@@ -20,7 +20,7 @@
 #include "qgsgpsconnection.h"
 #include "qgsnmeaconnection.h"
 #include "qgsgpsdconnection.h"
-
+#include "qgssettings.h"
 
 #if defined(HAVE_QT_MOBILITY_LOCATION ) || defined(QT_POSITIONING_LIB)
 #include "qgsqtlocationconnection.h"
@@ -60,8 +60,6 @@ QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
 
 QgsGpsDetector::QgsGpsDetector( const QString &portName )
 {
-  mConn = nullptr;
-
 #if defined( HAVE_QT5SERIALPORT )
   mBaudList << QSerialPort::Baud4800 << QSerialPort::Baud9600 << QSerialPort::Baud38400 << QSerialPort::Baud57600 << QSerialPort::Baud115200;  //add 57600 for SXBlueII GPS unit
 #endif
@@ -74,21 +72,15 @@ QgsGpsDetector::QgsGpsDetector( const QString &portName )
   {
     mPortList << QPair<QString, QString>( portName, portName );
   }
-
-  mPortIndex = 0;
-  mBaudIndex = -1;
 }
 
-QgsGpsDetector::~QgsGpsDetector()
-{
-  delete mConn;
-}
+QgsGpsDetector::~QgsGpsDetector() = default;
 
 void QgsGpsDetector::advance()
 {
-  delete mConn;
+  mConn.reset();
 
-  mConn = nullptr;
+  QgsSettings settings;
 
   while ( !mConn )
   {
@@ -114,12 +106,12 @@ void QgsGpsDetector::advance()
 
       Q_ASSERT( gpsParams.size() >= 3 );
 
-      mConn = new QgsGpsdConnection( gpsParams[0], gpsParams[1].toShort(), gpsParams[2] );
+      mConn = qgis::make_unique< QgsGpsdConnection >( gpsParams[0], gpsParams[1].toShort(), gpsParams[2] );
     }
     else if ( mPortList.at( mPortIndex ).first.contains( QLatin1String( "internalGPS" ) ) )
     {
 #if defined(HAVE_QT_MOBILITY_LOCATION ) || defined(QT_POSITIONING_LIB)
-      mConn = new QgsQtLocationConnection();
+      mConn = qgis::make_unique< QgsQtLocationConnection >();
 #else
       qWarning( "QT_MOBILITY_LOCATION not found and mPortList matches internalGPS, this should never happen" );
 #endif
@@ -127,21 +119,18 @@ void QgsGpsDetector::advance()
     else
     {
 #if defined( HAVE_QT5SERIALPORT )
-      QSerialPort *serial = new QSerialPort( mPortList.at( mPortIndex ).first );
+      std::unique_ptr< QSerialPort > serial = qgis::make_unique< QSerialPort >( mPortList.at( mPortIndex ).first );
 
       serial->setBaudRate( mBaudList[ mBaudIndex ] );
-      serial->setFlowControl( QSerialPort::NoFlowControl );
-      serial->setParity( QSerialPort::NoParity );
-      serial->setDataBits( QSerialPort::Data8 );
-      serial->setStopBits( QSerialPort::OneStop );
+
+      serial->setFlowControl( settings.enumValue( QStringLiteral( "gps/flow_control" ), QSerialPort::NoFlowControl, QgsSettings::Core ) );
+      serial->setParity( settings.enumValue( QStringLiteral( "gps/parity" ), QSerialPort::NoParity, QgsSettings::Core ) );
+      serial->setDataBits( settings.enumValue( QStringLiteral( "gps/data_bits" ), QSerialPort::Data8, QgsSettings::Core ) );
+      serial->setStopBits( settings.enumValue( QStringLiteral( "gps/stop_bits" ), QSerialPort::OneStop, QgsSettings::Core ) );
 
       if ( serial->open( QIODevice::ReadOnly ) )
       {
-        mConn = new QgsNmeaConnection( serial );
-      }
-      else
-      {
-        delete serial;
+        mConn = qgis::make_unique< QgsNmeaConnection >( serial.release() );
       }
 #else
       qWarning( "QT5SERIALPORT not found and mPortList matches serial port, this should never happen" );
@@ -149,8 +138,8 @@ void QgsGpsDetector::advance()
     }
   }
 
-  connect( mConn, &QgsGpsConnection::stateChanged, this, static_cast < void ( QgsGpsDetector::* )( const QgsGpsInformation & ) >( &QgsGpsDetector::detected ) );
-  connect( mConn, &QObject::destroyed, this, &QgsGpsDetector::connDestroyed );
+  connect( mConn.get(), &QgsGpsConnection::stateChanged, this, static_cast < void ( QgsGpsDetector::* )( const QgsGpsInformation & ) >( &QgsGpsDetector::detected ) );
+  connect( mConn.get(), &QObject::destroyed, this, &QgsGpsDetector::connDestroyed );
 
   // leave 2s to pickup a valid string
   QTimer::singleShot( 2000, this, &QgsGpsDetector::advance );
@@ -167,18 +156,20 @@ void QgsGpsDetector::detected( const QgsGpsInformation &info )
   }
   else if ( mConn->status() == QgsGpsConnection::GPSDataReceived )
   {
-    // signal detection
-    QgsGpsConnection *conn = mConn;
-    mConn = nullptr;
-    emit detected( conn );
+    // signal detected
+
+    // let's hope there's a single, unique connection to this signal... otherwise... boom
+    emit detected( mConn.release() );
+
     deleteLater();
   }
 }
 
 void QgsGpsDetector::connDestroyed( QObject *obj )
 {
-  if ( obj == mConn )
+  // WTF? This whole class needs re-writing...
+  if ( obj == mConn.get() )
   {
-    mConn = nullptr;
+    mConn.release();
   }
 }

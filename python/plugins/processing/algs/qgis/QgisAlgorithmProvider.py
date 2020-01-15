@@ -35,11 +35,9 @@ from .BoxPlot import BoxPlot
 from .CheckValidity import CheckValidity
 from .Climb import Climb
 from .ConcaveHull import ConcaveHull
-from .Datasources2Vrt import Datasources2Vrt
 from .DefineProjection import DefineProjection
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
-from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -87,7 +85,6 @@ from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
-from .SpatialJoin import SpatialJoin
 from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .TextToFloat import TextToFloat
@@ -119,11 +116,9 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 CheckValidity(),
                 Climb(),
                 ConcaveHull(),
-                Datasources2Vrt(),
                 DefineProjection(),
                 Delaunay(),
                 DeleteColumn(),
-                DeleteDuplicateGeometries(),
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
@@ -171,7 +166,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SetVectorStyle(),
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
-                SpatialJoin(),
                 SpatialJoinSummary(),
                 StatisticsByCategories(),
                 TextToFloat(),

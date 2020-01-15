@@ -88,19 +88,14 @@ namespace pal
        * \param feature labelpos owners
        * \param isReversed label is reversed
        * \param quadrant relative position of label to feature
-       * \param dX the correction of the anchor point in x direction
-       * \param dY the correction of the anchor point in y direction
        */
       LabelPosition( int id, double x1, double y1,
                      double w, double h,
                      double alpha, double cost,
-                     FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver,
-                     double dX = 0.0, double dY = 0.0 );
+                     FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
 
       //! Copy constructor
       LabelPosition( const LabelPosition &other );
-
-      ~LabelPosition() override { delete nextPart; }
 
       /**
        * \brief Is the labelposition in the bounding-box ? (intersect or inside????)
@@ -200,7 +195,7 @@ namespace pal
       {
         probFeat = probFid;
         id = lpId;
-        if ( nextPart ) nextPart->setProblemIds( probFid, lpId );
+        if ( mNextPart ) mNextPart->setProblemIds( probFid, lpId );
       }
 
       /**
@@ -272,8 +267,20 @@ namespace pal
       bool getUpsideDown() const { return upsideDown; }
 
       Quadrant getQuadrant() const { return quadrant; }
-      LabelPosition *getNextPart() const { return nextPart; }
-      void setNextPart( LabelPosition *next ) { nextPart = next; }
+
+      /**
+       * Returns the next part of this label position (i.e. the next character for a curved label).
+       *
+       * \see setNextPart()
+       */
+      LabelPosition *nextPart() const { return mNextPart.get(); }
+
+      /**
+       * Sets the \a next part of this label position (i.e. the next character for a curved label).
+       *
+       * \see nextPart()
+       */
+      void setNextPart( std::unique_ptr< LabelPosition > next ) { mNextPart = std::move( next ); }
 
       // -1 if not multi-part
       int getPartId() const { return partId; }
@@ -295,20 +302,6 @@ namespace pal
        */
       void insertIntoIndex( PalRtree<LabelPosition> &index );
 
-      /**
-       * The offset of the anchor point in x direction.
-       *
-       * \since QGIS 3.12
-       */
-      double dX() const;
-
-      /**
-       * The offset of the anchor point in y direction.
-       *
-       * \since QGIS 3.12
-       */
-      double dY() const;
-
     protected:
 
       int id;
@@ -324,7 +317,6 @@ namespace pal
       double w;
       double h;
 
-      LabelPosition *nextPart = nullptr;
       int partId;
 
       //True if label direction is the same as line / polygon ring direction.
@@ -337,12 +329,13 @@ namespace pal
       LabelPosition::Quadrant quadrant;
 
     private:
+
+      std::unique_ptr< LabelPosition > mNextPart;
+
       double mCost;
       bool mHasObstacleConflict;
       bool mHasHardConflict = false;
       int mUpsideDownCharCount;
-      double mDx = 0.0;
-      double mDy = 0.0;
 
       /**
        * Calculates the total number of parts for this label position

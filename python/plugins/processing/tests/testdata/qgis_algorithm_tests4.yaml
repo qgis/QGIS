@@ -1363,7 +1363,7 @@ tests:
         name: expected/split_linez_by_length.shp
         type: vector
 
-  - algorithm: qgis:deleteduplicategeometries
+  - algorithm: native:deleteduplicategeometries
     name: Delete Duplicates with null geometries
     params:
       INPUT:
@@ -1991,6 +1991,7 @@ tests:
       OUTPUT:
         name: expected/nearest_lines_to_polys.gml
         type: vector
+        pk: [fid,fid_2]
 
   - algorithm: native:joinbynearest
     name: Nearest points to lines, with max distance
@@ -2304,5 +2305,26 @@ tests:
       OUTPUT:
         name: expected/split_by_char_regex.gml
         type: vector
+
+  - algorithm: native:affinetransform
+    name: Affine transform
+    params:
+      DELTA_M: 4.0
+      DELTA_X: 1.0
+      DELTA_Y: 2.0
+      DELTA_Z: 3.0
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+      ROTATION_Z: 45.0
+      SCALE_M: 1.4
+      SCALE_X: 1.1
+      SCALE_Y: 1.2
+      SCALE_Z: 1.3
+    results:
+      OUTPUT:
+        name: expected/affine_transform.gml
+        type: vector
+
 
 # See ../README.md for a description of the file format

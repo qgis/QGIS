@@ -38,6 +38,7 @@ from .ClipRasterByExtent import ClipRasterByExtent
 from .ClipRasterByMask import ClipRasterByMask
 from .ColorRelief import ColorRelief
 from .contour import contour
+from .Datasources2Vrt import Datasources2Vrt
 from .fillnodata import fillnodata
 from .gdalinfo import gdalinfo
 from .gdal2tiles import gdal2tiles
@@ -99,6 +100,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
     def __init__(self):
         super().__init__()
         self.algs = []
+        QgsApplication.processingRegistry().addAlgorithmAlias('qgis:buildvirtualvector', 'gdal:buildvirtualvector')
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()
@@ -145,6 +147,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             ClipRasterByMask(),
             ColorRelief(),
             contour(),
+            Datasources2Vrt(),
             fillnodata(),
             gdalinfo(),
             gdal2tiles(),

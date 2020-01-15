@@ -36,6 +36,8 @@
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgslocaldefaultsettings.h"
+#include "qgsnumericformatwidget.h"
 
 #include "qgsattributetablefiltermodel.h"
 #include "qgsrasterformatsaveoptionswidget.h"
@@ -55,6 +57,7 @@
 #include "qgsgui.h"
 #include "qgswelcomepage.h"
 #include "qgsnewsfeedparser.h"
+#include "qgsbearingnumericformat.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -1198,6 +1201,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // restore window and widget geometry/state
   connect( mRestoreDefaultWindowStateBtn, &QAbstractButton::clicked, this, &QgsOptions::restoreDefaultWindowState );
 
+  mBearingFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsOptions::customizeBearingFormat );
+
   restoreOptionsBaseUi();
 
 #ifdef QGISDEBUG
@@ -1754,6 +1760,8 @@ void QgsOptions::saveOptions()
 
   // Number settings
   mSettings->setValue( QStringLiteral( "locale/showGroupSeparator" ), cbShowGroupSeparator->isChecked( ) );
+
+  QgsLocalDefaultSettings::setBearingFormat( mBearingFormat.release() );
 
 #ifdef HAVE_OPENCL
   // OpenCL settings
@@ -2666,4 +2674,14 @@ void QgsOptions::showHelp()
     }
   }
   QgsHelp::openHelp( link );
+}
+
+void QgsOptions::customizeBearingFormat()
+{
+  QgsBearingNumericFormatDialog dlg( mBearingFormat.get(), this );
+  dlg.setWindowTitle( tr( "Bearing Format" ) );
+  if ( dlg.exec() )
+  {
+    mBearingFormat.reset( dlg.format() );
+  }
 }

@@ -95,6 +95,23 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      */
     explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr, QgsSpatialIndex::Flags flags = nullptr );
 
+#ifndef SIP_RUN
+
+    /**
+     * Constructor - creates R-tree and bulk loads it with features from the iterator.
+     * This is much faster approach than creating an empty index and then inserting features one by one.
+     *
+     * This construct and bulk load variant allows for a \a callback function to be specified, which is
+     * called for each added feature in turn. It allows for bulk spatial index load along with other feature
+     * based operations on a single iteration through a feature source. If \a callback returns FALSE, the
+     * load and iteration is canceled.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 2.12
+     */
+    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, const std::function< bool( const QgsFeature & ) > &callback, QgsSpatialIndex::Flags flags = nullptr );
+#endif
+
     /**
      * Constructor - creates R-tree and bulk loads it with features from the source.
      * This is much faster approach than creating an empty index and then inserting features one by one.

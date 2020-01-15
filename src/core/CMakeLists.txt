@@ -104,6 +104,15 @@ SET(QGIS_CORE_SRCS
   metadata/qgslayermetadataformatter.cpp
   metadata/qgsprojectmetadata.cpp
 
+  numericformats/qgsbasicnumericformat.cpp
+  numericformats/qgsbearingnumericformat.cpp
+  numericformats/qgscurrencynumericformat.cpp
+  numericformats/qgsfallbacknumericformat.cpp
+  numericformats/qgsnumericformat.cpp
+  numericformats/qgsnumericformatregistry.cpp
+  numericformats/qgspercentagenumericformat.cpp
+  numericformats/qgsscientificnumericformat.cpp
+
   auth/qgsauthcertutils.cpp
   auth/qgsauthconfig.cpp
   auth/qgsauthcrypto.cpp
@@ -173,6 +182,7 @@ SET(QGIS_CORE_SRCS
   scalebar/qgsdoubleboxscalebarrenderer.cpp
   scalebar/qgsnumericscalebarrenderer.cpp
   scalebar/qgsscalebarrenderer.cpp
+  scalebar/qgsscalebarsettings.cpp
   scalebar/qgssingleboxscalebarrenderer.cpp
   scalebar/qgsticksscalebarrenderer.cpp
 
@@ -267,6 +277,7 @@ SET(QGIS_CORE_SRCS
   qgslegendrenderer.cpp
   qgslegendsettings.cpp
   qgslegendstyle.cpp
+  qgslocaldefaultsettings.cpp
   qgslocalec.cpp
   qgslogger.cpp
   qgsmapdecoration.cpp
@@ -323,6 +334,7 @@ SET(QGIS_CORE_SRCS
   qgsprojectbadlayerhandler.cpp
   qgsprojectfiletransform.cpp
   qgssnappingconfig.cpp
+  qgsprojectdisplaysettings.cpp
   qgsprojectproperty.cpp
   qgsprojectstorage.cpp
   qgsprojectstorageregistry.cpp
@@ -362,6 +374,7 @@ SET(QGIS_CORE_SRCS
   qgsstoredexpressionmanager.cpp
   qgsstringstatisticalsummary.cpp
   qgsstringutils.cpp
+  qgstablecell.cpp
   qgstaskmanager.cpp
   qgstessellator.cpp
   qgstextrenderer.cpp
@@ -428,6 +441,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutitemhtml.cpp
   layout/qgslayoutitemlabel.cpp
   layout/qgslayoutitemlegend.cpp
+  layout/qgslayoutitemmanualtable.cpp
   layout/qgslayoutitemmap.cpp
   layout/qgslayoutitemmapgrid.cpp
   layout/qgslayoutitemmapitem.cpp
@@ -763,6 +777,7 @@ SET(QGIS_CORE_HDRS
   qgslegendrenderer.h
   qgslegendsettings.h
   qgslegendstyle.h
+  qgslocaldefaultsettings.h
   qgslocalec.h
   qgslogger.h
   qgsmapdecoration.h
@@ -823,6 +838,7 @@ SET(QGIS_CORE_HDRS
   qgspostgresstringutils.h
   qgsproject.h
   qgsprojectbadlayerhandler.h
+  qgsprojectdisplaysettings.h
   qgsprojectfiletransform.h
   qgsprojectproperty.h
   qgsprojectstorage.h
@@ -868,6 +884,7 @@ SET(QGIS_CORE_HDRS
   qgsstoredexpressionmanager.h
   qgsstringstatisticalsummary.h
   qgsstringutils.h
+  qgstablecell.h
   qgstaskmanager.h
   qgstessellator.h
   qgstestutils.h
@@ -1061,6 +1078,7 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutitemhtml.h
   layout/qgslayoutitemlabel.h
   layout/qgslayoutitemlegend.h
+  layout/qgslayoutitemmanualtable.h
   layout/qgslayoutitemmap.h
   layout/qgslayoutitemmapgrid.h
   layout/qgslayoutitemmapitem.h
@@ -1125,6 +1143,15 @@ SET(QGIS_CORE_HDRS
   metadata/qgslayermetadataformatter.h
   metadata/qgslayermetadatavalidator.h
   metadata/qgsprojectmetadata.h
+
+  numericformats/qgsbasicnumericformat.h
+  numericformats/qgsbearingnumericformat.h
+  numericformats/qgscurrencynumericformat.h
+  numericformats/qgsfallbacknumericformat.h
+  numericformats/qgsnumericformat.h
+  numericformats/qgsnumericformatregistry.h
+  numericformats/qgspercentagenumericformat.h
+  numericformats/qgsscientificnumericformat.h
 
   processing/models/qgsprocessingmodelalgorithm.h
   processing/models/qgsprocessingmodelchildalgorithm.h
@@ -1322,6 +1349,7 @@ INCLUDE_DIRECTORIES(
   layout
   locator
   metadata
+  numericformats
   pal
   processing
   processing/models
@@ -1334,7 +1362,6 @@ INCLUDE_DIRECTORIES(
   renderer
   scalebar
   symbology
-  metadata
   mesh
   validity
   ${CMAKE_SOURCE_DIR}/external

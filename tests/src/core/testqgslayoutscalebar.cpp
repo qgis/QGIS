@@ -28,6 +28,7 @@
 #include "qgsproperty.h"
 #include "qgsproject.h"
 #include "qgspallabeling.h"
+#include "qgsbasicnumericformat.h"
 
 #include <QLocale>
 #include <QObject>
@@ -54,6 +55,7 @@ class TestQgsLayoutScaleBar : public QObject
     void tick();
     void dataDefined();
     void textFormat();
+    void numericFormat();
 
   private:
     QString mReport;
@@ -123,6 +125,7 @@ void TestQgsLayoutScaleBar::singleBox()
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 5 );
   scalebar->setLineWidth( 1.0 );
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   scalebar->setStyle( QStringLiteral( "Single Box" ) );
   QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_singlebox" ), &l );
@@ -152,6 +155,7 @@ void TestQgsLayoutScaleBar::singleBoxLabelBelowSegment()
   scalebar->setHeight( 5 );
   scalebar->setLineWidth( 1.0 );
   scalebar->setLabelVerticalPlacement( QgsScaleBarSettings::LabelBelowSegment );
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   scalebar->setStyle( QStringLiteral( "Single Box" ) );
   QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_singlebox_labelbelowsegment" ), &l );
@@ -189,6 +193,8 @@ void TestQgsLayoutScaleBar::singleBoxAlpha()
   scalebar->setFillColor2( QColor( 0, 255, 0, 50 ) );
   scalebar->setLineColor( QColor( 0, 0, 255, 150 ) );
   scalebar->setLineWidth( 1.0 );
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
+
   QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_singlebox_alpha" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
@@ -223,6 +229,7 @@ void TestQgsLayoutScaleBar::doubleBox()
   scalebar->setLineColor( Qt::black );
   scalebar->setLineWidth( 1.0 );
   scalebar->setStyle( QStringLiteral( "Double Box" ) );
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_doublebox" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
@@ -262,6 +269,7 @@ void TestQgsLayoutScaleBar::doubleBoxLabelCenteredSegment()
   scalebar->setLabelVerticalPlacement( QgsScaleBarSettings::LabelBelowSegment );
   scalebar->setLabelHorizontalPlacement( QgsScaleBarSettings::LabelCenteredSegment );
   scalebar->setUnitLabel( QStringLiteral( "units" ) );
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_doublebox_labelcenteredsegment" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
@@ -294,6 +302,8 @@ void TestQgsLayoutScaleBar::numeric()
   QFont newFont = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
   newFont.setPointSizeF( 12 );
   scalebar->setTextFormat( QgsTextFormat::fromQFont( newFont ) );
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setNumberDecimalPlaces( 0 );
 
   scalebar->setStyle( QStringLiteral( "Numeric" ) );
   QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_numeric" ), &l );
@@ -323,6 +333,7 @@ void TestQgsLayoutScaleBar::tick()
   scalebar->setNumberOfSegments( 2 );
   scalebar->setHeight( 5 );
   scalebar->setLineWidth( 1.0 );
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   scalebar->setStyle( QStringLiteral( "Line Ticks Up" ) );
   scalebar->setLineWidth( 1.0 );
@@ -354,6 +365,8 @@ void TestQgsLayoutScaleBar::dataDefined()
   scalebar->setHeight( 5 );
   scalebar->setLineWidth( 1.0 );
   scalebar->setStyle( QStringLiteral( "Single Box" ) );
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setNumberDecimalPlaces( 0 );
 
   QFont newFont = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
   newFont.setPointSizeF( 12 );
@@ -397,6 +410,7 @@ void TestQgsLayoutScaleBar::textFormat()
   scalebar->setHeight( 5 );
   scalebar->setLineWidth( 1.0 );
   scalebar->setStyle( QStringLiteral( "Single Box" ) );
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
   QgsTextFormat format = QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
   format.setSize( 16 );
@@ -404,6 +418,40 @@ void TestQgsLayoutScaleBar::textFormat()
   scalebar->setTextFormat( format );
 
   QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_textformat" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
+void TestQgsLayoutScaleBar::numericFormat()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 150, 150 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+  map->setExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+
+  QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
+  scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
+  l.addLayoutItem( scalebar );
+  scalebar->setLinkedMap( map );
+  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnitsPerSegment( 2000 );
+  scalebar->setNumberOfSegmentsLeft( 0 );
+  scalebar->setNumberOfSegments( 2 );
+  scalebar->setHeight( 5 );
+  scalebar->setLineWidth( 1.0 );
+  scalebar->setStyle( QStringLiteral( "Single Box" ) );
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( true );
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowPlusSign( true );
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setNumberDecimalPlaces( 1 );
+
+  QFont newFont = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
+  newFont.setPointSizeF( 12 );
+  scalebar->setTextFormat( QgsTextFormat::fromQFont( newFont ) );
+
+  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_numericformat" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }

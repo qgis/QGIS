@@ -2174,7 +2174,7 @@ p, li { white-space: pre-wrap; }
   <customwidget>
    <class>QgsRasterBandComboBox</class>
    <extends>QComboBox</extends>
-   <header>raster/qgsrasterbandcombobox.h</header>
+   <header>qgsrasterbandcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsWebView</class>

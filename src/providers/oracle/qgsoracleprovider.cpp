@@ -139,6 +139,14 @@ QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions 
 
   mLayerExtent.setMinimal();
 
+  // get always generated key
+  if ( !determineAlwaysGeneratedKeys() )
+  {
+    mValid = false;
+    disconnectDb();
+    return;
+  }
+
   // set the primary key
   if ( !determinePrimaryKey() )
   {
@@ -1010,6 +1018,46 @@ bool QgsOracleProvider::determinePrimaryKey()
   return mValid;
 }
 
+bool QgsOracleProvider::determineAlwaysGeneratedKeys()
+{
+  if ( !loadFields() )
+  {
+    return false;
+  }
+
+  // check to see if there is an unique index on the relation, which
+  // can be used as a key into the table. Primary keys are always
+  // unique indices, so we catch them as well.
+  QgsOracleConn *conn = connectionRO();
+  QSqlQuery qry( *conn );
+
+  QString sql = QStringLiteral( "SELECT a.column_name "
+                                "FROM all_tab_identity_cols a "
+                                "WHERE a.owner = '%1' "
+                                "AND a.table_name = '%2' "
+                                "AND a.generation_type = 'ALWAYS'" ).arg( mOwnerName ).arg( mTableName );
+
+  if ( exec( qry, sql, QVariantList() ) )
+  {
+    while ( qry.next() )
+    {
+      if ( mAttributeFields.names().contains( qry.value( 0 ).toString() ) )
+      {
+        mAlwaysGeneratedKeyAttrs.append( mAttributeFields.indexOf( qry.value( 0 ).toString() ) );
+      }
+    }
+    mValid = true;
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
+                               .arg( qry.lastError().text() )
+                               .arg( qry.lastQuery() ), tr( "Oracle" ) );
+    mValid = false;
+  }
+  return mValid;
+}
+
 bool QgsOracleProvider::uniqueData( QString query, QString colName )
 {
   Q_UNUSED( query )
@@ -1184,7 +1232,43 @@ bool QgsOracleProvider::isValid() const
 
 QVariant QgsOracleProvider::defaultValue( int fieldId ) const
 {
-  return mDefaultValues.value( fieldId, QVariant() );
+  QString defVal = mDefaultValues.value( fieldId, QString() ).toString();
+
+  if ( providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
+  {
+    QgsField fld = field( fieldId );
+    return evaluateDefaultExpression( defVal, fld.type() );
+  }
+
+  return defVal;
+}
+
+QString QgsOracleProvider::defaultValueClause( int fieldId ) const
+{
+  QString defVal = mDefaultValues.value( fieldId, QString() ).toString();
+
+  if ( !providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
+  {
+    return defVal;
+  }
+
+  return QString();
+}
+
+
+bool QgsOracleProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value ) const
+{
+  Q_UNUSED( constraint );
+  if ( providerProperty( EvaluateDefaultValues, false ).toBool() )
+  {
+    return !mDefaultValues.value( fieldIndex ).toString().isEmpty();
+  }
+  else
+  {
+    // stricter check - if we are evaluating default values only on commit then we can only bypass the check
+    // if the attribute values matches the original default clause
+    return mDefaultValues.value( fieldIndex ) == value.toString() && !value.isNull();
+  }
 }
 
 QVariant QgsOracleProvider::evaluateDefaultExpression( const QString &value, const QVariant::Type &fieldType ) const
@@ -1232,7 +1316,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
 
   try
   {
-    QSqlQuery ins( db ), getfid( db );
+    QSqlQuery ins( db ), getfid( db ), identitytype( db );
 
     if ( !conn->begin( db ) )
     {
@@ -1262,8 +1346,10 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
       for ( int idx : constMPrimaryKeyAttrs )
       {
         QgsField fld = field( idx );
-        insert += delim + quotedIdentifier( fld.name() );
         keys += kdelim + quotedIdentifier( fld.name() );
+        if ( mAlwaysGeneratedKeyAttrs.contains( idx ) )
+          continue;
+        insert += delim + quotedIdentifier( fld.name() );
         values += delim + '?';
         delim = ',';
         kdelim = ',';
@@ -1284,6 +1370,8 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flag
     for ( int idx = 0; idx < std::min( attributevec.size(), mAttributeFields.size() ); ++idx )
     {
       QVariant v = attributevec[idx];
+      if ( mAlwaysGeneratedKeyAttrs.contains( idx ) )
+        continue;
       if ( !v.isValid() )
         continue;
 
@@ -1910,7 +1998,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       {
         g.gtype = SDO_GTYPE( dim, GtLine );
         int nLines = 1;
-        if ( type == QgsWkbTypes::MultiLineString25D || type == QgsWkbTypes::MultiLineString )
+        if ( type == QgsWkbTypes::MultiLineString25D || type == QgsWkbTypes::MultiLineString || type == QgsWkbTypes::MultiLineStringZ )
         {
           g.gtype = SDO_GTYPE( dim, GtMultiLine );
           nLines = *ptr.iPtr++;
@@ -1949,7 +2037,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       {
         g.gtype = SDO_GTYPE( dim, GtPolygon );
         int nPolygons = 1;
-        if ( type == QgsWkbTypes::MultiPolygon25D || type == QgsWkbTypes::MultiPolygon )
+        if ( QgsWkbTypes::flatType( type ) == QgsWkbTypes::MultiPolygon )
         {
           g.gtype = SDO_GTYPE( dim, GtMultiPolygon );
           nPolygons = *ptr.iPtr++;
@@ -2006,27 +2094,162 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       }
       break;
 
-      // currently unsupported curved types
-      case QgsWkbTypes::CircularString:
       case QgsWkbTypes::CircularStringZ:
-      case QgsWkbTypes::CircularStringM:
-      case QgsWkbTypes::CircularStringZM:
-      case QgsWkbTypes::CompoundCurve:
       case QgsWkbTypes::CompoundCurveZ:
-      case QgsWkbTypes::CompoundCurveM:
-      case QgsWkbTypes::CompoundCurveZM:
-      case QgsWkbTypes::CurvePolygon:
-      case QgsWkbTypes::CurvePolygonZ:
-      case QgsWkbTypes::CurvePolygonM:
-      case QgsWkbTypes::CurvePolygonZM:
-      case QgsWkbTypes::MultiCurve:
       case QgsWkbTypes::MultiCurveZ:
-      case QgsWkbTypes::MultiCurveM:
-      case QgsWkbTypes::MultiCurveZM:
-      case QgsWkbTypes::MultiSurface:
+        dim = 3;
+        FALLTHROUGH
+
+      case QgsWkbTypes::CircularString:
+      case QgsWkbTypes::CompoundCurve:
+      case QgsWkbTypes::MultiCurve:
+      {
+        g.gtype = SDO_GTYPE( dim, GtLine );
+        int nCurves = 1;
+        QgsWkbTypes::Type curveType = type;
+        if ( type == QgsWkbTypes::MultiCurve || type == QgsWkbTypes::MultiCurveZ )
+        {
+          g.gtype = SDO_GTYPE( dim, GtMultiLine );
+          nCurves = *ptr.iPtr++;
+
+          ptr.ucPtr++; // Skip endianness of first curve
+          curveType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first curve
+        }
+
+        for ( int iCurve = 0; iCurve < nCurves; iCurve++ )
+        {
+          int nLines = 1;
+          QgsWkbTypes::Type lineType = curveType;
+          if ( curveType == QgsWkbTypes::CompoundCurve || curveType == QgsWkbTypes::CompoundCurveZ )
+          {
+            g.gtype = SDO_GTYPE( dim, GtMultiLine );
+            nLines = *ptr.iPtr++;
+
+            // Oracle don't store compound curve with only one line
+            if ( nLines > 1 )
+            {
+              g.eleminfo << iOrdinate << 4 << nLines;
+            }
+
+            ptr.ucPtr++; // Skip endianness of first linestring
+            lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first linestring
+          }
+
+          for ( int iLine = 0; iLine < nLines; iLine++ )
+          {
+            bool circularString = lineType == QgsWkbTypes::CircularString || lineType == QgsWkbTypes::CircularStringZ;
+
+            g.eleminfo << iOrdinate << 2 << ( circularString ? 2 : 1 );
+
+            for ( int i = 0, n = *ptr.iPtr++; i < n; i++ )
+            {
+              // Inside a compound curve, two consecutives lines share start/end points
+              // We don't repeat this point in ordinates, so we skip the last point (except for last line)
+              if ( ( curveType == QgsWkbTypes::CompoundCurve || curveType == QgsWkbTypes::CompoundCurveZ )
+                   && i == n - 1 && iLine < nLines - 1 )
+              {
+                ptr.dPtr += dim;
+                continue;
+              }
+
+              g.ordinates << *ptr.dPtr++;
+              g.ordinates << *ptr.dPtr++;
+              if ( dim == 3 )
+                g.ordinates << *ptr.dPtr++;
+
+              iOrdinate  += dim;
+            }
+
+            ptr.ucPtr++; // Skip endianness of next linestring
+            lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of next linestring
+          }
+
+          curveType = lineType; // type of next curve
+        }
+      }
+      break;
+
+
+      case QgsWkbTypes::CurvePolygonZ:
       case QgsWkbTypes::MultiSurfaceZ:
-      case QgsWkbTypes::MultiSurfaceM:
-      case QgsWkbTypes::MultiSurfaceZM:
+        dim = 3;
+        FALLTHROUGH
+
+      case QgsWkbTypes::CurvePolygon:
+      case QgsWkbTypes::MultiSurface:
+      {
+        g.gtype = SDO_GTYPE( dim, GtPolygon );
+        int nSurfaces = 1;
+        QgsWkbTypes::Type surfaceType = type;
+        if ( type == QgsWkbTypes::MultiSurface || type == QgsWkbTypes::MultiSurfaceZ )
+        {
+          g.gtype = SDO_GTYPE( dim, GtMultiPolygon );
+          nSurfaces = *ptr.iPtr++;
+
+          ptr.ucPtr++; // Skip endianness of first surface
+          surfaceType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first surface
+        }
+
+        for ( int iSurface = 0; iSurface < nSurfaces; iSurface++ )
+        {
+          int nRings = nRings = *ptr.iPtr++;
+
+          ptr.ucPtr++; // Skip endianness of first ring
+          QgsWkbTypes::Type ringType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first ring
+
+          QgsWkbTypes::Type lineType;
+          for ( int iRing = 0; iRing < nRings; iRing++ )
+          {
+            int nLines = 1;
+            lineType = ringType;
+            if ( QgsWkbTypes::flatType( ringType ) == QgsWkbTypes::CompoundCurve )
+            {
+              nLines = *ptr.iPtr++;
+
+              ptr.ucPtr++; // Skip endianness of first linestring
+              lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first linestring
+            }
+
+            // Oracle don't store compound curve with only one line
+            g.eleminfo << iOrdinate
+                       << ( iRing == 0 ? 1000 : 2000 ) + ( nLines > 1 ? 5 : 3 )
+                       << ( nLines > 1 ? nLines : ( QgsWkbTypes::flatType( ringType ) == QgsWkbTypes::CircularString ? 2 : 1 ) );
+
+            for ( int iLine = 0; iLine < nLines; iLine++ )
+            {
+              if ( nLines > 1 )
+                g.eleminfo << iOrdinate << 2 << ( QgsWkbTypes::flatType( lineType ) == QgsWkbTypes::CircularString ? 2 : 1 );
+
+              for ( int i = 0, n = *ptr.iPtr++; i < n; i++ )
+              {
+                // Inside a compound polygon, two consecutives lines share start/end points
+                // We don't repeat this point in ordinates, so we skip the last point (except for last line)
+                if ( QgsWkbTypes::flatType( ringType ) == QgsWkbTypes::CompoundCurve
+                     && i == n - 1 && iLine < nLines - 1 )
+                {
+                  ptr.dPtr += dim;
+                  continue;
+                }
+
+                g.ordinates << *ptr.dPtr++;
+                g.ordinates << *ptr.dPtr++;
+                if ( dim == 3 )
+                  g.ordinates << *ptr.dPtr++;
+
+                iOrdinate  += dim;
+              }
+
+              ptr.ucPtr++; // Skip endianness of next linestring
+              lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of next linestring
+            }
+
+            ringType = lineType; // type of next curve
+          }
+
+          surfaceType = lineType;
+        }
+      }
+      break;
 
       // unsupported M values
       case QgsWkbTypes::PointM:
@@ -2041,6 +2264,16 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case QgsWkbTypes::MultiLineStringZM:
       case QgsWkbTypes::MultiPolygonM:
       case QgsWkbTypes::MultiPolygonZM:
+      case QgsWkbTypes::CircularStringM:
+      case QgsWkbTypes::CircularStringZM:
+      case QgsWkbTypes::CompoundCurveM:
+      case QgsWkbTypes::CompoundCurveZM:
+      case QgsWkbTypes::MultiCurveM:
+      case QgsWkbTypes::MultiCurveZM:
+      case QgsWkbTypes::CurvePolygonM:
+      case QgsWkbTypes::CurvePolygonZM:
+      case QgsWkbTypes::MultiSurfaceM:
+      case QgsWkbTypes::MultiSurfaceZM:
 
       // other unsupported or missing geometry types
       case QgsWkbTypes::GeometryCollection:
@@ -2272,7 +2505,7 @@ QgsRectangle QgsOracleProvider::extent() const
         }
       }
 
-      if ( mHasSpatialIndex && ( mUseEstimatedMetadata || mSqlWhereClause.isEmpty() ) )
+      if ( mHasSpatialIndex && mUseEstimatedMetadata )
       {
         ok = exec( qry,
                    QStringLiteral( "SELECT SDO_TUNE.EXTENT_OF(?,?) FROM dual" ),
@@ -2482,18 +2715,6 @@ bool QgsOracleProvider::getGeometryDetails()
 
   if ( !mValid )
     return false;
-
-
-  // store whether the geometry includes measure value
-  if ( detectedType == QgsWkbTypes::Point25D || detectedType == QgsWkbTypes::MultiPoint25D ||
-       detectedType == QgsWkbTypes::LineString25D || detectedType == QgsWkbTypes::MultiLineString25D ||
-       detectedType == QgsWkbTypes::Polygon25D || detectedType == QgsWkbTypes::MultiPolygon25D )
-  {
-    // explicitly disable adding new features and editing of geometries
-    // as this would lead to corruption of measures
-    QgsMessageLog::logMessage( tr( "Editing and adding disabled for 2D+ layer (%1; %2)" ).arg( mGeometryColumn ).arg( mQuery ) );
-    mEnabledCapabilities &= ~( QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::AddFeatures );
-  }
 
   QgsDebugMsg( QStringLiteral( "Feature type name is %1" ).arg( QgsWkbTypes::displayString( wkbType() ) ) );
 

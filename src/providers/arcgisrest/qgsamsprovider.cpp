@@ -392,7 +392,7 @@ void QgsAmsProvider::setSubLayerVisibility( const QString &name, bool vis )
   }
 }
 
-void QgsAmsProvider::reloadData()
+void QgsAmsProvider::reloadProviderData()
 {
   mCachedImage = QImage();
 }

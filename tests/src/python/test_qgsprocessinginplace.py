@@ -194,6 +194,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self._support_inplace_edit_tester('native:splitlinesbylength', LINESTRING_ONLY)
         self._support_inplace_edit_tester('native:buffer', POLYGON_ONLY_NOT_M_NOT_Z)
         self._support_inplace_edit_tester('native:antimeridiansplit', LINESTRING_ONLY)
+        self._support_inplace_edit_tester('native:affinetransform', GEOMETRY_ONLY)
 
     def _make_compatible_tester(self, feature_wkt, layer_wkb_name, attrs=[1]):
         layer = self._make_layer(layer_wkb_name)

@@ -4,6 +4,7 @@ SET(QGIS_GUI_SRCS
   raster/qgspalettedrendererwidget.cpp
   raster/qgsrasterbandcombobox.cpp
   raster/qgsrasterhistogramwidget.cpp
+  raster/qgsrasterlayerproperties.cpp
   raster/qgsrasterminmaxwidget.cpp
   raster/qgsrasterrendererwidget.cpp
   raster/qgssinglebandgrayrendererwidget.cpp
@@ -201,6 +202,10 @@ SET(QGIS_GUI_SRCS
 
   locator/qgslocatorwidget.cpp
 
+  numericformats/qgsnumericformatselectorwidget.cpp
+  numericformats/qgsnumericformatwidget.cpp
+  numericformats/qgsnumericformatguiregistry.cpp
+
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsnewogrconnection.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
@@ -231,6 +236,10 @@ SET(QGIS_GUI_SRCS
   providers/ogr/qgsgeopackageitemguiprovider.cpp
   providers/ogr/qgsogritemguiprovider.cpp
   providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp
+
+  tableeditor/qgstableeditordialog.cpp
+  tableeditor/qgstableeditorformattingwidget.cpp
+  tableeditor/qgstableeditorwidget.cpp
 
   qgisinterface.cpp
   qgsactionmenu.cpp
@@ -337,6 +346,7 @@ SET(QGIS_GUI_SRCS
   qgsmaplayeractionregistry.cpp
   qgsmaplayercombobox.cpp
   qgsmaplayerconfigwidgetfactory.cpp
+  qgsmaplayerstyleguiutils.cpp
   qgsmaplayerstylemanagerwidget.cpp
   qgsmapmouseevent.cpp
   qgsmapoverviewcanvas.cpp
@@ -541,6 +551,7 @@ SET(QGIS_GUI_HDRS
   qgsmaplayercombobox.h
   qgsmaplayerconfigwidget.h
   qgsmaplayerconfigwidgetfactory.h
+  qgsmaplayerstyleguiutils.h
   qgsmaplayerstylemanagerwidget.h
   qgsmapmouseevent.h
   qgsmapoverviewcanvas.h
@@ -788,6 +799,10 @@ SET(QGIS_GUI_HDRS
 
   locator/qgslocatorwidget.h
 
+  numericformats/qgsnumericformatselectorwidget.h
+  numericformats/qgsnumericformatwidget.h
+  numericformats/qgsnumericformatguiregistry.h
+
   ogr/qgsnewogrconnection.h
   ogr/qgsogrhelperfunctions.h
   ogr/qgsvectorlayersaveasdialog.h
@@ -831,6 +846,7 @@ SET(QGIS_GUI_HDRS
   raster/qgsrendererrasterpropertieswidget.h
   raster/qgssinglebandgrayrendererwidget.h
   raster/qgssinglebandpseudocolorrendererwidget.h
+  raster/qgsrasterlayerproperties.h
 
   symbology/characterwidget.h
   symbology/qgs25drendererwidget.h
@@ -867,6 +883,10 @@ SET(QGIS_GUI_HDRS
   symbology/qgssymbolslistwidget.h
   symbology/qgssymbolwidgetcontext.h
   symbology/qgsvectorfieldsymbollayerwidget.h
+
+  tableeditor/qgstableeditordialog.h
+  tableeditor/qgstableeditorformattingwidget.h
+  tableeditor/qgstableeditorwidget.h
 
   qgsbrowserdockwidget_p.h
 )
@@ -935,6 +955,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsarcgisservicesourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterlayerpropertiesbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
@@ -959,10 +980,13 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/layout
+  ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/processing
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
@@ -974,6 +998,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/pal

@@ -1809,6 +1809,28 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   QString::number( layer.fixedHeight ) %
   QStringLiteral( "</td></tr>" );
 
+  // Dimensions
+  if ( !layer.dimensions.isEmpty() )
+  {
+    metadata += QStringLiteral( "<tr><th>" ) %
+                tr( "Dimensions" ) %
+                QStringLiteral( "</th>"
+                                "<td><table class=\"tabular-view\">"
+                                "<tr><th>" ) %
+                tr( "Name" ) %
+                QStringLiteral( "</th><th>" ) %
+                tr( "Unit" ) %
+                QStringLiteral( "</th><th>" ) %
+                tr( "Extent" ) %
+                QStringLiteral( "</th></tr>" );
+
+    for ( const QgsWmsDimensionProperty &d : qgis::as_const( layer.dimensions ) )
+    {
+      metadata += QStringLiteral( "<tr><td>" ) % d.name % QStringLiteral( "</td><td>" ) % d.units %  QStringLiteral( "</td><td>" ) % d.extent % QStringLiteral( "</td></tr>" );
+    }
+    metadata += QStringLiteral( "</table>"
+                                "</td></tr>" );
+  }
   // Metadata URLs
   if ( !layer.metadataUrl.isEmpty() )
   {
@@ -3249,10 +3271,6 @@ QString QgsWmsProvider::providerKey()
 QString  QgsWmsProvider::description() const
 {
   return WMS_DESCRIPTION;
-}
-
-void QgsWmsProvider::reloadData()
-{
 }
 
 bool QgsWmsProvider::renderInPreview( const QgsDataProvider::PreviewContext &context )

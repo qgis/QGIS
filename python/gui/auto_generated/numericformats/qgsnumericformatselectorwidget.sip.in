@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/numericformats/qgsnumericformatselectorwidget.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsNumericFormatSelectorWidget : QgsPanelWidget
+{
+%Docstring
+A widget which allows choice of numeric formats and the properties of them.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatselectorwidget.h"
+%End
+  public:
+
+    QgsNumericFormatSelectorWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsNumericFormatSelectorWidget with the specified ``parent`` widget.
+%End
+
+    ~QgsNumericFormatSelectorWidget();
+
+    void setFormat( const QgsNumericFormat *format );
+%Docstring
+Sets the format to show in the widget.
+%End
+
+    QgsNumericFormat *format() const /TransferBack/;
+%Docstring
+Returns a new format object representing the settings currently configured in the widget.
+
+The caller takes ownership of the returned object.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted whenever the format configured55 in the widget is changed.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/numericformats/qgsnumericformatselectorwidget.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

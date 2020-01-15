@@ -133,12 +133,14 @@ int nmea_pack_type( const char *buff, int buff_sz )
     "GPGSV",
     "GPRMC",
     "GPVTG",
+    "HCHDG",
+    "HCHDT",
     "GNRMC",
     "GPGST",
   };
 
   // BUFFER_SIZE = size(P_HEADS) - 1;
-  int buffer_size = 6;
+  int buffer_size = 8;
 
   NMEA_ASSERT( buff );
 
@@ -155,8 +157,12 @@ int nmea_pack_type( const char *buff, int buff_sz )
   else if ( 0 == memcmp( buff, P_HEADS[4], buffer_size ) )
     return GPVTG;
   else if ( 0 == memcmp( buff, P_HEADS[5], buffer_size ) )
-    return GPRMC;
+    return HCHDG;
   else if ( 0 == memcmp( buff, P_HEADS[6], buffer_size ) )
+    return HCHDT;
+  else if ( 0 == memcmp( buff, P_HEADS[7], buffer_size ) )
+    return GPRMC;
+  else if ( 0 == memcmp( buff, P_HEADS[8], buffer_size ) )
     return GPGST;
 
   return GPNON;
@@ -502,6 +508,72 @@ int nmea_parse_GPVTG( const char *buff, int buff_sz, nmeaGPVTG *pack )
        pack->spk_k != 'K' )
   {
     nmea_error( "GPVTG parse error (format error)!" );
+    return 0;
+  }
+
+  return 1;
+}
+
+/**
+ * \brief Parse HCHDG packet from buffer.
+ * @param buff a constant character pointer of packet buffer.
+ * @param buff_sz buffer size.
+ * @param pack a pointer of packet which will filled by function.
+ * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
+ */
+int nmea_parse_HCHDG( const char *buff, int buff_sz, nmeaHCHDG *pack )
+{
+  NMEA_ASSERT( buff && pack );
+
+  memset( pack, 0, sizeof( nmeaHCHDG ) );
+
+  nmea_trace_buff( buff, buff_sz );
+
+  if ( 5 != nmea_scanf( buff, buff_sz,
+                        "$HCHDG,%f,%f,%C,%f,%C*",
+                        &( pack->mag_heading ), &( pack->mag_deviation ),
+                        &( pack->ew_deviation ), &( pack->mag_variation ),
+                        &( pack->ew_variation ) ) )
+  {
+    nmea_error( "HCHDG parse error!" );
+    return 0;
+  }
+
+  if ( pack->ew_deviation != 'E' && pack->ew_deviation != 'W' )
+  {
+    nmea_error( "HCHDG invalid deviation direction" );
+    return 0;
+  }
+
+  if ( pack->ew_variation != 'E' && pack->ew_variation != 'W' )
+  {
+    nmea_error( "HCHDG invalid variation direction" );
+    return 0;
+  }
+
+  return 1;
+}
+
+/**
+ * \brief Parse HDT packet from buffer.
+ * @param buff a constant character pointer of packet buffer.
+ * @param buff_sz buffer size.
+ * @param pack a pointer of packet which will filled by function.
+ * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
+ */
+int nmea_parse_HCHDT( const char *buff, int buff_sz, nmeaHCHDT *pack )
+{
+  NMEA_ASSERT( buff && pack );
+
+  memset( pack, 0, sizeof( nmeaHCHDT ) );
+
+  nmea_trace_buff( buff, buff_sz );
+
+  if ( 2 != nmea_scanf( buff, buff_sz,
+                        "$HCHDT,%f,%C*",
+                        &( pack->direction ), &( pack->t_flag ) ) )
+  {
+    nmea_error( "HCHDT parse error!" );
     return 0;
   }
 

@@ -188,23 +188,20 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
 
   // make spatial index
   QgsFeatureIterator f2 = input2->getFeatures( QgsFeatureRequest().setDestinationCrs( input->sourceCrs(), context.transformContext() ).setSubsetOfAttributes( fields2Fetch ) );
-  QgsSpatialIndex index( QgsSpatialIndex::FlagStoreFeatureGeometries );
   QHash< QgsFeatureId, QgsAttributes > input2AttributeCache;
-  QgsFeature f;
   double step = input2->featureCount() > 0 ? 50.0 / input2->featureCount() : 1;
   int i = 0;
-  while ( f2.nextFeature( f ) )
+  QgsSpatialIndex index( f2, [&]( const QgsFeature & f )->bool
   {
     i++;
     if ( feedback->isCanceled() )
-      break;
+      return false;
 
     feedback->setProgress( i * step );
 
     if ( !f.hasGeometry() )
-      continue;
+      return true;
 
-    index.addFeature( f );
     // only keep selected attributes
     QgsAttributes attributes;
     for ( int j = 0; j < f.attributes().count(); ++j )
@@ -214,10 +211,15 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
       attributes << f.attribute( j );
     }
     input2AttributeCache.insert( f.id(), attributes );
-  }
+
+    return true;
+  }, QgsSpatialIndex::FlagStoreFeatureGeometries );
+
+  QgsFeature f;
 
   // create extra null attributes for non-matched records (the +2 is for the "n" and "distance", and start/end x/y fields)
   QgsAttributes nullMatch;
+  nullMatch.reserve( fields2Indices.size() + 6 );
   for ( int i = 0; i < fields2Indices.count() + 6; ++i )
     nullMatch << QVariant();
 

@@ -50,6 +50,7 @@ class Grass7Utils:
     GRASS_LOG_COMMANDS = 'GRASS7_LOG_COMMANDS'
     GRASS_LOG_CONSOLE = 'GRASS7_LOG_CONSOLE'
     GRASS_HELP_PATH = 'GRASS_HELP_PATH'
+    GRASS_USE_REXTERNAL = 'GRASS_USE_REXTERNAL'
     GRASS_USE_VEXTERNAL = 'GRASS_USE_VEXTERNAL'
 
     # TODO Review all default options formats
@@ -401,6 +402,9 @@ class Grass7Utils:
                     elif 'Segmentation fault' in line:
                         feedback.reportError(line.strip())
                         feedback.reportError('\n' + Grass7Utils.tr('GRASS command crashed :( Try a different set of input parameters and consult the GRASS algorithm manual for more information.') + '\n')
+                        if ProcessingConfig.getSetting(Grass7Utils.GRASS_USE_REXTERNAL):
+                            feedback.reportError(Grass7Utils.tr(
+                                'Suggest disabling the experimental "use r.external" option from the Processing GRASS Provider options.') + '\n')
                         if ProcessingConfig.getSetting(Grass7Utils.GRASS_USE_VEXTERNAL):
                             feedback.reportError(Grass7Utils.tr(
                                 'Suggest disabling the experimental "use v.external" option from the Processing GRASS Provider options.') + '\n')

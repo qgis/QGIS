@@ -73,6 +73,7 @@ class QgsAuxiliaryStorage;
 class QgsMapLayer;
 class QgsBookmarkManager;
 class QgsProjectViewSettings;
+class QgsProjectDisplaySettings;
 
 /**
  * \ingroup core
@@ -579,6 +580,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.10.1
      */
     QgsProjectViewSettings *viewSettings();
+
+    /**
+     * Returns the project's display settings, which settings and properties relating
+     * to how a QgsProject should display values such as map coordinates and bearings.
+     * \note not available in Python bindings
+     * \since QGIS 3.12
+     */
+    const QgsProjectDisplaySettings *displaySettings() const SIP_SKIP;
+
+    /**
+     * Returns the project's display settings, which settings and properties relating
+     * to how a QgsProject should display values such as map coordinates and bearings.
+     * \since QGIS 3.12
+     */
+    QgsProjectDisplaySettings *displaySettings();
 
     /**
      * Returns pointer to the root (invisible) node of the project's layer tree
@@ -1743,6 +1759,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsBookmarkManager *mBookmarkManager = nullptr;
 
     QgsProjectViewSettings *mViewSettings = nullptr;
+
+    QgsProjectDisplaySettings *mDisplaySettings = nullptr;
 
     QgsLayerTree *mRootGroup = nullptr;
 

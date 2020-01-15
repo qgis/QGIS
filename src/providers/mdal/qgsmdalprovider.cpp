@@ -275,7 +275,7 @@ void QgsMdalProvider::loadData()
   }
 }
 
-void QgsMdalProvider::reloadData()
+void QgsMdalProvider::reloadProviderData()
 {
   if ( mMeshH )
     MDAL_CloseMesh( mMeshH );

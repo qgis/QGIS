@@ -130,6 +130,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mpHistogramLayout->addWidget( mPlot );
   mpHistogramWidget->setLayout( mpHistogramLayout );
 
+  mSpinMapRotateInterval->setClearValue( 0 );
+
   //
   // Set up the polar graph for satellite pos
   //
@@ -276,7 +278,11 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   {
     radRecenterWhenNeeded->setChecked( true );
   }
+
+  connect( mRotateMapCheckBox, &QCheckBox::toggled, mSpinMapRotateInterval, &QSpinBox::setEnabled );
+
   mRotateMapCheckBox->setChecked( mySettings.value( QStringLiteral( "gps/rotateMap" ), false ).toBool() );
+  mSpinMapRotateInterval->setValue( mySettings.value( QStringLiteral( "gps/rotateMapInterval" ), 0 ).toInt() );
   mShowBearingLineCheck->setChecked( mySettings.value( QStringLiteral( "gps/showBearingLine" ), false ).toBool() );
 
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
@@ -445,6 +451,7 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
     mySettings.setValue( QStringLiteral( "gps/panMode" ), "none" );
   }
   mySettings.setValue( QStringLiteral( "gps/rotateMap" ), mRotateMapCheckBox->isChecked() );
+  mySettings.setValue( QStringLiteral( "gps/rotateMapInterval" ), mSpinMapRotateInterval->value() );
   mySettings.setValue( QStringLiteral( "gps/showBearingLine" ), mShowBearingLineCheck->isChecked() );
 
   QDomDocument doc;
@@ -914,9 +921,10 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
 
     }
 
-    if ( mRotateMapCheckBox->isChecked() )
+    if ( mRotateMapCheckBox->isChecked() && ( !mLastRotateTimer.isValid() || mLastRotateTimer.hasExpired( mSpinMapRotateInterval->value() * 1000 ) ) )
     {
       mMapCanvas->setRotation( trueNorth - info.direction );
+      mLastRotateTimer.restart();
     }
 
     if ( mShowBearingLineCheck )
@@ -953,7 +961,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
         mMapMarker = new QgsGpsMarker( mMapCanvas );
       }
       mMapMarker->setSize( mSliderMarkerSize->value() );
-      mMapMarker->setCenter( myNewCenter );
+      mMapMarker->setGpsPosition( myNewCenter );
     }
   }
   else

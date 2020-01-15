@@ -280,7 +280,7 @@ QString QgsMeshLayerUtils::formatTime( double hours, const QgsMeshTimeSettings &
   {
     QString format( settings.absoluteTimeFormat() );
     QDateTime dateTime( settings.absoluteTimeReferenceTime() );
-    int seconds = static_cast<int>( hours * 3600.0 );
+    qint64 seconds = static_cast<qint64>( hours * 3600.0 );
     dateTime = dateTime.addSecs( seconds );
     ret = dateTime.toString( format );
     if ( ret.isEmpty() ) // error

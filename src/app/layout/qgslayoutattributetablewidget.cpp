@@ -69,6 +69,7 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   connect( mHideEmptyBgCheckBox, &QCheckBox::toggled, this, &QgsLayoutAttributeTableWidget::mHideEmptyBgCheckBox_toggled );
   connect( mWrapBehaviorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutAttributeTableWidget::mWrapBehaviorComboBox_currentIndexChanged );
   connect( mAdvancedCustomizationButton, &QPushButton::clicked, this, &QgsLayoutAttributeTableWidget::mAdvancedCustomizationButton_clicked );
+  connect( mUseConditionalStylingCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutAttributeTableWidget::useConditionalStylingChanged );
   setPanelTitle( tr( "Table Properties" ) );
 
   mContentFontToolButton->setMode( QgsFontButton::ModeQFont );
@@ -76,18 +77,27 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
 
   blockAllSignals( true );
 
-  mResizeModeComboBox->addItem( tr( "Use existing frames" ), QgsLayoutMultiFrame::UseExistingFrames );
-  mResizeModeComboBox->addItem( tr( "Extend to next page" ), QgsLayoutMultiFrame::ExtendToNextPage );
-  mResizeModeComboBox->addItem( tr( "Repeat until finished" ), QgsLayoutMultiFrame::RepeatUntilFinished );
+  mResizeModeComboBox->addItem( tr( "Use Existing Frames" ), QgsLayoutMultiFrame::UseExistingFrames );
+  mResizeModeComboBox->addItem( tr( "Extend to Next Page" ), QgsLayoutMultiFrame::ExtendToNextPage );
+  mResizeModeComboBox->addItem( tr( "Repeat Until Finished" ), QgsLayoutMultiFrame::RepeatUntilFinished );
 
-  mEmptyModeComboBox->addItem( tr( "Draw headers only" ), QgsLayoutTable::HeadersOnly );
-  mEmptyModeComboBox->addItem( tr( "Hide entire table" ), QgsLayoutTable::HideTable );
-  mEmptyModeComboBox->addItem( tr( "Show set message" ), QgsLayoutTable::ShowMessage );
+  mEmptyModeComboBox->addItem( tr( "Draw Headers Only" ), QgsLayoutTable::HeadersOnly );
+  mEmptyModeComboBox->addItem( tr( "Hide Entire Table" ), QgsLayoutTable::HideTable );
+  mEmptyModeComboBox->addItem( tr( "Show Set Message" ), QgsLayoutTable::ShowMessage );
 
-  mWrapBehaviorComboBox->addItem( tr( "Truncate text" ), QgsLayoutTable::TruncateText );
-  mWrapBehaviorComboBox->addItem( tr( "Wrap text" ), QgsLayoutTable::WrapText );
+  mWrapBehaviorComboBox->addItem( tr( "Truncate Text" ), QgsLayoutTable::TruncateText );
+  mWrapBehaviorComboBox->addItem( tr( "Wrap Text" ), QgsLayoutTable::WrapText );
 
-  mSourceComboBox->addItem( tr( "Layer features" ), QgsLayoutItemAttributeTable::LayerAttributes );
+  mHeaderModeComboBox->addItem( tr( "On First Frame" ), QgsLayoutTable::FirstFrame );
+  mHeaderModeComboBox->addItem( tr( "On All Frames" ), QgsLayoutTable::AllFrames );
+  mHeaderModeComboBox->addItem( tr( "No Header" ), QgsLayoutTable::NoHeaders );
+
+  mHeaderHAlignmentComboBox->addItem( tr( "Follow Column Alignment" ), QgsLayoutTable::FollowColumn );
+  mHeaderHAlignmentComboBox->addItem( tr( "Left" ), QgsLayoutTable::HeaderLeft );
+  mHeaderHAlignmentComboBox->addItem( tr( "Center" ), QgsLayoutTable::HeaderCenter );
+  mHeaderHAlignmentComboBox->addItem( tr( "Right" ), QgsLayoutTable::HeaderRight );
+
+  mSourceComboBox->addItem( tr( "Layer Features" ), QgsLayoutItemAttributeTable::LayerAttributes );
   toggleAtlasSpecificControls( static_cast< bool >( coverageLayer() ) );
 
   //update relations combo when relations modified in project
@@ -155,7 +165,7 @@ void QgsLayoutAttributeTableWidget::setReportTypeString( const QString &string )
   const int atlasFeatureIndex = mSourceComboBox->findData( QgsLayoutItemAttributeTable::AtlasFeature );
   if ( atlasFeatureIndex != -1 )
   {
-    mSourceComboBox->setItemText( atlasFeatureIndex,  tr( "Current %1 feature" ).arg( string ) );
+    mSourceComboBox->setItemText( atlasFeatureIndex,  tr( "Current %1 Feature" ).arg( string ) );
   }
 }
 
@@ -476,9 +486,10 @@ void QgsLayoutAttributeTableWidget::updateGuiElements()
   mFeatureFilterCheckBox->setCheckState( mTable->filterFeatures() ? Qt::Checked : Qt::Unchecked );
   mFeatureFilterEdit->setEnabled( mTable->filterFeatures() );
   mFeatureFilterButton->setEnabled( mTable->filterFeatures() );
+  mUseConditionalStylingCheckBox->setChecked( mTable->useConditionalStyling() );
 
-  mHeaderHAlignmentComboBox->setCurrentIndex( static_cast<int>( mTable->headerHAlignment() ) );
-  mHeaderModeComboBox->setCurrentIndex( static_cast<int>( mTable->headerMode() ) );
+  mHeaderHAlignmentComboBox->setCurrentIndex( mHeaderHAlignmentComboBox->findData( mTable->headerHAlignment() ) );
+  mHeaderModeComboBox->setCurrentIndex( mHeaderModeComboBox->findData( mTable->headerMode() ) );
 
   mEmptyModeComboBox->setCurrentIndex( mEmptyModeComboBox->findData( mTable->emptyTableBehavior() ) );
   mEmptyMessageLineEdit->setText( mTable->emptyTableMessage() );
@@ -564,12 +575,12 @@ void QgsLayoutAttributeTableWidget::toggleAtlasSpecificControls( const bool atla
     if ( mSourceComboBox->findData( QgsLayoutItemAttributeTable::AtlasFeature ) == -1 )
     {
       //add missing atlasfeature option to combobox
-      mSourceComboBox->addItem( tr( "Current atlas feature" ), QgsLayoutItemAttributeTable::AtlasFeature );
+      mSourceComboBox->addItem( tr( "Current Atlas Feature" ), QgsLayoutItemAttributeTable::AtlasFeature );
     }
     if ( mSourceComboBox->findData( QgsLayoutItemAttributeTable::RelationChildren ) == -1 )
     {
       //add missing relation children option to combobox
-      mSourceComboBox->addItem( tr( "Relation children" ), QgsLayoutItemAttributeTable::RelationChildren );
+      mSourceComboBox->addItem( tr( "Relation Children" ), QgsLayoutItemAttributeTable::RelationChildren );
     }
 
     //add relations for coverage layer
@@ -749,7 +760,7 @@ void QgsLayoutAttributeTableWidget::mFeatureFilterButton_clicked()
   }
 }
 
-void QgsLayoutAttributeTableWidget::mHeaderHAlignmentComboBox_currentIndexChanged( int index )
+void QgsLayoutAttributeTableWidget::mHeaderHAlignmentComboBox_currentIndexChanged( int )
 {
   if ( !mTable )
   {
@@ -757,11 +768,11 @@ void QgsLayoutAttributeTableWidget::mHeaderHAlignmentComboBox_currentIndexChange
   }
 
   mTable->beginCommand( tr( "Change Table Alignment" ) );
-  mTable->setHeaderHAlignment( static_cast<  QgsLayoutTable::HeaderHAlignment >( index ) );
+  mTable->setHeaderHAlignment( static_cast<  QgsLayoutTable::HeaderHAlignment >( mHeaderHAlignmentComboBox->currentData().toInt() ) );
   mTable->endCommand();
 }
 
-void QgsLayoutAttributeTableWidget::mHeaderModeComboBox_currentIndexChanged( int index )
+void QgsLayoutAttributeTableWidget::mHeaderModeComboBox_currentIndexChanged( int )
 {
   if ( !mTable )
   {
@@ -769,7 +780,7 @@ void QgsLayoutAttributeTableWidget::mHeaderModeComboBox_currentIndexChanged( int
   }
 
   mTable->beginCommand( tr( "Change Table Header Mode" ) );
-  mTable->setHeaderMode( ( QgsLayoutTable::HeaderMode )index );
+  mTable->setHeaderMode( static_cast< QgsLayoutTable::HeaderMode >( mHeaderModeComboBox->currentData().toInt() ) );
   mTable->endCommand();
 }
 
@@ -912,6 +923,19 @@ void QgsLayoutAttributeTableWidget::mAdvancedCustomizationButton_clicked()
 
   QgsLayoutTableBackgroundColorsDialog d( mTable, this );
   d.exec();
+}
+
+void QgsLayoutAttributeTableWidget::useConditionalStylingChanged( bool checked )
+{
+  if ( !mTable )
+  {
+    return;
+  }
+
+  mTable->beginCommand( tr( "Toggle Table Conditional Styling" ) );
+  mTable->setUseConditionalStyling( checked );
+  mTable->update();
+  mTable->endCommand();
 }
 
 void QgsLayoutAttributeTableWidget::mDrawEmptyCheckBox_toggled( bool checked )

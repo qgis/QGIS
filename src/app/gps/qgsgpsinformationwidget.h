@@ -35,7 +35,7 @@
 class QextSerialPort;
 class QgsGpsConnection;
 class QgsGpsTrackerThread;
-struct QgsGpsInformation;
+class QgsGpsInformation;
 class QgsMapCanvas;
 class QgsFeature;
 class QgsGpsBearingItem;
@@ -137,6 +137,9 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
     QMap<QString, QString> mPreferredTimestampFields;
     //! Flag when updating fields
     bool mPopulatingFields = false;
+
+    QElapsedTimer mLastRotateTimer;
+
     friend class TestQgsGpsInformationWidget;
 };
 

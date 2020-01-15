@@ -91,6 +91,7 @@
 %Include auto_generated/qgslegendrenderer.sip
 %Include auto_generated/qgslegendsettings.sip
 %Include auto_generated/qgslegendstyle.sip
+%Include auto_generated/qgslocaldefaultsettings.sip
 %Include auto_generated/qgslogger.sip
 %Include auto_generated/qgsmapdecoration.sip
 %Include auto_generated/qgsmaphittest.sip
@@ -144,6 +145,7 @@
 %Include auto_generated/qgspostgresstringutils.sip
 %Include auto_generated/qgsproject.sip
 %Include auto_generated/qgsprojectbadlayerhandler.sip
+%Include auto_generated/qgsprojectdisplaysettings.sip
 %Include auto_generated/qgsprojectfiletransform.sip
 %Include auto_generated/qgsprojectproperty.sip
 %Include auto_generated/qgsprojectstorage.sip
@@ -185,6 +187,7 @@
 %Include auto_generated/qgsstoredexpressionmanager.sip
 %Include auto_generated/qgsstringstatisticalsummary.sip
 %Include auto_generated/qgsstringutils.sip
+%Include auto_generated/qgstablecell.sip
 %Include auto_generated/qgstaskmanager.sip
 %Include auto_generated/qgstessellator.sip
 %Include auto_generated/qgstestutils.sip
@@ -340,6 +343,7 @@
 %Include auto_generated/layout/qgslayoutitemhtml.sip
 %Include auto_generated/layout/qgslayoutitemlabel.sip
 %Include auto_generated/layout/qgslayoutitemlegend.sip
+%Include auto_generated/layout/qgslayoutitemmanualtable.sip
 %Include auto_generated/layout/qgslayoutitemmap.sip
 %Include auto_generated/layout/qgslayoutitemmapgrid.sip
 %Include auto_generated/layout/qgslayoutitemmapitem.sip
@@ -395,6 +399,14 @@
 %Include auto_generated/metadata/qgslayermetadataformatter.sip
 %Include auto_generated/metadata/qgslayermetadatavalidator.sip
 %Include auto_generated/metadata/qgsprojectmetadata.sip
+%Include auto_generated/numericformats/qgsbasicnumericformat.sip
+%Include auto_generated/numericformats/qgsbearingnumericformat.sip
+%Include auto_generated/numericformats/qgscurrencynumericformat.sip
+%Include auto_generated/numericformats/qgsfallbacknumericformat.sip
+%Include auto_generated/numericformats/qgsnumericformat.sip
+%Include auto_generated/numericformats/qgsnumericformatregistry.sip
+%Include auto_generated/numericformats/qgspercentagenumericformat.sip
+%Include auto_generated/numericformats/qgsscientificnumericformat.sip
 %Include auto_generated/processing/models/qgsprocessingmodelalgorithm.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildalgorithm.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildparametersource.sip

@@ -326,7 +326,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
             output_files[out.name()] = filePath
             command += ' -{} "{}"'.format(out.name(), filePath)
-            commands.append(command)
+        commands.append(command)
 
         # special treatment for RGB algorithm
         # TODO: improve this and put this code somewhere else
