@@ -17,6 +17,9 @@
 #include <QDebug>
 #include <QObject>
 
+#include "cpl_string.h"
+#include "gdal.h"
+
 #include "qgspostgresrastershareddata.h"
 #include "qgspostgresrasterutils.h"
 #include "qgspostgresconn.h"
@@ -73,7 +76,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
   // Get intersecting tiles from the index
   mSpatialIndexes[ request.overviewFactor ]->intersects( request.extent, [ & ]( Tile * tilePtr ) -> bool
   {
-    if ( tilePtr->data.isEmpty() )
+    if ( tilePtr->data.size() == 0 )
     {
       missingTileIds.push_back( QStringLiteral( "'%1'" ).arg( tilePtr->tileId ) );
     }
@@ -129,7 +132,10 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
                                    .arg( sql ), QObject::tr( "PostGIS" ), Qgis::Critical );
       }
 
-      Tile const *tilePtr { setTileData( request.overviewFactor, tileId, QByteArray::fromHex( dataResult.PQgetvalue( row, 1 ).toAscii() ) ) };
+      int dataRead;
+      GByte *binaryData { CPLHexToBinary( dataResult.PQgetvalue( row, 1 ).toAscii().constData(), &dataRead ) };
+      Tile const *tilePtr { setTileData( request.overviewFactor, tileId, QByteArray::fromRawData( reinterpret_cast<char *>( binaryData ), dataRead ) ) };
+      CPLFree( binaryData );
 
       if ( ! tilePtr )
       {
@@ -174,8 +180,14 @@ QgsPostgresRasterSharedData::Tile const *QgsPostgresRasterSharedData::setTileDat
   {
     return nullptr;
   }
-  mTiles[ overviewFactor ][ tileId ]->data = data;
-  return mTiles[ overviewFactor ][ tileId ].get();
+
+  Tile *const tile { mTiles[ overviewFactor ][ tileId ].get() };
+  const QVariantMap parsedData { QgsPostgresRasterUtils::parseWkb( data ) };
+  for ( int bandCnt = 1; bandCnt <= tile->numBands; ++bandCnt )
+  {
+    tile->data.emplace_back( parsedData[ QStringLiteral( "band%1" ).arg( bandCnt ) ].toByteArray() );
+  }
+  return tile;
 }
 
 bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPolygon, const TilesRequest &request )
@@ -259,7 +271,8 @@ QgsPostgresRasterSharedData::Tile::Tile( const QgsPostgresRasterSharedData::Tile
 
 }
 
-QByteArray QgsPostgresRasterSharedData::Tile::bandData( int bandNo ) const
+const QByteArray QgsPostgresRasterSharedData::Tile::bandData( int bandNo ) const
 {
-  return QgsPostgresRasterUtils::parseWkb( data, bandNo )[ QStringLiteral( "band%1" ).arg( bandNo )].toByteArray();
+  Q_ASSERT( 0 < bandNo && bandNo <= static_cast<int>( data.size() ) );
+  return data.at( static_cast<unsigned int>( bandNo ) - 1 );
 }

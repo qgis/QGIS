@@ -434,8 +434,8 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     const QgsRectangle &tilesExtent { tileResponse.extent };
 
     // Prepare tmp output raster
-    const int tmpWidth = static_cast<int>( std::round( tilesExtent.width() / tileResponse.tiles.first().scaleX ) );
-    const int tmpHeight = static_cast<int>( std::round( tilesExtent.height() / std::fabs( tileResponse.tiles.first().scaleY ) ) );
+    const int tmpWidth = static_cast<int>( tilesExtent.width() / tileResponse.tiles.first().scaleX );
+    const int tmpHeight = static_cast<int>( tilesExtent.height() / std::fabs( tileResponse.tiles.first().scaleY ) );
 
     GDALDataType gdalDataType { static_cast<GDALDataType>( sourceDataType( bandNo ) ) };
 

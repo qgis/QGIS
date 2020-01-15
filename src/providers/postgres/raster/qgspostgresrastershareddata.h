@@ -125,11 +125,11 @@ class QgsPostgresRasterSharedData
         /**
          *  Returns data for specified \a bandNo
          */
-        QByteArray bandData( int bandNo ) const;
+        const QByteArray bandData( int bandNo ) const;
 
       private:
 
-        QByteArray data;
+        std::vector<QByteArray> data;
 
         friend class QgsPostgresRasterSharedData;
 
