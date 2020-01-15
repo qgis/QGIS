@@ -57,7 +57,7 @@ QList<QgsLocatorFilter *> QgsLocator::filters( const QString &prefix )
     QList<QgsLocatorFilter *> filters =  QList<QgsLocatorFilter *>();
     for ( QgsLocatorFilter *filter : mFilters )
     {
-      if ( !filter->activePrefix().isEmpty() && filter->activePrefix() == prefix )
+      if ( !filter->activePrefix().isEmpty() && filter->activePrefix().compare( prefix, Qt::CaseInsensitive ) == 0 )
       {
         filters << filter;
       }
@@ -149,7 +149,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   {
     for ( QgsLocatorFilter *filter : qgis::as_const( mFilters ) )
     {
-      if ( filter->activePrefix() == prefix && filter->enabled() )
+      if ( filter->activePrefix().compare( prefix, Qt::CaseInsensitive ) == 0 && filter->enabled() )
       {
         activeFilters << filter;
       }
