@@ -47,7 +47,7 @@ QString QgsRectanglesOvalsDiamondsAlgorithm::groupId() const
 
 QString QgsRectanglesOvalsDiamondsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Creates a rectangle, oval or diamond-shaped polygons from the input point layer using "
+  return QObject::tr( "Creates rectangle, oval or diamond-shaped polygons from the input point layer using "
                       "specified width, height and (optional) rotation values." );
 }
 
@@ -92,17 +92,17 @@ void QgsRectanglesOvalsDiamondsAlgorithm::initParameters( const QVariantMap & )
 
   auto widthParam = qgis::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "WIDTH" ), QObject::tr( "Width" ), 1.0, QStringLiteral( "INPUT" ), false, 0.0 );
   widthParam->setIsDynamic( true );
-  widthParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Width" ), QObject::tr( "Width" ), QgsPropertyDefinition::Double ) );
+  widthParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Width" ), QObject::tr( "Width" ), QgsPropertyDefinition::DoublePositive ) );
   widthParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( widthParam.release() );
 
   auto heightParam = qgis::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "HEIGHT" ), QObject::tr( "Height" ), 1.0, QStringLiteral( "INPUT" ), false, 0.0 );
   heightParam->setIsDynamic( true );
-  heightParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Height" ), QObject::tr( "Height" ), QgsPropertyDefinition::Double ) );
+  heightParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Height" ), QObject::tr( "Height" ), QgsPropertyDefinition::DoublePositive ) );
   heightParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( heightParam.release() );
 
-  auto rotationParam = qgis::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "ROTATION" ), QObject::tr( "Rotation" ), QgsProcessingParameterNumber::Double, 0.0, true, 0.0, 360.0 );
+  auto rotationParam = qgis::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "ROTATION" ), QObject::tr( "Rotation" ), QgsProcessingParameterNumber::Double, 0.0, true, -360.0, 360.0 );
   rotationParam->setIsDynamic( true );
   rotationParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Rotation" ), QObject::tr( "Rotation" ), QgsPropertyDefinition::Double ) );
   rotationParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
