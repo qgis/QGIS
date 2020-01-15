@@ -26,6 +26,7 @@ class QPainter;
 /**
  * \ingroup gui
  * A class for marking the position of a gps pointer.
+ * \since QGIS 3.12
  */
 class GUI_EXPORT QgsGpsMarker : public QgsMapCanvasItem
 {
