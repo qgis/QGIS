@@ -255,7 +255,7 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
 
       case CreateNewFeature:
       {
-        QgsGeometryGapCheckError *gapCheckError = dynamic_cast<QgsGeometryGapCheckError *>( error );
+        QgsGeometryGapCheckError *gapCheckError = static_cast<QgsGeometryGapCheckError *>( error );
         QgsProject *project = QgsProject::instance();
         QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( gapCheckError->neighbors().keys().first() ) );
         if ( layer )
