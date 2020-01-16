@@ -180,13 +180,13 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
     {
       case 0:
         // rectangle
-        ringX = { -xOffset, -xOffset, xOffset, xOffset, -xOffset };
-        ringY = { -yOffset, yOffset, yOffset, -yOffset, -yOffset };
+        ringX = { -xOffset + x, -xOffset + x, xOffset + x, xOffset + x, -xOffset + x };
+        ringY = { -yOffset + y, yOffset + y, yOffset + y, -yOffset + y, -yOffset + y };
         break;
       case 1:
         // diamond
-        ringX = { 0.0, -xOffset, 0.0, xOffset, 0.0 };
-        ringY = { -yOffset, 0.0, yOffset, 0.0, -yOffset };
+        ringX = { x, -xOffset + x, x, xOffset + x, x };
+        ringY = { -yOffset + y, y, yOffset + y, y, -yOffset + y };
         break;
       case 2:
         // oval
@@ -195,20 +195,23 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
         for ( int i = 0; i < mSegments; i ++ )
         {
           double t = ( 2 * M_PI ) / mSegments * i;
-          ringX[ i ] = xOffset * cos( t );
-          ringY[ i ] = yOffset * sin( t );
+          ringX[ i ] = xOffset * cos( t ) + x;
+          ringY[ i ] = yOffset * sin( t ) + y;
         }
         ringX[ mSegments ] = ringX.at( 0 );
         ringY[ mSegments ] = ringY.at( 0 );
         break;
     }
 
-    for ( int i = 0; i < ringX.size(); ++i )
+    if ( phi != 0 )
     {
-      double px = ringX.at( i );
-      double py = ringY.at( i );
-      ringX[ i ] = px * cos( phi ) + py * sin( phi ) + x;
-      ringY[ i ] = -px * sin( phi ) + py * cos( phi ) + y;
+      for ( int i = 0; i < ringX.size(); ++i )
+      {
+        double px = ringX.at( i );
+        double py = ringY.at( i );
+        ringX[ i ] = ( px - x ) * cos( phi ) + ( py - y ) * sin( phi ) + x;
+        ringY[ i ] = -( px - x ) * sin( phi ) + ( py - y ) * cos( phi ) + y;
+      }
     }
 
     std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
