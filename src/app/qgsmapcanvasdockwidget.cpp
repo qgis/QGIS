@@ -227,6 +227,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
     if ( mSyncExtentRadio->isChecked() )
       syncViewCenter( mMainCanvas );
   } );
+
+  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeRenamed, this, &QgsMapCanvasDockWidget::currentMapThemeRenamed );
 }
 
 void QgsMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
@@ -439,6 +441,14 @@ void QgsMapCanvasDockWidget::menuAboutToShow()
     mMenuPresetActions.append( a );
   }
   mMenu->addActions( mMenuPresetActions );
+}
+
+void QgsMapCanvasDockWidget::currentMapThemeRenamed( const QString &theme, const QString &newTheme )
+{
+  if ( theme == mMapCanvas->theme() )
+  {
+    mMapCanvas->setTheme( newTheme );
+  }
 }
 
 void QgsMapCanvasDockWidget::settingsMenuAboutToShow()

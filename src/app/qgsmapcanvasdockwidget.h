@@ -157,6 +157,7 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QgsDockWidget, private Ui::QgsM
     void mapExtentChanged();
     void mapCrsChanged();
     void menuAboutToShow();
+    void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
     void settingsMenuAboutToShow();
     void syncMarker( const QgsPointXY &p );
     void mapScaleChanged();
