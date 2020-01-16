@@ -1103,9 +1103,13 @@ QString QgsPostgresConn::postgisVersion() const
 SELECT
  has_table_privilege(c.oid, 'select')
  AND has_table_privilege(f.oid, 'select')
-FROM pg_class c, pg_class f
-WHERE c.relname = 'pointcloud_columns'
+FROM pg_class c, pg_class f, pg_namespace n, pg_extension e
+WHERE c.relnamespace = n.oid
+  AND c.relname = 'pointcloud_columns'
+  AND f.relnamespace = n.oid
   AND f.relname = 'pointcloud_formats'
+  AND n.oid = e.extnamespace
+  AND e.extname = 'pointcloud'
     )" ), false );
     if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
