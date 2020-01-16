@@ -51,6 +51,15 @@ This is a container for configuration of the snapping of the project
     typedef QFlags<QgsSnappingConfig::SnappingTypes> SnappingTypeFlag;
 
 
+    static const QString snappingTypeFlagToString( SnappingTypeFlag type );
+%Docstring
+Convenient method to returns the translated name of the enum type
+QgsSnappingConfig.SnappingTypeFlag
+
+.. versionadded:: 3.12
+%End
+
+
     class IndividualLayerSettings
 {
 %Docstring

@@ -78,6 +78,27 @@ class CORE_EXPORT QgsSnappingConfig
     Q_FLAG( SnappingTypeFlag )
 
     /**
+     * Convenient method to returns the translated name of the enum type
+     * QgsSnappingConfig::SnappingTypeFlag
+     *
+     * \since QGIS 3.12
+     */
+    static const QString snappingTypeFlagToString( SnappingTypeFlag type )
+    {
+      switch ( type )
+      {
+        case QgsSnappingConfig::NoSnap: return QObject::tr( "No Snapping" );
+        case QgsSnappingConfig::VertexV2: return QObject::tr( "Vertex" );
+        case QgsSnappingConfig::SegmentV2: return QObject::tr( "Segment" );
+        case QgsSnappingConfig::Area: return QObject::tr( "Area" );
+        case QgsSnappingConfig::Centroid: return QObject::tr( "Centroid" );
+        case QgsSnappingConfig::MiddleOfSegment: return QObject::tr( "Middle of Segments" );
+      }
+      return QString();
+    }
+
+
+    /**
      * \ingroup core
      * This is a container of advanced configuration (per layer) of the snapping of the project
      * \since QGIS 3.0

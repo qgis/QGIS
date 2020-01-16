@@ -496,22 +496,17 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       {
         if ( ls.typeV2() == QgsSnappingConfig::NoSnap )
         {
-          return tr( "No snapping" );
+          return QgsSnappingConfig::snappingTypeFlagToString( ls.typeV2() );
         }
         else
         {
           QString modes;
           int activeTypes = 0;
-          std::map<QgsSnappingConfig::SnappingTypeFlag, QString> types;
-          types.insert( { QgsSnappingConfig::VertexV2, tr( "Vertex" ) } );
-          types.insert( { QgsSnappingConfig::SegmentV2, tr( "Segment" ) } );
-          types.insert( { QgsSnappingConfig::Area, tr( "Area" ) } );
-          types.insert( { QgsSnappingConfig::Centroid, tr( "Centroid" ) } );
-          types.insert( { QgsSnappingConfig::MiddleOfSegment, tr( "Middle of Segments" ) } );
 
-          for ( auto it = types.cbegin(); it != types.cend(); ++it )
+          QMetaEnum snappingTypeEnum = QMetaEnum::fromType<QgsSnappingConfig::SnappingTypeFlag>();
+          for ( int i = 0; i < snappingTypeEnum.keyCount(); ++i )
           {
-            if ( ls.typeV2() & it->first )
+            if ( ls.typeV2() & snappingTypeEnum.value( i ) )
             {
               if ( activeTypes == 2 )
               {
@@ -520,7 +515,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
               }
               if ( activeTypes > 0 )
                 modes.append( tr( ", " ) );
-              modes.append( it->second );
+              modes.append( QgsSnappingConfig::snappingTypeFlagToString( ls.typeV2() ) );
               activeTypes++;
             }
           }
