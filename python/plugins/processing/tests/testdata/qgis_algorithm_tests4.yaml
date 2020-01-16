@@ -2326,5 +2326,18 @@ tests:
         name: expected/affine_transform.gml
         type: vector
 
+  - algorithm: native:renametablefield
+    name: Rename table field
+    params:
+      FIELD: id2
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      NEW_NAME: id_renamed
+    results:
+      OUTPUT:
+        name: expected/renamed_field.gml
+        type: vector
+
 
 # See ../README.md for a description of the file format

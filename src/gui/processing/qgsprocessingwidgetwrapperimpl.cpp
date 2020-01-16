@@ -3323,7 +3323,8 @@ void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstr
     context = tmpContext.get();
   }
 
-  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), parentWrapper->parameterValue(), *context );
+  const QVariant value = parentWrapper->parameterValue();
+  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), value, *context );
   if ( !layer || !layer->isValid() )
   {
     if ( mComboBox )
@@ -3331,7 +3332,7 @@ void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstr
     else if ( mPanel )
       mPanel->setFields( QgsFields() );
 
-    if ( widgetContext().messageBar() )
+    if ( value.isValid() && widgetContext().messageBar() )
     {
       widgetContext().messageBar()->clearWidgets();
       widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent field could not be populated" ),

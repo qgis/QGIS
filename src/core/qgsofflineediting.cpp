@@ -705,6 +705,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
         const QString fieldName( field.name() );
         const QVariant::Type type = field.type();
         OGRFieldType ogrType( OFTString );
+        OGRFieldSubType ogrSubType = OFSTNone;
         if ( type == QVariant::Int )
           ogrType = OFTInteger;
         else if ( type == QVariant::LongLong )
@@ -717,6 +718,11 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
           ogrType = OFTDate;
         else if ( type == QVariant::DateTime )
           ogrType = OFTDateTime;
+        else if ( type == QVariant::Bool )
+        {
+          ogrType = OFTInteger;
+          ogrSubType = OFSTBoolean;
+        }
         else
           ogrType = OFTString;
 
@@ -724,6 +730,8 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
 
         gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( fieldName.toUtf8().constData(), ogrType ) );
         OGR_Fld_SetWidth( fld.get(), ogrWidth );
+        if ( ogrSubType != OFSTNone )
+          OGR_Fld_SetSubType( fld.get(), ogrSubType );
 
         if ( OGR_L_CreateField( hLayer, fld.get(), true ) != OGRERR_NONE )
         {

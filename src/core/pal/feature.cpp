@@ -40,6 +40,7 @@
 #include "qgsmessagelog.h"
 #include "costcalculator.h"
 #include "qgsgeometryutils.h"
+#include "qgslabeling.h"
 #include <QLinkedList>
 #include <cmath>
 #include <cfloat>
@@ -700,9 +701,9 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
   double labelWidth = getLabelWidth();
   double labelHeight = getLabelHeight();
   double distanceLineToLabel = getLabelDistance();
-  LineArrangementFlags flags = mLF->arrangementFlags();
+  QgsLabeling::LinePlacementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
-    flags = FLAG_ON_LINE; // default flag
+    flags = QgsLabeling::LinePlacementFlag::OnLine; // default flag
 
   // first scan through the whole line and look for segments where the angle at a node is greater than 45 degrees - these form a "hard break" which labels shouldn't cross over
   QVector< int > extremeAngleNodes;
@@ -876,9 +877,9 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
         // find out whether the line direction for this candidate is from right to left
         bool isRightToLeft = ( angle > M_PI_2 || angle <= -M_PI_2 );
         // meaning of above/below may be reversed if using map orientation and the line has right-to-left direction
-        bool reversed = ( ( flags & FLAG_MAP_ORIENTATION ) ? isRightToLeft : false );
-        bool aboveLine = ( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) );
-        bool belowLine = ( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) );
+        bool reversed = ( ( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) ? isRightToLeft : false );
+        bool aboveLine = ( !reversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) || ( reversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) );
+        bool belowLine = ( !reversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) || ( reversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) );
 
         if ( belowLine )
         {
@@ -896,7 +897,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
             lPos.emplace_back( qgis::make_unique< LabelPosition >( i, candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + std::sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ) ); // Line
           }
         }
-        if ( flags & FLAG_ON_LINE )
+        if ( flags & QgsLabeling::LinePlacementFlag::OnLine )
         {
           if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle ) )
           {
@@ -931,9 +932,9 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
   double angle;
   double cost;
 
-  LineArrangementFlags flags = mLF->arrangementFlags();
+  QgsLabeling::LinePlacementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
-    flags = FLAG_ON_LINE; // default flag
+    flags = QgsLabeling::LinePlacementFlag::OnLine; // default flag
 
   PointSet *line = mapShape;
   int nbPoints = line->nbPoints;
@@ -1033,9 +1034,9 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
       // find out whether the line direction for this candidate is from right to left
       bool isRightToLeft = ( angle > M_PI_2 || angle <= -M_PI_2 );
       // meaning of above/below may be reversed if using map orientation and the line has right-to-left direction
-      bool reversed = ( ( flags & FLAG_MAP_ORIENTATION ) ? isRightToLeft : false );
-      bool aboveLine = ( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) );
-      bool belowLine = ( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) );
+      bool reversed = ( ( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) ? isRightToLeft : false );
+      bool aboveLine = ( !reversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) || ( reversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) );
+      bool belowLine = ( !reversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) || ( reversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) );
 
       if ( aboveLine )
       {
@@ -1053,7 +1054,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
           lPos.emplace_back( qgis::make_unique< LabelPosition >( i, candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - std::sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ) ); // Line
         }
       }
-      if ( flags & FLAG_ON_LINE )
+      if ( flags & QgsLabeling::LinePlacementFlag::OnLine )
       {
         if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle ) )
         {
@@ -1329,9 +1330,9 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   const std::size_t candidateTargetCount = maximumLineCandidates();
   double delta = std::max( li->label_height / 6, total_distance / candidateTargetCount );
 
-  pal::LineArrangementFlags flags = mLF->arrangementFlags();
+  QgsLabeling::LinePlacementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
-    flags = FLAG_ON_LINE; // default flag
+    flags = QgsLabeling::LinePlacementFlag::OnLine; // default flag
 
   // generate curved labels
   for ( double distanceAlongLineToStartCandidate = 0; distanceAlongLineToStartCandidate < total_distance; distanceAlongLineToStartCandidate += delta )
@@ -1345,7 +1346,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
 
     // an orientation of 0 means try both orientations and choose the best
     int orientation = 0;
-    if ( !( flags & FLAG_MAP_ORIENTATION ) )
+    if ( !( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) )
     {
       //... but if we are using line orientation flags, then we can only accept a single orientation,
       // as we need to ensure that the labels fall inside or outside the polyline or polygon (and not mixed)
@@ -1406,14 +1407,14 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     for ( int i = 0; i <= 2; ++i )
     {
       std::unique_ptr< LabelPosition > p;
-      if ( i == 0 && ( ( !localreversed && ( flags & FLAG_ABOVE_LINE ) ) || ( localreversed && ( flags & FLAG_BELOW_LINE ) ) ) )
+      if ( i == 0 && ( ( !localreversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) || ( localreversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) ) )
         p = _createCurvedCandidate( slp.get(), angle_avg, mLF->distLabel() + li->label_height / 2 );
-      if ( i == 1 && flags & FLAG_ON_LINE )
+      if ( i == 1 && flags & QgsLabeling::LinePlacementFlag::OnLine )
       {
         p = _createCurvedCandidate( slp.get(), angle_avg, 0 );
         p->setCost( p->cost() + 0.002 );
       }
-      if ( i == 2 && ( ( !localreversed && ( flags & FLAG_BELOW_LINE ) ) || ( localreversed && ( flags & FLAG_ABOVE_LINE ) ) ) )
+      if ( i == 2 && ( ( !localreversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) || ( localreversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) ) )
       {
         p = _createCurvedCandidate( slp.get(), angle_avg, -li->label_height / 2 - mLF->distLabel() );
         p->setCost( p->cost() + 0.001 );

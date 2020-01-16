@@ -24,7 +24,7 @@ jobs:
 
       # transform the milestone (e.g. 3.10.4) to a doc label (3.10)
       - name: QGIS milestone to Doc label
-        if: cancelled() == false
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
         id: milestone2label
         env:
           MILESTONE: ${{ github.event.pull_request.milestone.title }}
@@ -36,7 +36,7 @@ jobs:
 
       # get the PR body
       - name: Get PR body as JSON
-        if: cancelled() == false
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
         id: get_pr_info
         uses: octokit/request-action@v2.x
         env:
@@ -47,7 +47,7 @@ jobs:
 
       # extract body from json output
       - name: Get PR body as text
-        if: cancelled() == false
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
         id: get_pr_body
         uses: gr2m/get-json-paths-action@v1.x
         with:
@@ -56,7 +56,7 @@ jobs:
 
       # get commits from the PR
       - name: Get PR commits
-        if: cancelled() == false
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
         uses: octokit/request-action@v2.x
         id: get_pr_commits
         env:
@@ -67,7 +67,7 @@ jobs:
 
       # extracts the matching commits
       - name: Filter commits with \[needs?.doc(umentation)?s?\]
-        if: cancelled() == false
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
         id: filtered_commits
         env:
           JSON_DATA: ${{ steps.get_pr_commits.outputs.data }}
@@ -77,7 +77,7 @@ jobs:
 
       # create the documentation issue
       - name: Create Documentation issue
-        if: cancelled() == false
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
         id: doc_issue
         uses: maxkomarychev/oction-create-issue@v0.7.1
         with:
@@ -104,7 +104,7 @@ jobs:
 
       # write comment to ping the PR author
       - name: Create comment
-        if: cancelled() == false
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
         uses: peter-evans/create-or-update-comment@v1
         with:
           token: ${{ steps.token.outputs.token }}

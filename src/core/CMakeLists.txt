@@ -1040,6 +1040,7 @@ SET(QGIS_CORE_HDRS
   gps/qgsnmeaconnection.h
 
   labeling/qgslabelfeature.h
+  labeling/qgslabeling.h
   labeling/qgslabelingengine.h
   labeling/qgslabelingenginesettings.h
   labeling/qgslabelobstaclesettings.h
@@ -1222,6 +1223,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterpyramid.h
   raster/qgsrasterrange.h
   raster/qgsrasterrenderer.h
+  raster/qgsrasterrendererregistry.h
   raster/qgsrasterresamplefilter.h
   raster/qgsrasterresampler.h
   raster/qgsrastershader.h

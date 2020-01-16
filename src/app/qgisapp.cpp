@@ -87,6 +87,7 @@
 #include "qgssourceselectproviderregistry.h"
 #include "qgssourceselectprovider.h"
 #include "qgsprovidermetadata.h"
+#include "qgsfixattributedialog.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -1298,6 +1299,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 #endif
 
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsProjectDataItemProvider() );
+
+  // now when all data item providers are registered, customize both browsers
+  QgsCustomization::instance()->updateBrowserWidget( mBrowserWidget );
+  QgsCustomization::instance()->updateBrowserWidget( mBrowserWidget2 );
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
@@ -9611,6 +9616,59 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   // now create new feature using pasted feature as a template. This automatically handles default
   // values and field constraints
   QgsFeatureList newFeatures {QgsVectorLayerUtils::createFeatures( pasteVectorLayer, newFeaturesDataList, &context )};
+
+  // check constraints
+  bool hasStrongConstraints = false;
+
+  for ( const QgsField &field : pasteVectorLayer->fields() )
+  {
+    if ( ( field.constraints().constraints() & QgsFieldConstraints::ConstraintUnique && field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) & QgsFieldConstraints::ConstraintStrengthHard )
+         || ( field.constraints().constraints() & QgsFieldConstraints::ConstraintNotNull && field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) & QgsFieldConstraints::ConstraintStrengthHard )
+         || ( field.constraints().constraints() & QgsFieldConstraints::ConstraintExpression && !field.constraints().constraintExpression().isEmpty() && field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) & QgsFieldConstraints::ConstraintStrengthHard )
+       )
+      hasStrongConstraints = true;
+  }
+
+  if ( hasStrongConstraints )
+  {
+    QgsFeatureList validFeatures = newFeatures;
+    QgsFeatureList invalidFeatures;
+    QMutableListIterator<QgsFeature> it( validFeatures );
+    while ( it.hasNext() )
+    {
+      QgsFeature &f = it.next();
+      for ( int idx = 0; idx < pasteVectorLayer->fields().count(); ++idx )
+      {
+        QStringList errors;
+        if ( !QgsVectorLayerUtils::validateAttribute( pasteVectorLayer, f, idx, errors, QgsFieldConstraints::ConstraintStrengthHard, QgsFieldConstraints::ConstraintOriginNotSet ) )
+        {
+          invalidFeatures << f;
+          it.remove();
+          break;
+        }
+      }
+    }
+
+    if ( !invalidFeatures.isEmpty() )
+    {
+      newFeatures.clear();
+
+      QgsFixAttributeDialog *dialog = new QgsFixAttributeDialog( pasteVectorLayer, invalidFeatures, this );
+      int feedback = dialog->exec();
+
+      switch ( feedback )
+      {
+        case QgsFixAttributeDialog::PasteValid:
+          //paste valid and fixed, vanish unfixed
+          newFeatures << validFeatures << dialog->fixedFeatures();
+          break;
+        case QgsFixAttributeDialog::PasteAll:
+          //paste all, even unfixed
+          newFeatures << validFeatures << dialog->fixedFeatures() << dialog->unfixedFeatures();
+          break;
+      }
+    }
+  }
   pasteVectorLayer->addFeatures( newFeatures );
   QgsFeatureIds newIds;
   newIds.reserve( newFeatures.size() );
@@ -9623,8 +9681,8 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   pasteVectorLayer->endEditCommand();
   pasteVectorLayer->updateExtents();
 
-  int nCopiedFeatures = features.count();
-  Qgis::MessageLevel level = ( nCopiedFeatures == 0 || nCopiedFeatures < nTotalFeatures || invalidGeometriesCount > 0 ) ? Qgis::Warning : Qgis::Info;
+  int nCopiedFeatures = newFeatures.count();
+  Qgis::MessageLevel level = ( nCopiedFeatures == 0 || invalidGeometriesCount > 0 ) ? Qgis::Warning : Qgis::Info;
   QString message;
   if ( nCopiedFeatures == 0 )
   {

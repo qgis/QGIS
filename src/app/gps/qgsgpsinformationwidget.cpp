@@ -43,6 +43,9 @@
 #include "qgsbearingutils.h"
 #include "qgsgpsbearingitem.h"
 #include "qgssymbollayerutils.h"
+#include "qgslocaldefaultsettings.h"
+#include "qgsprojectdisplaysettings.h"
+#include "qgsbearingnumericformat.h"
 
 // QWT Charting widget
 
@@ -90,6 +93,32 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mBtnCloseFeature, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnCloseFeature_clicked );
   connect( mBtnResetFeature, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnResetFeature_clicked );
   connect( mBtnLogFile, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnLogFile_clicked );
+  connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsGpsInformationWidget::cursorCoordinateChanged );
+
+  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+
+  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::bearingFormatChanged, this, [ = ]
+  {
+    mBearingNumericFormat.reset( QgsProject::instance()->displaySettings()->bearingFormat()->clone() );
+    updateGpsDistanceStatusMessage();
+  } );
+
+  mCanvasToWgs84Transform = QgsCoordinateTransform( mMapCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ]
+  {
+    mCanvasToWgs84Transform = QgsCoordinateTransform( mMapCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+  } );
+  connect( QgsProject::instance(), &QgsProject::transformContextChanged, this, [ = ]
+  {
+    mCanvasToWgs84Transform = QgsCoordinateTransform( mMapCanvas->mapSettings().destinationCrs(), mWgs84CRS, QgsProject::instance() );
+  } );
+  mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  mDistanceCalculator.setSourceCrs( mWgs84CRS, QgsProject::instance()->transformContext() );
+  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged, this, [ = ]
+  {
+    mDistanceCalculator.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  } );
 
   mLastGpsPosition = QgsPointXY( 0.0, 0.0 );
   mLastNmeaPosition.lat = nmea_degree2radian( 0.0 );
@@ -284,8 +313,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   mRotateMapCheckBox->setChecked( mySettings.value( QStringLiteral( "gps/rotateMap" ), false ).toBool() );
   mSpinMapRotateInterval->setValue( mySettings.value( QStringLiteral( "gps/rotateMapInterval" ), 0 ).toInt() );
   mShowBearingLineCheck->setChecked( mySettings.value( QStringLiteral( "gps/showBearingLine" ), false ).toBool() );
-
-  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
 
   mBtnDebug->setVisible( mySettings.value( QStringLiteral( "gps/showDebug" ), "false" ).toBool() );  // use a registry setting to control - power users/devs could set it
 
@@ -882,24 +909,28 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     // Pan based on user specified behavior
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
-      QgsCoordinateReferenceSystem mypSRS = mMapCanvas->mapSettings().destinationCrs();
-      QgsCoordinateTransform myTransform( mWgs84CRS, mypSRS, QgsProject::instance() ); // use existing WGS84 CRS
-
-      QgsPointXY myPoint = myTransform.transform( myNewCenter );
-      //keep the extent the same just center the map canvas in the display so our feature is in the middle
-      QgsRectangle myRect( myPoint, myPoint );  // empty rect can be used to set new extent that is centered on the point used to construct the rect
-
-      // testing if position is outside some proportion of the map extent
-      // this is a user setting - useful range: 5% to 100% (0.05 to 1.0)
-      QgsRectangle myExtentLimit( mMapCanvas->extent() );
-      myExtentLimit.scale( mSpinMapExtentMultiplier->value() * 0.01 );
-
-      // only change the extents if the point is beyond the current extents to minimize repaints
-      if ( radRecenterMap->isChecked() ||
-           ( radRecenterWhenNeeded->isChecked() && !myExtentLimit.contains( myPoint ) ) )
+      try
       {
-        mMapCanvas->setExtent( myRect );
-        mMapCanvas->refresh();
+        QgsPointXY myPoint = mCanvasToWgs84Transform.transform( myNewCenter, QgsCoordinateTransform::ReverseTransform );
+        //keep the extent the same just center the map canvas in the display so our feature is in the middle
+        QgsRectangle myRect( myPoint, myPoint );  // empty rect can be used to set new extent that is centered on the point used to construct the rect
+
+        // testing if position is outside some proportion of the map extent
+        // this is a user setting - useful range: 5% to 100% (0.05 to 1.0)
+        QgsRectangle myExtentLimit( mMapCanvas->extent() );
+        myExtentLimit.scale( mSpinMapExtentMultiplier->value() * 0.01 );
+
+        // only change the extents if the point is beyond the current extents to minimize repaints
+        if ( radRecenterMap->isChecked() ||
+             ( radRecenterWhenNeeded->isChecked() && !myExtentLimit.contains( myPoint ) ) )
+        {
+          mMapCanvas->setExtent( myRect );
+          mMapCanvas->refresh();
+        }
+      }
+      catch ( QgsCsException & )
+      {
+
       }
     } //otherwise never recenter automatically
 
@@ -907,7 +938,9 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     {
       addVertex();
     }
-  } // mLastGpsPosition != myNewCenter
+
+    updateGpsDistanceStatusMessage();
+  }
 
   if ( !std::isnan( info.direction ) )
   {
@@ -971,7 +1004,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       delete mMapMarker;
       mMapMarker = nullptr;
     }
-  } // show marker
+  }
 }
 
 void QgsGpsInformationWidget::mBtnAddVertex_clicked()
@@ -998,8 +1031,7 @@ void QgsGpsInformationWidget::addVertex()
   QgsPointXY myPoint;
   if ( mMapCanvas )
   {
-    QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
-    myPoint = t.transform( mLastGpsPosition );
+    myPoint = mCanvasToWgs84Transform.transform( mLastGpsPosition, QgsCoordinateTransform::ReverseTransform );
   }
   else
   {
@@ -1459,6 +1491,34 @@ void QgsGpsInformationWidget::timestampFormatChanged( int )
   const bool enabled { static_cast<Qt::TimeSpec>( mCboTimestampFormat->currentData( ).toInt() ) == Qt::TimeSpec::TimeZone };
   mCboTimeZones->setEnabled( enabled );
   mLblTimeZone->setEnabled( enabled );
+}
+
+void QgsGpsInformationWidget::cursorCoordinateChanged( const QgsPointXY &point )
+{
+  try
+  {
+    mLastCursorPosWgs84 = mCanvasToWgs84Transform.transform( point );
+    updateGpsDistanceStatusMessage();
+  }
+  catch ( QgsCsException & )
+  {
+
+  }
+}
+
+void QgsGpsInformationWidget::updateGpsDistanceStatusMessage()
+{
+  if ( !mNmea )
+    return;
+
+  const double distance = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector< QgsPointXY >() << mLastCursorPosWgs84 << mLastGpsPosition ),
+                          QgsProject::instance()->distanceUnits() );
+  const double bearing = 180 * mDistanceCalculator.bearing( mLastCursorPosWgs84, mLastGpsPosition ) / M_PI;
+  const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
+  const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
+  const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
+
+  QgisApp::instance()->statusBarIface()->showMessage( tr( "Distance to GPS location %1 (%2)" ).arg( distanceString, bearingString ), 2000 );
 }
 
 void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *mapLayer )

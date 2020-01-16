@@ -457,7 +457,7 @@ void MDAL::DriverTuflowFV::parseNetCDFVariableMetadata( int varid, const std::st
   *is_x = true;
 
   std::string long_name = mNcFile->getAttrStr( "long_name", varid );
-  if ( long_name.empty() )
+  if ( long_name.empty() || ( long_name == "??????" ) )
   {
     name = variableName;
   }

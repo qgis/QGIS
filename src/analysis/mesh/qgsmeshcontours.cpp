@@ -196,8 +196,36 @@ QgsGeometry QgsMeshContours::exportPolygons(
         }
         else
         {
-          // nothing here, we are outside the range
-          continue;
+          // last option we need to consider is that both min and max are between
+          // value i and j, and in that case we need to calculate both point
+          double value1 = max_value;
+          double value2 = max_value;
+          if ( values[i] < values[j] )
+          {
+            if ( ( min_value < values[i] ) || ( max_value > values[j] ) )
+            {
+              continue;
+            }
+            value1 = min_value;
+          }
+          else
+          {
+            if ( ( min_value < values[j] ) || ( max_value > values[i] ) )
+            {
+              continue;
+            }
+            value2 = min_value;
+          }
+
+          const double fraction1 = ( value1 - values[i] ) / ( values[j] - values[i] );
+          const QgsPoint xy1 = QgsGeometryUtils::interpolatePointOnLine( coords[i], coords[j], fraction1 );
+          if ( !ring.contains( xy1 ) )
+            ring.push_back( xy1 );
+
+          const double fraction2 = ( value2 - values[i] ) / ( values[j] - values[i] );
+          const QgsPoint xy2 = QgsGeometryUtils::interpolatePointOnLine( coords[i], coords[j], fraction2 );
+          if ( !ring.contains( xy2 ) )
+            ring.push_back( xy2 );
         }
       }
     }
@@ -205,8 +233,7 @@ QgsGeometry QgsMeshContours::exportPolygons(
     // add if the polygon is not degraded
     if ( ring.size() > 2 )
     {
-      ring.push_back( coords[0] );
-      std::unique_ptr< QgsLineString > ext = qgis::make_unique< QgsLineString> ( coords );
+      std::unique_ptr< QgsLineString > ext = qgis::make_unique< QgsLineString> ( ring );
       std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
       poly->setExteriorRing( ext.release() );
       multiPolygon.push_back( QgsGeometry( std::move( poly ) ) );

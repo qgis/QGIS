@@ -67,16 +67,6 @@ namespace pal
     FALP = 4 //!< Only initial solution
   };
 
-  //! Enumeration line arrangement flags. Flags can be combined.
-  enum LineArrangementFlag
-  {
-    FLAG_ON_LINE     = 1,
-    FLAG_ABOVE_LINE  = 2,
-    FLAG_BELOW_LINE  = 4,
-    FLAG_MAP_ORIENTATION = 8
-  };
-  Q_DECLARE_FLAGS( LineArrangementFlags, LineArrangementFlag )
-
   /**
    * \ingroup core
    *  \brief Main Pal labeling class
@@ -347,7 +337,5 @@ namespace pal
   };
 
 } // end namespace pal
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( pal::LineArrangementFlags )
 
 #endif

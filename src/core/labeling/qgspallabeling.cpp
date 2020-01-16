@@ -2434,7 +2434,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
     ( *labelFeature )->setHasFixedQuadrant( true );
   }
 
-  pal::LineArrangementFlags featureArrangementFlags = static_cast< pal::LineArrangementFlags >( placementFlags );
+  QgsLabeling::LinePlacementFlags featureArrangementFlags = static_cast< QgsLabeling::LinePlacementFlags >( placementFlags );
   if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::LinePlacementOptions ) )
   {
     context.expressionContext().setOriginalValueVariable( QgsLabelingUtils::encodeLinePlacementFlags( featureArrangementFlags ) );
