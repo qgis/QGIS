@@ -1041,7 +1041,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDefaultSnapModeComboBox->addItem( tr( "Centroid" ), static_cast<int>( QgsSnappingConfig::Centroid ) );
   mDefaultSnapModeComboBox->addItem( tr( "Middle of Segments" ), static_cast<int>( QgsSnappingConfig::MiddleOfSegment ) );
   mDefaultSnapModeComboBox->addItem( tr( "Area" ), static_cast<int>( QgsSnappingConfig::Area ) );
-  QgsSnappingConfig::SnappingTypeFlag defaultSnapMode = static_cast<QgsSnappingConfig::SnappingTypeFlag>( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), static_cast<int>( QgsSnappingConfig::NoSnap ) ).toInt() );
+  QgsSnappingConfig::SnappingTypeFlag defaultSnapMode = static_cast<QgsSnappingConfig::SnappingTypeFlag>( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), static_cast<int>( QgsSnappingConfig::VertexV2 ) ).toInt() );
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( static_cast<int>( defaultSnapMode ) ) );
   mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );

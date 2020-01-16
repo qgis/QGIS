@@ -166,7 +166,7 @@ class CORE_EXPORT QgsSnappingConfig
       private:
         bool mValid = false;
         bool mEnabled = false;
-        SnappingTypeFlag mType = NoSnap;
+        SnappingTypeFlag mType = VertexV2;
         double mTolerance = 0;
         QgsTolerance::UnitType mUnits = QgsTolerance::Pixels;
     };
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsSnappingConfig
     QgsProject *mProject = nullptr;
     bool mEnabled = false;
     SnappingMode mMode = ActiveLayer;
-    SnappingTypeFlag mType = NoSnap;
+    SnappingTypeFlag mType = VertexV2;
     double mTolerance = 0.0;
     QgsTolerance::UnitType mUnits = QgsTolerance::ProjectUnits;
     bool mIntersectionSnapping = false;
