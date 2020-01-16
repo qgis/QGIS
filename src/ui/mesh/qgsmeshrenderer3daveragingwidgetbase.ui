@@ -58,7 +58,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Depth (relative to sufrace)</string>
+         <string>Depth (relative to surface)</string>
         </property>
        </item>
        <item>
@@ -147,7 +147,7 @@
              <item>
               <widget class="QLabel" name="mSingleTopDescLabel">
                <property name="text">
-                <string>Display the value from a vertical layer from the top (surface). The level is be truncated to the maximum number of vertical layers for particular face.</string>
+                <string>Display the value from a vertical layer from the top (surface). The level is truncated to the maximum number of vertical layers for particular face.</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -226,7 +226,7 @@
              <item>
               <widget class="QLabel" name="mSingleBottomDescLabel">
                <property name="text">
-                <string>Display the value from a vertical layer from the bottom (bed). The level is be truncated to the maximum number of vertical layers for particular face.</string>
+                <string>Display the value from a vertical layer from the bottom (bed). The level is truncated to the maximum number of vertical layers for particular face.</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -329,7 +329,7 @@
           <item>
            <widget class="QLabel" name="mMultiTopDescLabel">
             <property name="text">
-             <string>Averages values from multiple vertical layers from the top (surface). The level is be truncated to the maximum number of vertical layers for particular face.</string>
+             <string>Averages values from multiple vertical layers from the top (surface). The level is truncated to the maximum number of vertical layers for particular face.</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -429,7 +429,7 @@
           <item>
            <widget class="QLabel" name="mMultiBottomDescLabel">
             <property name="text">
-             <string>Averages values from multiple vertical layers from the bottom (bed). The level is be truncated to the maximum number of vertical layers for particular face.</string>
+             <string>Averages values from multiple vertical layers from the bottom (bed). The level is truncated to the maximum number of vertical layers for particular face.</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -813,7 +813,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox_7">
             <property name="title">
-             <string>Example: Elevation -0.5 -to -2.5</string>
+             <string>Example: Elevation -0.5 to -2.5</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_11">
              <item>

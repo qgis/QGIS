@@ -711,7 +711,7 @@ void QgsCustomization::createTreeItemBrowser()
   QVector<QStringList> items;
 
   items << QStringList( {QStringLiteral( "special:Home" ), tr( "Home Folder" )} );
-  items << QStringList( {QStringLiteral( "special:ProjectHome" ), tr( "Project tHome Folder" )} );
+  items << QStringList( {QStringLiteral( "special:ProjectHome" ), tr( "Project Home Folder" )} );
   items << QStringList( {QStringLiteral( "special:Favorites" ), tr( "Favorites Folder" )} );
   items << QStringList( {QStringLiteral( "special:Drives" ), tr( "Drive Folders (e.g. C:\\)" )} );
   items << QStringList( {QStringLiteral( "special:Volumes" ), tr( "Volume Folder (MacOS only)" )} );
