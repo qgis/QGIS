@@ -635,22 +635,24 @@ class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
       QgsFeatureId id = d.getIdentifier();
       const QgsGeometry *geom = mLocator->mGeoms.value( id );
 
-      QgsAbstractGeometry::vertex_iterator it = geom->vertices_begin();
-      QgsAbstractGeometry::vertex_iterator itPrevious = geom->vertices_begin();
-      it++;
-      for ( ; it != geom->vertices_end(); ++it, ++itPrevious )
+      for ( QgsAbstractGeometry::const_part_iterator itPart = geom->const_parts_begin() ; itPart != geom->const_parts_end() ; ++itPart )
       {
-
-        QgsPointXY pt( ( ( *itPrevious ).x() + ( *it ).x() ) / 2.0, ( ( *itPrevious ).y() + ( *it ).y() ) / 2.0 );
-        if ( mSrcRect.contains( pt ) )
+        QgsAbstractGeometry::vertex_iterator it = ( *itPart )->vertices_begin();
+        QgsAbstractGeometry::vertex_iterator itPrevious = ( *itPart )->vertices_begin();
+        it++;
+        for ( ; it != geom->vertices_end(); ++it, ++itPrevious )
         {
-          QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, 0, pt, -1 );
+          QgsPointXY pt( ( ( *itPrevious ).x() + ( *it ).x() ) / 2.0, ( ( *itPrevious ).y() + ( *it ).y() ) / 2.0 );
+          if ( mSrcRect.contains( pt ) )
+          {
+            QgsPointLocator::Match m( QgsPointLocator::MiddleOfSegment, mLocator->mLayer, id, 0, pt, -1 );
 
-          // in range queries the filter may reject some matches
-          if ( mFilter && !mFilter->acceptMatch( m ) )
-            continue;
+            // in range queries the filter may reject some matches
+            if ( mFilter && !mFilter->acceptMatch( m ) )
+              continue;
 
-          mList << m;
+            mList << m;
+          }
         }
       }
     }
