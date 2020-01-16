@@ -39,7 +39,7 @@ ring and item (first number is index 0), and feature
 to the given coordinates
 %End
 
-    bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
+    bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexFlag/;
 %Docstring
 Moves the vertex at the given position number,
 ring and item (first number is index 0), and feature
@@ -47,7 +47,7 @@ to the given coordinates
 
 .. note::
 
-   available in Python bindings as moveVertexV2
+   available in Python bindings as moveVertexFlag
 %End
 
     QgsVectorLayer::EditResult deleteVertex( QgsFeatureId featureId, int vertex );

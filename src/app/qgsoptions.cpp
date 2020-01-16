@@ -1035,13 +1035,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   //default snap mode
   mSnappingEnabledDefault->setChecked( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ),  false ).toBool() );
-  mDefaultSnapModeComboBox->addItem( tr( "No Snapping" ), QgsSnappingConfig::NoSnap );
-  mDefaultSnapModeComboBox->addItem( tr( "Vertex" ), QgsSnappingConfig::VertexV2 );
-  mDefaultSnapModeComboBox->addItem( tr( "Segment" ), QgsSnappingConfig::SegmentV2 );
-  mDefaultSnapModeComboBox->addItem( tr( "Centroid" ), QgsSnappingConfig::Centroid );
-  mDefaultSnapModeComboBox->addItem( tr( "Middle of Segments" ), QgsSnappingConfig::MiddleOfSegment );
-  mDefaultSnapModeComboBox->addItem( tr( "Area" ), QgsSnappingConfig::Area );
-  QgsSnappingConfig::SnappingTypeFlag defaultSnapMode = mSettings->flagValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ),  QgsSnappingConfig::VertexV2 );
+  mDefaultSnapModeComboBox->addItem( tr( "No Snapping" ), QgsSnappingConfig::NoSnapFlag );
+  mDefaultSnapModeComboBox->addItem( tr( "Vertex" ), QgsSnappingConfig::VertexFlag );
+  mDefaultSnapModeComboBox->addItem( tr( "Segment" ), QgsSnappingConfig::SegmentFlag );
+  mDefaultSnapModeComboBox->addItem( tr( "Centroid" ), QgsSnappingConfig::CentroidFlag );
+  mDefaultSnapModeComboBox->addItem( tr( "Middle of Segments" ), QgsSnappingConfig::MiddleOfSegmentFlag );
+  mDefaultSnapModeComboBox->addItem( tr( "Area" ), QgsSnappingConfig::AreaFlag );
+  QgsSnappingConfig::SnappingTypeFlag defaultSnapMode = mSettings->flagValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ),  QgsSnappingConfig::VertexFlag );
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( static_cast<int>( defaultSnapMode ) ) );
   mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );

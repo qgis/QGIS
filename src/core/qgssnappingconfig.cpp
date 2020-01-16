@@ -57,7 +57,7 @@ void QgsSnappingConfig::IndividualLayerSettings::setEnabled( bool enabled )
   mEnabled = enabled;
 }
 
-QgsSnappingConfig::SnappingTypeFlag QgsSnappingConfig::IndividualLayerSettings::typeV2() const
+QgsSnappingConfig::SnappingTypeFlag QgsSnappingConfig::IndividualLayerSettings::typeFlag() const
 {
   return mType;
 }
@@ -65,9 +65,9 @@ QgsSnappingConfig::SnappingTypeFlag QgsSnappingConfig::IndividualLayerSettings::
 QgsSnappingConfig::SnappingType QgsSnappingConfig::IndividualLayerSettings::type() const
 {
 
-  if ( ( mType & SegmentV2 ) && ( mType & VertexV2 ) )
+  if ( ( mType & SegmentFlag ) && ( mType & VertexFlag ) )
     return QgsSnappingConfig::SnappingType::VertexAndSegment;
-  else if ( mType & SegmentV2 )
+  else if ( mType & SegmentFlag )
     return QgsSnappingConfig::SnappingType::Segment;
   else
     return QgsSnappingConfig::SnappingType::Vertex;
@@ -79,20 +79,20 @@ void QgsSnappingConfig::IndividualLayerSettings::setType( QgsSnappingConfig::Sna
   switch ( type )
   {
     case 1:
-      mType = VertexV2;
+      mType = VertexFlag;
       break;
     case 2:
-      mType = VertexV2 | SegmentV2;
+      mType = VertexFlag | SegmentFlag;
       break;
     case 3:
-      mType = SegmentV2;
+      mType = SegmentFlag;
       break;
     default:
-      mType = NoSnap;
+      mType = NoSnapFlag;
       break;
   }
 }
-void QgsSnappingConfig::IndividualLayerSettings::setTypeV2( QgsSnappingConfig::SnappingTypeFlag type )
+void QgsSnappingConfig::IndividualLayerSettings::setTypeFlag( QgsSnappingConfig::SnappingTypeFlag type )
 {
   mType = type;
 }
@@ -165,7 +165,7 @@ void QgsSnappingConfig::reset()
     // could be removed in 3.4+
     mode = AllLayers;
   }
-  QgsSnappingConfig::SnappingTypeFlag type = QgsSettings().flagValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ),  VertexV2 );
+  QgsSnappingConfig::SnappingTypeFlag type = QgsSettings().flagValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ),  VertexFlag );
   double tolerance = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble();
   QgsTolerance::UnitType units = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ),  Qgis::DEFAULT_SNAP_UNITS );
 
@@ -229,16 +229,16 @@ void QgsSnappingConfig::setMode( QgsSnappingConfig::SnappingMode mode )
   mMode = mode;
 }
 
-QgsSnappingConfig::SnappingTypeFlag QgsSnappingConfig::typeV2() const
+QgsSnappingConfig::SnappingTypeFlag QgsSnappingConfig::typeFlag() const
 {
   return mType;
 }
 
 QgsSnappingConfig::SnappingType QgsSnappingConfig::type() const
 {
-  if ( ( mType & SegmentV2 ) && ( mType & VertexV2 ) )
+  if ( ( mType & SegmentFlag ) && ( mType & VertexFlag ) )
     return QgsSnappingConfig::SnappingType::VertexAndSegment;
-  else if ( mType & SegmentV2 )
+  else if ( mType & SegmentFlag )
     return QgsSnappingConfig::SnappingType::Segment;
   else
     return QgsSnappingConfig::SnappingType::Vertex;
@@ -249,20 +249,20 @@ void QgsSnappingConfig::setType( QgsSnappingConfig::SnappingType type )
   switch ( type )
   {
     case SnappingType::Vertex:
-      mType = VertexV2;
+      mType = VertexFlag;
       break;
     case SnappingType::VertexAndSegment:
-      mType = static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexV2 | QgsSnappingConfig::SegmentV2 );
+      mType = static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag );
       break;
     case SnappingType::Segment:
-      mType = SegmentV2;
+      mType = SegmentFlag;
       break;
     default:
-      mType = NoSnap;
+      mType = NoSnapFlag;
       break;
   }
 }
-void QgsSnappingConfig::setTypeV2( QgsSnappingConfig::SnappingTypeFlag type )
+void QgsSnappingConfig::setTypeFlag( QgsSnappingConfig::SnappingTypeFlag type )
 {
   if ( mType == type )
   {
@@ -387,16 +387,16 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
       switch ( type )
       {
         case 1:
-          mType = VertexV2;
+          mType = VertexFlag;
           break;
         case 2:
-          mType = static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexV2 | QgsSnappingConfig::SegmentV2 );
+          mType = static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag );
           break;
         case 3:
-          mType = SegmentV2;
+          mType = SegmentFlag;
           break;
         default:
-          mType = NoSnap;
+          mType = NoSnapFlag;
           break;
       }
     }
@@ -466,7 +466,7 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
     QDomElement layerElement = doc.createElement( QStringLiteral( "layer-setting" ) );
     layerElement.setAttribute( QStringLiteral( "id" ), layerIt.key()->id() );
     layerElement.setAttribute( QStringLiteral( "enabled" ), QString::number( setting.enabled() ) );
-    layerElement.setAttribute( QStringLiteral( "type" ), static_cast<int>( setting.typeV2() ) );
+    layerElement.setAttribute( QStringLiteral( "type" ), static_cast<int>( setting.typeFlag() ) );
     layerElement.setAttribute( QStringLiteral( "tolerance" ), setting.tolerance() );
     layerElement.setAttribute( QStringLiteral( "units" ), static_cast<int>( setting.units() ) );
     ilsElement.appendChild( layerElement );
@@ -480,7 +480,7 @@ bool QgsSnappingConfig::addLayers( const QList<QgsMapLayer *> &layers )
 {
   bool changed = false;
   bool enabled = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), true ).toBool();
-  QgsSnappingConfig::SnappingTypeFlag type = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), VertexV2 );
+  QgsSnappingConfig::SnappingTypeFlag type = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), VertexFlag );
   double tolerance = QgsSettings().value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble();
   QgsTolerance::UnitType units = QgsSettings().enumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), Qgis::DEFAULT_SNAP_UNITS );
 
@@ -559,9 +559,9 @@ void QgsSnappingConfig::readLegacySettings()
     if ( !vlayer || !vlayer->isSpatial() )
       continue;
 
-    QgsSnappingConfig::SnappingTypeFlag t( *snapIt == QLatin1String( "to_vertex" ) ? VertexV2 :
-                                           ( *snapIt == QLatin1String( "to_segment" ) ? SegmentV2 :
-                                               static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexV2 | QgsSnappingConfig::SegmentV2 )
+    QgsSnappingConfig::SnappingTypeFlag t( *snapIt == QLatin1String( "to_vertex" ) ? VertexFlag :
+                                           ( *snapIt == QLatin1String( "to_segment" ) ? SegmentFlag :
+                                               static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag )
                                            )
                                          );
 
@@ -571,11 +571,11 @@ void QgsSnappingConfig::readLegacySettings()
   QString snapType = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapType" ), QStringLiteral( "off" ) );
   mEnabled = true;
   if ( snapType == QLatin1String( "to segment" ) )
-    mType = SegmentV2;
+    mType = SegmentFlag;
   else if ( snapType == QLatin1String( "to vertex and segment" ) )
-    mType = static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexV2 | QgsSnappingConfig::SegmentV2 );
+    mType = static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag );
   else if ( snapType == QLatin1String( "to vertex" ) )
-    mType = VertexV2;
+    mType = VertexFlag;
   else if ( mMode != AdvancedConfiguration ) // Type is off but mode is advanced
   {
     mEnabled = false;

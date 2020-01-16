@@ -126,7 +126,7 @@ void TestQgsMapToolAddFeaturePoint::initTestCase()
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( QgsSnappingConfig::AllLayers );
   cfg.setTolerance( 100 );
-  cfg.setTypeV2( static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexV2 | QgsSnappingConfig::SegmentV2 ) );
+  cfg.setTypeFlag( static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ) );
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
 

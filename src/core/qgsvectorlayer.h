@@ -1247,13 +1247,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Moves the vertex at the given position number,
      * ring and item (first number is index 0), and feature
      * to the given coordinates.
-     * \note available in Python as moveVertexV2
+     * \note available in Python as moveVertexFlag
      * \note Calls to moveVertex() are only valid for layers in which edits have been enabled
      * by a call to startEditing(). Changes made to features using this method are not committed
      * to the underlying data provider until a commitChanges() call is made. Any uncommitted
      * changes can be discarded by calling rollBack().
      */
-    bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) SIP_PYNAME( moveVertexV2 );
+    bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) SIP_PYNAME( moveVertexFlag );
 
     /**
      * Deletes a vertex from a feature.

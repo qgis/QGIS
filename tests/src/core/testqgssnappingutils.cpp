@@ -116,7 +116,7 @@ class TestQgsSnappingUtils : public QObject
 
       // now enable snapping
       snappingConfig.setEnabled( true );
-      snappingConfig.setTypeV2( QgsSnappingConfig::VertexV2 );
+      snappingConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
       u.setConfig( snappingConfig );
 
       QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
@@ -131,7 +131,7 @@ class TestQgsSnappingUtils : public QObject
       // do not consider edges in the following test - on 32-bit platforms
       // result was an edge match very close to (1,0) instead of being exactly (1,0)
 
-      snappingConfig.setTypeV2( QgsSnappingConfig::VertexV2 );
+      snappingConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
       u.setConfig( snappingConfig );
 
       // test with filtering
@@ -188,7 +188,7 @@ class TestQgsSnappingUtils : public QObject
 
       // now enable snapping
       snappingConfig.setEnabled( true );
-      snappingConfig.setTypeV2( QgsSnappingConfig::VertexV2 );
+      snappingConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
       u.setConfig( snappingConfig );
 
       QgsPointLocator::Match m5 = u.snapToMap( QPoint( 2, 2 ) );
@@ -220,7 +220,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       u.setMapSettings( mapSettings );
       snappingConfig.setEnabled( true );
-      snappingConfig.setTypeV2( QgsSnappingConfig::VertexV2 );
+      snappingConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
       snappingConfig.setMode( QgsSnappingConfig::AllLayers );
       u.setConfig( snappingConfig );
 
@@ -250,7 +250,7 @@ class TestQgsSnappingUtils : public QObject
       u.setMapSettings( mapSettings );
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexV2, 10, QgsTolerance::Pixels ) );
+      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels ) );
       u.setConfig( snappingConfig );
 
       QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
@@ -297,7 +297,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::VertexV2, 0.1, QgsTolerance::ProjectUnits );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::VertexFlag, 0.1, QgsTolerance::ProjectUnits );
       snappingConfig.setIndividualLayerSettings( vl, layerSettings );
       u.setConfig( snappingConfig );
 
@@ -349,7 +349,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::VertexV2, 0.2, QgsTolerance::ProjectUnits );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::VertexFlag, 0.2, QgsTolerance::ProjectUnits );
       snappingConfig.setIntersectionSnapping( true );
       snappingConfig.setIndividualLayerSettings( vCurveZ.get(), layerSettings );
       u.setConfig( snappingConfig );
@@ -386,7 +386,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::VertexV2, 0.2, QgsTolerance::ProjectUnits );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::VertexFlag, 0.2, QgsTolerance::ProjectUnits );
       snappingConfig.setIntersectionSnapping( true );
       snappingConfig.setIndividualLayerSettings( vMulti.get(), layerSettings );
       u.setConfig( snappingConfig );
@@ -424,7 +424,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::MiddleOfSegment | QgsSnappingConfig::Centroid ), 0.2, QgsTolerance::ProjectUnits );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::MiddleOfSegmentFlag | QgsSnappingConfig::CentroidFlag ), 0.2, QgsTolerance::ProjectUnits );
       snappingConfig.setIndividualLayerSettings( vSnapCentroidMiddle.get(), layerSettings );
       u.setConfig( snappingConfig );
 

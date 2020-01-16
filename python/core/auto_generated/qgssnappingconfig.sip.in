@@ -41,12 +41,12 @@ This is a container for configuration of the snapping of the project
 
     enum SnappingTypes
     {
-      NoSnap,
-      VertexV2,
-      SegmentV2,
-      Area,
-      Centroid,
-      MiddleOfSegment,
+      NoSnapFlag,
+      VertexFlag,
+      SegmentFlag,
+      AreaFlag,
+      CentroidFlag,
+      MiddleOfSegmentFlag,
     };
     typedef QFlags<QgsSnappingConfig::SnappingTypes> SnappingTypeFlag;
 
@@ -118,7 +118,7 @@ Returns if snapping is enabled
 enables the snapping
 %End
 
-        QgsSnappingConfig::SnappingTypeFlag typeV2() const;
+        QgsSnappingConfig::SnappingTypeFlag typeFlag() const;
 %Docstring
 Returns the flags type (vertices | segments | area | centroid | middle)
 
@@ -130,7 +130,7 @@ Returns the flags type (vertices | segments | area | centroid | middle)
 Returns the flags type (vertices | segments | area | centroid | middle)
 
 .. deprecated:: QGIS 3.12
-   use typeV2 instead.
+   use typeFlag instead.
 %End
 
  void setType( QgsSnappingConfig::SnappingType type ) /Deprecated/;
@@ -138,10 +138,10 @@ Returns the flags type (vertices | segments | area | centroid | middle)
 define the type of snapping
 
 .. deprecated:: QGIS 3.12
-   use setTypeV2 instead.
+   use setTypeFlag instead.
 %End
 
-        void setTypeV2( QgsSnappingConfig::SnappingTypeFlag type );
+        void setTypeFlag( QgsSnappingConfig::SnappingTypeFlag type );
 %Docstring
 define the type of snapping
 
@@ -206,7 +206,7 @@ Returns the mode (all layers, active layer, per layer settings)
 define the mode of snapping
 %End
 
-    QgsSnappingConfig::SnappingTypeFlag typeV2() const;
+    QgsSnappingConfig::SnappingTypeFlag typeFlag() const;
 %Docstring
 Returns the flags type (vertices | segments | area | centroid | middle)
 
@@ -218,7 +218,7 @@ Returns the flags type (vertices | segments | area | centroid | middle)
 Returns the flags type (vertices | segments | area | centroid | middle)
 
 .. deprecated:: QGIS 3.12
-   use typeV2 instead.
+   use typeFlag instead.
 %End
 
  void setType( QgsSnappingConfig::SnappingType type );
@@ -226,10 +226,10 @@ Returns the flags type (vertices | segments | area | centroid | middle)
 define the type of snapping
 
 .. deprecated:: QGIS 3.12
-   use setTypeV2 instead.
+   use setTypeFlag instead.
 %End
 
-    void setTypeV2( QgsSnappingConfig::SnappingTypeFlag type );
+    void setTypeFlag( QgsSnappingConfig::SnappingTypeFlag type );
 %Docstring
 define the type of snapping
 

@@ -58,9 +58,9 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Moves the vertex at the given position number,
      * ring and item (first number is index 0), and feature
      * to the given coordinates
-     * \note available in Python bindings as moveVertexV2
+     * \note available in Python bindings as moveVertexFlag
      */
-    bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) SIP_PYNAME( moveVertexV2 );
+    bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) SIP_PYNAME( moveVertexFlag );
 
     /**
      * Deletes a vertex from a feature.

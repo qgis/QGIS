@@ -1215,7 +1215,7 @@ to the given coordinates.
    changes can be discarded by calling rollBack().
 %End
 
-    bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
+    bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexFlag/;
 %Docstring
 Moves the vertex at the given position number,
 ring and item (first number is index 0), and feature
@@ -1223,7 +1223,7 @@ to the given coordinates.
 
 .. note::
 
-   available in Python as moveVertexV2
+   available in Python as moveVertexFlag
 
 .. note::
 
