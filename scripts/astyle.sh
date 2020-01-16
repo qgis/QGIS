@@ -52,7 +52,15 @@ if ! type -p flip >/dev/null; then
 			dos2unix -q -k "$2"
 		}
 	else
-		echo "flip not found" >&2
+    echo "flip not found" >&2
+    echo "Try:"
+    if [[ -f /etc/fedora-release ]]; then
+      echo "  dnf install dos2unix";
+    elif [[ -f /etc/debian_version ]]; then
+      echo "  apt install flip";
+    else
+      echo "  installing flip or dos2unix from your package manager";
+    fi
 		flip() {
 			:
 		}
@@ -61,6 +69,14 @@ fi
 
 if ! type -p autopep8 >/dev/null; then
 	echo "autopep8 not found" >&2
+	echo "Try:"
+	if [[ -f /etc/fedora-release ]]; then
+		echo "  dnf install python3-autopep8";
+	elif [[ -f /etc/debian_version ]]; then
+		echo "  apt install python3-autopep8";
+	else
+		echo "  installing python3-autopep8 from your package manager";
+	fi
 	autopep8() {
 		:
 	}
