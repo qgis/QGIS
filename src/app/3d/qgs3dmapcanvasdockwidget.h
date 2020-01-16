@@ -57,7 +57,7 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
-    void onTerrainPendingJobsCountChanged();
+    void onTotalPendingJobsCountChanged();
 
   private:
     Qgs3DMapCanvas *mCanvas = nullptr;

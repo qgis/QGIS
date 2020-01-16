@@ -42,6 +42,13 @@ class QgsChunkQueueJobFactory;
 
 #include <QTime>
 
+#include "qgsfeatureid.h"
+
+namespace Qt3DRender
+{
+  class QPickEvent;
+}
+
 /**
  * \ingroup 3d
  * Implementation of entity that handles chunks of data organized in quadtree with loading data when necessary
@@ -85,6 +92,11 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     //! Returns number of jobs pending for this entity until it is fully loaded/updated in the current view
     int pendingJobsCount() const;
 
+    //! Enables or disables object picking on this entity. When enabled, pickedObject() signals will be emitted on mouse clicks
+    void setPickingEnabled( bool enabled );
+    //! Returns whether object picking is currently enabled
+    bool hasPickingEnabled() const { return mPickingEnabled; }
+
   protected:
     //! Cancels the background job that is currently in progress
     void cancelActiveJob( QgsChunkQueueJob *job );
@@ -104,16 +116,31 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
   private slots:
     void onActiveJobFinished();
 
+    void onPickEvent( Qt3DRender::QPickEvent *event );
+
   signals:
     //! Emitted when the number of pending jobs changes (some jobs have finished or some jobs have been just created)
     void pendingJobsCountChanged();
+
+    //! Emitted when a new 3D entity has been created. Other components can use that to do extra work
+    void newEntityCreated( Qt3DCore::QEntity *entity );
+
+    //! Emitted on mouse clicks when picking is enabled and there is a feature under the cursor
+    void pickedObject( Qt3DRender::QPickEvent *pickEvent, QgsFeatureId fid );
 
   protected:
     //! root node of the quadtree hierarchy
     QgsChunkNode *mRootNode = nullptr;
     //! A chunk has been loaded recently? let's display it!
     bool mNeedsUpdate = false;
-    //! max. allowed screen space error
+
+    /**
+     * Maximum allowed screen space error (in pixels).
+     * If the value is negative, it means that the screen space error
+     * does not need to be taken into account. This essentially means that
+     * the chunked entity will try to go deeper into the tree of chunks until
+     * it reaches leafs.
+     */
     float mTau;
     //! maximum allowed depth of quad tree
     int mMaxLevel;
@@ -140,6 +167,9 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
     //! jobs that are currently being processed (asynchronously in worker threads)
     QList<QgsChunkQueueJob *> mActiveJobs;
+
+    //! If picking is enabled, QObjectPicker objects will be assigned to chunks and pickedObject() signals fired on mouse click
+    bool mPickingEnabled = false;
 };
 
 /// @endcond

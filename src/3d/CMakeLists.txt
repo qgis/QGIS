@@ -4,6 +4,7 @@
 SET(QGIS_3D_SRCS
   qgsaabb.cpp
   qgsabstract3dengine.cpp
+  qgsabstractvectorlayer3drenderer.cpp
   qgs3danimationsettings.cpp
   qgs3dmapscene.cpp
   qgs3dmapsettings.cpp
@@ -17,9 +18,11 @@ SET(QGIS_3D_SRCS
   qgspointlightsettings.cpp
   qgsraycastingutils_p.cpp
   qgsrulebased3drenderer.cpp
+  qgsrulebasedchunkloader_p.cpp
   qgstessellatedpolygongeometry.cpp
   qgstilingscheme.cpp
   qgsvectorlayer3drenderer.cpp
+  qgsvectorlayerchunkloader_p.cpp
   qgsmeshlayer3drenderer.cpp
   qgswindow3dengine.cpp
 
@@ -70,6 +73,7 @@ SET(QGIS_3D_HDRS
   qgs3dutils.h
   qgsaabb.h
   qgsabstract3dengine.h
+  qgsabstractvectorlayer3drenderer.h
   qgscameracontroller.h
   qgscamerapose.h
   qgslayoutitem3dmap.h
@@ -100,6 +104,8 @@ SET(QGIS_3D_HDRS
 )
 
 SET(QGIS_3D_PRIVATE_HDRS
+  qgsrulebasedchunkloader_p.h
+  qgsvectorlayerchunkloader_p.h
   chunks/qgschunkboundsentity_p.h
   chunks/qgschunkedentity_p.h
   chunks/qgschunklist_p.h

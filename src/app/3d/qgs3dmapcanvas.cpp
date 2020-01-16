@@ -57,7 +57,12 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
 
 Qgs3DMapCanvas::~Qgs3DMapCanvas()
 {
+  // make sure the scene is deleted while map settings object is still alive
+  delete mScene;
+  mScene = nullptr;
+
   delete mMap;
+  mMap = nullptr;
 }
 
 void Qgs3DMapCanvas::resizeEvent( QResizeEvent *ev )
