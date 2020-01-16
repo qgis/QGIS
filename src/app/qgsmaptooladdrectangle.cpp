@@ -71,7 +71,20 @@ void QgsMapToolAddRectangle::deactivate( )
   }
 
   mParentTool->clearCurve( );
-  mParentTool->addCurve( mRectangle.toLineString( !QgsWkbTypes::hasZ( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() )->wkbType() ) ) );
+  // keep z value from the first snapped point
+  std::unique_ptr<QgsLineString> ls( mRectangle.toLineString() );
+  for ( const QgsPoint point : qgis::as_const( mPoints ) )
+  {
+    if ( QgsWkbTypes::hasZ( point.wkbType() ) &&
+         point.z() != defaultZValue() )
+    {
+      ls->dropZValue();
+      ls->addZValue( point.z() );
+      break;
+    }
+  }
+
+  mParentTool->addCurve( ls.release() );
   clean();
 
   QgsMapToolCapture::deactivate();
