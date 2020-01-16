@@ -4473,8 +4473,15 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     return false;
   }
 
+  QgsUnitTypes::RenderUnit sldUnitSize = QgsUnitTypes::RenderPixels;
+  if ( textSymbolizerElem.hasAttribute( QStringLiteral( "uom" ) ) )
+  {
+    sldUnitSize = QgsSymbolLayerUtils::decodeSldUom( textSymbolizerElem.attribute( QStringLiteral( "uom" ) ) );
+  }
+
   QString fontFamily = QStringLiteral( "Sans-Serif" );
   int fontPointSize = 10;
+  QgsUnitTypes::RenderUnit fontUnitSize = QgsUnitTypes::RenderPoints;
   int fontWeight = -1;
   bool fontItalic = false;
   bool fontUnderline = false;
@@ -4501,7 +4508,10 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
         bool ok;
         int fontSize = it.value().toInt( &ok );
         if ( ok )
+        {
           fontPointSize = fontSize;
+          fontUnitSize = sldUnitSize;
+        }
       }
       else if ( it.key() == QLatin1String( "font-weight" ) )
       {
@@ -4520,6 +4530,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
   font.setUnderline( fontUnderline );
   format.setFont( font );
   format.setSize( fontPointSize );
+  format.setSizeUnit( fontUnitSize );
 
   // Fill
   QDomElement fillElem = textSymbolizerElem.firstChildElement( QStringLiteral( "Fill" ) );
@@ -4549,6 +4560,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       if ( ok )
       {
         bufferSettings.setSize( bufferSize );
+        bufferSettings.setSizeUnit( sldUnitSize );
       }
     }
 
@@ -4584,6 +4596,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
           if ( ok )
           {
             settings.xOffset = xOffset;
+            settings.offsetUnits = sldUnitSize;
           }
         }
         QDomElement displacementYElem = displacementElem.firstChildElement( QStringLiteral( "DisplacementY" ) );
@@ -4594,6 +4607,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
           if ( ok )
           {
             settings.yOffset = yOffset;
+            settings.offsetUnits = sldUnitSize;
           }
         }
       }
@@ -4608,6 +4622,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
           if ( ok )
           {
             settings.xOffset = xOffset;
+            settings.offsetUnits = sldUnitSize;
           }
         }
         QDomElement anchorPointYElem = anchorPointElem.firstChildElement( QStringLiteral( "AnchorPointY" ) );
@@ -4618,6 +4633,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
           if ( ok )
           {
             settings.yOffset = yOffset;
+            settings.offsetUnits = sldUnitSize;
           }
         }
       }
