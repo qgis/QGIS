@@ -307,6 +307,12 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual json asJsonObject( int precision = 17 ) SIP_SKIP const;
 
+    /**
+     * Returns a KML representation of the geometry.
+     * \since QGIS 3.12
+     */
+    virtual QString asKml( int precision = 17 ) const = 0;
+
 
     //render pipeline
 
