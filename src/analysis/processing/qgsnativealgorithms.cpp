@@ -110,6 +110,7 @@
 #include "qgsalgorithmrastersurfacevolume.h"
 #include "qgsalgorithmrasterzonalstats.h"
 #include "qgsalgorithmreclassifybylayer.h"
+#include "qgsalgorithmrectanglesovalsdiamonds.h"
 #include "qgsalgorithmremoveduplicatesbyattribute.h"
 #include "qgsalgorithmremoveduplicatevertices.h"
 #include "qgsalgorithmremoveholes.h"
@@ -308,6 +309,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsAlgorithmRemoveDuplicateVertices() );
   addAlgorithm( new QgsReclassifyByLayerAlgorithm() );
   addAlgorithm( new QgsReclassifyByTableAlgorithm() );
+  addAlgorithm( new QgsRectanglesOvalsDiamondsAlgorithm() );
   addAlgorithm( new QgsRemoveDuplicatesByAttributeAlgorithm() );
   addAlgorithm( new QgsRemoveHolesAlgorithm() );
   addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );

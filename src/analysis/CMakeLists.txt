@@ -116,6 +116,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrastersurfacevolume.cpp
   processing/qgsalgorithmrasterzonalstats.cpp
   processing/qgsalgorithmreclassifybylayer.cpp
+  processing/qgsalgorithmrectanglesovalsdiamonds.cpp
   processing/qgsalgorithmremoveduplicatesbyattribute.cpp
   processing/qgsalgorithmremoveduplicatevertices.cpp
   processing/qgsalgorithmremoveholes.cpp
