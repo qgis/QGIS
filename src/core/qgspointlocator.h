@@ -339,31 +339,6 @@ class CORE_EXPORT QgsPointLocator : public QObject
      */
     MatchList verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
-    /**
-     * Find centroids within a specified recangle
-     * Optional filter may discard unwanted matches.
-     * \since QGIS 3.12
-     */
-    MatchList centroidsInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = nullptr );
-
-    /**
-     * Override of centroidsInRect that construct rectangle from a center point and tolerance
-     * \since QGIS 3.12
-     */
-    MatchList centroidsInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
-
-    /**
-     * Find middle segment within a specified recangle
-     * Optional filter may discard unwanted matches.
-     * \since QGIS 3.12
-     */
-    MatchList middlesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = nullptr );
-
-    /**
-     * Override of middleInRect that construct rectangle from a center point and tolerance
-     * \since QGIS 3.12
-     */
-    MatchList middlesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
     // point-in-polygon query
 
     // TODO: function to return just the first match?

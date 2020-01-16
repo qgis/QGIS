@@ -275,35 +275,6 @@ This method is either blocking or non blocking according to ``relaxed`` paramete
 .. versionadded:: 3.6
 %End
 
-    MatchList centroidsInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0 );
-%Docstring
-Find centroids within a specified recangle
-Optional filter may discard unwanted matches.
-
-.. versionadded:: 3.12
-%End
-
-    MatchList centroidsInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
-%Docstring
-Override of centroidsInRect that construct rectangle from a center point and tolerance
-
-.. versionadded:: 3.12
-%End
-
-    MatchList middlesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0 );
-%Docstring
-Find middle segment within a specified recangle
-Optional filter may discard unwanted matches.
-
-.. versionadded:: 3.12
-%End
-
-    MatchList middlesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
-%Docstring
-Override of middleInRect that construct rectangle from a center point and tolerance
-
-.. versionadded:: 3.12
-%End
 
 
     MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false );

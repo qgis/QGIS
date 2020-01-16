@@ -664,7 +664,6 @@ class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
     QgsPointLocator::MatchFilter *mFilter = nullptr;
 };
 
-
 ////////////////////////////////////////////////////////////////////////////
 #include <QStack>
 
@@ -1271,50 +1270,6 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsPointXY &po
 {
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
   return verticesInRect( rect, filter, relaxed );
-}
-
-QgsPointLocator::MatchList QgsPointLocator::centroidsInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter )
-{
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return MatchList();
-  }
-
-  MatchList lst;
-  QgsPointLocator_VisitorCentroidsInRect visitor( this, lst, rect, filter );
-  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
-
-  return lst;
-}
-
-QgsPointLocator::MatchList QgsPointLocator::centroidsInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter )
-{
-  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
-  return centroidsInRect( rect, filter );
-}
-
-QgsPointLocator::MatchList QgsPointLocator::middlesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter )
-{
-  if ( !mRTree )
-  {
-    init();
-    if ( !mRTree ) // still invalid?
-      return MatchList();
-  }
-
-  MatchList lst;
-  QgsPointLocator_VisitorMiddlesInRect visitor( this, lst, rect, filter );
-  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
-
-  return lst;
-}
-
-QgsPointLocator::MatchList QgsPointLocator::middlesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter )
-{
-  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
-  return middlesInRect( rect, filter );
 }
 
 QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &point, bool relaxed )
