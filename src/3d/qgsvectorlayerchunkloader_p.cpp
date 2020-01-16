@@ -20,7 +20,7 @@
 #include "qgschunknode_p.h"
 #include "qgspolygon3dsymbol_p.h"
 #include "qgseventtracing.h"
-
+#include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
@@ -52,14 +52,20 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   QgsVectorLayer *layer = mFactory->mLayer;
   const Qgs3DMapSettings &map = mFactory->mMap;
 
-  if ( mFactory->mSymbol->type() == QLatin1String( "polygon" ) )
-    mHandler = Qgs3DSymbolImpl::handlerForPolygon3DSymbol( layer, *static_cast<QgsPolygon3DSymbol *>( mFactory->mSymbol.get() ) );
-  else if ( mFactory->mSymbol->type() == QLatin1String( "point" ) )
-    mHandler = Qgs3DSymbolImpl::handlerForPoint3DSymbol( layer, *static_cast<QgsPoint3DSymbol *>( mFactory->mSymbol.get() ) );
-  else if ( mFactory->mSymbol->type() == QLatin1String( "line" ) )
-    mHandler = Qgs3DSymbolImpl::handlerForLine3DSymbol( layer, *static_cast<QgsLine3DSymbol *>( mFactory->mSymbol.get() ) );
+  QgsFeature3DHandler *handler = nullptr;
+  QString symbolType = mFactory->mSymbol->type();
+  if ( symbolType == QLatin1String( "polygon" ) )
+    handler = Qgs3DSymbolImpl::handlerForPolygon3DSymbol( layer, *static_cast<QgsPolygon3DSymbol *>( mFactory->mSymbol.get() ) );
+  else if ( symbolType == QLatin1String( "point" ) )
+    handler = Qgs3DSymbolImpl::handlerForPoint3DSymbol( layer, *static_cast<QgsPoint3DSymbol *>( mFactory->mSymbol.get() ) );
+  else if ( symbolType == QLatin1String( "line" ) )
+    handler = Qgs3DSymbolImpl::handlerForLine3DSymbol( layer, *static_cast<QgsLine3DSymbol *>( mFactory->mSymbol.get() ) );
   else
-    return;  // TODO: how to handle error
+  {
+    QgsDebugMsg( QStringLiteral( "Unknown 3D symbol type for vector layer: " ) + symbolType );
+    return;
+  }
+  mHandler.reset( handler );
 
   QgsExpressionContext exprContext( Qgs3DUtils::globalProjectLayerExpressionContext( layer ) );
   exprContext.setFields( layer->fields() );
@@ -67,7 +73,10 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
 
   QSet<QString> attributeNames;
   if ( !mHandler->prepare( mContext, attributeNames ) )
-    return;  // TODO: how to handle errors
+  {
+    QgsDebugMsg( QStringLiteral( "Failed to prepare 3D feature handler!" ) );
+    return;
+  }
 
   // build the feature request
   QgsFeatureRequest req;
@@ -84,7 +93,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
 
   QFuture<void> future = QtConcurrent::run( [req, this]
   {
-    QgsEventTracing::ScopedEvent e( "3D", "VL chunk load" );
+    QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "VL chunk load" ) );
 
     QgsFeature f;
     QgsFeatureIterator fi = mSource->getFeatures( req );
@@ -110,9 +119,6 @@ QgsVectorLayerChunkLoader::~QgsVectorLayerChunkLoader()
     disconnect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
     mFutureWatcher->waitForFinished();
   }
-
-  delete mHandler;
-  mHandler = nullptr;
 }
 
 void QgsVectorLayerChunkLoader::cancel()

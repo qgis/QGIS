@@ -20,6 +20,8 @@
 
 #include <Qt3DCore/QEntity>
 
+#include "qgsfeatureid.h"
+
 namespace Qt3DRender
 {
   class QRenderSettings;
@@ -47,8 +49,6 @@ class Qgs3DMapSettings;
 class QgsTerrainEntity;
 class QgsChunkedEntity;
 
-#include "qgsfeatureid.h"
-
 
 /**
  * \ingroup 3d
@@ -73,7 +73,10 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Returns number of pending jobs of the terrain entity
     int terrainPendingJobsCount() const;
 
-    //! Returns number of pending jobs for all chunked entities
+    /**
+     * Returns number of pending jobs for all chunked entities
+     * \since QGIS 3.12
+     */
     int totalPendingJobsCount() const;
 
     //! Enumeration of possible states of the 3D scene
@@ -102,7 +105,11 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void terrainEntityChanged();
     //! Emitted when the number of terrain's pending jobs changes
     void terrainPendingJobsCountChanged();
-    //! Emitted when the total number of pending jobs changes
+
+    /**
+     * Emitted when the total number of pending jobs changes
+     * \since QGIS 3.12
+     */
     void totalPendingJobsCountChanged();
     //! Emitted when the scene's state has changed
     void sceneStateChanged();

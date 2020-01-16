@@ -43,9 +43,7 @@ void QgsVectorLayer3DTilingSettings::readXml( const QDomElement &elem )
 //////////////////
 
 
-QgsAbstractVectorLayer3DRenderer::QgsAbstractVectorLayer3DRenderer()
-{
-}
+QgsAbstractVectorLayer3DRenderer::QgsAbstractVectorLayer3DRenderer() = default;
 
 void QgsAbstractVectorLayer3DRenderer::setLayer( QgsVectorLayer *layer )
 {

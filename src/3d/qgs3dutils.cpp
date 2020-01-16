@@ -456,6 +456,7 @@ static QgsRectangle _tryReprojectExtent2D( const QgsRectangle &extent, const Qgs
     catch ( const QgsCsException & )
     {
       // bad luck, can't reproject for some reason
+      QgsDebugMsg( QStringLiteral( "3D utils: transformation of extent failed: " ) + extentMapCrs.toString( -1 ) );
     }
   }
   return extentMapCrs;

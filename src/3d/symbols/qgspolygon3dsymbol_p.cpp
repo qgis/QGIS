@@ -37,8 +37,6 @@
 
 /// @cond PRIVATE
 
-class QgsTessellator;
-
 
 class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
 {
@@ -218,7 +216,7 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
 
 void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected )
 {
-  if ( !out.tessellator->dataVerticesCount() )
+  if ( out.tessellator->dataVerticesCount() == 0 )
     return;  // nothing to show - no need to create the entity
 
   Qt3DExtras::QPhongMaterial *mat = material( mSymbol );

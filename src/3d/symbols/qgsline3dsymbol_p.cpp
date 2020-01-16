@@ -167,7 +167,7 @@ void QgsBufferedLine3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const 
 
 void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, LineData &out, bool selected )
 {
-  if ( !out.tessellator->dataVerticesCount() )
+  if ( out.tessellator->dataVerticesCount() == 0 )
     return;  // nothing to show - no need to create the entity
 
   Qt3DExtras::QPhongMaterial *mat = _material( mSymbol );

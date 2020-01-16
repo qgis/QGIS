@@ -84,7 +84,7 @@ class QgsVectorLayerChunkLoader : public QgsChunkLoader
 
   private:
     const QgsVectorLayerChunkLoaderFactory *mFactory;
-    QgsFeature3DHandler *mHandler = nullptr;
+    std::unique_ptr<QgsFeature3DHandler> mHandler;
     Qgs3DRenderContext mContext;
     std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
     bool mCanceled = false;

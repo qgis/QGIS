@@ -131,14 +131,28 @@ class _3D_EXPORT Qgs3DUtils
     //! Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
     static QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin );
 
-    //! Converts extent (in map layer's CRS) to axis aligned bounding box in 3D world coordinates
+    /**
+     * Converts extent (in map layer's CRS) to axis aligned bounding box in 3D world coordinates
+     * \since QGIS 3.12
+     */
     static QgsAABB layerToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context );
-    //! Converts axis aligned bounding box in 3D world coordinates to extent in map layer CRS
+
+    /**
+     * Converts axis aligned bounding box in 3D world coordinates to extent in map layer CRS
+     * \since QGIS 3.12
+     */
     static QgsRectangle worldToLayerExtent( const QgsAABB &bbox, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context );
 
-    //! Converts map extent to axis aligned bounding box in 3D world coordinates
+    /**
+     * Converts map extent to axis aligned bounding box in 3D world coordinates
+     * \since QGIS 3.12
+     */
     static QgsAABB mapToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsVector3D &mapOrigin );
-    //! Converts axis aligned bounding box in 3D world coordinates to extent in map coordinates
+
+    /**
+     * Converts axis aligned bounding box in 3D world coordinates to extent in map coordinates
+     * \since QGIS 3.12
+     */
     static QgsRectangle worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin );
 
     //! Transforms a world point from (origin1, crs1) to (origin2, crs2)
@@ -150,6 +164,7 @@ class _3D_EXPORT Qgs3DUtils
      * The implementation scans a small amount of features and looks at the Z values of geometries
      * (we don't need exact range, just a rough estimate is fine to know where to expect the data to be).
      * For layers with geometries without Z values, the returned range will be [0, 0].
+     * \since QGIS 3.12
      */
     static void estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin, double &zMax );
 

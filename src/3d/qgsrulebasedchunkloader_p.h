@@ -30,14 +30,13 @@
 #include "qgschunkloader_p.h"
 #include "qgsfeature3dhandler_p.h"
 #include "qgschunkedentity_p.h"
+#include "qgsrulebased3drenderer.h"
 
 class Qgs3DMapSettings;
 class QgsVectorLayer;
 class QgsVectorLayerFeatureSource;
 class QgsAbstract3DSymbol;
 class QgsFeature3DHandler;
-
-#include "qgsrulebased3drenderer.h"
 
 
 /**
@@ -50,7 +49,7 @@ class QgsFeature3DHandler;
 class QgsRuleBasedChunkLoaderFactory : public QgsChunkLoaderFactory
 {
   public:
-    //! Constructs the factory
+    //! Constructs the factory (vl and rootRule must not be null)
     QgsRuleBasedChunkLoaderFactory( const Qgs3DMapSettings &map, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, int leafLevel );
     ~QgsRuleBasedChunkLoaderFactory() override;
 
@@ -75,7 +74,7 @@ class QgsRuleBasedChunkLoaderFactory : public QgsChunkLoaderFactory
 class QgsRuleBasedChunkLoader : public QgsChunkLoader
 {
   public:
-    //! Constructs the loader
+    //! Constructs the loader (factory and node must not be null)
     QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderFactory *factory, QgsChunkNode *node );
     ~QgsRuleBasedChunkLoader() override;
 

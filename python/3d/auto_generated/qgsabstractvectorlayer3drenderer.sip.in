@@ -100,15 +100,15 @@ Returns tiling settings of the renderer
   protected:
     void copyBaseProperties( QgsAbstractVectorLayer3DRenderer *r ) const;
 %Docstring
-copy common properties of this object to another object
+Copies common properties of this object to another object
 %End
     void writeXmlBaseProperties( QDomElement &elem, const QgsReadWriteContext &context ) const;
 %Docstring
-write common properties of this object to DOM element
+Writes common properties of this object to DOM element
 %End
     void readXmlBaseProperties( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
-read common properties of this object from DOM element
+Reads common properties of this object from DOM element
 %End
 
 };
