@@ -473,6 +473,16 @@ QString QgsProject::title() const
   return mMetadata.title();
 }
 
+QString QgsProject::saveUser() const
+{
+	return mSaveUser;
+}
+
+QString QgsProject::saveUserFullname() const
+{
+	return mSaveUserFull;
+}
+
 bool QgsProject::isDirty() const
 {
   return mDirty;
@@ -725,6 +735,8 @@ void QgsProject::clear()
   mProjectScope.reset();
   mFile.setFileName( QString() );
   mProperties.clearKeys();
+  mSaveUser.clear();
+  mSaveUserFull.clear();
   mHomePath.clear();
   mCachedHomePath.clear();
   mAutoTransaction = false;
@@ -899,6 +911,24 @@ static void _getTitle( const QDomDocument &doc, QString &title )
   title = titleText.data();
 
 }
+
+static void getProjectMetadata(const QDomDocument &doc, QString &lastUser, QString &lastUserFull)
+{
+	QDomNodeList nl = doc.elementsByTagName(QStringLiteral("qgis"));
+
+	if (!nl.count())
+	{
+		QgsDebugMsg("unable to find qgis element");
+		return;
+	}
+
+	QDomNode qgisNode = nl.item(0);  // there should only be one, so zeroth element OK
+
+	QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
+	lastUser = qgisElement.attribute(QStringLiteral("save-user"), QString());
+	lastUserFull = qgisElement.attribute(QStringLiteral("save-user-full"), QString());
+}
+
 
 QgsProjectVersion getVersion( const QDomDocument &doc )
 {
@@ -1235,6 +1265,8 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   QString oldTitle;
   _getTitle( *doc, oldTitle );
 
+  getProjectMetadata(*doc, mSaveUser, mSaveUserFull);
+
   QDomNodeList homePathNl = doc->elementsByTagName( QStringLiteral( "homePath" ) );
   if ( homePathNl.count() > 0 )
   {
@@ -1525,6 +1557,9 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   // if all went well, we're allegedly in pristine state
   if ( clean )
     setDirty( false );
+
+  QgsDebugMsg(QString("Project save user: %1").arg(mSaveUser));
+  QgsDebugMsg(QString("Project save user: %1").arg(mSaveUserFull));
 
   Q_NOWARN_DEPRECATED_PUSH
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
@@ -1951,7 +1986,10 @@ bool QgsProject::writeProjectFile( const QString &filename )
   QDomElement qgisNode = doc->createElement( QStringLiteral( "qgis" ) );
   qgisNode.setAttribute( QStringLiteral( "projectname" ), title() );
   qgisNode.setAttribute( QStringLiteral( "version" ), QStringLiteral( "%1" ).arg( Qgis::version() ) );
-
+  QString newSaveUser = QgsApplication::userLoginName();
+  QString newSaveUserFull = QgsApplication::userFullName();
+  qgisNode.setAttribute(QStringLiteral("save-user"), newSaveUser);
+  qgisNode.setAttribute(QStringLiteral("save-user-full"), newSaveUserFull);
   doc->appendChild( qgisNode );
 
   QDomElement homePathNode = doc->createElement( QStringLiteral( "homePath" ) );
@@ -2191,7 +2229,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   setDirty( false );               // reset to pristine state
 
   emit projectSaved();
-
+  mSaveUser = newSaveUser;
+  mSaveUserFull = newSaveUserFull;
   return true;
 }
 

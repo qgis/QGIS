@@ -160,6 +160,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     */
     QString title() const;
 
+	/**
+	* Returns the user name that did the last save.
+	*/
+	QString saveUser() const;
+
+	/**
+	* Returns the full user name that did the last save.
+	*/
+	QString saveUserFullname() const;
+
     /**
      * Returns TRUE if the project has been modified since the last write()
      */
@@ -1792,6 +1802,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     std::unique_ptr<QgsAuxiliaryStorage> mAuxiliaryStorage;
 
     QFile mFile;                 // current physical project file
+
+	QString mSaveUser;              // last saved user.
+	QString mSaveUserFull;          // last saved user full name.
 
     /**
      * Manual override for project home path - if empty, home path is automatically
