@@ -405,4 +405,9 @@ FOREACH(module ${PY_MODULES})
     )
   ENDFOREACH(pyfile)
   PY_COMPILE(py${module} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}")
+
+  # install source sip files
+  FILE(GLOB sip_files ${CMAKE_CURRENT_BINARY_DIR}/${module}/*.sip)
+  INSTALL(FILES ${sip_files} DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
+  INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${module}/auto_generated DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
 ENDFOREACH(module)
