@@ -236,8 +236,6 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setTerrainMapTheme( cboTerrainMapTheme->currentText() );
 
   mMap->setPointLights( widgetLights->pointLights() );
-
-  mMap->setMeshterrainSymbol( mMeshSymbolWidget->symbol() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainTypeChanged()
@@ -263,6 +261,7 @@ void Qgs3DMapConfigWidget::onTerrainTypeChanged()
   {
     cboTerrainLayer->setFilters( QgsMapLayerProxyModel::MeshLayer );
   }
+
   if ( cboTerrainLayer->currentLayer() != oldTerrainLayer )
     onTerrainLayerChanged();
 

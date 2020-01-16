@@ -17,14 +17,7 @@
 
 #include "qgsmesh3dentity_p.h"
 
-#include <QOpenGLContext>
-#include <qopenglfunctions_3_2_core.h>
-
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QParameter>
-#include <Qt3DExtras/QTextureMaterial>
-#include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DExtras/QMetalRoughMaterial>
+#include <Qt3DRender/QGeometryRenderer>
 
 #include "qgsmeshlayer.h"
 #include "qgsmapsettings.h"
@@ -59,20 +52,10 @@ void QgsMesh3dEntity::buildGeometry()
     fakeScalarMag[i] = mTriangularMesh.vertices().at( i ).z();
   }
 
-#if 0
-  mesh->setGeometry( new QgsMesh3dGeometry_p( mTriangularMesh,
+  mesh->setGeometry( new QgsMesh3dGeometry( mTriangularMesh,
                      mExtent,
                      mSymbol.verticaleScale(),
                      mesh ) );
-#else
-
-  mesh->setGeometry( new QgsMesh3dDatasetGeometry( mTriangularMesh,
-                     fakeScalarMag,
-                     fakeScalarMag,
-                     mExtent,
-                     mSymbol.verticaleScale(),
-                     mesh ) );
-#endif
 
   addComponent( mesh );
 

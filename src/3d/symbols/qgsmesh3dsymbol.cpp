@@ -50,7 +50,7 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elemAdvancedSettings.appendChild( mColorRampShader.writeXml( doc ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "min-color-ramp-shader" ), mColorRampShader.minimumValue() );
   elemAdvancedSettings.setAttribute( QStringLiteral( "max-color-ramp-shader" ), mColorRampShader.maximumValue() );
-  elemAdvancedSettings.setAttribute( QStringLiteral( "texture-unique-color" ), QgsSymbolLayerUtils::encodeColor( mUniqueColor ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "texture-single-color" ), QgsSymbolLayerUtils::encodeColor( mSingleColor ) );
   elem.appendChild( elemAdvancedSettings );
 
   QDomElement elemDDP = doc.createElement( QStringLiteral( "data-defined-properties" ) );
@@ -82,7 +82,7 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mColorRampShader.readXml( elemAdvancedSettings.firstChildElement( "colorrampshader" ) );
   mColorRampShader.setMinimumValue( elemAdvancedSettings.attribute( QStringLiteral( "min-color-ramp-shader" ) ).toDouble() );
   mColorRampShader.setMaximumValue( elemAdvancedSettings.attribute( QStringLiteral( "max-color-ramp-shader" ) ).toDouble() );
-  mUniqueColor = QgsSymbolLayerUtils::decodeColor( elemAdvancedSettings.attribute( QStringLiteral( "texture-unique-color" ) ) );
+  mSingleColor = QgsSymbolLayerUtils::decodeColor( elemAdvancedSettings.attribute( QStringLiteral( "texture-single-color" ) ) );
 
   QDomElement elemDDP = elem.firstChildElement( QStringLiteral( "data-defined-properties" ) );
   if ( !elemDDP.isNull() )
@@ -149,14 +149,14 @@ void QgsMesh3DSymbol::setColorRampShader( const QgsColorRampShader &colorRampSha
   mColorRampShader = colorRampShader;
 }
 
-QColor QgsMesh3DSymbol::uniqueMeshColor() const
+QColor QgsMesh3DSymbol::singleMeshColor() const
 {
-  return mUniqueColor;
+  return mSingleColor;
 }
 
-void QgsMesh3DSymbol::setUniqueMeshColor( const QColor &color )
+void QgsMesh3DSymbol::setSingleMeshColor( const QColor &color )
 {
-  mUniqueColor = color;
+  mSingleColor = color;
 }
 
 QgsMesh3DSymbol::RenderingStyle QgsMesh3DSymbol::renderingStyle() const

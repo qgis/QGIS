@@ -44,7 +44,7 @@ QgsMesh3dSymbolWidget::QgsMesh3dSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
   connect( mComboBoxTextureType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
            this, &QgsMesh3dSymbolWidget::changed );
 
-  connect( mMeshUniqueColorButton, &QgsColorButton::colorChanged, this, &QgsMesh3dSymbolWidget::changed );
+  connect( mMeshSingleColorButton, &QgsColorButton::colorChanged, this, &QgsMesh3dSymbolWidget::changed );
 
   connect( spinBoxVerticaleScale, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ),
            this, &QgsMesh3dSymbolWidget::changed );
@@ -61,7 +61,7 @@ void QgsMesh3dSymbolWidget::setSymbol( const QgsMesh3DSymbol &symbol )
   spinBoxWireframeLineWidth->setValue( symbol.wireframeLineWidth() );
   spinBoxVerticaleScale->setValue( symbol.verticaleScale() );
   mComboBoxTextureType->setCurrentIndex( symbol.renderingStyle() );
-  mMeshUniqueColorButton->setColor( symbol.uniqueMeshColor() );
+  mMeshSingleColorButton->setColor( symbol.singleMeshColor() );
   mColorRampShaderWidget->setFromShader( symbol.colorRampShader() );
 
   setColorRampMinMax( symbol.colorRampShader().minimumValue(), symbol.colorRampShader().maximumValue() );
@@ -110,7 +110,7 @@ QgsMesh3DSymbol QgsMesh3dSymbolWidget::symbol() const
   sym.setWireframeLineWidth( spinBoxWireframeLineWidth->value() );
   sym.setVerticaleScale( spinBoxVerticaleScale->value() );
   sym.setRenderingStyle( static_cast<QgsMesh3DSymbol::RenderingStyle>( mComboBoxTextureType->currentIndex() ) );
-  sym.setUniqueMeshColor( mMeshUniqueColorButton->color() );
+  sym.setSingleMeshColor( mMeshSingleColorButton->color() );
   sym.setColorRampShader( mColorRampShaderWidget->shader() );
 
   return sym;
@@ -152,7 +152,7 @@ void QgsMesh3dSymbolWidget::onColorRampShaderMinMaxChanged()
 void QgsMesh3dSymbolWidget::onColoringTypeChanged()
 {
   mGroupBoxColorRampShader->setVisible( mComboBoxTextureType->currentIndex() == QgsMesh3DSymbol::ColorRamp );
-  mMeshUniqueColorWidget->setVisible( mComboBoxTextureType->currentIndex() == QgsMesh3DSymbol::UniqueColor );
+  mMeshSingleColorWidget->setVisible( mComboBoxTextureType->currentIndex() == QgsMesh3DSymbol::SingleColor );
 }
 
 void QgsMesh3dSymbolWidget::setColorRampMinMax( double min, double max )

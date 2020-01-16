@@ -92,18 +92,18 @@
    <item>
     <widget class="QgsCollapsibleGroupBox" name="mgroupBoxTextureSettings">
      <property name="title">
-      <string>Texture Settings</string>
+      <string>Rendering Color Settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_6">
       <item row="0" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Texture Type</string>
+         <string>Rendering Style</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0" colspan="2">
-       <widget class="QWidget" name="mMeshUniqueColorWidget" native="true">
+       <widget class="QWidget" name="mMeshSingleColorWidget" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QLabel" name="label_6">
@@ -113,7 +113,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QgsColorButton" name="mMeshUniqueColorButton">
+          <widget class="QgsColorButton" name="mMeshSingleColorButton">
            <property name="text">
             <string>...</string>
            </property>
@@ -126,7 +126,7 @@
        <widget class="QComboBox" name="mComboBoxTextureType">
         <item>
          <property name="text">
-          <string>Unique Color</string>
+          <string>Single Color</string>
          </property>
         </item>
         <item>

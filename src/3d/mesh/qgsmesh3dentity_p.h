@@ -19,8 +19,6 @@
 #define QGSMESHENTITY_H
 
 #include <Qt3DCore/QEntity>
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QTexture>
 
 #include "mesh/qgsmesh3dgeometry_p.h"
 #include "qgs3dmapsettings.h"

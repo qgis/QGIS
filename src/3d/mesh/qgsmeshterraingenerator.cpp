@@ -97,7 +97,6 @@ void QgsMeshTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
 void QgsMeshTerrainGenerator::resolveReferences( const QgsProject &project )
 {
   mLayer = QgsMapLayerRef( project.mapLayer( mLayer.layerId ) );
-  mLayer = QgsMapLayerRef( project.mapLayer( mLayer.layerId ) );
 }
 
 void QgsMeshTerrainGenerator::setLayer( QgsMeshLayer *layer )
@@ -115,6 +114,9 @@ QgsTerrainGenerator *QgsMeshTerrainGenerator::clone() const
   QgsMeshTerrainGenerator *cloned = new QgsMeshTerrainGenerator();
   cloned->mLayer = mLayer;
   cloned->mTerrainTilingScheme = QgsTilingScheme();
+  cloned->mCrs = mCrs;
+  cloned->mSymbol = mSymbol;
+  cloned->mTransformContext = mTransformContext;
   return cloned;
 }
 

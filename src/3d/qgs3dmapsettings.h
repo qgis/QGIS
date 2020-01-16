@@ -356,18 +356,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
      */
     double outputDpi() const { return mDpi; }
 
-    /**
-     * Returns the mesh symbol used to render mesh terrain
-     * \since QGIS 3.12
-     */
-    QgsMesh3DSymbol meshterrainSymbol() const;
-
-    /**
-     * Sets the mesh symbol used to render mesh terrain
-     * \since QGIS 3.12
-     */
-    void setMeshterrainSymbol( const QgsMesh3DSymbol &meshterrainSymbol );
-
   signals:
     //! Emitted when the background color has changed
     void backgroundColorChanged();
@@ -459,7 +447,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     QgsPathResolver mPathResolver;
     QgsMapThemeCollection *mMapThemes = nullptr;   //!< Pointer to map themes (e.g. from the current project) to resolve map theme content from the name
     double mDpi = 96;  //!< Dot per inch value for the screen / painter
-    QgsMesh3DSymbol mMeshterrainSymbol;
 };
 
 

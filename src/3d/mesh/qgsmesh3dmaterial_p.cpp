@@ -189,7 +189,7 @@ void QgsMesh3dMaterial::configure()
   mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampCount", mSymbol.colorRampShader().colorRampItemList().count() ) );
   int colorRampType = mSymbol.colorRampShader().colorRampType();
   mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampType", colorRampType ) );
-  QColor meshColor = mSymbol.uniqueMeshColor();
+  QColor meshColor = mSymbol.singleMeshColor();
   mTechnique->addParameter( new Qt3DRender::QParameter( "meshColor", QVector4D( meshColor.redF(), meshColor.greenF(), meshColor.blueF(), 1.0f ) ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "verticaleScale", float( mSymbol.verticaleScale() ) ) );
 }

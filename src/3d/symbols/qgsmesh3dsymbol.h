@@ -45,8 +45,8 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
      */
     enum RenderingStyle
     {
-      //! Render the mesh with a unique color
-      UniqueColor = 0,
+      //! Render the mesh with a single color
+      SingleColor = 0,
       //! Render the mesh with a color ramp
       ColorRamp
     };
@@ -86,112 +86,112 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     void setAddBackFaces( bool add ) { mAddBackFaces = add; }
 
     /**
-     * Returns if mesh triangle are smoothed for advanced symbology
+     * Returns if mesh triangle are smoothed
      *
      * \since QGIS 3.12
      */
     bool smoothedTriangles() const;
 
     /**
-     * Sets if the mesh triangles have to been smoothed for advanced symbology
+     * Sets if the mesh triangles have to been smoothed
      *
      * \since QGIS 3.12
      */
     void setSmoothedTriangles( bool smoothTriangles );
 
     /**
-     * Returns if the mesh wireframe is enabled for advanced symbology
+     * Returns if the mesh wireframe
      *
      * \since QGIS 3.12
      */
     bool wireframeEnabled() const;
 
     /**
-     * Sets if the mesh wireframe is enabled for advanced symbology
+     * Sets if the mesh wireframe
      *
      * \since QGIS 3.12
      */
     void setWireframeEnabled( bool wireframeEnabled );
 
     /**
-     * Returns wireframe line width for advanced symbology
+     * Returns wireframe line width
      *
      * \since QGIS 3.12
      */
     double wireframeLineWidth() const;
 
     /**
-     * Sets wireframe line width for advanced symbology
+     * Sets wireframe line width
      *
      * \since QGIS 3.12
      */
     void setWireframeLineWidth( double wireframeLineWidth );
 
     /**
-     * Returns wireframe line color for advanced symbology
+     * Returns wireframe line color
      *
      * \since QGIS 3.12
      */
     QColor wireframeLineColor() const;
 
     /**
-     * Sets wireframe line color for advanced symbology
+     * Sets wireframe line color
      *
      * \since QGIS 3.12
      */
     void setWireframeLineColor( const QColor &wireframeLineColor );
 
     /**
-     * Returns mesh verticale scale for advanced symbology
+     * Returns mesh verticale scale
      *
      * \since QGIS 3.12
      */
     double verticaleScale() const;
 
     /**
-     * Sets mesh verticale scale for advanced symbology
+     * Sets mesh verticale scale
      *
      * \since QGIS 3.12
      */
     void setVerticaleScale( double verticaleScale );
 
     /**
-     * Returns the color ramp shader used to render the color for advanced symbology
+     * Returns the color ramp shader used to render the color
      *
      * \since QGIS 3.12
      */
     QgsColorRampShader colorRampShader() const;
 
     /**
-     * Sets the color ramp shader used to render the color for advanced symbology
+     * Sets the color ramp shader used to render the color
      *
      * \since QGIS 3.12
      */
     void setColorRampShader( const QgsColorRampShader &colorRampShader );
 
     /**
-     * Returns the color used to render the color for advanced symbology
+     * Returns the single color
      *
      * \since QGIS 3.12
      */
-    QColor uniqueMeshColor() const;
+    QColor singleMeshColor() const;
 
     /**
-     * Sets the unique color used to render for advanced symbology
+     * Sets the single color
      *
      * \since QGIS 3.12
      */
-    void setUniqueMeshColor( const QColor &uniqueMeshColor );
+    void setSingleMeshColor( const QColor &singleMeshColor );
 
     /**
-     * Returns the coloring type used to render with advanced symbology
+     * Returns the rendering style
      *
      * \since QGIS 3.12
      */
     QgsMesh3DSymbol::RenderingStyle renderingStyle() const;
 
     /**
-     * Sets the coloring type used to render with advanced symbology
+     * Sets the rendering style
      *
      * \since QGIS 3.12
      */
@@ -211,9 +211,9 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     QColor mWireframeLineColor = Qt::darkGray;
     double mVerticaleScale = 1.0;
 
-    QgsMesh3DSymbol::RenderingStyle mRenderingStyle = QgsMesh3DSymbol::UniqueColor;
+    QgsMesh3DSymbol::RenderingStyle mRenderingStyle = QgsMesh3DSymbol::SingleColor;
     QgsColorRampShader mColorRampShader;
-    QColor mUniqueColor = Qt::darkGreen;
+    QColor mSingleColor = Qt::darkGreen;
 };
 
 #endif // QGSMESH3DSYMBOL_H
