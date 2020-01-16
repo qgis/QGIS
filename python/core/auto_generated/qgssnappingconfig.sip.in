@@ -377,6 +377,7 @@ The project from which the snapped layers should be retrieved
 };
 QFlags<QgsSnappingConfig::SnappingTypes> operator|(QgsSnappingConfig::SnappingTypes f1, QFlags<QgsSnappingConfig::SnappingTypes> f2);
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

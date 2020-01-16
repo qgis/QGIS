@@ -381,14 +381,5 @@ class CORE_EXPORT QgsSnappingConfig
 
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsSnappingConfig::SnappingTypeFlag )
-/*
-constexpr QgsSnappingConfig::SnappingTypeFlag operator| ( QgsSnappingConfig::SnappingTypeFlag t1, QgsSnappingConfig::SnappingTypeFlag t2 )
-{
-  return static_cast<QgsSnappingConfig::SnappingTypeFlag>( static_cast<int>( t1 ) | static_cast<int>( t2 ) );
-}
-constexpr bool operator& ( QgsSnappingConfig::SnappingTypeFlag t1, QgsSnappingConfig::SnappingTypeFlag t2 )
-{
-  return static_cast<int>( t1 ) & static_cast<int>( t2 );
-}
-*/
+
 #endif // QGSPROJECTSNAPPINGSETTINGS_H
