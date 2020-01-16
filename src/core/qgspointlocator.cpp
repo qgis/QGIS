@@ -1170,7 +1170,7 @@ QgsPointLocator::Match QgsPointLocator::nearestCentroid( const QgsPointXY &point
   return m;
 }
 
-QgsPointLocator::Match QgsPointLocator::nearestMiddle( const QgsPointXY &point, double tolerance, MatchFilter *filter, bool relaxed )
+QgsPointLocator::Match QgsPointLocator::nearestMiddleOfSegment( const QgsPointXY &point, double tolerance, MatchFilter *filter, bool relaxed )
 {
   if ( !prepare( relaxed ) )
     return Match();

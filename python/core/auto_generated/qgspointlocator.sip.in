@@ -218,9 +218,9 @@ This method is either blocking or non blocking according to ``relaxed`` paramete
 .. versionadded:: 3.12
 %End
 
-    Match nearestMiddle( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
+    Match nearestMiddleOfSegment( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0, bool relaxed = false );
 %Docstring
-Find nearest centroid to the specified point - up to distance specified by tolerance
+Find nearest middle of segment to the specified point - up to distance specified by tolerance
 Optional filter may discard unwanted matches.
 This method is either blocking or non blocking according to ``relaxed`` parameter passed
 

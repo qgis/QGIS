@@ -230,7 +230,7 @@ static void _updateBestMatch( QgsPointLocator::Match &bestMatch, const QgsPointX
   }
   if ( type & QgsPointLocator::MiddleOfSegment )
   {
-    _replaceIfBetter( bestMatch, loc->nearestMiddle( pointMap, tolerance, filter ), tolerance );
+    _replaceIfBetter( bestMatch, loc->nearestMiddleOfSegment( pointMap, tolerance, filter ), tolerance );
   }
 }
 
