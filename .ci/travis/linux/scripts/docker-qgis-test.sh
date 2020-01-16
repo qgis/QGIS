@@ -59,6 +59,25 @@ pushd /root/QGIS > /dev/null
 popd > /dev/null # /root/QGIS
 echo "travis_fold:end:oracle"
 
+##################################
+# Prepare HANA database connection
+##################################
+HANA_DRIVER=/usr/sap/hdbclient/libodbcHDB.so
+HANA_HOST=hana
+HANA_PORT=39041
+HANA_USER=SYSTEM
+HANA_PASSWORD=HXEHana1
+export QGIS_HANA_TEST_DB='driver='$HANA_DRIVER' host='$HANA_HOST' port='$HANA_PORT' user='$HANA_USER' password='$HANA_PASSWORD''
+
+# wait for the DB to be available
+echo "Wait a moment while loading HANA database."
+while ! echo exit | hdbsql -n '$HANA_HOST:$HANA_PORT' -u '$HANA_USER' -p '$HANA_PASSWORD' &> /dev/null
+do
+  printf "."
+  sleep 1
+done
+echo " done"
+
 # this is proving very flaky:
 
 ##############################
