@@ -266,7 +266,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
 
     bool ok;
     const QString val { result.PQgetvalue( 0, 0 ) };
-    const Qgis::DataType dataType { mDataTypes[ static_cast<size_t>( bandNo - 1 ) ] };
+    const Qgis::DataType dataType { mDataTypes[ static_cast<unsigned int>( bandNo - 1 ) ] };
     switch ( dataType )
     {
       case Qgis::DataType::Byte:
@@ -387,31 +387,16 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     //qDebug() << "View extent" << viewExtent.toString( 1 ) << width << height << minPixelSize;
 
     // Get the the tiles we need to build the block
-    const QString dataSql { QStringLiteral( "SELECT %3, ENCODE( ST_AsBinary( %1, TRUE ), 'hex') "
-                                            "FROM %2 WHERE %4 %3 IN " )
-                            .arg( quotedIdentifier( mRasterColumn ) )
-                            .arg( tableToQuery )
-                            .arg( quotedIdentifier( pkSql() ) )
-                            .arg( whereAnd )};
-
-    const QString indexSql { QStringLiteral( "SELECT %1, (ST_Metadata( %2 )).* FROM %3 "
-                             "WHERE %6 %2 && ST_GeomFromText( %5, %4 )" )
-                             .arg( quotedIdentifier( pkSql() ) )
-                             .arg( quotedIdentifier( mRasterColumn ) )
-                             .arg( tableToQuery )
-                             .arg( mCrs.postgisSrid() )
-                             .arg( quotedValue( QStringLiteral( "###__POLYGON_WKT__###" ) ) )
-                             .arg( whereAnd )
-                           };
-
-
     const QgsPostgresRasterSharedData::TilesRequest tilesRequest
     {
       bandNo,
       rasterExtent,
       overviewFactor,
-      indexSql,
-      dataSql,
+      quotedIdentifier( pkSql() ),
+      quotedIdentifier( mRasterColumn ),
+      tableToQuery,
+      QString::number( mCrs.postgisSrid() ),
+      whereAnd,
       connectionRO()
     };
 
@@ -1458,7 +1443,7 @@ void QgsPostgresRasterProvider::findOverviews()
   }
   if ( mOverViews.isEmpty() )
   {
-    QgsMessageLog::logMessage( tr( "No overviews found, performances may be affected" ), QStringLiteral( "PostGIS" ), Qgis::Info );
+    QgsMessageLog::logMessage( tr( "No overviews found, performances may be affected for %1" ).arg( mQuery ), QStringLiteral( "PostGIS" ), Qgis::Info );
   }
 }
 

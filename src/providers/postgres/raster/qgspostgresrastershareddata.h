@@ -62,10 +62,16 @@ class QgsPostgresRasterSharedData
       int bandNo;
       QgsRectangle extent;
       unsigned int overviewFactor;
-      //! SQL command for fetching index
-      QString indexSql;
-      //! SQL command for fetching tiles data
-      QString dataSql;
+      //! PK
+      QString pk;
+      //! raster column
+      QString rasterColumn;
+      //! table name
+      QString tableToQuery;
+      //! SRID
+      QString srid;
+      //! where clause
+      QString whereClause;
       //! RO DB connection
       QgsPostgresConn *conn;
     };
@@ -137,6 +143,8 @@ class QgsPostgresRasterSharedData
 
     bool fetchTilesData( unsigned int overviewFactor, const QList<TileIdType> &tileIds );
     bool fetchTilesIndex( const QgsGeometry &requestPolygon, const TilesRequest &request );
+    //! Fast track for first fetch
+    TilesResponse fetchTilesIndexAndData( const QgsGeometry &requestPolygon, const TilesRequest &request );
     Tile const *setTileData( unsigned int overviewFactor, TileIdType tileId, const QByteArray &data );
 
     // Note: cannot be a smart pointer because spatial index cannot be copied

@@ -148,39 +148,52 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         conn = "user={user} host=localhost port=5432 password={password} dbname={speed_db} ".format(
             user=os.environ.get('USER'),
             password=os.environ.get('USER'),
-            speed_db='qgis_tests'
+            speed_db='qgis_test'
         )
 
         table = 'eu_dem_tiled'
         schema = 'public'
 
-        start = time.time()
-        rl = QgsRasterLayer("PG: " + conn + "table={table} mode=2 schema={schema}".format(table=table, schema=schema), 'gdal_layer', 'gdal')
-        self.assertTrue(rl.isValid())
-        checkpoint_1 = time.time()
-        print("Tiled GDAL start time: {:.6f}".format(checkpoint_1 - start))
-        rl.dataProvider().block(1, rl.extent(), 6, 5)
-        checkpoint_2 = time.time()
-        print("Tiled GDAL first block time: {:.6f}".format(checkpoint_2 - checkpoint_1))
-        rl.dataProvider().block(1, rl.extent(), 6, 5)
-        checkpoint_3 = time.time()
-        print("Tiled GDAL second block time: {:.6f}".format(checkpoint_3 - checkpoint_2))
-        print("Total GDAL time: {:.6f}".format(time.time() - start))
-        print('-' * 80)
+        def _speed_check(schema, table, width, height):
 
-        start = time.time()
-        rl = QgsRasterLayer(conn + "table={table} schema={schema}".format(table=table, schema=schema), 'gdal_layer', 'postgresraster')
-        self.assertTrue(rl.isValid())
-        checkpoint_1 = time.time()
-        print("Tiled PG start time: {:.6f}".format(checkpoint_1 - start))
-        rl.dataProvider().block(1, rl.extent(), 6, 5)
-        checkpoint_2 = time.time()
-        print("Tiled PG first block time: {:.6f}".format(checkpoint_2 - checkpoint_1))
-        rl.dataProvider().block(1, rl.extent(), 6, 5)
-        checkpoint_3 = time.time()
-        print("Tiled PG second block time: {:.6f}".format(checkpoint_3 - checkpoint_2))
-        print("Total PG time: {:.6f}".format(time.time() - start))
-        print('-' * 80)
+            print('-' * 80)
+            print("Testing: {schema}.{table}".format(table=table, schema=schema))
+            print('-' * 80)
+
+            # GDAL
+            start = time.time()
+            rl = QgsRasterLayer("PG: " + conn + "table={table} mode=2 schema={schema}".format(table=table, schema=schema), 'gdal_layer', 'gdal')
+            self.assertTrue(rl.isValid())
+            # Make is smaller than full extent
+            extent = rl.extent().buffered(-rl.extent().width() * 0.2)
+            checkpoint_1 = time.time()
+            print("Tiled GDAL start time: {:.6f}".format(checkpoint_1 - start))
+            rl.dataProvider().block(1, extent, width, height)
+            checkpoint_2 = time.time()
+            print("Tiled GDAL first block time: {:.6f}".format(checkpoint_2 - checkpoint_1))
+            #rl.dataProvider().block(1, extent, width, height)
+            checkpoint_3 = time.time()
+            print("Tiled GDAL second block time: {:.6f}".format(checkpoint_3 - checkpoint_2))
+            print("Total GDAL time: {:.6f}".format(checkpoint_3 - start))
+            print('-' * 80)
+
+            # PG native
+            start = time.time()
+            rl = QgsRasterLayer(conn + "table={table} schema={schema}".format(table=table, schema=schema), 'gdal_layer', 'postgresraster')
+            self.assertTrue(rl.isValid())
+            extent = rl.extent().buffered(-rl.extent().width() * 0.2)
+            checkpoint_1 = time.time()
+            print("Tiled PG start time: {:.6f}".format(checkpoint_1 - start))
+            rl.dataProvider().block(1, extent, width, height)
+            checkpoint_2 = time.time()
+            print("Tiled PG first block time: {:.6f}".format(checkpoint_2 - checkpoint_1))
+            rl.dataProvider().block(1, extent, width, height)
+            checkpoint_3 = time.time()
+            print("Tiled PG second block time: {:.6f}".format(checkpoint_3 - checkpoint_2))
+            print("Total PG time: {:.6f}".format(checkpoint_3 - start))
+            print('-' * 80)
+
+        _speed_check(schema, table, 1000, 1000)
 
 
 if __name__ == '__main__':
