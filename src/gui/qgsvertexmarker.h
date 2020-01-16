@@ -56,6 +56,7 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
       ICON_CIRCLE,
       ICON_DOUBLE_TRIANGLE,    //!< Added in QGIS 3.0
       ICON_TRIANGLE,  //!< Added in QGIS 3.12
+      ICON_RHOMBUS,  //!< Added in QGIS 3.12
     };
 
     QgsVertexMarker( QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
