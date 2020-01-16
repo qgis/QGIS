@@ -310,6 +310,22 @@ void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
 
   QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
   QCOMPARE( cbs[2]->isEnabled(), false );
+
+  // set a foreign key
+  w.setForeignKeys( QVariantList() << QVariant( 11 ) );
+
+  QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
+  QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
+  QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
+
+  // set a null foreign key
+  w.setForeignKeys( QVariantList() << QVariant( QVariant::Int ) );
+  QCOMPARE( cbs[0]->currentText(), QString( "material" ) );
+  QCOMPARE( cbs[0]->isEnabled(), true );
+  QCOMPARE( cbs[1]->currentText(), QString( "diameter" ) );
+  QCOMPARE( cbs[1]->isEnabled(), false );
+  QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
+  QCOMPARE( cbs[2]->isEnabled(), false );
 }
 
 void TestQgsRelationReferenceWidget::testInvalidRelation()
@@ -346,7 +362,6 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
   Q_ASSERT( w.foreignKeys().at( 0 ).isNull() );
   QCOMPARE( spy.count(), 3 );
 }
-
 
 // Test issue https://github.com/qgis/QGIS/issues/29884
 // Relation reference widget wrong feature when "on map identification"
@@ -396,9 +411,9 @@ class DummyVectorLayerTools : public QgsVectorLayerTools // clazy:exclude=missin
 
     bool startEditing( QgsVectorLayer * ) const override {return true;}
 
-    bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;};
+    bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;}
 
-    bool saveEdits( QgsVectorLayer * ) const override {return true;};
+    bool saveEdits( QgsVectorLayer * ) const override {return true;}
 };
 
 void TestQgsRelationReferenceWidget::testAddEntry()
