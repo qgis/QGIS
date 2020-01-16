@@ -83,7 +83,7 @@ void QgsMesh3dEntity::buildGeometry()
 
 void QgsMesh3dEntity::applyMaterial()
 {
-  mMaterial = new QgsMesh3dMaterial( QgsMesh3dMaterial::ScalarDataSet, mSymbol );
+  mMaterial = new QgsMesh3dMaterial( mSymbol );
   addComponent( mMaterial );
 }
 
@@ -120,6 +120,6 @@ void QgsMesh3dTerrainTileEntity::buildGeometry()
 
 void QgsMesh3dTerrainTileEntity::applyMaterial()
 {
-  mMaterial = new QgsMesh3dMaterial( QgsMesh3dMaterial::ZValue, mSymbol );
+  mMaterial = new QgsMesh3dMaterial( mSymbol );
   addComponent( mMaterial );
 }

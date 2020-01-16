@@ -136,8 +136,7 @@ class ColorRampTexture: public Qt3DRender::QAbstractTextureImage
 };
 
 
-QgsMesh3dMaterial::QgsMesh3dMaterial( MagnitudeType magnitudeType, const QgsMesh3DSymbol &symbol ):
-  mMagnitudeType( magnitudeType ),
+QgsMesh3dMaterial::QgsMesh3dMaterial( const QgsMesh3DSymbol &symbol ):
   mSymbol( symbol )
 {
   Qt3DRender::QEffect *eff = new Qt3DRender::QEffect( this );
@@ -149,7 +148,6 @@ QgsMesh3dMaterial::QgsMesh3dMaterial( MagnitudeType magnitudeType, const QgsMesh
 
 void QgsMesh3dMaterial::configure()
 {
-
   Qt3DRender::QTexture1D *colorRampTexture = new Qt3DRender::QTexture1D;
   colorRampTexture->addTextureImage( new ColorRampTexture( mSymbol.colorRampShader() ) );
   colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );

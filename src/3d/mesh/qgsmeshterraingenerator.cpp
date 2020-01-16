@@ -1,3 +1,20 @@
+/***************************************************************************
+                         qgsmeshterraingenerator.cpp
+                         -------------------------
+    begin                : january 2020
+    copyright            : (C) 2020 by Vincent Cloarec
+    email                : vcloarec at gmail dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgsmeshterraingenerator.h"
 
 #include <Qt3DRender/QMaterial>
@@ -39,7 +56,7 @@ QgsChunkLoader *QgsMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node )
 
   /*
    * Force to create a triangularMesh by create a renderer, if it does not have been created yet
-   * Not very clean but could be improve when improvment of mesh triangulation handling
+   * Not very clean but could be improve with mesh triangulation handling in the future
    */
   QgsRenderContext renderContext;
   renderContext.setCoordinateTransform( terrainToMapTransform );

@@ -90,9 +90,6 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
      */
     float worldSpaceError( float epsilon, float distance );
 
-
-    void setViewport( const QRect &viewportrect );
-
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();

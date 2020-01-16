@@ -46,14 +46,16 @@
 class QgsMesh3dMaterial : public Qt3DRender::QMaterial
 {
   public:
-    //! enum used to defined wich type of value will be used to render the 3D entity
+    //! enum used to defined which type of value will be used to render the 3D entity
     enum MagnitudeType
     {
+
       /**
        * Only the z values of the mesh will be used to build the geometry and to render the color
        * Used to render the terrain
        */
       ZValue,
+
       /**
        * The datasets are used to build the geometry and to render the color
        * For example, can be used to render the geometry of the water surface with color varying with velocity
@@ -61,13 +63,11 @@ class QgsMesh3dMaterial : public Qt3DRender::QMaterial
       ScalarDataSet
     };
 
-    //! Contructor
-    QgsMesh3dMaterial( MagnitudeType magnitudeType, const QgsMesh3DSymbol &symbol );
+    //! Constructor
+    QgsMesh3dMaterial( const QgsMesh3DSymbol &symbol );
 
   private:
-    MagnitudeType mMagnitudeType;
     QgsMesh3DSymbol mSymbol;
-    Qt3DRender::QBuffer *mColorsRampBuffer = nullptr;
     Qt3DRender::QTechnique *mTechnique;
 
     void configure();
