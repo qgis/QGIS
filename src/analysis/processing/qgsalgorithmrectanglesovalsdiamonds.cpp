@@ -50,7 +50,7 @@ QString QgsRectanglesOvalsDiamondsAlgorithm::groupId() const
 QString QgsRectanglesOvalsDiamondsAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Creates rectangle, oval or diamond-shaped polygons from the input point layer using "
-                      "specified width, height and (optional) rotation values. Multipart inputs should be promoted"
+                      "specified width, height and (optional) rotation values. Multipart inputs should be promoted "
                       "to singleparts first." );
 }
 
@@ -216,11 +216,11 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
 
     if ( geometry.constGet()->is3D() )
     {
-      poly->addZValue( 0 );
+      poly->addZValue( static_cast< const QgsPoint * >( geometry.constGet() )->z() );
     }
     if ( geometry.constGet()->isMeasure() )
     {
-      poly->addMValue( 0 );
+      poly->addMValue( static_cast< const QgsPoint * >( geometry.constGet() )->m() );
     }
 
     outFeature.setGeometry( std::move( poly ) );
