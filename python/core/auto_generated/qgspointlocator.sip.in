@@ -11,6 +11,11 @@
 
 
 
+
+
+
+
+
 class QgsPointLocator : QObject
 {
 %Docstring

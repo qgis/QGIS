@@ -34,10 +34,48 @@ class QgsVectorLayerFeatureSource;
 #include "qgspointlocatorinittask.h"
 #include <memory>
 
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for vertices - builds a list of matches.
+ * \note not available in Python bindings
+*/
 class QgsPointLocator_VisitorNearestVertex;
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for centroid - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.12
+*/
 class QgsPointLocator_VisitorNearestCentroid;
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for middle segment - builds a list of matches.
+ * \note not available in Python bindings
+ * \since QGIS 3.12
+*/
+class QgsPointLocator_VisitorNearestMiddleOfSegment;
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for edges - builds a list of matches.
+ * \note not available in Python bindings
+*/
 class QgsPointLocator_VisitorNearestEdge;
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index with areas - builds a list of matches.
+ * \note not available in Python bindings
+*/
 class QgsPointLocator_VisitorArea;
+
+/**
+ * \ingroup core
+ * Helper class used when traversing the index looking for edges - builds a list of matches.
+ * \note not available in Python bindings
+*/
 class QgsPointLocator_VisitorEdgesInRect;
 
 namespace SpatialIndex SIP_SKIP
