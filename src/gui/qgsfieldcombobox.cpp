@@ -47,6 +47,8 @@ void QgsFieldComboBox::setLayer( QgsMapLayer *layer )
 {
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
   mFieldProxyModel->sourceFieldModel()->setLayer( vl );
+
+  setCurrentIndex( allowEmptyFieldName() ? -1 : 0 );
 }
 
 QgsVectorLayer *QgsFieldComboBox::layer() const
