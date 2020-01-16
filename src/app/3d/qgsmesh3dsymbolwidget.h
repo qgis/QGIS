@@ -18,25 +18,41 @@
 
 #include <QWidget>
 
-#include "ui_mesh3dsymbolwidget.h"
+#include "ui_qgsmesh3dpropswidget.h"
+
 
 class QgsMesh3DSymbol;
 class QgsMeshLayer;
 
-//! A widget for configuration of 3D symbol for polygons
-class QgsMesh3DSymbolWidget : public QWidget, private Ui::Mesh3DSymbolWidget
+//! A widget for configuration of 3D symbol for meshes
+class QgsMesh3dSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
 {
     Q_OBJECT
   public:
-    explicit QgsMesh3DSymbolWidget( QWidget *parent = nullptr );
+    explicit QgsMesh3dSymbolWidget( QgsMeshLayer *meshLayer, QWidget *parent = nullptr );
 
-    void setSymbol( const QgsMesh3DSymbol &symbol, QgsMeshLayer *layer );
     QgsMesh3DSymbol symbol() const;
+
+    void setLayer( QgsMeshLayer *meshLayer, bool updateSymbol = true );
+    void setSymbol( const QgsMesh3DSymbol &symbol );
+
+    void enableVerticalSetting( bool isEnable );
+
+  public slots:
+    void reloadColorRampShaderMinMax();
 
   signals:
     void changed();
 
-  public slots:
+  private slots:
+
+    void onColorRampShaderMinMaxChanged();
+    void onColoringTypeChanged();
+
+  private:
+    double lineEditValue( const QLineEdit *lineEdit ) const;
+    void setColorRampMinMax( double min, double max );
+    QgsMeshLayer *mLayer = nullptr;
 };
 
 #endif // QGSMESH3DSYMBOLWIDGET_H

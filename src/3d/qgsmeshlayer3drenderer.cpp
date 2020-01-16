@@ -21,7 +21,7 @@
 
 #include "qgsmeshlayer.h"
 #include "qgsxmlutils.h"
-
+#include "qgsmesh3dentity_p.h"
 
 QgsMeshLayer3DRendererMetadata::QgsMeshLayer3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "mesh" ) )
@@ -34,7 +34,6 @@ QgsAbstract3DRenderer *QgsMeshLayer3DRendererMetadata::createRenderer( QDomEleme
   r->readXml( elem, context );
   return r;
 }
-
 
 // ---------
 
@@ -75,10 +74,29 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings 
 {
   QgsMeshLayer *vl = layer();
 
-  if ( !mSymbol || !vl )
+  if ( !vl )
     return nullptr;
 
-  return new QgsMesh3DSymbolEntity( map, vl, *static_cast<QgsMesh3DSymbol *>( mSymbol.get() ) );
+  Qt3DCore::QEntity *entity = nullptr;
+
+  QgsCoordinateTransform coordTrans( vl->crs(), map.crs(), map.transformContext() );
+
+  QgsRectangle extentInMap;
+
+  try
+  {
+    extentInMap = coordTrans.transform( vl->extent() );
+  }
+  catch ( QgsCsException &e )
+  {
+    extentInMap = vl->extent();
+  }
+
+  QgsMesh3dEntity *meshEntity = new QgsMesh3dEntity( map, *vl->triangularMesh(), extentInMap, *static_cast<QgsMesh3DSymbol *>( mSymbol.get() ) );
+  meshEntity->build();
+  entity = meshEntity;
+
+  return entity;
 }
 
 void QgsMeshLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
