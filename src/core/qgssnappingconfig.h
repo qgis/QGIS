@@ -64,7 +64,7 @@ class CORE_EXPORT QgsSnappingConfig
      * SnappingTypeFlag defines on what object the snapping is performed
      * \since QGIS 3.12
      */
-    enum SnappingTypes : int
+    enum SnappingTypes
     {
       NoSnap = 0, //!< No snapping
       VertexV2 = 1, //!< On vertices
