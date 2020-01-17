@@ -40,7 +40,7 @@
       <bool>true</bool>
      </property>
      <property name="title">
-      <string>Use absolute time </string>
+      <string>Use Absolute Time </string>
      </property>
      <property name="flat">
       <bool>false</bool>
@@ -106,7 +106,7 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Date/time Format</string>
+         <string>Date/time format</string>
         </property>
        </widget>
       </item>
@@ -183,7 +183,7 @@
    <item>
     <widget class="QGroupBox" name="mRelativeTimeGroupBox">
      <property name="title">
-      <string>Use relative time</string>
+      <string>Use Relative Time</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
@@ -221,7 +221,7 @@
          <item>
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Time Format</string>
+            <string>Time format</string>
            </property>
           </widget>
          </item>
@@ -276,7 +276,7 @@
    <item>
     <widget class="QGroupBox" name="mDatasetPlaybackGroupBox">
      <property name="title">
-      <string>Dataset playback</string>
+      <string>Dataset Playback</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
@@ -317,7 +317,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Provider time settings</string>
+      <string>Provider Time Settings</string>
      </property>
      <layout class="QFormLayout" name="formLayout">
       <item row="0" column="1">

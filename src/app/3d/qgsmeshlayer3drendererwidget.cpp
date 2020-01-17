@@ -30,6 +30,7 @@ QgsMeshLayer3DRendererWidget::QgsMeshLayer3DRendererWidget( QgsMeshLayer *layer,
   setPanelTitle( tr( "3D View" ) );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
+  layout->setContentsMargins( 0, 0, 0, 0 );
   chkEnabled = new QCheckBox( tr( "Enable 3D Renderer" ), this );
   layout->addWidget( chkEnabled );
 
