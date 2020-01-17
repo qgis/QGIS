@@ -94,10 +94,6 @@ QgsMeshDataBlock QgsMesh3dAveragingMethod::calculate( const QgsMesh3dDataBlock &
       std::swap( faceLevelTop, faceLevelBottom );
     }
 
-    double totalAveragedHeight = 0;
-    double nSumX = 0.0;
-    double nSumY = 0.0;
-
     double methodLevelTop = std::numeric_limits<double>::quiet_NaN();
     double methodLevelBottom = std::numeric_limits<double>::quiet_NaN();
 
@@ -105,74 +101,28 @@ QgsMeshDataBlock QgsMesh3dAveragingMethod::calculate( const QgsMesh3dDataBlock &
                         methodLevelBottom,
                         verticalLevelsForFace );
 
-    if ( std::isnan( methodLevelTop ) || std::isnan( methodLevelBottom ) )
-      continue;
-
-    // the level is value below surface, so top level (-0.1m) is usually higher number than bottom level (e.g. -1.2m)
-    if ( methodLevelTop < methodLevelBottom )
+    if ( !std::isnan( methodLevelTop ) && !std::isnan( methodLevelBottom ) )
     {
-      std::swap( methodLevelTop, methodLevelBottom );
-    }
-
-    // check if we are completely outside the limits
-    if ( methodLevelTop < faceLevelBottom )
-      continue;
-    if ( methodLevelBottom > faceLevelTop )
-      continue;
-
-    // Now go through all volumes below face and check if we need to take that volume into consideration
-    for ( int relativeVolumeIndex = 0; relativeVolumeIndex < volumesBelowFaceCount; ++relativeVolumeIndex )
-    {
-      const int volumeIndex = startVolumeIndex + relativeVolumeIndex;
-      double volumeLevelTop = verticalLevelsForFace[relativeVolumeIndex];
-      double volumeLevelBottom = verticalLevelsForFace[relativeVolumeIndex + 1];
-      if ( volumeLevelTop < volumeLevelBottom )
+      // the level is value below surface, so top level (-0.1m) is usually higher number than bottom level (e.g. -1.2m)
+      if ( methodLevelTop < methodLevelBottom )
       {
-        std::swap( volumeLevelTop, volumeLevelBottom );
+        std::swap( methodLevelTop, methodLevelBottom );
       }
 
-      const double intersectionLevelTop = std::min( methodLevelTop, volumeLevelTop );
-      const double intersectionLevelBottom = std::max( methodLevelBottom, volumeLevelBottom );
-      const double effectiveInterval = intersectionLevelTop - intersectionLevelBottom;
-
-      if ( effectiveInterval > eps )
+      // check if we are completely outside the limits
+      if ( ( methodLevelTop >= faceLevelBottom ) && ( methodLevelBottom <= faceLevelTop ) )
       {
-        if ( isVector )
-        {
-          const double x = volumeValues[2 * volumeIndex ];
-          const double y = volumeValues[ 2 * volumeIndex + 1 ];
-          if ( ! std::isnan( x ) &&
-               ! std::isnan( y )
-             )
-          {
-            nSumX += x * effectiveInterval;
-            nSumY += y * effectiveInterval;
-            totalAveragedHeight += effectiveInterval;
-          }
-        }
-        else
-        {
-          const double x = volumeValues[ volumeIndex ];
-          if ( ! std::isnan( x ) )
-          {
-            nSumX += x * effectiveInterval;
-            totalAveragedHeight += effectiveInterval;
-          }
-        }
-      }
-    }
-
-    // calculate average
-    if ( totalAveragedHeight > eps )
-    {
-      if ( isVector )
-      {
-        valuesFaces[2 * faceIndex] = nSumX / totalAveragedHeight;
-        valuesFaces[2 * faceIndex + 1 ] = nSumY / totalAveragedHeight;
-      }
-      else
-      {
-        valuesFaces[faceIndex] = nSumX / totalAveragedHeight;
+        averageVolumeValuesForFace(
+          faceIndex,
+          volumesBelowFaceCount,
+          startVolumeIndex,
+          methodLevelTop,
+          methodLevelBottom,
+          isVector,
+          verticalLevelsForFace,
+          volumeValues,
+          valuesFaces
+        );
       }
     }
 
@@ -186,6 +136,79 @@ QgsMeshDataBlock QgsMesh3dAveragingMethod::calculate( const QgsMesh3dDataBlock &
 QgsMesh3dAveragingMethod::Method QgsMesh3dAveragingMethod::method() const
 {
   return mMethod;
+}
+
+void QgsMesh3dAveragingMethod::averageVolumeValuesForFace(
+  int faceIndex,
+  int volumesBelowFaceCount,
+  int startVolumeIndex,
+  double methodLevelTop,
+  double methodLevelBottom,
+  bool isVector,
+  const QVector<double> &verticalLevelsForFace,
+  const QVector<double> &volumeValues,
+  QVector<double> &valuesFaces
+) const
+{
+  double totalAveragedHeight = 0;
+  double nSumX = 0.0;
+  double nSumY = 0.0;
+
+  // Now go through all volumes below face and check if we need to take that volume into consideration
+  for ( int relativeVolumeIndex = 0; relativeVolumeIndex < volumesBelowFaceCount; ++relativeVolumeIndex )
+  {
+    const int volumeIndex = startVolumeIndex + relativeVolumeIndex;
+    double volumeLevelTop = verticalLevelsForFace[relativeVolumeIndex];
+    double volumeLevelBottom = verticalLevelsForFace[relativeVolumeIndex + 1];
+    if ( volumeLevelTop < volumeLevelBottom )
+    {
+      std::swap( volumeLevelTop, volumeLevelBottom );
+    }
+
+    const double intersectionLevelTop = std::min( methodLevelTop, volumeLevelTop );
+    const double intersectionLevelBottom = std::max( methodLevelBottom, volumeLevelBottom );
+    const double effectiveInterval = intersectionLevelTop - intersectionLevelBottom;
+
+    if ( effectiveInterval > eps )
+    {
+      if ( isVector )
+      {
+        const double x = volumeValues[2 * volumeIndex ];
+        const double y = volumeValues[ 2 * volumeIndex + 1 ];
+        if ( ! std::isnan( x ) &&
+             ! std::isnan( y )
+           )
+        {
+          nSumX += x * effectiveInterval;
+          nSumY += y * effectiveInterval;
+          totalAveragedHeight += effectiveInterval;
+        }
+      }
+      else
+      {
+        const double x = volumeValues[ volumeIndex ];
+        if ( ! std::isnan( x ) )
+        {
+          nSumX += x * effectiveInterval;
+          totalAveragedHeight += effectiveInterval;
+        }
+      }
+    }
+  }
+
+  // calculate average
+  if ( totalAveragedHeight > eps )
+  {
+    if ( isVector )
+    {
+      valuesFaces[2 * faceIndex] = nSumX / totalAveragedHeight;
+      valuesFaces[2 * faceIndex + 1 ] = nSumY / totalAveragedHeight;
+    }
+    else
+    {
+      valuesFaces[faceIndex] = nSumX / totalAveragedHeight;
+    }
+  }
 }
 
 bool QgsMesh3dAveragingMethod::equals( const QgsMesh3dAveragingMethod *a, const QgsMesh3dAveragingMethod *b )
