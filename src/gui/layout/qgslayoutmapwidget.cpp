@@ -20,9 +20,8 @@
 #include "qgslayoutitemmap.h"
 #include "qgsproject.h"
 #include "qgsmapthemecollection.h"
-#include "qgsmapthemes.h"
 #include "qgslayout.h"
-#include "qgisapp.h"
+#include "qgslayertree.h"
 #include "qgsmapcanvas.h"
 #include "qgssymbolselectordialog.h"
 #include "qgssymbollayerutils.h"
@@ -39,9 +38,10 @@
 #include <QMenu>
 #include <QMessageBox>
 
-QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
+QgsLayoutMapWidget::QgsLayoutMapWidget(QgsLayoutItemMap *item , QgsMapCanvas *mapCanvas)
   : QgsLayoutItemBaseWidget( nullptr, item )
   , mMapItem( item )
+  , mMapCanvas( mapCanvas )
 {
   Q_ASSERT( mMapItem );
 
@@ -316,7 +316,7 @@ void QgsLayoutMapWidget::keepLayersVisibilityPresetSelected()
     return;
 
   QString presetName = action->text();
-  QList<QgsMapLayer *> lst = QgsMapThemes::instance()->orderedPresetVisibleLayers( presetName );
+  QList<QgsMapLayer *> lst = orderedPresetVisibleLayers( presetName );
   if ( mMapItem )
   {
     mKeepLayerListCheckBox->setChecked( true );
@@ -642,15 +642,15 @@ void QgsLayoutMapWidget::setToMapCanvasExtent()
     return;
   }
 
-  QgsRectangle newExtent = QgisApp::instance()->mapCanvas()->mapSettings().visibleExtent();
+  QgsRectangle newExtent = mMapCanvas->mapSettings().visibleExtent();
 
   //transform?
-  if ( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs()
+  if ( mMapCanvas->mapSettings().destinationCrs()
        != mMapItem->crs() )
   {
     try
     {
-      QgsCoordinateTransform xForm( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(),
+      QgsCoordinateTransform xForm( mMapCanvas->mapSettings().destinationCrs(),
                                     mMapItem->crs(), QgsProject::instance() );
       newExtent = xForm.transformBoundingBox( newExtent );
     }
@@ -673,7 +673,7 @@ void QgsLayoutMapWidget::setToMapCanvasScale()
     return;
   }
 
-  const double newScale = QgisApp::instance()->mapCanvas()->scale();
+  const double newScale = mMapCanvas->scale();
 
   mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Scale" ) );
   mMapItem->setScale( newScale );
@@ -693,14 +693,14 @@ void QgsLayoutMapWidget::viewExtentInCanvas()
   {
     try
     {
-      QgisApp::instance()->mapCanvas()->setReferencedExtent( QgsReferencedRectangle( currentMapExtent, mMapItem->crs() ) );
+      mMapCanvas->setReferencedExtent( QgsReferencedRectangle( currentMapExtent, mMapItem->crs() ) );
     }
     catch ( QgsCsException & )
     {
       //transform failed, better not proceed
       return;
     }
-    QgisApp::instance()->mapCanvas()->refresh();
+    mMapCanvas->refresh();
   }
 }
 
@@ -712,7 +712,7 @@ void QgsLayoutMapWidget::viewScaleInCanvas()
   }
 
   const double currentScale = mMapItem->scale();
-  QgisApp::instance()->mapCanvas()->zoomScale( currentScale );
+  mMapCanvas->zoomScale( currentScale );
 }
 
 void QgsLayoutMapWidget::mXMinLineEdit_editingFinished()
@@ -1437,7 +1437,7 @@ void QgsLayoutMapWidget::storeCurrentLayerSet()
   if ( !mMapItem )
     return;
 
-  QList<QgsMapLayer *> layers = QgisApp::instance()->mapCanvas()->mapSettings().layers();
+  QList<QgsMapLayer *> layers = mMapCanvas->mapSettings().layers();
   mMapItem->setLayers( layers );
 
   if ( mMapItem->keepLayerStyles() )
@@ -1445,6 +1445,23 @@ void QgsLayoutMapWidget::storeCurrentLayerSet()
     // also store styles associated with the layers
     mMapItem->storeCurrentLayerStyles();
   }
+}
+
+QList<QgsMapLayer *> QgsLayoutMapWidget::orderedPresetVisibleLayers( const QString &name ) const
+{
+  QStringList visibleIds = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayerIds( name );
+
+  // also make sure to order the layers according to map canvas order
+  QList<QgsMapLayer *> lst;
+  const auto constLayerOrder = QgsProject::instance()->layerTreeRoot()->layerOrder();
+  for ( QgsMapLayer *layer : constLayerOrder )
+  {
+    if ( visibleIds.contains( layer->id() ) )
+    {
+      lst << layer;
+    }
+  }
+  return lst;
 }
 
 QListWidgetItem *QgsLayoutMapWidget::addOverviewListItem( const QString &id, const QString &name )

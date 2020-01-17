@@ -17,6 +17,10 @@
 #ifndef QGSLAYOUTPOLYGONWIDGET_H
 #define QGSLAYOUTPOLYGONWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutpolygonwidgetbase.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutitempolygon.h"
@@ -24,7 +28,7 @@
 /**
  * Input widget for QgsLayoutItemPolygon
  */
-class QgsLayoutPolygonWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPolygonWidgetBase
+class GUI_EXPORT QgsLayoutPolygonWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPolygonWidgetBase
 {
     Q_OBJECT
   public:

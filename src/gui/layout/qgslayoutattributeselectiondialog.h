@@ -18,12 +18,16 @@
 #ifndef QGSLAYOUTATTRIBUTESELECTIONDIALOG_H
 #define QGSLAYOUTATTRIBUTESELECTIONDIALOG_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
 #include <QDialog>
 #include <QMap>
 #include <QSet>
 #include <QItemDelegate>
 #include <QAbstractTableModel>
 #include <QSortFilterProxyModel>
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "ui_qgslayoutattributeselectiondialogbase.h"
 #include "qgsexpressioncontextgenerator.h"
@@ -43,7 +47,7 @@ class QgsLayoutTableColumn;
 /**
  * A model for displaying columns shown in a QgsLayoutAttributeTable
 */
-class QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
+class GUI_EXPORT QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
 {
     Q_OBJECT
 
@@ -135,7 +139,7 @@ class QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
 /**
  * Allows for filtering QgsComposerAttributeTable columns by columns which are sorted or unsorted
 */
-class QgsLayoutTableSortColumnsProxyModel: public QSortFilterProxyModel
+class GUI_EXPORT QgsLayoutTableSortColumnsProxyModel: public QSortFilterProxyModel
 {
     Q_OBJECT
 
@@ -208,7 +212,7 @@ class QgsLayoutTableSortColumnsProxyModel: public QSortFilterProxyModel
 // QgsLayoutColumnAlignmentDelegate
 
 //! A delegate for showing column alignment as a combo box
-class QgsLayoutColumnAlignmentDelegate : public QItemDelegate
+class GUI_EXPORT QgsLayoutColumnAlignmentDelegate : public QItemDelegate
 {
     Q_OBJECT
 
@@ -225,7 +229,7 @@ class QgsLayoutColumnAlignmentDelegate : public QItemDelegate
 // QgsLayoutColumnSourceDelegate
 
 //! A delegate for showing column attribute source as a QgsFieldExpressionWidget
-class QgsLayoutColumnSourceDelegate : public QItemDelegate, private QgsExpressionContextGenerator
+class GUI_EXPORT QgsLayoutColumnSourceDelegate : public QItemDelegate, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -246,7 +250,7 @@ class QgsLayoutColumnSourceDelegate : public QItemDelegate, private QgsExpressio
 // QgsLayoutColumnWidthDelegate
 
 //! A delegate for showing column width as a spin box
-class QgsLayoutColumnWidthDelegate : public QItemDelegate
+class GUI_EXPORT QgsLayoutColumnWidthDelegate : public QItemDelegate
 {
     Q_OBJECT
 
@@ -263,7 +267,7 @@ class QgsLayoutColumnWidthDelegate : public QItemDelegate
 // QgsLayoutColumnSortOrderDelegate
 
 //! A delegate for showing column sort order as a combo box
-class QgsLayoutColumnSortOrderDelegate : public QItemDelegate
+class GUI_EXPORT QgsLayoutColumnSortOrderDelegate : public QItemDelegate
 {
     Q_OBJECT
 
@@ -280,7 +284,7 @@ class QgsLayoutColumnSortOrderDelegate : public QItemDelegate
 // QgsLayoutAttributeSelectionDialog
 
 //! A dialog to select what attributes to display (in the table item), set the column properties and specify a sort order
-class QgsLayoutAttributeSelectionDialog: public QDialog, private Ui::QgsLayoutAttributeSelectionDialogBase
+class GUI_EXPORT QgsLayoutAttributeSelectionDialog: public QDialog, private Ui::QgsLayoutAttributeSelectionDialogBase
 {
     Q_OBJECT
   public:

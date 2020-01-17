@@ -246,7 +246,6 @@ void QgsAppLayoutDesignerInterface::showRulers( bool visible )
   mDesigner->showRulers( visible );
 }
 
-
 static bool cmpByText_( QAction *a, QAction *b )
 {
   return QString::localeAwareCompare( a->text(), b->text() ) < 0;
@@ -809,7 +808,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mPanelsMenu->addAction( mItemsDock->toggleViewAction() );
 
   //items tree widget
-  mItemsTreeView = new QgsLayoutItemsListView( mItemsDock, this );
+  mItemsTreeView = new QgsLayoutItemsListView( mItemsDock, iface() );
   mItemsDock->setWidget( mItemsTreeView );
 
   mAtlasDock = new QgsDockWidget( tr( "Atlas" ), this );

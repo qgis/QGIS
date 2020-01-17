@@ -16,16 +16,20 @@
 #ifndef QGSLAYOUTITEMSLISTVIEW_H
 #define QGSLAYOUTITEMSLISTVIEW_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include <QTreeView>
 #include <QSortFilterProxyModel>
 
 class QgsLayout;
-class QgsLayoutDesignerDialog;
+class QgsLayoutDesignerInterface;
 class QgsLayoutModel;
 class QgsLayoutItem;
 
-class QgsLayoutItemsListViewModel : public QSortFilterProxyModel
+class GUI_EXPORT QgsLayoutItemsListViewModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
@@ -33,7 +37,7 @@ class QgsLayoutItemsListViewModel : public QSortFilterProxyModel
 
     QgsLayoutItemsListViewModel( QgsLayoutModel *model, QObject *parent );
 
-    QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const; \
+    QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
   public slots:
@@ -51,7 +55,7 @@ class QgsLayoutItemsListViewModel : public QSortFilterProxyModel
 /**
  * A list view for showing items in a layout
  */
-class QgsLayoutItemsListView : public QTreeView
+class GUI_EXPORT QgsLayoutItemsListView : public QTreeView
 {
     Q_OBJECT
 
@@ -60,7 +64,7 @@ class QgsLayoutItemsListView : public QTreeView
     /**
      * Constructor for QgsLayoutItemsListView.
      */
-    QgsLayoutItemsListView( QWidget *parent, QgsLayoutDesignerDialog *designer );
+    QgsLayoutItemsListView( QWidget *parent, QgsLayoutDesignerInterface *designer );
 
     void setCurrentLayout( QgsLayout *layout );
 
@@ -72,7 +76,7 @@ class QgsLayoutItemsListView : public QTreeView
 
     QgsLayout *mLayout = nullptr;
     QgsLayoutItemsListViewModel *mModel = nullptr;
-    QgsLayoutDesignerDialog *mDesigner = nullptr;
+    QgsLayoutDesignerInterface *mDesigner = nullptr;
 };
 
 #endif // QGSLAYOUTITEMSLISTVIEW_H

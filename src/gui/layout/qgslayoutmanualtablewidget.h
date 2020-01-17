@@ -18,6 +18,9 @@
 #ifndef QGSLAYOUTMANUALTABLEWIDGET_H
 #define QGSLAYOUTMANUALTABLEWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
 #include "ui_qgslayoutmanualtablewidgetbase.h"
 #include "qgslayoutitemwidget.h"
 #include "qgstableeditordialog.h"
@@ -26,7 +29,7 @@
 class QgsLayoutItemManualTable;
 class QgsLayoutFrame;
 
-class QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutManualTableWidgetBase
+class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutManualTableWidgetBase
 {
     Q_OBJECT
   public:

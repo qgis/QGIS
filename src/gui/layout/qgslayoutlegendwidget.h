@@ -18,6 +18,10 @@
 #ifndef QGSLAYOUTLEGENDWIDGET_H
 #define QGSLAYOUTLEGENDWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutlegendwidgetbase.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutitemlegend.h"
@@ -28,12 +32,12 @@
  * \ingroup app
  * A widget for setting properties relating to a layout legend.
  */
-class QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutLegendWidgetBase
+class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutLegendWidgetBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsLayoutLegendWidget( QgsLayoutItemLegend *legend );
+    explicit QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMapCanvas *mapCanvas );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
     //! Updates the legend layers and groups
@@ -123,12 +127,12 @@ class QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayo
     void blockAllSignals( bool b );
 
     QPointer< QgsLayoutItemLegend > mLegend;
-
+    QgsMapCanvas *mMapCanvas = nullptr;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 };
 
 
-class QgsLayoutLegendMenuProvider : public QgsLayerTreeViewMenuProvider
+class GUI_EXPORT QgsLayoutLegendMenuProvider : public QgsLayerTreeViewMenuProvider
 {
 
   public:

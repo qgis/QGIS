@@ -193,37 +193,10 @@ SET(QGIS_APP_SRCS
   labeling/qgsmaptoolrotatelabel.cpp
   labeling/qgsrulebasedlabelingwidget.cpp
 
-  layout/qgsgeopdflayertreemodel.cpp
-  layout/qgslayoutaddpagesdialog.cpp
-  layout/qgslayoutapputils.cpp
-  layout/qgslayoutatlaswidget.cpp
-  layout/qgslayoutattributeselectiondialog.cpp
-  layout/qgslayoutattributetablewidget.cpp
-  layout/qgslayoutdesignerdialog.cpp
-  layout/qgslayoutguidewidget.cpp
-  layout/qgslayouthtmlwidget.cpp
-  layout/qgslayoutimagedrophandler.cpp
-  layout/qgslayoutimageexportoptionsdialog.cpp
-  layout/qgslayoutitemslistview.cpp
   layout/qgslayoutappmenuprovider.cpp
-  layout/qgslayoutlabelwidget.cpp
-  layout/qgslayoutlegendlayersdialog.cpp
-  layout/qgslayoutlegendwidget.cpp
+  layout/qgslayoutdesignerdialog.cpp
+  layout/qgslayoutimagedrophandler.cpp
   layout/qgslayoutmanagerdialog.cpp
-  layout/qgslayoutmanualtablewidget.cpp
-  layout/qgslayoutmapwidget.cpp
-  layout/qgslayoutmapgridwidget.cpp
-  layout/qgslayoutpagepropertieswidget.cpp
-  layout/qgslayoutpdfexportoptionsdialog.cpp
-  layout/qgslayoutpicturewidget.cpp
-  layout/qgslayoutpolygonwidget.cpp
-  layout/qgslayoutpolylinewidget.cpp
-  layout/qgslayoutpropertieswidget.cpp
-  layout/qgslayoutqptdrophandler.cpp
-  layout/qgslayoutscalebarwidget.cpp
-  layout/qgslayoutshapewidget.cpp
-  layout/qgslayouttablebackgroundcolorsdialog.cpp
-  layout/qgslayoutvaliditychecks.cpp
   layout/qgsreportfieldgroupsectionwidget.cpp
   layout/qgsreportlayoutsectionwidget.cpp
   layout/qgsreportorganizerwidget.cpp

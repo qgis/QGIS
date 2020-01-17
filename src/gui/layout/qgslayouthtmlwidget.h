@@ -15,6 +15,10 @@
 #ifndef QGSLAYOUTHTMLWIDGET_H
 #define QGSLAYOUTHTMLWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayouthtmlwidgetbase.h"
 #include "qgslayoutitemwidget.h"
 
@@ -27,7 +31,7 @@ class QgsCodeEditorCSS;
  * \ingroup app
  * Input widget for the configuration of QgsLayoutItemHtml
 */
-class QgsLayoutHtmlWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutHtmlWidgetBase
+class GUI_EXPORT QgsLayoutHtmlWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutHtmlWidgetBase
 {
     Q_OBJECT
   public:

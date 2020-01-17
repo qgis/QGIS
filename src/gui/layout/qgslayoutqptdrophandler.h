@@ -16,9 +16,13 @@
 #ifndef QGSLAYOUTQPTDROPHANDLER_H
 #define QGSLAYOUTQPTDROPHANDLER_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "qgslayoutcustomdrophandler.h"
 
-class QgsLayoutQptDropHandler : public QgsLayoutCustomDropHandler
+class GUI_EXPORT QgsLayoutQptDropHandler : public QgsLayoutCustomDropHandler
 {
     Q_OBJECT
 

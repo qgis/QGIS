@@ -18,7 +18,11 @@
 #ifndef QGSLAYOUTPDFEXPORTOPTIONSDIALOG_H
 #define QGSLAYOUTPDFEXPORTOPTIONSDIALOG_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
 #include <QDialog>
+#include "qgis_gui.h"
 #include "ui_qgspdfexportoptions.h"
 
 #include "qgsrendercontext.h"
@@ -26,7 +30,7 @@
 /**
  * A dialog for customizing the properties of an exported PDF file from a layout.
 */
-class QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::QgsPdfExportOptionsDialog
+class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::QgsPdfExportOptionsDialog
 {
     Q_OBJECT
 

@@ -107,6 +107,8 @@
 #include "qgsvectorlayer3drenderer.h"
 #include "processing/qgs3dalgorithms.h"
 #include "qgs3dmaptoolmeasureline.h"
+#include "layout/qgslayout3dmapwidget.h"
+#include "layout/qgslayoutviewrubberband.h"
 #endif
 
 #include "qgsgui.h"
@@ -234,10 +236,11 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayoutatlas.h"
 #include "qgslayoutcustomdrophandler.h"
 #include "qgslayoutdesignerdialog.h"
+#include "qgslayoutitemguiregistry.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutqptdrophandler.h"
 #include "qgslayoutimagedrophandler.h"
-#include "qgslayoutapputils.h"
+#include "qgslayoutguiutils.h"
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
 #include "qgsinbuiltlocatorfilters.h"
@@ -11912,13 +11915,26 @@ void QgisApp::initNativeProcessing()
 
 void QgisApp::initLayouts()
 {
+  // 3D map item
 #ifdef HAVE_3D
   QgsApplication::layoutItemRegistry()->addLayoutItemType(
     new QgsLayoutItemMetadata( QgsLayoutItemRegistry::Layout3DMap, QObject::tr( "3D Map" ), QObject::tr( "3D Maps" ), QgsLayoutItem3DMap::create )
   );
+
+  auto createRubberBand = ( []( QgsLayoutView * view )->QgsLayoutViewRubberBand *
+  {
+    return new QgsLayoutViewRectangularRubberBand( view );
+  } );
+  std::unique_ptr< QgsLayoutItemGuiMetadata > map3dMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata>(
+        QgsLayoutItemRegistry::Layout3DMap, QObject::tr( "3D Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAdd3DMap.svg" ) ),
+        [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayout3DMapWidget( qobject_cast< QgsLayoutItem3DMap * >( item ) );
+  }, createRubberBand );
+  QgsGui::layoutItemGuiRegistry()->addLayoutItemGuiMetadata( map3dMetadata.release() );
 #endif
 
-  QgsLayoutAppUtils::registerGuiForKnownItemTypes();
+  QgsLayoutGuiUtils::registerGuiForKnownItemTypes( mMapCanvas );
 
   mLayoutQptDropHandler = new QgsLayoutQptDropHandler( this );
   registerCustomLayoutDropHandler( mLayoutQptDropHandler );

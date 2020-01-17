@@ -18,7 +18,11 @@
 #ifndef QGSLAYOUTIMAGEEXPORTOPTIONSDIALOG_H
 #define QGSLAYOUTIMAGEEXPORTOPTIONSDIALOG_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
 #include <QDialog>
+#include "qgis_gui.h"
 #include "ui_qgslayoutimageexportoptions.h"
 
 
@@ -26,7 +30,7 @@
  * A dialog for customizing the properties of an exported image file.
  * \since QGIS 3.0
 */
-class QgsLayoutImageExportOptionsDialog: public QDialog, private Ui::QgsLayoutImageExportOptionsDialog
+class GUI_EXPORT QgsLayoutImageExportOptionsDialog: public QDialog, private Ui::QgsLayoutImageExportOptionsDialog
 {
     Q_OBJECT
 

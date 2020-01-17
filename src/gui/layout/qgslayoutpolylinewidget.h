@@ -17,6 +17,10 @@
 #ifndef QGSLAYOUTPOLYLINEWIDGET_H
 #define QGSLAYOUTPOLYLINEWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutpolylinewidgetbase.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutitempolyline.h"
@@ -24,7 +28,7 @@
 /**
  * Input widget for QgsLayoutItemPolyline
  */
-class QgsLayoutPolylineWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPolylineWidgetBase
+class GUI_EXPORT QgsLayoutPolylineWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPolylineWidgetBase
 {
     Q_OBJECT
   public:

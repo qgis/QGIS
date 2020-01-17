@@ -18,7 +18,11 @@
 #ifndef QGSLAYOUTTABLEBACKGROUNDCOLORSDIALOG_H
 #define QGSLAYOUTTABLEBACKGROUNDCOLORSDIALOG_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
 #include <QDialog>
+#include "qgis_gui.h"
 #include "ui_qgslayouttablebackgroundstyles.h"
 #include "qgslayouttable.h"
 
@@ -29,7 +33,7 @@ class QgsColorButton;
  * A dialog for customization of the cell background colors for a QgsLayoutTable
  * \since QGIS 3.0
 */
-class QgsLayoutTableBackgroundColorsDialog: public QDialog, private Ui::QgsLayoutTableBackgroundDialog
+class GUI_EXPORT QgsLayoutTableBackgroundColorsDialog: public QDialog, private Ui::QgsLayoutTableBackgroundDialog
 {
     Q_OBJECT
   public:

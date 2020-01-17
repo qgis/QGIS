@@ -23,7 +23,6 @@
 #include "qgslayout.h"
 #include "qgsguiutils.h"
 
-#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
@@ -33,6 +32,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsproject.h"
+#include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutitemlegend.h"
@@ -41,6 +41,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
 
+#include <QMenu>
 #include <QMessageBox>
 #include <QInputDialog>
 
@@ -63,9 +64,10 @@ static int _originalLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
 }
 
 
-QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
+QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMapCanvas *mapCanvas )
   : QgsLayoutItemBaseWidget( nullptr, legend )
   , mLegend( legend )
+  , mMapCanvas( mapCanvas )
 {
   Q_ASSERT( mLegend );
 
@@ -141,15 +143,15 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.svg" ) ) );
   mLayerExpressionButton->setIcon( QIcon( QgsApplication::iconPath( "mIconExpression.svg" ) ) );
 
-  mMoveDownToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
-  mMoveUpToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
-  mAddGroupToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
-  mAddToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
-  mRemoveToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
-  mEditPushButton->setIconSize( QgisApp::instance()->iconSize( true ) );
-  mCountToolButton->setIconSize( QgisApp::instance()->iconSize( true ) );
-  mExpressionFilterButton->setIconSize( QgisApp::instance()->iconSize( true ) );
-  mLayerExpressionButton->setIconSize( QgisApp::instance()->iconSize( true ) );
+  mMoveDownToolButton->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mMoveUpToolButton->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mAddGroupToolButton->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mAddToolButton->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mRemoveToolButton->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mEditPushButton->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mCountToolButton->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mExpressionFilterButton->setIconSize( QgsGuiUtils::iconSize( true ) );
+  mLayerExpressionButton->setIconSize( QgsGuiUtils::iconSize( true ) );
 
   mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setContext( QStringLiteral( "composer" ) );
@@ -818,7 +820,7 @@ void QgsLayoutLegendWidget::mAddToolButton_clicked()
   if ( visibleLayers.isEmpty() )
   {
     // just use current canvas layers as visible layers
-    visibleLayers = QgisApp::instance()->mapCanvas()->layers();
+    visibleLayers = mMapCanvas->layers();
   }
 
   QgsLayoutLegendLayersDialog addDialog( this );

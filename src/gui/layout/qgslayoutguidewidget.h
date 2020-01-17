@@ -17,6 +17,10 @@
 #ifndef QGSLAYOUTGUIDEWIDGET_H
 #define QGSLAYOUTGUIDEWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutguidewidgetbase.h"
 #include "qgspanelwidget.h"
 #include <QStyledItemDelegate>
@@ -26,7 +30,7 @@ class QgsLayoutView;
 class QgsLayout;
 class QgsLayoutGuideProxyModel;
 
-class QgsLayoutGuideWidget: public QgsPanelWidget, private Ui::QgsLayoutGuideWidgetBase
+class GUI_EXPORT QgsLayoutGuideWidget: public QgsPanelWidget, private Ui::QgsLayoutGuideWidgetBase
 {
     Q_OBJECT
   public:
@@ -63,7 +67,7 @@ class QgsLayoutGuideWidget: public QgsPanelWidget, private Ui::QgsLayoutGuideWid
 };
 
 
-class QgsLayoutGuidePositionDelegate : public QStyledItemDelegate
+class GUI_EXPORT QgsLayoutGuidePositionDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
@@ -77,7 +81,7 @@ class QgsLayoutGuidePositionDelegate : public QStyledItemDelegate
 
 };
 
-class QgsLayoutGuideUnitDelegate : public QStyledItemDelegate
+class GUI_EXPORT QgsLayoutGuideUnitDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 

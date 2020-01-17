@@ -18,13 +18,17 @@
 #ifndef QGSLAYOUTATTRIBUTETABLEWIDGET_H
 #define QGSLAYOUTATTRIBUTETABLEWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutattributetablewidgetbase.h"
 #include "qgslayoutitemwidget.h"
 
 class QgsLayoutItemAttributeTable;
 class QgsLayoutFrame;
 
-class QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutAttributeTableWidgetBase
+class GUI_EXPORT QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutAttributeTableWidgetBase
 {
     Q_OBJECT
   public:

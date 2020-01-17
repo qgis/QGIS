@@ -17,6 +17,10 @@
 #ifndef QGSLAYOUTSCALEBARWIDGET_H
 #define QGSLAYOUTSCALEBARWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutscalebarwidgetbase.h"
 #include "qgslayoutitemwidget.h"
 
@@ -28,7 +32,7 @@ class QgsLayoutItemScaleBar;
  * \ingroup app
  * A widget to define the properties of a QgsLayoutItemScaleBar.
  */
-class QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutScaleBarWidgetBase
+class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutScaleBarWidgetBase
 {
     Q_OBJECT
 

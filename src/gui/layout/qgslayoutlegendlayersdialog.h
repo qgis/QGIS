@@ -15,6 +15,10 @@
 #ifndef QGSLAYOUTLEGENDLAYERSDIALOG_H
 #define QGSLAYOUTLEGENDLAYERSDIALOG_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutlegendlayersdialogbase.h"
 
 class QgsMapLayer;
@@ -24,7 +28,7 @@ class QgsMapLayerProxyModel;
  * \ingroup app
  * A dialog to add new layers to the legend.
  * */
-class QgsLayoutLegendLayersDialog: public QDialog, private Ui::QgsLayoutLegendLayersDialogBase
+class GUI_EXPORT QgsLayoutLegendLayersDialog: public QDialog, private Ui::QgsLayoutLegendLayersDialogBase
 {
     Q_OBJECT
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgslayoutapputils.h
+                             qgslayoutguiutils.h
                              -------------------
     Date                 : October 2017
     Copyright            : (C) 2017 Nyall Dawson
@@ -13,13 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLAYOUTAPPUTILS_H
-#define QGSLAYOUTAPPUTILS_H
+#ifndef QGSLAYOUTGUIUTILS_H
+#define QGSLAYOUTGUIUTILS_H
+
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
+
+class QgsMapCanvas;
 
 /**
  * Utils for layout handling from app.
  */
-class QgsLayoutAppUtils
+class GUI_EXPORT QgsLayoutGuiUtils
 {
 
   public:
@@ -27,10 +34,10 @@ class QgsLayoutAppUtils
     /**
      * Registers the GUI handlers for known layout item types.
      */
-    static void registerGuiForKnownItemTypes();
+    static void registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas );
 
 };
 
 
 
-#endif // QGSLAYOUTAPPUTILS_H
+#endif // QGSLAYOUTGUIUTILS_H

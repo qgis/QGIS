@@ -81,23 +81,6 @@ void QgsMapThemes::updatePreset( const QString &name )
   QgsProject::instance()->mapThemeCollection()->update( name, currentState() );
 }
 
-QList<QgsMapLayer *> QgsMapThemes::orderedPresetVisibleLayers( const QString &name ) const
-{
-  QStringList visibleIds = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayerIds( name );
-
-  // also make sure to order the layers according to map canvas order
-  QList<QgsMapLayer *> lst;
-  const auto constLayerOrder = QgsProject::instance()->layerTreeRoot()->layerOrder();
-  for ( QgsMapLayer *layer : constLayerOrder )
-  {
-    if ( visibleIds.contains( layer->id() ) )
-    {
-      lst << layer;
-    }
-  }
-  return lst;
-}
-
 QMenu *QgsMapThemes::menu()
 {
   return mMenu;

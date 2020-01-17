@@ -16,6 +16,10 @@
 #ifndef QGSLAYOUTPAGEPROPERTIESWIDGET_H
 #define QGSLAYOUTPAGEPROPERTIESWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "ui_qgslayoutpagepropertieswidget.h"
 
@@ -31,7 +35,7 @@ class QgsLayoutItemPage;
 /**
  * A widget for configuring properties of pages in a layout
  */
-class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPagePropertiesWidget
+class GUI_EXPORT QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPagePropertiesWidget
 {
     Q_OBJECT
 

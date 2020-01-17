@@ -18,6 +18,10 @@
 #ifndef QGSLAYOUTMAPWIDGET_H
 #define QGSLAYOUTMAPWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutmapwidgetbase.h"
 #include "ui_qgslayoutmaplabelingwidgetbase.h"
 #include "qgslayoutitemwidget.h"
@@ -33,12 +37,12 @@ class QgsBookmarkManagerProxyModel;
  * \ingroup app
  * Input widget for the configuration of QgsLayoutItemMap
 */
-class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapWidgetBase
+class GUI_EXPORT QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapWidgetBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsLayoutMapWidget( QgsLayoutItemMap *item );
+    explicit QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *mapCanvas );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
     void setReportTypeString( const QString &string ) override;
@@ -130,6 +134,7 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
 
   private:
     QPointer< QgsLayoutItemMap > mMapItem;
+    QgsMapCanvas *mMapCanvas = nullptr;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
     QgsLayoutDesignerInterface *mInterface = nullptr;
     QPointer< QgsLayoutMapLabelingWidget > mLabelWidget;
@@ -163,10 +168,16 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
 
     void storeCurrentLayerSet();
 
+    /**
+     * Returns list of layer IDs that should be visible for particular preset.
+     * The order will match the layer order from the map canvas
+     */
+    QList<QgsMapLayer *> orderedPresetVisibleLayers( const QString &name ) const;
+
 };
 
 
-class QgsLayoutMapItemBlocksLabelsModel : public QSortFilterProxyModel
+class GUI_EXPORT QgsLayoutMapItemBlocksLabelsModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
@@ -193,7 +204,7 @@ class QgsLayoutMapItemBlocksLabelsModel : public QSortFilterProxyModel
  * \ingroup app
  * Allows configuration of layout map labeling settings.
  * */
-class QgsLayoutMapLabelingWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapLabelingWidgetBase
+class GUI_EXPORT QgsLayoutMapLabelingWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapLabelingWidgetBase
 {
     Q_OBJECT
 

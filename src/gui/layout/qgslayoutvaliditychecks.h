@@ -14,10 +14,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsabstractvaliditycheck.h"
-#include "qgis_app.h"
+#ifndef QGSLAYOUTVALIDITYCHECKS_H
+#define QGSLAYOUTVALIDITYCHECKS_H
 
-class APP_EXPORT QgsLayoutScaleBarValidityCheck : public QgsAbstractValidityCheck
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
+#include "qgsabstractvaliditycheck.h"
+
+class GUI_EXPORT QgsLayoutScaleBarValidityCheck : public QgsAbstractValidityCheck
 {
   public:
 
@@ -31,7 +37,7 @@ class APP_EXPORT QgsLayoutScaleBarValidityCheck : public QgsAbstractValidityChec
     QList<QgsValidityCheckResult> mResults;
 };
 
-class APP_EXPORT QgsLayoutNorthArrowValidityCheck : public QgsAbstractValidityCheck
+class GUI_EXPORT QgsLayoutNorthArrowValidityCheck : public QgsAbstractValidityCheck
 {
   public:
 
@@ -45,7 +51,7 @@ class APP_EXPORT QgsLayoutNorthArrowValidityCheck : public QgsAbstractValidityCh
     QList<QgsValidityCheckResult> mResults;
 };
 
-class APP_EXPORT QgsLayoutOverviewValidityCheck : public QgsAbstractValidityCheck
+class GUI_EXPORT QgsLayoutOverviewValidityCheck : public QgsAbstractValidityCheck
 {
   public:
 
@@ -59,7 +65,7 @@ class APP_EXPORT QgsLayoutOverviewValidityCheck : public QgsAbstractValidityChec
     QList<QgsValidityCheckResult> mResults;
 };
 
-class APP_EXPORT QgsLayoutPictureSourceValidityCheck : public QgsAbstractValidityCheck
+class GUI_EXPORT QgsLayoutPictureSourceValidityCheck : public QgsAbstractValidityCheck
 {
   public:
 
@@ -73,3 +79,4 @@ class APP_EXPORT QgsLayoutPictureSourceValidityCheck : public QgsAbstractValidit
     QList<QgsValidityCheckResult> mResults;
 };
 
+#endif // QGSLAYOUTVALIDITYCHECKS_H

@@ -16,9 +16,10 @@
 #include "qgslayoutitemslistview.h"
 #include "qgslayout.h"
 #include "qgslayoutmodel.h"
-#include "qgslayoutdesignerdialog.h"
+#include "qgslayoutdesignerinterface.h"
 #include "qgslayoutview.h"
 #include <QHeaderView>
+#include <QMenu>
 #include <QMouseEvent>
 
 
@@ -76,7 +77,7 @@ QVariant QgsLayoutItemsListViewModel::data( const QModelIndex &index, int role )
 // QgsLayoutItemsListView
 //
 
-QgsLayoutItemsListView::QgsLayoutItemsListView( QWidget *parent, QgsLayoutDesignerDialog *designer )
+QgsLayoutItemsListView::QgsLayoutItemsListView( QWidget *parent, QgsLayoutDesignerInterface *designer )
   : QTreeView( parent )
   , mDesigner( designer )
 {

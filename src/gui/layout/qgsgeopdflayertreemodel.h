@@ -15,17 +15,20 @@
 #ifndef QGSGEOPDFLAYERTREEMODEL_H
 #define QGSGEOPDFLAYERTREEMODEL_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
 #include <QSortFilterProxyModel>
 #include <QItemDelegate>
 
+#include "qgis_gui.h"
 #include "qgslayertreemodel.h"
-#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsProject;
 
 
-class APP_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
+class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
 {
     Q_OBJECT
 

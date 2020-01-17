@@ -18,6 +18,10 @@
 #ifndef QGSLAYOUTPICTUREWIDGET_H
 #define QGSLAYOUTPICTUREWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutpicturewidgetbase.h"
 #include "qgslayoutitemwidget.h"
 
@@ -27,7 +31,7 @@ class QgsLayoutItemPicture;
  * \ingroup app
  * A widget for configuring layout picture items.
  */
-class QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPictureWidgetBase
+class GUI_EXPORT QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPictureWidgetBase
 {
     Q_OBJECT
 
