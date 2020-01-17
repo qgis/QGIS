@@ -165,14 +165,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     QByteArray quotedIdentifier( const QByteArray &field ) const;
 
-    /**
-     * A forced reload invalidates the underlying connection.
-     * E.g. in case a shapefile is replaced, the old file will be closed
-     * and the new file will be opened.
-     */
-    void forceReload() override;
-    void reloadData() override;
-
   protected:
     //! Loads fields from input file to member attributeFields
     void loadFields();
@@ -335,6 +327,13 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QgsOgrTransaction *mTransaction = nullptr;
 
     void setTransaction( QgsTransaction *transaction ) override;
+
+    /**
+    * Invalidates and reopens the file and resets the feature count
+    * E.g. in case a shapefile is replaced, the old file will be closed
+    * and the new file will be opened.
+    */
+    void reloadProviderData() override;
 };
 
 class QgsOgrDataset;

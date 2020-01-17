@@ -199,8 +199,6 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     bool setNoDataValue( int bandNo, double noDataValue ) override;
     bool remove() override;
 
-    void reloadData() override;
-
     QString validateCreationOptions( const QStringList &createOptions, const QString &format ) override;
     QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
                                            const QStringList &configOptions, const QString &fileFormat ) override;
@@ -335,6 +333,11 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     bool worldToPixel( double x, double y, int &col, int &row ) const;
 
     bool mStatisticsAreReliable = false;
+
+    /**
+     * Closes and reinits dataset
+    */
+    void reloadProviderData() override;
 };
 
 /**

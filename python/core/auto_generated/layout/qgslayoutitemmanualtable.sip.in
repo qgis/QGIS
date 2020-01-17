@@ -1,0 +1,121 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutitemmanualtable.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLayoutItemManualTable: QgsLayoutTable
+{
+%Docstring
+A layout table subclass that displays manually entered (and formatted) content.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgslayoutitemmanualtable.h"
+%End
+  public:
+
+    QgsLayoutItemManualTable( QgsLayout *layout /TransferThis/ );
+%Docstring
+Constructor for QgsLayoutItemManualTable, attached to the specified ``layout``.
+
+Ownership is transferred to the layout.
+%End
+
+    virtual int type() const;
+
+    virtual QIcon icon() const;
+
+    virtual QString displayName() const;
+
+
+    static QgsLayoutItemManualTable *create( QgsLayout *layout ) /Factory/;
+%Docstring
+Returns a new QgsLayoutItemManualTable for the specified parent ``layout``.
+%End
+    virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
+
+
+    void setTableContents( const QgsTableContents &contents );
+%Docstring
+Sets the ``contents`` of the table.
+
+.. seealso:: :py:func:`tableContents`
+%End
+
+    QgsTableContents tableContents() const;
+%Docstring
+Returns the contents of the table.
+
+.. seealso:: :py:func:`contents`
+%End
+
+    QList< double > rowHeights() const;
+%Docstring
+Returns the list of row heights (in millimeters) to use when rendering the table.
+
+A height of 0 indicates that the row height should be automatically calculated.
+
+.. seealso:: :py:func:`setRowHeights`
+
+.. seealso:: :py:func:`columnWidths`
+%End
+
+    void setRowHeights( const QList< double > &heights );
+%Docstring
+Sets the list of row ``heights`` (in millimeters) to use when rendering the table.
+
+A height of 0 indicates that the row height should be automatically calculated.
+
+.. seealso:: :py:func:`rowHeights`
+
+.. seealso:: :py:func:`setColumnWidths`
+%End
+
+    QList< double > columnWidths() const;
+%Docstring
+Returns the list of column widths (in millimeters) to use when rendering the table.
+
+A width of 0 indicates that the column width should be automatically calculated.
+
+.. seealso:: :py:func:`setColumnWidths`
+
+.. seealso:: :py:func:`rowHeights`
+%End
+
+    void setColumnWidths( const QList< double > &widths );
+%Docstring
+Sets the list of column ``widths`` (in millimeters) to use when rendering the table.
+
+A width of 0 indicates that the column width should be automatically calculated.
+
+.. seealso:: :py:func:`columnWidths`
+
+.. seealso:: :py:func:`setColumnWidths`
+%End
+
+  protected:
+
+    virtual bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context );
+
+    virtual bool calculateMaxRowHeights();
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutitemmanualtable.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

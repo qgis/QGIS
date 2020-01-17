@@ -35,11 +35,9 @@ from .BoxPlot import BoxPlot
 from .CheckValidity import CheckValidity
 from .Climb import Climb
 from .ConcaveHull import ConcaveHull
-from .Datasources2Vrt import Datasources2Vrt
 from .DefineProjection import DefineProjection
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
-from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -77,7 +75,6 @@ from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .RasterCalculator import RasterCalculator
 from .RasterLayerHistogram import RasterLayerHistogram
 from .RasterSampling import RasterSampling
-from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
 from .Relief import Relief
@@ -87,7 +84,6 @@ from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
 from .SnapGeometries import SnapGeometriesToLayer
 from .SpatialiteExecuteSQL import SpatialiteExecuteSQL
-from .SpatialJoin import SpatialJoin
 from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .TextToFloat import TextToFloat
@@ -110,6 +106,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
         super().__init__()
         self.algs = []
         self.externalAlgs = []
+        QgsApplication.processingRegistry().addAlgorithmAlias('qgis:rectanglesovalsdiamondsfixed', 'native:rectanglesovalsdiamonds')
 
     def getAlgs(self):
         algs = [Aggregate(),
@@ -119,11 +116,9 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 CheckValidity(),
                 Climb(),
                 ConcaveHull(),
-                Datasources2Vrt(),
                 DefineProjection(),
                 Delaunay(),
                 DeleteColumn(),
-                DeleteDuplicateGeometries(),
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
@@ -161,7 +156,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RasterCalculator(),
                 RasterLayerHistogram(),
                 RasterSampling(),
-                RectanglesOvalsDiamondsFixed(),
                 RectanglesOvalsDiamondsVariable(),
                 RegularPoints(),
                 Relief(),
@@ -171,7 +165,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SetVectorStyle(),
                 SnapGeometriesToLayer(),
                 SpatialiteExecuteSQL(),
-                SpatialJoin(),
                 SpatialJoinSummary(),
                 StatisticsByCategories(),
                 TextToFloat(),

@@ -17,12 +17,15 @@
 
 #include <QElapsedTimer>
 #include <QVector4D>
+#include <Qt3DRender/QObjectPicker>
+#include <Qt3DRender/QPickTriangleEvent>
 
 #include "qgs3dutils.h"
 #include "qgschunkboundsentity_p.h"
 #include "qgschunklist_p.h"
 #include "qgschunkloader_p.h"
 #include "qgschunknode_p.h"
+#include "qgstessellatedpolygongeometry.h"
 
 #include "qgseventtracing.h"
 
@@ -56,6 +59,9 @@ static float screenSpaceError( float epsilon, float distance, float screenSize, 
 
 static float screenSpaceError( QgsChunkNode *node, const QgsChunkedEntity::SceneState &state )
 {
+  if ( node->error() <= 0 ) //it happens for meshes
+    return 0;
+
   float dist = node->bbox().distanceFromPoint( state.cameraPos );
 
   // TODO: what to do when distance == 0 ?
@@ -244,9 +250,9 @@ void QgsChunkedEntity::update( QgsChunkNode *node, const SceneState &state )
     return;
   }
 
-  //qDebug() << node->x << "|" << node->y << "|" << node->z << "  " << tau << "  " << screenSpaceError(node, state);
+  //qDebug() << node->tileX() << "|" << node->tileY() << "|" << node->tileZ() << "  " << mTau << "  " << screenSpaceError(node, state);
 
-  if ( screenSpaceError( node, state ) <= mTau )
+  if ( mTau > 0 && screenSpaceError( node, state ) <= mTau )
   {
     // acceptable error for the current chunk - let's render it
 
@@ -343,6 +349,15 @@ void QgsChunkedEntity::onActiveJobFinished()
       node->setLoaded( entity );
 
       mReplacementQueue->insertFirst( node->replacementQueueEntry() );
+
+      if ( mPickingEnabled )
+      {
+        Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker( node->entity() );
+        node->entity()->addComponent( picker );
+        connect( picker, &Qt3DRender::QObjectPicker::clicked, this, &QgsChunkedEntity::onPickEvent );
+      }
+
+      emit newEntityCreated( entity );
     }
     else
     {
@@ -447,6 +462,72 @@ void QgsChunkedEntity::cancelActiveJobs()
   while ( !mActiveJobs.isEmpty() )
   {
     cancelActiveJob( mActiveJobs.takeFirst() );
+  }
+}
+
+
+void QgsChunkedEntity::setPickingEnabled( bool enabled )
+{
+  if ( mPickingEnabled == enabled )
+    return;
+
+  mPickingEnabled = enabled;
+
+  if ( enabled )
+  {
+    QgsChunkListEntry *entry = mReplacementQueue->first();
+    while ( entry )
+    {
+      QgsChunkNode *node = entry->chunk;
+      Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker( node->entity() );
+      node->entity()->addComponent( picker );
+      connect( picker, &Qt3DRender::QObjectPicker::clicked, this, &QgsChunkedEntity::onPickEvent );
+
+      entry = entry->next;
+    }
+  }
+  else
+  {
+    for ( Qt3DRender::QObjectPicker *picker : findChildren<Qt3DRender::QObjectPicker *>() )
+      picker->deleteLater();
+  }
+}
+
+void QgsChunkedEntity::onPickEvent( Qt3DRender::QPickEvent *event )
+{
+  Qt3DRender::QPickTriangleEvent *triangleEvent = qobject_cast<Qt3DRender::QPickTriangleEvent *>( event );
+  if ( !triangleEvent )
+    return;
+
+  Qt3DRender::QObjectPicker *picker = qobject_cast<Qt3DRender::QObjectPicker *>( sender() );
+  if ( !picker )
+    return;
+
+  Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( picker->parent() );
+  if ( !entity )
+    return;
+
+  // go figure out feature ID from the triangle index
+  QgsFeatureId fid = FID_NULL;
+  for ( Qt3DRender::QGeometryRenderer *geomRenderer : entity->findChildren<Qt3DRender::QGeometryRenderer *>() )
+  {
+    // unfortunately we can't access which sub-entity triggered the pick event
+    // so as a temporary workaround let's just ignore the entity with selection
+    // and hope the event was the main entity (QTBUG-58206)
+    if ( geomRenderer->objectName() != QLatin1String( "main" ) )
+      continue;
+
+    if ( QgsTessellatedPolygonGeometry *g = qobject_cast<QgsTessellatedPolygonGeometry *>( geomRenderer->geometry() ) )
+    {
+      fid = g->triangleIndexToFeatureId( triangleEvent->triangleIndex() );
+      if ( !FID_IS_NULL( fid ) )
+        break;
+    }
+  }
+
+  if ( !FID_IS_NULL( fid ) )
+  {
+    emit pickedObject( event, fid );
   }
 }
 

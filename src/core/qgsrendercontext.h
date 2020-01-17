@@ -170,6 +170,16 @@ class CORE_EXPORT QgsRenderContext
     */
     QPainter *painter() {return mPainter;}
 
+#ifndef SIP_RUN
+
+    /**
+     * Returns the const destination QPainter for the render operation.
+     * \see setPainter()
+    * \since QGIS 3.12
+    */
+    const QPainter *painter() const { return mPainter; }
+#endif
+
     /**
      * Returns a mask QPainter for the render operation.
      * Multiple mask painters can be defined, each with a unique identifier.

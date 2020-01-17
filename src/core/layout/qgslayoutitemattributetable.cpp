@@ -30,6 +30,7 @@
 #include "qgsmapsettings.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsgeometryengine.h"
+#include "qgsconditionalstyle.h"
 
 //QgsLayoutAttributeTableCompare
 
@@ -46,10 +47,10 @@ class CORE_EXPORT QgsLayoutAttributeTableCompare
      * Constructor for QgsLayoutAttributeTableCompare.
      */
     QgsLayoutAttributeTableCompare() = default;
-    bool operator()( const QgsLayoutTableRow &m1, const QgsLayoutTableRow &m2 )
+    bool operator()( const QVector< QPair< QVariant, QgsConditionalStyle > > &m1, const QVector< QPair< QVariant, QgsConditionalStyle > > &m2 )
     {
-      return ( mAscending ? qgsVariantLessThan( m1[mCurrentSortColumn], m2[mCurrentSortColumn] )
-               : qgsVariantGreaterThan( m1[mCurrentSortColumn], m2[mCurrentSortColumn] ) );
+      return ( mAscending ? qgsVariantLessThan( m1[mCurrentSortColumn].first, m2[mCurrentSortColumn].first )
+               : qgsVariantGreaterThan( m1[mCurrentSortColumn].first, m2[mCurrentSortColumn].first ) );
     }
 
     /**
@@ -238,6 +239,23 @@ void QgsLayoutItemAttributeTable::disconnectCurrentMap()
   mMap = nullptr;
 }
 
+bool QgsLayoutItemAttributeTable::useConditionalStyling() const
+{
+  return mUseConditionalStyling;
+}
+
+void QgsLayoutItemAttributeTable::setUseConditionalStyling( bool useConditionalStyling )
+{
+  if ( useConditionalStyling == mUseConditionalStyling )
+  {
+    return;
+  }
+
+  mUseConditionalStyling = useConditionalStyling;
+  refreshAttributes();
+  emit changed();
+}
+
 void QgsLayoutItemAttributeTable::setMap( QgsLayoutItemMap *map )
 {
   if ( map == mMap )
@@ -414,6 +432,8 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     return false;
   }
 
+  const QgsConditionalLayerStyles *conditionalStyles = layer->conditionalStyles();
+
   QgsExpressionContext context = createExpressionContext();
   context.setFields( layer->fields() );
 
@@ -503,6 +523,11 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   int counter = 0;
   QgsFeatureIterator fit = layer->getFeatures( req );
 
+  mConditionalStyles.clear();
+
+  QVector< QVector< QPair< QVariant, QgsConditionalStyle > > > tempContents;
+  QgsLayoutTableContents existingContents;
+
   while ( fit.nextFeature( f ) && counter < mMaximumNumberOfFeatures )
   {
     context.setFeature( f );
@@ -539,15 +564,45 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
         continue;
     }
 
-    QgsLayoutTableRow currentRow;
+    QgsConditionalStyle rowStyle;
+
+    if ( mUseConditionalStyling )
+    {
+      const QList<QgsConditionalStyle> styles = QgsConditionalStyle::matchingConditionalStyles( conditionalStyles->rowStyles(), QVariant(),  context );
+      rowStyle = QgsConditionalStyle::compressStyles( styles );
+    }
+
+    // We need to build up two different lists here -- one is a pair of the cell contents along with the cell style.
+    // We need this one because we do a sorting step later, and we need to ensure that the cell styling is attached to the right row and sorted
+    // correctly when this occurs
+    // We also need a list of just the cell contents, so that we can do a quick check for row uniqueness (when the
+    // corresponding option is enabled)
+    QVector< QPair< QVariant, QgsConditionalStyle > > currentRow;
     currentRow.reserve( mColumns.count() );
+    QgsLayoutTableRow rowContents;
+    rowContents.reserve( mColumns.count() );
 
     for ( QgsLayoutTableColumn *column : qgis::as_const( mColumns ) )
     {
       int idx = layer->fields().lookupField( column->attribute() );
+
+      QgsConditionalStyle style;
+
       if ( idx != -1 )
       {
-        currentRow << replaceWrapChar( f.attributes().at( idx ) );
+        const QVariant val = f.attributes().at( idx );
+
+        if ( mUseConditionalStyling )
+        {
+          QList<QgsConditionalStyle> styles = conditionalStyles->fieldStyles( layer->fields().at( idx ).name() );
+          styles = QgsConditionalStyle::matchingConditionalStyles( styles, val, context );
+          styles.insert( 0, rowStyle );
+          style = QgsConditionalStyle::compressStyles( styles );
+        }
+
+        QVariant v = replaceWrapChar( val );
+        currentRow << qMakePair( v, style );
+        rowContents << v;
       }
       else
       {
@@ -556,15 +611,21 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
         context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), counter + 1, true ) );
         expression->prepare( &context );
         QVariant value = expression->evaluate( &context );
-        currentRow << value;
+
+        currentRow << qMakePair( value, rowStyle );
+        rowContents << value;
       }
     }
 
-    if ( !mShowUniqueRowsOnly || !contentsContainsRow( contents, currentRow ) )
+    if ( mShowUniqueRowsOnly )
     {
-      contents << currentRow;
-      ++counter;
+      if ( contentsContainsRow( existingContents, rowContents ) )
+        continue;
     }
+
+    tempContents << currentRow;
+    existingContents << rowContents;
+    ++counter;
   }
 
   //sort the list, starting with the last attribute
@@ -574,11 +635,38 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   {
     c.setSortColumn( sortColumns.at( i ).first );
     c.setAscending( sortColumns.at( i ).second );
-    std::stable_sort( contents.begin(), contents.end(), c );
+    std::stable_sort( tempContents.begin(), tempContents.end(), c );
+  }
+
+  // build final table contents
+  contents.reserve( tempContents.size() );
+  mConditionalStyles.reserve( tempContents.size() );
+  for ( auto it = tempContents.constBegin(); it != tempContents.constEnd(); ++it )
+  {
+    QgsLayoutTableRow row;
+    QList< QgsConditionalStyle > rowStyles;
+    row.reserve( it->size() );
+    rowStyles.reserve( it->size() );
+
+    for ( auto cellIt = it->constBegin(); cellIt != it->constEnd(); ++cellIt )
+    {
+      row << cellIt->first;
+      rowStyles << cellIt->second;
+    }
+    contents << row;
+    mConditionalStyles << rowStyles;
   }
 
   recalculateTableSize();
   return true;
+}
+
+QgsConditionalStyle QgsLayoutItemAttributeTable::conditionalCellStyle( int row, int column ) const
+{
+  if ( row >= mConditionalStyles.size() )
+    return QgsConditionalStyle();
+
+  return mConditionalStyles.at( row ).at( column );
 }
 
 QgsExpressionContext QgsLayoutItemAttributeTable::createExpressionContext() const
@@ -736,6 +824,7 @@ bool QgsLayoutItemAttributeTable::writePropertiesToElement( QDomElement &tableEl
   tableElem.setAttribute( QStringLiteral( "filterFeatures" ), mFilterFeatures ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   tableElem.setAttribute( QStringLiteral( "featureFilter" ), mFeatureFilter );
   tableElem.setAttribute( QStringLiteral( "wrapString" ), mWrapString );
+  tableElem.setAttribute( QStringLiteral( "useConditionalStyling" ), mUseConditionalStyling );
 
   if ( mMap )
   {
@@ -778,6 +867,7 @@ bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &
   mFeatureFilter = itemElem.attribute( QStringLiteral( "featureFilter" ), QString() );
   mMaximumNumberOfFeatures = itemElem.attribute( QStringLiteral( "maxFeatures" ), QStringLiteral( "5" ) ).toInt();
   mWrapString = itemElem.attribute( QStringLiteral( "wrapString" ) );
+  mUseConditionalStyling = itemElem.attribute( QStringLiteral( "useConditionalStyling" ), QStringLiteral( "0" ) ).toInt();
 
   //map
   mMapUuid = itemElem.attribute( QStringLiteral( "mapUuid" ) );

@@ -31,6 +31,7 @@ class QgsMapCanvas;
 
 class QgsRuleBased3DRendererWidget;
 class QgsSymbol3DWidget;
+class QgsVectorLayer3DPropertiesWidget;
 
 
 class QgsSingleSymbol3DRendererWidget : public QWidget
@@ -78,6 +79,7 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
   private:
     QComboBox *cboRendererType = nullptr;
     QStackedWidget *widgetRendererStack = nullptr;
+    QgsVectorLayer3DPropertiesWidget *widgetBaseProperties = nullptr;
 
     QLabel *widgetNoRenderer = nullptr;
     QgsSingleSymbol3DRendererWidget *widgetSingleSymbolRenderer = nullptr;

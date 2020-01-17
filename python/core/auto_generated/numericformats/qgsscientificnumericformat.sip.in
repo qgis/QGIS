@@ -1,0 +1,64 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsscientificnumericformat.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsScientificNumericFormat : QgsBasicNumericFormat
+{
+%Docstring
+A numeric formatter which returns a scientific notation representation of a value.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsscientificnumericformat.h"
+%End
+  public:
+
+    QgsScientificNumericFormat();
+%Docstring
+Default constructor
+%End
+
+    virtual QString id() const;
+
+    virtual QString visibleName() const;
+
+    virtual int sortKey();
+
+    virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
+
+    virtual QgsNumericFormat *clone() const /Factory/;
+
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
+
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
+
+
+    virtual void setNumberDecimalPlaces( int places );
+
+%Docstring
+Sets the maximum number of decimal ``places`` to show.
+
+The ``places`` argument must be at least 1.
+
+.. seealso:: :py:func:`numberDecimalPlaces`
+
+.. seealso:: :py:func:`setShowTrailingZeros`
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgsscientificnumericformat.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

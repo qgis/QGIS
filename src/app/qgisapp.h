@@ -137,6 +137,7 @@ class QgsGeoCmsProviderRegistry;
 class QgsLayoutCustomDropHandler;
 class QgsProxyProgressTask;
 class QgsNetworkRequestParameters;
+class QgsBearingNumericFormat;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -482,6 +483,23 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionShowBookmarks() { return mActionShowBookmarks; }
     QAction *actionShowBookmarkManager() { return mActionShowBookmarkManager; }
     QAction *actionDraw() { return mActionDraw; }
+    QAction *actionCircle2Points() { return mActionCircle2Points ; }
+    QAction *actionCircle3Points() { return mActionCircle3Points ; }
+    QAction *actionCircle3Tangents() { return mActionCircle3Tangents ; }
+    QAction *actionCircle2TangentsPoint() { return mActionCircle2TangentsPoint ; }
+    QAction *actionCircleCenterPoint() { return mActionCircleCenterPoint ; }
+    QAction *actionEllipseCenter2Points() { return mActionEllipseCenter2Points ; }
+    QAction *actionEllipseCenterPoint() { return mActionEllipseCenterPoint ; }
+    QAction *actionEllipseExtent() { return mActionEllipseExtent ; }
+    QAction *actionEllipseFoci() { return mActionEllipseFoci ; }
+    QAction *actionRectangleCenterPoint() { return mActionRectangleCenterPoint ; }
+    QAction *actionRectangleExtent() { return mActionRectangleExtent ; }
+    QAction *actionRectangle3PointsDistance() { return mActionRectangle3PointsDistance ; }
+    QAction *actionRectangle3PointsProjected() { return mActionRectangle3PointsProjected ; }
+    QAction *actionRegularPolygon2Points() { return mActionRegularPolygon2Points ; }
+    QAction *actionRegularPolygonCenterPoint() { return mActionRegularPolygonCenterPoint ; }
+    QAction *actionRegularPolygonCenterCorner() { return mActionRegularPolygonCenterCorner ; }
+
 
     QAction *actionDataSourceManager() { return mActionDataSourceManager; }
     QAction *actionNewVectorLayer() { return mActionNewVectorLayer; }
@@ -2389,6 +2407,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
     QgsGeometryValidationDock *mGeometryValidationDock = nullptr;
     QgsHandleBadLayersHandler *mAppBadLayersHandler = nullptr;
+
+    std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
 
     class QgsCanvasRefreshBlocker
     {

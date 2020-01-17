@@ -389,6 +389,11 @@ void MDAL::DriverTuflowFV::populateFaces( MDAL::Faces &faces )
   }
 }
 
+MDAL::DateTime MDAL::DriverTuflowFV::defaultReferenceTime() const
+{
+  return DateTime( 1990, 1, 1 );
+}
+
 void MDAL::DriverTuflowFV::calculateMaximumLevelCount()
 {
   if ( mMaximumLevelsCount < 0 )
@@ -457,7 +462,7 @@ void MDAL::DriverTuflowFV::parseNetCDFVariableMetadata( int varid, const std::st
   *is_x = true;
 
   std::string long_name = mNcFile->getAttrStr( "long_name", varid );
-  if ( long_name.empty() )
+  if ( long_name.empty() || ( long_name == "??????" ) )
   {
     name = variableName;
   }

@@ -192,7 +192,7 @@ tests:
         type: vector
 
   - algorithm: grass7:v.net.centrality
-    name: v.net.centrality
+    name: Test (grass7:v.net.centrality)
     params:
       -a: true
       -g: false
@@ -200,29 +200,25 @@ tests:
       GRASS_OUTPUT_TYPE_PARAMETER: 0
       GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
       GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_EXPORT_NOCAT: true
       GRASS_VECTOR_LCO: ''
-      betweenness: ''
+      betweenness: btw
       cats: ''
-      closeness: closeness
-      degree: degree
-      eigenvector: ''
+      closeness: cls
+      degree: dgr
+      eigenvector: eig
       error: 0.1
       input:
-        name: custom/grass7/network.shp
+        name: roads.gml|layername=roads
         type: vector
       iterations: 1000
-      points:
-        name: custom/grass7/network_points.shp
-        type: vector
-      threshold: 50.0
       where: ''
     results:
       output:
         name: expected/grass7/v_net_centrality.shp
         type: vector
         compare:
-          geometry:
-            precision: 3
+          ignore_crs_check: true
 
   - algorithm: grass7:v.net.distance
     name: v.net.distance

@@ -40,6 +40,7 @@
 #include "qgsmessagelog.h"
 #include "costcalculator.h"
 #include "qgsgeometryutils.h"
+#include "qgslabeling.h"
 #include <QLinkedList>
 #include <cmath>
 #include <cfloat>
@@ -157,6 +158,55 @@ QgsFeatureId FeaturePart::featureId() const
   return mLF->id();
 }
 
+std::size_t FeaturePart::maximumPointCandidates() const
+{
+  return mLF->layer()->maximumPointLabelCandidates();
+}
+
+std::size_t FeaturePart::maximumLineCandidates() const
+{
+  if ( mCachedMaxLineCandidates > 0 )
+    return mCachedMaxLineCandidates;
+
+  const double l = length();
+  if ( l > 0 )
+  {
+    const std::size_t candidatesForLineLength = static_cast< std::size_t >( std::ceil( mLF->layer()->mPal->maximumLineCandidatesPerMapUnit() * l ) );
+    const std::size_t maxForLayer = mLF->layer()->maximumLineLabelCandidates();
+    if ( maxForLayer == 0 )
+      mCachedMaxLineCandidates = candidatesForLineLength;
+    else
+      mCachedMaxLineCandidates = std::min( candidatesForLineLength, maxForLayer );
+  }
+  else
+  {
+    mCachedMaxLineCandidates = 1;
+  }
+  return mCachedMaxLineCandidates;
+}
+
+std::size_t FeaturePart::maximumPolygonCandidates() const
+{
+  if ( mCachedMaxPolygonCandidates > 0 )
+    return mCachedMaxPolygonCandidates;
+
+  const double a = area();
+  if ( a > 0 )
+  {
+    const std::size_t candidatesForArea = static_cast< std::size_t >( std::ceil( mLF->layer()->mPal->maximumPolygonCandidatesPerMapUnitSquared() * a ) );
+    const std::size_t maxForLayer = mLF->layer()->maximumPolygonLabelCandidates();
+    if ( maxForLayer == 0 )
+      mCachedMaxPolygonCandidates = candidatesForArea;
+    else
+      mCachedMaxPolygonCandidates = std::min( candidatesForArea, maxForLayer );
+  }
+  else
+  {
+    mCachedMaxPolygonCandidates = 1;
+  }
+  return mCachedMaxPolygonCandidates;
+}
+
 bool FeaturePart::hasSameLabelFeatureAs( FeaturePart *part ) const
 {
   if ( !part )
@@ -249,6 +299,8 @@ std::size_t FeaturePart::createCandidatesOverPoint( double x, double y, std::vec
   double xdiff = -labelW / 2.0;
   double ydiff = -labelH / 2.0;
 
+  feature()->setAnchorPosition( QgsPointXY( x, y ) );
+
   if ( !qgsDoubleNear( mLF->quadOffset().x(), 0.0 ) )
   {
     xdiff += labelW / 2.0 * mLF->quadOffset().x();
@@ -310,7 +362,7 @@ std::size_t FeaturePart::createCandidatesOverPoint( double x, double y, std::vec
     }
   }
 
-  lPos.emplace_back( qgis::make_unique< LabelPosition >( id, lx, ly, labelW, labelH, angle, cost, this, false, quadrantFromOffset(), xdiff, ydiff ) );
+  lPos.emplace_back( qgis::make_unique< LabelPosition >( id, lx, ly, labelW, labelH, angle, cost, this, false, quadrantFromOffset() ) );
   return nbp;
 }
 
@@ -343,7 +395,7 @@ std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( Point
 
 std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, double y, std::vector< std::unique_ptr< LabelPosition > > &lPos, double angle )
 {
-  QVector< QgsPalLayerSettings::PredefinedPointPosition > positions = mLF->predefinedPositionOrder();
+  const QVector< QgsPalLayerSettings::PredefinedPointPosition > positions = mLF->predefinedPositionOrder();
   double labelWidth = getLabelWidth( angle );
   double labelHeight = getLabelHeight( angle );
   double distanceToLabel = getLabelDistance();
@@ -354,10 +406,9 @@ std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, 
 
   double cost = 0.0001;
   int i = 0;
-  const auto constPositions = positions;
 
   const std::size_t maxNumberCandidates = mLF->layer()->maximumPointLabelCandidates();
-  for ( QgsPalLayerSettings::PredefinedPointPosition position : constPositions )
+  for ( QgsPalLayerSettings::PredefinedPointPosition position : positions )
   {
     double alpha = 0.0;
     double deltaX = 0;
@@ -462,7 +513,7 @@ std::size_t FeaturePart::createCandidatesAtOrderedPositionsOverPoint( double x, 
       lPos.emplace_back( qgis::make_unique< LabelPosition >( i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant ) );
       //TODO - tweak
       cost += 0.001;
-      if ( lPos.size() >= maxNumberCandidates )
+      if ( maxNumberCandidates > 0 && lPos.size() >= maxNumberCandidates )
         break;
     }
     ++i;
@@ -477,7 +528,9 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
   double labelHeight = getLabelHeight( angle );
   double distanceToLabel = getLabelDistance();
 
-  const std::size_t maxNumberCandidates = mLF->layer()->maximumPointLabelCandidates();
+  std::size_t maxNumberCandidates = mLF->layer()->maximumPointLabelCandidates();
+  if ( maxNumberCandidates == 0 )
+    maxNumberCandidates = 16;
 
   int icost = 0;
   int inc = 2;
@@ -634,7 +687,8 @@ std::size_t FeaturePart::createCandidatesAlongLine( std::vector< std::unique_ptr
   //prefer to label along straightish segments:
   std::size_t candidates = createCandidatesAlongLineNearStraightSegments( lPos, mapShape, pal );
 
-  if ( static_cast< int >( candidates ) < mLF->layer()->maximumLineLabelCandidates() )
+  const std::size_t candidateTargetCount = maximumLineCandidates();
+  if ( candidates < candidateTargetCount )
   {
     // but not enough candidates yet, so fallback to labeling near whole line's midpoint
     candidates = createCandidatesAlongLineNearMidpoint( lPos, mapShape, candidates > 0 ? 0.01 : 0.0, pal );
@@ -647,9 +701,9 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
   double labelWidth = getLabelWidth();
   double labelHeight = getLabelHeight();
   double distanceLineToLabel = getLabelDistance();
-  LineArrangementFlags flags = mLF->arrangementFlags();
+  QgsLabeling::LinePlacementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
-    flags = FLAG_ON_LINE; // default flag
+    flags = QgsLabeling::LinePlacementFlag::OnLine; // default flag
 
   // first scan through the whole line and look for segments where the angle at a node is greater than 45 degrees - these form a "hard break" which labels shouldn't cross over
   QVector< int > extremeAngleNodes;
@@ -733,8 +787,9 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
     return 0; //createCandidatesAlongLineNearMidpoint will be more appropriate
   }
 
+  const std::size_t candidateTargetCount = maximumLineCandidates();
   double lineStepDistance = ( totalLineLength - labelWidth ); // distance to move along line with each candidate
-  lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / mLF->layer()->maximumLineLabelCandidates() );
+  lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / candidateTargetCount );
 
   double distanceToEndOfSegment = 0.0;
   int lastNodeInSegment = 0;
@@ -822,9 +877,9 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
         // find out whether the line direction for this candidate is from right to left
         bool isRightToLeft = ( angle > M_PI_2 || angle <= -M_PI_2 );
         // meaning of above/below may be reversed if using map orientation and the line has right-to-left direction
-        bool reversed = ( ( flags & FLAG_MAP_ORIENTATION ) ? isRightToLeft : false );
-        bool aboveLine = ( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) );
-        bool belowLine = ( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) );
+        bool reversed = ( ( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) ? isRightToLeft : false );
+        bool aboveLine = ( !reversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) || ( reversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) );
+        bool belowLine = ( !reversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) || ( reversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) );
 
         if ( belowLine )
         {
@@ -842,7 +897,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearStraightSegments( std::vec
             lPos.emplace_back( qgis::make_unique< LabelPosition >( i, candidateStartX + std::cos( beta ) *distanceLineToLabel, candidateStartY + std::sin( beta ) *distanceLineToLabel, labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ) ); // Line
           }
         }
-        if ( flags & FLAG_ON_LINE )
+        if ( flags & QgsLabeling::LinePlacementFlag::OnLine )
         {
           if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle ) )
           {
@@ -877,9 +932,9 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
   double angle;
   double cost;
 
-  LineArrangementFlags flags = mLF->arrangementFlags();
+  QgsLabeling::LinePlacementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
-    flags = FLAG_ON_LINE; // default flag
+    flags = QgsLabeling::LinePlacementFlag::OnLine; // default flag
 
   PointSet *line = mapShape;
   int nbPoints = line->nbPoints;
@@ -905,9 +960,11 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
   double lineStepDistance = ( totalLineLength - labelWidth ); // distance to move along line with each candidate
   double currentDistanceAlongLine = 0;
 
+  const std::size_t candidateTargetCount = maximumLineCandidates();
+
   if ( totalLineLength > labelWidth )
   {
-    lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / mLF->layer()->maximumLineLabelCandidates() );
+    lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / candidateTargetCount );
   }
   else if ( !line->isClosed() ) // line length < label width => centering label position
   {
@@ -977,9 +1034,9 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
       // find out whether the line direction for this candidate is from right to left
       bool isRightToLeft = ( angle > M_PI_2 || angle <= -M_PI_2 );
       // meaning of above/below may be reversed if using map orientation and the line has right-to-left direction
-      bool reversed = ( ( flags & FLAG_MAP_ORIENTATION ) ? isRightToLeft : false );
-      bool aboveLine = ( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) );
-      bool belowLine = ( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) );
+      bool reversed = ( ( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) ? isRightToLeft : false );
+      bool aboveLine = ( !reversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) || ( reversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) );
+      bool belowLine = ( !reversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) || ( reversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) );
 
       if ( aboveLine )
       {
@@ -997,7 +1054,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
           lPos.emplace_back( qgis::make_unique< LabelPosition >( i, candidateStartX - std::cos( beta ) * ( distanceLineToLabel + labelHeight ), candidateStartY - std::sin( beta ) * ( distanceLineToLabel + labelHeight ), labelWidth, labelHeight, angle, candidateCost, this, isRightToLeft ) ); // Line
         }
       }
-      if ( flags & FLAG_ON_LINE )
+      if ( flags & QgsLabeling::LinePlacementFlag::OnLine )
       {
         if ( !mLF->permissibleZonePrepared() || GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), candidateStartX - labelHeight * std::cos( beta ) / 2, candidateStartY - labelHeight * std::sin( beta ) / 2, labelWidth, labelHeight, angle ) )
         {
@@ -1027,7 +1084,7 @@ std::size_t FeaturePart::createCandidatesAlongLineNearMidpoint( std::vector< std
 }
 
 
-LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, double *path_distances, int &orientation, const double offsetAlongLine, bool &reversed, bool &flip )
+std::unique_ptr< LabelPosition > FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, double *path_distances, int &orientation, const double offsetAlongLine, bool &reversed, bool &flip )
 {
   double offsetAlongSegment = offsetAlongLine;
   int index = 1;
@@ -1099,7 +1156,7 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
     }
   }
 
-  LabelPosition *slp = nullptr;
+  std::unique_ptr< LabelPosition > slp;
   LabelPosition *slp_tmp = nullptr;
 
   double old_x = path_positions->x[index - 1];
@@ -1126,7 +1183,6 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
     double start_x, start_y, end_x, end_y;
     if ( !nextCharPosition( ci.width, path_distances[index], path_positions, index, offsetAlongSegment, start_x, start_y, end_x, end_y ) )
     {
-      delete slp;
       return nullptr;
     }
 
@@ -1145,7 +1201,6 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
          || ( li->max_char_angle_outside < 0 && angle_delta < 0
               && angle_delta < li->max_char_angle_outside * ( M_PI / 180 ) ) )
     {
-      delete slp;
       return nullptr;
     }
 
@@ -1177,13 +1232,14 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
       render_angle += M_PI;
     }
 
-    LabelPosition *tmp = new LabelPosition( 0, render_x /*- xBase*/, render_y /*- yBase*/, ci.width, string_height, -render_angle, 0.0001, this );
+    std::unique_ptr< LabelPosition > tmp = qgis::make_unique< LabelPosition >( 0, render_x /*- xBase*/, render_y /*- yBase*/, ci.width, string_height, -render_angle, 0.0001, this );
     tmp->setPartId( orientation > 0 ? i : li->char_num - i - 1 );
+    LabelPosition *next = tmp.get();
     if ( !slp )
-      slp = tmp;
+      slp = std::move( tmp );
     else
-      slp_tmp->setNextPart( tmp );
-    slp_tmp = tmp;
+      slp_tmp->setNextPart( std::move( tmp ) );
+    slp_tmp = next;
 
     // Normalise to 0 <= angle < 2PI
     while ( render_angle >= 2 * M_PI ) render_angle -= 2 * M_PI;
@@ -1196,9 +1252,9 @@ LabelPosition *FeaturePart::curvedPlacementAtOffset( PointSet *path_positions, d
   return slp;
 }
 
-static LabelPosition *_createCurvedCandidate( LabelPosition *lp, double angle, double dist )
+static std::unique_ptr< LabelPosition > _createCurvedCandidate( LabelPosition *lp, double angle, double dist )
 {
-  LabelPosition *newLp = new LabelPosition( *lp );
+  std::unique_ptr< LabelPosition > newLp = qgis::make_unique< LabelPosition >( *lp );
   newLp->offsetPosition( dist * std::cos( angle + M_PI_2 ), dist * std::sin( angle + M_PI_2 ) );
   return newLp;
 }
@@ -1270,12 +1326,13 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   if ( pal->isCanceled() )
     return 0;
 
-  QLinkedList<LabelPosition *> positions;
-  double delta = std::max( li->label_height / 6, total_distance / mLF->layer()->maximumLineLabelCandidates() );
+  std::vector< std::unique_ptr< LabelPosition >> positions;
+  const std::size_t candidateTargetCount = maximumLineCandidates();
+  double delta = std::max( li->label_height / 6, total_distance / candidateTargetCount );
 
-  pal::LineArrangementFlags flags = mLF->arrangementFlags();
+  QgsLabeling::LinePlacementFlags flags = mLF->arrangementFlags();
   if ( flags == 0 )
-    flags = FLAG_ON_LINE; // default flag
+    flags = QgsLabeling::LinePlacementFlag::OnLine; // default flag
 
   // generate curved labels
   for ( double distanceAlongLineToStartCandidate = 0; distanceAlongLineToStartCandidate < total_distance; distanceAlongLineToStartCandidate += delta )
@@ -1289,14 +1346,14 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
 
     // an orientation of 0 means try both orientations and choose the best
     int orientation = 0;
-    if ( !( flags & FLAG_MAP_ORIENTATION ) )
+    if ( !( flags & QgsLabeling::LinePlacementFlag::MapOrientation ) )
     {
       //... but if we are using line orientation flags, then we can only accept a single orientation,
       // as we need to ensure that the labels fall inside or outside the polyline or polygon (and not mixed)
       orientation = 1;
     }
 
-    LabelPosition *slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, distanceAlongLineToStartCandidate, reversed, flip );
+    std::unique_ptr< LabelPosition > slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, distanceAlongLineToStartCandidate, reversed, flip );
     if ( !slp )
       continue;
 
@@ -1306,7 +1363,6 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       // if labels should be shown upright then retry with the opposite orientation
       if ( ( showUprightLabels() && !flip ) )
       {
-        delete slp;
         orientation = -orientation;
         slp = curvedPlacementAtOffset( mapShape, path_distances.get(), orientation, distanceAlongLineToStartCandidate, reversed, flip );
       }
@@ -1316,11 +1372,11 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
 
     // evaluate cost
     double angle_diff = 0.0, angle_last = 0.0, diff;
-    LabelPosition *tmp = slp;
+    LabelPosition *tmp = slp.get();
     double sin_avg = 0, cos_avg = 0;
     while ( tmp )
     {
-      if ( tmp != slp ) // not first?
+      if ( tmp != slp.get() ) // not first?
       {
         diff = std::fabs( tmp->getAlpha() - angle_last );
         if ( diff > 2 * M_PI ) diff -= 2 * M_PI;
@@ -1331,7 +1387,7 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
       sin_avg += std::sin( tmp->getAlpha() );
       cos_avg += std::cos( tmp->getAlpha() );
       angle_last = tmp->getAlpha();
-      tmp = tmp->getNextPart();
+      tmp = tmp->nextPart();
     }
 
     double angle_diff_avg = li->char_num > 1 ? ( angle_diff / ( li->char_num - 1 ) ) : 0; // <0, pi> but pi/8 is much already
@@ -1350,51 +1406,46 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     // displacement - we loop through 3 times, generating above, online then below line placements successively
     for ( int i = 0; i <= 2; ++i )
     {
-      LabelPosition *p = nullptr;
-      if ( i == 0 && ( ( !localreversed && ( flags & FLAG_ABOVE_LINE ) ) || ( localreversed && ( flags & FLAG_BELOW_LINE ) ) ) )
-        p = _createCurvedCandidate( slp, angle_avg, mLF->distLabel() + li->label_height / 2 );
-      if ( i == 1 && flags & FLAG_ON_LINE )
+      std::unique_ptr< LabelPosition > p;
+      if ( i == 0 && ( ( !localreversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) || ( localreversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) ) )
+        p = _createCurvedCandidate( slp.get(), angle_avg, mLF->distLabel() + li->label_height / 2 );
+      if ( i == 1 && flags & QgsLabeling::LinePlacementFlag::OnLine )
       {
-        p = _createCurvedCandidate( slp, angle_avg, 0 );
+        p = _createCurvedCandidate( slp.get(), angle_avg, 0 );
         p->setCost( p->cost() + 0.002 );
       }
-      if ( i == 2 && ( ( !localreversed && ( flags & FLAG_BELOW_LINE ) ) || ( localreversed && ( flags & FLAG_ABOVE_LINE ) ) ) )
+      if ( i == 2 && ( ( !localreversed && ( flags & QgsLabeling::LinePlacementFlag::BelowLine ) ) || ( localreversed && ( flags & QgsLabeling::LinePlacementFlag::AboveLine ) ) ) )
       {
-        p = _createCurvedCandidate( slp, angle_avg, -li->label_height / 2 - mLF->distLabel() );
+        p = _createCurvedCandidate( slp.get(), angle_avg, -li->label_height / 2 - mLF->distLabel() );
         p->setCost( p->cost() + 0.001 );
       }
 
       if ( p && mLF->permissibleZonePrepared() )
       {
         bool within = true;
-        LabelPosition *currentPos = p;
+        LabelPosition *currentPos = p.get();
         while ( within && currentPos )
         {
           within = GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), currentPos->getX(), currentPos->getY(), currentPos->getWidth(), currentPos->getHeight(), currentPos->getAlpha() );
-          currentPos = currentPos->getNextPart();
+          currentPos = currentPos->nextPart();
         }
         if ( !within )
         {
-          delete p;
-          p = nullptr;
+          p.reset();
         }
       }
 
       if ( p )
-        positions.append( p );
+        positions.emplace_back( std::move( p ) );
     }
-
-    // delete original candidate
-    delete slp;
   }
 
-  std::size_t nbp = positions.size();
-  for ( std::size_t i = 0; i < nbp; i++ )
+  for ( std::unique_ptr< LabelPosition > &pos : positions )
   {
-    lPos.emplace_back( std::unique_ptr< LabelPosition >( positions.takeFirst() ) );
+    lPos.emplace_back( std::move( pos ) );
   }
 
-  return nbp;
+  return positions.size();
 }
 
 /*
@@ -1414,8 +1465,13 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
   double labelWidth = getLabelWidth();
   double labelHeight = getLabelHeight();
 
+  const std::size_t maxPolygonCandidates = mLF->layer()->maximumPolygonLabelCandidates();
+  const std::size_t targetPolygonCandidates = maxPolygonCandidates > 0 ? std::min( maxPolygonCandidates,  static_cast< std::size_t>( std::ceil( mLF->layer()->mPal->maximumPolygonCandidatesPerMapUnitSquared() * area() ) ) )
+      : 0;
+
   QLinkedList<PointSet *> shapes_toProcess;
   QLinkedList<PointSet *> shapes_final;
+  const double totalArea = area();
 
   mapShape->parent = nullptr;
 
@@ -1434,8 +1490,7 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
     double dlx, dly; // delta from label center and bottom-left corner
     double alpha = 0.0; // rotation for the label
     double px, py;
-    double dx;
-    double dy;
+
     double beta;
     double diago = std::sqrt( labelWidth * labelWidth / 4.0 + labelHeight * labelHeight / 4 );
     double rx, ry;
@@ -1455,10 +1510,8 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
     if ( pal->isCanceled() )
       return 0;
 
-    //dx = dy = min( yrm, xrm ) / 2;
-    dx = labelWidth / 2.0;
-    dy = labelHeight / 2.0;
-
+    double densityX = 1.0 / std::sqrt( mLF->layer()->mPal->maximumPolygonCandidatesPerMapUnitSquared() );
+    double densityY = densityX;
     int numTry = 0;
 
     //fit in polygon only mode slows down calculation a lot, so if it's enabled
@@ -1471,6 +1524,26 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
     {
       for ( CHullBox &box : boxes )
       {
+        // there is two possibilities here:
+        // 1. no maximum candidates for polygon setting is in effect (i.e. maxPolygonCandidates == 0). In that case,
+        // we base our dx/dy on the current maximumPolygonCandidatesPerMapUnitSquared value. That should give us the desired
+        // density of candidates straight up. Easy!
+        // 2. a maximum candidate setting IS in effect. In that case, we want to generate a good initial estimate for dx/dy
+        // which gives us a good spatial coverage of the polygon while roughly matching the desired maximum number of candidates.
+        // If dx/dy is too small, then too many candidates will be generated, which is both slow AND results in poor coverage of the
+        // polygon (after culling candidates to the max number, only those clustered around the polygon's pole of inaccessibility
+        // will remain).
+        double dx = densityX;
+        double dy = densityY;
+        if ( numTry == 0 && maxPolygonCandidates > 0 )
+        {
+          // scale maxPolygonCandidates for just this convex hull
+          const double boxArea = box.width * box.length;
+          double maxThisBox = targetPolygonCandidates * boxArea / totalArea;
+          dx = std::max( dx, std::sqrt( boxArea / maxThisBox ) * 0.8 );
+          dy = dx;
+        }
+
         if ( pal->isCanceled() )
           return numberCandidatesGenerated;
 
@@ -1553,10 +1626,8 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
         dlx = std::cos( beta ) * diago;
         dly = std::sin( beta ) * diago;
 
-        double px0, py0;
-
-        px0 = box.width / 2.0;
-        py0 = box.length / 2.0;
+        double px0 = box.width / 2.0;
+        double py0 = box.length / 2.0;
 
         px0 -= std::ceil( px0 / dx ) * dx;
         py0 -= std::ceil( py0 / dy ) * dy;
@@ -1575,28 +1646,46 @@ std::size_t FeaturePart::createCandidatesForPolygon( std::vector< std::unique_pt
             rx += box.x[0];
             ry += box.y[0];
 
-            bool candidateAcceptable = ( mLF->permissibleZonePrepared()
-                                         ? GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), rx - dlx, ry - dly, labelWidth, labelHeight, alpha )
-                                         : mapShape->containsPoint( rx, ry ) );
-            if ( candidateAcceptable )
+            if ( mLF->permissibleZonePrepared() )
             {
-              // cost is set to minimal value, evaluated later
-              lPos.emplace_back( qgis::make_unique< LabelPosition >( id++, rx - dlx, ry - dly, labelWidth, labelHeight, alpha, 0.0001, this ) ); // Polygon
-              numberCandidatesGenerated++;
+              if ( GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), rx - dlx, ry - dly, labelWidth, labelHeight, alpha ) )
+              {
+                // cost is set to minimal value, evaluated later
+                lPos.emplace_back( qgis::make_unique< LabelPosition >( id++, rx - dlx, ry - dly, labelWidth, labelHeight, alpha, 0.0001, this ) );
+                numberCandidatesGenerated++;
+              }
+            }
+            else
+            {
+              // TODO - this should be an intersection test, not just a contains test of the candidate centroid
+              // because in some cases we would want to allow candidates which mostly overlap the polygon even though
+              // their centroid doesn't overlap (e.g. a "U" shaped polygon)
+              // but the bugs noted in CostCalculator currently prevent this
+              if ( mapShape->containsPoint( rx, ry ) )
+              {
+                std::unique_ptr< LabelPosition > potentialCandidate = qgis::make_unique< LabelPosition >( id++, rx - dlx, ry - dly, labelWidth, labelHeight, alpha, 0.0001, this );
+                // cost is set to minimal value, evaluated later
+                lPos.emplace_back( std::move( potentialCandidate ) );
+                numberCandidatesGenerated++;
+              }
             }
           }
         }
       } // forall box
 
       nbp = numberCandidatesGenerated;
-      if ( nbp == 0 )
+      if ( maxPolygonCandidates > 0 && nbp < targetPolygonCandidates )
       {
-        dx /= 2;
-        dy /= 2;
+        densityX /= 2;
+        densityY /= 2;
         numTry++;
       }
+      else
+      {
+        break;
+      }
     }
-    while ( nbp == 0 && numTry < maxTry );
+    while ( numTry < maxTry );
 
     nbp = numberCandidatesGenerated;
   }
@@ -1615,7 +1704,7 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
 
   if ( mLF->hasFixedPosition() )
   {
-    lPos.emplace_back( qgis::make_unique< LabelPosition> ( 0, mLF->fixedPosition().x(), mLF->fixedPosition().y(), getLabelWidth( angle ), getLabelHeight( angle ), angle, 0.0, this ) );
+    lPos.emplace_back( qgis::make_unique< LabelPosition> ( 0, mLF->fixedPosition().x(), mLF->fixedPosition().y(), getLabelWidth( angle ), getLabelHeight( angle ), angle, 0.0, this, false, LabelPosition::Quadrant::QuadrantOver ) );
   }
   else
   {
@@ -1664,7 +1753,7 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
   return lPos;
 }
 
-void FeaturePart::addSizePenalty( std::size_t nbp, std::vector< std::unique_ptr< LabelPosition > > &lPos, double bbx[4], double bby[4] )
+void FeaturePart::addSizePenalty( std::vector< std::unique_ptr< LabelPosition > > &lPos, double bbx[4], double bby[4] )
 {
   if ( !mGeos )
     createGeosGeom();
@@ -1675,49 +1764,32 @@ void FeaturePart::addSizePenalty( std::size_t nbp, std::vector< std::unique_ptr<
   double sizeCost = 0;
   if ( geomType == GEOS_LINESTRING )
   {
-    double length;
-    try
-    {
-      if ( GEOSLength_r( ctxt, mGeos, &length ) != 1 )
-        return; // failed to calculate length
-    }
-    catch ( GEOSException &e )
-    {
-      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
-      return;
-    }
+    const double l = length();
+    if ( l <= 0 )
+      return; // failed to calculate length
     double bbox_length = std::max( bbx[2] - bbx[0], bby[2] - bby[0] );
-    if ( length >= bbox_length / 4 )
+    if ( l >= bbox_length / 4 )
       return; // the line is longer than quarter of height or width - don't penalize it
 
-    sizeCost = 1 - ( length / ( bbox_length / 4 ) ); // < 0,1 >
+    sizeCost = 1 - ( l / ( bbox_length / 4 ) ); // < 0,1 >
   }
   else if ( geomType == GEOS_POLYGON )
   {
-    double area;
-    try
-    {
-      if ( GEOSArea_r( ctxt, mGeos, &area ) != 1 )
-        return;
-    }
-    catch ( GEOSException &e )
-    {
-      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    const double a = area();
+    if ( a <= 0 )
       return;
-    }
     double bbox_area = ( bbx[2] - bbx[0] ) * ( bby[2] - bby[0] );
-    if ( area >= bbox_area / 16 )
+    if ( a >= bbox_area / 16 )
       return; // covers more than 1/16 of our view - don't penalize it
 
-    sizeCost = 1 - ( area / ( bbox_area / 16 ) ); // < 0, 1 >
+    sizeCost = 1 - ( a / ( bbox_area / 16 ) ); // < 0, 1 >
   }
   else
     return; // no size penalty for points
 
-  // apply the penalty
-  for ( std::size_t i = 0; i < nbp; i++ )
+// apply the penalty
+  for ( std::unique_ptr< LabelPosition > &pos : lPos )
   {
-    LabelPosition *pos = lPos[ i ].get();
     pos->setCost( pos->cost() + sizeCost / 100 );
   }
 }

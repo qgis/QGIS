@@ -85,7 +85,6 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QStringList subLayerStyles() const override;
     void setLayerOrder( const QStringList &layers ) override;
     void setSubLayerVisibility( const QString &name, bool vis ) override;
-    void reloadData() override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
     QgsLayerMetadata layerMetadata() const override;
 
@@ -158,6 +157,11 @@ class QgsAmsProvider : public QgsRasterDataProvider
     int mMaxImageHeight = 4096;
     QgsLayerMetadata mLayerMetadata;
     QList< double > mResolutions;
+
+    /**
+     * Resets cached image
+    */
+    void reloadProviderData() override;
 };
 
 //! Handler for tiled MapServer requests, the data are written to the given image

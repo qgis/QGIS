@@ -123,7 +123,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   blockAllSignals( true );
 
   mCrsSelector->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
-  mCrsSelector->setNotSetText( tr( "Use project CRS" ) );
+  mCrsSelector->setNotSetText( tr( "Use Project CRS" ) );
 
   mOverviewFrameStyleButton->setSymbolType( QgsSymbol::Fill );
 

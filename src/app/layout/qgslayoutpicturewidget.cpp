@@ -38,6 +38,23 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   , mPicture( picture )
 {
   setupUi( this );
+
+  mResizeModeComboBox->addItem( tr( "Zoom" ), QgsLayoutItemPicture::Zoom );
+  mResizeModeComboBox->addItem( tr( "Stretch" ), QgsLayoutItemPicture::Stretch );
+  mResizeModeComboBox->addItem( tr( "Clip" ), QgsLayoutItemPicture::Clip );
+  mResizeModeComboBox->addItem( tr( "Zoom and Resize Frame" ), QgsLayoutItemPicture::ZoomResizeFrame );
+  mResizeModeComboBox->addItem( tr( "Resize Frame to Image Size" ), QgsLayoutItemPicture::FrameToImageSize );
+
+  mAnchorPointComboBox->addItem( tr( "Top Left" ), QgsLayoutItem::UpperLeft );
+  mAnchorPointComboBox->addItem( tr( "Top Center" ), QgsLayoutItem::UpperMiddle );
+  mAnchorPointComboBox->addItem( tr( "Top Right" ), QgsLayoutItem::UpperRight );
+  mAnchorPointComboBox->addItem( tr( "Middle Left" ), QgsLayoutItem::MiddleLeft );
+  mAnchorPointComboBox->addItem( tr( "Middle" ), QgsLayoutItem::Middle );
+  mAnchorPointComboBox->addItem( tr( "Middle Right" ), QgsLayoutItem::MiddleRight );
+  mAnchorPointComboBox->addItem( tr( "Bottom Left" ), QgsLayoutItem::LowerLeft );
+  mAnchorPointComboBox->addItem( tr( "Bottom Center" ), QgsLayoutItem::LowerMiddle );
+  mAnchorPointComboBox->addItem( tr( "Bottom Right" ), QgsLayoutItem::LowerRight );
+
   connect( mPictureBrowseButton, &QPushButton::clicked, this, &QgsLayoutPictureWidget::mPictureBrowseButton_clicked );
   connect( mPictureLineEdit, &QLineEdit::editingFinished, this, &QgsLayoutPictureWidget::mPictureLineEdit_editingFinished );
   connect( mPictureRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPictureWidget::mPictureRotationSpinBox_valueChanged );
@@ -65,8 +82,8 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   mStrokeColorDDBtn->registerLinkedWidget( mStrokeColorButton );
 
   mNorthTypeComboBox->blockSignals( true );
-  mNorthTypeComboBox->addItem( tr( "Grid north" ), QgsLayoutItemPicture::GridNorth );
-  mNorthTypeComboBox->addItem( tr( "True north" ), QgsLayoutItemPicture::TrueNorth );
+  mNorthTypeComboBox->addItem( tr( "Grid North" ), QgsLayoutItemPicture::GridNorth );
+  mNorthTypeComboBox->addItem( tr( "True North" ), QgsLayoutItemPicture::TrueNorth );
   mNorthTypeComboBox->blockSignals( false );
   mPictureRotationOffsetSpinBox->setClearValue( 0.0 );
   mPictureRotationSpinBox->setClearValue( 0.0 );
@@ -249,7 +266,7 @@ void QgsLayoutPictureWidget::mRemoveDirectoryButton_clicked()
   s.setValue( QStringLiteral( "/Composer/PictureWidgetDirectories" ), userDirList );
 }
 
-void QgsLayoutPictureWidget::mResizeModeComboBox_currentIndexChanged( int index )
+void QgsLayoutPictureWidget::mResizeModeComboBox_currentIndexChanged( int )
 {
   if ( !mPicture )
   {
@@ -257,7 +274,7 @@ void QgsLayoutPictureWidget::mResizeModeComboBox_currentIndexChanged( int index 
   }
 
   mPicture->beginCommand( tr( "Change Resize Mode" ) );
-  mPicture->setResizeMode( ( QgsLayoutItemPicture::ResizeMode )index );
+  mPicture->setResizeMode( static_cast< QgsLayoutItemPicture::ResizeMode >( mResizeModeComboBox->currentData().toInt() ) );
   mPicture->endCommand();
 
   //disable picture rotation for non-zoom modes
@@ -276,7 +293,7 @@ void QgsLayoutPictureWidget::mResizeModeComboBox_currentIndexChanged( int index 
   }
 }
 
-void QgsLayoutPictureWidget::mAnchorPointComboBox_currentIndexChanged( int index )
+void QgsLayoutPictureWidget::mAnchorPointComboBox_currentIndexChanged( int )
 {
   if ( !mPicture )
   {
@@ -284,7 +301,7 @@ void QgsLayoutPictureWidget::mAnchorPointComboBox_currentIndexChanged( int index
   }
 
   mPicture->beginCommand( tr( "Change Placement" ) );
-  mPicture->setPictureAnchor( static_cast< QgsLayoutItem::ReferencePoint >( index ) );
+  mPicture->setPictureAnchor( static_cast< QgsLayoutItem::ReferencePoint >( mAnchorPointComboBox->currentData().toInt() ) );
   mPicture->endCommand();
 }
 
@@ -416,12 +433,12 @@ void QgsLayoutPictureWidget::setGuiElementValues()
     mNorthTypeComboBox->setCurrentIndex( mNorthTypeComboBox->findData( mPicture->northMode() ) );
     mPictureRotationOffsetSpinBox->setValue( mPicture->northOffset() );
 
-    mResizeModeComboBox->setCurrentIndex( static_cast<int>( mPicture->resizeMode() ) );
+    mResizeModeComboBox->setCurrentIndex( mResizeModeComboBox->findData( mPicture->resizeMode() ) );
     //disable picture rotation for non-zoom modes
     mRotationGroupBox->setEnabled( mPicture->resizeMode() == QgsLayoutItemPicture::Zoom ||
                                    mPicture->resizeMode() == QgsLayoutItemPicture::ZoomResizeFrame );
 
-    mAnchorPointComboBox->setCurrentIndex( static_cast<int>( mPicture->pictureAnchor() ) );
+    mAnchorPointComboBox->setCurrentIndex( mAnchorPointComboBox->findData( mPicture->pictureAnchor() ) );
     //disable anchor point control for certain zoom modes
     if ( mPicture->resizeMode() == QgsLayoutItemPicture::Zoom ||
          mPicture->resizeMode() == QgsLayoutItemPicture::Clip )

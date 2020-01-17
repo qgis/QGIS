@@ -580,14 +580,14 @@ void QgsGeometryCheckerResultTab::setDefaultResolutionMethods()
     groupBoxLayout->setContentsMargins( 2, 0, 2, 2 );
     QButtonGroup *radioGroup = new QButtonGroup( groupBox );
     radioGroup->setProperty( "errorType", check->id() );
-    int id = 0;
     int checkedId = QgsSettings().value( sSettingsGroup + check->id(), QVariant::fromValue<int>( 0 ) ).toInt();
-    for ( const QString &method : check->resolutionMethods() )
+    const QList<QgsGeometryCheckResolutionMethod> resolutionMethods = check->availableResolutionMethods();
+    for ( const QgsGeometryCheckResolutionMethod &method : resolutionMethods )
     {
-      QRadioButton *radio = new QRadioButton( method, groupBox );
-      radio->setChecked( id == checkedId );
+      QRadioButton *radio = new QRadioButton( method.name(), groupBox );
+      radio->setChecked( method.id() == checkedId );
       groupBoxLayout->addWidget( radio );
-      radioGroup->addButton( radio, id++ );
+      radioGroup->addButton( radio, method.id() );
     }
     connect( radioGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsGeometryCheckerResultTab::storeDefaultResolutionMethod );
 

@@ -20,6 +20,7 @@
 #include "qgsconfig.h"
 
 #include <QRegExp>
+#include <QTemporaryDir>
 
 #include <iostream>
 #include <limits>
@@ -50,7 +51,8 @@ int main( int argc, char **argv )
       verbose = true;
   }
 
-  QgsApplication::init();
+  QTemporaryDir temp;
+  QgsApplication::init( temp.path() );
 
   if ( !QgsApplication::isRunningFromBuildDir() )
   {

@@ -1152,6 +1152,16 @@ class TestQgsExpression: public QObject
       QTest::newRow( "flip_coordinates not geom" ) << "flip_coordinates('g')" << true << QVariant();
       QTest::newRow( "flip_coordinates null" ) << "flip_coordinates(NULL)" << false << QVariant();
       QTest::newRow( "flip_coordinates point" ) << "geom_to_wkt(flip_coordinates(geom_from_wkt('POINT(1 2)')))" << false << QVariant( "Point (2 1)" );
+      QTest::newRow( "rotate not geom" ) << "rotate('g', 90)" << true << QVariant();
+      QTest::newRow( "rotate null" ) << "rotate(NULL, 90)" << false << QVariant();
+      QTest::newRow( "rotate point" ) << "geom_to_wkt(rotate(geom_from_wkt('POINT( 20 10)'), 90, geom_from_wkt('POINT( 30 15)')))" << false << QVariant( "Point (25 25)" );
+      QTest::newRow( "rotate line centroid" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90))" << false << QVariant( "LineString (0 10, 0 0, 10 0)" );
+      QTest::newRow( "rotate line fixed point" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, make_point(5, 2)))" << false << QVariant( "LineString (3 7, 3 -3, 13 -3)" );
+      QTest::newRow( "rotate line fixed point not geom" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, 'a'))" << true << QVariant();
+      QTest::newRow( "rotate line fixed point not point" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, geom_from_wkt('LineString(0 0, 10 0, 10 10)')))" << true << QVariant();
+      QTest::newRow( "rotate line fixed multi point" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, geom_from_wkt('MULTIPOINT((-5 -3))')))" << false << QVariant( "LineString (-2 -8, -2 -18, 8 -18)" );
+      QTest::newRow( "rotate line fixed multi point multiple" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, geom_from_wkt('MULTIPOINT(-5 -3,1 2)')))" << true << QVariant();
+      QTest::newRow( "rotate polygon centroid" ) << "geom_to_wkt(rotate(geom_from_wkt('Polygon((0 0, 10 0, 10 10, 0 0))'),-90))" << false << QVariant( "Polygon ((10 0, 10 10, 0 10, 10 0))" );
 
       // string functions
       QTest::newRow( "format_number" ) << "format_number(1999.567,2)" << false << QVariant( "1,999.57" );

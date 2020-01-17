@@ -261,6 +261,18 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
 #endif
   }
 
+  if ( suffix == QStringLiteral( "mbtiles" ) )
+  {
+    // handled by WMS provider
+    QUrlQuery uq;
+    uq.addQueryItem( "type", "mbtiles" );
+    uq.addQueryItem( "url", QUrl::fromLocalFile( path ).toString() );
+    QString encodedUri = uq.toString();
+    QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) );
+    item->setState( QgsDataItem::Populated );
+    return item;
+  }
+
   // Filters out the OGR/GDAL supported formats that can contain multiple layers
   // and should be treated like a DB: GeoPackage and SQLite
   // NOTE: this formats are scanned for rasters too and they are handled

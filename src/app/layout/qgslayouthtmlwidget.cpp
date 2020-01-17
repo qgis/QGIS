@@ -59,10 +59,10 @@ QgsLayoutHtmlWidget::QgsLayoutHtmlWidget( QgsLayoutFrame *frame )
   stylesheetEditorLayout->addWidget( mStylesheetEditor );
 
   blockSignals( true );
-  mResizeModeComboBox->addItem( tr( "Use existing frames" ), QgsLayoutMultiFrame::UseExistingFrames );
-  mResizeModeComboBox->addItem( tr( "Extend to next page" ), QgsLayoutMultiFrame::ExtendToNextPage );
-  mResizeModeComboBox->addItem( tr( "Repeat on every page" ), QgsLayoutMultiFrame::RepeatOnEveryPage );
-  mResizeModeComboBox->addItem( tr( "Repeat until finished" ), QgsLayoutMultiFrame::RepeatUntilFinished );
+  mResizeModeComboBox->addItem( tr( "Use Existing Frames" ), QgsLayoutMultiFrame::UseExistingFrames );
+  mResizeModeComboBox->addItem( tr( "Extend to Next Page" ), QgsLayoutMultiFrame::ExtendToNextPage );
+  mResizeModeComboBox->addItem( tr( "Repeat on Every Page" ), QgsLayoutMultiFrame::RepeatOnEveryPage );
+  mResizeModeComboBox->addItem( tr( "Repeat Until Finished" ), QgsLayoutMultiFrame::RepeatUntilFinished );
   blockSignals( false );
   setGuiElementValues();
 

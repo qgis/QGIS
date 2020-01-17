@@ -87,6 +87,7 @@
 #include "qgssourceselectproviderregistry.h"
 #include "qgssourceselectprovider.h"
 #include "qgsprovidermetadata.h"
+#include "qgsfixattributedialog.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -104,6 +105,7 @@
 #include "qgslayoutitem3dmap.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgsvectorlayer3drenderer.h"
+#include "qgsmeshlayer3drenderer.h"
 #include "processing/qgs3dalgorithms.h"
 #include "qgs3dmaptoolmeasureline.h"
 #endif
@@ -352,6 +354,9 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsappcoordinateoperationhandlers.h"
 #include "qgsprojectviewsettings.h"
 #include "qgscoordinateformatter.h"
+#include "qgslocaldefaultsettings.h"
+#include "qgsbearingnumericformat.h"
+#include "qgsprojectdisplaysettings.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -1296,6 +1301,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   QgsApplication::dataItemProviderRegistry()->addProvider( new QgsProjectDataItemProvider() );
 
+  // now when all data item providers are registered, customize both browsers
+  QgsCustomization::instance()->updateBrowserWidget( mBrowserWidget );
+  QgsCustomization::instance()->updateBrowserWidget( mBrowserWidget2 );
+
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
   mSplash->showMessage( tr( "Restoring loaded plugins" ), Qt::AlignHCenter | Qt::AlignBottom );
@@ -1546,6 +1555,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   std::sort( actions.begin(), actions.end(), cmpByText_ );
   mPanelMenu->insertActions( nullptr, actions );
 
+  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+
   // update windows
   qApp->processEvents();
 
@@ -1554,6 +1565,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   startProfile( QStringLiteral( "New project" ) );
   fileNewBlank(); // prepare empty project, also skips any default templates from loading
+  updateCrsStatusBar();
   endProfile();
 
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
@@ -1585,6 +1597,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( QgsProject::instance(), &QgsProject::isDirtyChanged, mActionRevertProject, toggleRevert );
   connect( QgsProject::instance(), &QgsProject::fileNameChanged, mActionRevertProject, toggleRevert );
 
+  connect( QgsProject::instance()->displaySettings(), &QgsProjectDisplaySettings::bearingFormatChanged, this, [ = ]
+  {
+    mBearingNumericFormat.reset( QgsProject::instance()->displaySettings()->bearingFormat()->clone() );
+  } );
   connect( mMapCanvas, &QgsMapCanvas::panDistanceBearingChanged, this, &QgisApp::showPanMessage );
 
   // the most important part of the initialization: make sure that people can play puzzle if they need
@@ -1623,6 +1639,8 @@ QgisApp::QgisApp()
   mPanelMenu = new QMenu( this );
   mProgressBar = new QProgressBar( this );
   mStatusBar = new QgsStatusBar( this );
+
+  mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
   // More tests may need more members to be initialized
 }
 
@@ -6648,12 +6666,23 @@ bool QgisApp::fileSave()
 
     const QString qgsExt = tr( "QGIS files" ) + " (*.qgs)";
     const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
+
+    QString exts;
+    QgsProject::FileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
+    if ( defaultProjectFileFormat == QgsProject::FileFormat::Qgs )
+    {
+      exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
+    }
+    else
+    {
+      exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
+    }
     QString filter;
     QString path = QFileDialog::getSaveFileName(
                      this,
                      tr( "Choose a QGIS project file" ),
                      lastUsedDir + '/' + QgsProject::instance()->title(),
-                     zipExt + ";;" + qgsExt, &filter );
+                     exts, &filter );
     if ( path.isEmpty() )
       return false;
 
@@ -6988,6 +7017,16 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
       CPLPopErrorHandler();
       return true;
     }
+  }
+
+  if ( fileName.endsWith( QStringLiteral( ".mbtiles" ), Qt::CaseInsensitive ) )
+  {
+    // prefer to use WMS provider's implementation to open MBTiles rasters
+    QUrlQuery uq;
+    uq.addQueryItem( "type", "mbtiles" );
+    uq.addQueryItem( "url", QUrl::fromLocalFile( fileName ).toString() );
+    if ( addRasterLayer( uq.toString(), fileInfo.completeBaseName(), QStringLiteral( "wms" ) ) )
+      return true;
   }
 
   // try to load it as raster
@@ -7664,12 +7703,19 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
         QString subsetString;
         // Get the subset string directly from the data provider because
         // layer's method will return a null string from invalid layers
-        if ( !layerWasValid && vlayer && vlayer->dataProvider() &&
+        if ( vlayer && vlayer->dataProvider() &&
              vlayer->dataProvider()->supportsSubsetString() &&
              !vlayer->dataProvider()->subsetString( ).isEmpty() )
         {
           subsetString = vlayer->dataProvider()->subsetString();
         }
+        if ( subsetString.isEmpty() )
+        {
+          // actually -- the above isn't true in all situations. If a layer was invalid at the time
+          // that the subset string was set, then ONLY the layer has knowledge of this subset string!
+          subsetString = vlayer->subsetString();
+        }
+
         layer->setDataSource( uri.uri, layer->name(), uri.providerKey, QgsDataProvider::ProviderOptions() );
         // Re-apply original style and subset string  when fixing bad layers
         if ( !( layerWasValid || layer->originalXmlProperties().isEmpty() ) )
@@ -7699,6 +7745,10 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
                          .arg( layer->name( ) )
                          .arg( errorMsg ) );
           }
+        }
+        else if ( !subsetString.isEmpty() )
+        {
+          vlayer->setSubsetString( subsetString );
         }
 
         // All the following code is necessary to refresh the layer
@@ -9588,6 +9638,59 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   // now create new feature using pasted feature as a template. This automatically handles default
   // values and field constraints
   QgsFeatureList newFeatures {QgsVectorLayerUtils::createFeatures( pasteVectorLayer, newFeaturesDataList, &context )};
+
+  // check constraints
+  bool hasStrongConstraints = false;
+
+  for ( const QgsField &field : pasteVectorLayer->fields() )
+  {
+    if ( ( field.constraints().constraints() & QgsFieldConstraints::ConstraintUnique && field.constraints().constraintStrength( QgsFieldConstraints::ConstraintUnique ) & QgsFieldConstraints::ConstraintStrengthHard )
+         || ( field.constraints().constraints() & QgsFieldConstraints::ConstraintNotNull && field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) & QgsFieldConstraints::ConstraintStrengthHard )
+         || ( field.constraints().constraints() & QgsFieldConstraints::ConstraintExpression && !field.constraints().constraintExpression().isEmpty() && field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) & QgsFieldConstraints::ConstraintStrengthHard )
+       )
+      hasStrongConstraints = true;
+  }
+
+  if ( hasStrongConstraints )
+  {
+    QgsFeatureList validFeatures = newFeatures;
+    QgsFeatureList invalidFeatures;
+    QMutableListIterator<QgsFeature> it( validFeatures );
+    while ( it.hasNext() )
+    {
+      QgsFeature &f = it.next();
+      for ( int idx = 0; idx < pasteVectorLayer->fields().count(); ++idx )
+      {
+        QStringList errors;
+        if ( !QgsVectorLayerUtils::validateAttribute( pasteVectorLayer, f, idx, errors, QgsFieldConstraints::ConstraintStrengthHard, QgsFieldConstraints::ConstraintOriginNotSet ) )
+        {
+          invalidFeatures << f;
+          it.remove();
+          break;
+        }
+      }
+    }
+
+    if ( !invalidFeatures.isEmpty() )
+    {
+      newFeatures.clear();
+
+      QgsFixAttributeDialog *dialog = new QgsFixAttributeDialog( pasteVectorLayer, invalidFeatures, this );
+      int feedback = dialog->exec();
+
+      switch ( feedback )
+      {
+        case QgsFixAttributeDialog::PasteValid:
+          //paste valid and fixed, vanish unfixed
+          newFeatures << validFeatures << dialog->fixedFeatures();
+          break;
+        case QgsFixAttributeDialog::PasteAll:
+          //paste all, even unfixed
+          newFeatures << validFeatures << dialog->fixedFeatures() << dialog->unfixedFeatures();
+          break;
+      }
+    }
+  }
   pasteVectorLayer->addFeatures( newFeatures );
   QgsFeatureIds newIds;
   newIds.reserve( newFeatures.size() );
@@ -9600,8 +9703,8 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
   pasteVectorLayer->endEditCommand();
   pasteVectorLayer->updateExtents();
 
-  int nCopiedFeatures = features.count();
-  Qgis::MessageLevel level = ( nCopiedFeatures == 0 || nCopiedFeatures < nTotalFeatures || invalidGeometriesCount > 0 ) ? Qgis::Warning : Qgis::Info;
+  int nCopiedFeatures = newFeatures.count();
+  Qgis::MessageLevel level = ( nCopiedFeatures == 0 || invalidGeometriesCount > 0 ) ? Qgis::Warning : Qgis::Info;
   QString message;
   if ( nCopiedFeatures == 0 )
   {
@@ -11816,6 +11919,7 @@ void QgisApp::init3D()
   // register 3D renderers
   QgsApplication::instance()->renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
   QgsApplication::instance()->renderer3DRegistry()->addRenderer( new QgsRuleBased3DRendererMetadata );
+  QgsApplication::instance()->renderer3DRegistry()->addRenderer( new QgsMeshLayer3DRendererMetadata );
 #else
   mActionNew3DMapCanvas->setVisible( false );
 #endif
@@ -12909,8 +13013,11 @@ void QgisApp::showRotation()
 
 void QgisApp::showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, double bearing )
 {
-  mStatusBar->showMessage( tr( "Pan distance %1 (%2)" ).arg( QgsDistanceArea::formatDistance( distance, 1, unit ),
-                           QgsCoordinateFormatter::formatX( bearing, QgsCoordinateFormatter::FormatDecimalDegrees, 1, QgsCoordinateFormatter::FlagDegreesUseStringSuffix ) ), 2000 );
+  const double distanceInProjectUnits = distance * QgsUnitTypes::fromUnitToUnitFactor( unit, QgsProject::instance()->distanceUnits() );
+  const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
+  const QString distanceString = QgsDistanceArea::formatDistance( distanceInProjectUnits, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
+  const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
+  mStatusBar->showMessage( tr( "Pan distance %1 (%2)" ).arg( distanceString, bearingString ), 2000 );
 }
 
 void QgisApp::selectionModeChanged( QgsMapToolSelect::Mode mode )

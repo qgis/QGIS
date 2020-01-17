@@ -61,11 +61,10 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         # Test raster
         self.assertEqual(conn.tableUri('qgis_test', 'Raster1'),
-                         'PG: %s mode=2 schema=\'qgis_test\' table=\'Raster1\' column=\'Rast\'' % self.uri)
+                         '%s table="qgis_test"."Raster1"' % self.uri)
 
-        if (gdal.VersionInfo() >= '2040000'):
-            rl = QgsRasterLayer(conn.tableUri('qgis_test', 'Raster1'), 'r1', 'gdal')
-            self.assertTrue(rl.isValid())
+        rl = QgsRasterLayer(conn.tableUri('qgis_test', 'Raster1'), 'r1', 'postgresraster')
+        self.assertTrue(rl.isValid())
 
     def test_postgis_table_uri(self):
         """Create a connection from a layer uri and create a table URI"""

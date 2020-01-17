@@ -127,6 +127,21 @@ namespace pal
       QgsFeatureId featureId() const;
 
       /**
+       * Returns the maximum number of point candidates to generate for this feature.
+       */
+      std::size_t maximumPointCandidates() const;
+
+      /**
+       * Returns the maximum number of line candidates to generate for this feature.
+       */
+      std::size_t maximumLineCandidates() const;
+
+      /**
+       * Returns the maximum number of polygon candidates to generate for this feature.
+       */
+      std::size_t maximumPolygonCandidates() const;
+
+      /**
        * Generates a list of candidate positions for labels for this feature.
        */
       std::vector<std::unique_ptr<LabelPosition> > createCandidates( Pal *pal );
@@ -211,8 +226,8 @@ namespace pal
        * \param flip if TRUE label is placed on the other side of the line
        * \returns calculated label position
        */
-      LabelPosition *curvedPlacementAtOffset( PointSet *path_positions, double *path_distances,
-                                              int &orientation, double distance, bool &reversed, bool &flip );
+      std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *path_positions, double *path_distances,
+          int &orientation, double distance, bool &reversed, bool &flip );
 
       /**
        * Generate curved candidates for line features.
@@ -309,7 +324,7 @@ namespace pal
        *
        * E.g. small lines or polygons get higher cost so that larger features are more likely to be labeled.
        */
-      void addSizePenalty( std::size_t nbp, std::vector<std::unique_ptr<LabelPosition> > &lPos, double bbx[4], double bby[4] );
+      void addSizePenalty( std::vector<std::unique_ptr<LabelPosition> > &lPos, double bbx[4], double bby[4] );
 
       /**
        * Calculates the priority for the feature. This will be the feature's priority if set,
@@ -349,6 +364,9 @@ namespace pal
       LabelPosition::Quadrant quadrantFromOffset() const;
 
       int mTotalRepeats = 0;
+
+      mutable std::size_t mCachedMaxLineCandidates = 0;
+      mutable std::size_t mCachedMaxPolygonCandidates = 0;
   };
 
 } // end namespace pal

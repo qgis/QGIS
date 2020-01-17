@@ -104,6 +104,26 @@ class QgsFeature3DHandler
      * to a 3D entity object(s) attached to the given parent.
      */
     virtual void finalize( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context ) = 0;
+
+    /**
+     * Returns minimal Z value of the data (in world coordinates).
+     * \note this method should not be called before call to finalize() - it may not be initialized
+     */
+    float zMinimum() const { return mZMin; }
+
+    /**
+     * Returns maximal Z value of the data (in world coordinates).
+     * \note this method should not be called before call to finalize() - it may not be initialized
+     */
+    float zMaximum() const { return mZMax; }
+
+  protected:
+    //! updates zMinimum, zMaximum from the vector of positions in 3D world coordinates
+    void updateZRangeFromPositions( const QVector<QVector3D> &positions );
+
+  protected:
+    float mZMin = std::numeric_limits<double>::max();
+    float mZMax = std::numeric_limits<double>::min();
 };
 
 

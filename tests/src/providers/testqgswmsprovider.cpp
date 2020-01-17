@@ -17,6 +17,8 @@
 #include "qgstest.h"
 #include <qgswmsprovider.h>
 #include <qgsapplication.h>
+#include <qgsmultirenderchecker.h>
+#include <qgsrasterlayer.h>
 
 /**
  * \ingroup UnitTests
@@ -41,11 +43,22 @@ class TestQgsWmsProvider: public QObject
 
       mCapabilities = new QgsWmsCapabilities();
       QVERIFY( mCapabilities->parseResponse( content, config ) );
+
+      mReport += QLatin1String( "<h1>WMS Provider Tests</h1>\n" );
     }
 
     //runs after all tests
     void cleanupTestCase()
     {
+      QString myReportFile = QDir::tempPath() + "/qgistest.html";
+      QFile myFile( myReportFile );
+      if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+      {
+        QTextStream myQTextStream( &myFile );
+        myQTextStream << mReport;
+        myFile.close();
+      }
+
       delete mCapabilities;
       QgsApplication::exitQgis();
     }
@@ -87,8 +100,49 @@ class TestQgsWmsProvider: public QObject
                                          "STYLES=&FORMAT=&TRANSPARENT=TRUE" ) );
     }
 
+    void testMBTiles()
+    {
+      QString dataDir( TEST_DATA_DIR );
+      QUrlQuery uq;
+      uq.addQueryItem( "type", "mbtiles" );
+      uq.addQueryItem( "url", QUrl::fromLocalFile( dataDir + "/isle_of_man_xxx_invalid.mbtiles" ).toString() );
+
+      // check first that we do not accept invalid mbtiles paths
+      QgsRasterLayer layerInvalid( uq.toString(), "invalid", "wms" );
+      //QgsWmsProvider providerInvalid( uq.toString(), QgsDataProvider::ProviderOptions() );
+      QVERIFY( !layerInvalid.isValid() );
+
+      uq.addQueryItem( "url", QUrl::fromLocalFile( dataDir + "/isle_of_man.mbtiles" ).toString() );
+      QgsRasterLayer layer( uq.toString(), "isle_of_man", "wms" );
+      QVERIFY( layer.isValid() );
+
+      QVERIFY( imageCheck( "mbtiles_1", &layer, layer.extent() ) );
+    }
+
+
+    bool imageCheck( const QString &testType, QgsMapLayer *layer, const QgsRectangle &extent )
+    {
+      //use the QgsRenderChecker test utility class to
+      //ensure the rendered output matches our control image
+      QgsMapSettings mapSettings;
+      mapSettings.setLayers( QList<QgsMapLayer *>() << layer );
+      mapSettings.setExtent( extent );
+      mapSettings.setOutputSize( QSize( 400, 400 ) );
+      mapSettings.setOutputDpi( 96 );
+      QgsMultiRenderChecker myChecker;
+      myChecker.setControlPathPrefix( QStringLiteral( "wmsprovider" ) );
+      myChecker.setControlName( "expected_" + testType );
+      myChecker.setMapSettings( mapSettings );
+      myChecker.setColorTolerance( 20 );
+      bool myResultFlag = myChecker.runTest( testType, 500 );
+      mReport += myChecker.report();
+      return myResultFlag;
+    }
+
   private:
     QgsWmsCapabilities *mCapabilities = nullptr;
+
+    QString mReport;
 };
 
 QGSTEST_MAIN( TestQgsWmsProvider )

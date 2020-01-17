@@ -1,10 +1,10 @@
 QGIS News
 Change history for the QGIS Project
-%%date(%A %B %d, %Y)
+@NOW@
 
 %! target       : html
 %! style        : style.css
-%! Options      : --toc --toc-level 1 --enum-title --css-sugar --css-inside
+%! Options      : --toc --toc-level 1 --enum-title
 %! preproc      : TUT_URL   https://qgis.org
 %! PostProc(html): '(?i)(<pre>)' '<div class="code">\1'
 %! PostProc(html): '(?i)(</pre>)' '\1</div>'
@@ -35,8 +35,8 @@ Change history for the QGIS Project
 % End of comments
 % -------------------
 
-Last Updated: %%date(%A %B %d, %Y)
-Last Change : %%mtime(%A %B %d, %Y)
+Last Updated: @NOW@
+Last Change : @MODTIME@
 
 = What's new in Version 3.10 'A Coruña'? =
 

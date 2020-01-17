@@ -117,25 +117,7 @@ QString QgsPostgresProviderConnection::tableUri( const QString &schema, const QS
   QgsDataSourceUri dsUri( uri() );
   dsUri.setTable( name );
   dsUri.setSchema( schema );
-  if ( tableInfo.flags().testFlag( QgsAbstractDatabaseProviderConnection::TableFlag::Raster ) )
-  {
-    const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=("[^"]+"\.?)*\s*)raw" };
-    if ( tableInfo.geometryColumn().isEmpty() )
-    {
-      throw QgsProviderConnectionException( QObject::tr( "Raster table '%1' in schema '%2' has no geometry column." )
-                                            .arg( name )
-                                            .arg( schema ) );
-    }
-    return QStringLiteral( "PG: %1 mode=2 schema='%2' table='%4' column='%3'" )
-           .arg( dsUri.uri( false ).replace( removePartsRe, QString() ) )
-           .arg( schema )
-           .arg( tableInfo.geometryColumn() )
-           .arg( name );
-  }
-  else
-  {
-    return dsUri.uri( false );
-  }
+  return dsUri.uri( false );
 }
 
 void QgsPostgresProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
@@ -295,9 +277,12 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             const QVariant::Type vType { typeMap.value( colIdx, QVariant::Type::String ) };
             QVariant val { res.PQgetvalue( rowIdx, colIdx ) };
             // Special case for bools: 'f' and 't'
-            if ( vType == QVariant::Bool && ! val.isNull() )
+            if ( vType == QVariant::Bool )
             {
-              val = val.toString() == 't';
+              if ( ! val.toString().isEmpty() )
+              {
+                val = val.toString() == 't';
+              }
             }
             else if ( val.canConvert( static_cast<int>( vType ) ) )
             {

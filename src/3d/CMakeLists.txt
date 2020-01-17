@@ -4,6 +4,7 @@
 SET(QGIS_3D_SRCS
   qgsaabb.cpp
   qgsabstract3dengine.cpp
+  qgsabstractvectorlayer3drenderer.cpp
   qgs3danimationsettings.cpp
   qgs3dmapscene.cpp
   qgs3dmapsettings.cpp
@@ -17,9 +18,11 @@ SET(QGIS_3D_SRCS
   qgspointlightsettings.cpp
   qgsraycastingutils_p.cpp
   qgsrulebased3drenderer.cpp
+  qgsrulebasedchunkloader_p.cpp
   qgstessellatedpolygongeometry.cpp
   qgstilingscheme.cpp
   qgsvectorlayer3drenderer.cpp
+  qgsvectorlayerchunkloader_p.cpp
   qgsmeshlayer3drenderer.cpp
   qgswindow3dengine.cpp
 
@@ -59,6 +62,12 @@ SET(QGIS_3D_SRCS
   terrain/qgsterraintileloader_p.cpp
   #terrain/quantizedmeshgeometry.cpp
   #terrain/quantizedmeshterraingenerator.cpp
+
+  mesh/qgsmesh3dgeometry_p.cpp
+  mesh/qgsmesh3dentity_p.cpp
+  mesh/qgsmesh3dmaterial_p.cpp
+  mesh/qgsmeshterraingenerator.cpp
+
 )
 
 SET(QGIS_3D_HDRS
@@ -70,6 +79,7 @@ SET(QGIS_3D_HDRS
   qgs3dutils.h
   qgsaabb.h
   qgsabstract3dengine.h
+  qgsabstractvectorlayer3drenderer.h
   qgscameracontroller.h
   qgscamerapose.h
   qgslayoutitem3dmap.h
@@ -97,9 +107,12 @@ SET(QGIS_3D_HDRS
   terrain/qgsterraintileloader_p.h
   chunks/qgschunkloader_p.h
   chunks/qgschunkqueuejob_p.h
+  mesh/qgsmeshterraingenerator.h
 )
 
 SET(QGIS_3D_PRIVATE_HDRS
+  qgsrulebasedchunkloader_p.h
+  qgsvectorlayerchunkloader_p.h
   chunks/qgschunkboundsentity_p.h
   chunks/qgschunkedentity_p.h
   chunks/qgschunklist_p.h
@@ -116,6 +129,9 @@ SET(QGIS_3D_PRIVATE_HDRS
   terrain/qgsterraintexturegenerator_p.h
   terrain/qgsterraintextureimage_p.h
   terrain/qgsterraintileentity_p.h
+  mesh/qgsmesh3dentity_p.h
+  mesh/qgsmesh3dgeometry_p.h
+  mesh/qgsmesh3dmaterial_p.h
 )
 
 QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
@@ -125,6 +141,7 @@ QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/chunks
+  ${CMAKE_CURRENT_SOURCE_DIR}/mesh
   ${CMAKE_CURRENT_SOURCE_DIR}/symbols
   ${CMAKE_CURRENT_SOURCE_DIR}/terrain
   ${CMAKE_SOURCE_DIR}/src/core/

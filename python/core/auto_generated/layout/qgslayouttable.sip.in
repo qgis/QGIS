@@ -499,6 +499,13 @@ Fetches the contents used for the cells in the table.
 :param contents: QgsLayoutTableContents to store retrieved row data in
 %End
 
+    virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
+%Docstring
+Returns the conditional style to use for the cell at ``row``, ``column``.
+
+.. versionadded:: 3.12
+%End
+
     QgsLayoutTableContents &contents();
 %Docstring
 Returns the current contents of the table. Excludes header cells.

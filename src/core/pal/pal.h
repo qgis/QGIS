@@ -67,16 +67,6 @@ namespace pal
     FALP = 4 //!< Only initial solution
   };
 
-  //! Enumeration line arrangement flags. Flags can be combined.
-  enum LineArrangementFlag
-  {
-    FLAG_ON_LINE     = 1,
-    FLAG_ABOVE_LINE  = 2,
-    FLAG_BELOW_LINE  = 4,
-    FLAG_MAP_ORIENTATION = 8
-  };
-  Q_DECLARE_FLAGS( LineArrangementFlags, LineArrangementFlag )
-
   /**
    * \ingroup core
    *  \brief Main Pal labeling class
@@ -174,40 +164,32 @@ namespace pal
       bool showPartialLabels() const;
 
       /**
-       * Sets the maximum number of candidates to generate for points features.
+       * Returns the maximum number of line label candidate positions per map unit.
        *
-       * The larger the value, the longer the labeling solution will take to calculate.
+       * \see setMaximumLineCandidatesPerMapUnit()
        */
-      void setMaximumNumberOfPointCandidates( int candidates );
+      double maximumLineCandidatesPerMapUnit() const { return mMaxLineCandidatesPerMapUnit; }
 
       /**
-       * Sets the maximum number of candidates to generate for line features.
+       * Sets the maximum number of line label \a candidates per map unit.
        *
-       * The larger the value, the longer the labeling solution will take to calculate.
+       * \see maximumLineCandidatesPerMapUnit()
        */
-      void setMaximumNumberOfLineCandidates( int candidates );
+      void setMaximumLineCandidatesPerMapUnit( double candidates ) { mMaxLineCandidatesPerMapUnit = candidates; }
 
       /**
-       * Sets the maximum number of candidates to generate for polygon features.
+       * Returns the maximum number of polygon label candidate positions per map unit squared.
        *
-       * The larger the value, the longer the labeling solution will take to calculate.
+       * \see setMaximumPolygonCandidatesPerMapUnitSquared()
        */
-      void setMaximumNumberOfPolygonCandidates( int candidates );
+      double maximumPolygonCandidatesPerMapUnitSquared() const { return mMaxPolygonCandidatesPerMapUnitSquared; }
 
       /**
-       * Returns the number of candidates to generate for point features.
+       * Sets the maximum number of polygon label \a candidates per map unit squared.
+       *
+       * \see maximumPolygonCandidatesPerMapUnitSquared()
        */
-      int maximumNumberOfPointCandidates() const;
-
-      /**
-       * Returns the number of candidates to generate for line features.
-       */
-      int maximumNumberOfLineCandidates() const;
-
-      /**
-       * Returns the number of candidates to generate for polygon features.
-       */
-      int maximumNumberOfPolygonCandidates() const;
+      void setMaximumPolygonCandidatesPerMapUnitSquared( double candidates ) { mMaxPolygonCandidatesPerMapUnitSquared = candidates; }
 
       /**
        * Returns the placement engine version, which dictates how the label placement problem is solved.
@@ -223,26 +205,47 @@ namespace pal
        */
       void setPlacementVersion( QgsLabelingEngineSettings::PlacementEngineVersion placementVersion );
 
+      /**
+       * Returns the global candidates limit for point features, or 0 if no global limit is in effect.
+       *
+       * This is an installation-wide setting which applies to all projects, and is set via QSettings. It can
+       * be used to place global limits on the number of candidates generated for point features in order
+       * to optimise map rendering speeds.
+       *
+       * \see globalCandidatesLimitLine()
+       * \see globalCandidatesLimitPolygon()
+       */
+      int globalCandidatesLimitPoint() const { return mGlobalCandidatesLimitPoint; }
+
+      /**
+       * Returns the global candidates limit for line features, or 0 if no global limit is in effect.
+       *
+       * This is an installation-wide setting which applies to all projects, and is set via QSettings. It can
+       * be used to place global limits on the number of candidates generated for line features in order
+       * to optimise map rendering speeds.
+       *
+       * \see globalCandidatesLimitPolygon()
+       * \see globalCandidatesLimitPoint()
+       */
+      int globalCandidatesLimitLine() const { return mGlobalCandidatesLimitLine; }
+
+      /**
+       * Returns the global candidates limit for polygon features, or 0 if no global limit is in effect.
+       *
+       * This is an installation-wide setting which applies to all projects, and is set via QSettings. It can
+       * be used to place global limits on the number of candidates generated for polygon features in order
+       * to optimise map rendering speeds.
+       *
+       * \see globalCandidatesLimitLine()
+       * \see globalCandidatesLimitPoint()
+       */
+      int globalCandidatesLimitPolygon() const { return mGlobalCandidatesLimitPolygon; }
+
     private:
 
       std::unordered_map< QgsAbstractLabelProvider *, std::unique_ptr< Layer > > mLayers;
 
       QMutex mMutex;
-
-      /**
-       * Maximum number of candidates for a point.
-       */
-      int mMaxPointCandidates = 16;
-
-      /**
-       * Maximum number of candidates for a line.
-       */
-      int mMaxLineCandidates = 50;
-
-      /**
-       * Maximum number of candidates for a polygon.
-       */
-      int mMaxPolyCandidates = 30;
 
       /*
        * POPMUSIC Tuning
@@ -260,6 +263,13 @@ namespace pal
        * \brief show partial labels (cut-off by the map canvas) or not
        */
       bool mShowPartialLabels = true;
+
+      double mMaxLineCandidatesPerMapUnit = 0;
+      double mMaxPolygonCandidatesPerMapUnitSquared = 0;
+
+      int mGlobalCandidatesLimitPoint = 0;
+      int mGlobalCandidatesLimitLine = 0;
+      int mGlobalCandidatesLimitPolygon = 0;
 
       QgsLabelingEngineSettings::PlacementEngineVersion mPlacementVersion = QgsLabelingEngineSettings::PlacementEngineVersion2;
 
@@ -327,7 +337,5 @@ namespace pal
   };
 
 } // end namespace pal
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( pal::LineArrangementFlags )
 
 #endif

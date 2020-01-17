@@ -306,6 +306,11 @@ json QgsPoint::asJsonObject( int precision ) const
   return j;
 }
 
+QString QgsPoint::asKml( int precision ) const
+{
+  return QStringLiteral( "<Point><coordinates>%1,%2</coordinates></Point>" ).arg( qgsDoubleToString( mX, precision ), qgsDoubleToString( mY, precision ) );
+}
+
 void QgsPoint::draw( QPainter &p ) const
 {
   p.drawRect( QRectF( mX - 2, mY - 2, 4, 4 ) );

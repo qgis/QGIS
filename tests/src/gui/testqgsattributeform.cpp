@@ -53,6 +53,7 @@ class TestQgsAttributeForm : public QObject
     void testAttributeFormInterface();
     void testDefaultValueUpdate();
     void testDefaultValueUpdateRecursion();
+    void testSameFieldSync();
 
   private:
     QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
@@ -1065,6 +1066,47 @@ void TestQgsAttributeForm::testDefaultValueUpdateRecursion()
   QCOMPARE( ww1->value().toInt(), 41 );
   QCOMPARE( ww2->value().toInt(), 42 );
   QCOMPARE( ww3->value().toInt(), 43 );
+}
+
+void TestQgsAttributeForm::testSameFieldSync()
+{
+  // Check that widget synchronisation works when a form contains the same field several times
+  // and there is no issues when editing
+
+  // make a temporary vector layer
+  QString def = QStringLiteral( "Point?field=col0:integer" );
+  QgsVectorLayer *layer = new QgsVectorLayer( def, QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+  layer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
+
+  // add a feature to the vector layer
+  QgsFeature ft( layer->dataProvider()->fields(), 1 );
+  ft.setAttribute( QStringLiteral( "col0" ), 10 );
+
+  // add same field twice so they get synced
+  QgsEditFormConfig editFormConfig = layer->editFormConfig();
+  editFormConfig.clearTabs();
+  editFormConfig.addTab( new QgsAttributeEditorField( "col0", 0, editFormConfig.invisibleRootContainer() ) );
+  editFormConfig.addTab( new QgsAttributeEditorField( "col0", 0, editFormConfig.invisibleRootContainer() ) );
+  editFormConfig.setLayout( QgsEditFormConfig::TabLayout );
+  layer->setEditFormConfig( editFormConfig );
+
+  layer->startEditing();
+
+  // build a form for this feature
+  QgsAttributeForm form( layer );
+  form.setFeature( ft );
+
+  QList<QLineEdit *> les = form.findChildren<QLineEdit *>( "col0" );
+  QCOMPARE( les.count(), 2 );
+
+  les[0]->setCursorPosition( 1 );
+  QTest::keyClick( les[0], Qt::Key_2 );
+  QTest::keyClick( les[0], Qt::Key_3 );
+
+  QCOMPARE( les[0]->text(), QString( "1230" ) );
+  QCOMPARE( les[0]->cursorPosition(), 3 );
+  QCOMPARE( les[1]->text(), QString( "1230" ) );
+  QCOMPARE( les[1]->cursorPosition(), 4 );
 }
 
 QGSTEST_MAIN( TestQgsAttributeForm )

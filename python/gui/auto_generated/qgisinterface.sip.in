@@ -599,6 +599,71 @@ Returns the Hide Deselected Layers action.
     virtual QAction *actionCheckQgisVersion() = 0;
     virtual QAction *actionAbout() = 0;
 
+    virtual QAction *actionCircle2Points()  = 0;
+%Docstring
+Returns the native add circle from 2 points action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionCircle3Points()  = 0;
+%Docstring
+Returns the native add circle from 3 points action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionCircle3Tangents()  = 0;
+%Docstring
+Returns the native add circle from 3 tangents action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionCircle2TangentsPoint()  = 0;
+%Docstring
+Returns the native add circle from 2 tangents and a point action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionCircleCenterPoint()  = 0;
+%Docstring
+Returns the native add circle from center action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionEllipseCenter2Points()  = 0;
+%Docstring
+Returns the native add ellipse from center and 2 points action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionEllipseCenterPoint()  = 0;
+%Docstring
+Returns the native add ellipse from center and a point action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionEllipseExtent()  = 0;
+%Docstring
+Returns the native add ellipse from an extent action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionEllipseFoci()  = 0;
+%Docstring
+Returns the native add ellipse from foci action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRectangleCenterPoint()  = 0;
+%Docstring
+Returns the native add rectangle from center and a point action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRectangleExtent()  = 0;
+%Docstring
+Returns the native add rectangle from extent action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRectangle3PointsDistance()  = 0;
+%Docstring
+Returns the native add rectangle from 3 points (distance from 2nd and 3rd points) action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRectangle3PointsProjected()  = 0;
+%Docstring
+Returns the native add rectangle from 3 points (distance from projected 3rd point on segment p1 and p2) action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRegularPolygon2Points()  = 0;
+%Docstring
+Returns the native add regular polygon from 2 points action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRegularPolygonCenterPoint()  = 0;
+%Docstring
+Returns the native add regular polygon from center and a point action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRegularPolygonCenterCorner()  = 0;
+%Docstring
+Returns the native add regular polygon from center and a corner action. Call trigger() on it to set the map tool.
+%End
+
     virtual QgsVectorLayerTools *vectorLayerTools() = 0;
 %Docstring
 Access the vector layer tools instance.

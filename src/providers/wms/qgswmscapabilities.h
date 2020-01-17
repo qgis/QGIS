@@ -154,17 +154,38 @@ struct QgsWmsBoundingBoxProperty
   QgsRectangle   box;    // consumes minx, miny, maxx, maxy.
 };
 
-//! Dimension Property structure
-// TODO: Fill to WMS specifications
+/**
+ * \brief Dimension Property structure.
+ *
+ *  Contains the optional dimension element,
+ *  the element can be present in Service or Layer metadata
+ */
 struct QgsWmsDimensionProperty
 {
+  //! Name of the dimensional axis eg. time
   QString   name;
+
+  //! Units of the dimensional axis, defined from UCUM. Can be null.
   QString   units;
+
+  //! Optional, unit symbol a 7-bit ASCII character string also defined from UCUM.
   QString   unitSymbol;
+
+  //! Optional, default value to be used in GetMap request
   QString   defaultValue;   // plain "default" is a reserved word
-  bool      multipleValues;
-  bool      nearestValue;
-  bool      current;
+
+  //! Text containing available value(s) for the dimension
+  QString   extent;
+
+  //! Optional, determines whether multiple values of the dimension can be requested
+  bool      multipleValues = false;
+
+  //! Optional, whether nearest value of the dimension will be returned, if requested.
+  bool      nearestValue = false;
+
+  //! Optional, valid only for temporal exents, determines whether data are normally kept current.
+  bool      current = false;
+
 };
 
 //! Logo URL Property structure
@@ -283,6 +304,7 @@ struct QgsWmsLayerProperty
   QgsWmsAttributionProperty               attribution;
   QVector<QgsWmsAuthorityUrlProperty>     authorityUrl;
   QVector<QgsWmsIdentifierProperty>       identifier;
+  QVector<QgsWmsDimensionProperty>        dimensions;
   QVector<QgsWmsMetadataUrlProperty>      metadataUrl;
   QVector<QgsWmsDataListUrlProperty>      dataListUrl;
   QVector<QgsWmsFeatureListUrlProperty>   featureListUrl;
@@ -566,6 +588,8 @@ class QgsWmsSettings
     bool                    mTiled;
     //! whether we actually work with XYZ tiles instead of WMS / WMTS
     bool mXyz;
+    //! whether we are dealing with MBTiles file rather than using network-based tiles
+    bool mIsMBTiles = false;
     //! chosen values for dimensions in case of multi-dimensional data (key=dim id, value=dim value)
     QHash<QString, QString>  mTileDimensionValues;
     //! name of the chosen tile matrix set
@@ -691,7 +715,9 @@ class QgsWmsCapabilities
 
     void parseCapability( const QDomElement &element, QgsWmsCapabilityProperty &capabilityProperty );
     void parseRequest( const QDomElement &element, QgsWmsRequestProperty &requestProperty );
+    void parseDimension( const QDomElement &element, QgsWmsDimensionProperty &dimensionProperty );
     void parseLegendUrl( const QDomElement &element, QgsWmsLegendUrlProperty &legendUrlProperty );
+    void parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty );
     void parseLayer( const QDomElement &element, QgsWmsLayerProperty &layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
     void parseStyle( const QDomElement &element, QgsWmsStyleProperty &styleProperty );
 

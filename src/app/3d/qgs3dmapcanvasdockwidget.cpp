@@ -141,7 +141,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
   setWidget( contentsWidget );
 
-  onTerrainPendingJobsCountChanged();
+  onTotalPendingJobsCountChanged();
 }
 
 void Qgs3DMapCanvasDockWidget::saveAsImage()
@@ -206,7 +206,7 @@ void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   mCanvas->setMap( map );
 
-  connect( mCanvas->scene(), &Qgs3DMapScene::terrainPendingJobsCountChanged, this, &Qgs3DMapCanvasDockWidget::onTerrainPendingJobsCountChanged );
+  connect( mCanvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, this, &Qgs3DMapCanvasDockWidget::onTotalPendingJobsCountChanged );
 
   mAnimationWidget->setCameraController( mCanvas->scene()->cameraController() );
   mAnimationWidget->setMap( map );
@@ -278,9 +278,9 @@ void Qgs3DMapCanvasDockWidget::onMainCanvasColorChanged()
   mCanvas->map()->setBackgroundColor( mMainCanvas->canvasColor() );
 }
 
-void Qgs3DMapCanvasDockWidget::onTerrainPendingJobsCountChanged()
+void Qgs3DMapCanvasDockWidget::onTotalPendingJobsCountChanged()
 {
-  int count = mCanvas->scene() ? mCanvas->scene()->terrainPendingJobsCount() : 0;
+  int count = mCanvas->scene() ? mCanvas->scene()->totalPendingJobsCount() : 0;
   mProgressPendingJobs->setVisible( count );
   mLabelPendingJobs->setVisible( count );
   if ( count )

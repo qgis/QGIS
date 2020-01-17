@@ -24,6 +24,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmaddincrementalfield.cpp
   processing/qgsalgorithmaddtablefield.cpp
   processing/qgsalgorithmaddxyfields.cpp
+  processing/qgsalgorithmaffinetransform.cpp
   processing/qgsalgorithmapplylayerstyle.cpp
   processing/qgsalgorithmarraytranslatedfeatures.cpp
   processing/qgsalgorithmaspect.cpp
@@ -39,8 +40,10 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmconstantraster.cpp
   processing/qgsalgorithmconvexhull.cpp
   processing/qgsalgorithmdbscanclustering.cpp
+  processing/qgsalgorithmdeleteduplicategeometries.cpp
   processing/qgsalgorithmdensifygeometriesbycount.cpp
   processing/qgsalgorithmdensifygeometriesbyinterval.cpp
+  processing/qgsalgorithmdetectdatasetchanges.cpp
   processing/qgsalgorithmdifference.cpp
   processing/qgsalgorithmdissolve.cpp
   processing/qgsalgorithmdrape.cpp
@@ -73,9 +76,11 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithminterpolatepoint.cpp
   processing/qgsalgorithmintersection.cpp
   processing/qgsalgorithmjoinbyattribute.cpp
+  processing/qgsalgorithmjoinbylocation.cpp
   processing/qgsalgorithmjoinbynearest.cpp
   processing/qgsalgorithmjoinwithlines.cpp
   processing/qgsalgorithmkmeansclustering.cpp
+  processing/qgsalgorithmlinedensity.cpp
   processing/qgsalgorithmlineintersection.cpp
   processing/qgsalgorithmlinesubstring.cpp
   processing/qgsalgorithmloadlayer.cpp
@@ -111,11 +116,13 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrastersurfacevolume.cpp
   processing/qgsalgorithmrasterzonalstats.cpp
   processing/qgsalgorithmreclassifybylayer.cpp
+  processing/qgsalgorithmrectanglesovalsdiamonds.cpp
   processing/qgsalgorithmremoveduplicatesbyattribute.cpp
   processing/qgsalgorithmremoveduplicatevertices.cpp
   processing/qgsalgorithmremoveholes.cpp
   processing/qgsalgorithmremovenullgeometry.cpp
   processing/qgsalgorithmrenamelayer.cpp
+  processing/qgsalgorithmrenametablefield.cpp
   processing/qgsalgorithmrepairshapefile.cpp
   processing/qgsalgorithmreverselinedirection.cpp
   processing/qgsalgorithmrotate.cpp
@@ -201,6 +208,7 @@ SET(QGIS_ANALYSIS_SRCS
   vector/geometry_checker/qgsgeometryanglecheck.cpp
   vector/geometry_checker/qgsgeometryareacheck.cpp
   vector/geometry_checker/qgsgeometrycheck.cpp
+  vector/geometry_checker/qgsgeometrycheckresolutionmethod.cpp
   vector/geometry_checker/qgsgeometrycheckcontext.cpp
   vector/geometry_checker/qgsgeometrychecker.cpp
   vector/geometry_checker/qgsgeometrycheckerror.cpp
@@ -293,6 +301,7 @@ SET(QGIS_ANALYSIS_HDRS
   vector/geometry_checker/qgsgeometryanglecheck.h
   vector/geometry_checker/qgsgeometryareacheck.h
   vector/geometry_checker/qgsgeometrycheck.h
+  vector/geometry_checker/qgsgeometrycheckresolutionmethod.h
   vector/geometry_checker/qgsgeometrycheckcontext.h
   vector/geometry_checker/qgsgeometrychecker.h
   vector/geometry_checker/qgsgeometrycheckerror.h

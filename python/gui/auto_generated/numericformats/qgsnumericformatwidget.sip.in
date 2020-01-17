@@ -1,0 +1,240 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/numericformats/qgsnumericformatwidget.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsNumericFormatWidget : QgsPanelWidget
+{
+%Docstring
+Base class for widgets which allow control over the properties of QgsNumericFormat subclasses
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsNumericFormatWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsNumericFormatWidget.
+%End
+
+    virtual void setFormat( QgsNumericFormat *format ) = 0;
+%Docstring
+Sets the ``format`` to show in the widget. Ownership is not transferred.
+
+.. seealso:: :py:func:`format`
+%End
+
+    virtual QgsNumericFormat *format() = 0 /TransferBack/;
+%Docstring
+Returns the format defined by the current settings in the widget.
+
+Ownership of the returned object is transferred to the caller
+
+.. seealso:: :py:func:`setFormat`
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted whenever the configuration of the numeric format is changed.
+%End
+
+};
+
+
+
+
+class QgsBasicNumericFormatWidget : QgsNumericFormatWidget
+{
+%Docstring
+A widget which allow control over the properties of a :py:class:`QgsBasicNumericFormat`.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsBasicNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBasicNumericFormatWidget, initially showing the specified ``format``.
+%End
+    ~QgsBasicNumericFormatWidget();
+
+    virtual void setFormat( QgsNumericFormat *format );
+
+
+    virtual QgsNumericFormat *format() /Factory/;
+
+
+};
+
+
+
+class QgsBearingNumericFormatWidget : QgsNumericFormatWidget
+{
+%Docstring
+A widget which allow control over the properties of a :py:class:`QgsBearingNumericFormat`.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsBearingNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBearingNumericFormatWidget, initially showing the specified ``format``.
+%End
+    ~QgsBearingNumericFormatWidget();
+
+    virtual void setFormat( QgsNumericFormat *format );
+
+
+    virtual QgsNumericFormat *format() /Factory/;
+
+
+};
+
+
+class QgsBearingNumericFormatDialog : QDialog
+{
+%Docstring
+A dialog which allow control over the properties of a :py:class:`QgsBearingNumericFormat`.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsBearingNumericFormatDialog( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBearingNumericFormatDialog, initially showing the specified ``format``.
+%End
+
+    QgsBearingNumericFormat *format() /Factory/;
+%Docstring
+Returns the format defined by the current settings in the dialog.
+
+Ownership of the returned object is transferred to the caller
+%End
+
+};
+
+
+
+
+
+
+class QgsCurrencyNumericFormatWidget : QgsNumericFormatWidget
+{
+%Docstring
+A widget which allow control over the properties of a :py:class:`QgsCurrencyNumericFormat`.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsCurrencyNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCurrencyNumericFormatWidget, initially showing the specified ``format``.
+%End
+    ~QgsCurrencyNumericFormatWidget();
+
+    virtual void setFormat( QgsNumericFormat *format );
+
+
+    virtual QgsNumericFormat *format() /Factory/;
+
+
+};
+
+
+
+
+class QgsPercentageNumericFormatWidget : QgsNumericFormatWidget
+{
+%Docstring
+A widget which allow control over the properties of a :py:class:`QgsPercentageNumericFormat`.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsPercentageNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsPercentageNumericFormatWidget, initially showing the specified ``format``.
+%End
+    ~QgsPercentageNumericFormatWidget();
+
+    virtual void setFormat( QgsNumericFormat *format );
+
+
+    virtual QgsNumericFormat *format() /Factory/;
+
+
+};
+
+
+
+
+
+class QgsScientificNumericFormatWidget : QgsNumericFormatWidget
+{
+%Docstring
+A widget which allow control over the properties of a :py:class:`QgsScientificNumericFormat`.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsnumericformatwidget.h"
+%End
+  public:
+
+    QgsScientificNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsScientificNumericFormatWidget, initially showing the specified ``format``.
+%End
+    ~QgsScientificNumericFormatWidget();
+
+    virtual void setFormat( QgsNumericFormat *format );
+
+
+    virtual QgsNumericFormat *format() /Factory/;
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/numericformats/qgsnumericformatwidget.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

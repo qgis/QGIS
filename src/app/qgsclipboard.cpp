@@ -270,10 +270,10 @@ QgsFields QgsClipboard::retrieveFields() const
     }
 
     //wkt?
-    QStringList lines = string.split( '\n' );
-    if ( !lines.empty() )
+    QString firstLine = string.section( '\n', 0, 0 );
+    if ( !firstLine.isEmpty() )
     {
-      QStringList fieldNames = lines.at( 0 ).split( '\t' );
+      QStringList fieldNames = firstLine.split( '\t' );
       //wkt / text always has wkt_geom as first attribute (however values can be NULL)
       if ( fieldNames.at( 0 ) != QLatin1String( "wkt_geom" ) )
       {
@@ -308,6 +308,16 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields ) const
 #else
   QString text = cb->text( QClipboard::Clipboard );
 #endif
+
+  if ( text.endsWith( '\n' ) )
+  {
+    text.chop( 1 );
+    // In case Windows <EOL> marker (CRLF) makes it into the variable "text"
+    if ( text.endsWith( '\r' ) )
+    {
+      text.chop( 1 );
+    }
+  }
 
   return stringToFeatureList( text, fields );
 }

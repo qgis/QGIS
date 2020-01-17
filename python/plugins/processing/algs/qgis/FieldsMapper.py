@@ -108,9 +108,12 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
                 expression.setAreaUnits(context.project().areaUnits())
                 if expression.hasParserError():
                     feedback.reportError(
-                        self.tr(u'Parser error in expression "{}": {}')
-                        .format(expression.expression(),
-                                expression.parserErrorString()))
+                        self.tr('Parser error for field "{}" with expression "{}": {}')
+                        .format(
+                            field_def['name'],
+                            expression.expression(),
+                            expression.parserErrorString()),
+                        True)
                     return False
                 self.expressions.append(expression)
             else:

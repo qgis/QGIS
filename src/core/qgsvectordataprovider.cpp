@@ -596,11 +596,6 @@ QgsTransaction *QgsVectorDataProvider::transaction() const
   return nullptr;
 }
 
-void QgsVectorDataProvider::forceReload()
-{
-  emit dataChanged();
-}
-
 static bool _compareEncodings( const QString &s1, const QString &s2 )
 {
   return s1.toLower() < s2.toLower();

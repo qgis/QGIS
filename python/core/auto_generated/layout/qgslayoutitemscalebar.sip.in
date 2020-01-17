@@ -540,6 +540,26 @@ Returns the scale bar style name.
 .. seealso:: :py:func:`setStyle`
 %End
 
+    const QgsNumericFormat *numericFormat() const;
+%Docstring
+Returns the numeric format used for numbers in the scalebar.
+
+.. seealso:: :py:func:`setNumericFormat`
+
+.. versionadded:: 3.12
+%End
+
+    void setNumericFormat( QgsNumericFormat *format /Transfer/ );
+%Docstring
+Sets the numeric ``format`` used for numbers in the scalebar.
+
+Ownership of ``format`` is transferred to the scalebar.
+
+.. seealso:: :py:func:`numericFormat`
+
+.. versionadded:: 3.12
+%End
+
     void update();
 %Docstring
 Adjusts the scale bar box size and updates the item.

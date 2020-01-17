@@ -19,7 +19,7 @@
 #include "qgis_3d.h"
 
 #include "qgs3drendererregistry.h"
-#include "qgsabstract3drenderer.h"
+#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsabstract3dsymbol.h"
 
 #include "qgsmaplayerref.h"
@@ -58,7 +58,7 @@ class _3D_EXPORT QgsRuleBased3DRendererMetadata : public Qgs3DRendererAbstractMe
  *
  * \since QGIS 3.6
  */
-class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
+class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRenderer
 {
   public:
 
@@ -296,11 +296,6 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
     QgsRuleBased3DRenderer( QgsRuleBased3DRenderer::Rule *root SIP_TRANSFER );
     ~QgsRuleBased3DRenderer() override;
 
-    //! Sets vector layer associated with the renderer
-    void setLayer( QgsVectorLayer *layer );
-    //! Returns vector layer associated with the renderer
-    QgsVectorLayer *layer() const;
-
     //! Returns pointer to the root rule
     QgsRuleBased3DRenderer::Rule *rootRule() { return mRootRule; }
     //! Returns pointer to the root rule
@@ -312,10 +307,8 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstract3DRenderer
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
-    void resolveReferences( const QgsProject &project ) override;
 
   private:
-    QgsMapLayerRef mLayerRef; //!< Layer used to extract polygons from
     Rule *mRootRule = nullptr;
 
 };

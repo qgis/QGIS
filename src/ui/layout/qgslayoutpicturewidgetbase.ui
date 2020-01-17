@@ -62,7 +62,7 @@
         <x>0</x>
         <y>0</y>
         <width>318</width>
-        <height>949</height>
+        <height>928</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -129,33 +129,7 @@
            </widget>
           </item>
           <item row="3" column="0">
-           <widget class="QComboBox" name="mResizeModeComboBox">
-            <item>
-             <property name="text">
-              <string>Zoom</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Stretch</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Clip</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Zoom and resize frame</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Resize frame to image size</string>
-             </property>
-            </item>
-           </widget>
+           <widget class="QComboBox" name="mResizeModeComboBox"/>
           </item>
           <item row="4" column="0">
            <widget class="QLabel" name="label_5">
@@ -165,53 +139,7 @@
            </widget>
           </item>
           <item row="5" column="0">
-           <widget class="QComboBox" name="mAnchorPointComboBox">
-            <item>
-             <property name="text">
-              <string>Top left</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Top center</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Top right</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Middle left</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Middle</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Middle right</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Bottom left</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Bottom center</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Bottom right</string>
-             </property>
-            </item>
-           </widget>
+           <widget class="QComboBox" name="mAnchorPointComboBox"/>
           </item>
          </layout>
         </widget>

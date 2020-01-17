@@ -63,7 +63,7 @@ class ANALYSIS_EXPORT QgsGeometrySelfIntersectionCheck : public QgsSingleGeometr
                                 configuration ) {}
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
-    QStringList resolutionMethods() const override;
+    Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     QString description() const override { return factoryDescription(); }
     QString id() const override { return factoryId(); }
     QgsGeometryCheck::Flags flags() const override {return factoryFlags(); }

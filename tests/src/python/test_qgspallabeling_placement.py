@@ -165,6 +165,48 @@ class TestPointPlacement(TestPlacementBase):
         self.removeMapLayer(polyLayer)
         self.layer = None
 
+    def test_polygon_placement_with_obstacle(self):
+        # Horizontal label placement for polygon and a line obstacle
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_rect')
+        obstacleLayer = TestQgsPalLabeling.loadFeatureLayer('polygon_with_hole_line_obstacle')
+        obstacle_label_settings = QgsPalLayerSettings()
+        obstacle_label_settings.obstacle = True
+        obstacle_label_settings.drawLabels = False
+        obstacle_label_settings.obstacleFactor = 7
+        obstacleLayer.setLabeling(QgsVectorLayerSimpleLabeling(obstacle_label_settings))
+        obstacleLayer.setLabelsEnabled(True)
+
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Horizontal
+        self.checkTest()
+        self.removeMapLayer(obstacleLayer)
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_polygon_placement_bumps(self):
+        # Horizontal label placement for polygon with bumps, checking that
+        # labels are placed close to the pole of inaccessibility (max distance
+        # to rings)
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_with_bump')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Horizontal
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
+    def test_polygon_placement_small_bump(self):
+        # Horizontal label placement for polygon with a small bump, checking that
+        # labels AREN'T placed right at the pole of inaccessibility
+        # when that position is far from the polygon's centroid
+        # i.e. when label candidates have close-ish max distance to rings
+        # then we pick the one closest to the polygon's centroid
+        self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_small_bump')
+        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+        self.lyr.placement = QgsPalLayerSettings.Horizontal
+        self.checkTest()
+        self.removeMapLayer(self.layer)
+        self.layer = None
+
     def test_polygon_multiple_labels(self):
         # Horizontal label placement for polygon with hole
         # Note for this test, the mask is used to check only pixels outside of the polygon.

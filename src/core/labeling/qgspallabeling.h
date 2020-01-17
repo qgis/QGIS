@@ -256,8 +256,7 @@ class CORE_EXPORT QgsPalLayerSettings
       FromSymbolBounds, //!< Offset distance applies from rendered symbol bounds
     };
 
-    //TODO QGIS 4.0 - move to QgsLabelingEngine, rename to LinePlacementFlag, use Q_DECLARE_FLAGS to make
-    //LinePlacementFlags type, and replace use of pal::LineArrangementFlag
+    //TODO QGIS 4.0 - remove, replaced by QgsLabeling::LinePlacementFlags
 
     /**
      * Line placement flags, which control how candidates are generated for a linear feature.

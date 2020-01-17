@@ -2933,7 +2933,7 @@ QString createFilters( const QString &type )
       {
         sDatabaseDrivers += QObject::tr( "ESRI ArcSDE" ) + ",SDE;";
       }
-      else if ( driverName.startsWith( QLatin1String( "ESRI" ) ) )
+      else if ( driverName.startsWith( QLatin1String( "ESRI Shapefile" ) ) )
       {
         QString exts = GDALGetMetadataItem( driver, GDAL_DMD_EXTENSIONS, "" );
         sFileFilters += createFileFilter_( QObject::tr( "ESRI Shapefiles" ), exts.contains( "shz" ) ? QStringLiteral( "*.shp *.shz *.shp.zip" ) : QStringLiteral( "*.shp" ) );
@@ -3919,11 +3919,6 @@ QByteArray QgsOgrProvider::quotedIdentifier( const QByteArray &field ) const
   return QgsOgrProviderUtils::quotedIdentifier( field, mGDALDriverName );
 }
 
-void QgsOgrProvider::forceReload()
-{
-  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
-}
-
 QString QgsOgrProviderUtils::connectionPoolId( const QString &dataSourceURI, bool shareSameDatasetAmongLayers )
 {
   if ( shareSameDatasetAmongLayers )
@@ -4598,11 +4593,11 @@ void QgsOgrProvider::close()
   invalidateCachedExtent( false );
 }
 
-void QgsOgrProvider::reloadData()
+void QgsOgrProvider::reloadProviderData()
 {
   mFeaturesCounted = QgsVectorDataProvider::Uncounted;
   bool wasValid = mValid;
-  forceReload();
+  QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ), mShareSameDatasetAmongLayers ) );
   close();
   open( OpenModeSameAsCurrent );
   if ( !mValid && wasValid )

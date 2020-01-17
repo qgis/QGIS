@@ -437,6 +437,27 @@ json QgsCurvePolygon::asJsonObject( int precision ) const
   };
 }
 
+QString QgsCurvePolygon::asKml( int precision ) const
+{
+  QString kml;
+  kml.append( QLatin1String( "<Polygon>" ) );
+  if ( mExteriorRing )
+  {
+    kml.append( QLatin1String( "<outerBoundaryIs>" ) );
+    kml.append( mExteriorRing->asKml( precision ) );
+    kml.append( QLatin1String( "</outerBoundaryIs>" ) );
+  }
+  const QVector<QgsCurve *> &interiorRings = mInteriorRings;
+  for ( const QgsCurve *ring : interiorRings )
+  {
+    kml.append( QLatin1String( "<innerBoundaryIs>" ) );
+    kml.append( ring->asKml( precision ) );
+    kml.append( QLatin1String( "</innerBoundaryIs>" ) );
+  }
+  kml.append( QLatin1String( "</Polygon>" ) );
+  return kml;
+}
+
 double QgsCurvePolygon::area() const
 {
   if ( !mExteriorRing )

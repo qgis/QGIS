@@ -88,6 +88,8 @@ class QgsRuleBasedLabelingWidget : public QgsPanelWidget, private Ui::QgsRuleBas
     //! Gives access to the internal root of the rule tree
     const QgsRuleBasedLabeling::Rule *rootRule() const { return mRootRule; }
 
+    void setDockMode( bool dockMode ) override;
+
   protected slots:
     void addRule();
     void editRule();

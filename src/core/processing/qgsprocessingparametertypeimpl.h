@@ -1730,4 +1730,57 @@ class CORE_EXPORT QgsProcessingParameterTypeCoordinateOperation : public QgsProc
 
 
 };
+
+
+/**
+ * A map theme parameter for Processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('maptheme')
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsProcessingParameterTypeMapTheme: public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterMapTheme( name );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A map theme parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Map Theme" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "maptheme" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterMapTheme" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterMapTheme" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: name of an existing map theme" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Name of an existing map theme" );
+    }
+
+};
 #endif // QGSPROCESSINGPARAMETERTYPEIMPL_H

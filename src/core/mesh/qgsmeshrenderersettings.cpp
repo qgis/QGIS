@@ -400,6 +400,7 @@ QDomElement QgsMeshRendererSettings::writeXml( QDomDocument &doc ) const
     QDomElement elemAveraging = doc.createElement( QStringLiteral( "averaging-3d" ) );
     elemAveraging.setAttribute( QStringLiteral( "method" ), QStringLiteral( "%1" ).arg( mAveragingMethod->method() ) ) ;
     QDomElement elemAveragingParams = mAveragingMethod->writeXml( doc );
+    elemAveraging.appendChild( elemAveragingParams );
     elem.appendChild( elemAveraging );
   }
 
@@ -457,7 +458,7 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem )
   QDomElement elemAveraging = elem.firstChildElement( QStringLiteral( "averaging-3d" ) );
   if ( !elemAveraging.isNull() )
   {
-    mAveragingMethod.reset( QgsMesh3dAveragingMethod::createFromXml( elem ) );
+    mAveragingMethod.reset( QgsMesh3dAveragingMethod::createFromXml( elemAveraging ) );
   }
 }
 

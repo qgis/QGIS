@@ -36,6 +36,8 @@
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgslocaldefaultsettings.h"
+#include "qgsnumericformatwidget.h"
 
 #include "qgsattributetablefiltermodel.h"
 #include "qgsrasterformatsaveoptionswidget.h"
@@ -55,6 +57,7 @@
 #include "qgsgui.h"
 #include "qgswelcomepage.h"
 #include "qgsnewsfeedparser.h"
+#include "qgsbearingnumericformat.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -773,6 +776,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   Qgis::PythonMacroMode pyMacroMode = mSettings->enumValue( QStringLiteral( "/qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
   mEnableMacrosComboBox->setCurrentIndex( mEnableMacrosComboBox->findData( QVariant::fromValue( pyMacroMode ) ) );
 
+  QgsProject::FileFormat defaultProjectFileFormat = mSettings->enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
+  mFileFormatQgzButton->setChecked( defaultProjectFileFormat == QgsProject::FileFormat::Qgz );
+  mFileFormatQgsButton->setChecked( defaultProjectFileFormat == QgsProject::FileFormat::Qgs );
+
   // templates
   cbxProjectDefaultNew->setChecked( mSettings->value( QStringLiteral( "/qgis/newProjectDefault" ), QVariant( false ) ).toBool() );
   QString templateDirName = mSettings->value( QStringLiteral( "/qgis/projectTemplateDir" ),
@@ -1198,6 +1205,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // restore window and widget geometry/state
   connect( mRestoreDefaultWindowStateBtn, &QAbstractButton::clicked, this, &QgsOptions::restoreDefaultWindowState );
 
+  mBearingFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsOptions::customizeBearingFormat );
+
   restoreOptionsBaseUi();
 
 #ifdef QGISDEBUG
@@ -1538,6 +1548,8 @@ void QgsOptions::saveOptions()
   }
   mSettings->setEnumValue( QStringLiteral( "/qgis/enableMacros" ), mEnableMacrosComboBox->currentData().value<Qgis::PythonMacroMode>() );
 
+  mSettings->setEnumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), mFileFormatQgsButton->isChecked() ? QgsProject::FileFormat::Qgs : QgsProject::FileFormat::Qgz );
+
   QgsApplication::setNullRepresentation( leNullValue->text() );
   mSettings->setValue( QStringLiteral( "/qgis/style" ), cmbStyle->currentText() );
   mSettings->setValue( QStringLiteral( "/qgis/iconSize" ), cmbIconSize->currentText() );
@@ -1754,6 +1766,8 @@ void QgsOptions::saveOptions()
 
   // Number settings
   mSettings->setValue( QStringLiteral( "locale/showGroupSeparator" ), cbShowGroupSeparator->isChecked( ) );
+
+  QgsLocalDefaultSettings::setBearingFormat( mBearingFormat.release() );
 
 #ifdef HAVE_OPENCL
   // OpenCL settings
@@ -2666,4 +2680,14 @@ void QgsOptions::showHelp()
     }
   }
   QgsHelp::openHelp( link );
+}
+
+void QgsOptions::customizeBearingFormat()
+{
+  QgsBearingNumericFormatDialog dlg( mBearingFormat.get(), this );
+  dlg.setWindowTitle( tr( "Bearing Format" ) );
+  if ( dlg.exec() )
+  {
+    mBearingFormat.reset( dlg.format() );
+  }
 }

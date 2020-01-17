@@ -64,6 +64,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri, bool transaction )
   : mRef( 1 )
   , mCurrentUser( QString() )
   , mHasSpatial( -1 )
+  , mLock( QMutex::Recursive )
   , mTransaction( transaction )
 {
   QgsDebugMsg( QStringLiteral( "New Oracle connection for " ) + uri.connectionInfo( false ) );
@@ -200,6 +201,7 @@ void QgsOracleConn::reconnect()
 
 void QgsOracleConn::unref()
 {
+  QMutexLocker locker( &mLock );
   if ( --mRef > 0 )
     return;
 
@@ -217,7 +219,9 @@ void QgsOracleConn::unref()
     }
   }
 
-  deleteLater();
+  // to avoid destroying locked mutex
+  locker.unlock();
+  delete this;
 }
 
 bool QgsOracleConn::exec( QSqlQuery &qry, const QString &sql, const QVariantList &params )
@@ -419,13 +423,13 @@ bool QgsOracleConn::exec( const QString &query, bool logError, QString *errorMes
     if ( logError )
     {
       QgsMessageLog::logMessage( tr( "Connection error: %1 returned %2" )
-                                 .arg( query ).arg( error ),
+                                 .arg( query, error ),
                                  tr( "Oracle" ) );
     }
     else
     {
       QgsDebugMsg( QStringLiteral( "Connection error: %1 returned %2" )
-                   .arg( query ).arg( error ) );
+                   .arg( query, error ) );
     }
     if ( errorMessage )
       *errorMessage = error;
@@ -436,6 +440,7 @@ bool QgsOracleConn::exec( const QString &query, bool logError, QString *errorMes
 
 bool QgsOracleConn::begin( QSqlDatabase &db )
 {
+  QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
     return exec( QStringLiteral( "SAVEPOINT sp%1" ).arg( ++mSavePointId ) );
@@ -448,6 +453,7 @@ bool QgsOracleConn::begin( QSqlDatabase &db )
 
 bool QgsOracleConn::commit( QSqlDatabase &db )
 {
+  QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
     return exec( QStringLiteral( "SAVEPOINT sp%1" ).arg( ++mSavePointId ) );
@@ -460,6 +466,7 @@ bool QgsOracleConn::commit( QSqlDatabase &db )
 
 bool QgsOracleConn::rollback( QSqlDatabase &db )
 {
+  QMutexLocker locker( &mLock );
   if ( mTransaction )
   {
     return exec( QStringLiteral( "ROLLBACK TO SAVEPOINT sp%1" ).arg( mSavePointId ) );
@@ -507,6 +514,7 @@ QString QgsOracleConn::fieldExpression( const QgsField &fld )
 
 void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes )
 {
+  QMutexLocker locker( &mLock );
   QgsDebugMsgLevel( QStringLiteral( "entering: " ) + layerProperty.toString(), 3 );
 
   if ( layerProperty.isView )
@@ -639,13 +647,25 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
       return QStringLiteral( "mod(%1.sdo_gtype,100) IN (1,5)" ).arg( geomCol );
     case QgsWkbTypes::LineString:
     case QgsWkbTypes::LineString25D:
+    case QgsWkbTypes::LineStringZ:
+    case QgsWkbTypes::CircularString:
+    case QgsWkbTypes::CircularStringZ:
     case QgsWkbTypes::MultiLineString:
     case QgsWkbTypes::MultiLineString25D:
+    case QgsWkbTypes::MultiLineStringZ:
+    case QgsWkbTypes::MultiCurve:
+    case QgsWkbTypes::MultiCurveZ:
       return QStringLiteral( "mod(%1.sdo_gtype,100) IN (2,6)" ).arg( geomCol );
     case QgsWkbTypes::Polygon:
     case QgsWkbTypes::Polygon25D:
+    case QgsWkbTypes::PolygonZ:
+    case QgsWkbTypes::CurvePolygon:
+    case QgsWkbTypes::CurvePolygonZ:
     case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::MultiPolygonZ:
     case QgsWkbTypes::MultiPolygon25D:
+    case QgsWkbTypes::MultiSurface:
+    case QgsWkbTypes::MultiSurfaceZ:
       return QStringLiteral( "mod(%1.sdo_gtype,100) IN (3,7)" ).arg( geomCol );
     case QgsWkbTypes::NoGeometry:
       return QStringLiteral( "%1 IS NULL" ).arg( geomCol );
@@ -944,6 +964,7 @@ QString QgsOracleConn::databaseName( const QString &database, const QString &hos
 
 bool QgsOracleConn::hasSpatial()
 {
+  QMutexLocker locker( &mLock );
   if ( mHasSpatial == -1 )
   {
     QSqlQuery qry( mDatabase );
@@ -955,6 +976,7 @@ bool QgsOracleConn::hasSpatial()
 
 QString QgsOracleConn::currentUser()
 {
+  QMutexLocker locker( &mLock );
   if ( mCurrentUser.isNull() )
   {
     QSqlQuery qry( mDatabase );

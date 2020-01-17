@@ -34,6 +34,7 @@ class QgsLayerTreeGroup;
 class QgsMetadataWidget;
 class QgsTreeWidgetItem;
 class QgsLayerCapabilitiesModel;
+class QgsBearingNumericFormat;
 
 /**
  * Dialog to set project level properties
@@ -48,6 +49,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
   public:
     //! Constructor
     QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+
+    ~QgsProjectProperties() override;
 
     void setCurrentPage( const QString & );
 
@@ -177,6 +180,10 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();
 
+  private slots:
+
+    void customizeBearingFormat();
+
   private:
 
     /**
@@ -225,6 +232,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QList<EllipsoidDefs> mEllipsoidList;
     int mEllipsoidIndex;
     bool mBlockCrsUpdates = false;
+
+    std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
 
     //! populate WMTS tree
     void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );

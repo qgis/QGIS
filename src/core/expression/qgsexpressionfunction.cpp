@@ -3400,6 +3400,47 @@ static QVariant fcnTranslate( const QVariantList &values, const QgsExpressionCon
   fGeom.translate( dx, dy );
   return QVariant::fromValue( fGeom );
 }
+
+static QVariant fcnRotate( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  const double rotation = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  const QgsGeometry center = values.at( 2 ).isValid() ? QgsExpressionUtils::getGeometry( values.at( 2 ), parent )
+                             : QgsGeometry();
+
+  QgsPointXY pt;
+  if ( center.isNull() )
+  {
+    // if center wasn't specified, use bounding box centroid
+    pt = fGeom.boundingBox().center();
+  }
+  else if ( center.type() != QgsWkbTypes::PointGeometry )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function 'rotate' requires a point value for the center" ) );
+    return QVariant();
+  }
+  else if ( center.isMultipart() )
+  {
+    QgsMultiPointXY multiPoint = center.asMultiPoint();
+    if ( multiPoint.count() == 1 )
+    {
+      pt = multiPoint[0];
+    }
+    else
+    {
+      parent->setEvalErrorString( QObject::tr( "Function 'rotate' requires a point value for the center" ) );
+      return QVariant();
+    }
+  }
+  else
+  {
+    pt = center.asPoint();
+  }
+
+  fGeom.rotate( rotation, pt );
+  return QVariant::fromValue( fGeom );
+}
+
 static QVariant fcnCentroid( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -5664,6 +5705,10 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "dx" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "dy" ) ),
                                             fcnTranslate, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "rotate" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geom" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "rotation" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "center" ), true ),
+                                            fcnRotate, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "buffer" ), -1, fcnBuffer, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "force_rhr" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) ),
                                             fcnForceRHR, QStringLiteral( "GeometryGroup" ) )

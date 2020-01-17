@@ -40,6 +40,8 @@
 #include "qgslayoutscalebarwidget.h"
 #include "qgslayoutitemattributetable.h"
 #include "qgslayoutattributetablewidget.h"
+#include "qgslayoutitemmanualtable.h"
+#include "qgslayoutmanualtablewidget.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 
@@ -421,5 +423,32 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     table->addFrame( frame.release() );
     return f;
   } );
-  registry->addLayoutItemGuiMetadata( attributeTableItemMetadata .release() );
+  registry->addLayoutItemGuiMetadata( attributeTableItemMetadata.release() );
+
+  // manual table item
+
+  auto manualTableItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutManualTable, QObject::tr( "Fixed Table" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) ),
+                                 [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutManualTableWidget( qobject_cast< QgsLayoutFrame * >( item ) );
+  }, createRubberBand );
+  manualTableItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem *
+  {
+    std::unique_ptr< QgsLayoutItemManualTable > tableMultiFrame = qgis::make_unique< QgsLayoutItemManualTable >( layout );
+    QgsLayoutItemManualTable *table = tableMultiFrame.get();
+
+    // initially start with a 2x2 empty table
+    QgsTableContents contents;
+    contents << ( QgsTableRow() << QgsTableCell() << QgsTableCell() );
+    contents << ( QgsTableRow() << QgsTableCell() << QgsTableCell() );
+    table->setTableContents( contents );
+
+    layout->addMultiFrame( tableMultiFrame.release() );
+
+    std::unique_ptr< QgsLayoutFrame > frame = qgis::make_unique< QgsLayoutFrame >( layout, table );
+    QgsLayoutFrame *f = frame.get();
+    table->addFrame( frame.release() );
+    return f;
+  } );
+  registry->addLayoutItemGuiMetadata( manualTableItemMetadata.release() );
 }

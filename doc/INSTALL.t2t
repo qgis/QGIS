@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-%%date(%A %B %d, %Y)
+@NOW@
 
 %! target       : html
 %! style        : style.css
-%! Options      : --toc --toc-level 2 --enum-title --css-sugar --css-inside
+%! Options      : --toc --toc-level 2 --enum-title
 %! preproc      : TUT_URL   https://qgis.org
 %! PostProc(html): '(?i)(<pre>)' '<div class="code">\1'
 %! PostProc(html): '(?i)(</pre>)' '\1</div>'
@@ -56,10 +56,8 @@ Building QGIS from source - step by step
 % End of comments
 % -------------------
 
-% change to force build: Fri, 28 Sep 2012 11:08:01 +0200
-
-Last Updated: %%date(%A %B %d, %Y)
-Last Change : %%mtime(%A %B %d, %Y)
+Last Updated: @NOW@
+Last Change : @MODTIME@
 
 %%toc
 

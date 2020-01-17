@@ -33,6 +33,21 @@ open within the main QGIS application.
 #include "qgsproject.h"
 %End
   public:
+
+    enum class ReadFlag
+    {
+      FlagDontResolveLayers,
+      FlagDontLoadLayouts,
+    };
+    typedef QFlags<QgsProject::ReadFlag> ReadFlags;
+
+
+    enum class FileFormat
+    {
+      Qgz,
+      Qgs,
+    };
+
     static QgsProject *instance();
 %Docstring
 Returns the QgsProject singleton instance
@@ -234,14 +249,6 @@ Clears the project, removing all settings and resetting it back to an empty, def
 
 .. versionadded:: 2.4
 %End
-
-    enum ReadFlag
-    {
-      FlagDontResolveLayers,
-      FlagDontLoadLayouts,
-    };
-    typedef QFlags<QgsProject::ReadFlag> ReadFlags;
-
 
     bool read( const QString &filename, QgsProject::ReadFlags flags = 0 );
 %Docstring
@@ -573,6 +580,15 @@ relating to how a QgsProject should be viewed and behave inside a map canvas
 (e.g. map scales and default view extent)
 
 .. versionadded:: 3.10.1
+%End
+
+
+    QgsProjectDisplaySettings *displaySettings();
+%Docstring
+Returns the project's display settings, which settings and properties relating
+to how a QgsProject should display values such as map coordinates and bearings.
+
+.. versionadded:: 3.12
 %End
 
     QgsLayerTree *layerTreeRoot() const;

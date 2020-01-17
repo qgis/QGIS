@@ -21,7 +21,9 @@ from qgis.core import (
     NULL,
     QgsProject,
     QgsTransactionGroup,
-    QgsFeature
+    QgsFeature,
+    QgsGeometry,
+    QgsWkbTypes
 )
 
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant
@@ -40,7 +42,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = "host=localhost port=1521 user='QGIS' password='qgis'"
+        cls.dbconn = "host=localhost/XEPDB1 port=1521 user='QGIS' password='qgis'"
         if 'QGIS_ORACLETEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_ORACLETEST_DB']
         # Create test layers
@@ -54,7 +56,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         cls.poly_provider = cls.poly_vl.dataProvider()
 
         cls.conn = QSqlDatabase.addDatabase('QOCISPATIAL', "oracletest")
-        cls.conn.setDatabaseName('10.0.0.2/orcl')
+        cls.conn.setDatabaseName('localhost/XEPDB1')
         if 'QGIS_ORACLETEST_DBNAME' in os.environ:
             cls.conn.setDatabaseName(os.environ['QGIS_ORACLETEST_DBNAME'])
         cls.conn.setUserName('QGIS')
@@ -255,7 +257,120 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(
             compareWkt(features[7].geometry().asWkt(), 'MultiCurve (CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4),CircularString (-11 -3, 5 7, 10 -1))', 0.00001), features[7].geometry().asWkt())
         self.assertTrue(
-            compareWkt(features[8].geometry().asWkt(), 'MultiCurve (CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4),(13 4, 17 -6)),CompoundCurve (CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4)),CompoundCurve ((-11 -3, 5 7, 10 -1)))', 0.00001), features[8].geometry().asWkt())
+            compareWkt(features[8].geometry().asWkt(), 'MultiCurve (CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4),(13 4, 17 -6)),CompoundCurve (CircularString (1 3, 5 5, 7 3.2, 10 1.1, 13 5)),CompoundCurve ((-11 -3, 5 7, 10 -1)))', 0.00001), features[8].geometry().asWkt())
+
+    def check_geom(self, layer, pk, wkt, wkt_ref=None, check_valid=True):
+        """
+        Add geom to the layer and check everything is OK
+        """
+        table = layer.dataProvider().uri().table()
+
+        # insert geom in layer
+        self.assertTrue(layer.startEditing())
+        feature = QgsFeature(layer.fields())
+        geom = QgsGeometry.fromWkt(wkt)
+        feature.setAttributes([pk])
+        feature.setGeometry(geom)
+        self.assertTrue(layer.addFeature(feature))
+        self.assertTrue(layer.commitChanges())
+
+        if check_valid:
+            self.assertTrue(self.conn)
+            query = QSqlQuery(self.conn)
+            sql = """select p.GEOM.st_isvalid() from QGIS.{} p where "pk" = {}""".format(table, pk)
+            res = query.exec_(sql)
+            self.assertTrue(res, sql + ': ' + query.lastError().text())
+            query.next()
+            valid = query.value(0)
+            self.assertTrue(valid, "geometry '{}' inserted in database is not valid".format(wkt))
+            query.finish()
+
+        expected_wkt = wkt if wkt_ref is None else wkt_ref
+        res_wkt = layer.getFeature(pk).geometry().asWkt()
+        self.assertTrue(compareWkt(res_wkt, expected_wkt, 0.00001), "\nactual   = {}\nexpected = {}".format(res_wkt, expected_wkt))
+
+    def createTable(self, name, dims, srid):
+        self.execSQLCommand('DROP TABLE "QGIS"."{}"'.format(name), ignore_errors=True)
+        self.execSQLCommand("""DELETE FROM user_sdo_geom_metadata  where TABLE_NAME = '{}'""".format(name))
+        self.execSQLCommand("""CREATE TABLE QGIS.{} ("pk" INTEGER PRIMARY KEY, GEOM SDO_GEOMETRY)""".format(name))
+        self.execSQLCommand("""INSERT INTO user_sdo_geom_metadata (TABLE_NAME, COLUMN_NAME, DIMINFO, SRID) VALUES ( '{}', 'GEOM', sdo_dim_array(sdo_dim_element('X',-50,50,0.005),sdo_dim_element('Y',-50,50,0.005){}),{})""".format(
+            name, ",sdo_dim_element('Z',-50,50,0.005)" if dims > 2 else "", srid), ignore_errors=True)
+        self.execSQLCommand("""CREATE INDEX {0}_spatial_idx ON QGIS.{0}(GEOM) INDEXTYPE IS MDSYS.SPATIAL_INDEX""".format(name))
+
+    def testEditCurves(self):
+
+        self.createTable('EDIT_CURVE_DATA', 2, 3857)
+        # We choose SRID=5698 (see https://docs.oracle.com/database/121/SPATL/three-dimensional-coordinate-reference-system-support.htm#SPATL626)
+        # to get Oracle valid geometries because it support 3D and arcs (arcs are not supported in geodetic projection)
+        self.createTable('EDIT_CURVEZ_DATA', 3, 5698)
+
+        lines = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=3857 type=LineString table="QGIS"."EDIT_CURVE_DATA" (GEOM) sql=',
+            'test_lines', 'oracle')
+        self.assertTrue(lines.isValid())
+
+        self.check_geom(lines, 1, 'LineString (1 2, 3 4, 5 6)')
+        self.check_geom(lines, 2, 'CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4)')
+        self.check_geom(lines, 3, 'CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.20, 10 0.1, 13 4),(13 4, 17 -6))')
+
+        # We choose SRID=5698 (see https://docs.oracle.com/database/121/SPATL/three-dimensional-coordinate-reference-system-support.htm#SPATL626)
+        # to get Oracle valid geometries because it support 3D and arcs (arcs are not supported in geodetic projection)
+        lines_z = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=5698 type=LineStringZ table="QGIS"."EDIT_CURVEZ_DATA" (GEOM) sql=',
+            'test_lines', 'oracle')
+        self.assertTrue(lines_z.isValid())
+
+        self.check_geom(lines_z, 4, 'LineStringZ (1 2 3, 4 5 6, 7 8 9)')
+        # 3D arcs and compound curve are invalid
+        # https://support.oracle.com/knowledge/Oracle%20Database%20Products/1446335_1.html
+        # https://support.oracle.com/knowledge/Oracle%20Database%20Products/1641672_1.html
+        self.check_geom(lines_z, 5, 'CircularStringZ (1 2 1, 5 4 2, 7 2.2 3, 10 0.1 4, 13 4 5)', check_valid=False)
+        self.check_geom(lines_z, 6, 'CompoundCurveZ ((-1 -5 1, 1 2 2),CircularStringZ (1 2 2, 5 4 3, 7 2.20 4, 10 0.1 5, 13 4 6),(13 4 6, 17 -6 7))', check_valid=False)
+
+        multi_lines = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=3857 type=MultiLineString table="QGIS"."EDIT_CURVE_DATA" (GEOM) sql=',
+            'test_multilines', 'oracle')
+        self.assertTrue(multi_lines.isValid())
+
+        self.check_geom(multi_lines, 7, 'MultiLineString ((1 2, 3 4),(5 6, 7 8, 9 10), (11 12, 13 14))')
+        self.check_geom(multi_lines, 8, 'MultiLineString ((1 2, 3 4),(5 6, 7 8, 9 10))')
+
+        multi_lines_z = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=5698 type=MultiLineStringZ table="QGIS"."EDIT_CURVEZ_DATA" (GEOM) sql=',
+            'test_multilines', 'oracle')
+        self.assertTrue(multi_lines_z.isValid())
+
+        self.check_geom(multi_lines_z, 9, 'MultiLineStringZ ((1 2 11, 3 4 -11),(5 6 9, 7 8 1, 9 10 -3))')
+        self.check_geom(multi_lines_z, 10, 'MultiLineStringZ ((1 2 1, 3 4 2),(5 6 3, 7 8 4, 9 10 5), (11 12 6, 13 14 7))')
+
+        multi_curves = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=3857 type=MultiCurve table="QGIS"."EDIT_CURVE_DATA" (GEOM) sql=',
+            'test_multicurves', 'oracle')
+        self.assertTrue(multi_curves.isValid())
+
+        # There is no way to represent a compound curve with only one LineString or CircularString in Oracle database
+        # if SDO_ETYPE = 4, n must be greater than 1 : https://docs.oracle.com/database/121/SPATL/sdo_geometry-object-type.htm#GUID-270AE39D-7B83-46D0-9DD6-E5D99C045021__BGHDGCCE
+        # So, this two different WKTs inputs generate the same data in Oracle database, and so the same WKT
+        # output representation (with CompoundCurve() around each MultiCurve parts)
+        self.check_geom(multi_curves, 11,
+                        'MultiCurve (CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4),(13 4, 17 -6)),CompoundCurve (CircularString (1 3, 5 5, 7 3.2, 10 1.1, 13 5)),CompoundCurve ((-11 -3, 5 7, 10 -1)))')
+        self.check_geom(multi_curves, 12,
+                        'MultiCurve (CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4),(13 4, 17 -6)),CompoundCurve (CircularString (1 3, 5 5, 7 3.2, 10 1.1, 13 5)),(-11 -3, 5 7, 10 -1))',
+                        'MultiCurve (CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4),(13 4, 17 -6)),CompoundCurve (CircularString (1 3, 5 5, 7 3.2, 10 1.1, 13 5)),CompoundCurve ((-11 -3, 5 7, 10 -1)))')
+
+        multi_curves_z = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=5698 type=MultiCurveZ table="QGIS"."EDIT_CURVEZ_DATA" (GEOM) sql=',
+            'test_multicurves_z', 'oracle')
+        self.assertTrue(multi_curves_z.isValid())
+
+        # ora-54530 : 3D compound lines are invalid since 11.2.0.3 : https://support.oracle.com/knowledge/Oracle%20Database%20Products/1446335_1.html
+        self.check_geom(multi_curves_z, 13,
+                        'MultiCurveZ (CompoundCurveZ ((-1 -5 3, 1 2 4),CircularStringZ (1 2 4, 5 4 5, 7 2.2 6, 10 0.1 7, 13 4 8),(13 4 8, 17 -6 9)),CompoundCurveZ (CircularStringZ (1 3 2, 5 5 3, 7 3.2 4, 10 1.1 5, 13 5 6)),CompoundCurveZ ((-11 -3 1, 5 7 2, 10 -1 3)))',
+                        check_valid=False)
+        self.check_geom(multi_curves_z, 14,
+                        'MultiCurveZ (CompoundCurveZ ((-1 -5 3, 1 2 4),CircularStringZ (1 2 4, 5 4 5, 7 2.2 6, 10 0.1 7, 13 4 8),(13 4 8, 17 -6 9)),CompoundCurveZ (CircularStringZ (1 3 2, 5 5 3, 7 3.2 4, 10 1.1 5, 13 5 6)),(-11 -3 1, 5 7 2, 10 -1 3))',
+                        'MultiCurveZ (CompoundCurveZ ((-1 -5 3, 1 2 4),CircularStringZ (1 2 4, 5 4 5, 7 2.2 6, 10 0.1 7, 13 4 8),(13 4 8, 17 -6 9)),CompoundCurveZ (CircularStringZ (1 3 2, 5 5 3, 7 3.2 4, 10 1.1 5, 13 5 6)),CompoundCurveZ ((-11 -3 1, 5 7 2, 10 -1 3)))',
+                        check_valid=False)
 
     def testSurfaces(self):
         vl = QgsVectorLayer('%s table="QGIS"."POLY_DATA" (GEOM) srid=4326 type=POLYGON sql=' %
@@ -285,6 +400,96 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
             compareWkt(features[11].geometry().asWkt(), 'CurvePolygon(CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.20, 10 0.1, 13 4),(13 4, 17 -6),CircularString (17 -6, 5 -7, -1 -5)))', 0.00001), features[11].geometry().asWkt())
         self.assertTrue(
             compareWkt(features[12].geometry().asWkt(), 'MultiSurface (CurvePolygon (CircularString (1 3, 3 5, 4 7, 7 3, 1 3)),CurvePolygon (CircularString (11 3, 13 5, 14 7, 17 3, 11 3)))', 0.00001), features[12].geometry().asWkt())
+        self.assertTrue(
+            compareWkt(features[13].geometry().asWkt(), 'CurvePolygonZ(CompoundCurveZ (CircularStringZ (-1 -5 1, 5 -7 2, 17 -6 3), (17 -6 3, 13 4 4), CircularStringZ (13 4 4, 10 0.1 5, 7 2.20 6, 5 4 7, 1 2 8),(1 2 8, -1 -5 1)))', 0.00001), features[13].geometry().asWkt())
+        self.assertTrue(
+            compareWkt(features[14].geometry().asWkt(), 'MultiPolygon (((22 22, 28 22, 28 26, 22 26, 22 22)))', 0.00001), features[14].geometry().asWkt())
+        self.assertTrue(
+            compareWkt(features[15].geometry().asWkt(), 'MultiSurface (CurvePolygon(CompoundCurve (CircularString (-1 -5, 5 -7, 17 -6), (17 -6, -1 -5))), CurvePolygon (CircularString (1 3, 7 3, 4 7, 3 5, 1 3)))', 0.00001), features[15].geometry().asWkt())
+
+    def testEditSurfaces(self):
+
+        self.createTable('EDIT_SURFACE_DATA', 2, 3857)
+        # We choose SRID=5698 (see https://docs.oracle.com/database/121/SPATL/three-dimensional-coordinate-reference-system-support.htm#SPATL626)
+        # to get Oracle valid geometries because it support 3D and arcs (arcs are not supported in geodetic projection)
+        self.createTable('EDIT_SURFACEZ_DATA', 3, 5698)
+
+        polygon = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=3857 type=Polygon table="QGIS"."EDIT_SURFACE_DATA" (GEOM) sql=',
+            'test_polygon', 'oracle')
+        self.assertTrue(polygon.isValid())
+
+        self.check_geom(polygon, 1, 'Polygon ((1 2, 11 2, 11 22, 1 22, 1 2))')
+        self.check_geom(polygon, 2, 'Polygon ((1 2, 11 2, 11 22, 1 22, 1 2),(5 6, 8 9, 8 6, 5 6),(3 4, 3 6, 5 6, 3 4))')
+
+        polygon_z = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=5698 type=PolygonZ table="QGIS"."EDIT_SURFACEZ_DATA" (GEOM) sql=',
+            'test_polygon_z', 'oracle')
+        self.assertTrue(polygon_z.isValid())
+
+        # non planar polygon are invalid : to http://ora.codes/ora-54505/
+        self.check_geom(polygon_z, 3, 'PolygonZ ((1 2 3, 11 2 3, 11 22 3, 1 22 3, 1 2 3))')
+        self.check_geom(polygon_z, 4, 'PolygonZ ((1 2 4, 11 2 5, 11 22 6, 1 22 7, 1 2 1))', check_valid=False)
+        self.check_geom(polygon_z, 5, 'PolygonZ ((1 2 3, 11 2 3, 11 22 3, 1 22 3, 1 2 3),(5 6 3, 8 9 3, 8 6 3, 5 6 3))')
+        self.check_geom(polygon_z, 6, 'PolygonZ ((1 2 3, 11 2 13, 11 22 15, 1 22 7, 1 2 3),(5 6 1, 8 9 -1, 8 6 2, 5 6 1))', check_valid=False)
+
+        multi_polygon = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=3857 type=MultiPolygon table="QGIS"."EDIT_SURFACE_DATA" (GEOM) sql=',
+            'multi_polygon', 'oracle')
+        self.assertTrue(multi_polygon.isValid())
+
+        self.check_geom(multi_polygon, 7, 'MultiPolygon (((22 22, 28 22, 28 26, 22 26, 22 22)),((1 2, 11 2, 11 22, 1 22, 1 2),(5 6, 8 9, 8 6, 5 6),(3 4, 3 6, 5 6, 3 4)))')
+        self.check_geom(multi_polygon, 23, 'MultiPolygon (((22 22, 28 22, 28 26, 22 26, 22 22)))')
+
+        multi_polygon_z = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=5698 type=MultiPolygonZ table="QGIS"."EDIT_SURFACEZ_DATA" (GEOM) sql=',
+            'multi_polygon_z', 'oracle')
+        self.assertTrue(multi_polygon_z.isValid())
+
+        self.check_geom(multi_polygon_z, 8, 'MultiPolygonZ (((22 22 1, 28 22 2, 28 26 3, 22 26 4, 22 22 1)),((1 2 3, 11 2 4, 11 22 5, 1 22 6, 1 2 3),(5 6 1, 8 9 2, 8 6 3, 5 6 1),(3 4 0, 3 6 1, 5 6 2, 3 4 0)))', check_valid=False)
+
+        curve_polygon = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=3857 type=CurvePolygon table="QGIS"."EDIT_SURFACE_DATA" (GEOM) sql=',
+            'curve_polygon', 'oracle')
+        self.assertTrue(curve_polygon.isValid())
+
+        self.check_geom(curve_polygon, 9, 'CurvePolygon (CircularString (6.76923076923076916 22.82875364393326834, -4.44413825931788598 11.61538461538461497, 6.76923076923076916 0.40201558683595984, 17.98259979777942519 11.61538461538461497, 6.76923076923076916 22.82875364393326834))')
+        self.check_geom(curve_polygon, 10, 'CurvePolygon (CircularString (1 3, 7 3, 4 7, 3 5, 1 3))')
+        self.check_geom(curve_polygon, 11, 'CurvePolygon (CircularString (1 3, 7 3, 4 7, 3 5, 1 3),CircularString (3.1 3.3, 3.3 3.5, 3.4 3.7, 3.7 3.3, 3.1 3.3))')
+        self.check_geom(curve_polygon, 12, 'CurvePolygon(CompoundCurve (CircularString (-1 -5, 5 -7, 17 -6), (17 -6, 13 4), CircularString (13 4, 10 0.1, 7 2.20, 5 4, 1 2),(1 2, -1 -5)))')
+        self.check_geom(curve_polygon, 13, 'CurvePolygon(CircularString (0 0, 30 0, 30 20, 0 30, 0 0), CompoundCurve ((13 10, 17 2), CircularString (17 2, 1 1, 13 10)))')
+
+        curve_polygon_z = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=5698 type=CurvePolygonZ table="QGIS"."EDIT_SURFACEZ_DATA" (GEOM) sql=',
+            'curve_polygon_z', 'oracle')
+        self.assertTrue(curve_polygon_z.isValid())
+
+        # There is no way to build a valid 3D curve polygon (even with make3d from the valid 2D one)
+        # we get ora-13033 although everything is OK in sdo_elem_array ...
+        self.check_geom(curve_polygon_z, 14, 'CurvePolygonZ (CircularStringZ (6.76923076923076916 22.82875364393326834 1, -4.44413825931788598 11.61538461538461497 2, 6.76923076923076916 0.40201558683595984 3, 17.98259979777942519 11.61538461538461497 4, 6.76923076923076916 22.82875364393326834 1))', check_valid=False)
+        self.check_geom(curve_polygon_z, 15, 'CurvePolygonZ (CircularStringZ (1 3 1, 7 3 2, 4 7 3, 3 5 2, 1 3 1))', check_valid=False)
+        self.check_geom(curve_polygon_z, 16, 'CurvePolygonZ (CircularStringZ (1 3 1, 7 3 2, 4 7 3, 3 5 4, 1 3 1),CircularStringZ (3.1 3.3 1, 3.3 3.5 2, 3.4 3.7 3, 3.7 3.3 4, 3.1 3.3 1))', check_valid=False)
+        self.check_geom(curve_polygon_z, 17, 'CurvePolygonZ(CompoundCurveZ (CircularStringZ (-1 -5 1, 5 -7 2, 17 -6 3), (17 -6 3, 13 4 4), CircularStringZ (13 4 4, 10 0.1 5, 7 2.20 6, 5 4 7, 1 2 8),(1 2 8, -1 -5 1)))', check_valid=False)
+        self.check_geom(curve_polygon_z, 18, 'CurvePolygonZ(CircularStringZ (0 0 1, 30 0 2, 30 20 3, 0 30 4, 0 0 5), CompoundCurveZ ((13 10 1, 17 2 3), CircularStringZ (17 2 3, 1 1 5, 13 10 1)))', check_valid=False)
+
+        multi_surface = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=3857 type=MultiSurface table="QGIS"."EDIT_SURFACE_DATA" (GEOM) sql=',
+            'multi_surface', 'oracle')
+        self.assertTrue(multi_surface.isValid())
+
+        self.check_geom(multi_surface, 19, 'MultiSurface (CurvePolygon (CircularString (1 3, 7 3, 4 7, 3 5, 1 3)),CurvePolygon (CircularString (11 3, 17 3, 14 7, 13 5, 11 3)))')
+        self.check_geom(multi_surface, 20, 'MultiSurface (CurvePolygon (CircularString (1 3, 7 3, 4 7, 3 5, 1 3)))')
+        self.check_geom(multi_surface, 21, 'MultiSurface (CurvePolygon(CompoundCurve (CircularString (-1 -5, 5 -7, 17 -6), (17 -6, -1 -5))), CurvePolygon (CircularString (1 3, 7 3, 4 7, 3 5, 1 3)))')
+
+        multi_surface_z = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=5698 type=MultiSurfaceZ table="QGIS"."EDIT_SURFACEZ_DATA" (GEOM) sql=',
+            'multi_surface_z', 'oracle')
+        self.assertTrue(multi_surface_z.isValid())
+
+        # ora-54530 : 3D compound lines are invalid since 11.2.0.3 : https://support.oracle.com/knowledge/Oracle%20Database%20Products/1446335_1.html
+        self.check_geom(multi_surface_z, 22, 'MultiSurfaceZ (CurvePolygonZ (CircularStringZ (1 3 1, 7 3 2, 4 7 3, 3 5 4, 1 3 1)),CurvePolygonZ (CircularStringZ (11 3 1, 17 3 2, 14 7 3, 13 5 4, 11 3 1)))', check_valid=False)
+        self.check_geom(multi_surface_z, 23, 'MultiSurfaceZ (CurvePolygonZ (CircularStringZ (1 3 1, 7 3 2, 4 7 3, 3 5 4, 1 3 1)))', check_valid=False)
+        self.check_geom(multi_surface_z, 24, 'MultiSurfaceZ (CurvePolygonZ(CompoundCurveZ (CircularStringZ (-1 -5 1, 5 -7 2, 17 -6 3), (17 -6 3, -1 -5 1))), CurvePolygonZ (CircularStringZ (1 3 1, 7 3 2, 4 7 3, 3 5 4, 1 3 1)))', check_valid=False)
 
     def testNestedInsert(self):
         tg = QgsTransactionGroup()
@@ -379,8 +584,11 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         ft1 = vl.getFeatures('pk=1')
         self.assertFalse(ft1.nextFeature(f))
 
+        # rollback
+        vl.rollBack()
+
     def testTransactionTuple(self):
-        # create a vector layer based on postgres
+        # create a vector layer based on oracle
         vl = QgsVectorLayer(
             self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="QGIS"."SOME_POLY_DATA" (GEOM) sql=',
             'test', 'oracle')
@@ -399,6 +607,24 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         # underlying data has not been modified
         self.assertFalse(vl.isModified())
+
+    def testIdentityCommit(self):
+        # create a vector layer based on oracle
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="QGIS"."POINT_DATA_IDENTITY" (GEOM) sql=',
+            'test', 'oracle')
+        self.assertTrue(vl.isValid())
+
+        features = [f for f in vl.getFeatures()]
+
+        # add a new feature
+        newf = QgsFeature(features[0].fields())
+        success, featureAdded = vl.dataProvider().addFeatures([newf])
+        self.assertTrue(success)
+
+        # clean up
+        features = [f for f in vl.getFeatures()]
+        vl.dataProvider().deleteFeatures([features[-1].id()])
 
 
 if __name__ == '__main__':

@@ -834,7 +834,11 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
   if ( !mRTree )
   {
     if ( mIsEmptyLayer )
-      init(); // first feature - let's built the index
+    {
+      // layer is not empty any more, let's build the index
+      mIsEmptyLayer = false;
+      init();
+    }
     return; // nothing to do if we are not initialized yet
   }
 

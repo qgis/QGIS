@@ -70,6 +70,7 @@ class QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public QgsExpress
     void segmentSizeRadioChanged( QAbstractButton *radio );
     void mapChanged( QgsLayoutItem *item );
     void textFormatChanged();
+    void changeNumberFormat();
 
   private:
     QPointer< QgsLayoutItemScaleBar > mScalebar;

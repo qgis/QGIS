@@ -62,7 +62,17 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
     //! Initializes vertex buffer from given polygons. Takes ownership of passed polygon geometries
     void setPolygons( const QList<QgsPolygon *> &polygons, const QList<QgsFeatureId> &featureIds, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon = QList<float>() );
 
-    //! Returns ID of the feature to which given triangle index belongs (used for picking)
+    /**
+     * Initializes vertex buffer (and other members) from data that were already tessellated.
+     * This is an alternative to setPolygons() - this method does not do any expensive work in the body.
+     * \since QGIS 3.12
+     */
+    void setData( const QByteArray &vertexBufferData, int vertexCount, const QVector<QgsFeatureId> &triangleIndexFids, const QVector<uint> &triangleIndexStartingIndices );
+
+    /**
+     * Returns ID of the feature to which given triangle index belongs (used for picking).
+     * In case such triangle index does not match any feature, FID_NULL is returned.
+     */
     QgsFeatureId triangleIndexToFeatureId( uint triangleIndex ) const;
 
   private:

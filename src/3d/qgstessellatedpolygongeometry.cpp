@@ -86,6 +86,17 @@ void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &poly
     mNormalAttribute->setCount( nVerts );
 }
 
+void QgsTessellatedPolygonGeometry::setData( const QByteArray &vertexBufferData, int vertexCount, const QVector<QgsFeatureId> &triangleIndexFids, const QVector<uint> &triangleIndexStartingIndices )
+{
+  mTriangleIndexStartingIndices = triangleIndexStartingIndices;
+  mTriangleIndexFids = triangleIndexFids;
+
+  mVertexBuffer->setData( vertexBufferData );
+  mPositionAttribute->setCount( vertexCount );
+  if ( mNormalAttribute )
+    mNormalAttribute->setCount( vertexCount );
+}
+
 
 // run binary search on a sorted array, return index i where data[i] <= x < data[i+1]
 static int binary_search( uint v, const uint *data, int count )
@@ -93,7 +104,7 @@ static int binary_search( uint v, const uint *data, int count )
   int idx0 = 0;
   int idx1 = count - 1;
 
-  if ( v < data[0] )
+  if ( v < data[0] || v >= data[count - 1] )
     return -1;  // not in the array
 
   while ( idx0 != idx1 )
@@ -117,6 +128,5 @@ static int binary_search( uint v, const uint *data, int count )
 QgsFeatureId QgsTessellatedPolygonGeometry::triangleIndexToFeatureId( uint triangleIndex ) const
 {
   int i = binary_search( triangleIndex, mTriangleIndexStartingIndices.constData(), mTriangleIndexStartingIndices.count() );
-  Q_ASSERT( i != -1 );
-  return mTriangleIndexFids[i];
+  return i != -1 ? mTriangleIndexFids[i] : FID_NULL;
 }

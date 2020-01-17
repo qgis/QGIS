@@ -53,7 +53,8 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
   mXyz = false;  // assume WMS / WMTS
 
-  if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "xyz" ) )
+  if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "xyz" ) ||
+       uri.param( QStringLiteral( "type" ) ) == QLatin1String( "mbtiles" ) )
   {
     // for XYZ tiles most of the things do not apply
     mTiled = true;
@@ -75,6 +76,9 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mImageMimeType.clear();
     mCrsId = QStringLiteral( "EPSG:3857" );
     mEnableContextualLegend = false;
+
+    mIsMBTiles = uri.param( QStringLiteral( "type" ) ) == QLatin1String( "mbtiles" );
+
     return true;
   }
 
@@ -759,6 +763,63 @@ void QgsWmsCapabilities::parseLegendUrl( const QDomElement &element, QgsWmsLegen
   }
 }
 
+void QgsWmsCapabilities::parseDimension( const QDomElement &element, QgsWmsDimensionProperty &dimensionProperty )
+{
+
+  // TODO, check for the name value if it is time, implement WMS-T support
+  dimensionProperty.name = element.attribute( QStringLiteral( "name" ) );
+  dimensionProperty.units = element.attribute( QStringLiteral( "units" ) );
+  dimensionProperty.unitSymbol = element.attribute( QStringLiteral( "unitSymbol" ) );
+  dimensionProperty.defaultValue = element.attribute( QStringLiteral( "default" ) );
+
+  if ( !element.attribute( QStringLiteral( "multipleValues" ) ).isNull() )
+  {
+    QString multipleValuesAttribute = element.attribute( QStringLiteral( "multipleValues" ) );
+    dimensionProperty.multipleValues = ( multipleValuesAttribute == QLatin1String( "1" ) || multipleValuesAttribute == QLatin1String( "true" ) );
+  }
+
+  if ( !element.attribute( QStringLiteral( "nearestValue" ) ).isNull() )
+  {
+    QString nearestValueAttribute = element.attribute( QStringLiteral( "nearestValue" ) );
+    dimensionProperty.nearestValue = ( nearestValueAttribute == QLatin1String( "1" ) || nearestValueAttribute == QLatin1String( "true" ) );
+  }
+
+  if ( !element.attribute( QStringLiteral( "current" ) ).isNull() )
+  {
+    QString currentAttribute = element.attribute( QStringLiteral( "current" ) );
+    dimensionProperty.current = ( currentAttribute == QLatin1String( "1" ) || currentAttribute == QLatin1String( "true" ) );
+  }
+
+  dimensionProperty.extent = element.text();
+}
+
+void QgsWmsCapabilities::parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty )
+{
+
+  QDomNode node = element.firstChild();
+  while ( !node.isNull() )
+  {
+    QDomElement nodeElement = node.toElement();
+    if ( !nodeElement.isNull() )
+    {
+      QString tagName = nodeElement.tagName();
+      if ( tagName.startsWith( QLatin1String( "wms:" ), Qt::CaseInsensitive ) )
+        tagName = tagName.mid( 4 );
+
+      if ( tagName.compare( QLatin1String( "Format" ), Qt::CaseInsensitive ) == 0 )
+      {
+        metadataUrlProperty.format = nodeElement.text();
+      }
+      else if ( tagName.compare( QLatin1String( "OnlineResource" ), Qt::CaseInsensitive ) == 0 )
+      {
+        parseOnlineResource( nodeElement, metadataUrlProperty.onlineResource );
+      }
+    }
+    node = node.nextSibling();
+  }
+}
+
+
 void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProperty &layerProperty,
                                      QgsWmsLayerProperty *parentProperty )
 {
@@ -932,7 +993,8 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
       }
       else if ( tagName == QLatin1String( "Dimension" ) )
       {
-        // TODO
+        layerProperty.dimensions << QgsWmsDimensionProperty();
+        parseDimension( nodeElement, layerProperty.dimensions.last() );
       }
       else if ( tagName == QLatin1String( "Attribution" ) )
       {
@@ -948,7 +1010,8 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
       }
       else if ( tagName == QLatin1String( "MetadataURL" ) )
       {
-        // TODO
+        layerProperty.metadataUrl << QgsWmsMetadataUrlProperty();
+        parseMetadataUrl( nodeElement, layerProperty.metadataUrl.last() );
       }
       else if ( tagName == QLatin1String( "DataURL" ) )
       {
@@ -1507,6 +1570,20 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
         legendURL.href     = thirdChildElement.firstChildElement( QStringLiteral( "href" ) ).text();
         legendURL.width    = thirdChildElement.firstChildElement( QStringLiteral( "width" ) ).text().toInt();
         legendURL.height   = thirdChildElement.firstChildElement( QStringLiteral( "height" ) ).text().toInt();
+
+        style.legendURLs << legendURL;
+      }
+      QDomElement thirdChildElement = secondChildElement.firstChildElement( QStringLiteral( "LegendURL" ) );
+      if ( !thirdChildElement.isNull() )
+      {
+        QgsWmtsLegendURL legendURL;
+
+        legendURL.format   = thirdChildElement.attribute( QStringLiteral( "format" ) );
+        legendURL.minScale = thirdChildElement.attribute( QStringLiteral( "minScaleDenominator" ) ).toDouble();
+        legendURL.maxScale = thirdChildElement.attribute( QStringLiteral( "maxScaleDenominator" ) ).toDouble();
+        legendURL.href     = thirdChildElement.attribute( QStringLiteral( "xlink:href" ) );
+        legendURL.width    = thirdChildElement.attribute( QStringLiteral( "width" ) ).toInt();
+        legendURL.height   = thirdChildElement.attribute( QStringLiteral( "height" ) ).toInt();
 
         style.legendURLs << legendURL;
       }

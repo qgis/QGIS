@@ -71,7 +71,13 @@ namespace pal
       friend class Pal;
 
     public:
-      Problem();
+
+      /**
+       * Constructor for Problem.
+       *
+       * The \a extent argument specifies the bounds of the incoming coordinates.
+       */
+      Problem( const QgsRectangle &extent );
 
       //Problem(char *lorena_file, bool displayAll);
 

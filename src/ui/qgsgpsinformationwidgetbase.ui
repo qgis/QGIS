@@ -1028,7 +1028,7 @@ gray = no data
            <item row="5" column="0">
             <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
              <property name="title">
-              <string>Map Centering</string>
+              <string>Map Centering and Rotation</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_8">
               <property name="topMargin">
@@ -1040,23 +1040,6 @@ gray = no data
               <property name="verticalSpacing">
                <number>2</number>
               </property>
-              <item row="1" column="0">
-               <widget class="QRadioButton" name="radRecenterWhenNeeded">
-                <property name="text">
-                 <string>When leaving</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QRadioButton" name="radRecenterMap">
-                <property name="text">
-                 <string>Always</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
               <item row="2" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout">
                 <property name="leftMargin">
@@ -1092,6 +1075,23 @@ gray = no data
                 </item>
                </layout>
               </item>
+              <item row="0" column="0">
+               <widget class="QRadioButton" name="radRecenterMap">
+                <property name="text">
+                 <string>Always</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QRadioButton" name="radRecenterWhenNeeded">
+                <property name="text">
+                 <string>When leaving</string>
+                </property>
+               </widget>
+              </item>
               <item row="3" column="0">
                <widget class="QRadioButton" name="radNeverRecenter">
                 <property name="text">
@@ -1105,6 +1105,51 @@ gray = no data
                  <string>Rotate map to match GPS direction</string>
                 </property>
                </widget>
+              </item>
+              <item row="5" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,1">
+                <property name="leftMargin">
+                 <number>20</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_12">
+                  <property name="text">
+                   <string>Frequency</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QgsSpinBox" name="mSpinMapRotateInterval">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="specialValueText">
+                   <string>On GPS signal</string>
+                  </property>
+                  <property name="suffix">
+                   <string> s</string>
+                  </property>
+                  <property name="minimum">
+                   <number>0</number>
+                  </property>
+                  <property name="maximum">
+                   <number>1000</number>
+                  </property>
+                  <property name="singleStep">
+                   <number>1</number>
+                  </property>
+                  <property name="value">
+                   <number>0</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>

@@ -218,20 +218,23 @@ void QgsGeometryValidationDock::onCurrentErrorChanged( const QModelIndex &curren
 
     if ( error->status() != QgsGeometryCheckError::StatusFixed )
     {
-      const QStringList resolutionMethods = error->check()->resolutionMethods();
+      const QList<QgsGeometryCheckResolutionMethod> resolutionMethods = error->check()->availableResolutionMethods();
       QGridLayout *layout = new QGridLayout( mResolutionWidget );
       int resolutionIndex = 0;
-      for ( const QString &resolutionMethod : resolutionMethods )
+      for ( const QgsGeometryCheckResolutionMethod &resolutionMethod : resolutionMethods )
       {
         QToolButton *resolveBtn = new QToolButton( mResolutionWidget );
         resolveBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) ) );
+        resolveBtn->setToolTip( resolutionMethod.description() );
         layout->addWidget( resolveBtn, resolutionIndex, 0 );
-        QLabel *resolveLabel = new QLabel( resolutionMethod, mResolutionWidget );
+        QLabel *resolveLabel = new QLabel( resolutionMethod.name(), mResolutionWidget );
+        resolveLabel->setToolTip( resolutionMethod.description() );
         resolveLabel->setWordWrap( true );
         layout->addWidget( resolveLabel, resolutionIndex, 1 );
-        connect( resolveBtn, &QToolButton::clicked, this, [resolutionIndex, error, this]()
+        int fixId = resolutionMethod.id();
+        connect( resolveBtn, &QToolButton::clicked, this, [fixId, error, this]()
         {
-          mGeometryValidationService->fixError( error, resolutionIndex );
+          mGeometryValidationService->fixError( error, fixId );
         } );
         resolutionIndex++;
       }

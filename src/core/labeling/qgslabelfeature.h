@@ -23,11 +23,12 @@
 #include "qgsgeos.h"
 #include "qgsmargins.h"
 #include "qgslabelobstaclesettings.h"
-#include "pal.h"
+#include "qgslabeling.h"
 
 namespace pal
 {
   class LabelInfo;
+  class Layer;
 }
 
 class QgsAbstractLabelProvider;
@@ -174,8 +175,25 @@ class CORE_EXPORT QgsLabelFeature
     void setHasFixedPosition( bool enabled ) { mHasFixedPosition = enabled; }
     //! Coordinates of the fixed position (relevant only if hasFixedPosition() returns TRUE)
     QgsPointXY fixedPosition() const { return mFixedPosition; }
+
     //! Sets coordinates of the fixed position (relevant only if hasFixedPosition() returns TRUE)
     void setFixedPosition( const QgsPointXY &point ) { mFixedPosition = point; }
+
+    /**
+     * In case of quadrand or aligned positioning, this is set to the anchor point.
+     * This can be used for proper vector based output like DXF.
+     *
+     * \since QGIS 3.12
+     */
+    QgsPointXY anchorPosition() const;
+
+    /**
+     * In case of quadrand or aligned positioning, this is set to the anchor point.
+     * This can be used for proper vector based output like DXF.
+     *
+     * \since QGIS 3.12
+     */
+    void setAnchorPosition( const QgsPointXY &anchorPosition );
 
     //! Whether the label should use a fixed angle instead of using angle from automatic placement
     bool hasFixedAngle() const { return mHasFixedAngle; }
@@ -291,14 +309,14 @@ class CORE_EXPORT QgsLabelFeature
      * Returns the feature's arrangement flags.
      * \see setArrangementFlags
      */
-    pal::LineArrangementFlags arrangementFlags() const { return mArrangementFlags; }
+    QgsLabeling::LinePlacementFlags arrangementFlags() const { return mArrangementFlags; }
 
     /**
      * Sets the feature's arrangement flags.
      * \param flags arrangement flags
      * \see arrangementFlags
      */
-    void setArrangementFlags( pal::LineArrangementFlags flags ) { mArrangementFlags = flags; }
+    void setArrangementFlags( QgsLabeling::LinePlacementFlags flags ) { mArrangementFlags = flags; }
 
 
     /**
@@ -453,33 +471,33 @@ class CORE_EXPORT QgsLabelFeature
     //! Size of associated rendered symbol, if applicable
     QSizeF mSymbolSize;
     //! Priority of the label
-    double mPriority;
+    double mPriority = -1;
     //! Z-index of label (higher z-index labels are rendered on top of lower z-index labels)
-    double mZIndex;
+    double mZIndex = 0;
     //! whether mFixedPosition should be respected
-    bool mHasFixedPosition;
+    bool mHasFixedPosition = false;
     //! fixed position for the label (instead of automatic placement)
     QgsPointXY mFixedPosition;
     //! whether mFixedAngle should be respected
-    bool mHasFixedAngle;
+    bool mHasFixedAngle = false;
     //! fixed rotation for the label (instead of automatic choice)
-    double mFixedAngle;
+    double mFixedAngle = 0;
     //! whether mQuadOffset should be respected (only for "around point" placement)
-    bool mHasFixedQuadrant;
+    bool mHasFixedQuadrant = false;
     //! whether the side of the label is fixed (only for "around point" placement)
     QPointF mQuadOffset;
     //! offset of label from the feature (only for "offset from point" placement)
     QgsPointXY mPositionOffset;
     //! distance of label from the feature (only for "around point" placement or linestrings)
-    double mDistLabel;
+    double mDistLabel = 0;
     //! Offset type for certain placement modes
-    QgsPalLayerSettings::OffsetType mOffsetType;
+    QgsPalLayerSettings::OffsetType mOffsetType = QgsPalLayerSettings::FromPoint;
     //! Ordered list of predefined positions for label (only for OrderedPositionsAroundPoint placement)
     QVector< QgsPalLayerSettings::PredefinedPointPosition > mPredefinedPositionOrder;
     //! distance after which label should be repeated (only for linestrings)
-    double mRepeatDistance;
+    double mRepeatDistance = 0;
     //! whether to always show label - even in case of collisions
-    bool mAlwaysShow;
+    bool mAlwaysShow = false;
     //! text of the label
     QString mLabelText;
     //! extra information for curved labels (may be NULLPTR)
@@ -490,7 +508,7 @@ class CORE_EXPORT QgsLabelFeature
     //! Distance to smooth angle of line start and end when calculating overruns
     double mOverrunSmoothDistance = 0;
 
-    pal::LineArrangementFlags mArrangementFlags = nullptr;
+    QgsLabeling::LinePlacementFlags mArrangementFlags = nullptr;
 
   private:
 
@@ -508,6 +526,7 @@ class CORE_EXPORT QgsLabelFeature
 
     QgsLabelObstacleSettings mObstacleSettings;
 
+    QgsPointXY mAnchorPosition;
 };
 
 #endif // QGSLABELFEATURE_H

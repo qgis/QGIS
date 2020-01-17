@@ -232,10 +232,10 @@ QgsRectangle QgsOapifProvider::extent() const
   return mShared->consolidatedExtent();
 }
 
-void QgsOapifProvider::reloadData()
+void QgsOapifProvider::reloadProviderData()
 {
+  mUpdateFeatureCountAtNextFeatureCountRequest = true;
   mShared->invalidateCache();
-  QgsVectorDataProvider::reloadData();
 }
 
 bool QgsOapifProvider::isValid() const
@@ -302,13 +302,16 @@ bool QgsOapifProvider::setSubsetString( const QString &filter, bool updateFeatur
   if ( !mShared->computeServerFilter( errorMsg ) )
     QgsMessageLog::logMessage( errorMsg, tr( "OAPIF" ) );
 
-  reloadData();
+
   if ( updateFeatureCount )
   {
-    mUpdateFeatureCountAtNextFeatureCountRequest = true;
+    reloadData();
   }
-
-  emit dataChanged();
+  else
+  {
+    mShared->invalidateCache();
+    emit dataChanged();
+  }
 
   return true;
 }

@@ -1639,7 +1639,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
     return;
   }
 
-  double zoomFactor = mWheelZoomFactor;
+  double zoomFactor = e->angleDelta().y() > 0 ? 1. / zoomInFactor() : zoomOutFactor();
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
   zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( e->angleDelta().y() );
@@ -1670,13 +1670,13 @@ void QgsMapCanvas::setWheelFactor( double factor )
 void QgsMapCanvas::zoomIn()
 {
   // magnification is alreday handled in zoomByFactor
-  zoomByFactor( 1 / mWheelZoomFactor );
+  zoomByFactor( zoomInFactor() );
 }
 
 void QgsMapCanvas::zoomOut()
 {
   // magnification is alreday handled in zoomByFactor
-  zoomByFactor( mWheelZoomFactor );
+  zoomByFactor( zoomOutFactor() );
 }
 
 void QgsMapCanvas::zoomScale( double newScale )
@@ -1686,7 +1686,7 @@ void QgsMapCanvas::zoomScale( double newScale )
 
 void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
 {
-  double scaleFactor = ( zoomIn ? 1 / mWheelZoomFactor : mWheelZoomFactor );
+  double scaleFactor = ( zoomIn ? zoomInFactor() : zoomOutFactor() );
 
   if ( mScaleLocked )
   {
@@ -1732,9 +1732,12 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent *e )
     }
   }
 
-  // show x y on status bar
-  mCursorPoint = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->mouseLastXY );
-  emit xyCoordinates( mCursorPoint );
+  // show x y on status bar (if we are mid pan operation, then the cursor point hasn't changed!)
+  if ( !panOperationInProgress() )
+  {
+    mCursorPoint = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->mouseLastXY );
+    emit xyCoordinates( mCursorPoint );
+  }
 }
 
 void QgsMapCanvas::setMapTool( QgsMapTool *tool, bool clean )
@@ -1768,22 +1771,24 @@ void QgsMapCanvas::setMapTool( QgsMapTool *tool, bool clean )
 
   // set new map tool and activate it
   mMapTool = tool;
+  emit mapToolSet( mMapTool, oldTool );
   if ( mMapTool )
   {
     connect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
     mMapTool->activate();
   }
 
-  emit mapToolSet( mMapTool, oldTool );
 } // setMapTool
 
 void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
 {
   if ( mMapTool && mMapTool == tool )
   {
-    mMapTool->deactivate();
+    disconnect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
+    QgsMapTool *oldTool = mMapTool;
     mMapTool = nullptr;
-    emit mapToolSet( nullptr, mMapTool );
+    oldTool->deactivate();
+    emit mapToolSet( nullptr, oldTool );
     setCursor( Qt::ArrowCursor );
   }
 
@@ -2502,4 +2507,65 @@ void QgsMapCanvas::schedulePreviewJob( int number )
     startPreviewJob( number );
   } );
   mPreviewTimer.start();
+}
+
+bool QgsMapCanvas::panOperationInProgress()
+{
+  if ( mCanvasProperties->panSelectorDown )
+    return true;
+
+  if ( QgsMapToolPan *panTool = qobject_cast< QgsMapToolPan *>( mMapTool ) )
+  {
+    if ( panTool->isDragging() )
+      return true;
+  }
+
+  return false;
+}
+
+int QgsMapCanvas::nextZoomLevel( const QList<double> &resolutions, bool zoomIn ) const
+{
+  int resolutionLevel = -1;
+  double currentResolution = mapUnitsPerPixel();
+
+  for ( int i = 0, n = resolutions.size(); i < n; ++i )
+  {
+    if ( qgsDoubleNear( resolutions[i], currentResolution, 0.0001 ) )
+    {
+      resolutionLevel = zoomIn ? ( i - 1 ) : ( i + 1 );
+      break;
+    }
+    else if ( currentResolution <= resolutions[i] )
+    {
+      resolutionLevel = zoomIn ? ( i - 1 ) : i;
+      break;
+    }
+  }
+  return ( resolutionLevel < 0 || resolutionLevel >= resolutions.size() ) ? -1 : resolutionLevel;
+}
+
+double QgsMapCanvas::zoomInFactor() const
+{
+  if ( !mZoomResolutions.isEmpty() )
+  {
+    int zoomLevel = nextZoomLevel( mZoomResolutions, true );
+    if ( zoomLevel != -1 )
+    {
+      return mZoomResolutions.at( zoomLevel ) / mapUnitsPerPixel();
+    }
+  }
+  return 1 / mWheelZoomFactor;
+}
+
+double QgsMapCanvas::zoomOutFactor() const
+{
+  if ( !mZoomResolutions.isEmpty() )
+  {
+    int zoomLevel = nextZoomLevel( mZoomResolutions, false );
+    if ( zoomLevel != -1 )
+    {
+      return mZoomResolutions.at( zoomLevel ) / mapUnitsPerPixel();
+    }
+  }
+  return mWheelZoomFactor;
 }

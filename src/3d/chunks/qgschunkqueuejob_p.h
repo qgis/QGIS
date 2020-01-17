@@ -63,8 +63,11 @@ class QgsChunkQueueJob : public QObject
     QgsChunkNode *chunk() { return mNode; }
 
     /**
-     * Request that the job gets canceled.
-     * Returns only after the async job has been stopped.
+     * Requests that the job gets canceled. The implementation should _not_ wait until
+     * the asynchronous job is terminated - it should only indicate to the async code that
+     * is should finish as soon as possible. It is responsibility of the object's destructor
+     * to make sure that the async code has been terminated before deleting the object.
+     *
      * The signal finished() will not be emitted afterwards.
      */
     virtual void cancel();

@@ -82,10 +82,14 @@ QVariantMap QgsConstantRasterAlgorithm::processAlgorithm( const QVariantMap &par
   int rows = std::max( std::ceil( extent.height() / pixelSize ), 1.0 );
   int cols = std::max( std::ceil( extent.width() / pixelSize ), 1.0 );
 
+  //build new raster extent based on number of columns and cellsize
+  //this prevents output cellsize being calculated too small
+  QgsRectangle rasterExtent = QgsRectangle( extent.xMinimum(), extent.yMaximum() - ( rows * pixelSize ), extent.xMinimum() + ( cols * pixelSize ), extent.yMaximum() );
+
   std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
-  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( Qgis::Float32, cols, rows, extent, crs ) );
+  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( Qgis::Float32, cols, rows, rasterExtent, crs ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !provider->isValid() )

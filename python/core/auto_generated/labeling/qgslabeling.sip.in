@@ -1,0 +1,46 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabeling.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsLabeling
+{
+%Docstring
+
+Contains constants and enums relating to labeling.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgslabeling.h"
+%End
+  public:
+
+    enum class LinePlacementFlag
+    {
+      OnLine,
+      AboveLine,
+      BelowLine,
+      MapOrientation,
+    };
+    typedef QFlags<QgsLabeling::LinePlacementFlag> LinePlacementFlags;
+
+
+};
+
+QFlags<QgsLabeling::LinePlacementFlag> operator|(QgsLabeling::LinePlacementFlag f1, QFlags<QgsLabeling::LinePlacementFlag> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabeling.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

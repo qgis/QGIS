@@ -453,8 +453,14 @@ void TestQgs3DRendering::testRuleBasedRenderer()
   engine.setRootEntity( scene );
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 250 ), 500, 45, 0 );
-  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
+  // When running the test, it would sometimes return partially rendered image.
+  // It is probably based on how fast qt3d manages to upload the data to GPU...
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
   QVERIFY( renderCheck( "rulebased", img, 40 ) );
 }
 
@@ -518,13 +524,13 @@ void TestQgs3DRendering::testAnimationExport()
 
 void TestQgs3DRendering::testBillboardRendering()
 {
-  QgsRectangle fullExtent( 0, 0, 1000, 1000 );
+  QgsRectangle fullExtent( 1000, 1000, 2000, 2000 );
 
   std::unique_ptr<QgsVectorLayer> layerPointsZ( new QgsVectorLayer( "PointZ?crs=EPSG:27700", "points Z", "memory" ) );
 
-  QgsPoint *p1 = new QgsPoint( 0, 0, 50 );
-  QgsPoint *p2 = new QgsPoint( 0, 1000, 100 );
-  QgsPoint *p3 = new QgsPoint( 1000, 1000, 200 );
+  QgsPoint *p1 = new QgsPoint( 1000, 1000, 50 );
+  QgsPoint *p2 = new QgsPoint( 1000, 2000, 100 );
+  QgsPoint *p3 = new QgsPoint( 2000, 2000, 200 );
 
   QgsFeature f1( layerPointsZ->fields() );
   QgsFeature f2( layerPointsZ->fields() );

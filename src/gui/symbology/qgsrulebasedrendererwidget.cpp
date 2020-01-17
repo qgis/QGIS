@@ -83,9 +83,9 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
   mDeleteAction = new QAction( tr( "Remove Rule" ), this );
   mDeleteAction->setShortcut( QKeySequence( QKeySequence::Delete ) );
 
-  viewRules->addAction( mDeleteAction );
   viewRules->addAction( mCopyAction );
   viewRules->addAction( mPasteAction );
+  viewRules->addAction( mDeleteAction );
 
   mRefineMenu = new QMenu( tr( "Refine Current Rule" ), btnRefineRule );
   mRefineMenu->addAction( tr( "Add Scales to Rule" ), this, SLOT( refineRuleScales() ) );
@@ -141,6 +141,17 @@ QgsRuleBasedRendererWidget::~QgsRuleBasedRendererWidget()
 QgsFeatureRenderer *QgsRuleBasedRendererWidget::renderer()
 {
   return mRenderer;
+}
+
+void QgsRuleBasedRendererWidget::setDockMode( bool dockMode )
+{
+  if ( dockMode )
+  {
+    // when in dock mode, these shortcuts conflict with the main window shortcuts and cannot be used
+    if ( mDeleteAction )
+      mDeleteAction->setShortcut( QKeySequence() );
+  }
+  QgsRendererWidget::setDockMode( dockMode );
 }
 
 void QgsRuleBasedRendererWidget::addRule()

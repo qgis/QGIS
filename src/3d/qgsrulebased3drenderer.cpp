@@ -27,6 +27,8 @@
 #include "qgspoint3dsymbol_p.h"
 #include "qgspolygon3dsymbol_p.h"
 
+#include "qgsrulebasedchunkloader_p.h"
+
 QgsRuleBased3DRendererMetadata::QgsRuleBased3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( QStringLiteral( "rulebased" ) )
 {
@@ -393,18 +395,8 @@ QgsRuleBased3DRenderer *QgsRuleBased3DRenderer::clone() const
     clonedDescendants[i]->setRuleKey( origDescendants[i]->ruleKey() );
 
   QgsRuleBased3DRenderer *r = new QgsRuleBased3DRenderer( rootRule );
-  r->mLayerRef = mLayerRef;
+  copyBaseProperties( r );
   return r;
-}
-
-void QgsRuleBased3DRenderer::setLayer( QgsVectorLayer *layer )
-{
-  mLayerRef = QgsMapLayerRef( layer );
-}
-
-QgsVectorLayer *QgsRuleBased3DRenderer::layer() const
-{
-  return qobject_cast<QgsVectorLayer *>( mLayerRef.layer );
 }
 
 Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings &map ) const
@@ -414,45 +406,17 @@ Qt3DCore::QEntity *QgsRuleBased3DRenderer::createEntity( const Qgs3DMapSettings 
   if ( !vl )
     return nullptr;
 
-  Qgs3DRenderContext context( map );
+  double zMin, zMax;
+  Qgs3DUtils::estimateVectorLayerZRange( vl, zMin, zMax );
 
-  QgsExpressionContext exprContext( Qgs3DUtils::globalProjectLayerExpressionContext( vl ) );
-  exprContext.setFields( vl->fields() );
-  context.setExpressionContext( exprContext );
-
-  RuleToHandlerMap handlers;
-  mRootRule->createHandlers( vl, handlers );
-
-  QSet<QString> attributeNames;
-  mRootRule->prepare( context, attributeNames, handlers );
-
-  QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs(), map.transformContext() );
-  req.setSubsetOfAttributes( attributeNames, vl->fields() );
-
-  QgsFeature f;
-  QgsFeatureIterator fi = vl->getFeatures( req );
-  while ( fi.nextFeature( f ) )
-  {
-    context.expressionContext().setFeature( f );
-    mRootRule->registerFeature( f, context, handlers );
-  }
-
-  Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
-  for ( QgsFeature3DHandler *handler : handlers.values() )
-    handler->finalize( entity, context );
-
-  qDeleteAll( handlers );
-
-  return entity;
-
+  return new QgsRuleBasedChunkedEntity( vl, zMin, zMax, tilingSettings(), mRootRule, map );
 }
 
 void QgsRuleBased3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   QDomDocument doc = elem.ownerDocument();
 
-  elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
+  writeXmlBaseProperties( elem, context );
 
   QDomElement rulesElem = mRootRule->save( doc, context );
   rulesElem.setTagName( QStringLiteral( "rules" ) ); // instead of just "rule"
@@ -461,13 +425,7 @@ void QgsRuleBased3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCont
 
 void QgsRuleBased3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context )
-  mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
+  readXmlBaseProperties( elem, context );
 
   // root rule is read before class constructed
-}
-
-void QgsRuleBased3DRenderer::resolveReferences( const QgsProject &project )
-{
-  mLayerRef.setLayer( project.mapLayer( mLayerRef.layerId ) );
 }

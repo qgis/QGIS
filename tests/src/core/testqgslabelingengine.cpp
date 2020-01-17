@@ -25,7 +25,7 @@
 #include <qgsvectorlayerdiagramprovider.h>
 #include <qgsvectorlayerlabeling.h>
 #include <qgsvectorlayerlabelprovider.h>
-#include "qgsrenderchecker.h"
+#include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
 #include "qgsnullsymbolrenderer.h"
 #include "pointset.h"
@@ -541,17 +541,17 @@ void TestQgsLabelingEngine::testEncodeDecodePositionOrder()
 
 void TestQgsLabelingEngine::testEncodeDecodeLinePlacement()
 {
-  QString encoded = QgsLabelingUtils::encodeLinePlacementFlags( pal::FLAG_ABOVE_LINE | pal::FLAG_ON_LINE );
+  QString encoded = QgsLabelingUtils::encodeLinePlacementFlags( QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::OnLine );
   QVERIFY( !encoded.isEmpty() );
-  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( encoded ), pal::FLAG_ABOVE_LINE | pal::FLAG_ON_LINE );
-  encoded = QgsLabelingUtils::encodeLinePlacementFlags( pal::FLAG_ON_LINE | pal::FLAG_MAP_ORIENTATION );
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( encoded ), QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::OnLine );
+  encoded = QgsLabelingUtils::encodeLinePlacementFlags( QgsLabeling::LinePlacementFlag::OnLine | QgsLabeling::LinePlacementFlag::MapOrientation );
   QVERIFY( !encoded.isEmpty() );
-  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( encoded ), pal::FLAG_ON_LINE | pal::FLAG_MAP_ORIENTATION );
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( encoded ), QgsLabeling::LinePlacementFlag::OnLine | QgsLabeling::LinePlacementFlag::MapOrientation );
 
   //test decoding with a messy string
-  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( QStringLiteral( ",ol,," ) ), pal::FLAG_ON_LINE | pal::FLAG_MAP_ORIENTATION );
-  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( QStringLiteral( ",ol,BL,  al" ) ), pal::FLAG_ON_LINE | pal::FLAG_ABOVE_LINE | pal::FLAG_BELOW_LINE | pal::FLAG_MAP_ORIENTATION );
-  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( QStringLiteral( ",ol,BL, LO,  al" ) ), pal::FLAG_ON_LINE | pal::FLAG_ABOVE_LINE | pal::FLAG_BELOW_LINE );
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( QStringLiteral( ",ol,," ) ), QgsLabeling::LinePlacementFlag::OnLine | QgsLabeling::LinePlacementFlag::MapOrientation );
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( QStringLiteral( ",ol,BL,  al" ) ), QgsLabeling::LinePlacementFlag::OnLine | QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::BelowLine | QgsLabeling::LinePlacementFlag::MapOrientation );
+  QCOMPARE( QgsLabelingUtils::decodeLinePlacementFlags( QStringLiteral( ",ol,BL, LO,  al" ) ), QgsLabeling::LinePlacementFlag::OnLine | QgsLabeling::LinePlacementFlag::AboveLine | QgsLabeling::LinePlacementFlag::BelowLine );
 }
 
 void TestQgsLabelingEngine::testSubstitutions()
@@ -770,7 +770,7 @@ bool TestQgsLabelingEngine::imageCheck( const QString &testName, QImage &image, 
 {
   //draw background
   QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );
-  QgsRenderChecker::drawBackground( &imageWithBackground );
+  QgsMultiRenderChecker::drawBackground( &imageWithBackground );
   QPainter painter( &imageWithBackground );
   painter.drawImage( 0, 0, image );
   painter.end();
@@ -779,12 +779,12 @@ bool TestQgsLabelingEngine::imageCheck( const QString &testName, QImage &image, 
   QString tempDir = QDir::tempPath() + '/';
   QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
-  QgsRenderChecker checker;
+  QgsMultiRenderChecker checker;
   checker.setControlPathPrefix( QStringLiteral( "labelingengine" ) );
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( fileName );
   checker.setColorTolerance( 2 );
-  bool resultFlag = checker.compareImages( testName, mismatchCount );
+  bool resultFlag = checker.runTest( testName, mismatchCount );
   mReport += checker.report();
   return resultFlag;
 }
@@ -2173,7 +2173,7 @@ void TestQgsLabelingEngine::curvedOverrun()
   QImage img = job.renderedImage();
   QVERIFY( imageCheck( QStringLiteral( "label_curved_no_overrun" ), img, 20 ) );
 
-  settings.overrunDistance = 10;
+  settings.overrunDistance = 11;
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
   vl2->setLabelsEnabled( true );
   QgsMapRendererSequentialJob job2( mapSettings );

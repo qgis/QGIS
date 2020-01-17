@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1029</width>
-    <height>878</height>
+    <height>730</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -103,7 +103,7 @@
            <string>General</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/general.svg</normaloff>:/images/themes/default/propertyicons/general.svg</iconset>
           </property>
          </item>
@@ -115,7 +115,7 @@
            <string>System</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/system.svg</normaloff>:/images/themes/default/propertyicons/system.svg</iconset>
           </property>
          </item>
@@ -127,7 +127,7 @@
            <string>CRS</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/CRS.svg</normaloff>:/images/themes/default/propertyicons/CRS.svg</iconset>
           </property>
          </item>
@@ -139,7 +139,7 @@
            <string>Data sources</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/attributes.svg</normaloff>:/images/themes/default/propertyicons/attributes.svg</iconset>
           </property>
          </item>
@@ -151,7 +151,7 @@
            <string>Rendering</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
           </property>
          </item>
@@ -163,7 +163,7 @@
            <string>Canvas and legend</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
           </property>
          </item>
@@ -175,7 +175,7 @@
            <string>Map tools</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/map_tools.svg</normaloff>:/images/themes/default/propertyicons/map_tools.svg</iconset>
           </property>
          </item>
@@ -187,7 +187,7 @@
            <string>Colors</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/colors.svg</normaloff>:/images/themes/default/propertyicons/colors.svg</iconset>
           </property>
          </item>
@@ -199,7 +199,7 @@
            <string>Digitizing</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/digitizing.svg</normaloff>:/images/themes/default/propertyicons/digitizing.svg</iconset>
           </property>
          </item>
@@ -211,7 +211,7 @@
            <string>Print layouts</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/mIconLayout.svg</normaloff>:/images/themes/default/mIconLayout.svg</iconset>
           </property>
          </item>
@@ -223,7 +223,7 @@
            <string>GDAL</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/gdal.svg</normaloff>:/images/themes/default/propertyicons/gdal.svg</iconset>
           </property>
          </item>
@@ -235,7 +235,7 @@
            <string>Variables</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
           </property>
          </item>
@@ -247,7 +247,7 @@
            <string>Authentication</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/locked.svg</normaloff>:/images/themes/default/locked.svg</iconset>
           </property>
          </item>
@@ -259,7 +259,7 @@
            <string>Network</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/network_and_proxy.svg</normaloff>:/images/themes/default/propertyicons/network_and_proxy.svg</iconset>
           </property>
          </item>
@@ -271,7 +271,7 @@
            <string>Locator</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/search.svg</normaloff>:/images/themes/default/search.svg</iconset>
           </property>
          </item>
@@ -283,7 +283,7 @@
            <string>Advanced</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/mIconWarning.svg</normaloff>:/images/themes/default/mIconWarning.svg</iconset>
           </property>
          </item>
@@ -295,7 +295,7 @@
            <string>Configure GPU for processing algorithms</string>
           </property>
           <property name="icon">
-           <iconset>
+           <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/mIconGPU.svg</normaloff>:/images/themes/default/mIconGPU.svg</iconset>
           </property>
          </item>
@@ -360,9 +360,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>848</width>
-                <height>943</height>
+                <y>-339</y>
+                <width>833</width>
+                <height>1003</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -815,7 +815,7 @@
                        <string/>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                       </property>
                      </widget>
@@ -953,7 +953,7 @@
                        <string/>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                       </property>
                      </widget>
@@ -967,7 +967,7 @@
                        <string/>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
                       </property>
                      </widget>
@@ -1029,6 +1029,50 @@
                     </item>
                    </layout>
                   </item>
+                  <item>
+                   <layout class="QGridLayout" name="gridLayout_31">
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_67">
+                      <property name="text">
+                       <string>Default project file format</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="2">
+                     <spacer name="horizontalSpacer_12">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QRadioButton" name="mFileFormatQgzButton">
+                      <property name="text">
+                       <string>QGZ Archive file format, supports auxiliary data</string>
+                      </property>
+                      <attribute name="buttonGroup">
+                       <string notr="true">mDefaultProjectFileFormatButtonGroup</string>
+                      </attribute>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QRadioButton" name="mFileFormatQgsButton">
+                      <property name="text">
+                       <string>QGS Project saved in a clear text, does not support auxiliary data</string>
+                      </property>
+                      <attribute name="buttonGroup">
+                       <string notr="true">mDefaultProjectFileFormatButtonGroup</string>
+                      </attribute>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
                  </layout>
                 </widget>
                </item>
@@ -1078,7 +1122,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>545</width>
+                <width>539</width>
                 <height>1114</height>
                </rect>
               </property>
@@ -1118,7 +1162,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
@@ -1132,7 +1176,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -1185,7 +1229,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
@@ -1199,7 +1243,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -1232,7 +1276,7 @@
                      <string>…</string>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
                     </property>
                    </widget>
@@ -1266,7 +1310,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
@@ -1280,7 +1324,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -1312,7 +1356,7 @@
                      <string>…</string>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
                     </property>
                    </widget>
@@ -1348,7 +1392,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
                     </property>
                    </widget>
@@ -1390,7 +1434,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -1410,7 +1454,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
@@ -1614,8 +1658,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>827</height>
+                <width>555</width>
+                <height>501</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1827,7 +1871,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>533</width>
+                <width>530</width>
                 <height>678</height>
                </rect>
               </property>
@@ -2086,7 +2130,7 @@
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -2143,7 +2187,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>702</width>
+                <width>695</width>
                 <height>1139</height>
                </rect>
               </property>
@@ -2929,7 +2973,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>532</width>
+                <width>529</width>
                 <height>309</height>
                </rect>
               </property>
@@ -3240,8 +3284,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>611</width>
-                <height>652</height>
+                <width>606</width>
+                <height>741</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3498,6 +3542,67 @@
                 </widget>
                </item>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="mCoordinateDisplayGroup">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="title">
+                  <string>Coordinate and Bearing Display</string>
+                 </property>
+                 <property name="syncGroup" stdset="0">
+                  <string notr="true">projgeneral</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_30" columnstretch="0,0,3,6">
+                  <item row="0" column="3">
+                   <spacer name="horizontalSpacer_10">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_69">
+                    <property name="text">
+                     <string>Default bearing format for new projects</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="2">
+                   <widget class="QPushButton" name="mCustomizeBearingFormatButton">
+                    <property name="text">
+                     <string>Customize…</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <spacer name="horizontalSpacer_11">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                     <enum>QSizePolicy::Maximum</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_10">
                  <property name="title">
                   <string>Zooming</string>
@@ -3559,7 +3664,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                       </property>
                      </widget>
@@ -3573,7 +3678,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                       </property>
                      </widget>
@@ -3587,7 +3692,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/mActionUndo.svg</normaloff>:/images/themes/default/mActionUndo.svg</iconset>
                       </property>
                      </widget>
@@ -3614,7 +3719,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                       </property>
                      </widget>
@@ -3628,7 +3733,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                        <string>…</string>
                       </property>
                       <property name="icon">
-                       <iconset>
+                       <iconset resource="../../images/images.qrc">
                         <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
                       </property>
                      </widget>
@@ -3717,7 +3822,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                     </property>
                    </widget>
@@ -3738,7 +3843,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/mActionEditPaste.svg</normaloff>:/images/themes/default/mActionEditPaste.svg</iconset>
                     </property>
                    </widget>
@@ -3752,7 +3857,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
@@ -3766,7 +3871,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -3780,7 +3885,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
                     </property>
                    </widget>
@@ -3801,7 +3906,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
                     </property>
                    </widget>
@@ -3852,7 +3957,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>574</width>
+                <width>570</width>
                 <height>827</height>
                </rect>
               </property>
@@ -4461,7 +4566,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>472</width>
+                <width>469</width>
                 <height>572</height>
                </rect>
               </property>
@@ -4652,7 +4757,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
@@ -4666,7 +4771,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -4730,7 +4835,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>509</width>
+                <width>506</width>
                 <height>367</height>
                </rect>
               </property>
@@ -4899,8 +5004,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>640</width>
-                <height>753</height>
+                <width>633</width>
+                <height>750</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5058,7 +5163,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset>
+                         <iconset resource="../../images/images.qrc">
                           <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
                         </property>
                        </widget>
@@ -5072,7 +5177,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                          <string/>
                         </property>
                         <property name="icon">
-                         <iconset>
+                         <iconset resource="../../images/images.qrc">
                           <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
                         </property>
                        </widget>
@@ -5142,7 +5247,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
@@ -5156,7 +5261,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                      <string/>
                     </property>
                     <property name="icon">
-                     <iconset>
+                     <iconset resource="../../images/images.qrc">
                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
                     </property>
                    </widget>
@@ -5401,7 +5506,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.SF NS Text'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'.AppleSystemUIFont'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Noto Sans'; font-size:10pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
@@ -5717,6 +5822,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mDistanceUnitsComboBox</tabstop>
   <tabstop>mAreaUnitsComboBox</tabstop>
   <tabstop>mAngleUnitsComboBox</tabstop>
+  <tabstop>mCustomizeBearingFormatButton</tabstop>
   <tabstop>spinZoomFactor</tabstop>
   <tabstop>mListGlobalScales</tabstop>
   <tabstop>pbnAddScale</tabstop>
@@ -5802,7 +5908,10 @@ p, li { white-space: pre-wrap; }
   <tabstop>mOpenClDevicesCombo</tabstop>
   <tabstop>mGPUInfoTextBrowser</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>mOptionsListWidget</sender>
@@ -5869,4 +5978,7 @@ p, li { white-space: pre-wrap; }
    </hints>
   </connection>
  </connections>
+ <buttongroups>
+  <buttongroup name="mDefaultProjectFileFormatButtonGroup"/>
+ </buttongroups>
 </ui>

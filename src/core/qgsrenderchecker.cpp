@@ -28,8 +28,6 @@
 #include <QDebug>
 #include <QBuffer>
 
-static int sRenderCounter = 0;
-
 
 QString QgsRenderChecker::controlImagePath() const
 {
@@ -344,7 +342,7 @@ bool QgsRenderChecker::compareImages( const QString &testName,
                                  mRenderedImageFile,
                                  mExpectedImageFile )
                            .arg( imgWidth ).arg( imgHeight )
-                           .arg( sRenderCounter++ );
+                           .arg( QUuid::createUuid().toString().mid( 1, 6 ) );
 
   QString prefix;
   if ( !mControlPathPrefix.isNull() )

@@ -67,12 +67,17 @@ class TestGdalAlgorithms(unittest.TestCase):
         # Test that algorithms report a valid commandName
         p = QgsApplication.processingRegistry().providerById('gdal')
         for a in p.algorithms():
+            if a.id() in ('gdal:buildvirtualvector'):
+                # build virtual vector is an exception
+                continue
             self.assertTrue(a.commandName(), 'Algorithm {} has no commandName!'.format(a.id()))
 
     def testCommandNameInTags(self):
         # Test that algorithms commandName is present in provided tags
         p = QgsApplication.processingRegistry().providerById('gdal')
         for a in p.algorithms():
+            if not a.commandName():
+                continue
             self.assertTrue(a.commandName() in a.tags(), 'Algorithm {} commandName not found in tags!'.format(a.id()))
 
     def testNoParameters(self):

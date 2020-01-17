@@ -213,7 +213,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString name() const override;
     static QString providerKey();
     QString description() const override;
-    void reloadData() override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
     QList< double > nativeResolutions() const override;
 
@@ -271,7 +270,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
   private:
 
     //! In case of XYZ tile layer, setup capabilities from its URI
-    void setupXyzCapabilities( const QString &uri );
+    void setupXyzCapabilities( const QString &uri, const QgsRectangle &sourceExtent = QgsRectangle(), int sourceMinZoom = -1, int sourceMaxZoom = -1, double sourceTilePixelRatio = 0. );
+    //! In case of MBTiles layer, setup capabilities from its metadata
+    bool setupMBTilesCapabilities( const QString &uri );
 
     QImage *draw( QgsRectangle const   &viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback *feedback );
 
@@ -440,7 +441,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * The error message associated with the last WMS error.
      */
     QString mError;
-
 
     /**
      * The mime type of the message

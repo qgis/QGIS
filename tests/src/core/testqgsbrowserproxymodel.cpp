@@ -99,7 +99,7 @@ void TestQgsBrowserProxyModel::testModel()
   QCOMPARE( proxy.dataItem( root1Index ), rootItem1 );
 
   // second root item
-  QgsDataCollectionItem *rootItem2 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Test2" ), QStringLiteral( "root2" ) );
+  QgsDataCollectionItem *rootItem2 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Test2" ), QStringLiteral( "root2" ),  QStringLiteral( "provider2" ) );
   model.setupItemConnections( rootItem2 );
   model.beginInsertRows( QModelIndex(), 1, 1 );
   model.mRootItems.append( rootItem2 );
@@ -116,7 +116,7 @@ void TestQgsBrowserProxyModel::testModel()
   QCOMPARE( proxy.dataItem( root2Index ), rootItem2 );
 
   // child item
-  QgsDataCollectionItem *childItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child1" ), QStringLiteral( "child1" ) );
+  QgsDataCollectionItem *childItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child1" ), QStringLiteral( "child1" ), QStringLiteral( "provider1" ) );
   rootItem1->addChildItem( childItem1, true );
 
   QCOMPARE( proxy.rowCount(), 2 );
@@ -250,6 +250,20 @@ void TestQgsBrowserProxyModel::testModel()
   QCOMPARE( proxy.rowCount( child2Index ), 0 );
   QCOMPARE( proxy.rowCount( root2Index ), 1 );
   QCOMPARE( proxy.data( proxy.index( 0, 0, root2Index ) ).toString(), QStringLiteral( "Child4" ) );
+
+  proxy.setFilterByLayerType( false );
+
+  // provider filtering
+  proxy.setDataItemProviderKeyFilter( QStringList( {QStringLiteral( "provider1" )} ) );
+  QCOMPARE( proxy.rowCount(), 2 );
+  root1Index = proxy.index( 0, 0 );
+  QCOMPARE( proxy.rowCount( root1Index ), 1 );
+  proxy.setDataItemProviderKeyFilter( QStringList( {QStringLiteral( "provider2" )} ) );
+  QCOMPARE( proxy.rowCount(), 1 );
+  root1Index = proxy.index( 0, 0 );
+  QCOMPARE( proxy.rowCount( root1Index ), 2 );
+  proxy.setDataItemProviderKeyFilter( QStringList() );
+  QCOMPARE( proxy.rowCount(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsBrowserProxyModel )

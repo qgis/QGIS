@@ -14,6 +14,18 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
@@ -200,7 +212,7 @@
          <item row="0" column="2">
           <widget class="QLabel" name="percShaftLenLabel">
            <property name="text">
-            <string>% of Shaft Length</string>
+            <string>% of shaft length</string>
            </property>
           </widget>
          </item>
@@ -217,7 +229,7 @@
          <item row="1" column="2">
           <widget class="QLabel" name="percShaftLenLabel_2">
            <property name="text">
-            <string>% of Shaft Length</string>
+            <string>% of shaft length</string>
            </property>
           </widget>
          </item>
@@ -230,18 +242,6 @@
          <string>Arrow Length</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
          <item>
           <widget class="QComboBox" name="mShaftLengthComboBox">
            <property name="minimumSize">
@@ -273,10 +273,22 @@
          <item>
           <widget class="QStackedWidget" name="mShaftOptionsStackedWidget">
            <property name="currentIndex">
-            <number>2</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="page">
             <layout class="QFormLayout" name="formLayout">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item row="0" column="0">
               <widget class="QLabel" name="minimumShaftLabel">
                <property name="text">
@@ -301,10 +313,22 @@
            </widget>
            <widget class="QWidget" name="page_2">
             <layout class="QFormLayout" name="formLayout_2">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item row="0" column="0">
               <widget class="QLabel" name="scaleByFactorOfLabel">
                <property name="text">
-                <string>Scale by a Factor of</string>
+                <string>Scale by a factor of</string>
                </property>
               </widget>
              </item>
@@ -315,6 +339,18 @@
            </widget>
            <widget class="QWidget" name="page_3">
             <layout class="QFormLayout" name="formLayout_3">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item row="0" column="0">
               <widget class="QLabel" name="LengthLabel">
                <property name="text">
@@ -447,7 +483,7 @@
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>Max Tail Length</string>
+           <string>Max tail length</string>
           </property>
          </widget>
         </item>

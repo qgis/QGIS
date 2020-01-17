@@ -319,21 +319,23 @@ class PGRasterTable(PGTable, RasterTable):
 
         return PGRasterTableInfo(self)
 
-    def gdalUri(self, uri=None):
+    def uri(self, uri=None):
+        """Returns the datasource URI for postgresraster provider"""
+
         if not uri:
             uri = self.database().uri()
         service = (u'service=\'%s\'' % uri.service()) if uri.service() else ''
-        schema = (u'schema=\'%s\'' % self.schemaName()) if self.schemaName() else ''
         dbname = (u'dbname=\'%s\'' % uri.database()) if uri.database() else ''
         host = (u'host=%s' % uri.host()) if uri.host() else ''
         user = (u'user=%s' % uri.username()) if uri.username() else ''
         passw = (u'password=%s' % uri.password()) if uri.password() else ''
         port = (u'port=%s' % uri.port()) if uri.port() else ''
 
+        schema = self.schemaName() if self.schemaName() else 'public'
+        table = '"%s"."%s"' % (schema, self.name)
+
         if not dbname:
-            # GDAL postgisraster driver *requires* ad dbname
-            # See: https://trac.osgeo.org/gdal/ticket/6910
-            # TODO: cache this ?
+            # postgresraster provider *requires* a dbname
             connector = self.database().connector
             r = connector._execute(None, "SELECT current_database()")
             dbname = (u'dbname=\'%s\'' % connector._fetchone(r)[0])
@@ -346,20 +348,19 @@ class PGRasterTable(PGTable, RasterTable):
                 col = u'column=\'%s\'' % fld.name
                 break
 
-        gdalUri = u'PG: %s %s %s %s %s %s mode=2 %s %s table=\'%s\'' % \
-                  (service, dbname, host, user, passw, port, schema, col, self.name)
+        uri = u'%s %s %s %s %s %s %s table=%s' % \
+            (service, dbname, host, user, passw, port, col, table)
 
-        return gdalUri
+        return uri
 
     def mimeUri(self):
-        # QGIS has no provider for PGRasters, let's use GDAL
-        uri = u"raster:gdal:{}:{}".format(self.name, re.sub(":", r"\:", self.gdalUri()))
+        uri = u"raster:postgresraster:{}:{}".format(self.name, re.sub(":", r"\:", self.uri()))
         return uri
 
     def toMapLayer(self):
         from qgis.core import QgsRasterLayer, QgsContrastEnhancement, QgsDataSourceUri, QgsCredentials
 
-        rl = QgsRasterLayer(self.gdalUri(), self.name)
+        rl = QgsRasterLayer(self.uri(), self.name, "postgresraster")
         if not rl.isValid():
             err = rl.error().summary()
             uri = QgsDataSourceUri(self.database().uri())
@@ -372,7 +373,7 @@ class PGRasterTable(PGTable, RasterTable):
                 if ok:
                     uri.setUsername(username)
                     uri.setPassword(password)
-                    rl = QgsRasterLayer(self.gdalUri(uri), self.name)
+                    rl = QgsRasterLayer(self.uri(uri), self.name)
                     if rl.isValid():
                         break
 

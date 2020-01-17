@@ -116,7 +116,7 @@ class QgsOracleLayerItem : public QgsLayerItem
     QList<QAction *> actions( QWidget *parent ) override;
 
   public slots:
-    bool deleteLayer();
+    bool deleteLayer() override;
 
   private:
     QgsOracleLayerProperty mLayerProperty;

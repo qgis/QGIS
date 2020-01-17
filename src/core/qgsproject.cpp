@@ -58,6 +58,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsprojectdisplaysettings.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -363,6 +364,7 @@ QgsProject::QgsProject( QObject *parent )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mViewSettings( new QgsProjectViewSettings( this ) )
+  , mDisplaySettings( new QgsProjectDisplaySettings( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
   , mArchive( new QgsProjectArchive() )
@@ -748,6 +750,7 @@ void QgsProject::clear()
   mLayoutManager->clear();
   mBookmarkManager->clear();
   mViewSettings->reset();
+  mDisplaySettings->reset();
   mSnappingConfig.reset();
   emit snappingConfigChanged( mSnappingConfig );
   emit topologicalEditingChanged();
@@ -1043,12 +1046,12 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   // have the layer restore state that is stored in Dom node
   QgsMapLayer::ReadFlags layerFlags = nullptr;
-  if ( flags & QgsProject::FlagDontResolveLayers )
+  if ( flags & QgsProject::ReadFlag::FlagDontResolveLayers )
     layerFlags |= QgsMapLayer::FlagDontResolveLayers;
   bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags ) && mapLayer->isValid();
   QList<QgsMapLayer *> newLayers;
   newLayers << mapLayer.get();
-  if ( layerIsValid || flags & QgsProject::FlagDontResolveLayers )
+  if ( layerIsValid || flags & QgsProject::ReadFlag::FlagDontResolveLayers )
   {
     emit readMapLayer( mapLayer.get(), layerElem );
     addMapLayers( newLayers );
@@ -1469,7 +1472,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   emit labelingEngineSettingsChanged();
 
   mAnnotationManager->readXml( doc->documentElement(), context );
-  if ( !( flags & QgsProject::FlagDontLoadLayouts ) )
+  if ( !( flags & QgsProject::ReadFlag::FlagDontLoadLayouts ) )
     mLayoutManager->readXml( doc->documentElement(), *doc );
   mBookmarkManager->readXml( doc->documentElement(), *doc );
 
@@ -1503,6 +1506,10 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   QDomElement viewSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectViewSettings" ) );
   if ( !viewSettingsElement.isNull() )
     mViewSettings->readXml( viewSettingsElement, context );
+
+  QDomElement displaySettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectDisplaySettings" ) );
+  if ( !displaySettingsElement.isNull() )
+    mDisplaySettings->readXml( displaySettingsElement, context );
 
   emit customVariablesChanged();
   emit crsChanged();
@@ -2103,6 +2110,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   QDomElement viewSettingsElem = mViewSettings->writeXml( *doc, context );
   qgisNode.appendChild( viewSettingsElem );
+
+  QDomElement displaySettingsElem = mDisplaySettings->writeXml( *doc, context );
+  qgisNode.appendChild( displaySettingsElem );
 
   // now wrap it up and ship it to the project file
   doc->normalize();             // XXX I'm not entirely sure what this does
@@ -2807,6 +2817,16 @@ const QgsProjectViewSettings *QgsProject::viewSettings() const
 QgsProjectViewSettings *QgsProject::viewSettings()
 {
   return mViewSettings;
+}
+
+const QgsProjectDisplaySettings *QgsProject::displaySettings() const
+{
+  return mDisplaySettings;
+}
+
+QgsProjectDisplaySettings *QgsProject::displaySettings()
+{
+  return mDisplaySettings;
 }
 
 QgsLayerTree *QgsProject::layerTreeRoot() const

@@ -460,6 +460,24 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     QString style() const;
 
     /**
+     * Returns the numeric format used for numbers in the scalebar.
+     *
+     * \see setNumericFormat()
+     * \since QGIS 3.12
+     */
+    const QgsNumericFormat *numericFormat() const;
+
+    /**
+     * Sets the numeric \a format used for numbers in the scalebar.
+     *
+     * Ownership of \a format is transferred to the scalebar.
+     *
+     * \see numericFormat()
+     * \since QGIS 3.12
+     */
+    void setNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
+
+    /**
      * Adjusts the scale bar box size and updates the item.
      */
     void update();

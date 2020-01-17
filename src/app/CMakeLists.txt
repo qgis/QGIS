@@ -46,6 +46,7 @@ SET(QGIS_APP_SRCS
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
   qgsfirstrundialog.cpp
+  qgsfixattributedialog.cpp
   qgsgeometryvalidationservice.cpp
   qgsgeometryvalidationdock.cpp
   qgsgeometryvalidationmodel.cpp
@@ -66,7 +67,6 @@ SET(QGIS_APP_SRCS
   qgsmasksourceselectionwidget.cpp
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstylecategoriesmodel.cpp
-  qgsmaplayerstyleguiutils.cpp
   qgsmapsavedialog.cpp
   qgsprojectlistitemdelegate.cpp
   qgspuzzlewidget.cpp
@@ -145,7 +145,6 @@ SET(QGIS_APP_SRCS
   qgsprojectlayergroupdialog.cpp
   qgsprojectproperties.cpp
   qgsrastercalcdialog.cpp
-  qgsrasterlayerproperties.cpp
   qgsrelationmanagerdialog.cpp
   qgsrelationadddlg.cpp
   qgsselectbyformdialog.cpp
@@ -211,6 +210,7 @@ SET(QGIS_APP_SRCS
   layout/qgslayoutlegendlayersdialog.cpp
   layout/qgslayoutlegendwidget.cpp
   layout/qgslayoutmanagerdialog.cpp
+  layout/qgslayoutmanualtablewidget.cpp
   layout/qgslayoutmapwidget.cpp
   layout/qgslayoutmapgridwidget.cpp
   layout/qgslayoutpagepropertieswidget.cpp
@@ -285,6 +285,7 @@ IF (WITH_3D)
     3d/qgsphongmaterialwidget.cpp
     3d/qgsrulebased3drendererwidget.cpp
     3d/qgssymbol3dwidget.cpp
+    3d/qgsvectorlayer3dpropertieswidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
     layout/qgslayout3dmapwidget.cpp
@@ -440,9 +441,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/locator
+  ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/raster
@@ -455,7 +458,9 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
+  ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/processing
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
@@ -481,6 +486,7 @@ IF (WITH_3D)
     ${CMAKE_SOURCE_DIR}/src/core/3d
     ${CMAKE_SOURCE_DIR}/src/3d
     ${CMAKE_SOURCE_DIR}/src/3d/symbols
+    ${CMAKE_SOURCE_DIR}/src/3d/mesh
     ${CMAKE_SOURCE_DIR}/src/3d/terrain
     ${CMAKE_SOURCE_DIR}/src/3d/chunks
     ${CMAKE_BINARY_DIR}/src/3d
@@ -520,12 +526,14 @@ INCLUDE_DIRECTORIES(
   ../gui/symbology
   ../gui/attributetable
   ../gui/auth
+  ../gui/effects
   ../gui/ogr
   ../gui/raster
   ../gui/editorwidgets
   ../gui/editorwidgets/core
   ../gui/layertree
   ../gui/layout
+  ../gui/tableeditor
   ../plugins
   ../python
   gps

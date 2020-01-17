@@ -19,6 +19,7 @@
 #include "qgslayoututils.h"
 #include "qgstextrenderer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsnumericformat.h"
 #include <QFontMetricsF>
 #include <QPainter>
 
@@ -65,6 +66,8 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
       break;
   }
 
+  QgsNumericFormatContext numericContext;
+
   for ( int i = 0; i < positions.size(); ++i )
   {
     if ( segmentCounter == 0 && nSegmentsLeft > 0 )
@@ -79,7 +82,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
 
     if ( segmentCounter >= nSegmentsLeft )
     {
-      currentNumericLabel = QString::number( currentLabelNumber / settings.mapUnitsPerScaleBarUnit() );
+      currentNumericLabel = settings.numericFormat()->formatDouble( currentLabelNumber / settings.mapUnitsPerScaleBarUnit(), numericContext );
     }
 
     //don't draw label for intermediate left segments or the zero label when it needs to be skipped
@@ -120,7 +123,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
     // note: this label is NOT centered over the end of the bar - rather the numeric portion
     // of it is, without considering the unit label suffix. That's drawn at the end after
     // horizontally centering just the numeric portion.
-    currentNumericLabel = QString::number( currentLabelNumber / settings.mapUnitsPerScaleBarUnit() );
+    currentNumericLabel = settings.numericFormat()->formatDouble( currentLabelNumber / settings.mapUnitsPerScaleBarUnit(), numericContext );
     scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "scale_value" ), currentNumericLabel, true, false ) );
     QPointF pos;
     pos.setY( fontMetrics.ascent() + scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelBelowSegment ? scaledHeight + scaledLabelBarSpace : 0 ) );
@@ -165,7 +168,7 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &setting
 
   //consider last number and label
   double largestLabelNumber = settings.numberOfSegments() * settings.unitsPerSegment() / settings.mapUnitsPerScaleBarUnit();
-  QString largestNumberLabel = QString::number( largestLabelNumber );
+  QString largestNumberLabel = settings.numericFormat()->formatDouble( largestLabelNumber, QgsNumericFormatContext() );
   QString largestLabel = largestNumberLabel + ' ' + settings.unitLabel();
   double largestLabelWidth;
   if ( settings.labelHorizontalPlacement() == QgsScaleBarSettings::LabelCenteredSegment )
@@ -197,11 +200,11 @@ QString QgsScaleBarRenderer::firstLabelString( const QgsScaleBarSettings &settin
 {
   if ( settings.numberOfSegmentsLeft() > 0 )
   {
-    return QString::number( settings.unitsPerSegment() / settings.mapUnitsPerScaleBarUnit() );
+    return settings.numericFormat()->formatDouble( settings.unitsPerSegment() / settings.mapUnitsPerScaleBarUnit(), QgsNumericFormatContext() );
   }
   else
   {
-    return QStringLiteral( "0" );
+    return settings.numericFormat()->formatDouble( 0, QgsNumericFormatContext() );
   }
 }
 

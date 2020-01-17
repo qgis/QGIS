@@ -48,7 +48,7 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     void mGridFramePenColorButton_colorChanged( const QColor &newColor );
     void mGridFrameFill1ColorButton_colorChanged( const QColor &newColor );
     void mGridFrameFill2ColorButton_colorChanged( const QColor &newColor );
-    void mGridTypeComboBox_currentIndexChanged( const QString &text );
+    void mGridTypeComboBox_currentIndexChanged( int );
     void mMapGridCRSButton_clicked();
     void mGridBlendComboBox_currentIndexChanged( int index );
     void mCheckGridLeftSide_toggled( bool checked );
@@ -66,16 +66,16 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     void mAnnotationFormatButton_clicked();
 
     //annotation display
-    void mAnnotationDisplayLeftComboBox_currentIndexChanged( const QString &text );
-    void mAnnotationDisplayRightComboBox_currentIndexChanged( const QString &text );
-    void mAnnotationDisplayTopComboBox_currentIndexChanged( const QString &text );
-    void mAnnotationDisplayBottomComboBox_currentIndexChanged( const QString &text );
+    void mAnnotationDisplayLeftComboBox_currentIndexChanged( int );
+    void mAnnotationDisplayRightComboBox_currentIndexChanged( int );
+    void mAnnotationDisplayTopComboBox_currentIndexChanged( int );
+    void mAnnotationDisplayBottomComboBox_currentIndexChanged( int );
 
     //annotation position
-    void mAnnotationPositionLeftComboBox_currentIndexChanged( const QString &text );
-    void mAnnotationPositionRightComboBox_currentIndexChanged( const QString &text );
-    void mAnnotationPositionTopComboBox_currentIndexChanged( const QString &text );
-    void mAnnotationPositionBottomComboBox_currentIndexChanged( const QString &text );
+    void mAnnotationPositionLeftComboBox_currentIndexChanged( int );
+    void mAnnotationPositionRightComboBox_currentIndexChanged( int );
+    void mAnnotationPositionTopComboBox_currentIndexChanged( int );
+    void mAnnotationPositionBottomComboBox_currentIndexChanged( int );
 
     //annotation direction
     void mAnnotationDirectionComboBoxLeft_currentIndexChanged( int index );
@@ -117,8 +117,8 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     void blockAllSignals( bool b );
 
     void handleChangedFrameDisplay( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::DisplayMode mode );
-    void handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::BorderSide border, const QString &text );
-    void handleChangedAnnotationPosition( QgsLayoutItemMapGrid::BorderSide border, const QString &text );
+    void handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::DisplayMode mode );
+    void handleChangedAnnotationPosition( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::AnnotationPosition position );
     void handleChangedAnnotationDirection( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::AnnotationDirection direction );
 
     void insertFrameDisplayEntries( QComboBox *c );
@@ -127,7 +127,6 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     void insertAnnotationDirectionEntries( QComboBox *c );
 
     void initFrameDisplayBox( QComboBox *c, QgsLayoutItemMapGrid::DisplayMode display );
-    void initAnnotationDisplayBox( QComboBox *c, QgsLayoutItemMapGrid::DisplayMode display );
     void initAnnotationPositionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationPosition pos );
     void initAnnotationDirectionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationDirection dir );
 

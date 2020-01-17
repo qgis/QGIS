@@ -442,6 +442,59 @@ QgsVector3D Qgs3DUtils::worldToMapCoordinates( const QgsVector3D &worldCoords, c
                       worldCoords.y() + origin.z() );
 }
 
+static QgsRectangle _tryReprojectExtent2D( const QgsRectangle &extent, const QgsCoordinateReferenceSystem &crs1, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context )
+{
+  QgsRectangle extentMapCrs( extent );
+  if ( crs1 != crs2 )
+  {
+    // reproject if necessary
+    QgsCoordinateTransform ct( crs1, crs2, context );
+    try
+    {
+      extentMapCrs = ct.transformBoundingBox( extentMapCrs );
+    }
+    catch ( const QgsCsException & )
+    {
+      // bad luck, can't reproject for some reason
+      QgsDebugMsg( QStringLiteral( "3D utils: transformation of extent failed: " ) + extentMapCrs.toString( -1 ) );
+    }
+  }
+  return extentMapCrs;
+}
+
+QgsAABB Qgs3DUtils::layerToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context )
+{
+  QgsRectangle extentMapCrs( _tryReprojectExtent2D( extent, layerCrs, mapCrs, context ) );
+  return mapToWorldExtent( extentMapCrs, zMin, zMax, mapOrigin );
+}
+
+QgsRectangle Qgs3DUtils::worldToLayerExtent( const QgsAABB &bbox, const QgsCoordinateReferenceSystem &layerCrs, const QgsVector3D &mapOrigin, const QgsCoordinateReferenceSystem &mapCrs, const QgsCoordinateTransformContext &context )
+{
+  QgsRectangle extentMap = worldToMapExtent( bbox, mapOrigin );
+  return _tryReprojectExtent2D( extentMap, mapCrs, layerCrs, context );
+}
+
+QgsAABB Qgs3DUtils::mapToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsVector3D &mapOrigin )
+{
+  QgsVector3D extentMin3D( extent.xMinimum(), extent.yMinimum(), zMin );
+  QgsVector3D extentMax3D( extent.xMaximum(), extent.yMaximum(), zMax );
+  QgsVector3D worldExtentMin3D = mapToWorldCoordinates( extentMin3D, mapOrigin );
+  QgsVector3D worldExtentMax3D = mapToWorldCoordinates( extentMax3D, mapOrigin );
+  QgsAABB rootBbox( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMin3D.z(),
+                    worldExtentMax3D.x(), worldExtentMax3D.y(), worldExtentMax3D.z() );
+  return rootBbox;
+}
+
+QgsRectangle Qgs3DUtils::worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin )
+{
+  QgsVector3D worldExtentMin3D = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( bbox.xMin, bbox.yMin, bbox.zMin ), mapOrigin );
+  QgsVector3D worldExtentMax3D = Qgs3DUtils::worldToMapCoordinates( QgsVector3D( bbox.xMax, bbox.yMax, bbox.zMax ), mapOrigin );
+  QgsRectangle extentMap( worldExtentMin3D.x(), worldExtentMin3D.y(), worldExtentMax3D.x(), worldExtentMax3D.y() );
+  // we discard zMin/zMax here because we don't need it
+  return extentMap;
+}
+
+
 QgsVector3D Qgs3DUtils::transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context )
 {
   QgsVector3D mapPoint1 = worldToMapCoordinates( worldPoint1, origin1 );
@@ -461,6 +514,38 @@ QgsVector3D Qgs3DUtils::transformWorldCoordinates( const QgsVector3D &worldPoint
     }
   }
   return mapToWorldCoordinates( mapPoint2, origin2 );
+}
+
+void Qgs3DUtils::estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin, double &zMax )
+{
+  if ( !QgsWkbTypes::hasZ( layer->wkbType() ) )
+  {
+    zMin = 0;
+    zMax = 0;
+    return;
+  }
+
+  zMin = std::numeric_limits<double>::max();
+  zMax = std::numeric_limits<double>::min();
+
+  QgsFeature f;
+  QgsFeatureIterator it = layer->getFeatures( QgsFeatureRequest().setNoAttributes().setLimit( 100 ) );
+  while ( it.nextFeature( f ) )
+  {
+    QgsGeometry g = f.geometry();
+    for ( auto vit = g.vertices_begin(); vit != g.vertices_end(); ++vit )
+    {
+      double z = ( *vit ).z();
+      if ( z < zMin ) zMin = z;
+      if ( z > zMax ) zMax = z;
+    }
+  }
+
+  if ( zMin == std::numeric_limits<double>::max() && zMax == std::numeric_limits<double>::min() )
+  {
+    zMin = 0;
+    zMax = 0;
+  }
 }
 
 std::unique_ptr<QgsAbstract3DSymbol> Qgs3DUtils::symbolForGeometryType( QgsWkbTypes::GeometryType geomType )

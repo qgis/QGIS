@@ -45,7 +45,7 @@
 #include "qgssinglesymbolrenderer.h"
 
 //qgs unit test utility class
-#include "qgsrenderchecker.h"
+#include "qgsmultirenderchecker.h"
 
 /**
  * \ingroup UnitTests
