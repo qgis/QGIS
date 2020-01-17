@@ -91,11 +91,19 @@ Returns the project's title.
     QString saveUser() const;
 %Docstring
 Returns the user name that did the last save.
+
+.. seealso:: :py:func:`saveUserFullname`
+
+.. versionadded:: 3.12
 %End
 
     QString saveUserFullname() const;
 %Docstring
 Returns the full user name that did the last save.
+
+.. seealso:: :py:func:`saveUser`
+
+.. versionadded:: 3.12
 %End
 
     bool isDirty() const;
