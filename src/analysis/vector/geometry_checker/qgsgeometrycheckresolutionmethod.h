@@ -20,6 +20,7 @@
 #include "qgis_analysis.h"
 
 /**
+ * \ingroup analysis
  * This class implements a resolution for problems detected in geometry checks.
  *
  * \since QGIS 3.12
