@@ -33,6 +33,21 @@ open within the main QGIS application.
 #include "qgsproject.h"
 %End
   public:
+
+    enum class ReadFlag
+    {
+      FlagDontResolveLayers,
+      FlagDontLoadLayouts,
+    };
+    typedef QFlags<QgsProject::ReadFlag> ReadFlags;
+
+
+    enum class FileFormat
+    {
+      Qgz,
+      Qgs,
+    };
+
     static QgsProject *instance();
 %Docstring
 Returns the QgsProject singleton instance
@@ -234,14 +249,6 @@ Clears the project, removing all settings and resetting it back to an empty, def
 
 .. versionadded:: 2.4
 %End
-
-    enum ReadFlag
-    {
-      FlagDontResolveLayers,
-      FlagDontLoadLayouts,
-    };
-    typedef QFlags<QgsProject::ReadFlag> ReadFlags;
-
 
     bool read( const QString &filename, QgsProject::ReadFlags flags = 0 );
 %Docstring
