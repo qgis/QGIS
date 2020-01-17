@@ -43,7 +43,13 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.old_pgdatabase_env = os.environ.get('PGDATABASE')
-        self.testdb = os.environ.get('QGIS_PGTEST_DB') or 'qgis_test'
+        # QGIS_PGTEST_DB contains the full connection string and not only the DB name!
+        QGIS_PGTEST_DB = os.environ.get('QGIS_PGTEST_DB')
+        if not QGIS_PGTEST_DB is None:
+            test_uri = QgsDataSourceUri(QGIS_PGTEST_DB)
+            self.testdb = test_uri.database()
+        else:
+            self.testdb = 'qgis_test'
         os.environ['PGDATABASE'] = self.testdb
 
         # Create temporary service file
@@ -68,16 +74,16 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
 
     # See https://github.com/qgis/QGIS/issues/24525
 
-    def test_rasterTableGdalURI(self):
+    def test_rasterTableURI(self):
 
-        def check_rasterTableGdalURI(expected_dbname):
+        def check_rasterTableURI(expected_dbname):
             tables = database.tables()
             raster_tables_count = 0
             for tab in tables:
                 if tab.type == Table.RasterType:
                     raster_tables_count += 1
-                    gdalUri = tab.gdalUri()
-                    m = re.search(' dbname=\'([^ ]*)\' ', gdalUri)
+                    uri = tab.uri()
+                    m = re.search(' dbname=\'([^ ]*)\' ', uri)
                     self.assertTrue(m)
                     actual_dbname = m.group(1)
                     self.assertEqual(actual_dbname, expected_dbname)
@@ -87,7 +93,7 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
 
             # We need to make sure a database is created with at
             # least one raster table !
-            self.assertEqual(raster_tables_count, 1)
+            self.assertTrue(raster_tables_count > 1)
 
         obj = QObject() # needs to be kept alive
 
@@ -107,7 +113,7 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
         self.assertEqual(uri.database(), expected_dbname)
         self.assertEqual(uri.service(), '')
 
-        check_rasterTableGdalURI(expected_dbname)
+        check_rasterTableURI(expected_dbname)
 
         # Test for service-only URI
         # See https://github.com/qgis/QGIS/issues/24526
@@ -122,7 +128,7 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
         self.assertEqual(uri.database(), '')
         self.assertEqual(uri.service(), 'dbmanager')
 
-        check_rasterTableGdalURI(expected_dbname)
+        check_rasterTableURI(expected_dbname)
 
     # See https://github.com/qgis/QGIS/issues/24732
     def test_unicodeInQuery(self):

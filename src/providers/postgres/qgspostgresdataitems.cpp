@@ -26,7 +26,6 @@
 #include "qgsprojectstorageregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
-#include "providers/gdal/qgsgdaldataitems.h"
 #include <QMessageBox>
 #include <climits>
 
@@ -312,7 +311,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
 
 // ---------------------------------------------------------------------------
 QgsPGLayerItem::QgsPGLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsPostgresLayerProperty &layerProperty )
-  : QgsLayerItem( parent, name, path, QString(), layerType, QStringLiteral( "postgres" ) )
+  : QgsLayerItem( parent, name, path, QString(), layerType, layerProperty.isRaster ? QStringLiteral( "postgresraster" ) : QStringLiteral( "postgres" ) )
   , mLayerProperty( layerProperty )
 {
   mCapabilities |= Delete;
@@ -410,6 +409,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
       continue;
 
     if ( !layerProperty.geometryColName.isNull() &&
+         //!layerProperty.isRaster &&
          ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown  ||
            layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
     {
@@ -424,20 +424,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
     for ( int i = 0; i < layerProperty.size(); i++ )
     {
       QgsDataItem *layerItem = nullptr;
-      if ( !  layerProperty.isRaster )
-      {
-        layerItem = createLayer( layerProperty.at( i ) );
-      }
-      else
-      {
-        const QString connInfo = conn->connInfo();
-        const QString uri = QStringLiteral( "PG:  %1 mode=2 schema='%2' column='%3' table='%4'" )
-                            .arg( connInfo )
-                            .arg( layerProperty.schemaName )
-                            .arg( layerProperty.geometryColName )
-                            .arg( layerProperty.tableName );
-        layerItem = new QgsGdalLayerItem( this, layerProperty.tableName, QString(), uri );
-      }
+      layerItem = createLayer( layerProperty.at( i ) );
       if ( layerItem )
         items.append( layerItem );
     }
@@ -479,7 +466,7 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
   }
   else if ( layerProperty.isRaster )
   {
-    tip = tr( "Raster (GDAL)" );
+    tip = tr( "Raster" );
   }
   else
   {

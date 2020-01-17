@@ -130,6 +130,15 @@ class CORE_EXPORT QgsGenericSpatialIndex
       return true;
     }
 
+    /**
+     * Returns TRUE if the index contains no items.
+     */
+    bool isEmpty( ) const
+    {
+      QMutexLocker locker( &mMutex );
+      return mIdToData.isEmpty();
+    }
+
   private:
 
     std::unique_ptr< SpatialIndex::ISpatialIndex > createSpatialIndex( SpatialIndex::IStorageManager &storageManager )
