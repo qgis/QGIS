@@ -88,6 +88,16 @@ Returns the project's title.
    Since QGIS 3.2 this is just a shortcut to retrieving the title from the project's metadata().
 %End
 
+    QString saveUser() const;
+%Docstring
+Returns the user name that did the last save.
+%End
+
+    QString saveUserFullname() const;
+%Docstring
+Returns the full user name that did the last save.
+%End
+
     bool isDirty() const;
 %Docstring
 Returns ``True`` if the project has been modified since the last write()
