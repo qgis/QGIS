@@ -6660,12 +6660,23 @@ bool QgisApp::fileSave()
 
     const QString qgsExt = tr( "QGIS files" ) + " (*.qgs)";
     const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
+
+    QString exts;
+    QgsProject::FileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
+    if ( defaultProjectFileFormat == QgsProject::FileFormat::Qgs )
+    {
+      exts = qgsExt + ";;" + zipExt;
+    }
+    else
+    {
+      exts = zipExt + ";;" + qgsExt;
+    }
     QString filter;
     QString path = QFileDialog::getSaveFileName(
                      this,
                      tr( "Choose a QGIS project file" ),
                      lastUsedDir + '/' + QgsProject::instance()->title(),
-                     zipExt + ";;" + qgsExt, &filter );
+                     exts, &filter );
     if ( path.isEmpty() )
       return false;
 

@@ -106,6 +106,29 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QColor selectionColor READ selectionColor WRITE setSelectionColor NOTIFY selectionColorChanged )
 
   public:
+
+    /**
+     * Flags which control project read behavior.
+     * \since QGIS 3.10
+     */
+    enum class ReadFlag SIP_MONKEYPATCH_SCOPEENUM
+    {
+      FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
+      FlagDontLoadLayouts = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
+    };
+    Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
+
+    /**
+     * Flags which control project read behavior.
+     * \since QGIS 3.12
+     */
+    enum class FileFormat
+    {
+      Qgz, //!< Archive file format, supports auxiliary data
+      Qgs, //!< Project saved in a clear text, does not support auxiliary data
+    };
+    Q_ENUM( FileFormat )
+
     //! Returns the QgsProject singleton instance
     static QgsProject *instance();
 
@@ -268,17 +291,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 2.4
      */
     void clear();
-
-    /**
-     * Flags which control project read behavior.
-     * \since QGIS 3.10
-     */
-    enum ReadFlag
-    {
-      FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
-      FlagDontLoadLayouts = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
-    };
-    Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
     /**
      * Reads given project file from the given file.

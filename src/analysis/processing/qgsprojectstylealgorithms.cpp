@@ -203,7 +203,7 @@ QVariantMap QgsStyleFromProjectAlgorithm::processAlgorithm( const QVariantMap &p
   {
     // load project from path
     QgsProject p;
-    if ( !p.read( mProjectPath, QgsProject::FlagDontResolveLayers ) )
+    if ( !p.read( mProjectPath, QgsProject::ReadFlag::FlagDontResolveLayers ) )
     {
       throw QgsProcessingException( QObject::tr( "Could not read project %1" ).arg( mProjectPath ) );
     }

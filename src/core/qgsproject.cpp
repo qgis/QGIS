@@ -1046,12 +1046,12 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   // have the layer restore state that is stored in Dom node
   QgsMapLayer::ReadFlags layerFlags = nullptr;
-  if ( flags & QgsProject::FlagDontResolveLayers )
+  if ( flags & QgsProject::ReadFlag::FlagDontResolveLayers )
     layerFlags |= QgsMapLayer::FlagDontResolveLayers;
   bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags ) && mapLayer->isValid();
   QList<QgsMapLayer *> newLayers;
   newLayers << mapLayer.get();
-  if ( layerIsValid || flags & QgsProject::FlagDontResolveLayers )
+  if ( layerIsValid || flags & QgsProject::ReadFlag::FlagDontResolveLayers )
   {
     emit readMapLayer( mapLayer.get(), layerElem );
     addMapLayers( newLayers );
@@ -1472,7 +1472,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   emit labelingEngineSettingsChanged();
 
   mAnnotationManager->readXml( doc->documentElement(), context );
-  if ( !( flags & QgsProject::FlagDontLoadLayouts ) )
+  if ( !( flags & QgsProject::ReadFlag::FlagDontLoadLayouts ) )
     mLayoutManager->readXml( doc->documentElement(), *doc );
   mBookmarkManager->readXml( doc->documentElement(), *doc );
 
