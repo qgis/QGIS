@@ -23,6 +23,10 @@
 #include "qgsfeedback.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgspolygon.h"
+#include "qgscurve.h"
+#include "qgssnappingutils.h"
 
 #include "geos_c.h"
 
@@ -208,7 +212,7 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
       case MergeLongestEdge:
       {
         QString errMsg;
-        if ( mergeWithNeighbor( featurePools, static_cast<QgsGeometryGapCheckError *>( error ), changes, errMsg ) )
+        if ( mergeWithNeighbor( featurePools, static_cast<QgsGeometryGapCheckError *>( error ), changes, errMsg, LongestSharedEdge ) )
         {
           error->setFixed( method );
         }
@@ -248,13 +252,51 @@ void QgsGeometryGapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featu
         }
         break;
       }
+
+      case CreateNewFeature:
+      {
+        QgsGeometryGapCheckError *gapCheckError = static_cast<QgsGeometryGapCheckError *>( error );
+        QgsProject *project = QgsProject::instance();
+        QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( project->mapLayer( gapCheckError->neighbors().keys().first() ) );
+        if ( layer )
+        {
+          const QgsGeometry geometry = error->geometry();
+          QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+          QgsFeature feature = QgsVectorLayerUtils::createFeature( layer, geometry, QgsAttributeMap(), &context );
+          if ( !layer->addFeature( feature ) )
+          {
+            error->setFixFailed( tr( "Could not add feature" ) );
+          }
+          else
+          {
+            error->setFixed( method );
+          }
+        }
+        else
+        {
+          error->setFixFailed( tr( "Could not resolve target layer %1 to add feature" ).arg( error->layerId() ) );
+        }
+        break;
+      }
+
+      case MergeLargestArea:
+      {
+        QString errMsg;
+        if ( mergeWithNeighbor( featurePools, static_cast<QgsGeometryGapCheckError *>( error ), changes, errMsg, LargestArea ) )
+        {
+          error->setFixed( method );
+        }
+        else
+        {
+          error->setFixFailed( tr( "Failed to merge with neighbor: %1" ).arg( errMsg ) );
+        }
+        break;
+      }
     }
   }
 }
 
-bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool *> &featurePools,
-    QgsGeometryGapCheckError *err,
-    Changes &changes, QString &errMsg ) const
+bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryGapCheckError *err, Changes &changes, QString &errMsg, Condition condition ) const
 {
   double maxVal = 0.;
   QString mergeLayerId;
@@ -265,6 +307,8 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
   const QgsAbstractGeometry *errGeometry = QgsGeometryCheckerUtils::getGeomPart( geometry.constGet(), 0 );
 
   const auto layerIds = err->neighbors().keys();
+  QList<QgsFeature> neighbours;
+
   // Search for touching neighboring geometries
   for ( const QString &layerId : layerIds )
   {
@@ -277,19 +321,39 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
 
     for ( QgsFeatureId testId : featureIds )
     {
-      QgsFeature testFeature;
-      if ( !featurePool->getFeature( testId, testFeature ) )
+      QgsFeature feature;
+      if ( !featurePool->getFeature( testId, feature ) )
       {
         continue;
       }
+
+      QgsGeometry transformedGeometry = feature.geometry();
+      transformedGeometry.transform( ct );
+      feature.setGeometry( transformedGeometry );
+      neighbours.append( feature );
+    }
+
+    for ( const QgsFeature &testFeature : neighbours )
+    {
       const QgsGeometry featureGeom = testFeature.geometry();
       const QgsAbstractGeometry *testGeom = featureGeom.constGet();
       for ( int iPart = 0, nParts = testGeom->partCount(); iPart < nParts; ++iPart )
       {
-        double len = QgsGeometryCheckerUtils::sharedEdgeLength( errLayerGeom.get(), QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart ), mContext->reducedTolerance );
-        if ( len > maxVal )
+        double val;
+        switch ( condition )
         {
-          maxVal = len;
+          case LongestSharedEdge:
+            val = QgsGeometryCheckerUtils::sharedEdgeLength( errLayerGeom.get(), QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart ), mContext->reducedTolerance );
+            break;
+
+          case LargestArea:
+            val = QgsGeometryCheckerUtils::getGeomPart( testGeom, iPart )->area();
+            break;
+        }
+
+        if ( val > maxVal )
+        {
+          maxVal = val;
           mergeFeature = testFeature;
           mergePartIdx = iPart;
           mergeLayerId = layerId;
@@ -303,14 +367,34 @@ bool QgsGeometryGapCheck::mergeWithNeighbor( const QMap<QString, QgsFeaturePool 
     return false;
   }
 
+  QgsSpatialIndex neighbourIndex( QgsSpatialIndex::Flag::FlagStoreFeatureGeometries );
+  neighbourIndex.addFeatures( neighbours );
+
+  QgsPolyline snappedRing;
+  QgsVertexIterator iterator = errGeometry->vertices();
+  while ( iterator.hasNext() )
+  {
+    QgsPoint pt = iterator.next();
+    QgsVertexId id;
+    QgsGeometry closestGeom = neighbourIndex.geometry( neighbourIndex.nearestNeighbor( QgsPointXY( pt ) ).first() );
+    if ( !closestGeom.isEmpty() )
+    {
+      QgsPoint closestPoint = QgsGeometryUtils::closestVertex( *closestGeom.constGet(), pt, id );
+      snappedRing.append( closestPoint );
+    }
+  }
+
+  std::unique_ptr<QgsPolygon> snappedErrGeom = qgis::make_unique<QgsPolygon>();
+  snappedErrGeom->setExteriorRing( new QgsLineString( snappedRing ) );
+
   // Merge geometries
   QgsFeaturePool *featurePool = featurePools[ mergeLayerId ];
-  std::unique_ptr<QgsAbstractGeometry> errLayerGeom( errGeometry->clone() );
+  std::unique_ptr<QgsAbstractGeometry> errLayerGeom( snappedErrGeom->clone() );
   QgsCoordinateTransform ct( featurePool->crs(), mContext->mapCrs, mContext->transformContext );
   errLayerGeom->transform( ct, QgsCoordinateTransform::ReverseTransform );
   const QgsGeometry mergeFeatureGeom = mergeFeature.geometry();
   const QgsAbstractGeometry *mergeGeom = mergeFeatureGeom.constGet();
-  std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( errLayerGeom.get(), mContext->reducedTolerance );
+  std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( errLayerGeom.get(), 0 );
   std::unique_ptr<QgsAbstractGeometry> combinedGeom( geomEngine->combine( QgsGeometryCheckerUtils::getGeomPart( mergeGeom, mergePartIdx ), &errMsg ) );
   if ( !combinedGeom || combinedGeom->isEmpty() || !QgsWkbTypes::isSingleType( combinedGeom->wkbType() ) )
   {
@@ -333,6 +417,23 @@ QStringList QgsGeometryGapCheck::resolutionMethods() const
     methods << tr( "Add gap to allowed exceptions" );
 
   return methods;
+}
+
+QList<QgsGeometryCheckResolutionMethod> QgsGeometryGapCheck::availableResolutionMethods() const
+{
+  QList<QgsGeometryCheckResolutionMethod> fixes
+  {
+    QgsGeometryCheckResolutionMethod( MergeLongestEdge, tr( "Add to longest shared edge" ), tr( "Add the gap area to the neighbouring polygon with the longest shared edge." ), false ),
+    QgsGeometryCheckResolutionMethod( CreateNewFeature, tr( "Create new feature" ), tr( "Create a new feature from the gap area." ), false ),
+    QgsGeometryCheckResolutionMethod( MergeLargestArea, tr( "Add to largest neighbouring area" ), tr( "Add the gap area to the neighbouring polygon with the largest area." ), false )
+  };
+
+  if ( mAllowedGapsSource )
+    fixes << QgsGeometryCheckResolutionMethod( AddToAllowedGaps, tr( "Add gap to allowed exceptions" ), tr( "Create a new feature from the gap geometry on the allowed exceptions layer." ), false );
+
+  fixes << QgsGeometryCheckResolutionMethod( NoChange, tr( "No action" ), tr( "Do not perform any action and mark this error as fixed." ), false );
+
+  return fixes;
 }
 
 QString QgsGeometryGapCheck::description() const
