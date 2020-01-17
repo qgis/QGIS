@@ -97,7 +97,7 @@ Returns the user name that did the last save.
 .. versionadded:: 3.12
 %End
 
-    QString saveUserFullname() const;
+    QString saveUserFullName() const;
 %Docstring
 Returns the full user name that did the last save.
 

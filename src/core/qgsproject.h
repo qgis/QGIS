@@ -176,7 +176,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     *
     * \since QGIS 3.12
     */
-    QString saveUserFullname() const;
+    QString saveUserFullName() const;
 
     /**
      * Returns TRUE if the project has been modified since the last write()
