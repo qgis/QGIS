@@ -53,7 +53,8 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
   mXyz = false;  // assume WMS / WMTS
 
-  if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "xyz" ) )
+  if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "xyz" ) ||
+       uri.param( QStringLiteral( "type" ) ) == QLatin1String( "mbtiles" ) )
   {
     // for XYZ tiles most of the things do not apply
     mTiled = true;
@@ -75,6 +76,9 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mImageMimeType.clear();
     mCrsId = QStringLiteral( "EPSG:3857" );
     mEnableContextualLegend = false;
+
+    mIsMBTiles = uri.param( QStringLiteral( "type" ) ) == QLatin1String( "mbtiles" );
+
     return true;
   }
 

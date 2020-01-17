@@ -588,6 +588,8 @@ class QgsWmsSettings
     bool                    mTiled;
     //! whether we actually work with XYZ tiles instead of WMS / WMTS
     bool mXyz;
+    //! whether we are dealing with MBTiles file rather than using network-based tiles
+    bool mIsMBTiles = false;
     //! chosen values for dimensions in case of multi-dimensional data (key=dim id, value=dim value)
     QHash<QString, QString>  mTileDimensionValues;
     //! name of the chosen tile matrix set

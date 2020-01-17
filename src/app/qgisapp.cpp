@@ -7019,6 +7019,16 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
     }
   }
 
+  if ( fileName.endsWith( QStringLiteral( ".mbtiles" ), Qt::CaseInsensitive ) )
+  {
+    // prefer to use WMS provider's implementation to open MBTiles rasters
+    QUrlQuery uq;
+    uq.addQueryItem( "type", "mbtiles" );
+    uq.addQueryItem( "url", QUrl::fromLocalFile( fileName ).toString() );
+    if ( addRasterLayer( uq.toString(), fileInfo.completeBaseName(), QStringLiteral( "wms" ) ) )
+      return true;
+  }
+
   // try to load it as raster
   if ( QgsRasterLayer::isValidRasterFileName( fileName ) )
   {
