@@ -912,7 +912,7 @@ static void _getTitle( const QDomDocument &doc, QString &title )
 
 }
 
-static void getProjectMetadata( const QDomDocument &doc, QString &lastUser, QString &lastUserFull )
+static void readProjectFileMetadata( const QDomDocument &doc, QString &lastUser, QString &lastUserFull )
 {
   QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
 
@@ -925,8 +925,8 @@ static void getProjectMetadata( const QDomDocument &doc, QString &lastUser, QStr
   QDomNode qgisNode = nl.item( 0 ); // there should only be one, so zeroth element OK
 
   QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
-  lastUser = qgisElement.attribute( QStringLiteral( "save-user" ), QString() );
-  lastUserFull = qgisElement.attribute( QStringLiteral( "save-user-full" ), QString() );
+  lastUser = qgisElement.attribute( QStringLiteral( "saveUser" ), QString() );
+  lastUserFull = qgisElement.attribute( QStringLiteral( "saveUserFull" ), QString() );
 }
 
 
@@ -1265,7 +1265,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   QString oldTitle;
   _getTitle( *doc, oldTitle );
 
-  getProjectMetadata( *doc, mSaveUser, mSaveUserFull );
+  readProjectFileMetadata( *doc, mSaveUser, mSaveUserFull );
 
   QDomNodeList homePathNl = doc->elementsByTagName( QStringLiteral( "homePath" ) );
   if ( homePathNl.count() > 0 )
@@ -1986,10 +1986,15 @@ bool QgsProject::writeProjectFile( const QString &filename )
   QDomElement qgisNode = doc->createElement( QStringLiteral( "qgis" ) );
   qgisNode.setAttribute( QStringLiteral( "projectname" ), title() );
   qgisNode.setAttribute( QStringLiteral( "version" ), QStringLiteral( "%1" ).arg( Qgis::version() ) );
-  QString newSaveUser = QgsApplication::userLoginName();
-  QString newSaveUserFull = QgsApplication::userFullName();
-  qgisNode.setAttribute( QStringLiteral( "save-user" ), newSaveUser );
-  qgisNode.setAttribute( QStringLiteral( "save-user-full" ), newSaveUserFull );
+
+  QgsSettings settings;
+  if ( !settings.value( QStringLiteral( "projects/anonymize_saved_projects" ), false, QgsSettings::Core ).toBool() )
+  {
+    QString newSaveUser = QgsApplication::userLoginName();
+    QString newSaveUserFull = QgsApplication::userFullName();
+    qgisNode.setAttribute( QStringLiteral( "saveUser" ), newSaveUser );
+    qgisNode.setAttribute( QStringLiteral( "saveUserFull" ), newSaveUserFull );
+  }
   doc->appendChild( qgisNode );
 
   QDomElement homePathNode = doc->createElement( QStringLiteral( "homePath" ) );
