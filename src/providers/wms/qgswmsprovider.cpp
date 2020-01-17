@@ -1363,10 +1363,19 @@ bool QgsWmsProvider::setupMBTilesCapabilities( const QString &uri )
   QgsRectangle sourceExtentWgs84 = mbtilesReader.extent();
   if ( !sourceExtentWgs84.isNull() )
   {
+    QgsPointXY customTopLeft, customBottomRight;
     QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( mSettings.mCrsId ),
                                transformContext() );
-    QgsPointXY customTopLeft = ct.transform( QgsPointXY( sourceExtentWgs84.xMinimum(), sourceExtentWgs84.yMaximum() ) );
-    QgsPointXY customBottomRight = ct.transform( QgsPointXY( sourceExtentWgs84.xMaximum(), sourceExtentWgs84.yMinimum() ) );
+    try
+    {
+      customTopLeft = ct.transform( QgsPointXY( sourceExtentWgs84.xMinimum(), sourceExtentWgs84.yMaximum() ) );
+      customBottomRight = ct.transform( QgsPointXY( sourceExtentWgs84.xMaximum(), sourceExtentWgs84.yMinimum() ) );
+    }
+    catch ( const QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Failed to reproject extent from MBTiles metadata" ) );
+      return false;
+    }
     sourceExtent = QgsRectangle( customTopLeft.x(), customBottomRight.y(), customBottomRight.x(), customTopLeft.y() );
   }
 
