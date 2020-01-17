@@ -2708,7 +2708,7 @@ namespace QgsWms
         case QgsMapLayerType::VectorLayer:
         {
           QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-          vl->setOpacity( opacity / 255. );
+          vl->setOpacity( vl->opacity() * opacity / 255. );
           break;
         }
 
@@ -2716,7 +2716,7 @@ namespace QgsWms
         {
           QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
           QgsRasterRenderer *rasterRenderer = rl->renderer();
-          rasterRenderer->setOpacity( opacity / 255. );
+          rasterRenderer->setOpacity( rasterRenderer->opacity() * opacity / 255. );
           break;
         }
 
