@@ -444,7 +444,7 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
         self.assertEqual(format.size(), 18)
         self.assertEqual(format.sizeUnit(), QgsUnitTypes.RenderPixels)
 
-        self.assertEqual(settings.placement, QgsPalLayerSettings.OverPoint)
+        self.assertEqual(settings.placement, QgsPalLayerSettings.AroundPoint)
         self.assertEqual(settings.xOffset, 1)
         self.assertEqual(settings.yOffset, 0)
         self.assertEqual(settings.offsetUnits, QgsUnitTypes.RenderPixels)
