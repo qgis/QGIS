@@ -140,6 +140,7 @@ namespace MDAL
       void addBedElevationDatasetOnFaces();
       void populateVertices( MDAL::Vertices &vertices );
       void populateFaces( MDAL::Faces &faces );
+      virtual DateTime defaultReferenceTime() const override;
 
       void calculateMaximumLevelCount();
       int mMaximumLevelsCount = -1;

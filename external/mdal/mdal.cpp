@@ -22,7 +22,7 @@ static MDAL_Status sLastStatus;
 
 const char *MDAL_Version()
 {
-  return "0.4.94";
+  return "0.4.95";
 }
 
 MDAL_Status MDAL_LastStatus()
