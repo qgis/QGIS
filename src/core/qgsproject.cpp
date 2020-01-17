@@ -475,12 +475,12 @@ QString QgsProject::title() const
 
 QString QgsProject::saveUser() const
 {
-	return mSaveUser;
+  return mSaveUser;
 }
 
 QString QgsProject::saveUserFullname() const
 {
-	return mSaveUserFull;
+  return mSaveUserFull;
 }
 
 bool QgsProject::isDirty() const
@@ -912,21 +912,21 @@ static void _getTitle( const QDomDocument &doc, QString &title )
 
 }
 
-static void getProjectMetadata(const QDomDocument &doc, QString &lastUser, QString &lastUserFull)
+static void getProjectMetadata( const QDomDocument &doc, QString &lastUser, QString &lastUserFull )
 {
-	QDomNodeList nl = doc.elementsByTagName(QStringLiteral("qgis"));
+  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
 
-	if (!nl.count())
-	{
-		QgsDebugMsg("unable to find qgis element");
-		return;
-	}
+  if ( !nl.count() )
+  {
+    QgsDebugMsg( "unable to find qgis element" );
+    return;
+  }
 
-	QDomNode qgisNode = nl.item(0);  // there should only be one, so zeroth element OK
+  QDomNode qgisNode = nl.item( 0 ); // there should only be one, so zeroth element OK
 
-	QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
-	lastUser = qgisElement.attribute(QStringLiteral("save-user"), QString());
-	lastUserFull = qgisElement.attribute(QStringLiteral("save-user-full"), QString());
+  QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
+  lastUser = qgisElement.attribute( QStringLiteral( "save-user" ), QString() );
+  lastUserFull = qgisElement.attribute( QStringLiteral( "save-user-full" ), QString() );
 }
 
 
@@ -1265,7 +1265,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   QString oldTitle;
   _getTitle( *doc, oldTitle );
 
-  getProjectMetadata(*doc, mSaveUser, mSaveUserFull);
+  getProjectMetadata( *doc, mSaveUser, mSaveUserFull );
 
   QDomNodeList homePathNl = doc->elementsByTagName( QStringLiteral( "homePath" ) );
   if ( homePathNl.count() > 0 )
@@ -1558,8 +1558,8 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   if ( clean )
     setDirty( false );
 
-  QgsDebugMsg(QString("Project save user: %1").arg(mSaveUser));
-  QgsDebugMsg(QString("Project save user: %1").arg(mSaveUserFull));
+  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUser ) );
+  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUserFull ) );
 
   Q_NOWARN_DEPRECATED_PUSH
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
@@ -1988,8 +1988,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.setAttribute( QStringLiteral( "version" ), QStringLiteral( "%1" ).arg( Qgis::version() ) );
   QString newSaveUser = QgsApplication::userLoginName();
   QString newSaveUserFull = QgsApplication::userFullName();
-  qgisNode.setAttribute(QStringLiteral("save-user"), newSaveUser);
-  qgisNode.setAttribute(QStringLiteral("save-user-full"), newSaveUserFull);
+  qgisNode.setAttribute( QStringLiteral( "save-user" ), newSaveUser );
+  qgisNode.setAttribute( QStringLiteral( "save-user-full" ), newSaveUserFull );
   doc->appendChild( qgisNode );
 
   QDomElement homePathNode = doc->createElement( QStringLiteral( "homePath" ) );
