@@ -254,6 +254,9 @@ MDAL::DateTime MDAL::DriverCF::parseTime( std::vector<RelativeTimestamp> &times 
   std::string timeUnitInformation = mNcFile->getAttrStr( timeArrName, "units" );
   std::string calendar = mNcFile->getAttrStr( timeArrName, "calendar" );
   MDAL::DateTime referenceTime = parseCFReferenceTime( timeUnitInformation, calendar );
+  if ( !referenceTime.isValid() )
+    referenceTime = defaultReferenceTime();
+
   MDAL::RelativeTimestamp::Unit unit = parseCFTimeUnit( timeUnitInformation );
 
   times = std::vector<RelativeTimestamp>( nTimesteps );
@@ -315,6 +318,12 @@ bool MDAL::DriverCF::canReadMesh( const std::string &uri )
     return false;
   }
   return true;
+}
+
+MDAL::DateTime MDAL::DriverCF::defaultReferenceTime() const
+{
+  // return invalid reference time
+  return DateTime();
 }
 
 void MDAL::DriverCF::setProjection( MDAL::Mesh *mesh )
