@@ -6665,11 +6665,11 @@ bool QgisApp::fileSave()
     QgsProject::FileFormat defaultProjectFileFormat = settings.enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
     if ( defaultProjectFileFormat == QgsProject::FileFormat::Qgs )
     {
-      exts = qgsExt + ";;" + zipExt;
+      exts = qgsExt + QStringLiteral( ";;" ) + zipExt;
     }
     else
     {
-      exts = zipExt + ";;" + qgsExt;
+      exts = zipExt + QStringLiteral( ";;" ) + qgsExt;
     }
     QString filter;
     QString path = QFileDialog::getSaveFileName(
