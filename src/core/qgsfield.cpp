@@ -224,7 +224,14 @@ QString QgsField::displayString( const QVariant &v ) const
     {
       if ( d->precision > 0 )
       {
-        return QLocale().toString( v.toDouble(), 'f', d->precision );
+        if ( -1 < v.toDouble() && v.toDouble() < 1 )
+        {
+          return QLocale().toString( v.toDouble(), 'g', d->precision );
+        }
+        else
+        {
+          return QLocale().toString( v.toDouble(), 'f', d->precision );
+        }
       }
       else
       {
@@ -233,21 +240,38 @@ QString QgsField::displayString( const QVariant &v ) const
         QString s( v.toString() );
         int dotPosition( s.indexOf( '.' ) );
         int precision;
-        if ( dotPosition < 0 )
+        if ( dotPosition < 0 && s.indexOf( 'e' ) < 0 )
         {
           precision = 0;
+          return QLocale().toString( v.toDouble(), 'f', precision );
         }
         else
         {
-          precision = s.length() - dotPosition - 1;
+          if ( dotPosition < 0 ) precision = 0;
+          else precision = s.length() - dotPosition - 1;
+
+          if ( -1 < v.toDouble() && v.toDouble() < 1 )
+          {
+            return QLocale().toString( v.toDouble(), 'g', precision );
+          }
+          else
+          {
+            return QLocale().toString( v.toDouble(), 'f', precision );
+          }
         }
-        return QLocale().toString( v.toDouble(), 'f', precision );
       }
     }
     // Default for doubles with precision
     else if ( d->type == QVariant::Double && d->precision > 0 )
     {
-      return QString::number( v.toDouble(), 'f', d->precision );
+      if ( -1 < v.toDouble() && v.toDouble() < 1 )
+      {
+        return QString::number( v.toDouble(), 'g', d->precision );
+      }
+      else
+      {
+        return QString::number( v.toDouble(), 'f', d->precision );
+      }
     }
   }
   // Other numeric types than doubles
