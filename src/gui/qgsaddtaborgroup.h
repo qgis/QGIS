@@ -30,6 +30,13 @@
 class QTreeWidgetItem;
 class QgsVectorLayer;
 
+/**
+ * \ingroup gui
+ * Dialog to add a tab or group of attributes
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.14
+ */
 class GUI_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroupBase
 {
     Q_OBJECT
@@ -38,16 +45,22 @@ class GUI_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroup
     typedef QPair<QString, QTreeWidgetItem *> TabPair;
 
   public:
+    //! constructor
     QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList<TabPair> &tabList, QWidget *parent = nullptr );
 
+    //! Returns the name of the tab or group
     QString name();
 
+    //! Returns tree item corresponding to the added tab
     QTreeWidgetItem *tab();
 
+    //! Returns the column count
     int columnCount() const;
 
+    //! Returns whether the tab button is checked
     bool tabButtonIsChecked();
 
+    //! Accepts the dialog
     void accept() override;
 
   private slots:

@@ -28,18 +28,28 @@
 
 class QgsVectorLayer;
 
+/**
+ * \ingroup gui
+ * Dialog to add a source field attribute
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.14
+ */
 class GUI_EXPORT QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogBase
 {
     Q_OBJECT
   public:
+    //! constructor
     QgsAddAttrDialog( QgsVectorLayer *vlayer,
                       QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    //! constructor
     QgsAddAttrDialog( const std::list<QString> &typelist,
                       QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
+    //! Returns a field for the configured attribute
     QgsField field() const;
 
-  public slots:
+  private slots:
     void mTypeBox_currentIndexChanged( int idx );
     void mLength_editingFinished();
     void accept() override;

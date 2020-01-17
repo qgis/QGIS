@@ -28,8 +28,12 @@ class QTreeWidgetItem;
 class QgsSymbolLayer;
 
 /**
+ * \ingroup gui
  * A widget that allows the selection of a list of sources for selective masking.
  * A masking source can be either a label mask or a mask symbol layer.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.14
  */
 class GUI_EXPORT QgsMaskSourceSelectionWidget : public QWidget
 {
@@ -47,6 +51,7 @@ class GUI_EXPORT QgsMaskSourceSelectionWidget : public QWidget
       QgsSymbolLayerId symbolLayerId;
     };
 
+    //! constructor
     explicit QgsMaskSourceSelectionWidget( QWidget *parent = nullptr );
 
     //! Updates the possible sources, from the project layers
@@ -59,6 +64,7 @@ class GUI_EXPORT QgsMaskSourceSelectionWidget : public QWidget
     void setSelection( const QList<MaskSource> &sel );
 
   signals:
+    //! Emitted when an item was changed
     void changed();
 
   private:

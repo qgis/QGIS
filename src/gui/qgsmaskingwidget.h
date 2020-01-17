@@ -24,19 +24,29 @@
 #include "qgis_gui.h"
 
 /**
+ * \ingroup gui
  * Main widget for the configuration of mask sources and targets.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.14
  */
 class GUI_EXPORT QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMaskingWidgetBase
 {
     Q_OBJECT
   public:
+    //! constructor
     QgsMaskingWidget( QWidget *parent = nullptr );
 
+    //! Sets the layer to configure
     void setLayer( QgsVectorLayer *layer );
 
+    //! Applies the changes
     void apply();
+
   signals:
+    //! Emitted when a change is performed
     void widgetChanged();
+
   private:
     QgsVectorLayer *mLayer;
 };

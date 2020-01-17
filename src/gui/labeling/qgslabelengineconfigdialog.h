@@ -27,18 +27,29 @@
 class QgsMapCanvas;
 class QgsMessageBar;
 
+/**
+ * \ingroup gui
+ * Widget for configuring the labeling engine
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.14
+ */
 class GUI_EXPORT QgsLabelEngineConfigWidget : public QgsPanelWidget, private Ui::QgsLabelEngineConfigWidgetBase
 {
     Q_OBJECT
   public:
+    //! constructor
     QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     QMenu *menuButtonMenu() override;
     QString menuButtonTooltip() const override;
 
   public slots:
+    //! Applies the changes
     void apply();
+    //! Resets the settings to the defaults
     void setDefaults();
+    //! Shows the help
     void showHelp();
 
   private:
@@ -49,12 +60,19 @@ class GUI_EXPORT QgsLabelEngineConfigWidget : public QgsPanelWidget, private Ui:
     QgsLabelingEngineSettings::PlacementEngineVersion mPreviousEngineVersion = QgsLabelingEngineSettings::PlacementEngineVersion2;
 };
 
+/**
+ * \ingroup gui
+ * Dialog for configuring the labeling engine
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.14
+ */
 class GUI_EXPORT QgsLabelEngineConfigDialog : public QDialog
 {
     Q_OBJECT
 
   public:
-
+    //! constructor
     QgsLabelEngineConfigDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     void accept() override;

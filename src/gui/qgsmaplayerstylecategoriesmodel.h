@@ -24,20 +24,28 @@
 #include "qgsmaplayer.h"
 #include "qgis_gui.h"
 
+/**
+ * \ingroup gui
+ * Model for layer style categories
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.14
+ */
 class GUI_EXPORT QgsMapLayerStyleCategoriesModel : public QAbstractListModel
 {
     Q_OBJECT
 
   public:
+    //! constructor
     explicit QgsMapLayerStyleCategoriesModel( QObject *parent = nullptr );
 
-    //! reset the model data
+    //! Reset the model data
     void setCategories( QgsMapLayer::StyleCategories categories );
 
-    //! return the categories as defined in the model
+    //! Returns the categories as defined in the model
     QgsMapLayer::StyleCategories categories() const;
 
-    //! defines if the model should list the AllStyleCategories entry
+    //! Defines if the model should list the AllStyleCategories entry
     void setShowAllCategories( bool showAll );
 
     int rowCount( const QModelIndex & = QModelIndex() ) const override;

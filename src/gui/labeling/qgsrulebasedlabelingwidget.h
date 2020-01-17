@@ -31,11 +31,19 @@ class QgsMapCanvas;
 class QgsVectorLayer;
 
 
+/**
+ * \ingroup gui
+ * Model for rule based rendering rules view.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.14
+ */
 class GUI_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
 {
     Q_OBJECT
 
   public:
+    //! constructor
     QgsRuleBasedLabelingModel( QgsRuleBasedLabeling::Rule *rootRule, QObject *parent = nullptr );
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
@@ -62,15 +70,25 @@ class GUI_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
 
     // new methods
 
+    //! Returns the rule at the specified index
     QgsRuleBasedLabeling::Rule *ruleForIndex( const QModelIndex &index ) const;
 
+    //! Inserts a new rule at the specified position
     void insertRule( const QModelIndex &parent, int before, QgsRuleBasedLabeling::Rule *newrule );
+    //! Updates the rule at the specified position
     void updateRule( const QModelIndex &parent, int row );
-    // update rule and all its descendants
+    //! Update rule and all its descendants
     void updateRule( const QModelIndex &index );
+    //! Removes the rule at the specified position
     void removeRule( const QModelIndex &index );
 
+    //! Notify the model that new rules will be added
     void willAddRules( const QModelIndex &parent, int count ); // call beginInsertRows
+
+    /**
+     * Notify the model that one is done inserting new rules
+     * \see willAddRules()
+     */
     void finishedAddingRules(); // call endInsertRows
 
   protected:
@@ -81,10 +99,18 @@ class GUI_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
 class QgsLabelingRulePropsWidget;
 
 
+/**
+ * \ingroup gui
+ * Widget for configuring rule based labeling
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.14
+ */
 class GUI_EXPORT QgsRuleBasedLabelingWidget : public QgsPanelWidget, private Ui::QgsRuleBasedLabelingWidget
 {
     Q_OBJECT
   public:
+    //! constructor
     QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
     ~QgsRuleBasedLabelingWidget() override;
 
@@ -93,22 +119,19 @@ class GUI_EXPORT QgsRuleBasedLabelingWidget : public QgsPanelWidget, private Ui:
 
     void setDockMode( bool dockMode ) override;
 
-  protected slots:
+  private slots:
     void addRule();
     void editRule();
     void editRule( const QModelIndex &index );
     void removeRule();
     void copy();
     void paste();
-
-  private slots:
     void ruleWidgetPanelAccepted( QgsPanelWidget *panel );
     void liveUpdateRuleFromPanel();
 
-  protected:
+  private:
     QgsRuleBasedLabeling::Rule *currentRule();
 
-  protected:
     QgsVectorLayer *mLayer = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
 
@@ -127,35 +150,37 @@ class QgsLabelingGui;
 
 #include "ui_qgslabelingrulepropswidget.h"
 
+/**
+ * \ingroup gui
+ * Widget for editing a labeling rule
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.14
+ */
 class GUI_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui::QgsLabelingRulePropsWidget
 {
     Q_OBJECT
 
   public:
-    enum Mode
-    {
-      Adding,
-      Editing
-    };
-
+    //! constructor
     QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Rule *rule, QgsVectorLayer *layer,
                                 QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr );
     ~QgsLabelingRulePropsWidget() override;
 
+    //! Returns the rule being edited
     QgsRuleBasedLabeling::Rule *rule() { return mRule; }
 
     void setDockMode( bool dockMode ) override;
 
   public slots:
+    //! Apply any changes from the widget to the set rule.
+    void apply();
+
+  private slots:
     void testFilter();
     void buildExpression();
 
-    /**
-     * Apply any changes from the widget to the set rule.
-     */
-    void apply();
-
-  protected:
+  private:
     QgsRuleBasedLabeling::Rule *mRule; // borrowed
     QgsVectorLayer *mLayer = nullptr;
 

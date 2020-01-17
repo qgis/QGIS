@@ -45,14 +45,19 @@ QgsMaskingWidget::QgsMaskingWidget( QWidget *parent ) :
 }
 
 /**
+ * \ingroup gui
  * Generic visitor that collects symbol layers of a vector layer's renderer
  * and call a callback function on them with their corresponding QgsSymbolLayerId
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.14
  */
 class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
 {
   public:
     typedef std::function<void( const QgsSymbolLayer *, const QgsSymbolLayerId & )> SymbolLayerCallback;
 
+    //! constructor
     SymbolLayerVisitor( SymbolLayerCallback callback ) :
       mCallback( callback )
     {}
@@ -66,6 +71,7 @@ class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
       return true;
     }
 
+    //! Process a symbol
     void visitSymbol( const QgsSymbol *symbol, const QString &leafIdentifier, QVector<int> rootPath )
     {
       for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
