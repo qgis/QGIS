@@ -22,12 +22,20 @@
 #include "qgis_gui.h"
 #include "qgslayoutcustomdrophandler.h"
 
+/**
+ * \ingroup gui
+ * Layout drop handler for handling QPT files
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutQptDropHandler : public QgsLayoutCustomDropHandler
 {
     Q_OBJECT
 
   public:
 
+    //! constructor
     QgsLayoutQptDropHandler( QObject *parent = nullptr );
 
     bool handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF point, const QString &file ) override;

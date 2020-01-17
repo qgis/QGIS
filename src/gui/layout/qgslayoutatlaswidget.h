@@ -28,14 +28,19 @@ class QgsLayoutAtlas;
 class QgsMessageBar;
 
 /**
- * \ingroup app
-  * A widget for layout atlas settings.
-  */
+ * \ingroup gui
+ * Widget for configuring the properties of a layout atlas.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutAtlasWidget: public QWidget, private Ui::QgsLayoutAtlasWidgetBase
 {
     Q_OBJECT
   public:
+    //! Constructor
     QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *layout );
+    //! Sets the message bar to which to emit messages
     void setMessageBar( QgsMessageBar *bar );
 
   private slots:

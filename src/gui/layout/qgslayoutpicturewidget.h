@@ -28,21 +28,25 @@
 class QgsLayoutItemPicture;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * A widget for configuring layout picture items.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
  */
 class GUI_EXPORT QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPictureWidgetBase
 {
     Q_OBJECT
 
   public:
+    //! constructor
     explicit QgsLayoutPictureWidget( QgsLayoutItemPicture *picture );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
     //! Add the icons of the standard directories to the preview
     void addStandardDirectoriesToPreview();
 
-  public slots:
+  private slots:
     void mPictureBrowseButton_clicked();
     void mPictureLineEdit_editingFinished();
     void mPictureRotationSpinBox_valueChanged( double d );

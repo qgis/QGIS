@@ -28,14 +28,19 @@ class QgsCodeEditorHTML;
 class QgsCodeEditorCSS;
 
 /**
- * \ingroup app
- * Input widget for the configuration of QgsLayoutItemHtml
-*/
+ * \ingroup gui
+ * A widget for configuring layout html items.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutHtmlWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutHtmlWidgetBase
 {
     Q_OBJECT
   public:
+    //! constructor
     QgsLayoutHtmlWidget() = delete;
+    //! constructor
     QgsLayoutHtmlWidget( QgsLayoutFrame *frame );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 

@@ -42,11 +42,13 @@ class QgsLayoutTableAvailableSortProxyModel;
 class QgsLayoutObject;
 class QgsLayoutTableColumn;
 
-//QgsLayoutAttributeTableColumnModel
-
 /**
+ * \ingroup gui
  * A model for displaying columns shown in a QgsLayoutAttributeTable
-*/
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
 {
     Q_OBJECT
@@ -110,7 +112,6 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
     /**
      * Sets a specified column as a sorted column in the QgsLayoutItemAttributeTable. The column will be
      * added to the end of the sort rank list, ie it will take the next largest available sort rank.
-     * \see removeColumnFromSort()
      * \see moveColumnInSortRank()
      */
     void setColumnAsSorted( QgsLayoutTableColumn *column, Qt::SortOrder order );
@@ -133,12 +134,13 @@ class GUI_EXPORT QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
 
 };
 
-
-//QgsLayoutTableSortColumnsProxyModel
-
 /**
+ * \ingroup gui
  * Allows for filtering QgsComposerAttributeTable columns by columns which are sorted or unsorted
-*/
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutTableSortColumnsProxyModel: public QSortFilterProxyModel
 {
     Q_OBJECT
@@ -209,14 +211,19 @@ class GUI_EXPORT QgsLayoutTableSortColumnsProxyModel: public QSortFilterProxyMod
 
 };
 
-// QgsLayoutColumnAlignmentDelegate
-
-//! A delegate for showing column alignment as a combo box
+/**
+ * \ingroup gui
+ * A delegate for showing column alignment as a combo box
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutColumnAlignmentDelegate : public QItemDelegate
 {
     Q_OBJECT
 
   public:
+    //! constructor
     explicit QgsLayoutColumnAlignmentDelegate( QObject *parent = nullptr );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
@@ -225,21 +232,25 @@ class GUI_EXPORT QgsLayoutColumnAlignmentDelegate : public QItemDelegate
 
 };
 
-
-// QgsLayoutColumnSourceDelegate
-
-//! A delegate for showing column attribute source as a QgsFieldExpressionWidget
+/**
+ * \ingroup gui
+ * A delegate for showing column attribute source as a QgsFieldExpressionWidget
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutColumnSourceDelegate : public QItemDelegate, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
+    //! constructor
     QgsLayoutColumnSourceDelegate( QgsVectorLayer *vlayer, QObject *parent = nullptr, const QgsLayoutObject *layoutObject = nullptr );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
     void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-  public slots:
+  private slots:
     void commitAndCloseEditor();
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
@@ -247,14 +258,19 @@ class GUI_EXPORT QgsLayoutColumnSourceDelegate : public QItemDelegate, private Q
     QgsExpressionContext createExpressionContext() const override;
 };
 
-// QgsLayoutColumnWidthDelegate
-
-//! A delegate for showing column width as a spin box
+/**
+ * \ingroup gui
+ * A delegate for showing column width as a spin box
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutColumnWidthDelegate : public QItemDelegate
 {
     Q_OBJECT
 
   public:
+    //! constructor
     explicit QgsLayoutColumnWidthDelegate( QObject *parent = nullptr );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
@@ -263,15 +279,19 @@ class GUI_EXPORT QgsLayoutColumnWidthDelegate : public QItemDelegate
 
 };
 
-
-// QgsLayoutColumnSortOrderDelegate
-
-//! A delegate for showing column sort order as a combo box
+/**
+ * \ingroup gui
+ * A delegate for showing column sort order as a combo box
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutColumnSortOrderDelegate : public QItemDelegate
 {
     Q_OBJECT
 
   public:
+    //! constructor
     explicit QgsLayoutColumnSortOrderDelegate( QObject *parent = nullptr );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
@@ -281,13 +301,18 @@ class GUI_EXPORT QgsLayoutColumnSortOrderDelegate : public QItemDelegate
 };
 
 
-// QgsLayoutAttributeSelectionDialog
-
-//! A dialog to select what attributes to display (in the table item), set the column properties and specify a sort order
+/**
+ * \ingroup gui
+ * A dialog to select what attributes to display (in the table item), set the column properties and specify a sort order
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutAttributeSelectionDialog: public QDialog, private Ui::QgsLayoutAttributeSelectionDialogBase
 {
     Q_OBJECT
   public:
+    //! constructor
     QgsLayoutAttributeSelectionDialog( QgsLayoutItemAttributeTable *table, QgsVectorLayer *vLayer, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
   private slots:

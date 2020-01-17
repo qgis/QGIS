@@ -29,7 +29,11 @@
 #include "qgslayoutmeasurementconverter.h"
 
 /**
+ * \ingroup gui
  * A dialog for configuring properties of new pages to be added to a layout
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
  */
 class GUI_EXPORT QgsLayoutAddPagesDialog : public QDialog, private Ui::QgsLayoutNewPageDialog
 {
@@ -37,6 +41,7 @@ class GUI_EXPORT QgsLayoutAddPagesDialog : public QDialog, private Ui::QgsLayout
 
   public:
 
+    //! Page insertion positions
     enum PagePosition
     {
       BeforePage,

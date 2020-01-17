@@ -29,23 +29,27 @@
 class QgsLayoutItemScaleBar;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * A widget to define the properties of a QgsLayoutItemScaleBar.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
  */
 class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutScaleBarWidgetBase
 {
     Q_OBJECT
 
   public:
+    //! constructor
     explicit QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBar );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
     QgsExpressionContext createExpressionContext() const override;
-  protected:
 
+  protected:
     bool setNewItem( QgsLayoutItem *item ) override;
 
-  public slots:
+  private slots:
 
     void mHeightSpinBox_valueChanged( double d );
     void mLineWidthSpinBox_valueChanged( double d );

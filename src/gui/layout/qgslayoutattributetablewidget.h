@@ -28,10 +28,18 @@
 class QgsLayoutItemAttributeTable;
 class QgsLayoutFrame;
 
+/**
+ * \ingroup gui
+ * A widget for configuring layout attribute table items.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutAttributeTableWidgetBase
 {
     Q_OBJECT
   public:
+    //! constructor
     QgsLayoutAttributeTableWidget( QgsLayoutFrame *frame );
 
     void setReportTypeString( const QString &string ) override;

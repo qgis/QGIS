@@ -33,7 +33,11 @@ class QgsLayoutItem;
 class QgsLayoutItemPage;
 
 /**
+ * \ingroup gui
  * A widget for configuring properties of pages in a layout
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
  */
 class GUI_EXPORT QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPagePropertiesWidget
 {

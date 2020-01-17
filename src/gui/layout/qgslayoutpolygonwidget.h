@@ -26,12 +26,17 @@
 #include "qgslayoutitempolygon.h"
 
 /**
+ * \ingroup gui
  * Input widget for QgsLayoutItemPolygon
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
  */
 class GUI_EXPORT QgsLayoutPolygonWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPolygonWidgetBase
 {
     Q_OBJECT
   public:
+    //! constructor
     explicit QgsLayoutPolygonWidget( QgsLayoutItemPolygon *polygon );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 

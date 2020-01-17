@@ -27,12 +27,21 @@
 class QgsLayout;
 class QgsMasterLayoutInterface;
 
+/**
+ * \ingroup gui
+ * Widget for configuring the properties of a layout.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWidgetBase
 {
     Q_OBJECT
   public:
+    //! constructor
     QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout *layout );
 
+    //! Sets the master layout
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout );
 
   public slots:

@@ -29,28 +29,43 @@
 #include <QItemDelegate>
 
 /**
- * \ingroup app
+ * \ingroup gui
  * A widget for setting properties relating to a layout legend.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
  */
 class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutLegendWidgetBase
 {
     Q_OBJECT
 
   public:
+    //! constructor
     explicit QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMapCanvas *mapCanvas );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
     //! Updates the legend layers and groups
     void updateLegend();
 
+    //! Returns the legend item associated to this widget
     QgsLayoutItemLegend *legend() { return mLegend; }
     void setReportTypeString( const QString &string ) override;
+
+  public slots:
+    //! Reset a layer node to the default settings
+    void resetLayerNodeToDefaults();
+
+    /**
+     * Sets the current node style from the data of the action which invokes this slot
+     * \see QgsLayoutLegendMenuProvider::createContextMenu
+     */
+    void setCurrentNodeStyleFromAction();
 
   protected:
 
     bool setNewItem( QgsLayoutItem *item ) override;
 
-  public slots:
+  private slots:
 
     void mWrapCharLineEdit_textChanged( const QString &text );
     void mTitleLineEdit_textChanged( const QString &text );
@@ -87,7 +102,6 @@ class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private 
     void mCountToolButton_clicked( bool checked );
     void mExpressionFilterButton_toggled( bool checked );
     void mFilterByMapCheckBox_toggled( bool checked );
-    void resetLayerNodeToDefaults();
     void mUpdateAllPushButton_clicked();
     void mAddGroupToolButton_clicked();
     void mLayerExpressionButton_clicked();
@@ -95,8 +109,6 @@ class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private 
     void mFilterLegendByAtlasCheckBox_toggled( bool checked );
 
     void selectedChanged( const QModelIndex &current, const QModelIndex &previous );
-
-    void setCurrentNodeStyleFromAction();
 
     void setLegendMapViewData();
 
@@ -131,11 +143,18 @@ class GUI_EXPORT QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private 
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 };
 
-
+/**
+ * \ingroup gui
+ * Layout legend menu provider
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutLegendMenuProvider : public QgsLayerTreeViewMenuProvider
 {
 
   public:
+    //! constructor
     QgsLayoutLegendMenuProvider( QgsLayerTreeView *view, QgsLayoutLegendWidget *w );
 
     QMenu *createContextMenu() override;

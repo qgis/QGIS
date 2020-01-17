@@ -30,10 +30,18 @@ class QgsLayoutView;
 class QgsLayout;
 class QgsLayoutGuideProxyModel;
 
+/**
+ * \ingroup gui
+ * Widget for managing the layout guides
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutGuideWidget: public QgsPanelWidget, private Ui::QgsLayoutGuideWidgetBase
 {
     Q_OBJECT
   public:
+    //! constructor
     QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, QgsLayoutView *layoutView );
 
   public slots:
@@ -66,13 +74,20 @@ class GUI_EXPORT QgsLayoutGuideWidget: public QgsPanelWidget, private Ui::QgsLay
 
 };
 
-
+/**
+ * \ingroup gui
+ * View delegate displaying a QgsDoubleSpinBox for the layout guide position
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutGuidePositionDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
   public:
 
+    //! constructor
     QgsLayoutGuidePositionDelegate( QObject *parent );
 
   protected:
@@ -81,12 +96,20 @@ class GUI_EXPORT QgsLayoutGuidePositionDelegate : public QStyledItemDelegate
 
 };
 
+/**
+ * \ingroup gui
+ * View delegate displaying a QgsLayoutUnitsComboBox for the layout guide unit
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutGuideUnitDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
   public:
 
+    //! constructor
     QgsLayoutGuideUnitDelegate( QObject *parent );
 
   protected:

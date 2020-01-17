@@ -24,7 +24,11 @@
 class QgsMapCanvas;
 
 /**
+ * \ingroup gui
  * Utils for layout handling from app.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
  */
 class GUI_EXPORT QgsLayoutGuiUtils
 {

@@ -27,17 +27,21 @@
 #include "qgslayoutitemmapgrid.h"
 
 /**
- * \ingroup app
- * Input widget for the configuration of QgsLayoutItemMapGrids
- * */
+ * \ingroup gui
+ * A widget for configuring layout map grid items.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapGridWidgetBase
 {
     Q_OBJECT
 
   public:
+    //! constructor
     explicit QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, QgsLayoutItemMap *map );
 
-  public slots:
+  private slots:
 
     void setGridItems();
     void mIntervalXSpinBox_editingFinished();

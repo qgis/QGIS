@@ -27,13 +27,17 @@
 #include "qgslayoutitemshape.h"
 
 /**
- * \ingroup app
- * Input widget for the configuration of QgsLayoutItemShape
-*/
+ * \ingroup gui
+ * A widget for configuring layout shape items.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutShapeWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutShapeWidgetBase
 {
     Q_OBJECT
   public:
+    //! constructor
     explicit QgsLayoutShapeWidget( QgsLayoutItemShape *shape );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 

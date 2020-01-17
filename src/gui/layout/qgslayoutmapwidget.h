@@ -34,21 +34,25 @@ class QgsLayoutMapLabelingWidget;
 class QgsBookmarkManagerProxyModel;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * Input widget for the configuration of QgsLayoutItemMap
-*/
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapWidgetBase
 {
     Q_OBJECT
 
   public:
+    //! constructor
     explicit QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *mapCanvas );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
     void setReportTypeString( const QString &string ) override;
     void setDesignerInterface( QgsLayoutDesignerInterface *iface ) override;
 
-  public slots:
+  private slots:
     void mScaleLineEdit_editingFinished();
     void setToMapCanvasExtent();
     void setToMapCanvasScale();
@@ -176,13 +180,19 @@ class GUI_EXPORT QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui:
 
 };
 
-
+/**
+ * \ingroup gui
+ * Model for label blocking items
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutMapItemBlocksLabelsModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
   public:
-
+    //! constructor
     explicit QgsLayoutMapItemBlocksLabelsModel( QgsLayoutItemMap *map, QgsLayoutModel *layoutModel, QObject *parent = nullptr );
 
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -201,14 +211,18 @@ class GUI_EXPORT QgsLayoutMapItemBlocksLabelsModel : public QSortFilterProxyMode
 };
 
 /**
- * \ingroup app
+ * \ingroup gui
  * Allows configuration of layout map labeling settings.
- * */
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutMapLabelingWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapLabelingWidgetBase
 {
     Q_OBJECT
 
   public:
+    //! constructor
     explicit QgsLayoutMapLabelingWidget( QgsLayoutItemMap *map );
 
   protected:

@@ -25,14 +25,18 @@ class QgsMapLayer;
 class QgsMapLayerProxyModel;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * A dialog to add new layers to the legend.
- * */
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsLayoutLegendLayersDialog: public QDialog, private Ui::QgsLayoutLegendLayersDialogBase
 {
     Q_OBJECT
 
   public:
+    //! constructor
     QgsLayoutLegendLayersDialog( QWidget *parent = nullptr );
 
     /**
@@ -40,6 +44,7 @@ class GUI_EXPORT QgsLayoutLegendLayersDialog: public QDialog, private Ui::QgsLay
      */
     void setVisibleLayers( const QList<QgsMapLayer *> &layers );
 
+    //! Returns the list of selected layers
     QList< QgsMapLayer * > selectedLayers() const;
 
   private slots:

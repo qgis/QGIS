@@ -26,12 +26,17 @@
 #include "qgslayoutitempolyline.h"
 
 /**
+ * \ingroup gui
  * Input widget for QgsLayoutItemPolyline
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
  */
 class GUI_EXPORT QgsLayoutPolylineWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPolylineWidgetBase
 {
     Q_OBJECT
   public:
+    //! constructor
     explicit QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polyline );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 

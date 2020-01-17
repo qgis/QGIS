@@ -28,11 +28,19 @@ class QgsMapCanvas;
 class QgsProject;
 
 
+/**
+ * \ingroup gui
+ * Layer tree model for Geo-PDF layers
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
 class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
 {
     Q_OBJECT
 
   public:
+    //! constructor
     QgsGeoPdfLayerTreeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
 
     int columnCount( const QModelIndex &parent ) const override;
