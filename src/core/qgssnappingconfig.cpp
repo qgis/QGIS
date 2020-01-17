@@ -25,7 +25,7 @@
 #include "qgsapplication.h"
 
 
-QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, QgsSnappingConfig::SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units )
+QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units )
   : mValid( true )
   , mEnabled( enabled )
   , mType( type )
@@ -33,7 +33,7 @@ QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enable
   , mUnits( units )
 {}
 
-QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, QgsSnappingConfig::SnappingType type, double tolerance, QgsTolerance::UnitType units )
+QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units )
   : mValid( true )
   , mEnabled( enabled )
   , mTolerance( tolerance )

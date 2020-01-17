@@ -53,12 +53,15 @@ class CORE_EXPORT QgsSnappingConfig
      * SnappingType defines on what object the snapping is performed
      * \deprecated since QGIS 3.12 use SnappingTypeFlag instead.
      */
-    enum Q_DECL_DEPRECATED SnappingType
+    enum SnappingType
     {
       Vertex = 1, //!< On vertices only
       VertexAndSegment = 2, //!< Both on vertices and segments
       Segment = 3, //!< On segments only
     };
+    // TODO QGIS 4: remove
+    // this could not be tagged with Q_DECL_DEPRECATED due to Doxygen warning
+    // might be fixed in newer Doxygen (does not on 1.8.15, might be ok on 1.8.16)
 
     /**
      * SnappingTypeFlag defines on what object the snapping is performed
