@@ -1994,6 +1994,13 @@ bool QgsProject::writeProjectFile( const QString &filename )
     QString newSaveUserFull = QgsApplication::userFullName();
     qgisNode.setAttribute( QStringLiteral( "saveUser" ), newSaveUser );
     qgisNode.setAttribute( QStringLiteral( "saveUserFull" ), newSaveUserFull );
+    mSaveUser = newSaveUser;
+    mSaveUserFull = newSaveUserFull;
+  }
+  else
+  {
+    mSaveUser.clear();
+    mSaveUserFull.clear();
   }
   doc->appendChild( qgisNode );
 
@@ -2234,8 +2241,6 @@ bool QgsProject::writeProjectFile( const QString &filename )
   setDirty( false );               // reset to pristine state
 
   emit projectSaved();
-  mSaveUser = newSaveUser;
-  mSaveUserFull = newSaveUserFull;
   return true;
 }
 

@@ -47,6 +47,7 @@ class TestQgsProject : public QObject
     void testReadFlags();
     void testSetGetCrs();
     void testEmbeddedLayerGroupFromQgz();
+    void projectSaveUser();
 };
 
 void TestQgsProject::init()
@@ -69,6 +70,7 @@ void TestQgsProject::initTestCase()
 
   QgsApplication::init();
   QgsApplication::initQgis();
+  QgsSettings().clear();
 }
 
 
@@ -483,6 +485,36 @@ void TestQgsProject::testEmbeddedLayerGroupFromQgz()
 
   QCOMPARE( p1.layerIsEmbedded( points->id() ), path );
   QCOMPARE( p1.layerIsEmbedded( polys->id() ), path );
+}
+
+void TestQgsProject::projectSaveUser()
+{
+  QgsProject p;
+  QVERIFY( p.saveUser().isEmpty() );
+  QVERIFY( p.saveUserFullname().isEmpty() );
+
+  QTemporaryFile f;
+  QVERIFY( f.open() );
+  f.close();
+  p.setFileName( f.fileName() );
+  p.write();
+
+  QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );
+  QCOMPARE( p.saveUserFullname(), QgsApplication::userFullName() );
+
+  QgsSettings s;
+  s.setValue( QStringLiteral( "projects/anonymize_saved_projects" ), true, QgsSettings::Core );
+
+  p.write();
+
+  QVERIFY( p.saveUser().isEmpty() );
+  QVERIFY( p.saveUserFullname().isEmpty() );
+
+  s.setValue( QStringLiteral( "projects/anonymize_saved_projects" ), false, QgsSettings::Core );
+
+  p.write();
+  QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );
+  QCOMPARE( p.saveUserFullname(), QgsApplication::userFullName() );
 }
 
 void TestQgsProject::testSetGetCrs()
