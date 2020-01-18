@@ -226,6 +226,11 @@ class TestQgsLocator(unittest.TestCase):
             QCoreApplication.processEvents()
         self.assertEqual(got_hit._results_, [])
         got_hit._results_ = []
+        l.fetchResults('AaA a', context)
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+        self.assertEqual(set(got_hit._results_), {'a0', 'a1', 'a2'})
 
         # test with two filters
         filter_b = test_filter('b', 'bbb')
@@ -274,6 +279,13 @@ class TestQgsLocator(unittest.TestCase):
         self.assertEqual(filter_c.activePrefix(), 'xyz')
         got_hit._results_ = []
         l.fetchResults('b', context)
+        for i in range(100):
+            sleep(0.002)
+            QCoreApplication.processEvents()
+        self.assertEqual(set(got_hit._results_), {'custom0', 'custom1', 'custom2'})
+        filter_c.setUseWithoutPrefix(False)
+        got_hit._results_ = []
+        l.fetchResults('XyZ b', context)
         for i in range(100):
             sleep(0.002)
             QCoreApplication.processEvents()
