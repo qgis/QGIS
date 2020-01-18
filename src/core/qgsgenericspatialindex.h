@@ -41,7 +41,7 @@ class QgsRectangle;
  * \since QGIS 3.12
  */
 template <typename T>
-class CORE_EXPORT QgsGenericSpatialIndex
+class QgsGenericSpatialIndex
 {
   public:
 
