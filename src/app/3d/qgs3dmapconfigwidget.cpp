@@ -81,7 +81,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
     QgsMeshTerrainGenerator *meshTerrain = static_cast<QgsMeshTerrainGenerator *>( terrainGen );
     cboTerrainLayer->setFilters( QgsMapLayerProxyModel::MeshLayer );
     cboTerrainLayer->setLayer( meshTerrain->meshLayer() );
-    mMeshSymbolWidget->setLayer( meshTerrain->meshLayer() );
+    mMeshSymbolWidget->setLayer( meshTerrain->meshLayer(), false );
     mMeshSymbolWidget->setSymbol( meshTerrain->symbol() );
     spinTerrainScale->setValue( meshTerrain->symbol().verticaleScale() );
   }
@@ -277,12 +277,11 @@ void Qgs3DMapConfigWidget::onTerrainLayerChanged()
     QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( cboTerrainLayer->currentLayer() );
     if ( meshLayer )
     {
+      QgsMeshLayer *oldLayer = mMeshSymbolWidget->meshLayer();
 
       mMeshSymbolWidget->setLayer( meshLayer, false );
-      if ( mMeshSymbolWidget->symbol().colorRampShader().colorRampItemList().count() == 0 )
-      {
+      if ( oldLayer != meshLayer )
         mMeshSymbolWidget->reloadColorRampShaderMinMax();
-      }
     }
   }
 }

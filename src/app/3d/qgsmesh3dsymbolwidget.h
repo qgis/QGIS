@@ -34,6 +34,7 @@ class QgsMesh3dSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
     QgsMesh3DSymbol symbol() const;
 
     void setLayer( QgsMeshLayer *meshLayer, bool updateSymbol = true );
+    QgsMeshLayer *meshLayer() const;
     void setSymbol( const QgsMesh3DSymbol &symbol );
 
     void enableVerticalSetting( bool isEnable );

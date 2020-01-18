@@ -63,6 +63,8 @@ void QgsMesh3dSymbolWidget::setSymbol( const QgsMesh3DSymbol &symbol )
   mComboBoxTextureType->setCurrentIndex( symbol.renderingStyle() );
   mMeshSingleColorButton->setColor( symbol.singleMeshColor() );
   mColorRampShaderWidget->setFromShader( symbol.colorRampShader() );
+  mColorRampShaderWidget->setMinimumMaximumAndClassify( symbol.colorRampShader().minimumValue(),
+      symbol.colorRampShader().maximumValue() );
 
   setColorRampMinMax( symbol.colorRampShader().minimumValue(), symbol.colorRampShader().maximumValue() );
 }
@@ -89,6 +91,8 @@ void QgsMesh3dSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
   setSymbol( QgsMesh3DSymbol() );
   reloadColorRampShaderMinMax(); //As the symbol is new, the Color ramp shader needs to be initialized with min max value
 }
+
+QgsMeshLayer *QgsMesh3dSymbolWidget::meshLayer() const {return mLayer;}
 
 double QgsMesh3dSymbolWidget::lineEditValue( const QLineEdit *lineEdit ) const
 {
