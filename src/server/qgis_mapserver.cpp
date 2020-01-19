@@ -102,12 +102,37 @@ int main( int argc, char *argv[] )
 #endif
 
   QTcpServer tcpServer;
-  QString ipAddress;
 
   // The port to listen
-  const QString serverPort { getenv( "QGIS_SERVER_PORT" ) };
+  QString serverPort { getenv( "QGIS_SERVER_PORT" ) };
+  // The address to listen
+  QString ipAddress { getenv( "QGIS_SERVER_ADDRESS" ) };
 
-  if ( !tcpServer.listen( QHostAddress::Any, serverPort.isEmpty() ? 8000 : serverPort.toInt( ) ) )
+  if ( serverPort.isEmpty() )
+  {
+    serverPort = QStringLiteral( "8000" );
+  }
+
+  if ( ipAddress.isEmpty() )
+  {
+    ipAddress = QStringLiteral( "localhost" );
+  }
+
+  // Override from command line
+  if ( argc == 2 )
+  {
+    QStringList addressAndPort { QString( argv[1] ).split( ':' ) };
+    if ( addressAndPort.size() == 2 )
+    {
+      ipAddress = addressAndPort.at( 0 );
+      serverPort = addressAndPort.at( 1 );
+    }
+  }
+
+  QHostAddress address { QHostAddress::AnyIPv4 };
+  address.setAddress( ipAddress );
+
+  if ( ! tcpServer.listen( address, serverPort.toInt( ) ) )
   {
     QgsMessageLog::logMessage( QObject::tr( "Unable to start the server: %1." )
                                .arg( tcpServer.errorString() ) );
@@ -115,20 +140,6 @@ int main( int argc, char *argv[] )
   }
   else
   {
-    QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
-    // use the first non-localhost IPv4 address
-    for ( int i = 0; i < ipAddressesList.size(); ++i )
-    {
-      if ( ipAddressesList.at( i ) != QHostAddress::LocalHost &&
-           ipAddressesList.at( i ).toIPv4Address() )
-      {
-        ipAddress = ipAddressesList.at( i ).toString();
-        break;
-      }
-    }
-    // if we did not find one, use IPv4 localhost
-    if ( ipAddress.isEmpty() )
-      ipAddress = QHostAddress( QHostAddress::LocalHost ).toString();
 
     const int port { tcpServer.serverPort() };
     QgsMessageLog::logMessage( QObject::tr( "QGIS Development Server listening on http://%1:%2" )
@@ -167,11 +178,12 @@ int main( int argc, char *argv[] )
                                  clientConnection, &QObject::deleteLater );
 
       // Incoming connection parser
-      clientConnection->connect( clientConnection, &QIODevice::readyRead, [ & ] {
+      clientConnection->connect( clientConnection, &QIODevice::readyRead, [ =, &server ] {
+
+        const QString incomingData { clientConnection->readAll() };
 
         try
         {
-          const QString incomingData { clientConnection->readAll() };
 
           // Parse protocol and URL GET /path HTTP/1.1
           int firstLinePos { incomingData.indexOf( "\r\n" ) };
@@ -229,7 +241,7 @@ int main( int argc, char *argv[] )
           }
 
           const QString protocol { firstLinePieces.at( 2 )};
-          if ( protocol != QStringLiteral( "HTTP/1.0" ) )
+          if ( protocol != QStringLiteral( "HTTP/1.0" ) && protocol != QStringLiteral( "HTTP/1.1" ) )
           {
             throw HttpException( QStringLiteral( "HTTP error unsupported protocol: %1" ).arg( protocol ) );
           }
@@ -271,20 +283,20 @@ int main( int argc, char *argv[] )
             throw HttpException( QStringLiteral( "HTTP error unsupported status code: %1" ).arg( response.statusCode() ) );
           }
 
+          // Output stream
+          clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( response.statusCode() ).arg( knownStatuses.value( response.statusCode() ) ).toUtf8() );
+          clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
           const auto responseHeaders { response.headers() };
           for ( auto it = responseHeaders.constBegin(); it != responseHeaders.constEnd(); ++it )
           {
             clientConnection->write( QStringLiteral( "%1: %2\r\n" ).arg( it.key(), it.value() ).toUtf8() );
           }
-          // Output stream
-          clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( response.statusCode() ).arg( knownStatuses.value( response.statusCode() ) ).toUtf8() );
-          clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
           clientConnection->write( "\r\n" );
           const QByteArray body { response.body() };
           clientConnection->write( body );
 
           // 10.185.248.71 [09/Jan/2015:19:12:06 +0000] 808840 <time> "GET / HTTP/1.1" 500"
-          QgsMessageLog::logMessage( QStringLiteral( "%1 [%2] %3 %4 \"%5\" %6" )
+          QgsMessageLog::logMessage( QStringLiteral( "%1 [%2] %3 %4ms \"%5\" %6" )
                                      .arg( clientConnection->peerAddress().toString() )
                                      .arg( QDateTime::currentDateTime().toString() )
                                      .arg( body.size() )
