@@ -59,10 +59,6 @@ void QgsMesh3dEntity::buildGeometry()
                      mesh ) );
 
   addComponent( mesh );
-
-  Qt3DCore::QTransform *tform = new Qt3DCore::QTransform;
-  tform->setTranslation( QVector3D( 0, 0, 0 ) ) ;
-  addComponent( tform );
 }
 
 void QgsMesh3dEntity::applyMaterial()
@@ -96,10 +92,6 @@ void QgsMesh3dTerrainTileEntity::buildGeometry()
 
   mesh->setGeometry( new QgsMesh3dGeometry( mTriangularMesh, mMapSettings.origin(), mExtent, mSymbol.verticaleScale(), mesh ) );
   addComponent( mesh );
-
-  Qt3DCore::QTransform *tform = new Qt3DCore::QTransform;
-  tform->setTranslation( QVector3D( 0, 0, 0 ) );
-  addComponent( tform );
 }
 
 void QgsMesh3dTerrainTileEntity::applyMaterial()
