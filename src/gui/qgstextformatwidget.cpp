@@ -527,13 +527,18 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
     case Text:
       toggleDDButtons( true );
       delete mLabelingOptionsListWidget->takeItem( 8 ); // rendering
-      delete mLabelingOptionsListWidget->takeItem( 7 ); // placement
-      delete mLabelingOptionsListWidget->takeItem( 6 ); // callouts
-      delete mLabelingOptionsListWidget->takeItem( 3 ); // mask
+      delete mLabelingOptionsListWidget->takeItem( 7 ); // callouts
+      delete mLabelingOptionsListWidget->takeItem( 4 ); // mask
+      delete mLabelingOptionsListWidget->takeItem( 1 ); // placement
       mOptionsTab->removeTab( 8 );
       mOptionsTab->removeTab( 7 );
-      mOptionsTab->removeTab( 6 );
-      mOptionsTab->removeTab( 5 );
+      mOptionsTab->removeTab( 4 );
+      mOptionsTab->removeTab( 1 );
+      mLabelStackedWidget->removeWidget( mLabelPage_Rendering );
+      mLabelStackedWidget->removeWidget( mLabelPage_Callouts );
+      mLabelStackedWidget->removeWidget( mLabelPage_Mask );
+      mLabelStackedWidget->removeWidget( mLabelPage_Placement );
+      mLabelStackedWidget->setCurrentIndex( 0 );
 
       frameLabelWith->hide();
       mDirectSymbolsFrame->hide();
