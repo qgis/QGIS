@@ -79,7 +79,7 @@
      <item>
       <widget class="QCheckBox" name="mEnabledCheckBox">
        <property name="text">
-        <string>Enable layer</string>
+        <string>Enable symbol layer</string>
        </property>
       </widget>
      </item>
