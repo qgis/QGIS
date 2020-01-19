@@ -1560,7 +1560,7 @@ void QgsLayoutDesignerDialog::itemTypeAdded( int id )
 
   // update UI for new item type
   QAction *action = new QAction( tr( "Add %1" ).arg( name ), this );
-  action->setToolTip( tr( "Adds a new %1 to the layout" ).arg( name ) );
+  action->setToolTip( tr( "Add %1" ).arg( name ) );
   action->setCheckable( true );
   action->setData( id );
   action->setIcon( QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->creationIcon() );
