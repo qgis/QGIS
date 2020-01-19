@@ -2374,6 +2374,6 @@ void QgsStyleManagerDialog::onClose()
 
 void QgsStyleManagerDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#the-style-manager" ) );
+  QgsHelp::openHelp( QStringLiteral( "style_library/style_manager.html" ) );
 }
 
