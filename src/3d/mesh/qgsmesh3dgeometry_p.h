@@ -22,6 +22,8 @@
 #include <Qt3DRender/qgeometry.h>
 #include <QVector3D>
 
+#include <qgsvector3d.h>
+
 #include "qgstriangularmesh.h"
 
 ///@cond PRIVATE
@@ -51,12 +53,13 @@ class QgsMesh3dGeometry: public  Qt3DRender::QGeometry
   public:
 
     //! Constructs a mesh layer geometry from triangular mesh.
-    explicit QgsMesh3dGeometry( const QgsTriangularMesh &mesh, const QgsRectangle &extent, float verticaleScale, QNode *parent );
+    explicit QgsMesh3dGeometry( const QgsTriangularMesh &mesh, const QgsVector3D &origin, const QgsRectangle &extent, float verticaleScale, QNode *parent );
 
   private:
     void init();
 
     QgsTriangularMesh mTriangularMesh;
+    QgsVector3D mOrigin;
     QgsRectangle mExtent;
     float mVertScale;
 
@@ -66,9 +69,7 @@ class QgsMesh3dGeometry: public  Qt3DRender::QGeometry
     Qt3DRender::QAttribute *mIndexAttribute = nullptr;
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
     Qt3DRender::QBuffer *mIndexBuffer = nullptr;
-
 };
-
 
 ///@endcond
 

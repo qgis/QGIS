@@ -26,7 +26,10 @@
 
 using namespace Qt3DRender;
 
-static QByteArray createPlaneVertexData( const QgsTriangularMesh &mesh, const QgsRectangle &extent, float vertScale )
+static QByteArray createPlaneVertexData( const QgsTriangularMesh &mesh,
+    const QgsVector3D &origin,
+    const QgsRectangle &extent,
+    float vertScale )
 {
   const int nVerts = mesh.vertices().count();
 
@@ -49,9 +52,9 @@ static QByteArray createPlaneVertexData( const QgsTriangularMesh &mesh, const Qg
   for ( int i = 0; i < nVerts; i++ )
   {
     const QgsMeshVertex &vert = mesh.vertices().at( i );
-    *fptr++ = float( vert.x() );
-    *fptr++ = float( vert.z() ) * vertScale ;
-    *fptr++ = float( -vert.y() );
+    *fptr++ = float( vert.x() - origin.x() );
+    *fptr++ = float( vert.z() - origin.z() ) * vertScale ;
+    *fptr++ = float( -vert.y() + origin.y() );
 
     *fptr++ = float( ( vert.x() - x0 ) / w );
     *fptr++ = float( ( y0 - vert.y() ) / h );
@@ -144,8 +147,12 @@ static QByteArray createPlaneIndexData( const QgsTriangularMesh &mesh )
 class MeshPlaneVertexBufferFunctor : public QBufferDataGenerator
 {
   public:
-    explicit MeshPlaneVertexBufferFunctor( const QgsTriangularMesh &mesh,  const QgsRectangle &extent, float vertScale )
+    explicit MeshPlaneVertexBufferFunctor( const QgsTriangularMesh &mesh,
+                                           const QgsVector3D &origin,
+                                           const QgsRectangle &extent,
+                                           float vertScale )
       : mMesh( mesh ),
+        mOrigin( origin ),
         mExtent( extent ),
         mVertScale( vertScale )
 
@@ -153,7 +160,7 @@ class MeshPlaneVertexBufferFunctor : public QBufferDataGenerator
 
     QByteArray operator()() final
     {
-      return createPlaneVertexData( mMesh, mExtent, mVertScale );
+      return createPlaneVertexData( mMesh, mOrigin, mExtent, mVertScale );
     }
 
     bool operator ==( const QBufferDataGenerator &other ) const final
@@ -171,6 +178,7 @@ class MeshPlaneVertexBufferFunctor : public QBufferDataGenerator
   private:
 
     QgsTriangularMesh mMesh;
+    QgsVector3D mOrigin;
     QgsRectangle mExtent;
     float mVertScale;
 
@@ -253,11 +261,13 @@ class MeshPlaneVertexDatasetBufferFunctor : public QBufferDataGenerator
 
 QgsMesh3dGeometry::QgsMesh3dGeometry(
   const QgsTriangularMesh &mesh,
+  const QgsVector3D &origin,
   const QgsRectangle &extent,
   float verticaleScale,
   QgsMesh3dGeometry::QNode *parent ):
   QGeometry( parent ),
   mTriangularMesh( mesh ),
+  mOrigin( origin ),
   mExtent( extent ),
   mVertScale( verticaleScale )
 {
@@ -313,7 +323,7 @@ void QgsMesh3dGeometry::init()
   // Each primitive has 3 vertives
   mIndexAttribute->setCount( uint( mTriangularMesh.triangles().count() ) * 3 );
 
-  mVertexBuffer->setData( MeshPlaneVertexBufferFunctor( mTriangularMesh, mExtent, mVertScale )() );
+  mVertexBuffer->setData( MeshPlaneVertexBufferFunctor( mTriangularMesh, mOrigin, mExtent, mVertScale )() );
   mIndexBuffer->setData( MeshPlaneIndexBufferFunctor( mTriangularMesh )() );
 
   addAttribute( mPositionAttribute );
