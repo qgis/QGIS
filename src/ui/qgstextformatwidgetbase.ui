@@ -4382,8 +4382,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>830</width>
-                       <height>303</height>
+                       <width>284</width>
+                       <height>212</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_121">
@@ -4640,7 +4640,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>816</width>
+                       <width>437</width>
                        <height>696</height>
                       </rect>
                      </property>
@@ -5401,7 +5401,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>816</width>
+                       <width>295</width>
                        <height>406</height>
                       </rect>
                      </property>
@@ -5862,47 +5862,6 @@ font-style: italic;</string>
                           </property>
                          </widget>
                         </item>
-                        <item row="2" column="0" colspan="3">
-                         <layout class="QGridLayout" name="gridLayout_45" columnstretch="0,0,0">
-                          <property name="leftMargin">
-                           <number>20</number>
-                          </property>
-                          <property name="topMargin">
-                           <number>0</number>
-                          </property>
-                          <item row="0" column="1" colspan="2">
-                           <widget class="QComboBox" name="mCalloutStyleComboBox"/>
-                          </item>
-                          <item row="0" column="0">
-                           <widget class="QLabel" name="label_11">
-                            <property name="text">
-                             <string>Style</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item row="1" column="0" colspan="3">
-                           <widget class="QStackedWidget" name="mCalloutStackedWidget">
-                            <widget class="QWidget" name="pageDummy">
-                             <layout class="QVBoxLayout" name="verticalLayout_19">
-                              <item>
-                               <widget class="QLabel" name="label_45">
-                                <property name="text">
-                                 <string>This callout type doesn't have any editable properties</string>
-                                </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
-                                </property>
-                                <property name="wordWrap">
-                                 <bool>true</bool>
-                                </property>
-                               </widget>
-                              </item>
-                             </layout>
-                            </widget>
-                           </widget>
-                          </item>
-                         </layout>
-                        </item>
                         <item row="1" column="0">
                          <widget class="QCheckBox" name="mCalloutsDrawCheckBox">
                           <property name="sizePolicy">
@@ -5928,6 +5887,49 @@ font-style: italic;</string>
                            </size>
                           </property>
                          </spacer>
+                        </item>
+                        <item row="2" column="0" colspan="3">
+                         <widget class="QFrame" name="mCalloutFrame">
+                          <layout class="QGridLayout" name="gridLayout_45" columnstretch="0,0,0">
+                           <property name="leftMargin">
+                            <number>20</number>
+                           </property>
+                           <property name="topMargin">
+                            <number>1</number>
+                           </property>
+                           <item row="0" column="1" colspan="2">
+                            <widget class="QComboBox" name="mCalloutStyleComboBox"/>
+                           </item>
+                           <item row="0" column="0">
+                            <widget class="QLabel" name="label_11">
+                             <property name="text">
+                              <string>Style</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="1" column="0" colspan="3">
+                            <widget class="QStackedWidget" name="mCalloutStackedWidget">
+                             <widget class="QWidget" name="pageDummy">
+                              <layout class="QVBoxLayout" name="verticalLayout_19">
+                               <item>
+                                <widget class="QLabel" name="label_45">
+                                 <property name="text">
+                                  <string>This callout type doesn't have any editable properties</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignCenter</set>
+                                 </property>
+                                 <property name="wordWrap">
+                                  <bool>true</bool>
+                                 </property>
+                                </widget>
+                               </item>
+                              </layout>
+                             </widget>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
                         </item>
                        </layout>
                       </item>
