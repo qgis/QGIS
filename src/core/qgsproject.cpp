@@ -478,7 +478,7 @@ QString QgsProject::saveUser() const
   return mSaveUser;
 }
 
-QString QgsProject::saveUserFullname() const
+QString QgsProject::saveUserFullName() const
 {
   return mSaveUserFull;
 }
