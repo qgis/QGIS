@@ -139,5 +139,5 @@ QDialogButtonBox *QgsLimitedRandomColorRampDialog::buttonBox() const
 
 void QgsLimitedRandomColorRampDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#color-ramp" ) );
+  QgsHelp::openHelp( QStringLiteral( "style_library/style_manager.html#setting-a-color-ramp" ) );
 }

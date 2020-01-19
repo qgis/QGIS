@@ -930,5 +930,5 @@ QDialogButtonBox *QgsSymbolSelectorDialog::buttonBox() const
 
 void QgsSymbolSelectorDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#the-symbol-selector" ) );
+  QgsHelp::openHelp( QStringLiteral( "style_library/symbol_selector.html" ) );
 }
