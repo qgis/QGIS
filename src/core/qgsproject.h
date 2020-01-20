@@ -163,7 +163,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
     * Returns the user name that did the last save.
     *
-    * \see saveUserFullname()
+    * \see saveUserFullName()
     *
     * \since QGIS 3.12
     */
