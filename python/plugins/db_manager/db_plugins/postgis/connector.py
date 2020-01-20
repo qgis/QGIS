@@ -26,8 +26,20 @@ from builtins import range
 
 from functools import cmp_to_key
 
-from qgis.PyQt.QtCore import QRegExp, QFile, QCoreApplication
-from qgis.core import Qgis, QgsCredentials, QgsDataSourceUri, QgsCoordinateReferenceSystem
+from qgis.PyQt.QtCore import (
+    QRegExp,
+    QFile,
+    QCoreApplication,
+    QVariant
+)
+from qgis.core import (
+    Qgis,
+    QgsCredentials,
+    QgsVectorLayer,
+    QgsDataSourceUri,
+    QgsProviderRegistry,
+    QgsProviderConnectionException,
+)
 
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
@@ -44,16 +56,140 @@ def classFactory():
     return PostGisDBConnector
 
 
+class CursorAdapter():
+
+    def _debug(self, msg):
+        pass
+        #print("XXX CursorAdapter[" + hex(id(self)) + "]: " + msg)
+
+    def __init__(self, connection, sql=None):
+        self._debug("Created with sql: " + str(sql))
+        self.connection = connection
+        self.sql = sql
+        self.result = None
+        self.cursor = 0
+        self.closed = False
+        if (self.sql != None):
+            self._execute()
+
+    def _toStrResultSet(self, res):
+        newres = []
+        for rec in res:
+            newrec = []
+            for col in rec:
+                if type(col) == type(QVariant(None)):
+                    if (str(col) == 'NULL'):
+                        col = None
+                    else:
+                        col = str(col) # force to string
+                newrec.append(col)
+            newres.append(newrec)
+        return newres
+
+    def _execute(self, sql=None):
+        if self.sql == sql and self.result != None:
+            return
+        if (sql != None):
+            self.sql = sql
+        if (self.sql == None):
+            return
+        self._debug("execute called with sql " + self.sql)
+        try:
+            self.result = self._toStrResultSet(self.connection.executeSql(self.sql))
+        except QgsProviderConnectionException as e:
+            raise DbError(e, self.sql)
+        self._debug("execute returned " + str(len(self.result)) + " rows")
+        self.cursor = 0
+
+        self._description = None # reset description
+
+    @property
+    def description(self):
+
+        if self._description is None:
+
+            uri = QgsDataSourceUri(self.connection.uri())
+
+            # TODO: make this part provider-agnostic
+            uri.setTable('(SELECT row_number() OVER () AS __rid__, * FROM (' + self.sql + ') as foo)')
+            uri.setKeyColumn('__rid__')
+            # TODO: fetch provider name from connection (QgsAbstractConnectionProvider)
+            # TODO: re-use the VectorLayer for fetching rows in batch mode
+            vl = QgsVectorLayer(uri.uri(False), 'dbmanager_cursor', 'postgres')
+
+            fields = vl.fields()
+            self._description = []
+            for i in range(1, len(fields)): # skip first field (__rid__)
+                f = fields[i]
+                self._description.append([
+                    f.name(),                         # name
+                    f.type(),                         # type_code
+                    f.length(),                       # display_size
+                    f.length(),                       # internal_size
+                    f.precision(),                    # precision
+                    None,                             # scale
+                    True                              # null_ok
+                ])
+            self._debug("get_description returned " + str(len(self._description)) + " cols")
+
+        return self._description
+
+    def fetchone(self):
+        self._execute()
+        if len(self.result) - self.cursor:
+            res = self.result[self.cursor]
+            ++self.cursor
+            return res
+        return None
+
+    def fetchmany(self, size):
+        self._execute()
+        if self.result is None:
+            self._debug("fetchmany: none result after _execute (self.sql is " + str(self.sql) + ", returning []")
+            return []
+        leftover = len(self.result) - self.cursor
+        self._debug("fetchmany: cursor: " + str(self.cursor) + " leftover: " + str(leftover) + " requested: " + str(size))
+        if leftover < 1:
+            return []
+        if size > leftover:
+            size = leftover
+        stop = self.cursor + size
+        res = self.result[self.cursor:stop]
+        self.cursor = stop
+        self._debug("fetchmany: new cursor: " + str(self.cursor) + " reslen: " + str(len(self.result)))
+        return res
+
+    def fetchall(self):
+        self._execute()
+        res = self.result[self.cursor:]
+        self.cursor = len(self.result)
+        return res
+
+    def scroll(self, pos, mode='relative'):
+        self._execute()
+        if pos < 0:
+            self._debug("scroll pos is negative: " + str(pos))
+        if mode == 'relative':
+            self.cursor = self.cursor + pos
+        elif mode == 'absolute':
+            self.cursor = pos
+
+    def close(self):
+        self.result = None
+        self.closed = True
+
+
 class PostGisDBConnector(DBConnector):
 
     def __init__(self, uri):
+        """Creates a new PostgreSQL connector
+
+        :param uri: data source URI
+        :type uri: QgsDataSourceUri
+        """
         DBConnector.__init__(self, uri)
 
-        self.host = uri.host() or os.environ.get('PGHOST')
-        self.port = uri.port() or os.environ.get('PGPORT')
-
         username = uri.username() or os.environ.get('PGUSER')
-        password = uri.password() or os.environ.get('PGPASSWORD')
 
         # Do not get db and user names from the env if service is used
         if not uri.service():
@@ -62,42 +198,13 @@ class PostGisDBConnector(DBConnector):
             self.dbname = uri.database() or os.environ.get('PGDATABASE') or username
             uri.setDatabase(self.dbname)
 
-        expandedConnInfo = self._connectionInfo()
-        try:
-            self.connection = psycopg2.connect(expandedConnInfo)
-        except self.connection_error_types() as e:
-            # get credentials if cached or asking to the user no more than 3 times
-            err = str(e)
-            uri = self.uri()
-            conninfo = uri.connectionInfo(False)
+        #self.connName = connName
+        #self.user = uri.username() or os.environ.get('USER')
+        #self.passwd = uri.password()
+        self.host = uri.host()
 
-            for i in range(3):
-                (ok, username, password) = QgsCredentials.instance().get(conninfo, username, password, err)
-                if not ok:
-                    raise ConnectionError(QCoreApplication.translate('db_manager', 'Could not connect to database as user {user}').format(user=username))
-
-                if username:
-                    uri.setUsername(username)
-
-                if password:
-                    uri.setPassword(password)
-
-                newExpandedConnInfo = uri.connectionInfo(True)
-                try:
-                    self.connection = psycopg2.connect(newExpandedConnInfo)
-                    QgsCredentials.instance().put(conninfo, username, password)
-                except self.connection_error_types() as e:
-                    if i == 2:
-                        raise ConnectionError(e)
-                    err = str(e)
-                finally:
-                    # clear certs for each time trying to connect
-                    self._clearSslTempCertsIfAny(newExpandedConnInfo)
-        finally:
-            # clear certs of the first connection try
-            self._clearSslTempCertsIfAny(expandedConnInfo)
-
-        self.connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        self.core_connection = md.createConnection(uri.database())
 
         c = self._execute(None, u"SELECT current_user,current_database()")
         self.user, self.dbname = self._fetchone(c)
@@ -752,19 +859,15 @@ class PostGisDBConnector(DBConnector):
         if new_table == tablename:
             return
 
-        c = self._get_cursor()
-
         sql = u"ALTER TABLE %s RENAME  TO %s" % (self.quoteId(table), self.quoteId(new_table))
-        self._execute(c, sql)
+        self._executeSql(sql)
 
         # update geometry_columns if PostGIS is enabled
         if self.has_geometry_columns and not self.is_geometry_columns_view:
             schema_where = u" AND f_table_schema=%s " % self.quoteString(schema) if schema is not None else ""
             sql = u"UPDATE geometry_columns SET f_table_name=%s WHERE f_table_name=%s %s" % (
                 self.quoteString(new_table), self.quoteString(tablename), schema_where)
-            self._execute(c, sql)
-
-        self._commit()
+            self._executeSql(sql)
 
     def commentTable(self, schema, tablename, comment=None):
         if comment is None:
@@ -1034,33 +1137,26 @@ class PostGisDBConnector(DBConnector):
     def connection_error_types(self):
         return psycopg2.InterfaceError, psycopg2.OperationalError
 
-    # moved into the parent class: DbConnector._execute()
-    # def _execute(self, cursor, sql):
-    #       pass
+    def _execute(self, cursor, sql):
+        if cursor != None:
+            cursor._execute(sql)
+            return cursor
+        return CursorAdapter(self.core_connection, sql)
 
-    # moved into the parent class: DbConnector._execute_and_commit()
-    # def _execute_and_commit(self, sql):
-    #       pass
+    def _executeSql(self, sql):
+        return self.core_connection.executeSql(sql)
 
-    # moved into the parent class: DbConnector._get_cursor()
-    # def _get_cursor(self, name=None):
-    #       pass
+    def _get_cursor(self, name=None):
+        #if name is not None:
+        #   print("XXX _get_cursor called with a Name: " + name)
+        return CursorAdapter(self.core_connection, name)
 
-    # moved into the parent class: DbConnector._fetchall()
-    # def _fetchall(self, c):
-    #       pass
-
-    # moved into the parent class: DbConnector._fetchone()
-    # def _fetchone(self, c):
-    #       pass
-
-    # moved into the parent class: DbConnector._commit()
-    # def _commit(self):
-    #       pass
+    def _commit(self):
+        pass
 
     # moved into the parent class: DbConnector._rollback()
-    # def _rollback(self):
-    #       pass
+    def _rollback(self):
+        pass
 
     # moved into the parent class: DbConnector._get_cursor_columns()
     # def _get_cursor_columns(self, c):

@@ -184,6 +184,9 @@ class PGDatabase(Database):
     def supportsComment(self):
         return True
 
+    def executeSql(self, sql):
+        return self.connector._executeSql(sql)
+
 
 class PGSchema(Schema):
 

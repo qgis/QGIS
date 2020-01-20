@@ -263,6 +263,10 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             {
               vType = QVariant::Bool;
             }
+            else
+            {
+              QgsDebugMsg( QStringLiteral( "Unhandled PostgreSQL type %1" ).arg( typName ) );
+            }
           }
           typeMap[ rowIdx ] = vType;
         }
