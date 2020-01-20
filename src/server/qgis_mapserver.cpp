@@ -43,16 +43,27 @@ on the command line.
 #include <string>
 #include <chrono>
 
+///@cond PRIVATE
+
+/**
+ * The HttpException class represents an HTTP parsing exception.
+ */
 class HttpException: public std::exception
 {
 
   public:
 
+    /**
+     * Constructs an HttpException with the given \a message
+     */
     HttpException( const QString &message )
       : mMessage( message )
     {
     }
 
+    /**
+     * Returns the exception message.
+     */
     QString message( )
     {
       return mMessage;
@@ -357,3 +368,4 @@ int main( int argc, char *argv[] )
   return 0;
 }
 
+/// @endcond
