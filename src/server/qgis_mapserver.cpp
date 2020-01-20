@@ -135,20 +135,19 @@ int main( int argc, char *argv[] )
 
   if ( ! tcpServer.listen( address, serverPort.toInt( ) ) )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Unable to start the server: %1." )
-                               .arg( tcpServer.errorString() ) );
+    std::cerr << QObject::tr( "Unable to start the server: %1." )
+              .arg( tcpServer.errorString() ).toStdString();
     tcpServer.close();
   }
   else
   {
 
     const int port { tcpServer.serverPort() };
-    QgsMessageLog::logMessage( QObject::tr( "QGIS Development Server listening on http://%1:%2" )
-                               .arg( ipAddress ).arg( port ),
-                               QStringLiteral( "QGIS Development Server" ), Qgis::Info );
+    std::cout << QObject::tr( "QGIS Development Server listening on http://%1:%2" )
+              .arg( ipAddress ).arg( port ).toStdString() << std::endl;
 
 #ifndef Q_OS_WIN
-    QgsMessageLog::logMessage( QObject::tr( "CTRL+C to exit" ) );
+    std::cout << QObject::tr( "CTRL+C to exit" ).toStdString() << std::endl;
 #endif
 
     static const QMap<int, QString> knownStatuses
@@ -301,14 +300,13 @@ int main( int argc, char *argv[] )
           clientConnection->write( body );
 
           // 10.185.248.71 [09/Jan/2015:19:12:06 +0000] 808840 <time> "GET / HTTP/1.1" 500"
-          QgsMessageLog::logMessage( QStringLiteral( "%1 [%2] %3 %4ms \"%5\" %6" )
-                                     .arg( clientConnection->peerAddress().toString() )
-                                     .arg( QDateTime::currentDateTime().toString() )
-                                     .arg( body.size() )
-                                     .arg( std::chrono::duration_cast<std::chrono::milliseconds>( elapsedTime ).count() )
-                                     .arg( firstLinePieces.join( ' ' ) )
-                                     .arg( response.statusCode() ),
-                                     QStringLiteral( "QGIS Development Server" ), Qgis::Info );
+          std::cout << QStringLiteral( "%1 [%2] %3 %4ms \"%5\" %6" )
+                    .arg( clientConnection->peerAddress().toString() )
+                    .arg( QDateTime::currentDateTime().toString() )
+                    .arg( body.size() )
+                    .arg( std::chrono::duration_cast<std::chrono::milliseconds>( elapsedTime ).count() )
+                    .arg( firstLinePieces.join( ' ' ) )
+                    .arg( response.statusCode() ).toStdString() << std::endl;
 
         }
         catch ( HttpException &ex )
@@ -319,11 +317,10 @@ int main( int argc, char *argv[] )
           clientConnection->write( "\r\n" );
           clientConnection->write( ex.message().toUtf8() );
 
-          QgsMessageLog::logMessage( QStringLiteral( "%1 [%2] \"%3\" - - 500" )
-                                     .arg( clientConnection->peerAddress().toString() )
-                                     .arg( QDateTime::currentDateTime().toString() )
-                                     .arg( ex.message() ),
-                                     QStringLiteral( "QGIS Development Server" ), Qgis::Info );
+          std::cout << QStringLiteral( "%1 [%2] \"%3\" - - 500" )
+                    .arg( clientConnection->peerAddress().toString() )
+                    .arg( QDateTime::currentDateTime().toString() )
+                    .arg( ex.message() ).toStdString() << std::endl;
 
         }
         clientConnection->disconnectFromHost();
