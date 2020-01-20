@@ -250,7 +250,11 @@ QSet<int> QgsExpression::referencedAttributeIndexes( const QgsFields &fields ) c
       referencedIndexes = fields.allAttributesList().toSet();
       break;
     }
-    referencedIndexes << fields.lookupField( fieldName );
+    const int idx = fields.lookupField( fieldName );
+    if ( idx >= 0 )
+    {
+      referencedIndexes << idx;
+    }
   }
 
   return referencedIndexes;
