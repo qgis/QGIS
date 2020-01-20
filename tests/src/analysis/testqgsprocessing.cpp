@@ -8541,7 +8541,7 @@ void TestQgsProcessing::tempUtils()
   settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ), alternative_tempFolder1 );
   // check folder and if it's constant with alternative temp folder 1
   tempFolder = QgsProcessingUtils::tempFolder();
-  QVERIFY( tempFolder.startsWith( alternative_tempFolder1 ) );
+  QCOMPARE( tempFolder.left( alternative_tempFolder1.length() ), alternative_tempFolder1 );
   QCOMPARE( QgsProcessingUtils::tempFolder(), tempFolder );
   // create file
   QString alternativeTempFile1 = QgsProcessingUtils::generateTempFilename( "alternative_temptest.txt" );
