@@ -35,6 +35,11 @@ void QgsMapToolRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint point = mapPoint( *e );
 
+  if ( !currentVectorLayer() )
+  {
+    notifyNotVectorLayer();
+  }
+
   if ( e->button() == Qt::LeftButton )
   {
     if ( !point.is3D() )
