@@ -34,6 +34,11 @@ void QgsMapToolEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsPoint point = mapPoint( *e );
 
+  if ( !currentVectorLayer() )
+  {
+    notifyNotVectorLayer();
+  }
+
   if ( e->button() == Qt::LeftButton )
   {
     mPoints.append( point );

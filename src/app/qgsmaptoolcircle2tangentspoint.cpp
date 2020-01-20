@@ -46,6 +46,12 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
 {
 
   QgsPoint mapPoint( e->mapPoint() );
+
+  if ( !currentVectorLayer() )
+  {
+    notifyNotVectorLayer();
+  }
+
   EdgesOnlyFilter filter;
   QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
 

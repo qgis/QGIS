@@ -33,6 +33,11 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
 {
   QgsPoint point = mapPoint( *e );
 
+  if ( !currentVectorLayer() )
+  {
+    notifyNotVectorLayer();
+  }
+
   if ( e->button() == Qt::LeftButton )
   {
     mPoints.append( point );
