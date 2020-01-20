@@ -28,6 +28,7 @@
  * for a particular operation (e.g. report progress or pass some data for preview).
  *
  * When cancel() is called, the internal code has two options to check for cancellation state:
+ *
  * - if the worker thread uses an event loop (e.g. for network communication), the code can
  *   make a queued connection to canceled() signal and handle the cancellation in its slot.
  * - if the worker thread does not use an event loop, it can poll isCanceled() method regularly
