@@ -2,8 +2,9 @@
                               qgs_mapserver.cpp
 
 A QGIS development HTTP server for testing/development purposes.
-The server listen to localhost:8000, the port can be changed with the
-environment variable QGIS_SERVER_PORT
+The server listens to localhost:8000, the address and port can be changed with the
+environment variable QGIS_SERVER_ADDRESS and QGIS_SERVER_PORT or passing <address>:<port>
+on the command line.
 
                               -------------------
   begin                : Jan 17 2020
@@ -180,7 +181,11 @@ int main( int argc, char *argv[] )
       // Incoming connection parser
       clientConnection->connect( clientConnection, &QIODevice::readyRead, [ =, &server ] {
 
-        const QString incomingData { clientConnection->readAll() };
+        QString incomingData;
+        while ( clientConnection->bytesAvailable() > 0 )
+        {
+          incomingData += clientConnection->readAll();
+        }
 
         try
         {
@@ -267,7 +272,7 @@ int main( int argc, char *argv[] )
           }
 
           // Inefficient copy :(
-          QByteArray data { incomingData.mid( endHeadersPos + 2 ).toUtf8() };
+          QByteArray data { incomingData.mid( endHeadersPos + 4 ).toUtf8() };
 
           auto start = std::chrono::steady_clock::now();
 
