@@ -92,7 +92,7 @@ Returns the project's title.
 %Docstring
 Returns the user name that did the last save.
 
-.. seealso:: :py:func:`saveUserFullname`
+.. seealso:: :py:func:`saveUserFullName`
 
 .. versionadded:: 3.12
 %End
