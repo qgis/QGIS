@@ -56,20 +56,20 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *  The qgsrasterlayer class makes use of gdal for data io, and thus supports
  *  any gdal supported format. The constructor attempts to infer what type of
  *  file (LayerType) is being opened - not in terms of the file format (tif, ascii grid etc.)
- *  but rather in terms of whether the image is a GRAYSCALE, PaletteD or Multiband,
+ *  but rather in terms of whether the image is a GRAYSCALE, PaletteD or Multiband.
  *
  *  Within the three allowable raster layer types, there are 8 permutations of
  *  how a layer can actually be rendered. These are defined in the DrawingStyle enum
  *  and consist of:
  *
- *  SingleBandGray -> a GRAYSCALE layer drawn as a range of gray colors (0-255)
- *  SingleBandPseudoColor -> a GRAYSCALE layer drawn using a pseudocolor algorithm
- *  PalettedSingleBandGray -> a PaletteD layer drawn in gray scale (using only one of the color components)
- *  PalettedSingleBandPseudoColor -> a PaletteD layer having only one of its color components rendered as pseudo color
- *  PalettedMultiBandColor -> a PaletteD image where the bands contains 24bit color info and 8 bits is pulled out per color
- *  MultiBandSingleBandGray -> a layer containing 2 or more bands, but using only one band to produce a grayscale image
- *  MultiBandSingleBandPseudoColor -> a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
- *  MultiBandColor -> a layer containing 2 or more bands, mapped to the three RGBcolors. In the case of a multiband with only two bands, one band will have to be mapped to more than one color
+ *  - SingleBandGray -> a GRAYSCALE layer drawn as a range of gray colors (0-255)
+ *  - SingleBandPseudoColor -> a GRAYSCALE layer drawn using a pseudocolor algorithm
+ *  - PalettedSingleBandGray -> a PaletteD layer drawn in gray scale (using only one of the color components)
+ *  - PalettedSingleBandPseudoColor -> a PaletteD layer having only one of its color components rendered as pseudo color
+ *  - PalettedMultiBandColor -> a PaletteD image where the bands contains 24bit color info and 8 bits is pulled out per color
+ *  - MultiBandSingleBandGray -> a layer containing 2 or more bands, but using only one band to produce a grayscale image
+ *  - MultiBandSingleBandPseudoColor -> a layer containing 2 or more bands, but using only one band to produce a pseudocolor image
+ *  - MultiBandColor -> a layer containing 2 or more bands, mapped to the three RGBcolors. In the case of a multiband with only two bands, one band will have to be mapped to more than one color
  *
  *  Each of the above mentioned drawing styles is implemented in its own draw* function.
  *  Some of the drawing styles listed above require statistics about the layer such
@@ -96,7 +96,7 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *     QgsRasterLayer *myRasterLayer = new QgsRasterLayer(myFileNameQString, myBaseNameQString);
  * \endcode
  *
- *  In order to automate redrawing of a raster layer, you should link it to a map canvas like this :
+ *  In order to automate redrawing of a raster layer, you should link it to a map canvas like this:
  *
  * \code{.cpp}
  *     QObject::connect( myRasterLayer, SIGNAL(repaintRequested()), mapCanvas, SLOT(refresh()) );
@@ -210,15 +210,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * The main tasks carried out by the constructor are:
      *
-     * -Load the rasters default style (.qml) file if it exists
+     * - Load the rasters default style (.qml) file if it exists
      *
-     * -Populate the RasterStatsVector with initial values for each band.
+     * - Populate the RasterStatsVector with initial values for each band.
      *
-     * -Calculate the layer extents
+     * - Calculate the layer extents
      *
-     * -Determine whether the layer is gray, paletted or multiband.
+     * - Determine whether the layer is gray, paletted or multiband.
      *
-     * -Assign sensible defaults for the red, green, blue and gray bands.
+     * - Assign sensible defaults for the red, green, blue and gray bands.
      * */
     explicit QgsRasterLayer( const QString &uri,
                              const QString &baseName = QString(),
