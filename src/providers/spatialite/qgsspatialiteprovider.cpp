@@ -255,6 +255,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
       switch ( wkbType )
       {
         case QgsWkbTypes::Point25D:
+        case QgsWkbTypes::PointZ:
           dim = 3;
           FALLTHROUGH
         case QgsWkbTypes::Point:
@@ -262,6 +263,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
           break;
 
         case QgsWkbTypes::LineString25D:
+        case QgsWkbTypes::LineStringZ:
           dim = 3;
           FALLTHROUGH
         case QgsWkbTypes::LineString:
@@ -269,6 +271,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
           break;
 
         case QgsWkbTypes::Polygon25D:
+        case QgsWkbTypes::PolygonZ:
           dim = 3;
           FALLTHROUGH
         case QgsWkbTypes::Polygon:
@@ -276,6 +279,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
           break;
 
         case QgsWkbTypes::MultiPoint25D:
+        case QgsWkbTypes::MultiPointZ:
           dim = 3;
           FALLTHROUGH
         case QgsWkbTypes::MultiPoint:
@@ -283,6 +287,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
           break;
 
         case QgsWkbTypes::MultiLineString25D:
+        case QgsWkbTypes::MultiLineStringZ:
           dim = 3;
           FALLTHROUGH
         case QgsWkbTypes::MultiLineString:
@@ -290,6 +295,7 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
           break;
 
         case QgsWkbTypes::MultiPolygon25D:
+        case QgsWkbTypes::MultiPolygonZ:
           dim = 3;
           FALLTHROUGH
         case QgsWkbTypes::MultiPolygon:
