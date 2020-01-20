@@ -141,7 +141,7 @@ Content-Type: text/xml; charset=utf-8
     <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
    </KeywordList>
    <TreeName>QGIS Test Project</TreeName>
-   <Layer geometryType="Point" queryable="1" displayField="id" visible="1">
+   <Layer geometryType="Point" queryable="1" displayField="id" visible="1" opacity="1">
     <Name>layer_with_short_name</Name>
     <Title>A Layer with a short name</Title>
     <Abstract>A Layer with an abstract</Abstract>
@@ -171,7 +171,7 @@ Content-Type: text/xml; charset=utf-8
      <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="utf8nameè" comment="" length="13"/>
     </Attributes>
    </Layer>
-   <Layer queryable="1" visible="1">
+   <Layer queryable="1" visible="1" opacity="1">
     <Name>landsat</Name>
     <Title>landsat</Title>
     <CRS>CRS:84</CRS>
@@ -195,7 +195,7 @@ Content-Type: text/xml; charset=utf-8
     </Style>
     <TreeName>landsat</TreeName>
    </Layer>
-   <Layer geometryType="Point" queryable="1" displayField="name" visible="1">
+   <Layer geometryType="Point" queryable="1" displayField="name" visible="1" opacity="1">
     <Name>testlayer èé</Name>
     <Title>A test vector layer</Title>
     <Abstract>A test vector layer with unicode òà</Abstract>
@@ -225,7 +225,7 @@ Content-Type: text/xml; charset=utf-8
      <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="utf8nameè" comment="" length="13"/>
     </Attributes>
    </Layer>
-   <Layer geometryType="Point" queryable="1" displayField="alias_name" visible="1">
+   <Layer geometryType="Point" queryable="1" displayField="alias_name" visible="1" opacity="1">
     <Name>fields_alias</Name>
     <Title>A test vector layer</Title>
     <Abstract>A test vector layer with unicode òà</Abstract>
@@ -255,7 +255,7 @@ Content-Type: text/xml; charset=utf-8
      <Attribute precision="0" type="QString" editType="TextEdit" typeName="String" name="utf8nameè" comment="" length="13"/>
     </Attributes>
    </Layer>
-   <Layer geometryType="Point" queryable="1" displayField="name" visible="1">
+   <Layer geometryType="Point" queryable="1" displayField="name" visible="1" opacity="1">
     <Name>exclude_attribute</Name>
     <Title>A test vector layer</Title>
     <Abstract>A test vector layer with unicode òà</Abstract>
@@ -300,7 +300,7 @@ Content-Type: text/xml; charset=utf-8
     <BoundingBox maxy="5606025.239" maxx="913214.676" miny="5606011.456" CRS="EPSG:3857" minx="913204.911"/>
     <BoundingBox maxy="8.203548" maxx="44.901483" miny="8.203459" CRS="EPSG:4326" minx="44.901394"/>
     <TreeName>groupwithshortname</TreeName>
-    <Layer geometryType="Point" queryable="1" displayField="id" visible="1">
+    <Layer geometryType="Point" queryable="1" displayField="id" visible="1" opacity="1">
      <Name>testlayer2</Name>
      <Title>testlayer2</Title>
      <CRS>CRS:84</CRS>
@@ -345,7 +345,7 @@ Content-Type: text/xml; charset=utf-8
     <BoundingBox maxy="5606025.239" maxx="913214.676" miny="5606011.456" CRS="EPSG:3857" minx="913204.911"/>
     <BoundingBox maxy="8.203548" maxx="44.901483" miny="8.203459" CRS="EPSG:4326" minx="44.901394"/>
     <TreeName>groupwithoutshortname</TreeName>
-    <Layer geometryType="Point" queryable="0" displayField="name" visible="1">
+    <Layer geometryType="Point" queryable="0" displayField="name" visible="1" opacity="1">
      <Name>testlayer3</Name>
      <Title>testlayer3</Title>
      <CRS>CRS:84</CRS>
