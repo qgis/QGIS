@@ -58,9 +58,9 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
   mExpressionBuilder->setLayer( layer );
   mExpressionBuilder->setExpressionText( startText );
   mExpressionBuilder->loadFieldNames();
-  mExpressionBuilder->loadRecent( QStringLiteral( "Selection" ) );
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+  mExpressionBuilder->loadRecent( QStringLiteral( "selection" ) );
   mExpressionBuilder->setExpressionContext( context );
 
   // by default, zoom to features is hidden, shown only if canvas is set
@@ -224,7 +224,7 @@ void QgsExpressionSelectionDialog::done( int r )
 
 void QgsExpressionSelectionDialog::saveRecent()
 {
-  mExpressionBuilder->saveToRecent( QStringLiteral( "Selection" ) );
+  mExpressionBuilder->saveToRecent( QStringLiteral( "selection" ) );
 }
 
 void QgsExpressionSelectionDialog::showHelp()
