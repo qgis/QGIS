@@ -71,7 +71,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText">
+       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -208,6 +208,7 @@
      <addaction name="separator"/>
      <addaction name="mActionAddAttribute"/>
      <addaction name="mActionRemoveAttribute"/>
+     <addaction name="mActionOrganizeColumns"/>
      <addaction name="mActionOpenFieldCalculator"/>
      <addaction name="separator"/>
      <addaction name="mActionSetStyles"/>
@@ -532,6 +533,15 @@
    </property>
    <property name="toolTip">
     <string>Dock Attribute Table</string>
+   </property>
+  </action>
+  <action name="mActionOrganizeColumns">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditTable.svg</normaloff>:/images/themes/default/mActionEditTable.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Organize Columns</string>
    </property>
   </action>
  </widget>
