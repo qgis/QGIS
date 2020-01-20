@@ -32,8 +32,10 @@ class QgsMapLayer;
  * \ingroup core
  * Stores style information (renderer, opacity, labeling, diagrams etc.) applicable to a map layer.
  *
- * Stored data are considered as opaque - it is not possible to access them directly or modify them - it is
- * only possible to read or write layer's current style.
+ * Stored data are considered as opaque
+ *
+ * - it is not possible to access them directly or modify them
+ * - it is only possible to read or write layer's current style.
  *
  * \since QGIS 2.8
  */
