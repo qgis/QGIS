@@ -36,6 +36,11 @@ void QgsMapToolRegularPolygonCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEven
 {
   QgsPoint point = mapPoint( *e );
 
+  if ( !currentVectorLayer() )
+  {
+    notifyNotVectorLayer();
+  }
+
   if ( e->button() == Qt::LeftButton )
   {
     if ( mPoints.size() < 1 )
