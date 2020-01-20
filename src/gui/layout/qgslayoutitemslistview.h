@@ -16,42 +16,58 @@
 #ifndef QGSLAYOUTITEMSLISTVIEW_H
 #define QGSLAYOUTITEMSLISTVIEW_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include <QTreeView>
 #include <QSortFilterProxyModel>
 
 class QgsLayout;
-class QgsLayoutDesignerDialog;
+class QgsLayoutDesignerInterface;
 class QgsLayoutModel;
 class QgsLayoutItem;
 
-class QgsLayoutItemsListViewModel : public QSortFilterProxyModel
+/**
+ * \ingroup gui
+ * Model for the layout items list view.
+ * \see QgsLayoutItemsListView
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutItemsListViewModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
   public:
-
+    //! constructor
     QgsLayoutItemsListViewModel( QgsLayoutModel *model, QObject *parent );
 
-    QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const; \
+    //! Returns the layout item listed at the specified index
+    QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
   public slots:
+    //! Sets the selected index
     void setSelected( const QModelIndex &index );
 
   protected:
-
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
-
     QgsLayoutModel *mModel = nullptr;
 };
 
 /**
+ * \ingroup gui
  * A list view for showing items in a layout
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
  */
-class QgsLayoutItemsListView : public QTreeView
+class GUI_EXPORT QgsLayoutItemsListView : public QTreeView
 {
     Q_OBJECT
 
@@ -60,8 +76,9 @@ class QgsLayoutItemsListView : public QTreeView
     /**
      * Constructor for QgsLayoutItemsListView.
      */
-    QgsLayoutItemsListView( QWidget *parent, QgsLayoutDesignerDialog *designer );
+    QgsLayoutItemsListView( QWidget *parent, QgsLayoutDesignerInterface *designer );
 
+    //! Sets the current layout
     void setCurrentLayout( QgsLayout *layout );
 
   private slots:
@@ -72,7 +89,7 @@ class QgsLayoutItemsListView : public QTreeView
 
     QgsLayout *mLayout = nullptr;
     QgsLayoutItemsListViewModel *mModel = nullptr;
-    QgsLayoutDesignerDialog *mDesigner = nullptr;
+    QgsLayoutDesignerInterface *mDesigner = nullptr;
 };
 
 #endif // QGSLAYOUTITEMSLISTVIEW_H

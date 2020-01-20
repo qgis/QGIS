@@ -17,17 +17,26 @@
 #ifndef QGSLAYOUTPOLYLINEWIDGET_H
 #define QGSLAYOUTPOLYLINEWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutpolylinewidgetbase.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutitempolyline.h"
 
 /**
+ * \ingroup gui
  * Input widget for QgsLayoutItemPolyline
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
  */
-class QgsLayoutPolylineWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPolylineWidgetBase
+class GUI_EXPORT QgsLayoutPolylineWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPolylineWidgetBase
 {
     Q_OBJECT
   public:
+    //! constructor
     explicit QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polyline );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 

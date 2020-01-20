@@ -17,6 +17,10 @@
 #ifndef QGSLAYOUTGUIDEWIDGET_H
 #define QGSLAYOUTGUIDEWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutguidewidgetbase.h"
 #include "qgspanelwidget.h"
 #include <QStyledItemDelegate>
@@ -26,10 +30,18 @@ class QgsLayoutView;
 class QgsLayout;
 class QgsLayoutGuideProxyModel;
 
-class QgsLayoutGuideWidget: public QgsPanelWidget, private Ui::QgsLayoutGuideWidgetBase
+/**
+ * \ingroup gui
+ * Widget for managing the layout guides
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutGuideWidget: public QgsPanelWidget, private Ui::QgsLayoutGuideWidgetBase
 {
     Q_OBJECT
   public:
+    //! constructor
     QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, QgsLayoutView *layoutView );
 
   public slots:
@@ -62,13 +74,20 @@ class QgsLayoutGuideWidget: public QgsPanelWidget, private Ui::QgsLayoutGuideWid
 
 };
 
-
-class QgsLayoutGuidePositionDelegate : public QStyledItemDelegate
+/**
+ * \ingroup gui
+ * View delegate displaying a QgsDoubleSpinBox for the layout guide position
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutGuidePositionDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
   public:
 
+    //! constructor
     QgsLayoutGuidePositionDelegate( QObject *parent );
 
   protected:
@@ -77,12 +96,20 @@ class QgsLayoutGuidePositionDelegate : public QStyledItemDelegate
 
 };
 
-class QgsLayoutGuideUnitDelegate : public QStyledItemDelegate
+/**
+ * \ingroup gui
+ * View delegate displaying a QgsLayoutUnitsComboBox for the layout guide unit
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutGuideUnitDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
   public:
 
+    //! constructor
     QgsLayoutGuideUnitDelegate( QObject *parent );
 
   protected:

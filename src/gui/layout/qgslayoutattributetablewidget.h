@@ -18,16 +18,28 @@
 #ifndef QGSLAYOUTATTRIBUTETABLEWIDGET_H
 #define QGSLAYOUTATTRIBUTETABLEWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutattributetablewidgetbase.h"
 #include "qgslayoutitemwidget.h"
 
 class QgsLayoutItemAttributeTable;
 class QgsLayoutFrame;
 
-class QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutAttributeTableWidgetBase
+/**
+ * \ingroup gui
+ * A widget for configuring layout attribute table items.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutAttributeTableWidgetBase
 {
     Q_OBJECT
   public:
+    //! constructor
     QgsLayoutAttributeTableWidget( QgsLayoutFrame *frame );
 
     void setReportTypeString( const QString &string ) override;

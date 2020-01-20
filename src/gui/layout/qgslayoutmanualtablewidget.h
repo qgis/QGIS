@@ -18,6 +18,9 @@
 #ifndef QGSLAYOUTMANUALTABLEWIDGET_H
 #define QGSLAYOUTMANUALTABLEWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
 #include "ui_qgslayoutmanualtablewidgetbase.h"
 #include "qgslayoutitemwidget.h"
 #include "qgstableeditordialog.h"
@@ -26,10 +29,18 @@
 class QgsLayoutItemManualTable;
 class QgsLayoutFrame;
 
-class QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutManualTableWidgetBase
+/**
+ * \ingroup gui
+ * A widget for configuring layout manual table items.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutManualTableWidgetBase
 {
     Q_OBJECT
   public:
+    //! constructor
     QgsLayoutManualTableWidget( QgsLayoutFrame *frame );
 
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;

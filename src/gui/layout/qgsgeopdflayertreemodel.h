@@ -15,21 +15,32 @@
 #ifndef QGSGEOPDFLAYERTREEMODEL_H
 #define QGSGEOPDFLAYERTREEMODEL_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
 #include <QSortFilterProxyModel>
 #include <QItemDelegate>
 
+#include "qgis_gui.h"
 #include "qgslayertreemodel.h"
-#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsProject;
 
 
-class APP_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
+/**
+ * \ingroup gui
+ * Layer tree model for Geo-PDF layers
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsGeoPdfLayerTreeModel : public QgsLayerTreeModel
 {
     Q_OBJECT
 
   public:
+    //! constructor
     QgsGeoPdfLayerTreeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
 
     int columnCount( const QModelIndex &parent ) const override;

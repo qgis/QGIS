@@ -17,6 +17,10 @@
 #ifndef QGSLAYOUTSCALEBARWIDGET_H
 #define QGSLAYOUTSCALEBARWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutscalebarwidgetbase.h"
 #include "qgslayoutitemwidget.h"
 
@@ -25,23 +29,27 @@
 class QgsLayoutItemScaleBar;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * A widget to define the properties of a QgsLayoutItemScaleBar.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
  */
-class QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutScaleBarWidgetBase
+class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutScaleBarWidgetBase
 {
     Q_OBJECT
 
   public:
+    //! constructor
     explicit QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBar );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
     QgsExpressionContext createExpressionContext() const override;
-  protected:
 
+  protected:
     bool setNewItem( QgsLayoutItem *item ) override;
 
-  public slots:
+  private slots:
 
     void mHeightSpinBox_valueChanged( double d );
     void mLineWidthSpinBox_valueChanged( double d );

@@ -18,6 +18,10 @@
 #ifndef QGSLAYOUTMAPWIDGET_H
 #define QGSLAYOUTMAPWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutmapwidgetbase.h"
 #include "ui_qgslayoutmaplabelingwidgetbase.h"
 #include "qgslayoutitemwidget.h"
@@ -30,21 +34,25 @@ class QgsLayoutMapLabelingWidget;
 class QgsBookmarkManagerProxyModel;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * Input widget for the configuration of QgsLayoutItemMap
-*/
-class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapWidgetBase
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapWidgetBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsLayoutMapWidget( QgsLayoutItemMap *item );
+    //! constructor
+    explicit QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *mapCanvas );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
     void setReportTypeString( const QString &string ) override;
     void setDesignerInterface( QgsLayoutDesignerInterface *iface ) override;
 
-  public slots:
+  private slots:
     void mScaleLineEdit_editingFinished();
     void setToMapCanvasExtent();
     void setToMapCanvasScale();
@@ -130,6 +138,7 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
 
   private:
     QPointer< QgsLayoutItemMap > mMapItem;
+    QgsMapCanvas *mMapCanvas = nullptr;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
     QgsLayoutDesignerInterface *mInterface = nullptr;
     QPointer< QgsLayoutMapLabelingWidget > mLabelWidget;
@@ -163,15 +172,27 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
 
     void storeCurrentLayerSet();
 
+    /**
+     * Returns list of layer IDs that should be visible for particular preset.
+     * The order will match the layer order from the map canvas
+     */
+    QList<QgsMapLayer *> orderedPresetVisibleLayers( const QString &name ) const;
+
 };
 
-
-class QgsLayoutMapItemBlocksLabelsModel : public QSortFilterProxyModel
+/**
+ * \ingroup gui
+ * Model for label blocking items
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutMapItemBlocksLabelsModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
   public:
-
+    //! constructor
     explicit QgsLayoutMapItemBlocksLabelsModel( QgsLayoutItemMap *map, QgsLayoutModel *layoutModel, QObject *parent = nullptr );
 
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -190,14 +211,18 @@ class QgsLayoutMapItemBlocksLabelsModel : public QSortFilterProxyModel
 };
 
 /**
- * \ingroup app
+ * \ingroup gui
  * Allows configuration of layout map labeling settings.
- * */
-class QgsLayoutMapLabelingWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapLabelingWidgetBase
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutMapLabelingWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapLabelingWidgetBase
 {
     Q_OBJECT
 
   public:
+    //! constructor
     explicit QgsLayoutMapLabelingWidget( QgsLayoutItemMap *map );
 
   protected:

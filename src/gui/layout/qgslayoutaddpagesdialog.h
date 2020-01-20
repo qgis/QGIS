@@ -16,6 +16,9 @@
 #ifndef QGSLAYOUTADDPAGESDIALOG_H
 #define QGSLAYOUTADDPAGESDIALOG_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 #include "ui_qgslayoutnewpagedialog.h"
@@ -26,14 +29,19 @@
 #include "qgslayoutmeasurementconverter.h"
 
 /**
+ * \ingroup gui
  * A dialog for configuring properties of new pages to be added to a layout
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
  */
-class QgsLayoutAddPagesDialog : public QDialog, private Ui::QgsLayoutNewPageDialog
+class GUI_EXPORT QgsLayoutAddPagesDialog : public QDialog, private Ui::QgsLayoutNewPageDialog
 {
     Q_OBJECT
 
   public:
 
+    //! Page insertion positions
     enum PagePosition
     {
       BeforePage,

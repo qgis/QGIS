@@ -14,13 +14,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsabstractvaliditycheck.h"
-#include "qgis_app.h"
+#ifndef QGSLAYOUTVALIDITYCHECKS_H
+#define QGSLAYOUTVALIDITYCHECKS_H
 
-class APP_EXPORT QgsLayoutScaleBarValidityCheck : public QgsAbstractValidityCheck
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
+#include "qgsabstractvaliditycheck.h"
+
+/**
+ * \ingroup gui
+ * Layout scalebar validity check
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutScaleBarValidityCheck : public QgsAbstractValidityCheck
 {
   public:
-
+    //! constructor
     QgsLayoutScaleBarValidityCheck *create() const override;
     QString id() const override;
     int checkType() const override;
@@ -31,10 +44,18 @@ class APP_EXPORT QgsLayoutScaleBarValidityCheck : public QgsAbstractValidityChec
     QList<QgsValidityCheckResult> mResults;
 };
 
-class APP_EXPORT QgsLayoutNorthArrowValidityCheck : public QgsAbstractValidityCheck
+
+/**
+ * \ingroup gui
+ * Layout north arrow validity check
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutNorthArrowValidityCheck : public QgsAbstractValidityCheck
 {
   public:
-
+    //! constructor
     QgsLayoutNorthArrowValidityCheck *create() const override;
     QString id() const override;
     int checkType() const override;
@@ -45,10 +66,18 @@ class APP_EXPORT QgsLayoutNorthArrowValidityCheck : public QgsAbstractValidityCh
     QList<QgsValidityCheckResult> mResults;
 };
 
-class APP_EXPORT QgsLayoutOverviewValidityCheck : public QgsAbstractValidityCheck
+
+/**
+ * \ingroup gui
+ * Layout overview validity check
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutOverviewValidityCheck : public QgsAbstractValidityCheck
 {
   public:
-
+    //! constructor
     QgsLayoutOverviewValidityCheck *create() const override;
     QString id() const override;
     int checkType() const override;
@@ -59,10 +88,18 @@ class APP_EXPORT QgsLayoutOverviewValidityCheck : public QgsAbstractValidityChec
     QList<QgsValidityCheckResult> mResults;
 };
 
-class APP_EXPORT QgsLayoutPictureSourceValidityCheck : public QgsAbstractValidityCheck
+
+/**
+ * \ingroup gui
+ * Layout picture source validity check
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutPictureSourceValidityCheck : public QgsAbstractValidityCheck
 {
   public:
-
+    //! constructor
     QgsLayoutPictureSourceValidityCheck *create() const override;
     QString id() const override;
     int checkType() const override;
@@ -73,3 +110,4 @@ class APP_EXPORT QgsLayoutPictureSourceValidityCheck : public QgsAbstractValidit
     QList<QgsValidityCheckResult> mResults;
 };
 
+#endif // QGSLAYOUTVALIDITYCHECKS_H

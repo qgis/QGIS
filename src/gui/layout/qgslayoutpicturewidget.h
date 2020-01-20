@@ -18,27 +18,35 @@
 #ifndef QGSLAYOUTPICTUREWIDGET_H
 #define QGSLAYOUTPICTUREWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutpicturewidgetbase.h"
 #include "qgslayoutitemwidget.h"
 
 class QgsLayoutItemPicture;
 
 /**
- * \ingroup app
+ * \ingroup gui
  * A widget for configuring layout picture items.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
  */
-class QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPictureWidgetBase
+class GUI_EXPORT QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPictureWidgetBase
 {
     Q_OBJECT
 
   public:
+    //! constructor
     explicit QgsLayoutPictureWidget( QgsLayoutItemPicture *picture );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
     //! Add the icons of the standard directories to the preview
     void addStandardDirectoriesToPreview();
 
-  public slots:
+  private slots:
     void mPictureBrowseButton_clicked();
     void mPictureLineEdit_editingFinished();
     void mPictureRotationSpinBox_valueChanged( double d );

@@ -18,18 +18,26 @@
 #ifndef QGSLAYOUTLABELWIDGET_H
 #define QGSLAYOUTLABELWIDGET_H
 
+// We don't want to expose this in the public API
+#define SIP_NO_FILE
+
+#include "qgis_gui.h"
 #include "ui_qgslayoutlabelwidgetbase.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutitemlabel.h"
 
 /**
- * \ingroup app
-  * A widget for layout item settings.
-  */
-class QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutLabelWidgetBase
+ * \ingroup gui
+ * A widget for layout item settings.
+ *
+ * \note This class is not a part of public API
+ * \since QGIS 3.12
+ */
+class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutLabelWidgetBase
 {
     Q_OBJECT
   public:
+    //! constructor
     explicit QgsLayoutLabelWidget( QgsLayoutItemLabel *label );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 

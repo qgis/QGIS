@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayoutapputils.h"
+#include "qgslayoutguiutils.h"
 #include "qgsgui.h"
 #include "qgslayout.h"
 #include "qgslayoutitemguiregistry.h"
@@ -42,12 +42,7 @@
 #include "qgslayoutattributetablewidget.h"
 #include "qgslayoutitemmanualtable.h"
 #include "qgslayoutmanualtablewidget.h"
-#include "qgisapp.h"
 #include "qgsmapcanvas.h"
-
-#ifdef HAVE_3D
-#include "qgslayout3dmapwidget.h"
-#endif
 
 /**
  * Attempts to find the best guess at a map item to link \a referenceItem to,
@@ -88,7 +83,7 @@ QgsLayoutItemMap *findSensibleDefaultLinkedMapItem( QgsLayoutItem *referenceItem
   return referenceItem->layout()->referenceMap();
 }
 
-void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
+void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 {
   QgsLayoutItemGuiRegistry *registry = QgsGui::layoutItemGuiRegistry();
 
@@ -117,7 +112,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   auto mapItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutMap, QObject::tr( "Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMap.svg" ) ),
                          [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
-    return new QgsLayoutMapWidget( qobject_cast< QgsLayoutItemMap * >( item ) );
+    return new QgsLayoutMapWidget( qobject_cast< QgsLayoutItemMap * >( item ), mapCanvas );
   }, createRubberBand );
   mapItemMetadata->setItemAddedToLayoutFunction( [ = ]( QgsLayoutItem * item )
   {
@@ -127,23 +122,12 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     //get the color for map canvas background and set map background color accordingly
     map->setBackgroundColor( QgsProject::instance()->backgroundColor() );
 
-    if ( QgisApp::instance()->mapCanvas() )
+    if ( mapCanvas )
     {
-      map->zoomToExtent( QgisApp::instance()->mapCanvas()->mapSettings().visibleExtent() );
+      map->zoomToExtent( mapCanvas->mapSettings().visibleExtent() );
     }
   } );
   registry->addLayoutItemGuiMetadata( mapItemMetadata.release() );
-
-  // 3D map item
-#ifdef HAVE_3D
-  std::unique_ptr< QgsLayoutItemGuiMetadata > map3dMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata>(
-        QgsLayoutItemRegistry::Layout3DMap, QObject::tr( "3D Map" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAdd3DMap.svg" ) ),
-        [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
-  {
-    return new QgsLayout3DMapWidget( qobject_cast< QgsLayoutItem3DMap * >( item ) );
-  }, createRubberBand );
-  registry->addLayoutItemGuiMetadata( map3dMetadata.release() );
-#endif
 
   // picture item
 
@@ -188,7 +172,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   auto legendItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutLegend, QObject::tr( "Legend" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLegend.svg" ) ),
                             [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
-    return new QgsLayoutLegendWidget( qobject_cast< QgsLayoutItemLegend * >( item ) );
+    return new QgsLayoutLegendWidget( qobject_cast< QgsLayoutItemLegend * >( item ), mapCanvas );
   }, createRubberBand );
   legendItemMetadata->setItemAddedToLayoutFunction( [ = ]( QgsLayoutItem * item )
   {
