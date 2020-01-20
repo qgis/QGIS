@@ -121,6 +121,9 @@ QString QgsPathResolver::readPath( const QString &f ) const
   bool uncPath = projPath.startsWith( "//" );
 #endif
 
+  // Make sure the path is absolute (see GH #33200)
+  projPath = QFileInfo( projPath ).absoluteFilePath();
+
   QStringList srcElems = srcPath.split( '/', QString::SkipEmptyParts );
   QStringList projElems = projPath.split( '/', QString::SkipEmptyParts );
 
