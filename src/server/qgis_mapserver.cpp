@@ -122,11 +122,25 @@ int main( int argc, char *argv[] )
   // Override from command line
   if ( argc == 2 )
   {
-    QStringList addressAndPort { QString( argv[1] ).split( ':' ) };
-    if ( addressAndPort.size() == 2 )
+    const QString arg{ argv[1] };
+    if ( arg == QStringLiteral( "-h" ) )
     {
-      ipAddress = addressAndPort.at( 0 );
-      serverPort = addressAndPort.at( 1 );
+      std::cout << QObject::tr( "Usage: %1 [-h] [ADDRESS:PORT]\n"
+                                "Example: %1 localhost:8000\n\n"
+                                "Default: localhost:8000\n\n"
+                                "The following environment variables can be used:\n"
+                                "QGIS_SERVER_PORT: server port\n"
+                                "QGIS_SERVER_ADDRESS: server address\n" ).arg( basename( argv[0] ) ).toStdString() << std::endl;
+      exit( 0 );
+    }
+    else
+    {
+      QStringList addressAndPort { arg.split( ':' ) };
+      if ( addressAndPort.size() == 2 )
+      {
+        ipAddress = addressAndPort.at( 0 );
+        serverPort = addressAndPort.at( 1 );
+      }
     }
   }
 
