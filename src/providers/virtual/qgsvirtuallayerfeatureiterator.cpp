@@ -138,10 +138,9 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       // ensure that all attributes required for expression filter are being fetched
       if ( request.filterType() == QgsFeatureRequest::FilterExpression )
       {
-        const auto constReferencedColumns = request.filterExpression()->referencedColumns();
-        for ( const QString &field : constReferencedColumns )
+        const QSet<int> attributeIndexes = request.filterExpression()->referencedAttributeIndexes( mSource->mFields );
+        for ( int attrIdx : attributeIndexes )
         {
-          int attrIdx = mSource->mFields.lookupField( field );
           if ( !mAttributes.contains( attrIdx ) )
             mAttributes << attrIdx;
         }
