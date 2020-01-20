@@ -306,6 +306,11 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       {
         fName.chop( suffix.length() + 1 );
       }
+      // Chop any ending slashes
+      while ( fName.endsWith( '/' ) )
+      {
+        fName.chop( 1 );
+      }
       fName += '/' + QString::number( args.at( 0 )->get<QgsFeatureId>( ) );
       if ( !suffix.isEmpty() )
       {
