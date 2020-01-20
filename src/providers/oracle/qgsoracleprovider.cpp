@@ -2180,19 +2180,18 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       {
         g.gtype = SDO_GTYPE( dim, GtPolygon );
         int nSurfaces = 1;
-        QgsWkbTypes::Type surfaceType = type;
         if ( type == QgsWkbTypes::MultiSurface || type == QgsWkbTypes::MultiSurfaceZ )
         {
           g.gtype = SDO_GTYPE( dim, GtMultiPolygon );
           nSurfaces = *ptr.iPtr++;
 
           ptr.ucPtr++; // Skip endianness of first surface
-          surfaceType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first surface
+          ptr.iPtr++; // Skip type of first surface
         }
 
         for ( int iSurface = 0; iSurface < nSurfaces; iSurface++ )
         {
-          int nRings = nRings = *ptr.iPtr++;
+          const int nRings = *ptr.iPtr++;
 
           ptr.ucPtr++; // Skip endianness of first ring
           QgsWkbTypes::Type ringType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first ring
@@ -2245,8 +2244,6 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
 
             ringType = lineType; // type of next curve
           }
-
-          surfaceType = lineType;
         }
       }
       break;
