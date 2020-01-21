@@ -74,13 +74,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mAxisInvertedDirty( other.mAxisInvertedDirty )
       , mAxisInverted( other.mAxisInverted )
     {
-#if PROJ_VERSION_MAJOR>=6
-      if ( mIsValid )
-      {
-        if ( PJ *obj = other.threadLocalProjObject() )
-          mPj.reset( proj_clone( QgsProjContext::get(), obj ) );
-      }
-#else
+#if PROJ_VERSION_MAJOR<6
       if ( mIsValid )
       {
         mCRS = OSRClone( other.mCRS );
@@ -96,25 +90,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     {
 #if PROJ_VERSION_MAJOR>=6
       QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
-
-      // During destruction of PJ* objects, the errno is set in the underlying
-      // context. Consequently the context attached to the PJ* must still exist !
-      // Which is not necessarily the case currently unfortunately. So
-      // create a temporary dummy context, and attach it to the PJ* before destroying
-      // it
-      PJ_CONTEXT *tmpContext = proj_context_create();
-      for ( auto it = mProjObjects.begin(); it != mProjObjects.end(); ++it )
-      {
-        proj_assign_context( it.value(), tmpContext );
-        proj_destroy( it.value() );
-      }
-      mProjObjects.clear();
-      if ( mPj )
-      {
-        proj_assign_context( mPj.get(), tmpContext );
-        mPj.reset();
-      }
-      proj_context_destroy( tmpContext );
+      cleanPjObjects();
 #else
       OSRDestroySpatialReference( mCRS );
 #endif
@@ -156,18 +132,35 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     QgsProjUtils::proj_pj_unique_ptr mPj;
     PJ_CONTEXT *mPjParentContext = nullptr;
 
+    void cleanPjObjects()
+    {
+
+      // During destruction of PJ* objects, the errno is set in the underlying
+      // context. Consequently the context attached to the PJ* must still exist !
+      // Which is not necessarily the case currently unfortunately. So
+      // create a temporary dummy context, and attach it to the PJ* before destroying
+      // it
+      PJ_CONTEXT *tmpContext = proj_context_create();
+      for ( auto it = mProjObjects.begin(); it != mProjObjects.end(); ++it )
+      {
+        proj_assign_context( it.value(), tmpContext );
+        proj_destroy( it.value() );
+      }
+      mProjObjects.clear();
+      if ( mPj )
+      {
+        proj_assign_context( mPj.get(), tmpContext );
+        mPj.reset();
+      }
+      proj_context_destroy( tmpContext );
+    }
+
   public:
 
     void setPj( QgsProjUtils::proj_pj_unique_ptr obj )
     {
       QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
-      if ( mPj )
-      {
-        PJ_CONTEXT *tmpContext = proj_context_create();
-        proj_assign_context( mPj.get(), tmpContext );
-        mPj.reset();
-        proj_context_destroy( tmpContext );
-      }
+      cleanPjObjects();
 
       mPj = std::move( obj );
       mPjParentContext = QgsProjContext::get();
