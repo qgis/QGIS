@@ -42,6 +42,10 @@ void QgsMapToolRegularPolygon2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e
   if ( !currentVectorLayer() )
   {
     notifyNotVectorLayer();
+    clean();
+    stopCapturing();
+    e->ignore();
+    return;
   }
 
   if ( e->button() == Qt::LeftButton )
