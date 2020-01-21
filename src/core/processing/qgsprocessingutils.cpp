@@ -764,6 +764,9 @@ QString QgsProcessingUtils::tempFolder()
   }
   else if ( sFolder.isEmpty() || !sFolder.startsWith( basePath ) || !sTempFolder )
   {
+    if ( !QDir().exists( basePath ) )
+      QDir().mkpath( basePath );
+
     const QString templatePath = QStringLiteral( "%1/processing_XXXXXX" ).arg( basePath );
     // leak the previous folder -- we don't want it to be cleaned up, we don't know what was in it that may still
     // be required for this session!
