@@ -3016,7 +3016,7 @@ void QgisApp::refreshProfileMenu()
 
 void QgisApp::createProfileMenu()
 {
-  mConfigMenu = new QMenu();
+  mConfigMenu = new QMenu( this );
   mConfigMenu->setObjectName( "mUserProfileMenu" );
 
   settingsMenu()->insertMenu( settingsMenu()->actions().first(), mConfigMenu );

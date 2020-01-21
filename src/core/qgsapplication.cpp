@@ -339,7 +339,8 @@ void QgsApplication::init( QString profileFolder )
   colorSchemeRegistry()->initStyleScheme();
 
   bookmarkManager()->initialize( QgsApplication::qgisSettingsDirPath() + "/bookmarks.xml" );
-  members()->mStyleModel = new QgsStyleModel( QgsStyle::defaultStyle() );
+  if ( !members()->mStyleModel )
+    members()->mStyleModel = new QgsStyleModel( QgsStyle::defaultStyle() );
 
   ABISYM( mInitialized ) = true;
 }
