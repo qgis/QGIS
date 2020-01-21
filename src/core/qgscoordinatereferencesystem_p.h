@@ -153,6 +153,22 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     // this is the "master" proj object, to be used as a template for new proj objects created on different threads ONLY.
     // Always use threadLocalProjObject() instead of this.
     QgsProjUtils::proj_pj_unique_ptr mPj;
+    PJ_CONTEXT *mPjParentContext = nullptr;
+
+    void setPj( QgsProjUtils::proj_pj_unique_ptr obj )
+    {
+      if ( mPj )
+      {
+        PJ_CONTEXT *tmpContext = proj_context_create();
+        proj_assign_context( mPj.get(), tmpContext );
+        mPj.reset();
+        proj_context_destroy( tmpContext );
+      }
+
+      mPj = std::move( obj );
+      mPjParentContext = QgsProjContext::get();
+    }
+
 #else
     OGRSpatialReferenceH mCRS;
 #endif
@@ -202,6 +218,12 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       {
         proj_destroy( it.value() );
         mProjObjects.erase( it );
+      }
+
+      if ( mPjParentContext == pj_context )
+      {
+        mPj.reset();
+        mPjParentContext = nullptr;
       }
 
       return mProjObjects.isEmpty();
