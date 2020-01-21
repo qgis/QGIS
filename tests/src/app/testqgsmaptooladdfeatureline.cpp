@@ -79,6 +79,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
     QgsVectorLayer *mLayerLineZ = nullptr;
     QgsVectorLayer *mLayerPointZM = nullptr;
     QgsVectorLayer *mLayerTopoZ = nullptr;
+    QgsVectorLayer *mLayerLine2D = nullptr;
     QgsFeatureId mFidLineF1 = 0;
 };
 
@@ -164,12 +165,23 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
 
   mLayerTopoZ->startEditing();
   QgsFeature topoFeat;
-  topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ((7.25 6 0, 7.25 7 0, 7.5 7 0, 7.5 6 0, 7.25 6 0),(6 6 0, 6 7 0, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.25 0)));" ) );
+  topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ((7.25 6 0, 7.25 7 0, 7.5 7 0, 7.5 6 0, 7.25 6 0),(6 6 0, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.25 0)));" ) );
 
   mLayerTopoZ->addFeature( topoFeat );
   QCOMPARE( mLayerTopoZ->featureCount(), ( long ) 1 );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineZ << mLayerPointZM << mLayerTopoZ );
+  // make 2D layer for snapping with a 3D layer
+  mLayerLine2D = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerLine2D->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine2D );
+
+  mLayerLine2D->startEditing();
+  QgsFeature lineString2DF;
+  lineString2DF.setGeometry( QgsGeometry::fromWkt( "LineString ((8 8, 9 9))" ) );
+
+  mLayerLine2D->addFeature( lineString2DF );
+  QCOMPARE( mLayerLine2D->featureCount(), ( long )1 );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineZ << mLayerPointZM << mLayerTopoZ << mLayerLine2D );
 
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
@@ -406,6 +418,27 @@ void TestQgsMapToolAddFeatureLine::testZMSnapping()
 
   mLayerLine->undoStack()->undo();
 
+  mCanvas->setCurrentLayer( mLayerLineZ );
+  oldFids = utils.existingFeatureIds();
+  // test with default Z value = 222
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 222 );
+  // snap a on a layer without ZM support
+  utils.mouseClick( 9, 9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 8, 7, Qt::LeftButton );
+  utils.mouseClick( 5, 0, Qt::RightButton );
+
+  newFid = utils.newFeatureId( oldFids );
+
+  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry().get()->is3D(), true );
+
+  QString wkt = "LineStringZ (9 9 222, 8 7 222)";
+  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry().get()->isMeasure(), false );
+
+  mLayerLine->undoStack()->undo();
+
+  cfg.setEnabled( false );
+
   cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );
 }
@@ -438,9 +471,9 @@ void TestQgsMapToolAddFeatureLine::testTopologicalEditingZ()
   utils.mouseClick( 8, 6.5, Qt::RightButton );
   QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  QString wkt = "LineStringZ (6 6.5 333, 6.25 6.5 333, 6.75 6.5 333, 7.25 6.5 333, 7.5 6.5 333)";
+  QString wkt = "LineStringZ (6 6.5 5, 6.25 6.5 333, 6.75 6.5 333, 7.25 6.5 333, 7.5 6.5 333)";
   QCOMPARE( mLayerTopoZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
-  wkt = "MultiLineStringZ ((7.25 6 0, 7.25 6.5 333, 7.25 7 0, 7.5 7 0, 7.5 6.5 333, 7.5 6 0, 7.25 6 0),(6 6 0, 6 6.5 333, 6 7 0, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.5 333, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.5 333, 6.25 6.25 0))";
+  wkt = "MultiLineStringZ ((7.25 6 0, 7.25 6.5 333, 7.25 7 0, 7.5 7 0, 7.5 6.5 333, 7.5 6 0, 7.25 6 0),(6 6 0, 6 6.5 5, 6 7 10, 7 7 0, 7 6 0, 6 6 0),(6.25 6.25 0, 6.75 6.25 0, 6.75 6.5 333, 6.75 6.75 0, 6.25 6.75 0, 6.25 6.5 333, 6.25 6.25 0))";
   QCOMPARE( mLayerTopoZ->getFeature( oldFids.toList().last() ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLine->undoStack()->undo();
