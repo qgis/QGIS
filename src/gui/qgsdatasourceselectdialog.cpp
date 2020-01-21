@@ -35,21 +35,20 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
 {
   if ( ! browserModel )
   {
-    mBrowserModel = qgis::make_unique<QgsBrowserGuiModel>();
+    mBrowserModel = new QgsBrowserGuiModel( this );
     mBrowserModel->initialize();
-    mOwnModel = true;
   }
   else
   {
-    mBrowserModel.reset( browserModel );
-    mOwnModel = false;
+    mBrowserModel = browserModel;
+    mBrowserModel->initialize();
   }
 
   setupUi( this );
   setWindowTitle( tr( "Select a Data Source" ) );
   QgsGui::enableAutoGeometryRestore( this );
 
-  mBrowserProxyModel.setBrowserModel( mBrowserModel.get() );
+  mBrowserProxyModel.setBrowserModel( mBrowserModel );
   mBrowserTreeView->setHeaderHidden( true );
 
   if ( setFilterByLayerType )
@@ -63,7 +62,7 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
     buttonBox->button( QDialogButtonBox::StandardButton::Ok )->setEnabled( false );
   }
 
-  mBrowserTreeView->setBrowserModel( mBrowserModel.get() );
+  mBrowserTreeView->setBrowserModel( mBrowserModel );
 
   mWidgetFilter->hide();
   mLeFilter->setPlaceholderText( tr( "Type here to filter visible items…" ) );
@@ -116,12 +115,7 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
   }
 }
 
-QgsDataSourceSelectDialog::~QgsDataSourceSelectDialog()
-{
-  if ( ! mOwnModel )
-    mBrowserModel.release();
-}
-
+QgsDataSourceSelectDialog::~QgsDataSourceSelectDialog() = default;
 
 void QgsDataSourceSelectDialog::showEvent( QShowEvent *e )
 {
