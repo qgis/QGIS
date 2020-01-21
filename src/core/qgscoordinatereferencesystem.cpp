@@ -666,7 +666,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
         d->setPj( QgsProjUtils::crsToSingleCrs( crs.get() ) );
       }
 
-      d->mIsValid = static_cast< bool >( d->mPj );
+      d->mIsValid = d->hasPj();
 #else
       OSRDestroySpatialReference( d->mCRS );
       d->mCRS = OSRNewSpatialReference( nullptr );
@@ -1475,7 +1475,7 @@ void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
     d->setPj( QgsProjUtils::proj_pj_unique_ptr( proj_create( ctx, trimmed.toLatin1().constData() ) ) );
   }
 
-  if ( !d->mPj )
+  if ( !d->hasPj() )
   {
 #ifdef QGISDEBUG
     const int errNo = proj_context_errno( ctx );
@@ -1529,7 +1529,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
     d->setPj( QgsProjUtils::proj_pj_unique_ptr( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) ) );
   }
 
-  res = static_cast< bool >( d->mPj );
+  res = d->hasPj();
   if ( !res )
   {
     QgsDebugMsg( QStringLiteral( "\n---------------------------------------------------------------" ) );
@@ -1573,16 +1573,16 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
   }
 
 #if PROJ_VERSION_MAJOR>=6
-  if ( d->mPj )
+  if ( d->hasPj() )
   {
     // try 1 - maybe we can directly grab the auth name and code from the crs already?
-    QString authName( proj_get_id_auth_name( d->mPj.get(), 0 ) );
-    QString authCode( proj_get_id_code( d->mPj.get(), 0 ) );
+    QString authName( proj_get_id_auth_name( d->threadLocalProjObject(), 0 ) );
+    QString authCode( proj_get_id_code( d->threadLocalProjObject(), 0 ) );
 
     if ( authName.isEmpty() || authCode.isEmpty() )
     {
       // try 2, use proj's identify method and see if there's a nice candidate we can use
-      QgsProjUtils::identifyCrs( d->mPj.get(), authName, authCode );
+      QgsProjUtils::identifyCrs( d->threadLocalProjObject(), authName, authCode );
     }
 
     if ( !authName.isEmpty() && !authCode.isEmpty() )
@@ -1671,14 +1671,14 @@ void QgsCoordinateReferenceSystem::setMapUnits()
 #endif
 
 #if PROJ_VERSION_MAJOR>=6
-  if ( !d->mPj )
+  if ( !d->hasPj() )
   {
     d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
     return;
   }
 
   PJ_CONTEXT *context = QgsProjContext::get();
-  QgsProjUtils::proj_pj_unique_ptr coordinateSystem( proj_crs_get_coordinate_system( context, d->mPj.get() ) );
+  QgsProjUtils::proj_pj_unique_ptr coordinateSystem( proj_crs_get_coordinate_system( context, d->threadLocalProjObject() ) );
   if ( !coordinateSystem )
   {
     d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
