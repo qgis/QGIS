@@ -2032,7 +2032,7 @@
                      <string>Disable OGR on-the-fly conversion from declared encoding to UTF-8</string>
                     </property>
                     <property name="text">
-                     <string>Ignore shapefile encoding declaration</string>
+                     <string>Ignore original encoding when opening Shapefiles</string>
                     </property>
                    </widget>
                   </item>
