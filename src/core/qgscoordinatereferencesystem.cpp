@@ -662,7 +662,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
 
       {
         QgsProjUtils::proj_pj_unique_ptr crs( proj_create_from_database( QgsProjContext::get(), auth.toLatin1(), code.toLatin1(), PJ_CATEGORY_CRS, false, nullptr ) );
-        d->mPj = QgsProjUtils::crsToSingleCrs( crs.get() );
+        d->setPj( QgsProjUtils::crsToSingleCrs( crs.get() ) );
       }
 
       d->mIsValid = static_cast< bool >( d->mPj );
@@ -1495,7 +1495,7 @@ void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
   PJ_CONTEXT *ctx = QgsProjContext::get();
 
   {
-    d->mPj.reset( proj_create( ctx, trimmed.toLatin1().constData() ) );
+    d->setPj( QgsProjUtils::proj_pj_unique_ptr( proj_create( ctx, trimmed.toLatin1().constData() ) ) );
   }
 
   if ( !d->mPj )
@@ -1549,7 +1549,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
   PROJ_STRING_LIST warnings = nullptr;
   PROJ_STRING_LIST grammerErrors = nullptr;
   {
-    d->mPj.reset( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) );
+    d->setPj( QgsProjUtils::proj_pj_unique_ptr( proj_create_from_wkt( QgsProjContext::get(), wkt.toLatin1().constData(), nullptr, &warnings, &grammerErrors ) ) );
   }
 
   res = static_cast< bool >( d->mPj );
@@ -2453,7 +2453,7 @@ bool QgsCoordinateReferenceSystem::loadFromAuthCode( const QString &auth, const 
   getOperationAndEllipsoidFromProjString( proj4, operation, ellipsoid );
   d->mProjectionAcronym = operation;
   d->mEllipsoidAcronym.clear();
-  d->mPj = std::move( crs );
+  d->setPj( std::move( crs ) );
 
   const QString dbVals = sAuthIdToQgisSrsIdMap.value( QStringLiteral( "%1:%2" ).arg( auth, code ).toUpper() );
   QString srsId;
