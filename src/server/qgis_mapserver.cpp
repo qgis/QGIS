@@ -34,6 +34,7 @@ on the command line.
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QNetworkInterface>
+#include <QCommandLineParser>
 #include <QObject>
 
 #ifndef Q_OS_WIN
@@ -100,20 +101,13 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationName( QgsApplication::QGIS_ORGANIZATION_NAME );
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( "QGIS Development Server" );
-
-
-  QgsServer server;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-  server.initPython();
-#endif
+  QCoreApplication::setApplicationVersion( "1.0" );
 
 #ifdef Q_OS_WIN
   // Initialize font database before fcgi_accept.
   // When using FCGI with IIS, environment variables (QT_QPA_FONTDIR in this case) are lost after fcgi_accept().
   QFontDatabase fontDB;
 #endif
-
-  QTcpServer tcpServer;
 
   // The port to listen
   QString serverPort { getenv( "QGIS_SERVER_PORT" ) };
@@ -130,30 +124,40 @@ int main( int argc, char *argv[] )
     ipAddress = QStringLiteral( "localhost" );
   }
 
-  // Override from command line
-  if ( argc == 2 )
+  QCommandLineParser parser;
+  parser.setApplicationDescription( QObject::tr( "QGIS Development Server" ) );
+  parser.addHelpOption();
+  parser.addVersionOption();
+  parser.addPositionalArgument( QStringLiteral( "addressAndPort" ),
+                                QObject::tr( "listen to address and port (default: \"localhost:8000\")\n"
+                                    "address and port can also be specified with the environment\n"
+                                    "variables QGIS_SERVER_ADDRESS and QGIS_SERVER_PORT" ), QStringLiteral( "[address:port]" ) );
+  QCommandLineOption logLevelOption( "l", QObject::tr( "Set log level (default: 0)\n"
+                                     "0: INFO\n"
+                                     "1: WARNING\n"
+                                     "3: CRITICAL" ), "logLevel", "0" );
+  parser.addOption( logLevelOption );
+
+  parser.process( app );
+  const QStringList args = parser.positionalArguments();
+
+  if ( args.size() == 1 )
   {
-    const QString arg{ argv[1] };
-    if ( arg == QStringLiteral( "-h" ) )
+    QStringList addressAndPort { args.at( 0 ).split( ':' ) };
+    if ( addressAndPort.size() == 2 )
     {
-      std::cout << QObject::tr( "Usage: %1 [-h] [ADDRESS:PORT]\n"
-                                "Example: %1 localhost:8000\n\n"
-                                "Default: localhost:8000\n\n"
-                                "The following environment variables can be used:\n"
-                                "QGIS_SERVER_PORT: server port\n"
-                                "QGIS_SERVER_ADDRESS: server address\n" ).arg( basename( argv[0] ) ).toStdString() << std::endl;
-      exit( 0 );
-    }
-    else
-    {
-      QStringList addressAndPort { arg.split( ':' ) };
-      if ( addressAndPort.size() == 2 )
-      {
-        ipAddress = addressAndPort.at( 0 );
-        serverPort = addressAndPort.at( 1 );
-      }
+      ipAddress = addressAndPort.at( 0 );
+      serverPort = addressAndPort.at( 1 );
     }
   }
+
+  QString logLevel = parser.value( logLevelOption );
+  qunsetenv( "QGIS_SERVER_LOG_FILE" );
+  qputenv( "QGIS_SERVER_LOG_LEVEL", logLevel.toUtf8() );
+  qputenv( "QGIS_SERVER_LOG_STDERR", "1" );
+
+  // Create server
+  QTcpServer tcpServer;
 
   QHostAddress address { QHostAddress::AnyIPv4 };
   address.setAddress( ipAddress );
@@ -193,6 +197,12 @@ int main( int argc, char *argv[] )
       { 502, QStringLiteral( "Bad Gateway" ) },
       { 503, QStringLiteral( "Service Unavailable" ) }
     };
+
+    QgsServer server;
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    server.initPython();
+#endif
 
     // Starts HTTP loop with a poor man's HTTP parser
     tcpServer.connect( &tcpServer, &QTcpServer::newConnection, [ & ]
@@ -364,6 +374,7 @@ int main( int argc, char *argv[] )
 #endif
 
   app.exec();
+  std::cout << "Exiting" << std::endl;
   app.exitQgis();
   return 0;
 }
