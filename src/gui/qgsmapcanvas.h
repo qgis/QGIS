@@ -827,6 +827,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void refreshMap();
 
     void mapThemeChanged( const QString &theme );
+    void mapThemeRenamed( const QString &theme, const QString &newTheme );
 
   signals:
 
