@@ -432,6 +432,15 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         fid += 1
         self.check_geom(polygon, fid, 'Polygon ((1 2, 11 2, 11 22, 1 22, 1 2),(5 6, 8 9, 8 6, 5 6),(3 4, 3 6, 5 6, 3 4))')
         fid += 1
+        # Outer ring in clockwise order --> reversed on writing
+        self.check_geom(polygon, fid, 'Polygon ((0 0, 0 1, 1 1, 0 0))', 'Polygon ((0 0, 1 1, 0 1, 0 0))')
+        fid += 1
+        # Outer ring in clockwise order --> reversed on writing. Inner ring in clockwise order --> unmodified
+        self.check_geom(polygon, fid, 'Polygon ((0 0, 0 1, 1 1, 0 0),(0.1 0.2, 0.1 0.9, 0.7 0.9, 0.1 0.2))', 'Polygon ((0 0, 1 1, 0 1, 0 0),(0.1 0.2, 0.1 0.9, 0.7 0.9, 0.1 0.2))')
+        fid += 1
+        # Inner ring in counterclockwise order --> reversed on writing. Outer ring in counterclockwise order --> unmodified
+        self.check_geom(polygon, fid, 'Polygon ((0 0, 1 1, 0 1, 0 0),(0.1 0.2, 0.7 0.9, 0.1 0.9, 0.1 0.2))', 'Polygon ((0 0, 1 1, 0 1, 0 0),(0.1 0.2, 0.1 0.9, 0.7 0.9, 0.1 0.2))')
+        fid += 1
 
         polygon_z = QgsVectorLayer(
             self.dbconn + ' sslmode=disable key=\'pk\' srid=5698 type=PolygonZ table="QGIS"."EDIT_SURFACEZ_DATA" (GEOM) sql=',
@@ -485,6 +494,12 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         fid += 1
         self.check_geom(curve_polygon, fid, 'CurvePolygon((0 0, 30 0, 30 20, 0 30, 0 0), CircularString (1 3, 3 5, 4 7, 7 3, 1 3))')
         fid += 1
+        # Reverse orientation of outer ring
+        self.check_geom(curve_polygon, fid, 'CurvePolygon((0 0, 0 30, 30 20, 30 0, 0 0), CircularString (1 3, 3 5, 4 7, 7 3, 1 3))', 'CurvePolygon((0 0, 30 0, 30 20, 0 30, 0 0), CircularString (1 3, 3 5, 4 7, 7 3, 1 3))')
+        fid += 1
+        # Reverse orientation of outer ring
+        self.check_geom(curve_polygon, fid, 'CurvePolygon( CompoundCurve ((0 0, 0 1, 1 1),(1 1,0 0)))', 'CurvePolygon (CompoundCurve ((0 0, 1 1),(1 1, 0 1, 0 0)))')
+        fid += 1
 
         curve_polygon_z = QgsVectorLayer(
             self.dbconn + ' sslmode=disable key=\'pk\' srid=5698 type=CurvePolygonZ table="QGIS"."EDIT_SURFACEZ_DATA" (GEOM) sql=',
@@ -518,6 +533,17 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         wkt = 'MultiSurface (((0 0, 1 0, 1 1, 0 0)),((100 100, 101 100, 101 101, 100 100)))'
         self.check_geom(multi_surface, fid, wkt, wkt.replace('MultiSurface', 'MultiPolygon'))
         fid += 1
+
+        # Outer ring in clockwise order --> reversed on writing
+        self.check_geom(multi_surface, fid, 'MultiSurface( Polygon ((0 0, 0 1, 1 1, 0 0)))', 'MultiPolygon (((0 0, 1 1, 0 1, 0 0)))')
+        fid += 1
+        # Outer ring in clockwise order --> reversed on writing. Inner ring in clockwise order --> unmodified
+        self.check_geom(multi_surface, fid, 'MultiSurface(Polygon ((0 0, 0 1, 1 1, 0 0),(0.1 0.2, 0.1 0.9, 0.7 0.9, 0.1 0.2)))', 'MultiPolygon (((0 0, 1 1, 0 1, 0 0),(0.1 0.2, 0.1 0.9, 0.7 0.9, 0.1 0.2)))')
+        fid += 1
+        # Inner ring in counterclockwise order --> reversed on writing. Outer ring in counterclockwise order --> unmodified
+        self.check_geom(multi_surface, fid, 'MultiSurface(Polygon ((0 0, 1 1, 0 1, 0 0),(0.1 0.2, 0.7 0.9, 0.1 0.9, 0.1 0.2)))', 'MultiPolygon (((0 0, 1 1, 0 1, 0 0),(0.1 0.2, 0.1 0.9, 0.7 0.9, 0.1 0.2)))')
+        fid += 1
+
         self.check_geom(multi_surface, fid, 'MultiSurface (Polygon ((0 0, 1 0, 1 1, 0 0)),CurvePolygon (CompoundCurve (CircularString (100 100, 105.5 99.5, 101 100, 101.5 100.5, 101 101),(101 101, 100 100))))')
         fid += 1
         self.check_geom(multi_surface, fid, 'MultiSurface (CurvePolygon (CompoundCurve (CircularString (100 100, 101 100, 101 101),(101 101, 100 100))),Polygon ((0 0, 1 0, 1 1, 0 0)))')
