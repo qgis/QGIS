@@ -2106,18 +2106,21 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       {
         g.gtype = SDO_GTYPE( dim, GtLine );
         int nCurves = 1;
-        QgsWkbTypes::Type curveType = type;
         if ( type == QgsWkbTypes::MultiCurve || type == QgsWkbTypes::MultiCurveZ )
         {
           g.gtype = SDO_GTYPE( dim, GtMultiLine );
           nCurves = *ptr.iPtr++;
-
-          ptr.ucPtr++; // Skip endianness of first curve
-          curveType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first curve
         }
 
         for ( int iCurve = 0; iCurve < nCurves; iCurve++ )
         {
+          QgsWkbTypes::Type curveType = type;
+          if ( type == QgsWkbTypes::MultiCurve || type == QgsWkbTypes::MultiCurveZ )
+          {
+            ptr.ucPtr++; // Skip endianness of curve
+            curveType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of curve
+          }
+
           int nLines = 1;
           QgsWkbTypes::Type lineType = curveType;
           if ( curveType == QgsWkbTypes::CompoundCurve || curveType == QgsWkbTypes::CompoundCurveZ )
@@ -2137,6 +2140,11 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
 
           for ( int iLine = 0; iLine < nLines; iLine++ )
           {
+            if ( iLine > 0 )
+            {
+              ptr.ucPtr++; // Skip endianness of linestring
+              lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of linestring
+            }
             bool circularString = lineType == QgsWkbTypes::CircularString || lineType == QgsWkbTypes::CircularStringZ;
 
             g.eleminfo << iOrdinate << 2 << ( circularString ? 2 : 1 );
@@ -2159,12 +2167,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
 
               iOrdinate  += dim;
             }
-
-            ptr.ucPtr++; // Skip endianness of next linestring
-            lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of next linestring
           }
-
-          curveType = lineType; // type of next curve
         }
       }
       break;
@@ -2184,23 +2187,30 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
         {
           g.gtype = SDO_GTYPE( dim, GtMultiPolygon );
           nSurfaces = *ptr.iPtr++;
-
-          ptr.ucPtr++; // Skip endianness of first surface
-          ptr.iPtr++; // Skip type of first surface
         }
 
         for ( int iSurface = 0; iSurface < nSurfaces; iSurface++ )
         {
+          QgsWkbTypes::Type surfaceType = QgsWkbTypes::CurvePolygon;
+          if ( type == QgsWkbTypes::MultiSurface || type == QgsWkbTypes::MultiSurfaceZ )
+          {
+            ptr.ucPtr++; // Skip endianness of surface
+            surfaceType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of surface
+          }
+
           const int nRings = *ptr.iPtr++;
 
-          ptr.ucPtr++; // Skip endianness of first ring
-          QgsWkbTypes::Type ringType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of first ring
-
-          QgsWkbTypes::Type lineType;
           for ( int iRing = 0; iRing < nRings; iRing++ )
           {
+            QgsWkbTypes::Type ringType = QgsWkbTypes::LineString;
+            if ( surfaceType == QgsWkbTypes::CurvePolygon || surfaceType == QgsWkbTypes::CurvePolygonZ )
+            {
+              ptr.ucPtr++; // Skip endianness of ring
+              ringType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of ring
+            }
+
             int nLines = 1;
-            lineType = ringType;
+            QgsWkbTypes::Type lineType = ringType;
             if ( QgsWkbTypes::flatType( ringType ) == QgsWkbTypes::CompoundCurve )
             {
               nLines = *ptr.iPtr++;
@@ -2212,12 +2222,19 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
             // Oracle don't store compound curve with only one line
             g.eleminfo << iOrdinate
                        << ( iRing == 0 ? 1000 : 2000 ) + ( nLines > 1 ? 5 : 3 )
-                       << ( nLines > 1 ? nLines : ( QgsWkbTypes::flatType( ringType ) == QgsWkbTypes::CircularString ? 2 : 1 ) );
+                       << ( nLines > 1 ? nLines : ( QgsWkbTypes::flatType( lineType ) == QgsWkbTypes::CircularString ? 2 : 1 ) );
 
             for ( int iLine = 0; iLine < nLines; iLine++ )
             {
+              if ( iLine > 0 )
+              {
+                ptr.ucPtr++; // Skip endianness of linestring
+                lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of linestring
+              }
               if ( nLines > 1 )
+              {
                 g.eleminfo << iOrdinate << 2 << ( QgsWkbTypes::flatType( lineType ) == QgsWkbTypes::CircularString ? 2 : 1 );
+              }
 
               for ( int i = 0, n = *ptr.iPtr++; i < n; i++ )
               {
@@ -2237,12 +2254,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
 
                 iOrdinate  += dim;
               }
-
-              ptr.ucPtr++; // Skip endianness of next linestring
-              lineType = ( QgsWkbTypes::Type ) * ptr.iPtr++; // type of next linestring
             }
-
-            ringType = lineType; // type of next curve
           }
         }
       }
