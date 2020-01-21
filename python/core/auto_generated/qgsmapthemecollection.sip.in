@@ -195,7 +195,7 @@ Removes an existing map theme from collection.
 %Docstring
 Renames an existing map theme in the collection.
 
-.. versionadded:: 3.12
+.. versionadded:: 3.14
 %End
 
     void clear();
@@ -337,7 +337,7 @@ Emitted when a map theme changes definition.
 %Docstring
 Emitted when a map theme within the collection is renamed.
 
-.. versionadded:: 3.12
+.. versionadded:: 3.14
 %End
 
     void projectChanged();

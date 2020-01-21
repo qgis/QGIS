@@ -264,7 +264,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
     /**
      * Renames an existing map theme in the collection.
-     * \since QGIS 3.12
+     * \since QGIS 3.14
      */
     void renameMapTheme( const QString &name, const QString &newName );
 
@@ -381,7 +381,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
     /**
      * Emitted when a map theme within the collection is renamed.
-     * \since QGIS 3.12
+     * \since QGIS 3.14
      */
     void mapThemeRenamed( const QString &name, const QString &newName );
 
