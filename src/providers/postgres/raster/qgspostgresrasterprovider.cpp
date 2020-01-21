@@ -72,11 +72,11 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
   // TODO: for now always true
   // mUseEstimatedMetadata = mUri.useEstimatedMetadata();
 
-  QgsDebugMsg( QStringLiteral( "Connection info is %1" ).arg( mUri.connectionInfo( false ) ) );
-  QgsDebugMsg( QStringLiteral( "Schema is: %1" ).arg( mSchemaName ) );
-  QgsDebugMsg( QStringLiteral( "Table name is: %1" ).arg( mTableName ) );
-  QgsDebugMsg( QStringLiteral( "Query is: %1" ).arg( mQuery ) );
-  QgsDebugMsg( QStringLiteral( "Where clause is: %1" ).arg( mSqlWhereClause ) );
+  QgsDebugMsgLevel( QStringLiteral( "Connection info is %1" ).arg( mUri.connectionInfo( false ) ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Schema is: %1" ).arg( mSchemaName ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Table name is: %1" ).arg( mTableName ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Query is: %1" ).arg( mQuery ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Where clause is: %1" ).arg( mSqlWhereClause ), 4 );
 
   // no table/query passed, the provider could be used to get tables
   if ( mQuery.isEmpty() )
@@ -152,14 +152,10 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QgsPostgresRasterPro
 {
 }
 
-QgsPostgresRasterProvider::~QgsPostgresRasterProvider()
-{
-
-}
 
 bool QgsPostgresRasterProvider::hasSufficientPermsAndCapabilities()
 {
-  QgsDebugMsg( QStringLiteral( "Checking for permissions on the relation" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Checking for permissions on the relation" ), 4 );
 
   QgsPostgresResult testAccess;
   if ( !mIsQuery )
@@ -797,7 +793,15 @@ bool QgsPostgresRasterProvider::init()
         mHasSpatialIndex = result.PQgetvalue( 0, 9 ) == 't';
         bool ok;
 
-        mCrs = QgsCoordinateReferenceSystem::fromEpsgId( result.PQgetvalue( 0, 1 ).toLong( &ok ) );
+        mCrs = QgsCoordinateReferenceSystem();
+        // FIXME: from Nyall's comment:
+        // keep in mind that postgis crs handling is rather broken in QGIS and needs to be rethought for 4.0
+        // (we should be retrieving the definition from the server corresponding to the reported postgis srs,
+        // and not using any qgis internal databases for this ... which may or may not have any match to the
+        // server's definitions.)
+        Q_NOWARN_DEPRECATED_PUSH
+        mCrs.createFromSrid( result.PQgetvalue( 0, 1 ).toLong( &ok ) );
+        Q_NOWARN_DEPRECATED_PUSH
 
         if ( ! ok )
         {
@@ -987,7 +991,7 @@ bool QgsPostgresRasterProvider::init()
                       .arg( tableToQuery )
                       .arg( where )};
 
-  QgsDebugMsg( QStringLiteral( "Raster information sql: %1" ).arg( sql ) );
+  QgsDebugMsgLevel( QStringLiteral( "Raster information sql: %1" ).arg( sql ), 4 );
 
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
   if ( PGRES_TUPLES_OK == result.PQresultStatus() && result.PQntuples() > 0 )
@@ -1059,7 +1063,15 @@ bool QgsPostgresRasterProvider::init()
     mWidth = static_cast<long>( mExtent.width() / std::abs( mScaleX ) );
     mIsTiled = ( mWidth != mTileWidth ) || ( mHeight != mTileHeight );
 
-    mCrs = QgsCoordinateReferenceSystem::fromEpsgId( result.PQgetvalue( 0, 9 ).toLong( &ok ) );
+    mCrs = QgsCoordinateReferenceSystem();
+    // FIXME: from Nyall's comment:
+    // keep in mind that postgis crs handling is rather broken in QGIS and needs to be rethought for 4.0
+    // (we should be retrieving the definition from the server corresponding to the reported postgis srs,
+    // and not using any qgis internal databases for this ... which may or may not have any match to the
+    // server's definitions.)
+    Q_NOWARN_DEPRECATED_PUSH
+    mCrs.createFromSrid( result.PQgetvalue( 0, 9 ).toLong( &ok ) );
+    Q_NOWARN_DEPRECATED_PUSH
 
     if ( ! ok )
     {
@@ -1147,39 +1159,39 @@ QgsPostgresProvider::Relkind QgsPostgresRasterProvider::relkind() const
 
   QgsPostgresProvider::Relkind kind = QgsPostgresProvider::Relkind::Unknown;
 
-  if ( type == QLatin1String( "r" ) )
+  if ( type == 'r' )
   {
     kind = QgsPostgresProvider::Relkind::OrdinaryTable;
   }
-  else if ( type == QLatin1String( "i" ) )
+  else if ( type == 'i' )
   {
     kind = QgsPostgresProvider::Relkind::Index;
   }
-  else if ( type == QLatin1String( "s" ) )
+  else if ( type == 's' )
   {
     kind = QgsPostgresProvider::Relkind::Sequence;
   }
-  else if ( type == QLatin1String( "v" ) )
+  else if ( type == 'v' )
   {
     kind = QgsPostgresProvider::Relkind::View;
   }
-  else if ( type == QLatin1String( "m" ) )
+  else if ( type == 'm' )
   {
     kind = QgsPostgresProvider::Relkind::MaterializedView;
   }
-  else if ( type == QLatin1String( "c" ) )
+  else if ( type == 'c' )
   {
     kind = QgsPostgresProvider::Relkind::CompositeType;
   }
-  else if ( type == QLatin1String( "t" ) )
+  else if ( type == 't' )
   {
     kind = QgsPostgresProvider::Relkind::ToastTable;
   }
-  else if ( type == QLatin1String( "f" ) )
+  else if ( type == 'f' )
   {
     kind = QgsPostgresProvider::Relkind::ForeignTable;
   }
-  else if ( type == QLatin1String( "p" ) )
+  else if ( type == 'p' )
   {
     kind = QgsPostgresProvider::Relkind::PartitionedTable;
   }
@@ -1198,22 +1210,22 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
   if ( !mIsQuery )
   {
     sql = QStringLiteral( "SELECT count(*) FROM pg_inherits WHERE inhparent=%1::regclass" ).arg( quotedValue( mQuery ) );
-    QgsDebugMsg( QStringLiteral( "Checking whether %1 is a parent table" ).arg( sql ) );
+    QgsDebugMsgLevel( QStringLiteral( "Checking whether %1 is a parent table" ).arg( sql ), 4 );
     QgsPostgresResult res( connectionRO()->PQexec( sql ) );
     bool isParentTable( res.PQntuples() == 0 || res.PQgetvalue( 0, 0 ).toInt() > 0 );
 
     sql = QStringLiteral( "SELECT indexrelid FROM pg_index WHERE indrelid=%1::regclass AND (indisprimary OR indisunique) ORDER BY CASE WHEN indisprimary THEN 1 ELSE 2 END LIMIT 1" ).arg( quotedValue( mQuery ) );
-    QgsDebugMsg( QStringLiteral( "Retrieving first primary or unique index: %1" ).arg( sql ) );
+    QgsDebugMsgLevel( QStringLiteral( "Retrieving first primary or unique index: %1" ).arg( sql ), 4 );
 
     res = connectionRO()->PQexec( sql );
-    QgsDebugMsg( QStringLiteral( "Got %1 rows." ).arg( res.PQntuples() ) );
+    QgsDebugMsgLevel( QStringLiteral( "Got %1 rows." ).arg( res.PQntuples() ), 4 );
 
     QStringList log;
 
     // no primary or unique indices found
     if ( res.PQntuples() == 0 )
     {
-      QgsDebugMsg( QStringLiteral( "Relation has no primary key -- investigating alternatives" ) );
+      QgsDebugMsgLevel( QStringLiteral( "Relation has no primary key -- investigating alternatives" ), 4 );
 
       // Two options here. If the relation is a table, see if there is
       // an oid column that can be used instead.
@@ -1224,7 +1236,7 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
 
       if ( type == QgsPostgresProvider::Relkind::OrdinaryTable || type == QgsPostgresProvider::Relkind::PartitionedTable )
       {
-        QgsDebugMsg( QStringLiteral( "Relation is a table. Checking to see if it has an oid column." ) );
+        QgsDebugMsgLevel( QStringLiteral( "Relation is a table. Checking to see if it has an oid column." ), 4 );
 
         mPrimaryKeyAttrs.clear();
         mPrimaryKeyType = PktUnknown;
@@ -1299,9 +1311,9 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
             .arg( quotedValue( mSchemaName ) )
             .arg( indrelid );
 
-      QgsDebugMsg( "Retrieving key columns: " + sql );
+      QgsDebugMsgLevel( "Retrieving key columns: " + sql, 4 );
       res = connectionRO()->PQexec( sql );
-      QgsDebugMsg( QStringLiteral( "Got %1 rows." ).arg( res.PQntuples() ) );
+      QgsDebugMsgLevel( QStringLiteral( "Got %1 rows." ).arg( res.PQntuples() ), 4 );
 
       bool mightBeNull = false;
       QString primaryKey;
@@ -1504,7 +1516,7 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int st
   {
     if ( stats.contains( rasterBandStats ) )
     {
-      QgsDebugMsg( QStringLiteral( "Using cached statistics." ) );
+      QgsDebugMsgLevel( QStringLiteral( "Using cached statistics." ), 4 );
       return stats;
     }
   }
@@ -1575,12 +1587,12 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int st
                                QStringLiteral( "PostGIS" ), Qgis::Warning );
   }
 
-  QgsDebugMsg( QStringLiteral( "************ STATS **************" ) );
-  QgsDebugMsg( QStringLiteral( "MIN %1" ).arg( rasterBandStats.minimumValue ) );
-  QgsDebugMsg( QStringLiteral( "MAX %1" ).arg( rasterBandStats.maximumValue ) );
-  QgsDebugMsg( QStringLiteral( "RANGE %1" ).arg( rasterBandStats.range ) );
-  QgsDebugMsg( QStringLiteral( "MEAN %1" ).arg( rasterBandStats.mean ) );
-  QgsDebugMsg( QStringLiteral( "STDDEV %1" ).arg( rasterBandStats.stdDev ) );
+  QgsDebugMsgLevel( QStringLiteral( "************ STATS **************" ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "MIN %1" ).arg( rasterBandStats.minimumValue ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "MAX %1" ).arg( rasterBandStats.maximumValue ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "RANGE %1" ).arg( rasterBandStats.range ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "MEAN %1" ).arg( rasterBandStats.mean ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "STDDEV %1" ).arg( rasterBandStats.stdDev ), 4 );
 
   mStatistics.append( rasterBandStats );
   return rasterBandStats;
