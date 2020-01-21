@@ -464,7 +464,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   QgsApplication::registerOgrDrivers();
 
   QgsSettings settings;
-  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() ? "" : nullptr );
+  CPLSetConfigOption( "SHAPE_ENCODING", settings.value( QStringLiteral( "dataProviders/ignoreShapeEncoding" ), false, QgsSettings::Core ).toBool() ? "" : nullptr );
 
 #ifndef QT_NO_NETWORKPROXY
   setupProxy();
@@ -979,7 +979,7 @@ void QgsOgrProvider::setEncoding( const QString &e )
 {
   QgsSettings settings;
   if ( ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) &&
-         settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() ) ||
+         settings.value( QStringLiteral( "dataProviders/ignoreShapeEncoding" ), false, QgsSettings::Core ).toBool() ) ||
        ( mOgrLayer && !mOgrLayer->TestCapability( OLCStringsAsUTF8 ) ) )
   {
     QgsVectorDataProvider::setEncoding( e );
@@ -3556,7 +3556,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
   CSLDestroy( papszOptions );
 
   QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() )
+  if ( !settings.value( QStringLiteral( "dataProviders/ignoreShapeEncoding" ), false, QgsSettings::Core ).toBool() )
   {
     CPLSetConfigOption( "SHAPE_ENCODING", nullptr );
   }
