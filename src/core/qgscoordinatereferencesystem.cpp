@@ -692,12 +692,113 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
   return d->mIsValid;
 }
 
+#if PROJ_VERSION_MAJOR>=6
+void QgsCoordinateReferenceSystem::removeFromCacheObjectsBelongingToCurrentThread( void *pj_context )
+{
+  // Not completely sure about object order destruction after main() has
+  // exited. So it is safer to check sDisableCache before using sCacheLock
+  // in case sCacheLock would have been destroyed before the current TLS
+  // QgsProjContext object that has called us...
+
+  if ( !sDisableSrIdCache )
+  {
+    QgsReadWriteLocker locker( *sSrIdCacheLock(), QgsReadWriteLocker::Write );
+    if ( !sDisableSrIdCache )
+    {
+      for ( auto it = sSrIdCache()->begin(); it != sSrIdCache()->end(); )
+      {
+        auto &v = it.value();
+        if ( v.d->removeObjectsBelongingToCurrentThread( pj_context ) )
+          it = sSrIdCache()->erase( it );
+        else
+          ++it;
+      }
+    }
+  }
+  if ( !sDisableOgcCache )
+  {
+    QgsReadWriteLocker locker( *sOgcLock(), QgsReadWriteLocker::Write );
+    if ( !sDisableOgcCache )
+    {
+      for ( auto it = sOgcCache()->begin(); it != sOgcCache()->end(); )
+      {
+        auto &v = it.value();
+        if ( v.d->removeObjectsBelongingToCurrentThread( pj_context ) )
+          it = sOgcCache()->erase( it );
+        else
+          ++it;
+      }
+    }
+  }
+  if ( !sDisableProjCache )
+  {
+    QgsReadWriteLocker locker( *sProj4CacheLock(), QgsReadWriteLocker::Write );
+    if ( !sDisableProjCache )
+    {
+      for ( auto it = sProj4Cache()->begin(); it != sProj4Cache()->end(); )
+      {
+        auto &v = it.value();
+        if ( v.d->removeObjectsBelongingToCurrentThread( pj_context ) )
+          it = sProj4Cache()->erase( it );
+        else
+          ++it;
+      }
+    }
+  }
+  if ( !sDisableWktCache )
+  {
+    QgsReadWriteLocker locker( *sCRSWktLock(), QgsReadWriteLocker::Write );
+    if ( !sDisableWktCache )
+    {
+      for ( auto it = sWktCache()->begin(); it != sWktCache()->end(); )
+      {
+        auto &v = it.value();
+        if ( v.d->removeObjectsBelongingToCurrentThread( pj_context ) )
+          it = sWktCache()->erase( it );
+        else
+          ++it;
+      }
+    }
+  }
+  if ( !sDisableSrsIdCache )
+  {
+    QgsReadWriteLocker locker( *sCRSSrsIdLock(), QgsReadWriteLocker::Write );
+    if ( !sDisableSrsIdCache )
+    {
+      for ( auto it = sSrsIdCache()->begin(); it != sSrsIdCache()->end(); )
+      {
+        auto &v = it.value();
+        if ( v.d->removeObjectsBelongingToCurrentThread( pj_context ) )
+          it = sSrsIdCache()->erase( it );
+        else
+          ++it;
+      }
+    }
+  }
+  if ( !sDisableStringCache )
+  {
+    QgsReadWriteLocker locker( *sCrsStringLock(), QgsReadWriteLocker::Write );
+    if ( !sDisableStringCache )
+    {
+      for ( auto it = sStringCache()->begin(); it != sStringCache()->end(); )
+      {
+        auto &v = it.value();
+        if ( v.d->removeObjectsBelongingToCurrentThread( pj_context ) )
+          it = sStringCache()->erase( it );
+        else
+          ++it;
+      }
+    }
+  }
+}
+#endif
+
 bool QgsCoordinateReferenceSystem::hasAxisInverted() const
 {
   if ( d->mAxisInvertedDirty )
   {
 #if PROJ_VERSION_MAJOR>=6
-    d->mAxisInverted = QgsProjUtils::axisOrderIsSwapped( d->mPj.get() );
+    d->mAxisInverted = QgsProjUtils::axisOrderIsSwapped( d->threadLocalProjObject() );
 #else
     OGRAxisOrientation orientation;
     OSRGetAxis( d->mCRS, OSRIsGeographic( d->mCRS ) ? "GEOGCS" : "PROJCS", 0, &orientation );
@@ -1216,9 +1317,9 @@ QString QgsCoordinateReferenceSystem::ellipsoidAcronym() const
   if ( d->mEllipsoidAcronym.isNull() )
   {
 #if PROJ_VERSION_MAJOR>=6
-    if ( d->mPj )
+    if ( PJ *obj = d->threadLocalProjObject() )
     {
-      QgsProjUtils::proj_pj_unique_ptr ellipsoid( proj_get_ellipsoid( QgsProjContext::get(), d->mPj.get() ) );
+      QgsProjUtils::proj_pj_unique_ptr ellipsoid( proj_get_ellipsoid( QgsProjContext::get(), obj ) );
       if ( ellipsoid )
       {
         const QString ellipsoidAuthName( proj_get_id_auth_name( ellipsoid.get(), 0 ) );
@@ -1266,9 +1367,9 @@ QString QgsCoordinateReferenceSystem::toProj() const
   if ( d->mProj4.isEmpty() )
   {
 #if PROJ_VERSION_MAJOR>=6
-    if ( d->mPj )
+    if ( PJ *obj = d->threadLocalProjObject() )
     {
-      d->mProj4 = getFullProjString( d->mPj.get() );
+      d->mProj4 = getFullProjString( obj );
     }
 #else
     char *proj4src = nullptr;
@@ -1300,7 +1401,8 @@ QgsRectangle QgsCoordinateReferenceSystem::bounds() const
     return QgsRectangle();
 
 #if PROJ_VERSION_MAJOR>=6
-  if ( !d->mPj )
+  PJ *obj = d->threadLocalProjObject();
+  if ( !obj )
     return QgsRectangle();
 
   double westLon = 0;
@@ -1308,7 +1410,7 @@ QgsRectangle QgsCoordinateReferenceSystem::bounds() const
   double eastLon = 0;
   double northLat = 0;
 
-  if ( !proj_get_area_of_use( QgsProjContext::get(), d->mPj.get(),
+  if ( !proj_get_area_of_use( QgsProjContext::get(), obj,
                               &westLon, &southLat, &eastLon, &northLat, nullptr ) )
     return QgsRectangle();
 
@@ -1822,7 +1924,7 @@ bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSyste
 QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline, int indentationWidth ) const
 {
 #if PROJ_VERSION_MAJOR>=6
-  if ( d->mPj )
+  if ( PJ *obj = d->threadLocalProjObject() )
   {
     PJ_WKT_TYPE type = PJ_WKT1_GDAL;
     switch ( variant )
@@ -1850,7 +1952,7 @@ QString QgsCoordinateReferenceSystem::toWkt( WktVariant variant, bool multiline,
     const QByteArray multiLineOption = QStringLiteral( "MULTILINE=%1" ).arg( multiline ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) ).toLocal8Bit();
     const QByteArray indentatationWidthOption = QStringLiteral( "INDENTATION_WIDTH=%1" ).arg( multiline ? QString::number( indentationWidth ) : QStringLiteral( "0" ) ).toLocal8Bit();
     const char *const options[] = {multiLineOption.constData(), indentatationWidthOption.constData(), nullptr};
-    return QString( proj_as_wkt( QgsProjContext::get(), d->mPj.get(), type, options ) );
+    return QString( proj_as_wkt( QgsProjContext::get(), obj, type, options ) );
   }
   return QString();
 #else
@@ -2424,14 +2526,15 @@ QList<long> QgsCoordinateReferenceSystem::userSrsIds()
 
 long QgsCoordinateReferenceSystem::matchToUserCrs() const
 {
-  if ( !d->mPj )
+  PJ *obj = d->threadLocalProjObject();
+  if ( !obj )
     return 0;
 
   const QList< long > ids = userSrsIds();
   for ( long id : ids )
   {
     QgsCoordinateReferenceSystem candidate = QgsCoordinateReferenceSystem::fromSrsId( id );
-    if ( candidate.projObject() && proj_is_equivalent_to( d->mPj.get(), candidate.projObject(), PJ_COMP_EQUIVALENT ) )
+    if ( candidate.projObject() && proj_is_equivalent_to( obj, candidate.projObject(), PJ_COMP_EQUIVALENT ) )
     {
       return id;
     }
@@ -3341,9 +3444,9 @@ QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
     return d->mAuthId;
   }
 #if PROJ_VERSION_MAJOR>=6
-  else if ( d->mPj )
+  else if ( PJ *obj = d->threadLocalProjObject() )
   {
-    QgsProjUtils::proj_pj_unique_ptr geoCrs( proj_crs_get_geodetic_crs( QgsProjContext::get(), d->mPj.get() ) );
+    QgsProjUtils::proj_pj_unique_ptr geoCrs( proj_crs_get_geodetic_crs( QgsProjContext::get(), obj ) );
     return geoCrs ? QStringLiteral( "%1:%2" ).arg( proj_get_id_auth_name( geoCrs.get(), 0 ), proj_get_id_code( geoCrs.get(), 0 ) ) : QString();
   }
 #else
@@ -3361,7 +3464,7 @@ QString QgsCoordinateReferenceSystem::geographicCrsAuthId() const
 #if PROJ_VERSION_MAJOR>=6
 PJ *QgsCoordinateReferenceSystem::projObject() const
 {
-  return d->mPj.get();
+  return d->threadLocalProjObject();
 }
 #endif
 
