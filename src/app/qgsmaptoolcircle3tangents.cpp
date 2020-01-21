@@ -40,6 +40,10 @@ void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   if ( !currentVectorLayer() )
   {
     notifyNotVectorLayer();
+    clean();
+    stopCapturing();
+    e->ignore();
+    return;
   }
 
   EdgesOnlyFilter filter;
