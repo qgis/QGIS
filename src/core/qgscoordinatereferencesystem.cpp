@@ -126,12 +126,14 @@ QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const long id, CrsTy
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs )  //NOLINT
   : d( srs.d )
+  , mValidationHint( srs.mValidationHint )
 {
 }
 
 QgsCoordinateReferenceSystem &QgsCoordinateReferenceSystem::operator=( const QgsCoordinateReferenceSystem &srs )  //NOLINT
 {
   d = srs.d;
+  mValidationHint = srs.mValidationHint;
   return *this;
 }
 
@@ -2235,13 +2237,12 @@ void QgsCoordinateReferenceSystem::debugPrint()
 
 void QgsCoordinateReferenceSystem::setValidationHint( const QString &html )
 {
-  d.detach();
-  d->mValidationHint = html;
+  mValidationHint = html;
 }
 
 QString QgsCoordinateReferenceSystem::validationHint()
 {
-  return d->mValidationHint;
+  return mValidationHint;
 }
 
 /// Copied from QgsCustomProjectionDialog ///

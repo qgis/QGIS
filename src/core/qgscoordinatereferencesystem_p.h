@@ -173,7 +173,6 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     OGRSpatialReferenceH mCRS;
 #endif
 
-    QString mValidationHint;
     mutable QString mProj4;
 
     //! True if presence of an inverted axis needs to be recalculated
