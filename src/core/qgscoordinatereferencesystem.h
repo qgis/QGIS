@@ -960,6 +960,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     QExplicitlySharedDataPointer<QgsCoordinateReferenceSystemPrivate> d;
 
+    QString mValidationHint;
+
 #if PROJ_VERSION_MAJOR>=6
     friend class QgsProjContext;
 
