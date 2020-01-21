@@ -13671,6 +13671,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionRegularPolygon2Points->setEnabled( false );
       mActionRegularPolygonCenterPoint->setEnabled( false );
       mActionRegularPolygonCenterCorner->setEnabled( false );
+      mActionReverseLine->setEnabled( false );
+      mActionTrimExtendFeature->setEnabled( false );
       mActionDeleteSelected->setEnabled( false );
       mActionAddRing->setEnabled( false );
       mActionFillRing->setEnabled( false );
