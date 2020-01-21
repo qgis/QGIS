@@ -34,6 +34,7 @@
 #if PROJ_VERSION_MAJOR>=6
 #include <proj.h>
 #include "qgsprojutils.h"
+#include "qgsreadwritelocker.h"
 #else
 #include <ogr_srs_api.h>
 #endif
@@ -75,8 +76,11 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       , mAxisInverted( other.mAxisInverted )
     {
 #if PROJ_VERSION_MAJOR>=6
-      if ( mIsValid && other.mPj )
-        mPj.reset( proj_clone( QgsProjContext::get(), other.mPj.get() ) );
+      if ( mIsValid )
+      {
+        if ( PJ *obj = other.threadLocalProjObject() )
+          mPj.reset( proj_clone( QgsProjContext::get(), obj ) );
+      }
 #else
       if ( mIsValid )
       {
@@ -91,7 +95,15 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
     ~QgsCoordinateReferenceSystemPrivate()
     {
-#if PROJ_VERSION_MAJOR<6
+#if PROJ_VERSION_MAJOR>=6
+      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
+
+      for ( auto it = mProjObjects.begin(); it != mProjObjects.end(); ++it )
+      {
+        proj_destroy( it.value() );
+      }
+      mProjObjects.clear();
+#else
       OSRDestroySpatialReference( mCRS );
 #endif
     }
@@ -124,6 +136,9 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     bool mIsValid = false;
 
 #if PROJ_VERSION_MAJOR>=6
+
+    // this is the "master" proj object, to be used as a template for new proj objects created on different threads ONLY.
+    // Always use threadLocalProjObject() instead of this.
     QgsProjUtils::proj_pj_unique_ptr mPj;
 #else
     OGRSpatialReferenceH mCRS;
@@ -137,6 +152,49 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
     //! Whether this is a coordinate system has inverted axis
     mutable bool mAxisInverted = false;
+
+#if PROJ_VERSION_MAJOR>=6
+    mutable QReadWriteLock mProjLock;
+    mutable QMap < uintptr_t, PJ * > mProjObjects;
+
+    PJ *threadLocalProjObject() const
+    {
+      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
+      if ( !mPj )
+        return nullptr;
+
+      PJ_CONTEXT *context = QgsProjContext::get();
+      QMap < uintptr_t, PJ * >::const_iterator it = mProjObjects.constFind( reinterpret_cast< uintptr_t>( context ) );
+
+      if ( it != mProjObjects.constEnd() )
+      {
+        return it.value();
+      }
+
+      // proj object doesn't exist yet, so we need to create
+      locker.changeMode( QgsReadWriteLocker::Write );
+
+      PJ *res = proj_clone( context, mPj.get() );
+      mProjObjects.insert( reinterpret_cast< uintptr_t>( context ), res );
+      return res;
+    }
+
+    // Only meant to be called by QgsCoordinateReferenceSystem::removeFromCacheObjectsBelongingToCurrentThread()
+    bool removeObjectsBelongingToCurrentThread( void *pj_context )
+    {
+      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
+
+      QMap < uintptr_t, PJ * >::iterator it = mProjObjects.find( reinterpret_cast< uintptr_t>( pj_context ) );
+      if ( it != mProjObjects.end() )
+      {
+        proj_destroy( it.value() );
+        mProjObjects.erase( it );
+      }
+
+      return mProjObjects.isEmpty();
+    }
+#endif
+
 
 };
 

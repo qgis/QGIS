@@ -956,9 +956,15 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     QExplicitlySharedDataPointer<QgsCoordinateReferenceSystemPrivate> d;
 
+#if PROJ_VERSION_MAJOR>=6
+    friend class QgsProjContext;
+
+    // Only meant to be called by QgsProjContext::~QgsProjContext()
+    static void removeFromCacheObjectsBelongingToCurrentThread( void *pj_context );
+#endif
+
     //! Function for CRS validation. May be NULLPTR.
     static CUSTOM_CRS_VALIDATION sCustomSrsValidation;
-
 
     // cache
 
