@@ -102,6 +102,9 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
     def test_getprojectsettings(self):
         self.wms_request_compare('GetProjectSettings')
 
+    def test_getprojectsettings_opacity(self):
+        self.wms_request_compare('GetProjectSettings', None, 'getprojectsettings_opacity', 'test_opacity_project.qgs')
+
     def test_getcontext(self):
         self.wms_request_compare('GetContext')
 
