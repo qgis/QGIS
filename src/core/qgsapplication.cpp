@@ -1436,7 +1436,7 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                    "table.tabular-view, table.list-view { "
                    "   border-collapse: collapse;"
                    "   table-layout:fixed;"
-                   "   width: 100% !important;"
+                   "   width: 75% !important;"
                    "}"
                    // Override
                    "h1 { "
@@ -1448,7 +1448,7 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                    "}"
                    // Set first column width
                    ".list-view th:first-child, .list-view td:first-child {"
-                   "   width: 15%;"
+                   "   width: 25%;"
                    "}"
                    ".list-view.highlight { "
                    "   padding-left: inherit; "
