@@ -52,7 +52,6 @@ class GUI_EXPORT QgsLayoutLegendLayersDialog: public QDialog, private Ui::QgsLay
     void filterVisible( bool enabled );
 
   private:
-    QgsLayoutLegendLayersDialog() = delete;
 
     QgsMapLayerProxyModel *mModel = nullptr;
     QList< QgsMapLayer * > mVisibleLayers;
