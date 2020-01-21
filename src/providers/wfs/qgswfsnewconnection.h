@@ -28,7 +28,7 @@ class QgsWFSNewConnection : public QgsNewHttpConnection
 
   public:
     //! Constructor
-    QgsWFSNewConnection( QWidget *parent = nullptr, const QString &connName = QString::null );
+    QgsWFSNewConnection( QWidget *parent = nullptr, const QString &connName = QString() );
     ~QgsWFSNewConnection() override;
 
   private slots:

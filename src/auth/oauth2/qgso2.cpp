@@ -32,7 +32,7 @@ QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );
 QgsO2::QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config,
               QObject *parent, QNetworkAccessManager *manager )
   : O2( parent, manager )
-  , mTokenCacheFile( QString::null )
+  , mTokenCacheFile( QString() )
   , mAuthcfg( authcfg )
   , mOAuth2Config( oauth2config )
 {
