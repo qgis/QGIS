@@ -202,6 +202,7 @@ void QgsMapThemes::menuAboutToShow()
   mMenu->insertActions( mMenuSeparator, mMenuPresetActions );
   mReplaceMenu->addActions( mMenuReplaceActions );
 
+  mReplaceMenu->setEnabled( !hasCurrent );
   mActionAddPreset->setEnabled( !hasCurrent );
   mActionRemoveCurrentPreset->setEnabled( hasCurrent );
 }
