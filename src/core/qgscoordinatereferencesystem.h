@@ -44,6 +44,10 @@ class QgsCoordinateReferenceSystemPrivate;
 #ifndef SIP_RUN
 struct PJconsts;
 typedef struct PJconsts PJ;
+
+struct projCtx_t;
+typedef struct projCtx_t PJ_CONTEXT;
+
 #endif
 #endif
 
@@ -960,7 +964,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     friend class QgsProjContext;
 
     // Only meant to be called by QgsProjContext::~QgsProjContext()
-    static void removeFromCacheObjectsBelongingToCurrentThread( void *pj_context );
+    static void removeFromCacheObjectsBelongingToCurrentThread( PJ_CONTEXT *pj_context );
 #endif
 
     //! Function for CRS validation. May be NULLPTR.

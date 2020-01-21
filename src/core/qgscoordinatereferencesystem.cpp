@@ -690,7 +690,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
 }
 
 #if PROJ_VERSION_MAJOR>=6
-void QgsCoordinateReferenceSystem::removeFromCacheObjectsBelongingToCurrentThread( void *pj_context )
+void QgsCoordinateReferenceSystem::removeFromCacheObjectsBelongingToCurrentThread( PJ_CONTEXT *pj_context )
 {
   // Not completely sure about object order destruction after main() has
   // exited. So it is safer to check sDisableCache before using sCacheLock
