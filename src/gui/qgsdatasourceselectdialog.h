@@ -106,8 +106,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog, private Ui::QgsDataS
     void refreshModel( const QModelIndex &index );
 
     QgsBrowserProxyModel mBrowserProxyModel;
-    std::unique_ptr<QgsBrowserGuiModel> mBrowserModel;
-    bool mOwnModel = true;
+    QgsBrowserGuiModel *mBrowserModel = nullptr;
     QgsMimeDataUtils::Uri mUri;
     QLabel *mDescriptionLabel = nullptr;
 
