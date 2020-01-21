@@ -150,11 +150,11 @@ class TestQgsPathResolver(unittest.TestCase):
         curdir = os.getcwd()
         os.chdir(os.path.join(TEST_DATA_DIR, 'qgis_server'))
         resolver = QgsPathResolver('./test_project.qgs')
-        self.assertEqual(resolver.readPath('./testlayer.shp'), os.path.join(TEST_DATA_DIR, 'qgis_server', 'testlayer.shp'))
-        self.assertEqual(resolver.readPath('testlayer.shp'), os.path.join(TEST_DATA_DIR, 'qgis_server', 'testlayer.shp'))
+        self.assertEqual(resolver.readPath('./testlayer.shp').replace("\\", "/"), os.path.join(TEST_DATA_DIR, 'qgis_server', 'testlayer.shp').replace("\\", "/"))
+        self.assertEqual(resolver.readPath('testlayer.shp').replace("\\", "/"), os.path.join(TEST_DATA_DIR, 'qgis_server', 'testlayer.shp').replace("\\", "/"))
         resolver = QgsPathResolver('test_project.qgs')
-        self.assertEqual(resolver.readPath('./testlayer.shp'), os.path.join(TEST_DATA_DIR, 'qgis_server', 'testlayer.shp'))
-        self.assertEqual(resolver.readPath('testlayer.shp'), os.path.join(TEST_DATA_DIR, 'qgis_server', 'testlayer.shp'))
+        self.assertEqual(resolver.readPath('./testlayer.shp').replace("\\", "/"), os.path.join(TEST_DATA_DIR, 'qgis_server', 'testlayer.shp').replace("\\", "/"))
+        self.assertEqual(resolver.readPath('testlayer.shp').replace("\\", "/"), os.path.join(TEST_DATA_DIR, 'qgis_server', 'testlayer.shp').replace("\\", "/"))
         os.chdir(curdir)
 
 
