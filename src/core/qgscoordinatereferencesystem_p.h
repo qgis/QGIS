@@ -70,7 +70,6 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 #if PROJ_VERSION_MAJOR<6
       , mCRS( nullptr )
 #endif
-      , mValidationHint( other.mValidationHint )
       , mProj4( other.mProj4 )
       , mAxisInvertedDirty( other.mAxisInvertedDirty )
       , mAxisInverted( other.mAxisInverted )
@@ -152,11 +151,16 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
     // this is the "master" proj object, to be used as a template for new proj objects created on different threads ONLY.
     // Always use threadLocalProjObject() instead of this.
+
+  private:
     QgsProjUtils::proj_pj_unique_ptr mPj;
     PJ_CONTEXT *mPjParentContext = nullptr;
 
+  public:
+
     void setPj( QgsProjUtils::proj_pj_unique_ptr obj )
     {
+      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
       if ( mPj )
       {
         PJ_CONTEXT *tmpContext = proj_context_create();
@@ -167,6 +171,12 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
       mPj = std::move( obj );
       mPjParentContext = QgsProjContext::get();
+    }
+
+    bool hasPj() const
+    {
+      QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
+      return static_cast< bool >( mPj );
     }
 
 #else
@@ -182,8 +192,11 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     mutable bool mAxisInverted = false;
 
 #if PROJ_VERSION_MAJOR>=6
+  private:
     mutable QReadWriteLock mProjLock;
     mutable QMap < PJ_CONTEXT *, PJ * > mProjObjects;
+
+  public:
 
     PJ *threadLocalProjObject() const
     {
