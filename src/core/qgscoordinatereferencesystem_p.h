@@ -155,7 +155,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
 
 #if PROJ_VERSION_MAJOR>=6
     mutable QReadWriteLock mProjLock;
-    mutable QMap < uintptr_t, PJ * > mProjObjects;
+    mutable QMap < PJ_CONTEXT *, PJ * > mProjObjects;
 
     PJ *threadLocalProjObject() const
     {
@@ -164,7 +164,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
         return nullptr;
 
       PJ_CONTEXT *context = QgsProjContext::get();
-      QMap < uintptr_t, PJ * >::const_iterator it = mProjObjects.constFind( reinterpret_cast< uintptr_t>( context ) );
+      QMap < PJ_CONTEXT *, PJ * >::const_iterator it = mProjObjects.constFind( context );
 
       if ( it != mProjObjects.constEnd() )
       {
@@ -175,16 +175,16 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
       locker.changeMode( QgsReadWriteLocker::Write );
 
       PJ *res = proj_clone( context, mPj.get() );
-      mProjObjects.insert( reinterpret_cast< uintptr_t>( context ), res );
+      mProjObjects.insert( context, res );
       return res;
     }
 
     // Only meant to be called by QgsCoordinateReferenceSystem::removeFromCacheObjectsBelongingToCurrentThread()
-    bool removeObjectsBelongingToCurrentThread( void *pj_context )
+    bool removeObjectsBelongingToCurrentThread( PJ_CONTEXT *pj_context )
     {
       QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
 
-      QMap < uintptr_t, PJ * >::iterator it = mProjObjects.find( reinterpret_cast< uintptr_t>( pj_context ) );
+      QMap < PJ_CONTEXT *, PJ * >::iterator it = mProjObjects.find( pj_context );
       if ( it != mProjObjects.end() )
       {
         proj_destroy( it.value() );
