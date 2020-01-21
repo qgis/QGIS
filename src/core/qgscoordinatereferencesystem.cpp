@@ -464,8 +464,6 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
        wmsCrs.compare( QLatin1String( "OGC:CRS84" ), Qt::CaseInsensitive ) == 0 )
   {
     createFromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
-
-    d.detach();
     d->mAxisInverted = false;
     d->mAxisInvertedDirty = false;
 
@@ -489,8 +487,6 @@ void QgsCoordinateReferenceSystem::validate()
 {
   if ( d->mIsValid || !sCustomSrsValidation )
     return;
-
-  d.detach();
 
   // try to validate using custom validation routines
   if ( sCustomSrsValidation )
@@ -1460,30 +1456,6 @@ QgsRectangle QgsCoordinateReferenceSystem::bounds() const
 #endif
 }
 
-
-// Mutators -----------------------------------
-
-
-void QgsCoordinateReferenceSystem::setInternalId( long srsId )
-{
-  d.detach();
-  d->mSrsId = srsId;
-}
-void QgsCoordinateReferenceSystem::setAuthId( const QString &authId )
-{
-  d.detach();
-  d->mAuthId = authId;
-}
-void QgsCoordinateReferenceSystem::setSrid( long srid )
-{
-  d.detach();
-  d->mSRID = srid;
-}
-void QgsCoordinateReferenceSystem::setDescription( const QString &description )
-{
-  d.detach();
-  d->mDescription = description;
-}
 void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
 {
   d.detach();
@@ -1679,30 +1651,8 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
   return d->mIsValid;
 }
 
-void QgsCoordinateReferenceSystem::setGeographicFlag( bool geoFlag )
-{
-  d.detach();
-  d->mIsGeographic = geoFlag;
-}
-void QgsCoordinateReferenceSystem::setEpsg( long epsg )
-{
-  d.detach();
-  d->mAuthId = QStringLiteral( "EPSG:%1" ).arg( epsg );
-}
-void  QgsCoordinateReferenceSystem::setProjectionAcronym( const QString &projectionAcronym )
-{
-  d.detach();
-  d->mProjectionAcronym = projectionAcronym;
-}
-void  QgsCoordinateReferenceSystem::setEllipsoidAcronym( const QString &ellipsoidAcronym )
-{
-  d.detach();
-  d->mEllipsoidAcronym = ellipsoidAcronym;
-}
-
 void QgsCoordinateReferenceSystem::setMapUnits()
 {
-  d.detach();
   if ( !d->mIsValid )
   {
     d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
@@ -2033,32 +1983,25 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
         setProjString( node.toElement().text() );
 
       node = srsNode.namedItem( QStringLiteral( "srsid" ) );
-      setInternalId( node.toElement().text().toLong() );
+      d->mSrsId = node.toElement().text().toLong();
 
       node = srsNode.namedItem( QStringLiteral( "srid" ) );
-      setSrid( node.toElement().text().toLong() );
+      d->mSRID = node.toElement().text().toLong();
 
       node = srsNode.namedItem( QStringLiteral( "authid" ) );
-      setAuthId( node.toElement().text() );
+      d->mAuthId = node.toElement().text();
 
       node = srsNode.namedItem( QStringLiteral( "description" ) );
-      setDescription( node.toElement().text() );
+      d->mDescription = node.toElement().text();
 
       node = srsNode.namedItem( QStringLiteral( "projectionacronym" ) );
-      setProjectionAcronym( node.toElement().text() );
+      d->mProjectionAcronym = node.toElement().text();
 
       node = srsNode.namedItem( QStringLiteral( "ellipsoidacronym" ) );
-      setEllipsoidAcronym( node.toElement().text() );
+      d->mEllipsoidAcronym = node.toElement().text();
 
       node = srsNode.namedItem( QStringLiteral( "geographicflag" ) );
-      if ( node.toElement().text().compare( QLatin1String( "true" ) ) )
-      {
-        setGeographicFlag( true );
-      }
-      else
-      {
-        setGeographicFlag( false );
-      }
+      d->mIsGeographic = node.toElement().text().compare( QLatin1String( "true" ) );
 
       //make sure the map units have been set
       setMapUnits();
@@ -2315,10 +2258,10 @@ long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name, Format na
     QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj() ), QObject::tr( "CRS" ) );
 
     returnId = sqlite3_last_insert_rowid( database.get() );
-    setInternalId( returnId );
+    d->mSrsId = returnId;
     if ( authid().isEmpty() )
-      setAuthId( QStringLiteral( "USER:%1" ).arg( returnId ) );
-    setDescription( name );
+      d->mAuthId = QStringLiteral( "USER:%1" ).arg( returnId );
+    d->mDescription = name;
   }
 
   invalidateCache();

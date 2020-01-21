@@ -837,24 +837,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     static QString projFromSrsId( int srsId );
 
     /**
-     * Set the QGIS SrsId
-     *  \param srsId The internal sqlite3 srs.db primary key for this CRS
-     */
-    void setInternalId( long srsId );
-
-    /**
-     * Set the PostGIS srid
-     *  \param srid The PostGIS spatial_ref_sys key for this CRS
-     */
-    void setSrid( long srid );
-
-    /**
-     * Set the Description
-     * \param description A textual description of the CRS.
-     */
-    void setDescription( const QString &description );
-
-    /**
      * Set the Proj string.
      * \param projString Proj format specifies
      * (excluding proj and ellips) that define this CRS.
@@ -865,37 +847,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Set the WKT string
      */
     bool setWktString( const QString &wkt, bool allowProjFallback = true );
-
-    /**
-     * Set this Geographic? flag
-     * \param geoFlag Whether this is a geographic or projected coordinate system
-     */
-    void setGeographicFlag( bool geoFlag );
-
-    /**
-     * Set the EpsgCrsId identifier for this CRS
-     * \param epsg the EPSG identifier for this CRS (defaults to 0)
-     */
-    void setEpsg( long epsg );
-
-    /**
-     * Set the authority identifier for this CRS
-     * \param theID the authority identifier for this CRS (defaults to 0)
-     */
-    void setAuthId( const QString &theID );
-
-    /**
-     * Set the projection acronym
-     * \param projectionAcronym the acronym (must be a valid Proj projection acronym)
-     */
-    void setProjectionAcronym( const QString &projectionAcronym );
-
-    /**
-     * Set the ellipsoid acronym
-     * \param ellipsoidAcronym the acronym (must be a valid Proj ellipsoid acronym or
-     * authority:code identifier on Proj version 6+ builds)
-     */
-    void setEllipsoidAcronym( const QString &ellipsoidAcronym );
 
     /**
      * Print the description if debugging
