@@ -278,34 +278,6 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
     {
       fields[fldIdx].setName( fields.at( fldIdx ).name().toLower() );
     }
-
-    // This code does not make much sense anymore except for POINT
-    // because since commit 1aa0091e7a368ded all POLYGON and LINESTRING are
-    // reported as MULTI from the OGR provider and shapefiles.
-    if ( !forceSinglePartGeom )
-    {
-      // convert wkbtype to multipart (see #5547)
-      switch ( wkbType )
-      {
-        case QgsWkbTypes::LineString:
-          wkbType = QgsWkbTypes::MultiLineString;
-          break;
-        case QgsWkbTypes::Polygon:
-          wkbType = QgsWkbTypes::MultiPolygon;
-          break;
-        case QgsWkbTypes::Point25D:
-          wkbType = QgsWkbTypes::MultiPoint25D;
-          break;
-        case QgsWkbTypes::LineString25D:
-          wkbType = QgsWkbTypes::MultiLineString25D;
-          break;
-        case QgsWkbTypes::Polygon25D:
-          wkbType = QgsWkbTypes::MultiPolygon25D;
-          break;
-        default:
-          break;
-      }
-    }
   }
 
   bool convertGeometryToSinglePart = false;

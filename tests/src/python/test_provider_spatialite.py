@@ -31,6 +31,7 @@ from qgis.core import (QgsProviderRegistry,
                        QgsDefaultValue,
                        QgsFeatureRequest,
                        QgsRectangle,
+                       QgsVectorLayerExporter,
                        QgsWkbTypes)
 
 from qgis.testing import start_app, unittest
@@ -1065,6 +1066,68 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         _test_db(testPath)
         testPath = "dbname=%s table='test_pg'" % dbname
         _test_db(testPath)
+
+    def testGeometryTypes(self):
+        """Test creating db with various geometry types"""
+
+        # create test db
+        dbname = os.path.join(tempfile.gettempdir(), "testGeometryTypes.sqlite")
+        if os.path.exists(dbname):
+            os.remove(dbname)
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = "SELECT InitSpatialMetadata()"
+        cur.execute(sql)
+
+        cur.execute("COMMIT")
+        con.close()
+
+        tests = [('Point', 'Point (0 0)', QgsWkbTypes.Point),
+                 ('PointZ', 'PointZ (0 0 10)', QgsWkbTypes.PointZ),
+                 ('Point25D', 'PointZ (0 0 10)', QgsWkbTypes.PointZ),
+                 ('MultiPoint', 'MultiPoint (0 0, 0 1)', QgsWkbTypes.MultiPoint),
+                 ('MultiPointZ', 'MultiPointZ ((0 0 10, 0 1 10))', QgsWkbTypes.MultiPointZ),
+                 ('MultiPoint25D', 'MultiPointZ ((0 0 10, 0 1 10))', QgsWkbTypes.MultiPointZ),
+                 ('LineString', 'LineString (0 0, 0 1)', QgsWkbTypes.LineString),
+                 ('LineStringZ', 'LineStringZ (0 0 10, 0 1 10)', QgsWkbTypes.LineStringZ),
+                 ('LineString25D', 'LineStringZ (0 0 10, 0 1 10)', QgsWkbTypes.LineStringZ),
+                 ('MultiLineString', 'MultiLineString (0 0, 0 1)', QgsWkbTypes.MultiLineString),
+                 ('MultiLineStringZ', 'MultiLineStringZ ((0 0 10, 0 1 10))', QgsWkbTypes.MultiLineStringZ),
+                 ('MultiLineString25D', 'MultiLineStringZ ((0 0 10, 0 1 10))', QgsWkbTypes.MultiLineStringZ),
+                 ('Polygon', 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))', QgsWkbTypes.Polygon),
+                 ('PolygonZ', 'PolygonZ ((0 0 10, 0 1 10, 1 1 10, 1 0 10, 0 0 10))', QgsWkbTypes.PolygonZ),
+                 ('Polygon25D', 'PolygonZ ((0 0 10, 0 1 10, 1 1 10, 1 0 10, 0 0 10))', QgsWkbTypes.PolygonZ),
+                 ('MultiPolygon', 'MultiPolygon (((0 0, 0 1, 1 1, 1 0, 0 0)))', QgsWkbTypes.MultiPolygon),
+                 ('MultiPolygonZ', 'MultiPolygonZ (((0 0 10, 0 1 10, 1 1 10, 1 0 10, 0 0 10)))', QgsWkbTypes.MultiPolygonZ),
+                 ('MultiPolygon25D', 'MultiPolygonZ (((0 0 10, 0 1 10, 1 1 10, 1 0 10, 0 0 10)))', QgsWkbTypes.MultiPolygonZ)
+                 ]
+        for typeStr, wkt, qgisType in tests:
+
+            ml = QgsVectorLayer(
+                (typeStr + '?crs=epsg:4326&field=id:int'),
+                typeStr,
+                'memory')
+
+            provider = ml.dataProvider()
+            ft = QgsFeature()
+            ft.setGeometry(QgsGeometry.fromWkt(wkt))
+            res, features = provider.addFeatures([ft])
+
+            layer = typeStr
+            uri = "dbname=%s table='%s' (geometry)" % (dbname, layer)
+            write_result, error_message = QgsVectorLayerExporter.exportLayer(ml,
+                                                                             uri,
+                                                                             'spatialite',
+                                                                             ml.crs(),
+                                                                             False,
+                                                                             {},
+                                                                             )
+            self.assertEqual(write_result, QgsVectorLayerExporter.NoError, error_message)
+
+            vl = QgsVectorLayer(uri, typeStr, 'spatialite')
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.wkbType(), qgisType)
 
 
 if __name__ == '__main__':
