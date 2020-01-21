@@ -1686,12 +1686,14 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
 
     if ( layerProperty.isRaster )
     {
-      QString sql = QStringLiteral( "SELECT %3, "
-                                    "array_agg(DISTINCT ST_SRID( %1 ) || ':RASTER')"
-                                    " FROM %2" )
-                    .arg( quotedIdentifier( layerProperty.geometryColName ) )
-                    .arg( table )
-                    .arg( i - 1 );
+      const QString sql = QStringLiteral( "SELECT %1, "
+                                          "array_agg( srid || ':RASTER') "
+                                          "FROM raster_columns "
+                                          "WHERE r_raster_column = %2 AND r_table_schema = %3 AND r_table_name = %4" )
+                          .arg( i - 1 )
+                          .arg( quotedValue( layerProperty.geometryColName ) )
+                          .arg( quotedValue( layerProperty.schemaName ) )
+                          .arg( quotedValue( layerProperty.tableName ) );
 
       QgsDebugMsg( "Raster srids query: " + sql );
       query += sql;
