@@ -397,6 +397,10 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
         return 2;
 
       layerPoint = f.geometry().constGet()->vertexAt( vId );
+      if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) && !layerPoint.is3D() )
+        layerPoint.addZValue( defaultZValue() );
+      if ( QgsWkbTypes::hasM( vlayer->wkbType() ) && !layerPoint.isMeasure() )
+        layerPoint.addMValue( 0.0 );
 
       // ZM support depends on the target layer
       if ( !QgsWkbTypes::hasZ( vlayer->wkbType() ) )
