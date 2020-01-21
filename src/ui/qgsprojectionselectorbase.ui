@@ -42,7 +42,7 @@
       <string>Use this option to treat all coordinates as Cartesian coordinates in an unknown reference system.</string>
      </property>
      <property name="text">
-      <string>No projection (or unknown/non-Earth projection)</string>
+      <string>No CRS (or unknown/non-Earth projection)</string>
      </property>
     </widget>
    </item>
