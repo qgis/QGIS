@@ -50,6 +50,7 @@ QgsProjContext::~QgsProjContext()
   // Call removeFromCacheObjectsBelongingToCurrentThread() before
   // destroying the context
   QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread( mContext );
+  QgsCoordinateReferenceSystem::removeFromCacheObjectsBelongingToCurrentThread( mContext );
   proj_context_destroy( mContext );
 #else
   pj_ctx_free( mContext );
