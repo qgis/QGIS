@@ -13356,7 +13356,8 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionCopyStyle->setEnabled( false );
     mActionPasteStyle->setEnabled( false );
     mActionCopyLayer->setEnabled( false );
-    mActionPasteLayer->setEnabled( false );
+    // pasting should be allowed if there is a layer in the clipboard
+    mActionPasteLayer->setEnabled( clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_MAPLAYER_MIME ) ) );
     mActionReverseLine->setEnabled( false );
     mActionTrimExtendFeature->setEnabled( false );
 
@@ -13406,7 +13407,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
   mActionCopyStyle->setEnabled( true );
   mActionPasteStyle->setEnabled( clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_STYLE_MIME ) ) );
   mActionCopyLayer->setEnabled( true );
-  mActionPasteLayer->setEnabled( clipboard()->hasFormat( QStringLiteral( QGSCLIPBOARD_MAPLAYER_MIME ) ) );
 
   // Vector layers
   switch ( layer->type() )
