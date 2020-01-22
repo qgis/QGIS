@@ -1866,8 +1866,20 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
 
 bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSystem &srs ) const
 {
-  return ( !d->mIsValid && !srs.d->mIsValid ) ||
-         ( d->mIsValid && srs.d->mIsValid && srs.authid() == authid() );
+  // shortcut
+  if ( d == srs.d )
+    return true;
+
+  if ( !d->mIsValid && !srs.d->mIsValid )
+    return true;
+
+  if ( !d->mIsValid || !srs.d->mIsValid )
+    return false;
+
+  if ( !d->mAuthId.isEmpty() && d->mAuthId == srs.d->mAuthId )
+    return true;
+
+  return toWkt( WKT2_2018 ) == srs.toWkt( WKT2_2018 );
 }
 
 bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSystem &srs ) const
