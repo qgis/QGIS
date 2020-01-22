@@ -227,6 +227,18 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         sql += "VALUES (8, 'int', GeomFromText('POINT(2 1)', 4326))"
         cur.execute(sql)
 
+        # bigint table
+        sql = "CREATE TABLE test_bigint (id BIGINT, value INT)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_bigint', 'position', 4326, 'LINESTRING', 'XYM')"
+        cur.execute(sql)
+        sql = """
+        INSERT INTO test_bigint (id, value, position) VALUES
+        (987654321012345, 1, ST_GeomFromtext('LINESTRINGM(10.416255 55.3786316 1577093516, 10.516255 55.4786316 157709)', 4326) ),
+        (987654321012346, 2, ST_GeomFromtext('LINESTRINGM(10.316255 55.3786316 1577093516, 11.216255 56.3786316 157709)', 4326) )"""
+
+        cur.execute(sql)
+
         cur.execute("COMMIT")
         con.close()
 
@@ -816,7 +828,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         filename = '/home/to/path/test.db'
         registry = QgsProviderRegistry.instance()
 
-        parts = {'path', filename, 'layerName': 'test'}
+        parts = {'path': filename, 'layerName': 'test'}
         uri = registry.encodeUri('spatialite', parts)
         self.assertEqual(uri, 'dbname=\'{}\' table="test" (geometry) sql='.format(filename))
 
@@ -1138,6 +1150,14 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
             vl = QgsVectorLayer(uri, typeStr, 'spatialite')
             self.assertTrue(vl.isValid())
             self.assertEqual(vl.wkbType(), qgisType)
+
+    def testBigint(self):
+        """Test unique values bigint, see GH #33585"""
+
+        l = QgsVectorLayer("dbname=%s table='test_bigint' (position) key='id'" % self.dbname, "test_bigint", "spatialite")
+        self.assertTrue(l.isValid())
+        self.assertEqual(l.uniqueValues(1), {1, 2})
+        self.assertEqual(l.uniqueValues(0), {987654321012345, 987654321012346})
 
 
 if __name__ == '__main__':
