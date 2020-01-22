@@ -228,6 +228,18 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         sql += "VALUES (8, 'int', GeomFromText('POINT(2 1)', 4326))"
         cur.execute(sql)
 
+        # bigint table
+        sql = "CREATE TABLE test_bigint (id BIGINT, value INT)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_bigint', 'position', 4326, 'LINESTRING', 'XYM')"
+        cur.execute(sql)
+        sql = """
+        INSERT INTO test_bigint (id, value, position) VALUES
+        (987654321012345, 1, ST_GeomFromtext('LINESTRINGM(10.416255 55.3786316 1577093516, 10.516255 55.4786316 157709)', 4326) ),
+        (987654321012346, 2, ST_GeomFromtext('LINESTRINGM(10.316255 55.3786316 1577093516, 11.216255 56.3786316 157709)', 4326) )"""
+
+        cur.execute(sql)
+
         cur.execute("COMMIT")
         con.close()
 

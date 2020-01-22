@@ -3869,7 +3869,7 @@ QSet<QVariant> QgsSpatiaLiteProvider::uniqueValues( int index, int limit ) const
         switch ( sqlite3_column_type( stmt, 0 ) )
         {
           case SQLITE_INTEGER:
-            uniqueValues.insert( QVariant( sqlite3_column_int( stmt, 0 ) ) );
+            uniqueValues.insert( QVariant( sqlite3_column_int64( stmt, 0 ) ) );
             break;
           case SQLITE_FLOAT:
             uniqueValues.insert( QVariant( sqlite3_column_double( stmt, 0 ) ) );
