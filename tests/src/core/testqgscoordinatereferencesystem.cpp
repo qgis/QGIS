@@ -863,6 +863,14 @@ void TestQgsCoordinateReferenceSystem::equality()
 {
   QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:4326" ) );
   QgsCoordinateReferenceSystem myCrs2( QStringLiteral( "EPSG:4326" ) );
+  QgsCoordinateReferenceSystem myCrs3 = myCrs2;
+  QVERIFY( myCrs == myCrs2 );
+  QVERIFY( myCrs3 == myCrs2 );
+  QVERIFY( QgsCoordinateReferenceSystem() == QgsCoordinateReferenceSystem() );
+
+  // custom crs, no authid
+  myCrs.createFromWkt( QStringLiteral( "PROJCS[\"unnamed\",GEOGCS[\"unnamed\",DATUM[\"Geocentric_Datum_of_Australia_2020\",SPHEROID[\"GRS 80\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",147],PARAMETER[\"scale_factor\",0.1996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]" ) );
+  myCrs2.createFromWkt( QStringLiteral( "PROJCS[\"unnamed\",GEOGCS[\"unnamed\",DATUM[\"Geocentric_Datum_of_Australia_2020\",SPHEROID[\"GRS 80\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",147],PARAMETER[\"scale_factor\",0.1996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]" ) );
   QVERIFY( myCrs == myCrs2 );
 }
 void TestQgsCoordinateReferenceSystem::noEquality()
@@ -870,6 +878,14 @@ void TestQgsCoordinateReferenceSystem::noEquality()
   QgsCoordinateReferenceSystem myCrs( QStringLiteral( "EPSG:4326" ) );
   QgsCoordinateReferenceSystem myCrs2( QStringLiteral( "EPSG:4327" ) );
   QVERIFY( myCrs != myCrs2 );
+  QVERIFY( myCrs != QgsCoordinateReferenceSystem() );
+  QVERIFY( QgsCoordinateReferenceSystem() != myCrs );
+
+  // custom crs, no authid
+  myCrs.createFromWkt( QStringLiteral( "PROJCS[\"unnamed\",GEOGCS[\"unnamed\",DATUM[\"Geocentric_Datum_of_Australia_2020\",SPHEROID[\"GRS 80\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",147],PARAMETER[\"scale_factor\",0.1996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]" ) );
+  myCrs2.createFromWkt( QStringLiteral( "PROJCS[\"unnamed\",GEOGCS[\"unnamed\",DATUM[\"Geocentric_Datum_of_Australia_2020\",SPHEROID[\"GRS 80\",6378137,298.257222101]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",147],PARAMETER[\"scale_factor\",0.2996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH]]" ) );
+  QVERIFY( myCrs != myCrs2 );
+
 }
 
 void TestQgsCoordinateReferenceSystem::equalityInvalid()
