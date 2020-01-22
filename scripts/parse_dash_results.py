@@ -366,11 +366,17 @@ class ResultHandler(QDialog):
 def main():
     app = QApplication(sys.argv)
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('dash_url')
-    args = parser.parse_args()
+    parser = argparse.ArgumentParser(
+            description='''A tool to automatically update test images masks based on results submitted to cdash.
 
-    w = ResultHandler()
+            Will take local control images and rendered images on cdash to create a mask.
+            When using it, make sure that the new masks will only mask regions on the image that indeed allow for variation
+            and do not completely void any tests.
+            ''')
+    parser.add_argument('dash_url', help='URL to a dash result with images. E.g. https://cdash.orfeo-toolbox.org/testDetails.php?test=15052561&build=27712'))
+    args=parser.parse_args()
+
+    w=ResultHandler()
     w.parse_url(args.dash_url)
     w.exec_()
 
