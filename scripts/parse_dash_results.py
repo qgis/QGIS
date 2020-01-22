@@ -33,7 +33,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import re
-from bs4 import BeautifulSoup
+import json
 from PyQt5.QtGui import (
     QImage, QColor, qRed, qBlue, qGreen, qAlpha, qRgb, QPixmap)
 from PyQt5.QtWidgets import (QDialog,
@@ -147,19 +147,20 @@ class ResultHandler(QDialog):
         self.reject()
 
     def parse_url(self, url):
-        print('Fetching dash results from: {}'.format(url))
-        page = urllib.request.urlopen(url)
-        soup = BeautifulSoup(page, "lxml")
+        parts = urllib.parse.urlsplit(url)
+        apiurl = urllib.parse.urlunsplit((parts.scheme, parts.netloc, '/api/v1/testDetails.php', parts.query, parts.fragment))
+        print('Fetching dash results from api: {}'.format(apiurl))
+        page = urllib.request.urlopen(apiurl)
+        content = json.loads(page.read().decode('utf-8'))
 
         # build up list of rendered images
-        measurement_img = [img for img in soup.find_all('img') if
-                           img.get('alt') and img.get('alt').startswith('Rendered Image')]
+        measurement_img = [img for img in content['test']['images'] if img['role'].startswith('Rendered Image')]
 
         images = {}
         for img in measurement_img:
-            m = re.search('Rendered Image (.*?)(\s|$)', img.get('alt'))
+            m = re.search('Rendered Image (.*?)(\s|$)', img['role'])
             test_name = m.group(1)
-            rendered_image = img.get('src')
+            rendered_image = 'displayImage.php?imgid={}'.format(img['imgid'])
             images[test_name] = '{}/{}'.format(dash_url, rendered_image)
 
         if images:
