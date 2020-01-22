@@ -136,7 +136,7 @@ int main( int argc, char *argv[] )
                                      "0: INFO\n"
                                      "1: WARNING\n"
                                      "3: CRITICAL" ), "logLevel", "0" );
-  parser.addOption( logLevelOption );
+  parser.addOption( logLevelOption );  //#spellok
 
   parser.process( app );
   const QStringList args = parser.positionalArguments();
