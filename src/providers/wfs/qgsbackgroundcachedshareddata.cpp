@@ -21,6 +21,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsspatialiteutils.h"
 #include "qgsvectorfilewriter.h"
+#include "qgswfsutils.h" // for isCompatibleType()
 
 #include <QCryptographicHash>
 #include <QDir>
@@ -172,6 +173,10 @@ bool QgsBackgroundCachedSharedData::createCache()
       // it to a String
       type = QVariant::LongLong;
     }
+    else if ( type == QVariant::List && field.subType() == QVariant::String )
+    {
+      type = QVariant::StringList;
+    }
 
     // Make sure we don't have several field names that only differ by their case
     QString sqliteFieldName( field.name() );
@@ -262,6 +267,8 @@ bool QgsBackgroundCachedSharedData::createCache()
         type = QStringLiteral( "BIGINT" );
       else if ( field.type() == QVariant::Double )
         type = QStringLiteral( "REAL" );
+      else if ( field.type() == QVariant::StringList )
+        type = QStringLiteral( "JSONSTRINGLIST" );
 
       sql += QStringLiteral( ", %1 %2" ).arg( quotedIdentifier( field.name() ), type );
     }
@@ -590,12 +597,13 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
       if ( idx >= 0 )
       {
         const QVariant &v = srcFeature.attributes().value( i );
+        const QVariant::Type fieldType = dataProviderFields.at( idx ).type();
         if ( v.type() == QVariant::DateTime && !v.isNull() )
           cachedFeature.setAttribute( idx, QVariant( v.toDateTime().toMSecsSinceEpoch() ) );
-        else if ( v.type() != dataProviderFields.at( idx ).type() )
-          cachedFeature.setAttribute( idx, QgsVectorDataProvider::convertValue( dataProviderFields.at( idx ).type(), v.toString() ) );
-        else
+        else if ( QgsWFSUtils::isCompatibleType( v.type(), fieldType ) )
           cachedFeature.setAttribute( idx, v );
+        else
+          cachedFeature.setAttribute( idx, QgsVectorDataProvider::convertValue( fieldType, v.toString() ) );
       }
     }
 
@@ -1120,9 +1128,14 @@ QString QgsBackgroundCachedSharedData::getMD5( const QgsFeature &f )
       qint64 val = v.toLongLong();
       hash.addData( QByteArray( ( const char * )&val, sizeof( val ) ) );
     }
-    else  if ( v.type() == QVariant::String )
+    else if ( v.type() == QVariant::String )
     {
       hash.addData( v.toByteArray() );
+    }
+    else if ( v.type() == QVariant::StringList )
+    {
+      for ( const QString &s : v.toStringList() )
+        hash.addData( s.toUtf8() );
     }
   }
 

@@ -21,6 +21,7 @@
 #include "qgsoapifapirequest.h"
 #include "qgsoapifcollection.h"
 #include "qgsoapifitemsrequest.h"
+#include "qgswfsutils.h" // for isCompatibleType()
 
 #include <algorithm>
 
@@ -735,7 +736,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
           const auto dstFieldType = dstFields.at( j ).type();
           if ( v.isNull() )
             dstFeat.setAttribute( j, QVariant( dstFieldType ) );
-          else if ( v.type() == dstFieldType )
+          else if ( QgsWFSUtils::isCompatibleType( v.type(), dstFieldType ) )
             dstFeat.setAttribute( j, v );
           else
             dstFeat.setAttribute( j, QgsVectorDataProvider::convertValue( dstFieldType, v.toString() ) );
