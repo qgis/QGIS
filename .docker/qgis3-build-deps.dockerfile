@@ -26,6 +26,7 @@ RUN  apt-get update \
     git \
     graphviz \
     grass-dev \
+    lib64asan5 \
     libaio1 \
     libexiv2-dev \
     libexpat1-dev \

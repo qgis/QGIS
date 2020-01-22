@@ -95,7 +95,7 @@ else
   echo "Flaky tests are run!"
 fi
 echo "List of skipped tests: $EXCLUDE_TESTS"
-timeout ${TIMEOUT}s python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/travis/travis.ctest --output-on-failure
+LD_PRELOAD=/usr/lib64/libasan.so.5.0.0 timeout ${TIMEOUT}s python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -E "${EXCLUDE_TESTS}" -S /root/QGIS/.ci/travis/travis.ctest --output-on-failure
 rv=$?
 if [ $rv -eq 124 ] ; then
     printf '\n\n${bold}Build and test timeout. Please restart the build for meaningful results.${endbold}\n'

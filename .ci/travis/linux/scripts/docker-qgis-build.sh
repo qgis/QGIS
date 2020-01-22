@@ -35,6 +35,10 @@ export CXX=/usr/lib/ccache/clang++
 
 cmake \
  -GNinja \
+ -DCXX_EXTRA_FLAGS="-fsanitize=address -fsanitize=leak"
+ -DCMAKE_C_FLAGS="-fsanitize=address -fsanitize=leak"
+ -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address -fsanitize=leak"
+ -DCMAKE_MODULE_LINKER_FLAGS="-fsanitize=address -fsanitize=leak"
  -DUSE_CCACHE=OFF \
  -DWITH_QUICK=ON \
  -DWITH_3D=ON \
