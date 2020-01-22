@@ -1262,6 +1262,7 @@ void QgsDxfExport::writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QS
 
 void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::LabelPosition *label, const QgsPalLayerSettings &layerSettings, const QgsExpressionContext &expressionContext )
 {
+
   double lblX = label->getX();
   double lblY = label->getY();
 
@@ -1272,59 +1273,64 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
 
   const QgsPropertyCollection &props = layerSettings.dataDefinedProperties();
 
-  if ( props.isActive( QgsPalLayerSettings::OffsetQuad ) )
+  if ( layerSettings.placement == QgsPalLayerSettings::Placement::OverPoint )
   {
     lblX = labelFeature->anchorPosition().x();
     lblY = labelFeature->anchorPosition().y();
 
-    const QVariant exprVal = props.value( QgsPalLayerSettings::OffsetQuad, expressionContext );
-    if ( exprVal.isValid() )
-    {
-      int offsetQuad = exprVal.toInt();
+    QgsPalLayerSettings::QuadrantPosition offsetQuad = layerSettings.quadOffset;
 
-      switch ( offsetQuad )
+    if ( props.isActive( QgsPalLayerSettings::OffsetQuad ) )
+    {
+      const QVariant exprVal = props.value( QgsPalLayerSettings::OffsetQuad, expressionContext );
+      if ( exprVal.isValid() )
       {
-        case 0: // Above Left
-          hali = HAlign::HRight;
-          vali = VAlign::VBottom;
-          break;
-        case 1: // Above
-          hali = HAlign::HCenter;
-          vali = VAlign::VBottom;
-          break;
-        case 2: // Above Right
-          hali = HAlign::HLeft;
-          vali = VAlign::VBottom;
-          break;
-        case 3: // Left
-          hali = HAlign::HRight;
-          vali = VAlign::VMiddle;
-          break;
-        case 4: // Over
-          hali = HAlign::HCenter;
-          vali = VAlign::VMiddle;
-          break;
-        case 5: // Right
-          hali = HAlign::HLeft;
-          vali = VAlign::VMiddle;
-          break;
-        case 6: // Below Left
-          hali = HAlign::HRight;
-          vali = VAlign::VTop;
-          break;
-        case 7: // Below
-          hali = HAlign::HCenter;
-          vali = VAlign::VTop;
-          break;
-        case 8: // Below Right
-          hali = HAlign::HLeft;
-          vali = VAlign::VTop;
-          break;
-        default: // OverHali
-          hali = HAlign::HCenter;
-          vali = VAlign::VTop;
-          break;
+        offsetQuad = static_cast<QgsPalLayerSettings::QuadrantPosition>( exprVal.toInt() );
       }
+    }
+
+    switch ( offsetQuad )
+    {
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantAboveLeft:
+        hali = HAlign::HRight;
+        vali = VAlign::VBottom;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantAbove:
+        hali = HAlign::HCenter;
+        vali = VAlign::VBottom;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantAboveRight:
+        hali = HAlign::HLeft;
+        vali = VAlign::VBottom;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantLeft:
+        hali = HAlign::HRight;
+        vali = VAlign::VMiddle;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantOver:
+        hali = HAlign::HCenter;
+        vali = VAlign::VMiddle;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantRight:
+        hali = HAlign::HLeft;
+        vali = VAlign::VMiddle;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantBelowLeft:
+        hali = HAlign::HRight;
+        vali = VAlign::VTop;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantBelow:
+        hali = HAlign::HCenter;
+        vali = VAlign::VTop;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantBelowRight:
+        hali = HAlign::HLeft;
+        vali = VAlign::VTop;
+        break;
+      default: // OverHali
+        hali = HAlign::HCenter;
+        vali = VAlign::VTop;
+        break;
     }
   }
 
