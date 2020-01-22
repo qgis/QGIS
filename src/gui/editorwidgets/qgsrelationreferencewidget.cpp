@@ -156,6 +156,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   mHighlightFeatureButton->hide();
   mAttributeEditorFrame->hide();
   mInvalidLabel->hide();
+  mAddEntryButton->hide();
 
   // connect buttons
   connect( mOpenFormButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::openForm );
@@ -429,8 +430,12 @@ void QgsRelationReferenceWidget::setEditorContext( const QgsAttributeEditorConte
   mMapToolIdentify.reset( new QgsMapToolIdentifyFeature( mCanvas ) );
   mMapToolIdentify->setButton( mMapIdentificationButton );
 
-  mMapToolDigitize.reset( new QgsMapToolDigitizeFeature( mCanvas, context.cadDockWidget() ) );
-  mMapToolDigitize->setButton( mAddEntryButton );
+  if ( mEditorContext.cadDockWidget() )
+  {
+    mMapToolDigitize.reset( new QgsMapToolDigitizeFeature( mCanvas, mEditorContext.cadDockWidget() ) );
+    mMapToolDigitize->setButton( mAddEntryButton );
+    updateAddEntryButton();
+  }
 }
 
 void QgsRelationReferenceWidget::setEmbedForm( bool display )
@@ -1006,7 +1011,7 @@ void QgsRelationReferenceWidget::entryAdded( const QgsFeature &feat )
 
 void QgsRelationReferenceWidget::updateAddEntryButton()
 {
-  mAddEntryButton->setVisible( mAllowAddFeatures );
+  mAddEntryButton->setVisible( mAllowAddFeatures && mMapToolDigitize );
   mAddEntryButton->setEnabled( mReferencedLayer && mReferencedLayer->isEditable() );
 }
 

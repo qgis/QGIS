@@ -74,6 +74,11 @@ Sets the ``feature`` being edited and updates the UI unless ``update`` is set to
     void setEditorContext( const QgsAttributeEditorContext &context );
 %Docstring
 Sets the editor ``context``
+
+.. note::
+
+   if context cadDockWidget is null, it won't be possible to digitize
+   the geometry of a referencing feature from this widget
 %End
 
     QgsIFeatureSelectionManager *featureSelectionManager();

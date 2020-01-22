@@ -164,7 +164,11 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     }
     else
     {
-      QgsAttributeDialog *dialog = new QgsAttributeDialog( vlayer, &ft, false, nullptr, true );
+      QgsAttributeEditorContext context;
+      // don't set cadDockwidget in context because we don't want to be able to create geometries from this dialog
+      // there is one modified and one created feature, so it's a mess of we start to digitize a relation feature geometry
+      context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
+      QgsAttributeDialog *dialog = new QgsAttributeDialog( vlayer, &ft, false, nullptr, true, context );
       dialog->setMode( QgsAttributeEditorContext::AddFeatureMode );
       res = dialog->exec(); // will also add the feature
     }

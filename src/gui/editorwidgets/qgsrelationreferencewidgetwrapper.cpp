@@ -88,6 +88,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
       mWidget->setReadOnlySelector( true );
       mWidget->setAllowMapIdentification( false );
       mWidget->setOpenFormButtonVisible( false );
+      mWidget->setAllowAddFeatures( false );
       break;
     }
     ctx = ctx->parentContext();
