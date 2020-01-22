@@ -26,7 +26,9 @@ done
 echo " done 🥩"
 
 pushd /root/QGIS > /dev/null
+echo "Restoring postgres test data ..."
 /root/QGIS/tests/testdata/provider/testdata_pg.sh
+echo "Postgres test data restored ..."
 popd > /dev/null # /root/QGIS
 
 ##############################

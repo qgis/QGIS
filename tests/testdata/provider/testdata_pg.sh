@@ -19,6 +19,7 @@ SCRIPTS="
 dropdb --if-exists $DB
 createdb $DB -E UTF8 -T template0 || exit 1
 for f in ${SCRIPTS}; do
+  echo "Restoring $f"
   psql -q --echo-errors -c "SET client_min_messages TO WARNING;" -f $f $DB -v ON_ERROR_STOP=1 || exit 1
 done
 
