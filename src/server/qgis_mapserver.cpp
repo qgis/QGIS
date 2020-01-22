@@ -87,7 +87,7 @@ int main( int argc, char *argv[] )
   // minimal, minimalegl, offscreen, wayland-egl, wayland, xcb.
   // https://www.ics.com/blog/qt-tips-and-tricks-part-1
   // http://doc.qt.io/qt-5/qpa.html
-  const char *display = getenv( "DISPLAY" );
+  const char *display = qgetenv( "DISPLAY" );
   bool withDisplay = true;
   if ( !display )
   {
@@ -110,9 +110,9 @@ int main( int argc, char *argv[] )
 #endif
 
   // The port to listen
-  QString serverPort { getenv( "QGIS_SERVER_PORT" ) };
+  QString serverPort { qgetenv( "QGIS_SERVER_PORT" ) };
   // The address to listen
-  QString ipAddress { getenv( "QGIS_SERVER_ADDRESS" ) };
+  QString ipAddress { qgetenv( "QGIS_SERVER_ADDRESS" ) };
 
   if ( serverPort.isEmpty() )
   {
@@ -135,7 +135,7 @@ int main( int argc, char *argv[] )
   QCommandLineOption logLevelOption( "l", QObject::tr( "Set log level (default: 0)\n"
                                      "0: INFO\n"
                                      "1: WARNING\n"
-                                     "3: CRITICAL" ), "logLevel", "0" );
+                                     "2: CRITICAL" ), "logLevel", "0" );
   parser.addOption( logLevelOption );
 
   parser.process( app );
@@ -271,7 +271,7 @@ int main( int argc, char *argv[] )
           }
 
           // Build URL from env ...
-          QString url { getenv( "REQUEST_URI" ) };
+          QString url { qgetenv( "REQUEST_URI" ) };
           // ... or from server ip/port and request path
           if ( url.isEmpty() )
           {
