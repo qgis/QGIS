@@ -1102,6 +1102,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Create a new spatial bookmark
     void newBookmark( bool inProject = false );
 
+    /**
+     * Creates a default attribute editor context using the main map canvas and the main edit tools and message bar
+     * \since QGIS 3.12
+     */
+    QgsAttributeEditorContext createAttributeEditorContext();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)

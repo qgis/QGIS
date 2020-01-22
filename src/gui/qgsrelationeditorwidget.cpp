@@ -282,7 +282,7 @@ void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeat
     text = tr( "Add Polygon Feature" );
   }
 
-  if ( text.isEmpty() )
+  if ( text.isEmpty() || !mEditorContext.mapCanvas() || !mEditorContext.cadDockWidget() )
   {
     mAddFeatureGeometryButton->setVisible( false );
   }
@@ -365,8 +365,12 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
 void QgsRelationEditorWidget::setEditorContext( const QgsAttributeEditorContext &context )
 {
   mEditorContext = context;
-  mMapToolDigitize.reset( new QgsMapToolDigitizeFeature( context.mapCanvas(), context.cadDockWidget() ) );
-  mMapToolDigitize->setButton( mAddFeatureGeometryButton );
+
+  if ( context.mapCanvas() && context.cadDockWidget() )
+  {
+    mMapToolDigitize.reset( new QgsMapToolDigitizeFeature( context.mapCanvas(), context.cadDockWidget() ) );
+    mMapToolDigitize->setButton( mAddFeatureGeometryButton );
+  }
 }
 
 QgsIFeatureSelectionManager *QgsRelationEditorWidget::featureSelectionManager()
@@ -442,6 +446,9 @@ void QgsRelationEditorWidget::addFeatureGeometry()
     layer = mRelation.referencingLayer();
 
   mMapToolDigitize->setLayer( layer );
+
+  // window is always on top, so we hide it to digitize without seeing it
+  window()->setVisible( false );
   setMapTool( mMapToolDigitize );
 
   connect( mMapToolDigitize, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsRelationEditorWidget::onDigitizingCompleted );
@@ -958,6 +965,7 @@ void QgsRelationEditorWidget::onKeyPressed( QKeyEvent *e )
 
 void QgsRelationEditorWidget::mapToolDeactivated()
 {
+  window()->setVisible( true );
   window()->raise();
   window()->activateWindow();
 

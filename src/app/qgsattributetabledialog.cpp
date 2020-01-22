@@ -150,12 +150,9 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   QgsDistanceArea da;
   da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  mEditorContext.setDistanceArea( da );
 
-  mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
-  mEditorContext.setMapCanvas( QgisApp::instance()->mapCanvas() );
-  mEditorContext.setMainMessageBar( QgisApp::instance()->messageBar() );
-  mEditorContext.setCadDockWidget( QgisApp::instance()->cadDockWidget() );
+  QgsAttributeEditorContext editorContext = QgisApp::instance()->createAttributeEditorContext();
+  editorContext.setDistanceArea( da );
 
   QgsFeatureRequest r;
   bool needsGeom = false;
@@ -175,12 +172,12 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     r.setFlags( QgsFeatureRequest::NoGeometry );
 
   // Initialize dual view
-  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, mEditorContext, false );
+  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, editorContext, false );
 
   QgsAttributeTableConfig config = mLayer->attributeTableConfig();
   mMainView->setAttributeTableConfig( config );
 
-  mFeatureFilterWidget->init( mLayer, mEditorContext, mMainView, QgisApp::instance()->messageBar(), QgisApp::instance()->messageTimeout() );
+  mFeatureFilterWidget->init( mLayer, editorContext, mMainView, QgisApp::instance()->messageBar(), QgisApp::instance()->messageTimeout() );
 
   mActionFeatureActions = new QToolButton();
   mActionFeatureActions->setAutoRaise( false );
