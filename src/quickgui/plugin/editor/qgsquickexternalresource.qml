@@ -118,6 +118,22 @@ Item {
     return (prefix) ? prefix + "/" + pathFromValue : pathFromValue
   }
 
+  function showDefaultPanel() {
+    if (!photoCapturePanelLoader.item) {
+      // Load the photo capture panel if not loaded yet
+      photoCapturePanelLoader.setSource("qgsquickphotopanel.qml")
+      photoCapturePanelLoader.item.height = window.height
+      photoCapturePanelLoader.item.width = window.width
+      photoCapturePanelLoader.item.edge = Qt.RightEdge
+      photoCapturePanelLoader.item.imageButtonSize = fieldItem.iconSize
+      photoCapturePanelLoader.item.backButtonSource = fieldItem.backIcon
+    }
+    photoCapturePanelLoader.item.visible = true
+    photoCapturePanelLoader.item.targetDir = targetDir
+    photoCapturePanelLoader.item.prefixToRelativePath = prefixToRelativePath
+    photoCapturePanelLoader.item.fieldItem = fieldItem
+  }
+
   id: fieldItem
   enabled: true // its interactive widget
   height: customStyle.fields.height * 3
@@ -259,20 +275,11 @@ Item {
         MouseArea {
           anchors.fill: parent
           onClicked: {
-            var photoCapturePanel = photoCapturePanelLoader.item
-            if (!photoCapturePanelLoader.item) {
-              // Load the photo capture panel if not loaded yet
-              photoCapturePanelLoader.setSource("qgsquickphotopanel.qml")
-              photoCapturePanelLoader.item.height = window.height
-              photoCapturePanelLoader.item.width = window.width
-              photoCapturePanelLoader.item.edge = Qt.RightEdge
-              photoCapturePanelLoader.item.imageButtonSize = fieldItem.iconSize
-              photoCapturePanelLoader.item.backButtonSource = fieldItem.backIcon
+            if (externalResourceHandler.capturePhoto) {
+              externalResourceHandler.capturePhoto(fieldItem)
+            } else {
+              showDefaultPanel()
             }
-            photoCapturePanelLoader.item.visible = true
-            photoCapturePanelLoader.item.targetDir = targetDir
-            photoCapturePanelLoader.item.prefixToRelativePath = prefixToRelativePath
-            photoCapturePanelLoader.item.fieldItem = fieldItem
           }
         }
       }
