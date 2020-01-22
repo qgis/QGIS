@@ -2012,8 +2012,12 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   bool ddXPos = false, ddYPos = false;
   double quadOffsetX = 0.0, quadOffsetY = 0.0;
   double offsetX = 0.0, offsetY = 0.0;
-  QgsPointXY anchorPosition = geom.centroid().asPoint();
+  QgsPointXY anchorPosition;
 
+  if ( placement == QgsPalLayerSettings::OverPoint )
+  {
+    anchorPosition = geom.centroid().asPoint();
+  }
   //x/y shift in case of alignment
   double xdiff = 0.0;
   double ydiff = 0.0;
