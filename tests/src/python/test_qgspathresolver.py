@@ -144,6 +144,19 @@ class TestQgsPathResolver(unittest.TestCase):
 
         self.assertEqual(QgsPathResolver().writePath(QgsApplication.pkgDataPath() + '/resources/data/world_map.shp'), 'inbuilt:/data/world_map.shp')
 
+    def testRelativeProject(self):
+        """Test relative project paths can still resolve, regression #33200"""
+
+        curdir = os.getcwd()
+        os.chdir(os.path.join(TEST_DATA_DIR, 'qgis_server'))
+        resolver = QgsPathResolver('./test_project.qgs')
+        self.assertEqual(resolver.readPath('./testlayer.shp').replace("\\", "/"), os.path.join(TEST_DATA_DIR, 'qgis_server', 'testlayer.shp').replace("\\", "/"))
+        self.assertEqual(resolver.readPath('testlayer.shp').replace("\\", "/"), os.path.join(TEST_DATA_DIR, 'qgis_server', 'testlayer.shp').replace("\\", "/"))
+        resolver = QgsPathResolver('test_project.qgs')
+        self.assertEqual(resolver.readPath('./testlayer.shp').replace("\\", "/"), os.path.join(TEST_DATA_DIR, 'qgis_server', 'testlayer.shp').replace("\\", "/"))
+        self.assertEqual(resolver.readPath('testlayer.shp').replace("\\", "/"), os.path.join(TEST_DATA_DIR, 'qgis_server', 'testlayer.shp').replace("\\", "/"))
+        os.chdir(curdir)
+
 
 if __name__ == '__main__':
     unittest.main()
