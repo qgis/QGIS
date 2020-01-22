@@ -173,6 +173,17 @@ class CORE_EXPORT QgsProviderRegistry
     QVariantMap decodeUri( const QString &providerKey, const QString &uri );
 
     /**
+     * Reassembles a provider data source URI from its component paths (e.g. file path, layer name).
+     * \param providerKey identifier of the provider
+     * \param parts parts as returned by decodeUri
+     * \returns datasource uri string
+     * \note this function may not be supported by all providers, an empty string will be returned in such case
+     * \see decodeUri()
+     * \since QGIS 3.12
+     */
+    QString encodeUri( const QString &providerKey, const QVariantMap &parts );
+
+    /**
      * Returns a new widget for selecting layers from a provider.
      * Either the \a parent widget must be set or the caller becomes
      * responsible for deleting the returned widget.

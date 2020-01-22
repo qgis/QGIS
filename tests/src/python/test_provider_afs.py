@@ -28,7 +28,8 @@ from qgis.core import (NULL,
                        QgsRectangle,
                        QgsCategorizedSymbolRenderer,
                        QgsProviderRegistry,
-                       QgsWkbTypes
+                       QgsWkbTypes,
+                       QgsDataSourceUri
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -157,7 +158,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": -200,
             "name": null,
             "name2":"NuLl",
-            "num_char":"5"    
+            "num_char":"5"
            },
            "geometry": {
             "x": -71.123,
@@ -171,7 +172,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 300,
             "name": "Pear",
             "name2":"PEaR",
-            "num_char":"3"   
+            "num_char":"3"
            },
            "geometry": null
           },
@@ -182,7 +183,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 100,
             "name": "Orange",
             "name2":"oranGe",
-            "num_char":"1"    
+            "num_char":"1"
            },
            "geometry": {
             "x": -70.332,
@@ -196,7 +197,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 200,
             "name": "Apple",
             "name2":"Apple",
-            "num_char":"2"    
+            "num_char":"2"
            },
            "geometry": {
             "x": -68.2,
@@ -210,7 +211,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 400,
             "name": "Honey",
             "name2":"Honey",
-            "num_char":"4"    
+            "num_char":"4"
            },
            "geometry": {
             "x": -65.32,
@@ -247,7 +248,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
     "cnt": -200,
     "name": null,
     "name2":"NuLl",
-    "num_char":"5"    
+    "num_char":"5"
    },
    "geometry": {
     "x": -71.123,
@@ -261,7 +262,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
     "cnt": 300,
     "name": "Pear",
     "name2":"PEaR",
-    "num_char":"3"   
+    "num_char":"3"
    },
    "geometry": null
   },
@@ -272,7 +273,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
     "cnt": 100,
     "name": "Orange",
     "name2":"oranGe",
-    "num_char":"1"    
+    "num_char":"1"
    },
    "geometry": {
     "x": -70.332,
@@ -286,7 +287,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
     "cnt": 200,
     "name": "Apple",
     "name2":"Apple",
-    "num_char":"2"    
+    "num_char":"2"
    },
    "geometry": {
     "x": -68.2,
@@ -300,7 +301,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
     "cnt": 400,
     "name": "Honey",
     "name2":"Honey",
-    "num_char":"4"    
+    "num_char":"4"
    },
    "geometry": {
     "x": -65.32,
@@ -424,6 +425,14 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         uri = self.vl.source()
         parts = QgsProviderRegistry.instance().decodeUri(self.vl.dataProvider().name(), uri)
         self.assertEqual(parts, {'url': 'http://' + self.basetestpath + '/fake_qgis_http_endpoint'})
+
+    def testEncodeUri(self):
+        """
+        Test encoding an AFS uri
+        """
+        parts = {'url': self.vl.source()}
+        uri = QgsProviderRegistry.instance().encodeUri(self.vl.dataProvider().name(), parts)
+        self.assertEqual(QgsDataSourceUri(uri).param('url'), self.vl.source())
 
     def testObjectIdDifferentName(self):
         """ Test that object id fields not named OBJECTID work correctly """

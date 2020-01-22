@@ -277,6 +277,16 @@ class CORE_EXPORT QgsProviderMetadata
     virtual QVariantMap decodeUri( const QString &uri );
 
     /**
+     * Reassembles a provider data source URI from its component paths (e.g. file path, layer name).
+     * \param parts parts as returned by decodeUri
+     * \returns datasource uri string
+     * \note this function may not be supported by all providers, an empty string will be returned in such case
+     * \see decodeUri()
+     * \since QGIS 3.12
+     */
+    virtual QString encodeUri( const QVariantMap &parts );
+
+    /**
      * Returns data item providers. Caller is responsible for ownership of the item providers
      * \see QgsProviderGuiMetadata::dataItemGuiProviders()
      * \note Ownership of created data item providers is passed to the caller.

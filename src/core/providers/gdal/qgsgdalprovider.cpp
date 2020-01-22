@@ -2092,6 +2092,13 @@ QVariantMap QgsGdalProviderMetadata::decodeUri( const QString &uri )
   return uriComponents;
 }
 
+QString QgsGdalProviderMetadata::encodeUri( const QVariantMap &parts )
+{
+  QString path = parts.value( QStringLiteral( "path" ) ).toString();
+  QString layerName = parts.value( QStringLiteral( "layerName" ) ).toString();
+  return path + ( !layerName.isEmpty() ? QStringLiteral( "|%1" ).arg( layerName ) : QString() );
+}
+
 
 QgsGdalProvider *QgsGdalProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {

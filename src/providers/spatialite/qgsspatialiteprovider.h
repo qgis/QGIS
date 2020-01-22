@@ -398,6 +398,7 @@ class QgsSpatiaLiteProviderMetadata: public QgsProviderMetadata
     int listStyles( const QString &uri, QStringList &ids, QStringList &names,
                     QStringList &descriptions, QString &errCause ) override;
     QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
     QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 
     QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields,

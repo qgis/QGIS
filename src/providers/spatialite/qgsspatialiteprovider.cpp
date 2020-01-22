@@ -5532,6 +5532,14 @@ QgsSpatiaLiteProvider *QgsSpatiaLiteProviderMetadata::createProvider(
   return new QgsSpatiaLiteProvider( uri, options );
 }
 
+QString QgsSpatiaLiteProviderMetadata::encodeUri( const QVariantMap &parts )
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setDatabase( parts.value( QStringLiteral( "path" ) ).toString() );
+  dsUri.setTable( parts.value( QStringLiteral( "layerName" ) ).toString() );
+  return dsUri.uri();
+}
+
 
 QgsVectorLayerExporter::ExportError QgsSpatiaLiteProviderMetadata::createEmptyLayer(
   const QString &uri,
