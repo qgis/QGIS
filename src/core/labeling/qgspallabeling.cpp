@@ -1957,7 +1957,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   {
     geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines );
 
-    if ( geom.isNull() )
+    if ( geom.isEmpty() )
       return;
   }
   geos_geom_clone = QgsGeos::asGeos( geom );
@@ -2012,8 +2012,12 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   bool ddXPos = false, ddYPos = false;
   double quadOffsetX = 0.0, quadOffsetY = 0.0;
   double offsetX = 0.0, offsetY = 0.0;
-  QgsPointXY anchorPosition = geom.centroid().asPoint();
+  QgsPointXY anchorPosition;
 
+  if ( placement == QgsPalLayerSettings::OverPoint )
+  {
+    anchorPosition = geom.centroid().asPoint();
+  }
   //x/y shift in case of alignment
   double xdiff = 0.0;
   double ydiff = 0.0;
@@ -3577,7 +3581,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
          || ( !qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry.contains( geom ) ) ) )
   {
     QgsGeometry clipGeom = geom.intersection( clipGeometry ); // creates new geometry
-    if ( clipGeom.isNull() )
+    if ( clipGeom.isEmpty() )
     {
       return QgsGeometry();
     }
