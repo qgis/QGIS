@@ -60,6 +60,7 @@ class TestQgsMapSettings: public QObject
     void testLabelBoundary();
     void testExpressionContext();
     void testRenderedFeatureHandlers();
+    void testCustomRenderingFlags();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -546,6 +547,22 @@ void TestQgsMapSettings::testRenderedFeatureHandlers()
   //ownership should NOT be transferred, i.e. it won't delete the registered handlers upon QgsMapSettings destruction
   mapSettings.reset();
   // should be no double-delete here
+}
+
+void TestQgsMapSettings::testCustomRenderingFlags()
+{
+  QgsMapSettings settings;
+  settings.setCustomRenderingFlag( QStringLiteral( "myexport" ), true );
+  settings.setCustomRenderingFlag( QStringLiteral( "omitgeometries" ), QStringLiteral( "points" ) );
+  QVERIFY( settings.customRenderingFlags()[ QStringLiteral( "myexport" ) ].toBool() == true );
+  QVERIFY( settings.customRenderingFlags()[ QStringLiteral( "omitgeometries" ) ].toString() == QStringLiteral( "points" ) );
+
+  // Test deprecated API
+  Q_NOWARN_DEPRECATED_PUSH
+  settings.setCustomRenderFlags( QStringLiteral( "myexport;omitpoints" ) );
+  QVERIFY( settings.customRenderFlags().split( ";" ).contains( QStringLiteral( "myexport" ) ) );
+  QVERIFY( settings.customRenderFlags().split( ";" ).contains( QStringLiteral( "omitpoints" ) ) );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )

@@ -729,6 +729,40 @@ in a mask painter, which is not meant to be visible, by definition.
 .. versionadded:: 3.12
 %End
 
+    QVariantMap customRenderingFlags() const;
+%Docstring
+Gets custom rendering flags. Layers might honour these to alter their rendering.
+
+:return: a map of custom flags
+
+.. seealso:: :py:func:`setCustomRenderingFlag`
+
+.. versionadded:: 3.12
+%End
+
+    void setCustomRenderingFlag( const QString &flag, const QVariant &value );
+%Docstring
+Sets a custom rendering flag. Layers might honour these to alter their rendering.
+
+:param flag: the flag name
+:param value: the flag value
+
+.. seealso:: :py:func:`customRenderingFlags`
+
+.. versionadded:: 3.12
+%End
+
+    void clearCustomRenderingFlag( const QString &flag );
+%Docstring
+Clears the specified custom rendering flag.
+
+:param flag: the flag name
+
+.. seealso:: :py:func:`setCustomRenderingFlag`
+
+.. versionadded:: 3.12
+%End
+
 };
 
 QFlags<QgsRenderContext::Flag> operator|(QgsRenderContext::Flag f1, QFlags<QgsRenderContext::Flag> f2);

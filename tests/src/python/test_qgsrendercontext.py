@@ -464,6 +464,21 @@ class TestQgsRenderContext(unittest.TestCase):
         sf = r.convertToMapUnits(1, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 2.0, places=5)
 
+    def testCustomRenderingFlags(self):
+        rc = QgsRenderContext()
+        rc.setCustomRenderingFlag('myexport', True)
+        rc.setCustomRenderingFlag('omitgeometries', 'points')
+        self.assertTrue(rc.customRenderingFlags()['myexport'])
+        self.assertEqual(rc.customRenderingFlags()['omitgeometries'], 'points')
+
+        # test that custom flags are correctly copied from settings
+        settings = QgsMapSettings()
+        settings.setCustomRenderingFlag('myexport', True)
+        settings.setCustomRenderingFlag('omitgeometries', 'points')
+        rc = QgsRenderContext.fromMapSettings(settings)
+        self.assertTrue(rc.customRenderingFlags()['myexport'])
+        self.assertEqual(rc.customRenderingFlags()['omitgeometries'], 'points')
+
 
 if __name__ == '__main__':
     unittest.main()

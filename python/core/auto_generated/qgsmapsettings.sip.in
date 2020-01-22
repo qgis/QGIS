@@ -213,7 +213,7 @@ Set map of map layer style overrides (key: layer ID, value: style name) where a 
 .. versionadded:: 2.8
 %End
 
-    QString customRenderFlags() const;
+ QString customRenderFlags() const;
 %Docstring
 Gets custom rendering flags. Layers might honour these to alter their rendering.
 
@@ -222,9 +222,12 @@ Gets custom rendering flags. Layers might honour these to alter their rendering.
 .. seealso:: :py:func:`setCustomRenderFlags`
 
 .. versionadded:: 2.16
+
+.. deprecated::
+   use \see customRenderingFlags().
 %End
 
-    void setCustomRenderFlags( const QString &customRenderFlags );
+ void setCustomRenderFlags( const QString &customRenderFlags );
 %Docstring
 Sets the custom rendering flags. Layers might honour these to alter their rendering.
 
@@ -233,6 +236,43 @@ Sets the custom rendering flags. Layers might honour these to alter their render
 .. seealso:: :py:func:`customRenderFlags`
 
 .. versionadded:: 2.16
+
+.. deprecated::
+   use \see setCustomRenderingFlag() instead.
+%End
+
+    QVariantMap customRenderingFlags() const;
+%Docstring
+Gets custom rendering flags. Layers might honour these to alter their rendering.
+
+:return: a map of custom flags
+
+.. seealso:: :py:func:`setCustomRenderingFlag`
+
+.. versionadded:: 3.12
+%End
+
+    void setCustomRenderingFlag( const QString &flag, const QVariant &value );
+%Docstring
+Sets a custom rendering flag. Layers might honour these to alter their rendering.
+
+:param flag: the flag name
+:param value: the flag value
+
+.. seealso:: :py:func:`customRenderingFlags`
+
+.. versionadded:: 3.12
+%End
+
+    void clearCustomRenderingFlag( const QString &flag );
+%Docstring
+Clears the specified custom rendering flag.
+
+:param flag: the flag name
+
+.. seealso:: :py:func:`setCustomRenderingFlag`
+
+.. versionadded:: 3.12
 %End
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
