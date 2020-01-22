@@ -1922,6 +1922,11 @@ void QgsApplication::setTranslation( const QString &translation )
   *sTranslation() = translation;
 }
 
+QString QgsApplication::translation() const
+{
+  return *sTranslation();
+}
+
 void QgsApplication::collectTranslatableObjects( QgsTranslationContext *translationContext )
 {
   emit requestForTranslatableObjects( translationContext );
