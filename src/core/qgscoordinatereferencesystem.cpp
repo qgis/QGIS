@@ -463,9 +463,11 @@ bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( const QString &crs )
   if ( wmsCrs.compare( QLatin1String( "CRS:84" ), Qt::CaseInsensitive ) == 0 ||
        wmsCrs.compare( QLatin1String( "OGC:CRS84" ), Qt::CaseInsensitive ) == 0 )
   {
-    createFromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
-    d->mAxisInverted = false;
-    d->mAxisInvertedDirty = false;
+    if ( loadFromDatabase( QgsApplication::srsDatabaseFilePath(), QStringLiteral( "lower(auth_name||':'||auth_id)" ), QStringLiteral( "epsg:4326" ) ) )
+    {
+      d->mAxisInverted = false;
+      d->mAxisInvertedDirty = false;
+    }
 
     locker.changeMode( QgsReadWriteLocker::Write );
     if ( !sDisableOgcCache )
