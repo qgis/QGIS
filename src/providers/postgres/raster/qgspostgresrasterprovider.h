@@ -39,7 +39,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     QgsPostgresRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
     explicit QgsPostgresRasterProvider( const QgsPostgresRasterProvider &other, const QgsDataProvider::ProviderOptions &providerOptions );
 
-    virtual ~QgsPostgresRasterProvider() override;
+    virtual ~QgsPostgresRasterProvider() override = default;
 
   public:
 
