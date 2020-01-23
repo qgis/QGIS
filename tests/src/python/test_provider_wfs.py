@@ -22,7 +22,7 @@ import socketserver
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime, QEventLoop
 
 from qgis.core import (
     QgsWkbTypes,
@@ -1651,6 +1651,11 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # Check that we get a log message
         with MessageLogger('WFS') as logger:
             [f for f in vl.getFeatures()]
+
+            # Let signals to be notified to QgsVectorDataProvider
+            loop = QEventLoop()
+            loop.processEvents()
+
             self.assertEqual(len(logger.messages()), 1, logger.messages())
             self.assertTrue(logger.messages()[0].decode('UTF-8').find('The download limit has been reached') >= 0, logger.messages())
 
@@ -1696,6 +1701,11 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         # Failed download: test that error is propagated to the data provider, so as to get application notification
         [f['INTFIELD'] for f in vl.getFeatures()]
+
+        # Let signals to be notified to QgsVectorDataProvider
+        loop = QEventLoop()
+        loop.processEvents()
+
         errors = vl.dataProvider().errors()
         self.assertEqual(len(errors), 1, errors)
 
@@ -2585,6 +2595,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(features), 2)
 
         reference = QgsGeometry.fromRect(QgsRectangle(500000, 4500000, 510000, 4510000))
+        # Let signals to be notified to QgsVectorLayer
+        loop = QEventLoop()
+        loop.processEvents()
         vl_extent = QgsGeometry.fromRect(vl.extent())
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
         self.assertEqual(features[0]['intfield'], 1)
