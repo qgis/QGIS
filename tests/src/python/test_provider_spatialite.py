@@ -17,6 +17,7 @@ import re
 import sys
 import shutil
 import tempfile
+from datetime import datetime
 
 from qgis.core import (QgsProviderRegistry,
                        QgsVectorLayer,
@@ -1158,6 +1159,59 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(l.isValid())
         self.assertEqual(l.uniqueValues(1), {1, 2})
         self.assertEqual(l.uniqueValues(0), {987654321012345, 987654321012346})
+
+    def testSpatialiteDefaultValues(self):
+        """Test wether in spatialite table with default values like CURRENT_TIMESTAMP or
+        (datetime('now','localtime')) they are respected. See GH #33383"""
+
+        # Create the test table
+
+        dbname = os.path.join(tempfile.gettempdir(), "test.sqlite")
+        if os.path.exists(dbname):
+            os.remove(dbname)
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = "SELECT InitSpatialMetadata()"
+        cur.execute(sql)
+
+        # simple table with primary key
+        sql = """
+        CREATE TABLE test_table (
+            id integer primary key autoincrement,
+            comment text,
+            created_at_01 text DEFAULT (datetime('now','localtime')),
+            created_at_02 text DEFAULT CURRENT_TIMESTAMP,
+            anumber INTEGER DEFAULT 123
+        )
+        """
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        vl = QgsVectorLayer("dbname='%s' table='test_table'" % dbname, 'test_table', 'spatialite')
+        self.assertTrue(vl.isValid())
+        feature = QgsFeature(vl.fields())
+        for idx in range(vl.fields().count()):
+            default = vl.dataProvider().defaultValueClause(idx)
+            if default != '':
+                feature.setAttribute(idx, default)
+            else:
+                feature.setAttribute(idx, 'A comment')
+
+        # Save it for the test
+        now = datetime.now()
+
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+        del(vl)
+
+        # Verify
+        vl2 = QgsVectorLayer("dbname='%s' table='test_table'" % dbname, 'test_table', 'spatialite')
+        self.assertTrue(vl2.isValid())
+        feature = next(vl2.getFeatures())
+        self.assertTrue(feature.attribute(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(feature.attribute(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(feature.attribute(4), 123)
 
 
 if __name__ == '__main__':

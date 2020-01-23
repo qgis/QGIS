@@ -382,6 +382,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     friend class QgsSpatiaLiteFeatureSource;
 
+    // QgsVectorDataProvider interface
+  public:
+    virtual QString defaultValueClause( int fieldIndex ) const override;
 };
 
 class QgsSpatiaLiteProviderMetadata: public QgsProviderMetadata

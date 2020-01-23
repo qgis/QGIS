@@ -983,6 +983,11 @@ void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultV
   }
 }
 
+QString QgsSpatiaLiteProvider::defaultValueClause( int fieldIndex ) const
+{
+  return mDefaultValues.value( fieldIndex, QString() ).toString();
+}
+
 void QgsSpatiaLiteProvider::handleError( const QString &sql, char *errorMessage, bool rollback )
 {
   QgsMessageLog::logMessage( tr( "SQLite error: %2\nSQL: %1" ).arg( sql, errorMessage ? errorMessage : tr( "unknown cause" ) ), tr( "SpatiaLite" ) );
@@ -3957,10 +3962,11 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   sqlite3_stmt *stmt = nullptr;
   char *errMsg = nullptr;
   bool toCommit = false;
-  QString sql;
   QString values;
   QString separator;
   int ia, ret;
+  // SQL for single row
+  QString sql;
 
   if ( flist.isEmpty() )
     return true;
@@ -3971,46 +3977,57 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   {
     toCommit = true;
 
-    sql = QStringLiteral( "INSERT INTO %1(" ).arg( QgsSqliteUtils::quotedIdentifier( mTableName ) );
+    QString baseSql { QStringLiteral( "INSERT INTO %1(" ).arg( QgsSqliteUtils::quotedIdentifier( mTableName ) ) };
     values = QStringLiteral( ") VALUES (" );
     separator.clear();
 
     if ( !mGeometryColumn.isEmpty() )
     {
-      sql += separator + QgsSqliteUtils::quotedIdentifier( mGeometryColumn );
+      baseSql += separator + QgsSqliteUtils::quotedIdentifier( mGeometryColumn );
       values += separator + geomParam();
       separator = ',';
     }
 
-    for ( int i = 0; i < attributevec.count(); ++i )
+    for ( QgsFeatureList::iterator feature = flist.begin(); feature != flist.end(); ++feature )
     {
-      if ( i >= mAttributeFields.count() )
-        continue;
 
-      QString fieldname = mAttributeFields.at( i ).name();
-      if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
-        continue;
+      sql = baseSql;
 
-      sql += separator + QgsSqliteUtils::quotedIdentifier( fieldname );
-      values += separator + '?';
-      separator = ',';
-    }
+      // looping on each feature to insert
+      QgsAttributes attributevec = feature->attributes();
 
-    sql += values;
-    sql += ')';
+      // Default indexes (to be skipped)
+      QList<int> defaultIndexes;
 
-    // SQLite prepared statement
-    ret = sqlite3_prepare_v2( mSqliteHandle, sql.toUtf8().constData(), -1, &stmt, nullptr );
-    if ( ret == SQLITE_OK )
-    {
-      for ( QgsFeatureList::iterator feature = flist.begin(); feature != flist.end(); ++feature )
+      for ( int i = 0; i < attributevec.count(); ++i )
       {
-        // looping on each feature to insert
-        QgsAttributes attributevec = feature->attributes();
+        if ( mDefaultValues.contains( i ) && defaultValue( i ) == attributevec.at( i ).toString() )
+        {
+          defaultIndexes.push_back( i );
+          continue;
+        }
 
-        // resetting Prepared Statement and bindings
-        sqlite3_reset( stmt );
-        sqlite3_clear_bindings( stmt );
+        if ( i >= mAttributeFields.count() )
+          continue;
+
+        QString fieldname = mAttributeFields.at( i ).name();
+        if ( fieldname.isEmpty() || fieldname == mGeometryColumn )
+        {
+          continue;
+        }
+
+        sql += separator + QgsSqliteUtils::quotedIdentifier( fieldname );
+        values += separator + '?';
+        separator = ',';
+      }
+
+      sql += values;
+      sql += ')';
+
+      // SQLite prepared statement
+      ret = sqlite3_prepare_v2( mSqliteHandle, sql.toUtf8().constData(), -1, &stmt, nullptr );
+      if ( ret == SQLITE_OK )
+      {
 
         // initializing the column counter
         ia = 0;
@@ -4039,6 +4056,11 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
         for ( int i = 0; i < attributevec.count(); ++i )
         {
+          if ( defaultIndexes.contains( i ) )
+          {
+            continue;
+          }
+
           QVariant v = attributevec.at( i );
 
           // binding values for each attribute
@@ -4102,6 +4124,8 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
         // performing actual row insert
         ret = sqlite3_step( stmt );
+
+        qDebug() << sqlite3_expanded_sql( stmt );
 
         if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
         {
