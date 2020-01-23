@@ -483,18 +483,16 @@ void QgsBackgroundCachedFeatureIterator::connectSignals( QgsFeatureDownloader *d
   connect( downloader, static_cast<void ( QgsFeatureDownloader::* )( QVector<QgsFeatureUniqueIdPair> )>( &QgsFeatureDownloader::featureReceived ),
            this, &QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous, Qt::DirectConnection );
 
-  connect( downloader, static_cast<void ( QgsFeatureDownloader::* )( int )>( &QgsFeatureDownloader::featureReceived ),
-           this, &QgsBackgroundCachedFeatureIterator::featureReceived );
-
   connect( downloader, &QgsFeatureDownloader::endOfDownload,
-           this, &QgsBackgroundCachedFeatureIterator::endOfDownload );
+           this, &QgsBackgroundCachedFeatureIterator::endOfDownloadSynchronous, Qt::DirectConnection );
 }
 
-void QgsBackgroundCachedFeatureIterator::endOfDownload( bool )
+void QgsBackgroundCachedFeatureIterator::endOfDownloadSynchronous( bool )
 {
+  // Wake up waiting loop
+  QMutexLocker locker( &mMutex );
   mDownloadFinished = true;
-  if ( mLoop )
-    mLoop->quit();
+  mWaitCond.wakeOne();
 }
 
 void QgsBackgroundCachedFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
@@ -508,6 +506,11 @@ void QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous( const QVect
 {
   QgsDebugMsgLevel( QStringLiteral( "QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous %1 features" ).arg( list.size() ), 4 );
   QMutexLocker locker( &mMutex );
+
+  // Wake up waiting loop
+  mNewFeaturesReceived = true;
+  mWaitCond.wakeOne();
+
   if ( !mWriterStream )
   {
     mWriterStream.reset( new QDataStream( &mWriterByteArray, QIODevice::WriteOnly ) );
@@ -539,34 +542,6 @@ void QgsBackgroundCachedFeatureIterator::featureReceivedSynchronous( const QVect
   }
 }
 
-// This will invoked asynchronously, in the thread of QgsBackgroundCachedFeatureIterator
-// hence it is safe to quite the loop
-void QgsBackgroundCachedFeatureIterator::featureReceived( int /*featureCount*/ )
-{
-  //QgsDebugMsg( QStringLiteral("QgsBackgroundCachedFeatureIterator::featureReceived %1 features").arg(featureCount) );
-  if ( mLoop )
-    mLoop->quit();
-}
-
-void QgsBackgroundCachedFeatureIterator::checkInterruption()
-{
-  //QgsDebugMsg("QgsBackgroundCachedFeatureIterator::checkInterruption()");
-
-  if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
-  {
-    mDownloadFinished = true;
-    if ( mLoop )
-      mLoop->quit();
-  }
-}
-
-void QgsBackgroundCachedFeatureIterator::timeout()
-{
-  mTimeoutOccurred = true;
-  mDownloadFinished = true;
-  if ( mLoop )
-    mLoop->quit();
-}
 
 bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
 {
@@ -582,7 +557,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
     if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
       return false;
 
-    if ( mTimeoutOccurred )
+    if ( mTimeoutOrInterruptionOccurred )
       return false;
 
     //QgsDebugMsg(QString("QgsBackgroundCachedSharedData::fetchFeature() : mCacheIterator.nextFeature(cachedFeature)") );
@@ -641,6 +616,11 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
   // Second step is to wait for features to be notified by the downloader
   while ( true )
   {
+    {
+      QMutexLocker locker( &mMutex );
+      mNewFeaturesReceived = false;
+    }
+
     // Initialize a reader stream if there's a writer stream available
     if ( !mReaderStream )
     {
@@ -727,22 +707,41 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
     if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
       return false;
 
-    //QgsDebugMsg("fetchFeature before loop");
-    QEventLoop loop;
-    mLoop = &loop;
-    QTimer timer( this );
-    timer.start( 50 );
-    QTimer requestTimeout( this );
-    if ( mRequest.timeout() > 0 )
+    // Wait for:
+    // - mRequest.timeout to fire
+    // - or new features to be notified
+    // - or end of download being notified
+    // - or interruption checker to notify cancellation
+    QTime timeRequestTimeout;
+    const int requestTimeout = mRequest.timeout();
+    if ( requestTimeout > 0 )
+      timeRequestTimeout.start();
+    while ( true )
     {
-      connect( &requestTimeout, &QTimer::timeout, this, &QgsBackgroundCachedFeatureIterator::timeout );
-      requestTimeout.start( mRequest.timeout() );
+      QMutexLocker locker( &mMutex );
+      if ( mNewFeaturesReceived || mDownloadFinished )
+      {
+        break;
+      }
+      const int delayCheckInterruption = 50;
+      const int timeout = ( requestTimeout > 0 ) ?
+                          std::min( requestTimeout - timeRequestTimeout.elapsed(), delayCheckInterruption ) :
+                          delayCheckInterruption;
+      if ( timeout < 0 )
+      {
+        mTimeoutOrInterruptionOccurred = true;
+        mDownloadFinished = true;
+        break;
+      }
+      mWaitCond.wait( &mMutex, timeout );
+      if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
+      {
+        mTimeoutOrInterruptionOccurred = true;
+        mDownloadFinished = true;
+        break;
+      }
     }
-    if ( mInterruptionChecker )
-      connect( &timer, &QTimer::timeout, this, &QgsBackgroundCachedFeatureIterator::checkInterruption );
-    loop.exec( QEventLoop::ExcludeUserInputEvents );
-    mLoop = nullptr;
-    //QgsDebugMsg("fetchFeature after loop");
+
   }
 }
 
