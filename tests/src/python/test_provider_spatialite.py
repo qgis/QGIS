@@ -1166,7 +1166,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         # Create the test table
 
-        dbname = os.path.join(tempfile.gettempdir(), "test.sqlite")
+        dbname = os.path.join(tempfile.gettempdir(), "test_default_values.sqlite")
         if os.path.exists(dbname):
             os.remove(dbname)
         con = spatialite_connect(dbname, isolation_level=None)
@@ -1182,7 +1182,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
             comment text,
             created_at_01 text DEFAULT (datetime('now','localtime')),
             created_at_02 text DEFAULT CURRENT_TIMESTAMP,
-            anumber INTEGER DEFAULT 123
+            anumber INTEGER DEFAULT 123,
+            atext TEXT default 'My default'
         )
         """
         cur.execute(sql)
@@ -1193,8 +1194,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
         feature = QgsFeature(vl.fields())
         for idx in range(vl.fields().count()):
-            default = vl.dataProvider().defaultValueClause(idx)
-            if default != '':
+            default = vl.dataProvider().defaultValue(idx)
+            if default is not None:
                 feature.setAttribute(idx, default)
             else:
                 feature.setAttribute(idx, 'A comment')
@@ -1209,9 +1210,11 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         vl2 = QgsVectorLayer("dbname='%s' table='test_table'" % dbname, 'test_table', 'spatialite')
         self.assertTrue(vl2.isValid())
         feature = next(vl2.getFeatures())
+        self.assertEqual(feature.attribute(1), 'A comment')
         self.assertTrue(feature.attribute(2).startswith(now.strftime('%Y-%m-%d')))
         self.assertTrue(feature.attribute(3).startswith(now.strftime('%Y-%m-%d')))
         self.assertEqual(feature.attribute(4), 123)
+        self.assertEqual(feature.attribute(5), 'My default')
 
 
 if __name__ == '__main__':

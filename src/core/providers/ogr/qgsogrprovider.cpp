@@ -1209,13 +1209,18 @@ void QgsOgrProvider::loadFields()
     QString defaultValue = textEncoding()->toUnicode( OGR_Fld_GetDefault( fldDef ) );
     if ( !defaultValue.isEmpty() && !OGR_Fld_IsDefaultDriverSpecific( fldDef ) )
     {
+      if ( defaultValue.startsWith( '\'' ) )
+      {
+        defaultValue = defaultValue.remove( 0, 1 );
+        defaultValue.chop( 1 );
+        defaultValue.replace( QLatin1String( "''" ), QLatin1String( "'" ) );
+      }
       mDefaultValues.insert( createdFields, defaultValue );
     }
 
     mAttributeFields.append( newField );
     createdFields++;
   }
-
 }
 
 
@@ -1389,13 +1394,6 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
     resultVar = QDate::currentDate();
   else if ( defaultVal == QStringLiteral( "CURRENT_TIME" ) )
     resultVar = QTime::currentTime();
-  else if ( defaultVal.startsWith( '\'' ) )
-  {
-    defaultVal = defaultVal.remove( 0, 1 );
-    defaultVal.chop( 1 );
-    defaultVal.replace( QLatin1String( "''" ), QLatin1String( "'" ) );
-    resultVar = defaultVal;
-  }
 
   ( void )mAttributeFields.at( fieldId ).convertCompatible( resultVar );
   return resultVar;
