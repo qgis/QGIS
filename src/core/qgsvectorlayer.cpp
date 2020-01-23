@@ -2407,7 +2407,7 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       }
     }
 
-    // get and set the layer transparency if it exists
+    // get and set the layer transparency and scale visibility if they exists
     if ( categories.testFlag( Rendering ) )
     {
       QDomNode layerTransparencyNode = node.namedItem( QStringLiteral( "layerTransparency" ) );
@@ -2421,6 +2421,20 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage,
       {
         QDomElement e = layerOpacityNode.toElement();
         setOpacity( e.text().toDouble() );
+      }
+
+      const bool hasScaleBasedVisibiliy { node.attributes().namedItem( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).nodeValue() == '1' };
+      setScaleBasedVisibility( hasScaleBasedVisibiliy );
+      bool ok;
+      const double maxScale { node.attributes().namedItem( QStringLiteral( "maxScale" ) ).nodeValue().toDouble( &ok ) };
+      if ( ok )
+      {
+        setMaximumScale( maxScale );
+      }
+      const double minScale { node.attributes().namedItem( QStringLiteral( "minScale" ) ).nodeValue().toDouble( &ok ) };
+      if ( ok )
+      {
+        setMinimumScale( minScale );
       }
     }
 
@@ -2807,13 +2821,16 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
       node.appendChild( featureBlendModeElem );
     }
 
-    // add the layer opacity
+    // add the layer opacity and scale visibility
     if ( categories.testFlag( Rendering ) )
     {
       QDomElement layerOpacityElem  = doc.createElement( QStringLiteral( "layerOpacity" ) );
       QDomText layerOpacityText = doc.createTextNode( QString::number( opacity() ) );
       layerOpacityElem.appendChild( layerOpacityText );
       node.appendChild( layerOpacityElem );
+      mapLayerNode.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
+      mapLayerNode.setAttribute( QStringLiteral( "maxScale" ), maximumScale() );
+      mapLayerNode.setAttribute( QStringLiteral( "minScale" ), minimumScale() );
     }
 
     if ( categories.testFlag( Diagrams ) && mDiagramRenderer )
