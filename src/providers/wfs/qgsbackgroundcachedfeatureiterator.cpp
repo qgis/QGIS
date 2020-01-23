@@ -20,6 +20,7 @@
 #include "qgsfeedback.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgswfsutils.h" // for isCompatibleType()
 
 #include <QDataStream>
 #include <QDir>
@@ -816,14 +817,15 @@ void QgsBackgroundCachedFeatureIterator::copyFeature( const QgsFeature &srcFeatu
     if ( idx >= 0 )
     {
       const QVariant &v = srcFeature.attributes().value( idx );
+      const QVariant::Type fieldType = fields.at( i ).type();
       if ( v.isNull() )
-        dstFeature.setAttribute( i, QVariant( fields.at( i ).type() ) );
-      else if ( v.type() == fields.at( i ).type() )
+        dstFeature.setAttribute( i, QVariant( fieldType ) );
+      else if ( QgsWFSUtils::isCompatibleType( v.type(), fieldType ) )
         dstFeature.setAttribute( i, v );
-      else if ( fields.at( i ).type() == QVariant::DateTime && !v.isNull() )
+      else if ( fieldType == QVariant::DateTime && !v.isNull() )
         dstFeature.setAttribute( i, QVariant( QDateTime::fromMSecsSinceEpoch( v.toLongLong() ) ) );
       else
-        dstFeature.setAttribute( i, QgsVectorDataProvider::convertValue( fields.at( i ).type(), v.toString() ) );
+        dstFeature.setAttribute( i, QgsVectorDataProvider::convertValue( fieldType, v.toString() ) );
     }
   };
 

@@ -18,6 +18,7 @@ import re
 import shutil
 import tempfile
 
+from osgeo import gdal
 from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime, QVariant
 
 from qgis.core import (
@@ -51,6 +52,10 @@ def sanitize(endpoint, x):
         return ret
     ret = endpoint + x.replace('?', '_').replace('&', '_').replace('<', '_').replace('>', '_').replace('"', '_').replace("'", '_').replace(' ', '_').replace(':', '_').replace('/', '_').replace('\n', '_')
     return ret
+
+
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
 
 ACCEPT_LANDING = 'Accept=application/json'
@@ -595,6 +600,36 @@ class TestPyQgsOapifProvider(unittest.TestCase, ProviderTestCase):
         values = [f['id'] for f in vl.getFeatures()]
         os.unlink(filename)
         self.assertEqual(values, ['feat.1'])
+
+    def testStringList(self):
+
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_testStringList'
+        create_landing_page_api_collection(endpoint)
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {"type": "Feature", "id": "feat.1", "properties": {"my_stringlist_field": ["a", "b"]}, "geometry": {"type": "Point", "coordinates": [-70.332, 66.33]}}
+            ]
+        }
+
+        filename = sanitize(endpoint, '/collections/mycollection/items?limit=10&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "' typename='mycollection'", 'test', 'OAPIF')
+        self.assertTrue(vl.isValid())
+        os.unlink(filename)
+
+        filename = sanitize(endpoint, '/collections/mycollection/items?limit=1000&' + ACCEPT_ITEMS)
+        with open(filename, 'wb') as f:
+            f.write(json.dumps(items).encode('UTF-8'))
+        features = [f for f in vl.getFeatures()]
+        os.unlink(filename)
+        if int(gdal.VersionInfo('VERSION_NUM')) < GDAL_COMPUTE_VERSION(2, 4, 0):
+            self.assertEqual(features[0]['my_stringlist_field'], '(2:a,b)')
+        else:
+            self.assertEqual(features[0]['my_stringlist_field'], ["a", "b"])
 
 
 if __name__ == '__main__':
