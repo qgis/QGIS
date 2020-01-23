@@ -15,6 +15,7 @@ import shutil
 import sys
 import tempfile
 import hashlib
+from datetime import datetime
 
 from osgeo import gdal, ogr  # NOQA
 from qgis.PyQt.QtCore import QVariant, QByteArray
@@ -27,6 +28,7 @@ from qgis.core import (NULL,
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
+from qgis.utils import spatialite_connect
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -608,6 +610,60 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl.reload()
         self.assertEqual(vl.featureCount(), 1)
         gdal.Unlink(filename)
+
+    def testSpatialiteDefaultValues(self):
+        """Test wether in spatialite table with default values like CURRENT_TIMESTAMP or
+        (datetime('now','localtime')) they are respected. See GH #33383"""
+
+        # Create the test table
+
+        dbname = os.path.join(tempfile.gettempdir(), "test.sqlite")
+        if os.path.exists(dbname):
+            os.remove(dbname)
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = "SELECT InitSpatialMetadata()"
+        cur.execute(sql)
+
+        # simple table with primary key
+        sql = """
+        CREATE TABLE test_table (
+            id integer primary key autoincrement,
+            comment text,
+            created_at_01 text DEFAULT (datetime('now','localtime')),
+            created_at_02 text DEFAULT CURRENT_TIMESTAMP,
+            anumber INTEGER DEFAULT 123
+        )
+        """
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        vl = QgsVectorLayer(dbname + '|layername=test_table', 'test_table', 'ogr')
+        self.assertTrue(vl.isValid())
+        feature = QgsFeature(vl.fields())
+        for idx in range(vl.fields().count()):
+            default = vl.dataProvider().defaultValueClause(idx)
+            if default != '':
+                feature.setAttribute(idx, default)
+            else:
+                feature.setAttribute(idx, 'A comment')
+
+        # Save it for the test
+        now = datetime.now()
+
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+        del(vl)
+
+        # Verify
+        vl2 = QgsVectorLayer(dbname + '|layername=test_table', 'test_table', 'ogr')
+        self.assertTrue(vl2.isValid())
+        feature = next(vl2.getFeatures())
+        self.assertTrue(feature.attribute(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(feature.attribute(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(feature.attribute(4), 123)
+        self.assertEqual(feature.attribute(1), 'A comment')
 
 
 if __name__ == '__main__':

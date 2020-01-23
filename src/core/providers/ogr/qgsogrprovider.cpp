@@ -1584,7 +1584,12 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
     OGRFieldType type = OGR_Fld_GetType( fldDef );
 
     QVariant attrVal = attrs.at( qgisAttId );
-    if ( attrVal.isNull() || ( type != OFTString && attrVal.toString().isEmpty() ) )
+    // The field value is equal to the default (that might be a provider-side expression)
+    if ( mDefaultValues.contains( qgisAttId ) && attrVal.toString() == mDefaultValues.value( qgisAttId ) )
+    {
+      OGR_F_UnsetField( feature.get(), ogrAttId );
+    }
+    else if ( attrVal.isNull() || ( type != OFTString && attrVal.toString().isEmpty() ) )
     {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
