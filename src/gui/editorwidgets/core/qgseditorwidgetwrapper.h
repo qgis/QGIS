@@ -347,7 +347,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     bool setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue );
 
-
   private:
 
     /**

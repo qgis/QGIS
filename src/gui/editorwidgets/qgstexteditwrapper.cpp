@@ -19,8 +19,12 @@
 #include "qgsfieldvalidator.h"
 #include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
+#include "qgsjsonutils.cpp"
+#include "qgsmessagebar.h"
+#include "qgslogger.h"
 
 #include <QSettings>
+#include <nlohmann/json.hpp>
 
 QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -64,7 +68,8 @@ QVariant QgsTextEditWrapper::value() const
   }
 
   QVariant res( v );
-  if ( field().convertCompatible( res ) )
+  // treat VariantMap fields including JSON differently
+  if ( field().type() != QVariant::Map && field().convertCompatible( res ) )
   {
     return res;
   }
@@ -74,6 +79,35 @@ QVariant QgsTextEditWrapper::value() const
     // input rather then discarding it entirely
     return QVariant( v.left( field().length() ) );
   }
+  else if ( field().type() == QVariant::Map )
+  {
+    // replace empty string (invalid) with quoted empty string
+    if ( v.isEmpty() )
+    {
+      QVariant qjson = QgsJsonUtils::parseJson( std::string( "\"\"" ) );
+      mInvalidJSON = false;
+      return qjson;
+    }
+    if ( json::accept( v.toUtf8() ) )
+    {
+      QVariant qjson = QgsJsonUtils::parseJson( v.toStdString() );
+      mInvalidJSON = false;
+      return qjson;
+    }
+    else
+      // return null value if json is invalid
+    {
+      if ( v.length() > 0 )
+      {
+        mInvalidJSON = true;
+      }
+      else
+      {
+        mInvalidJSON = false;
+      }
+      return QVariant();
+    }
+  }
   else
   {
     return QVariant( field().type() );
@@ -82,6 +116,7 @@ QVariant QgsTextEditWrapper::value() const
 
 QWidget *QgsTextEditWrapper::createWidget( QWidget *parent )
 {
+  mForm = qobject_cast<QgsAttributeForm *>( parent );
   if ( config( QStringLiteral( "IsMultiline" ) ).toBool() )
   {
     if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
@@ -101,6 +136,7 @@ QWidget *QgsTextEditWrapper::createWidget( QWidget *parent )
 
 void QgsTextEditWrapper::initWidget( QWidget *editor )
 {
+  mInvalidJSON = false;
   mTextBrowser = qobject_cast<QTextBrowser *>( editor );
   mTextEdit = qobject_cast<QTextEdit *>( editor );
   mPlainTextEdit = qobject_cast<QPlainTextEdit *>( editor );
@@ -162,7 +198,7 @@ void QgsTextEditWrapper::showIndeterminateState()
   if ( mLineEdit )
   {
     mLineEdit->blockSignals( true );
-    // for interdeminate state we need to clear the placeholder text - we want an empty line edit, not
+    // for indeterminate state we need to clear the placeholder text - we want an empty line edit, not
     // one showing the default value (e.g., "NULL")
     mLineEdit->setPlaceholderText( QString() );
   }
@@ -175,6 +211,18 @@ void QgsTextEditWrapper::showIndeterminateState()
     mPlainTextEdit->blockSignals( false );
   if ( mLineEdit )
     mLineEdit->blockSignals( false );
+}
+
+void QgsTextEditWrapper::setFeature( const QgsFeature &feature )
+{
+  // Do nothing if the value has not changed
+  if ( mInvalidJSON )
+    mForm->displayWarning( tr( "Your JSON was invalid and has been reverted back to the last valid edit or the original data" ) );
+  {
+    mInvalidJSON = false;
+  }
+  setFormFeature( feature );
+  setValue( feature.attribute( fieldIdx() ) );
 }
 
 void QgsTextEditWrapper::updateValues( const QVariant &val, const QVariantList & )
@@ -211,6 +259,11 @@ void QgsTextEditWrapper::setEnabled( bool enabled )
   }
 }
 
+bool QgsTextEditWrapper::isInvalidJSON()
+{
+  return mInvalidJSON;
+}
+
 void QgsTextEditWrapper::textChanged( const QString & )
 {
   if ( mLineEdit )
@@ -228,11 +281,34 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
     if ( !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
       v = QgsApplication::nullRepresentation();
   }
+  else if ( field().type() == QVariant::Map )
+  {
+    // this has to be overridden for json which has only values (i.e. no objects or arrays), as qgsfield.cpp displayString()
+    // uses QJsonDocument which doesn't recognise this as valid JSON although it technically is
+    if ( field().displayString( val ).isEmpty() )
+    {
+      if ( val.type() == QVariant::String && val.toString() != QStringLiteral( "\"\"" ) )
+      {
+        v = val.toString().append( "\"" ).insert( 0, "\"" );
+      }
+      else
+      {
+        v = val.toString();
+      }
+    }
+    else
+    {
+      v = field().displayString( val );
+    }
+  }
   else if ( val.type() == QVariant::Double && std::isnan( val.toDouble() ) )
+  {
     v = QgsApplication::nullRepresentation();
+  }
   else
+  {
     v = field().displayString( val );
-
+  }
   // For numbers, remove the group separator that might cause validation errors
   // when the user is editing the field value.
   // We are checking for editable layer because in the form field context we do not
