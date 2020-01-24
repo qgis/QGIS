@@ -1487,6 +1487,25 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(feature.attribute(3).startswith(now.strftime('%Y-%m-%d')))
         self.assertEqual(feature.attribute(4), 123)
         self.assertEqual(feature.attribute(5), 'My default')
+    
+    def testIdentityPk(self):
+        """Test a table with identity pk, see GH #29560"""
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\' srid=4326 type=POLYGON table="qgis_test"."b29560"(geom) sql=', 'testb29560', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        feature = QgsFeature(vl.fields())
+        geom = QgsGeometry.fromWkt('POLYGON EMPTY')
+        feature.setGeometry(geom)
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+
+        del(vl)
+
+        # Verify
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\' srid=4326 type=POLYGON table="qgis_test"."b29560"(geom) sql=', 'testb29560', 'postgres')
+        self.assertTrue(vl.isValid())
+        feature = next(vl.getFeatures())
+        self.assertIsNotNone(feature.id())
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
