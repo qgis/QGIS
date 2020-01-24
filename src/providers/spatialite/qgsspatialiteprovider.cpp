@@ -982,7 +982,7 @@ void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultV
         }
       }
 
-      if ( ! ok )  // Must be a SQL clause
+      if ( ! ok )  // Must be a SQL clause and not a literal
       {
         mDefaultValueClause.insert( fieldIndex, defaultVal );
       }
@@ -990,6 +990,36 @@ void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultV
     }
     mDefaultValues.insert( fieldIndex, defaultVal );
   }
+}
+
+
+QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
+{
+  // TODO: backend-side evaluation
+  if ( fieldId < 0 || fieldId >= mAttributeFields.count() )
+    return QVariant();
+
+  QString defaultVal = mDefaultValues.value( fieldId, QString() );
+  if ( defaultVal.isEmpty() )
+    return QVariant();
+
+  QVariant resultVar = defaultVal;
+  if ( defaultVal == QStringLiteral( "CURRENT_TIMESTAMP" ) )
+    resultVar = QDateTime::currentDateTime();
+  else if ( defaultVal == QStringLiteral( "CURRENT_DATE" ) )
+    resultVar = QDate::currentDate();
+  else if ( defaultVal == QStringLiteral( "CURRENT_TIME" ) )
+    resultVar = QTime::currentTime();
+  else if ( defaultVal.startsWith( '\'' ) )
+  {
+    defaultVal = defaultVal.remove( 0, 1 );
+    defaultVal.chop( 1 );
+    defaultVal.replace( QLatin1String( "''" ), QLatin1String( "'" ) );
+    resultVar = defaultVal;
+  }
+
+  ( void )mAttributeFields.at( fieldId ).convertCompatible( resultVar );
+  return resultVar;
 }
 
 QString QgsSpatiaLiteProvider::defaultValueClause( int fieldIndex ) const
@@ -4557,34 +4587,6 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( const QgsGeometryMap &geometry
 QgsVectorDataProvider::Capabilities QgsSpatiaLiteProvider::capabilities() const
 {
   return mEnabledCapabilities;
-}
-
-QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
-{
-  if ( fieldId < 0 || fieldId >= mAttributeFields.count() )
-    return QVariant();
-
-  QString defaultVal = mDefaultValues.value( fieldId, QString() );
-  if ( defaultVal.isEmpty() )
-    return QVariant();
-
-  QVariant resultVar = defaultVal;
-  if ( defaultVal == QStringLiteral( "CURRENT_TIMESTAMP" ) )
-    resultVar = QDateTime::currentDateTime();
-  else if ( defaultVal == QStringLiteral( "CURRENT_DATE" ) )
-    resultVar = QDate::currentDate();
-  else if ( defaultVal == QStringLiteral( "CURRENT_TIME" ) )
-    resultVar = QTime::currentTime();
-  else if ( defaultVal.startsWith( '\'' ) )
-  {
-    defaultVal = defaultVal.remove( 0, 1 );
-    defaultVal.chop( 1 );
-    defaultVal.replace( QLatin1String( "''" ), QLatin1String( "'" ) );
-    resultVar = defaultVal;
-  }
-
-  ( void )mAttributeFields.at( fieldId ).convertCompatible( resultVar );
-  return resultVar;
 }
 
 bool QgsSpatiaLiteProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value ) const

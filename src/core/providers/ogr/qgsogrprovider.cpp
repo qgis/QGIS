@@ -1385,7 +1385,7 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
 
   QString defaultVal = mDefaultValues.value( fieldId, QString() );
   if ( defaultVal.isEmpty() )
-    return QVariant();
+    return defaultVal;
 
   QVariant resultVar = defaultVal;
   if ( defaultVal == QStringLiteral( "CURRENT_TIMESTAMP" ) )
