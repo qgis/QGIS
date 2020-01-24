@@ -129,14 +129,19 @@ int main( int argc, char *argv[] )
   parser.addHelpOption();
   parser.addVersionOption();
   parser.addPositionalArgument( QStringLiteral( "addressAndPort" ),
-                                QObject::tr( "listen to address and port (default: \"localhost:8000\")\n"
+                                QObject::tr( "Listen to address and port (default: \"localhost:8000\")\n"
                                     "address and port can also be specified with the environment\n"
-                                    "variables QGIS_SERVER_ADDRESS and QGIS_SERVER_PORT" ), QStringLiteral( "[address:port]" ) );
-  QCommandLineOption logLevelOption( "l", QObject::tr( "Set log level (default: 0)\n"
+                                    "variables QGIS_SERVER_ADDRESS and QGIS_SERVER_PORT." ), QStringLiteral( "[address:port]" ) );
+  QCommandLineOption logLevelOption( "l", QObject::tr( "Sets log level (default: 0)\n"
                                      "0: INFO\n"
                                      "1: WARNING\n"
                                      "2: CRITICAL" ), "logLevel", "0" );
   parser.addOption( logLevelOption );
+
+  QCommandLineOption projectOption( "p", QObject::tr( "Path to a QGIS project file (*.qgs or *.qgz),\n"
+                                    "if specified it will override the query string MAP argument\n"
+                                    "and the QGIS_PROJECT_FILE environment variable." ), "projectPath", "" );
+  parser.addOption( projectOption );
 
   parser.process( app );
   const QStringList args = parser.positionalArguments();
@@ -156,6 +161,20 @@ int main( int argc, char *argv[] )
   qputenv( "QGIS_SERVER_LOG_LEVEL", logLevel.toUtf8() );
   qputenv( "QGIS_SERVER_LOG_STDERR", "1" );
 
+  if ( ! parser.value( projectOption ).isEmpty( ) )
+  {
+    // Check it!
+    const QString projectFilePath { parser.value( projectOption ) };
+    if ( ! QFile::exists( projectFilePath ) )
+    {
+      std::cout << QObject::tr( "Project file not found, the option will be ignored." ).toStdString() << std::endl;
+    }
+    else
+    {
+      qputenv( "QGIS_PROJECT_FILE", projectFilePath.toUtf8() );
+    }
+  }
+
   // Create server
   QTcpServer tcpServer;
 
@@ -165,12 +184,13 @@ int main( int argc, char *argv[] )
   if ( ! tcpServer.listen( address, serverPort.toInt( ) ) )
   {
     std::cerr << QObject::tr( "Unable to start the server: %1." )
-              .arg( tcpServer.errorString() ).toStdString();
+              .arg( tcpServer.errorString() ).toStdString() << std::endl;
     tcpServer.close();
+    app.exitQgis();
+    return 1;
   }
   else
   {
-
     const int port { tcpServer.serverPort() };
     std::cout << QObject::tr( "QGIS Development Server listening on http://%1:%2" )
               .arg( ipAddress ).arg( port ).toStdString() << std::endl;
@@ -215,6 +235,7 @@ int main( int argc, char *argv[] )
       // Incoming connection parser
       clientConnection->connect( clientConnection, &QIODevice::readyRead, [ =, &server ] {
 
+        // Read all incoming data
         QString incomingData;
         while ( clientConnection->bytesAvailable() > 0 )
         {
@@ -223,7 +244,6 @@ int main( int argc, char *argv[] )
 
         try
         {
-
           // Parse protocol and URL GET /path HTTP/1.1
           int firstLinePos { incomingData.indexOf( "\r\n" ) };
           if ( firstLinePos == -1 )
@@ -370,11 +390,9 @@ int main( int argc, char *argv[] )
   signal( SIGTERM, []( int ) { qApp->quit(); } );
   signal( SIGABRT, []( int ) { qApp->quit(); } );
   signal( SIGINT, []( int ) { qApp->quit(); } );
-  signal( SIGKILL, []( int ) { qApp->quit(); } );
 #endif
 
   app.exec();
-  std::cout << "Exiting" << std::endl;
   app.exitQgis();
   return 0;
 }
