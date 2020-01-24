@@ -1111,6 +1111,31 @@ bool QgsPostgresProvider::loadFields()
     }
 
     mAttrPalIndexName.insert( i, fieldName );
+    // If this is an identity field with constraints and there is no default, let's look for a sequence:
+    // we might have a default value created by a sequence named <table>_<field>_seq
+    if ( ! identityMap[tableoid ][ attnum ].isEmpty()
+         && notNullMap[tableoid][ attnum ]
+         && uniqueMap[tableoid][attnum]
+         && defValMap[tableoid][attnum].isEmpty() )
+    {
+      const QString seqName { mTableName + '_' + fieldName + QStringLiteral( "_seq" ) };
+      const QString seqSql { QStringLiteral( "SELECT c.oid "
+                                             "  FROM pg_class c "
+                                             "  LEFT JOIN pg_namespace n "
+                                             "    ON ( n.oid = c.relnamespace ) "
+                                             "  WHERE c.relkind = 'S' "
+                                             "    AND c.relname = %1 "
+                                             "    AND n.nspname = %2" )
+                             .arg( quotedValue( seqName ) )
+                             .arg( quotedValue( mSchemaName ) )
+                           };
+      QgsPostgresResult seqResult( connectionRO()->PQexec( seqSql ) );
+      if ( seqResult.PQntuples() == 1 )
+      {
+        defValMap[tableoid][attnum] = QStringLiteral( "nextval(%1::regclass)" ).arg( quotedIdentifier( seqName ) );
+      }
+    }
+
     mDefaultValues.insert( mAttributeFields.size(), defValMap[tableoid][attnum] );
 
     QgsField newField = QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType );
