@@ -810,7 +810,10 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int 
   QgsDebugMsg( QStringLiteral( "%1 bytes received" ).arg( mCachedData.size() ) );
   if ( mCachedData.isEmpty() )
   {
-    QgsMessageLog::logMessage( tr( "No data received" ), tr( "WCS" ) );
+    if ( !feedback || !feedback->isCanceled() )
+    {
+      QgsMessageLog::logMessage( tr( "No data received" ), tr( "WCS" ) );
+    }
     clearCache();
     return;
   }
