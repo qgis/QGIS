@@ -612,7 +612,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         gdal.Unlink(filename)
 
     def testSpatialiteDefaultValues(self):
-        """Test wether in spatialite table with default values like CURRENT_TIMESTAMP or
+        """Test whether in spatialite table with default values like CURRENT_TIMESTAMP or
         (datetime('now','localtime')) they are respected. See GH #33383"""
 
         # Create the test table

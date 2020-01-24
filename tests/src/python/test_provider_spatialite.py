@@ -1161,7 +1161,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(l.uniqueValues(0), {987654321012345, 987654321012346})
 
     def testSpatialiteDefaultValues(self):
-        """Test wether in spatialite table with default values like CURRENT_TIMESTAMP or
+        """Test whether in spatialite table with default values like CURRENT_TIMESTAMP or
         (datetime('now','localtime')) they are respected. See GH #33383"""
 
         # Create the test table

@@ -1441,7 +1441,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertIsNotNone(feature.id())
     
     def testDefaultValuesAndClauses(self):
-        """Test wether default values like CURRENT_TIMESTAMP or
+        """Test whether default values like CURRENT_TIMESTAMP or
         now() they are respected. See GH #33383"""
 
         # Create the test table
