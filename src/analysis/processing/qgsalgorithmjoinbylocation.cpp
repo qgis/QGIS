@@ -159,7 +159,7 @@ QVariantMap QgsJoinByLocationAlgorithm::processAlgorithm( const QVariantMap &par
   {
     for ( int i = 0; i < joinFields.count(); ++i )
     {
-      joinFields[ i ].setName( prefix + joinFields[ i ].name() );
+      joinFields.rename( i, prefix + joinFields[ i ].name() );
     }
   }
 
