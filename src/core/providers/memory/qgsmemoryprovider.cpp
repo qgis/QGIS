@@ -512,7 +512,7 @@ bool QgsMemoryProvider::renameAttributes( const QgsFieldNameMap &renamedAttribut
       continue;
     }
 
-    mFields[ fieldIndex ].setName( renameIt.value() );
+    mFields.rename( fieldIndex, renameIt.value() );
   }
   return result;
 }
