@@ -53,7 +53,7 @@ defaultMenuEntries.update({'qgis:distancematrix': analysisToolsMenu,
                            'native:meancoordinates': analysisToolsMenu,
                            'native:lineintersections': analysisToolsMenu})
 researchToolsMenu = vectorMenu + "/" + Processing.tr('&Research Tools')
-defaultMenuEntries.update({'qgis:creategrid': researchToolsMenu,
+defaultMenuEntries.update({'native:creategrid': researchToolsMenu,
                            'qgis:randomselection': researchToolsMenu,
                            'qgis:randomselectionwithinsubsets': researchToolsMenu,
                            'qgis:randompointsinextent': researchToolsMenu,
