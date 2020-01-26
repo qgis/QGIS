@@ -18,7 +18,7 @@
 
 
 
-class QgsMapCanvas : QGraphicsView
+class QgsMapCanvas : QGraphicsView, QgsAbstractTemporal
 {
 %Docstring
 Map canvas is a class for displaying all GIS data types on a canvas.

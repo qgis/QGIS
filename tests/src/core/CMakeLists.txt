@@ -31,6 +31,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/classification
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/temporal
   ${CMAKE_SOURCE_DIR}/src/test
 
   ${CMAKE_BINARY_DIR}/src/core
@@ -223,6 +224,7 @@ SET(TESTS
  testqgssvgmarker.cpp
  testqgssymbol.cpp
  testqgstaskmanager.cpp
+ testqgsabstracttemporal.cpp
  testqgstracer.cpp
  testqgstriangularmesh.cpp
  testqgsfontutils.cpp

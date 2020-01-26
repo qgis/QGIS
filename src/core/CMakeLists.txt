@@ -611,6 +611,8 @@ SET(QGIS_CORE_SRCS
   geocms/geonode/qgsgeonodeconnection.cpp
   geocms/geonode/qgsgeonoderequest.cpp
 
+  temporal/qgsabstracttemporal.cpp
+
   validity/qgsabstractvaliditycheck.cpp
   validity/qgsvaliditycheckcontext.cpp
   validity/qgsvaliditycheckregistry.cpp

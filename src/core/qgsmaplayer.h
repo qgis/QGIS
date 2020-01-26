@@ -76,7 +76,7 @@ enum class QgsMapLayerType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsMapLayer, LayerT
  * Base class for all map layer types.
  * This is the base class for all map layer types (vector, raster).
  */
-class CORE_EXPORT QgsMapLayer : public QObject
+class CORE_EXPORT QgsMapLayer : public QObject, public QgsAbstractTemporal
 {
     Q_OBJECT
 

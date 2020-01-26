@@ -27,10 +27,7 @@
 #include "qgsrange.h"
 
 #include <QObject>
-#include <QMutex>
-#include <QSet>
 #include <QDateTime>
-#include <QList>
 
 /**
  * \class QgsAbstractTemporal
@@ -48,19 +45,81 @@ class CORE_EXPORT QgsAbstractTemporal
     /**
      * Constructor for QgsAbstractTemporal.
      */
-    QgsAbstractTemporal() ;
+    QgsAbstractTemporal();
+
+    QgsAbstractTemporal( const bool enabled );
 
     virtual ~QgsAbstractTemporal() = default;
 
-  private:
+    /**
+     * Sets object as a temporal based one, which will be considered when rendering maps with a specific time range set.
+     *
+     * \see isTemporal()
+     * \since QGIS 3.14
+     */
+    void setIsTemporal( bool enabled );
 
     /**
-     * Represents datetime range.
-     */
-    QgsDateTimeRange *dateTimeRange = nullptr;
+     * Returns true if the object is a temporal one, and will be filtered when rendering maps with a specific time range set.
+     *
+     * For map settings, If false is returned, then any other temporal settings relating to the map will be ignored during rendering.
+     *
+     * \see setIsTemporal()
+     * \since QGIS 3.14
+    */
+    bool isTemporal() const;
+
+    /**
+     * Set datetime range for a temporal object.
+     *
+     * When set, can be used to filter and request time base objects.
+     *
+     * \see dateTimeRange()
+     * \since QGIS 3.14
+    */
+    void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
+
+    /**
+     * Returns datetime range if object is a temporal object.
+     *
+     * \see setDateTimeRange()
+     * \since QGIS 3.14
+    */
+    const QgsDateTimeRange &temporalRange() const;
+
+    /**
+     * Sets current datetime object.
+     *
+     * Can be used in map canvas when changing snapshots
+     *
+     * \see currentDateTime()
+     * \since QGIS 3.14
+    */
+
+    void setCurrentDateTime( QDateTime *dateTime );
+
+    /**
+     * Returns current datetime object.
+     *
+     * Can be used in map canvas when changing snapshots
+     *
+     * \see dateTime()
+     * \since QGIS 3.14
+    */
+
+    QDateTime *currentDateTime() const;
+
+  private:
+
+    //! Temporal state
+    bool mTemporal = false;
+
+    //! Represents datetime range member.
+    QgsDateTimeRange mDateTimeRange;
+
+    //! Datetime member, for storing instant of time
+    QDateTime *mDateTime = nullptr;
 
 };
-
-#endif
 
 #endif // QGSABSTRACTTEMPORAL_H
