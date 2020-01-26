@@ -23,6 +23,7 @@
 #include "qgis_sip.h"
 #include "qgsrange.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsrasterdataprovider.h"
 
 /**
  * \class QgsRasterLayerTemporalProperties
@@ -31,14 +32,13 @@
  *
  * \since QGIS 3.14
  */
+
 class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalProperties
 {
   public:
 
     /**
      * Constructor for QgsRasterLayerTemporalProperties.
-     *
-     * The \a enabled argument specifies whether the temporal properties are initially enabled or not (see isActive()).
      */
     QgsRasterLayerTemporalProperties( bool enabled = false );
 
@@ -46,30 +46,31 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
 
     /**
      * Mode of the raster temporal properties
+     *
      **/
     enum TemporalMode
     {
-      ModeFixedTemporalRange = 0, //! Mode when temporal properties have fixed start and end datetimes.
-      ModeTemporalRangeFromDataProvider = 1, //! Mode when raster layer depends on temporal range from its dataprovider.
-      ModeTemporalRangesList = 2 //! To be used when raster layer has list of temporal ranges.
+      ModeFixedTemporalRange, //! Mode when temporal properties have fixed start and end datetimes.
+      ModeTemporalRangeFromDataProvider, //! Mode when raster layer depends on temporal range from its data provider.
+      ModeTemporalRangesList //! To be used when raster layer has list of temporal ranges.
     };
 
     /**
-     * Returns the temporal properties mode.
+     * Returns the temporal properties mode
      *
      *\see setMode()
     **/
     TemporalMode mode() const;
 
     /**
-     * Sets the temporal properties \a mode.
+     * Sets the temporal properties mode
      *
      *\see mode()
     **/
     void setMode( TemporalMode mode );
 
     /**
-     * Sets a temporal \a range to apply to the whole layer. All bands from
+     * Sets the temporal \a range to apply to the whole layer. All bands from
      * the raster layer will be rendered whenever the current datetime range of
      * a render context intersects the specified \a range.
      *
@@ -84,7 +85,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     void setFixedTemporalRange( const QgsDateTimeRange &range );
 
     /**
-     * Returns the fixed temporal range for the layer.
+     * Returns the fixed temporal range for these properties
      *
      * \warning To be used only when mode() is
      * QgsRasterLayerTemporalProperties::ModeFixedTemporalRange
@@ -92,6 +93,26 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      *\see setFixedTemporalRange()
     **/
     const QgsDateTimeRange &fixedTemporalRange() const;
+
+    /**
+     * Sets the temporal \a range to apply to the whole layer.
+     *
+     * \warning To be used only when mode() is
+     * QgsRasterLayerTemporalProperties::ModeProviderTemporalRange
+     *
+     * \see providerTemporalRange()
+     */
+    void setProviderTemporalRange( const QgsDateTimeRange &range );
+
+    /**
+     * Returns the provider temporal range for these properties
+     *
+     * \warning To be used only when mode() is
+     * QgsRasterLayerTemporalProperties::ModeProviderTemporalRange
+     *
+     *\see setProviderTemporalRange()
+    **/
+    const QgsDateTimeRange &providerTemporalRange() const;
 
     /**
      * Sets the raster layer properties with WMS-T temporal settings.
@@ -105,6 +126,13 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     **/
     void setWmstRelatedSettings( const QString &dimension );
 
+    /**
+     * Sets the raster layer properties with WMS-T temporal settings.
+     *
+     * \param dimension contains text content indicating WMS layer available time value(s).
+     */
+    void setDataProvider( QgsRasterDataProvider *provider );
+
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
@@ -117,8 +145,12 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     //! Represents datetime range member.
     QgsDateTimeRange mRange;
 
+    //! Raster layer data provider with temporal properties
+    QgsRasterDataProvider *mDataProvider = nullptr;
+
     /**
      * Returns the temporal mode given index
+     *
      **/
     TemporalMode indexToMode( int index );
 };

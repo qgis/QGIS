@@ -59,6 +59,8 @@
 #include "qgsfileutils.h"
 #include "qgswebview.h"
 
+#include "qgstemporallayerwidget.h"
+
 #include <QDesktopServices>
 #include <QTableWidgetItem>
 #include <QHeaderView>
@@ -268,6 +270,20 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mMetadataWidget->setMapCanvas( mMapCanvas );
   layout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( layout );
+
+  // Temporal options
+
+  if ( mRasterLayer->temporalProperties()->isActive() ||
+       mRasterLayer->dataProvider()->temporalProperties()->isActive() )
+  {
+    QVBoxLayout *temporalLayout = new QVBoxLayout( temporalFrame );
+    mTemporalLayerWidget = new QgsTemporalLayerWidget( this, mRasterLayer );
+    mTemporalLayerWidget->setMapCanvas( mMapCanvas );
+    temporalLayout->addWidget( mTemporalLayerWidget );
+
+    // TODO set lower and upper limits in datetimeedit inputs
+
+  }
 
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().userFriendlyIdentifier() );
@@ -1093,6 +1109,9 @@ void QgsRasterLayerProperties::apply()
 
   mRasterLayer->setCustomProperty( "WMSPublishDataSourceUrl", mPublishDataSourceUrlCheckBox->isChecked() );
   mRasterLayer->setCustomProperty( "WMSBackgroundLayer", mBackgroundLayerCheckBox->isChecked() );
+
+  // Update temporal properties
+  mTemporalLayerWidget->saveTemporalProperties();
 
   // Force a redraw of the legend
   mRasterLayer->setLegend( QgsMapLayerLegend::defaultRasterLegend( mRasterLayer ) );

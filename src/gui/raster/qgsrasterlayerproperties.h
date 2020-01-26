@@ -37,6 +37,7 @@ class QgsMetadataWidget;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;
+class QgsTemporalLayerWidget;
 class QgsWebView;
 
 
@@ -200,12 +201,22 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QgsRasterRendererWidget *mRendererWidget = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
+    /**
+     * Widget with temporal inputs, to be used by temporal based raster layers.
+     */
+    QgsTemporalLayerWidget *mTemporalLayerWidget = nullptr;
+
     bool rasterIsMultiBandColor();
 
     /**
      * Updates the information tab by reloading metadata
      */
     void updateInformationContent();
+
+    /**
+     * Updates the temporal properties for temporal based raster layers.
+     */
+    void updateTemporalProperties();
 
     void setupTransparencyTable( int nBands );
 

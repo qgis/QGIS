@@ -186,6 +186,23 @@ struct QgsWmsDimensionProperty
   //! Optional, valid only for temporal exents, determines whether data are normally kept current.
   bool      current = false;
 
+  //! Parse the dimension extent to QgsDateTimeRange instance
+  QgsDateTimeRange parseExtent() const
+  {
+    if ( extent.contains( '/' ) )
+    {
+      QStringList extentContent = extent.split( '/' );
+      int extentSize = extentContent.size();
+
+      QDateTime start = QDateTime::fromString( extentContent.at( 0 ), Qt::ISODateWithMs );
+      QDateTime end = QDateTime::fromString( extentContent.at( extentSize - 2 ), Qt::ISODateWithMs );
+
+      if ( start.isValid() & end.isValid() )
+        return QgsDateTimeRange( start, end );
+    }
+
+    return QgsDateTimeRange();
+  }
 };
 
 //! Logo URL Property structure
@@ -300,7 +317,6 @@ struct QgsWmsLayerProperty
   QStringList                             crs;        // coord ref sys
   QgsRectangle                            ex_GeographicBoundingBox;
   QVector<QgsWmsBoundingBoxProperty>      boundingBoxes;
-  QVector<QgsWmsDimensionProperty>        dimension;
   QgsWmsAttributionProperty               attribution;
   QVector<QgsWmsAuthorityUrlProperty>     authorityUrl;
   QVector<QgsWmsIdentifierProperty>       identifier;
@@ -334,6 +350,84 @@ struct QgsWmsLayerProperty
     return true;
   }
 
+  /**
+   * Returns true if it the struct has the dimension with the passed name
+   */
+  bool hasDimension( QString dimensionName ) const
+  {
+    if ( dimensions.isEmpty() )
+      return false;
+
+    for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( dimensions ) )
+    {
+      if ( dimension.name == dimensionName )
+        return true;
+    }
+
+    return false;
+  }
+};
+
+/**
+ * Stores the dates part from the WMS-T dimension extent.
+ *
+ * Here a date with no time precision is not equal with
+ * a date with same year, month and day but with time precision.
+ * eg. 2020-01-02 is not equal to 2020-01-02T00:00:00
+ *
+ * Hence this struct has two hash date members to acccount for the difference.
+ *
+ *
+ */
+struct QgsWmstDates
+{
+  QList< QDateTime > dateTimes;
+};
+
+/**
+ * Stores resolution part of the WMS-T dimension extent.
+ *
+ * If resolution does not exist, active() will return false;
+ */
+struct QgsWmstResolution
+{
+  int year = -1;
+  int month = -1;
+  int day = -1;
+
+  int hour = -1;
+  int minutes = -1;
+  int seconds = -1;
+
+  bool active()
+  {
+    return year != -1 && month != -1 && day != -1 &&
+           hour != -1 && minutes != -1 && seconds != -1;
+  }
+
+};
+
+struct QgsWmstExtentPair
+{
+  QgsWmstExtentPair()
+  {
+  }
+  QgsWmstExtentPair( QgsWmstDates otherDates, QgsWmstResolution otherResolution )
+  {
+    dates = otherDates;
+    resolution = otherResolution;
+  }
+  QgsWmstDates dates;
+  QgsWmstResolution resolution;
+};
+
+
+/**
+ * Stores  the WMS-T dimension extent.
+ */
+struct QgsWmstDimensionExtent
+{
+  QList <QgsWmstExtentPair> datesResolutionList;
 };
 
 struct QgsWmtsTheme
@@ -595,6 +689,21 @@ class QgsWmsSettings
 
     QgsWmsParserSettings parserSettings() const { return mParserSettings; }
 
+    /**
+     * Parse the given string extent into a well defined dates and resolution structures
+     */
+    QgsDateTimeRange parseTemporalExtent( QgsWmstDimensionExtent dimensionExtent, QString extent );
+
+    /**
+     * Parse the given string item into a resolution structure
+     */
+    QgsWmstResolution parseWmstResolution( QString item );
+
+    /**
+     * Parse the given string item into QDateTime instant
+     */
+    QDateTime parseWmstDateTimes( QString item );
+
   protected:
     QgsWmsParserSettings    mParserSettings;
 
@@ -602,6 +711,25 @@ class QgsWmsSettings
     bool                    mTiled;
     //! whether we actually work with XYZ tiles instead of WMS / WMTS
     bool mXyz;
+
+    //! Whether we are dealing with WMS-T
+    bool mIsTemporal = false;
+
+    //! Temporal extent from dimension property in WMS-T
+    QString mTemporalExtent;
+
+    //! Fixed temporal range for the data provider
+    QgsDateTimeRange mFixedRange;
+
+    //! Fixed reference temporal range for the data provider
+    QgsDateTimeRange mFixedReferenceRange;
+
+    //! Stores WMS-T time dimension extent dates
+    QgsWmstDimensionExtent mTimeDimensionExtent;
+
+    //! Stores WMS-T reference dimension extent dates
+    QgsWmstDimensionExtent mReferenceTimeDimensionExtent;
+
     //! whether we are dealing with MBTiles file rather than using network-based tiles
     bool mIsMBTiles = false;
     //! chosen values for dimensions in case of multi-dimensional data (key=dim id, value=dim value)

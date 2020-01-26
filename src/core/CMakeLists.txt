@@ -232,6 +232,7 @@ SET(QGIS_CORE_SRCS
   qgsdataitemproviderregistry.cpp
   qgsdatasourceuri.cpp
   qgsdataprovider.cpp
+  qgsdataprovidertemporalproperties.cpp
   qgsdatetimestatisticalsummary.cpp
   qgsdatumtransform.cpp
   qgsdbfilterproxymodel.cpp
@@ -407,6 +408,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerjoininfo.cpp
   qgsvectorlayerrenderer.cpp
+  qgsvectorlayertemporalproperties.cpp
   qgsvectorlayertools.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectorlayerundopassthroughcommand.cpp
@@ -508,6 +510,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrasterblock.cpp
   raster/qgsrasterchecker.cpp
   raster/qgsrasterdataprovider.cpp
+  raster/qgsrasterdataprovidertemporalproperties.cpp
   raster/qgsrasterfilewritertask.cpp
   raster/qgsrasteridentifyresult.cpp
   raster/qgsrasterinterface.cpp
@@ -726,6 +729,7 @@ SET(QGIS_CORE_HDRS
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
   qgsdataprovider.h
+  qgsdataprovidertemporalproperties.h
   qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
   qgsdatumtransform.h
@@ -925,6 +929,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerjoininfo.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerserverproperties.h
+  qgsvectorlayertemporalproperties.h
   qgsvectorlayertools.h
   qgsvectorlayerundocommand.h
   qgsvectorlayerundopassthroughcommand.h
@@ -1214,6 +1219,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterblock.h
   raster/qgsrasterchecker.h
   raster/qgsrasterdataprovider.h
+  raster/qgsrasterdataprovidertemporalproperties.h
   raster/qgsrasterdrawer.h
   raster/qgsrasterfilewriter.h
   raster/qgsrasterfilewritertask.h

@@ -365,6 +365,21 @@ QString QgsWMSLayerItem::createUri()
   QString style = !mLayerProperty.style.isEmpty() ? mLayerProperty.style.at( 0 ).name : QString();
   mDataSourceUri.setParam( QStringLiteral( "styles" ), style );
 
+  // Check for layer dimensions
+  if ( !mLayerProperty.dimensions.empty() )
+  {
+      for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( mLayerProperty.dimensions ) )
+      {
+          // add temporal dimensions only
+          if ( dimension.name == "time" || dimension.name == "reference_time" )
+          {
+              if ( !( mDataSourceUri.param( "type" ) == "wmst" ) )
+                  mDataSourceUri.setParam( "type", "wmst" );
+              mDataSourceUri.setParam( dimension.name, dimension.extent );
+          }
+      }
+  }
+
   QString format;
   // get first supported by qt and server
   QVector<QgsWmsSupportedFormat> formats( QgsWmsProvider::supportedFormats() );

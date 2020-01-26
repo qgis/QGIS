@@ -157,6 +157,12 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     bool isValid() const override;
 
+    /**
+     * Converts temporal dimension extent string from WMS-T capabilities
+     * to a QgsDateTimeRange instant
+     */
+    QgsDateTimeRange parseTemporalExtent( QString extent );
+
 #if 0
 
     /**
@@ -470,6 +476,9 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     //! User's settings (URI, authorization, layer, style, ...)
     QgsWmsSettings mSettings;
+
+    //! Temporal range member
+    QgsDateTimeRange mRange;
 
     QList< double > mNativeResolutions;
 
