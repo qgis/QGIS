@@ -82,6 +82,20 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     return true;
   }
 
+  if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "wmst" ) )
+  {
+    mIsTemporal = true;
+    mTemporalExtent = uri.param( QStringLiteral( "time" ) );
+    mFixedRange = parseTemporalExtent( mTimeDimensionExtent, mTemporalExtent );
+
+    if ( uri.param( QStringLiteral( "reference_time" ) ) != QLatin1String( "" ) )
+    {
+      QString referenceExtent = uri.param( QStringLiteral( "reference_time" ) );
+      mFixedReferenceRange = parseTemporalExtent( mReferenceTimeDimensionExtent,
+                             referenceExtent );
+    }
+  }
+
   mTiled = false;
   mTileDimensionValues.clear();
 
@@ -159,6 +173,179 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   mFeatureCount = uri.param( QStringLiteral( "featureCount" ) ).toInt(); // default to 0
 
   return true;
+}
+
+QgsDateTimeRange QgsWmsSettings::parseTemporalExtent( QgsWmstDimensionExtent dimensionExtent,
+    QString extent )
+{
+  if ( extent.isNull() )
+    return QgsDateTimeRange();
+
+  bool containResolution = false;
+
+  QStringList parts;
+
+  if ( extent.contains( ',' ) )
+    parts = extent.split( ',' );
+  else
+    parts.append( extent );
+
+  QStringListIterator iter( parts );
+
+  QgsWmstExtentPair pair;
+
+  QgsWmstResolution resolution = pair.resolution;
+  QgsWmstDates datesList = pair.dates;
+
+  while ( iter.hasNext() )
+  {
+    QString item = iter.next();
+    QStringList itemParts;
+
+    // If item contain '/' content separator, it is an interval
+    if ( item.contains( '/' ) )
+    {
+      itemParts = item.split( '/' );
+      QStringListIterator itemIter( itemParts );
+      QgsWmstExtentPair itemPair;
+
+      QgsWmstResolution itemResolution = itemPair.resolution;
+      QgsWmstDates itemDatesList = itemPair.dates;
+
+      bool itemContainResolution = false;
+
+      while ( itemIter.hasNext() )
+      {
+        QString itemContent = itemIter.next();
+
+        if ( itemContent.startsWith( 'P' ) )
+        {
+          itemResolution = parseWmstResolution( itemContent );
+          itemContainResolution = true;
+        }
+        else
+        {
+          itemDatesList.dateTimes.append( parseWmstDateTimes( itemContent ) );
+        }
+      }
+
+      if ( itemContainResolution )
+        dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( itemDatesList, itemResolution ) );
+      else
+        dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( itemDatesList, QgsWmstResolution() ) );
+      itemContainResolution = false;
+      continue;
+    }
+
+    if ( item.startsWith( 'P' ) )
+    {
+      resolution = parseWmstResolution( item );
+      containResolution = true;
+    }
+    else
+    {
+      datesList.dateTimes.append( parseWmstDateTimes( item ) );
+    }
+
+    if ( containResolution )
+      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( datesList, resolution ) );
+    else
+      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( datesList, QgsWmstResolution() ) );
+    containResolution = false;
+  }
+
+
+  // Return the provider temporal take the begin date in first temporal range and
+  // and the end date in last temporal range
+
+  if ( dimensionExtent.datesResolutionList.first().dates.dateTimes.size() > 0 )
+  {
+    QDateTime begin = dimensionExtent.datesResolutionList.first().dates.dateTimes.first();
+    QDateTime end = dimensionExtent.datesResolutionList.first().dates.dateTimes.last();
+
+    return QgsDateTimeRange( begin, end );
+  }
+
+  return QgsDateTimeRange();
+}
+
+QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
+{
+  QgsWmstResolution resolution;
+  char datesSymbols[] = { 'Y', 'M', 'D' };
+  char timesSymbols[] = { 'H', 'M', 'S' };
+
+  for ( int i = 0; i < 3; i++ )
+  {
+    QString number = item.left( item.indexOf( datesSymbols[i] ) );
+    int resolutionValue = number.remove( 'P' ).toInt();
+
+    if ( datesSymbols[i] == 'Y' && item.contains( 'Y' ) )
+    {
+      resolution.year = resolutionValue;
+      item = item.remove( number );
+    }
+    if ( datesSymbols[i] == 'M' && item.contains( 'M' ) )
+    {
+      resolution.month = resolutionValue;
+      item = item.remove( number );
+    }
+    if ( datesSymbols[i] == 'D' && item.contains( 'D' ) )
+    {
+      resolution.day = resolutionValue;
+      item = item.remove( number );
+    }
+
+  }
+  if ( !item.contains( 'T' ) )
+    return resolution;
+  else
+    item.remove( 'T' );
+
+  for ( int i = 0; i < 3; i++ )
+  {
+    QString number = item.left( item.indexOf( timesSymbols[i] ) );
+    int resolutionValue = number.remove( 'P' ).toInt();
+
+    if ( timesSymbols[i] == 'H' && item.contains( 'H' ) )
+    {
+      resolution.hour = resolutionValue;
+      item = item.remove( number );
+    }
+    if ( timesSymbols[i] == 'M' && item.contains( 'M' ) )
+    {
+      resolution.minutes = resolutionValue;
+      item = item.remove( number );
+    }
+    if ( timesSymbols[i] == 'S' && item.contains( 'S' ) )
+    {
+      resolution.seconds = resolutionValue;
+      item = item.remove( number );
+    }
+
+  }
+  return resolution;
+}
+
+QDateTime QgsWmsSettings::parseWmstDateTimes( QString item )
+{
+  // Standard item will have YYYY-MM-DDThh:mm:ss.SSSZ
+  //  format a Qt::ISODateWithMs
+
+  QString format = "YYYY-MM-DDThh:mm:ss.SSSZ";
+
+  // Check if it does not have time part
+  if ( !item.contains( 'T' ) )
+    return QDateTime::fromString( item, "YYYY-MM-DD" );
+  else
+  {
+    if ( item.contains( '.' ) )
+      return QDateTime::fromString( item, Qt::ISODateWithMs );
+    else
+      return QDateTime::fromString( item, Qt::ISODate );
+  }
+
+  return QDateTime::fromString( item, format );
 }
 
 

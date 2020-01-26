@@ -54,6 +54,8 @@ email                : tim at linfiniti.com
 #include "qgsbilinearrasterresampler.h"
 #include "qgscubicrasterresampler.h"
 
+#include "../../providers/wms/qgswmsprovider.h"
+
 #include <cmath>
 #include <cstdio>
 #include <limits>
@@ -78,6 +80,8 @@ email                : tim at linfiniti.com
 #include <QPixmap>
 #include <QRegExp>
 #include <QSlider>
+
+
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
 
@@ -125,6 +129,8 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
 
   setDataSource( uri, baseName, providerKey, providerOptions, options.loadDefaultStyle );
 
+  setTemporalState();
+
 } // QgsRasterLayer ctor
 
 QgsRasterLayer::~QgsRasterLayer()
@@ -171,6 +177,21 @@ bool QgsRasterLayer::isValidRasterFileName( QString const &fileNameQString )
 {
   QString retErrMsg;
   return isValidRasterFileName( fileNameQString, retErrMsg );
+}
+
+void QgsRasterLayer::setTemporalState()
+{
+    if ( mProviderKey == QLatin1String( "wms" ) )
+      {
+         const QgsWmsProvider *wmsProvider = qobject_cast<const QgsWmsProvider* >( mDataProvider );
+         if ( wmsProvider->layerIsTemporal( mLayerName ) )
+         {
+             setIsTemporal( true );
+             QgsDateTimeRange dateTimeRange = wmsProvider->layerTemporalRange( mLayerName );
+             setTemporalRange( dateTimeRange );
+         }
+
+      }
 }
 
 QDateTime QgsRasterLayer::lastModified( QString const &name )
@@ -576,8 +597,6 @@ void QgsRasterLayer::init()
   //Initialize the last view port structure, should really be a class
   mLastViewPort.mWidth = 0;
   mLastViewPort.mHeight = 0;
-
-  mTemporalProperties = qgis::make_unique<QgsRasterLayerTemporalProperties>();
 }
 
 void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
@@ -945,9 +964,16 @@ bool QgsRasterLayer::ignoreExtents() const
   return mDataProvider ? mDataProvider->ignoreExtents() : false;
 }
 
-QgsRasterLayerTemporalProperties *QgsRasterLayer::temporalProperties()
+void QgsRasterLayer::setTemporalProperty( const QgsTemporalProperty &temporalProperty )
 {
-  return mTemporalProperties.get();
+    if( mTemporalProperty.equal( temporalProperty ) )
+        return;
+    mTemporalProperty = temporalProperty;
+}
+
+const QgsTemporalProperty &QgsRasterLayer::temporalProperty() const
+{
+    return mTemporalProperty;
 }
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )
@@ -1998,9 +2024,6 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
     layer_node.appendChild( noData );
   }
 
-  // write temporal properties
-  mTemporalProperties->writeXml( mapLayerNode, document, context );
-
   writeStyleManager( layer_node, document );
 
   //write out the symbology
@@ -2335,4 +2358,35 @@ bool QgsRasterLayer::update()
     emit dataChanged();
   }
   return mValid;
+}
+
+void QgsRasterLayer::setTemporalState()
+{
+    // TODO add check for other raster based data providers with possible temporal properties
+    if ( mProviderKey == QLatin1String( "wms" ) )
+      {
+         if ( mDataSource.contains( QLatin1String( "time=" ) ) ||
+              mDataSource.contains( QLatin1String( "reference_time=" ) ) )
+         {
+             QString extent;
+
+             QString sourceUri( mDataSource );
+             QStringList parts = sourceUri.split( ',' );
+
+             QStringListIterator iter( parts );
+             while ( iter.hasNext() )
+             {
+               QString item = iter.next();
+               if ( item.startsWith( QLatin1String( "time=" ) ) )
+               {
+                   extent = item.mid( 5 );
+               }
+               else if ( item.startsWith( QLatin1String( "reference_time=" ) ) )
+               {
+                   extent = item.mid( 15 );
+               }
+             }
+             setTemporalProperty( QgsTemporalProperty());
+         }
+      }
 }

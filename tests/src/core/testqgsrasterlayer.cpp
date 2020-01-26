@@ -113,7 +113,8 @@ class TestQgsRasterLayer : public QObject
     QgsRasterLayer *mpFloat32RasterLayer = nullptr;
     QgsRasterLayer *mPngRasterLayer = nullptr;
     QgsRasterLayer *mGeoJp2RasterLayer = nullptr;
-    QgsRasterLayer *mTemporalRasterLayer = nullptr;
+
+    QgsRasterLayerTemporalProperties *temporalProperties = nullptr;
 
     QgsMapSettings *mMapSettings = nullptr;
     QString mReport;
@@ -193,8 +194,6 @@ void TestQgsRasterLayer::initTestCase()
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mpRasterLayer );
   mReport += QLatin1String( "<h1>Raster Layer Tests</h1>\n" );
   mReport += "<p>" + mySettings + "</p>";
-
-  mTemporalRasterLayer = new QgsRasterLayer();
 
 }
 //runs after all tests
@@ -1005,35 +1004,40 @@ void TestQgsRasterLayer::sample()
 
 void TestQgsRasterLayer::testTemporalProperties()
 {
-  QgsRasterLayerTemporalProperties *temporalProperties = mTemporalRasterLayer->temporalProperties();
-  QVERIFY( !mTemporalRasterLayer->temporalProperties()->isActive() );
+  QgsRasterLayerTemporalProperties *temporalProperties = mpRasterLayer->temporalProperties();
+  QVERIFY( !mpRasterLayer->temporalProperties()->isActive() );
 
   QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
                                    QDateTime( QDate( 2020, 12, 31 ) ) );
 
   temporalProperties->setFixedTemporalRange( dateTimeRange );
-
-  QCOMPARE( mTemporalRasterLayer->temporalProperties()->fixedTemporalRange().begin(), dateTimeRange.begin() );
-  QCOMPARE( mTemporalRasterLayer->temporalProperties()->fixedTemporalRange().end(), dateTimeRange.end() );
+  QCOMPARE( mpRasterLayer->temporalProperties()->fixedTemporalRange(), dateTimeRange );
 
   // writing and reading from xml
   QDomDocument document;
-  QDomElement elementRoot = document.createElement( "maplayer" );
+  QDomElement elementRoot = document.createElement( "qgis" );
   document.appendChild( elementRoot );
 
   QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeFixedTemporalRange );
 
-  temporalProperties->setMode( QgsRasterLayerTemporalProperties::TemporalMode::ModeTemporalRangesList );
-
-  // Change temporal properties, save the xml
   QDomElement element = temporalProperties->writeXml( elementRoot, document, QgsReadWriteContext() );
 
-  // Restore
+  QVERIFY( temporalProperties->readXml( element, QgsReadWriteContext() ) );
+  QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeFixedTemporalRange );
+
+  // Change temporal properties, save the xml
+  temporalProperties->setMode( QgsRasterLayerTemporalProperties::TemporalMode::ModeTemporalRangesList );
+  element = temporalProperties->writeXml( elementRoot, document, QgsReadWriteContext() );
+
+  // set mode without saving to xml
+  temporalProperties->setMode( QgsRasterLayerTemporalProperties::TemporalMode::ModeFixedTemporalRange );
+
+  QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeFixedTemporalRange );
+
+  // Read the xml and test if the old saved mode is restored
   QVERIFY( temporalProperties->readXml( element, QgsReadWriteContext() ) );
   QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeTemporalRangesList );
 
-  QCOMPARE( mTemporalRasterLayer->temporalProperties()->fixedTemporalRange().begin(), dateTimeRange.begin() );
-  QCOMPARE( mTemporalRasterLayer->temporalProperties()->fixedTemporalRange().end(), dateTimeRange.end() );
 }
 
 

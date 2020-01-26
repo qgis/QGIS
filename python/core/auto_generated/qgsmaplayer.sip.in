@@ -1299,7 +1299,7 @@ should be canceled.
 
     virtual QgsMapLayerTemporalProperties *temporalProperties();
 %Docstring
-Returns the layer's temporal properties. This may be ``None``, depending on the layer type.
+Returns map layer temporal properties. This may be ``None``, depending on the layer type.
 
 .. versionadded:: 3.14
 %End

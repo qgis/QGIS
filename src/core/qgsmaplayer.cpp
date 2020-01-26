@@ -53,6 +53,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsxmlutils.h"
 #include "qgsstringutils.h"
+#include "qgsrasterlayertemporalproperties.h"
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
 {
@@ -1870,6 +1871,7 @@ bool QgsMapLayer::accept( QgsStyleEntityVisitorInterface * ) const
 {
   return true;
 }
+
 
 void QgsMapLayer::setProviderType( const QString &providerType )
 {

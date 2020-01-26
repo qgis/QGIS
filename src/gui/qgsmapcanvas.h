@@ -26,7 +26,11 @@
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
 #include "qgscustomdrophandler.h"
+<<<<<<< HEAD
 #include "qgstemporalrangeobject.h"
+=======
+#include "temporal/qgsabstracttemporal.h"
+>>>>>>> de9992479d... updates on tests and abstract temporal class
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -941,13 +945,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void tapAndHoldGestureOccurred( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
 
-    /**
-     * Emitted when the map canvas temporal range changes.
+     /** Emitted when the map canvas temporal range changes.
      *
      * \since QGIS 3.14
      */
     void temporalRangeChanged();
-
+    
   protected:
 
     bool event( QEvent *e ) override;

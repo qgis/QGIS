@@ -1,7 +1,7 @@
 /***************************************************************************
-                         qgstemporalrangeobject.cpp
+                         qgsdataprovidertemporalproperties.cpp
                          ---------------
-    begin                : January 2020
+    begin                : February 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
     email                : samweli at kartoza dot com
  ***************************************************************************/
@@ -15,46 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdataprovidertemporalproperties.h"
 
-#include "qgstemporalrangeobject.h"
-#include "qgsrendercontext.h"
-
-QgsTemporalRangeObject::QgsTemporalRangeObject()
+QgsDataProviderTemporalProperties::QgsDataProviderTemporalProperties( bool enabled )
+  : QgsTemporalProperty( enabled )
 {
-}
-
-QgsTemporalRangeObject::QgsTemporalRangeObject( bool enabled )
-  : mTemporal( enabled )
-{
-}
-
-QgsTemporalRangeObject::QgsTemporalRangeObject( const QgsRenderContext &rh )
-  : mTemporal( rh.isTemporal() )
-  , mDateTimeRange( rh.temporalRange() )
-{
-}
-
-void QgsTemporalRangeObject::setIsTemporal( bool enabled )
-{
-  mTemporal = enabled;
-}
-
-bool QgsTemporalRangeObject::isTemporal() const
-{
-  return mTemporal;
-}
-
-void QgsTemporalRangeObject::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
-{
-  if ( !isTemporal() )
-    setIsTemporal( true );
-
-  mDateTimeRange = dateTimeRange;
-
-}
-
-const QgsDateTimeRange &QgsTemporalRangeObject::temporalRange() const
-{
-  return mDateTimeRange;
 }
 

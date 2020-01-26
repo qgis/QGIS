@@ -217,12 +217,14 @@ QgsRasterDataProvider::QgsRasterDataProvider()
   : QgsDataProvider( QString(), QgsDataProvider::ProviderOptions() )
   , QgsRasterInterface( nullptr )
 {
+  mTemporalProperties = std::unique_ptr< QgsRasterDataProviderTemporalProperties >( new QgsRasterDataProviderTemporalProperties() );
 }
 
 QgsRasterDataProvider::QgsRasterDataProvider( const QString &uri, const ProviderOptions &options )
   : QgsDataProvider( uri, options )
   , QgsRasterInterface( nullptr )
 {
+  mTemporalProperties = std::unique_ptr< QgsRasterDataProviderTemporalProperties >( new QgsRasterDataProviderTemporalProperties() );
 }
 
 QgsRasterDataProvider::ProviderCapabilities QgsRasterDataProvider::providerCapabilities() const
@@ -514,6 +516,12 @@ void QgsRasterDataProvider::copyBaseSettings( const QgsRasterDataProvider &other
   mUseSrcNoDataValue = other.mUseSrcNoDataValue;
   mUserNoDataValue = other.mUserNoDataValue;
   mExtent = other.mExtent;
+
+  // copy temporal properties
+  mTemporalProperties->setIsActive( other.mTemporalProperties->isActive() );
+  mTemporalProperties->setTemporalRange( other.mTemporalProperties->temporalRange() );
+  mTemporalProperties->setFixedTemporalRange( other.mTemporalProperties->fixedTemporalRange() );
+  mTemporalProperties->setEnableTime( other.mTemporalProperties->isTimeEnabled() );
 }
 
 // ENDS

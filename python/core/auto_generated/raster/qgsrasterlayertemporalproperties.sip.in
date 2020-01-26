@@ -10,6 +10,7 @@
 
 
 
+
 class QgsRasterLayerTemporalProperties : QgsMapLayerTemporalProperties
 {
 %Docstring
@@ -26,8 +27,6 @@ Implementation of map layer temporal properties for raster layers.
     QgsRasterLayerTemporalProperties( bool enabled = false );
 %Docstring
 Constructor for QgsRasterLayerTemporalProperties.
-
-The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see isActive()).
 %End
 
     virtual ~QgsRasterLayerTemporalProperties();
@@ -41,21 +40,21 @@ The ``enabled`` argument specifies whether the temporal properties are initially
 
     TemporalMode mode() const;
 %Docstring
-Returns the temporal properties mode.
+Returns the temporal properties mode
 
 .. seealso:: :py:func:`setMode`
 %End
 
     void setMode( TemporalMode mode );
 %Docstring
-Sets the temporal properties ``mode``.
+Sets the temporal properties mode
 
 .. seealso:: :py:func:`mode`
 %End
 
     void setFixedTemporalRange( const QgsDateTimeRange &range );
 %Docstring
-Sets a temporal ``range`` to apply to the whole layer. All bands from
+Sets the temporal ``range`` to apply to the whole layer. All bands from
 the raster layer will be rendered whenever the current datetime range of
 a render context intersects the specified ``range``.
 
@@ -72,7 +71,7 @@ with which the range of the render context intersects the specified ``range``.
 
     const QgsDateTimeRange &fixedTemporalRange() const;
 %Docstring
-Returns the fixed temporal range for the layer.
+Returns the fixed temporal range for these properties
 
 .. warning::
 
