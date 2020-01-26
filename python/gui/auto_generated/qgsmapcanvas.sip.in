@@ -1048,6 +1048,11 @@ start of the pan and the current pan position.
 Emitted whenever a tap and hold ``gesture`` occurs at the specified map point.
 
 .. versionadded:: 3.12
+    void temporalRangeChanged();
+%Docstring
+Emitted when the map canvas temporal range changes.
+
+.. versionadded:: 3.14
 %End
 
     void temporalRangeChanged();

@@ -41,6 +41,7 @@
 %Include auto_generated/qgsdataitemprovider.sip
 %Include auto_generated/qgsdataitemproviderregistry.sip
 %Include auto_generated/qgsdataprovider.sip
+%Include auto_generated/qgsdataprovidertemporalproperties.sip
 %Include auto_generated/qgsdatasourceuri.sip
 %Include auto_generated/qgsdatetimestatisticalsummary.sip
 %Include auto_generated/qgsdatumtransform.sip
@@ -447,6 +448,7 @@
 %Include auto_generated/raster/qgsrasterblock.sip
 %Include auto_generated/raster/qgsrasterchecker.sip
 %Include auto_generated/raster/qgsrasterdataprovider.sip
+%Include auto_generated/raster/qgsrasterdataprovidertemporalproperties.sip
 %Include auto_generated/raster/qgsrasterdrawer.sip
 %Include auto_generated/raster/qgsrasterfilewriter.sip
 %Include auto_generated/raster/qgsrasterfilewritertask.sip

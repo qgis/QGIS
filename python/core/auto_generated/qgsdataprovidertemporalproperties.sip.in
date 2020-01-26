@@ -1,0 +1,42 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdataprovidertemporalproperties.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsDataProviderTemporalProperties : QgsTemporalProperty
+{
+%Docstring
+Class for handling data providers temporal properties.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsdataprovidertemporalproperties.h"
+%End
+  public:
+
+    QgsDataProviderTemporalProperties( bool enabled = false );
+%Docstring
+Constructor for QgsDataProviderTemporalProperties.
+%End
+
+    virtual ~QgsDataProviderTemporalProperties();
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdataprovidertemporalproperties.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

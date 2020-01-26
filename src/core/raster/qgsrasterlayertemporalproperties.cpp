@@ -29,11 +29,16 @@ QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties:
 
 void QgsRasterLayerTemporalProperties::setMode( QgsRasterLayerTemporalProperties::TemporalMode mode )
 {
+  if ( mMode == mode )
+    return;
   mMode = mode;
 }
 
 void  QgsRasterLayerTemporalProperties::setFixedTemporalRange( const QgsDateTimeRange &range )
 {
+  if ( range == mRange )
+    return;
+
   mRange = range;
 }
 
@@ -41,6 +46,25 @@ const QgsDateTimeRange &QgsRasterLayerTemporalProperties::fixedTemporalRange() c
 {
   return mRange;
 }
+
+//void  QgsRasterLayerTemporalProperties::setProviderTemporalRange( const QgsDateTimeRange &range )
+//{
+//  if ( range == mRange )
+//    return;
+
+//  QgsWmsProvider *wmsProvider = qobject_cast<QgsWmsProvider*> (mDataProvider);
+
+//  if ( wmsProvider)
+//      wmsProvider->setTemporalRange( range );
+
+//  mRange = range;
+
+//}
+
+//void QgsRasterLayerTemporalProperties::setDataProvider( QgsRasterDataProvider *provider)
+//{
+//    mDataProvider = provider;
+//}
 
 void  QgsRasterLayerTemporalProperties::setWmstRelatedSettings( const QString &dimension )
 {
@@ -77,7 +101,7 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
 
 QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context )
+  Q_UNUSED( context );
   if ( element.isNull() )
     return QDomElement();
 
@@ -116,6 +140,6 @@ QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties:
     case 2:
       return TemporalMode::ModeTemporalRangesList;
     default:
-      return TemporalMode::ModeTemporalRangesList;
+      return TemporalMode::ModeFixedTemporalRange;
   }
 }
