@@ -40,6 +40,7 @@
 #include "qgsrasterrange.h"
 #include "qgsrectangle.h"
 #include "qgsrasteriterator.h"
+#include "qgsrasterdataprovidertemporalproperties.h"
 
 class QImage;
 class QByteArray;
@@ -47,6 +48,7 @@ class QByteArray;
 class QgsPointXY;
 class QgsRasterIdentifyResult;
 class QgsMapSettings;
+class QgsWmsProvider;
 
 /**
  * \brief Handles asynchronous download of images
@@ -259,6 +261,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     {
       return QStringList();
     }
+
+    /**
+     * Returns temporal properties associated with data provider.
+     */
+    QgsRasterDataProviderTemporalProperties *temporalProperties() override { return mTemporalProperties.get(); }
 
     //! \brief Returns whether the provider supplies a legend graphic
     virtual bool supportsLegendGraphic() const { return false; }
@@ -610,6 +617,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     QList< QgsRasterRangeList > mUserNoDataValue;
 
     mutable QgsRectangle mExtent;
+
+  private:
+
+    /**
+     * Data provider temporal properties
+     */
+    std::unique_ptr< QgsRasterDataProviderTemporalProperties > mTemporalProperties;
 
 };
 

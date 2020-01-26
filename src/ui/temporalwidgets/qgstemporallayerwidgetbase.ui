@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsTemporalLayerWidgetBase</class>
+ <widget class="QWidget" name="QgsTemporalLayerWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>752</width>
+    <height>787</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QgsScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>752</width>
+        <height>787</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <property name="topMargin">
+        <number>9</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QgsCollapsibleGroupBox" name="mTemporalGroupBox">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}
+background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::title {  subcontrol-origin: margin;  subcontrol-position: top left;  margin-left: 20px;  margin-right: 5px;  left: 0px;  top: 1px;}</string>
+         </property>
+         <property name="title">
+          <string>Temporal</string>
+         </property>
+         <property name="collapsed">
+          <bool>false</bool>
+         </property>
+         <property name="syncGroup">
+          <string notr="true">rastertransp</string>
+         </property>
+         <property name="saveCollapsedState">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QFrame" name="frame_5">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_11">
+             <item>
+              <widget class="QLabel" name="mRangeLabel">
+               <property name="styleSheet">
+                <string notr="true">color:rgb(46, 52, 54);
+</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="mLayerRadioButton">
+               <property name="text">
+                <string>Specify time range</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QFrame" name="frame_3">
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <property name="lineWidth">
+                <number>1</number>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_2">
+                <item>
+                 <widget class="QGroupBox" name="startTemporalDateTimeGroupBox">
+                  <property name="title">
+                   <string>Start date</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_10">
+                   <item>
+                    <widget class="QDateTimeEdit" name="mStartTemporalDateTimeEdit">
+                     <property name="dateTime">
+                      <datetime>
+                       <hour>0</hour>
+                       <minute>0</minute>
+                       <second>0</second>
+                       <year>2020</year>
+                       <month>1</month>
+                       <day>1</day>
+                      </datetime>
+                     </property>
+                     <property name="date">
+                      <date>
+                       <year>2020</year>
+                       <month>1</month>
+                       <day>1</day>
+                      </date>
+                     </property>
+                     <property name="displayFormat">
+                      <string>M.d.yy h:mm AP</string>
+                     </property>
+                     <property name="calendarPopup">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="endTemporalDateTimeGroupBox">
+                  <property name="title">
+                   <string>End date</string>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout">
+                   <item>
+                    <widget class="QDateTimeEdit" name="mEndTemporalDateTimeEdit">
+                     <property name="dateTime">
+                      <datetime>
+                       <hour>0</hour>
+                       <minute>0</minute>
+                       <second>0</second>
+                       <year>2020</year>
+                       <month>12</month>
+                       <day>31</day>
+                      </datetime>
+                     </property>
+                     <property name="date">
+                      <date>
+                       <year>2020</year>
+                       <month>12</month>
+                       <day>31</day>
+                      </date>
+                     </property>
+                     <property name="time">
+                      <time>
+                       <hour>0</hour>
+                       <minute>0</minute>
+                       <second>0</second>
+                      </time>
+                     </property>
+                     <property name="displayFormat">
+                      <string>M.d.yy h:mm AP</string>
+                     </property>
+                     <property name="calendarPopup">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QFrame" name="frame_4">
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <property name="lineWidth">
+                <number>1</number>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_21">
+                <item>
+                 <widget class="QCheckBox" name="mDisableTime">
+                  <property name="text">
+                   <string>Use date only</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>110</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="mSetEndAsStartNormalButton">
+                  <property name="text">
+                   <string>Set end same as start</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_2">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_12">
+             <item>
+              <widget class="QTextBrowser" name="textBrowser">
+               <property name="maximumSize">
+                <size>
+                 <width>674</width>
+                 <height>70</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background: transparent;</string>
+               </property>
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Note:  If the capabilities of this layer move out of this time range, the range will be reset to layer's advertised  default layer time range.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="mProjectRadioButton">
+               <property name="text">
+                <string>Use Project time</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QFrame" name="frame_7">
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <property name="lineWidth">
+                <number>1</number>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_13">
+                <item>
+                 <widget class="QLabel" name="label">
+                  <property name="styleSheet">
+                   <string notr="true">font-size:12px;</string>
+                  </property>
+                  <property name="text">
+                   <string>If this option is checked, project time will be used to determine time range.</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_6">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_17">
+             <item>
+              <widget class="QgsCollapsibleGroupBox" name="mAdvancedGroupBox">
+               <property name="title">
+                <string>Advanced</string>
+               </property>
+               <property name="collapsed">
+                <bool>false</bool>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_4">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QCheckBox" name="mReferenceCheckBox">
+                  <property name="text">
+                   <string>Use Reference time</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QGroupBox" name="groupBox">
+                  <property name="title">
+                   <string/>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_18">
+                   <property name="leftMargin">
+                    <number>9</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="QLabel" name="label_3">
+                     <property name="styleSheet">
+                      <string notr="true">font-size:12px;</string>
+                     </property>
+                     <property name="text">
+                      <string>Filter layer temporal properties based on the time when product model ran. </string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QFrame" name="frame_10">
+                     <property name="frameShape">
+                      <enum>QFrame::NoFrame</enum>
+                     </property>
+                     <property name="frameShadow">
+                      <enum>QFrame::Raised</enum>
+                     </property>
+                     <property name="lineWidth">
+                      <number>1</number>
+                     </property>
+                     <layout class="QHBoxLayout" name="horizontalLayout_4">
+                      <item>
+                       <widget class="QFrame" name="frame_9">
+                        <property name="frameShape">
+                         <enum>QFrame::NoFrame</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Raised</enum>
+                        </property>
+                        <property name="lineWidth">
+                         <number>1</number>
+                        </property>
+                        <layout class="QVBoxLayout" name="verticalLayout_19">
+                         <item>
+                          <widget class="QGroupBox" name="startReferenceDateTimeGroupBox">
+                           <property name="title">
+                            <string>Start date</string>
+                           </property>
+                           <layout class="QVBoxLayout" name="verticalLayout_15">
+                            <item>
+                             <widget class="QDateTimeEdit" name="mStartReferenceDateTimeEdit">
+                              <property name="dateTime">
+                               <datetime>
+                                <hour>0</hour>
+                                <minute>0</minute>
+                                <second>0</second>
+                                <year>2020</year>
+                                <month>1</month>
+                                <day>1</day>
+                               </datetime>
+                              </property>
+                              <property name="date">
+                               <date>
+                                <year>2020</year>
+                                <month>1</month>
+                                <day>1</day>
+                               </date>
+                              </property>
+                              <property name="displayFormat">
+                               <string>M.d.yy h:mm AP</string>
+                              </property>
+                              <property name="calendarPopup">
+                               <bool>true</bool>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QGroupBox" name="endReferenceDateTimeGroupBox">
+                           <property name="title">
+                            <string>End date</string>
+                           </property>
+                           <layout class="QVBoxLayout" name="verticalLayout_14">
+                            <item>
+                             <widget class="QDateTimeEdit" name="mEndReferenceDateTimeEdit">
+                              <property name="dateTime">
+                               <datetime>
+                                <hour>0</hour>
+                                <minute>0</minute>
+                                <second>0</second>
+                                <year>2020</year>
+                                <month>12</month>
+                                <day>31</day>
+                               </datetime>
+                              </property>
+                              <property name="date">
+                               <date>
+                                <year>2020</year>
+                                <month>12</month>
+                                <day>31</day>
+                               </date>
+                              </property>
+                              <property name="time">
+                               <time>
+                                <hour>0</hour>
+                                <minute>0</minute>
+                                <second>0</second>
+                               </time>
+                              </property>
+                              <property name="displayFormat">
+                               <string>M.d.yy h:mm AP</string>
+                              </property>
+                              <property name="calendarPopup">
+                               <bool>true</bool>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QFrame" name="frame_8">
+                        <property name="frameShape">
+                         <enum>QFrame::NoFrame</enum>
+                        </property>
+                        <property name="frameShadow">
+                         <enum>QFrame::Raised</enum>
+                        </property>
+                        <property name="lineWidth">
+                         <number>1</number>
+                        </property>
+                        <layout class="QVBoxLayout" name="verticalLayout_16">
+                         <item>
+                          <spacer name="verticalSpacer_2">
+                           <property name="orientation">
+                            <enum>Qt::Vertical</enum>
+                           </property>
+                           <property name="sizeHint" stdset="0">
+                            <size>
+                             <width>20</width>
+                             <height>40</height>
+                            </size>
+                           </property>
+                          </spacer>
+                         </item>
+                         <item>
+                          <widget class="QPushButton" name="mSetEndAsStartReferenceButton">
+                           <property name="text">
+                            <string>Set end same as start</string>
+                           </property>
+                          </widget>
+                         </item>
+                        </layout>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

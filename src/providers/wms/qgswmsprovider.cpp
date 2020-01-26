@@ -150,6 +150,12 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     {
       return;
     }
+
+    // Setup temporal properties for layers in WMS-T
+    if ( mSettings.mIsTemporal )
+    {
+      temporalProperties()->setFixedTemporalRange( mSettings.mFixedRange );
+    }
   }
 
   // setImageCrs is using mTiled !!!
@@ -208,9 +214,9 @@ QgsWmsProvider *QgsWmsProvider::clone() const
   QgsDataProvider::ProviderOptions options;
   QgsWmsProvider *provider = new QgsWmsProvider( dataSourceUri(), options, mCaps.isValid() ? &mCaps : nullptr );
   provider->copyBaseSettings( *this );
+
   return provider;
 }
-
 
 QString QgsWmsProvider::getMapUrl() const
 {
@@ -1031,6 +1037,47 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   setQueryItem( query, QStringLiteral( "HEIGHT" ), QString::number( pixelHeight ) );
   setQueryItem( query, QStringLiteral( "LAYERS" ), layers );
   setQueryItem( query, QStringLiteral( "STYLES" ), styles );
+
+  // For WMS-T layers
+  if ( temporalProperties()->isActive() )
+  {
+    QgsDateTimeRange range = temporalProperties()->temporalRange();
+    QString format = "yyyy-MM-ddThh:mm:ssZ";
+
+    if ( !temporalProperties()->isTimeEnabled() )
+      format = "yyyy-MM-dd";
+
+    if ( range.begin().isValid() && range.end().isValid() )
+    {
+      if ( range.begin() == range.end() )
+        setQueryItem( query, QStringLiteral( "TIME" ), range.begin().toString( format ) );
+      else
+      {
+        QString extent = range.begin().toString( format );
+        extent.append( "/" );
+        extent.append( range.end().toString( format ) );
+
+        setQueryItem( query, QStringLiteral( "TIME" ), extent );
+      }
+    }
+    // If the data provider has bi-temporal properties,
+    if ( temporalProperties()->hasReference() )
+    {
+      QgsDateTimeRange referenceRange = temporalProperties()->referenceTemporalRange();
+
+      if ( referenceRange.begin() == referenceRange.end() )
+        setQueryItem( query, QStringLiteral( "DIM_REFERENCE" ), range.begin().toString( format ) );
+      else
+      {
+        QString extent = referenceRange.begin().toString( format );
+        extent.append( "/" );
+        extent.append( referenceRange.end().toString( format ) );
+
+        setQueryItem( query, QStringLiteral( "DIM_REFERENCE" ), extent );
+      }
+    }
+  }
+
   setFormatQueryItem( query );
 
   if ( mDpi != -1 )
@@ -1674,7 +1721,6 @@ bool QgsWmsProvider::isValid() const
 {
   return mValid;
 }
-
 
 QString QgsWmsProvider::wmsVersion()
 {
