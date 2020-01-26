@@ -18,7 +18,6 @@
 #include "qgspostgresrasterutils.h"
 #include "qgsmessagelog.h"
 
-
 QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo )
 {
   QVariantMap result;
@@ -53,8 +52,7 @@ QVariantMap QgsPostgresRasterUtils::parseWkb( const QByteArray &wkb, int bandNo 
   // TODO: endianness
   Q_ASSERT( result[ QStringLiteral( "endiannes" ) ] == 1 );  //#spellok
   result[ QStringLiteral( "version" ) ] = *reinterpret_cast<const unsigned short int *>( &wkb.constData()[1] );
-  result[ QStringLiteral( "nBands" ) ] = *reinterpret_cast<const unsigned int *>( &wkb.constData()[3] );
-  const unsigned int nBands { *reinterpret_cast<const unsigned int *>( &wkb.constData()[3] ) };
+  const unsigned short int nBands { *reinterpret_cast<const unsigned short int *>( &wkb.constData()[3] ) };
   result[ QStringLiteral( "nBands" ) ] = nBands;
   result[ QStringLiteral( "scaleX" ) ] = *reinterpret_cast<const double *>( &wkb.constData()[5] );
   result[ QStringLiteral( "scaleY" ) ] = *reinterpret_cast<const double *>( &wkb.constData()[13] );
