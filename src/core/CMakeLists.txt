@@ -1275,6 +1275,8 @@ SET(QGIS_CORE_HDRS
   symbology/qgssymbollayerutils.h
   symbology/qgsvectorfieldsymbollayer.h
 
+  temporal/qgsabstracttemporal.h
+
   validity/qgsabstractvaliditycheck.h
   validity/qgsvaliditycheckcontext.h
   validity/qgsvaliditycheckregistry.h
