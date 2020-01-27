@@ -66,6 +66,33 @@ void QgsMapToolAddCircularString::keyPressEvent( QKeyEvent *e )
     if ( mParentTool )
       mParentTool->keyPressEvent( e );
   }
+  if ( ( e && e->key() == Qt::Key_Backspace ) && ( ! mPoints.isEmpty() ) )
+  {
+    mPoints.removeLast();
+    std::unique_ptr<QgsCircularString> geomRubberBand( new QgsCircularString() );
+    std::unique_ptr<QgsLineString> geomTempRubberBand( new QgsLineString() );
+    const int lastPositionCompleteCircularString = mPoints.size() - 1 - ( mPoints.size() + 1 ) % 2 ;
+
+    geomTempRubberBand->setPoints( mPoints.mid( lastPositionCompleteCircularString ) );
+    mTempRubberBand->setGeometry( geomTempRubberBand.release() );
+
+    if ( mRubberBand )
+    {
+      geomRubberBand->setPoints( mPoints.mid( 0, lastPositionCompleteCircularString + 1 ) );
+      mRubberBand->setGeometry( geomRubberBand.release() );
+    }
+
+    QgsVertexId idx( 0, 0, ( mPoints.size() + 1 ) % 2 );
+    if ( mTempRubberBand )
+    {
+      mTempRubberBand->moveVertex( idx, mPoints.last() );
+      updateCenterPointRubberBand( mPoints.last() );
+    }
+
+    if ( mParentTool )
+      mParentTool->keyPressEvent( e );
+
+  }
 }
 
 void QgsMapToolAddCircularString::keyReleaseEvent( QKeyEvent *e )
