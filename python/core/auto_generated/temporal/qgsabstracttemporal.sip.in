@@ -16,7 +16,7 @@ class QgsAbstractTemporal
 %Docstring
 Base class for temporal based classes.
 
-Subclasses may wish to update the .
+Subclasses may wish to update the abstract temporal functions.
 
 .. versionadded:: 3.14
 %End
@@ -61,7 +61,7 @@ Set datetime range for a temporal object.
 
 When set, can be used to filter and request time base objects.
 
-.. seealso:: :py:func:`dateTimeRange`
+.. seealso:: :py:func:`temporalRange`
 
 .. versionadded:: 3.14
 %End
@@ -70,7 +70,7 @@ When set, can be used to filter and request time base objects.
 %Docstring
 Returns datetime range if object is a temporal object.
 
-.. seealso:: :py:func:`setDateTimeRange`
+.. seealso:: :py:func:`setTemporalRange`
 
 .. versionadded:: 3.14
 %End
@@ -80,7 +80,7 @@ Returns datetime range if object is a temporal object.
 %Docstring
 Sets current datetime object.
 
-Can be used in map canvas when changing snapshots
+Can be used in map canvas, setting the map temporal instant
 
 .. seealso:: :py:func:`currentDateTime`
 
@@ -92,9 +92,9 @@ Can be used in map canvas when changing snapshots
 %Docstring
 Returns current datetime object.
 
-Can be used in map canvas when changing snapshots
+Can be used in map canvas when changing map snapshots
 
-.. seealso:: :py:func:`dateTime`
+.. seealso:: :py:func:`setCurrentDateTime`
 
 .. versionadded:: 3.14
 %End

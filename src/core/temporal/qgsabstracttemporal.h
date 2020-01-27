@@ -34,7 +34,7 @@
  * \ingroup core
  * Base class for temporal based classes.
  *
- * Subclasses may wish to update the .
+ * Subclasses may wish to update the abstract temporal functions.
  *
  * \since QGIS 3.14
  */
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsAbstractTemporal
      *
      * When set, can be used to filter and request time base objects.
      *
-     * \see dateTimeRange()
+     * \see temporalRange()
      * \since QGIS 3.14
     */
     void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsAbstractTemporal
     /**
      * Returns datetime range if object is a temporal object.
      *
-     * \see setDateTimeRange()
+     * \see setTemporalRange()
      * \since QGIS 3.14
     */
     const QgsDateTimeRange &temporalRange() const;
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsAbstractTemporal
     /**
      * Sets current datetime object.
      *
-     * Can be used in map canvas when changing snapshots
+     * Can be used in map canvas, setting the map temporal instant
      *
      * \see currentDateTime()
      * \since QGIS 3.14
@@ -101,9 +101,9 @@ class CORE_EXPORT QgsAbstractTemporal
     /**
      * Returns current datetime object.
      *
-     * Can be used in map canvas when changing snapshots
+     * Can be used in map canvas when changing map snapshots
      *
-     * \see dateTime()
+     * \see setCurrentDateTime()
      * \since QGIS 3.14
     */
 
