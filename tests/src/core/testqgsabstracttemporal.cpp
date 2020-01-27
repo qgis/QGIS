@@ -101,7 +101,7 @@ void TestQgsAbstractTemporal::cleanupTestCase()
 
 void TestQgsAbstractTemporal::isTemporal()
 {
-  QVERIFY( !temporalObject->isTemporal() );
+  QVERIFY( temporalObject->isTemporal() );
 }
 
 void TestQgsAbstractTemporal::checkSettingTemporal()
