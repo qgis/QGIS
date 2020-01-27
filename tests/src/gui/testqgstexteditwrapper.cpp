@@ -71,6 +71,7 @@ void TestQgsTextEditWrapper::cleanup()
 
 void TestQgsTextEditWrapper::testWithJsonInPostgres()
 {
+#ifdef ENABLE_PGTEST
   // create pg layers
   QString dbConn = getenv( "QGIS_PGTEST_DB" );
   if ( dbConn.isEmpty() )
@@ -169,10 +170,12 @@ void TestQgsTextEditWrapper::testWithJsonInPostgres()
   QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_string() );
   // avoid dumping as strings are quoted, so would be double quoted
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).front( ) ), QStringLiteral( "abc" ) );
+#endif
 }
 
 void TestQgsTextEditWrapper::testWithJsonBInPostgres()
 {
+#ifdef ENABLE_PGTEST
   //create pg layers
   QString dbConn = getenv( "QGIS_PGTEST_DB" );
   if ( dbConn.isEmpty() )
@@ -273,6 +276,7 @@ void TestQgsTextEditWrapper::testWithJsonBInPostgres()
   QVERIFY( QgsJsonUtils::jsonFromVariant( w_json.value() ).is_string() );
   // avoid dumping as strings are quoted, so would be double quoted
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( w_json.value() ).front( ) ), QStringLiteral( "abc" ) );
+#endif
 }
 
 QGSTEST_MAIN( TestQgsTextEditWrapper )
