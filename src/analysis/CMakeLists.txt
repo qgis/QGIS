@@ -64,6 +64,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmextractvertices.cpp
   processing/qgsalgorithmextractspecificvertices.cpp
   processing/qgsalgorithmfiledownloader.cpp
+  processing/qgsalgorithmfillnodata.cpp
   processing/qgsalgorithmfilter.cpp
   processing/qgsalgorithmfiltervertices.cpp
   processing/qgsalgorithmfixgeometries.cpp
