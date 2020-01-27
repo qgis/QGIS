@@ -441,17 +441,23 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
       const int xOff { static_cast<int>( std::round( ( tile.upperLeftX - tilesExtent.xMinimum() ) / tile.scaleX ) ) };
       const int yOff { static_cast<int>( std::round( ( tilesExtent.yMaximum() - tile.extent.yMaximum() ) / std::fabs( tile.scaleY ) ) )};
 
-      //qDebug() << "Merging tile output raster: " << tile.tileId << xOff << yOff << tile.width << tile.height ;
+      // qDebug() << "Merging tile output raster: " << tile.tileId << xOff << yOff << tile.width << tile.height ;
+
+      // Band aid to prevent "Access window out of range in RasterIO()" errors, if width or height are one pixel larger
+      const int theAvailableWidth { static_cast<int>( std::round( ( tilesExtent.xMaximum() - tilesExtent.xMinimum() ) / tile.scaleX ) - 1 ) };
+      const int theAvailableHeight { static_cast<int>( std::round( ( tilesExtent.yMaximum() - tilesExtent.yMinimum() ) / std::fabs( tile.scaleY ) ) - 1 ) };
+      const long int safeWidth = ( xOff + tile.width > theAvailableWidth ) ? theAvailableWidth - xOff : tile.width;
+      const long int safeHeight = ( yOff + tile.height > theAvailableHeight ) ? theAvailableHeight - yOff : tile.height;
 
       CPLErr err =  GDALRasterIO( GDALGetRasterBand( tmpDS.get(), 1 ),
                                   GF_Write,
                                   xOff,
                                   yOff,
-                                  static_cast<int>( tile.width ),
-                                  static_cast<int>( tile.height ),
+                                  static_cast<int>( safeWidth ),
+                                  static_cast<int>( safeHeight ),
                                   ( void * )( tile.data.constData() ),  // old-style because of const
-                                  static_cast<int>( tile.width ),
-                                  static_cast<int>( tile.height ),
+                                  static_cast<int>( safeWidth ),
+                                  static_cast<int>( safeHeight ),
                                   gdalDataType,
                                   0,
                                   0 );
