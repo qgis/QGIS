@@ -3,3 +3,4 @@ usr/lib/cgi-bin/qgis_mapserv.fcgi
 usr/lib/cgi-bin/wms_metadata.xml
 usr/lib/qgis/server/*.so
 usr/share/qgis/resources/server/
+usr/bin/qgis_mapserver
