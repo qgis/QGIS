@@ -214,11 +214,8 @@ class QgsWFSFeatureIterator : public QObject,
     void connectSignals( QgsWFSFeatureDownloader *downloader );
 
   private slots:
-    void featureReceived( int featureCount );
     void featureReceivedSynchronous( const QVector<QgsWFSFeatureGmlIdPair> &list );
-    void endOfDownload( bool success );
-    void checkInterruption();
-    void timeout();
+    void endOfDownloadSynchronous( bool success );
 
   private:
 
@@ -235,14 +232,15 @@ class QgsWFSFeatureIterator : public QObject,
     //! Subset of attributes (relatives to mShared->mFields) to fetch. Only valid if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
     QgsAttributeList mSubSetAttributes;
 
-    bool mDownloadFinished;
-    QEventLoop *mLoop = nullptr;
+    bool mNewFeaturesReceived = false;
+    bool mDownloadFinished = false;
     QgsFeatureIterator mCacheIterator;
     QgsFeedback *mInterruptionChecker = nullptr;
-    bool mTimeoutOccurred = false;
+    bool mTimeoutOrInterruptionOccurred = false;
 
     //! this mutex synchronizes the mWriterXXXX variables between featureReceivedSynchronous() and fetchFeature()
     QMutex mMutex;
+    QWaitCondition mWaitCond;
     //! used to forger mWriterFilename
     int mCounter;
     //! maximum size in bytes of mWriterByteArray before flushing it to disk
