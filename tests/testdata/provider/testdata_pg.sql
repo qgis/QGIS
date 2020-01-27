@@ -671,3 +671,18 @@ CREATE VIEW qgis_test.b31799_test_view_ctid AS (SELECT ctid, geom, random() FROM
 CREATE VIEW qgis_test.b32523 AS
   SELECT pk, random()
   FROM qgis_test.some_poly_data;
+
+----------------------------------------------
+--
+-- IDENTITY pk
+-- See https://github.com/qgis/QGIS/issues/29560
+--
+
+CREATE TABLE qgis_test.b29560 (
+    gid int8 NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    geom geometry(polygon)
+);
+
+INSERT INTO qgis_test.b29560 (geom)
+VALUES ('POLYGON EMPTY'::geometry);
+
