@@ -287,11 +287,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
 
   QCOMPARE( w_municipality.mTableWidget->rowCount(), 1 );
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Some Place By The River" ) );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
-  QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 1 } ) ) );
-#else
   QCOMPARE( w_municipality.value(), QVariant( QStringLiteral( "{1}" ) ) );
-#endif
 
   // Filter by geometry
   cfg_municipality[ QStringLiteral( "FilterExpression" ) ] = QStringLiteral( "contains(buffer(@current_geometry, 1 ), $geometry)" );
@@ -315,29 +311,17 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "2" ) );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "Some Place By The River" ) );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "1" ) );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
-  QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 1 } ) ) );
-#else
   QCOMPARE( w_municipality.value(), QVariant( QStringLiteral( "{1}" ) ) );
-#endif
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
   w_municipality.setValues( QStringLiteral( "{1,2}" ), QVariantList() );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
-  QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 2, 1 } ) ) );
-#else
   QCOMPARE( w_municipality.value(), QVariant( QStringLiteral( "{2,1}" ) ) );
-#endif
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
 
   // Check with passing a variant list
   w_municipality.setValues( QVariantList( {1, 2} ), QVariantList() );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
-  QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 2, 1 } ) ) );
-#else
   QCOMPARE( w_municipality.value(), QVariant( QStringLiteral( "{2,1}" ) ) );
-#endif
 
   // Check values are checked
   f3.setAttribute( QStringLiteral( "fk_municipality" ), QStringLiteral( "{1,2}" ) );
@@ -347,13 +331,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "Some Place By The River" ) );
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
-  QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 2, 1 } ) ) );
-#else
   QCOMPARE( w_municipality.value(), QVariant( QStringLiteral( "{2,1}" ) ) );
-#endif
-
-
 }
 
 void TestQgsValueRelationWidgetWrapper::testZeroIndexInRelatedTable()
