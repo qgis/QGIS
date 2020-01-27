@@ -122,8 +122,8 @@ class QgsFeature3DHandler
     void updateZRangeFromPositions( const QVector<QVector3D> &positions );
 
   protected:
-    float mZMin = std::numeric_limits<double>::max();
-    float mZMax = std::numeric_limits<double>::min();
+    float mZMin = std::numeric_limits<float>::max();
+    float mZMax = std::numeric_limits<float>::lowest();
 };
 
 
