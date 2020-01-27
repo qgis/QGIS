@@ -111,7 +111,7 @@
       <item row="1" column="2">
        <widget class="QLineEdit" name="mEditUrl">
         <property name="toolTip">
-         <string>URL of the connection, {z}, {y}, and {z} will be replaced with actual values. Use {-y} for inverted y axis.</string>
+         <string>URL of the connection, {x}, {y}, and {z} will be replaced with actual values. Use {-y} for inverted y axis.</string>
         </property>
         <property name="placeholderText">
          <string>http://example.com/{z}/{x}/{y}.png</string>
