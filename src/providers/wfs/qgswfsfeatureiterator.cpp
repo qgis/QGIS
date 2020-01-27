@@ -1130,18 +1130,16 @@ void QgsWFSFeatureIterator::connectSignals( QgsWFSFeatureDownloader *downloader 
   connect( downloader, static_cast<void ( QgsWFSFeatureDownloader::* )( QVector<QgsWFSFeatureGmlIdPair> )>( &QgsWFSFeatureDownloader::featureReceived ),
            this, &QgsWFSFeatureIterator::featureReceivedSynchronous, Qt::DirectConnection );
 
-  connect( downloader, static_cast<void ( QgsWFSFeatureDownloader::* )( int )>( &QgsWFSFeatureDownloader::featureReceived ),
-           this, &QgsWFSFeatureIterator::featureReceived );
-
   connect( downloader, &QgsWFSFeatureDownloader::endOfDownload,
-           this, &QgsWFSFeatureIterator::endOfDownload );
+           this, &QgsWFSFeatureIterator::endOfDownloadSynchronous, Qt::DirectConnection );
 }
 
-void QgsWFSFeatureIterator::endOfDownload( bool )
+void QgsWFSFeatureIterator::endOfDownloadSynchronous( bool )
 {
+  // Wake up waiting loop
+  QMutexLocker locker( &mMutex );
   mDownloadFinished = true;
-  if ( mLoop )
-    mLoop->quit();
+  mWaitCond.wakeOne();
 }
 
 void QgsWFSFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
@@ -1155,6 +1153,11 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( const QVector<QgsWFSFeat
 {
   QgsDebugMsgLevel( QStringLiteral( "QgsWFSFeatureIterator::featureReceivedSynchronous %1 features" ).arg( list.size() ), 4 );
   QMutexLocker locker( &mMutex );
+
+  // Wake up waiting loop
+  mNewFeaturesReceived = true;
+  mWaitCond.wakeOne();
+
   if ( !mWriterStream )
   {
     mWriterStream = new QDataStream( &mWriterByteArray, QIODevice::WriteOnly );
@@ -1185,35 +1188,6 @@ void QgsWFSFeatureIterator::featureReceivedSynchronous( const QVector<QgsWFSFeat
   }
 }
 
-// This will invoked asynchronously, in the thread of QgsWFSFeatureIterator
-// hence it is safe to quite the loop
-void QgsWFSFeatureIterator::featureReceived( int /*featureCount*/ )
-{
-  //QgsDebugMsg( QStringLiteral("QgsWFSFeatureIterator::featureReceived %1 features").arg(featureCount) );
-  if ( mLoop )
-    mLoop->quit();
-}
-
-void QgsWFSFeatureIterator::checkInterruption()
-{
-  //QgsDebugMsg("QgsWFSFeatureIterator::checkInterruption()");
-
-  if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
-  {
-    mDownloadFinished = true;
-    if ( mLoop )
-      mLoop->quit();
-  }
-}
-
-void QgsWFSFeatureIterator::timeout()
-{
-  mTimeoutOccurred = true;
-  mDownloadFinished = true;
-  if ( mLoop )
-    mLoop->quit();
-}
-
 bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
 {
   f.setValid( false );
@@ -1228,7 +1202,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
     if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
       return false;
 
-    if ( mTimeoutOccurred )
+    if ( mTimeoutOrInterruptionOccurred )
       return false;
 
     //QgsDebugMsg(QString("QgsWFSSharedData::fetchFeature() : mCacheIterator.nextFeature(cachedFeature)") );
@@ -1296,6 +1270,11 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
   // Second step is to wait for features to be notified by the downloader
   while ( true )
   {
+    {
+      QMutexLocker locker( &mMutex );
+      mNewFeaturesReceived = false;
+    }
+
     // Initialize a reader stream if there's a writer stream available
     if ( !mReaderStream )
     {
@@ -1394,22 +1373,40 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature &f )
     if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
       return false;
 
-    //QgsDebugMsg("fetchFeature before loop");
-    QEventLoop loop;
-    mLoop = &loop;
-    QTimer timer( this );
-    timer.start( 50 );
-    QTimer requestTimeout( this );
-    if ( mRequest.timeout() > 0 )
+    // Wait for:
+    // - mRequest.timeout to fire
+    // - or new features to be notified
+    // - or end of download being notified
+    // - or interruption checker to notify cancellation
+    QTime timeRequestTimeout;
+    const int requestTimeout = mRequest.timeout();
+    if ( requestTimeout > 0 )
+      timeRequestTimeout.start();
+    while ( true )
     {
-      connect( &requestTimeout, &QTimer::timeout, this, &QgsWFSFeatureIterator::timeout );
-      requestTimeout.start( mRequest.timeout() );
+      QMutexLocker locker( &mMutex );
+      if ( mNewFeaturesReceived || mDownloadFinished )
+      {
+        break;
+      }
+      const int delayCheckInterruption = 50;
+      const int timeout = ( requestTimeout > 0 ) ?
+                          std::min( requestTimeout - timeRequestTimeout.elapsed(), delayCheckInterruption ) :
+                          delayCheckInterruption;
+      if ( timeout < 0 )
+      {
+        mTimeoutOrInterruptionOccurred = true;
+        mDownloadFinished = true;
+        break;
+      }
+      mWaitCond.wait( &mMutex, timeout );
+      if ( mInterruptionChecker && mInterruptionChecker->isCanceled() )
+      {
+        mTimeoutOrInterruptionOccurred = true;
+        mDownloadFinished = true;
+        break;
+      }
     }
-    if ( mInterruptionChecker )
-      connect( &timer, &QTimer::timeout, this, &QgsWFSFeatureIterator::checkInterruption );
-    loop.exec( QEventLoop::ExcludeUserInputEvents );
-    mLoop = nullptr;
-    //QgsDebugMsg("fetchFeature after loop");
   }
 }
 
