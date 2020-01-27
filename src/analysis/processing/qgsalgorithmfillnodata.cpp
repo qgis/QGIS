@@ -27,12 +27,12 @@ QString QgsFillNoDataAlgorithm::name() const
 
 QString QgsFillNoDataAlgorithm::displayName() const
 {
-  return QObject::tr( "Fill noData cells" );
+  return QObject::tr( "Fill NoData cells" );
 }
 
 QStringList QgsFillNoDataAlgorithm::tags() const
 {
-  return QObject::tr( "noData,nodata,data,cells,fill,set" ).split( ',' );
+  return QObject::tr( "noData,NoData,data,cells,fill,set" ).split( ',' );
 }
 
 QString QgsFillNoDataAlgorithm::group() const
@@ -55,9 +55,10 @@ void QgsFillNoDataAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsFillNoDataAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm resets the noData values in the input raster "
-                      "to a chosen value. This value can be set by the user or "
-                      "evaluated as an expression." );
+  return QObject::tr( "This algorithm resets the NoData values in the input raster "
+                      "to a chosen value. This value can be set by the user using the Fill value parameter. "
+                      "The algorithm respects the input raster data type (eg. a fill value with commas gets truncated "
+                      "when applied to an integer raster)." );
 }
 
 QgsFillNoDataAlgorithm *QgsFillNoDataAlgorithm::createInstance() const
