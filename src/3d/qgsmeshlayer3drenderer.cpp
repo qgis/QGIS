@@ -87,7 +87,7 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings 
   {
     extentInMap = coordTrans.transform( vl->extent() );
   }
-  catch ( QgsCsException &e )
+  catch ( QgsCsException & )
   {
     extentInMap = vl->extent();
   }
