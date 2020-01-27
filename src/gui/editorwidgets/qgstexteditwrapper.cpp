@@ -19,7 +19,7 @@
 #include "qgsfieldvalidator.h"
 #include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
-#include "qgsjsonutils.cpp"
+#include "qgsjsonutils.h"
 #include "qgsmessagebar.h"
 #include "qgslogger.h"
 
