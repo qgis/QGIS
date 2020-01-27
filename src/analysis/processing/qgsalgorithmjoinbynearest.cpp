@@ -160,7 +160,7 @@ QVariantMap QgsJoinByNearestAlgorithm::processAlgorithm( const QVariantMap &para
   {
     for ( int i = 0; i < outFields2.count(); ++i )
     {
-      outFields2[ i ].setName( prefix + outFields2[ i ].name() );
+      outFields2.rename( i, prefix + outFields2[ i ].name() );
     }
   }
 

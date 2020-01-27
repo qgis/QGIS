@@ -276,7 +276,7 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
     // convert field names to lowercase
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
-      fields[fldIdx].setName( fields.at( fldIdx ).name().toLower() );
+      fields.rename( fldIdx, fields.at( fldIdx ).name().toLower() );
     }
   }
 
