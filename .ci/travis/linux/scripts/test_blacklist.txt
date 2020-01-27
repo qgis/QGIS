@@ -15,6 +15,9 @@ PyQgsAuthManagerPKIPostgresTest
 PyQgsAuthManagerOgrPostgresTest
 PyQgsDbManagerPostgis
 
+# Broken on master builds due to failure while loading pg raster test data
+PyQgsPostgresRasterProvider
+
 # Needs an OpenCL device, the library is not enough
 qgis_openclutilstest
 
