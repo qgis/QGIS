@@ -55,7 +55,7 @@ void QgsMapToolAddCircularString::keyPressEvent( QKeyEvent *e )
     createCenterPointRubberBand();
   }
 
-  if ( e && e->key() == Qt::Key_Escape )
+  if ( ( e && e->key() == Qt::Key_Escape ) || ( ( e && e->key() == Qt::Key_Backspace ) && ( mPoints.size() == 1 ) ) )
   {
     mPoints.clear();
     delete mRubberBand;
@@ -66,7 +66,7 @@ void QgsMapToolAddCircularString::keyPressEvent( QKeyEvent *e )
     if ( mParentTool )
       mParentTool->keyPressEvent( e );
   }
-  if ( ( e && e->key() == Qt::Key_Backspace ) && ( ! mPoints.isEmpty() ) )
+  if ( ( e && e->key() == Qt::Key_Backspace ) && ( mPoints.size() > 1 ) )
   {
     mPoints.removeLast();
     std::unique_ptr<QgsCircularString> geomRubberBand( new QgsCircularString() );
