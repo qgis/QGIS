@@ -313,6 +313,7 @@ qgis:minimalenclosingcircle: >
 
   As an alternative, the output layer can contain not just a single circle, but one for each input feature, representing the minimum enclosing circle that covers each of them.
 
+<<<<<<< HEAD
 qgis:orthogonalize: >
   This algorithm takes a line or polygon layer and attempts to orthogonalize all the geometries in the layer. This process shifts the nodes in the geometries to try to make every angle in the geometry either a right angle or a straight line.
 
@@ -325,6 +326,8 @@ qgis:pointsalonglines: >
 
   An optional start and end offset can be specified, which controls how far from the start and end of the geometry the points should be created.
 
+=======
+>>>>>>> 41c847136e... Remove qgis:pointsalonglines python alg help
 qgis:pointsdisplacement: >
   Offsets nearby point features by moving nearby points by a preset amount to minimize overlapping features.
 
