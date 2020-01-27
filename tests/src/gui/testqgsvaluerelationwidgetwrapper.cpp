@@ -412,6 +412,7 @@ void TestQgsValueRelationWidgetWrapper::testZeroIndexInRelatedTable()
 
 void TestQgsValueRelationWidgetWrapper::testWithJsonInPostgres()
 {
+#ifdef ENABLE_PGTEST
   //this is only reading
 
   // create pg layers
@@ -522,7 +523,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInPostgres()
 
   // check value from widget wrapper
   QCOMPARE( w_favoriteauthors_b.value().toStringList(), QStringList() << "4" << "5" << "6" );
-
+#endif
 }
 
 void TestQgsValueRelationWidgetWrapper::testWithJsonInGPKG()
