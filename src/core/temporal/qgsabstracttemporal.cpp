@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsabstracttemporal.h
+                         qgsabstracttemporal.cpp
                          ---------------
     begin                : January 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
@@ -37,7 +37,7 @@ bool QgsAbstractTemporal::isTemporal() const
   return mTemporal;
 }
 
-void QgsAbstractTemporal::setTemporalRange( const QgsDateTimeRange& dateTimeRange )
+void QgsAbstractTemporal::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( !isTemporal() )
     return;
@@ -49,7 +49,7 @@ void QgsAbstractTemporal::setTemporalRange( const QgsDateTimeRange& dateTimeRang
 
 }
 
-const QgsDateTimeRange& QgsAbstractTemporal::temporalRange() const
+const QgsDateTimeRange &QgsAbstractTemporal::temporalRange() const
 {
   return mDateTimeRange;
 }

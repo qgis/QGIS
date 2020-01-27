@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsabstracttemporal.h
+                         testqgsabstracttemporal.cpp
                          ---------------
     begin                : January 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
@@ -113,7 +113,7 @@ void TestQgsAbstractTemporal::checkSettingTemporal()
 
 void TestQgsAbstractTemporal::checkSettingTemporalRange()
 {
-  QgsDateTimeRange dateTimeRange = new QgsDateTimeRange();
+  QgsDateTimeRange dateTimeRange = QgsDateTimeRange();
 
   temporalObject->setTemporalRange( dateTimeRange );
 
@@ -122,7 +122,7 @@ void TestQgsAbstractTemporal::checkSettingTemporalRange()
 
 void TestQgsAbstractTemporal::checkSettingCurrentDateTime()
 {
-  QDateTime dateTime = new QDateTime();
+  QDateTime dateTime = QDateTime::currentDateTime();
 
   temporalObject->setCurrentDateTime( &dateTime );
 

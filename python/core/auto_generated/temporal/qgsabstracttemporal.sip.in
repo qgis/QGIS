@@ -1,0 +1,110 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/temporal/qgsabstracttemporal.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsAbstractTemporal
+{
+%Docstring
+Base class for temporal based classes.
+
+Subclasses may wish to update the .
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsabstracttemporal.h"
+%End
+  public:
+
+    QgsAbstractTemporal();
+%Docstring
+Constructors for QgsAbstractTemporal.
+%End
+
+    QgsAbstractTemporal( const bool enabled );
+
+    virtual ~QgsAbstractTemporal();
+
+    void setIsTemporal( bool enabled );
+%Docstring
+Sets object as a temporal based one, which will be considered when rendering maps with a specific time range set.
+
+.. seealso:: :py:func:`isTemporal`
+
+.. versionadded:: 3.14
+%End
+
+    bool isTemporal() const;
+%Docstring
+Returns true if the object is a temporal one, and will be filtered when rendering maps with a specific time range set.
+
+For map settings, If false is returned, then any other temporal settings relating to the map will be ignored during rendering.
+
+.. seealso:: :py:func:`setIsTemporal`
+
+.. versionadded:: 3.14
+%End
+
+    void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
+%Docstring
+Set datetime range for a temporal object.
+
+When set, can be used to filter and request time base objects.
+
+.. seealso:: :py:func:`dateTimeRange`
+
+.. versionadded:: 3.14
+%End
+
+    const QgsDateTimeRange &temporalRange() const;
+%Docstring
+Returns datetime range if object is a temporal object.
+
+.. seealso:: :py:func:`setDateTimeRange`
+
+.. versionadded:: 3.14
+%End
+
+
+    void setCurrentDateTime( QDateTime *dateTime );
+%Docstring
+Sets current datetime object.
+
+Can be used in map canvas when changing snapshots
+
+.. seealso:: :py:func:`currentDateTime`
+
+.. versionadded:: 3.14
+%End
+
+
+    QDateTime *currentDateTime() const;
+%Docstring
+Returns current datetime object.
+
+Can be used in map canvas when changing snapshots
+
+.. seealso:: :py:func:`dateTime`
+
+.. versionadded:: 3.14
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/temporal/qgsabstracttemporal.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

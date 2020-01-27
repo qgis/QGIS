@@ -43,7 +43,7 @@ class CORE_EXPORT QgsAbstractTemporal
   public:
 
     /**
-     * Constructor for QgsAbstractTemporal.
+     * Constructors for QgsAbstractTemporal.
      */
     QgsAbstractTemporal();
 
