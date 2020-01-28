@@ -14,7 +14,7 @@
   If this is a pull request that adds new functionality which needs documentation, give an especially detailed explanation.
   In this case, start with a short abstract and then write some text that can be copied 1:1 to the documentation in the best case.
 
-  Also mention if you think this PR needs to be backporte and relevant or fixed issues.
+  Also mention if you think this PR needs to be backported. And list relevant or fixed issues.
 
 ------------------------
 
@@ -27,8 +27,8 @@
 
   - New unit tests have been added for relevant changes
 
-  - You have run [the `scripts/prepare-commit.sh` script](https://github.com/qgis/QGIS/blob/master/.github/CONTRIBUTING.md#contributing-to-qgis) before each commit.
+  - You have run the `scripts/prepare-commit.sh` script (https://github.com/qgis/QGIS/blob/master/.github/CONTRIBUTING.md#contributing-to-qgis) before each commit.
     If you didn't do this, you can also run `./scripts/astyle-all.sh` from your source folder.
 
-  - You have read the [QGIS Coding Standards](https://docs.qgis.org/testing/en/docs/developers_guide/codingstandards.html) and this PR complies with them
+  - You have read the QGIS Coding Standards (https://docs.qgis.org/testing/en/docs/developers_guide/codingstandards.html) and this PR complies with them
 -->
