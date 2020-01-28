@@ -41,8 +41,11 @@ class TestQgsMapToolRegularPolygon : public QObject
     void cleanupTestCase();
 
     void testRegularPolygonFrom2Points();
+    void testRegularPolygonFrom2PointsWithDeletedVertex();
     void testRegularPolygonFromCenterAndPoint();
+    void testRegularPolygonFromCenterAndPointWithDeletedVertex();
     void testRegularPolygonFromCenterAndCroner();
+    void testRegularPolygonFromCenterAndCronerWithDeletedVertex();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -105,6 +108,32 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFrom2Points()
   mLayer->rollBack();
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
 }
+void TestQgsMapToolRegularPolygon::testRegularPolygonFrom2PointsWithDeletedVertex()
+{
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+  mLayer->startEditing();
+
+  QgsMapToolRegularPolygon2Points mapTool( mParentTool, mCanvas );
+  mCanvas->setMapTool( &mapTool );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.keyClick( Qt::Key_Backspace );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 2, 1 );
+  utils.mouseClick( 2, 1, Qt::RightButton );
+  QgsFeatureId newFid = utils.newFeatureId();
+
+  QCOMPARE( mLayer->featureCount(), ( long )1 );
+  QgsFeature f = mLayer->getFeature( newFid );
+
+  QString wkt = "LineStringZ (0 0 333, 2 1 333, 4 0 333, 4 -2 333, 2 -3 333, 0 -2 333, 0 0 333)";
+  QCOMPARE( f.geometry().asWkt( 0 ), wkt );
+
+  mLayer->rollBack();
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+}
+
 
 void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPoint()
 {
@@ -129,6 +158,32 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPoint()
   mLayer->rollBack();
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
 }
+void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndPointWithDeletedVertex()
+{
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 222 );
+  mLayer->startEditing();
+
+  QgsMapToolRegularPolygonCenterPoint mapTool( mParentTool, mCanvas );
+  mCanvas->setMapTool( &mapTool );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.keyClick( Qt::Key_Backspace );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 2, 1 );
+  utils.mouseClick( 2, 1, Qt::RightButton );
+  QgsFeatureId newFid = utils.newFeatureId();
+
+  QCOMPARE( mLayer->featureCount(), ( long )1 );
+  QgsFeature f = mLayer->getFeature( newFid );
+
+  QString wkt = "LineStringZ (1 2 222, 3 0 222, 1 -2 222, -1 -2 222, -3 0 222, -1 2 222, 1 2 222)";
+  QCOMPARE( f.geometry().asWkt( 0 ), wkt );
+
+  mLayer->rollBack();
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+}
+
 
 void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCroner()
 {
@@ -153,6 +208,32 @@ void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCroner()
   mLayer->rollBack();
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
 }
+void TestQgsMapToolRegularPolygon::testRegularPolygonFromCenterAndCronerWithDeletedVertex()
+{
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 111 );
+  mLayer->startEditing();
+
+  QgsMapToolRegularPolygonCenterCorner mapTool( mParentTool, mCanvas );
+  mCanvas->setMapTool( &mapTool );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.keyClick( Qt::Key_Backspace );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 2, 1 );
+  utils.mouseClick( 2, 1, Qt::RightButton );
+  QgsFeatureId newFid = utils.newFeatureId();
+
+  QCOMPARE( mLayer->featureCount(), ( long )1 );
+  QgsFeature f = mLayer->getFeature( newFid );
+
+  QString wkt = "LineStringZ (2 1 111, 2 -1 111, 0 -2 111, -2 -1 111, -2 1 111, 0 2 111, 2 1 111)";
+  QCOMPARE( f.geometry().asWkt( 0 ), wkt );
+
+  mLayer->rollBack();
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+}
+
 
 QGSTEST_MAIN( TestQgsMapToolRegularPolygon )
 #include "testqgsmaptoolregularpolygon.moc"
