@@ -746,33 +746,35 @@ QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input
 
 QString QgsProcessingUtils::tempFolder()
 {
-  static std::unique_ptr< QTemporaryDir > sTempFolder;
+  // we maintain a list of temporary folders -- this allows us to append additional
+  // folders when a setting change causes the base temp folder to change, while deferring
+  // cleanup of ALL these temp folders until session end (we can't cleanup older folders immediately,
+  // because we don't know whether they have data in them which is still wanted)
+  static std::vector< std::unique_ptr< QTemporaryDir > > sTempFolders;
   static QString sFolder;
   static QMutex sMutex;
   QMutexLocker locker( &sMutex );
   const QString basePath = QgsSettings().value( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ) ).toString();
   if ( basePath.isEmpty() )
   {
-    // default setting -- automatically create a temp folder. In this case, we use QTemporaryDir so
-    // that the folder is automatically deleted when QGIS is closed
-    if ( !sTempFolder )
+    // default setting -- automatically create a temp folder
+    if ( sTempFolders.empty() )
     {
       const QString templatePath = QStringLiteral( "%1/processing_XXXXXX" ).arg( QDir::tempPath() );
-      sTempFolder = qgis::make_unique< QTemporaryDir >( templatePath );
-      sFolder = sTempFolder->path();
+      std::unique_ptr< QTemporaryDir > tempFolder = qgis::make_unique< QTemporaryDir >( templatePath );
+      sFolder = tempFolder->path();
+      sTempFolders.emplace_back( std::move( tempFolder ) );
     }
   }
-  else if ( sFolder.isEmpty() || !sFolder.startsWith( basePath ) || !sTempFolder )
+  else if ( sFolder.isEmpty() || !sFolder.startsWith( basePath ) || sTempFolders.empty() )
   {
     if ( !QDir().exists( basePath ) )
       QDir().mkpath( basePath );
 
     const QString templatePath = QStringLiteral( "%1/processing_XXXXXX" ).arg( basePath );
-    // leak the previous folder -- we don't want it to be cleaned up, we don't know what was in it that may still
-    // be required for this session!
-    sTempFolder.release();
-    sTempFolder = qgis::make_unique< QTemporaryDir >( templatePath );
-    sFolder = sTempFolder->path();
+    std::unique_ptr< QTemporaryDir > tempFolder = qgis::make_unique< QTemporaryDir >( templatePath );
+    sFolder = tempFolder->path();
+    sTempFolders.emplace_back( std::move( tempFolder ) );
   }
   return sFolder;
 }
