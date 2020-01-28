@@ -1263,7 +1263,11 @@ QgsLayoutViewSnapMarker::QgsLayoutViewSnapMarker()
 {
   QFont f;
   QFontMetrics fm( f );
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   mSize = fm.width( QStringLiteral( "X" ) );
+#else
+  mSize = fm.horizontalAdvance( 'X' );
+#endif
   setPen( QPen( Qt::transparent, mSize ) );
 
   setFlags( flags() | QGraphicsItem::ItemIgnoresTransformations );
