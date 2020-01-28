@@ -28,11 +28,6 @@ qgis:boundary: >
 qgis:boxplot: >
   This algorithm creates a box plot from a category and a layer field.
 
-qgis:buildvirtualvector: >
-  This algorithm creates a virtual layer that contains a set of vector layer.
-
-  The output virtual layer will not be open in the current project.
-
 qgis:centroids: >
   This algorithm creates a new point layer, with points representing the centroid of the geometries in an input layer.
 
