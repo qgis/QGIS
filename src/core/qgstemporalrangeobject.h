@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsabstracttemporal.h
+                         qgstemporalrangeobject.h
                          ---------------
     begin                : January 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
@@ -16,21 +16,15 @@
  ***************************************************************************/
 
 
-#ifndef QGSABSTRACTTEMPORAL_H
-#define QGSABSTRACTTEMPORAL_H
+#ifndef QGSTEMPORALRANGEOBJECT_H
+#define QGSTEMPORALRANGEOBJECT_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "qgsapplication.h"
 #include "qgsrange.h"
 
-#include <QObject>
-#include <QDateTime>
-
 /**
- * \class QgsAbstractTemporal
+ * \class QgsTemporalRangeObject
  * \ingroup core
  * Base class for temporal based classes.
  *
@@ -38,24 +32,26 @@
  *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsAbstractTemporal
+class CORE_EXPORT QgsTemporalRangeObject
 {
   public:
 
     /**
-     * Constructors for QgsAbstractTemporal.
+     * Constructor for QgsTemporalRangeObject.
      */
-    QgsAbstractTemporal();
+    QgsTemporalRangeObject();
 
-    QgsAbstractTemporal( const bool enabled );
+    /**
+     * Creates temporal range object with the specified temporal state.
+     */
+    QgsTemporalRangeObject( bool enabled );
 
-    virtual ~QgsAbstractTemporal() = default;
+    virtual ~QgsTemporalRangeObject() = default;
 
     /**
      * Sets object as a temporal based one, which will be considered when rendering maps with a specific time range set.
      *
      * \see isTemporal()
-     * \since QGIS 3.14
      */
     void setIsTemporal( bool enabled );
 
@@ -65,7 +61,6 @@ class CORE_EXPORT QgsAbstractTemporal
      * For map settings, If false is returned, then any other temporal settings relating to the map will be ignored during rendering.
      *
      * \see setIsTemporal()
-     * \since QGIS 3.14
     */
     bool isTemporal() const;
 
@@ -75,7 +70,6 @@ class CORE_EXPORT QgsAbstractTemporal
      * When set, can be used to filter and request time base objects.
      *
      * \see temporalRange()
-     * \since QGIS 3.14
     */
     void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
 
@@ -83,31 +77,8 @@ class CORE_EXPORT QgsAbstractTemporal
      * Returns datetime range if object is a temporal object.
      *
      * \see setTemporalRange()
-     * \since QGIS 3.14
     */
     const QgsDateTimeRange &temporalRange() const;
-
-    /**
-     * Sets current datetime object.
-     *
-     * Can be used in map canvas, setting the map temporal instant
-     *
-     * \see currentDateTime()
-     * \since QGIS 3.14
-    */
-
-    void setCurrentDateTime( QDateTime *dateTime );
-
-    /**
-     * Returns current datetime object.
-     *
-     * Can be used in map canvas when changing map snapshots
-     *
-     * \see setCurrentDateTime()
-     * \since QGIS 3.14
-    */
-
-    QDateTime *currentDateTime() const;
 
   private:
 
@@ -117,9 +88,6 @@ class CORE_EXPORT QgsAbstractTemporal
     //! Represents datetime range member.
     QgsDateTimeRange mDateTimeRange;
 
-    //! Datetime member, for storing instant of time
-    QDateTime *mDateTime = nullptr;
-
 };
 
-#endif // QGSABSTRACTTEMPORAL_H
+#endif // QGSTEMPORALRANGEOBJECT_H

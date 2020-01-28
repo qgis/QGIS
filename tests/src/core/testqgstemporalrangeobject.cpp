@@ -1,5 +1,5 @@
 /***************************************************************************
-                         testqgsabstracttemporal.cpp
+                         testqgstemporalrangeobject.cpp
                          ---------------
     begin                : January 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
@@ -17,43 +17,20 @@
 
 #include "qgstest.h"
 #include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
 
 //qgis includes...
-#include <qgsabstracttemporal.h>
-#include <qgsapplication.h>
-#include <qgsproviderregistry.h>
-
-class TestSignalReceiver : public QObject
-{
-    Q_OBJECT
-
-  public:
-    TestSignalReceiver()
-      : QObject( nullptr )
-    {}
-    QPainter::CompositionMode blendMode =  QPainter::CompositionMode_SourceOver ;
-  public slots:
-    void onBlendModeChanged( const QPainter::CompositionMode blendMode )
-    {
-      this->blendMode = blendMode;
-    }
-};
+#include <qgstemporalrangeobject.h>
 
 /**
  * \ingroup UnitTests
- * This is a unit test for the QgsAbstractTemporal class.
+ * This is a unit test for the QgsTemporalRangeObject class.
  */
-class TestQgsAbstractTemporal : public QObject
+class TestQgsTemporalRangeObject : public QObject
 {
     Q_OBJECT
 
   public:
-    TestQgsAbstractTemporal() = default;
+    TestQgsTemporalRangeObject() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -64,13 +41,12 @@ class TestQgsAbstractTemporal : public QObject
     void isTemporal();
     void checkSettingTemporal();
     void checkSettingTemporalRange();
-    void checkSettingCurrentDateTime();
 
   private:
-    QgsAbstractTemporal *temporalObject = nullptr;
+    QgsTemporalRangeObject *temporalObject = nullptr;
 };
 
-void TestQgsAbstractTemporal::initTestCase()
+void TestQgsTemporalRangeObject::initTestCase()
 {
   //
   // Runs once before any tests are run
@@ -82,36 +58,36 @@ void TestQgsAbstractTemporal::initTestCase()
 
 }
 
-void TestQgsAbstractTemporal::init()
+void TestQgsTemporalRangeObject::init()
 {
   //create some objects that will be used in all tests...
   //create a temporal object that will be used in all tests...
 
-  temporalObject = new QgsAbstractTemporal( true );
+  temporalObject = new QgsTemporalRangeObject( true );
 }
 
-void TestQgsAbstractTemporal::cleanup()
+void TestQgsTemporalRangeObject::cleanup()
 {
 }
 
-void TestQgsAbstractTemporal::cleanupTestCase()
+void TestQgsTemporalRangeObject::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 }
 
-void TestQgsAbstractTemporal::isTemporal()
+void TestQgsTemporalRangeObject::isTemporal()
 {
   QVERIFY( temporalObject->isTemporal() );
 }
 
-void TestQgsAbstractTemporal::checkSettingTemporal()
+void TestQgsTemporalRangeObject::checkSettingTemporal()
 {
   temporalObject->setIsTemporal( false );
 
   QCOMPARE( temporalObject->isTemporal(), false );
 }
 
-void TestQgsAbstractTemporal::checkSettingTemporalRange()
+void TestQgsTemporalRangeObject::checkSettingTemporalRange()
 {
   QgsDateTimeRange dateTimeRange = QgsDateTimeRange();
 
@@ -120,14 +96,5 @@ void TestQgsAbstractTemporal::checkSettingTemporalRange()
   QCOMPARE( temporalObject->temporalRange(), dateTimeRange );
 }
 
-void TestQgsAbstractTemporal::checkSettingCurrentDateTime()
-{
-  QDateTime dateTime = QDateTime::currentDateTime();
-
-  temporalObject->setCurrentDateTime( &dateTime );
-
-  QCOMPARE( temporalObject->currentDateTime(), &dateTime );
-}
-
-QGSTEST_MAIN( TestQgsAbstractTemporal )
-#include "testqgsabstracttemporal.moc"
+QGSTEST_MAIN( TestQgsTemporalRangeObject )
+#include "testqgstemporalrangeobject.moc"

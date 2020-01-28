@@ -376,6 +376,7 @@ SET(QGIS_CORE_SRCS
   qgsstringutils.cpp
   qgstablecell.cpp
   qgstaskmanager.cpp
+  qgstemporalrangeobject.cpp
   qgstessellator.cpp
   qgstextrenderer.cpp
   qgstilecache.cpp
@@ -610,8 +611,6 @@ SET(QGIS_CORE_SRCS
 
   geocms/geonode/qgsgeonodeconnection.cpp
   geocms/geonode/qgsgeonoderequest.cpp
-
-  temporal/qgsabstracttemporal.cpp
 
   validity/qgsabstractvaliditycheck.cpp
   validity/qgsvaliditycheckcontext.cpp
@@ -888,6 +887,7 @@ SET(QGIS_CORE_HDRS
   qgsstringutils.h
   qgstablecell.h
   qgstaskmanager.h
+  qgstemporalrangeobject.h
   qgstessellator.h
   qgstestutils.h
   qgstextrenderer.h
@@ -1276,8 +1276,6 @@ SET(QGIS_CORE_HDRS
   symbology/qgssymbollayerregistry.h
   symbology/qgssymbollayerutils.h
   symbology/qgsvectorfieldsymbollayer.h
-
-  temporal/qgsabstracttemporal.h
 
   validity/qgsabstractvaliditycheck.h
   validity/qgsvaliditycheckcontext.h

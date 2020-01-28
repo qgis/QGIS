@@ -189,6 +189,7 @@
 %Include auto_generated/qgsstringutils.sip
 %Include auto_generated/qgstablecell.sip
 %Include auto_generated/qgstaskmanager.sip
+%Include auto_generated/qgstemporalrangeobject.sip
 %Include auto_generated/qgstessellator.sip
 %Include auto_generated/qgstestutils.sip
 %Include auto_generated/qgstextrenderer.sip
@@ -507,7 +508,6 @@
 %Include auto_generated/symbology/qgssymbollayerregistry.sip
 %Include auto_generated/symbology/qgssymbollayerutils.sip
 %Include auto_generated/symbology/qgsvectorfieldsymbollayer.sip
-%Include auto_generated/temporal/qgsabstracttemporal.sip
 %Include auto_generated/validity/qgsabstractvaliditycheck.sip
 %Include auto_generated/validity/qgsvaliditycheckcontext.sip
 %Include auto_generated/validity/qgsvaliditycheckregistry.sip

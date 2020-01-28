@@ -38,7 +38,7 @@ QgsRenderContext::QgsRenderContext()
 }
 
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
-  : QgsAbstractTemporal()
+  : QgsTemporalRangeObject()
   , mFlags( rh.mFlags )
   , mPainter( rh.mPainter )
   , mMaskPainter( rh.mMaskPainter )

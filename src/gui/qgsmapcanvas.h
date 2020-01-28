@@ -26,7 +26,7 @@
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
 #include "qgscustomdrophandler.h"
-#include "temporal/qgsabstracttemporal.h"
+#include "qgstemporalrangeobject.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -73,7 +73,7 @@ class QgsReferencedRectangle;
  * Map canvas is a class for displaying all GIS data types on a canvas.
  */
 
-class GUI_EXPORT QgsMapCanvas : public QGraphicsView, public QgsAbstractTemporal
+class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 {
 
 #ifdef SIP_RUN

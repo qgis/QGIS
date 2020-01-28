@@ -34,7 +34,7 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgspathresolver.h"
 #include "qgssymbollayerreference.h"
-#include "temporal/qgsabstracttemporal.h"
+#include "qgstemporalrangeobject.h"
 
 class QPainter;
 class QgsAbstractGeometry;
@@ -53,7 +53,7 @@ class QgsMaskIdProvider;
  * the conversion ratio between screen and map units, the extents
  * to be rendered etc.
  **/
-class CORE_EXPORT QgsRenderContext : public QgsAbstractTemporal
+class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 {
   public:
     QgsRenderContext();

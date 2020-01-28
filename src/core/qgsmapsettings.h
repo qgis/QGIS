@@ -32,7 +32,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsmaplayer.h"
 #include "qgsgeometry.h"
-#include "temporal/qgsabstracttemporal.h"
+#include "qgstemporalrangeobject.h"
 
 class QPainter;
 
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsLabelBlockingRegion
  *
  * \since QGIS 2.4
  */
-class CORE_EXPORT QgsMapSettings : public QgsAbstractTemporal
+class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 {
   public:
     QgsMapSettings();

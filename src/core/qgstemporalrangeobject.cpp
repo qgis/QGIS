@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsabstracttemporal.cpp
+                         qgstemporalrangeobject.cpp
                          ---------------
     begin                : January 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
@@ -16,28 +16,28 @@
  ***************************************************************************/
 
 
-#include "qgsabstracttemporal.h"
+#include "qgstemporalrangeobject.h"
 
-QgsAbstractTemporal::QgsAbstractTemporal()
+QgsTemporalRangeObject::QgsTemporalRangeObject()
 {
 }
 
-QgsAbstractTemporal::QgsAbstractTemporal( const bool enabled )
+QgsTemporalRangeObject::QgsTemporalRangeObject( bool enabled )
   : mTemporal( enabled )
 {
 }
 
-void QgsAbstractTemporal::setIsTemporal( bool enabled )
+void QgsTemporalRangeObject::setIsTemporal( bool enabled )
 {
   mTemporal = enabled;
 }
 
-bool QgsAbstractTemporal::isTemporal() const
+bool QgsTemporalRangeObject::isTemporal() const
 {
   return mTemporal;
 }
 
-void QgsAbstractTemporal::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
+void QgsTemporalRangeObject::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( !isTemporal() )
     return;
@@ -49,25 +49,8 @@ void QgsAbstractTemporal::setTemporalRange( const QgsDateTimeRange &dateTimeRang
 
 }
 
-const QgsDateTimeRange &QgsAbstractTemporal::temporalRange() const
+const QgsDateTimeRange &QgsTemporalRangeObject::temporalRange() const
 {
   return mDateTimeRange;
 }
 
-void QgsAbstractTemporal::setCurrentDateTime( QDateTime *dateTime )
-{
-  if ( !isTemporal() )
-    return;
-
-  if ( dateTime == mDateTime )
-    return;
-
-  delete mDateTime;
-  mDateTime = dateTime;
-
-}
-
-QDateTime *QgsAbstractTemporal::currentDateTime() const
-{
-  return mDateTime;
-}

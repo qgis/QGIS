@@ -22,7 +22,7 @@ enum class QgsMapLayerType
   MeshLayer
 };
 
-class QgsMapLayer : QObject, QgsAbstractTemporal
+class QgsMapLayer : QObject, QgsTemporalRangeObject
 {
 %Docstring
 Base class for all map layer types.

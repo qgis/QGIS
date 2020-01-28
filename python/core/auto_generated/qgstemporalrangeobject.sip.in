@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/temporal/qgsabstracttemporal.h                              *
+ * src/core/qgstemporalrangeobject.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,8 +10,7 @@
 
 
 
-
-class QgsAbstractTemporal
+class QgsTemporalRangeObject
 {
 %Docstring
 Base class for temporal based classes.
@@ -22,26 +21,27 @@ Subclasses may wish to update the abstract temporal functions.
 %End
 
 %TypeHeaderCode
-#include "qgsabstracttemporal.h"
+#include "qgstemporalrangeobject.h"
 %End
   public:
 
-    QgsAbstractTemporal();
+    QgsTemporalRangeObject();
 %Docstring
-Constructors for QgsAbstractTemporal.
+Constructor for QgsTemporalRangeObject.
 %End
 
-    QgsAbstractTemporal( const bool enabled );
+    QgsTemporalRangeObject( bool enabled );
+%Docstring
+Creates temporal range object with the specified temporal state.
+%End
 
-    virtual ~QgsAbstractTemporal();
+    virtual ~QgsTemporalRangeObject();
 
     void setIsTemporal( bool enabled );
 %Docstring
 Sets object as a temporal based one, which will be considered when rendering maps with a specific time range set.
 
 .. seealso:: :py:func:`isTemporal`
-
-.. versionadded:: 3.14
 %End
 
     bool isTemporal() const;
@@ -51,8 +51,6 @@ Returns true if the object is a temporal one, and will be filtered when renderin
 For map settings, If false is returned, then any other temporal settings relating to the map will be ignored during rendering.
 
 .. seealso:: :py:func:`setIsTemporal`
-
-.. versionadded:: 3.14
 %End
 
     void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
@@ -62,8 +60,6 @@ Set datetime range for a temporal object.
 When set, can be used to filter and request time base objects.
 
 .. seealso:: :py:func:`temporalRange`
-
-.. versionadded:: 3.14
 %End
 
     const QgsDateTimeRange &temporalRange() const;
@@ -71,32 +67,6 @@ When set, can be used to filter and request time base objects.
 Returns datetime range if object is a temporal object.
 
 .. seealso:: :py:func:`setTemporalRange`
-
-.. versionadded:: 3.14
-%End
-
-
-    void setCurrentDateTime( QDateTime *dateTime );
-%Docstring
-Sets current datetime object.
-
-Can be used in map canvas, setting the map temporal instant
-
-.. seealso:: :py:func:`currentDateTime`
-
-.. versionadded:: 3.14
-%End
-
-
-    QDateTime *currentDateTime() const;
-%Docstring
-Returns current datetime object.
-
-Can be used in map canvas when changing map snapshots
-
-.. seealso:: :py:func:`setCurrentDateTime`
-
-.. versionadded:: 3.14
 %End
 
 };
@@ -104,7 +74,7 @@ Can be used in map canvas when changing map snapshots
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/temporal/qgsabstracttemporal.h                              *
+ * src/core/qgstemporalrangeobject.h                                    *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
