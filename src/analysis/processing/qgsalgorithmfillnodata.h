@@ -66,11 +66,6 @@ class QgsFillNoDataAlgorithm : public QgsProcessingAlgorithm
     int mNbCellsXProvider = 0;
     int mNbCellsYProvider = 0;
     double mInputNoDataValue;
-    QgsRasterDataProvider *mDestinationRasterProvider;
-
-    bool mDynamicFillValue = false;
-    QgsProperty mDynamicFillValueProperty;
-
 };
 
 ///@endcond PRIVATE
