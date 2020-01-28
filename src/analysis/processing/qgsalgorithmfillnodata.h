@@ -65,7 +65,7 @@ class QgsFillNoDataAlgorithm : public QgsProcessingAlgorithm
     int mLayerHeight;
     int mNbCellsXProvider = 0;
     int mNbCellsYProvider = 0;
-    double mInputNoDataValue;
+    QgsRasterDataProvider *mDestinationRasterProvider;
 };
 
 ///@endcond PRIVATE

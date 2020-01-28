@@ -112,7 +112,6 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
 
   //prepare output provider
   mDestinationRasterProvider = provider.get();
-  mDestinationRasterProvider->setNoDataValue( 1, -9999 );
   mDestinationRasterProvider->setEditable( true );
 
   int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
