@@ -35,7 +35,8 @@ void QgsMapToolEllipseFoci::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( e->button() == Qt::LeftButton )
   {
-    mPoints.append( point );
+    if ( mPoints.size() < 2 )
+      mPoints.append( point );
 
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {

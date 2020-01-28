@@ -41,7 +41,8 @@ void QgsMapToolRegularPolygon2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e
 
   if ( e->button() == Qt::LeftButton )
   {
-    mPoints.append( point );
+    if ( mPoints.size() < 1 )
+      mPoints.append( point );
 
     if ( !mPoints.isEmpty() )
     {
