@@ -936,7 +936,7 @@ void QgsSpatiaLiteProvider::fetchConstraints()
       if ( rows >= 1 )
       {
         QString tableSql = QString::fromUtf8( results[ 1 ] );
-        QRegularExpression rx( QStringLiteral( "[(,]\\s*(?:%1|\"%1\")\\s+INTEGER PRIMARY KEY AUTOINCREMENT" ).arg( mPrimaryKey ), QRegularExpression::CaseInsensitiveOption );
+        QRegularExpression rx( QStringLiteral( "[(,]\\s*(?:%1|\"%1\"|`%1`)\\s+INTEGER PRIMARY KEY AUTOINCREMENT" ).arg( mPrimaryKey ), QRegularExpression::CaseInsensitiveOption );
         if ( tableSql.contains( rx ) )
         {
           mPrimaryKeyAutoIncrement = true;
@@ -1024,6 +1024,10 @@ QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
 
 QString QgsSpatiaLiteProvider::defaultValueClause( int fieldIndex ) const
 {
+  if ( mAttributeFields.at( fieldIndex ).name() == mPrimaryKey && mPrimaryKeyAutoIncrement )
+  {
+    return tr( "Autogenerate" );
+  }
   return mDefaultValueClause.value( fieldIndex, QString() );
 }
 
