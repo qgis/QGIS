@@ -133,10 +133,10 @@ void QgsServerRequest::setMethod( Method method )
 
 const QString QgsServerRequest::queryParameter( const QString &name, const QString &defaultValue ) const
 {
-  if ( ! mUrl.hasQueryItem( name ) )
+  if ( !QUrlQuery( mUrl ).hasQueryItem( name ) )
   {
     return defaultValue;
   }
-  return QUrl::fromPercentEncoding( mUrl.queryItemValue( name ).toUtf8() );
+  return QUrl::fromPercentEncoding( QUrlQuery( mUrl ).queryItemValue( name ).toUtf8() );
 }
 

@@ -39,7 +39,8 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
   QgsFields fields;
 
   int layerIdx = 0;
-  QList<QPair<QByteArray, QByteArray> > items = url.encodedQueryItems();
+
+  const QList<QPair<QString, QString> > items = QUrlQuery( url ).queryItems( QUrl::FullyEncoded );
   for ( int i = 0; i < items.size(); i++ )
   {
     QString key = items.at( i ).first;

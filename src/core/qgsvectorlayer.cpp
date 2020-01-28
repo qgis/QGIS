@@ -1891,7 +1891,7 @@ QString QgsVectorLayer::encodedSource( const QString &source, const QgsReadWrite
   {
     QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
     QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
-    urlDest.setQueryItems( urlSource.queryItems() );
+    urlDest.setQuery( urlSource.query() );
     src = QString::fromLatin1( urlDest.toEncoded() );
   }
   else if ( providerType() == QLatin1String( "memory" ) )
@@ -1970,7 +1970,7 @@ QString QgsVectorLayer::decodedSource( const QString &source, const QString &pro
     }
 
     QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
-    urlDest.setQueryItems( urlSource.queryItems() );
+    urlDest.setQuery( urlSource.query() );
     src = QString::fromLatin1( urlDest.toEncoded() );
   }
   else if ( provider == QLatin1String( "virtual" ) )

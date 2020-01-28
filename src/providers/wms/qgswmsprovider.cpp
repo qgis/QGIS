@@ -510,7 +510,7 @@ bool QgsWmsProvider::setImageCrs( QString const &crs )
   return true;
 }
 
-void QgsWmsProvider::setQueryItem( QUrl &url, const QString &item, const QString &value )
+void QgsWmsProvider::setQueryItem( QUrlQuery &url, const QString &item, const QString &value )
 {
   url.removeQueryItem( item );
   if ( value.isNull() )
@@ -519,14 +519,14 @@ void QgsWmsProvider::setQueryItem( QUrl &url, const QString &item, const QString
     url.addQueryItem( item, value );
 }
 
-void QgsWmsProvider::setFormatQueryItem( QUrl &url )
+void QgsWmsProvider::setFormatQueryItem( QUrlQuery &url )
 {
   url.removeQueryItem( QStringLiteral( "FORMAT" ) );
   if ( mSettings.mImageMimeType.contains( '+' ) )
   {
     QString format( mSettings.mImageMimeType );
     format.replace( '+', QLatin1String( "%2b" ) );
-    url.addEncodedQueryItem( "FORMAT", format.toUtf8() );
+    url.addQueryItem( "FORMAT", format );
   }
   else
     setQueryItem( url, QStringLiteral( "FORMAT" ), mSettings.mImageMimeType );
@@ -824,9 +824,10 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
 
       if ( mbtilesReader && !QgsTileCache::tile( r.url, localImage ) )
       {
-        QImage img = mbtilesReader->tileDataAsImage( r.url.queryItemValue( "z" ).toInt(),
-                     r.url.queryItemValue( "x" ).toInt(),
-                     r.url.queryItemValue( "y" ).toInt() );
+        QUrlQuery query( r.url );
+        QImage img = mbtilesReader->tileDataAsImage( query.queryItemValue( "z" ).toInt(),
+                     query.queryItemValue( "x" ).toInt(),
+                     query.queryItemValue( "y" ).toInt() );
         if ( img.isNull() )
           continue;
         QgsTileCache::insertTile( r.url, img );
@@ -1020,25 +1021,26 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   QString bbox = toParamValue( viewExtent, changeXY );
 
   QUrl url( mSettings.mIgnoreGetMapUrl ? mSettings.mBaseUrl : getMapUrl() );
-  setQueryItem( url, QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
-  setQueryItem( url, QStringLiteral( "VERSION" ), mCaps.mCapabilities.version );
-  setQueryItem( url, QStringLiteral( "REQUEST" ), QStringLiteral( "GetMap" ) );
-  setQueryItem( url, QStringLiteral( "BBOX" ), bbox );
-  setSRSQueryItem( url );
-  setQueryItem( url, QStringLiteral( "WIDTH" ), QString::number( pixelWidth ) );
-  setQueryItem( url, QStringLiteral( "HEIGHT" ), QString::number( pixelHeight ) );
-  setQueryItem( url, QStringLiteral( "LAYERS" ), layers );
-  setQueryItem( url, QStringLiteral( "STYLES" ), styles );
-  setFormatQueryItem( url );
+  QUrlQuery query( url );
+  setQueryItem( query, QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
+  setQueryItem( query, QStringLiteral( "VERSION" ), mCaps.mCapabilities.version );
+  setQueryItem( query, QStringLiteral( "REQUEST" ), QStringLiteral( "GetMap" ) );
+  setQueryItem( query, QStringLiteral( "BBOX" ), bbox );
+  setSRSQueryItem( query );
+  setQueryItem( query, QStringLiteral( "WIDTH" ), QString::number( pixelWidth ) );
+  setQueryItem( query, QStringLiteral( "HEIGHT" ), QString::number( pixelHeight ) );
+  setQueryItem( query, QStringLiteral( "LAYERS" ), layers );
+  setQueryItem( query, QStringLiteral( "STYLES" ), styles );
+  setFormatQueryItem( query );
 
   if ( mDpi != -1 )
   {
     if ( mSettings.mDpiMode & DpiQGIS )
-      setQueryItem( url, QStringLiteral( "DPI" ), QString::number( mDpi ) );
+      setQueryItem( query, QStringLiteral( "DPI" ), QString::number( mDpi ) );
     if ( mSettings.mDpiMode & DpiUMN )
-      setQueryItem( url, QStringLiteral( "MAP_RESOLUTION" ), QString::number( mDpi ) );
+      setQueryItem( query, QStringLiteral( "MAP_RESOLUTION" ), QString::number( mDpi ) );
     if ( mSettings.mDpiMode & DpiGeoServer )
-      setQueryItem( url, QStringLiteral( "FORMAT_OPTIONS" ), QStringLiteral( "dpi:%1" ).arg( mDpi ) );
+      setQueryItem( query, QStringLiteral( "FORMAT_OPTIONS" ), QStringLiteral( "dpi:%1" ).arg( mDpi ) );
   }
 
   //MH: jpeg does not support transparency and some servers complain if jpg and transparent=true
@@ -1046,8 +1048,10 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
        ( !mSettings.mImageMimeType.contains( QLatin1String( "jpeg" ), Qt::CaseInsensitive ) &&
          !mSettings.mImageMimeType.contains( QLatin1String( "jpg" ), Qt::CaseInsensitive ) ) )
   {
-    setQueryItem( url, QStringLiteral( "TRANSPARENT" ), QStringLiteral( "TRUE" ) );  // some servers giving error for 'true' (lowercase)
+    setQueryItem( query, QStringLiteral( "TRANSPARENT" ), QStringLiteral( "TRUE" ) );  // some servers giving error for 'true' (lowercase)
   }
+
+  url.setQuery( query );
 
   QgsDebugMsg( QStringLiteral( "getmap: %1" ).arg( url.toString() ) );
   return url;
@@ -1060,38 +1064,40 @@ void QgsWmsProvider::createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const 
 
   // add WMS request
   QUrl url( mSettings.mIgnoreGetMapUrl ? mSettings.mBaseUrl : getMapUrl() );
-  setQueryItem( url, QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
-  setQueryItem( url, QStringLiteral( "VERSION" ), mCaps.mCapabilities.version );
-  setQueryItem( url, QStringLiteral( "REQUEST" ), QStringLiteral( "GetMap" ) );
-  setQueryItem( url, QStringLiteral( "LAYERS" ), mSettings.mActiveSubLayers.join( QStringLiteral( "," ) ) );
-  setQueryItem( url, QStringLiteral( "STYLES" ), mSettings.mActiveSubStyles.join( QStringLiteral( "," ) ) );
-  setQueryItem( url, QStringLiteral( "WIDTH" ), QString::number( tm->tileWidth ) );
-  setQueryItem( url, QStringLiteral( "HEIGHT" ), QString::number( tm->tileHeight ) );
-  setFormatQueryItem( url );
+  QUrlQuery query( url );
+  setQueryItem( query, QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
+  setQueryItem( query, QStringLiteral( "VERSION" ), mCaps.mCapabilities.version );
+  setQueryItem( query, QStringLiteral( "REQUEST" ), QStringLiteral( "GetMap" ) );
+  setQueryItem( query, QStringLiteral( "LAYERS" ), mSettings.mActiveSubLayers.join( QStringLiteral( "," ) ) );
+  setQueryItem( query, QStringLiteral( "STYLES" ), mSettings.mActiveSubStyles.join( QStringLiteral( "," ) ) );
+  setQueryItem( query, QStringLiteral( "WIDTH" ), QString::number( tm->tileWidth ) );
+  setQueryItem( query, QStringLiteral( "HEIGHT" ), QString::number( tm->tileHeight ) );
+  setFormatQueryItem( query );
 
-  setSRSQueryItem( url );
+  setSRSQueryItem( query );
 
   if ( mSettings.mTiled )
   {
-    setQueryItem( url, QStringLiteral( "TILED" ), QStringLiteral( "true" ) );
+    setQueryItem( query, QStringLiteral( "TILED" ), QStringLiteral( "true" ) );
   }
 
   if ( mDpi != -1 )
   {
     if ( mSettings.mDpiMode & DpiQGIS )
-      setQueryItem( url, QStringLiteral( "DPI" ), QString::number( mDpi ) );
+      setQueryItem( query, QStringLiteral( "DPI" ), QString::number( mDpi ) );
     if ( mSettings.mDpiMode & DpiUMN )
-      setQueryItem( url, QStringLiteral( "MAP_RESOLUTION" ), QString::number( mDpi ) );
+      setQueryItem( query, QStringLiteral( "MAP_RESOLUTION" ), QString::number( mDpi ) );
     if ( mSettings.mDpiMode & DpiGeoServer )
-      setQueryItem( url, QStringLiteral( "FORMAT_OPTIONS" ), QStringLiteral( "dpi:%1" ).arg( mDpi ) );
+      setQueryItem( query, QStringLiteral( "FORMAT_OPTIONS" ), QStringLiteral( "dpi:%1" ).arg( mDpi ) );
   }
 
   if ( mSettings.mImageMimeType == QLatin1String( "image/x-jpegorpng" ) ||
        ( !mSettings.mImageMimeType.contains( QLatin1String( "jpeg" ), Qt::CaseInsensitive ) &&
          !mSettings.mImageMimeType.contains( QLatin1String( "jpg" ), Qt::CaseInsensitive ) ) )
   {
-    setQueryItem( url, QStringLiteral( "TRANSPARENT" ), QStringLiteral( "TRUE" ) );  // some servers giving error for 'true' (lowercase)
+    setQueryItem( query, QStringLiteral( "TRANSPARENT" ), QStringLiteral( "TRUE" ) );  // some servers giving error for 'true' (lowercase)
   }
+  url.setQuery( query );
 
   int i = 0;
   const auto constTiles = tiles;
@@ -1119,24 +1125,26 @@ void QgsWmsProvider::createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const 
   {
     // KVP
     QUrl url( mSettings.mIgnoreGetMapUrl ? mSettings.mBaseUrl : getTileUrl() );
+    QUrlQuery query( url );
 
     // compose static request arguments.
-    setQueryItem( url, QStringLiteral( "SERVICE" ), QStringLiteral( "WMTS" ) );
-    setQueryItem( url, QStringLiteral( "REQUEST" ), QStringLiteral( "GetTile" ) );
-    setQueryItem( url, QStringLiteral( "VERSION" ), mCaps.mCapabilities.version );
-    setQueryItem( url, QStringLiteral( "LAYER" ), mSettings.mActiveSubLayers[0] );
-    setQueryItem( url, QStringLiteral( "STYLE" ), mSettings.mActiveSubStyles[0] );
-    setQueryItem( url, QStringLiteral( "FORMAT" ), mSettings.mImageMimeType );
-    setQueryItem( url, QStringLiteral( "TILEMATRIXSET" ), mTileMatrixSet->identifier );
-    setQueryItem( url, QStringLiteral( "TILEMATRIX" ), tm->identifier );
+    setQueryItem( query, QStringLiteral( "SERVICE" ), QStringLiteral( "WMTS" ) );
+    setQueryItem( query, QStringLiteral( "REQUEST" ), QStringLiteral( "GetTile" ) );
+    setQueryItem( query, QStringLiteral( "VERSION" ), mCaps.mCapabilities.version );
+    setQueryItem( query, QStringLiteral( "LAYER" ), mSettings.mActiveSubLayers[0] );
+    setQueryItem( query, QStringLiteral( "STYLE" ), mSettings.mActiveSubStyles[0] );
+    setQueryItem( query, QStringLiteral( "FORMAT" ), mSettings.mImageMimeType );
+    setQueryItem( query, QStringLiteral( "TILEMATRIXSET" ), mTileMatrixSet->identifier );
+    setQueryItem( query, QStringLiteral( "TILEMATRIX" ), tm->identifier );
 
     for ( QHash<QString, QString>::const_iterator it = mSettings.mTileDimensionValues.constBegin(); it != mSettings.mTileDimensionValues.constEnd(); ++it )
     {
-      setQueryItem( url, it.key(), it.value() );
+      setQueryItem( query, it.key(), it.value() );
     }
 
-    url.removeQueryItem( QStringLiteral( "TILEROW" ) );
-    url.removeQueryItem( QStringLiteral( "TILECOL" ) );
+    query.removeQueryItem( QStringLiteral( "TILEROW" ) );
+    query.removeQueryItem( QStringLiteral( "TILECOL" ) );
+    url.setQuery( query );
 
     int i = 0;
     const auto constTiles = tiles;
@@ -2745,34 +2753,36 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
       QgsDebugMsg( "Layer '" + *layers + "' is queryable." );
 
       QUrl requestUrl( mSettings.mIgnoreGetFeatureInfoUrl ? mSettings.mBaseUrl : getFeatureInfoUrl() );
-      setQueryItem( requestUrl, QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
-      setQueryItem( requestUrl, QStringLiteral( "VERSION" ), mCaps.mCapabilities.version );
-      setQueryItem( requestUrl, QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeatureInfo" ) );
-      setQueryItem( requestUrl, QStringLiteral( "BBOX" ), bbox );
-      setSRSQueryItem( requestUrl );
-      setQueryItem( requestUrl, QStringLiteral( "WIDTH" ), QString::number( width ) );
-      setQueryItem( requestUrl, QStringLiteral( "HEIGHT" ), QString::number( height ) );
-      setQueryItem( requestUrl, QStringLiteral( "LAYERS" ), *layers );
-      setQueryItem( requestUrl, QStringLiteral( "STYLES" ), *styles );
-      setFormatQueryItem( requestUrl );
-      setQueryItem( requestUrl, QStringLiteral( "QUERY_LAYERS" ), *layers );
-      setQueryItem( requestUrl, QStringLiteral( "INFO_FORMAT" ), formatStr );
+      QUrlQuery query( requestUrl );
+      setQueryItem( query, QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
+      setQueryItem( query, QStringLiteral( "VERSION" ), mCaps.mCapabilities.version );
+      setQueryItem( query, QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeatureInfo" ) );
+      setQueryItem( query, QStringLiteral( "BBOX" ), bbox );
+      setSRSQueryItem( query );
+      setQueryItem( query, QStringLiteral( "WIDTH" ), QString::number( width ) );
+      setQueryItem( query, QStringLiteral( "HEIGHT" ), QString::number( height ) );
+      setQueryItem( query, QStringLiteral( "LAYERS" ), *layers );
+      setQueryItem( query, QStringLiteral( "STYLES" ), *styles );
+      setFormatQueryItem( query );
+      setQueryItem( query, QStringLiteral( "QUERY_LAYERS" ), *layers );
+      setQueryItem( query, QStringLiteral( "INFO_FORMAT" ), formatStr );
 
       if ( mCaps.mCapabilities.version == QLatin1String( "1.3.0" ) || mCaps.mCapabilities.version == QLatin1String( "1.3" ) )
       {
-        setQueryItem( requestUrl, QStringLiteral( "I" ), QString::number( finalPoint.x() ) );
-        setQueryItem( requestUrl, QStringLiteral( "J" ), QString::number( finalPoint.y() ) );
+        setQueryItem( query, QStringLiteral( "I" ), QString::number( finalPoint.x() ) );
+        setQueryItem( query, QStringLiteral( "J" ), QString::number( finalPoint.y() ) );
       }
       else
       {
-        setQueryItem( requestUrl, QStringLiteral( "X" ), QString::number( finalPoint.x() ) );
-        setQueryItem( requestUrl, QStringLiteral( "Y" ), QString::number( finalPoint.y() ) );
+        setQueryItem( query, QStringLiteral( "X" ), QString::number( finalPoint.x() ) );
+        setQueryItem( query, QStringLiteral( "Y" ), QString::number( finalPoint.y() ) );
       }
 
       if ( mSettings.mFeatureCount > 0 )
       {
-        setQueryItem( requestUrl, QStringLiteral( "FEATURE_COUNT" ), QString::number( mSettings.mFeatureCount ) );
+        setQueryItem( query, QStringLiteral( "FEATURE_COUNT" ), QString::number( mSettings.mFeatureCount ) );
       }
+      requestUrl.setQuery( query );
 
       layerList << *layers;
       urls << requestUrl;
@@ -2872,26 +2882,28 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
     {
       // KVP
       QUrl url( mSettings.mIgnoreGetFeatureInfoUrl ? mSettings.mBaseUrl : getFeatureInfoUrl() );
+      QUrlQuery query( url );
 
       // compose static request arguments.
-      setQueryItem( url, QStringLiteral( "SERVICE" ), QStringLiteral( "WMTS" ) );
-      setQueryItem( url, QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeatureInfo" ) );
-      setQueryItem( url, QStringLiteral( "VERSION" ), mCaps.mCapabilities.version );
-      setQueryItem( url, QStringLiteral( "LAYER" ), mSettings.mActiveSubLayers[0] );
-      setQueryItem( url, QStringLiteral( "STYLE" ), mSettings.mActiveSubStyles[0] );
-      setQueryItem( url, QStringLiteral( "INFOFORMAT" ), formatStr );
-      setQueryItem( url, QStringLiteral( "TILEMATRIXSET" ), mTileMatrixSet->identifier );
-      setQueryItem( url, QStringLiteral( "TILEMATRIX" ), tm->identifier );
+      setQueryItem( query, QStringLiteral( "SERVICE" ), QStringLiteral( "WMTS" ) );
+      setQueryItem( query, QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeatureInfo" ) );
+      setQueryItem( query, QStringLiteral( "VERSION" ), mCaps.mCapabilities.version );
+      setQueryItem( query, QStringLiteral( "LAYER" ), mSettings.mActiveSubLayers[0] );
+      setQueryItem( query, QStringLiteral( "STYLE" ), mSettings.mActiveSubStyles[0] );
+      setQueryItem( query, QStringLiteral( "INFOFORMAT" ), formatStr );
+      setQueryItem( query, QStringLiteral( "TILEMATRIXSET" ), mTileMatrixSet->identifier );
+      setQueryItem( query, QStringLiteral( "TILEMATRIX" ), tm->identifier );
 
       for ( QHash<QString, QString>::const_iterator it = mSettings.mTileDimensionValues.constBegin(); it != mSettings.mTileDimensionValues.constEnd(); ++it )
       {
-        setQueryItem( url, it.key(), it.value() );
+        setQueryItem( query, it.key(), it.value() );
       }
 
-      setQueryItem( url, QStringLiteral( "TILEROW" ), QString::number( row ) );
-      setQueryItem( url, QStringLiteral( "TILECOL" ), QString::number( col ) );
-      setQueryItem( url, QStringLiteral( "I" ), qgsDoubleToString( i ) );
-      setQueryItem( url, QStringLiteral( "J" ), qgsDoubleToString( j ) );
+      setQueryItem( query, QStringLiteral( "TILEROW" ), QString::number( row ) );
+      setQueryItem( query, QStringLiteral( "TILECOL" ), QString::number( col ) );
+      setQueryItem( query, QStringLiteral( "I" ), qgsDoubleToString( i ) );
+      setQueryItem( query, QStringLiteral( "J" ), qgsDoubleToString( j ) );
+      url.setQuery( query );
 
       urls << url;
       layerList << mSettings.mActiveSubLayers[0];
@@ -3496,6 +3508,7 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle &
   QgsDebugMsg( QStringLiteral( "visibleExtent is %1" ).arg( visibleExtent.toString() ) );
 
   QUrl url( lurl );
+  QUrlQuery query( url );
 
   if ( dataSourceUri().contains( "SERVICE=WMTS" ) || dataSourceUri().contains( "/WMTSCapabilities.xml" ) )
   {
@@ -3505,27 +3518,27 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle &
 
   // query names are NOT case-sensitive, so make an uppercase list for proper comparison
   QStringList qnames = QStringList();
-  for ( int i = 0; i < url.queryItems().size(); i++ )
+  for ( int i = 0; i < query.queryItems().size(); i++ )
   {
-    qnames << url.queryItems().at( i ).first.toUpper();
+    qnames << query.queryItems().at( i ).first.toUpper();
   }
   if ( !qnames.contains( QStringLiteral( "SERVICE" ) ) )
-    setQueryItem( url, QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
+    setQueryItem( query, QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
   if ( !qnames.contains( QStringLiteral( "VERSION" ) ) )
-    setQueryItem( url, QStringLiteral( "VERSION" ), mCaps.mCapabilities.version );
+    setQueryItem( query, QStringLiteral( "VERSION" ), mCaps.mCapabilities.version );
   if ( !qnames.contains( QStringLiteral( "SLD_VERSION" ) ) )
-    setQueryItem( url, QStringLiteral( "SLD_VERSION" ), QStringLiteral( "1.1.0" ) ); // can not determine SLD_VERSION
+    setQueryItem( query, QStringLiteral( "SLD_VERSION" ), QStringLiteral( "1.1.0" ) ); // can not determine SLD_VERSION
   if ( !qnames.contains( QStringLiteral( "REQUEST" ) ) )
-    setQueryItem( url, QStringLiteral( "REQUEST" ), QStringLiteral( "GetLegendGraphic" ) );
+    setQueryItem( query, QStringLiteral( "REQUEST" ), QStringLiteral( "GetLegendGraphic" ) );
   if ( !qnames.contains( QStringLiteral( "FORMAT" ) ) )
-    setFormatQueryItem( url );
+    setFormatQueryItem( query );
   if ( !qnames.contains( QStringLiteral( "LAYER" ) ) )
-    setQueryItem( url, QStringLiteral( "LAYER" ), mSettings.mActiveSubLayers[0] );
+    setQueryItem( query, QStringLiteral( "LAYER" ), mSettings.mActiveSubLayers[0] );
   if ( !qnames.contains( QStringLiteral( "STYLE" ) ) )
-    setQueryItem( url, QStringLiteral( "STYLE" ), mSettings.mActiveSubStyles[0] );
+    setQueryItem( query, QStringLiteral( "STYLE" ), mSettings.mActiveSubStyles[0] );
   // by setting TRANSPARENT=true, even too big legend images will look good
   if ( !qnames.contains( QStringLiteral( "TRANSPARENT" ) ) )
-    setQueryItem( url, QStringLiteral( "TRANSPARENT" ), QStringLiteral( "true" ) );
+    setQueryItem( query, QStringLiteral( "TRANSPARENT" ), QStringLiteral( "true" ) );
 
   // add config parameter related to resolution
   QgsSettings s;
@@ -3534,25 +3547,26 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle &
   if ( defaultLegendGraphicResolution )
   {
     if ( mSettings.mDpiMode & DpiQGIS )
-      setQueryItem( url, QStringLiteral( "DPI" ), QString::number( defaultLegendGraphicResolution ) );
+      setQueryItem( query, QStringLiteral( "DPI" ), QString::number( defaultLegendGraphicResolution ) );
     if ( mSettings.mDpiMode & DpiUMN )
     {
-      setQueryItem( url, QStringLiteral( "MAP_RESOLUTION" ), QString::number( defaultLegendGraphicResolution ) );
-      setQueryItem( url, QStringLiteral( "SCALE" ), QString::number( scale, 'f' ) );
+      setQueryItem( query, QStringLiteral( "MAP_RESOLUTION" ), QString::number( defaultLegendGraphicResolution ) );
+      setQueryItem( query, QStringLiteral( "SCALE" ), QString::number( scale, 'f' ) );
     }
     if ( mSettings.mDpiMode & DpiGeoServer )
     {
-      setQueryItem( url, QStringLiteral( "FORMAT_OPTIONS" ), QStringLiteral( "dpi:%1" ).arg( defaultLegendGraphicResolution ) );
-      setQueryItem( url, QStringLiteral( "SCALE" ), QString::number( scale, 'f' ) );
+      setQueryItem( query, QStringLiteral( "FORMAT_OPTIONS" ), QStringLiteral( "dpi:%1" ).arg( defaultLegendGraphicResolution ) );
+      setQueryItem( query, QStringLiteral( "SCALE" ), QString::number( scale, 'f' ) );
     }
   }
 
   if ( useContextualWMSLegend )
   {
     bool changeXY = mCaps.shouldInvertAxisOrientation( mImageCrs );
-    setQueryItem( url, QStringLiteral( "BBOX" ), toParamValue( visibleExtent, changeXY ) );
-    setSRSQueryItem( url );
+    setQueryItem( query, QStringLiteral( "BBOX" ), toParamValue( visibleExtent, changeXY ) );
+    setSRSQueryItem( query );
   }
+  url.setQuery( query );
 
   QgsDebugMsg( QStringLiteral( "getlegendgraphicrequest: %1" ).arg( url.toString() ) );
   return QUrl( url );
@@ -4248,7 +4262,7 @@ QString QgsWmsProvider::toParamValue( const QgsRectangle &rect, bool changeXY )
                formatDouble( rect.yMaximum() ) );
 }
 
-void QgsWmsProvider::setSRSQueryItem( QUrl &url )
+void QgsWmsProvider::setSRSQueryItem( QUrlQuery &url )
 {
   QString crsKey = QStringLiteral( "SRS" ); //SRS in 1.1.1 and CRS in 1.3.0
   if ( mCaps.mCapabilities.version == QLatin1String( "1.3.0" ) || mCaps.mCapabilities.version == QLatin1String( "1.3" ) )

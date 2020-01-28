@@ -330,7 +330,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString toParamValue( const QgsRectangle &rect, bool changeXY );
 
     /* \brief add SRS or CRS parameter */
-    void setSRSQueryItem( QUrl &url );
+    void setSRSQueryItem( QUrlQuery &url );
 
     bool ignoreExtents() const override;
 
@@ -365,10 +365,10 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString layerMetadata( QgsWmsLayerProperty &layer );
 
     //! remove query item and replace it with a new value
-    void setQueryItem( QUrl &url, const QString &key, const QString &value );
+    void setQueryItem( QUrlQuery &url, const QString &key, const QString &value );
 
     //! add image FORMAT parameter to url
-    void setFormatQueryItem( QUrl &url );
+    void setFormatQueryItem( QUrlQuery &url );
 
     //! Name of the stored connection
     QString mConnectionName;

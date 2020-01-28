@@ -2260,7 +2260,7 @@ void QgsSymbolLayerUtils::parametricSvgToSld( QDomDocument &doc, QDomElement &gr
 
 QString QgsSymbolLayerUtils::getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth )
 {
-  QUrl url = QUrl();
+  QUrlQuery url;
   if ( fillColor.isValid() )
   {
     url.addQueryItem( QStringLiteral( "fill" ), fillColor.name() );
@@ -2282,7 +2282,7 @@ QString QgsSymbolLayerUtils::getSvgParametricPath( const QString &basePath, cons
     url.addQueryItem( QStringLiteral( "outline-opacity" ), QStringLiteral( "1" ) );
   }
   url.addQueryItem( QStringLiteral( "outline-width" ), QString::number( strokeWidth ) );
-  QString params = url.encodedQuery();
+  QString params = url.toString( QUrl::FullyEncoded );
   if ( params.isEmpty() )
   {
     return basePath;

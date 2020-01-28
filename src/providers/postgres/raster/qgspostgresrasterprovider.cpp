@@ -172,15 +172,12 @@ bool QgsPostgresRasterProvider::hasSufficientPermsAndCapabilities()
       return false;
     }
 
-    bool inRecovery = false;
-
     if ( connectionRO()->pgVersion() >= 90000 )
     {
       testAccess = connectionRO()->PQexec( QStringLiteral( "SELECT pg_is_in_recovery()" ) );
       if ( testAccess.PQresultStatus() != PGRES_TUPLES_OK || testAccess.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
       {
         QgsMessageLog::logMessage( tr( "PostgreSQL is still in recovery after a database crash\n(or you are connected to a (read-only) slave).\nWrite accesses will be denied." ), tr( "PostGIS" ) );
-        inRecovery = true;
       }
     }
   }
