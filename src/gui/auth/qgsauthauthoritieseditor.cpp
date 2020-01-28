@@ -287,7 +287,11 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &
     {
       policy = QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted );
     }
-    else if ( untrustedids.contains( id ) || !cert.isValid() )
+    else if ( untrustedids.contains( id )
+              || cert.isBlacklisted()
+              || cert.isNull()
+              || cert.expiryDate() <= QDateTime::currentDateTime()
+              || cert.effectiveDate() > QDateTime::currentDateTime() )
     {
       policy = QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted );
     }
@@ -296,7 +300,10 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &
     QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, static_cast<int>( catype ) ) );
 
     item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
-    if ( !cert.isValid() )
+    if ( cert.isBlacklisted()
+         || cert.isNull()
+         || cert.expiryDate() <= QDateTime::currentDateTime()
+         || cert.effectiveDate() > QDateTime::currentDateTime() )
     {
       item->setForeground( 2, redb );
       item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
@@ -305,7 +312,10 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &
     if ( trustedids.contains( id ) )
     {
       item->setForeground( 3, greenb );
-      if ( cert.isValid() )
+      if ( !cert.isBlacklisted()
+           && !cert.isNull()
+           && cert.expiryDate() > QDateTime::currentDateTime()
+           && cert.effectiveDate() <= QDateTime::currentDateTime() )
       {
         item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateTrusted.svg" ) ) );
       }

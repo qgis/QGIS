@@ -2379,7 +2379,11 @@ int QgisApp::chooseReasonableDefaultIconSize() const
   }
   else
   {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     double size = fontMetrics().width( QStringLiteral( "XXX" ) );
+#else
+    double size = fontMetrics().horizontalAdvance( 'X' ) * 3;
+#endif
     if ( size < 24 )
       return 16;
     else if ( size < 32 )
@@ -13625,7 +13629,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         mActionAddFeature->setToolTip( addFeatureText );
         QgsGui::shortcutsManager()->unregisterAction( mActionAddFeature );
         if ( !mActionAddFeature->text().isEmpty() ) // The text will be empty on unknown geometry type -> in this case do not create a shortcut
-          QgsGui::shortcutsManager()->registerAction( mActionAddFeature, mActionAddFeature->shortcut() );
+          QgsGui::shortcutsManager()->registerAction( mActionAddFeature, mActionAddFeature->shortcut().toString() );
       }
       else
       {
