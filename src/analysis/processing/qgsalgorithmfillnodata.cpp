@@ -145,8 +145,6 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
         break;
       for ( int column = 0; column < iterCols; column++ )
       {
-        if ( feedback && feedback->isCanceled() )
-          break;
         if ( filledRasterBlock->isNoData( row, column ) )
           filledRasterBlock->setValue( row, column, mFillValue );
       }
