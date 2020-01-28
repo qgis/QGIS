@@ -286,8 +286,8 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   QString maskImagePath = mExpectedImageFile;
   maskImagePath.chop( 4 ); //remove .png extension
   maskImagePath += QLatin1String( "_mask.png" );
-  QImage *maskImage = new QImage( maskImagePath );
-  bool hasMask = !maskImage->isNull();
+  const QImage maskImage( maskImagePath );
+  const bool hasMask = !maskImage.isNull();
   if ( hasMask )
   {
     qDebug( "QgsRenderChecker using mask image" );
@@ -361,6 +361,8 @@ bool QgsRenderChecker::compareImages( const QString &testName,
 
   qDebug( "Expected size: %dw x %dh", myExpectedImage.width(), myExpectedImage.height() );
   qDebug( "Actual   size: %dw x %dh", myResultImage.width(), myResultImage.height() );
+  if ( hasMask )
+    qDebug( "Mask size: %dw x %dh", maskImage.width(), maskImage.height() );
 
   if ( mMatchTarget != myPixelCount )
   {
@@ -373,7 +375,6 @@ bool QgsRenderChecker::compareImages( const QString &testName,
       mReport += "<font color=red>Expected image and result image for " + testName + " are different dimensions - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
-      delete maskImage;
       return false;
     }
     else
@@ -394,7 +395,6 @@ bool QgsRenderChecker::compareImages( const QString &testName,
       mReport += "<font color=red>Expected image and result image for " + testName + " have different formats (8bit format is expected) - FAILING!</font>";
       mReport += QLatin1String( "</td></tr>" );
       mReport += myImagesString;
-      delete maskImage;
       return false;
     }
 
@@ -420,12 +420,12 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   {
     const QRgb *expectedScanline = reinterpret_cast< const QRgb * >( myExpectedImage.constScanLine( y ) );
     const QRgb *resultScanline = reinterpret_cast< const QRgb * >( myResultImage.constScanLine( y ) );
-    const QRgb *maskScanline = hasMask ? reinterpret_cast< const QRgb * >( maskImage->constScanLine( y ) ) : nullptr;
+    const QRgb *maskScanline = ( hasMask && maskImage.height() > y ) ? reinterpret_cast< const QRgb * >( maskImage.constScanLine( y ) ) : nullptr;
     QRgb *diffScanline = reinterpret_cast< QRgb * >( myDifferenceImage.scanLine( y ) );
 
     for ( int x = 0; x < maxWidth; ++x )
     {
-      int maskTolerance = hasMask ? qRed( maskScanline[ x ] ) : 0;
+      int maskTolerance = ( maskScanline && maskImage.width() > x ) ? qRed( maskScanline[ x ] ) : 0;
       int pixelTolerance = std::max( colorTolerance, maskTolerance );
       if ( pixelTolerance == 255 )
       {
@@ -461,7 +461,6 @@ bool QgsRenderChecker::compareImages( const QString &testName,
   //
   myDifferenceImage.save( myDiffImageFile );
   emitDashMessage( "Difference Image " + testName + prefix, QgsDartMeasurement::ImagePng, myDiffImageFile );
-  delete maskImage;
 
   //
   // Send match result to debug
