@@ -184,6 +184,9 @@ class TestQgsExpressionBuilderWidget(unittest.TestCase):
 
         # Reload by creating a new widget
         w = QgsExpressionBuilderWidget()
+        items = w.findExpressions('Stored Expression Number One')
+        self.assertEqual(len(items), 1)
+        exp = items[0]
         self.assertEqual(exp.getExpressionText(), '"field_two" = 456')
 
         # Test removal
