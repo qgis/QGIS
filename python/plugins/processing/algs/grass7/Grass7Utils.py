@@ -165,8 +165,8 @@ class Grass7Utils:
                 ]
         else:
             cmdList = [
-                "grass76", "grass74", "grass72", "grass70", "grass",
-                "grass76.sh", "grass74.sh", "grass72.sh", "grass70.sh", "grass.sh"
+                "grass78", "grass76", "grass74", "grass72", "grass70", "grass",
+                "grass78.sh", "grass76.sh", "grass74.sh", "grass72.sh", "grass70.sh", "grass.sh"
             ]
 
         # For MS-Windows there is a difference between GRASS Path and GRASS binary
@@ -224,13 +224,13 @@ class Grass7Utils:
                 else:
                     testfolder = os.path.join(str(QgsApplication.prefixPath()), 'grass')
                     if os.path.isdir(testfolder):
-                        grassfolders = sorted([f for f in os.listdir(testfolder) if f.startswith("grass-7.") and os.path.isdir(os.path.join(testfolder, f))], reverse=True, key=lambda x: [int(v) for v in x[len("grass-"):].split('.') if v != 'svn'])
+                        grassfolders = sorted([f for f in os.listdir(testfolder) if f.startswith("grass7") and os.path.isdir(os.path.join(testfolder, f))], reverse=True, key=lambda x: [int(v) for v in x[len("grass-"):].split('.') if v != 'svn'])
                         if grassfolders:
                             folder = os.path.join(testfolder, grassfolders[0])
             elif isMac():
                 # For MacOSX, we scan some well-known directories
                 # Start with QGIS bundle
-                for version in ['', '7', '76', '74', '72', '70']:
+                for version in ['', '7', '78', '76', '74', '72', '70']:
                     testfolder = os.path.join(str(QgsApplication.prefixPath()),
                                               'grass{}'.format(version))
                     if os.path.isdir(testfolder):
