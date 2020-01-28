@@ -389,6 +389,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
     int mMaxFeaturesToIndex = -1;
     bool mIsIndexing = false;
+    bool mIsDestroying = false;
     QgsFeatureIds mAddedFeatures;
     QgsFeatureIds mDeletedFeatures;
     QPointer<QgsPointLocatorInitTask> mInitTask;

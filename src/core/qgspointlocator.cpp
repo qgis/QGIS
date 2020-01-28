@@ -549,6 +549,7 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
 QgsPointLocator::~QgsPointLocator()
 {
   // don't delete a locator if there is an indexing task running on it
+  mIsDestroying = true;
   if ( mIsIndexing )
     waitForIndexingFinished();
 
@@ -595,6 +596,9 @@ void QgsPointLocator::onInitTaskFinished()
   // Check that we don't call this method twice, when calling waitForFinished
   // for instance (because of taskCompleted signal)
   if ( !mIsIndexing )
+    return;
+
+  if ( mIsDestroying )
     return;
 
   mIsIndexing = false;
@@ -652,7 +656,8 @@ void QgsPointLocator::waitForIndexingFinished()
 {
   mInitTask->waitForFinished();
 
-  onInitTaskFinished();
+  if ( !mIsDestroying )
+    onInitTaskFinished();
 }
 
 bool QgsPointLocator::hasIndex() const
