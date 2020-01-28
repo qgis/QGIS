@@ -94,7 +94,7 @@ QgsProviderRegistry::QgsProviderRegistry( const QString &pluginPath )
   QString baseDir = appDir.left( bin );
   QString mLibraryDirectory = baseDir + "/lib";
 #endif
-  mLibraryDirectory = pluginPath;
+  mLibraryDirectory.setPath( pluginPath );
   init();
 }
 

@@ -435,7 +435,7 @@ QString QgsFontUtils::translateNamedStyle( const QString &namedStyle )
   QStringList words = namedStyle.split( ' ', QString::SkipEmptyParts );
   for ( int i = 0, n = words.length(); i < n; ++i )
   {
-    words[i] = QCoreApplication::translate( "QFontDatabase", words[i].toUtf8(), nullptr, QCoreApplication::UnicodeUTF8 );
+    words[i] = QCoreApplication::translate( "QFontDatabase", words[i].toLocal8Bit().constData() );
   }
   return words.join( QStringLiteral( " " ) );
 }
