@@ -920,6 +920,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   for ( int row = 0; row < height; row++ )
   {
     int tmpRow = static_cast<int>( std::floor( -1. * ( tmpYMax - y ) / tmpYRes ) );
+    tmpRow = std::min( tmpRow, tmpHeight - 1 );
 
     char *srcRowBlock = tmpBlock + dataSize * tmpRow * tmpWidth;
     char *dstRowBlock = ( char * )data + dataSize * ( top + row ) * pixelWidth;
@@ -935,6 +936,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
     {
       // std::floor() is quite slow! Use just cast to int.
       tmpCol = static_cast<int>( x );
+      tmpCol = std::min( tmpCol, tmpWidth - 1 );
       if ( tmpCol > lastCol )
       {
         src += ( tmpCol - lastCol ) * dataSize;
