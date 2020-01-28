@@ -32,7 +32,7 @@ QString QgsFillNoDataAlgorithm::displayName() const
 
 QStringList QgsFillNoDataAlgorithm::tags() const
 {
-  return QObject::tr( "noData,NoData,data,cells,fill,set" ).split( ',' );
+  return QObject::tr( "data,cells,fill,set" ).split( ',' );
 }
 
 QString QgsFillNoDataAlgorithm::group() const
@@ -49,15 +49,16 @@ void QgsFillNoDataAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QStringLiteral( "Raster input" ) ) );
   addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band Number" ), 1, QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FILL_VALUE" ), QObject::tr( "Fill value" ), QgsProcessingParameterNumber::Double, 1, false, 1, 10000000 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FILL_VALUE" ), QObject::tr( "Fill value" ), QgsProcessingParameterNumber::Double, 1, false ) );
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster" ) ) );
 }
 
 QString QgsFillNoDataAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm resets the NoData values in the input raster "
-                      "to a chosen value. This value can be set by the user using the Fill value parameter. "
-                      "The algorithm respects the input raster data type (eg. a fill value with commas gets truncated "
+                      "to a chosen value, resulting in a raster dataset with no NoData pixels. "
+                      "This value can be set by the user using the Fill value parameter. "
+                      "The algorithm respects the input raster data type (eg. a floating point fill value will be truncated "
                       "when applied to an integer raster)." );
 }
 
@@ -94,7 +95,7 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
 {
   //test if input dataset has NoData
   if ( !mInputRaster->dataProvider()->sourceHasNoDataValue( mBand ) )
-    throw QgsProcessingException( QObject::tr( "Input raster has no NoData values. There exist no NoData cells to fill." ) );
+    feedback->reportError( QObject::tr( "Input raster has no NoData values. There exist no NoData cells to fill." ), false );
 
   //prepare output dataset
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
@@ -131,8 +132,13 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+
     if ( !filledRasterBlock->hasNoDataValue() )
+    {
+      mDestinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop );
       continue;
+    }
+
     for ( int row = 0; row < iterRows; row++ )
     {
       if ( feedback && feedback->isCanceled() )
