@@ -123,6 +123,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtExpressionString->setFoldingVisible( false );
 
   updateFunctionTree();
+  loadUserExpressions();
 
   if ( QgsPythonRunner::isValid() )
   {
