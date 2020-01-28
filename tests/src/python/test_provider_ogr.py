@@ -651,7 +651,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         dp = vl.dataProvider()
         #FIXME: should it be None?
         self.assertTrue(dp.defaultValue(0).isNull())
-        self.assertTrue(dp.defaultValue(1).isNull())
+        self.assertIsNone(dp.defaultValue(1))
         #FIXME: This fails because there is no backend-side evaluation in this provider
         #self.assertTrue(dp.defaultValue(2).startswith(now.strftime('%Y-%m-%d')))
         self.assertTrue(dp.defaultValue(3).startswith(now.strftime('%Y-%m-%d')))
