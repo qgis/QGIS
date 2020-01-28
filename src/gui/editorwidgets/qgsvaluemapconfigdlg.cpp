@@ -33,7 +33,7 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
 
   tableWidget->insertRow( 0 );
 
-  tableWidget->horizontalHeader()->setClickable( true );
+  tableWidget->horizontalHeader()->setSectionsClickable( true );
   tableWidget->setSortingEnabled( true );
 
   connect( addNullButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::addNullButtonPushed );

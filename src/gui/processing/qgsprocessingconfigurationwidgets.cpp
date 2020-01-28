@@ -42,7 +42,7 @@ QgsFilterAlgorithmConfigurationWidget::QgsFilterAlgorithmConfigurationWidget( QW
   mOutputExpressionWidget->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "Output Name" ) ) );
   mOutputExpressionWidget->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "Filter Expression" ) ) );
   mOutputExpressionWidget->setHorizontalHeaderItem( 2, new QTableWidgetItem( tr( "Final Output" ) ) );
-  mOutputExpressionWidget->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
+  mOutputExpressionWidget->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::Stretch );
   QGridLayout *layout = new QGridLayout();
   setLayout( layout );
 

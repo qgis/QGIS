@@ -161,9 +161,9 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
   }
   else if ( mTableWidget )
   {
-    mTableWidget->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
+    mTableWidget->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
     mTableWidget->horizontalHeader()->setVisible( false );
-    mTableWidget->verticalHeader()->setResizeMode( QHeaderView::Stretch );
+    mTableWidget->verticalHeader()->setSectionResizeMode( QHeaderView::Stretch );
     mTableWidget->verticalHeader()->setVisible( false );
     mTableWidget->setShowGrid( false );
     mTableWidget->setEditTriggers( QAbstractItemView::NoEditTriggers );
