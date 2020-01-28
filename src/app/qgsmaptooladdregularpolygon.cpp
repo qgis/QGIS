@@ -48,7 +48,6 @@ void QgsMapToolAddRegularPolygon::createNumberSidesSpinBox()
   mNumberSidesSpinBox->setPrefix( tr( "Number of sides: " ) );
   mNumberSidesSpinBox->setValue( mNumberSides );
   QgisApp::instance()->addUserInputWidget( mNumberSidesSpinBox.get() );
-  mNumberSidesSpinBox->setFocus( Qt::TabFocusReason );
 }
 
 void QgsMapToolAddRegularPolygon::deleteNumberSidesSpinBox()
