@@ -93,7 +93,7 @@ void QgsMapThemeCollection::createThemeFromCurrentState( QgsLayerTreeGroup *pare
     else if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-      if ( node->itemVisibilityChecked() != Qt::Unchecked )
+      if ( node->itemVisibilityChecked() != Qt::Unchecked && nodeLayer->layer() )
         rec.mLayerRecords << createThemeLayerRecord( nodeLayer, model );
     }
   }
