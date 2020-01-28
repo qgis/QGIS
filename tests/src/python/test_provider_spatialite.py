@@ -1178,7 +1178,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         # simple table with primary key
         sql = """
         CREATE TABLE test_table_default_values (
-            id integer primary key autoincrement,
+            `id` integer primary key autoincrement,
             comment text,
             created_at_01 text DEFAULT (datetime('now','localtime')),
             created_at_02 text DEFAULT CURRENT_TIMESTAMP,
@@ -1207,7 +1207,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(dp.defaultValue(4), 123)
         self.assertEqual(dp.defaultValue(5), 'My default')
 
-        self.assertEqual(dp.defaultValueClause(0), '')
+        self.assertEqual(dp.defaultValueClause(0), 'Autogenerate')
         self.assertEqual(dp.defaultValueClause(1), '')
         self.assertEqual(dp.defaultValueClause(2), "datetime('now','localtime')")
         self.assertEqual(dp.defaultValueClause(3), "CURRENT_TIMESTAMP")

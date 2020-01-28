@@ -1449,12 +1449,18 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer(self.dbconn + ' sslmode=disable  table="public"."test_table_default_values" sql=', 'test', 'postgres')
         self.assertTrue(vl.isValid())
 
+        dp = vl.dataProvider()
+
+        # Clean the table
+        dp.deleteFeatures(dp.allFeatureIds())
+
         # Save it for the test
         now = datetime.now()
 
         # Test default values
-        dp = vl.dataProvider()
         dp.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, 1)
+        # FIXME: spatialite provider (and OGR) return a NULL here and the following passes
+        # self.assertTrue(dp.defaultValue(0).isNull())
         self.assertIsNotNone(dp.defaultValue(0))
         self.assertIsNone(dp.defaultValue(1))
         self.assertTrue(dp.defaultValue(2).startswith(now.strftime('%Y-%m-%d')))
