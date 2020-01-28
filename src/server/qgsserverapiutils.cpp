@@ -623,7 +623,7 @@ QString QgsServerApiUtils::appendMapParameter( const QString &path, const QUrl &
 {
   QList<QPair<QString, QString> > qi;
   QString result { path };
-  const auto constItems { requestUrl.queryItems( ) };
+  const auto constItems { QUrlQuery( requestUrl ).queryItems() };
   for ( const auto &i : constItems )
   {
     if ( i.first.compare( QStringLiteral( "MAP" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )

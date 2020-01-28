@@ -1283,8 +1283,10 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
 
       // Url without offset and limit
       QUrl cleanedUrl { url };
-      cleanedUrl.removeQueryItem( QStringLiteral( "limit" ) );
-      cleanedUrl.removeQueryItem( QStringLiteral( "offset" ) );
+      QUrlQuery query( cleanedUrl );
+      query.removeQueryItem( QStringLiteral( "limit" ) );
+      query.removeQueryItem( QStringLiteral( "offset" ) );
+      cleanedUrl.setQuery( query );
 
       QString cleanedUrlAsString { cleanedUrl.toString() };
 
