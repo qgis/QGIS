@@ -40,6 +40,7 @@ class TestQgsMapToolCircularString : public QObject
 
     void testAddCircularStringCurvePoint();
     void testAddCircularStringRadius();
+    void testAddCircularStringCurvePointWithDeletedVertex();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -104,6 +105,34 @@ void TestQgsMapToolCircularString::testAddCircularStringCurvePoint()
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
 }
 
+void TestQgsMapToolCircularString::testAddCircularStringCurvePointWithDeletedVertex()
+{
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+  mLayer->startEditing();
+
+  QgsMapToolCircularStringCurvePoint mapTool( mParentTool, mCanvas );
+  mCanvas->setMapTool( &mapTool );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.keyClick( Qt::Key_Backspace );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 0, 2, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.keyClick( Qt::Key_Backspace );
+  utils.mouseClick( 0, 2, Qt::RightButton );
+  QgsFeatureId newFid = utils.newFeatureId();
+
+  QCOMPARE( mLayer->featureCount(), ( long )1 );
+  QgsFeature f = mLayer->getFeature( newFid );
+
+  QString wkt = "CompoundCurveZ (CircularStringZ (0 0 333, 1 1 333, 0 2 333))";
+  QCOMPARE( f.geometry().asWkt(), wkt );
+
+  mLayer->rollBack();
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+}
 void TestQgsMapToolCircularString::testAddCircularStringRadius()
 {
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 111 );
