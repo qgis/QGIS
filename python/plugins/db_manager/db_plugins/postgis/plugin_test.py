@@ -93,7 +93,7 @@ class TestDBManagerPostgisPlugin(unittest.TestCase):
 
             # We need to make sure a database is created with at
             # least one raster table !
-            self.assertTrue(raster_tables_count > 1)
+            self.assertGreaterEqual(raster_tables_count, 1)
 
         obj = QObject() # needs to be kept alive
 
