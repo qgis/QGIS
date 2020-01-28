@@ -72,6 +72,28 @@ void QgsMapToolAddRegularPolygon::keyPressEvent( QKeyEvent *e )
     if ( mParentTool )
       mParentTool->keyPressEvent( e );
   }
+
+  if ( e && e->key() == Qt::Key_Backspace )
+  {
+    if ( mPoints.size() == 1 )
+    {
+
+      if ( mTempRubberBand )
+      {
+        delete mTempRubberBand;
+        mTempRubberBand = nullptr;
+      }
+
+      mPoints.clear();
+    }
+    else if ( mPoints.size() > 1 )
+    {
+      mPoints.removeLast();
+
+    }
+    if ( mParentTool )
+      mParentTool->keyPressEvent( e );
+  }
 }
 
 void QgsMapToolAddRegularPolygon::keyReleaseEvent( QKeyEvent *e )
