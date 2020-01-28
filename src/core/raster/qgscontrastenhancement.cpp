@@ -105,11 +105,11 @@ bool QgsContrastEnhancement::generateLookupTable()
   if ( !mLookupTable )
     return false;
 
-  QgsDebugMsg( QStringLiteral( "building lookup table" ) );
-  QgsDebugMsg( "***MinimumValue : " + QString::number( mMinimumValue ) );
-  QgsDebugMsg( "***MaximumValue : " + QString::number( mMaximumValue ) );
-  QgsDebugMsg( "***mLookupTableOffset : " + QString::number( mLookupTableOffset ) );
-  QgsDebugMsg( "***mRasterDataTypeRange : " + QString::number( mRasterDataTypeRange ) );
+  QgsDebugMsgLevel( QStringLiteral( "building lookup table" ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "***MinimumValue : %1" ).arg( mMinimumValue ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "***MaximumValue : %1" ).arg( mMaximumValue ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "***mLookupTableOffset : %1" ).arg( mLookupTableOffset ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "***mRasterDataTypeRange : %1" ).arg( mRasterDataTypeRange ), 4 );
 
   for ( int myIterator = 0; myIterator <= mRasterDataTypeRange; myIterator++ )
   {
