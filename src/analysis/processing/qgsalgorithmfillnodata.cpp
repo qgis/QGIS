@@ -111,8 +111,9 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
     throw QgsProcessingException( QObject::tr( "Could not create raster output %1: %2" ).arg( outputFile, provider->error().message( QgsErrorMessage::Text ) ) );
 
   //prepare output provider
-  mDestinationRasterProvider = provider.get();
-  mDestinationRasterProvider->setEditable( true );
+  QgsRasterDataProvider *destinationRasterProvider;
+  destinationRasterProvider = provider.get();
+  destinationRasterProvider->setEditable( true );
 
   int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
   int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
@@ -134,7 +135,7 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
 
     if ( !filledRasterBlock->hasNoDataValue() )
     {
-      mDestinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop );
+      destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop );
       continue;
     }
 
@@ -148,9 +149,9 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
           filledRasterBlock->setValue( row, column, mFillValue );
       }
     }
-    mDestinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop );
+    destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop );
   }
-  mDestinationRasterProvider->setEditable( false );
+  destinationRasterProvider->setEditable( false );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
