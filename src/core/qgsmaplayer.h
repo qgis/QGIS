@@ -592,20 +592,20 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see customProperty()
      * \since QGIS 3.0
      */
-    QStringList customPropertyKeys() const;
+    Q_INVOKABLE QStringList customPropertyKeys() const;
 
     /**
      * Set a custom property for layer. Properties are stored in a map and saved in project file.
      * \see customProperty()
      * \see removeCustomProperty()
      */
-    void setCustomProperty( const QString &key, const QVariant &value );
+    Q_INVOKABLE void setCustomProperty( const QString &key, const QVariant &value );
 
     /**
      * Read a custom property from layer. Properties are stored in a map and saved in project file.
      * \see setCustomProperty()
     */
-    QVariant customProperty( const QString &value, const QVariant &defaultValue = QVariant() ) const;
+    Q_INVOKABLE QVariant customProperty( const QString &value, const QVariant &defaultValue = QVariant() ) const;
 
     /**
      * Set custom properties for layer. Current properties are dropped.
