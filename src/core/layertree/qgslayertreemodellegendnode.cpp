@@ -1156,6 +1156,7 @@ void QgsDataDefinedSizeLegendNode::cacheImage() const
     if ( !context )
     {
       context.reset( new QgsRenderContext );
+      Q_ASSERT( context ); // to make cppcheck happy
       context->setScaleFactor( 96 / 25.4 );
     }
     mImage = mSettings->collapsedLegendImage( *context );

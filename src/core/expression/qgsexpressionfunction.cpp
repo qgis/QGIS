@@ -743,8 +743,10 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
     }
   }
 
+  if ( !context->hasFeature() )
+    return QVariant();
+  QgsFeature f = context->feature();
 
-  FEAT_FROM_CONTEXT( context, f )
   parameters.filter = relation.getRelatedFeaturesFilter( f );
 
   QString cacheKey = QStringLiteral( "relagg:%1:%2:%3:%4:%5" ).arg( vl->id(),
@@ -752,7 +754,7 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
                      subExpression,
                      parameters.filter,
                      orderBy );
-  if ( context && context->hasCachedValue( cacheKey ) )
+  if ( context->hasCachedValue( cacheKey ) )
     return context->cachedValue( cacheKey );
 
   QVariant result;
@@ -769,8 +771,7 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
   }
 
   // cache value
-  if ( context )
-    context->setCachedValue( cacheKey, result );
+  context->setCachedValue( cacheKey, result );
   return result;
 }
 
@@ -854,7 +855,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
                      subExpression,
                      parameters.filter,
                      orderBy );
-  if ( context && context->hasCachedValue( cacheKey ) )
+  if ( context->hasCachedValue( cacheKey ) )
     return context->cachedValue( cacheKey );
 
   QVariant result;
@@ -870,8 +871,7 @@ static QVariant fcnAggregateGeneric( QgsAggregateCalculator::Aggregate aggregate
   }
 
   // cache value
-  if ( context )
-    context->setCachedValue( cacheKey, result );
+  context->setCachedValue( cacheKey, result );
   return result;
 }
 
