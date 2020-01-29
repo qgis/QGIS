@@ -1291,13 +1291,13 @@ namespace QgsWms
         if ( ! mContext.parameters().queryLayersNickname().contains( queryLayer ) )
         {
           // Find which group this layer belongs to
-          const auto &constNicks { mContext.parameters().queryLayersNickname() };
-          for ( const auto &ql : constNicks )
+          const QStringList constNicks { mContext.parameters().queryLayersNickname() };
+          for ( const QString &ql : constNicks )
           {
             if ( mContext.layerGroups().contains( ql ) )
             {
-              const auto &constLayers { mContext.layerGroups()[ql] };
-              for ( const auto &ml : constLayers )
+              const QList<QgsMapLayer *> constLayers { mContext.layerGroups()[ql] };
+              for ( const QgsMapLayer *ml : constLayers )
               {
                 if ( ( ! ml->shortName().isEmpty() &&  ml->shortName() == queryLayer ) || ( ml->name() == queryLayer ) )
                 {
