@@ -176,7 +176,7 @@ int main( int argc, char *argv[] )
     }
   }
 
-  // Disable parallel rendering because if its interal loop
+  // Disable parallel rendering because if its internal loop
   qputenv( "QGIS_SERVER_PARALLEL_RENDERING", "0" );
 
   // Create server
