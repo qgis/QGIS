@@ -194,7 +194,8 @@ class TestSelectiveMasking(unittest.TestCase):
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
 
-        self.assertTrue(self.polys_layer.labeling().settings().format().mask().enabled())
+        format = self.polys_layer.labeling().settings().format()
+        self.assertTrue(format.mask().enabled())
 
         self.check_renderings(self.map_settings, "label_mask")
 
@@ -216,7 +217,8 @@ class TestSelectiveMasking(unittest.TestCase):
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
 
-        self.assertTrue(self.polys_layer.labeling().settings().format().mask().enabled())
+        format = self.polys_layer.labeling().settings().format()
+        self.assertTrue(format.mask().enabled())
 
         # modify labeling settings of the lines layer
         label_settings = self.lines_with_labels.labeling().settings()
@@ -254,7 +256,8 @@ class TestSelectiveMasking(unittest.TestCase):
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
 
-        self.assertTrue(self.polys_layer.labeling().settings().format().mask().enabled())
+        format = self.polys_layer.labeling().settings().format()
+        self.assertTrue(format.mask().enabled())
 
         # modify labeling settings of the lines layer
         label_settings = self.lines_with_labels.labeling().settings()
@@ -297,7 +300,8 @@ class TestSelectiveMasking(unittest.TestCase):
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
 
-        self.assertTrue(self.polys_layer.labeling().settings().format().mask().enabled())
+        format = self.polys_layer.labeling().settings().format()
+        self.assertTrue(format.mask().enabled())
 
         self.check_renderings(self.map_settings, "label_mask_subsymbol")
 
@@ -401,7 +405,8 @@ class TestSelectiveMasking(unittest.TestCase):
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
 
-        self.assertTrue(self.polys_layer.labeling().settings().format().mask().enabled())
+        format = self.polys_layer.labeling().settings().format()
+        self.assertTrue(format.mask().enabled())
 
         # enable symbol levels
         self.lines_layer.renderer().setUsingSymbolLevels(True)
@@ -624,7 +629,8 @@ class TestSelectiveMasking(unittest.TestCase):
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
 
-        self.assertTrue(self.polys_layer.labeling().settings().format().mask().enabled())
+        format = self.polys_layer.labeling().settings().format()
+        self.assertTrue(format.mask().enabled())
 
         self.check_renderings(self.map_settings, "label_mask_with_effect")
 
