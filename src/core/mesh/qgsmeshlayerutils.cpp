@@ -121,6 +121,75 @@ double QgsMeshLayerUtils::interpolateFromFacesData( const QgsPointXY &p1, const 
   return val;
 }
 
+<<<<<<< HEAD
+=======
+QgsVector QgsMeshLayerUtils::interpolateVectorFromFacesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
+    QgsVector vect, const QgsPointXY &pt )
+{
+  double lam1, lam2, lam3;
+  if ( !E3T_physicalToBarycentric( p1, p2, p3, pt, lam1, lam2, lam3 ) )
+    return QgsVector( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() );
+
+  return vect;
+}
+
+
+QVector<double> QgsMeshLayerUtils::interpolateFromFacesData(
+  QVector<double> valuesOnFaces,
+  const QgsMesh *nativeMesh,
+  const QgsTriangularMesh *triangularMesh,
+  QgsMeshDataBlock *active,
+  QgsMeshRendererScalarSettings::DataInterpolationMethod method )
+{
+  Q_UNUSED( triangularMesh )
+  Q_UNUSED( method )
+
+  assert( nativeMesh );
+  assert( method == QgsMeshRendererScalarSettings::NeighbourAverage );
+
+  // assuming that native vertex count = triangular vertex count
+  assert( nativeMesh->vertices.size() == triangularMesh->vertices().size() );
+  int vertexCount = triangularMesh->vertices().size();
+
+  QVector<double> res( vertexCount, 0.0 );
+  // for face datasets do simple average of the valid values of all faces that contains this vertex
+  QVector<int> count( vertexCount, 0 );
+
+  for ( int i = 0; i < nativeMesh->faces.size(); ++i )
+  {
+    if ( !active || active->active( i ) )
+    {
+      double val = valuesOnFaces[ i ];
+      if ( !std::isnan( val ) )
+      {
+        // assign for all vertices
+        const QgsMeshFace &face = nativeMesh->faces.at( i );
+        for ( int j = 0; j < face.size(); ++j )
+        {
+          int vertexIndex = face[j];
+          res[vertexIndex] += val;
+          count[vertexIndex] += 1;
+        }
+      }
+    }
+  }
+
+  for ( int i = 0; i < vertexCount; ++i )
+  {
+    if ( count.at( i ) > 0 )
+    {
+      res[i] = res[i] / double( count.at( i ) );
+    }
+    else
+    {
+      res[i] = std::numeric_limits<double>::quiet_NaN();
+    }
+  }
+
+  return res;
+}
+
+>>>>>>> 4fe056bf66... Fix some more const auto& = usage where temporaries are stored
 QgsRectangle QgsMeshLayerUtils::triangleBoundingBox( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 )
 {
   // p1

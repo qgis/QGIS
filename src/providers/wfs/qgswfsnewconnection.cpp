@@ -100,8 +100,13 @@ void QgsWFSNewConnection::capabilitiesReplyFinished()
     return;
   }
 
+<<<<<<< HEAD
   const auto &caps = mCapabilities->capabilities();
   int versionIdx = 0;
+=======
+  const QgsWfsCapabilities::Capabilities &caps = mCapabilities->capabilities();
+  int versionIdx = WFS_VERSION_MAX;
+>>>>>>> 4fe056bf66... Fix some more const auto& = usage where temporaries are stored
   wfsPageSizeLineEdit()->clear();
   if ( caps.version.startsWith( QLatin1String( "1.0" ) ) )
   {

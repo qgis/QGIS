@@ -442,6 +442,37 @@ QString QgsMeshCalculatorDialog::addSuffix( const QString fileName ) const
   return fileName + allowedSuffix;
 }
 
+<<<<<<< HEAD
+=======
+void QgsMeshCalculatorDialog::getMeshDrivers()
+{
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+  if ( providerMetadata )
+  {
+    const QList<QgsMeshDriverMetadata> allDrivers = providerMetadata->meshDriversMetadata();
+    for ( const QgsMeshDriverMetadata &meta : allDrivers )
+    {
+      if ( meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets ) ||
+           meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets ) )
+        mMeshDrivers[meta.name()] = meta;
+    }
+  }
+}
+
+void QgsMeshCalculatorDialog::populateDriversComboBox( )
+{
+
+  whileBlocking( mOutputFormatComboBox )->clear();
+
+  const QList< QgsMeshDriverMetadata > vals = mMeshDrivers.values();
+  for ( const QgsMeshDriverMetadata &meta : vals )
+  {
+    whileBlocking( mOutputFormatComboBox )->addItem( meta.description(), meta.name() );
+  }
+  mOutputFormatComboBox->setCurrentIndex( 0 );
+}
+
+>>>>>>> 4fe056bf66... Fix some more const auto& = usage where temporaries are stored
 void QgsMeshCalculatorDialog::useFullLayerExtent()
 {
   QgsMeshLayer *layer = meshLayer();

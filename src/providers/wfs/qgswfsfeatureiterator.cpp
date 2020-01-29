@@ -270,6 +270,11 @@ QUrl QgsWFSFeatureDownloader::buildURL( qint64 startIndex, int maxFeatures, bool
     getFeatureUrl.addQueryItem( QStringLiteral( "SRSNAME" ), srsName );
   }
 
+<<<<<<< HEAD
+=======
+  const QgsRectangle &rect = mShared->currentRect();
+
+>>>>>>> 4fe056bf66... Fix some more const auto& = usage where temporaries are stored
   // In case we must issue a BBOX and we have a filter, we must combine
   // both as a single filter, as both BBOX and FILTER aren't supported together
   if ( !mShared->mRect.isNull() && !mShared->mWFSFilter.isEmpty() )
