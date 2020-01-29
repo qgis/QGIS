@@ -16,7 +16,7 @@
 #include "qgsmaprendererjob.h"
 
 #include <QPainter>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QTimer>
 #include <QtConcurrentMap>
 
@@ -380,7 +380,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
       }
     }
 
-    QTime layerTime;
+    QElapsedTimer layerTime;
     layerTime.start();
     job.renderer = ml->createMapRenderer( job.context );
     job.renderingTime = layerTime.elapsed(); // include job preparation time in layer rendering time
@@ -910,7 +910,7 @@ void QgsMapRendererJob::drawLabeling( QgsRenderContext &renderContext, QgsLabeli
 {
   QgsDebugMsgLevel( QStringLiteral( "Draw labeling start" ), 5 );
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   // Reset the composition mode before rendering the labels

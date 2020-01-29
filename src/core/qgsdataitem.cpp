@@ -19,6 +19,7 @@
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
 #include <QDateTime>
+#include <QElapsedTimer>
 #include <QDir>
 #include <QFileInfo>
 #include <QMenu>
@@ -280,7 +281,7 @@ void QgsDataItem::populate( bool foreground )
 QVector<QgsDataItem *> QgsDataItem::runCreateChildren( QgsDataItem *item )
 {
   QgsDebugMsgLevel( "path = " + item->path(), 2 );
-  QTime time;
+  QElapsedTimer time;
   time.start();
   QVector <QgsDataItem *> children = item->createChildren();
   QgsDebugMsgLevel( QStringLiteral( "%1 children created in %2 ms" ).arg( children.size() ).arg( time.elapsed() ), 3 );

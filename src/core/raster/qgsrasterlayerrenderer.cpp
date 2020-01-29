@@ -48,7 +48,7 @@ void QgsRasterLayerRendererFeedback::onNewData()
   // TODO: update only the area that got new data
 
   QgsDebugMsgLevel( QStringLiteral( "new raster preview! %1" ).arg( mLastPreview.msecsTo( QTime::currentTime() ) ), 3 );
-  QTime t;
+  QElapsedTimer t;
   t.start();
   QgsRasterBlockFeedback feedback;
   feedback.setPreviewOnly( true );
@@ -240,7 +240,7 @@ bool QgsRasterLayerRenderer::render()
 
   //R->draw( mPainter, mRasterViewPort, &mMapToPixel );
 
-  QTime time;
+  QElapsedTimer time;
   time.start();
   //
   //

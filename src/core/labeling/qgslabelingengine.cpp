@@ -340,7 +340,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
 
   mPal->registerCancellationCallback( &_palIsCanceled, reinterpret_cast< void * >( &context ) );
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   // do the labeling itself
@@ -400,7 +400,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
 
 void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &layerId )
 {
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();

@@ -377,7 +377,7 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
   if ( !layersToIndex.isEmpty() )
   {
     // build indexes
-    QTime t;
+    QElapsedTimer t;
     int i = 0;
 
     if ( !relaxed )

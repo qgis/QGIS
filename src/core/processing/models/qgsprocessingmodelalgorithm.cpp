@@ -246,7 +246,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       toExecute.insert( childIt->childId() );
   }
 
-  QTime totalTime;
+  QElapsedTimer totalTime;
   totalTime.start();
 
   QgsProcessingMultiStepFeedback modelFeedback( toExecute.count(), feedback );
@@ -310,7 +310,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( params.join( QStringLiteral( ", " ) ) ) );
       }
 
-      QTime childTime;
+      QElapsedTimer childTime;
       childTime.start();
 
       bool ok = false;

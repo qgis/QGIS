@@ -687,7 +687,7 @@ bool QgsPointLocator::prepare( bool relaxed )
 
 bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 {
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   QgsDebugMsg( QStringLiteral( "RebuildIndex start : %1" ).arg( mSource->id() ) );

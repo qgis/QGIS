@@ -313,7 +313,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
   protected:
 
     QgsMapSettings mSettings;
-    QTime mRenderingStart;
+    QElapsedTimer mRenderingStart;
     Errors mErrors;
 
     QgsMapRendererCache *mCache = nullptr;
