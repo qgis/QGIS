@@ -110,9 +110,9 @@ bool QgsConditionalLayerStyles::readXml( const QDomNode &node, const QgsReadWrit
     QString fieldName = fieldel.attribute( QStringLiteral( "fieldname" ) );
     QDomNodeList stylenodelist = fieldel.toElement().elementsByTagName( QStringLiteral( "style" ) );
     styles.reserve( stylenodelist.count() );
-    for ( int i = 0; i < stylenodelist.count(); i++ )
+    for ( int j = 0; j < stylenodelist.count(); j++ )
     {
-      QDomElement styleElm = stylenodelist.at( i ).toElement();
+      QDomElement styleElm = stylenodelist.at( j ).toElement();
       QgsConditionalStyle style = QgsConditionalStyle();
       style.readXml( styleElm, context );
       styles.append( style );

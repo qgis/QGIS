@@ -180,7 +180,6 @@ bool QgsFontUtils::updateFontViaStyle( QFont &f, const QString &fontstyle, bool 
     // fallback to first style found that works
     if ( !foundmatch )
     {
-      const auto constFamily = fontDB.styles( f.family() );
       for ( const QString &style : constFamily )
       {
         styledfont = fontDB.font( f.family(), style, defaultSize );

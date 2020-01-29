@@ -285,10 +285,10 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
         if ( !qgsDoubleNear( contrastEnhancement()->minimumValue(), myRasterBandStats.minimumValue ) )
         {
           // look for VendorOption tag to look for that with minValue attribute
-          QDomNodeList elements = contrastEnhancementElem.elementsByTagName( QStringLiteral( "sld:VendorOption" ) );
-          for ( int i = 0; i < elements.size(); ++i )
+          const QDomNodeList vendorOptions = contrastEnhancementElem.elementsByTagName( QStringLiteral( "sld:VendorOption" ) );
+          for ( int i = 0; i < vendorOptions.size(); ++i )
           {
-            QDomElement vendorOption = elements.at( i ).toElement();
+            QDomElement vendorOption = vendorOptions.at( i ).toElement();
             if ( vendorOption.attribute( QStringLiteral( "name" ) ) != QStringLiteral( "minValue" ) )
               continue;
 

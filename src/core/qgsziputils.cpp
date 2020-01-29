@@ -138,8 +138,8 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
   }
 
   int rc = 0;
-  const QByteArray fileNamePtr = zipFilename.toUtf8();
-  struct zip *z = zip_open( fileNamePtr.constData(), ZIP_CREATE, &rc );
+  const QByteArray zipFileNamePtr = zipFilename.toUtf8();
+  struct zip *z = zip_open( zipFileNamePtr.constData(), ZIP_CREATE, &rc );
 
   if ( rc == ZIP_ER_OK && z )
   {
@@ -159,9 +159,9 @@ bool QgsZipUtils::zip( const QString &zipFilename, const QStringList &files )
       {
         const QByteArray fileInfoPtr = fileInfo.fileName().toUtf8();
 #if LIBZIP_VERSION_MAJOR < 1
-        int rc = ( int ) zip_add( z, fileInfoPtr.constData(), src );
+        rc = ( int ) zip_add( z, fileInfoPtr.constData(), src );
 #else
-        int rc = ( int ) zip_file_add( z, fileInfoPtr.constData(), src, 0 );
+        rc = ( int ) zip_file_add( z, fileInfoPtr.constData(), src, 0 );
 #endif
         if ( rc == -1 )
         {

@@ -1064,19 +1064,22 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
     // also with parameters containing spaces (e.g. +nadgrids)
     // make sure result is trimmed (#5598)
     QStringList myParams;
-    const auto constSplit = myProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts );
-    for ( const QString &param : constSplit )
+    const QRegExp regExp( "\\s+(?=\\+)" );
     {
-      QString arg = QStringLiteral( "' '||parameters||' ' LIKE %1" ).arg( QgsSqliteUtils::quotedString( QStringLiteral( "% %1 %" ).arg( param.trimmed() ) ) );
-      if ( param.startsWith( QLatin1String( "+datum=" ) ) )
+      const auto constSplit = myProj4String.split( regExp, QString::SkipEmptyParts );
+      for ( const QString &param : constSplit )
       {
-        datum = arg;
-      }
-      else
-      {
-        sql += delim + arg;
-        delim = QStringLiteral( " AND " );
-        myParams << param.trimmed();
+        QString arg = QStringLiteral( "' '||parameters||' ' LIKE %1" ).arg( QgsSqliteUtils::quotedString( QStringLiteral( "% %1 %" ).arg( param.trimmed() ) ) );
+        if ( param.startsWith( QLatin1String( "+datum=" ) ) )
+        {
+          datum = arg;
+        }
+        else
+        {
+          sql += delim + arg;
+          delim = QStringLiteral( " AND " );
+          myParams << param.trimmed();
+        }
       }
     }
 
@@ -1095,7 +1098,7 @@ bool QgsCoordinateReferenceSystem::createFromProj( const QString &projString )
     {
       // Bugfix 8487 : test param lists are equal, except for +datum
       QStringList foundParams;
-      const auto constSplit = myRecord["parameters"].split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts );
+      const auto constSplit = myRecord["parameters"].split( regExp, QString::SkipEmptyParts );
       for ( const QString &param : constSplit )
       {
         if ( !param.startsWith( QLatin1String( "+datum=" ) ) )
@@ -3212,64 +3215,67 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
   };
 
   QString update = QStringLiteral( "UPDATE tbl_datum_transform SET " );
-  QString insert, values;
-
-  int n = CSLCount( fieldnames );
-
+  QString insert;
+  const int n = CSLCount( fieldnames );
   int idxid = -1, idxrx = -1, idxry = -1, idxrz = -1, idxmcode = -1;
-  for ( unsigned int i = 0; i < sizeof( map ) / sizeof( *map ); i++ )
+
   {
-    bool last = i == sizeof( map ) / sizeof( *map ) - 1;
+    QString values;
 
-    map[i].idx = CSLFindString( fieldnames, map[i].src );
-    if ( map[i].idx < 0 )
+    for ( unsigned int i = 0; i < sizeof( map ) / sizeof( *map ); i++ )
     {
-      qWarning( "field %s not found", map[i].src );
-      CSLDestroy( fieldnames );
-      fclose( fp );
-      return false;
+      bool last = i == sizeof( map ) / sizeof( *map ) - 1;
+
+      map[i].idx = CSLFindString( fieldnames, map[i].src );
+      if ( map[i].idx < 0 )
+      {
+        qWarning( "field %s not found", map[i].src );
+        CSLDestroy( fieldnames );
+        fclose( fp );
+        return false;
+      }
+
+      if ( strcmp( map[i].src, "COORD_OP_CODE" ) == 0 )
+        idxid = i;
+      if ( strcmp( map[i].src, "RX" ) == 0 )
+        idxrx = i;
+      if ( strcmp( map[i].src, "RY" ) == 0 )
+        idxry = i;
+      if ( strcmp( map[i].src, "RZ" ) == 0 )
+        idxrz = i;
+      if ( strcmp( map[i].src, "COORD_OP_METHOD_CODE" ) == 0 )
+        idxmcode = i;
+
+      if ( i > 0 )
+      {
+        insert += ',';
+        values += ',';
+
+        if ( last )
+        {
+          update += QLatin1String( " WHERE " );
+        }
+        else
+        {
+          update += ',';
+        }
+      }
+
+      update += QStringLiteral( "%1=%%2" ).arg( map[i].dst ).arg( i + 1 );
+
+      insert += map[i].dst;
+      values += QStringLiteral( "%%1" ).arg( i + 1 );
     }
 
-    if ( strcmp( map[i].src, "COORD_OP_CODE" ) == 0 )
-      idxid = i;
-    if ( strcmp( map[i].src, "RX" ) == 0 )
-      idxrx = i;
-    if ( strcmp( map[i].src, "RY" ) == 0 )
-      idxry = i;
-    if ( strcmp( map[i].src, "RZ" ) == 0 )
-      idxrz = i;
-    if ( strcmp( map[i].src, "COORD_OP_METHOD_CODE" ) == 0 )
-      idxmcode = i;
+    insert = "INSERT INTO tbl_datum_transform(" + insert + ") VALUES (" + values + ')';
 
-    if ( i > 0 )
-    {
-      insert += ',';
-      values += ',';
-
-      if ( last )
-      {
-        update += QLatin1String( " WHERE " );
-      }
-      else
-      {
-        update += ',';
-      }
-    }
-
-    update += QStringLiteral( "%1=%%2" ).arg( map[i].dst ).arg( i + 1 );
-
-    insert += map[i].dst;
-    values += QStringLiteral( "%%1" ).arg( i + 1 );
+    Q_ASSERT( idxid >= 0 );
+    Q_ASSERT( idxrx >= 0 );
+    Q_ASSERT( idxry >= 0 );
+    Q_ASSERT( idxrz >= 0 );
   }
 
-  insert = "INSERT INTO tbl_datum_transform(" + insert + ") VALUES (" + values + ')';
-
   CSLDestroy( fieldnames );
-
-  Q_ASSERT( idxid >= 0 );
-  Q_ASSERT( idxrx >= 0 );
-  Q_ASSERT( idxry >= 0 );
-  Q_ASSERT( idxrz >= 0 );
 
   sqlite3_database_unique_ptr database;
   int openResult = database.open( dbPath );
