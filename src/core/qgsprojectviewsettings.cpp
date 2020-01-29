@@ -86,7 +86,7 @@ bool QgsProjectViewSettings::readXml( const QDomElement &element, const QgsReadW
   if ( !scalesNodes.isEmpty() )
   {
     QDomElement scalesElement = scalesNodes.at( 0 ).toElement();
-    QDomNodeList scalesNodes = scalesElement.elementsByTagName( QStringLiteral( "Scale" ) );
+    scalesNodes = scalesElement.elementsByTagName( QStringLiteral( "Scale" ) );
     for ( int i = 0; i < scalesNodes.count(); i++ )
     {
       QDomElement scaleElement = scalesNodes.at( i ).toElement();

@@ -135,7 +135,8 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
     QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Cannot find referenced layer" ).arg( layer->name(), fieldName ) );
     return QVariant();
   }
-  int referencedFieldIdx = referencedLayer->fields().lookupField( relation.fieldPairs().at( 0 ).second );
+
+  const int referencedFieldIdx = referencedLayer->fields().lookupField( relation.fieldPairs().at( 0 ).second );
   if ( referencedFieldIdx == -1 )
   {
     QgsMessageLog::logMessage( QObject::tr( "Layer %1, field %2: Invalid referenced field (%3) configured in relation %4" ).arg( layer->name(), fieldName, relation.fieldPairs().at( 0 ).second, relation.name() ) );
@@ -163,7 +164,6 @@ QVariant QgsRelationReferenceFieldFormatter::createCache( QgsVectorLayer *layer,
 
     if ( expr.hasEvalError() )
     {
-      int referencedFieldIdx = referencedLayer->fields().lookupField( relation.fieldPairs().at( 0 ).second );
       title = feature.attribute( referencedFieldIdx ).toString();
     }
 

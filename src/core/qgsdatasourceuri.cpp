@@ -93,7 +93,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
         {
           i++;
 
-          int start = i;
+          start = i;
           while ( i < uri.length() && uri[i] != ')' )
           {
             if ( uri[i] == '\\' )

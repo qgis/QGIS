@@ -126,12 +126,12 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
                   p );
         else
         {
-          int face = mTriangularMesh.trianglesToNativeFaces()[i];
+          const int faceIdx = mTriangularMesh.trianglesToNativeFaces()[i];
           val = QgsMeshLayerUtils::interpolateFromFacesData(
                   p1,
                   p2,
                   p3,
-                  mDatasetValues[face],
+                  mDatasetValues[faceIdx],
                   p
                 );
         }
