@@ -29,7 +29,8 @@
 #define INCH_TO_MM 25.4
 
 QgsRenderContext::QgsRenderContext()
-  : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
+  : QgsTemporalRangeObject()
+  , mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   // For RenderMetersInMapUnits support, when rendering in Degrees, the Ellipsoid must be set
@@ -64,6 +65,8 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mRenderedFeatureHandlers( rh.mRenderedFeatureHandlers )
   , mHasRenderedFeatureHandlers( rh.mHasRenderedFeatureHandlers )
   , mCustomRenderingFlags( rh.mCustomRenderingFlags )
+  , mTemporal( rh.mTemporal )
+  , mDateTimeRange( rh.mDateTimeRange )
 #ifdef QGISDEBUG
   , mHasTransformContext( rh.mHasTransformContext )
 #endif
@@ -97,6 +100,8 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mRenderedFeatureHandlers = rh.mRenderedFeatureHandlers;
   mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
   mCustomRenderingFlags = rh.mCustomRenderingFlags;
+  mTemporal = rh.mTemporal;
+  mDateTimeRange = rh.mDateTimeRange;
 #ifdef QGISDEBUG
   mHasTransformContext = rh.mHasTransformContext;
 #endif
@@ -200,7 +205,12 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
+<<<<<<< HEAD
   ctx.mCustomRenderingFlags = mapSettings.customRenderingFlags();
+=======
+  ctx.setIsTemporal( mapSettings.isTemporal() );
+  ctx.setTemporalRange( mapSettings.temporalRange() );
+>>>>>>> 52528ece4c... edits per review on qgs map canvas
 
   return ctx;
 }

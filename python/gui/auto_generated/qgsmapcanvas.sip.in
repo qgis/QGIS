@@ -732,6 +732,26 @@ for the canvas.
 %End
 
 
+    void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
+%Docstring
+Set datetime range for the map canvas.
+
+Emits temporalRangeChanged(), after successfully update.
+
+.. seealso:: :py:func:`temporalRange`
+
+.. versionadded:: 3.14
+%End
+
+    const QgsDateTimeRange &temporalRange() const;
+%Docstring
+Returns map canvas datetime range.
+
+.. seealso:: :py:func:`setTemporalRange`
+
+.. versionadded:: 3.14
+%End
+
   public slots:
 
     void refresh();
@@ -1028,6 +1048,12 @@ start of the pan and the current pan position.
 Emitted whenever a tap and hold ``gesture`` occurs at the specified map point.
 
 .. versionadded:: 3.12
+
+    void temporalRangeChanged();
+%Docstring
+Emitted when the map canvas temporal range changes.
+
+.. versionadded:: 3.14
 %End
 
   protected:
