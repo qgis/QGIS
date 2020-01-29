@@ -29,6 +29,7 @@
 #include <QPushButton>
 #include <QStyle>
 #include <QTimer>
+#include <QElapsedTimer>
 
 #include <sqlite3.h>
 
@@ -712,7 +713,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
     // - or new features to be notified
     // - or end of download being notified
     // - or interruption checker to notify cancellation
-    QTime timeRequestTimeout;
+    QElapsedTimer timeRequestTimeout;
     const int requestTimeout = mRequest.timeout();
     if ( requestTimeout > 0 )
       timeRequestTimeout.start();
@@ -725,7 +726,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
       }
       const int delayCheckInterruption = 50;
       const int timeout = ( requestTimeout > 0 ) ?
-                          std::min( requestTimeout - timeRequestTimeout.elapsed(), delayCheckInterruption ) :
+                          std::min( requestTimeout - (int) timeRequestTimeout.elapsed(), delayCheckInterruption ) :
                           delayCheckInterruption;
       if ( timeout < 0 )
       {
