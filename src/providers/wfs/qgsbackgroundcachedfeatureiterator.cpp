@@ -726,7 +726,7 @@ bool QgsBackgroundCachedFeatureIterator::fetchFeature( QgsFeature &f )
       }
       const int delayCheckInterruption = 50;
       const int timeout = ( requestTimeout > 0 ) ?
-                          std::min( requestTimeout - (int) timeRequestTimeout.elapsed(), delayCheckInterruption ) :
+                          std::min( requestTimeout - ( int ) timeRequestTimeout.elapsed(), delayCheckInterruption ) :
                           delayCheckInterruption;
       if ( timeout < 0 )
       {
