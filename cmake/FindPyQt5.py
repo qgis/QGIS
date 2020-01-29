@@ -45,7 +45,8 @@ except ImportError:
         sip_dir = sip_dir.replace(py_version, '')
     for p in (os.path.join(sip_dir, "PyQt5"),
               os.path.join(sip_dir, "PyQt5-3"),
-              sip_dir):
+              sip_dir,
+              os.path.join(cfg.default_mod_dir, "PyQt5", "bindings")):
         if os.path.exists(os.path.join(p, "QtCore", "QtCoremod.sip")):
             sip_dir = p
             break
