@@ -498,7 +498,7 @@ class TestQgsRenderContext(unittest.TestCase):
     def testTemporalState(self):
         rc = QgsRenderContext()
         self.assertEqual(rc.isTemporal(), False)
-        self.assertIsNotNull(rc.temporalRange())
+        self.assertIsNotNone(rc.temporalRange())
 
 
 
