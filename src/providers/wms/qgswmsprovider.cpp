@@ -814,7 +814,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       mbtilesReader->open();
     }
 
-    QTime t;
+    QElapsedTimer t;
     t.start();
     TileRequests requestsFinal;
     const auto constRequests = requests;
