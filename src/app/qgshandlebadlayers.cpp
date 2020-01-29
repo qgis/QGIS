@@ -245,7 +245,7 @@ void QgsHandleBadLayers::setFilename( int row, const QString &filename )
     {
       QUrl uriSource = QUrl::fromEncoded( datasource.toLatin1() );
       QUrl uriDest = QUrl::fromLocalFile( filename );
-      uriDest.setQueryItems( uriSource.queryItems() );
+      uriDest.setQuery( QUrlQuery( uriSource ) );
       datasource = QString::fromLatin1( uriDest.toEncoded() );
     }
   }

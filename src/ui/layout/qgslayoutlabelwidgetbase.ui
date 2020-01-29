@@ -92,9 +92,6 @@
               <height>150</height>
              </size>
             </property>
-            <property name="tabStopWidth">
-             <number>10</number>
-            </property>
            </widget>
           </item>
           <item row="1" column="0">
