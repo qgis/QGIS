@@ -627,6 +627,22 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
       return QgsFieldModel::fieldToolTip( field );
     }
   }
+  else if ( role == Qt::DecorationRole )
+  {
+    if ( orientation == Qt::Vertical )
+    {
+      return QVariant();
+    }
+    else if ( section >= 0 && section < mFieldCount )
+    {
+      const QIcon icon = layer()->fields().iconForField( mAttributes.at( section ) );
+      return icon;
+    }
+    else
+    {
+      return QVariant();
+    }
+  }
   else
   {
     return QVariant();
