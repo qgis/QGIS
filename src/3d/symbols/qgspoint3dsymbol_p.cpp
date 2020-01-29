@@ -229,7 +229,11 @@ Qt3DRender::QGeometryRenderer *QgsInstancedPoint3DSymbolHandler::renderer( const
   ba.resize( byteCount );
   memcpy( ba.data(), positions.constData(), byteCount );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
   Qt3DRender::QBuffer *instanceBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer );
+#else
+  Qt3DRender::QBuffer *instanceBuffer = new Qt3DRender::QBuffer();
+#endif
   instanceBuffer->setData( ba );
 
   Qt3DRender::QAttribute *instanceDataAttribute = new Qt3DRender::QAttribute;
