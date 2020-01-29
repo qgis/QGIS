@@ -42,7 +42,7 @@
 #include <QDomDocument>
 #include <QNetworkDiskCache>
 #include <QSettings>
-#include <QDateTime>
+#include <QElapsedTimer>
 
 // TODO: remove, it's only needed by a single debug message
 #include <fcgi_stdio.h>
@@ -301,7 +301,7 @@ void QgsServer::putenv( const QString &var, const QString &val )
 void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project )
 {
   Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
-  QTime time; //used for measuring request time if loglevel < 1
+  QElapsedTimer time; //used for measuring request time if loglevel < 1
 
   qApp->processEvents();
 
