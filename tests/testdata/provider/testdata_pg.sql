@@ -686,3 +686,18 @@ CREATE TABLE qgis_test.b29560 (
 INSERT INTO qgis_test.b29560 (geom)
 VALUES ('POLYGON EMPTY'::geometry);
 
+
+---------------------------------------------
+--
+-- Aspatial table with default values
+--
+
+CREATE TABLE test_table_default_values (
+    id SERIAL primary key,
+    comment TEXT,
+    created_at_01 text DEFAULT now(),
+    created_at_02 text DEFAULT CURRENT_TIMESTAMP,
+    anumber INTEGER DEFAULT 123,
+    atext TEXT default 'My default'
+)
+

@@ -17,6 +17,7 @@ import re
 import sys
 import shutil
 import tempfile
+from datetime import datetime
 
 from qgis.core import (QgsProviderRegistry,
                        QgsVectorLayer,
@@ -1158,6 +1159,81 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(l.isValid())
         self.assertEqual(l.uniqueValues(1), {1, 2})
         self.assertEqual(l.uniqueValues(0), {987654321012345, 987654321012346})
+
+    def testSpatialiteDefaultValues(self):
+        """Test whether in spatialite table with default values like CURRENT_TIMESTAMP or
+        (datetime('now','localtime')) they are respected. See GH #33383"""
+
+        # Create the test table
+
+        dbname = os.path.join(tempfile.gettempdir(), "test_default_values.sqlite")
+        if os.path.exists(dbname):
+            os.remove(dbname)
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = "SELECT InitSpatialMetadata()"
+        cur.execute(sql)
+
+        # simple table with primary key
+        sql = """
+        CREATE TABLE test_table_default_values (
+            `id` integer primary key autoincrement,
+            comment text,
+            created_at_01 text DEFAULT (datetime('now','localtime')),
+            created_at_02 text DEFAULT CURRENT_TIMESTAMP,
+            anumber INTEGER DEFAULT 123,
+            atext TEXT default 'My default'
+        )
+        """
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        vl = QgsVectorLayer("dbname='%s' table='test_table_default_values'" % dbname, 'test_table_default_values', 'spatialite')
+        self.assertTrue(vl.isValid())
+
+        # Save it for the test
+        now = datetime.now()
+
+        # Test default values
+        dp = vl.dataProvider()
+        # FIXME: should it be None?
+        self.assertTrue(dp.defaultValue(0).isNull())
+        self.assertIsNone(dp.defaultValue(1))
+        # FIXME: This fails because there is no backend-side evaluation in this provider
+        #self.assertTrue(dp.defaultValue(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(dp.defaultValue(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(dp.defaultValue(4), 123)
+        self.assertEqual(dp.defaultValue(5), 'My default')
+
+        self.assertEqual(dp.defaultValueClause(0), 'Autogenerate')
+        self.assertEqual(dp.defaultValueClause(1), '')
+        self.assertEqual(dp.defaultValueClause(2), "datetime('now','localtime')")
+        self.assertEqual(dp.defaultValueClause(3), "CURRENT_TIMESTAMP")
+        self.assertEqual(dp.defaultValueClause(4), '')
+        self.assertEqual(dp.defaultValueClause(5), '')
+
+        feature = QgsFeature(vl.fields())
+        for idx in range(vl.fields().count()):
+            default = vl.dataProvider().defaultValue(idx)
+            if not default:
+                feature.setAttribute(idx, 'A comment')
+            else:
+                feature.setAttribute(idx, default)
+
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+        del(vl)
+
+        # Verify
+        vl2 = QgsVectorLayer("dbname='%s' table='test_table_default_values'" % dbname, 'test_table_default_values', 'spatialite')
+        self.assertTrue(vl2.isValid())
+        feature = next(vl2.getFeatures())
+        self.assertEqual(feature.attribute(1), 'A comment')
+        self.assertTrue(feature.attribute(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(feature.attribute(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(feature.attribute(4), 123)
+        self.assertEqual(feature.attribute(5), 'My default')
 
 
 if __name__ == '__main__':

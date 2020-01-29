@@ -221,6 +221,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     QgsFields mAttributeFields;
 
+    //! Map of field index to default value SQL fragments
+    QMap<int, QString> mDefaultValueClause;
+
     //! Flag indicating if the layer data source is a valid SpatiaLite layer
     bool mValid = false;
 
@@ -264,7 +267,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QString mGeometryColumn;
 
     //! Map of field index to default value
-    QMap<int, QVariant> mDefaultValues;
+    QMap<int, QString> mDefaultValues;
 
     //! Name of the SpatialIndex table
     QString mIndexTable;
@@ -382,6 +385,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     friend class QgsSpatiaLiteFeatureSource;
 
+    // QgsVectorDataProvider interface
+  public:
+    virtual QString defaultValueClause( int fieldIndex ) const override;
 };
 
 class QgsSpatiaLiteProviderMetadata: public QgsProviderMetadata

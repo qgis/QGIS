@@ -1209,13 +1209,18 @@ void QgsOgrProvider::loadFields()
     QString defaultValue = textEncoding()->toUnicode( OGR_Fld_GetDefault( fldDef ) );
     if ( !defaultValue.isEmpty() && !OGR_Fld_IsDefaultDriverSpecific( fldDef ) )
     {
+      if ( defaultValue.startsWith( '\'' ) )
+      {
+        defaultValue = defaultValue.remove( 0, 1 );
+        defaultValue.chop( 1 );
+        defaultValue.replace( QLatin1String( "''" ), QLatin1String( "'" ) );
+      }
       mDefaultValues.insert( createdFields, defaultValue );
     }
 
     mAttributeFields.append( newField );
     createdFields++;
   }
-
 }
 
 
@@ -1389,13 +1394,6 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
     resultVar = QDate::currentDate();
   else if ( defaultVal == QStringLiteral( "CURRENT_TIME" ) )
     resultVar = QTime::currentTime();
-  else if ( defaultVal.startsWith( '\'' ) )
-  {
-    defaultVal = defaultVal.remove( 0, 1 );
-    defaultVal.chop( 1 );
-    defaultVal.replace( QLatin1String( "''" ), QLatin1String( "'" ) );
-    resultVar = defaultVal;
-  }
 
   ( void )mAttributeFields.at( fieldId ).convertCompatible( resultVar );
   return resultVar;
@@ -1584,7 +1582,12 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
     OGRFieldType type = OGR_Fld_GetType( fldDef );
 
     QVariant attrVal = attrs.at( qgisAttId );
-    if ( attrVal.isNull() || ( type != OFTString && attrVal.toString().isEmpty() ) )
+    // The field value is equal to the default (that might be a provider-side expression)
+    if ( mDefaultValues.contains( qgisAttId ) && attrVal.toString() == mDefaultValues.value( qgisAttId ) )
+    {
+      OGR_F_UnsetField( feature.get(), ogrAttId );
+    }
+    else if ( attrVal.isNull() || ( type != OFTString && attrVal.toString().isEmpty() ) )
     {
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For a GeoJSON output,
