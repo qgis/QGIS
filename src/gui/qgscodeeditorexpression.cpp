@@ -67,8 +67,8 @@ void QgsCodeEditorExpression::setExpressionContext( const QgsExpressionContext &
       signature += '(';
 
       QStringList paramNames;
-      const auto &parameters = func->parameters();
-      for ( const auto &param : parameters )
+      const QgsExpressionFunction::ParameterList parameters = func->parameters();
+      for ( const QgsExpressionFunction::Parameter &param : parameters )
       {
         paramNames << param.name();
       }

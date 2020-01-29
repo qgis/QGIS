@@ -90,7 +90,7 @@ QgsGeometry QgsMeshContours::exportPolygons(
     if ( !mScalarActiveFaceFlagValues.active( nativeIndex ) )
       continue;
 
-    const auto &triangle = mTriangularMesh->triangles().at( i );
+    const QgsMeshFace &triangle = mTriangularMesh->triangles().at( i );
     const int indices[3] =
     {
       triangle.at( 0 ),
@@ -279,7 +279,7 @@ QgsGeometry QgsMeshContours::exportLines( const QgsMeshDatasetIndex &index,
     if ( !mScalarActiveFaceFlagValues.active( nativeIndex ) )
       continue;
 
-    const auto &triangle = mTriangularMesh->triangles().at( i );
+    const QgsMeshFace &triangle = mTriangularMesh->triangles().at( i );
 
     const int indices[3] =
     {

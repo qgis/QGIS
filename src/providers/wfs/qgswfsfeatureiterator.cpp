@@ -157,7 +157,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, int maxFeatures, 
     getFeatureUrl.addQueryItem( QStringLiteral( "SRSNAME" ), srsName );
   }
 
-  const auto &rect = mShared->currentRect();
+  const QgsRectangle &rect = mShared->currentRect();
 
   // In case we must issue a BBOX and we have a filter, we must combine
   // both as a single filter, as both BBOX and FILTER aren't supported together
