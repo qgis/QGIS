@@ -676,6 +676,7 @@ QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, 
     return block.release();
   }
   // apply scale and offset
+  Q_ASSERT( block ); // to make cppcheck happy
   block->applyScaleOffset( bandScale( bandNo ), bandOffset( bandNo ) );
   block->applyNoDataValues( userNoDataValues( bandNo ) );
   return block.release();
