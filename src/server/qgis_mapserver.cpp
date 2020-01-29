@@ -36,7 +36,7 @@ on the command line.
 #include <QNetworkInterface>
 #include <QCommandLineParser>
 #include <QObject>
-#include <QPointer>
+
 
 #ifndef Q_OS_WIN
 #include <csignal>
@@ -176,6 +176,9 @@ int main( int argc, char *argv[] )
     }
   }
 
+  // Disable parallel rendering because if its interal loop
+  qputenv( "QGIS_SERVER_PARALLEL_RENDERING", "0" );
+
   // Create server
   QTcpServer tcpServer;
 
@@ -228,7 +231,7 @@ int main( int argc, char *argv[] )
     // Starts HTTP loop with a poor man's HTTP parser
     tcpServer.connect( &tcpServer, &QTcpServer::newConnection, [ & ]
     {
-      QPointer<QTcpSocket> clientConnection = tcpServer.nextPendingConnection();
+      QTcpSocket *clientConnection = tcpServer.nextPendingConnection();
 
       QObject *context { new QObject };
 
@@ -238,10 +241,8 @@ int main( int argc, char *argv[] )
         // Disconnect the lambda
         delete context;
         clientConnection->deleteLater();
-      } );
 
-      // Delete connection on close
-      //clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, clientConnection, &QAbstractSocket::deleteLater );
+      } );
 
       // Incoming connection parser
       clientConnection->connect( clientConnection, &QIODevice::readyRead, context, [ =, &server ] {
@@ -353,7 +354,7 @@ int main( int argc, char *argv[] )
             throw HttpException( QStringLiteral( "HTTP error unsupported status code: %1" ).arg( response.statusCode() ) );
           }
 
-          if ( clientConnection && clientConnection->isValid() )
+          if ( clientConnection->isValid() )
           {
             // Output stream
             clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( response.statusCode() ).arg( knownStatuses.value( response.statusCode() ) ).toUtf8() );
@@ -381,7 +382,7 @@ int main( int argc, char *argv[] )
         }
         catch ( HttpException &ex )
         {
-          if ( clientConnection && clientConnection->isValid() )
+          if ( clientConnection->isValid() )
           {
             // Output stream: send error
             clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( 500 ).arg( knownStatuses.value( 500 ) ).toUtf8() );
