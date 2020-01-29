@@ -19,7 +19,7 @@
 
 #include <QCoreApplication>
 #include <QString>
-#include <QTime>
+#include <QElapsedTimer>
 
 #include <ogr_api.h>
 
@@ -224,5 +224,5 @@ class QgsDwgImporter : public DRW_Interface
     QLabel *mLabel = nullptr;
     int mEntities = 0;
     QTextCodec *mCodec = nullptr;
-    QTime mTime;
+    QElapsedTimer mTime;
 };

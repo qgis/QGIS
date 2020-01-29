@@ -2386,7 +2386,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsStatusBar *mStatusBar = nullptr;
 
-    QTime mLastRenderTime;
+    QElapsedTimer mLastRenderTime;
     double mLastRenderTimeSeconds = 0;
     QTimer mRenderProgressBarTimer;
     QMetaObject::Connection mRenderProgressBarTimerConnection;
