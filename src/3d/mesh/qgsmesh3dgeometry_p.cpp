@@ -280,9 +280,14 @@ void QgsMesh3dGeometry::init()
   mNormalAttribute = new QAttribute( this );
   mTexCoordAttribute = new QAttribute( this );
   mIndexAttribute = new QAttribute( this );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
   mVertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
   mIndexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, this );
-
+#else
+  mVertexBuffer = new Qt3DRender::QBuffer( this );
+  mIndexBuffer = new Qt3DRender::QBuffer( this );
+#endif
 
   const int stride = ( 3 /*position*/ +
                        2 /*texture*/  +
