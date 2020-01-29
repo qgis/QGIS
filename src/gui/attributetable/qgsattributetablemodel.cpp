@@ -456,7 +456,7 @@ void QgsAttributeTableModel::loadLayer()
 
     int i = 0;
 
-    QTime t;
+    QElapsedTimer t;
     t.start();
 
     while ( features.nextFeature( mFeat ) )
