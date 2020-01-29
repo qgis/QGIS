@@ -329,7 +329,7 @@ QgsFeatureRequest QgsBackgroundCachedFeatureIterator::buildRequestCache( int gen
 {
   QgsFeatureRequest requestCache;
 
-  const auto &fields = mShared->fields();
+  const QgsFields fields = mShared->fields();
 
   auto cacheDataProvider = mShared->cacheDataProvider();
   if ( mRequest.filterType() == QgsFeatureRequest::FilterFid ||

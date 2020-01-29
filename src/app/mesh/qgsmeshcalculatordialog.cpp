@@ -497,8 +497,7 @@ void QgsMeshCalculatorDialog::populateDriversComboBox( )
 
   whileBlocking( mOutputFormatComboBox )->clear();
 
-  const auto &vals = mMeshDrivers.values();
-
+  const QList< QgsMeshDriverMetadata > vals = mMeshDrivers.values();
   for ( const QgsMeshDriverMetadata &meta : vals )
   {
     whileBlocking( mOutputFormatComboBox )->addItem( meta.description(), meta.name() );

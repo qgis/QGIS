@@ -207,7 +207,7 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData(
       if ( !std::isnan( val ) )
       {
         // assign for all vertices
-        const auto &face = nativeMesh->faces.at( i );
+        const QgsMeshFace &face = nativeMesh->faces.at( i );
         for ( int j = 0; j < face.size(); ++j )
         {
           int vertexIndex = face[j];

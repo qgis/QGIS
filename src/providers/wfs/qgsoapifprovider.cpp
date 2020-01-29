@@ -647,7 +647,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
     hasQueryParam = true;
   }
 
-  const auto &rect = mShared->currentRect();
+  const QgsRectangle &rect = mShared->currentRect();
   if ( !rect.isNull() )
   {
     // Clamp to avoid server errors.
@@ -717,8 +717,8 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
 
     QVector<QgsFeatureUniqueIdPair> featureList;
     size_t i = 0;
-    const auto &srcFields = itemsRequest.fields();
-    const auto &dstFields = mShared->fields();
+    const QgsFields srcFields = itemsRequest.fields();
+    const QgsFields dstFields = mShared->fields();
     for ( const auto &pair : itemsRequest.features() )
     {
       // In the case the features of the current page have not the same schema
