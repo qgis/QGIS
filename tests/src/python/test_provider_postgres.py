@@ -24,6 +24,7 @@ import psycopg2
 
 import os
 import time
+from datetime import datetime
 
 from qgis.core import (
     QgsVectorLayer,
@@ -1424,6 +1425,68 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' estimatedmetadata=true srid=4326 type=POINT table="qgis_test"."somedataview" (geom) sql=', 'test', 'postgres')
         self.assertTrue(vl.isValid())
         self.assertTrue(self.source.featureCount() > 0)
+
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test flaky')
+    def testDefaultValuesAndClauses(self):
+        """Test whether default values like CURRENT_TIMESTAMP or
+        now() they are respected. See GH #33383"""
+
+        # Create the test table
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable  table="public"."test_table_default_values" sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        dp = vl.dataProvider()
+
+        # Clean the table
+        dp.deleteFeatures(dp.allFeatureIds())
+
+        # Save it for the test
+        now = datetime.now()
+
+        # Test default values
+        dp.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, 1)
+        # FIXME: spatialite provider (and OGR) return a NULL here and the following passes
+        # self.assertTrue(dp.defaultValue(0).isNull())
+        self.assertIsNotNone(dp.defaultValue(0))
+        self.assertIsNone(dp.defaultValue(1))
+        self.assertTrue(dp.defaultValue(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(dp.defaultValue(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(dp.defaultValue(4), 123)
+        self.assertEqual(dp.defaultValue(5), 'My default')
+
+        #FIXME: the provider should return the clause definition
+        #       regardless of the EvaluateDefaultValues setting
+        dp.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, 0)
+        self.assertEqual(dp.defaultValueClause(0), "nextval('test_table_default_values_id_seq'::regclass)")
+        self.assertEqual(dp.defaultValueClause(1), '')
+        self.assertEqual(dp.defaultValueClause(2), "now()")
+        self.assertEqual(dp.defaultValueClause(3), "CURRENT_TIMESTAMP")
+        self.assertEqual(dp.defaultValueClause(4), '123')
+        self.assertEqual(dp.defaultValueClause(5), "'My default'::text")
+        #FIXME: the test fails if the value is not reset to 1
+        dp.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, 1)
+
+        feature = QgsFeature(vl.fields())
+        for idx in range(vl.fields().count()):
+            default = vl.dataProvider().defaultValue(idx)
+            if default is not None:
+                feature.setAttribute(idx, default)
+            else:
+                feature.setAttribute(idx, 'A comment')
+
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+        del(vl)
+
+        # Verify
+        vl2 = QgsVectorLayer(self.dbconn + ' sslmode=disable  table="public"."test_table_default_values" sql=', 'test', 'postgres')
+        self.assertTrue(vl2.isValid())
+        feature = next(vl2.getFeatures())
+        self.assertEqual(feature.attribute(1), 'A comment')
+        self.assertTrue(feature.attribute(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(feature.attribute(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(feature.attribute(4), 123)
+        self.assertEqual(feature.attribute(5), 'My default')
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
