@@ -42,7 +42,7 @@ void QgsMapRendererStagedRenderJob::start()
   mErrors.clear();
 
   QgsDebugMsgLevel( QStringLiteral( "Preparing list of layer jobs for rendering" ), 5 );
-  QTime prepareTime;
+  QElapsedTimer prepareTime;
   prepareTime.start();
 
   mLabelingEngineV2.reset();

@@ -484,7 +484,7 @@ bool QgsTracer::initGraph()
 
   // TODO: use QgsPointLocator as a source for the linework
 
-  QTime t1, t2, t2a, t3;
+  QElapsedTimer t1, t2, t2a, t3;
 
   t1.start();
   int featuresCounted = 0;
@@ -745,7 +745,7 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
     return QVector<QgsPointXY>();
   }
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
   int v1 = pointInGraph( *mGraph, p1 );
   int v2 = pointInGraph( *mGraph, p2 );
@@ -762,7 +762,7 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
     return QVector<QgsPointXY>();
   }
 
-  QTime t2;
+  QElapsedTimer t2;
   t2.start();
   QgsPolylineXY points = shortestPath( *mGraph, v1, v2 );
   int tPath = t2.elapsed();
