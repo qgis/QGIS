@@ -49,7 +49,7 @@ void QgsInstallGridShiftFileDialog::installFromFile()
 {
   QgsSettings settings;
   const QString initialDir = settings.value( QStringLiteral( "lastTransformGridFolder" ), QDir::homePath(), QgsSettings::App ).toString();
-  const QString gridFilePath = QFileDialog::getOpenFileName( nullptr, tr( "Install %1" ).arg( mGridName ), initialDir, QStringLiteral( "%1 (%1);;" ).arg( mGridName ) + tr( "Grid Shift Files" ) + QStringLiteral( " (*.gsb *.GSB);;" ) + QObject::tr( "All files" ) + " (*)" );
+  const QString gridFilePath = QFileDialog::getOpenFileName( nullptr, tr( "Install %1" ).arg( mGridName ), initialDir, QStringLiteral( "%1 (%1);;" ).arg( mGridName ) + tr( "Grid Shift Files" ) + QStringLiteral( " (*.gsb *.GSB *.tif);;" ) + QObject::tr( "All files" ) + " (*)" );
 
   if ( gridFilePath.isEmpty() )
   {
