@@ -107,10 +107,13 @@ void QgsGeometryDuplicateCheck::fixError( const QMap<QString, QgsFeaturePool *> 
     std::unique_ptr< QgsGeometryEngine > geomEngineA = QgsGeometryCheckerUtils::createGeomEngine( layerFeatureA.geometry().constGet(), mContext->tolerance );
 
     QgsGeometryDuplicateCheckError *duplicateError = static_cast<QgsGeometryDuplicateCheckError *>( error );
-    for ( const QString &layerIdB : duplicateError->duplicates().keys() )
+    const QMap<QString, QList<QgsFeatureId>> duplicates = duplicateError->duplicates();
+    for ( auto it = duplicates.constBegin(); it != duplicates.constEnd(); ++it )
     {
+      const QString layerIdB = it.key();
       QgsFeaturePool *featurePoolB = featurePools[ layerIdB ];
-      for ( QgsFeatureId idB : duplicateError->duplicates()[layerIdB] )
+      const QList< QgsFeatureId > ids = it.value();
+      for ( QgsFeatureId idB : ids )
       {
         QgsFeature featureB;
         if ( !featurePoolB->getFeature( idB, featureB ) )
