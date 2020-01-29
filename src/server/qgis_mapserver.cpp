@@ -36,6 +36,7 @@ on the command line.
 #include <QNetworkInterface>
 #include <QCommandLineParser>
 #include <QObject>
+#include <QPointer>
 
 #ifndef Q_OS_WIN
 #include <csignal>
@@ -227,13 +228,23 @@ int main( int argc, char *argv[] )
     // Starts HTTP loop with a poor man's HTTP parser
     tcpServer.connect( &tcpServer, &QTcpServer::newConnection, [ & ]
     {
-      QTcpSocket *clientConnection = tcpServer.nextPendingConnection();
+      QPointer<QTcpSocket> clientConnection = tcpServer.nextPendingConnection();
+
+      QObject *context { new QObject };
 
       clientConnection->connect( clientConnection, &QAbstractSocket::disconnected,
-                                 clientConnection, &QObject::deleteLater );
+                                 clientConnection, [ = ]()
+      {
+        // Disconnect the lambda
+        delete context;
+        clientConnection->deleteLater();
+      } );
+
+      // Delete connection on close
+      //clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, clientConnection, &QAbstractSocket::deleteLater );
 
       // Incoming connection parser
-      clientConnection->connect( clientConnection, &QIODevice::readyRead, [ =, &server ] {
+      clientConnection->connect( clientConnection, &QIODevice::readyRead, context, [ =, &server ] {
 
         // Read all incoming data
         QString incomingData;
@@ -342,43 +353,51 @@ int main( int argc, char *argv[] )
             throw HttpException( QStringLiteral( "HTTP error unsupported status code: %1" ).arg( response.statusCode() ) );
           }
 
-          // Output stream
-          clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( response.statusCode() ).arg( knownStatuses.value( response.statusCode() ) ).toUtf8() );
-          clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
-          const auto responseHeaders { response.headers() };
-          for ( auto it = responseHeaders.constBegin(); it != responseHeaders.constEnd(); ++it )
+          if ( clientConnection && clientConnection->isValid() )
           {
-            clientConnection->write( QStringLiteral( "%1: %2\r\n" ).arg( it.key(), it.value() ).toUtf8() );
+            // Output stream
+            clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( response.statusCode() ).arg( knownStatuses.value( response.statusCode() ) ).toUtf8() );
+            clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
+            const auto responseHeaders { response.headers() };
+            for ( auto it = responseHeaders.constBegin(); it != responseHeaders.constEnd(); ++it )
+            {
+              clientConnection->write( QStringLiteral( "%1: %2\r\n" ).arg( it.key(), it.value() ).toUtf8() );
+            }
+            clientConnection->write( "\r\n" );
+            const QByteArray body { response.body() };
+            clientConnection->write( body );
+
+            // 10.185.248.71 [09/Jan/2015:19:12:06 +0000] 808840 <time> "GET / HTTP/1.1" 500"
+            std::cout << QStringLiteral( "%1 [%2] %3 %4ms \"%5\" %6" )
+                      .arg( clientConnection->peerAddress().toString() )
+                      .arg( QDateTime::currentDateTime().toString() )
+                      .arg( body.size() )
+                      .arg( std::chrono::duration_cast<std::chrono::milliseconds>( elapsedTime ).count() )
+                      .arg( firstLinePieces.join( ' ' ) )
+                      .arg( response.statusCode() ).toStdString() << std::endl;
+
+            clientConnection->disconnectFromHost();
           }
-          clientConnection->write( "\r\n" );
-          const QByteArray body { response.body() };
-          clientConnection->write( body );
-
-          // 10.185.248.71 [09/Jan/2015:19:12:06 +0000] 808840 <time> "GET / HTTP/1.1" 500"
-          std::cout << QStringLiteral( "%1 [%2] %3 %4ms \"%5\" %6" )
-                    .arg( clientConnection->peerAddress().toString() )
-                    .arg( QDateTime::currentDateTime().toString() )
-                    .arg( body.size() )
-                    .arg( std::chrono::duration_cast<std::chrono::milliseconds>( elapsedTime ).count() )
-                    .arg( firstLinePieces.join( ' ' ) )
-                    .arg( response.statusCode() ).toStdString() << std::endl;
-
         }
         catch ( HttpException &ex )
         {
-          // Output stream: send error
-          clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( 500 ).arg( knownStatuses.value( 500 ) ).toUtf8() );
-          clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
-          clientConnection->write( "\r\n" );
-          clientConnection->write( ex.message().toUtf8() );
+          if ( clientConnection && clientConnection->isValid() )
+          {
+            // Output stream: send error
+            clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( 500 ).arg( knownStatuses.value( 500 ) ).toUtf8() );
+            clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
+            clientConnection->write( "\r\n" );
+            clientConnection->write( ex.message().toUtf8() );
 
-          std::cout << QStringLiteral( "%1 [%2] \"%3\" - - 500" )
-                    .arg( clientConnection->peerAddress().toString() )
-                    .arg( QDateTime::currentDateTime().toString() )
-                    .arg( ex.message() ).toStdString() << std::endl;
+            std::cout << QStringLiteral( "%1 [%2] \"%3\" - - 500" )
+                      .arg( clientConnection->peerAddress().toString() )
+                      .arg( QDateTime::currentDateTime().toString() )
+                      .arg( ex.message() ).toStdString() << std::endl;
 
+            clientConnection->disconnectFromHost();
+          }
         }
-        clientConnection->disconnectFromHost();
+
       } );
 
     } );
@@ -387,9 +406,21 @@ int main( int argc, char *argv[] )
 
   // Exit handlers
 #ifndef Q_OS_WIN
-  signal( SIGTERM, []( int ) { qApp->quit(); } );
-  signal( SIGABRT, []( int ) { qApp->quit(); } );
-  signal( SIGINT, []( int ) { qApp->quit(); } );
+
+  auto exitHandler = [ ]( int signal )
+  {
+    std::cout << QStringLiteral( "Signal %1 received: quitting" ).arg( signal ).toStdString() << std::endl;
+    qApp->quit();
+  };
+
+  signal( SIGTERM, exitHandler );
+  signal( SIGABRT, exitHandler );
+  signal( SIGINT, exitHandler );
+  signal( SIGPIPE, [ ]( int )
+  {
+    std::cerr << QStringLiteral( "Signal SIGPIPE received: ignoring" ).toStdString() << std::endl;
+  } );
+
 #endif
 
   app.exec();
