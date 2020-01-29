@@ -214,7 +214,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
     request.setSubsetOfAttributes( exp.referencedColumns(), vlayer->fields() );
   }
   QgsFeatureIterator it = vlayer->getFeatures( request );
-  QTime timer;
+  QElapsedTimer timer;
   timer.start();
   while ( it.nextFeature( feature ) )
   {
