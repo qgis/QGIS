@@ -341,13 +341,13 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
     }
   }
 
-  if ( mPlainTextEdit )
-  {
-    if ( val != value() )
-      mPlainTextEdit->setPlainText( v );
-  }
+// allow replacement of invalid variants with
+// what was there before - e.g for JSON
+  if ( mPlainTextEdit && ( val != value() || !val.isValid() ) )
+    mPlainTextEdit->setPlainText( v );
 
-  if ( mLineEdit && val != value() )
+
+  if ( mLineEdit && ( val != value() || !val.isValid() ) )
     mLineEdit->setText( v );
 }
 
