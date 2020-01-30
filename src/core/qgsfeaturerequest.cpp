@@ -56,7 +56,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsExpression &expr, const QgsExpres
 {
 }
 
-QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
+QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh ): mTransformContext{}
 {
   operator=( rh );
 }

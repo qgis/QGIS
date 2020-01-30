@@ -237,7 +237,7 @@ QgsExpressionContext::QgsExpressionContext( const QList<QgsExpressionContextScop
 {
 }
 
-QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other )
+QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext &other ) : mStack{}
 {
   for ( const QgsExpressionContextScope *scope : qgis::as_const( other.mStack ) )
   {
