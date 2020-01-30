@@ -3423,7 +3423,15 @@ QVariant QgsProcessingFieldWidgetWrapper::widgetValue() const
   else if ( mPanel )
     return mPanel->value();
   else if ( mLineEdit )
-    return mLineEdit->text().split( ';' );
+  {
+    const QgsProcessingParameterField *fieldParam = static_cast< const QgsProcessingParameterField * >( parameterDefinition() );
+    if ( fieldParam->allowMultiple() )
+    {
+      return mLineEdit->text().split( ';' );
+    }
+    else
+      return mLineEdit->text();
+  }
   else
     return QVariant();
 }
