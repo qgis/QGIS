@@ -10,6 +10,7 @@
 
 
 
+
 class QgsTemporalRangeObject
 {
 %Docstring
@@ -33,6 +34,11 @@ Constructor for QgsTemporalRangeObject.
     QgsTemporalRangeObject( bool enabled );
 %Docstring
 Creates temporal range object with the specified temporal state.
+%End
+
+    QgsTemporalRangeObject( const QgsRenderContext &rh );
+%Docstring
+Copies render context temporal members
 %End
 
     virtual ~QgsTemporalRangeObject();

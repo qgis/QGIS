@@ -74,11 +74,11 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertEqual(c2.textRenderFormat(), QgsRenderContext.TextFormatAlwaysOutlines)
 
         c1.setIsTemporal(True)
-        c1.setTemporalRange(QgsDateTimeRange(QDateTime(2020, 1, 1), QDateTime(2010, 12, 31)))
+        c1.setTemporalRange(QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
         c2 = QgsRenderContext(c1)
 
         self.assertEqual(c2.isTemporal(), True)
-        self.assertEqual(rc.temporalRange(), QgsDateTimeRange(QDateTime(2020, 1, 1), QDateTime(2010, 12, 31)))
+        self.assertEqual(c2.temporalRange(), QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
 
     def testFromQPainter(self):
         """ test QgsRenderContext.fromQPainter """
@@ -126,13 +126,13 @@ class TestQgsRenderContext(unittest.TestCase):
 
         self.assertEqual(rc.mapExtent(), QgsRectangle(10000, 20000, 30000, 40000))
 
-        ms.setIsTemporal(true)
+        ms.setIsTemporal(True)
         rc = QgsRenderContext.fromMapSettings(ms)
         self.assertEqual(rc.isTemporal(), True)
 
-        ms.setTemporalRange(QgsDateTimeRange(QDateTime(2020, 1, 1), QDateTime(2010, 12, 31)))
+        ms.setTemporalRange(QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
         rc = QgsRenderContext.fromMapSettings(ms)
-        self.assertEqual(rc.temporalRange(), QgsDateTimeRange(QDateTime(2020, 1, 1), QDateTime(2010, 12, 31)))
+        self.assertEqual(rc.temporalRange(), QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
 
     def testVectorSimplification(self):
         """
@@ -499,7 +499,6 @@ class TestQgsRenderContext(unittest.TestCase):
         rc = QgsRenderContext()
         self.assertEqual(rc.isTemporal(), False)
         self.assertIsNotNone(rc.temporalRange())
-
 
 
 if __name__ == '__main__':

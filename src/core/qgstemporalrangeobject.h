@@ -23,6 +23,8 @@
 #include "qgis_sip.h"
 #include "qgsrange.h"
 
+class QgsRenderContext;
+
 /**
  * \class QgsTemporalRangeObject
  * \ingroup core
@@ -45,6 +47,11 @@ class CORE_EXPORT QgsTemporalRangeObject
      * Creates temporal range object with the specified temporal state.
      */
     QgsTemporalRangeObject( bool enabled );
+
+    /**
+     * Copies render context temporal members
+     */
+    QgsTemporalRangeObject( const QgsRenderContext &rh );
 
     virtual ~QgsTemporalRangeObject() = default;
 
