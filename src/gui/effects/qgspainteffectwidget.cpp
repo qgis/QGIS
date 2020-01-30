@@ -485,6 +485,8 @@ void QgsGlowWidget::initGui()
   mSpreadUnitWidget->setUnit( mEffect->spreadUnit() );
   mSpreadUnitWidget->setMapUnitScale( mEffect->spreadMapUnitScale() );
   mBlurRadiusSpnBx->setValue( mEffect->blurLevel() );
+  mBlurUnitWidget->setUnit( mEffect->blurUnit() );
+  mBlurUnitWidget->setMapUnitScale( mEffect->blurMapUnitScale() );
   mOpacityWidget->setOpacity( mEffect->opacity() );
   mColorBtn->setColor( mEffect->color() );
   mBlendCmbBx->setBlendMode( mEffect->blendMode() );
