@@ -177,7 +177,7 @@ int main( int argc, char *argv[] )
   }
 
   // Disable parallel rendering because if its internal loop
-  qputenv( "QGIS_SERVER_PARALLEL_RENDERING", "0" );
+  //qputenv( "QGIS_SERVER_PARALLEL_RENDERING", "0" );
 
   // Create server
   QTcpServer tcpServer;
@@ -202,6 +202,8 @@ int main( int argc, char *argv[] )
 #ifndef Q_OS_WIN
     std::cout << QObject::tr( "CTRL+C to exit" ).toStdString() << std::endl;
 #endif
+
+    QAtomicInt connCounter { 0 };
 
     static const QMap<int, QString> knownStatuses
     {
@@ -233,19 +235,28 @@ int main( int argc, char *argv[] )
     {
       QTcpSocket *clientConnection = tcpServer.nextPendingConnection();
 
+      connCounter++;
+
+      //qDebug() << "Active connections: " << connCounter;
+
+      // Lambda disconnect context
       QObject *context { new QObject };
 
-      clientConnection->connect( clientConnection, &QAbstractSocket::disconnected,
-                                 clientConnection, [ = ]()
+      // Deletes the connection later
+      auto connectionDeleter = [ =, &connCounter ]()
       {
-        // Disconnect the lambda
-        delete context;
         clientConnection->deleteLater();
+        connCounter--;
+      };
 
-      } );
+      // This will delete the connection when disconnected before ready read is called
+      clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, context, connectionDeleter );
 
       // Incoming connection parser
-      clientConnection->connect( clientConnection, &QIODevice::readyRead, context, [ =, &server ] {
+      clientConnection->connect( clientConnection, &QIODevice::readyRead, context, [ =, &server, &connCounter ] {
+
+        // Disconnect the lambdas
+        delete context;
 
         // Read all incoming data
         QString incomingData;
@@ -347,6 +358,20 @@ int main( int argc, char *argv[] )
 
           server.handleRequest( request, response );
 
+          // The QGIS server machinery calls processEvents and has internal loop events
+          // that might change the connection state
+          if ( clientConnection->state() == QAbstractSocket::SocketState::ConnectedState )
+          {
+            clientConnection->connect( clientConnection, &QAbstractSocket::disconnected,
+                                       clientConnection, connectionDeleter );
+          }
+          else
+          {
+            connCounter --;
+            clientConnection->deleteLater();
+            return;
+          }
+
           auto elapsedTime { std::chrono::steady_clock::now() - start };
 
           if ( ! knownStatuses.contains( response.statusCode() ) )
@@ -354,49 +379,56 @@ int main( int argc, char *argv[] )
             throw HttpException( QStringLiteral( "HTTP error unsupported status code: %1" ).arg( response.statusCode() ) );
           }
 
-          if ( clientConnection->isValid() )
+          // Output stream
+          clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( response.statusCode() ).arg( knownStatuses.value( response.statusCode() ) ).toUtf8() );
+          clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
+          const auto responseHeaders { response.headers() };
+          for ( auto it = responseHeaders.constBegin(); it != responseHeaders.constEnd(); ++it )
           {
-            // Output stream
-            clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( response.statusCode() ).arg( knownStatuses.value( response.statusCode() ) ).toUtf8() );
-            clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
-            const auto responseHeaders { response.headers() };
-            for ( auto it = responseHeaders.constBegin(); it != responseHeaders.constEnd(); ++it )
-            {
-              clientConnection->write( QStringLiteral( "%1: %2\r\n" ).arg( it.key(), it.value() ).toUtf8() );
-            }
-            clientConnection->write( "\r\n" );
-            const QByteArray body { response.body() };
-            clientConnection->write( body );
-
-            // 10.185.248.71 [09/Jan/2015:19:12:06 +0000] 808840 <time> "GET / HTTP/1.1" 500"
-            std::cout << QStringLiteral( "%1 [%2] %3 %4ms \"%5\" %6" )
-                      .arg( clientConnection->peerAddress().toString() )
-                      .arg( QDateTime::currentDateTime().toString() )
-                      .arg( body.size() )
-                      .arg( std::chrono::duration_cast<std::chrono::milliseconds>( elapsedTime ).count() )
-                      .arg( firstLinePieces.join( ' ' ) )
-                      .arg( response.statusCode() ).toStdString() << std::endl;
-
-            clientConnection->disconnectFromHost();
+            clientConnection->write( QStringLiteral( "%1: %2\r\n" ).arg( it.key(), it.value() ).toUtf8() );
           }
+          clientConnection->write( "\r\n" );
+          const QByteArray body { response.body() };
+          clientConnection->write( body );
+
+          // 10.185.248.71 [09/Jan/2015:19:12:06 +0000] 808840 <time> "GET / HTTP/1.1" 500"
+          std::cout << QStringLiteral( "%1 [%2] %3 %4ms \"%5\" %6" )
+                    .arg( clientConnection->peerAddress().toString() )
+                    .arg( QDateTime::currentDateTime().toString() )
+                    .arg( body.size() )
+                    .arg( std::chrono::duration_cast<std::chrono::milliseconds>( elapsedTime ).count() )
+                    .arg( firstLinePieces.join( ' ' ) )
+                    .arg( response.statusCode() ).toStdString() << std::endl;
+
+          clientConnection->disconnectFromHost();
         }
         catch ( HttpException &ex )
         {
-          if ( clientConnection->isValid() )
+
+          if ( clientConnection->state() == QAbstractSocket::SocketState::ConnectedState )
           {
-            // Output stream: send error
-            clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( 500 ).arg( knownStatuses.value( 500 ) ).toUtf8() );
-            clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
-            clientConnection->write( "\r\n" );
-            clientConnection->write( ex.message().toUtf8() );
-
-            std::cout << QStringLiteral( "%1 [%2] \"%3\" - - 500" )
-                      .arg( clientConnection->peerAddress().toString() )
-                      .arg( QDateTime::currentDateTime().toString() )
-                      .arg( ex.message() ).toStdString() << std::endl;
-
-            clientConnection->disconnectFromHost();
+            clientConnection->connect( clientConnection, &QAbstractSocket::disconnected,
+                                       clientConnection, connectionDeleter );
           }
+          else
+          {
+            connCounter --;
+            clientConnection->deleteLater();
+            return;
+          }
+
+          // Output stream: send error
+          clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( 500 ).arg( knownStatuses.value( 500 ) ).toUtf8() );
+          clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
+          clientConnection->write( "\r\n" );
+          clientConnection->write( ex.message().toUtf8() );
+
+          std::cout << QStringLiteral( "%1 [%2] \"%3\" - - 500" )
+                    .arg( clientConnection->peerAddress().toString() )
+                    .arg( QDateTime::currentDateTime().toString() )
+                    .arg( ex.message() ).toStdString() << std::endl;
+
+          clientConnection->disconnectFromHost();
         }
 
       } );
