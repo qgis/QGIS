@@ -453,74 +453,82 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:points_along_polys fid="polys.3">
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7,-1</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
       <ogr:floatval xsi:nil="true"/>
       <ogr:distance>17</ogr:distance>
+      <ogr:angle>180</ogr:angle>
+    </ogr:points_along_polys>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:points_along_polys fid="polys.3">
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7,-2</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:name>ASDF</ogr:name>
+      <ogr:intval>0</ogr:intval>
+      <ogr:floatval xsi:nil="true"/>
+      <ogr:distance>18</ogr:distance>
       <ogr:angle>135</ogr:angle>
     </ogr:points_along_polys>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:points_along_polys fid="polys.3">
-      <ogr:name>ASDF</ogr:name>
-      <ogr:intval>0</ogr:intval>
-      <ogr:floatval xsi:nil="true"/>
-      <ogr:distance>18</ogr:distance>
-      <ogr:angle>180</ogr:angle>
-    </ogr:points_along_polys>
-  </gml:featureMember>
-  <gml:featureMember>
-    <ogr:points_along_polys fid="polys.3">
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>8,-2</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
       <ogr:floatval xsi:nil="true"/>
       <ogr:distance>19</ogr:distance>
-      <ogr:angle>180</ogr:angle>
+      <ogr:angle>90</ogr:angle>
     </ogr:points_along_polys>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:points_along_polys fid="polys.3">
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9,-2</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
       <ogr:floatval xsi:nil="true"/>
       <ogr:distance>20</ogr:distance>
-      <ogr:angle>90</ogr:angle>
+      <ogr:angle>45</ogr:angle>
     </ogr:points_along_polys>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:points_along_polys fid="polys.3">
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9,-1</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
       <ogr:floatval xsi:nil="true"/>
       <ogr:distance>21</ogr:distance>
-      <ogr:angle>90</ogr:angle>
+      <ogr:angle>0</ogr:angle>
     </ogr:points_along_polys>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:points_along_polys fid="polys.3">
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>9,0</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
       <ogr:floatval xsi:nil="true"/>
       <ogr:distance>22</ogr:distance>
-      <ogr:angle>0</ogr:angle>
+      <ogr:angle>315</ogr:angle>
     </ogr:points_along_polys>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:points_along_polys fid="polys.3">
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>8,0</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
       <ogr:floatval xsi:nil="true"/>
       <ogr:distance>23</ogr:distance>
-      <ogr:angle>0</ogr:angle>
+      <ogr:angle>270</ogr:angle>
     </ogr:points_along_polys>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:points_along_polys fid="polys.3">
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>7,0</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
       <ogr:floatval xsi:nil="true"/>
       <ogr:distance>24</ogr:distance>
-      <ogr:angle>270</ogr:angle>
+      <ogr:angle>225</ogr:angle>
     </ogr:points_along_polys>
   </gml:featureMember>
   <gml:featureMember>
