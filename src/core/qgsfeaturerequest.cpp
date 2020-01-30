@@ -56,7 +56,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsExpression &expr, const QgsExpres
 {
 }
 
-QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh ): mTransformContext{}
+QgsFeatureRequest::QgsFeatureRequest( const QgsFeatureRequest &rh )
 {
   operator=( rh );
 }
@@ -84,6 +84,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mLimit = rh.mLimit;
   mOrderBy = rh.mOrderBy;
   mCrs = rh.mCrs;
+  mTransformContext = rh.mTransformContext;
   mTransformErrorCallback = rh.mTransformErrorCallback;
   mTimeout = rh.mTimeout;
   mRequestMayBeNested = rh.mRequestMayBeNested;
