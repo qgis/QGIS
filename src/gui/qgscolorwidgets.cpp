@@ -392,7 +392,11 @@ QgsColorWheel::~QgsColorWheel()
 
 QSize QgsColorWheel::sizeHint() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int size = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
+#else
+  int size = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22;
+#endif
   return QSize( size, size );
 }
 
@@ -750,7 +754,11 @@ QgsColorBox::~QgsColorBox()
 
 QSize QgsColorBox::sizeHint() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int size = Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) );
+#else
+  int size = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22;
+#endif
   return QSize( size, size );
 }
 
@@ -981,12 +989,20 @@ QSize QgsColorRampWidget::sizeHint() const
   if ( mOrientation == QgsColorRampWidget::Horizontal )
   {
     //horizontal
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3 );
+#else
+    return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22, Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3 );
+#endif
   }
   else
   {
     //vertical
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3, Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) );
+#else
+    return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.3, Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22 );
+#endif
   }
 }
 
@@ -1277,7 +1293,11 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
 
   mSpinBox = new QSpinBox();
   //set spinbox to a reasonable width
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int largestCharWidth = mSpinBox->fontMetrics().width( QStringLiteral( "888%" ) );
+#else
+  int largestCharWidth = mSpinBox->fontMetrics().horizontalAdvance( QStringLiteral( "888%" ) );
+#endif
   mSpinBox->setMinimumWidth( largestCharWidth + 35 );
   mSpinBox->setMinimum( 0 );
   mSpinBox->setMaximum( convertRealToDisplay( componentRange() ) );
@@ -1588,7 +1608,11 @@ void QgsColorPreviewWidget::paintEvent( QPaintEvent *event )
 
 QSize QgsColorPreviewWidget::sizeHint() const
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   return QSize( Qgis::UI_SCALE_FACTOR *  fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ), Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXX" ) ) * 0.75 );
+#else
+  return QSize( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22, Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 22 * 0.75 );
+#endif
 }
 
 void QgsColorPreviewWidget::setColor2( const QColor &color )
