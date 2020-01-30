@@ -245,6 +245,14 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, Q
         c.setProperty( property, prop );
         settings->setDataDefinedProperties( c );
 
+        if ( property == QgsPalLayerSettings::BufferColor
+             || property == QgsPalLayerSettings::BufferSize )
+        {
+          QgsTextFormat format = settings->format();
+          format.buffer().setEnabled( true );
+          settings->setFormat( format );
+        }
+
         layer->labeling()->setSettings( settings, providerId );
       }
     }
