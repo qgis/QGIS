@@ -29,21 +29,8 @@ QgsGlowEffect::QgsGlowEffect()
 
 QgsGlowEffect::QgsGlowEffect( const QgsGlowEffect &other )
   : QgsPaintEffect( other )
-  , mSpread( other.spread() )
-  , mSpreadUnit( other.spreadUnit() )
-  , mSpreadMapUnitScale( other.spreadMapUnitScale() )
-  , mBlurLevel( other.blurLevel() )
-  , mBlurUnit( other.mBlurUnit )
-  , mBlurMapUnitScale( other.mBlurMapUnitScale )
-  , mOpacity( other.opacity() )
-  , mColor( other.color() )
-  , mBlendMode( other.blendMode() )
-  , mColorType( other.colorType() )
 {
-  if ( other.ramp() )
-  {
-    mRamp = other.ramp()->clone();
-  }
+  operator=( other );
 }
 
 QgsGlowEffect::~QgsGlowEffect()
@@ -216,8 +203,12 @@ QgsGlowEffect &QgsGlowEffect::operator=( const QgsGlowEffect &rhs )
   delete mRamp;
 
   mSpread = rhs.spread();
+  mSpreadUnit = rhs.spreadUnit();
+  mSpreadMapUnitScale = rhs.spreadMapUnitScale();
   mRamp = rhs.ramp() ? rhs.ramp()->clone() : nullptr;
   mBlurLevel = rhs.blurLevel();
+  mBlurUnit = rhs.mBlurUnit;
+  mBlurMapUnitScale = rhs.mBlurMapUnitScale;
   mOpacity = rhs.opacity();
   mColor = rhs.color();
   mBlendMode = rhs.blendMode();
