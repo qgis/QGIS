@@ -1579,6 +1579,10 @@ QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParam
       for ( const QVariant &var : constToList )
         resultStringList << var.toString();
     }
+    else if ( val.type() == QVariant::StringList )
+    {
+      resultStringList = val.toStringList();
+    }
     else
       resultStringList.append( val.toString().split( ';' ) );
   }
@@ -1594,6 +1598,10 @@ QStringList QgsProcessingParameters::parameterAsFields( const QgsProcessingParam
         const auto constToList = definition->defaultValue().toList();
         for ( const QVariant &var : constToList )
           resultStringList << var.toString();
+      }
+      else if ( definition->defaultValue().type() == QVariant::StringList )
+      {
+        resultStringList = definition->defaultValue().toStringList();
       }
       else
         resultStringList.append( definition->defaultValue().toString().split( ';' ) );
