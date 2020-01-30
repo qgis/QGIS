@@ -37,6 +37,7 @@ on the command line.
 #include <QCommandLineParser>
 #include <QObject>
 
+
 #ifndef Q_OS_WIN
 #include <csignal>
 #endif
@@ -175,6 +176,9 @@ int main( int argc, char *argv[] )
     }
   }
 
+  // Disable parallel rendering because if its internal loop
+  //qputenv( "QGIS_SERVER_PARALLEL_RENDERING", "0" );
+
   // Create server
   QTcpServer tcpServer;
 
@@ -198,6 +202,8 @@ int main( int argc, char *argv[] )
 #ifndef Q_OS_WIN
     std::cout << QObject::tr( "CTRL+C to exit" ).toStdString() << std::endl;
 #endif
+
+    QAtomicInt connCounter { 0 };
 
     static const QMap<int, QString> knownStatuses
     {
@@ -229,11 +235,28 @@ int main( int argc, char *argv[] )
     {
       QTcpSocket *clientConnection = tcpServer.nextPendingConnection();
 
-      clientConnection->connect( clientConnection, &QAbstractSocket::disconnected,
-                                 clientConnection, &QObject::deleteLater );
+      connCounter++;
+
+      //qDebug() << "Active connections: " << connCounter;
+
+      // Lambda disconnect context
+      QObject *context { new QObject };
+
+      // Deletes the connection later
+      auto connectionDeleter = [ =, &connCounter ]()
+      {
+        clientConnection->deleteLater();
+        connCounter--;
+      };
+
+      // This will delete the connection when disconnected before ready read is called
+      clientConnection->connect( clientConnection, &QAbstractSocket::disconnected, context, connectionDeleter );
 
       // Incoming connection parser
-      clientConnection->connect( clientConnection, &QIODevice::readyRead, [ =, &server ] {
+      clientConnection->connect( clientConnection, &QIODevice::readyRead, context, [ =, &server, &connCounter ] {
+
+        // Disconnect the lambdas
+        delete context;
 
         // Read all incoming data
         QString incomingData;
@@ -335,6 +358,20 @@ int main( int argc, char *argv[] )
 
           server.handleRequest( request, response );
 
+          // The QGIS server machinery calls processEvents and has internal loop events
+          // that might change the connection state
+          if ( clientConnection->state() == QAbstractSocket::SocketState::ConnectedState )
+          {
+            clientConnection->connect( clientConnection, &QAbstractSocket::disconnected,
+                                       clientConnection, connectionDeleter );
+          }
+          else
+          {
+            connCounter --;
+            clientConnection->deleteLater();
+            return;
+          }
+
           auto elapsedTime { std::chrono::steady_clock::now() - start };
 
           if ( ! knownStatuses.contains( response.statusCode() ) )
@@ -363,9 +400,23 @@ int main( int argc, char *argv[] )
                     .arg( firstLinePieces.join( ' ' ) )
                     .arg( response.statusCode() ).toStdString() << std::endl;
 
+          clientConnection->disconnectFromHost();
         }
         catch ( HttpException &ex )
         {
+
+          if ( clientConnection->state() == QAbstractSocket::SocketState::ConnectedState )
+          {
+            clientConnection->connect( clientConnection, &QAbstractSocket::disconnected,
+                                       clientConnection, connectionDeleter );
+          }
+          else
+          {
+            connCounter --;
+            clientConnection->deleteLater();
+            return;
+          }
+
           // Output stream: send error
           clientConnection->write( QStringLiteral( "HTTP/1.0 %1 %2\r\n" ).arg( 500 ).arg( knownStatuses.value( 500 ) ).toUtf8() );
           clientConnection->write( QStringLiteral( "Server: QGIS\r\n" ).toUtf8() );
@@ -377,8 +428,9 @@ int main( int argc, char *argv[] )
                     .arg( QDateTime::currentDateTime().toString() )
                     .arg( ex.message() ).toStdString() << std::endl;
 
+          clientConnection->disconnectFromHost();
         }
-        clientConnection->disconnectFromHost();
+
       } );
 
     } );
@@ -387,9 +439,21 @@ int main( int argc, char *argv[] )
 
   // Exit handlers
 #ifndef Q_OS_WIN
-  signal( SIGTERM, []( int ) { qApp->quit(); } );
-  signal( SIGABRT, []( int ) { qApp->quit(); } );
-  signal( SIGINT, []( int ) { qApp->quit(); } );
+
+  auto exitHandler = [ ]( int signal )
+  {
+    std::cout << QStringLiteral( "Signal %1 received: quitting" ).arg( signal ).toStdString() << std::endl;
+    qApp->quit();
+  };
+
+  signal( SIGTERM, exitHandler );
+  signal( SIGABRT, exitHandler );
+  signal( SIGINT, exitHandler );
+  signal( SIGPIPE, [ ]( int )
+  {
+    std::cerr << QStringLiteral( "Signal SIGPIPE received: ignoring" ).toStdString() << std::endl;
+  } );
+
 #endif
 
   app.exec();
