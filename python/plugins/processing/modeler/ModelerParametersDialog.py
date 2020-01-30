@@ -291,8 +291,15 @@ class ModelerParametersDialog(QDialog):
                 return self.model.parameterDefinition(value.parameterName()).description()
             elif value.source() == QgsProcessingModelChildParameterSource.ChildOutput:
                 alg = self.model.childAlgorithm(value.outputChildId())
-                return self.tr("'{0}' from algorithm '{1}'").format(
-                    alg.algorithm().outputDefinition(value.outputName()).description(), alg.description())
+
+                output_name = alg.algorithm().outputDefinition(value.outputName()).description()
+                # see if this output has been named by the model designer -- if so, we use that friendly name
+                for name, output in alg.modelOutputs().items():
+                    if output.childOutputName() == value.outputName():
+                        output_name = name
+                        break
+
+                return self.tr("'{0}' from algorithm '{1}'").format(output_name, alg.description())
 
         return value
 
