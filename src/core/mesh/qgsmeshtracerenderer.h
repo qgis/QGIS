@@ -298,7 +298,7 @@ class QgsMeshStreamField
     QPoint mFieldTopLeftInDeviceCoordinates;
     bool mValid = false;
     double mMaximumMagnitude = 0;
-    double mPixelFillingDensity;
+    double mPixelFillingDensity = 0;
     double mMinMagFilter = -1;
     double mMaxMagFilter = -1;
     const QgsRenderContext &mRenderContext; //keep the renderer context only to know if the renderer is stopped

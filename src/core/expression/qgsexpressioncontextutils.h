@@ -327,7 +327,7 @@ class CORE_EXPORT QgsExpressionContextUtils
 
         QList< QPointer< QgsMapLayer > > mLayers;
         QMap< QPointer< QgsMapLayer >, QPair< double, double > > mScaleBasedVisibilityDetails;
-        double mScale;
+        double mScale = 0.0;
 
     };
 
