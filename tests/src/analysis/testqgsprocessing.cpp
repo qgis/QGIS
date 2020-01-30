@@ -4913,6 +4913,18 @@ void TestQgsProcessing::parameterField()
   fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
   QCOMPARE( fields, QStringList() << "def" );
 
+  // optional with string list default
+  def.reset( new QgsProcessingParameterField( "optional", QString(), QStringList() << QStringLiteral( "def" ) << QStringLiteral( "abc" ), QString(), QgsProcessingParameterField::Any, true, true ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
+  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  QCOMPARE( fields, QStringList() << "def" << "abc" );
+  params.insert( "optional",  QVariantList() << "f" << "h" );
+  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  QCOMPARE( fields, QStringList() << "f" << "h" );
+  params.insert( "optional",  QStringList() << "g" << "h" );
+  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  QCOMPARE( fields, QStringList() << "g" << "h" );
+
   // optional, no default
   def.reset( new QgsProcessingParameterField( "optional", QString(), QVariant(), QString(), QgsProcessingParameterField::Any, false, true ) );
   params.insert( "optional",  QVariant() );
