@@ -54,6 +54,7 @@ class TestQgsAttributeForm : public QObject
     void testDefaultValueUpdate();
     void testDefaultValueUpdateRecursion();
     void testSameFieldSync();
+    void testZeroDoubles();
 
   private:
     QLabel *constraintsLabel( QgsAttributeForm *form, QgsEditorWidgetWrapper *ww )
@@ -1107,6 +1108,21 @@ void TestQgsAttributeForm::testSameFieldSync()
   QCOMPARE( les[0]->cursorPosition(), 3 );
   QCOMPARE( les[1]->text(), QString( "1230" ) );
   QCOMPARE( les[1]->cursorPosition(), 4 );
+}
+
+void TestQgsAttributeForm::testZeroDoubles()
+{
+  // See issue GH #34118
+  QString def = QStringLiteral( "Point?field=col0:double" );
+  QgsVectorLayer layer { def, QStringLiteral( "test" ), QStringLiteral( "memory" ) };
+  layer.setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "TextEdit" ), QVariantMap() ) );
+  QgsFeature ft( layer.dataProvider()->fields(), 1 );
+  ft.setAttribute( QStringLiteral( "col0" ), 0.0 );
+  QgsAttributeForm form( &layer );
+  form.setFeature( ft );
+  QList<QLineEdit *> les = form.findChildren<QLineEdit *>( "col0" );
+  QCOMPARE( les.count(), 1 );
+  QCOMPARE( les.at( 0 )->text(), QStringLiteral( "0" ) );
 }
 
 QGSTEST_MAIN( TestQgsAttributeForm )

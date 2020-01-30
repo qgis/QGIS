@@ -54,9 +54,14 @@ QVariant QgsTextEditWrapper::value() const
     v = mLineEdit->text();
   }
 
-  if ( ( v.isEmpty() && ( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) ) ||
-       v == QgsApplication::nullRepresentation() )
+  if ( ( v.isEmpty() && ( field().type() == QVariant::Int
+                          || field().type() == QVariant::Double
+                          || field().type() == QVariant::LongLong
+                          || field().type() == QVariant::Date ) )
+       || v == QgsApplication::nullRepresentation() )
+  {
     return QVariant( field().type() );
+  }
 
   if ( !defaultValue().isNull() && v == defaultValue().toString() )
   {
@@ -247,9 +252,14 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
     v = v.remove( QLocale().groupSeparator() );
   }
 
-  if ( mTextEdit )
+  const QVariant currentValue { value( ) };
+  // Note: comparing QVariants leads to funny (and wrong) results:
+  // QVariant(0.0) == QVariant(QVariant.Double) -> True
+  const bool changed { val != currentValue || val.isNull() != currentValue.isNull() };
+
+  if ( changed )
   {
-    if ( val != value() )
+    if ( mTextEdit )
     {
       if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
       {
@@ -261,18 +271,19 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
         }
       }
       else
+      {
         mTextEdit->setPlainText( v );
+      }
+    }
+    else if ( mPlainTextEdit )
+    {
+      mPlainTextEdit->setPlainText( v );
+    }
+    else if ( mLineEdit )
+    {
+      mLineEdit->setText( v );
     }
   }
-
-  if ( mPlainTextEdit )
-  {
-    if ( val != value() )
-      mPlainTextEdit->setPlainText( v );
-  }
-
-  if ( mLineEdit && val != value() )
-    mLineEdit->setText( v );
 }
 
 void QgsTextEditWrapper::setHint( const QString &hintText )
