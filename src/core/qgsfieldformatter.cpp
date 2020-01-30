@@ -30,7 +30,14 @@ QString QgsFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex
   if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginProvider && layer->dataProvider() )
     defVal = layer->dataProvider()->defaultValueClause( layer->fields().fieldOriginIndex( fieldIndex ) );
 
-  return value == defVal ? defVal : layer->fields().at( fieldIndex ).displayString( value );
+  if ( layer->fields().exists( fieldIndex ) && ( defVal.isNull() || defVal != value ) )
+  {
+    return layer->fields().at( fieldIndex ).displayString( value );
+  }
+  else
+  {
+    return defVal;
+  }
 }
 
 QVariant QgsFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
