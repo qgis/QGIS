@@ -30,13 +30,13 @@ QString QgsFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex
   if ( layer->fields().fieldOrigin( fieldIndex ) == QgsFields::OriginProvider && layer->dataProvider() )
     defVal = layer->dataProvider()->defaultValueClause( layer->fields().fieldOriginIndex( fieldIndex ) );
 
-  if ( layer->fields().exists( fieldIndex ) && ( defVal.isNull() || defVal != value ) )
+  if ( ! layer->fields().exists( fieldIndex ) )
   {
-    return layer->fields().at( fieldIndex ).displayString( value );
+    return defVal;
   }
   else
   {
-    return defVal;
+    return layer->fields().at( fieldIndex ).displayString( value.isNull() ? defVal : value );
   }
 }
 
