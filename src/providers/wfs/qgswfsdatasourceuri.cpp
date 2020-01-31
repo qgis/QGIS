@@ -202,11 +202,18 @@ QUrl QgsWFSDataSourceURI::requestUrl( const QString &request, const Method &meth
         // One could argue that the server should expose them in the DCP endpoint.
         url = QUrl( mGetEndpoints[ request ] );
         urlQuery = QUrlQuery( url );
+        // OGC case insensitive keys KVP: see https://github.com/qgis/QGIS/issues/34148
+        QSet<QString> upperCaseQueryItemKeys;
+        const QList<QPair<QString, QString>> constQueryItems { urlQuery.queryItems() };
+        for ( const auto &qi : constQueryItems )
+        {
+          upperCaseQueryItemKeys.insert( qi.first.toUpper() );
+        }
         const QUrlQuery defaultUrlQuery( defaultUrl );
         const auto itemsDefaultUrl( defaultUrlQuery.queryItems() );
         for ( const auto &item : itemsDefaultUrl )
         {
-          if ( !urlQuery.hasQueryItem( item.first ) )
+          if ( !upperCaseQueryItemKeys.contains( item.first.toUpper() ) )
           {
             urlQuery.addQueryItem( item.first, item.second );
           }
