@@ -445,7 +445,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # with fallback
         options = QgsVectorLayer.LayerOptions()
         options.fallbackWkbType = QgsWkbTypes.CircularString
-        options.fallbackCrs = QgsCoordinateReferenceSystem('EPSG:3111')
+        options.fallbackCrs = QgsCoordinateReferenceSystem.fromEpsgId(3111)
         vl = QgsVectorLayer("i'm the moon", options=options)
         self.assertFalse(vl.isValid())
         self.assertEqual(vl.wkbType(), QgsWkbTypes.CircularString)
@@ -1970,7 +1970,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         temp_layer.dataProvider().addFeatures([f1])
 
         # set project CRS and ellipsoid
-        srs = QgsCoordinateReferenceSystem(3111, QgsCoordinateReferenceSystem.EpsgCrsId)
+        srs = QgsCoordinateReferenceSystem.fromEpsgId(3111)
         QgsProject.instance().setCrs(srs)
         QgsProject.instance().setEllipsoid("WGS84")
         QgsProject.instance().setDistanceUnits(QgsUnitTypes.DistanceMeters)
@@ -2000,7 +2000,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         temp_layer.dataProvider().addFeatures([f1])
 
         # set project CRS and ellipsoid
-        srs = QgsCoordinateReferenceSystem(3111, QgsCoordinateReferenceSystem.EpsgCrsId)
+        srs = QgsCoordinateReferenceSystem.fromEpsgId(3111)
         QgsProject.instance().setCrs(srs)
         QgsProject.instance().setEllipsoid("WGS84")
         QgsProject.instance().setAreaUnits(QgsUnitTypes.AreaSquareMeters)
@@ -2721,7 +2721,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
     def testClone(self):
         # init crs
-        srs = QgsCoordinateReferenceSystem(3111, QgsCoordinateReferenceSystem.EpsgCrsId)
+        srs = QgsCoordinateReferenceSystem.fromEpsgId(3111)
 
         # init map layer styles
         tmplayer = createLayerWithTwoPoints()
@@ -2943,7 +2943,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertAlmostEqual(virtual_values[4], -65.32, 2)
 
         # repeat, with reprojection on request
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'),
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem.fromEpsgId(3785),
                                                         QgsProject.instance().transformContext())
         features = [f for f in layer.getFeatures(request)]
         # virtual field value should not change, even though geometry has
@@ -3353,9 +3353,9 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         """Prepare tc"""
         super(TestQgsVectorLayerTransformContext, self).setUp()
         self.ctx = QgsCoordinateTransformContext()
-        self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
-        self.ctx.addCoordinateOperation(QgsCoordinateReferenceSystem(4326),
-                                        QgsCoordinateReferenceSystem(3857), 'test')
+        self.ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857), 1234, 1235)
+        self.ctx.addCoordinateOperation(QgsCoordinateReferenceSystem.fromEpsgId(4326),
+                                        QgsCoordinateReferenceSystem.fromEpsgId(3857), 'test')
 
     def testTransformContextIsSetInCtor(self):
         """Test transform context can be set from ctor"""
@@ -3363,13 +3363,13 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         vl = QgsVectorLayer(
             'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
             'test', 'memory')
-        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
 
         options = QgsVectorLayer.LayerOptions(self.ctx)
         vl = QgsVectorLayer(
             'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
             'test', 'memory', options)
-        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
 
     def testTransformContextInheritsFromProject(self):
         """Test that when a layer is added to a project it inherits its context"""
@@ -3377,15 +3377,15 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         vl = QgsVectorLayer(
             'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
             'test', 'memory')
-        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
 
         p = QgsProject()
-        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
         p.setTransformContext(self.ctx)
-        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
 
         p.addMapLayers([vl])
-        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
 
     def testTransformContextIsSyncedFromProject(self):
         """Test that when a layer is synced when project context changes"""
@@ -3393,24 +3393,24 @@ class TestQgsVectorLayerTransformContext(unittest.TestCase):
         vl = QgsVectorLayer(
             'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
             'test', 'memory')
-        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
 
         p = QgsProject()
-        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
         p.setTransformContext(self.ctx)
-        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
 
         p.addMapLayers([vl])
-        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
 
         # Now change the project context
         tc2 = QgsCoordinateTransformContext()
         p.setTransformContext(tc2)
-        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
-        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertFalse(p.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+        self.assertFalse(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
         p.setTransformContext(self.ctx)
-        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
-        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857)))
+        self.assertTrue(p.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
+        self.assertTrue(vl.transformContext().hasTransform(QgsCoordinateReferenceSystem.fromEpsgId(4326), QgsCoordinateReferenceSystem.fromEpsgId(3857)))
 
     def testSubsetStringInvalidLayer(self):
         """
