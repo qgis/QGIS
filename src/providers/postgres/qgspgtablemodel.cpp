@@ -45,7 +45,7 @@ QgsPgTableModel::QgsPgTableModel()
 
 void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProperty )
 {
-  QgsDebugMsg( layerProperty.toString() );
+  QgsDebugMsgLevel( layerProperty.toString(), 3 );
 
   // is there already a root item with the given scheme Name?
   QStandardItem *schemaItem = nullptr;
