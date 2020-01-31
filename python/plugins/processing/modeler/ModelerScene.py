@@ -161,7 +161,7 @@ class ModelerScene(QGraphicsScene):
         for alg in list(model.childAlgorithms().values()):
             outputs = alg.modelOutputs()
             outputItems = {}
-            idx = 0
+
             for key, out in outputs.items():
                 if out is not None:
                     item = ModelerGraphicItem(out, model, controls, scene=self)
@@ -169,6 +169,15 @@ class ModelerScene(QGraphicsScene):
                     item.setFlag(QGraphicsItem.ItemIsSelectable, True)
                     self.addItem(item)
                     pos = out.position()
+
+                    # find the actual index of the linked output from the child algorithm it comes from
+                    source_child_alg_outputs = alg.algorithm().outputDefinitions()
+                    idx = -1
+                    for i, child_alg_output in enumerate(source_child_alg_outputs):
+                        if child_alg_output.name() == out.childOutputName():
+                            idx = i
+                            break
+
                     if pos is None:
                         pos = (alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, 0) +
                                self.algItems[alg.childId()].getLinkPointForOutput(idx))
@@ -180,7 +189,6 @@ class ModelerScene(QGraphicsScene):
                     item.addArrow(arrow)
                     arrow.updatePath()
                     self.addItem(arrow)
-                    idx += 1
                 else:
                     outputItems[key] = None
             self.outputItems[alg.childId()] = outputItems
