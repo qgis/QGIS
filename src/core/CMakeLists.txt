@@ -376,6 +376,7 @@ SET(QGIS_CORE_SRCS
   qgsstringutils.cpp
   qgstablecell.cpp
   qgstaskmanager.cpp
+  qgstemporalproperty.cpp
   qgstemporalrangeobject.cpp
   qgstessellator.cpp
   qgstextrenderer.cpp
@@ -887,6 +888,7 @@ SET(QGIS_CORE_HDRS
   qgsstringutils.h
   qgstablecell.h
   qgstaskmanager.h
+  qgstemporalproperty.h
   qgstemporalrangeobject.h
   qgstessellator.h
   qgstestutils.h

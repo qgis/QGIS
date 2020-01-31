@@ -672,7 +672,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
      * Set datetime range for the map canvas.
      *
-     * Emits temporalRangeChanged(), after successfully update.
+     * Emits temporalRangeChanged(), after a successful update.
      *
      * \see temporalRange()
      * \since QGIS 3.14

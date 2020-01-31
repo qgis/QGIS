@@ -74,6 +74,8 @@ class CORE_EXPORT QgsTemporalRangeObject
     /**
      * Set datetime range for a temporal object.
      *
+     * It updates object temporal state to true if it was false.
+     *
      * When set, can be used to filter and request time base objects.
      *
      * \see temporalRange()

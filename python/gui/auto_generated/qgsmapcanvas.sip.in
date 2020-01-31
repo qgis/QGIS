@@ -736,7 +736,7 @@ for the canvas.
 %Docstring
 Set datetime range for the map canvas.
 
-Emits temporalRangeChanged(), after successfully update.
+Emits temporalRangeChanged(), after a successful update.
 
 .. seealso:: :py:func:`temporalRange`
 

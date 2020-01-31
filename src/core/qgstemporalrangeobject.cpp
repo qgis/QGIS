@@ -46,11 +46,11 @@ bool QgsTemporalRangeObject::isTemporal() const
 
 void QgsTemporalRangeObject::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
-  if ( !isTemporal() )
-    return;
-
   if ( dateTimeRange == mDateTimeRange )
     return;
+
+  if ( !isTemporal() )
+    setIsTemporal( true );
 
   mDateTimeRange = dateTimeRange;
 
