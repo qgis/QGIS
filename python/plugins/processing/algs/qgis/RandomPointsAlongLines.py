@@ -117,12 +117,14 @@ class RandomPointsAlongLines(QgisAlgorithm):
 
         random.seed()
 
+        ids = source.allFeatureIds()
+
         while nIterations < maxIterations and nPoints < pointCount:
             if feedback.isCanceled():
                 break
 
             # pick random feature
-            fid = random.randint(0, featureCount - 1)
+            fid = random.choice(ids)
             f = next(source.getFeatures(request.setFilterFid(fid).setSubsetOfAttributes([])))
             fGeom = f.geometry()
 
