@@ -26,8 +26,10 @@
   QT_END_NAMESPACE \
   int main(int argc, char *argv[]) \
   { \
+    QTemporaryDir dir; \
     QgsApplication app(argc, argv, false); \
-    app.init(); \
+    app.init( dir.path() ); \
+    dir.setAutoRemove( false ); \
     app.setAttribute(Qt::AA_Use96Dpi, true); \
     QTEST_DISABLE_KEYPAD_NAVIGATION \
     QTEST_ADD_GPU_BLACKLIST_SUPPORT \
