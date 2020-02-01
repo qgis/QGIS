@@ -146,7 +146,7 @@ jobs:
 #        osgeo4w | $(OSGEO4W_ARCH)
 #    displayName: Cache OSGeo4W
 
-  - powershell: ms-windows/osgeo4w/runasadmin.ps1 c:\osgeo4w-setup.exe --autoaccept --advanced --arch $env:OSGEO4W_ARCH --quiet-mode --upgrade-also --root $env:OSGEO4W_ROOT --only-site -s http://download.osgeo.org/osgeo4w -l c:\temp\osgeo4w -P $env:OSGEO4W_DEPS -P python3-clcache
+  - powershell: ms-windows/osgeo4w/runasadmin.ps1 c:\osgeo4w-setup.exe --autoaccept --advanced --arch $env:OSGEO4W_ARCH --quiet-mode --upgrade-also --root $env:OSGEO4W_ROOT --only-site -s http://ftp.osuosl.org/pub/osgeo/download/osgeo4w -l c:\temp\osgeo4w -P $env:OSGEO4W_DEPS -P python3-clcache
     displayName: 'Installing OSGeo4W'
 
   - script: |
