@@ -2484,7 +2484,7 @@ QList<long> QgsCoordinateReferenceSystem::userSrsIds()
     }
     else
     {
-      QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( database.get() ) ), QObject::tr( "SpatiaLite" ) );
+      QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1\nDatabase: %3" ).arg( sql, sqlite3_errmsg( database.get() ), db ), QObject::tr( "SpatiaLite" ) );
       break;
     }
   }
