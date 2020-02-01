@@ -2452,7 +2452,8 @@ void QgsMapCanvas::startPreviewJob( int number )
   for ( QgsMapLayer *layer : layers )
   {
     context.lastRenderingTimeMs = mLastLayerRenderTime.value( layer->id(), 0 );
-    if ( !layer->dataProvider()->renderInPreview( context ) )
+    QgsDataProvider *provider = layer->dataProvider();
+    if ( provider && !provider->renderInPreview( context ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "Layer %1 not rendered because it does not match the renderInPreview criterion %2" ).arg( layer->id() ).arg( mLastLayerRenderTime.value( layer->id() ) ), 3 );
       continue;

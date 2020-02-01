@@ -214,7 +214,8 @@ int QgsRasterLayer::bandCount() const
 
 QString QgsRasterLayer::bandName( int bandNo ) const
 {
-  return dataProvider()->generateBandName( bandNo );
+  if ( !mDataProvider ) return QString();
+  return mDataProvider->generateBandName( bandNo );
 }
 
 void QgsRasterLayer::setRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle )
@@ -486,7 +487,8 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
 
   // Only do this for the GDAL provider?
   // Maybe WMS can do this differently using QImage::numColors and QImage::color()
-  if ( mDataProvider->colorInterpretation( bandNumber ) == QgsRaster::PaletteIndex )
+  if ( mDataProvider &&
+       mDataProvider->colorInterpretation( bandNumber ) == QgsRaster::PaletteIndex )
   {
     QgsDebugMsgLevel( QStringLiteral( "....found paletted image" ), 4 );
     QgsColorRampShader myShader;
@@ -546,7 +548,8 @@ double QgsRasterLayer::rasterUnitsPerPixelX() const
 // We can only use one of the mGeoTransform[], so go with the
 // horisontal one.
 
-  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && !qgsDoubleNear( mDataProvider->xSize(), 0.0 ) )
+  if ( mDataProvider &&
+       mDataProvider->capabilities() & QgsRasterDataProvider::Size && !qgsDoubleNear( mDataProvider->xSize(), 0.0 ) )
   {
     return mDataProvider->extent().width() / mDataProvider->xSize();
   }
@@ -555,7 +558,8 @@ double QgsRasterLayer::rasterUnitsPerPixelX() const
 
 double QgsRasterLayer::rasterUnitsPerPixelY() const
 {
-  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && !qgsDoubleNear( mDataProvider->ySize(), 0.0 ) )
+  if ( mDataProvider &&
+       mDataProvider->capabilities() & QgsRasterDataProvider::Size && !qgsDoubleNear( mDataProvider->ySize(), 0.0 ) )
   {
     return mDataProvider->extent().height() / mDataProvider->ySize();
   }
@@ -908,6 +912,8 @@ void QgsRasterLayer::computeMinMax( int band,
 
   min = std::numeric_limits<double>::quiet_NaN();
   max = std::numeric_limits<double>::quiet_NaN();
+  if ( !mDataProvider )
+    return;
 
   if ( limits == QgsRasterMinMaxOrigin::MinMax )
   {
@@ -1312,6 +1318,8 @@ void QgsRasterLayer::setSubLayerVisibility( const QString &name, bool vis )
 
 QDateTime QgsRasterLayer::timestamp() const
 {
+  if ( !mDataProvider )
+    return QDateTime();
   return mDataProvider->timestamp();
 }
 
@@ -1559,6 +1567,8 @@ void QgsRasterLayer::setTransformContext( const QgsCoordinateTransformContext &t
 
 QStringList QgsRasterLayer::subLayers() const
 {
+  if ( ! mDataProvider )
+    return QStringList();
   return mDataProvider->subLayers();
 }
 
@@ -2306,7 +2316,7 @@ bool QgsRasterLayer::update()
 {
   QgsDebugMsgLevel( QStringLiteral( "entered." ), 4 );
   // Check if data changed
-  if ( mDataProvider->dataTimestamp() > mDataProvider->timestamp() )
+  if ( mDataProvider && mDataProvider->dataTimestamp() > mDataProvider->timestamp() )
   {
     QgsDebugMsgLevel( QStringLiteral( "reload data" ), 4 );
     closeDataProvider();

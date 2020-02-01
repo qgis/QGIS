@@ -13252,10 +13252,13 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     case QgsMapLayerType::RasterLayer:
     {
       const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
-      if ( rlayer->dataProvider()->dataType( 1 ) != Qgis::ARGB32
-           && rlayer->dataProvider()->dataType( 1 ) != Qgis::ARGB32_Premultiplied )
+      const QgsRasterDataProvider *dprovider = rlayer->dataProvider();
+
+      if ( dprovider
+           && dprovider->dataType( 1 ) != Qgis::ARGB32
+           && dprovider->dataType( 1 ) != Qgis::ARGB32_Premultiplied )
       {
-        if ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
+        if ( dprovider->capabilities() & QgsRasterDataProvider::Size )
         {
           mActionFullHistogramStretch->setEnabled( true );
         }
@@ -13359,8 +13362,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       QgsMapToolIdentify::IdentifyMode identifyMode = settings.enumValue( QStringLiteral( "Map/identifyMode" ), QgsMapToolIdentify::ActiveLayer );
       if ( identifyMode == QgsMapToolIdentify::ActiveLayer )
       {
-        const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
-        const QgsRasterDataProvider *dprovider = rlayer->dataProvider();
         if ( dprovider )
         {
           // does provider allow the identify map tool?
