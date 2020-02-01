@@ -223,6 +223,7 @@ SET(TESTS
  testqgssvgmarker.cpp
  testqgssymbol.cpp
  testqgstaskmanager.cpp
+ testqgstemporalproperty.cpp
  testqgstemporalrangeobject.cpp
  testqgstracer.cpp
  testqgstriangularmesh.cpp
