@@ -226,8 +226,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         attributeTable->setEnabled( vlayer->isValid() );
 
         // allow editing
-        unsigned int cap = vlayer->dataProvider()->capabilities();
-        if ( cap & QgsVectorDataProvider::EditingCapabilities )
+        const QgsVectorDataProvider *provider = vlayer->dataProvider();
+        if ( provider &&
+             ( provider->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
         {
           if ( toggleEditingAction )
           {
@@ -244,7 +245,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( allEditsAction->isEnabled() )
           menu->addAction( allEditsAction );
 
-        if ( vlayer->dataProvider()->supportsSubsetString() )
+        if ( provider && provider->supportsSubsetString() )
         {
           QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), &QgisApp::layerSubsetString );
           action->setEnabled( !vlayer->isEditable() );

@@ -637,7 +637,7 @@ QgsWkbTypes::Type QgsVectorLayer::wkbType() const
 
 QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
 {
-  if ( !mValid || !isSpatial() || mSelectedFeatureIds.isEmpty() ) //no selected features
+  if ( !mValid || !isSpatial() || mSelectedFeatureIds.isEmpty() || !mDataProvider ) //no selected features
   {
     return QgsRectangle( 0, 0, 0, 0 );
   }
@@ -3199,6 +3199,8 @@ QgsFields QgsVectorLayer::fields() const
 QgsAttributeList QgsVectorLayer::primaryKeyAttributes() const
 {
   QgsAttributeList pkAttributesList;
+  if ( !mDataProvider )
+    return pkAttributesList;
 
   QgsAttributeList providerIndexes = mDataProvider->pkAttributeIndexes();
   for ( int i = 0; i < mFields.count(); ++i )
@@ -3232,7 +3234,7 @@ QgsFeatureSource::FeatureAvailability QgsVectorLayer::hasFeatures() const
       return QgsFeatureSource::FeatureAvailability::FeaturesMaybeAvailable;
   }
 
-  if ( ( !mEditBuffer || addedFeatures.empty() ) && mDataProvider->empty() )
+  if ( ( !mEditBuffer || addedFeatures.empty() ) && mDataProvider && mDataProvider->empty() )
     return QgsFeatureSource::FeatureAvailability::NoFeaturesAvailable;
   else
     return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
@@ -3292,6 +3294,12 @@ bool QgsVectorLayer::rollBack( bool deleteBuffer )
 {
   if ( !mEditBuffer )
   {
+    return false;
+  }
+
+  if ( !mDataProvider )
+  {
+    mCommitErrors << tr( "ERROR: no provider" );
     return false;
   }
 
@@ -3414,7 +3422,7 @@ bool QgsVectorLayer::addFeatures( QgsFeatureList &features, Flags )
 void QgsVectorLayer::setCoordinateSystem()
 {
   // if layer is not spatial, it has not CRS!
-  setCrs( isSpatial() ? mDataProvider->crs() : QgsCoordinateReferenceSystem() );
+  setCrs( ( isSpatial() && mDataProvider ) ? mDataProvider->crs() : QgsCoordinateReferenceSystem() );
 }
 
 QString QgsVectorLayer::displayField() const
@@ -3784,7 +3792,7 @@ void QgsVectorLayer::updateFields()
 
 QVariant QgsVectorLayer::defaultValue( int index, const QgsFeature &feature, QgsExpressionContext *context ) const
 {
-  if ( index < 0 || index >= mFields.count() )
+  if ( index < 0 || index >= mFields.count() || !mDataProvider )
     return QVariant();
 
   QString expression = mFields.at( index ).defaultValueDefinition().expression();
@@ -4867,7 +4875,11 @@ QString QgsVectorLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Comment" ) + QStringLiteral( "</td><td>" ) + dataComment() + QStringLiteral( "</td></tr>\n" );
 
   // encoding
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Encoding" ) + QStringLiteral( "</td><td>" ) + dataProvider()->encoding() + QStringLiteral( "</td></tr>\n" );
+  const QgsVectorDataProvider *provider = dataProvider();
+  if ( provider )
+  {
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Encoding" ) + QStringLiteral( "</td><td>" ) + provider->encoding() + QStringLiteral( "</td></tr>\n" );
+  }
 
   if ( isSpatial() )
   {
@@ -5254,7 +5266,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
 
 QgsFieldConstraints::Constraints QgsVectorLayer::fieldConstraints( int fieldIndex ) const
 {
-  if ( fieldIndex < 0 || fieldIndex >= mFields.count() )
+  if ( fieldIndex < 0 || fieldIndex >= mFields.count() || !mDataProvider )
     return nullptr;
 
   QgsFieldConstraints::Constraints constraints = mFields.at( fieldIndex ).constraints().constraints();
