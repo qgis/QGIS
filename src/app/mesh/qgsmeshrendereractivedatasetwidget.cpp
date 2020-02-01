@@ -141,8 +141,11 @@ void QgsMeshRendererActiveDatasetWidget::setTimeRange()
 
 void QgsMeshRendererActiveDatasetWidget::enableTimeControls()
 {
-  const int scalarDatesets = mMeshLayer->dataProvider()->datasetCount( mActiveScalarDatasetGroup );
-  const int vectorDatesets = mMeshLayer->dataProvider()->datasetCount( mActiveVectorDatasetGroup );
+  const QgsMeshDataProvider *provider = mMeshLayer->dataProvider();
+  if ( !provider )
+    return;
+  const int scalarDatesets = provider->datasetCount( mActiveScalarDatasetGroup );
+  const int vectorDatesets = provider->datasetCount( mActiveVectorDatasetGroup );
   const bool isTimeVarying = ( scalarDatesets > 1 ) || ( vectorDatesets > 1 );
   mTimeComboBox->setEnabled( isTimeVarying );
   mDatasetSlider->setEnabled( isTimeVarying );
