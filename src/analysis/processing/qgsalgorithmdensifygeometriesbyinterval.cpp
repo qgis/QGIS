@@ -96,7 +96,7 @@ QgsFeatureList QgsDensifyGeometriesByIntervalAlgorithm::processFeature( const Qg
     interval = mIntervalProperty.valueAsDouble( context.expressionContext(), interval );
 
   if ( feature.hasGeometry() )
-    modifiedFeature.setGeometry( feature.geometry().densifyByDistance( mInterval ) );
+    modifiedFeature.setGeometry( feature.geometry().densifyByDistance( interval ) );
 
   return QgsFeatureList() << modifiedFeature;
 }
