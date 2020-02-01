@@ -476,7 +476,7 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
     // the user may have started dragging a rect to select vertices
     if ( !mDraggingVertex && !mDraggingEdge )
-      mSelectionRectStartPos.reset( new QPoint( e->pos() ) );
+      mSelectionRubberBandStartPos.reset( new QPoint( e->pos() ) );
   }
 }
 
@@ -509,14 +509,16 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       mouseMoveNotDragging( e );
     }
   }
-  else if ( mSelectionRect )
+  else if ( mSelectionRubberBand )
   {
     // only handling of selection rect being dragged
-    QgsPointXY pt0 = toMapCoordinates( *mSelectionRectStartPos );
+    QgsPointXY pt0 = toMapCoordinates( *mSelectionRubberBandStartPos );
     QgsPointXY pt1 = toMapCoordinates( e->pos() );
     QgsRectangle map_rect( pt0, pt1 );
     QList<Vertex> vertices;
     QList<Vertex> selectedVertices;
+
+    QgsGeometry rubberBandGeometry = mSelectionRubberBand->asGeometry();
 
     // the logic for selecting vertices using rectangle:
     // - if we have a bound (locked) feature, we only allow selection of its vertices
@@ -534,7 +536,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       if ( mLockedFeature && mLockedFeature->layer() != vlayer )
         continue;  // with locked feature we only allow selection of its vertices
 
-      QgsRectangle layerRect = toLayerCoordinates( vlayer, map_rect );
+      QgsRectangle layerRect = toLayerCoordinates( vlayer, rubberBandGeometry.boundingBox() );
       QgsFeature f;
       QgsFeatureIterator fi = vlayer->getFeatures( QgsFeatureRequest( layerRect ).setNoAttributes() );
       while ( fi.nextFeature( f ) )
@@ -547,7 +549,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         for ( int i = 0; i < g.constGet()->nCoordinates(); ++i )
         {
           QgsPointXY pt = g.vertexAt( i );
-          if ( layerRect.contains( pt ) )
+          if ( rubberBandGeometry.contains( &pt ) )
           {
             vertices << Vertex( vlayer, f.id(), i );
 
@@ -572,7 +574,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     setHighlightedVertices( vertices, mode );
 
-    stopSelectionRect();
+    stopSelectionRubberBand();
   }
   else  // selection rect is not being dragged
   {
@@ -601,7 +603,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         // cancel action
         stopDragging();
       }
-      else if ( !mSelectionRect )
+      else if ( !mSelectionRubberBand )
       {
         // Right-click to select/delect a feature for editing (also gets selected in vertex editor).
         // If there are multiple features at one location, cycle through them with subsequent right clicks.
@@ -610,7 +612,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     }
   }
 
-  mSelectionRectStartPos.reset();
+  mSelectionRubberBandStartPos.reset();
 }
 
 void QgsVertexTool::cadCanvasMoveEvent( QgsMapMouseEvent *e )
@@ -636,16 +638,16 @@ void QgsVertexTool::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   {
     mouseMoveDraggingEdge( e );
   }
-  else if ( mSelectionRectStartPos )
+  else if ( mSelectionRubberBandStartPos )
   {
     // the user may be dragging a rect to select vertices
-    if ( !mSelectionRect && ( e->pos() - *mSelectionRectStartPos ).manhattanLength() >= 10 )
+    if ( !mSelectionRubberBand && ( e->pos() - *mSelectionRubberBandStartPos ).manhattanLength() >= 10 )
     {
-      startSelectionRect( *mSelectionRectStartPos );
+      initSelectionRubberBand();
     }
-    if ( mSelectionRect )
+    if ( mSelectionRubberBand )
     {
-      updateSelectionRect( e->pos() );
+      updateSelectionRubberBand( e );
     }
   }
   else
@@ -2430,28 +2432,28 @@ void QgsVertexTool::highlightAdjacentVertex( double offset )
   zoomToVertex( vertex );  // make sure the vertex is visible
 }
 
-void QgsVertexTool::startSelectionRect( QPoint point0 )
+void QgsVertexTool::initSelectionRubberBand()
 {
-  Q_ASSERT( !mSelectionRect );
-  mSelectionRect.reset( new QRect() );
-  mSelectionRect->setTopLeft( point0 );
-  mSelectionRectItem = new QRubberBand( QRubberBand::Rectangle, canvas() );
+  if ( !mSelectionRubberBand )
+  {
+    mSelectionRubberBand = qgis::make_unique<QgsRubberBand>( mCanvas, QgsWkbTypes::PolygonGeometry );
+    QColor fillColor = QColor( 0, 120, 215, 63 );
+    QColor strokeColor = QColor( 0, 102, 204, 100 );
+    mSelectionRubberBand->setFillColor( fillColor );
+    mSelectionRubberBand->setStrokeColor( strokeColor );
+  }
 }
 
-void QgsVertexTool::updateSelectionRect( QPoint point1 )
+void QgsVertexTool::updateSelectionRubberBand( QgsMapMouseEvent *e )
 {
-  Q_ASSERT( mSelectionRect );
-  mSelectionRect->setBottomRight( point1 );
-  mSelectionRectItem->setGeometry( mSelectionRect->normalized() );
-  mSelectionRectItem->show();
+  QRect rect = QRect( e->pos(), *mSelectionRubberBandStartPos );
+  if ( mSelectionRubberBand )
+    mSelectionRubberBand->setToCanvasRectangle( rect );
 }
 
-void QgsVertexTool::stopSelectionRect()
+void QgsVertexTool::stopSelectionRubberBand()
 {
-  Q_ASSERT( mSelectionRect );
-  mSelectionRectItem->deleteLater();
-  mSelectionRectItem = nullptr;
-  mSelectionRect.reset();
+  mSelectionRubberBand.reset();
 }
 
 bool QgsVertexTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint, QgsPointXY *edgeCenterPtr )
