@@ -1767,7 +1767,7 @@ void QgsOptions::saveOptions()
   // Number settings
   mSettings->setValue( QStringLiteral( "locale/showGroupSeparator" ), cbShowGroupSeparator->isChecked( ) );
 
-  QgsLocalDefaultSettings::setBearingFormat( mBearingFormat.release() );
+  QgsLocalDefaultSettings::setBearingFormat( mBearingFormat.get() );
 
 #ifdef HAVE_OPENCL
   // OpenCL settings
