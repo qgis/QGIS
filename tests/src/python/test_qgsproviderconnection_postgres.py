@@ -164,6 +164,34 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         self.assertFalse('Raster2' in table_names)
         self.assertTrue('Raster1' in table_names)
 
+<<<<<<< HEAD
+=======
+    def test_true_false(self):
+        """Test returned values from BOOL queries"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+        self.assertEqual(conn.executeSql('SELECT FALSE'), [[False]])
+        self.assertEqual(conn.executeSql('SELECT TRUE'), [[True]])
+
+    def test_nulls(self):
+        """Test returned values from typed NULL queries"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+        self.assertEqual(conn.executeSql('SELECT NULL::bool'), [[None]])
+        self.assertEqual(conn.executeSql('SELECT NULL::text'), [[None]])
+        self.assertEqual(conn.executeSql('SELECT NULL::bytea'), [[None]])
+
+    def test_pk_cols_order(self):
+        """Test that PKs are returned in consistent order: see GH #34167"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+        self.assertEqual(conn.table('qgis_test', 'bikes_view').primaryKeyColumns(), ['pk', 'name'])
+        self.assertEqual(conn.table('qgis_test', 'some_poly_data_view').primaryKeyColumns(), ['pk', 'geom'])
+
+>>>>>>> 6d7072a6bb... Remove test case on not existent view
 
 if __name__ == '__main__':
     unittest.main()
