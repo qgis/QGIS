@@ -214,7 +214,6 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
         conn = md.createConnection(self.uri, {})
         self.assertEqual(conn.table('qgis_test', 'bikes_view').primaryKeyColumns(), ['pk', 'name'])
-        self.assertEqual(conn.table('qgis_test', 'somedataview').primaryKeyColumns(), ['pk', 'cnt', 'name', 'name2', 'num_char', 'geom'])
         self.assertEqual(conn.table('qgis_test', 'some_poly_data_view').primaryKeyColumns(), ['pk', 'geom'])
 
 
