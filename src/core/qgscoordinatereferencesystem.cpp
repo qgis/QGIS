@@ -1587,7 +1587,7 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt, bool allowP
     if ( authName.isEmpty() || authCode.isEmpty() )
     {
       // try 2, use proj's identify method and see if there's a nice candidate we can use
-      QgsProjUtils::identifyCrs( d->threadLocalProjObject(), authName, authCode );
+      QgsProjUtils::identifyCrs( d->threadLocalProjObject(), authName, authCode, QgsProjUtils::FlagMatchBoundCrsToUnderlyingSourceCrs );
     }
 
     if ( !authName.isEmpty() && !authCode.isEmpty() )
