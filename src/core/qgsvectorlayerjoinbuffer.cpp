@@ -82,6 +82,11 @@ bool QgsVectorLayerJoinBuffer::addJoin( const QgsVectorLayerJoinInfo &joinInfo )
     cacheJoinLayer( mVectorJoins.last() );
   }
 
+  if ( joinInfo.hasUpsertOnEdit() )
+  {
+    QgsProject::instance()->setEvaluateDefaultValues( true );
+  }
+
   // Wait for notifications about changed fields in joined layer to propagate them.
   // During project load the joined layers possibly do not exist yet so the connection will not be created,
   // but then QgsProject makes sure to call createJoinCaches() which will do the connection.
