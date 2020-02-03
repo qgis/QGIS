@@ -21,6 +21,7 @@
 #include <QProgressBar>
 #include <QToolBar>
 #include <QUrl>
+#include <QAction>
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
@@ -33,6 +34,7 @@
 #include "qgsapplication.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsmapthemecollection.h"
 
 #include "qgs3danimationsettings.h"
 #include "qgs3danimationwidget.h"
@@ -302,5 +304,37 @@ void Qgs3DMapCanvasDockWidget::onTotalPendingJobsCountChanged()
 
 void Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow()
 {
+  qDeleteAll( mMapThemeMenuPresetActions );
+  mMapThemeMenuPresetActions.clear();
 
+  QString currentTheme = mCanvas->map()->terrainMapTheme();
+
+  QAction *actionFollowMain = new QAction( tr( "(none)" ), mMapThemeMenu );
+  actionFollowMain->setCheckable( true );
+  if ( currentTheme.isEmpty() || !QgsProject::instance()->mapThemeCollection()->hasMapTheme( currentTheme ) )
+  {
+    actionFollowMain->setChecked( true );
+  }
+  connect( actionFollowMain, &QAction::triggered, this, [ = ]
+  {
+    mCanvas->map()->setTerrainMapTheme( QString() );
+  } );
+  mMapThemeMenuPresetActions.append( actionFollowMain );
+
+  const auto constMapThemes = QgsProject::instance()->mapThemeCollection()->mapThemes();
+  for ( const QString &grpName : constMapThemes )
+  {
+    QAction *a = new QAction( grpName, mMapThemeMenu );
+    a->setCheckable( true );
+    if ( grpName == currentTheme )
+    {
+      a->setChecked( true );
+    }
+    connect( a, &QAction::triggered, this, [a, this]
+    {
+      mCanvas->map()->setTerrainMapTheme( a->text() );
+    } );
+    mMapThemeMenuPresetActions.append( a );
+  }
+  mMapThemeMenu->addActions( mMapThemeMenuPresetActions );
 }

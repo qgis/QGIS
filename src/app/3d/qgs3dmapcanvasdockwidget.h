@@ -74,6 +74,7 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
     Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
     QMenu *mMapThemeMenu = nullptr;
+    QList<QAction *> mMapThemeMenuPresetActions;
 };
 
 #endif // QGS3DMAPCANVASDOCKWIDGET_H
