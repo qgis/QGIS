@@ -165,6 +165,11 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
       element.setAttribute( QStringLiteral( "value" ), value.toString() );
       break;
 
+    case QVariant::Char:
+      element.setAttribute( QStringLiteral( "type" ), QVariant::typeToName( value.type() ) );
+      element.setAttribute( QStringLiteral( "value" ), value.isNull() ? QString() : value.toString() );
+      break;
+
     case QVariant::Color:
       element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "color" ) );
       element.setAttribute( QStringLiteral( "value" ), value.value< QColor >().isValid() ? QgsSymbolLayerUtils::encodeColor( value.value< QColor >() ) : QString() );
