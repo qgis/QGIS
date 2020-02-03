@@ -38,7 +38,7 @@ void QgsMapToolEllipseFoci::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     if ( mPoints.size() < 2 )
       mPoints.append( point );
 
-    if ( !mPoints.isEmpty() && !mTempRubberBand )
+    if ( !mTempRubberBand )
     {
       mTempRubberBand = createGeometryRubberBand( mLayerType, true );
       mTempRubberBand->show();
