@@ -39,18 +39,15 @@ void QgsMapToolRegularPolygonCenterCorner::cadCanvasReleaseEvent( QgsMapMouseEve
 
   if ( e->button() == Qt::LeftButton )
   {
-    if ( mPoints.size() < 1 )
+    if ( mPoints.empty() )
       mPoints.append( point );
 
-    if ( !mPoints.isEmpty() )
+    if ( !mTempRubberBand )
     {
-      if ( !mTempRubberBand )
-      {
-        mTempRubberBand = createGeometryRubberBand( mLayerType, true );
-        mTempRubberBand->show();
+      mTempRubberBand = createGeometryRubberBand( mLayerType, true );
+      mTempRubberBand->show();
 
-        createNumberSidesSpinBox();
-      }
+      createNumberSidesSpinBox();
     }
   }
   else if ( e->button() == Qt::RightButton )

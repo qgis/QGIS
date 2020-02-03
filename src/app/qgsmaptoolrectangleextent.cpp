@@ -36,10 +36,10 @@ void QgsMapToolRectangleExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( e->button() == Qt::LeftButton )
   {
-    if ( mPoints.size() < 1 )
+    if ( mPoints.empty() )
       mPoints.append( point );
 
-    if ( !mPoints.isEmpty() && !mTempRubberBand )
+    if ( !mTempRubberBand )
     {
       mTempRubberBand = createGeometryRubberBand( mLayerType, true );
       mTempRubberBand->show();

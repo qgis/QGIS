@@ -34,10 +34,10 @@ void QgsMapToolCircle2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( e->button() == Qt::LeftButton )
   {
-    if ( mPoints.size() < 1 )
+    if ( mPoints.isEmpty() )
       mPoints.append( point );
 
-    if ( !mPoints.isEmpty() && !mTempRubberBand )
+    if ( !mTempRubberBand )
     {
       mTempRubberBand = createGeometryRubberBand( mLayerType, true );
       mTempRubberBand->show();
