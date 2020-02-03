@@ -503,6 +503,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     CPLSetConfigOption( "SHAPE_ENCODING", nullptr );
   }
 
+#if PROJ_VERSION_MAJOR<6
   if ( srs.isValid() )
   {
     if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
@@ -526,6 +527,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 #endif
     }
   }
+#endif
 
   if ( !mLayer )
   {
