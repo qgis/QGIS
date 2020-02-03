@@ -609,6 +609,18 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QString description() const;
 
     /**
+     * Type of identifier string to create.
+     *
+     * \since QGIS 3.10.3
+     */
+    enum IdentifierType
+    {
+      ShortString, //!< A heavily abbreviated string, for use when a compact representation is required
+      MediumString, //!< A medium-length string, recommended for general purpose use
+      FullString, //!< Full definition -- possibly a very lengthy string, e.g. with no truncation of custom WKT definitions
+    };
+
+    /**
      * Returns a user friendly identifier for the CRS.
      *
      * Depending on the format of the CRS, this may reflect the CRSes registered name, or for
@@ -618,12 +630,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * In most cases this is the best method to use when showing a friendly identifier for the CRS to a
      * user.
      *
-     * If \a shortString is TRUE than an abbreviated identifier will be returned.
-     *
      * \see description()
      * \since QGIS 3.10.3
      */
-    QString userFriendlyIdentifier( bool shortString = false ) const;
+    QString userFriendlyIdentifier( IdentifierType type = MediumString ) const;
 
     /**
      * Returns the projection acronym for the projection used by the CRS.
