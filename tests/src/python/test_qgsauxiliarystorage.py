@@ -403,16 +403,6 @@ class TestQgsAuxiliaryStorage(unittest.TestCase):
         afIndex = vl.fields().indexOf(afName)
         self.assertEqual(index, afIndex)
 
-        # Create a buffer property and check if drawing is activated
-        f = vl.labeling().settings().format()
-        self.assertFalse(f.buffer().enabled())
-
-        key = QgsPalLayerSettings.BufferColor
-        index = QgsAuxiliaryLayer.createProperty(key, vl)
-
-        f = vl.labeling().settings().format()
-        self.assertTrue(f.buffer().enabled())
-
     def testCreateField(self):
         s = QgsAuxiliaryStorage()
         self.assertTrue(s.isValid())
