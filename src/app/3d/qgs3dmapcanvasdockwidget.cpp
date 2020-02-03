@@ -98,6 +98,19 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
   toolBar->addSeparator();
 
+  // Map Theme Menu
+  mMapThemeMenu = new QMenu();
+  connect( mMapThemeMenu, &QMenu::aboutToShow, this, &Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow );
+
+  QToolButton *btnMapThemes = new QToolButton;
+  btnMapThemes->setAutoRaise( true );
+  btnMapThemes->setToolTip( tr( "Set View Theme" ) );
+  btnMapThemes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
+  btnMapThemes->setPopupMode( QToolButton::InstantPopup );
+  btnMapThemes->setMenu( mMapThemeMenu );
+
+  toolBar->addWidget( btnMapThemes );
+
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
                       tr( "Configure…" ), this, &Qgs3DMapCanvasDockWidget::configure );
 
@@ -285,4 +298,9 @@ void Qgs3DMapCanvasDockWidget::onTotalPendingJobsCountChanged()
   mLabelPendingJobs->setVisible( count );
   if ( count )
     mLabelPendingJobs->setText( tr( "Loading %1 tiles" ).arg( count ) );
+}
+
+void Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow()
+{
+
 }
