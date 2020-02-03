@@ -70,8 +70,8 @@ void QgsAppMissingGridHandler::onMissingRequiredGrid( const QgsCoordinateReferen
   if ( !shouldWarnAboutPair( sourceCrs, destinationCrs ) )
     return;
 
-  const QString shortMessage = tr( "No transform available between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( true ),
-                               destinationCrs.userFriendlyIdentifier( true ) );
+  const QString shortMessage = tr( "No transform available between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ),
+                               destinationCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) );
 
   QString downloadMessage;
   const QString gridName = grid.shortName;
@@ -117,8 +117,8 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
   if ( !shouldWarnAboutPair( sourceCrs, destinationCrs ) )
     return;
 
-  const QString shortMessage = tr( "Cannot use preferred transform between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( true ),
-                               destinationCrs.userFriendlyIdentifier( true ) );
+  const QString shortMessage = tr( "Cannot use preferred transform between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ),
+                               destinationCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) );
 
   QString gridMessage;
   QString downloadMessage;
@@ -185,7 +185,7 @@ void QgsAppMissingGridHandler::onCoordinateOperationCreationError( const QgsCoor
   if ( !shouldWarnAboutPairForCurrentProject( sourceCrs, destinationCrs ) )
     return;
 
-  const QString shortMessage = tr( "No transform available between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( true ), destinationCrs.userFriendlyIdentifier( true ) );
+  const QString shortMessage = tr( "No transform available between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ), destinationCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) );
   const QString longMessage = tr( "<p>No transform is available between <i>%1</i> and <i>%2</i>.</p><p style=\"color: red\">%3</p>" ).arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier(), error );
 
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
@@ -209,8 +209,8 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
   if ( !shouldWarnAboutPairForCurrentProject( sourceCrs, destinationCrs ) )
     return;
 
-  const QString shortMessage = tr( "Cannot use project transform between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( true ),
-                               destinationCrs.userFriendlyIdentifier( true ) );
+  const QString shortMessage = tr( "Cannot use project transform between %1 and %2" ).arg( sourceCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ),
+                               destinationCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) );
 
   QString gridMessage;
   QString downloadMessage;

@@ -1278,22 +1278,25 @@ QString QgsCoordinateReferenceSystem::description() const
   }
 }
 
-QString QgsCoordinateReferenceSystem::userFriendlyIdentifier( bool shortString ) const
+QString QgsCoordinateReferenceSystem::userFriendlyIdentifier( IdentifierType type ) const
 {
   if ( !authid().isEmpty() )
   {
-    if ( !shortString && !description().isEmpty() )
+    if ( type != ShortString && !description().isEmpty() )
       return QStringLiteral( "%1 - %2" ).arg( authid(), description() );
     return authid();
   }
   else if ( !description().isEmpty() )
     return description();
-  else if ( shortString )
+  else if ( type == ShortString )
     return QObject::tr( "Unknown CRS" );
   else if ( !toWkt( WKT2_2018 ).isEmpty() )
-    return QObject::tr( "Unknown CRS: %1" ).arg( toWkt( WKT2_2018 ).left( 50 ) + QString( QChar( 0x2026 ) ) );
+    return QObject::tr( "Unknown CRS: %1" ).arg(
+             type == MediumString ? ( toWkt( WKT2_2018 ).left( 50 ) + QString( QChar( 0x2026 ) ) )
+             : toWkt( WKT2_2018 ) );
   else if ( !toProj().isEmpty() )
-    return QObject::tr( "Unknown CRS: %1" ).arg( toProj().left( 50 ) + QString( QChar( 0x2026 ) ) );
+    return QObject::tr( "Unknown CRS: %1" ).arg( type == MediumString ? ( toProj().left( 50 ) + QString( QChar( 0x2026 ) ) )
+           : toProj() );
   else
     return QString();
 }
