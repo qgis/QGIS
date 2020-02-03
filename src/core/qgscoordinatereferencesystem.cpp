@@ -56,9 +56,10 @@
 #include <cpl_csv.h>
 
 
-
+#if PROJ_VERSION_MAJOR<6
 //! The length of the string "+lat_1="
 const int LAT_PREFIX_LEN = 7;
+#endif
 
 CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::sCustomSrsValidation = nullptr;
 
@@ -1677,7 +1678,8 @@ void QgsCoordinateReferenceSystem::setMapUnits()
   }
 
   PJ_CONTEXT *context = QgsProjContext::get();
-  QgsProjUtils::proj_pj_unique_ptr coordinateSystem( proj_crs_get_coordinate_system( context, d->threadLocalProjObject() ) );
+  QgsProjUtils::proj_pj_unique_ptr crs( QgsProjUtils::crsToSingleCrs( d->threadLocalProjObject() ) );
+  QgsProjUtils::proj_pj_unique_ptr coordinateSystem( proj_crs_get_coordinate_system( context, crs.get() ) );
   if ( !coordinateSystem )
   {
     d->mMapUnits = QgsUnitTypes::DistanceUnknownUnit;
@@ -1713,7 +1715,9 @@ void QgsCoordinateReferenceSystem::setMapUnits()
          unitName.compare( QLatin1String( "hemisphere degree minute second" ), Qt::CaseInsensitive ) == 0 ||
          unitName.compare( QLatin1String( "degree (supplier to define representation)" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = QgsUnitTypes::DistanceDegrees;
-    else if ( unitName.compare( QLatin1String( "metre" ), Qt::CaseInsensitive ) == 0 )
+    else if ( unitName.compare( QLatin1String( "metre" ), Qt::CaseInsensitive ) == 0
+              || unitName.compare( QLatin1String( "m" ), Qt::CaseInsensitive ) == 0
+              || unitName.compare( QLatin1String( "meter" ), Qt::CaseInsensitive ) == 0 )
       d->mMapUnits = QgsUnitTypes::DistanceMeters;
     // we don't differentiate between these, suck it imperial users!
     else if ( unitName.compare( QLatin1String( "US survey foot" ), Qt::CaseInsensitive ) == 0 ||
