@@ -32,6 +32,8 @@ QgsMapToolDigitizeFeature is a map tool to digitize a feature geometry
 :param mode: type of geometry to capture (point/line/polygon), QgsMapToolCapture.CaptureNone to autodetect geometry
 %End
 
+    virtual void keyPressEvent( QKeyEvent *e );
+
     virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e );
 
 
