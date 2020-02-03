@@ -220,11 +220,20 @@ QgsVectorLayer::~QgsVectorLayer()
 QgsVectorLayer *QgsVectorLayer::clone() const
 {
   QgsVectorLayer::LayerOptions options;
+  // We get the data source string from the provider when
+  // possible because some providers may have changed it
+  // directly (memory provider does that).
+  QString dataSource;
   if ( mDataProvider )
   {
+    dataSource = mDataProvider->dataSourceUri();
     options.transformContext = mDataProvider->transformContext();
   }
-  QgsVectorLayer *layer = new QgsVectorLayer( source(), name(), mProviderKey, options );
+  else
+  {
+    dataSource = source();
+  }
+  QgsVectorLayer *layer = new QgsVectorLayer( dataSource, name(), mProviderKey, options );
   if ( mDataProvider && layer->dataProvider() )
   {
     layer->dataProvider()->handlePostCloneOperations( mDataProvider );
