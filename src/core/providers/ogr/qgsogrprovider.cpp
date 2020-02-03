@@ -3687,6 +3687,7 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
   if ( !mValid || ( mOGRGeomType == wkbNone ) )
     return srs;
 
+#if PROJ_VERSION_MAJOR<6
   if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
   {
     int index = mFilePath.indexOf( QLatin1String( ".shp" ), Qt::CaseInsensitive );
@@ -3708,7 +3709,6 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs() const
   }
 
   // add towgs84 parameter
-#if PROJ_VERSION_MAJOR<6
   Q_NOWARN_DEPRECATED_PUSH
   QgsCoordinateReferenceSystem::setupESRIWktFix();
   Q_NOWARN_DEPRECATED_POP
