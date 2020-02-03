@@ -2044,12 +2044,19 @@ const QList<QgsVectorLayerRef> QgisApp::findBrokenLayerDependencies( QgsVectorLa
         const QList<QgsVectorLayerRef> constDependencies { fieldFormatter->layerDependencies( setup.config() ) };
         for ( const QgsVectorLayerRef &dependency : constDependencies )
         {
-          const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
-                                          QgsProject::instance(),
-                                          QgsVectorLayerRef::MatchType::Name ) };
-          if ( ! depVl || ! depVl->isValid() )
+          // I guess we need and isNull()/isValid() method for the ref
+          if ( dependency.layer ||
+               ! dependency.name.isEmpty() ||
+               ! dependency.source.isEmpty() ||
+               ! dependency.layerId.isEmpty() )
           {
-            brokenDependencies.append( dependency );
+            const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
+                                            QgsProject::instance(),
+                                            QgsVectorLayerRef::MatchType::Name ) };
+            if ( ! depVl || ! depVl->isValid() )
+            {
+              brokenDependencies.append( dependency );
+            }
           }
         }
       }
