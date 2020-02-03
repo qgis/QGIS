@@ -512,9 +512,6 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   else if ( mSelectionRubberBand )
   {
     // only handling of selection rect being dragged
-    QgsPointXY pt0 = toMapCoordinates( *mSelectionRubberBandStartPos );
-    QgsPointXY pt1 = toMapCoordinates( e->pos() );
-    QgsRectangle map_rect( pt0, pt1 );
     QList<Vertex> vertices;
     QList<Vertex> selectedVertices;
 
