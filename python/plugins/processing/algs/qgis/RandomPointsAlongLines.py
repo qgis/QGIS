@@ -146,25 +146,24 @@ class RandomPointsAlongLines(QgisAlgorithm):
             length = da.measureLine(startPoint, endPoint)
             dist = length * random.random()
 
-            if dist > minDistance:
-                d = dist / (length - dist)
-                rx = (startPoint.x() + d * endPoint.x()) / (1 + d)
-                ry = (startPoint.y() + d * endPoint.y()) / (1 + d)
+            d = dist / (length - dist)
+            rx = (startPoint.x() + d * endPoint.x()) / (1 + d)
+            ry = (startPoint.y() + d * endPoint.y()) / (1 + d)
 
-                # generate random point
-                p = QgsPointXY(rx, ry)
-                geom = QgsGeometry.fromPointXY(p)
-                if vector.checkMinDistance(p, index, minDistance, points):
-                    f = QgsFeature(nPoints)
-                    f.initAttributes(1)
-                    f.setFields(fields)
-                    f.setAttribute('id', nPoints)
-                    f.setGeometry(geom)
-                    sink.addFeature(f, QgsFeatureSink.FastInsert)
-                    index.addFeature(f)
-                    points[nPoints] = p
-                    nPoints += 1
-                    feedback.setProgress(int(nPoints * total))
+            # generate random point
+            p = QgsPointXY(rx, ry)
+            geom = QgsGeometry.fromPointXY(p)
+            if vector.checkMinDistance(p, index, minDistance, points):
+                f = QgsFeature(nPoints)
+                f.initAttributes(1)
+                f.setFields(fields)
+                f.setAttribute('id', nPoints)
+                f.setGeometry(geom)
+                sink.addFeature(f, QgsFeatureSink.FastInsert)
+                index.addFeature(f)
+                points[nPoints] = p
+                nPoints += 1
+                feedback.setProgress(int(nPoints * total))
             nIterations += 1
 
         if nPoints < pointCount:
