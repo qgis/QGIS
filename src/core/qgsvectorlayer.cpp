@@ -4450,6 +4450,10 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
     if ( !pointPlacementElem.isNull() )
     {
       settings.placement = QgsPalLayerSettings::OverPoint;
+      if ( geometryType() == QgsWkbTypes::LineGeometry )
+      {
+        settings.placement = QgsPalLayerSettings::Line;
+      }
 
       QDomElement displacementElem = pointPlacementElem.firstChildElement( QStringLiteral( "Displacement" ) );
       if ( !displacementElem.isNull() )
@@ -4513,6 +4517,15 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
         {
           settings.angleOffset = 360 - rotation;
         }
+      }
+    }
+    else
+    {
+      // PointPlacement
+      QDomElement linePlacementElem = labelPlacementElem.firstChildElement( QStringLiteral( "LinePlacement" ) );
+      if ( !linePlacementElem.isNull() )
+      {
+        settings.placement = QgsPalLayerSettings::Line;
       }
     }
   }

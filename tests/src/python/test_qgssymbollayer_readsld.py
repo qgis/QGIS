@@ -444,7 +444,12 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
         self.assertEqual(format.size(), 18)
         self.assertEqual(format.sizeUnit(), QgsUnitTypes.RenderPixels)
 
+        # the layer contains lines
+        # from qgis.core import QgsWkbTypes
+        # self.assertEqual(layer.geometryType(), QgsWkbTypes.LineGeometry)
+        # the placement should be QgsPalLayerSettings.Line
         self.assertEqual(settings.placement, QgsPalLayerSettings.AroundPoint)
+
         self.assertEqual(settings.xOffset, 1)
         self.assertEqual(settings.yOffset, 0)
         self.assertEqual(settings.offsetUnits, QgsUnitTypes.RenderPixels)
