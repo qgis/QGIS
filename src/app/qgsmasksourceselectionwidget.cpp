@@ -104,7 +104,7 @@ void QgsMaskSourceSelectionWidget::update()
           QVector<int> indexPath = rootPath;
           indexPath.append( idx );
 
-          QTreeWidgetItem *slItem = new QTreeWidgetItem();
+          std::unique_ptr< QTreeWidgetItem > slItem = qgis::make_unique< QTreeWidgetItem >( rootItem );
           QIcon slIcon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( sl, QgsUnitTypes::RenderMillimeters, QSize( iconSize, iconSize ) );
           slItem->setIcon( 0, slIcon );
           if ( sl->layerType() == "MaskMarker" )
@@ -115,11 +115,11 @@ void QgsMaskSourceSelectionWidget::update()
           }
 
           if ( ( sl->layerType() == "MaskMarker" ) ||
-               ( subSymbol && visitSymbol( slItem, identifier, subSymbol, indexPath ) ) )
+               ( subSymbol && visitSymbol( slItem.get(), identifier, subSymbol, indexPath ) ) )
           {
-            rootItem->addChild( slItem );
             QgsSymbolLayerReference ref( mLayer->id(), QgsSymbolLayerId( mCurrentIdentifier + identifier, indexPath ) );
-            mItems[ref] = slItem;
+            mItems[ref] = slItem.get();
+            rootItem->addChild( slItem.release() );
             ret = true;
           }
         }
@@ -136,12 +136,12 @@ void QgsMaskSourceSelectionWidget::update()
         if ( ! symbol )
           return true;
 
-        QTreeWidgetItem *symbolItem = new QTreeWidgetItem( QStringList() << ( mCurrentDescription + leaf.description ) );
+        std::unique_ptr< QTreeWidgetItem > symbolItem = qgis::make_unique< QTreeWidgetItem >( mLayerItem, QStringList() << ( mCurrentDescription + leaf.description ) );
         QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, QSize( iconSize, iconSize ) );
         symbolItem->setIcon( 0, icon );
 
-        if ( visitSymbol( symbolItem, leaf.identifier, symbol, {} ) )
-          mLayerItem->addChild( symbolItem );
+        if ( visitSymbol( symbolItem.get(), leaf.identifier, symbol, {} ) )
+          mLayerItem->addChild( symbolItem.release() );
 
         return true;
       }
@@ -180,7 +180,7 @@ void QgsMaskSourceSelectionWidget::update()
             QString maskTitle = currentRule.isEmpty()
                                 ? QObject::tr( "Label mask" )
                                 : QObject::tr( "Label mask for '%1' rule" ).arg( currentDescription );
-            QTreeWidgetItem *slItem = new QTreeWidgetItem( QStringList() << maskTitle );
+            QTreeWidgetItem *slItem = new QTreeWidgetItem( mLayerItem, QStringList() << maskTitle );
             slItem->setFlags( slItem->flags() | Qt::ItemIsUserCheckable );
             slItem->setCheckState( 0, Qt::Unchecked );
             mLayerItem->addChild( slItem );
@@ -210,20 +210,20 @@ void QgsMaskSourceSelectionWidget::update()
     if ( ! vl->renderer() )
       continue;
 
-    QTreeWidgetItem *layerItem = new QTreeWidgetItem( QStringList() << layer->name() );
+    std::unique_ptr< QTreeWidgetItem > layerItem = qgis::make_unique< QTreeWidgetItem >( mTree, QStringList() << layer->name() );
     layerItem->setData( 0, Qt::UserRole, vl );
 
     if ( vl->labeling() )
     {
-      LabelMasksVisitor lblVisitor( layerItem, vl, mItems );
+      LabelMasksVisitor lblVisitor( layerItem.get(), vl, mItems );
       vl->labeling()->accept( &lblVisitor );
     }
 
-    SymbolLayerFillVisitor slVisitor( layerItem, vl, mItems );
+    SymbolLayerFillVisitor slVisitor( layerItem.get(), vl, mItems );
     vl->renderer()->accept( &slVisitor );
 
     if ( layerItem->childCount() > 0 )
-      mTree->addTopLevelItem( layerItem );
+      mTree->addTopLevelItem( layerItem.release() );
   }
 
   expandAll( mTree->invisibleRootItem() );
