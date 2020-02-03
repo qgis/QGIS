@@ -4737,7 +4737,7 @@ QString QgsVectorLayer::htmlMetadata() const
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" );
     if ( crs().isValid() )
     {
-      myMetadata += crs().userFriendlyIdentifier() + QStringLiteral( " - " );
+      myMetadata += crs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::FullString ) + QStringLiteral( " - " );
       if ( crs().isGeographic() )
         myMetadata += tr( "Geographic" );
       else
