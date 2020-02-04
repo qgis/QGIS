@@ -721,7 +721,9 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
   }
 
   // entries for multiple features layer actions
-  if ( mLayer->selectedFeatureCount() > 1 )
+  // only show if the context menu is shown over a selected row
+  QgsFeatureId currentFid = masterModel()->rowToId( sourceIndex.row() );
+  if ( mLayer->selectedFeatureCount() > 1 && mLayer->selectedFeatureIds().contains( currentFid ) )
   {
     const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::MultipleFeatures );
     if ( !constRegisteredActions.isEmpty() )
