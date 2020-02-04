@@ -357,6 +357,7 @@ SET(QGIS_GUI_SRCS
   qgshistogramwidget.cpp
   qgshelp.cpp
   qgsidentifymenu.cpp
+  qgsinstallgridshiftdialog.cpp
   qgskeyvaluewidget.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
@@ -561,6 +562,7 @@ SET(QGIS_GUI_HDRS
   qgshighlightablecombobox.h
   qgshistogramwidget.h
   qgsidentifymenu.h
+  qgsinstallgridshiftdialog.h
   qgskeyvaluewidget.h
   qgslegendfilterbutton.h
   qgslimitedrandomcolorrampdialog.h
