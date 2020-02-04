@@ -29,7 +29,8 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterCrs,
                        QgsProcessingOutputVectorLayer,
-                       QgsCoordinateReferenceSystem)
+                       QgsCoordinateReferenceSystem,
+                       QgsProjUtils)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -84,8 +85,11 @@ class DefineProjection(QgisAlgorithm):
 
             qpjFile = dsPath + '.qpj'
             if os.path.exists(qpjFile):
-                with open(qpjFile, 'w') as f:
-                    f.write(wkt)
+                if QgsProjUtils.projVersionMajor() < 6:
+                    with open(qpjFile, 'w') as f:
+                        f.write(wkt)
+                else:
+                    os.remove(qpjFile)
         else:
             feedback.pushConsoleInfo(self.tr("Data source isn't a shapefile, skipping .prj/.qpj creation"))
 
