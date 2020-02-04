@@ -3635,6 +3635,7 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
     {
       QString layerName = uri.left( index );
       QFile prjFile( layerName + ".qpj" );
+#if PROJ_VERSION_MAJOR<6
       if ( prjFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
       {
         QTextStream prjStream( &prjFile );
@@ -3645,6 +3646,10 @@ bool QgsOgrProviderUtils::createEmptyDataSource( const QString &uri,
       {
         QgsMessageLog::logMessage( QObject::tr( "Couldn't create file %1.qpj" ).arg( layerName ), QObject::tr( "OGR" ) );
       }
+#else
+      if ( prjFile.exists() )
+        prjFile.remove();
+#endif
     }
   }
 
