@@ -512,9 +512,12 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   else if ( mSelectionRect )
   {
     // only handling of selection rect being dragged
+<<<<<<< HEAD
     QgsPointXY pt0 = toMapCoordinates( *mSelectionRectStartPos );
     QgsPointXY pt1 = toMapCoordinates( e->pos() );
     QgsRectangle map_rect( pt0, pt1 );
+=======
+>>>>>>> ae5ffd46b2... deleted unused variables
     QList<Vertex> vertices;
     QList<Vertex> selectedVertices;
 
