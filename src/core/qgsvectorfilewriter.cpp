@@ -503,13 +503,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     CPLSetConfigOption( "SHAPE_ENCODING", nullptr );
   }
 
-#if PROJ_VERSION_MAJOR<6
   if ( srs.isValid() )
   {
     if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
     {
       QString layerName = vectorFileName.left( vectorFileName.indexOf( QLatin1String( ".shp" ), Qt::CaseInsensitive ) );
       QFile prjFile( layerName + ".qpj" );
+#if PROJ_VERSION_MAJOR<6
       if ( prjFile.open( QIODevice::WriteOnly  | QIODevice::Truncate ) )
       {
         QTextStream prjStream( &prjFile );
@@ -520,9 +520,12 @@ void QgsVectorFileWriter::init( QString vectorFileName,
       {
         QgsDebugMsg( "Couldn't open file " + layerName + ".qpj" );
       }
+#else
+      if ( prjFile.exists() )
+        prjFile.remove();
+#endif
     }
   }
-#endif
 
   if ( !mLayer )
   {
