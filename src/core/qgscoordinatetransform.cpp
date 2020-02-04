@@ -637,6 +637,13 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     return;
   }
 
+  double *xprev = new double[ numPoints ];
+  memcpy( xprev, x, sizeof( double ) * numPoints );
+  double *yprev = new double[ numPoints ];
+  memcpy( yprev, y, sizeof( double ) * numPoints );
+  double *zprev = new double[ numPoints ];
+  memcpy( zprev, z, sizeof( double ) * numPoints );
+
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   double xorg = *x;
   double yorg = *y;
@@ -670,9 +677,15 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   // bit more subtle than that, and I'm not completely sure the logic in
   // pj_transform() was really sane & fully bullet proof
   // So here just check proj_errno() for single point transform
+  int actualRes = 0;
   if ( numPoints == 1 )
   {
     projResult = proj_errno( projData );
+    actualRes = projResult;
+  }
+  else
+  {
+    actualRes =  proj_errno( projData );
   }
 #else
   bool sourceIsLatLong = false;
@@ -707,6 +720,45 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   }
 #endif
 
+#if PROJ_VERSION_MAJOR>=6
+
+  if ( actualRes != 0 )
+  {
+    // fail #1 -- try with getting proj to auto-pick an appropriate coordinate operation for the points
+    if ( PJ *transform = d->threadLocalFallbackProjData() )
+    {
+      projResult = 0;
+      proj_errno_reset( transform );
+      proj_trans_generic( transform, direction == ForwardTransform ? PJ_FWD : PJ_INV,
+                          xprev, sizeof( double ), numPoints,
+                          yprev, sizeof( double ), numPoints,
+                          zprev, sizeof( double ), numPoints,
+                          nullptr, sizeof( double ), 0 );
+      // Try to - approximatively - emulate the behavior of pj_transform()...
+      // In the case of a single point transform, and a transformation error occurs,
+      // pj_transform() would return the errno. In cases of multiple point transform,
+      // it would continue (for non-transient errors, that is pipeline definition
+      // errors) and just set the resulting x,y to infinity. This is in fact a
+      // bit more subtle than that, and I'm not completely sure the logic in
+      // pj_transform() was really sane & fully bullet proof
+      // So here just check proj_errno() for single point transform
+      if ( numPoints == 1 )
+      {
+        projResult = proj_errno( transform );
+      }
+
+      if ( projResult == 0 )
+      {
+        memcpy( x, xprev, sizeof( double ) * numPoints );
+        memcpy( y, yprev, sizeof( double ) * numPoints );
+        memcpy( z, zprev, sizeof( double ) * numPoints );
+      }
+    }
+  }
+  delete [] xprev;
+  delete [] yprev;
+  delete [] zprev;
+#endif
   if ( projResult != 0 )
   {
     //something bad happened....
