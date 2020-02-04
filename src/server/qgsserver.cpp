@@ -420,7 +420,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     {
       responseDecorator.write( ex );
       QString format;
-      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::Info );
+      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::Warning );
     }
     catch ( QgsException &ex )
     {
