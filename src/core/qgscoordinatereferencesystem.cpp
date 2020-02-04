@@ -653,7 +653,7 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     wkt = statement.columnAsText( 8 );
     d->mAxisInvertedDirty = true;
 
-    if ( d->mSrsId >= USER_CRS_START_ID && d->mAuthId.isEmpty() )
+    if ( d->mSrsId >= USER_CRS_START_ID && ( d->mAuthId.isEmpty() || d->mAuthId == QChar( ':' ) ) )
     {
       d->mAuthId = QStringLiteral( "USER:%1" ).arg( d->mSrsId );
     }
