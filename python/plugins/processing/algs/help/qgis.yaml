@@ -110,9 +110,9 @@ qgis:createpointslayerfromtable: >
   This algorithm creates points layer from a table with columns that contain coordinates fields. Besides X and Y coordinates you can also specify Z and M fields.
 
 qgis:definecurrentprojection: >
-  This algorithm sets an existing layer's projection to the provided CRS. Contrary to the "Assign projection" algorithm, it will not output a new layer.
+  This algorithm sets an existing Shapefile's projection to the provided CRS. Contrary to the "Assign projection" algorithm, it will not output a new layer.
 
-  For shapefile datasets, the .prj and .qpj files will be overwritten - or created if missing - to match the provided CRS.
+  The .prj and .qpj files associated with the Shapefile will be overwritten - or created if missing - to match the provided CRS.
 
 qgis:delaunaytriangulation: >
   This algorithm creates a polygon layer with the delaunay triangulation corresponding to a points layer.
