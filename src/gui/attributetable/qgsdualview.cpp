@@ -720,6 +720,23 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
     }
   }
 
+  // entries for multiple features layer actions
+  if ( mLayer->selectedFeatureCount() > 1 )
+  {
+    const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::MultipleFeatures );
+    if ( !constRegisteredActions.isEmpty() )
+    {
+      menu->addSeparator();
+      QAction *action = menu->addAction( tr( "Actions on selection (%1)" ).arg( mLayer->selectedFeatureCount() ) );
+      action->setEnabled( false );
+
+      for ( QgsMapLayerAction *action : constRegisteredActions )
+      {
+        menu->addAction( action->text(), action, [ = ]() {action->triggerForFeatures( mLayer, mLayer->selectedFeatures() );} );
+      }
+    }
+  }
+
   menu->addSeparator();
   QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open Form" ), this, QString(), rowSourceIndex );
   menu->addAction( tr( "Open Form" ), a, &QgsAttributeTableAction::featureForm );
