@@ -27,8 +27,9 @@ QgsDatumTransformTableModel::QgsDatumTransformTableModel( QObject *parent )
 
 void QgsDatumTransformTableModel::setTransformContext( const QgsCoordinateTransformContext &context )
 {
+  beginResetModel();
   mTransformContext = context;
-  reset();
+  endResetModel();
 }
 
 void QgsDatumTransformTableModel::removeTransform( const QModelIndexList &indexes )
@@ -47,8 +48,9 @@ void QgsDatumTransformTableModel::removeTransform( const QModelIndexList &indexe
     }
     if ( sourceCrs.isValid() && destinationCrs.isValid() )
     {
+      beginResetModel();
       mTransformContext.removeCoordinateOperation( sourceCrs, destinationCrs );
-      reset();
+      endResetModel();
       break;
     }
   }
@@ -282,7 +284,7 @@ void QgsDatumTransformTableWidget::editDatumTransform( const QModelIndex &index 
 #endif
 
 #if PROJ_VERSION_MAJOR>=6
-  if ( sourceCrs.isValid() && destinationCrs.isValid() && !proj.isEmpty() )
+  if ( sourceCrs.isValid() && destinationCrs.isValid() )
 #else
   if ( sourceCrs.isValid() && destinationCrs.isValid() &&
        ( sourceTransform != -1 || destinationTransform != -1 ) )

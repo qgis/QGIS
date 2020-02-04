@@ -75,7 +75,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
                      QgsMapCanvas *mapCanvas = nullptr,
                      const QString &windowTitle = QString() );
 
-    // TODO QGIS 4.0 - remove selectedDatumTransform
+    // TODO QGIS 4.0 - remove selectedDatumTransform, forceChoice
 
     /**
      * Constructor for QgsDatumTransformDialog.
