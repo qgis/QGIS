@@ -38,6 +38,7 @@
 #include "qgsrasterviewport.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
+#include "qgsrasterlayertemporalproperties.h"
 
 class QgsMapToPixel;
 class QgsRasterRenderer;

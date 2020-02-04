@@ -1,7 +1,7 @@
 /***************************************************************************
-                         qgstemporalproperty.cpp
+                         qgsmaplayertemporalproperties.cpp
                          ---------------
-    begin                : January 2020
+    begin                : February 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
     email                : samweli at kartoza dot com
  ***************************************************************************/
@@ -15,21 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaplayertemporalproperties.h"
 
-#include "qgstemporalproperty.h"
-
-QgsTemporalProperty::QgsTemporalProperty( bool enabled )
-  :  mActive( enabled )
+QgsMapLayerTemporalProperties::QgsMapLayerTemporalProperties( bool enabled )
+  : QgsTemporalProperty( enabled )
 {
 }
-
-void QgsTemporalProperty::setIsActive( bool enabled )
-{
-  mActive = enabled;
-}
-
-bool QgsTemporalProperty::isActive() const
-{
-  return mActive;
-}
-

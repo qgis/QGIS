@@ -289,6 +289,7 @@ SET(QGIS_CORE_SRCS
   qgsmaplayerstore.cpp
   qgsmaplayerstyle.cpp
   qgsmaplayerstylemanager.cpp
+  qgsmaplayertemporalproperties.cpp
   qgsmaprenderercache.cpp
   qgsmaprenderercustompainterjob.cpp
   qgsmaprendererjob.cpp
@@ -406,6 +407,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerjoininfo.cpp
   qgsvectorlayerrenderer.cpp
+  qgsvectorlayertemporalproperties.cpp
   qgsvectorlayertools.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectorlayerundopassthroughcommand.cpp
@@ -513,6 +515,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrasteriterator.cpp
   raster/qgsrasterlayer.cpp
   raster/qgsrasterlayerrenderer.cpp
+  raster/qgsrasterlayertemporalproperties.cpp
   raster/qgsrasterminmaxorigin.cpp
   raster/qgsrasternuller.cpp
   raster/qgsrasterpipe.cpp
@@ -794,6 +797,7 @@ SET(QGIS_CORE_HDRS
   qgsmaplayerstore.h
   qgsmaplayerstyle.h
   qgsmaplayerstylemanager.h
+  qgsmaplayertemporalproperties.h
   qgsmaprenderercache.h
   qgsmaprenderercustompainterjob.h
   qgsmaprendererjob.h
@@ -922,6 +926,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerjoininfo.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerserverproperties.h
+  qgsvectorlayertemporalproperties.h
   qgsvectorlayertools.h
   qgsvectorlayerundocommand.h
   qgsvectorlayerundopassthroughcommand.h
@@ -1220,6 +1225,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasteriterator.h
   raster/qgsrasterlayer.h
   raster/qgsrasterlayerrenderer.h
+  raster/qgsrasterlayertemporalproperties.h
   raster/qgsrasterminmaxorigin.h
   raster/qgsrasternuller.h
   raster/qgsrasterpipe.h

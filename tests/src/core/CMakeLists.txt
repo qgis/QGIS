@@ -205,6 +205,7 @@ SET(TESTS
  testqgsrasteriterator.cpp
  testqgsrasterblock.cpp
  testqgsrasterlayer.cpp
+ testqgsrasterlayertemporalproperties.cpp
  testqgsrastersublayer.cpp
  testqgsrectangle.cpp
  testqgsrelationreferencefieldformatter.cpp

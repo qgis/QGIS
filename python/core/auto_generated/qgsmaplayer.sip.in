@@ -1297,6 +1297,15 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+    QgsMapLayerTemporalProperties *temporalProperties();
+%Docstring
+Returns map layer temporal properties
+
+.. versionadded:: 3.14
+%End
+
+
+
   public slots:
 
     void setMinimumScale( double scale );

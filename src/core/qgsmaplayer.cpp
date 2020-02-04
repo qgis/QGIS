@@ -53,6 +53,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsxmlutils.h"
 #include "qgsstringutils.h"
+#include "qgsrasterlayertemporalproperties.h"
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
 {
@@ -89,6 +90,7 @@ QgsMapLayer::~QgsMapLayer()
   delete m3DRenderer;
   delete mLegend;
   delete mStyleManager;
+  delete mTemporalProperties;
 }
 
 void QgsMapLayer::clone( QgsMapLayer *layer ) const
@@ -1869,6 +1871,13 @@ QString QgsMapLayer::generateId( const QString &layerName )
 bool QgsMapLayer::accept( QgsStyleEntityVisitorInterface * ) const
 {
   return true;
+}
+
+QgsMapLayerTemporalProperties *QgsMapLayer::temporalProperties()
+{
+  if ( type() == QgsMapLayerType::RasterLayer )
+    return dynamic_cast<QgsRasterLayerTemporalProperties *>( mTemporalProperties );
+  return mTemporalProperties;
 }
 
 void QgsMapLayer::setProviderType( const QString &providerType )

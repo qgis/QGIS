@@ -1,7 +1,7 @@
 /***************************************************************************
-                         qgstemporalproperty.h
+                         qgsmaplayertemporalproperties.h
                          ---------------
-    begin                : January 2020
+    begin                : February 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
     email                : samweli at kartoza dot com
  ***************************************************************************/
@@ -15,56 +15,52 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSTEMPORALPROPERTY_H
-#define QGSTEMPORALPROPERTY_H
 
+#ifndef QGSMAPLAYERTEMPORALPROPERTIES_H
+#define QGSMAPLAYERTEMPORALPROPERTIES_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgstemporalproperty.h"
+
+#include <QDomElement>
 
 
 /**
- * \class QgsTemporalProperty
+ * \class QgsMapLayerTemporalProperties
  * \ingroup core
- * Base class for temporal property.
+ * Class for handling map layer temporal properties.
+ *
+ * Subclasses will provide full implementation.
  *
  * \since QGIS 3.14
  */
 
-class CORE_EXPORT QgsTemporalProperty
+class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
 {
   public:
 
     /**
-     * Constructor for QgsTemporalProperty.
+     * Constructor for QgsMapLayerTemporalProperties.
      */
-    QgsTemporalProperty( bool enabled = false );
+    QgsMapLayerTemporalProperties( bool enabled = false );
+
+    virtual ~QgsMapLayerTemporalProperties() = default;
 
     /**
-     * Copy constructor
-     */
-    QgsTemporalProperty( const QgsTemporalProperty &temporalProperty );
-
-    virtual ~QgsTemporalProperty() = default;
-
-    /**
-     * Sets temporal property status.
+     * Writes map layer temporal properties to a DOM element, to be used later with readXml()
      *
-     * \see isActive()
+     * \see readXml()
      */
-    void setIsActive( bool enabled );
+    virtual QDomElement writeXml( ... ) = 0;
 
     /**
-     * Returns true temporal property status.
+     * Reads temporal properties from a DOM element previously written by writeXml()
      *
-     * \see setIsActive()
-    */
-    bool isActive() const;
-
-  private:
-
-    bool mActive = false;
+     * \see writeXml()
+     */
+    virtual bool readXml( QDomElement ... ) = 0;
 
 };
 
-#endif // QGSTEMPORALPROPERTY_H
+#endif // QGSMAPLAYERTEMPORALPROPERTIES_H

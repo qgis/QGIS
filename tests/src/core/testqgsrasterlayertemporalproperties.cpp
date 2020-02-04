@@ -1,5 +1,5 @@
 /***************************************************************************
-                         testqgstemporalproperty.cpp
+                         testqgsrasterlayertemporalproperties.cpp
                          ---------------
     begin                : February 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
@@ -17,21 +17,20 @@
 
 #include "qgstest.h"
 #include <QObject>
-#include "qgsrange.h"
 
 //qgis includes...
-#include <qgstemporalproperty.h>
+#include <qgsrasterlayertemporalproperties.h>
 
 /**
  * \ingroup UnitTests
- * This is a unit test for the QgsTemporalProperty class.
+ * This is a unit test for the QgsRasterLayerTemporalProperties class.
  */
-class TestQgsTemporalProperty : public QObject
+class TestQgsRasterLayerTemporalProperties : public QObject
 {
     Q_OBJECT
 
   public:
-    TestQgsTemporalProperty() = default;
+    TestQgsRasterLayerTemporalProperties() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -39,13 +38,13 @@ class TestQgsTemporalProperty : public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
 
-    void checkSettingTemporalStatus();
+    void checkSettingTemporalRange();
 
   private:
-    QgsTemporalProperty *temporalProperty = nullptr;
+    QgsRasterLayerTemporalProperties *temporalProperties = nullptr;
 };
 
-void TestQgsTemporalProperty::initTestCase()
+void TestQgsRasterLayerTemporalProperties::initTestCase()
 {
   //
   // Runs once before any tests are run
@@ -57,28 +56,31 @@ void TestQgsTemporalProperty::initTestCase()
 
 }
 
-void TestQgsTemporalProperty::init()
+void TestQgsRasterLayerTemporalProperties::init()
 {
   // create a temporal property that will be used in all tests...
 
-  temporalProperty = new QgsTemporalProperty();
+  temporalProperties = new QgsRasterLayerTemporalProperties();
 }
 
-void TestQgsTemporalProperty::cleanup()
+void TestQgsRasterLayerTemporalProperties::cleanup()
 {
 }
 
-void TestQgsTemporalProperty::cleanupTestCase()
+void TestQgsRasterLayerTemporalProperties::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 }
 
-void TestQgsTemporalProperty::checkSettingTemporalStatus()
+void TestQgsRasterLayerTemporalProperties::checkSettingTemporalRange()
 {
-  temporalProperty->setIsTemporal( true );
+  QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( 2020, 01, 01, 0, 0 ),
+                                   QDateTime( 2020, 12, 31, 23, 59 ) );
 
-  QCOMPARE( temporalProperty->isTemporal(), true );
+  temporalProperties->setFixedTemporalRange( dateTimeRange );
+
+  QCOMPARE( temporalProperties->fixedTemporalRange(), dateTimeRange );
 }
 
-QGSTEST_MAIN( TestQgsTemporalProperty )
-#include "testqgstemporalproperty.moc"
+QGSTEST_MAIN( TestQgsRasterLayerTemporalProperties )
+#include "testqgsrasterlayertemporalproperties.moc"
