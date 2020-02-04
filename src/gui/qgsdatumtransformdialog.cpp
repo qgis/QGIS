@@ -44,7 +44,7 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
     return true;
   }
 
-  QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, false, true, true, qMakePair( -1, -1 ), parent, nullptr, QString(), mapCanvas );
+  QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, false, true, false, qMakePair( -1, -1 ), parent, nullptr, QString(), mapCanvas );
   if ( !windowTitle.isEmpty() )
     dlg.setWindowTitle( windowTitle );
 
