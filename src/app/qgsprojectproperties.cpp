@@ -766,9 +766,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   QStringList wfstInsertLayerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "WFSTLayers" ), QStringLiteral( "Insert" ) );
   QStringList wfstDeleteLayerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "WFSTLayers" ), QStringLiteral( "Delete" ) );
 
-  QSignalMapper *smPublied = new QSignalMapper( this );
-  connect( smPublied, SIGNAL( mapped( int ) ), this, SLOT( cbxWFSPubliedStateChanged( int ) ) );
-
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
 
   twWFSLayers->setColumnCount( 6 );
@@ -795,9 +792,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       QCheckBox *cbp = new QCheckBox();
       cbp->setChecked( wfsLayerIdList.contains( currentLayer->id() ) );
       twWFSLayers->setCellWidget( j, 1, cbp );
-
-      smPublied->setMapping( cbp, j );
-      connect( cbp, SIGNAL( stateChanged( int ) ), smPublied, SLOT( map() ) );
+      connect( cbp, &QCheckBox::stateChanged, this, [ = ] { cbxWCSPubliedStateChanged( j ); } );
 
       QSpinBox *psb = new QSpinBox();
       psb->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WFSLayersPrecision" ), "/" + currentLayer->id(), 8 ) );
@@ -833,9 +828,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWCSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WCSUrl" ), QStringLiteral( "/" ), QString() ) );
   QStringList wcsLayerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "WCSLayers" ), QStringLiteral( "/" ) );
 
-  QSignalMapper *smWcsPublied = new QSignalMapper( this );
-  connect( smWcsPublied, SIGNAL( mapped( int ) ), this, SLOT( cbxWCSPubliedStateChanged( int ) ) );
-
   twWCSLayers->setColumnCount( 2 );
   twWCSLayers->horizontalHeader()->setVisible( true );
   twWCSLayers->setRowCount( mapLayers.size() );
@@ -860,8 +852,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       cbp->setChecked( wcsLayerIdList.contains( currentLayer->id() ) );
       twWCSLayers->setCellWidget( j, 1, cbp );
 
-      smWcsPublied->setMapping( cbp, j );
-      connect( cbp, SIGNAL( stateChanged( int ) ), smWcsPublied, SLOT( map() ) );
+      connect( cbp, &QCheckBox::stateChanged, this, [ = ] { cbxWCSPubliedStateChanged( j ); } );
 
       j++;
     }

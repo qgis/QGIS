@@ -18,7 +18,6 @@
 
 #include <QMenu>
 #include "qgis_sip.h"
-#include <QSignalMapper>
 
 #include "qgsfeature.h"
 #include "qgsaction.h"
