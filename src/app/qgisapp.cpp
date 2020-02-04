@@ -7386,7 +7386,7 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
         {
           subsetString = vlayer->dataProvider()->subsetString();
         }
-        if ( subsetString.isEmpty() )
+        if ( vlayer && subsetString.isEmpty() )
         {
           // actually -- the above isn't true in all situations. If a layer was invalid at the time
           // that the subset string was set, then ONLY the layer has knowledge of this subset string!
