@@ -28,7 +28,8 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterCrs,
-                       QgsProcessingOutputVectorLayer)
+                       QgsProcessingOutputVectorLayer,
+                       QgsCoordinateReferenceSystem)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -77,7 +78,7 @@ class DefineProjection(QgisAlgorithm):
         if dsPath.lower().endswith('.shp'):
             dsPath = dsPath[:-4]
 
-            wkt = crs.toWkt()
+            wkt = crs.toWkt(QgsCoordinateReferenceSystem.WKT1_ESRI)
             with open(dsPath + '.prj', 'w') as f:
                 f.write(wkt)
 
