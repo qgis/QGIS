@@ -90,7 +90,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * Returns TRUE if the current selection in the widget is a valid choice. Valid
      * selections include any projection and also the "no/invalid projection" option
      * (if setShowNoProjection() was called). Invalid selections are the group
-     * headers (such as "Geographic Coordinate Systems"
+     * headers (such as "Geographic Coordinate Systems")
      */
     bool hasValidSelection() const;
 
@@ -182,6 +182,9 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      */
     void loadCrsList( QSet<QString> *crsFilter = nullptr );
 
+
+    void loadUnknownCrs( const QgsCoordinateReferenceSystem &crs );
+
     /**
      * \brief Makes a \a string safe for use in SQL statements.
      *  This involves escaping single quotes, double quotes, backslashes,
@@ -226,10 +229,6 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     QString selectedName();
 
-    QString selectedProj4String();
-
-    QString selectedWktString();
-
     //! Gets the current QGIS projection identfier
     long selectedCrsId();
 
@@ -239,6 +238,8 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     enum Roles
     {
       RoleDeprecated = Qt::UserRole,
+      RoleWkt,
+      RoleProj
     };
 
     // List view nodes for the tree view of projections
@@ -248,6 +249,8 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     QTreeWidgetItem *mGeoList = nullptr;
     //! PROJCS node
     QTreeWidgetItem *mProjList = nullptr;
+
+    QTreeWidgetItem *mUnknownList = nullptr;
 
     //! Users custom coordinate system file
     QString mCustomCsFile;
