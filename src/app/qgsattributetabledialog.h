@@ -34,7 +34,6 @@ class QPushButton;
 class QLineEdit;
 class QComboBox;
 class QMenu;
-class QSignalMapper;
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
 class QgsRubberBand;
