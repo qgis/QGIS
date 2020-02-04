@@ -24,6 +24,7 @@
 #include "qgsguiutils.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsinstallgridshiftdialog.h"
 
 #include <QDir>
 #include <QPushButton>
@@ -40,8 +41,10 @@ QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
 
   mLabelSrcDescription->setTextInteractionFlags( Qt::TextBrowserInteraction );
   mLabelSrcDescription->setOpenExternalLinks( true );
+  mInstallGridButton->hide();
 
 #if PROJ_VERSION_MAJOR>=6
+  connect( mInstallGridButton, &QPushButton::clicked, this, &QgsCoordinateOperationWidget::installGrid );
   mCoordinateOperationTableWidget->setColumnCount( 3 );
 #else
   mCoordinateOperationTableWidget->setColumnCount( 2 );
@@ -201,10 +204,17 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     if ( !transform.isAvailable )
     {
       QStringList gridMessages;
+      QStringList missingGrids;
+      QStringList missingGridPackages;
+      QStringList missingGridUrls;
+
       for ( const QgsDatumTransform::GridDetails &grid : transform.grids )
       {
         if ( !grid.isAvailable )
         {
+          missingGrids << grid.shortName;
+          missingGridPackages << grid.packageName;
+          missingGridUrls << grid.url;
           QString m = tr( "This transformation requires the grid file “%1”, which is not available for use on the system." ).arg( grid.shortName );
           if ( !grid.url.isEmpty() )
           {
@@ -220,6 +230,10 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
           gridMessages << m;
         }
       }
+
+      item->setData( MissingGridsRole, missingGrids );
+      item->setData( MissingGridPackageNamesRole, missingGridPackages );
+      item->setData( MissingGridUrlsRole, missingGridUrls );
 
       if ( gridMessages.count() > 1 )
       {
@@ -702,6 +716,7 @@ void QgsCoordinateOperationWidget::tableCurrentItemChanged( QTableWidgetItem *, 
     mLabelDstDescription->clear();
 #if PROJ_VERSION_MAJOR>=6
     mAreaCanvas->hide();
+    mInstallGridButton->hide();
 #endif
   }
   else
@@ -721,6 +736,13 @@ void QgsCoordinateOperationWidget::tableCurrentItemChanged( QTableWidgetItem *, 
       mAreaCanvas->setPreviewRect( rect );
 #if PROJ_VERSION_MAJOR>=6
       mAreaCanvas->show();
+
+      const QStringList missingGrids = srcItem->data( MissingGridsRole ).toStringList();
+      mInstallGridButton->setVisible( !missingGrids.empty() );
+      if ( !missingGrids.empty() )
+      {
+        mInstallGridButton->setText( tr( "Install “%1” Grid…" ).arg( missingGrids.at( 0 ) ) );
+      }
 #endif
     }
     else
@@ -728,6 +750,7 @@ void QgsCoordinateOperationWidget::tableCurrentItemChanged( QTableWidgetItem *, 
       mAreaCanvas->setPreviewRect( QgsRectangle() );
 #if PROJ_VERSION_MAJOR>=6
       mAreaCanvas->hide();
+      mInstallGridButton->hide();
 #endif
     }
     QTableWidgetItem *destItem = mCoordinateOperationTableWidget->item( row, 1 );
@@ -781,4 +804,43 @@ void QgsCoordinateOperationWidget::showSupersededToggled( bool )
   Q_NOWARN_DEPRECATED_POP
 #endif
   loadAvailableOperations();
+}
+
+void QgsCoordinateOperationWidget::installGrid()
+{
+#if PROJ_VERSION_MAJOR>=6
+  int row = mCoordinateOperationTableWidget->currentRow();
+  QTableWidgetItem *srcItem = mCoordinateOperationTableWidget->item( row, 0 );
+  if ( !srcItem )
+    return;
+
+  const QStringList missingGrids = srcItem->data( MissingGridsRole ).toStringList();
+  if ( missingGrids.empty() )
+    return;
+
+  const QStringList missingGridPackagesNames = srcItem->data( MissingGridPackageNamesRole ).toStringList();
+  const QString packageName = missingGridPackagesNames.value( 0 );
+  const QStringList missingGridUrls = srcItem->data( MissingGridUrlsRole ).toStringList();
+  const QString gridUrl = missingGridUrls.value( 0 );
+
+  QString downloadMessage;
+  if ( !packageName.isEmpty() )
+  {
+    downloadMessage = tr( "This grid is part of the “<i>%1</i>” package, available for download from <a href=\"%2\">%2</a>." ).arg( packageName, gridUrl );
+  }
+  else if ( !gridUrl.isEmpty() )
+  {
+    downloadMessage = tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( gridUrl );
+  }
+
+  const QString longMessage = tr( "<p>This transformation requires the grid file “%1”, which is not available for use on the system.</p>" ).arg( missingGrids.at( 0 ) );
+
+  QgsInstallGridShiftFileDialog *dlg = new QgsInstallGridShiftFileDialog( missingGrids.at( 0 ), this );
+  dlg->setAttribute( Qt::WA_DeleteOnClose );
+  dlg->setWindowTitle( tr( "Install Grid File" ) );
+  dlg->setDescription( longMessage );
+  dlg->setDownloadMessage( downloadMessage );
+  dlg->exec();
+
+#endif
 }

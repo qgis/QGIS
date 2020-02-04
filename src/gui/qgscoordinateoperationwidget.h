@@ -159,6 +159,8 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
 
     void showSupersededToggled( bool toggled );
 
+    void installGrid();
+
   private:
 
     enum Roles
@@ -166,7 +168,10 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
       TransformIdRole = Qt::UserRole + 1,
       ProjRole,
       AvailableRole,
-      BoundsRole
+      BoundsRole,
+      MissingGridsRole,
+      MissingGridPackageNamesRole,
+      MissingGridUrlsRole
     };
 
     bool gridShiftTransformation( const QString &itemText ) const;

@@ -23,6 +23,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+///@cond PRIVATE
+
 QgsInstallGridShiftFileDialog::QgsInstallGridShiftFileDialog( const QString &gridName, QWidget *parent )
   : QDialog( parent )
   , mGridName( gridName )
@@ -75,3 +77,5 @@ void QgsInstallGridShiftFileDialog::installFromFile()
     QMessageBox::critical( this, tr( "Install Grid File" ), tr( "Could not copy %1 to %2. Please check folder permissions and retry." ).arg( mGridName, destPath ) );
   }
 }
+
+///@endcond
