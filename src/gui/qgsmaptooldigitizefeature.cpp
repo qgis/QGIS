@@ -94,37 +94,42 @@ void QgsMapToolDigitizeFeature::setCheckGeometryType( bool checkGeometryType )
 
 void QgsMapToolDigitizeFeature::keyPressEvent( QKeyEvent *e )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
-  if ( !vlayer )
-    //if no given layer take the current from canvas
-    vlayer = currentVectorLayer();
-
-  if ( !vlayer )
+  if ( e && e->key() == Qt::Key_C )
   {
-    notifyNotVectorLayer();
-    return;
-  }
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
+    if ( !vlayer )
+      //if no given layer take the current from canvas
+      vlayer = currentVectorLayer();
 
-  QgsVectorDataProvider *provider = vlayer->dataProvider();
+    if ( !vlayer )
+    {
+      notifyNotVectorLayer();
+      return;
+    }
 
-  if ( !( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
-  {
-    emit messageEmitted( tr( "The data provider for this layer does not support the addition of features." ), Qgis::Warning );
-    return;
-  }
+    QgsVectorDataProvider *provider = vlayer->dataProvider();
 
-  if ( !vlayer->isEditable() )
-  {
-    notifyNotEditableLayer();
-    return;
-  }
+    if ( !( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
+    {
+      emit messageEmitted( tr( "The data provider for this layer does not support the addition of features." ), Qgis::Warning );
+      return;
+    }
 
-  if ( e && e->key() == Qt::Key_C && mode() == CaptureLine && vlayer->geometryType() == QgsWkbTypes::LineGeometry && mCheckGeometryType )
-  {
-    closePolygon();
-    QgsMapMouseEvent e2( mCanvas, QEvent::MouseButtonRelease, QPoint( ), Qt::RightButton );
-    cadCanvasReleaseEvent( &e2 );
+    if ( !vlayer->isEditable() )
+    {
+      notifyNotEditableLayer();
+      return;
+    }
+
+    if ( ( mode() == CaptureLine && vlayer->geometryType() == QgsWkbTypes::LineGeometry && mCheckGeometryType ) || ( mode() == CapturePolygon && vlayer->geometryType() == QgsWkbTypes::PolygonGeometry && mCheckGeometryType ) )
+    {
+      closePolygon();
+      QgsMapMouseEvent e2( mCanvas, QEvent::MouseButtonRelease, QPoint( ), Qt::RightButton );
+      cadCanvasReleaseEvent( &e2 );
+    }
   }
+  else
+    QgsMapToolCapture::keyPressEvent( e );
 }
 void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
