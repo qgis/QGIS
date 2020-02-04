@@ -402,7 +402,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsVectorLayerCache *mLayerCache = nullptr;
     QPointer< QgsVectorLayer > mLayer = nullptr;
     QProgressDialog *mProgressDlg = nullptr;
-    QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
+    QPointer<QgsIFeatureSelectionManager> mFeatureSelectionManager;
     QString mDisplayExpression;
     QgsAttributeTableConfig mConfig;
     QgsScrollArea *mAttributeEditorScrollArea = nullptr;

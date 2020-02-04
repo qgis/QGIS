@@ -1023,7 +1023,7 @@ void QgsDualView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featu
   mTableView->setFeatureSelectionManager( featureSelectionManager );
   mFeatureListView->setFeatureSelectionManager( featureSelectionManager );
 
-  if ( mFeatureSelectionManager && mFeatureSelectionManager->parent() == this )
+  if ( !mFeatureSelectionManager.isNull() && mFeatureSelectionManager->parent() == this )
     delete mFeatureSelectionManager;
 
   mFeatureSelectionManager = featureSelectionManager;
