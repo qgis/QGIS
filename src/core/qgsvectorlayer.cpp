@@ -2059,7 +2059,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         const QDomNodeList fieldPairNodes { relationElement.elementsByTagName( QStringLiteral( "fieldPair" ) ) };
         for ( int j = 0; j < fieldPairNodes.length(); ++j )
         {
-          const QDomElement fieldPairElement = fieldPairNodes.at( i ).toElement();
+          const QDomElement fieldPairElement = fieldPairNodes.at( j ).toElement();
           fieldPairs.push_back( { fieldPairElement.attribute( QStringLiteral( "referencing" ) ),
                                   fieldPairElement.attribute( QStringLiteral( "referenced" ) ) } );
         }
@@ -2093,7 +2093,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
         const QDomNodeList fieldPairNodes { relationElement.elementsByTagName( QStringLiteral( "fieldPair" ) ) };
         for ( int j = 0; j < fieldPairNodes.length(); ++j )
         {
-          const QDomElement fieldPairElement = fieldPairNodes.at( i ).toElement();
+          const QDomElement fieldPairElement = fieldPairNodes.at( j ).toElement();
           fieldPairs.push_back( { fieldPairElement.attribute( QStringLiteral( "referencing" ) ),
                                   fieldPairElement.attribute( QStringLiteral( "referenced" ) ) } );
         }
