@@ -103,6 +103,8 @@ class QgsCoordinateTransformPrivate : public QSharedData
     ProjData threadLocalProjData();
 
 #if PROJ_VERSION_MAJOR>=6
+    ProjData threadLocalFallbackProjData();
+
     // Only meant to be called by QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread()
     bool removeObjectsBelongingToCurrentThread( void *pj_context );
 #endif
@@ -152,6 +154,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     QReadWriteLock mProjLock;
     QMap < uintptr_t, ProjData > mProjProjections;
+    QMap < uintptr_t, ProjData > mProjFallbackProjections;
 
     /**
      * Sets a custom handler to use when a coordinate transform is created between \a sourceCrs and
