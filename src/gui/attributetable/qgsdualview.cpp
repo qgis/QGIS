@@ -706,7 +706,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
     return;
   }
   //add actions from QgsMapLayerActionRegistry to context menu
-  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer );
+  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::Layer | QgsMapLayerAction::SingleFeature );
   if ( !registeredActions.isEmpty() )
   {
     //add a separator between user defined and standard actions
