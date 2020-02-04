@@ -585,6 +585,33 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   return res;
 }
 
+#if PROJ_VERSION_MAJOR>=6
+ProjData QgsCoordinateTransformPrivate::threadLocalFallbackProjData()
+{
+  QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QMap < uintptr_t, ProjData >::const_iterator it = mProjFallbackProjections.constFind( reinterpret_cast< uintptr_t>( context ) );
+
+  if ( it != mProjFallbackProjections.constEnd() )
+  {
+    ProjData res = it.value();
+    return res;
+  }
+
+  // proj projections don't exist yet, so we need to create
+  locker.changeMode( QgsReadWriteLocker::Write );
+
+  QgsProjUtils::proj_pj_unique_ptr transform( proj_create_crs_to_crs_from_pj( context, mSourceCRS.projObject(), mDestCRS.projObject(), nullptr, nullptr ) );
+  if ( transform )
+    transform.reset( proj_normalize_for_visualization( QgsProjContext::get(), transform.get() ) );
+
+  ProjData res = transform.release();
+  mProjFallbackProjections.insert( reinterpret_cast< uintptr_t>( context ), res );
+  return res;
+}
+#endif
+
 void QgsCoordinateTransformPrivate::setCustomMissingRequiredGridHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::GridDetails & )> &handler )
 {
   sMissingRequiredGridHandler = handler;
@@ -657,7 +684,7 @@ void QgsCoordinateTransformPrivate::addNullGridShifts( QString &srcProjString, Q
 void QgsCoordinateTransformPrivate::freeProj()
 {
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
-  if ( mProjProjections.isEmpty() )
+  if ( mProjProjections.isEmpty() && mProjFallbackProjections.isEmpty() )
     return;
   QMap < uintptr_t, ProjData >::const_iterator it = mProjProjections.constBegin();
 #if PROJ_VERSION_MAJOR>=6
@@ -672,6 +699,14 @@ void QgsCoordinateTransformPrivate::freeProj()
     proj_assign_context( it.value(), tmpContext );
     proj_destroy( it.value() );
   }
+
+  it = mProjFallbackProjections.constBegin();
+  for ( ; it != mProjFallbackProjections.constEnd(); ++it )
+  {
+    proj_assign_context( it.value(), tmpContext );
+    proj_destroy( it.value() );
+  }
+
   proj_context_destroy( tmpContext );
 #else
   projCtx tmpContext = pj_ctx_alloc();
@@ -685,6 +720,7 @@ void QgsCoordinateTransformPrivate::freeProj()
   pj_ctx_free( tmpContext );
 #endif
   mProjProjections.clear();
+  mProjFallbackProjections.clear();
 }
 
 #if PROJ_VERSION_MAJOR>=6
@@ -697,6 +733,13 @@ bool QgsCoordinateTransformPrivate::removeObjectsBelongingToCurrentThread( void 
   {
     proj_destroy( it.value() );
     mProjProjections.erase( it );
+  }
+
+  it = mProjFallbackProjections.find( reinterpret_cast< uintptr_t>( pj_context ) );
+  if ( it != mProjFallbackProjections.end() )
+  {
+    proj_destroy( it.value() );
+    mProjFallbackProjections.erase( it );
   }
 
   return mProjProjections.isEmpty();
