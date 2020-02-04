@@ -291,7 +291,7 @@ void QgsDatumTransformTableWidget::editDatumTransform()
     }
 
 #if PROJ_VERSION_MAJOR>=6
-    if ( sourceCrs.isValid() && destinationCrs.isValid() && !proj.isEmpty() )
+    if ( sourceCrs.isValid() && destinationCrs.isValid() )
 #else
     if ( sourceCrs.isValid() && destinationCrs.isValid() &&
          ( sourceTransform != -1 || destinationTransform != -1 ) )
