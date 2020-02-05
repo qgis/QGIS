@@ -34,6 +34,9 @@ class QgsGpsBearingItem : public QObject, public QgsMapCanvasLineSymbolItem
   public:
     explicit QgsGpsBearingItem( QgsMapCanvas *mapCanvas );
 
+    /**
+     * Point is in WGS84
+     */
     void setGpsPosition( const QgsPointXY &point );
     void setGpsBearing( double bearing );
 
@@ -41,8 +44,11 @@ class QgsGpsBearingItem : public QObject, public QgsMapCanvasLineSymbolItem
 
   protected:
 
-    //! coordinates of the point in the center
+    //! coordinates of the point in the center (map units)
     QgsPointXY mCenter;
+
+    //! coordinates of the point in the center (WGS84)
+    QgsPointXY mCenterWGS84;
 
   private:
     void updateLine();
