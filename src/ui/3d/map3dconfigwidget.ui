@@ -37,7 +37,7 @@
         <x>0</x>
         <y>0</y>
         <width>539</width>
-        <height>693</height>
+        <height>696</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -63,10 +63,34 @@
           <item row="1" column="1" colspan="2">
            <widget class="QgsMapLayerComboBox" name="cboTerrainLayer"/>
           </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelTerrainLayer">
+            <property name="text">
+             <string>Elevation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QComboBox" name="cboTerrainType"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="labelTerrainResolution">
+            <property name="text">
+             <string>Tile resolution</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="1" colspan="2">
            <widget class="QgsDoubleSpinBox" name="spinTerrainScale">
             <property name="value">
              <double>1.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelTerrainType">
+            <property name="text">
+             <string>Type</string>
             </property>
            </widget>
           </item>
@@ -80,17 +104,17 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labelTerrainScale">
+            <property name="text">
+             <string>Vertical scale</string>
+            </property>
+           </widget>
+          </item>
           <item row="4" column="0">
            <widget class="QLabel" name="labelTerrainSkirtHeight">
             <property name="text">
              <string>Skirt height</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1" colspan="2">
-           <widget class="QComboBox" name="cboTerrainMapTheme">
-            <property name="editable">
-             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -109,44 +133,6 @@
              <double>10.000000000000000</double>
             </property>
            </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="labelTerrainScale">
-            <property name="text">
-             <string>Vertical scale</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="labelTerrainType">
-            <property name="text">
-             <string>Type</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="labelTerrainLayer">
-            <property name="text">
-             <string>Elevation</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="labelTerrainMapTheme">
-            <property name="text">
-             <string>Map theme</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="labelTerrainResolution">
-            <property name="text">
-             <string>Tile resolution</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="cboTerrainType"/>
           </item>
          </layout>
         </widget>
@@ -392,7 +378,6 @@
   <tabstop>spinTerrainScale</tabstop>
   <tabstop>spinTerrainResolution</tabstop>
   <tabstop>spinTerrainSkirtHeight</tabstop>
-  <tabstop>cboTerrainMapTheme</tabstop>
   <tabstop>groupTerrainShading</tabstop>
   <tabstop>spinMapResolution</tabstop>
   <tabstop>spinScreenError</tabstop>
