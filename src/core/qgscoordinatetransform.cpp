@@ -49,6 +49,11 @@ QReadWriteLock QgsCoordinateTransform::sCacheLock;
 QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > QgsCoordinateTransform::sTransforms; //same auth_id pairs might have different datum transformations
 bool QgsCoordinateTransform::sDisableCache = false;
 
+std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                     const QgsCoordinateReferenceSystem &destinationCrs,
+                     const QgsDatumTransform::TransformDetails &desiredOperation,
+                     const QgsDatumTransform::TransformDetails &usedOperation )> QgsCoordinateTransform::sFallbackOperationOccurredHandler = nullptr;
+
 QgsCoordinateTransform::QgsCoordinateTransform()
 {
   d = new QgsCoordinateTransformPrivate();
@@ -637,12 +642,14 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     return;
   }
 
+#if PROJ_VERSION_MAJOR>=6
   double *xprev = new double[ numPoints ];
   memcpy( xprev, x, sizeof( double ) * numPoints );
   double *yprev = new double[ numPoints ];
   memcpy( yprev, y, sizeof( double ) * numPoints );
   double *zprev = new double[ numPoints ];
   memcpy( zprev, z, sizeof( double ) * numPoints );
+#endif
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
   double xorg = *x;
@@ -753,11 +760,21 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
         memcpy( y, yprev, sizeof( double ) * numPoints );
         memcpy( z, zprev, sizeof( double ) * numPoints );
       }
+
+      if ( sFallbackOperationOccurredHandler )
+      {
+        QgsDatumTransform::TransformDetails desired = instantiatedCoordinateOperationDetails();
+        QgsDatumTransform::TransformDetails used = QgsDatumTransform::transformDetailsFromPj( transform );
+        sFallbackOperationOccurredHandler( d->mSourceCRS, d->mDestCRS, desired, used );
+      }
     }
   }
   delete [] xprev;
+  xprev = nullptr;
   delete [] yprev;
+  yprev = nullptr;
   delete [] zprev;
+  zprev = nullptr;
 #endif
   if ( projResult != 0 )
   {
@@ -1090,4 +1107,9 @@ void QgsCoordinateTransform::setCustomCoordinateOperationCreationErrorHandler( c
 void QgsCoordinateTransform::setCustomMissingGridUsedByContextHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails & )> &handler )
 {
   QgsCoordinateTransformPrivate::setCustomMissingGridUsedByContextHandler( handler );
+}
+
+void QgsCoordinateTransform::setFallbackOperationOccurredHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails &, const QgsDatumTransform::TransformDetails & )> &handler )
+{
+  sFallbackOperationOccurredHandler = handler;
 }

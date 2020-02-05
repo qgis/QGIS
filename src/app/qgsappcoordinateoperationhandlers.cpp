@@ -56,10 +56,19 @@ QgsAppMissingGridHandler::QgsAppMissingGridHandler( QObject *parent )
     emit missingGridUsedByContextHandler( sourceCrs, destinationCrs, desired );
   } );
 
+  QgsCoordinateTransform::setFallbackOperationOccurredHandler( [ = ]( const QgsCoordinateReferenceSystem & sourceCrs,
+      const QgsCoordinateReferenceSystem & destinationCrs,
+      const QgsDatumTransform::TransformDetails & desired,
+      const QgsDatumTransform::TransformDetails & used )
+  {
+    emit fallbackOperationOccurred( sourceCrs, destinationCrs, desired, used );
+  } );
+
   connect( this, &QgsAppMissingGridHandler::missingRequiredGrid, this, &QgsAppMissingGridHandler::onMissingRequiredGrid, Qt::QueuedConnection );
   connect( this, &QgsAppMissingGridHandler::missingPreferredGrid, this, &QgsAppMissingGridHandler::onMissingPreferredGrid, Qt::QueuedConnection );
   connect( this, &QgsAppMissingGridHandler::coordinateOperationCreationError, this, &QgsAppMissingGridHandler::onCoordinateOperationCreationError, Qt::QueuedConnection );
   connect( this, &QgsAppMissingGridHandler::missingGridUsedByContextHandler, this, &QgsAppMissingGridHandler::onMissingGridUsedByContextHandler, Qt::QueuedConnection );
+  connect( this, &QgsAppMissingGridHandler::fallbackOperationOccurred, this, &QgsAppMissingGridHandler::onFallbackOperationOccurred, Qt::QueuedConnection );
 
   connect( QgsProject::instance(), &QgsProject::cleared, this, [ = ] { mAlreadyWarnedPairsForProject.clear(); } );
 
@@ -259,6 +268,30 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
     {
       bar->popWidget( widget );
     }
+  } );
+
+  widget->layout()->addWidget( detailsButton );
+  bar->pushWidget( widget, Qgis::Critical, 0 );
+}
+
+void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &desired, const QgsDatumTransform::TransformDetails &used )
+{
+  //  if ( !shouldWarnAboutPairForCurrentProject( sourceCrs, destinationCrs ) )
+  //    return;
+
+  const QString shortMessage = tr( "Used a fallback transform from %1 to %2" ).arg( sourceCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ), destinationCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) );
+  const QString longMessage = tr( "<p>An alternative transform was used when transforming coordinates between <i>%1</i> and <i>%2</i>.</p><p style=\"color: red\">I wanted to use %3</p>" ).arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier(), desired.proj );
+
+  QgsMessageBar *bar = QgisApp::instance()->messageBar();
+  QgsMessageBarItem *widget = bar->createMessage( QString(), shortMessage );
+  QPushButton *detailsButton = new QPushButton( tr( "Details" ) );
+  connect( detailsButton, &QPushButton::clicked, this, [longMessage]
+  {
+    // dlg has deleted on close
+    QgsMessageOutput * dlg( QgsMessageOutput::createMessageOutput() );
+    dlg->setTitle( tr( "Fallback Transform Occurred" ) );
+    dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+    dlg->showMessage();
   } );
 
   widget->layout()->addWidget( detailsButton );
