@@ -331,11 +331,15 @@ class CORE_EXPORT QgsRenderContext
 
     /**
      * Returns TRUE if advanced effects such as blend modes such be used
+     *
+     * \see setUseAdvancedEffects()
      */
     bool useAdvancedEffects() const;
 
     /**
      * Used to enable or disable advanced effects such as blend modes
+     *
+     * \see useAdvancedEffects()
      */
     void setUseAdvancedEffects( bool enabled );
 
@@ -519,9 +523,16 @@ class CORE_EXPORT QgsRenderContext
 
     /**
      * Returns TRUE if the rendering optimization (geometry simplification) can be executed
+     *
+     * \see setUseRenderingOptimization()
      */
     bool useRenderingOptimization() const;
 
+    /**
+     * Sets whether the rendering optimization (geometry simplification) should be executed
+     *
+     * \see useRenderingOptimization()
+     */
     void setUseRenderingOptimization( bool enabled );
 
     /**
@@ -597,16 +608,30 @@ class CORE_EXPORT QgsRenderContext
 
     /**
      * Sets the segmentation tolerance applied when rendering curved geometries
-    \param tolerance the segmentation tolerance*/
+     * \param tolerance the segmentation tolerance
+     * \see segmentationTolerance()
+     * \see segmentationToleranceType()
+     */
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
-    //! Gets the segmentation tolerance applied when rendering curved geometries
+
+    /**
+     * Gets the segmentation tolerance applied when rendering curved geometries
+     * \see setSegmentationTolerance()
+     */
     double segmentationTolerance() const { return mSegmentationTolerance; }
 
     /**
      * Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-    \param type the segmentation tolerance typename*/
+     * \param type the segmentation tolerance typename
+     * \see segmentationToleranceType()
+     * \see segmentationTolerance()
+     */
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
-    //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+
+    /**
+     * Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+     * \see setSegmentationToleranceType()
+     */
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
 
     // Conversions
