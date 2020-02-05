@@ -115,7 +115,6 @@ bool QgsMapToolPan::gestureEvent( QGestureEvent *event )
   if ( QTouchDevice::devices().isEmpty() )
     return true; // no touch support
 
-  qDebug() << "gesture " << event;
   if ( QGesture *gesture = event->gesture( Qt::PinchGesture ) )
   {
     mPinching = true;

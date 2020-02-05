@@ -1023,6 +1023,13 @@ start of the pan and the current pan position.
 .. versionadded:: 3.12
 %End
 
+    void tapAndHoldGestureOccurred( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
+%Docstring
+Emitted whenever a tap and hold ``gesture`` occurs at the specified map point.
+
+.. versionadded:: 3.12
+%End
+
   protected:
 
     virtual bool event( QEvent *e );

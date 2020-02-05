@@ -94,6 +94,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mBtnResetFeature, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnResetFeature_clicked );
   connect( mBtnLogFile, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnLogFile_clicked );
   connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsGpsInformationWidget::cursorCoordinateChanged );
+  connect( mMapCanvas, &QgsMapCanvas::tapAndHoldGestureOccurred, this, &QgsGpsInformationWidget::tapAndHold );
 
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
 
@@ -1553,6 +1554,22 @@ void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *map
     }
   }
   mPopulatingFields = false;
+}
+
+void QgsGpsInformationWidget::tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture * )
+{
+  if ( !mNmea )
+    return;
+
+  try
+  {
+    mLastCursorPosWgs84 = mCanvasToWgs84Transform.transform( mapPoint );
+    updateGpsDistanceStatusMessage();
+  }
+  catch ( QgsCsException & )
+  {
+
+  }
 }
 
 void QgsGpsInformationWidget::switchAcquisition()

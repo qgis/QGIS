@@ -916,6 +916,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void panDistanceBearingChanged( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
 
+    /**
+     * Emitted whenever a tap and hold \a gesture occurs at the specified map point.
+     * \since QGIS 3.12
+     */
+    void tapAndHoldGestureOccurred( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
+
   protected:
 
     bool event( QEvent *e ) override;
