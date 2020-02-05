@@ -49,6 +49,11 @@ class QgsAppMissingGridHandler : public QObject
                                           const QgsCoordinateReferenceSystem &destinationCrs,
                                           const QgsDatumTransform::TransformDetails &desired );
 
+    void fallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs,
+                                    const QgsCoordinateReferenceSystem &destinationCrs,
+                                    const QgsDatumTransform::TransformDetails &desired,
+                                    const QgsDatumTransform::TransformDetails &used );
+
   private slots:
 
     void onMissingRequiredGrid( const QgsCoordinateReferenceSystem &sourceCrs,
@@ -67,6 +72,12 @@ class QgsAppMissingGridHandler : public QObject
     void onMissingGridUsedByContextHandler( const QgsCoordinateReferenceSystem &sourceCrs,
                                             const QgsCoordinateReferenceSystem &destinationCrs,
                                             const QgsDatumTransform::TransformDetails &desired );
+
+    void onFallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs,
+                                      const QgsCoordinateReferenceSystem &destinationCrs,
+                                      const QgsDatumTransform::TransformDetails &desired,
+                                      const QgsDatumTransform::TransformDetails &used );
+
   private:
 
     bool shouldWarnAboutPair( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
