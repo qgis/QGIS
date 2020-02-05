@@ -170,12 +170,6 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
     mTableWidget->setItem( mTableWidget->rowCount() - 1, j, mergedItem );
   }
 
-  //insert currently merged values
-  for ( int i = 0; i < mTableWidget->columnCount(); ++i )
-  {
-    refreshMergedValue( i );
-  }
-
   //initially set any fields with default values/default value clauses to that value
   for ( int j = 0; j < mTableWidget->columnCount(); j++ )
   {
@@ -205,6 +199,12 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
         currentComboBox->blockSignals( false );
       }
     }
+  }
+
+  //insert currently merged values
+  for ( int i = 0; i < mTableWidget->columnCount(); ++i )
+  {
+    refreshMergedValue( i );
   }
 
 }
