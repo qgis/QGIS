@@ -282,11 +282,15 @@ of any faster raster shortcuts.
     bool useAdvancedEffects() const;
 %Docstring
 Returns ``True`` if advanced effects such as blend modes such be used
+
+.. seealso:: :py:func:`setUseAdvancedEffects`
 %End
 
     void setUseAdvancedEffects( bool enabled );
 %Docstring
 Used to enable or disable advanced effects such as blend modes
+
+.. seealso:: :py:func:`useAdvancedEffects`
 %End
 
     bool drawEditingInformation() const;
@@ -479,9 +483,16 @@ Sets whether vector selections should be shown in the rendered map
     bool useRenderingOptimization() const;
 %Docstring
 Returns ``True`` if the rendering optimization (geometry simplification) can be executed
+
+.. seealso:: :py:func:`setUseRenderingOptimization`
 %End
 
     void setUseRenderingOptimization( bool enabled );
+%Docstring
+Sets whether the rendering optimization (geometry simplification) should be executed
+
+.. seealso:: :py:func:`useRenderingOptimization`
+%End
 
     const QgsVectorSimplifyMethod &vectorSimplifyMethod() const;
 %Docstring
@@ -565,22 +576,36 @@ Gets the filter feature provider used for additional filtering of rendered featu
 %Docstring
 Sets the segmentation tolerance applied when rendering curved geometries
 
-:param tolerance: the segmentation tolerance*
+:param tolerance: the segmentation tolerance
+
+.. seealso:: :py:func:`segmentationTolerance`
+
+.. seealso:: :py:func:`segmentationToleranceType`
 %End
+
     double segmentationTolerance() const;
 %Docstring
 Gets the segmentation tolerance applied when rendering curved geometries
+
+.. seealso:: :py:func:`setSegmentationTolerance`
 %End
 
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 %Docstring
 Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
 
-:param type: the segmentation tolerance typename*
+:param type: the segmentation tolerance typename
+
+.. seealso:: :py:func:`segmentationToleranceType`
+
+.. seealso:: :py:func:`segmentationTolerance`
 %End
+
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const;
 %Docstring
 Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+
+.. seealso:: :py:func:`setSegmentationToleranceType`
 %End
 
 
