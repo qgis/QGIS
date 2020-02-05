@@ -138,16 +138,17 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   //Build the delimited text URI from the user provided information
 
   QUrl url = mFile->url();
+  QUrlQuery query( url );
 
-  url.addQueryItem( QStringLiteral( "detectTypes" ), cbxDetectTypes->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+  query.addQueryItem( QStringLiteral( "detectTypes" ), cbxDetectTypes->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
 
   if ( cbxPointIsComma->isChecked() )
   {
-    url.addQueryItem( QStringLiteral( "decimalPoint" ), QStringLiteral( "," ) );
+    query.addQueryItem( QStringLiteral( "decimalPoint" ), QStringLiteral( "," ) );
   }
   if ( cbxXyDms->isChecked() )
   {
-    url.addQueryItem( QStringLiteral( "xyDms" ), QStringLiteral( "yes" ) );
+    query.addQueryItem( QStringLiteral( "xyDms" ), QStringLiteral( "yes" ) );
   }
 
   bool haveGeom = true;
@@ -157,19 +158,19 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
     if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
     {
       field = cmbXField->currentText();
-      url.addQueryItem( QStringLiteral( "xField" ), field );
+      query.addQueryItem( QStringLiteral( "xField" ), field );
       field = cmbYField->currentText();
-      url.addQueryItem( QStringLiteral( "yField" ), field );
+      query.addQueryItem( QStringLiteral( "yField" ), field );
     }
     if ( !cmbZField->currentText().isEmpty() )
     {
       field = cmbZField->currentText();
-      url.addQueryItem( QStringLiteral( "zField" ), field );
+      query.addQueryItem( QStringLiteral( "zField" ), field );
     }
     if ( !cmbMField->currentText().isEmpty() )
     {
       field = cmbMField->currentText();
-      url.addQueryItem( QStringLiteral( "mField" ), field );
+      query.addQueryItem( QStringLiteral( "mField" ), field );
     }
   }
   else if ( geomTypeWKT->isChecked() )
@@ -177,36 +178,37 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
     if ( ! cmbWktField->currentText().isEmpty() )
     {
       QString field = cmbWktField->currentText();
-      url.addQueryItem( QStringLiteral( "wktField" ), field );
+      query.addQueryItem( QStringLiteral( "wktField" ), field );
     }
     if ( cmbGeometryType->currentIndex() > 0 )
     {
-      url.addQueryItem( QStringLiteral( "geomType" ), cmbGeometryType->currentText() );
+      query.addQueryItem( QStringLiteral( "geomType" ), cmbGeometryType->currentText() );
     }
   }
   else
   {
     haveGeom = false;
-    url.addQueryItem( QStringLiteral( "geomType" ), QStringLiteral( "none" ) );
+    query.addQueryItem( QStringLiteral( "geomType" ), QStringLiteral( "none" ) );
   }
   if ( haveGeom )
   {
     QgsCoordinateReferenceSystem crs = crsGeometry->crs();
     if ( crs.isValid() )
     {
-      url.addQueryItem( QStringLiteral( "crs" ), crs.authid() );
+      query.addQueryItem( QStringLiteral( "crs" ), crs.authid() );
     }
 
   }
 
   if ( ! geomTypeNone->isChecked() )
   {
-    url.addQueryItem( QStringLiteral( "spatialIndex" ), cbxSpatialIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+    query.addQueryItem( QStringLiteral( "spatialIndex" ), cbxSpatialIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
   }
 
-  url.addQueryItem( QStringLiteral( "subsetIndex" ), cbxSubsetIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
-  url.addQueryItem( QStringLiteral( "watchFile" ), cbxWatchFile->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+  query.addQueryItem( QStringLiteral( "subsetIndex" ), cbxSubsetIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
+  query.addQueryItem( QStringLiteral( "watchFile" ), cbxWatchFile->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
 
+  url.setQuery( query );
   // store the settings
   saveSettings();
   saveSettingsForFile( mFileWidget->filePath() );

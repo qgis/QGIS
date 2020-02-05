@@ -63,7 +63,13 @@ Toggle the link between classes boundaries
 
     void rowsMoved();
     void modelDataChanged();
-    void refreshRanges( bool reset = false );
+
+    void refreshRanges( bool reset );
+%Docstring
+Refreshes the ranges for the renderer.
+
+The ``reset`` argument is deprecated and has no effect.
+%End
 
   protected slots:
 

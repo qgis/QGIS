@@ -165,7 +165,7 @@ void QgsAmsLegendFetcher::handleFinished()
     {
       maxImageSize.setWidth( std::max( maxImageSize.width(), legendEntry.second.width() ) );
       maxImageSize.setHeight( std::max( maxImageSize.height(), legendEntry.second.height() ) );
-      textWidth = std::max( textWidth, fm.width( legendEntry.first ) + 10 );
+      textWidth = std::max( textWidth, fm.boundingRect( legendEntry.first ).width() + 10 );
     }
     double scaleFactor = maxImageSize.width() == 0 || maxImageSize.height() == 0 ? 1.0 :
                          std::min( 1., std::min( double( imageSize ) / maxImageSize.width(), double( imageSize ) / maxImageSize.height() ) );
