@@ -39,6 +39,39 @@ class TestQgsColorButton(unittest.TestCase):
         # ensure that only the alpha channel has changed - not the other color components
         self.assertEqual(button.color(), QColor(255, 100, 200, 0))
 
+    def testNulling(self):
+        """
+        Test clearing colors to null
+        """
+
+        # start with a valid color
+        button = QgsColorButton()
+        button.setAllowOpacity(True)
+        button.setColor(QColor(255, 100, 200, 255))
+        self.assertEqual(button.color(), QColor(255, 100, 200, 255))
+
+        spy_changed = QSignalSpy(button.colorChanged)
+        spy_cleared = QSignalSpy(button.cleared)
+
+        button.setColor(QColor(50, 100, 200, 255))
+        self.assertEqual(button.color(), QColor(50, 100, 200, 255))
+        self.assertEqual(len(spy_changed), 1)
+        self.assertEqual(len(spy_cleared), 0)
+
+        # now set to null
+        button.setToNull()
+
+        self.assertEqual(button.color(), QColor())
+        self.assertEqual(len(spy_changed), 2)
+        self.assertEqual(len(spy_cleared), 1)
+
+        button.setToNull()
+        self.assertEqual(button.color(), QColor())
+        # should not be refired, the color wasn't changed
+        self.assertEqual(len(spy_changed), 2)
+        # SHOULD be refired
+        self.assertEqual(len(spy_cleared), 2)
+
     def testLinkProjectColor(self):
         """
         Test linking to a project color
