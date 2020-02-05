@@ -711,14 +711,14 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     {
       mExpressionContext.setFeature( mFeat );
       QList<QgsConditionalStyle> styles;
-      if ( mRowStylesMap.contains( index.row() ) )
+      if ( mRowStylesMap.contains( mFeat.id() ) )
       {
-        styles = mRowStylesMap[index.row()];
+        styles = mRowStylesMap[mFeat.id()];
       }
       else
       {
         styles = QgsConditionalStyle::matchingConditionalStyles( layer()->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
-        mRowStylesMap.insert( index.row(), styles );
+        mRowStylesMap.insert( mFeat.id(), styles );
       }
 
       QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
@@ -756,7 +756,7 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
   if ( !layer()->isModified() )
     return false;
 
-  mRowStylesMap.remove( index.row() );
+  mRowStylesMap.remove( mFeat.id() );
 
   return true;
 }
