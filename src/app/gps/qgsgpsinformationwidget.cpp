@@ -1513,12 +1513,12 @@ void QgsGpsInformationWidget::updateGpsDistanceStatusMessage()
 
   const double distance = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector< QgsPointXY >() << mLastCursorPosWgs84 << mLastGpsPosition ),
                           QgsProject::instance()->distanceUnits() );
-  const double bearing = 180 * mDistanceCalculator.bearing( mLastCursorPosWgs84, mLastGpsPosition ) / M_PI;
+  const double bearing = 180 * mDistanceCalculator.bearing( mLastGpsPosition, mLastCursorPosWgs84 ) / M_PI;
   const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
   const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
   const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
 
-  QgisApp::instance()->statusBarIface()->showMessage( tr( "Distance to GPS location %1 (%2)" ).arg( distanceString, bearingString ), 2000 );
+  QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), 2000 );
 }
 
 void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *mapLayer )
