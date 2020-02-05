@@ -13044,6 +13044,10 @@ void QgisApp::showRotation()
 
 void QgisApp::showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, double bearing )
 {
+  const bool showMessage = QgsSettings().value( QStringLiteral( "showPanDistanceInStatusBar" ), true, QgsSettings::App ).toBool();
+  if ( !showMessage )
+    return;
+
   const double distanceInProjectUnits = distance * QgsUnitTypes::fromUnitToUnitFactor( unit, QgsProject::instance()->distanceUnits() );
   const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
   const QString distanceString = QgsDistanceArea::formatDistance( distanceInProjectUnits, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
