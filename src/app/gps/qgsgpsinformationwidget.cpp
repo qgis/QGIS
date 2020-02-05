@@ -81,6 +81,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   Q_ASSERT( mMapCanvas ); // precondition
   setupUi( this );
   connect( mConnectButton, &QPushButton::toggled, this, &QgsGpsInformationWidget::mConnectButton_toggled );
+  connect( mRecenterButton, &QPushButton::clicked, this, &QgsGpsInformationWidget::recenter );
+  connect( mConnectButton, &QAbstractButton::toggled, mRecenterButton, &QWidget::setEnabled );
   connect( mBtnTrackColor, &QgsColorButton::colorChanged, this, &QgsGpsInformationWidget::trackColorChanged );
   connect( mSpinTrackWidth, qgis::overload< int >::of( &QSpinBox::valueChanged ), this, &QgsGpsInformationWidget::mSpinTrackWidth_valueChanged );
   connect( mBtnPosition, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnPosition_clicked );
@@ -95,6 +97,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mBtnLogFile, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnLogFile_clicked );
   connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsGpsInformationWidget::cursorCoordinateChanged );
   connect( mMapCanvas, &QgsMapCanvas::tapAndHoldGestureOccurred, this, &QgsGpsInformationWidget::tapAndHold );
+
+  mRecenterButton->setEnabled( false );
 
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
 
@@ -549,6 +553,20 @@ void QgsGpsInformationWidget::mConnectButton_toggled( bool flag )
   else
   {
     disconnectGps();
+  }
+}
+
+void QgsGpsInformationWidget::recenter()
+{
+  try
+  {
+    const QgsPointXY center = mCanvasToWgs84Transform.transform( mLastGpsPosition, QgsCoordinateTransform::ReverseTransform );
+    mMapCanvas->setCenter( center );
+    mMapCanvas->refresh();
+  }
+  catch ( QgsCsException & )
+  {
+
   }
 }
 
