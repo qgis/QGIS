@@ -1621,7 +1621,7 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFl
       if ( child->customProperty( QStringLiteral( "embedded" ) ).toInt() )
       {
         QList<QDomNode> brokenNodes;
-        createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), child->customProperty( QStringLiteral( "embedded_project" ) ).toString(), brokenNodes, flags );
+        createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), readPath( child->customProperty( QStringLiteral( "embedded_project" ) ).toString() ), brokenNodes, flags );
       }
     }
 
