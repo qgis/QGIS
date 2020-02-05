@@ -729,7 +729,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
     if ( !constRegisteredActions.isEmpty() )
     {
       menu->addSeparator();
-      QAction *action = menu->addAction( tr( "Actions on selection (%1)" ).arg( mLayer->selectedFeatureCount() ) );
+      QAction *action = menu->addAction( tr( "Actions on Selection (%1)" ).arg( mLayer->selectedFeatureCount() ) );
       action->setEnabled( false );
 
       for ( QgsMapLayerAction *action : constRegisteredActions )
