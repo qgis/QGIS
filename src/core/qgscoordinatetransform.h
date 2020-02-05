@@ -555,6 +555,19 @@ class CORE_EXPORT QgsCoordinateTransform
     static void setCustomMissingGridUsedByContextHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
         const QgsCoordinateReferenceSystem &destinationCrs,
         const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
+
+
+    /**
+     * Sets a custom \a handler to use when the desired coordinate operation for use between \a sourceCrs and
+     * \a destinationCrs failed and an alternative fallback \a usedOperation was utilised instead.
+     *
+     * \since QGIS 3.10.3
+     */
+    static void setFallbackOperationOccurredHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+        const QgsCoordinateReferenceSystem &destinationCrs,
+        const QgsDatumTransform::TransformDetails &desiredOperation,
+        const QgsDatumTransform::TransformDetails &usedOperation )> &handler );
+
 #endif
 
 #ifndef SIP_RUN
@@ -595,6 +608,12 @@ class CORE_EXPORT QgsCoordinateTransform
     static QReadWriteLock sCacheLock;
     static QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > sTransforms; //same auth_id pairs might have different datum transformations
     static bool sDisableCache;
+
+
+    static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
+                                const QgsCoordinateReferenceSystem &destinationCrs,
+                                const QgsDatumTransform::TransformDetails &desiredOperation,
+                                const QgsDatumTransform::TransformDetails &usedOperation )> sFallbackOperationOccurredHandler;
 
 };
 
