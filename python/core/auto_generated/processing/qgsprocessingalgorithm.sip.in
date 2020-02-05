@@ -529,9 +529,8 @@ algorithm should be canceled and exited early.
 
 This method will not be called if the prepareAlgorithm() step failed (returned ``False``).
 
-c++ implementations of processAlgorithm can throw the QgsProcessingException exception
-to indicate that a fatal error occurred within the execution. Python based subclasses
-should raise GeoAlgorithmExecutionException for the same purpose.
+Implementations of processAlgorithm can throw the QgsProcessingException exception
+to indicate that a fatal error occurred within the execution.
 
 :return: A map of algorithm outputs. These may be output layer references, or calculated
          values such as statistical calculations. Unless the algorithm subclass overrides

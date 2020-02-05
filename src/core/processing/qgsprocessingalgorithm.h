@@ -525,9 +525,8 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * This method will not be called if the prepareAlgorithm() step failed (returned FALSE).
      *
-     * c++ implementations of processAlgorithm can throw the QgsProcessingException exception
-     * to indicate that a fatal error occurred within the execution. Python based subclasses
-     * should raise GeoAlgorithmExecutionException for the same purpose.
+     * Implementations of processAlgorithm can throw the QgsProcessingException exception
+     * to indicate that a fatal error occurred within the execution.
      *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
      * values such as statistical calculations. Unless the algorithm subclass overrides
