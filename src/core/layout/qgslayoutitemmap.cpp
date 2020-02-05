@@ -1960,27 +1960,23 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
     scopedContext = createExpressionContext();
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
 
-  QList<QgsMapLayer *> renderLayers, highlightLayers;
-
-  if ( !layers().isEmpty() )
-    renderLayers = layers();
-  else
-    renderLayers = mLayout->project()->mapThemeCollection()->masterVisibleLayers();
-
-  // preserve the list of highlight layers to add if presetName is set
-  for ( const auto mlayer : renderLayers )
-  {
-    if ( mlayer->name().contains( "highlight_" ) )
-      highlightLayers << mlayer;
-  }
+  QList<QgsMapLayer *> renderLayers;
 
   QString presetName = themeToRender( *evalContext );
   if ( !presetName.isEmpty() )
   {
     if ( mLayout->project()->mapThemeCollection()->hasMapTheme( presetName ) )
-      renderLayers = highlightLayers << mLayout->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
+      renderLayers = mLayout->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
     else  // fallback to using map canvas layers
-      renderLayers = highlightLayers << mLayout->project()->mapThemeCollection()->masterVisibleLayers();
+      renderLayers = mLayout->project()->mapThemeCollection()->masterVisibleLayers();
+  }
+  else if ( !layers().isEmpty() )
+  {
+    renderLayers = layers();
+  }
+  else
+  {
+    renderLayers = mLayout->project()->mapThemeCollection()->masterVisibleLayers();
   }
 
   bool ok = false;
