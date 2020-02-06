@@ -605,6 +605,7 @@ IF(MSVC)
 ENDIF(MSVC)
 
 # Prevent build when Qt api deprecated before this Qt version is used:
+ADD_DEFINITIONS(-DQT_DEPRECATED_WARNINGS)
 # Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
 ADD_DEFINITIONS(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
 
