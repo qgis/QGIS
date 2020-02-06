@@ -173,7 +173,7 @@ class CORE_EXPORT QgsLayoutTableColumn : public QObject
      * will be sorted in the table. The sort rank specifies the priority given to the
      * column when the table is sorted by multiple columns, with lower sort ranks
      * having higher priority. This property is only used when the column
-     * is part of a QgsComposerAttributeTable.
+     * is part of a QgsLayoutItemAttributeTable.
      * If the sort \a rank is <= 0 then the column is not being sorted.
      *
      * \note only applicable when used in a QgsLayoutItemAttributeTable
