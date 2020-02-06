@@ -8941,8 +8941,8 @@ void QgisApp::setupLayoutManagerConnections()
 void QgisApp::setupDuplicateFeaturesAction()
 {
   mDuplicateFeatureAction.reset( new QgsMapLayerAction( tr( "Duplicate Feature" ),
-                                 nullptr, QgsMapLayerAction::SingleFeature,
-                                 QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeature.svg" ) ), QgsMapLayerAction::EnabledOnlyWhenEditable ) );
+                                 nullptr, QgsMapLayerAction::Target::SingleFeature,
+                                 QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeature.svg" ) ), QgsMapLayerAction::Flag::EnabledOnlyWhenEditable ) );
 
   QgsGui::mapLayerActionRegistry()->addMapLayerAction( mDuplicateFeatureAction.get() );
   connect( mDuplicateFeatureAction.get(), &QgsMapLayerAction::triggeredForFeature, this, [this]( QgsMapLayer * layer, const QgsFeature & feat )
@@ -8952,8 +8952,8 @@ void QgisApp::setupDuplicateFeaturesAction()
          );
 
   mDuplicateFeatureDigitizeAction.reset( new QgsMapLayerAction( tr( "Duplicate Feature and Digitize" ),
-                                         nullptr, QgsMapLayerAction::SingleFeature,
-                                         QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeatureDigitized.svg" ) ), QgsMapLayerAction::EnabledOnlyWhenEditable ) );
+                                         nullptr, QgsMapLayerAction::Target::SingleFeature,
+                                         QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeatureDigitized.svg" ) ), QgsMapLayerAction::Flag::EnabledOnlyWhenEditable ) );
 
   QgsGui::mapLayerActionRegistry()->addMapLayerAction( mDuplicateFeatureDigitizeAction.get() );
   connect( mDuplicateFeatureDigitizeAction.get(), &QgsMapLayerAction::triggeredForFeature, this, [this]( QgsMapLayer * layer, const QgsFeature & feat )
@@ -8977,7 +8977,7 @@ void QgisApp::setupAtlasMapLayerAction( QgsPrintLayout *layout, bool enableActio
   if ( enableAction )
   {
     action = new QgsMapLayerAction( QString( tr( "Set as Atlas Feature for %1" ) ).arg( layout->name() ),
-                                    this, layout->atlas()->coverageLayer(), QgsMapLayerAction::SingleFeature,
+                                    this, layout->atlas()->coverageLayer(), QgsMapLayerAction::Target::SingleFeature,
                                     QgsApplication::getThemeIcon( QStringLiteral( "/mIconAtlas.svg" ) ) );
     mAtlasFeatureActions.insert( layout, action );
     QgsGui::mapLayerActionRegistry()->addMapLayerAction( action );

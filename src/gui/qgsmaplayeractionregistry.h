@@ -24,6 +24,7 @@
 
 #include "qgsmaplayer.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QgsFeature;
 
@@ -36,7 +37,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     Q_OBJECT
 
   public:
-    enum Target
+    enum class Target SIP_MONKEYPATCH_SCOPEENUM : int
     {
       Layer = 1,
       SingleFeature = 2,
@@ -48,17 +49,12 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
     /**
      * Flags which control action behavior
-     * /since QGIS 3.0
+     * \since QGIS 3.0
      */
-    enum Flag
+    enum class Flag SIP_MONKEYPATCH_SCOPEENUM : int
     {
       EnabledOnlyWhenEditable = 1 << 1, //!< Action should be shown only for editable layers
     };
-
-    /**
-     * Action behavior flags.
-     * \since QGIS 3.0
-     */
     Q_DECLARE_FLAGS( Flags, Flag )
     Q_FLAG( Flags )
 
@@ -66,13 +62,13 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
      * Creates a map layer action which can run on any layer
      * \note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
      */
-    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = nullptr );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, Targets targets = QgsMapLayerAction::Target::AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = nullptr );
 
     //! Creates a map layer action which can run only on a specific layer
-    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer *layer, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = nullptr );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer *layer, Targets targets = QgsMapLayerAction::Target::AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = nullptr );
 
     //! Creates a map layer action which can run on a specific type of layer
-    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayerType layerType, Targets targets = AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = nullptr );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayerType layerType, Targets targets = QgsMapLayerAction::Target::AllActions, const QIcon &icon = QIcon(), QgsMapLayerAction::Flags flags = nullptr );
 
     ~QgsMapLayerAction() override;
 
@@ -160,7 +156,7 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     void addMapLayerAction( QgsMapLayerAction *action );
 
     //! Returns the map layer actions which can run on the specified layer
-    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets = QgsMapLayerAction::AllActions );
+    QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets = QgsMapLayerAction::Target::AllActions );
 
     //! Removes a map layer action from the registry
     bool removeMapLayerAction( QgsMapLayerAction *action );

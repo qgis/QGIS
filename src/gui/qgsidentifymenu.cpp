@@ -173,7 +173,7 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer *layer )
   QMenu *layerMenu = nullptr;
 
   QList<QgsMapLayerAction *> separators = QList<QgsMapLayerAction *>();
-  QList<QgsMapLayerAction *> layerActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::Layer );
+  QList<QgsMapLayerAction *> layerActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::Target::Layer );
   int nCustomActions = layerActions.count();
   if ( nCustomActions )
   {
@@ -181,7 +181,7 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer *layer )
   }
   if ( mShowFeatureActions )
   {
-    layerActions.append( QgsGui::mapLayerActionRegistry()->mapLayerActions( layer, QgsMapLayerAction::Layer ) );
+    layerActions.append( QgsGui::mapLayerActionRegistry()->mapLayerActions( layer, QgsMapLayerAction::Target::Layer ) );
     if ( layerActions.count() > nCustomActions )
     {
       separators.append( layerActions[nCustomActions] );
@@ -238,7 +238,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
 
   // do not add actions with MultipleFeatures as target if only 1 feature is found for this layer
   // targets defines which actions will be shown
-  QgsMapLayerAction::Targets targets = results.count() > 1 ? QgsMapLayerAction::Layer | QgsMapLayerAction::MultipleFeatures : QgsMapLayerAction::Layer;
+  QgsMapLayerAction::Targets targets = results.count() > 1 ? QgsMapLayerAction::Target::Layer | QgsMapLayerAction::Target::MultipleFeatures : QgsMapLayerAction::Target::Layer;
 
   QList<QgsMapLayerAction *> separators = QList<QgsMapLayerAction *>();
   QList<QgsMapLayerAction *> layerActions = mCustomActionRegistry.mapLayerActions( layer, targets );
@@ -268,7 +268,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
   // i.e custom actions or map layer actions at feature level
   if ( !createMenu )
   {
-    createMenu = !mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature ).isEmpty();
+    createMenu = !mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::Target::SingleFeature ).isEmpty();
     if ( !createMenu && mShowFeatureActions )
     {
       QgsActionMenu *featureActionMenu = new QgsActionMenu( layer, results[0].mFeature, QStringLiteral( "Feature" ), this );
@@ -355,7 +355,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     QMenu *featureMenu = nullptr;
     QgsActionMenu *featureActionMenu = nullptr;
 
-    QList<QgsMapLayerAction *> customFeatureActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature );
+    QList<QgsMapLayerAction *> customFeatureActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::Target::SingleFeature );
     if ( mShowFeatureActions )
     {
       featureActionMenu = new QgsActionMenu( layer, result.mFeature, QStringLiteral( "Feature" ), layerMenu );
@@ -445,7 +445,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
   for ( QgsMapLayerAction *mapLayerAction : constLayerActions )
   {
     QString title = mapLayerAction->text();
-    if ( mapLayerAction->targets().testFlag( QgsMapLayerAction::MultipleFeatures ) )
+    if ( mapLayerAction->targets().testFlag( QgsMapLayerAction::Target::MultipleFeatures ) )
       title.append( QStringLiteral( " (%1)" ).arg( results.count() ) );
     QAction *action = new QAction( mapLayerAction->icon(), title, layerMenu );
     action->setData( QVariant::fromValue<ActionData>( ActionData( layer, mapLayerAction ) ) );
@@ -473,13 +473,13 @@ void QgsIdentifyMenu::triggerMapLayerAction()
   if ( actData.mIsValid && actData.mMapLayerAction )
   {
     // layer
-    if ( actData.mMapLayerAction->targets().testFlag( QgsMapLayerAction::Layer ) )
+    if ( actData.mMapLayerAction->targets().testFlag( QgsMapLayerAction::Target::Layer ) )
     {
       actData.mMapLayerAction->triggerForLayer( actData.mLayer );
     }
 
     // multiples features
-    if ( actData.mMapLayerAction->targets().testFlag( QgsMapLayerAction::MultipleFeatures ) )
+    if ( actData.mMapLayerAction->targets().testFlag( QgsMapLayerAction::Target::MultipleFeatures ) )
     {
       QList<QgsFeature> featureList;
       const auto results { mLayerIdResults[actData.mLayer] };
@@ -491,7 +491,7 @@ void QgsIdentifyMenu::triggerMapLayerAction()
     }
 
     // single feature
-    if ( actData.mMapLayerAction->targets().testFlag( QgsMapLayerAction::SingleFeature ) )
+    if ( actData.mMapLayerAction->targets().testFlag( QgsMapLayerAction::Target::SingleFeature ) )
     {
       const auto results { mLayerIdResults[actData.mLayer] };
       for ( const QgsMapToolIdentify::IdentifyResult &result : results )

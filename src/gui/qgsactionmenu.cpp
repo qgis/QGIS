@@ -145,7 +145,7 @@ void QgsActionMenu::reloadActions()
     addAction( qAction );
   }
 
-  QList<QgsMapLayerAction *> mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::SingleFeature );
+  QList<QgsMapLayerAction *> mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::Target::SingleFeature );
 
   if ( !mapLayerActions.isEmpty() )
   {

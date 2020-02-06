@@ -55,7 +55,7 @@ QgsMapLayerAction::Flags QgsMapLayerAction::flags() const
 
 bool QgsMapLayerAction::canRunUsingLayer( QgsMapLayer *layer ) const
 {
-  if ( mFlags & EnabledOnlyWhenEditable )
+  if ( mFlags & Flag::EnabledOnlyWhenEditable )
   {
     // action is only enabled for editable layers
     if ( !layer )
@@ -104,7 +104,7 @@ void QgsMapLayerAction::triggerForLayer( QgsMapLayer *layer )
 
 bool QgsMapLayerAction::isEnabledOnlyWhenEditable() const
 {
-  return mFlags & EnabledOnlyWhenEditable;
+  return mFlags & Flag::EnabledOnlyWhenEditable;
 }
 
 //

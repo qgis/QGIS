@@ -706,7 +706,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
     return;
   }
   //add actions from QgsMapLayerActionRegistry to context menu
-  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::Layer | QgsMapLayerAction::SingleFeature );
+  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::Target::Layer | QgsMapLayerAction::Target::SingleFeature );
   if ( !registeredActions.isEmpty() )
   {
     //add a separator between user defined and standard actions
@@ -725,7 +725,7 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
   QgsFeatureId currentFid = masterModel()->rowToId( sourceIndex.row() );
   if ( mLayer->selectedFeatureCount() > 1 && mLayer->selectedFeatureIds().contains( currentFid ) )
   {
-    const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::MultipleFeatures );
+    const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::Target::MultipleFeatures );
     if ( !constRegisteredActions.isEmpty() )
     {
       menu->addSeparator();

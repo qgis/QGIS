@@ -220,7 +220,7 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
       defaultAction = act;
   }
 
-  const auto mapLayerActions {QgsGui::mapLayerActionRegistry()->mapLayerActions( mFilterModel->layer(), QgsMapLayerAction::SingleFeature ) };
+  const auto mapLayerActions {QgsGui::mapLayerActionRegistry()->mapLayerActions( mFilterModel->layer(), QgsMapLayerAction::Target::SingleFeature ) };
   // next add any registered actions for this layer
   for ( QgsMapLayerAction *mapLayerAction : mapLayerActions )
   {
