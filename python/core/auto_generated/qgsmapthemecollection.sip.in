@@ -193,7 +193,8 @@ Removes an existing map theme from collection.
 
     bool renameMapTheme( const QString &name, const QString &newName );
 %Docstring
-Retuns whether a map theme is renamed.
+Renames the existing map theme called ``name`` to ``newName``.
+Returns ``True`` if the rename was successful, or ``False`` if it failed (e.g. due to a duplicate name for ``newName``).
 
 .. versionadded:: 3.12
 %End
