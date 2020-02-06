@@ -1000,7 +1000,7 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
       height = bounds.height();
     }
 
-    pt2 = pt1;
+    pt1 = pt2;
   }
 
   QgsGeometry minBounds = QgsGeometry::fromRect( minRect );
