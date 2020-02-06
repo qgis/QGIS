@@ -78,6 +78,15 @@ Returns the current connection url.
 
   protected:
 
+    enum WfsVersionIndex
+    {
+      WFS_VERSION_MAX,
+      WFS_VERSION_1_0,
+      WFS_VERSION_1_1,
+      WFS_VERSION_2_0,
+      WFS_VERSION_API_FEATURES_1_0,
+    };
+
     virtual bool validate();
 %Docstring
 Returns ``True`` if dialog settings are valid, or ``False`` if current

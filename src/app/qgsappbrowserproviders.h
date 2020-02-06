@@ -290,7 +290,7 @@ class APP_EXPORT QgsBookmarksItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    //! Icon for boomark manager container
+    //! Icon for bookmark manager container
     static QIcon iconBookmarks();
 
     QVariant sortKey() const override;
@@ -404,6 +404,32 @@ class QgsBookmarkDropHandler : public QgsCustomDropHandler
     QString customUriProviderKey() const override;
     bool canHandleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) override;
     bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) const override;
+};
+
+
+/**
+ * Data item provider for showing html files in the browser.
+ */
+class QgsHtmlDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+    int capabilities() const override;
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+};
+
+/**
+ * Custom data item for html files.
+ */
+class QgsHtmlDataItem : public QgsDataItem
+{
+    Q_OBJECT
+
+  public:
+
+    QgsHtmlDataItem( QgsDataItem *parent, const QString &name, const QString &path );
+    bool handleDoubleClick() override;
+    QList< QAction * > actions( QWidget *parent ) override;
 };
 
 #endif // QGSAPPBROWSERPROVIDERS_H

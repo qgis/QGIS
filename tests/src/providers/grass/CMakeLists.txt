@@ -19,7 +19,6 @@ MACRO (ADD_QGIS_GRASS_TEST grass_build_version testname testsrc)
   )
 
   SET_TARGET_PROPERTIES(qgis_${testname}${grass_build_version} PROPERTIES
-    AUTOMOC TRUE
     COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX${grass_build_version}}\\\" \"-DGRASS_BUILD_VERSION=${grass_build_version}\""
   )
   TARGET_LINK_LIBRARIES(qgis_${testname}${grass_build_version}

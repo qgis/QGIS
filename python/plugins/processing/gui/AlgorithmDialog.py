@@ -202,6 +202,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
             self.clearProgress()
             self.feedback.pushVersionInfo(self.algorithm().provider())
+            if self.algorithm().provider().warningMessage():
+                self.feedback.reportError(self.algorithm().provider().warningMessage())
+
             self.setProgressText(QCoreApplication.translate('AlgorithmDialog', 'Processing algorithm…'))
 
             self.setInfo(

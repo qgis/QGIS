@@ -7,12 +7,16 @@ from urllib.error import URLError
 import argparse
 
 parser = argparse.ArgumentParser(description='Determines if a pull request has a defined label')
-parser.add_argument('pull_request', type=int,
+parser.add_argument('pull_request', type=str,
                     help='pull request id')
 parser.add_argument('label', type=int,
                     help='label ID')
 
 args = parser.parse_args()
+
+if args.pull_request == 'false':
+    print("false")
+    sys.exit(1)
 
 url = "https://api.github.com/repos/qgis/QGIS/pulls/{}".format(args.pull_request)
 

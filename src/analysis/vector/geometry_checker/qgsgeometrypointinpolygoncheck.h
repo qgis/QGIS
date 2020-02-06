@@ -34,7 +34,7 @@ class ANALYSIS_EXPORT QgsGeometryPointInPolygonCheck : public QgsGeometryCheck
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
-    QStringList resolutionMethods() const override;
+    Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     static QString factoryDescription() { return tr( "Point not in polygon" ); }
     QString description() const override { return factoryDescription(); }
     static QString factoryId() { return QStringLiteral( "QgsGeometryPointInPolygonCheck" ); }

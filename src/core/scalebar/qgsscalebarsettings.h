@@ -26,6 +26,9 @@
 #include <QPen>
 #include <QBrush>
 
+class QgsNumericFormat;
+
+
 /**
  * \class QgsScaleBarSettings
  * \ingroup core
@@ -77,23 +80,16 @@ class CORE_EXPORT QgsScaleBarSettings
     /**
      * Constructor for QgsScaleBarSettings.
      */
-    QgsScaleBarSettings()
-    {
-      mPen = QPen( mLineColor );
-      mPen.setJoinStyle( mLineJoinStyle );
-      mPen.setCapStyle( mLineCapStyle );
-      mPen.setWidthF( mLineWidth );
+    QgsScaleBarSettings();
 
-      mBrush.setColor( mFillColor );
-      mBrush.setStyle( Qt::SolidPattern );
+    ~QgsScaleBarSettings();
 
-      mBrush2.setColor( mFillColor2 );
-      mBrush2.setStyle( Qt::SolidPattern );
+    /**
+     * Copy constructor
+     */
+    QgsScaleBarSettings( const QgsScaleBarSettings &other );
 
-      mTextFormat.setSize( 12.0 );
-      mTextFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
-      mTextFormat.setColor( QColor( 0, 0, 0 ) );
-    }
+    QgsScaleBarSettings &operator=( const QgsScaleBarSettings &other );
 
     /**
      * Returns the number of segments included in the scalebar.
@@ -484,6 +480,24 @@ class CORE_EXPORT QgsScaleBarSettings
      */
     void setLineCapStyle( Qt::PenCapStyle style ) { mLineCapStyle = style; mPen.setCapStyle( style ); }
 
+    /**
+     * Returns the numeric format used for numbers in the scalebar.
+     *
+     * \see setNumericFormat()
+     * \since QGIS 3.12
+     */
+    const QgsNumericFormat *numericFormat() const;
+
+    /**
+     * Sets the numeric \a format used for numbers in the scalebar.
+     *
+     * Ownership of \a format is transferred to the settings.
+     *
+     * \see numericFormat()
+     * \since QGIS 3.12
+     */
+    void setNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
+
   private:
 
     //! Number of segments on right side
@@ -540,6 +554,8 @@ class CORE_EXPORT QgsScaleBarSettings
 
     Qt::PenJoinStyle mLineJoinStyle = Qt::MiterJoin;
     Qt::PenCapStyle mLineCapStyle = Qt::SquareCap;
+
+    std::unique_ptr< QgsNumericFormat > mNumericFormat;
 
 };
 

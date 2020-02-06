@@ -55,19 +55,18 @@ namespace MDAL
    *   </DataItem>
    * </Attribute>
    */
-  class XdmfDataset: public Dataset
+  class XdmfDataset: public Dataset2D
   {
     public:
       XdmfDataset( DatasetGroup *grp,
                    const HyperSlab &slab,
                    const HdfDataset &valuesDs,
-                   double time
+                   MDAL::RelativeTimestamp time
                  );
       ~XdmfDataset() override;
 
       size_t scalarData( size_t indexStart, size_t count, double *buffer ) override;
       size_t vectorData( size_t indexStart, size_t count, double *buffer ) override;
-      size_t activeData( size_t indexStart, size_t count, int *buffer ) override;
 
     private:
       std::vector<hsize_t> offsets( size_t indexStart );
@@ -99,7 +98,7 @@ namespace MDAL
    *   </DataItem>
    * </Attribute>
    */
-  class XdmfFunctionDataset: public Dataset
+  class XdmfFunctionDataset: public Dataset2D
   {
     public:
       enum FunctionType
@@ -109,21 +108,19 @@ namespace MDAL
         Flow, //!< scalar: flow velocity (abs) = sqrt($0/($2-$3)*$0/($2-$3) + $1/($2-$3)*$1/($2-$3))
       };
 
-      XdmfFunctionDataset(
-        DatasetGroup *grp,
-        FunctionType type,
-        double time
-      );
+      XdmfFunctionDataset( DatasetGroup *grp,
+                           FunctionType type,
+                           const RelativeTimestamp &time
+                         );
       ~XdmfFunctionDataset() override;
 
       //! Adds reference XMDF dataset
-      void addReferenceDataset( const HyperSlab &slab, const HdfDataset &hdfDataset, double time );
+      void addReferenceDataset( const HyperSlab &slab, const HdfDataset &hdfDataset, const RelativeTimestamp &time );
       //! Swaps first and second reference dataset
       void swap();
 
       size_t scalarData( size_t indexStart, size_t count, double *buffer ) override;
       size_t vectorData( size_t indexStart, size_t count, double *buffer ) override;
-      size_t activeData( size_t indexStart, size_t count, int *buffer ) override;
 
     private:
       size_t subtractFunction( size_t indexStart, size_t count, double *buffer );
@@ -159,7 +156,7 @@ namespace MDAL
       ~DriverXdmf( ) override;
       DriverXdmf *create() override;
 
-      bool canRead( const std::string &uri ) override;
+      bool canReadDatasets( const std::string &uri ) override;
       void load( const std::string &datFile, Mesh *mesh, MDAL_Status *status ) override;
 
     private:

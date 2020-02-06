@@ -38,14 +38,14 @@ QgsGeoNodeConnection::QgsGeoNodeConnection( const QString &name )
   QString password = settings.value( credentialsKey + QStringLiteral( "/password" ), QString() ).toString();
   if ( !username.isEmpty() )
   {
-    mUri.setParam( QStringLiteral( "username" ), username );
-    mUri.setParam( QStringLiteral( "password" ), password );
+    mUri.setUsername( username );
+    mUri.setPassword( password );
   }
 
   QString authcfg = settings.value( credentialsKey + QStringLiteral( "/authcfg" ), QString() ).toString();
   if ( !authcfg.isEmpty() )
   {
-    mUri.setParam( QStringLiteral( "authcfg" ), authcfg );
+    mUri.setAuthConfigId( authcfg );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "encodedUri: '%1'." ).arg( QString( mUri.encodedUri() ) ), 4 );
@@ -102,10 +102,7 @@ QStringList QgsGeoNodeConnectionUtils::connectionList()
 
 void QgsGeoNodeConnectionUtils::deleteConnection( const QString &name )
 {
-  QgsSettings settings;
-  // Add Section manually
-  settings.remove( QStringLiteral( "qgis/connections-geonode/" ) + name );
-  settings.remove( QStringLiteral( "qgis/geonode/" ) + name );
+  QgsOwsConnection::deleteConnection( QStringLiteral( "GEONODE" ), name );
 }
 
 QString QgsGeoNodeConnectionUtils::pathGeoNodeConnection()

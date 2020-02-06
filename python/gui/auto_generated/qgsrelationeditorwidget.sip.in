@@ -17,6 +17,9 @@
 #include <qgsrelationeditorwidget.h>
 %End
 
+
+
+
 class QgsRelationEditorWidget : QgsCollapsibleGroupBox
 {
 

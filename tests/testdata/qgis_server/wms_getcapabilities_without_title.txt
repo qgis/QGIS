@@ -1,14 +1,14 @@
-Content-Length: 5775
+Content-Length: 6022
 Content-Type: text/xml; charset=utf-8
 
 <?xml version="1.0" encoding="utf-8"?>
-<WMS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:qgs="http://www.qgis.org/wms" xmlns="http://www.opengis.net/wms" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd https://www.qgis.org/?MAP=tests/testdata/qgis_server/test_project_without_title.qgs&amp;SERVICE=WMS&amp;REQUEST=GetSchemaExtension" version="1.3.0" xmlns:sld="http://www.opengis.net/sld">
+<WMS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:qgs="http://www.qgis.org/wms" xmlns="http://www.opengis.net/wms" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd http://www.qgis.org/wms https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_without_title.qgs&amp;SERVICE=WMS&amp;REQUEST=GetSchemaExtension" version="1.3.0" xmlns:sld="http://www.opengis.net/sld">
  <Service>
   <Name>WMS</Name>
   <KeywordList>
    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
   </KeywordList>
-  <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=tests/testdata/qgis_server/test_project_without_title.qgs" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+  <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_without_title.qgs" xmlns:xlink="http://www.w3.org/1999/xlink"/>
   <Fees>conditions unknown</Fees>
   <AccessConstraints>None</AccessConstraints>
   <MaxWidth>5000</MaxWidth>
@@ -21,7 +21,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=tests/testdata/qgis_server/test_project_without_title.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_without_title.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -36,7 +36,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=tests/testdata/qgis_server/test_project_without_title.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_without_title.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -52,7 +52,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=tests/testdata/qgis_server/test_project_without_title.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_without_title.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -60,10 +60,11 @@ Content-Type: text/xml; charset=utf-8
    <sld:GetLegendGraphic>
     <Format>image/jpeg</Format>
     <Format>image/png</Format>
+    <Format>application/json</Format>
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=tests/testdata/qgis_server/test_project_without_title.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_without_title.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -73,7 +74,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=tests/testdata/qgis_server/test_project_without_title.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_without_title.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -83,7 +84,7 @@ Content-Type: text/xml; charset=utf-8
     <DCPType>
      <HTTP>
       <Get>
-       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=tests/testdata/qgis_server/test_project_without_title.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_without_title.qgs&amp;" xmlns:xlink="http://www.w3.org/1999/xlink"/>
       </Get>
      </HTTP>
     </DCPType>
@@ -93,7 +94,7 @@ Content-Type: text/xml; charset=utf-8
    <Format>XML</Format>
   </Exception>
   <sld:UserDefinedSymbolization SupportSLD="1" RemoteWCS="0" UserLayer="0" InlineFeature="0" RemoteWFS="0" UserStyle="1"/>
-  <Layer>
+  <Layer queryable="1">
    <KeywordList>
     <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
    </KeywordList>
@@ -101,13 +102,13 @@ Content-Type: text/xml; charset=utf-8
    <CRS>EPSG:4326</CRS>
    <CRS>EPSG:3857</CRS>
    <EX_GeographicBoundingBox>
-    <westBoundLongitude>-5.13262</westBoundLongitude>
-    <eastBoundLongitude>3.11793</eastBoundLongitude>
-    <southBoundLatitude>46.2792</southBoundLatitude>
-    <northBoundLatitude>49.7265</northBoundLatitude>
+    <westBoundLongitude>-5.132627</westBoundLongitude>
+    <eastBoundLongitude>3.117929</eastBoundLongitude>
+    <southBoundLatitude>46.27919</southBoundLatitude>
+    <northBoundLatitude>49.726475</northBoundLatitude>
    </EX_GeographicBoundingBox>
-   <BoundingBox maxy="6.39904e+06" maxx="347086" miny="5.8252e+06" CRS="EPSG:3857" minx="-571361"/>
-   <BoundingBox maxy="3.11793" maxx="49.7265" miny="-5.13262" CRS="EPSG:4326" minx="46.2792"/>
+   <BoundingBox maxy="6399040.039" maxx="347086.259" miny="5825203.208" CRS="EPSG:3857" minx="-571361.417"/>
+   <BoundingBox maxy="3.117929" maxx="49.726475" miny="-5.132627" CRS="EPSG:4326" minx="46.27919"/>
    <Layer queryable="1">
     <Name>france_parts</Name>
     <Title>france_parts</Title>
@@ -115,19 +116,19 @@ Content-Type: text/xml; charset=utf-8
     <CRS>EPSG:4326</CRS>
     <CRS>EPSG:3857</CRS>
     <EX_GeographicBoundingBox>
-     <westBoundLongitude>-5.13263</westBoundLongitude>
-     <eastBoundLongitude>3.11793</eastBoundLongitude>
-     <southBoundLatitude>46.2792</southBoundLatitude>
-     <northBoundLatitude>49.7265</northBoundLatitude>
+     <westBoundLongitude>-5.132627</westBoundLongitude>
+     <eastBoundLongitude>3.117929</eastBoundLongitude>
+     <southBoundLatitude>46.27919</southBoundLatitude>
+     <northBoundLatitude>49.726475</northBoundLatitude>
     </EX_GeographicBoundingBox>
-    <BoundingBox maxy="6.39904e+06" maxx="347086" miny="5.8252e+06" CRS="EPSG:3857" minx="-571361"/>
-    <BoundingBox maxy="3.11793" maxx="49.7265" miny="-5.13263" CRS="EPSG:4326" minx="46.2792"/>
+    <BoundingBox maxy="6399040.039" maxx="347086.259" miny="5825203.209" CRS="EPSG:3857" minx="-571361.416"/>
+    <BoundingBox maxy="3.117929" maxx="49.726475" miny="-5.132627" CRS="EPSG:4326" minx="46.27919"/>
     <Style>
      <Name>default</Name>
      <Title>default</Title>
      <LegendURL>
       <Format>image/png</Format>
-      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=tests/testdata/qgis_server/test_project_without_title.qgs&amp;SERVICE=WMS&amp;VERSION=1.3&amp;REQUEST=GetLegendGraphic&amp;LAYER=france_parts&amp;FORMAT=image/png&amp;STYLE=default" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?MAP=/home/dhont/3liz_dev/QGIS/qgis_rldhont/tests/testdata/qgis_server/test_project_without_title.qgs&amp;SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetLegendGraphic&amp;LAYER=france_parts&amp;FORMAT=image/png&amp;STYLE=default&amp;SLD_VERSION=1.1.0" xmlns:xlink="http://www.w3.org/1999/xlink"/>
      </LegendURL>
     </Style>
    </Layer>

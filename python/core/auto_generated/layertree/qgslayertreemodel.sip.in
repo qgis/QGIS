@@ -283,7 +283,7 @@ Returns the current map settings used for the current legend filter (or ``None``
     void setLegendMapViewData( double mapUnitsPerPixel, int dpi, double scale );
 %Docstring
 Give the layer tree model hints about the currently associated map view
-so that legend nodes that use map units can be scaled currectly
+so that legend nodes that use map units can be scaled correctly
 
 .. versionadded:: 2.6
 %End

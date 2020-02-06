@@ -94,6 +94,15 @@ namespace QgsWms
        */
       QImage *getLegendGraphics( QgsLayerTreeModelLegendNode &nodeModel );
 
+      /**
+       * Returns the map legend as a JSON object. The caller takes the ownership
+       * of the JSON object.
+       * \param model The layer tree model to use for building the legend
+       * \returns the legend as a JSON object
+       * \since QGIS 3.12
+       */
+      QJsonObject getLegendGraphicsAsJson( QgsLayerTreeModel &model );
+
       typedef QSet<QString> SymbolSet;
       typedef QHash<QgsVectorLayer *, SymbolSet> HitTest;
 
@@ -115,7 +124,7 @@ namespace QgsWms
        * \returns the map as DXF data
        * \since QGIS 3.0
       */
-      QgsDxfExport getDxf();
+      std::unique_ptr<QgsDxfExport> getDxf();
 
       /**
        * Returns printed page as binary

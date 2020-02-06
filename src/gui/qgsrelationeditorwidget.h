@@ -20,17 +20,21 @@
 #include <QToolButton>
 #include <QButtonGroup>
 #include <QGridLayout>
+#include "qobjectuniqueptr.h"
 
+#include "qobjectuniqueptr.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgsdualview.h"
 #include "qgsrelation.h"
+#include "qgsvectorlayerselectionmanager.h"
 #include "qgis_gui.h"
 
 class QgsFeature;
-class QgsGenericFeatureSelectionManager;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
+class QgsMapTool;
+class QgsMapToolDigitizeFeature;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -40,6 +44,37 @@ class QgsVectorLayerTools;
 #include <qgsrelationeditorwidget.h>
 % End
 #endif
+
+
+/// @cond PRIVATE
+#ifndef SIP_RUN
+
+/**
+ * This class is used to filter the current vector layer selection to features matching the given request.
+ * Relation editor widget use it in order to get selected feature for the current relation.
+ */
+class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
+{
+    Q_OBJECT
+
+  public:
+    QgsFilteredSelectionManager( QgsVectorLayer *layer, const QgsFeatureRequest &request, QObject *parent = nullptr );
+
+    const QgsFeatureIds &selectedFeatureIds() const override;
+    int selectedFeatureCount() override;
+
+  private slots:
+
+    void onSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect ) override;
+
+  private:
+
+    QgsFeatureRequest mRequest;
+    QgsFeatureIds mSelectedFeatureIds;
+};
+#endif
+/// @endcond
+
 
 /**
  * \ingroup gui
@@ -145,7 +180,8 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}
     void updateButtons();
 
-    void addFeature();
+    void addFeature( const QgsGeometry &geometry = QgsGeometry() );
+    void addFeatureGeometry();
     void duplicateFeature();
     void linkFeature();
     void deleteFeature( QgsFeatureId featureid = QgsFeatureId() );
@@ -157,13 +193,21 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void toggleEditing( bool state );
     void onCollapsedStateChanged( bool collapsed );
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
+    void mapToolDeactivated();
+    void onKeyPressed( QKeyEvent *e );
+    void onDigitizingCompleted( const QgsFeature &feature );
+    void onLinkFeatureDlgAccepted();
 
   private:
     void updateUi();
+    void initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request );
+    void setMapTool( QgsMapTool *mapTool );
+    void unsetMapTool();
 
     QgsDualView *mDualView = nullptr;
+    QPointer<QgsMessageBarItem> mMessageBarItem;
     QgsDualView::ViewMode mViewMode = QgsDualView::AttributeEditor;
-    QgsGenericFeatureSelectionManager *mFeatureSelectionMgr = nullptr;
+    QgsVectorLayerSelectionManager *mFeatureSelectionMgr = nullptr;
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
     QgsRelation mNmRelation;
@@ -179,7 +223,9 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QToolButton *mZoomToFeatureButton = nullptr;
     QToolButton *mFormViewButton = nullptr;
     QToolButton *mTableViewButton = nullptr;
+    QToolButton *mAddFeatureGeometryButton = nullptr;
     QGridLayout *mRelationLayout = nullptr;
+    QObjectUniquePtr<QgsMapToolDigitizeFeature> mMapToolDigitize;
     QButtonGroup *mViewModeButtonGroup = nullptr;
 
     bool mShowLabel = true;

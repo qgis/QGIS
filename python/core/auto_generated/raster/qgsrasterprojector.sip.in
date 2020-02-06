@@ -51,7 +51,8 @@ which are used to calculate affine transformation matrices.
 %Docstring
 Sets the source and destination CRS
 
-.. deprecated:: since QGIS 3.8, use transformContext version instead
+.. deprecated:: QGIS 3.8
+  use transformContext version instead
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,

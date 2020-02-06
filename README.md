@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/qgis/QGIS.svg?branch=master)](https://travis-ci.org/qgis/QGIS)
 [![Docker Status](https://img.shields.io/docker/automated/qgis/qgis.svg)](https://cloud.docker.com/app/qgis/repository/docker/qgis/qgis/general)
+[![Build Status](https://dev.azure.com/qgis/QGIS/_apis/build/status/qgis.QGIS?branchName=master)](https://dev.azure.com/qgis/QGIS/_build/latest?definitionId=1&branchName=master)
 
 QGIS is an Open Source Geographic Information System. The project was born in
 May of 2002 and was established as a project on SourceForge in June of the same
@@ -89,3 +90,7 @@ repository, and then [create a pull request](https://help.github.com/articles/cr
 If you commit a new feature, add [FEATURE] to your commit message AND give a clear description of the new feature. A webhook will automatically create an issue on the QGIS-Documentation repo to tell people to write documentation about it.
 
 If you are not a developer, there are many other possibilities which do not require programming skills to help QGIS to evolve. Check our [project homepage for more information](http://qgis.org/en/site/getinvolved/index.html).
+
+### Building from source
+
+The [building guide](http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTALL.html) can be used to get started with building QGIS from source.

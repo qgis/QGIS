@@ -1,0 +1,77 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/mesh/qgsmeshcontours.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMeshContours
+{
+%Docstring
+
+Exporter of contours lines or polygons from a mesh layer.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsmeshcontours.h"
+%End
+  public:
+
+    QgsMeshContours( QgsMeshLayer *layer );
+%Docstring
+Constructs the mesh contours exporter.
+Caches the native and triangular mesh from data provider
+
+:param layer: mesh layer to be associated with this exporter
+%End
+    ~QgsMeshContours();
+
+    QgsGeometry exportLines( const QgsMeshDatasetIndex &index,
+                             double value,
+                             QgsMeshRendererScalarSettings::DataInterpolationMethod method,
+                             QgsFeedback *feedback = 0 );
+%Docstring
+Exports multi line string containing the contour line for particular dataset and value
+
+:param index: dataset index
+:param value: value of the contour line
+:param method: for datasets defined on faces, the method will be used to convert data to vertices
+:param feedback: optional feedback object for progress and cancellation support
+
+:return: MultiLineString geometry containing contour lines
+%End
+
+    QgsGeometry exportPolygons( const QgsMeshDatasetIndex &index,
+                                double min_value,
+                                double max_value,
+                                QgsMeshRendererScalarSettings::DataInterpolationMethod method,
+                                QgsFeedback *feedback = 0 );
+%Docstring
+Exports multi polygons representing the areas with values in range for particular dataset
+
+:param index: dataset index
+:param min_value: minimum of the value interval for contour polygon
+:param max_value: maximum of the value interval for contour polygon
+:param method: for datasets defined on faces, the method will be used to convert data to vertices
+:param feedback: optional feedback object for progress and cancellation support
+
+:return: MultiPolygon geometry containing contour polygons
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/mesh/qgsmeshcontours.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

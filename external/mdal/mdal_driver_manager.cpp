@@ -9,6 +9,7 @@
 #include "frmts/mdal_ascii_dat.hpp"
 #include "frmts/mdal_binary_dat.hpp"
 #include "frmts/mdal_selafin.hpp"
+#include "frmts/mdal_esri_tin.hpp"
 #include "mdal_utils.hpp"
 
 #ifdef HAVE_HDF5
@@ -25,6 +26,7 @@
 #include "frmts/mdal_ugrid.hpp"
 #include "frmts/mdal_3di.hpp"
 #include "frmts/mdal_sww.hpp"
+#include "frmts/mdal_tuflowfv.hpp"
 #endif
 
 #if defined HAVE_GDAL && defined HAVE_NETCDF
@@ -48,7 +50,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverManager::load( const std::string &meshFi
   for ( const auto &driver : mDrivers )
   {
     if ( ( driver->hasCapability( Capability::ReadMesh ) ) &&
-         driver->canRead( meshFile ) )
+         driver->canReadMesh( meshFile ) )
     {
       std::unique_ptr<Driver> drv( driver->create() );
       mesh = drv->load( meshFile, status );
@@ -80,7 +82,7 @@ void MDAL::DriverManager::loadDatasets( Mesh *mesh, const std::string &datasetFi
   for ( const auto &driver : mDrivers )
   {
     if ( driver->hasCapability( Capability::ReadDatasets ) &&
-         driver->canRead( datasetFile ) )
+         driver->canReadDatasets( datasetFile ) )
     {
       std::unique_ptr<Driver> drv( driver->create() );
       drv->load( datasetFile, mesh, status );
@@ -90,6 +92,15 @@ void MDAL::DriverManager::loadDatasets( Mesh *mesh, const std::string &datasetFi
 
   if ( status )
     *status = MDAL_Status::Err_UnknownFormat;
+}
+
+void MDAL::DriverManager::save( MDAL::Mesh *mesh, const std::string &uri, const std::string &driverName, MDAL_Status *status ) const
+{
+  auto selectedDriver = driver( driverName );
+
+  std::unique_ptr<Driver> drv( selectedDriver->create() );
+
+  drv->save( uri, mesh, status );
 }
 
 size_t MDAL::DriverManager::driversCount() const
@@ -124,6 +135,7 @@ MDAL::DriverManager::DriverManager()
   // MESH DRIVERS
   mDrivers.push_back( std::make_shared<MDAL::Driver2dm>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverSelafin>() );
+  mDrivers.push_back( std::make_shared<MDAL::DriverEsriTin>() );
 
 #ifdef HAVE_HDF5
   mDrivers.push_back( std::make_shared<MDAL::DriverFlo2D>() );
@@ -131,6 +143,7 @@ MDAL::DriverManager::DriverManager()
 #endif
 
 #ifdef HAVE_NETCDF
+  mDrivers.push_back( std::make_shared<MDAL::DriverTuflowFV>() );
   mDrivers.push_back( std::make_shared<MDAL::Driver3Di>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverSWW>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverUgrid>() );
@@ -155,3 +168,4 @@ MDAL::DriverManager::DriverManager()
   mDrivers.push_back( std::make_shared<MDAL::DriverXdmf>() );
 #endif
 }
+

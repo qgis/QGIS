@@ -145,6 +145,16 @@ class CORE_EXPORT QgsProcessingUtils
     static QgsProcessingFeatureSource *variantToSource( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() ) SIP_FACTORY;
 
     /**
+     * Converts a variant \a value to a coordinate reference system.
+     *
+     * The optional \a fallbackValue can be used to specify a "default" value which is used
+     * if \a value cannot be successfully converted to a CRS.
+     *
+     * \since QGIS 3.12
+     */
+    static QgsCoordinateReferenceSystem variantToCrs( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() );
+
+    /**
      * Normalizes a layer \a source string for safe comparison across different
      * operating system environments.
      */
@@ -466,6 +476,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     QVariant maximumValue( int fieldIndex ) const override;
     QgsRectangle sourceExtent() const override;
     QgsFeatureIds allFeatureIds() const override;
+    SpatialIndexPresence hasSpatialIndex() const override;
 
     /**
      * Returns an expression context scope suitable for this source.

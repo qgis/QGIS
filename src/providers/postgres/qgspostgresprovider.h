@@ -206,6 +206,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
     QgsTransaction *transaction() const override;
+    static QString providerKey();
 
     /**
      * Convert the postgres string representation into the given QVariant type.
@@ -238,6 +239,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * \since QGIS 3.0
      */
     void setListening( bool isListening ) override;
+
 
   private:
     Relkind relkind() const;
@@ -323,6 +325,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Search all the layers using the given table.
      */
     static QList<QgsVectorLayer *> searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &schema, const QString &tableName );
+
+    /**
+     * Effect a reload including resetting the feature count
+     * and setting the layer extent to minimal
+     *
+     * \since QGIS 3.12
+    */
+    void reloadProviderData() override;
 
     //! Old-style mapping of index to name for QgsPalLabeling fix
     QgsAttrPalIndexNameHash mAttrPalIndexName;
@@ -572,7 +582,7 @@ class QgsPostgresProviderMetadata: public QgsProviderMetadata
     void saveConnection( const QgsAbstractProviderConnection *createConnection, const QString &name ) override;
     void initProvider() override;
     void cleanupProvider() override;
-
+    QVariantMap decodeUri( const QString &uri ) override;
 };
 
 // clazy:excludeall=qstring-allocations

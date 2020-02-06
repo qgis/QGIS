@@ -33,12 +33,16 @@
 #include "qgsdistancearea.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgspathresolver.h"
+#include "qgssymbollayerreference.h"
 
 class QPainter;
 class QgsAbstractGeometry;
 class QgsLabelingEngine;
 class QgsMapSettings;
 class QgsRenderedFeatureHandlerInterface;
+class QgsSymbolLayer;
+
+class QgsMaskIdProvider;
 
 
 /**
@@ -72,6 +76,7 @@ class CORE_EXPORT QgsRenderContext
       Antialiasing             = 0x80,  //!< Use antialiasing while drawing
       RenderPartialOutput      = 0x100, //!< Whether to make extra effort to update map image with partially rendered layers (better for interactive map canvas). Added in QGIS 3.0
       RenderPreviewJob         = 0x200, //!< Render is a 'canvas preview' render, and shortcuts should be taken to ensure fast rendering
+      RenderBlocking           = 0x400, //!< Render and load remote sources in the same thread to ensure rendering remote sources (svg and images). WARNING: this flag must NEVER be used from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external scripts or QGIS server.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -164,6 +169,49 @@ class CORE_EXPORT QgsRenderContext
      * \see setPainter()
     */
     QPainter *painter() {return mPainter;}
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the const destination QPainter for the render operation.
+     * \see setPainter()
+    * \since QGIS 3.12
+    */
+    const QPainter *painter() const { return mPainter; }
+#endif
+
+    /**
+     * Returns a mask QPainter for the render operation.
+     * Multiple mask painters can be defined, each with a unique identifier.
+     * nullptr is returned if a mask painter with the given identifier does not exist.
+     * This is currently used to implement selective masking.
+     * \see setMaskPainter()
+     * \see currentMaskId()
+     * \since QGIS 3.12
+     */
+    QPainter *maskPainter( int id = 0 ) { return mMaskPainter.value( id, nullptr ); }
+
+    /**
+     * When rendering a map layer in a second pass (for selective masking),
+     * some symbol layers may be disabled.
+     *
+     * Returns the list of disabled symbol layers.
+     * \see setDisabledSymbolLayers()
+     * \see isSymbolLayerEnabled()
+     * \since QGIS 3.12
+     */
+    QSet<const QgsSymbolLayer *> disabledSymbolLayers() const { return mDisabledSymbolLayers; }
+
+    /**
+     * When rendering a map layer in a second pass (for selective masking),
+     * some symbol layers may be disabled.
+     *
+     * Checks whether a given symbol layer has been disabled for the current pass.
+     * \see setDisabledSymbolLayers()
+     * \see disabledSymbolLayers()
+     * \since QGIS 3.12
+     */
+    bool isSymbolLayerEnabled( const QgsSymbolLayer *layer ) const { return ! mDisabledSymbolLayers.contains( layer ); }
 
     /**
      * Returns the current coordinate transform for the context.
@@ -283,11 +331,15 @@ class CORE_EXPORT QgsRenderContext
 
     /**
      * Returns TRUE if advanced effects such as blend modes such be used
+     *
+     * \see setUseAdvancedEffects()
      */
     bool useAdvancedEffects() const;
 
     /**
      * Used to enable or disable advanced effects such as blend modes
+     *
+     * \see useAdvancedEffects()
      */
     void setUseAdvancedEffects( bool enabled );
 
@@ -420,6 +472,26 @@ class CORE_EXPORT QgsRenderContext
     void setPainter( QPainter *p ) {mPainter = p;}
 
     /**
+     * Sets a mask QPainter for the render operation. Ownership of the painter
+     * is not transferred and the QPainter must stay alive for the duration
+     * of any rendering operations.
+     * Multiple mask painters can be defined and the second parameter gives a unique identifier to each one.
+     * \see maskPainter()
+     */
+    void setMaskPainter( QPainter *p, int id = 0 ) { mMaskPainter[id] = p; }
+
+    /**
+     * When rendering a map layer in a second pass (for selective masking),
+     * some symbol layers may be disabled.
+     *
+     * Sets the list of disabled symbol layers.
+     * \see disabledSymbolLayers()
+     * \see isSymbolLayerEnabled()
+     * \since QGIS 3.12
+     */
+    void setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers ) { mDisabledSymbolLayers = symbolLayers; }
+
+    /**
      * Sets whether rendering operations should use vector operations instead
      * of any faster raster shortcuts.
      *
@@ -431,7 +503,7 @@ class CORE_EXPORT QgsRenderContext
      * Assign new labeling engine
      * \note not available in Python bindings
      */
-    void setLabelingEngine( QgsLabelingEngine *engine2 ) { mLabelingEngine = engine2; } SIP_SKIP
+    void setLabelingEngine( QgsLabelingEngine *engine ) { mLabelingEngine = engine; } SIP_SKIP
 
     /**
      * Sets the \a color to use when rendering selected features.
@@ -451,9 +523,16 @@ class CORE_EXPORT QgsRenderContext
 
     /**
      * Returns TRUE if the rendering optimization (geometry simplification) can be executed
+     *
+     * \see setUseRenderingOptimization()
      */
     bool useRenderingOptimization() const;
 
+    /**
+     * Sets whether the rendering optimization (geometry simplification) should be executed
+     *
+     * \see useRenderingOptimization()
+     */
     void setUseRenderingOptimization( bool enabled );
 
     /**
@@ -529,16 +608,30 @@ class CORE_EXPORT QgsRenderContext
 
     /**
      * Sets the segmentation tolerance applied when rendering curved geometries
-    \param tolerance the segmentation tolerance*/
+     * \param tolerance the segmentation tolerance
+     * \see segmentationTolerance()
+     * \see segmentationToleranceType()
+     */
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
-    //! Gets the segmentation tolerance applied when rendering curved geometries
+
+    /**
+     * Gets the segmentation tolerance applied when rendering curved geometries
+     * \see setSegmentationTolerance()
+     */
     double segmentationTolerance() const { return mSegmentationTolerance; }
 
     /**
      * Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-    \param type the segmentation tolerance typename*/
+     * \param type the segmentation tolerance typename
+     * \see segmentationToleranceType()
+     * \see segmentationTolerance()
+     */
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
-    //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+
+    /**
+     * Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+     * \see setSegmentationToleranceType()
+     */
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
 
     // Conversions
@@ -610,12 +703,119 @@ class CORE_EXPORT QgsRenderContext
      */
     bool hasRenderedFeatureHandlers() const { return mHasRenderedFeatureHandlers; }
 
+    /**
+     * Attaches a mask id provider to the context. It will allow some rendering operations to set the current mask id
+     * based on the context (label layer names and label rules for instance).
+     * \see QgsMaskIdProvider
+     * \see setCurrentMaskId()
+     * \see maskIdProvider()
+     * \since QGIS 3.12
+     */
+    void setMaskIdProvider( QgsMaskIdProvider *provider ) { mMaskIdProvider = provider; }
+
+    /**
+     * Returns the mask id provider attached to the context.
+     * \see setMaskIdProvider()
+     * \since QGIS 3.12
+     */
+    const QgsMaskIdProvider *maskIdProvider() const { return mMaskIdProvider; }
+
+    /**
+     * Stores a mask id as the "current" one.
+     * \see currentMaskId()
+     * \since QGIS 3.12
+     */
+    void setCurrentMaskId( int id ) { mCurrentMaskId = id; }
+
+    /**
+     * Returns the current mask id, which can be used with maskPainter()
+     * \see setCurrentMaskId()
+     * \see maskPainter()
+     * \since QGIS 3.12
+     */
+    int currentMaskId() const { return mCurrentMaskId; }
+
+    /**
+     * Sets GUI preview mode.
+     * GUI preview mode is used to change the behavior of some renderings when
+     * they are done to preview of symbology in the GUI.
+     * This is especially used to display mask symbol layers rather than painting them
+     * in a mask painter, which is not meant to be visible, by definition.
+     * \see isGuiPreview
+     * \since QGIS 3.12
+     */
+    void setIsGuiPreview( bool preview ) { mIsGuiPreview = preview; }
+
+    /**
+     * Returns the Gui preview mode.
+     * GUI preview mode is used to change the behavior of some renderings when
+     * they are done to preview of symbology in the GUI.
+     * This is especially used to display mask symbol layers rather than painting them
+     * in a mask painter, which is not meant to be visible, by definition.
+     * \see isGuiPreview
+     * \see setIsGuiPreview
+     * \since QGIS 3.12
+     */
+    bool isGuiPreview() const { return mIsGuiPreview; }
+
+    /**
+     * Gets custom rendering flags. Layers might honour these to alter their rendering.
+     * \returns a map of custom flags
+     * \see setCustomRenderingFlag()
+     * \since QGIS 3.12
+     */
+    QVariantMap customRenderingFlags() const { return mCustomRenderingFlags; }
+
+    /**
+     * Sets a custom rendering flag. Layers might honour these to alter their rendering.
+     * \param flag the flag name
+     * \param value the flag value
+     * \see customRenderingFlags()
+     * \since QGIS 3.12
+     */
+    void setCustomRenderingFlag( const QString &flag, const QVariant &value ) { mCustomRenderingFlags[flag] = value; }
+
+    /**
+     * Clears the specified custom rendering flag.
+     * \param flag the flag name
+     * \see setCustomRenderingFlag()
+     * \since QGIS 3.12
+     */
+    void clearCustomRenderingFlag( const QString &flag ) { mCustomRenderingFlags.remove( flag ); }
+
   private:
 
     Flags mFlags;
 
     //! Painter for rendering operations
     QPainter *mPainter = nullptr;
+
+    /**
+     * Mask painters for selective masking.
+     * Multiple mask painters can be defined for a rendering. The map key is a unique identifier for each mask painter.
+     * \see mMaskIdProvider
+     * \since QGIS 3.12
+     */
+    QMap<int, QPainter *> mMaskPainter;
+
+    /**
+     * Pointer to a mask id provider
+     * \see QgsMaskIdProvider
+     * \since QGIS 3.12
+     */
+    QgsMaskIdProvider *mMaskIdProvider = nullptr;
+
+    /**
+     * Current mask identifier
+     * \since QGIS 3.12
+     */
+    int mCurrentMaskId = -1;
+
+    /**
+     * Whether we are rendering a preview of a symbol / label
+     * \since QGIS 3.12
+     */
+    bool mIsGuiPreview = false;
 
     //! For transformation between coordinate systems. Can be invalid if on-the-fly reprojection is not used
     QgsCoordinateTransform mCoordTransform;
@@ -670,6 +870,9 @@ class CORE_EXPORT QgsRenderContext
     TextRenderFormat mTextRenderFormat = TextFormatAlwaysOutlines;
     QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
     bool mHasRenderedFeatureHandlers = false;
+    QVariantMap mCustomRenderingFlags;
+
+    QSet<const QgsSymbolLayer *> mDisabledSymbolLayers;
 
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;

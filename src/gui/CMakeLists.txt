@@ -4,6 +4,7 @@ SET(QGIS_GUI_SRCS
   raster/qgspalettedrendererwidget.cpp
   raster/qgsrasterbandcombobox.cpp
   raster/qgsrasterhistogramwidget.cpp
+  raster/qgsrasterlayerproperties.cpp
   raster/qgsrasterminmaxwidget.cpp
   raster/qgsrasterrendererwidget.cpp
   raster/qgssinglebandgrayrendererwidget.cpp
@@ -26,6 +27,7 @@ SET(QGIS_GUI_SRCS
   symbology/qgsheatmaprendererwidget.cpp
   symbology/qgsinvertedpolygonrendererwidget.cpp
   symbology/qgslayerpropertieswidget.cpp
+  symbology/qgsmasksymbollayerwidget.cpp
   symbology/qgsnullsymbolrendererwidget.cpp
   symbology/qgspenstylecombobox.cpp
   symbology/qgspointclusterrendererwidget.cpp
@@ -67,6 +69,7 @@ SET(QGIS_GUI_SRCS
   attributetable/qgsgenericfeatureselectionmanager.cpp
   attributetable/qgsvectorlayerselectionmanager.cpp
   attributetable/qgsorganizetablecolumnsdialog.cpp
+  attributetable/qgsfeaturefilterwidget.cpp
 
   auth/qgsauthauthoritieseditor.cpp
   auth/qgsauthcertificateinfo.cpp
@@ -158,6 +161,10 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsvaluerelationsearchwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
 
+  labeling/qgslabelinggui.cpp
+  labeling/qgslabelobstaclesettingswidget.cpp
+  labeling/qgslabelsettingswidgetbase.cpp
+
   layertree/qgscustomlayerorderwidget.cpp
   layertree/qgslayertreeembeddedconfigwidget.cpp
   layertree/qgslayertreeembeddedwidgetregistry.cpp
@@ -168,16 +175,43 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreeviewindicator.cpp
   layertree/qgslayertreeviewitemdelegate.cpp
 
+  layout/qgsgeopdflayertreemodel.cpp
+  layout/qgslayoutaddpagesdialog.cpp
+  layout/qgslayoutguiutils.cpp
+  layout/qgslayoutatlaswidget.cpp
+  layout/qgslayoutattributeselectiondialog.cpp
+  layout/qgslayoutattributetablewidget.cpp
   layout/qgslayoutcombobox.cpp
   layout/qgslayoutcustomdrophandler.cpp
-  layout/qgslayoutitemguiregistry.cpp
+  layout/qgslayoutguidewidget.cpp
+  layout/qgslayouthtmlwidget.cpp
+  layout/qgslayoutimageexportoptionsdialog.cpp
   layout/qgslayoutitemcombobox.cpp
+  layout/qgslayoutitemguiregistry.cpp
+  layout/qgslayoutitemslistview.cpp
   layout/qgslayoutitemwidget.cpp
+  layout/qgslayoutlabelwidget.cpp
+  layout/qgslayoutlegendlayersdialog.cpp
+  layout/qgslayoutlegendwidget.cpp
+  layout/qgslayoutmanualtablewidget.cpp
+  layout/qgslayoutmapgridwidget.cpp
+  layout/qgslayoutmapwidget.cpp
   layout/qgslayoutmousehandles.cpp
   layout/qgslayoutnewitempropertiesdialog.cpp
+  layout/qgslayoutpagepropertieswidget.cpp
+  layout/qgslayoutpdfexportoptionsdialog.cpp
+  layout/qgslayoutpicturewidget.cpp
+  layout/qgslayoutpolygonwidget.cpp
+  layout/qgslayoutpolylinewidget.cpp
+  layout/qgslayoutpropertieswidget.cpp
+  layout/qgslayoutqptdrophandler.cpp
   layout/qgslayoutreportsectionlabel.cpp
   layout/qgslayoutruler.cpp
+  layout/qgslayoutscalebarwidget.cpp
+  layout/qgslayoutshapewidget.cpp
+  layout/qgslayouttablebackgroundcolorsdialog.cpp
   layout/qgslayoutunitscombobox.cpp
+  layout/qgslayoutvaliditychecks.cpp
   layout/qgslayoutview.cpp
   layout/qgslayoutviewmouseevent.cpp
   layout/qgslayoutviewrubberband.cpp
@@ -194,6 +228,10 @@ SET(QGIS_GUI_SRCS
   layout/qgslayoutviewtoolzoom.cpp
 
   locator/qgslocatorwidget.cpp
+
+  numericformats/qgsnumericformatselectorwidget.cpp
+  numericformats/qgsnumericformatwidget.cpp
+  numericformats/qgsnumericformatguiregistry.cpp
 
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsnewogrconnection.cpp
@@ -226,6 +264,10 @@ SET(QGIS_GUI_SRCS
   providers/ogr/qgsogritemguiprovider.cpp
   providers/ogr/qgsgeopackageprojectstorageguiprovider.cpp
 
+  tableeditor/qgstableeditordialog.cpp
+  tableeditor/qgstableeditorformattingwidget.cpp
+  tableeditor/qgstableeditorwidget.cpp
+
   qgisinterface.cpp
   qgsactionmenu.cpp
   qgsadvanceddigitizingcanvasitem.cpp
@@ -246,7 +288,6 @@ SET(QGIS_GUI_SRCS
   qgsbrowsertreeview.cpp
   qgsbrowserguimodel.cpp
   qgsbrowserdockwidget.cpp
-  qgsbrowserdockwidget_p.cpp
   qgsbusyindicatordialog.cpp
   qgscharacterselectordialog.cpp
   qgscheckablecombobox.cpp
@@ -267,6 +308,7 @@ SET(QGIS_GUI_SRCS
   qgscompoundcolorwidget.cpp
   qgsconfigureshortcutsdialog.cpp
   qgscoordinateboundspreviewmapwidget.cpp
+  qgscoordinateoperationwidget.cpp
   qgscredentialdialog.cpp
   qgscustomdrophandler.cpp
   qgscurveeditorwidget.cpp
@@ -287,6 +329,7 @@ SET(QGIS_GUI_SRCS
   qgsexpressionhighlighter.cpp
   qgsexpressionlineedit.cpp
   qgsexpressionselectiondialog.cpp
+  qgsexpressionstoredialog.cpp
   qgsextentgroupbox.cpp
   qgsexternalresourcewidget.cpp
   qgsfeatureselectiondlg.cpp
@@ -310,11 +353,12 @@ SET(QGIS_GUI_SRCS
   qgsgui.cpp
   qgsguiutils.cpp
   qgshighlight.cpp
+  qgshighlightablecombobox.cpp
   qgshistogramwidget.cpp
   qgshelp.cpp
   qgsidentifymenu.cpp
+  qgsinstallgridshiftdialog.cpp
   qgskeyvaluewidget.cpp
-  qgslabelinggui.cpp
   qgslistwidget.cpp
   qgslegendfilterbutton.cpp
   qgslimitedrandomcolorrampdialog.cpp
@@ -330,6 +374,7 @@ SET(QGIS_GUI_SRCS
   qgsmaplayeractionregistry.cpp
   qgsmaplayercombobox.cpp
   qgsmaplayerconfigwidgetfactory.cpp
+  qgsmaplayerstyleguiutils.cpp
   qgsmaplayerstylemanagerwidget.cpp
   qgsmapmouseevent.cpp
   qgsmapoverviewcanvas.cpp
@@ -424,20 +469,26 @@ SET(QGIS_GUI_SRCS
   qgssourceselectproviderregistry.cpp
 )
 
-SET(QGIS_GUI_MOC_HDRS
+SET(QGIS_GUI_HDRS
   qgisinterface.h
+
+  qgsabstractdatasourcewidget.h
   qgsactionmenu.h
   qgsadvanceddigitizingdockwidget.h
   qgsadvanceddigitizingfloater.h
   qgsaggregatetoolbutton.h
   qgsalignmentcombobox.h
   qgsattributedialog.h
+  qgsattributeeditorcontext.h
   qgsattributeform.h
   qgsattributeformeditorwidget.h
+  qgsattributeforminterface.h
+  qgsattributeformlegacyinterface.h
   qgsattributeformrelationeditorwidget.h
   qgsattributeformwidget.h
   qgsattributetypeloaddialog.h
   qgsblendmodecombobox.h
+  qgsbrowserdockwidget.h
   qgsbrowserguimodel.h
   qgsbrowsertreeview.h
   qgsbusyindicatordialog.h
@@ -445,106 +496,119 @@ SET(QGIS_GUI_MOC_HDRS
   qgscheckablecombobox.h
   qgscodeeditor.h
   qgscodeeditorcss.h
+  qgscodeeditorexpression.h
   qgscodeeditorhtml.h
   qgscodeeditorpython.h
   qgscodeeditorsql.h
-  qgscodeeditorexpression.h
   qgscollapsiblegroupbox.h
   qgscolorbrewercolorrampdialog.h
   qgscolorbutton.h
-  qgscolorrampbutton.h
   qgscolordialog.h
+  qgscolorrampbutton.h
   qgscolorschemelist.h
   qgscolorswatchgrid.h
   qgscolorwidgets.h
   qgscompoundcolorwidget.h
   qgsconfigureshortcutsdialog.h
   qgscoordinateboundspreviewmapwidget.h
+  qgscoordinateoperationwidget.h
   qgscredentialdialog.h
   qgscurveeditorwidget.h
   qgscustomdrophandler.h
-  qgsdatumtransformdialog.h
+  qgsdataitemguiprovider.h
+  qgsdataitemguiproviderregistry.h
+  qgsdatasourcemanagerdialog.h
   qgsdatasourceselectdialog.h
+  qgsdatumtransformdialog.h
+  qgsdetaileditemdata.h
   qgsdetaileditemdelegate.h
   qgsdetaileditemwidget.h
   qgsdial.h
   qgsdialog.h
   qgsdockwidget.h
-  qgsbrowserdockwidget_p.h
-  qgsbrowserdockwidget.h
   qgsencodingfiledialog.h
   qgserrordialog.h
   qgsexpressionbuilderdialog.h
+  qgsexpressionstoredialog.h
   qgsexpressionbuilderwidget.h
   qgsexpressionhighlighter.h
   qgsexpressionlineedit.h
   qgsexpressionselectiondialog.h
   qgsextentgroupbox.h
   qgsexternalresourcewidget.h
+  qgsfeaturelistcombobox.h
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h
   qgsfieldexpressionwidget.h
-  qgsfindfilesbypatternwidget.h
-  qgsfeaturelistcombobox.h
   qgsfieldvalidator.h
   qgsfieldvalueslineedit.h
   qgsfilecontentsourcelineedit.h
+  qgsfiledownloaderdialog.h
   qgsfilewidget.h
   qgsfilterlineedit.h
+  qgsfindfilesbypatternwidget.h
   qgsfloatingwidget.h
   qgsfocuswatcher.h
   qgsfontbutton.h
   qgsformannotation.h
+  qgsgeometryrubberband.h
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
   qgsgroupwmsdatadialog.h
   qgsgui.h
-  qgshistogramwidget.h
+  qgsguiutils.h
+  qgshelp.h
   qgshighlight.h
+  qgshighlightablecombobox.h
+  qgshistogramwidget.h
   qgsidentifymenu.h
+  qgsinstallgridshiftdialog.h
   qgskeyvaluewidget.h
-  qgslabelinggui.h
-  qgslistwidget.h
   qgslegendfilterbutton.h
   qgslimitedrandomcolorrampdialog.h
-  qgsratiolockbutton.h
+  qgslistwidget.h
   qgslonglongvalidator.h
   qgsludialog.h
   qgsmanageconnectionsdialog.h
   qgsmapcanvas.h
   qgsmapcanvasannotationitem.h
+  qgsmapcanvasitem.h
+  qgsmapcanvasmap.h
   qgsmapcanvassnappingutils.h
   qgsmapcanvastracer.h
   qgsmaplayeractionregistry.h
   qgsmaplayercombobox.h
+  qgsmaplayerconfigwidget.h
+  qgsmaplayerconfigwidgetfactory.h
+  qgsmaplayerstyleguiutils.h
   qgsmaplayerstylemanagerwidget.h
+  qgsmapmouseevent.h
   qgsmapoverviewcanvas.h
   qgsmaptip.h
   qgsmaptool.h
   qgsmaptooladvanceddigitizing.h
   qgsmaptoolcapture.h
-  qgsmaptooledit.h
   qgsmaptooldigitizefeature.h
+  qgsmaptooledit.h
   qgsmaptoolemitpoint.h
   qgsmaptoolextent.h
   qgsmaptoolidentify.h
   qgsmaptoolidentifyfeature.h
   qgsmaptoolpan.h
   qgsmaptoolzoom.h
-  qgsmaplayerconfigwidget.h
   qgsmenuheader.h
   qgsmessagebar.h
   qgsmessagebaritem.h
   qgsmessagelogviewer.h
   qgsmessageviewer.h
   qgsmetadatawidget.h
-  qgsnewauxiliarylayerdialog.h
   qgsnewauxiliaryfielddialog.h
+  qgsnewauxiliarylayerdialog.h
+  qgsnewgeopackagelayerdialog.h
   qgsnewhttpconnection.h
   qgsnewmemorylayerdialog.h
   qgsnewnamedialog.h
   qgsnewvectorlayerdialog.h
-  qgsnewgeopackagelayerdialog.h
   qgsopacitywidget.h
   qgsoptionsdialogbase.h
   qgsoptionsdialoghighlightwidget.h
@@ -560,15 +624,20 @@ SET(QGIS_GUI_MOC_HDRS
   qgspresetcolorrampdialog.h
   qgsprevieweffect.h
   qgsprojectionselectiondialog.h
-  qgsprojectionselectionwidget.h
   qgsprojectionselectiontreewidget.h
+  qgsprojectionselectionwidget.h
+  qgsprojectstorageguiprovider.h
+  qgsprojectstorageguiregistry.h
   qgspropertyassistantwidget.h
   qgspropertyoverridebutton.h
+  qgsproviderguimetadata.h
+  qgsproviderguiregistry.h
   qgsproxystyle.h
   qgsquerybuilder.h
   qgsrasterformatsaveoptionswidget.h
   qgsrasterlayersaveasdialog.h
   qgsrasterpyramidsoptionswidget.h
+  qgsratiolockbutton.h
   qgsrelationeditorwidget.h
   qgsrubberband.h
   qgsscalecombobox.h
@@ -579,7 +648,10 @@ SET(QGIS_GUI_MOC_HDRS
   qgssearchquerybuilder.h
   qgsshortcutsmanager.h
   qgsslider.h
+  qgssnapindicator.h
   qgssnaptogridcanvasitem.h
+  qgssourceselectprovider.h
+  qgssourceselectproviderregistry.h
   qgssqlcomposerdialog.h
   qgsstatusbar.h
   qgsstyleitemslistwidget.h
@@ -587,6 +659,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgssubstitutionlistwidget.h
   qgssymbolbutton.h
   qgstablewidgetbase.h
+  qgstablewidgetitem.h
   qgstabwidget.h
   qgstaskmanagerwidget.h
   qgstextformatwidget.h
@@ -596,64 +669,9 @@ SET(QGIS_GUI_MOC_HDRS
   qgsuserinputwidget.h
   qgsvaliditycheckresultswidget.h
   qgsvariableeditorwidget.h
+  qgsvertexmarker.h
   qgsvscrollarea.h
-  qgsfiledownloaderdialog.h
-  qgsdatasourcemanagerdialog.h
-  qgsabstractdatasourcewidget.h
-  qgswidgetstatehelper_p.h
-  qgsattributeeditorcontext.h
-
-  callouts/qgscalloutwidget.h
-
-  ogr/qgsnewogrconnection.h
-  ogr/qgsvectorlayersaveasdialog.h
-
-  raster/qgscolorrampshaderwidget.h
-  raster/qgsmultibandcolorrendererwidget.h
-  raster/qgspalettedrendererwidget.h
-  raster/qgsrasterbandcombobox.h
-  raster/qgsrasterhistogramwidget.h
-  raster/qgsrasterminmaxwidget.h
-  raster/qgsrasterrendererwidget.h
-  raster/qgssinglebandgrayrendererwidget.h
-  raster/qgssinglebandpseudocolorrendererwidget.h
-  raster/qgsrendererrasterpropertieswidget.h
-  raster/qgsrastertransparencywidget.h
-  raster/qgshillshaderendererwidget.h
-
-  symbology/qgs25drendererwidget.h
-  symbology/characterwidget.h
-  symbology/qgsarrowsymbollayerwidget.h
-  symbology/qgsbrushstylecombobox.h
-  symbology/qgscategorizedsymbolrendererwidget.h
-  symbology/qgscptcitycolorrampdialog.h
-  symbology/qgsdashspacedialog.h
-  symbology/qgsdatadefinedsizelegendwidget.h
-  symbology/qgsellipsesymbollayerwidget.h
-  symbology/qgsgraduatedhistogramwidget.h
-  symbology/qgsgraduatedsymbolrendererwidget.h
-  symbology/qgsheatmaprendererwidget.h
-  symbology/qgsinvertedpolygonrendererwidget.h
-  symbology/qgslayerpropertieswidget.h
-  symbology/qgsnullsymbolrendererwidget.h
-  symbology/qgspenstylecombobox.h
-  symbology/qgspointclusterrendererwidget.h
-  symbology/qgspointdisplacementrendererwidget.h
-  symbology/qgsrendererpropertiesdialog.h
-  symbology/qgsrendererwidget.h
-  symbology/qgsrulebasedrendererwidget.h
-  symbology/qgssinglesymbolrendererwidget.h
-  symbology/qgssmartgroupeditordialog.h
-  symbology/qgsstyleexportimportdialog.h
-  symbology/qgsstylegroupselectiondialog.h
-  symbology/qgsstylemanagerdialog.h
-  symbology/qgsstylesavedialog.h
-  symbology/qgssvgselectorwidget.h
-  symbology/qgssymbollayerwidget.h
-  symbology/qgssymbollevelsdialog.h
-  symbology/qgssymbolslistwidget.h
-  symbology/qgssymbolselectordialog.h
-  symbology/qgsvectorfieldsymbollayerwidget.h
+  qgswindowmanagerinterface.h
 
   attributetable/qgsattributetabledelegate.h
   attributetable/qgsattributetablefiltermodel.h
@@ -663,12 +681,13 @@ SET(QGIS_GUI_MOC_HDRS
   attributetable/qgsfeaturelistmodel.h
   attributetable/qgsfeaturelistview.h
   attributetable/qgsfeaturelistviewdelegate.h
+  attributetable/qgsfeaturemodel.h
   attributetable/qgsfeatureselectionmodel.h
   attributetable/qgsfieldconditionalformatwidget.h
   attributetable/qgsgenericfeatureselectionmanager.h
   attributetable/qgsifeatureselectionmanager.h
-  attributetable/qgsvectorlayerselectionmanager.h
   attributetable/qgsorganizetablecolumnsdialog.h
+  attributetable/qgsvectorlayerselectionmanager.h
 
   auth/qgsauthauthoritieseditor.h
   auth/qgsauthcertificateinfo.h
@@ -678,78 +697,102 @@ SET(QGIS_GUI_MOC_HDRS
   auth/qgsauthconfigeditor.h
   auth/qgsauthconfigidedit.h
   auth/qgsauthconfigselect.h
-  auth/qgsauthsettingswidget.h
   auth/qgsautheditorwidgets.h
+  auth/qgsauthguiutils.h
   auth/qgsauthidentitieseditor.h
   auth/qgsauthimportcertdialog.h
   auth/qgsauthimportidentitydialog.h
   auth/qgsauthmasterpassresetdialog.h
   auth/qgsauthmethodedit.h
   auth/qgsauthserverseditor.h
+  auth/qgsauthsettingswidget.h
   auth/qgsauthsslconfigwidget.h
   auth/qgsauthsslerrorsdialog.h
   auth/qgsauthsslimportdialog.h
   auth/qgsauthtrustedcasdialog.h
+
+  callouts/qgscalloutwidget.h
+
+  editorwidgets/core/qgseditorconfigwidget.h
+  editorwidgets/core/qgseditorwidgetautoconf.h
+  editorwidgets/core/qgseditorwidgetfactory.h
+  editorwidgets/core/qgseditorwidgetregistry.h
+  editorwidgets/core/qgseditorwidgetwrapper.h
+  editorwidgets/core/qgssearchwidgetwrapper.h
+  editorwidgets/core/qgswidgetwrapper.h
+  editorwidgets/qgsbinarywidgetfactory.h
+  editorwidgets/qgsbinarywidgetwrapper.h
+  editorwidgets/qgscheckboxconfigdlg.h
+  editorwidgets/qgscheckboxsearchwidgetwrapper.h
+  editorwidgets/qgscheckboxwidgetfactory.h
+  editorwidgets/qgscheckboxwidgetwrapper.h
+  editorwidgets/qgsclassificationwidgetwrapper.h
+  editorwidgets/qgsclassificationwidgetwrapperfactory.h
+  editorwidgets/qgscolorwidgetfactory.h
+  editorwidgets/qgscolorwidgetwrapper.h
+  editorwidgets/qgsdatetimeedit.h
+  editorwidgets/qgsdatetimeeditconfig.h
+  editorwidgets/qgsdatetimeeditfactory.h
+  editorwidgets/qgsdatetimeeditwrapper.h
+  editorwidgets/qgsdatetimesearchwidgetwrapper.h
+  editorwidgets/qgsdefaultsearchwidgetwrapper.h
+  editorwidgets/qgsdoublespinbox.h
+  editorwidgets/qgsdummyconfigdlg.h
+  editorwidgets/qgsenumerationwidgetfactory.h
+  editorwidgets/qgsenumerationwidgetwrapper.h
+  editorwidgets/qgsexternalresourceconfigdlg.h
+  editorwidgets/qgsexternalresourcewidgetfactory.h
+  editorwidgets/qgsexternalresourcewidgetwrapper.h
+  editorwidgets/qgshiddenwidgetfactory.h
+  editorwidgets/qgshiddenwidgetwrapper.h
+  editorwidgets/qgshtmlwidgetwrapper.h
+  editorwidgets/qgskeyvaluewidgetfactory.h
+  editorwidgets/qgskeyvaluewidgetwrapper.h
+  editorwidgets/qgslistwidgetfactory.h
+  editorwidgets/qgslistwidgetwrapper.h
+  editorwidgets/qgsmultiedittoolbutton.h
+  editorwidgets/qgsrangeconfigdlg.h
+  editorwidgets/qgsrangewidgetfactory.h
+  editorwidgets/qgsrangewidgetwrapper.h
+  editorwidgets/qgsrelationaggregatesearchwidgetwrapper.h
+  editorwidgets/qgsrelationreferenceconfigdlg.h
+  editorwidgets/qgsrelationreferencefactory.h
+  editorwidgets/qgsrelationreferencesearchwidgetwrapper.h
+  editorwidgets/qgsrelationreferencewidget.h
+  editorwidgets/qgsrelationreferencewidgetwrapper.h
+  editorwidgets/qgsrelationwidgetwrapper.h
+  editorwidgets/qgssearchwidgettoolbutton.h
+  editorwidgets/qgsspinbox.h
+  editorwidgets/qgstexteditconfigdlg.h
+  editorwidgets/qgstexteditsearchwidgetwrapper.h
+  editorwidgets/qgstexteditwidgetfactory.h
+  editorwidgets/qgstexteditwrapper.h
+  editorwidgets/qgsuniquevaluesconfigdlg.h
+  editorwidgets/qgsuniquevaluewidgetfactory.h
+  editorwidgets/qgsuniquevaluewidgetwrapper.h
+  editorwidgets/qgsuuidwidgetfactory.h
+  editorwidgets/qgsuuidwidgetwrapper.h
+  editorwidgets/qgsvaluemapconfigdlg.h
+  editorwidgets/qgsvaluemapsearchwidgetwrapper.h
+  editorwidgets/qgsvaluemapwidgetfactory.h
+  editorwidgets/qgsvaluemapwidgetwrapper.h
+  editorwidgets/qgsvaluerelationconfigdlg.h
+  editorwidgets/qgsvaluerelationsearchwidgetwrapper.h
+  editorwidgets/qgsvaluerelationwidgetfactory.h
+  editorwidgets/qgsvaluerelationwidgetwrapper.h
 
   effects/qgseffectdrawmodecombobox.h
   effects/qgseffectstackpropertieswidget.h
   effects/qgspainteffectpropertieswidget.h
   effects/qgspainteffectwidget.h
 
-  editorwidgets/core/qgseditorconfigwidget.h
-  editorwidgets/core/qgseditorconfigwidget.h
-  editorwidgets/core/qgseditorwidgetregistry.h
-  editorwidgets/core/qgseditorwidgetregistry.h
-  editorwidgets/core/qgseditorwidgetwrapper.h
-  editorwidgets/core/qgssearchwidgetwrapper.h
-  editorwidgets/core/qgswidgetwrapper.h
-
-  editorwidgets/qgsbinarywidgetwrapper.h
-  editorwidgets/qgscheckboxconfigdlg.h
-  editorwidgets/qgscheckboxsearchwidgetwrapper.h
-  editorwidgets/qgscheckboxwidgetwrapper.h
-  editorwidgets/qgsclassificationwidgetwrapper.h
-  editorwidgets/qgscolorwidgetwrapper.h
-  editorwidgets/qgsdatetimeedit.h
-  editorwidgets/qgsdatetimeeditconfig.h
-  editorwidgets/qgsdatetimesearchwidgetwrapper.h
-  editorwidgets/qgsdatetimeeditwrapper.h
-  editorwidgets/qgsdefaultsearchwidgetwrapper.h
-  editorwidgets/qgsdoublespinbox.h
-  editorwidgets/qgsdummyconfigdlg.h
-  editorwidgets/qgsenumerationwidgetwrapper.h
-  editorwidgets/qgsexternalresourceconfigdlg.h
-  editorwidgets/qgsexternalresourcewidgetwrapper.h
-  editorwidgets/qgshiddenwidgetwrapper.h
-  editorwidgets/qgshtmlwidgetwrapper.h
-  editorwidgets/qgskeyvaluewidgetwrapper.h
-  editorwidgets/qgslistwidgetwrapper.h
-  editorwidgets/qgsmultiedittoolbutton.h
-  editorwidgets/qgsrangeconfigdlg.h
-  editorwidgets/qgsrangewidgetwrapper.h
-  editorwidgets/qgsrelationreferenceconfigdlg.h
-  editorwidgets/qgsrelationreferencesearchwidgetwrapper.h
-  editorwidgets/qgsrelationreferencewidget.h
-  editorwidgets/qgsrelationreferencewidgetwrapper.h
-  editorwidgets/qgsrelationwidgetwrapper.h
-  editorwidgets/qgsrelationaggregatesearchwidgetwrapper.h
-  editorwidgets/qgssearchwidgettoolbutton.h
-  editorwidgets/qgsspinbox.h
-  editorwidgets/qgstexteditconfigdlg.h
-  editorwidgets/qgstexteditwrapper.h
-  editorwidgets/qgstexteditsearchwidgetwrapper.h
-  editorwidgets/qgsuniquevaluesconfigdlg.h
-  editorwidgets/qgsuniquevaluewidgetwrapper.h
-  editorwidgets/qgsuuidwidgetwrapper.h
-  editorwidgets/qgsvaluemapconfigdlg.h
-  editorwidgets/qgsvaluemapsearchwidgetwrapper.h
-  editorwidgets/qgsvaluemapwidgetwrapper.h
-  editorwidgets/qgsvaluerelationconfigdlg.h
-  editorwidgets/qgsvaluerelationsearchwidgetwrapper.h
-  editorwidgets/qgsvaluerelationwidgetwrapper.h
+  labeling/qgslabelinggui.h
+  labeling/qgslabelobstaclesettingswidget.h
+  labeling/qgslabelsettingswidgetbase.h
 
   layertree/qgscustomlayerorderwidget.h
   layertree/qgslayertreeembeddedconfigwidget.h
+  layertree/qgslayertreeembeddedwidgetregistry.h
   layertree/qgslayertreeembeddedwidgetsimpl.h
   layertree/qgslayertreemapcanvasbridge.h
   layertree/qgslayertreeview.h
@@ -757,17 +800,45 @@ SET(QGIS_GUI_MOC_HDRS
   layertree/qgslayertreeviewindicator.h
   layertree/qgslayertreeviewitemdelegate.h
 
+  layout/qgsgeopdflayertreemodel.h
+  layout/qgslayoutaddpagesdialog.h
+  layout/qgslayoutguiutils.h
+  layout/qgslayoutatlaswidget.h
+  layout/qgslayoutattributeselectiondialog.h
+  layout/qgslayoutattributetablewidget.h
   layout/qgslayoutcombobox.h
   layout/qgslayoutcustomdrophandler.h
   layout/qgslayoutdesignerinterface.h
+  layout/qgslayoutguidewidget.h
+  layout/qgslayouthtmlwidget.h
+  layout/qgslayoutimageexportoptionsdialog.h
   layout/qgslayoutitemcombobox.h
   layout/qgslayoutitemguiregistry.h
+  layout/qgslayoutitemslistview.h
   layout/qgslayoutitemwidget.h
+  layout/qgslayoutlabelwidget.h
+  layout/qgslayoutlegendlayersdialog.h
+  layout/qgslayoutlegendwidget.h
+  layout/qgslayoutmanualtablewidget.h
+  layout/qgslayoutmapgridwidget.h
+  layout/qgslayoutmapwidget.h
   layout/qgslayoutmousehandles.h
   layout/qgslayoutnewitempropertiesdialog.h
+  layout/qgslayoutpagepropertieswidget.h
+  layout/qgslayoutpdfexportoptionsdialog.h
+  layout/qgslayoutpicturewidget.h
+  layout/qgslayoutpolygonwidget.h
+  layout/qgslayoutpolylinewidget.h
+  layout/qgslayoutpropertieswidget.h
+  layout/qgslayoutqptdrophandler.h
+  layout/qgslayoutreportsectionlabel.h
   layout/qgslayoutruler.h
+  layout/qgslayoutscalebarwidget.h
+  layout/qgslayoutshapewidget.h
+  layout/qgslayouttablebackgroundcolorsdialog.h
   layout/qgslayoutunitscombobox.h
   layout/qgslayoutview.h
+  layout/qgslayoutviewmouseevent.h
   layout/qgslayoutviewrubberband.h
   layout/qgslayoutviewtool.h
   layout/qgslayoutviewtooladditem.h
@@ -783,9 +854,19 @@ SET(QGIS_GUI_MOC_HDRS
 
   locator/qgslocatorwidget.h
 
+  numericformats/qgsnumericformatselectorwidget.h
+  numericformats/qgsnumericformatwidget.h
+  numericformats/qgsnumericformatguiregistry.h
+
+  ogr/qgsnewogrconnection.h
+  ogr/qgsogrhelperfunctions.h
+  ogr/qgsvectorlayersaveasdialog.h
+
   processing/qgsprocessingalgorithmconfigurationwidget.h
   processing/qgsprocessingalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
+  processing/qgsprocessinggui.h
+  processing/qgsprocessingguiregistry.h
   processing/qgsprocessingmaplayercombobox.h
   processing/qgsprocessingmatrixparameterdialog.h
   processing/qgsprocessingmodelerparameterwidget.h
@@ -797,141 +878,92 @@ SET(QGIS_GUI_MOC_HDRS
   processing/qgsprocessingwidgetwrapper.h
   processing/qgsprocessingwidgetwrapperimpl.h
 
-  providers/gdal/qgsgdalsourceselect.h
   providers/gdal/qgsgdalguiprovider.h
-
-  providers/ogr/qgsogrsourceselect.h
+  providers/gdal/qgsgdalsourceselect.h
+  providers/ogr/qgsgeopackageitemguiprovider.h
+  providers/ogr/qgsgeopackageprojectstoragedialog.h
+  providers/ogr/qgsgeopackageprojectstorageguiprovider.h
   providers/ogr/qgsogrdbsourceselect.h
   providers/ogr/qgsogrdbtablemodel.h
-  providers/ogr/qgsgeopackageprojectstoragedialog.h
-  providers/ogr/qgsgeopackageitemguiprovider.h
+  providers/ogr/qgsogrguiprovider.h
   providers/ogr/qgsogritemguiprovider.h
+  providers/ogr/qgsogrsourceselect.h
+
+  raster/qgscolorrampshaderwidget.h
+  raster/qgshillshaderendererwidget.h
+  raster/qgsmultibandcolorrendererwidget.h
+  raster/qgspalettedrendererwidget.h
+  raster/qgsrasterbandcombobox.h
+  raster/qgsrasterhistogramwidget.h
+  raster/qgsrasterminmaxwidget.h
+  raster/qgsrasterrendererwidget.h
+  raster/qgsrastertransparencywidget.h
+  raster/qgsrendererrasterpropertieswidget.h
+  raster/qgssinglebandgrayrendererwidget.h
+  raster/qgssinglebandpseudocolorrendererwidget.h
+  raster/qgsrasterlayerproperties.h
+
+  symbology/characterwidget.h
+  symbology/qgs25drendererwidget.h
+  symbology/qgsarrowsymbollayerwidget.h
+  symbology/qgsbrushstylecombobox.h
+  symbology/qgscategorizedsymbolrendererwidget.h
+  symbology/qgscptcitycolorrampdialog.h
+  symbology/qgsdashspacedialog.h
+  symbology/qgsdatadefinedsizelegendwidget.h
+  symbology/qgsellipsesymbollayerwidget.h
+  symbology/qgsgraduatedhistogramwidget.h
+  symbology/qgsgraduatedsymbolrendererwidget.h
+  symbology/qgsheatmaprendererwidget.h
+  symbology/qgsinvertedpolygonrendererwidget.h
+  symbology/qgslayerpropertieswidget.h
+  symbology/qgsnullsymbolrendererwidget.h
+  symbology/qgsmasksymbollayerwidget.h
+  symbology/qgspenstylecombobox.h
+  symbology/qgspointclusterrendererwidget.h
+  symbology/qgspointdisplacementrendererwidget.h
+  symbology/qgsrendererpropertiesdialog.h
+  symbology/qgsrendererwidget.h
+  symbology/qgsrulebasedrendererwidget.h
+  symbology/qgssinglesymbolrendererwidget.h
+  symbology/qgssmartgroupeditordialog.h
+  symbology/qgsstyleexportimportdialog.h
+  symbology/qgsstylegroupselectiondialog.h
+  symbology/qgsstylemanagerdialog.h
+  symbology/qgsstylesavedialog.h
+  symbology/qgssvgselectorwidget.h
+  symbology/qgssymbollayerwidget.h
+  symbology/qgssymbollevelsdialog.h
+  symbology/qgssymbolselectordialog.h
+  symbology/qgssymbolslistwidget.h
+  symbology/qgssymbolwidgetcontext.h
+  symbology/qgsvectorfieldsymbollayerwidget.h
+
+  tableeditor/qgstableeditordialog.h
+  tableeditor/qgstableeditorformattingwidget.h
+  tableeditor/qgstableeditorwidget.h
+
+  qgsbrowserdockwidget_p.h
 )
+
+SET(QGIS_GUI_PRIVATE_HDRS
+  qgsbrowserdockwidget_p.cpp
+  qgswidgetstatehelper_p.h
+  attributetable/qgsfeaturefilterwidget_p.h
+)
+
 FIND_PACKAGE(Qt5Qml REQUIRED)
 FIND_PACKAGE(Qt5QuickWidgets REQUIRED)
 
 IF(Qt5Qml_FOUND)
 ADD_DEFINITIONS(-DWITH_QML)
-SET(QGIS_GUI_MOC_HDRS
-  ${QGIS_GUI_MOC_HDRS}
+SET(QGIS_GUI_HDRS
+  ${QGIS_GUI_HDRS}
   editorwidgets/qgsqmlwidgetwrapper.h
 )
 ENDIF(Qt5Qml_FOUND)
 
-SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_MOC_HDRS ${QGIS_GUI_MOC_HDRS})
-
-QT5_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
-
-IF(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${QGIS_GUI_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4512 /wd4996" )
-ELSE(MSVC)
-  SET_SOURCE_FILES_PROPERTIES(${QGIS_GUI_MOC_SRCS} PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations" )
-ENDIF(MSVC)
-
 # for installing headers
-
-SET(QGIS_GUI_HDRS
-  qgsattributeforminterface.h
-  qgsattributeformlegacyinterface.h
-  qgsdataitemguiprovider.h
-  qgsdataitemguiproviderregistry.h
-  qgsdetaileditemdata.h
-  qgsexpressionbuilderdialog.h
-  qgsgeometryrubberband.h
-  qgsguiutils.h
-  qgsproviderguimetadata.h
-  qgsproviderguiregistry.h
-  qgsprojectstorageguiregistry.h
-  qgshelp.h
-  qgshighlight.h
-  qgsmapcanvasitem.h
-  qgsmapcanvasmap.h
-  qgsmapcanvassnappingutils.h
-  qgsmapcanvastracer.h
-  qgsmaplayerconfigwidgetfactory.h
-  qgsmapmouseevent.h
-  qgsmaptip.h
-  qgssnapindicator.h
-  qgssqlcomposerdialog.h
-  qgstablewidgetitem.h
-  qgsuserinputwidget.h
-  qgsbrowserdockwidget.h
-  qgsbrowserdockwidget_p.h
-  qgsvertexmarker.h
-  qgsdatasourcemanagerdialog.h
-  qgsdatasourceselectdialog.h
-  qgsabstractdatasourcewidget.h
-  qgswidgetstatehelper_p.h
-  qgssourceselectprovider.h
-  qgssourceselectproviderregistry.h
-  qgswindowmanagerinterface.h
-  qgsprojectstorageguiprovider.h
-
-  ogr/qgsogrhelperfunctions.h
-  ogr/qgsnewogrconnection.h
-  ogr/qgsvectorlayersaveasdialog.h
-
-  attributetable/qgsfeaturemodel.h
-
-  auth/qgsauthauthoritieseditor.h
-  auth/qgsauthcertificateinfo.h
-  auth/qgsauthcertificatemanager.h
-  auth/qgsauthcerttrustpolicycombobox.h
-  auth/qgsauthconfigedit.h
-  auth/qgsauthconfigeditor.h
-  auth/qgsauthconfigidedit.h
-  auth/qgsauthconfigselect.h
-  auth/qgsauthsettingswidget.h
-  auth/qgsautheditorwidgets.h
-  auth/qgsauthguiutils.h
-  auth/qgsauthidentitieseditor.h
-  auth/qgsauthimportcertdialog.h
-  auth/qgsauthimportidentitydialog.h
-  auth/qgsauthmasterpassresetdialog.h
-  auth/qgsauthmethodedit.h
-  auth/qgsauthserverseditor.h
-  auth/qgsauthsslconfigwidget.h
-  auth/qgsauthsslerrorsdialog.h
-  auth/qgsauthsslimportdialog.h
-  auth/qgsauthtrustedcasdialog.h
-
-  editorwidgets/core/qgseditorwidgetfactory.h
-  editorwidgets/core/qgseditorwidgetautoconf.h
-
-  editorwidgets/qgsbinarywidgetfactory.h
-  editorwidgets/qgscheckboxwidgetfactory.h
-  editorwidgets/qgsclassificationwidgetwrapperfactory.h
-  editorwidgets/qgscolorwidgetfactory.h
-  editorwidgets/qgsdatetimeeditfactory.h
-  editorwidgets/qgsenumerationwidgetfactory.h
-  editorwidgets/qgsexternalresourcewidgetfactory.h
-  editorwidgets/qgshiddenwidgetfactory.h
-  editorwidgets/qgskeyvaluewidgetfactory.h
-  editorwidgets/qgslistwidgetfactory.h
-  editorwidgets/qgsrangewidgetfactory.h
-  editorwidgets/qgsrelationreferencefactory.h
-  editorwidgets/qgstexteditwidgetfactory.h
-  editorwidgets/qgsuniquevaluewidgetfactory.h
-  editorwidgets/qgsuuidwidgetfactory.h
-  editorwidgets/qgsvaluemapwidgetfactory.h
-  editorwidgets/qgsvaluerelationwidgetfactory.h
-
-  layertree/qgslayertreeembeddedconfigwidget.h
-  layertree/qgslayertreeembeddedwidgetregistry.h
-
-  layout/qgslayoutreportsectionlabel.h
-  layout/qgslayoutviewmouseevent.h
-
-  processing/qgsprocessinggui.h
-  processing/qgsprocessingguiregistry.h
-
-  providers/ogr/qgsgeopackageprojectstorageguiprovider.h
-  providers/ogr/qgsogrguiprovider.h
-
-  raster/qgsrasterrendererwidget.h
-
-  symbology/qgssymbolwidgetcontext.h
-)
 
 IF(Qt5Qml_FOUND)
 
@@ -945,6 +977,8 @@ SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_HDRS ${QGIS_GUI_HDRS})
 
 
 SET(QGIS_GUI_UI_HDRS
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsadvanceddigitizingdockwidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsadvanceddigitizingfloaterbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthauthoritieseditor.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthcertificateinfo.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsauthcertificatemanager.h
@@ -968,18 +1002,31 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionstoredialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsfeaturefilterwidget.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsarcgisservicesourceselectbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrasterlayerpropertiesbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssqlcomposerdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgstablewidgetuibase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrendererpropsdialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgseffectstackpropertieswidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutnewpagedialog.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutguidewidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutimageexportoptions.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutitemwidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutpagepropertieswidget.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspdfexportoptions.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutwidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrenderercontainerbase.h
 )
 
 IF(ENABLE_MODELTEST)
@@ -997,22 +1044,28 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/effects
+  ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/layout
+  ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/processing
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/callouts
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/pal
@@ -1029,6 +1082,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/native
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
@@ -1043,6 +1097,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
+  ${SPATIALINDEX_INCLUDE_DIR}
 )
 
 # disable deprecation warnings for classes re-exporting deprecated methods
@@ -1064,7 +1119,7 @@ ENDIF(MSVC)
 # qgis_gui library
 
 ADD_LIBRARY(qgis_gui SHARED
-     ${QGIS_GUI_SRCS} ${QGIS_GUI_MOC_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_MOC_HDRS}
+  ${QGIS_GUI_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_PRIVATE_HDRS}
 )
 
 GENERATE_EXPORT_HEADER(
@@ -1082,7 +1137,7 @@ IF(NOT APPLE)
   IF (UNIX)
     INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/native/linux)
   ENDIF(UNIX)
-  INSTALL(FILES ${QGIS_GUI_HDRS} ${QGIS_GUI_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+  INSTALL(FILES ${QGIS_GUI_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
 ELSE(NOT APPLE)
   INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/native/mac)
   SET_TARGET_PROPERTIES(qgis_gui PROPERTIES
@@ -1093,7 +1148,7 @@ ELSE(NOT APPLE)
     MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
     MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis3_gui
     BUILD_WITH_INSTALL_RPATH TRUE
-    PUBLIC_HEADER "${QGIS_GUI_HDRS};${QGIS_GUI_MOC_HDRS}"
+    PUBLIC_HEADER "${QGIS_GUI_HDRS}"
     LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
   )
   # generated export header does not get copied with PUBLIC_HEADER files
@@ -1129,9 +1184,11 @@ TARGET_LINK_LIBRARIES(qgis_gui
 IF (FORCE_STATIC_PROVIDERS)
   INCLUDE_DIRECTORIES(
     ${CMAKE_SOURCE_DIR}/src/providers/wms
+    ${CMAKE_SOURCE_DIR}/src/providers/postgres
   )
   TARGET_LINK_LIBRARIES(qgis_gui
     wmsprovider_gui_a
+    postgresprovider_gui_a
   )
 ENDIF (FORCE_STATIC_PROVIDERS)
 

@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "polygon_with_hole_line_obstacle",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::32613" } },
+"features": [
+{ "type": "Feature", "properties": { }, "geometry": { "type": "LineString", "coordinates": [ [ 609769.435287182219326, 4826971.812226937152445 ], [ 609825.629525374737568, 4823006.104560206644237 ] ] } }
+]
+}

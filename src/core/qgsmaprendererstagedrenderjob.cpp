@@ -42,7 +42,7 @@ void QgsMapRendererStagedRenderJob::start()
   mErrors.clear();
 
   QgsDebugMsgLevel( QStringLiteral( "Preparing list of layer jobs for rendering" ), 5 );
-  QTime prepareTime;
+  QElapsedTimer prepareTime;
   prepareTime.start();
 
   mLabelingEngineV2.reset();
@@ -102,7 +102,7 @@ bool QgsMapRendererStagedRenderJob::renderCurrentPart( QPainter *painter )
   if ( mJobIt != mLayerJobs.end() )
   {
     LayerRenderJob &job = *mJobIt;
-    job.context.setPainter( painter );
+    job.renderer->renderContext()->setPainter( painter );
 
     if ( job.context.useAdvancedEffects() )
     {

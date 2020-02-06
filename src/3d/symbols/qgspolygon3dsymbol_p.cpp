@@ -19,6 +19,7 @@
 #include "qgstessellatedpolygongeometry.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
+#include "qgstessellator.h"
 
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QPhongMaterial>
@@ -52,12 +53,12 @@ class QgsPolygon3DSymbolHandler : public QgsFeature3DHandler
     //! temporary data we will pass to the tessellator
     struct PolygonData
     {
-      QList<QgsPolygon *> polygons;
-      QList<QgsFeatureId> fids;
-      QList<float> extrusionHeightPerPolygon;  // will stay empty if not needed per polygon
+      std::unique_ptr<QgsTessellator> tessellator;
+      QVector<QgsFeatureId> triangleIndexFids;
+      QVector<uint> triangleIndexStartingIndices;
     };
 
-    void processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, bool hasDDExtrusion, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out );
+    void processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out );
     void makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected );
     Qt3DExtras::QPhongMaterial *material( const QgsPolygon3DSymbol &symbol ) const;
 
@@ -79,12 +80,15 @@ bool QgsPolygon3DSymbolHandler::prepare( const Qgs3DRenderContext &context, QSet
   outEdges.withAdjacency = true;
   outEdges.init( mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), mSymbol.height(), &context.map() );
 
+  outNormal.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces() ) );
+  outSelected.tessellator.reset( new QgsTessellator( context.map().origin().x(), context.map().origin().y(), true, mSymbol.invertNormals(), mSymbol.addBackFaces() ) );
+
   QSet<QString> attrs = mSymbol.dataDefinedProperties().referencedFields( context.expressionContext() );
   attributeNames.unite( attrs );
   return true;
 }
 
-void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, bool hasDDExtrusion, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out )
+void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatureId fid, float height, float extrusionHeight, const Qgs3DRenderContext &context, PolygonData &out )
 {
   if ( mSymbol.edgesEnabled() )
   {
@@ -109,10 +113,13 @@ void QgsPolygon3DSymbolHandler::processPolygon( QgsPolygon *polyClone, QgsFeatur
   }
 
   Qgs3DUtils::clampAltitudes( polyClone, mSymbol.altitudeClamping(), mSymbol.altitudeBinding(), height, context.map() );
-  out.polygons.append( polyClone );
-  out.fids.append( fid );
-  if ( hasDDExtrusion )
-    out.extrusionHeightPerPolygon.append( extrusionHeight );
+
+  Q_ASSERT( out.tessellator->dataVerticesCount() % 3 == 0 );
+  uint startingTriangleIndex = static_cast<uint>( out.tessellator->dataVerticesCount() / 3 );
+  out.triangleIndexStartingIndices.append( startingTriangleIndex );
+  out.triangleIndexFids.append( fid );
+  out.tessellator->addPolygon( *polyClone, extrusionHeight );
+  delete polyClone;
 }
 
 void QgsPolygon3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRenderContext &context )
@@ -144,7 +151,7 @@ void QgsPolygon3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRender
   if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon *>( g ) )
   {
     QgsPolygon *polyClone = poly->clone();
-    processPolygon( polyClone, f.id(), height, hasDDExtrusion, extrusionHeight, context, out );
+    processPolygon( polyClone, f.id(), height, extrusionHeight, context, out );
   }
   else if ( const QgsMultiPolygon *mpoly = qgsgeometry_cast< const QgsMultiPolygon *>( g ) )
   {
@@ -153,7 +160,7 @@ void QgsPolygon3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRender
       const QgsAbstractGeometry *g2 = mpoly->geometryN( i );
       Q_ASSERT( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon );
       QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
-      processPolygon( polyClone, f.id(), height, hasDDExtrusion, extrusionHeight, context, out );
+      processPolygon( polyClone, f.id(), height, extrusionHeight, context, out );
     }
   }
   else if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( g ) )
@@ -164,7 +171,7 @@ void QgsPolygon3DSymbolHandler::processFeature( QgsFeature &f, const Qgs3DRender
       if ( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon )
       {
         QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
-        processPolygon( polyClone, f.id(), height, hasDDExtrusion, extrusionHeight, context, out );
+        processPolygon( polyClone, f.id(), height, extrusionHeight, context, out );
       }
     }
   }
@@ -178,6 +185,9 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
   // create entity for selected and not selected
   makeEntity( parent, context, outNormal, false );
   makeEntity( parent, context, outSelected, true );
+
+  mZMin = std::min( outNormal.tessellator->zMinimum(), outSelected.tessellator->zMinimum() );
+  mZMax = std::max( outNormal.tessellator->zMaximum(), outSelected.tessellator->zMaximum() );
 
   // add entity for edges
   if ( mSymbol.edgesEnabled() && !outEdges.indexes.isEmpty() )
@@ -206,7 +216,7 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
 
 void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs3DRenderContext &context, PolygonData &out, bool selected )
 {
-  if ( out.polygons.isEmpty() )
+  if ( out.tessellator->dataVerticesCount() == 0 )
     return;  // nothing to show - no need to create the entity
 
   Qt3DExtras::QPhongMaterial *mat = material( mSymbol );
@@ -217,11 +227,14 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
     mat->setAmbient( context.map().selectionColor().darker() );
   }
 
-  QgsPointXY origin( context.map().origin().x(), context.map().origin().y() );
+  // extract vertex buffer data from tessellator
+  QByteArray data( ( const char * )out.tessellator->data().constData(), out.tessellator->data().count() * sizeof( float ) );
+  int nVerts = data.count() / out.tessellator->stride();
+
   QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry;
   geometry->setInvertNormals( mSymbol.invertNormals() );
   geometry->setAddBackFaces( mSymbol.addBackFaces() );
-  geometry->setPolygons( out.polygons, out.fids, origin, mSymbol.extrusionHeight(), out.extrusionHeightPerPolygon );
+  geometry->setData( data, nVerts, out.triangleIndexFids, out.triangleIndexStartingIndices );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );

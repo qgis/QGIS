@@ -131,6 +131,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool createSpatialIndex() override;
     bool createAttributeIndex( int field ) override;
     QgsVectorDataProvider::Capabilities capabilities() const override;
+    QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     void setEncoding( const QString &e ) override;
     bool enterUpdateMode() override { return _enterUpdateMode(); }
     bool leaveUpdateMode() override;
@@ -163,14 +164,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
     int layerIndex() const { return mLayerIndex; }
 
     QByteArray quotedIdentifier( const QByteArray &field ) const;
-
-    /**
-     * A forced reload invalidates the underlying connection.
-     * E.g. in case a shapefile is replaced, the old file will be closed
-     * and the new file will be opened.
-     */
-    void forceReload() override;
-    void reloadData() override;
 
   protected:
     //! Loads fields from input file to member attributeFields
@@ -230,6 +223,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool mFirstFieldIsFid = false;
     mutable std::unique_ptr< OGREnvelope > mExtent;
     bool mForceRecomputeExtent = false;
+
+    QList<int> mPrimaryKeyAttrs;
 
     /**
      * This member variable receives the same value as extent_
@@ -332,6 +327,13 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QgsOgrTransaction *mTransaction = nullptr;
 
     void setTransaction( QgsTransaction *transaction ) override;
+
+    /**
+    * Invalidates and reopens the file and resets the feature count
+    * E.g. in case a shapefile is replaced, the old file will be closed
+    * and the new file will be opened.
+    */
+    void reloadProviderData() override;
 };
 
 class QgsOgrDataset;
@@ -378,20 +380,8 @@ class CORE_EXPORT QgsOgrProviderUtils
         DatasetWithLayers(): mutex( QMutex::Recursive ) {}
     };
 
-    //! Global mutex for QgsOgrProviderUtils
-    static QMutex sGlobalMutex;
-
     //! Map dataset identification to a list of corresponding DatasetWithLayers*
     static QMap< DatasetIdentification, QList<DatasetWithLayers *> > sMapSharedDS;
-
-    //! Map a dataset name to the number of opened GDAL dataset objects on it (if opened with GDALOpenWrapper, only for GPKG)
-    static QMap< QString, int > sMapCountOpenedDS;
-
-    //! Map a dataset handle to its update open mode (if opened with GDALOpenWrapper, only for GPKG)
-    static QHash< GDALDatasetH, bool> sMapDSHandleToUpdateMode;
-
-    //! Map a dataset name to its last modified data
-    static QMap< QString, QDateTime > sMapDSNameToLastModifiedDate;
 
     static bool canUseOpenedDatasets( const QString &dsName );
 
@@ -734,6 +724,9 @@ class QgsOgrLayer
 
     //! Wrapper of GDALDatasetExecuteSQL().
     QgsOgrLayerUniquePtr ExecuteSQL( const QByteArray &sql );
+
+    // Wrapper of GDALGetMetadataItem()
+    QString GetMetadataItem( const QString &key, const QString &domain = QString() );
 };
 
 /**
@@ -751,6 +744,7 @@ class QgsOgrProviderMetadata: public QgsProviderMetadata
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     QgsOgrProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
     QString filters( FilterType type ) override;
     QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,

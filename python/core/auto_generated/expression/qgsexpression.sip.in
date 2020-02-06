@@ -454,7 +454,6 @@ Unregisters a function from the expression engine. The function will no longer b
 .. seealso:: :py:func:`registerFunction`
 %End
 
-
     static void cleanRegisteredFunctions();
 %Docstring
 Deletes all registered functions whose ownership have been transferred to the expression engine.
@@ -536,6 +535,15 @@ Returns the help text for a specified function.
 .. seealso:: :py:func:`variableHelpText`
 
 .. seealso:: :py:func:`formatVariableHelp`
+%End
+
+    static QStringList tags( const QString &name );
+%Docstring
+Returns a string list of search tags for a specified function.
+
+:param name: function name
+
+.. versionadded:: 3.12
 %End
 
     static QString variableHelpText( const QString &variableName );

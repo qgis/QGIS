@@ -115,7 +115,8 @@ starting with QGIS 2.16, a URI constructed using the QgsDataSourceUri class with
 - filter=string: QGIS expression or OGC/FES filter
 - restrictToRequestBBOX=1: to download only features in the view extent (or more generally
 in the bounding box of the feature iterator)
-- maxNumFeatures=number
+- pageSize=number: number of features to retrieve in a single request (WFS 2)
+- maxNumFeatures=number: maximum number of features to retrieve (possibly across several multiple paging requests)
 - IgnoreAxisOrientation=1: to ignore EPSG axis order for WFS 1.1 or 2.0
 - InvertAxisOrientation=1: to invert axis order
 - hideDownloadProgressDialog=1: to hide the download progress dialog
@@ -128,6 +129,23 @@ QGIS expression filter only supports” =, !=, <, >, <=, >=, AND, OR, NOT, LIKE,
 attribute operators, “BBOX, Disjoint, Intersects, Touches, Crosses, Contains, Overlaps, Within”
 spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
 geometry constructor functions.
+
+\subsection oapif OGC API - Features data provider (oapif)
+
+Used to access data provided by a OGC API - Features server.
+
+The URI should be constructed using the QgsDataSourceUri class with the following parameters:
+- url=string (mandatory): HTTP url to a OGC API - Features landing page.
+- typename=string (mandatory): Collection id
+- username=string
+- password=string
+- authcfg=string
+- filter=string: QGIS expression (only datetime filtering is forwarded to the server)
+- restrictToRequestBBOX=1: to download only features in the view extent (or more generally
+in the bounding box of the feature iterator)
+- pageSize=number: number of features to retrieve in a single request
+- maxNumFeatures=number: maximum number of features to retrieve (possibly across several multiple paging requests)
+- hideDownloadProgressDialog=1: to hide the download progress dialog.
 
 Also note:
 
@@ -352,6 +370,8 @@ Constructor for LayerOptions.
 
       QgsCoordinateReferenceSystem fallbackCrs;
 
+      bool skipCrsValidation;
+
     };
 
     explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
@@ -547,7 +567,7 @@ which is used by the layer, so any changes are immediately applied.
 %End
 
 
-    QgsVectorLayerServerProperties *serverProperties();
+    QgsVectorLayerServerProperties *serverProperties() const;
 %Docstring
 Returns QGIS Server Properties of the vector layer
 
@@ -561,7 +581,7 @@ Returns the number of features that are selected in this layer.
 .. seealso:: :py:func:`selectedFeatureIds`
 %End
 
-    void selectByRect( QgsRectangle &rect, SelectBehavior behavior = SetSelection );
+    void selectByRect( QgsRectangle &rect, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 %Docstring
 Selects features found within the search rectangle (in layer's coordinates)
 
@@ -576,7 +596,7 @@ Selects features found within the search rectangle (in layer's coordinates)
 .. seealso:: :py:func:`selectByIds`
 %End
 
-    void selectByExpression( const QString &expression, SelectBehavior behavior = SetSelection );
+    void selectByExpression( const QString &expression, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 %Docstring
 Selects matching features using an expression.
 
@@ -591,7 +611,7 @@ Selects matching features using an expression.
 .. versionadded:: 2.16
 %End
 
-    void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
+    void selectByIds( const QgsFeatureIds &ids, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 %Docstring
 Selects matching features using a list of feature IDs. Will emit the
 selectionChanged() signal with the clearAndSelect flag set.
@@ -1015,7 +1035,8 @@ if the geometry type of the new data source matches the current geometry type of
 
 .. versionadded:: 2.10
 
-.. deprecated:: Use version with ProviderOptions argument instead
+.. deprecated::
+   Use version with ProviderOptions argument instead
 %End
 
     virtual void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
@@ -1039,12 +1060,14 @@ if the geometry type of the new data source matches the current geometry type of
     virtual QString loadDefaultStyle( bool &resultFlag /Out/ ) ${SIP_FINAL};
 
 
-    QgsVectorLayerFeatureCounter *countSymbolFeatures();
+    QgsVectorLayerFeatureCounter *countSymbolFeatures( bool storeSymbolFids = false );
 %Docstring
 Count features for symbols.
 The method will return the feature counter task. You will need to
 connect to the symbolFeatureCountMapChanged() signal to be
 notified when the freshly updated feature counts are ready.
+
+:param storeSymbolFids: If ``True`` will gather the feature ids (fids) per symbol, otherwise only the count. Default ``False``.
 
 .. note::
 
@@ -1257,7 +1280,8 @@ Adds a ring to polygon/multipolygon features
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
 
@@ -1334,7 +1358,8 @@ Adds a new part polygon to a multipart feature
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
  QgsGeometry::OperationResult addPart( const QVector<QgsPointXY> &ring ) /PyName=addPartV2,Deprecated/;
@@ -1362,7 +1387,8 @@ Adds a new part polygon to a multipart feature
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring ) /PyName=addPartV2/;
@@ -1447,7 +1473,8 @@ Splits parts cut by the given line
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     QgsGeometry::OperationResult splitParts( const QgsPointSequence &splitLine, bool topologicalEditing = false );
@@ -1497,7 +1524,8 @@ Splits features cut by the given line
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     QgsGeometry::OperationResult splitFeatures( const QgsPointSequence &splitLine, bool topologicalEditing = false );
@@ -1562,7 +1590,8 @@ editing.
    to the underlying data provider until a commitChanges() call is made. Any uncommitted
    changes can be discarded by calling rollBack().
 
-.. deprecated:: in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+.. deprecated:: QGIS 3.12
+   - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
 %End
 
     int addTopologicalPoints( const QgsPoint &p );
@@ -1985,6 +2014,8 @@ Returns the layer's relations, where the foreign key is on this layer.
 :return: A list of relations
 %End
 
+
+
     QgsVectorLayerEditBuffer *editBuffer();
 %Docstring
 Buffer with uncommitted editing operations. Only valid after editing has been turned on.
@@ -2019,7 +2050,8 @@ Destroy active command and reverts all changes in it
 %Docstring
 Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
 
-.. deprecated:: Use the equivalent QgsSymbolLayerUtils.drawVertexMarker function instead
+.. deprecated::
+   Use the equivalent QgsSymbolLayerUtils.drawVertexMarker function instead
 %End
 
     void updateFields();
@@ -2527,6 +2559,9 @@ Sets the coordinate transform context to ``transformContext``
 
 .. versionadded:: 3.8
 %End
+
+    virtual SpatialIndexPresence hasSpatialIndex() const;
+
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 

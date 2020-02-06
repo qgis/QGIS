@@ -162,10 +162,11 @@ QgsRasterBlock *QgsPalettedRasterRenderer::block( int, QgsRectangle  const &exte
     return outputBlock.release();
   }
 
-  QRgb myDefaultColor = NODATA_COLOR;
+  const QRgb myDefaultColor = renderColorForNodataPixel();
 
   //use direct data access instead of QgsRasterBlock::setValue
   //because of performance
+  Q_ASSERT( outputBlock ); // to make cppcheck happy
   unsigned int *outputData = ( unsigned int * )( outputBlock->bits() );
 
   qgssize rasterSize = ( qgssize )width * height;

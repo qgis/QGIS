@@ -67,43 +67,42 @@ void QgsGeomColumnTypeThread::run()
     return;
   }
 
-  int i = 0, n = layerProperties.size();
-  for ( QVector<QgsPostgresLayerProperty>::iterator it = layerProperties.begin(),
-        end = layerProperties.end();
-        it != end; ++it )
+  int totalLayers = layerProperties.length();
+  int addedLayers = 0;
+
+  emit progress( addedLayers, totalLayers );
+
+  QVector<QgsPostgresLayerProperty *> unrestrictedLayers;
+
+  for ( auto &layerProperty : layerProperties )
   {
-    QgsPostgresLayerProperty &layerProperty = *it;
-    if ( !mStopped )
+    if ( !layerProperty.geometryColName.isNull() &&
+         ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown ||
+           layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
     {
-      emit progress( i++, n );
-      emit progressMessage( tr( "Scanning column %1.%2.%3…" )
-                            .arg( layerProperty.schemaName,
-                                  layerProperty.tableName,
-                                  layerProperty.geometryColName ) );
-
-      if ( !layerProperty.geometryColName.isNull() &&
-           ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown ||
-             layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
-      {
-        if ( dontResolveType )
-        {
-          QgsDebugMsg( QStringLiteral( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName, layerProperty.tableName ) );
-          continue;
-        }
-
-        mConn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata );
-      }
+      unrestrictedLayers << &layerProperty;
     }
+  }
 
-    if ( mStopped )
-    {
-      layerProperty.types.clear();
-      layerProperty.srids.clear();
-      break;
-    }
+  if ( mStopped )
+  {
+    emit progress( 0, 0 );
+    emit progressMessage( tr( "Table retrieval stopped." ) );
+    QgsPostgresConnPool::instance()->releaseConnection( mConn );
+    mConn = nullptr;
+    return;
+  }
 
-    // Now tell the layer list dialog box...
+  if ( ! dontResolveType )
+  {
+    mConn->retrieveLayerTypes( unrestrictedLayers, mUseEstimatedMetadata );
+  }
+
+  for ( const auto &layerProperty : layerProperties )
+  {
+    // Tell the layer list dialog box about the completed layers
     emit setLayerType( layerProperty );
+    emit progress( ++addedLayers, totalLayers );
   }
 
   emit progress( 0, 0 );

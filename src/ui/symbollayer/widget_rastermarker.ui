@@ -14,7 +14,7 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="10" column="0" rowspan="2">
+   <item row="9" column="0" rowspan="2">
     <widget class="QLabel" name="mAnchorPointLabel">
      <property name="text">
       <string>Anchor point</string>
@@ -72,7 +72,7 @@
      </item>
     </layout>
    </item>
-   <item row="9" column="0">
+   <item row="11" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -294,7 +294,7 @@
      </item>
     </layout>
    </item>
-   <item row="11" column="1">
+   <item row="10" column="1">
     <widget class="QComboBox" name="mHorizontalAnchorComboBox">
      <item>
       <property name="text">
@@ -313,7 +313,7 @@
      </item>
     </widget>
    </item>
-   <item row="10" column="2">
+   <item row="9" column="2">
     <widget class="QgsPropertyOverrideButton" name="mVerticalAnchorDDBtn">
      <property name="text">
       <string>…</string>
@@ -372,14 +372,14 @@
      </property>
     </widget>
    </item>
-   <item row="11" column="2">
+   <item row="10" column="2">
     <widget class="QgsPropertyOverrideButton" name="mHorizontalAnchorDDBtn">
      <property name="text">
       <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="10" column="1">
+   <item row="9" column="1">
     <widget class="QComboBox" name="mVerticalAnchorComboBox">
      <item>
       <property name="text">
@@ -488,18 +488,18 @@
   <tabstop>mImageSourceLineEdit</tabstop>
   <tabstop>mFilenameDDBtn</tabstop>
   <tabstop>mWidthSpinBox</tabstop>
-  <tabstop>mSizeUnitWidget</tabstop>
   <tabstop>mWidthDDBtn</tabstop>
   <tabstop>mHeightSpinBox</tabstop>
   <tabstop>mHeightDDBtn</tabstop>
+  <tabstop>mSizeUnitWidget</tabstop>
   <tabstop>mOpacityWidget</tabstop>
   <tabstop>mOpacityDDBtn</tabstop>
   <tabstop>mRotationSpinBox</tabstop>
   <tabstop>mRotationDDBtn</tabstop>
   <tabstop>mSpinOffsetX</tabstop>
+  <tabstop>mSpinOffsetY</tabstop>
   <tabstop>mOffsetUnitWidget</tabstop>
   <tabstop>mOffsetDDBtn</tabstop>
-  <tabstop>mSpinOffsetY</tabstop>
   <tabstop>mVerticalAnchorComboBox</tabstop>
   <tabstop>mVerticalAnchorDDBtn</tabstop>
   <tabstop>mHorizontalAnchorComboBox</tabstop>

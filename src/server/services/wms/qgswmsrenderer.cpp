@@ -174,6 +174,28 @@ namespace QgsWms
     return image.release();
   }
 
+  QJsonObject QgsRenderer::getLegendGraphicsAsJson( QgsLayerTreeModel &model )
+  {
+    // get layers
+    std::unique_ptr<QgsLayerRestorer> restorer;
+    restorer.reset( new QgsLayerRestorer( mContext.layers() ) );
+
+    // configure layers
+    QList<QgsMapLayer *> layers = mContext.layersToRender();
+    configureLayers( layers );
+
+    // init renderer
+    QgsLegendSettings settings = legendSettings();
+    QgsLegendRenderer renderer( &model, settings );
+
+    // rendering
+    QJsonObject json;
+    QgsRenderContext renderContext;
+    renderer.exportLegendToJson( renderContext, json );
+
+    return json;
+  }
+
   void QgsRenderer::runHitTest( const QgsMapSettings &mapSettings, HitTest &hitTest ) const
   {
     QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
@@ -237,6 +259,7 @@ namespace QgsWms
 
     // configure layers
     QgsMapSettings mapSettings;
+    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers, &mapSettings );
 
@@ -385,6 +408,7 @@ namespace QgsWms
 
     // configure layers
     QgsMapSettings mapSettings;
+    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
     QList<QgsMapLayer *> layers = mContext.layersToRender();
     configureLayers( layers, &mapSettings );
 
@@ -749,6 +773,7 @@ namespace QgsWms
     QList<QgsMapLayer *> layers = mContext.layersToRender();
 
     QgsMapSettings mapSettings;
+    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
     configureLayers( layers, &mapSettings );
 
     // create the output image and the painter
@@ -779,7 +804,7 @@ namespace QgsWms
     return image.release();
   }
 
-  QgsDxfExport QgsRenderer::getDxf()
+  std::unique_ptr<QgsDxfExport> QgsRenderer::getDxf()
   {
     // init layer restorer before doing anything
     std::unique_ptr<QgsLayerRestorer> restorer;
@@ -813,15 +838,22 @@ namespace QgsWms
     }
 
     // add layers to dxf
-    QgsDxfExport dxf;
-    dxf.setExtent( mWmsParameters.bboxAsRectangle() );
-    dxf.addLayers( dxfLayers );
-    dxf.setLayerTitleAsName( mWmsParameters.dxfUseLayerTitleAsName() );
-    dxf.setSymbologyExport( mWmsParameters.dxfMode() );
+    std::unique_ptr<QgsDxfExport> dxf = qgis::make_unique<QgsDxfExport>();
+    dxf->setExtent( mWmsParameters.bboxAsRectangle() );
+    dxf->addLayers( dxfLayers );
+    dxf->setLayerTitleAsName( mWmsParameters.dxfUseLayerTitleAsName() );
+    dxf->setSymbologyExport( mWmsParameters.dxfMode() );
     if ( mWmsParameters.dxfFormatOptions().contains( QgsWmsParameters::DxfFormatOption::SCALE ) )
     {
-      dxf.setSymbologyScale( mWmsParameters.dxfScale() );
+      dxf->setSymbologyScale( mWmsParameters.dxfScale() );
     }
+
+    dxf->setForce2d( mWmsParameters.isForce2D() );
+    QgsDxfExport::Flags flags;
+    if ( mWmsParameters.noMText() )
+      flags.setFlag( QgsDxfExport::Flag::FlagNoMText );
+
+    dxf->setFlags( flags );
 
     return dxf;
   }
@@ -901,6 +933,7 @@ namespace QgsWms
 
     // configure map settings (background, DPI, ...)
     QgsMapSettings mapSettings;
+    mapSettings.setFlag( QgsMapSettings::RenderBlocking );
     configureMapSettings( outputImage.get(), mapSettings, mandatoryCrsParam );
 
     // compute scale denominator
@@ -1060,11 +1093,7 @@ namespace QgsWms
     mapSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
 
     // set selection color
-    int myRed = mProject->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
-    int myGreen = mProject->readNumEntry( "Gui", "/SelectionColorGreenPart", 255 );
-    int myBlue = mProject->readNumEntry( "Gui", "/SelectionColorBluePart", 0 );
-    int myAlpha = mProject->readNumEntry( "Gui", "/SelectionColorAlphaPart", 255 );
-    mapSettings.setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+    mapSettings.setSelectionColor( mProject->selectionColor() );
   }
 
   QDomDocument QgsRenderer::featureInfoDocument( QList<QgsMapLayer *> &layers, const QgsMapSettings &mapSettings,
@@ -1262,13 +1291,13 @@ namespace QgsWms
         if ( ! mContext.parameters().queryLayersNickname().contains( queryLayer ) )
         {
           // Find which group this layer belongs to
-          const auto &constNicks { mContext.parameters().queryLayersNickname() };
-          for ( const auto &ql : constNicks )
+          const QStringList constNicks { mContext.parameters().queryLayersNickname() };
+          for ( const QString &ql : constNicks )
           {
             if ( mContext.layerGroups().contains( ql ) )
             {
-              const auto &constLayers { mContext.layerGroups()[ql] };
-              for ( const auto &ml : constLayers )
+              const QList<QgsMapLayer *> constLayers { mContext.layerGroups()[ql] };
+              for ( const QgsMapLayer *ml : constLayers )
               {
                 if ( ( ! ml->shortName().isEmpty() &&  ml->shortName() == queryLayer ) || ( ml->name() == queryLayer ) )
                 {
@@ -2219,6 +2248,7 @@ namespace QgsWms
         exporter.setAttributeDisplayName( true );
         exporter.setAttributes( attributes );
         exporter.setIncludeGeometry( withGeometry );
+        exporter.setTransformGeometries( false );
 
         for ( const auto &feature : qgis::as_const( features ) )
         {
@@ -2997,6 +3027,7 @@ namespace QgsWms
     const QList< QgsAnnotation * > annotations = annotationManager->annotations();
 
     QgsRenderContext renderContext = QgsRenderContext::fromQPainter( painter );
+    renderContext.setFlag( QgsRenderContext::RenderBlocking );
     for ( QgsAnnotation *annotation : annotations )
     {
       if ( !annotation || !annotation->isVisible() )
@@ -3050,7 +3081,7 @@ namespace QgsWms
     {
       const QgsWmsParametersLayer param = mContext.parameters( *layer );
 
-      if ( param.mNickname.isEmpty() )
+      if ( ! mContext.layersToRender().contains( layer ) )
       {
         continue;
       }
@@ -3131,6 +3162,7 @@ namespace QgsWms
     if ( !mWmsParameters.bbox().isEmpty() )
     {
       QgsMapSettings mapSettings;
+      mapSettings.setFlag( QgsMapSettings::RenderBlocking );
       std::unique_ptr<QImage> tmp( createImage( mContext.mapSize( false ) ) );
       configureMapSettings( tmp.get(), mapSettings );
       settings.setMapScale( mapSettings.scale() );

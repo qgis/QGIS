@@ -21,6 +21,7 @@
 #include "qgsgeos.h"
 #include "qgsprocessingparameters.h"
 #include <map>
+#include <cmath>
 ///@cond PRIVATE
 
 void QgsRasterAnalysisUtils::cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY,
@@ -165,6 +166,18 @@ void QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( QgsRasterInterfa
 bool QgsRasterAnalysisUtils::validPixel( double value )
 {
   return !std::isnan( value );
+}
+
+void QgsRasterAnalysisUtils::mapToPixel( const double x, const double y, const QgsRectangle bounds, const double unitsPerPixelX, const double unitsPerPixelY, int &px, int &py )
+{
+  px = trunc( ( x - bounds.xMinimum() ) / unitsPerPixelX );
+  py = trunc( ( y - bounds.yMaximum() ) / -unitsPerPixelY );
+}
+
+void QgsRasterAnalysisUtils::pixelToMap( const int px, const int py, const QgsRectangle bounds, const double unitsPerPixelX, const double unitsPerPixelY, double &x, double &y )
+{
+  x = bounds.xMinimum() + ( px + 0.5 ) * unitsPerPixelX;
+  y = bounds.yMaximum() - ( py + 0.5 ) * unitsPerPixelY;
 }
 
 static QVector< QPair< QString, Qgis::DataType > > sDataTypes;

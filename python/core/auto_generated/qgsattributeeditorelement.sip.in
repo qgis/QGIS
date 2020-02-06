@@ -286,13 +286,15 @@ This element will load a relation editor onto the form.
  QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent );
 %Docstring
 
-.. deprecated:: since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
+.. deprecated:: QGIS 3.0.2.
+   The name parameter is not used for anything and overwritten by the relationId internally.
 %End
 
  QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent );
 %Docstring
 
-.. deprecated:: since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
+.. deprecated:: QGIS 3.0.2.
+   The name parameter is not used for anything and overwritten by the relationId internally.
 %End
 
     QgsAttributeEditorRelation( const QString &relationId, QgsAttributeEditorElement *parent );

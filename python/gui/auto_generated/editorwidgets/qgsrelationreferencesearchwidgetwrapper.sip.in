@@ -70,7 +70,8 @@ Returns a variant representing the current state of the widget.
 %Docstring
 Called when current value of search widget changes
 
-.. deprecated:: since QGIS 3.10 made private
+.. deprecated:: QGIS 3.10
+   made private
 %End
 
   protected slots:

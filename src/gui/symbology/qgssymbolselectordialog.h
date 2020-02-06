@@ -199,7 +199,7 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
   signals:
 
     /**
-     * Emiited when a symbol is modified in the widget.
+     * Emitted when a symbol is modified in the widget.
      */
     void symbolModified();
 

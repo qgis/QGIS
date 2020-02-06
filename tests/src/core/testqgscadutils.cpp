@@ -22,6 +22,7 @@
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the QgsCadUtils class.
@@ -98,6 +99,8 @@ void TestQgsCadUtils::initTestCase()
   mSnappingUtils = new QgsSnappingUtils;
   mSnappingUtils->setConfig( snapConfig );
   mSnappingUtils->setMapSettings( mMapSettings );
+
+  mSnappingUtils->locatorForLayer( mLayerPolygon )->init();
 }
 
 //runs after all tests

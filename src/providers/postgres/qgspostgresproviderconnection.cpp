@@ -26,22 +26,20 @@ extern "C"
 #include <libpq-fe.h>
 }
 
-QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name ):
-  QgsAbstractDatabaseProviderConnection( name )
+QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &name )
+  : QgsAbstractDatabaseProviderConnection( name )
 {
   // Remove the sql and table empty parts
-  static const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*)raw" };
+  const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=""\s*)raw" };
   setUri( QgsPostgresConn::connUri( name ).uri().replace( removePartsRe, QString() ) );
   setDefaultCapabilities();
 }
 
 QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &uri, const QVariantMap &configuration ):
-  QgsAbstractDatabaseProviderConnection( uri, configuration )
+  QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
 {
   setDefaultCapabilities();
 }
-
-
 
 void QgsPostgresProviderConnection::setDefaultCapabilities()
 {
@@ -50,6 +48,7 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
   mCapabilities =
   {
     Capability::DropVectorTable,
+    Capability::DropRasterTable,
     Capability::CreateVectorTable,
     Capability::RenameSchema,
     Capability::DropSchema,
@@ -110,6 +109,15 @@ void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
   }
+}
+
+QString QgsPostgresProviderConnection::tableUri( const QString &schema, const QString &name ) const
+{
+  const auto tableInfo { table( schema, name ) };
+  QgsDataSourceUri dsUri( uri() );
+  dsUri.setTable( name );
+  dsUri.setSchema( schema );
+  return dsUri.uri( false );
 }
 
 void QgsPostgresProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
@@ -255,6 +263,10 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             {
               vType = QVariant::Bool;
             }
+            else
+            {
+              QgsDebugMsg( QStringLiteral( "Unhandled PostgreSQL type %1" ).arg( typName ) );
+            }
           }
           typeMap[ rowIdx ] = vType;
         }
@@ -268,7 +280,15 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
           {
             const QVariant::Type vType { typeMap.value( colIdx, QVariant::Type::String ) };
             QVariant val { res.PQgetvalue( rowIdx, colIdx ) };
-            if ( val.canConvert( static_cast<int>( vType ) ) )
+            // Special case for bools: 'f' and 't'
+            if ( vType == QVariant::Bool )
+            {
+              if ( ! val.toString().isEmpty() )
+              {
+                val = val.toString() == 't';
+              }
+            }
+            else if ( val.canConvert( static_cast<int>( vType ) ) )
             {
               val.convert( static_cast<int>( vType ) );
             }
@@ -324,6 +344,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
       const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
       conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema );
       bool dontResolveType = configuration().value( QStringLiteral( "dontResolveType" ), false ).toBool();
+      bool useEstimatedMetadata = configuration().value( QStringLiteral( "estimatedMetadata" ), false ).toBool();
 
       // Cannot be const:
       for ( auto &pr : properties )
@@ -359,7 +380,7 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
                                       ( pr.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown ||
                                         pr.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) ) )
           {
-            conn->retrieveLayerTypes( pr, true /* useEstimatedMetadata */ );
+            conn->retrieveLayerTypes( pr, useEstimatedMetadata );
           }
           QgsPostgresProviderConnection::TableProperty property;
           property.setFlags( prFlags );

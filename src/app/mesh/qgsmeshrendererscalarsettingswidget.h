@@ -46,7 +46,7 @@ class APP_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     void setLayer( QgsMeshLayer *layer );
 
     //! Associates a dataset group with the widget (should be set before syncToLayer())
-    void setActiveDatasetGroup( int groupIndex ) { mActiveDatasetGroup = groupIndex; }
+    void setActiveDatasetGroup( int groupIndex );
 
     //! Returns scalar settings
     QgsMeshRendererScalarSettings settings() const;
@@ -65,6 +65,9 @@ class APP_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
 
   private:
     double lineEditValue( const QLineEdit *lineEdit ) const;
+    QgsMeshRendererScalarSettings::DataInterpolationMethod dataIntepolationMethod() const;
+
+    bool dataIsDefinedOnFaces() const;
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
     int mActiveDatasetGroup = -1;

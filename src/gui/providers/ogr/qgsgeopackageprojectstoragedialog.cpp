@@ -48,10 +48,12 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
 
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
-    const QString fileName{QFileInfo( path ).fileName()};
+    const QString fileName{ QFileInfo( path ).fileName() };
     if ( mCboConnection->findData( path ) == -1 )
     {
-      mCboConnection->addItem( QFileInfo( path ).fileName(), path );
+      // the call to filePath standardizes the path and prevents
+      // an error when opening the file on windows
+      mCboConnection->addItem( fileName, QFileInfo( path ).filePath() );
       mCboConnection->setItemData( mCboConnection->findText( fileName ), path, Qt::ItemDataRole::ToolTipRole );
     }
     mCboConnection->setCurrentIndex( mCboConnection->findText( fileName ) );

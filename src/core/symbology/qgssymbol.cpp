@@ -364,6 +364,11 @@ QgsSymbolLayer *QgsSymbol::symbolLayer( int layer )
   return mLayers.value( layer );
 }
 
+const QgsSymbolLayer *QgsSymbol::symbolLayer( int layer ) const
+{
+  return mLayers.value( layer );
+}
+
 bool QgsSymbol::insertSymbolLayer( int index, QgsSymbolLayer *layer )
 {
   if ( index < 0 || index > mLayers.count() ) // can be added also after the last index
@@ -430,6 +435,8 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
 
   mSymbolRenderContext.reset( new QgsSymbolRenderContext( context, QgsUnitTypes::RenderUnknownUnit, mOpacity, false, mRenderHints, nullptr, fields ) );
 
+  // Why do we need a copy here ? Is it to make sure the symbol layer rendering does not mess with the symbol render context ?
+  // Or is there another profound reason ?
   QgsSymbolRenderContext symbolContext( context, QgsUnitTypes::RenderUnknownUnit, mOpacity, false, mRenderHints, nullptr, fields );
 
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::updateSymbolScope( this, new QgsExpressionContextScope() ) );
@@ -438,7 +445,7 @@ void QgsSymbol::startRender( QgsRenderContext &context, const QgsFields &fields 
   const auto constMLayers = mLayers;
   for ( QgsSymbolLayer *layer : constMLayers )
   {
-    if ( !layer->enabled() )
+    if ( !layer->enabled() || !context.isSymbolLayerEnabled( layer ) )
       continue;
 
     layer->prepareExpressions( symbolContext );
@@ -457,7 +464,7 @@ void QgsSymbol::stopRender( QgsRenderContext &context )
     const auto constMLayers = mLayers;
     for ( QgsSymbolLayer *layer : constMLayers )
     {
-      if ( !layer->enabled() )
+      if ( !layer->enabled()  || !context.isSymbolLayerEnabled( layer ) )
         continue;
 
       layer->stopRender( *mSymbolRenderContext );
@@ -520,10 +527,9 @@ void QgsSymbol::drawPreviewIcon( QPainter *painter, QSize size, QgsRenderContext
     context->setExpressionContext( expContext );
   }
 
-  const auto constMLayers = mLayers;
-  for ( QgsSymbolLayer *layer : constMLayers )
+  for ( QgsSymbolLayer *layer : qgis::as_const( mLayers ) )
   {
-    if ( !layer->enabled() )
+    if ( !layer->enabled()  || ( customContext && !customContext->isSymbolLayerEnabled( layer ) ) )
       continue;
 
     if ( mType == Fill && layer->type() == Line )
@@ -597,7 +603,7 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
 
   QPainter p( &preview );
   p.setRenderHint( QPainter::Antialiasing );
-  p.translate( 0.5, 0.5 ); // shift by half a pixel to avoid blurring due antialising
+  p.translate( 0.5, 0.5 ); // shift by half a pixel to avoid blurring due antialiasing
 
   if ( mType == QgsSymbol::Marker )
   {
@@ -610,6 +616,7 @@ QImage QgsSymbol::bigSymbolPreviewImage( QgsExpressionContext *expressionContext
   if ( expressionContext )
     context.setExpressionContext( *expressionContext );
 
+  context.setIsGuiPreview( true );
   startRender( context );
 
   if ( mType == QgsSymbol::Line )
@@ -855,6 +862,8 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   }
 
   QgsGeometry renderedBoundsGeom;
+
+  startFeatureRender( feature, context, layer );
 
   switch ( QgsWkbTypes::flatType( segmentizedGeometry.constGet()->wkbType() ) )
   {
@@ -1115,6 +1124,8 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
                    .arg( geom.wkbType(), 0, 16 ) );
   }
 
+  stopFeatureRender( feature, context, layer );
+
   if ( context.hasRenderedFeatureHandlers() )
   {
     QgsRenderedFeatureHandlerInterface::RenderedFeatureContext featureContext( context );
@@ -1170,6 +1181,54 @@ void QgsSymbol::renderVertexMarker( QPointF pt, QgsRenderContext &context, int c
 {
   int markerSize = context.convertToPainterUnits( currentVertexMarkerSize, QgsUnitTypes::RenderMillimeters );
   QgsSymbolLayerUtils::drawVertexMarker( pt.x(), pt.y(), *context.painter(), static_cast< QgsSymbolLayerUtils::VertexMarkerType >( currentVertexMarkerType ), markerSize );
+}
+
+void QgsSymbol::startFeatureRender( const QgsFeature &feature, QgsRenderContext &context, const int layer )
+{
+  if ( layer != -1 )
+  {
+    QgsSymbolLayer *symbolLayer = mLayers.value( layer );
+    if ( symbolLayer && symbolLayer->enabled() )
+    {
+      symbolLayer->startFeatureRender( feature, context );
+    }
+    return;
+  }
+  else
+  {
+    const QList< QgsSymbolLayer * > layers = mLayers;
+    for ( QgsSymbolLayer *symbolLayer : layers )
+    {
+      if ( !symbolLayer->enabled() )
+        continue;
+
+      symbolLayer->startFeatureRender( feature, context );
+    }
+  }
+}
+
+void QgsSymbol::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer )
+{
+  if ( layer != -1 )
+  {
+    QgsSymbolLayer *symbolLayer = mLayers.value( layer );
+    if ( symbolLayer && symbolLayer->enabled() )
+    {
+      symbolLayer->stopFeatureRender( feature, context );
+    }
+    return;
+  }
+  else
+  {
+    const QList< QgsSymbolLayer * > layers = mLayers;
+    for ( QgsSymbolLayer *symbolLayer : layers )
+    {
+      if ( !symbolLayer->enabled() )
+        continue;
+
+      symbolLayer->stopFeatureRender( feature, context );
+    }
+  }
 }
 
 ////////////////////
@@ -1283,8 +1342,7 @@ void QgsMarkerSymbol::setAngle( double symbolAngle )
 
 double QgsMarkerSymbol::angle() const
 {
-  const auto constMLayers = mLayers;
-  for ( QgsSymbolLayer *layer : constMLayers )
+  for ( QgsSymbolLayer *layer : qgis::as_const( mLayers ) )
   {
     if ( layer->type() != QgsSymbol::Marker )
       continue;
@@ -1310,8 +1368,8 @@ void QgsMarkerSymbol::setDataDefinedAngle( const QgsProperty &property )
 {
   const double symbolRotation = angle();
 
-  const auto constMLayers = mLayers;
-  for ( QgsSymbolLayer *layer : constMLayers )
+
+  for ( QgsSymbolLayer *layer : qgis::as_const( mLayers ) )
   {
     if ( layer->type() != QgsSymbol::Marker )
       continue;
@@ -1653,7 +1711,7 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
   if ( layerIdx != -1 )
   {
     QgsSymbolLayer *symbolLayer = mLayers.value( layerIdx );
-    if ( symbolLayer && symbolLayer->enabled() )
+    if ( symbolLayer && symbolLayer->enabled() && context.isSymbolLayerEnabled( symbolLayer ) )
     {
       if ( symbolLayer->type() == QgsSymbol::Marker )
       {
@@ -1666,13 +1724,13 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
     return;
   }
 
-  const auto constMLayers = mLayers;
-  for ( QgsSymbolLayer *symbolLayer : constMLayers )
+
+  for ( QgsSymbolLayer *symbolLayer : qgis::as_const( mLayers ) )
   {
     if ( context.renderingStopped() )
       break;
 
-    if ( !symbolLayer->enabled() )
+    if ( !symbolLayer->enabled() || !context.isSymbolLayerEnabled( symbolLayer ) )
       continue;
 
     if ( symbolLayer->type() == QgsSymbol::Marker )
@@ -1892,7 +1950,7 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
   if ( layerIdx != -1 )
   {
     QgsSymbolLayer *symbolLayer = mLayers.value( layerIdx );
-    if ( symbolLayer && symbolLayer->enabled() )
+    if ( symbolLayer && symbolLayer->enabled() && context.isSymbolLayerEnabled( symbolLayer ) )
     {
       if ( symbolLayer->type() == QgsSymbol::Line )
       {
@@ -1909,9 +1967,9 @@ void QgsLineSymbol::renderPolyline( const QPolygonF &points, const QgsFeature *f
   for ( QgsSymbolLayer *symbolLayer : constMLayers )
   {
     if ( context.renderingStopped() )
-      break;;
+      break;
 
-    if ( !symbolLayer->enabled() )
+    if ( !symbolLayer->enabled() || !context.isSymbolLayerEnabled( symbolLayer ) )
       continue;
 
     if ( symbolLayer->type() == QgsSymbol::Line )
@@ -1980,7 +2038,7 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, QList<QPolygonF> *ri
   if ( layerIdx != -1 )
   {
     QgsSymbolLayer *symbolLayer = mLayers.value( layerIdx );
-    if ( symbolLayer && symbolLayer->enabled() )
+    if ( symbolLayer && symbolLayer->enabled() && context.isSymbolLayerEnabled( symbolLayer ) )
     {
       if ( symbolLayer->type() == Fill || symbolLayer->type() == Line )
         renderPolygonUsingLayer( symbolLayer, points, rings, symbolContext );
@@ -1996,7 +2054,7 @@ void QgsFillSymbol::renderPolygon( const QPolygonF &points, QList<QPolygonF> *ri
     if ( context.renderingStopped() )
       break;
 
-    if ( !symbolLayer->enabled() )
+    if ( !symbolLayer->enabled() || !context.isSymbolLayerEnabled( symbolLayer ) )
       continue;
 
     if ( symbolLayer->type() == Fill || symbolLayer->type() == Line )

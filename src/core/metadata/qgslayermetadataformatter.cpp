@@ -37,14 +37,14 @@ QString QgsLayerMetadataFormatter::accessSectionHtml() const
   {
     if ( notFirstRow )
     {
-      myMetadata += QLatin1String( "<br />" );
+      myMetadata += QStringLiteral( "<br />" );
     }
     myMetadata += QStringLiteral( "<strong>" ) + constraint.type + QStringLiteral( ": </strong>" ) + constraint.constraint;
     notFirstRow = true;
   }
-  myMetadata += QLatin1String( "</td></tr>\n" );
-  mMetadata.rights().join( QStringLiteral( "<br />" ) ) + QStringLiteral( "</td></tr>\n" );
-  myMetadata += QLatin1String( "</table>\n" );
+  mMetadata.rights().join( QStringLiteral( "<br />" ) );
+  myMetadata += QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "</table>\n" );
   return myMetadata;
 }
 
@@ -118,8 +118,7 @@ QString QgsLayerMetadataFormatter::extentSectionHtml( const bool showSpatialExte
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" );
     if ( mMetadata.crs().isValid() )
     {
-      myMetadata += mMetadata.crs().authid() + QStringLiteral( " - " );
-      myMetadata += mMetadata.crs().description() + QStringLiteral( " - " );
+      myMetadata += mMetadata.crs().userFriendlyIdentifier() + QStringLiteral( " - " );
       if ( mMetadata.crs().isGeographic() )
         myMetadata += tr( "Geographic" );
       else
@@ -135,8 +134,7 @@ QString QgsLayerMetadataFormatter::extentSectionHtml( const bool showSpatialExte
       {
         myMetadata += QLatin1String( "<br />\n" );
       }
-      myMetadata += QStringLiteral( "<strong>" ) + tr( "CRS" ) + QStringLiteral( ": </strong>" ) + spatialExtent.extentCrs.authid() + QStringLiteral( " - " );
-      myMetadata += spatialExtent.extentCrs.description() + QStringLiteral( " - " );
+      myMetadata += QStringLiteral( "<strong>" ) + tr( "CRS" ) + QStringLiteral( ": </strong>" ) + spatialExtent.extentCrs.userFriendlyIdentifier() + QStringLiteral( " - " );
       if ( spatialExtent.extentCrs.isGeographic() )
         myMetadata += tr( "Geographic" );
       else

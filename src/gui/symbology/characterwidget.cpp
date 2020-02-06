@@ -271,7 +271,7 @@ void CharacterWidget::paintEvent( QPaintEvent *event )
 
       if ( fontMetrics.inFont( QChar( key ) ) )
       {
-        painter.drawText( column * mSquareSize + ( mSquareSize / 2 ) - fontMetrics.width( QChar( key ) ) / 2,
+        painter.drawText( column * mSquareSize + ( mSquareSize / 2 ) - fontMetrics.boundingRect( QChar( key ) ).width() / 2,
                           row * mSquareSize + 4 + fontMetrics.ascent(),
                           QString( QChar( key ) ) );
       }

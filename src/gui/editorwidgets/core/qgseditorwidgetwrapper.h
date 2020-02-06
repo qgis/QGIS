@@ -28,6 +28,7 @@ class QgsField;
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
+
 /**
  * \ingroup gui
  * Manages an editor widget
@@ -345,7 +346,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \since QGIS 3.2
      */
     bool setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue );
-
 
   private:
 

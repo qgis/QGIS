@@ -110,7 +110,7 @@ class QgsGrassModuleParam
     //! Item's id
     QString id() { return mId; }
 
-    //! Check if otpion is ready
+    //! Check if option is ready
     //  Returns empty string or error message
     virtual QString ready() { return QString() ; }
 

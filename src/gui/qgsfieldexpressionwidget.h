@@ -73,7 +73,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! Returns the title used for the expression dialog
     const QString expressionDialogTitle() { return mExpressionDialogTitle; }
 
-    //! setFilters allows fitering according to the type of field
+    //! setFilters allows filtering according to the type of field
     void setFilters( QgsFieldProxyModel::Filters filters );
 
     /**

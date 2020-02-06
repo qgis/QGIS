@@ -60,6 +60,7 @@ void QgsMapRendererParallelJob::start()
   bool canUseLabelCache = prepareLabelCache();
   mLayerJobs = prepareJobs( nullptr, mLabelingEngineV2.get() );
   mLabelJob = prepareLabelingJob( nullptr, mLabelingEngineV2.get(), canUseLabelCache );
+  mSecondPassLayerJobs = prepareSecondPassJobs( mLayerJobs, mLabelJob );
 
   QgsDebugMsgLevel( QStringLiteral( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ), 2 );
 
@@ -104,6 +105,15 @@ void QgsMapRendererParallelJob::cancel()
     renderingFinished();
   }
 
+  if ( mStatus == RenderingSecondPass )
+  {
+    disconnect( &mSecondPassFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderLayersSecondPassFinished );
+
+    mSecondPassFutureWatcher.waitForFinished();
+
+    renderLayersSecondPassFinished();
+  }
+
   Q_ASSERT( mStatus == Idle );
 }
 
@@ -138,7 +148,7 @@ void QgsMapRendererParallelJob::waitForFinished()
   {
     disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderLayersFinished );
 
-    QTime t;
+    QElapsedTimer t;
     t.start();
 
     mFutureWatcher.waitForFinished();
@@ -152,7 +162,7 @@ void QgsMapRendererParallelJob::waitForFinished()
   {
     disconnect( &mLabelingFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderingFinished );
 
-    QTime t;
+    QElapsedTimer t;
     t.start();
 
     mLabelingFutureWatcher.waitForFinished();
@@ -160,6 +170,20 @@ void QgsMapRendererParallelJob::waitForFinished()
     QgsDebugMsgLevel( QStringLiteral( "waitForFinished (2): %1 ms" ).arg( t.elapsed() / 1000.0 ), 2 );
 
     renderingFinished();
+  }
+
+  if ( mStatus == RenderingSecondPass )
+  {
+    disconnect( &mSecondPassFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderLayersSecondPassFinished );
+
+    QElapsedTimer t;
+    t.start();
+
+    mSecondPassFutureWatcher.waitForFinished();
+
+    QgsDebugMsg( QStringLiteral( "waitForFinished (1): %1 ms" ).arg( t.elapsed() / 1000.0 ) );
+
+    renderLayersSecondPassFinished();
   }
 
   Q_ASSERT( mStatus == Idle );
@@ -204,8 +228,11 @@ void QgsMapRendererParallelJob::renderLayersFinished()
     }
   }
 
-  // compose final image
-  mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
+  // compose final image for labeling
+  if ( mSecondPassLayerJobs.isEmpty() )
+  {
+    mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
+  }
 
   QgsDebugMsgLevel( QStringLiteral( "PARALLEL layers finished" ), 2 );
 
@@ -226,13 +253,74 @@ void QgsMapRendererParallelJob::renderLayersFinished()
   }
 }
 
+#define DEBUG_RENDERING 0
+
 void QgsMapRendererParallelJob::renderingFinished()
+{
+#if DEBUG_RENDERING
+  int i = 0;
+  for ( LayerRenderJob &job : mLayerJobs )
+  {
+    if ( job.img )
+    {
+      job.img->save( QString( "/tmp/first_pass_%1.png" ).arg( i ) );
+    }
+    if ( job.maskPass.image )
+    {
+      job.maskPass.image->save( QString( "/tmp/first_pass_%1_mask.png" ).arg( i ) );
+    }
+    i++;
+  }
+  if ( mLabelJob.img )
+  {
+    mLabelJob.img->save( QString( "/tmp/labels.png" ) );
+  }
+  if ( mLabelJob.maskImage )
+  {
+    mLabelJob.maskImage->save( QString( "/tmp/labels_mask.png" ) );
+  }
+#endif
+  if ( ! mSecondPassLayerJobs.isEmpty() )
+  {
+    mStatus = RenderingSecondPass;
+    // We have a second pass to do.
+    mSecondPassFuture = QtConcurrent::map( mSecondPassLayerJobs, renderLayerStatic );
+    mSecondPassFutureWatcher.setFuture( mSecondPassFuture );
+    connect( &mSecondPassFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderLayersSecondPassFinished );
+  }
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "PARALLEL finished" ), 2 );
+
+    logRenderingTime( mLayerJobs, mSecondPassLayerJobs, mLabelJob );
+
+    cleanupJobs( mLayerJobs );
+
+    cleanupLabelJob( mLabelJob );
+
+    mStatus = Idle;
+
+    mRenderingTime = mRenderingStart.elapsed();
+
+    emit finished();
+  }
+}
+
+void QgsMapRendererParallelJob::renderLayersSecondPassFinished()
 {
   QgsDebugMsgLevel( QStringLiteral( "PARALLEL finished" ), 2 );
 
-  logRenderingTime( mLayerJobs, mLabelJob );
+  // compose second pass images into first pass images
+  composeSecondPass( mSecondPassLayerJobs, mLabelJob );
+
+  // compose final image
+  mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
+
+  logRenderingTime( mLayerJobs, mSecondPassLayerJobs, mLabelJob );
 
   cleanupJobs( mLayerJobs );
+
+  cleanupSecondPassJobs( mSecondPassLayerJobs );
 
   cleanupLabelJob( mLabelJob );
 
@@ -257,7 +345,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
     job.imageInitialized = true;
   }
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
   QgsDebugMsgLevel( QStringLiteral( "job %1 start (layer %2)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.layerId ), 2 );
   try
@@ -291,7 +379,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
 
   if ( !job.cached )
   {
-    QTime labelTime;
+    QElapsedTimer labelTime;
     labelTime.start();
 
     QPainter painter;

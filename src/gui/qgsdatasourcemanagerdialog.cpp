@@ -200,4 +200,6 @@ void QgsDataSourceManagerDialog::showEvent( QShowEvent *e )
 {
   ui->mOptionsStackedWidget->currentWidget()->show();
   QgsOptionsDialogBase::showEvent( e );
+  resizeAlltabs( ui->mOptionsStackedWidget->currentIndex() );
 }
+

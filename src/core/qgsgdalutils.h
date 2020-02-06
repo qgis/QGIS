@@ -46,14 +46,19 @@ class CORE_EXPORT QgsGdalUtils
      * Creates a new single band memory dataset with given parameters
      * \since QGIS 3.8
      */
-    static gdal::dataset_unique_ptr createSingleBandMemoryDataset( GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
+    static gdal::dataset_unique_ptr createSingleBandMemoryDataset( GDALDataType dataType, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Creates a new multi band memory dataset with given parameters
+     * \since QGIS 3.12
+     */
+    static gdal::dataset_unique_ptr createMultiBandMemoryDataset( GDALDataType dataType, int bands, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Creates a new single band TIFF dataset with given parameters
      * \since QGIS 3.8
      */
-    static gdal::dataset_unique_ptr createSingleBandTiffDataset( QString filename, GDALDataType dataType, QgsRectangle extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
-
+    static gdal::dataset_unique_ptr createSingleBandTiffDataset( const QString &filename, GDALDataType dataType, const QgsRectangle &extent, int width, int height, const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Resamples a single band raster to the destination dataset with different resolution (and possibly with different CRS).
@@ -63,22 +68,39 @@ class CORE_EXPORT QgsGdalUtils
     static void resampleSingleBandRaster( GDALDatasetH hSrcDS, GDALDatasetH hDstDS, GDALResampleAlg resampleAlg );
 
     /**
+     * Resamples a QImage \a image using GDAL resampler.
+     * \since QGIS 3.12
+     */
+    static QImage resampleImage( const QImage &image, QSize outputSize, GDALRIOResampleAlg resampleAlg );
+
+    /**
      * Gets creation options metadata for a given format
      * \since QGIS 3.10
      */
-    static QString helpCreationOptionsFormat( QString format );
+    static QString helpCreationOptionsFormat( const QString &format );
 
     /**
      * Validates creation options for a given format, regardless of layer.
      * \since QGIS 3.10
      */
-    static QString validateCreationOptionsFormat( const QStringList &createOptions, QString format );
+    static QString validateCreationOptionsFormat( const QStringList &createOptions, const QString &format );
 
     /**
      * Helper function
      * \since QGIS 3.10
      */
     static char **papszFromStringList( const QStringList &list );
+
+    /**
+     * Converts an \a image to a GDAL memory dataset by borrowing image data.
+     *
+     * \warning The \a image must exist unchanged for the lifetime of the returned gdal dataset!
+     *
+     * \since QGIS 3.12
+     */
+    static gdal::dataset_unique_ptr imageToMemoryDataset( const QImage &image );
+
+    friend class TestQgsGdalUtils;
 };
 
 #endif // QGSGDALUTILS_H

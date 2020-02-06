@@ -111,7 +111,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * Returns a quoted attribute value, in the format expected by the provider.
      * Derived classes should override this if special handling of attribute values is required.
      * \param value value to quote
-     * \param ok wil be set to TRUE if value can be compiled
+     * \param ok will be set to TRUE if value can be compiled
      * \see quotedIdentifier()
      */
     virtual QString quotedValue( const QVariant &value, bool &ok );

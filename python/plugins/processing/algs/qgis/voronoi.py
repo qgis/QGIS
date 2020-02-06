@@ -664,7 +664,7 @@ class EdgeList(object):
                     break
                 i += 1
 
-        # Now search linear list of halfedges for the corect one
+        # Now search linear list of halfedges for the correct one
         if (he is self.leftend) or (he is not self.rightend and he.isPointRightOf(pt)):
             he = he.right
             while he is not self.rightend and he.isPointRightOf(pt):

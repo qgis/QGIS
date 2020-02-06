@@ -34,6 +34,35 @@ class QgsRenderContext;
 
 ///@cond PRIVATE
 
+
+class QgsMeshVectorRenderer
+{
+  public:
+    //! Constructor
+    QgsMeshVectorRenderer() = default;
+
+    /**
+     * Draws vector arrows in the context's painter based on settings
+     */
+    virtual ~QgsMeshVectorRenderer();
+
+    virtual void draw() = 0;
+
+    //! Vector renderer factory. The returned renderer type depend on the settings
+    static QgsMeshVectorRenderer *makeVectorRenderer(
+      const QgsTriangularMesh &m,
+      const QgsMeshDataBlock &datasetVectorValues,
+      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+      const QVector<double> &datasetValuesMag,
+      double datasetMagMaximumValue,
+      double datasetMagMinimumValue,
+      bool dataIsOnVertices,
+      const QgsMeshRendererVectorSettings &settings,
+      QgsRenderContext &context,
+      const QgsRectangle &layerExtent,
+      QSize size );
+};
+
 /**
  * \ingroup core
  *
@@ -42,26 +71,26 @@ class QgsRenderContext;
  * \note not available in Python bindings
  * \since QGIS 3.2
  */
-class QgsMeshVectorRenderer
+class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
 {
   public:
     //! Ctor
-    QgsMeshVectorRenderer( const QgsTriangularMesh &m,
-                           const QgsMeshDataBlock &datasetValues,
-                           const QVector<double> &datasetValuesMag,
-                           double datasetMagMaximumValue,
-                           double datasetMagMinimumValue,
-                           bool dataIsOnVertices,
-                           const QgsMeshRendererVectorSettings &settings,
-                           QgsRenderContext &context,
-                           QSize size );
+    QgsMeshVectorArrowRenderer( const QgsTriangularMesh &m,
+                                const QgsMeshDataBlock &datasetValues,
+                                const QVector<double> &datasetValuesMag,
+                                double datasetMagMaximumValue,
+                                double datasetMagMinimumValue,
+                                bool dataIsOnVertices,
+                                const QgsMeshRendererVectorSettings &settings,
+                                QgsRenderContext &context,
+                                QSize size );
     //! Dtor
-    ~QgsMeshVectorRenderer();
+    ~QgsMeshVectorArrowRenderer() override;
 
     /**
      * Draws vector arrows in the context's painter based on settings
      */
-    void draw();
+    void draw() override;
 
   private:
     //! Draws for data defined on vertices
@@ -97,7 +126,7 @@ class QgsMeshVectorRenderer
     double mMinMag = 0.0;
     double mMaxMag = 0.0;
     QgsRenderContext &mContext;
-    const QgsMeshRendererVectorSettings &mCfg;
+    const QgsMeshRendererVectorSettings mCfg;
     bool mDataOnVertices = true;
     QSize mOutputSize;
     QgsRectangle mBufferedExtent;

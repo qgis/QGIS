@@ -1193,6 +1193,221 @@ Updates the format by evaluating current values of data defined properties.
 
 
 
+class QgsTextMaskSettings
+{
+%Docstring
+Container for settings relating to a selective masking around a text.
+A selective masking only makes sense in contexts where the text is rendered over some other map layers, especially for labeling.
+
+.. note::
+
+   QgsTextMaskSettings objects are implicitly shared.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgstextrenderer.h"
+%End
+  public:
+
+    enum MaskType
+    {
+      MaskBuffer
+    };
+
+    QgsTextMaskSettings();
+
+    QgsTextMaskSettings( const QgsTextMaskSettings &other );
+%Docstring
+Copy constructor.
+
+:param other: source settings
+%End
+
+
+    ~QgsTextMaskSettings();
+
+    bool enabled() const;
+%Docstring
+Returns whether the mask is enabled.
+%End
+
+    void setEnabled( bool );
+%Docstring
+Returns whether the mask is enabled.
+%End
+
+    MaskType type() const;
+%Docstring
+Returns the type of mask shape.
+
+.. seealso:: :py:func:`setType`
+%End
+
+    void setType( MaskType type );
+%Docstring
+Sets the type of mask shape.
+
+:param type: shape type
+
+.. seealso:: :py:func:`type`
+%End
+
+    double size() const;
+%Docstring
+Returns the size of the buffer.
+
+.. seealso:: :py:func:`sizeUnit`
+
+.. seealso:: :py:func:`setSize`
+%End
+
+    void setSize( double size );
+%Docstring
+Sets the size of the buffer. The size units are specified using setSizeUnit().
+
+:param size: buffer size
+
+.. seealso:: :py:func:`size`
+
+.. seealso:: :py:func:`setSizeUnit`
+%End
+
+    QgsUnitTypes::RenderUnit sizeUnit() const;
+%Docstring
+Returns the units for the buffer size.
+
+.. seealso:: :py:func:`size`
+
+.. seealso:: :py:func:`setSizeUnit`
+%End
+
+    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
+%Docstring
+Sets the units used for the buffer size.
+
+:param unit: size unit
+
+.. seealso:: :py:func:`setSize`
+
+.. seealso:: :py:func:`sizeUnit`
+%End
+
+    QgsMapUnitScale sizeMapUnitScale() const;
+%Docstring
+Returns the map unit scale object for the buffer size. This is only used if the
+buffer size is set to QgsUnitTypes.RenderMapUnit.
+
+.. seealso:: :py:func:`setSizeMapUnitScale`
+
+.. seealso:: :py:func:`sizeUnit`
+%End
+
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit scale object for the buffer size. This is only used if the
+buffer size is set to QgsUnitTypes.RenderMapUnit.
+
+:param scale: scale for buffer size
+
+.. seealso:: :py:func:`sizeMapUnitScale`
+
+.. seealso:: :py:func:`setSizeUnit`
+%End
+
+    Qt::PenJoinStyle joinStyle() const;
+%Docstring
+Returns the buffer join style.
+
+.. seealso:: :py:func:`setJoinStyle`
+%End
+
+    void setJoinStyle( Qt::PenJoinStyle style );
+%Docstring
+Sets the join style used for drawing the buffer.
+
+:param style: join style
+
+.. seealso:: :py:func:`joinStyle`
+%End
+
+    double opacity() const;
+%Docstring
+Returns the mask's opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
+opaque).
+
+.. seealso:: :py:func:`setOpacity`
+%End
+
+    void setOpacity( double opacity );
+%Docstring
+Sets the mask's opacity.
+
+:param opacity: opacity as a double value between 0 (fully transparent) and 1 (totally
+                opaque)
+
+.. seealso:: :py:func:`opacity`
+%End
+
+    QgsPaintEffect *paintEffect() const;
+%Docstring
+Returns the current paint effect for the mask.
+
+:return: paint effect
+
+.. seealso:: :py:func:`setPaintEffect`
+%End
+
+    void setPaintEffect( QgsPaintEffect *effect /Transfer/ );
+%Docstring
+Sets the current paint ``effect`` for the mask.
+
+:param effect: paint effect. Ownership is transferred to the mask settings.
+
+.. seealso:: :py:func:`paintEffect`
+%End
+
+    void readXml( const QDomElement &elem );
+%Docstring
+Read settings from a DOM element.
+
+.. seealso:: :py:func:`writeXml`
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Write settings into a DOM element.
+
+.. seealso:: :py:func:`readXml`
+%End
+
+    QgsSymbolLayerReferenceList maskedSymbolLayers() const;
+%Docstring
+Returns a list of references to symbol layers that are masked by this buffer.
+
+:return: a list of references to masked symbol layers
+
+.. seealso:: :py:func:`setMaskedSymbolLayers`
+%End
+
+    void setMaskedSymbolLayers( QgsSymbolLayerReferenceList maskedLayers );
+%Docstring
+Sets the symbol layers that will be masked by this buffer.
+
+:param maskedLayers: list of references to symbol layers
+
+.. seealso:: :py:func:`setMaskedSymbolLayers`
+%End
+
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+%Docstring
+Updates the format by evaluating current values of data defined properties.
+%End
+
+};
+
+
 class QgsTextFormat
 {
 %Docstring
@@ -1278,6 +1493,26 @@ Sets the text's drop shadow settings.
 :param shadowSettings: shadow settings
 
 .. seealso:: :py:func:`shadow`
+%End
+
+    QgsTextMaskSettings &mask();
+%Docstring
+Returns a reference to the masking settings.
+
+.. seealso:: :py:func:`setMask`
+%End
+
+
+    void setMask( const QgsTextMaskSettings &maskSettings );
+%Docstring
+Sets the text's masking settings.
+Masks may be defined in contexts where the text is rendered over some map layers, for labeling especially.
+
+:param maskSettings: mask settings
+
+.. seealso:: :py:func:`mask`
+
+.. versionadded:: 3.12
 %End
 
     QFont font() const;

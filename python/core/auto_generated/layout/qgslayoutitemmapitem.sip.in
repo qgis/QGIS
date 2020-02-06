@@ -187,6 +187,13 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+    virtual QgsMapLayer *mapLayer();
+%Docstring
+Returns the internal map layer used by this item, if available.
+
+.. versionadded:: 3.10.1
+%End
+
     virtual QgsExpressionContext createExpressionContext() const;
 
 

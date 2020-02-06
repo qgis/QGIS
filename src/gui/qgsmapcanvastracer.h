@@ -92,8 +92,6 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
 
     QAction *mActionEnableTracing = nullptr;
     QAction *mActionEnableSnapping = nullptr;
-
-    static QHash<QgsMapCanvas *, QgsMapCanvasTracer *> sTracers;
 };
 
 #endif // QGSMAPCANVASTRACER_H

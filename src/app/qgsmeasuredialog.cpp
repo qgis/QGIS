@@ -42,6 +42,10 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   QgsGui::instance()->enableAutoGeometryRestore( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMeasureDialog::showHelp );
 
+  // hide 3D related options
+  editHorizontalTotal->hide();
+  totalHorizontalDistanceLabel->hide();
+
   QPushButton *nb = new QPushButton( tr( "&New" ) );
   buttonBox->addButton( nb, QDialogButtonBox::ActionRole );
   connect( nb, &QAbstractButton::clicked, this, &QgsMeasureDialog::restart );
@@ -90,7 +94,7 @@ void QgsMeasureDialog::projChanged()
 {
   if ( mCartesian->isChecked() )
   {
-    mDa.setEllipsoid( GEO_NONE );
+    mDa.setEllipsoid( geoNone() );
   }
   else
   {
@@ -145,7 +149,7 @@ void QgsMeasureDialog::updateSettings()
        ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
          && mDistanceUnits == QgsUnitTypes::DistanceDegrees ) )
   {
-    mDa.setEllipsoid( GEO_NONE );
+    mDa.setEllipsoid( geoNone() );
   }
   else
   {
@@ -380,15 +384,15 @@ void QgsMeasureDialog::updateUi()
         toolTip += "<br> * " + tr( "Units are unknown." );
         mConvertToDisplayUnits = false;
       }
-      mDa.setEllipsoid( GEO_NONE );
+      mDa.setEllipsoid( geoNone() );
     }
     else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
               && ( mAreaUnits == QgsUnitTypes::AreaSquareDegrees || mAreaUnits == QgsUnitTypes::AreaUnknownUnit ) )
     {
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured area are in degrees, so area is calculated using Cartesian calculations in square degrees." ).arg(
-                   mCanvas->mapSettings().destinationCrs().description() );
-      mDa.setEllipsoid( GEO_NONE );
+                   mCanvas->mapSettings().destinationCrs().userFriendlyIdentifier() );
+      mDa.setEllipsoid( geoNone() );
       mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
     else
@@ -406,7 +410,7 @@ void QgsMeasureDialog::updateUi()
         resultUnit = QgsUnitTypes::distanceToAreaUnit( mCanvas->mapSettings().destinationCrs().mapUnits() );
         toolTip += "<br> * " + tr( "Project ellipsoidal calculation is not selected." ) + ' ';
         toolTip += tr( "Area is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
-                   mCanvas->mapSettings().destinationCrs().description() );
+                   mCanvas->mapSettings().destinationCrs().userFriendlyIdentifier() );
       }
       setWindowTitle( tr( "Measure" ) );
 
@@ -458,15 +462,15 @@ void QgsMeasureDialog::updateUi()
         toolTip += "<br> * " + tr( "Units are unknown." );
         mConvertToDisplayUnits = false;
       }
-      mDa.setEllipsoid( GEO_NONE );
+      mDa.setEllipsoid( geoNone() );
     }
     else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
               && mDistanceUnits == QgsUnitTypes::DistanceDegrees )
     {
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using Cartesian calculations in degrees." ).arg(
-                   mCanvas->mapSettings().destinationCrs().description() );
-      mDa.setEllipsoid( GEO_NONE );
+                   mCanvas->mapSettings().destinationCrs().userFriendlyIdentifier() );
+      mDa.setEllipsoid( geoNone() );
       mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
     else
@@ -484,7 +488,7 @@ void QgsMeasureDialog::updateUi()
         resultUnit = mCanvas->mapSettings().destinationCrs().mapUnits();
         toolTip += "<br> * " + tr( "Project ellipsoidal calculation is not selected." ) + ' ';
         toolTip += tr( "Distance is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
-                   mCanvas->mapSettings().destinationCrs().description() );
+                   mCanvas->mapSettings().destinationCrs().userFriendlyIdentifier() );
       }
       setWindowTitle( tr( "Measure" ) );
 

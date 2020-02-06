@@ -641,14 +641,16 @@ Shall the marker be rotated.
 
 :return: ``True`` if the marker should be rotated.
 
-.. deprecated:: Use rotateSymbols() instead.
+.. deprecated::
+   Use rotateSymbols() instead.
 %End
 
  void setRotateMarker( bool rotate ) /Deprecated/;
 %Docstring
 Shall the marker be rotated.
 
-.. deprecated:: Use setRotateSymbols() instead.
+.. deprecated::
+   Use setRotateSymbols() instead.
 %End
 
   protected:

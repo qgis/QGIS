@@ -270,7 +270,7 @@ void QgsMeshDatasetGroupTreeModel::syncToLayer( QgsMeshLayer *layer )
 
       if ( subdatasets.size() == 1 )
       {
-        addTreeItem( name, isVector, groupIndex, mRootItem.get() );
+        addTreeItem( name, name, isVector, groupIndex, mRootItem.get() );
       }
       else if ( subdatasets.size() == 2 )
       {
@@ -278,17 +278,17 @@ void QgsMeshDatasetGroupTreeModel::syncToLayer( QgsMeshLayer *layer )
         if ( i == mNameToItem.end() )
         {
           QgsDebugMsg( QStringLiteral( "Unable to find parent group for %1." ).arg( name ) );
-          addTreeItem( name, isVector, groupIndex, mRootItem.get() );
+          addTreeItem( name, name, isVector, groupIndex, mRootItem.get() );
         }
         else
         {
-          addTreeItem( subdatasets[1], isVector, groupIndex, i.value() );
+          addTreeItem( name, subdatasets[1], isVector, groupIndex, i.value() );
         }
       }
       else
       {
         QgsDebugMsg( QStringLiteral( "Ignoring too deep child group name %1." ).arg( name ) );
-        addTreeItem( name, isVector, groupIndex, mRootItem.get() );
+        addTreeItem( name, name, isVector, groupIndex, mRootItem.get() );
       }
     }
   }
@@ -296,10 +296,10 @@ void QgsMeshDatasetGroupTreeModel::syncToLayer( QgsMeshLayer *layer )
   endResetModel();
 }
 
-void QgsMeshDatasetGroupTreeModel::addTreeItem( const QString &groupName, bool isVector, int groupIndex, QgsMeshDatasetGroupTreeItem *parent )
+void QgsMeshDatasetGroupTreeModel::addTreeItem( const QString &groupName, const QString &displayName, bool isVector, int groupIndex, QgsMeshDatasetGroupTreeItem *parent )
 {
   Q_ASSERT( parent );
-  QgsMeshDatasetGroupTreeItem *item = new QgsMeshDatasetGroupTreeItem( groupName, isVector, groupIndex, parent );
+  QgsMeshDatasetGroupTreeItem *item = new QgsMeshDatasetGroupTreeItem( displayName, isVector, groupIndex, parent );
   parent->appendChild( item );
 
   if ( mNameToItem.contains( groupName ) )

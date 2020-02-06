@@ -23,15 +23,15 @@ Content-Type: application/json
     {
       "href": "http://server.qgis.org/wfs3/conformance",
       "rel": "conformance",
-      "title": "WFS 3.0 conformance classes",
+      "title": "Conformance classes",
       "type": "application/json"
     },
     {
       "href": "http://server.qgis.org/wfs3/api",
-      "rel": "service_desc",
-      "title": "API definition",
+      "rel": "service-desc",
+      "title": "API description",
       "type": "application/openapi+json;version=3.0"
     }
   ],
-  "timeStamp": "2019-09-10T18:18:17Z"
+  "timeStamp": "2019-07-05T12:27:07Z"
 }

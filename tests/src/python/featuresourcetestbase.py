@@ -130,7 +130,7 @@ class FeatureSourceTestCase(object):
         self.assertTrue(all(f.isValid() for f in source.getFeatures(request)))
 
         # Also check that filter works when referenced fields are not being retrieved by request
-        result = set([f['pk'] for f in source.getFeatures(QgsFeatureRequest().setFilterExpression(expression).setSubsetOfAttributes([0]))])
+        result = set([f['pk'] for f in source.getFeatures(QgsFeatureRequest().setFilterExpression(expression).setSubsetOfAttributes(['pk'], self.source.fields()))])
         assert set(expected) == result, 'Expected {} and got {} when testing expression "{}" using empty attribute subset'.format(set(expected), result, expression)
 
         # test that results match QgsFeatureRequest.acceptFeature
@@ -715,3 +715,10 @@ class FeatureSourceTestCase(object):
     def testAllFeatureIds(self):
         ids = set([f.id() for f in self.source.getFeatures()])
         self.assertEqual(set(self.source.allFeatureIds()), ids)
+
+    def testSubsetOfAttributesWithFilterExprWithNonExistingColumn(self):
+        """ Test fix for https://github.com/qgis/QGIS/issues/33878 """
+        request = QgsFeatureRequest().setSubsetOfAttributes([0])
+        request.setFilterExpression("non_existing = 1")
+        features = [f for f in self.source.getFeatures(request)]
+        self.assertEqual(len(features), 0)

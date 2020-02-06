@@ -135,8 +135,10 @@ void QgsFeatureListView::mousePressEvent( QMouseEvent *event )
 
     if ( QgsFeatureListViewDelegate::EditElement == mItemDelegate->positionToElement( event->pos() ) )
     {
+
       mEditSelectionDrag = true;
-      setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+      if ( index.isValid() )
+        setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
     }
     else
     {
@@ -205,10 +207,7 @@ void QgsFeatureListView::setEditSelection( const QModelIndex &index, QItemSelect
   bool ok = true;
   emit aboutToChangeEditSelection( ok );
 
-#ifdef QGISDEBUG
-  if ( index.model() != mModel->masterModel() )
-    qWarning() << "Index from wrong model passed in";
-#endif
+  Q_ASSERT( index.model() == mModel->masterModel() || !index.isValid() );
 
   if ( ok )
     mCurrentEditSelectionModel->select( index, command );
@@ -236,7 +235,8 @@ void QgsFeatureListView::mouseMoveEvent( QMouseEvent *event )
 
   if ( mEditSelectionDrag )
   {
-    setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
+    if ( index.isValid() )
+      setEditSelection( mModel->mapToMaster( index ), QItemSelectionModel::ClearAndSelect );
   }
   else
   {
@@ -325,7 +325,11 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
 
     QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "Feature" ), this );
 
-    emit willShowContextMenu( menu, index );
+    // Index is from feature list model, but we need an index from the
+    // filter model to be passed to listeners, using fid instead would
+    // have been much better in term of bugs (and headaches) but this
+    // belongs to the API unfortunately.
+    emit willShowContextMenu( menu, mModel->mapToSource( index ) );
 
     menu->exec( event->globalPos() );
   }

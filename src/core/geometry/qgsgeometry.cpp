@@ -1133,6 +1133,12 @@ bool QgsGeometry::intersects( const QgsRectangle &r ) const
   if ( !boundingBoxIntersects( r ) )
     return false;
 
+  // optimise trivial case for point intersections -- the bounding box test has already given us the answer
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point )
+  {
+    return true;
+  }
+
   QgsGeometry g = fromRect( r );
   return intersects( g );
 }
@@ -1154,6 +1160,13 @@ bool QgsGeometry::boundingBoxIntersects( const QgsRectangle &rectangle ) const
   if ( !d->geometry )
   {
     return false;
+  }
+
+  // optimise trivial case for point intersections
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point )
+  {
+    const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( d->geometry.get() );
+    return rectangle.contains( QgsPointXY( point->x(), point->y() ) );
   }
 
   return d->geometry->boundingBox().intersects( rectangle );
@@ -1216,6 +1229,10 @@ bool QgsGeometry::equals( const QgsGeometry &geometry ) const
   // fast check - are they shared copies of the same underlying geometry?
   if ( d == geometry.d )
     return true;
+
+  // fast check - distinct geometry types?
+  if ( type() != geometry.type() )
+    return false;
 
   // slower check - actually test the geometries
   return *d->geometry == *geometry.d->geometry;
@@ -2108,7 +2125,7 @@ QgsGeometry QgsGeometry::subdivide( int maxNodes ) const
   return QgsGeometry( std::move( result ) );
 }
 
-QgsGeometry QgsGeometry::interpolate( const double distance ) const
+QgsGeometry QgsGeometry::interpolate( double distance ) const
 {
   if ( !d->geometry )
   {
@@ -2126,11 +2143,21 @@ QgsGeometry QgsGeometry::interpolate( const double distance ) const
   const QgsCurve *curve = nullptr;
   if ( line.isMultipart() )
   {
-    // if multi part, just use first part
+    // if multi part, iterate through parts to find target part
     const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( line.constGet() );
-    if ( collection && collection->numGeometries() > 0 )
+    for ( int part = 0; part < collection->numGeometries(); ++part )
     {
-      curve = qgsgeometry_cast< const QgsCurve * >( collection->geometryN( 0 ) );
+      const QgsCurve *candidate = qgsgeometry_cast< const QgsCurve * >( collection->geometryN( part ) );
+      if ( !candidate )
+        continue;
+      const double candidateLength = candidate->length();
+      if ( candidateLength >= distance )
+      {
+        curve = candidate;
+        break;
+      }
+
+      distance -= candidateLength;
     }
   }
   else
@@ -2330,7 +2357,7 @@ QgsGeometry QgsGeometry::extrude( double x, double y )
 }
 
 ///@cond PRIVATE // avoid dox warning
-QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed, QgsFeedback *feedback )
+QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed, QgsFeedback *feedback ) const
 {
   if ( type() != QgsWkbTypes::PolygonGeometry )
     return QVector< QgsPointXY >();
@@ -2338,7 +2365,7 @@ QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, const std::fu
   return QgsInternalGeometryEngine::randomPointsInPolygon( *this, count, acceptPoint, seed, feedback );
 }
 
-QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long seed, QgsFeedback *feedback )
+QVector<QgsPointXY> QgsGeometry::randomPointsInPolygon( int count, unsigned long seed, QgsFeedback *feedback ) const
 {
   if ( type() != QgsWkbTypes::PolygonGeometry )
     return QVector< QgsPointXY >();
@@ -2590,6 +2617,10 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
   // fast check - are they shared copies of the same underlying geometry?
   if ( d == g.d )
     return true;
+
+  // fast check - distinct geometry types?
+  if ( type() != g.type() )
+    return false;
 
   // avoid calling geos for trivial point case
   if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point

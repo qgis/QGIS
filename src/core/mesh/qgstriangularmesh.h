@@ -22,6 +22,7 @@
 #define SIP_NO_FILE
 
 #include <QVector>
+#include <QVector3D>
 #include <memory>
 #include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
@@ -86,6 +87,17 @@ class CORE_EXPORT QgsTriangularMesh
     int faceIndexForPoint( const QgsPointXY &point ) const ;
 
     /**
+     * Finds index of triangle at given point
+     * It uses spatial indexing and don't use geos to be faster
+     *
+     * \param point point in map coordinate system
+     * \returns triangle index that contains the given point, -1 if no such triangle exists
+     *
+     * \since QGIS 3.12
+     */
+    int faceIndexForPoint_v2( const QgsPointXY &point ) const;
+
+    /**
      * Finds indexes of triangles intersecting given bounding box
      * It uses spatial indexing
      *
@@ -95,6 +107,16 @@ class CORE_EXPORT QgsTriangularMesh
      * \since QGIS 3.4
      */
     QList<int> faceIndexesForRectangle( const QgsRectangle &rectangle ) const ;
+
+    /**
+     * Calculates and returns normale vector on each vertex
+     *
+     * \returns  all normales at vertices
+     *
+     * \since QGIS 3.12
+     */
+
+    QVector<QVector3D> vertexNormals( float vertScale ) const;
 
   private:
 
@@ -109,6 +131,9 @@ class CORE_EXPORT QgsTriangularMesh
      * with the given algorithm (e.g. only 2 vertices, polygon with holes)
      */
     void triangulate( const QgsMeshFace &face, int nativeIndex );
+
+    // check and, if needed set the indexes of the face counter clock-wise
+    void setTrianglesCounterClockWise( QgsMeshFace &face );
 
     // vertices: map CRS; 0-N ... native vertices, N+1 - len ... extra vertices
     // faces are derived triangles
@@ -137,6 +162,13 @@ namespace QgsMeshUtils
    * \since QGIS 3.4
    */
   CORE_EXPORT QList<int> nativeFacesFromTriangles( const QList<int> &triangleIndexes, const QVector<int> &trianglesToNativeFaces );
+
+  /**
+   * Tests if point p is on the face defined with vertices
+   * \since QGIS 3.12
+  */
+  bool isInTriangleFace( const QgsPointXY point, const QgsMeshFace &face,  const QVector<QgsMeshVertex> &vertices );
+
 };
 
 #endif // QGSTRIANGULARMESH_H

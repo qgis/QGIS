@@ -49,7 +49,7 @@
 
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
-#include "../../app/qgsrasterlayerproperties.h"
+#include "../../gui/raster/qgsrasterlayerproperties.h"
 #include "qgsproviderregistry.h"
 
 #include "qgsgeorefdatapoint.h"
@@ -733,7 +733,7 @@ void QgsGeorefPluginGui::extentsChangedGeorefCanvas()
 
     mExtentsChangedRecursionGuard = true;
     // Just set the whole extent for now
-    // TODO: better fitting function which acounts for differing aspect ratios etc.
+    // TODO: better fitting function which accounts for differing aspect ratios etc.
     mIface->mapCanvas()->setExtent( boundingBox );
     mIface->mapCanvas()->refresh();
     mExtentsChangedRecursionGuard = false;
@@ -763,7 +763,7 @@ void QgsGeorefPluginGui::extentsChangedQGisCanvas()
 
     mExtentsChangedRecursionGuard = true;
     // Just set the whole extent for now
-    // TODO: better fitting function which acounts for differing aspect ratios etc.
+    // TODO: better fitting function which accounts for differing aspect ratios etc.
     mCanvas->setExtent( rectMap );
     mCanvas->refresh();
     mExtentsChangedRecursionGuard = false;
@@ -1173,7 +1173,7 @@ void QgsGeorefPluginGui::addRaster( const QString &file )
   {
     QString authid = mLayer->crs().authid();
     mEPSG->setText( authid );
-    mEPSG->setToolTip( mLayer->crs().toProj4() );
+    mEPSG->setToolTip( mLayer->crs().toProj() );
   }
   else
   {
@@ -1905,7 +1905,7 @@ QString QgsGeorefPluginGui::generateGDALwarpCommand( const QString &resampling, 
   }
   else
   {
-    gdalCommand << QStringLiteral( "-t_srs \"%1\"" ).arg( mProjection.toProj4().simplified() );
+    gdalCommand << QStringLiteral( "-t_srs \"%1\"" ).arg( mProjection.toProj().simplified() );
   }
 
   gdalCommand << QStringLiteral( "\"%1\"" ).arg( mTranslatedRasterFileName ) << QStringLiteral( "\"%1\"" ).arg( mModifiedRasterFileName );

@@ -4317,12 +4317,49 @@ class TestQgsGeometry(unittest.TestCase):
         exp = 'Point(5 0)'
         result = linestring.interpolate(5).asWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001), "Interpolate: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        self.assertTrue(linestring.interpolate(25).isNull())
+
+        # multilinestring
+        linestring = QgsGeometry.fromWkt('MultiLineString((0 0, 10 0, 10 10),(20 0, 30 0, 30 10))')
+        exp = 'Point(5 0)'
+        result = linestring.interpolate(5).asWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "Interpolate: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        exp = 'Point(10 5)'
+        result = linestring.interpolate(15).asWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "Interpolate: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        exp = 'Point(10 10)'
+        result = linestring.interpolate(20).asWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "Interpolate: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        exp = 'Point(25 0)'
+        result = linestring.interpolate(25).asWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "Interpolate: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        exp = 'Point(30 0)'
+        result = linestring.interpolate(30).asWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "Interpolate: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        exp = 'Point(30 5)'
+        result = linestring.interpolate(35).asWkt()
+        self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "Interpolate: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        self.assertTrue(linestring.interpolate(50).isNull())
 
         # polygon
         polygon = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 20 20, 10 20, 0 0))')  # NOQA
         exp = 'Point(10 5)'
-        result = linestring.interpolate(15).asWkt()
+        result = polygon.interpolate(15).asWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
+                        "Interpolate: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+        self.assertTrue(polygon.interpolate(68).isNull())
+
+        # polygon with ring
+        polygon = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 20 20, 10 20, 0 0),(5 5, 6 5, 6 6, 5 6, 5 5))')  # NOQA
+        exp = 'Point (6 5.5)'
+        result = polygon.interpolate(68).asWkt()
+        self.assertTrue(compareWkt(result, exp, 0.1),
                         "Interpolate: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
     def testAngleAtVertex(self):

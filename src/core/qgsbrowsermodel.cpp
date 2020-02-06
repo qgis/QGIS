@@ -88,7 +88,9 @@ void QgsBrowserModel::addRootItems()
   updateProjectHome();
 
   // give the home directory a prominent third place
-  QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(), QStringLiteral( HOME_PREFIX ) + QDir::homePath() );
+  QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(),
+      QStringLiteral( HOME_PREFIX ) + QDir::homePath(),
+      QStringLiteral( "special:Home" ) );
   item->setSortKey( QStringLiteral( " 2" ) );
   setupItemConnections( item );
   mRootItems << item;
@@ -110,7 +112,7 @@ void QgsBrowserModel::addRootItems()
     if ( QgsDirectoryItem::hiddenPath( path ) )
       continue;
 
-    QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path );
+    QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, QString(), path, QStringLiteral( "special:Drives" ) );
     item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
     mDriveItems.insert( path, item );
 
@@ -120,7 +122,7 @@ void QgsBrowserModel::addRootItems()
 
 #ifdef Q_OS_MAC
   QString path = QString( "/Volumes" );
-  QgsDirectoryItem *vols = new QgsDirectoryItem( nullptr, path, path );
+  QgsDirectoryItem *vols = new QgsDirectoryItem( nullptr, path, QString(), path, QStringLiteral( "special:Volumes" ) );
   mRootItems << vols;
 #endif
 
@@ -140,6 +142,8 @@ void QgsBrowserModel::addRootItems()
     QgsDataItem *item = pr->createDataItem( QString(), nullptr );  // empty path -> top level
     if ( item )
     {
+      // make sure the top level key is set always
+      item->setProviderKey( pr->name() );
       // Forward the signal from the root items to the model (and then to the app)
       connect( item, &QgsDataItem::connectionsChanged, this, &QgsBrowserModel::connectionsChanged );
       QgsDebugMsgLevel( "Add new top level item : " + item->name(), 4 );
@@ -193,7 +197,6 @@ void QgsBrowserModel::initialize()
     mInitialized = true;
   }
 }
-
 
 Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex &index ) const
 {
@@ -262,6 +265,10 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
       return lyrItem->comments();
     }
     return QVariant();
+  }
+  else if ( role == QgsBrowserModel::ProviderKeyRole )
+  {
+    return item->providerKey();
   }
   else
   {

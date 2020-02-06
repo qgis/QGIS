@@ -26,7 +26,6 @@
 #include "qgis_gui.h"
 
 class QgsFeatureRequest;
-class QSignalMapper;
 class QgsMapLayerAction;
 class QgsScrollArea;
 class QgsFieldConditionalFormatWidget;

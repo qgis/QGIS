@@ -184,6 +184,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     json asJsonObject( int precision = 17 ) const override SIP_SKIP;
+    QString asKml( int precision = 17 ) const override;
 
     QgsRectangle boundingBox() const override;
 

@@ -57,6 +57,7 @@ QgsSettings provides some shortcuts to get/set namespaced settings from/to a spe
       Auth,
       App,
       Providers,
+      Expressions,
       Misc
     };
 

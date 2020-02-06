@@ -73,6 +73,7 @@ class TestQgsMapLayer : public QObject
     void layerRef();
     void layerRefListUtils();
     void layerRefResolveByIdOrNameOnly();
+    void layerRefResolveWeakly();
 
     void styleCategories();
 
@@ -305,6 +306,49 @@ void TestQgsMapLayer::layerRefResolveByIdOrNameOnly()
   QCOMPARE( ref.resolveByIdOrNameOnly( QgsProject::instance() ), vlB );
   // Cleanup
   QgsProject::instance()->removeAllMapLayers();
+}
+
+void TestQgsMapLayer::layerRefResolveWeakly()
+{
+  QgsVectorLayer *vlA = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "name" ), QStringLiteral( "memory" ) );
+  QgsVectorLayerRef ref;
+  QgsProject::instance()->addMapLayer( vlA );
+  ref.name = vlA->name();
+  QVERIFY( ! ref.resolveWeakly( QgsProject::instance() ) );
+  QVERIFY( ref.resolveWeakly( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) );
+
+  ref = QgsVectorLayerRef();
+  ref.name = QStringLiteral( "another name" );
+  QVERIFY( ! ref.resolveWeakly( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) );
+  ref.provider = vlA->providerType();
+  QVERIFY( ref.resolveWeakly( QgsProject::instance(), QgsVectorLayerRef::MatchType::Provider ) );
+
+  ref = QgsVectorLayerRef();
+  ref.name = QStringLiteral( "another name" );
+  QVERIFY( ! ref.resolveWeakly( QgsProject::instance(),
+                                static_cast<QgsVectorLayerRef::MatchType>( QgsVectorLayerRef::MatchType::Provider |
+                                    QgsVectorLayerRef::MatchType::Name ) ) );
+  ref.provider = vlA->providerType();
+  QVERIFY( ! ref.resolveWeakly( QgsProject::instance(),
+                                static_cast<QgsVectorLayerRef::MatchType>( QgsVectorLayerRef::MatchType::Provider |
+                                    QgsVectorLayerRef::MatchType::Name ) ) );
+  ref.name = vlA->name();
+  QVERIFY( ref.resolveWeakly( QgsProject::instance(),
+                              static_cast<QgsVectorLayerRef::MatchType>( QgsVectorLayerRef::MatchType::Provider |
+                                  QgsVectorLayerRef::MatchType::Name ) ) );
+
+  ref = QgsVectorLayerRef();
+  QVERIFY( ! ref.resolveWeakly( QgsProject::instance(),
+                                static_cast<QgsVectorLayerRef::MatchType>( QgsVectorLayerRef::MatchType::Source |
+                                    QgsVectorLayerRef::MatchType::Name ) ) );
+  ref.source = vlA->publicSource();
+  QVERIFY( ! ref.resolveWeakly( QgsProject::instance(),
+                                static_cast<QgsVectorLayerRef::MatchType>( QgsVectorLayerRef::MatchType::Source |
+                                    QgsVectorLayerRef::MatchType::Name ) ) );
+  ref.name = vlA->name();
+  QVERIFY( ref.resolveWeakly( QgsProject::instance(),
+                              static_cast<QgsVectorLayerRef::MatchType>( QgsVectorLayerRef::MatchType::Source |
+                                  QgsVectorLayerRef::MatchType::Name ) ) );
 }
 
 void TestQgsMapLayer::styleCategories()

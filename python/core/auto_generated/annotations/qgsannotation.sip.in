@@ -149,7 +149,8 @@ Sets the annotation's frame's offset (in pixels) from the mapPosition() referenc
 
 .. seealso:: :py:func:`frameOffsetFromReferencePoint`
 
-.. deprecated:: use setFrameOffsetFromReferencePointMm() instead
+.. deprecated::
+   use setFrameOffsetFromReferencePointMm() instead
 %End
 
  QPointF frameOffsetFromReferencePoint() const /Deprecated/;
@@ -158,7 +159,8 @@ Returns the annotation's frame's offset (in pixels) from the mapPosition() refer
 
 .. seealso:: :py:func:`setFrameOffsetFromReferencePoint`
 
-.. deprecated:: use frameOffsetFromReferencePointMm() instead
+.. deprecated::
+   use frameOffsetFromReferencePointMm() instead
 %End
 
     void setFrameOffsetFromReferencePointMm( QPointF offset );
@@ -186,7 +188,8 @@ the annotation's content is drawn).
 
 .. seealso:: :py:func:`frameSize`
 
-.. deprecated:: use setFrameSizeMm() instead
+.. deprecated::
+   use setFrameSizeMm() instead
 %End
 
  QSizeF frameSize() const /Deprecated/;
@@ -196,7 +199,8 @@ the annotation's content is drawn).
 
 .. seealso:: :py:func:`setFrameSize`
 
-.. deprecated:: use frameSizeMm() instead
+.. deprecated::
+   use frameSizeMm() instead
 %End
 
     void setFrameSizeMm( QSizeF size );

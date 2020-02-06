@@ -28,7 +28,7 @@ from ..Grass7Utils import isWindows
 def processInputs(alg, parameters, context, feedback):
     # Grab the projection from the input vector layer
     layer = alg.parameterAsLayer(parameters, 'input', context)
-    layerCrs = layer.crs().toProj4()
+    layerCrs = layer.crs().toProj()
 
     # Creates a new location with this Crs
     newLocation = 'newProj{}'.format(alg.uniqueSuffix)
@@ -49,7 +49,7 @@ def processInputs(alg, parameters, context, feedback):
     # Grab the projected Crs
     crs = alg.parameterAsCrs(parameters, 'crs', context)
     alg.commands.append('g.proj -c proj4="{}"'.format(
-        crs.toProj4(), newLocation))
+        crs.toProj(), newLocation))
 
     # Remove crs parameter
     alg.removeParameter('crs')

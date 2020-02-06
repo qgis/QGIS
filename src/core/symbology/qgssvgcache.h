@@ -119,9 +119,12 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * \param widthScaleFactor width scale factor
      * \param fitsInCache
      * \param fixedAspectRatio fixed aspect ratio (optional)
+     * \param blocking forces to wait for loading before returning image (optional). WARNING: the
+     * blocking parameter must NEVER be TRUE from GUI based applications (like the main QGIS
+     * application) or crashes will result. Only for use in external scripts or QGIS server.
      */
     QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                       double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0 );
+                       double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0, bool blocking = false );
 
     /**
      * Gets SVG  as QPicture&.
@@ -133,9 +136,12 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * \param widthScaleFactor width scale factor
      * \param forceVectorOutput
      * \param fixedAspectRatio fixed aspect ratio (optional)
+     * \param blocking forces to wait for loading before returning image (optional). WARNING: the
+     * blocking parameter must NEVER be TRUE from GUI based applications (like the main QGIS
+     * application) or crashes will result. Only for use in external scripts or QGIS server.
      */
     QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0 );
+                           double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0, bool blocking = false );
 
     /**
      * Calculates the viewbox size of a (possibly cached) SVG file.
@@ -146,17 +152,22 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * \param strokeWidth width of stroke
      * \param widthScaleFactor width scale factor
      * \param fixedAspectRatio fixed aspect ratio (optional)
+     * \param blocking forces to wait for loading before returning image (optional). WARNING: the
+     * blocking parameter must NEVER be TRUE from GUI based applications (like the main QGIS
+     * application) or crashes will result. Only for use in external scripts or QGIS server.
      * \returns viewbox size set in SVG file
      * \since QGIS 2.14
      */
     QSizeF svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0 );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false );
 
     /**
      * Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
-      default values in the svg file, only the first one is considered*/
+      default values in the svg file, only the first one is considered. Blocking forces to wait for loading before returning image (optional). WARNING: the
+      blocking parameter must NEVER be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for use in external
+      scripts or QGIS server.*/
     void containsParams( const QString &path, bool &hasFillParam, QColor &defaultFillColor, bool &hasStrokeParam, QColor &defaultStrokeColor, bool &hasStrokeWidthParam,
-                         double &defaultStrokeWidth ) const;
+                         double &defaultStrokeWidth, bool blocking = false ) const;
 
     /**
      * Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
@@ -177,6 +188,9 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
      * \param hasStrokeOpacityParam will be TRUE if stroke opacity param present in SVG
      * \param hasDefaultStrokeOpacity will be TRUE if stroke opacity param has a default value specified
      * \param defaultStrokeOpacity will be set to default stroke opacity specified in SVG, if present
+     * \param blocking forces to wait for loading before returning image (optional). WARNING: the
+     * blocking parameter must NEVER be TRUE from GUI based applications (like the main QGIS
+     * application) or crashes will result. Only for use in external scripts or QGIS server.
      * \note available in Python bindings as containsParamsV3
      * \since QGIS 2.14
      */
@@ -184,14 +198,42 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
                          bool &hasFillOpacityParam, bool &hasDefaultFillOpacity, double &defaultFillOpacity,
                          bool &hasStrokeParam, bool &hasDefaultStrokeColor, QColor &defaultStrokeColor,
                          bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
-                         bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const SIP_PYNAME( containsParamsV3 );
+                         bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity,
+                         bool blocking = false ) const SIP_PYNAME( containsParamsV3 );
 
-    //! Gets image data
-    QByteArray getImageData( const QString &path ) const;
+    /**
+     * Gets the SVG content corresponding to the given \a path.
+     *
+     * \a path may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+     *
+     * The class default missingContent byte array is returned if the \a path could not be resolved or is broken. If
+     * the \a path corresponds to a remote URL, then class default fetchingContent will be returned while the content
+     * is in the process of being fetched.
+     * The \a blocking boolean forces to wait for loading before returning result. The content is loaded
+     * in the same thread to ensure provided the remote content. WARNING: the \a blocking parameter must NEVER
+     * be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for
+     * use in external scripts or QGIS server.
+     */
+    QByteArray getImageData( const QString &path, bool blocking = false ) const;
 
     //! Gets SVG content
+
+    /**
+     * Gets the SVG content corresponding to the given \a path.
+     *
+     * \a path may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+     *
+     * The parameters \a size, \a strokeWidth for width of stroke, \a widthScaleFactor for width scale factor,
+     * \a fill for color of fill, \a stroke for color of stroke and \a fixedAspectRatio for fixed aspect ratio (optional)
+     * are needed to get the entry from cache or creates a new entry if it does not exist already.
+     *
+     * The \a blocking boolean forces to wait for loading before returning image. The content is loaded
+     * in the same thread to ensure provided the image. WARNING: the \a blocking parameter must NEVER
+     * be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for
+     * use in external scripts or QGIS server.
+     */
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                           double widthScaleFactor, double fixedAspectRatio = 0 );
+                           double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false );
 
   signals:
 
@@ -213,12 +255,12 @@ class CORE_EXPORT QgsSvgCache : public QgsAbstractContentCache< QgsSvgCacheEntry
 
   private:
 
-    void replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry );
+    void replaceParamsAndCacheSvg( QgsSvgCacheEntry *entry, bool blocking = false );
     void cacheImage( QgsSvgCacheEntry *entry );
     void cachePicture( QgsSvgCacheEntry *entry, bool forceVectorOutput = false );
     //! Returns entry from cache or creates a new entry if it does not exist already
     QgsSvgCacheEntry *cacheEntry( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
-                                  double widthScaleFactor, double fixedAspectRatio = 0 );
+                                  double widthScaleFactor, double fixedAspectRatio = 0, bool blocking = false );
 
     //! Replaces parameters in elements of a dom node and calls method for all child nodes
     void replaceElemParams( QDomElement &elem, const QColor &fill, const QColor &stroke, double strokeWidth );

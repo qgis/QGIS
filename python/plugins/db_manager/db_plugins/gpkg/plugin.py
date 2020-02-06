@@ -178,8 +178,7 @@ class GPKGDatabase(Database):
     def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, filter=""):
         from qgis.core import QgsVectorLayer
 
-        vl = QgsVectorLayer(self.uri().database(), layerName, 'ogr')
-        vl.setSubsetString(sql)
+        vl = QgsVectorLayer(self.uri().database() + '|subset=' + sql, layerName, 'ogr')
         return vl
 
     def supportsComment(self):

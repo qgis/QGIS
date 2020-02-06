@@ -32,6 +32,7 @@
 #include "qgis_app.h"
 
 class QgsLabelingWidget;
+class QgsMaskingWidget;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRendererPropertiesDialog;
@@ -141,6 +142,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsUndoWidget *mUndoWidget = nullptr;
     QgsMapLayer *mCurrentLayer = nullptr;
     QgsLabelingWidget *mLabelingWidget = nullptr;
+    QgsMaskingWidget *mMaskingWidget = nullptr;
 #ifdef HAVE_3D
     QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
     QgsMeshLayer3DRendererWidget *mMesh3DWidget = nullptr;

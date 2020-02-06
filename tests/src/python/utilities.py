@@ -107,8 +107,7 @@ def writeShape(theMemoryLayer, theFileName):
     myLayerOptions = []
     mySelectedOnlyFlag = False
     mySkipAttributesFlag = False
-    myGeoCrs = QgsCoordinateReferenceSystem()
-    myGeoCrs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+    myGeoCrs = QgsCoordinateReferenceSystem('EPSG:4326')
     myResult, myErrorMessage = QgsVectorFileWriter.writeAsVectorFormat(
         theMemoryLayer,
         myFileName,

@@ -180,7 +180,6 @@ bool QgsFontUtils::updateFontViaStyle( QFont &f, const QString &fontstyle, bool 
     // fallback to first style found that works
     if ( !foundmatch )
     {
-      const auto constFamily = fontDB.styles( f.family() );
       for ( const QString &style : constFamily )
       {
         styledfont = fontDB.font( f.family(), style, defaultSize );
@@ -435,7 +434,7 @@ QString QgsFontUtils::translateNamedStyle( const QString &namedStyle )
   QStringList words = namedStyle.split( ' ', QString::SkipEmptyParts );
   for ( int i = 0, n = words.length(); i < n; ++i )
   {
-    words[i] = QCoreApplication::translate( "QFontDatabase", words[i].toUtf8(), nullptr, QCoreApplication::UnicodeUTF8 );
+    words[i] = QCoreApplication::translate( "QFontDatabase", words[i].toLocal8Bit().constData() );
   }
   return words.join( QStringLiteral( " " ) );
 }

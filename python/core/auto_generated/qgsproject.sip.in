@@ -33,6 +33,21 @@ open within the main QGIS application.
 #include "qgsproject.h"
 %End
   public:
+
+    enum class ReadFlag
+    {
+      FlagDontResolveLayers,
+      FlagDontLoadLayouts,
+    };
+    typedef QFlags<QgsProject::ReadFlag> ReadFlags;
+
+
+    enum class FileFormat
+    {
+      Qgz,
+      Qgs,
+    };
+
     static QgsProject *instance();
 %Docstring
 Returns the QgsProject singleton instance
@@ -73,6 +88,24 @@ Returns the project's title.
    Since QGIS 3.2 this is just a shortcut to retrieving the title from the project's metadata().
 %End
 
+    QString saveUser() const;
+%Docstring
+Returns the user name that did the last save.
+
+.. seealso:: :py:func:`saveUserFullName`
+
+.. versionadded:: 3.12
+%End
+
+    QString saveUserFullName() const;
+%Docstring
+Returns the full user name that did the last save.
+
+.. seealso:: :py:func:`saveUser`
+
+.. versionadded:: 3.12
+%End
+
     bool isDirty() const;
 %Docstring
 Returns ``True`` if the project has been modified since the last write()
@@ -110,7 +143,8 @@ Returns QFileInfo object for the project's associated file.
 
 .. seealso:: :py:func:`fileName`
 
-.. deprecated:: since QGIS 3.2 use absoluteFilePath(), baseName() or lastModifiedTime() instead
+.. deprecated:: QGIS 3.2
+   use absoluteFilePath(), baseName() or lastModifiedTime() instead
 %End
 
     QgsProjectStorage *projectStorage() const;
@@ -233,14 +267,6 @@ Clears the project, removing all settings and resetting it back to an empty, def
 
 .. versionadded:: 2.4
 %End
-
-    enum ReadFlag
-    {
-      FlagDontResolveLayers,
-      FlagDontLoadLayouts,
-    };
-    typedef QFlags<QgsProject::ReadFlag> ReadFlags;
-
 
     bool read( const QString &filename, QgsProject::ReadFlags flags = 0 );
 %Docstring
@@ -549,7 +575,7 @@ an absolute path.
 
     QgsLayoutManager *layoutManager();
 %Docstring
-Returns the project's layout manager, which manages compositions within
+Returns the project's layout manager, which manages print layouts, atlases and reports within
 the project.
 
 .. versionadded:: 3.0
@@ -562,6 +588,25 @@ Returns the project's bookmark manager, which manages bookmarks within
 the project.
 
 .. versionadded:: 3.10
+%End
+
+
+    QgsProjectViewSettings *viewSettings();
+%Docstring
+Returns the project's view settings, which contains settings and properties
+relating to how a QgsProject should be viewed and behave inside a map canvas
+(e.g. map scales and default view extent)
+
+.. versionadded:: 3.10.1
+%End
+
+
+    QgsProjectDisplaySettings *displaySettings();
+%Docstring
+Returns the project's display settings, which settings and properties relating
+to how a QgsProject should display values such as map coordinates and bearings.
+
+.. versionadded:: 3.12
 %End
 
     QgsLayerTree *layerTreeRoot() const;
@@ -601,21 +646,24 @@ Returns pointer to the project's annotation manager.
 %Docstring
 Set a list of layers which should not be taken into account on map identification
 
-.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.setFlags() instead
 %End
 
  void setNonIdentifiableLayers( const QStringList &layerIds );
 %Docstring
 Set a list of layers which should not be taken into account on map identification
 
-.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.setFlags() instead
 %End
 
  QStringList nonIdentifiableLayers() const;
 %Docstring
 Gets the list of layers which currently should not be taken into account on map identification
 
-.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.setFlags() instead
 %End
 
     bool autoTransaction() const;
@@ -1048,7 +1096,8 @@ removed from the project. The set of layers may be configured by users in projec
 and it is mainly a hint for the user interface to protect users from removing layers that important
 in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
 
-.. deprecated:: since QGIS 3.4 use QgsMapLayer.flags() instead
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.flags() instead
 
 .. versionadded:: 3.2
 %End
@@ -1060,7 +1109,8 @@ removed from the project. The set of layers may be configured by users in projec
 and it is mainly a hint for the user interface to protect users from removing layers that important
 in the project. The removeMapLayer(), removeMapLayers() calls do not block removal of layers listed here.
 
-.. deprecated:: since QGIS 3.4 use QgsMapLayer.setFlags() instead
+.. deprecated:: QGIS 3.4
+   use QgsMapLayer.setFlags() instead
 
 .. versionadded:: 3.2
 %End
@@ -1074,7 +1124,43 @@ Sets the ``colors`` for the project's color scheme (see QgsProjectColorScheme).
 .. versionadded:: 3.6
 %End
 
-    void setMapScales( const QVector<double> &scales );
+    void setBackgroundColor( const QColor &color );
+%Docstring
+Sets the default background ``color`` used by default map canvases.
+
+.. seealso:: :py:func:`backgroundColor`
+
+.. versionadded:: 3.10
+%End
+
+    QColor backgroundColor() const;
+%Docstring
+Returns the default background color used by default map canvases.
+
+.. seealso:: :py:func:`setBackgroundColor`
+
+.. versionadded:: 3.10
+%End
+
+    void setSelectionColor( const QColor &color );
+%Docstring
+Sets the ``color`` used to highlight selected features.
+
+.. seealso:: :py:func:`selectionColor`
+
+.. versionadded:: 3.10
+%End
+
+    QColor selectionColor() const;
+%Docstring
+Returns the color used to highlight selected features
+
+.. seealso:: :py:func:`setSelectionColor`
+
+.. versionadded:: 3.10
+%End
+
+ void setMapScales( const QVector<double> &scales ) /Deprecated/;
 %Docstring
 Sets the list of custom project map ``scales``.
 
@@ -1085,10 +1171,11 @@ The ``scales`` list consists of a list of scale denominator values, e.g.
 
 .. seealso:: :py:func:`mapScalesChanged`
 
-.. versionadded:: 3.10
+.. deprecated::
+   Use viewSettings() instead
 %End
 
-    QVector<double> mapScales() const;
+ QVector<double> mapScales() const /Deprecated/;
 %Docstring
 Returns the list of custom project map scales.
 
@@ -1099,10 +1186,11 @@ The scales list consists of a list of scale denominator values, e.g.
 
 .. seealso:: :py:func:`mapScalesChanged`
 
-.. versionadded:: 3.10
+.. deprecated::
+   Use viewSettings() instead
 %End
 
-    void setUseProjectScales( bool enabled );
+ void setUseProjectScales( bool enabled ) /Deprecated/;
 %Docstring
 Sets whether project mapScales() are ``enabled``.
 
@@ -1110,10 +1198,11 @@ Sets whether project mapScales() are ``enabled``.
 
 .. seealso:: :py:func:`setMapScales`
 
-.. versionadded:: 3.10
+.. deprecated::
+   Use viewSettings() instead
 %End
 
-    bool useProjectScales() const;
+ bool useProjectScales() const /Deprecated/;
 %Docstring
 Returns ``True`` if project mapScales() are enabled.
 
@@ -1121,7 +1210,8 @@ Returns ``True`` if project mapScales() are enabled.
 
 .. seealso:: :py:func:`mapScales`
 
-.. versionadded:: 3.10
+.. deprecated::
+   Use viewSettings() instead
 %End
 
     void generateTsFile( const QString &locale );
@@ -1248,7 +1338,7 @@ Emitted when loading layers has produced some messages
 %Docstring
 Emitted when the list of layer which are excluded from map identification changes
 
-.. deprecated:: since QGIS 3.4
+.. deprecated:: QGIS 3.4
 %End
 
     void fileNameChanged();
@@ -1374,6 +1464,24 @@ Emitted whenever the project's color scheme has been changed.
 .. seealso:: :py:func:`setProjectColors`
 
 .. versionadded:: 3.6
+%End
+
+    void backgroundColorChanged();
+%Docstring
+Emitted whenever the project's canvas background color has been changed.
+
+.. seealso:: :py:func:`setBackgroundColor`
+
+.. versionadded:: 3.10
+%End
+
+    void selectionColorChanged();
+%Docstring
+Emitted whenever the project's selection color has been changed.
+
+.. seealso:: :py:func:`setSelectionColor`
+
+.. versionadded:: 3.10
 %End
 
 
@@ -1504,7 +1612,7 @@ Emitted when the project dirty status changes.
 %End
 
 
-    void mapScalesChanged();
+ void mapScalesChanged() /Deprecated/;
 %Docstring
 Emitted when the list of custom project map scales changes.
 
@@ -1512,7 +1620,8 @@ Emitted when the list of custom project map scales changes.
 
 .. seealso:: :py:func:`setMapScales`
 
-.. versionadded:: 3.10
+.. deprecated::
+   Use viewSettings() instead
 %End
 
   public slots:

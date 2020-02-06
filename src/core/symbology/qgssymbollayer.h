@@ -30,6 +30,7 @@
 #include "qgssymbol.h"
 #include "qgsfields.h"
 #include "qgspropertycollection.h"
+#include "qgspainteffect.h"
 
 class QPainter;
 class QSize;
@@ -38,7 +39,6 @@ class QPolygonF;
 class QgsDxfExport;
 class QgsExpression;
 class QgsRenderContext;
-class QgsPaintEffect;
 
 #ifndef SIP_RUN
 typedef QMap<QString, QString> QgsStringMap;
@@ -74,6 +74,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsRasterMarkerSymbolLayer;
         else if ( sipCpp->layerType() == "VectorField" )
           sipType = sipType_QgsVectorFieldSymbolLayer;
+        else if ( sipCpp->layerType() == "MaskMarker" )
+          sipType = sipType_QgsMaskMarkerSymbolLayer;
         else
           sipType = sipType_QgsMarkerSymbolLayer;
         break;
@@ -106,6 +108,8 @@ class CORE_EXPORT QgsSymbolLayer
           sipType = sipType_QgsGradientFillSymbolLayer;
         else if ( sipCpp->layerType() == "ShapeburstFill" )
           sipType = sipType_QgsShapeburstFillSymbolLayer;
+        else if ( sipCpp->layerType() == "RandomMarkerFill" )
+          sipType = sipType_QgsRandomMarkerFillSymbolLayer;
         else
           sipType = sipType_QgsFillSymbolLayer;
         break;
@@ -177,6 +181,10 @@ class CORE_EXPORT QgsSymbolLayer
       PropertyArrowType, //!< Arrow type
       PropertyOffsetX, //!< Horizontal offset
       PropertyOffsetY, //!< Vertical offset
+      PropertyPointCount, //!< Point count
+      PropertyRandomSeed, //!< Random number seed
+      PropertyClipPoints, //!< Whether markers should be clipped to polygon boundaries
+      PropertyDensityArea, //<! Density area
     };
 
     /**
@@ -245,8 +253,72 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QString layerType() const = 0;
 
+    /**
+     * Called before a set of rendering operations commences on the supplied render \a context.
+     *
+     * This is always followed by a call to stopRender() after all rendering operations
+     * have been completed.
+     *
+     * Subclasses can use this method to prepare for a set of rendering operations, e.g. by
+     * pre-evaluating paths or images to render, and performing other one-time optimisations.
+     *
+     * \see startFeatureRender()
+     * \see stopRender()
+     */
     virtual void startRender( QgsSymbolRenderContext &context ) = 0;
+
+    /**
+     * Called after a set of rendering operations has finished on the supplied render \a context.
+     *
+     * This is always preceded by a call to startRender() before all rendering operations
+     * are commenced.
+     *
+     * Subclasses can use this method to cleanup after a set of rendering operations.
+     *
+     * \see startRender()
+     * \see stopFeatureRender()
+     */
     virtual void stopRender( QgsSymbolRenderContext &context ) = 0;
+
+    /**
+     * Called before the layer will be rendered for a particular \a feature.
+     *
+     * This is always followed by a call to stopFeatureRender() after the feature
+     * has been completely rendered (i.e. all parts have been rendered).
+     *
+     * The default implementation does nothing.
+     *
+     * \note In some circumstances, startFeatureRender() and stopFeatureRender() may not be called
+     * before a symbol layer is rendered. E.g., when a symbol layer is being rendered in isolation
+     * and not as a result of rendering a feature (for instance, when rendering a legend patch or other
+     * non-feature based shape).
+     *
+     * \see stopFeatureRender()
+     * \see startRender()
+     *
+     * \since QGIS 3.12
+     */
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    /**
+     * Called after the layer has been rendered for a particular \a feature.
+     *
+     * This is always preceded by a call to startFeatureRender() just before the feature
+     * will be rendered.
+     *
+     * The default implementation does nothing.
+     *
+     * \note In some circumstances, startFeatureRender() and stopFeatureRender() may not be called
+     * before a symbol layer is rendered. E.g., when a symbol layer is being rendered in isolation
+     * and not as a result of rendering a feature (for instance, when rendering a legend patch or other
+     * non-feature based shape).
+     *
+     * \see startFeatureRender()
+     * \see stopRender()
+     *
+     * \since QGIS 3.12
+     */
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
 
     /**
      * Shall be reimplemented by subclasses to create a deep copy of the instance.
@@ -425,6 +497,13 @@ class CORE_EXPORT QgsSymbolLayer
      * \since QGIS 3.4.5
      */
     virtual bool hasDataDefinedProperties() const;
+
+    /**
+     * Returns masks defined by this symbol layer.
+     * This is a list of symbol layers of other layers that should be occluded.
+     * \since QGIS 3.12
+     */
+    virtual QgsSymbolLayerReferenceList masks() const;
 
   protected:
 

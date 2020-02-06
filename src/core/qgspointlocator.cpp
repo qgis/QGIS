@@ -526,10 +526,8 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
 ////////////////////////////////////////////////////////////////////////////
 
 
-QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destCRS, const QgsCoordinateTransformContext &transformContext, const QgsRectangle *extent,
-                                  bool asynchronous )
+QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destCRS, const QgsCoordinateTransformContext &transformContext, const QgsRectangle *extent )
   : mLayer( layer )
-  , mAsynchronous( asynchronous )
 {
   if ( destCRS.isValid() )
   {
@@ -550,6 +548,11 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
 
 QgsPointLocator::~QgsPointLocator()
 {
+  // don't delete a locator if there is an indexing task running on it
+  mIsDestroying = true;
+  if ( mIsIndexing )
+    waitForIndexingFinished();
+
   destroyIndex();
 }
 
@@ -588,28 +591,33 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
 
 }
 
-void QgsPointLocator::onInitTaskTerminated()
+void QgsPointLocator::onInitTaskFinished()
 {
+  // Check that we don't call this method twice, when calling waitForFinished
+  // for instance (because of taskCompleted signal)
+  if ( !mIsIndexing )
+    return;
+
+  if ( mIsDestroying )
+    return;
+
   mIsIndexing = false;
   mRenderer.reset();
   mSource.reset();
-}
-
-void QgsPointLocator::onRebuildIndexFinished( bool ok )
-{
-  onInitTaskTerminated();
 
   // treat added and deleted feature while indexing
   for ( QgsFeatureId fid : mAddedFeatures )
     onFeatureAdded( fid );
+  mAddedFeatures.clear();
 
   for ( QgsFeatureId fid : mDeletedFeatures )
     onFeatureDeleted( fid );
+  mDeletedFeatures.clear();
 
-  emit initFinished( ok );
+  emit initFinished( mInitTask->isBuildOK() );
 }
 
-bool QgsPointLocator::init( int maxFeaturesToIndex )
+bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
 {
   const QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QgsWkbTypes::NullGeometry // nothing to index
@@ -627,12 +635,12 @@ bool QgsPointLocator::init( int maxFeaturesToIndex )
 
   mIsIndexing = true;
 
-  if ( mAsynchronous )
+  if ( relaxed )
   {
-    QgsPointLocatorInitTask *task = new QgsPointLocatorInitTask( this );
-    connect( task, &QgsPointLocatorInitTask::rebuildIndexFinished, this, &QgsPointLocator::onRebuildIndexFinished );
-    connect( task, &QgsPointLocatorInitTask::taskTerminated, this, &QgsPointLocator::onInitTaskTerminated );
-    QgsApplication::taskManager()->addTask( task );
+    mInitTask = new QgsPointLocatorInitTask( this );
+    connect( mInitTask, &QgsPointLocatorInitTask::taskTerminated, this, &QgsPointLocator::onInitTaskFinished );
+    connect( mInitTask, &QgsPointLocatorInitTask::taskCompleted, this, &QgsPointLocator::onInitTaskFinished );
+    QgsApplication::taskManager()->addTask( mInitTask );
     return true;
   }
   else
@@ -644,20 +652,33 @@ bool QgsPointLocator::init( int maxFeaturesToIndex )
   }
 }
 
+void QgsPointLocator::waitForIndexingFinished()
+{
+  mInitTask->waitForFinished();
+
+  if ( !mIsDestroying )
+    onInitTaskFinished();
+}
+
 bool QgsPointLocator::hasIndex() const
 {
   return mIsIndexing || mRTree || mIsEmptyLayer;
 }
 
-bool QgsPointLocator::prepare()
+bool QgsPointLocator::prepare( bool relaxed )
 {
   if ( mIsIndexing )
-    return false;
+  {
+    if ( relaxed )
+      return false;
+    else
+      waitForIndexingFinished();
+  }
 
   if ( !mRTree )
   {
-    init();
-    if ( mIsIndexing || !mRTree ) // asynchronous mode and currently indexing or still invalid?
+    init( -1, relaxed );
+    if ( ( relaxed && mIsIndexing ) || !mRTree ) // relaxed mode and currently indexing or still invalid?
       return false;
   }
 
@@ -666,7 +687,7 @@ bool QgsPointLocator::prepare()
 
 bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 {
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   QgsDebugMsg( QStringLiteral( "RebuildIndex start : %1" ).arg( mSource->id() ) );
@@ -818,7 +839,11 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
   if ( !mRTree )
   {
     if ( mIsEmptyLayer )
-      init(); // first feature - let's built the index
+    {
+      // layer is not empty any more, let's build the index
+      mIsEmptyLayer = false;
+      init();
+    }
     return; // nothing to do if we are not initialized yet
   }
 
@@ -928,9 +953,9 @@ void QgsPointLocator::onAttributeValueChanged( QgsFeatureId fid, int idx, const 
 }
 
 
-QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, double tolerance, MatchFilter *filter )
+QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, double tolerance, MatchFilter *filter, bool relaxed )
 {
-  if ( !prepare() )
+  if ( !prepare( relaxed ) )
     return Match();
 
   Match m;
@@ -942,9 +967,9 @@ QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPointXY &point, 
   return m;
 }
 
-QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, double tolerance, MatchFilter *filter )
+QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, double tolerance, MatchFilter *filter, bool relaxed )
 {
-  if ( !prepare() )
+  if ( !prepare( relaxed ) )
     return Match();
 
   QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
@@ -960,9 +985,9 @@ QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPointXY &point, do
   return m;
 }
 
-QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, double tolerance, MatchFilter *filter )
+QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, double tolerance, MatchFilter *filter, bool relaxed )
 {
-  if ( !prepare() )
+  if ( !prepare( relaxed ) )
     return Match();
 
   MatchList mlist = pointInPolygon( point );
@@ -990,9 +1015,9 @@ QgsPointLocator::Match QgsPointLocator::nearestArea( const QgsPointXY &point, do
 }
 
 
-QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter )
+QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter, bool relaxed )
 {
-  if ( !prepare() )
+  if ( !prepare( relaxed ) )
     return MatchList();
 
   QgsWkbTypes::GeometryType geomType = mLayer->geometryType();
@@ -1006,15 +1031,15 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle &rec
   return lst;
 }
 
-QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter )
+QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter, bool relaxed )
 {
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
-  return edgesInRect( rect, filter );
+  return edgesInRect( rect, filter, relaxed );
 }
 
-QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter )
+QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter, bool relaxed )
 {
-  if ( !prepare() )
+  if ( !prepare( relaxed ) )
     return MatchList();
 
   MatchList lst;
@@ -1024,15 +1049,15 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle &
   return lst;
 }
 
-QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter )
+QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter, bool relaxed )
 {
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
-  return verticesInRect( rect, filter );
+  return verticesInRect( rect, filter, relaxed );
 }
 
-QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &point )
+QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &point, bool relaxed )
 {
-  if ( !prepare() )
+  if ( !prepare( relaxed ) )
     return MatchList();
 
   QgsWkbTypes::GeometryType geomType = mLayer->geometryType();

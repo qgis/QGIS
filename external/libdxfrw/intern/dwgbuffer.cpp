@@ -764,17 +764,20 @@ duint16 dwgBuffer::getObjType( DRW::Version v ) //OT
 * be followed by 3BD.
 * For R13-R14 this is 3BD.
 */
-DRW_Coord dwgBuffer::getExtrusion( bool b_R2000_style )
+DRW_Coord dwgBuffer::getExtrusion( bool b_R2000_style, bool &haveExtrusion )
 {
   DRW_Coord ext( 0.0, 0.0, 1.0 );
+  haveExtrusion = false;
   if ( b_R2000_style )
     /* If the bit is one, the extrusion value is assumed to be 0,0,1*/
     if ( getBit() == 1 )
       return ext;
+
   /*R13-R14 or bit == 0*/
   ext.x = getBitDouble();
   ext.y = getBitDouble();
   ext.z = getBitDouble();
+  haveExtrusion = ext.x != 0.0 || ext.y != 0.0 || ext.z != 1.0;
   return ext;
 }
 

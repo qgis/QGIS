@@ -2,7 +2,9 @@
 
 #set -e
 
-DIR=$(git rev-parse --show-toplevel)
+srcdir=$(dirname $0)/../../
+
+DIR=$(git -C ${srcdir} rev-parse --show-toplevel)
 
 # GNU prefix command for mac os support (gsed, gsplit)
 GP=

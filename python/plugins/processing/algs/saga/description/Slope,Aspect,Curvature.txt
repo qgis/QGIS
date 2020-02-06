@@ -6,13 +6,13 @@ QgsProcessingParameterEnum|UNIT_SLOPE|Slope Units|[0] radians;[1] degree;[2] per
 QgsProcessingParameterEnum|UNIT_ASPECT|Aspect Units|[0] radians;[1] degree|False|1
 QgsProcessingParameterRasterDestination|SLOPE|Slope
 QgsProcessingParameterRasterDestination|ASPECT|Aspect
-QgsProcessingParameterRasterDestination|C_GENE|General Curvature|None|True
-QgsProcessingParameterRasterDestination|C_PLAN|Plan Curvature|None|True|False
-QgsProcessingParameterRasterDestination|C_PROF|Profile Curvature|None|True|False
-QgsProcessingParameterRasterDestination|C_TANG|Tangential Curvature|None|True|False
-QgsProcessingParameterRasterDestination|C_LONG|Longitudinal Curvature|None|True|False
-QgsProcessingParameterRasterDestination|C_CROS|Cross-Sectional Curvature|None|True|False
-QgsProcessingParameterRasterDestination|C_MINI|Minimal Curvature|None|True|False
-QgsProcessingParameterRasterDestination|C_MAXI|Maximal Curvature|None|True|False
-QgsProcessingParameterRasterDestination|C_TOTA|Total Curvature|None|True|False
-QgsProcessingParameterRasterDestination|C_ROTO|Flow-Line Curvature|None|True|False
+QgsProcessingParameterRasterDestination|C_GENE|General Curvature
+QgsProcessingParameterRasterDestination|C_PLAN|Plan Curvature
+QgsProcessingParameterRasterDestination|C_PROF|Profile Curvature
+QgsProcessingParameterRasterDestination|C_TANG|Tangential Curvature
+QgsProcessingParameterRasterDestination|C_LONG|Longitudinal Curvature
+QgsProcessingParameterRasterDestination|C_CROS|Cross-Sectional Curvature
+QgsProcessingParameterRasterDestination|C_MINI|Minimal Curvature
+QgsProcessingParameterRasterDestination|C_MAXI|Maximal Curvature
+QgsProcessingParameterRasterDestination|C_TOTA|Total Curvature
+QgsProcessingParameterRasterDestination|C_ROTO|Flow-Line Curvature

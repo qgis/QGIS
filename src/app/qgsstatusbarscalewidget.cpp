@@ -24,6 +24,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsscalecombobox.h"
 #include "qgsproject.h"
+#include "qgsprojectviewsettings.h"
 
 QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QWidget( parent )
@@ -91,9 +92,9 @@ void QgsStatusBarScaleWidget::setFont( const QFont &font )
 
 void QgsStatusBarScaleWidget::updateScales()
 {
-  if ( QgsProject::instance()->useProjectScales() )
+  if ( QgsProject::instance()->viewSettings()->useProjectScales() )
   {
-    const QVector< double > scales = QgsProject::instance()->mapScales();
+    const QVector< double > scales = QgsProject::instance()->viewSettings()->mapScales();
     QStringList textScales;
     textScales.reserve( scales.size() );
     for ( double scale : scales )

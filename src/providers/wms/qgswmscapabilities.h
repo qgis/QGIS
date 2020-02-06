@@ -154,17 +154,38 @@ struct QgsWmsBoundingBoxProperty
   QgsRectangle   box;    // consumes minx, miny, maxx, maxy.
 };
 
-//! Dimension Property structure
-// TODO: Fill to WMS specifications
+/**
+ * \brief Dimension Property structure.
+ *
+ *  Contains the optional dimension element,
+ *  the element can be present in Service or Layer metadata
+ */
 struct QgsWmsDimensionProperty
 {
+  //! Name of the dimensional axis eg. time
   QString   name;
+
+  //! Units of the dimensional axis, defined from UCUM. Can be null.
   QString   units;
+
+  //! Optional, unit symbol a 7-bit ASCII character string also defined from UCUM.
   QString   unitSymbol;
+
+  //! Optional, default value to be used in GetMap request
   QString   defaultValue;   // plain "default" is a reserved word
-  bool      multipleValues;
-  bool      nearestValue;
-  bool      current;
+
+  //! Text containing available value(s) for the dimension
+  QString   extent;
+
+  //! Optional, determines whether multiple values of the dimension can be requested
+  bool      multipleValues = false;
+
+  //! Optional, whether nearest value of the dimension will be returned, if requested.
+  bool      nearestValue = false;
+
+  //! Optional, valid only for temporal exents, determines whether data are normally kept current.
+  bool      current = false;
+
 };
 
 //! Logo URL Property structure
@@ -283,6 +304,7 @@ struct QgsWmsLayerProperty
   QgsWmsAttributionProperty               attribution;
   QVector<QgsWmsAuthorityUrlProperty>     authorityUrl;
   QVector<QgsWmsIdentifierProperty>       identifier;
+  QVector<QgsWmsDimensionProperty>        dimensions;
   QVector<QgsWmsMetadataUrlProperty>      metadataUrl;
   QVector<QgsWmsDataListUrlProperty>      dataListUrl;
   QVector<QgsWmsFeatureListUrlProperty>   featureListUrl;
@@ -298,6 +320,20 @@ struct QgsWmsLayerProperty
   bool               noSubsets;
   int                fixedWidth;
   int                fixedHeight;
+
+  // TODO need to expand this to cover more of layer properties
+  bool equal( const QgsWmsLayerProperty &layerProperty )
+  {
+    if ( !( name == layerProperty.name ) )
+      return false;
+    if ( !( title == layerProperty.title ) )
+      return false;
+    if ( !( abstract == layerProperty.abstract ) )
+      return false;
+
+    return true;
+  }
+
 };
 
 struct QgsWmtsTheme
@@ -566,6 +602,8 @@ class QgsWmsSettings
     bool                    mTiled;
     //! whether we actually work with XYZ tiles instead of WMS / WMTS
     bool mXyz;
+    //! whether we are dealing with MBTiles file rather than using network-based tiles
+    bool mIsMBTiles = false;
     //! chosen values for dimensions in case of multi-dimensional data (key=dim id, value=dim value)
     QHash<QString, QString>  mTileDimensionValues;
     //! name of the chosen tile matrix set
@@ -680,33 +718,35 @@ class QgsWmsCapabilities
     int identifyCapabilities() const;
 
   protected:
-    bool parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty &capabilitiesProperty );
+    bool parseCapabilitiesDom( const QByteArray &xml, QgsWmsCapabilitiesProperty &capabilitiesProperty );
 
-    void parseService( QDomElement const &e, QgsWmsServiceProperty &serviceProperty );
-    void parseOnlineResource( QDomElement const &e, QgsWmsOnlineResourceAttribute &onlineResourceAttribute );
-    void parseKeywordList( QDomElement  const &e, QStringList &keywordListProperty );
-    void parseContactInformation( QDomElement const &e, QgsWmsContactInformationProperty &contactInformationProperty );
-    void parseContactPersonPrimary( QDomElement const &e, QgsWmsContactPersonPrimaryProperty &contactPersonPrimaryProperty );
-    void parseContactAddress( QDomElement const &e, QgsWmsContactAddressProperty &contactAddressProperty );
+    void parseService( const QDomElement &element, QgsWmsServiceProperty &serviceProperty );
+    void parseOnlineResource( const QDomElement &element, QgsWmsOnlineResourceAttribute &onlineResourceAttribute );
+    void parseKeywordList( const QDomElement &element, QStringList &keywordListProperty );
+    void parseContactInformation( const QDomElement &element, QgsWmsContactInformationProperty &contactInformationProperty );
+    void parseContactPersonPrimary( const QDomElement &element, QgsWmsContactPersonPrimaryProperty &contactPersonPrimaryProperty );
+    void parseContactAddress( const QDomElement &element, QgsWmsContactAddressProperty &contactAddressProperty );
 
-    void parseCapability( QDomElement const &e, QgsWmsCapabilityProperty &capabilityProperty );
-    void parseRequest( QDomElement const &e, QgsWmsRequestProperty &requestProperty );
-    void parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlProperty &legendUrlProperty );
-    void parseLayer( QDomElement const &e, QgsWmsLayerProperty &layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
-    void parseStyle( QDomElement const &e, QgsWmsStyleProperty &styleProperty );
+    void parseCapability( const QDomElement &element, QgsWmsCapabilityProperty &capabilityProperty );
+    void parseRequest( const QDomElement &element, QgsWmsRequestProperty &requestProperty );
+    void parseDimension( const QDomElement &element, QgsWmsDimensionProperty &dimensionProperty );
+    void parseLegendUrl( const QDomElement &element, QgsWmsLegendUrlProperty &legendUrlProperty );
+    void parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty );
+    void parseLayer( const QDomElement &element, QgsWmsLayerProperty &layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
+    void parseStyle( const QDomElement &element, QgsWmsStyleProperty &styleProperty );
 
-    void parseOperationType( QDomElement const &e, QgsWmsOperationType &operationType );
-    void parseDcpType( QDomElement const &e, QgsWmsDcpTypeProperty &dcpType );
-    void parseHttp( QDomElement const &e, QgsWmsHttpProperty &httpProperty );
-    void parseGet( QDomElement const &e, QgsWmsGetProperty &getProperty );
-    void parsePost( QDomElement const &e, QgsWmsPostProperty &postProperty );
+    void parseOperationType( const QDomElement &element, QgsWmsOperationType &operationType );
+    void parseDcpType( const QDomElement &element, QgsWmsDcpTypeProperty &dcpType );
+    void parseHttp( const QDomElement &element, QgsWmsHttpProperty &httpProperty );
+    void parseGet( const QDomElement &element, QgsWmsGetProperty &getProperty );
+    void parsePost( const QDomElement &element, QgsWmsPostProperty &postProperty );
 
-    void parseTileSetProfile( QDomElement const &e );
-    void parseWMTSContents( QDomElement const &e );
+    void parseTileSetProfile( const QDomElement &element );
+    void parseWMTSContents( const QDomElement &element );
     void parseKeywords( const QDomNode &e, QStringList &keywords );
     void parseTheme( const QDomElement &e, QgsWmtsTheme &t );
 
-    QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString() );
+    QString nodeAttribute( const QDomElement &element, const QString &name, const QString &defValue = QString() );
 
     /**
      * In case no bounding box is present in WMTS capabilities, try to estimate it from tile matrix sets.

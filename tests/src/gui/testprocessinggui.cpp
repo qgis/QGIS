@@ -63,6 +63,10 @@
 #include "mesh/qgsmeshdataprovider.h"
 #include "qgscolorbutton.h"
 #include "qgsprocessingparameterdefinitionwidget.h"
+#include "qgscoordinateoperationwidget.h"
+#include "qgsmessagebar.h"
+#include "qgsfieldcombobox.h"
+#include "qgsmapthemecollection.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -86,7 +90,7 @@ class TestParamType : public QgsProcessingParameterDefinition
 
 };
 
-class TestWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper
+class TestWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper // clazy:exclude=missing-qobject-macro
 {
   public:
 
@@ -178,6 +182,8 @@ class TestProcessingGui : public QObject
     void testMatrixDialog();
     void testMatrixWrapper();
     void testExpressionWrapper();
+    void testFieldSelectionPanel();
+    void testFieldWrapper();
     void testMultipleSelectionDialog();
     void testEnumSelectionPanel();
     void testEnumCheckboxPanel();
@@ -187,8 +193,10 @@ class TestProcessingGui : public QObject
     void testPointPanel();
     void testPointWrapper();
     void testColorWrapper();
+    void testCoordinateOperationWrapper();
     void mapLayerComboBox();
     void paramConfigWidget();
+    void testMapThemeWrapper();
 
   private:
 
@@ -415,6 +423,11 @@ void TestProcessingGui::testWrapperGeneral()
   QgsProcessingParameterWidgetContext widgetContext;
   widgetContext.setMapCanvas( mc.get() );
   QCOMPARE( widgetContext.mapCanvas(), mc.get() );
+
+  std::unique_ptr< QgsMessageBar > mb = qgis::make_unique< QgsMessageBar >();
+  widgetContext.setMessageBar( mb.get() );
+  QCOMPARE( widgetContext.messageBar(), mb.get() );
+
   QgsProject p;
   widgetContext.setProject( &p );
   QCOMPARE( widgetContext.project(), &p );
@@ -426,6 +439,7 @@ void TestProcessingGui::testWrapperGeneral()
 
   wrapper.setWidgetContext( widgetContext );
   QCOMPARE( wrapper.widgetContext().mapCanvas(), mc.get() );
+  QCOMPARE( wrapper.widgetContext().messageBar(), mb.get() );
   QCOMPARE( wrapper.widgetContext().model(), model.get() );
   QCOMPARE( wrapper.widgetContext().modelChildAlgorithmId(), QStringLiteral( "xx" ) );
 }
@@ -447,7 +461,7 @@ class TestProcessingContextGenerator : public QgsProcessingContextGenerator
 };
 
 
-class TestLayerWrapper : public QgsAbstractProcessingParameterWidgetWrapper
+class TestLayerWrapper : public QgsAbstractProcessingParameterWidgetWrapper // clazy:exclude=missing-qobject-macro
 {
   public:
     TestLayerWrapper( const QgsProcessingParameterDefinition *parameter = nullptr )
@@ -1974,6 +1988,28 @@ void TestProcessingGui::testRangeWrapper()
     QCOMPARE( wrapper2.parameterValue().toString(), QStringLiteral( "100,100" ) );
 
     delete w;
+
+    // optional
+    QgsProcessingParameterRange paramOptional( QStringLiteral( "range" ), QStringLiteral( "range" ), QgsProcessingParameterNumber::Double, QVariant(), true );
+
+    QgsProcessingRangeWidgetWrapper wrapperOptional( &paramOptional, type );
+
+    w = wrapperOptional.createWrappedWidget( context );
+    QCOMPARE( wrapperOptional.parameterValue().toString(), QStringLiteral( "None,None" ) );
+    wrapperOptional.setParameterValue( QStringLiteral( "1,100" ), context );
+    QCOMPARE( wrapperOptional.parameterValue().toString(), QStringLiteral( "1,100" ) );
+    wrapperOptional.setParameterValue( QStringLiteral( "None,100" ), context );
+    QCOMPARE( wrapperOptional.parameterValue().toString(), QStringLiteral( "None,100" ) );
+    wrapperOptional.setParameterValue( QStringLiteral( "1,None" ), context );
+    QCOMPARE( wrapperOptional.parameterValue().toString(), QStringLiteral( "1,None" ) );
+    wrapperOptional.setParameterValue( QStringLiteral( "None,None" ), context );
+    QCOMPARE( wrapperOptional.parameterValue().toString(), QStringLiteral( "None,None" ) );
+    wrapperOptional.setParameterValue( QStringLiteral( "None" ), context );
+    QCOMPARE( wrapperOptional.parameterValue().toString(), QStringLiteral( "None,None" ) );
+    wrapperOptional.setParameterValue( QVariant(), context );
+    QCOMPARE( wrapperOptional.parameterValue().toString(), QStringLiteral( "None,None" ) );
+
+    delete w;
   };
 
   // standard wrapper
@@ -2168,6 +2204,374 @@ void TestProcessingGui::testExpressionWrapper()
     QCOMPARE( wrapper2.mFieldExpWidget->layer()->publicSource(), pointFileName );
     // must be owned by wrapper, or layer may be deleted while still required by wrapper
     QCOMPARE( wrapper2.mParentLayer->publicSource(), pointFileName );
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testFieldSelectionPanel()
+{
+  QgsProcessingParameterField fieldParam( QString(), QString(), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true );
+  QgsProcessingFieldPanelWidget w( nullptr, &fieldParam );
+  QSignalSpy spy( &w, &QgsProcessingFieldPanelWidget::changed );
+
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 options selected" ) );
+  w.setValue( QStringLiteral( "aa" ) );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "aa" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "1 options selected" ) );
+
+  w.setValue( QVariantList() << QStringLiteral( "bb" ) << QStringLiteral( "aa" ) );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "bb" ) << QStringLiteral( "aa" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "2 options selected" ) );
+
+  w.setValue( QVariant() );
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( w.value().toList(), QVariantList() );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 options selected" ) );
+
+}
+
+void TestProcessingGui::testFieldWrapper()
+{
+  const QgsProcessingAlgorithm *centroidAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:centroids" ) );
+  const QgsProcessingParameterDefinition *layerDef = centroidAlg->parameterDefinition( QStringLiteral( "INPUT" ) );
+
+  auto testWrapper = [layerDef]( QgsProcessingGui::WidgetType type )
+  {
+    TestLayerWrapper layerWrapper( layerDef );
+    QgsProject p;
+    QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString?field=aaa:int&field=bbb:string" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+    p.addMapLayer( vl );
+
+    QgsProcessingParameterField param( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ) );
+
+    QgsProcessingFieldWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    ( void )w;
+    layerWrapper.setWidgetValue( QVariant::fromValue( vl ), context );
+    wrapper.setParentLayerWrapperValue( &layerWrapper );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingFieldWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "bbb" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(),  QStringLiteral( "bbb" ) );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsFieldComboBox * >( wrapper.wrappedWidget() )->currentField(),  QStringLiteral( "bbb" ) );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(),  QStringLiteral( "bbb" ) );
+        break;
+    }
+
+    wrapper.setWidgetValue( QString(), context );
+    QCOMPARE( spy.count(), 2 );
+    QVERIFY( wrapper.widgetValue().toString().isEmpty() );
+
+    delete w;
+
+    // optional
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, false, true );
+
+    QgsProcessingFieldWidgetWrapper wrapper2( &param, type );
+
+    w = wrapper2.createWrappedWidget( context );
+    layerWrapper.setWidgetValue( QVariant::fromValue( vl ), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QSignalSpy spy2( &wrapper2, &QgsProcessingFieldWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( QStringLiteral( "aaa" ), context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toString(),  QStringLiteral( "aaa" ) );
+
+    wrapper2.setWidgetValue( QString(), context );
+    QCOMPARE( spy2.count(), 2 );
+    QVERIFY( wrapper2.widgetValue().toString().isEmpty() );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsFieldComboBox * >( wrapper2.wrappedWidget() )->currentField(), QString() );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(),  QString() );
+        break;
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "field [optional]" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        static_cast< QgsFieldComboBox * >( wrapper2.wrappedWidget() )->setField( QStringLiteral( "bbb" ) );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->setText( QStringLiteral( "bbb" ) );
+        break;
+    }
+
+    QCOMPARE( spy2.count(), 3 );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper2.mComboBox->layer(), vl );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+
+    // should not be owned by wrapper
+    QVERIFY( !wrapper2.mParentLayer.get() );
+    layerWrapper.setWidgetValue( QVariant(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QVERIFY( !wrapper2.mComboBox->layer() );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+
+    layerWrapper.setWidgetValue( vl->id(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QVERIFY( !wrapper2.mComboBox->layer() );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    QVERIFY( !wrapper2.mParentLayer.get() );
+
+    // with project layer
+    context.setProject( &p );
+    TestProcessingContextGenerator generator( context );
+    wrapper2.registerProcessingContextGenerator( &generator );
+
+    layerWrapper.setWidgetValue( vl->id(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper2.mComboBox->layer(), vl );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    QVERIFY( !wrapper2.mParentLayer.get() );
+
+    // non-project layer
+    QString pointFileName = TEST_DATA_DIR + QStringLiteral( "/points.shp" );
+    layerWrapper.setWidgetValue( pointFileName, context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper2.mComboBox->layer()->publicSource(), pointFileName );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+
+    // must be owned by wrapper, or layer may be deleted while still required by wrapper
+    QCOMPARE( wrapper2.mParentLayer->publicSource(), pointFileName );
+
+    delete w;
+
+    // multiple
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true );
+
+    QgsProcessingFieldWidgetWrapper wrapper3( &param, type );
+
+    w = wrapper3.createWrappedWidget( context );
+    layerWrapper.setWidgetValue( QVariant::fromValue( vl ), context );
+    wrapper3.setParentLayerWrapperValue( &layerWrapper );
+    QSignalSpy spy3( &wrapper3, &QgsProcessingFieldWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "aaa" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toStringList(), QStringList() << QStringLiteral( "aaa" ) );
+
+    wrapper3.setWidgetValue( QString(), context );
+    QCOMPARE( spy3.count(), 2 );
+    QVERIFY( wrapper3.widgetValue().toString().isEmpty() );
+
+    wrapper3.setWidgetValue( QStringLiteral( "aaa;bbb" ), context );
+    QCOMPARE( spy3.count(), 3 );
+    QCOMPARE( wrapper3.widgetValue().toStringList(), QStringList() << QStringLiteral( "aaa" ) << QStringLiteral( "bbb" ) );
+
+    delete w;
+
+    // filtering fields
+    QgsFields f;
+    f.append( QgsField( QStringLiteral( "string" ), QVariant::String ) );
+    f.append( QgsField( QStringLiteral( "double" ), QVariant::Double ) );
+    f.append( QgsField( QStringLiteral( "int" ), QVariant::Int ) );
+    f.append( QgsField( QStringLiteral( "date" ), QVariant::Date ) );
+    f.append( QgsField( QStringLiteral( "time" ), QVariant::Time ) );
+    f.append( QgsField( QStringLiteral( "datetime" ), QVariant::DateTime ) );
+
+    QgsFields f2 = wrapper3.filterFields( f );
+    QCOMPARE( f2, f );
+
+    // string fields
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::String, false, true );
+    QgsProcessingFieldWidgetWrapper wrapper4( &param, type );
+    w = wrapper4.createWrappedWidget( context );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsFieldComboBox * >( wrapper4.wrappedWidget() )->filters(), QgsFieldProxyModel::String );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    f2 = wrapper4.filterFields( f );
+    QCOMPARE( f2.size(), 1 );
+    QCOMPARE( f2.at( 0 ).name(), QStringLiteral( "string" ) );
+    delete w;
+
+    // string, multiple
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::String, true, true );
+    QgsProcessingFieldWidgetWrapper wrapper4a( &param, type );
+    w = wrapper4a.createWrappedWidget( context );
+    wrapper4a.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper4a.mPanel->fields().count(), 1 );
+        QCOMPARE( wrapper4a.mPanel->fields().at( 0 ).name(), QStringLiteral( "bbb" ) );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    delete w;
+
+    // numeric fields
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Numeric, false, true );
+    QgsProcessingFieldWidgetWrapper wrapper5( &param, type );
+    w = wrapper5.createWrappedWidget( context );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsFieldComboBox * >( wrapper5.wrappedWidget() )->filters(), QgsFieldProxyModel::Numeric );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    f2 = wrapper5.filterFields( f );
+    QCOMPARE( f2.size(), 2 );
+    QCOMPARE( f2.at( 0 ).name(), QStringLiteral( "double" ) );
+    QCOMPARE( f2.at( 1 ).name(), QStringLiteral( "int" ) );
+
+    delete w;
+
+    // numeric, multiple
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Numeric, true, true );
+    QgsProcessingFieldWidgetWrapper wrapper5a( &param, type );
+    w = wrapper5a.createWrappedWidget( context );
+    wrapper5a.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper5a.mPanel->fields().count(), 1 );
+        QCOMPARE( wrapper5a.mPanel->fields().at( 0 ).name(), QStringLiteral( "aaa" ) );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    delete w;
+
+    // datetime fields
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::DateTime, false, true );
+    QgsProcessingFieldWidgetWrapper wrapper6( &param, type );
+    w = wrapper6.createWrappedWidget( context );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsFieldComboBox * >( wrapper6.wrappedWidget() )->filters(), QgsFieldProxyModel::Date | QgsFieldProxyModel::Time | QgsFieldProxyModel::DateTime );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    f2 = wrapper6.filterFields( f );
+    QCOMPARE( f2.size(), 3 );
+    QCOMPARE( f2.at( 0 ).name(), QStringLiteral( "date" ) );
+    QCOMPARE( f2.at( 1 ).name(), QStringLiteral( "time" ) );
+    QCOMPARE( f2.at( 2 ).name(), QStringLiteral( "datetime" ) );
+
+
+    // default to all fields
+    param = QgsProcessingParameterField( QStringLiteral( "field" ), QStringLiteral( "field" ), QVariant(), QStringLiteral( "INPUT" ), QgsProcessingParameterField::Any, true, true );
+    param.setDefaultToAllFields( true );
+    QgsProcessingFieldWidgetWrapper wrapper7( &param, type );
+    w = wrapper7.createWrappedWidget( context );
+    wrapper7.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper7.widgetValue().toList(), QVariantList() << QStringLiteral( "aaa" ) << QStringLiteral( "bbb" ) );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    delete w;
   };
 
   // standard wrapper
@@ -3260,6 +3664,118 @@ void TestProcessingGui::testColorWrapper()
   QVERIFY( !static_cast< QgsProcessingParameterColor * >( def.get() )->opacityEnabled() );
 }
 
+void TestProcessingGui::testCoordinateOperationWrapper()
+{
+#if PROJ_VERSION_MAJOR>=6
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingParameterCoordinateOperation param( QStringLiteral( "op" ), QStringLiteral( "op" ) );
+
+    QgsProcessingCoordinateOperationWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+    wrapper.setSourceCrsParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:26745" ) ) );
+    wrapper.setDestinationCrsParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingCoordinateOperationWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      {
+        QCOMPARE( static_cast< QgsCoordinateOperationWidget * >( wrapper.wrappedWidget() )->selectedOperation().proj, QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
+        wrapper.setWidgetValue( QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ), context );
+        QCOMPARE( spy.count(), 2 );
+        QCOMPARE( static_cast< QgsCoordinateOperationWidget * >( wrapper.wrappedWidget() )->selectedOperation().proj, QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
+
+        // check signal
+        QgsCoordinateOperationWidget::OperationDetails deets;
+        deets.proj = QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" );
+        static_cast< QgsCoordinateOperationWidget * >( wrapper.wrappedWidget() )->setSelectedOperation( deets );
+        QCOMPARE( spy.count(), 3 );
+        break;
+      }
+
+      case QgsProcessingGui::Modeler:
+      case QgsProcessingGui::Batch:
+      {
+        QCOMPARE( wrapper.mLineEdit->text(), QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
+        wrapper.setWidgetValue( QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ), context );
+        QCOMPARE( spy.count(), 2 );
+        QCOMPARE( wrapper.mLineEdit->text(), QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
+
+        // check signal
+        wrapper.mLineEdit->setText( QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
+        QCOMPARE( spy.count(), 3 );
+        break;
+      }
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "op" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  QgsProcessingContext context;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "coordinateoperation" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+
+  QVERIFY( !static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->sourceCrs().isValid() ); // should default to not set
+  QVERIFY( !static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->destinationCrs().isValid() ); // should default to not set
+  QVERIFY( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->sourceCrsParameterName().isEmpty() ); // should default to not set
+  QVERIFY( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->destinationCrsParameterName().isEmpty() ); // should default to not set
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterCoordinateOperation coordParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QStringLiteral( "+proj" ), QStringLiteral( "a" ), QStringLiteral( "b" ), QStringLiteral( "EPSG:26745" ), QStringLiteral( "EPSG:4326" ), false );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "coordinateoperation" ), context, widgetContext, &coordParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->defaultValue().toString(), QStringLiteral( "+proj" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->sourceCrsParameterName(), QStringLiteral( "a" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->destinationCrsParameterName(), QStringLiteral( "b" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->sourceCrs().value< QgsCoordinateReferenceSystem >( ).authid(), QStringLiteral( "EPSG:26745" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->destinationCrs().value< QgsCoordinateReferenceSystem >( ).authid(), QStringLiteral( "EPSG:4326" ) );
+  coordParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "coordinateoperation" ), context, widgetContext, &coordParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+#endif
+}
+
 void TestProcessingGui::mapLayerComboBox()
 {
   QgsProject::instance()->removeAllMapLayers();
@@ -3738,6 +4254,159 @@ void TestProcessingGui::paramConfigWidget()
   QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
   QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+}
+
+void TestProcessingGui::testMapThemeWrapper()
+{
+  // add some themes to the project
+  QgsProject p;
+  p.mapThemeCollection()->insert( QStringLiteral( "aa" ), QgsMapThemeCollection::MapThemeRecord() );
+  p.mapThemeCollection()->insert( QStringLiteral( "bb" ), QgsMapThemeCollection::MapThemeRecord() );
+
+  QCOMPARE( p.mapThemeCollection()->mapThemes(), QStringList() << QStringLiteral( "aa" ) << QStringLiteral( "bb" ) );
+
+  auto testWrapper = [&p]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional, no existing themes
+    QgsProcessingParameterMapTheme param( QStringLiteral( "theme" ), QStringLiteral( "theme" ), false );
+
+    QgsProcessingMapThemeWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingEnumWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "bb" ), context );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        // batch or standard mode, only valid themes can be set!
+        QCOMPARE( spy.count(), 0 );
+        QVERIFY( !wrapper.widgetValue().isValid() );
+        QCOMPARE( static_cast< QComboBox * >( wrapper.wrappedWidget() )->currentIndex(), -1 );
+        wrapper.setWidgetValue( QStringLiteral( "aa" ), context );
+        QCOMPARE( spy.count(), 0 );
+        QVERIFY( !wrapper.widgetValue().isValid() );
+        QCOMPARE( static_cast< QComboBox * >( wrapper.wrappedWidget() )->currentIndex(), -1 );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( spy.count(), 1 );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "bb" ) );
+        QCOMPARE( static_cast< QComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
+        wrapper.setWidgetValue( QStringLiteral( "aa" ), context );
+        QCOMPARE( spy.count(), 2 );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "aa" ) );
+        QCOMPARE( static_cast< QComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "aa" ) );
+        break;
+    }
+
+    delete w;
+
+    // with project
+    QgsProcessingParameterWidgetContext widgetContext;
+    widgetContext.setProject( &p );
+
+    QgsProcessingMapThemeWidgetWrapper wrapper2( &param, type );
+    wrapper2.setWidgetContext( widgetContext );
+    w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingEnumWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "bb" ) );
+    QCOMPARE( static_cast< QComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
+    wrapper2.setWidgetValue( QStringLiteral( "aa" ), context );
+    QCOMPARE( spy2.count(), 2 );
+    QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "aa" ) );
+    QCOMPARE( static_cast< QComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "aa" ) );
+
+    // check signal
+    static_cast< QComboBox * >( wrapper2.wrappedWidget() )->setCurrentIndex( 2 );
+    QCOMPARE( spy2.count(), 3 );
+
+    delete w;
+
+    // optional
+    QgsProcessingParameterMapTheme param2( QStringLiteral( "theme" ), QStringLiteral( "theme" ), true );
+    QgsProcessingMapThemeWidgetWrapper wrapper3( &param2, type );
+    wrapper3.setWidgetContext( widgetContext );
+    w = wrapper3.createWrappedWidget( context );
+
+    QSignalSpy spy3( &wrapper3, &QgsProcessingEnumWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toString(), QStringLiteral( "bb" ) );
+    QCOMPARE( static_cast< QComboBox * >( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
+    wrapper3.setWidgetValue( QStringLiteral( "aa" ), context );
+    QCOMPARE( spy3.count(), 2 );
+    QCOMPARE( wrapper3.widgetValue().toString(), QStringLiteral( "aa" ) );
+    QCOMPARE( static_cast< QComboBox * >( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "aa" ) );
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 3 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    delete w;
+
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "theme" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  widgetContext.setProject( &p );
+  QgsProcessingContext context;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "maptheme" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QVERIFY( !static_cast< QgsProcessingParameterMapTheme * >( def.get() )->defaultValue().isValid() );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterMapTheme themeParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QStringLiteral( "aaa" ), false );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "maptheme" ), context, widgetContext, &themeParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterMapTheme * >( def.get() )->defaultValue().toString(), QStringLiteral( "aaa" ) );
+  themeParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  themeParam.setDefaultValue( QStringLiteral( "xxx" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "maptheme" ), context, widgetContext, &themeParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterMapTheme * >( def.get() )->defaultValue().toString(), QStringLiteral( "xxx" ) );
+  themeParam.setDefaultValue( QVariant() );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "maptheme" ), context, widgetContext, &themeParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QVERIFY( !static_cast< QgsProcessingParameterMapTheme * >( def.get() )->defaultValue().isValid() );
 }
 
 void TestProcessingGui::cleanupTempDir()

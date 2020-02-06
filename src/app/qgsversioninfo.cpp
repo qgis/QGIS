@@ -32,12 +32,12 @@ void QgsVersionInfo::checkVersion()
 
 bool QgsVersionInfo::newVersionAvailable() const
 {
-  return mLatestVersion > Qgis::QGIS_VERSION_INT;
+  return mLatestVersion > Qgis::versionInt();
 }
 
 bool QgsVersionInfo::isDevelopmentVersion() const
 {
-  return Qgis::QGIS_VERSION_INT > mLatestVersion;
+  return Qgis::versionInt() > mLatestVersion;
 }
 
 void QgsVersionInfo::versionReplyFinished()

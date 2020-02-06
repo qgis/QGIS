@@ -134,7 +134,7 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
     void setCurrentStep( int step );
 
     void setProgressText( const QString &text ) override;
-    void reportError( const QString &error, bool fatalError ) override;
+    void reportError( const QString &error, bool fatalError = false ) override;
     void pushInfo( const QString &info ) override;
     void pushCommandInfo( const QString &info ) override;
     void pushDebugInfo( const QString &info ) override;

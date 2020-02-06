@@ -32,7 +32,7 @@ The layers can be filtered and/or ordered.
 
     void setFilters( QgsMapLayerProxyModel::Filters filters );
 %Docstring
-setFilters allows fitering according to layer type and/or geometry type.
+setFilters allows filtering according to layer type and/or geometry type.
 %End
 
     QgsMapLayerProxyModel::Filters filters() const;

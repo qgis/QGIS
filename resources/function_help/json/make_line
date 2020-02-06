@@ -4,7 +4,7 @@
   "description": "Creates a line geometry from a series of point geometries.",
   "variants": [
    { "variant": "List of arguments variant",
-     "variant_description": "Line vertices are specified as seperate arguments to the function.",
+     "variant_description": "Line vertices are specified as separate arguments to the function.",
      "variableLenArguments": true,
      "arguments": [
 	{"arg":"point1", "syntaxOnly": true},

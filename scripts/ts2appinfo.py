@@ -57,7 +57,7 @@ except AttributeError:
 
 app = QCoreApplication(argvb)
 
-for qm in glob(sys.argv[1] + "/output/i18n/qgis_*.qm"):
+for qm in sorted(glob(sys.argv[1] + "/output/i18n/qgis_*.qm")):
     translator = QTranslator()
     translator.load(qm)
 

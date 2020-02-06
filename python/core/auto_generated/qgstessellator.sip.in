@@ -66,6 +66,20 @@ Returns size of one vertex entry in bytes
 %End
 
 
+    float zMinimum() const;
+%Docstring
+Returns minimal Z value of the data (in world coordinates)
+
+.. versionadded:: 3.12
+%End
+
+    float zMaximum() const;
+%Docstring
+Returns maximal Z value of the data (in world coordinates)
+
+.. versionadded:: 3.12
+%End
+
 };
 
 /************************************************************************

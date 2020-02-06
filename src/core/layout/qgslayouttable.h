@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayoutmultiframe.h"
+#include "qgsconditionalstyle.h"
 #include <QFont>
 #include <QColor>
 #include <QPair>
@@ -30,7 +31,7 @@ class QgsLayoutTableColumn;
 /**
  * \ingroup core
  * List of QVariants, representing a the contents of a single row in
- * a QgsComposerTable
+ * a QgsLayoutTable
  * \since QGIS 3.0
 */
 typedef QVector< QVariant > QgsLayoutTableRow;
@@ -59,7 +60,7 @@ typedef QVector< QgsLayoutTableColumn * > QgsLayoutTableColumns;
 /**
  * \ingroup core
  *  \class QgsLayoutTableStyle
- *  \brief Styling option for a composer table cell
+ *  \brief Styling option for a layout table cell
  *  \since QGIS 3.0
  */
 
@@ -466,6 +467,13 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     virtual bool getTableContents( QgsLayoutTableContents &contents ) = 0;
 
     /**
+     * Returns the conditional style to use for the cell at \a row, \a column.
+     *
+     * \since QGIS 3.12
+     */
+    virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
+
+    /**
      * Returns the current contents of the table. Excludes header cells.
      */
     QgsLayoutTableContents &contents() { return mTableContents; }
@@ -675,6 +683,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     QColor backgroundColor( int row, int column ) const;
 
     friend class TestQgsLayoutTable;
+    friend class TestQgsLayoutManualTable;
     friend class QgsCompositionConverter;
 };
 

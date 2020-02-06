@@ -66,8 +66,8 @@ inline qint32 FID2PKINT( qint64 x )
 
 static bool tableExists( QgsPostgresConn &conn, const QString &name )
 {
-  QgsPostgresResult res( conn.PQexec( "SELECT COUNT(*) FROM information_schema.tables WHERE table_name=" + QgsPostgresConn::quotedValue( name ) ) );
-  return res.PQgetvalue( 0, 0 ).toInt() > 0;
+  QgsPostgresResult res( conn.PQexec( "SELECT EXISTS ( SELECT oid FROM pg_catalog.pg_class WHERE relname=" + QgsPostgresConn::quotedValue( name ) + ")" ) );
+  return res.PQgetvalue( 0, 0 ).startsWith( 't' );
 }
 
 static bool columnExists( QgsPostgresConn &conn, const QString &table, const QString &column )
@@ -349,6 +349,13 @@ void QgsPostgresProvider::setListening( bool isListening )
   }
 }
 
+void QgsPostgresProvider::reloadProviderData()
+{
+  mShared->setFeaturesCounted( -1 );
+  mLayerExtent.setMinimal();
+}
+
+
 QgsPostgresConn *QgsPostgresProvider::connectionRW()
 {
   if ( mTransaction )
@@ -365,6 +372,11 @@ QgsPostgresConn *QgsPostgresProvider::connectionRW()
 QgsTransaction *QgsPostgresProvider::transaction() const
 {
   return mTransaction;
+}
+
+QString QgsPostgresProvider::providerKey()
+{
+  return POSTGRES_KEY;
 }
 
 void QgsPostgresProvider::setTransaction( QgsTransaction *transaction )
@@ -1105,6 +1117,31 @@ bool QgsPostgresProvider::loadFields()
     }
 
     mAttrPalIndexName.insert( i, fieldName );
+    // If this is an identity field with constraints and there is no default, let's look for a sequence:
+    // we might have a default value created by a sequence named <table>_<field>_seq
+    if ( ! identityMap[tableoid ][ attnum ].isEmpty()
+         && notNullMap[tableoid][ attnum ]
+         && uniqueMap[tableoid][attnum]
+         && defValMap[tableoid][attnum].isEmpty() )
+    {
+      const QString seqName { mTableName + '_' + fieldName + QStringLiteral( "_seq" ) };
+      const QString seqSql { QStringLiteral( "SELECT c.oid "
+                                             "  FROM pg_class c "
+                                             "  LEFT JOIN pg_namespace n "
+                                             "    ON ( n.oid = c.relnamespace ) "
+                                             "  WHERE c.relkind = 'S' "
+                                             "    AND c.relname = %1 "
+                                             "    AND n.nspname = %2" )
+                             .arg( quotedValue( seqName ) )
+                             .arg( quotedValue( mSchemaName ) )
+                           };
+      QgsPostgresResult seqResult( connectionRO()->PQexec( seqSql ) );
+      if ( seqResult.PQntuples() == 1 )
+      {
+        defValMap[tableoid][attnum] = QStringLiteral( "nextval(%1::regclass)" ).arg( quotedIdentifier( seqName ) );
+      }
+    }
+
     mDefaultValues.insert( mAttributeFields.size(), defValMap[tableoid][attnum] );
 
     QgsField newField = QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment, fieldSubType );
@@ -1127,36 +1164,59 @@ bool QgsPostgresProvider::loadFields()
 
 void QgsPostgresProvider::setEditorWidgets()
 {
-  if ( tableExists( *connectionRO(), EDITOR_WIDGET_STYLES_TABLE ) )
+  if ( ! tableExists( *connectionRO(), EDITOR_WIDGET_STYLES_TABLE ) )
   {
-    for ( int i = 0; i < mAttributeFields.count(); ++i )
-    {
-      // CREATE TABLE qgis_editor_widget_styles (schema_name TEXT NOT NULL, table_name TEXT NOT NULL, field_name TEXT NOT NULL,
-      //                                         type TEXT NOT NULL, config TEXT,
-      //                                         PRIMARY KEY(schema_name, table_name, field_name));
-      QgsField &field = mAttributeFields[i];
-      const QString sql = QStringLiteral( "SELECT type, config FROM %1 WHERE schema_name = %2 and table_name = %3 and field_name = %4 LIMIT 1" ).
-                          arg( EDITOR_WIDGET_STYLES_TABLE, quotedValue( mSchemaName ), quotedValue( mTableName ), quotedValue( field.name() ) );
-      QgsPostgresResult result( connectionRO()->PQexec( sql ) );
-      for ( int i = 0; i < result.PQntuples(); ++i )
-      {
-        const QString type = result.PQgetvalue( i, 0 );
-        QVariantMap config;
-        if ( !result.PQgetisnull( i, 1 ) ) // Can be null and it's OK
-        {
-          const QString configTxt = result.PQgetvalue( i, 1 );
-          QDomDocument doc;
-          if ( doc.setContent( configTxt ) )
-          {
-            config = QgsXmlUtils::readVariant( doc.documentElement() ).toMap();
-          }
-          else
-          {
-            QgsMessageLog::logMessage( tr( "Cannot parse widget configuration for field %1.%2.%3\n" ).arg( mSchemaName, mTableName, field.name() ), tr( "PostGIS" ) );
-          }
-        }
+    return;
+  }
 
+  QStringList quotedFnames;
+  const QStringList fieldNames = mAttributeFields.names();
+  for ( const QString &name : fieldNames )
+  {
+    quotedFnames << quotedValue( name );
+  }
+
+  // We expect the table to be created like this:
+  //
+  // CREATE TABLE qgis_editor_widget_styles (schema_name TEXT NOT NULL, table_name TEXT NOT NULL, field_name TEXT NOT NULL,
+  //                                         type TEXT NOT NULL, config TEXT,
+  //                                         PRIMARY KEY(schema_name, table_name, field_name));
+  const QString sql = QStringLiteral( "SELECT field_name, type, config "
+                                      "FROM %1 WHERE schema_name = %2 "
+                                      "AND table_name = %3 "
+                                      "AND field_name IN ( %4 )" ) .
+                      arg( EDITOR_WIDGET_STYLES_TABLE, quotedValue( mSchemaName ),
+                           quotedValue( mTableName ), quotedFnames.join( "," ) );
+  QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+  for ( int i = 0; i < result.PQntuples(); ++i )
+  {
+    if ( result.PQgetisnull( i, 2 ) ) continue; // config can be null and it's OK
+
+    const QString &configTxt = result.PQgetvalue( i, 2 );
+    const QString &type = result.PQgetvalue( i, 1 );
+    const QString &fname = result.PQgetvalue( i, 0 );
+    QVariantMap config;
+    QDomDocument doc;
+    if ( doc.setContent( configTxt ) )
+    {
+      config = QgsXmlUtils::readVariant( doc.documentElement() ).toMap();
+    }
+    else
+    {
+      QgsMessageLog::logMessage(
+        tr( "Cannot parse widget configuration for field %1.%2.%3\n" )
+        .arg( mSchemaName, mTableName, fname ), tr( "PostGIS" )
+      );
+      continue;
+    }
+
+    // Set corresponding editor widget
+    for ( auto &field : mAttributeFields )
+    {
+      if ( field.name() == fname )
+      {
         field.setEditorWidgetSetup( QgsEditorWidgetSetup( type, config ) );
+        break;
       }
     }
   }
@@ -1847,18 +1907,39 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
   QgsPostgresResult domainResult( connectionRO()->PQexec( domainSql ) );
   if ( domainResult.PQresultStatus() == PGRES_TUPLES_OK && domainResult.PQntuples() > 0 && !domainResult.PQgetvalue( 0, 0 ).isNull() )
   {
-    //a domain type
-    QString domainCheckDefinitionSql = QStringLiteral( ""
-                                       "SELECT consrc FROM pg_constraint "
-                                       "  WHERE contypid =("
-                                       "    SELECT oid FROM pg_type "
-                                       "      WHERE typname = %1 "
-                                       "      AND typnamespace =("
-                                       "        SELECT oid FROM pg_namespace WHERE nspname = %2"
-                                       "      )"
-                                       "    )" )
-                                       .arg( quotedValue( domainResult.PQgetvalue( 0, 0 ) ) )
-                                       .arg( quotedValue( domainResult.PQgetvalue( 0, 1 ) ) );
+    QString domainCheckDefinitionSql;
+    if ( connectionRO()->pgVersion() < 120000 )
+    {
+      domainCheckDefinitionSql = QStringLiteral( ""
+                                 "SELECT consrc FROM pg_constraint "
+                                 "  WHERE contypid =("
+                                 "    SELECT oid FROM pg_type "
+                                 "      WHERE typname = %1 "
+                                 "      AND typnamespace =("
+                                 "        SELECT oid FROM pg_namespace WHERE nspname = %2"
+                                 "      )"
+                                 "    )" )
+                                 .arg( quotedValue( domainResult.PQgetvalue( 0, 0 ) ) )
+                                 .arg( quotedValue( domainResult.PQgetvalue( 0, 1 ) ) );
+
+    }
+    else
+    {
+      domainCheckDefinitionSql = QStringLiteral( ""
+                                 "SELECT pg_catalog.pg_get_constraintdef( ( "
+                                 "  SELECT oid FROM pg_constraint WHERE contypid = ( "
+                                 "    SELECT oid FROM pg_type "
+                                 "      WHERE typname = %1 "
+                                 "      AND typnamespace =("
+                                 "        SELECT oid FROM pg_namespace WHERE nspname = %2"
+                                 "      )"
+                                 "    )"
+                                 "  ), true );" )
+                                 .arg( quotedValue( domainResult.PQgetvalue( 0, 0 ) ) )
+                                 .arg( quotedValue( domainResult.PQgetvalue( 0, 1 ) ) );
+
+    }
+
     QgsPostgresResult domainCheckRes( connectionRO()->PQexec( domainCheckDefinitionSql ) );
     if ( domainCheckRes.PQresultStatus() == PGRES_TUPLES_OK && domainCheckRes.PQntuples() > 0 )
     {
@@ -1866,7 +1947,7 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
 
       //we assume that the constraint is of the following form:
       //(VALUE = ANY (ARRAY['a'::text, 'b'::text, 'c'::text, 'd'::text]))
-      //normally, PostgreSQL creates that if the contstraint has been specified as 'VALUE in ('a', 'b', 'c', 'd')
+      //normally, PostgreSQL creates that if the constraint has been specified as 'VALUE in ('a', 'b', 'c', 'd')
 
       int anyPos = checkDefinition.indexOf( QRegExp( "VALUE\\s*=\\s*ANY\\s*\\(\\s*ARRAY\\s*\\[" ) );
       int arrayPosition = checkDefinition.lastIndexOf( QLatin1String( "ARRAY[" ) );
@@ -3280,11 +3361,13 @@ bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFea
 
   if ( updateFeatureCount )
   {
-    mShared->setFeaturesCounted( -1 );
+    reloadData();
   }
-  mLayerExtent.setMinimal();
-
-  emit dataChanged();
+  else
+  {
+    mLayerExtent.setMinimal();
+    emit dataChanged();
+  }
 
   return true;
 }
@@ -3310,20 +3393,38 @@ long QgsPostgresProvider::featureCount() const
   // use estimated metadata even when there is a where clause,
   // although we get an incorrect feature count for the subset
   // - but make huge dataset usable.
+  long num = -1;
   if ( !mIsQuery && mUseEstimatedMetadata )
   {
-    sql = QStringLiteral( "SELECT reltuples::bigint FROM pg_catalog.pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
+    if ( connectionRO()->pgVersion() >= 90000 )
+    {
+      // parse explain output to estimate feature count
+      // we don't use pg_class reltuples because it returns 0 for view
+      sql = QStringLiteral( "EXPLAIN (FORMAT JSON) SELECT count(*) FROM %1%2" ).arg( mQuery, filterWhereClause() );
+      QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+
+      const QString json = result.PQgetvalue( 0, 0 );
+      const QVariantList explain = QgsJsonUtils::parseJson( json ).toList();
+      const QVariantMap countPlan = explain.count() ? explain[0].toMap().value( "Plan" ).toMap() : QVariantMap();
+      const QVariantList queryPlan = countPlan.value( "Plans" ).toList();
+      const QVariant nbRows = queryPlan.count() ? queryPlan[0].toMap().value( "Plan Rows" ) : QVariant();
+
+      if ( nbRows.isValid() )
+        num = nbRows.toInt();
+      else
+        QgsLogger::warning( QStringLiteral( "Cannot parse JSON explain result to estimate feature count (%1) : %2" ).arg( sql, json ) );
+    }
   }
   else
   {
     sql = QStringLiteral( "SELECT count(*) FROM %1%2" ).arg( mQuery, filterWhereClause() );
+    QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+
+    QgsDebugMsg( "number of features as text: " + result.PQgetvalue( 0, 0 ) );
+
+    num = result.PQgetvalue( 0, 0 ).toLong();
   }
 
-  QgsPostgresResult result( connectionRO()->PQexec( sql ) );
-
-  QgsDebugMsg( "number of features as text: " + result.PQgetvalue( 0, 0 ) );
-
-  long num = result.PQgetvalue( 0, 0 ).toLong();
   mShared->setFeaturesCounted( num );
 
   QgsDebugMsg( "number of features: " + QString::number( num ) );
@@ -3535,7 +3636,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     }
   }
 
-  QString detectedType;
+  QString detectedType = mRequestedGeomType == QgsWkbTypes::Unknown ? QString() : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
   QString detectedSrid = mRequestedSrid;
   if ( !schemaName.isEmpty() )
   {
@@ -3551,14 +3652,17 @@ bool QgsPostgresProvider::getGeometryDetails()
 
     if ( result.PQntuples() == 1 )
     {
-      detectedType = result.PQgetvalue( 0, 0 );
+      QString dt = result.PQgetvalue( 0, 0 );
+      if ( dt != "GEOMETRY" ) detectedType = dt;
+
       QString dim = result.PQgetvalue( 0, 2 );
       if ( dim == QLatin1String( "3" ) && !detectedType.endsWith( 'M' ) )
         detectedType += QLatin1String( "Z" );
       else if ( dim == QLatin1String( "4" ) )
         detectedType += QLatin1String( "ZM" );
 
-      detectedSrid = result.PQgetvalue( 0, 1 );
+      QString ds = result.PQgetvalue( 0, 1 );
+      if ( ds != "0" ) detectedSrid = ds;
       mSpatialColType = SctGeometry;
     }
     else
@@ -3580,8 +3684,10 @@ bool QgsPostgresProvider::getGeometryDetails()
 
       if ( result.PQntuples() == 1 )
       {
-        detectedType = result.PQgetvalue( 0, 0 );
-        detectedSrid = result.PQgetvalue( 0, 1 );
+        QString dt = result.PQgetvalue( 0, 0 );
+        if ( dt != "GEOMETRY" ) detectedType = dt;
+        QString ds = result.PQgetvalue( 0, 1 );
+        if ( ds != "0" ) detectedSrid = ds;
         mSpatialColType = SctGeography;
       }
       else
@@ -4262,7 +4368,9 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::crs() const
 {
   QgsCoordinateReferenceSystem srs;
   int srid = mRequestedSrid.isEmpty() ? mDetectedSrid.toInt() : mRequestedSrid.toInt();
-  srs.createFromSrid( srid );
+
+  // TODO QGIS 4 - move the logic from createFromSridInternal to sit within the postgres provider alone
+  srs.createFromPostgisSrid( srid );
   if ( !srs.isValid() )
   {
     static QMutex sMutex;
@@ -4273,11 +4381,14 @@ QgsCoordinateReferenceSystem QgsPostgresProvider::crs() const
     else
     {
       QgsPostgresConn *conn = connectionRO();
-      QgsPostgresResult result( conn->PQexec( QStringLiteral( "SELECT proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
-      if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+      if ( conn )
       {
-        srs = QgsCoordinateReferenceSystem::fromProj4( result.PQgetvalue( 0, 0 ) );
-        sCrsCache.insert( srid, srs );
+        QgsPostgresResult result( conn->PQexec( QStringLiteral( "SELECT proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( srid ) ) );
+        if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+        {
+          srs = QgsCoordinateReferenceSystem::fromProj( result.PQgetvalue( 0, 0 ) );
+          sCrsCache.insert( srid, srs );
+        }
       }
     }
   }
@@ -4343,11 +4454,10 @@ static void jumpSpace( const QString &txt, int &i )
 QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QString &sep )
 {
   jumpSpace( txt, i );
-  QString cur = txt.mid( i );
-  if ( cur.startsWith( '"' ) )
+  if ( i < txt.length() && txt.at( i ) == '"' )
   {
     QRegExp stringRe( "^\"((?:\\\\.|[^\"\\\\])*)\".*" );
-    if ( !stringRe.exactMatch( cur ) )
+    if ( !stringRe.exactMatch( txt.mid( i ) ) )
     {
       QgsMessageLog::logMessage( tr( "Cannot find end of double quoted string: %1" ).arg( txt ), tr( "PostGIS" ) );
       return QString();
@@ -4364,14 +4474,17 @@ QString QgsPostgresProvider::getNextString( const QString &txt, int &i, const QS
   }
   else
   {
-    int sepPos = cur.indexOf( sep );
-    if ( sepPos < 0 )
+    int start = i;
+    for ( ; i < txt.length(); i++ )
     {
-      i += cur.length();
-      return cur.trimmed();
+      if ( txt.midRef( i ).startsWith( sep ) )
+      {
+        QStringRef r( txt.midRef( start, i - start ) );
+        i += sep.length();
+        return r.trimmed().toString();
+      }
     }
-    i += sepPos + sep.length();
-    return cur.left( sepPos ).trimmed();
+    return txt.midRef( start, i - start ).trimmed().toString();
   }
 }
 
@@ -4734,10 +4847,10 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                                          ",styleSLD xml"
                                          ",useAsDefault boolean"
                                          ",description text"
-                                         ",owner varchar(63)"
+                                         ",owner varchar(63) DEFAULT CURRENT_USER"
                                          ",ui xml"
                                          ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
-                                         ",type varchar(30)"
+                                         ",type varchar"
                                          ")" ) );
     if ( res.PQresultStatus() != PGRES_COMMAND_OK )
     {
@@ -4750,7 +4863,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
   {
     if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
     {
-      QgsPostgresResult res( conn->PQexec( "ALTER TABLE layer_styles ADD COLUMN type varchar(30) NULL" ) );
+      QgsPostgresResult res( conn->PQexec( "ALTER TABLE layer_styles ADD COLUMN type varchar NULL" ) );
       if ( res.PQresultStatus() != PGRES_COMMAND_OK )
       {
         errCause = QObject::tr( "Unable to add column type to layer_styles table. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
@@ -4792,7 +4905,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                 .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
                 .arg( useAsDefault ? "true" : "false" )
                 .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
-                .arg( QgsPostgresConn::quotedValue( dsUri.username() ) )
+                .arg( "CURRENT_USER" )
                 .arg( uiFileColumn )
                 .arg( uiFileValue )
                 .arg( wkbTypeString )
@@ -4815,7 +4928,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                        .arg( wkbTypeString )
                        .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
 
-  QgsPostgresResult res( conn->PQexec( checkQuery ) );
+  res = conn->PQexec( checkQuery );
   if ( res.PQntuples() > 0 )
   {
     if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
@@ -4843,7 +4956,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
           .arg( useAsDefault ? "true" : "false" )
           .arg( wkbTypeString )
           .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
-          .arg( QgsPostgresConn::quotedValue( dsUri.username() ) )
+          .arg( "CURRENT_USER" )
           .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
@@ -5260,7 +5373,35 @@ QgsPostgresProviderMetadata::QgsPostgresProviderMetadata()
 {
 }
 
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsPostgresProviderMetadata();
+}
+#endif
+
+
+QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri )
+{
+  const QgsDataSourceUri dsUri { uri };
+  return
+  {
+    { QStringLiteral( "dbname" ), dsUri.database() },
+    { QStringLiteral( "host" ), dsUri.host() },
+    { QStringLiteral( "port" ), dsUri.port() },
+    { QStringLiteral( "service" ), dsUri.service() },
+    { QStringLiteral( "username" ), dsUri.username() },
+    { QStringLiteral( "password" ), dsUri.password() },
+    { QStringLiteral( "authcfg" ), dsUri.authConfigId() },
+    { QStringLiteral( "type" ), dsUri.wkbType() },
+    { QStringLiteral( "selectatid" ), dsUri.selectAtIdDisabled() },
+    { QStringLiteral( "table" ), dsUri.table() },
+    { QStringLiteral( "schema" ), dsUri.schema() },
+    { QStringLiteral( "key" ), dsUri.keyColumn() },
+    { QStringLiteral( "srid" ), dsUri.srid() },
+    { QStringLiteral( "estimatedmetadata" ), dsUri.useEstimatedMetadata() },
+    { QStringLiteral( "sslmode" ), dsUri.sslMode() },
+    { QStringLiteral( "sql" ), dsUri.sql() },
+    { QStringLiteral( "geometrycolumn" ), dsUri.geometryColumn() },
+  };
 }

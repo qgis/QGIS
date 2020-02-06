@@ -57,6 +57,7 @@ namespace QgsWcs
     }
 #else
     doc = createDescribeCoverageDocument( serverIface, project, version, request );
+    describeDocument = &doc;
 #endif
     response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
     response.write( describeDocument->toByteArray() );

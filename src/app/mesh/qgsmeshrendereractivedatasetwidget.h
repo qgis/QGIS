@@ -21,6 +21,7 @@
 #include "qgsmeshdataprovider.h"
 
 #include <QWidget>
+#include <QIcon>
 
 class QgsMeshLayer;
 
@@ -39,10 +40,11 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
   public:
 
     /**
-     * A widget to hold the renderer scalar settings for a mesh layer.
+    mTimeComboBox->setCurrentIndex( mTimeComboBox->count() - 1 );     * A widget to hold the renderer scalar settings for a mesh layer.
      * \param parent Parent object
      */
     QgsMeshRendererActiveDatasetWidget( QWidget *parent = nullptr );
+    ~QgsMeshRendererActiveDatasetWidget() override;
 
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );
@@ -82,7 +84,8 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
     void onPreviousTimeClicked();
     void onNextTimeClicked();
     void onLastTimeClicked();
-
+    void onDatasetPlaybackClicked();
+    void datasetPlaybackTick();
     QString metadata( QgsMeshDatasetIndex datasetIndex );
 
   private:
@@ -99,6 +102,8 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
     int mActiveVectorDatasetGroup = -1;
     QgsMeshDatasetIndex mActiveScalarDataset;
     QgsMeshDatasetIndex mActiveVectorDataset;
+    bool mDatasetIsPlaying = false;
+    QTimer *mDatasetPlaybackTimer = nullptr;
 };
 
 #endif // QGSMESHRENDERERSCALARSETTINGSWIDGET_H

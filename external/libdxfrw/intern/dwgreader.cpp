@@ -1187,6 +1187,7 @@ bool dwgReader::readDwgEntity( dwgBuffer *dbuf, objHandle &obj, DRW_Interface &i
 #define ENTRY_PARSE(e) \
   ret = e.parseDwg(version, &buff, bs); \
   parseAttribs(&e); \
+  e.applyExtrusion(); \
   nextEntLink = e.nextEntLink; \
   prevEntLink = e.prevEntLink;
 
@@ -1426,11 +1427,15 @@ bool dwgReader::readDwgEntity( dwgBuffer *dbuf, objHandle &obj, DRW_Interface &i
       intfa.addPolyline( e );
       break;
     }
-//        case 30: {
-//            DRW_Polyline e;// MESH (not pline)
-//            ENTRY_PARSE(e)
-//            intfa.addRay(e);
-//            break; }
+#if 0
+    case 30:
+    {
+      DRW_Polyline e;// MESH (not pline)
+      ENTRY_PARSE( e )
+      intfa.addRay( e );
+      break;
+    }
+#endif
     case 41:
     {
       DRW_Xline e;

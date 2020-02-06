@@ -44,6 +44,11 @@ class CORE_EXPORT QgsRelationManager : public QObject
     explicit QgsRelationManager( QgsProject *project = nullptr );
 
     /**
+     * Gets the relation context
+     */
+    QgsRelationContext context() const;
+
+    /**
      * Will set the specified relations and remove any relation currently set.
      *
      * \param relations A list of relations to set.
@@ -121,7 +126,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * \returns A list of relations where the specified layer is the referenced part.
      */
-    QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = nullptr ) const;
+    QList<QgsRelation> referencedRelations( const QgsVectorLayer *layer = nullptr ) const;
 
     /**
      * Discover all the relations available from the current layers.

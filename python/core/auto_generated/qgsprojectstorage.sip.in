@@ -103,7 +103,8 @@ Returns human-readable name of the storage. Used as the menu item text in QGIS. 
 indicates that the storage does not implement GUI support (showLoadGui() and showSaveGui()).
 The name may be translatable and ideally unique as well.
 
-.. deprecated:: since QGIS 3.10 - use QgsProjectStorageGuiProvider for GUI-related project storage functionality
+.. deprecated:: QGIS 3.10
+   - use QgsProjectStorageGuiProvider for GUI-related project storage functionality
 %End
 
  virtual QString showLoadGui() /Deprecated/;
@@ -111,7 +112,8 @@ The name may be translatable and ideally unique as well.
 Opens GUI to allow user to select a project to be loaded (GUI specific to this storage type).
 Returns project URI if user has picked a project or empty string if the GUI was canceled.
 
-.. deprecated:: since QGIS 3.10 - use QgsProjectStorageGuiProvider for GUI-related project storage functionality
+.. deprecated:: QGIS 3.10
+   - use QgsProjectStorageGuiProvider for GUI-related project storage functionality
 %End
 
  virtual QString showSaveGui() /Deprecated/;
@@ -119,7 +121,8 @@ Returns project URI if user has picked a project or empty string if the GUI was 
 Opens GUI to allow user to select where a project should be saved (GUI specific to this storage type).
 Returns project URI if user has picked a destination or empty string if the GUI was canceled.
 
-.. deprecated:: since QGIS 3.10 - use QgsProjectStorageGuiProvider for GUI-related project storage functionality
+.. deprecated:: QGIS 3.10
+   - use QgsProjectStorageGuiProvider for GUI-related project storage functionality
 %End
 
 };

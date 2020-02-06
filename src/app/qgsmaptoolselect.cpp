@@ -23,6 +23,7 @@
 #include "qgspointxy.h"
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 #include <QMouseEvent>
 #include <QRect>
@@ -63,10 +64,54 @@ void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent *e )
   mSelectionHandler->canvasReleaseEvent( e );
 }
 
+void QgsMapToolSelect::keyPressEvent( QKeyEvent *e )
+{
+  if ( !e->isAutoRepeat() )
+  {
+    switch ( e->key() )
+    {
+      case Qt::Key_Shift:
+      case Qt::Key_Control:
+      case Qt::Key_Alt:
+      case Qt::Key_Meta:
+        //note -- if ctrl and shift are already depressed, pressing alt reports the "meta" key eventZ
+        modifiersChanged( e->modifiers() & Qt::ControlModifier || e->key() == Qt::Key_Control,
+                          e->modifiers() & Qt::ShiftModifier || e->key() == Qt::Key_Shift,
+                          e->modifiers() & Qt::AltModifier || e->key() == Qt::Key_Alt ||
+                          ( e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier && e->key() == Qt::Key_Meta ) );
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  QgsMapTool::keyPressEvent( e );
+}
+
 void QgsMapToolSelect::keyReleaseEvent( QKeyEvent *e )
 {
   if ( mSelectionHandler->keyReleaseEvent( e ) )
     return;
+
+  if ( !e->isAutoRepeat() )
+  {
+    switch ( e->key() )
+    {
+      case Qt::Key_Shift:
+      case Qt::Key_Control:
+      case Qt::Key_Alt:
+      case Qt::Key_Meta:
+        modifiersChanged( e->modifiers() & Qt::ControlModifier && e->key() != Qt::Key_Control,
+                          e->modifiers() & Qt::ShiftModifier && e->key() != Qt::Key_Shift,
+                          e->modifiers() & Qt::AltModifier && e->key() != Qt::Key_Alt &&
+                          !( e->modifiers() & Qt::ControlModifier && e->modifiers() & Qt::ShiftModifier && e->key() == Qt::Key_Meta ) );
+        break;
+
+      default:
+        break;
+    }
+  }
 
   QgsMapTool::keyReleaseEvent( e );
 }
@@ -88,4 +133,24 @@ void QgsMapToolSelect::selectFeatures( Qt::KeyboardModifiers modifiers )
   }
   else
     QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers );
+}
+
+void QgsMapToolSelect::modifiersChanged( bool ctrlModifier, bool shiftModifier, bool altModifier )
+{
+  if ( !ctrlModifier && !shiftModifier && !altModifier )
+    emit modeChanged( GeometryIntersectsSetSelection );
+  else if ( !ctrlModifier && !shiftModifier && altModifier )
+    emit modeChanged( GeometryWithinSetSelection );
+  else if ( !ctrlModifier && shiftModifier && !altModifier )
+    emit modeChanged( GeometryIntersectsAddToSelection );
+  else if ( !ctrlModifier && shiftModifier && altModifier )
+    emit modeChanged( GeometryWithinAddToSelection );
+  else if ( ctrlModifier && !shiftModifier && !altModifier )
+    emit modeChanged( GeometryIntersectsSubtractFromSelection );
+  else if ( ctrlModifier && !shiftModifier && altModifier )
+    emit modeChanged( GeometryWithinSubtractFromSelection );
+  else if ( ctrlModifier && shiftModifier && !altModifier )
+    emit modeChanged( GeometryIntersectsIntersectWithSelection );
+  else if ( ctrlModifier && shiftModifier && altModifier )
+    emit modeChanged( GeometryWithinIntersectWithSelection );
 }

@@ -25,8 +25,17 @@ class QgsSymbolLevelItem
 %End
   public:
     QgsSymbolLevelItem( QgsSymbol *symbol, int layer );
-    QgsSymbol *symbol();
-    int layer();
+
+    QgsSymbol *symbol() const;
+%Docstring
+The symbol of this symbol level
+%End
+
+    int layer() const;
+%Docstring
+The layer of this symbol level
+%End
+
   protected:
 };
 

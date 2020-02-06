@@ -36,6 +36,12 @@ class QgsPhongMaterialSettings;
 class QgsTerrainEntity;
 class QgsTerrainTileEntity;
 
+namespace Qt3DRender
+{
+  class QTexture2D;
+}
+
+
 
 /**
  * \ingroup 3d
@@ -54,10 +60,14 @@ class QgsTerrainTileLoader : public QgsChunkLoader
   protected:
     //! Starts asynchronous rendering of map texture
     void loadTexture();
+    //! Creates a new texture thaht is linked to the entity
+    Qt3DRender::QTexture2D *createTexture( QgsTerrainTileEntity *entity );
     //! Creates material component for the entity with the rendered map as a texture
     void createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial );
     //! Gives access to the terain entity
     QgsTerrainEntity *terrain() { return mTerrain; }
+
+
 
   private slots:
     void onImageReady( int jobId, const QImage &image );
@@ -68,6 +78,7 @@ class QgsTerrainTileLoader : public QgsChunkLoader
     QString mTileDebugText;
     int mTextureJobId = -1;
     QImage mTextureImage;
+
 };
 
 /// @endcond

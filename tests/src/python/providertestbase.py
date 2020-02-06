@@ -353,6 +353,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertAlmostEqual(provider_extent.yMinimum(), 66.33, 3)
         self.assertAlmostEqual(provider_extent.yMaximum(), 78.3, 3)
 
+    def testExtentSubsetString(self):
         if self.source.supportsSubsetString():
             # with only one point
             subset = self.getSubsetString3()
@@ -414,7 +415,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         if self.source.supportsSubsetString():
             subset = self.getSubsetString2()
             self.source.setSubsetString(subset)
-            values = self.source.uniqueStringsMatching(2, 'a')
+            values = self.source.uniqueStringsMatching(field_index, 'a')
             self.source.setSubsetString(None)
             self.assertEqual(set(values), set(['Pear', 'Apple']))
 

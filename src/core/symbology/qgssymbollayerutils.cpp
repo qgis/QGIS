@@ -33,6 +33,8 @@
 #include "qgsunittypes.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgseffectstack.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgsrenderer.h"
 
 #include <QColor>
 #include <QFont>
@@ -638,6 +640,12 @@ QgsUnitTypes::RenderUnit QgsSymbolLayerUtils::decodeSldUom( const QString &str, 
       *scaleFactor = 304.8; // from feet to meters
     return QgsUnitTypes::RenderMapUnits;
   }
+  else if ( str == QLatin1String( "http://www.opengeospatial.org/se/units/pixel" ) )
+  {
+    if ( scaleFactor )
+      *scaleFactor = 1.0; // from pixels to pixels
+    return QgsUnitTypes::RenderPixels;
+  }
 
   // pixel is the SLD default uom. The "standardized rendering pixel
   // size" is defined to be 0.28mm x 0.28mm (millimeters).
@@ -874,7 +882,7 @@ QPixmap QgsSymbolLayerUtils::colorRampPreviewPixmap( QgsColorRamp *ramp, QSize s
   //draw stippled background, for transparent images
   drawStippledBackground( &painter, QRect( padding, padding, size.width() - padding * 2, size.height() - padding  * 2 ) );
 
-  // antialising makes the colors duller, and no point in antialiasing a color ramp
+  // antialiasing makes the colors duller, and no point in antialiasing a color ramp
   // painter.setRenderHint( QPainter::Antialiasing );
   for ( int i = 0; i < size.width(); i++ )
   {
@@ -1181,7 +1189,7 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
 
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
   {
-    const QgsSymbolLayer *layer = const_cast< QgsSymbol * >( symbol )->symbolLayer( i );
+    const QgsSymbolLayer *layer = symbol->symbolLayer( i );
 
     QDomElement layerEl = doc.createElement( QStringLiteral( "layer" ) );
     layerEl.setAttribute( QStringLiteral( "class" ), layer->layerType() );
@@ -1228,7 +1236,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
     QgsWkbTypes::GeometryType geomType,
     QgsSymbolLayerList &layers )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   if ( element.isNull() )
     return false;
@@ -1250,7 +1258,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
       switch ( geomType )
       {
         case QgsWkbTypes::PolygonGeometry:
-          // polygon layer and point symbolizer: draw poligon centroid
+          // polygon layer and point symbolizer: draw polygon centroid
           l = QgsApplication::symbolLayerRegistry()->createSymbolLayerFromSld( QStringLiteral( "CentroidFill" ), element );
           if ( l )
             layers.append( l );
@@ -1628,7 +1636,7 @@ bool QgsSymbolLayerUtils::needSvgFill( QDomElement &element )
 
 bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerList &layerList )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   /* SE 1.1 says about PolygonSymbolizer:
   if a point geometry is referenced instead of a polygon,
@@ -1935,7 +1943,7 @@ void QgsSymbolLayerUtils::fillToSld( QDomDocument &doc, QDomElement &element, Qt
 
 bool QgsSymbolLayerUtils::fillFromSld( QDomElement &element, Qt::BrushStyle &brushStyle, QColor &color )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   brushStyle = Qt::SolidPattern;
   color = QColor( 128, 128, 128 );
@@ -2076,7 +2084,7 @@ bool QgsSymbolLayerUtils::lineFromSld( QDomElement &element,
                                        Qt::PenJoinStyle *penJoinStyle, Qt::PenCapStyle *penCapStyle,
                                        QVector<qreal> *customDashPattern, double *dashOffset )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   penStyle = Qt::SolidLine;
   color = QColor( 0, 0, 0 );
@@ -2252,7 +2260,7 @@ void QgsSymbolLayerUtils::parametricSvgToSld( QDomDocument &doc, QDomElement &gr
 
 QString QgsSymbolLayerUtils::getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth )
 {
-  QUrl url = QUrl();
+  QUrlQuery url;
   if ( fillColor.isValid() )
   {
     url.addQueryItem( QStringLiteral( "fill" ), fillColor.name() );
@@ -2274,7 +2282,7 @@ QString QgsSymbolLayerUtils::getSvgParametricPath( const QString &basePath, cons
     url.addQueryItem( QStringLiteral( "outline-opacity" ), QStringLiteral( "1" ) );
   }
   url.addQueryItem( QStringLiteral( "outline-width" ), QString::number( strokeWidth ) );
-  QString params = url.encodedQuery();
+  QString params = url.toString( QUrl::FullyEncoded );
   if ( params.isEmpty() )
   {
     return basePath;
@@ -2289,7 +2297,7 @@ bool QgsSymbolLayerUtils::externalGraphicFromSld( QDomElement &element,
     QString &path, QString &mime,
     QColor &color, double &size )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
   Q_UNUSED( color )
 
   QDomElement externalGraphicElem = element.firstChildElement( QStringLiteral( "ExternalGraphic" ) );
@@ -2344,7 +2352,7 @@ bool QgsSymbolLayerUtils::externalMarkerFromSld( QDomElement &element,
     QString &path, QString &format, int &markIndex,
     QColor &color, double &size )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   color = QColor();
   markIndex = -1;
@@ -2424,7 +2432,7 @@ bool QgsSymbolLayerUtils::wellKnownMarkerFromSld( QDomElement &element,
     QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle,
     double &strokeWidth, double &size )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   name = QStringLiteral( "square" );
   color = QColor();
@@ -2811,7 +2819,7 @@ void QgsSymbolLayerUtils::createOnlineResourceElement( QDomDocument &doc, QDomEl
 
 bool QgsSymbolLayerUtils::onlineResourceFromSldElement( QDomElement &element, QString &path, QString &format )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   QDomElement onlineResourceElem = element.firstChildElement( QStringLiteral( "OnlineResource" ) );
   if ( onlineResourceElem.isNull() )
@@ -4404,4 +4412,64 @@ double QgsSymbolLayerUtils::sizeInPixelsFromSldUom( const QString &uom, double s
   }
 
   return size * scale;
+}
+
+QSet<const QgsSymbolLayer *> QgsSymbolLayerUtils::toSymbolLayerPointers( QgsFeatureRenderer *renderer, const QSet<QgsSymbolLayerId> &symbolLayerIds )
+{
+  class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
+  {
+    public:
+      SymbolLayerVisitor( const QSet<QgsSymbolLayerId> &layerIds )
+        : mSymbolLayerIds( layerIds )
+      {}
+
+      bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
+      {
+        if ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule )
+        {
+          mCurrentRuleKey = node.identifier;
+          return true;
+        }
+        return false;
+      }
+
+      void visitSymbol( const QgsSymbol *symbol, const QString &identifier, QVector<int> rootPath )
+      {
+        for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+        {
+          QVector<int> indexPath = rootPath;
+          indexPath.append( idx );
+          const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+          if ( mSymbolLayerIds.contains( QgsSymbolLayerId( mCurrentRuleKey + identifier, indexPath ) ) )
+          {
+            mSymbolLayers.insert( sl );
+          }
+
+          const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
+          if ( subSymbol )
+            visitSymbol( subSymbol, identifier, indexPath );
+        }
+      }
+
+      bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
+      {
+        if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
+        {
+          auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
+          if ( symbolEntity->symbol() )
+          {
+            visitSymbol( symbolEntity->symbol(), leaf.identifier, {} );
+          }
+        }
+        return true;
+      }
+
+      QString mCurrentRuleKey;
+      const QSet<QgsSymbolLayerId> &mSymbolLayerIds;
+      QSet<const QgsSymbolLayer *> mSymbolLayers;
+  };
+
+  SymbolLayerVisitor visitor( symbolLayerIds );
+  renderer->accept( &visitor );
+  return visitor.mSymbolLayers;
 }

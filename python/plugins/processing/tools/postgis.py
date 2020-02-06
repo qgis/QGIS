@@ -385,6 +385,10 @@ class GeoDB(object):
         schema_where = (" AND nspname='%s' "
                         % self._quote_unicode(schema) if schema is not None else ''
                         )
+
+        version_number = int(self.get_info().split(' ')[1].split('.')[0])
+        ad_col_name = 'adsrc' if version_number < 12 else 'adbin'
+
         sql = """SELECT a.attnum AS ordinal_position,
                         a.attname AS column_name,
                         t.typname AS data_type,
@@ -392,7 +396,7 @@ class GeoDB(object):
                         a.atttypmod AS modifier,
                         a.attnotnull AS notnull,
                         a.atthasdef AS hasdefault,
-                        adef.adsrc AS default_value
+                        adef.%s AS default_value
               FROM pg_class c
               JOIN pg_attribute a ON a.attrelid = c.oid
               JOIN pg_type t ON a.atttypid = t.oid
@@ -403,7 +407,7 @@ class GeoDB(object):
                   c.relname = '%s' %s AND
                   a.attnum > 0
               ORDER BY a.attnum""" \
-              % (self._quote_unicode(table), schema_where)
+              % (ad_col_name, self._quote_unicode(table), schema_where)
 
         self._exec_sql(c, sql)
         attrs = []
@@ -443,8 +447,12 @@ class GeoDB(object):
         schema_where = (" AND nspname='%s' "
                         % self._quote_unicode(schema) if schema is not None else ''
                         )
+
+        version_number = int(self.get_info().split(' ')[1].split('.')[0])
+        con_col_name = 'consrc' if version_number < 12 else 'conbin'
+
         sql = """SELECT c.conname, c.contype, c.condeferrable, c.condeferred,
-                        array_to_string(c.conkey, ' '), c.consrc, t2.relname,
+                        array_to_string(c.conkey, ' '), c.%s, t2.relname,
                         c.confupdtype, c.confdeltype, c.confmatchtype,
                         array_to_string(c.confkey, ' ')
               FROM pg_constraint c
@@ -452,7 +460,7 @@ class GeoDB(object):
               LEFT JOIN pg_class t2 ON c.confrelid = t2.oid
               JOIN pg_namespace nsp ON t.relnamespace = nsp.oid
               WHERE t.relname = '%s' %s """ \
-              % (self._quote_unicode(table), schema_where)
+              % (con_col_name, self._quote_unicode(table), schema_where)
 
         self._exec_sql(c, sql)
 

@@ -22,6 +22,7 @@
 #include "qgsmeshrendererscalarsettingswidget.h"
 #include "qgsmeshdatasetgrouptreeview.h"
 #include "qgsmeshrendereractivedatasetwidget.h"
+#include "qgsmeshlayerutils.h"
 
 QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -42,6 +43,7 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
   mNativeMeshSettingsWidget->setLayer( mMeshLayer, false );
   mTriangularMeshSettingsWidget->setLayer( mMeshLayer, true );
   mMeshRendererVectorSettingsWidget->setLayer( mMeshLayer );
+  m3dAveragingSettingsWidget->setLayer( mMeshLayer );
   syncToLayer();
 
   //blend mode
@@ -64,6 +66,7 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
            this, &QgsPanelWidget::widgetChanged );
   connect( mTriangularMeshSettingsWidget, &QgsMeshRendererMeshSettingsWidget::widgetChanged,
            this, &QgsPanelWidget::widgetChanged );
+  connect( m3dAveragingSettingsWidget, &QgsMeshRenderer3dAveragingWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
 }
 
 void QgsRendererMeshPropertiesWidget::apply()
@@ -105,7 +108,9 @@ void QgsRendererMeshPropertiesWidget::apply()
 
   //set the blend mode for the layer
   mMeshLayer->setBlendMode( mBlendModeComboBox->blendMode() );
-
+  //set the averaging method for the layer
+  std::unique_ptr<QgsMesh3dAveragingMethod> averagingMethod( m3dAveragingSettingsWidget->averagingMethod() );
+  settings.setAveragingMethod( averagingMethod.get() );
   mMeshLayer->setRendererSettings( settings );
   mMeshLayer->triggerRepaint();
 }
@@ -115,6 +120,7 @@ void QgsRendererMeshPropertiesWidget::syncToLayer()
   mMeshRendererActiveDatasetWidget->syncToLayer();
   mNativeMeshSettingsWidget->syncToLayer();
   mTriangularMeshSettingsWidget->syncToLayer();
+  m3dAveragingSettingsWidget->syncToLayer();
 
   mNativeMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().nativeMeshSettings().isEnabled() : false );
   mTriangularMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().triangularMeshSettings().isEnabled() : false );

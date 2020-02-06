@@ -22,7 +22,7 @@ static MDAL_Status sLastStatus;
 
 const char *MDAL_Version()
 {
-  return "0.3.3";
+  return "0.5.0";
 }
 
 MDAL_Status MDAL_LastStatus()
@@ -81,15 +81,29 @@ bool MDAL_DR_meshLoadCapability( DriverH driver )
   return d->hasCapability( MDAL::Capability::ReadMesh );
 }
 
-bool MDAL_DR_writeDatasetsCapability( DriverH driver )
+bool MDAL_DR_writeDatasetsCapability( DriverH driver, MDAL_DataLocation location )
 {
   if ( !driver )
   {
     sLastStatus = MDAL_Status::Err_MissingDriver;
     return false;
   }
+
+
   MDAL::Driver *d = static_cast< MDAL::Driver * >( driver );
-  return d->hasCapability( MDAL::Capability::WriteDatasets );
+  return d->hasWriteDatasetCapability( location );
+}
+
+bool MDAL_DR_saveMeshCapability( DriverH driver )
+{
+  if ( !driver )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriver;
+    return false;
+  }
+
+  MDAL::Driver *d = static_cast< MDAL::Driver * >( driver );
+  return d->hasCapability( MDAL::Capability::SaveMesh );
 }
 
 const char *MDAL_DR_longName( DriverH driver )
@@ -141,6 +155,39 @@ MeshH MDAL_LoadMesh( const char *meshFile )
 
   std::string filename( meshFile );
   return static_cast< MeshH >( MDAL::DriverManager::instance().load( filename, &sLastStatus ).release() );
+}
+
+void MDAL_SaveMesh( MeshH mesh, const char *meshFile, const char *driver )
+{
+  if ( !meshFile )
+  {
+    sLastStatus = MDAL_Status::Err_FileNotFound;
+    return;
+  }
+
+  std::string driverName( driver );
+  auto d = MDAL::DriverManager::instance().driver( driver );
+
+  if ( !d )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriver;
+    return;
+  }
+
+  if ( !d->hasCapability( MDAL::Capability::SaveMesh ) )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriverCapability;
+    return;
+  }
+
+  if ( d->faceVerticesMaximumCount() < MDAL_M_faceVerticesMaximumCount( mesh ) )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleMesh;
+    return;
+  }
+
+  std::string filename( meshFile );
+  MDAL::DriverManager::instance().save( static_cast< MDAL::Mesh * >( mesh ), filename, driverName, &sLastStatus );
 }
 
 
@@ -283,7 +330,7 @@ DatasetGroupH MDAL_M_datasetGroup( MeshH mesh, int index )
 DatasetGroupH MDAL_M_addDatasetGroup(
   MeshH mesh,
   const char *name,
-  bool isOnVertices,
+  MDAL_DataLocation dataLocation,
   bool hasScalarData,
   DriverH driver,
   const char *datasetGroupFile )
@@ -315,7 +362,7 @@ DatasetGroupH MDAL_M_addDatasetGroup(
   MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
   MDAL::Driver *dr = static_cast< MDAL::Driver * >( driver );
 
-  if ( !dr->hasCapability( MDAL::Capability::WriteDatasets ) )
+  if ( !dr->hasWriteDatasetCapability( dataLocation ) )
   {
     sLastStatus = MDAL_Status::Err_MissingDriverCapability;
     return nullptr;
@@ -324,7 +371,7 @@ DatasetGroupH MDAL_M_addDatasetGroup(
   const size_t index = m->datasetGroups.size();
   dr->createDatasetGroup( m,
                           name,
-                          isOnVertices,
+                          dataLocation,
                           hasScalarData,
                           datasetGroupFile
                         );
@@ -557,15 +604,27 @@ bool MDAL_G_hasScalarData( DatasetGroupH group )
   return g->isScalar();
 }
 
-bool MDAL_G_isOnVertices( DatasetGroupH group )
+MDAL_DataLocation MDAL_G_dataLocation( DatasetGroupH group )
 {
   if ( !group )
   {
     sLastStatus = MDAL_Status::Err_IncompatibleDataset;
-    return true;
+    return DataInvalidLocation;
   }
   MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
-  return g->isOnVertices();
+  return g->dataLocation();
+}
+
+int MDAL_G_maximumVerticalLevelCount( DatasetGroupH group )
+{
+  if ( !group )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    return 0;
+  }
+  MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
+  int len = static_cast<int>( g->maximumVerticalLevelsCount() );
+  return len;
 }
 
 void MDAL_G_minimumMaximum( DatasetGroupH group, double *min, double *max )
@@ -619,15 +678,28 @@ DatasetH MDAL_G_addDataset( DatasetGroupH group, double time, const double *valu
     return nullptr;
   }
 
-  if ( !dr->hasCapability( MDAL::Capability::WriteDatasets ) )
+  if ( !dr->hasWriteDatasetCapability( g->dataLocation() ) )
   {
     sLastStatus = MDAL_Status::Err_MissingDriverCapability;
     return nullptr;
   }
 
+  if ( g->dataLocation() == MDAL_DataLocation::DataOnVolumes3D )
+  {
+    sLastStatus = MDAL_Status::Err_MissingDriverCapability;
+    return nullptr;
+  }
+
+  if ( active && g->dataLocation() != MDAL_DataLocation::DataOnVertices2D )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    return nullptr;
+  }
+
   const size_t index = g->datasets.size();
+  MDAL::RelativeTimestamp t( time, MDAL::RelativeTimestamp::hours );
   dr->createDataset( g,
-                     time,
+                     t,
                      values,
                      active
                    );
@@ -673,7 +745,7 @@ void MDAL_G_closeEditMode( DatasetGroupH group )
     return;
   }
 
-  if ( !dr->hasCapability( MDAL::Capability::WriteDatasets ) )
+  if ( !dr->hasWriteDatasetCapability( g->dataLocation() ) )
   {
     sLastStatus = MDAL_Status::Err_MissingDriverCapability;
     return;
@@ -686,6 +758,16 @@ void MDAL_G_closeEditMode( DatasetGroupH group )
   }
 }
 
+const char *MDAL_G_referenceTime( DatasetGroupH group )
+{
+  if ( !group )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    return EMPTY_STR;
+  }
+  MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
+  return _return_str( g->referenceTime().toStandartCalendarISO8601() );
+}
 
 void MDAL_G_setMetadata( DatasetGroupH group, const char *key, const char *val )
 {
@@ -746,8 +828,31 @@ double MDAL_D_time( DatasetH dataset )
     return NODATA;
   }
   MDAL::Dataset *d = static_cast< MDAL::Dataset * >( dataset );
-  return d->time();
+  return d->time( MDAL::RelativeTimestamp::hours );
+}
 
+int MDAL_D_volumesCount( DatasetH dataset )
+{
+  if ( !dataset )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    return 0;
+  }
+  MDAL::Dataset *d = static_cast< MDAL::Dataset * >( dataset );
+  int len = static_cast<int>( d->volumesCount() );
+  return len;
+}
+
+int MDAL_D_maximumVerticalLevelCount( DatasetH dataset )
+{
+  if ( !dataset )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    return 0;
+  }
+  MDAL::Dataset *d = static_cast< MDAL::Dataset * >( dataset );
+  int len = static_cast<int>( d->maximumVerticalLevelsCount() );
+  return len;
 }
 
 int MDAL_D_valueCount( DatasetH dataset )
@@ -800,6 +905,11 @@ int MDAL_D_data( DatasetH dataset, int indexStart, int count, MDAL_DataType data
         sLastStatus = MDAL_Status::Err_IncompatibleDataset;
         return 0;
       }
+      if ( ( g->dataLocation() != MDAL_DataLocation::DataOnVertices2D ) && ( g->dataLocation() != MDAL_DataLocation::DataOnFaces2D ) )
+      {
+        sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+        return 0;
+      }
       valuesCount = d->valuesCount();
       break;
     case MDAL_DataType::VECTOR_2D_DOUBLE:
@@ -808,10 +918,70 @@ int MDAL_D_data( DatasetH dataset, int indexStart, int count, MDAL_DataType data
         sLastStatus = MDAL_Status::Err_IncompatibleDataset;
         return 0;
       }
+      if ( ( g->dataLocation() != MDAL_DataLocation::DataOnVertices2D ) && ( g->dataLocation() != MDAL_DataLocation::DataOnFaces2D ) )
+      {
+        sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+        return 0;
+      }
       valuesCount = d->valuesCount();
       break;
     case MDAL_DataType::ACTIVE_INTEGER:
+      if ( !d->supportsActiveFlag() )
+      {
+        sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+        return 0;
+      }
       valuesCount = m->facesCount();
+      break;
+    case MDAL_DataType::VERTICAL_LEVEL_COUNT_INTEGER:
+      if ( g->dataLocation() != MDAL_DataLocation::DataOnVolumes3D )
+      {
+        sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+        return 0;
+      }
+      valuesCount = m->facesCount();
+      break;
+    case MDAL_DataType::VERTICAL_LEVEL_DOUBLE:
+      if ( g->dataLocation() != MDAL_DataLocation::DataOnVolumes3D )
+      {
+        sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+        return 0;
+      }
+      valuesCount = m->facesCount() + d->volumesCount();
+      break;
+    case MDAL_DataType::FACE_INDEX_TO_VOLUME_INDEX_INTEGER:
+      if ( g->dataLocation() != MDAL_DataLocation::DataOnVolumes3D )
+      {
+        sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+        return 0;
+      }
+      valuesCount = m->facesCount();
+      break;
+    case MDAL_DataType::SCALAR_VOLUMES_DOUBLE:
+      if ( g->dataLocation() != MDAL_DataLocation::DataOnVolumes3D )
+      {
+        sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+        return 0;
+      }
+      if ( !g->isScalar() )
+      {
+        sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+        return 0;
+      }
+      valuesCount = d->volumesCount();
+      break;
+    case MDAL_DataType::VECTOR_2D_VOLUMES_DOUBLE:
+      if ( g->dataLocation() != MDAL_DataLocation::DataOnVolumes3D )
+      {
+        sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+        return 0;
+      }
+      if ( g->isScalar() )
+      {
+        sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+        return 0;
+      }
+      valuesCount = 2 * d->volumesCount();
       break;
   }
 
@@ -841,6 +1011,21 @@ int MDAL_D_data( DatasetH dataset, int indexStart, int count, MDAL_DataType data
     case MDAL_DataType::ACTIVE_INTEGER:
       writtenValuesCount = d->activeData( indexStartSizeT, countSizeT, static_cast<int *>( buffer ) );
       break;
+    case MDAL_DataType::VERTICAL_LEVEL_COUNT_INTEGER:
+      writtenValuesCount = d->verticalLevelCountData( indexStartSizeT, countSizeT, static_cast<int *>( buffer ) );
+      break;
+    case MDAL_DataType::VERTICAL_LEVEL_DOUBLE:
+      writtenValuesCount = d->verticalLevelData( indexStartSizeT, countSizeT, static_cast<double *>( buffer ) );
+      break;
+    case MDAL_DataType::FACE_INDEX_TO_VOLUME_INDEX_INTEGER:
+      writtenValuesCount = d->faceToVolumeData( indexStartSizeT, countSizeT, static_cast<int *>( buffer ) );
+      break;
+    case MDAL_DataType::SCALAR_VOLUMES_DOUBLE:
+      writtenValuesCount = d->scalarVolumesData( indexStartSizeT, countSizeT, static_cast<double *>( buffer ) );
+      break;
+    case MDAL_DataType::VECTOR_2D_VOLUMES_DOUBLE:
+      writtenValuesCount = d->vectorVolumesData( indexStartSizeT, countSizeT, static_cast<double *>( buffer ) );
+      break;
   }
 
   return static_cast<int>( writtenValuesCount );
@@ -867,3 +1052,16 @@ void MDAL_D_minimumMaximum( DatasetH dataset, double *min, double *max )
   *min = stats.minimum;
   *max = stats.maximum;
 }
+
+bool MDAL_D_hasActiveFlagCapability( DatasetH dataset )
+{
+  if ( !dataset )
+  {
+    sLastStatus = MDAL_Status::Err_IncompatibleDataset;
+    return false;
+  }
+
+  MDAL::Dataset *ds = static_cast< MDAL::Dataset * >( dataset );
+  return ds->supportsActiveFlag();
+}
+

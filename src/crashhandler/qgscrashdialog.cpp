@@ -26,7 +26,7 @@ QgsCrashDialog::QgsCrashDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
-  setWindowTitle( tr( "Oh Uh!" ) );
+  setWindowTitle( tr( "Uh-oh!" ) );
 
   mCrashHeaderMessage->setText( tr( "QGIS unexpectedly ended" ) );
   connect( mReloadQGISButton, &QPushButton::clicked, this, &QgsCrashDialog::reloadQGIS );

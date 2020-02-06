@@ -54,22 +54,22 @@ class TestQgsLayoutItemLabel(unittest.TestCase, LayoutItemTestCase):
     def evaluation_test(self, layout, label):
         # $CURRENT_DATE evaluation
         label.setText("__$CURRENT_DATE__")
-        assert label.currentText() == ("__" + QDate.currentDate().toString() + "__")
+        self.assertEqual(label.currentText(), ("__" + QDate.currentDate().toString() + "__"))
 
         # $CURRENT_DATE() evaluation
         label.setText("__$CURRENT_DATE(dd)(ok)__")
         expected = "__" + QDateTime.currentDateTime().toString("dd") + "(ok)__"
-        assert label.currentText() == expected
+        self.assertEqual(label.currentText(), expected)
 
         # $CURRENT_DATE() evaluation (inside an expression)
         label.setText("__[%$CURRENT_DATE(dd) + 1%](ok)__")
         dd = QDate.currentDate().day()
         expected = "__%d(ok)__" % (dd + 1)
-        assert label.currentText() == expected
+        self.assertEqual(label.currentText(), expected)
 
         # expression evaluation (without associated feature)
-        label.setText("__[%\"NAME_1\"%][%21*2%]__")
-        assert label.currentText() == "__[NAME_1]42__"
+        label.setText("__[%try(\"NAME_1\", '[NAME_1]')%][%21*2%]__")
+        self.assertEqual(label.currentText(), "__[NAME_1]42__")
 
     def feature_evaluation_test(self, layout, label, mVectorLayer):
         atlas = layout.atlas()
@@ -79,21 +79,21 @@ class TestQgsLayoutItemLabel(unittest.TestCase, LayoutItemTestCase):
         label.setText("[%\"NAME_1\"||'_ok'%]")
         atlas.beginRender()
         atlas.seekTo(0)
-        assert label.currentText() == "Basse-Normandie_ok"
+        self.assertEqual(label.currentText(), "Basse-Normandie_ok")
 
         atlas.seekTo(1)
-        assert label.currentText() == "Bretagne_ok"
+        self.assertEqual(label.currentText(), "Bretagne_ok")
 
     def page_evaluation_test(self, layout, label, mVectorLayer):
         page = QgsLayoutItemPage(layout)
         page.setPageSize('A4')
         layout.pageCollection().addPage(page)
         label.setText("[%@layout_page||'/'||@layout_numpages%]")
-        assert label.currentText() == "1/2"
+        self.assertEqual(label.currentText(), "1/2")
 
         # move the the second page and re-evaluate
         label.attemptMove(QgsLayoutPoint(0, 320))
-        assert label.currentText() == "2/2"
+        self.assertEqual(label.currentText(), "2/2")
 
 
 if __name__ == '__main__':

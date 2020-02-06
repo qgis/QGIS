@@ -34,6 +34,13 @@ QgsAbstractDatabaseProviderConnection::Capabilities QgsAbstractDatabaseProviderC
   return mCapabilities;
 }
 
+QString QgsAbstractDatabaseProviderConnection::tableUri( const QString &schema, const QString &name ) const
+{
+  Q_UNUSED( schema )
+  Q_UNUSED( name )
+  throw QgsProviderConnectionException( QObject::tr( "Operation 'tableUri' is not supported" ) );
+}
+
 ///@cond PRIVATE
 void QgsAbstractDatabaseProviderConnection::checkCapability( QgsAbstractDatabaseProviderConnection::Capability capability ) const
 {
@@ -129,6 +136,23 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseP
 {
   checkCapability( Capability::Tables );
   return QList<QgsAbstractDatabaseProviderConnection::TableProperty>();
+}
+
+
+QgsAbstractDatabaseProviderConnection::TableProperty QgsAbstractDatabaseProviderConnection::table( const QString &schema, const QString &name ) const
+{
+  checkCapability( Capability::Tables );
+  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> constTables { tables( schema ) };
+  for ( const auto &t : constTables )
+  {
+    if ( t.tableName() == name )
+    {
+      return t;
+    }
+  }
+  throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
+                                        .arg( name )
+                                        .arg( schema ) );
 }
 
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tablesInt( const QString &schema, const int flags ) const

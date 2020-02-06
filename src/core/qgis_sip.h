@@ -251,5 +251,9 @@
 #define SIP_MONKEYPATCH_SCOPEENUM
 #define SIP_MONKEYPATCH_SCOPEENUM_UNNEST(OUTSIDE_CLASS,FORMERNAME)
 
+/*
+ * Directive to define a Python property;
+ */
+#define SIP_PROPERTY(name,getter,setter)
 
 #endif // QGIS_SIP_H

@@ -120,6 +120,7 @@ void QgsMapLayer::clone( QgsMapLayer *layer ) const
   layer->setLegendUrl( legendUrl() );
   layer->setLegendUrlFormat( legendUrlFormat() );
   layer->setDependencies( dependencies() );
+  layer->mShouldValidateCrs = mShouldValidateCrs;
   layer->setCrs( crs() );
   layer->setCustomProperties( mCustomProperties );
 }
@@ -266,15 +267,6 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
 
   QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Layer" ), mne.text() );
 
-  // now let the children grab what they need from the Dom node.
-  layerError = !readXml( layerElement, context );
-
-  // overwrite CRS with what we read from project file before the raster/vector
-  // file reading functions changed it. They will if projections is specified in the file.
-  // FIXME: is this necessary?
-  QgsCoordinateReferenceSystem::setCustomCrsValidation( savedValidation );
-  mCRS = savedCRS;
-
   // the internal name is just the data source basename
   //QFileInfo dataSourceFileInfo( mDataSource );
   //internalName = dataSourceFileInfo.baseName();
@@ -295,13 +287,21 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, QgsReadWriteCon
   setRefreshOnNofifyMessage( layerElement.attribute( QStringLiteral( "refreshOnNotifyMessage" ), QString() ) );
   setRefreshOnNotifyEnabled( layerElement.attribute( QStringLiteral( "refreshOnNotifyEnabled" ), QStringLiteral( "0" ) ).toInt() );
 
-
   // set name
   mnl = layerElement.namedItem( QStringLiteral( "layername" ) );
   mne = mnl.toElement();
 
   //name can be translated
   setName( context.projectTranslator()->translate( QStringLiteral( "project:layers:%1" ).arg( layerElement.namedItem( QStringLiteral( "id" ) ).toElement().text() ), mne.text() ) );
+
+  // now let the children grab what they need from the Dom node.
+  layerError = !readXml( layerElement, context );
+
+  // overwrite CRS with what we read from project file before the raster/vector
+  // file reading functions changed it. They will if projections is specified in the file.
+  // FIXME: is this necessary? Yes, it is (autumn 2019)
+  QgsCoordinateReferenceSystem::setCustomCrsValidation( savedValidation );
+  mCRS = savedCRS;
 
   //short name
   QDomElement shortNameElem = layerElement.firstChildElement( QStringLiteral( "shortname" ) );
@@ -764,7 +764,7 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
 {
   mCRS = srs;
 
-  if ( isSpatial() && !mCRS.isValid() )
+  if ( mShouldValidateCrs && isSpatial() && !mCRS.isValid() )
   {
     mCRS.setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
     mCRS.validate();
@@ -1036,7 +1036,7 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
 
   // get style file version string, if any
   QgsProjectVersion fileVersion( myRoot.attribute( QStringLiteral( "version" ) ) );
-  QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
+  QgsProjectVersion thisVersion( Qgis::version() );
 
   if ( thisVersion > fileVersion )
   {
@@ -1074,7 +1074,7 @@ void QgsMapLayer::exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) co
   QDomDocument myDocument( documentType );
 
   QDomElement myRootNode = myDocument.createElement( QStringLiteral( "qgis" ) );
-  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
+  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
   myDocument.appendChild( myRootNode );
 
   if ( !mMetadata.writeMetadataXml( myRootNode, myDocument ) )
@@ -1093,7 +1093,7 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg, const 
   QDomDocument myDocument( documentType );
 
   QDomElement myRootNode = myDocument.createElement( QStringLiteral( "qgis" ) );
-  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
+  myRootNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
   myDocument.appendChild( myRootNode );
 
   if ( !writeSymbology( myRootNode, myDocument, errorMsg, context, categories ) )  // TODO: support relative paths in QML?
@@ -1724,6 +1724,31 @@ bool QgsMapLayer::isEditable() const
 bool QgsMapLayer::isSpatial() const
 {
   return true;
+}
+
+bool QgsMapLayer::isTemporary() const
+{
+  // invalid layers are temporary? -- who knows?!
+  if ( !isValid() )
+    return false;
+
+  if ( mProviderKey == QLatin1String( "memory" ) )
+    return true;
+
+  const QVariantMap sourceParts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, mDataSource );
+  const QString path = sourceParts.value( QStringLiteral( "path" ) ).toString();
+  if ( path.isEmpty() )
+    return false;
+
+  // check if layer path is inside one of the standard temporary file locations for this platform
+  const QStringList tempPaths = QStandardPaths::standardLocations( QStandardPaths::TempLocation );
+  for ( const QString &tempPath : tempPaths )
+  {
+    if ( path.startsWith( tempPath ) )
+      return true;
+  }
+
+  return false;
 }
 
 void QgsMapLayer::setValid( bool valid )

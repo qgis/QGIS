@@ -562,6 +562,12 @@ bool QgsLayoutManagerProxyModel::filterAcceptsRow( int sourceRow, const QModelIn
   if ( !layout )
     return model->allowEmptyLayout();
 
+  if ( !mFilterString.trimmed().isEmpty() )
+  {
+    if ( !layout->name().contains( mFilterString, Qt::CaseInsensitive ) )
+      return false;
+  }
+
   switch ( layout->layoutType() )
   {
     case QgsMasterLayoutInterface::PrintLayout:
@@ -580,5 +586,11 @@ QgsLayoutManagerProxyModel::Filters QgsLayoutManagerProxyModel::filters() const
 void QgsLayoutManagerProxyModel::setFilters( Filters filters )
 {
   mFilters = filters;
+  invalidateFilter();
+}
+
+void QgsLayoutManagerProxyModel::setFilterString( const QString &filter )
+{
+  mFilterString = filter;
   invalidateFilter();
 }

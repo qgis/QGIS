@@ -390,7 +390,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
         int n;
         for ( n = 0; !hasChecked || !hasUnchecked; n++ )
         {
-          QVariant v = data( idx.child( n, LayerColumn ), role );
+          QVariant v = data( index( n, LayerColumn, idx ), role );
           if ( !v.isValid() )
             break;
 
@@ -526,7 +526,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       int i = 0;
       for ( i = 0; ; i++ )
       {
-        QModelIndex child = index.child( i, LayerColumn );
+        QModelIndex child = QgsSnappingLayerTreeModel::index( i, LayerColumn, index );
         if ( !child.isValid() )
           break;
 

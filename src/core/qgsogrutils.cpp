@@ -26,6 +26,8 @@
 #include <cpl_error.h>
 #include <QJsonDocument>
 
+#include "ogr_srs_api.h"
+
 // Starting with GDAL 2.2, there are 2 concepts: unset fields and null fields
 // whereas previously there was only unset fields. For QGIS purposes, both
 // states (unset/null) are equivalent.
@@ -169,9 +171,23 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding )
   return fields;
 }
 
+
 QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok )
 {
-  if ( !ogrFet || attIndex < 0 || attIndex >= fields.count() )
+  if ( attIndex < 0 || attIndex >= fields.count() )
+  {
+    if ( ok )
+      *ok = false;
+    return QVariant();
+  }
+
+  const QgsField field = fields.at( attIndex );
+  return getOgrFeatureAttribute( ogrFet, field, attIndex, encoding, ok );
+}
+
+QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField &field, int attIndex, QTextCodec *encoding, bool *ok )
+{
+  if ( !ogrFet || attIndex < 0 )
   {
     if ( ok )
       *ok = false;
@@ -196,7 +212,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
   if ( OGR_F_IsFieldSetAndNotNull( ogrFet, attIndex ) )
   {
-    switch ( fields.at( attIndex ).type() )
+    switch ( field.type() )
     {
       case QVariant::String:
       {
@@ -225,9 +241,9 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         int year, month, day, hour, minute, second, tzf;
 
         OGR_F_GetFieldAsDateTime( ogrFet, attIndex, &year, &month, &day, &hour, &minute, &second, &tzf );
-        if ( fields.at( attIndex ).type() == QVariant::Date )
+        if ( field.type() == QVariant::Date )
           value = QDate( year, month, day );
-        else if ( fields.at( attIndex ).type() == QVariant::Time )
+        else if ( field.type() == QVariant::Time )
           value = QTime( hour, minute, second );
         else
           value = QDateTime( QDate( year, month, day ), QTime( hour, minute, second ) );
@@ -250,7 +266,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
 
       case QVariant::List:
       {
-        if ( fields.at( attIndex ).subType() == QVariant::String )
+        if ( field.subType() == QVariant::String )
         {
           QStringList list;
           char **lst = OGR_F_GetFieldAsStringList( ogrFet, attIndex );
@@ -700,3 +716,31 @@ QStringList QgsOgrUtils::cStringListToQStringList( char **stringList )
   return strings;
 }
 
+QString QgsOgrUtils::OGRSpatialReferenceToWkt( OGRSpatialReferenceH srs )
+{
+  if ( !srs )
+    return QString();
+
+  char *pszWkt = nullptr;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,0,0)
+  const QByteArray multiLineOption = QStringLiteral( "MULTILINE=NO" ).toLocal8Bit();
+  const QByteArray formatOption = QStringLiteral( "FORMAT=WKT2" ).toLocal8Bit();
+  const char *const options[] = {multiLineOption.constData(), formatOption.constData(), nullptr};
+  OSRExportToWktEx( srs, &pszWkt, options );
+#else
+  OSRExportToWkt( srs, &pszWkt );
+#endif
+
+  const QString res( pszWkt );
+  CPLFree( pszWkt );
+  return res;
+}
+
+QgsCoordinateReferenceSystem QgsOgrUtils::OGRSpatialReferenceToCrs( OGRSpatialReferenceH srs )
+{
+  const QString wkt = OGRSpatialReferenceToWkt( srs );
+  if ( wkt.isEmpty() )
+    return QgsCoordinateReferenceSystem();
+
+  return QgsCoordinateReferenceSystem::fromWkt( wkt );
+}

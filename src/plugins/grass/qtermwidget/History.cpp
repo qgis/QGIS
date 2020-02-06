@@ -205,7 +205,7 @@ bool HistoryScroll::hasScroll()
 /*
    The history scroll makes a Row(Row(Cell)) from
    two history buffers. The index buffer contains
-   start of line positions which refere to the cells
+   start of line positions which refers to the cells
    buffer.
 
    Note that index[0] addresses the second line

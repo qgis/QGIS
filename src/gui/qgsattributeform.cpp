@@ -42,6 +42,7 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturerequest.h"
+#include "qgstexteditwrapper.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -244,20 +245,23 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
   for ( QgsWidgetWrapper *ww : constMWidgets )
   {
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
-    if ( eww && eww->field().name() == field )
+    if ( eww )
     {
-      eww->setValues( value, QVariantList() );
-      eww->setHint( hintText );
-    }
-    // see if the field is present in additional fields of the editor widget
-    int index = eww->additionalFields().indexOf( field );
-    if ( index >= 0 )
-    {
-      QVariant mainValue = eww->value();
-      QVariantList additionalFieldValues = eww->additionalFieldValues();
-      additionalFieldValues[index] = value;
-      eww->setValues( mainValue, additionalFieldValues );
-      eww->setHint( hintText );
+      if ( eww->field().name() == field )
+      {
+        eww->setValues( value, QVariantList() );
+        eww->setHint( hintText );
+      }
+      // see if the field is present in additional fields of the editor widget
+      int index = eww->additionalFields().indexOf( field );
+      if ( index >= 0 )
+      {
+        QVariant mainValue = eww->value();
+        QVariantList additionalFieldValues = eww->additionalFieldValues();
+        additionalFieldValues[index] = value;
+        eww->setValues( mainValue, additionalFieldValues );
+        eww->setHint( hintText );
+      }
     }
   }
 }
@@ -308,7 +312,6 @@ bool QgsAttributeForm::saveEdits()
   bool changedLayer = false;
 
   QgsFeature updatedFeature = QgsFeature( mFeature );
-
   if ( mFeature.isValid() || mMode == QgsAttributeEditorContext::AddFeatureMode )
   {
     bool doUpdate = false;
@@ -326,6 +329,12 @@ bool QgsAttributeForm::saveEdits()
       QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
       if ( eww )
       {
+        // check for invalid JSON values
+        QgsTextEditWrapper *text_edit = qobject_cast<QgsTextEditWrapper *>( eww );
+        if ( text_edit && text_edit->isInvalidJSON() )
+        {
+          return false;
+        }
         QVariantList dstVars = QVariantList() << dst.at( eww->fieldIdx() );
         QVariantList srcVars = QVariantList() << eww->value();
         QList<int> fieldIndexes = QList<int>() << eww->fieldIdx();
@@ -589,6 +598,14 @@ void QgsAttributeForm::pushSelectedFeaturesMessage()
                               Qgis::Warning,
                               messageTimeout() );
   }
+}
+
+void QgsAttributeForm::displayWarning( const QString &message )
+{
+  mMessageBar->pushMessage( QString(),
+                            message,
+                            Qgis::Warning,
+                            messageTimeout() );
 }
 
 void QgsAttributeForm::runSearchSelect( QgsVectorLayer::SelectBehavior behavior )
@@ -1764,7 +1781,7 @@ void QgsAttributeForm::initPython()
     QString numArgs;
 
     // Check for eval result
-    if ( QgsPythonRunner::eval( QStringLiteral( "len(inspect.getargspec(%1)[0])" ).arg( initFunction ), numArgs ) )
+    if ( QgsPythonRunner::eval( QStringLiteral( "len(inspect.getfullargspec(%1)[0])" ).arg( initFunction ), numArgs ) )
     {
       static int sFormId = 0;
       mPyFormVarName = QStringLiteral( "_qgis_featureform_%1_%2" ).arg( mFormNr ).arg( sFormId++ );

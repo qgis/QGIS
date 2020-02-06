@@ -56,7 +56,7 @@ QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >
 
   mColumnCountSpinBox->setValue( QgsSettings().value( QStringLiteral( "/qgis/attributeForm/defaultTabColumnCount" ), 1 ).toInt() );
 
-  setWindowTitle( tr( "Add Tab or Group for %1" ).arg( mLayer->name() ) );
+  setWindowTitle( tr( "Add Container for %1" ).arg( mLayer->name() ) );
 }
 
 QString QgsAddTabOrGroup::name()

@@ -36,6 +36,11 @@ QgsClassificationMethodRegistry::QgsClassificationMethodRegistry()
   addMethod( new QgsClassificationLogarithmic() );
 }
 
+QgsClassificationMethodRegistry::~QgsClassificationMethodRegistry()
+{
+  qDeleteAll( mMethods );
+}
+
 bool QgsClassificationMethodRegistry::addMethod( QgsClassificationMethod *method )
 {
   if ( mMethods.contains( method->id() ) )

@@ -79,6 +79,8 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
      */
     void applyChanges();
 
+    void setDockMode( bool dockMode ) override;
+
   signals:
 
     /**

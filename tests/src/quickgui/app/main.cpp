@@ -36,7 +36,7 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationName( "QGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
   QCoreApplication::setApplicationName( "QgsQuick Test App" );
-  QCoreApplication::setApplicationVersion( Qgis::QGIS_VERSION );
+  QCoreApplication::setApplicationVersion( Qgis::version() );
 
   QCommandLineParser parser;
   parser.addVersionOption();

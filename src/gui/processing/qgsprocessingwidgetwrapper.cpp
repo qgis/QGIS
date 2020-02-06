@@ -41,6 +41,16 @@ QgsMapCanvas *QgsProcessingParameterWidgetContext::mapCanvas() const
   return mMapCanvas;
 }
 
+void QgsProcessingParameterWidgetContext::setMessageBar( QgsMessageBar *bar )
+{
+  mMessageBar = bar;
+}
+
+QgsMessageBar *QgsProcessingParameterWidgetContext::messageBar() const
+{
+  return mMessageBar;
+}
+
 void QgsProcessingParameterWidgetContext::setProject( QgsProject *project )
 {
   mProject = project;

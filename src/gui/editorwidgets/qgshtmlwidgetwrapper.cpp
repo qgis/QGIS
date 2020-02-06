@@ -19,7 +19,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsapplication.h"
 #include "qgswebframe.h"
-
+#include <QScreen>
 
 QgsHtmlWidgetWrapper::QgsHtmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
@@ -46,15 +46,18 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget->setHtml( mHtmlCode );
 #ifdef WITH_QTWEBKIT
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
+#else
+  QScreen *screen = QGuiApplication::screenAt( mWidget->mapToGlobal( QPoint( mWidget->width() / 2, 0 ) ) );
+  const int horizontalDpi = screen->logicalDotsPerInchX();
+#endif
+
   mWidget->setZoomFactor( horizontalDpi / 96.0 );
 
-  auto page = mWidget->page();
-  connect( page, &QWebPage::contentsChanged, this, [ = ]
-  {
-    auto docHeight { page->mainFrame()->contentsSize().height() };
-    mWidget->setFixedHeight( docHeight );
-  }, Qt::ConnectionType::UniqueConnection );
+  QWebPage *page = mWidget->page();
+  connect( page, &QWebPage::contentsChanged, this, &QgsHtmlWidgetWrapper::fixHeight, Qt::ConnectionType::UniqueConnection );
 #endif
 
 }
@@ -94,6 +97,15 @@ void QgsHtmlWidgetWrapper::setHtmlContext( )
 
   mWidget->setHtml( mHtmlCode );
 }
+
+#ifdef WITH_QTWEBKIT
+void QgsHtmlWidgetWrapper::fixHeight()
+{
+  QWebPage *page = mWidget->page();
+  int docHeight { page->mainFrame()->contentsSize().height() };
+  mWidget->setFixedHeight( docHeight );
+}
+#endif
 
 void QgsHtmlWidgetWrapper::setFeature( const QgsFeature &feature )
 {

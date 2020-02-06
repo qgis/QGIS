@@ -17,7 +17,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsproperty_p.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgscolorramp.h"
@@ -31,6 +30,7 @@
 #include <QColor>
 
 class QgsPropertyTransformer;
+class QgsPropertyPrivate;
 
 /**
  * \ingroup core
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsProperty
      */
     QgsProperty();
 
-    virtual ~QgsProperty() = default;
+    virtual ~QgsProperty();
 
     /**
      * Returns a new ExpressionBasedProperty created from the specified expression.

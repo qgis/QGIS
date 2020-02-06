@@ -116,7 +116,7 @@ QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle
     return outputBlock.release();
   }
 
-  QRgb myDefaultColor = NODATA_COLOR;
+  const QRgb myDefaultColor = renderColorForNodataPixel();
   bool isNoData = false;
   for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
   {
@@ -270,8 +270,9 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
     contrastEnhancement()->toSld( doc, contrastEnhancementElem );
 
     // do changes to minValue/maxValues depending on stretching algorithm. This is necessary because
-    // geoserver do a first stretch on min/max, then apply colo map rules. In some combination is necessary
-    // to use real min/max values and in othere the actual edited min/max values
+    // geoserver does a first stretch on min/max, then applies color map rules.
+    // In some combination it is necessary to use real min/max values and in
+    // others the actual edited min/max values
     switch ( contrastEnhancement()->contrastEnhancementAlgorithm() )
     {
       case QgsContrastEnhancement::StretchAndClipToMinimumMaximum:
@@ -284,10 +285,10 @@ void QgsSingleBandGrayRenderer::toSld( QDomDocument &doc, QDomElement &element, 
         if ( !qgsDoubleNear( contrastEnhancement()->minimumValue(), myRasterBandStats.minimumValue ) )
         {
           // look for VendorOption tag to look for that with minValue attribute
-          QDomNodeList elements = contrastEnhancementElem.elementsByTagName( QStringLiteral( "sld:VendorOption" ) );
-          for ( int i = 0; i < elements.size(); ++i )
+          const QDomNodeList vendorOptions = contrastEnhancementElem.elementsByTagName( QStringLiteral( "sld:VendorOption" ) );
+          for ( int i = 0; i < vendorOptions.size(); ++i )
           {
-            QDomElement vendorOption = elements.at( i ).toElement();
+            QDomElement vendorOption = vendorOptions.at( i ).toElement();
             if ( vendorOption.attribute( QStringLiteral( "name" ) ) != QStringLiteral( "minValue" ) )
               continue;
 

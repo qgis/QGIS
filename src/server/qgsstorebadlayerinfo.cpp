@@ -29,7 +29,13 @@ void QgsStoreBadLayerInfo::handleBadLayers( const QList<QDomNode> &layers )
       QDomElement idElem = it->firstChildElement( "id" );
       if ( !idElem.isNull() )
       {
-        mBadLayerIds.append( idElem.text() );
+        const QString badLayerId = idElem.text();
+        mBadLayerIds.append( badLayerId );
+        const QDomElement nameElem = it->firstChildElement( "layername" );
+        if ( !nameElem.isNull() )
+        {
+          mBadLayerNames.insert( badLayerId, nameElem.text() );
+        }
       }
     }
   }

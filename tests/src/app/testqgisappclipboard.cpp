@@ -167,7 +167,7 @@ void TestQgisAppClipboard::copyToText()
 
   // test CRS is transformed correctly for GeoJSON
 
-  QgsCoordinateReferenceSystem crs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:3111" ) );
   feats = QgsFeatureStore();
   feats.setCrs( crs );
   feat.setGeometry( QgsGeometry( new QgsPoint( 2502577, 2403869 ) ) );
@@ -331,6 +331,40 @@ void TestQgisAppClipboard::pasteWkt()
   QCOMPARE( features.at( 2 ).attributes().at( 0 ).toString(), QStringLiteral( "2" ) );
   QCOMPARE( features.at( 2 ).attributes().at( 1 ).toString(), QStringLiteral( "b2" ) );
   QCOMPARE( features.at( 2 ).attributes().at( 2 ).toString(), QStringLiteral( "3" ) );
+
+  // when a set of features is built outside of QGIS, last one might be terminated by newline
+  // https://github.com/qgis/QGIS/issues/33617
+  mQgisApp->clipboard()->setText( QStringLiteral( "POINT (125 10)\nPOINT (111 30)\n" ) );
+  features = mQgisApp->clipboard()->copyOf();
+  QCOMPARE( features.length(), 2 );
+  QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
+  featureGeom = features.at( 0 ).geometry();
+  point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
+  QCOMPARE( point->x(), 125.0 );
+  QCOMPARE( point->y(), 10.0 );
+  QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
+  QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
+  point = dynamic_cast< const QgsPoint * >( features.at( 1 ).geometry().constGet() );
+  QCOMPARE( point->x(), 111.0 );
+  QCOMPARE( point->y(), 30.0 );
+
+  // on MS Windows, the <EOL> marker is CRLF
+  // https://github.com/qgis/QGIS/pull/33618#discussion_r363147854
+  mQgisApp->clipboard()->setText( QStringLiteral( "POINT (125 10)\r\nPOINT (111 30)\r\n" ) );
+  features = mQgisApp->clipboard()->copyOf();
+  QCOMPARE( features.length(), 2 );
+  QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
+  featureGeom = features.at( 0 ).geometry();
+  point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
+  QCOMPARE( point->x(), 125.0 );
+  QCOMPARE( point->y(), 10.0 );
+  QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
+  QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
+  point = dynamic_cast< const QgsPoint * >( features.at( 1 ).geometry().constGet() );
+  QCOMPARE( point->x(), 111.0 );
+  QCOMPARE( point->y(), 30.0 );
 }
 
 void TestQgisAppClipboard::pasteGeoJson()
@@ -399,8 +433,7 @@ void TestQgisAppClipboard::clipboardLogic()
   feats.addFeature( feat );
   feats.addFeature( feat2 );
   feats.setFields( fields );
-  QgsCoordinateReferenceSystem crs;
-  crs.createFromSrsId( 3452 );
+  QgsCoordinateReferenceSystem crs( QStringLiteral( "EPSG:4326" ) );
   feats.setCrs( crs );
   mQgisApp->clipboard()->replaceWithCopyOf( feats );
 

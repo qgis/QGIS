@@ -580,7 +580,7 @@ void QgsAuthCertInfo::populateInfoDetailsSection()
                 mCurrentACert.subjectInfo().value( QCA::XMPP ),
                 LineEdit );
 
-  QMultiMap<QSsl::AlternateNameEntryType, QString> alts( mCurrentQCert.alternateSubjectNames() );
+  QMultiMap<QSsl::AlternateNameEntryType, QString> alts( mCurrentQCert.subjectAlternativeNames() );
   QStringList altslist;
   QString email( tr( "Email: " ) );
   QStringList emails( alts.values( QSsl::EmailEntry ) );

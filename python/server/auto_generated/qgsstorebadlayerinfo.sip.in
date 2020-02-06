@@ -41,6 +41,13 @@ badLayers
 :return: ids of bad layers
 %End
 
+    QMap<QString, QString> badLayerNames() const;
+%Docstring
+Returns names of bad layers with ids.
+
+.. versionadded:: 3.12
+%End
+
 };
 
 /************************************************************************

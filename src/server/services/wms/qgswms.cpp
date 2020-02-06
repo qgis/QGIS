@@ -95,8 +95,8 @@ namespace QgsWms
         }
 
         if ( ( mVersion.compare( QLatin1String( "1.1.1" ) ) == 0 \
-               && req.compare( QLatin1String( "capabilities" ) ) == 0 )
-             || req.compare( QLatin1String( "GetCapabilities" ) ) == 0 )
+               && QSTR_COMPARE( req, "capabilities" ) )
+             || QSTR_COMPARE( req, "GetCapabilities" ) )
         {
           writeGetCapabilities( mServerIface, project, version, request, response, false );
         }
@@ -154,7 +154,7 @@ namespace QgsWms
         {
           // Operation not supported
           throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
-                                     QString( "Request %1 is not supported" ).arg( req ), 501 );
+                                     QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
         }
       }
 

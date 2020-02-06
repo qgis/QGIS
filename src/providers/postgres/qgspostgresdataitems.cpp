@@ -26,12 +26,6 @@
 #include "qgsprojectstorageregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
-#include "providers/gdal/qgsgdaldataitems.h"
-
-#ifdef HAVE_GUI
-#include "qgspgsourceselect.h"
-#endif
-
 #include <QMessageBox>
 #include <climits>
 
@@ -272,9 +266,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
         uri.setSchema( toSchema );
       }
 
-      QVariantMap options;
-      options.insert( QStringLiteral( "forceSinglePartGeometryType" ), true );
-      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, uri.uri( false ), QStringLiteral( "postgres" ), srcLayer->crs(), options, owner ) );
+      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( new QgsVectorLayerExporterTask( srcLayer, uri.uri( false ), QStringLiteral( "postgres" ), srcLayer->crs(), QVariantMap(), owner ) );
 
       // when export is successful:
       connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
@@ -319,7 +311,7 @@ bool QgsPGConnectionItem::handleDrop( const QMimeData *data, const QString &toSc
 
 // ---------------------------------------------------------------------------
 QgsPGLayerItem::QgsPGLayerItem( QgsDataItem *parent, const QString &name, const QString &path, QgsLayerItem::LayerType layerType, const QgsPostgresLayerProperty &layerProperty )
-  : QgsLayerItem( parent, name, path, QString(), layerType, QStringLiteral( "postgres" ) )
+  : QgsLayerItem( parent, name, path, QString(), layerType, layerProperty.isRaster ? QStringLiteral( "postgresraster" ) : QStringLiteral( "postgres" ) )
   , mLayerProperty( layerProperty )
 {
   mCapabilities |= Delete;
@@ -343,12 +335,20 @@ QString QgsPGLayerItem::createUri()
     return QString();
   }
 
-  QgsDataSourceUri uri( QgsPostgresConn::connUri( connItem->name() ).connectionInfo( false ) );
+  const QString &connName = connItem->name();
 
-  QStringList defPk( QgsSettings().value(
-                       QStringLiteral( "/PostgreSQL/connections/%1/keys/%2/%3" ).arg( connItem->name(), mLayerProperty.schemaName, mLayerProperty.tableName ),
+  QgsDataSourceUri uri( QgsPostgresConn::connUri( connName ).connectionInfo( false ) );
+
+  const QgsSettings &settings = QgsSettings();
+  QString basekey = QStringLiteral( "/PostgreSQL/connections/%1" ).arg( connName );
+
+  QStringList defPk( settings.value(
+                       QStringLiteral( "%1/keys/%2/%3" ).arg( basekey, mLayerProperty.schemaName, mLayerProperty.tableName ),
                        QVariant( !mLayerProperty.pkCols.isEmpty() ? QStringList( mLayerProperty.pkCols.at( 0 ) ) : QStringList() )
                      ).toStringList() );
+
+  const bool useEstimatedMetadata = QgsPostgresConn::useEstimatedMetadata( connName );
+  uri.setUseEstimatedMetadata( useEstimatedMetadata );
 
   QStringList cols;
   for ( const auto &col : defPk )
@@ -360,6 +360,7 @@ QString QgsPGLayerItem::createUri()
   uri.setWkbType( mLayerProperty.types.at( 0 ) );
   if ( uri.wkbType() != QgsWkbTypes::NoGeometry && mLayerProperty.srids.at( 0 ) != std::numeric_limits<int>::min() )
     uri.setSrid( QString::number( mLayerProperty.srids.at( 0 ) ) );
+
   QgsDebugMsg( QStringLiteral( "layer uri: %1" ).arg( uri.uri( false ) ) );
   return uri.uri( false );
 }
@@ -400,6 +401,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
   }
 
   bool dontResolveType = QgsPostgresConn::dontResolveType( mConnectionName );
+  bool estimatedMetadata = QgsPostgresConn::useEstimatedMetadata( mConnectionName );
   const auto constLayerProperties = layerProperties;
   for ( QgsPostgresLayerProperty layerProperty : constLayerProperties )
   {
@@ -407,6 +409,7 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
       continue;
 
     if ( !layerProperty.geometryColName.isNull() &&
+         //!layerProperty.isRaster &&
          ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown  ||
            layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
     {
@@ -415,27 +418,13 @@ QVector<QgsDataItem *> QgsPGSchemaItem::createChildren()
         //QgsDebugMsg( QStringLiteral( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ) );
         continue;
       }
-
-      conn->retrieveLayerTypes( layerProperty, true /* useEstimatedMetadata */ );
+      conn->retrieveLayerTypes( layerProperty, estimatedMetadata );
     }
 
     for ( int i = 0; i < layerProperty.size(); i++ )
     {
       QgsDataItem *layerItem = nullptr;
-      if ( !  layerProperty.isRaster )
-      {
-        layerItem = createLayer( layerProperty.at( i ) );
-      }
-      else
-      {
-        const QString connInfo = conn->connInfo();
-        const QString uri = QStringLiteral( "PG:  %1 mode=2 schema='%2' column='%3' table='%4'" )
-                            .arg( connInfo )
-                            .arg( layerProperty.schemaName )
-                            .arg( layerProperty.geometryColName )
-                            .arg( layerProperty.tableName );
-        layerItem = new QgsGdalLayerItem( this, layerProperty.tableName, QString(), uri );
-      }
+      layerItem = createLayer( layerProperty.at( i ) );
       if ( layerItem )
         items.append( layerItem );
     }
@@ -477,7 +466,7 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
   }
   else if ( layerProperty.isRaster )
   {
-    tip = tr( "Raster (GDAL)" );
+    tip = tr( "Raster" );
   }
   else
   {
@@ -550,19 +539,10 @@ QVector<QgsDataItem *> QgsPGRootItem::createChildren()
   return connections;
 }
 
-#ifdef HAVE_GUI
-QWidget *QgsPGRootItem::paramWidget()
-{
-  QgsPgSourceSelect *select = new QgsPgSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
-  connect( select, &QgsPgSourceSelect::connectionsChanged, this, &QgsPGRootItem::onConnectionsChanged );
-  return select;
-}
-
 void QgsPGRootItem::onConnectionsChanged()
 {
   refresh();
 }
-#endif
 
 QMainWindow *QgsPGRootItem::sMainWindow = nullptr;
 

@@ -12,7 +12,6 @@ MDAL::DriverGdalNetCDF::DriverGdalNetCDF()
       "GDAL NetCDF",
       "*.nc"
       , "GRIB" )
-  , mTimeDiv( 1.0 )
 {
 }
 
@@ -33,7 +32,7 @@ std::string MDAL::DriverGdalNetCDF::GDALFileName( const std::string &fileName )
 #endif
 }
 
-bool MDAL::DriverGdalNetCDF::parseBandInfo( const MDAL::GdalDataset *cfGDALDataset, const MDAL::DriverGdal::metadata_hash &metadata, std::string &band_name, double *time, bool *is_vector, bool *is_x )
+bool MDAL::DriverGdalNetCDF::parseBandInfo( const MDAL::GdalDataset *cfGDALDataset, const MDAL::DriverGdal::metadata_hash &metadata, std::string &band_name, RelativeTimestamp *time, bool *is_vector, bool *is_x )
 {
   MDAL_UNUSED( cfGDALDataset );
 
@@ -41,7 +40,7 @@ bool MDAL::DriverGdalNetCDF::parseBandInfo( const MDAL::GdalDataset *cfGDALDatas
 
   iter = metadata.find( "netcdf_dim_time" );
   if ( iter == metadata.end() ) return true; //FAILURE, skip no-time bands
-  *time = parseMetadataTime( iter->second ) / mTimeDiv;
+  *time = MDAL::RelativeTimestamp( parseMetadataTime( iter->second ), mTimeUnit );
 
   // NAME
   iter = metadata.find( "long_name" );
@@ -78,11 +77,19 @@ bool MDAL::DriverGdalNetCDF::parseBandInfo( const MDAL::GdalDataset *cfGDALDatas
 
 void MDAL::DriverGdalNetCDF::parseGlobals( const MDAL::DriverGdal::metadata_hash &metadata )
 {
-  metadata_hash::const_iterator iter = metadata.find( "time#units" );
-  if ( iter != metadata.end() )
+  metadata_hash::const_iterator iterTimeUnit = metadata.find( "time#units" );
+  metadata_hash::const_iterator iterCalendar = metadata.find( "time#calendar" );
+  std::string  calendar;
+  if ( iterCalendar != metadata.end() )
+    calendar = iterCalendar->second;
+
+  if ( iterTimeUnit != metadata.end() )
   {
-    std::string units = iter->second;
-    mTimeDiv = MDAL::parseTimeUnits( units );
-    // TODO store reference time from iter->second too, see crayfish_netcdf.cpp
+    std::string units = iterTimeUnit->second;
+    mTimeUnit = MDAL::parseCFTimeUnit( units );
+    if ( !mRefTime.isValid() )
+      mRefTime = MDAL::parseCFReferenceTime( units, calendar );
   }
 }
+
+MDAL::DateTime MDAL::DriverGdalNetCDF::referenceTime() const {return mRefTime;}

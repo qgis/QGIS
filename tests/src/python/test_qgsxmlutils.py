@@ -64,7 +64,7 @@ class TestQgsXmlUtils(unittest.TestCase):
 
     def test_string(self):
         """
-        Test that maps are correctly loaded and written
+        Test that strings are correctly loaded and written
         """
         doc = QDomDocument("properties")
 

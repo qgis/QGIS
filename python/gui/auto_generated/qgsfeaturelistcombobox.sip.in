@@ -87,7 +87,7 @@ TODO!
 The identifier value of the currently selected feature. A value from the
 identifierField.
 
-.. deprecated:: since QGIS 3.10
+.. deprecated:: QGIS 3.10
 %End
 
     QVariantList identifierValues() const;
@@ -104,7 +104,8 @@ identifierField.
 The identifier value of the currently selected feature. A value from the
 identifierField.
 
-.. deprecated:: since QGIS 3.10 use setIdentifierValues
+.. deprecated:: QGIS 3.10
+   use setIdentifierValues
 %End
 
     void setIdentifierValues( const QVariantList &identifierValues );
@@ -143,7 +144,7 @@ Determines if a NULL value should be available in the list.
 Field name that will be used to uniquely identify the current feature.
 Normally the primary key of the layer.
 
-.. deprecated:: since QGIS 3.10
+.. deprecated:: QGIS 3.10
 %End
 
     QStringList identifierFields() const;
@@ -159,7 +160,7 @@ Normally the primary key of the layer.
 Field name that will be used to uniquely identify the current feature.
 Normally the primary key of the layer.
 
-.. deprecated:: since QGIS 3.10
+.. deprecated:: QGIS 3.10
 %End
 
     void setIdentifierFields( const QStringList &identifierFields );

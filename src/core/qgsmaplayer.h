@@ -161,8 +161,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Rendering          = 1 << 10, //!< Rendering: scale visibility, simplify method, opacity
       CustomProperties   = 1 << 11, //!< Custom properties (by plugins for instance)
       GeometryOptions    = 1 << 12, //!< Geometry validation configuration
+      Relations          = 1 << 13, //!< Relations
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
-                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions,
+                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations,
     };
     Q_ENUM( StyleCategory )
     Q_DECLARE_FLAGS( StyleCategories, StyleCategory )
@@ -523,6 +524,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool isSpatial() const;
 
     /**
+     * Returns TRUE if the layer is considered a temporary layer.
+     *
+     * These include memory-only layers such as those created by the "memory" data provider, or layers
+     * stored inside a local temporary folder (such as the "/tmp" folder on Linux).
+     *
+     * \since QGIS 3.10.1
+     */
+    virtual bool isTemporary() const;
+
+    /**
      * Flags which control project read behavior.
      * \since QGIS 3.10
      */
@@ -581,20 +592,20 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see customProperty()
      * \since QGIS 3.0
      */
-    QStringList customPropertyKeys() const;
+    Q_INVOKABLE QStringList customPropertyKeys() const;
 
     /**
      * Set a custom property for layer. Properties are stored in a map and saved in project file.
      * \see customProperty()
      * \see removeCustomProperty()
      */
-    void setCustomProperty( const QString &key, const QVariant &value );
+    Q_INVOKABLE void setCustomProperty( const QString &key, const QVariant &value );
 
     /**
      * Read a custom property from layer. Properties are stored in a map and saved in project file.
      * \see setCustomProperty()
     */
-    QVariant customProperty( const QString &value, const QVariant &defaultValue = QVariant() ) const;
+    Q_INVOKABLE QVariant customProperty( const QString &value, const QVariant &defaultValue = QVariant() ) const;
 
     /**
      * Set custom properties for layer. Current properties are dropped.
@@ -1370,6 +1381,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void dataSourceChanged();
 
+    /**
+     * Emitted when a style has been loaded
+     * \param categories style categories
+     * \since QGIS 3.12
+     */
+    void styleLoaded( QgsMapLayer::StyleCategories categories );
+
 
   private slots:
 
@@ -1532,6 +1550,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Read flags. It's up to the subclass to respect these when restoring state from XML
     QgsMapLayer::ReadFlags mReadFlags = nullptr;
+
+    /**
+     * TRUE if the layer's CRS should be validated and invalid CRSes are not permitted.
+     *
+     * \since QGIS 3.10
+     */
+    bool mShouldValidateCrs = true;
 
   private:
 

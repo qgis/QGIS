@@ -17,7 +17,6 @@
 #define QGSPOINTLOCATOR_H
 
 class QgsPointXY;
-class QgsVectorLayer;
 class QgsFeatureRenderer;
 class QgsRenderContext;
 class QgsRectangle;
@@ -29,6 +28,10 @@ class QgsVectorLayerFeatureSource;
 #include "qgscoordinatetransform.h"
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryutils.h"
+#include "qgsvectorlayer.h"
+#include "qgslinestring.h"
+#include "qgspointlocatorinittask.h"
 #include <memory>
 
 class QgsPointLocator_VisitorNearestVertex;
@@ -66,16 +69,11 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * to set the correct \a transformContext if a \a destinationCrs is specified. This is usually taken
      * from the current QgsProject::transformContext().
      *
-     * if \a asynchronous is FALSE, point locator init() method will block until point locator index
-     * is completely built. if TRUE, index building will be done in another thread and init() method returns
-     * immediately. initFinished() signal will be emitted once the initialization is over.
-     *
      * If \a extent is not NULLPTR, the locator will index only a subset of the layer which falls within that extent.
      */
     explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
                               const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
-                              const QgsRectangle *extent = nullptr,
-                              bool asynchronous = false );
+                              const QgsRectangle *extent = nullptr );
 
     ~QgsPointLocator() override;
 
@@ -128,13 +126,15 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
      * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used.
      *
-     * This method is either blocking or non blocking according to \a asynchronous parameter passed
-     * in the constructor.
+     * This method is either blocking or non blocking according to \a relaxed parameter passed
+     * in the constructor. if TRUE, index building will be done in another thread and init() method returns
+     * immediately. initFinished() signal will be emitted once the initialization is over.
+     *
      * Returns false if the creation of index is blocking and has been prematurely stopped due to the limit of features, otherwise true
      *
      * \see QgsPointLocator()
      */
-    bool init( int maxFeaturesToIndex = -1 );
+    bool init( int maxFeaturesToIndex = -1, bool relaxed = false );
 
     //! Indicate whether the data have been already indexed
     bool hasIndex() const;
@@ -199,6 +199,24 @@ class CORE_EXPORT QgsPointLocator : public QObject
           pt2 = mEdgePoints[1];
         }
 
+        /**
+         * Convenient method to return a point on an edge with linear
+         * interpolation of the Z value.
+         * \since 3.10
+         */
+        QgsPoint interpolatedPoint() const
+        {
+          QgsPoint point;
+          const QgsGeometry geom = mLayer->getGeometry( mFid );
+          if ( !( geom.isNull() || geom.isEmpty() ) )
+          {
+            QgsLineString line( geom.vertexAt( mVertexIndex ), geom.vertexAt( mVertexIndex + 1 ) );
+
+            point = QgsGeometryUtils::closestPoint( line, QgsPoint( mPoint ) );
+          }
+          return point;
+        }
+
         bool operator==( const QgsPointLocator::Match &other ) const
         {
           return mType == other.mType &&
@@ -242,50 +260,65 @@ class CORE_EXPORT QgsPointLocator : public QObject
     /**
      * Find nearest vertex to the specified point - up to distance specified by tolerance
      * Optional filter may discard unwanted matches.
+     * This method is either blocking or non blocking according to \a relaxed parameter passed
      */
-    Match nearestVertex( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
+    Match nearestVertex( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     /**
      * Find nearest edge to the specified point - up to distance specified by tolerance
      * Optional filter may discard unwanted matches.
+     * This method is either blocking or non blocking according to \a relaxed parameter passed
      */
-    Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
+    Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     /**
      * Find nearest area to the specified point - up to distance specified by tolerance
      * Optional filter may discard unwanted matches.
      * This will first perform a pointInPolygon and return first result.
      * If no match is found and tolerance is not 0, it will return nearestEdge.
+     * This method is either blocking or non blocking according to \a relaxed parameter passed
      * \since QGIS 3.0
      */
-    Match nearestArea( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
+    Match nearestArea( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     /**
      * Find edges within a specified recangle
      * Optional filter may discard unwanted matches.
+     * This method is either blocking or non blocking according to \a relaxed parameter passed
      */
-    MatchList edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = nullptr );
-    //! Override of edgesInRect that construct rectangle from a center point and tolerance
-    MatchList edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
+    MatchList edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
+
+    /**
+     * Override of edgesInRect that construct rectangle from a center point and tolerance
+     * This method is either blocking or non blocking according to \a relaxed parameter passed
+     */
+    MatchList edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     /**
      * Find vertices within a specified recangle
+     * This method is either blocking or non blocking according to \a relaxed parameter passed
      * Optional filter may discard unwanted matches.
      * \since QGIS 3.6
      */
-    MatchList verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = nullptr );
+    MatchList verticesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     /**
      * Override of verticesInRect that construct rectangle from a center point and tolerance
+     * This method is either blocking or non blocking according to \a relaxed parameter passed
      * \since QGIS 3.6
      */
-    MatchList verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
+    MatchList verticesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr, bool relaxed = false );
 
     // point-in-polygon query
 
     // TODO: function to return just the first match?
-    //! find out if the point is in any polygons
-    MatchList pointInPolygon( const QgsPointXY &point );
+
+    /**
+     * find out if the \a point is in any polygons
+     * This method is either blocking or non blocking according to \a relaxed parameter passed
+     */
+    //!
+    MatchList pointInPolygon( const QgsPointXY &point, bool relaxed = false );
 
     /**
      * Returns how many geometries are cached in the index
@@ -295,11 +328,17 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     /**
      * Returns TRUE if the point locator is currently indexing the data.
-     * This method is useful if constructor parameter \a asynchronous is TRUE
+     * This method is useful if constructor parameter \a relaxed is TRUE
      *
      * \see QgsPointLocator()
      */
     bool isIndexing() const { return mIsIndexing; }
+
+    /**
+     * If the point locator has been initialized relaxedly and is currently indexing,
+     * this methods waits for the indexing to be finished
+     */
+    void waitForIndexingFinished();
 
   signals:
 
@@ -316,8 +355,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
   protected slots:
     void destroyIndex();
   private slots:
-    void onInitTaskTerminated();
-    void onRebuildIndexFinished( bool ok );
+    void onInitTaskFinished();
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
@@ -325,8 +363,11 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
   private:
 
-    //! prepare index if need and returns TRUE if the index is ready to be used
-    bool prepare();
+    /**
+     * prepare index if need and returns TRUE if the index is ready to be used
+     * \param relaxed TRUE if index build has to be non blocking
+     */
+    bool prepare( bool relaxed );
 
     //! Storage manager
     std::unique_ptr< SpatialIndex::IStorageManager > mStorage;
@@ -347,10 +388,11 @@ class CORE_EXPORT QgsPointLocator : public QObject
     std::unique_ptr<QgsFeatureRenderer> mRenderer;
     std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
     int mMaxFeaturesToIndex = -1;
-    bool mAsynchronous = false;
     bool mIsIndexing = false;
+    bool mIsDestroying = false;
     QgsFeatureIds mAddedFeatures;
     QgsFeatureIds mDeletedFeatures;
+    QPointer<QgsPointLocatorInitTask> mInitTask;
 
     friend class QgsPointLocator_VisitorNearestVertex;
     friend class QgsPointLocator_VisitorNearestEdge;

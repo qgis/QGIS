@@ -221,6 +221,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     QgsFields mAttributeFields;
 
+    //! Map of field index to default value SQL fragments
+    QMap<int, QString> mDefaultValueClause;
+
     //! Flag indicating if the layer data source is a valid SpatiaLite layer
     bool mValid = false;
 
@@ -264,7 +267,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QString mGeometryColumn;
 
     //! Map of field index to default value
-    QMap<int, QVariant> mDefaultValues;
+    QMap<int, QString> mDefaultValues;
 
     //! Name of the SpatialIndex table
     QString mIndexTable;
@@ -382,6 +385,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     friend class QgsSpatiaLiteFeatureSource;
 
+    // QgsVectorDataProvider interface
+  public:
+    virtual QString defaultValueClause( int fieldIndex ) const override;
 };
 
 class QgsSpatiaLiteProviderMetadata: public QgsProviderMetadata
@@ -398,6 +404,7 @@ class QgsSpatiaLiteProviderMetadata: public QgsProviderMetadata
     int listStyles( const QString &uri, QStringList &ids, QStringList &names,
                     QStringList &descriptions, QString &errCause ) override;
     QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
     QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 
     QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields,
@@ -406,6 +413,19 @@ class QgsSpatiaLiteProviderMetadata: public QgsProviderMetadata
         const QMap<QString, QVariant> *options ) override;
     bool createDb( const QString &dbPath, QString &errCause ) override;
     QList< QgsDataItemProvider * > dataItemProviders() const override;
+
+    // QgsProviderMetadata interface
+  public:
+    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &name ) override;
+    void deleteConnection( const QString &name ) override;
+    void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) override;
+
+  protected:
+
+    QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
+
+
 };
 
 // clazy:excludeall=qstring-allocations

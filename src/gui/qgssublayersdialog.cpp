@@ -54,9 +54,10 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   {
     setWindowTitle( tr( "Select Vector Layers to Add…" ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
-                                  << tr( "Number of features" ) << tr( "Geometry type" ) );
+                                  << tr( "Number of features" ) << tr( "Geometry type" ) << tr( "Description" ) );
     mShowCount = true;
     mShowType = true;
+    mShowDescription = true;
   }
   else if ( providerType == QgsSublayersDialog::Gdal )
   {
@@ -86,6 +87,8 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
 QgsSublayersDialog::~QgsSublayersDialog()
 {
   QgsSettings settings;
+  settings.setValue( "/Windows/" + mName + "SubLayers/headerColumnCount",
+                     layersTable->columnCount() );
   settings.setValue( "/Windows/" + mName + "SubLayers/headerState",
                      layersTable->header()->saveState() );
 }
@@ -138,13 +141,16 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
       elements << ( item.count == -1 ? tr( "Unknown" ) : QString::number( item.count ) );
     if ( mShowType )
       elements << item.type;
+    if ( mShowDescription )
+      elements << item.description;
     layersTable->addTopLevelItem( new SubLayerItem( elements ) );
   }
 
   // resize columns
   QgsSettings settings;
   QByteArray ba = settings.value( "/Windows/" + mName + "SubLayers/headerState" ).toByteArray();
-  if ( ! ba.isNull() )
+  int savedColumnCount = settings.value( "/Windows/" + mName + "SubLayers/headerColumnCount" ).toInt();
+  if ( ! ba.isNull() && savedColumnCount == layersTable->columnCount() )
   {
     layersTable->header()->restoreState( ba );
   }

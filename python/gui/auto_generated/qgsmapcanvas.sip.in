@@ -513,7 +513,7 @@ used to determine if anti-aliasing is enabled or not
 
     bool antiAliasingEnabled() const;
 %Docstring
-``True`` if antialising is enabled
+``True`` if antialiasing is enabled
 %End
 
     void enableMapTileRendering( bool flag );
@@ -525,6 +525,7 @@ sets map tile rendering flag
 %Docstring
 Ends pan action and redraws the canvas.
 %End
+
 
     void panAction( QMouseEvent *event );
 %Docstring
@@ -842,6 +843,25 @@ Zoom to the extent of the selected features of provided (vector) layer.
 :param layer: optionally specify different than current layer
 %End
 
+    void setZoomResolutions( const QList<double> &resolutions );
+%Docstring
+Set a list of resolutions (map units per pixel) to which to "snap to" when zooming the map
+
+:param resolutions: A list of resolutions
+
+.. versionadded:: 3.12
+%End
+
+    const QList<double> &zoomResolutions() const;
+%Docstring
+
+:return: List of resolutions to which to "snap to" when zooming the map
+
+.. seealso:: :py:func:`setZoomResolutions`
+
+.. versionadded:: 3.12
+%End
+
   signals:
 
     void xyCoordinates( const QgsPointXY &p );
@@ -989,6 +1009,25 @@ Emitted whenever an error is encountered during a map render operation.
 The ``layer`` argument indicates the associated map layer, if available.
 
 .. versionadded:: 3.10.0
+%End
+
+    void panDistanceBearingChanged( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+%Docstring
+Emitted whenever the distance or bearing of an in-progress panning
+operation is changed.
+
+This signal will be emitted during a pan operation as the user moves the map,
+giving the total distance and bearing between the map position at the
+start of the pan and the current pan position.
+
+.. versionadded:: 3.12
+%End
+
+    void tapAndHoldGestureOccurred( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
+%Docstring
+Emitted whenever a tap and hold ``gesture`` occurs at the specified map point.
+
+.. versionadded:: 3.12
 %End
 
   protected:

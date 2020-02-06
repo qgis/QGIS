@@ -4,10 +4,12 @@
   "description": "Converts a string into a date object. An optional format string can be provided to parse the string; see <a href='https://doc.qt.io/qt-5/qdate.html#fromString-1'>QDate::fromString</a> for additional documentation on the format.",
   "arguments": [
    {"arg":"string","description":"string representing a date value"},
-   {"arg":"format","optional":true,"description":"format used to convert the string into a date"}
+   {"arg":"format","optional":true,"description":"format used to convert the string into a date"},
+   {"arg":"language","optional":true,"description":"language (lowercase, two- or three-letter, ISO 639 language code) used to convert the string into a date"}
   ],
   "examples": [
    { "expression":"to_date('2012-05-04')", "returns":"2012-05-04"},
-   { "expression":"to_date('June 29, 2019','MMMM d, yyyy')", "returns":"2019-06-29"}
+   { "expression":"to_date('June 29, 2019','MMMM d, yyyy')", "returns":"2019-06-29"},
+   { "expression":"to_date('29 juin, 2019','d MMMM, yyyy','fr')", "returns":"2019-06-29"}
   ]
 }

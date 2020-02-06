@@ -168,11 +168,6 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
 
     QString stripped( const QString &originalText ) const;
 
-    // This is required because private implementation of
-    // QAbstractSpinBoxPrivate checks for specialText emptiness
-    // and skips specialText handling if it's empty
-    static QString SPECIAL_TEXT_WHEN_EMPTY;
-
     friend class TestQgsRangeWidgetWrapper;
 };
 

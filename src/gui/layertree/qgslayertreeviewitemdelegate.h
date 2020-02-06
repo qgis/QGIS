@@ -48,7 +48,7 @@ class QgsLayerTreeViewProxyStyle : public QgsProxyStyle
 
     QRect subElementRect( SubElement element, const QStyleOption *option, const QWidget *widget ) const override;
 
-    static const unsigned long SE_LayerTreeItemIndicator = SE_CustomBase + 1;
+    static const auto SE_LayerTreeItemIndicator = SE_CustomBase + 1;
 
   private:
     QgsLayerTreeView *mLayerTreeView;

@@ -87,8 +87,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         # create layout with layout map
 
         # select epsg:2154
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromSrid(2154)
+        crs = QgsCoordinateReferenceSystem('epsg:2154')
         QgsProject.instance().setCrs(crs)
 
         self.layout = QgsPrintLayout(QgsProject.instance())

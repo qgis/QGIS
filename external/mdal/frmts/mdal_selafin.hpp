@@ -62,7 +62,7 @@ namespace MDAL
       ~DriverSelafin() override;
       DriverSelafin *create() override;
 
-      bool canRead( const std::string &uri ) override;
+      bool canReadMesh( const std::string &uri ) override;
       std::unique_ptr< Mesh > load( const std::string &meshFile, MDAL_Status *status ) override;
 
     private:
@@ -76,7 +76,10 @@ namespace MDAL
                        std::vector<size_t> &ikle,
                        std::vector<double> &x,
                        std::vector<double> &y );
-      void addData( const std::vector<std::string> &var_names, const std::vector<timestep_map> &data, size_t nPoints );
+      void addData( const std::vector<std::string> &var_names,
+                    const std::vector<timestep_map> &data,
+                    size_t nPoints,
+                    const DateTime &referenceTime );
       void parseFile( std::vector<std::string> &var_names,
                       double *xOrigin,
                       double *yOrigin,
@@ -86,7 +89,8 @@ namespace MDAL
                       std::vector<size_t> &ikle,
                       std::vector<double> &x,
                       std::vector<double> &y,
-                      std::vector<timestep_map> &data );
+                      std::vector<timestep_map> &data,
+                      DateTime &referenceTime );
 
       bool getStreamPrecision( std::ifstream &in );
 

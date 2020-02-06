@@ -6,17 +6,18 @@
 #ifndef MDAL_UTILS_HPP
 #define MDAL_UTILS_HPP
 
-// Macro for exporting symbols
-// for unit tests (on windows)
-#define MDAL_TEST_EXPORT MDAL_EXPORT
-
 #include <string>
 #include <vector>
 #include <stddef.h>
 #include <limits>
+#include <sstream>
+#include <fstream>
+
+#include <algorithm>
 
 #include "mdal_data_model.hpp"
 #include "mdal_memory_data_model.hpp"
+#include "mdal_datetime.hpp"
 
 // avoid unused variable warnings
 #define MDAL_UNUSED(x) (void)x;
@@ -41,6 +42,7 @@ namespace MDAL
   std::string baseName( const std::string &filename );
   std::string dirName( const std::string &filename );
   std::string pathJoin( const std::string &path1, const std::string &path2 );
+  std::string readFileToString( const std::string &filename );
 
   // strings
   enum ContainsBehaviour
@@ -59,6 +61,9 @@ namespace MDAL
 
   std::string toLower( const std::string &std );
 
+  //! Get a first line from stream clipped to first 100 characters
+  bool getHeaderLine( std::ifstream &stream, std::string &line );
+
   /** Return 0 if not possible to convert */
   size_t toSizeT( const std::string &str );
   size_t toSizeT( const char &str );
@@ -66,14 +71,23 @@ namespace MDAL
   double toDouble( const std::string &str );
   bool toBool( const std::string &str );
 
+  //! Returns the string with a adapted format to coordinate
+  //! precision is the number of digits after the digital point if fabs(value)>180 (seems to not be a geographic coordinate)
+  //! precision+6 is the number of digits after the digital point if fabs(value)<=180 (could be a geographic coordinate)
+  std::string coordinateToString( double coordinate, int precision = 2 );
+
+  //! Returns a string with scientific format
+  //! precision is the number of signifiant digits
+  std::string doubleToString( double value, int precision = 6 );
+
   /**
    * Splits by deliminer and skips empty parts.
    * Faster than version with std::string
    */
-  MDAL_TEST_EXPORT std::vector<std::string> split( const std::string &str, const char delimiter );
+  std::vector<std::string> split( const std::string &str, const char delimiter );
 
   //! Splits by deliminer and skips empty parts
-  MDAL_TEST_EXPORT std::vector<std::string> split( const std::string &str, const std::string &delimiter );
+  std::vector<std::string> split( const std::string &str, const std::string &delimiter );
 
   std::string join( const std::vector<std::string> parts, const std::string &delimiter );
 
@@ -97,7 +111,9 @@ namespace MDAL
 
   // time
   //! Returns a delimiter to get time in hours
-  MDAL_TEST_EXPORT double parseTimeUnits( const std::string &units );
+  double parseTimeUnits( const std::string &units );
+  //! Returns current time stamp in YYYY-mm-ddTHH:MM:SSzoneOffset
+  std::string getCurrentTimeStamp();
 
   // statistics
   void combineStatistics( Statistics &main, const Statistics &other );
@@ -112,10 +128,36 @@ namespace MDAL
   // mesh & datasets
   //! Adds bed elevatiom dataset group to mesh
   void addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertices );
-  //! Adds face scalar dataset group to mesh
+  //! Adds altitude dataset group to mesh
   void addFaceScalarDatasetGroup( MDAL::Mesh *mesh, const std::vector<double> &values, const std::string &name );
-  //! Loop through all faces and activate those which has all 4 values on vertices valid
-  void activateFaces( MDAL::MemoryMesh *mesh, std::shared_ptr<MemoryDataset> dataset );
+
+  //! function used to read all of type of value. Option to change the endianness is provided
+  template<typename T>
+  bool readValue( T &value, std::ifstream &in, bool changeEndianness = false )
+  {
+    char *const p = reinterpret_cast<char *>( &value );
+
+    if ( !in.read( p, sizeof( T ) ) )
+      return false;
+
+    if ( changeEndianness )
+      std::reverse( p, p + sizeof( T ) );
+
+    return true;
+  }
+
+  //! Prepend 0 to string to have n char
+  std::string prependZero( const std::string &str, size_t length );
+
+  RelativeTimestamp::Unit parseDurationTimeUnit( const std::string &timeUnit );
+
+  //! parse the time unit in the CF convention string format "XXXX since 2019-01-01 00:00:00"
+  //! https://www.unidata.ucar.edu/software/netcdf-java/current/CDM/CalendarDateTime.html
+  RelativeTimestamp::Unit parseCFTimeUnit( std::string timeInformation );
+
+  //! parse the reference time in the CF convention string format "XXXX since 2019-01-01 00:00:00"
+  //! https://www.unidata.ucar.edu/software/netcdf-java/current/CDM/CalendarDateTime.html
+  MDAL::DateTime parseCFReferenceTime( const std::string &timeInformation, const std::string &calendarString );
 
 } // namespace MDAL
 #endif //MDAL_UTILS_HPP

@@ -187,10 +187,7 @@ void QgsQuickMapSettings::onReadProject( const QDomDocument &doc )
 {
   if ( mProject )
   {
-    int red = mProject->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
-    int green = mProject->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
-    int blue = mProject->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
-    mMapSettings.setBackgroundColor( QColor( red, green, blue ) );
+    mMapSettings.setBackgroundColor( mProject->backgroundColor() );
   }
 
   QDomNodeList nodes = doc.elementsByTagName( "mapcanvas" );

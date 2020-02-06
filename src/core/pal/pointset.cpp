@@ -127,15 +127,23 @@ void PointSet::createGeosGeom() const
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints + ( needClose ? 1 : 0 ), 2 );
   for ( int i = 0; i < nbPoints; ++i )
   {
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    GEOSCoordSeq_setXY_r( geosctxt, coord, i, x[i], y[i] );
+#else
     GEOSCoordSeq_setX_r( geosctxt, coord, i, x[i] );
     GEOSCoordSeq_setY_r( geosctxt, coord, i, y[i] );
+#endif
   }
 
   //close ring if needed
   if ( needClose )
   {
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    GEOSCoordSeq_setXY_r( geosctxt, coord, nbPoints, x[0], y[0] );
+#else
     GEOSCoordSeq_setX_r( geosctxt, coord, nbPoints, x[0] );
     GEOSCoordSeq_setY_r( geosctxt, coord, nbPoints, y[0] );
+#endif
   }
 
   switch ( type )
@@ -177,6 +185,8 @@ void PointSet::invalidateGeos()
   mOwnsGeom = false;
   mGeos = nullptr;
   mPreparedGeom = nullptr;
+  mLength = -1;
+  mArea = -1;
 }
 
 PointSet::~PointSet()
@@ -201,12 +211,11 @@ void PointSet::deleteCoords()
   y.clear();
 }
 
-PointSet *PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty )
+std::unique_ptr<PointSet> PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty )
 {
-
   int i, j;
 
-  PointSet *newShape = new PointSet();
+  std::unique_ptr<PointSet> newShape = qgis::make_unique< PointSet >();
   newShape->type = GEOS_POLYGON;
   newShape->nbPoints = nbPtSh;
   newShape->x.resize( newShape->nbPoints );
@@ -239,10 +248,14 @@ bool PointSet::containsPoint( double x, double y ) const
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    geos::unique_ptr point( GEOSGeom_createPointFromXY_r( geosctxt, x, y ) );
+#else
     GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
     GEOSCoordSeq_setX_r( geosctxt, seq, 0, x );
     GEOSCoordSeq_setY_r( geosctxt, seq, 0, y );
     geos::unique_ptr point( GEOSGeom_createPoint_r( geosctxt, seq ) );
+#endif
     bool result = ( GEOSPreparedContainsProperly_r( geosctxt, preparedGeom(), point.get() ) == 1 );
 
     return result;
@@ -260,8 +273,8 @@ bool PointSet::containsLabelCandidate( double x, double y, double width, double 
   return GeomFunction::containsCandidate( preparedGeom(), x, y, width, height, alpha );
 }
 
-void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
-                              QLinkedList<PointSet *> &shapes_final,
+void PointSet::splitPolygons( QLinkedList<PointSet *> &inputShapes,
+                              QLinkedList<PointSet *> &outputShapes,
                               double xrm, double yrm )
 {
   int i, j;
@@ -301,9 +314,9 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
 
   PointSet *shape = nullptr;
 
-  while ( !shapes_toProcess.isEmpty() )
+  while ( !inputShapes.isEmpty() )
   {
-    shape = shapes_toProcess.takeFirst();
+    shape = inputShapes.takeFirst();
 
     x = shape->x;
     y = shape->y;
@@ -497,33 +510,33 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
       // check for useless splitting
       else if ( imax == imin || nbPtSh1 <= 2 || nbPtSh2 <= 2 || nbPtSh1 == nbp  || nbPtSh2 == nbp )
       {
-        shapes_final.append( shape );
+        outputShapes.append( shape );
       }
       else
       {
 
-        PointSet *newShape = shape->extractShape( nbPtSh1, imin, imax, fps, fpe, fptx, fpty );
+        PointSet *newShape = shape->extractShape( nbPtSh1, imin, imax, fps, fpe, fptx, fpty ).release();
 
         if ( shape->parent )
           newShape->parent = shape->parent;
         else
           newShape->parent = shape;
 
-        shapes_toProcess.append( newShape );
+        inputShapes.append( newShape );
 
         if ( imax == fps )
           imax = fpe;
         else
           imax = fps;
 
-        newShape = shape->extractShape( nbPtSh2, imax, imin, fps, fpe, fptx, fpty );
+        newShape = shape->extractShape( nbPtSh2, imax, imin, fps, fpe, fptx, fpty ).release();
 
         if ( shape->parent )
           newShape->parent = shape->parent;
         else
           newShape->parent = shape;
 
-        shapes_toProcess.append( newShape );
+        inputShapes.append( newShape );
 
         if ( shape->parent )
           delete shape;
@@ -531,7 +544,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
     }
     else
     {
-      shapes_final.append( shape );
+      outputShapes.append( shape );
     }
     delete[] pts;
   }
@@ -624,7 +637,7 @@ void PointSet::extendLineByDistance( double startDistance, double endDistance, d
   invalidateGeos();
 }
 
-CHullBox *PointSet::compute_chull_bbox()
+CHullBox PointSet::compute_chull_bbox()
 {
   int i;
   int j;
@@ -756,18 +769,18 @@ CHullBox *PointSet::compute_chull_bbox()
 
   // best bbox is defined
 
-  CHullBox *finalBb = new CHullBox();
+  CHullBox finalBb;
 
   for ( i = 0; i < 16; i = i + 4 )
   {
     GeomFunction::computeLineIntersection( best_bb[i], best_bb[i + 1], best_bb[i + 2], best_bb[i + 3],
                                            best_bb[( i + 4 ) % 16], best_bb[( i + 5 ) % 16], best_bb[( i + 6 ) % 16], best_bb[( i + 7 ) % 16],
-                                           &finalBb->x[int ( i / 4 )], &finalBb->y[int ( i / 4 )] );
+                                           &finalBb.x[int ( i / 4 )], &finalBb.y[int ( i / 4 )] );
   }
 
-  finalBb->alpha = best_alpha;
-  finalBb->width = best_width;
-  finalBb->length = best_length;
+  finalBb.alpha = best_alpha;
+  finalBb.width = best_width;
+  finalBb.length = best_length;
 
   return finalBb;
 }
@@ -783,11 +796,14 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
   GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    geos::unique_ptr geosPt( GEOSGeom_createPointFromXY_r( geosctxt, px, py ) );
+#else
     GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
     GEOSCoordSeq_setX_r( geosctxt, coord, 0, px );
     GEOSCoordSeq_setY_r( geosctxt, coord, 0, py );
     geos::unique_ptr geosPt( GEOSGeom_createPoint_r( geosctxt, coord ) );
-
+#endif
     int type = GEOSGeomTypeId_r( geosctxt, mGeos );
     const GEOSGeometry *extRing = nullptr;
     if ( type != GEOS_POLYGON )
@@ -802,8 +818,12 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
     geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosctxt, extRing, geosPt.get() ) );
     double nx;
     double ny;
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+    ( void )GEOSCoordSeq_getXY_r( geosctxt, nearestCoord.get(), 0, &nx, &ny );
+#else
     ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord.get(), 0, &nx );
     ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord.get(), 0, &ny );
+#endif
 
     if ( rx )
       *rx = nx;
@@ -834,8 +854,12 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
     if ( centroidGeom )
     {
       const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom.get() );
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+      GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
+#else
       GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
       GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
+#endif
     }
 
     // check if centroid inside in polygon
@@ -846,8 +870,12 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
       if ( pointGeom )
       {
         const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom.get() );
+#if GEOS_VERSION_MAJOR>3 || GEOS_VERSION_MINOR>=8
+        GEOSCoordSeq_getXY_r( geosctxt, coordSeq, 0, &px, &py );
+#else
         GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
         GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
+#endif
       }
     }
   }
@@ -918,6 +946,9 @@ const GEOSGeometry *PointSet::geos() const
 
 double PointSet::length() const
 {
+  if ( mLength >= 0 )
+    return mLength;
+
   if ( !mGeos )
     createGeosGeom();
 
@@ -928,9 +959,34 @@ double PointSet::length() const
 
   try
   {
-    double len = 0;
-    ( void )GEOSLength_r( geosctxt, mGeos, &len );
-    return len;
+    ( void )GEOSLength_r( geosctxt, mGeos, &mLength );
+    return mLength;
+  }
+  catch ( GEOSException &e )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    return -1;
+  }
+}
+
+double PointSet::area() const
+{
+  if ( mArea >= 0 )
+    return mArea;
+
+  if ( !mGeos )
+    createGeosGeom();
+
+  if ( !mGeos )
+    return -1;
+
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+
+  try
+  {
+    ( void )GEOSArea_r( geosctxt, mGeos, &mArea );
+    mArea = std::fabs( mArea );
+    return mArea;
   }
   catch ( GEOSException &e )
   {

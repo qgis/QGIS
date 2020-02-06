@@ -166,7 +166,7 @@ bool QgsGeometryUtils::verticesAtDistance( const QgsAbstractGeometry &geometry, 
   bool first = true;
   while ( currentDist < distance && geometry.nextVertex( nextVertex, point ) )
   {
-    if ( !first )
+    if ( !first && nextVertex.part == previousVertex.part && nextVertex.ring == previousVertex.ring )
     {
       currentDist += std::sqrt( QgsGeometryUtils::sqrDistance2D( previousPoint, point ) );
     }
@@ -1143,7 +1143,7 @@ QDomElement QgsGeometryUtils::pointsToGML2( const QgsPointSequence &points, QDom
 
   // coordinate separator
   QString cs = QStringLiteral( "," );
-  // tupel separator
+  // tuple separator
   QString ts = QStringLiteral( " " );
 
   elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );

@@ -33,6 +33,7 @@ class QgsGeoPackageProviderConnection : public QgsAbstractDatabaseProviderConnec
   public:
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
+    QString tableUri( const QString &schema, const QString &name ) const override;
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void dropRasterTable( const QString &schema, const QString &name ) const override;

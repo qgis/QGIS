@@ -7,6 +7,7 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # POLICIES
 CMAKE_POLICY (SET CMP0048 NEW)
 CMAKE_POLICY (SET CMP0053 NEW)
+CMAKE_POLICY (SET CMP0071 NEW)
 
 # don't relink it only the shared object changes
 SET(CMAKE_LINK_DEPENDS_NO_SHARED ON)
@@ -14,7 +15,7 @@ SET(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 SET(CPACK_PACKAGE_VERSION_MAJOR "3")
-SET(CPACK_PACKAGE_VERSION_MINOR "9")
+SET(CPACK_PACKAGE_VERSION_MINOR "11")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
@@ -43,7 +44,7 @@ IF (USE_OPENCL)
     FIND_PACKAGE(OpenCL)
     IF(${OpenCL_FOUND})
         SET(HAVE_OPENCL TRUE)
-        # Fixup for standard FindOpenCL module not assinging proper framework headers directory
+        # Fixup for standard FindOpenCL module not assigning proper framework headers directory
         IF (APPLE AND "${OpenCL_INCLUDE_DIR}" MATCHES "OpenCL\\.framework/?$")
             SET(OpenCL_INCLUDE_DIR "${OpenCL_INCLUDE_DIR}/Headers" CACHE PATH "" FORCE)
             SET(OpenCL_INCLUDE_DIRS ${OpenCL_INCLUDE_DIR})
@@ -140,6 +141,7 @@ IF(WITH_CORE)
     # as otherwise user has to use PYTHONPATH environment variable to add
     # QGIS bindings to package search path
     SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
+    SET (SIP_GLOBAL_INSTALL FALSE CACHE BOOL "Install sip source files to system sip directory? (might need root)")
     SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
     SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
     # concatenate QScintilla2 API files
@@ -189,7 +191,7 @@ IF(WITH_CORE)
     # The qgis_desktop target is meant to build a minimal but complete running QGIS during development
     # This should help to reduce compile time while still having a "complete enough" QGIS for most of the development
     ADD_CUSTOM_TARGET(qgis_desktop
-    	DEPENDS qgis qgispython pycore pygui pyanalysis postgresprovider staged-plugins pyplugin-installer
+      DEPENDS qgis qgispython pycore pygui pyanalysis postgresprovider staged-plugins pyplugin-installer resources svg doc icons
     )
   ENDIF ()
 
@@ -455,6 +457,8 @@ IF(WITH_CORE)
   ADD_DEFINITIONS(-DQT_NO_CAST_TO_ASCII)
 ENDIF(WITH_CORE)
 
+SET(CMAKE_AUTOMOC ON)
+
 # build our version of astyle
 SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare-commit.sh (using 'our' astyle)")
 
@@ -526,6 +530,7 @@ IF (PEDANTIC)
     SET(_warnings "${_warnings} /wd4706 ")  # assignment within conditional expression (pal)
     SET(_warnings "${_warnings} /wd4714 ")  # function '...' marked as __forceinline not inlined (QString::toLower/toUpper/trimmed)
     SET(_warnings "${_warnings} /wd4800 ")  # 'int' : forcing value to bool 'true' or 'false' (performance warning)
+    SET(_warnings "${_warnings} /wd4996 ")  # '...': was declared deprecated (unfortunately triggered when implementing deprecated interfaces even when it is deprecated too)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_warnings}")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
   ELSE (MSVC)
@@ -543,10 +548,10 @@ IF (PEDANTIC)
     # unavoidable - we can't avoid these, as older, supported compilers do not support removing the redundant move
     SET(_warnings "${_warnings} -Wno-redundant-move")
 
-    IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 8.0)
+    IF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.9.999)
       # heaps of these thrown by Qt headers at the moment (sep 2019)
       SET(_warnings "${_warnings} -Wno-deprecated-copy")
-    ENDIF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 8.0)
+    ENDIF(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 7.9.999)
 
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
 
@@ -753,6 +758,14 @@ IF (WITH_CORE)
 
   SET(CMAKE_CXX_VISIBILITY_PRESET hidden)
   INCLUDE(GenerateExportHeader)
+
+  SET (ADD_CLAZY_CHECKS ${DEFAULT_MANUAL_SUBDIR} CACHE STRING "Add default set of clazy checks which should not raise any warnings")
+  MARK_AS_ADVANCED (ADD_CLAZY_CHECKS)
+  IF (ADD_CLAZY_CHECKS)
+  SET(CMAKE_CXX_BASE_FLAGS "${CMAKE_CXX_FLAGS}")
+  SET(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lambda-in-connect,lowercase-qml-type-name,qcolor-from-literal,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,missing-qobject-macro,isempty-vs-count")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS}")
+  ENDIF (ADD_CLAZY_CHECKS)
 ENDIF (WITH_CORE)
 
 #############################################################

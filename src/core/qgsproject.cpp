@@ -57,6 +57,8 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsprojectviewsettings.h"
+#include "qgsprojectdisplaysettings.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -94,7 +96,7 @@ QStringList makeKeyTokens_( const QString &scope, const QString &key )
   // be sure to include the canonical root node
   keyTokens.push_front( QStringLiteral( "properties" ) );
 
-  //check validy of keys since an unvalid xml name will will be dropped upon saving the xml file. If not valid, we print a message to the console.
+  //check validy of keys since an invalid xml name will will be dropped upon saving the xml file. If not valid, we print a message to the console.
   for ( int i = 0; i < keyTokens.size(); ++i )
   {
     QString keyToken = keyTokens.at( i );
@@ -361,6 +363,8 @@ QgsProject::QgsProject( QObject *parent )
   , mAnnotationManager( new QgsAnnotationManager( this ) )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
+  , mViewSettings( new QgsProjectViewSettings( this ) )
+  , mDisplaySettings( new QgsProjectDisplaySettings( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
   , mArchive( new QgsProjectArchive() )
@@ -415,6 +419,10 @@ QgsProject::QgsProject( QObject *parent )
     }
   }
          );
+
+  Q_NOWARN_DEPRECATED_PUSH
+  connect( mViewSettings, &QgsProjectViewSettings::mapScalesChanged, this, &QgsProject::mapScalesChanged );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 
@@ -463,6 +471,16 @@ void QgsProject::setTitle( const QString &title )
 QString QgsProject::title() const
 {
   return mMetadata.title();
+}
+
+QString QgsProject::saveUser() const
+{
+  return mSaveUser;
+}
+
+QString QgsProject::saveUserFullName() const
+{
+  return mSaveUserFull;
 }
 
 bool QgsProject::isDirty() const
@@ -675,9 +693,9 @@ void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs, bool adjustEll
 QString QgsProject::ellipsoid() const
 {
   if ( !crs().isValid() )
-    return GEO_NONE;
+    return geoNone();
 
-  return readEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), GEO_NONE );
+  return readEntry( QStringLiteral( "Measure" ), QStringLiteral( "/Ellipsoid" ), geoNone() );
 }
 
 void QgsProject::setEllipsoid( const QString &ellipsoid )
@@ -712,11 +730,13 @@ void QgsProject::setTransformContext( const QgsCoordinateTransformContext &conte
 
 void QgsProject::clear()
 {
-  QgsSettings s;
+  QgsSettings settings;
 
   mProjectScope.reset();
   mFile.setFileName( QString() );
   mProperties.clearKeys();
+  mSaveUser.clear();
+  mSaveUserFull.clear();
   mHomePath.clear();
   mCachedHomePath.clear();
   mAutoTransaction = false;
@@ -725,7 +745,7 @@ void QgsProject::clear()
   mTrustLayerMetadata = false;
   mCustomVariables.clear();
   mMetadata = QgsProjectMetadata();
-  if ( !s.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
+  if ( !settings.value( QStringLiteral( "projects/anonymize_new_projects" ), false, QgsSettings::Core ).toBool() )
   {
     mMetadata.setCreationDateTime( QDateTime::currentDateTime() );
     mMetadata.setAuthor( QgsApplication::userFullName() );
@@ -741,6 +761,8 @@ void QgsProject::clear()
   mAnnotationManager->clear();
   mLayoutManager->clear();
   mBookmarkManager->clear();
+  mViewSettings->reset();
+  mDisplaySettings->reset();
   mSnappingConfig.reset();
   emit snappingConfigChanged( mSnappingConfig );
   emit topologicalEditingChanged();
@@ -768,8 +790,19 @@ void QgsProject::clear()
   writeEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
 
   //copy default units to project
-  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), s.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
-  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), s.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
+  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/DistanceUnits" ), settings.value( QStringLiteral( "/qgis/measure/displayunits" ) ).toString() );
+  writeEntry( QStringLiteral( "Measurement" ), QStringLiteral( "/AreaUnits" ), settings.value( QStringLiteral( "/qgis/measure/areaunits" ) ).toString() );
+
+  int red = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
+  int green = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
+  int blue = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
+  setBackgroundColor( QColor( red, green, blue ) );
+
+  red = settings.value( QStringLiteral( "qgis/default_selection_color_red" ), 255 ).toInt();
+  green = settings.value( QStringLiteral( "qgis/default_selection_color_green" ), 255 ).toInt();
+  blue = settings.value( QStringLiteral( "qgis/default_selection_color_blue" ), 0 ).toInt();
+  int alpha = settings.value( QStringLiteral( "qgis/default_selection_color_alpha" ), 255 ).toInt();
+  setSelectionColor( QColor( red, green, blue, alpha ) );
 
   removeAllMapLayers();
   mRootGroup->clear();
@@ -782,7 +815,7 @@ void QgsProject::clear()
 // basically a debugging tool to dump property list values
 void dump_( const QgsProjectPropertyKey &topQgsPropertyKey )
 {
-  QgsDebugMsg( QStringLiteral( "current properties:" ) );
+  QgsDebugMsgLevel( QStringLiteral( "current properties:" ), 3 );
   topQgsPropertyKey.dump();
 }
 
@@ -878,6 +911,24 @@ static void _getTitle( const QDomDocument &doc, QString &title )
   title = titleText.data();
 
 }
+
+static void readProjectFileMetadata( const QDomDocument &doc, QString &lastUser, QString &lastUserFull )
+{
+  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
+
+  if ( !nl.count() )
+  {
+    QgsDebugMsg( "unable to find qgis element" );
+    return;
+  }
+
+  QDomNode qgisNode = nl.item( 0 ); // there should only be one, so zeroth element OK
+
+  QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
+  lastUser = qgisElement.attribute( QStringLiteral( "saveUser" ), QString() );
+  lastUserFull = qgisElement.attribute( QStringLiteral( "saveUserFull" ), QString() );
+}
+
 
 QgsProjectVersion getVersion( const QDomDocument &doc )
 {
@@ -1025,12 +1076,12 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   // have the layer restore state that is stored in Dom node
   QgsMapLayer::ReadFlags layerFlags = nullptr;
-  if ( flags & QgsProject::FlagDontResolveLayers )
+  if ( flags & QgsProject::ReadFlag::FlagDontResolveLayers )
     layerFlags |= QgsMapLayer::FlagDontResolveLayers;
   bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags ) && mapLayer->isValid();
   QList<QgsMapLayer *> newLayers;
   newLayers << mapLayer.get();
-  if ( layerIsValid || flags & QgsProject::FlagDontResolveLayers )
+  if ( layerIsValid || flags & QgsProject::ReadFlag::FlagDontResolveLayers )
   {
     emit readMapLayer( mapLayer.get(), layerElem );
     addMapLayers( newLayers );
@@ -1171,17 +1222,17 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 
   projectFile.close();
 
-  QgsDebugMsg( "Opened document " + projectFile.fileName() );
+  QgsDebugMsgLevel( "Opened document " + projectFile.fileName(), 2 );
 
   // get project version string, if any
   QgsProjectVersion fileVersion = getVersion( *doc );
-  QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
+  QgsProjectVersion thisVersion( Qgis::version() );
 
   if ( thisVersion > fileVersion )
   {
     QgsLogger::warning( "Loading a file that was saved with an older "
                         "version of qgis (saved in " + fileVersion.text() +
-                        ", loaded in " + Qgis::QGIS_VERSION +
+                        ", loaded in " + Qgis::version() +
                         "). Problems may occur." );
 
     QgsProjectFileTransform projectFile( *doc, fileVersion );
@@ -1204,7 +1255,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   // now get any properties
   _getProperties( *doc, mProperties );
 
-  QgsDebugMsg( QString::number( mProperties.count() ) + " properties read" );
+  QgsDebugMsgLevel( QString::number( mProperties.count() ) + " properties read", 2 );
 
 #if 0
   dump_( mProperties );
@@ -1213,6 +1264,8 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   // get older style project title
   QString oldTitle;
   _getTitle( *doc, oldTitle );
+
+  readProjectFileMetadata( *doc, mSaveUser, mSaveUserFull );
 
   QDomNodeList homePathNl = doc->elementsByTagName( QStringLiteral( "homePath" ) );
   if ( homePathNl.count() > 0 )
@@ -1226,6 +1279,16 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   {
     emit homePathChanged();
   }
+
+  const QColor backgroundColor( readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 ),
+                                readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 ),
+                                readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 ) );
+  setBackgroundColor( backgroundColor );
+  const QColor selectionColor( readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), 255 ),
+                               readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), 255 ),
+                               readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), 255 ),
+                               readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), 255 ) );
+  setSelectionColor( selectionColor );
 
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
@@ -1246,17 +1309,23 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     {
       QString projCrsString = readEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSProj4String" ) );
       long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
+      const QString authid = readEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCrs" ) );
+
+      // authid should be prioritized over all
+      bool isUserAuthId = authid.startsWith( QLatin1String( "USER:" ), Qt::CaseInsensitive );
+      if ( !authid.isEmpty() && !isUserAuthId )
+        projectCrs = QgsCoordinateReferenceSystem( authid );
 
       // try the CRS
-      if ( currentCRS >= 0 )
+      if ( !projectCrs.isValid() && currentCRS >= 0 )
       {
         projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
       }
 
       // if that didn't produce a match, try the proj.4 string
-      if ( !projCrsString.isEmpty() && ( !projectCrs.isValid() || projectCrs.toProj4() != projCrsString ) )
+      if ( !projCrsString.isEmpty() && ( authid.isEmpty() || isUserAuthId ) && ( !projectCrs.isValid() || projectCrs.toProj() != projCrsString ) )
       {
-        projectCrs = QgsCoordinateReferenceSystem::fromProj4( projCrsString );
+        projectCrs = QgsCoordinateReferenceSystem::fromProj( projCrsString );
       }
 
       // last just take the given id
@@ -1274,6 +1343,24 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
     emit missingDatumTransforms( datumErrors );
   }
   emit transformContextChanged();
+
+  //add variables defined in project file - do this early in the reading cycle, as other components
+  //(e.g. layouts) may depend on these variables
+  QStringList variableNames = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ) );
+  QStringList variableValues = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableValues" ) );
+
+  mCustomVariables.clear();
+  if ( variableNames.length() == variableValues.length() )
+  {
+    for ( int i = 0; i < variableNames.length(); ++i )
+    {
+      mCustomVariables.insert( variableNames.at( i ), variableValues.at( i ) );
+    }
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Project Variables Invalid" ), tr( "The project contains invalid variable settings." ) );
+  }
 
   QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "projectMetadata" ) );
   if ( !nl.isEmpty() )
@@ -1417,7 +1504,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   emit labelingEngineSettingsChanged();
 
   mAnnotationManager->readXml( doc->documentElement(), context );
-  if ( !( flags & QgsProject::FlagDontLoadLayouts ) )
+  if ( !( flags & QgsProject::ReadFlag::FlagDontLoadLayouts ) )
     mLayoutManager->readXml( doc->documentElement(), *doc );
   mBookmarkManager->readXml( doc->documentElement(), *doc );
 
@@ -1429,22 +1516,33 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   }
 
   mSnappingConfig.readProject( *doc );
-  //add variables defined in project file
-  QStringList variableNames = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ) );
-  QStringList variableValues = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableValues" ) );
 
-  mCustomVariables.clear();
-  if ( variableNames.length() == variableValues.length() )
+  // restore older project scales settings
+  mViewSettings->setUseProjectScales( readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
+  const QStringList scales = readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
+  QVector<double> res;
+  for ( const QString &scale : scales )
   {
-    for ( int i = 0; i < variableNames.length(); ++i )
+    const QStringList parts = scale.split( ':' );
+    if ( parts.size() != 2 )
+      continue;
+
+    bool ok = false;
+    const double denominator = QLocale().toDouble( parts[1], &ok );
+    if ( ok )
     {
-      mCustomVariables.insert( variableNames.at( i ), variableValues.at( i ) );
+      res << denominator;
     }
   }
-  else
-  {
-    QgsMessageLog::logMessage( tr( "Project Variables Invalid" ), tr( "The project contains invalid variable settings." ) );
-  }
+  mViewSettings->setMapScales( res );
+  QDomElement viewSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectViewSettings" ) );
+  if ( !viewSettingsElement.isNull() )
+    mViewSettings->readXml( viewSettingsElement, context );
+
+  QDomElement displaySettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectDisplaySettings" ) );
+  if ( !displaySettingsElement.isNull() )
+    mDisplaySettings->readXml( displaySettingsElement, context );
+
   emit customVariablesChanged();
   emit crsChanged();
   emit ellipsoidChanged( ellipsoid() );
@@ -1459,6 +1557,9 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   // if all went well, we're allegedly in pristine state
   if ( clean )
     setDirty( false );
+
+  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUser ) );
+  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUserFull ) );
 
   Q_NOWARN_DEPRECATED_PUSH
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
@@ -1648,7 +1749,7 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_home" ), QDir::toNativeSeparators( homePath() ), true, true ) );
   QgsCoordinateReferenceSystem projectCrs = crs();
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true, true ) );
-  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj4(), true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj(), true, true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_ellipsoid" ), ellipsoid(), true, true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "_project_transform_context" ), QVariant::fromValue<QgsCoordinateTransformContext>( transformContext() ), true, true ) );
 
@@ -1884,8 +1985,23 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   QDomElement qgisNode = doc->createElement( QStringLiteral( "qgis" ) );
   qgisNode.setAttribute( QStringLiteral( "projectname" ), title() );
-  qgisNode.setAttribute( QStringLiteral( "version" ), QStringLiteral( "%1" ).arg( Qgis::QGIS_VERSION ) );
+  qgisNode.setAttribute( QStringLiteral( "version" ), QStringLiteral( "%1" ).arg( Qgis::version() ) );
 
+  QgsSettings settings;
+  if ( !settings.value( QStringLiteral( "projects/anonymize_saved_projects" ), false, QgsSettings::Core ).toBool() )
+  {
+    QString newSaveUser = QgsApplication::userLoginName();
+    QString newSaveUserFull = QgsApplication::userFullName();
+    qgisNode.setAttribute( QStringLiteral( "saveUser" ), newSaveUser );
+    qgisNode.setAttribute( QStringLiteral( "saveUserFull" ), newSaveUserFull );
+    mSaveUser = newSaveUser;
+    mSaveUserFull = newSaveUserFull;
+  }
+  else
+  {
+    mSaveUser.clear();
+    mSaveUserFull.clear();
+  }
   doc->appendChild( qgisNode );
 
   QDomElement homePathNode = doc->createElement( QStringLiteral( "homePath" ) );
@@ -2003,12 +2119,21 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   mLabelingEngineSettings->writeSettingsToProject( this );
 
+  writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), mBackgroundColor.red() );
+  writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), mBackgroundColor.green() );
+  writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), mBackgroundColor.blue() );
+
+  writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorRedPart" ), mSelectionColor.red() );
+  writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorGreenPart" ), mSelectionColor.green() );
+  writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorBluePart" ), mSelectionColor.blue() );
+  writeEntry( QStringLiteral( "Gui" ), QStringLiteral( "/SelectionColorAlphaPart" ), mSelectionColor.alpha() );
+
   // now add the optional extra properties
 #if 0
   dump_( mProperties );
 #endif
 
-  QgsDebugMsg( QStringLiteral( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ) );
+  QgsDebugMsgLevel( QStringLiteral( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ), 1 );
 
   if ( !mProperties.isEmpty() ) // only worry about properties if we
     // actually have any properties
@@ -2032,6 +2157,12 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   QDomElement bookmarkElem = mBookmarkManager->writeXml( *doc );
   qgisNode.appendChild( bookmarkElem );
+
+  QDomElement viewSettingsElem = mViewSettings->writeXml( *doc, context );
+  qgisNode.appendChild( viewSettingsElem );
+
+  QDomElement displaySettingsElem = mDisplaySettings->writeXml( *doc, context );
+  qgisNode.appendChild( displaySettingsElem );
 
   // now wrap it up and ship it to the project file
   doc->normalize();             // XXX I'm not entirely sure what this does
@@ -2110,7 +2241,6 @@ bool QgsProject::writeProjectFile( const QString &filename )
   setDirty( false );               // reset to pristine state
 
   emit projectSaved();
-
   return true;
 }
 
@@ -2410,13 +2540,21 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
   static QDateTime sPrevProjectFileTimestamp;
   static QDomDocument sProjectDocument;
 
+  QString qgsProjectFile = projectFilePath;
+  QgsProjectArchive archive;
+  if ( projectFilePath.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
+  {
+    archive.unzip( projectFilePath );
+    qgsProjectFile = archive.projectFile();
+  }
+
   QDateTime projectFileTimestamp = QFileInfo( projectFilePath ).lastModified();
 
   if ( projectFilePath != sPrevProjectFilePath || projectFileTimestamp != sPrevProjectFileTimestamp )
   {
     sPrevProjectFilePath.clear();
 
-    QFile projectFile( projectFilePath );
+    QFile projectFile( qgsProjectFile );
     if ( !projectFile.open( QIODevice::ReadOnly ) )
     {
       return false;
@@ -2490,8 +2628,16 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
 
 QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers, QgsProject::ReadFlags flags )
 {
+  QString qgsProjectFile = projectFilePath;
+  QgsProjectArchive archive;
+  if ( projectFilePath.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
+  {
+    archive.unzip( projectFilePath );
+    qgsProjectFile = archive.projectFile();
+  }
+
   // open project file, get layer ids in group, add the layers
-  QFile projectFile( projectFilePath );
+  QFile projectFile( qgsProjectFile );
   if ( !projectFile.open( QIODevice::ReadOnly ) )
   {
     return nullptr;
@@ -2710,6 +2856,26 @@ const QgsBookmarkManager *QgsProject::bookmarkManager() const
 QgsBookmarkManager *QgsProject::bookmarkManager()
 {
   return mBookmarkManager;
+}
+
+const QgsProjectViewSettings *QgsProject::viewSettings() const
+{
+  return mViewSettings;
+}
+
+QgsProjectViewSettings *QgsProject::viewSettings()
+{
+  return mViewSettings;
+}
+
+const QgsProjectDisplaySettings *QgsProject::displaySettings() const
+{
+  return mDisplaySettings;
+}
+
+QgsProjectDisplaySettings *QgsProject::displaySettings()
+{
+  return mDisplaySettings;
 }
 
 QgsLayerTree *QgsProject::layerTreeRoot() const
@@ -3049,17 +3215,19 @@ QgsCoordinateReferenceSystem QgsProject::defaultCrsForNewLayers() const
 {
   QgsSettings settings;
   QgsCoordinateReferenceSystem defaultCrs;
-  if ( settings.value( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "prompt" ) ).toString() == QStringLiteral( "useProject" )
-       || settings.value( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "prompt" ) ).toString() == QStringLiteral( "prompt" ) )
+
+  // TODO QGIS 4.0 -- remove this method, and place it somewhere in app (where it belongs)
+  // in the meantime, we have a slightly hacky way to read the settings key using an enum which isn't available (since it lives in app)
+  if ( settings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), QStringLiteral( "NoAction" ), QgsSettings::App ).toString() == QStringLiteral( "UseProjectCrs" )
+       || settings.value( QStringLiteral( "/projections/unknownCrsBehavior" ), 0, QgsSettings::App ).toString() == 2 )
   {
     // for new layers if the new layer crs method is set to either prompt or use project, then we use the project crs
-    // (since "prompt" has no meaning here - the prompt will always be shown, it's just deciding on the default choice in the prompt!)
     defaultCrs = crs();
   }
   else
   {
     // global crs
-    QString layerDefaultCrs = settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
+    QString layerDefaultCrs = settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString();
     defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( layerDefaultCrs );
   }
 
@@ -3190,56 +3358,52 @@ void QgsProject::setProjectColors( const QgsNamedColorList &colors )
   emit projectColorsChanged();
 }
 
-void QgsProject::setMapScales( const QVector<double> &scales )
+void QgsProject::setBackgroundColor( const QColor &color )
 {
-  // sort scales in descending order
-  QVector< double > sorted = scales;
-  std::sort( sorted.begin(), sorted.end(), std::greater<double>() );
-
-  if ( sorted == mapScales() )
+  if ( mBackgroundColor == color )
     return;
 
-  QStringList store;
-  store.reserve( sorted.size() );
-  for ( double scale : qgis::as_const( sorted ) )
-    store << QStringLiteral( "1:%1" ).arg( scale );
+  mBackgroundColor = color;
+  emit backgroundColorChanged();
+}
 
-  writeEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ), store );
-  emit mapScalesChanged();
+QColor QgsProject::backgroundColor() const
+{
+  return mBackgroundColor;
+}
+
+void QgsProject::setSelectionColor( const QColor &color )
+{
+  if ( mSelectionColor == color )
+    return;
+
+  mSelectionColor = color;
+  emit selectionColorChanged();
+}
+
+QColor QgsProject::selectionColor() const
+{
+  return mSelectionColor;
+}
+
+void QgsProject::setMapScales( const QVector<double> &scales )
+{
+  mViewSettings->setMapScales( scales );
 }
 
 QVector<double> QgsProject::mapScales() const
 {
-  const QStringList scales = readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
-  QVector<double> res;
-  for ( const QString &scale : scales )
-  {
-    const QStringList parts = scale.split( ':' );
-    if ( parts.size() != 2 )
-      continue;
-
-    bool ok = false;
-    const double denominator = QLocale().toDouble( parts[1], &ok );
-    if ( ok )
-    {
-      res << denominator;
-    }
-  }
-  return res;
+  return mViewSettings->mapScales();
 }
 
 void QgsProject::setUseProjectScales( bool enabled )
 {
-  if ( enabled == useProjectScales() )
-    return;
-
-  writeEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ), enabled );
-  emit mapScalesChanged();
+  mViewSettings->setUseProjectScales( enabled );
 }
 
 bool QgsProject::useProjectScales() const
 {
-  return readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
+  return mViewSettings->useProjectScales();
 }
 
 void QgsProject::generateTsFile( const QString &locale )

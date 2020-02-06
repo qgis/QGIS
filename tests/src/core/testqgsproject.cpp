@@ -46,6 +46,8 @@ class TestQgsProject : public QObject
     void testLocalUrlFiles();
     void testReadFlags();
     void testSetGetCrs();
+    void testEmbeddedLayerGroupFromQgz();
+    void projectSaveUser();
 };
 
 void TestQgsProject::init()
@@ -68,6 +70,7 @@ void TestQgsProject::initTestCase()
 
   QgsApplication::init();
   QgsApplication::initQgis();
+  QgsSettings().clear();
 }
 
 
@@ -434,7 +437,7 @@ void TestQgsProject::testReadFlags()
 {
   QString project1Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project1.qgs" );
   QgsProject p;
-  QVERIFY( p.read( project1Path, QgsProject::FlagDontResolveLayers ) );
+  QVERIFY( p.read( project1Path, QgsProject::ReadFlag::FlagDontResolveLayers ) );
   auto layers = p.mapLayers();
   QCOMPARE( layers.count(), 3 );
   // layers should be invalid - we skipped loading them!
@@ -450,7 +453,7 @@ void TestQgsProject::testReadFlags()
   // project with embedded groups
   QString project2Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project2.qgs" );
   QgsProject p2;
-  QVERIFY( p2.read( project2Path, QgsProject::FlagDontResolveLayers ) );
+  QVERIFY( p2.read( project2Path, QgsProject::ReadFlag::FlagDontResolveLayers ) );
   // layers should be invalid - we skipped loading them!
   layers = p2.mapLayers();
   QCOMPARE( layers.count(), 2 );
@@ -462,8 +465,56 @@ void TestQgsProject::testReadFlags()
 
   QString project3Path = QString( TEST_DATA_DIR ) + QStringLiteral( "/layouts/layout_casting.qgs" );
   QgsProject p3;
-  QVERIFY( p3.read( project3Path, QgsProject::FlagDontLoadLayouts ) );
+  QVERIFY( p3.read( project3Path, QgsProject::ReadFlag::FlagDontLoadLayouts ) );
   QCOMPARE( p3.layoutManager()->layouts().count(), 0 );
+}
+
+void TestQgsProject::testEmbeddedLayerGroupFromQgz()
+{
+  QString path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_groups/project1.qgz" );
+  QList<QDomNode> brokenNodes;
+
+  QgsProject p0;
+  p0.read( path );
+  QgsMapLayer *points = p0.mapLayersByName( "points" )[0];
+  QgsMapLayer *polys = p0.mapLayersByName( "polys" )[0];
+
+  QgsProject p1;
+  p1.createEmbeddedLayer( points->id(), p0.fileName(), brokenNodes );
+  p1.createEmbeddedGroup( "group1", p0.fileName(), QStringList() );
+
+  QCOMPARE( p1.layerIsEmbedded( points->id() ), path );
+  QCOMPARE( p1.layerIsEmbedded( polys->id() ), path );
+}
+
+void TestQgsProject::projectSaveUser()
+{
+  QgsProject p;
+  QVERIFY( p.saveUser().isEmpty() );
+  QVERIFY( p.saveUserFullName().isEmpty() );
+
+  QTemporaryFile f;
+  QVERIFY( f.open() );
+  f.close();
+  p.setFileName( f.fileName() );
+  p.write();
+
+  QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );
+  QCOMPARE( p.saveUserFullName(), QgsApplication::userFullName() );
+
+  QgsSettings s;
+  s.setValue( QStringLiteral( "projects/anonymize_saved_projects" ), true, QgsSettings::Core );
+
+  p.write();
+
+  QVERIFY( p.saveUser().isEmpty() );
+  QVERIFY( p.saveUserFullName().isEmpty() );
+
+  s.setValue( QStringLiteral( "projects/anonymize_saved_projects" ), false, QgsSettings::Core );
+
+  p.write();
+  QCOMPARE( p.saveUser(), QgsApplication::userLoginName() );
+  QCOMPARE( p.saveUserFullName(), QgsApplication::userFullName() );
 }
 
 void TestQgsProject::testSetGetCrs()

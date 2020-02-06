@@ -56,7 +56,7 @@ class QgsLayerRestorer
       QString name;
       double mOpacity;
       QString mNamedStyle;
-      QDomDocument mSldStyle;
+      QDomDocument mQgisStyle;
       QString mFilter;
       QgsFeatureIds mSelectedFeatureIds;
     };

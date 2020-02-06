@@ -29,10 +29,8 @@ class TestQgsCoordinateTransform(unittest.TestCase):
     def testTransformBoundingBox(self):
         """Test that we can transform a rectangular bbox from utm56s to LonLat"""
         myExtent = QgsRectangle(242270, 6043737, 246330, 6045897)
-        myGeoCrs = QgsCoordinateReferenceSystem()
-        myGeoCrs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-        myUtmCrs = QgsCoordinateReferenceSystem()
-        myUtmCrs.createFromId(32756, QgsCoordinateReferenceSystem.EpsgCrsId)
+        myGeoCrs = QgsCoordinateReferenceSystem('EPSG:4326')
+        myUtmCrs = QgsCoordinateReferenceSystem('EPSG:32756')
         myXForm = QgsCoordinateTransform(myUtmCrs, myGeoCrs, QgsProject.instance())
         myProjectedExtent = myXForm.transformBoundingBox(myExtent)
         myExpectedExtent = ('150.1509239873580270,-35.7176936443908772 : '
@@ -48,13 +46,18 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         self.assertAlmostEqual(myExpectedValues[2], myProjectedExtent.xMaximum(), msg=myMessage)
         self.assertAlmostEqual(myExpectedValues[3], myProjectedExtent.yMaximum(), msg=myMessage)
 
+    def testTransformBoundingBoxSizeOverflowProtection(self):
+        """Test transform bounding box size overflow protection (github issue #32302)"""
+        extent = QgsRectangle(-176.0454709164556562, 89.9999999999998153, 180.0000000000000000, 90.0000000000000000)
+        transform = d = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4236'), QgsCoordinateReferenceSystem('EPSG:3031'), QgsProject.instance())
+        # this test checks that the line below doesn't assert and crash
+        transformedExtent = transform.transformBoundingBox(extent)
+
     def testTransformQgsRectangle_Regression17600(self):
         """Test that rectangle transform is in the bindings"""
         myExtent = QgsRectangle(-1797107, 4392148, 6025926, 6616304)
-        myGeoCrs = QgsCoordinateReferenceSystem()
-        myGeoCrs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-        myUtmCrs = QgsCoordinateReferenceSystem()
-        myUtmCrs.createFromId(3857, QgsCoordinateReferenceSystem.EpsgCrsId)
+        myGeoCrs = QgsCoordinateReferenceSystem('EPSG:4326')
+        myUtmCrs = QgsCoordinateReferenceSystem('EPSG:3857')
         myXForm = QgsCoordinateTransform(myUtmCrs, myGeoCrs, QgsProject.instance())
         myTransformedExtent = myXForm.transform(myExtent)
         myTransformedExtentForward = myXForm.transform(myExtent, QgsCoordinateTransform.ForwardTransform)

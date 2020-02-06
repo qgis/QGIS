@@ -41,7 +41,12 @@
 #include "qgsmapmouseevent.h"
 #include "qgsfilterlineedit.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
 #include "qgscolorbutton.h"
+#include "qgscoordinateoperationwidget.h"
+#include "qgsdatumtransformdialog.h"
+#include "qgsfieldcombobox.h"
+#include "qgsmapthemecollection.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -109,7 +114,7 @@ QWidget *QgsProcessingBooleanWidgetWrapper::createWidget()
         emit widgetValueHasChanged( this );
       } );
       return mCheckBox;
-    };
+    }
 
     case QgsProcessingGui::Batch:
     case QgsProcessingGui::Modeler:
@@ -255,7 +260,7 @@ QWidget *QgsProcessingCrsWidgetWrapper::createWidget()
     case QgsProcessingGui::Batch:
     {
       return mProjectionSelectionWidget;
-    };
+    }
 
     case QgsProcessingGui::Modeler:
     {
@@ -427,7 +432,7 @@ QWidget *QgsProcessingStringWidgetWrapper::createWidget()
         } );
         return mLineEdit;
       }
-    };
+    }
 
     case QgsProcessingGui::Batch:
     {
@@ -473,7 +478,8 @@ QStringList QgsProcessingStringWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterScale::typeName()
          << QgsProcessingParameterFile::typeName()
          << QgsProcessingParameterField::typeName()
-         << QgsProcessingParameterExpression::typeName();
+         << QgsProcessingParameterExpression::typeName()
+         << QgsProcessingParameterCoordinateOperation::typeName();
 }
 
 QStringList QgsProcessingStringWidgetWrapper::compatibleOutputTypes() const
@@ -531,7 +537,7 @@ QWidget *QgsProcessingAuthConfigWidgetWrapper::createWidget()
         emit widgetValueHasChanged( this );
       } );
       return mAuthConfigSelect;
-    };
+    }
   }
   return nullptr;
 }
@@ -718,7 +724,7 @@ QWidget *QgsProcessingNumericWidgetWrapper::createWidget()
         connect( mSpinBox, qgis::overload<int>::of( &QgsSpinBox::valueChanged ), this, [ = ] { emit widgetValueHasChanged( this ); } );
 
       return spinBox;
-    };
+    }
   }
   return nullptr;
 }
@@ -850,7 +856,11 @@ QWidget *QgsProcessingDistanceWidgetWrapper::createWidget()
       mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceMiles ), QgsUnitTypes::DistanceMiles );
       mUnitsCombo->addItem( QgsUnitTypes::toString( QgsUnitTypes::DistanceYards ), QgsUnitTypes::DistanceYards );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
       const int labelMargin = static_cast< int >( std::round( mUnitsCombo->fontMetrics().width( 'X' ) ) );
+#else
+      const int labelMargin = static_cast< int >( std::round( mUnitsCombo->fontMetrics().horizontalAdvance( 'X' ) ) );
+#endif
       QHBoxLayout *layout = new QHBoxLayout();
       layout->addWidget( spin, 1 );
       layout->insertSpacing( 1, labelMargin / 2 );
@@ -874,12 +884,13 @@ QWidget *QgsProcessingDistanceWidgetWrapper::createWidget()
       mWarningLabel->setLayout( warningLayout );
       layout->insertWidget( 4, mWarningLabel );
 
-      setUnits( distanceDef->defaultUnit() );
-
       QWidget *w = new QWidget();
       layout->setMargin( 0 );
       layout->setContentsMargins( 0, 0, 0, 0 );
       w->setLayout( layout );
+
+      setUnits( distanceDef->defaultUnit() );
+
       return w;
     }
 
@@ -1110,12 +1121,28 @@ QWidget *QgsProcessingRangeWidgetWrapper::createWidget()
       mMinSpinBox->setMaximum( 99999999.999999 );
       mMaxSpinBox->setMaximum( 99999999.999999 );
 
+      if ( rangeDef->flags() & QgsProcessingParameterDefinition::FlagOptional )
+      {
+        mAllowingNull = true;
+
+        const double min = mMinSpinBox->minimum() - 1;
+        mMinSpinBox->setMinimum( min );
+        mMaxSpinBox->setMinimum( min );
+        mMinSpinBox->setValue( min );
+        mMaxSpinBox->setValue( min );
+
+        mMinSpinBox->setShowClearButton( true );
+        mMaxSpinBox->setShowClearButton( true );
+        mMinSpinBox->setSpecialValueText( tr( "Not set" ) );
+        mMaxSpinBox->setSpecialValueText( tr( "Not set" ) );
+      }
+
       w->setToolTip( parameterDefinition()->toolTip() );
 
       connect( mMinSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( const double v )
       {
         mBlockChangedSignal++;
-        if ( v > mMaxSpinBox->value() )
+        if ( !mAllowingNull && v > mMaxSpinBox->value() )
           mMaxSpinBox->setValue( v );
         mBlockChangedSignal--;
 
@@ -1125,7 +1152,7 @@ QWidget *QgsProcessingRangeWidgetWrapper::createWidget()
       connect( mMaxSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( const double v )
       {
         mBlockChangedSignal++;
-        if ( v < mMinSpinBox->value() )
+        if ( !mAllowingNull && v < mMinSpinBox->value() )
           mMinSpinBox->setValue( v );
         mBlockChangedSignal--;
 
@@ -1134,7 +1161,7 @@ QWidget *QgsProcessingRangeWidgetWrapper::createWidget()
       } );
 
       return w;
-    };
+    }
   }
   return nullptr;
 }
@@ -1142,14 +1169,42 @@ QWidget *QgsProcessingRangeWidgetWrapper::createWidget()
 void QgsProcessingRangeWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
 {
   const QList< double > v = QgsProcessingParameters::parameterAsRange( parameterDefinition(), value, context );
-  if ( v.empty() )
-    return;
+  if ( mAllowingNull && v.empty() )
+  {
+    mMinSpinBox->clear();
+    mMaxSpinBox->clear();
+  }
+  else
+  {
+    if ( v.empty() )
+      return;
 
-  mBlockChangedSignal++;
-  mMinSpinBox->setValue( v.at( 0 ) );
-  if ( v.count() >= 2 )
-    mMaxSpinBox->setValue( v.at( 1 ) );
-  mBlockChangedSignal--;
+    if ( mAllowingNull )
+    {
+      mBlockChangedSignal++;
+      if ( std::isnan( v.at( 0 ) ) )
+        mMinSpinBox->clear();
+      else
+        mMinSpinBox->setValue( v.at( 0 ) );
+
+      if ( v.count() >= 2 )
+      {
+        if ( std::isnan( v.at( 1 ) ) )
+          mMaxSpinBox->clear();
+        else
+          mMaxSpinBox->setValue( v.at( 1 ) );
+      }
+      mBlockChangedSignal--;
+    }
+    else
+    {
+      mBlockChangedSignal++;
+      mMinSpinBox->setValue( v.at( 0 ) );
+      if ( v.count() >= 2 )
+        mMaxSpinBox->setValue( v.at( 1 ) );
+      mBlockChangedSignal--;
+    }
+  }
 
   if ( !mBlockChangedSignal )
     emit widgetValueHasChanged( this );
@@ -1157,7 +1212,23 @@ void QgsProcessingRangeWidgetWrapper::setWidgetValue( const QVariant &value, Qgs
 
 QVariant QgsProcessingRangeWidgetWrapper::widgetValue() const
 {
-  return QStringLiteral( "%1,%2" ).arg( mMinSpinBox->value() ).arg( mMaxSpinBox->value() );
+  if ( mAllowingNull )
+  {
+    QString value;
+    if ( qgsDoubleNear( mMinSpinBox->value(), mMinSpinBox->minimum() ) )
+      value = QStringLiteral( "None" );
+    else
+      value = QStringLiteral( "%1" ).arg( mMinSpinBox->value() );
+
+    if ( qgsDoubleNear( mMaxSpinBox->value(), mMaxSpinBox->minimum() ) )
+      value += QStringLiteral( ",None" );
+    else
+      value += QStringLiteral( ",%1" ).arg( mMaxSpinBox->value() );
+
+    return value;
+  }
+  else
+    return QStringLiteral( "%1,%2" ).arg( mMinSpinBox->value() ).arg( mMaxSpinBox->value() );
 }
 
 QStringList QgsProcessingRangeWidgetWrapper::compatibleParameterTypes() const
@@ -1221,7 +1292,7 @@ QWidget *QgsProcessingMatrixWidgetWrapper::createWidget()
     case QgsProcessingGui::Modeler:
     {
       return mMatrixWidget;
-    };
+    }
   }
   return nullptr;
 }
@@ -1393,7 +1464,7 @@ QWidget *QgsProcessingFileWidgetWrapper::createWidget()
         emit widgetValueHasChanged( this );
       } );
       return mFileWidget;
-    };
+    }
   }
   return nullptr;
 }
@@ -1500,7 +1571,7 @@ QWidget *QgsProcessingExpressionWidgetWrapper::createWidget()
         } );
         return mFieldExpWidget;
       }
-    };
+    }
   }
   return nullptr;
 }
@@ -1659,7 +1730,7 @@ QgsProcessingEnumPanelWidget::QgsProcessingEnumPanelWidget( QWidget *parent, con
   hl->addWidget( mLineEdit, 1 );
 
   mToolButton = new QToolButton();
-  mToolButton->setText( QStringLiteral( "…" ) );
+  mToolButton->setText( QString( QChar( 0x2026 ) ) );
   hl->addWidget( mToolButton );
 
   setLayout( hl );
@@ -1892,7 +1963,7 @@ QWidget *QgsProcessingEnumWidgetWrapper::createWidget()
         } );
         return mComboBox;
       }
-    };
+    }
   }
   return nullptr;
 }
@@ -2188,6 +2259,7 @@ QWidget *QgsProcessingLayoutItemWidgetWrapper::createWidget()
 
 void QgsProcessingLayoutItemWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
 {
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
@@ -2371,7 +2443,7 @@ QgsProcessingPointPanel::QgsProcessingPointPanel( QWidget *parent )
   mLineEdit->setShowClearButton( false );
   l->addWidget( mLineEdit, 1 );
   mButton = new QToolButton();
-  mButton->setText( QStringLiteral( "…" ) );
+  mButton->setText( QString( QChar( 0x2026 ) ) );
   l->addWidget( mButton );
   setLayout( l );
 
@@ -2409,8 +2481,8 @@ void QgsProcessingPointPanel::clear()
 void QgsProcessingPointPanel::setValue( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs )
 {
   QString newText = QStringLiteral( "%1,%2" )
-                    .arg( QString::number( point.x(), 'f' ) )
-                    .arg( QString::number( point.y(), 'f' ) );
+                    .arg( QString::number( point.x(), 'f' ),
+                          QString::number( point.y(), 'f' ) );
 
   mCrs = crs;
   if ( mCrs.isValid() )
@@ -2744,5 +2816,859 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingColorWidgetWrapper:
 {
   return new QgsProcessingColorParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
+
+
+//
+// QgsProcessingCoordinateOperationWidgetWrapper
+//
+
+QgsProcessingCoordinateOperationParameterDefinitionWidget::QgsProcessingCoordinateOperationParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultLineEdit = new QLineEdit();
+  if ( const QgsProcessingParameterCoordinateOperation *coordParam = dynamic_cast<const QgsProcessingParameterCoordinateOperation *>( definition ) )
+    mDefaultLineEdit->setText( QgsProcessingParameters::parameterAsString( coordParam, coordParam->defaultValue(), context ) );
+  vlayout->addWidget( mDefaultLineEdit );
+
+  mSourceParamComboBox = new QComboBox();
+  mDestParamComboBox = new QComboBox();
+  QString initialSource;
+  QString initialDest;
+  QgsCoordinateReferenceSystem sourceCrs;
+  QgsCoordinateReferenceSystem destCrs;
+  if ( const QgsProcessingParameterCoordinateOperation *itemParam = dynamic_cast<const QgsProcessingParameterCoordinateOperation *>( definition ) )
+  {
+    initialSource = itemParam->sourceCrsParameterName();
+    initialDest = itemParam->destinationCrsParameterName();
+    sourceCrs = QgsProcessingUtils::variantToCrs( itemParam->sourceCrs(), context );
+    destCrs = QgsProcessingUtils::variantToCrs( itemParam->destinationCrs(), context );
+  }
+
+  mSourceParamComboBox->addItem( QString(), QString() );
+  mDestParamComboBox->addItem( QString(), QString() );
+  if ( widgetContext.model() )
+  {
+    // populate combo box with other model input choices
+    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
+    {
+      if ( it->parameterName() == definition->name() )
+        continue;
+
+      // TODO - we should probably filter this list?
+      mSourceParamComboBox->addItem( it->parameterName(), it->parameterName() );
+      mDestParamComboBox->addItem( it->parameterName(), it->parameterName() );
+      if ( !initialSource.isEmpty() && initialSource == it->parameterName() )
+      {
+        mSourceParamComboBox->setCurrentIndex( mSourceParamComboBox->count() - 1 );
+      }
+      if ( !initialDest.isEmpty() && initialDest == it->parameterName() )
+      {
+        mDestParamComboBox->setCurrentIndex( mDestParamComboBox->count() - 1 );
+      }
+    }
+  }
+
+  if ( mSourceParamComboBox->count() == 1 && !initialSource.isEmpty() )
+  {
+    // if no source candidates found, we just add the existing one as a placeholder
+    mSourceParamComboBox->addItem( initialSource, initialSource );
+    mSourceParamComboBox->setCurrentIndex( mSourceParamComboBox->count() - 1 );
+  }
+  if ( mDestParamComboBox->count() == 1 && !initialDest.isEmpty() )
+  {
+    // if no dest candidates found, we just add the existing one as a placeholder
+    mDestParamComboBox->addItem( initialDest, initialDest );
+    mDestParamComboBox->setCurrentIndex( mDestParamComboBox->count() - 1 );
+  }
+
+  vlayout->addWidget( new QLabel( tr( "Source CRS parameter" ) ) );
+  vlayout->addWidget( mSourceParamComboBox );
+  vlayout->addWidget( new QLabel( tr( "Destination CRS parameter" ) ) );
+  vlayout->addWidget( mDestParamComboBox );
+
+  mStaticSourceWidget = new QgsProjectionSelectionWidget();
+  mStaticSourceWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
+  mStaticSourceWidget->setCrs( sourceCrs );
+  mStaticDestWidget = new QgsProjectionSelectionWidget();
+  mStaticDestWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
+  mStaticDestWidget->setCrs( destCrs );
+
+  vlayout->addWidget( new QLabel( tr( "Static source CRS" ) ) );
+  vlayout->addWidget( mStaticSourceWidget );
+  vlayout->addWidget( new QLabel( tr( "Static destination CRS" ) ) );
+  vlayout->addWidget( mStaticDestWidget );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingCoordinateOperationParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterCoordinateOperation >( name, description, mDefaultLineEdit->text(),
+               mSourceParamComboBox->currentText(),
+               mDestParamComboBox->currentText(),
+               mStaticSourceWidget->crs().isValid() ? QVariant::fromValue( mStaticSourceWidget->crs() ) : QVariant(),
+               mStaticDestWidget->crs().isValid() ? QVariant::fromValue( mStaticDestWidget->crs() ) : QVariant() );
+  param->setFlags( flags );
+  return param.release();
+}
+
+QgsProcessingCoordinateOperationWidgetWrapper::QgsProcessingCoordinateOperationWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingCoordinateOperationWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterCoordinateOperation *coordParam = dynamic_cast< const QgsProcessingParameterCoordinateOperation *>( parameterDefinition() );
+  QgsProcessingContext c;
+  mSourceCrs = QgsProcessingUtils::variantToCrs( coordParam->sourceCrs(), c );
+  mDestCrs = QgsProcessingUtils::variantToCrs( coordParam->destinationCrs(), c );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    {
+      mOperationWidget = new QgsCoordinateOperationWidget( nullptr );
+      mOperationWidget->setShowMakeDefault( false );
+      mOperationWidget->setToolTip( parameterDefinition()->toolTip() );
+      mOperationWidget->setSourceCrs( mSourceCrs );
+      mOperationWidget->setDestinationCrs( mDestCrs );
+      mOperationWidget->setMapCanvas( mCanvas );
+      if ( !coordParam->defaultValue().toString().isEmpty() )
+      {
+        QgsCoordinateOperationWidget::OperationDetails deets;
+        deets.proj = coordParam->defaultValue().toString();
+        mOperationWidget->setSelectedOperation( deets );
+      }
+
+      connect( mOperationWidget, &QgsCoordinateOperationWidget::operationChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+
+      return mOperationWidget;
+    }
+
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
+    {
+      mLineEdit = new QLineEdit();
+      QHBoxLayout *layout = new QHBoxLayout();
+      layout->addWidget( mLineEdit, 1 );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+
+      QToolButton *button = new QToolButton();
+      button->setText( QString( QChar( 0x2026 ) ) );
+      connect( button, &QToolButton::clicked, this, [ = ]
+      {
+        QgsDatumTransformDialog dlg( mSourceCrs, mDestCrs, false, false, false, qMakePair( -1, -1 ), button, nullptr, mLineEdit->text(), mCanvas );
+        if ( dlg.exec() )
+        {
+          mLineEdit->setText( dlg.selectedDatumTransform().proj );
+          emit widgetValueHasChanged( this );
+        }
+      } );
+      layout->addWidget( button );
+
+      QWidget *w = new QWidget();
+      layout->setMargin( 0 );
+      layout->setContentsMargins( 0, 0, 0, 0 );
+      w->setLayout( layout );
+      return w;
+    }
+
+  }
+  return nullptr;
+}
+
+void QgsProcessingCoordinateOperationWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
+      {
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterCoordinateOperation * >( parameterDefinition() )->sourceCrsParameterName() )
+        {
+          setSourceCrsParameterValue( wrapper->parameterValue() );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
+          {
+            setSourceCrsParameterValue( wrapper->parameterValue() );
+          } );
+        }
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterCoordinateOperation * >( parameterDefinition() )->destinationCrsParameterName() )
+        {
+          setDestinationCrsParameterValue( wrapper->parameterValue() );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
+          {
+            setDestinationCrsParameterValue( wrapper->parameterValue() );
+          } );
+        }
+      }
+      break;
+    }
+
+    case QgsProcessingGui::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingCoordinateOperationWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  mCanvas = context.mapCanvas();
+  if ( mOperationWidget )
+    mOperationWidget->setMapCanvas( context.mapCanvas() );
+}
+
+void QgsProcessingCoordinateOperationWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext & )
+{
+  if ( mOperationWidget )
+  {
+    if ( !value.isValid() ||
+         ( value.type() == QVariant::String ) )
+    {
+      QgsCoordinateOperationWidget::OperationDetails deets;
+      deets.proj = value.toString();
+      mOperationWidget->setSelectedOperation( deets );
+    }
+  }
+  if ( mLineEdit )
+  {
+    if ( !value.isValid() ||
+         ( value.type() == QVariant::String ) )
+    {
+      mLineEdit->setText( value.toString() );
+    }
+  }
+}
+
+QVariant QgsProcessingCoordinateOperationWidgetWrapper::widgetValue() const
+{
+  if ( mOperationWidget )
+    return mOperationWidget->selectedOperation().proj;
+  else if ( mLineEdit )
+    return mLineEdit->text();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingCoordinateOperationWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterCoordinateOperation::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingCoordinateOperationWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingCoordinateOperationWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingCoordinateOperationWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "Proj coordinate operation string, e.g. '+proj=pipeline +step +inv...'" );
+}
+
+void QgsProcessingCoordinateOperationWidgetWrapper::setSourceCrsParameterValue( const QVariant &value )
+{
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  mSourceCrs = QgsProcessingUtils::variantToCrs( value, *context );
+  if ( mOperationWidget )
+  {
+    mOperationWidget->setSourceCrs( mSourceCrs );
+    mOperationWidget->setSelectedOperationUsingContext( context->transformContext() );
+  }
+}
+
+void QgsProcessingCoordinateOperationWidgetWrapper::setDestinationCrsParameterValue( const QVariant &value )
+{
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  mDestCrs = QgsProcessingUtils::variantToCrs( value, *context );
+  if ( mOperationWidget )
+  {
+    mOperationWidget->setDestinationCrs( mDestCrs );
+    mOperationWidget->setSelectedOperationUsingContext( context->transformContext() );
+  }
+}
+
+QString QgsProcessingCoordinateOperationWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterCoordinateOperation::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingCoordinateOperationWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingCoordinateOperationWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingCoordinateOperationWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingCoordinateOperationParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
+
+
+
+//
+// QgsProcessingFieldPanelWidget
+//
+
+QgsProcessingFieldPanelWidget::QgsProcessingFieldPanelWidget( QWidget *parent, const QgsProcessingParameterField *param )
+  : QWidget( parent )
+  , mParam( param )
+{
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setMargin( 0 );
+  hl->setContentsMargins( 0, 0, 0, 0 );
+
+  mLineEdit = new QLineEdit();
+  mLineEdit->setEnabled( false );
+  hl->addWidget( mLineEdit, 1 );
+
+  mToolButton = new QToolButton();
+  mToolButton->setText( QString( QChar( 0x2026 ) ) );
+  hl->addWidget( mToolButton );
+
+  setLayout( hl );
+
+  if ( mParam )
+  {
+    mLineEdit->setText( tr( "%1 options selected" ).arg( 0 ) );
+  }
+
+  connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingFieldPanelWidget::showDialog );
+}
+
+void QgsProcessingFieldPanelWidget::setFields( const QgsFields &fields )
+{
+  mFields = fields;
+}
+
+void QgsProcessingFieldPanelWidget::setValue( const QVariant &value )
+{
+  if ( value.isValid() )
+    mValue = value.type() == QVariant::List ? value.toList() : QVariantList() << value;
+  else
+    mValue.clear();
+
+  updateSummaryText();
+  emit changed();
+}
+
+void QgsProcessingFieldPanelWidget::showDialog()
+{
+  QVariantList availableOptions;
+  QStringList fieldNames;
+  availableOptions.reserve( mFields.size() );
+  for ( const QgsField &field : qgis::as_const( mFields ) )
+  {
+    availableOptions << field.name();
+  }
+
+  QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
+  dlg.setValueFormatter( []( const QVariant & v ) -> QString
+  {
+    return v.toString();
+  } );
+  if ( dlg.exec() )
+  {
+    setValue( dlg.selectedOptions() );
+  }
+}
+
+void QgsProcessingFieldPanelWidget::updateSummaryText()
+{
+  if ( mParam )
+    mLineEdit->setText( tr( "%1 options selected" ).arg( mValue.count() ) );
+}
+
+
+//
+// QgsProcessingFieldWidgetWrapper
+//
+
+QgsProcessingFieldWidgetWrapper::QgsProcessingFieldWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingFieldWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterField *fieldParam = dynamic_cast< const QgsProcessingParameterField *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      if ( fieldParam->allowMultiple() )
+      {
+        mPanel = new QgsProcessingFieldPanelWidget( nullptr, fieldParam );
+        mPanel->setToolTip( parameterDefinition()->toolTip() );
+        connect( mPanel, &QgsProcessingFieldPanelWidget::changed, this, [ = ]
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mPanel;
+      }
+      else
+      {
+        mComboBox = new QgsFieldComboBox();
+        mComboBox->setAllowEmptyFieldName( fieldParam->flags() & QgsProcessingParameterDefinition::FlagOptional );
+
+        if ( fieldParam->dataType() == QgsProcessingParameterField::Numeric )
+          mComboBox->setFilters( QgsFieldProxyModel::Numeric );
+        else if ( fieldParam->dataType() == QgsProcessingParameterField::String )
+          mComboBox->setFilters( QgsFieldProxyModel::String );
+        else if ( fieldParam->dataType() == QgsProcessingParameterField::DateTime )
+          mComboBox->setFilters( QgsFieldProxyModel::Date | QgsFieldProxyModel::Time | QgsFieldProxyModel::DateTime );
+
+        mComboBox->setToolTip( parameterDefinition()->toolTip() );
+        connect( mComboBox, &QgsFieldComboBox::fieldChanged, this, [ = ]( const QString & )
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mComboBox;
+      }
+    }
+
+    case QgsProcessingGui::Modeler:
+    {
+      mLineEdit = new QLineEdit();
+      mLineEdit->setToolTip( QObject::tr( "Name of field (separate field names with ; for multiple field parameters)" ) );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mLineEdit;
+    }
+
+  }
+  return nullptr;
+}
+
+void QgsProcessingFieldWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
+      {
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterField * >( parameterDefinition() )->parentLayerParameterName() )
+        {
+          setParentLayerWrapperValue( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
+          {
+            setParentLayerWrapperValue( wrapper );
+          } );
+          break;
+        }
+      }
+      break;
+    }
+
+    case QgsProcessingGui::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
+{
+  // evaluate value to layer
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  const QVariant value = parentWrapper->parameterValue();
+  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), value, *context );
+  if ( !layer || !layer->isValid() )
+  {
+    if ( mComboBox )
+      mComboBox->setLayer( nullptr );
+    else if ( mPanel )
+      mPanel->setFields( QgsFields() );
+
+    if ( value.isValid() && widgetContext().messageBar() )
+    {
+      widgetContext().messageBar()->clearWidgets();
+      widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent field could not be populated" ),
+          Qgis::Warning, 5 );
+    }
+    return;
+  }
+
+  // need to grab ownership of layer if required - otherwise layer may be deleted when context
+  // goes out of scope
+  std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
+  if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::VectorLayer )
+  {
+    mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
+    layer = mParentLayer.get();
+  }
+  else
+  {
+    // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
+  }
+
+  if ( mComboBox )
+    mComboBox->setLayer( layer );
+  else if ( mPanel )
+    mPanel->setFields( filterFields( layer->fields() ) );
+
+  const QgsProcessingParameterField *fieldParam = static_cast< const QgsProcessingParameterField * >( parameterDefinition() );
+  if ( mPanel && fieldParam->defaultToAllFields() )
+  {
+    QVariantList val;
+    val.reserve( mPanel->fields().size() );
+    for ( const QgsField &field : mPanel->fields() )
+      val << field.name();
+    setWidgetValue( val, *context );
+  }
+  else if ( fieldParam->defaultValue().isValid() )
+    setWidgetValue( parameterDefinition()->defaultValue(), *context );
+}
+
+void QgsProcessingFieldWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mComboBox )
+  {
+    if ( !value.isValid() )
+      mComboBox->setField( QString() );
+    else
+    {
+      const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+      mComboBox->setField( v );
+    }
+  }
+  else if ( mPanel )
+  {
+    QVariantList opts;
+    if ( value.isValid() )
+    {
+      const QStringList v = QgsProcessingParameters::parameterAsFields( parameterDefinition(), value, context );
+      opts.reserve( v.size() );
+      for ( const QString &i : v )
+        opts << i;
+    }
+    if ( mPanel )
+      mPanel->setValue( opts );
+  }
+  else if ( mLineEdit )
+  {
+    const QgsProcessingParameterField *fieldParam = static_cast< const QgsProcessingParameterField * >( parameterDefinition() );
+    if ( fieldParam->allowMultiple() )
+    {
+      const QStringList v = QgsProcessingParameters::parameterAsFields( parameterDefinition(), value, context );
+      mLineEdit->setText( v.join( ';' ) );
+    }
+    else
+    {
+      mLineEdit->setText( QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context ) );
+    }
+  }
+}
+
+QVariant QgsProcessingFieldWidgetWrapper::widgetValue() const
+{
+  if ( mComboBox )
+    return mComboBox->currentField();
+  else if ( mPanel )
+    return mPanel->value();
+  else if ( mLineEdit )
+  {
+    const QgsProcessingParameterField *fieldParam = static_cast< const QgsProcessingParameterField * >( parameterDefinition() );
+    if ( fieldParam->allowMultiple() )
+    {
+      return mLineEdit->text().split( ';' );
+    }
+    else
+      return mLineEdit->text();
+  }
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingFieldWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterField::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingFieldWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingFieldWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingFieldWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "selected field names as an array of names, or semicolon separated string of options (e.g. 'fid;place_name')" );
+}
+
+const QgsVectorLayer *QgsProcessingFieldWidgetWrapper::linkedVectorLayer() const
+{
+  if ( mComboBox && mComboBox->layer() )
+    return mComboBox->layer();
+
+  return QgsAbstractProcessingParameterWidgetWrapper::linkedVectorLayer();
+}
+
+QgsFields QgsProcessingFieldWidgetWrapper::filterFields( const QgsFields &fields ) const
+{
+  const QgsProcessingParameterField *fieldParam = static_cast< const QgsProcessingParameterField * >( parameterDefinition() );
+  QgsFields res;
+  for ( const QgsField &f : fields )
+  {
+    switch ( fieldParam->dataType() )
+    {
+      case QgsProcessingParameterField::Any:
+        res.append( f );
+        break;
+
+      case QgsProcessingParameterField::Numeric:
+        if ( f.isNumeric() )
+          res.append( f );
+        break;
+
+      case QgsProcessingParameterField::String:
+        if ( f.type() == QVariant::String )
+          res.append( f );
+        break;
+
+      case QgsProcessingParameterField::DateTime:
+        if ( f.type() == QVariant::Date || f.type() == QVariant::Time || f.type() == QVariant::DateTime )
+          res.append( f );
+        break;
+    }
+  }
+
+  return res;
+}
+
+QString QgsProcessingFieldWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterField::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFieldWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingFieldWidgetWrapper( parameter, type );
+}
+
+//
+// QgsProcessingMapThemeWidgetWrapper
+//
+
+
+QgsProcessingMapThemeParameterDefinitionWidget::QgsProcessingMapThemeParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultComboBox = new QComboBox();
+  mDefaultComboBox->addItem( QString(), QVariant( -1 ) );
+
+  const QStringList mapThemes = widgetContext.project() ? widgetContext.project()->mapThemeCollection()->mapThemes() : QgsProject::instance()->mapThemeCollection()->mapThemes();
+  for ( const QString &theme : mapThemes )
+  {
+    mDefaultComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ), theme, theme );
+  }
+  mDefaultComboBox->setEditable( true );
+
+  if ( const QgsProcessingParameterMapTheme *themeParam = dynamic_cast<const QgsProcessingParameterMapTheme *>( definition ) )
+  {
+    if ( themeParam->defaultValue().isValid() )
+      mDefaultComboBox->setCurrentText( QgsProcessingParameters::parameterAsString( themeParam, themeParam->defaultValue(), context ) );
+    else
+      mDefaultComboBox->setCurrentIndex( mDefaultComboBox->findData( -1 ) );
+  }
+  else
+    mDefaultComboBox->setCurrentIndex( mDefaultComboBox->findData( -1 ) );
+
+  vlayout->addWidget( mDefaultComboBox );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingMapThemeParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  QVariant defaultVal;
+  if ( mDefaultComboBox->currentText().isEmpty() )
+    defaultVal = QVariant();
+  else
+    defaultVal = mDefaultComboBox->currentText();
+  auto param = qgis::make_unique< QgsProcessingParameterMapTheme>( name, description, defaultVal );
+  param->setFlags( flags );
+  return param.release();
+}
+
+
+QgsProcessingMapThemeWidgetWrapper::QgsProcessingMapThemeWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingMapThemeWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterMapTheme *themeParam = dynamic_cast< const QgsProcessingParameterMapTheme *>( parameterDefinition() );
+
+  mComboBox = new QComboBox();
+
+  if ( themeParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+    mComboBox->addItem( tr( "[Not selected]" ), QVariant( -1 ) );
+
+  const QStringList mapThemes = widgetContext().project() ? widgetContext().project()->mapThemeCollection()->mapThemes() : QgsProject::instance()->mapThemeCollection()->mapThemes();
+  for ( const QString &theme : mapThemes )
+  {
+    mComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ), theme, theme );
+  }
+
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+      break;
+
+    case QgsProcessingGui::Modeler:
+      mComboBox->setEditable( true );
+      break;
+  }
+
+  mComboBox->setToolTip( parameterDefinition()->toolTip() );
+  connect( mComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
+    emit widgetValueHasChanged( this );
+  } );
+
+  return mComboBox;
+}
+
+void QgsProcessingMapThemeWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QString v = QgsProcessingParameters::parameterAsString( parameterDefinition(), value, context );
+
+  if ( !value.isValid() )
+    mComboBox->setCurrentIndex( mComboBox->findData( QVariant( -1 ) ) );
+  else
+  {
+    if ( mComboBox->isEditable() && mComboBox->findData( v ) == -1 )
+    {
+      const QString prev = mComboBox->currentText();
+      mComboBox->setCurrentText( v );
+      if ( prev != v )
+        emit widgetValueHasChanged( this );
+    }
+    else
+      mComboBox->setCurrentIndex( mComboBox->findData( v ) );
+  }
+}
+
+QVariant QgsProcessingMapThemeWidgetWrapper::widgetValue() const
+{
+  if ( mComboBox )
+    return mComboBox->currentData().toInt() == -1 ? QVariant() :
+           !mComboBox->currentData().isValid() && mComboBox->isEditable() ? mComboBox->currentText().isEmpty() ? QVariant() : QVariant( mComboBox->currentText() )
+           : mComboBox->currentData();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingMapThemeWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterExpression::typeName();
+}
+
+QStringList QgsProcessingMapThemeWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingMapThemeWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingMapThemeWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "map theme as a string value (e.g. 'base maps')" );
+}
+
+QString QgsProcessingMapThemeWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterMapTheme::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMapThemeWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingMapThemeWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMapThemeWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingMapThemeParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
+
 
 ///@endcond PRIVATE

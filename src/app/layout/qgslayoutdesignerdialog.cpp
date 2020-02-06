@@ -72,6 +72,7 @@
 #include "qgsvaliditycheckresultswidget.h"
 #include "qgsabstractvaliditycheck.h"
 #include "qgsvaliditycheckcontext.h"
+#include "qgsprojectviewsettings.h"
 #include "ui_defaults.h"
 
 #include <QShortcut>
@@ -97,9 +98,7 @@
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
 #endif
-
-//add some nice zoom levels for zoom comboboxes
-QList<double> QgsLayoutDesignerDialog::sStatusZoomLevelsList { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0};
+#include <QGlobalStatic>
 #define FIT_LAYOUT -101
 #define FIT_LAYOUT_WIDTH -102
 
@@ -246,7 +245,6 @@ void QgsAppLayoutDesignerInterface::showRulers( bool visible )
 {
   mDesigner->showRulers( visible );
 }
-
 
 static bool cmpByText_( QAction *a, QAction *b )
 {
@@ -716,8 +714,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   QValidator *zoomValidator = new QRegularExpressionValidator( zoomRx, mStatusZoomCombo );
   mStatusZoomCombo->lineEdit()->setValidator( zoomValidator );
 
-  const auto constSStatusZoomLevelsList = sStatusZoomLevelsList;
-  for ( double level : constSStatusZoomLevelsList )
+  for ( double level : { 0.125, 0.25, 0.5, 1.0, 2.0, 4.0, 8.0 } )
   {
     mStatusZoomCombo->insertItem( 0, tr( "%1%" ).arg( level * 100.0, 0, 'f', 1 ), level );
   }
@@ -768,7 +765,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mMenuProvider = new QgsLayoutAppMenuProvider( this );
   mView->setMenuProvider( mMenuProvider );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int minDockWidth( fontMetrics().width( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ) );
+#else
+  int minDockWidth = fontMetrics().horizontalAdvance( 'X' ) * 38;
+#endif
 
   setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North );
   mGeneralDock = new QgsDockWidget( tr( "Layout" ), this );
@@ -811,7 +812,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mPanelsMenu->addAction( mItemsDock->toggleViewAction() );
 
   //items tree widget
-  mItemsTreeView = new QgsLayoutItemsListView( mItemsDock, this );
+  mItemsTreeView = new QgsLayoutItemsListView( mItemsDock, iface() );
   mItemsDock->setWidget( mItemsTreeView );
 
   mAtlasDock = new QgsDockWidget( tr( "Atlas" ), this );
@@ -990,7 +991,6 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
     connect( obj, &QObject::destroyed, this, [ = ]
   {
     this->close();
-    QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
   } );
 
   setTitle( mMasterLayout->name() );
@@ -1062,6 +1062,7 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   if ( !layout )
   {
     toggleActions( false );
+    mLayout = nullptr;
   }
   else
   {
@@ -1469,17 +1470,25 @@ void QgsLayoutDesignerDialog::dropEvent( QDropEvent *event )
     }
   }
 
-  connect( timer, &QTimer::timeout, this, [this, timer, files]
+  QPointF layoutPoint = mView->mapToScene( mView->mapFromGlobal( mapToGlobal( event->pos() ) ) );
+
+  connect( timer, &QTimer::timeout, this, [this, timer, files, layoutPoint]
   {
     for ( const QString &file : qgis::as_const( files ) )
     {
       const QVector<QPointer<QgsLayoutCustomDropHandler >> handlers = QgisApp::instance()->customLayoutDropHandlers();
       for ( QgsLayoutCustomDropHandler *handler : handlers )
       {
+        if ( handler && handler->handleFileDrop( iface(), layoutPoint, file ) )
+        {
+          break;
+        }
+        Q_NOWARN_DEPRECATED_PUSH
         if ( handler && handler->handleFileDrop( iface(), file ) )
         {
           break;
         }
+        Q_NOWARN_DEPRECATED_POP
       }
     }
 
@@ -1554,7 +1563,7 @@ void QgsLayoutDesignerDialog::itemTypeAdded( int id )
 
   // update UI for new item type
   QAction *action = new QAction( tr( "Add %1" ).arg( name ), this );
-  action->setToolTip( tr( "Adds a new %1 to the layout" ).arg( name ) );
+  action->setToolTip( tr( "Add %1" ).arg( name ) );
   action->setCheckable( true );
   action->setData( id );
   action->setIcon( QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->creationIcon() );
@@ -2544,12 +2553,10 @@ void QgsLayoutDesignerDialog::printAtlas()
     proxyTask->setProxyProgress( progress );
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -2728,12 +2735,10 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
     proxyTask->setProxyProgress( progress );
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -2885,12 +2890,10 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
     proxyTask->setProxyProgress( progress );
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -3099,12 +3102,10 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     proxyTask->setProxyProgress( progress );
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -3234,12 +3235,10 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -3352,12 +3351,10 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -3489,12 +3486,10 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -3596,12 +3591,10 @@ void QgsLayoutDesignerDialog::printReport()
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX
-    // For some reason on Windows hasPendingEvents() always return true,
-    // but one iteration is actually enough on Windows to get good interactivity
+    // One iteration is actually enough on Windows to get good interactivity
     // whereas on Linux we must allow for far more iterations.
-    // For safety limit the number of iterations
     int nIters = 0;
-    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+    while ( ++nIters < 100 )
 #endif
     {
       QCoreApplication::processEvents();
@@ -4386,25 +4379,25 @@ QVector<double> QgsLayoutDesignerDialog::predefinedScales() const
 {
   QgsProject *project = mMasterLayout->layoutProject();
   // first look at project's scales
-  QVector< double > projectScales = project->mapScales();
-  bool hasProjectScales( project->useProjectScales() );
-  if ( !hasProjectScales || projectScales.isEmpty() )
+  QVector< double > projectMapScales = project->viewSettings()->mapScales();
+  bool hasProjectScales( project->viewSettings()->useProjectScales() );
+  if ( !hasProjectScales || projectMapScales.isEmpty() )
   {
     // default to global map tool scales
     QgsSettings settings;
-    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString() );
-    QStringList scales = scalesStr.split( ',' );
+    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString() );
+    const QStringList scales = scalesStr.split( ',' );
 
-    for ( auto scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )
+    for ( const QString &scale : scales )
     {
-      QStringList parts( scaleIt->split( ':' ) );
+      QStringList parts( scale.split( ':' ) );
       if ( parts.size() == 2 )
       {
-        projectScales.push_back( parts[1].toDouble() );
+        projectMapScales.push_back( parts[1].toDouble() );
       }
     }
   }
-  return projectScales;
+  return projectMapScales;
 }
 
 QgsLayoutAtlas *QgsLayoutDesignerDialog::atlas()

@@ -200,7 +200,7 @@ class TestLayerDependencies(unittest.TestCase):
         f.setGeometry(geom)
         self.pointsLayer.startEditing()
 
-        # new point fire featureAdded so dependening line fire dataChanged
+        # new point fire featureAdded so depending line fire dataChanged
         # point depends on line, so fire dataChanged
         self.pointsLayer.addFeatures([f])
         self.assertEqual(len(spy_points_data_changed), 3)

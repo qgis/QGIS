@@ -153,6 +153,11 @@ QVariantMap QgsRelationReferenceConfigDlg::config()
 
   if ( mReferencedLayer )
   {
+    // Store referenced layer data source and provider
+    myConfig.insert( QStringLiteral( "ReferencedLayerDataSource" ), mReferencedLayer->publicSource() );
+    myConfig.insert( QStringLiteral( "ReferencedLayerProviderKey" ), mReferencedLayer->providerType() );
+    myConfig.insert( QStringLiteral( "ReferencedLayerId" ), mReferencedLayer->id() );
+    myConfig.insert( QStringLiteral( "ReferencedLayerName" ), mReferencedLayer->name() );
     mReferencedLayer->setDisplayExpression( mExpressionWidget->currentField() );
   }
 

@@ -174,9 +174,9 @@ void QgsMapToolOffsetPointSymbol::createPreviewItem( QgsMarkerSymbol *markerSymb
     return;
   }
 
-  mOffsetItem = new QgsPointMarkerItem( mCanvas );
+  mOffsetItem = new QgsMapCanvasMarkerSymbolItem( mCanvas );
   mOffsetItem->setOpacity( 0.7 );
-  mOffsetItem->setSymbol( markerSymbol->clone() );
+  mOffsetItem->setSymbol( std::unique_ptr< QgsSymbol >( markerSymbol->clone() ) );
 }
 
 QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( const QgsPointXY &startPoint, const QgsPointXY &endPoint ) const

@@ -1096,7 +1096,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       columnCount->setValue( itemData.columnCount() );
 
       layout->addRow( tr( "Title" ), title );
-      layout->addRow( tr( "Column count" ), columnCount );
+      layout->addRow( tr( "Number of columns" ), columnCount );
       layout->addRow( visibilityExpressionGroupBox );
 
       if ( !item->parent() )

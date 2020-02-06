@@ -47,7 +47,7 @@ from processing.tools.system import userFolder
 
 from processing.gui.wrappers import InvalidParameterValue
 
-from qgis.analysis import QgsRasterCalculatorEntry
+from qgis.analysis import QgsRasterCalculatorEntry, QgsRasterCalcNode
 
 pluginPath = os.path.dirname(__file__)
 WIDGET_ADD_NEW, BASE_ADD_NEW = uic.loadUiType(
@@ -154,6 +154,25 @@ class ExpressionWidget(BASE, WIDGET):
         self.buttonAddPredefined.clicked.connect(self.addPredefined)
 
         self.buttonSavePredefined.clicked.connect(self.savePredefined)
+        self.text.textChanged.connect(self.expressionValid)
+
+    def expressionValid(self):
+        errorString = ''
+        testNode = QgsRasterCalcNode.parseRasterCalcString(self.text.toPlainText(), errorString)
+
+        if not self.text.toPlainText():
+            self.expressionErrorLabel.setText(self.tr('Expression is empty'))
+            self.expressionErrorLabel.setStyleSheet("QLabel { color: black; }")
+            return False
+
+        if testNode:
+            self.expressionErrorLabel.setText(self.tr('Expression is valid'))
+            self.expressionErrorLabel.setStyleSheet("QLabel { color: green; font-weight: bold; }")
+            return True
+
+        self.expressionErrorLabel.setText(self.tr('Expression is not valid ') + errorString)
+        self.expressionErrorLabel.setStyleSheet("QLabel { color : red; font-weight: bold; }")
+        return False
 
     def expsFile(self):
         return os.path.join(userFolder(), 'rastercalcexpressions.json')

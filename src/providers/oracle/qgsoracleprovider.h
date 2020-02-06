@@ -127,6 +127,11 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     bool determinePrimaryKey();
 
+    /**
+     * Determine the always generated identity fields
+     */
+    bool determineAlwaysGeneratedKeys();
+
     QgsFields fields() const override;
     QString dataComment() const override;
 
@@ -142,6 +147,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QVariant defaultValue( QString fieldName, QString tableName = QString(), QString schemaName = QString() );
     QVariant defaultValue( int fieldId ) const override;
+    QString defaultValueClause( int fieldId ) const override;
+    bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
@@ -181,7 +188,11 @@ class QgsOracleProvider : public QgsVectorDataProvider
   private:
     QString whereClause( QgsFeatureId featureId, QVariantList &args ) const;
     QString pkParamWhereClause() const;
-    QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
+
+    /**
+     * Evaluates the given expression string server-side and convert the result to the given type
+     */
+    QVariant evaluateDefaultExpression( const QString &value, const QVariant::Type &fieldType ) const;
     void appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry ) const;
     void appendPkParams( QgsFeatureId fid, QSqlQuery &qry ) const;
 
@@ -245,6 +256,11 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QList<int> mPrimaryKeyAttrs;
     QString mPrimaryKeyDefault;
 
+    /**
+     * List of always generated key attributes
+     */
+    QList<int> mAlwaysGeneratedKeyAttrs;
+
     QString mGeometryColumn;           //!< Name of the geometry column
     mutable QgsRectangle mLayerExtent; //!< Rectangle that contains the extent (bounding box) of the layer
     mutable long mFeaturesCounted;     //!< Number of features in the layer
@@ -300,7 +316,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     };
 
     // A function that determines if the given schema.table.column
-    // contains unqiue entries
+    // contains unique entries
     bool uniqueData( QString query, QString colName );
 
     void disconnectDb();
@@ -378,7 +394,7 @@ class QgsOracleProviderMetadata: public QgsProviderMetadata
     QString loadStyle( const QString &uri, QString &errCause ) override;
     bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName,
                     const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
-    void cleanupProvider();
+    void cleanupProvider() override;
     QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri,
         const QgsFields &fields, QgsWkbTypes::Type wkbType,
         const QgsCoordinateReferenceSystem &srs, bool overwrite,

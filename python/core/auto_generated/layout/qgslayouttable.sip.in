@@ -22,7 +22,7 @@ typedef QVector< QgsLayoutTableColumn * > QgsLayoutTableColumns;
 class QgsLayoutTableStyle
 {
 %Docstring
-Styling option for a composer table cell
+Styling option for a layout table cell
 
 .. versionadded:: 3.0
 %End
@@ -497,6 +497,13 @@ Fetches the contents used for the cells in the table.
 :return: ``True`` if table contents were successfully retrieved.
 
 :param contents: QgsLayoutTableContents to store retrieved row data in
+%End
+
+    virtual QgsConditionalStyle conditionalCellStyle( int row, int column ) const;
+%Docstring
+Returns the conditional style to use for the cell at ``row``, ``column``.
+
+.. versionadded:: 3.12
 %End
 
     QgsLayoutTableContents &contents();

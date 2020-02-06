@@ -94,20 +94,18 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     // Add table to existing DB
     QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table…" ), collectionItem->parent() );
     QPointer<QgsGeoPackageCollectionItem>collectionItemPtr { collectionItem };
-    connect( actionAddTable, &QAction::triggered, [ collectionItemPtr ]
+    const QString itemPath = collectionItem->path();
+    connect( actionAddTable, &QAction::triggered, actionAddTable, [ collectionItemPtr, itemPath ]
     {
-      if ( collectionItemPtr )
+      QgsNewGeoPackageLayerDialog dialog( nullptr );
+      dialog.setDatabasePath( itemPath );
+      dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+      dialog.setOverwriteBehavior( QgsNewGeoPackageLayerDialog::AddNewLayer );
+      dialog.lockDatabasePath();
+      if ( dialog.exec() == QDialog::Accepted )
       {
-        QgsNewGeoPackageLayerDialog dialog( nullptr );
-        dialog.setDatabasePath( collectionItemPtr->path() );
-        dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
-        dialog.setOverwriteBehavior( QgsNewGeoPackageLayerDialog::AddNewLayer );
-        dialog.lockDatabasePath();
-        if ( dialog.exec() == QDialog::Accepted )
-        {
-          if ( collectionItemPtr )
-            collectionItemPtr->refreshConnections();
-        }
+        if ( collectionItemPtr )
+          collectionItemPtr->refreshConnections();
       }
     } );
 
@@ -217,7 +215,6 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
     }
     else
     {
-      QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
       const QList<QgsMapLayer *> layersList( layerItem->layersInProject() );
       if ( ! layersList.isEmpty( ) )
       {
@@ -496,7 +493,6 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
             options.insert( QStringLiteral( "update" ), true );
             options.insert( QStringLiteral( "overwrite" ), true );
             options.insert( QStringLiteral( "layerName" ), dropUri.name );
-            options.insert( QStringLiteral( "forceSinglePartGeometryType" ), true );
             QgsVectorLayerExporterTask *exportTask = new QgsVectorLayerExporterTask( vectorSrcLayer, uri, QStringLiteral( "ogr" ), vectorSrcLayer->crs(), options, owner );
             mainTask->addSubTask( exportTask, importTasks );
             importTasks << exportTask;

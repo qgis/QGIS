@@ -110,7 +110,8 @@ The identifier field should be a unique field that can be used to identify indiv
 It is normally set to the primary key of the layer.
 If there are several identifier fields defined, the behavior is not guaranteed
 
-.. deprecated:: since QGIS 3.10 use identifierFields instead
+.. deprecated:: QGIS 3.10
+   use identifierFields instead
 %End
 
     QStringList identifierFields() const;
@@ -126,7 +127,7 @@ It is normally set to the primary key of the layer.
 The identifier field should be a unique field that can be used to identify individual features.
 It is normally set to the primary key of the layer.
 
-.. deprecated:: since QGIS 3.10
+.. deprecated:: QGIS 3.10
 %End
 
     void setIdentifierFields( const QStringList &identifierFields );
@@ -146,7 +147,7 @@ It is normally set to the primary key of the layer.
 Allows specifying one value that does not need to match the filter criteria but will
 still be available in the model.
 
-.. deprecated:: since QGIS 3.10
+.. deprecated:: QGIS 3.10
 %End
 
     QVariantList extraIdentifierValues() const;
@@ -162,7 +163,7 @@ still be available in the model.
 Allows specifying one value that does not need to match the filter criteria but will
 still be available in the model.
 
-.. deprecated:: since QGIS 3.10
+.. deprecated:: QGIS 3.10
 %End
 
     void setExtraIdentifierValues( const QVariantList &extraIdentifierValues );

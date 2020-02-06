@@ -429,6 +429,14 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      */
     void updateRangeLabels();
 
+    /**
+     * Returns the renderer range matching the provided \a value, or NULLPTR if no
+     * range matches the value.
+     *
+     * \since QGIS 3.10.1
+     */
+    const QgsRendererRange *rangeForValue( double value ) const;
+
   protected:
     QString mAttrName;
     QgsRangeList mRanges;
@@ -479,6 +487,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QgsGraduatedSymbolRenderer( const QgsGraduatedSymbolRenderer & );
     QgsGraduatedSymbolRenderer &operator=( const QgsGraduatedSymbolRenderer & );
 #endif
+
+    friend class TestQgsGraduatedSymbolRenderer;
+
 };
 
 #endif // QGSGRADUATEDSYMBOLRENDERER_H

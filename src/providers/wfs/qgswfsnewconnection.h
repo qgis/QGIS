@@ -19,6 +19,8 @@
 #include "qgsnewhttpconnection.h"
 #include "qgswfsconstants.h"
 #include "qgswfscapabilities.h"
+#include "qgsoapiflandingpagerequest.h"
+#include "qgsoapifapirequest.h"
 
 class QgsWFSNewConnection : public QgsNewHttpConnection
 {
@@ -26,16 +28,23 @@ class QgsWFSNewConnection : public QgsNewHttpConnection
 
   public:
     //! Constructor
-    QgsWFSNewConnection( QWidget *parent = nullptr, const QString &connName = QString::null );
+    QgsWFSNewConnection( QWidget *parent = nullptr, const QString &connName = QString() );
     ~QgsWFSNewConnection() override;
 
   private slots:
     void versionDetectButton();
     void capabilitiesReplyFinished();
+    void oapifLandingPageReplyFinished();
+    void oapifApiReplyFinished();
 
   private:
-    QgsWfsCapabilities *mCapabilities = nullptr;
+    QgsDataSourceUri createUri();
+    void startOapifLandingPageRequest();
+    void startOapifApiRequest();
 
+    std::unique_ptr<QgsWfsCapabilities> mCapabilities;
+    std::unique_ptr<QgsOapifLandingPageRequest> mOAPIFLandingPage;
+    std::unique_ptr<QgsOapifApiRequest> mOAPIFApi;
 };
 
 #endif //QGSWFSNEWCONNECTION_H

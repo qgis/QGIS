@@ -53,6 +53,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void testIdentifyOnMap();
     void testAddEntry();
     void testAddEntryNoGeom();
+    void testDependencies(); // Test relation datasource, id etc. config storage
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -309,6 +310,22 @@ void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
 
   QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
   QCOMPARE( cbs[2]->isEnabled(), false );
+
+  // set a foreign key
+  w.setForeignKeys( QVariantList() << QVariant( 11 ) );
+
+  QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
+  QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
+  QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
+
+  // set a null foreign key
+  w.setForeignKeys( QVariantList() << QVariant( QVariant::Int ) );
+  QCOMPARE( cbs[0]->currentText(), QString( "material" ) );
+  QCOMPARE( cbs[0]->isEnabled(), true );
+  QCOMPARE( cbs[1]->currentText(), QString( "diameter" ) );
+  QCOMPARE( cbs[1]->isEnabled(), false );
+  QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
+  QCOMPARE( cbs[2]->isEnabled(), false );
 }
 
 void TestQgsRelationReferenceWidget::testInvalidRelation()
@@ -346,7 +363,6 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
   QCOMPARE( spy.count(), 3 );
 }
 
-
 // Test issue https://github.com/qgis/QGIS/issues/29884
 // Relation reference widget wrong feature when "on map identification"
 void TestQgsRelationReferenceWidget::testIdentifyOnMap()
@@ -361,7 +377,7 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
   // Populate model (I tried to listen to signals but the module reload() runs twice
   // (the first load triggers a second one which does the population of the combo)
   // and I haven't fin a way to properly wait for it.
-  QTimer::singleShot( 300, [&] { loop.quit(); } );
+  QTimer::singleShot( 300, this, [&] { loop.quit(); } );
   loop.exec();
   QgsFeature feature;
   mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 11 ) ).nextFeature( feature );
@@ -381,7 +397,7 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
 
 // Monkey patch gui vector layer tool in order to simple add a new feature in
 // referenced layer
-class DummyVectorLayerTools : public QgsVectorLayerTools
+class DummyVectorLayerTools : public QgsVectorLayerTools // clazy:exclude=missing-qobject-macro
 {
     bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &, const QgsGeometry &, QgsFeature *feat = nullptr ) const override
     {
@@ -395,9 +411,9 @@ class DummyVectorLayerTools : public QgsVectorLayerTools
 
     bool startEditing( QgsVectorLayer * ) const override {return true;}
 
-    bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;};
+    bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;}
 
-    bool saveEdits( QgsVectorLayer * ) const override {return true;};
+    bool saveEdits( QgsVectorLayer * ) const override {return true;}
 };
 
 void TestQgsRelationReferenceWidget::testAddEntry()
@@ -470,6 +486,38 @@ void TestQgsRelationReferenceWidget::testAddEntryNoGeom()
   QVERIFY( !w.mCurrentMapTool );
 
   QCOMPARE( w.mComboBox->identifierValues().at( 0 ).toInt(), 13 );
+}
+
+void TestQgsRelationReferenceWidget::testDependencies()
+{
+  QgsVectorLayer mLayer1( QStringLiteral( "Point?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &mLayer1, false, false );
+
+  QgsVectorLayer mLayer2( QStringLiteral( "None?field=pk:int&field=material:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &mLayer2, false, false );
+
+  // create relation
+  QgsRelation mRelation;
+  mRelation.setId( QStringLiteral( "vl1.vl2" ) );
+  mRelation.setName( QStringLiteral( "vl1.vl2" ) );
+  mRelation.setReferencingLayer( mLayer1.id() );
+  mRelation.setReferencedLayer( mLayer2.id() );
+  mRelation.addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
+  QVERIFY( mRelation.isValid() );
+  QgsProject::instance()->relationManager()->addRelation( mRelation );
+
+  // check that a new added entry in referenced layer populate correctly
+  // widget config
+  QgsMapCanvas canvas;
+  QgsRelationReferenceWidget w( &canvas );
+  w.setRelation( mRelation, true );
+  w.init();
+
+  QCOMPARE( w.referencedLayerId(), mLayer2.id() );
+  QCOMPARE( w.referencedLayerName(), mLayer2.name() );
+  QCOMPARE( w.referencedLayerDataSource(), mLayer2.publicSource() );
+  QCOMPARE( w.referencedLayerProviderKey(), mLayer2.providerType() );
+
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )

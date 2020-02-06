@@ -251,7 +251,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     /**
      * Give the layer tree model hints about the currently associated map view
-     * so that legend nodes that use map units can be scaled currectly
+     * so that legend nodes that use map units can be scaled correctly
      * \since QGIS 2.6
      */
     void setLegendMapViewData( double mapUnitsPerPixel, int dpi, double scale );
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     QMap<QString, QString> mLayerStyleOverrides;
 
     //! Per layer data about layer's legend nodes
-    QMap<QgsLayerTreeLayer *, LayerLegendData> mLegend;
+    QHash<QgsLayerTreeLayer *, LayerLegendData> mLegend;
 
     QFont mFontLayer;
     QFont mFontGroup;

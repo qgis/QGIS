@@ -18,7 +18,7 @@ from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularS
     QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField, QgsError,\
     QgsMimeDataUtils, QgsVector, QgsVector3D, QgsVectorLayer, QgsReferencedPointXY, QgsReferencedRectangle,\
     QgsCoordinateReferenceSystem, QgsCoordinateTransform, QgsProject, QgsClassificationRange, QgsBookmark, \
-    QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes, QgsConditionalStyle
+    QgsLayoutMeasurement, QgsLayoutPoint, QgsLayoutSize, QgsUnitTypes, QgsConditionalStyle, QgsTableCell
 
 start_app()
 
@@ -218,6 +218,12 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(b.__repr__(), "<QgsConditionalStyle: @value > 20>")
         b.setName('test name')
         self.assertEqual(b.__repr__(), "<QgsConditionalStyle: 'test name' (@value > 20)>")
+
+    def testQgsTableCell(self):
+        b = QgsTableCell('test')
+        self.assertEqual(b.__repr__(), "<QgsTableCell: test>")
+        b.setContent(5)
+        self.assertEqual(b.__repr__(), "<QgsTableCell: 5>")
 
 
 if __name__ == "__main__":

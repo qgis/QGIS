@@ -116,8 +116,13 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      *
      * If the resultant raster was of a sufficiently small size to store in the cache, then \a fitsInCache
      * will be set to TRUE.
+     *
+     * The \a blocking boolean forces to wait for loading before returning image. The content is loaded
+     * in the same thread to ensure provided the image. WARNING: the \a blocking parameter must NEVER
+     * be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for
+     * use in external scripts or QGIS server.
      */
-    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT );
+    QImage pathAsImage( const QString &path, const QSize size, const bool keepAspectRatio, const double opacity, bool &fitsInCache SIP_OUT, bool blocking = false );
 
     /**
      * Returns the original size (in pixels) of the image at the specified \a path.
@@ -127,9 +132,14 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
      * If \a path is a remote file, then an invalid size may be returned while the image is in the process
      * of being fetched.
      *
+     * The \a blocking boolean forces to wait for loading before returning the original size. The content is loaded
+     * in the same thread to ensure provided the original size. WARNING: the \a blocking parameter must NEVER
+     * be TRUE from GUI based applications (like the main QGIS application) or crashes will result. Only for
+     * use in external scripts or QGIS server.
+     *
      * If the image could not be read then an invalid QSize is returned.
      */
-    QSize originalSize( const QString &path ) const;
+    QSize originalSize( const QString &path, bool blocking = false ) const;
 
   signals:
 
@@ -140,7 +150,7 @@ class CORE_EXPORT QgsImageCache : public QgsAbstractContentCache< QgsImageCacheE
 
   private:
 
-    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity ) const;
+    QImage renderImage( const QString &path, QSize size, const bool keepAspectRatio, const double opacity, bool blocking = false ) const;
 
     //! SVG content to be rendered if SVG file was not found.
     QByteArray mMissingSvg;

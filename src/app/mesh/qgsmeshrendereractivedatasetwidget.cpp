@@ -16,8 +16,10 @@
 #include "qgsmeshrendereractivedatasetwidget.h"
 
 #include <QDateTime>
+#include <QIcon>
 
 #include "qgis.h"
+#include "qgsapplication.h"
 #include "qgsmeshlayer.h"
 #include "qgsmessagelog.h"
 #include "qgsmeshrenderersettings.h"
@@ -36,11 +38,27 @@ QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget 
   connect( mPreviousDatasetButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onPreviousTimeClicked );
   connect( mNextDatasetButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onNextTimeClicked );
   connect( mLastDatasetButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onLastTimeClicked );
+  connect( mDatasetPlaybackButton, &QToolButton::clicked, this, &QgsMeshRendererActiveDatasetWidget::onDatasetPlaybackClicked );
 
   connect( mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::activeScalarGroupChanged,
            this, &QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged );
   connect( mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::activeVectorGroupChanged,
            this, &QgsMeshRendererActiveDatasetWidget::onActiveVectorGroupChanged );
+
+  mDatasetPlaybackTimer = new QTimer( this );
+  connect( mDatasetPlaybackTimer, &QTimer::timeout,
+           this,  qgis::overload<>::of( &QgsMeshRendererActiveDatasetWidget::datasetPlaybackTick ) );
+
+  mDatasetPlaybackButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionPlay.svg" ) ) );
+  mFirstDatasetButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFirst.svg" ) ) );
+  mPreviousDatasetButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionPrevious.svg" ) ) );
+  mNextDatasetButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNext.svg" ) ) );
+  mLastDatasetButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionLast.svg" ) ) );
+}
+
+QgsMeshRendererActiveDatasetWidget::~QgsMeshRendererActiveDatasetWidget()
+{
+  mDatasetPlaybackTimer->stop();
 }
 
 void QgsMeshRendererActiveDatasetWidget::setLayer( QgsMeshLayer *layer )
@@ -102,6 +120,7 @@ void QgsMeshRendererActiveDatasetWidget::setTimeRange()
 
   // update combobox
   mTimeComboBox->blockSignals( true );
+  int currentIndex = mTimeComboBox->currentIndex();
   mTimeComboBox->clear();
   if ( groupWithMaximumDatasets > -1 )
   {
@@ -113,16 +132,20 @@ void QgsMeshRendererActiveDatasetWidget::setTimeRange()
       mTimeComboBox->addItem( mMeshLayer->formatTime( time ), time );
     }
   }
+  mTimeComboBox->setCurrentIndex( currentIndex );
   mTimeComboBox->blockSignals( false );
-
+  updateMetadata();
   // enable/disable time controls depending on whether the data set is time varying
   enableTimeControls();
 }
 
 void QgsMeshRendererActiveDatasetWidget::enableTimeControls()
 {
-  const int scalarDatesets = mMeshLayer->dataProvider()->datasetCount( mActiveScalarDatasetGroup );
-  const int vectorDatesets = mMeshLayer->dataProvider()->datasetCount( mActiveVectorDatasetGroup );
+  const QgsMeshDataProvider *provider = mMeshLayer->dataProvider();
+  if ( !provider )
+    return;
+  const int scalarDatesets = provider->datasetCount( mActiveScalarDatasetGroup );
+  const int vectorDatesets = provider->datasetCount( mActiveVectorDatasetGroup );
   const bool isTimeVarying = ( scalarDatesets > 1 ) || ( vectorDatesets > 1 );
   mTimeComboBox->setEnabled( isTimeVarying );
   mDatasetSlider->setEnabled( isTimeVarying );
@@ -131,6 +154,7 @@ void QgsMeshRendererActiveDatasetWidget::enableTimeControls()
   mPreviousDatasetButton->setEnabled( isTimeVarying );
   mNextDatasetButton->setEnabled( isTimeVarying );
   mLastDatasetButton->setEnabled( isTimeVarying );
+  mDatasetPlaybackButton->setEnabled( isTimeVarying );
 }
 
 void QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged( int groupIndex )
@@ -230,6 +254,53 @@ void QgsMeshRendererActiveDatasetWidget::onLastTimeClicked()
   mTimeComboBox->setCurrentIndex( mTimeComboBox->count() - 1 );
 }
 
+void QgsMeshRendererActiveDatasetWidget::onDatasetPlaybackClicked()
+{
+  if ( mDatasetIsPlaying )
+  {
+    // stop playing
+    mDatasetIsPlaying = false;
+    mTimeComboBox->setEnabled( true );
+    mTimeFormatButton->setEnabled( true );
+    mDatasetSlider->setEnabled( true );
+    mFirstDatasetButton->setEnabled( true );
+    mPreviousDatasetButton->setEnabled( true );
+    mNextDatasetButton->setEnabled( true );
+    mLastDatasetButton->setEnabled( true );
+    mDatasetPlaybackTimer->stop();
+    mDatasetPlaybackButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionPlay.svg" ) ) );
+  }
+  else
+  {
+    // start
+    mDatasetIsPlaying = true;
+    mTimeComboBox->setEnabled( false );
+    mTimeFormatButton->setEnabled( false );
+    mDatasetSlider->setEnabled( false );
+    mFirstDatasetButton->setEnabled( false );
+    mPreviousDatasetButton->setEnabled( false );
+    mNextDatasetButton->setEnabled( false );
+    mLastDatasetButton->setEnabled( false );
+    int intervalMs = 3000;
+    if ( mMeshLayer )
+    {
+      intervalMs = static_cast<int>( mMeshLayer->timeSettings().datasetPlaybackInterval() * 1000 );
+    }
+    datasetPlaybackTick();
+    mDatasetPlaybackTimer->start( intervalMs );
+    mDatasetPlaybackButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionStop.svg" ) ) );
+  }
+}
+
+void QgsMeshRendererActiveDatasetWidget::datasetPlaybackTick()
+{
+  int nextIdx = mTimeComboBox->currentIndex() + 1;
+  if ( nextIdx >= mTimeComboBox->count() )
+    nextIdx = 0;
+
+  mTimeComboBox->setCurrentIndex( nextIdx );
+}
+
 void QgsMeshRendererActiveDatasetWidget::updateMetadata()
 {
   QString msg;
@@ -298,9 +369,22 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
          .arg( time );
 
   const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
+  QString definedOn;
+  switch ( gmeta.dataType() )
+  {
+    case QgsMeshDatasetGroupMetadata::DataOnVertices:
+      definedOn = tr( "vertices" );
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnFaces:
+      definedOn = tr( "faces" );
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+      definedOn = tr( "volumes" );
+      break;
+  }
   msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-         .arg( tr( "Data Type" ) )
-         .arg( gmeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ? tr( "Defined on vertices" ) : tr( "Defined on faces" ) );
+         .arg( tr( "Data type" ) )
+         .arg( definedOn );
 
   msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
          .arg( tr( "Is vector" ) )

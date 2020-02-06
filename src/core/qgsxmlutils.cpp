@@ -165,6 +165,11 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
       element.setAttribute( QStringLiteral( "value" ), value.toString() );
       break;
 
+    case QVariant::Char:
+      element.setAttribute( QStringLiteral( "type" ), QVariant::typeToName( value.type() ) );
+      element.setAttribute( QStringLiteral( "value" ), value.isNull() ? QString() : value.toString() );
+      break;
+
     case QVariant::Color:
       element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "color" ) );
       element.setAttribute( QStringLiteral( "value" ), value.value< QColor >().isValid() ? QgsSymbolLayerUtils::encodeColor( value.value< QColor >() ) : QString() );
@@ -235,6 +240,11 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
   else if ( type == QLatin1String( "QString" ) )
   {
     return element.attribute( QStringLiteral( "value" ) );
+  }
+  else if ( type == QLatin1String( "QChar" ) )
+  {
+    const QString res = element.attribute( QStringLiteral( "value" ) );
+    return res.isEmpty() ? QChar() : res.at( 0 );
   }
   else if ( type == QLatin1String( "bool" ) )
   {

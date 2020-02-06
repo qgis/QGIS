@@ -5,6 +5,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
@@ -12,12 +13,13 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/dxf
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
-  ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
@@ -30,6 +32,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/classification
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/test
+
   ${CMAKE_BINARY_DIR}/src/core
 )
 INCLUDE_DIRECTORIES(SYSTEM
@@ -40,6 +43,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
+  ${SPATIALINDEX_INCLUDE_DIR}
   )
 
 IF(HAVE_OPENCL)
@@ -62,7 +66,6 @@ MACRO (ADD_QGIS_TEST TESTSRC)
   STRING(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
   SET (TESTNAME  "qgis_${TESTNAME}test")
   ADD_EXECUTABLE(${TESTNAME} ${TESTSRC} ${util_SRCS})
-  SET_TARGET_PROPERTIES(${TESTNAME} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(${TESTNAME}
     ${Qt5Core_LIBRARIES}
     ${Qt5Xml_LIBRARIES}
@@ -71,6 +74,7 @@ MACRO (ADD_QGIS_TEST TESTSRC)
     ${PROJ_LIBRARY}
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
+    ${SPATIALINDEX_LIBRARY}
     qgis_core)
   ADD_TEST(${TESTNAME} ${CMAKE_BINARY_DIR}/output/bin/${TESTNAME} -maxwarnings 10000)
 ENDMACRO (ADD_QGIS_TEST)
@@ -118,6 +122,7 @@ SET(TESTS
  testqgsgdalutils.cpp
  testqgsvectorfilewriter.cpp
  testqgsfontmarker.cpp
+ testqgsgenericspatialindex.cpp
  testqgsgeopdfexport.cpp
  testqgsgeometryimport.cpp
  testqgsgeometry.cpp
@@ -144,6 +149,7 @@ SET(TESTS
  testqgslayoutitemgroup.cpp
  testqgslayoutgeopdfexport.cpp
  testqgslayoutlabel.cpp
+ testqgslayoutmanualtable.cpp
  testqgslayoutmap.cpp
  testqgslayoutmapgrid.cpp
  testqgslayoutmapoverview.cpp
@@ -172,6 +178,7 @@ SET(TESTS
  testqgsmaptopixelgeometrysimplifier.cpp
  testqgsmaptopixel.cpp
  testqgsmarkerlinesymbol.cpp
+ testqgsmesh3daveraging.cpp
  testqgsmeshlayer.cpp
  testqgsmeshlayerinterpolator.cpp
  testqgsmeshlayerrenderer.cpp
@@ -200,6 +207,7 @@ SET(TESTS
  testqgsrasterlayer.cpp
  testqgsrastersublayer.cpp
  testqgsrectangle.cpp
+ testqgsrelationreferencefieldformatter.cpp
  testqgsrenderers.cpp
  testqgsrulebasedrenderer.cpp
  testqgssettings.cpp
@@ -218,6 +226,7 @@ SET(TESTS
  testqgstracer.cpp
  testqgstriangularmesh.cpp
  testqgsfontutils.cpp
+ testqgsvaluerelationfieldformatter.cpp
  testqgsvector.cpp
  testqgsvectordataprovider.cpp
  testqgsvectorlayercache.cpp
@@ -234,6 +243,7 @@ SET(TESTS
  testqobjectuniqueptr.cpp
  testqgspostgresstringutils.cpp
  testqgsstoredexpressionmanager.cpp
+ testqgsweakrelation.cpp
 )
 
 IF(WITH_QTWEBKIT)

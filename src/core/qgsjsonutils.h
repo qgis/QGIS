@@ -23,7 +23,7 @@
 #include "qgsfields.h"
 
 #ifndef SIP_RUN
-#include <nlohmann/json_fwd.hpp>
+#include <json_fwd.hpp>
 using namespace nlohmann;
 #endif
 
@@ -154,6 +154,13 @@ class CORE_EXPORT QgsJsonExporter
     QgsCoordinateReferenceSystem sourceCrs() const;
 
     /**
+     * Sets whether geometries should be transformed in EPSG 4326 (default
+     * behavior) or just keep as it is.
+     * \since QGIS 3.12
+     */
+    void setTransformGeometries( bool activate ) { mTransformGeometries = activate; }
+
+    /**
      * Sets the list of attributes to include in the JSON exports.
      * \param attributes list of attribute indexes, or an empty list to include all
      * attributes
@@ -270,6 +277,8 @@ class CORE_EXPORT QgsJsonExporter
     QgsCoordinateTransform mTransform;
 
     bool mAttributeDisplayName = false;
+
+    bool mTransformGeometries = true;
 };
 
 /**
@@ -284,25 +293,23 @@ class CORE_EXPORT QgsJsonUtils
   public:
 
     /**
-     * Attempts to parse a GeoJSON string to a collection of features.
-     * \param string GeoJSON string to parse
-     * \param fields fields collection to use for parsed features
-     * \param encoding text encoding
-     * \returns list of parsed features, or an empty list if no features could be parsed
+     * Attempts to parse a GeoJSON \a string to a collection of features.
+     * It is possible to specify \a fields to parse specific fields, if not provided, no fields will be included.
+     * An \a encoding can be specified which defaults to UTF-8 if it is `nullptr`.
+     * \returns a list of parsed features, or an empty list if no features could be parsed
      * \see stringToFields()
      * \note this function is a wrapper around QgsOgrUtils::stringToFeatureList()
      */
-    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding );
+    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields = QgsFields(), QTextCodec *encoding = nullptr );
 
     /**
-     * Attempts to retrieve the fields from a GeoJSON string representing a collection of features.
-     * \param string GeoJSON string to parse
-     * \param encoding text encoding
+     * Attempts to retrieve the fields from a GeoJSON  \a string representing a collection of features.
+     * An \a encoding can be specified which defaults to UTF-8 if it is `nullptr`.
      * \returns retrieved fields collection, or an empty list if no fields could be determined from the string
      * \see stringToFeatureList()
      * \note this function is a wrapper around QgsOgrUtils::stringToFields()
      */
-    static QgsFields stringToFields( const QString &string, QTextCodec *encoding );
+    static QgsFields stringToFields( const QString &string, QTextCodec *encoding = nullptr );
 
     /**
      * Encodes a value to a JSON string representation, adding appropriate quotations and escaping

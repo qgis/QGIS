@@ -86,13 +86,13 @@ void TestQgsServerWmsDxf::use_title_as_layername_true()
   context.setParameters( parameters );
 
   QgsWms::QgsRenderer renderer( context );
-  QgsDxfExport exporter = renderer.getDxf();
+  std::unique_ptr<QgsDxfExport> exporter = renderer.getDxf();
 
-  const QString name = exporter.layerName( vl );
-  QCOMPARE( exporter.layerName( vl ), QString( "testlayer \u00E8\u00E9" ) );
+  const QString name = exporter->layerName( vl );
+  QCOMPARE( exporter->layerName( vl ), QString( "testlayer \u00E8\u00E9" ) );
 
   const QgsFeature ft = vl->getFeature( 1 );
-  QCOMPARE( exporter.layerName( vl->id(), ft ), QString( "two" ) );
+  QCOMPARE( exporter->layerName( vl->id(), ft ), QString( "two" ) );
 }
 
 void TestQgsServerWmsDxf::use_title_as_layername_false()
@@ -135,13 +135,13 @@ void TestQgsServerWmsDxf::use_title_as_layername_false()
   context.setParameters( parameters );
 
   QgsWms::QgsRenderer renderer( context );
-  QgsDxfExport exporter = renderer.getDxf();
+  std::unique_ptr<QgsDxfExport> exporter = renderer.getDxf();
 
-  const QString name = exporter.layerName( vl );
-  QCOMPARE( exporter.layerName( vl ), QString( "A test vector layer" ) );
+  const QString name = exporter->layerName( vl );
+  QCOMPARE( exporter->layerName( vl ), QString( "A test vector layer" ) );
 
   const QgsFeature ft = vl->getFeature( 1 );
-  QCOMPARE( exporter.layerName( vl->id(), ft ), QString( "A test vector layer" ) );
+  QCOMPARE( exporter->layerName( vl->id(), ft ), QString( "A test vector layer" ) );
 }
 
 QGSTEST_MAIN( TestQgsServerWmsDxf )

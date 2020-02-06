@@ -21,8 +21,8 @@
 #include <QApplication>
 #include <QProgressDialog>
 
-QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent, bool asynchronous )
-  : QgsSnappingUtils( parent, QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool(), asynchronous )
+QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent )
+  : QgsSnappingUtils( parent, QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool() )
   , mCanvas( canvas )
 
 {
@@ -57,4 +57,25 @@ void QgsMapCanvasSnappingUtils::canvasCurrentLayerChanged()
 void QgsMapCanvasSnappingUtils::canvasMapToolChanged()
 {
   setEnableSnappingForInvisibleFeature( QgsSettings().value( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), false ).toBool() );
+}
+
+void QgsMapCanvasSnappingUtils::prepareIndexStarting( int count )
+{
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+  mProgress = new QProgressDialog( tr( "Indexing data…" ), QString(), 0, count, mCanvas->topLevelWidget() );
+  mProgress->setWindowModality( Qt::WindowModal );
+}
+
+void QgsMapCanvasSnappingUtils::prepareIndexProgress( int index )
+{
+  if ( !mProgress )
+    return;
+
+  mProgress->setValue( index );
+  if ( index == mProgress->maximum() )
+  {
+    delete mProgress;
+    mProgress = nullptr;
+    QApplication::restoreOverrideCursor();
+  }
 }

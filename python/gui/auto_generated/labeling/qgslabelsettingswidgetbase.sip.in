@@ -1,0 +1,136 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/labeling/qgslabelsettingswidgetbase.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsLabelSettingsWidgetBase : QgsPanelWidget, protected QgsExpressionContextGenerator
+{
+%Docstring
+Base class for widgets which allow customization of label engine properties, such as label placement settings.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgslabelsettingswidgetbase.h"
+%End
+  public:
+
+    QgsLabelSettingsWidgetBase( QWidget *parent /TransferThis/ = 0, QgsVectorLayer *vl = 0 );
+%Docstring
+Constructor for QgsLabelSettingsWidgetBase.
+
+:param parent: parent widget
+:param vl: associated vector layer
+%End
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+%Docstring
+Sets the ``context`` in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`context`
+%End
+
+    QgsSymbolWidgetContext context() const;
+%Docstring
+Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+
+.. seealso:: :py:func:`setContext`
+%End
+
+    virtual void setGeometryType( QgsWkbTypes::GeometryType type );
+%Docstring
+Sets the geometry ``type`` of the features to customize the widget accordingly.
+%End
+
+    QgsPropertyCollection dataDefinedProperties() const;
+%Docstring
+Returns the current data defined properties state as specified in the widget.
+
+.. seealso:: :py:func:`updateDataDefinedProperties`
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+%End
+
+    void setDataDefinedProperties( const QgsPropertyCollection &dataDefinedProperties );
+%Docstring
+Sets the current data defined properties to show in the widget.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+%End
+
+    virtual void updateDataDefinedProperties( QgsPropertyCollection &properties );
+%Docstring
+Updates a data defined ``properties`` collection, correctly setting the values
+for any properties related to this widget.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+
+.. seealso:: :py:func:`dataDefinedProperties`
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when any of the settings described by the widget are changed.
+%End
+
+    void auxiliaryFieldCreated();
+%Docstring
+Emitted when an auxiliary field is created in the widget.
+%End
+
+  protected:
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key );
+%Docstring
+Registers a data defined override ``button``. Handles setting up connections
+for the button and initializing the button to show the correct descriptions
+and help text for the associated property.
+%End
+
+
+};
+
+class QgsLabelSettingsWidgetDialog : QDialog
+{
+%Docstring
+A blocking dialog containing a QgsLabelSettingsWidgetBase.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgslabelsettingswidgetbase.h"
+%End
+  public:
+
+
+    QgsLabelSettingsWidgetDialog( QgsLabelSettingsWidgetBase *widget /Transfer/, QWidget *parent = 0 );
+%Docstring
+Constructor for QgsLabelSettingsWidgetDialog.
+
+:param widget: label settings widget to embed in the dialog. Ownership is transferred to the dialog.
+:param parent: parent widget
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/labeling/qgslabelsettingswidgetbase.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

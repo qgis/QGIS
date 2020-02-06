@@ -138,6 +138,7 @@ class TestQgsTessellator : public QObject
     void testCrashEmptyPolygon();
     void testBoundsScaling();
     void testNoZ();
+    void testTriangulationDoesNotCrash();
 
   private:
 };
@@ -357,8 +358,8 @@ void TestQgsTessellator::testBoundsScaling()
   polygon.fromWkt( "POLYGON((1 1, 1.00000001 1, 1.00000001 1.00000001, 1 1.0000000001, 1 1))" );
 
   QList<TriangleCoords> tc;
-  tc << TriangleCoords( QVector3D( 0, 1e-10, 0 ), QVector3D( 1e-08, 0, 0 ), QVector3D( 1e-08, 1e-08, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ) );
-  tc << TriangleCoords( QVector3D( 0, 1e-10, 0 ), QVector3D( 0, 0, 0 ), QVector3D( 1e-08, 0, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ) );
+  tc << TriangleCoords( QVector3D( 0, 1e-10f, 0 ), QVector3D( 1e-08f, 0, 0 ), QVector3D( 1e-08f, 1e-08f, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ) );
+  tc << TriangleCoords( QVector3D( 0, 1e-10f, 0 ), QVector3D( 0, 0, 0 ), QVector3D( 1e-08f, 0, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 1 ) );
 
   // without using bounds -- numerically unstable, expect no result
   QgsTessellator t( 0, 0, true );
@@ -384,6 +385,16 @@ void TestQgsTessellator::testNoZ()
   QgsTessellator t( polygonZ.boundingBox(), false, false, false, true );
   t.addPolygon( polygonZ, 0 );
   QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
+}
+
+void TestQgsTessellator::testTriangulationDoesNotCrash()
+{
+  // a commit in poly2tri has caused a crashing regression - https://github.com/jhasse/poly2tri/issues/11
+  // this code only makes sure that the crash does not come back during another update of poly2tri
+  QgsPolygon polygon;
+  polygon.fromWkt( "Polygon((0 0, -5 -3e-10, -10 -2e-10, -10 -4, 0 -4))" );
+  QgsTessellator t( 0, 0, true );
+  t.addPolygon( polygon, 0 );
 }
 
 

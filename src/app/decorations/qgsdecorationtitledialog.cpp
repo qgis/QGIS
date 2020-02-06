@@ -43,9 +43,6 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsDecorationTitleDialog::mInsertExpressionButton_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationTitleDialog::showHelp );
 
-  // once the documentation for this dialog is added, remove the line below
-  buttonBox->button( QDialogButtonBox::Help )->setVisible( false );
-
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
   connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationTitleDialog::apply );
 
@@ -82,6 +79,7 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   } );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
 
+  spnHorizontal->setClearValue( 0 );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
   wgtUnitSelection->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderPixels );
@@ -140,5 +138,5 @@ void QgsDecorationTitleDialog::apply()
 
 void QgsDecorationTitleDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#title-label" ) );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#copyright-and-title-labels" ) );
 }

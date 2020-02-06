@@ -33,6 +33,7 @@ class QgsExpressionContext;
 class QgsOptionsPageWidget;
 class QgsLocatorOptionsWidget;
 class QgsAuthConfigSelect;
+class QgsBearingNumericFormat;
 
 /**
  * \class QgsOptions
@@ -42,6 +43,20 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 {
     Q_OBJECT
   public:
+
+    /**
+     * Behavior to use when encountering a layer with an unknown CRS
+     * \since QGIS 3.10
+     */
+    enum UnknownLayerCrsBehavior
+    {
+      NoAction = 0, //!< Take no action and leave as unknown CRS
+      PromptUserForCrs = 1, //!< User is prompted for a CRS choice
+      UseProjectCrs = 2, //!< Copy the current project's CRS
+      UseDefaultCrs = 3, //!< Use the default layer CRS set via QGIS options
+    };
+    Q_ENUM( UnknownLayerCrsBehavior )
+
 
     /**
      * Constructor
@@ -251,6 +266,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void updateSampleLocaleText();
 
+    void customizeBearingFormat();
+
   protected:
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
     QMap<QString, QVariant> mStyleSheetNewOpts;
@@ -263,6 +280,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     QList< QgsOptionsPageWidget * > mAdditionalOptionWidgets;
     QgsLocatorOptionsWidget *mLocatorOptionsWidget = nullptr;
+
+    std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
 
     void updateActionsForCurrentColorScheme( QgsColorScheme *scheme );
 

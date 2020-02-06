@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerlistutils.h"
+#include "qgsvectorlayerlabeling.h"
 
 #include <QtConcurrentRun>
 
@@ -86,7 +87,7 @@ void QgsMapRendererCustomPainterJob::start()
   QgsDebugMsgLevel( QStringLiteral( "QPAINTER run!" ), 5 );
 
   QgsDebugMsgLevel( QStringLiteral( "Preparing list of layer jobs for rendering" ), 5 );
-  QTime prepareTime;
+  QElapsedTimer prepareTime;
   prepareTime.start();
 
   preparePainter( mPainter, mSettings.backgroundColor() );
@@ -102,6 +103,7 @@ void QgsMapRendererCustomPainterJob::start()
   bool canUseLabelCache = prepareLabelCache();
   mLayerJobs = prepareJobs( mPainter, mLabelingEngineV2.get() );
   mLabelJob = prepareLabelingJob( mPainter, mLabelingEngineV2.get(), canUseLabelCache );
+  mSecondPassLayerJobs = prepareSecondPassJobs( mLayerJobs, mLabelJob );
 
   QgsDebugMsgLevel( QStringLiteral( "Rendering prepared in (seconds): %1" ).arg( prepareTime.elapsed() / 1000.0 ), 4 );
 
@@ -135,7 +137,7 @@ void QgsMapRendererCustomPainterJob::cancel()
   disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererCustomPainterJob::futureFinished );
   cancelWithoutBlocking();
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   mFutureWatcher.waitForFinished();
@@ -171,7 +173,7 @@ void QgsMapRendererCustomPainterJob::waitForFinished()
 
   disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererCustomPainterJob::futureFinished );
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   mFutureWatcher.waitForFinished();
@@ -244,10 +246,11 @@ void QgsMapRendererCustomPainterJob::futureFinished()
   QgsDebugMsgLevel( QStringLiteral( "QPAINTER futureFinished" ), 5 );
 
   if ( !mPrepared )
-    logRenderingTime( mLayerJobs, mLabelJob );
+    logRenderingTime( mLayerJobs, {}, mLabelJob );
 
   // final cleanup
   cleanupJobs( mLayerJobs );
+  cleanupSecondPassJobs( mSecondPassLayerJobs );
   cleanupLabelJob( mLabelJob );
 
   emit finished();
@@ -278,8 +281,9 @@ void QgsMapRendererCustomPainterJob::staticRender( QgsMapRendererCustomPainterJo
 
 void QgsMapRendererCustomPainterJob::doRender()
 {
+  bool hasSecondPass = ! mSecondPassLayerJobs.isEmpty();
   QgsDebugMsgLevel( QStringLiteral( "Starting to render layer stack." ), 5 );
-  QTime renderTime;
+  QElapsedTimer renderTime;
   renderTime.start();
 
   for ( LayerRenderJobs::iterator it = mLayerJobs.begin(); it != mLayerJobs.end(); ++it )
@@ -289,7 +293,7 @@ void QgsMapRendererCustomPainterJob::doRender()
     if ( job.context.renderingStopped() )
       break;
 
-    if ( job.context.useAdvancedEffects() )
+    if ( ! hasSecondPass && job.context.useAdvancedEffects() )
     {
       // Set the QPainter composition mode so that this layer is rendered using
       // the desired blending mode
@@ -298,7 +302,7 @@ void QgsMapRendererCustomPainterJob::doRender()
 
     if ( !job.cached )
     {
-      QTime layerTime;
+      QElapsedTimer layerTime;
       layerTime.start();
 
       if ( job.img )
@@ -312,7 +316,7 @@ void QgsMapRendererCustomPainterJob::doRender()
       job.renderingTime += layerTime.elapsed();
     }
 
-    if ( job.img )
+    if ( ! hasSecondPass && job.img )
     {
       // If we flattened this layer for alternate blend modes, composite it now
       mPainter->setOpacity( job.opacity );
@@ -328,7 +332,7 @@ void QgsMapRendererCustomPainterJob::doRender()
   {
     if ( !mLabelJob.cached )
     {
-      QTime labelTime;
+      QElapsedTimer labelTime;
       labelTime.start();
 
       if ( mLabelJob.img )
@@ -350,11 +354,47 @@ void QgsMapRendererCustomPainterJob::doRender()
       mLabelJob.participatingLayers = _qgis_listRawToQPointer( mLabelingEngineV2->participatingLayers() );
     }
   }
-  if ( mLabelJob.img && mLabelJob.complete )
+
+  if ( ! hasSecondPass )
   {
+    if ( mLabelJob.img && mLabelJob.complete )
+    {
+      mPainter->setCompositionMode( QPainter::CompositionMode_SourceOver );
+      mPainter->setOpacity( 1.0 );
+      mPainter->drawImage( 0, 0, *mLabelJob.img );
+    }
+  }
+  else
+  {
+    for ( LayerRenderJob &job : mSecondPassLayerJobs )
+    {
+      if ( job.context.renderingStopped() )
+        break;
+
+      if ( !job.cached )
+      {
+        QElapsedTimer layerTime;
+        layerTime.start();
+
+        if ( job.img )
+        {
+          job.img->fill( 0 );
+          job.imageInitialized = true;
+        }
+
+        job.renderer->render();
+
+        job.renderingTime += layerTime.elapsed();
+      }
+    }
+
+    composeSecondPass( mSecondPassLayerJobs, mLabelJob );
+
+    QImage finalImage = composeImage( mSettings, mLayerJobs, mLabelJob );
+
     mPainter->setCompositionMode( QPainter::CompositionMode_SourceOver );
     mPainter->setOpacity( 1.0 );
-    mPainter->drawImage( 0, 0, *mLabelJob.img );
+    mPainter->drawImage( 0, 0, finalImage );
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Rendering completed in (seconds): %1" ).arg( renderTime.elapsed() / 1000.0 ), 2 );

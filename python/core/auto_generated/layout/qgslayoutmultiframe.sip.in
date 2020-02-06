@@ -23,6 +23,7 @@ several frames (QgsLayoutFrame items).
 #include "qgslayoutmultiframe.h"
 #include "qgslayoutitemhtml.h"
 #include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemmanualtable.h"
 #include "qgslayoutitemtexttable.h"
 %End
 %ConvertToSubClassCode
@@ -44,6 +45,10 @@ several frames (QgsLayoutFrame items).
         case QGraphicsItem::UserType + 114:
           sipType = sipType_QgsLayoutItemTextTable;
           *sipCppRet = static_cast<QgsLayoutItemTextTable *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 116:
+          sipType = sipType_QgsLayoutItemManualTable;
+          *sipCppRet = static_cast<QgsLayoutItemManualTable *>( sipCpp );
           break;
         default:
           sipType = 0;

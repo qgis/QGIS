@@ -1,0 +1,286 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/tableeditor/qgstableeditorwidget.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsTableEditorWidget : QTableWidget
+{
+%Docstring
+
+A reusable widget for editing simple spreadsheet-style tables.
+
+Table content is retrieved and set using the QgsTableContents class. The editor
+has support for table foreground and background colors, and numeric formats.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgstableeditorwidget.h"
+%End
+  public:
+
+    QgsTableEditorWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsTableEditorWidget with the specified ``parent`` widget.
+%End
+    ~QgsTableEditorWidget();
+
+    void setTableContents( const QgsTableContents &contents );
+%Docstring
+Sets the ``contents`` to show in the editor widget.
+
+.. seealso:: :py:func:`tableContents`
+%End
+
+    QgsTableContents tableContents() const;
+%Docstring
+Returns the current contents of the editor widget table.
+
+.. seealso:: :py:func:`setTableContents`
+%End
+
+    void setSelectionNumericFormat( QgsNumericFormat *format /Transfer/ );
+%Docstring
+Sets the numeric ``format`` to use for the currently selected cells.
+
+Ownership of ``format`` is transferred to the widget.
+
+.. seealso:: :py:func:`selectionNumericFormat`
+%End
+
+    QgsNumericFormat *selectionNumericFormat();
+%Docstring
+Returns the numeric format used for the currently selected cells, or
+``None`` if the selection has no numeric format set.
+
+If the selected cells have a mix of different formats then ``None``
+will be returned.
+
+.. seealso:: :py:func:`setSelectionNumericFormat`
+
+.. seealso:: :py:func:`hasMixedSelectionNumericFormat`
+%End
+
+    bool hasMixedSelectionNumericFormat();
+%Docstring
+Returns ``True`` if the current selection has a mix of numeric formats.
+
+.. seealso:: :py:func:`selectionNumericFormat`
+%End
+
+    QColor selectionForegroundColor();
+%Docstring
+Returns the foreground color for the currently selected cells.
+
+If the selected cells have a mix of different foreground colors then an
+invalid color will be returned.
+
+.. seealso:: :py:func:`setSelectionForegroundColor`
+
+.. seealso:: :py:func:`selectionBackgroundColor`
+%End
+
+    QColor selectionBackgroundColor();
+%Docstring
+Returns the background color for the currently selected cells.
+
+If the selected cells have a mix of different background colors then an
+invalid color will be returned.
+
+.. seealso:: :py:func:`setSelectionBackgroundColor`
+
+.. seealso:: :py:func:`selectionForegroundColor`
+%End
+
+    double selectionRowHeight();
+%Docstring
+Returns the height (in millimeters) of the rows associated with the current selection,
+or 0 if an automatic row height is desired, or -1 if the selection has mixed row heights.
+
+.. seealso:: :py:func:`setSelectionRowHeight`
+%End
+
+    double selectionColumnWidth();
+%Docstring
+Returns the width (in millimeters) of the columns associated with the current selection,
+or 0 if an automatic column width is desired.
+
+.. seealso:: :py:func:`setSelectionColumnWidth`
+%End
+
+    double tableRowHeight( int row );
+%Docstring
+Returns the configured row height for the specified ``row``, or 0 if an automatic height
+should be used for the row.
+%End
+
+    double tableColumnWidth( int column );
+%Docstring
+Returns the configured column width for the specified ``column``, or 0 if an automatic width
+should be used for the column.
+%End
+
+    void setTableRowHeight( int row, double height );
+%Docstring
+Sets the configured row ``height`` for the specified ``row``. Set ``height`` to 0
+if an automatic height should be used for the row.
+
+This should be called after a call to setTableContents().
+
+.. seealso:: :py:func:`tableRowHeight`
+%End
+
+    void setTableColumnWidth( int column, double width );
+%Docstring
+Sets the configured column ``width`` for the specified ``column``. Set ``width`` to 0
+if an automatic width should be used for the column.
+
+This should be called after a call to setTableContents().
+
+.. seealso:: :py:func:`tableColumnWidth`
+%End
+
+    QList<int> rowsAssociatedWithSelection();
+%Docstring
+Returns a list of the rows associated with the current table selected cells.
+
+.. seealso:: :py:func:`columnsAssociatedWithSelection`
+%End
+
+    QList<int> columnsAssociatedWithSelection();
+%Docstring
+Returns a list of the columns associated with the current table selected cells.
+
+.. seealso:: :py:func:`rowsAssociatedWithSelection`
+%End
+
+  public slots:
+
+    void insertRowsBelow();
+%Docstring
+Inserts new rows below the current selection.
+
+.. seealso:: :py:func:`insertRowsAbove`
+%End
+
+    void insertRowsAbove();
+%Docstring
+Inserts new rows above the current selection.
+
+.. seealso:: :py:func:`insertRowsBelow`
+%End
+
+    void insertColumnsBefore();
+%Docstring
+Inserts new columns before the current selection.
+
+.. seealso:: :py:func:`insertColumnsAfter`
+%End
+
+    void insertColumnsAfter();
+%Docstring
+Inserts new columns after the current selection.
+
+.. seealso:: :py:func:`insertColumnsBefore`
+%End
+
+    void deleteRows();
+%Docstring
+Deletes all rows associated with the current selected cells.
+
+.. seealso:: :py:func:`deleteColumns`
+%End
+
+    void deleteColumns();
+%Docstring
+Deletes all columns associated with the current selected cells.
+
+.. seealso:: :py:func:`deleteRows`
+%End
+
+    void expandRowSelection();
+%Docstring
+Expands out the selection to include whole rows associated with the
+current selected cells.
+
+.. seealso:: :py:func:`expandColumnSelection`
+%End
+
+    void expandColumnSelection();
+%Docstring
+Expands out the selection to include whole columns associated with the
+current selected cells.
+
+.. seealso:: :py:func:`expandRowSelection`
+%End
+
+    void clearSelectedCells();
+%Docstring
+Clears the contents of the currently selected cells.
+%End
+
+    void setSelectionForegroundColor( const QColor &color );
+%Docstring
+Sets the foreground color for the currently selected cells.
+
+.. seealso:: :py:func:`selectionForegroundColor`
+
+.. seealso:: :py:func:`setSelectionBackgroundColor`
+%End
+
+    void setSelectionBackgroundColor( const QColor &color );
+%Docstring
+Sets the background color for the currently selected cells.
+
+.. seealso:: :py:func:`selectionBackgroundColor`
+
+.. seealso:: :py:func:`setSelectionForegroundColor`
+%End
+
+    void setSelectionRowHeight( double height );
+%Docstring
+Sets the row ``height`` (in millimeters) for the currently selected rows, or 0 for automatic row height.
+
+.. seealso:: :py:func:`setSelectionColumnWidth`
+%End
+
+    void setSelectionColumnWidth( double height );
+%Docstring
+Sets the column ``width`` (in millimeters) for the currently selected columns, or 0 for automatic column width.
+
+.. seealso:: :py:func:`setSelectionRowHeight`
+%End
+
+  protected:
+    virtual void keyPressEvent( QKeyEvent *event );
+
+
+  signals:
+
+    void tableChanged();
+%Docstring
+Emitted whenever the table contents are changed.
+%End
+
+    void activeCellChanged();
+%Docstring
+Emitted whenever the active (or selected) cell changes in the widget.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/tableeditor/qgstableeditorwidget.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

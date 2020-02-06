@@ -40,6 +40,11 @@ bool orderByValueLessThan( const QgsValueRelationFieldFormatter::ValueRelationIt
   return qgsVariantLessThan( p1.value, p2.value );
 }
 
+QgsValueRelationFieldFormatter::QgsValueRelationFieldFormatter()
+{
+  setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues );
+}
+
 QString QgsValueRelationFieldFormatter::id() const
 {
   return QStringLiteral( "ValueRelation" );
@@ -168,6 +173,37 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   return cache;
 }
 
+
+QList<QgsVectorLayerRef> QgsValueRelationFieldFormatter::layerDependencies( const QVariantMap &config ) const
+{
+  QList<QgsVectorLayerRef> result;
+  const QString layerId { config.value( QStringLiteral( "Layer" ) ).toString() };
+  const QString layerName { config.value( QStringLiteral( "LayerName" ) ).toString() };
+  const QString providerName { config.value( QStringLiteral( "LayerProviderName" ) ).toString() };
+  const QString layerSource { config.value( QStringLiteral( "LayerSource" ) ).toString() };
+  if ( ! layerId.isEmpty() && ! layerName.isEmpty() && ! providerName.isEmpty() && ! layerSource.isEmpty() )
+  {
+    result.append( QgsVectorLayerRef( layerId, layerName, layerSource, providerName ) );
+  }
+  return result;
+}
+
+QVariantList QgsValueRelationFieldFormatter::availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const
+{
+  QVariantList values;
+
+  if ( context.project() )
+  {
+    const QgsVectorLayer *referencedLayer = qobject_cast<QgsVectorLayer *>( context.project()->mapLayer( config[QStringLiteral( "Layer" )].toString() ) );
+    if ( referencedLayer )
+    {
+      int fieldIndex = referencedLayer->fields().indexOf( config.value( QStringLiteral( "Key" ) ).toString() );
+      values = referencedLayer->uniqueValues( fieldIndex, countLimit ).toList();
+    }
+  }
+  return values;
+}
+
 QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &value )
 {
   QStringList checkList;
@@ -291,4 +327,3 @@ QgsVectorLayer *QgsValueRelationFieldFormatter::resolveLayer( const QVariantMap 
                           config.value( QStringLiteral( "LayerProviderName" ) ).toString() };
   return ref.resolveByIdOrNameOnly( project );
 }
-

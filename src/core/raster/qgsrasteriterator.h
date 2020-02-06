@@ -48,7 +48,7 @@ class CORE_EXPORT QgsRasterIterator
      * \param extent area to read
      * \param feedback optional raster feedback object for cancellation/preview. Added in QGIS 3.0.
      */
-    void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = nullptr );
+    void startRasterRead( int bandNumber, qgssize nCols, qgssize nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = nullptr );
 
     /**
      * Fetches details of the next part of the raster data. This method does NOT actually fetch the raster
@@ -154,10 +154,10 @@ class CORE_EXPORT QgsRasterIterator
     //Stores information about reading of a raster band. Columns and rows are in unsampled coordinates
     struct RasterPartInfo
     {
-      int currentCol;
-      int currentRow;
-      int nCols;
-      int nRows;
+      qgssize currentCol;
+      qgssize currentRow;
+      qgssize nCols;
+      qgssize nRows;
     };
 
     QgsRasterInterface *mInput = nullptr;

@@ -159,6 +159,7 @@ void Qgs3DMapToolMeasureLine::handleClick( Qt3DRender::QPickEvent *event, const 
   {
     // Finish measurement
     mDone = true;
+    restart();
   }
   else if ( event->button() == Qt3DRender::QPickEvent::MiddleButton )
   {
@@ -239,6 +240,7 @@ void Qgs3DMapToolMeasureLine::restart()
   mPoints.clear();
   mDone = true;
   updateMeasurementLayer();
+  mDialog->resetTable();
 }
 
 void Qgs3DMapToolMeasureLine::undo()

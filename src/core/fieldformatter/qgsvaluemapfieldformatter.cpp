@@ -19,6 +19,11 @@
 
 const QString QgsValueMapFieldFormatter::NULL_VALUE = QStringLiteral( "{2839923C-8B7D-419E-B84B-CA2FE9B80EC7}" );
 
+QgsValueMapFieldFormatter::QgsValueMapFieldFormatter()
+{
+  setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues );
+}
+
 QString QgsValueMapFieldFormatter::id() const
 {
   return QStringLiteral( "ValueMap" );
@@ -61,4 +66,20 @@ QString QgsValueMapFieldFormatter::representValue( QgsVectorLayer *layer, int fi
 QVariant QgsValueMapFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
 {
   return representValue( layer, fieldIndex, config, cache, value );
+}
+
+QVariantList QgsValueMapFieldFormatter::availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const
+{
+  Q_UNUSED( context )
+
+  QVariantList values;
+  const QList<QVariant> valueList = config.value( QStringLiteral( "map" ) ).toList();
+  for ( const QVariant &item : valueList )
+  {
+    values.append( item.toMap().constBegin().value() );
+    if ( values.count() == countLimit )
+      break;
+  }
+
+  return values;
 }

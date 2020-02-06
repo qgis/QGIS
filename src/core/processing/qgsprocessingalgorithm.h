@@ -525,9 +525,8 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * This method will not be called if the prepareAlgorithm() step failed (returned FALSE).
      *
-     * c++ implementations of processAlgorithm can throw the QgsProcessingException exception
-     * to indicate that a fatal error occurred within the execution. Python based subclasses
-     * should raise GeoAlgorithmExecutionException for the same purpose.
+     * Implementations of processAlgorithm can throw the QgsProcessingException exception
+     * to indicate that a fatal error occurred within the execution.
      *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
      * values such as statistical calculations. Unless the algorithm subclass overrides
@@ -995,6 +994,24 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
   protected:
 
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+
+    /**
+     * Returns the name of the parameter corresponding to the input layer.
+     *
+     * By default this is the standard "INPUT" parameter name.
+     *
+     * \since QGIS 3.12
+     */
+    virtual QString inputParameterName() const;
+
+    /**
+     * Returns the translated description of the parameter corresponding to the input layer.
+     *
+     * By default this is a translated "Input layer" string.
+     *
+     * \since QGIS 3.12
+     */
+    virtual QString inputParameterDescription() const;
 
     /**
      * Returns the translated, user visible name for any layers created by this algorithm.

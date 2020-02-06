@@ -30,6 +30,7 @@ QgsGpsMarker::QgsGpsMarker( QgsMapCanvas *mapCanvas )
   mSize = 16;
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
   mSvg.load( QStringLiteral( ":/images/north_arrows/gpsarrow2.svg" ) );
+  setZValue( 200 );
 }
 
 void QgsGpsMarker::setSize( int size )
@@ -37,7 +38,7 @@ void QgsGpsMarker::setSize( int size )
   mSize = size;
 }
 
-void QgsGpsMarker::setCenter( const QgsPointXY &point )
+void QgsGpsMarker::setGpsPosition( const QgsPointXY &point )
 {
   //transform to map crs
   if ( mMapCanvas )
@@ -87,5 +88,6 @@ QRectF QgsGpsMarker::boundingRect() const
 
 void QgsGpsMarker::updatePosition()
 {
-  setCenter( mCenter );
+  QPointF pt = toCanvasCoordinates( mCenter );
+  setPos( pt );
 }

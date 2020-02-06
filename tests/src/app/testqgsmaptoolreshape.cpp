@@ -165,6 +165,11 @@ void TestQgsMapToolReshape::initTestCase()
   mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLineZ << mLayerPointZ << mLayerPolygonZ );
   mCanvas->setCurrentLayer( mLayerLineZ );
 
+  mCanvas->snappingUtils()->locatorForLayer( mLayerLineZ )->init();
+  mCanvas->snappingUtils()->locatorForLayer( mLayerPointZ )->init();
+  mCanvas->snappingUtils()->locatorForLayer( mLayerPolygonZ )->init();
+  mCanvas->snappingUtils()->locatorForLayer( mLayerTopo )->init();
+
   // create the tool
   mCaptureTool = new QgsMapToolReshape( mCanvas );
   mCanvas->setMapTool( mCaptureTool );
@@ -187,8 +192,6 @@ void TestQgsMapToolReshape::testReshapeZ()
 
   // test with default Z value = 333
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
-
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   // snap on a linestringz layer
   utils.mouseClick( 1, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );
@@ -232,8 +235,6 @@ void TestQgsMapToolReshape::testTopologicalEditing()
   // test with default Z value = 333
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
 
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
-
   utils.mouseClick( 4, 4, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 7, 2, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 4, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );
@@ -272,7 +273,7 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
   QList<QgsMapLayer *> layers;
   layers.append( vl.get() );
 
-  QgsCoordinateReferenceSystem srs( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+  QgsCoordinateReferenceSystem srs( QStringLiteral( "EPSG:4326" ) );
   mQgisApp->mapCanvas()->setDestinationCrs( srs );
   mQgisApp->mapCanvas()->setLayers( layers );
   mQgisApp->mapCanvas()->setCurrentLayer( vl.get() );

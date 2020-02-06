@@ -209,7 +209,8 @@ void QgsCompositionConverter::adjustPos( QgsPrintLayout *layout, QgsLayoutItem *
     }
   }
 
-  layout->addLayoutItem( layoutItem );
+  if ( !layoutItem->scene() )
+    layout->addLayoutItem( layoutItem );
   layoutItem->setZValue( layoutItem->zValue() + zOrderOffset );
 }
 
@@ -556,9 +557,9 @@ bool QgsCompositionConverter::readShapeXml( QgsLayoutItemShape *layoutItem, cons
   if ( itemElem.elementsByTagName( QStringLiteral( "symbol" ) ).size() )
   {
     QDomElement symbolElement = itemElem.elementsByTagName( QStringLiteral( "symbol" ) ).at( 0 ).toElement();
-    QgsFillSymbol *shapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElement, context );
+    std::unique_ptr< QgsFillSymbol > shapeStyleSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElement, context ) );
     if ( shapeStyleSymbol )
-      layoutItem->setSymbol( shapeStyleSymbol );
+      layoutItem->setSymbol( shapeStyleSymbol.get() );
   }
   else
   {
@@ -633,7 +634,8 @@ bool QgsCompositionConverter::readShapeXml( QgsLayoutItemShape *layoutItem, cons
       }
     }
 
-    layoutItem->setSymbol( QgsFillSymbol::createSimple( properties ) );
+    std::unique_ptr< QgsFillSymbol > shapeStyleSymbol( QgsFillSymbol::createSimple( properties ) );
+    layoutItem->setSymbol( shapeStyleSymbol.get() );
   }
   // Disable frame for shapes
   layoutItem->setFrameEnabled( false );

@@ -65,28 +65,40 @@ void QgsMapToolAddFeature::digitized( const QgsFeature &f )
   QgsVectorLayer *vlayer = currentVectorLayer();
   bool res = addFeature( vlayer, f, false );
 
-  if ( res && ( mode() == CaptureLine || mode() == CapturePolygon ) )
+  if ( res )
   {
     //add points to other features to keep topology up-to-date
     bool topologicalEditing = QgsProject::instance()->topologicalEditing();
-
-    //use always topological editing for avoidIntersection.
-    //Otherwise, no way to guarantee the geometries don't have a small gap in between.
-    const QList<QgsVectorLayer *> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();
-
-    if ( !intersectionLayers.isEmpty() ) //try to add topological points also to background layers
+    if ( mode() == CaptureLine || mode() == CapturePolygon )
     {
-      for ( QgsVectorLayer *vl : intersectionLayers )
+
+      //use always topological editing for avoidIntersection.
+      //Otherwise, no way to guarantee the geometries don't have a small gap in between.
+      const QList<QgsVectorLayer *> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();
+
+      if ( !intersectionLayers.isEmpty() ) //try to add topological points also to background layers
       {
-        //can only add topological points if background layer is editable...
-        if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )
+        for ( QgsVectorLayer *vl : intersectionLayers )
         {
-          vl->addTopologicalPoints( f.geometry() );
+          //can only add topological points if background layer is editable...
+          if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )
+          {
+            vl->addTopologicalPoints( f.geometry() );
+          }
         }
       }
     }
-    else if ( topologicalEditing )
+    if ( topologicalEditing )
     {
+      QList<QgsPointLocator::Match> sm = snappingMatches();
+      Q_ASSERT( f.geometry().constGet()->vertexCount() == sm.size() );
+      for ( int i = 0; i < sm.size() ; ++i )
+      {
+        if ( sm.at( i ).layer() )
+        {
+          sm.at( i ).layer()->addTopologicalPoints( f.geometry().vertexAt( i ) );
+        }
+      }
       vlayer->addTopologicalPoints( f.geometry() );
     }
   }

@@ -372,17 +372,20 @@ void qgisCrash( int signal )
  * Based on qInstallMsgHandler example code in the Qt documentation.
  *
  */
-void myMessageOutput( QtMsgType type, const char *msg )
+void myMessageOutput( QtMsgType type, const QMessageLogContext &, const QString &msg )
 {
   switch ( type )
   {
     case QtDebugMsg:
-      myPrint( "%s\n", msg );
-      if ( strncmp( msg, "Backtrace", 9 ) == 0 )
-        dumpBacktrace( atoi( msg + 9 ) );
+      myPrint( "%s\n", msg.toLocal8Bit().constData() );
+      if ( msg.startsWith( QLatin1String( "Backtrace" ) ) )
+      {
+        const QString trace = msg.mid( 9 );
+        dumpBacktrace( atoi( trace.toLocal8Bit().constData() ) );
+      }
       break;
     case QtCriticalMsg:
-      myPrint( "Critical: %s\n", msg );
+      myPrint( "Critical: %s\n", msg.toLocal8Bit().constData() );
       break;
     case QtWarningMsg:
     {
@@ -391,18 +394,18 @@ void myMessageOutput( QtMsgType type, const char *msg )
        *  we have no control over and have low value anyway);
        * - QtSVG warnings with regards to lack of implementation beyond Tiny SVG 1.2
        */
-      if ( strncmp( msg, "libpng warning: iCCP: known incorrect sRGB profile", 50 ) == 0 ||
-           strstr( msg, "Could not add child element to parent element because the types are incorrect" ) )
+      if ( msg.startsWith( QLatin1String( "libpng warning: iCCP: known incorrect sRGB profile" ), Qt::CaseInsensitive ) ||
+           msg.contains( QLatin1String( "Could not add child element to parent element because the types are incorrect" ), Qt::CaseInsensitive ) )
         break;
 
-      myPrint( "Warning: %s\n", msg );
+      myPrint( "Warning: %s\n", msg.toLocal8Bit().constData() );
 
 #ifdef QGISDEBUG
       // Print all warnings except setNamedColor.
       // Only seems to happen on windows
-      if ( 0 != strncmp( msg, "QColor::setNamedColor: Unknown color name 'param", 48 ) &&
-           0 != strncmp( msg, "Trying to create a QVariant instance of QMetaType::Void type, an invalid QVariant will be constructed instead", 109 ) &&
-           0 != strncmp( msg, "Logged warning", 14 ) )
+      if ( !msg.startsWith( QLatin1String( "QColor::setNamedColor: Unknown color name 'param" ), Qt::CaseInsensitive )
+           && !msg.startsWith( QLatin1String( "Trying to create a QVariant instance of QMetaType::Void type, an invalid QVariant will be constructed instead" ), Qt::CaseInsensitive )
+           && !msg.startsWith( QLatin1String( "Logged warning" ), Qt::CaseInsensitive ) )
       {
         // TODO: Verify this code in action.
         dumpBacktrace( 20 );
@@ -420,7 +423,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
 #endif
 
       // TODO: Verify this code in action.
-      if ( 0 == strncmp( msg, "libpng error:", 13 ) )
+      if ( msg.startsWith( QLatin1String( "libpng error:" ), Qt::CaseInsensitive ) )
       {
         // Let the user know
         QgsMessageLog::logMessage( msg, QStringLiteral( "libpng" ) );
@@ -431,7 +434,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
 
     case QtFatalMsg:
     {
-      myPrint( "Fatal: %s\n", msg );
+      myPrint( "Fatal: %s\n", msg.toLocal8Bit().constData() );
 #ifdef QGIS_CRASH
       qgisCrash( -1 );
 #else
@@ -442,7 +445,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
     }
 
     case QtInfoMsg:
-      myPrint( "Info: %s\n", msg );
+      myPrint( "Info: %s\n", msg.toLocal8Bit().constData() );
       break;
   }
 }
@@ -510,7 +513,7 @@ int main( int argc, char *argv[] )
 
   // Set up the custom qWarning/qDebug custom handler
 #ifndef ANDROID
-  qInstallMsgHandler( myMessageOutput );
+  qInstallMessageHandler( myMessageOutput );
 #endif
 
 #ifdef QGIS_CRASH
@@ -588,7 +591,6 @@ int main( int argc, char *argv[] )
 
   // The user can specify a path which will override the default path of custom
   // user settings (~/.qgis) and it will be used for QgsSettings INI file
-  QString configpath;
   QString authdbdirectory;
 
   QString pythonfile;
@@ -604,7 +606,7 @@ int main( int argc, char *argv[] )
 #if defined(ANDROID)
   QgsDebugMsg( QStringLiteral( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
   //put all QGIS settings in the same place
-  configpath = QgsApplication::qgisSettingsDirPath();
+  QString configpath = QgsApplication::qgisSettingsDirPath();
   QgsDebugMsg( QStringLiteral( "Android: configpath set to %1" ).arg( configpath ) );
 #endif
 
@@ -864,7 +866,7 @@ int main( int argc, char *argv[] )
                 "You are seeing this message most likely because you "
                 "have no DISPLAY environment variable set.\n"
               ).toUtf8().constData();
-    exit( 1 ); //exit for now until a version of qgis is capabable of running non interactive
+    exit( 1 ); //exit for now until a version of qgis is capable of running non interactive
   }
 
   // GUI customization is enabled according to settings (loaded when instance is created)
@@ -1020,9 +1022,9 @@ int main( int argc, char *argv[] )
 
     QgsSettings migSettings;
     int firstRunVersion = migSettings.value( QStringLiteral( "migration/firstRunVersionFlag" ), 0 ).toInt();
-    bool showWelcome = ( firstRunVersion == 0  || Qgis::QGIS_VERSION_INT > firstRunVersion );
+    bool showWelcome = ( firstRunVersion == 0  || Qgis::versionInt() > firstRunVersion );
 
-    std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::QGIS_VERSION_INT ) );
+    std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::versionInt() ) );
     if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
     {
       bool runMigration = true;
@@ -1035,7 +1037,7 @@ int main( int argc, char *argv[] )
         }
         dlg.exec();
         runMigration = dlg.migrateSettings();
-        migSettings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::QGIS_VERSION_INT );
+        migSettings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::versionInt() );
       }
 
       if ( runMigration )
@@ -1510,13 +1512,28 @@ int main( int argc, char *argv[] )
       dxfFile.setFileName( dxfOutputFile );
     }
 
-    int res = dxfExport.writeToFile( &dxfFile, dxfEncoding );
-    if ( res )
-      std::cerr << "dxf output failed with error code " << res << std::endl;
+    QgsDxfExport::ExportResult res = dxfExport.writeToFile( &dxfFile, dxfEncoding );
+    switch ( res )
+    {
+      case QgsDxfExport::ExportResult::Success:
+        break;
+
+      case QgsDxfExport::ExportResult::DeviceNotWritableError:
+        std::cerr << "dxf output failed, the device is not wriable" << std::endl;
+        break;
+
+      case QgsDxfExport::ExportResult::InvalidDeviceError:
+        std::cerr << "dxf output failed, the device is invalid" << std::endl;
+        break;
+
+      case QgsDxfExport::ExportResult::EmptyExtentError:
+        std::cerr << "dxf output failed, the extent could not be determined" << std::endl;
+        break;
+    }
 
     delete qgis;
 
-    return res;
+    return static_cast<int>( res );
   }
 
   // make sure we don't have a dirty blank project after launch

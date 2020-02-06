@@ -358,7 +358,7 @@ QSizeF QgsLayoutItemLabel::sizeForText() const
 
   double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
 
-  double width = textWidth + 2 * mMarginX + 2 * penWidth + 1;
+  double width = textWidth + 2 * mMarginX + 2 * penWidth;
   double height = fontHeight + 2 * mMarginY + 2 * penWidth;
 
   return mLayout->convertToLayoutUnits( QgsLayoutSize( width, height, QgsUnitTypes::LayoutMillimeters ) );

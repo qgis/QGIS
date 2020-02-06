@@ -442,8 +442,16 @@ QgsLayerDefinition::DependencySorter::DependencySorter( const QString &fileName 
   : mHasCycle( false )
   , mHasMissingDependency( false )
 {
+  QString qgsProjectFile = fileName;
+  QgsProjectArchive archive;
+  if ( fileName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
+  {
+    archive.unzip( fileName );
+    qgsProjectFile = archive.projectFile();
+  }
+
   QDomDocument doc;
-  QFile pFile( fileName );
+  QFile pFile( qgsProjectFile );
   ( void )pFile.open( QIODevice::ReadOnly );
   ( void )doc.setContent( &pFile );
   init( doc );

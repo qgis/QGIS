@@ -479,7 +479,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! used to determine if anti-aliasing is enabled or not
     void enableAntiAliasing( bool flag );
 
-    //! TRUE if antialising is enabled
+    //! TRUE if antialiasing is enabled
     bool antiAliasingEnabled() const { return mSettings.testFlag( QgsMapSettings::Antialiasing ); }
 
     //! sets map tile rendering flag
@@ -489,6 +489,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     // currently used by pan map tool
     //! Ends pan action and redraws the canvas.
     void panActionEnd( QPoint releasePoint );
+
+#ifndef SIP_RUN
+
+    /**
+     * Starts a pan action.
+     * \note Not available in Python bindings
+     * \since QGIS 3.12
+     */
+    void panActionStart( QPoint releasePoint );
+#endif
 
     //! Called when mouse is moving and pan is activated
     void panAction( QMouseEvent *event );
@@ -741,6 +751,20 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void zoomToSelected( QgsVectorLayer *layer = nullptr );
 
+    /**
+     * Set a list of resolutions (map units per pixel) to which to "snap to" when zooming the map
+     * \param resolutions A list of resolutions
+     * \since QGIS 3.12
+     */
+    void setZoomResolutions( const QList<double> &resolutions ) { mZoomResolutions = resolutions; }
+
+    /**
+     * \returns List of resolutions to which to "snap to" when zooming the map
+     * \see setZoomResolutions()
+     * \since QGIS 3.12
+     */
+    const QList<double> &zoomResolutions() const { return mZoomResolutions; }
+
   private slots:
     //! called when current maptool is destroyed
     void mapToolDestroyed();
@@ -879,6 +903,24 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \since QGIS 3.10.0
      */
     void renderErrorOccurred( const QString &error, QgsMapLayer *layer );
+
+    /**
+     * Emitted whenever the distance or bearing of an in-progress panning
+     * operation is changed.
+     *
+     * This signal will be emitted during a pan operation as the user moves the map,
+     * giving the total distance and bearing between the map position at the
+     * start of the pan and the current pan position.
+     *
+     * \since QGIS 3.12
+     */
+    void panDistanceBearingChanged( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+
+    /**
+     * Emitted whenever a tap and hold \a gesture occurs at the specified map point.
+     * \since QGIS 3.12
+     */
+    void tapAndHoldGestureOccurred( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
 
   protected:
 
@@ -1032,6 +1074,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     QVector<QPointer<QgsCustomDropHandler >> mDropHandlers;
 
+    QgsDistanceArea mDa;
+    QList<double> mZoomResolutions;
+
     /**
      * Returns the last cursor position on the canvas in geographical coordinates
      * \since QGIS 3.4
@@ -1072,6 +1117,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void startPreviewJobs();
     void stopPreviewJobs();
     void schedulePreviewJob( int number );
+
+    /**
+     * Returns TRUE if a pan operation is in progress
+     */
+    bool panOperationInProgress();
+
+    int nextZoomLevel( const QList<double> &resolutions, bool zoomIn = true ) const;
+    double zoomInFactor() const;
+    double zoomOutFactor() const;
 
     friend class TestQgsMapCanvas;
 

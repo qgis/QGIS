@@ -336,13 +336,34 @@ class CORE_EXPORT QgsCoordinateTransform
      * Returns a Proj string representing the coordinate operation which will be used to transform
      * coordinates.
      *
+     * \note The string returned by this method gives the desired coordinate operation string, based on
+     * the state of the QgsCoordinateTransformContext object given in the QgsCoordinateTransform's constructor.
+     * It may be an empty string if no explicit coordinate operation is required. In order to determine the
+     * ACTUAL coordinate operation which is being used by the transform, use the instantiatedCoordinateOperationDetails() call instead.
+     *
      * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
      * an empty string, and the deprecated sourceDatumTransformId() or destinationDatumTransformId() methods should be used instead.
      *
+     * \see instantiatedCoordinateOperationDetails()
      * \see setCoordinateOperation()
      * \since QGIS 3.8
      */
     QString coordinateOperation() const;
+
+    /**
+     * Returns the transform details representing the coordinate operation which is being used to transform
+     * coordinates.
+     *
+     * This may differ from the result returned by coordinateOperation() if the desired coordinate
+     * operation was not successfully instantiated.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
+     * an empty result, and the deprecated sourceDatumTransformId() or destinationDatumTransformId() methods should be used instead.
+     *
+     * \see coordinateOperation()
+     * \since QGIS 3.10.2
+     */
+    QgsDatumTransform::TransformDetails instantiatedCoordinateOperationDetails() const;
 
     /**
      * Sets a Proj string representing the coordinate \a operation which will be used to transform

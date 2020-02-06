@@ -239,7 +239,7 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
     return outputBlock.release();
   }
 
-  QRgb myDefaultColor = NODATA_COLOR;
+  const QRgb myDefaultColor = renderColorForNodataPixel();
   QRgb *outputBlockData = outputBlock->colorData();
   const QgsRasterShaderFunction *fcn = mShader->rasterShaderFunction();
 
@@ -368,20 +368,20 @@ void QgsSingleBandPseudoColorRenderer::toSld( QDomDocument &doc, QDomElement &el
   // basing on interpolation algorithm of the raster shader
   QString rampType = QStringLiteral( "ramp" );
   const QgsColorRampShader *rampShader = dynamic_cast<const QgsColorRampShader *>( mShader->rasterShaderFunction() );
-  if ( rampShader )
+  if ( !rampShader )
+    return;
+
+  switch ( rampShader->colorRampType() )
   {
-    switch ( rampShader->colorRampType() )
-    {
-      case ( QgsColorRampShader::Exact ):
-        rampType = QStringLiteral( "values" );
-        break;
-      case ( QgsColorRampShader::Discrete ):
-        rampType = QStringLiteral( "intervals" );
-        break;
-      case ( QgsColorRampShader::Interpolated ):
-        rampType = QStringLiteral( "ramp" );
-        break;
-    }
+    case ( QgsColorRampShader::Exact ):
+      rampType = QStringLiteral( "values" );
+      break;
+    case ( QgsColorRampShader::Discrete ):
+      rampType = QStringLiteral( "intervals" );
+      break;
+    case ( QgsColorRampShader::Interpolated ):
+      rampType = QStringLiteral( "ramp" );
+      break;
   }
 
   colorMapElem.setAttribute( QStringLiteral( "type" ), rampType );

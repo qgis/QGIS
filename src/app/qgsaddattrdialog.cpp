@@ -58,6 +58,8 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
 
   if ( mIsShapeFile )
     mNameEdit->setMaxLength( 10 );
+
+  mNameEdit->setFocus();
 }
 
 void QgsAddAttrDialog::mTypeBox_currentIndexChanged( int idx )

@@ -87,6 +87,19 @@ class CORE_EXPORT QgsFileUtils
      * \since QGIS 3.2
      */
     static QString findClosestExistingPath( const QString &path );
+
+    /**
+     * Will check \a basepath in an outward spiral up to \a maxClimbs levels to check if \a file exists.
+     * \param file Name or full path of the file to find
+     * \param basepath current basepath of the file, needed if only the name is specified in file
+     * \param maxClimbs limit the number of time the search can move up from the basepath
+     * \param searchCeiling limits where in the folder hierarchy the search can be performed, 1 = root/drive, 2 = first folder level, 3 = sub folders ( Unix: /usr/bin, Win: C:/Users/Admin ), etc.
+     * \param currentDir alternative default directory to override the actual current directory during the search
+     * \returns List of strings of the first matching path in unix format.
+     * \since QGIS 3.12
+     */
+    static QStringList findFile( const QString &file, const QString &basepath = QString(), int maxClimbs = 4, int searchCeiling = 4, const QString &currentDir = QString() );
+
 };
 
 #endif // QGSFILEUTILS_H

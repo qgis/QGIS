@@ -21,6 +21,7 @@
 #include "qgis.h"
 #include <QWidget>
 #include <QStandardItemModel>
+#include <QPicture>
 #include "qgspanelwidget.h"
 
 #include "ui_qgseffectstackpropertieswidgetbase.h"
@@ -116,7 +117,7 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
     QgsEffectStack *mStack = nullptr;
     QStandardItemModel *mModel = nullptr;
     QWidget *mPresentWidget = nullptr;
-    QPicture *mPreviewPicture = nullptr;
+    QPicture mPreviewPicture;
 
     /**
      * Refreshes the widget to reflect the current state of the stack.
@@ -272,7 +273,7 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget
     QgsEffectStack *mStack = nullptr;
     QCheckBox *mEnabledCheckBox = nullptr;
     QToolButton *mButton = nullptr;
-    QPicture *mPreviewPicture = nullptr;
+    QPicture mPreviewPicture;
 
 };
 

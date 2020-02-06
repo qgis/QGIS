@@ -39,6 +39,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmasksymbollayerwidget.h"
 
 static bool _initWidgetFunction( const QString &name, QgsSymbolLayerWidgetFunc f )
 {
@@ -78,6 +79,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( QStringLiteral( "FontMarker" ), QgsFontMarkerSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "EllipseMarker" ), QgsEllipseSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "VectorField" ), QgsVectorFieldSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "MaskMarker" ), QgsMaskMarkerSymbolLayerWidget::create );
 
   _initWidgetFunction( QStringLiteral( "SimpleFill" ), QgsSimpleFillSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "GradientFill" ), QgsGradientFillSymbolLayerWidget::create );
@@ -87,6 +89,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( QStringLiteral( "CentroidFill" ), QgsCentroidFillSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "LinePatternFill" ), QgsLinePatternFillSymbolLayerWidget::create );
   _initWidgetFunction( QStringLiteral( "PointPatternFill" ), QgsPointPatternFillSymbolLayerWidget::create );
+  _initWidgetFunction( QStringLiteral( "RandomMarkerFill" ), QgsRandomMarkerFillSymbolLayerWidget::create );
 
   _initWidgetFunction( QStringLiteral( "GeometryGenerator" ), QgsGeometryGeneratorSymbolLayerWidget::create );
 
@@ -112,7 +115,7 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const
   //
   // 3. populate the combo box with the supported layer type
   // 4. set the present layer type
-  // 5. create the widget for the present layer type and set inn stacked widget
+  // 5. create the widget for the present layer type and set in stacked widget
   // 6. connect comboBox type changed to two things
   //     1. emit signal that type has beed changed
   //     2. remove the widget and place the new widget corresponding to the changed layer type

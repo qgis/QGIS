@@ -76,7 +76,9 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
   {
     return processRasterCPU( feedback );
   }
+#ifndef _MSC_VER
   return 1;
+#endif
 #else
   return processRasterCPU( feedback );
 #endif

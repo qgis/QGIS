@@ -72,6 +72,7 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   } );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
 
+  spnHorizontal->setClearValue( 0 );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
   wgtUnitSelection->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderPixels );
@@ -129,5 +130,5 @@ void QgsDecorationCopyrightDialog::apply()
 
 void QgsDecorationCopyrightDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#copyright-label" ) );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#copyright-and-title-labels" ) );
 }

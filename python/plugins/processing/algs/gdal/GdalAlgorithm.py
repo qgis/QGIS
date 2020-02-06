@@ -89,6 +89,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
                 # and extract selection if required
                 ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
                                                                           QgsVectorFileWriter.supportedFormatExtensions(),
+                                                                          QgsVectorFileWriter.supportedFormatExtensions()[0],
                                                                           feedback=feedback)
                 ogr_layer_name = GdalUtils.ogrLayerName(ogr_data_path)
             else:

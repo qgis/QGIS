@@ -9,8 +9,8 @@ usr/share/qgis/doc/developersmap.html
 usr/share/qgis/doc/favicon.ico
 usr/share/qgis/doc/images
 usr/share/qgis/doc/index.html
-usr/share/qgis/doc/news
-usr/share/qgis/doc/news.html
+usr/share/qgis/doc/NEWS
+usr/share/qgis/doc/NEWS.html
 usr/share/qgis/doc/nohelp.html
 usr/share/qgis/doc/style.css
 usr/share/qgis/i18n/*

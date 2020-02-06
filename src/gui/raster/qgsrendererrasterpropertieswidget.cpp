@@ -319,16 +319,18 @@ void QgsRendererRasterPropertiesWidget::toggleColorizeControls( bool colorizeEna
 
 void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &rendererName )
 {
-  QgsDebugMsg( "rendererName = " + rendererName );
+  QgsDebugMsgLevel( "rendererName = " + rendererName, 3 );
   QgsRasterRendererWidget *oldWidget = mRendererWidget;
 
   int alphaBand = -1;
   double opacity = 1;
+  QColor nodataColor;
   if ( QgsRasterRenderer *oldRenderer = mRasterLayer->renderer() )
   {
     // Retain alpha band and opacity when switching renderer
     alphaBand = oldRenderer->alphaBand();
     opacity = oldRenderer->opacity();
+    nodataColor = oldRenderer->nodataColor();
   }
 
   QgsRasterRendererRegistryEntry rendererEntry;
@@ -354,6 +356,7 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
       }
       mRasterLayer->renderer()->setAlphaBand( alphaBand );
       mRasterLayer->renderer()->setOpacity( opacity );
+      mRasterLayer->renderer()->setNodataColor( nodataColor );
       mRendererWidget = rendererEntry.widgetCreateFunction( mRasterLayer, myExtent );
       mRendererWidget->setMapCanvas( mMapCanvas );
       connect( mRendererWidget, &QgsRasterRendererWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );

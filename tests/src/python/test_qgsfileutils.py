@@ -92,6 +92,51 @@ class TestQgsFileUtils(unittest.TestCase):
         self.assertEqual(QgsFileUtils.findClosestExistingPath(sub_folder2 + '/../subfolder2'), sub_folder2)
         self.assertEqual(QgsFileUtils.findClosestExistingPath(sub_folder2 + '/../subfolder2/zxcv/asfdasd'), sub_folder2)
 
+    def testAutoFinder(self):
+        temp_folder = tempfile.mkdtemp()
+        base_folder = os.path.join(temp_folder, 'base_level')
+        os.mkdir(base_folder)
+        side_fold = os.path.join(temp_folder, 'sidefold')
+        os.mkdir(side_fold)
+        nest = os.path.join(base_folder, 'direct_nest')
+        os.mkdir(nest)
+        side_nest = os.path.join(side_fold, 'side_nest')
+        os.mkdir(side_nest)
+        filename = "findme.txt"
+
+        #unexisting
+        files = QgsFileUtils.findFile(filename, nest, 1, 4)
+        self.assertEqual(len(files), 0)
+        #out of depth
+        files = QgsFileUtils.findFile(filename, nest, 0, 4)
+        self.assertEqual(len(files), 0)
+        #too close
+        files = QgsFileUtils.findFile(filename, nest, 1, 13)
+        self.assertEqual(len(files), 0)
+        #side nest
+        open(os.path.join(side_nest, filename), 'w+')
+        files = QgsFileUtils.findFile(os.path.join(base_folder, filename))
+        self.assertEqual(files[0], os.path.join(side_nest, filename).replace(os.sep, '/'))
+        #side + side nest  =  2
+        open(os.path.join(side_fold, filename), 'w+')
+        files = QgsFileUtils.findFile(filename, base_folder, 3, 4)
+        self.assertEqual(len(files), 2)
+        #up
+        open(os.path.join(temp_folder, filename), 'w+')
+        files = QgsFileUtils.findFile(filename, base_folder, 3, 4)
+        self.assertEqual(files[0], os.path.join(temp_folder, filename).replace(os.sep, '/'))
+        #nest
+        open(os.path.join(nest, filename), 'w+')
+        files = QgsFileUtils.findFile(os.path.join(base_folder, filename))
+        self.assertEqual(files[0], os.path.join(nest, filename).replace(os.sep, '/'))
+        #base level
+        open(os.path.join(base_folder, filename), 'w+')
+        files = QgsFileUtils.findFile(filename, base_folder, 2, 4)
+        self.assertEqual(files[0], os.path.join(base_folder, filename).replace(os.sep, '/'))
+        #invalid path, too deep
+        files = QgsFileUtils.findFile(filename, os.path.join(nest, 'nest2'), 2, 4)
+        self.assertEqual(files[0], os.path.join(nest, filename).replace(os.sep, '/'))
+
 
 if __name__ == '__main__':
     unittest.main()

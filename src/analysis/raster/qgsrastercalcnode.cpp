@@ -60,6 +60,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
     QMap<QString, QgsRasterBlock *>::iterator it = rasterData.find( mRasterName );
     if ( it == rasterData.end() )
     {
+      QgsDebugMsg( QStringLiteral( "Error: could not find raster data for \"%1\"" ).arg( mRasterName ) );
       return false;
     }
 
@@ -190,9 +191,10 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
   else if ( mType == tNumber )
   {
     size_t nEntries = static_cast<size_t>( result.nColumns() * result.nRows() );
-    std::vector<double> *data = new  std::vector<double>( nEntries );
-    std::fill( std::begin( *data ), std::end( *data ), mNumber );
-    result.setData( result.nColumns(), 1, data->data(), result.nodataValue() );
+    double *data = new double[ nEntries ];
+    std::fill( data, data + nEntries, mNumber );
+    result.setData( result.nColumns(), 1, data, result.nodataValue() );
+
     return true;
   }
   else if ( mType == tMatrix )
@@ -265,7 +267,7 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
           break;
         case opLT:
           if ( cStyle )
-            result = QStringLiteral( "( float ) ( %1 < %2" ).arg( left ).arg( right );
+            result = QStringLiteral( "( float ) ( %1 < %2 )" ).arg( left ).arg( right );
           else
             result = QStringLiteral( "%1 < %2" ).arg( left ).arg( right );
           break;
@@ -344,13 +346,16 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
       }
       break;
     case tRasterRef:
-      result = QStringLiteral( "\"%1\"" ).arg( mRasterName );
+      if ( cStyle )
+        result = QStringLiteral( "( float ) \"%1\"" ).arg( mRasterName );
+      else
+        result = QStringLiteral( "\"%1\"" ).arg( mRasterName );
       break;
     case tNumber:
       result = QString::number( mNumber );
       if ( cStyle )
       {
-        result = QStringLiteral( "( float ) ( %1 )" ).arg( result );
+        result = QStringLiteral( "( float ) %1" ).arg( result );
       }
       break;
     case tMatrix:

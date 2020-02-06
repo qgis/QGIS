@@ -16,12 +16,18 @@
 #include <QMutexLocker>
 #include "qgsdataprovider.h"
 
-QString QgsDataProvider::SUBLAYER_SEPARATOR = QString( "!!::!!" );
+#define SUBLAYER_SEPARATOR QStringLiteral( "!!::!!" )
 
 QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions )
   : mDataSourceURI( uri ),
     mOptions( providerOptions )
 {
+}
+
+void QgsDataProvider::reloadData()
+{
+  reloadProviderData();
+  emit dataChanged();
 }
 
 void QgsDataProvider::setProviderProperty( QgsDataProvider::ProviderProperty property, const QVariant &value )
@@ -64,4 +70,9 @@ void QgsDataProvider::setTransformContext( const QgsCoordinateTransformContext &
 {
   QMutexLocker locker( &mOptionsMutex );
   mOptions.transformContext = value;
+}
+
+QString QgsDataProvider::sublayerSeparator()
+{
+  return SUBLAYER_SEPARATOR;
 }

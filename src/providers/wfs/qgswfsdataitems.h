@@ -55,7 +55,7 @@ class QgsWfsConnectionItem : public QgsDataCollectionItem
   private:
     QString mUri;
 
-    QgsWfsCapabilities *mWfsCapabilities = nullptr;
+    QVector<QgsDataItem *> createChildrenOapif();
 };
 
 
@@ -64,7 +64,7 @@ class QgsWfsLayerItem : public QgsLayerItem
     Q_OBJECT
 
   public:
-    QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString );
+    QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString, const QString &providerKey );
 
     QList<QMenu *> menus( QWidget *parent ) override;
 

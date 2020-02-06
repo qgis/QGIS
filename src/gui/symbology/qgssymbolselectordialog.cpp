@@ -191,11 +191,11 @@ class SymbolLayerItem : public QStandardItem
           switch ( mSymbol->type() )
           {
             case QgsSymbol::Marker :
-              return QCoreApplication::translate( "SymbolLayerItem", "Marker", nullptr, QCoreApplication::UnicodeUTF8 );
+              return QCoreApplication::translate( "SymbolLayerItem", "Marker" );
             case QgsSymbol::Fill   :
-              return QCoreApplication::translate( "SymbolLayerItem", "Fill", nullptr, QCoreApplication::UnicodeUTF8 );
+              return QCoreApplication::translate( "SymbolLayerItem", "Fill" );
             case QgsSymbol::Line   :
-              return QCoreApplication::translate( "SymbolLayerItem", "Line", nullptr, QCoreApplication::UnicodeUTF8 );
+              return QCoreApplication::translate( "SymbolLayerItem", "Line" );
             default:
               return "Symbol";
           }
@@ -385,6 +385,9 @@ QgsSymbolWidgetContext QgsSymbolSelectorWidget::context() const
 
 void QgsSymbolSelectorWidget::loadSymbol( QgsSymbol *symbol, SymbolLayerItem *parent )
 {
+  if ( !symbol )
+    return;
+
   if ( !parent )
   {
     mSymbol = symbol;
@@ -449,6 +452,9 @@ void QgsSymbolSelectorWidget::updateUi()
 
 void QgsSymbolSelectorWidget::updatePreview()
 {
+  if ( !mSymbol )
+    return;
+
   std::unique_ptr< QgsSymbol > symbolClone( mSymbol->clone() );
   QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
@@ -776,6 +782,8 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
   layout()->addWidget( mSelectorWidget );
   layout()->addWidget( mButtonBox );
 
+  connect( mSelectorWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
+
   mSelectorWidget->setMinimumSize( 460, 560 );
   setObjectName( QStringLiteral( "SymbolSelectorDialog" ) );
   QgsGui::instance()->enableAutoGeometryRestore( this );
@@ -928,5 +936,5 @@ QDialogButtonBox *QgsSymbolSelectorDialog::buttonBox() const
 
 void QgsSymbolSelectorDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#the-symbol-selector" ) );
+  QgsHelp::openHelp( QStringLiteral( "style_library/symbol_selector.html" ) );
 }

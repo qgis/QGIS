@@ -52,6 +52,40 @@ class QgsServerApiContext;
  * - contentTypes
  * - defaultContentType
  *
+ * \code{.py}
+ *
+ * class Handler1(QgsServerOgcApiHandler):
+ *   """Example handler"""
+ *
+ *   def path(self):
+ *       return QtCore.QRegularExpression("/handlerone")
+ *
+ *   def operationId(self):
+ *       return "handlerOne"
+ *
+ *   def summary(self):
+ *       return "First of its name"
+ *
+ *   def description(self):
+ *       return "The first handler ever"
+ *
+ *   def linkTitle(self):
+ *       return "Handler One Link Title"
+ *
+ *   def linkType(self):
+ *       return QgsServerOgcApi.data
+ *
+ *   def handleRequest(self, context):
+ *       """Simple mirror: returns the parameters"""
+ *
+ *       params = self.values(context)
+ *       self.write(params, context)
+ *
+ *   def parameters(self, context):
+ *       return [QgsServerQueryStringParameter("value1", True, QgsServerQueryStringParameter.Type.Double, "a double value")]
+ *
+ *
+ * \endcode
  *
  * \since QGIS 3.10
  */
@@ -181,6 +215,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *   static( "/style/black.css" ) will return something like "/wfs3/static/style/black.css".
      * - links_filter( links, key, value ): Returns filtered links from a link list
      * - content_type_name( content_type ): Returns a short name from a content type for example "text/html" will return "HTML"
+     * - nl2br( text ): Returns the input text with all newlines replaced by "<br>" tags
      *
      * \note not available in Python bindings
      */

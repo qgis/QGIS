@@ -50,6 +50,7 @@ QgsProjContext::~QgsProjContext()
   // Call removeFromCacheObjectsBelongingToCurrentThread() before
   // destroying the context
   QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread( mContext );
+  QgsCoordinateReferenceSystem::removeFromCacheObjectsBelongingToCurrentThread( mContext );
   proj_context_destroy( mContext );
 #else
   pj_ctx_free( mContext );
@@ -181,7 +182,63 @@ QgsProjUtils::proj_pj_unique_ptr QgsProjUtils::crsToSingleCrs( const PJ *crs )
       return QgsProjUtils::proj_pj_unique_ptr( proj_clone( context, crs ) );
   }
 
+#ifndef _MSC_VER  // unreachable
   return nullptr;
+#endif
+}
+
+bool QgsProjUtils::identifyCrs( const PJ *crs, QString &authName, QString &authCode, IdentifyFlags flags )
+{
+  authName.clear();
+  authCode.clear();
+
+  if ( !crs )
+    return false;
+
+  int *confidence = nullptr;
+  if ( PJ_OBJ_LIST *crsList = proj_identify( QgsProjContext::get(), crs, nullptr, nullptr, &confidence ) )
+  {
+    const int count = proj_list_get_count( crsList );
+    int bestConfidence = 0;
+    QgsProjUtils::proj_pj_unique_ptr matchedCrs;
+    for ( int i = 0; i < count; ++i )
+    {
+      if ( confidence[i] >= bestConfidence )
+      {
+        QgsProjUtils::proj_pj_unique_ptr candidateCrs( proj_list_get( QgsProjContext::get(), crsList, i ) );
+        switch ( proj_get_type( candidateCrs.get() ) )
+        {
+          case PJ_TYPE_BOUND_CRS:
+            // proj_identify also matches bound CRSes to the source CRS. But they are not the same as the source CRS, so we don't
+            // consider them a candidate for a match here (depending on the identify flags, that is!)
+            if ( flags & FlagMatchBoundCrsToUnderlyingSourceCrs )
+              break;
+            else
+              continue;
+
+          default:
+            break;
+        }
+
+        candidateCrs = QgsProjUtils::crsToSingleCrs( candidateCrs.get() );
+        const QString authName( proj_get_id_auth_name( candidateCrs.get(), 0 ) );
+        // if a match is identical confidence, we prefer EPSG codes for compatibility with earlier qgis conversions
+        if ( confidence[i] > bestConfidence || ( confidence[i] == bestConfidence && authName == QLatin1String( "EPSG" ) ) )
+        {
+          bestConfidence = confidence[i];
+          matchedCrs = std::move( candidateCrs );
+        }
+      }
+    }
+    proj_list_destroy( crsList );
+    proj_int_list_destroy( confidence );
+    if ( matchedCrs && bestConfidence >= 70 )
+    {
+      authName = QString( proj_get_id_auth_name( matchedCrs.get(), 0 ) );
+      authCode = QString( proj_get_id_code( matchedCrs.get(), 0 ) );
+    }
+  }
+  return !authName.isEmpty() && !authCode.isEmpty();
 }
 
 bool QgsProjUtils::coordinateOperationIsAvailable( const QString &projDef )
@@ -260,15 +317,10 @@ QStringList QgsProjUtils::searchPaths()
 #if PROJ_VERSION_MAJOR>=6
   const QString path( proj_info().searchpath );
   QStringList paths;
-#if PROJ_VERSION_MINOR==1 && PROJ_VERSION_PATCH==0
-  // -- see https://github.com/OSGeo/proj.4/pull/1497
-  paths = path.split( ';' );
-#else
 #ifdef Q_OS_WIN
   paths = path.split( ';' );
 #else
   paths = path.split( ':' );
-#endif
 #endif
 
   QSet<QString> existing;

@@ -58,6 +58,7 @@ cmake \
   -DWITH_STAGED_PLUGINS=ON \
   -DENABLE_MODELTEST=ON \
   -DENABLE_PGTEST=OFF \
+  -DENABLE_SAGA_TESTS=ON \
   -DWITH_QWTPOLAR=OFF \
   -DCMAKE_CXX_FLAGS="-Wno-deprecated-declarations" \
   ..

@@ -255,9 +255,9 @@ bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *d
   errCause = _executeSql( projectUri.database, sql );
   if ( !errCause.isEmpty() )
   {
-    const QString errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database: %2" )
-                             .arg( uri,
-                                   errCause );
+    errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database: %2" )
+               .arg( uri,
+                     errCause );
 
     context.pushMessage( errCause, Qgis::Critical );
     return false;
@@ -293,22 +293,29 @@ QgsGeoPackageProjectUri QgsGeoPackageProjectStorage::decodeUri( const QString &u
 {
   QUrl url = QUrl::fromEncoded( uri.toUtf8() );
   QUrlQuery urlQuery( url.query() );
+  const QString urlAsString( url.toString( ) );
 
   QgsGeoPackageProjectUri gpkgUri;
 
+  // Check for windows paths: github issue #33057
+  const QRegularExpression winLocalPath { R"(^[A-Za-z]:)" };
   // Check for windows network shares: github issue #31310
-  const QString path { url.toString().startsWith( QStringLiteral( "//" ) ) ? url.toString() : url.path() };
-  gpkgUri.valid = url.isValid() && QFile::exists( path );
-  gpkgUri.database = path;
+  const QString path { ( winLocalPath.match( urlAsString ).hasMatch() ||
+                         urlAsString.startsWith( QStringLiteral( "//" ) ) ) ?
+                       urlAsString :
+                       url.path() };
 
+  gpkgUri.valid = QFile::exists( path );
+  gpkgUri.database = path;
   gpkgUri.projectName = urlQuery.queryItemValue( "projectName" );
+
   return gpkgUri;
 }
 
 QString QgsGeoPackageProjectStorage::filePath( const QString &uri )
 {
   const QgsGeoPackageProjectUri gpkgUri { decodeUri( uri ) };
-  return gpkgUri.valid ? gpkgUri.database :  QString();
+  return gpkgUri.valid ? gpkgUri.database : QString();
 }
 
 

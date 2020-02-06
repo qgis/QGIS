@@ -360,7 +360,7 @@
      <item row="1" column="0" colspan="5">
       <widget class="QCheckBox" name="chkRotateMarker">
        <property name="text">
-        <string>Rotate marker</string>
+        <string>Rotate marker to follow line direction</string>
        </property>
       </widget>
      </item>

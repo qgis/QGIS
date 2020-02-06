@@ -700,9 +700,13 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
       menu->addAction( action.name(), a, &QgsAttributeTableAction::execute );
     }
   }
-
+  QModelIndex rowSourceIndex = mFilterModel->fidToIndex( mFilterModel->rowToId( atIndex ) );
+  if ( ! rowSourceIndex.isValid() )
+  {
+    return;
+  }
   //add actions from QgsMapLayerActionRegistry to context menu
-  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer );
+  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::Layer | QgsMapLayerAction::SingleFeature );
   if ( !registeredActions.isEmpty() )
   {
     //add a separator between user defined and standard actions
@@ -711,13 +715,32 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
     const auto constRegisteredActions = registeredActions;
     for ( QgsMapLayerAction *action : constRegisteredActions )
     {
-      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( action->text(), this, action, sourceIndex );
+      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( action->text(), this, action, rowSourceIndex );
       menu->addAction( action->text(), a, &QgsAttributeTableMapLayerAction::execute );
     }
   }
 
+  // entries for multiple features layer actions
+  // only show if the context menu is shown over a selected row
+  QgsFeatureId currentFid = masterModel()->rowToId( sourceIndex.row() );
+  if ( mLayer->selectedFeatureCount() > 1 && mLayer->selectedFeatureIds().contains( currentFid ) )
+  {
+    const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::MultipleFeatures );
+    if ( !constRegisteredActions.isEmpty() )
+    {
+      menu->addSeparator();
+      QAction *action = menu->addAction( tr( "Actions on Selection (%1)" ).arg( mLayer->selectedFeatureCount() ) );
+      action->setEnabled( false );
+
+      for ( QgsMapLayerAction *action : constRegisteredActions )
+      {
+        menu->addAction( action->text(), action, [ = ]() {action->triggerForFeatures( mLayer, mLayer->selectedFeatures() );} );
+      }
+    }
+  }
+
   menu->addSeparator();
-  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open Form" ), this, QString(), sourceIndex );
+  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open Form" ), this, QString(), rowSourceIndex );
   menu->addAction( tr( "Open Form" ), a, &QgsAttributeTableAction::featureForm );
 }
 
@@ -856,6 +879,7 @@ void QgsDualView::modifySort()
   expressionBuilder->setLayer( mLayer );
   expressionBuilder->loadFieldNames();
   expressionBuilder->loadRecent( QStringLiteral( "generic" ) );
+  expressionBuilder->loadUserExpressions( );
   expressionBuilder->setExpressionText( sortExpression().isEmpty() ? mLayer->displayExpression() : sortExpression() );
 
   sortingGroupBox->layout()->addWidget( expressionBuilder );

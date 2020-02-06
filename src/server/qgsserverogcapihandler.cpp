@@ -40,7 +40,6 @@ using namespace inja;
 QVariantMap QgsServerOgcApiHandler::values( const QgsServerApiContext &context ) const
 {
   QVariantMap result ;
-  QVariantList positional;
   const auto constParameters { parameters( context ) };
   for ( const auto &p : constParameters )
   {
@@ -121,6 +120,9 @@ void QgsServerOgcApiHandler::write( json &data, const QgsServerApiContext &conte
     case QgsServerOgcApi::ContentType::JSON:
     case QgsServerOgcApi::ContentType::OPENAPI3:
       jsonDump( data, context, QgsServerOgcApi::contentTypeMimes().value( contentType ).first() );
+      break;
+    case QgsServerOgcApi::ContentType::XML:
+      // Not handled yet
       break;
   }
 }
@@ -300,7 +302,15 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       QFileInfo fi{ url.path() };
       auto suffix { fi.suffix() };
       auto fName { fi.filePath()};
-      fName.chop( suffix.length() + 1 );
+      if ( !suffix.isEmpty() )
+      {
+        fName.chop( suffix.length() + 1 );
+      }
+      // Chop any ending slashes
+      while ( fName.endsWith( '/' ) )
+      {
+        fName.chop( 1 );
+      }
       fName += '/' + QString::number( args.at( 0 )->get<QgsFeatureId>( ) );
       if ( !suffix.isEmpty() )
       {
@@ -357,6 +367,37 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
     {
       const QgsServerOgcApi::ContentType ct { QgsServerOgcApi::contenTypeFromExtension( args.at( 0 )->get<std::string>( ) ) };
       return QgsServerOgcApi::contentTypeToStdString( ct );
+    } );
+
+    // Replace newlines with <br>
+    env.add_callback( "nl2br", 1, [ = ]( Arguments & args )
+    {
+      QString text { QString::fromStdString( args.at( 0 )->get<std::string>( ) ) };
+      return text.replace( '\n', QLatin1String( "<br>" ) ).toStdString();
+    } );
+
+
+    // Returns a list of parameter component data from components -> parameters by ref name
+    // parameter( <ref object> )
+    env.add_callback( "component_parameter", 1, [ = ]( Arguments & args )
+    {
+      json ret = json::array();
+      json ref = args.at( 0 )->get<json>( );
+      if ( ! ref.is_object() )
+      {
+        return ret;
+      }
+      try
+      {
+        QString name = QString::fromStdString( ref["$ref"] );
+        name = name.split( '/' ).last();
+        ret.push_back( data["components"]["parameters"][name.toStdString()] );
+      }
+      catch ( std::exception & )
+      {
+        // Do nothing
+      }
+      return ret;
     } );
 
 
@@ -469,8 +510,9 @@ QString QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )
     path = path.replace( re, QString() );
   }
   QUrl result( url );
+  QUrlQuery query( result );
   QList<QPair<QString, QString> > qi;
-  const auto constItems { result.queryItems( ) };
+  const auto constItems { query.queryItems( ) };
   for ( const auto &i : constItems )
   {
     if ( i.first.compare( QStringLiteral( "MAP" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
@@ -478,7 +520,14 @@ QString QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )
       qi.push_back( i );
     }
   }
-  result.setQueryItems( qi );
+  // Make sure the parent link ends with a slash
+  if ( ! path.endsWith( '/' ) )
+  {
+    path.append( '/' );
+  }
+  QUrlQuery resultQuery;
+  resultQuery.setQueryItems( qi );
+  result.setQuery( resultQuery );
   result.setPath( path );
   return result.toString();
 }

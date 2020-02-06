@@ -349,7 +349,9 @@ namespace QgsWms
         MODE,
         LAYERATTRIBUTES,
         USE_TITLE_AS_LAYERNAME,
-        CODEC
+        CODEC,
+        NO_MTEXT,
+        FORCE_2D
       };
       Q_ENUM( DxfFormatOption )
 
@@ -1309,6 +1311,22 @@ namespace QgsWms
        */
       QMap<QString, QString> dimensionValues() const;
 
+      /**
+       * \returns true if the FORCE_MTEXT parameter is set and the DXF should
+       * be produced with MTEXT instead of TEXT.
+       *
+       * \since QGIS 3.12
+       */
+      bool noMText() const;
+
+      /**
+       * \returns true if the FORCE_2D parameter is set and the DXF should
+       * be produced in 2D.
+       *
+       * \since QGIS 3.12
+       */
+      bool isForce2D() const;
+
     private:
       static bool isExternalLayer( const QString &name );
 
@@ -1324,6 +1342,7 @@ namespace QgsWms
       QgsWmsParametersExternalLayer externalLayerParameter( const QString &name ) const;
 
       QMultiMap<QString, QgsWmsParametersFilter> layerFilters( const QStringList &layers ) const;
+
 
       QMap<QgsWmsParameter::Name, QgsWmsParameter> mWmsParameters;
       QMap<QString, QMap<QString, QString> > mExternalWMSParameters;

@@ -226,8 +226,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         attributeTable->setEnabled( vlayer->isValid() );
 
         // allow editing
-        unsigned int cap = vlayer->dataProvider()->capabilities();
-        if ( cap & QgsVectorDataProvider::EditingCapabilities )
+        const QgsVectorDataProvider *provider = vlayer->dataProvider();
+        if ( provider &&
+             ( provider->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
         {
           if ( toggleEditingAction )
           {
@@ -244,7 +245,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( allEditsAction->isEnabled() )
           menu->addAction( allEditsAction );
 
-        if ( vlayer->dataProvider()->supportsSubsetString() )
+        if ( provider && provider->supportsSubsetString() )
         {
           QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), &QgisApp::layerSubsetString );
           action->setEnabled( !vlayer->isEditable() );
@@ -298,7 +299,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( vlayer )
       {
-        if ( vlayer->providerType() == QLatin1String( "memory" ) )
+        if ( vlayer->isTemporary() )
         {
           QAction *actionMakePermanent = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ), tr( "Make Permanent…" ), menu );
           connect( actionMakePermanent, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->makeMemoryLayerPermanent( vlayer ); } );
@@ -649,13 +650,13 @@ QList< LegendLayerAction > QgsAppLayerTreeViewMenuProvider::legendLayerActions( 
 #ifdef QGISDEBUG
   if ( mLegendLayerActionMap.contains( type ) )
   {
-    QgsDebugMsg( QStringLiteral( "legendLayerActions for layers of type %1:" ).arg( static_cast<int>( type ) ) );
+    QgsDebugMsgLevel( QStringLiteral( "legendLayerActions for layers of type %1:" ).arg( static_cast<int>( type ) ), 2 );
 
     const auto legendLayerActions { mLegendLayerActionMap.value( type ) };
     for ( const LegendLayerAction &lyrAction : legendLayerActions )
     {
       Q_UNUSED( lyrAction )
-      QgsDebugMsg( QStringLiteral( "%1/%2 - %3 layers" ).arg( lyrAction.menu, lyrAction.action->text() ).arg( lyrAction.layers.count() ) );
+      QgsDebugMsgLevel( QStringLiteral( "%1/%2 - %3 layers" ).arg( lyrAction.menu, lyrAction.action->text() ).arg( lyrAction.layers.count() ), 2 );
     }
   }
 #endif

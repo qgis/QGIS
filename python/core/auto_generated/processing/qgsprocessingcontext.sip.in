@@ -162,6 +162,13 @@ Ownership of ``processor`` is transferred.
 .. versionadded:: 3.2
 %End
 
+        void setOutputLayerName( QgsMapLayer *layer ) const;
+%Docstring
+Sets a ``layer`` name to match this output, respecting any local user settings which affect this name.
+
+.. versionadded:: 3.10.1
+%End
+
         QgsProject *project;
 
     };

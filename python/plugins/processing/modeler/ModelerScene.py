@@ -99,14 +99,18 @@ class ModelerScene(QGraphicsScene):
         for input_name in list(model.parameterComponents().keys()):
             idx = 0
             parameter_def = model.parameterDefinition(input_name)
-            parent_name = None
+            parent_names = []
             if hasattr(parameter_def, 'parentLayerParameterName') and parameter_def.parentLayerParameterName():
-                parent_name = parameter_def.parentLayerParameterName()
+                parent_names.append(parameter_def.parentLayerParameterName())
             if hasattr(parameter_def, 'parentLayoutParameterName') and parameter_def.parentLayoutParameterName():
-                parent_name = parameter_def.parentLayoutParameterName()
-            elif hasattr(parameter_def, 'parentParameterName') and parameter_def.parentParameterName():
-                parent_name = parameter_def.parentParameterName()
-            if parent_name:
+                parent_names.append(parameter_def.parentLayoutParameterName())
+            if hasattr(parameter_def, 'parentParameterName') and parameter_def.parentParameterName():
+                parent_names.append(parameter_def.parentParameterName())
+            if hasattr(parameter_def, 'sourceCrsParameterName') and parameter_def.sourceCrsParameterName():
+                parent_names.append(parameter_def.sourceCrsParameterName())
+            if hasattr(parameter_def, 'destinationCrsParameterName') and parameter_def.destinationCrsParameterName():
+                parent_names.append(parameter_def.destinationCrsParameterName())
+            for parent_name in parent_names:
                 if input_name in self.paramItems and parent_name in self.paramItems:
                     input_item = self.paramItems[input_name]
                     parent_item = self.paramItems[parent_name]
@@ -157,7 +161,7 @@ class ModelerScene(QGraphicsScene):
         for alg in list(model.childAlgorithms().values()):
             outputs = alg.modelOutputs()
             outputItems = {}
-            idx = 0
+
             for key, out in outputs.items():
                 if out is not None:
                     item = ModelerGraphicItem(out, model, controls, scene=self)
@@ -165,6 +169,15 @@ class ModelerScene(QGraphicsScene):
                     item.setFlag(QGraphicsItem.ItemIsSelectable, True)
                     self.addItem(item)
                     pos = out.position()
+
+                    # find the actual index of the linked output from the child algorithm it comes from
+                    source_child_alg_outputs = alg.algorithm().outputDefinitions()
+                    idx = -1
+                    for i, child_alg_output in enumerate(source_child_alg_outputs):
+                        if child_alg_output.name() == out.childOutputName():
+                            idx = i
+                            break
+
                     if pos is None:
                         pos = (alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, 0) +
                                self.algItems[alg.childId()].getLinkPointForOutput(idx))
@@ -176,7 +189,6 @@ class ModelerScene(QGraphicsScene):
                     item.addArrow(arrow)
                     arrow.updatePath()
                     self.addItem(arrow)
-                    idx += 1
                 else:
                     outputItems[key] = None
             self.outputItems[alg.childId()] = outputItems

@@ -1,14 +1,10 @@
 SET (WMS_SRCS
+  qgsmbtilesreader.cpp
   qgswmscapabilities.cpp
   qgswmsprovider.cpp
   qgswmsconnection.cpp
   qgswmsdataitems.cpp
   qgsxyzconnection.cpp
-)
-SET (WMS_MOC_HDRS
-  qgswmscapabilities.h
-  qgswmsprovider.h
-  qgswmsdataitems.h
 )
 
 IF (WITH_GUI)
@@ -20,17 +16,7 @@ IF (WITH_GUI)
     qgswmtsdimensions.cpp
     qgsxyzconnectiondialog.cpp
   )
-  SET(WMS_GUI_MOC_HDRS
-    qgswmssourceselect.h
-    qgswmsdataitemguiproviders.h
-    qgstilescalewidget.h
-    qgswmtsdimensions.h
-    qgsxyzconnectiondialog.h
-  )
 ENDIF ()
-
-QT5_WRAP_CPP (WMS_MOC_SRCS ${WMS_MOC_HDRS})
-QT5_WRAP_CPP (WMS_GUI_MOC_SRCS ${WMS_GUI_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
@@ -38,11 +24,14 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/ui
   ${CMAKE_BINARY_DIR}/src/core
@@ -56,7 +45,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 # static library
-ADD_LIBRARY(wmsprovider_a STATIC ${WMS_SRCS} ${WMS_MOC_SRCS})
+ADD_LIBRARY(wmsprovider_a STATIC ${WMS_SRCS})
 TARGET_LINK_LIBRARIES(wmsprovider_a
   ${Qt5Xml_LIBRARIES}
   ${Qt5Core_LIBRARIES}
@@ -68,7 +57,7 @@ TARGET_LINK_LIBRARIES(wmsprovider_a
 TARGET_COMPILE_DEFINITIONS(wmsprovider_a PRIVATE "-DQT_NO_FOREACH")
 
 IF (WITH_GUI)
-  ADD_LIBRARY(wmsprovider_gui_a STATIC ${WMS_GUI_SRCS} ${WMS_GUI_MOC_SRCS})
+  ADD_LIBRARY(wmsprovider_gui_a STATIC ${WMS_GUI_SRCS})
   TARGET_LINK_LIBRARIES(wmsprovider_gui_a
     ${Qt5Xml_LIBRARIES}
     ${Qt5Core_LIBRARIES}
@@ -81,6 +70,7 @@ IF (WITH_GUI)
   )
   TARGET_COMPILE_DEFINITIONS(wmsprovider_gui_a PRIVATE "-DQT_NO_FOREACH")
   ADD_DEPENDENCIES(wmsprovider_gui_a ui)
+  ADD_DEPENDENCIES(wmsprovider_a ui)
 ENDIF (WITH_GUI)
 
 IF (FORCE_STATIC_PROVIDERS)
@@ -90,8 +80,8 @@ IF (FORCE_STATIC_PROVIDERS)
     INSTALL (TARGETS wmsprovider_gui_a ARCHIVE DESTINATION ${QGIS_PLUGIN_DIR})
   ENDIF (WITH_GUI)
 ELSE (FORCE_STATIC_PROVIDERS)
-  # dynimally loaded module
-  ADD_LIBRARY(wmsprovider MODULE ${WMS_SRCS} ${WMS_GUI_SRCS} ${WMS_MOC_SRCS} ${WMS_GUI_MOC_SRCS})
+  # dynamically loaded module
+  ADD_LIBRARY(wmsprovider MODULE ${WMS_SRCS} ${WMS_GUI_SRCS})
 
   TARGET_LINK_LIBRARIES(wmsprovider
     qgis_core

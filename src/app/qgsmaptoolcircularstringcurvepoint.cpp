@@ -87,10 +87,14 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasMoveEvent( QgsMapMouseEvent *e
 
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
-  QgsVertexId idx( 0, 0, 1 + ( mPoints.size() + 1 ) % 2 );
   if ( mTempRubberBand )
   {
-    mTempRubberBand->moveVertex( idx, mapPoint );
+    QgsPointSequence mTempPoints = mPoints.mid( mPoints.size() - 1 - ( mPoints.size() + 1 ) % 2 );
+    mTempPoints.append( mapPoint );
+    std::unique_ptr<QgsCircularString> geom( new QgsCircularString() );
+    geom->setPoints( mTempPoints );
+    mTempRubberBand->setGeometry( geom.release() );
+
     updateCenterPointRubberBand( mapPoint );
   }
 }

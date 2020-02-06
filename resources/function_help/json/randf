@@ -1,8 +1,9 @@
 {
   "name": "randf",
   "type": "function",
-  "description": "Returns a random float within the range specified by the minimum and maximum argument (inclusive).",
+  "description": "Returns a random float within the range specified by the minimum and maximum argument (inclusive). If a seed is provided, the returned will always be the same, depending on the seed.",
   "arguments": [ {"arg":"min","optional":true,"default":"0.0","description":"an float representing the smallest possible random number desired"},
-                 {"arg":"max","optional":true,"default":"1.0","description":"an float representing the largest possible random number desired"}],
-  "examples": [ { "expression":"randf(1, 10)", "returns":"4.59258286403147"}]
+                 {"arg":"max","optional":true,"default":"1.0","description":"an float representing the largest possible random number desired"},
+                 {"arg":"seed","optional":true,"default":"null","description":"any value to use as seed"}],
+  "examples": [ { "expression":"randf(1, 10)", "returns":"4.59258286403147"} ]
 }

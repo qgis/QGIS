@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -41,30 +40,6 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.RenderingStyles import RenderingStyles
 
 
-def set_layer_name(layer, context_layer_details):
-    """
-    Sets the name for the given layer, either using the layer's file name
-    (or database layer name), or the name specified by the parameter definition.
-    """
-    use_filename_as_layer_name = ProcessingConfig.getSetting(ProcessingConfig.USE_FILENAME_AS_LAYER_NAME)
-
-    if use_filename_as_layer_name or not context_layer_details.name:
-        source_parts = QgsProviderRegistry.instance().decodeUri(layer.dataProvider().name(), layer.source())
-        layer_name = source_parts.get('layerName', '')
-        # if source layer name exists, use that -- else use
-        if layer_name:
-            layer.setName(layer_name)
-        else:
-            path = source_parts.get('path', '')
-            if path:
-                layer.setName(os.path.splitext(os.path.basename(path))[0])
-            elif context_layer_details.name:
-                # fallback to parameter's name -- shouldn't happen!
-                layer.setName(context_layer_details.name)
-    else:
-        layer.setName(context_layer_details.name)
-
-
 def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parameters={}):
     wrongLayers = []
     if feedback is None:
@@ -82,7 +57,7 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
         try:
             layer = QgsProcessingUtils.mapLayerFromString(l, context, typeHint=details.layerTypeHint)
             if layer is not None:
-                set_layer_name(layer, details)
+                details.setOutputLayerName(layer)
 
                 '''If running a model, the execution will arrive here when an algorithm that is part of
                 that model is executed. We check if its output is a final otuput of the model, and
@@ -126,7 +101,9 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
             else:
                 wrongLayers.append(str(l))
         except Exception:
-            QgsMessageLog.logMessage(QCoreApplication.translate('Postprocessing', "Error loading result layer:") + "\n" + traceback.format_exc(), 'Processing', Qgis.Critical)
+            QgsMessageLog.logMessage(QCoreApplication.translate('Postprocessing',
+                                                                "Error loading result layer:") + "\n" + traceback.format_exc(),
+                                     'Processing', Qgis.Critical)
             wrongLayers.append(str(l))
         i += 1
 
@@ -135,7 +112,8 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True, parame
     if wrongLayers:
         msg = QCoreApplication.translate('Postprocessing', "The following layers were not correctly generated.")
         msg += "<ul>" + "".join(["<li>%s</li>" % lay for lay in wrongLayers]) + "</ul>"
-        msg += QCoreApplication.translate('Postprocessing', "You can check the 'Log Messages Panel' in QGIS main window to find more information about the execution of the algorithm.")
+        msg += QCoreApplication.translate('Postprocessing',
+                                          "You can check the 'Log Messages Panel' in QGIS main window to find more information about the execution of the algorithm.")
         feedback.reportError(msg)
 
     return len(wrongLayers) == 0

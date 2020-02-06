@@ -501,13 +501,15 @@ Returns whether the symbol utilizes any data defined properties.
 
    the layer will be ``None`` after stopRender
 
-.. deprecated:: Will be removed in QGIS 4.0
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
  const QgsVectorLayer *layer() const /Deprecated/;
 %Docstring
 
-.. deprecated:: Will be removed in QGIS 4.0
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
     void renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false, int currentVertexMarkerType = 0, double currentVertexMarkerSize = 0.0 ) throw( QgsCsException );
@@ -632,26 +634,30 @@ Sets the original value variable value for data defined symbology
 %Docstring
 Returns the output unit for the context.
 
-.. deprecated:: No longer used and will be removed in QGIS 4.0
+.. deprecated::
+   No longer used and will be removed in QGIS 4.0
 %End
 
  void setOutputUnit( QgsUnitTypes::RenderUnit u ) /Deprecated/;
 %Docstring
 Sets the output unit for the context.
 
-.. deprecated:: No longer used and will be removed in QGIS 4.0
+.. deprecated::
+   No longer used and will be removed in QGIS 4.0
 %End
 
  QgsMapUnitScale mapUnitScale() const /Deprecated/;
 %Docstring
 
-.. deprecated:: Will be removed in QGIS 4.0
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
  void setMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated/;
 %Docstring
 
-.. deprecated:: Will be removed in QGIS 4.0
+.. deprecated::
+   Will be removed in QGIS 4.0
 %End
 
     qreal opacity() const;
@@ -768,13 +774,15 @@ Sets the part number of current geometry
  double outputLineWidth( double width ) const /Deprecated/;
 %Docstring
 
-.. deprecated:: Use the size conversion methods in QgsRenderContext instead.
+.. deprecated::
+   Use the size conversion methods in QgsRenderContext instead.
 %End
 
  double outputPixelSize( double size ) const /Deprecated/;
 %Docstring
 
-.. deprecated:: Use the size conversion methods in QgsRenderContext instead.
+.. deprecated::
+   Use the size conversion methods in QgsRenderContext instead.
 %End
 
 

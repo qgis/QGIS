@@ -38,8 +38,11 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
 
     /**
      * Create a new feature counter for \a layer.
+     * \param layer Target QgsVectorLayer to perform counting on.
+     * \param context Specific QgsExpressionContext to use during the rendering step.
+     * \param storeSymbolFids If TRUE will store the feature ids (fids), otherwise will only count the number of features per symbol. Default FALSE.
      */
-    QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext() );
+    QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), bool storeSymbolFids = false );
 
 
     /**
@@ -92,6 +95,7 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
     QgsExpressionContext mExpressionContext;
     QHash<QString, long> mSymbolFeatureCountMap;
     QHash<QString, QgsFeatureIds> mSymbolFeatureIdMap;
+    bool mWithFids = false;
     int mFeatureCount;
 
 };

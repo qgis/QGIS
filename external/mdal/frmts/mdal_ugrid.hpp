@@ -26,6 +26,7 @@ namespace MDAL
       DriverUgrid();
       ~DriverUgrid() override = default;
       DriverUgrid *create() override;
+      void save( const std::string &uri, Mesh *mesh, MDAL_Status *status ) override;
 
     private:
       CFDimensions populateDimensions( ) override;
@@ -37,6 +38,7 @@ namespace MDAL
       std::set<std::string> ignoreNetCDFVariables() override;
       void parseNetCDFVariableMetadata( int varid, const std::string &variableName,
                                         std::string &name, bool *is_vector, bool *is_x ) override;
+      std::string getTimeVariableName() const override;
 
       void parse2VariablesFromAttribute( const std::string &name, const std::string &attr_name,
                                          std::string &var1, std::string &var2,
@@ -45,6 +47,12 @@ namespace MDAL
       std::string mMesh2dName;
       std::string mMesh1dName;
       std::string nodeZVariableName() const;
+
+      void writeDimensions( MDAL::Mesh *mesh );
+      void writeVariables( MDAL::Mesh *mesh );
+      void writeGlobals();
+      int faceVerticesMaximumCount() const override
+      { return std::numeric_limits<int>::max(); }
   };
 
 } // namespace MDAL

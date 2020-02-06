@@ -55,6 +55,7 @@ Constructor for QgsBrowserModel, with the specified ``parent`` object.
       PathRole,
       CommentRole,
       SortRole,
+      ProviderKeyRole,
     };
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -141,7 +142,8 @@ items, i.e. it does not fetch children.
  void connectItem( QgsDataItem *item ) /Deprecated/;
 %Docstring
 
-.. deprecated:: Deprecated since QGIS 3.4 -- this method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
+.. deprecated::
+   Deprecated since QGIS 3.4 -- this method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!).
 %End
 
     bool initialized() const;
@@ -160,7 +162,6 @@ and on Linux the "/" root directory.
 
 .. versionadded:: 3.6
 %End
-
   signals:
 
     void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
@@ -230,7 +231,6 @@ Delayed initialization, needed because the provider registry must be already pop
 
 .. seealso:: :py:func:`initialized`
 %End
-
 
   protected:
     void addRootItems();

@@ -94,7 +94,8 @@ Write raster file
 :param crs: crs to reproject to
 :param feedback: optional feedback object for progress reports
 
-.. deprecated:: since QGIS 3.8, use version with transformContext instead
+.. deprecated:: QGIS 3.8
+  use version with transformContext instead
 %End
 
     WriterError writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,

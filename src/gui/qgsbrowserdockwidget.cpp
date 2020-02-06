@@ -128,6 +128,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
   {
     mProxyModel = new QgsBrowserProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
+    mProxyModel->setDataItemProviderKeyFilter( mDisabledDataItemsKeys );
     mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 or more instances of the browser
     mBrowserView->setBrowserModel( mModel );
     mBrowserView->setModel( mProxyModel );
@@ -287,6 +288,16 @@ void QgsBrowserDockWidget::setMessageBar( QgsMessageBar *bar )
 QgsMessageBar *QgsBrowserDockWidget::messageBar()
 {
   return mMessageBar;
+}
+
+void QgsBrowserDockWidget::setDisabledDataItemsKeys( const QStringList &filter )
+{
+  mDisabledDataItemsKeys = filter;
+
+  if ( !mProxyModel )
+    return;
+
+  mProxyModel->setDataItemProviderKeyFilter( mDisabledDataItemsKeys );
 }
 
 void QgsBrowserDockWidget::removeFavorite()

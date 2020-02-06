@@ -46,7 +46,7 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
     explicit QgsScaleVisibilityDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &title = QString(), QgsMapCanvas *mapCanvas = nullptr );
 
     /**
-     * Returns TRUE if scale based visibilty is enabled.
+     * Returns TRUE if scale based visibility is enabled.
      */
     bool hasScaleVisibility() const;
 

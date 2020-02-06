@@ -145,35 +145,18 @@ std::string MDAL::SerafinStreamReader::read_string_without_length( size_t len )
 double MDAL::SerafinStreamReader::read_double( )
 {
   double ret;
-  unsigned char buffer[8];
 
   if ( mStreamInFloatPrecision )
   {
     float ret_f;
-    if ( mIn.read( reinterpret_cast< char * >( &buffer ), 4 ) )
-      if ( !mIn )
-        throw MDAL_Status::Err_UnknownFormat;
-    if ( mIsNativeLittleEndian )
-    {
-      std::reverse( reinterpret_cast< char * >( &buffer ), reinterpret_cast< char * >( &buffer ) + 4 );
-    }
-    memcpy( reinterpret_cast< char * >( &ret_f ),
-            reinterpret_cast< char * >( &buffer ),
-            4 );
+    if ( !readValue( ret_f, mIn, mIsNativeLittleEndian ) )
+      throw MDAL_Status::Err_UnknownFormat;
     ret = static_cast<double>( ret_f );
   }
   else
   {
-    if ( mIn.read( reinterpret_cast< char * >( &buffer ), 8 ) )
-      if ( !mIn )
-        throw MDAL_Status::Err_UnknownFormat;
-    if ( mIsNativeLittleEndian )
-    {
-      std::reverse( reinterpret_cast< char * >( &buffer ), reinterpret_cast< char * >( &buffer ) + 8 );
-    }
-    memcpy( reinterpret_cast< char * >( &ret ),
-            reinterpret_cast< char * >( &buffer ),
-            8 );
+    if ( !readValue( ret, mIn, mIsNativeLittleEndian ) )
+      throw MDAL_Status::Err_UnknownFormat;
   }
   return ret;
 }
@@ -249,7 +232,8 @@ void MDAL::DriverSelafin::parseFile( std::vector<std::string> &var_names,
                                      std::vector<size_t> &ikle,
                                      std::vector<double> &x,
                                      std::vector<double> &y,
-                                     std::vector<timestep_map> &data )
+                                     std::vector<timestep_map> &data,
+                                     DateTime &referenceTime )
 {
 
   /* 1 record containing the title of the study (72 characters) and a 8 characters
@@ -310,7 +294,7 @@ void MDAL::DriverSelafin::parseFile( std::vector<std::string> &var_names,
   if ( params[9] == 1 )
   {
     std::vector<int> datetime = mReader.read_int_arr( 6 );
-    MDAL_UNUSED( datetime )
+    referenceTime = DateTime( datetime[0], datetime[1], datetime[2], datetime[3], datetime[4], double( datetime[5] ) );
   }
 
   /* 1 record containing the integers NELEM,NPOIN,NDP,1 (number of
@@ -338,7 +322,7 @@ void MDAL::DriverSelafin::parseFile( std::vector<std::string> &var_names,
      gives the numbering of boundary points for the others
   */
   std::vector<int> iPointBoundary = mReader.read_int_arr( *nPoint );
-  MDAL_UNUSED( iPointBoundary );
+  MDAL_UNUSED( iPointBoundary )
 
   /* 1 record containing table X (real array of dimension NPOIN containing the
      abscissae of the points)
@@ -428,7 +412,10 @@ void MDAL::DriverSelafin::createMesh(
   mMesh->vertices = nodes;
 }
 
-void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, const std::vector<timestep_map> &data, size_t nPoints )
+void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names,
+                                   const std::vector<timestep_map> &data,
+                                   size_t nPoints,
+                                   const DateTime &referenceTime )
 {
   for ( size_t nName = 0; nName < var_names.size(); ++nName )
   {
@@ -453,6 +440,20 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
       var_name =  MDAL::replace( var_name, "along y", "" );
     }
 
+    if ( MDAL::contains( var_name, "vitesse u" ) || MDAL::contains( var_name, "suivant x" ) )
+    {
+      is_vector = true;
+      var_name = MDAL::replace( var_name, "vitesse u", "vitesse" );
+      var_name = MDAL::replace( var_name, "suivant x", "" );
+    }
+    else if ( MDAL::contains( var_name, "vitesse v" ) || MDAL::contains( var_name, "suivant y" ) )
+    {
+      is_vector = true;
+      is_x =  false;
+      var_name =  MDAL::replace( var_name, "vitesse v", "vitesse" );
+      var_name =  MDAL::replace( var_name, "suivant y", "" );
+    }
+
     std::shared_ptr<DatasetGroup> group = mMesh->group( var_name );
     if ( !group )
     {
@@ -462,28 +463,29 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
                 mMesh->uri(),
                 var_name
               );
-      group->setIsOnVertices( true );
+      group->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
       group->setIsScalar( !is_vector );
 
       mMesh->datasetGroups.push_back( group );
     }
 
+    group->setReferenceTime( referenceTime );
+
     size_t i = 0;
     for ( timestep_map::const_iterator it = data[nName].begin(); it != data[nName].end(); ++it, ++i )
     {
-      std::shared_ptr<MDAL::MemoryDataset> dataset;
+      std::shared_ptr<MDAL::MemoryDataset2D> dataset;
       if ( group->datasets.size() > i )
       {
-        dataset = std::dynamic_pointer_cast<MDAL::MemoryDataset>( group->datasets[i] );
+        dataset = std::dynamic_pointer_cast<MDAL::MemoryDataset2D>( group->datasets[i] );
       }
       else
       {
-        dataset = std::make_shared< MemoryDataset >( group.get() );
-        dataset->setTime( it->first );
+        dataset = std::make_shared< MemoryDataset2D >( group.get(), true );
+        // see https://github.com/lutraconsulting/MDAL/issues/185
+        dataset->setTime( it->first, RelativeTimestamp::seconds );
         group->datasets.push_back( dataset );
       }
-      double *values = dataset->values();
-
       for ( size_t nP = 0; nP < nPoints; nP++ )
       {
         double val = it->second.at( nP );
@@ -495,16 +497,16 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
         {
           if ( is_x )
           {
-            values[2 * nP] = val;
+            dataset->setValueX( nP, val );
           }
           else
           {
-            values[2 * nP + 1] = val;
+            dataset->setValueY( nP, val );
           }
         }
         else
         {
-          values[nP] = val;
+          dataset->setScalarValue( nP, val );
         }
       }
     }
@@ -515,8 +517,9 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
   {
     for ( auto dataset : group->datasets )
     {
-      std::shared_ptr<MDAL::MemoryDataset> dts = std::dynamic_pointer_cast<MDAL::MemoryDataset>( dataset );
-      MDAL::activateFaces( mMesh.get(), dts );
+      std::shared_ptr<MDAL::MemoryDataset2D> dts = std::dynamic_pointer_cast<MDAL::MemoryDataset2D>( dataset );
+      if ( dts )
+        dts->activateFaces( mMesh.get() );
 
       MDAL::Statistics stats = MDAL::calculateStatistics( dataset );
       dataset->setStatistics( stats );
@@ -527,7 +530,7 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
   }
 }
 
-bool MDAL::DriverSelafin::canRead( const std::string &uri )
+bool MDAL::DriverSelafin::canReadMesh( const std::string &uri )
 {
   if ( !MDAL::fileExists( uri ) ) return false;
 
@@ -571,6 +574,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFi
   std::vector<double> x;
   std::vector<double> y;
   std::vector<timestep_map> data;
+  DateTime referenceTime;
 
   try
   {
@@ -583,7 +587,8 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFi
                ikle,
                x,
                y,
-               data );
+               data,
+               referenceTime );
 
     createMesh( xOrigin,
                 yOrigin,
@@ -594,13 +599,12 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFi
                 x,
                 y );
 
-    addData( var_names, data, nPoints );
+    addData( var_names, data, nPoints, referenceTime );
   }
   catch ( MDAL_Status error )
   {
     if ( status ) *status = ( error );
     mMesh.reset();
   }
-
   return std::unique_ptr<Mesh>( mMesh.release() );
 }

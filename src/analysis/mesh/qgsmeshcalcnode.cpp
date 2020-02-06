@@ -113,8 +113,8 @@ bool QgsMeshCalcNode::calculate( const  QgsMeshCalcUtils &dsu, QgsMeshMemoryData
   }
   else if ( mType == tOperator )
   {
-    QgsMeshMemoryDatasetGroup leftDatasetGroup( "left" );
-    QgsMeshMemoryDatasetGroup rightDatasetGroup( "right" );
+    QgsMeshMemoryDatasetGroup leftDatasetGroup( "left", dsu.outputType() );
+    QgsMeshMemoryDatasetGroup rightDatasetGroup( "right", dsu.outputType() );
 
     if ( !mLeft || !mLeft->calculate( dsu, leftDatasetGroup ) )
     {
@@ -125,7 +125,7 @@ bool QgsMeshCalcNode::calculate( const  QgsMeshCalcUtils &dsu, QgsMeshMemoryData
       return false;
     }
 
-    QgsMeshMemoryDatasetGroup condition( "condition" );
+    QgsMeshMemoryDatasetGroup condition( "condition", dsu.outputType() );
     switch ( mOperator )
     {
       case opIF:

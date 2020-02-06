@@ -160,7 +160,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
         QEventLoop rloop( nullptr );
         connect( o2, &QgsO2::refreshFinished, &rloop, &QEventLoop::quit );
 
-        // add singlshot timer to quit refresh after an alloted timeout
+        // add single shot timer to quit refresh after an allotted timeout
         // this should keep the local event loop from blocking forever
         QTimer r_timer( nullptr );
         int r_reqtimeout = o2->oauth2config()->requestTimeout() * 1000;
@@ -214,7 +214,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     connect( o2, &QgsO2::linkingFailed, &loop, &QEventLoop::quit );
     connect( o2, &QgsO2::linkingSucceeded, &loop, &QEventLoop::quit );
 
-    // add singlshot timer to quit linking after an alloted timeout
+    // add single shot timer to quit linking after an allotted timeout
     // this should keep the local event loop from blocking forever
     QTimer timer( nullptr );
     timer.setInterval( reqtimeout * 5 );

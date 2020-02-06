@@ -113,6 +113,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     QString mReturnvarname;
     QgsAttributeForm *mAttributeForm = nullptr;
     QgsFeature *mOwnedFeature = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
 
     QgsTrackedVectorLayerTools mTrackedVectorLayerTools;
 
@@ -122,7 +123,6 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     QgsActionMenu *mMenu;
 
     static int sFormCounter;
-    static QString sSettingsPath;
 
     void saveGeometry();
     void restoreGeometry();

@@ -28,8 +28,8 @@
 
 ///@cond PRIVATE
 
-static const QString TEXT_PROVIDER_KEY = QStringLiteral( "memory" );
-static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "Memory provider" );
+#define TEXT_PROVIDER_KEY QStringLiteral( "memory" )
+#define TEXT_PROVIDER_DESCRIPTION QStringLiteral( "Memory provider" )
 
 QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions &options )
   : QgsVectorDataProvider( uri, options )
@@ -37,10 +37,11 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
   // Initialize the geometry with the uri to support old style uri's
   // (ie, just 'point', 'line', 'polygon')
   QUrl url = QUrl::fromEncoded( uri.toUtf8() );
+  const QUrlQuery query( url );
   QString geometry;
-  if ( url.hasQueryItem( QStringLiteral( "geometry" ) ) )
+  if ( query.hasQueryItem( QStringLiteral( "geometry" ) ) )
   {
-    geometry = url.queryItemValue( QStringLiteral( "geometry" ) );
+    geometry = query.queryItemValue( QStringLiteral( "geometry" ) );
   }
   else
   {
@@ -56,10 +57,16 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
     mWkbType = QgsWkbTypes::parseType( geometry );
   }
 
-  if ( url.hasQueryItem( QStringLiteral( "crs" ) ) )
+  if ( query.hasQueryItem( QStringLiteral( "crs" ) ) )
   {
-    QString crsDef = url.queryItemValue( QStringLiteral( "crs" ) );
+    QString crsDef = query.queryItemValue( QStringLiteral( "crs" ) );
     mCrs.createFromString( crsDef );
+  }
+  else
+  {
+    // TODO - remove in QGIS 4.0. Layers without an explicit CRS set SHOULD have an invalid CRS. But in order to maintain
+    // 3.x api, we have to be tolerant/shortsighted(?) here and fallback to EPSG:4326
+    mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
   }
 
   mNextFeatureId = 1;
@@ -102,7 +109,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
 
                 );
 
-  if ( url.hasQueryItem( QStringLiteral( "field" ) ) )
+  if ( query.hasQueryItem( QStringLiteral( "field" ) ) )
   {
     QList<QgsField> attributes;
     QRegExp reFieldDef( "\\:"
@@ -111,7 +118,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
                         "(?:\\,(\\-?\\d+))?"                  // precision
                         "\\))?(\\[\\])?"                  // array
                         "$", Qt::CaseInsensitive );
-    QStringList fields = url.allQueryItemValues( QStringLiteral( "field" ) );
+    QStringList fields = query.allQueryItemValues( QStringLiteral( "field" ) );
     for ( int i = 0; i < fields.size(); i++ )
     {
       QString name = QUrl::fromPercentEncoding( fields.at( i ).toUtf8() );
@@ -197,7 +204,7 @@ QgsMemoryProvider::QgsMemoryProvider( const QString &uri, const ProviderOptions 
     addAttributes( attributes );
   }
 
-  if ( url.hasQueryItem( QStringLiteral( "index" ) ) && url.queryItemValue( QStringLiteral( "index" ) ) == QLatin1String( "yes" ) )
+  if ( query.hasQueryItem( QStringLiteral( "index" ) ) && query.queryItemValue( QStringLiteral( "index" ) ) == QLatin1String( "yes" ) )
   {
     createSpatialIndex();
   }
@@ -234,8 +241,9 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
   Q_UNUSED( expandAuthConfig )
 
   QUrl uri( QStringLiteral( "memory" ) );
+  QUrlQuery query;
   QString geometry = QgsWkbTypes::displayString( mWkbType );
-  uri.addQueryItem( QStringLiteral( "geometry" ), geometry );
+  query.addQueryItem( QStringLiteral( "geometry" ), geometry );
 
   if ( mCrs.isValid() )
   {
@@ -247,21 +255,13 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
     }
     else
     {
-      int srid = mCrs.postgisSrid();
-      if ( srid )
-      {
-        crsDef = QStringLiteral( "postgis:%1" ).arg( srid );
-      }
-      else
-      {
-        crsDef = QStringLiteral( "wkt:%1" ).arg( mCrs.toWkt() );
-      }
+      crsDef = QStringLiteral( "wkt:%1" ).arg( mCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
     }
-    uri.addQueryItem( QStringLiteral( "crs" ), crsDef );
+    query.addQueryItem( QStringLiteral( "crs" ), crsDef );
   }
   if ( mSpatialIndex )
   {
-    uri.addQueryItem( QStringLiteral( "index" ), QStringLiteral( "yes" ) );
+    query.addQueryItem( QStringLiteral( "index" ), QStringLiteral( "yes" ) );
   }
 
   QgsAttributeList attrs = const_cast<QgsMemoryProvider *>( this )->attributeIndexes();
@@ -270,8 +270,9 @@ QString QgsMemoryProvider::dataSourceUri( bool expandAuthConfig ) const
     QgsField field = mFields.at( attrs[i] );
     QString fieldDef = field.name();
     fieldDef.append( QStringLiteral( ":%2(%3,%4)" ).arg( field.typeName() ).arg( field.length() ).arg( field.precision() ) );
-    uri.addQueryItem( QStringLiteral( "field" ), fieldDef );
+    query.addQueryItem( QStringLiteral( "field" ), fieldDef );
   }
+  uri.setQuery( query );
 
   return QString( uri.toEncoded() );
 
@@ -514,7 +515,7 @@ bool QgsMemoryProvider::renameAttributes( const QgsFieldNameMap &renamedAttribut
       continue;
     }
 
-    mFields[ fieldIndex ].setName( renameIt.value() );
+    mFields.rename( fieldIndex, renameIt.value() );
   }
   return result;
 }
@@ -622,6 +623,11 @@ bool QgsMemoryProvider::createSpatialIndex()
     }
   }
   return true;
+}
+
+QgsFeatureSource::SpatialIndexPresence QgsMemoryProvider::hasSpatialIndex() const
+{
+  return mSpatialIndex ? SpatialIndexPresent : SpatialIndexNotPresent;
 }
 
 QgsVectorDataProvider::Capabilities QgsMemoryProvider::capabilities() const

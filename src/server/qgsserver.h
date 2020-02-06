@@ -140,8 +140,6 @@ class SERVER_EXPORT QgsServer
     //! service registry
     static QgsServiceRegistry *sServiceRegistry;
 
-    static QgsServerSettings sSettings;
-
     //! cache
     QgsConfigCache *mConfigCache = nullptr;
 

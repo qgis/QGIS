@@ -39,7 +39,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
 
     enum ItemDataRole
     {
-      FieldIndex = Qt::UserRole //!< Index of corresponding field in source table
+      FieldIndex = Qt::UserRole //!< Index of corresponding field in source table for table header
     };
 
 

@@ -48,13 +48,13 @@ QgsDistanceArea::QgsDistanceArea()
   mSemiMinor = -1.0;
   mInvFlattening = -1.0;
   QgsCoordinateTransformContext context; // this is ok - by default we have a source/dest of WGS84, so no reprojection takes place
-  setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ), context ); // WGS 84
-  setEllipsoid( GEO_NONE );
+  setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), context ); // WGS 84
+  setEllipsoid( geoNone() );
 }
 
 bool QgsDistanceArea::willUseEllipsoid() const
 {
-  return mEllipsoid != GEO_NONE;
+  return mEllipsoid != geoNone();
 }
 
 void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateTransformContext &context )
@@ -66,9 +66,9 @@ void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS, 
 bool QgsDistanceArea::setEllipsoid( const QString &ellipsoid )
 {
   // Shortcut if ellipsoid is none.
-  if ( ellipsoid == GEO_NONE )
+  if ( ellipsoid == geoNone() )
   {
-    mEllipsoid = GEO_NONE;
+    mEllipsoid = geoNone();
     return true;
   }
 
@@ -324,8 +324,8 @@ double QgsDistanceArea::measureLine( const QgsPointXY &p1, const QgsPointXY &p2 
     if ( willUseEllipsoid() )
     {
       QgsDebugMsgLevel( QStringLiteral( "Ellipsoidal calculations is enabled, using ellipsoid %1" ).arg( mEllipsoid ), 4 );
-      QgsDebugMsgLevel( QStringLiteral( "From proj4 : %1" ).arg( mCoordTransform.sourceCrs().toProj4() ), 4 );
-      QgsDebugMsgLevel( QStringLiteral( "To   proj4 : %1" ).arg( mCoordTransform.destinationCrs().toProj4() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "From proj4 : %1" ).arg( mCoordTransform.sourceCrs().toProj() ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "To   proj4 : %1" ).arg( mCoordTransform.destinationCrs().toProj() ), 4 );
       pp1 = mCoordTransform.transform( p1 );
       pp2 = mCoordTransform.transform( p2 );
       QgsDebugMsgLevel( QStringLiteral( "New points are %1 and %2, calculating..." ).arg( pp1.toString( 4 ), pp2.toString( 4 ) ), 4 );
@@ -476,7 +476,7 @@ double QgsDistanceArea::latitudeGeodesicCrossesAntimeridian( const QgsPointXY &p
   double lat = p2y;
   double lon = p2x;
 
-  if ( mEllipsoid == GEO_NONE )
+  if ( mEllipsoid == geoNone() )
   {
     fractionAlongLine = ( 180 - p1x ) / ( p2x - p1x );
     if ( p1.x() >= 180 )
@@ -971,7 +971,7 @@ double QgsDistanceArea::getQbar( double x ) const
 void QgsDistanceArea::computeAreaInit()
 {
   //don't try to perform calculations if no ellipsoid
-  if ( mEllipsoid == GEO_NONE )
+  if ( mEllipsoid == geoNone() )
   {
     return;
   }

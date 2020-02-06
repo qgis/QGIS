@@ -40,6 +40,7 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 REQUIRED_VERSION = '2.3.'
+BETA_SUPPORT_VERSION = '7.3.'
 
 
 class SagaAlgorithmProvider(QgsProcessingProvider):
@@ -78,9 +79,15 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
 
     def canBeActivated(self):
         version = SagaUtils.getInstalledVersion(True)
-        if version is not None and version.startswith(REQUIRED_VERSION):
+        if version is not None and (version.startswith(REQUIRED_VERSION) or version.startswith(BETA_SUPPORT_VERSION)):
             return True
         return False
+
+    def warningMessage(self):
+        version = SagaUtils.getInstalledVersion(True)
+        if version is not None and version.startswith(BETA_SUPPORT_VERSION):
+            return self.tr('SAGA version {} is not officially supported - algorithms may encounter issues').format(version)
+        return ''
 
     def loadAlgorithms(self):
         version = SagaUtils.getInstalledVersion(True)
@@ -89,7 +96,7 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
                                      self.tr('Processing'), Qgis.Critical)
             return
 
-        if not version.startswith(REQUIRED_VERSION):
+        if not version.startswith(REQUIRED_VERSION) and not version.startswith(BETA_SUPPORT_VERSION):
             QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: unsupported SAGA version (found: {}, required: {}).').format(version, REQUIRED_VERSION),
                                      self.tr('Processing'),
                                      Qgis.Critical)

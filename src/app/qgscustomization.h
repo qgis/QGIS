@@ -31,6 +31,7 @@ class QTreeWidgetItem;
 class QEvent;
 class QMouseEvent;
 class QSettings;
+class QgsBrowserDockWidget;
 
 class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCustomizationDialogBase
 {
@@ -129,6 +130,7 @@ class APP_EXPORT QgsCustomization : public QObject
     static void customizeWidget( const QString &path, QWidget *widget, QSettings *settings );
     static void removeFromLayout( QLayout *layout, QWidget *widget );
 
+    void updateBrowserWidget( QgsBrowserDockWidget *model );
     void updateMainWindow( QMenu *toolBarMenu );
 
     // make sure to enable/disable before creating QgisApp in order to get it customized (or not)
@@ -142,9 +144,6 @@ class APP_EXPORT QgsCustomization : public QObject
 
     // Loads and sets default customization
     void loadDefault();
-
-    // Internal Qt widget which has to be skipped in paths
-    static QStringList sInternalWidgets;
 
     QString statusPath() const { return mStatusPath; }
 
@@ -165,12 +164,12 @@ class APP_EXPORT QgsCustomization : public QObject
     void createTreeItemToolbars();
     void createTreeItemDocks();
     void createTreeItemStatus();
+    void createTreeItemBrowser();
     void addTreeItemMenu( QTreeWidgetItem *parentItem, const QMenu *menu, const QAction *action = nullptr );
     void addTreeItemActions( QTreeWidgetItem *parentItem, const QList<QAction *> &actions );
     QList<QTreeWidgetItem *> mMainWindowItems;
-    friend class QgsCustomizationDialog; // in order to access mMainWindowItems
-
-  private slots:
+    QTreeWidgetItem *mBrowserItem = nullptr;
+    friend class QgsCustomizationDialog; // in order to access mMainWindowItems and mBrowserItem
 
   private:
     static QgsCustomization *sInstance;

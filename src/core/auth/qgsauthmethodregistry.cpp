@@ -53,7 +53,7 @@ QgsAuthMethodRegistry::QgsAuthMethodRegistry( const QString &pluginPath )
   QString baseDir = appDir.left( bin );
   QString mLibraryDirectory = baseDir + "/lib";
 #endif
-  mLibraryDirectory = pluginPath;
+  mLibraryDirectory.setPath( pluginPath );
   mLibraryDirectory.setSorting( QDir::Name | QDir::IgnoreCase );
   mLibraryDirectory.setFilter( QDir::Files | QDir::NoSymLinks );
 

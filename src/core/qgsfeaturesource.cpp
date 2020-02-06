@@ -187,3 +187,8 @@ QgsVectorLayer *QgsFeatureSource::materialize( const QgsFeatureRequest &request,
   return layer.release();
 }
 
+QgsFeatureSource::SpatialIndexPresence QgsFeatureSource::hasSpatialIndex() const
+{
+  return SpatialIndexUnknown;
+}
+

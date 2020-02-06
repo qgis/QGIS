@@ -63,7 +63,21 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
     bool requestMasterPassword( QString &password SIP_INOUT, bool stored = false ) override;
 
   private:
-    QPushButton *mOkButton = nullptr;
+
+    /**
+     * The ConnectionsIgnoreMode enum represent the modes a connection can be ignored
+     */
+    enum ConnectionsIgnoreMode
+    {
+      IgnoreTemporarily, //!< Ignore for a certain amount of time
+      IgnoreForSession,  //!< Ignore for the whole QGIS session
+    };
+
+    //! mutex for the static ignored connections cache
+    static QMutex sIgnoredConnectionsCacheMutex;
+
+    ConnectionsIgnoreMode mIgnoreMode = ConnectionsIgnoreMode::IgnoreTemporarily;
+
 };
 
 #endif

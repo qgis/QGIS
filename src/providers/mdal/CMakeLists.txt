@@ -2,18 +2,11 @@ SET(MDAL_SRCS
   qgsmdalprovider.cpp
   qgsmdaldataitems.cpp
 )
-SET(MDAL_MOC_HDRS
-  qgsmdalprovider.h
-  qgsmdaldataitems.h
-)
 
 IF (WITH_GUI)
   SET(MDAL_SRCS ${MDAL_SRCS}
     qgsmdalprovidergui.cpp
     qgsmdalsourceselect.cpp
-  )
-  SET(MDAL_MOC_HDRS ${MDAL_MOC_HDRS}
-    qgsmdalsourceselect.h
   )
 ENDIF ()
 
@@ -37,6 +30,7 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_utils.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_data_model.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/mdal_datetime.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_memory_data_model.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_driver_manager.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_driver.cpp
@@ -44,12 +38,14 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_selafin.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_esri_tin.cpp
   )
 
   SET(MDAL_LIB_HDRS
     ${CMAKE_SOURCE_DIR}/external/mdal/api/mdal.h
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_utils.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_data_model.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/mdal_datetime.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_memory_data_model.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_driver_manager.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_driver.hpp
@@ -57,6 +53,7 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_selafin.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_esri_tin.hpp
   )
 
   IF(HDF5_FOUND)
@@ -95,6 +92,7 @@ IF (WITH_INTERNAL_MDAL)
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.cpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ugrid.cpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_tuflowfv.cpp
     )
     SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_cf.hpp
@@ -102,6 +100,7 @@ IF (WITH_INTERNAL_MDAL)
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_netcdf.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_sww.hpp
       ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ugrid.hpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_tuflowfv.hpp
     )
     SET (HAVE_NETCDF TRUE)
   ENDIF(NETCDF_FOUND)
@@ -151,18 +150,18 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/external
+  ${CMAKE_SOURCE_DIR}/external/nlohmann
 
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
-
 )
 
-QT5_WRAP_CPP(MDAL_MOC_SRCS ${MDAL_MOC_HDRS})
-ADD_LIBRARY (mdalprovider MODULE ${MDAL_SRCS} ${MDAL_MOC_HDRS} ${MDAL_MOC_SRCS} ${MDAL_LIB_SRCS} ${MDAL_LIB_HDRS})
+ADD_LIBRARY (mdalprovider MODULE ${MDAL_SRCS} ${MDAL_LIB_SRCS} ${MDAL_LIB_HDRS})
 
 TARGET_LINK_LIBRARIES (mdalprovider
   qgis_core

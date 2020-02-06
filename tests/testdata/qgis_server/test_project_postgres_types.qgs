@@ -19,7 +19,7 @@
   </projectCrs>
   <layer-tree-group>
     <customproperties/>
-    <layer-tree-layer expanded="1" checked="Qt::Checked" source="dbname='qgis_test' port=5432 user='postgres' sslmode=disable key='pk' table=&quot;qgis_test&quot;.&quot;json&quot; sql=" providerKey="postgres" id="json_b2af056d_ba24_4fb7_805b_5a7720e242f3" name="json">
+    <layer-tree-layer expanded="1" checked="Qt::Checked" source="service='qgis_test' key='pk' table=&quot;qgis_test&quot;.&quot;json&quot; sql=" providerKey="postgres" id="json_b2af056d_ba24_4fb7_805b_5a7720e242f3" name="json">
       <customproperties/>
     </layer-tree-layer>
     <custom-order enabled="0"/>
@@ -63,7 +63,7 @@
   <projectlayers>
     <maplayer maxScale="0" autoRefreshEnabled="0" hasScaleBasedVisibilityFlag="0" type="vector" refreshOnNotifyMessage="" autoRefreshTime="0" geometry="No geometry" styleCategories="AllStyleCategories" refreshOnNotifyEnabled="0" minScale="1e+8" readOnly="0">
       <id>json_b2af056d_ba24_4fb7_805b_5a7720e242f3</id>
-      <datasource>dbname='qgis_test' port=5432 sslmode=disable key='pk' table="qgis_test"."json" sql=</datasource>
+      <datasource>service='qgis_test' key='pk' table="qgis_test"."json" sql=</datasource>
       <keywordList>
         <value></value>
       </keywordList>

@@ -36,7 +36,7 @@ The layer can be either manually given or dynamically set by connecting the sign
 
     void setFilters( QgsFieldProxyModel::Filters filters );
 %Docstring
-setFilters allows fitering according to the type of field
+setFilters allows filtering according to the type of field
 %End
 
     QgsFieldProxyModel::Filters filters() const;

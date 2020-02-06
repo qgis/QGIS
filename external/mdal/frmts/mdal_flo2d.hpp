@@ -13,6 +13,9 @@
 #include "mdal.h"
 #include "mdal_driver.hpp"
 
+class HdfGroup;
+class HdfFile;
+
 namespace MDAL
 {
   class DriverFlo2D: public Driver
@@ -22,8 +25,12 @@ namespace MDAL
       ~DriverFlo2D( ) override = default;
       DriverFlo2D *create() override;
 
-      bool canRead( const std::string &uri ) override;
+      bool canReadMesh( const std::string &uri ) override;
+      bool canReadDatasets( const std::string &uri ) override;
+
       std::unique_ptr< Mesh > load( const std::string &resultsFile, MDAL_Status *status ) override;
+      void load( const std::string &uri, Mesh *mesh, MDAL_Status *status ) override;
+      bool persist( DatasetGroup *group ) override;
 
     private:
       struct CellCenter
@@ -39,7 +46,7 @@ namespace MDAL
 
       void createMesh( const std::vector<CellCenter> &cells, double half_cell_size );
       void parseOUTDatasets( const std::string &datFileName, const std::vector<double> &elevations );
-      bool parseHDF5Datasets( const std::string &datFileName );
+      bool parseHDF5Datasets( MDAL::MemoryMesh *mesh, const std::string &timedepFileName );
       void parseVELFPVELOCFile( const std::string &datFileName );
       void parseDEPTHFile( const std::string &datFileName, const std::vector<double> &elevations );
       void parseTIMDEPFile( const std::string &datFileName, const std::vector<double> &elevations );
@@ -48,6 +55,12 @@ namespace MDAL
       void addStaticDataset( std::vector<double> &vals, const std::string &groupName, const std::string &datFileName );
       static MDAL::Vertex createVertex( size_t position, double half_cell_size, const CellCenter &cell );
       static double calcCellSize( const std::vector<CellCenter> &cells );
+
+      // Write API
+      bool addToHDF5File( DatasetGroup *group );
+      bool saveNewHDF5File( DatasetGroup *group );
+      bool appendGroup( HdfFile &file, DatasetGroup *dsGroup, HdfGroup &groupTNOR );
+
   };
 
 } // namespace MDAL

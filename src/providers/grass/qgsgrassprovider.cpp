@@ -758,7 +758,7 @@ int QgsGrassProvider::rewriteLine( int oldLid, int type, struct line_pnts *Point
   {
     newLid = Vect_rewrite_line_function_pointer( map(), oldLid, type, Points, Cats );
 
-    // oldLids are maping to the very first, original version (used by undo)
+    // oldLids are mapping to the very first, original version (used by undo)
     int oldestLid = oldLid;
     if ( mLayer->map()->oldLids().contains( oldLid ) ) // if it was changed already
     {
@@ -1581,7 +1581,7 @@ void QgsGrassProvider::onFeatureDeleted( QgsFeatureId fid )
         QgsDebugMsg( "no more cats on the line -> delete" );
 
         Vect_delete_line_function_pointer( map(), realLine );
-        // oldLids are maping to the very first, original version (used by undo)
+        // oldLids are mapping to the very first, original version (used by undo)
         int oldestLid = oldLid;
         if ( mLayer->map()->oldLids().contains( oldLid ) )
         {
@@ -1707,7 +1707,7 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
       changedAttributes[fid][idx] = QgsGrassFeatureIterator::nonEditableValue( layerField );
     }
     // update table
-    // TODO: This would be too slow with buld update (field calculator for example), causing update
+    // TODO: This would be too slow with bulk updates (field calculator for example), causing update
     // of the whole table after each change. How to update single row?
     //emit dataChanged();
     return;
@@ -1738,7 +1738,7 @@ void QgsGrassProvider::onAttributeValueChanged( QgsFeatureId fid, int idx, const
 
   QgsDebugMsg( "field.name() = " + field.name() + " keyColumnName() = " + mLayer->keyColumnName() );
   // TODO: Changing existing category is currently disabled (read only widget set on layer)
-  //       bacause it makes it all too complicated
+  //       because it makes it all too complicated
   if ( field.name() == mLayer->keyColumnName() )
   {
     // user changed category -> rewrite line

@@ -334,7 +334,7 @@ bool QgsPythonUtilsImpl::runString( const QString &command, QString msgOnError, 
 
   QString str = "<font color=\"red\">" + msgOnError + "</font><br><pre>\n" + traceback + "\n</pre>"
                 + QObject::tr( "Python version:" ) + "<br>" + version + "<br><br>"
-                + QObject::tr( "QGIS version:" ) + "<br>" + QStringLiteral( "%1 '%2', %3" ).arg( Qgis::QGIS_VERSION, Qgis::QGIS_RELEASE_NAME, Qgis::QGIS_DEV_VERSION ) + "<br><br>"
+                + QObject::tr( "QGIS version:" ) + "<br>" + QStringLiteral( "%1 '%2', %3" ).arg( Qgis::version(), Qgis::releaseName(), Qgis::devVersion() ) + "<br><br>"
                 + QObject::tr( "Python path:" ) + "<br>" + path;
   str.replace( '\n', QLatin1String( "<br>" ) ).replace( QLatin1String( "  " ), QLatin1String( "&nbsp; " ) );
 

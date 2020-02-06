@@ -1,0 +1,21 @@
+name: Windows cross build with MXE
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Cross build with MXE
+      run: cd $GITHUB_WORKSPACE && ms-windows/mxe/build.sh
+    - name: Rename artifact
+      run: cd $GITHUB_WORKSPACE && mv qgis-mxe-release-*.zip qgis-mxe-release.zip
+    - name: Upload build
+      uses: actions/upload-artifact@v1
+      with:
+        name: QGIS for Windows 64bit
+        path: qgis-mxe-release.zip
+      

@@ -126,12 +126,12 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
                   p );
         else
         {
-          int face = mTriangularMesh.trianglesToNativeFaces()[i];
+          const int faceIdx = mTriangularMesh.trianglesToNativeFaces()[i];
           val = QgsMeshLayerUtils::interpolateFromFacesData(
                   p1,
                   p2,
                   p3,
-                  mDatasetValues[face],
+                  mDatasetValues[faceIdx],
                   p
                 );
         }
@@ -190,11 +190,14 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
 
   const QgsMeshDatasetGroupMetadata metadata = layer.dataProvider()->datasetGroupMetadata( datasetIndex );
   bool scalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
-
-  QgsMeshDataBlock vals = layer.dataProvider()->datasetValues(
+  const int count = scalarDataOnVertices ? nativeMesh->vertices.count() : nativeMesh->faces.count();
+  QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                            &layer,
                             datasetIndex,
                             0,
-                            scalarDataOnVertices ? nativeMesh->vertices.count() : nativeMesh->faces.count() );
+                            count );
+  if ( !vals.isValid() )
+    return nullptr;
 
   QVector<double> datasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
   QgsMeshDataBlock activeFaceFlagValues = layer.dataProvider()->areFacesActive(

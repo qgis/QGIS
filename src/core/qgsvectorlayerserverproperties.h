@@ -48,6 +48,7 @@ class CORE_EXPORT QgsVectorLayerServerProperties
     enum PredefinedWmsDimensionName
     {
       TIME,
+      DATE,
       ELEVATION
     };
     Q_ENUM( PredefinedWmsDimensionName )

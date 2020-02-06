@@ -14,8 +14,10 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
             crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="{{ static( "jsonFormatter.min.css" ) }}" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ static( "jsonFormatter.min.css" ) }}" crossorigin="anonymous">
     <script src="{{ static( "jsonFormatter.min.js" ) }}" crossorigin="anonymous"></script>
+
+    {% include "links.html" %}
 
     <title>{{ metadata.pageTitle }}</title>
   </head>

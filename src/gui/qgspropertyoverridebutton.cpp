@@ -714,6 +714,9 @@ void QgsPropertyOverrideButton::showAssistant()
       this->emit changed();
     } );
 
+    // if the source layer is removed, we need to dismiss the assistant immediately
+    connect( mVectorLayer, &QObject::destroyed, widget, &QgsPanelWidget::acceptPanel );
+
     connect( widget, &QgsPropertyAssistantWidget::panelAccepted, this, [ = ] { updateGui(); } );
 
     panel->openPanel( widget );

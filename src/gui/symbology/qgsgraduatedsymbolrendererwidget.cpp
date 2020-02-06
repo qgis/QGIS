@@ -46,6 +46,14 @@
 #include "qgsclassificationmethodregistry.h"
 #include "qgsclassificationequalinterval.h"
 #include "qgsclassificationstandarddeviation.h"
+#include "qgsgui.h"
+#include "qgsprocessinggui.h"
+#include "qgsprocessingguiregistry.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingwidgetwrapper.h"
+
+
+
 
 // ------------------------------ Model ------------------------------------
 
@@ -365,16 +373,9 @@ void QgsGraduatedSymbolRendererModel::sort( int column, Qt::SortOrder order )
   emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
 }
 
-void QgsGraduatedSymbolRendererModel::updateSymbology( bool resetModel )
+void QgsGraduatedSymbolRendererModel::updateSymbology()
 {
-  if ( resetModel )
-  {
-    reset();
-  }
-  else
-  {
-    emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
-  }
+  emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
 }
 
 void QgsGraduatedSymbolRendererModel::updateLabels()
@@ -507,38 +508,41 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   viewGraduated->setStyle( new QgsGraduatedSymbolRendererViewStyle( viewGraduated ) );
 
   mGraduatedSymbol.reset( QgsSymbol::defaultSymbol( mLayer->geometryType() ) );
-  btnChangeGraduatedSymbol->setSymbolType( mGraduatedSymbol->type() );
-  btnChangeGraduatedSymbol->setSymbol( mGraduatedSymbol->clone() );
-
-  methodComboBox->blockSignals( true );
-  methodComboBox->addItem( tr( "Color" ), ColorMode );
-  switch ( mGraduatedSymbol->type() )
+  if ( mGraduatedSymbol )
   {
-    case QgsSymbol::Marker:
+    btnChangeGraduatedSymbol->setSymbolType( mGraduatedSymbol->type() );
+    btnChangeGraduatedSymbol->setSymbol( mGraduatedSymbol->clone() );
+
+    methodComboBox->blockSignals( true );
+    methodComboBox->addItem( tr( "Color" ), ColorMode );
+    switch ( mGraduatedSymbol->type() )
     {
-      methodComboBox->addItem( tr( "Size" ), SizeMode );
-      minSizeSpinBox->setValue( 1 );
-      maxSizeSpinBox->setValue( 8 );
-      break;
+      case QgsSymbol::Marker:
+      {
+        methodComboBox->addItem( tr( "Size" ), SizeMode );
+        minSizeSpinBox->setValue( 1 );
+        maxSizeSpinBox->setValue( 8 );
+        break;
+      }
+      case QgsSymbol::Line:
+      {
+        methodComboBox->addItem( tr( "Size" ), SizeMode );
+        minSizeSpinBox->setValue( .1 );
+        maxSizeSpinBox->setValue( 2 );
+        break;
+      }
+      case QgsSymbol::Fill:
+      {
+        //set button and label invisible to avoid display of a single item combobox
+        methodComboBox->hide();
+        labelMethod->hide();
+        break;
+      }
+      case QgsSymbol::Hybrid:
+        break;
     }
-    case QgsSymbol::Line:
-    {
-      methodComboBox->addItem( tr( "Size" ), SizeMode );
-      minSizeSpinBox->setValue( .1 );
-      maxSizeSpinBox->setValue( 2 );
-      break;
-    }
-    case QgsSymbol::Fill:
-    {
-      //set button and label invisible to avoid display of a single item combobox
-      methodComboBox->hide();
-      labelMethod->hide();
-      break;
-    }
-    case QgsSymbol::Hybrid:
-      break;
+    methodComboBox->blockSignals( false );
   }
-  methodComboBox->blockSignals( false );
 
   connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsGraduatedSymbolRendererWidget::graduatedColumnChanged );
   connect( viewGraduated, &QAbstractItemView::doubleClicked, this, &QgsGraduatedSymbolRendererWidget::rangesDoubleClicked );
@@ -553,6 +557,8 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   connect( cbxLinkBoundaries, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::toggleBoundariesLink );
   connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed );
 
+  connect( cboGraduatedMode, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::updateMethodParameters );
+
   connectUpdateHandlers();
 
   // initialize from previously set renderer
@@ -565,7 +571,7 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   QMenu *advMenu = new QMenu( this );
 
   advMenu->addAction( tr( "Symbol Levels…" ), this, SLOT( showSymbolLevels() ) );
-  if ( mGraduatedSymbol->type() == QgsSymbol::Marker )
+  if ( mGraduatedSymbol && mGraduatedSymbol->type() == QgsSymbol::Marker )
   {
     QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined Size Legend…" ) );
     // only from Qt 5.6 there is convenience addAction() with new style connection
@@ -595,6 +601,7 @@ void QgsGraduatedSymbolRendererWidget::mSizeUnitWidget_changed()
 QgsGraduatedSymbolRendererWidget::~QgsGraduatedSymbolRendererWidget()
 {
   delete mModel;
+  mParameterWidgetWrappers.clear();
 }
 
 QgsFeatureRenderer *QgsGraduatedSymbolRendererWidget::renderer()
@@ -628,6 +635,11 @@ void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
   connect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cboSymmetryPoint, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cboSymmetryPoint->lineEdit(), &QLineEdit::editingFinished, this, &QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished );
+
+  for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
+  {
+    connect( ppww.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  }
 }
 
 // Connect/disconnect event handlers which trigger updating renderer
@@ -649,6 +661,11 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
   disconnect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cboSymmetryPoint, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cboSymmetryPoint->lineEdit(), &QLineEdit::editingFinished, this, &QgsGraduatedSymbolRendererWidget::symmetryPointEditingFinished );
+
+  for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
+  {
+    disconnect( ppww.get(), &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  }
 }
 
 void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
@@ -681,6 +698,14 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
     txtLegendFormat->setText( method->labelFormat() );
     spinPrecision->setValue( method->labelPrecision() );
     cbxTrimTrailingZeroes->setChecked( method->labelTrimTrailingZeroes() );
+
+    QgsProcessingContext context;
+    for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
+    {
+      const QgsProcessingParameterDefinition *def = ppww->parameterDefinition();
+      QVariant value = method->parameterValues().value( def->name(), def->defaultValue() );
+      ppww->setParameterValue( value, context );
+    }
   }
 
   // Only update class count if different - otherwise typing value gets very messy
@@ -795,6 +820,31 @@ void QgsGraduatedSymbolRendererWidget::methodComboBox_currentIndexChanged( int )
   }
 }
 
+void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
+{
+  clearParameterWidgets();
+
+  const QString methodId = cboGraduatedMode->currentData().toString();
+  QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
+  Q_ASSERT( method );
+
+  // need more context?
+  QgsProcessingContext context;
+
+  for ( const QgsProcessingParameterDefinition *def : method->parameterDefinitions() )
+  {
+    QgsAbstractProcessingParameterWidgetWrapper *ppww = QgsGui::processingGuiRegistry()->createParameterWidgetWrapper( def, QgsProcessingGui::Standard );
+    mParametersLayout->addRow( ppww->createWrappedLabel(), ppww->createWrappedWidget( context ) );
+
+    QVariant value = method->parameterValues().value( def->name(), def->defaultValue() );
+    ppww->setParameterValue( value, context );
+
+    connect( ppww, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+
+    mParameterWidgetWrappers.push_back( std::unique_ptr<QgsAbstractProcessingParameterWidgetWrapper>( ppww ) );
+  }
+}
+
 void QgsGraduatedSymbolRendererWidget::toggleMethodWidgets( MethodMode mode )
 {
   switch ( mode )
@@ -825,12 +875,28 @@ void QgsGraduatedSymbolRendererWidget::toggleMethodWidgets( MethodMode mode )
   }
 }
 
-void QgsGraduatedSymbolRendererWidget::refreshRanges( bool reset )
+void QgsGraduatedSymbolRendererWidget::clearParameterWidgets()
+{
+  while ( mParametersLayout->rowCount() )
+  {
+    QFormLayout::TakeRowResult row = mParametersLayout->takeRow( 0 );
+    for ( QLayoutItem *item : QList<QLayoutItem *>( {row.labelItem, row.fieldItem} ) )
+      if ( item )
+      {
+        if ( item->widget() )
+          item->widget()->deleteLater();
+        delete item;
+      }
+  }
+  mParameterWidgetWrappers.clear();
+}
+
+void QgsGraduatedSymbolRendererWidget::refreshRanges( bool )
 {
   if ( !mModel )
     return;
 
-  mModel->updateSymbology( reset );
+  mModel->updateSymbology();
 
   disconnectUpdateHandlers();
   spinGraduatedClasses->setValue( mRenderer->ranges().count() );
@@ -942,6 +1008,11 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     bool astride = cbxAstride->isChecked();
     method->setSymmetricMode( true, symmetryPoint, astride );
   }
+
+  QVariantMap parameterValues;
+  for ( const auto &ppww : qgis::as_const( mParameterWidgetWrappers ) )
+    parameterValues.insert( ppww->parameterDefinition()->name(), ppww->parameterValue() );
+  method->setParameterValues( parameterValues );
 
   // set method to renderer
   mRenderer->setClassificationMethod( method );

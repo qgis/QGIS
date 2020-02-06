@@ -113,7 +113,15 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   if ( mSharedData->mExtent.isEmpty() )
   {
     mSharedData->mExtent = originalExtent;
-    mSharedData->mExtent = QgsCoordinateTransform( extentCrs, mSharedData->mSourceCRS, options.transformContext ).transformBoundingBox( mSharedData->mExtent );
+    QgsCoordinateTransform ct( extentCrs, mSharedData->mSourceCRS, options.transformContext );
+    try
+    {
+      mSharedData->mExtent = ct.transformBoundingBox( mSharedData->mExtent );
+    }
+    catch ( QgsCsException & )
+    {
+      QgsDebugMsg( QStringLiteral( "Exception raised while transforming layer extent" ) );
+    }
   }
 
   QString objectIdFieldName;
@@ -320,7 +328,7 @@ QString QgsAfsProvider::dataComment() const
   return mLayerDescription;
 }
 
-void QgsAfsProvider::reloadData()
+void QgsAfsProvider::reloadProviderData()
 {
   mSharedData->clearCache();
 }
@@ -365,6 +373,13 @@ QVariantMap QgsAfsProviderMetadata::decodeUri( const QString &uri )
   QVariantMap components;
   components.insert( QStringLiteral( "url" ), dsUri.param( QStringLiteral( "url" ) ) );
   return components;
+}
+
+QString QgsAfsProviderMetadata::encodeUri( const QVariantMap &parts )
+{
+  QgsDataSourceUri dsUri;
+  dsUri.setParam( QStringLiteral( "url" ), parts.value( QStringLiteral( "url" ) ).toString() );
+  return dsUri.uri();
 }
 
 QgsAfsProvider *QgsAfsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )

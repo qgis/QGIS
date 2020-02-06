@@ -57,10 +57,10 @@ void QgsProcessingFeedback::pushConsoleInfo( const QString &info )
 
 void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provider )
 {
-  pushDebugInfo( tr( "QGIS version: %1" ).arg( Qgis::QGIS_VERSION ) );
-  if ( QString( Qgis::QGIS_DEV_VERSION ) != QLatin1String( "exported" ) )
+  pushDebugInfo( tr( "QGIS version: %1" ).arg( Qgis::version() ) );
+  if ( QString( Qgis::devVersion() ) != QLatin1String( "exported" ) )
   {
-    pushDebugInfo( tr( "QGIS code revision: %1" ).arg( Qgis::QGIS_DEV_VERSION ) );
+    pushDebugInfo( tr( "QGIS code revision: %1" ).arg( Qgis::devVersion() ) );
   }
   pushDebugInfo( tr( "Qt version: %1" ).arg( qVersion() ) );
   pushDebugInfo( tr( "GDAL version: %1" ).arg( GDALVersionInfo( "RELEASE_NAME" ) ) );

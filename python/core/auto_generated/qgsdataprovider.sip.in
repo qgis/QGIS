@@ -170,8 +170,6 @@ it knows about in some way before it hands them off to the provider.
 .. seealso:: SUBLAYER_SEPARATOR
 %End
 
-    static QString SUBLAYER_SEPARATOR;
-
     virtual QStringList subLayerStyles() const;
 %Docstring
 Sub-layer styles for each sub-layer handled by this provider,
@@ -267,8 +265,10 @@ databases and servers.
 
     virtual void reloadData();
 %Docstring
-Reloads the data from the source. Needs to be implemented by providers with data caches to
-synchronize with changes in the data source
+Reloads the data from the source by calling reloadProviderData() implemented
+by providers with data caches to synchronize, changes in the data source, feature
+counts and other specific actions.
+Emits the `dataChanged` signal
 %End
 
     virtual QDateTime timestamp() const;
@@ -391,6 +391,19 @@ Returns ``True`` if metadata was successfully written to the data provider.
 %End
 
 
+
+    static QString sublayerSeparator();
+%Docstring
+String sequence used for separating components of sublayers strings.
+
+.. note::
+
+   Replaces the static const SUBLAYER_SEPARATOR
+
+.. seealso:: :py:func:`subLayers`
+
+.. versionadded:: 3.12
+%End
 
   signals:
 

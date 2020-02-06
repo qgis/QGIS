@@ -79,6 +79,7 @@ CMAKE_OPTS := \
 	-DCMAKE_VERBOSE_MAKEFILE=1 \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DBINDINGS_GLOBAL_INSTALL=TRUE \
+	-DSIP_GLOBAL_INSTALL=TRUE \
 	-DPEDANTIC=TRUE \
 	-DSERVER_SKIP_ECW=TRUE \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
@@ -109,12 +110,12 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid buster"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster bionic disco"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster bionic disco eoan"))
 	CMAKE_OPTS += \
 		-DWITH_3D=TRUE \
 		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid buster disco"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid buster disco eoan"))
 # Qt3DExtras intentionally removed from debian (#895386) and in turn ubuntu
 	CMAKE_OPTS += \
 		-DCMAKE_PREFIX_PATH=$(realpath external/qt3dextra-headers/cmake) \
@@ -125,12 +126,12 @@ endif
 
 ifneq (,$(WITH_ORACLE))
 ifeq ($(DEB_BUILD_ARCH),amd64)
-	ORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client64/
-	ORACLE_LIBDIR=/usr/lib/oracle/12.1/client64/lib/
+	ORACLE_INCLUDEDIR=/usr/include/oracle/18.5/client64/
+	ORACLE_LIBDIR=/usr/lib/oracle/18.5/client64/lib/
 endif
 ifeq ($(DEB_BUILD_ARCH),i386)
-	ORACLE_INCLUDEDIR=/usr/include/oracle/12.1/client/
-	ORACLE_LIBDIR=/usr/lib/oracle/12.1/client/lib/
+	ORACLE_INCLUDEDIR=/usr/include/oracle/18.5/client/
+	ORACLE_LIBDIR=/usr/lib/oracle/18.5/client/lib/
 endif
 	CMAKE_OPTS += \
 		-DWITH_ORACLE=TRUE \

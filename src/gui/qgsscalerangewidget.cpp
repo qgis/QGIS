@@ -18,6 +18,7 @@
 #include "qgsproject.h"
 #include "qgsscalewidget.h"
 #include "qgsguiutils.h"
+#include "qgsprojectviewsettings.h"
 
 QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   : QWidget( parent )
@@ -71,11 +72,11 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
 
 void QgsScaleRangeWidget::reloadProjectScales()
 {
-  bool projectScales = QgsProject::instance()->useProjectScales();
+  bool projectScales = QgsProject::instance()->viewSettings()->useProjectScales();
   if ( projectScales )
   {
     QStringList scalesList;
-    const QVector< double >projectScales = QgsProject::instance()->mapScales();
+    const QVector< double >projectScales = QgsProject::instance()->viewSettings()->mapScales();
     scalesList.reserve( projectScales.size() );
     for ( double scale : projectScales )
       scalesList << QStringLiteral( "1:%1" ).arg( scale );

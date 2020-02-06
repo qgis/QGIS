@@ -296,7 +296,8 @@ void QgsPanningWidget::setPolygon( const QPolygon &p )
   if ( mPoly.at( 0 ) != mPoly.at( mPoly.length() - 1 ) )
     mPoly.append( mPoly.at( 0 ) );
 
-  setGeometry( p.boundingRect() );
+  QRect rect = p.boundingRect() + QMargins( 1, 1, 1, 1 );
+  setGeometry( rect );
   update();
 }
 
@@ -305,14 +306,24 @@ void QgsPanningWidget::paintEvent( QPaintEvent *pe )
   Q_UNUSED( pe )
 
   QPainter p;
+
   p.begin( this );
-  p.setPen( Qt::red );
-  QPolygonF t = mPoly.translated( -mPoly.boundingRect().left(), -mPoly.boundingRect().top() );
+  QPolygonF t = mPoly.translated( -mPoly.boundingRect().left() + 1, -mPoly.boundingRect().top() + 1 );
 
   // drawPolygon causes issues on windows - corners of path may be missing resulting in triangles being drawn
   // instead of rectangles! (Same cause as #13343)
   QPainterPath path;
   path.addPolygon( t );
+
+  QPen pen;
+  pen.setJoinStyle( Qt::MiterJoin );
+  pen.setColor( Qt::white );
+  pen.setWidth( 3 );
+  p.setPen( pen );
+  p.drawPath( path );
+  pen.setColor( Qt::red );
+  pen.setWidth( 1 );
+  p.setPen( pen );
   p.drawPath( path );
 
   p.end();

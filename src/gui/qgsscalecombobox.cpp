@@ -45,7 +45,7 @@ void QgsScaleComboBox::updateScales( const QStringList &scales )
   if ( scales.isEmpty() )
   {
     QgsSettings settings;
-    QString myScales = settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
+    QString myScales = settings.value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString();
     if ( !myScales.isEmpty() )
     {
       myScalesList = myScales.split( ',' );

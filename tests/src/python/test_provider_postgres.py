@@ -24,6 +24,7 @@ import psycopg2
 
 import os
 import time
+from datetime import datetime
 
 from qgis.core import (
     QgsVectorLayer,
@@ -61,7 +62,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = 'dbname=\'qgis_test\''
+        cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layers
@@ -1334,13 +1335,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def testStyleDatabaseWithService(self):
         """Test saving style in DB using a service file.
 
-        To run this test, you first need to create a service with:
-        [qgis_test]
-        host=localhost
-        port=5432
-        dbname=qgis_test
-        user=USERNAME
-        password=PASSWORD
+        To run this test, you first need to setup the test
+        database with tests/testdata/provider/testdata_pg.sh
         """
         myconn = 'service=\'qgis_test\''
         if 'QGIS_PGTEST_DB' in os.environ:
@@ -1418,7 +1414,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def testFilterOnCustomBbox(self):
         extent = QgsRectangle(-68, 70, -67, 80)
         request = QgsFeatureRequest().setFilterRect(extent)
-        dbconn = 'dbname=\'qgis_test\''
+        dbconn = 'service=qgis_test'
         uri = '%s srid=4326 key="pk" sslmode=disable table="qgis_test"."some_poly_data_shift_bbox" (geom)' % (dbconn)
 
         def _test(vl, ids):
@@ -1454,13 +1450,104 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         for f in vl0.getFeatures():
             self.assertNotEqual(f.attribute(0), NULL)
 
+    def testFeatureCountEstimatedOnView(self):
+        """
+        Test feature count on view when estimated data is enabled
+        """
+        self.execSQLCommand('DROP VIEW IF EXISTS qgis_test.somedataview')
+        self.execSQLCommand('CREATE VIEW qgis_test.somedataview AS SELECT * FROM qgis_test."someData"')
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' estimatedmetadata=true srid=4326 type=POINT table="qgis_test"."somedataview" (geom) sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(self.source.featureCount() > 0)
+
+    def testIdentityPk(self):
+        """Test a table with identity pk, see GH #29560"""
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\' srid=4326 type=POLYGON table="qgis_test"."b29560"(geom) sql=', 'testb29560', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        feature = QgsFeature(vl.fields())
+        geom = QgsGeometry.fromWkt('POLYGON EMPTY')
+        feature.setGeometry(geom)
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+
+        del(vl)
+
+        # Verify
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\' srid=4326 type=POLYGON table="qgis_test"."b29560"(geom) sql=', 'testb29560', 'postgres')
+        self.assertTrue(vl.isValid())
+        feature = next(vl.getFeatures())
+        self.assertIsNotNone(feature.id())
+
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test flaky')
+    def testDefaultValuesAndClauses(self):
+        """Test whether default values like CURRENT_TIMESTAMP or
+        now() they are respected. See GH #33383"""
+
+        # Create the test table
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable  table="public"."test_table_default_values" sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        dp = vl.dataProvider()
+
+        # Clean the table
+        dp.deleteFeatures(dp.allFeatureIds())
+
+        # Save it for the test
+        now = datetime.now()
+
+        # Test default values
+        dp.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, 1)
+        # FIXME: spatialite provider (and OGR) return a NULL here and the following passes
+        # self.assertTrue(dp.defaultValue(0).isNull())
+        self.assertIsNotNone(dp.defaultValue(0))
+        self.assertIsNone(dp.defaultValue(1))
+        self.assertTrue(dp.defaultValue(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(dp.defaultValue(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(dp.defaultValue(4), 123)
+        self.assertEqual(dp.defaultValue(5), 'My default')
+
+        #FIXME: the provider should return the clause definition
+        #       regardless of the EvaluateDefaultValues setting
+        dp.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, 0)
+        self.assertEqual(dp.defaultValueClause(0), "nextval('test_table_default_values_id_seq'::regclass)")
+        self.assertEqual(dp.defaultValueClause(1), '')
+        self.assertEqual(dp.defaultValueClause(2), "now()")
+        self.assertEqual(dp.defaultValueClause(3), "CURRENT_TIMESTAMP")
+        self.assertEqual(dp.defaultValueClause(4), '123')
+        self.assertEqual(dp.defaultValueClause(5), "'My default'::text")
+        #FIXME: the test fails if the value is not reset to 1
+        dp.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, 1)
+
+        feature = QgsFeature(vl.fields())
+        for idx in range(vl.fields().count()):
+            default = vl.dataProvider().defaultValue(idx)
+            if default is not None:
+                feature.setAttribute(idx, default)
+            else:
+                feature.setAttribute(idx, 'A comment')
+
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+        del(vl)
+
+        # Verify
+        vl2 = QgsVectorLayer(self.dbconn + ' sslmode=disable  table="public"."test_table_default_values" sql=', 'test', 'postgres')
+        self.assertTrue(vl2.isValid())
+        feature = next(vl2.getFeatures())
+        self.assertEqual(feature.attribute(1), 'A comment')
+        self.assertTrue(feature.attribute(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(feature.attribute(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(feature.attribute(4), 123)
+        self.assertEqual(feature.attribute(5), 'My default')
+
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        cls.dbconn = 'dbname=\'qgis_test\''
+        cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layers

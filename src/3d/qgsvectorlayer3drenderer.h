@@ -20,7 +20,7 @@
 #include "qgis_sip.h"
 
 #include "qgs3drendererregistry.h"
-#include "qgsabstract3drenderer.h"
+#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsabstract3dsymbol.h"
 
 #include "qgsphongmaterialsettings.h"
@@ -57,16 +57,11 @@ class _3D_EXPORT QgsVectorLayer3DRendererMetadata : public Qgs3DRendererAbstract
  * The appearance is completely defined by the symbol.
  * \since QGIS 3.0
  */
-class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstract3DRenderer
+class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstractVectorLayer3DRenderer
 {
   public:
     //! Takes ownership of the symbol object
     explicit QgsVectorLayer3DRenderer( QgsAbstract3DSymbol *s SIP_TRANSFER = nullptr );
-
-    //! Sets vector layer associated with the renderer
-    void setLayer( QgsVectorLayer *layer );
-    //! Returns vector layer associated with the renderer
-    QgsVectorLayer *layer() const;
 
     //! Sets 3D symbol associated with the renderer. Takes ownership of the symbol
     void setSymbol( QgsAbstract3DSymbol *symbol SIP_TRANSFER );
@@ -79,10 +74,8 @@ class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstract3DRenderer
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
-    void resolveReferences( const QgsProject &project ) override;
 
   private:
-    QgsMapLayerRef mLayerRef; //!< Layer used to extract polygons from
     std::unique_ptr<QgsAbstract3DSymbol> mSymbol;  //!< 3D symbol that defines appearance
 
   private:

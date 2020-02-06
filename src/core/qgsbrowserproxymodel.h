@@ -143,13 +143,28 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
      */
     void setLayerType( QgsMapLayerType type );
 
+    /**
+     * Sets the customization filters for data items based on item's data provider key
+     *
+     * By default browser model shows all items from all available data items provider and few special
+     * items (e.g. Favourites). To customize the behavious, set the filter to not load certain data items.
+     * The items that are not based on data item providers have prefix "special:", for example
+     * "special:Favourites", "special:Home", "PostGIS", "MSSQL"
+     *
+     * All items created by the providers listed in filter are hidden from the layer tree.
+     * This filter is always evaluated.
+     *
+     * \since QGIS 3.12
+     */
+    void setDataItemProviderKeyFilter( const QStringList &filter );
+
   protected:
 
     // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
-
+    QStringList mHiddenDataItemsKeys;
     QgsBrowserModel *mModel = nullptr;
     QString mFilter; //filter string provided
     QVector<QRegExp> mREList; //list of filters, separated by "|"
@@ -173,6 +188,12 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
 
     //! Filter accepts item name
     bool filterAcceptsItem( const QModelIndex &sourceIndex ) const;
+
+    //! Filter accepts provider key.
+    bool filterAcceptsProviderKey( const QModelIndex &sourceIndex ) const;
+
+    //! Root item accepts provider key.
+    bool filterRootAcceptsProviderKey( const QModelIndex &sourceIndex ) const;
 };
 
 #endif // QGSBROWSERPROXYMODEL_H

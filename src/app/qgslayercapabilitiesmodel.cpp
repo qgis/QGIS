@@ -254,24 +254,30 @@ QVariant QgsLayerCapabilitiesModel::data( const QModelIndex &idx, int role ) con
     {
       QVariant trueValue = role == Qt::CheckStateRole ? QVariant( Qt::Checked ) : QVariant( true );
       QVariant falseValue = role == Qt::CheckStateRole ? QVariant( Qt::Unchecked ) : QVariant( false );
-      if ( idx.column() == IdentifiableColumn )
+      switch ( idx.column() )
       {
-        if ( layer->isSpatial() )
-          return mIdentifiableLayers.value( layer, true ) ? trueValue : falseValue;
-      }
-      else if ( idx.column() == ReadOnlyColumn )
-      {
-        if ( layer->type() == QgsMapLayerType::VectorLayer )
-          return mReadOnlyLayers.value( layer, true ) ? trueValue : falseValue;
-      }
-      else if ( idx.column() == SearchableColumn )
-      {
-        if ( layer->type() == QgsMapLayerType::VectorLayer )
-          return mSearchableLayers.value( layer, true ) ? trueValue : falseValue;
-      }
-      else if ( idx.column() == RequiredColumn )
-      {
-        return !mRemovableLayers.value( layer, true ) ? trueValue : falseValue;
+        case LayerColumn:
+          break;
+
+        case IdentifiableColumn:
+          if ( layer->isSpatial() )
+            return mIdentifiableLayers.value( layer, true ) ? trueValue : falseValue;
+          break;
+
+        case ReadOnlyColumn:
+
+          if ( layer->type() == QgsMapLayerType::VectorLayer )
+            return mReadOnlyLayers.value( layer, true ) ? trueValue : falseValue;
+          break;
+
+        case SearchableColumn:
+
+          if ( layer->type() == QgsMapLayerType::VectorLayer )
+            return mSearchableLayers.value( layer, true ) ? trueValue : falseValue;
+          break;
+
+        case RequiredColumn:
+          return !mRemovableLayers.value( layer, true ) ? trueValue : falseValue;
       }
     }
   }
@@ -286,53 +292,62 @@ bool QgsLayerCapabilitiesModel::setData( const QModelIndex &index, const QVarian
     QgsMapLayer *layer = mapLayer( index );
     if ( layer )
     {
-      if ( index.column() == IdentifiableColumn )
+      switch ( index.column() )
       {
-        if ( layer->isSpatial() )
+        case LayerColumn:
+          break;
+        case IdentifiableColumn:
         {
-          bool identifiable = value == Qt::Checked;
-          if ( identifiable != mIdentifiableLayers.value( layer, true ) )
+          if ( layer->isSpatial() )
           {
-            mIdentifiableLayers.insert( layer, identifiable );
+            bool identifiable = value == Qt::Checked;
+            if ( identifiable != mIdentifiableLayers.value( layer, true ) )
+            {
+              mIdentifiableLayers.insert( layer, identifiable );
+              emit dataChanged( index, index );
+              return true;
+            }
+          }
+          break;
+        }
+        case ReadOnlyColumn:
+        {
+          if ( layer->type() == QgsMapLayerType::VectorLayer )
+          {
+            bool readOnly = value == Qt::Checked;
+            if ( readOnly != mReadOnlyLayers.value( layer, true ) )
+            {
+              mReadOnlyLayers.insert( layer, readOnly );
+              emit dataChanged( index, index );
+              return true;
+            }
+          }
+          break;
+        }
+        case SearchableColumn:
+        {
+          if ( layer->type() == QgsMapLayerType::VectorLayer )
+          {
+            bool searchable = value == Qt::Checked;
+            if ( searchable != mSearchableLayers.value( layer, true ) )
+            {
+              mSearchableLayers.insert( layer, searchable );
+              emit dataChanged( index, index );
+              return true;
+            }
+          }
+          break;
+        }
+        case RequiredColumn:
+        {
+          bool removable = value == Qt::Unchecked;
+          if ( removable != mRemovableLayers.value( layer, true ) )
+          {
+            mRemovableLayers.insert( layer, removable );
             emit dataChanged( index, index );
             return true;
           }
-        }
-      }
-      else if ( index.column() == ReadOnlyColumn )
-      {
-        if ( layer->type() == QgsMapLayerType::VectorLayer )
-        {
-          bool readOnly = value == Qt::Checked;
-          if ( readOnly != mReadOnlyLayers.value( layer, true ) )
-          {
-            mReadOnlyLayers.insert( layer, readOnly );
-            emit dataChanged( index, index );
-            return true;
-          }
-        }
-      }
-      else if ( index.column() == SearchableColumn )
-      {
-        if ( layer->type() == QgsMapLayerType::VectorLayer )
-        {
-          bool searchable = value == Qt::Checked;
-          if ( searchable != mSearchableLayers.value( layer, true ) )
-          {
-            mSearchableLayers.insert( layer, searchable );
-            emit dataChanged( index, index );
-            return true;
-          }
-        }
-      }
-      else if ( index.column() == RequiredColumn )
-      {
-        bool removable = value == Qt::Unchecked;
-        if ( removable != mRemovableLayers.value( layer, true ) )
-        {
-          mRemovableLayers.insert( layer, removable );
-          emit dataChanged( index, index );
-          return true;
+          break;
         }
       }
     }

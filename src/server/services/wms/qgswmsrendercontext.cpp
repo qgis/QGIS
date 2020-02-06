@@ -452,7 +452,6 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
     if ( !names.isEmpty() )
     {
       QString lname = names.item( 0 ).toElement().text();
-      QString err;
       if ( mNicknameLayers.contains( lname ) )
       {
         mSlds[lname] = namedElem;

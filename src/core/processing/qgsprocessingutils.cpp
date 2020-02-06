@@ -193,28 +193,6 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
   return nullptr;
 }
 
-///@cond PRIVATE
-class ProjectionSettingRestorer
-{
-  public:
-
-    ProjectionSettingRestorer()
-    {
-      QgsSettings settings;
-      previousSetting = settings.value( QStringLiteral( "/Projections/defaultBehavior" ) ).toString();
-      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), QStringLiteral( "useProject" ) );
-    }
-
-    ~ProjectionSettingRestorer()
-    {
-      QgsSettings settings;
-      settings.setValue( QStringLiteral( "/Projections/defaultBehavior" ), previousSetting );
-    }
-
-    QString previousSetting;
-};
-///@endcond PRIVATE
-
 QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint )
 {
   QStringList components = string.split( '|' );
@@ -229,10 +207,6 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   else
     return nullptr;
 
-  // TODO - remove when there is a cleaner way to block the unknown projection dialog!
-  ProjectionSettingRestorer restorer;
-  ( void )restorer; // no warnings
-
   QString name = fi.baseName();
 
   // brute force attempt to load a matching layer
@@ -240,6 +214,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   {
     QgsVectorLayer::LayerOptions options { transformContext };
     options.loadDefaultStyle = false;
+    options.skipCrsValidation = true;
     std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( string, name, QStringLiteral( "ogr" ), options );
     if ( layer->isValid() )
     {
@@ -250,6 +225,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   {
     QgsRasterLayer::LayerOptions rasterOptions;
     rasterOptions.loadDefaultStyle = false;
+    rasterOptions.skipCrsValidation = true;
     std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), rasterOptions ) );
     if ( rasterLayer->isValid() )
     {
@@ -259,6 +235,7 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Mesh )
   {
     QgsMeshLayer::LayerOptions meshOptions;
+    meshOptions.skipCrsValidation = true;
     std::unique_ptr< QgsMeshLayer > meshLayer( new QgsMeshLayer( string, name, QStringLiteral( "mdal" ), meshOptions ) );
     if ( meshLayer->isValid() )
     {
@@ -359,6 +336,67 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
   {
     return new QgsProcessingFeatureSource( vl, context );
   }
+}
+
+QgsCoordinateReferenceSystem QgsProcessingUtils::variantToCrs( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue )
+{
+  QVariant val = value;
+
+  if ( val.canConvert<QgsCoordinateReferenceSystem>() )
+  {
+    // input is a QgsCoordinateReferenceSystem - done!
+    return val.value< QgsCoordinateReferenceSystem >();
+  }
+  else if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+    val = fromVar.source;
+  }
+  else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    val = fromVar.sink;
+  }
+
+  if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  {
+    val = val.value< QgsProperty >().staticValue();
+  }
+
+  // maybe a map layer
+  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
+    return layer->crs();
+
+  if ( val.canConvert<QgsProperty>() )
+    val = val.value< QgsProperty >().valueAsString( context.expressionContext(), fallbackValue.toString() );
+
+  if ( !val.isValid() )
+  {
+    // fall back to default
+    val = fallbackValue;
+  }
+
+  QString crsText = val.toString();
+  if ( crsText.isEmpty() )
+    crsText = fallbackValue.toString();
+
+  if ( crsText.isEmpty() )
+    return QgsCoordinateReferenceSystem();
+
+  // maybe special string
+  if ( context.project() && crsText.compare( QLatin1String( "ProjectCrs" ), Qt::CaseInsensitive ) == 0 )
+    return context.project()->crs();
+
+  // maybe a map layer reference
+  if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( crsText, context ) )
+    return layer->crs();
+
+  // else CRS from string
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( crsText );
+  return crs;
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsMeshLayer *layer )
@@ -708,17 +746,36 @@ QVariant QgsProcessingUtils::generateIteratingDestination( const QVariant &input
 
 QString QgsProcessingUtils::tempFolder()
 {
+  // we maintain a list of temporary folders -- this allows us to append additional
+  // folders when a setting change causes the base temp folder to change, while deferring
+  // cleanup of ALL these temp folders until session end (we can't cleanup older folders immediately,
+  // because we don't know whether they have data in them which is still wanted)
+  static std::vector< std::unique_ptr< QTemporaryDir > > sTempFolders;
   static QString sFolder;
   static QMutex sMutex;
-  sMutex.lock();
-  if ( sFolder.isEmpty() )
+  QMutexLocker locker( &sMutex );
+  const QString basePath = QgsSettings().value( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ) ).toString();
+  if ( basePath.isEmpty() )
   {
-    QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
-    sFolder = QDir::tempPath() + QStringLiteral( "/processing_" ) + subPath;
-    if ( !QDir( sFolder ).exists() )
-      QDir().mkpath( sFolder );
+    // default setting -- automatically create a temp folder
+    if ( sTempFolders.empty() )
+    {
+      const QString templatePath = QStringLiteral( "%1/processing_XXXXXX" ).arg( QDir::tempPath() );
+      std::unique_ptr< QTemporaryDir > tempFolder = qgis::make_unique< QTemporaryDir >( templatePath );
+      sFolder = tempFolder->path();
+      sTempFolders.emplace_back( std::move( tempFolder ) );
+    }
   }
-  sMutex.unlock();
+  else if ( sFolder.isEmpty() || !sFolder.startsWith( basePath ) || sTempFolders.empty() )
+  {
+    if ( !QDir().exists( basePath ) )
+      QDir().mkpath( basePath );
+
+    const QString templatePath = QStringLiteral( "%1/processing_XXXXXX" ).arg( basePath );
+    std::unique_ptr< QTemporaryDir > tempFolder = qgis::make_unique< QTemporaryDir >( templatePath );
+    sFolder = tempFolder->path();
+    sTempFolders.emplace_back( std::move( tempFolder ) );
+  }
   return sFolder;
 }
 
@@ -1062,6 +1119,11 @@ QgsFeatureIds QgsProcessingFeatureSource::allFeatureIds() const
   return mSource->allFeatureIds();
 }
 
+QgsFeatureSource::SpatialIndexPresence QgsProcessingFeatureSource::hasSpatialIndex() const
+{
+  return mSource->hasSpatialIndex();
+}
+
 QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextScope() const
 {
   QgsExpressionContextScope *expressionContextScope = nullptr;
@@ -1108,7 +1170,7 @@ bool QgsProcessingFeatureSink::addFeatures( QgsFeatureList &features, QgsFeature
 
 bool QgsProcessingFeatureSink::addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags )
 {
-  bool result = !QgsProxyFeatureSink::addFeatures( iterator, flags );
+  bool result = QgsProxyFeatureSink::addFeatures( iterator, flags );
   if ( !result )
     mContext.feedback()->reportError( QObject::tr( "Features could not be written to %1" ).arg( mSinkName ) );
   return result;

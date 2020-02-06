@@ -936,7 +936,13 @@ class MapLayerWidgetWrapper(WidgetWrapper):
             self.context = dataobjects.createContext()
 
             try:
-                self.combo.setLayer(iface.activeLayer())
+                if self.parameterDefinition().flags() & QgsProcessingParameterDefinition.FlagOptional:
+                    self.combo.setValue(self.parameterDefinition().defaultValue(), self.context)
+                else:
+                    if self.parameterDefinition().defaultValue():
+                        self.combo.setvalue(self.parameterDefinition().defaultValue(), self.context)
+                    else:
+                        self.combo.setLayer(iface.activeLayer())
             except:
                 pass
 
@@ -1497,6 +1503,14 @@ class TableFieldWidgetWrapper(WidgetWrapper):
 
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
         super().__init__(param, dialog, row, col, **kwargs)
+        """
+        .. deprecated:: 3.12
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("TableFieldWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
+
         self.context = dataobjects.createContext()
 
     def createWidget(self):
@@ -1565,6 +1579,9 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         self._layer = layer
 
         self.refreshItems()
+
+        if self.parameterDefinition().allowMultiple() and self.parameterDefinition().defaultToAllFields():
+            self.setValue(self.getFields())
 
     def refreshItems(self):
         if self.parameterDefinition().allowMultiple():
@@ -1837,6 +1854,7 @@ class WidgetWrapperFactory:
         elif param.type() == 'vector':
             wrapper = VectorLayerWidgetWrapper
         elif param.type() == 'field':
+            # deprecated, moved to c++
             wrapper = TableFieldWidgetWrapper
         elif param.type() == 'source':
             wrapper = FeatureSourceWidgetWrapper

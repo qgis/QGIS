@@ -33,6 +33,8 @@
 
 #include <memory>
 
+#define SPECIAL_TEXT_WHEN_EMPTY QString( QChar( 0x2063 ) )
+
 /**
  * @ingroup UnitTests
  * This is a unit test for the range widget
@@ -51,6 +53,7 @@ class TestQgsRangeWidgetWrapper : public QObject
     void test_setDoubleSmallerRange();
     void test_setDoubleLimits();
     void test_nulls();
+    void test_negativeIntegers(); // see GH issue #32149
     void test_focus();
 
   private:
@@ -285,7 +288,6 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
 
 void TestQgsRangeWidgetWrapper::test_nulls()
 {
-
   QgsApplication::setNullRepresentation( QString( "" ) );
 
   QVariantMap cfg;
@@ -305,10 +307,10 @@ void TestQgsRangeWidgetWrapper::test_nulls()
   // Null
   QCOMPARE( editor1->value( ), editor1->minimum() );
   QCOMPARE( widget1->value( ), QVariant( QVariant::Double ) );
-  QCOMPARE( editor1->mLineEdit->text(), QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY );
-  editor1->mLineEdit->setText( QString( "151%1" ).arg( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ) );
+  QCOMPARE( editor1->mLineEdit->text(), SPECIAL_TEXT_WHEN_EMPTY );
+  editor1->mLineEdit->setText( QString( "151%1" ).arg( SPECIAL_TEXT_WHEN_EMPTY ) );
   QCOMPARE( widget1->value( ).toInt(), 151 );
-  editor1->mLineEdit->setText( QString( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ).append( QStringLiteral( "161" ) ) );
+  editor1->mLineEdit->setText( QString( SPECIAL_TEXT_WHEN_EMPTY ).append( QStringLiteral( "161" ) ) );
   QCOMPARE( widget1->value( ).toInt(), 161 );
 
 
@@ -324,12 +326,45 @@ void TestQgsRangeWidgetWrapper::test_nulls()
   // Null
   QCOMPARE( editor0->value( ), editor0->minimum() );
   QCOMPARE( widget0->value( ), QVariant( QVariant::Int ) );
-  QCOMPARE( editor0->mLineEdit->text(), QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY );
+  QCOMPARE( editor0->mLineEdit->text(), SPECIAL_TEXT_WHEN_EMPTY );
 
-  editor0->mLineEdit->setText( QString( "150%1" ).arg( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ) );
+  editor0->mLineEdit->setText( QString( "150%1" ).arg( SPECIAL_TEXT_WHEN_EMPTY ) );
   QCOMPARE( widget0->value( ).toInt(), 150 );
-  editor0->mLineEdit->setText( QString( QgsDoubleSpinBox::SPECIAL_TEXT_WHEN_EMPTY ).append( QStringLiteral( "160" ) ) );
+  editor0->mLineEdit->setText( QString( SPECIAL_TEXT_WHEN_EMPTY ).append( QStringLiteral( "160" ) ) );
   QCOMPARE( widget0->value( ).toInt(), 160 );
+
+}
+
+void TestQgsRangeWidgetWrapper::test_negativeIntegers()
+{
+  QgsApplication::setNullRepresentation( QString( "" ) );
+
+  QVariantMap cfg;
+  widget3->setConfig( cfg );
+
+  QgsSpinBox *editor3 = qobject_cast<QgsSpinBox *>( widget3->createWidget( nullptr ) );
+  QVERIFY( editor3 );
+  widget3->initWidget( editor3 );
+
+  QgsFeature feature { vl->getFeature( 3 ) };
+  feature.setAttribute( 3, -12345 );
+
+  widget3->setFeature( feature );
+  QCOMPARE( widget3->value( ).toInt(), -12345 );
+
+  cfg.insert( QStringLiteral( "Min" ), 10 );
+  widget3->setConfig( cfg );
+  widget3->initWidget( editor3 );
+  widget3->setFeature( feature );
+  QVERIFY( widget3->value().isNull() );
+  QCOMPARE( widget3->value( ).toInt(), 0 );
+
+  cfg.clear();
+  cfg.insert( QStringLiteral( "Min" ), -12346 );
+  widget3->setConfig( cfg );
+  widget3->initWidget( editor3 );
+  widget3->setFeature( feature );
+  QCOMPARE( widget3->value( ).toInt(), -12345 );
 
 }
 
@@ -348,14 +383,14 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QgsDoubleSpinBox *editor1 = qobject_cast<QgsDoubleSpinBox *>( widget1->createWidget( w ) );
   QVERIFY( editor1 );
   widget1->initWidget( editor1 );
-  widget3->setValue( QVariant( QVariant::Double ) );
+  widget1->setValue( QVariant( QVariant::Double ) );
 
   //QgsDoubleSpinBox
   widget2->setConfig( cfg );
   QgsDoubleSpinBox *editor2 = qobject_cast<QgsDoubleSpinBox *>( widget2->createWidget( w ) );
   QVERIFY( editor2 );
   widget2->initWidget( editor2 );
-  widget3->setValue( QVariant( QVariant::Double ) );
+  widget2->setValue( QVariant( QVariant::Double ) );
 
   //QgsSpinBox
   widget3->setConfig( cfg );
@@ -381,7 +416,7 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QVERIFY( editor1->mLineEdit->hasFocus() );
   QVERIFY( !editor2->mLineEdit->hasFocus() );
   QVERIFY( !editor3->mLineEdit->hasFocus() );
-  QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "" ) );
+  QCOMPARE( editor1->mLineEdit->text(), QString() );
   QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "nope" ) );
   QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "nope" ) );
 
@@ -393,7 +428,7 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QVERIFY( editor2->mLineEdit->hasFocus() );
   QVERIFY( !editor3->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "nope" ) );
-  QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "" ) );
+  QCOMPARE( editor2->mLineEdit->text(), QString() );
   QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "nope" ) );
 
   editor3->mLineEdit->setFocus();
@@ -427,7 +462,7 @@ void TestQgsRangeWidgetWrapper::test_focus()
   QVERIFY( editor2->mLineEdit->hasFocus() );
   QVERIFY( !editor3->mLineEdit->hasFocus() );
   QCOMPARE( editor1->mLineEdit->text(), QStringLiteral( "151.000000000" ) );
-  QCOMPARE( editor2->mLineEdit->text(), QStringLiteral( "" ) );
+  QCOMPARE( editor2->mLineEdit->text(), QString() );
   QCOMPARE( editor3->mLineEdit->text(), QStringLiteral( "nope" ) );
 
 }

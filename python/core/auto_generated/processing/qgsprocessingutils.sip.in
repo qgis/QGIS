@@ -127,6 +127,16 @@ if ``value`` cannot be successfully converted to a source.
 This function creates a new object and the caller takes responsibility for deleting the returned object.
 %End
 
+    static QgsCoordinateReferenceSystem variantToCrs( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() );
+%Docstring
+Converts a variant ``value`` to a coordinate reference system.
+
+The optional ``fallbackValue`` can be used to specify a "default" value which is used
+if ``value`` cannot be successfully converted to a CRS.
+
+.. versionadded:: 3.12
+%End
+
     static QString normalizeLayerSource( const QString &source );
 %Docstring
 Normalizes a layer ``source`` string for safe comparison across different
@@ -191,7 +201,8 @@ using the specified ``context``.
 Combines the extent of several map ``layers``. If specified, the target ``crs``
 will be used to transform the layer's extent to the desired output reference system.
 
-.. deprecated:: Use version with QgsProcessingContext argument instead
+.. deprecated::
+   Use version with QgsProcessingContext argument instead
 %End
 
     static QVariant generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context );
@@ -410,6 +421,8 @@ iterator, eg by restricting the returned attributes or geometry.
     virtual QgsRectangle sourceExtent() const;
 
     virtual QgsFeatureIds allFeatureIds() const;
+
+    virtual SpatialIndexPresence hasSpatialIndex() const;
 
 
     QgsExpressionContextScope *createExpressionContextScope() const /Factory/;

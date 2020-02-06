@@ -42,10 +42,10 @@ void QgsLayerTreeViewMemoryIndicatorProvider::onIndicatorClicked( const QModelIn
 
 bool QgsLayerTreeViewMemoryIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !( vlayer && vlayer->isValid() ) )
+  if ( !layer )
     return false;
-  return  vlayer->providerType() == QLatin1String( "memory" );
+
+  return layer->isTemporary();
 }
 
 QString QgsLayerTreeViewMemoryIndicatorProvider::iconName( QgsMapLayer *layer )
@@ -56,7 +56,9 @@ QString QgsLayerTreeViewMemoryIndicatorProvider::iconName( QgsMapLayer *layer )
 
 QString QgsLayerTreeViewMemoryIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
-  Q_UNUSED( layer )
-  return tr( "<b>Temporary scratch layer only!</b><br>Contents will be discarded after closing this project" );
+  if ( layer->providerType() == QLatin1String( "memory" ) )
+    return tr( "<b>Temporary scratch layer only!</b><br>Contents will be discarded after closing this project" );
+
+  return tr( "<b>Temporary layer only!</b><br>Contents will be discarded after closing QGIS." );
 }
 

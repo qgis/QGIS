@@ -311,6 +311,12 @@ class CORE_EXPORT QgsTask : public QObject
      */
     QMutex mNotFinishedMutex;
 
+    /**
+     * This semaphore remains locked from task creation until the task actually start,
+     * it's used in waitForFinished to actually wait the task to be started.
+     */
+    QSemaphore mNotStartedMutex;
+
     //! Progress of this (parent) task alone
     double mProgress = 0.0;
     //! Overall progress of this task and all subtasks

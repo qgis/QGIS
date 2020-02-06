@@ -99,6 +99,34 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
         self.picture.setPicturePath(self.pngImage)
         assert testResult, message
 
+    def testNorthArrowWithMapItemRotation(self):
+        """Test picture rotation when map item is also rotated"""
+
+        layout = QgsLayout(QgsProject.instance())
+
+        map = QgsLayoutItemMap(layout)
+        map.setExtent(QgsRectangle(0, -256, 256, 0))
+        layout.addLayoutItem(map)
+
+        picture = QgsLayoutItemPicture(layout)
+        layout.addLayoutItem(picture)
+
+        picture.setLinkedMap(map)
+        self.assertEqual(picture.linkedMap(), map)
+
+        picture.setNorthMode(QgsLayoutItemPicture.GridNorth)
+        map.setItemRotation(45)
+        self.assertEqual(picture.pictureRotation(), 45)
+        map.setMapRotation(-34)
+        self.assertEqual(picture.pictureRotation(), 11)
+
+        # add an offset
+        picture.setNorthOffset(-10)
+        self.assertEqual(picture.pictureRotation(), 1)
+
+        map.setItemRotation(55)
+        self.assertEqual(picture.pictureRotation(), 11)
+
     def testGridNorth(self):
         """Test syncing picture to grid north"""
 

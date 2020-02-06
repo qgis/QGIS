@@ -424,7 +424,7 @@ void QgsLayerTreeViewDefaultActions::moveOutOfGroup()
 
 void QgsLayerTreeViewDefaultActions::moveToTop()
 {
-  QMap <QgsLayerTreeGroup *, int> groupInsertIdx;
+  QHash <QgsLayerTreeGroup *, int> groupInsertIdx;
   int insertIdx;
   const QList< QgsLayerTreeNode * >  selectedNodes = mView->selectedNodes();
   for ( QgsLayerTreeNode *n : selectedNodes )

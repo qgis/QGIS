@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgsmapunitscale.h"
 #include "qgsunittypes.h"
+#include "qgssymbollayerreference.h"
 
 #include <QSharedData>
 #include <QPainter>
@@ -31,6 +32,7 @@ class QgsReadWriteContext;
 class QgsTextBufferSettingsPrivate;
 class QgsTextBackgroundSettingsPrivate;
 class QgsTextShadowSettingsPrivate;
+class QgsTextMaskSettingsPrivate;
 class QgsTextSettingsPrivate;
 class QgsVectorLayer;
 class QgsPaintEffect;
@@ -1006,6 +1008,191 @@ class CORE_EXPORT QgsTextShadowSettings
 
 
 /**
+ * \class QgsTextMaskSettings
+  * \ingroup core
+  * Container for settings relating to a selective masking around a text.
+  * A selective masking only makes sense in contexts where the text is rendered over some other map layers, especially for labeling.
+  * \note QgsTextMaskSettings objects are implicitly shared.
+  * \since QGIS 3.12
+ */
+
+class CORE_EXPORT QgsTextMaskSettings
+{
+  public:
+
+    /**
+     * Mask shape types.
+     */
+    enum MaskType
+    {
+      MaskBuffer = 0 //!< Buffer
+    };
+
+    QgsTextMaskSettings();
+
+    /**
+     * Copy constructor.
+     * \param other source settings
+     */
+    QgsTextMaskSettings( const QgsTextMaskSettings &other );
+
+    /**
+     * Copy constructor.
+     * \param other source QgsTextMaskSettings
+     */
+    QgsTextMaskSettings &operator=( const QgsTextMaskSettings &other );
+
+    ~QgsTextMaskSettings();
+
+    /**
+     * Returns whether the mask is enabled.
+     */
+    bool enabled() const;
+
+    /**
+     * Returns whether the mask is enabled.
+     */
+    void setEnabled( bool );
+
+    /**
+     * Returns the type of mask shape.
+     * \see setType()
+     */
+    MaskType type() const;
+
+    /**
+     * Sets the type of mask shape.
+     * \param type shape type
+     * \see type()
+     */
+    void setType( MaskType type );
+
+    /**
+     * Returns the size of the buffer.
+     * \see sizeUnit()
+     * \see setSize()
+     */
+    double size() const;
+
+    /**
+     * Sets the size of the buffer. The size units are specified using setSizeUnit().
+     * \param size buffer size
+     * \see size()
+     * \see setSizeUnit()
+     */
+    void setSize( double size );
+
+    /**
+     * Returns the units for the buffer size.
+     * \see size()
+     * \see setSizeUnit()
+     */
+    QgsUnitTypes::RenderUnit sizeUnit() const;
+
+    /**
+     * Sets the units used for the buffer size.
+     * \param unit size unit
+     * \see setSize()
+     * \see sizeUnit()
+     */
+    void setSizeUnit( QgsUnitTypes::RenderUnit unit );
+
+    /**
+     * Returns the map unit scale object for the buffer size. This is only used if the
+     * buffer size is set to QgsUnitTypes::RenderMapUnit.
+     * \see setSizeMapUnitScale()
+     * \see sizeUnit()
+     */
+    QgsMapUnitScale sizeMapUnitScale() const;
+
+    /**
+     * Sets the map unit scale object for the buffer size. This is only used if the
+     * buffer size is set to QgsUnitTypes::RenderMapUnit.
+     * \param scale scale for buffer size
+     * \see sizeMapUnitScale()
+     * \see setSizeUnit()
+     */
+    void setSizeMapUnitScale( const QgsMapUnitScale &scale );
+
+    /**
+     * Returns the buffer join style.
+     * \see setJoinStyle
+     */
+    Qt::PenJoinStyle joinStyle() const;
+
+    /**
+     * Sets the join style used for drawing the buffer.
+     * \param style join style
+     * \see joinStyle()
+     */
+    void setJoinStyle( Qt::PenJoinStyle style );
+
+    /**
+     * Returns the mask's opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
+     * opaque).
+     * \see setOpacity()
+     */
+    double opacity() const;
+
+    /**
+     * Sets the mask's opacity.
+     * \param opacity opacity as a double value between 0 (fully transparent) and 1 (totally
+     * opaque)
+     * \see opacity()
+     */
+    void setOpacity( double opacity );
+
+    /**
+     * Returns the current paint effect for the mask.
+     * \returns paint effect
+     * \see setPaintEffect()
+     */
+    QgsPaintEffect *paintEffect() const;
+
+    /**
+     * Sets the current paint \a effect for the mask.
+     * \param effect paint effect. Ownership is transferred to the mask settings.
+     * \see paintEffect()
+     */
+    void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
+
+    /**
+     * Read settings from a DOM element.
+     * \see writeXml()
+     */
+    void readXml( const QDomElement &elem );
+
+    /**
+     * Write settings into a DOM element.
+     * \see readXml()
+     */
+    QDomElement writeXml( QDomDocument &doc ) const;
+
+    /**
+     * Returns a list of references to symbol layers that are masked by this buffer.
+     * \returns a list of references to masked symbol layers
+     * \see setMaskedSymbolLayers
+     */
+    QgsSymbolLayerReferenceList maskedSymbolLayers() const;
+
+    /**
+     * Sets the symbol layers that will be masked by this buffer.
+     * \param maskedLayers list of references to symbol layers
+     * \see setMaskedSymbolLayers
+     */
+    void setMaskedSymbolLayers( QgsSymbolLayerReferenceList maskedLayers );
+
+    /**
+     * Updates the format by evaluating current values of data defined properties.
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context, const QgsPropertyCollection &properties );
+
+  private:
+
+    QSharedDataPointer<QgsTextMaskSettingsPrivate> d;
+};
+
+/**
  * \class QgsTextFormat
   * \ingroup core
   * Container for all settings relating to text rendering.
@@ -1093,6 +1280,29 @@ class CORE_EXPORT QgsTextFormat
      * \see shadow()
      */
     void setShadow( const QgsTextShadowSettings &shadowSettings ) { mShadowSettings = shadowSettings; }
+
+    /**
+     * Returns a reference to the masking settings.
+     * \see setMask()
+     */
+    QgsTextMaskSettings &mask() { return mMaskSettings; }
+
+    /**
+     * Returns a reference to the masking settings.
+     * Masks may be defined in contexts where the text is rendered over some map layers, for labeling especially.
+     * \see setMask()
+     * \since QGIS 3.12
+     */
+    SIP_SKIP QgsTextMaskSettings mask() const { return mMaskSettings; }
+
+    /**
+     * Sets the text's masking settings.
+     * Masks may be defined in contexts where the text is rendered over some map layers, for labeling especially.
+     * \param maskSettings mask settings
+     * \see mask()
+     * \since QGIS 3.12
+     */
+    void setMask( const QgsTextMaskSettings &maskSettings ) { mMaskSettings = maskSettings; }
 
     /**
      * Returns the font used for rendering text. Note that the size of the font
@@ -1390,6 +1600,7 @@ class CORE_EXPORT QgsTextFormat
     QgsTextBufferSettings mBufferSettings;
     QgsTextBackgroundSettings mBackgroundSettings;
     QgsTextShadowSettings mShadowSettings;
+    QgsTextMaskSettings mMaskSettings;
 
     QString mTextFontFamily;
     bool mTextFontFound = true;
@@ -1598,6 +1809,10 @@ class CORE_EXPORT QgsTextRenderer
     static void drawShadow( QgsRenderContext &context,
                             const Component &component,
                             const QgsTextFormat &format );
+
+    static void drawMask( QgsRenderContext &context,
+                          const Component &component,
+                          const QgsTextFormat &format );
 
     static void drawText( QgsRenderContext &context,
                           const Component &component,

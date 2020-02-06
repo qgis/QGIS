@@ -30,7 +30,8 @@
 #define SIP_NO_FILE
 
 #include "qgstaskmanager.h"
-#include "qgspointlocator.h"
+
+class QgsPointLocator;
 
 class QgsPointLocatorInitTask : public QgsTask
 {
@@ -40,15 +41,17 @@ class QgsPointLocatorInitTask : public QgsTask
 
     QgsPointLocatorInitTask( QgsPointLocator *loc );
 
+    /**
+     * Returns TRUE when the task has finished and the index build was ok
+     */
+    bool isBuildOK() const;
+
     bool run();
-
-  signals:
-
-    void rebuildIndexFinished( bool ok );
 
   private:
 
     QgsPointLocator *mLoc = nullptr;
+    bool mBuildOK = false;
 };
 
 /// @endcond

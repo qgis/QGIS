@@ -388,7 +388,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
       }
     }
 
-    QgsDebugMsg( QStringLiteral( "native type matches" ) );
+    QgsDebugMsgLevel( QStringLiteral( "native type matches" ), 3 );
     return true;
   }
 
@@ -594,11 +594,6 @@ QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, const QString
 QgsTransaction *QgsVectorDataProvider::transaction() const
 {
   return nullptr;
-}
-
-void QgsVectorDataProvider::forceReload()
-{
-  emit dataChanged();
 }
 
 static bool _compareEncodings( const QString &s1, const QString &s2 )

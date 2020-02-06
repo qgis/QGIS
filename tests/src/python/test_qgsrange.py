@@ -348,6 +348,61 @@ class TestQgsDateRange(unittest.TestCase):
         self.assertNotEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 3), False, False))
         self.assertNotEqual(range, QgsDateRange(QDate(2010, 3, 2), QDate(2010, 6, 2), False, False))
 
+    def testExtend(self):
+        range_empty = QgsDateRange(QDate(2010, 6, 2), QDate(2010, 3, 1))
+
+        # Empty
+        self.assertFalse(range_empty.extend(range_empty))
+        range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
+        self.assertFalse(range.extend(range_empty))
+        range = QgsDateRange(QDate(2010, 6, 2), QDate(2010, 3, 1))
+        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)))
+        self.assertEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False))
+
+        # Extend low
+        range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
+        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 2, 1), QDate(2010, 6, 2), False, False)))
+        self.assertEqual(range, QgsDateRange(QDate(2010, 2, 1), QDate(2010, 6, 2), False, False))
+        range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
+        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 2, 1), QDate(2010, 5, 2), True, False)))
+        self.assertEqual(range, QgsDateRange(QDate(2010, 2, 1), QDate(2010, 6, 2), True, False))
+
+        # Extend high
+        range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
+        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 7, 2), False, False)))
+        self.assertEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 7, 2), False, False))
+        range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
+        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, True)))
+        self.assertEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, True))
+
+        # Extend both
+        range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
+        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 2, 1), QDate(2010, 7, 2), False, False)))
+        self.assertEqual(range, QgsDateRange(QDate(2010, 2, 1), QDate(2010, 7, 2), False, False))
+
+        # Extend none
+        range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
+        self.assertFalse(range.extend(QgsDateRange(QDate(2010, 4, 6), QDate(2010, 5, 2), False, False)))
+
+        # Test infinity
+        range = QgsDateRange(QDate(), QDate())
+        self.assertFalse(range.extend(QgsDateRange(QDate(2010, 4, 6), QDate(2010, 5, 2), False, False)))
+        range = QgsDateRange(QDate(), QDate(2010, 5, 2))
+        self.assertFalse(range.extend(QgsDateRange(QDate(2010, 4, 6), QDate(2010, 5, 2), False, False)))
+        self.assertEqual(range, QgsDateRange(QDate(), QDate(2010, 5, 2), True, True))
+        range = QgsDateRange(QDate(2010, 4, 6), QDate())
+        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 3, 6), QDate(2010, 5, 2), False, False)))
+        self.assertEqual(range, QgsDateRange(QDate(2010, 3, 6), QDate(), False, True))
+        range = QgsDateRange(QDate(), QDate(2010, 5, 2))
+        self.assertTrue(range.extend(QgsDateRange(QDate(2010, 3, 6), QDate(2010, 6, 2), False, False)))
+        self.assertEqual(range, QgsDateRange(QDate(), QDate(2010, 6, 2), True, False))
+        range = QgsDateRange(QDate(2010, 4, 6), QDate())
+        self.assertTrue(range.extend(QgsDateRange(QDate(), QDate(2010, 5, 2), True, False)))
+        self.assertEqual(range, QgsDateRange(QDate(), QDate(), True, True))
+        range = QgsDateRange(QDate(), QDate(2010, 4, 6))
+        self.assertTrue(range.extend(QgsDateRange(QDate(), QDate(), True, True)))
+        self.assertEqual(range, QgsDateRange(QDate(), QDate(), True, True))
+
 
 if __name__ == "__main__":
     unittest.main()

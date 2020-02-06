@@ -1,0 +1,5 @@
+{
+  "name": "UserGroup",
+  "type": "group",
+  "description": "This group contains expressions stored in the user profile."
+}

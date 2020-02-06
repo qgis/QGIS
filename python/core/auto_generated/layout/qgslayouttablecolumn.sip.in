@@ -199,7 +199,7 @@ Sets the sort ``rank`` for the column. If the sort rank is > 0 then the column
 will be sorted in the table. The sort rank specifies the priority given to the
 column when the table is sorted by multiple columns, with lower sort ranks
 having higher priority. This property is only used when the column
-is part of a :py:class:`QgsComposerAttributeTable`.
+is part of a :py:class:`QgsLayoutItemAttributeTable`.
 If the sort ``rank`` is <= 0 then the column is not being sorted.
 
 .. note::

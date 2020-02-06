@@ -424,8 +424,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, public Ui::QgsLayoutDesignerB
     QLabel *mStatusCursorYLabel = nullptr;
     QLabel *mStatusCursorPageLabel = nullptr;
 
-    static QList<double> sStatusZoomLevelsList;
-
     QgsLayoutViewToolAddItem *mAddItemTool = nullptr;
     QgsLayoutViewToolAddNodeItem *mAddNodeItemTool = nullptr;
     QgsLayoutViewToolPan *mPanTool = nullptr;

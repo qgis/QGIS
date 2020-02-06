@@ -67,12 +67,17 @@ class TestGdalAlgorithms(unittest.TestCase):
         # Test that algorithms report a valid commandName
         p = QgsApplication.processingRegistry().providerById('gdal')
         for a in p.algorithms():
+            if a.id() in ('gdal:buildvirtualvector'):
+                # build virtual vector is an exception
+                continue
             self.assertTrue(a.commandName(), 'Algorithm {} has no commandName!'.format(a.id()))
 
     def testCommandNameInTags(self):
         # Test that algorithms commandName is present in provided tags
         p = QgsApplication.processingRegistry().providerById('gdal')
         for a in p.algorithms():
+            if not a.commandName():
+                continue
             self.assertTrue(a.commandName() in a.tags(), 'Algorithm {} commandName not found in tags!'.format(a.id()))
 
     def testNoParameters(self):
@@ -109,11 +114,11 @@ class TestGdalAlgorithms(unittest.TestCase):
         self.assertIsNotNone(alg)
         parameters = {'INPUT': 'testmem'}
         feedback = QgsProcessingFeedback()
-        # check that memory layer is automatically saved out to shape when required by GDAL algorithms
+        # check that memory layer is automatically saved out to geopackage when required by GDAL algorithms
         ogr_data_path, ogr_layer_name = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback,
                                                                    executing=True)
         self.assertTrue(ogr_data_path)
-        self.assertTrue(ogr_data_path.endswith('.shp'))
+        self.assertTrue(ogr_data_path.endswith('.gpkg'))
         self.assertTrue(os.path.exists(ogr_data_path))
         self.assertTrue(ogr_layer_name)
 
@@ -198,11 +203,11 @@ class TestGdalAlgorithms(unittest.TestCase):
         self.assertIsNotNone(alg)
         parameters = {'INPUT': QgsProcessingFeatureSourceDefinition('testmem', True)}
         feedback = QgsProcessingFeedback()
-        # check that memory layer is automatically saved out to shape when required by GDAL algorithms
+        # check that memory layer is automatically saved out to geopackage when required by GDAL algorithms
         ogr_data_path, ogr_layer_name = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback,
                                                                    executing=True)
         self.assertTrue(ogr_data_path)
-        self.assertTrue(ogr_data_path.endswith('.shp'))
+        self.assertTrue(ogr_data_path.endswith('.gpkg'))
         self.assertTrue(os.path.exists(ogr_data_path))
         self.assertTrue(ogr_layer_name)
 
@@ -310,14 +315,14 @@ class TestGdalAlgorithms(unittest.TestCase):
             'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')),
             'EPSG:20936')
         crs = QgsCoordinateReferenceSystem()
-        crs.createFromProj4(
+        crs.createFromProj(
             '+proj=utm +zone=36 +south +a=600000 +b=70000 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
         self.assertTrue(crs.isValid())
         self.assertEqual(GdalUtils.gdal_crs_string(crs),
                          '+proj=utm +zone=36 +south +a=600000 +b=70000 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
         # check that newlines are stripped
         crs = QgsCoordinateReferenceSystem()
-        crs.createFromProj4(
+        crs.createFromProj(
             '+proj=utm +zone=36 +south\n     +a=600000 +b=70000 \r\n    +towgs84=-143,-90,-294,0,0,0,0 +units=m\n+no_defs')
         self.assertTrue(crs.isValid())
         self.assertEqual(GdalUtils.gdal_crs_string(crs),

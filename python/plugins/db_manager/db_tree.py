@@ -88,8 +88,6 @@ class DBTree(QTreeView):
 
     def currentTable(self):
         item = self.currentItem()
-        if item is None:
-            return
 
         if isinstance(item, Table):
             return item
@@ -131,6 +129,7 @@ class DBTree(QTreeView):
             if isinstance(item, Table) and item.canBeAddedToCanvas():
                 menu.addSeparator()
                 menu.addAction(self.tr("Add to Canvas"), self.addLayer)
+                item.addExtraContextMenuEntries(menu)
 
         elif isinstance(item, DBPlugin):
             if item.database() is not None:

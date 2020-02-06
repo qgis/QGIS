@@ -127,7 +127,11 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
                 std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
                 if ( symbol )
                 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
                   int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 23 );
+#else
+                  int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).horizontalAdvance( 'X' ) * 23 );
+#endif
                   int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
                   QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol.get(), QSize( width, height ), height / 20, nullptr, false, mExpressionContext.get() );
                   QByteArray data;
@@ -140,7 +144,11 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
               case QgsStyle::TextFormatEntity:
               {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
                 int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 23 );
+#else
+                int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).horizontalAdvance( 'X' ) * 23 );
+#endif
                 int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
                 const QgsTextFormat format = mStyle->textFormat( name );
                 QPixmap pm = QgsTextFormat::textFormatPreviewPixmap( format, QSize( width, height ), QString(), height / 20 );
@@ -153,7 +161,11 @@ QVariant QgsStyleModel::data( const QModelIndex &index, int role ) const
 
               case QgsStyle::LabelSettingsEntity:
               {
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
                 int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).width( 'X' ) * 23 );
+#else
+                int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * QFontMetrics( data( index, Qt::FontRole ).value< QFont >() ).horizontalAdvance( 'X' ) * 23 );
+#endif
                 int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
                 const QgsPalLayerSettings settings = mStyle->labelSettings( name );
                 QPixmap pm = QgsPalLayerSettings::labelSettingsPreviewPixmap( settings, QSize( width, height ), QString(), height / 20 );

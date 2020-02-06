@@ -100,7 +100,7 @@ else(EXISTS "${PYTHON_INCLUDE_PATH}" AND EXISTS "${PYTHON_LIBRARY}" AND EXISTS "
     if(APPLE)
       # keep reference to system or custom python site-packages
       # useful during app-bundling operations
-      set(PYTHON_SITE_PACKAGES_SYS ${PYTHON_SITE_PACKAGES_DIR})
+      set(PYTHON_SITE_PACKAGES_SYS ${PYTHON_SITE_PACKAGES_DIR} CACHE FILEPATH "Directory holding Python site packages")
     endif(APPLE)
     set(PYTHON_LIBRARIES ${PYTHON_LIBRARY})
     if(NOT PYTHONLIBRARY_FIND_QUIETLY)

@@ -42,7 +42,8 @@ from qgis.core import (
     QgsRectangle,
     QgsApplication,
     QgsFeature,
-    QgsWkbTypes)
+    QgsWkbTypes,
+    QgsFeatureSource)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, compareWkt
@@ -887,6 +888,32 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         assert vl.isValid(), "{} is invalid".format(basetestfile)
         assert vl.wkbType() == QgsWkbTypes.PointM, "wrong wkb type, should be PointM"
         assert vl.getFeature(2).geometry().asWkt() == "PointM (-71.12300000000000466 78.23000000000000398 2)", "wrong PointM geometry"
+
+    def testSpatialIndex(self):
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        basetestfile = os.path.join(srcpath, 'delimited_xyzm.csv')
+
+        url = MyUrl.fromLocalFile(basetestfile)
+        url.addQueryItem("crs", "epsg:4326")
+        url.addQueryItem("type", "csv")
+        url.addQueryItem("xField", "X")
+        url.addQueryItem("yField", "Y")
+        url.addQueryItem("spatialIndex", "no")
+
+        vl = QgsVectorLayer(url.toString(), 'test', 'delimitedtext')
+        self.assertTrue(vl.isValid())
+
+        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexNotPresent)
+        vl.dataProvider().createSpatialIndex()
+        self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresent)
+
+    def testEncodeuri(self):
+        # URI decoding
+        filename = '/home/to/path/test.csv'
+        registry = QgsProviderRegistry.instance()
+        parts = {'path': filename}
+        uri = registry.encodeUri('delimitedtext', parts)
+        self.assertEqual(uri, 'file://' + filename)
 
 
 if __name__ == '__main__':

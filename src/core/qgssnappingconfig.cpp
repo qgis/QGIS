@@ -147,14 +147,17 @@ void QgsSnappingConfig::reset()
   mIntersectionSnapping = false;
 
   // set advanced config
-  mIndividualLayerSettings = QHash<QgsVectorLayer *, IndividualLayerSettings>();
-  const auto constMapLayers = mProject->mapLayers();
-  for ( QgsMapLayer *ml : constMapLayers )
+  if ( mProject )
   {
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-    if ( vl )
+    mIndividualLayerSettings = QHash<QgsVectorLayer *, IndividualLayerSettings>();
+    const auto constMapLayers = mProject->mapLayers();
+    for ( QgsMapLayer *ml : constMapLayers )
     {
-      mIndividualLayerSettings.insert( vl, IndividualLayerSettings( enabled, type, tolerance, units ) );
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
+      if ( vl )
+      {
+        mIndividualLayerSettings.insert( vl, IndividualLayerSettings( enabled, type, tolerance, units ) );
+      }
     }
   }
 }

@@ -33,7 +33,7 @@ class ANALYSIS_EXPORT QgsGeometryDangleCheck : public QgsGeometryCheck
 
     QList<QgsWkbTypes::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
-    QStringList resolutionMethods() const override;
+    Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     QString description() const override { return factoryDescription(); }
     QString id() const override { return factoryId(); }
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }

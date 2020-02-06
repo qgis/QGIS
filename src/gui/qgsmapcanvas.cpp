@@ -74,6 +74,7 @@ email                : sherman at mrcc.com
 #include "qgsmimedatautils.h"
 #include "qgscustomdrophandler.h"
 #include "qgsreferencedgeometry.h"
+#include "qgsprojectviewsettings.h"
 
 /**
  * \ingroup gui
@@ -193,6 +194,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   // Enable touch event on Windows.
   // Qt on Windows needs to be told it can take touch events or else it ignores them.
   grabGesture( Qt::PinchGesture );
+  grabGesture( Qt::TapAndHoldGesture );
   viewport()->setAttribute( Qt::WA_AcceptTouchEvents );
 #endif
 
@@ -900,16 +902,20 @@ bool QgsMapCanvas::setReferencedExtent( const QgsReferencedRectangle &extent )
 
 void QgsMapCanvas::setCenter( const QgsPointXY &center )
 {
-  QgsRectangle r = mapSettings().extent();
-  double x = center.x();
-  double y = center.y();
-  setExtent(
-    QgsRectangle(
-      x - r.width() / 2.0, y - r.height() / 2.0,
-      x + r.width() / 2.0, y + r.height() / 2.0
-    ),
-    true
+  const QgsRectangle r = mapSettings().extent();
+  const double x = center.x();
+  const double y = center.y();
+  const QgsRectangle rect(
+    x - r.width() / 2.0, y - r.height() / 2.0,
+    x + r.width() / 2.0, y + r.height() / 2.0
   );
+  if ( ! rect.isEmpty() )
+  {
+    setExtent(
+      rect,
+      true
+    );
+  }
 } // setCenter
 
 QgsPointXY QgsMapCanvas::center() const
@@ -1028,8 +1034,9 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
   if ( layer->geometryType() == QgsWkbTypes::PointGeometry && rect.isEmpty() )
   {
     int scaleFactor = 5;
-    QgsPointXY center = mSettings.mapToLayerCoordinates( layer, rect.center() );
-    QgsRectangle extentRect = mSettings.mapToLayerCoordinates( layer, extent() ).scaled( 1.0 / scaleFactor, &center );
+    QgsPointXY centerMapCoordinates = rect.center();
+    QgsPointXY centerLayerCoordinates = mSettings.mapToLayerCoordinates( layer, centerMapCoordinates );
+    QgsRectangle extentRect = mSettings.mapToLayerCoordinates( layer, extent() ).scaled( 1.0 / scaleFactor, &centerLayerCoordinates );
     QgsFeatureRequest req = QgsFeatureRequest().setFilterRect( extentRect ).setLimit( 1000 ).setNoAttributes();
     QgsFeatureIterator fit = layer->getFeatures( req );
     QgsFeature f;
@@ -1039,7 +1046,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
     while ( fit.nextFeature( f ) )
     {
       QgsPointXY point = f.geometry().asPoint();
-      double sqrDist = point.sqrDist( center );
+      double sqrDist = point.sqrDist( centerLayerCoordinates );
       if ( sqrDist > closestSquaredDistance || sqrDist < 4 * std::numeric_limits<double>::epsilon() )
         continue;
       pointFound = true;
@@ -1050,7 +1057,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
     {
       // combine selected point with closest point and scale this rect
       rect.combineExtentWith( mSettings.layerToMapCoordinates( layer, closestPoint ) );
-      rect.scale( scaleFactor, &center );
+      rect.scale( scaleFactor, &centerMapCoordinates );
     }
   }
 
@@ -1334,7 +1341,7 @@ void QgsMapCanvas::keyPressEvent( QKeyEvent *e )
         {
           QApplication::setOverrideCursor( Qt::ClosedHandCursor );
           mCanvasProperties->panSelectorDown = true;
-          mCanvasProperties->rubberStartPoint = mCanvasProperties->mouseLastXY;
+          panActionStart( mCanvasProperties->mouseLastXY );
         }
         break;
 
@@ -1469,7 +1476,7 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent *e )
   if ( e->button() == Qt::MidButton )
   {
     mCanvasProperties->panSelectorDown = true;
-    mCanvasProperties->rubberStartPoint = mCanvasProperties->mouseLastXY;
+    panActionStart( mCanvasProperties->mouseLastXY );
   }
   else
   {
@@ -1633,7 +1640,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
     return;
   }
 
-  double zoomFactor = mWheelZoomFactor;
+  double zoomFactor = e->angleDelta().y() > 0 ? 1. / zoomInFactor() : zoomOutFactor();
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
   zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( e->angleDelta().y() );
@@ -1664,13 +1671,13 @@ void QgsMapCanvas::setWheelFactor( double factor )
 void QgsMapCanvas::zoomIn()
 {
   // magnification is alreday handled in zoomByFactor
-  zoomByFactor( 1 / mWheelZoomFactor );
+  zoomByFactor( zoomInFactor() );
 }
 
 void QgsMapCanvas::zoomOut()
 {
   // magnification is alreday handled in zoomByFactor
-  zoomByFactor( mWheelZoomFactor );
+  zoomByFactor( zoomOutFactor() );
 }
 
 void QgsMapCanvas::zoomScale( double newScale )
@@ -1680,7 +1687,7 @@ void QgsMapCanvas::zoomScale( double newScale )
 
 void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
 {
-  double scaleFactor = ( zoomIn ? 1 / mWheelZoomFactor : mWheelZoomFactor );
+  double scaleFactor = ( zoomIn ? zoomInFactor() : zoomOutFactor() );
 
   if ( mScaleLocked )
   {
@@ -1726,9 +1733,12 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent *e )
     }
   }
 
-  // show x y on status bar
-  mCursorPoint = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->mouseLastXY );
-  emit xyCoordinates( mCursorPoint );
+  // show x y on status bar (if we are mid pan operation, then the cursor point hasn't changed!)
+  if ( !panOperationInProgress() )
+  {
+    mCursorPoint = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->mouseLastXY );
+    emit xyCoordinates( mCursorPoint );
+  }
 }
 
 void QgsMapCanvas::setMapTool( QgsMapTool *tool, bool clean )
@@ -1762,22 +1772,24 @@ void QgsMapCanvas::setMapTool( QgsMapTool *tool, bool clean )
 
   // set new map tool and activate it
   mMapTool = tool;
+  emit mapToolSet( mMapTool, oldTool );
   if ( mMapTool )
   {
     connect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
     mMapTool->activate();
   }
 
-  emit mapToolSet( mMapTool, oldTool );
 } // setMapTool
 
 void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
 {
   if ( mMapTool && mMapTool == tool )
   {
-    mMapTool->deactivate();
+    disconnect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
+    QgsMapTool *oldTool = mMapTool;
     mMapTool = nullptr;
-    emit mapToolSet( nullptr, mMapTool );
+    oldTool->deactivate();
+    emit mapToolSet( nullptr, oldTool );
     setCursor( Qt::ArrowCursor );
   }
 
@@ -1807,6 +1819,8 @@ void QgsMapCanvas::setCanvasColor( const QColor &color )
   // background of QGraphicsScene
   mScene->setBackgroundBrush( bgBrush );
 
+  refresh();
+
   emit canvasColorChanged();
 }
 
@@ -1817,7 +1831,31 @@ QColor QgsMapCanvas::canvasColor() const
 
 void QgsMapCanvas::setSelectionColor( const QColor &color )
 {
+  if ( mSettings.selectionColor() == color )
+    return;
+
   mSettings.setSelectionColor( color );
+
+  if ( mCache )
+  {
+    bool hasSelectedFeatures = false;
+    const auto layers = mSettings.layers();
+    for ( QgsMapLayer *layer : layers )
+    {
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+      if ( vlayer && vlayer->selectedFeatureCount() )
+      {
+        hasSelectedFeatures = true;
+        break;
+      }
+    }
+
+    if ( hasSelectedFeatures )
+    {
+      mCache->clear();
+      refresh();
+    }
+  }
 }
 
 QColor QgsMapCanvas::selectionColor() const
@@ -1997,9 +2035,22 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   refresh();
 }
 
+void QgsMapCanvas::panActionStart( QPoint releasePoint )
+{
+  mCanvasProperties->rubberStartPoint = releasePoint;
+
+  mDa = QgsDistanceArea();
+  mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  mDa.setSourceCrs( mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+}
+
 void QgsMapCanvas::panAction( QMouseEvent *e )
 {
   Q_UNUSED( e )
+
+  QgsPointXY currentMapPoint = getCoordinateTransform()->toMapCoordinates( e->pos() );
+  QgsPointXY startMapPoint = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
+  emit panDistanceBearingChanged( mDa.measureLine( currentMapPoint, startMapPoint ), mDa.lengthUnits(), mDa.bearing( currentMapPoint, startMapPoint ) * 180 / M_PI );
 
   // move all map canvas items
   moveCanvasContents();
@@ -2111,6 +2162,8 @@ void QgsMapCanvas::setSnappingUtils( QgsSnappingUtils *utils )
 
 void QgsMapCanvas::readProject( const QDomDocument &doc )
 {
+  QgsProject *project = qobject_cast< QgsProject * >( sender() );
+
   QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "mapcanvas" ) );
   if ( nodes.count() )
   {
@@ -2165,6 +2218,11 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
   else
   {
     QgsDebugMsg( QStringLiteral( "Couldn't read mapcanvas information from project" ) );
+    if ( !project->viewSettings()->defaultViewExtent().isNull() )
+    {
+      setReferencedExtent( project->viewSettings()->defaultViewExtent() );
+      clearExtentHistory(); // clear the extent history on project load
+    }
   }
 }
 
@@ -2280,6 +2338,14 @@ bool QgsMapCanvas::event( QEvent *e )
   {
     if ( e->type() == QEvent::Gesture )
     {
+      if ( QTapAndHoldGesture *tapAndHoldGesture = qobject_cast< QTapAndHoldGesture * >( static_cast<QGestureEvent *>( e )->gesture( Qt::TapAndHoldGesture ) ) )
+      {
+        QPointF pos = tapAndHoldGesture->position();
+        pos = mapFromGlobal( QPoint( pos.x(), pos.y() ) );
+        QgsPointXY mapPoint = getCoordinateTransform()->toMapCoordinates( pos.x(), pos.y() );
+        emit tapAndHoldGestureOccurred( mapPoint, tapAndHoldGesture );
+      }
+
       // call handler of current map tool
       if ( mMapTool )
       {
@@ -2407,7 +2473,8 @@ void QgsMapCanvas::startPreviewJob( int number )
   for ( QgsMapLayer *layer : layers )
   {
     context.lastRenderingTimeMs = mLastLayerRenderTime.value( layer->id(), 0 );
-    if ( !layer->dataProvider()->renderInPreview( context ) )
+    QgsDataProvider *provider = layer->dataProvider();
+    if ( provider && !provider->renderInPreview( context ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "Layer %1 not rendered because it does not match the renderInPreview criterion %2" ).arg( layer->id() ).arg( mLastLayerRenderTime.value( layer->id() ) ), 3 );
       continue;
@@ -2450,4 +2517,65 @@ void QgsMapCanvas::schedulePreviewJob( int number )
     startPreviewJob( number );
   } );
   mPreviewTimer.start();
+}
+
+bool QgsMapCanvas::panOperationInProgress()
+{
+  if ( mCanvasProperties->panSelectorDown )
+    return true;
+
+  if ( QgsMapToolPan *panTool = qobject_cast< QgsMapToolPan *>( mMapTool ) )
+  {
+    if ( panTool->isDragging() )
+      return true;
+  }
+
+  return false;
+}
+
+int QgsMapCanvas::nextZoomLevel( const QList<double> &resolutions, bool zoomIn ) const
+{
+  int resolutionLevel = -1;
+  double currentResolution = mapUnitsPerPixel();
+
+  for ( int i = 0, n = resolutions.size(); i < n; ++i )
+  {
+    if ( qgsDoubleNear( resolutions[i], currentResolution, 0.0001 ) )
+    {
+      resolutionLevel = zoomIn ? ( i - 1 ) : ( i + 1 );
+      break;
+    }
+    else if ( currentResolution <= resolutions[i] )
+    {
+      resolutionLevel = zoomIn ? ( i - 1 ) : i;
+      break;
+    }
+  }
+  return ( resolutionLevel < 0 || resolutionLevel >= resolutions.size() ) ? -1 : resolutionLevel;
+}
+
+double QgsMapCanvas::zoomInFactor() const
+{
+  if ( !mZoomResolutions.isEmpty() )
+  {
+    int zoomLevel = nextZoomLevel( mZoomResolutions, true );
+    if ( zoomLevel != -1 )
+    {
+      return mZoomResolutions.at( zoomLevel ) / mapUnitsPerPixel();
+    }
+  }
+  return 1 / mWheelZoomFactor;
+}
+
+double QgsMapCanvas::zoomOutFactor() const
+{
+  if ( !mZoomResolutions.isEmpty() )
+  {
+    int zoomLevel = nextZoomLevel( mZoomResolutions, false );
+    if ( zoomLevel != -1 )
+    {
+      return mZoomResolutions.at( zoomLevel ) / mapUnitsPerPixel();
+    }
+  }
+  return mWheelZoomFactor;
 }

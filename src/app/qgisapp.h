@@ -134,9 +134,10 @@ class QgsDataSourceManagerDialog;
 class QgsBrowserGuiModel;
 class QgsBrowserModel;
 class QgsGeoCmsProviderRegistry;
-class QgsLayoutQptDropHandler;
+class QgsLayoutCustomDropHandler;
 class QgsProxyProgressTask;
 class QgsNetworkRequestParameters;
+class QgsBearingNumericFormat;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -158,9 +159,11 @@ class QgsNetworkRequestParameters;
 #include "qgsoptionswidgetfactory.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsmasterlayoutinterface.h"
+#include "qgsmaptoolselect.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
+#include "qgsvectorlayerref.h"
 
 #include <QGestureEvent>
 #include <QTapAndHoldGesture>
@@ -480,6 +483,23 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionShowBookmarks() { return mActionShowBookmarks; }
     QAction *actionShowBookmarkManager() { return mActionShowBookmarkManager; }
     QAction *actionDraw() { return mActionDraw; }
+    QAction *actionCircle2Points() { return mActionCircle2Points ; }
+    QAction *actionCircle3Points() { return mActionCircle3Points ; }
+    QAction *actionCircle3Tangents() { return mActionCircle3Tangents ; }
+    QAction *actionCircle2TangentsPoint() { return mActionCircle2TangentsPoint ; }
+    QAction *actionCircleCenterPoint() { return mActionCircleCenterPoint ; }
+    QAction *actionEllipseCenter2Points() { return mActionEllipseCenter2Points ; }
+    QAction *actionEllipseCenterPoint() { return mActionEllipseCenterPoint ; }
+    QAction *actionEllipseExtent() { return mActionEllipseExtent ; }
+    QAction *actionEllipseFoci() { return mActionEllipseFoci ; }
+    QAction *actionRectangleCenterPoint() { return mActionRectangleCenterPoint ; }
+    QAction *actionRectangleExtent() { return mActionRectangleExtent ; }
+    QAction *actionRectangle3PointsDistance() { return mActionRectangle3PointsDistance ; }
+    QAction *actionRectangle3PointsProjected() { return mActionRectangle3PointsProjected ; }
+    QAction *actionRegularPolygon2Points() { return mActionRegularPolygon2Points ; }
+    QAction *actionRegularPolygonCenterPoint() { return mActionRegularPolygonCenterPoint ; }
+    QAction *actionRegularPolygonCenterCorner() { return mActionRegularPolygonCenterCorner ; }
+
 
     QAction *actionDataSourceManager() { return mActionDataSourceManager; }
     QAction *actionNewVectorLayer() { return mActionNewVectorLayer; }
@@ -1527,6 +1547,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void extentChanged();
     void showRotation();
 
+    void showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, double bearing );
+
+    void selectionModeChanged( QgsMapToolSelect::Mode mode );
+
     void displayMapToolMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );
     void displayMessage( const QString &title, const QString &message, Qgis::MessageLevel level );
     void removeMapToolMessage();
@@ -1699,6 +1723,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void projectCrsChanged();
 
     void onActiveLayerChanged( QgsMapLayer *layer );
+
+    /**
+     * Triggered when a vector layer style has changed, checks for widget config layer dependencies
+     * \param categories style categories
+     * \since QGIS 3.12
+     */
+    void vectorLayerStyleLoaded( const QgsMapLayer::StyleCategories categories );
+
+    //! Enable or disable event tracing (for debugging)
+    void toggleEventTracing();
 
   signals:
 
@@ -2008,7 +2042,35 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Returns the message bar of the datasource manager dialog if it is visible, the canvas's message bar otherwise.
     QgsMessageBar *visibleMessageBar();
 
+    /**
+     * Searches for layer dependencies by querying the form widgets and the
+     * \a vectorLayer itself for broken relations. Style \a categories can be
+     * used to limit the search to one or more of the currently implemented search
+     * categories ("Forms" for the form widgets and "Relations" for layer weak relations).
+     * \return a list of weak references to broken layer dependencies
+     */
+    const QList< QgsVectorLayerRef > findBrokenLayerDependencies( QgsVectorLayer *vectorLayer,
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::StyleCategory::AllStyleCategories ) const;
+
+    /**
+     * Scans the \a vectorLayer for broken dependencies and automatically
+     * try to load the missing layers, users are notified about the operation
+     * result. Style \a categories can be
+     * used to exclude one of the currently implemented search categories
+     * ("Forms" for the form widgets and "Relations" for layer weak relations).
+     */
+    void resolveVectorLayerDependencies( QgsVectorLayer *vectorLayer,
+                                         QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
+
+    /**
+     * Scans the \a vectorLayer for weak relations and automatically
+     * try to resolve and create the broken relations.
+     */
+    void resolveVectorLayerWeakRelations( QgsVectorLayer *vectorLayer );
+
+
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
+
 
     // actions for menus and toolbars -----------------
 
@@ -2300,7 +2362,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
     QVector<QPointer<QgsLayoutCustomDropHandler>> mCustomLayoutDropHandlers;
 
-    QgsLayoutQptDropHandler *mLayoutQptDropHandler = nullptr;
+    QgsLayoutCustomDropHandler *mLayoutQptDropHandler = nullptr;
+    QgsLayoutCustomDropHandler *mLayoutImageDropHandler = nullptr;
 
     QDateTime mProjectLastModified;
 
@@ -2323,7 +2386,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsStatusBar *mStatusBar = nullptr;
 
-    QTime mLastRenderTime;
+    QElapsedTimer mLastRenderTime;
     double mLastRenderTimeSeconds = 0;
     QTimer mRenderProgressBarTimer;
     QMetaObject::Connection mRenderProgressBarTimerConnection;
@@ -2344,6 +2407,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
     QgsGeometryValidationDock *mGeometryValidationDock = nullptr;
     QgsHandleBadLayersHandler *mAppBadLayersHandler = nullptr;
+
+    std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
 
     class QgsCanvasRefreshBlocker
     {

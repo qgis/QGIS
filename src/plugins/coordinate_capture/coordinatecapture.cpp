@@ -74,7 +74,7 @@ CoordinateCapture::CoordinateCapture( QgisInterface *qgisInterface )
  */
 void CoordinateCapture::initGui()
 {
-  mCrs.createFromSrsId( GEOCRS_ID ); // initialize the CRS object
+  mCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ); // initialize the CRS object
 
   connect( mQGisIface->mapCanvas(), &QgsMapCanvas::destinationCrsChanged, this, &CoordinateCapture::setSourceCrs );
   connect( mQGisIface, &QgisInterface::currentThemeChanged, this, &CoordinateCapture::setCurrentTheme );

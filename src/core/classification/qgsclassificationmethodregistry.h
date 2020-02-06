@@ -39,6 +39,7 @@ class CORE_EXPORT QgsClassificationMethodRegistry
 {
   public:
     QgsClassificationMethodRegistry();
+    ~QgsClassificationMethodRegistry();
 
     /**
      * Adds a method to the registry

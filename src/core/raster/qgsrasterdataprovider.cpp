@@ -420,7 +420,10 @@ QgsRasterDataProvider *QgsRasterDataProvider::create( const QString &providerKey
                                  nBands, type, width,
                                  height, geoTransform, crs, createOptions );
   if ( !ret )
+  {
     QgsDebugMsg( "Cannot resolve 'createRasterDataProviderFunction' function in " + providerKey + " provider" );
+  }
+
   // TODO: it would be good to return invalid QgsRasterDataProvider
   // with QgsError set, but QgsRasterDataProvider has pure virtual methods
 

@@ -53,7 +53,7 @@ def values(source, *attributes):
     Returns a dict of lists, with the passed field identifiers as keys.
     It considers the existing selection.
 
-    It assummes fields are numeric or contain values that can be parsed
+    It assumes fields are numeric or contain values that can be parsed
     to a number.
     """
     ret = {}

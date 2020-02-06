@@ -395,9 +395,15 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   // consider spatial reference system of the layer
   if ( srs.isValid() )
   {
-    QString srsWkt = srs.toWkt();
+    QString srsWkt = srs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 );
     QgsDebugMsg( "WKT to save as is " + srsWkt );
     mOgrRef = OSRNewSpatialReference( srsWkt.toLocal8Bit().constData() );
+#if GDAL_VERSION_MAJOR >= 3
+    if ( mOgrRef )
+    {
+      OSRSetAxisMappingStrategy( mOgrRef, OAMS_TRADITIONAL_GIS_ORDER );
+    }
+#endif
   }
 
   // datasource created, now create the output layer
@@ -503,6 +509,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     {
       QString layerName = vectorFileName.left( vectorFileName.indexOf( QLatin1String( ".shp" ), Qt::CaseInsensitive ) );
       QFile prjFile( layerName + ".qpj" );
+#if PROJ_VERSION_MAJOR<6
       if ( prjFile.open( QIODevice::WriteOnly  | QIODevice::Truncate ) )
       {
         QTextStream prjStream( &prjFile );
@@ -513,6 +520,10 @@ void QgsVectorFileWriter::init( QString vectorFileName,
       {
         QgsDebugMsg( "Couldn't open file " + layerName + ".qpj" );
       }
+#else
+      if ( prjFile.exists() )
+        prjFile.remove();
+#endif
     }
   }
 
@@ -961,6 +972,23 @@ class QgsVectorFileWriterMetadataContainer
                                layerOptions
                              )
                            );
+
+#if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
+      // FlatGeobuf
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      driverMetadata.insert( QStringLiteral( "FlatGeobuf" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "FlatGeobuf" ),
+                               QObject::tr( "FlatGeobuf" ),
+                               QStringLiteral( "*.fgb" ),
+                               QStringLiteral( "fgb" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
+#endif
 
       // ESRI Shapefile
       datasetOptions.clear();
@@ -3266,7 +3294,7 @@ QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( 
           // OGR SQLite driver is compiled with SpatiaLite support.
           // We have HAVE_SPATIALITE in QGIS, but that may differ from OGR
           // http://lists.osgeo.org/pipermail/gdal-dev/2012-November/034580.html
-          // -> test if creation failes
+          // -> test if creation fails
           QString option = QStringLiteral( "SPATIALITE=YES" );
           char *options[2] = { CPLStrdup( option.toLocal8Bit().constData() ), nullptr };
           OGRSFDriverH poDriver;

@@ -50,7 +50,7 @@ def register_function(function, arg_count, group, usesgeometry=False,
     :param function:
     :param arg_count:
     :param group:
-    :param usesgeometry: 
+    :param usesgeometry:
     :param handlesnull: Needs to be set to True if this function does not always return NULL if any parameter is NULL. Default False.
     :return:
     """
@@ -75,11 +75,11 @@ def register_function(function, arg_count, group, usesgeometry=False,
                 if self.expandargs:
                     values.append(feature)
                     values.append(parent)
-                    if inspect.getargspec(self.function).args[-1] == 'context':
+                    if inspect.getfullargspec(self.function).args[-1] == 'context':
                         values.append(context)
                     return self.function(*values)
                 else:
-                    if inspect.getargspec(self.function).args[-1] == 'context':
+                    if inspect.getfullargspec(self.function).args[-1] == 'context':
                         self.function(values, feature, parent, context)
                     return self.function(values, feature, parent)
             except Exception as ex:
@@ -104,7 +104,7 @@ def register_function(function, arg_count, group, usesgeometry=False,
     if arg_count == "auto":
         # Work out the number of args we need.
         # Number of function args - 2.  The last two args are always feature, parent.
-        args = inspect.getargspec(function).args
+        args = inspect.getfullargspec(function).args
         number = len(args)
         arg_count = number - 2
         if args[-1] == 'context':

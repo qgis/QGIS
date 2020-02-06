@@ -15,7 +15,7 @@
 #include <qgsrubberband.h>
 %End
 
-class QgsRubberBand : QObject, QgsMapCanvasItem
+class QgsRubberBand : QgsMapCanvasItem
 {
 %Docstring
 A class for drawing transient features (e.g. digitizing lines) on the map.

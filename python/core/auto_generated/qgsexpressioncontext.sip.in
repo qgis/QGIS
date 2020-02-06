@@ -715,7 +715,7 @@ Convenience function for retrieving the fields for the context, if set.
 %Docstring
 Sets the original value variable value for the context.
 
-:param value: value for original value variable. This usually represents the an original widget
+:param value: value for original value variable. This usually represents an original widget
               value before any data defined overrides have been applied.
 
 .. versionadded:: 2.12

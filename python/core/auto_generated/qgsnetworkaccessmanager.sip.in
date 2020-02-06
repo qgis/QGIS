@@ -324,7 +324,8 @@ The contents of the reply will be returned after the request is completed or an 
  void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * ) /Deprecated/;
 %Docstring
 
-.. deprecated:: Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+.. deprecated::
+   Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
 %End
 
     void requestAboutToBeCreated( QgsNetworkRequestParameters request );
@@ -449,7 +450,8 @@ See QgsSslErrorHandler for details on how to handle SSL errors and potentially i
  void requestCreated( QNetworkReply * ) /Deprecated/;
 %Docstring
 
-.. deprecated:: Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
+.. deprecated::
+   Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead.
 %End
 
     void requestTimedOut( QNetworkReply * );

@@ -256,6 +256,16 @@ Returns connection capabilities
 %End
 
 
+    virtual QString tableUri( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
+%Docstring
+Returns the URI string for the given ``table`` and ``schema``.
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.12
+%End
+
     virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const throw( QgsProviderConnectionException );
 %Docstring
 Creates an empty table with ``name`` in the given ``schema`` (schema is ignored  if not supported by the backend).
@@ -370,6 +380,20 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 :raises :: py:class:`QgsProviderConnectionException`
 %End
 
+
+    virtual QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table ) const;
+%Docstring
+Returns information on a ``table`` in the given ``schema``.
+Raises a QgsProviderConnectionException if any errors are encountered or if the table does not exist.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. note::
+
+   Not available in Python bindings
+
+.. versionadded:: 3.12
+%End
 
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesInt( const QString &schema = QString(), const int flags = 0 ) const throw( QgsProviderConnectionException ) /PyName=tables/;
 %Docstring

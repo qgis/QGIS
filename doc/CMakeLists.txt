@@ -5,25 +5,41 @@ SET (WITH_APIDOC FALSE CACHE BOOL "Determines whether the QGIS API doxygen docum
 SET (WITH_TXT2TAGS_PDF FALSE CACHE BOOL "Determines whether PDF should be generate for the txt2tags documentation")
 
 # include Qt documentation
-SET (QT_DOC_URL "http://doc.qt.io/qt-5/" CACHE STRING "URL for Qt docs")
+SET (QT_DOC_URL "https://doc.qt.io/qt-5/" CACHE STRING "URL for Qt docs")
 
 INCLUDE(Txt2Tags)
 FIND_TXT2TAGS()
 
 IF(TXT2TAGS_EXECUTABLE)
-  ADD_TXT2TAGS_FILES(QGIS_DOC_FILES INSTALL.t2t news.t2t)
+  ADD_TXT2TAGS_FILES(QGIS_DOC_FILES INSTALL.t2t NEWS.t2t)
   IF(WITH_TXT2TAGS_PDF)
-    ADD_TXT2TAGS_PDFS(QGIS_DOC_FILES INSTALL.t2t news.t2t)
+    ADD_TXT2TAGS_PDFS(QGIS_DOC_FILES INSTALL.t2t NEWS.t2t)
   ENDIF(WITH_TXT2TAGS_PDF)
   FILE(GLOB t2tfiles doc/*.t2t)
   ADD_CUSTOM_TARGET (t2tdoc ALL DEPENDS ${QGIS_DOC_FILES} ${t2tfiles})
 ELSE(TXT2TAGS_EXECUTABLE)
   SET(QGIS_DOC_FILES
-    ${CMAKE_SOURCE_DIR}/INSTALL
+    ../INSTALL
+    ../NEWS
+    INSTALL.html
+    NEWS.html
   )
 ENDIF(TXT2TAGS_EXECUTABLE)
 
-SET(QGIS_DOC_FILES ${QGIS_DOC_FILES} index.html news.html developersmap.html nohelp.html favicon.ico style.css AUTHORS CONTRIBUTORS SPONSORS DONORS TRANSLATORS LICENSE)
+SET(QGIS_DOC_FILES
+  ${QGIS_DOC_FILES}
+  index.html
+  developersmap.html
+  nohelp.html
+  favicon.ico
+  style.css
+  AUTHORS
+  CONTRIBUTORS
+  SPONSORS
+  DONORS
+  TRANSLATORS
+  LICENSE
+)
 
 INSTALL(FILES ${QGIS_DOC_FILES} DESTINATION ${QGIS_DATA_DIR}/doc)
 INSTALL(FILES ../images/icons/qgis-icon-60x60.png DESTINATION ${QGIS_DATA_DIR}/doc/images)
@@ -68,11 +84,13 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/geocms
       ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
       ${CMAKE_SOURCE_DIR}/src/core/gps
+      ${CMAKE_SOURCE_DIR}/src/core/labeling
       ${CMAKE_SOURCE_DIR}/src/core/layertree
       ${CMAKE_SOURCE_DIR}/src/core/layout
       ${CMAKE_SOURCE_DIR}/src/core/locator
       ${CMAKE_SOURCE_DIR}/src/core/metadata
       ${CMAKE_SOURCE_DIR}/src/core/mesh
+      ${CMAKE_SOURCE_DIR}/src/core/numericformats
       ${CMAKE_SOURCE_DIR}/src/core/pal
       ${CMAKE_SOURCE_DIR}/src/core/processing
       ${CMAKE_SOURCE_DIR}/src/core/providers
@@ -88,9 +106,11 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
       ${CMAKE_SOURCE_DIR}/src/gui/effects
+      ${CMAKE_SOURCE_DIR}/src/gui/labeling
       ${CMAKE_SOURCE_DIR}/src/gui/layertree
       ${CMAKE_SOURCE_DIR}/src/gui/layout
       ${CMAKE_SOURCE_DIR}/src/gui/locator
+      ${CMAKE_SOURCE_DIR}/src/gui/numericformats
       ${CMAKE_SOURCE_DIR}/src/gui/ogr
       ${CMAKE_SOURCE_DIR}/src/gui/processing
       ${CMAKE_SOURCE_DIR}/src/gui/raster

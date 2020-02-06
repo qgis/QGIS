@@ -21,19 +21,19 @@ class DefaultTranslator : public QgsProjectTranslator
   public:
     QString translate( const QString &context, const QString &sourceText, const char *disambiguation, int n ) const override
     {
-      Q_UNUSED( context );
-      Q_UNUSED( disambiguation );
-      Q_UNUSED( n );
+      Q_UNUSED( context )
+      Q_UNUSED( disambiguation )
+      Q_UNUSED( n )
       return sourceText;
     }
 };
 
 ///@endcond PRIVATE
 
-static DefaultTranslator sDefaultTranslator;
+Q_GLOBAL_STATIC( DefaultTranslator, sDefaultTranslator )
 
 QgsReadWriteContext::QgsReadWriteContext()
-  : mProjectTranslator( &sDefaultTranslator )
+  : mProjectTranslator( sDefaultTranslator() )
 {
 
 }

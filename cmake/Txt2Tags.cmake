@@ -37,12 +37,16 @@ MACRO(ADD_TXT2TAGS_FILES _sources)
     GET_FILENAME_COMPONENT(_in ${_current_FILE} ABSOLUTE)
     GET_FILENAME_COMPONENT(_basename ${_current_FILE} NAME_WE)
 
+    STRING(TIMESTAMP NOW "%Y-%m-%d")
+    FILE(TIMESTAMP ${_in} MODTIME "%Y-%m-%d")
+    CONFIGURE_FILE(${_in} ${_in}.tmp @ONLY)
+
     SET(_out ${CMAKE_CURRENT_BINARY_DIR}/${_basename})
 
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_out}
       COMMAND ${TXT2TAGS_EXECUTABLE}
-      ARGS --encoding=utf-8 -o${_out} -t txt ${_in}
+      ARGS --encoding=utf-8 -o${_out} -t txt ${_in}.tmp
       DEPENDS ${_in}
       COMMENT "Building ${_out} from ${_in}"
       )
@@ -50,7 +54,7 @@ MACRO(ADD_TXT2TAGS_FILES _sources)
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_out}.html
       COMMAND ${TXT2TAGS_EXECUTABLE}
-      ARGS --encoding=utf-8 -o${_out}.html -t html ${_in}
+      ARGS --encoding=utf-8 -o${_out}.html -t html ${_in}.tmp
       DEPENDS ${_in}
       COMMENT "Building ${_out}.html from ${_in}"
       )
@@ -64,12 +68,16 @@ MACRO(ADD_TXT2TAGS_PDFS _sources)
     GET_FILENAME_COMPONENT(_in ${_current_FILE} ABSOLUTE)
     GET_FILENAME_COMPONENT(_basename ${_current_FILE} NAME_WE)
 
+    STRING(TIMESTAMP NOW "%Y-%m-%d")
+    FILE(TIMESTAMP ${_in} MODTIME "%Y-%m-%d")
+    CONFIGURE_FILE(${_in} ${_in}.tmp @ONLY)
+
     SET(_out ${CMAKE_CURRENT_BINARY_DIR}/${_basename})
 
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_out}.tex
       COMMAND ${TXT2TAGS_EXECUTABLE}
-      ARGS -o${_out}.tex -t tex ${_in}
+      ARGS -o${_out}.tex -t tex ${_in}.tmp
       DEPENDS ${_in}
       COMMENT "Building ${_out}.tex from ${_in}"
       )

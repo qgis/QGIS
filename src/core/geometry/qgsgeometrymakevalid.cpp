@@ -348,7 +348,7 @@ static bool lwcollection_make_geos_friendly( QgsGeometryCollection *g );
 // Ensure the geometry is "structurally" valid (enough for GEOS to accept it)
 static bool lwgeom_make_geos_friendly( QgsAbstractGeometry *geom )
 {
-  QgsDebugMsg( QStringLiteral( "lwgeom_make_geos_friendly enter (type %1)" ).arg( geom->wkbType() ) );
+  QgsDebugMsgLevel( QStringLiteral( "lwgeom_make_geos_friendly enter (type %1)" ).arg( geom->wkbType() ), 3 );
   switch ( QgsWkbTypes::flatType( geom->wkbType() ) )
   {
     case QgsWkbTypes::Point:
@@ -585,7 +585,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
 
     if ( GEOSisEmpty_r( handle, new_area ) )
     {
-      // no more rings can be build with thes edges
+      // no more rings can be build with the edges
       GEOSGeom_destroy_r( handle, new_area );
       break;
     }
@@ -911,7 +911,7 @@ std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstrac
   geos::unique_ptr geosgeom = QgsGeos::asGeos( lwgeom_in );
   if ( !geosgeom )
   {
-    QgsDebugMsg( QStringLiteral( "Original geom can't be converted to GEOS - will try cleaning that up first" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Original geom can't be converted to GEOS - will try cleaning that up first" ), 3 );
 
     std::unique_ptr<QgsAbstractGeometry> lwgeom_in_clone( lwgeom_in->clone() );
     if ( !lwgeom_make_geos_friendly( lwgeom_in_clone.get() ) )

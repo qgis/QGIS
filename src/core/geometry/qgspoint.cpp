@@ -252,7 +252,7 @@ QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &n
 
   // coordinate separator
   QString cs = QStringLiteral( "," );
-  // tupel separator
+  // tuple separator
   QString ts = QStringLiteral( " " );
 
   elemCoordinates.setAttribute( QStringLiteral( "cs" ), cs );
@@ -304,6 +304,11 @@ json QgsPoint::asJsonObject( int precision ) const
     }
   }
   return j;
+}
+
+QString QgsPoint::asKml( int precision ) const
+{
+  return QStringLiteral( "<Point><coordinates>%1,%2</coordinates></Point>" ).arg( qgsDoubleToString( mX, precision ), qgsDoubleToString( mY, precision ) );
 }
 
 void QgsPoint::draw( QPainter &p ) const

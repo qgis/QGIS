@@ -80,7 +80,8 @@ class QgsRendererRangeLabelFormat /Deprecated/
 
 .. versionadded:: 2.6
 
-.. deprecated:: since QGIS 3.10, use QgsClassificationMethod instead
+.. deprecated:: QGIS 3.10
+  use QgsClassificationMethod instead
 %End
 
 %TypeHeaderCode

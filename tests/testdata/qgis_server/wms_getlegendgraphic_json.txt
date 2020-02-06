@@ -1,0 +1,13 @@
+*****
+Content-Type: application/json
+
+{
+   "nodes":[
+      {
+         "icon":"iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAYAAABWzo5XAAAACXBIWXMAAA9hAAAPYQGoP6dpAAAA5klEQVQ4je3QPw/BQBjH8V/LJdfKdSAXEXZhsIiBd2CyWsS7MFnF4pWY+x4MIhIDfQFYhMR/0rsy0EiqklaMvslN99wnTw7494sKz/NdmhYtM04tg9OtwemWcTojOil9mlc+IpmYWWsX40rkMSKFA7MzWm8W56p9soeBIMapVe9Vsi7iJm0H/dbA2q8uOe8b1ccpKEDKiwBAhKiAgzSAfBDoq/ygyQ3KUgrn7UJcJaBiDmAaaCNxEE2zM1pL+4WJq4TZHW8uR9kItSrRSYlxbcYSdMcSdGck9SnRSTEU4ikPn8/9F747d+tCtRm7EewAAAAASUVORK5CYII=",
+         "title":"A test vector layer",
+         "type":"layer"
+      }
+   ],
+   "title":""
+}

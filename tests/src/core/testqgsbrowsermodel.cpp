@@ -75,7 +75,7 @@ void TestQgsBrowserModel::testModel()
   QVERIFY( !model.dataItem( QModelIndex() ) );
 
   // add a root child
-  QgsDataCollectionItem *rootItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Test" ), QStringLiteral( "root1" ) );
+  QgsDataCollectionItem *rootItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Test" ), QStringLiteral( "root1" ), QStringLiteral( "providerKeyRoot1" ) );
   QVERIFY( !model.findItem( rootItem1 ).isValid() );
   model.setupItemConnections( rootItem1 );
   model.mRootItems.append( rootItem1 );
@@ -95,6 +95,7 @@ void TestQgsBrowserModel::testModel()
   QVERIFY( !model.hasChildren( root1Index ) );
   QCOMPARE( model.data( root1Index ).toString(), QStringLiteral( "Test" ) );
   QCOMPARE( model.data( root1Index, QgsBrowserModel::PathRole ).toString(), QStringLiteral( "root1" ) );
+  QCOMPARE( model.data( root1Index, QgsBrowserModel::ProviderKeyRole ).toString(), QStringLiteral( "providerKeyRoot1" ) );
   QCOMPARE( model.dataItem( root1Index ), rootItem1 );
   QCOMPARE( model.findItem( rootItem1 ), root1Index );
 
@@ -111,11 +112,12 @@ void TestQgsBrowserModel::testModel()
   QCOMPARE( model.columnCount( root2Index ), 1 );
   QCOMPARE( model.data( root2Index ).toString(), QStringLiteral( "Test2" ) );
   QCOMPARE( model.data( root2Index, QgsBrowserModel::PathRole ).toString(), QStringLiteral( "root2" ) );
+  QVERIFY( model.data( root2Index, QgsBrowserModel::ProviderKeyRole ).toString().isEmpty() );
   QCOMPARE( model.dataItem( root2Index ), rootItem2 );
   QCOMPARE( model.findItem( rootItem2 ), root2Index );
 
   // child item
-  QgsDataCollectionItem *childItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child1" ), QStringLiteral( "child1" ) );
+  QgsDataCollectionItem *childItem1 = new QgsDataCollectionItem( nullptr, QStringLiteral( "Child1" ), QStringLiteral( "child1" ), QStringLiteral( "providerKeyChild1" ) );
   model.setupItemConnections( childItem1 );
   rootItem1->addChild( childItem1 );
 
@@ -127,6 +129,7 @@ void TestQgsBrowserModel::testModel()
   QModelIndex child1Index = model.index( 0, 0, root1Index );
   QCOMPARE( model.data( child1Index ).toString(), QStringLiteral( "Child1" ) );
   QCOMPARE( model.data( child1Index, QgsBrowserModel::PathRole ).toString(), QStringLiteral( "child1" ) );
+  QCOMPARE( model.data( child1Index, QgsBrowserModel::ProviderKeyRole ).toString(), QStringLiteral( "providerKeyChild1" ) );
   QCOMPARE( model.dataItem( child1Index ), childItem1 );
   QCOMPARE( model.findItem( childItem1 ), child1Index );
   QCOMPARE( model.findItem( childItem1, rootItem1 ), child1Index );

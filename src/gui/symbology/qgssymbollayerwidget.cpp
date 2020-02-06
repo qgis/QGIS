@@ -473,7 +473,11 @@ void QgsSimpleLineSymbolLayerWidget::updatePatternIcon()
 
   // set tooltip
   // create very large preview image
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 23 );
+#else
+  int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
+#endif
   int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
   QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( previewSymbol.get(), QSize( width, height ), height / 20 );
@@ -539,7 +543,13 @@ QgsSimpleMarkerSymbolLayerWidget::QgsSimpleMarkerSymbolLayerWidget( QgsVectorLay
     mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
 
   int size = lstNames->iconSize().width();
-  size = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXX" ) ) ) ) );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  size = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 3 ) ) );
+#else
+  size = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 3 ) ) );
+#endif
+
   lstNames->setGridSize( QSize( size * 1.2, size * 1.2 ) );
   lstNames->setIconSize( QSize( size, size ) );
 
@@ -969,7 +979,11 @@ QgsFilledMarkerSymbolLayerWidget::QgsFilledMarkerSymbolLayerWidget( QgsVectorLay
     mSizeDDBtn->setSymbol( mAssistantPreviewSymbol );
 
   int size = lstNames->iconSize().width();
-  size = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXX" ) ) ) ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  size = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 3 ) ) );
+#else
+  size = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 3 ) ) );
+#endif
   lstNames->setGridSize( QSize( size * 1.2, size * 1.2 ) );
   lstNames->setIconSize( QSize( size, size ) );
 
@@ -2260,7 +2274,11 @@ QgsSvgMarkerSymbolLayerWidget::QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl
   spinOffsetY->setClearValue( 0.0 );
   spinAngle->setClearValue( 0.0 );
 
-  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXX" ) ) ) ) );
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 4 ) ) );
+#else
+  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 4 ) ) );
+#endif
   viewImages->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
 
   populateList();
@@ -4108,4 +4126,146 @@ void QgsGeometryGeneratorSymbolLayerWidget::updateSymbolType()
   mLayer->setSymbolType( static_cast<QgsSymbol::SymbolType>( cbxGeometryType->currentData().toInt() ) );
 
   emit symbolChanged();
+}
+
+//
+// QgsRandomMarkerFillSymbolLayerWidget
+//
+
+
+QgsRandomMarkerFillSymbolLayerWidget::QgsRandomMarkerFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent ):
+  QgsSymbolLayerWidget( parent, vl )
+{
+  setupUi( this );
+
+  mCountMethodComboBox->addItem( tr( "Absolute Count" ), QgsRandomMarkerFillSymbolLayer::AbsoluteCount );
+  mCountMethodComboBox->addItem( tr( "Density-based Count" ), QgsRandomMarkerFillSymbolLayer::DensityBasedCount );
+
+  mPointCountSpinBox->setShowClearButton( true );
+  mPointCountSpinBox->setClearValue( 100 );
+  mSeedSpinBox->setShowClearButton( true );
+  mSeedSpinBox->setClearValue( 0 );
+
+  connect( mCountMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRandomMarkerFillSymbolLayerWidget::countMethodChanged );
+  connect( mPointCountSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsRandomMarkerFillSymbolLayerWidget::countChanged );
+  connect( mDensityAreaSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRandomMarkerFillSymbolLayerWidget::densityAreaChanged );
+  connect( mSeedSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsRandomMarkerFillSymbolLayerWidget::seedChanged );
+  connect( mClipPointsCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    if ( mLayer )
+    {
+      mLayer->setClipPoints( checked );
+      emit changed();
+    }
+  } );
+
+  mDensityAreaUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
+                                    << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
+
+  connect( mDensityAreaUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsRandomMarkerFillSymbolLayerWidget::densityAreaUnitChanged );
+}
+
+void QgsRandomMarkerFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
+{
+  if ( !layer || layer->layerType() != QLatin1String( "RandomMarkerFill" ) )
+  {
+    return;
+  }
+
+  mLayer = static_cast<QgsRandomMarkerFillSymbolLayer *>( layer );
+  whileBlocking( mPointCountSpinBox )->setValue( mLayer->pointCount() );
+  whileBlocking( mSeedSpinBox )->setValue( mLayer->seed() );
+  whileBlocking( mClipPointsCheckBox )->setChecked( mLayer->clipPoints() );
+
+  bool showDensityBasedCountWidgets = false;
+  switch ( mLayer->countMethod() )
+  {
+    case QgsRandomMarkerFillSymbolLayer::DensityBasedCount:
+      showDensityBasedCountWidgets = true;
+      break;
+    case QgsRandomMarkerFillSymbolLayer::AbsoluteCount:
+      break;
+  }
+  mDensityAreaLabel->setVisible( showDensityBasedCountWidgets );
+  mDensityAreaSpinBox->setVisible( showDensityBasedCountWidgets );
+  mDensityAreaUnitWidget->setVisible( showDensityBasedCountWidgets );
+  mDensityAreaDdbtn->setVisible( showDensityBasedCountWidgets );
+
+  whileBlocking( mCountMethodComboBox )->setCurrentIndex( mCountMethodComboBox->findData( mLayer->countMethod() ) );
+  whileBlocking( mDensityAreaSpinBox )->setValue( mLayer->densityArea() );
+  mDensityAreaUnitWidget->blockSignals( true );
+  mDensityAreaUnitWidget->setUnit( mLayer->densityAreaUnit() );
+  mDensityAreaUnitWidget->setMapUnitScale( mLayer->densityAreaUnitScale() );
+  mDensityAreaUnitWidget->blockSignals( false );
+
+  registerDataDefinedButton( mPointCountDdbtn, QgsSymbolLayer::PropertyPointCount );
+  registerDataDefinedButton( mDensityAreaDdbtn, QgsSymbolLayer::PropertyDensityArea );
+  registerDataDefinedButton( mSeedDdbtn, QgsSymbolLayer::PropertyRandomSeed );
+  registerDataDefinedButton( mClipPointsDdbtn, QgsSymbolLayer::PropertyClipPoints );
+}
+
+QgsSymbolLayer *QgsRandomMarkerFillSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsRandomMarkerFillSymbolLayerWidget::countMethodChanged( int )
+{
+
+  bool showDensityBasedCountWidgets = false;
+  switch ( static_cast< QgsRandomMarkerFillSymbolLayer::CountMethod >( mCountMethodComboBox->currentData().toInt() ) )
+  {
+    case QgsRandomMarkerFillSymbolLayer::DensityBasedCount:
+      showDensityBasedCountWidgets = true;
+      break;
+    case QgsRandomMarkerFillSymbolLayer::AbsoluteCount:
+      break;
+  }
+  mDensityAreaLabel->setVisible( showDensityBasedCountWidgets );
+  mDensityAreaSpinBox->setVisible( showDensityBasedCountWidgets );
+  mDensityAreaUnitWidget->setVisible( showDensityBasedCountWidgets );
+  mDensityAreaDdbtn->setVisible( showDensityBasedCountWidgets );
+
+  if ( mLayer )
+  {
+    mLayer->setCountMethod( static_cast< QgsRandomMarkerFillSymbolLayer::CountMethod >( mCountMethodComboBox->currentData().toInt() ) );
+    emit changed();
+  }
+}
+
+void QgsRandomMarkerFillSymbolLayerWidget::countChanged( int d )
+{
+  if ( mLayer )
+  {
+    mLayer->setPointCount( d );
+    emit changed();
+  }
+}
+
+void QgsRandomMarkerFillSymbolLayerWidget::densityAreaChanged( double d )
+{
+  if ( mLayer )
+  {
+    mLayer->setDensityArea( d );
+    emit changed();
+  }
+}
+
+void QgsRandomMarkerFillSymbolLayerWidget::densityAreaUnitChanged()
+{
+  if ( mLayer )
+  {
+    mLayer->setDensityAreaUnit( mDensityAreaUnitWidget->unit() );
+    mLayer->setDensityAreaUnitScale( mDensityAreaUnitWidget->getMapUnitScale() );
+    emit changed();
+  }
+}
+
+void QgsRandomMarkerFillSymbolLayerWidget::seedChanged( int d )
+{
+  if ( mLayer )
+  {
+    mLayer->setSeed( d );
+    emit changed();
+  }
 }

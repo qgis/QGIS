@@ -24,15 +24,20 @@ Snapping utils instance that is connected to a canvas and updates the configurat
 %End
   public:
 
-    QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = 0, bool asynchronous = false );
+    QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = 0 );
 %Docstring
 Construct map canvas snapping utils object
 
 :param canvas: map canvas
 :param parent: parent object
-:param asynchronous: if ``True`` snapping cache index will be non blocking and done in another thread,
-                     if ``False`` it will block until indexing is done
+               if ``False`` it will block until indexing is done
 %End
+
+  protected:
+    virtual void prepareIndexStarting( int count );
+
+    virtual void prepareIndexProgress( int index );
+
 
 };
 

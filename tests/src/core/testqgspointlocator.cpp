@@ -349,14 +349,14 @@ class TestQgsPointLocator : public QObject
 
     void testAsynchronousMode()
     {
-      QgsPointLocator loc( mVL, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr, true );
+      QgsPointLocator loc( mVL, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr );
       QgsPointXY pt( 2, 2 );
 
       QEventLoop loop;
       connect( &loc, &QgsPointLocator::initFinished, &loop, &QEventLoop::quit );
 
       // locator is not ready yet
-      QgsPointLocator::Match m = loc.nearestVertex( pt, 999 );
+      QgsPointLocator::Match m = loc.nearestVertex( pt, 999, nullptr, true );
       QVERIFY( !m.isValid() );
       QVERIFY( loc.mIsIndexing );
 
@@ -379,13 +379,13 @@ class TestQgsPointLocator : public QObject
     void testLayerUpdatesAsynchronous()
     {
 
-      QgsPointLocator loc( mVL, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr, true );
+      QgsPointLocator loc( mVL );
 
       QEventLoop loop;
       connect( &loc, &QgsPointLocator::initFinished, &loop, &QEventLoop::quit );
 
       // trigger locator initialization
-      QgsPointLocator::Match mAddV0 = loc.nearestVertex( QgsPointXY( 12, 12 ), 999 );
+      QgsPointLocator::Match mAddV0 = loc.nearestVertex( QgsPointXY( 12, 12 ), 999, nullptr, true );
 
       // locator is not ready yet
       QVERIFY( !mAddV0.isValid() );
@@ -436,6 +436,87 @@ class TestQgsPointLocator : public QObject
 
       mVL->rollBack();
     }
+
+    void testWaitForIndexingFinished()
+    {
+      QgsPointLocator loc( mVL, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr );
+      QgsPointXY pt( 2, 2 );
+
+      // locator is not ready yet
+      QgsPointLocator::Match m = loc.nearestVertex( pt, 999, nullptr, true );
+      QVERIFY( !m.isValid() );
+      QVERIFY( loc.mIsIndexing );
+
+      // non relaxed call, this will block until the first indexing is finished
+      // so the match point has to be valid
+      m = loc.nearestVertex( pt, 999, nullptr );
+      QVERIFY( m.isValid() );
+      QVERIFY( !loc.mIsIndexing );
+
+      // now locator is ready
+      m = loc.nearestVertex( pt, 999 );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasVertex() );
+      QCOMPARE( m.layer(), mVL );
+      QCOMPARE( m.featureId(), ( QgsFeatureId )1 );
+      QCOMPARE( m.point(), QgsPointXY( 1, 1 ) );
+      QCOMPARE( m.distance(), std::sqrt( 2.0 ) );
+      QCOMPARE( m.vertexIndex(), 2 );
+    }
+
+    void testDeleteLocator()
+    {
+      QgsPointLocator *loc = new QgsPointLocator( mVL, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr );
+      QgsPointXY pt( 2, 2 );
+
+      // delete locator while we are indexing (could happen when closing project for instance)
+      loc->nearestVertex( pt, 999, nullptr, true );
+      delete loc;
+    }
+
+
+    void testEmptyLayer()
+    {
+      // Issue https://github.com/qgis/QGIS/issues/33449
+
+
+      // Create an empty layer, add one feature and check that we can snap on this feature
+      QgsVectorLayer layer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      QgsProject::instance()->addMapLayer( &layer );
+
+      QgsPointLocator loc( &layer );
+
+      // init locator (no rtree in locator because there is no feature in layer)
+      QgsPointXY pt( 2, 2 );
+      QgsPointLocator::Match m = loc.nearestVertex( pt, 999 );
+      QVERIFY( loc.mIsEmptyLayer );
+      QVERIFY( !loc.mRTree );
+
+      layer.startEditing();
+      QgsFeature ff( 0 );
+      QgsPolygonXY polygon;
+      QgsPolylineXY polyline;
+      polyline << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 0, 1 );
+      polygon << polyline;
+      QgsGeometry ffGeom = QgsGeometry::fromPolygonXY( polygon );
+      ff.setGeometry( ffGeom );
+
+      layer.addFeature( ff );
+
+      QVERIFY( !loc.mIsEmptyLayer );
+      QVERIFY( loc.mRTree );
+
+      // Check is inserted feature is well known from the locator (even in relaxed mode,
+      // no need to index and wait for finished)
+      m = loc.nearestVertex( pt, 999, nullptr, true );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasVertex() );
+      QCOMPARE( m.layer(), &layer );
+      QCOMPARE( m.point(), QgsPointXY( 1, 1 ) );
+      QCOMPARE( m.distance(), std::sqrt( 2.0 ) );
+      QCOMPARE( m.vertexIndex(), 2 );
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsPointLocator )

@@ -534,6 +534,40 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionCheckQgisVersion() = 0;
     virtual QAction *actionAbout() = 0;
 
+    // Shape digitize actions
+    //! Returns the native add circle from 2 points action. Call trigger() on it to set the map tool.
+    virtual QAction *actionCircle2Points()  = 0;
+    //! Returns the native add circle from 3 points action. Call trigger() on it to set the map tool.
+    virtual QAction *actionCircle3Points()  = 0;
+    //! Returns the native add circle from 3 tangents action. Call trigger() on it to set the map tool.
+    virtual QAction *actionCircle3Tangents()  = 0;
+    //! Returns the native add circle from 2 tangents and a point action. Call trigger() on it to set the map tool.
+    virtual QAction *actionCircle2TangentsPoint()  = 0;
+    //! Returns the native add circle from center action. Call trigger() on it to set the map tool.
+    virtual QAction *actionCircleCenterPoint()  = 0;
+    //! Returns the native add ellipse from center and 2 points action. Call trigger() on it to set the map tool.
+    virtual QAction *actionEllipseCenter2Points()  = 0;
+    //! Returns the native add ellipse from center and a point action. Call trigger() on it to set the map tool.
+    virtual QAction *actionEllipseCenterPoint()  = 0;
+    //! Returns the native add ellipse from an extent action. Call trigger() on it to set the map tool.
+    virtual QAction *actionEllipseExtent()  = 0;
+    //! Returns the native add ellipse from foci action. Call trigger() on it to set the map tool.
+    virtual QAction *actionEllipseFoci()  = 0;
+    //! Returns the native add rectangle from center and a point action. Call trigger() on it to set the map tool.
+    virtual QAction *actionRectangleCenterPoint()  = 0;
+    //! Returns the native add rectangle from extent action. Call trigger() on it to set the map tool.
+    virtual QAction *actionRectangleExtent()  = 0;
+    //! Returns the native add rectangle from 3 points (distance from 2nd and 3rd points) action. Call trigger() on it to set the map tool.
+    virtual QAction *actionRectangle3PointsDistance()  = 0;
+    //! Returns the native add rectangle from 3 points (distance from projected 3rd point on segment p1 and p2) action. Call trigger() on it to set the map tool.
+    virtual QAction *actionRectangle3PointsProjected()  = 0;
+    //! Returns the native add regular polygon from 2 points action. Call trigger() on it to set the map tool.
+    virtual QAction *actionRegularPolygon2Points()  = 0;
+    //! Returns the native add regular polygon from center and a point action. Call trigger() on it to set the map tool.
+    virtual QAction *actionRegularPolygonCenterPoint()  = 0;
+    //! Returns the native add regular polygon from center and a corner action. Call trigger() on it to set the map tool.
+    virtual QAction *actionRegularPolygonCenterCorner()  = 0;
+
     /**
      * Access the vector layer tools instance.
      * With the help of this you can access methods like addFeature, startEditing
@@ -616,8 +650,18 @@ class GUI_EXPORT QgisInterface : public QObject
 
     //! Adds (opens) a project
     virtual bool addProject( const QString &project ) = 0;
-    //! Starts a new blank project
-    virtual void newProject( bool promptToSaveFlag = false ) = 0;
+
+    /**
+     * Starts a new blank project.
+     *
+     * If \a promptToSaveFlag is TRUE then users will be prompted to save any currently open
+     * project (if that project has changes). If the flag is FALSE, then the current project will
+     * be closed without prompting to save (possibly resulting in data loss).
+     *
+     * Since QGIS 3.10.1, returns TRUE if a new project was created, or FALSE if the operation was not successful (e.g.
+     * the user opted to cancel when prompted to save the current project).
+     */
+    virtual bool newProject( bool promptToSaveFlag = false ) = 0;
 
     /**
      * Triggered when connections have changed.

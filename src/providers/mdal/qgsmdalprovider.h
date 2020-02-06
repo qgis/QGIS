@@ -70,6 +70,8 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const override;
     QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const override;
     QgsMeshDataBlock datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const override;
+    QgsMesh3dDataBlock dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
+
     bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
     QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
     QgsRectangle extent() const override;
@@ -80,8 +82,6 @@ class QgsMdalProvider : public QgsMeshDataProvider
                               const QVector<QgsMeshDataBlock> &datasetActive,
                               const QVector<double> &times
                             ) override;
-
-    void reloadData() override;
 
     /**
      * Returns file filters for meshes and datasets to be used in Open File Dialogs
@@ -112,6 +112,11 @@ class QgsMdalProvider : public QgsMeshDataProvider
     MeshH mMeshH;
     QStringList mExtraDatasetUris;
     QgsCoordinateReferenceSystem mCrs;
+
+    /**
+     * Closes and reloads dataset
+    */
+    void reloadProviderData() override;
 };
 
 class QgsMdalProviderMetadata: public QgsProviderMetadata
@@ -119,6 +124,7 @@ class QgsMdalProviderMetadata: public QgsProviderMetadata
   public:
     QgsMdalProviderMetadata();
     QString filters( FilterType type ) override;
+    QList<QgsMeshDriverMetadata> meshDriversMetadata() override;
     QgsMdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 };

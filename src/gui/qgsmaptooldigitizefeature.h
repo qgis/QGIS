@@ -4,7 +4,7 @@
  ---------------------
  begin                : 7.12.2017
  copyright            : (C) 2017 by David Signer
- email                : david@opengis.ch
+ email                : david at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -42,6 +42,7 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
      */
     QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode = QgsMapToolCapture::CaptureNone );
 
+    void keyPressEvent( QKeyEvent *e ) override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     /**

@@ -27,6 +27,7 @@
 
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovidergui.h"
+#include "qgspostgresprovidergui.h"
 #endif
 
 /**
@@ -68,6 +69,9 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
 #ifdef HAVE_STATIC_PROVIDERS
   QgsProviderGuiMetadata *wms = new QgsWmsProviderGuiMetadata();
   mProviders[ wms->key() ] = wms;
+
+  QgsProviderGuiMetadata *postgres = new QgsPostgresProviderGuiMetadata();
+  mProviders[ postgres->key() ] = postgres;
 #endif
 }
 

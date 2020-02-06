@@ -283,7 +283,7 @@ Returns a string with characters having vertical representation form substituted
 
 :param string: input string
 
-:return: string with substition applied
+:return: string with substitution applied
 
 .. versionadded:: 3.10
 %End

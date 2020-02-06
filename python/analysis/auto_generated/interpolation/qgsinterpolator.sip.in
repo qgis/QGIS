@@ -10,6 +10,7 @@
 
 
 
+
 struct QgsInterpolatorVertexData
 {
 
@@ -70,6 +71,8 @@ can be an attribute or the z-coordinates in case of 3D types.
       QgsInterpolator::ValueSource valueSource;
       int interpolationAttribute;
       QgsInterpolator::SourceType sourceType;
+
+      QgsCoordinateTransformContext transformContext;
     };
 
     QgsInterpolator( const QList<QgsInterpolator::LayerData> &layerData );

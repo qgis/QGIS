@@ -29,6 +29,7 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   mValueColumn->setLayer( mLayerName->currentLayer() );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mKeyColumn, &QgsFieldComboBox::setLayer );
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mValueColumn, &QgsFieldComboBox::setLayer );
+  connect( mLayerName, &QgsMapLayerComboBox::layerChanged, this, &QgsValueRelationConfigDlg::layerChanged );
   connect( mEditExpression, &QAbstractButton::clicked, this, &QgsValueRelationConfigDlg::editExpression );
 
   mNofColumns->setMinimum( 1 );
@@ -51,6 +52,8 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
          );
 
   connect( mNofColumns, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+
+  layerChanged();
 }
 
 QVariantMap QgsValueRelationConfigDlg::config()
@@ -92,6 +95,12 @@ void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
   mOrderByValue->setChecked( config.value( QStringLiteral( "OrderByValue" ) ).toBool() );
   mFilterExpression->setPlainText( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
   mUseCompleter->setChecked( config.value( QStringLiteral( "UseCompleter" ) ).toBool() );
+}
+
+void QgsValueRelationConfigDlg::layerChanged()
+{
+  mFilterExpression->setEnabled( qobject_cast<QgsVectorLayer *>( mLayerName->currentLayer() ) );
+  mEditExpression->setEnabled( qobject_cast<QgsVectorLayer *>( mLayerName->currentLayer() ) );
 }
 
 void QgsValueRelationConfigDlg::editExpression()

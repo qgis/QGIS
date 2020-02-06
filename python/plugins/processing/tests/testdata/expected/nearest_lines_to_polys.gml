@@ -10,7 +10,7 @@
       <gml:coord><gml:X>10</gml:X><gml:Y>5</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
-                                                                                                                                                             
+
   <gml:featureMember>
     <ogr:nearest_lines_to_polys fid="polys.0">
       <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-1,-1 -0.784492588369441,2.79526795895097 2.84914481185861,2.77371721778791 2.97844925883694,2.0 2.30005017001229,2.31222976119276 1.7306157354618,2.18318129988597 1.8047712914227,1.30692158433784 1.67006135290115,0.930982619199196 1.75463252921878,0.447776631639586 2,-1 -1,-1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
@@ -48,7 +48,7 @@
       <ogr:intval>0</ogr:intval>
       <ogr:floatval xsi:nil="true"/>
       <ogr:fid_2>lines.4</ogr:fid_2>
-      <ogr:n>1</ogr:n>
+      <ogr:n>2</ogr:n>
       <ogr:distance>0</ogr:distance>
       <ogr:feature_x>7</ogr:feature_x>
       <ogr:feature_y>-3</ogr:feature_y>
@@ -63,7 +63,7 @@
       <ogr:intval>0</ogr:intval>
       <ogr:floatval xsi:nil="true"/>
       <ogr:fid_2>lines.5</ogr:fid_2>
-      <ogr:n>2</ogr:n>
+      <ogr:n>1</ogr:n>
       <ogr:distance>0</ogr:distance>
       <ogr:feature_x>10</ogr:feature_x>
       <ogr:feature_y>0.751595020683033</ogr:feature_y>

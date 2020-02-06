@@ -1,0 +1,827 @@
+<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
+<qgis version="3.4.13-Madeira" projectname="">
+  <homePath path=""/>
+  <title></title>
+  <autotransaction active="0"/>
+  <evaluateDefaultValues active="0"/>
+  <trust active="0"/>
+  <projectCrs>
+    <spatialrefsys>
+      <proj4>+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+      <srsid>145</srsid>
+      <srid>2154</srid>
+      <authid>EPSG:2154</authid>
+      <description>RGF93 / Lambert-93</description>
+      <projectionacronym>lcc</projectionacronym>
+      <ellipsoidacronym>GRS80</ellipsoidacronym>
+      <geographicflag>false</geographicflag>
+    </spatialrefsys>
+  </projectCrs>
+  <layer-tree-group>
+    <customproperties/>
+    <layer-tree-layer expanded="1" name="observations" checked="Qt::Checked" source="./communes.gpkg|layername=observations" providerKey="ogr" id="observations_677eb8d1_d799_44e9_9cca_2a2ea751516b">
+      <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-layer expanded="1" name="communes" checked="Qt::Checked" source="./communes.gpkg|layername=communes" providerKey="ogr" id="communes_1eab96b3_6926_4df4_a2ab_28d52849c5c7">
+      <customproperties/>
+    </layer-tree-layer>
+    <custom-order enabled="0">
+      <item>communes_1eab96b3_6926_4df4_a2ab_28d52849c5c7</item>
+      <item>observations_677eb8d1_d799_44e9_9cca_2a2ea751516b</item>
+    </custom-order>
+  </layer-tree-group>
+  <snapping-settings mode="2" unit="1" intersection-snapping="0" type="1" enabled="0" tolerance="12">
+    <individual-layer-settings>
+      <layer-setting units="1" type="1" id="communes_1eab96b3_6926_4df4_a2ab_28d52849c5c7" enabled="0" tolerance="12"/>
+      <layer-setting units="1" type="1" id="observations_677eb8d1_d799_44e9_9cca_2a2ea751516b" enabled="0" tolerance="12"/>
+    </individual-layer-settings>
+  </snapping-settings>
+  <relations>
+    <relation referencedLayer="communes_1eab96b3_6926_4df4_a2ab_28d52849c5c7" referencingLayer="observations_677eb8d1_d799_44e9_9cca_2a2ea751516b" strength="Association" name="Com/Obs" id="observatio_insee_com_communes_1_INSEE_COM">
+      <fieldRef referencingField="insee_com" referencedField="INSEE_COM"/>
+    </relation>
+  </relations>
+  <mapcanvas name="theMapCanvas" annotationsVisible="1">
+    <units>meters</units>
+    <extent>
+      <xmin>759305.65625</xmin>
+      <ymin>6262698.08750000037252903</ymin>
+      <xmax>788987.84375</xmax>
+      <ymax>6291926.41249999962747097</ymax>
+    </extent>
+    <rotation>0</rotation>
+    <destinationsrs>
+      <spatialrefsys>
+        <proj4>+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+        <srsid>145</srsid>
+        <srid>2154</srid>
+        <authid>EPSG:2154</authid>
+        <description>RGF93 / Lambert-93</description>
+        <projectionacronym>lcc</projectionacronym>
+        <ellipsoidacronym>GRS80</ellipsoidacronym>
+        <geographicflag>false</geographicflag>
+      </spatialrefsys>
+    </destinationsrs>
+    <rendermaptile>0</rendermaptile>
+  </mapcanvas>
+  <projectModels/>
+  <legend updateDrawingOrder="true">
+    <legendlayer drawingOrder="-1" checked="Qt::Checked" name="observations" open="true" showFeatureCount="0">
+      <filegroup hidden="false" open="true">
+        <legendlayerfile layerid="observations_677eb8d1_d799_44e9_9cca_2a2ea751516b" visible="1" isInOverview="0"/>
+      </filegroup>
+    </legendlayer>
+    <legendlayer drawingOrder="-1" checked="Qt::Checked" name="communes" open="true" showFeatureCount="0">
+      <filegroup hidden="false" open="true">
+        <legendlayerfile layerid="communes_1eab96b3_6926_4df4_a2ab_28d52849c5c7" visible="1" isInOverview="0"/>
+      </filegroup>
+    </legendlayer>
+  </legend>
+  <mapViewDocks/>
+  <projectlayers>
+    <maplayer simplifyLocal="1" refreshOnNotifyEnabled="0" autoRefreshEnabled="0" maxScale="0" autoRefreshTime="0" geometry="Polygon" styleCategories="AllStyleCategories" simplifyAlgorithm="0" simplifyMaxScale="1" simplifyDrawingTol="1" minScale="1e+8" type="vector" readOnly="0" hasScaleBasedVisibilityFlag="0" simplifyDrawingHints="1" refreshOnNotifyMessage="" labelsEnabled="0">
+      <extent>
+        <xmin>760012.375</xmin>
+        <ymin>6263394</ymin>
+        <xmax>788281.125</xmax>
+        <ymax>6291230.5</ymax>
+      </extent>
+      <id>communes_1eab96b3_6926_4df4_a2ab_28d52849c5c7</id>
+      <datasource>./communes.gpkg|layername=communes</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>communes</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+          <srsid>145</srsid>
+          <srid>2154</srid>
+          <authid>EPSG:2154</authid>
+          <description>RGF93 / Lambert-93</description>
+          <projectionacronym>lcc</projectionacronym>
+          <ellipsoidacronym>GRS80</ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <renderer-v2 symbollevels="0" forceraster="0" type="singleSymbol" enableorderby="0">
+        <symbols>
+          <symbol alpha="1" name="0" type="fill" force_rhr="0" clip_to_extent="1">
+            <layer class="SimpleFill" pass="0" enabled="1" locked="0">
+              <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+              <prop v="145,82,45,255" k="color"/>
+              <prop v="bevel" k="joinstyle"/>
+              <prop v="0,0" k="offset"/>
+              <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+              <prop v="MM" k="offset_unit"/>
+              <prop v="35,35,35,255" k="outline_color"/>
+              <prop v="solid" k="outline_style"/>
+              <prop v="0.26" k="outline_width"/>
+              <prop v="MM" k="outline_width_unit"/>
+              <prop v="solid" k="style"/>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option name="name" value="" type="QString"/>
+                  <Option name="properties"/>
+                  <Option name="type" value="collection" type="QString"/>
+                </Option>
+              </data_defined_properties>
+            </layer>
+          </symbol>
+        </symbols>
+        <rotation/>
+        <sizescale/>
+      </renderer-v2>
+      <customproperties/>
+      <blendMode>0</blendMode>
+      <featureBlendMode>0</featureBlendMode>
+      <layerOpacity>1</layerOpacity>
+      <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
+        <activeChecks type="StringList">
+          <Option value="" type="QString"/>
+        </activeChecks>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="fid">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="ID_GEOFLA">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="CODE_COM">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="INSEE_COM">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="NOM_COM">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="STATUT">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="X_CHF_LIEU">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Y_CHF_LIEU">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="X_CENTROID">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Y_CENTROID">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="Z_MOYEN">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="SUPERFICIE">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="POPULATION">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="CODE_CANT">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="CODE_ARR">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="CODE_DEPT">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="NOM_DEPT">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="CODE_REG">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="NOM_REG">
+          <editWidget type="">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias index="0" name="" field="fid"/>
+        <alias index="1" name="" field="ID_GEOFLA"/>
+        <alias index="2" name="" field="CODE_COM"/>
+        <alias index="3" name="" field="INSEE_COM"/>
+        <alias index="4" name="" field="NOM_COM"/>
+        <alias index="5" name="" field="STATUT"/>
+        <alias index="6" name="" field="X_CHF_LIEU"/>
+        <alias index="7" name="" field="Y_CHF_LIEU"/>
+        <alias index="8" name="" field="X_CENTROID"/>
+        <alias index="9" name="" field="Y_CENTROID"/>
+        <alias index="10" name="" field="Z_MOYEN"/>
+        <alias index="11" name="" field="SUPERFICIE"/>
+        <alias index="12" name="" field="POPULATION"/>
+        <alias index="13" name="" field="CODE_CANT"/>
+        <alias index="14" name="" field="CODE_ARR"/>
+        <alias index="15" name="" field="CODE_DEPT"/>
+        <alias index="16" name="" field="NOM_DEPT"/>
+        <alias index="17" name="" field="CODE_REG"/>
+        <alias index="18" name="" field="NOM_REG"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="" applyOnUpdate="0" field="fid"/>
+        <default expression="" applyOnUpdate="0" field="ID_GEOFLA"/>
+        <default expression="" applyOnUpdate="0" field="CODE_COM"/>
+        <default expression="" applyOnUpdate="0" field="INSEE_COM"/>
+        <default expression="" applyOnUpdate="0" field="NOM_COM"/>
+        <default expression="" applyOnUpdate="0" field="STATUT"/>
+        <default expression="" applyOnUpdate="0" field="X_CHF_LIEU"/>
+        <default expression="" applyOnUpdate="0" field="Y_CHF_LIEU"/>
+        <default expression="" applyOnUpdate="0" field="X_CENTROID"/>
+        <default expression="" applyOnUpdate="0" field="Y_CENTROID"/>
+        <default expression="" applyOnUpdate="0" field="Z_MOYEN"/>
+        <default expression="" applyOnUpdate="0" field="SUPERFICIE"/>
+        <default expression="" applyOnUpdate="0" field="POPULATION"/>
+        <default expression="" applyOnUpdate="0" field="CODE_CANT"/>
+        <default expression="" applyOnUpdate="0" field="CODE_ARR"/>
+        <default expression="" applyOnUpdate="0" field="CODE_DEPT"/>
+        <default expression="" applyOnUpdate="0" field="NOM_DEPT"/>
+        <default expression="" applyOnUpdate="0" field="CODE_REG"/>
+        <default expression="" applyOnUpdate="0" field="NOM_REG"/>
+      </defaults>
+      <constraints>
+        <constraint unique_strength="1" exp_strength="0" constraints="3" notnull_strength="1" field="fid"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="ID_GEOFLA"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="CODE_COM"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="INSEE_COM"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="NOM_COM"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="STATUT"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="X_CHF_LIEU"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="Y_CHF_LIEU"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="X_CENTROID"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="Y_CENTROID"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="Z_MOYEN"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="SUPERFICIE"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="POPULATION"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="CODE_CANT"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="CODE_ARR"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="CODE_DEPT"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="NOM_DEPT"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="CODE_REG"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="NOM_REG"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="fid"/>
+        <constraint desc="" exp="" field="ID_GEOFLA"/>
+        <constraint desc="" exp="" field="CODE_COM"/>
+        <constraint desc="" exp="" field="INSEE_COM"/>
+        <constraint desc="" exp="" field="NOM_COM"/>
+        <constraint desc="" exp="" field="STATUT"/>
+        <constraint desc="" exp="" field="X_CHF_LIEU"/>
+        <constraint desc="" exp="" field="Y_CHF_LIEU"/>
+        <constraint desc="" exp="" field="X_CENTROID"/>
+        <constraint desc="" exp="" field="Y_CENTROID"/>
+        <constraint desc="" exp="" field="Z_MOYEN"/>
+        <constraint desc="" exp="" field="SUPERFICIE"/>
+        <constraint desc="" exp="" field="POPULATION"/>
+        <constraint desc="" exp="" field="CODE_CANT"/>
+        <constraint desc="" exp="" field="CODE_ARR"/>
+        <constraint desc="" exp="" field="CODE_DEPT"/>
+        <constraint desc="" exp="" field="NOM_DEPT"/>
+        <constraint desc="" exp="" field="CODE_REG"/>
+        <constraint desc="" exp="" field="NOM_REG"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions>
+        <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
+      </attributeactions>
+      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
+        <columns/>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>generatedlayout</editorlayout>
+      <editable/>
+      <labelOnTop/>
+      <widgets/>
+      <previewExpression>NOM_COM</previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+    <maplayer simplifyLocal="1" refreshOnNotifyEnabled="0" autoRefreshEnabled="0" maxScale="0" autoRefreshTime="0" geometry="Point" styleCategories="AllStyleCategories" simplifyAlgorithm="0" simplifyMaxScale="1" simplifyDrawingTol="1" minScale="1e+8" type="vector" readOnly="0" hasScaleBasedVisibilityFlag="0" simplifyDrawingHints="0" refreshOnNotifyMessage="" labelsEnabled="0">
+      <extent>
+        <xmin>767362.1875</xmin>
+        <ymin>6274758.5</ymin>
+        <xmax>772947.5625</xmax>
+        <ymax>6281819</ymax>
+      </extent>
+      <id>observations_677eb8d1_d799_44e9_9cca_2a2ea751516b</id>
+      <datasource>./communes.gpkg|layername=observations</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>observations</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs</proj4>
+          <srsid>145</srsid>
+          <srid>2154</srid>
+          <authid>EPSG:2154</authid>
+          <description>RGF93 / Lambert-93</description>
+          <projectionacronym>lcc</projectionacronym>
+          <ellipsoidacronym>GRS80</ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <contact>
+          <name></name>
+          <organization></organization>
+          <position></position>
+          <voice></voice>
+          <fax></fax>
+          <email></email>
+          <role></role>
+        </contact>
+        <links/>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent>
+          <spatial minx="0" dimensions="2" miny="0" maxy="0" crs="" maxx="0" maxz="0" minz="0"/>
+          <temporal>
+            <period>
+              <start></start>
+              <end></end>
+            </period>
+          </temporal>
+        </extent>
+      </resourceMetadata>
+      <provider encoding="UTF-8">ogr</provider>
+      <vectorjoins/>
+      <layerDependencies/>
+      <dataDependencies/>
+      <legend type="default-vector"/>
+      <expressionfields/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <auxiliaryLayer/>
+      <flags>
+        <Identifiable>1</Identifiable>
+        <Removable>1</Removable>
+        <Searchable>1</Searchable>
+      </flags>
+      <renderer-v2 symbollevels="0" forceraster="0" type="singleSymbol" enableorderby="0">
+        <symbols>
+          <symbol alpha="1" name="0" type="marker" force_rhr="0" clip_to_extent="1">
+            <layer class="SimpleMarker" pass="0" enabled="1" locked="0">
+              <prop v="0" k="angle"/>
+              <prop v="125,139,143,255" k="color"/>
+              <prop v="1" k="horizontal_anchor_point"/>
+              <prop v="bevel" k="joinstyle"/>
+              <prop v="circle" k="name"/>
+              <prop v="0,0" k="offset"/>
+              <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+              <prop v="MM" k="offset_unit"/>
+              <prop v="35,35,35,255" k="outline_color"/>
+              <prop v="solid" k="outline_style"/>
+              <prop v="0" k="outline_width"/>
+              <prop v="3x:0,0,0,0,0,0" k="outline_width_map_unit_scale"/>
+              <prop v="MM" k="outline_width_unit"/>
+              <prop v="diameter" k="scale_method"/>
+              <prop v="2" k="size"/>
+              <prop v="3x:0,0,0,0,0,0" k="size_map_unit_scale"/>
+              <prop v="MM" k="size_unit"/>
+              <prop v="1" k="vertical_anchor_point"/>
+              <data_defined_properties>
+                <Option type="Map">
+                  <Option name="name" value="" type="QString"/>
+                  <Option name="properties"/>
+                  <Option name="type" value="collection" type="QString"/>
+                </Option>
+              </data_defined_properties>
+            </layer>
+          </symbol>
+        </symbols>
+        <rotation/>
+        <sizescale/>
+      </renderer-v2>
+      <customproperties>
+        <property key="dualview/previewExpressions">
+          <value>fid</value>
+        </property>
+        <property value="0" key="embeddedWidgets/count"/>
+        <property key="variableNames"/>
+        <property key="variableValues"/>
+      </customproperties>
+      <blendMode>0</blendMode>
+      <featureBlendMode>0</featureBlendMode>
+      <layerOpacity>1</layerOpacity>
+      <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
+        <DiagramCategory maxScaleDenominator="1e+8" height="15" sizeScale="3x:0,0,0,0,0,0" penAlpha="255" lineSizeScale="3x:0,0,0,0,0,0" labelPlacementMethod="XHeight" barWidth="5" opacity="1" scaleBasedVisibility="0" lineSizeType="MM" penColor="#000000" minScaleDenominator="0" scaleDependency="Area" minimumSize="0" backgroundColor="#ffffff" penWidth="0" diagramOrientation="Up" rotationOffset="270" sizeType="MM" width="15" backgroundAlpha="255" enabled="0">
+          <fontProperties style="" description="Ubuntu,11,-1,5,50,0,0,0,0,0"/>
+        </DiagramCategory>
+      </SingleCategoryDiagramRenderer>
+      <DiagramLayerSettings linePlacementFlags="18" obstacle="0" priority="0" dist="0" zIndex="0" showAll="1" placement="0">
+        <properties>
+          <Option type="Map">
+            <Option name="name" value="" type="QString"/>
+            <Option name="properties"/>
+            <Option name="type" value="collection" type="QString"/>
+          </Option>
+        </properties>
+      </DiagramLayerSettings>
+      <geometryOptions geometryPrecision="0" removeDuplicateNodes="0">
+        <activeChecks/>
+        <checkConfiguration/>
+      </geometryOptions>
+      <fieldConfiguration>
+        <field name="fid">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="label">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="description">
+          <editWidget type="TextEdit">
+            <config>
+              <Option/>
+            </config>
+          </editWidget>
+        </field>
+        <field name="insee_com">
+          <editWidget type="RelationReference">
+            <config>
+              <Option type="Map">
+                <Option name="AllowAddFeatures" value="false" type="bool"/>
+                <Option name="AllowNULL" value="false" type="bool"/>
+                <Option name="MapIdentification" value="true" type="bool"/>
+                <Option name="OrderByValue" value="false" type="bool"/>
+                <Option name="ReadOnly" value="false" type="bool"/>
+                <Option name="Relation" value="observatio_insee_com_communes_1_INSEE_COM" type="QString"/>
+                <Option name="ShowForm" value="false" type="bool"/>
+                <Option name="ShowOpenFormButton" value="true" type="bool"/>
+              </Option>
+            </config>
+          </editWidget>
+        </field>
+      </fieldConfiguration>
+      <aliases>
+        <alias index="0" name="" field="fid"/>
+        <alias index="1" name="" field="label"/>
+        <alias index="2" name="" field="description"/>
+        <alias index="3" name="" field="insee_com"/>
+      </aliases>
+      <excludeAttributesWMS/>
+      <excludeAttributesWFS/>
+      <defaults>
+        <default expression="" applyOnUpdate="0" field="fid"/>
+        <default expression="" applyOnUpdate="0" field="label"/>
+        <default expression="" applyOnUpdate="0" field="description"/>
+        <default expression="" applyOnUpdate="0" field="insee_com"/>
+      </defaults>
+      <constraints>
+        <constraint unique_strength="1" exp_strength="0" constraints="3" notnull_strength="1" field="fid"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="label"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="description"/>
+        <constraint unique_strength="0" exp_strength="0" constraints="0" notnull_strength="0" field="insee_com"/>
+      </constraints>
+      <constraintExpressions>
+        <constraint desc="" exp="" field="fid"/>
+        <constraint desc="" exp="" field="label"/>
+        <constraint desc="" exp="" field="description"/>
+        <constraint desc="" exp="" field="insee_com"/>
+      </constraintExpressions>
+      <expressionfields/>
+      <attributeactions>
+        <defaultAction value="{00000000-0000-0000-0000-000000000000}" key="Canvas"/>
+      </attributeactions>
+      <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
+        <columns>
+          <column width="-1" hidden="0" name="fid" type="field"/>
+          <column width="-1" hidden="0" name="label" type="field"/>
+          <column width="-1" hidden="0" name="description" type="field"/>
+          <column width="-1" hidden="0" name="insee_com" type="field"/>
+          <column width="-1" hidden="1" type="actions"/>
+        </columns>
+      </attributetableconfig>
+      <conditionalstyles>
+        <rowstyles/>
+        <fieldstyles/>
+      </conditionalstyles>
+      <editform tolerant="1"></editform>
+      <editforminit/>
+      <editforminitcodesource>0</editforminitcodesource>
+      <editforminitfilepath></editforminitfilepath>
+      <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
+"""
+QGIS forms can have a Python function that is called when the form is
+opened.
+
+Use this function to add extra logic to your forms.
+
+Enter the name of the function in the "Python Init function"
+field.
+An example follows:
+"""
+from qgis.PyQt.QtWidgets import QWidget
+
+def my_form_open(dialog, layer, feature):
+	geom = feature.geometry()
+	control = dialog.findChild(QWidget, "MyLineEdit")
+]]></editforminitcode>
+      <featformsuppress>0</featformsuppress>
+      <editorlayout>generatedlayout</editorlayout>
+      <editable>
+        <field name="description" editable="1"/>
+        <field name="fid" editable="1"/>
+        <field name="insee_com" editable="1"/>
+        <field name="label" editable="1"/>
+      </editable>
+      <labelOnTop>
+        <field name="description" labelOnTop="0"/>
+        <field name="fid" labelOnTop="0"/>
+        <field name="insee_com" labelOnTop="0"/>
+        <field name="label" labelOnTop="0"/>
+      </labelOnTop>
+      <widgets/>
+      <previewExpression>fid</previewExpression>
+      <mapTip></mapTip>
+    </maplayer>
+  </projectlayers>
+  <layerorder>
+    <layer id="communes_1eab96b3_6926_4df4_a2ab_28d52849c5c7"/>
+    <layer id="observations_677eb8d1_d799_44e9_9cca_2a2ea751516b"/>
+  </layerorder>
+  <properties>
+    <Paths>
+      <Absolute type="bool">false</Absolute>
+    </Paths>
+    <WMSServiceTitle type="QString"></WMSServiceTitle>
+    <WCSLayers type="QStringList"/>
+    <Measure>
+      <Ellipsoid type="QString">GRS80</Ellipsoid>
+    </Measure>
+    <WMSImageQuality type="int">90</WMSImageQuality>
+    <WMTSJpegLayers>
+      <Layer type="QStringList"/>
+      <Project type="bool">false</Project>
+      <Group type="QStringList"/>
+    </WMTSJpegLayers>
+    <Measurement>
+      <DistanceUnits type="QString">meters</DistanceUnits>
+      <AreaUnits type="QString">m2</AreaUnits>
+    </Measurement>
+    <WMSContactPhone type="QString"></WMSContactPhone>
+    <WMSServiceCapabilities type="bool">false</WMSServiceCapabilities>
+    <WMSContactPerson type="QString"></WMSContactPerson>
+    <WMSRequestDefinedDataSources type="bool">false</WMSRequestDefinedDataSources>
+    <WMSAccessConstraints type="QString">None</WMSAccessConstraints>
+    <WMSContactMail type="QString"></WMSContactMail>
+    <WMSSegmentizeFeatureInfoGeometry type="bool">false</WMSSegmentizeFeatureInfoGeometry>
+    <WFSLayers type="QStringList"/>
+    <WMSAddWktGeometry type="bool">false</WMSAddWktGeometry>
+    <WMTSPngLayers>
+      <Layer type="QStringList"/>
+      <Project type="bool">false</Project>
+      <Group type="QStringList"/>
+    </WMTSPngLayers>
+    <WCSUrl type="QString"></WCSUrl>
+    <Gui>
+      <CanvasColorBluePart type="int">255</CanvasColorBluePart>
+      <SelectionColorBluePart type="int">0</SelectionColorBluePart>
+      <CanvasColorRedPart type="int">255</CanvasColorRedPart>
+      <CanvasColorGreenPart type="int">255</CanvasColorGreenPart>
+      <SelectionColorRedPart type="int">255</SelectionColorRedPart>
+      <SelectionColorAlphaPart type="int">255</SelectionColorAlphaPart>
+      <SelectionColorGreenPart type="int">255</SelectionColorGreenPart>
+    </Gui>
+    <WFSTLayers>
+      <Delete type="QStringList"/>
+      <Insert type="QStringList"/>
+      <Update type="QStringList"/>
+    </WFSTLayers>
+    <WMSPrecision type="QString">8</WMSPrecision>
+    <PositionPrecision>
+      <DecimalPlaces type="int">2</DecimalPlaces>
+      <DegreeFormat type="QString">MU</DegreeFormat>
+      <Automatic type="bool">true</Automatic>
+    </PositionPrecision>
+    <WMSUrl type="QString"></WMSUrl>
+    <WMSContactPosition type="QString"></WMSContactPosition>
+    <SpatialRefSys>
+      <ProjectionsEnabled type="int">1</ProjectionsEnabled>
+    </SpatialRefSys>
+    <PAL>
+      <ShowingAllLabels type="bool">false</ShowingAllLabels>
+      <DrawRectOnly type="bool">false</DrawRectOnly>
+      <ShowingCandidates type="bool">false</ShowingCandidates>
+      <CandidatesPoint type="int">16</CandidatesPoint>
+      <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
+      <TextFormat type="int">0</TextFormat>
+      <SearchMethod type="int">0</SearchMethod>
+      <CandidatesLine type="int">50</CandidatesLine>
+      <CandidatesPolygon type="int">30</CandidatesPolygon>
+    </PAL>
+    <WMSUseLayerIDs type="bool">false</WMSUseLayerIDs>
+    <WMSOnlineResource type="QString"></WMSOnlineResource>
+    <WMSFees type="QString">conditions unknown</WMSFees>
+    <DefaultStyles>
+      <Opacity type="double">1</Opacity>
+      <ColorRamp type="QString"></ColorRamp>
+      <Line type="QString"></Line>
+      <Fill type="QString"></Fill>
+      <Marker type="QString"></Marker>
+      <RandomColors type="bool">true</RandomColors>
+    </DefaultStyles>
+    <WMSContactOrganization type="QString"></WMSContactOrganization>
+    <WMSKeywordList type="QStringList">
+      <value></value>
+    </WMSKeywordList>
+    <Legend>
+      <filterByMap type="bool">false</filterByMap>
+    </Legend>
+    <WMTSMinScale type="int">5000</WMTSMinScale>
+    <WMTSUrl type="QString"></WMTSUrl>
+    <WMTSLayers>
+      <Layer type="QStringList"/>
+      <Project type="bool">false</Project>
+      <Group type="QStringList"/>
+    </WMTSLayers>
+    <WFSUrl type="QString"></WFSUrl>
+    <WMSDefaultMapUnitsPerMm type="double">1</WMSDefaultMapUnitsPerMm>
+    <WMSRootName type="QString"></WMSRootName>
+    <Macros>
+      <pythonCode type="QString"></pythonCode>
+    </Macros>
+    <WMSServiceAbstract type="QString"></WMSServiceAbstract>
+  </properties>
+  <visibility-presets/>
+  <transformContext/>
+  <projectMetadata>
+    <identifier></identifier>
+    <parentidentifier></parentidentifier>
+    <language></language>
+    <type></type>
+    <title></title>
+    <abstract></abstract>
+    <contact>
+      <name></name>
+      <organization></organization>
+      <position></position>
+      <voice></voice>
+      <fax></fax>
+      <email></email>
+      <role></role>
+    </contact>
+    <links/>
+    <author>dhont</author>
+    <creation>2019-12-18T13:31:02</creation>
+  </projectMetadata>
+  <Annotations/>
+  <Layouts/>
+</qgis>

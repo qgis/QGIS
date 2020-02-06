@@ -37,7 +37,7 @@ email                : morb at ozemail dot com dot au
 #include "qgsfeatureid.h"
 
 #ifndef SIP_RUN
-#include <nlohmann/json_fwd.hpp>
+#include "json_fwd.hpp"
 using namespace nlohmann;
 #endif
 
@@ -152,6 +152,7 @@ class CORE_EXPORT QgsGeometry
       /* Split features */
       SplitCannotSplitPoint, //!< Cannot split points
     };
+    Q_ENUM( OperationResult )
 
     //! Constructor
     QgsGeometry();
@@ -881,7 +882,7 @@ class CORE_EXPORT QgsGeometry
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated in QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+     * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QVector<QgsPointXY> &topologyTestPoints SIP_OUT ) SIP_DEPRECATED;
 
@@ -1466,7 +1467,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.10
      */
-    QVector< QgsPointXY > randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr );
+    QVector< QgsPointXY > randomPointsInPolygon( int count, const std::function< bool( const QgsPointXY & ) > &acceptPoint, unsigned long seed = 0, QgsFeedback *feedback = nullptr ) const;
 
     /**
      * Returns a list of \a count random points generated inside a (multi)polygon geometry.
@@ -1481,7 +1482,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.10
      */
-    QVector< QgsPointXY > randomPointsInPolygon( int count, unsigned long seed = 0, QgsFeedback *feedback = nullptr );
+    QVector< QgsPointXY > randomPointsInPolygon( int count, unsigned long seed = 0, QgsFeedback *feedback = nullptr ) const;
     ///@cond PRIVATE
 #else
 
@@ -1497,7 +1498,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.10
      */
-    SIP_PYOBJECT randomPointsInPolygon( int count, unsigned long seed = 0 ) SIP_TYPEHINT( QgsPolylineXY );
+    SIP_PYOBJECT randomPointsInPolygon( int count, unsigned long seed = 0 ) const SIP_TYPEHINT( QgsPolylineXY );
     % MethodCode
     const QgsWkbTypes::GeometryType type = sipCpp->type();
     if ( sipCpp->isNull() )

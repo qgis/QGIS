@@ -69,6 +69,9 @@ Returns the vector layer associated with the widget.
 This method should be called whenever the renderer is actually set on the layer.
 %End
 
+    virtual void setDockMode( bool dockMode );
+
+
   signals:
 
     void layerVariablesChanged();

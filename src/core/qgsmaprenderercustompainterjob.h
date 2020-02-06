@@ -149,6 +149,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererAbstract
     bool mPrepared = false;
     bool mPrepareOnly = false;
 
+    LayerRenderJobs mSecondPassLayerJobs;
 };
 
 

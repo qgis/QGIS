@@ -320,7 +320,7 @@ bool QgsMapRendererTask::run()
             f -= 0.5 * e;
             double geoTransform[6] = { c, a, b, f, d, e };
             GDALSetGeoTransform( outputDS.get(), geoTransform );
-            GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt().toLocal8Bit().constData() );
+            GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().constData() );
           }
 
           if ( mExportMetadata )
@@ -343,7 +343,7 @@ bool QgsMapRendererTask::run()
             GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toLocal8Bit().constData(), nullptr );
 
             GDALSetMetadataItem( outputDS.get(), "AUTHOR", mGeoPdfExportDetails.author.toLocal8Bit().constData(), nullptr );
-            const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+            const QString creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
             GDALSetMetadataItem( outputDS.get(), "CREATOR", creator.toLocal8Bit().constData(), nullptr );
             GDALSetMetadataItem( outputDS.get(), "PRODUCER", creator.toLocal8Bit().constData(), nullptr );
             GDALSetMetadataItem( outputDS.get(), "SUBJECT", mGeoPdfExportDetails.subject.toLocal8Bit().constData(), nullptr );
@@ -396,13 +396,13 @@ bool QgsMapRendererTask::run()
             f -= 0.5 * e;
             double geoTransform[] = { c, a, b, f, d, e };
             GDALSetGeoTransform( outputDS.get(), geoTransform );
-            GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt().toLocal8Bit().constData() );
+            GDALSetProjection( outputDS.get(), mMapSettings.destinationCrs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().constData() );
           }
         }
 
         if ( !skipWorldFile )
         {
-          QString worldFileName = info.absolutePath() + '/' + info.baseName() + '.'
+          QString worldFileName = info.absolutePath() + '/' + info.completeBaseName() + '.'
                                   + outputSuffix.at( 0 ) + outputSuffix.at( info.suffix().size() - 1 ) + 'w';
           QFile worldFile( worldFileName );
 

@@ -444,7 +444,7 @@ void QgsOWSSourceSelect::populateCrs()
         defaultCRS = *it;
 
       // prefer value of DEFAULT_GEO_EPSG_CRS_ID if available
-      if ( *it == GEO_EPSG_CRS_AUTHID )
+      if ( *it == geoEpsgCrsAuthId() )
         defaultCRS = *it;
     }
 
@@ -600,8 +600,8 @@ QString QgsOWSSourceSelect::descriptionForAuthId( const QString &authId )
     return mCrsNames[ authId ];
 
   QgsCoordinateReferenceSystem qgisSrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authId );
-  mCrsNames.insert( authId, qgisSrs.description() );
-  return qgisSrs.description();
+  mCrsNames.insert( authId, qgisSrs.userFriendlyIdentifier() );
+  return qgisSrs.userFriendlyIdentifier();
 }
 
 void QgsOWSSourceSelect::addDefaultServers()

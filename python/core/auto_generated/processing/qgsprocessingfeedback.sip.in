@@ -136,7 +136,7 @@ to scale the current progress to account for progress through the overall proces
 
     virtual void setProgressText( const QString &text );
 
-    virtual void reportError( const QString &error, bool fatalError );
+    virtual void reportError( const QString &error, bool fatalError = false );
 
     virtual void pushInfo( const QString &info );
 

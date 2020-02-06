@@ -41,7 +41,6 @@ ENDIF (WIN32)
 
 MACRO (ADD_QGIS_TEST testname testsrc)
   ADD_EXECUTABLE(qgis_${testname} ${testsrc} ${util_SRCS})
-  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   IF(APPLE)
     TARGET_LINK_LIBRARIES(qgis_${testname} ${APP_SERVICES_LIBRARY})
   ENDIF(APPLE)

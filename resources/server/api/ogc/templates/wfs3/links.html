@@ -1,6 +1,4 @@
-<!-- template for the WFS3 API links list -->
-<ul>
+<!-- template for the WFS3 API links list, to be included in HEAD -->
 {% for link in links %}
-    <li><a rel="{{ link.rel }}" href="{{ link.href }}">{{ link.title }}</a></li>
+    <link rel="{{ link.rel }}" href="{{ link.href }}" title="{{ link.title }}" type="{{ link.type }}">
 {% endfor %}
-</ul>

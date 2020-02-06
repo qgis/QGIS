@@ -1,0 +1,117 @@
+
+name: Documentation issue for labeled PR
+
+on:
+  pull_request:
+    types:
+      - closed
+      - labeled
+
+jobs:
+  pr2docissue:
+    runs-on: ubuntu-latest
+    name: Create issue on doc repo for labeled issue
+    steps:
+
+      # obfuscate the github token so it can be used on jobs triggered from forks
+      - name: Clear GH Token
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
+        id: token
+        uses: opengisch/clear-token@v1.0.12
+        with:
+          bot_token_encrypted: ddbdec32940df79f1adf2369b4b10f10b5a66f65
+          bot_token_xor_key: a1b2c3d47311f8e29e204f85a81b4df4a44e252c
+
+      # transform the milestone (e.g. 3.10.4) to a doc label (3.10)
+      - name: QGIS milestone to Doc label
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
+        id: milestone2label
+        env:
+          MILESTONE: ${{ github.event.pull_request.milestone.title }}
+        run: |
+          LABEL=$(sed -r 's/^([[:digit:]]\.[[:digit:]]+)(\.[[:digit:]]+)?$/\1/' <<< ${MILESTONE})
+          echo ${LABEL}
+          echo "::set-output name=label::${LABEL}"
+            # get the PR body
+
+      # get the PR body
+      - name: Get PR body as JSON
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
+        id: get_pr_info
+        uses: octokit/request-action@v2.x
+        env:
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+        with:
+          route: GET /repos/qgis/QGIS/pulls/:pull_number
+          pull_number: ${{ github.event.pull_request.number }}
+
+      # extract body from json output
+      - name: Get PR body as text
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
+        id: get_pr_body
+        uses: gr2m/get-json-paths-action@v1.x
+        with:
+          json: ${{ steps.get_pr_info.outputs.data }}
+          body: "body"
+
+      # get commits from the PR
+      - name: Get PR commits
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
+        uses: octokit/request-action@v2.x
+        id: get_pr_commits
+        env:
+          GITHUB_TOKEN: ${{ steps.token.outputs.token }}
+        with:
+          route: GET /repos/qgis/QGIS/pulls/:pull_number/commits
+          pull_number: ${{ github.event.pull_request.number }}
+
+      # extracts the matching commits
+      - name: Filter commits with \[needs?.doc(umentation)?s?\]
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
+        id: filtered_commits
+        env:
+          JSON_DATA: ${{ steps.get_pr_commits.outputs.data }}
+        run: |
+          COMMITS_MESSAGES=$(echo ${JSON_DATA} | jq '.[].commit.message | select( . |test("\\[(feature|needs?.doc(umentation)?s?)\\]"; "i")) | sub("\\[needs?.doc(umentation)?s?\\]"; "\n\n\n\n"; "i")')
+          echo "::set-output name=commits::$(echo ${COMMITS_MESSAGES} | tr -d '\n' )"
+
+      # create the documentation issue
+      - name: Create Documentation issue
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
+        id: doc_issue
+        uses: maxkomarychev/oction-create-issue@v0.7.1
+        with:
+          token: ${{ steps.token.outputs.token }}
+          owner: qgis
+          repo: QGIS-Documentation
+          title: ${{ format('Request in QGIS ({0})', github.event.pull_request.title) }}
+          # do not modify the QGIS version, an action automatically creates a label in the doc repo
+          # this is not possible to set labels directly due to security reasons
+          # the token is in clear, so no rights are given to qgis-bot
+          body: |
+            ### Request for documentation
+            From pull request QGIS/qgis#${{ github.event.pull_request.number }}
+            Author: @${{ github.event.pull_request.user.login }}
+            QGIS version: ${{ steps.milestone2label.outputs.label }}
+
+            **${{ github.event.pull_request.title }}**
+
+            ### PR Description:
+            ${{ steps.get_pr_body.outputs.body }}
+
+            ### Commits tagged with [need-docs] or [FEATURE]
+            ${{ steps.filtered_commits.outputs.commits }}
+
+      # write comment to ping the PR author
+      - name: Create comment
+        if: github.event.pull_request.merged && contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          token: ${{ steps.token.outputs.token }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            @${{ github.event.pull_request.user.login }}
+            A documentation ticket has been opened at https://github.com/qgis/QGIS-Documentation/issues/${{ steps.doc_issue.outputs.number }}
+            It is **your** responsibility to visit this ticket and add as much detail as possible for the documentation team to correctly document this change.
+            Thank you!
+          reaction-type: 'rocket'

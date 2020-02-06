@@ -5,65 +5,87 @@
 
 #include "mdal_memory_data_model.hpp"
 #include <assert.h>
-#include <math.h>
+#include <cmath>
 #include <cstring>
 #include <algorithm>
 #include <iterator>
 #include "mdal_utils.hpp"
 
-MDAL::MemoryDataset::MemoryDataset( MDAL::DatasetGroup *grp )
-  : Dataset( grp )
+MDAL::MemoryDataset2D::MemoryDataset2D( MDAL::DatasetGroup *grp, bool hasActiveFlag )
+  : Dataset2D( grp )
   , mValues( group()->isScalar() ? valuesCount() : 2 * valuesCount(),
              std::numeric_limits<double>::quiet_NaN() )
 {
-  if ( group()->isOnVertices() )
+  setSupportsActiveFlag( hasActiveFlag );
+  if ( hasActiveFlag )
+  {
+    assert( grp->dataLocation() == MDAL_DataLocation::DataOnVertices2D );
     mActive = std::vector<int>( mesh()->facesCount(), 1 );
-}
-
-MDAL::MemoryDataset::~MemoryDataset() = default;
-
-int *MDAL::MemoryDataset::active()
-{
-  return mActive.data();
-}
-
-double *MDAL::MemoryDataset::values()
-{
-  return mValues.data();
-}
-
-const int *MDAL::MemoryDataset::constActive() const
-{
-  return mActive.data();
-}
-
-const double *MDAL::MemoryDataset::constValues() const
-{
-  return mValues.data();
-}
-
-size_t MDAL::MemoryDataset::activeData( size_t indexStart, size_t count, int *buffer )
-{
-  if ( group()->isOnVertices() )
-  {
-    size_t nValues = mActive.size();
-
-    if ( ( count < 1 ) || ( indexStart >= nValues ) )
-      return 0;
-
-    size_t copyValues = std::min( nValues - indexStart, count );
-    memcpy( buffer, constActive() + indexStart, copyValues * sizeof( int ) );
-    return copyValues;
   }
-  else
-  {
-    memset( buffer, 1, count * sizeof( int ) );
-  }
-
-  return count;
 }
 
-size_t MDAL::MemoryDataset::scalarData( size_t indexStart, size_t count, double *buffer )
+MDAL::MemoryDataset2D::~MemoryDataset2D() = default;
+
+size_t MDAL::MemoryDataset2D::activeData( size_t indexStart, size_t count, int *buffer )
+{
+  assert( supportsActiveFlag() );
+  size_t nValues = mActive.size();
+
+  if ( ( count < 1 ) || ( indexStart >= nValues ) )
+    return 0;
+
+  size_t copyValues = std::min( nValues - indexStart, count );
+  memcpy( buffer, mActive.data() + indexStart, copyValues * sizeof( int ) );
+  return copyValues;
+}
+
+void MDAL::MemoryDataset2D::activateFaces( MDAL::MemoryMesh *mesh )
+{
+  assert( mesh );
+  assert( supportsActiveFlag() );
+  assert( group()->dataLocation() == MDAL_DataLocation::DataOnVertices2D );
+
+  bool isScalar = group()->isScalar();
+
+  // Activate only Faces that do all Vertex's outputs with some data
+  const size_t nFaces = mesh->facesCount();
+
+  for ( unsigned int idx = 0; idx < nFaces; ++idx )
+  {
+    Face elem = mesh->faces.at( idx );
+    for ( size_t i = 0; i < elem.size(); ++i )
+    {
+      const size_t vertexIndex = elem[i];
+      if ( isScalar )
+      {
+        const double val = mValues[vertexIndex];
+        if ( std::isnan( val ) )
+        {
+          mActive[idx] = 0; //NOT ACTIVE
+          break;
+        }
+      }
+      else
+      {
+        const double x = mValues[2 * vertexIndex];
+        const double y = mValues[2 * vertexIndex + 1];
+        if ( std::isnan( x ) || std::isnan( y ) )
+        {
+          mActive[idx] = 0; //NOT ACTIVE
+          break;
+        }
+      }
+    }
+  }
+}
+
+void MDAL::MemoryDataset2D::setActive( const int *activeBuffer )
+{
+  assert( supportsActiveFlag() );
+  memcpy( mActive.data(), activeBuffer, sizeof( int ) * mesh()->facesCount() );
+}
+
+size_t MDAL::MemoryDataset2D::scalarData( size_t indexStart, size_t count, double *buffer )
 {
   assert( group()->isScalar() ); //checked in C API interface
   size_t nValues = valuesCount();
@@ -73,11 +95,11 @@ size_t MDAL::MemoryDataset::scalarData( size_t indexStart, size_t count, double 
     return 0;
 
   size_t copyValues = std::min( nValues - indexStart, count );
-  memcpy( buffer, constValues() + indexStart, copyValues * sizeof( double ) );
+  memcpy( buffer, mValues.data() + indexStart, copyValues * sizeof( double ) );
   return copyValues;
 }
 
-size_t MDAL::MemoryDataset::vectorData( size_t indexStart, size_t count, double *buffer )
+size_t MDAL::MemoryDataset2D::vectorData( size_t indexStart, size_t count, double *buffer )
 {
   assert( !group()->isScalar() ); //checked in C API interface
   size_t nValues = valuesCount();
@@ -87,7 +109,7 @@ size_t MDAL::MemoryDataset::vectorData( size_t indexStart, size_t count, double 
     return 0;
 
   size_t copyValues = std::min( nValues - indexStart, count );
-  memcpy( buffer, constValues() + 2 * indexStart, 2 * copyValues * sizeof( double ) );
+  memcpy( buffer, mValues.data() + 2 * indexStart, 2 * copyValues * sizeof( double ) );
   return copyValues;
 }
 

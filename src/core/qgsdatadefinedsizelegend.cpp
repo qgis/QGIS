@@ -21,6 +21,10 @@
 #include "qgsxmlutils.h"
 
 
+QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend() = default;
+
+QgsDataDefinedSizeLegend::~QgsDataDefinedSizeLegend() = default;
+
 QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLegend &other )
   : mType( other.mType )
   , mTitleLabel( other.mTitleLabel )

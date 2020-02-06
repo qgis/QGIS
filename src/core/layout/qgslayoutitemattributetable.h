@@ -288,10 +288,30 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
      */
     bool getTableContents( QgsLayoutTableContents &contents ) override SIP_SKIP;
 
+    QgsConditionalStyle conditionalCellStyle( int row, int column ) const override;
+
     QgsExpressionContext createExpressionContext() const override;
     void finalizeRestoreFromXml() override;
 
     void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+
+    /**
+     * Returns TRUE if the attribute table will be rendered using the conditional styling
+     * properties of the linked vector layer.
+     *
+     * \see setUseConditionalStyling()
+     * \since QGIS 3.12
+     */
+    bool useConditionalStyling() const;
+
+    /**
+     * Sets whether the attribute table will be rendered using the conditional styling
+     * properties of the linked vector layer.
+     *
+     * \see useConditionalStyling()
+     * \since QGIS 3.12
+     */
+    void setUseConditionalStyling( bool enabled );
 
   protected:
 
@@ -341,6 +361,10 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     QString mFeatureFilter;
 
     QString mWrapString;
+
+    bool mUseConditionalStyling = false;
+
+    QList< QList< QgsConditionalStyle > > mConditionalStyles;
 
     /**
      * Returns a list of attribute indices corresponding to displayed fields in the table.

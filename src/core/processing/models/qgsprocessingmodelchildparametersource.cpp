@@ -169,7 +169,7 @@ QString QgsProcessingModelChildParameterSource::asPythonCode( const QgsProcessin
       }
 
     case Expression:
-      return QStringLiteral( "QgsExpression('%1').evaluate()" ).arg( mExpression );
+      return QStringLiteral( "QgsExpression(%1).evaluate()" ).arg( QgsProcessingUtils::stringToPythonLiteral( mExpression ) );
 
     case ExpressionText:
       return mExpressionText;

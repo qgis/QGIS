@@ -39,6 +39,8 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
   mCachedBaseData.clear();
   mCachedBaseData.reserve( 100000 );
 
+  const QgsCoordinateReferenceSystem crs = !mLayerData.empty() ? mLayerData.at( 0 ).source->sourceCrs() : QgsCoordinateReferenceSystem();
+
   double layerStep = !mLayerData.empty() ? 100.0 / mLayerData.count() : 1;
   int layerCount = 0;
   for ( const LayerData &layer : qgis::as_const( mLayerData ) )
@@ -68,7 +70,7 @@ QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
     bool attributeConversionOk = false;
     double progress = layerCount * layerStep;
 
-    QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+    QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ).setDestinationCrs( crs, layer.transformContext ) );
     double featureStep = source->featureCount() > 0 ? layerStep / source->featureCount() : layerStep;
 
     QgsFeature feature;

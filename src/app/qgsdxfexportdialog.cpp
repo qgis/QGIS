@@ -168,7 +168,7 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
       int n;
       for ( n = 0; !hasChecked || !hasUnchecked; n++ )
       {
-        QVariant v = data( idx.child( n, 0 ), role );
+        QVariant v = data( index( n, 0, idx ), role );
         if ( !v.isValid() )
           break;
 
@@ -237,7 +237,7 @@ bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const Q
     int i = 0;
     for ( i = 0; ; i++ )
     {
-      QModelIndex child = index.child( i, 0 );
+      QModelIndex child = QgsVectorLayerAndAttributeModel::index( i, 0, index );
       if ( !child.isValid() )
         break;
 
@@ -281,14 +281,13 @@ QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
   QList< QgsDxfExport::DxfLayer > layers;
   QHash< QString, int > layerIdx;
 
-  const auto constMCheckedLeafs = mCheckedLeafs;
-  for ( const QModelIndex &idx : constMCheckedLeafs )
+  for ( const QModelIndex &idx : qgis::as_const( mCheckedLeafs ) )
   {
     QgsLayerTreeNode *node = index2node( idx );
     if ( QgsLayerTree::isGroup( node ) )
     {
-      const auto constFindLayers = QgsLayerTree::toGroup( node )->findLayers();
-      for ( QgsLayerTreeLayer *treeLayer : constFindLayers )
+      const auto childLayers = QgsLayerTree::toGroup( node )->findLayers();
+      for ( QgsLayerTreeLayer *treeLayer : childLayers )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( treeLayer->layer() );
         Q_ASSERT( vl );

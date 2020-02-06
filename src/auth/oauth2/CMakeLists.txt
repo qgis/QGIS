@@ -44,10 +44,10 @@ IF(WITH_INTERNAL_O2)
 ENDIF()
 
 SET(OAUTH2_HDRS
-  qgso2.h
   qgsauthoauth2config.h
-  qgsauthoauth2method.h
   qgsauthoauth2edit.h
+  qgsauthoauth2method.h
+  qgso2.h
   qjsonwrapper/Json.h
 )
 IF(WITH_INTERNAL_O2)
@@ -66,26 +66,6 @@ IF(WITH_INTERNAL_O2)
     ${O2_INCLUDE_DIR}/o2requestor.h
   )
   SET(OAUTH2_HDRS ${OAUTH2_HDRS} ${O2_HDRS})
-ENDIF()
-
-SET(OAUTH2_MOC_HDRS
-  qgso2.h
-  qgsauthoauth2config.h
-  qgsauthoauth2method.h
-  qgsauthoauth2edit.h
-)
-IF(WITH_INTERNAL_O2)
-  SET(O2_MOC_HDRS
-    ${O2_INCLUDE_DIR}/o0abstractstore.h
-    ${O2_INCLUDE_DIR}/o0baseauth.h
-    ${O2_INCLUDE_DIR}/o0keychainstore.h
-    ${O2_INCLUDE_DIR}/o0settingsstore.h
-    ${O2_INCLUDE_DIR}/o2.h
-    ${O2_INCLUDE_DIR}/o2reply.h
-    ${O2_INCLUDE_DIR}/o2replyserver.h
-    ${O2_INCLUDE_DIR}/o2requestor.h
-  )
-  SET(OAUTH2_MOC_HDRS ${OAUTH2_MOC_HDRS} ${O2_MOC_HDRS})
 ENDIF()
 
 SET(OAUTH2_UIS qgsauthoauth2edit.ui)
@@ -129,8 +109,6 @@ IF(WITH_INTERNAL_O2 AND CMAKE_GENERATOR MATCHES "Ninja")
 ENDIF()
 QT5_WRAP_UI(OAUTH2_UIS_H ${OAUTH2_UIS})
 
-QT5_WRAP_CPP(OAUTH2_MOC_SRCS ${OAUTH2_MOC_HDRS})
-
 QT5_ADD_RESOURCES(OAUTH2_RCC_SRCS ${OAUTH2_RCCS})
 ############################################################
 # Set up plugin targets
@@ -138,7 +116,6 @@ QT5_ADD_RESOURCES(OAUTH2_RCC_SRCS ${OAUTH2_RCCS})
 ADD_LIBRARY (oauth2authmethod MODULE
   ${OAUTH2_SRCS}
   ${OAUTH2_HDRS}
-  ${OAUTH2_MOC_SRCS}
   ${OAUTH2_RCC_SRCS}
   ${OAUTH2_UIS_H}
 )
@@ -147,7 +124,6 @@ ADD_LIBRARY (oauth2authmethod MODULE
 ADD_LIBRARY (oauth2authmethod_static STATIC
   ${OAUTH2_SRCS}
   ${OAUTH2_HDRS}
-  ${OAUTH2_MOC_SRCS}
   ${OAUTH2_RCC_SRCS}
   ${OAUTH2_UIS_H}
 )

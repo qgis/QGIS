@@ -240,13 +240,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
     /**
-     * String sequence used for separating components of sublayers strings.
-     * \see subLayers()
-     * \since QGIS 3.0
-     */
-    static QString SUBLAYER_SEPARATOR;
-
-    /**
      * Sub-layer styles for each sub-layer handled by this provider,
      * in order from bottom to top
      *
@@ -363,10 +356,12 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
     /**
-     * Reloads the data from the source. Needs to be implemented by providers with data caches to
-     * synchronize with changes in the data source
+     * Reloads the data from the source by calling reloadProviderData() implemented
+     * by providers with data caches to synchronize, changes in the data source, feature
+     * counts and other specific actions.
+     * Emits the `dataChanged` signal
      */
-    virtual void reloadData() {}
+    virtual void reloadData();
 
     //! Time stamp of data source in the moment when data/metadata were loaded by provider
     virtual QDateTime timestamp() const { return mTimestamp; }
@@ -546,6 +541,14 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) SIP_SKIP;
 
+    /**
+     * String sequence used for separating components of sublayers strings.
+     * \note Replaces the static const SUBLAYER_SEPARATOR
+     * \see subLayers()
+     * \since QGIS 3.12
+     */
+    static QString sublayerSeparator();
+
   signals:
 
     /**
@@ -613,6 +616,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     mutable QMutex mOptionsMutex;
 
+    /**
+     * Reloads the data according to the provider
+     * \since QGIS 3.12
+    */
+    virtual void reloadProviderData() {}
 };
 
 

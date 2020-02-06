@@ -56,6 +56,7 @@
 #include "qgsprojectstorageguiregistry.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgsnumericformatguiregistry.h"
 
 
 QgsGui *QgsGui::instance()
@@ -102,6 +103,11 @@ QgsLayoutItemGuiRegistry *QgsGui::layoutItemGuiRegistry()
 QgsProcessingGuiRegistry *QgsGui::processingGuiRegistry()
 {
   return instance()->mProcessingGuiRegistry;
+}
+
+QgsNumericFormatGuiRegistry *QgsGui::numericFormatGuiRegistry()
+{
+  return instance()->mNumericFormatGuiRegistry;
 }
 
 QgsProcessingRecentAlgorithmLog *QgsGui::processingRecentAlgorithmLog()
@@ -168,6 +174,7 @@ QgsGui::~QgsGui()
   delete mSourceSelectProviderRegistry;
   delete mShortcutsManager;
   delete mNative;
+  delete mNumericFormatGuiRegistry;
   delete mWidgetStateHelper;
   delete mProjectStorageGuiRegistry;
   delete mProviderGuiRegistry;
@@ -221,6 +228,7 @@ QgsGui::QgsGui()
   mProjectStorageGuiRegistry = new QgsProjectStorageGuiRegistry();
   mDataItemGuiProviderRegistry = new QgsDataItemGuiProviderRegistry();
   mSourceSelectProviderRegistry = new QgsSourceSelectProviderRegistry();
+  mNumericFormatGuiRegistry = new QgsNumericFormatGuiRegistry();
 
   mProjectStorageGuiRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
   mDataItemGuiProviderRegistry->initializeFromProviderGuiRegistry( mProviderGuiRegistry );
@@ -293,7 +301,7 @@ bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
             0,
             messageBar );
 
-          connect( btnEnableMacros, &QToolButton::clicked, [ = ]()
+          connect( btnEnableMacros, &QToolButton::clicked, messageBar, [ = ]()
           {
             lambda();
             messageBar->popWidget( macroMsg );
@@ -306,4 +314,5 @@ bool QgsGui::pythonMacroAllowed( void ( *lambda )(), QgsMessageBar *messageBar )
         return false;
       }
   }
+  return false;
 }

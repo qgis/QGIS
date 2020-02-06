@@ -320,7 +320,7 @@ void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
     QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( r, r->usingSymbolLevels(), panel );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
     connect( widget, &QgsPanelWidget::widgetChanged, widget, &QgsSymbolLevelsWidget::apply );
-    connect( widget, &QgsPanelWidget::widgetChanged, [ = ]() { emit widgetChanged(); emit symbolLevelsChanged(); } );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]() { emit widgetChanged(); emit symbolLevelsChanged(); } );
     panel->openPanel( widget );
     return;
   }
@@ -346,6 +346,19 @@ QgsSymbolWidgetContext QgsRendererWidget::context() const
 void QgsRendererWidget::applyChanges()
 {
   apply();
+}
+
+void QgsRendererWidget::setDockMode( bool dockMode )
+{
+  if ( dockMode )
+  {
+    // when in dock mode, these shortcuts conflict with the main window shortcuts and cannot be used
+    if ( mCopyAction )
+      mCopyAction->setShortcut( QKeySequence() );
+    if ( mPasteAction )
+      mPasteAction->setShortcut( QKeySequence() );
+  }
+  QgsPanelWidget::setDockMode( dockMode );
 }
 
 QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend )

@@ -172,7 +172,7 @@ class OtbAlgorithmProvider(QgsProcessingProvider):
             self.setActive(False)
             raise ValueError(self.tr("'{}' does not exist. OTB provider will be disabled".format(v)))
 
-        #isValid is True if there is atleast one valid otb application is given path
+        #isValid is True if there is at least one valid otb application is given path
         isValid = False
         descr_folder = self.descrFolder(folder)
         for app_dir in otb_app_dirs:

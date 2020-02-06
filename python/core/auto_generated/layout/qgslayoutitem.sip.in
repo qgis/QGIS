@@ -419,7 +419,8 @@ their rendering to determine which layer should be drawn.
 
 .. seealso:: :py:func:`exportLayerDetails`
 
-.. deprecated:: Use nextExportPart() and exportLayerBehavior() instead.
+.. deprecated::
+   Use nextExportPart() and exportLayerBehavior() instead.
 %End
 
     virtual void startLayeredExport();

@@ -398,7 +398,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
     i = start;
 
     QgsPointXY vertex = geom.vertexAt( i );
-    while ( vertex != QgsPointXY( 0, 0 ) )
+    while ( !vertex.isEmpty() )
     {
       double newX = a * vertex.x() + b * vertex.y() + c;
       double newY = d * vertex.x() + ee * vertex.y() + f;

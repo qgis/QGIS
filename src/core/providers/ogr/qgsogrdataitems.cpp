@@ -122,7 +122,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
     int prevIdx = -1;
     for ( const QString &descriptor : subLayersList )
     {
-      QStringList pieces = descriptor.split( QgsDataProvider::SUBLAYER_SEPARATOR );
+      QStringList pieces = descriptor.split( QgsDataProvider::sublayerSeparator() );
       int idx = pieces[0].toInt();
       subLayersMap.insert( idx, pieces );
       if ( pieces.count() >= 4 && idx != prevIdx )
@@ -291,7 +291,7 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
   {
     // we are in a collection
     name = QString::fromUtf8( OGR_FD_GetName( hDef ) );
-    QgsDebugMsg( "OGR layer name : " + name );
+    QgsDebugMsgLevel( "OGR layer name : " + name, 2 );
     if ( !uniqueNames )
     {
       layerUri += "|layerid=" + QString::number( layerId );

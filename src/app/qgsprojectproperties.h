@@ -34,6 +34,7 @@ class QgsLayerTreeGroup;
 class QgsMetadataWidget;
 class QgsTreeWidgetItem;
 class QgsLayerCapabilitiesModel;
+class QgsBearingNumericFormat;
 
 /**
  * Dialog to set project level properties
@@ -49,9 +50,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Constructor
     QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    void setCurrentPage( const QString & );
-
     ~QgsProjectProperties() override;
+
+    void setCurrentPage( const QString & );
 
     /**
        Every project has a title
@@ -59,8 +60,10 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QString title() const;
     void title( QString const &title );
 
-    //! Returns the projection as a WKT string
-    QString projectionWkt();
+    /**
+     * Sets the \a crs shown as selected within the dialog.
+     */
+    void setSelectedCrs( const QgsCoordinateReferenceSystem &crs );
 
   public slots:
 
@@ -167,17 +170,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      */
     void cbxWCSPubliedStateChanged( int aIdx );
 
-    /**
-      * If user changes the CRS, set the corresponding map units
-      */
-    void srIdUpdated();
-
     /* Update ComboBox accorindg to the selected new index
      * Also sets the new selected Ellipsoid. */
     void updateEllipsoidUI( int newIndex );
-
-    //! sets the right ellipsoid for measuring (from settings)
-    void projectionSelectorInitialized();
 
     void mButtonAddColor_clicked();
 
@@ -185,7 +180,16 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();
 
+  private slots:
+
+    void customizeBearingFormat();
+
   private:
+
+    /**
+      * Called when the user sets a CRS for the project.
+      */
+    void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
     //! Formats for displaying coordinates
     enum CoordinateFormat
@@ -213,16 +217,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void editSymbol( QComboBox *cbo );
 
     /**
-     * Function to save non-base dialog states
-     */
-    void saveState();
-
-    /**
-     * Function to restore non-base dialog states
-     */
-    void restoreState();
-
-    /**
      * Reset the Python macros
      */
     void resetPythonMacros();
@@ -237,6 +231,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     };
     QList<EllipsoidDefs> mEllipsoidList;
     int mEllipsoidIndex;
+    bool mBlockCrsUpdates = false;
+
+    std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
 
     //! populate WMTS tree
     void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );
@@ -247,6 +244,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     //! Populates list with ellipsoids from Sqlite3 db
     void populateEllipsoidList();
+
+    void setCurrentEllipsoid( const QString &ellipsoidAcronym );
 
     //! Create a new scale item and add it to the list of scales
     QListWidgetItem *addScaleToScaleList( const QString &newScale );
@@ -259,4 +258,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void updateGuiForMapUnits();
 
     void showHelp();
+
+    friend class TestQgsProjectProperties;
 };

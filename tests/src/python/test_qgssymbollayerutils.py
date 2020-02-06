@@ -14,7 +14,8 @@ import qgis  # NOQA
 
 from qgis.core import (QgsSymbolLayerUtils,
                        QgsMarkerSymbol,
-                       QgsArrowSymbolLayer)
+                       QgsArrowSymbolLayer,
+                       QgsUnitTypes)
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtCore import QSizeF, QPointF
 from qgis.testing import unittest, start_app
@@ -209,6 +210,41 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         symbol2 = QgsSymbolLayerUtils.symbolFromMimeData(mime)
         self.assertTrue(symbol2 is not None)
         self.assertEqual(symbol2.color().name(), symbol.color().name())
+
+    def testEncodeSldUom(self):
+        """
+        Test Encodes a SLD unit of measure string to a render unit
+        """
+
+        # millimeter
+        encode = None
+        encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderMillimeters)
+        self.assertTupleEqual(encode, ('', 3.571428571428571))
+
+        # mapunits
+        encode = None
+        encode = QgsSymbolLayerUtils.encodeSldUom(QgsUnitTypes.RenderMapUnits)
+        self.assertTupleEqual(encode, ('http://www.opengeospatial.org/se/units/metre', 0.001))
+
+    def testDecodeSldUom(self):
+        """
+        Test Decodes a SLD unit of measure string to a render unit
+        """
+
+        # meter
+        decode = None
+        decode = QgsSymbolLayerUtils.decodeSldUom("http://www.opengeospatial.org/se/units/metre")
+        self.assertEqual(decode, (QgsUnitTypes.RenderMapUnits, 1000.0))
+
+        # foot
+        decode = None
+        decode = QgsSymbolLayerUtils.decodeSldUom("http://www.opengeospatial.org/se/units/foot")
+        self.assertEqual(decode, (QgsUnitTypes.RenderMapUnits, 304.8))
+
+        # pixel
+        decode = None
+        decode = QgsSymbolLayerUtils.decodeSldUom("http://www.opengeospatial.org/se/units/pixel")
+        self.assertEqual(decode, (QgsUnitTypes.RenderPixels, 1.0))
 
 
 if __name__ == '__main__':

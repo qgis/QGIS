@@ -48,6 +48,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
       QString layerName;  //!< Name of the layer (not necessarily unique)
       int count = -1 ;          //!< Number of features (might be unused)
       QString type;       //!< Extra type depending on the use (e.g. geometry type for vector sublayers)
+      QString description;  //!< Description. Added in QGIS 3.10
     };
 
     /**
@@ -108,6 +109,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     QStringList mSelectedSubLayers;
     bool mShowCount = false;  //!< Whether to show number of features in the table
     bool mShowType = false;   //!< Whether to show type in the table
+    bool mShowDescription = false;   //!< Whether to show description in the table
 
   private:
 

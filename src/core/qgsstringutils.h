@@ -279,7 +279,7 @@ class CORE_EXPORT QgsStringUtils
     /**
      * Returns a string with characters having vertical representation form substituted.
      * \param string input string
-     * \returns string with substition applied
+     * \returns string with substitution applied
      * \since QGIS 3.10
      */
     static QString substituteVerticalCharacters( QString string );

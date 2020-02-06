@@ -33,6 +33,8 @@
 #include "qgsunittypes.h"
 #include "qgssettings.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgsnumericformat.h"
+#include "qgsnumericformatregistry.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -550,6 +552,16 @@ QString QgsLayoutItemScaleBar::style() const
   }
 }
 
+const QgsNumericFormat *QgsLayoutItemScaleBar::numericFormat() const
+{
+  return mSettings.numericFormat();
+}
+
+void QgsLayoutItemScaleBar::setNumericFormat( QgsNumericFormat *format )
+{
+  mSettings.setNumericFormat( format );
+}
+
 QFont QgsLayoutItemScaleBar::font() const
 {
   return mSettings.textFormat().font();
@@ -599,6 +611,10 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   composerScaleBarElem.setAttribute( QStringLiteral( "unitType" ), QgsUnitTypes::encodeUnit( mSettings.units() ) );
   composerScaleBarElem.setAttribute( QStringLiteral( "lineJoinStyle" ), QgsSymbolLayerUtils::encodePenJoinStyle( mSettings.lineJoinStyle() ) );
   composerScaleBarElem.setAttribute( QStringLiteral( "lineCapStyle" ), QgsSymbolLayerUtils::encodePenCapStyle( mSettings.lineCapStyle() ) );
+
+  QDomElement numericFormatElem = doc.createElement( QStringLiteral( "numericFormat" ) );
+  mSettings.numericFormat()->writeXml( numericFormatElem, doc, rwContext );
+  composerScaleBarElem.appendChild( numericFormatElem );
 
   //style
   if ( mStyle )
@@ -690,6 +706,13 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
       mSettings.textFormat().setSize( f.pixelSize() );
       mSettings.textFormat().setSizeUnit( QgsUnitTypes::RenderPixels );
     }
+  }
+
+  QDomNodeList numericFormatNodeList = itemElem.elementsByTagName( QStringLiteral( "numericFormat" ) );
+  if ( !numericFormatNodeList.isEmpty() )
+  {
+    QDomElement numericFormatElem = numericFormatNodeList.at( 0 ).toElement();
+    mSettings.setNumericFormat( QgsApplication::numericFormatRegistry()->createFromXml( numericFormatElem, context ) );
   }
 
   //colors

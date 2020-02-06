@@ -68,6 +68,8 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     //! Polygon placement button group
     QButtonGroup *mPlacePolygonBtnGrp = nullptr;
 
+    std::unique_ptr< QgsPaintEffect> mPaintEffect;
+
     enum Columns
     {
       ColumnAttributeExpression = 0,

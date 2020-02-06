@@ -58,6 +58,7 @@ namespace QgsWfs
     }
 #else
     doc = createDescribeFeatureTypeDocument( serverIface, project, version, request );
+    describeDocument = &doc;
 #endif
     response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
     response.write( describeDocument->toByteArray() );

@@ -1,5 +1,6 @@
 // Include auto-generated SIP files
 %Include auto_generated/qgs3dtypes.sip
+%Include auto_generated/qgsabstractvectorlayer3drenderer.sip
 %Include auto_generated/qgsphongmaterialsettings.sip
 %Include auto_generated/qgsrulebased3drenderer.sip
 %Include auto_generated/qgsvectorlayer3drenderer.sip

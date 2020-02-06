@@ -74,5 +74,7 @@ QgsVectorLayer *QgsMemoryProviderUtils::createMemoryLayer( const QString &name, 
   }
 
   QString uri = geomType + '?' + parts.join( '&' );
-  return new QgsVectorLayer( uri, name, QStringLiteral( "memory" ), QgsVectorLayer::LayerOptions( QgsCoordinateTransformContext() ) );
+  QgsVectorLayer::LayerOptions options{ QgsCoordinateTransformContext() };
+  options.skipCrsValidation = true;
+  return new QgsVectorLayer( uri, name, QStringLiteral( "memory" ), options );
 }

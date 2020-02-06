@@ -20,7 +20,6 @@
 #include <cmath>
 #include <limits>
 
-static const QRegExp IDENTIFIER_RE( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" );
 
 // from parser
 extern QgsSQLStatement::Node *parse( const QString &str, QString &parserErrorMsg );
@@ -90,6 +89,7 @@ QString QgsSQLStatement::quotedIdentifierIfNeeded( const QString &name )
       return quotedIdentifier( name );
     }
   }
+  static const QRegExp IDENTIFIER_RE( "^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff]*$" );
   return IDENTIFIER_RE.exactMatch( name ) ? name : quotedIdentifier( name );
 }
 

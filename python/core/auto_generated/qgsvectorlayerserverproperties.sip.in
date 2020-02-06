@@ -30,6 +30,7 @@ Manages QGIS Server properties for a vector layer
     enum PredefinedWmsDimensionName
     {
       TIME,
+      DATE,
       ELEVATION
     };
 

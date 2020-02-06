@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspostgresprovidergui.h"
 #include "qgsapplication.h"
 #include "qgsproviderguimetadata.h"
 #include "qgspgsourceselect.h"
@@ -70,43 +71,39 @@ class QgsPostgresProjectStorageGuiProvider : public QgsProjectStorageGuiProvider
 };
 
 
-
-class QgsPostgresProviderGuiMetadata: public QgsProviderGuiMetadata
+QgsPostgresProviderGuiMetadata::QgsPostgresProviderGuiMetadata():
+  QgsProviderGuiMetadata( QgsPostgresProvider::POSTGRES_KEY )
 {
-  public:
-    QgsPostgresProviderGuiMetadata():
-      QgsProviderGuiMetadata( QgsPostgresProvider::POSTGRES_KEY )
-    {
-    }
+}
 
-    QList<QgsSourceSelectProvider *> sourceSelectProviders() override
-    {
-      QList<QgsSourceSelectProvider *> providers;
-      providers << new QgsPostgresSourceSelectProvider;  //#spellok
-      return providers;
-    }
+QList<QgsSourceSelectProvider *> QgsPostgresProviderGuiMetadata::sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> providers;
+  providers << new QgsPostgresSourceSelectProvider;  //#spellok
+  return providers;
+}
 
-    QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override
-    {
-      return QList<QgsDataItemGuiProvider *>()
-             << new QgsPostgresDataItemGuiProvider;
-    }
+QList<QgsDataItemGuiProvider *> QgsPostgresProviderGuiMetadata::dataItemGuiProviders()
+{
+  return QList<QgsDataItemGuiProvider *>()
+         << new QgsPostgresDataItemGuiProvider;
+}
 
-    QList<QgsProjectStorageGuiProvider *> projectStorageGuiProviders() override
-    {
-      QList<QgsProjectStorageGuiProvider *> providers;
-      providers << new QgsPostgresProjectStorageGuiProvider;
-      return providers;
-    }
+QList<QgsProjectStorageGuiProvider *> QgsPostgresProviderGuiMetadata::projectStorageGuiProviders()
+{
+  QList<QgsProjectStorageGuiProvider *> providers;
+  providers << new QgsPostgresProjectStorageGuiProvider;
+  return providers;
+}
 
-    void registerGui( QMainWindow *mainWindow ) override
-    {
-      QgsPGRootItem::sMainWindow = mainWindow;
-    }
-};
+void QgsPostgresProviderGuiMetadata::registerGui( QMainWindow *mainWindow )
+{
+  QgsPGRootItem::sMainWindow = mainWindow;
+}
 
-
+#ifndef HAVE_STATIC_PROVIDERS
 QGISEXTERN QgsProviderGuiMetadata *providerGuiMetadataFactory()
 {
   return new QgsPostgresProviderGuiMetadata();
 }
+#endif

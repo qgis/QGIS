@@ -15,7 +15,7 @@ import qgis  # NOQA
 from qgis.PyQt.QtCore import QVariant
 from qgis.testing import unittest
 from qgis.utils import qgsfunction
-from qgis.core import QgsExpression, QgsFeatureRequest, QgsExpressionContext, NULL
+from qgis.core import QgsExpression, QgsFeatureRequest, QgsFields, QgsExpressionContext, NULL
 
 
 class TestQgsExpressionCustomFunctions(unittest.TestCase):
@@ -263,6 +263,12 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         value = True
         res = '"my\'field" = TRUE'
         self.assertEqual(e.createFieldEqualityExpression(field, value), res)
+
+    def testReferencedAttributeIndexesNonExistingField(self):
+        e = QgsExpression()
+        e.setExpression("foo = 1")
+        self.assertTrue(e.isValid())
+        self.assertEqual(len(e.referencedAttributeIndexes(QgsFields())), 0)
 
 
 if __name__ == "__main__":

@@ -41,6 +41,8 @@ class QgsMeshLayer;
 //! Entity that handles rendering of polygons
 class QgsMesh3DSymbolEntity : public Qt3DCore::QEntity
 {
+    Q_OBJECT
+
   public:
     QgsMesh3DSymbolEntity( const Qgs3DMapSettings &map, QgsMeshLayer *layer, const QgsMesh3DSymbol &symbol, Qt3DCore::QNode *parent = nullptr );
 
@@ -50,6 +52,8 @@ class QgsMesh3DSymbolEntity : public Qt3DCore::QEntity
 
 class QgsMesh3DSymbolEntityNode : public Qt3DCore::QEntity
 {
+    Q_OBJECT
+
   public:
     QgsMesh3DSymbolEntityNode( const Qgs3DMapSettings &map, QgsMeshLayer *layer, const QgsMesh3DSymbol &symbol, Qt3DCore::QNode *parent = nullptr );
 

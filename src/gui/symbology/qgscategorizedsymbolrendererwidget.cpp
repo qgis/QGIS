@@ -514,7 +514,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
 
   // setup user interface
   setupUi( this );
-  this->layout()->setContentsMargins( 0, 0, 0, 0 );
+  layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mExpressionWidget->setLayer( mLayer );
   btnChangeCategorizedSymbol->setLayer( mLayer );
@@ -535,8 +535,11 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   }
 
   mCategorizedSymbol.reset( QgsSymbol::defaultSymbol( mLayer->geometryType() ) );
-  btnChangeCategorizedSymbol->setSymbolType( mCategorizedSymbol->type() );
-  btnChangeCategorizedSymbol->setSymbol( mCategorizedSymbol->clone() );
+  if ( mCategorizedSymbol )
+  {
+    btnChangeCategorizedSymbol->setSymbolType( mCategorizedSymbol->type() );
+    btnChangeCategorizedSymbol->setSymbol( mCategorizedSymbol->clone() );
+  }
 
   mModel = new QgsCategorizedSymbolRendererModel( this );
   mModel->setRenderer( mRenderer.get() );
@@ -575,7 +578,7 @@ QgsCategorizedSymbolRendererWidget::QgsCategorizedSymbolRendererWidget( QgsVecto
   advMenu->addAction( tr( "Match to Saved Symbols" ), this, SLOT( matchToSymbolsFromLibrary() ) );
   advMenu->addAction( tr( "Match to Symbols from File…" ), this, SLOT( matchToSymbolsFromXml() ) );
   advMenu->addAction( tr( "Symbol Levels…" ), this, SLOT( showSymbolLevels() ) );
-  if ( mCategorizedSymbol->type() == QgsSymbol::Marker )
+  if ( mCategorizedSymbol && mCategorizedSymbol->type() == QgsSymbol::Marker )
   {
     QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined Size Legend…" ) );
     // only from Qt 5.6 there is convenience addAction() with new style connection

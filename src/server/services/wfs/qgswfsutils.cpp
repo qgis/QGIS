@@ -281,7 +281,7 @@ namespace QgsWfs
       std::shared_ptr<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem, layer ) );
       if ( filter )
       {
-        if ( filter->hasParserError() )
+        if ( filter->hasParserError() || !filter->parserErrorString().isEmpty() )
         {
           throw QgsRequestNotWellFormedException( filter->parserErrorString() );
         }

@@ -73,6 +73,32 @@ and 1.0 (fully opaque).
 .. seealso:: :py:func:`setOpacity`
 %End
 
+    QColor nodataColor() const;
+%Docstring
+Returns the color to use for shading nodata pixels.
+
+If the returned value is an invalid color then the default transparent rendering of
+nodata values will be used.
+
+.. seealso:: :py:func:`renderColorForNodataPixel`
+
+.. seealso:: :py:func:`setNodataColor`
+
+.. versionadded:: 3.12
+%End
+
+    void setNodataColor( const QColor &color );
+%Docstring
+Sets the ``color`` to use for shading nodata pixels.
+
+If ``color`` is an invalid color then the default transparent rendering of
+nodata values will be used.
+
+.. seealso:: :py:func:`nodataColor`
+
+.. versionadded:: 3.12
+%End
+
     void setRasterTransparency( QgsRasterTransparency *t /Transfer/ );
     const QgsRasterTransparency *rasterTransparency() const;
 
@@ -141,6 +167,16 @@ Write upper class info into rasterrenderer element (called by writeXml method of
 
 
 
+
+    QRgb renderColorForNodataPixel() const;
+%Docstring
+Returns the color for the renderer to use to represent nodata pixels.
+
+Subclasses should use this rather then nodataColor() to determine the color to use for nodata pixels
+during an actual rendering operation.
+
+.. versionadded:: 3.10
+%End
 
   private:
     QgsRasterRenderer( const QgsRasterRenderer & );

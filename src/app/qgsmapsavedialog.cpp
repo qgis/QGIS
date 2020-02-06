@@ -104,7 +104,7 @@ QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, co
       {
         mInfoDetails = tr( "The following layer(s) use advanced effects:\n\n%1\n\nRasterizing map is recommended for proper rendering." ).arg(
                          QChar( 0x2022 ) + QStringLiteral( " " ) + layers.join( QStringLiteral( "\n" ) + QChar( 0x2022 ) + QStringLiteral( " " ) ) );
-        connect( mInfo, &QLabel::linkActivated, [this]( const QString & )
+        connect( mInfo, &QLabel::linkActivated, this, [this]( const QString & )
         {
           QgsMessageViewer *viewer = new QgsMessageViewer( this );
           viewer->setWindowTitle( tr( "Advanced effects warning" ) );
@@ -325,7 +325,7 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   switch ( mDialogType )
   {
     case Pdf:
-      mapSettings.setFlag( QgsMapSettings::Antialiasing, true ); // hardcode antialising when saving as PDF
+      mapSettings.setFlag( QgsMapSettings::Antialiasing, true ); // hardcode antialiasing when saving as PDF
       break;
 
     case Image:
@@ -512,8 +512,8 @@ void QgsMapSaveDialog::onAccepted()
         {
           // These details will be used on non-GeoPDF exports is the export metadata checkbox is checked
           geoPdfExportDetails.author = QgsProject::instance()->metadata().author();
-          geoPdfExportDetails.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
-          geoPdfExportDetails.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::QGIS_VERSION );
+          geoPdfExportDetails.producer = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
+          geoPdfExportDetails.creator = QStringLiteral( "QGIS %1" ).arg( Qgis::version() );
           geoPdfExportDetails.creationDateTime = QDateTime::currentDateTime();
           geoPdfExportDetails.subject = QgsProject::instance()->metadata().abstract();
           geoPdfExportDetails.title = QgsProject::instance()->metadata().title();
@@ -573,5 +573,5 @@ void QgsMapSaveDialog::onAccepted()
 
 void QgsMapSaveDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/getting_started.html#output" ) );
+  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#exporting-the-map-view" ) );
 }

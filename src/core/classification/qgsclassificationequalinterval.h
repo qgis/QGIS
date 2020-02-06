@@ -35,12 +35,13 @@ class CORE_EXPORT QgsClassificationEqualInterval : public QgsClassificationMetho
     QgsClassificationMethod *clone() const override;
     QIcon icon() const override;
 
+    bool valuesRequired() const override { return false; }
+
     static const QString METHOD_ID;
 
   private:
-    QList<double> calculateBreaks( double minimum, double maximum,
+    QList<double> calculateBreaks( double &minimum, double &maximum,
                                    const QList<double> &values, int nclasses ) override;
-
 
 };
 

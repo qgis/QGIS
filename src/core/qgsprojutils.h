@@ -63,6 +63,14 @@ class CORE_EXPORT QgsProjUtils
     static QStringList searchPaths();
 
 #ifndef SIP_RUN
+
+    //! Flags controlling CRS identification behavior
+    enum IdentifyFlag
+    {
+      FlagMatchBoundCrsToUnderlyingSourceCrs = 1 << 0, //!< Allow matching a BoundCRS object to its underlying SourceCRS
+    };
+    Q_DECLARE_FLAGS( IdentifyFlags, IdentifyFlag )
+
 #if PROJ_VERSION_MAJOR >= 6
 
     /**
@@ -102,6 +110,14 @@ class CORE_EXPORT QgsProjUtils
      * from it.
      */
     static proj_pj_unique_ptr crsToSingleCrs( const PJ *crs );
+
+    /**
+     * Attempts to identify a \a crs, matching it to a known authority and code within
+     * an acceptable level of tolerance.
+     *
+     * Returns TRUE if a matching authority and code was found.
+     */
+    static bool identifyCrs( const PJ *crs, QString &authName, QString &authCode, IdentifyFlags flags = nullptr );
 
     /**
      * Returns TRUE if a coordinate operation (specified via proj string) is available.
@@ -168,5 +184,6 @@ class CORE_EXPORT QgsProjContext
 #endif
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProjUtils::IdentifyFlags )
 #endif
 #endif // QGSPROJUTILS_H

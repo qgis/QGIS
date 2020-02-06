@@ -27,15 +27,33 @@ Abstract base class that may be implemented to handle new types of data to be dr
 Constructor for QgsLayoutCustomDropHandler.
 %End
 
-    virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file );
+ virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file ) /Deprecated/;
 %Docstring
 Called when the specified ``file`` has been dropped onto a QGIS layout. If ``True``
 is returned, then the handler has accepted this file and it should not
 be further processed (e.g. by other QgsLayoutCustomDropHandler).
 
 The base class implementation does nothing.
+
+.. deprecated::
+   use the version which specifies a drop location instead.
+%End
+
+    virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF dropPoint, const QString &file );
+%Docstring
+Called when the specified ``file`` has been dropped onto a QGIS layout. If ``True``
+is returned, then the handler has accepted this file and it should not
+be further processed (e.g. by other QgsLayoutCustomDropHandler).
+
+The ``dropPoint`` point specifies the location (in layout coordinates) at which
+the drop occurred.
+
+The base class implementation does nothing.
+
+.. versionadded:: 3.12
 %End
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

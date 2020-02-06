@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>292</width>
+    <width>343</width>
     <height>337</height>
    </rect>
   </property>
@@ -17,6 +17,18 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QgsMeshDatasetGroupTreeView" name="mDatasetGroupTreeView">
      <property name="minimumSize">
@@ -30,12 +42,35 @@
    <item>
     <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>Dataset in Selected Group(s)</string>
+      <string>Dataset in selected group(s)</string>
      </property>
     </widget>
    </item>
    <item>
     <layout class="QGridLayout" name="mTimeLayout">
+     <item row="2" column="5">
+      <widget class="QToolButton" name="mFirstDatasetButton">
+       <property name="text">
+        <string>|&lt;</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="9">
+      <widget class="QSlider" name="mDatasetSlider">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickPosition">
+        <enum>QSlider::TicksBelow</enum>
+       </property>
+       <property name="tickInterval">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
      <item row="2" column="0" colspan="2">
       <widget class="QComboBox" name="mTimeComboBox">
        <property name="editable">
@@ -46,7 +81,7 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="5">
+     <item row="2" column="7">
       <widget class="QToolButton" name="mNextDatasetButton">
        <property name="text">
         <string>&gt;</string>
@@ -56,17 +91,24 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="4">
-      <widget class="QToolButton" name="mPreviousDatasetButton">
+     <item row="2" column="3">
+      <widget class="QToolButton" name="mTimeFormatButton">
+       <property name="toolTip">
+        <string>Time Format Options</string>
+       </property>
        <property name="text">
-        <string>&lt;</string>
+        <string notr="true">...</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/images/themes/default/console/iconSettingsConsole.svg</normaloff>:/images/themes/default/console/iconSettingsConsole.svg</iconset>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="2" column="6">
+     <item row="2" column="8">
       <widget class="QToolButton" name="mLastDatasetButton">
        <property name="text">
         <string>&gt;|</string>
@@ -76,43 +118,23 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="3">
-      <widget class="QToolButton" name="mFirstDatasetButton">
+     <item row="2" column="6">
+      <widget class="QToolButton" name="mPreviousDatasetButton">
        <property name="text">
-        <string>|&lt;</string>
+        <string>&lt;</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="2" column="2">
-      <widget class="QToolButton" name="mTimeFormatButton">
-       <property name="toolTip">
-        <string>Time Format Options</string>
-       </property>
+     <item row="2" column="4">
+      <widget class="QToolButton" name="mDatasetPlaybackButton">
        <property name="text">
-        <string notr="true"/>
-       </property>
-       <property name="icon">
-        <iconset resource="../../../images/images.qrc">
-         <normaloff>:/images/themes/default/console/iconSettingsConsole.svg</normaloff>:/images/themes/default/console/iconSettingsConsole.svg</iconset>
+        <string>P</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0" colspan="7">
-      <widget class="QSlider" name="mDatasetSlider">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="tickPosition">
-        <enum>QSlider::TicksBelow</enum>
-       </property>
-       <property name="tickInterval">
-        <number>1</number>
        </property>
       </widget>
      </item>
@@ -152,8 +174,6 @@
    <header>mesh/qgsmeshdatasetgrouptreeview.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

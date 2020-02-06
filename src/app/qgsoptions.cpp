@@ -36,6 +36,8 @@
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgslocaldefaultsettings.h"
+#include "qgsnumericformatwidget.h"
 
 #include "qgsattributetablefiltermodel.h"
 #include "qgsrasterformatsaveoptionswidget.h"
@@ -55,6 +57,7 @@
 #include "qgsgui.h"
 #include "qgswelcomepage.h"
 #include "qgsnewsfeedparser.h"
+#include "qgsbearingnumericformat.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -453,23 +456,28 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mLogCanvasRefreshChkBx->setChecked( mSettings->value( QStringLiteral( "/Map/logCanvasRefreshEvent" ), false ).toBool() );
 
   //set the default projection behavior radio buttons
-  if ( mSettings->value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "prompt" ) )
+  const QgsOptions::UnknownLayerCrsBehavior mode = QgsSettings().enumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  switch ( mode )
   {
-    radPromptForProjection->setChecked( true );
+    case NoAction:
+      radCrsNoAction->setChecked( true );
+      break;
+    case PromptUserForCrs:
+      radPromptForProjection->setChecked( true );
+      break;
+    case UseProjectCrs:
+      radUseProjectProjection->setChecked( true );
+      break;
+    case UseDefaultCrs:
+      radUseGlobalProjection->setChecked( true );
+      break;
   }
-  else if ( mSettings->value( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" ).toString() == QLatin1String( "useProject" ) )
-  {
-    radUseProjectProjection->setChecked( true );
-  }
-  else //useGlobal
-  {
-    radUseGlobalProjection->setChecked( true );
-  }
-  QString myLayerDefaultCrs = mSettings->value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
+
+  QString myLayerDefaultCrs = mSettings->value( QStringLiteral( "/Projections/layerDefaultCrs" ), geoEpsgCrsAuthId() ).toString();
   mLayerDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( myLayerDefaultCrs );
   leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
 
-  const QString defaultProjectCrs = mSettings->value( QStringLiteral( "/projections/defaultProjectCrs" ), GEO_EPSG_CRS_AUTHID, QgsSettings::App ).toString();
+  const QString defaultProjectCrs = mSettings->value( QStringLiteral( "/projections/defaultProjectCrs" ), geoEpsgCrsAuthId(), QgsSettings::App ).toString();
   leProjectGlobalCrs->setOptionVisible( QgsProjectionSelectionWidget::DefaultCrs, false );
   leProjectGlobalCrs->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
   leProjectGlobalCrs->setNotSetText( tr( "No projection (or unknown/non-Earth projection)" ) );
@@ -641,7 +649,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
   mSegmentationToleranceSpinBox->setValue( tolerance );
 
-  QStringList myScalesList = PROJECT_SCALES.split( ',' );
+  QStringList myScalesList = Qgis::defaultProjectScales().split( ',' );
   myScalesList.append( QStringLiteral( "1:1" ) );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
   mSimplifyMaximumScaleComboBox->setScale( mSettings->value( QStringLiteral( "/qgis/simplifyMaxScale" ), 1 ).toFloat() );
@@ -768,6 +776,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   Qgis::PythonMacroMode pyMacroMode = mSettings->enumValue( QStringLiteral( "/qgis/enableMacros" ), Qgis::PythonMacroMode::Ask );
   mEnableMacrosComboBox->setCurrentIndex( mEnableMacrosComboBox->findData( QVariant::fromValue( pyMacroMode ) ) );
 
+  QgsProject::FileFormat defaultProjectFileFormat = mSettings->enumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), QgsProject::FileFormat::Qgz );
+  mFileFormatQgzButton->setChecked( defaultProjectFileFormat == QgsProject::FileFormat::Qgz );
+  mFileFormatQgsButton->setChecked( defaultProjectFileFormat == QgsProject::FileFormat::Qgs );
+
   // templates
   cbxProjectDefaultNew->setChecked( mSettings->value( QStringLiteral( "/qgis/newProjectDefault" ), QVariant( false ) ).toBool() );
   QString templateDirName = mSettings->value( QStringLiteral( "/qgis/projectTemplateDir" ),
@@ -787,7 +799,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   setZoomFactorValue();
 
   // predefined scales for scale combobox
-  QString scalePaths = mSettings->value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
+  QString scalePaths = mSettings->value( QStringLiteral( "Map/scales" ), Qgis::defaultProjectScales() ).toString();
   if ( !scalePaths.isEmpty() )
   {
     const QStringList scalesList = scalePaths.split( ',' );
@@ -1193,6 +1205,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // restore window and widget geometry/state
   connect( mRestoreDefaultWindowStateBtn, &QAbstractButton::clicked, this, &QgsOptions::restoreDefaultWindowState );
 
+  mBearingFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
+  connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsOptions::customizeBearingFormat );
+
   restoreOptionsBaseUi();
 
 #ifdef QGISDEBUG
@@ -1533,6 +1548,8 @@ void QgsOptions::saveOptions()
   }
   mSettings->setEnumValue( QStringLiteral( "/qgis/enableMacros" ), mEnableMacrosComboBox->currentData().value<Qgis::PythonMacroMode>() );
 
+  mSettings->setEnumValue( QStringLiteral( "/qgis/defaultProjectFileFormat" ), mFileFormatQgsButton->isChecked() ? QgsProject::FileFormat::Qgs : QgsProject::FileFormat::Qgz );
+
   QgsApplication::setNullRepresentation( leNullValue->text() );
   mSettings->setValue( QStringLiteral( "/qgis/style" ), cmbStyle->currentText() );
   mSettings->setValue( QStringLiteral( "/qgis/iconSize" ), cmbIconSize->currentText() );
@@ -1570,15 +1587,19 @@ void QgsOptions::saveOptions()
   //projection defined...
   if ( radPromptForProjection->isChecked() )
   {
-    mSettings->setValue( QStringLiteral( "/Projections/defaultBehavior" ), "prompt" );
+    mSettings->setEnumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::PromptUserForCrs, QgsSettings::App );
   }
   else if ( radUseProjectProjection->isChecked() )
   {
-    mSettings->setValue( QStringLiteral( "/Projections/defaultBehavior" ), "useProject" );
+    mSettings->setEnumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::UseProjectCrs, QgsSettings::App );
   }
-  else //assumes radUseGlobalProjection is checked
+  else if ( radCrsNoAction->isChecked() )
   {
-    mSettings->setValue( QStringLiteral( "/Projections/defaultBehavior" ), "useGlobal" );
+    mSettings->setEnumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::NoAction, QgsSettings::App );
+  }
+  else
+  {
+    mSettings->setEnumValue( QStringLiteral( "/projections/unknownCrsBehavior" ), QgsOptions::UnknownLayerCrsBehavior::UseDefaultCrs, QgsSettings::App );
   }
 
   mSettings->setValue( QStringLiteral( "/Projections/layerDefaultCrs" ), mLayerDefaultCrs.authid() );
@@ -1745,6 +1766,8 @@ void QgsOptions::saveOptions()
 
   // Number settings
   mSettings->setValue( QStringLiteral( "locale/showGroupSeparator" ), cbShowGroupSeparator->isChecked( ) );
+
+  QgsLocalDefaultSettings::setBearingFormat( mBearingFormat.get() );
 
 #ifdef HAVE_OPENCL
   // OpenCL settings
@@ -2194,7 +2217,9 @@ void QgsOptions::optionsStackedWidget_CurrentChanged( int index )
 
 void QgsOptions::loadGdalDriverList()
 {
-  QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
+  QgsApplication::registerGdalDriversFromSettings();
+
+  const QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
   GDALDriverH myGdalDriver; // current driver
   QString myGdalDriverDescription;
   QStringList myDrivers;
@@ -2256,8 +2281,8 @@ void QgsOptions::loadGdalDriverList()
     myDriversLongName[myGdalDriverDescription] = QString( GDALGetMetadataItem( myGdalDriver, "DMD_LONGNAME", "" ) );
 
   }
-  // restore GDAL_SKIP just in case
-  CPLSetConfigOption( "GDAL_SKIP", mySkippedDrivers.join( QStringLiteral( " " ) ).toUtf8() );
+  // restore active drivers
+  QgsApplication::applyGdalSkippedDrivers();
 
   myDrivers.removeDuplicates();
   // myDrivers.sort();
@@ -2311,19 +2336,38 @@ void QgsOptions::loadGdalDriverList()
 
 void QgsOptions::saveGdalDriverList()
 {
+  bool driverUnregisterNeeded = false;
+  const auto oldSkippedGdalDrivers = QgsApplication::skippedGdalDrivers();
+  auto deferredSkippedGdalDrivers = QgsApplication::deferredSkippedGdalDrivers();
+  QStringList skippedGdalDrivers;
   for ( int i = 0; i < lstGdalDrivers->topLevelItemCount(); i++ )
   {
     QTreeWidgetItem *mypItem = lstGdalDrivers->topLevelItem( i );
+    const auto &driverName( mypItem->text( 0 ) );
     if ( mypItem->checkState( 0 ) == Qt::Unchecked )
     {
-      QgsApplication::skipGdalDriver( mypItem->text( 0 ) );
+      skippedGdalDrivers << driverName;
+      if ( !deferredSkippedGdalDrivers.contains( driverName ) &&
+           !oldSkippedGdalDrivers.contains( driverName ) )
+      {
+        deferredSkippedGdalDrivers << driverName;
+        driverUnregisterNeeded = true;
+      }
     }
     else
     {
-      QgsApplication::restoreGdalDriver( mypItem->text( 0 ) );
+      if ( deferredSkippedGdalDrivers.contains( driverName ) )
+      {
+        deferredSkippedGdalDrivers.removeAll( driverName );
+      }
     }
   }
-  mSettings->setValue( QStringLiteral( "gdal/skipList" ), QgsApplication::skippedGdalDrivers().join( QStringLiteral( " " ) ) );
+  if ( driverUnregisterNeeded )
+  {
+    QMessageBox::information( this, tr( "Drivers Disabled" ),
+                              tr( "One or more drivers have been disabled. This will only take effect after QGIS is restarted." ) );
+  }
+  QgsApplication::setSkippedGdalDrivers( skippedGdalDrivers, deferredSkippedGdalDrivers );
 }
 
 void QgsOptions::addScale()
@@ -2354,7 +2398,7 @@ void QgsOptions::restoreDefaultScaleValues()
 {
   mListGlobalScales->clear();
 
-  QStringList myScalesList = PROJECT_SCALES.split( ',' );
+  QStringList myScalesList = Qgis::defaultProjectScales().split( ',' );
   const auto constMyScalesList = myScalesList;
   for ( const QString &scale : constMyScalesList )
   {
@@ -2636,4 +2680,14 @@ void QgsOptions::showHelp()
     }
   }
   QgsHelp::openHelp( link );
+}
+
+void QgsOptions::customizeBearingFormat()
+{
+  QgsBearingNumericFormatDialog dlg( mBearingFormat.get(), this );
+  dlg.setWindowTitle( tr( "Bearing Format" ) );
+  if ( dlg.exec() )
+  {
+    mBearingFormat.reset( dlg.format() );
+  }
 }

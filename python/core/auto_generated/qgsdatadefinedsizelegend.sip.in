@@ -31,6 +31,8 @@ legend nodes or whether to collapse them into one legend node.
 Constructor for QgsDataDefinedSizeLegend.
 %End
 
+    ~QgsDataDefinedSizeLegend();
+
     QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLegend &other );
 %Docstring
 Copy constructor

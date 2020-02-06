@@ -339,6 +339,23 @@
              </widget>
             </item>
             <item>
+             <widget class="QToolButton" name="mLayerExpressionButton">
+              <property name="toolTip">
+               <string> Add an expression to the vector layer and each child symbol's label</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../../images/images.qrc">
+                <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QToolButton" name="mCountToolButton">
               <property name="enabled">
                <bool>false</bool>
@@ -365,24 +382,17 @@
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="mFilterByMapToolButton">
-              <property name="toolTip">
-               <string>Filter Legend by Map Content</string>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
               </property>
-              <property name="icon">
-               <iconset resource="../../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionFilter2.svg</normaloff>:/images/themes/default/mActionFilter2.svg</iconset>
-              </property>
-              <property name="iconSize">
+              <property name="sizeHint" stdset="0">
                <size>
-                <width>20</width>
+                <width>0</width>
                 <height>20</height>
                </size>
               </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-             </widget>
+             </spacer>
             </item>
             <item>
              <widget class="QgsLegendFilterButton" name="mExpressionFilterButton">
@@ -401,37 +411,17 @@
               </property>
              </widget>
             </item>
-            <item>
-             <widget class="QToolButton" name="mLayerExpressionButton">
-              <property name="toolTip">
-               <string> Add an expression to the vector layer and each child symbol's label</string>
-              </property>
-              <property name="icon">
-               <iconset resource="../../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionAddExpression.svg</normaloff>:/images/themes/default/mActionAddExpression.svg</iconset>
-              </property>
-              <property name="iconSize">
-               <size>
-                <width>20</width>
-                <height>20</height>
-               </size>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_4">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>0</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="mFilterByMapCheckBox">
+            <property name="toolTip">
+             <string>Filter out legend elements that lie outside the linked map item.</string>
+            </property>
+            <property name="text">
+             <string>Only show items inside linked map</string>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="mFilterLegendByAtlasCheckBox">
@@ -1283,8 +1273,8 @@
   <tabstop>mRemoveToolButton</tabstop>
   <tabstop>mEditPushButton</tabstop>
   <tabstop>mCountToolButton</tabstop>
-  <tabstop>mFilterByMapToolButton</tabstop>
   <tabstop>mExpressionFilterButton</tabstop>
+  <tabstop>mFilterByMapCheckBox</tabstop>
   <tabstop>mFilterLegendByAtlasCheckBox</tabstop>
   <tabstop>mFontsColGroupBox</tabstop>
   <tabstop>mTitleFontButton</tabstop>

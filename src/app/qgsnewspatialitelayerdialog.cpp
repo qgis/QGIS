@@ -95,7 +95,7 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
 
   // Set the SRID box to a default of WGS84
   mCrsId = defaultCrs.authid();
-  leSRID->setText( defaultCrs.authid() + " - " + defaultCrs.description() );
+  leSRID->setText( defaultCrs.userFriendlyIdentifier() );
 
   pbnFindSRID->setEnabled( mDatabaseComboBox->count() );
 
@@ -255,7 +255,7 @@ void QgsNewSpatialiteLayerDialog::pbnFindSRID_clicked()
       if ( crsId != mCrsId )
       {
         mCrsId = crsId;
-        leSRID->setText( srs.authid() + " - " + srs.description() );
+        leSRID->setText( srs.userFriendlyIdentifier() );
       }
     }
     delete mySelector;

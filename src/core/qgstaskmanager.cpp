@@ -28,7 +28,9 @@
 QgsTask::QgsTask( const QString &name, Flags flags )
   : mFlags( flags )
   , mDescription( name )
+  , mNotStartedMutex( 1 )
 {
+  mNotStartedMutex.acquire();
 }
 
 QgsTask::~QgsTask()
@@ -41,6 +43,7 @@ QgsTask::~QgsTask()
     delete subTask.task;
   }
   mNotFinishedMutex.unlock();
+  mNotStartedMutex.release();
 }
 
 void QgsTask::setDescription( const QString &description )
@@ -56,6 +59,7 @@ qint64 QgsTask::elapsedTime() const
 void QgsTask::start()
 {
   mNotFinishedMutex.lock();
+  mNotStartedMutex.release();
   mStartCount++;
   Q_ASSERT( mStartCount == 1 );
 
@@ -92,6 +96,7 @@ void QgsTask::cancel()
   {
     // immediately terminate unstarted jobs
     terminated();
+    mNotStartedMutex.release();
   }
 
   if ( mStatus == Terminated )
@@ -152,6 +157,9 @@ QList<QgsMapLayer *> QgsTask::dependentLayers() const
 
 bool QgsTask::waitForFinished( int timeout )
 {
+  // We wait the task to be started
+  mNotStartedMutex.acquire();
+
   bool rv = true;
   if ( mOverallStatus == Complete || mOverallStatus == Terminated )
   {
@@ -676,8 +684,11 @@ void QgsTaskManager::taskStatusChanged( int status )
   mTaskMutex->lock();
   QgsTaskRunnableWrapper *runnable = mTasks.value( id ).runnable;
   mTaskMutex->unlock();
-  if ( runnable )
-    QThreadPool::globalInstance()->cancel( runnable );
+  if ( runnable && QThreadPool::globalInstance()->tryTake( runnable ) )
+  {
+    delete runnable;
+    mTasks[ id ].runnable = nullptr;
+  }
 
   if ( status == QgsTask::Terminated || status == QgsTask::Complete )
   {
@@ -780,8 +791,12 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   }
   else
   {
-    if ( runnable )
-      QThreadPool::globalInstance()->cancel( runnable );
+    if ( runnable && QThreadPool::globalInstance()->tryTake( runnable ) )
+    {
+      delete runnable;
+      mTasks[ id ].runnable = nullptr;
+    }
+
     if ( isParent )
     {
       //task already finished, kill it

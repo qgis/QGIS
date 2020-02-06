@@ -32,6 +32,7 @@ class QgsSymbol;
 class QgsTriangularMesh;
 class QgsRenderContext;
 struct QgsMesh;
+class QgsMesh3dAveragingMethod;
 
 /**
  * \ingroup core
@@ -107,6 +108,21 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       {}
 
       QgsCoordinateTransformContext transformContext;
+
+      /**
+       * Controls whether the layer is allowed to have an invalid/unknown CRS.
+       *
+       * If TRUE, then no validation will be performed on the layer's CRS and the layer
+       * layer's crs() may be invalid() (i.e. the layer will have no georeferencing available
+       * and will be treated as having purely numerical coordinates).
+       *
+       * If FALSE (the default), the layer's CRS will be validated using QgsCoordinateReferenceSystem::validate(),
+       * which may cause a blocking, user-facing dialog asking users to manually select the correct CRS for the
+       * layer.
+       *
+       * \since QGIS 3.10
+       */
+      bool skipCrsValidation = false;
     };
 
     /**
@@ -230,6 +246,23 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       */
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
 
+    /**
+      * Returns the 3d values of stacked 3d mesh defined by the given point
+      *
+      * \note It uses previously cached and indexed triangular mesh
+      * and so if the layer has not been rendered previously
+      * (e.g. when used in a script) it returns NaN value
+      *
+      * \param index dataset index specifying group and dataset to extract value from
+      * \param point point to query in map coordinates
+      * \returns all 3d stacked values that belong to face defined by given point. Returns invalid block
+      * for point outside the mesh layer or in case triangular mesh was not
+      * previously used for rendering or for datasets that do not have type DataOnVolumes
+      *
+      * \since QGIS 3.12
+      */
+    QgsMesh3dDataBlock dataset3dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+
   public slots:
 
     /**
@@ -307,7 +340,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     //! Time format configuration
     QgsMeshTimeSettings mTimeSettings;
-
 };
 
 #endif //QGSMESHLAYER_H

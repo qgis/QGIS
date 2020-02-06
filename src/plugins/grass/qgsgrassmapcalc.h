@@ -406,7 +406,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     // Half size of socket symbol
     int mSocketHalf;
 
-    // Margin beteween mRect and QCanvasRectangle.rect()
+    // Margin between mRect and QCanvasRectangle.rect()
     int mMargin;
 
     // Space between text boxes

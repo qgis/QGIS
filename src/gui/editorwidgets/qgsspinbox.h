@@ -167,11 +167,6 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
 
     bool mExpressionsEnabled = true;
 
-    // This is required because private implementation of
-    // QAbstractSpinBoxPrivate checks for specialText emptiness
-    // and skips specialText handling if it's empty
-    static QString SPECIAL_TEXT_WHEN_EMPTY;
-
     QString stripped( const QString &originalText ) const;
 
     friend class TestQgsRangeWidgetWrapper;

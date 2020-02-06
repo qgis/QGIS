@@ -277,7 +277,7 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &optio
     }
     // It may happen that nodata value given by GDAL is wrong and it has to be
     // disabled by user, in that case we need another value to be used for nodata
-    // (for reprojection for example) -> always internaly represent as wider type
+    // (for reprojection for example) -> always internally represent as wider type
     // with mInternalNoDataValue in reserve.
     // No retyping, no internal values for now
 #if 0
@@ -426,15 +426,15 @@ bool QgsWcsProvider::parseUri( const QString &uriString )
   mIgnoreAxisOrientation = uri.hasParam( QStringLiteral( "IgnoreAxisOrientation" ) ); // must be before parsing!
   mInvertAxisOrientation = uri.hasParam( QStringLiteral( "InvertAxisOrientation" ) ); // must be before parsing!
 
-  mAuth.mUserName = uri.param( QStringLiteral( "username" ) );
+  mAuth.mUserName = uri.username();
   QgsDebugMsg( "set username to " + mAuth.mUserName );
 
-  mAuth.mPassword = uri.param( QStringLiteral( "password" ) );
+  mAuth.mPassword = uri.password();
   QgsDebugMsg( "set password to " + mAuth.mPassword );
 
-  if ( uri.hasParam( QStringLiteral( "authcfg" ) ) )
+  if ( !uri.authConfigId().isEmpty() )
   {
-    mAuth.mAuthCfg = uri.param( QStringLiteral( "authcfg" ) );
+    mAuth.mAuthCfg = uri.authConfigId();
   }
   QgsDebugMsg( "set authcfg to " + mAuth.mAuthCfg );
 
@@ -526,8 +526,10 @@ void QgsWcsProvider::setCoverageCrs( QString const &crs )
 
 void QgsWcsProvider::setQueryItem( QUrl &url, const QString &item, const QString &value ) const
 {
-  url.removeQueryItem( item );
-  url.addQueryItem( item, value );
+  QUrlQuery query( url );
+  query.removeQueryItem( item );
+  query.addQueryItem( item, value );
+  url.setQuery( query );
 }
 
 bool QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
@@ -565,7 +567,7 @@ bool QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
     {
       QgsDebugMsg( QStringLiteral( "Cached does not have CRS" ) );
     }
-    QgsDebugMsg( "Cache CRS: " + cacheCrs.authid() + ' ' + cacheCrs.description() );
+    QgsDebugMsg( "Cache CRS: " + cacheCrs.userFriendlyIdentifier() );
 
     QgsRectangle cacheExtent = QgsGdalProviderBase::extent( mCachedGdalDataset.get() );
     QgsDebugMsg( "viewExtent = " + viewExtent.toString() );
@@ -668,7 +670,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int 
   //according to the WCS spec for 1.1, some CRS have inverted axis
   // box:
   //  1.0.0: minx,miny,maxx,maxy
-  //  1.1.0, 1.1.2: OGC 07-067r5 (WCS 1.1.2) referes to OGC 06-121r3 which says
+  //  1.1.0, 1.1.2: OGC 07-067r5 (WCS 1.1.2) refers to OGC 06-121r3 which says
   //  "The number of axes included, and the order of these axes, shall be as specified
   //  by the referenced CRS." That means inverted for geographic.
   bool changeXY = false;
@@ -948,7 +950,7 @@ int QgsWcsProvider::colorInterpretation( int bandNo ) const
 }
 
 
-bool QgsWcsProvider::parseServiceExceptionReportDom( QByteArray const &xml, const QString &wcsVersion, QString &errorTitle, QString &errorText )
+bool QgsWcsProvider::parseServiceExceptionReportDom( const QByteArray &xml, const QString &wcsVersion, QString &errorTitle, QString &errorText )
 {
 
 #ifdef QGISDEBUG
@@ -1174,7 +1176,7 @@ bool QgsWcsProvider::calculateExtent() const
     {
       QgsDebugMsg( QStringLiteral( "Cached does not have CRS" ) );
     }
-    QgsDebugMsg( "Cache CRS: " + cacheCrs.authid() + ' ' + cacheCrs.description() );
+    QgsDebugMsg( "Cache CRS: " + cacheCrs.userFriendlyIdentifier() );
 
     // We can only verify extent if CRS is set
     // If dataset comes rotated, GDAL probably cuts latitude extend, disable
@@ -1244,6 +1246,14 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
   metadata += htmlRow( tr( "Name (identifier)" ), coverage.identifier );
   metadata += htmlRow( tr( "Title" ), coverage.title );
   metadata += htmlRow( tr( "Abstract" ), coverage.abstract );
+
+  if ( !coverage.metadataLink.metadataType.isNull()  &&
+       !coverage.metadataLink.xlinkHref.isNull() )
+  {
+    metadata += htmlRow( tr( "Metadata Type" ), coverage.metadataLink.metadataType );
+    metadata += htmlRow( tr( "Metadata Link" ), coverage.metadataLink.xlinkHref );
+  }
+
 #if 0
   // We don't have size, nativeCrs, nativeBoundingBox etc. until describe coverage which would be heavy for all coverages
   metadata += htmlRow( tr( "Fixed Width" ), QString::number( coverage.width ) );
@@ -1584,7 +1594,7 @@ QString  QgsWcsProvider::description() const
   return WCS_DESCRIPTION;
 }
 
-void QgsWcsProvider::reloadData()
+void QgsWcsProvider::reloadProviderData()
 {
   clearCache();
 }

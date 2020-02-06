@@ -4,13 +4,8 @@ SET(AUTH_PKIPATHS_SRCS
 )
 
 SET(AUTH_PKIPATHS_HDRS
-  qgsauthpkipathsmethod.h
   qgsauthpkipathsedit.h
-)
-
-SET(AUTH_PKIPATHS_MOC_HDRS
   qgsauthpkipathsmethod.h
-  qgsauthpkipathsedit.h
 )
 
 SET(AUTH_PKIPATHS_UIS qgsauthpkipathsedit.ui)
@@ -35,9 +30,7 @@ INCLUDE_DIRECTORIES (
 
 QT5_WRAP_UI (AUTH_PKIPATHS_UIS_H ${AUTH_PKIPATHS_UIS})
 
-QT5_WRAP_CPP(AUTH_PKIPATHS_MOC_SRCS ${AUTH_PKIPATHS_MOC_HDRS})
-
-ADD_LIBRARY (pkipathsauthmethod MODULE ${AUTH_PKIPATHS_SRCS} ${AUTH_PKIPATHS_HDRS} ${AUTH_PKIPATHS_MOC_SRCS} ${AUTH_PKIPATHS_UIS_H})
+ADD_LIBRARY (pkipathsauthmethod MODULE ${AUTH_PKIPATHS_SRCS} ${AUTH_PKIPATHS_HDRS} ${AUTH_PKIPATHS_UIS_H})
 
 TARGET_LINK_LIBRARIES (pkipathsauthmethod
   qgis_core

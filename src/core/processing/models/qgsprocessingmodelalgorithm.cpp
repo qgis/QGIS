@@ -19,6 +19,7 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingutils.h"
+#include "qgis.h"
 #include "qgsxmlutils.h"
 #include "qgsexception.h"
 #include "qgsvectorlayer.h"
@@ -245,7 +246,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       toExecute.insert( childIt->childId() );
   }
 
-  QTime totalTime;
+  QElapsedTimer totalTime;
   totalTime.start();
 
   QgsProcessingMultiStepFeedback modelFeedback( toExecute.count(), feedback );
@@ -309,7 +310,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( params.join( QStringLiteral( ", " ) ) ) );
       }
 
-      QTime childTime;
+      QElapsedTimer childTime;
       childTime.start();
 
       bool ok = false;
@@ -362,6 +363,15 @@ void QgsProcessingModelAlgorithm::setSourceFilePath( const QString &sourceFile )
 
 QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::PythonOutputType outputType, const int indentSize ) const
 {
+  QStringList fileDocString;
+  fileDocString << QStringLiteral( "\"\"\"" );
+  fileDocString << QStringLiteral( "Model exported as python." );
+  fileDocString << QStringLiteral( "Name : %1" ).arg( displayName() );
+  fileDocString << QStringLiteral( "Group : %1" ).arg( group() );
+  fileDocString << QStringLiteral( "With QGIS : %1" ).arg( Qgis::versionInt() );
+  fileDocString << QStringLiteral( "\"\"\"" );
+  fileDocString << QString();
+
   QStringList lines;
   QString indent = QString( ' ' ).repeated( indentSize );
   QString currentIndent;
@@ -417,12 +427,20 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       importLines << QStringLiteral( "from qgis.core import QgsProcessing" );
       importLines << QStringLiteral( "from qgis.core import QgsProcessingAlgorithm" );
       importLines << QStringLiteral( "from qgis.core import QgsProcessingMultiStepFeedback" );
+
+      bool hasAdvancedParams = false;
       for ( const QgsProcessingParameterDefinition *def : params )
       {
+        if ( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced )
+          hasAdvancedParams = true;
+
         const QString importString = QgsApplication::processingRegistry()->parameterType( def->type() )->pythonImportString();
         if ( !importString.isEmpty() && !importLines.contains( importString ) )
           importLines << importString;
       }
+
+      if ( hasAdvancedParams )
+        importLines << QStringLiteral( "from qgis.core import QgsProcessingParameterDefinition" );
 
       lines << QStringLiteral( "import processing" );
       lines << QString() << QString();
@@ -432,19 +450,35 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
 
       // initAlgorithm, parameter definitions
       lines << indent + QStringLiteral( "def initAlgorithm(self, config=None):" );
-      lines.reserve( lines.size() + params.size() );
-      for ( const QgsProcessingParameterDefinition *def : params )
+      if ( params.empty() )
       {
-        std::unique_ptr< QgsProcessingParameterDefinition > defClone( def->clone() );
-
-        if ( defClone->isDestination() )
+        lines << indent + indent + QStringLiteral( "pass" );
+      }
+      else
+      {
+        lines.reserve( lines.size() + params.size() );
+        for ( const QgsProcessingParameterDefinition *def : params )
         {
-          const QString &friendlyName = !defClone->description().isEmpty() ? uniqueSafeName( defClone->description(), true, friendlyOutputNames ) : defClone->name();
-          friendlyOutputNames.insert( defClone->name(), friendlyName );
-          defClone->setName( friendlyName );
-        }
+          std::unique_ptr< QgsProcessingParameterDefinition > defClone( def->clone() );
 
-        lines << indent + indent + QStringLiteral( "self.addParameter(%1)" ).arg( defClone->asPythonString() );
+          if ( defClone->isDestination() )
+          {
+            const QString &friendlyName = !defClone->description().isEmpty() ? uniqueSafeName( defClone->description(), true, friendlyOutputNames ) : defClone->name();
+            friendlyOutputNames.insert( defClone->name(), friendlyName );
+            defClone->setName( friendlyName );
+          }
+
+          if ( defClone->flags() & QgsProcessingParameterDefinition::FlagAdvanced )
+          {
+            lines << indent + indent + QStringLiteral( "param = %1" ).arg( defClone->asPythonString() );
+            lines << indent + indent + QStringLiteral( "param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)" );
+            lines << indent + indent + QStringLiteral( "self.addParameter(param)" );
+          }
+          else
+          {
+            lines << indent + indent + QStringLiteral( "self.addParameter(%1)" ).arg( defClone->asPythonString() );
+          }
+        }
       }
 
       lines << QString();
@@ -632,6 +666,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       static QMap< QString, QString > sAdditionalImports
       {
         { QStringLiteral( "QgsCoordinateReferenceSystem" ), QStringLiteral( "from qgis.core import QgsCoordinateReferenceSystem" ) },
+        { QStringLiteral( "QgsExpression" ), QStringLiteral( "from qgis.core import QgsExpression" ) },
         { QStringLiteral( "QgsRectangle" ), QStringLiteral( "from qgis.core import QgsRectangle" ) },
         { QStringLiteral( "QgsReferencedRectangle" ), QStringLiteral( "from qgis.core import QgsReferencedRectangle" ) },
         { QStringLiteral( "QgsPoint" ), QStringLiteral( "from qgis.core import QgsPoint" ) },
@@ -672,7 +707,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
         }
       }
 
-      lines = importLines + lines;
+      lines = fileDocString + importLines + lines;
       break;
   }
 
@@ -696,6 +731,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       << QgsProcessingParameterDistance::typeName()
       << QgsProcessingParameterScale::typeName()
       << QgsProcessingParameterBoolean::typeName()
+      << QgsProcessingParameterEnum::typeName()
       << QgsProcessingParameterExpression::typeName()
       << QgsProcessingParameterField::typeName()
       << QgsProcessingParameterString::typeName()

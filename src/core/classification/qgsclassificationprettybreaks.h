@@ -35,8 +35,10 @@ class CORE_EXPORT QgsClassificationPrettyBreaks : public QgsClassificationMethod
     QgsClassificationMethod *clone() const override;
     QIcon icon() const override;
 
+    bool valuesRequired() const override {return false;}
+
   private:
-    QList<double> calculateBreaks( double minimum, double maximum,
+    QList<double> calculateBreaks( double &minimum, double &maximum,
                                    const QList<double> &values, int nclasses ) override;
 };
 

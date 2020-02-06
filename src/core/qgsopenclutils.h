@@ -312,7 +312,6 @@ class CORE_EXPORT QgsOpenClUtils
     static bool sAvailable;
     static QLatin1String SETTINGS_GLOBAL_ENABLED_KEY;
     static QLatin1String SETTINGS_DEFAULT_DEVICE_KEY;
-    static QString sSourcePath;
 };
 
 

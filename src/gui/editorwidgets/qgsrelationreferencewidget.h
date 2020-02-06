@@ -191,6 +191,54 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      */
     void setFormFeature( const QgsFeature &formFeature );
 
+    /**
+     * Returns the public data source of the referenced layer
+     * \since QGIS 3.12
+     */
+    QString referencedLayerDataSource() const;
+
+    /**
+     * Set the public data source of the referenced layer to \a referencedLayerDataSource
+     * \since QGIS 3.12
+     */
+    void setReferencedLayerDataSource( const QString &referencedLayerDataSource );
+
+    /**
+     * Returns the data provider key of the referenced layer
+     * \since QGIS 3.12
+     */
+    QString referencedLayerProviderKey() const;
+
+    /**
+     * Set the data provider key of the referenced layer to \a referencedLayerProviderKey
+     * \since QGIS 3.12
+     */
+    void setReferencedLayerProviderKey( const QString &referencedLayerProviderKey );
+
+    /**
+     * Returns the id of the referenced layer
+     * \since QGIS 3.12
+     */
+    QString referencedLayerId() const;
+
+    /**
+     * Set the id of the referenced layer to \a referencedLayerId
+     * \since QGIS 3.12
+     */
+    void setReferencedLayerId( const QString &referencedLayerId );
+
+    /**
+     * Returns the name of the referenced layer
+     * \since QGIS 3.12
+     */
+    QString referencedLayerName() const;
+
+    /**
+     * Set the name of the referenced layer to \a referencedLayerName
+     * \since QGIS 3.12
+     */
+    void setReferencedLayerName( const QString &referencedLayerName );
+
   public slots:
     //! open the form of the related feature in a new dialog
     void openForm();
@@ -282,6 +330,10 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool mOpenFormButtonVisible = true;
     bool mChainFilters = false;
     bool mAllowAddFeatures = false;
+    QString mReferencedLayerId;
+    QString mReferencedLayerName;
+    QString mReferencedLayerDataSource;
+    QString mReferencedLayerProviderKey;
 
     // UI
     QVBoxLayout *mTopLayout = nullptr;

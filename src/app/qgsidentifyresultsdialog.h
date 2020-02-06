@@ -242,7 +242,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void mExpandNewAction_triggered( bool checked );
 
-    void cbxAutoFeatureForm_toggled( bool checked );
+    void mActionAutoFeatureForm_toggled( bool checked );
 
     void mExpandAction_triggered( bool checked ) { Q_UNUSED( checked ) expandAll(); }
     void mCollapseAction_triggered( bool checked ) { Q_UNUSED( checked ) collapseAll(); }
@@ -264,7 +264,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     };
 
     QMenu *mActionPopup = nullptr;
-    QMap<QTreeWidgetItem *, QgsHighlight * > mHighlights;
+    QHash<QTreeWidgetItem *, QgsHighlight * > mHighlights;
     QgsMapCanvas *mCanvas = nullptr;
     QList<QgsFeature> mFeatures;
     QMap< QString, QMap< QString, QVariant > > mWidgetCaches;

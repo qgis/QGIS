@@ -37,6 +37,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QRegExp>
+#include <QScreen>
 
 //graph
 #include <qwt_plot.h>
@@ -325,10 +326,10 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( cmbIdentifyMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsIdentifyResultsDialog::cmbIdentifyMode_currentIndexChanged );
   connect( cmbViewMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsIdentifyResultsDialog::cmbViewMode_currentIndexChanged );
   connect( mExpandNewAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mExpandNewAction_triggered );
-  connect( cbxAutoFeatureForm, &QCheckBox::toggled, this, &QgsIdentifyResultsDialog::cbxAutoFeatureForm_toggled );
   connect( mExpandAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mExpandAction_triggered );
   connect( mCollapseAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mCollapseAction_triggered );
   connect( mActionCopy, &QAction::triggered, this, &QgsIdentifyResultsDialog::mActionCopy_triggered );
+  connect( mActionAutoFeatureForm, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled );
 
   mOpenFormAction->setDisabled( true );
 
@@ -360,7 +361,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mExpandNewAction->setChecked( mySettings.value( QStringLiteral( "Map/identifyExpand" ), false ).toBool() );
   mActionCopy->setEnabled( false );
   lstResults->setColumnCount( 2 );
-  lstResults->sortByColumn( -1 );
+  lstResults->sortByColumn( -1, Qt::AscendingOrder );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
 
@@ -383,7 +384,6 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   cmbIdentifyMode->addItem( tr( "Top down" ), QgsMapToolIdentify::TopDownAll );
   cmbIdentifyMode->addItem( tr( "Layer selection" ), QgsMapToolIdentify::LayerSelection );
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
-  cbxAutoFeatureForm->setChecked( mySettings.value( QStringLiteral( "Map/identifyAutoFeatureForm" ), false ).toBool() );
 
   // view modes
   cmbViewMode->addItem( tr( "Tree" ), 0 );
@@ -417,6 +417,18 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mHelpToolButton, &QAbstractButton::clicked, this, &QgsIdentifyResultsDialog::showHelp );
 
   initSelectionModes();
+
+  QMenu *settingsMenu = new QMenu();
+  QToolButton *settingsButton = new QToolButton();
+  settingsButton->setAutoRaise( true );
+  settingsButton->setToolTip( tr( "Identify Settings" ) );
+  settingsButton->setMenu( settingsMenu );
+  settingsButton->setPopupMode( QToolButton::InstantPopup );
+  settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  mIdentifyToolbar->addWidget( settingsButton );
+
+  settingsMenu->addAction( mActionAutoFeatureForm );
+  mActionAutoFeatureForm->setChecked( mySettings.value( QStringLiteral( "Map/identifyAutoFeatureForm" ), false ).toBool() );
 }
 
 QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
@@ -940,7 +952,15 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     QgsIdentifyResultsWebViewItem *attrItem = new QgsIdentifyResultsWebViewItem( lstResults );
 #ifdef WITH_QTWEBKIT
     attrItem->webView()->page()->setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
+#else
+    QScreen *screen = QGuiApplication::screenAt( mapToGlobal( QPoint( width() / 2, 0 ) ) );
+    const int horizontalDpi = screen->logicalDotsPerInchX();
+#endif
+
+
     // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
     if ( horizontalDpi > 96 )
     {
@@ -1344,7 +1364,7 @@ void QgsIdentifyResultsDialog::clear()
   }
 
   lstResults->clear();
-  lstResults->sortByColumn( -1 );
+  lstResults->sortByColumn( -1, Qt::AscendingOrder );
   clearHighlights();
 
   tblResults->clearContents();
@@ -2051,7 +2071,7 @@ void QgsIdentifyResultsDialog::cmbViewMode_currentIndexChanged( int index )
   stackedWidget->setCurrentIndex( index );
 }
 
-void QgsIdentifyResultsDialog::cbxAutoFeatureForm_toggled( bool checked )
+void QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled( bool checked )
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Map/identifyAutoFeatureForm" ), checked );

@@ -290,7 +290,7 @@ void QgsGrassModuleInputModel::reload()
   Q_FOREACH ( const QString &dirName, dirNames )
   {
     QString dirPath = mLocationPath + "/" + dirName;
-    // Watch the dir in any case, WIND mabe created later
+    // Watch the dir in any case, WIND maybe created later
     mWatcher->addPath( dirPath );
 
     Q_FOREACH ( const QString &watchedDir, watchedDirs() )

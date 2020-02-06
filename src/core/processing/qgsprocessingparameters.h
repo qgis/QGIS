@@ -268,6 +268,10 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterLayoutItem;
     else if ( sipCpp->type() == QgsProcessingParameterColor::typeName() )
       sipType = sipType_QgsProcessingParameterColor;
+    else if ( sipCpp->type() == QgsProcessingParameterCoordinateOperation::typeName() )
+      sipType = sipType_QgsProcessingParameterCoordinateOperation;
+    else if ( sipCpp->type() == QgsProcessingParameterMapTheme::typeName() )
+      sipType = sipType_QgsProcessingParameterMapTheme;
     else
       sipType = nullptr;
     SIP_END
@@ -2253,7 +2257,8 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
                                  const QString &parentLayerParameterName = QString(),
                                  DataType type = Any,
                                  bool allowMultiple = false,
-                                 bool optional = false );
+                                 bool optional = false,
+                                 bool defaultToAllFields = false );
 
     /**
      * Returns the type name for the parameter class.
@@ -2303,6 +2308,28 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
      */
     void setAllowMultiple( bool allowMultiple );
 
+    /**
+     * Returns whether a parameter which allows multiple selections (see allowMultiple()) should automatically
+     * select all fields as the default value.
+     *
+     * If TRUE, this will override any existing defaultValue() set on the parameter.
+     *
+     * \see setDefaultToAllFields()
+     * \since QGIS 3.12
+     */
+    bool defaultToAllFields() const;
+
+    /**
+     * Sets whether a parameter which allows multiple selections (see allowMultiple()) should automatically
+     * select all fields as the default value.
+     *
+     * If TRUE, this will override any existing defaultValue() set on the parameter.
+     *
+     * \see defaultToAllFields()
+     * \since QGIS 3.12
+     */
+    void setDefaultToAllFields( bool enabled );
+
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
 
@@ -2316,6 +2343,7 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
     QString mParentLayerParameterName;
     DataType mDataType = Any;
     bool mAllowMultiple = false;
+    bool mDefaultToAllFields = false;
 
 };
 
@@ -3000,6 +3028,155 @@ class CORE_EXPORT QgsProcessingParameterColor : public QgsProcessingParameterDef
     bool mAllowOpacity = true;
 
 };
+
+
+/**
+ * \class QgsProcessingParameterCoordinateOperation
+ * \ingroup core
+ * A coordinate operation parameter for processing algorithms, for selection between available
+ * coordinate operations to use when projecting between a source and destination coordinate reference system.
+ *
+ * QgsProcessingParameterCoordinateOperation should be evaluated by calling QgsProcessingAlgorithm::parameterAsString().
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsProcessingParameterCoordinateOperation : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterCoordinateOperation.
+     */
+    QgsProcessingParameterCoordinateOperation( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+        const QString &sourceCrsParameterName = QString(), const QString &destinationCrsParameterName = QString(),
+        const QVariant &staticSourceCrs = QVariant(), const QVariant &staticDestinationCrs = QVariant(),
+        bool optional = false );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "coordinateoperation" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterCoordinateOperation *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+    /**
+     * Returns the name of the source CRS parameter, or an empty string if this is not set.
+     * \see setSourceCrsParameterName()
+     * \see destinationCrsParameterName()
+     */
+    QString sourceCrsParameterName() const { return mSourceParameterName; }
+
+    /**
+     * Sets the \a name of the source CRS parameter. Use an empty string if this is not required.
+     * \see sourceCrsParameterName()
+     * \see setDestinationCrsParameterName()
+     */
+    void setSourceCrsParameterName( const QString &name ) { mSourceParameterName = name; }
+
+    /**
+     * Returns the name of the destination CRS parameter, or an empty string if this is not set.
+     * \see setDestinationCrsParameterName()
+     * \see sourceCrsParameterName()
+     */
+    QString destinationCrsParameterName() const { return mDestParameterName; }
+
+    /**
+     * Sets the \a name of the destination CRS parameter. Use an empty string if this is not required.
+     * \see destinationCrsParameterName()
+     * \see setSourceCrsParameterName()
+     */
+    void setDestinationCrsParameterName( const QString &name ) { mDestParameterName = name; }
+
+    /**
+     * Returns the static source CRS, or an invalid value if this is not set.
+     * \see setSourceCrs()
+     * \see destinationCrs()
+     */
+    QVariant sourceCrs() const { return mSourceCrs; }
+
+    /**
+     * Sets the static source \a crs.
+     * \see sourceCrs()
+     * \see setDestinationCrs()
+     */
+    void setSourceCrs( const QVariant &crs ) { mSourceCrs = crs; }
+
+    /**
+     * Returns the static destination CRS, or an invalid value if this is not set.
+     * \see setDestinationCrs()
+     * \see sourceCrs()
+     */
+    QVariant destinationCrs() const { return mDestCrs; }
+
+    /**
+     * Sets the static destination \a crs.
+     * \see destinationCrs()
+     * \see setSourceCrs()
+     */
+    void setDestinationCrs( const QVariant &crs ) { mDestCrs = crs; }
+
+  private:
+
+    QString mSourceParameterName;
+    QString mDestParameterName;
+    QVariant mSourceCrs;
+    QVariant mDestCrs;
+
+};
+
+
+/**
+ * \class QgsProcessingParameterMapTheme
+ * \ingroup core
+ * A map theme parameter for processing algorithms, allowing users to select an existing map theme from a project.
+ *
+ * QgsProcessingParameterMapTheme should be evaluated by calling QgsProcessingAlgorithm::parameterAsString().
+ *
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsProcessingParameterMapTheme : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterMapTheme.
+     */
+    QgsProcessingParameterMapTheme( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                    bool optional = false );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "maptheme" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterMapTheme *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+
+};
+
+
 
 // clazy:excludeall=qstring-allocations
 

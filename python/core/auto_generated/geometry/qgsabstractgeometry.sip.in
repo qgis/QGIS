@@ -273,6 +273,13 @@ Returns a GeoJSON representation of the geometry as a QString.
 %End
 
 
+    virtual QString asKml( int precision = 17 ) const = 0;
+%Docstring
+Returns a KML representation of the geometry.
+
+.. versionadded:: 3.12
+%End
+
 
 
     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException ) = 0;

@@ -191,6 +191,8 @@ of layout items.
 
       Layout3DMap,
 
+      LayoutManualTable,
+
       // item types provided by plugins
       PluginItem,
     };

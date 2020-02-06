@@ -46,6 +46,7 @@ struct CORE_EXPORT QgsMeshMemoryDataset
 
 struct CORE_EXPORT QgsMeshMemoryDatasetGroup
 {
+  QgsMeshMemoryDatasetGroup( const QString &nm, QgsMeshDatasetGroupMetadata::DataType dataType );
   QgsMeshMemoryDatasetGroup( const QString &nm );
   QgsMeshMemoryDatasetGroup();
   QgsMeshDatasetGroupMetadata groupMetadata() const;
@@ -77,7 +78,7 @@ class CORE_EXPORT QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     /**
      * Construct a mesh in-memory data provider from data string
      *
-     * Data string constains simple definition of vertices and faces
+     * Data string contains simple definition of vertices and faces
      * Each entry is separated by "\n" sign and section deliminer "---"
      * vertex is x and y coordinate separated by comma
      * face is list of vertex indexes, numbered from 0
@@ -111,7 +112,7 @@ class CORE_EXPORT QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     /**
      * Adds dataset to a mesh in-memory data provider from data string
      *
-     * Data string constains simple definition of datasets
+     * Data string contains simple definition of datasets
      * Each entry is separated by "\n" sign and section deliminer "---"
      * First section defines the dataset group: Vertex/Face Vector/Scalar Name
      * Second section defines the group metadata: key: value pairs
@@ -146,6 +147,8 @@ class CORE_EXPORT QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     QgsMeshDatasetMetadata datasetMetadata( QgsMeshDatasetIndex index ) const override;
     QgsMeshDatasetValue datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const override;
     QgsMeshDataBlock datasetValues( QgsMeshDatasetIndex index, int valueIndex, int count ) const override;
+    QgsMesh3dDataBlock dataset3dValues( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
+
     bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
     QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
     bool persistDatasetGroup( const QString &path,

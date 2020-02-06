@@ -147,7 +147,7 @@ class TestQgsCallout: public QObject
     void manhattanDataDefinedDrawToAllParts();
 
   private:
-    bool imageCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
+    bool imageCheck( const QString &testName, QImage &image, unsigned int mismatchCount = 0 );
 
     QString mReport;
     QString mTestDataDir;
@@ -1698,7 +1698,7 @@ void TestQgsCallout::manhattanDataDefinedDrawToAllParts()
 // Private helper functions not called directly by CTest
 //
 
-bool TestQgsCallout::imageCheck( const QString &testName, QImage &image, int mismatchCount )
+bool TestQgsCallout::imageCheck( const QString &testName, QImage &image, unsigned int mismatchCount )
 {
   //draw background
   QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );
@@ -1711,12 +1711,12 @@ bool TestQgsCallout::imageCheck( const QString &testName, QImage &image, int mis
   QString tempDir = QDir::tempPath() + '/';
   QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
-  QgsRenderChecker checker;
+  QgsMultiRenderChecker checker;
   checker.setControlPathPrefix( QStringLiteral( "callouts" ) );
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( fileName );
   checker.setColorTolerance( 2 );
-  bool resultFlag = checker.compareImages( testName, mismatchCount );
+  bool resultFlag = checker.runTest( testName, mismatchCount );
   mReport += checker.report();
   return resultFlag;
 }

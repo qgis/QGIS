@@ -60,7 +60,6 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     QgsAttributeList pkAttributeIndexes() const override;
     QSet<QgsMapLayerDependency> dependencies() const override;
     bool cancelReload() override;
-    void reloadData() override;
 
   private:
 
@@ -117,6 +116,11 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     bool createIt();
     bool loadSourceLayers();
     void createVirtualTable( QgsVectorLayer *vlayer, const QString &name );
+
+    /**
+     * Opens or creates file
+    */
+    void reloadProviderData() override;
 
     friend class QgsVirtualLayerFeatureSource;
 

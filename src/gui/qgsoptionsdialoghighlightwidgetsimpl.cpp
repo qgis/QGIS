@@ -237,8 +237,6 @@ bool QgsOptionsDialogHighlightTree::highlightText( const QString &text )
     QList<QTreeWidgetItem *> items = treeWidget->findItems( text, Qt::MatchContains | Qt::MatchRecursive, 0 );
     success = !items.empty();
     mTreeInitialExpand.clear();
-    QBrush highlightBackground( QColor( HIGHLIGHT_BACKGROUND_RED, HIGHLIGHT_BACKGROUND_GREEN, HIGHLIGHT_BACKGROUND_BLUE ) );
-    QBrush highlightText( QColor( HIGHLIGHT_TEXT_RED, HIGHLIGHT_TEXT_GREEN, HIGHLIGHT_TEXT_BLUE ) );
     for ( QTreeWidgetItem *item : items )
     {
       setChildrenVisible( item, true );

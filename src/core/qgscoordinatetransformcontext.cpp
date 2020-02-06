@@ -189,6 +189,36 @@ QString QgsCoordinateTransformContext::calculateCoordinateOperation( const QgsCo
 #endif
 }
 
+bool QgsCoordinateTransformContext::mustReverseCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
+{
+#if PROJ_VERSION_MAJOR>=6
+  const QString srcKey = source.authid();
+  const QString destKey = destination.authid();
+
+  d->mLock.lockForRead();
+  QString res = d->mSourceDestDatumTransforms.value( qMakePair( srcKey, destKey ), QString() );
+  if ( !res.isEmpty() )
+  {
+    d->mLock.unlock();
+    return false;
+  }
+  // see if the reverse operation is present
+  res = d->mSourceDestDatumTransforms.value( qMakePair( destKey, srcKey ), QString() );
+  if ( !res.isEmpty() )
+  {
+    d->mLock.unlock();
+    return true;
+  }
+
+  d->mLock.unlock();
+  return false;
+#else
+  Q_UNUSED( source )
+  Q_UNUSED( destination )
+  return false;
+#endif
+}
+
 bool QgsCoordinateTransformContext::readXml( const QDomElement &element, const QgsReadWriteContext &, QStringList &missingTransforms )
 {
   d.detach();

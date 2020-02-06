@@ -35,7 +35,23 @@
 class CORE_EXPORT QgsMeshTimeSettings
 {
   public:
-    //! Default constructor for relative time formate and 0 offset
+
+    /**
+     *  Time units used to display time
+     *  \since QGIS 3.12
+    */
+    enum TimeUnit
+    {
+      //! second unit
+      seconds = 0,
+      //! minute unit
+      minutes,
+      //! hour unit
+      hours,
+      //! day unit
+      days
+    };
+
     QgsMeshTimeSettings();
     //! Constructs relative time format settings with defined offset in hours
     QgsMeshTimeSettings( double relativeTimeOffsetHours, const QString &relativeTimeFormat );
@@ -57,6 +73,18 @@ class CORE_EXPORT QgsMeshTimeSettings
     //! Sets number of offset hours for relative time formatting
     void setRelativeTimeOffsetHours( double relativeTimeOffsetHours );
 
+    /**
+     * Returns number of seconds used as interval for dataset playback
+     * \since QGIS 3.12
+     */
+    double datasetPlaybackInterval() const; SIP_SKIP
+
+    /**
+     * Sets number of seconds used as interval for dataset playback
+     * \since QGIS 3.12
+     */
+    void setDatasetPlaybackInterval( double seconds ); SIP_SKIP
+
     //! Returns format used for relative time
     QString relativeTimeFormat() const;
     //! Sets format used for relative time
@@ -72,14 +100,29 @@ class CORE_EXPORT QgsMeshTimeSettings
     //! Sets format used for absolute time
     void setAbsoluteTimeFormat( const QString &absoluteTimeFormat );
 
+    /**
+     * Returns the provider time unit
+     * \since QGIS 3.12
+     */
+    TimeUnit providerTimeUnit() const;
+
+    /**
+    * Sets the provider time unit
+    * \since QGIS 3.12
+    */
+    void setProviderTimeUnit( const TimeUnit &providerTimeUnit );
+
   private:
     bool mUseAbsoluteTime = false;
 
     double mRelativeTimeOffsetHours = 0;
+    double mDatasetPlaybackIntervalSec = 3;
     QString mRelativeTimeFormat = QStringLiteral( "d hh:mm:ss" );
 
     QDateTime mAbsoluteTimeReferenceTime;
     QString mAbsoluteTimeFormat = QStringLiteral( "dd.MM.yyyy hh:mm:ss" );
+
+    TimeUnit mProviderTimeUnit = TimeUnit::hours;
 };
 
 Q_DECLARE_METATYPE( QgsMeshTimeSettings );

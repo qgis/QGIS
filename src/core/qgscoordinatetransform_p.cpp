@@ -106,6 +106,8 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mSourceDatumTransform( other.mSourceDatumTransform )
   , mDestinationDatumTransform( other.mDestinationDatumTransform )
   , mProjCoordinateOperation( other.mProjCoordinateOperation )
+  , mShouldReverseCoordinateOperation( other.mShouldReverseCoordinateOperation )
+  , mIsReversed( other.mIsReversed )
 {
 #if PROJ_VERSION_MAJOR < 6
   //must reinitialize to setup mSourceProjection and mDestinationProjection
@@ -169,7 +171,7 @@ bool QgsCoordinateTransformPrivate::initialize()
   int destDatumTransform = mDestinationDatumTransform;
   bool useDefaultDatumTransform = ( sourceDatumTransform == - 1 && destDatumTransform == -1 );
 
-  mSourceProjString = mSourceCRS.toProj4();
+  mSourceProjString = mSourceCRS.toProj();
   if ( !useDefaultDatumTransform )
   {
     mSourceProjString = stripDatumTransform( mSourceProjString );
@@ -179,7 +181,7 @@ bool QgsCoordinateTransformPrivate::initialize()
     mSourceProjString += ( ' ' + QgsDatumTransform::datumTransformToProj( sourceDatumTransform ) );
   }
 
-  mDestProjString = mDestCRS.toProj4();
+  mDestProjString = mDestCRS.toProj();
   if ( !useDefaultDatumTransform )
   {
     mDestProjString = stripDatumTransform( mDestProjString );
@@ -200,8 +202,8 @@ bool QgsCoordinateTransformPrivate::initialize()
   ProjData res = threadLocalProjData();
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
-  QgsDebugMsg( "From proj : " + mSourceCRS.toProj4() );
-  QgsDebugMsg( "To proj   : " + mDestCRS.toProj4() );
+  QgsDebugMsg( "From proj : " + mSourceCRS.toProj() );
+  QgsDebugMsg( "To proj   : " + mDestCRS.toProj() );
 #endif
 
 #if PROJ_VERSION_MAJOR>=6
@@ -238,7 +240,7 @@ bool QgsCoordinateTransformPrivate::initialize()
 
   //XXX todo overload == operator for QgsCoordinateReferenceSystem
   //at the moment srs.parameters contains the whole proj def...soon it won't...
-  //if (mSourceCRS->toProj4() == mDestCRS->toProj4())
+  //if (mSourceCRS->toProj() == mDestCRS->toProj())
   if ( mSourceCRS == mDestCRS )
   {
     // If the source and destination projection are the same, set the short
@@ -260,6 +262,7 @@ void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTran
   // recalculate datum transforms from context
 #if PROJ_VERSION_MAJOR >= 6
   mProjCoordinateOperation = context.calculateCoordinateOperation( mSourceCRS, mDestCRS );
+  mShouldReverseCoordinateOperation = context.mustReverseCoordinateOperation( mSourceCRS, mDestCRS );
 #else
   Q_NOWARN_DEPRECATED_PUSH
   QgsDatumTransform::TransformPair transforms = context.calculateDatumTransforms( mSourceCRS, mDestCRS );
@@ -331,6 +334,8 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   QStringList projErrors;
   proj_log_func( context, &projErrors, proj_collecting_logger );
 
+  mIsReversed = false;
+
   QgsProjUtils::proj_pj_unique_ptr transform;
   if ( !mProjCoordinateOperation.isEmpty() )
   {
@@ -357,14 +362,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
     }
     else
     {
-      // transform may have either the source or destination CRS using swapped axis order. For QGIS, we ALWAYS need regular x/y axis order
-      transform.reset( proj_normalize_for_visualization( context, transform.get() ) );
-      if ( !transform )
-      {
-        const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid(),
-                            mDestCRS.authid() );
-        QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
-      }
+      mIsReversed = mShouldReverseCoordinateOperation;
     }
   }
 
@@ -465,15 +463,21 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
         // multiple operations available. Can we use the best one?
         QgsDatumTransform::TransformDetails preferred;
         bool missingPreferred = false;
+        bool stillLookingForPreferred = true;
         for ( int i = 0; i < count; ++ i )
         {
           transform.reset( proj_list_get( context, ops, i ) );
           const bool isInstantiable = transform && proj_coordoperation_is_instantiable( context, transform.get() );
-          if ( i == 0 && transform && !isInstantiable )
+          if ( stillLookingForPreferred && transform && !isInstantiable )
           {
             // uh oh :( something is missing blocking us from the preferred operation!
-            missingPreferred = true;
-            preferred = QgsDatumTransform::transformDetailsFromPj( transform.get() );
+            QgsDatumTransform::TransformDetails candidate = QgsDatumTransform::transformDetailsFromPj( transform.get() );
+            if ( !candidate.proj.isEmpty() )
+            {
+              preferred = candidate;
+              missingPreferred = true;
+              stillLookingForPreferred = false;
+            }
           }
           if ( transform && isInstantiable )
           {

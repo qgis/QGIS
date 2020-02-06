@@ -56,7 +56,7 @@
 
 QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mDefaultCRS( GEO_EPSG_CRS_AUTHID )
+  , mDefaultCRS( geoEpsgCrsAuthId() )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -1109,8 +1109,8 @@ QString QgsWMSSourceSelect::descriptionForAuthId( const QString &authId )
     return mCrsNames[ authId ];
 
   QgsCoordinateReferenceSystem qgisSrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authId );
-  mCrsNames.insert( authId, qgisSrs.description() );
-  return qgisSrs.description();
+  mCrsNames.insert( authId, qgisSrs.userFriendlyIdentifier() );
+  return qgisSrs.userFriendlyIdentifier();
 }
 
 void QgsWMSSourceSelect::addDefaultServers()

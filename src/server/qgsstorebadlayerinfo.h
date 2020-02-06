@@ -21,6 +21,7 @@
 #include "qgsprojectbadlayerhandler.h"
 #include "qgis_server.h"
 #include <QStringList>
+#include <QMap>
 
 /**
  * \ingroup server
@@ -48,8 +49,15 @@ class SERVER_EXPORT QgsStoreBadLayerInfo: public QgsProjectBadLayerHandler
      */
     QStringList badLayers() const { return mBadLayerIds; }
 
+    /**
+     * Returns names of bad layers with ids.
+     * \since QGIS 3.12
+     */
+    QMap<QString, QString> badLayerNames() const { return mBadLayerNames; }
+
   private:
     QStringList mBadLayerIds;
+    QMap<QString, QString> mBadLayerNames;
 };
 
 #endif // QGSSTOREBADLAYERINFO_H

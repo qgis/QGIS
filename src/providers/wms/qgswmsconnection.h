@@ -27,6 +27,8 @@
 class QgsWMSConnection : public QgsOwsConnection
 {
 
+    Q_OBJECT
+
   public:
     //! Constructor
     explicit QgsWMSConnection( const QString &connName );

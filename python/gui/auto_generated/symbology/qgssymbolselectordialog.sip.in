@@ -142,7 +142,7 @@ alters tree and sets proper widget when Layer Type is changed
 
     void symbolModified();
 %Docstring
-Emiited when a symbol is modified in the widget.
+Emitted when a symbol is modified in the widget.
 %End
 
 };

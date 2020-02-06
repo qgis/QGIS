@@ -33,7 +33,8 @@ from qgis.core import (QgsProject,
                        QgsRasterLayer,
                        QgsMapLayer,
                        QgsExpressionContextUtils,
-                       QgsProjectColorScheme)
+                       QgsProjectColorScheme,
+                       QgsSettings)
 from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
@@ -1124,7 +1125,7 @@ class TestQgsProject(unittest.TestCase):
         tmpFile = "{}/project.qgs".format(tmpDir.path())
 
         s0 = QgsLabelingEngineSettings()
-        s0.setNumCandidatePositions(3, 33, 333)
+        s0.setMaximumLineCandidatesPerCm(33)
 
         p0 = QgsProject()
         p0.setFileName(tmpFile)
@@ -1135,11 +1136,7 @@ class TestQgsProject(unittest.TestCase):
         p1.read(tmpFile)
 
         s1 = p1.labelingEngineSettings()
-        candidates = s1.numCandidatePositions()
-
-        self.assertEqual(candidates[0], 3)
-        self.assertEqual(candidates[1], 33)
-        self.assertEqual(candidates[2], 333)
+        self.assertEqual(s1.maximumLineCandidatesPerCm(), 33)
 
     def testLayerChangeDirtiesProject(self):
         """
@@ -1232,6 +1229,43 @@ class TestQgsProject(unittest.TestCase):
         project.setCrs(QgsCoordinateReferenceSystem('EPSG:3148'))
         self.assertFalse(project.isDirty())
 
+    def testBackgroundColor(self):
+        p = QgsProject()
+        s = QgsSettings()
+
+        red = int(s.value("qgis/default_canvas_color_red", 255))
+        green = int(s.value("qgis/default_canvas_color_green", 255))
+        blue = int(s.value("qgis/default_canvas_color_blue", 255))
+        # test default canvas background color
+        self.assertEqual(p.backgroundColor(), QColor(red, green, blue))
+        spy = QSignalSpy(p.backgroundColorChanged)
+        p.setBackgroundColor(QColor(0, 0, 0))
+        self.assertEqual(len(spy), 1)
+        # test customized canvas background color
+        self.assertEqual(p.backgroundColor(), QColor(0, 0, 0))
+        # test signal not emitted when color doesn't actually change
+        p.setBackgroundColor(QColor(0, 0, 0))
+        self.assertEqual(len(spy), 1)
+
+    def testSelectionColor(self):
+        p = QgsProject()
+        s = QgsSettings()
+
+        red = int(s.value("qgis/default_selection_color_red", 255))
+        green = int(s.value("qgis/default_selection_color_green", 255))
+        blue = int(s.value("qgis/default_selection_color_blue", 0))
+        alpha = int(s.value("qgis/default_selection_color_alpha", 255))
+        # test default feature selection color
+        self.assertEqual(p.selectionColor(), QColor(red, green, blue, alpha))
+        spy = QSignalSpy(p.selectionColorChanged)
+        p.setSelectionColor(QColor(0, 0, 0, 50))
+        self.assertEqual(len(spy), 1)
+        # test customized feature selection color
+        self.assertEqual(p.selectionColor(), QColor(0, 0, 0, 50))
+        # test signal not emitted when color doesn't actually change
+        p.setSelectionColor(QColor(0, 0, 0, 50))
+        self.assertEqual(len(spy), 1)
+
     def testColorScheme(self):
         p = QgsProject.instance()
         spy = QSignalSpy(p.projectColorsChanged)
@@ -1258,6 +1292,7 @@ class TestQgsProject(unittest.TestCase):
         spy = QSignalSpy(p.transformContextChanged)
         ctx = QgsCoordinateTransformContext()
         ctx.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 1234, 1235)
+        ctx.addCoordinateOperation(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), 'x')
         p.setTransformContext(ctx)
         self.assertEqual(len(spy), 1)
 

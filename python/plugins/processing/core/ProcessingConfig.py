@@ -22,13 +22,15 @@ __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
+import tempfile
 
 from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
 from qgis.core import (NULL,
                        QgsApplication,
                        QgsSettings,
                        QgsVectorFileWriter,
-                       QgsRasterFileWriter)
+                       QgsRasterFileWriter,
+                       QgsProcessingUtils)
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 from multiprocessing import cpu_count
@@ -49,7 +51,7 @@ class ProcessingConfig:
     VECTOR_LINE_STYLE = 'VECTOR_LINE_STYLE'
     VECTOR_POLYGON_STYLE = 'VECTOR_POLYGON_STYLE'
     FILTER_INVALID_GEOMETRIES = 'FILTER_INVALID_GEOMETRIES'
-    USE_FILENAME_AS_LAYER_NAME = 'USE_FILENAME_AS_LAYER_NAME'
+    PREFER_FILENAME_AS_LAYER_NAME = 'PREFER_FILENAME_AS_LAYER_NAME'
     KEEP_DIALOG_OPEN = 'KEEP_DIALOG_OPEN'
     PRE_EXECUTION_SCRIPT = 'PRE_EXECUTION_SCRIPT'
     POST_EXECUTION_SCRIPT = 'POST_EXECUTION_SCRIPT'
@@ -60,6 +62,7 @@ class ProcessingConfig:
     MAX_THREADS = 'MAX_THREADS'
     DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DefaultOutputRasterLayerExt'
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DefaultOutputVectorLayerExt'
+    TEMP_PATH = 'TEMP_PATH2'
 
     settings = {}
     settingIcons = {}
@@ -74,8 +77,8 @@ class ProcessingConfig:
             ProcessingConfig.tr('Keep dialog open after running an algorithm'), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
-            ProcessingConfig.USE_FILENAME_AS_LAYER_NAME,
-            ProcessingConfig.tr('Use filename as layer name'), False))
+            ProcessingConfig.PREFER_FILENAME_AS_LAYER_NAME,
+            ProcessingConfig.tr('Prefer output filename for layer names'), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.SHOW_PROVIDERS_TOOLTIP,
@@ -152,7 +155,7 @@ class ProcessingConfig:
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,
             ProcessingConfig.tr('Default output vector layer extension'),
-            'gpkg',
+            QgsVectorFileWriter.supportedFormatExtensions()[0],
             valuetype=Setting.SELECTION,
             options=extensions))
 
@@ -164,6 +167,12 @@ class ProcessingConfig:
             'tif',
             valuetype=Setting.SELECTION,
             options=extensions))
+
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.TEMP_PATH,
+            ProcessingConfig.tr('Override temporary output folder path (leave blank for default)'), None,
+            valuetype=Setting.FOLDER))
 
     @staticmethod
     def setGroupIcon(group, icon):

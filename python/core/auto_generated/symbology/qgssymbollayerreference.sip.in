@@ -1,0 +1,143 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgssymbollayerreference.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsSymbolLayerId
+{
+%Docstring
+We may need stable references to symbol layers, when pointers to symbol layers is not usable
+(when a symbol or a feature renderer is cloned for example).
+
+A symbol layer identifier consists of:
+- an identifier to its symbol (given by the QgsFeatureRenderer)
+- a path of indexes inside its symbol and subsymbols.
+
+For a symbol in a QgsSingleSymbolRenderer that has two symbol layers, it will give:
+- "" for the symbol key
+- [0] and [1] for the two symbol layer indexes
+
+For a QgsRuleBasedRenderer each rule key is the symbol key.
+
+For a symbol with a symbol layer that has a sub symbol (say a QgsArrowSymbolLayer),
+path to symbol layers of the sub symbol are given by a list of indexes:
+- [0, 0] : first symbol layer of the sub symbol of the first symbol layer
+- [0, 1] : second symbol layer of the sub symbol of the first symbol layer
+- [2, 0] : first symbol layer of the sub symbol of the third symbol layer, etc.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerreference.h"
+%End
+  public:
+    QgsSymbolLayerId();
+
+    QgsSymbolLayerId( QString key, int index );
+%Docstring
+QgsSymbolLayerId constructor with a symbol key and a unique symbol layer index
+%End
+
+    QgsSymbolLayerId( QString key, const QVector<int> &indexPath );
+%Docstring
+QgsSymbolLayerId constructor with a symbol key and an index path
+%End
+
+    QgsSymbolLayerId( const QgsSymbolLayerId &other );
+%Docstring
+Default copy constructor
+%End
+
+
+    QString symbolKey() const;
+%Docstring
+Returns the key associated to the symbol
+%End
+
+    QVector<int> symbolLayerIndexPath() const;
+%Docstring
+Returns the symbol layer index path inside the symbol
+%End
+
+    bool operator==( const QgsSymbolLayerId &other ) const;
+
+    bool operator<( const QgsSymbolLayerId &other ) const;
+
+};
+
+class QgsSymbolLayerReference
+{
+%Docstring
+
+Type used to refer to a specific symbol layer in a symbol of a layer.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgssymbollayerreference.h"
+%End
+  public:
+    QgsSymbolLayerReference();
+%Docstring
+Default constructor
+%End
+
+    QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer );
+%Docstring
+Constructor
+%End
+
+    QString layerId() const;
+%Docstring
+The referenced vector layer / feature renderer
+%End
+
+    QgsSymbolLayerId symbolLayerId() const;
+%Docstring
+The symbol layer's id
+%End
+
+    bool operator==( const QgsSymbolLayerReference &other ) const;
+
+};
+
+uint qHash( const QgsSymbolLayerId &id );
+
+uint qHash( const QgsSymbolLayerReference &r );
+
+typedef QList<QgsSymbolLayerReference> QgsSymbolLayerReferenceList;
+
+QString symbolLayerReferenceListToString( const QgsSymbolLayerReferenceList & );
+%Docstring
+Utilitary function to turn a QgsSymbolLayerReferenceList into a string
+
+.. seealso:: :py:func:`stringToSymbolLayerReferenceList`
+
+.. versionadded:: 3.12
+%End
+
+QgsSymbolLayerReferenceList stringToSymbolLayerReferenceList( const QString & );
+%Docstring
+Utilitary function to parse a string originated from symbolLayerReferenceListToString
+into a QgsSymbolLayerReferenceList
+
+.. seealso:: :py:func:`symbolLayerReferenceListToString`
+
+.. versionadded:: 3.12
+%End
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgssymbollayerreference.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -32,7 +32,7 @@ QgsRasterLayerRendererFeedback::QgsRasterLayerRendererFeedback( QgsRasterLayerRe
   : mR( r )
   , mMinimalPreviewInterval( 250 )
 {
-  setRenderPartialOutput( r->mContext.testFlag( QgsRenderContext::RenderPartialOutput ) );
+  setRenderPartialOutput( r->renderContext()->testFlag( QgsRenderContext::RenderPartialOutput ) );
 }
 
 void QgsRasterLayerRendererFeedback::onNewData()
@@ -47,32 +47,27 @@ void QgsRasterLayerRendererFeedback::onNewData()
 
   // TODO: update only the area that got new data
 
-  QgsDebugMsg( QStringLiteral( "new raster preview! %1" ).arg( mLastPreview.msecsTo( QTime::currentTime() ) ) );
-  QTime t;
+  QgsDebugMsgLevel( QStringLiteral( "new raster preview! %1" ).arg( mLastPreview.msecsTo( QTime::currentTime() ) ), 3 );
+  QElapsedTimer t;
   t.start();
   QgsRasterBlockFeedback feedback;
   feedback.setPreviewOnly( true );
   feedback.setRenderPartialOutput( true );
   QgsRasterIterator iterator( mR->mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
-  drawer.draw( mR->mPainter, mR->mRasterViewPort, mR->mMapToPixel, &feedback );
-  QgsDebugMsg( QStringLiteral( "total raster preview time: %1 ms" ).arg( t.elapsed() ) );
+  drawer.draw( mR->renderContext()->painter(), mR->mRasterViewPort, &mR->renderContext()->mapToPixel(), &feedback );
+  QgsDebugMsgLevel( QStringLiteral( "total raster preview time: %1 ms" ).arg( t.elapsed() ), 3 );
   mLastPreview = QTime::currentTime();
 }
 
 ///@endcond
 ///
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext )
-  : QgsMapLayerRenderer( layer->id() )
-  , mContext( rendererContext )
+  : QgsMapLayerRenderer( layer->id(), &rendererContext )
   , mFeedback( new QgsRasterLayerRendererFeedback( this ) )
 {
-  mPainter = rendererContext.painter();
-  const QgsMapToPixel &qgsMapToPixel = rendererContext.mapToPixel();
-  mMapToPixel = &qgsMapToPixel;
-
-  QgsMapToPixel mapToPixel = qgsMapToPixel;
-  if ( mapToPixel.mapRotation() )
+  QgsMapToPixel mapToPixel = rendererContext.mapToPixel();
+  if ( rendererContext.mapToPixel().mapRotation() )
   {
     // unset rotation for the sake of local computations.
     // Rotation will be handled by QPainter later
@@ -137,7 +132,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   QgsRectangle myRasterExtent = layer->ignoreExtents() ? myProjectedViewExtent : myProjectedViewExtent.intersect( myProjectedLayerExtent );
   if ( myRasterExtent.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "draw request outside view extent." ) );
+    QgsDebugMsgLevel( QStringLiteral( "draw request outside view extent." ), 2 );
     // nothing to do
     return;
   }
@@ -192,8 +187,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   );
 
   //raster viewport top left / bottom right are already rounded to int
-  mRasterViewPort->mWidth = static_cast<int>( mRasterViewPort->mBottomRightPoint.x() - mRasterViewPort->mTopLeftPoint.x() );
-  mRasterViewPort->mHeight = static_cast<int>( mRasterViewPort->mBottomRightPoint.y() - mRasterViewPort->mTopLeftPoint.y() );
+  mRasterViewPort->mWidth = static_cast<qgssize>( std::abs( mRasterViewPort->mBottomRightPoint.x() - mRasterViewPort->mTopLeftPoint.x() ) );
+  mRasterViewPort->mHeight = static_cast<qgssize>( std::abs( mRasterViewPort->mBottomRightPoint.y() - mRasterViewPort->mTopLeftPoint.y() ) );
 
   //the drawable area can start to get very very large when you get down displaying 2x2 or smaller, this is because
   //mapToPixel.mapUnitsPerPixel() is less then 1,
@@ -245,7 +240,7 @@ bool QgsRasterLayerRenderer::render()
 
   //R->draw( mPainter, mRasterViewPort, &mMapToPixel );
 
-  QTime time;
+  QElapsedTimer time;
   time.start();
   //
   //
@@ -266,7 +261,7 @@ bool QgsRasterLayerRenderer::render()
   // Drawer to pipe?
   QgsRasterIterator iterator( mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
-  drawer.draw( mPainter, mRasterViewPort, mMapToPixel, mFeedback );
+  drawer.draw( renderContext()->painter(), mRasterViewPort, &renderContext()->mapToPixel(), mFeedback );
 
   const QStringList errors = mFeedback->errors();
   for ( const QString &error : errors )

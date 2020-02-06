@@ -15,6 +15,7 @@ import shutil
 import sys
 import tempfile
 import hashlib
+from datetime import datetime
 
 from osgeo import gdal, ogr  # NOQA
 from qgis.PyQt.QtCore import QVariant, QByteArray
@@ -27,6 +28,7 @@ from qgis.core import (NULL,
 from qgis.testing import start_app, unittest
 
 from utilities import unitTestDataPath
+from qgis.utils import spatialite_connect
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -119,7 +121,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
-        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'testMixOfPolygonCurvePolygon', '4', 'CurvePolygon', '']))
+        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'testMixOfPolygonCurvePolygon', '4', 'CurvePolygon', '', '']))
 
     def testMixOfLineStringCompoundCurve(self):
 
@@ -135,7 +137,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
-        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'testMixOfLineStringCompoundCurve', '5', 'CompoundCurve', '']))
+        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'testMixOfLineStringCompoundCurve', '5', 'CompoundCurve', '', '']))
 
     def testGpxElevation(self):
         # GPX without elevation data
@@ -608,6 +610,82 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl.reload()
         self.assertEqual(vl.featureCount(), 1)
         gdal.Unlink(filename)
+
+    def testSpatialiteDefaultValues(self):
+        """Test whether in spatialite table with default values like CURRENT_TIMESTAMP or
+        (datetime('now','localtime')) they are respected. See GH #33383"""
+
+        # Create the test table
+
+        dbname = os.path.join(tempfile.gettempdir(), "test.sqlite")
+        if os.path.exists(dbname):
+            os.remove(dbname)
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = "SELECT InitSpatialMetadata()"
+        cur.execute(sql)
+
+        # simple table with primary key
+        sql = """
+        CREATE TABLE test_table_default_values (
+            id integer primary key autoincrement,
+            comment TEXT,
+            created_at_01 text DEFAULT (datetime('now','localtime')),
+            created_at_02 text DEFAULT CURRENT_TIMESTAMP,
+            anumber INTEGER DEFAULT 123,
+            atext TEXT default 'My default'
+        )
+        """
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        vl = QgsVectorLayer(dbname + '|layername=test_table_default_values', 'test_table_default_values', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        # Save it for the test
+        now = datetime.now()
+
+        # Test default values
+        dp = vl.dataProvider()
+        #FIXME: should it be None?
+        self.assertTrue(dp.defaultValue(0).isNull())
+        self.assertIsNone(dp.defaultValue(1))
+        #FIXME: This fails because there is no backend-side evaluation in this provider
+        #self.assertTrue(dp.defaultValue(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(dp.defaultValue(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(dp.defaultValue(4), 123)
+        self.assertEqual(dp.defaultValue(5), 'My default')
+
+        self.assertEqual(dp.defaultValueClause(0), 'Autogenerate')
+        self.assertEqual(dp.defaultValueClause(1), '')
+        self.assertEqual(dp.defaultValueClause(2), "datetime('now','localtime')")
+        self.assertEqual(dp.defaultValueClause(3), "CURRENT_TIMESTAMP")
+        #FIXME: ogr provider simply returns values when asked for clauses
+        #self.assertEqual(dp.defaultValueClause(4), '')
+        #self.assertEqual(dp.defaultValueClause(5), '')
+
+        feature = QgsFeature(vl.fields())
+        for idx in range(vl.fields().count()):
+            default = vl.dataProvider().defaultValue(idx)
+            if not default:
+                feature.setAttribute(idx, 'A comment')
+            else:
+                feature.setAttribute(idx, default)
+
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+        del(vl)
+
+        # Verify
+        vl2 = QgsVectorLayer(dbname + '|layername=test_table_default_values', 'test_table_default_values', 'ogr')
+        self.assertTrue(vl2.isValid())
+        feature = next(vl2.getFeatures())
+        self.assertEqual(feature.attribute(1), 'A comment')
+        self.assertTrue(feature.attribute(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(feature.attribute(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(feature.attribute(4), 123)
+        self.assertEqual(feature.attribute(5), 'My default')
 
 
 if __name__ == '__main__':

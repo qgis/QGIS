@@ -207,7 +207,7 @@ void QgsTextDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext 
     QgsExpression *expression = getExpression( s.categoryAttributes.at( i ), expressionContext );
     QString val = expression->evaluate( &expressionContext ).toString();
 
-    //find out dimesions
+    //find out dimensions
     double textWidth = fontMetrics.width( val );
     double textHeight = fontMetrics.height();
 

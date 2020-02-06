@@ -401,10 +401,26 @@ class TestQgsSnappingUtils : public QObject
       QCOMPARE( m2.point(), QgsPointXY( 5.0, 2.5 ) );
 
     }
+
+    void testSnapOnCurrentLayer()
+    {
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 1, 1 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u( nullptr, true );
+      u.setMapSettings( mapSettings );
+      u.setCurrentLayer( mVL );
+
+      QgsPointLocator::Match m = u.snapToCurrentLayer( QPoint( 100, 100 ), QgsPointLocator::Vertex );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasVertex() );
+      QCOMPARE( m.point(), QgsPointXY( 1, 0 ) );
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsSnappingUtils )
 
 #include "testqgssnappingutils.moc"
-
-

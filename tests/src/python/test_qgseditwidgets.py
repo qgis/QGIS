@@ -57,11 +57,14 @@ class TestQgsTextEditWidget(unittest.TestCase):
         editwidget.setValue(NULL)
         self.assertEqual(editwidget.value(), expected[3])
 
+        editwidget.setValue(float('nan'))
+        self.assertEqual(editwidget.value(), expected[4])
+
     def test_SetValue(self):
         self.createLayerWithOnePoint()
 
-        self.doAttributeTest(0, ['value', '123', NULL, NULL])
-        self.doAttributeTest(1, [NULL, 123, NULL, NULL])
+        self.doAttributeTest(0, ['value', '123', NULL, NULL, NULL])
+        self.doAttributeTest(1, [NULL, 123, NULL, NULL, NULL])
 
     def testStringWithMaxLen(self):
         """ tests that text edit wrappers correctly handle string fields with a maximum length """

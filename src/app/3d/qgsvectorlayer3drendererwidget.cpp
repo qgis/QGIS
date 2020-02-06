@@ -20,6 +20,7 @@
 #include "qgsrulebased3drendererwidget.h"
 #include "qgssymbol3dwidget.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayer3dpropertieswidget.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsapplication.h"
 
@@ -78,9 +79,12 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsVectorLayer *
   cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererSingleSymbol.svg" ) ), tr( "Single symbol" ) );
   cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererRuleBasedSymbol.svg" ) ), tr( "Rule-based" ) );
 
+  widgetBaseProperties = new QgsVectorLayer3DPropertiesWidget( this );
+
   widgetRendererStack = new QStackedWidget( this );
   layout->addWidget( cboRendererType );
   layout->addWidget( widgetRendererStack );
+  layout->addWidget( widgetBaseProperties );
 
   widgetNoRenderer = new QLabel;
   widgetSingleSymbolRenderer = new QgsSingleSymbol3DRendererWidget( this );
@@ -93,8 +97,8 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsVectorLayer *
   connect( cboRendererType, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), this, &QgsVectorLayer3DRendererWidget::onRendererTypeChanged );
   connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
-
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
+  connect( widgetBaseProperties, &QgsVectorLayer3DPropertiesWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
 }
 
 
@@ -120,6 +124,11 @@ void QgsVectorLayer3DRendererWidget::setLayer( QgsVectorLayer *layer )
   }
   widgetRendererStack->setCurrentIndex( pageIndex );
   whileBlocking( cboRendererType )->setCurrentIndex( pageIndex );
+
+  if ( r && ( r->type() == QLatin1String( "vector" ) || r->type() == QLatin1String( "rulebased" ) ) )
+  {
+    widgetBaseProperties->load( static_cast<QgsAbstractVectorLayer3DRenderer *>( r ) );
+  }
 }
 
 void QgsVectorLayer3DRendererWidget::setDockMode( bool dockMode )
@@ -141,6 +150,7 @@ void QgsVectorLayer3DRendererWidget::apply()
     {
       QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( widgetSingleSymbolRenderer->symbol() );
       r->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
+      widgetBaseProperties->apply( r );
       mLayer->setRenderer3D( r );
     }
     break;
@@ -148,6 +158,7 @@ void QgsVectorLayer3DRendererWidget::apply()
     {
       QgsRuleBased3DRenderer *r = new QgsRuleBased3DRenderer( widgetRuleBasedRenderer->rootRule()->clone() );
       r->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
+      widgetBaseProperties->apply( r );
       mLayer->setRenderer3D( r );
     }
     break;

@@ -20,8 +20,10 @@
 
 #include <QVector>
 #include <QList>
+
 #include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgscoordinatetransformcontext.h"
 
 class QgsFeatureSource;
 class QgsGeometry;
@@ -101,6 +103,13 @@ class ANALYSIS_EXPORT QgsInterpolator
       int interpolationAttribute = -1;
       //! Source type
       QgsInterpolator::SourceType sourceType = SourcePoints;
+
+      /**
+       * Coordinate transform context.
+       *
+       * \since QGIS 3.10.1
+       */
+      QgsCoordinateTransformContext transformContext;
     };
 
     QgsInterpolator( const QList<QgsInterpolator::LayerData> &layerData );

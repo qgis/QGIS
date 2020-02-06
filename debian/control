@@ -402,7 +402,6 @@ Architecture: all
 Section: python
 Depends:
  gdal-bin,
- python-gdal,
  python3-gdal,
  python3-matplotlib,
  libqgis-customwidgets (>= ${source:Version}),

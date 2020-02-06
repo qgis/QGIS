@@ -155,7 +155,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void setNorthOffset( double offset );
 
     /**
-     * Returns the resize mode used for drawing the picture within the composer
+     * Returns the resize mode used for drawing the picture within the layout
      * item's frame.
      * \see setResizeMode()
      */

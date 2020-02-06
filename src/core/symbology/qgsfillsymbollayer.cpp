@@ -31,12 +31,15 @@
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
 #include "qgsimageoperation.h"
+#include "qgspolygon.h"
+#include "qgslinestring.h"
 
 #include <QPainter>
 #include <QFile>
 #include <QSvgRenderer>
 #include <QDomDocument>
 #include <QDomElement>
+#include <random>
 
 QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor &color, Qt::BrushStyle style, const QColor &strokeColor, Qt::PenStyle strokeStyle, double strokeWidth,
     Qt::PenJoinStyle penJoinStyle )
@@ -1935,11 +1938,11 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush &brush, const QString &svgFileP
     bool fitsInCache = true;
     double strokeWidth = context.renderContext().convertToPainterUnits( svgStrokeWidth, svgStrokeWidthUnit, svgStrokeWidthMapUnitScale );
     QImage patternImage = QgsApplication::svgCache()->svgAsImage( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
-                          context.renderContext().scaleFactor(), fitsInCache );
+                          context.renderContext().scaleFactor(), fitsInCache, 0, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
     if ( !fitsInCache )
     {
       QPicture patternPict = QgsApplication::svgCache()->svgAsPicture( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
-                             context.renderContext().scaleFactor() );
+                             context.renderContext().scaleFactor(), false, 0, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
       double hwRatio = 1.0;
       if ( patternPict.width() > 0 )
       {
@@ -3180,7 +3183,11 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
 
   QImage patternImage( width, height, QImage::Format_ARGB32 );
   patternImage.fill( 0 );
-
+  if ( patternImage.isNull() )
+  {
+    brush.setTextureImage( QImage() );
+    return;
+  }
   if ( mMarkerSymbol )
   {
     QPainter p( &patternImage );
@@ -3903,9 +3910,368 @@ void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &image
   }
 
   bool cached;
-  QImage img = QgsApplication::imageCache()->pathAsImage( imageFilePath, size, true, alpha, cached );
+  QImage img = QgsApplication::imageCache()->pathAsImage( imageFilePath, size, true, alpha, cached, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
   if ( img.isNull() )
     return;
 
   brush.setTextureImage( img );
 }
+
+
+//
+// QgsRandomMarkerFillSymbolLayer
+//
+
+QgsRandomMarkerFillSymbolLayer::QgsRandomMarkerFillSymbolLayer( int pointCount, CountMethod method, double densityArea, unsigned long seed )
+  : mCountMethod( method )
+  , mPointCount( pointCount )
+  , mDensityArea( densityArea )
+  , mSeed( seed )
+{
+  setSubSymbol( new QgsMarkerSymbol() );
+}
+
+QgsSymbolLayer *QgsRandomMarkerFillSymbolLayer::create( const QgsStringMap &properties )
+{
+  const CountMethod countMethod  = static_cast< CountMethod >( properties.value( QStringLiteral( "count_method" ), QStringLiteral( "0" ) ).toInt() );
+  const int pointCount = properties.value( QStringLiteral( "point_count" ), QStringLiteral( "10" ) ).toInt();
+  const double densityArea = properties.value( QStringLiteral( "density_area" ), QStringLiteral( "250.0" ) ).toDouble();
+
+  unsigned long seed = 0;
+  if ( properties.contains( QStringLiteral( "seed" ) ) )
+    seed = properties.value( QStringLiteral( "seed" ) ).toULong();
+  else
+  {
+    // if we a creating a new random marker fill from scratch, we default to a random seed
+    // because seed based fills are just nicer for users vs seeing points jump around with every map refresh
+    std::random_device rd;
+    std::mt19937 mt( seed == 0 ? rd() : seed );
+    std::uniform_int_distribution<> uniformDist( 1, 999999999 );
+    seed = uniformDist( mt );
+  }
+
+  std::unique_ptr< QgsRandomMarkerFillSymbolLayer > sl = qgis::make_unique< QgsRandomMarkerFillSymbolLayer >( pointCount, countMethod, densityArea, seed );
+
+  if ( properties.contains( QStringLiteral( "density_area_unit" ) ) )
+    sl->setDensityAreaUnit( QgsUnitTypes::decodeRenderUnit( properties[QStringLiteral( "density_area_unit" )] ) );
+  if ( properties.contains( QStringLiteral( "density_area_unit_scale" ) ) )
+    sl->setDensityAreaUnitScale( QgsSymbolLayerUtils::decodeMapUnitScale( properties[QStringLiteral( "density_area_unit_scale" )] ) );
+
+  if ( properties.contains( QStringLiteral( "clip_points" ) ) )
+  {
+    sl->setClipPoints( properties[QStringLiteral( "clip_points" )].toInt() );
+  }
+
+  return sl.release();
+}
+
+QString QgsRandomMarkerFillSymbolLayer::layerType() const
+{
+  return QStringLiteral( "RandomMarkerFill" );
+}
+
+void QgsRandomMarkerFillSymbolLayer::setColor( const QColor &color )
+{
+  mMarker->setColor( color );
+  mColor = color;
+}
+
+QColor QgsRandomMarkerFillSymbolLayer::color() const
+{
+  return mMarker ? mMarker->color() : mColor;
+}
+
+void QgsRandomMarkerFillSymbolLayer::startRender( QgsSymbolRenderContext &context )
+{
+  mMarker->setOpacity( context.opacity() );
+  mMarker->startRender( context.renderContext(), context.fields() );
+}
+
+void QgsRandomMarkerFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
+{
+  mMarker->stopRender( context.renderContext() );
+}
+
+void QgsRandomMarkerFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context )
+{
+  Part part;
+  part.exterior = points;
+  if ( rings )
+    part.rings = *rings;
+
+  if ( mRenderingFeature )
+  {
+    // in the middle of rendering a possibly multi-part feature, so we collect all the parts and defer the actual rendering
+    // until after we've received the final part
+    mCurrentParts << part;
+  }
+  else
+  {
+    // not rendering a feature, so we can just render the polygon immediately
+    render( context.renderContext(), QVector< Part>() << part, context.feature() ? *context.feature() : QgsFeature(), context.selected() );
+  }
+}
+
+void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QVector<QgsRandomMarkerFillSymbolLayer::Part> &parts, const QgsFeature &feature, bool selected )
+{
+  bool clipPoints = mClipPoints;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyClipPoints ) )
+  {
+    context.expressionContext().setOriginalValueVariable( clipPoints );
+    clipPoints = mDataDefinedProperties.valueAsBool( QgsSymbolLayer::PropertyClipPoints, context.expressionContext(), clipPoints );
+  }
+
+  QVector< QgsGeometry > geometryParts;
+  geometryParts.reserve( parts.size() );
+  QPainterPath path;
+
+  for ( const Part &part : parts )
+  {
+    QgsGeometry geom = QgsGeometry::fromQPolygonF( part.exterior );
+    if ( !geom.isNull() && !part.rings.empty() )
+    {
+      QgsPolygon *poly = qgsgeometry_cast< QgsPolygon * >( geom.get() );
+      for ( const QPolygonF &ring : part.rings )
+      {
+        poly->addInteriorRing( QgsLineString::fromQPolygonF( ring ) );
+      }
+    }
+    if ( !geom.isGeosValid() )
+    {
+      geom = geom.buffer( 0, 0 );
+    }
+    geometryParts << geom;
+
+    if ( clipPoints )
+    {
+      path.addPolygon( part.exterior );
+      for ( const QPolygonF &ring : part.rings )
+      {
+        path.addPolygon( ring );
+      }
+    }
+  }
+
+  const QgsGeometry geom = geometryParts.count() != 1 ? QgsGeometry::unaryUnion( geometryParts ) : geometryParts.at( 0 );
+
+  if ( clipPoints )
+  {
+    context.painter()->save();
+    context.painter()->setClipPath( path );
+  }
+
+
+  int count = mPointCount;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyPointCount ) )
+  {
+    context.expressionContext().setOriginalValueVariable( count );
+    count = mDataDefinedProperties.valueAsInt( QgsSymbolLayer::PropertyPointCount, context.expressionContext(), count );
+  }
+
+  switch ( mCountMethod )
+  {
+    case DensityBasedCount:
+    {
+      double densityArea = mDensityArea;
+      if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyDensityArea ) )
+      {
+        context.expressionContext().setOriginalValueVariable( densityArea );
+        densityArea = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyPointCount, context.expressionContext(), densityArea );
+      }
+      densityArea = context.convertToPainterUnits( std::sqrt( densityArea ), mDensityAreaUnit, mDensityAreaUnitScale );
+      densityArea = std::pow( densityArea, 2 );
+      count = std::max( 0.0, std::ceil( count * ( geom.area() / densityArea ) ) );
+      break;
+    }
+    case AbsoluteCount:
+      break;
+  }
+
+  unsigned long seed = mSeed;
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyRandomSeed ) )
+  {
+    context.expressionContext().setOriginalValueVariable( static_cast< unsigned long long >( seed ) );
+    seed = mDataDefinedProperties.valueAsInt( QgsSymbolLayer::PropertyRandomSeed, context.expressionContext(), seed );
+  }
+
+  QVector< QgsPointXY > randomPoints = geom.randomPointsInPolygon( count, seed );
+#if 0
+  // in some cases rendering from top to bottom is nice (e.g. randomised tree markers), but in other cases it's not wanted..
+  // TODO consider exposing this as an option
+  std::sort( randomPoints.begin(), randomPoints.end(), []( const QgsPointXY & a, const QgsPointXY & b )->bool
+  {
+    return a.y() < b.y();
+  } );
+#endif
+  for ( const QgsPointXY &p : qgis::as_const( randomPoints ) )
+  {
+    mMarker->renderPoint( QPointF( p.x(), p.y() ), feature.isValid() ? &feature : nullptr, context, -1, selected );
+  }
+
+  if ( clipPoints )
+  {
+    context.painter()->restore();
+  }
+}
+
+QgsStringMap QgsRandomMarkerFillSymbolLayer::properties() const
+{
+  QgsStringMap map;
+  map.insert( QStringLiteral( "count_method" ), QString::number( static_cast< int >( mCountMethod ) ) );
+  map.insert( QStringLiteral( "point_count" ), QString::number( mPointCount ) );
+  map.insert( QStringLiteral( "density_area" ), QString::number( mDensityArea ) );
+  map.insert( QStringLiteral( "density_area_unit" ), QgsUnitTypes::encodeUnit( mDensityAreaUnit ) );
+  map.insert( QStringLiteral( "density_area_unit_scale" ), QgsSymbolLayerUtils::encodeMapUnitScale( mDensityAreaUnitScale ) );
+  map.insert( QStringLiteral( "seed" ), QString::number( mSeed ) );
+  map.insert( QStringLiteral( "clip_points" ), QString::number( mClipPoints ) );
+  return map;
+}
+
+QgsRandomMarkerFillSymbolLayer *QgsRandomMarkerFillSymbolLayer::clone() const
+{
+  std::unique_ptr< QgsRandomMarkerFillSymbolLayer > res = qgis::make_unique< QgsRandomMarkerFillSymbolLayer >( mPointCount, mCountMethod, mDensityArea, mSeed );
+  res->mAngle = mAngle;
+  res->mColor = mColor;
+  res->setDensityAreaUnit( mDensityAreaUnit );
+  res->setDensityAreaUnitScale( mDensityAreaUnitScale );
+  res->mClipPoints = mClipPoints;
+  res->setSubSymbol( mMarker->clone() );
+  copyDataDefinedProperties( res.get() );
+  copyPaintEffect( res.get() );
+  return res.release();
+}
+
+QgsSymbol *QgsRandomMarkerFillSymbolLayer::subSymbol()
+{
+  return mMarker.get();
+}
+
+bool QgsRandomMarkerFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
+{
+  if ( !symbol || symbol->type() != QgsSymbol::Marker )
+  {
+    delete symbol;
+    return false;
+  }
+
+  mMarker.reset( static_cast<QgsMarkerSymbol *>( symbol ) );
+  mColor = mMarker->color();
+  return true;
+}
+
+QSet<QString> QgsRandomMarkerFillSymbolLayer::usedAttributes( const QgsRenderContext &context ) const
+{
+  QSet<QString> attributes = QgsFillSymbolLayer::usedAttributes( context );
+
+  if ( mMarker )
+    attributes.unite( mMarker->usedAttributes( context ) );
+
+  return attributes;
+}
+
+bool QgsRandomMarkerFillSymbolLayer::hasDataDefinedProperties() const
+{
+  if ( QgsSymbolLayer::hasDataDefinedProperties() )
+    return true;
+  if ( mMarker && mMarker->hasDataDefinedProperties() )
+    return true;
+  return false;
+}
+
+int QgsRandomMarkerFillSymbolLayer::pointCount() const
+{
+  return mPointCount;
+}
+
+void QgsRandomMarkerFillSymbolLayer::setPointCount( int pointCount )
+{
+  mPointCount = pointCount;
+}
+
+unsigned long QgsRandomMarkerFillSymbolLayer::seed() const
+{
+  return mSeed;
+}
+
+void QgsRandomMarkerFillSymbolLayer::setSeed( unsigned long seed )
+{
+  mSeed = seed;
+}
+
+bool QgsRandomMarkerFillSymbolLayer::clipPoints() const
+{
+  return mClipPoints;
+}
+
+void QgsRandomMarkerFillSymbolLayer::setClipPoints( bool clipPoints )
+{
+  mClipPoints = clipPoints;
+}
+
+QgsRandomMarkerFillSymbolLayer::CountMethod QgsRandomMarkerFillSymbolLayer::countMethod() const
+{
+  return mCountMethod;
+}
+
+void QgsRandomMarkerFillSymbolLayer::setCountMethod( CountMethod method )
+{
+  mCountMethod = method;
+}
+
+double QgsRandomMarkerFillSymbolLayer::densityArea() const
+{
+  return mDensityArea;
+}
+
+void QgsRandomMarkerFillSymbolLayer::setDensityArea( double area )
+{
+  mDensityArea = area;
+}
+
+void QgsRandomMarkerFillSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext & )
+{
+  mRenderingFeature = true;
+  mCurrentParts.clear();
+}
+
+void QgsRandomMarkerFillSymbolLayer::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
+{
+  mRenderingFeature = false;
+  render( context, mCurrentParts, feature, false );
+}
+
+
+void QgsRandomMarkerFillSymbolLayer::setOutputUnit( QgsUnitTypes::RenderUnit unit )
+{
+  if ( mMarker )
+  {
+    mMarker->setOutputUnit( unit );
+  }
+}
+
+QgsUnitTypes::RenderUnit QgsRandomMarkerFillSymbolLayer::outputUnit() const
+{
+  if ( mMarker )
+  {
+    return mMarker->outputUnit();
+  }
+  return QgsUnitTypes::RenderUnknownUnit; //mOutputUnit;
+}
+
+void QgsRandomMarkerFillSymbolLayer::setMapUnitScale( const QgsMapUnitScale &scale )
+{
+  if ( mMarker )
+  {
+    mMarker->setMapUnitScale( scale );
+  }
+}
+
+QgsMapUnitScale QgsRandomMarkerFillSymbolLayer::mapUnitScale() const
+{
+  if ( mMarker )
+  {
+    return mMarker->mapUnitScale();
+  }
+  return QgsMapUnitScale();
+}
+

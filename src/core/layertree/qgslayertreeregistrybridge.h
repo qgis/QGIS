@@ -53,7 +53,7 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
      */
     struct InsertionPoint
     {
-      //! Construcs an insertion point as layer tree group with its corresponding position.
+      //! Constructs an insertion point as layer tree group with its corresponding position.
       InsertionPoint( QgsLayerTreeGroup *group, int position )
         : group( group ), position( position ) {}
 

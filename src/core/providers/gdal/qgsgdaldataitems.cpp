@@ -59,7 +59,7 @@ bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
   if ( !hDS )
     return false;
 
-  QString wkt = crs.toWkt();
+  QString wkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 );
   if ( GDALSetProjection( hDS.get(), wkt.toLocal8Bit().data() ) != CE_None )
   {
     QgsDebugMsg( QStringLiteral( "Could not set CRS" ) );
@@ -90,7 +90,7 @@ QVector<QgsDataItem *> QgsGdalLayerItem::createChildren()
       else
       {
         // remove driver name and file name and initial ':'
-        name.remove( name.split( QgsDataProvider::SUBLAYER_SEPARATOR )[0] + ':' );
+        name.remove( name.split( QgsDataProvider::sublayerSeparator() )[0] + ':' );
         name.remove( mPath );
       }
       // remove any : or " left over
@@ -121,11 +121,6 @@ QString QgsGdalLayerItem::layerName() const
 
 // ---------------------------------------------------------------------------
 
-static QString sFilterString;
-static QStringList sExtensions = QStringList();
-static QStringList sWildcards = QStringList();
-static QMutex sBuildingFilters;
-
 QString QgsGdalDataItemProvider::name()
 {
   return QStringLiteral( "GDAL" );
@@ -138,6 +133,11 @@ int QgsGdalDataItemProvider::capabilities() const
 
 QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, QgsDataItem *parentItem )
 {
+  static QString sFilterString;
+  static QStringList sExtensions = QStringList();
+  static QStringList sWildcards = QStringList();
+  static QMutex sBuildingFilters;
+
   QString path( pathIn );
   if ( path.isEmpty() )
     return nullptr;
@@ -259,6 +259,18 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
       name = name.replace( vsiPrefix + parentItem->path() + '/', "" );
     }
 #endif
+  }
+
+  if ( suffix == QStringLiteral( "mbtiles" ) )
+  {
+    // handled by WMS provider
+    QUrlQuery uq;
+    uq.addQueryItem( "type", "mbtiles" );
+    uq.addQueryItem( "url", QUrl::fromLocalFile( path ).toString() );
+    QString encodedUri = uq.toString();
+    QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) );
+    item->setState( QgsDataItem::Populated );
+    return item;
   }
 
   // Filters out the OGR/GDAL supported formats that can contain multiple layers

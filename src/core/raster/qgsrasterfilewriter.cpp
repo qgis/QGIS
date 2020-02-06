@@ -523,6 +523,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
         {
           partDestProvider->setNoDataValue( i, destNoDataValueList.value( i - 1 ) );
         }
+        if ( destBlockList[ i - 1 ]->isEmpty() )
+          continue;
+
         if ( !partDestProvider->write( destBlockList[i - 1]->bits( 0 ), i, iterCols, iterRows, 0, 0 ) )
         {
           return WriteError;
@@ -536,6 +539,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       //loop over data
       for ( int i = 1; i <= nBands; ++i )
       {
+        if ( destBlockList[ i - 1 ]->isEmpty() )
+          continue;
+
         if ( !destProvider->write( destBlockList[i - 1]->bits( 0 ), i, iterCols, iterRows, iterLeft, iterTop ) )
         {
           return WriteError;
@@ -643,7 +649,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   std::unique_ptr< QgsRasterBlock > inputBlock;
   while ( iter->readNextRasterPart( 1, iterCols, iterRows, inputBlock, iterLeft, iterTop ) )
   {
-    if ( !inputBlock )
+    if ( !inputBlock || inputBlock->isEmpty() )
     {
       continue;
     }

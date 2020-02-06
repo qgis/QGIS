@@ -32,7 +32,7 @@
 #include "qgsvectorlayerlabeling.h"
 
 //qgis unit test includes
-#include <qgsrenderchecker.h>
+#include "qgsmultirenderchecker.h"
 
 /**
  * \ingroup UnitTests
@@ -222,7 +222,7 @@ bool TestQgsMapRotation::render( const QString &testType )
 {
   mReport += "<h2>" + testType + "</h2>\n";
   mMapSettings->setOutputDpi( 96 );
-  QgsRenderChecker checker;
+  QgsMultiRenderChecker checker;
   checker.setControlPathPrefix( QStringLiteral( "maprotation" ) );
   checker.setControlName( "expected_" + testType );
   checker.setMapSettings( *mMapSettings );

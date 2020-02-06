@@ -62,11 +62,12 @@ class GPKGDBConnector(DBConnector):
         DBConnector.__init__(self, uri)
         self.dbname = uri.database()
         self.connection = connection
+        self._current_thread = None
         md = QgsProviderRegistry.instance().providerMetadata(connection.providerName())
         # QgsAbstractDatabaseProviderConnection instance
         self.core_connection = md.findConnection(connection.connectionName())
         if self.core_connection is None:
-            self.core_connection = md.createConnection(connection.connectionName(), uri.database())
+            self.core_connection = md.createConnection(uri.uri(), {})
         self.has_raster = False
         self.mapSridToName = {}
         # To be removed when migration to new API is completed

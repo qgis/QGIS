@@ -136,7 +136,7 @@ void TestQgsVectorFileWriter::initTestCase()
   mEncoding = QStringLiteral( "UTF-8" );
   QgsField myField1( QStringLiteral( "Field1" ), QVariant::String, QStringLiteral( "String" ), 10, 0, QStringLiteral( "Field 1 comment" ) );
   mFields.append( myField1 );
-  mCRS = QgsCoordinateReferenceSystem( GEOWKT );
+  mCRS = QgsCoordinateReferenceSystem( geoWkt() );
   mPoint1 = QgsPointXY( 10.0, 10.0 );
   mPoint2 = QgsPointXY( 15.0, 10.0 );
   mPoint3 = QgsPointXY( 15.0, 12.0 );
@@ -354,16 +354,10 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
   QString myFileName = QStringLiteral( "/testprjgrid.shp" );
   myFileName = QDir::tempPath() + myFileName;
   QVERIFY( QgsVectorFileWriter::deleteShapeFile( myFileName ) );
-  //
+
   // We are testing projected coordinate
-  // system vector writing to lets use something fun...
-  // Jamaica National Grid
-  // QGIS CRSID: 1286
-  // PostGIS SRID: 24200
-  // +proj=lcc +lat_1=18 +lat_0=18 +lon_0=-77 +k_0=1 +x_0=250000
-  // +y_0=150000 +ellps=clrk66 +units=m +no_defs
-  //
-  mCRS = QgsCoordinateReferenceSystem( 1286, QgsCoordinateReferenceSystem::InternalCrsId );
+  // system vector writing...
+  mCRS = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3328" ) );
   QgsVectorFileWriter myWriter( myFileName,
                                 mEncoding,
                                 mFields,
@@ -434,7 +428,7 @@ void TestQgsVectorFileWriter::regression1141()
   QgsFields fields;
   fields.append( myField );
   QgsCoordinateReferenceSystem crs;
-  crs = QgsCoordinateReferenceSystem( GEOWKT );
+  crs = QgsCoordinateReferenceSystem( geoWkt() );
   QString tmpDir = QDir::tempPath() + '/';
   QString fileName = tmpDir +  "ąęćń.shp";
 
