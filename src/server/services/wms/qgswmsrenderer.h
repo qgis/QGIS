@@ -28,6 +28,7 @@
 #include <QDomDocument>
 #include <QMap>
 #include <QString>
+#include <QRegularExpression>
 
 class QgsCoordinateReferenceSystem;
 class QgsPrintLayout;
@@ -280,6 +281,8 @@ namespace QgsWms
        * */
       bool configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, bool atlasPrint = false );
 
+      void unConfigurePrintLayout( QgsPrintLayout *c );
+
       void removeTemporaryLayers();
 
       void handlePrintErrors( const QgsLayout *layout ) const;
@@ -295,6 +298,7 @@ namespace QgsWms
       const QgsProject *mProject = nullptr;
       QList<QgsMapLayer *> mTemporaryLayers;
       QgsWmsRenderContext mContext;
+
   };
 
 } // namespace QgsWms
