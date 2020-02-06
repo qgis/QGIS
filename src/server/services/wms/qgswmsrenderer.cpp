@@ -620,7 +620,10 @@ namespace QgsWms
             for ( auto layer : mapSettings.layers() )
             {
               if ( layer->name().contains( "highlight_" ) )
+              {
                 highlightLayers << layer;
+                c->project()->layerTreeRoot()->insertLayer( 0, layer );
+              }
             }
 
             // create a new theme with all layers
@@ -637,8 +640,8 @@ namespace QgsWms
             }
 
             // Add the theme and set it
-            c->project()->mapThemeCollection()->insert( presetName + "_higlight", rec );
-            map->setFollowVisibilityPresetName( presetName + "_higlight" );
+            c->project()->mapThemeCollection()->insert( presetName + "_highlight", rec );
+            map->setFollowVisibilityPresetName( presetName + "_highlight" );
           }
           map->setLayers( mapSettings.layers() );
         }

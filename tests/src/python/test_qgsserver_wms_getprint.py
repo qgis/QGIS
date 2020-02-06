@@ -580,7 +580,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         assert h.get("Content-Type").startswith('image'), r
         self._img_diff_error(r, h, "WMS_GetPrint_Highlight")
 
-    def test_wms_getprint_highlight_folllow_theme(self):
+    def test_wms_getprint_highlight_follow_theme(self):
         # default style
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
