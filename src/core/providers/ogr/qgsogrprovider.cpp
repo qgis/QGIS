@@ -4070,12 +4070,12 @@ static bool IsLocalFile( const QString &path )
        ( dirName[2] == '\\' || dirName[2] == '/' ) )
   {
     dirName.resize( 3 );
-    return GetDriveType( dirName.toAscii().constData() ) != DRIVE_REMOTE;
+    return GetDriveType( dirName.toLatin1().constData() ) != DRIVE_REMOTE;
   }
   return true;
 #elif defined(Q_OS_LINUX)
   struct statfs sStatFS;
-  if ( statfs( dirName.toAscii().constData(), &sStatFS ) == 0 )
+  if ( statfs( dirName.toLatin1().constData(), &sStatFS ) == 0 )
   {
     // Codes from http://man7.org/linux/man-pages/man2/statfs.2.html
     if ( sStatFS.f_type == 0x6969 /* NFS */ ||

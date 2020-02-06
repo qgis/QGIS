@@ -25,6 +25,7 @@
 #include <QDir>
 #include <QSettings>
 #include <QUrl>
+#include <QUrlQuery>
 
 
 QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );

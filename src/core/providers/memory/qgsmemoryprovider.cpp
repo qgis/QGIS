@@ -24,6 +24,7 @@
 #include "qgscoordinatereferencesystem.h"
 
 #include <QUrl>
+#include <QUrlQuery>
 #include <QRegExp>
 
 ///@cond PRIVATE
