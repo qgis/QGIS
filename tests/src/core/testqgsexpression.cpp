@@ -671,10 +671,26 @@ class TestQgsExpression: public QObject
       QTest::newRow( "in 2" ) << "1 in (1,null,3)" << false << QVariant( 1 );
       QTest::newRow( "in 3" ) << "1 in (null,2,3)" << false << QVariant();
       QTest::newRow( "in 4" ) << "null in (1,2,3)" << false << QVariant();
+      QTest::newRow( "in 5" ) << "'a' in (1,2,3)" << false << QVariant( 0 );
+      QTest::newRow( "in 6" ) << "'a' in (1,'a',3)" << false << QVariant( 1 );
+      QTest::newRow( "in 7" ) << "'b' in (1,'a',3)" << false << QVariant( 0 );
+      QTest::newRow( "in 8" ) << "1.2 in (1,2,3)" << false << QVariant( 0 );
+      QTest::newRow( "in 9" ) << "'010080383000187224' in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 0 );
+      QTest::newRow( "in 10" ) << "'010080383000187219' in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 1 );
+      QTest::newRow( "in 11" ) << "'010080383000187218' in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 1 );
+      QTest::newRow( "in 12" ) << "'010080383000187223' in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 1 );
       QTest::newRow( "not in 1" ) << "1 not in (1,2,3)" << false << QVariant( 0 );
       QTest::newRow( "not in 2" ) << "1 not in (1,null,3)" << false << QVariant( 0 );
       QTest::newRow( "not in 3" ) << "1 not in (null,2,3)" << false << QVariant();
       QTest::newRow( "not in 4" ) << "null not in (1,2,3)" << false << QVariant();
+      QTest::newRow( "not in 5" ) << "'a' not in (1,2,3)" << false << QVariant( 1 );
+      QTest::newRow( "not in 6" ) << "'a' not in (1,'a',3)" << false << QVariant( 0 );
+      QTest::newRow( "not in 7" ) << "'b' not in (1,'a',3)" << false << QVariant( 1 );
+      QTest::newRow( "not in 8" ) << "1.2 not in (1,2,3)" << false << QVariant( 1 );
+      QTest::newRow( "not in 9" ) << "'010080383000187224' not in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 1 );
+      QTest::newRow( "not in 10" ) << "'010080383000187219' not in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 0 );
+      QTest::newRow( "not in 11" ) << "'010080383000187218' not in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 0 );
+      QTest::newRow( "not in 12" ) << "'010080383000187223' not in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 0 );
 
       // regexp, like
       QTest::newRow( "like 1" ) << "'hello' like '%ll_'" << false << QVariant( 1 );
