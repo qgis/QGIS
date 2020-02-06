@@ -22,7 +22,7 @@ typedef QVector< QgsLayoutTableColumn * > QgsLayoutTableColumns;
 class QgsLayoutTableStyle
 {
 %Docstring
-Styling option for a composer table cell
+Styling option for a layout table cell
 
 .. versionadded:: 3.0
 %End
