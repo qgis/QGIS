@@ -316,7 +316,11 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
       // Create output layer
       QString errMsg;
-      QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormat( layer, outputPath, layer->dataProvider()->encoding(), layer->crs(), outputDriverName, selectedOnly, &errMsg );
+      QgsVectorFileWriter::SaveVectorOptions saveOptions;
+      saveOptions.fileEncoding = layer->dataProvider()->encoding();
+      saveOptions.driverName = outputDriverName;
+      saveOptions.onlySelectedFeatures = selectedOnly;
+      QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormatV2( layer, outputPath, layer->transformContext(), saveOptions, nullptr, nullptr, &errMsg );
       if ( err != QgsVectorFileWriter::NoError )
       {
         createErrors.append( errMsg );
