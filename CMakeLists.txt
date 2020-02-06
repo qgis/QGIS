@@ -604,6 +604,10 @@ IF(MSVC)
   ADD_DEFINITIONS(-DNOMINMAX)
 ENDIF(MSVC)
 
+# Prevent build when Qt api deprecated before this Qt version is used:
+# Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
+ADD_DEFINITIONS(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
+
 IF(ENABLE_COVERAGE)
   INCLUDE("cmake/modules/coverage/CodeCoverage.cmake")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
