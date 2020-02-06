@@ -1233,8 +1233,6 @@ void QgsSimpleMarkerSymbolLayer::drawMarker( QPainter *p, QgsSymbolRenderContext
 
 bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift ) const
 {
-  Q_UNUSED( mmMapUnitScaleFactor )
-
   //data defined size?
   double size = mSize;
 
@@ -1260,6 +1258,12 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
 
     size *= e.mapUnitScaleFactor( e.symbologyScale(), mSizeUnit, e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
   }
+
+  if ( mSizeUnit == QgsUnitTypes::RenderMillimeters )
+  {
+    size *= mmMapUnitScaleFactor;
+  }
+
   if ( mSizeUnit == QgsUnitTypes::RenderMapUnits )
   {
     e.clipValueToMapUnitScale( size, mSizeMapUnitScale, context.renderContext().scaleFactor() );
