@@ -44,6 +44,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
       MultipleFeatures = 4,
       AllActions = Layer | SingleFeature | MultipleFeatures
     };
+    Q_ENUM( Target )
     Q_DECLARE_FLAGS( Targets, Target )
     Q_FLAG( Targets )
 
@@ -55,6 +56,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     {
       EnabledOnlyWhenEditable = 1 << 1, //!< Action should be shown only for editable layers
     };
+    Q_ENUM( Flag )
     Q_DECLARE_FLAGS( Flags, Flag )
     Q_FLAG( Flags )
 
