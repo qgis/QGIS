@@ -627,9 +627,14 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       // use QgsVectorFileWriter for OGR destinations instead of QgsVectorLayerImport, as that allows
       // us to use any OGR format which supports feature addition
       QString finalFileName;
-      std::unique_ptr< QgsVectorFileWriter > writer = qgis::make_unique< QgsVectorFileWriter >( destination, options.value( QStringLiteral( "fileEncoding" ) ).toString(), newFields, geometryType, crs, format, QgsVectorFileWriter::defaultDatasetOptions( format ),
-          QgsVectorFileWriter::defaultLayerOptions( format ), &finalFileName, QgsVectorFileWriter::NoSymbology, sinkFlags );
-
+      QgsVectorFileWriter::SaveVectorOptions saveOptions;
+      saveOptions.fileEncoding = options.value( QStringLiteral( "fileEncoding" ) ).toString();
+      saveOptions.driverName = format;
+      saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( format );
+      saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( format );
+      saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
+      saveOptions.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
+      std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( destination, newFields, geometryType, crs, context.transformContext(), saveOptions, sinkFlags, &finalFileName ) );
       if ( writer->hasError() )
       {
         throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, writer->errorMessage() ) );
@@ -892,8 +897,10 @@ QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool select
   {
     QString temp = QgsProcessingUtils::generateTempFilename( baseName + '.' + preferredFormat );
 
-    QgsVectorFileWriter writer( temp, context.defaultEncoding(),
-                                vl->fields(), vl->wkbType(), vl->crs(), QgsVectorFileWriter::driverForExtension( preferredFormat ) );
+    QgsVectorFileWriter::SaveVectorOptions saveOptions;
+    saveOptions.fileEncoding = context.defaultEncoding();
+    saveOptions.driverName = QgsVectorFileWriter::driverForExtension( preferredFormat );
+    std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( temp, vl->fields(), vl->wkbType(), vl->crs(), context.transformContext(), saveOptions ) );
     QgsFeature f;
     QgsFeatureIterator it;
     if ( selectedFeaturesOnly )
@@ -905,7 +912,7 @@ QString convertToCompatibleFormatInternal( const QgsVectorLayer *vl, bool select
     {
       if ( feedback->isCanceled() )
         return QString();
-      writer.addFeature( f, QgsFeatureSink::FastInsert );
+      writer->addFeature( f, QgsFeatureSink::FastInsert );
     }
     return temp;
   }

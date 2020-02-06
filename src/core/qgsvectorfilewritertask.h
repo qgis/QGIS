@@ -89,6 +89,8 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
     QgsVectorFileWriter::SaveVectorOptions mOptions;
     QgsVectorFileWriter::PreparedWriterDetails mWriterDetails;
     std::unique_ptr< QgsVectorFileWriter::FieldValueConverter > mFieldValueConverter;
+
+    QgsCoordinateTransformContext mTransformContext;
 };
 
 #endif
