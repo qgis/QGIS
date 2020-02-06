@@ -1780,12 +1780,9 @@ void QgsLayoutItemMap::mapThemeChanged( const QString &theme )
 
 void QgsLayoutItemMap::currentMapThemeRenamed( const QString &theme, const QString &newTheme )
 {
-  if ( mFollowVisibilityPreset )
+  if ( theme == mFollowVisibilityPresetName )
   {
-    if ( theme == mFollowVisibilityPresetName )
-    {
-      mFollowVisibilityPresetName = newTheme;
-    }
+    mFollowVisibilityPresetName = newTheme;
   }
 }
 
