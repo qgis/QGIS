@@ -263,7 +263,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     void removeMapTheme( const QString &name );
 
     /**
-     * Retuns whether a map theme is renamed.
+     * Renames the existing map theme called \a name to \a newName.
+     * Returns TRUE if the rename was successful, or FALSE if it failed (e.g. due to a duplicate name for \a newName).
      * \since QGIS 3.12
      */
     bool renameMapTheme( const QString &name, const QString &newName );
