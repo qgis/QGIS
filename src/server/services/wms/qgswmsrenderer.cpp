@@ -558,34 +558,25 @@ namespace QgsWms
   {
     static const QRegularExpression RE_HIGHLIGHT_LAYER = QRegularExpression( "^highlight_\\d+$" );
 
-    QgsDebugMsg( QStringLiteral( "---------------jgr--unConfigurePrintLayout---- " ) );
     // remove themes
     QStringList allThemes = c->project()->mapThemeCollection()->mapThemes( );
     for ( auto theme : allThemes )
     {
       if ( theme.endsWith( "__highlight" ) )
-      {
         c->project()->mapThemeCollection()->removeMapTheme( theme );
-        QgsDebugMsg( QStringLiteral( "---------------jgr------removeMapTheme (%1)" ) .arg( theme ) );
-      }
     }
+
     // remove highlight layers added
     QList<QgsLayerTreeLayer *> allLayers = c->project()->layerTreeRoot()->findLayers();
     for ( auto layerTree : c->project()->layerTreeRoot()->findLayers() )
     {
       if ( RE_HIGHLIGHT_LAYER.match( layerTree->layer()->name() ).hasMatch() )
-      {
-        QgsDebugMsg( QStringLiteral( "---------------jgr------removeLayer (%1)" ) .arg( layerTree->layer()->name() ) );
         c->project()->layerTreeRoot()->removeLayer( layerTree->layer() );
-      }
     }
-
   }
 
   bool QgsRenderer::configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings, bool atlasPrint )
   {
-    QgsDebugMsg( QStringLiteral( "---------------jgr--configurePrintLayout---- " ) );
-
     c->renderContext().setSelectionColor( mapSettings.selectionColor() );
     // Maps are configured first
     QList<QgsLayoutItemMap *> maps;
@@ -639,14 +630,7 @@ namespace QgsWms
 
       if ( !map->keepLayerSet() )
       {
-        QgsDebugMsg( QStringLiteral( "---------------jgr--!map->keepLayerSet()---- " ) );
-
         static const QRegularExpression RE_HIGHLIGHT_LAYER = QRegularExpression( "^highlight_\\d+$" );
-        QgsDebugMsg( QStringLiteral( "---------------jgr--Antes da Magia---- " ) );
-        if ( cMapParams.mHighlightLayers.isEmpty() )
-        {
-          QgsDebugMsg( QStringLiteral( "---------------jgr--cMapParams.mHighlightLayers.isEmpty()---- " ) );
-        }
 
         QString presetName = map->followVisibilityPresetName();
         QString newPresetName;
@@ -661,12 +645,10 @@ namespace QgsWms
           // get highlight layers, if any
           for ( auto layer : mapSettings.layers() )
           {
-            QgsDebugMsg( QStringLiteral( "---------------jgr--mapSettings.layers()---- (%1)" ) .arg( layer->name() ) );
             if ( RE_HIGHLIGHT_LAYER.match( layer->name() ).hasMatch() )
             {
               auxHighlightLayers << layer;
               c->project()->layerTreeRoot()->insertLayer( 0, layer );
-              QgsDebugMsg( QStringLiteral( "---------------jgr--mapSettings.layers()-match- (%1)" ) .arg( layer->name() ) );
             }
           }
 
@@ -691,15 +673,10 @@ namespace QgsWms
 
         if ( cMapParams.mLayers.isEmpty() && cMapParams.mExternalLayers.isEmpty() )
         {
-          QgsDebugMsg( QStringLiteral( "---------------jgr--cMapParams.mLayers.isEmpty() && cMapParams.mExternalLayers.isEmpty()---- " ) );
-
           map->setLayers( mapSettings.layers() );
-
         }
         else
         {
-          QgsDebugMsg( QStringLiteral( "---------------jgr--else cMapParams.mLayers.isEmpty() && cMapParams.mExternalLayers.isEmpty()---- " ) );
-
           QList<QgsMapLayer *> layerSet;
           for ( auto layer : cMapParams.mLayers )
           {
@@ -737,16 +714,11 @@ namespace QgsWms
             }
           }
 
+          // not sure about the order
           layerSet << auxHighlightLayers;
           layerSet << externalLayers( cMapParams.mExternalLayers );
           layerSet << highlightLayers( cMapParams.mHighlightLayers );
           layerSet << renderLayers;
-
-
-          for ( auto layer : layerSet )
-          {
-            QgsDebugMsg( QStringLiteral( "---------------jgr---layer : layerSet--- (%1)" ) .arg( layer->name() ) );
-          }
 
           std::reverse( layerSet.begin(), layerSet.end() );
           map->setLayers( layerSet );
