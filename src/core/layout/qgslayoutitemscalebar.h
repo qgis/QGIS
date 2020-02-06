@@ -514,7 +514,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     //! Calculates with of a segment in mm and stores it in mSegmentMillimeters
     void refreshSegmentMillimeters();
 
-    //! Returns diagonal of composer map in selected units (map units / meters / feet / nautical miles)
+    //! Returns diagonal of layout map in selected units (map units / meters / feet / nautical miles)
     double mapWidth() const;
 
     QgsScaleBarRenderer::ScaleBarContext createScaleContext() const;

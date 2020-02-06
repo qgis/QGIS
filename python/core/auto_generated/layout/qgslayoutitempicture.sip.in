@@ -153,7 +153,7 @@ Sets the ``offset`` added to the picture's rotation from a map's North.
 
     ResizeMode resizeMode() const;
 %Docstring
-Returns the resize mode used for drawing the picture within the composer
+Returns the resize mode used for drawing the picture within the layout
 item's frame.
 
 .. seealso:: :py:func:`setResizeMode`
