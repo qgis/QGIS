@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include <QPair>
 #include <QStack>
+#include <QList>
 
 #include "qgis_core.h"
 

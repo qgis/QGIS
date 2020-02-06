@@ -28,7 +28,7 @@
 #include <QStringList>
 #include <QRegExp>
 #include <QUrl>
-
+#include <QUrlQuery>
 
 QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
   : mFileName( QString() )

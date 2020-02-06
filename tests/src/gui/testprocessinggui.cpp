@@ -216,7 +216,7 @@ void TestProcessingGui::initTestCase()
   // make QGIS_AUTH_DB_DIR_PATH temp dir for qgis - auth.db and master password file
   QDir tmpDir = QDir::temp();
   QVERIFY2( tmpDir.mkpath( mTempDir ), "Couldn't make temp directory" );
-  qputenv( "QGIS_AUTH_DB_DIR_PATH", mTempDir.toAscii() );
+  qputenv( "QGIS_AUTH_DB_DIR_PATH", mTempDir.toLatin1() );
 
   // init app and auth manager
   QgsApplication::init();
@@ -244,7 +244,7 @@ void TestProcessingGui::initTestCase()
     QTextStream fout( &passfile );
     fout << QString( mPass ) << "\r\n";
     passfile.close();
-    qputenv( "QGIS_AUTH_PASSWORD_FILE", passfilepath.toAscii() );
+    qputenv( "QGIS_AUTH_PASSWORD_FILE", passfilepath.toLatin1() );
   }
   // qDebug( "QGIS_AUTH_PASSWORD_FILE=%s", qgetenv( "QGIS_AUTH_PASSWORD_FILE" ).constData() );
 

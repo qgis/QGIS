@@ -219,7 +219,7 @@ class CORE_EXPORT  QgsFields
     int fieldIdx = sipCpp->indexFromName( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else

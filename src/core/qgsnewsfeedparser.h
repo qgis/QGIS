@@ -158,7 +158,7 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
     QString mBaseUrl;
     QUrl mFeedUrl;
     QString mAuthCfg;
-    uint mFetchStartTime = 0;
+    qint64 mFetchStartTime = 0;
     QString mSettingsKey;
 
     QList< Entry > mEntries;

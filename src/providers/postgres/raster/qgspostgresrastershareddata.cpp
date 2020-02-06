@@ -138,7 +138,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
       }
 
       int dataRead;
-      GByte *binaryData { CPLHexToBinary( dataResult.PQgetvalue( row, 1 ).toAscii().constData(), &dataRead ) };
+      GByte *binaryData { CPLHexToBinary( dataResult.PQgetvalue( row, 1 ).toLatin1().constData(), &dataRead ) };
       Tile const *tilePtr { setTileData( request.overviewFactor, tileId, QByteArray::fromRawData( reinterpret_cast<char *>( binaryData ), dataRead ) ) };
       CPLFree( binaryData );
 
@@ -332,7 +332,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
           );
 
       int dataRead;
-      GByte *binaryData { CPLHexToBinary( dataResult.PQgetvalue( row, 11 ).toAscii().constData(), &dataRead ) };
+      GByte *binaryData { CPLHexToBinary( dataResult.PQgetvalue( row, 11 ).toLatin1().constData(), &dataRead ) };
       const QVariantMap parsedData { QgsPostgresRasterUtils::parseWkb( QByteArray::fromRawData( reinterpret_cast<char *>( binaryData ), dataRead ) ) };
       CPLFree( binaryData );
       for ( int bandCnt = 1; bandCnt <= tile->numBands; ++bandCnt )
