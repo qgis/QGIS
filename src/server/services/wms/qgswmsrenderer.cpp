@@ -64,6 +64,7 @@
 #include "qgsserverexception.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturestore.h"
+#include "qgsmapthemecollection.h"
 
 #include <QImage>
 #include <QPainter>
@@ -604,6 +605,41 @@ namespace QgsWms
       {
         if ( cMapParams.mLayers.isEmpty() && cMapParams.mExternalLayers.isEmpty() )
         {
+          QString presetName = map->followVisibilityPresetName();
+          if ( !presetName.isEmpty() )
+          {
+            QList<QgsMapLayer *> renderLayers, highlightLayers;
+
+            // get layers from theme
+            if ( c->project()->mapThemeCollection()->hasMapTheme( presetName ) )
+              renderLayers = c->project()->mapThemeCollection()->mapThemeVisibleLayers( presetName );
+            else
+              renderLayers = c->project()->mapThemeCollection()->masterVisibleLayers();
+
+            // get highlight layers, if any
+            for ( auto layer : mapSettings.layers() )
+            {
+              if ( layer->name().contains( "highlight_" ) )
+                highlightLayers << layer;
+            }
+
+            // create a new theme with all layers
+            QgsMapThemeCollection::MapThemeRecord rec;
+            // layers from the theme
+            for ( auto layer : renderLayers )
+            {
+              rec.addLayerRecord( QgsMapThemeCollection::MapThemeLayerRecord( layer ) );
+            }
+            // highlight layers
+            for ( auto layer : highlightLayers )
+            {
+              rec.addLayerRecord( QgsMapThemeCollection::MapThemeLayerRecord( layer ) );
+            }
+
+            // Add the theme and set it
+            c->project()->mapThemeCollection()->insert( presetName + "_higlight", rec );
+            map->setFollowVisibilityPresetName( presetName + "_higlight" );
+          }
           map->setLayers( mapSettings.layers() );
         }
         else
