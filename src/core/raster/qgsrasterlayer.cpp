@@ -125,9 +125,6 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
 
   setDataSource( uri, baseName, providerKey, providerOptions, options.loadDefaultStyle );
 
-  // Initialize temporal properties
-  mTemporalProperties = std::unique_ptr<QgsRasterLayerTemporalProperties>( new QgsRasterLayerTemporalProperties() );
-
 } // QgsRasterLayer ctor
 
 QgsRasterLayer::~QgsRasterLayer()
@@ -579,6 +576,9 @@ void QgsRasterLayer::init()
   //Initialize the last view port structure, should really be a class
   mLastViewPort.mWidth = 0;
   mLastViewPort.mHeight = 0;
+
+  // Initialize temporal properties
+  mTemporalProperties = std::unique_ptr<QgsRasterLayerTemporalProperties>( new QgsRasterLayerTemporalProperties() );
 }
 
 void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )

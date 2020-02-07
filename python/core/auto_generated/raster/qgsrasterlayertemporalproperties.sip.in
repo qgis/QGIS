@@ -58,8 +58,8 @@ Sets the temporal ``range`` to apply to the whole layer. All bands from
 the raster layer will be rendered whenever the current datetime range of
 a render context intersects the specified ``range``.
 
-For the case of WMS-T layers, new layers with the current datetime range
-of the render context will be fetched.
+For the case of WMS-T layers, this set up will cause new WMS layer to be fetched
+with which the range of the render context intersects the specified ``range``.
 
 .. warning::
 
@@ -84,6 +84,8 @@ Returns the fixed temporal range for these properties
     void setWmstRelatedSettings( const QString &dimension );
 %Docstring
 Sets the raster layer properties with WMS-T temporal settings.
+
+:param dimension: contains text content indicating WMS layer available time value(s).
 
 .. warning::
 

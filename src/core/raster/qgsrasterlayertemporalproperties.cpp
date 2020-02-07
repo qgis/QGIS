@@ -49,19 +49,20 @@ const QgsDateTimeRange &QgsRasterLayerTemporalProperties::fixedTemporalRange() c
 
 void  QgsRasterLayerTemporalProperties::setWmstRelatedSettings( const QString &dimension )
 {
-  // For WMS-T instant
+  Q_UNUSED( dimension )
 
-  // For WMS-T List
-
-  // For WMS-T intervals
+  // TODO add WMS-T handling here,
+  // For WMS-T instant time values, WMS-T List times and for WMS-T intervals time values.
 }
 
 bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
+  Q_UNUSED( context )
+  // TODO add support for raster layers with multi-temporal properties.
+
   QDomNode temporalNode = element.elementsByTagName( QStringLiteral( "temporal" ) ).at( 0 );
 
   TemporalMode mode = indexToMode( temporalNode.toElement().attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
-
   setMode( mode );
 
   QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "range" ) );
@@ -81,6 +82,7 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
 
 QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context )
 {
+  Q_UNUSED( context )
   if ( element.isNull() )
     return QDomElement();
 

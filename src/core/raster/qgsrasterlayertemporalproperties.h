@@ -73,8 +73,8 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * the raster layer will be rendered whenever the current datetime range of
      * a render context intersects the specified \a range.
      *
-     * For the case of WMS-T layers, new layers with the current datetime range
-     * of the render context will be fetched.
+     * For the case of WMS-T layers, this set up will cause new WMS layer to be fetched
+     * with which the range of the render context intersects the specified \a range.
      *
      * \warning This setting is only effective when mode() is
      * QgsRasterLayerTemporalProperties::ModeFixedTemporalRange
@@ -95,6 +95,8 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
 
     /**
      * Sets the raster layer properties with WMS-T temporal settings.
+     *
+     * \param dimension contains text content indicating WMS layer available time value(s).
      *
      * \warning This is to be used to support WMS-T layers only. Applicable when
      * TemporalMode is QgsRasterLayerTemporalProperties::ModeFixedTemporalRange or

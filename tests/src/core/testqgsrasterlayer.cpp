@@ -1011,6 +1011,31 @@ void TestQgsRasterLayer::testTemporalProperties()
   temporalProperties->setFixedTemporalRange( dateTimeRange );
   QCOMPARE( mpRasterLayer->temporalProperties()->fixedTemporalRange(), dateTimeRange );
 
+  // writing and reading from xml
+  QDomDocument document;
+  QDomElement elementRoot = document.createElement( "qgis" );
+  document.appendChild( elementRoot );
+
+  QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeFixedTemporalRange );
+
+  QDomElement element = temporalProperties->writeXml( elementRoot, document, QgsReadWriteContext() );
+
+  QVERIFY( temporalProperties->readXml( element, QgsReadWriteContext() ) );
+  QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeFixedTemporalRange );
+
+  // Change temporal properties, save the xml
+  temporalProperties->setMode( QgsRasterLayerTemporalProperties::TemporalMode::ModeTemporalRangesList );
+  element = temporalProperties->writeXml( elementRoot, document, QgsReadWriteContext() );
+
+  // set mode without saving to xml
+  temporalProperties->setMode( QgsRasterLayerTemporalProperties::TemporalMode::ModeFixedTemporalRange );
+
+  QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeFixedTemporalRange );
+
+  // Read the xml and test if the old saved mode is restored
+  QVERIFY( temporalProperties->readXml( element, QgsReadWriteContext() ) );
+  QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeTemporalRangesList );
+
 }
 
 
