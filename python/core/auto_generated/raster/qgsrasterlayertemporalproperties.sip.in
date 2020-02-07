@@ -40,14 +40,14 @@ Constructor for QgsRasterLayerTemporalProperties.
 
     TemporalMode mode() const;
 %Docstring
-Return the temporal properties mode
+Returns the temporal properties mode
 
 .. seealso:: :py:func:`setMode`
 %End
 
     void setMode( TemporalMode mode );
 %Docstring
-Set the temporal properties mode
+Sets the temporal properties mode
 
 .. seealso:: :py:func:`mode`
 %End
@@ -71,7 +71,7 @@ of the render context will be fetched.
 
     const QgsDateTimeRange &fixedTemporalRange() const;
 %Docstring
-Return fixed temporal range for these properties
+Returns the fixed temporal range for these properties
 
 .. warning::
 
@@ -83,7 +83,7 @@ Return fixed temporal range for these properties
 
     void setWmstRelatedSettings( const QString &dimension );
 %Docstring
-Set this raster layer properties with WMS-T temporal settings.
+Sets the raster layer properties with WMS-T temporal settings.
 
 .. warning::
 

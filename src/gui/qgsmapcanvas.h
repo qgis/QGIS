@@ -941,7 +941,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void tapAndHoldGestureOccurred( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
 
-    /** Emitted when the map canvas temporal range changes.
+    /**
+     * Emitted when the map canvas temporal range changes.
      *
      * \since QGIS 3.14
      */

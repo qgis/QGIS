@@ -43,22 +43,26 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
 
     virtual ~QgsRasterLayerTemporalProperties() = default;
 
+    /**
+     * Mode of the raster temporal properties
+     *
+     **/
     enum TemporalMode
     {
-      ModeFixedTemporalRange,
-      ModeTemporalRangeFromDataProvider,
-      ModeTemporalRangesList
+      ModeFixedTemporalRange, //! Mode when temporal properties have fixed start and end datetimes.
+      ModeTemporalRangeFromDataProvider, //! Mode when raster layer depends on temporal range from its dataprovider.
+      ModeTemporalRangesList //! To be used when raster layer has list of temporal ranges.
     };
 
     /**
-     * Return the temporal properties mode
+     * Returns the temporal properties mode
      *
      *\see setMode()
     **/
     TemporalMode mode() const;
 
     /**
-     * Set the temporal properties mode
+     * Sets the temporal properties mode
      *
      *\see mode()
     **/
@@ -80,7 +84,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     void setFixedTemporalRange( const QgsDateTimeRange &range );
 
     /**
-     * Return fixed temporal range for these properties
+     * Returns the fixed temporal range for these properties
      *
      * \warning To be used only when mode() is
      * QgsRasterLayerTemporalProperties::ModeFixedTemporalRange
@@ -90,7 +94,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     const QgsDateTimeRange &fixedTemporalRange() const;
 
     /**
-     * Set this raster layer properties with WMS-T temporal settings.
+     * Sets the raster layer properties with WMS-T temporal settings.
      *
      * \warning This is to be used to support WMS-T layers only. Applicable when
      * TemporalMode is QgsRasterLayerTemporalProperties::ModeFixedTemporalRange or
@@ -112,11 +116,9 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     QgsDateTimeRange mRange;
 
     /**
-     * Returns Temporal mode given index
+     * Returns the temporal mode given index
      *
-     *
-     *
-     */
+     **/
     TemporalMode indexToMode( int index );
 };
 
