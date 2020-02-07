@@ -290,11 +290,14 @@ bool QgsServer::init()
 
 void QgsServer::putenv( const QString &var, const QString &val )
 {
-#ifdef _MSC_VER
-  _putenv_s( var.toStdString().c_str(), val.toStdString().c_str() );
-#else
-  setenv( var.toStdString().c_str(), val.toStdString().c_str(), 1 );
-#endif
+  if ( val.isEmpty() )
+  {
+    qunsetenv( var.toUtf8().data() );
+  }
+  else
+  {
+    qputenv( var.toUtf8().data(), val.toUtf8() );
+  }
   sSettings()->load( var );
 }
 
