@@ -150,7 +150,7 @@ Updates the list of classes, source symbol and title label from given symbol and
 Generates legend symbol items according to the configuration
 %End
 
-    void drawCollapsedLegend( QgsRenderContext &context, QSize *outputSize /Out/ = 0, int *labelXOffset /Out/ = 0 ) const;
+    void drawCollapsedLegend( QgsRenderContext &context, QSizeF *outputSize /Out/ = 0, double *labelXOffset /Out/ = 0 ) const;
 %Docstring
 Draw the legend if using LegendOneNodeForAll and optionally output size of the legend and x offset of labels (in painter units).
 If the painter in context is ``None``, it only does size calculation without actual rendering.
