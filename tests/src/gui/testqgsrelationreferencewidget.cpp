@@ -46,6 +46,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void testChainFilter();
+    void testChainFilter_data();
     void testChainFilterRefreshed();
     void testChainFilterDeleteForeignKey();
     void testInvalidRelation();
@@ -146,8 +147,18 @@ void TestQgsRelationReferenceWidget::cleanup()
   QgsProject::instance()->removeMapLayer( mLayer2.get() );
 }
 
+void TestQgsRelationReferenceWidget::testChainFilter_data()
+{
+  QTest::addColumn<bool>( "allowNull" );
+
+  QTest::newRow( "allowNull=true" ) << true;
+  QTest::newRow( "allowNull=false" ) << false;
+}
+
 void TestQgsRelationReferenceWidget::testChainFilter()
 {
+  QFETCH( bool, allowNull );
+
   // init a relation reference widget
   QStringList filterFields = { "material", "diameter", "raccord" };
 
@@ -155,7 +166,7 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   QgsRelationReferenceWidget w( &parentWidget );
   w.setChainFilters( true );
   w.setFilterFields( filterFields );
-  w.setRelation( *mRelation, true );
+  w.setRelation( *mRelation, allowNull );
   w.init();
 
   // check default status for comboboxes
@@ -202,7 +213,7 @@ void TestQgsRelationReferenceWidget::testChainFilter()
 
   cbs[0]->setCurrentIndex( 0 );
   loop.exec();
-  QCOMPARE( w.mComboBox->currentText(), QString( "NULL" ) );
+  QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
 
   cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
   loop.exec();
@@ -228,15 +239,15 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   loop.exec();
   QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
 
-  // combobox should propose NULL, 10 and 11 because the filter is now:
+  // combobox should propose NULL (if allowNull is true), 10 and 11 because the filter is now:
   // "material" == 'iron'
-  QCOMPARE( w.mComboBox->count(), 3 );
+  QCOMPARE( w.mComboBox->count(), allowNull ? 3 : 2 );
 
   // if there's no filter at all, all features' id should be proposed
   cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "material" ) ) );
   loop.exec();
-  QCOMPARE( w.mComboBox->count(), 4 );
-  QCOMPARE( w.mComboBox->currentText(), QString( "NULL" ) );
+  QCOMPARE( w.mComboBox->count(), allowNull ? 4 : 3 );
+  QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
 }
 
 void TestQgsRelationReferenceWidget::testChainFilterRefreshed()
