@@ -114,8 +114,6 @@ class TestQgsRasterLayer : public QObject
     QgsRasterLayer *mPngRasterLayer = nullptr;
     QgsRasterLayer *mGeoJp2RasterLayer = nullptr;
 
-    QgsRasterLayerTemporalProperties *temporalProperties = nullptr;
-
     QgsMapSettings *mMapSettings = nullptr;
     QString mReport;
 };
@@ -195,9 +193,6 @@ void TestQgsRasterLayer::initTestCase()
   mReport += QLatin1String( "<h1>Raster Layer Tests</h1>\n" );
   mReport += "<p>" + mySettings + "</p>";
 
-  // add temporal tests
-  temporalProperties = new QgsRasterLayerTemporalProperties();
-  mpRasterLayer->setTemporalProperties( temporalProperties );
 }
 //runs after all tests
 void TestQgsRasterLayer::cleanupTestCase()
@@ -1007,8 +1002,8 @@ void TestQgsRasterLayer::sample()
 
 void TestQgsRasterLayer::testTemporalProperties()
 {
-  QCOMPARE( mpRasterLayer->temporalProperties(), temporalProperties );
-  QVERIFY( !mpRasterLayer->temporalProperties()->isTemporal() );
+  QgsRasterLayerTemporalProperties *temporalProperties = mpRasterLayer->temporalProperties();
+  QVERIFY( !mpRasterLayer->temporalProperties()->isActive() );
 
   QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
                                    QDateTime( QDate( 2020, 12, 31 ) ) );

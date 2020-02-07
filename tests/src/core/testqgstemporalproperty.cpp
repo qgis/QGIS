@@ -75,9 +75,9 @@ void TestQgsTemporalProperty::cleanupTestCase()
 
 void TestQgsTemporalProperty::checkSettingTemporalStatus()
 {
-  temporalProperty->setIsTemporal( true );
+  temporalProperty->setIsActive( true );
 
-  QCOMPARE( temporalProperty->isTemporal(), true );
+  QCOMPARE( temporalProperty->isActive(), true );
 }
 
 QGSTEST_MAIN( TestQgsTemporalProperty )

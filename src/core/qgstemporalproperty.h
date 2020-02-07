@@ -40,11 +40,6 @@ class CORE_EXPORT QgsTemporalProperty
      */
     QgsTemporalProperty( bool enabled = false );
 
-    /**
-     * Copy constructor
-     */
-    QgsTemporalProperty( const QgsTemporalProperty &temporalProperty );
-
     virtual ~QgsTemporalProperty() = default;
 
     /**

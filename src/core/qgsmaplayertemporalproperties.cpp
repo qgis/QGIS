@@ -21,3 +21,4 @@ QgsMapLayerTemporalProperties::QgsMapLayerTemporalProperties( bool enabled )
   : QgsTemporalProperty( enabled )
 {
 }
+

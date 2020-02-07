@@ -125,6 +125,9 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
 
   setDataSource( uri, baseName, providerKey, providerOptions, options.loadDefaultStyle );
 
+  // Initialize temporal properties
+  mTemporalProperties = std::unique_ptr<QgsRasterLayerTemporalProperties>( new QgsRasterLayerTemporalProperties() );
+
 } // QgsRasterLayer ctor
 
 QgsRasterLayer::~QgsRasterLayer()

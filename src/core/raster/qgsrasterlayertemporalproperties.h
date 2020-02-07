@@ -65,9 +65,12 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     void setMode( TemporalMode mode );
 
     /**
-     * Sets the temporal \a range to apply to the whole layer. Allfeatures from
-     * the layer will be rendered whenever the current datetime range of
+     * Sets the temporal \a range to apply to the whole layer. All bands from
+     * the raster layer will be rendered whenever the current datetime range of
      * a render context intersects the specified \a range.
+     *
+     * For the case of WMS-T layers, new layers with the current datetime range
+     * of the render context will be fetched.
      *
      * \warning This setting is only effective when mode() is
      * QgsRasterLayerTemporalProperties::ModeFixedTemporalRange
@@ -96,19 +99,25 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     **/
     void setWmstRelatedSettings( const QString &dimension );
 
-    QDomElement writeXml( ... ) override;
+    QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
-    bool readXml( QDomElement ... ) override;
-
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
   private:
 
     //! Temporal layer mode.
-    TemporalMode mMode;
+    TemporalMode mMode = TemporalMode::ModeFixedTemporalRange;
 
     //! Represents datetime range member.
     QgsDateTimeRange mRange;
 
+    /**
+     * Returns Temporal mode given index
+     *
+     *
+     *
+     */
+    TemporalMode indexToMode( int index );
 };
 
 #endif // QGSRASTERLAYERTEMPORALPROPERTIES_H

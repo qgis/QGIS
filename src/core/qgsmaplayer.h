@@ -1175,19 +1175,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
     /**
-     * Returns map layer temporal properties
+     * Returns map layer temporal properties. This may be NULLPTR, depending on the layer type.
      *
      * \since QGIS 3.14
      */
-    QgsMapLayerTemporalProperties *temporalProperties();
-
-//    /**
-//     * Sets map layer temporal properties
-//     *
-//     * \since QGIS 3.14
-//     */
-//    virtual void setTemporalProperties( QgsMapLayerTemporalProperties *temporalProperties );
-
+    virtual QgsMapLayerTemporalProperties *temporalProperties() { return nullptr; }
 
   public slots:
 
@@ -1648,9 +1640,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! To avoid firing multiple time repaintRequested signal on circular layer circular dependencies
     bool mRepaintRequestedFired = false;
-
-    //! Temporal properties
-    QgsMapLayerTemporalProperties *mTemporalProperties = nullptr;
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer * )

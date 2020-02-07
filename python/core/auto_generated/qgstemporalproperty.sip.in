@@ -1,0 +1,57 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstemporalproperty.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsTemporalProperty
+{
+%Docstring
+Base class for temporal property.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstemporalproperty.h"
+%End
+  public:
+
+    QgsTemporalProperty( bool enabled = false );
+%Docstring
+Constructor for QgsTemporalProperty.
+%End
+
+    virtual ~QgsTemporalProperty();
+
+    void setIsActive( bool enabled );
+%Docstring
+Sets temporal property status.
+
+.. seealso:: :py:func:`isActive`
+%End
+
+    bool isActive() const;
+%Docstring
+Returns true temporal property status.
+
+.. seealso:: :py:func:`setIsActive`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstemporalproperty.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

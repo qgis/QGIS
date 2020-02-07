@@ -74,8 +74,8 @@ void TestQgsRasterLayerTemporalProperties::cleanupTestCase()
 
 void TestQgsRasterLayerTemporalProperties::checkSettingTemporalRange()
 {
-  QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( 2020, 01, 01, 0, 0 ),
-                                   QDateTime( 2020, 12, 31, 23, 59 ) );
+  QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
+                                   QDateTime( QDate( 2020, 12, 31 ) ) );
 
   temporalProperties->setFixedTemporalRange( dateTimeRange );
 

@@ -22,9 +22,9 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgstemporalproperty.h"
+#include "qgsreadwritecontext.h"
 
 #include <QDomElement>
-
 
 /**
  * \class QgsMapLayerTemporalProperties
@@ -52,14 +52,14 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
      *
      * \see readXml()
      */
-    virtual QDomElement writeXml( ... ) = 0;
+    virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
 
     /**
      * Reads temporal properties from a DOM element previously written by writeXml()
      *
      * \see writeXml()
      */
-    virtual bool readXml( QDomElement ... ) = 0;
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
 
 };
 

@@ -49,19 +49,76 @@ const QgsDateTimeRange &QgsRasterLayerTemporalProperties::fixedTemporalRange() c
 
 void  QgsRasterLayerTemporalProperties::setWmstRelatedSettings( const QString &dimension )
 {
-  // For temporal instant
+  // For WMS-T instant
 
-  // For temporal List
+  // For WMS-T List
 
-  // For temporal intervals
+  // For WMS-T intervals
 }
 
-bool QgsRasterLayerTemporalProperties::readXml( QDomElement ... )
+bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  return false;
+  QDomNode temporalNode = element.elementsByTagName( QStringLiteral( "temporal" ) ).at( 0 );
+
+  TemporalMode mode = indexToMode( temporalNode.toElement().attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
+
+  setMode( mode );
+
+  QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "range" ) );
+
+  QDomNode begin = rangeElement.namedItem( QStringLiteral( "start" ) );
+  QDomNode end = rangeElement.namedItem( QStringLiteral( "end" ) );
+
+  QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
+  QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
+
+  QgsDateTimeRange range = QgsDateTimeRange( beginDate, endDate );
+
+  setFixedTemporalRange( range );
+
+  return true;
 }
 
-QDomElement QgsRasterLayerTemporalProperties::writeXml( ... )
+QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context )
 {
-  return QDomElement();
+  if ( element.isNull() )
+    return QDomElement();
+
+  QDomElement temporalElement = document.createElement( QStringLiteral( "temporal" ) );
+  temporalElement.setAttribute( QStringLiteral( "mode" ), QString::number( mMode ) );
+
+  QDomElement rangeElement = document.createElement( QStringLiteral( "range" ) );
+
+  QDomElement startElement = document.createElement( QStringLiteral( "start" ) );
+  QDomElement endElement = document.createElement( QStringLiteral( "end" ) );
+
+  QDomText startText = document.createTextNode( mRange.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+  QDomText endText = document.createTextNode( mRange.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+
+  startElement.appendChild( startText );
+  endElement.appendChild( endText );
+
+  rangeElement.appendChild( startElement );
+  rangeElement.appendChild( endElement );
+
+  temporalElement.appendChild( rangeElement );
+
+  element.appendChild( temporalElement );
+
+  return element;
+}
+
+QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties::indexToMode( int number )
+{
+  switch ( number )
+  {
+    case 0:
+      return TemporalMode::ModeFixedTemporalRange;
+    case 1:
+      return TemporalMode::ModeTemporalRangeFromDataProvider;
+    case 2:
+      return TemporalMode::ModeTemporalRangesList;
+    default:
+      return TemporalMode::ModeFixedTemporalRange;
+  }
 }

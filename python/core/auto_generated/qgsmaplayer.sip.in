@@ -1297,14 +1297,12 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
-    QgsMapLayerTemporalProperties *temporalProperties();
+    virtual QgsMapLayerTemporalProperties *temporalProperties();
 %Docstring
-Returns map layer temporal properties
+Returns map layer temporal properties. This may be ``None``, depending on the layer type.
 
 .. versionadded:: 3.14
 %End
-
-
 
   public slots:
 
