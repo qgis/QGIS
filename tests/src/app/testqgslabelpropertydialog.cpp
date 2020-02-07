@@ -75,7 +75,7 @@ class TestQgsLabelPropertyDialog : public QObject
       QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::BufferDraw, vl );
       QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[QgsPalLayerSettings::BufferDraw];
       QString propName = QgsAuxiliaryLayer::nameFromProperty( def, true );
-      QCOMPARE( al->featureCount(), 0 );
+      QCOMPARE( int( al->featureCount() ), 0 );
 
       QgsFeatureId fid = 0;
       QVariant val = vl->getFeature( fid ).attribute( propName );
@@ -93,9 +93,22 @@ class TestQgsLabelPropertyDialog : public QObject
       }
 
       // check auxiliary values
-      QCOMPARE( al->featureCount(), 1 );
+      QCOMPARE( int( al->featureCount() ), 1 );
       val = vl->getFeature( fid ).attribute( propName );
       QCOMPARE( val.toInt(), 1 );
+
+      // toggle false
+      dialog.bufferDrawToggled( false );
+
+      changes = dialog.changedProperties();
+      changeIt = changes.constBegin();
+      for ( ; changeIt != changes.constEnd(); ++changeIt )
+      {
+        vl->changeAttributeValue( fid, changeIt.key(), changeIt.value() );
+      }
+
+      val = vl->getFeature( fid ).attribute( propName );
+      QCOMPARE( val.toInt(), 0 );
     }
 };
 
