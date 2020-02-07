@@ -1957,7 +1957,14 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
 {
   QOCISpatialGeometry g;
 
-  QByteArray wkb = geom.asWkb();
+  QgsGeometry convertedGeom;
+  QgsWkbTypes::Type geomWkbType = geom.wkbType();
+  if ( ( geomWkbType != QgsWkbTypes::CircularString ) &&
+       ( geomWkbType != QgsWkbTypes::CircularStringZ ) &&
+       ( geomWkbType != QgsWkbTypes::CompoundCurve ) &&
+       ( geomWkbType != QgsWkbTypes::CompoundCurveZ ) )
+    convertedGeom = convertToProviderType( geom );
+  QByteArray wkb( !convertedGeom.isNull() ? convertedGeom.asWkb() : geom.asWkb() );
 
   wkbPtr ptr;
   ptr.ucPtr = !geom.isEmpty() ? reinterpret_cast< unsigned char * >( const_cast<char *>( wkb.constData() ) ) : nullptr;
@@ -2044,7 +2051,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
         int nPolygons = 1;
         const QgsMultiPolygon *multipoly =
           ( QgsWkbTypes::flatType( type ) == QgsWkbTypes::MultiPolygon ) ?
-          dynamic_cast<const QgsMultiPolygon *>( geom.constGet() ) : nullptr;
+          dynamic_cast<const QgsMultiPolygon *>( convertedGeom.isNull() ? geom.constGet() : convertedGeom.constGet() ) : nullptr;
         if ( multipoly )
         {
           g.gtype = SDO_GTYPE( dim, GtMultiPolygon );
@@ -2218,7 +2225,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
         int nSurfaces = 1;
         const QgsMultiSurface *multisurface =
           ( QgsWkbTypes::flatType( type ) == QgsWkbTypes::MultiSurface ) ?
-          dynamic_cast<const QgsMultiSurface *>( geom.constGet() ) : nullptr;
+          dynamic_cast<const QgsMultiSurface *>( convertedGeom.isNull() ? geom.constGet() : convertedGeom.constGet() ) : nullptr;
         if ( multisurface )
         {
           g.gtype = SDO_GTYPE( dim, GtMultiPolygon );
@@ -2492,17 +2499,26 @@ long QgsOracleProvider::featureCount() const
   QVariantList args;
   if ( !mIsQuery && mUseEstimatedMetadata )
   {
-    sql = QString( "SELECT num_rows FROM all_tables WHERE owner=? AND table_name=?" );
+    sql = QString( "SELECT num_rows FROM all_tables WHERE owner=? AND table_name=? FEATUREREQUEST" );
     args << mOwnerName << mTableName;
   }
   else
   {
-    sql = QString( "SELECT count(*) FROM %1" ).arg( mQuery );
+    sql = QString( "SELECT count(*) FROM %1 FEATUREREQUEST" ).arg( mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )
     {
       sql += " WHERE " + mSqlWhereClause;
     }
+  }
+
+  if ( mRequestedGeomType != mDetectedGeomType )
+  {
+    if ( mSqlWhereClause.isEmpty() )
+    {
+      sql += " WHERE ";
+    }
+    sql += conn->databaseTypeFilter( QStringLiteral( "FEATUREREQUEST" ), mGeometryColumn, mRequestedGeomType );
   }
 
   QSqlQuery qry( *conn );
@@ -2658,8 +2674,8 @@ bool QgsOracleProvider::getGeometryDetails()
     }
 
     if ( exec( qry, QString( mUseEstimatedMetadata
-                             ?  "SELECT DISTINCT gtype FROM (SELECT t.%1.sdo_gtype AS gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<100) WHERE rownum<=2"
-                             :  "SELECT DISTINCT t.%1.sdo_gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<=2" ).arg( quotedIdentifier( geomCol ) ).arg( mQuery ), QVariantList() ) )
+                             ?  "SELECT DISTINCT gtype FROM (SELECT t.%1.sdo_gtype AS gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<100 GROUP BY t.%1.sdo_gtype ) WHERE rownum<=2"
+                             :  "SELECT DISTINCT t.%1.sdo_gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<=100" ).arg( quotedIdentifier( geomCol ) ).arg( mQuery ), QVariantList() ) )
     {
       if ( qry.next() )
       {

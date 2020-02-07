@@ -642,31 +642,34 @@ QString QgsOracleConn::databaseTypeFilter( const QString &alias, QString geomCol
   {
     case QgsWkbTypes::Point:
     case QgsWkbTypes::Point25D:
+      return QStringLiteral( "mod(%1.sdo_gtype,100) = 1" ).arg( geomCol );
     case QgsWkbTypes::MultiPoint:
     case QgsWkbTypes::MultiPoint25D:
-      return QStringLiteral( "mod(%1.sdo_gtype,100) IN (1,5)" ).arg( geomCol );
+      return QStringLiteral( "mod(%1.sdo_gtype,100) = 5" ).arg( geomCol );
     case QgsWkbTypes::LineString:
     case QgsWkbTypes::LineString25D:
     case QgsWkbTypes::LineStringZ:
     case QgsWkbTypes::CircularString:
     case QgsWkbTypes::CircularStringZ:
+      return QStringLiteral( "mod(%1.sdo_gtype,100) = 2" ).arg( geomCol );
     case QgsWkbTypes::MultiLineString:
     case QgsWkbTypes::MultiLineString25D:
     case QgsWkbTypes::MultiLineStringZ:
     case QgsWkbTypes::MultiCurve:
     case QgsWkbTypes::MultiCurveZ:
-      return QStringLiteral( "mod(%1.sdo_gtype,100) IN (2,6)" ).arg( geomCol );
+      return QStringLiteral( "mod(%1.sdo_gtype,100) = 6" ).arg( geomCol );
     case QgsWkbTypes::Polygon:
     case QgsWkbTypes::Polygon25D:
     case QgsWkbTypes::PolygonZ:
     case QgsWkbTypes::CurvePolygon:
     case QgsWkbTypes::CurvePolygonZ:
+      return QStringLiteral( "mod(%1.sdo_gtype,100) = 3" ).arg( geomCol );
     case QgsWkbTypes::MultiPolygon:
     case QgsWkbTypes::MultiPolygonZ:
     case QgsWkbTypes::MultiPolygon25D:
     case QgsWkbTypes::MultiSurface:
     case QgsWkbTypes::MultiSurfaceZ:
-      return QStringLiteral( "mod(%1.sdo_gtype,100) IN (3,7)" ).arg( geomCol );
+      return QStringLiteral( "mod(%1.sdo_gtype,100) = 7" ).arg( geomCol );
     case QgsWkbTypes::NoGeometry:
       return QStringLiteral( "%1 IS NULL" ).arg( geomCol );
     case QgsWkbTypes::Unknown:

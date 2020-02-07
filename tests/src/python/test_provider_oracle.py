@@ -231,12 +231,18 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         features = [f for f in vl.getFeatures()]
         self.assertEqual(features[0].geometry().asWkt(), 'Point (1 2)')
         self.assertEqual(features[1].geometry().asWkt(), 'PointZ (1 2 3)')
+        self.assertEqual(features[2].geometry().asWkt(), 'Point (1 2)')
+        self.assertEqual(features[3].geometry().asWkt(), 'Point (3 4)')
+        self.assertEqual(features[4].geometry().asWkt(), 'Point (5 6)')
+
+        vl = QgsVectorLayer('%s table="QGIS"."POINT_DATA" (GEOM) srid=4326 type=MULTIPOINT sql=' %
+                            (self.dbconn), "testpoints", "oracle")
+        self.assertTrue(vl.isValid())
+
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(features[0].geometry().asWkt(), 'MultiPointZ ((1 2 3),(4 5 6))')
+        self.assertEqual(features[1].geometry().asWkt(), 'MultiPoint ((1 2),(3 4))')
         self.assertEqual(features[2].geometry().asWkt(), 'MultiPointZ ((1 2 3),(4 5 6))')
-        self.assertEqual(features[3].geometry().asWkt(), 'MultiPoint ((1 2),(3 4))')
-        self.assertEqual(features[4].geometry().asWkt(), 'MultiPointZ ((1 2 3),(4 5 6))')
-        self.assertEqual(features[5].geometry().asWkt(), 'Point (1 2)')
-        self.assertEqual(features[6].geometry().asWkt(), 'Point (3 4)')
-        self.assertEqual(features[7].geometry().asWkt(), 'Point (5 6)')
 
     def testCurves(self):
         vl = QgsVectorLayer('%s table="QGIS"."LINE_DATA" (GEOM) srid=4326 type=LINESTRING sql=' %
@@ -250,6 +256,12 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
             compareWkt(features[3].geometry().asWkt(), 'CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.20, 10 0.1, 13 4),(13 4, 17 -6))', 0.00001), features[3].geometry().asWkt())
         self.assertTrue(
             compareWkt(features[4].geometry().asWkt(), 'LineStringZ (1 2 3, 4 5 6, 7 8 9)', 0.00001), features[4].geometry().asWkt())
+
+        vl = QgsVectorLayer('%s table="QGIS"."LINE_DATA" (GEOM) srid=4326 type=MultiLineString sql=' %
+                            (self.dbconn), "testlines", "oracle")
+        self.assertTrue(vl.isValid())
+
+        features = {f['pk']: f for f in vl.getFeatures()}
         self.assertTrue(
             compareWkt(features[5].geometry().asWkt(), 'MultiLineString ((1 2, 3 4),(5 6, 7 8, 9 10))', 0.00001), features[5].geometry().asWkt())
         self.assertTrue(
@@ -311,7 +323,6 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         self.check_geom(lines, 1, 'LineString (1 2, 3 4, 5 6)')
         self.check_geom(lines, 2, 'CircularString (1 2, 5 4, 7 2.2, 10 0.1, 13 4)')
-        self.check_geom(lines, 3, 'CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.20, 10 0.1, 13 4),(13 4, 17 -6))')
 
         # We choose SRID=5698 (see https://docs.oracle.com/database/121/SPATL/three-dimensional-coordinate-reference-system-support.htm#SPATL626)
         # to get Oracle valid geometries because it support 3D and arcs (arcs are not supported in geodetic projection)
@@ -325,13 +336,13 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         # https://support.oracle.com/knowledge/Oracle%20Database%20Products/1446335_1.html
         # https://support.oracle.com/knowledge/Oracle%20Database%20Products/1641672_1.html
         self.check_geom(lines_z, 5, 'CircularStringZ (1 2 1, 5 4 2, 7 2.2 3, 10 0.1 4, 13 4 5)', check_valid=False)
-        self.check_geom(lines_z, 6, 'CompoundCurveZ ((-1 -5 1, 1 2 2),CircularStringZ (1 2 2, 5 4 3, 7 2.20 4, 10 0.1 5, 13 4 6),(13 4 6, 17 -6 7))', check_valid=False)
 
         multi_lines = QgsVectorLayer(
             self.dbconn + ' sslmode=disable key=\'pk\' srid=3857 type=MultiLineString table="QGIS"."EDIT_CURVE_DATA" (GEOM) sql=',
             'test_multilines', 'oracle')
         self.assertTrue(multi_lines.isValid())
 
+        self.check_geom(multi_lines, 3, 'CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.20, 10 0.1, 13 4),(13 4, 17 -6))')
         self.check_geom(multi_lines, 7, 'MultiLineString ((1 2, 3 4),(5 6, 7 8, 9 10), (11 12, 13 14))')
         self.check_geom(multi_lines, 8, 'MultiLineString ((1 2, 3 4),(5 6, 7 8, 9 10))')
 
@@ -340,6 +351,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
             'test_multilines', 'oracle')
         self.assertTrue(multi_lines_z.isValid())
 
+        self.check_geom(multi_lines_z, 6, 'CompoundCurveZ ((-1 -5 1, 1 2 2),CircularStringZ (1 2 2, 5 4 3, 7 2.20 4, 10 0.1 5, 13 4 6),(13 4 6, 17 -6 7))', check_valid=False)
         self.check_geom(multi_lines_z, 9, 'MultiLineStringZ ((1 2 11, 3 4 -11),(5 6 9, 7 8 1, 9 10 -3))')
         self.check_geom(multi_lines_z, 10, 'MultiLineStringZ ((1 2 1, 3 4 2),(5 6 3, 7 8 4, 9 10 5), (11 12 6, 13 14 7))')
 
@@ -397,19 +409,25 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(
             compareWkt(features[6].geometry().asWkt(), 'CurvePolygon (CircularString (6.76923076923076916 22.82875364393326834, 17.98259979777942519 11.61538461538461497, 6.76923076923076916 0.40201558683595984, -4.44413825931788598 11.61538461538461497, 6.76923076923076916 22.82875364393326834))', 0.00001), features[6].geometry().asWkt())
         self.assertTrue(
-            compareWkt(features[7].geometry().asWkt(), 'MultiPolygon (((1 2, 11 2, 11 22, 1 22, 1 2)),((1 2, 11 2, 11 22, 1 22, 1 2),(5 6, 8 9, 8 6, 5 6),(3 4, 5 6, 3 6, 3 4)))', 0.00001), features[7].geometry().asWkt())
-        self.assertTrue(
-            compareWkt(features[8].geometry().asWkt(), 'MultiPolygonZ (((1 2 3, 11 2 13, 11 22 15, 1 22 7, 1 2 3)),((1 2 3, 11 2 13, 11 22 15, 1 22 7, 1 2 3),(5 6 1, 8 9 -1, 8 6 2, 5 6 1)))', 0.00001), features[8].geometry().asWkt())
-        self.assertTrue(
             compareWkt(features[9].geometry().asWkt(), 'CurvePolygon (CircularString (1 3, 3 5, 4 7, 7 3, 1 3))', 0.00001), features[9].geometry().asWkt())
         self.assertTrue(
             compareWkt(features[10].geometry().asWkt(), 'CurvePolygon (CircularString (1 3, 3 5, 4 7, 7 3, 1 3),CircularString (3.1 3.3, 3.3 3.5, 3.4 3.7, 3.7 3.3, 3.1 3.3))', 0.00001), features[10].geometry().asWkt())
         self.assertTrue(
             compareWkt(features[11].geometry().asWkt(), 'CurvePolygon(CompoundCurve ((-1 -5, 1 2),CircularString (1 2, 5 4, 7 2.20, 10 0.1, 13 4),(13 4, 17 -6),CircularString (17 -6, 5 -7, -1 -5)))', 0.00001), features[11].geometry().asWkt())
         self.assertTrue(
-            compareWkt(features[12].geometry().asWkt(), 'MultiSurface (CurvePolygon (CircularString (1 3, 3 5, 4 7, 7 3, 1 3)),CurvePolygon (CircularString (11 3, 13 5, 14 7, 17 3, 11 3)))', 0.00001), features[12].geometry().asWkt())
-        self.assertTrue(
             compareWkt(features[13].geometry().asWkt(), 'CurvePolygonZ(CompoundCurveZ (CircularStringZ (-1 -5 1, 5 -7 2, 17 -6 3), (17 -6 3, 13 4 4), CircularStringZ (13 4 4, 10 0.1 5, 7 2.20 6, 5 4 7, 1 2 8),(1 2 8, -1 -5 1)))', 0.00001), features[13].geometry().asWkt())
+
+        vl = QgsVectorLayer('%s table="QGIS"."POLY_DATA" (GEOM) srid=4326 type=MULTIPOLYGON sql=' %
+                            (self.dbconn), "testpoly", "oracle")
+        self.assertTrue(vl.isValid())
+
+        features = {f['pk']: f for f in vl.getFeatures()}
+        self.assertTrue(
+            compareWkt(features[7].geometry().asWkt(), 'MultiPolygon (((1 2, 11 2, 11 22, 1 22, 1 2)),((1 2, 11 2, 11 22, 1 22, 1 2),(5 6, 8 9, 8 6, 5 6),(3 4, 5 6, 3 6, 3 4)))', 0.00001), features[7].geometry().asWkt())
+        self.assertTrue(
+            compareWkt(features[8].geometry().asWkt(), 'MultiPolygonZ (((1 2 3, 11 2 13, 11 22 15, 1 22 7, 1 2 3)),((1 2 3, 11 2 13, 11 22 15, 1 22 7, 1 2 3),(5 6 1, 8 9 -1, 8 6 2, 5 6 1)))', 0.00001), features[8].geometry().asWkt())
+        self.assertTrue(
+            compareWkt(features[12].geometry().asWkt(), 'MultiSurface (CurvePolygon (CircularString (1 3, 3 5, 4 7, 7 3, 1 3)),CurvePolygon (CircularString (11 3, 13 5, 14 7, 17 3, 11 3)))', 0.00001), features[12].geometry().asWkt())
         self.assertTrue(
             compareWkt(features[14].geometry().asWkt(), 'MultiPolygon (((22 22, 28 22, 28 26, 22 26, 22 22)))', 0.00001), features[14].geometry().asWkt())
         self.assertTrue(
@@ -698,6 +716,23 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         # clean up
         features = [f for f in vl.getFeatures()]
         vl.dataProvider().deleteFeatures([features[-1].id()])
+
+    def testFilterSimpleMultiGeom(self):
+        print("laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="QGIS"."MIX_SIMPLE_MULTI_POLYGON" (GEOM) sql=',
+              'test', 'oracle')
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="QGIS"."MIX_SIMPLE_MULTI_POLYGON" (GEOM) sql=',
+            'test', 'oracle')
+
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 2)
+
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=MULTIPOLYGON table="QGIS"."MIX_SIMPLE_MULTI_POLYGON" (GEOM) sql=',
+            'test', 'oracle')
+
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 1)
 
 
 if __name__ == '__main__':
