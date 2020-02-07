@@ -894,6 +894,9 @@ QgsTableEditorTextEdit::QgsTableEditorTextEdit( QWidget *parent )
 {
   // narrower default margins
   document()->setDocumentMargin( document()->documentMargin() / 2 );
+
+  connect( this, &QPlainTextEdit::textChanged, this, &QgsTableEditorTextEdit::resizeToContents );
+  updateMinimumSize();
 }
 
 void QgsTableEditorTextEdit::keyPressEvent( QKeyEvent *event )
@@ -907,6 +910,7 @@ void QgsTableEditorTextEdit::keyPressEvent( QKeyEvent *event )
       {
         // ctrl+enter inserts a line break
         insertPlainText( QString( '\n' ) );
+        resizeToContents();
       }
       else
       {
@@ -938,12 +942,81 @@ void QgsTableEditorTextEdit::keyPressEvent( QKeyEvent *event )
   }
 }
 
+void QgsTableEditorTextEdit::updateMinimumSize()
+{
+  const double tm = document()->documentMargin();
+  const QMargins cm = contentsMargins();
+  const int width = tm * 2 + cm.left() + cm.right() + 30;
+  const int height = tm * 2 + cm.top() + cm.bottom() + 4;
+  QStyleOptionFrame opt;
+  initStyleOption( &opt );
+  const QSize sizeFromContent = style()->sizeFromContents( QStyle::CT_LineEdit, &opt, QSize( width, height ), this );
+  setMinimumWidth( sizeFromContent.width() );
+  setMinimumHeight( sizeFromContent.height() );
+}
 
 void QgsTableEditorTextEdit::setWeakEditorMode( bool weakEditorMode )
 {
   mWeakEditorMode = weakEditorMode;
 }
 
+void QgsTableEditorTextEdit::resizeToContents()
+{
+  int oldWidth = width();
+  int oldHeight = height();
+  if ( mOriginalWidth == -1 )
+    mOriginalWidth = oldWidth;
+  if ( mOriginalHeight == -1 )
+    mOriginalHeight = oldHeight;
+
+  if ( QWidget *parent = parentWidget() )
+  {
+    QPoint position = pos();
+    QFontMetrics fm( font() );
+
+    const QStringList lines = toPlainText().split( '\n' );
+    int maxTextLineWidth = 0;
+    int totalTextHeight = 0;
+    for ( const QString &line : lines )
+    {
+      const QRect bounds = fontMetrics().boundingRect( line );
+      maxTextLineWidth = std::max( maxTextLineWidth, bounds.width() );
+      totalTextHeight += fm.height();
+    }
+
+    int hintWidth = minimumWidth() + maxTextLineWidth;
+    int hintHeight = minimumHeight() + totalTextHeight;
+    int parentWidth = parent->width();
+    int maxWidth = isRightToLeft() ? position.x() + oldWidth : parentWidth - position.x();
+    int maxHeight = parent->height() - position.y();
+    int newWidth = qBound( mOriginalWidth, hintWidth, maxWidth );
+    int newHeight = qBound( mOriginalHeight, hintHeight, maxHeight );
+
+    if ( mWidgetOwnsGeometry )
+    {
+      setMaximumWidth( newWidth );
+      setMaximumHeight( newHeight );
+    }
+    if ( isRightToLeft() )
+      move( position.x() - newWidth + oldWidth, position.y() );
+    resize( newWidth, newHeight );
+  }
+}
+
+void QgsTableEditorTextEdit::changeEvent( QEvent *e )
+{
+  switch ( e->type() )
+  {
+    case QEvent::FontChange:
+    case QEvent::StyleChange:
+    case QEvent::ContentsRectChange:
+      updateMinimumSize();
+      break;
+    default:
+      break;
+  }
+  QPlainTextEdit::changeEvent( e );
+}
 
 QgsTableEditorDelegate::QgsTableEditorDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
@@ -960,6 +1033,12 @@ QWidget *QgsTableEditorDelegate::createEditor( QWidget *parent, const QStyleOpti
 {
   QgsTableEditorTextEdit *w = new QgsTableEditorTextEdit( parent );
   w->setWeakEditorMode( mWeakEditorMode );
+
+  if ( !w->style()->styleHint( QStyle::SH_ItemView_DrawDelegateFrame, 0, w ) )
+    w->setFrameShape( QFrame::NoFrame );
+  if ( !w->style()->styleHint( QStyle::SH_ItemView_ShowDecorationSelected, 0, w ) )
+    w->setWidgetOwnsGeometry( true );
+
   return w;
 }
 

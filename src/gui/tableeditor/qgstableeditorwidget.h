@@ -40,13 +40,28 @@ class QgsTableEditorTextEdit : public QPlainTextEdit
      */
     void setWeakEditorMode( bool weakEditorMode );
 
+    void setWidgetOwnsGeometry( bool value )
+    {
+      mWidgetOwnsGeometry = value;
+    }
+
+  public slots:
+
+    void resizeToContents();
+
   protected:
+    void changeEvent( QEvent *e ) override;
 
     void keyPressEvent( QKeyEvent *e ) override;
 
   private:
 
+    void updateMinimumSize();
+
     bool mWeakEditorMode = false;
+    int mOriginalWidth = -1;
+    int mOriginalHeight = -1;
+    bool mWidgetOwnsGeometry = false;
 
 };
 
