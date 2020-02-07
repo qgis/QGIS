@@ -120,7 +120,9 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
   } );
 
 
-  setItemDelegate( new QgsTableEditorDelegate( this ) );
+  QgsTableEditorDelegate *delegate = new QgsTableEditorDelegate( this );
+  connect( delegate, &QgsTableEditorDelegate::updateNumericFormatForIndex, this, &QgsTableEditorWidget::updateNumericFormatForIndex );
+  setItemDelegate( delegate );
 
 
   connect( this, &QTableWidget::cellDoubleClicked, this, [ = ]
@@ -137,6 +139,17 @@ QgsTableEditorWidget::QgsTableEditorWidget( QWidget *parent )
 QgsTableEditorWidget::~QgsTableEditorWidget()
 {
   qDeleteAll( mNumericFormats );
+}
+
+void QgsTableEditorWidget::updateNumericFormatForIndex( const QModelIndex &index )
+{
+  if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
+  {
+    if ( QgsNumericFormat *format = mNumericFormats.value( i ) )
+    {
+      i->setData( Qt::DisplayRole, format->formatDouble( index.data( CellContent ).toDouble(), QgsNumericFormatContext() ) );
+    }
+  }
 }
 
 void QgsTableEditorWidget::updateHeaders()
@@ -282,6 +295,7 @@ void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
   qDeleteAll( mNumericFormats );
   mNumericFormats.clear();
 
+  QgsNumericFormatContext numericContext;
   int rowNumber = 0;
   setRowCount( contents.size() );
   for ( const QgsTableRow &row : contents )
@@ -293,11 +307,15 @@ void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
     for ( const QgsTableCell &col : row )
     {
       QTableWidgetItem *item = new QTableWidgetItem( col.content().toString() );
+      item->setData( CellContent, col.content() ); // can't use EditRole, because Qt. (https://bugreports.qt.io/browse/QTBUG-11549)
       item->setData( Qt::BackgroundRole, col.backgroundColor().isValid() ? col.backgroundColor() : QColor( 255, 255, 255 ) );
       item->setData( PresetBackgroundColorRole, col.backgroundColor().isValid() ? col.backgroundColor() : QVariant() );
       item->setData( Qt::ForegroundRole, col.foregroundColor().isValid() ? col.foregroundColor() : QVariant() );
       if ( col.numericFormat() )
+      {
         mNumericFormats.insert( item, col.numericFormat()->clone() );
+        item->setData( Qt::DisplayRole, mNumericFormats.value( item )->formatDouble( col.content().toDouble(), numericContext ) );
+      }
       setItem( rowNumber, colNumber, item );
       colNumber++;
     }
@@ -323,7 +341,7 @@ QgsTableContents QgsTableEditorWidget::tableContents() const
       QgsTableCell cell;
       if ( QTableWidgetItem *i = item( r, c ) )
       {
-        cell.setContent( i->text() );
+        cell.setContent( i->data( CellContent ) );
         cell.setBackgroundColor( i->data( PresetBackgroundColorRole ).value< QColor >() );
         cell.setForegroundColor( i->data( Qt::ForegroundRole ).value< QColor >() );
 
@@ -346,6 +364,7 @@ void QgsTableEditorWidget::setSelectionNumericFormat( QgsNumericFormat *format )
   mBlockSignals++;
   std::unique_ptr< QgsNumericFormat > newFormat( format );
   const QModelIndexList selection = selectedIndexes();
+  QgsNumericFormatContext numericContext;
   for ( const QModelIndex &index : selection )
   {
     QTableWidgetItem *i = item( index.row(), index.column() );
@@ -371,6 +390,7 @@ void QgsTableEditorWidget::setSelectionNumericFormat( QgsNumericFormat *format )
       delete mNumericFormats.value( i );
       mNumericFormats.insert( i, newFormat->clone() );
     }
+    i->setData( Qt::DisplayRole, newFormat ? mNumericFormats.value( i )->formatDouble( i->data( CellContent ).toDouble(), numericContext ) : i->data( CellContent ) );
   }
   mBlockSignals--;
   if ( changed && !mBlockSignals )
@@ -759,6 +779,7 @@ void QgsTableEditorWidget::clearSelectedCells()
     if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
     {
       i->setText( QString() );
+      i->setData( CellContent, QVariant() );
       changed = true;
     }
   }
@@ -1044,20 +1065,29 @@ QWidget *QgsTableEditorDelegate::createEditor( QWidget *parent, const QStyleOpti
 
 void QgsTableEditorDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  QVariant value = index.model()->data( index, Qt::EditRole );
+  QVariant value = index.model()->data( index, QgsTableEditorWidget::CellContent );
   if ( QgsTableEditorTextEdit *lineEdit = qobject_cast<QgsTableEditorTextEdit * >( editor ) )
   {
-    lineEdit->setPlainText( value.toString() );
-    lineEdit->selectAll();
+    if ( index != mLastIndex || lineEdit->toPlainText() != value.toString() )
+    {
+      lineEdit->setPlainText( value.toString() );
+      lineEdit->selectAll();
+    }
   }
+  mLastIndex = index;
 }
 
 void QgsTableEditorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   if ( QgsTableEditorTextEdit *lineEdit = qobject_cast<QgsTableEditorTextEdit * >( editor ) )
   {
-    model->setData( index, lineEdit->toPlainText(), Qt::EditRole );
-    model->setData( index, lineEdit->toPlainText(), Qt::DisplayRole );
+    const QString text = lineEdit->toPlainText();
+    if ( text != model->data( index, QgsTableEditorWidget::CellContent ).toString() )
+    {
+      model->setData( index, text, QgsTableEditorWidget::CellContent );
+      model->setData( index, text, Qt::DisplayRole );
+      emit updateNumericFormatForIndex( index );
+    }
   }
 }
 
