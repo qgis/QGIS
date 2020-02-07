@@ -311,7 +311,7 @@ QFont QgsFontUtils::getStandardTestFont( const QString &style, int pointsize )
     QgsDebugMsg( QStringLiteral( "Inexact font match - consider installing the %1 font." ).arg( standardTestFontFamily() ) );
     QgsDebugMsg( QStringLiteral( "Requested: %1" ).arg( f.toString() ) );
     QFontInfo fi( f );
-    QgsDebugMsg( QStringLiteral( "Replaced:  %1,%2,%3,%4,%5,%6,%7,%8,%9,%10" ).arg( fi.family() ).arg( fi.pointSizeF() ).arg( fi.pixelSize() ).arg( fi.styleHint() ).arg( fi.weight() ).arg( fi.style() ).arg( fi.underline() ).arg( fi.strikeOut() ).arg( fi.fixedPitch() ).arg( fi.rawMode() ) );
+    QgsDebugMsg( QStringLiteral( "Replaced:  %1,%2,%3,%4,%5,%6,%7,%8,%9" ).arg( fi.family() ).arg( fi.pointSizeF() ).arg( fi.pixelSize() ).arg( fi.styleHint() ).arg( fi.weight() ).arg( fi.style() ).arg( fi.underline() ).arg( fi.strikeOut() ).arg( fi.fixedPitch() ) );
   }
 #endif
   // in case above statement fails to set style
