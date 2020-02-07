@@ -237,7 +237,7 @@ void ModelTest::index()
  */
 void ModelTest::parent()
 {
-  // Make sure the model wont crash and will return an invalid QModelIndex
+  // Make sure the model won't crash and will return an invalid QModelIndex
   // when asked for the parent of an invalid index.
   Q_ASSERT( model->parent( QModelIndex() ) == QModelIndex() );
 
