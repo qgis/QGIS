@@ -1134,8 +1134,8 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
   ddsLegend.setFont( settings.style( QgsLegendStyle::SymbolLabel ).font() );
   ddsLegend.setTextColor( settings.fontColor() );
 
-  QSize contentSize;
-  int labelXOffset;
+  QSizeF contentSize;
+  double labelXOffset;
   ddsLegend.drawCollapsedLegend( context, &contentSize, &labelXOffset );
 
   if ( ctx && ctx->painter )
