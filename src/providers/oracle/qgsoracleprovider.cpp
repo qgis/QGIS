@@ -1686,7 +1686,7 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds &ids )
     qry.finish();
 
     QList<int> idsList = ids.values();
-    std::sort( idsList.begin(), idsList.end(), qGreater<int>() );
+    std::sort( idsList.begin(), idsList.end(), std::greater<int>() );
 
     const auto constIdsList = idsList;
     for ( int id : constIdsList )
