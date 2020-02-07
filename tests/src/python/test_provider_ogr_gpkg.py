@@ -1523,6 +1523,36 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(vl.dataProvider().uniqueValues(2), {QDate(2017, 1, 1), NULL, QDate(2018, 1, 1), QDate(2019, 1, 1), QDate(2010, 1, 1)})
         self.assertEqual(vl.dataProvider().uniqueValues(3), {QDateTime(2022, 1, 1, 1, 1, 1), NULL, QDateTime(2019, 1, 1, 1, 1, 1), QDateTime(2021, 1, 1, 1, 1, 1), QDateTime(2010, 1, 1, 1, 1, 1)})
 
+    def testExporterWithFIDColumn(self):
+        """Test issue GH #34333, a memory layer with FID is not exported correctly to GPKG"""
+
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326&field=FID:integer(0)&field=name:string(20)',
+            'test',
+            'memory')
+
+        self.assertTrue(vl.isValid(), 'Provider not initialized')
+
+        ft = QgsFeature(vl.fields())
+        ft.setAttributes([123, 'text1'])
+        ft.setGeometry(QgsGeometry.fromWkt('Point(2 49)'))
+        myResult, myFeatures = vl.dataProvider().addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        dest_file_name = tempfile.mktemp('.gpkg')
+        err = QgsVectorLayerExporter.exportLayer(vl, dest_file_name, "ogr", vl.crs(), False)
+        self.assertEqual(err[0], QgsVectorLayerExporter.NoError,
+                         'unexpected import error {0}'.format(err))
+
+        # Open result and check
+        created_layer = QgsVectorLayer(dest_file_name, 'test', 'ogr')
+        self.assertTrue(created_layer.isValid())
+        f = next(created_layer.getFeatures())
+        self.assertEqual(f.geometry().asWkt(), 'Point (2 49)')
+        self.assertEqual(f.attributes(), [123, 'text1'])
+        self.assertEqual(f.id(), 123)
+
 
 if __name__ == '__main__':
     unittest.main()
