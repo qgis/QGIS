@@ -121,6 +121,8 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     bool mIsPinned = false;
     bool mCanSetHAlignment = false;
     bool mCanSetVAlignment = false;
+
+    friend class TestQgsLabelPropertyDialog;
 };
 
 #endif // QGSLAYERPROPERTYDIALOG_H
