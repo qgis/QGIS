@@ -85,6 +85,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         QCoreApplication.setApplicationName("TestPyQgsOGRProviderGpkg")
         QgsSettings().clear()
         start_app()
+        QgsSettings().setValue("/qgis/walForSqlite3", True)
 
         # Create test layer
         cls.basetestpath = tempfile.mkdtemp()
