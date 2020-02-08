@@ -886,9 +886,9 @@ int main( int argc, char *argv[] )
 
   // Set up an OpenGL Context to be shared between threads beforehand
   // for plugins that depend on Qt WebEngine module.
-  // As suggested by Qt documentation at
-  //   - https://doc.qt.io/qt-5/qtwebengine.html
-  //   - https://code.qt.io/cgit/qt/qtwebengine.git/plain/src/webenginewidgets/api/qtwebenginewidgetsglobal.cpp
+  // As suggested by Qt documentation at:
+  // - https://doc.qt.io/qt-5/qtwebengine.html
+  // - https://code.qt.io/cgit/qt/qtwebengine.git/plain/src/webenginewidgets/api/qtwebenginewidgetsglobal.cpp
 #if defined(QT_OS_WIN) && !defined(QT_NO_OPENGL) && (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0) )
   QCoreApplication::setAttribute( Qt::AA_ShareOpenGLContexts, true );
 #endif
