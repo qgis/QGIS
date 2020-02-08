@@ -1987,6 +1987,13 @@
                     </property>
                    </widget>
                   </item>
+                  <item row="1" column="0">
+                   <widget class="QCheckBox" name="cbxAttributeTableHeaderIcons">
+                    <property name="text">
+                     <string>Display field type icons on attribute table headers</string>
+                    </property>
+                   </widget>
+                  </item>
                  </layout>
                 </widget>
                </item>
@@ -5759,6 +5766,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>mPlanimetricMeasurementsComboBox</tabstop>
   <tabstop>mOptionsScrollArea_11</tabstop>
   <tabstop>cbxAttributeTableDocked</tabstop>
+  <tabstop>cbxAttributeTableHeaderIcons</tabstop>
   <tabstop>mComboCopyFeatureFormat</tabstop>
   <tabstop>cmbAttrTableBehavior</tabstop>
   <tabstop>mAttrTableViewComboBox</tabstop>

@@ -627,7 +627,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
       return QgsFieldModel::fieldToolTip( field );
     }
   }
-  else if ( role == Qt::DecorationRole )
+  else if ( role == Qt::DecorationRole && mShowTypeIcons )
   {
     if ( orientation == Qt::Vertical )
     {

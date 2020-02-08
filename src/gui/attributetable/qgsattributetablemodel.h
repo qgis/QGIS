@@ -29,6 +29,7 @@
 #include "qgsattributeeditorcontext.h"
 #include "qgsvectorlayercache.h"
 #include "qgis_gui.h"
+#include "qgssettings.h"
 
 class QgsMapCanvas;
 class QgsMapLayerAction;
@@ -331,6 +332,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
   private:
     QgsVectorLayerCache *mLayerCache = nullptr;
     int mFieldCount = 0;
+    bool mShowTypeIcons = QgsSettings().value( QStringLiteral( "qgis/showAttributeTableHeaderIcons" ) ).toBool();
 
     mutable QgsFeature mFeat;
 
