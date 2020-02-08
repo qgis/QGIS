@@ -4368,7 +4368,10 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
   }
   else
   {
-    OGR_L_SetAttributeFilter( layer, encoding->fromUnicode( subsetString ).constData() );
+    if ( OGR_L_SetAttributeFilter( layer, encoding->fromUnicode( subsetString ).constData() ) != OGRERR_NONE )
+    {
+      return nullptr;
+    }
     subsetLayer = layer;
   }
 
