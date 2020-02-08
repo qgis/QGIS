@@ -582,13 +582,12 @@ bool QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
            !qgsDoubleNearSig( cacheExtent.xMaximum(), viewExtent.xMaximum(), 10 ) ||
            !qgsDoubleNearSig( cacheExtent.yMaximum(), viewExtent.yMaximum(), 10 ) )
       {
+        // Just print a message so user is aware of a server side issue but don't left
+        // the tile blank so we can deal with eventually misconfigured WCS server
+        // https://github.com/qgis/QGIS/issues/33339
+
         QgsDebugMsg( QStringLiteral( "cacheExtent and viewExtent differ" ) );
         QgsMessageLog::logMessage( tr( "Received coverage has wrong extent %1 (expected %2)" ).arg( cacheExtent.toString(), viewExtent.toString() ), tr( "WCS" ) );
-        // We are doing all possible to avoid this situation,
-        // If it happens, it would be possible to rescale the portion we get
-        // to only part of the data block, but it is better to left it
-        // blank, so that the problem may be discovered in its origin.
-        return false;
       }
     }
 
@@ -810,7 +809,10 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int 
   QgsDebugMsg( QStringLiteral( "%1 bytes received" ).arg( mCachedData.size() ) );
   if ( mCachedData.isEmpty() )
   {
-    QgsMessageLog::logMessage( tr( "No data received" ), tr( "WCS" ) );
+    if ( !feedback || !feedback->isCanceled() )
+    {
+      QgsMessageLog::logMessage( tr( "No data received" ), tr( "WCS" ) );
+    }
     clearCache();
     return;
   }

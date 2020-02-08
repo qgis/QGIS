@@ -337,29 +337,109 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   cbxWfsFeaturePaging->setChecked( pagingEnabled );
 }
 
+
+
+// Mega ewwww. all this is taken from Qt's QUrl::setEncodedPath compatibility helper.
+// (I can't see any way to port the below code to NOT require this).
+
+inline char toHexUpper( uint value ) noexcept
+{
+  return "0123456789ABCDEF"[value & 0xF];
+}
+
+static inline ushort encodeNibble( ushort c )
+{
+  return ushort( toHexUpper( c ) );
+}
+
+bool qt_is_ascii( const char *&ptr, const char *end ) noexcept
+{
+  while ( ptr + 4 <= end )
+  {
+    quint32 data = qFromUnaligned<quint32>( ptr );
+    if ( data &= 0x80808080U )
+    {
+#if Q_BYTE_ORDER == Q_BIG_ENDIAN
+      uint idx = qCountLeadingZeroBits( data );
+#else
+      uint idx = qCountTrailingZeroBits( data );
+#endif
+      ptr += idx / 8;
+      return false;
+    }
+    ptr += 4;
+  }
+  while ( ptr != end )
+  {
+    if ( quint8( *ptr ) & 0x80 )
+      return false;
+    ++ptr;
+  }
+  return true;
+}
+
+QString fromEncodedComponent_helper( const QByteArray &ba )
+{
+  if ( ba.isNull() )
+    return QString();
+  // scan ba for anything above or equal to 0x80
+  // control points below 0x20 are fine in QString
+  const char *in = ba.constData();
+  const char *const end = ba.constEnd();
+  if ( qt_is_ascii( in, end ) )
+  {
+    // no non-ASCII found, we're safe to convert to QString
+    return QString::fromLatin1( ba, ba.size() );
+  }
+  // we found something that we need to encode
+  QByteArray intermediate = ba;
+  intermediate.resize( ba.size() * 3 - ( in - ba.constData() ) );
+  uchar *out = reinterpret_cast<uchar *>( intermediate.data() + ( in - ba.constData() ) );
+  for ( ; in < end; ++in )
+  {
+    if ( *in & 0x80 )
+    {
+      // encode
+      *out++ = '%';
+      *out++ = encodeNibble( uchar( *in ) >> 4 );
+      *out++ = encodeNibble( uchar( *in ) & 0xf );
+    }
+    else
+    {
+      // keep
+      *out++ = uchar( *in );
+    }
+  }
+  // now it's safe to call fromLatin1
+  return QString::fromLatin1( intermediate, out - reinterpret_cast<uchar *>( intermediate.data() ) );
+}
+
+
 QUrl QgsNewHttpConnection::urlTrimmed() const
 {
-
   QUrl url( txtUrl->text().trimmed() );
-  const QList< QPair<QByteArray, QByteArray> > &items = url.encodedQueryItems();
-  QHash< QString, QPair<QByteArray, QByteArray> > params;
-  for ( QList< QPair<QByteArray, QByteArray> >::const_iterator it = items.constBegin(); it != items.constEnd(); ++it )
+  QUrlQuery query( url );
+  const QList<QPair<QString, QString> > items = query.queryItems( QUrl::FullyEncoded );
+  QHash< QString, QPair<QString, QString> > params;
+  for ( const QPair<QString, QString> &it : items )
   {
-    params.insert( QString( it->first ).toUpper(), *it );
+    params.insert( it.first.toUpper(), it );
   }
 
   if ( params[QStringLiteral( "SERVICE" )].second.toUpper() == "WMS" ||
        params[QStringLiteral( "SERVICE" )].second.toUpper() == "WFS" ||
        params[QStringLiteral( "SERVICE" )].second.toUpper() == "WCS" )
   {
-    url.removeEncodedQueryItem( params[QStringLiteral( "SERVICE" )].first );
-    url.removeEncodedQueryItem( params[QStringLiteral( "REQUEST" )].first );
-    url.removeEncodedQueryItem( params[QStringLiteral( "FORMAT" )].first );
+    query.removeQueryItem( params.value( QStringLiteral( "SERVICE" ) ).first );
+    query.removeQueryItem( params.value( QStringLiteral( "REQUEST" ) ).first );
+    query.removeQueryItem( params.value( QStringLiteral( "FORMAT" ) ).first );
   }
 
-  if ( url.encodedPath().isEmpty() )
+  url.setQuery( query );
+
+  if ( url.path( QUrl::FullyEncoded ).isEmpty() )
   {
-    url.setEncodedPath( "/" );
+    url.setPath( fromEncodedComponent_helper( "/" ) );
   }
   return url;
 }

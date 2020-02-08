@@ -31,7 +31,7 @@ class QgsLayoutTableColumn;
 /**
  * \ingroup core
  * List of QVariants, representing a the contents of a single row in
- * a QgsComposerTable
+ * a QgsLayoutTable
  * \since QGIS 3.0
 */
 typedef QVector< QVariant > QgsLayoutTableRow;
@@ -60,7 +60,7 @@ typedef QVector< QgsLayoutTableColumn * > QgsLayoutTableColumns;
 /**
  * \ingroup core
  *  \class QgsLayoutTableStyle
- *  \brief Styling option for a composer table cell
+ *  \brief Styling option for a layout table cell
  *  \since QGIS 3.0
  */
 

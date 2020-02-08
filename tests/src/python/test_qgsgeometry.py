@@ -4465,15 +4465,15 @@ class TestQgsGeometry(unittest.TestCase):
         # polygon
         polygon = QgsGeometry.fromWkt('Polygon((-0.1 -1.3, 2.1 1, 3 2.8, 6.7 0.2, 3 -1.8, 0.3 -2.7, -0.1 -1.3))')
         bbox, area, angle, width, height = polygon.orientedMinimumBoundingBox()
-        exp = 'Polygon ((-0.94905660 -1.571698, 2.3817055 -4.580453, 6.7000000 0.1999999, 3.36923 3.208754, -0.949056 -1.57169))'
+        exp = 'Polygon ((2.63653329463248109 -4.65542585423934607, 6.70000000000000284 0.19999999999999485, 3.24436595086289614 3.09199224252241889, -0.81910075450462605 -1.76343361171692159, 2.63653329463248109 -4.65542585423934607))'
 
         result = bbox.asWkt()
         self.assertTrue(compareWkt(result, exp, 0.00001),
                         "Oriented MBBR: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
-        self.assertAlmostEqual(area, 28.9152, places=3)
-        self.assertAlmostEqual(angle, 42.0922, places=3)
-        self.assertAlmostEqual(width, 4.4884, places=3)
-        self.assertAlmostEqual(height, 6.4420, places=3)
+        self.assertAlmostEqual(area, 28.5300, places=3)
+        self.assertAlmostEqual(angle, 129.9257, places=3)
+        self.assertAlmostEqual(width, 6.3314, places=3)
+        self.assertAlmostEqual(height, 4.5061, places=3)
 
     def testOrthogonalize(self):
         empty = QgsGeometry()

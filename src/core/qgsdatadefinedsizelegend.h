@@ -133,7 +133,7 @@ class CORE_EXPORT QgsDataDefinedSizeLegend
      * If the painter in context is NULLPTR, it only does size calculation without actual rendering.
      * Does nothing if legend is not configured as collapsed.
      */
-    void drawCollapsedLegend( QgsRenderContext &context, QSize *outputSize SIP_OUT = nullptr, int *labelXOffset SIP_OUT = nullptr ) const;
+    void drawCollapsedLegend( QgsRenderContext &context, QSizeF *outputSize SIP_OUT = nullptr, double *labelXOffset SIP_OUT = nullptr ) const;
 
     //! Returns output image that would be shown in the legend. Returns invalid image if legend is not configured as collapsed.
     QImage collapsedLegendImage( QgsRenderContext &context, const QColor &backgroundColor = Qt::transparent, double paddingMM = 1 ) const;

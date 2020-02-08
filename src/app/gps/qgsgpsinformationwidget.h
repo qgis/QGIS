@@ -54,8 +54,14 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
   public:
     QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
     ~QgsGpsInformationWidget() override;
+
+  public slots:
+    void tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
+
+
   private slots:
     void mConnectButton_toggled( bool flag );
+    void recenter();
     void displayGPSInformation( const QgsGpsInformation &info );
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
     void updateCloseFeatureButton( QgsMapLayer *lyr );
@@ -87,6 +93,7 @@ class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::Qgs
      * Updates compatible fields for timestamp recording
      */
     void updateTimestampDestinationFields( QgsMapLayer *mapLayer );
+
   private:
     enum FixStatus  //GPS status
     {

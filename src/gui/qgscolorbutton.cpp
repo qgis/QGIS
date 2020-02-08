@@ -160,6 +160,7 @@ void QgsColorButton::setToDefaultColor()
 void QgsColorButton::setToNull()
 {
   setColor( QColor() );
+  emit cleared();
 }
 
 void QgsColorButton::unlink()

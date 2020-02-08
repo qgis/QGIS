@@ -194,6 +194,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   // Enable touch event on Windows.
   // Qt on Windows needs to be told it can take touch events or else it ignores them.
   grabGesture( Qt::PinchGesture );
+  grabGesture( Qt::TapAndHoldGesture );
   viewport()->setAttribute( Qt::WA_AcceptTouchEvents );
 #endif
 
@@ -2337,6 +2338,14 @@ bool QgsMapCanvas::event( QEvent *e )
   {
     if ( e->type() == QEvent::Gesture )
     {
+      if ( QTapAndHoldGesture *tapAndHoldGesture = qobject_cast< QTapAndHoldGesture * >( static_cast<QGestureEvent *>( e )->gesture( Qt::TapAndHoldGesture ) ) )
+      {
+        QPointF pos = tapAndHoldGesture->position();
+        pos = mapFromGlobal( QPoint( pos.x(), pos.y() ) );
+        QgsPointXY mapPoint = getCoordinateTransform()->toMapCoordinates( pos.x(), pos.y() );
+        emit tapAndHoldGestureOccurred( mapPoint, tapAndHoldGesture );
+      }
+
       // call handler of current map tool
       if ( mMapTool )
       {

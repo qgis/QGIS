@@ -565,7 +565,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsRelationManager *relationManager() const;
 
     /**
-     * Returns the project's layout manager, which manages compositions within
+     * Returns the project's layout manager, which manages print layouts, atlases and reports within
      * the project.
      * \note not available in Python bindings
      * \since QGIS 3.0
@@ -573,7 +573,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     const QgsLayoutManager *layoutManager() const SIP_SKIP;
 
     /**
-     * Returns the project's layout manager, which manages compositions within
+     * Returns the project's layout manager, which manages print layouts, atlases and reports within
      * the project.
      * \since QGIS 3.0
      */

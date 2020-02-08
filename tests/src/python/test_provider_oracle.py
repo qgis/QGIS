@@ -718,8 +718,12 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         vl.dataProvider().deleteFeatures([features[-1].id()])
 
     def testFilterSimpleMultiGeom(self):
-        print("laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="QGIS"."MIX_SIMPLE_MULTI_POLYGON" (GEOM) sql=',
-              'test', 'oracle')
+        """
+        Check that we load separatly
+        simple and multi geometry stored
+        is a same table
+        https://github.com/qgis/QGIS/issues/32521
+        """
         vl = QgsVectorLayer(
             self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="QGIS"."MIX_SIMPLE_MULTI_POLYGON" (GEOM) sql=',
             'test', 'oracle')
@@ -733,6 +737,33 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.featureCount(), 1)
+
+    def testGetFeatureFidInvalid(self):
+        """
+        Get feature with an invalid fid
+        https://github.com/qgis/QGIS/issues/31626
+        """
+        self.execSQLCommand('DROP TABLE "QGIS"."TABLE_QGIS_ISSUE_FLOAT_KEY"', ignore_errors=True)
+        self.execSQLCommand("""CREATE TABLE "QGIS"."TABLE_QGIS_ISSUE_FLOAT_KEY" (CODE NUMBER PRIMARY KEY, DESCRIPTION VARCHAR2(25))""")
+        self.execSQLCommand("""INSERT INTO "QGIS"."TABLE_QGIS_ISSUE_FLOAT_KEY" VALUES(1000,'Desc for 1st record')""")
+        self.execSQLCommand("""INSERT INTO "QGIS"."TABLE_QGIS_ISSUE_FLOAT_KEY" VALUES(2000,'Desc for 2nd record')""")
+        self.execSQLCommand("""CREATE OR REPLACE VIEW "QGIS"."VIEW_QGIS_ISSUE_FLOAT_KEY" AS SELECT * FROM "QGIS"."TABLE_QGIS_ISSUE_FLOAT_KEY" """)
+
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable key=\'CODE\' table="QGIS"."VIEW_QGIS_ISSUE_FLOAT_KEY" sql=',
+            'test', 'oracle')
+
+        # feature are not loaded yet, mapping between CODE and fid is not built so feature
+        # is invalid
+        feature = vl.getFeature(2)
+        self.assertTrue(not feature.isValid())
+
+        # load all features
+        for f in vl.getFeatures():
+            pass
+
+        feature = vl.getFeature(2)
+        self.assertTrue(feature.isValid())
 
 
 if __name__ == '__main__':

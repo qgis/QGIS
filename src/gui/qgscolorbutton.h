@@ -362,6 +362,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * Sets color to null.
      * \see setToDefaultColor()
      * \see setToNoColor()
+     * \see cleared()
      * \since QGIS 2.16
      */
     void setToNull();
@@ -392,6 +393,14 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see behavior
      */
     void colorClicked( const QColor &color );
+
+    /**
+     * Emitted when the color is cleared (set to null).
+     *
+     * \see setToNull()
+     * \since QGIS 3.12
+     */
+    void cleared();
 
     /**
      * Emitted when the color is unlinked, e.g. when it was previously set to link
