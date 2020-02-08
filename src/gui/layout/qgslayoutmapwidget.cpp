@@ -38,7 +38,7 @@
 #include <QMenu>
 #include <QMessageBox>
 
-QgsLayoutMapWidget::QgsLayoutMapWidget(QgsLayoutItemMap *item , QgsMapCanvas *mapCanvas)
+QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *mapCanvas )
   : QgsLayoutItemBaseWidget( nullptr, item )
   , mMapItem( item )
   , mMapCanvas( mapCanvas )
