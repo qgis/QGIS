@@ -28,6 +28,7 @@
 #include <qgsproviderregistry.h>
 #include <qgsproject.h>
 #include "qgsrenderer.h"
+#include "qgssettings.h"
 
 //qgis test includes
 #include "qgsmultirenderchecker.h"
@@ -77,6 +78,13 @@ void TestQgsInvertedPolygon::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+
+  // Make sure geopackages are not written-to, during tests
+  // See https://github.com/qgis/QGIS/issues/25830
+  // NOTE: this needs to happen _after_ QgsApplication::initQgis()
+  //       as any previously-set value would otherwise disappear.
+  // TODO: do this in a base class!
+  QgsSettings().setValue( QStringLiteral( "/qgis/walForSqlite3" ), false );
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
