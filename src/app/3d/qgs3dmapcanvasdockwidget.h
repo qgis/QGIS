@@ -19,6 +19,7 @@
 #include "qmenu.h"
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
+#include "qtoolbutton.h"
 
 #define SIP_NO_FILE
 
@@ -75,6 +76,7 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
     QMenu *mMapThemeMenu = nullptr;
     QList<QAction *> mMapThemeMenuPresetActions;
+    QToolButton *mBtnMapThemes = nullptr;
 };
 
 #endif // QGS3DMAPCANVASDOCKWIDGET_H

@@ -104,14 +104,16 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   mMapThemeMenu = new QMenu();
   connect( mMapThemeMenu, &QMenu::aboutToShow, this, &Qgs3DMapCanvasDockWidget::mapThemeMenuAboutToShow );
 
-  QToolButton *btnMapThemes = new QToolButton;
-  btnMapThemes->setAutoRaise( true );
-  btnMapThemes->setToolTip( tr( "Set View Theme" ) );
-  btnMapThemes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
-  btnMapThemes->setPopupMode( QToolButton::InstantPopup );
-  btnMapThemes->setMenu( mMapThemeMenu );
+  mBtnMapThemes = new QToolButton();
+  mBtnMapThemes->setAutoRaise( true );
+  mBtnMapThemes->setToolTip( tr( "Set View Theme" ) );
+  mBtnMapThemes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
+  mBtnMapThemes->setPopupMode( QToolButton::InstantPopup );
+  mBtnMapThemes->setMenu( mMapThemeMenu );
+  // Disable if the terrain generator is a mesh
+  mBtnMapThemes->setDisabled( mCanvas->map()->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
 
-  toolBar->addWidget( btnMapThemes );
+  toolBar->addWidget( mBtnMapThemes );
 
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ),
                       tr( "Configure…" ), this, &Qgs3DMapCanvasDockWidget::configure );
@@ -281,6 +283,9 @@ void Qgs3DMapCanvasDockWidget::configure()
     newCameraPose.setCenterPoint( p );
     mCanvas->cameraController()->setCameraPose( newCameraPose );
   }
+
+  // Disable map theme button if the terrain generator is a mesh
+  mBtnMapThemes->setDisabled( map->terrainGenerator()->type() == QgsTerrainGenerator::Mesh );
 }
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
