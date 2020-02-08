@@ -49,9 +49,9 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      **/
     enum TemporalMode
     {
-      ModeFixedTemporalRange, //! Mode when temporal properties have fixed start and end datetimes.
-      ModeTemporalRangeFromDataProvider, //! Mode when raster layer depends on temporal range from its dataprovider.
-      ModeTemporalRangesList //! To be used when raster layer has list of temporal ranges.
+      ModeFixedTemporalRange = 0, //! Mode when temporal properties have fixed start and end datetimes.
+      ModeTemporalRangeFromDataProvider = 1, //! Mode when raster layer depends on temporal range from its dataprovider.
+      ModeTemporalRangesList = 2 //! To be used when raster layer has list of temporal ranges.
     };
 
     /**

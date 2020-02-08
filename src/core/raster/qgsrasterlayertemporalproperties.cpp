@@ -29,16 +29,11 @@ QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties:
 
 void QgsRasterLayerTemporalProperties::setMode( QgsRasterLayerTemporalProperties::TemporalMode mode )
 {
-  if ( mMode == mode )
-    return;
   mMode = mode;
 }
 
 void  QgsRasterLayerTemporalProperties::setFixedTemporalRange( const QgsDateTimeRange &range )
 {
-  if ( range == mRange )
-    return;
-
   mRange = range;
 }
 
@@ -121,6 +116,6 @@ QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties:
     case 2:
       return TemporalMode::ModeTemporalRangesList;
     default:
-      return TemporalMode::ModeFixedTemporalRange;
+      return TemporalMode::ModeTemporalRangesList;
   }
 }

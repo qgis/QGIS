@@ -1994,6 +1994,9 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
     layer_node.appendChild( noData );
   }
 
+  // write temporal properties
+  mTemporalProperties->writeXml( mapLayerNode, document, context );
+
   writeStyleManager( layer_node, document );
 
   //write out the symbology
