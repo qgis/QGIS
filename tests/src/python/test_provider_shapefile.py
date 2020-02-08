@@ -769,6 +769,27 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(_lessdigits(subSet_vl.extent().toString()), filtered_extent)
         self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
 
+    def testMalformedSubsetStrings(self):
+        """Test that invalid where clauses always return false"""
+
+        testPath = TEST_DATA_DIR + '/' + 'lines.shp'
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.setSubsetString(''))
+        self.assertTrue(vl.setSubsetString('"Name" = \'Arterial\''))
+        self.assertTrue(vl.setSubsetString('select * from lines where "Name" = \'Arterial\''))
+        self.assertFalse(vl.setSubsetString('this is invalid sql'))
+        self.assertFalse(vl.setSubsetString('select * from lines where "NonExistentField" = \'someValue\''))
+        self.assertFalse(vl.setSubsetString('select * from lines where "Name" = \'Arte...'))
+        self.assertFalse(vl.setSubsetString('select * from lines where "Name" in (\'Arterial\', \'Highway\' '))
+        self.assertFalse(vl.setSubsetString('select * from NonExistentTable'))
+        self.assertFalse(vl.setSubsetString('select NonExistentField from lines'))
+        self.assertFalse(vl.setSubsetString('"NonExistentField" = \'someValue\''))
+        self.assertFalse(vl.setSubsetString('"Name" = \'Arte...'))
+        self.assertFalse(vl.setSubsetString('"Name" in (\'Arterial\', \'Highway\' '))
+        self.assertTrue(vl.setSubsetString(''))
+
     def testMultipatch(self):
         """Check that we can deal with multipatch shapefiles, returned natively by OGR as GeometryCollection of TIN"""
 
