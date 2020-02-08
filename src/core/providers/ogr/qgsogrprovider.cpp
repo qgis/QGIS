@@ -408,11 +408,22 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
   }
 
   QString newLayerName( layerName );
+
   std::unique_ptr< QgsVectorFileWriter > writer = qgis::make_unique< QgsVectorFileWriter >(
-        uri, encoding, fields, wkbType,
-        srs, driverName, dsOptions, layerOptions, nullptr,
-        QgsVectorFileWriter::NoSymbology, nullptr,
-        layerName, action, &newLayerName );
+        uri,
+        encoding,
+        fields,
+        wkbType,
+        srs,
+        driverName,
+        dsOptions,
+        layerOptions,
+        nullptr,
+        QgsVectorFileWriter::NoSymbology,
+        nullptr,
+        layerName,
+        action,
+        &newLayerName );
   layerName = newLayerName;
 
   QgsVectorFileWriter::WriterError error = writer->hasError();
@@ -429,6 +440,7 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
 
   {
     bool firstFieldIsFid = false;
+    bool fidColumnIsField = false;
     if ( !layerName.isEmpty() )
     {
       gdal::dataset_unique_ptr hDS( GDALOpenEx( uri.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
@@ -439,17 +451,30 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
         {
           // Expose the OGR FID if it comes from a "real" column (typically GPKG)
           // and make sure that this FID column is not exposed as a regular OGR field (shouldn't happen normally)
+          const QString ogrFidColumnName { OGR_L_GetFIDColumn( hLayer ) };
           firstFieldIsFid = !( EQUAL( OGR_L_GetFIDColumn( hLayer ), "" ) ) &&
-                            OGR_FD_GetFieldIndex( OGR_L_GetLayerDefn( hLayer ), OGR_L_GetFIDColumn( hLayer ) ) < 0 &&
-                            fields.indexFromName( OGR_L_GetFIDColumn( hLayer ) ) < 0;
-
+                            OGR_FD_GetFieldIndex( OGR_L_GetLayerDefn( hLayer ), ogrFidColumnName.toUtf8() ) < 0 &&
+                            fields.indexFromName( ogrFidColumnName.toUtf8() ) < 0;
+          // At this point we must check if there is a real FID field in the the fields argument,
+          // because in that case we don't want to shift all fields (see issue GH #34333)
+          // Check for unique values should be performed in client code.
+          for ( const auto &f : qgis::as_const( fields ) )
+          {
+            if ( f.name().compare( ogrFidColumnName, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+            {
+              fidColumnIsField = true;
+              break;
+            }
+          }
         }
       }
     }
 
+    const bool shiftColumnsByOne { firstFieldIsFid &&( ! fidColumnIsField ) };
+
     for ( QMap<int, int>::const_iterator attrIt = attrIdxMap.constBegin(); attrIt != attrIdxMap.constEnd(); ++attrIt )
     {
-      oldToNewAttrIdxMap->insert( attrIt.key(), *attrIt + ( firstFieldIsFid ? 1 : 0 ) );
+      oldToNewAttrIdxMap->insert( attrIt.key(), *attrIt + ( shiftColumnsByOne ? 1 : 0 ) );
     }
   }
 
