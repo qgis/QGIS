@@ -719,9 +719,7 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
 
     def testFilterSimpleMultiGeom(self):
         """
-        Check that we load separatly
-        simple and multi geometry stored
-        is a same table
+        Check that we load separately simple and multi geometry stored is a same table
         https://github.com/qgis/QGIS/issues/32521
         """
         vl = QgsVectorLayer(
