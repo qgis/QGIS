@@ -497,12 +497,6 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     options = nullptr;
   }
 
-  QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() )
-  {
-    CPLSetConfigOption( "SHAPE_ENCODING", nullptr );
-  }
-
   if ( srs.isValid() )
   {
     if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
