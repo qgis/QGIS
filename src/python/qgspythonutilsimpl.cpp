@@ -306,7 +306,7 @@ QString QgsPythonUtilsImpl::runStringUnsafe( const QString &command, bool single
   // (non-unicode strings can be mangled)
   PyObject *obj = PyRun_String( command.toUtf8().constData(), single ? Py_single_input : Py_file_input, mMainDict, mMainDict );
   PyObject *errobj = PyErr_Occurred();
-  if(nullptr != errobj)
+  if ( nullptr != errobj )
   {
     ret = getTraceback();
   }
