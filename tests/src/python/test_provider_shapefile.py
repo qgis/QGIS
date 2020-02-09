@@ -713,7 +713,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
 
     def testMalformedSubsetStrings(self):
-        """Test that invalid where clauses allways return false"""
+        """Test that invalid where clauses always return false"""
 
         testPath = TEST_DATA_DIR + '/' + 'lines.shp'
 
@@ -723,12 +723,12 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.setSubsetString('"Name" = \'Arterial\''))
         self.assertTrue(vl.setSubsetString('select * from lines where "Name" = \'Arterial\''))
         self.assertFalse(vl.setSubsetString('this is invalid sql'))
-        self.assertFalse(vl.setSubsetString('select * from lines where "NonExistantField" = \'someValue\''))
+        self.assertFalse(vl.setSubsetString('select * from lines where "NonExistentField" = \'someValue\''))
         self.assertFalse(vl.setSubsetString('select * from lines where "Name" = \'Arte...'))
         self.assertFalse(vl.setSubsetString('select * from lines where "Name" in (\'Arterial\', \'Highway\' '))
-        self.assertFalse(vl.setSubsetString('select * from NonExistingTable'))
-        self.assertFalse(vl.setSubsetString('select NonExistingField from lines'))
-        self.assertFalse(vl.setSubsetString('"NonExistantField" = \'someValue\''))
+        self.assertFalse(vl.setSubsetString('select * from NonExistentTable'))
+        self.assertFalse(vl.setSubsetString('select NonExistentField from lines'))
+        self.assertFalse(vl.setSubsetString('"NonExistentField" = \'someValue\''))
         self.assertFalse(vl.setSubsetString('"Name" = \'Arte...'))
         self.assertFalse(vl.setSubsetString('"Name" in (\'Arterial\', \'Highway\' '))
         self.assertTrue(vl.setSubsetString(''))
