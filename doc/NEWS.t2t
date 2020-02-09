@@ -10,7 +10,7 @@ Change history for the QGIS Project
 %! PostProc(html): '(?i)(</pre>)' '\1</div>'
 % Next line will replace tabs with 2 spaces in txt generated outputs
 %! PostProc(txt): '(?i)(\t)' '  '
-%! encoding: iso-8859-1
+%! encoding: utf-8
 %
 % These are comments and will not be generated in any output
 % -------------------
