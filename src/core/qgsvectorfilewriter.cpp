@@ -534,12 +534,6 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     options = nullptr;
   }
 
-  QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "qgis/ignoreShapeEncoding" ), true ).toBool() )
-  {
-    CPLSetConfigOption( "SHAPE_ENCODING", nullptr );
-  }
-
 #if PROJ_VERSION_MAJOR<6
   if ( srs.isValid() )
   {
