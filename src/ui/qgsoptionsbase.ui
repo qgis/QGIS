@@ -1995,14 +1995,67 @@
                  <property name="title">
                   <string>Data source handling</string>
                  </property>
-                 <layout class="QGridLayout" name="gridLayout_23" columnstretch="0,2,1,0">
+                 <layout class="QGridLayout" name="gridLayout_23" columnstretch="0,0,0,0">
                   <item row="0" column="2">
                    <widget class="QComboBox" name="cmbScanItemsInBrowser"/>
+                  </item>
+                  <item row="2" column="2">
+                   <widget class="QComboBox" name="cmbPromptRasterSublayers">
+                    <item>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <spacer name="horizontalSpacer_3">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label_29">
                     <property name="text">
                      <string>Scan for contents of compressed files (.zip) in browser dock</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="0" colspan="4">
+                   <widget class="QCheckBox" name="cbxEvaluateDefaultValues">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When digitizing a new feature, default values are retrieved from the database. With this option turned on, the default values will be evaluated at the time of digitizing. With this option turned off, the default values will be evaluated at the time of saving.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="text">
+                     <string>Evaluate default values</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QComboBox" name="cmbScanZipInBrowser">
+                    <property name="currentIndex">
+                     <number>-1</number>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_30">
+                    <property name="text">
+                     <string>Scan for valid items in the browser dock</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0" colspan="4">
+                   <widget class="QCheckBox" name="cbxCompileExpressions">
+                    <property name="text">
+                     <string>Execute expressions on server-side if possible</string>
                     </property>
                    </widget>
                   </item>
@@ -2018,69 +2071,6 @@
                      <string>Prompt for raster sublayers when opening</string>
                     </property>
                    </widget>
-                  </item>
-                  <item row="6" column="0" colspan="4">
-                   <widget class="QCheckBox" name="cbxCompileExpressions">
-                    <property name="text">
-                     <string>Execute expressions on server-side if possible</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="3" column="0" colspan="4">
-                   <widget class="QCheckBox" name="cbxIgnoreShapeEncoding">
-                    <property name="toolTip">
-                     <string>Disable OGR on-the-fly conversion from declared encoding to UTF-8</string>
-                    </property>
-                    <property name="text">
-                     <string>Ignore shapefile encoding declaration</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="2">
-                   <widget class="QComboBox" name="cmbScanZipInBrowser">
-                    <property name="currentIndex">
-                     <number>-1</number>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="7" column="0" colspan="4">
-                   <widget class="QCheckBox" name="cbxEvaluateDefaultValues">
-                    <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When digitizing a new feature, default values are retrieved from the database. With this option turned on, the default values will be evaluated at the time of digitizing. With this option turned off, the default values will be evaluated at the time of saving.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                    <property name="text">
-                     <string>Evaluate default values</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="2">
-                   <widget class="QComboBox" name="cmbPromptRasterSublayers">
-                    <item>
-                     <property name="text">
-                      <string/>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_30">
-                    <property name="text">
-                     <string>Scan for valid items in the browser dock</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <spacer name="horizontalSpacer_3">
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>40</width>
-                      <height>20</height>
-                     </size>
-                    </property>
-                   </spacer>
                   </item>
                  </layout>
                 </widget>
@@ -5767,7 +5757,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>cmbScanItemsInBrowser</tabstop>
   <tabstop>cmbScanZipInBrowser</tabstop>
   <tabstop>cmbPromptRasterSublayers</tabstop>
-  <tabstop>cbxIgnoreShapeEncoding</tabstop>
   <tabstop>cbxCompileExpressions</tabstop>
   <tabstop>cbxEvaluateDefaultValues</tabstop>
   <tabstop>mBtnRemoveHiddenPath</tabstop>
