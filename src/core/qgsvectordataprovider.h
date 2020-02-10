@@ -404,12 +404,23 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QString capabilitiesString() const;
 
     /**
-     * Set encoding used for accessing data from layer
+     * Set encoding used for accessing data from layer.
+     *
+     * An empty encoding string indicates that the provider should automatically
+     * select the most appropriate encoding for the data source.
+     *
+     * \warning Support for setting the provider encoding depends on the underlying data
+     * provider. Check capabilities() for the QgsVectorDataProvider::SelectEncoding
+     * capability in order to determine if the provider supports this ability.
+     *
+     * \see encoding()
      */
     virtual void setEncoding( const QString &e );
 
     /**
-     * Gets encoding which is used for accessing data
+     * Returns the encoding which is used for accessing data.
+     *
+     * \see setEncoding()
      */
     QString encoding() const;
 
