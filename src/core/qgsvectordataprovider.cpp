@@ -38,8 +38,6 @@
 QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options )
   : QgsDataProvider( uri, options )
 {
-  QgsSettings settings;
-  setEncoding( settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString() );
 }
 
 QString QgsVectorDataProvider::storageType() const
