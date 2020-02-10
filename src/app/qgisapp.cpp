@@ -5283,7 +5283,8 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
     if ( layer->isValid() )
     {
       userAskedToAddLayers = true;
-      layer->setProviderEncoding( enc );
+      if ( !enc.isEmpty() )
+        layer->setProviderEncoding( enc );
 
       QStringList sublayers = layer->dataProvider()->subLayers();
       QgsDebugMsg( QStringLiteral( "got valid layer with %1 sublayers" ).arg( sublayers.count() ) );
@@ -5513,7 +5514,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
     }
     else if ( layerItem->providerKey() == QLatin1String( "ogr" ) )
     {
-      if ( addVectorLayers( QStringList( item->path() ), QStringLiteral( "System" ), QStringLiteral( "file" ) ) )
+      if ( addVectorLayers( QStringList( item->path() ), QString(), QStringLiteral( "file" ) ) )
         ok = true;
     }
   }
@@ -7062,7 +7063,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   {
     if ( allowInteractive )
     {
-      ok = ok || addVectorLayersPrivate( QStringList( fileName ), QStringLiteral( "System" ), QStringLiteral( "file" ), false );
+      ok = ok || addVectorLayersPrivate( QStringList( fileName ), QString(), QStringLiteral( "file" ), false );
     }
     else
     {
