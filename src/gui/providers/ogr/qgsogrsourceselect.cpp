@@ -67,18 +67,8 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   //set encoding
   cmbEncodings->addItems( QgsVectorDataProvider::availableEncodings() );
 
-  QgsSettings settings;
-  QString enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
-
-  // The specified decoding is added if not existing already, and then set current.
-  // This should select it.
-  int encindex = cmbEncodings->findText( enc );
-  if ( encindex < 0 )
-  {
-    cmbEncodings->insertItem( 0, enc );
-    encindex = 0;
-  }
-  cmbEncodings->setCurrentIndex( encindex );
+  cmbEncodings->insertItem( 0, tr( "Automatic" ), QString() );
+  cmbEncodings->setCurrentIndex( 0 );
 
   //add database drivers
   mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
@@ -155,7 +145,7 @@ QStringList QgsOgrSourceSelect::dataSources()
 
 QString QgsOgrSourceSelect::encoding()
 {
-  return cmbEncodings->currentText();
+  return cmbEncodings->currentData().isValid() ? cmbEncodings->currentData().toString() : cmbEncodings->currentText();
 }
 
 QString QgsOgrSourceSelect::dataSourceType()
@@ -434,9 +424,6 @@ void QgsOgrSourceSelect::addButtonClicked()
 
     mDataSources << mVectorPath;
   }
-
-  // Save the used encoding
-  settings.setValue( QStringLiteral( "UI/encoding" ), encoding() );
 
   if ( ! mDataSources.isEmpty() )
   {
