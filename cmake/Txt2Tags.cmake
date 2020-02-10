@@ -42,7 +42,7 @@ MACRO(ADD_TXT2TAGS_FILES _sources)
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_out}
       COMMAND ${TXT2TAGS_EXECUTABLE}
-      ARGS -o${_out} -t txt ${_in}.tmp
+      ARGS -o${_out} -t txt ${_in}
       DEPENDS ${_in}
       COMMENT "Building ${_out} from ${_in}"
       )
@@ -50,7 +50,7 @@ MACRO(ADD_TXT2TAGS_FILES _sources)
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_out}.html
       COMMAND ${TXT2TAGS_EXECUTABLE}
-      ARGS -o${_out}.html -t html ${_in}.tmp
+      ARGS -o${_out}.html -t html ${_in}
       DEPENDS ${_in}
       COMMENT "Building ${_out}.html from ${_in}"
       )
