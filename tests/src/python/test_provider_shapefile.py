@@ -625,6 +625,37 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             # force close of data provider
             vl.setDataSource('', 'test', 'ogr')
 
+    def testEncoding(self):
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'iso-8859-1.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'iso-8859-1_ldid.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'latin1.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'utf8.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'UTF-8')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252_ldid.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
+
     def testCreateAttributeIndex(self):
         tmpdir = tempfile.mkdtemp()
         self.dirs_to_cleanup.append(tmpdir)

@@ -285,6 +285,14 @@ class CORE_EXPORT QgsOgrUtils
      * \since QGIS 3.10.1
      */
     static QgsCoordinateReferenceSystem OGRSpatialReferenceToCrs( OGRSpatialReferenceH srs );
+
+    /**
+     * Reads the encoding of the shapefile at the specified \a path (where \a path is the
+     * location of the ".shp" file).
+     *
+     * \since QGIS 3.12
+     */
+    static QString readShapefileEncoding( const QString &path );
 };
 
 #endif // QGSOGRUTILS_H
