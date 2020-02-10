@@ -1010,8 +1010,10 @@ QStringList QgsOgrProvider::_subLayers( bool withFeatureCount )  const
 void QgsOgrProvider::setEncoding( const QString &e )
 {
   QgsSettings settings;
-  if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) ||
-       ( mOgrLayer && !mOgrLayer->TestCapability( OLCStringsAsUTF8 ) ) )
+
+  // if the layer has the OLCStringsAsUTF8 capability, we CANNOT override the
+  // encoding on the QGIS side!
+  if ( mOgrLayer && !mOgrLayer->TestCapability( OLCStringsAsUTF8 ) )
   {
     QgsVectorDataProvider::setEncoding( e );
   }
