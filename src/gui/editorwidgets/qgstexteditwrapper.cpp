@@ -258,7 +258,7 @@ void QgsTextEditWrapper::setEnabled( bool enabled )
       mLineEdit->setPalette( mReadOnlyPalette );
       // removing frame + setting transparent background to distinguish the readonly lineEdit from a normal one
       // did not get this working via the Palette:
-      mLineEdit->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 75%);" ) );
+      mLineEdit->setStyleSheet( QStringLiteral( "QLineEdit { background-color: rgba(255, 255, 255, 75%); }" ) );
     }
     mLineEdit->setFrame( enabled );
   }
