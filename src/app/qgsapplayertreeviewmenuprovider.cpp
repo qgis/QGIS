@@ -291,7 +291,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           {
             if ( target == QgsMapLayerAction::Target::SingleFeature )
             {
-              actionMenu->addAction( action->text(), action, [ = ]() {action->triggerForFeature( vlayer,  QgsFeature( vlayer->selectedFeatures().at( 0 ) ) );} );
+              actionMenu->addAction( action->text(), action, [ = ]() { action->triggerForFeature( vlayer,  vlayer->selectedFeatures().at( 0 ) ); } );
             }
             else if ( target == QgsMapLayerAction::Target::MultipleFeatures )
             {

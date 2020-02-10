@@ -498,7 +498,7 @@ void QgsIdentifyMenu::triggerMapLayerAction()
       {
         if ( result.mFeature.id() == actData.mFeatureId )
         {
-          actData.mMapLayerAction->triggerForFeature( actData.mLayer, QgsFeature( result.mFeature ) );
+          actData.mMapLayerAction->triggerForFeature( actData.mLayer, result.mFeature );
           return;
         }
       }
