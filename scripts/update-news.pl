@@ -61,8 +61,13 @@ close $in;
 
 copy($tempfile, "doc/news.t2t");
 
+<<<<<<< HEAD
 system "txt2tags --encoding=utf-8 -odoc/news.html -t html doc/news.t2t";
 system "txt2tags --encoding=utf-8 -oNEWS -t txt doc/news.t2t";
+=======
+system "txt2tags -odoc/NEWS.html -t html doc/NEWS.t2t";
+system "txt2tags -oNEWS -t txt doc/NEWS.t2t";
+>>>>>>> 58f1206748... Fix build with txt2tags >= 3.5
 
 =head1 NAME
 

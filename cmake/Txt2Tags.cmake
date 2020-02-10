@@ -42,7 +42,11 @@ MACRO(ADD_TXT2TAGS_FILES _sources)
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_out}
       COMMAND ${TXT2TAGS_EXECUTABLE}
+<<<<<<< HEAD
       ARGS --encoding=utf-8 -o${_out} -t txt ${_in}
+=======
+      ARGS -o${_out} -t txt ${_in}.tmp
+>>>>>>> 58f1206748... Fix build with txt2tags >= 3.5
       DEPENDS ${_in}
       COMMENT "Building ${_out} from ${_in}"
       )
@@ -50,7 +54,11 @@ MACRO(ADD_TXT2TAGS_FILES _sources)
     ADD_CUSTOM_COMMAND(
       OUTPUT ${_out}.html
       COMMAND ${TXT2TAGS_EXECUTABLE}
+<<<<<<< HEAD
       ARGS --encoding=utf-8 -o${_out}.html -t html ${_in}
+=======
+      ARGS -o${_out}.html -t html ${_in}.tmp
+>>>>>>> 58f1206748... Fix build with txt2tags >= 3.5
       DEPENDS ${_in}
       COMMENT "Building ${_out}.html from ${_in}"
       )
