@@ -630,31 +630,48 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         vl = QgsVectorLayer(file_path)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
 
         file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'iso-8859-1_ldid.shp')
         vl = QgsVectorLayer(file_path)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
 
         file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'latin1.shp')
         vl = QgsVectorLayer(file_path)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
 
         file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'utf8.shp')
         vl = QgsVectorLayer(file_path)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.dataProvider().encoding(), 'UTF-8')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
 
         file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252.shp')
         vl = QgsVectorLayer(file_path)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
 
         file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252_ldid.shp')
         vl = QgsVectorLayer(file_path)
         self.assertTrue(vl.isValid())
         self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'system_encoding.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        # no encoding hints, so it should default to UTF-8 (which is wrong for this particular file, but the correct guess to make first!)
+        self.assertEqual(vl.dataProvider().encoding(), 'UTF-8')
+        self.assertNotEqual(next(vl.getFeatures())[1], 'äöü')
+        # set to correct encoding
+        vl.dataProvider().setEncoding('ISO-8859-1')
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
 
     def testCreateAttributeIndex(self):
         tmpdir = tempfile.mkdtemp()
