@@ -582,7 +582,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorDataProvider *dataProvider() FINAL;
     const QgsVectorDataProvider *dataProvider() const FINAL SIP_SKIP;
 
-    //! Sets the textencoding of the data provider
+    /**
+     * Sets the text \a encoding of the data provider.
+     *
+     * An empty \a encoding string indicates that the provider should automatically
+     * select the most appropriate encoding.
+     *
+     * \warning Support for setting the provider encoding depends on the underlying data
+     * provider. Check dataProvider().capabilities() for the QgsVectorDataProvider::SelectEncoding
+     * capability in order to determine if the provider supports this ability.
+     */
     void setProviderEncoding( const QString &encoding );
 
     //! Setup the coordinate system transformation for the layer
