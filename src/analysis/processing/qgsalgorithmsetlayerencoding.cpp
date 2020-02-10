@@ -48,7 +48,7 @@ QString QgsSetLayerEncodingAlgorithm::groupId() const
 
 QString QgsSetLayerEncodingAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm sets the encoding used for reading a layer's attributes. No permanant changes "
+  return QObject::tr( "This algorithm sets the encoding used for reading a layer's attributes. No permanent changes "
                       "are made to the layer, rather it affects only how the layer is read during the current session.\n\n"
                       "Changing the encoding is only supported for some vector layer data sources." );
 }
