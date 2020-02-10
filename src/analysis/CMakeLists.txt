@@ -131,11 +131,13 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsegmentize.cpp
   processing/qgsalgorithmserviceareafromlayer.cpp
   processing/qgsalgorithmserviceareafrompoint.cpp
+  processing/qgsalgorithmsetlayerencoding.cpp
   processing/qgsalgorithmsetmvalue.cpp
   processing/qgsalgorithmsetzvalue.cpp
   processing/qgsalgorithmshortestpathlayertopoint.cpp
   processing/qgsalgorithmshortestpathpointtolayer.cpp
   processing/qgsalgorithmshortestpathpointtopoint.cpp
+  processing/qgsalgorithmshpencodinginfo.cpp
   processing/qgsalgorithmsimplify.cpp
   processing/qgsalgorithmsinglesidedbuffer.cpp
   processing/qgsalgorithmslope.cpp
