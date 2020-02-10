@@ -1479,7 +1479,7 @@ void QgsIdentifyResultsDialog::doMapLayerAction( QTreeWidgetItem *item, QgsMapLa
     return;
 
   int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
-  action->triggerForFeature( layer, &mFeatures[ featIdx ] );
+  action->triggerForFeature( layer, QgsFeature( mFeatures[ featIdx ] ) );
 }
 
 QTreeWidgetItem *QgsIdentifyResultsDialog::featureItem( QTreeWidgetItem *item )
@@ -2186,7 +2186,7 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
 
 void QgsIdentifyResultsDialogMapLayerAction::execute()
 {
-  mAction->triggerForFeature( mLayer, mFeature );
+  mAction->triggerForFeature( mLayer, QgsFeature( *mFeature ) );
 }
 
 void QgsIdentifyResultsDialog::showHelp()

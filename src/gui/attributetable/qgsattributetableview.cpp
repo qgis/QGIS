@@ -449,7 +449,7 @@ void QgsAttributeTableView::actionTriggered()
     QgsMapLayerAction *layerAction = qobject_cast<QgsMapLayerAction *>( object );
     if ( layerAction )
     {
-      layerAction->triggerForFeature( mFilterModel->layer(), &f );
+      layerAction->triggerForFeature( mFilterModel->layer(), QgsFeature( f ) );
     }
   }
 }
