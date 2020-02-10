@@ -751,6 +751,15 @@ QgsCoordinateReferenceSystem QgsOgrUtils::OGRSpatialReferenceToCrs( OGRSpatialRe
 
 QString QgsOgrUtils::readShapefileEncoding( const QString &path )
 {
+  const QString cpgEncoding = readShapefileEncodingFromCpg( path );
+  if ( !cpgEncoding.isEmpty() )
+    return cpgEncoding;
+
+  return readShapefileEncodingFromLdid( path );
+}
+
+QString QgsOgrUtils::readShapefileEncodingFromCpg( const QString &path )
+{
   // unfortunately OGR's routines for calculating the shapefile encoding aren't exposed anywhere in the GDAL c api, so
   // re-implement them here...
   if ( !QFileInfo::exists( path ) )
@@ -797,6 +806,24 @@ QString QgsOgrUtils::readShapefileEncoding( const QString &path )
       }
     }
   }
+
+  return QString();
+}
+
+QString QgsOgrUtils::readShapefileEncodingFromLdid( const QString &path )
+{
+  // unfortunately OGR's routines for calculating the shapefile encoding aren't exposed anywhere in the GDAL c api, so
+  // re-implement them here...
+
+  // from OGRShapeLayer::ConvertCodePage
+  // https://github.com/OSGeo/gdal/blob/master/gdal/ogr/ogrsf_frmts/shape/ogrshapelayer.cpp#L342
+
+  if ( !QFileInfo::exists( path ) )
+    return QString();
+
+  // first try to read cpg file, if present
+  const QFileInfo fi( path );
+  const QString baseName = fi.completeBaseName();
 
   // fallback to LDID value, read from DBF file
   const QString dbfPath = fi.dir().filePath( QStringLiteral( "%1.%2" ).arg( baseName, fi.suffix() == QLatin1String( "SHP" ) ? QStringLiteral( "DBF" ) : QStringLiteral( "dbf" ) ) );
