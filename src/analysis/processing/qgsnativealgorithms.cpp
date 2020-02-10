@@ -125,11 +125,13 @@
 #include "qgsalgorithmsegmentize.h"
 #include "qgsalgorithmserviceareafromlayer.h"
 #include "qgsalgorithmserviceareafrompoint.h"
+#include "qgsalgorithmsetlayerencoding.h"
 #include "qgsalgorithmsetmvalue.h"
 #include "qgsalgorithmsetzvalue.h"
 #include "qgsalgorithmshortestpathlayertopoint.h"
 #include "qgsalgorithmshortestpathpointtolayer.h"
 #include "qgsalgorithmshortestpathpointtopoint.h"
+#include "qgsalgorithmshpencodinginfo.h"
 #include "qgsalgorithmsimplify.h"
 #include "qgsalgorithmsinglesidedbuffer.h"
 #include "qgsalgorithmslope.h"
@@ -325,8 +327,10 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSelectByLocationAlgorithm() );
   addAlgorithm( new QgsServiceAreaFromLayerAlgorithm() );
   addAlgorithm( new QgsServiceAreaFromPointAlgorithm() );
+  addAlgorithm( new QgsSetLayerEncodingAlgorithm() );
   addAlgorithm( new QgsSetMValueAlgorithm() );
   addAlgorithm( new QgsSetZValueAlgorithm() );
+  addAlgorithm( new QgsShapefileEncodingInfoAlgorithm() );
   addAlgorithm( new QgsShortestPathLayerToPointAlgorithm() );
   addAlgorithm( new QgsShortestPathPointToLayerAlgorithm() );
   addAlgorithm( new QgsShortestPathPointToPointAlgorithm() );

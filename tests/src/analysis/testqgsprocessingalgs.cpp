@@ -103,6 +103,8 @@ class TestQgsProcessingAlgs: public QObject
     void renameField();
 
     void compareDatasets();
+    void shapefileEncoding();
+    void setLayerEncoding();
 
   private:
 
@@ -2050,6 +2052,76 @@ void TestQgsProcessingAlgs::compareDatasets()
   QCOMPARE( results.value( QStringLiteral( "UNCHANGED_COUNT" ) ).toLongLong(), 4LL );
   QCOMPARE( results.value( QStringLiteral( "ADDED_COUNT" ) ).toLongLong(), 2LL );
   QCOMPARE( results.value( QStringLiteral( "DELETED_COUNT" ) ).toLongLong(), 1LL );
+
+}
+
+void TestQgsProcessingAlgs::shapefileEncoding()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:shpencodinginfo" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QString() );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( TEST_DATA_DIR ) + "/shapefile/iso-8859-1.shp" );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( QStringLiteral( "ENCODING" ) ).toString(), QStringLiteral( "ISO-8859-1" ) );
+  QCOMPARE( results.value( QStringLiteral( "CPG_ENCODING" ) ).toString(), QStringLiteral( "ISO-8859-1" ) );
+  QCOMPARE( results.value( QStringLiteral( "LDID_ENCODING" ) ).toString(), QString() );
+
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( TEST_DATA_DIR ) + "/shapefile/windows-1252_ldid.shp" );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( QStringLiteral( "ENCODING" ) ).toString(), QStringLiteral( "CP1252" ) );
+  QCOMPARE( results.value( QStringLiteral( "CPG_ENCODING" ) ).toString(), QString() );
+  QCOMPARE( results.value( QStringLiteral( "LDID_ENCODING" ) ).toString(), QStringLiteral( "CP1252" ) );
+
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( TEST_DATA_DIR ) + "/shapefile/system_encoding.shp" );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( results.value( QStringLiteral( "ENCODING" ) ).toString(), QString() );
+  QCOMPARE( results.value( QStringLiteral( "CPG_ENCODING" ) ).toString(), QString() );
+  QCOMPARE( results.value( QStringLiteral( "LDID_ENCODING" ) ).toString(), QString() );
+}
+
+void TestQgsProcessingAlgs::setLayerEncoding()
+{
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( TEST_DATA_DIR ) + "/shapefile/system_encoding.shp",
+      QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
+  QVERIFY( vl->isValid() );
+  QgsProject p;
+  p.addMapLayers(
+    QList<QgsMapLayer *>() << vl );
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:setlayerencoding" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QString() );
+
+  bool ok = false;
+  QgsProcessingFeedback feedback;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  parameters.insert( QStringLiteral( "INPUT" ), vl->id() );
+  parameters.insert( QStringLiteral( "ENCODING" ), QStringLiteral( "ISO-8859-1" ) );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( vl->dataProvider()->encoding(), QStringLiteral( "ISO-8859-1" ) );
 
 }
 
