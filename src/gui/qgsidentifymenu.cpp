@@ -279,15 +279,14 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     }
   }
 
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  QgsExpression exp( layer->displayExpression() );
+  exp.prepare( &context );
+  context.setFeature( results[0].mFeature );
   // use a menu only if actions will be listed
   if ( !createMenu )
   {
     // case 1
-
-    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-    QgsExpression exp( layer->displayExpression() );
-    exp.prepare( &context );
-    context.setFeature( results[0].mFeature );
     QString featureTitle = exp.evaluate( &context ).toString();
     if ( featureTitle.isEmpty() )
       featureTitle = QStringLiteral( "%1" ).arg( results[0].mFeature.id() );
@@ -310,10 +309,6 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
       // case 2b
       else
       {
-        QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-        QgsExpression exp( layer->displayExpression() );
-        exp.prepare( &context );
-        context.setFeature( results[0].mFeature );
         QString featureTitle = exp.evaluate( &context ).toString();
         if ( featureTitle.isEmpty() )
           featureTitle = QStringLiteral( "%1" ).arg( results[0].mFeature.id() );
@@ -374,9 +369,6 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     }
 
     // feature title
-    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-    QgsExpression exp( layer->displayExpression() );
-    exp.prepare( &context );
     context.setFeature( result.mFeature );
     QString featureTitle = exp.evaluate( &context ).toString();
     if ( featureTitle.isEmpty() )
