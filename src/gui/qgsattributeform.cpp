@@ -1812,6 +1812,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
   {
     case QgsAttributeEditorElement::AeTypeField:
     {
+
       const QgsAttributeEditorField *fieldDef = dynamic_cast<const QgsAttributeEditorField *>( widgetDef );
       if ( !fieldDef )
         break;
@@ -1847,16 +1848,17 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
     case QgsAttributeEditorElement::AeTypeRelation:
     {
+
       const QgsAttributeEditorRelation *relDef = static_cast<const QgsAttributeEditorRelation *>( widgetDef );
 
       QgsRelationWidgetWrapper *rww = setupRelationWidgetWrapper( relDef->relation(), context );
 
+      QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
+      formWidget->createSearchWidgetWrappers( mContext );
+
       rww->setShowLabel( relDef->showLabel() );
       rww->setShowLinkButton( relDef->showLinkButton() );
       rww->setShowUnlinkButton( relDef->showUnlinkButton() );
-
-      QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
-      formWidget->createSearchWidgetWrappers( mContext );
 
       mWidgets.append( rww );
       mFormWidgets.append( formWidget );
@@ -2030,7 +2032,6 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
   }
 
   newWidgetInfo.showLabel = widgetDef->showLabel();
-
   return newWidgetInfo;
 }
 

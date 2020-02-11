@@ -229,7 +229,9 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
   connect( mRelation.referencingLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
 
   if ( mShowLabel )
+  {
     setTitle( relation.name() );
+  }
 
   QgsVectorLayer *lyr = relation.referencingLayer();
 
@@ -337,7 +339,14 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
     connect( mNmRelation.referencedLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
   }
 
-  setTitle( relation.name() );
+  if ( mShowLabel )
+  {
+    setTitle( relation.name() );
+  }
+  else
+  {
+    setTitle( QString() );
+  }
 
   QgsVectorLayer *lyr = relation.referencingLayer();
 
@@ -907,7 +916,9 @@ void QgsRelationEditorWidget::setShowLabel( bool showLabel )
   mShowLabel = showLabel;
 
   if ( mShowLabel && mRelation.isValid() )
+  {
     setTitle( mRelation.name() );
+  }
   else
     setTitle( QString() );
 }
