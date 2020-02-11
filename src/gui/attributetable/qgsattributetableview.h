@@ -58,9 +58,9 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
     /**
      * \brief setFeatureSelectionManager
-     * \param featureSelectionManager We will take ownership
+     * \param featureSelectionManager
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 
     /**
      * This event filter is installed on the verticalHeader to intercept mouse press and release
@@ -181,6 +181,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void selectRow( int row, bool anchor );
     QgsAttributeTableFilterModel *mFilterModel = nullptr;
     QgsFeatureSelectionModel *mFeatureSelectionModel = nullptr;
+    QgsIFeatureSelectionManager *mOwnedFeatureSelectionManager = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsAttributeTableDelegate *mTableDelegate = nullptr;
     QMenu *mActionPopup = nullptr;
