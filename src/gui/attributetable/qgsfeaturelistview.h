@@ -239,6 +239,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QgsFeatureListModel *mModel = nullptr;
     QItemSelectionModel *mCurrentEditSelectionModel = nullptr;
     QgsFeatureSelectionModel *mFeatureSelectionModel = nullptr;
+    QgsIFeatureSelectionManager *mOwnedFeatureSelectionManager = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsFeatureListViewDelegate *mItemDelegate = nullptr;
     bool mEditSelectionDrag = false; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing //!< TODO

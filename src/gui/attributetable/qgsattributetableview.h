@@ -181,6 +181,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void selectRow( int row, bool anchor );
     QgsAttributeTableFilterModel *mFilterModel = nullptr;
     QgsFeatureSelectionModel *mFeatureSelectionModel = nullptr;
+    QgsIFeatureSelectionManager *mOwnedFeatureSelectionManager = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsAttributeTableDelegate *mTableDelegate = nullptr;
     QMenu *mActionPopup = nullptr;
