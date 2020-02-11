@@ -32,11 +32,11 @@ Constructor for QgsAttributeTableView
 
     virtual void setModel( QgsAttributeTableFilterModel *filterModel );
 
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 %Docstring
 setFeatureSelectionManager
 
-:param featureSelectionManager: We will take ownership
+:param featureSelectionManager:
 %End
 
     virtual bool eventFilter( QObject *object, QEvent *event );

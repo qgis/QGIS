@@ -148,7 +148,8 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel *filterModel 
   {
     if ( !mFeatureSelectionManager )
     {
-      mFeatureSelectionManager = new QgsVectorLayerSelectionManager( mFilterModel->layer(), mFilterModel );
+      mOwnedFeatureSelectionManager =  new QgsVectorLayerSelectionManager( mFilterModel->layer(), this );
+      mFeatureSelectionManager = mOwnedFeatureSelectionManager;
     }
 
     mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, mFeatureSelectionManager, mFilterModel );
@@ -167,12 +168,17 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel *filterModel 
 
 void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager )
 {
-  delete mFeatureSelectionManager;
-
   mFeatureSelectionManager = featureSelectionManager;
 
   if ( mFeatureSelectionModel )
     mFeatureSelectionModel->setFeatureSelectionManager( mFeatureSelectionManager );
+
+  // only delete the owner selection manager and not one created from outside
+  if ( mOwnedFeatureSelectionManager )
+  {
+    mOwnedFeatureSelectionManager->deleteLater();
+    mOwnedFeatureSelectionManager = nullptr;
+  }
 }
 
 QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
