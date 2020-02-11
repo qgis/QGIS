@@ -278,11 +278,19 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     }
   }
 
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  QgsExpression exp( layer->displayExpression() );
+  exp.prepare( &context );
+  context.setFeature( results[0].mFeature );
   // use a menu only if actions will be listed
   if ( !createMenu )
   {
     // case 1
+<<<<<<< HEAD
     QString featureTitle = results[0].mFeature.attribute( layer->displayField() ).toString();
+=======
+    QString featureTitle = exp.evaluate( &context ).toString();
+>>>>>>> 71f851bc73... avoid code duplication
     if ( featureTitle.isEmpty() )
       featureTitle = QStringLiteral( "%1" ).arg( results[0].mFeature.id() );
     layerAction = new QAction( QStringLiteral( "%1 (%2)" ).arg( layer->name(), featureTitle ), this );
@@ -304,7 +312,11 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
       // case 2b
       else
       {
+<<<<<<< HEAD
         QString featureTitle = results[0].mFeature.attribute( layer->displayField() ).toString();
+=======
+        QString featureTitle = exp.evaluate( &context ).toString();
+>>>>>>> 71f851bc73... avoid code duplication
         if ( featureTitle.isEmpty() )
           featureTitle = QStringLiteral( "%1" ).arg( results[0].mFeature.id() );
         layerMenu = new QMenu( QStringLiteral( "%1 (%2)" ).arg( layer->name(), featureTitle ), this );
@@ -364,7 +376,12 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     }
 
     // feature title
+<<<<<<< HEAD
     QString featureTitle = result.mFeature.attribute( layer->displayField() ).toString();
+=======
+    context.setFeature( result.mFeature );
+    QString featureTitle = exp.evaluate( &context ).toString();
+>>>>>>> 71f851bc73... avoid code duplication
     if ( featureTitle.isEmpty() )
       featureTitle = QStringLiteral( "%1" ).arg( result.mFeature.id() );
 
