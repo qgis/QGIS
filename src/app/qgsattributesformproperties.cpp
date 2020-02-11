@@ -821,14 +821,14 @@ void QgsAttributesFormProperties::apply()
 
   editFormConfig.setUiForm( mEditFormLineEdit->text() );
 
-  editFormConfig.setLayout( ( QgsEditFormConfig::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
+  editFormConfig.setLayout( static_cast<QgsEditFormConfig::EditorLayout>( mEditorLayoutComboBox->currentIndex() ) );
 
   editFormConfig.setInitCodeSource( mInitCodeSource );
   editFormConfig.setInitFunction( mInitFunction );
   editFormConfig.setInitFilePath( mInitFilePath );
   editFormConfig.setInitCode( mInitCode );
 
-  editFormConfig.setSuppress( ( QgsEditFormConfig::FeatureFormSuppress )mFormSuppressCmbBx->currentIndex() );
+  editFormConfig.setSuppress( static_cast<QgsEditFormConfig::FeatureFormSuppress>( mFormSuppressCmbBx->currentIndex() ) );
 
   // relations
   QTreeWidgetItem *relationContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 1 );
@@ -1104,7 +1104,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
     case QgsAttributesFormProperties::DnDTreeItemData::Container:
     {
       QDialog dlg;
-      dlg.setObjectName( QLatin1Literal( "attributeFormPropertiesContainerDialog" ) );
+      dlg.setObjectName( QLatin1String( "attributeFormPropertiesContainerDialog" ) );
       dlg.setWindowTitle( tr( "Configure Container" ) );
       QFormLayout *layout = new QFormLayout() ;
       dlg.setLayout( layout );
@@ -1138,7 +1138,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       }
 
       QgsCollapsibleGroupBox *styleGroupBox = new QgsCollapsibleGroupBox( tr( "Style" ), layout->widget() );
-      styleGroupBox->setObjectName( QLatin1Literal( "attributeFormPropertiesContainerStyle" ) );
+      styleGroupBox->setObjectName( QLatin1String( "attributeFormPropertiesContainerStyle" ) );
       QFormLayout *customizeGroupBoxLayout = new QFormLayout( styleGroupBox ) ;
       QgsColorButton *backgroundColorButton = new QgsColorButton( styleGroupBox, tr( "Container Background Color" ) );
       backgroundColorButton->setShowNull( true );
@@ -1517,7 +1517,7 @@ void DnDTree::selectFirstMatchingItem( const QgsAttributesFormProperties::DnDTre
 
 QDataStream &operator<<( QDataStream &stream, const QgsAttributesFormProperties::DnDTreeItemData &data )
 {
-  stream << ( quint32 )data.type() << data.name() << data.displayName();
+  stream << static_cast<quint32>( data.type() ) << data.name() << data.displayName();
   return stream;
 }
 
@@ -1529,7 +1529,7 @@ QDataStream &operator>>( QDataStream &stream, QgsAttributesFormProperties::DnDTr
 
   stream >> type >> name >> displayName;
 
-  data.setType( ( QgsAttributesFormProperties::DnDTreeItemData::Type )type );
+  data.setType( static_cast<QgsAttributesFormProperties::DnDTreeItemData::Type>( type ) );
   data.setName( name );
   data.setDisplayName( displayName );
 
