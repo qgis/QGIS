@@ -4006,7 +4006,6 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   char *errMsg = nullptr;
   bool toCommit = false;
   QString baseValues;
-  QString separator;
   int ia, ret;
   // SQL for single row
   QString sql;
@@ -4022,13 +4021,11 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
     QString baseSql { QStringLiteral( "INSERT INTO %1(" ).arg( QgsSqliteUtils::quotedIdentifier( mTableName ) ) };
     baseValues = QStringLiteral( ") VALUES (" );
-    separator.clear();
 
     if ( !mGeometryColumn.isEmpty() )
     {
-      baseSql += separator + QgsSqliteUtils::quotedIdentifier( mGeometryColumn );
-      baseValues += separator + geomParam();
-      separator = ',';
+      baseSql += QgsSqliteUtils::quotedIdentifier( mGeometryColumn ) + ',';
+      baseValues += geomParam() + ',';
     }
 
     for ( QgsFeatureList::iterator feature = flist.begin(); feature != flist.end(); ++feature )
@@ -4060,9 +4057,9 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           continue;
         }
 
+        const QChar separator {  i > 0 ? ',' : ' ' };
         sql += separator + QgsSqliteUtils::quotedIdentifier( fieldname );
         values += separator + '?';
-        separator = ',';
       }
 
       sql += values;
