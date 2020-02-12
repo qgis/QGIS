@@ -39,14 +39,16 @@
 #include "qgsfieldcalculator.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsaddtaborgroup.h"
-#include "qgsattributetypedialog.h"
-#include "qgsattributerelationedit.h"
 #include "qgsattributesforminitcode.h"
 #include "qgsgui.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsrelationmanager.h"
 
+
+class QgsAttributeFormContainerEdit;
+class QgsAttributeTypeDialog;
+class QgsAttributeRelationEdit;
 class DnDTree;
 
 class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAttributesFormProperties
@@ -86,9 +88,10 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         {
           Field,
           Relation,
-          Container,
+          Container, //!< Container for the form
           QmlWidget,
-          HtmlWidget
+          HtmlWidget,
+          WidgetType //!< In the widget tree, the type of widget
         };
 
         //do we need that
@@ -217,11 +220,12 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
 
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
     QgsAttributeRelationEdit *mAttributeRelationEdit = nullptr;
+    QgsAttributeFormContainerEdit *mAttributeContainerEdit = nullptr;
 
   private slots:
 
     void onInvertSelectionButtonClicked( bool checked );
-    void synchronizeDnDTrees( DnDTree *emitter, DnDTree *receiver );
+    void loadAttributeSpecificEditor( DnDTree *emitter, DnDTree *receiver );
     void onAttributeSelectionChanged();
     void onFormLayoutSelectionChanged();
 
@@ -234,6 +238,9 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
 
     void loadAttributeRelationEdit();
     void storeAttributeRelationEdit( );
+
+    void storeAttributeContainerEdit();
+    void loadAttributeContainerEdit();
 
     QgsEditFormConfig::PythonInitCodeSource mInitCodeSource = QgsEditFormConfig::CodeSourceNone;
     QString mInitFunction;
