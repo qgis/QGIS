@@ -2015,7 +2015,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
   geos_geom_clone = QgsGeos::asGeos( geom );
 
-  if ( isObstacle )
+  if ( isObstacle || ( geom.type() == QgsWkbTypes::PointGeometry && offsetType == FromSymbolBounds ) )
   {
     if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
     {
@@ -2410,7 +2410,11 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   ( *labelFeature )->setOverrunDistance( overrunDistanceEval );
   ( *labelFeature )->setOverrunSmoothDistance( overrunSmoothDist );
   ( *labelFeature )->setLabelAllParts( labelAll );
+<<<<<<< HEAD:src/core/qgspallabeling.cpp
   if ( geosObstacleGeomClone )
+=======
+  if ( geom.type() == QgsWkbTypes::PointGeometry && !obstacleGeometry.isNull() )
+>>>>>>> 1c53c7744b... Fix labels don't render when mode is set to "From Symbol Bounds" and:src/core/labeling/qgspallabeling.cpp
   {
     ( *labelFeature )->setObstacleGeometry( std::move( geosObstacleGeomClone ) );
 
