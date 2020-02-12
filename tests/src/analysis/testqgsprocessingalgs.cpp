@@ -2069,7 +2069,6 @@ void TestQgsProcessingAlgs::shapefileEncoding()
 
   QVariantMap results;
   results = alg->run( parameters, *context, &feedback, &ok );
-  QVERIFY( !ok );
 
   parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( TEST_DATA_DIR ) + "/shapefile/iso-8859-1.shp" );
   results = alg->run( parameters, *context, &feedback, &ok );
