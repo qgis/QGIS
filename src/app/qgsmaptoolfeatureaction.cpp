@@ -182,7 +182,7 @@ void QgsMapToolFeatureAction::doActionForFeature( QgsVectorLayer *layer, const Q
     QgsMapLayerAction *mapLayerAction = QgsGui::mapLayerActionRegistry()->defaultActionForLayer( layer );
     if ( mapLayerAction )
     {
-      mapLayerAction->triggerForFeature( layer, &feature );
+      mapLayerAction->triggerForFeature( layer, feature );
     }
   }
 }

@@ -93,7 +93,7 @@ void QgsActionMenu::triggerAction()
   if ( data.actionType == MapLayerAction )
   {
     QgsMapLayerAction *mapLayerAction = data.actionData.value<QgsMapLayerAction *>();
-    mapLayerAction->triggerForFeature( data.mapLayer, &mFeature );
+    mapLayerAction->triggerForFeature( data.mapLayer, mFeature );
   }
   else if ( data.actionType == AttributeAction )
   {
