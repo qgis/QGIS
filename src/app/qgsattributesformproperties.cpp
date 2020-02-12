@@ -15,6 +15,7 @@
 
 #include "qgsattributesformproperties.h"
 #include "qgsattributetypedialog.h"
+#include "qgsattributeformcontaineredit.h"
 #include "qgsattributerelationedit.h"
 #include "qgsattributesforminitcode.h"
 #include "qgisapp.h"
@@ -24,6 +25,7 @@
 #include "qgsapplication.h"
 #include "qgscolorbutton.h"
 #include "qgscodeeditorhtml.h"
+
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -95,7 +97,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
 
   //load Fields
 
-  DnDTreeItemData catItemData = DnDTreeItemData( DnDTreeItemData::Container, QStringLiteral( "Fields" ), QStringLiteral( "Fields" ) );
+  DnDTreeItemData catItemData = DnDTreeItemData( DnDTreeItemData::WidgetType, QStringLiteral( "Fields" ), QStringLiteral( "Fields" ) );
   QTreeWidgetItem *catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
   const QgsFields fields = mLayer->fields();
@@ -122,7 +124,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   catitem->setExpanded( true );
 
   //load Relations
-  catItemData = DnDTreeItemData( DnDTreeItemData::Container, QStringLiteral( "Relations" ), tr( "Relations" ) );
+  catItemData = DnDTreeItemData( DnDTreeItemData::WidgetType, QStringLiteral( "Relations" ), tr( "Relations" ) );
   catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
   const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
@@ -141,7 +143,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   catitem->setExpanded( true );
 
   // QML/HTML widget
-  catItemData = DnDTreeItemData( DnDTreeItemData::Container, QStringLiteral( "Other" ), tr( "Other Widgets" ) );
+  catItemData = DnDTreeItemData( DnDTreeItemData::WidgetType, QStringLiteral( "Other" ), tr( "Other Widgets" ) );
   catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
   DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, QStringLiteral( "QmlWidget" ), tr( "QML Widget" ) );
@@ -406,6 +408,27 @@ void QgsAttributesFormProperties::storeAttributeRelationEdit()
   }
 }
 
+void QgsAttributesFormProperties::storeAttributeContainerEdit()
+{
+  if ( !mAttributeContainerEdit )
+    return;
+
+  mAttributeContainerEdit->updateItemData();
+}
+
+void QgsAttributesFormProperties::loadAttributeContainerEdit()
+{
+  clearAttributeTypeFrame();
+
+  if ( mFormLayoutTree->selectedItems().count() != 1 )
+    return;
+
+  QTreeWidgetItem *currentItem = mFormLayoutTree->selectedItems().at( 0 );
+  mAttributeContainerEdit = new QgsAttributeFormContainerEdit( currentItem, this );
+  mAttributeTypeFrame->layout()->setMargin( 0 );
+  mAttributeTypeFrame->layout()->addWidget( mAttributeContainerEdit );
+}
+
 QgsAttributesFormProperties::RelationConfig QgsAttributesFormProperties::configForRelation( const QString &relationId )
 {
   QTreeWidgetItemIterator itemIt( mAvailableWidgetsTree );
@@ -510,7 +533,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
 void QgsAttributesFormProperties::onAttributeSelectionChanged()
 {
   disconnect( mFormLayoutTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
-  synchronizeDnDTrees( mAvailableWidgetsTree, mFormLayoutTree );
+  loadAttributeSpecificEditor( mAvailableWidgetsTree, mFormLayoutTree );
   connect( mFormLayoutTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
 }
 
@@ -518,14 +541,15 @@ void QgsAttributesFormProperties::onFormLayoutSelectionChanged()
 {
   // when the selection changes in the DnD layout, sync the main tree
   disconnect( mAvailableWidgetsTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
-  synchronizeDnDTrees( mFormLayoutTree, mAvailableWidgetsTree );
+  loadAttributeSpecificEditor( mFormLayoutTree, mAvailableWidgetsTree );
   connect( mAvailableWidgetsTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
 }
 
-void QgsAttributesFormProperties::synchronizeDnDTrees( DnDTree *emitter, DnDTree *receiver )
+void QgsAttributesFormProperties::loadAttributeSpecificEditor( DnDTree *emitter, DnDTree *receiver )
 {
   storeAttributeTypeDialog();
   storeAttributeRelationEdit();
+  storeAttributeContainerEdit();
 
   if ( emitter->selectedItems().count() != 1 )
   {
@@ -550,6 +574,13 @@ void QgsAttributesFormProperties::synchronizeDnDTrees( DnDTree *emitter, DnDTree
         break;
       }
       case DnDTreeItemData::Container:
+      {
+        receiver->clearSelection();
+        loadAttributeContainerEdit();
+        break;
+      }
+
+      case DnDTreeItemData::WidgetType:
       case DnDTreeItemData::QmlWidget:
       case DnDTreeItemData::HtmlWidget:
       {
@@ -574,6 +605,12 @@ void QgsAttributesFormProperties::clearAttributeTypeFrame()
     mAttributeTypeFrame->layout()->removeWidget( mAttributeRelationEdit );
     mAttributeRelationEdit->deleteLater();
     mAttributeRelationEdit = nullptr;
+  }
+  if ( mAttributeContainerEdit )
+  {
+    mAttributeTypeFrame->layout()->removeWidget( mAttributeContainerEdit );
+    mAttributeContainerEdit->deleteLater();
+    mAttributeContainerEdit = nullptr;
   }
 }
 
@@ -682,6 +719,9 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
       break;
     }
 
+    case DnDTreeItemData::WidgetType:
+      break;
+
   }
 
   widgetDef->setShowLabel( itemData.showLabel() );
@@ -754,7 +794,7 @@ void QgsAttributesFormProperties::pbnSelectEditForm_clicked()
 
 void QgsAttributesFormProperties::apply()
 {
-
+  storeAttributeContainerEdit();
   storeAttributeTypeDialog();
   storeAttributeRelationEdit();
 
@@ -941,6 +981,9 @@ QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormPro
       case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
         //no icon for HtmlWidget
         break;
+
+      case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
+        break;
     }
   }
   newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, data );
@@ -1099,78 +1142,8 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
   switch ( itemData.type() )
   {
     case QgsAttributesFormProperties::DnDTreeItemData::Container:
-    {
-      QDialog dlg;
-      dlg.setObjectName( QLatin1String( "attributeFormPropertiesContainerDialog" ) );
-      dlg.setWindowTitle( tr( "Configure Container" ) );
-      QFormLayout *layout = new QFormLayout() ;
-      dlg.setLayout( layout );
-      layout->addRow( baseWidget );
-
-      QCheckBox *showAsGroupBox = nullptr;
-      QLineEdit *title = new QLineEdit( itemData.name() );
-      QSpinBox *columnCount = new QSpinBox();
-      QGroupBox *visibilityExpressionGroupBox = new QGroupBox( tr( "Control visibility by expression" ) );
-      visibilityExpressionGroupBox->setCheckable( true );
-      visibilityExpressionGroupBox->setChecked( itemData.visibilityExpression().enabled() );
-      visibilityExpressionGroupBox->setLayout( new QGridLayout );
-      QgsFieldExpressionWidget *visibilityExpressionWidget = new QgsFieldExpressionWidget;
-      visibilityExpressionWidget->setLayer( mLayer );
-      visibilityExpressionWidget->setExpressionDialogTitle( tr( "Visibility Expression" ) );
-      visibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
-      visibilityExpressionGroupBox->layout()->addWidget( visibilityExpressionWidget );
-
-      columnCount->setRange( 1, 5 );
-      columnCount->setValue( itemData.columnCount() );
-
-      layout->addRow( tr( "Title" ), title );
-      layout->addRow( tr( "Column count" ), columnCount );
-      layout->addRow( visibilityExpressionGroupBox );
-
-      if ( !item->parent() )
-      {
-        showAsGroupBox = new QCheckBox( tr( "Show as group box" ) );
-        showAsGroupBox->setChecked( itemData.showAsGroupBox() );
-        layout->addRow( showAsGroupBox );
-      }
-
-      QgsCollapsibleGroupBox *styleGroupBox = new QgsCollapsibleGroupBox( tr( "Style" ), layout->widget() );
-      styleGroupBox->setObjectName( QLatin1String( "attributeFormPropertiesContainerStyle" ) );
-      QFormLayout *customizeGroupBoxLayout = new QFormLayout( styleGroupBox ) ;
-      QgsColorButton *backgroundColorButton = new QgsColorButton( styleGroupBox, tr( "Container Background Color" ) );
-      backgroundColorButton->setShowNull( true );
-      backgroundColorButton->setColor( itemData.backgroundColor() );
-      customizeGroupBoxLayout->addRow( new QLabel( tr( "Background color" ), styleGroupBox ),
-                                       backgroundColorButton );
-      styleGroupBox->setLayout( customizeGroupBoxLayout );
-      layout->addRow( styleGroupBox );
-
-      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
-          | QDialogButtonBox::Cancel );
-
-      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
-      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-
-      layout->addWidget( buttonBox );
-
-      if ( dlg.exec() )
-      {
-        itemData.setColumnCount( columnCount->value() );
-        itemData.setShowAsGroupBox( showAsGroupBox ? showAsGroupBox->isChecked() : true );
-        itemData.setName( title->text() );
-        itemData.setShowLabel( showLabelCheckbox->isChecked() );
-        itemData.setBackgroundColor( backgroundColorButton->color() );
-
-        QgsOptionalExpression visibilityExpression;
-        visibilityExpression.setData( QgsExpression( visibilityExpressionWidget->expression() ) );
-        visibilityExpression.setEnabled( visibilityExpressionGroupBox->isChecked() );
-        itemData.setVisibilityExpression( visibilityExpression );
-
-        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
-        item->setText( 0, title->text() );
-      }
-    }
-    break;
+    case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
+      break;
 
     case  QgsAttributesFormProperties::DnDTreeItemData::Relation:
     {
