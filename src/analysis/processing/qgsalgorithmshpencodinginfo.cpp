@@ -75,26 +75,19 @@ void QgsShapefileEncodingInfoAlgorithm::initAlgorithm( const QVariantMap & )
 bool QgsShapefileEncodingInfoAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const QString path = parameterAsFile( parameters, QStringLiteral( "INPUT" ), context );
-  if ( !QFile::exists( path ) )
-  {
-    feedback->reportError( QObject::tr( "Input Shapefile %1 does not exist" ).arg( path ) );
-    return false;
-  }
+
+  mCpgEncoding = QgsOgrUtils::readShapefileEncodingFromCpg( path );
+  if ( mCpgEncoding.isEmpty() )
+    feedback->pushInfo( QObject::tr( "No encoding information present in CPG file" ) );
   else
-  {
-    mCpgEncoding = QgsOgrUtils::readShapefileEncodingFromCpg( path );
-    if ( mCpgEncoding.isEmpty() )
-      feedback->pushInfo( QObject::tr( "No encoding information present in CPG file" ) );
-    else
-      feedback->pushInfo( QObject::tr( "Detected encoding from CPG file: %1" ).arg( mCpgEncoding ) );
+    feedback->pushInfo( QObject::tr( "Detected encoding from CPG file: %1" ).arg( mCpgEncoding ) );
 
-    mLdidEncoding = QgsOgrUtils::readShapefileEncodingFromLdid( path );
-    if ( mLdidEncoding.isEmpty() )
-      feedback->pushInfo( QObject::tr( "No encoding information present in DBF LDID header" ) );
-    else
-      feedback->pushInfo( QObject::tr( "Detected encoding from DBF LDID header: %1" ).arg( mLdidEncoding ) );
+  mLdidEncoding = QgsOgrUtils::readShapefileEncodingFromLdid( path );
+  if ( mLdidEncoding.isEmpty() )
+    feedback->pushInfo( QObject::tr( "No encoding information present in DBF LDID header" ) );
+  else
+    feedback->pushInfo( QObject::tr( "Detected encoding from DBF LDID header: %1" ).arg( mLdidEncoding ) );
 
-  }
   return true;
 }
 
