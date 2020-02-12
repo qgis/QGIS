@@ -4504,7 +4504,15 @@ void QgsOgrProvider::open( OpenMode mode )
     if ( mode == OpenModeInitial && mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
     {
       // determine encoding from shapefile cpg or LDID information, if possible
-      const QString shpEncoding = QgsOgrUtils::readShapefileEncoding( mFilePath );
+      QString shpEncoding;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
+      shpEncoding = mOgrLayer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_CPG" ), QStringLiteral( "SHAPEFILE" ) );
+      if ( shpEncoding.isEmpty() )
+        shpEncoding = mOgrLayer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_LDID" ), QStringLiteral( "SHAPEFILE" ) );
+#else
+      shpEncoding = QgsOgrUtils::readShapefileEncoding( mFilePath );
+#endif
+
       if ( !shpEncoding.isEmpty() )
         setEncoding( shpEncoding );
       else
