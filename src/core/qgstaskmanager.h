@@ -283,7 +283,7 @@ class CORE_EXPORT QgsTask : public QObject
      * flag, then derived classes' run() methods should periodically check this and
      * terminate in a safe manner.
      */
-    bool isCanceled() const { return mShouldTerminate; }
+    bool isCanceled() const;
 
   protected slots:
 
@@ -323,6 +323,7 @@ class CORE_EXPORT QgsTask : public QObject
     //! Overall progress of this task and all subtasks
     double mTotalProgress = 0.0;
     bool mShouldTerminate = false;
+    mutable QMutex mShouldTerminateMutex;
     int mStartCount = 0;
 
     struct SubTask
