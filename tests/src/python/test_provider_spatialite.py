@@ -1225,6 +1225,45 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(feature.attribute(4), 123)
         self.assertEqual(feature.attribute(5), 'My default')
 
+    def testSpatialiteAspatialMultipleAdd(self):
+        """Add multiple features in aspatial table. See GH #34379"""
+
+        # Create the test table
+
+        dbname = os.path.join(tempfile.gettempdir(), "test_aspatial_multiple_edits.sqlite")
+        if os.path.exists(dbname):
+            os.remove(dbname)
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = "SELECT InitSpatialMetadata()"
+        cur.execute(sql)
+
+        # simple table with primary key
+        sql = """
+        CREATE TABLE "test_aspatial_multiple_edits"(pkuid integer primary key autoincrement,"id" integer,"note" text)
+        """
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        vl = QgsVectorLayer("dbname='%s' table='test_aspatial_multiple_edits'" % dbname, 'test_aspatial_multiple_edits', 'spatialite')
+        self.assertTrue(vl.isValid())
+
+        self.assertTrue(vl.startEditing())
+        f1 = QgsFeature(vl.fields())
+        f1.setAttribute('note', 'a note')
+        f1.setAttribute('id', 123)
+        f2 = QgsFeature(vl.fields())
+        f2.setAttribute('note', 'another note')
+        f2.setAttribute('id', 456)
+        self.assertTrue(vl.addFeatures([f1, f2]))
+        self.assertTrue(vl.commitChanges())
+
+        # Verify
+        self.assertEqual(vl.getFeature(1).attributes(), [1, 123, 'a note'])
+        self.assertEqual(vl.getFeature(2).attributes(), [2, 456, 'another note'])
+
 
 if __name__ == '__main__':
     unittest.main()
