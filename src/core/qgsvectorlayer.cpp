@@ -4452,7 +4452,7 @@ bool QgsVectorLayer::readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSet
       settings.placement = QgsPalLayerSettings::OverPoint;
       if ( geometryType() == QgsWkbTypes::LineGeometry )
       {
-        settings.placement = QgsPalLayerSettings::Line;
+        settings.placement = QgsPalLayerSettings::Horizontal;
       }
 
       QDomElement displacementElem = pointPlacementElem.firstChildElement( QStringLiteral( "Displacement" ) );
