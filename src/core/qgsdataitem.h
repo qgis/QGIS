@@ -87,10 +87,18 @@ class CORE_EXPORT QgsDataItem : public QObject
     Q_ENUM( Type )
 
     /**
-     * Creates new data item
-     * \a providerKey added in QGIS 3.12
+     * Constructor for QgsDataItem, with the specified \a parent item.
+     *
+     * The \a name argument specifies the text to show in the model for the item. A translated string should
+     * be used wherever appropriate.
+     *
+     * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
+     * but QgsDataItem items pointing to different logical locations should always use a different item \a path.
+     *
+     * The optional \a providerKey string (added in QGIS 3.12) can be used to specify the key for the QgsDataItemProvider that created this item.
      */
     QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path, const QString &providerKey = QString() );
+
     ~QgsDataItem() override;
 
     bool hasChildren();
@@ -594,8 +602,20 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-    //! Constructor
-    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
+
+    /**
+     * Constructor for QgsDataCollectionItem, with the specified \a parent item.
+     *
+     * The \a name argument specifies the text to show in the model for the item. A translated string should
+     * be used wherever appropriate.
+     *
+     * The \a path argument gives the item path in the browser tree. The \a path string can take any form,
+     * but QgsDataCollectionItem items pointing to different logical locations should always use a different item \a path.
+     *
+     * The optional \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
+     */
+    QgsDataCollectionItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
+
     ~QgsDataCollectionItem() override;
 
     void addChild( QgsDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }
@@ -636,17 +656,39 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
 
-    QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path );
+    /**
+     * Constructor for QgsDirectoryItem, with the specified \a parent item.
+     *
+     * The \a name argument specifies the text to show in the model for the item. This is usually
+     * the directory name, but in certain cases may differ for special directories (e.g. "Home").
+     * If a non-directory-name text is used, it should be a translated string when appropriate.
+     *
+     * The \a path argument specifies the directory path in the file system (e.g. "/home/gsherman/stuff"). A valid
+     * directory path must be specified.
+     */
+    QgsDirectoryItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path );
+
+
+    // TODO QGIS 4.0 -- rename "name" to "title" or "text" or something more descriptive, and "path" to something
+    // else to clarify the role of dirPath vs path
 
     /**
-     * Constructor.
-     * \param parent
-     * \param name directory name
-     * \param dirPath path to directory in file system
-     * \param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites:
-     * \param providerKey key of the provider that created this item
+     * Constructor for QgsDirectoryItem, with the specified \a parent item.
+     *
+     * The \a name argument specifies the text to show in the model for the item. This is usually
+     * the directory name, but in certain cases may differ for special directories (e.g. "Home").
+     * If a non-directory-name text is used, it should be a translated string when appropriate.
+     *
+     * The \a dirPath argument specifies the directory path in the file system (e.g. "/home/gsherman/stuff"). A valid
+     * directory path must be specified.
+     *
+     * The \a path argument gives the item path in the browser tree. The \a path string can take any form, but is usually
+     * the same as \a dirPath or \a dirPath with a prefix, e.g. "favorites:/home/gsherman/Downloads"). QgsDirectoryItem
+     * items pointing to different \a dirPaths should always use a different item \a path.
+     *
+     * The optional \a providerKey string can be used to specify the key for the QgsDataItemProvider that created this item.
      */
-    QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path, const QString &providerKey = QString() );
+    QgsDirectoryItem( QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &dirPath, const QString &path, const QString &providerKey = QString() );
 
     void setState( State state ) override;
 
