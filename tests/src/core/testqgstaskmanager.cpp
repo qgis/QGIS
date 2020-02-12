@@ -133,9 +133,6 @@ class CancelableTask : public QgsTask
     ~CancelableTask() override
     {
       qDebug() << "deleting task " << description();
-
-      int i = 1;
-      i++;
     }
 
   protected:
