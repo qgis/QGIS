@@ -19,6 +19,7 @@ import osgeo.gdal
 import osgeo.ogr
 import sys
 
+from osgeo import gdal
 from qgis.core import (
     QgsApplication,
     QgsSettings,
@@ -662,11 +663,13 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
         self.assertEqual(next(vl.getFeatures())[1], 'äöü')
 
-        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252.zip')
-        vl = QgsVectorLayer('/vsizip/{}'.format(file_path))
-        self.assertTrue(vl.isValid())
-        self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
-        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+        if int(gdal.VersionInfo('VERSION_NUM')) >= GDAL_COMPUTE_VERSION(3, 1, 0):
+            # correct autodetection of vsizip based shapefiles depends on GDAL 3.1
+            file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252.zip')
+            vl = QgsVectorLayer('/vsizip/{}'.format(file_path))
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
+            self.assertEqual(next(vl.getFeatures())[1], 'äöü')
 
         file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'system_encoding.shp')
         vl = QgsVectorLayer(file_path)
