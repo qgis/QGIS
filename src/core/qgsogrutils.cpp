@@ -21,6 +21,7 @@
 #include "qgslinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultilinestring.h"
+#include "qgsogrprovider.h"
 #include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
@@ -760,8 +761,11 @@ QString QgsOgrUtils::readShapefileEncoding( const QString &path )
 
 QString QgsOgrUtils::readShapefileEncodingFromCpg( const QString &path )
 {
-  // unfortunately OGR's routines for calculating the shapefile encoding aren't exposed anywhere in the GDAL c api, so
-  // re-implement them here...
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
+  QString errCause;
+  QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( path, false, QStringList(), 0, errCause, false );
+  return layer ? layer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_CPG" ), QStringLiteral( "SHAPEFILE" ) ) : QString();
+#else
   if ( !QFileInfo::exists( path ) )
     return QString();
 
@@ -806,15 +810,17 @@ QString QgsOgrUtils::readShapefileEncodingFromCpg( const QString &path )
       }
     }
   }
-
+#endif
   return QString();
 }
 
 QString QgsOgrUtils::readShapefileEncodingFromLdid( const QString &path )
 {
-  // unfortunately OGR's routines for calculating the shapefile encoding aren't exposed anywhere in the GDAL c api, so
-  // re-implement them here...
-
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,1,0)
+  QString errCause;
+  QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( path, false, QStringList(), 0, errCause, false );
+  return layer ? layer->GetMetadataItem( QStringLiteral( "ENCODING_FROM_LDID" ), QStringLiteral( "SHAPEFILE" ) ) : QString();
+#else
   // from OGRShapeLayer::ConvertCodePage
   // https://github.com/OSGeo/gdal/blob/master/gdal/ogr/ogrsf_frmts/shape/ogrshapelayer.cpp#L342
 
@@ -917,4 +923,5 @@ QString QgsOgrUtils::readShapefileEncodingFromLdid( const QString &path )
     }
   }
   return QString();
+#endif
 }
