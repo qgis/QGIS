@@ -34,7 +34,6 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
   setupUi( this );
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
-  layout()->setMargin( 0 );
 
   setPanelTitle( mDefinition.description() );
 
@@ -74,7 +73,6 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
   mLegendPreview->expandAll();
   mLegendVerticalFrame->setLayout( new QVBoxLayout() );
   mLegendVerticalFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
-  mLegendVerticalFrame->layout()->setMargin( 0 );
   mLegendVerticalFrame->hide();
 
   switch ( definition.standardTemplate() )
@@ -336,7 +334,6 @@ QgsPropertySizeAssistantWidget::QgsPropertySizeAssistantWidget( QWidget *parent,
   setupUi( this );
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
-  layout()->setMargin( 0 );
 
   if ( definition.standardTemplate() == QgsPropertyDefinition::Size )
   {
@@ -453,7 +450,6 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
   setupUi( this );
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
-  layout()->setMargin( 0 );
 
   bool supportsAlpha = definition.standardTemplate() == QgsPropertyDefinition::ColorWithAlpha;
   mNullColorButton->setAllowOpacity( supportsAlpha );
@@ -529,7 +525,6 @@ QgsPropertyGenericNumericAssistantWidget::QgsPropertyGenericNumericAssistantWidg
   setupUi( this );
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
-  layout()->setMargin( 0 );
 
   nullOutputSpinBox->setShowClearButton( false );
 

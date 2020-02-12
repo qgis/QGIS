@@ -1288,7 +1288,11 @@ QPixmap QgsPalLayerSettings::labelSettingsPreviewPixmap( const QgsPalLayerSettin
   textRect.setTop( bottom - textHeight );
   textRect.setBottom( bottom );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   const double iconWidth = QFontMetricsF( QFont() ).width( 'X' ) * Qgis::UI_SCALE_FACTOR;
+#else
+  const double iconWidth = QFontMetricsF( QFont() ).horizontalAdvance( 'X' ) * Qgis::UI_SCALE_FACTOR;
+#endif
 
   if ( settings.callout() && settings.callout()->enabled() )
   {
@@ -1477,7 +1481,11 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
   {
     QString dirSym = leftDirSymb;
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
     if ( fm->width( rightDirSymb ) > fm->width( dirSym ) )
+#else
+    if ( fm->horizontalAdvance( rightDirSymb ) > fm->horizontalAdvance( dirSym ) )
+#endif
       dirSym = rightDirSymb;
 
     if ( placeDirSymb == QgsPalLayerSettings::SymbolLeftRight )
@@ -1503,7 +1511,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
 
       for ( const auto &line : multiLineSplit )
       {
-        w = std::max( w, fm->width( line ) );
+        w = std::max( w, fm->boundingRect( line ).width() );
       }
       break;
     }
@@ -1528,7 +1536,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF *fm, const QSt
       double widthHorizontal = 0.0;
       for ( const auto &line : multiLineSplit )
       {
-        widthHorizontal = std::max( w, fm->width( line ) );
+        widthHorizontal = std::max( w, fm->boundingRect( line ).width() );
       }
 
       double widthVertical = 0.0;

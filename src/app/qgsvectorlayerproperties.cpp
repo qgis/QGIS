@@ -191,7 +191,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   {
     // Create the Labeling dialog tab
     layout = new QVBoxLayout( labelingFrame );
-    layout->setMargin( 0 );
+    layout->setContentsMargins( 0, 0, 0, 0 );
     labelingDialog = new QgsLabelingWidget( mLayer, QgisApp::instance()->mapCanvas(), labelingFrame );
     labelingDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
     connect( labelingDialog, &QgsLabelingWidget::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
@@ -200,7 +200,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
     // Create the masking dialog tab
     layout = new QVBoxLayout( mMaskingFrame );
-    layout->setMargin( 0 );
+    layout->setContentsMargins( 0, 0, 0, 0 );
     mMaskingWidget = new QgsMaskingWidget( mMaskingFrame );
     mMaskingWidget->setLayer( mLayer );
     mMaskingWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
@@ -218,15 +218,15 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   // Create the Actions dialog tab
   QVBoxLayout *actionLayout = new QVBoxLayout( actionOptionsFrame );
-  actionLayout->setMargin( 0 );
+  actionLayout->setContentsMargins( 0, 0, 0, 0 );
   mActionDialog = new QgsAttributeActionDialog( *mLayer->actions(), actionOptionsFrame );
-  mActionDialog->layout()->setMargin( 0 );
+  mActionDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   actionLayout->addWidget( mActionDialog );
 
   mSourceFieldsPropertiesDialog = new QgsSourceFieldsProperties( mLayer, mSourceFieldsFrame );
-  mSourceFieldsPropertiesDialog->layout()->setMargin( 0 );
+  mSourceFieldsPropertiesDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   mSourceFieldsFrame->setLayout( new QVBoxLayout( mSourceFieldsFrame ) );
-  mSourceFieldsFrame->layout()->setMargin( 0 );
+  mSourceFieldsFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mSourceFieldsFrame->layout()->addWidget( mSourceFieldsPropertiesDialog );
 
   connect( mSourceFieldsPropertiesDialog, &QgsSourceFieldsProperties::toggleEditing, this, static_cast<void ( QgsVectorLayerProperties::* )()>( &QgsVectorLayerProperties::toggleEditing ) );
@@ -234,9 +234,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgisApp::instance(), [ = ]( QgsMapLayer * layer ) { QgisApp::instance()->toggleEditing( layer ); } );
 
   mAttributesFormPropertiesDialog = new QgsAttributesFormProperties( mLayer, mAttributesFormFrame );
-  mAttributesFormPropertiesDialog->layout()->setMargin( 0 );
+  mAttributesFormPropertiesDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributesFormFrame->setLayout( new QVBoxLayout( mAttributesFormFrame ) );
-  mAttributesFormFrame->layout()->setMargin( 0 );
+  mAttributesFormFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributesFormFrame->layout()->addWidget( mAttributesFormPropertiesDialog );
 
 #ifdef HAVE_3D
@@ -250,7 +250,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   // Metadata tab, before the syncToLayer
   QVBoxLayout *metadataLayout = new QVBoxLayout( metadataFrame );
-  metadataLayout->setMargin( 0 );
+  metadataLayout->setContentsMargins( 0, 0, 0, 0 );
   mMetadataWidget = new QgsMetadataWidget( this, mLayer );
   mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
   mMetadataWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
@@ -311,7 +311,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mOldJoins = mLayer->vectorJoins();
 
   QVBoxLayout *diagLayout = new QVBoxLayout( mDiagramFrame );
-  diagLayout->setMargin( 0 );
+  diagLayout->setContentsMargins( 0, 0, 0, 0 );
   diagramPropertiesDialog = new QgsDiagramProperties( mLayer, mDiagramFrame, QgisApp::instance()->mapCanvas() );
   diagramPropertiesDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
   connect( diagramPropertiesDialog, &QgsDiagramProperties::auxiliaryFieldCreated, this, [ = ] { updateAuxiliaryStoragePage(); } );
@@ -1916,10 +1916,10 @@ void QgsVectorLayerProperties::updateSymbologyPage()
 
   if ( mRendererDialog )
   {
-    mRendererDialog->layout()->setMargin( 0 );
+    mRendererDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
     widgetStackRenderers->addWidget( mRendererDialog );
     widgetStackRenderers->setCurrentWidget( mRendererDialog );
-    widgetStackRenderers->currentWidget()->layout()->setMargin( 0 );
+    widgetStackRenderers->currentWidget()->layout()->setContentsMargins( 0, 0, 0, 0 );
   }
 }
 

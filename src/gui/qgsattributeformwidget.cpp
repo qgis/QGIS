@@ -26,19 +26,16 @@ QgsAttributeFormWidget::QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAtt
 {
   mEditPage = new QWidget();
   QHBoxLayout *l = new QHBoxLayout();
-  l->setMargin( 0 );
   l->setContentsMargins( 0, 0, 0, 0 );
   mEditPage->setLayout( l );
 
   l = new QHBoxLayout();
-  l->setMargin( 0 );
   l->setContentsMargins( 0, 0, 0, 0 );
   mSearchFrame = new QWidget();
   mSearchFrame->setLayout( l );
 
   mSearchPage = new QWidget();
   l = new QHBoxLayout();
-  l->setMargin( 0 );
   l->setContentsMargins( 0, 0, 0, 0 );
   mSearchPage->setLayout( l );
   l->addWidget( mSearchFrame, 1 );
@@ -54,7 +51,6 @@ QgsAttributeFormWidget::QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAtt
   mStack->addWidget( mSearchPage );
 
   l = new QHBoxLayout();
-  l->setMargin( 0 );
   l->setContentsMargins( 0, 0, 0, 0 );
   setLayout( l );
   l->addWidget( mStack );

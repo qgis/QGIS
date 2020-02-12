@@ -37,7 +37,6 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAt
   mForm->setMode( QgsAttributeEditorContext::SearchMode );
 
   QVBoxLayout *vLayout = new QVBoxLayout();
-  vLayout->setMargin( 0 );
   vLayout->setContentsMargins( 0, 0, 0, 0 );
   setLayout( vLayout );
 

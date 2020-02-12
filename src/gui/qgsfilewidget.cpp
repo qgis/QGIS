@@ -39,7 +39,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   setAutoFillBackground( true );
 
   mLayout = new QHBoxLayout();
-  mLayout->setMargin( 0 );
+  mLayout->setContentsMargins( 0, 0, 0, 0 );
 
   // If displaying a hyperlink, use a QLabel
   mLinkLabel = new QLabel( this );

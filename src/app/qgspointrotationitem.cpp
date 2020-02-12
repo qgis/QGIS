@@ -87,7 +87,7 @@ void QgsPointRotationItem::setSymbol( const QImage &symbolImage )
   p.drawLine( halfItemWidth, 0, mPixmap.width() * 0.75, quarterItemHeight );
 
   //set item size
-  mItemSize.setWidth( mPixmap.width() + fm.width( QStringLiteral( "360" ) ) );
+  mItemSize.setWidth( mPixmap.width() + fm.boundingRect( QStringLiteral( "360" ) ).width() );
   double pixmapHeight = mPixmap.height();
   double fontHeight = fm.height();
   if ( pixmapHeight >= fontHeight )

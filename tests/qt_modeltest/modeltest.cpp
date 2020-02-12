@@ -442,11 +442,19 @@ void ModelTest::data()
   }
 
   // General Purpose roles that should return a QColor
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
   QVariant colorVariant = model->data( model->index( 0, 0 ), Qt::BackgroundColorRole );
+#else
+  QVariant colorVariant = model->data( model->index( 0, 0 ), Qt::BackgroundRole );
+#endif
   if ( colorVariant.isValid() )
     Q_ASSERT( colorVariant.canConvert( QVariant::Color ) );
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
   colorVariant = model->data( model->index( 0, 0 ), Qt::TextColorRole );
+#else
+  colorVariant = model->data( model->index( 0, 0 ), Qt::ForegroundRole );
+#endif
   if ( colorVariant.isValid() )
     Q_ASSERT( colorVariant.canConvert( QVariant::Color ) );
 

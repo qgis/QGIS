@@ -57,7 +57,7 @@ QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridg
   connect( bridge->rootGroup(), &QgsLayerTreeNode::visibilityChanged, this, &QgsCustomLayerOrderWidget::nodeVisibilityChanged );
 
   QVBoxLayout *l = new QVBoxLayout;
-  l->setMargin( 0 );
+  l->setContentsMargins( 0, 0, 0, 0 );
   l->addWidget( mView );
   l->addWidget( mChkOverride );
   setLayout( l );

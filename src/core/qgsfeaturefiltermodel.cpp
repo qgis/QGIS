@@ -166,8 +166,13 @@ QVariant QgsFeatureFilterModel::data( const QModelIndex &index, int role ) const
     case IdentifierValuesRole:
       return mEntries.value( index.row() ).identifierValues;
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
     case Qt::BackgroundColorRole:
     case Qt::TextColorRole:
+#else
+    case Qt::BackgroundRole:
+    case Qt::ForegroundRole:
+#endif
     case Qt::DecorationRole:
     case Qt::FontRole:
     {
@@ -184,7 +189,11 @@ QVariant QgsFeatureFilterModel::data( const QModelIndex &index, int role ) const
       if ( isNull )
       {
         // Representation for NULL value
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
         if ( role == Qt::TextColorRole )
+#else
+        if ( role == Qt::ForegroundRole )
+#endif
         {
           return QBrush( QColor( Qt::gray ) );
         }
@@ -205,9 +214,17 @@ QVariant QgsFeatureFilterModel::data( const QModelIndex &index, int role ) const
 
         if ( style.isValid() )
         {
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
           if ( role == Qt::BackgroundColorRole && style.validBackgroundColor() )
+#else
+          if ( role == Qt::BackgroundRole && style.validBackgroundColor() )
+#endif
             return style.backgroundColor();
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
           if ( role == Qt::TextColorRole && style.validTextColor() )
+#else
+          if ( role == Qt::ForegroundRole && style.validTextColor() )
+#endif
             return style.textColor();
           if ( role == Qt::DecorationRole )
             return style.icon();

@@ -51,7 +51,6 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   setMinimumSize( QSize( minWidth, 0 ) );
 
   QHBoxLayout *layout = new QHBoxLayout();
-  layout->setMargin( 0 );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( mLineEdit );
   setLayout( layout );
@@ -65,7 +64,6 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   mResultsContainer->setAnchorWidgetPoint( QgsFloatingWidget::TopLeft );
 
   QHBoxLayout *containerLayout = new QHBoxLayout();
-  containerLayout->setMargin( 0 );
   containerLayout->setContentsMargins( 0, 0, 0, 0 );
   containerLayout->addWidget( mResultsView );
   mResultsContainer->setLayout( containerLayout );

@@ -2810,7 +2810,7 @@ void QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRender
       double partYOffset = 0.0;
       for ( const auto &part : parts )
       {
-        double partXOffset = ( labelWidth - ( fontMetrics->width( part ) - letterSpacing ) ) / 2;
+        double partXOffset = ( labelWidth - ( fontMetrics->boundingRect( part ).width() - letterSpacing ) ) / 2;
         path.addText( partXOffset, partYOffset, format.scaledFont( context ), part );
         partYOffset += fontMetrics->ascent() + letterSpacing;
       }
@@ -2952,7 +2952,7 @@ double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTex
       const auto constTextLines = textLines;
       for ( const QString &line : constTextLines )
       {
-        maxLineWidth = std::max( maxLineWidth, fontMetrics->width( line ) );
+        maxLineWidth = std::max( maxLineWidth, fontMetrics->boundingRect( line ).width() );
       }
       width = maxLineWidth;
       break;
@@ -3611,7 +3611,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
         case Point:
           for ( const QString &line : textLines )
           {
-            double labelWidth = fontMetrics->width( line );
+            double labelWidth = fontMetrics->boundingRect( line ).width();
             if ( labelWidth > labelWidest )
             {
               labelWidest = labelWidth;
@@ -3657,7 +3657,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
 
         // figure x offset for horizontal alignment of multiple lines
         double xMultiLineOffset = 0.0;
-        double labelWidth = fontMetrics->width( line );
+        double labelWidth = fontMetrics->boundingRect( line ).width();
         if ( adjustForAlignment )
         {
           double labelWidthDiff = labelWidest - labelWidth;
@@ -3933,7 +3933,7 @@ void QgsTextRenderer::drawTextInternal( TextPart drawType,
           double partYOffset = 0.0;
           for ( const auto &part : parts )
           {
-            double partXOffset = ( labelWidth - ( fontMetrics->width( part ) - letterSpacing ) ) / 2;
+            double partXOffset = ( labelWidth - ( fontMetrics->boundingRect( part ).width() - letterSpacing ) ) / 2;
             path.addText( partXOffset, partYOffset, format.scaledFont( context ), part );
             partYOffset += fontMetrics->ascent() + letterSpacing;
           }

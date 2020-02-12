@@ -70,7 +70,6 @@ QgsProcessingBooleanParameterDefinitionWidget::QgsProcessingBooleanParameterDefi
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   mDefaultCheckBox = new QCheckBox( tr( "Checked" ) );
@@ -268,7 +267,6 @@ QWidget *QgsProcessingCrsWidgetWrapper::createWidget()
       w->setToolTip( parameterDefinition()->toolTip() );
 
       QVBoxLayout *vl = new QVBoxLayout();
-      vl->setMargin( 0 );
       vl->setContentsMargins( 0, 0, 0, 0 );
       w->setLayout( vl );
 
@@ -370,7 +368,6 @@ QgsProcessingStringParameterDefinitionWidget::QgsProcessingStringParameterDefini
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
@@ -872,7 +869,6 @@ QWidget *QgsProcessingDistanceWidgetWrapper::createWidget()
       // instead of outside it
       mWarningLabel = new QWidget();
       QHBoxLayout *warningLayout = new QHBoxLayout();
-      warningLayout->setMargin( 0 );
       warningLayout->setContentsMargins( 0, 0, 0, 0 );
       QLabel *warning = new QLabel();
       QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
@@ -885,7 +881,6 @@ QWidget *QgsProcessingDistanceWidgetWrapper::createWidget()
       layout->insertWidget( 4, mWarningLabel );
 
       QWidget *w = new QWidget();
-      layout->setMargin( 0 );
       layout->setContentsMargins( 0, 0, 0, 0 );
       w->setLayout( layout );
 
@@ -1101,7 +1096,6 @@ QWidget *QgsProcessingRangeWidgetWrapper::createWidget()
       layout->addWidget( mMaxSpinBox, 1 );
 
       QWidget *w = new QWidget();
-      layout->setMargin( 0 );
       layout->setContentsMargins( 0, 0, 0, 0 );
       w->setLayout( layout );
 
@@ -1355,7 +1349,6 @@ QgsProcessingFileParameterDefinitionWidget::QgsProcessingFileParameterDefinition
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Type" ) ) );
@@ -1722,7 +1715,6 @@ QgsProcessingEnumPanelWidget::QgsProcessingEnumPanelWidget( QWidget *parent, con
   , mParam( param )
 {
   QHBoxLayout *hl = new QHBoxLayout();
-  hl->setMargin( 0 );
   hl->setContentsMargins( 0, 0, 0, 0 );
 
   mLineEdit = new QLineEdit();
@@ -1797,7 +1789,6 @@ QgsProcessingEnumCheckboxPanelWidget::QgsProcessingEnumCheckboxPanelWidget( QWid
 
   QGridLayout *l = new QGridLayout();
   l->setContentsMargins( 0, 0, 0, 0 );
-  l->setMargin( 0 );
 
   int rows = static_cast< int >( std::ceil( mParam->options().count() / static_cast< double >( mColumns ) ) );
   for ( int i = 0; i < mParam->options().count(); ++i )
@@ -2169,7 +2160,6 @@ QgsProcessingLayoutItemParameterDefinitionWidget::QgsProcessingLayoutItemParamet
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Parent layout" ) ) );
@@ -2438,7 +2428,6 @@ QgsProcessingPointPanel::QgsProcessingPointPanel( QWidget *parent )
 {
   QHBoxLayout *l = new QHBoxLayout();
   l->setContentsMargins( 0, 0, 0, 0 );
-  l->setMargin( 0 );
   mLineEdit = new QgsFilterLineEdit( );
   mLineEdit->setShowClearButton( false );
   l->addWidget( mLineEdit, 1 );
@@ -2676,7 +2665,6 @@ QgsProcessingColorParameterDefinitionWidget::QgsProcessingColorParameterDefiniti
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
@@ -2826,7 +2814,6 @@ QgsProcessingCoordinateOperationParameterDefinitionWidget::QgsProcessingCoordina
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
@@ -2981,7 +2968,6 @@ QWidget *QgsProcessingCoordinateOperationWidgetWrapper::createWidget()
       layout->addWidget( button );
 
       QWidget *w = new QWidget();
-      layout->setMargin( 0 );
       layout->setContentsMargins( 0, 0, 0, 0 );
       w->setLayout( layout );
       return w;
@@ -3156,7 +3142,6 @@ QgsProcessingFieldPanelWidget::QgsProcessingFieldPanelWidget( QWidget *parent, c
   , mParam( param )
 {
   QHBoxLayout *hl = new QHBoxLayout();
-  hl->setMargin( 0 );
   hl->setContentsMargins( 0, 0, 0, 0 );
 
   mLineEdit = new QLineEdit();
@@ -3518,7 +3503,6 @@ QgsProcessingMapThemeParameterDefinitionWidget::QgsProcessingMapThemeParameterDe
   : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
-  vlayout->setMargin( 0 );
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );

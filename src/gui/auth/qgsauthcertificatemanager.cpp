@@ -41,7 +41,7 @@ QgsAuthCertManager::QgsAuthCertManager( QWidget *parent )
 {
   setWindowTitle( tr( "Certificate Manager" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );
-  layout->setMargin( 6 );
+  layout->setContentsMargins( 6, 6, 6, 6 );
 
   mCertEditors = new QgsAuthCertEditors( this );
   layout->addWidget( mCertEditors );

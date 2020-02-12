@@ -38,7 +38,7 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   QGridLayout *availableWidgetsWidgetLayout = new QGridLayout;
   mAvailableWidgetsTree = new DnDTree( mLayer );
   availableWidgetsWidgetLayout->addWidget( mAvailableWidgetsTree );
-  availableWidgetsWidgetLayout->setMargin( 0 );
+  availableWidgetsWidgetLayout->setContentsMargins( 0, 0, 0, 0 );
   mAvailableWidgetsWidget->setLayout( availableWidgetsWidgetLayout );
   mAvailableWidgetsTree->setSelectionMode( QAbstractItemView::SelectionMode::ExtendedSelection );
   mAvailableWidgetsTree->setHeaderLabels( QStringList() << tr( "Available Widgets" ) );
@@ -49,20 +49,20 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mFormLayoutTree = new DnDTree( mLayer );
   mFormLayoutWidget->setLayout( formLayoutWidgetLayout );
   formLayoutWidgetLayout->addWidget( mFormLayoutTree );
-  formLayoutWidgetLayout->setMargin( 0 );
+  formLayoutWidgetLayout->setContentsMargins( 0, 0, 0, 0 );
   mFormLayoutTree->setHeaderLabels( QStringList() << tr( "Form Layout" ) );
   mFormLayoutTree->setType( DnDTree::Type::Drop );
 
   // AttributeTypeDialog
   mAttributeTypeDialog = new QgsAttributeTypeDialog( mLayer, -1, mAttributeTypeFrame );
-  mAttributeTypeDialog->layout()->setMargin( 0 );
-  mAttributeTypeFrame->layout()->setMargin( 0 );
+  mAttributeTypeDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
+  mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
 
   // AttributeRelationEdit
   mAttributeRelationEdit = new QgsAttributeRelationEdit( "", mAttributeTypeFrame );
-  mAttributeRelationEdit->layout()->setMargin( 0 );
-  mAttributeTypeFrame->layout()->setMargin( 0 );
+  mAttributeRelationEdit->layout()->setContentsMargins( 0, 0, 0, 0 );
+  mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributeTypeFrame->layout()->addWidget( mAttributeRelationEdit );
 
   connect( mAvailableWidgetsTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
@@ -278,8 +278,8 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
     mAttributeTypeDialog->setEditorWidgetConfig( cfg.mEditorWidgetConfig );
     mAttributeTypeDialog->setEditorWidgetType( cfg.mEditorWidgetType );
 
-    mAttributeTypeDialog->layout()->setMargin( 0 );
-    mAttributeTypeFrame->layout()->setMargin( 0 );
+    mAttributeTypeDialog->layout()->setContentsMargins( 0, 0, 0, 0 );
+    mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
 
     mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
   }
@@ -377,8 +377,8 @@ void QgsAttributesFormProperties::loadAttributeRelationEdit()
 
     mAttributeRelationEdit->setCardinality( cfg.mCardinality );
 
-    mAttributeRelationEdit->layout()->setMargin( 0 );
-    mAttributeTypeFrame->layout()->setMargin( 0 );
+    mAttributeRelationEdit->layout()->setContentsMargins( 0, 0, 0, 0 );
+    mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
 
     mAttributeTypeFrame->layout()->removeWidget( mAttributeTypeDialog );
     mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );

@@ -302,7 +302,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
   private slots:
 
-    void cacheloadForm( const QString &uifile );
+    void cacheloadForm( const QString &uifile = QString() );
 
   private:
 
