@@ -1962,7 +1962,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
   geos_geom_clone = QgsGeos::asGeos( geom );
 
-  if ( isObstacle )
+  if ( isObstacle || ( geom.type() == QgsWkbTypes::PointGeometry && offsetType == FromSymbolBounds ) )
   {
     if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
     {
@@ -2363,7 +2363,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   ( *labelFeature )->setOverrunDistance( overrunDistanceEval );
   ( *labelFeature )->setOverrunSmoothDistance( overrunSmoothDist );
   ( *labelFeature )->setLabelAllParts( labelAll );
-  if ( geom.type() == QgsWkbTypes::PointGeometry && isObstacle && !obstacleGeometry.isNull() )
+  if ( geom.type() == QgsWkbTypes::PointGeometry && !obstacleGeometry.isNull() )
   {
     //register symbol size
     ( *labelFeature )->setSymbolSize( QSizeF( obstacleGeometry.boundingBox().width(),
