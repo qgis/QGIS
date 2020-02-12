@@ -65,8 +65,7 @@ void QgsServiceNativeLoader::loadModules( const QString &modulePath, QgsServiceR
   moduleDir.setNameFilters( QStringList( "*.so" ) );
 #endif
 
-  qDebug() << QString( "Checking %1 for native services modules" ).arg( moduleDir.path() );
-  //QgsDebugMsg( QStringLiteral( "Checking %1 for native services modules" ).arg( moduleDir.path() ) );
+  // qDebug() << QString( "Checking %1 for native services modules" ).arg( moduleDir.path() );
 
   for ( const QFileInfo &fi : moduleDir.entryInfoList() )
   {

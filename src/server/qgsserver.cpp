@@ -278,7 +278,7 @@ bool QgsServer::init()
 
   // Load service module
   QString modulePath = QgsApplication::libexecPath() + "server";
-  qDebug() << "Initializing server modules from " << modulePath << endl;
+  // qDebug() << QStringLiteral( "Initializing server modules from: %1" ).arg( modulePath );
   sServiceRegistry->init( modulePath,  sServerInterface );
 
   sInitialized = true;
