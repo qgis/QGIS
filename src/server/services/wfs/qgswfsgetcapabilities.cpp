@@ -579,14 +579,6 @@ namespace QgsWfs
 
       layerElem.appendChild( operationsElement );
 
-      //create OutputFormats element
-      QDomElement outputFormatsElem = doc.createElement( QStringLiteral( "OutputFormats" ) );
-      QDomElement outputFormatElem = doc.createElement( QStringLiteral( "Format" ) );
-      QDomText outputFormatText = doc.createTextNode( QStringLiteral( "text/xml; subtype=gml/3.1.1" ) );
-      outputFormatElem.appendChild( outputFormatText );
-      outputFormatsElem.appendChild( outputFormatElem );
-      layerElem.appendChild( outputFormatsElem );
-
       //create WGS84BoundingBox
       QgsRectangle layerExtent = layer->extent();
       //transform the layers native CRS into WGS84
