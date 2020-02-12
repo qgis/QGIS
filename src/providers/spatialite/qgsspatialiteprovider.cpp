@@ -1022,6 +1022,11 @@ QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
 
 QString QgsSpatiaLiteProvider::defaultValueClause( int fieldIndex ) const
 {
+  if ( ! mAttributeFields.exists( fieldIndex ) )
+  {
+    return QString();
+  }
+
   if ( mAttributeFields.at( fieldIndex ).name() == mPrimaryKey && mPrimaryKeyAutoIncrement )
   {
     return tr( "Autogenerate" );
