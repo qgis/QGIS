@@ -49,6 +49,7 @@
 class QgsAttributeFormContainerEdit;
 class QgsAttributeTypeDialog;
 class QgsAttributeRelationEdit;
+class QgsAttributeWidgetEdit;
 class DnDTree;
 
 class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAttributesFormProperties
@@ -218,6 +219,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     DnDTree *mAvailableWidgetsTree = nullptr;
     DnDTree *mFormLayoutTree = nullptr;
 
+    QgsAttributeWidgetEdit *mAttributeWidgetEdit = nullptr;
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
     QgsAttributeRelationEdit *mAttributeRelationEdit = nullptr;
     QgsAttributeFormContainerEdit *mAttributeContainerEdit = nullptr;
@@ -232,6 +234,9 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
   private:
     //! this will clean the right panel
     void clearAttributeTypeFrame();
+
+    void loadAttributeWidgetEdit();
+    void storeAttributeWidgetEdit();
 
     void loadAttributeTypeDialog();
     void storeAttributeTypeDialog( );
