@@ -22,9 +22,11 @@
 #include "qgsgui.h"
 #include "qgsguiutils.h"
 #include "qgssettings.h"
+#include "qgsnative.h"
 
 #include <QPushButton>
 #include <QMenu>
+#include <QDesktopServices>
 
 QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
   QgsBrowserGuiModel *browserModel,
@@ -166,6 +168,16 @@ void QgsDataSourceSelectDialog::setDescription( const QString &description )
       mDescriptionLabel = new QLabel();
       mDescriptionLabel->setWordWrap( true );
       mDescriptionLabel->setMargin( 4 );
+      mDescriptionLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
+      connect( mDescriptionLabel, &QLabel::linkActivated, this, [ = ]( const QString & link )
+      {
+        QUrl url( link );
+        QFileInfo file( url.toLocalFile() );
+        if ( file.exists() && !file.isDir() )
+          QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+        else
+          QDesktopServices::openUrl( url );
+      } );
       verticalLayout->insertWidget( 1, mDescriptionLabel );
     }
     mDescriptionLabel->setText( description );
