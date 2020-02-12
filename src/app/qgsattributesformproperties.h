@@ -221,9 +221,13 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
   private slots:
 
     void onInvertSelectionButtonClicked( bool checked );
+    void synchronizeDnDTrees( DnDTree *emitter, DnDTree *receiver );
     void onAttributeSelectionChanged();
+    void onFormLayoutSelectionChanged();
 
   private:
+    //! this will clean the right panel
+    void clearAttributeTypeFrame();
 
     void loadAttributeTypeDialog();
     void storeAttributeTypeDialog( );
@@ -283,6 +287,9 @@ class DnDTree : public QTreeWidget
 
     Type type() const;
     void setType( DnDTree::Type value );
+
+  public slots:
+    void selectFirstMatchingItem( const QgsAttributesFormProperties::DnDTreeItemData &data );
 
   protected:
     void dragMoveEvent( QDragMoveEvent *event ) override;
