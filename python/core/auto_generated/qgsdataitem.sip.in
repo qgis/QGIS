@@ -54,9 +54,17 @@ Parent/children hierarchy is not based on QObject.
 
     QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent /TransferThis/, const QString &name, const QString &path, const QString &providerKey = QString() );
 %Docstring
-Creates new data item
-``providerKey`` added in QGIS 3.12
+Constructor for QgsDataItem, with the specified ``parent`` item.
+
+The ``name`` argument specifies the text to show in the model for the item. A translated string should
+be used wherever appropriate.
+
+The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
+but QgsDataItem items pointing to different logical locations should always use a different item ``path``.
+
+The optional ``providerKey`` string (added in QGIS 3.12) can be used to specify the key for the QgsDataItemProvider that created this item.
 %End
+
     ~QgsDataItem();
 
     bool hasChildren();
@@ -577,10 +585,20 @@ A Collection: logical collection of layers or subcollections, e.g. GRASS locatio
 #include "qgsdataitem.h"
 %End
   public:
-    QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
+
+    QgsDataCollectionItem( QgsDataItem *parent /TransferThis/, const QString &name, const QString &path = QString(), const QString &providerKey = QString() );
 %Docstring
-Constructor
+Constructor for QgsDataCollectionItem, with the specified ``parent`` item.
+
+The ``name`` argument specifies the text to show in the model for the item. A translated string should
+be used wherever appropriate.
+
+The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form,
+but QgsDataCollectionItem items pointing to different logical locations should always use a different item ``path``.
+
+The optional ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
 %End
+
     ~QgsDataCollectionItem();
 
     void addChild( QgsDataItem *item /Transfer/ );
@@ -627,17 +645,36 @@ A directory: contains subdirectories and layers
 %End
   public:
 
-    QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &path );
-
-    QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path, const QString &providerKey = QString() );
+    QgsDirectoryItem( QgsDataItem *parent /TransferThis/, const QString &name, const QString &path );
 %Docstring
-Constructor.
+Constructor for QgsDirectoryItem, with the specified ``parent`` item.
 
-:param parent:
-:param name: directory name
-:param dirPath: path to directory in file system
-:param path: item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites:
-:param providerKey: key of the provider that created this item
+The ``name`` argument specifies the text to show in the model for the item. This is usually
+the directory name, but in certain cases may differ for special directories (e.g. "Home").
+If a non-directory-name text is used, it should be a translated string when appropriate.
+
+The ``path`` argument specifies the directory path in the file system (e.g. "/home/gsherman/stuff"). A valid
+directory path must be specified.
+%End
+
+
+
+    QgsDirectoryItem( QgsDataItem *parent /TransferThis/, const QString &name, const QString &dirPath, const QString &path, const QString &providerKey = QString() );
+%Docstring
+Constructor for QgsDirectoryItem, with the specified ``parent`` item.
+
+The ``name`` argument specifies the text to show in the model for the item. This is usually
+the directory name, but in certain cases may differ for special directories (e.g. "Home").
+If a non-directory-name text is used, it should be a translated string when appropriate.
+
+The ``dirPath`` argument specifies the directory path in the file system (e.g. "/home/gsherman/stuff"). A valid
+directory path must be specified.
+
+The ``path`` argument gives the item path in the browser tree. The ``path`` string can take any form, but is usually
+the same as ``dirPath`` or ``dirPath`` with a prefix, e.g. "favorites:/home/gsherman/Downloads"). QgsDirectoryItem
+items pointing to different ``dirPaths`` should always use a different item ``path``.
+
+The optional ``providerKey`` string can be used to specify the key for the QgsDataItemProvider that created this item.
 %End
 
     virtual void setState( State state );
