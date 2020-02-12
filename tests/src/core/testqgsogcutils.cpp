@@ -463,6 +463,25 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
                                           "<Literal>+2</Literal>"
                                           "</PropertyIsEqualTo></Filter>" )
                                         << QStringLiteral( "LITERAL = '+2'" );
+
+  QTest::newRow( "not or list" ) << QStringLiteral( "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+                                 "<ogc:Not>"
+                                 " <ogc:Or>"
+                                 "  <ogc:PropertyIsEqualTo>"
+                                 "   <ogc:PropertyName>A</ogc:PropertyName>"
+                                 "   <ogc:Literal>1</ogc:Literal>"
+                                 "  </ogc:PropertyIsEqualTo>"
+                                 "  <ogc:PropertyIsEqualTo>"
+                                 "   <ogc:PropertyName>A</ogc:PropertyName>"
+                                 "   <ogc:Literal>2</ogc:Literal>"
+                                 "  </ogc:PropertyIsEqualTo>"
+                                 "  <ogc:PropertyIsEqualTo>"
+                                 "   <ogc:PropertyName>A</ogc:PropertyName>"
+                                 "   <ogc:Literal>3</ogc:Literal>"
+                                 "  </ogc:PropertyIsEqualTo>"
+                                 " </ogc:Or>"
+                                 "</ogc:Not>"
+                                 "</ogc:Filter>" ) << QStringLiteral( "NOT ( A = 1 OR A = 2 OR A = 3 )" );
 }
 
 void TestQgsOgcUtils::testExpressionFromOgcFilter()
