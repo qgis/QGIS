@@ -83,9 +83,6 @@ void QgsAttributesFormProperties::init()
   initLayoutConfig();
   initInitPython();
   initSuppressCombo();
-
-  mAttributeTypeDialog->setEnabled( false );
-  mAttributeRelationEdit->setEnabled( false );
 }
 
 void QgsAttributesFormProperties::initAvailableWidgetsTree()
