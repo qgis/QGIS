@@ -23,7 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 from qgis.core import (QgsApplication,
-                       QgsProcessingModelAlgorithm,
+                       QgsProcessingAlgorithm,
                        QgsProject)
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.QtCore import QCoreApplication
@@ -38,7 +38,7 @@ class DeleteModelAction(ContextAction):
         self.name = QCoreApplication.translate('DeleteModelAction', 'Delete Model…')
 
     def isEnabled(self):
-        return isinstance(self.itemData, QgsProcessingModelAlgorithm)
+        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() == "model"
 
     def execute(self):
         model = self.itemData
