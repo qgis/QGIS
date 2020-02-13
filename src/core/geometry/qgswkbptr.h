@@ -169,9 +169,9 @@ class CORE_EXPORT QgsConstWkbPtr
     inline const QgsConstWkbPtr &operator>>( char &v ) const { read( v ); return *this; } SIP_SKIP
 
     //! Read a point
-    virtual const QgsConstWkbPtr &operator>>( QPointF &point ) const; SIP_SKIP
+    const QgsConstWkbPtr &operator>>( QPointF &point ) const; SIP_SKIP
     //! Read a point array
-    virtual const QgsConstWkbPtr &operator>>( QPolygonF &points ) const; SIP_SKIP
+    const QgsConstWkbPtr &operator>>( QPolygonF &points ) const; SIP_SKIP
 
     inline void operator+=( int n ) { verifyBound( n ); mP += n; } SIP_SKIP
     inline void operator-=( int n ) { mP -= n; } SIP_SKIP
