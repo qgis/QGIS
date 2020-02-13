@@ -404,11 +404,24 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
   }
 
   QString newLayerName( layerName );
+<<<<<<< HEAD
   std::unique_ptr< QgsVectorFileWriter > writer = qgis::make_unique< QgsVectorFileWriter >(
         uri, encoding, fields, wkbType,
         srs, driverName, dsOptions, layerOptions, nullptr,
         QgsVectorFileWriter::NoSymbology, nullptr,
         layerName, action, &newLayerName );
+=======
+
+  QgsVectorFileWriter::SaveVectorOptions saveOptions;
+  saveOptions.layerName = layerName;
+  saveOptions.fileEncoding = encoding;
+  saveOptions.driverName = driverName;
+  saveOptions.datasourceOptions = dsOptions;
+  saveOptions.layerOptions = layerOptions;
+  saveOptions.actionOnExistingFile = action;
+  saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
+  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( uri, fields, wkbType, srs, QgsCoordinateTransformContext(), saveOptions, nullptr, nullptr, &newLayerName ) );
+>>>>>>> 9ce12c0812... [vector file writer] Add coordinate transformation context to fix KML/GPX export
   layerName = newLayerName;
 
   QgsVectorFileWriter::WriterError error = writer->hasError();
