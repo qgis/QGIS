@@ -69,7 +69,7 @@ struct CORE_EXPORT QgsMeshMemoryDatasetGroup
  * Provides data stored in-memory for QgsMeshLayer. Useful for plugins or tests.
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsMeshMemoryDataProvider: public QgsMeshDataProvider
+class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
 {
     Q_OBJECT
 

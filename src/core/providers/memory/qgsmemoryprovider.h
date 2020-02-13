@@ -26,7 +26,7 @@ class QgsSpatialIndex;
 
 class QgsMemoryFeatureIterator;
 
-class QgsMemoryProvider : public QgsVectorDataProvider
+class QgsMemoryProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 

@@ -109,7 +109,7 @@ class QgsCachedImageFetcher: public QgsImageFetcher
   data residing in a OGC Web Map Service.
 
 */
-class QgsWmsProvider : public QgsRasterDataProvider
+class QgsWmsProvider final: public QgsRasterDataProvider
 {
     Q_OBJECT
 
@@ -575,7 +575,7 @@ class QgsWmsStatistics
 
 Q_DECLARE_TYPEINFO( QgsWmsProvider::TilePosition, Q_PRIMITIVE_TYPE );
 
-class QgsWmsProviderMetadata: public QgsProviderMetadata
+class QgsWmsProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsWmsProviderMetadata();

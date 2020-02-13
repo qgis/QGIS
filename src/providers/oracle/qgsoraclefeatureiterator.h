@@ -28,7 +28,7 @@ class QgsOracleConn;
 class QgsOracleProvider;
 
 
-class QgsOracleFeatureSource : public QgsAbstractFeatureSource
+class QgsOracleFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsOracleFeatureSource( const QgsOracleProvider *p );
@@ -65,7 +65,7 @@ class QgsOracleFeatureSource : public QgsAbstractFeatureSource
 };
 
 
-class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>
+class QgsOracleFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>
 {
   public:
     QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );

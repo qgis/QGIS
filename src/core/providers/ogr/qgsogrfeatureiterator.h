@@ -33,7 +33,7 @@ class QgsOgrProvider;
 class QgsOgrDataset;
 using QgsOgrDatasetSharedPtr = std::shared_ptr< QgsOgrDataset>;
 
-class QgsOgrFeatureSource : public QgsAbstractFeatureSource
+class QgsOgrFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsOgrFeatureSource( const QgsOgrProvider *p );
@@ -61,7 +61,7 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
     friend class QgsOgrExpressionCompiler;
 };
 
-class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>
+class QgsOgrFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>
 {
   public:
     QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
