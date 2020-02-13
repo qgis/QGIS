@@ -487,7 +487,7 @@ void TestQgsProject::testEmbeddedLayerGroupFromQgz()
   QCOMPARE( p1.layerIsEmbedded( points->id() ), path );
   QCOMPARE( p1.layerIsEmbedded( polys->id() ), path );
 
-  // test embeded layers when origin project is something like ../XXX
+  // test embedded layers when origin project is something like ../XXX
   path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_layers/project.qgz" );
   QgsProject p2;
   p2.read( path );
