@@ -338,6 +338,13 @@ void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
 
   mBlockSignals--;
   updateHeaders();
+
+  if ( mFirstSet )
+  {
+    resizeColumnsToContents();
+    resizeRowsToContents();
+    mFirstSet = false;
+  }
   emit tableChanged();
 }
 
