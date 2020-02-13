@@ -244,6 +244,18 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      */
     QList<int> columnsAssociatedWithSelection();
 
+    /**
+     * Returns the table header values.
+     *
+     * \see setTableHeaders()
+     */
+    QVariantList tableHeaders() const;
+
+    /**
+     * Returns TRUE if any header cells are selected.
+     */
+    bool isHeaderCellSelected();
+
   public slots:
 
     /**
@@ -337,6 +349,20 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
      */
     void setSelectionColumnWidth( double height );
 
+    /**
+     * Sets whether the table includes a header row.
+     *
+     * \see includeTableHeader()
+     */
+    void setIncludeTableHeader( bool included );
+
+    /**
+     * Sets the table \a headers.
+     *
+     * \see tableHeaders()
+     */
+    void setTableHeaders( const QVariantList &headers );
+
   protected:
     void keyPressEvent( QKeyEvent *event ) override;
 
@@ -377,6 +403,7 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     int mBlockSignals = 0;
     QHash< QTableWidgetItem *, QgsNumericFormat * > mNumericFormats;
     QMenu *mHeaderMenu = nullptr;
+    bool mIncludeHeader = false;
 
     friend class QgsTableEditorDelegate;
 

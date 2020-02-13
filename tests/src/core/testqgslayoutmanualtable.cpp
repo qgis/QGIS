@@ -48,6 +48,7 @@ class TestQgsLayoutManualTable : public QObject
     void cellFormat();
     void rowHeight();
     void columnWidth();
+    void headers();
 
   private:
     QString mReport;
@@ -375,6 +376,39 @@ void TestQgsLayoutManualTable::columnWidth()
 
   table->setColumnWidths( QList< double >() << 0 << 10.0 << 30.0 );
   QgsLayoutChecker checker( QStringLiteral( "manualtable_columnwidth" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
+  bool result = checker.testLayout( mReport );
+  QVERIFY( result );
+}
+
+void TestQgsLayoutManualTable::headers()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemManualTable *table = new QgsLayoutItemManualTable( &l );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, table );
+  frame1->attemptSetSceneRect( QRectF( 5, 5, 100, 60 ) );
+  frame1->setFrameEnabled( true );
+  table->addFrame( frame1 );
+  table->setBackgroundColor( Qt::yellow );
+
+  table->setContentFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+  table->setHeaderFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 16 ) );
+
+  frame1->setFrameEnabled( false );
+  table->setShowGrid( true );
+  table->setHorizontalGrid( true );
+  table->setVerticalGrid( true );
+  table->setHeaderFontColor( QColor( 255, 0, 255 ) );
+
+  table->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( QStringLiteral( "Jet" ) ) << QgsTableCell( QStringLiteral( "Helicopter" ) ) << QgsTableCell( QStringLiteral( "Plane" ) ) )
+                           << ( QgsTableRow() << QgsTableCell( QStringLiteral( "A" ) ) << QgsTableCell( QStringLiteral( "B" ) ) << QgsTableCell( QStringLiteral( "C" ) ) ) );
+  table->setIncludeTableHeader( true );
+  table->setHeaders( QgsLayoutTableColumns() << new QgsLayoutTableColumn( QStringLiteral( "header1" ) )
+                     << new QgsLayoutTableColumn( QStringLiteral( "h2" ) )
+                     << new QgsLayoutTableColumn( QStringLiteral( "header 3" ) ) );
+
+  QgsLayoutChecker checker( QStringLiteral( "manualtable_headers" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_manual_table" ) );
   bool result = checker.testLayout( mReport );
   QVERIFY( result );

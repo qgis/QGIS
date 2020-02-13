@@ -33,6 +33,11 @@ QgsLayoutItemManualTable::QgsLayoutItemManualTable( QgsLayout *layout )
   refreshAttributes();
 }
 
+QgsLayoutItemManualTable::~QgsLayoutItemManualTable()
+{
+  qDeleteAll( mHeaders );
+}
+
 int QgsLayoutItemManualTable::type() const
 {
   return QgsLayoutItemRegistry::LayoutManualTable;
@@ -131,10 +136,54 @@ void QgsLayoutItemManualTable::setColumnWidths( const QList<double> &widths )
   refreshAttributes();
 }
 
+bool QgsLayoutItemManualTable::includeTableHeader() const
+{
+  return mIncludeHeader;
+}
+
+void QgsLayoutItemManualTable::setIncludeTableHeader( bool included )
+{
+  mIncludeHeader = included;
+
+  if ( !mIncludeHeader )
+    setHeaderMode( NoHeaders );
+  else
+    setHeaderMode( AllFrames );
+  refreshColumns();
+  refreshAttributes();
+}
+
+QgsLayoutTableColumns &QgsLayoutItemManualTable::headers()
+{
+  return mHeaders;
+}
+
+void QgsLayoutItemManualTable::setHeaders( const QgsLayoutTableColumns &headers )
+{
+  qDeleteAll( mHeaders );
+  mHeaders.clear();
+
+  mHeaders.append( headers );
+  refreshColumns();
+  refreshAttributes();
+}
+
 bool QgsLayoutItemManualTable::writePropertiesToElement( QDomElement &tableElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   if ( !QgsLayoutTable::writePropertiesToElement( tableElem, doc, context ) )
     return false;
+
+  tableElem.setAttribute( QStringLiteral( "includeHeader" ), mIncludeHeader ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+
+  //headers
+  QDomElement headersElem = doc.createElement( QStringLiteral( "headers" ) );
+  for ( QgsLayoutTableColumn *header : mHeaders )
+  {
+    QDomElement headerElem = doc.createElement( QStringLiteral( "header" ) );
+    header->writeXml( headerElem, doc );
+    headersElem.appendChild( headerElem );
+  }
+  tableElem.appendChild( headersElem );
 
   QDomElement contentsElement = doc.createElement( QStringLiteral( "contents" ) );
   for ( const QgsTableRow &row : mContents )
@@ -176,6 +225,24 @@ bool QgsLayoutItemManualTable::readPropertiesFromElement( const QDomElement &ite
 {
   if ( !QgsLayoutTable::readPropertiesFromElement( itemElem, doc, context ) )
     return false;
+
+  mIncludeHeader = itemElem.attribute( QStringLiteral( "includeHeader" ) ).toInt();
+  //restore header specifications
+  qDeleteAll( mHeaders );
+  mHeaders.clear();
+  QDomNodeList headersList = itemElem.elementsByTagName( QStringLiteral( "headers" ) );
+  if ( !headersList.isEmpty() )
+  {
+    QDomElement headersElem = headersList.at( 0 ).toElement();
+    QDomNodeList headerEntryList = headersElem.elementsByTagName( QStringLiteral( "header" ) );
+    for ( int i = 0; i < headerEntryList.size(); ++i )
+    {
+      QDomElement headerElem = headerEntryList.at( i ).toElement();
+      QgsLayoutTableColumn *header = new QgsLayoutTableColumn;
+      header->readXml( headerElem );
+      mHeaders.append( header );
+    }
+  }
 
   mRowHeights.clear();
   const QDomNodeList rowHeightNodeList = itemElem.firstChildElement( QStringLiteral( "rowHeights" ) ).childNodes();
@@ -252,7 +319,7 @@ void QgsLayoutItemManualTable::refreshColumns()
     for ( const QgsTableCell &cell : firstRow )
     {
       ( void )cell;
-      std::unique_ptr< QgsLayoutTableColumn > newCol = qgis::make_unique< QgsLayoutTableColumn >( QString() );
+      std::unique_ptr< QgsLayoutTableColumn > newCol = qgis::make_unique< QgsLayoutTableColumn >( mHeaders.value( colIndex ) ? mHeaders.value( colIndex )->heading() : QString() );
       newCol->setWidth( mColumnWidths.value( colIndex ) );
       columns << newCol.release();
       colIndex++;
