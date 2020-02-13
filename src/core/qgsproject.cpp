@@ -1585,9 +1585,9 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 }
 
 
-void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags )
+bool QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags )
 {
-
+  bool valid = true;
   const auto constChildren = group->children();
   for ( QgsLayerTreeNode *child : constChildren )
   {
@@ -1621,11 +1621,16 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFl
       if ( child->customProperty( QStringLiteral( "embedded" ) ).toInt() )
       {
         QList<QDomNode> brokenNodes;
-        createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), readPath( child->customProperty( QStringLiteral( "embedded_project" ) ).toString() ), brokenNodes, flags );
+        if ( ! createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), readPath( child->customProperty( QStringLiteral( "embedded_project" ) ).toString() ), brokenNodes, flags ) )
+        {
+          valid = valid && false;
+        }
       }
     }
 
   }
+
+  return valid;
 }
 
 QVariantMap QgsProject::customVariables() const
