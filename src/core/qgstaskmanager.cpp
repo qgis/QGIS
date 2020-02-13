@@ -36,7 +36,8 @@ QgsTask::QgsTask( const QString &name, Flags flags )
 QgsTask::~QgsTask()
 {
   Q_ASSERT_X( mStatus != Running, "delete", QStringLiteral( "status was %1" ).arg( mStatus ).toLatin1() );
-  mNotFinishedMutex.tryLock(); // we're not guaranteed to already have the lock in place here
+  // even here we are not sure that task start method has ended
+  mNotFinishedMutex.lock();
   const auto constMSubTasks = mSubTasks;
   for ( const SubTask &subTask : constMSubTasks )
   {
