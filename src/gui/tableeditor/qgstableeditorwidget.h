@@ -404,6 +404,7 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     QHash< QTableWidgetItem *, QgsNumericFormat * > mNumericFormats;
     QMenu *mHeaderMenu = nullptr;
     bool mIncludeHeader = false;
+    bool mFirstSet = true;
 
     friend class QgsTableEditorDelegate;
 
