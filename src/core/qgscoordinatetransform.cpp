@@ -41,6 +41,8 @@
 #endif
 
 #include <sqlite3.h>
+#include <vector>
+#include <algorithm>
 
 // if defined shows all information about transform to stdout
 // #define COORDINATE_TRANSFORM_VERBOSE
@@ -643,12 +645,12 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   }
 
 #if PROJ_VERSION_MAJOR>=6
-  double *xprev = new double[ numPoints ];
-  memcpy( xprev, x, sizeof( double ) * numPoints );
-  double *yprev = new double[ numPoints ];
-  memcpy( yprev, y, sizeof( double ) * numPoints );
-  double *zprev = new double[ numPoints ];
-  memcpy( zprev, z, sizeof( double ) * numPoints );
+  std::vector< double > xprev( numPoints );
+  memcpy( xprev.data(), x, sizeof( double ) * numPoints );
+  std::vector< double > yprev( numPoints );
+  memcpy( yprev.data(), y, sizeof( double ) * numPoints );
+  std::vector< double > zprev( numPoints );
+  memcpy( zprev.data(), z, sizeof( double ) * numPoints );
 #endif
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
@@ -694,6 +696,17 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   {
     actualRes =  proj_errno( projData );
   }
+  if ( actualRes == 0 )
+  {
+    // proj_errno is sometimes not an accurate method to test for transform failures - so we need to
+    // manually scan for nan values
+    if ( std::any_of( x, x + numPoints, []( double v ) { return std::isinf( v ); } )
+    || std::any_of( y, y + numPoints, []( double v ) { return std::isinf( v ); } )
+    || std::any_of( z, z + numPoints, []( double v ) { return std::isinf( v ); } ) )
+    {
+      actualRes = 1;
+    }
+  }
 #else
   bool sourceIsLatLong = false;
   bool destIsLatLong = false;
@@ -737,9 +750,9 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
       projResult = 0;
       proj_errno_reset( transform );
       proj_trans_generic( transform, direction == ForwardTransform ? PJ_FWD : PJ_INV,
-                          xprev, sizeof( double ), numPoints,
-                          yprev, sizeof( double ), numPoints,
-                          zprev, sizeof( double ), numPoints,
+                          xprev.data(), sizeof( double ), numPoints,
+                          yprev.data(), sizeof( double ), numPoints,
+                          zprev.data(), sizeof( double ), numPoints,
                           nullptr, sizeof( double ), 0 );
       // Try to - approximatively - emulate the behavior of pj_transform()...
       // In the case of a single point transform, and a transformation error occurs,
@@ -756,9 +769,9 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
       if ( projResult == 0 )
       {
-        memcpy( x, xprev, sizeof( double ) * numPoints );
-        memcpy( y, yprev, sizeof( double ) * numPoints );
-        memcpy( z, zprev, sizeof( double ) * numPoints );
+        memcpy( x, xprev.data(), sizeof( double ) * numPoints );
+        memcpy( y, yprev.data(), sizeof( double ) * numPoints );
+        memcpy( z, zprev.data(), sizeof( double ) * numPoints );
       }
 
       if ( sFallbackOperationOccurredHandler )
@@ -769,12 +782,6 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
       }
     }
   }
-  delete [] xprev;
-  xprev = nullptr;
-  delete [] yprev;
-  yprev = nullptr;
-  delete [] zprev;
-  zprev = nullptr;
 #endif
   if ( projResult != 0 )
   {
