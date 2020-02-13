@@ -381,6 +381,34 @@ class CORE_EXPORT QgsCoordinateTransform
     void setCoordinateOperation( const QString &operation ) const;
 
     /**
+     * Sets whether approximate "ballpark" results are appropriate for this coordinate transform.
+     *
+     * When a coordinate transform is only being used to generate ballpark results then the
+     * \a appropriate argument should be set to TRUE. This indicates that its perfectable
+     * acceptable (and even expected!) for the transform to use fallback coordinate operations
+     * in the case that the preferred or user-specified operation fails (such as when coordinates
+     * from outside of a grid shift file's extent are transformed).
+     *
+     * When \a appropriate is TRUE, then no warnings will be generated when the transform
+     * falls back to a default operation, which may introduce inaccuracies when compared to
+     * the default/specified coordinate operation.
+     *
+     * This should be set when a transform expects that coordinates outside of the direct
+     * area of use while be transformed, e.g. when transforming from a global extent to a
+     * CRS with a localized area of use.
+     *
+     * If \a appropriate is FALSE (the default behavior), then transforms MAY STILL fallback to default operations
+     * when the preferred or user-specified operation fails, however whenever this occurs
+     * a user-visible warning will be generated.
+     *
+     * \warning This setting applies to a single instance of a coordinate transform only,
+     * and is not copied when a coordinate transform object is copied or assigned.
+     *
+     * \since QGIS 3.12
+     */
+    void setBallparkTransformsAreAppropriate( bool appropriate );
+
+    /**
      * Returns the ID of the datum transform to use when projecting from the source
      * CRS.
      *
@@ -591,6 +619,7 @@ class CORE_EXPORT QgsCoordinateTransform
 #endif
 
     mutable QString mLastError;
+    bool mBallparkTransformsAreAppropriate = false;
 
 #if PROJ_VERSION_MAJOR>=6
     bool setFromCache( const QgsCoordinateReferenceSystem &src,
