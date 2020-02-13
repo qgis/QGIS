@@ -62,7 +62,7 @@ using QgsOgrLayerUniquePtr = std::unique_ptr< QgsOgrLayer, QgsOgrLayerReleaser>;
   \class QgsOgrProvider
   \brief Data provider for OGR datasources
   */
-class QgsOgrProvider : public QgsVectorDataProvider
+class QgsOgrProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -733,7 +733,7 @@ class QgsOgrLayer
  * Entry point for registration of the OGR data provider
  * \since QGIS 3.10
  */
-class QgsOgrProviderMetadata: public QgsProviderMetadata
+class QgsOgrProviderMetadata final: public QgsProviderMetadata
 {
   public:
 

@@ -27,7 +27,7 @@ extern "C"
 class QgsSqliteHandle;
 class QgsSpatiaLiteProvider;
 
-class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
+class QgsSpatiaLiteFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider *p );
@@ -54,7 +54,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     friend class QgsSpatiaLiteExpressionCompiler;
 };
 
-class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>
+class QgsSpatiaLiteFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>
 {
   public:
     QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
