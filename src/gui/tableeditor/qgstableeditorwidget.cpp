@@ -193,6 +193,16 @@ void QgsTableEditorWidget::updateHeaders()
   }
 
   setHorizontalHeaderLabels( headers );
+
+  headers.clear();
+  if ( mIncludeHeader )
+    headers << tr( "Header" );
+  for ( int i = 1; i <= 1000; i++ )
+  {
+    headers << QString::number( i );
+  }
+
+  setVerticalHeaderLabels( headers );
 }
 
 bool QgsTableEditorWidget::collectConsecutiveRowRange( const QModelIndexList &list, int &minRow, int &maxRow ) const
@@ -296,12 +306,16 @@ void QgsTableEditorWidget::setTableContents( const QgsTableContents &contents )
   mNumericFormats.clear();
 
   QgsNumericFormatContext numericContext;
-  int rowNumber = 0;
-  setRowCount( contents.size() );
+  int rowNumber = mIncludeHeader ? 1 : 0;
+  bool first = true;
+  setRowCount( contents.size() + rowNumber );
   for ( const QgsTableRow &row : contents )
   {
-    if ( rowNumber == 0 )
+    if ( first )
+    {
       setColumnCount( row.size() );
+      first = false;
+    }
 
     int colNumber = 0;
     for ( const QgsTableCell &col : row )
@@ -332,7 +346,7 @@ QgsTableContents QgsTableEditorWidget::tableContents() const
   QgsTableContents items;
   items.reserve( rowCount() );
 
-  for ( int r = 0; r < rowCount(); r++ )
+  for ( int r = mIncludeHeader ? 1 : 0; r < rowCount(); r++ )
   {
     QgsTableRow row;
     row.reserve( columnCount() );
@@ -367,6 +381,9 @@ void QgsTableEditorWidget::setSelectionNumericFormat( QgsNumericFormat *format )
   QgsNumericFormatContext numericContext;
   for ( const QModelIndex &index : selection )
   {
+    if ( index.row() == 0 && mIncludeHeader )
+      continue;
+
     QTableWidgetItem *i = item( index.row(), index.column() );
     if ( !i )
     {
@@ -546,7 +563,7 @@ double QgsTableEditorWidget::tableRowHeight( int row )
   double height = 0;
   for ( int col = 0; col < columnCount(); ++col )
   {
-    double thisHeight = model()->data( model()->index( row, col ), RowHeight ).toDouble();
+    double thisHeight = model()->data( model()->index( row + ( mIncludeHeader ? 1 : 0 ), col ), RowHeight ).toDouble();
     height = std::max( thisHeight, height );
   }
   return height;
@@ -565,12 +582,15 @@ double QgsTableEditorWidget::tableColumnWidth( int column )
 
 void QgsTableEditorWidget::setTableRowHeight( int row, double height )
 {
+  if ( row == 0 && mIncludeHeader )
+    return;
+
   bool changed = false;
   mBlockSignals++;
 
   for ( int col = 0; col < columnCount(); ++col )
   {
-    if ( QTableWidgetItem *i = item( row, col ) )
+    if ( QTableWidgetItem *i = item( row + ( mIncludeHeader ? 1 : 0 ), col ) )
     {
       if ( i->data( RowHeight ).toDouble() != height )
       {
@@ -582,7 +602,7 @@ void QgsTableEditorWidget::setTableRowHeight( int row, double height )
     {
       QTableWidgetItem *newItem = new QTableWidgetItem();
       newItem->setData( RowHeight, height );
-      setItem( row, col, newItem );
+      setItem( row + ( mIncludeHeader ? 1 : 0 ), col, newItem );
       changed = true;
     }
   }
@@ -627,6 +647,35 @@ QList<int> QgsTableEditorWidget::rowsAssociatedWithSelection()
 QList<int> QgsTableEditorWidget::columnsAssociatedWithSelection()
 {
   return collectUniqueColumns( selectedIndexes() );
+}
+
+QVariantList QgsTableEditorWidget::tableHeaders() const
+{
+  if ( !mIncludeHeader )
+    return QVariantList();
+
+  QVariantList res;
+  res.reserve( columnCount() );
+  for ( int col = 0; col < columnCount(); ++col )
+  {
+    if ( QTableWidgetItem *i = item( 0, col ) )
+    {
+      res << i->data( CellContent );
+    }
+    else
+    {
+      res << QVariant();
+    }
+  }
+  return res;
+}
+
+bool QgsTableEditorWidget::isHeaderCellSelected()
+{
+  if ( !mIncludeHeader )
+    return false;
+
+  return collectUniqueRows( selectedIndexes() ).contains( 0 );
 }
 
 void QgsTableEditorWidget::insertRowsBelow()
@@ -795,6 +844,9 @@ void QgsTableEditorWidget::setSelectionForegroundColor( const QColor &color )
   mBlockSignals++;
   for ( const QModelIndex &index : selection )
   {
+    if ( index.row() == 0 && mIncludeHeader )
+      continue;
+
     if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
     {
       if ( i->data( Qt::ForegroundRole ).value< QColor >() != color )
@@ -823,6 +875,9 @@ void QgsTableEditorWidget::setSelectionBackgroundColor( const QColor &color )
   mBlockSignals++;
   for ( const QModelIndex &index : selection )
   {
+    if ( index.row() == 0 && mIncludeHeader )
+      continue;
+
     if ( QTableWidgetItem *i = item( index.row(), index.column() ) )
     {
       if ( i->data( PresetBackgroundColorRole ).value< QColor >() != color )
@@ -853,6 +908,9 @@ void QgsTableEditorWidget::setSelectionRowHeight( double height )
   const QList< int > rows = rowsAssociatedWithSelection();
   for ( int row : rows )
   {
+    if ( row == 0 && mIncludeHeader )
+      continue;
+
     for ( int col = 0; col < columnCount(); ++col )
     {
       if ( QTableWidgetItem *i = item( row, col ) )
@@ -906,6 +964,44 @@ void QgsTableEditorWidget::setSelectionColumnWidth( double width )
   mBlockSignals--;
   if ( changed && !mBlockSignals )
     emit tableChanged();
+}
+
+void QgsTableEditorWidget::setIncludeTableHeader( bool included )
+{
+  if ( included == mIncludeHeader )
+    return;
+
+  mIncludeHeader = included;
+
+  if ( mIncludeHeader )
+    insertRow( 0 );
+  else
+    removeRow( 0 );
+  updateHeaders();
+}
+
+void QgsTableEditorWidget::setTableHeaders( const QVariantList &headers )
+{
+  if ( !mIncludeHeader )
+    return;
+
+  mBlockSignals++;
+
+  for ( int col = 0; col < columnCount(); ++col )
+  {
+    if ( QTableWidgetItem *i = item( 0, col ) )
+    {
+      i->setText( headers.value( col ).toString() );
+      i->setData( CellContent, headers.value( col ) ); // can't use EditRole, because Qt. (https://bugreports.qt.io/browse/QTBUG-11549)
+    }
+    else
+    {
+      QTableWidgetItem *item = new QTableWidgetItem( headers.value( col ).toString() );
+      item->setData( CellContent, headers.value( col ) ); // can't use EditRole, because Qt. (https://bugreports.qt.io/browse/QTBUG-11549)
+      setItem( 0, col, item );
+    }
+  }
+  mBlockSignals--;
 }
 
 /// @cond PRIVATE
