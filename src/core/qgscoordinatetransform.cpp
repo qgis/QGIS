@@ -41,6 +41,7 @@
 #endif
 
 #include <sqlite3.h>
+#include <qlogging.h>
 #include <vector>
 #include <algorithm>
 
@@ -774,11 +775,14 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
         memcpy( z, zprev.data(), sizeof( double ) * numPoints );
       }
 
-      if ( sFallbackOperationOccurredHandler )
+      if ( !mBallparkTransformsAreAppropriate && sFallbackOperationOccurredHandler )
       {
         QgsDatumTransform::TransformDetails desired = instantiatedCoordinateOperationDetails();
         QgsDatumTransform::TransformDetails used = QgsDatumTransform::transformDetailsFromPj( transform );
         sFallbackOperationOccurredHandler( d->mSourceCRS, d->mDestCRS, desired, used );
+        const QString warning = QStringLiteral( "A fallback coordinate operation was used between %1 and %2" ).arg( d->mSourceCRS.authid(),
+                                d->mDestCRS.authid() );
+        qWarning( "%s", warning.toLatin1().constData() );
       }
     }
   }
@@ -895,6 +899,11 @@ void QgsCoordinateTransform::setCoordinateOperation( const QString &operation ) 
   d.detach();
   d->mProjCoordinateOperation = operation;
   d->mShouldReverseCoordinateOperation = false;
+}
+
+void QgsCoordinateTransform::setBallparkTransformsAreAppropriate( bool appropriate )
+{
+  mBallparkTransformsAreAppropriate = appropriate;
 }
 
 const char *finder( const char *name )
