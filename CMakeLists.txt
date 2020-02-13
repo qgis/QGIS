@@ -549,6 +549,8 @@ IF (PEDANTIC)
 
     # c++ only warnings
 
+    SET(_warnings "${_warnings} -Wnon-virtual-dtor")
+
     # unavoidable - we can't avoid these, as older, supported compilers do not support removing the redundant move
     SET(_warnings "${_warnings} -Wno-redundant-move")
 
