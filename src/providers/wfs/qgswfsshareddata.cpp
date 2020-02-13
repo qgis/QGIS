@@ -287,8 +287,12 @@ bool QgsWFSSharedData::createCache()
     vsimemFilename.sprintf( "/vsimem/qgis_wfs_cache_template_%p/features.sqlite", this );
     mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
     VSIUnlink( vsimemFilename.toStdString().c_str() );
-    std::unique_ptr< QgsVectorFileWriter > writer = qgis::make_unique< QgsVectorFileWriter >( vsimemFilename, QString(),
-        cacheFields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem(), QStringLiteral( "SpatiaLite" ), datasourceOptions, layerOptions );
+    QgsVectorFileWriter::SaveVectorOptions saveOptions;
+    saveOptions.fileEncoding = QString();
+    saveOptions.driverName = QStringLiteral( "SpatiaLite" );
+    saveOptions.datasourceOptions = datasourceOptions;
+    saveOptions.layerOptions = layerOptions;
+    std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( vsimemFilename, cacheFields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), saveOptions ) );
     if ( writer->hasError() == QgsVectorFileWriter::NoError )
     {
       writer.reset();
