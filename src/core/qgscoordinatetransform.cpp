@@ -780,9 +780,11 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
       if ( !mBallparkTransformsAreAppropriate && sFallbackOperationOccurredHandler )
       {
         sFallbackOperationOccurredHandler( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation );
+#if 0
         const QString warning = QStringLiteral( "A fallback coordinate operation was used between %1 and %2" ).arg( d->mSourceCRS.authid(),
                                 d->mDestCRS.authid() );
         qWarning( "%s", warning.toLatin1().constData() );
+#endif
       }
     }
   }
