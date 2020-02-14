@@ -764,7 +764,10 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
       // So here just check proj_errno() for single point transform
       if ( numPoints == 1 )
       {
-        projResult = proj_errno( transform );
+        // hmm - something very odd here. We can't trust proj_errno( transform ), as that's giving us incorrect error numbers
+        // (such as "failed to load datum shift file", which is definitely incorrect for a default proj created operation!)
+        // so we resort to testing values ourselves...
+        projResult = std::isinf( xprev[0] ) || std::isinf( yprev[0] ) || std::isinf( zprev[0] ) ? 1 : 0;
       }
 
       if ( projResult == 0 )
@@ -813,7 +816,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
                                "Error: %3" )
                   .arg( dir,
                         points,
-                        QString::fromUtf8( proj_errno_string( projResult ) ) );
+                        projResult < 0 ? QString::fromUtf8( proj_errno_string( projResult ) ) : QObject::tr( "Fallback transform failed" ) );
 #else
     char *srcdef = pj_get_def( sourceProj, 0 );
     char *dstdef = pj_get_def( destProj, 0 );
