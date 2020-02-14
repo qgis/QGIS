@@ -609,7 +609,7 @@ class CORE_EXPORT QgsCoordinateTransform
 
     /**
      * Sets a custom \a handler to use when the desired coordinate operation for use between \a sourceCrs and
-     * \a destinationCrs failed and an alternative fallback operation was utilised instead.
+     * \a destinationCrs failed and an alternative fallback operation was utilized instead.
      *
      * \since QGIS 3.10.3
      */
