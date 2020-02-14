@@ -58,7 +58,7 @@ QgsAppMissingGridHandler::QgsAppMissingGridHandler( QObject *parent )
 
   QgsCoordinateTransform::setFallbackOperationOccurredHandler( [ = ]( const QgsCoordinateReferenceSystem & sourceCrs,
       const QgsCoordinateReferenceSystem & destinationCrs,
-      const QgsDatumTransform::TransformDetails & desired )
+      const QString & desired )
   {
     emit fallbackOperationOccurred( sourceCrs, destinationCrs, desired );
   } );
@@ -273,13 +273,13 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
   bar->pushWidget( widget, Qgis::Critical, 0 );
 }
 
-void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &desired )
+void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &desired )
 {
   //  if ( !shouldWarnAboutPairForCurrentProject( sourceCrs, destinationCrs ) )
   //    return;
 
   const QString shortMessage = tr( "Used a fallback transform from %1 to %2" ).arg( sourceCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ), destinationCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) );
-  const QString longMessage = tr( "<p>An alternative transform was used when transforming coordinates between <i>%1</i> and <i>%2</i>.</p><p style=\"color: red\">I wanted to use %3</p>" ).arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier(), desired.proj );
+  const QString longMessage = tr( "<p>An alternative transform was used when transforming coordinates between <i>%1</i> and <i>%2</i>.</p><p style=\"color: red\">I wanted to use %3</p>" ).arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier(), desired );
 
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = bar->createMessage( QString(), shortMessage );
