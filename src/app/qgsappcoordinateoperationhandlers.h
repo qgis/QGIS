@@ -51,8 +51,7 @@ class QgsAppMissingGridHandler : public QObject
 
     void fallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs,
                                     const QgsCoordinateReferenceSystem &destinationCrs,
-                                    const QgsDatumTransform::TransformDetails &desired,
-                                    const QgsDatumTransform::TransformDetails &used );
+                                    const QgsDatumTransform::TransformDetails &desired );
 
   private slots:
 
@@ -75,17 +74,17 @@ class QgsAppMissingGridHandler : public QObject
 
     void onFallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs,
                                       const QgsCoordinateReferenceSystem &destinationCrs,
-                                      const QgsDatumTransform::TransformDetails &desired,
-                                      const QgsDatumTransform::TransformDetails &used );
+                                      const QgsDatumTransform::TransformDetails &desired );
 
   private:
 
     bool shouldWarnAboutPair( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
     bool shouldWarnAboutPairForCurrentProject( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
+    bool shouldWarnAboutBallparkPairForCurrentProject( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest );
 
     QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedPairs;
     QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedPairsForProject;
-
+    QList< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem > > mAlreadyWarnedBallparkPairsForProject;
 };
 
 #endif // QGSAPPCOORDINATEOPERATIONHANDLERS_H

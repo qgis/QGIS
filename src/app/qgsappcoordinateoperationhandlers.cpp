@@ -58,10 +58,9 @@ QgsAppMissingGridHandler::QgsAppMissingGridHandler( QObject *parent )
 
   QgsCoordinateTransform::setFallbackOperationOccurredHandler( [ = ]( const QgsCoordinateReferenceSystem & sourceCrs,
       const QgsCoordinateReferenceSystem & destinationCrs,
-      const QgsDatumTransform::TransformDetails & desired,
-      const QgsDatumTransform::TransformDetails & used )
+      const QgsDatumTransform::TransformDetails & desired )
   {
-    emit fallbackOperationOccurred( sourceCrs, destinationCrs, desired, used );
+    emit fallbackOperationOccurred( sourceCrs, destinationCrs, desired );
   } );
 
   connect( this, &QgsAppMissingGridHandler::missingRequiredGrid, this, &QgsAppMissingGridHandler::onMissingRequiredGrid, Qt::QueuedConnection );
@@ -274,7 +273,7 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
   bar->pushWidget( widget, Qgis::Critical, 0 );
 }
 
-void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &desired, const QgsDatumTransform::TransformDetails &used )
+void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QgsDatumTransform::TransformDetails &desired )
 {
   //  if ( !shouldWarnAboutPairForCurrentProject( sourceCrs, destinationCrs ) )
   //    return;
