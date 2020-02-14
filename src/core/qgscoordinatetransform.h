@@ -587,14 +587,13 @@ class CORE_EXPORT QgsCoordinateTransform
 
     /**
      * Sets a custom \a handler to use when the desired coordinate operation for use between \a sourceCrs and
-     * \a destinationCrs failed and an alternative fallback \a usedOperation was utilised instead.
+     * \a destinationCrs failed and an alternative fallback operation was utilised instead.
      *
      * \since QGIS 3.10.3
      */
     static void setFallbackOperationOccurredHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
         const QgsCoordinateReferenceSystem &destinationCrs,
-        const QgsDatumTransform::TransformDetails &desiredOperation,
-        const QgsDatumTransform::TransformDetails &usedOperation )> &handler );
+        const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
 
 #endif
 
@@ -641,8 +640,7 @@ class CORE_EXPORT QgsCoordinateTransform
 
     static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
                                 const QgsCoordinateReferenceSystem &destinationCrs,
-                                const QgsDatumTransform::TransformDetails &desiredOperation,
-                                const QgsDatumTransform::TransformDetails &usedOperation )> sFallbackOperationOccurredHandler;
+                                const QgsDatumTransform::TransformDetails &desiredOperation )> sFallbackOperationOccurredHandler;
 
 };
 
