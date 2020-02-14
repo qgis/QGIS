@@ -593,7 +593,7 @@ class CORE_EXPORT QgsCoordinateTransform
      */
     static void setFallbackOperationOccurredHandler( const std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
         const QgsCoordinateReferenceSystem &destinationCrs,
-        const QgsDatumTransform::TransformDetails &desiredOperation )> &handler );
+        const QString &desiredOperation )> &handler );
 
 #endif
 
@@ -640,7 +640,7 @@ class CORE_EXPORT QgsCoordinateTransform
 
     static std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
                                 const QgsCoordinateReferenceSystem &destinationCrs,
-                                const QgsDatumTransform::TransformDetails &desiredOperation )> sFallbackOperationOccurredHandler;
+                                const QString &desiredOperation )> sFallbackOperationOccurredHandler;
 
 };
 
