@@ -298,7 +298,7 @@ void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateR
   } );
 
   widget->layout()->addWidget( detailsButton );
-  bar->pushWidget( widget, Qgis::Critical, 0 );
+  bar->pushWidget( widget, Qgis::Warning, 0 );
 }
 
 bool QgsAppMissingGridHandler::shouldWarnAboutPair( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest )
