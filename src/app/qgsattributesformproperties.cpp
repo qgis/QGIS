@@ -766,6 +766,8 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
 void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int index )
 {
+  Q_UNUSED( index )
+
   QgsEditFormConfig::EditorLayout layout = mEditorLayoutComboBox->currentData().value<QgsEditFormConfig::EditorLayout>();
   switch ( layout )
   {
