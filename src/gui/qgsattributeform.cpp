@@ -446,6 +446,10 @@ bool QgsAttributeForm::saveEdits()
 
 bool QgsAttributeForm::updateDefaultValues( const int originIdx )
 {
+
+  // Synchronize
+  updateDefaultValueDependencies();
+
   if ( !mDefaultValueDependencies.contains( originIdx ) )
     return false;
 
@@ -1544,32 +1548,7 @@ void QgsAttributeForm::init()
     }
   }
 
-  //create defaultValueDependencies
-  for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
-  {
-    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
-    if ( eww )
-    {
-      QgsExpression exp( eww->field().defaultValueDefinition().expression() );
-      const QSet<QString> referencedColumns = exp.referencedColumns();
-      for ( const QString &referencedColumn : referencedColumns )
-      {
-        if ( referencedColumn == QgsFeatureRequest::ALL_ATTRIBUTES )
-        {
-          const QList<int> allAttributeIds( mLayer->fields().allAttributesList() );
-
-          for ( const int id : allAttributeIds )
-          {
-            mDefaultValueDependencies.insertMulti( id, eww );
-          }
-        }
-        else
-        {
-          mDefaultValueDependencies.insertMulti( mLayer->fields().lookupField( referencedColumn ), eww );
-        }
-      }
-    }
-  }
+  updateDefaultValueDependencies();
 
   if ( !mButtonBox )
   {
@@ -2399,6 +2378,37 @@ void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
 bool QgsAttributeForm::fieldIsEditable( int fieldIndex ) const
 {
   return QgsVectorLayerUtils::fieldIsEditable( mLayer, fieldIndex, mFeature );
+}
+
+void QgsAttributeForm::updateDefaultValueDependencies()
+{
+  mDefaultValueDependencies.clear();
+  //create defaultValueDependencies
+  for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
+  {
+    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    if ( eww )
+    {
+      QgsExpression exp( eww->field().defaultValueDefinition().expression() );
+      const QSet<QString> referencedColumns = exp.referencedColumns();
+      for ( const QString &referencedColumn : referencedColumns )
+      {
+        if ( referencedColumn == QgsFeatureRequest::ALL_ATTRIBUTES )
+        {
+          const QList<int> allAttributeIds( mLayer->fields().allAttributesList() );
+
+          for ( const int id : allAttributeIds )
+          {
+            mDefaultValueDependencies.insertMulti( id, eww );
+          }
+        }
+        else
+        {
+          mDefaultValueDependencies.insertMulti( mLayer->fields().lookupField( referencedColumn ), eww );
+        }
+      }
+    }
+  }
 }
 
 void QgsAttributeForm::updateIcon( QgsEditorWidgetWrapper *eww )
