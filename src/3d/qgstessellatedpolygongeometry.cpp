@@ -28,7 +28,7 @@
 QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( QNode *parent )
   : Qt3DRender::QGeometry( parent )
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   mVertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
 #else
   mVertexBuffer = new Qt3DRender::QBuffer( this );
