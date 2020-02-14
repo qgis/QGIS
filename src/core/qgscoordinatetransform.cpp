@@ -808,15 +808,11 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     QString dir = ( direction == ForwardTransform ) ? QObject::tr( "forward transform" ) : QObject::tr( "inverse transform" );
 
 #if PROJ_VERSION_MAJOR>=6
-    QgsProjUtils::proj_pj_unique_ptr src( proj_get_source_crs( QgsProjContext::get(), projData ) );
-    QgsProjUtils::proj_pj_unique_ptr dest( proj_get_source_crs( QgsProjContext::get(), projData ) );
     QString msg = QObject::tr( "%1 of\n"
                                "%2"
-                               "PROJ: %3\n"
-                               "Error: %4" )
+                               "Error: %3" )
                   .arg( dir,
                         points,
-                        proj_as_proj_string( QgsProjContext::get(), projData, PJ_PROJ_5, nullptr ),
                         QString::fromUtf8( proj_errno_string( projResult ) ) );
 #else
     char *srcdef = pj_get_def( sourceProj, 0 );
