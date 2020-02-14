@@ -7,6 +7,11 @@ SET(QGIS_APP_SRCS
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
   ${CMAKE_SOURCE_DIR}/external/nmea/time.c
 
+  attributeformconfig/qgsattributeformcontaineredit.cpp
+  attributeformconfig/qgsattributerelationedit.cpp
+  attributeformconfig/qgsattributetypedialog.cpp
+  attributeformconfig/qgsattributewidgetedit.cpp
+
   qgisapp.cpp
   qgisappinterface.cpp
   qgisappstylesheet.cpp
@@ -26,8 +31,6 @@ SET(QGIS_APP_SRCS
   qgsappsslerrorhandler.cpp
   qgsattributeactiondialog.cpp
   qgsattributeactionpropertiesdialog.cpp
-  qgsattributetypedialog.cpp
-  qgsattributerelationedit.cpp
   qgsattributesforminitcode.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
@@ -111,8 +114,6 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsplitparts.cpp
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
-
-  attributeformconfig/qgsattributeformcontaineredit.cpp
 
   decorations/qgsdecorationitem.cpp
   decorations/qgsdecorationtitle.cpp
