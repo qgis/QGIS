@@ -106,7 +106,7 @@ void QgsCoordinateOperationWidget::setMapCanvas( QgsMapCanvas *canvas )
       // reproject extent
       QgsCoordinateTransform ct( QgsProject::instance()->crs(),
                                  QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
-
+      ct.setBallparkTransformsAreAppropriate( true );
       g = g.densifyByCount( 5 );
       try
       {
