@@ -742,6 +742,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
 #if PROJ_VERSION_MAJOR>=6
 
+  mFallbackOperationOccurred = false;
   if ( actualRes != 0 )
   {
     // fail #1 -- try with getting proj to auto-pick an appropriate coordinate operation for the points
@@ -775,9 +776,10 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
         memcpy( x, xprev.data(), sizeof( double ) * numPoints );
         memcpy( y, yprev.data(), sizeof( double ) * numPoints );
         memcpy( z, zprev.data(), sizeof( double ) * numPoints );
+        mFallbackOperationOccurred = true;
       }
 
-      if ( !mBallparkTransformsAreAppropriate && sFallbackOperationOccurredHandler )
+      if ( !mBallparkTransformsAreAppropriate && !mDisableFallbackHandler && sFallbackOperationOccurredHandler )
       {
         sFallbackOperationOccurredHandler( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation );
 #if 0
@@ -902,6 +904,16 @@ void QgsCoordinateTransform::setCoordinateOperation( const QString &operation ) 
 void QgsCoordinateTransform::setBallparkTransformsAreAppropriate( bool appropriate )
 {
   mBallparkTransformsAreAppropriate = appropriate;
+}
+
+void QgsCoordinateTransform::disableFallbackOperationHandler( bool disabled )
+{
+  mDisableFallbackHandler = disabled;
+}
+
+bool QgsCoordinateTransform::fallbackOperationOccurred() const
+{
+  return mFallbackOperationOccurred;
 }
 
 const char *finder( const char *name )
