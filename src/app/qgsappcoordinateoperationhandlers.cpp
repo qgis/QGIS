@@ -69,7 +69,11 @@ QgsAppMissingGridHandler::QgsAppMissingGridHandler( QObject *parent )
   connect( this, &QgsAppMissingGridHandler::missingGridUsedByContextHandler, this, &QgsAppMissingGridHandler::onMissingGridUsedByContextHandler, Qt::QueuedConnection );
   connect( this, &QgsAppMissingGridHandler::fallbackOperationOccurred, this, &QgsAppMissingGridHandler::onFallbackOperationOccurred, Qt::QueuedConnection );
 
-  connect( QgsProject::instance(), &QgsProject::cleared, this, [ = ] { mAlreadyWarnedPairsForProject.clear(); } );
+  connect( QgsProject::instance(), &QgsProject::cleared, this, [ = ]
+  {
+    mAlreadyWarnedPairsForProject.clear();
+    mAlreadyWarnedBallparkPairsForProject.clear();
+  } );
 
 }
 
@@ -275,8 +279,8 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
 
 void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &desired )
 {
-  //  if ( !shouldWarnAboutPairForCurrentProject( sourceCrs, destinationCrs ) )
-  //    return;
+  if ( !shouldWarnAboutBallparkPairForCurrentProject( sourceCrs, destinationCrs ) )
+    return;
 
   const QString shortMessage = tr( "Used a fallback transform from %1 to %2" ).arg( sourceCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ), destinationCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) );
   const QString longMessage = tr( "<p>An alternative transform was used when transforming coordinates between <i>%1</i> and <i>%2</i>.</p><p style=\"color: red\">I wanted to use %3</p>" ).arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier(), desired );
@@ -316,5 +320,16 @@ bool QgsAppMissingGridHandler::shouldWarnAboutPairForCurrentProject( const QgsCo
   }
 
   mAlreadyWarnedPairsForProject.append( qMakePair( source, dest ) );
+  return true;
+}
+
+bool QgsAppMissingGridHandler::shouldWarnAboutBallparkPairForCurrentProject( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &dest )
+{
+  if ( mAlreadyWarnedBallparkPairsForProject.contains( qMakePair( source, dest ) ) || mAlreadyWarnedBallparkPairsForProject.contains( qMakePair( dest, source ) ) )
+  {
+    return false;
+  }
+
+  mAlreadyWarnedBallparkPairsForProject.append( qMakePair( source, dest ) );
   return true;
 }
