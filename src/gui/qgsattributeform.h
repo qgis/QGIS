@@ -333,6 +333,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     bool fieldIsEditable( const QgsVectorLayer &layer, int fieldIndex, QgsFeatureId fid ) const;
 
+    void updateDefaultValueDependencies();
+
     struct WidgetInfo
     {
       QWidget *widget = nullptr;
