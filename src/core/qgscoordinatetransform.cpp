@@ -54,7 +54,7 @@ bool QgsCoordinateTransform::sDisableCache = false;
 
 std::function< void( const QgsCoordinateReferenceSystem &sourceCrs,
                      const QgsCoordinateReferenceSystem &destinationCrs,
-                     const QgsDatumTransform::TransformDetails &desiredOperation )> QgsCoordinateTransform::sFallbackOperationOccurredHandler = nullptr;
+                     const QString &desiredOperation )> QgsCoordinateTransform::sFallbackOperationOccurredHandler = nullptr;
 
 QgsCoordinateTransform::QgsCoordinateTransform()
 {
@@ -776,8 +776,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
       if ( !mBallparkTransformsAreAppropriate && sFallbackOperationOccurredHandler )
       {
-        QgsDatumTransform::TransformDetails desired = instantiatedCoordinateOperationDetails();
-        sFallbackOperationOccurredHandler( d->mSourceCRS, d->mDestCRS, desired );
+        sFallbackOperationOccurredHandler( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation );
         const QString warning = QStringLiteral( "A fallback coordinate operation was used between %1 and %2" ).arg( d->mSourceCRS.authid(),
                                 d->mDestCRS.authid() );
         qWarning( "%s", warning.toLatin1().constData() );
@@ -1123,7 +1122,7 @@ void QgsCoordinateTransform::setCustomMissingGridUsedByContextHandler( const std
   QgsCoordinateTransformPrivate::setCustomMissingGridUsedByContextHandler( handler );
 }
 
-void QgsCoordinateTransform::setFallbackOperationOccurredHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::TransformDetails & )> &handler )
+void QgsCoordinateTransform::setFallbackOperationOccurredHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QString & )> &handler )
 {
   sFallbackOperationOccurredHandler = handler;
 }
