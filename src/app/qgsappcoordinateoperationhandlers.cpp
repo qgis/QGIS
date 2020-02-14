@@ -282,8 +282,8 @@ void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateR
   if ( !shouldWarnAboutBallparkPairForCurrentProject( sourceCrs, destinationCrs ) )
     return;
 
-  const QString shortMessage = tr( "Used a fallback transform from %1 to %2" ).arg( sourceCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ), destinationCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) );
-  const QString longMessage = tr( "<p>An alternative transform was used when transforming coordinates between <i>%1</i> and <i>%2</i>.</p><p style=\"color: red\">I wanted to use %3</p>" ).arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier(), desired );
+  const QString shortMessage = tr( "Used a ballpark transform from %1 to %2" ).arg( sourceCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ), destinationCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) );
+  const QString longMessage = tr( "<p>An alternative, ballpark-only transform was used when transforming coordinates between <i>%1</i> and <i>%2</i>. The results may not match those obtained by using the preferred operation:</p><code>%3</code><p style=\"font-weight: bold\">Possibly an incorrect choice of operation was made for transformations between these reference systems. Check the Project Properties and ensure that the selected transform operations are applicable over the whole extent of the current project." ).arg( sourceCrs.userFriendlyIdentifier(), destinationCrs.userFriendlyIdentifier(), desired );
 
   QgsMessageBar *bar = QgisApp::instance()->messageBar();
   QgsMessageBarItem *widget = bar->createMessage( QString(), shortMessage );
@@ -292,7 +292,7 @@ void QgsAppMissingGridHandler::onFallbackOperationOccurred( const QgsCoordinateR
   {
     // dlg has deleted on close
     QgsMessageOutput * dlg( QgsMessageOutput::createMessageOutput() );
-    dlg->setTitle( tr( "Fallback Transform Occurred" ) );
+    dlg->setTitle( tr( "Ballpark Transform Occurred" ) );
     dlg->setMessage( longMessage, QgsMessageOutput::MessageHtml );
     dlg->showMessage();
   } );
