@@ -17,6 +17,7 @@
 #include "qgsattributetypedialog.h"
 #include "qgsattributeformcontaineredit.h"
 #include "qgsattributerelationedit.h"
+#include "qgsattributewidgetedit.h"
 #include "qgsattributesforminitcode.h"
 #include "qgisapp.h"
 #include "qgsfieldcombobox.h"
@@ -35,6 +36,10 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
     return;
 
   setupUi( this );
+
+  mEditorLayoutComboBox->addItem( tr( "Autogenerate" ), QgsEditFormConfig::EditorLayout::GeneratedLayout );
+  mEditorLayoutComboBox->addItem( tr( "Drag and drop designer" ), QgsEditFormConfig::EditorLayout::TabLayout );
+  mEditorLayoutComboBox->addItem( tr( "Provide ui-file" ), QgsEditFormConfig::EditorLayout::UiFileLayout );
 
   // available widgets tree
   QGridLayout *availableWidgetsWidgetLayout = new QGridLayout;
@@ -195,7 +200,8 @@ void QgsAttributesFormProperties::initSuppressCombo()
 }
 void QgsAttributesFormProperties::initLayoutConfig()
 {
-  mEditorLayoutComboBox->setCurrentIndex( mLayer->editFormConfig().layout() );
+  mEditorLayoutComboBox->setCurrentIndex( mEditorLayoutComboBox->findData( mLayer->editFormConfig().layout() ) );
+
   mEditorLayoutComboBox_currentIndexChanged( mEditorLayoutComboBox->currentIndex() );
 
   QgsEditFormConfig cfg = mLayer->editFormConfig();
@@ -232,7 +238,6 @@ void QgsAttributesFormProperties::initInitPython()
 
 void QgsAttributesFormProperties::loadAttributeTypeDialog()
 {
-  clearAttributeTypeFrame();
   if ( mAvailableWidgetsTree->selectedItems().count() != 1 )
     return;
 
@@ -356,7 +361,6 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
 
 void QgsAttributesFormProperties::loadAttributeRelationEdit()
 {
-  clearAttributeTypeFrame();
   if ( mAvailableWidgetsTree->selectedItems().count() != 1 )
     return;
 
@@ -408,6 +412,25 @@ void QgsAttributesFormProperties::storeAttributeRelationEdit()
   }
 }
 
+void QgsAttributesFormProperties::storeAttributeWidgetEdit()
+{
+  if ( !mAttributeWidgetEdit )
+    return;
+
+  mAttributeWidgetEdit->updateItemData();
+}
+
+void QgsAttributesFormProperties::loadAttributeWidgetEdit()
+{
+  if ( mFormLayoutTree->selectedItems().count() != 1 )
+    return;
+
+  QTreeWidgetItem *currentItem = mFormLayoutTree->selectedItems().at( 0 );
+  mAttributeWidgetEdit = new QgsAttributeWidgetEdit( currentItem, this );
+  mAttributeTypeFrame->layout()->setMargin( 0 );
+  mAttributeTypeFrame->layout()->addWidget( mAttributeWidgetEdit );
+}
+
 void QgsAttributesFormProperties::storeAttributeContainerEdit()
 {
   if ( !mAttributeContainerEdit )
@@ -418,8 +441,6 @@ void QgsAttributesFormProperties::storeAttributeContainerEdit()
 
 void QgsAttributesFormProperties::loadAttributeContainerEdit()
 {
-  clearAttributeTypeFrame();
-
   if ( mFormLayoutTree->selectedItems().count() != 1 )
     return;
 
@@ -547,13 +568,18 @@ void QgsAttributesFormProperties::onFormLayoutSelectionChanged()
 
 void QgsAttributesFormProperties::loadAttributeSpecificEditor( DnDTree *emitter, DnDTree *receiver )
 {
+  QgsEditFormConfig::EditorLayout layout = mEditorLayoutComboBox->currentData().value<QgsEditFormConfig::EditorLayout>();
+
+  if ( layout == QgsEditFormConfig::EditorLayout::TabLayout )
+    storeAttributeWidgetEdit();
   storeAttributeTypeDialog();
   storeAttributeRelationEdit();
   storeAttributeContainerEdit();
 
+  clearAttributeTypeFrame();
+
   if ( emitter->selectedItems().count() != 1 )
   {
-    clearAttributeTypeFrame();
     receiver->clearSelection();
   }
   else
@@ -564,12 +590,16 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( DnDTree *emitter,
       case DnDTreeItemData::Relation:
       {
         receiver->selectFirstMatchingItem( itemData );
+        if ( layout == QgsEditFormConfig::EditorLayout::TabLayout )
+          loadAttributeWidgetEdit();
         loadAttributeRelationEdit();
         break;
       }
       case DnDTreeItemData::Field:
       {
         receiver->selectFirstMatchingItem( itemData );
+        if ( layout == QgsEditFormConfig::EditorLayout::TabLayout )
+          loadAttributeWidgetEdit();
         loadAttributeTypeDialog();
         break;
       }
@@ -584,7 +614,6 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( DnDTree *emitter,
       case DnDTreeItemData::QmlWidget:
       case DnDTreeItemData::HtmlWidget:
       {
-        clearAttributeTypeFrame();
         receiver->clearSelection();
         break;
       }
@@ -594,6 +623,12 @@ void QgsAttributesFormProperties::loadAttributeSpecificEditor( DnDTree *emitter,
 
 void QgsAttributesFormProperties::clearAttributeTypeFrame()
 {
+  if ( mAttributeWidgetEdit )
+  {
+    mAttributeTypeFrame->layout()->removeWidget( mAttributeWidgetEdit );
+    mAttributeWidgetEdit->deleteLater();
+    mAttributeWidgetEdit = nullptr;
+  }
   if ( mAttributeTypeDialog )
   {
     mAttributeTypeFrame->layout()->removeWidget( mAttributeTypeDialog );
@@ -731,9 +766,12 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
 void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int index )
 {
-  switch ( index )
+  Q_UNUSED( index )
+
+  QgsEditFormConfig::EditorLayout layout = mEditorLayoutComboBox->currentData().value<QgsEditFormConfig::EditorLayout>();
+  switch ( layout )
   {
-    case 0:
+    case QgsEditFormConfig::EditorLayout::GeneratedLayout:
       mFormLayoutWidget->setVisible( false );
       mUiFileFrame->setVisible( false );
       mAddTabOrGroupButton->setVisible( false );
@@ -741,7 +779,7 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mInvertSelectionButton->setVisible( false );
       break;
 
-    case 1:
+    case QgsEditFormConfig::EditorLayout::TabLayout:
       mFormLayoutWidget->setVisible( true );
       mUiFileFrame->setVisible( false );
       mAddTabOrGroupButton->setVisible( true );
@@ -749,7 +787,8 @@ void QgsAttributesFormProperties::mEditorLayoutComboBox_currentIndexChanged( int
       mInvertSelectionButton->setVisible( true );
       break;
 
-    case 2:
+    case QgsEditFormConfig::EditorLayout::UiFileLayout:
+      // ui file
       mFormLayoutWidget->setVisible( false );
       mUiFileFrame->setVisible( true );
       mAddTabOrGroupButton->setVisible( false );
@@ -794,6 +833,7 @@ void QgsAttributesFormProperties::pbnSelectEditForm_clicked()
 
 void QgsAttributesFormProperties::apply()
 {
+  storeAttributeWidgetEdit();
   storeAttributeContainerEdit();
   storeAttributeTypeDialog();
   storeAttributeRelationEdit();
@@ -954,38 +994,25 @@ DnDTree::DnDTree( QgsVectorLayer *layer, QWidget *parent )
 QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data, int index )
 {
   QTreeWidgetItem *newItem = new QTreeWidgetItem( QStringList() << data.name() );
-  newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
-  if ( data.type() == QgsAttributesFormProperties::DnDTreeItemData::Container )
+
+  switch ( data.type() )
   {
-    newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
-    newItem->setBackground( 0, QBrush( Qt::lightGray ) );
+    case QgsAttributesFormProperties::DnDTreeItemData::Field:
+    case QgsAttributesFormProperties::DnDTreeItemData::Relation:
+    case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
+    case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
+      newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
+      break;
 
-    switch ( data.type() )
+    case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
+    case QgsAttributesFormProperties::DnDTreeItemData::Container:
     {
-      case QgsAttributesFormProperties::DnDTreeItemData::Field:
-        newItem->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mFieldIcon.svg" ) ) );
-        break;
-
-      case QgsAttributesFormProperties::DnDTreeItemData::Relation:
-        newItem->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mRelationIcon.svg" ) ) );
-        break;
-
-      case QgsAttributesFormProperties::DnDTreeItemData::Container:
-        newItem->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mContainerIcon.svg" ) ) );
-        break;
-
-      case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
-        //no icon for QmlWidget
-        break;
-
-      case QgsAttributesFormProperties::DnDTreeItemData::HtmlWidget:
-        //no icon for HtmlWidget
-        break;
-
-      case QgsAttributesFormProperties::DnDTreeItemData::WidgetType:
-        break;
+      newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled );
+      newItem->setBackground( 0, QBrush( Qt::lightGray ) );
     }
+    break;
   }
+
   newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, data );
   newItem->setText( 0, data.displayName() );
 

@@ -25,6 +25,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/src/app
+  ${CMAKE_SOURCE_DIR}/src/app/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/test
