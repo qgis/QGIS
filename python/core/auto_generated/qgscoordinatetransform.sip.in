@@ -382,6 +382,32 @@ a user-visible warning will be generated.
 .. versionadded:: 3.12
 %End
 
+    void disableFallbackOperationHandler( bool disabled );
+%Docstring
+Sets whether the default fallback operation handler is disabled for this transform instance.
+
+If the default handler is ``disabled`` then it is possible to determine whether a fallback
+operation occurred by testing fallbackOperationOccurred() immediately after a transformation.
+
+.. warning::
+
+   This setting applies to a single instance of a coordinate transform only,
+   and is not copied when a coordinate transform object is copied or assigned.
+
+.. seealso:: :py:func:`fallbackOperationOccurred`
+
+.. versionadded:: 3.12
+%End
+
+    bool fallbackOperationOccurred() const;
+%Docstring
+Returns ``True`` if a fallback operation occurred for the most recent transform.
+
+.. seealso:: :py:func:`disableFallbackOperationHandler`
+
+.. versionadded:: 3.12
+%End
+
  int sourceDatumTransformId() const /Deprecated/;
 %Docstring
 Returns the ID of the datum transform to use when projecting from the source
