@@ -51,7 +51,7 @@ class QgsAppMissingGridHandler : public QObject
 
     void fallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs,
                                     const QgsCoordinateReferenceSystem &destinationCrs,
-                                    const QgsDatumTransform::TransformDetails &desired );
+                                    const QString &desired );
 
   private slots:
 
@@ -74,7 +74,7 @@ class QgsAppMissingGridHandler : public QObject
 
     void onFallbackOperationOccurred( const QgsCoordinateReferenceSystem &sourceCrs,
                                       const QgsCoordinateReferenceSystem &destinationCrs,
-                                      const QgsDatumTransform::TransformDetails &desired );
+                                      const QString &desired );
 
   private:
 
