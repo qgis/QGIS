@@ -1886,8 +1886,8 @@ bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSyste
   if ( !d->mIsValid || !srs.d->mIsValid )
     return false;
 
-  if ( !d->mAuthId.isEmpty() && d->mAuthId == srs.d->mAuthId )
-    return true;
+  if ( ( !d->mAuthId.isEmpty() || !srs.d->mAuthId.isEmpty() ) )
+    return d->mAuthId == srs.d->mAuthId;
 
   return toWkt( WKT2_2018 ) == srs.toWkt( WKT2_2018 );
 }
