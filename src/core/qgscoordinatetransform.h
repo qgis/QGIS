@@ -409,6 +409,28 @@ class CORE_EXPORT QgsCoordinateTransform
     void setBallparkTransformsAreAppropriate( bool appropriate );
 
     /**
+     * Sets whether the default fallback operation handler is disabled for this transform instance.
+     *
+     * If the default handler is \a disabled then it is possible to determine whether a fallback
+     * operation occurred by testing fallbackOperationOccurred() immediately after a transformation.
+     *
+     * \warning This setting applies to a single instance of a coordinate transform only,
+     * and is not copied when a coordinate transform object is copied or assigned.
+     *
+     * \see fallbackOperationOccurred()
+     * \since QGIS 3.12
+     */
+    void disableFallbackOperationHandler( bool disabled );
+
+    /**
+     * Returns TRUE if a fallback operation occurred for the most recent transform.
+     *
+     * \see disableFallbackOperationHandler()
+     * \since QGIS 3.12
+     */
+    bool fallbackOperationOccurred() const;
+
+    /**
      * Returns the ID of the datum transform to use when projecting from the source
      * CRS.
      *
@@ -619,6 +641,8 @@ class CORE_EXPORT QgsCoordinateTransform
 
     mutable QString mLastError;
     bool mBallparkTransformsAreAppropriate = false;
+    bool mDisableFallbackHandler = false;
+    mutable bool mFallbackOperationOccurred = false;
 
 #if PROJ_VERSION_MAJOR>=6
     bool setFromCache( const QgsCoordinateReferenceSystem &src,
