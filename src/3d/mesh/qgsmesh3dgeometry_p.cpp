@@ -281,7 +281,7 @@ void QgsMesh3dGeometry::init()
   mTexCoordAttribute = new QAttribute( this );
   mIndexAttribute = new QAttribute( this );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   mVertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
   mIndexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, this );
 #else
