@@ -114,7 +114,7 @@ class CORE_EXPORT QgsProcessingUtils
       UnknownType, //!< Unknown layer type
       Vector, //!< Vector layer type
       Raster, //!< Raster layer type
-      Mesh, //!< Mesh layer type  \since QGIS 3.6
+      Mesh, //!< Mesh layer type, since QGIS 3.6
     };
 
     /**
