@@ -264,7 +264,7 @@ void QgsTask::setProgress( double progress )
 void QgsTask::completed()
 {
   mStatus = Complete;
-  QMetaObject::invokeMethod( this, &QgsTask::processSubTasksForCompletion, Qt::AutoConnection );
+  QMetaObject::invokeMethod( this, "processSubTasksForCompletion" );
 }
 
 void QgsTask::processSubTasksForCompletion()
@@ -350,7 +350,7 @@ void QgsTask::processSubTasksForHold()
 void QgsTask::terminated()
 {
   mStatus = Terminated;
-  QMetaObject::invokeMethod( this, &QgsTask::processSubTasksForTermination, Qt::AutoConnection );
+  QMetaObject::invokeMethod( this, "processSubTasksForTermination" );
 }
 
 
