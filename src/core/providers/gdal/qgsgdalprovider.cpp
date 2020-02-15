@@ -852,6 +852,11 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
     srcBottom = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - rasterExtent.yMinimum() ) / srcYRes ) );
   }
 
+  // srcBottom must be less than raster height or we'll get a raster I/O error,
+  // this may happen because of rounding errors with the floating point operations used above
+  // See: issue GH #34435
+  srcBottom = std::min( mHeight - 1, srcBottom );
+
   QgsDebugMsgLevel( QStringLiteral( "srcTop = %1 srcBottom = %2 srcLeft = %3 srcRight = %4" ).arg( srcTop ).arg( srcBottom ).arg( srcLeft ).arg( srcRight ), 5 );
 
   int srcWidth = srcRight - srcLeft + 1;
