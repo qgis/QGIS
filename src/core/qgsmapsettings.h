@@ -32,11 +32,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsmaplayer.h"
 #include "qgsgeometry.h"
-<<<<<<< HEAD
 #include "qgstemporalrangeobject.h"
-=======
-#include "temporal/qgsabstracttemporal.h"
->>>>>>> de9992479d... updates on tests and abstract temporal class
 
 class QPainter;
 
@@ -87,11 +83,7 @@ class CORE_EXPORT QgsLabelBlockingRegion
  *
  * \since QGIS 2.4
  */
-<<<<<<< HEAD
 class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
-=======
-class CORE_EXPORT QgsMapSettings : public QgsAbstractTemporal
->>>>>>> de9992479d... updates on tests and abstract temporal class
 {
   public:
     QgsMapSettings();

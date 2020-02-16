@@ -38,7 +38,7 @@
 #include "qgsrasterviewport.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
-#include "qgstemporalproperty.h"
+#include "qgsrasterlayertemporalproperties.h"
 
 class QgsMapToPixel;
 class QgsRasterRenderer;
@@ -496,20 +496,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool ignoreExtents() const;
 
     /**
-     * Set the temporal property.
-     *
-     * \see temporalProperty()
-     * \since QGIS 3.14
-    */
-    void setTemporalProperty( const QgsTemporalProperty &temporalProperty );
-
-    /**
-     * Returns the layer temporal property.
-     *
-     * \see setTemporalProperty()
-     * \since QGIS 3.14
-    */
-    const QgsTemporalProperty &temporalProperty() const;
+     * Returns temporal properties associated with the raster layer.
+     */
+    QgsRasterLayerTemporalProperties *temporalProperties() override { return mTemporalProperties.get(); }
 
   public slots:
     void showStatusMessage( const QString &message );
@@ -566,6 +555,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! Pointer to data provider
     QgsRasterDataProvider *mDataProvider = nullptr;
 
+    //! Pointer to temporal properties
+    std::unique_ptr< QgsRasterLayerTemporalProperties > mTemporalProperties;
+
     //! [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created
     QDateTime mLastModified;
 
@@ -580,9 +572,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     QDomDocument mOriginalStyleDocument;
     QDomElement mOriginalStyleElement;
-
-    //! Stores layer temporal state
-    QgsTemporalProperty mTemporalProperty;
 };
 
 // clazy:excludeall=qstring-allocations

@@ -36,6 +36,8 @@ QgsTemporalLayerWidget::QgsTemporalLayerWidget( QWidget *parent, QgsMapLayer *la
 void QgsTemporalLayerWidget::setEndAsStartNormalButton_clicked()
 {
   mEndTemporalDateTimeEdit->setDateTime( mStartTemporalDateTimeEdit->dateTime() );
+  // Update current selection label
+  updateRangeLabel( "layer", mRangeLabel );
 }
 
 void QgsTemporalLayerWidget::setEndAsStartReferenceButton_clicked()
@@ -137,6 +139,9 @@ void QgsTemporalLayerWidget::saveTemporalProperties()
         rasterLayer->dataProvider()->temporalProperties()->setEnableTime( false );
       else
         rasterLayer->dataProvider()->temporalProperties()->setEnableTime( true );
+
+      // Update current selection label
+      updateRangeLabel( "layer", mRangeLabel );
 
       if ( mReferenceCheckBox->isChecked() )
       {

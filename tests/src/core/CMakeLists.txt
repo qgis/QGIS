@@ -224,12 +224,8 @@ SET(TESTS
  testqgssvgmarker.cpp
  testqgssymbol.cpp
  testqgstaskmanager.cpp
-<<<<<<< HEAD
  testqgstemporalproperty.cpp
  testqgstemporalrangeobject.cpp
-=======
- testqgsabstracttemporal.cpp
->>>>>>> de9992479d... updates on tests and abstract temporal class
  testqgstracer.cpp
  testqgstriangularmesh.cpp
  testqgsfontutils.cpp
