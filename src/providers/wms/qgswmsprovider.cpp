@@ -1041,41 +1041,7 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   // For WMS-T layers
   if ( temporalProperties()->isActive() )
   {
-    QgsDateTimeRange range = temporalProperties()->temporalRange();
-    QString format = "yyyy-MM-ddThh:mm:ssZ";
-
-    if ( !temporalProperties()->isTimeEnabled() )
-      format = "yyyy-MM-dd";
-
-    if ( range.begin().isValid() && range.end().isValid() )
-    {
-      if ( range.begin() == range.end() )
-        setQueryItem( query, QStringLiteral( "TIME" ), range.begin().toString( format ) );
-      else
-      {
-        QString extent = range.begin().toString( format );
-        extent.append( "/" );
-        extent.append( range.end().toString( format ) );
-
-        setQueryItem( query, QStringLiteral( "TIME" ), extent );
-      }
-    }
-    // If the data provider has bi-temporal properties,
-    if ( temporalProperties()->hasReference() )
-    {
-      QgsDateTimeRange referenceRange = temporalProperties()->referenceTemporalRange();
-
-      if ( referenceRange.begin() == referenceRange.end() )
-        setQueryItem( query, QStringLiteral( "DIM_REFERENCE" ), range.begin().toString( format ) );
-      else
-      {
-        QString extent = referenceRange.begin().toString( format );
-        extent.append( "/" );
-        extent.append( referenceRange.end().toString( format ) );
-
-        setQueryItem( query, QStringLiteral( "DIM_REFERENCE" ), extent );
-      }
-    }
+    addWmstParameters( query );
   }
 
   setFormatQueryItem( query );
@@ -1102,6 +1068,48 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
 
   QgsDebugMsg( QStringLiteral( "getmap: %1" ).arg( url.toString() ) );
   return url;
+}
+
+void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
+{
+  QgsDateTimeRange range = temporalProperties()->temporalRange();
+  QString format = "yyyy-MM-ddThh:mm:ssZ";
+
+  if ( !temporalProperties()->isTimeEnabled() )
+    format = "yyyy-MM-dd";
+
+  if ( range.begin().isValid() && range.end().isValid() )
+  {
+    if ( range.begin() == range.end() )
+      setQueryItem( query, QStringLiteral( "TIME" ),
+                    range.begin().toString( format ) );
+    else
+    {
+      QString extent = range.begin().toString( format );
+      extent.append( "/" );
+      extent.append( range.end().toString( format ) );
+
+      setQueryItem( query, QStringLiteral( "TIME" ), extent );
+    }
+  }
+  // If the data provider has bi-temporal properties,
+  if ( temporalProperties()->hasReference() )
+  {
+    QgsDateTimeRange referenceRange = temporalProperties()->referenceTemporalRange();
+
+    if ( referenceRange.begin() == referenceRange.end() )
+      setQueryItem( query, QStringLiteral( "DIM_REFERENCE" ),
+                    range.begin().toString( format ) );
+    else
+    {
+      QString extent = referenceRange.begin().toString( format );
+      extent.append( "/" );
+      extent.append( referenceRange.end().toString( format ) );
+
+      setQueryItem( query, QStringLiteral( "DIM_REFERENCE" ), extent );
+    }
+  }
+
 }
 
 

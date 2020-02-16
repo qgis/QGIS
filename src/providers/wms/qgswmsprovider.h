@@ -157,12 +157,6 @@ class QgsWmsProvider final: public QgsRasterDataProvider
 
     bool isValid() const override;
 
-    /**
-     * Converts temporal dimension extent string from WMS-T capabilities
-     * to a QgsDateTimeRange instant
-     */
-    QgsDateTimeRange parseTemporalExtent( QString extent );
-
 #if 0
 
     /**
@@ -346,6 +340,13 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     void createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
     void createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
     void createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
+
+    /**
+      * Add WMS-T parameters to the query, if provider has temporal properties
+      *
+      * \since QGIS 3.14
+      */
+    void addWmstParameters( QUrlQuery &query );
 
     //! Helper structure to store a cached tile image with its rectangle
     typedef struct TileImage

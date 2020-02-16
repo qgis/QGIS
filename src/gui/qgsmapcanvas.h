@@ -26,11 +26,7 @@
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
 #include "qgscustomdrophandler.h"
-<<<<<<< HEAD
 #include "qgstemporalrangeobject.h"
-=======
-#include "temporal/qgsabstracttemporal.h"
->>>>>>> de9992479d... updates on tests and abstract temporal class
 
 #include <QDomDocument>
 #include <QGraphicsView>

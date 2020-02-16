@@ -522,6 +522,9 @@ void QgsRasterDataProvider::copyBaseSettings( const QgsRasterDataProvider &other
   mTemporalProperties->setTemporalRange( other.mTemporalProperties->temporalRange() );
   mTemporalProperties->setFixedTemporalRange( other.mTemporalProperties->fixedTemporalRange() );
   mTemporalProperties->setEnableTime( other.mTemporalProperties->isTimeEnabled() );
+  mTemporalProperties->setHasReference( other.mTemporalProperties->hasReference() );
+  mTemporalProperties->setReferenceTemporalRange( other.mTemporalProperties->referenceTemporalRange() );
+  mTemporalProperties->setFixedReferenceTemporalRange( other.mTemporalProperties->fixedReferenceTemporalRange() );
 }
 
 // ENDS
