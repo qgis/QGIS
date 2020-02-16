@@ -61,7 +61,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
 </ui>
