@@ -369,14 +369,7 @@ struct QgsWmsLayerProperty
 };
 
 /**
- * Stores the dates part from the WMS-T dimension extent.
- *
- * Here a date with no time precision is not equal with
- * a date with same year, month and day but with time precision.
- * eg. 2020-01-02 is not equal to 2020-01-02T00:00:00
- *
- * Hence this struct has two hash date members to acccount for the difference.
- *
+ * Stores the dates parts from the WMS-T dimension extent.
  *
  */
 struct QgsWmstDates
@@ -407,16 +400,22 @@ struct QgsWmstResolution
 
 };
 
+
+/**
+ * Stores dates and resolution structure pair.
+ */
 struct QgsWmstExtentPair
 {
   QgsWmstExtentPair()
   {
   }
+
   QgsWmstExtentPair( QgsWmstDates otherDates, QgsWmstResolution otherResolution )
   {
     dates = otherDates;
     resolution = otherResolution;
   }
+
   QgsWmstDates dates;
   QgsWmstResolution resolution;
 };
@@ -690,17 +689,24 @@ class QgsWmsSettings
     QgsWmsParserSettings parserSettings() const { return mParserSettings; }
 
     /**
-     * Parse the given string extent into a well defined dates and resolution structures
+     * Parse the given string extent into a well defined dates and resolution structures.
+     * The string extent comes from WMS-T dimension capabilities.
+     *
+     * \since 3.14
      */
     QgsDateTimeRange parseTemporalExtent( QgsWmstDimensionExtent dimensionExtent, QString extent );
 
     /**
-     * Parse the given string item into a resolution structure
+     * Parse the given string item into a resolution structure.
+     *
+     * \since 3.14
      */
     QgsWmstResolution parseWmstResolution( QString item );
 
     /**
-     * Parse the given string item into QDateTime instant
+     * Parse the given string item into QDateTime instant.
+     *
+     * \since 3.14
      */
     QDateTime parseWmstDateTimes( QString item );
 
