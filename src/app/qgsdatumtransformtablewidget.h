@@ -41,6 +41,7 @@ class APP_EXPORT QgsDatumTransformTableModel : public QAbstractTableModel
       SourceCrsColumn  = 0,
       DestinationCrsColumn,
       ProjDefinitionColumn,
+      AllowFallbackColumn,
 #else
       SourceCrsColumn  = 0,
       SourceTransformColumn,
