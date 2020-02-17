@@ -387,6 +387,9 @@ class CORE_EXPORT QgsCoordinateTransform
      *
      * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
      *
+     * \warning If setBallparkTransformsAreAppropriate() is set to TRUE, this setting will be ignored
+     * and fallback transformations will always be permitted.
+     *
      * \see allowFallbackTransforms()
      * \see setBallparkTransformsAreAppropriate()
      * \since QGIS 3.12
@@ -427,7 +430,8 @@ class CORE_EXPORT QgsCoordinateTransform
      * when the preferred or user-specified operation fails, however whenever this occurs
      * a user-visible warning will be generated.
      *
-     * If allowFallbackTransforms() is FALSE then this setting has no effect.
+     * If \a appropriate is TRUE, then this setting overrides allowFallbackTransforms()
+     * and fallback transforms will always be allowed when required.
      *
      * \warning This setting applies to a single instance of a coordinate transform only,
      * and is not copied when a coordinate transform object is copied or assigned.
