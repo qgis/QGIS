@@ -243,7 +243,7 @@ QgsPointXY QgsCoordinateTransform::transform( const QgsPointXY &point, Transform
   catch ( const QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsg( QStringLiteral( "rethrowing exception" ) );
+    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
     throw;
   }
 
@@ -260,7 +260,7 @@ QgsPointXY QgsCoordinateTransform::transform( const double theX, const double th
   catch ( const QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsg( QStringLiteral( "rethrowing exception" ) );
+    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
     throw;
   }
 }
@@ -287,7 +287,7 @@ QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &rect, Transf
   catch ( const QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsg( QStringLiteral( "rethrowing exception" ) );
+    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
     throw;
   }
 
@@ -317,7 +317,7 @@ void QgsCoordinateTransform::transformInPlace( double &x, double &y, double &z,
   catch ( const QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsg( QStringLiteral( "rethrowing exception" ) );
+    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
     throw;
   }
 }
@@ -353,7 +353,7 @@ void QgsCoordinateTransform::transformInPlace( float &x, float &y, float &z,
   catch ( QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsg( QStringLiteral( "rethrowing exception" ) );
+    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
     throw;
   }
 }
@@ -432,7 +432,7 @@ void QgsCoordinateTransform::transformInPlace(
   catch ( const QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsg( QStringLiteral( "rethrowing exception" ) );
+    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
     throw;
   }
 }
@@ -494,7 +494,7 @@ void QgsCoordinateTransform::transformInPlace(
   catch ( QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsg( QStringLiteral( "rethrowing exception" ) );
+    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
     throw;
   }
 }
@@ -569,7 +569,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   catch ( const QgsCsException & )
   {
     // rethrow the exception
-    QgsDebugMsg( QStringLiteral( "rethrowing exception" ) );
+    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
     throw;
   }
 
@@ -758,8 +758,13 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     pj_dalloc( dstdef );
 #endif
 
-    QgsDebugMsg( "Projection failed emitting invalid transform signal: " + msg );
-    QgsDebugMsg( QStringLiteral( "throwing exception" ) );
+    // don't flood console with thousands of duplicate transform error messages
+    if ( msg != mLastError )
+    {
+      QgsDebugMsg( "Projection failed emitting invalid transform signal: " + msg );
+      mLastError = msg;
+    }
+    QgsDebugMsgLevel( QStringLiteral( "rethrowing exception" ), 2 );
 
     throw QgsCsException( msg );
   }
