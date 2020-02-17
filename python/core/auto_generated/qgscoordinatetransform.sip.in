@@ -352,6 +352,40 @@ coordinates.
 .. versionadded:: 3.8
 %End
 
+    void setAllowFallbackTransforms( bool allowed );
+%Docstring
+Sets whether "ballpark" fallback transformations can be used in the case that the specified
+coordinate operation fails (such as when coordinates from outside a required grid shift file
+are transformed). See fallbackOperationOccurred() for further details.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
+
+.. seealso:: :py:func:`allowFallbackTransforms`
+
+.. seealso:: :py:func:`setBallparkTransformsAreAppropriate`
+
+.. versionadded:: 3.12
+%End
+
+    bool allowFallbackTransforms() const;
+%Docstring
+Returns whether "ballpark" fallback transformations will be used in the case that the specified
+coordinate operation fails (such as when coordinates from outside a required grid shift file
+are transformed). See fallbackOperationOccurred() for further details.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
+
+.. seealso:: :py:func:`setAllowFallbackTransforms`
+
+.. seealso:: :py:func:`setBallparkTransformsAreAppropriate`
+
+.. versionadded:: 3.12
+%End
+
     void setBallparkTransformsAreAppropriate( bool appropriate );
 %Docstring
 Sets whether approximate "ballpark" results are appropriate for this coordinate transform.
@@ -374,10 +408,17 @@ If ``appropriate`` is ``False`` (the default behavior), then transforms MAY STIL
 when the preferred or user-specified operation fails, however whenever this occurs
 a user-visible warning will be generated.
 
+If allowFallbackTransforms() is ``False`` then this setting has no effect.
+
 .. warning::
 
    This setting applies to a single instance of a coordinate transform only,
    and is not copied when a coordinate transform object is copied or assigned.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
+
 
 .. versionadded:: 3.12
 %End
@@ -394,6 +435,11 @@ operation occurred by testing fallbackOperationOccurred() immediately after a tr
    This setting applies to a single instance of a coordinate transform only,
    and is not copied when a coordinate transform object is copied or assigned.
 
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will never perform fallback operations.
+
+
 .. seealso:: :py:func:`fallbackOperationOccurred`
 
 .. versionadded:: 3.12
@@ -402,6 +448,10 @@ operation occurred by testing fallbackOperationOccurred() immediately after a tr
     bool fallbackOperationOccurred() const;
 %Docstring
 Returns ``True`` if a fallback operation occurred for the most recent transform.
+
+.. note::
+
+   Requires Proj 6.0 or later. Builds based on earlier Proj versions will never perform fallback operations.
 
 .. seealso:: :py:func:`disableFallbackOperationHandler`
 
