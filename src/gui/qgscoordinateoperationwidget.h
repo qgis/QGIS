@@ -144,6 +144,13 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
      */
     void setSelectedOperationUsingContext( const QgsCoordinateTransformContext &context );
 
+    /**
+     * Sets whether the "allow fallback" operations option is visible.
+     *
+     * \since QGIS 3.12
+     */
+    void setShowFallbackOption( bool visible );
+
   signals:
 
     /**

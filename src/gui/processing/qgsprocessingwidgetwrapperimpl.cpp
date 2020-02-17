@@ -2937,6 +2937,7 @@ QWidget *QgsProcessingCoordinateOperationWidgetWrapper::createWidget()
     {
       mOperationWidget = new QgsCoordinateOperationWidget( nullptr );
       mOperationWidget->setShowMakeDefault( false );
+      mOperationWidget->setShowFallbackOption( false );
       mOperationWidget->setToolTip( parameterDefinition()->toolTip() );
       mOperationWidget->setSourceCrs( mSourceCrs );
       mOperationWidget->setDestinationCrs( mDestCrs );
