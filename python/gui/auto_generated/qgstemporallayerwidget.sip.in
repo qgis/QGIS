@@ -1,0 +1,50 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgstemporallayerwidget.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsTemporalLayerWidget : QWidget
+{
+%Docstring
+A widget for filtering temporal layer based on its available time values
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstemporallayerwidget.h"
+%End
+  public:
+
+    QgsTemporalLayerWidget( QWidget *parent = 0, QgsMapLayer *layer = 0 );
+%Docstring
+Constructor for QgsTemporalLayerWidget.
+%End
+
+    void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+Sets the map canvas associtated with this temporal widget.
+%End
+
+    void saveTemporalProperties();
+%Docstring
+Save widget temporal properties inputs.
+%End
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgstemporallayerwidget.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -408,7 +408,6 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerjoininfo.cpp
   qgsvectorlayerrenderer.cpp
-  qgsvectorlayertemporalproperties.cpp
   qgsvectorlayertools.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectorlayerundopassthroughcommand.cpp
@@ -929,7 +928,6 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerjoininfo.h
   qgsvectorlayerrenderer.h
   qgsvectorlayerserverproperties.h
-  qgsvectorlayertemporalproperties.h
   qgsvectorlayertools.h
   qgsvectorlayerundocommand.h
   qgsvectorlayerundopassthroughcommand.h

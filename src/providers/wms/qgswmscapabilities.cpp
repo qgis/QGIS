@@ -88,7 +88,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mTemporalExtent = uri.param( QStringLiteral( "time" ) );
     mFixedRange = parseTemporalExtent( mTimeDimensionExtent, mTemporalExtent );
 
-    if ( uri.param( QStringLiteral( "reference_time" ) ) != QLatin1String( "" ) )
+    if ( uri.param( QStringLiteral( "reference_time" ) ) != QString() )
     {
       QString referenceExtent = uri.param( QStringLiteral( "reference_time" ) );
       mFixedReferenceRange = parseTemporalExtent( mReferenceTimeDimensionExtent,
