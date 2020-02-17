@@ -513,7 +513,7 @@ void QgsDualView::setBrowsingAutoPanScaleAllowed( bool allowed )
 
   QString disabledHint = tr( "(disabled when attribute table ony shows features visible in the current map canvas extent)" );
 
-  mAutoPanButton->setToolTip( tr( "Automatically pan to the current feature" ) + ( allowed ? QStringLiteral( "" ) : QStringLiteral( " " ) + disabledHint ) );
+  mAutoPanButton->setToolTip( tr( "Automatically pan to the current feature" ) + ( allowed ? QString() : QString( ' ' ) + disabledHint ) );
   mAutoZoomButton->setToolTip( tr( "Automatically zoom to the current feature" ) + ( allowed ? QStringLiteral( "" ) : QStringLiteral( " " ) + disabledHint ) );
 }
 
