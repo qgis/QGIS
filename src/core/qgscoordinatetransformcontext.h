@@ -224,7 +224,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
 
     /**
      * Returns TRUE if approximate "ballpark" transforms may be used when transforming
-     * between a \source and \a destination CRS pair, in the case that the preferred
+     * between a \a source and \a destination CRS pair, in the case that the preferred
      * coordinate operation fails (such as when
      * coordinates from outside a required grid shift file are transformed). See
      * QgsCoordinateTransform::fallbackOperationOccurred() for further details.
