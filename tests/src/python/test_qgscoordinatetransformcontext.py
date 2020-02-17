@@ -161,6 +161,8 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         self.assertEqual(context.coordinateOperations(), {('EPSG:3111', 'EPSG:4283'): proj_string})
         self.assertTrue(context.mustReverseCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4283'),
                                                                QgsCoordinateReferenceSystem('EPSG:3111')))
+        self.assertTrue(
+            context.allowFallbackTransform(QgsCoordinateReferenceSystem('EPSG:3111'), QgsCoordinateReferenceSystem('EPSG:4283')))
 
         self.assertTrue(
             context.hasTransform(QgsCoordinateReferenceSystem('EPSG:4283'), QgsCoordinateReferenceSystem('EPSG:3111')))
@@ -174,13 +176,18 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
                                                               QgsCoordinateReferenceSystem('EPSG:3111')), proj_string)
         self.assertTrue(context.mustReverseCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4283'),
                                                                QgsCoordinateReferenceSystem('EPSG:3111')))
+        self.assertTrue(
+            context.allowFallbackTransform(QgsCoordinateReferenceSystem('EPSG:4283'), QgsCoordinateReferenceSystem('EPSG:3111')))
+
         proj_string_2 = 'dummy'
         self.assertTrue(context.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4283'),
-                                                       QgsCoordinateReferenceSystem('EPSG:3111'), proj_string_2))
+                                                       QgsCoordinateReferenceSystem('EPSG:3111'), proj_string_2, False))
         self.assertEqual(context.calculateCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4283'),
                                                               QgsCoordinateReferenceSystem('EPSG:3111')), proj_string_2)
         self.assertFalse(context.mustReverseCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4283'),
                                                                 QgsCoordinateReferenceSystem('EPSG:3111')))
+        self.assertFalse(
+            context.allowFallbackTransform(QgsCoordinateReferenceSystem('EPSG:4283'), QgsCoordinateReferenceSystem('EPSG:3111')))
         context.removeCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:4283'),
                                           QgsCoordinateReferenceSystem('EPSG:3111'))
 
@@ -346,9 +353,9 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         proj_2 = '+proj=pipeline +step +proj=axisswap +order=2,1 +step +proj=unitconvert +xy_in=deg +xy_out=rad +step +proj=push +v_3 +step +proj=cart +ellps=intl +step +proj=helmert +x=-150 +y=-250 +z=-1 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=unitconvert +xy_in=rad +xy_out=deg +step +proj=axisswap +order=2,1'
 
         self.assertTrue(context.addCoordinateOperation(QgsCoordinateReferenceSystem(4204),
-                                                       QgsCoordinateReferenceSystem(4326), proj_1))
+                                                       QgsCoordinateReferenceSystem(4326), proj_1, True))
         self.assertTrue(context.addCoordinateOperation(QgsCoordinateReferenceSystem(4205),
-                                                       QgsCoordinateReferenceSystem(4326), proj_2))
+                                                       QgsCoordinateReferenceSystem(4326), proj_2, False))
 
         self.assertEqual(context.coordinateOperations(),
                          {('EPSG:4204', 'EPSG:4326'): proj_1,
@@ -367,6 +374,10 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         self.assertEqual(context2.coordinateOperations(),
                          {('EPSG:4204', 'EPSG:4326'): proj_1,
                           ('EPSG:4205', 'EPSG:4326'): proj_2})
+        self.assertTrue(context2.allowFallbackTransform(QgsCoordinateReferenceSystem(4204),
+                                                        QgsCoordinateReferenceSystem(4326)))
+        self.assertFalse(context2.allowFallbackTransform(QgsCoordinateReferenceSystem(4205),
+                                                         QgsCoordinateReferenceSystem(4326)))
 
     @unittest.skipIf(QgsProjUtils.projVersionMajor() >= 6, 'Skipped on proj6 builds')
     def testMissingTransforms(self):
@@ -443,11 +454,18 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         context_changed_spy = QSignalSpy(project.transformContextChanged)
         context = project.transformContext()
         context.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:3111'),
-                                       QgsCoordinateReferenceSystem('EPSG:4283'), 'proj')
+                                       QgsCoordinateReferenceSystem('EPSG:4283'), 'proj', True)
         project.setTransformContext(context)
         self.assertEqual(len(context_changed_spy), 1)
         self.assertEqual(project.transformContext().coordinateOperations(),
                          {('EPSG:3111', 'EPSG:4283'): 'proj'})
+        context2 = project.transformContext()
+        context2.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                        QgsCoordinateReferenceSystem('EPSG:4283'), 'proj', False)
+        project.setTransformContext(context2)
+        self.assertEqual(len(context_changed_spy), 2)
+        self.assertEqual(project.transformContext(), context2)
+        self.assertNotEqual(project.transformContext(), context)
 
     @unittest.skipIf(QgsProjUtils.projVersionMajor() >= 6, 'Skipped on proj6 builds')
     def testReadWriteSettings(self):
@@ -503,13 +521,17 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         self.assertEqual(context.coordinateOperations(), {})
 
         self.assertTrue(context.addCoordinateOperation(QgsCoordinateReferenceSystem(4204),
-                                                       QgsCoordinateReferenceSystem(4326), proj_1))
+                                                       QgsCoordinateReferenceSystem(4326), proj_1, True))
         self.assertTrue(context.addCoordinateOperation(QgsCoordinateReferenceSystem(4205),
-                                                       QgsCoordinateReferenceSystem(4326), proj_2))
+                                                       QgsCoordinateReferenceSystem(4326), proj_2, False))
 
         self.assertEqual(context.coordinateOperations(),
                          {('EPSG:4204', 'EPSG:4326'): proj_1,
                           ('EPSG:4205', 'EPSG:4326'): proj_2})
+        self.assertTrue(context.allowFallbackTransform(QgsCoordinateReferenceSystem(4204),
+                                                       QgsCoordinateReferenceSystem(4326)))
+        self.assertFalse(context.allowFallbackTransform(QgsCoordinateReferenceSystem(4205),
+                                                        QgsCoordinateReferenceSystem(4326)))
 
         # save to settings
         context.writeSettings()
@@ -523,6 +545,11 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         self.assertEqual(context2.coordinateOperations(),
                          {('EPSG:4204', 'EPSG:4326'): proj_1,
                           ('EPSG:4205', 'EPSG:4326'): proj_2})
+
+        self.assertTrue(context2.allowFallbackTransform(QgsCoordinateReferenceSystem(4204),
+                                                        QgsCoordinateReferenceSystem(4326)))
+        self.assertFalse(context2.allowFallbackTransform(QgsCoordinateReferenceSystem(4205),
+                                                         QgsCoordinateReferenceSystem(4326)))
 
     @unittest.skipIf(QgsProjUtils.projVersionMajor() >= 6, 'Skipped on proj6 builds')
     def testEqualOperator(self):
@@ -551,6 +578,10 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         context2.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:3111'),
                                         QgsCoordinateReferenceSystem('EPSG:4283'), 'p1')
         self.assertTrue(context1 == context2)
+
+        context2.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                        QgsCoordinateReferenceSystem('EPSG:4283'), 'p1', False)
+        self.assertFalse(context1 == context2)
 
 
 if __name__ == '__main__':
