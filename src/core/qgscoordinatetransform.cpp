@@ -74,7 +74,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 
   Q_NOWARN_DEPRECATED_PUSH
 #if PROJ_VERSION_MAJOR>=6
-  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation, d->mAllowFallbackTransforms ) )
 #else
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
 #endif
@@ -99,7 +99,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 
   Q_NOWARN_DEPRECATED_PUSH
 #if PROJ_VERSION_MAJOR>=6
-  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation, d->mAllowFallbackTransforms ) )
 #else
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
 #endif
@@ -122,7 +122,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 
   Q_NOWARN_DEPRECATED_PUSH
 #if PROJ_VERSION_MAJOR>=6
-  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation, d->mAllowFallbackTransforms ) )
 #else
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
 #endif
@@ -164,7 +164,7 @@ void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem &c
   d->calculateTransforms( mContext );
   Q_NOWARN_DEPRECATED_PUSH
 #if PROJ_VERSION_MAJOR>=6
-  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation, d->mAllowFallbackTransforms ) )
 #else
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
 #endif
@@ -184,7 +184,7 @@ void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSyst
   d->calculateTransforms( mContext );
   Q_NOWARN_DEPRECATED_PUSH
 #if PROJ_VERSION_MAJOR>=6
-  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation, d->mAllowFallbackTransforms ) )
 #else
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
 #endif
@@ -208,7 +208,7 @@ void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &co
   d->calculateTransforms( mContext );
   Q_NOWARN_DEPRECATED_PUSH
 #if PROJ_VERSION_MAJOR>=6
-  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation ) )
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mProjCoordinateOperation, d->mAllowFallbackTransforms ) )
 #else
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
 #endif
@@ -743,7 +743,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 #if PROJ_VERSION_MAJOR>=6
 
   mFallbackOperationOccurred = false;
-  if ( actualRes != 0 )
+  if ( actualRes != 0 && d->mAllowFallbackTransforms )
   {
     // fail #1 -- try with getting proj to auto-pick an appropriate coordinate operation for the points
     if ( PJ *transform = d->threadLocalFallbackProjData() )
@@ -901,6 +901,17 @@ void QgsCoordinateTransform::setCoordinateOperation( const QString &operation ) 
   d->mShouldReverseCoordinateOperation = false;
 }
 
+void QgsCoordinateTransform::setAllowFallbackTransforms( bool allowed )
+{
+  d.detach();
+  d->mAllowFallbackTransforms = allowed;
+}
+
+bool QgsCoordinateTransform::allowFallbackTransforms() const
+{
+  return d->mAllowFallbackTransforms;
+}
+
 void QgsCoordinateTransform::setBallparkTransformsAreAppropriate( bool appropriate )
 {
   mBallparkTransformsAreAppropriate = appropriate;
@@ -929,7 +940,7 @@ const char *finder( const char *name )
 }
 
 #if PROJ_VERSION_MAJOR>=6
-bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &src, const QgsCoordinateReferenceSystem &dest, const QString &coordinateOperationProj )
+bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &src, const QgsCoordinateReferenceSystem &dest, const QString &coordinateOperationProj, bool allowFallback )
 {
   if ( !src.isValid() || !dest.isValid() )
     return false;
@@ -949,7 +960,7 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
   const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( sourceKey, destKey ) );
   for ( auto valIt = values.constBegin(); valIt != values.constEnd(); ++valIt )
   {
-    if ( ( *valIt ).coordinateOperation() == coordinateOperationProj )
+    if ( ( *valIt ).coordinateOperation() == coordinateOperationProj && ( *valIt ).allowFallbackTransforms() == allowFallback )
     {
       // need to save, and then restore the context... we don't want this to be cached or to use the values from the cache
       QgsCoordinateTransformContext context = mContext;
