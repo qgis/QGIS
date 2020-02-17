@@ -107,7 +107,7 @@ class GUI_EXPORT QgsTemporalLayerWidget : public QWidget, private Ui::QgsTempora
   private:
 
     /**
-     * Initialize the widget with default state behaviour.
+     * Initialize the widget with default state.
      */
     void init();
 
