@@ -362,6 +362,12 @@ are transformed). See fallbackOperationOccurred() for further details.
 
    Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
 
+.. warning::
+
+   If setBallparkTransformsAreAppropriate() is set to ``True``, this setting will be ignored
+   and fallback transformations will always be permitted.
+
+
 .. seealso:: :py:func:`allowFallbackTransforms`
 
 .. seealso:: :py:func:`setBallparkTransformsAreAppropriate`
@@ -408,7 +414,8 @@ If ``appropriate`` is ``False`` (the default behavior), then transforms MAY STIL
 when the preferred or user-specified operation fails, however whenever this occurs
 a user-visible warning will be generated.
 
-If allowFallbackTransforms() is ``False`` then this setting has no effect.
+If ``appropriate`` is ``True``, then this setting overrides allowFallbackTransforms()
+and fallback transforms will always be allowed when required.
 
 .. warning::
 
