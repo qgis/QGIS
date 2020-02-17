@@ -49,6 +49,9 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
 
       //! TRUE if operation is available
       bool isAvailable = true;
+
+      //! TRUE if fallback transforms can be used
+      bool allowFallback = true;
     };
 
     /**
@@ -131,7 +134,7 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
      * Sets the details of the \a operation currently selected within the widget.
      * \see selectedOperation()
      */
-    void setSelectedOperation( const QgsCoordinateOperationWidget::OperationDetails &operation ) const;
+    void setSelectedOperation( const QgsCoordinateOperationWidget::OperationDetails &operation );
 
     /**
      * Automatically sets the selected operation using the settings encapsulated in a transform \a context.
@@ -192,6 +195,7 @@ class GUI_EXPORT QgsCoordinateOperationWidget : public QWidget, private Ui::QgsC
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mDestinationCrs;
     OperationDetails mPreviousOp;
+    int mBlockSignals = 0;
 };
 
 #endif // QGSCOORDINATEOPERATIONWIDGET_H

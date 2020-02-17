@@ -45,6 +45,11 @@ QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
 
 #if PROJ_VERSION_MAJOR>=6
   connect( mInstallGridButton, &QPushButton::clicked, this, &QgsCoordinateOperationWidget::installGrid );
+  connect( mAllowFallbackCheckBox, &QCheckBox::toggled, this, [ = ]
+  {
+    if ( !mBlockSignals )
+      emit operationChanged();
+  } );
   mCoordinateOperationTableWidget->setColumnCount( 3 );
 #else
   mCoordinateOperationTableWidget->setColumnCount( 2 );
@@ -69,6 +74,7 @@ QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
 #if PROJ_VERSION_MAJOR>6 || PROJ_VERSION_MINOR>=2
   mShowSupersededCheckBox->setVisible( true );
 #else
+  mAllowFallbackCheckBox->setVisible( false );
   mShowSupersededCheckBox->setVisible( false );
 #endif
 
@@ -570,6 +576,7 @@ QgsCoordinateOperationWidget::OperationDetails QgsCoordinateOperationWidget::sel
     op.destinationTransformId = destItem ? destItem->data( TransformIdRole ).toInt() : -1;
     op.proj = srcItem ? srcItem->data( ProjRole ).toString() : QString();
     op.isAvailable = srcItem ? srcItem->data( AvailableRole ).toBool() : true;
+    op.allowFallback = mAllowFallbackCheckBox->isChecked();
   }
   else
   {
@@ -580,8 +587,10 @@ QgsCoordinateOperationWidget::OperationDetails QgsCoordinateOperationWidget::sel
   return op;
 }
 
-void QgsCoordinateOperationWidget::setSelectedOperation( const QgsCoordinateOperationWidget::OperationDetails &operation ) const
+void QgsCoordinateOperationWidget::setSelectedOperation( const QgsCoordinateOperationWidget::OperationDetails &operation )
 {
+  int prevRow = mCoordinateOperationTableWidget->currentRow();
+  mBlockSignals++;
   for ( int row = 0; row < mCoordinateOperationTableWidget->rowCount(); ++row )
   {
     QTableWidgetItem *srcItem = mCoordinateOperationTableWidget->item( row, 0 );
@@ -614,6 +623,13 @@ void QgsCoordinateOperationWidget::setSelectedOperation( const QgsCoordinateOper
     }
 #endif
   }
+
+  bool fallbackChanged = mAllowFallbackCheckBox->isChecked() != operation.allowFallback;
+  mAllowFallbackCheckBox->setChecked( operation.allowFallback );
+  mBlockSignals--;
+
+  if ( mCoordinateOperationTableWidget->currentRow() != prevRow || fallbackChanged )
+    emit operationChanged();
 }
 
 void QgsCoordinateOperationWidget::setSelectedOperationUsingContext( const QgsCoordinateTransformContext &context )
@@ -624,6 +640,7 @@ void QgsCoordinateOperationWidget::setSelectedOperationUsingContext( const QgsCo
   {
     OperationDetails deets;
     deets.proj = op;
+    deets.allowFallback = context.allowFallbackTransform( mSourceCrs, mDestinationCrs );
     setSelectedOperation( deets );
   }
   else
@@ -758,7 +775,7 @@ void QgsCoordinateOperationWidget::tableCurrentItemChanged( QTableWidgetItem *, 
   }
   OperationDetails newOp = selectedOperation();
 #if PROJ_VERSION_MAJOR>=6
-  if ( newOp.proj != mPreviousOp.proj )
+  if ( newOp.proj != mPreviousOp.proj && !mBlockSignals )
     emit operationChanged();
 #else
   if ( newOp.sourceTransformId != mPreviousOp.sourceTransformId ||
