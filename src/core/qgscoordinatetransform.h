@@ -381,6 +381,32 @@ class CORE_EXPORT QgsCoordinateTransform
     void setCoordinateOperation( const QString &operation ) const;
 
     /**
+     * Sets whether "ballpark" fallback transformations can be used in the case that the specified
+     * coordinate operation fails (such as when coordinates from outside a required grid shift file
+     * are transformed). See fallbackOperationOccurred() for further details.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
+     *
+     * \see allowFallbackTransforms()
+     * \see setBallparkTransformsAreAppropriate()
+     * \since QGIS 3.12
+     */
+    void setAllowFallbackTransforms( bool allowed );
+
+    /**
+     * Returns whether "ballpark" fallback transformations will be used in the case that the specified
+     * coordinate operation fails (such as when coordinates from outside a required grid shift file
+     * are transformed). See fallbackOperationOccurred() for further details.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
+     *
+     * \see setAllowFallbackTransforms()
+     * \see setBallparkTransformsAreAppropriate()
+     * \since QGIS 3.12
+     */
+    bool allowFallbackTransforms() const;
+
+    /**
      * Sets whether approximate "ballpark" results are appropriate for this coordinate transform.
      *
      * When a coordinate transform is only being used to generate ballpark results then the
@@ -401,8 +427,12 @@ class CORE_EXPORT QgsCoordinateTransform
      * when the preferred or user-specified operation fails, however whenever this occurs
      * a user-visible warning will be generated.
      *
+     * If allowFallbackTransforms() is FALSE then this setting has no effect.
+     *
      * \warning This setting applies to a single instance of a coordinate transform only,
      * and is not copied when a coordinate transform object is copied or assigned.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will ignore this setting.
      *
      * \since QGIS 3.12
      */
@@ -417,6 +447,8 @@ class CORE_EXPORT QgsCoordinateTransform
      * \warning This setting applies to a single instance of a coordinate transform only,
      * and is not copied when a coordinate transform object is copied or assigned.
      *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will never perform fallback operations.
+     *
      * \see fallbackOperationOccurred()
      * \since QGIS 3.12
      */
@@ -424,6 +456,8 @@ class CORE_EXPORT QgsCoordinateTransform
 
     /**
      * Returns TRUE if a fallback operation occurred for the most recent transform.
+     *
+     * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will never perform fallback operations.
      *
      * \see disableFallbackOperationHandler()
      * \since QGIS 3.12
@@ -647,7 +681,7 @@ class CORE_EXPORT QgsCoordinateTransform
 #if PROJ_VERSION_MAJOR>=6
     bool setFromCache( const QgsCoordinateReferenceSystem &src,
                        const QgsCoordinateReferenceSystem &dest,
-                       const QString &coordinateOperationProj );
+                       const QString &coordinateOperationProj, bool allowFallback );
 #else
     bool setFromCache( const QgsCoordinateReferenceSystem &src,
                        const QgsCoordinateReferenceSystem &dest,

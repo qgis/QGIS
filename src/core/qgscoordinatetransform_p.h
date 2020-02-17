@@ -134,6 +134,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
     Q_DECL_DEPRECATED int mDestinationDatumTransform = -1;
     QString mProjCoordinateOperation;
     bool mShouldReverseCoordinateOperation = false;
+    bool mAllowFallbackTransforms = true;
 
     //! True if the proj transform corresponds to the reverse direction, and must be flipped when transforming...
     bool mIsReversed = false;
