@@ -721,6 +721,9 @@ class QgsWmsSettings
     //! Whether we are dealing with WMS-T
     bool mIsTemporal = false;
 
+    //! Whether we are dealing bi-temporal dimensional WMS-T
+    bool mIsBiTemporal = false;
+
     //! Temporal extent from dimension property in WMS-T
     QString mTemporalExtent;
 

@@ -74,9 +74,6 @@ void QgsRasterDataProviderTemporalProperties::setReferenceTemporalRange( const Q
   if ( !isActive() )
     setIsActive( true );
 
-  if ( !hasReference() )
-    setHasReference( true );
-
   mReferenceRange = dateTimeRange;
 
 }
@@ -109,5 +106,15 @@ void QgsRasterDataProviderTemporalProperties::setHasReference( bool enabled )
 bool QgsRasterDataProviderTemporalProperties::hasReference() const
 {
   return mHasReferenceRange;
+}
+
+void QgsRasterDataProviderTemporalProperties::setReferenceEnable( bool enabled )
+{
+  mReferenceEnable = enabled;
+}
+
+bool QgsRasterDataProviderTemporalProperties::isReferenceEnable() const
+{
+  return mReferenceEnable;
 }
 
