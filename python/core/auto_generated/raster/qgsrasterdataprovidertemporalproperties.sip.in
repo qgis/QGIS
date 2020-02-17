@@ -117,6 +117,20 @@ Returns the reference range presence status.
 .. seealso:: :py:func:`setHasReference`
 %End
 
+    void setReferenceEnable( bool enabled );
+%Docstring
+Sets the usage status of the reference range.
+
+.. seealso:: :py:func:`isReferenceEnable`
+%End
+
+    bool isReferenceEnable() const;
+%Docstring
+Returns the enabled status of the reference range.
+
+.. seealso:: :py:func:`setReferenceEnable`
+%End
+
 };
 
 /************************************************************************
