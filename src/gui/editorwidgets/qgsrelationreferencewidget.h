@@ -238,6 +238,18 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      * \since QGIS 3.12
      */
     void setReferencedLayerName( const QString &referencedLayerName );
+    /**
+     * Set show label for this widget
+     * \since QGIS 3.12
+     */
+    void setShowLabel(bool showLabel);
+
+    /**
+     * Get wether we show the label or not for this widget
+     * \since QGIS 3.12
+     */
+    bool showLabel() const;
+
 
   public slots:
     //! open the form of the related feature in a new dialog
@@ -321,6 +333,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QStringList mFilterFields;
     QMap<QString, QMap<QString, QSet<QString> > > mFilterCache;
     bool mInitialized = false;
+    bool mShowLabel = true;
 
     // Q_PROPERTY
     bool mEmbedForm = false;

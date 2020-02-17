@@ -236,7 +236,14 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
     if ( mEmbedForm )
     {
       QgsAttributeEditorContext context( mEditorContext, relation, QgsAttributeEditorContext::Single, QgsAttributeEditorContext::Embed );
-      mAttributeEditorFrame->setTitle( mReferencedLayer->name() );
+      if(mShowLabel)
+      {
+        mAttributeEditorFrame->setTitle( mReferencedLayer->name() );
+      }
+      else
+      {
+        mAttributeEditorFrame->setTitle("");
+      }
       mReferencedAttributeForm = new QgsAttributeForm( relation.referencedLayer(), QgsFeature(), context, this );
       mAttributeEditorLayout->addWidget( mReferencedAttributeForm );
     }
@@ -1127,4 +1134,23 @@ void QgsRelationReferenceWidget::setReferencedLayerDataSource( const QString &re
 void QgsRelationReferenceWidget::setFormFeature( const QgsFeature &formFeature )
 {
   mFormFeature = formFeature;
+}
+
+
+void QgsRelationReferenceWidget::setShowLabel(bool showLabel)
+{
+  mShowLabel = showLabel;
+  if(mShowLabel == false)
+  {
+    mAttributeEditorFrame->setTitle("");
+  }
+  else
+  {
+    mAttributeEditorFrame->setTitle( mReferencedLayer->name() );
+  }
+}
+
+bool QgsRelationReferenceWidget::showLabel() const
+{
+  return mShowLabel;
 }

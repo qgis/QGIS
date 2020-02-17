@@ -31,6 +31,7 @@
 #include "qgsnetworkcontentfetcherregistry.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgsrelationmanager.h"
+#include "qgsrelationreferencewidget.h"
 #include "qgslogger.h"
 #include "qgstabwidget.h"
 #include "qgssettings.h"
@@ -1825,6 +1826,14 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
         QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( widgetSetup.type(), mLayer, fldIdx, widgetSetup.config(), nullptr, this, mContext );
         QgsAttributeFormEditorWidget *formWidget = new QgsAttributeFormEditorWidget( eww, widgetSetup.type(), this );
+
+        QgsRelationReferenceWidget* relRefWidget = dynamic_cast<QgsRelationReferenceWidget*>(eww->widget());
+        if(relRefWidget)
+        {
+          //This field widget can be a frame for a reference relation, show or hide its label accordingly
+          relRefWidget->setShowLabel(widgetDef->showLabel());
+        }
+
         mFormEditorWidgets.insert( fldIdx, formWidget );
         mFormWidgets.append( formWidget );
 
