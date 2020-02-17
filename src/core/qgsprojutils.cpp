@@ -266,7 +266,6 @@ QList<QgsDatumTransform::GridDetails> QgsProjUtils::gridsUsed( const QString &pr
     const QString gridName = match.captured( 1 );
     QgsDatumTransform::GridDetails grid;
     grid.shortName = gridName;
-#if PROJ_VERSION_MAJOR>6 || (PROJ_VERSION_MAJOR==6 && PROJ_VERSION_MINOR>=2)
     const char *fullName = nullptr;
     const char *packageName = nullptr;
     const char *url = nullptr;
@@ -280,7 +279,6 @@ QList<QgsDatumTransform::GridDetails> QgsProjUtils::gridsUsed( const QString &pr
     grid.directDownload = directDownload;
     grid.openLicense = openLicense;
     grid.isAvailable = available;
-#endif
     grids.append( grid );
   }
   return grids;
