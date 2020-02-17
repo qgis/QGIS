@@ -100,7 +100,7 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
   {
     mCreatedTransform = true;
     if ( !mCoordOp.isEmpty() )
-      mTransformContext.addCoordinateOperation( sourceCrs(), mDestCrs, mCoordOp );
+      mTransformContext.addCoordinateOperation( sourceCrs(), mDestCrs, mCoordOp, false );
     mTransform = QgsCoordinateTransform( sourceCrs(), mDestCrs, mTransformContext );
 
     mTransform.disableFallbackOperationHandler( true );
