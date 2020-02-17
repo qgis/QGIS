@@ -205,6 +205,11 @@ bool QgsCoordinateTransformContext::allowFallbackTransform( const QgsCoordinateR
 
   d->mLock.lockForRead();
   QgsCoordinateTransformContextPrivate::OperationDetails res = d->mSourceDestDatumTransforms.value( qMakePair( srcKey, destKey ), QgsCoordinateTransformContextPrivate::OperationDetails() );
+  if ( res.operation.isEmpty() )
+  {
+    // try to reverse
+    res = d->mSourceDestDatumTransforms.value( qMakePair( destKey, srcKey ), QgsCoordinateTransformContextPrivate::OperationDetails() );
+  }
   d->mLock.unlock();
   return res.allowFallback;
 #else
