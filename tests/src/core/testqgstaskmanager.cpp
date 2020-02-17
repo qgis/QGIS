@@ -1016,7 +1016,7 @@ void TestQgsTaskManager::progressChanged()
   flushEvents();
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
-  QCOMPARE( spy.last().at( 1 ).toDouble(), 100 );
+  QCOMPARE( spy.last().at( 1 ).toDouble(), 100.0 );
   QCOMPARE( task2->status(), QgsTask::Running );
   task2->emitProgressChanged( 80.0 );
   while ( spy.count() == 3 )
