@@ -132,6 +132,13 @@ If no matching operations are found within the context then the defaultOperation
 selected.
 %End
 
+    void setShowFallbackOption( bool visible );
+%Docstring
+Sets whether the "allow fallback" operations option is visible.
+
+.. versionadded:: 3.12
+%End
+
   signals:
 
     void operationChanged();

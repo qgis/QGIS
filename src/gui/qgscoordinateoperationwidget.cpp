@@ -666,6 +666,11 @@ void QgsCoordinateOperationWidget::setSelectedOperationUsingContext( const QgsCo
 #endif
 }
 
+void QgsCoordinateOperationWidget::setShowFallbackOption( bool visible )
+{
+  mAllowFallbackCheckBox->setVisible( visible );
+}
+
 bool QgsCoordinateOperationWidget::gridShiftTransformation( const QString &itemText ) const
 {
   return !itemText.isEmpty() && !itemText.contains( QLatin1String( "towgs84" ), Qt::CaseInsensitive );
