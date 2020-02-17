@@ -107,6 +107,7 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mDestinationDatumTransform( other.mDestinationDatumTransform )
   , mProjCoordinateOperation( other.mProjCoordinateOperation )
   , mShouldReverseCoordinateOperation( other.mShouldReverseCoordinateOperation )
+  , mAllowFallbackTransforms( other.mAllowFallbackTransforms )
   , mIsReversed( other.mIsReversed )
 {
 #if PROJ_VERSION_MAJOR < 6
@@ -263,6 +264,7 @@ void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTran
 #if PROJ_VERSION_MAJOR >= 6
   mProjCoordinateOperation = context.calculateCoordinateOperation( mSourceCRS, mDestCRS );
   mShouldReverseCoordinateOperation = context.mustReverseCoordinateOperation( mSourceCRS, mDestCRS );
+  mAllowFallbackTransforms = context.allowFallbackTransform( mSourceCRS, mDestCRS );
 #else
   Q_NOWARN_DEPRECATED_PUSH
   QgsDatumTransform::TransformPair transforms = context.calculateDatumTransforms( mSourceCRS, mDestCRS );
