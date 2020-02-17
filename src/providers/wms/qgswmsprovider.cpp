@@ -155,6 +155,11 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     if ( mSettings.mIsTemporal )
     {
       temporalProperties()->setFixedTemporalRange( mSettings.mFixedRange );
+      if ( mSettings.mIsBiTemporal )
+      {
+        temporalProperties()->setFixedReferenceTemporalRange( mSettings.mFixedReferenceRange );
+        temporalProperties()->setHasReference( true );
+      }
     }
   }
 
@@ -1092,8 +1097,9 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
       setQueryItem( query, QStringLiteral( "TIME" ), extent );
     }
   }
-  // If the data provider has bi-temporal properties,
-  if ( temporalProperties()->hasReference() )
+  // If the data provider has bi-temporal properties and they are enabled
+  if ( temporalProperties()->hasReference() &&
+       temporalProperties()->isReferenceEnable() )
   {
     QgsDateTimeRange referenceRange = temporalProperties()->referenceTemporalRange();
 

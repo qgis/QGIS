@@ -130,6 +130,20 @@ class CORE_EXPORT QgsRasterDataProviderTemporalProperties : public QgsDataProvid
     */
     bool hasReference() const;
 
+    /**
+     * Sets the usage status of the reference range.
+     *
+     * \see isReferenceEnable()
+     */
+    void setReferenceEnable( bool enabled );
+
+    /**
+     * Returns the enabled status of the reference range.
+     *
+     * \see setReferenceEnable()
+    */
+    bool isReferenceEnable() const;
+
   private:
     //! Represents current active datetime range member.
     QgsDateTimeRange mRange;
@@ -167,6 +181,9 @@ class CORE_EXPORT QgsRasterDataProviderTemporalProperties : public QgsDataProvid
 
     //! If these properties has reference temporal range
     bool mHasReferenceRange = false;
+
+    //! If reference range has been enabled to be used in these properties
+    bool mReferenceEnable = false;
 
 
 };
