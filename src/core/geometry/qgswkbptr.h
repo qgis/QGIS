@@ -102,19 +102,19 @@ class CORE_EXPORT QgsWkbPtr
 
     /**
      * \brief size
-     * \note note available in Python bindings
+     * \note not available in Python bindings
      */
     inline int size() const { return mEnd - mStart; } SIP_SKIP
 
     /**
      * \brief remaining
-     * \note note available in Python bindings
+     * \note not available in Python bindings
      */
     inline int remaining() const { return mEnd - mP; } SIP_SKIP
 
     /**
      * \brief writtenSize
-     * \note note available in Python bindings
+     * \note not available in Python bindings
      */
     inline int writtenSize() const { return mP - mStart; } SIP_SKIP
 };
@@ -134,13 +134,13 @@ class CORE_EXPORT QgsConstWkbPtr
 
     /**
      * \brief Verify bounds
-     * \note note available in Python bindings
+     * \note not available in Python bindings
      */
     void verifyBound( int size ) const SIP_SKIP;
 
     /**
      * \brief Read a value
-     * \note note available in Python bindings
+     * \note not available in Python bindings
      */
     template<typename T> void read( T &v ) const SIP_SKIP
     {
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsConstWkbPtr
 
     /**
      * \brief readHeader
-     * \note note available in Python bindings
+     * \note not available in Python bindings
      */
     QgsWkbTypes::Type readHeader() const SIP_SKIP;
 
@@ -180,7 +180,7 @@ class CORE_EXPORT QgsConstWkbPtr
 
     /**
      * \brief remaining
-     * \note note available in Python bindings
+     * \note not available in Python bindings
      */
     inline int remaining() const { return mEnd - mP; } SIP_SKIP
 
