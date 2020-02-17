@@ -743,7 +743,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 #if PROJ_VERSION_MAJOR>=6
 
   mFallbackOperationOccurred = false;
-  if ( actualRes != 0 && d->mAllowFallbackTransforms )
+  if ( actualRes != 0 && ( d->mAllowFallbackTransforms || mBallparkTransformsAreAppropriate ) )
   {
     // fail #1 -- try with getting proj to auto-pick an appropriate coordinate operation for the points
     if ( PJ *transform = d->threadLocalFallbackProjData() )
