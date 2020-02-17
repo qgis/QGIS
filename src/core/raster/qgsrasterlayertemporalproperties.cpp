@@ -47,33 +47,6 @@ const QgsDateTimeRange &QgsRasterLayerTemporalProperties::fixedTemporalRange() c
   return mRange;
 }
 
-//void  QgsRasterLayerTemporalProperties::setProviderTemporalRange( const QgsDateTimeRange &range )
-//{
-//  if ( range == mRange )
-//    return;
-
-//  QgsWmsProvider *wmsProvider = qobject_cast<QgsWmsProvider*> (mDataProvider);
-
-//  if ( wmsProvider)
-//      wmsProvider->setTemporalRange( range );
-
-//  mRange = range;
-
-//}
-
-//void QgsRasterLayerTemporalProperties::setDataProvider( QgsRasterDataProvider *provider)
-//{
-//    mDataProvider = provider;
-//}
-
-void  QgsRasterLayerTemporalProperties::setWmstRelatedSettings( const QString &dimension )
-{
-  Q_UNUSED( dimension )
-
-  // TODO add WMS-T handling here,
-  // For WMS-T instant time values, WMS-T List times and for WMS-T intervals time values.
-}
-
 bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )

@@ -151,7 +151,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalProperties : public QgsDataProvid
     /**
      * Represents fixed data provider datetime range.
      *
-     * This is for determing the providers lower and upper datetime bounds,
+     * This is for determining the providers lower and upper datetime bounds,
      * any updates on the mRange should get out the range bound defined
      * by this member.
      *
@@ -184,7 +184,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalProperties : public QgsDataProvid
 
     //! If reference range has been enabled to be used in these properties
     bool mReferenceEnable = false;
-
 
 };
 

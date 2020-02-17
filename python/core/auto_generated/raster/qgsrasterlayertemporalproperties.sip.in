@@ -82,19 +82,6 @@ Returns the fixed temporal range for the layer.
 .. seealso:: :py:func:`setFixedTemporalRange`
 %End
 
-    void setWmstRelatedSettings( const QString &dimension );
-%Docstring
-Sets the raster layer properties with WMS-T temporal settings.
-
-:param dimension: contains text content indicating WMS layer available time value(s).
-
-.. warning::
-
-   This is to be used to support WMS-T layers only. Applicable when
-   TemporalMode is QgsRasterLayerTemporalProperties.ModeFixedTemporalRange or
-   QgsRasterLayerTemporalProperties.ModeTemporalRangesList
-%End
-
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
 
 
