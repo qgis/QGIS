@@ -242,7 +242,7 @@ be used.
     bool allowFallbackTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
 %Docstring
 Returns ``True`` if approximate "ballpark" transforms may be used when transforming
-between a \source and ``destination`` CRS pair, in the case that the preferred
+between a ``source`` and ``destination`` CRS pair, in the case that the preferred
 coordinate operation fails (such as when
 coordinates from outside a required grid shift file are transformed). See
 QgsCoordinateTransform.fallbackOperationOccurred() for further details.
