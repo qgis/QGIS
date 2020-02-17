@@ -25,7 +25,6 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
   setupUi( this );
 
   const QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
-  Q_ASSERT( itemData.type() == QgsAttributesFormProperties::DnDTreeItemData::Container );
 
   // common configs
   mShowLabelCheckBox->setChecked( itemData.showLabel() );
