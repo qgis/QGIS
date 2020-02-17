@@ -388,6 +388,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void insertRecentlyUsedDisplayExpression( const QString &expression );
     void updateEditSelectionProgress( int progress, int count );
     void panOrZoomToFeature( const QgsFeatureIds &featureset );
+    //! disable/enable the buttons of the browsing toolbar (feature list view)
+    void setBrowsingAutoPanScaleAllowed( bool allowed );
 
     QgsFieldConditionalFormatWidget *mConditionalFormatWidget = nullptr;
     QgsAttributeEditorContext mEditorContext;
@@ -410,6 +412,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     // we will temporarily save it in here and set it on init
     QgsFeature mTempAttributeFormFeature;
     QgsFeatureIds mLastFeatureSet;
+    bool mBrowsingAutoPanScaleAllowed = true;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeTable;
