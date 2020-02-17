@@ -681,6 +681,7 @@ class CORE_EXPORT QgsCoordinateTransform
     bool mBallparkTransformsAreAppropriate = false;
     bool mDisableFallbackHandler = false;
     mutable bool mFallbackOperationOccurred = false;
+    mutable QString mLastError;
 
 #if PROJ_VERSION_MAJOR>=6
     bool setFromCache( const QgsCoordinateReferenceSystem &src,
