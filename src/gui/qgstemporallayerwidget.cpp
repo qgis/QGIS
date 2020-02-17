@@ -37,7 +37,7 @@ void QgsTemporalLayerWidget::setEndAsStartNormalButton_clicked()
 {
   mEndTemporalDateTimeEdit->setDateTime( mStartTemporalDateTimeEdit->dateTime() );
   // Update current selection label
-  updateRangeLabel( "layer", mRangeLabel );
+  // updateRangeLabel( "layer", mRangeLabel );
 }
 
 void QgsTemporalLayerWidget::setEndAsStartReferenceButton_clicked()
@@ -50,7 +50,7 @@ void QgsTemporalLayerWidget::layerRadioButton_clicked()
   if ( mLayerRadioButton->isChecked() )
   {
     setInputWidgetState( "normal", true );
-    updateRangeLabel( "layer", mRangeLabel );
+    // updateRangeLabel( "layer", mRangeLabel );
     mProjectRadioButton->setChecked( false );
   }
   else
@@ -63,7 +63,7 @@ void QgsTemporalLayerWidget::projectRadioButton_clicked()
   {
     mLayerRadioButton->setChecked( false );
     setInputWidgetState( "normal", false );
-    updateRangeLabel( "project", mRangeLabel );
+    // updateRangeLabel( "project", mRangeLabel );
   }
 }
 
@@ -81,7 +81,7 @@ void QgsTemporalLayerWidget::init()
   setInputWidgetState( "reference", false );
   setDateTimeInputsLimit();
 
-  updateRangeLabel( "layer", mRangeLabel );
+  // updateRangeLabel( "layer", mRangeLabel );
 }
 
 void QgsTemporalLayerWidget::setDateTimeInputsLimit()
@@ -141,14 +141,17 @@ void QgsTemporalLayerWidget::saveTemporalProperties()
         rasterLayer->dataProvider()->temporalProperties()->setEnableTime( true );
 
       // Update current selection label
-      updateRangeLabel( "layer", mRangeLabel );
+      // updateRangeLabel( "layer", mRangeLabel );
 
       if ( mReferenceCheckBox->isChecked() )
       {
         QgsDateTimeRange referenceRange = QgsDateTimeRange( mStartReferenceDateTimeEdit->dateTime(),
                                           mEndReferenceDateTimeEdit->dateTime() );
         rasterLayer->dataProvider()->temporalProperties()->setReferenceTemporalRange( referenceRange );
+        rasterLayer->dataProvider()->temporalProperties()->setReferenceEnable( true );
       }
+      else
+        rasterLayer->dataProvider()->temporalProperties()->setReferenceEnable( false );
     }
 
     if ( mProjectRadioButton->isChecked() )
@@ -160,6 +163,10 @@ void QgsTemporalLayerWidget::saveTemporalProperties()
         QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *> ( mLayer );
         rasterLayer->dataProvider()->temporalProperties()->setTemporalRange( projectRange );
 
+        if ( mReferenceCheckBox->isChecked() )
+          rasterLayer->dataProvider()->temporalProperties()->setReferenceEnable( true );
+        else
+          rasterLayer->dataProvider()->temporalProperties()->setReferenceEnable( false );
       }
     }
   }
