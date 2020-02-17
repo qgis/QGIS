@@ -14,5 +14,7 @@ RUN wget -O- \
   https://github.com/pgpointcloud/pointcloud/archive/dda0cb9c84365088737d9c157beeedf87ca59f01.tar.gz \
   | tar xz && \
   cd pointcloud-dda0cb9c84365088737d9c157beeedf87ca59f01 && \
-  ./autogen.sh && ./configure && make && make install && \
+  ./autogen.sh && \
+  PG_CONFIG=/usr/lib/postgresql/11/bin/pg_config ./configure && \
+  make && make install && \
   cd .. && rm -Rf pointcloud-dda0cb9c84365088737d9c157beeedf87ca59f01
