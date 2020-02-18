@@ -110,8 +110,6 @@ QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties:
       return TemporalMode::ModeFixedTemporalRange;
     case 1:
       return TemporalMode::ModeTemporalRangeFromDataProvider;
-    case 2:
-      return TemporalMode::ModeTemporalRangesList;
     default:
       return TemporalMode::ModeFixedTemporalRange;
   }

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgstemporallayerwidget.h                                     *
+ * src/core/qgsdataprovidertemporalcapabilities.h                       *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -12,39 +12,31 @@
 
 
 
-class QgsTemporalLayerWidget : QWidget
+class QgsDataProviderTemporalCapabilities : QgsTemporalProperty
 {
 %Docstring
-A widget for filtering temporal layer based on its available time values
+Class for handling data providers temporal capabilities.
 
 .. versionadded:: 3.14
 %End
 
 %TypeHeaderCode
-#include "qgstemporallayerwidget.h"
+#include "qgsdataprovidertemporalcapabilities.h"
 %End
   public:
 
-    QgsTemporalLayerWidget( QWidget *parent = 0, QgsMapLayer *layer = 0 );
+    QgsDataProviderTemporalCapabilities( bool enabled = false );
 %Docstring
-Constructor for QgsTemporalLayerWidget.
+Constructor for QgsDataProviderTemporalCapabilities.
 %End
 
-    void setMapCanvas( QgsMapCanvas *canvas );
-%Docstring
-Sets the map canvas associtated with this temporal widget.
-%End
-
-    void saveTemporalProperties();
-%Docstring
-Save widget temporal properties inputs.
-%End
-
+    virtual ~QgsDataProviderTemporalCapabilities();
 };
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgstemporallayerwidget.h                                     *
+ * src/core/qgsdataprovidertemporalcapabilities.h                       *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

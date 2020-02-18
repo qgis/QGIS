@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsrasterdataprovidertemporalproperties.h
+                         qgsrasterdataprovidertemporalcapabilities.h
                          ---------------
     begin                : February 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
@@ -15,34 +15,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSRASTERDATAPROVIDERTEMPORALPROPERTIES_H
-#define QGSRASTERDATAPROVIDERTEMPORALPROPERTIES_H
+#ifndef QGSRASTERDATAPROVIDERTEMPORALCAPABILITIES_H
+#define QGSRASTERDATAPROVIDERTEMPORALCAPABILITIES_H
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsrange.h"
-#include "qgsdataprovidertemporalproperties.h"
+#include "qgsdataprovidertemporalcapabilities.h"
 
 /**
- * \class QgsRasterDataProviderTemporalProperties
+ * \class QgsRasterDataProviderTemporalCapabilities
  * \ingroup core
- * Implementation raster data provider temporal properties.
+ * Implementation of data provider temporal properties for QgsRasterDataProviders.
+ *
+ * Data provider temporal capabilities reflect the temporal capabilities of a QgsDataProvider.
+ * Unlike QgsMapLayerTemporalProperties, these settings are not user-configurable,
+ * and should only be set by the QgsDataProvider itself.
  *
  * \since QGIS 3.14
  */
 
-class CORE_EXPORT QgsRasterDataProviderTemporalProperties : public QgsDataProviderTemporalProperties
+class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProviderTemporalCapabilities
 {
   public:
 
     /**
      * Constructor for QgsRasterDataProviderTemporalProperties.
      */
-    QgsRasterDataProviderTemporalProperties( bool enabled = false );
+    QgsRasterDataProviderTemporalCapabilities( bool enabled = false );
 
-    virtual ~QgsRasterDataProviderTemporalProperties() = default;
+    virtual ~QgsRasterDataProviderTemporalCapabilities() = default;
 
-//    QgsRasterDataProviderTemporalProperties  &operator=( const QgsRasterDataProviderTemporalProperties &other );
+//    QgsRasterDataProviderTemporalCapabilities  &operator=( const QgsRasterDataProviderTemporalProperties &other );
 
     /**
      * Sets the current active datetime range for the temporal properties.
@@ -187,4 +191,4 @@ class CORE_EXPORT QgsRasterDataProviderTemporalProperties : public QgsDataProvid
 
 };
 
-#endif // QGSRASTERDATAPROVIDERTEMPORALPROPERTIES_H
+#endif // QGSRASTERDATAPROVIDERTEMPORALCAPABILITIES_H

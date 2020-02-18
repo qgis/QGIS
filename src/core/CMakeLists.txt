@@ -232,7 +232,7 @@ SET(QGIS_CORE_SRCS
   qgsdataitemproviderregistry.cpp
   qgsdatasourceuri.cpp
   qgsdataprovider.cpp
-  qgsdataprovidertemporalproperties.cpp
+  qgsdataprovidertemporalcapabilities.cpp
   qgsdatetimestatisticalsummary.cpp
   qgsdatumtransform.cpp
   qgsdbfilterproxymodel.cpp
@@ -509,7 +509,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrasterblock.cpp
   raster/qgsrasterchecker.cpp
   raster/qgsrasterdataprovider.cpp
-  raster/qgsrasterdataprovidertemporalproperties.cpp
+  raster/qgsrasterdataprovidertemporalcapabilities.cpp
   raster/qgsrasterfilewritertask.cpp
   raster/qgsrasteridentifyresult.cpp
   raster/qgsrasterinterface.cpp
@@ -729,7 +729,7 @@ SET(QGIS_CORE_HDRS
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
   qgsdataprovider.h
-  qgsdataprovidertemporalproperties.h
+  qgsdataprovidertemporalcapabilities.h
   qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
   qgsdatumtransform.h
@@ -1219,7 +1219,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterblock.h
   raster/qgsrasterchecker.h
   raster/qgsrasterdataprovider.h
-  raster/qgsrasterdataprovidertemporalproperties.h
+  raster/qgsrasterdataprovidertemporalcapabilities.h
   raster/qgsrasterdrawer.h
   raster/qgsrasterfilewriter.h
   raster/qgsrasterfilewritertask.h

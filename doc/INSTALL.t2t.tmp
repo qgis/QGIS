@@ -1,6 +1,10 @@
 QGIS
 Building QGIS from source - step by step
+<<<<<<< HEAD
 2020-02-24
+=======
+2020-02-19
+>>>>>>> c81bfa2090... suggested changes from the review
 
 %! target       : html
 %! style        : style.css
@@ -56,8 +60,13 @@ Building QGIS from source - step by step
 % End of comments
 % -------------------
 
+<<<<<<< HEAD
 Last Updated: 2020-02-24
 Last Change : 2020-02-24
+=======
+Last Updated: 2020-02-19
+Last Change : 2020-02-17
+>>>>>>> c81bfa2090... suggested changes from the review
 
 %%toc
 

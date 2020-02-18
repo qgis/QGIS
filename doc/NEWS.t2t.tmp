@@ -1,6 +1,10 @@
 QGIS News
 Change history for the QGIS Project
+<<<<<<< HEAD
 2020-02-24
+=======
+2020-02-19
+>>>>>>> c81bfa2090... suggested changes from the review
 
 %! target       : html
 %! style        : style.css
@@ -35,6 +39,7 @@ Change history for the QGIS Project
 % End of comments
 % -------------------
 
+<<<<<<< HEAD
 Last Updated: 2020-02-24
 Last Change : 2020-02-24
 
@@ -72,6 +77,10 @@ This release has following new features:
 - Notable Fixes: Bug fixes by Stephen Knox
 -
 
+=======
+Last Updated: 2020-02-19
+Last Change : 2020-02-17
+>>>>>>> c81bfa2090... suggested changes from the review
 
 = What's new in Version 3.10 'A Coruña'? =
 

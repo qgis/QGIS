@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgstemporallayerwidget.h
+                         qgsrasterlayertemporalpropertieswidget.h
                          ------------------------------
     begin                : January 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
@@ -15,34 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSTEMPORALLAYERWIDGET_H
-#define QGSTEMPORALLAYERWIDGET_H
+#ifndef QGSRASTERLAYERTEMPORALPROPERTIESWIDGET_H
+#define QGSRASTERLAYERTEMPORALPROPERTIESWIDGET_H
 
-#include "ui_qgstemporallayerwidgetbase.h"
+#include "ui_qgsrasterlayertemporalpropertieswidgetbase.h"
 #include "qgis_gui.h"
 #include "qgsmapcanvas.h"
 #include "qgsrasterlayer.h"
-
 
 class QgsMapLayer;
 
 /**
  * \ingroup gui
- * \class QgsTemporalLayerWidget
- * A widget for filtering temporal layer based on its available time values
+ * \class QgsRasterLayerTemporalPropertiesWidget
+ * A widget for configuring the temporal properties for a raster layer.
  *
  * \since QGIS 3.14
  */
 
-class GUI_EXPORT QgsTemporalLayerWidget : public QWidget, private Ui::QgsTemporalLayerWidgetBase
+class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, private Ui::QgsRasterLayerTemporalPropertiesWidgetBase
 {
     Q_OBJECT
   public:
 
     /**
-     * Constructor for QgsTemporalLayerWidget.
+     * Constructor for QgsRasterLayerTemporalPropertiesWidget.
      */
-    QgsTemporalLayerWidget( QWidget *parent = nullptr, QgsMapLayer *layer = nullptr );
+    QgsRasterLayerTemporalPropertiesWidget( QWidget *parent = nullptr, QgsMapLayer *layer = nullptr );
 
     /**
      * Sets the map canvas associtated with this temporal widget.
@@ -54,6 +53,39 @@ class GUI_EXPORT QgsTemporalLayerWidget : public QWidget, private Ui::QgsTempora
      * Save widget temporal properties inputs.
      */
     void saveTemporalProperties();
+
+  private:
+
+    /**
+     * Initialize the widget with default state.
+     */
+    void init();
+
+    /**
+     * Map canvas associtated with this temporal widget.
+     *
+     * This can be used to get current project map settings.
+     */
+    QgsMapCanvas *mCanvas = nullptr;
+
+    /**
+     * The corresponding map layer with temporal attributes
+     */
+    QgsMapLayer *mLayer = nullptr;
+
+    /**
+     * Mode used to determine if temporal properties dimensional status.
+     */
+    enum TemporalDimension
+    {
+      NormalTemporal, //! When temporal properties have single temporal dimension.
+
+      /**
+       * When temporal properties have bi-temporal dimension,
+       * eg. have normal time and reference time or reference time only.
+       */
+      BiTemporal
+    };
 
   private slots:
 
@@ -86,10 +118,10 @@ class GUI_EXPORT QgsTemporalLayerWidget : public QWidget, private Ui::QgsTempora
     /**
      * Sets the input widgets enable state in this temporal widget.
      *
-     * \param type widget type
+     * \param dimension determine to either enable normal time or reference time.
      * \param enabled new enable status
      */
-    void setInputWidgetState( QString type, bool enabled );
+    void setInputWidgetState( TemporalDimension dimension, bool enabled );
 
     /**
      * Updates the range label with current set datetime range.
@@ -104,31 +136,5 @@ class GUI_EXPORT QgsTemporalLayerWidget : public QWidget, private Ui::QgsTempora
      **/
     void setDateTimeInputsLimit();
 
-  private:
-
-    /**
-     * Initialize the widget with default state.
-     */
-    void init();
-
-    /**
-     * Map canvas associtated with this temporal widget.
-     *
-     * This can be used to get current project map settings.
-     */
-    QgsMapCanvas *mCanvas = nullptr;
-
-    /**
-     * Update temporal layer Uri
-     *
-     */
-    QString updateTemporalDataSource( QString sourceUri, QgsDateTimeRange sourceRange );
-
-    /**
-     * The corresponding map layer with temporal attributes
-     */
-    QgsMapLayer *mLayer = nullptr;
-
-
 };
-#endif // QGSTEMPORALLAYERWIDGET_H
+#endif // QGSRASTERLAYERTEMPORALPROPERTIESWIDGET_H

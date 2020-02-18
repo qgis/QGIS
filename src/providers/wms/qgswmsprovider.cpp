@@ -154,11 +154,11 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     // Setup temporal properties for layers in WMS-T
     if ( mSettings.mIsTemporal )
     {
-      temporalProperties()->setFixedTemporalRange( mSettings.mFixedRange );
+      temporalCapabilities()->setFixedTemporalRange( mSettings.mFixedRange );
       if ( mSettings.mIsBiTemporal )
       {
-        temporalProperties()->setFixedReferenceTemporalRange( mSettings.mFixedReferenceRange );
-        temporalProperties()->setHasReference( true );
+        temporalCapabilities()->setFixedReferenceTemporalRange( mSettings.mFixedReferenceRange );
+        temporalCapabilities()->setHasReference( true );
       }
     }
   }
@@ -1044,7 +1044,7 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   setQueryItem( query, QStringLiteral( "STYLES" ), styles );
 
   // For WMS-T layers
-  if ( temporalProperties()->isActive() )
+  if ( temporalCapabilities()->isActive() )
   {
     addWmstParameters( query );
   }
@@ -1077,10 +1077,10 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
 
 void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 {
-  QgsDateTimeRange range = temporalProperties()->temporalRange();
+  QgsDateTimeRange range = temporalCapabilities()->temporalRange();
   QString format = "yyyy-MM-ddThh:mm:ssZ";
 
-  if ( !temporalProperties()->isTimeEnabled() )
+  if ( !temporalCapabilities()->isTimeEnabled() )
     format = "yyyy-MM-dd";
 
   if ( range.begin().isValid() && range.end().isValid() )
@@ -1098,10 +1098,10 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
     }
   }
   // If the data provider has bi-temporal properties and they are enabled
-  if ( temporalProperties()->hasReference() &&
-       temporalProperties()->isReferenceEnable() )
+  if ( temporalCapabilities()->hasReference() &&
+       temporalCapabilities()->isReferenceEnable() )
   {
-    QgsDateTimeRange referenceRange = temporalProperties()->referenceTemporalRange();
+    QgsDateTimeRange referenceRange = temporalCapabilities()->referenceTemporalRange();
 
     if ( referenceRange.begin() == referenceRange.end() )
       setQueryItem( query, QStringLiteral( "DIM_REFERENCE" ),

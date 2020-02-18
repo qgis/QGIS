@@ -5,6 +5,7 @@ SET(QGIS_GUI_SRCS
   raster/qgsrasterbandcombobox.cpp
   raster/qgsrasterhistogramwidget.cpp
   raster/qgsrasterlayerproperties.cpp
+  raster/qgsrasterlayertemporalpropertieswidget.cpp
   raster/qgsrasterminmaxwidget.cpp
   raster/qgsrasterrendererwidget.cpp
   raster/qgssinglebandgrayrendererwidget.cpp
@@ -457,7 +458,6 @@ SET(QGIS_GUI_SRCS
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
   qgstaskmanagerwidget.cpp
-  qgstemporallayerwidget.cpp
   qgstextformatwidget.cpp
   qgstextpreview.cpp
   qgstreewidgetitem.cpp
@@ -668,7 +668,6 @@ SET(QGIS_GUI_HDRS
   qgstablewidgetitem.h
   qgstabwidget.h
   qgstaskmanagerwidget.h
-  qgstemporallayerwidget.h
   qgstextformatwidget.h
   qgstextpreview.h
   qgstreewidgetitem.h
@@ -914,6 +913,7 @@ SET(QGIS_GUI_HDRS
   raster/qgssinglebandgrayrendererwidget.h
   raster/qgssinglebandpseudocolorrendererwidget.h
   raster/qgsrasterlayerproperties.h
+  raster/qgsrasterlayertemporalpropertieswidget.h
 
   symbology/characterwidget.h
   symbology/qgs25drendererwidget.h
