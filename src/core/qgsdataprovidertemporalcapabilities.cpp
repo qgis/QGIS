@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsdataprovidertemporalproperties.cpp
+                         qgsdataprovidertemporalcapabalities.cpp
                          ---------------
     begin                : February 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdataprovidertemporalproperties.h"
+#include "qgsdataprovidertemporalcapabilities.h"
 
-QgsDataProviderTemporalProperties::QgsDataProviderTemporalProperties( bool enabled )
+QgsDataProviderTemporalCapabilities::QgsDataProviderTemporalCapabilities( bool enabled )
   : QgsTemporalProperty( enabled )
 {
 }

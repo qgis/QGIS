@@ -193,7 +193,6 @@
 %Include auto_generated/qgstablewidgetitem.sip
 %Include auto_generated/qgstabwidget.sip
 %Include auto_generated/qgstaskmanagerwidget.sip
-%Include auto_generated/qgstemporallayerwidget.sip
 %Include auto_generated/qgstextformatwidget.sip
 %Include auto_generated/qgstextpreview.sip
 %Include auto_generated/qgstreewidgetitem.sip
@@ -323,6 +322,7 @@
 %Include auto_generated/raster/qgssinglebandgrayrendererwidget.sip
 %Include auto_generated/raster/qgssinglebandpseudocolorrendererwidget.sip
 %Include auto_generated/raster/qgsrasterlayerproperties.sip
+%Include auto_generated/raster/qgsrasterlayertemporalpropertieswidget.sip
 %Include auto_generated/symbology/characterwidget.sip
 %Include auto_generated/symbology/qgs25drendererwidget.sip
 %Include auto_generated/symbology/qgsarrowsymbollayerwidget.sip

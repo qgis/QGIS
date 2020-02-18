@@ -1,7 +1,7 @@
 /***************************************************************************
-                         qgstemporalrangeobject.cpp
+                         qgsdataprovidertemporalcapabilities.h
                          ---------------
-    begin                : January 2020
+    begin                : February 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
     email                : samweli at kartoza dot com
  ***************************************************************************/
@@ -16,45 +16,33 @@
  ***************************************************************************/
 
 
-#include "qgstemporalrangeobject.h"
-#include "qgsrendercontext.h"
+#ifndef QGSDATAPROVIDERTEMPORALCAPABILITIES_H
+#define QGSDATAPROVIDERTEMPORALCAPABILITIES_H
 
-QgsTemporalRangeObject::QgsTemporalRangeObject()
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgstemporalproperty.h"
+
+#include <QDomElement>
+
+/**
+ * \class QgsDataProviderTemporalCapabilities
+ * \ingroup core
+ * Class for handling data providers temporal capabilities.
+ *
+ * \since QGIS 3.14
+ */
+
+class CORE_EXPORT QgsDataProviderTemporalCapabilities : public QgsTemporalProperty
 {
-}
+  public:
 
-QgsTemporalRangeObject::QgsTemporalRangeObject( bool enabled )
-  : mTemporal( enabled )
-{
-}
+    /**
+     * Constructor for QgsDataProviderTemporalCapabilities.
+     */
+    QgsDataProviderTemporalCapabilities( bool enabled = false );
 
-QgsTemporalRangeObject::QgsTemporalRangeObject( const QgsRenderContext &rh )
-  : mTemporal( rh.isTemporal() )
-  , mDateTimeRange( rh.temporalRange() )
-{
-}
+    virtual ~QgsDataProviderTemporalCapabilities() = default;
+};
 
-void QgsTemporalRangeObject::setIsTemporal( bool enabled )
-{
-  mTemporal = enabled;
-}
-
-bool QgsTemporalRangeObject::isTemporal() const
-{
-  return mTemporal;
-}
-
-void QgsTemporalRangeObject::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
-{
-  if ( !isTemporal() )
-    setIsTemporal( true );
-
-  mDateTimeRange = dateTimeRange;
-
-}
-
-const QgsDateTimeRange &QgsTemporalRangeObject::temporalRange() const
-{
-  return mDateTimeRange;
-}
-
+#endif // QGSDATAPROVIDERTEMPORALCAPABILITIES_H

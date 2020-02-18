@@ -36,7 +36,6 @@ The ``enabled`` argument specifies whether the temporal properties are initially
     {
       ModeFixedTemporalRange,
       ModeTemporalRangeFromDataProvider,
-      ModeTemporalRangesList
     };
 
     TemporalMode mode() const;
