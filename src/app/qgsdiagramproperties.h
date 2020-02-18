@@ -18,11 +18,14 @@
 #ifndef QGSDIAGRAMPROPERTIES_H
 #define QGSDIAGRAMPROPERTIES_H
 
-#include <QDialog>
-#include "qgsdiagramrenderer.h"
 #include "ui_qgsdiagrampropertiesbase.h"
-#include <QStyledItemDelegate>
+
 #include "qgis_app.h"
+#include "qgsdiagramrenderer.h"
+#include "qgscolorschemelist.h"
+
+#include <QDialog>
+#include <QStyledItemDelegate>
 
 class QgsVectorLayer;
 class QgsMapCanvas;
@@ -57,6 +60,13 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     void updatePlacementWidgets();
     void scalingTypeChanged();
     void showSizeLegendDialog();
+
+  private slots:
+
+    void updateProperty();
+    void showHelp();
+
+    void createAuxiliaryField();
 
   private:
 
@@ -94,13 +104,6 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     QgsExpressionContext createExpressionContext() const override;
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsDiagramLayerSettings::Property key );
-
-  private slots:
-
-    void updateProperty();
-    void showHelp();
-
-    void createAuxiliaryField();
 };
 
 class EditBlockerDelegate: public QStyledItemDelegate

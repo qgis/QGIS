@@ -114,7 +114,13 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mSizeSpinBox->setClearValue( 5 );
 
   mDiagramAttributesTreeWidget->setItemDelegateForColumn( ColumnAttributeExpression, new EditBlockerDelegate( this ) );
-  mDiagramAttributesTreeWidget->setItemDelegateForColumn( ColumnColor, new EditBlockerDelegate( this ) );
+  mDiagramAttributesTreeWidget->setItemDelegateForColumn( ColumnColor, new QgsColorSwatchDelegate( this ) );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  mDiagramAttributesTreeWidget->setColumnWidth( ColumnColor, Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 6.6 );
+#else
+  mDiagramAttributesTreeWidget->setColumnWidth( ColumnColor, Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 6.6 );
+#endif
 
   connect( mFixedSizeRadio, &QRadioButton::toggled, this, &QgsDiagramProperties::scalingTypeChanged );
   connect( mAttributeBasedScalingRadio, &QRadioButton::toggled, this, &QgsDiagramProperties::scalingTypeChanged );
@@ -371,7 +377,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
         newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
         QColor col( *coIt );
         col.setAlpha( 255 );
-        newItem->setBackground( 1, QBrush( col ) );
+        newItem->setData( ColumnColor, Qt::EditRole, col );
         newItem->setText( 2, *labIt );
         newItem->setFlags( newItem->flags() | Qt::ItemIsEditable );
       }
@@ -603,7 +609,7 @@ void QgsDiagramProperties::addAttribute( QTreeWidgetItem *item )
   int green = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
   int blue = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
   QColor randomColor( red, green, blue );
-  newItem->setBackground( 1, QBrush( randomColor ) );
+  newItem->setData( ColumnColor, Qt::EditRole, randomColor );
   mDiagramAttributesTreeWidget->addTopLevelItem( newItem );
 }
 
@@ -692,14 +698,7 @@ void QgsDiagramProperties::mDiagramAttributesTreeWidget_itemDoubleClicked( QTree
     }
 
     case ColumnColor:
-    {
-      QColor newColor = QgsColorDialog::getColor( item->background( 1 ).color(), nullptr );
-      if ( newColor.isValid() )
-      {
-        item->setBackground( 1, QBrush( newColor ) );
-      }
       break;
-    }
 
     case ColumnLegendText:
       break;
@@ -753,7 +752,7 @@ void QgsDiagramProperties::apply()
   categoryLabels.reserve( mDiagramAttributesTreeWidget->topLevelItemCount() );
   for ( int i = 0; i < mDiagramAttributesTreeWidget->topLevelItemCount(); ++i )
   {
-    QColor color = mDiagramAttributesTreeWidget->topLevelItem( i )->background( 1 ).color();
+    QColor color = mDiagramAttributesTreeWidget->topLevelItem( i )->data( ColumnColor, Qt::EditRole ).value<QColor>();
     color.setAlphaF( ds.opacity );
     categoryColors.append( color );
     categoryAttributes.append( mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, RoleAttributeExpression ).toString() );
@@ -934,7 +933,7 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
     int green = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
     int blue = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
     QColor randomColor( red, green, blue );
-    newItem->setBackground( 1, QBrush( randomColor ) );
+    newItem->setData( ColumnColor, Qt::EditRole, randomColor );
     mDiagramAttributesTreeWidget->addTopLevelItem( newItem );
   }
   activateWindow(); // set focus back parent
