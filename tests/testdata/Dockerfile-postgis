@@ -9,7 +9,13 @@ RUN chmod 400 /etc/ssl/private/postgres_key.key
 # Compile and install PointCloud.
 # NOTE: release 1.2.0 would not build against PostgreSQL-11:
 # https://github.com/pgpointcloud/pointcloud/issues/248
-RUN apt-get -y update; apt-get -y install build-essential autoconf postgresql-server-dev-11 libxml2-dev zlib1g-dev
+RUN apt-get -y update; apt-get -y install \
+  autoconf \
+  build-essential \
+  libxml2-dev \
+  postgresql-client-11 \
+  postgresql-server-dev-11 \
+  zlib1g-dev
 RUN dpkg -L postgresql-server-dev-11
 RUN wget -O- \
   https://github.com/pgpointcloud/pointcloud/archive/v1.2.1.tar.gz \
