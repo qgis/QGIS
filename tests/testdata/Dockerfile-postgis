@@ -17,8 +17,10 @@ RUN apt-get -y update; apt-get -y install \
   postgresql-server-dev-11 \
   zlib1g-dev
 RUN wget -O- \
-  https://github.com/pgpointcloud/pointcloud/archive/master.tar.gz \
+  https://github.com/pgpointcloud/pointcloud/archive/v1.2.1.tar.gz \
   | tar xz && \
-  cd pointcloud-master && \
-  ./autogen.sh && ./configure && make && make install && \
-  cd .. && rm -Rf pointcloud-master
+  cd pointcloud-1.2.1 && \
+  ./autogen.sh && \
+  ./configure && \
+  make && make install && \
+  cd .. && rm -Rf pointcloud-1.2.1
