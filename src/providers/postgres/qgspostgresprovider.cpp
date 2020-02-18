@@ -4928,7 +4928,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
                        .arg( wkbTypeString )
                        .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
 
-  res = conn->PQexec( checkQuery );
+  QgsPostgresResult res( conn->PQexec( checkQuery ) );
   if ( res.PQntuples() > 0 )
   {
     if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
