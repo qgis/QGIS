@@ -836,6 +836,8 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence 
 
   if ( result == QgsGeometryEngine::Success )
   {
+    if ( type() == QgsWkbTypes::PolygonGeometry && ! newGeoms.isEmpty() )
+      *this = newGeoms.takeAt( 0 );
     newGeometries = newGeoms;
   }
 
