@@ -59,7 +59,7 @@
 #include "qgsfileutils.h"
 #include "qgswebview.h"
 
-#include "qgstemporallayerwidget.h"
+#include "qgsrasterlayertemporalpropertieswidget.h"
 
 #include <QDesktopServices>
 #include <QTableWidgetItem>
@@ -274,14 +274,12 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   // Temporal options
 
   if ( mRasterLayer->temporalProperties()->isActive() ||
-       mRasterLayer->dataProvider()->temporalProperties()->isActive() )
+       mRasterLayer->dataProvider()->temporalCapabilities()->isActive() )
   {
     QVBoxLayout *temporalLayout = new QVBoxLayout( temporalFrame );
-    mTemporalLayerWidget = new QgsTemporalLayerWidget( this, mRasterLayer );
-    mTemporalLayerWidget->setMapCanvas( mMapCanvas );
-    temporalLayout->addWidget( mTemporalLayerWidget );
-
-    // TODO set lower and upper limits in datetimeedit inputs
+    mTemporalWidget = new QgsRasterLayerTemporalPropertiesWidget( this, mRasterLayer );
+    mTemporalWidget->setMapCanvas( mMapCanvas );
+    temporalLayout->addWidget( mTemporalWidget );
 
   }
 
@@ -1111,7 +1109,7 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setCustomProperty( "WMSBackgroundLayer", mBackgroundLayerCheckBox->isChecked() );
 
   // Update temporal properties
-  mTemporalLayerWidget->saveTemporalProperties();
+  mTemporalWidget->saveTemporalProperties();
 
   // Force a redraw of the legend
   mRasterLayer->setLegend( QgsMapLayerLegend::defaultRasterLegend( mRasterLayer ) );

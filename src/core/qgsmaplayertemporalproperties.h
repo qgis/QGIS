@@ -29,9 +29,10 @@
 /**
  * \class QgsMapLayerTemporalProperties
  * \ingroup core
- * Class for handling map layer temporal properties.
+ * Base class for storage of map layer temporal properties.
  *
- * Subclasses will provide full implementation.
+ * QgsMapLayerTemporalProperties expose user-configurable settings for controlling
+ * how an individual QgsMapLayer behaves in a temporal context, e.g. while animating a map object.
  *
  * \since QGIS 3.14
  */

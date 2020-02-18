@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/raster/qgsrasterdataprovidertemporalproperties.h            *
+ * src/core/raster/qgsrasterdataprovidertemporalcapabilities.h          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,25 +10,29 @@
 
 
 
-class QgsRasterDataProviderTemporalProperties : QgsDataProviderTemporalProperties
+class QgsRasterDataProviderTemporalCapabilities : QgsDataProviderTemporalCapabilities
 {
 %Docstring
-Implementation raster data provider temporal properties.
+Implementation of data provider temporal properties for QgsRasterDataProviders.
+
+Data provider temporal capabilities reflect the temporal capabilities of a QgsDataProvider.
+Unlike QgsMapLayerTemporalProperties, these settings are not user-configurable,
+and should only be set by the QgsDataProvider itself.
 
 .. versionadded:: 3.14
 %End
 
 %TypeHeaderCode
-#include "qgsrasterdataprovidertemporalproperties.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
 %End
   public:
 
-    QgsRasterDataProviderTemporalProperties( bool enabled = false );
+    QgsRasterDataProviderTemporalCapabilities( bool enabled = false );
 %Docstring
-Constructor for QgsRasterDataProviderTemporalProperties.
+Constructor for :py:class:`QgsRasterDataProviderTemporalProperties`.
 %End
 
-    virtual ~QgsRasterDataProviderTemporalProperties();
+    virtual ~QgsRasterDataProviderTemporalCapabilities();
 
 
     void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
@@ -136,7 +140,7 @@ Returns the enabled status of the reference range.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/raster/qgsrasterdataprovidertemporalproperties.h            *
+ * src/core/raster/qgsrasterdataprovidertemporalcapabilities.h          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

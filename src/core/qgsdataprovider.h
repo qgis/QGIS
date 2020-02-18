@@ -28,7 +28,7 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgslayermetadata.h"
 #include "qgserror.h"
-#include "qgsdataprovidertemporalproperties.h"
+#include "qgsdataprovidertemporalcapabilities.h"
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
@@ -173,11 +173,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
     /**
-     * Returns data provider temporal properties. This may be NULLPTR, depending on the data provider.
+     * Returns data provider temporal capabilities. This may be NULLPTR, depending on the data provider.
      *
      * \since QGIS 3.14
      */
-    virtual QgsDataProviderTemporalProperties *temporalProperties() { return nullptr; }
+    virtual QgsDataProviderTemporalCapabilities *temporalCapabilities() { return nullptr; }
 
     /**
      * Returns the extent of the layer

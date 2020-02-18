@@ -193,9 +193,9 @@ Returns the sublayers of this layer - useful for providers that manage
 their own layers, such as WMS
 %End
 
-    virtual QgsRasterDataProviderTemporalProperties *temporalProperties();
+    virtual QgsRasterDataProviderTemporalCapabilities *temporalCapabilities();
 %Docstring
-Returns temporal properties associated with data provider.
+Returns temporal capabilities associated with the data provider.
 %End
 
     virtual bool supportsLegendGraphic() const;

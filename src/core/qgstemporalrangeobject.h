@@ -30,8 +30,6 @@ class QgsRenderContext;
  * \ingroup core
  * Base class for temporal based classes.
  *
- * Subclasses may wish to update the abstract temporal functions.
- *
  * \since QGIS 3.14
  */
 class CORE_EXPORT QgsTemporalRangeObject
