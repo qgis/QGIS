@@ -11,10 +11,11 @@ RUN chmod 400 /etc/ssl/private/postgres_key.key
 # https://github.com/pgpointcloud/pointcloud/issues/248
 RUN apt-get -y update; apt-get -y install build-essential autoconf postgresql-server-dev-11 libxml2-dev zlib1g-dev
 RUN wget -O- \
-  https://github.com/pgpointcloud/pointcloud/archive/dda0cb9c84365088737d9c157beeedf87ca59f01.tar.gz \
+  https://github.com/pgpointcloud/pointcloud/archive/v1.2.1.tar.gz \
   | tar xz && \
-  cd pointcloud-dda0cb9c84365088737d9c157beeedf87ca59f01 && \
+  cd pointcloud-1.2.1 && \
+  PATH=/usr/lib/postgresql/11/bin/:$PATH && \
   ./autogen.sh && \
-  PG_CONFIG=/usr/lib/postgresql/11/bin/pg_config ./configure && \
+  ./configure && \
   make && make install && \
-  cd .. && rm -Rf pointcloud-dda0cb9c84365088737d9c157beeedf87ca59f01
+  cd .. && rm -Rf pointcloud-1.2.1
