@@ -54,15 +54,7 @@ QgsChunkLoader *QgsMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node )
 
   QgsCoordinateTransform terrainToMapTransform( mLayer->crs(), mCrs, mTransformContext );
 
-  /*
-   * Force to create a triangularMesh by create a renderer, if it does not have been created yet
-   * Not very clean but could be improve with mesh triangulation handling in the future
-   */
-  QgsRenderContext renderContext;
-  renderContext.setCoordinateTransform( terrainToMapTransform );
-  renderContext.setTransformContext( mTransformContext );
-  meshLayer()->createMapRenderer( renderContext );
-
+  meshLayer()->updateTriangularMesh( terrainToMapTransform );
   return new QgsMeshTerrainTileLoader( mTerrain, node, *meshLayer()->triangularMesh(), extent(), symbol() );
 }
 

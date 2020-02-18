@@ -43,13 +43,11 @@ QgsMeshContours::QgsMeshContours( QgsMeshLayer *layer )
   mNativeMesh.reset( new QgsMesh() );
   mMeshLayer->dataProvider()->populateMesh( mNativeMesh.get() );
 
-  QgsMapSettings mapSettings;
-  mapSettings.setExtent( mMeshLayer->extent() );
-  mapSettings.setDestinationCrs( mMeshLayer->crs() );
-  mapSettings.setOutputDpi( 96 );
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-  mTriangularMesh.reset( new QgsTriangularMesh() );
-  mTriangularMesh->update( mNativeMesh.get(), &context );
+  QgsCoordinateTransform transform;
+  transform.setDestinationCrs( mMeshLayer->crs() );
+  transform.setSourceCrs( mMeshLayer->crs() );
+  mTriangularMesh.reset( new QgsTriangularMesh );
+  mTriangularMesh->update( mNativeMesh.get(), transform );
 }
 
 QgsMeshContours::~QgsMeshContours() = default;

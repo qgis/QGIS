@@ -49,8 +49,19 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContex
   Q_ASSERT( layer->dataProvider() );
 
   mNativeMesh = *( layer->nativeMesh() );
-  mTriangularMesh = *( layer->triangularMesh() );
   mLayerExtent = layer->extent();
+  //handle level of details of mesh
+  QgsMeshSimplifySettings simplificationSettings = layer->meshSimplificationSettings();
+  if ( simplificationSettings.isEnabled() )
+  {
+    double triangleSize = simplificationSettings.meshResolution() * context.mapToPixel().mapUnitsPerPixel();
+    mTriangularMesh = *( layer->triangularMesh( triangleSize ) );
+    mIsMeshSimplificationActive = true;
+  }
+  else
+  {
+    mTriangularMesh = *( layer->triangularMesh() );
+  }
 
   copyScalarDatasetValues( layer );
   copyVectorDatasetValues( layer );
@@ -256,10 +267,11 @@ void QgsMeshLayerRenderer::renderMesh()
   }
 
   // native mesh
-  if ( mRendererSettings.nativeMeshSettings().isEnabled() )
+  if ( mRendererSettings.nativeMeshSettings().isEnabled() && mTriangularMesh.levelOfDetail() == 0 )
   {
     const QList<int> nativeFacesInExtent = QgsMeshUtils::nativeFacesFromTriangles( trianglesInExtent,
                                            mTriangularMesh.trianglesToNativeFaces() );
+
     renderMesh( mRendererSettings.nativeMeshSettings(),
                 mNativeMesh.faces,
                 nativeFacesInExtent );
@@ -344,6 +356,7 @@ void QgsMeshLayerRenderer::renderScalarDataset()
                                          mScalarDataOnVertices,
                                          context,
                                          mOutputSize );
+  interpolator.setSpatialIndexActive( mIsMeshSimplificationActive );
   QgsSingleBandPseudoColorRenderer renderer( &interpolator, 0, sh );  // takes ownership of sh
   renderer.setClassificationMin( scalarSettings.classificationMinimum() );
   renderer.setClassificationMax( scalarSettings.classificationMaximum() );

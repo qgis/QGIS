@@ -53,11 +53,13 @@ class CORE_EXPORT QgsTriangularMesh
     ~QgsTriangularMesh();
 
     /**
-     * Constructs triangular mesh from layer's native mesh and context. Populates spatial index.
+     * If update is needed (not yet constructed, native mesh changed or CRS changed),
+     * constructs triangular mesh from layer's native mesh and context. Populates spatial index.
      * \param nativeMesh QgsMesh to access native vertices and faces
-     * \param context Rendering context to estimate number of triagles to create for an face
+     * \param transform coordinate transform from layer CRS
+     * \returns true if the mesh is effectivly updated, and false if not
     */
-    void update( QgsMesh *nativeMesh, QgsRenderContext *context );
+    bool update( QgsMesh *nativeMesh, const QgsCoordinateTransform &transform );
 
     /**
      * Returns vertices in map coordinate system
@@ -118,6 +120,41 @@ class CORE_EXPORT QgsTriangularMesh
 
     QVector<QVector3D> vertexNormals( float vertScale ) const;
 
+    /**
+     * Returns simplified meshes.
+     * The first simplified mesh is simplified with a goal of a number of triangles equals to the
+     * number of triangles of the base mesh divised by the reduction factor. For the following mesh the same reduction factor is used with
+     * the prededent goal of number of triangles.
+     * There are as many simplified meshes as necessary to have a the minimum triangles count on the last simplified mesh.
+     *
+     * The caller has to take the ownership of returned meshes.
+     *
+     * \param reductionFactor is the factor used to reduce the number of triangles of the mesh
+     * \param minimumTrianglesCount is the minimal faces count on simplified mesh
+     * \since QGIS 3.14
+     */
+    QVector<QgsTriangularMesh *> simplifyMesh( double reductionFactor, int minimumTrianglesCount = 10 ) const;
+
+    /**
+     * Returns the average size of triangles in map unit. It is calculated using the maximum of the height/width of the
+     * bounding box of each triangles.
+     *
+     * \since QGIS 3.14
+     */
+    double averageTriangleSize() const;
+
+    /**
+     * Returns the corresponding index of level of detail on which this mesh is associated
+     * 0 : base mesh
+     * 1 : first simplified mesh
+     * 2 : second simplified mesh (lower level of detail)
+     * ...
+     * ...
+     *
+     * \since QGIS 3.14
+     */
+    int levelOfDetail() const;
+
   private:
 
     /**
@@ -132,8 +169,8 @@ class CORE_EXPORT QgsTriangularMesh
      */
     void triangulate( const QgsMeshFace &face, int nativeIndex );
 
-    // check and, if needed set the indexes of the face counter clock-wise
-    void setTrianglesCounterClockWise( QgsMeshFace &face );
+    // check clock wise and calculate average size of triangles
+    void finalizeTriangles();
 
     // vertices: map CRS; 0-N ... native vertices, N+1 - len ... extra vertices
     // faces are derived triangles
@@ -145,6 +182,12 @@ class CORE_EXPORT QgsTriangularMesh
 
     QgsMeshSpatialIndex mSpatialIndex;
     QgsCoordinateTransform mCoordinateTransform; //coordinate transform used to convert native mesh vertices to map vertices
+
+    // average size of the triangles
+    double mAverageTriangleSize = 0;
+    int mLod = 0;
+
+    const QgsTriangularMesh *mBaseTriangularMesh = nullptr;
 
     friend class TestQgsTriangularMesh;
 };

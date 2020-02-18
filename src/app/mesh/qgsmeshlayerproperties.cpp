@@ -146,6 +146,13 @@ void QgsMeshLayerProperties::syncToLayer()
 #ifdef HAVE_3D
   mVector3DWidget->setLayer( mMeshLayer );
 #endif
+
+  QgsDebugMsg( QStringLiteral( "populate rendering tab" ) );
+  QgsMeshSimplifySettings simplifySettings = mMeshLayer->meshSimplificationSettings();
+
+  mSimplifyMeshGroupBox->setChecked( simplifySettings.isEnabled() );
+  mSimplifyReductionFactorSpinBox->setValue( simplifySettings.reductionFactor() );
+  mSimplifyMeshResolutionSpinBox->setValue( simplifySettings.meshResolution() );
 }
 
 void QgsMeshLayerProperties::addDataset()
@@ -203,6 +210,22 @@ void QgsMeshLayerProperties::apply()
 #ifdef HAVE_3D
   mVector3DWidget->apply();
 #endif
+
+  QgsDebugMsg( QStringLiteral( "processing rendering tab" ) );
+  /*
+   * Rendering Tab
+   */
+  QgsMeshSimplifySettings simplifySettings;
+  simplifySettings.setEnabled( mSimplifyMeshGroupBox->isChecked() );
+  simplifySettings.setReductionFactor( mSimplifyReductionFactorSpinBox->value() );
+  simplifySettings.setMeshResolution( mSimplifyMeshResolutionSpinBox->value() );
+  bool needMeshUpdating = ( ( simplifySettings.isEnabled() != mMeshLayer->meshSimplificationSettings().isEnabled() ) ||
+                            ( simplifySettings.reductionFactor() != mMeshLayer->meshSimplificationSettings().reductionFactor() ) );
+
+  mMeshLayer->setMeshSimplificationSettings( simplifySettings );
+
+  if ( needMeshUpdating )
+    mMeshLayer->reload();
 
   //make sure the layer is redrawn
   mMeshLayer->triggerRepaint();

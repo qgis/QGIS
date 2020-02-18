@@ -82,6 +82,7 @@ class TestQgsMeshRenderer : public QObject
     void test_vertex_vector_on_user_grid_streamlines();
     void test_vertex_vector_traces();
     void test_stacked_3d_mesh_single_level_averaging();
+    void test_simplified_triangular_mesh_rendering();
 
     void test_signals();
 };
@@ -462,6 +463,23 @@ void TestQgsMeshRenderer::test_stacked_3d_mesh_single_level_averaging()
   mMdal3DLayer->setRendererSettings( rendererSettings );
 
   QVERIFY( imageCheck( "stacked_3d_mesh_single_level_averaging", mMdal3DLayer ) );
+}
+
+void TestQgsMeshRenderer::test_simplified_triangular_mesh_rendering()
+{
+  QgsMeshSimplifySettings simplificatationSettings;
+  simplificatationSettings.setEnabled( true );
+  simplificatationSettings.setMeshResolution( 10 );
+  simplificatationSettings.setReductionFactor( 2 );
+
+  QgsMeshRendererSettings rendererSettings = mMdal3DLayer->rendererSettings();
+  QgsMeshRendererMeshSettings meshSettings = rendererSettings.triangularMeshSettings();
+  meshSettings.setEnabled( true );
+  rendererSettings.setTriangularMeshSettings( meshSettings );
+  mMdal3DLayer->setRendererSettings( rendererSettings );
+
+  mMdal3DLayer->setMeshSimplificationSettings( simplificatationSettings );
+  QVERIFY( imageCheck( "simplified_triangular_mesh", mMdal3DLayer ) );
 }
 
 QGSTEST_MAIN( TestQgsMeshRenderer )

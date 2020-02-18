@@ -1,0 +1,85 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshsimplifysettings.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsMeshSimplifySettings
+{
+%Docstring
+
+Represents a overview renderer settings
+
+.. note::
+
+   The API is considered EXPERIMENTAL and can be changed without a notice
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmeshsimplifysettings.h"
+%End
+  public:
+    bool isEnabled() const;
+%Docstring
+Returns if the overview is active
+%End
+    void setEnabled( bool isEnabled );
+%Docstring
+Sets if the overview is active
+%End
+
+
+    double reductionFactor() const;
+%Docstring
+Returns the reduction factor used to build simplified mesh.
+%End
+
+    void setReductionFactor( double value );
+%Docstring
+Sets the reduction factor used to build simplified mesh.
+The triangles count of the simplified mesh equals apromativly the triangles count of base mesh divised by this factor.
+This reduction factor is used for simplification of each successive simplified mesh. For  example, if the base mesh has 5M faces,
+and the reduction factor is 10, the first simplified mesh will have approximativly 500 000 faces, the second 50 000 faces,
+the third 5000, ...
+If highter reduction factor leads to simpler meshes, it produces also fewer levels of detail.
+The reduction factor has to be strictly greater than 1. If not, the simplification processus will render nothing.
+%End
+
+    QDomElement writeXml( QDomDocument &doc ) const;
+%Docstring
+Writes configuration to a new DOM element
+%End
+    void readXml( const QDomElement &elem );
+%Docstring
+Reads configuration from the given DOM element
+%End
+
+    int meshResolution() const;
+%Docstring
+Returns the mesh resolution e.i., the minimum size (average) of triangles in pixels
+%End
+
+    void setMeshResolution( int meshResolution );
+%Docstring
+Sets the mesh resolution e.i., the minimum size (average) of triangles in pixels
+This value is used during map rendering to choose the most appropriate mesh from he list of simplified mesh.
+The first mesh which has its average triangle size greater this value will be chosen.
+%End
+
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshsimplifysettings.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

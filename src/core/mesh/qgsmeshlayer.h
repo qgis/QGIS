@@ -25,6 +25,7 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
 #include "qgsmeshtimesettings.h"
+#include "qgsmeshsimplificationsettings.h"
 
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
@@ -182,18 +183,24 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     const QgsMesh *nativeMesh() const SIP_SKIP;
 
     /**
-     * Returns triangular mesh (NULLPTR before rendering)
+     * Returns triangular mesh (NULLPTR before rendering).
      *
+     * If the parameter triangleSize is provided, among the base triangular mesh
+     * and the simplified triangular meshes, the one returned is which has the average triangle size just greater than triangleSize.
+     * The size of a triangle is the maximum between the height and the width of the triangle bounding box
+     * For default parameter (=0), it returns base triangular mesh.
+     * \param minimumTriangleSize is the average size criteria in canvas map units
+     * \returns triangular mesh
+     * \note triangular size added in QGIS 3.14
      * \note Not available in Python bindings
      */
-    QgsTriangularMesh *triangularMesh() SIP_SKIP;
+    QgsTriangularMesh *triangularMesh( double minimumTriangleSize = 0 ) const SIP_SKIP;
 
     /**
-     * Returns triangular mesh (NULLPTR before rendering)
-     *
-     * \note Not available in Python bindings
+     * Update the base triangular mesh, create one if it doesn't exist
+     * \since QGIS 3.14
      */
-    const QgsTriangularMesh *triangularMesh() const SIP_SKIP;
+    void updateTriangularMesh( const QgsCoordinateTransform &transform );
 
     /**
      * Returns native mesh (NULLPTR before rendering)
@@ -220,6 +227,22 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \since QGIS 3.8
      */
     void setTimeSettings( const QgsMeshTimeSettings &settings );
+
+    /**
+     * Returns mesh simplification settings
+     *
+     * \since QGIS 3.14
+     */
+
+    QgsMeshSimplifySettings meshSimplificationSettings() const;
+
+    /**
+     * Sets mesh simplification settings
+     *
+     * \since QGIS 3.14
+     */
+
+    void setMeshSimplificationSettings( const QgsMeshSimplifySettings &meshSimplificationSettings );
 
     /**
      * Returns (date) time in hours formatted to human readable form
@@ -318,6 +341,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     void fillNativeMesh();
     void assignDefaultStyleToDatasetGroup( int groupIndex );
     void setDefaultRendererSettings();
+    void createSimplifiedMeshes();
+    int levelsOfDetailsIndex( double partOfMeshInView ) const;
+
+    bool hasSimplifiedMeshes() const;
 
   private slots:
     void onDatasetGroupsAdded( int count );
@@ -329,8 +356,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! Pointer to native mesh structure, used as cache for rendering
     std::unique_ptr<QgsMesh> mNativeMesh;
 
-    //! Pointer to derived mesh structure
-    std::unique_ptr<QgsTriangularMesh> mTriangularMesh;
+    //! Pointer to derived mesh structures (the first one is the base mesh, others are simplified meshes with decreasing level of detail)
+    std::vector<std::unique_ptr<QgsTriangularMesh>> mTriangularMeshes;
 
     //! Pointer to the cache with data used for last rendering
     std::unique_ptr<QgsMeshLayerRendererCache> mRendererCache;
@@ -340,6 +367,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     //! Time format configuration
     QgsMeshTimeSettings mTimeSettings;
+
+    //! Simplify mesh configuration
+    QgsMeshSimplifySettings mSimplificationSettings;
 };
 
 #endif //QGSMESHLAYER_H

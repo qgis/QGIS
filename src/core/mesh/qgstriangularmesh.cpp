@@ -26,6 +26,8 @@
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 #include "qgsmeshspatialindex.h"
+#include "qgsmeshlayerutils.h"
+#include "meshOptimizer/meshoptimizer.h"
 
 static void ENP_centroid_step( const QPolygonF &pX, double &cx, double &cy, double &signedArea, int i, int i1 )
 {
@@ -71,7 +73,6 @@ static void ENP_centroid( const QPolygonF &pX, double &cx, double &cy )
   cy /= ( 6.0 * signedArea );
 }
 
-
 void QgsTriangularMesh::triangulate( const QgsMeshFace &face, int nativeIndex )
 {
   int vertexCount = face.size();
@@ -92,42 +93,24 @@ void QgsTriangularMesh::triangulate( const QgsMeshFace &face, int nativeIndex )
   mTrianglesToNativeFaces.push_back( nativeIndex );
 }
 
-
-void QgsTriangularMesh::setTrianglesCounterClockWise( QgsMeshFace &face )
+double QgsTriangularMesh::averageTriangleSize() const
 {
-  if ( face.size() != 3 )
-    return;
-
-  const QgsMeshVertex &v0 = mTriangularMesh.vertex( face[0] );
-  const QgsMeshVertex &v1 = mTriangularMesh.vertex( face[1] );
-  const QgsMeshVertex &v2 = mTriangularMesh.vertex( face[2] );
-
-  double ux = v1.x() - v0.x();
-  double uy = v1.y() - v0.y();
-  double vx = v2.x() - v0.x();
-  double vy = v2.y() - v0.y();
-
-  double crossProduct = ux * vy - uy * vx;
-  if ( crossProduct < 0 ) //CW -->change the orientation
-  {
-    std::swap( face[1], face[2] );
-  }
+  return mAverageTriangleSize;
 }
 
 QgsTriangularMesh::~QgsTriangularMesh() = default;
 QgsTriangularMesh::QgsTriangularMesh() = default;
 
-void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
+bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransform &transform )
 {
   Q_ASSERT( nativeMesh );
-  Q_ASSERT( context );
 
   // FIND OUT IF UPDATE IS NEEDED
   if ( mTriangularMesh.vertices.size() >= nativeMesh->vertices.size() &&
        mTriangularMesh.faces.size() >= nativeMesh->faces.size() &&
-       mCoordinateTransform.sourceCrs() == context->coordinateTransform().sourceCrs() &&
-       mCoordinateTransform.destinationCrs() == context->coordinateTransform().destinationCrs() )
-    return;
+       mCoordinateTransform.sourceCrs() == transform.sourceCrs() &&
+       mCoordinateTransform.destinationCrs() == transform.destinationCrs() )
+    return false;
 
   // CLEAN-UP
   mTriangularMesh.vertices.clear();
@@ -136,7 +119,7 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
   mNativeMeshFaceCentroids.clear();
 
   // TRANSFORM VERTICES
-  mCoordinateTransform = context->coordinateTransform();
+  mCoordinateTransform = transform;
   mTriangularMesh.vertices.resize( nativeMesh->vertices.size() );
   for ( int i = 0; i < nativeMesh->vertices.size(); ++i )
   {
@@ -193,11 +176,46 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
   // CALCULATE SPATIAL INDEX
   mSpatialIndex = QgsMeshSpatialIndex( mTriangularMesh );
 
-  // SET ALL TRIANGLE CCW
+  // SET ALL TRIANGLE CCW AND COMPUTE AVERAGE SIZE
+  finalizeTriangles();
+
+  return true;
+}
+
+void QgsTriangularMesh::finalizeTriangles()
+{
+  mAverageTriangleSize = 0;
   for ( int i = 0; i < mTriangularMesh.faceCount(); ++i )
   {
-    setTrianglesCounterClockWise( mTriangularMesh.faces[i] );
+    QgsMeshFace &face = mTriangularMesh.faces[i];
+
+    const QgsMeshVertex &v0 = mTriangularMesh.vertex( face[0] );
+    const QgsMeshVertex &v1 = mTriangularMesh.vertex( face[1] );
+    const QgsMeshVertex &v2 = mTriangularMesh.vertex( face[2] );
+
+    QgsRectangle bbox = QgsMeshLayerUtils::triangleBoundingBox( v0, v1, v2 );
+
+    mAverageTriangleSize += std::fmax( bbox.width(), bbox.height() );
+
+    //To have consistent clock wise orientation of triangles which is necessary for 3D rendering
+    //Check the clock wise, and if it is not counter clock wise, swap indexes to make the oientation counter clock wise
+    double ux = v1.x() - v0.x();
+    double uy = v1.y() - v0.y();
+    double vx = v2.x() - v0.x();
+    double vy = v2.y() - v0.y();
+
+    double crossProduct = ux * vy - uy * vx;
+    if ( crossProduct < 0 ) //CW -->change the orientation
+    {
+      std::swap( face[1], face[2] );
+    }
   }
+  mAverageTriangleSize /= mTriangularMesh.faceCount();
+}
+
+int QgsTriangularMesh::levelOfDetail() const
+{
+  return mLod;
 }
 
 const QVector<QgsMeshVertex> &QgsTriangularMesh::vertices() const
@@ -274,6 +292,126 @@ QVector<QVector3D> QgsTriangularMesh::vertexNormals( float vertScale ) const
     }
   }
   return normales;
+}
+
+QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFactor, int minimumTrianglesCount ) const
+{
+  QVector<QgsTriangularMesh *> simplifiedMeshes;
+
+  if ( !( reductionFactor > 1 ) )
+    return simplifiedMeshes;
+
+  size_t verticesCount = size_t( mTriangularMesh.vertices.count() );
+
+  unsigned int baseIndexCount = mTriangularMesh.faceCount() * 3;
+
+  QVector<unsigned int> indexes( mTriangularMesh.faces.count() * 3 );
+  for ( int i = 0; i < mTriangularMesh.faceCount(); ++i )
+  {
+    const QgsMeshFace &f = mTriangularMesh.face( i );
+    for ( int j = 0; j < 3; ++j )
+      indexes[i * 3 + j] = f.at( j );
+  }
+
+  QVector<float> vertices( mTriangularMesh.vertices.count() * 3 );
+  for ( int i = 0; i < mTriangularMesh.vertices.count(); ++i )
+  {
+    const QgsMeshVertex &v = mTriangularMesh.vertex( i );
+    vertices[i * 3] = v.x() ;
+    vertices[i * 3 + 1] = v.y() ;
+    vertices[i * 3 + 2] = v.z() ;
+  }
+
+  int path = 0;
+  while ( true )
+  {
+    QgsTriangularMesh *simplifiedMesh = new QgsTriangularMesh( *this );
+    size_t maxNumberOfIndexes = baseIndexCount / pow( reductionFactor, path + 1 );
+    QTime time;
+    time.start();
+
+    if ( indexes.size() <= int( maxNumberOfIndexes ) )
+      break;
+
+    QVector<unsigned int> returnIndexes( indexes.size() );
+    //returned size could be different than goal size but not than the input indexes count
+    size_t size = meshopt_simplifySloppy(
+                    returnIndexes.data(),
+                    indexes.data(),
+                    indexes.size(),
+                    vertices.data(),
+                    verticesCount,
+                    sizeof( float ) * 3,
+                    maxNumberOfIndexes );
+
+
+    returnIndexes.resize( size );
+
+    if ( size == 0 || int( size ) >= indexes.size() )
+    {
+      QgsDebugMsg( QStringLiteral( "Mesh simplification failed after %1 path" ).arg( path + 1 ) );
+      break;
+    }
+
+    QgsMesh newMesh;
+    newMesh.vertices = mTriangularMesh.vertices;
+
+    newMesh.faces.resize( returnIndexes.size() / 3 );
+    for ( int i = 0; i < newMesh.faces.size(); ++i )
+    {
+      QgsMeshFace f( 3 );
+      for ( size_t j = 0; j < 3 ; ++j )
+        f[j] = returnIndexes.at( i * 3 + j ) ;
+      newMesh.faces[i ] = f;
+    }
+
+    simplifiedMesh->mTriangularMesh = newMesh;
+    simplifiedMesh->mSpatialIndex = QgsMeshSpatialIndex( simplifiedMesh->mTriangularMesh );
+    simplifiedMesh->finalizeTriangles();
+    simplifiedMeshes.push_back( simplifiedMesh );
+
+    QgsDebugMsg( QStringLiteral( "Simplified mesh created with %1 triangles" ).arg( newMesh.faceCount() ) );
+
+    simplifiedMesh->mTrianglesToNativeFaces = QVector<int>( simplifiedMesh->triangles().count(), 0 );
+    for ( int i = 0; i < simplifiedMesh->mTrianglesToNativeFaces.count(); ++i )
+    {
+      QgsMeshFace triangle = simplifiedMesh->triangles().at( i );
+      double x = 0;
+      double y = 0;
+      for ( size_t j = 0; j < 3 ; ++j )
+      {
+        x += mTriangularMesh.vertex( triangle[j] ).x();
+        y += mTriangularMesh.vertex( triangle[j] ).y();
+      }
+      x /= 3;
+      y /= 3;
+      QgsPoint centroid( x, y );
+      int indexInBaseMesh = faceIndexForPoint_v2( centroid );
+
+      if ( indexInBaseMesh == -1 )
+      {
+        // sometime the centroid of simplified mesh could be outside the base mesh,
+        // so try with vertices of the simplified triangle
+        int j = 0;
+        while ( indexInBaseMesh == -1 && j < 3 )
+          indexInBaseMesh = faceIndexForPoint_v2( mTriangularMesh.vertex( triangle[j++] ) );
+      }
+
+      if ( indexInBaseMesh > -1 && indexInBaseMesh < mTrianglesToNativeFaces.count() )
+        simplifiedMesh->mTrianglesToNativeFaces[i] = mTrianglesToNativeFaces[indexInBaseMesh];
+    }
+
+    simplifiedMesh->mLod = path + 1;
+    simplifiedMesh->mBaseTriangularMesh = this;
+
+    if ( simplifiedMesh->triangles().count() <  minimumTrianglesCount )
+      break;
+
+    indexes = returnIndexes;
+    ++path;
+  }
+
+  return simplifiedMeshes;
 }
 
 std::unique_ptr< QgsPolygon > QgsMeshUtils::toPolygon( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices )

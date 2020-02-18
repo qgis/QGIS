@@ -146,6 +146,12 @@ Returns the provider type for this layer
 
 
 
+    void updateTriangularMesh( const QgsCoordinateTransform &transform );
+%Docstring
+Update the base triangular mesh, create one if it doesn't exist
+
+.. versionadded:: 3.14
+%End
 
 
     QgsMeshRendererSettings rendererSettings() const;
@@ -169,6 +175,22 @@ Returns time format settings
 Sets time format settings
 
 .. versionadded:: 3.8
+%End
+
+
+    QgsMeshSimplifySettings meshSimplificationSettings() const;
+%Docstring
+Returns mesh simplification settings
+
+.. versionadded:: 3.14
+%End
+
+
+    void setMeshSimplificationSettings( const QgsMeshSimplifySettings &meshSimplificationSettings );
+%Docstring
+Sets mesh simplification settings
+
+.. versionadded:: 3.14
 %End
 
     QString formatTime( double hours );
