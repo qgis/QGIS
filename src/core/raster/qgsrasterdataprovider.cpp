@@ -217,14 +217,14 @@ QgsRasterDataProvider::QgsRasterDataProvider()
   : QgsDataProvider( QString(), QgsDataProvider::ProviderOptions() )
   , QgsRasterInterface( nullptr )
 {
-  mTemporalProperties = std::unique_ptr< QgsRasterDataProviderTemporalProperties >( new QgsRasterDataProviderTemporalProperties() );
+  mTemporalCapabilities = qgis::make_unique< QgsRasterDataProviderTemporalCapabilities >();
 }
 
 QgsRasterDataProvider::QgsRasterDataProvider( const QString &uri, const ProviderOptions &options )
   : QgsDataProvider( uri, options )
   , QgsRasterInterface( nullptr )
 {
-  mTemporalProperties = std::unique_ptr< QgsRasterDataProviderTemporalProperties >( new QgsRasterDataProviderTemporalProperties() );
+  mTemporalCapabilities = qgis::make_unique< QgsRasterDataProviderTemporalCapabilities >();
 }
 
 QgsRasterDataProvider::ProviderCapabilities QgsRasterDataProvider::providerCapabilities() const
@@ -518,13 +518,13 @@ void QgsRasterDataProvider::copyBaseSettings( const QgsRasterDataProvider &other
   mExtent = other.mExtent;
 
   // copy temporal properties
-  mTemporalProperties->setIsActive( other.mTemporalProperties->isActive() );
-  mTemporalProperties->setTemporalRange( other.mTemporalProperties->temporalRange() );
-  mTemporalProperties->setFixedTemporalRange( other.mTemporalProperties->fixedTemporalRange() );
-  mTemporalProperties->setEnableTime( other.mTemporalProperties->isTimeEnabled() );
-  mTemporalProperties->setHasReference( other.mTemporalProperties->hasReference() );
-  mTemporalProperties->setReferenceTemporalRange( other.mTemporalProperties->referenceTemporalRange() );
-  mTemporalProperties->setFixedReferenceTemporalRange( other.mTemporalProperties->fixedReferenceTemporalRange() );
+  mTemporalCapabilities->setIsActive( other.mTemporalCapabilities->isActive() );
+  mTemporalCapabilities->setTemporalRange( other.mTemporalCapabilities->temporalRange() );
+  mTemporalCapabilities->setFixedTemporalRange( other.mTemporalCapabilities->fixedTemporalRange() );
+  mTemporalCapabilities->setEnableTime( other.mTemporalCapabilities->isTimeEnabled() );
+  mTemporalCapabilities->setHasReference( other.mTemporalCapabilities->hasReference() );
+  mTemporalCapabilities->setReferenceTemporalRange( other.mTemporalCapabilities->referenceTemporalRange() );
+  mTemporalCapabilities->setFixedReferenceTemporalRange( other.mTemporalCapabilities->fixedReferenceTemporalRange() );
 }
 
 // ENDS

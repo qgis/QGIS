@@ -273,25 +273,23 @@ QgsDateTimeRange QgsWmsSettings::parseTemporalExtent( QgsWmstDimensionExtent dim
 QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
 {
   QgsWmstResolution resolution;
-  char datesSymbols[] = { 'Y', 'M', 'D' };
-  char timesSymbols[] = { 'H', 'M', 'S' };
 
-  for ( int i = 0; i < 3; i++ )
+  for ( char datesSymbol : { 'Y', 'M', 'D' } )
   {
-    QString number = item.left( item.indexOf( datesSymbols[i] ) );
+    QString number = item.left( item.indexOf( datesSymbol ) );
     int resolutionValue = number.remove( 'P' ).toInt();
 
-    if ( datesSymbols[i] == 'Y' && item.contains( 'Y' ) )
+    if ( datesSymbol  == 'Y' && item.contains( 'Y' ) )
     {
       resolution.year = resolutionValue;
       item = item.remove( number );
     }
-    if ( datesSymbols[i] == 'M' && item.contains( 'M' ) )
+    if ( datesSymbol  == 'M' && item.contains( 'M' ) )
     {
       resolution.month = resolutionValue;
       item = item.remove( number );
     }
-    if ( datesSymbols[i] == 'D' && item.contains( 'D' ) )
+    if ( datesSymbol  == 'D' && item.contains( 'D' ) )
     {
       resolution.day = resolutionValue;
       item = item.remove( number );
@@ -303,22 +301,22 @@ QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
   else
     item.remove( 'T' );
 
-  for ( int i = 0; i < 3; i++ )
+  for ( char timeSymbol : { 'H', 'M', 'S' } )
   {
-    QString number = item.left( item.indexOf( timesSymbols[i] ) );
+    QString number = item.left( item.indexOf( timeSymbol ) );
     int resolutionValue = number.remove( 'P' ).toInt();
 
-    if ( timesSymbols[i] == 'H' && item.contains( 'H' ) )
+    if ( timeSymbol == 'H' && item.contains( 'H' ) )
     {
       resolution.hour = resolutionValue;
       item = item.remove( number );
     }
-    if ( timesSymbols[i] == 'M' && item.contains( 'M' ) )
+    if ( timeSymbol == 'M' && item.contains( 'M' ) )
     {
       resolution.minutes = resolutionValue;
       item = item.remove( number );
     }
-    if ( timesSymbols[i] == 'S' && item.contains( 'S' ) )
+    if ( timeSymbol == 'S' && item.contains( 'S' ) )
     {
       resolution.seconds = resolutionValue;
       item = item.remove( number );

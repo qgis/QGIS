@@ -16,8 +16,6 @@ class QgsTemporalRangeObject
 %Docstring
 Base class for temporal based classes.
 
-Subclasses may wish to update the abstract temporal functions.
-
 .. versionadded:: 3.14
 %End
 

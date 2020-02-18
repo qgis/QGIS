@@ -35,7 +35,6 @@ Constructor for QgsRasterLayerTemporalProperties.
     {
       ModeFixedTemporalRange,
       ModeTemporalRangeFromDataProvider,
-      ModeTemporalRangesList
     };
 
     TemporalMode mode() const;

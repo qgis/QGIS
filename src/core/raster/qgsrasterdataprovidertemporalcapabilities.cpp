@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsrasterdataprovidertemporalproperties.cpp
+                         qgsrasterdataprovidertemporalcapabilities.cpp
                          ---------------
     begin                : February 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterdataprovidertemporalproperties.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
 
-QgsRasterDataProviderTemporalProperties::QgsRasterDataProviderTemporalProperties( bool enabled )
-  :  QgsDataProviderTemporalProperties( enabled )
+QgsRasterDataProviderTemporalCapabilities::QgsRasterDataProviderTemporalCapabilities( bool enabled )
+  :  QgsDataProviderTemporalCapabilities( enabled )
 {
 }
 
@@ -31,7 +31,7 @@ QgsRasterDataProviderTemporalProperties::QgsRasterDataProviderTemporalProperties
 //  return *this;
 //}
 
-void QgsRasterDataProviderTemporalProperties::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
+void QgsRasterDataProviderTemporalCapabilities::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( !isActive() )
     setIsActive( true );
@@ -40,12 +40,12 @@ void QgsRasterDataProviderTemporalProperties::setTemporalRange( const QgsDateTim
 
 }
 
-const QgsDateTimeRange &QgsRasterDataProviderTemporalProperties::temporalRange() const
+const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::temporalRange() const
 {
   return mRange;
 }
 
-void QgsRasterDataProviderTemporalProperties::setFixedTemporalRange( const QgsDateTimeRange &dateTimeRange )
+void QgsRasterDataProviderTemporalCapabilities::setFixedTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( !isActive() )
     setIsActive( true );
@@ -54,22 +54,22 @@ void QgsRasterDataProviderTemporalProperties::setFixedTemporalRange( const QgsDa
 
 }
 
-const QgsDateTimeRange &QgsRasterDataProviderTemporalProperties::fixedTemporalRange() const
+const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::fixedTemporalRange() const
 {
   return mFixedRange;
 }
 
-void QgsRasterDataProviderTemporalProperties::setEnableTime( bool enabled )
+void QgsRasterDataProviderTemporalCapabilities::setEnableTime( bool enabled )
 {
   mEnableTime = enabled;
 }
 
-bool QgsRasterDataProviderTemporalProperties::isTimeEnabled() const
+bool QgsRasterDataProviderTemporalCapabilities::isTimeEnabled() const
 {
   return mEnableTime;
 }
 
-void QgsRasterDataProviderTemporalProperties::setReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
+void QgsRasterDataProviderTemporalCapabilities::setReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( !isActive() )
     setIsActive( true );
@@ -78,12 +78,12 @@ void QgsRasterDataProviderTemporalProperties::setReferenceTemporalRange( const Q
 
 }
 
-const QgsDateTimeRange &QgsRasterDataProviderTemporalProperties::referenceTemporalRange() const
+const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::referenceTemporalRange() const
 {
   return mReferenceRange;
 }
 
-void QgsRasterDataProviderTemporalProperties::setFixedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
+void QgsRasterDataProviderTemporalCapabilities::setFixedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( !isActive() )
     setIsActive( true );
@@ -92,28 +92,28 @@ void QgsRasterDataProviderTemporalProperties::setFixedReferenceTemporalRange( co
 
 }
 
-const QgsDateTimeRange &QgsRasterDataProviderTemporalProperties::fixedReferenceTemporalRange() const
+const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::fixedReferenceTemporalRange() const
 {
   return mFixedReferenceRange;
 }
 
 
-void QgsRasterDataProviderTemporalProperties::setHasReference( bool enabled )
+void QgsRasterDataProviderTemporalCapabilities::setHasReference( bool enabled )
 {
   mHasReferenceRange = enabled;
 }
 
-bool QgsRasterDataProviderTemporalProperties::hasReference() const
+bool QgsRasterDataProviderTemporalCapabilities::hasReference() const
 {
   return mHasReferenceRange;
 }
 
-void QgsRasterDataProviderTemporalProperties::setReferenceEnable( bool enabled )
+void QgsRasterDataProviderTemporalCapabilities::setReferenceEnable( bool enabled )
 {
   mReferenceEnable = enabled;
 }
 
-bool QgsRasterDataProviderTemporalProperties::isReferenceEnable() const
+bool QgsRasterDataProviderTemporalCapabilities::isReferenceEnable() const
 {
   return mReferenceEnable;
 }
