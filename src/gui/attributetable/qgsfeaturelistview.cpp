@@ -367,7 +367,7 @@ void QgsFeatureListView::ensureEditSelection( bool inSelection )
   if ( !mModel->rowCount() )
   {
     // not sure this is the best place to emit from
-    // this will allow to set the counter to zero in the browsing panel
+    // this will allow setting the counter to zero in the browsing panel
     emit currentEditSelectionProgressChanged( 0, 0 );
     return;
   }
