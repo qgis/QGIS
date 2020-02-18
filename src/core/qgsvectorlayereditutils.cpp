@@ -483,7 +483,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoint
     QgsGeometry featureGeom = feat.geometry();
     splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
 
-    if ( splitFunctionReturn == 0 )
+    if ( splitFunctionReturn == QgsGeometry::OperationResult::Success && !newGeometries.isEmpty() )
     {
       QgsGeometry newGeom( newGeometries.at( 0 ) );
       newGeom.convertToMultiType();
