@@ -1028,28 +1028,43 @@ bool QgsOracleProvider::determineAlwaysGeneratedKeys()
     return false;
   }
 
+  mValid = true;
   // check to see if there is an unique index on the relation, which
   // can be used as a key into the table. Primary keys are always
   // unique indices, so we catch them as well.
   QgsOracleConn *conn = connectionRO();
   QSqlQuery qry( *conn );
-
-  QString sql = QStringLiteral( "SELECT a.column_name "
-                                "FROM all_tab_identity_cols a "
-                                "WHERE a.owner = '%1' "
-                                "AND a.table_name = '%2' "
-                                "AND a.generation_type = 'ALWAYS'" ).arg( mOwnerName ).arg( mTableName );
-
-  if ( exec( qry, sql, QVariantList() ) )
+  QString sql = QStringLiteral( "SELECT VERSION FROM PRODUCT_COMPONENT_VERSION" );
+  if ( exec( qry, sql, QVariantList() ) && qry.next() )
   {
-    while ( qry.next() )
+    // Identity type is a feature since Oracle 12 version, otherwise all_tab_identity_cols table doesn't exist
+    if ( qry.value( 0 ).toString().split( '.' ).at( 0 ).toInt() >= 12 )
     {
-      if ( mAttributeFields.names().contains( qry.value( 0 ).toString() ) )
+      QgsDebugMsg( QStringLiteral( "Oracle version : %1" ).arg( qry.value( 0 ).toString().split( '.' ).at( 0 ) ) );
+      QString sql = QStringLiteral( "SELECT a.column_name "
+                                    "FROM all_tab_identity_cols a "
+                                    "WHERE a.owner = '%1' "
+                                    "AND a.table_name = '%2' "
+                                    "AND a.generation_type = 'ALWAYS'" ).arg( mOwnerName ).arg( mTableName );
+
+      if ( exec( qry, sql, QVariantList() ) )
       {
-        mAlwaysGeneratedKeyAttrs.append( mAttributeFields.indexOf( qry.value( 0 ).toString() ) );
+        while ( qry.next() )
+        {
+          if ( mAttributeFields.names().contains( qry.value( 0 ).toString() ) )
+          {
+            mAlwaysGeneratedKeyAttrs.append( mAttributeFields.indexOf( qry.value( 0 ).toString() ) );
+          }
+        }
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
+                                   .arg( qry.lastError().text() )
+                                   .arg( qry.lastQuery() ), tr( "Oracle" ) );
+        mValid = false;
       }
     }
-    mValid = true;
   }
   else
   {
