@@ -273,6 +273,7 @@ QgsDateTimeRange QgsWmsSettings::parseTemporalExtent( QgsWmstDimensionExtent dim
 QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
 {
   QgsWmstResolution resolution;
+  bool found = false;
 
   for ( char datesSymbol : { 'Y', 'M', 'D' } )
   {
@@ -282,17 +283,32 @@ QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
     if ( datesSymbol  == 'Y' && item.contains( 'Y' ) )
     {
       resolution.year = resolutionValue;
-      item = item.remove( number );
+      found = true;
+
     }
     if ( datesSymbol  == 'M' && item.contains( 'M' ) )
     {
+      // Symbol M is used to both represent either month or minutes
+      // The check below is for determing whether it means month or minutes
+      if ( item.contains( 'T' ) &&
+           item.indexOf( 'T' ) < item.indexOf( 'M' ) )
+        continue;
       resolution.month = resolutionValue;
-      item = item.remove( number );
+      found = true;
     }
     if ( datesSymbol  == 'D' && item.contains( 'D' ) )
     {
       resolution.day = resolutionValue;
-      item = item.remove( number );
+      found = true;
+    }
+
+    if ( found )
+    {
+      int symbolIndex = item.indexOf( datesSymbol );
+      item.remove( symbolIndex, 1 );
+      item.remove( symbolIndex - number.length(),
+                   number.length() );
+      found = false;
     }
 
   }
@@ -300,6 +316,8 @@ QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
     return resolution;
   else
     item.remove( 'T' );
+
+  bool foundTime = false;
 
   for ( char timeSymbol : { 'H', 'M', 'S' } )
   {
@@ -309,19 +327,27 @@ QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
     if ( timeSymbol == 'H' && item.contains( 'H' ) )
     {
       resolution.hour = resolutionValue;
-      item = item.remove( number );
+      foundTime = true;
     }
     if ( timeSymbol == 'M' && item.contains( 'M' ) )
     {
       resolution.minutes = resolutionValue;
-      item = item.remove( number );
+      foundTime = true;
     }
     if ( timeSymbol == 'S' && item.contains( 'S' ) )
     {
       resolution.seconds = resolutionValue;
-      item = item.remove( number );
+      foundTime = true;
     }
 
+    if ( foundTime )
+    {
+      int symbolIndex = item.indexOf( timeSymbol );
+      item.remove( symbolIndex, 1 );
+      item.remove( symbolIndex - number.length(),
+                   number.length() );
+      foundTime = false;
+    }
   }
   return resolution;
 }
