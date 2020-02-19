@@ -204,6 +204,7 @@ SET(TESTS
  testqgsrastermarker.cpp
  testqgsrasteriterator.cpp
  testqgsrasterblock.cpp
+ testqgsrasterdataprovidertemporalcapabilities.cpp
  testqgsrasterlayer.cpp
  testqgsrasterlayertemporalproperties.cpp
  testqgsrastersublayer.cpp
