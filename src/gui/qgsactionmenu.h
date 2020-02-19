@@ -112,6 +112,13 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      */
     QgsExpressionContextScope expressionContextScope() const;
 
+    /**
+     * Returns menu actions
+     *
+     * \since QGIS 3.12
+     */
+    QList<QgsAction> menuActions();
+
   signals:
     void reinit();
 
