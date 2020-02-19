@@ -289,7 +289,7 @@ QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
     if ( datesSymbol  == 'M' && item.contains( 'M' ) )
     {
       // Symbol M is used to both represent either month or minutes
-      // The check below is for determing whether it means month or minutes
+      // The check below is for determining whether it means month or minutes
       if ( item.contains( 'T' ) &&
            item.indexOf( 'T' ) < item.indexOf( 'M' ) )
         continue;
