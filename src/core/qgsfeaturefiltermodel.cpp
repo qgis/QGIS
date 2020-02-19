@@ -225,6 +225,12 @@ QVariant QgsFeatureFilterModel::data( const QModelIndex &index, int role ) const
 void QgsFeatureFilterModel::updateCompleter()
 {
   emit beginUpdate();
+  if( !mGatherer )
+  {
+    emit endUpdate();
+    return;
+  }
+
   QVector<Entry> entries = mGatherer->entries();
 
   if ( mExtraIdentifierValueIndex == -1 )
@@ -335,6 +341,8 @@ void QgsFeatureFilterModel::updateCompleter()
     emit filterJobCompleted();
   }
   emit endUpdate();
+
+  gathererThreadFinished();
 }
 
 void QgsFeatureFilterModel::gathererThreadFinished()
@@ -356,7 +364,6 @@ void QgsFeatureFilterModel::scheduledReload()
     // Send the gatherer thread to the graveyard:
     //   forget about it, tell it to stop and delete when finished
     disconnect( mGatherer, &QgsFieldExpressionValuesGatherer::collectedValues, this, &QgsFeatureFilterModel::updateCompleter );
-    disconnect( mGatherer, &QgsFieldExpressionValuesGatherer::finished, this, &QgsFeatureFilterModel::gathererThreadFinished );
     connect( mGatherer, &QgsFieldExpressionValuesGatherer::finished, mGatherer, &QgsFieldExpressionValuesGatherer::deleteLater );
     mGatherer->stop();
     wasLoading = true;
@@ -408,7 +415,6 @@ void QgsFeatureFilterModel::scheduledReload()
   mGatherer->setData( mShouldReloadCurrentFeature );
 
   connect( mGatherer, &QgsFieldExpressionValuesGatherer::collectedValues, this, &QgsFeatureFilterModel::updateCompleter );
-  connect( mGatherer, &QgsFieldExpressionValuesGatherer::finished, this, &QgsFeatureFilterModel::gathererThreadFinished );
 
   mGatherer->start();
   if ( !wasLoading )
