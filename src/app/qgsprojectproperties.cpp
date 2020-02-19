@@ -119,6 +119,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mButtonAddColor, &QToolButton::clicked, this, &QgsProjectProperties::mButtonAddColor_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectProperties::showHelp );
   connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsProjectProperties::customizeBearingFormat );
+  connect( mSameAsStartButton, &QPushButton::clicked, this, &QgsProjectProperties::setEndAsStartButton_clicked );
+  connect( mCalculateFromLayerButton, &QPushButton::clicked, this, &QgsProjectProperties::calculateFromLayersButton_clicked );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -227,6 +229,14 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       mAutoTransaction->setEnabled( false );
       mAutoTransaction->setToolTip( tr( "Layers are in edit mode. Stop edit mode on all layers to toggle transactional editing." ) );
     }
+  }
+
+  // Set time settings input
+  QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
+  if ( range.begin().isValid() && range.end().isValid() )
+  {
+    mStartDateTimeEdit->setDateTime( range.begin() );
+    mEndDateTimeEdit->setDateTime( range.end() );
   }
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
@@ -1016,6 +1026,12 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->setAutoTransaction( mAutoTransaction->isChecked() );
   QgsProject::instance()->setEvaluateDefaultValues( mEvaluateDefaultValues->isChecked() );
   QgsProject::instance()->setTrustLayerMetadata( mTrustProjectCheckBox->isChecked() );
+
+  // Time settings
+  QDateTime start =  mStartDateTimeEdit->dateTime();
+  QDateTime end = mEndDateTimeEdit->dateTime();
+
+  QgsProject::instance()->timeSettings()->setTemporalRange( QgsDateTimeRange( start, end ) );
 
   // set the mouse display precision method and the
   // number of decimal places for the manual option
@@ -2473,6 +2489,29 @@ void QgsProjectProperties::mButtonAddColor_clicked()
   activateWindow();
 
   mTreeProjectColors->addColor( newColor, QgsSymbolLayerUtils::colorToName( newColor ) );
+}
+
+void QgsProjectProperties::setEndAsStartButton_clicked()
+{
+  mEndDateTimeEdit->setDateTime( mStartDateTimeEdit->dateTime() );
+}
+
+void QgsProjectProperties::calculateFromLayersButton_clicked()
+{
+  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
+
+  QgsMapLayer *currentLayer = nullptr;
+  QgsRasterLayer *rasterLayer = nullptr;
+
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
+  {
+    currentLayer = it.value();
+    if ( currentLayer->type() == QgsMapLayerType::RasterLayer &&
+         currentLayer->providerType() == 'wms' )
+    {
+      rasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
+    }
+  }
 }
 
 QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const QString &newScale )
