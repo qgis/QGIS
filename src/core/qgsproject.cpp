@@ -59,6 +59,7 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsprojectdisplaysettings.h"
+#include "qgsprojecttimesettings.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -364,6 +365,7 @@ QgsProject::QgsProject( QObject *parent )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mViewSettings( new QgsProjectViewSettings( this ) )
+  , mTimeSettings( new QgsProjectTimeSettings( this ) )
   , mDisplaySettings( new QgsProjectDisplaySettings( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
@@ -762,6 +764,7 @@ void QgsProject::clear()
   mLayoutManager->clear();
   mBookmarkManager->clear();
   mViewSettings->reset();
+  mTimeSettings->reset();
   mDisplaySettings->reset();
   mSnappingConfig.reset();
   emit snappingConfigChanged( mSnappingConfig );
@@ -1539,6 +1542,11 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   if ( !viewSettingsElement.isNull() )
     mViewSettings->readXml( viewSettingsElement, context );
 
+  // restore time settings
+  QDomElement timeSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectTimeSettings" ) );
+  if ( !timeSettingsElement.isNull() )
+    mTimeSettings->readXml( timeSettingsElement, context );
+
   QDomElement displaySettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectDisplaySettings" ) );
   if ( !displaySettingsElement.isNull() )
     mDisplaySettings->readXml( displaySettingsElement, context );
@@ -2165,6 +2173,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   QDomElement viewSettingsElem = mViewSettings->writeXml( *doc, context );
   qgisNode.appendChild( viewSettingsElem );
+
+  QDomElement timeSettingsElement = mTimeSettings->writeXml( *doc, context );
+  qgisNode.appendChild( timeSettingsElement );
 
   QDomElement displaySettingsElem = mDisplaySettings->writeXml( *doc, context );
   qgisNode.appendChild( displaySettingsElem );
@@ -2871,6 +2882,11 @@ const QgsProjectViewSettings *QgsProject::viewSettings() const
 QgsProjectViewSettings *QgsProject::viewSettings()
 {
   return mViewSettings;
+}
+
+const QgsProjectTimeSettings *QgsProject::timeSettings() const
+{
+  return mTimeSettings;
 }
 
 const QgsProjectDisplaySettings *QgsProject::displaySettings() const
