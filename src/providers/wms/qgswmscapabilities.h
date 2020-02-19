@@ -374,6 +374,20 @@ struct QgsWmsLayerProperty
  */
 struct QgsWmstDates
 {
+  QgsWmstDates( QList< QDateTime > dates )
+  {
+    dateTimes = dates;
+  }
+  QgsWmstDates()
+  {
+
+  }
+
+  bool operator== ( const QgsWmstDates &other )
+  {
+    return dateTimes == other.dateTimes;
+  }
+
   QList< QDateTime > dateTimes;
 };
 
@@ -398,6 +412,57 @@ struct QgsWmstResolution
            hour != -1 && minutes != -1 && seconds != -1;
   }
 
+  QString text()
+  {
+    QString text( "P" );
+
+    if ( year != -1 )
+    {
+      text.append( QString::number( year ) );
+      text.append( 'Y' );
+    }
+    if ( month != -1 )
+    {
+      text.append( QString::number( month ) );
+      text.append( 'M' );
+    }
+    if ( day != -1 )
+    {
+      text.append( QString::number( day ) );
+      text.append( 'D' );
+    }
+
+    if ( hour != -1 )
+    {
+      if ( !text.contains( 'T' ) )
+        text.append( 'T' );
+      text.append( QString::number( hour ) );
+      text.append( 'H' );
+    }
+    if ( minutes != -1 )
+    {
+      if ( !text.contains( 'T' ) )
+        text.append( 'T' );
+      text.append( QString::number( minutes ) );
+      text.append( 'M' );
+    }
+    if ( seconds != -1 )
+    {
+      if ( !text.contains( 'T' ) )
+        text.append( 'T' );
+      text.append( QString::number( seconds ) );
+      text.append( 'S' );
+    }
+    return text;
+  }
+
+  bool operator== ( const QgsWmstResolution &other )
+  {
+    return year == other.year && month == other.month &&
+           day == other.day && hour == other.hour &&
+           minutes == other.minutes && seconds == other.seconds;
+  }
+
 };
 
 
@@ -414,6 +479,12 @@ struct QgsWmstExtentPair
   {
     dates = otherDates;
     resolution = otherResolution;
+  }
+
+  bool operator ==( const QgsWmstExtentPair &other )
+  {
+    return dates == other.dates &&
+           resolution == other.resolution;
   }
 
   QgsWmstDates dates;
