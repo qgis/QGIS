@@ -481,7 +481,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoint
     QVector<QgsGeometry> newGeometries;
     QgsPointSequence topologyTestPoints;
     QgsGeometry featureGeom = feat.geometry();
-    splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
+    splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints, false );
 
     if ( splitFunctionReturn == QgsGeometry::OperationResult::Success && !newGeometries.isEmpty() )
     {
