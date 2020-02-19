@@ -84,9 +84,9 @@ void TestQgsRasterDataProviderTemporalCapabilities::checkActiveStatus()
 void TestQgsRasterDataProviderTemporalCapabilities::checkTemporalRange()
 {
   QgsDateTimeRange fixedDateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
-                                       QDateTime( QDate( 2020, 12, 31 ) ) );
+                                        QDateTime( QDate( 2020, 12, 31 ) ) );
   QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
-                                     QDateTime( QDate( 2020, 3, 1 ) ) );
+                                   QDateTime( QDate( 2020, 3, 1 ) ) );
 
   temporalCapabilities->setTemporalRange( dateTimeRange );
   temporalCapabilities->setFixedTemporalRange( fixedDateTimeRange );
@@ -98,9 +98,9 @@ void TestQgsRasterDataProviderTemporalCapabilities::checkTemporalRange()
 void TestQgsRasterDataProviderTemporalCapabilities::checkReferenceTemporalRange()
 {
   QgsDateTimeRange fixedDateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
-                                       QDateTime( QDate( 2020, 12, 31 ) ) );
+                                        QDateTime( QDate( 2020, 12, 31 ) ) );
   QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
-                                     QDateTime( QDate( 2020, 3, 1 ) ) );
+                                   QDateTime( QDate( 2020, 3, 1 ) ) );
 
   temporalCapabilities->setReferenceTemporalRange( dateTimeRange );
   temporalCapabilities->setFixedReferenceTemporalRange( fixedDateTimeRange );
