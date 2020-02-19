@@ -184,6 +184,15 @@ namespace pal
       int createCandidatesAlongLine( QList<LabelPosition *> &lPos, PointSet *mapShape, bool allowOverrun = false );
 
       /**
+       * Generate horizontal candidates for line feature.
+       * \param lPos pointer to an array of candidates, will be filled by generated candidates
+       * \param mapShape a pointer to the line
+       * \param pal point to pal settings object, for cancellation support
+       * \returns the number of generated candidates
+       */
+      std::size_t createHorizontalCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, Pal *pal );
+
+      /**
        * Generate candidates for line feature, by trying to place candidates towards the middle of the longest
        * straightish segments of the line. Segments closer to horizontal are preferred over vertical segments.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
