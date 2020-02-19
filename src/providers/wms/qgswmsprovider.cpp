@@ -1104,7 +1104,7 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
     QgsDateTimeRange referenceRange = temporalCapabilities()->referenceTemporalRange();
 
     if ( referenceRange.begin() == referenceRange.end() )
-      setQueryItem( query, QStringLiteral( "DIM_REFERENCE" ),
+      setQueryItem( query, QStringLiteral( "DIM_REFERENCE_TIME" ),
                     range.begin().toString( format ) );
     else
     {
@@ -1112,7 +1112,7 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
       extent.append( "/" );
       extent.append( referenceRange.end().toString( format ) );
 
-      setQueryItem( query, QStringLiteral( "DIM_REFERENCE" ), extent );
+      setQueryItem( query, QStringLiteral( "DIM_REFERENCE_TIME" ), extent );
     }
   }
 
