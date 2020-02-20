@@ -736,7 +736,7 @@ QString QgsOgrUtils::OGRSpatialReferenceToWkt( OGRSpatialReferenceH srs )
   OSRExportToWkt( srs, &pszWkt );
 #endif
 
-  const QString res( pszWkt );
+  const QString res = QString::fromLatin1( pszWkt );
   CPLFree( pszWkt );
   return res;
 }
