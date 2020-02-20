@@ -652,7 +652,11 @@ void TestQgsLayoutMap::expressionContext()
 
   QgsExpression e9( QStringLiteral( "@map_crs_ellipsoid" ) );
   r = e9.evaluate( &c );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( r.toString(), QString( "EPSG:7030" ) );
+#else
   QCOMPARE( r.toString(), QString( "WGS84" ) );
+#endif
 
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
   QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
