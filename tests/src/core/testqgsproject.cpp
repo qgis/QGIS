@@ -576,7 +576,11 @@ void TestQgsProject::testSetGetCrs()
   QCOMPARE( ellipsoidChangedSpy.count(), 1 );
 
   QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 21781 ) );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "EPSG:7004" ) );
+#else
   QCOMPARE( p.ellipsoid(), QStringLiteral( "bessel" ) );
+#endif
 
   crsChangedSpy.clear();
   ellipsoidChangedSpy.clear();
@@ -591,7 +595,11 @@ void TestQgsProject::testSetGetCrs()
   QCOMPARE( ellipsoidChangedSpy.count(), 0 );
 
   QCOMPARE( p.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 2056 ) );
+#if PROJ_VERSION_MAJOR>=6
+  QCOMPARE( p.ellipsoid(), QStringLiteral( "EPSG:7004" ) );
+#else
   QCOMPARE( p.ellipsoid(), QStringLiteral( "bessel" ) );
+#endif
 
   crsChangedSpy.clear();
   ellipsoidChangedSpy.clear();
