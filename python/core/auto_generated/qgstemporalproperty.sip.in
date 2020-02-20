@@ -25,23 +25,25 @@ Base class for temporal property.
 %End
   public:
 
-    QgsTemporalProperty( bool enabled = false );
+    QgsTemporalProperty( bool active = false );
 %Docstring
 Constructor for QgsTemporalProperty.
+
+The ``active`` argument specifies whether the property is initially active (see isActive()).
 %End
 
     virtual ~QgsTemporalProperty();
 
-    void setIsActive( bool enabled );
+    void setIsActive( bool active );
 %Docstring
-Sets temporal property status.
+Sets whether the temporal property is ``active``.
 
 .. seealso:: :py:func:`isActive`
 %End
 
     bool isActive() const;
 %Docstring
-Returns true temporal property status.
+Returns ``True`` if the temporal property is active.
 
 .. seealso:: :py:func:`setIsActive`
 %End

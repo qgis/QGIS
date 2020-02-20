@@ -278,7 +278,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   {
     QVBoxLayout *temporalLayout = new QVBoxLayout( temporalFrame );
     mTemporalWidget = new QgsRasterLayerTemporalPropertiesWidget( this, mRasterLayer );
-    mTemporalWidget->setMapCanvas( mMapCanvas );
     temporalLayout->addWidget( mTemporalWidget );
 
   }

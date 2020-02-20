@@ -28,10 +28,10 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgslayermetadata.h"
 #include "qgserror.h"
-#include "qgsdataprovidertemporalcapabilities.h"
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
+class QgsDataProviderTemporalCapabilities;
 
 
 /**

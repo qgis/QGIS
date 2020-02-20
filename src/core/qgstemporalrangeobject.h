@@ -23,12 +23,10 @@
 #include "qgis_sip.h"
 #include "qgsrange.h"
 
-class QgsRenderContext;
-
 /**
  * \class QgsTemporalRangeObject
  * \ingroup core
- * Base class for temporal based classes.
+ * Base class for objects with an associated (optional) temporal range.
  *
  * \since QGIS 3.14
  */
@@ -37,51 +35,47 @@ class CORE_EXPORT QgsTemporalRangeObject
   public:
 
     /**
-     * Constructor for QgsTemporalRangeObject.
+     * Constructor QgsTemporalRangeObject.
+     *
+     * The \a enabled argument specifies whether the temporal range is initially enabled or not (see isTemporal()).
      */
-    QgsTemporalRangeObject();
-
-    /**
-     * Creates temporal range object with the specified temporal state.
-     */
-    QgsTemporalRangeObject( bool enabled );
-
-    /**
-     * Copies render context temporal members
-     */
-    QgsTemporalRangeObject( const QgsRenderContext &rh );
+    QgsTemporalRangeObject( bool enabled = false );
 
     virtual ~QgsTemporalRangeObject() = default;
 
     /**
-     * Sets object as a temporal based one, which will be considered when rendering maps with a specific time range set.
+     * Sets whether the temporal range is \a enabled (i.e. whether the object has a temporal range
+     * which will be considered when rendering maps with a specific time range set.)
      *
      * \see isTemporal()
      */
     void setIsTemporal( bool enabled );
 
     /**
-     * Returns true if the object is a temporal one, and will be filtered when rendering maps with a specific time range set.
+     * Returns TRUE if the object's temporal range is enabled, and the object will be filtered when rendering maps with a specific time range set.
      *
-     * For map settings, If false is returned, then any other temporal settings relating to the map will be ignored during rendering.
+     * For map settings, if FALSE is returned, then any other temporal settings relating to the map will be ignored during rendering.
      *
      * \see setIsTemporal()
     */
     bool isTemporal() const;
 
     /**
-     * Set datetime range for a temporal object.
+     * Sets the temporal \a range for the object.
      *
-     * It updates object temporal state to true if it was false.
+     * Calling setTemporalRange() automatically enables temporal properties on the
+     * object (see isTemporal()), regardless of its existing state.
      *
-     * When set, can be used to filter and request time base objects.
+     * When a temporal \a range is set it can be used to filter and request time base objects.
      *
      * \see temporalRange()
     */
-    void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
+    void setTemporalRange( const QgsDateTimeRange &range );
 
     /**
-     * Returns datetime range if object is a temporal object.
+     * Returns the datetime range for the object.
+     *
+     * This should only be considered when isTemporal() returns TRUE.
      *
      * \see setTemporalRange()
     */

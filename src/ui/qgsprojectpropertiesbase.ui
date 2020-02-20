@@ -264,9 +264,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-376</y>
-                <width>671</width>
-                <height>1080</height>
+                <y>-401</y>
+                <width>662</width>
+                <height>1106</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -829,13 +829,13 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_9">
                   <item>
-                   <widget class="QLabel" name="rangeLabel">
+                   <widget class="QLabel" name="mCurrentRangeLabel">
                     <property name="styleSheet">
                      <string notr="true">color:rgb(136, 138, 133);
 </string>
                     </property>
                     <property name="text">
-                     <string>Current range:</string>
+                     <string/>
                     </property>
                    </widget>
                   </item>
@@ -846,36 +846,14 @@
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_10">
                      <item>
-                      <widget class="QSplitter" name="splitter">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <widget class="QDateTimeEdit" name="mStartDateTimeEdit">
-                        <property name="dateTime">
-                         <datetime>
-                          <hour>0</hour>
-                          <minute>0</minute>
-                          <second>0</second>
-                          <year>2020</year>
-                          <month>1</month>
-                          <day>1</day>
-                         </datetime>
-                        </property>
-                        <property name="date">
-                         <date>
-                          <year>2020</year>
-                          <month>1</month>
-                          <day>1</day>
-                         </date>
-                        </property>
-                        <property name="displayFormat">
-                         <string>M.d.yy h:mm AP</string>
-                        </property>
-                        <property name="calendarPopup">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </widget>
+                      <layout class="QHBoxLayout" name="horizontalLayout_21">
+                       <item>
+                        <widget class="QgsDateTimeEdit" name="mStartDateTimeEdit"/>
+                       </item>
+                       <item>
+                        <widget class="QWidget" name="widget" native="true"/>
+                       </item>
+                      </layout>
                      </item>
                     </layout>
                    </widget>
@@ -889,38 +867,7 @@
                      <item>
                       <layout class="QHBoxLayout" name="horizontalLayout_20">
                        <item>
-                        <widget class="QDateTimeEdit" name="mEndDateTimeEdit">
-                         <property name="dateTime">
-                          <datetime>
-                           <hour>0</hour>
-                           <minute>0</minute>
-                           <second>0</second>
-                           <year>2020</year>
-                           <month>12</month>
-                           <day>31</day>
-                          </datetime>
-                         </property>
-                         <property name="date">
-                          <date>
-                           <year>2020</year>
-                           <month>12</month>
-                           <day>31</day>
-                          </date>
-                         </property>
-                         <property name="time">
-                          <time>
-                           <hour>0</hour>
-                           <minute>0</minute>
-                           <second>0</second>
-                          </time>
-                         </property>
-                         <property name="displayFormat">
-                          <string>M.d.yy h:mm AP</string>
-                         </property>
-                         <property name="calendarPopup">
-                          <bool>true</bool>
-                         </property>
-                        </widget>
+                        <widget class="QgsDateTimeEdit" name="mEndDateTimeEdit"/>
                        </item>
                        <item>
                         <widget class="QPushButton" name="mSameAsStartButton">
@@ -1019,8 +966,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>681</height>
+                <width>663</width>
+                <height>164</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -1094,8 +1041,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>290</width>
-                <height>543</height>
+                <width>315</width>
+                <height>553</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1670,8 +1617,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>178</width>
-                <height>54</height>
+                <width>191</width>
+                <height>55</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1732,8 +1679,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>2716</height>
+                <width>719</width>
+                <height>2767</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -3058,9 +3005,20 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorSchemeList</class>
@@ -3084,12 +3042,6 @@
    <class>QgsDatumTransformTableWidget</class>
    <extends>QWidget</extends>
    <header>qgsdatumtransformtablewidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -3221,7 +3173,6 @@
   <tabstop>teOWSChecker</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

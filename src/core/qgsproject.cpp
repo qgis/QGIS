@@ -2889,6 +2889,11 @@ const QgsProjectTimeSettings *QgsProject::timeSettings() const
   return mTimeSettings;
 }
 
+QgsProjectTimeSettings *QgsProject::timeSettings()
+{
+  return mTimeSettings;
+}
+
 const QgsProjectDisplaySettings *QgsProject::displaySettings() const
 {
   return mDisplaySettings;

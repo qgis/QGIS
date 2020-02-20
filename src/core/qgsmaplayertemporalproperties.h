@@ -29,34 +29,32 @@
 /**
  * \class QgsMapLayerTemporalProperties
  * \ingroup core
- * Base class for storage of map layer temporal properties.
- *
- * QgsMapLayerTemporalProperties expose user-configurable settings for controlling
- * how an individual QgsMapLayer behaves in a temporal context, e.g. while animating a map object.
+ * An abstract base class for handling map layer temporal properties.
  *
  * \since QGIS 3.14
  */
-
 class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
 {
   public:
 
     /**
      * Constructor for QgsMapLayerTemporalProperties.
+     *
+     * The \a enabled argument specifies whether the temporal properties are initially enabled or not (see isActive()).
      */
     QgsMapLayerTemporalProperties( bool enabled = false );
 
     virtual ~QgsMapLayerTemporalProperties() = default;
 
     /**
-     * Writes map layer temporal properties to a DOM element, to be used later with readXml()
+     * Writes the properties to a DOM \a element, to be used later with readXml().
      *
      * \see readXml()
      */
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
 
     /**
-     * Reads temporal properties from a DOM element previously written by writeXml()
+     * Reads temporal properties from a DOM \a element previously written by writeXml().
      *
      * \see writeXml()
      */
