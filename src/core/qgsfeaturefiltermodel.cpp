@@ -225,7 +225,7 @@ QVariant QgsFeatureFilterModel::data( const QModelIndex &index, int role ) const
 void QgsFeatureFilterModel::updateCompleter()
 {
   emit beginUpdate();
-  if( !mGatherer )
+  if ( !mGatherer )
   {
     emit endUpdate();
     return;
