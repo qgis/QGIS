@@ -140,16 +140,22 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         # Revoke select permissions on pointcloud_format from qgis_test_user
         conn.executeSql('REVOKE SELECT ON pointcloud_formats FROM qgis_test_user')
 
+        # Revoke select permissions on pointcloud_format from qgis_test_user
+        conn.executeSql('REVOKE SELECT ON raster_columns FROM public')
+        conn.executeSql('REVOKE SELECT ON raster_columns FROM qgis_test_user')
+
         # Re-connect as the qgis_test_role role
         newuri = self.uri + ' user=qgis_test_user password=qgis_test_user_password'
         newconn = md.createConnection(newuri, {})
 
         # Check TopoGeometry and Pointcloud layers are not found in vector table names
-        tables = newconn.tables('qgis_test', QgsAbstractDatabaseProviderConnection.Vector)
+        tableTypes = QgsAbstractDatabaseProviderConnection.Vector | QgsAbstractDatabaseProviderConnection.Raster
+        tables = newconn.tables('qgis_test', tableTypes)
         table_names = self._table_names(tables)
         self.assertFalse('TopoLayer1' in table_names)
         self.assertFalse('PointCloudPointLayer' in table_names)
         self.assertFalse('PointCloudPatchLayer' in table_names)
+        self.assertFalse('Raster1' in table_names)
         self.assertTrue('geometries_table' in table_names)
 
         # TODO: only revoke select permission on topology.layer, grant
@@ -166,7 +172,13 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         # Grant select permissions back on topology.topology to qgis_test_user
         conn.executeSql('GRANT SELECT ON topology.topology TO qgis_test_user')
+
+        # Grant select permissions back on pointcloud_formats to qgis_test_user
         conn.executeSql('GRANT SELECT ON pointcloud_formats TO qgis_test_user')
+
+        # Grant select permissions back on raster_columns to qgis_test_user
+        conn.executeSql('GRANT SELECT ON raster_columns TO public')
+        conn.executeSql('GRANT SELECT ON raster_columns TO qgis_test_user')
 
     # error: ERROR: relation "qgis_test.raster1" does not exist
     @unittest.skipIf(gdal.VersionInfo() < '2040000', 'This test requires GDAL >= 2.4.0')
