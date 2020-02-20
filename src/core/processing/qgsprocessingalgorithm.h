@@ -76,6 +76,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagDisplayNameIsLiteral = 1 << 7, //!< Algorithm's display name is a static literal string, and should not be translated or automatically formatted. For use with algorithms named after commands, e.g. GRASS 'v.in.ogr'.
       FlagSupportsInPlaceEdits = 1 << 8, //!< Algorithm supports in-place editing
       FlagKnownIssues = 1 << 9, //!< Algorithm has known issues
+      FlagCustomException = 1 << 10, //!< Algorithm raises custom exception notices, don't use the standard ones
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )

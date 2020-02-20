@@ -107,6 +107,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpoleofinaccessibility.cpp
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
+  processing/qgsalgorithmraiseexception.cpp
   processing/qgsalgorithmrandomextract.cpp
   processing/qgsalgorithmrandompointsextent.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
