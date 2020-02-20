@@ -237,6 +237,7 @@ class TestAlignRaster : public QObject
 
     void testInvalidReprojection()
     {
+#if PROJ_VERSION_MAJOR<6 // the projection works on proj 6 builds
       QString tmpFile( _tempFile( QStringLiteral( "reproject-invalid" ) ) );
 
       // reprojection to British National Grid with raster in Jakarta area clearly cannot work
@@ -250,6 +251,7 @@ class TestAlignRaster : public QObject
       align.setParametersFromRaster( SRC_FILE, destCRS.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
       bool res = align.run();
       QVERIFY( !res );
+#endif
     }
 
     void testSuggestedReferenceLayer()
