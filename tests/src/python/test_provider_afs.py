@@ -632,20 +632,20 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         extent1.extentCrs = QgsCoordinateReferenceSystem.fromEpsgId(4326)
         extent1.bounds = QgsBox3d(QgsRectangle(-71.123, 66.33, -65.32, 78.3))
         extent.setSpatialExtents([extent1])
-        self.assertEqual(vl.metadata().extent(), extent)
-
-        self.assertEqual(vl.metadata().crs(), QgsCoordinateReferenceSystem.fromEpsgId(4326))
-        self.assertEqual(vl.metadata().identifier(), 'http://' + sanitize(endpoint, ''))
-        self.assertEqual(vl.metadata().parentIdentifier(), 'http://' + self.basetestpath + '/2')
-        self.assertEqual(vl.metadata().type(), 'dataset')
-        self.assertEqual(vl.metadata().abstract(), 'QGIS Provider Test Layer')
-        self.assertEqual(vl.metadata().title(), 'QGIS Test')
-        self.assertEqual(vl.metadata().rights(), ['not copyright'])
+        md = vl.metadata()
+        self.assertEqual(md.extent(), extent)
+        self.assertEqual(md.crs(), QgsCoordinateReferenceSystem.fromEpsgId(4326))
+        self.assertEqual(md.identifier(), 'http://' + sanitize(endpoint, ''))
+        self.assertEqual(md.parentIdentifier(), 'http://' + self.basetestpath + '/2')
+        self.assertEqual(md.type(), 'dataset')
+        self.assertEqual(md.abstract(), 'QGIS Provider Test Layer')
+        self.assertEqual(md.title(), 'QGIS Test')
+        self.assertEqual(md.rights(), ['not copyright'])
         l = QgsLayerMetadata.Link()
         l.name = 'Source'
         l.type = 'WWW:LINK'
         l.url = 'http://' + sanitize(endpoint, '')
-        self.assertEqual(vl.metadata().links(), [l])
+        self.assertEqual(md.links(), [l])
 
     def testRenderer(self):
         """ Test that renderer is correctly acquired from provider """
