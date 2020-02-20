@@ -2665,6 +2665,21 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
     QString error;
     printAtlas->setFilenameExpression( QStringLiteral( "'output_'||@atlas_featurenumber" ), error );
   }
+  else
+  {
+    // Validate filename expression
+    QString errorString;
+    if ( ! printAtlas->setFilenameExpression( printAtlas->filenameExpression(), errorString ) )
+    {
+      QMessageBox::warning( nullptr, tr( "Export Atlas" ),
+                            tr( "Output file name expression is not valid. Canceling.\n"
+                                "Evaluation error: %1" ).arg( errorString ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      return;
+    }
+  }
+
 
   QString lastUsedDir = defaultExportPath();
 
