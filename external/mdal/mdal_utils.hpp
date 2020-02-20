@@ -94,17 +94,17 @@ namespace MDAL
   std::string join( const std::vector<std::string> parts, const std::string &delimiter );
 
   //! Right trim
-  std::string rtrim(
+  MDAL_TEST_EXPORT std::string rtrim(
     const std::string &s,
     const std::string &delimiters = " \f\n\r\t\v" );
 
   //! Left trim
-  std::string ltrim(
+  MDAL_TEST_EXPORT std::string ltrim(
     const std::string &s,
     const std::string &delimiters = " \f\n\r\t\v" );
 
   //! Right and left trim
-  std::string trim(
+  MDAL_TEST_EXPORT std::string trim(
     const std::string &s,
     const std::string &delimiters = " \f\n\r\t\v" );
 

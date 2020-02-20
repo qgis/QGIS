@@ -144,6 +144,14 @@ double NetCDFFile::getFillValue( int varid ) const
   return getAttrDouble( varid, "_FillValue" );
 }
 
+bool NetCDFFile::hasAttrDouble( int varid, const std::string &attr_name ) const
+{
+  double res;
+  if ( nc_get_att_double( mNcid, varid, attr_name.c_str(), &res ) )
+    return false;
+  return true;
+}
+
 double NetCDFFile::getAttrDouble( int varid, const std::string &attr_name ) const
 {
   double res;

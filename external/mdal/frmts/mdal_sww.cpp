@@ -122,8 +122,12 @@ MDAL::Vertices MDAL::DriverSWW::readVertices( const NetCDFFile &ncFile ) const
   std::vector<double> pz = readZCoords( ncFile );
 
   // we may need to apply a shift to the X,Y coordinates
-  double xLLcorner = ncFile.getAttrDouble( NC_GLOBAL, "xllcorner" );
-  double yLLcorner = ncFile.getAttrDouble( NC_GLOBAL, "yllcorner" );
+  double xLLcorner = 0.0;
+  if ( ncFile.hasAttrDouble( NC_GLOBAL, "xllcorner" ) )
+    xLLcorner = ncFile.getAttrDouble( NC_GLOBAL, "xllcorner" );
+  double yLLcorner = 0.0;
+  if ( ncFile.hasAttrDouble( NC_GLOBAL, "yllcorner" ) )
+    yLLcorner = ncFile.getAttrDouble( NC_GLOBAL, "yllcorner" );
 
   MDAL::Vertices vertices( nPoints );
   Vertex *vertexPtr = vertices.data();
