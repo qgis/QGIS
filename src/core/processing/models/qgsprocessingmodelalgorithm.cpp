@@ -316,14 +316,12 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       bool ok = false;
       std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
       QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok, child.configuration() );
-      childAlg.reset( nullptr );
       if ( !ok )
       {
-        QString error = QObject::tr( "Error encountered while running %1" ).arg( child.description() );
-        if ( feedback )
-          feedback->reportError( error );
+        const QString error = childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
         throw QgsProcessingException( error );
       }
+      childAlg.reset( nullptr );
       childResults.insert( childId, results );
 
       // look through child alg's outputs to determine whether any of these should be copied

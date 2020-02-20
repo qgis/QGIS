@@ -109,6 +109,9 @@ class TestQgsProcessingAlgs: public QObject
     void shapefileEncoding();
     void setLayerEncoding();
 
+    void raiseException();
+    void raiseWarning();
+
   private:
 
     QString mPointLayerPath;
@@ -2253,6 +2256,87 @@ void TestQgsProcessingAlgs::setLayerEncoding()
   QVERIFY( ok );
   QCOMPARE( vl->dataProvider()->encoding(), QStringLiteral( "ISO-8859-1" ) );
 
+}
+
+class TestProcessingFeedback : public QgsProcessingFeedback
+{
+  public:
+
+    void reportError( const QString &error, bool ) override
+    {
+      errors << error;
+    }
+
+    QStringList errors;
+
+};
+
+void TestQgsProcessingAlgs::raiseException()
+{
+  TestProcessingFeedback feedback;
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:raiseexception" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "MESSAGE" ), QStringLiteral( "you done screwed up boy" ) );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  QCOMPARE( feedback.errors, QStringList() << QStringLiteral( "you done screwed up boy" ) );
+
+  parameters.insert( QStringLiteral( "CONDITION" ), QStringLiteral( "FALSE" ) );
+  feedback.errors.clear();
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( feedback.errors, QStringList() );
+
+  parameters.insert( QStringLiteral( "CONDITION" ), QStringLiteral( "TRUE" ) );
+  feedback.errors.clear();
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+
+  QCOMPARE( feedback.errors, QStringList() << QStringLiteral( "you done screwed up boy" ) );
+}
+
+void TestQgsProcessingAlgs::raiseWarning()
+{
+  TestProcessingFeedback feedback;
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:raisewarning" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "MESSAGE" ), QStringLiteral( "you mighta screwed up boy, but i aint so sure" ) );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( feedback.errors, QStringList() << QStringLiteral( "you mighta screwed up boy, but i aint so sure" ) );
+
+  parameters.insert( QStringLiteral( "CONDITION" ), QStringLiteral( "FALSE" ) );
+  feedback.errors.clear();
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( feedback.errors, QStringList() );
+
+  parameters.insert( QStringLiteral( "CONDITION" ), QStringLiteral( "TRUE" ) );
+  feedback.errors.clear();
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( feedback.errors, QStringList() << QStringLiteral( "you mighta screwed up boy, but i aint so sure" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )

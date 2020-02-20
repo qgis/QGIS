@@ -102,6 +102,7 @@
 #include "qgsalgorithmpoleofinaccessibility.h"
 #include "qgsalgorithmprojectpointcartesian.h"
 #include "qgsalgorithmpromotetomultipart.h"
+#include "qgsalgorithmraiseexception.h"
 #include "qgsalgorithmrandomextract.h"
 #include "qgsalgorithmrandompointsextent.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
@@ -299,6 +300,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPoleOfInaccessibilityAlgorithm() );
   addAlgorithm( new QgsProjectPointCartesianAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
+  addAlgorithm( new QgsRaiseExceptionAlgorithm() );
+  addAlgorithm( new QgsRaiseWarningAlgorithm() );
   addAlgorithm( new QgsRandomExtractAlgorithm() );
   addAlgorithm( new QgsRandomPointsExtentAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
