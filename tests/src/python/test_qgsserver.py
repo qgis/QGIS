@@ -40,7 +40,7 @@ import difflib
 
 from io import StringIO
 from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
-from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils
+from qgis.core import QgsRenderChecker, QgsApplication, QgsFontUtils, QgsSettings
 from qgis.testing import unittest
 from qgis.PyQt.QtCore import QSize
 from utilities import unitTestDataPath
@@ -109,6 +109,7 @@ class QgsServerTestBase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.app = QgsApplication([], False)
+        QgsSettings().setValue("/qgis/walForSqlite3", False)
 
     @classmethod
     def tearDownClass(cls):
