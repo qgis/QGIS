@@ -1872,7 +1872,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see startEditing()
      * \see commitChanges()
      */
-    bool rollBack( bool deleteBuffer = true );
+    Q_INVOKABLE bool rollBack( bool deleteBuffer = true );
 
     /**
      * Returns the layer's relations, where the foreign key is on this layer.
