@@ -46,6 +46,19 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
 {
 
   QgsPoint mapPoint( e->mapPoint() );
+<<<<<<< HEAD
+=======
+
+  if ( !currentVectorLayer() )
+  {
+    notifyNotVectorLayer();
+    clean();
+    stopCapturing();
+    e->ignore();
+    return;
+  }
+
+>>>>>>> fd32338747... Clear existing geometry (rubberband) when the layer has accidentally become a raster layer.
   EdgesOnlyFilter filter;
   QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
 

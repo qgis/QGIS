@@ -46,6 +46,18 @@ void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
 {
   QgsPoint point = mapPoint( *e );
 
+<<<<<<< HEAD
+=======
+  if ( !currentVectorLayer() )
+  {
+    notifyNotVectorLayer();
+    clean();
+    stopCapturing();
+    e->ignore();
+    return;
+  }
+
+>>>>>>> fd32338747... Clear existing geometry (rubberband) when the layer has accidentally become a raster layer.
   if ( e->button() == Qt::LeftButton )
   {
     if ( mPoints.isEmpty() )
