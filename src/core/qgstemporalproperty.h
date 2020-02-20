@@ -21,7 +21,6 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsrange.h"
 
 
 /**
@@ -38,20 +37,22 @@ class CORE_EXPORT QgsTemporalProperty
 
     /**
      * Constructor for QgsTemporalProperty.
+     *
+     * The \a active argument specifies whether the property is initially active (see isActive()).
      */
-    QgsTemporalProperty( bool enabled = false );
+    QgsTemporalProperty( bool active = false );
 
     virtual ~QgsTemporalProperty() = default;
 
     /**
-     * Sets temporal property status.
+     * Sets whether the temporal property is \a active.
      *
      * \see isActive()
      */
-    void setIsActive( bool enabled );
+    void setIsActive( bool active );
 
     /**
-     * Returns true temporal property status.
+     * Returns TRUE if the temporal property is active.
      *
      * \see setIsActive()
     */

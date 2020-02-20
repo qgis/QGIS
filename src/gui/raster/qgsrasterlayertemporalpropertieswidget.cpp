@@ -140,11 +140,6 @@ void QgsRasterLayerTemporalPropertiesWidget::setInputWidgetState( TemporalDimens
   }
 }
 
-void QgsRasterLayerTemporalPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
-{
-  mCanvas = canvas;
-}
-
 void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
 {
   if ( mLayerRadioButton->isChecked() )

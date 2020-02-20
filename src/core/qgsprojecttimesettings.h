@@ -75,6 +75,16 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
      */
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 
+
+  signals:
+
+    /**
+     * Emitted when temporal range changes.
+     *
+     * \see temporalRange()
+     * \see setTemporalRange()
+     */
+    void temporalRangeChanged();
   private:
 
     QgsDateTimeRange mRange;

@@ -38,6 +38,8 @@ QgsDateTimeRange QgsProjectTimeSettings::temporalRange() const
 void QgsProjectTimeSettings::setTemporalRange( const QgsDateTimeRange &range )
 {
   mRange = range;
+
+  emit temporalRangeChanged();
 }
 
 bool QgsProjectTimeSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )
@@ -45,13 +47,13 @@ bool QgsProjectTimeSettings::readXml( const QDomElement &element, const QgsReadW
   QDomElement temporalElement = element.firstChildElement( QStringLiteral( "TemporalRange" ) );
   if ( !temporalElement.isNull() )
   {
-      QDomNode begin = temporalElement.namedItem( QStringLiteral( "start" ) );
-      QDomNode end = temporalElement.namedItem( QStringLiteral( "end" ) );
+    QDomNode begin = temporalElement.namedItem( QStringLiteral( "start" ) );
+    QDomNode end = temporalElement.namedItem( QStringLiteral( "end" ) );
 
-      QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
-      QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
+    QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
+    QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
 
-      mRange = QgsDateTimeRange( beginDate, endDate );
+    mRange = QgsDateTimeRange( beginDate, endDate );
 
   }
   else

@@ -22,15 +22,6 @@ QgsRasterDataProviderTemporalCapabilities::QgsRasterDataProviderTemporalCapabili
 {
 }
 
-//QgsRasterDataProviderTemporalProperties &QgsRasterDataProviderTemporalProperties::operator=( const QgsRasterDataProviderTemporalProperties &other )
-//{
-//  mRange = other.mRange;
-//  mFixedRange = other.mFixedRange;
-//  mEnableTime = other.mEnableTime;
-
-//  return *this;
-//}
-
 void QgsRasterDataProviderTemporalCapabilities::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( !isActive() )
@@ -41,12 +32,14 @@ void QgsRasterDataProviderTemporalCapabilities::setTemporalRange( const QgsDateT
   QDateTime begin;
   QDateTime end;
 
-  if ( dateTimeRange.begin() < mFixedRange.begin() )
+  if ( mFixedRange.begin().isValid() &&
+       ( dateTimeRange.begin() < mFixedRange.begin() ) )
     begin = mFixedRange.begin();
   else
     begin = dateTimeRange.begin();
 
-  if ( dateTimeRange.end() > mFixedRange.end() )
+  if ( mFixedRange.end().isValid() &&
+       ( dateTimeRange.end() > mFixedRange.end() ) )
     end = mFixedRange.end();
   else
     end = dateTimeRange.end();

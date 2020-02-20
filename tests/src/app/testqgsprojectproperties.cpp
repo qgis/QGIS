@@ -22,6 +22,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgsbearingnumericformat.h"
+#include "qgsrasterlayer.h"
 
 /**
  * \ingroup UnitTests
@@ -43,6 +44,7 @@ class TestQgsProjectProperties : public QObject
     void testEllipsoidChange();
     void testEllipsoidCrsSync();
     void testBearingFormat();
+    void testTimeSettings();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -248,6 +250,46 @@ void TestQgsProjectProperties::testBearingFormat()
   std::unique_ptr< QgsProjectProperties > pp = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
   pp->apply();
   QCOMPARE( QgsProject::instance()->displaySettings()->bearingFormat()->numberDecimalPlaces(), 9 );
+}
+
+void TestQgsProjectProperties::testTimeSettings()
+{
+  QgsProject::instance()->clear();
+  QgsDateTimeRange range = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
+                           QDateTime( QDate( 2020, 12, 31 ) ) );
+
+  QgsProject::instance()->timeSettings()->setTemporalRange( range );
+
+  std::unique_ptr< QgsProjectProperties > projectProperties = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
+  projectProperties->apply();
+
+  QCOMPARE( QgsProject::instance()->timeSettings()->temporalRange(), range );
+
+  // Test setting Project temporal range using temporal layers
+
+  QgsRasterLayer *firstLayer = new QgsRasterLayer( "", "firstLayer", "wms" );
+  QgsRasterLayer *secondLayer = new QgsRasterLayer( "", "secondLayer", "wms" );
+  QgsRasterLayer *thirdLayer = new QgsRasterLayer( "", "thirdLayer", "wms" );
+
+  QgsDateTimeRange firstRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
+                                QDateTime( QDate( 2020, 3, 31 ) ) );
+  QgsDateTimeRange secondRange = QgsDateTimeRange( QDateTime( QDate( 2020, 4, 1 ) ),
+                                 QDateTime( QDate( 2020, 7, 31 ) ) );
+  QgsDateTimeRange thirdRange = QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ) ),
+                                QDateTime( QDate( 2020, 2, 28 ) ) );
+
+  firstLayer->dataProvider()->temporalCapabilities()->setFixedTemporalRange( firstRange );
+  secondLayer->dataProvider()->temporalCapabilities()->setFixedTemporalRange( secondRange );
+  thirdLayer->dataProvider()->temporalCapabilities()->setFixedTemporalRange( thirdRange );
+
+  QgsProject::instance()->addMapLayers( { firstLayer, secondLayer, thirdLayer } );
+
+  projectProperties->calculateFromLayersButton_clicked();
+
+  QgsDateTimeRange expectedRange = QgsDateTimeRange( thirdRange.begin(), secondRange.end() );
+
+  QCOMPARE( QgsProject::instance()->timeSettings()->temporalRange(), expectedRange );
+
 }
 
 QGSTEST_MAIN( TestQgsProjectProperties )

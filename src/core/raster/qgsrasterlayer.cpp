@@ -579,9 +579,7 @@ void QgsRasterLayer::init()
   mLastViewPort.mWidth = 0;
   mLastViewPort.mHeight = 0;
 
-  // Initialize temporal properties
-  mTemporalProperties = std::unique_ptr<QgsRasterLayerTemporalProperties>( new QgsRasterLayerTemporalProperties() );
-
+  mTemporalProperties = qgis::make_unique<QgsRasterLayerTemporalProperties>();
 }
 
 void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
@@ -947,6 +945,11 @@ void QgsRasterLayer::computeMinMax( int band,
 bool QgsRasterLayer::ignoreExtents() const
 {
   return mDataProvider ? mDataProvider->ignoreExtents() : false;
+}
+
+QgsRasterLayerTemporalProperties *QgsRasterLayer::temporalProperties()
+{
+  return mTemporalProperties.get();
 }
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )
@@ -1996,6 +1999,9 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
   {
     layer_node.appendChild( noData );
   }
+
+  // write temporal properties
+  mTemporalProperties->writeXml( mapLayerNode, document, context );
 
   writeStyleManager( layer_node, document );
 

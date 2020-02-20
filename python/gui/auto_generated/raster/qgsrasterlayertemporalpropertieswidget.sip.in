@@ -29,11 +29,6 @@ A widget for configuring the temporal properties for a raster layer.
 Constructor for QgsRasterLayerTemporalPropertiesWidget.
 %End
 
-    void setMapCanvas( QgsMapCanvas *canvas );
-%Docstring
-Sets the map canvas associtated with this temporal widget.
-%End
-
     void saveTemporalProperties();
 %Docstring
 Save widget temporal properties inputs.

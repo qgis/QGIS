@@ -77,6 +77,8 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QAbstractListModel>
+#include <QList>
+#include <QtCore>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
@@ -238,6 +240,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     mStartDateTimeEdit->setDateTime( range.begin() );
     mEndDateTimeEdit->setDateTime( range.end() );
   }
+
+  mCurrentRangeLabel->setText( tr( "Current range: %1 to %2" ).arg(
+                                 mStartDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ),
+                                 mEndDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ) ) );
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
@@ -2494,24 +2500,68 @@ void QgsProjectProperties::mButtonAddColor_clicked()
 void QgsProjectProperties::setEndAsStartButton_clicked()
 {
   mEndDateTimeEdit->setDateTime( mStartDateTimeEdit->dateTime() );
+
+  mCurrentRangeLabel->setText( tr( "Current range: %1 to %2" ).arg(
+                                 mStartDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ),
+                                 mEndDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ) ) );
+
 }
 
 void QgsProjectProperties::calculateFromLayersButton_clicked()
 {
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
+  QList< QDateTime > dates;
 
   QgsMapLayer *currentLayer = nullptr;
-  QgsRasterLayer *rasterLayer = nullptr;
 
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
     currentLayer = it.value();
+
+    // Checking for WMS-T layers only, as of time writing this, they have full temporal support.
     if ( currentLayer->type() == QgsMapLayerType::RasterLayer &&
-         currentLayer->providerType() == 'wms' )
+         currentLayer->providerType() ==    "wms" )
     {
-      rasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
+      QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
+      if ( rasterLayer->dataProvider()->temporalCapabilities()->isActive() )
+      {
+        QgsDateTimeRange layerRange = rasterLayer->dataProvider()->temporalCapabilities()->fixedTemporalRange();
+
+        if ( layerRange.begin().isValid() )
+          dates.append( layerRange.begin() );
+
+        if ( layerRange.end().isValid() )
+          dates.append( layerRange.end() );
+      }
     }
+
   }
+
+  // No layer with temporal properties
+  if ( dates.empty() )
+    return;
+  QgsDateTimeRange range;
+
+  if ( dates.size() > 1 )
+  {
+    std::sort( dates.begin(), dates.end() );
+    range = QgsDateTimeRange( dates.first(), dates.last() );
+  }
+  else
+  {
+    range = QgsDateTimeRange( dates.first(), dates.first() );
+  }
+
+  QgsProject::instance()->timeSettings()->setTemporalRange( range );
+
+  mStartDateTimeEdit->setDateTime( range.begin() );
+  mEndDateTimeEdit->setDateTime( range.end() );
+
+  mCurrentRangeLabel->setText( tr( "Current range: %1 to %2" ).arg(
+                                 mStartDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ),
+                                 mEndDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ) ) );
+
+
 }
 
 QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const QString &newScale )

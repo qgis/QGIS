@@ -46,8 +46,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
 
     virtual ~QgsRasterDataProviderTemporalCapabilities() = default;
 
-//    QgsRasterDataProviderTemporalCapabilities  &operator=( const QgsRasterDataProviderTemporalProperties &other );
-
     /**
      * Sets the current active datetime range for the temporal properties.
      *
@@ -108,6 +106,10 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
 
     /**
      * Sets the time enabled status.
+     * This enables whether time part in the temporal range should be
+     * used when updated the temporal range of these capabilities.
+     *
+     * This is useful in some temporal layers who use dates only.
      *
      * \see isTimeEnabled()
      */

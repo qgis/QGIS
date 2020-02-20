@@ -59,7 +59,6 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsprojectdisplaysettings.h"
-#include "qgsprojecttimesettings.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -2885,6 +2884,11 @@ QgsProjectViewSettings *QgsProject::viewSettings()
 }
 
 const QgsProjectTimeSettings *QgsProject::timeSettings() const
+{
+  return mTimeSettings;
+}
+
+QgsProjectTimeSettings *QgsProject::timeSettings()
 {
   return mTimeSettings;
 }
