@@ -1117,8 +1117,16 @@ WHERE c.relname = 'pointcloud_columns'
   QgsDebugMsg( QStringLiteral( "Checking for raster support" ) );
   if ( mPostgisVersionMajor >= 2 )
   {
-    QgsPostgresResult result( PQexec( QStringLiteral( "SELECT oid FROM pg_catalog.pg_type WHERE typname='raster'" ) ) );
-    if ( result.PQntuples() >= 1 )
+    result = PQexec( QStringLiteral( R"(
+SELECT
+ has_table_privilege(c.oid, 'select')
+FROM pg_class c, pg_namespace n, pg_type t
+WHERE c.relnamespace = n.oid
+  AND n.oid = t.typnamespace
+  AND c.relname = 'raster_columns'
+  AND t.typname = 'raster'
+    )" ), false );
+    if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
       mRasterAvailable = true;
       QgsDebugMsg( QStringLiteral( "Raster support available!" ) );
