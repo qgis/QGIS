@@ -39,68 +39,78 @@ QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-def execSQLCommand(conn, sql):
+def executeNonQuery(conn, statement):
     assert conn
     cursor = conn.cursor()
     assert cursor
-    res = None
-    try:
-        cursor.execute(sql)
-        cursor.fetchone()
-        res = True
-    except:
-        pass
+    cursor.execute(statement)
     cursor.close()
     conn.commit()
-    return res
 
 
-def execSQLCommands(conn, sql, parameters):
+def executeManyNonQuery(conn, statement, parameters):
     assert conn
     cursor = conn.cursor()
     assert cursor
-    res = None
-    try:
-        cursor.executemany(sql, parameters)
-    except Exception as ex:
-        print(ex)
+    cursor.executemany(statement, parameters)
     cursor.close()
     conn.commit()
-    return res
 
 
-def createDefaultTables(conn):
-    execSQLCommand(conn, 'DROP SCHEMA "qgis_test" CASCADE')
-    execSQLCommand(conn, 'CREATE SCHEMA "qgis_test"')
+def executeScalar(conn, statement):
+    assert conn
+    cursor = conn.cursor()
+    assert cursor
+    cursor.execute(statement)
+    res = cursor.fetchone()
+    cursor.close()
+    conn.commit()
+    return res[0]
 
-    execSQLCommand(conn,
-                   'CREATE TABLE "qgis_test"."some_data" ( '
-                   '"pk" INTEGER NOT NULL PRIMARY KEY,'
-                   '"cnt" INTEGER,'
-                   '"name" NVARCHAR(32) DEFAULT \'qgis\','
-                   '"name2" NVARCHAR(32) DEFAULT \'qgis\','
-                   '"num_char" NVARCHAR(1),'
-                   '"geom" ST_GEOMETRY(4326))')
-    execSQLCommand(conn, 'COMMENT ON TABLE "qgis_test"."some_data" IS \'QGIS Test Table\'')
-    sql = 'INSERT INTO "qgis_test"."some_data" ("pk", "cnt", "name", "name2", "num_char", "geom") VALUES (?, ?, ' \
-          '?, ?, ?, ST_GeomFromEWKB(?)) '
-    args = [[5, -200, None, 'NuLl', '5', bytes.fromhex('0101000020E61000001D5A643BDFC751C01F85EB51B88E5340')],
-            [3, 300, 'Pear', 'PEaR', '3', None],
-            [1, 100, 'Orange', 'oranGe', '1', bytes.fromhex('0101000020E61000006891ED7C3F9551C085EB51B81E955040')],
-            [2, 200, 'Apple', 'Apple', '2', bytes.fromhex('0101000020E6100000CDCCCCCCCC0C51C03333333333B35140')],
-            [4, 400, 'Honey', 'Honey', '4', bytes.fromhex('0101000020E610000014AE47E17A5450C03333333333935340')]]
-    execSQLCommands(conn, sql, args)
 
-    execSQLCommand(conn,
-                   'CREATE TABLE "qgis_test"."some_poly_data" ( '
-                   '"pk" INTEGER NOT NULL PRIMARY KEY,'
-                   '"geom" ST_GEOMETRY(4326))')
-    sql = 'INSERT INTO "qgis_test"."some_poly_data" ("pk", "geom") VALUES (?, ST_GeomFromText(?, 4326))'
-    args = [[1, 'Polygon ((-69.0 81.4, -69.0 80.2, -73.7 80.2, -73.7 76.3, -74.9 76.3, -74.9 81.4, -69.0 81.4))'],
-            [2, 'Polygon ((-67.6 81.2, -66.3 81.2, -66.3 76.9, -67.6 76.9, -67.6 81.2))'],
-            [3, 'Polygon ((-68.4 75.8, -67.5 72.6, -68.6 73.7, -70.2 72.9, -68.4 75.8))'],
-            [4, None]]
-    execSQLCommands(conn, sql, args)
+def createAndFillTable(conn, create_statement, insert_statement, insert_args):
+    executeNonQuery(conn, create_statement)
+    executeManyNonQuery(conn, insert_statement, insert_args)
+
+
+def createAndFillDefaultTables(conn):
+    res = executeScalar(conn, "SELECT COUNT(*) FROM SYS.SCHEMAS WHERE SCHEMA_NAME='qgis_test'")
+    if res != 0:
+        executeNonQuery(conn, 'DROP SCHEMA "qgis_test" CASCADE')
+    executeNonQuery(conn, 'CREATE SCHEMA "qgis_test"')
+
+    create_sql = 'CREATE TABLE "qgis_test"."some_data" ( ' \
+                 '"pk" INTEGER NOT NULL PRIMARY KEY,' \
+                 '"cnt" INTEGER,' \
+                 '"name" NVARCHAR(32) DEFAULT \'qgis\',' \
+                 '"name2" NVARCHAR(32) DEFAULT \'qgis\',' \
+                 '"num_char" NVARCHAR(1),' \
+                 '"geom" ST_GEOMETRY(4326))'
+    insert_sql = 'INSERT INTO "qgis_test"."some_data" ("pk", "cnt", "name", "name2", "num_char", "geom") VALUES (?, ' \
+                 '?, ?, ?, ?, ST_GeomFromEWKB(?)) '
+    insert_args = [[5, -200, None, 'NuLl', '5', bytes.fromhex('0101000020E61000001D5A643BDFC751C01F85EB51B88E5340')],
+                   [3, 300, 'Pear', 'PEaR', '3', None],
+                   [1, 100, 'Orange', 'oranGe', '1',
+                    bytes.fromhex('0101000020E61000006891ED7C3F9551C085EB51B81E955040')],
+                   [2, 200, 'Apple', 'Apple', '2', bytes.fromhex('0101000020E6100000CDCCCCCCCC0C51C03333333333B35140')],
+                   [4, 400, 'Honey', 'Honey', '4', bytes.fromhex('0101000020E610000014AE47E17A5450C03333333333935340')]]
+    createAndFillTable(conn, create_sql, insert_sql, insert_args)
+    executeNonQuery(conn, 'COMMENT ON TABLE "qgis_test"."some_data" IS \'QGIS Test Table\'')
+
+    create_sql = 'CREATE TABLE "qgis_test"."some_poly_data" ( ' \
+                 '"pk" INTEGER NOT NULL PRIMARY KEY,' \
+                 '"geom" ST_GEOMETRY(4326))'
+    insert_sql = 'INSERT INTO "qgis_test"."some_poly_data" ("pk", "geom") VALUES (?, ST_GeomFromText(?, 4326))'
+    insert_args = [
+        [1, 'Polygon ((-69.0 81.4, -69.0 80.2, -73.7 80.2, -73.7 76.3, -74.9 76.3, -74.9 81.4, -69.0 81.4))'],
+        [2, 'Polygon ((-67.6 81.2, -66.3 81.2, -66.3 76.9, -67.6 76.9, -67.6 81.2))'],
+        [3, 'Polygon ((-68.4 75.8, -67.5 72.6, -68.6 73.7, -70.2 72.9, -68.4 75.8))'],
+        [4, None]]
+    createAndFillTable(conn, create_sql, insert_sql, insert_args)
+
+
+def createVectorLayer(conn_parameters, layer_name):
+    return QgsVectorLayer(conn_parameters, layer_name, 'hana')
 
 
 class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
@@ -113,23 +123,17 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         if 'QGIS_HANA_TEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_HANA_TEST_DB']
         uri = QgsDataSourceUri(cls.dbconn)
-        cls.conn = dbapi.connect(
-            address=uri.host(),
-            port=uri.port(),
-            user=uri.username(),
-            password=uri.password()
-        )
+        cls.conn = dbapi.connect(address=uri.host(), port=uri.port(), user=uri.username(), password=uri.password())
 
-        createDefaultTables(cls.conn)
+        createAndFillDefaultTables(cls.conn)
 
         # Create test layers
-        cls.vl = QgsVectorLayer(
-            cls.dbconn + ' key=\'pk\' srid=4326 type=POINT table="qgis_test"."some_data" (geom) sql=', 'test', 'hana')
+        cls.vl = createVectorLayer(
+            cls.dbconn + ' key=\'pk\' srid=4326 type=POINT table="qgis_test"."some_data" (geom) sql=', 'test')
         assert cls.vl.isValid()
         cls.source = cls.vl.dataProvider()
-        cls.poly_vl = QgsVectorLayer(
-            cls.dbconn + ' key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test',
-            'hana')
+        cls.poly_vl = createVectorLayer(
+            cls.dbconn + ' key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test')
         assert cls.poly_vl.isValid()
         cls.poly_provider = cls.poly_vl.dataProvider()
         QgsGui.editorWidgetRegistry().initEditors()
@@ -138,41 +142,39 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
     def tearDownClass(cls):
         """Run after all tests"""
 
-    def execSQLCommand(self, sql):
-        return execSQLCommand(self.conn, sql)
+    def createVectorLayer(self, conn_parameters, layer_name):
+        return createVectorLayer(self.dbconn + conn_parameters, layer_name)
 
-    def execSQLCommands(self, sql, parameters):
-        return execSQLCommands(self.conn, sql, parameters)
-
-    def dropTableIfExist(self, tableName):
-        res = self.execSQLCommand(
-            "SELECT * FROM SYS.TABLES WHERE SCHEMA_NAME='qgis_test' AND TABLE_NAME='{}'".format(tableName))
-        if res:
-            self.execSQLCommand('DROP TABLE "qgis_test"."{}" CASCADE'.format(tableName))
+    def createAndFillTable(self, table_name, create_sql, insert_sql, insert_args):
+        res = executeScalar(self.conn,
+                            "SELECT COUNT(*) FROM SYS.TABLES WHERE SCHEMA_NAME='qgis_test' AND TABLE_NAME='{}'".format(
+                                table_name))
+        if res != 0:
+            executeNonQuery(self.conn, 'DROP TABLE "qgis_test"."{}" CASCADE'.format(table_name))
+        createAndFillTable(self.conn, create_sql, insert_sql, insert_args)
 
     def getSource(self):
         # create temporary table for edit tests
-        self.dropTableIfExist('edit_data')
-        self.execSQLCommand(
-            'CREATE TABLE "qgis_test"."edit_data" ( '
-            '"pk" INTEGER NOT NULL PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,'
-            '"cnt" INTEGER,'
-            '"name" NVARCHAR(100), '
-            '"name2" NVARCHAR(100), '
-            '"num_char" NVARCHAR(100),'
-            '"geom" ST_GEOMETRY(4326))')
-        sql = 'INSERT INTO "qgis_test"."edit_data" ("pk", "cnt", "name", "name2", "num_char", "geom") VALUES (?, ' \
-              '?, ?, ?, ?, ST_GeomFromEWKB(?)) '
-        args = [[5, -200, None, 'NuLl', '5', bytes.fromhex('0101000020E61000001D5A643BDFC751C01F85EB51B88E5340')],
-                [3, 300, 'Pear', 'PEaR', '3', None],
-                [1, 100, 'Orange', 'oranGe', '1', bytes.fromhex('0101000020E61000006891ED7C3F9551C085EB51B81E955040')],
-                [2, 200, 'Apple', 'Apple', '2', bytes.fromhex('0101000020E6100000CDCCCCCCCC0C51C03333333333B35140')],
-                [4, 400, 'Honey', 'Honey', '4', bytes.fromhex('0101000020E610000014AE47E17A5450C03333333333935340')]]
-        self.execSQLCommands(sql, args)
-        vl = QgsVectorLayer(
-            self.dbconn + ' key=\'pk\' srid=4326 type=POINT table="qgis_test"."edit_data" (geom) sql=',
-            'test', 'hana')
-        return vl
+
+        create_sql = 'CREATE TABLE "qgis_test"."edit_data" ( ' \
+                     '"pk" INTEGER NOT NULL PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY,' \
+                     '"cnt" INTEGER,' \
+                     '"name" NVARCHAR(100), ' \
+                     '"name2" NVARCHAR(100), ' \
+                     '"num_char" NVARCHAR(100),' \
+                     '"geom" ST_GEOMETRY(4326))'
+        insert_sql = 'INSERT INTO "qgis_test"."edit_data" ("pk", "cnt", "name", "name2", "num_char", "geom") VALUES (' \
+                     '?, ?, ?, ?, ?, ST_GeomFromEWKB(?)) '
+        insert_args = [
+            [5, -200, None, 'NuLl', '5', bytes.fromhex('0101000020E61000001D5A643BDFC751C01F85EB51B88E5340')],
+            [3, 300, 'Pear', 'PEaR', '3', None],
+            [1, 100, 'Orange', 'oranGe', '1', bytes.fromhex('0101000020E61000006891ED7C3F9551C085EB51B81E955040')],
+            [2, 200, 'Apple', 'Apple', '2', bytes.fromhex('0101000020E6100000CDCCCCCCCC0C51C03333333333B35140')],
+            [4, 400, 'Honey', 'Honey', '4', bytes.fromhex('0101000020E610000014AE47E17A5450C03333333333935340')]]
+        self.createAndFillTable('edit_data', create_sql, insert_sql, insert_args)
+
+        return self.createVectorLayer(' key=\'pk\' srid=4326 type=POINT table="qgis_test"."edit_data" (geom) sql=',
+                                      'test')
 
     def getEditableLayer(self):
         return self.getSource()
@@ -238,7 +240,6 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
 
     # HERE GO THE PROVIDER SPECIFIC TESTS
     def testMetadata(self):
-        """ Test that metadata is correctly acquired from provider """
         metadata = self.vl.metadata()
         self.assertEqual(metadata.crs(), QgsCoordinateReferenceSystem.fromEpsgId(4326))
         self.assertEqual(metadata.type(), 'dataset')
@@ -254,47 +255,35 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.source.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, False)
 
     def testBooleanType(self):
-        self.dropTableIfExist('date_times')
-        self.execSQLCommand(
-            'CREATE TABLE "qgis_test"."boolean_type" ( '
-            '"id" INTEGER NOT NULL PRIMARY KEY,'
-            '"fld1" BOOLEAN)')
+        create_sql = 'CREATE TABLE "qgis_test"."boolean_type" ( ' \
+                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"fld1" BOOLEAN)'
+        insert_sql = 'INSERT INTO "qgis_test"."boolean_type" ("id", "fld1") VALUES (?, ?)'
+        insert_args = [[1, 'TRUE'], [2, 'FALSE'], [3, None]]
+        self.createAndFillTable('boolean_type', create_sql, insert_sql, insert_args)
 
-        sql = 'INSERT INTO "qgis_test"."boolean_type" ("id", "fld1") VALUES (?, ?)'
-        args = [[1, 'TRUE'],
-                [2, 'FALSE'],
-                [3, None]]
-        self.execSQLCommands(sql, args)
-
-        vl = QgsVectorLayer(self.dbconn + ' table="qgis_test"."boolean_type" sql=', "testbool", "hana")
+        vl = self.createVectorLayer(' table="qgis_test"."boolean_type" sql=', 'testbool')
         self.assertTrue(vl.isValid())
 
         fields = vl.dataProvider().fields()
         self.assertEqual(fields.at(fields.indexFromName('fld1')).type(), QVariant.Bool)
 
         values = {feat['id']: feat['fld1'] for feat in vl.getFeatures()}
-        expected = {
-            1: True,
-            2: False,
-            3: NULL
-        }
+        expected = {1: True, 2: False, 3: NULL}
         self.assertEqual(values, expected)
 
     def testDateTimeTypes(self):
-        self.dropTableIfExist('date_time_type')
-        self.execSQLCommand(
-            'CREATE TABLE "qgis_test"."date_time_type" ( '
-            '"id" INTEGER NOT NULL PRIMARY KEY,'
-            '"date_field" DATE,'
-            '"time_field" TIME,'
-            '"datetime_field" TIMESTAMP)')
+        create_sql = 'CREATE TABLE "qgis_test"."date_time_type" ( ' \
+                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"date_field" DATE,' \
+                     '"time_field" TIME,' \
+                     '"datetime_field" TIMESTAMP)'
+        insert_sql = 'INSERT INTO "qgis_test"."date_time_type" ("id", "date_field", "time_field", "datetime_field") ' \
+                     'VALUES (?, ?, ?, ?)'
+        insert_args = [[1, '2004-03-04', '13:41:52', '2004-03-04 13:41:52']]
+        self.createAndFillTable('date_time_type', create_sql, insert_sql, insert_args)
 
-        sql = 'INSERT INTO "qgis_test"."date_time_type" ("id", "date_field", "time_field", "datetime_field") VALUES (?, ' \
-              '?, ?, ?)'
-        args = [[1, '2004-03-04', '13:41:52', '2004-03-04 13:41:52']]
-        self.execSQLCommands(sql, args)
-
-        vl = QgsVectorLayer(self.dbconn + ' table="qgis_test"."date_time_type" sql=', "testdatetimes", "hana")
+        vl = self.createVectorLayer(' table="qgis_test"."date_time_type" sql=', 'testdatetimes')
         self.assertTrue(vl.isValid())
 
         fields = vl.dataProvider().fields()
@@ -315,18 +304,14 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.attributes()[datetime_idx], QDateTime(QDate(2004, 3, 4), QTime(13, 41, 52)))
 
     def testBinaryType(self):
-        self.dropTableIfExist('binary_type')
-        self.execSQLCommand(
-            'CREATE TABLE "qgis_test"."binary_type" ( '
-            '"id" INTEGER NOT NULL PRIMARY KEY,'
-            '"blob" VARBINARY(114))')
+        create_sql = 'CREATE TABLE "qgis_test"."binary_type" ( ' \
+                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"blob" VARBINARY(114))'
+        insert_sql = 'INSERT INTO "qgis_test"."binary_type" ("id", "blob") VALUES (?, ?)'
+        insert_args = [[1, base64.b64encode(b'binvalue')], [2, None]]
+        self.createAndFillTable('binary_type', create_sql, insert_sql, insert_args)
 
-        sql = 'INSERT INTO "qgis_test"."binary_type" ("id", "blob") VALUES (?, ?)'
-        args = [[1, base64.b64encode(b'binvalue')],
-                [2, None]]
-        self.execSQLCommands(sql, args)
-
-        vl = QgsVectorLayer(self.dbconn + ' table="qgis_test"."binary_type" sql=', "testbinary", "hana")
+        vl = self.createVectorLayer(' table="qgis_test"."binary_type" sql=', 'testbinary')
         self.assertTrue(vl.isValid())
 
         fields = vl.dataProvider().fields()
@@ -334,36 +319,27 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(fields.at(fields.indexFromName('blob')).length(), 114)
 
         values = {feat['id']: feat['blob'] for feat in vl.getFeatures()}
-        expected = {
-            1: QByteArray(b'YmludmFsdWU='),
-            2: QByteArray()
-        }
+        expected = {1: QByteArray(b'YmludmFsdWU='), 2: QByteArray()}
         self.assertEqual(values, expected)
 
         # editing binary values
-        self.dropTableIfExist('binary_type_edit')
-        self.execSQLCommand(
-            'CREATE TABLE "qgis_test"."binary_type_edit" ( '
-            '"id" INTEGER NOT NULL PRIMARY KEY,'
-            '"blob" VARBINARY(1000))')
+        create_sql = 'CREATE TABLE "qgis_test"."binary_type_edit" ( ' \
+                     '"id" INTEGER NOT NULL PRIMARY KEY,' \
+                     '"blob" VARBINARY(1000))'
+        insert_sql = 'INSERT INTO "qgis_test"."binary_type_edit" ("id", "blob") VALUES (?, ?)'
+        insert_args = [[1, base64.b64encode(b'bbb')]]
+        self.createAndFillTable('binary_type_edit', create_sql, insert_sql, insert_args)
 
-        self.execSQLCommands('INSERT INTO "qgis_test"."binary_type_edit" ("id", "blob") VALUES (?, ?)',
-                             [[1, base64.b64encode(b'bbb')]])
-
-        vl = QgsVectorLayer(self.dbconn + ' key=\'id\' table="qgis_test"."binary_type_edit" sql=', 'testbinaryedit', 'hana')
+        vl = self.createVectorLayer(' key=\'id\' table="qgis_test"."binary_type_edit" sql=', 'testbinaryedit')
         self.assertTrue(vl.isValid())
         values = {feat['id']: feat['blob'] for feat in vl.getFeatures()}
-        expected = {
-            1: QByteArray(b'YmJi')
-        }
+        expected = {1: QByteArray(b'YmJi')}
         self.assertEqual(values, expected)
 
         # change attribute value
         self.assertTrue(vl.dataProvider().changeAttributeValues({1: {1: QByteArray(b'bbbvx')}}))
         values = {feat['id']: feat['blob'] for feat in vl.getFeatures()}
-        expected = {
-            1: QByteArray(b'bbbvx')
-        }
+        expected = {1: QByteArray(b'bbbvx')}
         self.assertEqual(values, expected)
 
         # add feature
@@ -371,19 +347,13 @@ class TestPyQgsHanaProvider(unittest.TestCase, ProviderTestCase):
         f.setAttributes([2, QByteArray(b'cccc')])
         self.assertTrue(vl.dataProvider().addFeature(f))
         values = {feat['id']: feat['blob'] for feat in vl.getFeatures()}
-        expected = {
-            1: QByteArray(b'bbbvx'),
-            2: QByteArray(b'cccc')
-        }
+        expected = {1: QByteArray(b'bbbvx'), 2: QByteArray(b'cccc')}
         self.assertEqual(values, expected)
 
         # change feature
         self.assertTrue(vl.dataProvider().changeFeatures({2: {1: QByteArray(b'dddd')}}, {}))
         values = {feat['id']: feat['blob'] for feat in vl.getFeatures()}
-        expected = {
-            1: QByteArray(b'bbbvx'),
-            2: QByteArray(b'dddd')
-        }
+        expected = {1: QByteArray(b'bbbvx'), 2: QByteArray(b'dddd')}
         self.assertEqual(values, expected)
 
 
