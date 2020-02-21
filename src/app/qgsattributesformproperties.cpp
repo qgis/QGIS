@@ -731,7 +731,9 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
       for ( int t = 0; t < item->childCount(); t++ )
       {
-        container->addChildElement( createAttributeEditorWidget( item->child( t ), container ) );
+        QgsAttributeEditorElement *element { createAttributeEditorWidget( item->child( t ), container ) };
+        if ( element )
+          container->addChildElement( element );
       }
 
       widgetDef = container;

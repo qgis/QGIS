@@ -408,7 +408,8 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
         QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
 
         QgsAttributeEditorElement *attributeEditorWidget = attributeEditorElementFromDomElement( elem, nullptr, node.namedItem( QStringLiteral( "id" ) ).toElement().text(), context );
-        addTab( attributeEditorWidget );
+        if ( attributeEditorWidget )
+          addTab( attributeEditorWidget );
       }
 
       onRelationsLoaded();
