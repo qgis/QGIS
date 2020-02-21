@@ -424,15 +424,15 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         """
         uri = self.vl.source()
         parts = QgsProviderRegistry.instance().decodeUri(self.vl.dataProvider().name(), uri)
-        self.assertEqual(parts, {'url': 'http://' + self.basetestpath + '/fake_qgis_http_endpoint'})
+        self.assertEqual(parts, {'crs': 'epsg:4326', 'url': 'http://' + self.basetestpath + '/fake_qgis_http_endpoint'})
 
     def testEncodeUri(self):
         """
         Test encoding an AFS uri
         """
-        parts = {'url': self.vl.source()}
+        parts = {'url': 'http://blah.com', 'crs': 'epsg:4326', 'referer': 'me', 'bounds': QgsRectangle(1, 2, 3, 4)}
         uri = QgsProviderRegistry.instance().encodeUri(self.vl.dataProvider().name(), parts)
-        self.assertEqual(QgsDataSourceUri(uri).param('url'), self.vl.source())
+        self.assertEqual(uri, " bbox='1,2,3,4' crs='epsg:4326' referer='me' url='http://blah.com'")
 
     def testObjectIdDifferentName(self):
         """ Test that object id fields not named OBJECTID work correctly """
