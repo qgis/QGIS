@@ -87,6 +87,16 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
       BiTemporal
     };
 
+    /**
+     * Source where the temporal range will be taken from to update the layers
+     * temporal range.
+     */
+    enum TemporalRangeSource
+    {
+      Layer, //! When current temporal range is from layer properties.
+      Project //! Using Project time settings temporal range
+    };
+
   private slots:
 
     /**
@@ -127,7 +137,7 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
      * Updates the range label with current set datetime range.
      *
      **/
-    void updateRangeLabel( QString type, QLabel *label );
+    void updateRangeLabel( TemporalRangeSource source, QLabel *label );
 
     /**
      * Sets the temporal date time inputs with layer's lower and upper

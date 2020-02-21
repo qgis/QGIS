@@ -87,12 +87,19 @@ void TestQgsRasterDataProviderTemporalCapabilities::checkTemporalRange()
                                         QDateTime( QDate( 2020, 12, 31 ) ) );
   QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
                                    QDateTime( QDate( 2020, 3, 1 ) ) );
+  QgsDateTimeRange outOfLimitsRange = QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ) ),
+                                      QDateTime( QDate( 2021, 3, 1 ) ) );
 
-  temporalCapabilities->setTemporalRange( dateTimeRange );
   temporalCapabilities->setFixedTemporalRange( fixedDateTimeRange );
+  temporalCapabilities->setTemporalRange( dateTimeRange );
 
-  QCOMPARE( temporalCapabilities->temporalRange(), dateTimeRange );
   QCOMPARE( temporalCapabilities->fixedTemporalRange(), fixedDateTimeRange );
+  QCOMPARE( temporalCapabilities->temporalRange(), dateTimeRange );
+
+  // Test setting out of fixed temporal range limits, should default to
+  // using fixed temporal range
+  temporalCapabilities->setTemporalRange( outOfLimitsRange );
+  QCOMPARE( temporalCapabilities->temporalRange(), fixedDateTimeRange );
 }
 
 void TestQgsRasterDataProviderTemporalCapabilities::checkReferenceTemporalRange()
