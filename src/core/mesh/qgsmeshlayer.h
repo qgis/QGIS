@@ -198,7 +198,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     /**
      * Update the base triangular mesh, create one if it doesn't exist
-     * \param transform Transformation from layer CRS to destination (e.g. map) CRS. With invalid tranform, it keeps the native mesh CRS
+     * \param transform Transformation from layer CRS to destination (e.g. map) CRS. With invalid transform, it keeps the native mesh CRS
      * \since QGIS 3.14
      */
     void updateTriangularMesh( const QgsCoordinateTransform &transform = QgsCoordinateTransform() );
