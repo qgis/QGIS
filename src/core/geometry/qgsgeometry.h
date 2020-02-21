@@ -881,8 +881,7 @@ class CORE_EXPORT QgsGeometry
      * \param[out] newGeometries list of new geometries that have been created with the split
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-     * \param splitFeature TODO DESCRIPTION: can we really add this parameter to
-     * fix this bug?
+     * \param splitFeature Set to True if you want to split a feature, otherwise set to False to split parts
      * \returns OperationResult a result code: success or reason of failure
      * \deprecated since QGIS 3.12 - will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
