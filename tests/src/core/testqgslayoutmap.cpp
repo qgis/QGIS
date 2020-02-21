@@ -56,6 +56,7 @@ class TestQgsLayoutMap : public QObject
     void mapPolygonVertices(); // test mapPolygon function with no map rotation
     void dataDefinedLayers(); //test data defined layer string
     void dataDefinedStyles(); //test data defined styles
+    void dataDefinedCrs(); //test data defined crs
     void rasterized();
     void layersToRender();
     void mapRotation();
@@ -456,6 +457,36 @@ void TestQgsLayoutMap::dataDefinedStyles()
   QgsLayoutChecker checker( QStringLiteral( "composermap_ddstyles" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_map" ) );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
+void TestQgsLayoutMap::dataDefinedCrs()
+{
+  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
+
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptMove( QgsLayoutPoint( 20, 20 ) );
+  map->attemptResize( QgsLayoutSize( 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setLayers( layers );
+  l.addLayoutItem( map );
+
+  QString def_crs = map->extent().asWktCoordinates();
+
+  //test epsg variable
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::MapCrs, QgsProperty::fromValue( QStringLiteral( "EPSG:2192" ) ) );
+  map->refreshDataDefinedProperty( QgsLayoutObject::MapCrs );
+  QString epsg = map->extent().asWktCoordinates();
+  QCOMPARE( map->crs().authid(), QStringLiteral( "EPSG:2192" ) );
+
+  //test proj string variable
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::MapCrs, QgsProperty::fromValue( QStringLiteral( "PROJ: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs" ) ) );
+  map->refreshDataDefinedProperty( QgsLayoutObject::MapCrs );
+  QString projstr = map->extent().asWktCoordinates();
+  QCOMPARE( map->crs().toProj(), QStringLiteral( "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs" ) );
+
 }
 
 void TestQgsLayoutMap::rasterized()
