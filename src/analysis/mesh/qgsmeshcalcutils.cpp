@@ -25,6 +25,7 @@
 #include "qgsmapsettings.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshlayerrenderer.h"
+#include "qgsproject.h"
 
 const double D_TRUE = 1.0;
 const double D_FALSE = 0.0;
@@ -699,9 +700,7 @@ void QgsMeshCalcUtils::updateMesh() const
 {
   if ( ! mMeshLayer->nativeMesh() )
   {
-    QgsCoordinateTransform transform;
-    transform.setDestinationCrs( mMeshLayer->crs() );
-    transform.setSourceCrs( mMeshLayer->crs() );
+    QgsCoordinateTransform transform( mMeshLayer->crs(), mMeshLayer->crs(), QgsProject::instance() );
     //calling this method creates the triangular mesh if it doesn't exist
     mMeshLayer->updateTriangularMesh( transform );
   }

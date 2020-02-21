@@ -28,6 +28,7 @@
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsfeedback.h"
+#include "qgsproject.h"
 
 #include <limits>
 
@@ -43,9 +44,8 @@ QgsMeshContours::QgsMeshContours( QgsMeshLayer *layer )
   mNativeMesh.reset( new QgsMesh() );
   mMeshLayer->dataProvider()->populateMesh( mNativeMesh.get() );
 
-  QgsCoordinateTransform transform;
-  transform.setDestinationCrs( mMeshLayer->crs() );
-  transform.setSourceCrs( mMeshLayer->crs() );
+
+  QgsCoordinateTransform transform( mMeshLayer->crs(), mMeshLayer->crs(), QgsProject::instance() );
   mTriangularMesh.reset( new QgsTriangularMesh );
   mTriangularMesh->update( mNativeMesh.get(), transform );
 }

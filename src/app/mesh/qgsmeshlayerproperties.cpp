@@ -97,7 +97,7 @@ void QgsMeshLayerProperties::syncToLayer()
 {
   Q_ASSERT( mRendererMeshPropertiesWidget );
 
-  QgsDebugMsg( QStringLiteral( "populate general information tab" ) );
+  QgsDebugMsgLevel( QStringLiteral( "populate general information tab" ), 4 );
   /*
    * Information Tab
    */
@@ -117,7 +117,7 @@ void QgsMeshLayerProperties::syncToLayer()
   }
   mInformationTextBrowser->setText( info );
 
-  QgsDebugMsg( QStringLiteral( "populate source tab" ) );
+  QgsDebugMsgLevel( QStringLiteral( "populate source tab" ), 4 );
   /*
    * Source Tab
    */
@@ -134,7 +134,7 @@ void QgsMeshLayerProperties::syncToLayer()
     mUriLabel->setText( tr( "Not assigned" ) );
   }
 
-  QgsDebugMsg( QStringLiteral( "populate styling tab" ) );
+  QgsDebugMsgLevel( QStringLiteral( "populate styling tab" ), 4 );
   /*
    * Styling Tab
    */
@@ -147,7 +147,7 @@ void QgsMeshLayerProperties::syncToLayer()
   mVector3DWidget->setLayer( mMeshLayer );
 #endif
 
-  QgsDebugMsg( QStringLiteral( "populate rendering tab" ) );
+  QgsDebugMsgLevel( QStringLiteral( "populate rendering tab" ), 4 );
   QgsMeshSimplifySettings simplifySettings = mMeshLayer->meshSimplificationSettings();
 
   mSimplifyMeshGroupBox->setChecked( simplifySettings.isEnabled() );
@@ -192,13 +192,13 @@ void QgsMeshLayerProperties::apply()
 {
   Q_ASSERT( mRendererMeshPropertiesWidget );
 
-  QgsDebugMsg( QStringLiteral( "processing general tab" ) );
+  QgsDebugMsgLevel( QStringLiteral( "processing general tab" ), 4 );
   /*
    * General Tab
    */
   mMeshLayer->setName( mLayerOrigNameLineEd->text() );
 
-  QgsDebugMsg( QStringLiteral( "processing style tab" ) );
+  QgsDebugMsgLevel( QStringLiteral( "processing style tab" ), 4 );
   /*
    * Style Tab
    */
@@ -211,7 +211,7 @@ void QgsMeshLayerProperties::apply()
   mVector3DWidget->apply();
 #endif
 
-  QgsDebugMsg( QStringLiteral( "processing rendering tab" ) );
+  QgsDebugMsgLevel( QStringLiteral( "processing rendering tab" ), 4 );
   /*
    * Rendering Tab
    */

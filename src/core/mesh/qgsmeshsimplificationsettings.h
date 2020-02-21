@@ -22,6 +22,9 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgsreadwritecontext.h"
+
+SIP_NO_FILE
 
 /**
  * \ingroup core
@@ -58,9 +61,9 @@ class CORE_EXPORT QgsMeshSimplifySettings
     void setReductionFactor( double value );
 
     //! Writes configuration to a new DOM element
-    QDomElement writeXml( QDomDocument &doc ) const;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
     //! Reads configuration from the given DOM element
-    void readXml( const QDomElement &elem );
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
     //! Returns the mesh resolution e.i., the minimum size (average) of triangles in pixels
     int meshResolution() const;

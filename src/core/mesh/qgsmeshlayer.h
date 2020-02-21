@@ -190,7 +190,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * The size of a triangle is the maximum between the height and the width of the triangle bounding box
      * For default parameter (=0), it returns base triangular mesh.
      * \param minimumTriangleSize is the average size criteria in canvas map units
-     * \returns triangular mesh
+     * \returns triangular mesh, the layer keeps the ownership
      * \note triangular size added in QGIS 3.14
      * \note Not available in Python bindings
      */

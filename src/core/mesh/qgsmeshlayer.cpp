@@ -91,6 +91,7 @@ void QgsMeshLayer::createSimplifiedMeshes()
 
 bool QgsMeshLayer::hasSimplifiedMeshes() const
 {
+  //First mesh is the base mesh, so if size>1, there is no simplified meshes
   return ( mTriangularMeshes.size() > 1 );
 }
 
@@ -406,7 +407,7 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
 
   QDomElement elemSimplifySettings = elem.firstChildElement( "mesh-simplify-settings" );
   if ( !elemSimplifySettings.isNull() )
-    mSimplificationSettings.readXml( elemSimplifySettings );
+    mSimplificationSettings.readXml( elemSimplifySettings, context );
 
   // get and set the blend mode if it exists
   QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
@@ -435,7 +436,7 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
   QDomElement elemTimeSettings = mTimeSettings.writeXml( doc, context );
   elem.appendChild( elemTimeSettings );
 
-  QDomElement elemSimplifySettings = mSimplificationSettings.writeXml( doc );
+  QDomElement elemSimplifySettings = mSimplificationSettings.writeXml( doc, context );
   elem.appendChild( elemSimplifySettings );
 
   // add blend mode node
