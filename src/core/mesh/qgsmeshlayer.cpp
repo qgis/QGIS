@@ -317,12 +317,12 @@ void QgsMeshLayer::onDatasetGroupsAdded( int count )
     assignDefaultStyleToDatasetGroup( i );
 }
 
-QgsMeshSimplifySettings QgsMeshLayer::meshSimplificationSettings() const
+QgsMeshSimplificationSettings QgsMeshLayer::meshSimplificationSettings() const
 {
   return mSimplificationSettings;
 }
 
-void QgsMeshLayer::setMeshSimplificationSettings( const QgsMeshSimplifySettings &simplifySettings )
+void QgsMeshLayer::setMeshSimplificationSettings( const QgsMeshSimplificationSettings &simplifySettings )
 {
   mSimplificationSettings = simplifySettings;
 }

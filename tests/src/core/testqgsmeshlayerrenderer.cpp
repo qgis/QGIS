@@ -467,7 +467,7 @@ void TestQgsMeshRenderer::test_stacked_3d_mesh_single_level_averaging()
 
 void TestQgsMeshRenderer::test_simplified_triangular_mesh_rendering()
 {
-  QgsMeshSimplifySettings simplificatationSettings;
+  QgsMeshSimplificationSettings simplificatationSettings;
   simplificatationSettings.setEnabled( true );
   simplificatationSettings.setMeshResolution( 10 );
   simplificatationSettings.setReductionFactor( 2 );

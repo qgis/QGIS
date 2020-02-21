@@ -17,27 +17,27 @@
 
 #include "qgsmeshsimplificationsettings.h"
 
-bool QgsMeshSimplifySettings::isEnabled() const
+bool QgsMeshSimplificationSettings::isEnabled() const
 {
   return mEnabled;
 }
 
-void QgsMeshSimplifySettings::setEnabled( bool active )
+void QgsMeshSimplificationSettings::setEnabled( bool active )
 {
   mEnabled = active;
 }
 
-double QgsMeshSimplifySettings::reductionFactor() const
+double QgsMeshSimplificationSettings::reductionFactor() const
 {
   return mReductionFactor;
 }
 
-void QgsMeshSimplifySettings::setReductionFactor( double value )
+void QgsMeshSimplificationSettings::setReductionFactor( double value )
 {
   mReductionFactor = value;
 }
 
-QDomElement QgsMeshSimplifySettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
+QDomElement QgsMeshSimplificationSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( context )
   QDomElement elem = doc.createElement( QStringLiteral( "mesh-simplify-settings" ) );
@@ -47,7 +47,7 @@ QDomElement QgsMeshSimplifySettings::writeXml( QDomDocument &doc, const QgsReadW
   return elem;
 }
 
-void QgsMeshSimplifySettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
+void QgsMeshSimplificationSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   Q_UNUSED( context )
   mEnabled = elem.attribute( QStringLiteral( "enabled" ) ).toInt();
@@ -55,12 +55,12 @@ void QgsMeshSimplifySettings::readXml( const QDomElement &elem, const QgsReadWri
   mMeshResolution = elem.attribute( QStringLiteral( "mesh-resolution" ) ).toInt();
 }
 
-int QgsMeshSimplifySettings::meshResolution() const
+int QgsMeshSimplificationSettings::meshResolution() const
 {
   return mMeshResolution;
 }
 
-void QgsMeshSimplifySettings::setMeshResolution( int meshResolution )
+void QgsMeshSimplificationSettings::setMeshResolution( int meshResolution )
 {
   mMeshResolution = meshResolution;
 }

@@ -51,7 +51,7 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContex
   mNativeMesh = *( layer->nativeMesh() );
   mLayerExtent = layer->extent();
   //handle level of details of mesh
-  QgsMeshSimplifySettings simplificationSettings = layer->meshSimplificationSettings();
+  QgsMeshSimplificationSettings simplificationSettings = layer->meshSimplificationSettings();
   if ( simplificationSettings.isEnabled() )
   {
     double triangleSize = simplificationSettings.meshResolution() * context.mapToPixel().mapUnitsPerPixel();

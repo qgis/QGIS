@@ -234,7 +234,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \since QGIS 3.14
      */
 
-    QgsMeshSimplifySettings meshSimplificationSettings() const;
+    QgsMeshSimplificationSettings meshSimplificationSettings() const SIP_SKIP;
 
     /**
      * Sets mesh simplification settings
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \since QGIS 3.14
      */
 
-    void setMeshSimplificationSettings( const QgsMeshSimplifySettings &meshSimplificationSettings );
+    void setMeshSimplificationSettings( const QgsMeshSimplificationSettings &meshSimplificationSettings ) SIP_SKIP;
 
     /**
      * Returns (date) time in hours formatted to human readable form
@@ -369,7 +369,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshTimeSettings mTimeSettings;
 
     //! Simplify mesh configuration
-    QgsMeshSimplifySettings mSimplificationSettings;
+    QgsMeshSimplificationSettings mSimplificationSettings;
 };
 
 #endif //QGSMESHLAYER_H

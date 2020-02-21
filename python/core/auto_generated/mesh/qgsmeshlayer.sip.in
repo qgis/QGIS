@@ -178,20 +178,8 @@ Sets time format settings
 %End
 
 
-    QgsMeshSimplifySettings meshSimplificationSettings() const;
-%Docstring
-Returns mesh simplification settings
-
-.. versionadded:: 3.14
-%End
 
 
-    void setMeshSimplificationSettings( const QgsMeshSimplifySettings &meshSimplificationSettings );
-%Docstring
-Sets mesh simplification settings
-
-.. versionadded:: 3.14
-%End
 
     QString formatTime( double hours );
 %Docstring

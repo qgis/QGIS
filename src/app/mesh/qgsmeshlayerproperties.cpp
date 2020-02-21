@@ -148,7 +148,7 @@ void QgsMeshLayerProperties::syncToLayer()
 #endif
 
   QgsDebugMsgLevel( QStringLiteral( "populate rendering tab" ), 4 );
-  QgsMeshSimplifySettings simplifySettings = mMeshLayer->meshSimplificationSettings();
+  QgsMeshSimplificationSettings simplifySettings = mMeshLayer->meshSimplificationSettings();
 
   mSimplifyMeshGroupBox->setChecked( simplifySettings.isEnabled() );
   mSimplifyReductionFactorSpinBox->setValue( simplifySettings.reductionFactor() );
@@ -215,7 +215,7 @@ void QgsMeshLayerProperties::apply()
   /*
    * Rendering Tab
    */
-  QgsMeshSimplifySettings simplifySettings;
+  QgsMeshSimplificationSettings simplifySettings;
   simplifySettings.setEnabled( mSimplifyMeshGroupBox->isChecked() );
   simplifySettings.setReductionFactor( mSimplifyReductionFactorSpinBox->value() );
   simplifySettings.setMeshResolution( mSimplifyMeshResolutionSpinBox->value() );

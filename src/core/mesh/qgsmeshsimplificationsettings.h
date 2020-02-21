@@ -36,7 +36,7 @@ SIP_NO_FILE
  * \since QGIS 3.14
  */
 
-class CORE_EXPORT QgsMeshSimplifySettings
+class CORE_EXPORT QgsMeshSimplificationSettings
 {
   public:
     //! Returns if the overview is active
