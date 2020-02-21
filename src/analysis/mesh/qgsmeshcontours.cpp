@@ -44,10 +44,8 @@ QgsMeshContours::QgsMeshContours( QgsMeshLayer *layer )
   mNativeMesh.reset( new QgsMesh() );
   mMeshLayer->dataProvider()->populateMesh( mNativeMesh.get() );
 
-
-  QgsCoordinateTransform transform( mMeshLayer->crs(), mMeshLayer->crs(), QgsProject::instance() );
   mTriangularMesh.reset( new QgsTriangularMesh );
-  mTriangularMesh->update( mNativeMesh.get(), transform );
+  mTriangularMesh->update( mNativeMesh.get() );
 }
 
 QgsMeshContours::~QgsMeshContours() = default;

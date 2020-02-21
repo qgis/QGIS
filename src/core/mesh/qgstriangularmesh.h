@@ -53,13 +53,12 @@ class CORE_EXPORT QgsTriangularMesh
     ~QgsTriangularMesh();
 
     /**
-     * If update is needed (not yet constructed, native mesh changed or CRS changed),
-     * constructs triangular mesh from layer's native mesh and context. Populates spatial index.
+     * Constructs triangular mesh from layer's native mesh and transform to destination CRS. Populates spatial index.
      * \param nativeMesh QgsMesh to access native vertices and faces
-     * \param transform coordinate transform from layer CRS
+     * \param transform Transforamtion from layer CRS to destination (e.g. map) CRS. With invalid tranform, it keeps the native mesh CRS
      * \returns true if the mesh is effectivly updated, and false if not
     */
-    bool update( QgsMesh *nativeMesh, const QgsCoordinateTransform &transform );
+    bool update( QgsMesh *nativeMesh, const QgsCoordinateTransform &transform = QgsCoordinateTransform() );
 
     /**
      * Returns vertices in map coordinate system

@@ -700,9 +700,8 @@ void QgsMeshCalcUtils::updateMesh() const
 {
   if ( ! mMeshLayer->nativeMesh() )
   {
-    QgsCoordinateTransform transform( mMeshLayer->crs(), mMeshLayer->crs(), QgsProject::instance() );
     //calling this method creates the triangular mesh if it doesn't exist
-    mMeshLayer->updateTriangularMesh( transform );
+    mMeshLayer->updateTriangularMesh();
   }
 }
 
