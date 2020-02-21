@@ -99,6 +99,9 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
 
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate &other )
   : QSharedData( other )
+#if PROJ_VERSION_MAJOR >= 6
+  , mAvailableOpCount( other.mAvailableOpCount )
+#endif
   , mIsValid( other.mIsValid )
   , mShortCircuit( other.mShortCircuit )
   , mSourceCRS( other.mSourceCRS )
@@ -139,6 +142,9 @@ void QgsCoordinateTransformPrivate::invalidate()
 {
   mShortCircuit = true;
   mIsValid = false;
+#if PROJ_VERSION_MAJOR >= 6
+  mAvailableOpCount = -1;
+#endif
 }
 
 bool QgsCoordinateTransformPrivate::initialize()
@@ -387,8 +393,8 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 
     if ( PJ_OBJ_LIST *ops = proj_create_operations( context, mSourceCRS.projObject(), mDestCRS.projObject(), operationContext ) )
     {
-      int count = proj_list_get_count( ops );
-      if ( count < 1 )
+      mAvailableOpCount = proj_list_get_count( ops );
+      if ( mAvailableOpCount < 1 )
       {
         // huh?
         int errNo = proj_context_errno( context );
@@ -401,7 +407,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
           nonAvailableError = QObject::tr( "No coordinate operations are available between these two reference systems" );
         }
       }
-      else if ( count == 1 )
+      else if ( mAvailableOpCount == 1 )
       {
         // only a single operation available. Can we use it?
         transform.reset( proj_list_get( context, ops, 0 ) );
@@ -466,7 +472,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
         QgsDatumTransform::TransformDetails preferred;
         bool missingPreferred = false;
         bool stillLookingForPreferred = true;
-        for ( int i = 0; i < count; ++ i )
+        for ( int i = 0; i < mAvailableOpCount; ++ i )
         {
           transform.reset( proj_list_get( context, ops, i ) );
           const bool isInstantiable = transform && proj_coordoperation_is_instantiable( context, transform.get() );
