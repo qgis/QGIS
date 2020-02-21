@@ -277,7 +277,7 @@ qgis:randomextractwithinsubsets: >
 qgis:randompointsalongline: >
   This algorithm creates a point layer with a given "Number of points" placed on the lines of the "Input layer".
 
-  The location of a points is determined by randomly selecting a feature, then a segment of the line geometry of that feature, and finally a random position on that segment. A minimum distance between the points can be specified.
+  The location of a point is determined by randomly selecting a feature, then a segment of the line geometry of that feature, and finally a random position on that segment. A minimum distance between the points can be specified.
 
 qgis:randompointsinlayerbounds: >
   This algorithm creates a new point layer with a given number of random points, all of them within the extent of a given layer. A distance factor can be specified, to avoid points being too close to each other.
