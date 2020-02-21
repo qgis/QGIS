@@ -36,7 +36,22 @@ void QgsRasterDataProviderTemporalCapabilities::setTemporalRange( const QgsDateT
   if ( !isActive() )
     setIsActive( true );
 
-  mRange = dateTimeRange;
+  // Don't set temporal range outside fixed temporal range limits,
+  // instead set equal to the fixed temporal range
+  QDateTime begin;
+  QDateTime end;
+
+  if ( dateTimeRange.begin() < mFixedRange.begin() )
+    begin = mFixedRange.begin();
+  else
+    begin = dateTimeRange.begin();
+
+  if ( dateTimeRange.end() > mFixedRange.end() )
+    end = mFixedRange.end();
+  else
+    end = dateTimeRange.end();
+
+  mRange = QgsDateTimeRange( begin, end );
 
 }
 

@@ -193,11 +193,6 @@ QgsDateTimeRange QgsWmsSettings::parseTemporalExtent( QgsWmstDimensionExtent dim
 
   QStringListIterator iter( parts );
 
-  QgsWmstExtentPair pair;
-
-  QgsWmstResolution resolution = pair.resolution;
-  QgsWmstDates datesList = pair.dates;
-
   while ( iter.hasNext() )
   {
     QString item = iter.next();
@@ -238,6 +233,11 @@ QgsDateTimeRange QgsWmsSettings::parseTemporalExtent( QgsWmstDimensionExtent dim
       continue;
     }
 
+    QgsWmstExtentPair pair;
+
+    QgsWmstResolution resolution = pair.resolution;
+    QgsWmstDates datesList = pair.dates;
+
     if ( item.startsWith( 'P' ) )
     {
       resolution = parseWmstResolution( item );
@@ -255,14 +255,13 @@ QgsDateTimeRange QgsWmsSettings::parseTemporalExtent( QgsWmstDimensionExtent dim
     containResolution = false;
   }
 
-
-  // Return the provider temporal take the begin date in first temporal range and
-  // and the end date in last temporal range
+  // Return the provider temporal take the date in first temporal range and
+  // and the date in last temporal range in the dimension ranges list
 
   if ( dimensionExtent.datesResolutionList.first().dates.dateTimes.size() > 0 )
   {
     QDateTime begin = dimensionExtent.datesResolutionList.first().dates.dateTimes.first();
-    QDateTime end = dimensionExtent.datesResolutionList.first().dates.dateTimes.last();
+    QDateTime end = dimensionExtent.datesResolutionList.last().dates.dateTimes.last();
 
     return QgsDateTimeRange( begin, end );
   }
