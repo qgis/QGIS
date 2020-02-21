@@ -103,6 +103,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
     ProjData threadLocalProjData();
 
 #if PROJ_VERSION_MAJOR>=6
+    int mAvailableOpCount = -1;
     ProjData threadLocalFallbackProjData();
 
     // Only meant to be called by QgsCoordinateTransform::removeFromCacheObjectsBelongingToCurrentThread()
