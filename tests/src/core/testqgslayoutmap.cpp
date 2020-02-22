@@ -473,18 +473,14 @@ void TestQgsLayoutMap::dataDefinedCrs()
   map->setLayers( layers );
   l.addLayoutItem( map );
 
-  QString def_crs = map->extent().asWktCoordinates();
-
   //test epsg variable
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapCrs, QgsProperty::fromValue( QStringLiteral( "EPSG:2192" ) ) );
   map->refreshDataDefinedProperty( QgsLayoutObject::MapCrs );
-  QString epsg = map->extent().asWktCoordinates();
   QCOMPARE( map->crs().authid(), QStringLiteral( "EPSG:2192" ) );
 
   //test proj string variable
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapCrs, QgsProperty::fromValue( QStringLiteral( "PROJ4: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs" ) ) );
   map->refreshDataDefinedProperty( QgsLayoutObject::MapCrs );
-  QString projstr = map->extent().asWktCoordinates();
   QCOMPARE( map->crs().toProj(), QStringLiteral( "+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs" ) );
 
 }
