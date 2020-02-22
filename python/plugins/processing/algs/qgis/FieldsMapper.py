@@ -204,8 +204,6 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
                     return False
                 if 'expression' not in field_def.keys():
                     return False
-                if 'not_null' not in field_def.keys():
-                    return False
             return True
 
         def valueAsPythonString(self, value, context):
