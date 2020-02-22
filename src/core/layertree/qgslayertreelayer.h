@@ -146,7 +146,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     /**
      * Returns an expression representing the symbol associated with the \a ruleKey
      *
-     * \since QGIS 3.12
+     * \since QGIS 3.14
      */
     QString symbolExpression( const QString &ruleKey );
 
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     /**
      * Updates the stored registry of rulekey and symbol expression.
      *
-     * \since QGIS 3.12
+     * \since QGIS 3.14
      */
     void updateSymbolExpressions();
 
