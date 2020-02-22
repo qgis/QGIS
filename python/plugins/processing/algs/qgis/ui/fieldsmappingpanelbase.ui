@@ -109,7 +109,7 @@
      <item>
       <widget class="QLabel" name="loadFromLayerLabel">
        <property name="text">
-        <string>Load fields from layer</string>
+        <string>Load fields from template layer</string>
        </property>
       </widget>
      </item>
@@ -132,7 +132,7 @@
         </sizepolicy>
        </property>
        <property name="toolTip">
-        <string>Load fields from selected layer</string>
+        <string>Load fields from selected template layer</string>
        </property>
        <property name="text">
         <string>Load Fields</string>
