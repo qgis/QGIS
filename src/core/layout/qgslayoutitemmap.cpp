@@ -1687,7 +1687,13 @@ void QgsLayoutItemMap::updateBoundingRect()
 void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
 {
   QgsExpressionContext context = createExpressionContext();
-
+  if ( property == QgsLayoutObject::MapCrs || property == QgsLayoutObject::AllProperties )
+  {
+    bool ok;
+    QString crsVar = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapCrs, context, QString(), &ok );
+    if ( ok && QgsCoordinateReferenceSystem( crsVar ).isValid() )
+      mCrs = QgsCoordinateReferenceSystem( crsVar );
+  }
   //updates data defined properties and redraws item to match
   if ( property == QgsLayoutObject::MapRotation || property == QgsLayoutObject::MapScale ||
        property == QgsLayoutObject::MapXMin || property == QgsLayoutObject::MapYMin ||
@@ -2226,7 +2232,10 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   QgsExpressionContext scopedContext;
   if ( !context )
     scopedContext = createExpressionContext();
+
+  bool ok = false;
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
+
 
   //data defined map extents set?
   QgsRectangle newExtent = extent();
@@ -2239,7 +2248,6 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   double maxXD = 0;
   double maxYD = 0;
 
-  bool ok = false;
   minXD = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapXMin, *evalContext, 0.0, &ok );
   if ( ok )
   {
