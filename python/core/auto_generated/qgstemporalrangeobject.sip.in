@@ -36,11 +36,6 @@ Constructor for QgsTemporalRangeObject.
 Creates temporal range object with the specified temporal state.
 %End
 
-    QgsTemporalRangeObject( const QgsRenderContext &rh );
-%Docstring
-Copies render context temporal members
-%End
-
     virtual ~QgsTemporalRangeObject();
 
     void setIsTemporal( bool enabled );

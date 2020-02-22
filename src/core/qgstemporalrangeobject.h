@@ -48,11 +48,6 @@ class CORE_EXPORT QgsTemporalRangeObject
      */
     QgsTemporalRangeObject( bool enabled );
 
-    /**
-     * Copies render context temporal members
-     */
-    QgsTemporalRangeObject( const QgsRenderContext &rh );
-
     virtual ~QgsTemporalRangeObject() = default;
 
     /**
