@@ -248,6 +248,123 @@ QList< int > QgsProcessingParameters::parameterAsInts( const QgsProcessingParame
   return resultList;
 }
 
+QDateTime QgsProcessingParameters::parameterAsDateTime( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QDateTime();
+
+  return parameterAsDateTime( definition, parameters.value( definition->name() ), context );
+}
+
+QDateTime QgsProcessingParameters::parameterAsDateTime( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QDateTime();
+
+  QVariant val = value;
+  if ( val.canConvert<QgsProperty>() )
+    val = val.value< QgsProperty >().value( context.expressionContext(), definition->defaultValue() );
+
+  QDateTime d = val.toDateTime();
+  if ( !d.isValid() && val.type() == QVariant::String )
+  {
+    d = QDateTime::fromString( val.toString() );
+  }
+
+  if ( !d.isValid() )
+  {
+    // fall back to default
+    val = definition->defaultValue();
+    d = val.toDateTime();
+  }
+  if ( !d.isValid() && val.type() == QVariant::String )
+  {
+    d = QDateTime::fromString( val.toString() );
+  }
+
+  return d;
+}
+
+QDate QgsProcessingParameters::parameterAsDate( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QDate();
+
+  return parameterAsDate( definition, parameters.value( definition->name() ), context );
+}
+
+QDate QgsProcessingParameters::parameterAsDate( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QDate();
+
+  QVariant val = value;
+  if ( val.canConvert<QgsProperty>() )
+    val = val.value< QgsProperty >().value( context.expressionContext(), definition->defaultValue() );
+
+  QDate d = val.toDate();
+  if ( !d.isValid() && val.type() == QVariant::String )
+  {
+    d = QDate::fromString( val.toString() );
+  }
+
+  if ( !d.isValid() )
+  {
+    // fall back to default
+    val = definition->defaultValue();
+    d = val.toDate();
+  }
+  if ( !d.isValid() && val.type() == QVariant::String )
+  {
+    d = QDate::fromString( val.toString() );
+  }
+
+  return d;
+}
+
+QTime QgsProcessingParameters::parameterAsTime( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QTime();
+
+  return parameterAsTime( definition, parameters.value( definition->name() ), context );
+}
+
+QTime QgsProcessingParameters::parameterAsTime( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QTime();
+
+  QVariant val = value;
+  if ( val.canConvert<QgsProperty>() )
+    val = val.value< QgsProperty >().value( context.expressionContext(), definition->defaultValue() );
+
+  QTime d;
+
+  if ( val.type() == QVariant::DateTime )
+    d = val.toDateTime().time();
+  else
+    d = val.toTime();
+
+  if ( !d.isValid() && val.type() == QVariant::String )
+  {
+    d = QTime::fromString( val.toString() );
+  }
+
+  if ( !d.isValid() )
+  {
+    // fall back to default
+    val = definition->defaultValue();
+    d = val.toTime();
+  }
+  if ( !d.isValid() && val.type() == QVariant::String )
+  {
+    d = QTime::fromString( val.toString() );
+  }
+
+  return d;
+}
+
 int QgsProcessingParameters::parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
 {
   if ( !definition )
@@ -1658,6 +1775,10 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantM
   QString type = map.value( QStringLiteral( "parameter_type" ) ).toString();
   QString name = map.value( QStringLiteral( "name" ) ).toString();
   std::unique_ptr< QgsProcessingParameterDefinition > def;
+
+  // probably all these hardcoded values aren't required anymore, and we could
+  // always resort to the registry lookup...
+  // TODO: confirm
   if ( type == QgsProcessingParameterBoolean::typeName() )
     def.reset( new QgsProcessingParameterBoolean( name ) );
   else if ( type == QgsProcessingParameterCrs::typeName() )
@@ -1813,6 +1934,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterCoordinateOperation::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "maptheme" ) )
     return QgsProcessingParameterMapTheme::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "datetime" ) )
+    return QgsProcessingParameterDateTime::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -6141,4 +6264,218 @@ QgsProcessingParameterMapTheme *QgsProcessingParameterMapTheme::fromScriptCode( 
     defaultValue = QVariant();
 
   return new QgsProcessingParameterMapTheme( name, description, defaultValue, isOptional );
+}
+
+
+//
+// QgsProcessingParameterDateTime
+//
+
+QgsProcessingParameterDateTime::QgsProcessingParameterDateTime( const QString &name, const QString &description, Type type, const QVariant &defaultValue, bool optional, const QDateTime &minValue, const QDateTime &maxValue )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mMin( minValue )
+  , mMax( maxValue )
+  , mDataType( type )
+{
+  if ( mMin >= mMax )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Invalid datetime parameter \"%1\": min value %2 is >= max value %3!" ).arg( name, mMin.toString(), mMax.toString() ), QObject::tr( "Processing" ) );
+  }
+}
+
+QgsProcessingParameterDefinition *QgsProcessingParameterDateTime::clone() const
+{
+  return new QgsProcessingParameterDateTime( *this );
+}
+
+bool QgsProcessingParameterDateTime::checkValueIsAcceptable( const QVariant &value, QgsProcessingContext * ) const
+{
+  QVariant input = value;
+  if ( !input.isValid() )
+  {
+    if ( !defaultValue().isValid() )
+      return mFlags & FlagOptional;
+
+    input = defaultValue();
+  }
+
+  if ( input.canConvert<QgsProperty>() )
+  {
+    return true;
+  }
+
+  if ( input.type() != QVariant::DateTime && input.type() != QVariant::Date && input.type() != QVariant::Time && input.type() != QVariant::String )
+    return false;
+
+  if ( ( input.type() == QVariant::DateTime || input.type() == QVariant::Date ) && mDataType == Time )
+    return false;
+
+  if ( input.type() == QVariant::String )
+  {
+    QString s = input.toString();
+    if ( s.isEmpty() )
+      return mFlags & FlagOptional;
+
+    input = QDateTime::fromString( s, Qt::ISODate );
+    if ( mDataType == Time )
+    {
+      if ( !input.toDateTime().isValid() )
+        input = QTime::fromString( s );
+      else
+        input = input.toDateTime().time();
+    }
+  }
+
+  if ( mDataType != Time )
+  {
+    QDateTime res = input.toDateTime();
+    return res.isValid() && ( res >= mMin || !mMin.isValid() ) && ( res <= mMax || !mMax.isValid() );
+  }
+  else
+  {
+    QTime res = input.toTime();
+    return res.isValid() && ( res >= mMin.time() || !mMin.isValid() ) && ( res <= mMax.time() || !mMax.isValid() );
+  }
+}
+
+QString QgsProcessingParameterDateTime::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  if ( value.type() == QVariant::DateTime )
+  {
+    const QDateTime dt = value.toDateTime();
+    if ( !dt.isValid() )
+      return QStringLiteral( "QDateTime()" );
+    else
+      return QStringLiteral( "QDateTime(QDate(%1, %2, %3), QTime(%4, %5, %6))" ).arg( dt.date().year() )
+             .arg( dt.date().month() )
+             .arg( dt.date().day() )
+             .arg( dt.time().hour() )
+             .arg( dt.time().minute() )
+             .arg( dt.time().second() );
+  }
+  else if ( value.type() == QVariant::Date )
+  {
+    const QDate dt = value.toDate();
+    if ( !dt.isValid() )
+      return QStringLiteral( "QDate()" );
+    else
+      return QStringLiteral( "QDate(%1, %2, %3)" ).arg( dt.year() )
+             .arg( dt.month() )
+             .arg( dt.day() );
+  }
+  else if ( value.type() == QVariant::Time )
+  {
+    const QTime dt = value.toTime();
+    if ( !dt.isValid() )
+      return QStringLiteral( "QTime()" );
+    else
+      return QStringLiteral( "QTime(%4, %5, %6)" )
+             .arg( dt.hour() )
+             .arg( dt.minute() )
+             .arg( dt.second() );
+  }
+  return value.toString();
+}
+
+QString QgsProcessingParameterDateTime::toolTip() const
+{
+  QString text = QgsProcessingParameterDefinition::toolTip();
+  QStringList parts;
+  if ( mMin.isValid() )
+    parts << QObject::tr( "Minimum value: %1" ).arg( mMin.toString( Qt::ISODate ) );
+  if ( mMax.isValid() )
+    parts << QObject::tr( "Maximum value: %1" ).arg( mMax.toString( Qt::ISODate ) );
+  if ( mDefault.isValid() )
+    parts << QObject::tr( "Default value: %1" ).arg( mDataType == DateTime ? mDefault.toDateTime().toString( Qt::ISODate ) :
+          ( mDataType == Date ? mDefault.toDate().toString( Qt::ISODate ) : mDefault.toTime( ).toString() ) );
+  QString extra = parts.join( QStringLiteral( "<br />" ) );
+  if ( !extra.isEmpty() )
+    text += QStringLiteral( "<p>%1</p>" ).arg( extra );
+  return text;
+}
+
+QString QgsProcessingParameterDateTime::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterDateTime('%1', '%2'" ).arg( name(), description() );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+
+      code += QStringLiteral( ", type=%1" ).arg( mDataType == DateTime ? QStringLiteral( "QgsProcessingParameterDateTime.DateTime" )
+              : mDataType == Date ? QStringLiteral( "QgsProcessingParameterDateTime.Date" )
+              : QStringLiteral( "QgsProcessingParameterDateTime.Time" ) );
+
+      QgsProcessingContext c;
+      if ( mMin.isValid() )
+        code += QStringLiteral( ", minValue=%1" ).arg( valueAsPythonString( mMin, c ) );
+      if ( mMax.isValid() )
+        code += QStringLiteral( ", maxValue=%1" ).arg( valueAsPythonString( mMax, c ) );
+      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+      return code;
+    }
+  }
+  return QString();
+}
+
+QDateTime QgsProcessingParameterDateTime::minimum() const
+{
+  return mMin;
+}
+
+void QgsProcessingParameterDateTime::setMinimum( const QDateTime &min )
+{
+  mMin = min;
+}
+
+QDateTime QgsProcessingParameterDateTime::maximum() const
+{
+  return mMax;
+}
+
+void QgsProcessingParameterDateTime::setMaximum( const QDateTime &max )
+{
+  mMax = max;
+}
+
+QgsProcessingParameterDateTime::Type QgsProcessingParameterDateTime::dataType() const
+{
+  return mDataType;
+}
+
+void QgsProcessingParameterDateTime::setDataType( Type dataType )
+{
+  mDataType = dataType;
+}
+
+QVariantMap QgsProcessingParameterDateTime::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "min" ), mMin );
+  map.insert( QStringLiteral( "max" ), mMax );
+  map.insert( QStringLiteral( "data_type" ), mDataType );
+  return map;
+}
+
+bool QgsProcessingParameterDateTime::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mMin = map.value( QStringLiteral( "min" ) ).toDateTime();
+  mMax = map.value( QStringLiteral( "max" ) ).toDateTime();
+  mDataType = static_cast< Type >( map.value( QStringLiteral( "data_type" ) ).toInt() );
+  return true;
+}
+
+QgsProcessingParameterDateTime *QgsProcessingParameterDateTime::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  return new QgsProcessingParameterDateTime( name, description, DateTime, definition.isEmpty() ? QVariant()
+         : ( definition.toLower().trimmed() == QStringLiteral( "none" ) ? QVariant() : definition ), isOptional );
 }

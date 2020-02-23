@@ -615,6 +615,72 @@ Evaluates the parameter with matching ``definition`` and ``value`` to a list of 
 .. versionadded:: 3.4
 %End
 
+    static QDateTime parameterAsDateTime( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a static datetime value.
+
+.. seealso:: :py:func:`parameterAsDate`
+
+.. seealso:: :py:func:`parameterAsTime`
+
+.. versionadded:: 3.14
+%End
+
+    static QDateTime parameterAsDateTime( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a static datetime value.
+
+.. seealso:: :py:func:`parameterAsDate`
+
+.. seealso:: :py:func:`parameterAsTime`
+
+.. versionadded:: 3.14
+%End
+
+    static QDate parameterAsDate( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a static date value.
+
+.. seealso:: :py:func:`parameterAsDateTime`
+
+.. seealso:: :py:func:`parameterAsTime`
+
+.. versionadded:: 3.14
+%End
+
+    static QDate parameterAsDate( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a static date value.
+
+.. seealso:: :py:func:`parameterAsDateTime`
+
+.. seealso:: :py:func:`parameterAsTime`
+
+.. versionadded:: 3.14
+%End
+
+    static QTime parameterAsTime( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a static time value.
+
+.. seealso:: :py:func:`parameterAsDateTime`
+
+.. seealso:: :py:func:`parameterAsDate`
+
+.. versionadded:: 3.14
+%End
+
+    static QTime parameterAsTime( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a static time value.
+
+.. seealso:: :py:func:`parameterAsDateTime`
+
+.. seealso:: :py:func:`parameterAsDate`
+
+.. versionadded:: 3.14
+%End
+
     static int parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a enum value.
@@ -3410,6 +3476,123 @@ Creates a new parameter using the definition from a script code.
 
 };
 
+
+class QgsProcessingParameterDateTime : QgsProcessingParameterDefinition
+{
+%Docstring
+A datetime (or pure date or time) parameter for processing algorithms.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    enum Type
+    {
+      DateTime,
+      Date,
+      Time,
+    };
+
+    explicit QgsProcessingParameterDateTime( const QString &name, const QString &description = QString(),
+        Type type = DateTime,
+        const QVariant &defaultValue = QVariant(),
+        bool optional = false,
+        const QDateTime &minValue = QDateTime(),
+        const QDateTime &maxValue = QDateTime()
+                                           );
+%Docstring
+Constructor for QgsProcessingParameterDateTime.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString toolTip() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+
+    QDateTime minimum() const;
+%Docstring
+Returns the minimum value acceptable by the parameter.
+
+An invalid QDateTime value indicates no minimum value.
+
+.. seealso:: :py:func:`setMinimum`
+%End
+
+    void setMinimum( const QDateTime &minimum );
+%Docstring
+Sets the ``minimum`` value acceptable by the parameter.
+
+An invalid QDateTime value indicates no minimum value.
+
+If the dataType() is QgsProcessingParameterDateTime.Time, then the date component of ``minimum``
+must be set to any valid date (but this date will not actually be considered when comparing parameter
+values to the specified minimum value, only the time component will be considered).
+
+.. seealso:: :py:func:`minimum`
+%End
+
+    QDateTime maximum() const;
+%Docstring
+Returns the maximum value acceptable by the parameter.
+
+An invalid QDateTime value indicates no maximum value.
+
+.. seealso:: :py:func:`setMaximum`
+%End
+
+    void setMaximum( const QDateTime &maximum );
+%Docstring
+Sets the ``maximum`` value acceptable by the parameter.
+
+An invalid QDateTime value indicates no maximum value.
+
+If the dataType() is QgsProcessingParameterDateTime.Time, then the date component of ``maximum``
+must be set to any valid date (but this date will not actually be considered when comparing parameter
+values to the specified maximum value, only the time component will be considered).
+
+.. seealso:: :py:func:`maximum`
+%End
+
+    Type dataType() const;
+%Docstring
+Returns the acceptable data type for the parameter.
+
+.. seealso:: :py:func:`setDataType`
+%End
+
+    void setDataType( Type type );
+%Docstring
+Sets the acceptable data ``type`` for the parameter.
+
+.. seealso:: :py:func:`dataType`
+%End
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    static QgsProcessingParameterDateTime *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+};
 
 
 
