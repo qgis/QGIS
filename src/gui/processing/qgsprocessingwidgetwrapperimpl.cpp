@@ -3328,41 +3328,65 @@ void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstr
     context = tmpContext.get();
   }
 
-  const QVariant value = parentWrapper->parameterValue();
-  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), value, *context );
-  if ( !layer || !layer->isValid() )
-  {
-    if ( mComboBox )
-      mComboBox->setLayer( nullptr );
-    else if ( mPanel )
-      mPanel->setFields( QgsFields() );
+  QVariant value = parentWrapper->parameterValue();
 
-    if ( value.isValid() && widgetContext().messageBar() )
-    {
-      widgetContext().messageBar()->clearWidgets();
-      widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent field could not be populated" ),
-          Qgis::Warning, 5 );
-    }
-    return;
+  if ( value.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - source from it.
+    // this is normally discouraged, and algorithms should NEVER do this -- but in this case we can make
+    // certain assumptions due to the fact that we're calling this outside of algorithm/model execution and all sources
+    // should be real map layers at this stage
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
+    value = fromVar.source;
   }
-
-  // need to grab ownership of layer if required - otherwise layer may be deleted when context
-  // goes out of scope
-  std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
-  if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::VectorLayer )
+  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), value, *context );
+  if ( layer && layer->isValid() )
   {
-    mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
-    layer = mParentLayer.get();
+    // need to grab ownership of layer if required - otherwise layer may be deleted when context
+    // goes out of scope
+    std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
+    if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::VectorLayer )
+    {
+      mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
+      layer = mParentLayer.get();
+    }
+    else
+    {
+      // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
+    }
+
+    if ( mComboBox )
+      mComboBox->setLayer( layer );
+    else if ( mPanel )
+      mPanel->setFields( filterFields( layer->fields() ) );
   }
   else
   {
-    // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
-  }
+    std::unique_ptr< QgsProcessingFeatureSource > source( QgsProcessingParameters::parameterAsSource( parentWrapper->parameterDefinition(), value, *context ) );
+    if ( source )
+    {
+      const QgsFields fields = source->fields();
+      if ( mComboBox )
+        mComboBox->setFields( fields );
+      else if ( mPanel )
+        mPanel->setFields( filterFields( fields ) );
+    }
+    else
+    {
+      if ( mComboBox )
+        mComboBox->setLayer( nullptr );
+      else if ( mPanel )
+        mPanel->setFields( QgsFields() );
 
-  if ( mComboBox )
-    mComboBox->setLayer( layer );
-  else if ( mPanel )
-    mPanel->setFields( filterFields( layer->fields() ) );
+      if ( value.isValid() && widgetContext().messageBar() )
+      {
+        widgetContext().messageBar()->clearWidgets();
+        widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent field could not be populated" ),
+            Qgis::Warning, 5 );
+      }
+    }
+    return;
+  }
 
   const QgsProcessingParameterField *fieldParam = static_cast< const QgsProcessingParameterField * >( parameterDefinition() );
   if ( mPanel && fieldParam->defaultToAllFields() )
