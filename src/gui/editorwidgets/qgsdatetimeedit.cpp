@@ -36,6 +36,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
 
 QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QVariant::Type parserType, QWidget *parent )
   : QDateTimeEdit( var, parserType, parent )
+  , mNullRepresentation( QgsApplication::nullRepresentation() )
 {
   QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
   mClearAction = new QAction( clearIcon, tr( "clear" ), this );
@@ -151,7 +152,7 @@ void QgsDateTimeEdit::focusOutEvent( QFocusEvent *event )
   if ( mAllowNull && mIsNull && !mCurrentPressEvent )
   {
     QAbstractSpinBox::focusOutEvent( event );
-    if ( lineEdit()->text() != QgsApplication::nullRepresentation() )
+    if ( lineEdit()->text() != mNullRepresentation )
     {
       displayNull();
     }
@@ -191,7 +192,7 @@ void QgsDateTimeEdit::showEvent( QShowEvent *event )
 {
   QDateTimeEdit::showEvent( event );
   if ( mAllowNull && mIsNull &&
-       lineEdit()->text() != QgsApplication::nullRepresentation() )
+       lineEdit()->text() != mNullRepresentation )
   {
     displayNull();
   }
@@ -222,6 +223,20 @@ void QgsDateTimeEdit::changed( const QVariant &dateTime )
   emitValueChanged( dateTime );
 }
 
+QString QgsDateTimeEdit::nullRepresentation() const
+{
+  return mNullRepresentation;
+}
+
+void QgsDateTimeEdit::setNullRepresentation( const QString &nullRepresentation )
+{
+  mNullRepresentation = nullRepresentation;
+  if ( mIsNull )
+  {
+    lineEdit()->setText( mNullRepresentation );
+  }
+}
+
 void QgsDateTimeEdit::displayNull( bool updateCalendar )
 {
   disconnect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
@@ -232,7 +247,7 @@ void QgsDateTimeEdit::displayNull( bool updateCalendar )
     QDateTimeEdit::setDateTime( minimumDateTime() );
   }
   lineEdit()->setCursorPosition( lineEdit()->text().length() );
-  lineEdit()->setText( QgsApplication::nullRepresentation() );
+  lineEdit()->setText( mNullRepresentation );
   connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
 }
 

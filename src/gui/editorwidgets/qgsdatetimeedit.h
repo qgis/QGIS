@@ -97,6 +97,24 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      */
     void setEmpty();
 
+    /**
+     * Returns the widget's NULL representation, which defaults
+     * to QgsApplication::nullRepresentation().
+     *
+     * \see setNullRepresentation()
+     * \since QGIS 3.14
+     */
+    QString nullRepresentation() const;
+
+    /**
+     * Sets the widget's \a null representation, which defaults
+     * to QgsApplication::nullRepresentation().
+     *
+     * \see nullRepresentation()
+     * \since QGIS 3.14
+     */
+    void setNullRepresentation( const QString &null );
+
   signals:
 
     /**
@@ -141,6 +159,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
     QString mOriginalStyleSheet = QString();
     QAction *mClearAction;
+    QString mNullRepresentation;
 
     //! TRUE if the widget allows null values
     bool mAllowNull = true;

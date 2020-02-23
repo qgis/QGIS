@@ -105,6 +105,26 @@ Resets the widget to show no value (ie, an "unknown" state).
 .. versionadded:: 2.16
 %End
 
+    QString nullRepresentation() const;
+%Docstring
+Returns the widget's NULL representation, which defaults
+to :py:func:`QgsApplication.nullRepresentation()`
+
+.. seealso:: :py:func:`setNullRepresentation`
+
+.. versionadded:: 3.14
+%End
+
+    void setNullRepresentation( const QString &null );
+%Docstring
+Sets the widget's ``null`` representation, which defaults
+to :py:func:`QgsApplication.nullRepresentation()`
+
+.. seealso:: :py:func:`nullRepresentation`
+
+.. versionadded:: 3.14
+%End
+
   signals:
 
     void valueChanged( const QDateTime &date );
