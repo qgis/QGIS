@@ -192,7 +192,7 @@ class FieldsMappingModel(QAbstractTableModel):
         column_def = self.columns[index.column()]
 
         if role == Qt.DisplayRole:
-            value = field[column_def['name']]
+            value = field[column_def['name']] if column_def['name'] in field else QVariant()
             if column_def['type'] == QVariant.Type:
                 if value == QVariant.Invalid:
                     return ''
@@ -216,9 +216,8 @@ class FieldsMappingModel(QAbstractTableModel):
             return QBrush(QColor(255, 224, 178)) if 'constraints' in field and field['constraints'] else QVariant()
 
         if role == Qt.ToolTipRole:
-            if column_def['name'] == 'constraints':
-                return ", ".join(
-                    [self.constraints[constraint] for constraint in field['constraints'] if 'constraints' in field])
+            if column_def['name'] == 'constraints' and 'constraints' in field:
+                return ", ".join([self.constraints[constraint] for constraint in field['constraints']])
 
     def setData(self, index, value, role=Qt.EditRole):
         field = self._mapping[index.row()]
