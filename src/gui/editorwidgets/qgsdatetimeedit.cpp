@@ -29,7 +29,13 @@
 
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
-  : QDateTimeEdit( parent )
+  : QgsDateTimeEdit( QDateTime(), QVariant::DateTime, parent )
+{
+
+}
+
+QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QVariant::Type parserType, QWidget *parent )
+  : QDateTimeEdit( var, parserType, parent )
 {
   QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
   mClearAction = new QAction( clearIcon, tr( "clear" ), this );
@@ -48,6 +54,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   // init with current time so mIsNull is properly initialized
   QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
 }
+
 
 void QgsDateTimeEdit::setAllowNull( bool allowNull )
 {
@@ -190,7 +197,7 @@ void QgsDateTimeEdit::showEvent( QShowEvent *event )
   }
 }
 
-void QgsDateTimeEdit::changed( const QDateTime &dateTime )
+void QgsDateTimeEdit::changed( const QVariant &dateTime )
 {
   mIsEmpty = false;
   bool isNull = dateTime.isNull();
@@ -212,8 +219,7 @@ void QgsDateTimeEdit::changed( const QDateTime &dateTime )
   }
 
   mClearAction->setVisible( mAllowNull && !mIsNull );
-
-  emit QgsDateTimeEdit::valueChanged( dateTime );
+  emitValueChanged( dateTime );
 }
 
 void QgsDateTimeEdit::displayNull( bool updateCalendar )
@@ -228,6 +234,16 @@ void QgsDateTimeEdit::displayNull( bool updateCalendar )
   lineEdit()->setCursorPosition( lineEdit()->text().length() );
   lineEdit()->setText( QgsApplication::nullRepresentation() );
   connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
+}
+
+void QgsDateTimeEdit::emitValueChanged( const QVariant &value )
+{
+  emit QgsDateTimeEdit::valueChanged( value.toDateTime() );
+}
+
+bool QgsDateTimeEdit::isNull() const
+{
+  return mAllowNull && mIsNull;
 }
 
 void QgsDateTimeEdit::displayCurrentDate()
@@ -285,7 +301,7 @@ void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )
 
 QDateTime QgsDateTimeEdit::dateTime() const
 {
-  if ( mAllowNull && mIsNull )
+  if ( isNull() )
   {
     return QDateTime();
   }
@@ -297,7 +313,7 @@ QDateTime QgsDateTimeEdit::dateTime() const
 
 QTime QgsDateTimeEdit::time() const
 {
-  if ( mAllowNull && mIsNull )
+  if ( isNull() )
   {
     return QTime();
   }
@@ -309,7 +325,7 @@ QTime QgsDateTimeEdit::time() const
 
 QDate QgsDateTimeEdit::date() const
 {
-  if ( mAllowNull && mIsNull )
+  if ( isNull() )
   {
     return QDate();
   }
@@ -317,4 +333,72 @@ QDate QgsDateTimeEdit::date() const
   {
     return QDateTimeEdit::date();
   }
+}
+
+
+//
+// QgsTimeEdit
+//
+
+QgsTimeEdit::QgsTimeEdit( QWidget *parent )
+  : QgsDateTimeEdit( QTime(), QVariant::Time, parent )
+{
+
+}
+
+void QgsTimeEdit::setTime( const QTime &time )
+{
+  mIsEmpty = false;
+
+  // set an undefined date
+  if ( !time.isValid() || time.isNull() )
+  {
+    clear();
+    displayNull();
+  }
+  // Check if it's really changed or crash, see GH #29937
+  else if ( time != QgsTimeEdit::time() )
+  {
+    QDateTimeEdit::setTime( time );
+    changed( time );
+  }
+}
+
+void QgsTimeEdit::emitValueChanged( const QVariant &value )
+{
+  emit timeValueChanged( value.toTime() );
+}
+
+
+//
+// QgsDateEdit
+//
+
+QgsDateEdit::QgsDateEdit( QWidget *parent )
+  : QgsDateTimeEdit( QDate(), QVariant::Date, parent )
+{
+
+}
+
+void QgsDateEdit::setDate( const QDate &date )
+{
+  mIsEmpty = false;
+
+  // set an undefined date
+  if ( !date.isValid() || date.isNull() )
+  {
+    clear();
+    displayNull();
+  }
+  // Check if it's really changed or crash, see GH #29937
+  else if ( date != QgsDateEdit::date() )
+  {
+    QDateTimeEdit::setDate( date );
+    changed( date );
+  }
+}
+
+void QgsDateEdit::emitValueChanged( const QVariant &value )
+{
+  emit dateValueChanged( value.toDate() );
 }
