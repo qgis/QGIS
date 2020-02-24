@@ -366,7 +366,7 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
     int type = snapSettingsElem.attribute( QStringLiteral( "type" ) ).toInt();
     QDomElement versionElem = doc.firstChildElement( QStringLiteral( "qgis" ) );
     QString version;
-    bool before3_12 = false;
+    bool before3_14 = false;
     if ( versionElem.hasAttribute( QStringLiteral( "version" ) ) )
     {
       version = versionElem.attribute( QStringLiteral( "version" ) );
@@ -374,11 +374,11 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
       QRegularExpressionMatch match = re.match( version );
       if ( match.hasMatch() )
       {
-        if ( ( match.captured( 1 ).toInt() <= 3 ) && ( match.captured( 2 ).toInt() < 12 ) )
-          before3_12 = true;
+        if ( ( match.captured( 1 ).toInt() <= 3 ) && ( match.captured( 2 ).toInt() < 14 ) )
+          before3_14 = true;
       }
     }
-    if ( before3_12 )
+    if ( before3_14 )
     {
       // BEFORE 3.12:
       // 1 = vertex
