@@ -83,6 +83,7 @@ class TestQgsVectorLayer : public QObject
     QString mTestDataDir;
     QString mReport;
 
+
   private slots:
 
     void initTestCase(); // will be called before the first testfunction is executed.

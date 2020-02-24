@@ -39,6 +39,7 @@
 #include "qgsmaplayerstyle.h"
 #include "qgsreadwritecontext.h"
 #include "qgsdataprovider.h"
+#include "qgsmaplayertemporalproperties.h"
 
 class QgsAbstract3DRenderer;
 class QgsDataProvider;
@@ -1172,6 +1173,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.10
      */
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    /**
+     * Returns map layer temporal properties. This may be NULLPTR, depending on the layer type.
+     *
+     * \since QGIS 3.14
+     */
+    virtual QgsMapLayerTemporalProperties *temporalProperties() { return nullptr; }
 
   public slots:
 

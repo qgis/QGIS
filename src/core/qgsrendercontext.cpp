@@ -29,7 +29,8 @@
 #define INCH_TO_MM 25.4
 
 QgsRenderContext::QgsRenderContext()
-  : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
+  : QgsTemporalRangeObject()
+  , mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
   // For RenderMetersInMapUnits support, when rendering in Degrees, the Ellipsoid must be set
@@ -38,7 +39,8 @@ QgsRenderContext::QgsRenderContext()
 }
 
 QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
-  : mFlags( rh.mFlags )
+  : QgsTemporalRangeObject( rh )
+  , mFlags( rh.mFlags )
   , mPainter( rh.mPainter )
   , mMaskPainter( rh.mMaskPainter )
   , mCoordTransform( rh.mCoordTransform )
@@ -96,6 +98,8 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mRenderedFeatureHandlers = rh.mRenderedFeatureHandlers;
   mHasRenderedFeatureHandlers = rh.mHasRenderedFeatureHandlers;
   mCustomRenderingFlags = rh.mCustomRenderingFlags;
+  setIsTemporal( rh.isTemporal() );
+  setTemporalRange( rh.temporalRange() );
 #ifdef QGISDEBUG
   mHasTransformContext = rh.mHasTransformContext;
 #endif
@@ -200,6 +204,8 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
   ctx.mCustomRenderingFlags = mapSettings.customRenderingFlags();
+  ctx.setIsTemporal( mapSettings.isTemporal() );
+  ctx.setTemporalRange( mapSettings.temporalRange() );
 
   return ctx;
 }

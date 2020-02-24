@@ -289,6 +289,7 @@ SET(QGIS_CORE_SRCS
   qgsmaplayerstore.cpp
   qgsmaplayerstyle.cpp
   qgsmaplayerstylemanager.cpp
+  qgsmaplayertemporalproperties.cpp
   qgsmaprenderercache.cpp
   qgsmaprenderercustompainterjob.cpp
   qgsmaprendererjob.cpp
@@ -376,6 +377,8 @@ SET(QGIS_CORE_SRCS
   qgsstringutils.cpp
   qgstablecell.cpp
   qgstaskmanager.cpp
+  qgstemporalproperty.cpp
+  qgstemporalrangeobject.cpp
   qgstessellator.cpp
   qgstextrenderer.cpp
   qgstilecache.cpp
@@ -511,6 +514,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrasteriterator.cpp
   raster/qgsrasterlayer.cpp
   raster/qgsrasterlayerrenderer.cpp
+  raster/qgsrasterlayertemporalproperties.cpp
   raster/qgsrasterminmaxorigin.cpp
   raster/qgsrasternuller.cpp
   raster/qgsrasterpipe.cpp
@@ -792,6 +796,7 @@ SET(QGIS_CORE_HDRS
   qgsmaplayerstore.h
   qgsmaplayerstyle.h
   qgsmaplayerstylemanager.h
+  qgsmaplayertemporalproperties.h
   qgsmaprenderercache.h
   qgsmaprenderercustompainterjob.h
   qgsmaprendererjob.h
@@ -886,6 +891,8 @@ SET(QGIS_CORE_HDRS
   qgsstringutils.h
   qgstablecell.h
   qgstaskmanager.h
+  qgstemporalproperty.h
+  qgstemporalrangeobject.h
   qgstessellator.h
   qgstestutils.h
   qgstextrenderer.h
@@ -1216,6 +1223,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasteriterator.h
   raster/qgsrasterlayer.h
   raster/qgsrasterlayerrenderer.h
+  raster/qgsrasterlayertemporalproperties.h
   raster/qgsrasterminmaxorigin.h
   raster/qgsrasternuller.h
   raster/qgsrasterpipe.h

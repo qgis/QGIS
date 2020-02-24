@@ -38,6 +38,7 @@
 #include "qgsrasterviewport.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgscontrastenhancement.h"
+#include "qgsrasterlayertemporalproperties.h"
 
 class QgsMapToPixel;
 class QgsRasterRenderer;
@@ -494,6 +495,11 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     bool ignoreExtents() const;
 
+    /**
+     * Returns temporal properties associated with the raster layer.
+     */
+    QgsRasterLayerTemporalProperties *temporalProperties() override { return mTemporalProperties.get(); }
+
   public slots:
     void showStatusMessage( const QString &message );
 
@@ -548,6 +554,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     //! Pointer to data provider
     QgsRasterDataProvider *mDataProvider = nullptr;
+
+    //! Pointer to temporal properties
+    std::unique_ptr< QgsRasterLayerTemporalProperties > mTemporalProperties;
 
     //! [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created
     QDateTime mLastModified;

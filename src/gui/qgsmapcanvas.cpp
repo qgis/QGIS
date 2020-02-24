@@ -213,6 +213,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   // (by default map settings has white bg color, scene background brush is black)
   setCanvasColor( mSettings.backgroundColor() );
 
+  setTemporalRange( mSettings.temporalRange() );
+
   refresh();
 
 } // QgsMapCanvas ctor
@@ -724,6 +726,21 @@ void QgsMapCanvas::setPreviewJobsEnabled( bool enabled )
 void QgsMapCanvas::setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler> > &handlers )
 {
   mDropHandlers = handlers;
+}
+
+void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
+{
+  if ( temporalRange() == dateTimeRange )
+    return;
+
+  mTemporalRangeObject.setTemporalRange( dateTimeRange );
+
+  emit temporalRangeChanged();
+}
+
+const QgsDateTimeRange &QgsMapCanvas::temporalRange() const
+{
+  return mTemporalRangeObject.temporalRange();
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
