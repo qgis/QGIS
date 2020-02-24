@@ -217,7 +217,7 @@ class FieldsMappingModel(QAbstractTableModel):
 
         if role == Qt.ToolTipRole:
             if column_def['name'] == 'constraints' and 'constraints' in field:
-                return ", ".join([self.constraints[constraint] for constraint in field['constraints']])
+                return "<br>".join([self.constraints[constraint] for constraint in field['constraints']])
 
     def setData(self, index, value, role=Qt.EditRole):
         field = self._mapping[index.row()]
