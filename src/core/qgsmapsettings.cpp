@@ -32,8 +32,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 
 QgsMapSettings::QgsMapSettings()
-  : QgsTemporalRangeObject()
-  , mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
+  : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
   , mSize( QSize( 0, 0 ) )
   , mBackgroundColor( Qt::white )
   , mSelectionColor( Qt::yellow )

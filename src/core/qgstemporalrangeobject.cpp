@@ -15,13 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "qgstemporalrangeobject.h"
-#include "qgsrendercontext.h"
-
-QgsTemporalRangeObject::QgsTemporalRangeObject()
-{
-}
 
 QgsTemporalRangeObject::QgsTemporalRangeObject( bool enabled )
   : mTemporal( enabled )
@@ -44,7 +38,6 @@ void QgsTemporalRangeObject::setTemporalRange( const QgsDateTimeRange &dateTimeR
     setIsTemporal( true );
 
   mDateTimeRange = dateTimeRange;
-
 }
 
 const QgsDateTimeRange &QgsTemporalRangeObject::temporalRange() const
