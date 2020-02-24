@@ -67,6 +67,7 @@
 #include "qgsmessagebar.h"
 #include "qgsfieldcombobox.h"
 #include "qgsmapthemecollection.h"
+#include "qgsdatetimeedit.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -197,6 +198,7 @@ class TestProcessingGui : public QObject
     void mapLayerComboBox();
     void paramConfigWidget();
     void testMapThemeWrapper();
+    void testDateTimeWrapper();
 
   private:
 
@@ -4407,6 +4409,156 @@ void TestProcessingGui::testMapThemeWrapper()
   widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "maptheme" ), context, widgetContext, &themeParam );
   def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
   QVERIFY( !static_cast< QgsProcessingParameterMapTheme * >( def.get() )->defaultValue().isValid() );
+}
+
+void TestProcessingGui::testDateTimeWrapper()
+{
+  auto testWrapper = [ = ]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional, no existing themes
+    QgsProcessingParameterDateTime param( QStringLiteral( "datetime" ), QStringLiteral( "datetime" ), QgsProcessingParameterDateTime::DateTime, QVariant(), false );
+
+    QgsProcessingDateTimeWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingDateTimeWidgetWrapper::widgetValueHasChanged );
+    // not a date value
+    wrapper.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy.count(), 0 );
+    // not optional, so an invalid value gets a date anyway...
+    QVERIFY( wrapper.widgetValue().isValid() );
+    wrapper.setWidgetValue( QStringLiteral( "2019-08-07" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QVERIFY( wrapper.widgetValue().isValid() );
+    QCOMPARE( wrapper.widgetValue().toDateTime(), QDateTime( QDate( 2019, 8, 7 ) ) );
+    QCOMPARE( static_cast< QgsDateTimeEdit * >( wrapper.wrappedWidget() )->dateTime(), QDateTime( QDate( 2019, 8, 7 ) ) );
+    wrapper.setWidgetValue( QStringLiteral( "2019-08-07" ), context );
+    QCOMPARE( spy.count(), 1 );
+
+    // check signal
+    static_cast< QgsDateTimeEdit * >( wrapper.wrappedWidget() )->setDateTime( QDateTime( QDate( 2019, 8, 9 ) ) );
+    QCOMPARE( spy.count(), 2 );
+
+    delete w;
+
+    // optional
+    QgsProcessingParameterDateTime param2( QStringLiteral( "datetime" ), QStringLiteral( "datetime" ), QgsProcessingParameterDateTime::DateTime, QVariant(), true );
+    QgsProcessingDateTimeWidgetWrapper wrapper3( &param2, type );
+    w = wrapper3.createWrappedWidget( context );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    QSignalSpy spy3( &wrapper3, &QgsProcessingDateTimeWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy3.count(), 0 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    QVERIFY( !static_cast< QgsDateTimeEdit * >( wrapper3.wrappedWidget() )->dateTime().isValid() );
+    wrapper3.setWidgetValue( QStringLiteral( "2019-03-20" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toDateTime(), QDateTime( QDate( 2019, 3, 20 ) ) );
+    QCOMPARE( static_cast< QgsDateTimeEdit * >( wrapper3.wrappedWidget() )->dateTime(), QDateTime( QDate( 2019, 3, 20 ) ) );
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 2 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    delete w;
+
+    // date mode
+    QgsProcessingParameterDateTime param3( QStringLiteral( "datetime" ), QStringLiteral( "datetime" ), QgsProcessingParameterDateTime::Date, QVariant(), true );
+    QgsProcessingDateTimeWidgetWrapper wrapper4( &param3, type );
+    w = wrapper4.createWrappedWidget( context );
+    QVERIFY( !wrapper4.widgetValue().isValid() );
+    QSignalSpy spy4( &wrapper4, &QgsProcessingDateTimeWidgetWrapper::widgetValueHasChanged );
+    wrapper4.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy4.count(), 0 );
+    QVERIFY( !wrapper4.widgetValue().isValid() );
+    QVERIFY( !static_cast< QgsDateEdit * >( wrapper4.wrappedWidget() )->date().isValid() );
+    wrapper4.setWidgetValue( QStringLiteral( "2019-03-20" ), context );
+    QCOMPARE( spy4.count(), 1 );
+    QCOMPARE( wrapper4.widgetValue().toDate(), QDate( 2019, 3, 20 ) );
+    QCOMPARE( static_cast< QgsDateEdit * >( wrapper4.wrappedWidget() )->date(), QDate( 2019, 3, 20 ) );
+    wrapper4.setWidgetValue( QDate( 2020, 1, 3 ), context );
+    QCOMPARE( spy4.count(), 2 );
+    QCOMPARE( wrapper4.widgetValue().toDate(), QDate( 2020, 1, 3 ) );
+    QCOMPARE( static_cast< QgsDateEdit * >( wrapper4.wrappedWidget() )->date(), QDate( 2020, 1, 3 ) );
+    wrapper4.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy4.count(), 3 );
+    QVERIFY( !wrapper4.widgetValue().isValid() );
+    delete w;
+
+    // time mode
+    QgsProcessingParameterDateTime param4( QStringLiteral( "datetime" ), QStringLiteral( "datetime" ), QgsProcessingParameterDateTime::Time, QVariant(), true );
+    QgsProcessingDateTimeWidgetWrapper wrapper5( &param4, type );
+    w = wrapper5.createWrappedWidget( context );
+    QVERIFY( !wrapper5.widgetValue().isValid() );
+    QSignalSpy spy5( &wrapper5, &QgsProcessingDateTimeWidgetWrapper::widgetValueHasChanged );
+    wrapper5.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy5.count(), 0 );
+    QVERIFY( !wrapper5.widgetValue().isValid() );
+    QVERIFY( !static_cast< QgsTimeEdit * >( wrapper5.wrappedWidget() )->time().isValid() );
+    wrapper5.setWidgetValue( QStringLiteral( "11:34:56" ), context );
+    QCOMPARE( spy5.count(), 1 );
+    QCOMPARE( wrapper5.widgetValue().toTime(), QTime( 11, 34, 56 ) );
+    QCOMPARE( static_cast< QgsTimeEdit * >( wrapper5.wrappedWidget() )->time(), QTime( 11, 34, 56 ) );
+    wrapper5.setWidgetValue( QTime( 9, 34, 56 ), context );
+    QCOMPARE( spy5.count(), 2 );
+    QCOMPARE( wrapper5.widgetValue().toTime(), QTime( 9, 34, 56 ) );
+    QCOMPARE( static_cast< QgsTimeEdit * >( wrapper5.wrappedWidget() )->time(), QTime( 9, 34, 56 ) );
+    wrapper5.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy5.count(), 3 );
+    QVERIFY( !wrapper5.widgetValue().isValid() );
+    delete w;
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "datetime" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  QgsProcessingContext context;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "datetime" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QVERIFY( !static_cast< QgsProcessingParameterDateTime * >( def.get() )->defaultValue().isValid() );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterDateTime datetimeParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QgsProcessingParameterDateTime::Date, QVariant(), false );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "datetime" ), context, widgetContext, &datetimeParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterDateTime * >( def.get() )->dataType(), QgsProcessingParameterDateTime::Date );
+  datetimeParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  datetimeParam.setDefaultValue( QStringLiteral( "xxx" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "datetime" ), context, widgetContext, &datetimeParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterDateTime * >( def.get() )->dataType(), QgsProcessingParameterDateTime::Date );
 }
 
 void TestProcessingGui::cleanupTempDir()

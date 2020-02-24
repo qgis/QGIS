@@ -6277,7 +6277,7 @@ QgsProcessingParameterDateTime::QgsProcessingParameterDateTime( const QString &n
   , mMax( maxValue )
   , mDataType( type )
 {
-  if ( mMin >= mMax )
+  if ( mMin.isValid() && mMax.isValid() && mMin >= mMax )
   {
     QgsMessageLog::logMessage( QObject::tr( "Invalid datetime parameter \"%1\": min value %2 is >= max value %3!" ).arg( name, mMin.toString(), mMax.toString() ), QObject::tr( "Processing" ) );
   }
