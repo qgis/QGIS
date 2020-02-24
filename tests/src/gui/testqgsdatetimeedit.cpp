@@ -131,7 +131,7 @@ void TestQgsDateTimeEdit::nullValues()
   dateEdit->setAllowNull( false );
   QVERIFY( !dateEdit->allowNull() );
   dateEdit->setDate( dt );
-  QCOMPARE( timeEdit->date(), dt );
+  QCOMPARE( dateEdit->date(), dt );
 
   // Not null with null date
   dateEdit->setAllowNull( false );
