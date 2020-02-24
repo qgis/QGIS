@@ -34,6 +34,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
 
 }
 
+///@cond PRIVATE
 QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QVariant::Type parserType, QWidget *parent )
   : QDateTimeEdit( var, parserType, parent )
   , mNullRepresentation( QgsApplication::nullRepresentation() )
@@ -55,7 +56,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( const QVariant &var, QVariant::Type parserType
   // init with current time so mIsNull is properly initialized
   QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
 }
-
+///@endcond
 
 void QgsDateTimeEdit::setAllowNull( bool allowNull )
 {
@@ -198,6 +199,7 @@ void QgsDateTimeEdit::showEvent( QShowEvent *event )
   }
 }
 
+///@cond PRIVATE
 void QgsDateTimeEdit::changed( const QVariant &dateTime )
 {
   mIsEmpty = false;
@@ -223,6 +225,7 @@ void QgsDateTimeEdit::changed( const QVariant &dateTime )
   if ( !mBlockChangedSignal )
     emitValueChanged( dateTime );
 }
+///@endcond
 
 QString QgsDateTimeEdit::nullRepresentation() const
 {
