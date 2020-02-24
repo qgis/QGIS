@@ -18,7 +18,6 @@ uniform vec4 lineColor;
 uniform int textureType;
 uniform int colorRampType;
 uniform vec4 meshColor;
-uniform float verticaleScale;
 
 uniform sampler1D colorRampTexture;
 uniform int colorRampCount;
@@ -98,15 +97,24 @@ vec3 linearColorRamp()
       vec3 color1=colorRampLine1.yzw;
       vec3 color2=colorRampLine2.yzw;
 
-      float value1=colorRampLine1.x*verticaleScale;
-      float value2=colorRampLine2.x*verticaleScale;
+      float value1=colorRampLine1.x;
+      float value2=colorRampLine2.x;
 
-        if (fs_in.magnitude>value1 && fs_in.magnitude<=value2)
-        {
-            float mixValue=(fs_in.magnitude-value1)/(value2-value1);
-            return mix(color1,color2,mixValue);
-        }
-  }
+      if (fs_in.magnitude<=value1 )
+        return color1;
+
+      if (fs_in.magnitude>value1 && fs_in.magnitude<=value2)
+      {
+          float mixValue=(fs_in.magnitude-value1)/(value2-value1);
+          return mix(color1,color2,mixValue);
+      }
+    }
+
+   //last color if no value is found
+   vec4 colorRampLine=texture(colorRampTexture,(colorRampSize-0.5)/colorRampSize);
+   return colorRampLine.yzw;
+
+
 
   return vec3(0.5,0.5,0.5);
 }
@@ -122,7 +130,7 @@ vec3 discreteColorRamp()
         vec4 colorRampLine=texture(colorRampTexture,(i+0.5)/colorRampSize);
 
         color=colorRampLine.yzw;
-        float value=colorRampLine.x*verticaleScale;
+        float value=colorRampLine.x;
 
         if ( isinf(value) || fs_in.magnitude<value)
         {
@@ -142,7 +150,7 @@ vec3 exactColorRamp()
         vec4 colorRampLine=texture(colorRampTexture,(i+0.5)/colorRampSize);
 
         vec3 color=colorRampLine.yzw;
-        float value=colorRampLine.x*verticaleScale;
+        float value=colorRampLine.x;
 
         if ( abs(fs_in.magnitude-value)<0.01)
         {
@@ -186,6 +194,7 @@ void main()
       color=meshColor;
       break;
       case 1:
+      case 2:
       color=colorRamp();
       break;
     };

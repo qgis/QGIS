@@ -79,7 +79,7 @@ class _3D_EXPORT QgsMeshLayer3DRenderer : public QgsAbstract3DRenderer
 
 
   private:
-    QgsMapLayerRef mLayerRef; //!< Layer used to extract triangle from
+    QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
     std::unique_ptr<QgsMesh3DSymbol> mSymbol;  //!< 3D symbol that defines appearance
 
   private:

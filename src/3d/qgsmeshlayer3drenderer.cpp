@@ -81,18 +81,7 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings 
 
   QgsCoordinateTransform coordTrans( vl->crs(), map.crs(), map.transformContext() );
 
-  QgsRectangle extentInMap;
-
-  try
-  {
-    extentInMap = coordTrans.transform( vl->extent() );
-  }
-  catch ( QgsCsException & )
-  {
-    extentInMap = vl->extent();
-  }
-
-  QgsMesh3dEntity *meshEntity = new QgsMesh3dEntity( map, *vl->triangularMesh(), extentInMap, *static_cast<QgsMesh3DSymbol *>( mSymbol.get() ) );
+  QgsMeshDataset3dEntity *meshEntity = new QgsMeshDataset3dEntity( map, vl, *static_cast<QgsMesh3DSymbol *>( mSymbol.get() ) );
   meshEntity->build();
   entity = meshEntity;
 

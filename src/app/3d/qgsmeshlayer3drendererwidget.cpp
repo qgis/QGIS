@@ -35,6 +35,7 @@ QgsMeshLayer3DRendererWidget::QgsMeshLayer3DRendererWidget( QgsMeshLayer *layer,
   layout->addWidget( chkEnabled );
 
   mWidgetMesh = new QgsMesh3dSymbolWidget( layer, this );
+  mWidgetMesh->configureForDataset();
   layout->addWidget( mWidgetMesh );
 
   connect( chkEnabled, &QCheckBox::clicked, this, &QgsMeshLayer3DRendererWidget::onEnabledClicked );

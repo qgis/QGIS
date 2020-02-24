@@ -22,6 +22,7 @@
 #include "qgsphongmaterialsettings.h"
 #include "qgs3dtypes.h"
 #include "qgscolorrampshader.h"
+#include "qgsmeshdataprovider.h"
 
 #include <Qt3DRender/QCullFace>
 
@@ -39,7 +40,7 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
   public:
 
     /**
-     * How to render the color of the mesh with advanced symbology
+     * How to render the color of the mesh
      *
      * \since QGIS 3.12
      */
@@ -48,7 +49,22 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
       //! Render the mesh with a single color
       SingleColor = 0,
       //! Render the mesh with a color ramp
-      ColorRamp
+      ColorRamp,
+      //! Render the mesh with the color ramp shader of the 2D rendering
+      ColorRamp2DRendering
+    };
+
+    /**
+     * Which value to render the Z value of the mesh
+     *
+     * \since QGIS 3.14
+     */
+    enum ZvalueType
+    {
+      //! Use the Z value of the vertices
+      VerticesZValue = 0,
+      //! Render the mesh with a color ramp
+      ScalarDatasetZvalue
     };
 
     //! Constructor for QgsMesh3DSymbol
@@ -142,18 +158,18 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     void setWireframeLineColor( const QColor &wireframeLineColor );
 
     /**
-     * Returns mesh verticale scale
+     * Returns mesh vertical scale
      *
      * \since QGIS 3.12
      */
-    double verticaleScale() const;
+    double verticalScale() const;
 
     /**
-     * Sets mesh verticale scale
+     * Sets mesh vertical scale
      *
      * \since QGIS 3.12
      */
-    void setVerticaleScale( double verticaleScale );
+    void setVerticalScale( double verticalScale );
 
     /**
      * Returns the color ramp shader used to render the color
@@ -197,20 +213,55 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
      */
     void setRenderingStyle( const QgsMesh3DSymbol::RenderingStyle &textureType );
 
+    /**
+     * Returns the index og the dataset group that will be used to render the vertical of the 3D mesh
+     *
+     * \since QGIS 3.14
+     */
+    int verticalDatasetGroupIndex() const;
+
+    /**
+     * Sets the index og the dataset group that will be used to render the vertical of the 3D mesh
+     *
+     * \since QGIS 3.14
+     */
+    void setVerticalDatasetGroupIndex( int verticalDatasetGroupIndex );
+
+    /**
+     * Returns if the verticale magnitude is relative to the mesh vertices Z value
+     *
+     * \since QGIS 3.14
+     */
+    bool isVerticalMagnitudeRelative() const;
+
+    /**
+     * Sets if the verticale magnitude is relative to the mesh vertices Z value
+     *
+     * \since QGIS 3.14
+     */
+    void setIsVerticalMagnitudeRelative( bool isVerticalMagnitudeRelative );
+
   private:
 
+    //old settings
     //! how to handle altitude of vector features
     Qgs3DTypes::AltitudeClamping mAltClamping = Qgs3DTypes::AltClampRelative;
     float mHeight = 0.0f;           //!< Base height of triangles
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
     bool mAddBackFaces = false;
 
+    // Triangles settings
     bool mSmoothedTriangles = false;
     bool mWireframeEnabled = false;
     double mWireframeLineWidth = 1.0;
     QColor mWireframeLineColor = Qt::darkGray;
-    double mVerticaleScale = 1.0;
 
+    // Verticals settings
+    double mVerticalScale = 1.0;
+    int mVerticalDatasetGroupIndex = -1;
+    bool mIsVerticalMagnitudeRelative = false;
+
+    // Color rendering settings
     QgsMesh3DSymbol::RenderingStyle mRenderingStyle = QgsMesh3DSymbol::SingleColor;
     QgsColorRampShader mColorRampShader;
     QColor mSingleColor = Qt::darkGreen;
