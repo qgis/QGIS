@@ -1057,13 +1057,6 @@ Emitted when the map canvas temporal range changes.
 .. versionadded:: 3.14
 %End
 
-    void temporalRangeChanged();
-%Docstring
-Emitted when the map canvas temporal range changes.
-
-.. versionadded:: 3.14
-%End
-
   protected:
 
     virtual bool event( QEvent *e );

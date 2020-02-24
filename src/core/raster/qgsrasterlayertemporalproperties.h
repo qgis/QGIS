@@ -23,7 +23,6 @@
 #include "qgis_sip.h"
 #include "qgsrange.h"
 #include "qgsmaplayertemporalproperties.h"
-#include "qgsrasterdataprovider.h"
 
 /**
  * \class QgsRasterLayerTemporalProperties
@@ -50,22 +49,22 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      **/
     enum TemporalMode
     {
-      ModeFixedTemporalRange, //! Mode when temporal properties have fixed start and end datetimes.
-      ModeTemporalRangeFromDataProvider, //! Mode when raster layer depends on temporal range from its data provider.
+      ModeFixedTemporalRange = 0, //! Mode when temporal properties have fixed start and end datetimes.
+      ModeTemporalRangeFromDataProvider = 1, //! Mode when raster layer depends on temporal range from its dataprovider.
     };
 
     /**
      * Returns the temporal properties mode.
      *
      *\see setMode()
-     */
+    **/
     TemporalMode mode() const;
 
     /**
      * Sets the temporal properties \a mode.
      *
      *\see mode()
-     */
+    **/
     void setMode( TemporalMode mode );
 
     /**
@@ -90,7 +89,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * QgsRasterLayerTemporalProperties::ModeFixedTemporalRange
      *
      *\see setFixedTemporalRange()
-     */
+    **/
     const QgsDateTimeRange &fixedTemporalRange() const;
 
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
