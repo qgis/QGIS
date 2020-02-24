@@ -220,7 +220,8 @@ void QgsDateTimeEdit::changed( const QVariant &dateTime )
   }
 
   mClearAction->setVisible( mAllowNull && !mIsNull );
-  emitValueChanged( dateTime );
+  if ( !mBlockChangedSignal )
+    emitValueChanged( dateTime );
 }
 
 QString QgsDateTimeEdit::nullRepresentation() const
@@ -309,7 +310,10 @@ void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )
   // Check if it's really changed or crash, see GH #29937
   else if ( dateTime != QgsDateTimeEdit::dateTime() )
   {
+    // changed emits a signal, so don't allow it to be emitted from setDateTime
+    mBlockChangedSignal++;
     QDateTimeEdit::setDateTime( dateTime );
+    mBlockChangedSignal--;
     changed( dateTime );
   }
 }
@@ -374,7 +378,10 @@ void QgsTimeEdit::setTime( const QTime &time )
   // Check if it's really changed or crash, see GH #29937
   else if ( time != QgsTimeEdit::time() )
   {
+    // changed emits a signal, so don't allow it to be emitted from setTime
+    mBlockChangedSignal++;
     QDateTimeEdit::setTime( time );
+    mBlockChangedSignal--;
     changed( time );
   }
 }
@@ -408,7 +415,10 @@ void QgsDateEdit::setDate( const QDate &date )
   // Check if it's really changed or crash, see GH #29937
   else if ( date != QgsDateEdit::date() )
   {
+    // changed emits a signal, so don't allow it to be emitted from setDate
+    mBlockChangedSignal++;
     QDateTimeEdit::setDate( date );
+    mBlockChangedSignal--;
     changed( date );
   }
 }
