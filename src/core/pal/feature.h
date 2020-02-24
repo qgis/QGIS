@@ -137,6 +137,16 @@ namespace pal
       QList<LabelPosition *> createCandidates( const GEOSPreparedGeometry *mapBoundary, PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates );
 
       /**
+       * Generate one candidate centered over the specified point.
+       * \param x x coordinate of the point
+       * \param y y coordinate of the point
+       * \param lPos pointer to an array of candidates, will be filled by generated candidate
+       * \param angle orientation of the label
+       * \returns the number of generated candidates (always 1)
+       */
+      int createCandidateCenteredOverPoint( double x, double y, QList<LabelPosition *> &lPos, double angle );
+
+      /**
        * Generate candidates for point feature, located around a specified point.
        * \param x x coordinate of the point
        * \param y y coordinate of the point
