@@ -130,7 +130,11 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     void wheelEvent( QWheelEvent *event ) override;
     void showEvent( QShowEvent *event ) override;
 
+#ifndef SIP_RUN
+///@cond PRIVATE
     QgsDateTimeEdit( const QVariant &var, QVariant::Type parserType, QWidget *parent );
+///@endcond
+#endif
 
     //! TRUE if the widget is empty
     bool mIsEmpty = false;
@@ -155,7 +159,12 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     bool isNull() const;
 
   protected slots:
+#ifndef SIP_RUN
+    ///@cond PRIVATE
     void changed( const QVariant &dateTime );
+    ///@endcond
+#endif
+
 
   private:
     bool mCurrentPressEvent = false;

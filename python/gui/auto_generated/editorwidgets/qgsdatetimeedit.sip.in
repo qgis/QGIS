@@ -146,7 +146,6 @@ Signal emitted whenever the value changes.
     virtual void showEvent( QShowEvent *event );
 
 
-    QgsDateTimeEdit( const QVariant &var, QVariant::Type parserType, QWidget *parent );
 
 
 
@@ -168,7 +167,7 @@ Returns ``True`` if the widget is currently set to a null value
 %End
 
   protected slots:
-    void changed( const QVariant &dateTime );
+
 
 };
 
