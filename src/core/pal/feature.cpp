@@ -231,16 +231,41 @@ void FeaturePart::setTotalRepeats( int totalRepeats )
   mTotalRepeats = totalRepeats;
 }
 
+int FeaturePart::createCandidateCenteredOverPoint( double x, double y, QList< LabelPosition *> &lPos, double angle )
+{
+  // get from feature
+  double labelW = getLabelWidth( angle );
+  double labelH = getLabelHeight( angle );
+
+  double cost = 0.00005;
+  int id = lPos.size();
+
+  double xdiff = -labelW / 2.0;
+  double ydiff = -labelH / 2.0;
+
+  double lx = x + xdiff;
+  double ly = y + ydiff;
+
+  if ( mLF->permissibleZonePrepared() )
+  {
+    if ( !GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), lx, ly, labelW, labelH, angle ) )
+    {
+      return 0;
+    }
+  }
+
+  lPos << new LabelPosition( id, lx, ly, labelW, labelH, angle, cost, this, false, LabelPosition::QuadrantOver );
+  return 1;
+}
+
 int FeaturePart::createCandidatesOverPoint( double x, double y, QList< LabelPosition *> &lPos, double angle )
 {
-  int nbp = 1;
-
   // get from feature
   double labelW = getLabelWidth( angle );
   double labelH = getLabelHeight( angle );
 
   double cost = 0.0001;
-  int id = 0;
+  int id = lPos.size();
 
   double xdiff = -labelW / 2.0;
   double ydiff = -labelH / 2.0;
@@ -307,7 +332,7 @@ int FeaturePart::createCandidatesOverPoint( double x, double y, QList< LabelPosi
   }
 
   lPos << new LabelPosition( id, lx, ly, labelW, labelH, angle, cost, this, false, quadrantFromOffset() );
-  return nbp;
+  return 1;
 }
 
 std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( PointSet *mapShape )
@@ -473,6 +498,7 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
 
   int icost = 0;
   int inc = 2;
+  int id = lPos.size();
 
   double candidateAngleIncrement = 2 * M_PI / maxNumberCandidates; /* angle bw 2 pos */
 
@@ -588,7 +614,7 @@ int FeaturePart::createCandidatesAroundPoint( double x, double y, QList< LabelPo
       }
     }
 
-    candidates << new LabelPosition( i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant );
+    candidates << new LabelPosition( id + i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant );
 
     icost += inc;
 
@@ -1643,14 +1669,21 @@ QList<LabelPosition *> FeaturePart::createCandidates( const GEOSPreparedGeometry
         switch ( mLF->layer()->arrangement() )
         {
           case QgsPalLayerSettings::AroundPoint:
-          case QgsPalLayerSettings::OverPoint:
+          {
             double cx, cy;
-            mapShape->getCentroid( cx, cy, mLF->layer()->centroidInside() );
-            if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OverPoint )
-              createCandidatesOverPoint( cx, cy, lPos, angle );
-            else
-              createCandidatesAroundPoint( cx, cy, lPos, angle );
+            getCentroid( cx, cy, mLF->layer()->centroidInside() );
+            if ( qgsDoubleNear( mLF->distLabel(), 0.0 ) )
+              createCandidateCenteredOverPoint( cx, cy, lPos, angle );
+            createCandidatesAroundPoint( cx, cy, lPos, angle );
             break;
+          }
+          case QgsPalLayerSettings::OverPoint:
+          {
+            double cx, cy;
+            getCentroid( cx, cy, mLF->layer()->centroidInside() );
+            createCandidatesOverPoint( cx, cy, lPos, angle );
+            break;
+          }
           case QgsPalLayerSettings::Line:
             createCandidatesAlongLine( lPos, mapShape );
             break;
