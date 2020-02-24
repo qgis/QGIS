@@ -9,6 +9,7 @@
 
 
 
+
 typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 
 

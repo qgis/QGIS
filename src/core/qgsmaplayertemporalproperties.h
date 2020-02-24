@@ -29,33 +29,32 @@
 /**
  * \class QgsMapLayerTemporalProperties
  * \ingroup core
- * Class for handling map layer temporal properties.
- *
- * Subclasses will provide full implementation.
+ * An abstract base class for handling map layer temporal properties.
  *
  * \since QGIS 3.14
  */
-
 class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
 {
   public:
 
     /**
      * Constructor for QgsMapLayerTemporalProperties.
+     *
+     * The \a enabled argument specifies whether the temporal properties are initially enabled or not (see isActive()).
      */
     QgsMapLayerTemporalProperties( bool enabled = false );
 
     virtual ~QgsMapLayerTemporalProperties() = default;
 
     /**
-     * Writes map layer temporal properties to a DOM element, to be used later with readXml()
+     * Writes the properties to a DOM \a element, to be used later with readXml().
      *
      * \see readXml()
      */
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
 
     /**
-     * Reads temporal properties from a DOM element previously written by writeXml()
+     * Reads temporal properties from a DOM \a element previously written by writeXml().
      *
      * \see writeXml()
      */

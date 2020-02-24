@@ -11,13 +11,10 @@
 
 
 
-
 class QgsMapLayerTemporalProperties : QgsTemporalProperty
 {
 %Docstring
-Class for handling map layer temporal properties.
-
-Subclasses will provide full implementation.
+An abstract base class for handling map layer temporal properties.
 
 .. versionadded:: 3.14
 %End
@@ -30,20 +27,22 @@ Subclasses will provide full implementation.
     QgsMapLayerTemporalProperties( bool enabled = false );
 %Docstring
 Constructor for QgsMapLayerTemporalProperties.
+
+The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see isActive()).
 %End
 
     virtual ~QgsMapLayerTemporalProperties();
 
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
 %Docstring
-Writes map layer temporal properties to a DOM element, to be used later with readXml()
+Writes the properties to a DOM ``element``, to be used later with readXml().
 
 .. seealso:: :py:func:`readXml`
 %End
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
 %Docstring
-Reads temporal properties from a DOM element previously written by writeXml()
+Reads temporal properties from a DOM ``element`` previously written by writeXml().
 
 .. seealso:: :py:func:`writeXml`
 %End

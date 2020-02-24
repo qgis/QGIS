@@ -10,13 +10,10 @@
 
 
 
-
 class QgsTemporalRangeObject
 {
 %Docstring
-Base class for temporal based classes.
-
-Subclasses may wish to update the abstract temporal functions.
+Base class for objects with an associated (optional) temporal range.
 
 .. versionadded:: 3.14
 %End
@@ -26,48 +23,49 @@ Subclasses may wish to update the abstract temporal functions.
 %End
   public:
 
-    QgsTemporalRangeObject();
+    QgsTemporalRangeObject( bool enabled = false );
 %Docstring
-Constructor for QgsTemporalRangeObject.
-%End
+Constructor QgsTemporalRangeObject.
 
-    QgsTemporalRangeObject( bool enabled );
-%Docstring
-Creates temporal range object with the specified temporal state.
+The ``enabled`` argument specifies whether the temporal range is initially enabled or not (see isTemporal()).
 %End
 
     virtual ~QgsTemporalRangeObject();
 
     void setIsTemporal( bool enabled );
 %Docstring
-Sets object as a temporal based one, which will be considered when rendering maps with a specific time range set.
+Sets whether the temporal range is ``enabled`` (i.e. whether the object has a temporal range
+which will be considered when rendering maps with a specific time range set.)
 
 .. seealso:: :py:func:`isTemporal`
 %End
 
     bool isTemporal() const;
 %Docstring
-Returns true if the object is a temporal one, and will be filtered when rendering maps with a specific time range set.
+Returns ``True`` if the object's temporal range is enabled, and the object will be filtered when rendering maps with a specific time range set.
 
-For map settings, If false is returned, then any other temporal settings relating to the map will be ignored during rendering.
+For map settings, if ``False`` is returned, then any other temporal settings relating to the map will be ignored during rendering.
 
 .. seealso:: :py:func:`setIsTemporal`
 %End
 
-    void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
+    void setTemporalRange( const QgsDateTimeRange &range );
 %Docstring
-Set datetime range for a temporal object.
+Sets the temporal ``range`` for the object.
 
-It updates object temporal state to true if it was false.
+Calling setTemporalRange() automatically enables temporal properties on the
+object (see isTemporal()), regardless of its existing state.
 
-When set, can be used to filter and request time base objects.
+When a temporal ``range`` is set it can be used to filter and request time base objects.
 
 .. seealso:: :py:func:`temporalRange`
 %End
 
     const QgsDateTimeRange &temporalRange() const;
 %Docstring
-Returns datetime range if object is a temporal object.
+Returns the datetime range for the object.
+
+This should only be considered when isTemporal() returns ``True``.
 
 .. seealso:: :py:func:`setTemporalRange`
 %End
