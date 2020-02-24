@@ -135,6 +135,9 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     //! TRUE if the widget is empty
     bool mIsEmpty = false;
 
+    //! Block change signals if TRUE
+    int mBlockChangedSignal = 0;
+
     /**
     * write the null value representation to the line edit without changing the value
     * \param updateCalendar Flag if calendar is open and minimum date needs to be set

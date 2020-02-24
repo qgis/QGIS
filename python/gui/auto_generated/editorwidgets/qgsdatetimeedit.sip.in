@@ -149,6 +149,7 @@ Signal emitted whenever the value changes.
     QgsDateTimeEdit( const QVariant &var, QVariant::Type parserType, QWidget *parent );
 
 
+
     void displayNull( bool updateCalendar = false );
 %Docstring
 write the null value representation to the line edit without changing the value
