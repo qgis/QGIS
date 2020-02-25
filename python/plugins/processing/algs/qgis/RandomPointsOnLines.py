@@ -72,29 +72,28 @@ class RandomPointsOnLines(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                          self.tr('Input layer'),
-                          [QgsProcessing.TypeVectorLine]))
+                                                              self.tr('Input layer'),
+                                                              [QgsProcessing.TypeVectorLine]))
         self.addParameter(QgsProcessingParameterNumber(self.POINTS_NUMBER,
-                          self.tr('Number of points on each feature'),
-                          QgsProcessingParameterNumber.Integer,
-                          1, False, 1, 1000000000))
+                                                       self.tr('Number of points on each feature'),
+                                                       QgsProcessingParameterNumber.Integer,
+                                                       1, False, 1, 1000000000))
         self.addParameter(QgsProcessingParameterDistance(self.MIN_DISTANCE,
-                          self.tr('Minimum distance between points'),
-                          0, self.INPUT, False, 0, 1000000000))
+                                                         self.tr('Minimum distance between points'),
+                                                         0, self.INPUT, False, 0, 1000000000))
         self.addParameter(QgsProcessingParameterNumber(self.MAXTRIESPERPOINT,
-                          self.tr('Maximum number of attempts per point'),
-                          QgsProcessingParameterNumber.Integer,
-                          10, False, 1, 1000))
+                                                       self.tr('Maximum number of attempts per point'),
+                                                       QgsProcessingParameterNumber.Integer,
+                                                       10, False, 1, 1000))
         self.addParameter(QgsProcessingParameterNumber(self.RANDOM_SEED,
-                          self.tr('Integer seed (for random)'),
-                          QgsProcessingParameterNumber.Integer,
-                          None, True, 1, 1000000000))
+                                                       self.tr('Integer seed (for random)'),
+                                                       QgsProcessingParameterNumber.Integer,
+                                                       None, True, 1, 1000000000))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
-                          self.tr('Random points'),
-                          type=QgsProcessing.TypeVectorPoint))
-        self.addOutput(QgsProcessingOutputNumber(
-                         self.OUTPUT_POINTS,
-                         self.tr('Number of point generated')
+                                                            self.tr('Random points'),
+                                                            type=QgsProcessing.TypeVectorPoint))
+        self.addOutput(QgsProcessingOutputNumber(self.OUTPUT_POINTS,
+                                                 self.tr('Number of point generated')
                        ))
 
     def processAlgorithm(self, parameters, context, feedback):
