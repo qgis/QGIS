@@ -97,7 +97,7 @@ void QgsMeshLayerProperties::syncToLayer()
 {
   Q_ASSERT( mRendererMeshPropertiesWidget );
 
-  QgsDebugMsg( QStringLiteral( "populate general information tab" ) );
+  QgsDebugMsgLevel( QStringLiteral( "populate general information tab" ), 4 );
   /*
    * Information Tab
    */
@@ -117,7 +117,7 @@ void QgsMeshLayerProperties::syncToLayer()
   }
   mInformationTextBrowser->setText( info );
 
-  QgsDebugMsg( QStringLiteral( "populate source tab" ) );
+  QgsDebugMsgLevel( QStringLiteral( "populate source tab" ), 4 );
   /*
    * Source Tab
    */
@@ -134,7 +134,7 @@ void QgsMeshLayerProperties::syncToLayer()
     mUriLabel->setText( tr( "Not assigned" ) );
   }
 
-  QgsDebugMsg( QStringLiteral( "populate styling tab" ) );
+  QgsDebugMsgLevel( QStringLiteral( "populate styling tab" ), 4 );
   /*
    * Styling Tab
    */
@@ -146,6 +146,13 @@ void QgsMeshLayerProperties::syncToLayer()
 #ifdef HAVE_3D
   mVector3DWidget->setLayer( mMeshLayer );
 #endif
+
+  QgsDebugMsgLevel( QStringLiteral( "populate rendering tab" ), 4 );
+  QgsMeshSimplificationSettings simplifySettings = mMeshLayer->meshSimplificationSettings();
+
+  mSimplifyMeshGroupBox->setChecked( simplifySettings.isEnabled() );
+  mSimplifyReductionFactorSpinBox->setValue( simplifySettings.reductionFactor() );
+  mSimplifyMeshResolutionSpinBox->setValue( simplifySettings.meshResolution() );
 }
 
 void QgsMeshLayerProperties::addDataset()
@@ -185,13 +192,13 @@ void QgsMeshLayerProperties::apply()
 {
   Q_ASSERT( mRendererMeshPropertiesWidget );
 
-  QgsDebugMsg( QStringLiteral( "processing general tab" ) );
+  QgsDebugMsgLevel( QStringLiteral( "processing general tab" ), 4 );
   /*
    * General Tab
    */
   mMeshLayer->setName( mLayerOrigNameLineEd->text() );
 
-  QgsDebugMsg( QStringLiteral( "processing style tab" ) );
+  QgsDebugMsgLevel( QStringLiteral( "processing style tab" ), 4 );
   /*
    * Style Tab
    */
@@ -203,6 +210,22 @@ void QgsMeshLayerProperties::apply()
 #ifdef HAVE_3D
   mVector3DWidget->apply();
 #endif
+
+  QgsDebugMsgLevel( QStringLiteral( "processing rendering tab" ), 4 );
+  /*
+   * Rendering Tab
+   */
+  QgsMeshSimplificationSettings simplifySettings;
+  simplifySettings.setEnabled( mSimplifyMeshGroupBox->isChecked() );
+  simplifySettings.setReductionFactor( mSimplifyReductionFactorSpinBox->value() );
+  simplifySettings.setMeshResolution( mSimplifyMeshResolutionSpinBox->value() );
+  bool needMeshUpdating = ( ( simplifySettings.isEnabled() != mMeshLayer->meshSimplificationSettings().isEnabled() ) ||
+                            ( simplifySettings.reductionFactor() != mMeshLayer->meshSimplificationSettings().reductionFactor() ) );
+
+  mMeshLayer->setMeshSimplificationSettings( simplifySettings );
+
+  if ( needMeshUpdating )
+    mMeshLayer->reload();
 
   //make sure the layer is redrawn
   mMeshLayer->triggerRepaint();

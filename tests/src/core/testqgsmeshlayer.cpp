@@ -67,6 +67,8 @@ class TestQgsMeshLayer : public QObject
 
     void test_reload();
     void test_reload_extra_dataset();
+
+    void test_mesh_simplification();
 };
 
 QString TestQgsMeshLayer::readFile( const QString &fname ) const
@@ -664,6 +666,35 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   QCOMPARE( QgsMeshDatasetValue( 3, 2 ), layer.dataProvider()->datasetValue( ds, 2 ) );
   QCOMPARE( QgsMeshDatasetValue( 2, 2 ), layer.dataProvider()->datasetValue( ds, 3 ) );
   QCOMPARE( QgsMeshDatasetValue( 1, -2 ), layer.dataProvider()->datasetValue( ds, 4 ) );
+}
+
+void TestQgsMeshLayer::test_mesh_simplification()
+{
+  //init files for the test
+  QgsMeshLayer layer( mDataDir + "/trap_steady_05_3D.nc", "MDAL layer", "mdal" );
+
+  QgsCoordinateTransform invalidTransform;
+  layer.updateTriangularMesh( invalidTransform );
+  QgsTriangularMesh *baseMesh = layer.triangularMesh();
+
+  QCOMPARE( baseMesh->triangles().count(), 640 );
+
+  //Simplify with reduction factor lesser than 1
+  auto simplifiedMeshes = baseMesh->simplifyMesh( 0.5, 1 );
+  QCOMPARE( simplifiedMeshes.count(), 0 );
+
+  //Simplify with reduction factor equal to 2
+  simplifiedMeshes = baseMesh->simplifyMesh( 2, 1 );
+  QCOMPARE( simplifiedMeshes.count(), 5 );
+  QCOMPARE( simplifiedMeshes.at( 0 )->triangles().count(), 320 );
+  QCOMPARE( simplifiedMeshes.at( 1 )->triangles().count(), 112 );
+  QCOMPARE( simplifiedMeshes.at( 2 )->triangles().count(), 80 );
+  QCOMPARE( simplifiedMeshes.at( 3 )->triangles().count(), 32 );
+  QCOMPARE( simplifiedMeshes.at( 4 )->triangles().count(), 5 );
+
+  //Delete simplified meshes
+  for ( auto m : simplifiedMeshes )
+    delete m;
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )

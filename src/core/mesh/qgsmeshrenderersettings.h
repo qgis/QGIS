@@ -349,7 +349,7 @@ class CORE_EXPORT QgsMeshRendererVectorTracesSettings
 /**
  * \ingroup core
  *
- * Represents a streamline renderer settings for vector datasets
+ * Represents a renderer settings for vector datasets
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *

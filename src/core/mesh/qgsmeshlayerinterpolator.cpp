@@ -74,14 +74,25 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
   outputBlock->setIsNoData();  // assume initially that all values are unset
   double *data = reinterpret_cast<double *>( outputBlock->bits() );
 
-  const QVector<QgsMeshFace> &triangles = mTriangularMesh.triangles();
+  QList<int> spatialIndexTriangles;
+  int indexCount;
+  if ( mSpatialIndexActive )
+  {
+    spatialIndexTriangles = mTriangularMesh.faceIndexesForRectangle( extent );
+    indexCount = spatialIndexTriangles.count();
+  }
+  else
+  {
+    indexCount = mTriangularMesh.triangles().count();
+  }
+
   const QVector<QgsMeshVertex> &vertices = mTriangularMesh.vertices();
 
   // currently expecting that triangulation does not add any new extra vertices on the way
   if ( mDataOnVertices )
     Q_ASSERT( mDatasetValues.count() == mTriangularMesh.vertices().count() );
 
-  for ( int i = 0; i < triangles.size(); ++i )
+  for ( int i = 0; i < indexCount; ++i )
   {
     if ( feedback && feedback->isCanceled() )
       break;
@@ -89,12 +100,18 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
     if ( mContext.renderingStopped() )
       break;
 
-    const QgsMeshFace &face = triangles[i];
+    int triangleIndex;
+    if ( mSpatialIndexActive )
+      triangleIndex = spatialIndexTriangles[i];
+    else
+      triangleIndex = i;
+
+    const QgsMeshFace &face = mTriangularMesh.triangles()[triangleIndex];
 
     const int v1 = face[0], v2 = face[1], v3 = face[2];
     const QgsPoint p1 = vertices[v1], p2 = vertices[v2], p3 = vertices[v3];
 
-    const int nativeFaceIndex = mTriangularMesh.trianglesToNativeFaces()[i];
+    const int nativeFaceIndex = mTriangularMesh.trianglesToNativeFaces()[triangleIndex];
     const bool isActive = mActiveFaceFlagValues.active( nativeFaceIndex );
     if ( !isActive )
       continue;
@@ -126,7 +143,7 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
                   p );
         else
         {
-          const int faceIdx = mTriangularMesh.trianglesToNativeFaces()[i];
+          const int faceIdx = mTriangularMesh.trianglesToNativeFaces()[triangleIndex];
           val = QgsMeshLayerUtils::interpolateFromFacesData(
                   p1,
                   p2,
@@ -148,6 +165,8 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
 
   return outputBlock.release();
 }
+
+void QgsMeshLayerInterpolator::setSpatialIndexActive( bool active ) {mSpatialIndexActive = active;}
 
 ///@endcond
 
@@ -186,7 +205,7 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   std::unique_ptr<QgsMesh> nativeMesh = qgis::make_unique<QgsMesh>();
   layer.dataProvider()->populateMesh( nativeMesh.get() );
   std::unique_ptr<QgsTriangularMesh> triangularMesh = qgis::make_unique<QgsTriangularMesh>();
-  triangularMesh->update( nativeMesh.get(), &renderContext );
+  triangularMesh->update( nativeMesh.get(), renderContext.coordinateTransform() );
 
   const QgsMeshDatasetGroupMetadata metadata = layer.dataProvider()->datasetGroupMetadata( datasetIndex );
   bool scalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
