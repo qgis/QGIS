@@ -56,6 +56,7 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
     bool saveCrs( QgsCoordinateReferenceSystem crs, const QString &name, const QString &id, bool newEntry, QgsCoordinateReferenceSystem::Format format );
     void insertProjection( const QString &projectionAcronym );
     void showHelp();
+    QString multiLineWktToSingleLine( const QString &wkt );
 
     //These two QMap store the values as they are on the database when loading
     QMap <QString, QString> mExistingCRSproj;
@@ -68,6 +69,11 @@ class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCust
       QString id;
       QString wkt;
       QString proj;
+    };
+
+    enum Roles
+    {
+      FormattedWktRole = Qt::UserRole + 1,
     };
 
     QList< Definition > mDefinitions;
