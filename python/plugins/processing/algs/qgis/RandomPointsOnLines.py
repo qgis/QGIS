@@ -117,10 +117,10 @@ class RandomPointsOnLines(QgisAlgorithm):
                                                context, fields,
                                                QgsWkbTypes.Point,
                                                source.sourceCrs(),
-                                        QgsFeatureSink.RegeneratePrimaryKey)
+                                               QgsFeatureSink.RegeneratePrimaryKey)
         if sink is None:
             raise QgsProcessingException(
-                          self.invalidSinkError(parameters, self.OUTPUT))
+                self.invalidSinkError(parameters, self.OUTPUT))
 
         totNPoints = 0  # The total number of points generated
         missedPoints = 0  # The number of misses (too close)
@@ -206,14 +206,14 @@ class RandomPointsOnLines(QgisAlgorithm):
                         p = QgsPointXY(vertices[vid])
                     # Shall it be at the end point of the segment?
                     elif ((vid == len(vertices) - 2) and
-                          (remainDist == currGeom.distanceToVertex(vid+1) -
+                          (remainDist == currGeom.distanceToVertex(vid + 1) -
                            currGeom.distanceToVertex(vid))):
                         # A perfect hit at the end of this segment
-                        p = QgsPointXY(vertices[vid+1])
+                        p = QgsPointXY(vertices[vid + 1])
                     else:
                         # The point shall be remainDist along this segment
                         startPoint = vertices[vid]
-                        endPoint = vertices[vid+1]
+                        endPoint = vertices[vid + 1]
                         length = startPoint.distance(endPoint)
                         d = remainDist / (length - remainDist)
                         if (1.0 + d) == 0.0:
@@ -239,7 +239,7 @@ class RandomPointsOnLines(QgisAlgorithm):
                         nPoints += 1
                         totNPoints += 1
                         feedback.setProgress(int((totNPoints + missedPoints) *
-                                             total))
+                                                 total))
                         break  # Point added, so no need to continue
                 nIterations += 1
             if nPoints < pointCount:
