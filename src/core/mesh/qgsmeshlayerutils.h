@@ -166,6 +166,21 @@ class CORE_EXPORT QgsMeshLayerUtils
     );
 
     /**
+     * Calculates magnitude values ont vertices from the given QgsMeshDataBlock.
+     * If the values are defined on faces,
+     * \param meshLayer the mesh layer
+     * \param index the dataset index that contains the data
+     * \param activeFaceFlagValues pointer to the QVector containing active face flag values
+     * \param method used to inteprolate the values on vertices if needed
+     * \returns magnitude values of the dataset on all the vertices
+     * \since QGIS 3.14
+     */
+    static QVector<double> calculateMagnitudeOnVertices( const QgsMeshLayer *meshLayer,
+        const QgsMeshDatasetIndex index,
+        QgsMeshDataBlock *activeFaceFlagValues,
+        const QgsMeshRendererScalarSettings::DataInterpolationMethod method = QgsMeshRendererScalarSettings::NeighbourAverage );
+
+    /**
      * Calculates the bounding box of the triangle
      * \param p1 first vertex of the triangle
      * \param p2 second vertex of the triangle

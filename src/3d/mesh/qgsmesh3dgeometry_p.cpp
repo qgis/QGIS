@@ -36,7 +36,7 @@ static QByteArray createTerrainVertexData( const QgsTriangularMesh &mesh,
 {
   const int nVerts = mesh.vertices().count();
 
-  QVector<QVector3D> normales = mesh.vertexNormals( vertScale );
+  QVector<QVector3D> normals = mesh.vertexNormals( vertScale );
 
   // Populate a buffer with the interleaved per-vertex data with
   // vec3 pos,  vec3 normal
@@ -54,7 +54,7 @@ static QByteArray createTerrainVertexData( const QgsTriangularMesh &mesh,
     *fptr++ = float( vert.z() - origin.z() ) * vertScale ;
     *fptr++ = float( -vert.y() + origin.y() );
 
-    QVector3D normal = normales.at( i );
+    QVector3D normal = normals.at( i );
     normal = QVector3D( normal.x() * vertScale, -normal.y() * vertScale, normal.z() );
     normal.normalized();
 
@@ -76,7 +76,7 @@ static QByteArray createDatasetVertexData( const QgsTriangularMesh &mesh,
   const int nVerts = mesh.vertices().count();
 
   //Calculate normales with Z value equal to verticaleMagnitude
-  QVector<QVector3D> normales( nVerts );
+  QVector<QVector3D> normals( nVerts );
   for ( const auto &face : mesh.triangles() )
   {
     for ( int i = 0; i < 3; i++ )
@@ -107,12 +107,12 @@ static QByteArray createDatasetVertexData( const QgsTriangularMesh &mesh,
                     float( otherVert2.y() - vert.y() ),
                     vertScale * float( verticaleMagnitude[index2] - verticaleMagnitude[index] + adjustRelative2 - adjustRelative ) );
 
-      normales[index] += QVector3D::crossProduct( v1, v2 );
+      normals[index] += QVector3D::crossProduct( v1, v2 );
     }
   }
 
   // Populate a buffer with the interleaved per-vertex data with
-  // vec3 pos, vec2 texCoord, vec3 normal, vec4 tangent
+  // vec3 pos, vec3 normal, float magnitude
   const quint32 elementSize = 3 + 3 + 1 ;
   const quint32 stride = elementSize * sizeof( float );
   QByteArray bufferBytes;
@@ -133,7 +133,7 @@ static QByteArray createDatasetVertexData( const QgsTriangularMesh &mesh,
     *fptr++ = float( vertMag - origin.z() ) * vertScale ;
     *fptr++ = float( -vert.y() + origin.y() );
 
-    QVector3D normal = normales.at( i );
+    QVector3D normal = normals.at( i );
     normal = QVector3D( normal.x() * vertScale, -normal.y() * vertScale, normal.z() );
     normal.normalized();
 
@@ -169,14 +169,13 @@ static QByteArray createIndexData( const QgsTriangularMesh &mesh )
 
 static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, const QgsMeshDataBlock &mActiveFaceFlagValues, int activeFaceCount )
 {
-  const int faces = mesh.triangles().count();
+  const int trianglesCount = mesh.triangles().count();
   const quint32 indices = static_cast<quint32>( 3 * activeFaceCount );
-  Q_ASSERT( indices < std::numeric_limits<quint32>::max() );
   QByteArray indexBytes;
   indexBytes.resize( int( indices * sizeof( quint32 ) ) );
   quint32 *indexPtr = reinterpret_cast<quint32 *>( indexBytes.data() );
 
-  for ( int i = 0; i < faces; ++i )
+  for ( int i = 0; i < trianglesCount; ++i )
   {
     int nativeFaceIndex = mesh.trianglesToNativeFaces()[i];
     const bool isActive = mActiveFaceFlagValues.active( nativeFaceIndex );
@@ -287,6 +286,11 @@ class MeshDatasetIndexBufferFunctor : public QBufferDataGenerator
 class MeshDatasetVertexBufferFunctor : public QBufferDataGenerator
 {
   public:
+
+    /**
+     * verticalRelative parameter is true when the vertical magnitude provides from the sum of the z vertices and the scalar dataset choosen
+     * for rendering the vertical component.
+     */
     explicit MeshDatasetVertexBufferFunctor( const QgsTriangularMesh &mesh,
         const QVector<double> verticaleMagnitude,
         const QVector<double> scalarMagnitude,
@@ -337,14 +341,19 @@ class MeshDatasetVertexBufferFunctor : public QBufferDataGenerator
 
 
 
+QgsMeshLayer *QgsMesh3dGeometry::meshLayer() const
+{
+  return qobject_cast<QgsMeshLayer *>( mLayerRef.layer.data() );
+}
+
 QgsMesh3dGeometry::QgsMesh3dGeometry( QgsMeshLayer *layer,
                                       const QgsVector3D &origin,
                                       const QgsMesh3DSymbol &symbol,
                                       Qt3DCore::QNode *parent ):
   Qt3DRender::QGeometry( parent ),
-  mLayerRef( layer ),
   mOrigin( origin ),
-  mVertScale( symbol.verticalScale() )
+  mVertScale( symbol.verticalScale() ),
+  mLayerRef( layer )
 {}
 
 QgsMeshDataset3dGeometry::QgsMeshDataset3dGeometry(
@@ -361,7 +370,7 @@ QgsMeshDataset3dGeometry::QgsMeshDataset3dGeometry(
 
 void QgsMeshDataset3dGeometry::init()
 {
-  QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( mLayerRef.layer.data() );
+  QgsMeshLayer *layer = meshLayer();
 
   if ( !layer )
     return;
@@ -417,7 +426,7 @@ void QgsMeshDataset3dGeometry::init()
 
 int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude, QVector<double> &scalarMagnitude, QgsMeshDataBlock &activeFaceFlagValues )
 {
-  QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( mLayerRef.layer.data() );
+  QgsMeshLayer *layer = meshLayer();
 
   if ( !layer )
     return 0;
@@ -430,59 +439,23 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
     return 0;
 
   QgsTriangularMesh triangularMesh = *layer->triangularMesh();
-
   const QgsMesh nativeMesh = *layer->nativeMesh();
-  QgsMeshDatasetGroupMetadata verticalDatasetGroupMetadata = layer->dataProvider()->datasetGroupMetadata( mVerticalGroupDatasetIndex );
-  int dataOnVerticesCount = triangularMesh.vertices().count();
 
-  //***** extract the scalar dataset used to render vertical magintude of geometry
-  //define the vertical magitude datasetIndex
+
+  //extract the scalar dataset used to render vertical magnitude of geometry
+  //define the vertical magnitude datasetIndex
   int verticalDataSetIndexNumber = 0;
   verticalDataSetIndexNumber = scalarDatasetIndex.dataset();
   verticalDataSetIndexNumber = std::min( verticalDataSetIndexNumber, layer->dataProvider()->datasetCount( mVerticalGroupDatasetIndex ) - 1 );
   QgsMeshDatasetIndex verticalMagDatasetIndex( mVerticalGroupDatasetIndex, verticalDataSetIndexNumber );
 
   //define the active face for vertical magnitude, the inactive faces will not be rendered
+  // The active face flag values are defined based on the vertival magnitude dataset
   activeFaceFlagValues = layer->dataProvider()->areFacesActive( verticalMagDatasetIndex, 0, nativeMesh.faces.count() );
-
-
-  if ( verticalDatasetGroupMetadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices )
-  {
-    //The dataset values are on vertices, copy directly if data is scalar, calculate magnitude if data is vector
-    QgsMeshDataBlock dataOnVertices = layer->dataProvider()->datasetValues( verticalMagDatasetIndex, 0, dataOnVerticesCount );
-
-    if ( verticalDatasetGroupMetadata.isScalar() )
-      verticalMagnitude = dataOnVertices.values();
-
-    if ( verticalDatasetGroupMetadata.isVector() )
-      verticalMagnitude = QgsMeshLayerUtils::calculateMagnitudes( dataOnVertices );
-  }
-  else if ( verticalDatasetGroupMetadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces ||
-            verticalDatasetGroupMetadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVolumes )
-  {
-    //The dataset values are on faces or volumes,calculate magnitude if data is vector, then interpolate from faces to vertices
-    QgsMeshDataBlock dataOnFaces = QgsMeshLayerUtils::datasetValues(
-                                     layer,
-                                     verticalMagDatasetIndex,
-                                     0,
-                                     nativeMesh.faceCount() );
-
-    QVector<double> magOnFaces;
-
-    if ( verticalDatasetGroupMetadata.isScalar() )
-      magOnFaces = dataOnFaces.values();
-
-    if ( verticalDatasetGroupMetadata.isVector() )
-      magOnFaces = QgsMeshLayerUtils::calculateMagnitudes( dataOnFaces );
-
-    verticalMagnitude = QgsMeshLayerUtils::interpolateFromFacesData(
-                          magOnFaces,
-                          &nativeMesh,
-                          &triangularMesh,
-                          &activeFaceFlagValues,
-                          QgsMeshRendererScalarSettings::NeighbourAverage
-                        );
-  }
+  verticalMagnitude = QgsMeshLayerUtils::calculateMagnitudeOnVertices(
+                        layer,
+                        verticalMagDatasetIndex,
+                        &activeFaceFlagValues );
 
   //count active faces
   int activeTriangularCount = 0;
@@ -493,37 +466,14 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
       activeTriangularCount++;
   }
 
-  //***** extract the scalar dataset used to render color shading
-  const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( scalarDatasetIndex );
-  bool scalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
+  //extract the scalar dataset used to render color shading
+  QgsMeshDataBlock scalarActiveFaceFlagValues =
+    layer->dataProvider()->areFacesActive( scalarDatasetIndex, 0, nativeMesh.faces.count() );
+  scalarMagnitude = QgsMeshLayerUtils::calculateMagnitudeOnVertices(
+                      layer,
+                      scalarDatasetIndex,
+                      &scalarActiveFaceFlagValues );
 
-  // populate scalar values
-  int datacount = scalarDataOnVertices ? nativeMesh.vertices.count() : nativeMesh.faces.count();
-  QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
-                            layer,
-                            scalarDatasetIndex,
-                            0,
-                            datacount );
-
-  // vals could be scalar or vectors, for contour rendering we want always magnitude
-  if ( vals.isValid() )
-  {
-    scalarMagnitude = QgsMeshLayerUtils::calculateMagnitudes( vals );
-    QgsMeshDataBlock scalarActiveFaceFlagValues =
-      layer->dataProvider()->areFacesActive( scalarDatasetIndex, 0, nativeMesh.faces.count() );
-
-    if ( !scalarDataOnVertices )
-    {
-      //Need to interpolate data on vertices
-      scalarMagnitude = QgsMeshLayerUtils::interpolateFromFacesData(
-                          scalarMagnitude,
-                          &nativeMesh,
-                          &triangularMesh,
-                          &scalarActiveFaceFlagValues,
-                          QgsMeshRendererScalarSettings::NeighbourAverage
-                        );
-    }
-  }
   return activeTriangularCount;
 }
 
@@ -540,11 +490,10 @@ QgsMeshTerrain3dGeometry::QgsMeshTerrain3dGeometry(
 
 void QgsMeshTerrain3dGeometry::init()
 {
-  QgsMeshLayer *layer = qobject_cast<QgsMeshLayer *>( mLayerRef.layer.data() );
+  QgsMeshLayer *layer = meshLayer();
 
   if ( !layer )
     return;
-
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   Qt3DRender::QBuffer *mVertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
@@ -635,3 +584,4 @@ void QgsMesh3dGeometry::prepareIndexesAttribute( Qt3DRender::QBuffer *buffer, in
 
   addAttribute( indexAttribute );
 }
+

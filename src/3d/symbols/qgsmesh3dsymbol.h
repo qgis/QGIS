@@ -55,15 +55,15 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     };
 
     /**
-     * Which value to render the Z value of the mesh
+     * How to render the Z value of the mesh
      *
      * \since QGIS 3.14
      */
-    enum ZvalueType
+    enum ZValueType
     {
       //! Use the Z value of the vertices
       VerticesZValue = 0,
-      //! Render the mesh with a color ramp
+      //! Use the value from a dataset (for example, water surface value)
       ScalarDatasetZvalue
     };
 
@@ -214,28 +214,28 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     void setRenderingStyle( const QgsMesh3DSymbol::RenderingStyle &textureType );
 
     /**
-     * Returns the index og the dataset group that will be used to render the vertical of the 3D mesh
+     * Returns the index of the dataset group that will be used to render the vertical component of the 3D mesh geometry
      *
      * \since QGIS 3.14
      */
     int verticalDatasetGroupIndex() const;
 
     /**
-     * Sets the index og the dataset group that will be used to render the vertical of the 3D mesh
+     * Sets the index of the dataset group that will be used to render the vertical component of the 3D mesh geometry
      *
      * \since QGIS 3.14
      */
     void setVerticalDatasetGroupIndex( int verticalDatasetGroupIndex );
 
     /**
-     * Returns if the verticale magnitude is relative to the mesh vertices Z value
+     * Returns if the vertical component of the mesh is relative to the mesh vertices Z value
      *
      * \since QGIS 3.14
      */
     bool isVerticalMagnitudeRelative() const;
 
     /**
-     * Sets if the verticale magnitude is relative to the mesh vertices Z value
+     * Sets if the vertical component of the mesh is relative to the mesh vertices Z value
      *
      * \since QGIS 3.14
      */
@@ -243,25 +243,24 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
 
   private:
 
-    //old settings
     //! how to handle altitude of vector features
     Qgs3DTypes::AltitudeClamping mAltClamping = Qgs3DTypes::AltClampRelative;
     float mHeight = 0.0f;           //!< Base height of triangles
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
     bool mAddBackFaces = false;
 
-    // Triangles settings
+    //! Triangles settings
     bool mSmoothedTriangles = false;
     bool mWireframeEnabled = false;
     double mWireframeLineWidth = 1.0;
     QColor mWireframeLineColor = Qt::darkGray;
 
-    // Verticals settings
+    //! Verticals settings
     double mVerticalScale = 1.0;
     int mVerticalDatasetGroupIndex = -1;
     bool mIsVerticalMagnitudeRelative = false;
 
-    // Color rendering settings
+    //! Color rendering settings
     QgsMesh3DSymbol::RenderingStyle mRenderingStyle = QgsMesh3DSymbol::SingleColor;
     QgsColorRampShader mColorRampShader;
     QColor mSingleColor = Qt::darkGreen;

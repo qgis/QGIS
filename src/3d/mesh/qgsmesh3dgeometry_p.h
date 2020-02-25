@@ -49,14 +49,15 @@ namespace Qt3DRender
 class QgsMeshLayer;
 
 /**
- * \ingroup 3d
  * Creates attributes and vertex/index buffers for a mesh layer
- * \since QGIS 3.12
  */
 class QgsMesh3dGeometry: public  Qt3DRender::QGeometry
 {
+  public:
+    QgsMeshLayer *meshLayer() const;
+
   protected:
-    //! Constructor protected because must anly be called from derived classes
+    //! Constructor
     explicit QgsMesh3dGeometry( QgsMeshLayer *layer,
                                 const QgsVector3D &origin,
                                 const QgsMesh3DSymbol &symbol,
@@ -66,15 +67,16 @@ class QgsMesh3dGeometry: public  Qt3DRender::QGeometry
     void prepareVerticesNormalAttribute( Qt3DRender::QBuffer *buffer, int count, int stride, int offset );
     void prepareIndexesAttribute( Qt3DRender::QBuffer *buffer, int count );
 
-    QgsMapLayerRef mLayerRef;
     QgsVector3D mOrigin;
     float mVertScale;
+
+  private:
+
+    QgsMapLayerRef mLayerRef;
 };
 
 /**
- * \ingroup 3d
  * Creates attributes and vertex/index buffers for a mesh layer that renders the dataset
- * \since QGIS 3.14
  */
 class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
 {
@@ -88,7 +90,7 @@ class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
   private:
     void init();
 
-    // Returns the number of active faces
+    //! Returns the number of active faces
     int extractDataset( QVector<double> &verticaleMagnitude, QVector<double> &scalarMagnitude, QgsMeshDataBlock &verticalActiveFaceFlagValues );
     void prepareVerticesDatasetAttribute( Qt3DRender::QBuffer *buffer, int count, int stride, int offset );
 
@@ -98,9 +100,7 @@ class QgsMeshDataset3dGeometry: public  QgsMesh3dGeometry
 };
 
 /**
- * \ingroup 3d
  * Creates attributes and vertex/index buffers for a mesh layer that renders terrain
- * \since QGIS 3.14
  */
 class QgsMeshTerrain3dGeometry: public  QgsMesh3dGeometry
 {

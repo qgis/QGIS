@@ -37,7 +37,6 @@ class ColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
       mVerticalScale( verticalScale )
     {}
 
-    // QTextureImageDataGenerator interface
   public:
     Qt3DRender::QTextureImageDataPtr operator()() override
     {
@@ -77,8 +76,6 @@ class ColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
 
       dataPtr->setData( data, sizeof( float ) ); //size is the size of the type, here float
 
-      qDebug() << "Color ramp texture created";
-
       return dataPtr;
     }
 
@@ -101,8 +98,8 @@ class ColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
       QList<QgsColorRampShader::ColorRampItem> otherColorItemList = otherColorRampShader.colorRampItemList();
       for ( int i = 0; i < colorItemList.count(); ++i )
       {
-        QColor color = colorItemList.at( i ).color;
-        QColor otherColor = otherColorItemList.at( i ).color;
+        const QColor color = colorItemList.at( i ).color;
+        const QColor otherColor = otherColorItemList.at( i ).color;
         double value = colorItemList.at( i ).value;
         double otherValue = otherColorItemList.at( i ).value;
         if ( color != otherColor ||
@@ -166,11 +163,11 @@ void QgsMesh3dMaterial::configure()
     switch ( mMagnitudeType )
     {
       case QgsMesh3dMaterial::ZValue:
-        // if the color shading is done with the Z value of vertices, the color ramhave top adapted with verticale scale
+        // if the color shading is done with the Z value of vertices, the color ramp has to be adapted with vertical scale
         colorRampTexture->addTextureImage( new ColorRampTexture( mSymbol.colorRampShader(), mSymbol.verticalScale() ) );
         break;
       case QgsMesh3dMaterial::ScalarDataSet:
-        // if the color shading is done with scalar dataset, no verticale scale to use
+        // if the color shading is done with scalar dataset, no vertical scale to use
         colorRampTexture->addTextureImage( new ColorRampTexture( mSymbol.colorRampShader(), 1 ) );
         break;
     }
@@ -196,7 +193,7 @@ void QgsMesh3dMaterial::configure()
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram();
 
   //Load shader programs
-  QUrl urlVert = QUrl( QStringLiteral( "qrc:/shaders/mesh/mesh.vert" ) );
+  QUrl urlVert( QStringLiteral( "qrc:/shaders/mesh/mesh.vert" ) );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, shaderProgram->loadSource( urlVert ) );
   QUrl urlGeom( QStringLiteral( "qrc:/shaders/mesh/mesh.geom" ) );
   shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Geometry, shaderProgram->loadSource( urlGeom ) );

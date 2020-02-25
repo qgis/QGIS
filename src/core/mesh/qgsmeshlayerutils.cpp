@@ -233,6 +233,52 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData(
   return res;
 }
 
+QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices( const QgsMeshLayer *meshLayer,
+    const QgsMeshDatasetIndex index,
+    QgsMeshDataBlock *activeFaceFlagValues,
+    const QgsMeshRendererScalarSettings::DataInterpolationMethod method )
+{
+  QVector<double> ret;
+
+  if ( !meshLayer && !index.isValid() )
+    return ret;
+
+  const QgsTriangularMesh *triangularMesh = meshLayer->triangularMesh();
+  const QgsMesh *nativeMesh = meshLayer->nativeMesh();
+  if ( !triangularMesh || !nativeMesh )
+    return ret;
+
+  const QgsMeshDatasetGroupMetadata metadata = meshLayer->dataProvider()->datasetGroupMetadata( index );
+  bool scalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
+
+  // populate scalar values
+  int datacount = scalarDataOnVertices ? nativeMesh->vertices.count() : nativeMesh->faces.count();
+  QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                            meshLayer,
+                            index,
+                            0,
+                            datacount );
+
+  if ( vals.isValid() )
+  {
+    ret = QgsMeshLayerUtils::calculateMagnitudes( vals );
+    QgsMeshDataBlock scalarActiveFaceFlagValues =
+      meshLayer->dataProvider()->areFacesActive( index, 0, nativeMesh->faces.count() );
+
+    if ( !scalarDataOnVertices )
+    {
+      //Need to interpolate data on vertices
+      ret = QgsMeshLayerUtils::interpolateFromFacesData(
+              ret,
+              nativeMesh,
+              triangularMesh,
+              activeFaceFlagValues,
+              method );
+    }
+  }
+  return ret;
+}
+
 QgsRectangle QgsMeshLayerUtils::triangleBoundingBox( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 )
 {
   // p1

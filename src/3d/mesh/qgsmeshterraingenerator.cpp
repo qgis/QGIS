@@ -43,7 +43,7 @@ Qt3DCore::QEntity *QgsMeshTerrainTileLoader::createEntity( Qt3DCore::QEntity *pa
   if ( !layer )
     return nullptr;
 
-  auto entity = new QgsMesh3dTerrainTileEntity( terrain()->map3D(), layer, mSymbol, mNode->tileId(), parent );
+  QgsMesh3dTerrainTileEntity *entity = new QgsMesh3dTerrainTileEntity( terrain()->map3D(), layer, mSymbol, mNode->tileId(), parent );
   entity->build();
   createTexture( entity );
 
