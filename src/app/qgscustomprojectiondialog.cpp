@@ -133,6 +133,7 @@ void QgsCustomProjectionDialog::populateList()
 
       mExistingCRSnames[id] = name;
       const QString actualWkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false );
+      const QString actualWktFormatted = crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, true );
       const QString actualProj = crs.toProj();
       mExistingCRSwkt[id] = wkt.isEmpty() ? QString() : actualWkt;
       mExistingCRSproj[id] = wkt.isEmpty() ? actualProj : QString();
@@ -141,6 +142,7 @@ void QgsCustomProjectionDialog::populateList()
       newItem->setText( QgisCrsNameColumn, name );
       newItem->setText( QgisCrsIdColumn, id );
       newItem->setText( QgisCrsParametersColumn, wkt.isEmpty() ? actualProj : actualWkt );
+      newItem->setData( 0, FormattedWktRole, actualWktFormatted );
     }
   }
   else
@@ -321,6 +323,7 @@ void QgsCustomProjectionDialog::pbnAdd_clicked()
   newItem->setText( QgisCrsNameColumn, name );
   newItem->setText( QgisCrsIdColumn, QString() );
   newItem->setText( QgisCrsParametersColumn, QString() );
+  newItem->setData( 0, FormattedWktRole, QString() );
 
   Definition def;
   def.name = name;
@@ -388,14 +391,15 @@ void QgsCustomProjectionDialog::leNameList_currentItemChanged( QTreeWidgetItem *
     }
 
     previous->setText( QgisCrsNameColumn, leName->text() );
-    previous->setText( QgisCrsParametersColumn, teParameters->toPlainText() );
+    previous->setText( QgisCrsParametersColumn, multiLineWktToSingleLine( teParameters->toPlainText() ) );
+    previous->setData( 0, FormattedWktRole, teParameters->toPlainText() );
   }
 
   if ( current )
   {
     currentIndex = leNameList->indexOfTopLevelItem( current );
     whileBlocking( leName )->setText( mDefinitions[currentIndex].name );
-    whileBlocking( teParameters )->setPlainText( !mDefinitions[currentIndex].wkt.isEmpty() ? mDefinitions[currentIndex].wkt : mDefinitions[currentIndex].proj );
+    whileBlocking( teParameters )->setPlainText( !mDefinitions[currentIndex].wkt.isEmpty() ? current->data( 0, FormattedWktRole ).toString() : mDefinitions[currentIndex].proj );
     whileBlocking( mFormatComboBox )->setCurrentIndex( mFormatComboBox->findData( static_cast< int >( mDefinitions[currentIndex].wkt.isEmpty() ? QgsCoordinateReferenceSystem::FormatProj : QgsCoordinateReferenceSystem::FormatWkt ) ) );
   }
   else
@@ -425,6 +429,7 @@ void QgsCustomProjectionDialog::pbnCopyCRS_clicked()
     mDefinitions[leNameList->currentIndex().row()].proj.clear();
 
     leNameList->currentItem()->setText( QgisCrsParametersColumn, srs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, false ) );
+    leNameList->currentItem()->setData( 0, FormattedWktRole, srs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, true ) );
   }
 }
 
@@ -554,7 +559,8 @@ void QgsCustomProjectionDialog::updateListFromCurrentItem()
   }
 
   item->setText( QgisCrsNameColumn, leName->text() );
-  item->setText( QgisCrsParametersColumn, teParameters->toPlainText() );
+  item->setText( QgisCrsParametersColumn, multiLineWktToSingleLine( teParameters->toPlainText() ) );
+  item->setData( 0, FormattedWktRole, teParameters->toPlainText() );
 }
 
 #if PROJ_VERSION_MAJOR>=6
@@ -686,7 +692,7 @@ void QgsCustomProjectionDialog::formatChanged()
   {
     case QgsCoordinateReferenceSystem::FormatProj:
     {
-      crs.createFromWkt( teParameters->toPlainText() );
+      crs.createFromWkt( multiLineWktToSingleLine( teParameters->toPlainText() ) );
       if ( crs.isValid() )
         newFormatString = crs.toProj();
       break;
@@ -703,7 +709,7 @@ void QgsCustomProjectionDialog::formatChanged()
         QgsProjUtils::proj_pj_unique_ptr crs( proj_create( QgsProjContext::get(), proj.toLatin1().constData() ) );
         if ( crs )
         {
-          const QByteArray multiLineOption = QStringLiteral( "MULTILINE=NO" ).toLocal8Bit();
+          const QByteArray multiLineOption = QStringLiteral( "MULTILINE=YES" ).toLocal8Bit();
           const char *const options[] = {multiLineOption.constData(), nullptr};
           newFormatString = QString( proj_as_wkt( pjContext, crs.get(), PJ_WKT2_2018, options ) );
         }
@@ -869,5 +875,14 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
 void QgsCustomProjectionDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html" ) );
+}
+
+QString QgsCustomProjectionDialog::multiLineWktToSingleLine( const QString &wkt )
+{
+  QString res = wkt;
+  QRegularExpression re( QStringLiteral( "\\s*\\n\\s*" ) );
+  re.setPatternOptions( QRegularExpression::MultilineOption );
+  res.replace( re, QString() );
+  return res;
 }
 
