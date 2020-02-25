@@ -191,7 +191,7 @@ It supports the following formats:
 - "EPSG:<code>" - handled with createFromOgcWms()
 - "POSTGIS:<srid>" - handled with createFromSrid()
 - "INTERNAL:<srsid>" - handled with createFromSrsId()
-- "PROJ4:<proj4>" - handled with createFromProj()
+- "PROJ:<proj>" - handled with createFromProj()
 - "WKT:<wkt>" - handled with createFromWkt()
 
 If no prefix is specified, WKT definition is assumed.
@@ -485,7 +485,7 @@ It supports the following formats:
 - "EPSG:<code>" - handled with createFromOgcWms()
 - "POSTGIS:<srid>" - handled with createFromSrid()
 - "INTERNAL:<srsid>" - handled with createFromSrsId()
-- "PROJ4:<proj4>" - handled with createFromProj()
+- "PROJ:<proj>" - handled with createFromProj()
 - "WKT:<wkt>" - handled with createFromWkt()
 
 If no prefix is specified, WKT definition is assumed.
