@@ -481,12 +481,26 @@ void QgsCustomProjectionDialog::buttonBox_accepted()
       if ( def.wkt.isEmpty() )
       {
         QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                              tr( "Cannot save '%1' — this Proj string definition is identical to %2.\n\nTry changing the CRS definition to a WKT format instead." ).arg( def.name, crs.authid() ) );
+                              tr( "Cannot save '%1' — this Proj string definition is equivalent to %2.\n\nTry changing the CRS definition to a WKT format instead." ).arg( def.name, crs.authid() ) );
       }
       else
       {
-        QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
-                              tr( "Cannot save '%1' — the definition is identical to %2." ).arg( def.name, crs.authid() ) );
+        const QStringList authparts = crs.authid().split( ':' );
+        QString ref;
+        if ( authparts.size() == 2 )
+        {
+          ref = QStringLiteral( "ID[\"%1\",%2]" ).arg( authparts.at( 0 ), authparts.at( 1 ) );
+        }
+        if ( !ref.isEmpty() && crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).contains( ref ) )
+        {
+          QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                                tr( "Cannot save '%1' — the definition is equivalent to %2.\n\n(Try removing \"%3\" from the WKT definition.)" ).arg( def.name, crs.authid(), ref ) );
+        }
+        else
+        {
+          QMessageBox::warning( this, tr( "Custom Coordinate Reference System" ),
+                                tr( "Cannot save '%1' — the definition is equivalent to %2." ).arg( def.name, crs.authid() ) );
+        }
       }
       return;
     }
