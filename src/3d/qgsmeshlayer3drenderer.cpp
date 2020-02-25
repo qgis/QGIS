@@ -72,16 +72,16 @@ const QgsMesh3DSymbol *QgsMeshLayer3DRenderer::symbol() const
 
 Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings &map ) const
 {
-  QgsMeshLayer *vl = layer();
+  QgsMeshLayer *meshLayer = layer();
 
-  if ( !vl )
+  if ( !meshLayer )
     return nullptr;
 
   Qt3DCore::QEntity *entity = nullptr;
 
-  QgsCoordinateTransform coordTrans( vl->crs(), map.crs(), map.transformContext() );
-
-  QgsMeshDataset3dEntity *meshEntity = new QgsMeshDataset3dEntity( map, vl, *static_cast<QgsMesh3DSymbol *>( mSymbol.get() ) );
+  QgsCoordinateTransform coordTrans( meshLayer->crs(), map.crs(), map.transformContext() );
+  meshLayer->updateTriangularMesh( coordTrans );
+  QgsMeshDataset3dEntity *meshEntity = new QgsMeshDataset3dEntity( map, meshLayer, *static_cast<QgsMesh3DSymbol *>( mSymbol.get() ) );
   meshEntity->build();
   entity = meshEntity;
 
