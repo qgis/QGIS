@@ -43,6 +43,8 @@ Qt3DCore::QEntity *QgsMeshTerrainTileLoader::createEntity( Qt3DCore::QEntity *pa
   if ( !layer )
     return nullptr;
 
+  QgsCoordinateTransform transform( terrain()->map3D().crs(), layer->crs(), terrain()->map3D().transformContext() );
+  layer->updateTriangularMesh( transform );
   QgsMesh3dTerrainTileEntity *entity = new QgsMesh3dTerrainTileEntity( terrain()->map3D(), layer, mSymbol, mNode->tileId(), parent );
   entity->build();
   createTexture( entity );
@@ -55,10 +57,7 @@ QgsChunkLoader *QgsMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node )
   if ( !mLayer )
     return nullptr;
 
-  QgsCoordinateTransform terrainToMapTransform( mLayer->crs(), mCrs, mTransformContext );
-
-  meshLayer()->updateTriangularMesh( terrainToMapTransform );
-  return new QgsMeshTerrainTileLoader( mTerrain, node, *meshLayer()->triangularMesh(), extent(), symbol() );
+  return new QgsMeshTerrainTileLoader( mTerrain, node, meshLayer(), symbol() );
 }
 
 float QgsMeshTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const {Q_UNUSED( map ); return 0;}
