@@ -1,6 +1,7 @@
 MACRO (ADD_QGIS_TEST testname testsrc)
   ADD_TEST(qgis_${testname} ${testsrc})
   set_tests_properties(qgis_${testname} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
+  set_tests_properties(qgis_${testname} PROPERTIES ENVIRONMENT "QGIS_TEST_DATADIR=${TEST_DATA_DIR}")
 ENDMACRO (ADD_QGIS_TEST)
 
 IF(WITH_ASTYLE)

@@ -82,15 +82,18 @@ def unitTestDataPath(theSubdir=None):
     Args:
        * theSubdir: (Optional) Additional subdir to add to the path
     """
-    myPath = __file__
-    tmpPath = os.path.split(os.path.dirname(myPath))
-    myPath = os.path.split(tmpPath[0])
-    if theSubdir is not None:
-        myPath = os.path.abspath(os.path.join(myPath[0],
-                                              'testdata',
-                                              theSubdir))
+
+    if "QGIS_TEST_DATADIR" in os.environ:
+        myPath = os.environ.get('QGIS_TEST_DATADIR')
     else:
+        myPath = __file__
+        tmpPath = os.path.split(os.path.dirname(myPath))
+        myPath = os.path.split(tmpPath[0])
         myPath = os.path.abspath(os.path.join(myPath[0], 'testdata'))
+
+    if theSubdir is not None:
+        myPath = os.path.join(myPath, theSubdir)
+
     return myPath
 
 

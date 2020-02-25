@@ -102,6 +102,7 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   #  INSTALL_RPATH_USE_LINK_PATH true )
   set_tests_properties(qgis_${testname} PROPERTIES FIXTURES_REQUIRED SOURCETREE)
+  set_tests_properties(qgis_${testname} PROPERTIES ENVIRONMENT "QGIS_TEST_DATADIR=${TEST_DATA_DIR}")
 ENDMACRO (ADD_QGIS_TEST)
 
 #############################################################
