@@ -328,6 +328,8 @@ void QgsCustomProjectionDialog::pbnAdd_clicked()
   leNameList->setCurrentItem( newItem );
   leName->selectAll();
   leName->setFocus();
+
+  mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( QgsCoordinateReferenceSystem::FormatWkt ) );
 }
 
 void QgsCustomProjectionDialog::pbnRemove_clicked()
