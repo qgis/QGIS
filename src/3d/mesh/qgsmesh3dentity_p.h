@@ -68,7 +68,7 @@ class QgsMesh3dEntity
     virtual void applyMaterial() = 0;
 };
 
-//! Entity that handles rendering of dataset mesh
+//! Entity that handles rendering of dataset
 class QgsMeshDataset3dEntity: public QgsMesh3dEntity, public Qt3DCore::QEntity
 {
   public:

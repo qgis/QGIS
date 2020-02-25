@@ -40,8 +40,6 @@ class QgsMesh3dSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
     void configureForTerrain();
     void configureForDataset();
 
-
-
   public slots:
     void reloadColorRampShaderMinMax();
     void enableVerticalSetting( bool isEnable );

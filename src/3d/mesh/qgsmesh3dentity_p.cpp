@@ -34,9 +34,11 @@ QgsMesh3dEntity::QgsMesh3dEntity( const Qgs3DMapSettings &map, QgsMeshLayer *mes
   mSymbol( symbol )
 {}
 
-QgsMeshDataset3dEntity::QgsMeshDataset3dEntity( const Qgs3DMapSettings &map,
-    QgsMeshLayer *meshLayer,
-    const QgsMesh3DSymbol &symbol ): QgsMesh3dEntity( map, meshLayer, symbol )
+QgsMeshDataset3dEntity::QgsMeshDataset3dEntity(
+  const Qgs3DMapSettings &map,
+  QgsMeshLayer *meshLayer,
+  const QgsMesh3DSymbol &symbol ):
+  QgsMesh3dEntity( map, meshLayer, symbol )
 {}
 
 void QgsMesh3dEntity::build()
@@ -48,12 +50,11 @@ void QgsMesh3dEntity::build()
 void QgsMeshDataset3dEntity::buildGeometry()
 {
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  QgsMeshLayer *l = layer();
 
   if ( !layer() )
     return;
 
-  mesh->setGeometry( new QgsMeshDataset3dGeometry( l, mMapSettings.origin(), mSymbol, mesh ) );
+  mesh->setGeometry( new QgsMeshDataset3dGeometry( layer(), mMapSettings.origin(), mSymbol, mesh ) );
   addComponent( mesh );
 }
 
@@ -61,8 +62,8 @@ void QgsMeshDataset3dEntity::applyMaterial()
 {
   if ( mSymbol.renderingStyle() == QgsMesh3DSymbol::ColorRamp2DRendering && layer() )
   {
-    QgsMeshRendererSettings rendererSettings = layer()->rendererSettings();
-    QgsMeshDatasetIndex datasetIndex = rendererSettings.activeScalarDataset();
+    const QgsMeshRendererSettings rendererSettings = layer()->rendererSettings();
+    const QgsMeshDatasetIndex datasetIndex = rendererSettings.activeScalarDataset();
     if ( datasetIndex.isValid() )
       mSymbol.setColorRampShader( rendererSettings.scalarSettings( datasetIndex.group() ).colorRampShader() );
   }
@@ -82,12 +83,11 @@ QgsMesh3dTerrainTileEntity::QgsMesh3dTerrainTileEntity( const Qgs3DMapSettings &
 void QgsMesh3dTerrainTileEntity::buildGeometry()
 {
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  QgsMeshLayer *l = layer();
 
   if ( !layer() )
     return;
 
-  mesh->setGeometry( new QgsMeshTerrain3dGeometry( l, mMapSettings.origin(), mSymbol, mesh ) );
+  mesh->setGeometry( new QgsMeshTerrain3dGeometry( layer(), mMapSettings.origin(), mSymbol, mesh ) );
   addComponent( mesh );
 }
 
