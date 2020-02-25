@@ -34,7 +34,7 @@ class ExportModelAsPythonScriptAction(ContextAction):
         self.name = QCoreApplication.translate('ExportModelAsPythonScriptAction', 'Export Model as Python Algorithm…')
 
     def isEnabled(self):
-        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() == "model"
+        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() in ("model", "project")
 
     def icon(self):
         return QgsApplication.getThemeIcon('/mActionSaveAsPython.svg')
