@@ -36,7 +36,17 @@ void QgsAttributeRelationEdit::setCardinality( const QVariant &auserData )
     coCardinality->setCurrentIndex( idx );
 }
 
+void QgsAttributeRelationEdit::setForceSuppressFormPopup( bool suppressFormOpen )
+{
+  cbForceSuppressFormPopup->setChecked( suppressFormOpen );
+}
+
 QVariant  QgsAttributeRelationEdit::cardinality()
 {
   return coCardinality->currentData();
+}
+
+bool QgsAttributeRelationEdit::forceSuppressFormPopup()
+{
+  return cbForceSuppressFormPopup->isChecked();
 }

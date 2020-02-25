@@ -188,6 +188,11 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
 
       QVariant mCardinality;
 
+      /**
+       * Force suppress form popup open overriding other options.
+       */
+      bool mForceSuppressFormPopup;
+
       operator QVariant();
     };
 
