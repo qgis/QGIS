@@ -1852,11 +1852,15 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       QgsRelationWidgetWrapper *rww = setupRelationWidgetWrapper( relDef->relation(), context );
 
       rww->setShowLabel( relDef->showLabel() );
-      rww->setShowLinkButton( relDef->showLinkButton() );
-      rww->setShowUnlinkButton( relDef->showUnlinkButton() );
 
       QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
       formWidget->createSearchWidgetWrappers( mContext );
+
+      // This needs to be after QgsAttributeFormRelationEditorWidget creation, because the widget
+      // does not exists yet until QgsAttributeFormRelationEditorWidget is created and the setters
+      // below directly alter the widget and check for it.
+      rww->setShowLinkButton( relDef->showLinkButton() );
+      rww->setShowUnlinkButton( relDef->showUnlinkButton() );
 
       mWidgets.append( rww );
       mFormWidgets.append( formWidget );
