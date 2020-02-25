@@ -310,10 +310,8 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   mSettings.setNumberOfSegments( mStyleIndex == 3 ? 2 : 1 );
   mSettings.setUnitsPerSegment( mStyleIndex == 3 ? unitsPerSegment / 2 : unitsPerSegment );
   mSettings.setUnitLabel( scaleBarUnitLabel );
-  if ( mPlacement == TopCenter || mPlacement == BottomCenter )
-  {
-    mSettings.setLabelHorizontalPlacement( QgsScaleBarSettings::LabelCenteredSegment );
-  }
+  mSettings.setLabelHorizontalPlacement( mPlacement == TopCenter || mPlacement == BottomCenter ? QgsScaleBarSettings::LabelCenteredSegment : QgsScaleBarSettings::LabelCenteredEdge );
+
   QgsScaleBarRenderer::ScaleBarContext scaleContext;
   scaleContext.segmentWidth = mStyleIndex == 3 ? segmentSize / 2 : segmentSize;
   scaleContext.scale = mapSettings.scale();
