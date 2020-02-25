@@ -228,7 +228,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     ~QgsCoordinateReferenceSystem();
 
-    // TODO QGIS 4: remove "POSTGIS" and "INTERNAL", allow PROJ4 without the prefix
+    // TODO QGIS 4: remove "POSTGIS" and "INTERNAL"
 
     /**
      * Constructs a CRS object from a string definition using createFromString()
@@ -237,7 +237,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * - "EPSG:<code>" - handled with createFromOgcWms()
      * - "POSTGIS:<srid>" - handled with createFromSrid()
      * - "INTERNAL:<srsid>" - handled with createFromSrsId()
-     * - "PROJ4:<proj4>" - handled with createFromProj()
+     * - "PROJ:<proj>" - handled with createFromProj()
      * - "WKT:<wkt>" - handled with createFromWkt()
      *
      * If no prefix is specified, WKT definition is assumed.
@@ -460,7 +460,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * - "EPSG:<code>" - handled with createFromOgcWms()
      * - "POSTGIS:<srid>" - handled with createFromSrid()
      * - "INTERNAL:<srsid>" - handled with createFromSrsId()
-     * - "PROJ4:<proj4>" - handled with createFromProj()
+     * - "PROJ:<proj>" - handled with createFromProj()
      * - "WKT:<wkt>" - handled with createFromWkt()
      *
      * If no prefix is specified, WKT definition is assumed.

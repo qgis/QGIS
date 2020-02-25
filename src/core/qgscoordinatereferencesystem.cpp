@@ -310,11 +310,11 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
   }
   else
   {
-    QRegularExpression reCrsStr( "^(?:(wkt|proj4)\\:)?(.+)$", QRegularExpression::CaseInsensitiveOption );
+    QRegularExpression reCrsStr( "^(?:(wkt|proj4|proj)\\:)?(.+)$", QRegularExpression::CaseInsensitiveOption );
     match = reCrsStr.match( definition );
     if ( match.capturedStart() == 0 )
     {
-      if ( match.captured( 1 ).compare( QLatin1String( "proj4" ), Qt::CaseInsensitive ) == 0 )
+      if ( match.captured( 1 ).startsWith( QLatin1String( "proj" ), Qt::CaseInsensitive ) )
       {
         result = createFromProj( match.captured( 2 ) );
       }
