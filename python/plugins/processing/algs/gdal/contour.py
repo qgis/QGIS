@@ -47,7 +47,10 @@ class contour(GdalAlgorithm):
     BAND = 'BAND'
     INTERVAL = 'INTERVAL'
     FIELD_NAME = 'FIELD_NAME'
+    FIELD_NAME_MIN = 'FIELD_NAME_MIN'
+    FIELD_NAME_MAX = 'FIELD_NAME_MAX'
     CREATE_3D = 'CREATE_3D'
+    CREATE_POLYGON = 'CREATE_POLYGON'
     IGNORE_NODATA = 'IGNORE_NODATA'
     NODATA = 'NODATA'
     OFFSET = 'OFFSET'
@@ -75,11 +78,27 @@ class contour(GdalAlgorithm):
                                                        defaultValue='ELEV',
                                                        optional=True))
 
+        self.addParameter(QgsProcessingParameterString(self.FIELD_NAME_MIN,
+                                                       self.tr('Attribute name to use for the minimum elevation of contour polygons (if not set, no elevation attribute is attached)'),
+                                                       defaultValue='ELEV_MIN',
+                                                       optional=True))
+
+        self.addParameter(QgsProcessingParameterString(self.FIELD_NAME_MAX,
+                                                       self.tr('Attribute name to use for the maximum elevation of contour polygons (if not set, no elevation attribute is attached)'),
+                                                       defaultValue='ELEV_MAX',
+                                                       optional=True))
+
         create_3d_param = QgsProcessingParameterBoolean(self.CREATE_3D,
                                                         self.tr('Produce 3D vector'),
                                                         defaultValue=False)
         create_3d_param.setFlags(create_3d_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(create_3d_param)
+
+        create_polygon_param = QgsProcessingParameterBoolean(self.CREATE_POLYGON,
+                                                             self.tr('Produce contour polygons instead of lines'),
+                                                             defaultValue=False)
+        create_polygon_param.setFlags(create_polygon_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(create_polygon_param)
 
         ignore_nodata_param = QgsProcessingParameterBoolean(self.IGNORE_NODATA,
                                                             self.tr('Treat all raster values as valid'),
@@ -159,7 +178,9 @@ class contour(GdalAlgorithm):
         arguments.append('-b')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        if fieldName:
+        create_polygons = self.parameterAsBoolean(parameters, self.CREATE_POLYGON, context)
+
+        if fieldName and not create_polygons:
             arguments.append('-a')
             arguments.append(fieldName)
 
@@ -168,6 +189,20 @@ class contour(GdalAlgorithm):
 
         if self.parameterAsBoolean(parameters, self.CREATE_3D, context):
             arguments.append('-3d')
+
+        if create_polygons:
+            arguments.append('-p')
+
+            fieldNameMin = self.parameterAsString(parameters, self.FIELD_NAME_MIN, context)
+            fieldNameMax = self.parameterAsString(parameters, self.FIELD_NAME_MAX, context)
+
+            if fieldNameMin:
+                arguments.append('-amin')
+                arguments.append(fieldNameMin)
+
+            if fieldNameMax:
+                arguments.append('-amax')
+                arguments.append(fieldNameMax)
 
         if self.parameterAsBoolean(parameters, self.IGNORE_NODATA, context):
             arguments.append('-inodata')
