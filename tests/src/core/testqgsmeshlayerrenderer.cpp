@@ -482,5 +482,7 @@ void TestQgsMeshRenderer::test_simplified_triangular_mesh_rendering()
   QVERIFY( imageCheck( "simplified_triangular_mesh", mMdal3DLayer ) );
 }
 
+// TODO test edge mesh rendering!
+
 QGSTEST_MAIN( TestQgsMeshRenderer )
 #include "testqgsmeshlayerrenderer.moc"

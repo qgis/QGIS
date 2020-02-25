@@ -55,6 +55,20 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
     //! Sets color used for rendering of the mesh
     void setColor( const QColor &color );
 
+    /**
+     * Returns units of the width of the mesh frame
+     *
+     * \since QGIS 3.14
+     */
+    QgsUnitTypes::RenderUnit lineWidthUnit() const;
+
+    /**
+     * Sets units of the width of the mesh frame
+     *
+     * \since QGIS 3.14
+     */
+    void setLineWidthUnit( const QgsUnitTypes::RenderUnit &lineWidthUnit );
+
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads configuration from the given DOM element
@@ -63,6 +77,7 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
   private:
     bool mEnabled = false;
     double mLineWidth = DEFAULT_LINE_WIDTH;
+    QgsUnitTypes::RenderUnit mLineWidthUnit = QgsUnitTypes::RenderMillimeters;
     QColor mColor = Qt::black;
 };
 
@@ -132,6 +147,34 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
     //! Reads configuration from the given DOM element
     void readXml( const QDomElement &elem );
 
+    /**
+     * Returns width of the edge
+     *
+     * \since QGIS 3.14
+     */
+    double edgeWidth() const;
+
+    /**
+     * Sets width of the edge
+     *
+     * \since QGIS 3.14
+     */
+    void setEdgeWidth( double edgeWidth );
+
+    /**
+     * Returns length units of the width of the edge
+     *
+     * \since QGIS 3.14
+     */
+    QgsUnitTypes::RenderUnit edgeWidthUnit() const;
+
+    /**
+     * Sets length units of the width of the edge
+     *
+     * \since QGIS 3.14
+     */
+    void setEdgeWidthUnit( const QgsUnitTypes::RenderUnit &edgeWidthUnit );
+
   private:
     QgsColorRampShader mColorRampShader;
     DataInterpolationMethod mDataInterpolationMethod = DataInterpolationMethod::None;
@@ -139,6 +182,8 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
     double mClassificationMaximum = 0;
     double mOpacity = 1;
 
+    double mEdgeWidth = 2;
+    QgsUnitTypes::RenderUnit mEdgeWidthUnit = QgsUnitTypes::RenderMillimeters;
 };
 
 /**
@@ -369,7 +414,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
       Arrows = 0,
       //! Displaying vector dataset with streamlines
       Streamlines,
-      //! Displaying vector dataset with streamlines
+      //! Displaying vector dataset with particle traces
       Traces
     };
 
@@ -516,15 +561,27 @@ class CORE_EXPORT QgsMeshRendererSettings
     //! Destructor
     ~QgsMeshRendererSettings();
 
-    //! Returns renderer settings
+    //! Returns native mesh renderer settings
     QgsMeshRendererMeshSettings nativeMeshSettings() const { return mRendererNativeMeshSettings; }
-    //! Sets new renderer settings, triggers repaint
+    //! Sets new native mesh  renderer settings, triggers repaint
     void setNativeMeshSettings( const QgsMeshRendererMeshSettings &settings ) { mRendererNativeMeshSettings = settings; }
 
-    //! Returns renderer settings
+    //! Returns triangular mesh renderer settings
     QgsMeshRendererMeshSettings triangularMeshSettings() const { return mRendererTriangularMeshSettings; }
-    //! Sets new renderer settings
+    //! Sets new triangular mesh renderer settings
     void setTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings ) { mRendererTriangularMeshSettings = settings; }
+
+    /**
+     * Returns edge mesh renderer settings
+     * \since QGIS 3.14
+     */
+    QgsMeshRendererMeshSettings edgeMeshSettings() const { return mRendererEdgeMeshSettings; }
+
+    /**
+     * Sets new edge mesh renderer settings
+     * \since QGIS 3.14
+     */
+    void setEdgeMeshSettings( const QgsMeshRendererMeshSettings &settings ) { mRendererEdgeMeshSettings = settings; }
 
     //! Returns renderer settings
     QgsMeshRendererScalarSettings scalarSettings( int groupIndex ) const { return mRendererScalarSettings.value( groupIndex ); }
@@ -568,6 +625,7 @@ class CORE_EXPORT QgsMeshRendererSettings
   private:
     QgsMeshRendererMeshSettings mRendererNativeMeshSettings;
     QgsMeshRendererMeshSettings mRendererTriangularMeshSettings;
+    QgsMeshRendererMeshSettings mRendererEdgeMeshSettings;
 
     QHash<int, QgsMeshRendererScalarSettings> mRendererScalarSettings;  //!< Per-group scalar settings
     QHash<int, QgsMeshRendererVectorSettings> mRendererVectorSettings;  //!< Per-group vector settings

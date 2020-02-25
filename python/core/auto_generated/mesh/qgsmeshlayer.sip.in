@@ -148,11 +148,9 @@ Returns the provider type for this layer
 
     void updateTriangularMesh( const QgsCoordinateTransform &transform = QgsCoordinateTransform() );
 %Docstring
-Update the base triangular mesh, create one if it doesn't exist
+Gets native mesh and updates (creates if it doesn't exist) the base triangular mesh
 
 :param transform: Transformation from layer CRS to destination (e.g. map) CRS. With invalid transform, it keeps the native mesh CRS
-
-.. versionadded:: 3.14
 %End
 
 
@@ -178,8 +176,6 @@ Sets time format settings
 
 .. versionadded:: 3.8
 %End
-
-
 
 
 
@@ -245,7 +241,6 @@ Sets the coordinate transform context to ``transformContext``.
 
 .. versionadded:: 3.8
 %End
-
 
   signals:
 

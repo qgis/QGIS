@@ -41,6 +41,10 @@ QgsMeshContours::QgsMeshContours( QgsMeshLayer *layer )
   if ( !mMeshLayer ||  !mMeshLayer->dataProvider() || !mMeshLayer->dataProvider()->isValid() )
     return;
 
+  // Support for meshes with edges is not implemented
+  if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    return;
+
   mNativeMesh.reset( new QgsMesh() );
   mMeshLayer->dataProvider()->populateMesh( mNativeMesh.get() );
 

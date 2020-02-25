@@ -40,8 +40,9 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
 
   mMeshRendererActiveDatasetWidget->setLayer( mMeshLayer );
   mMeshRendererScalarSettingsWidget->setLayer( mMeshLayer );
-  mNativeMeshSettingsWidget->setLayer( mMeshLayer, false );
-  mTriangularMeshSettingsWidget->setLayer( mMeshLayer, true );
+  mNativeMeshSettingsWidget->setLayer( mMeshLayer, QgsMeshRendererMeshSettingsWidget::MeshType::Native );
+  mTriangularMeshSettingsWidget->setLayer( mMeshLayer, QgsMeshRendererMeshSettingsWidget::MeshType::Triangular );
+  mEdgeMeshSettingsWidget->setLayer( mMeshLayer, QgsMeshRendererMeshSettingsWidget::MeshType::Edge );
   mMeshRendererVectorSettingsWidget->setLayer( mMeshLayer );
   m3dAveragingSettingsWidget->setLayer( mMeshLayer );
   syncToLayer();
@@ -66,6 +67,8 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
            this, &QgsPanelWidget::widgetChanged );
   connect( mTriangularMeshSettingsWidget, &QgsMeshRendererMeshSettingsWidget::widgetChanged,
            this, &QgsPanelWidget::widgetChanged );
+  connect( mEdgeMeshSettingsWidget, &QgsMeshRendererMeshSettingsWidget::widgetChanged,
+           this, &QgsPanelWidget::widgetChanged );
   connect( m3dAveragingSettingsWidget, &QgsMeshRenderer3dAveragingWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
 }
 
@@ -74,12 +77,17 @@ void QgsRendererMeshPropertiesWidget::apply()
   if ( !mMeshLayer )
     return;
 
-  // MESH
-  bool meshRenderingIsEnabled = mNativeMeshGroup->isChecked();
-  QgsMeshRendererMeshSettings meshSettings = mNativeMeshSettingsWidget->settings();
-  meshSettings.setEnabled( meshRenderingIsEnabled );
+  // 1D EDGE MESH
+  bool edgeMeshRenderingIsEnabled = mEdgeMeshGroup->isChecked();
+  QgsMeshRendererMeshSettings edgeMeshSettings = mEdgeMeshSettingsWidget->settings();
+  edgeMeshSettings.setEnabled( edgeMeshRenderingIsEnabled );
 
-  // TRIANGULAR MESH
+  // 2D NATIVE MESH
+  bool nativeMeshRenderingIsEnabled = mNativeMeshGroup->isChecked();
+  QgsMeshRendererMeshSettings nativeMeshSettings = mNativeMeshSettingsWidget->settings();
+  nativeMeshSettings.setEnabled( nativeMeshRenderingIsEnabled );
+
+  // 2D TRIANGULAR MESH
   bool triangularMeshRenderingIsEnabled = mTriangularMeshGroup->isChecked();
   QgsMeshRendererMeshSettings triangularMeshSettings = mTriangularMeshSettingsWidget->settings();
   triangularMeshSettings.setEnabled( triangularMeshRenderingIsEnabled );
@@ -95,7 +103,8 @@ void QgsRendererMeshPropertiesWidget::apply()
     activeVectorDatasetIndex = QgsMeshDatasetIndex();
 
   QgsMeshRendererSettings settings = mMeshLayer->rendererSettings();
-  settings.setNativeMeshSettings( meshSettings );
+  settings.setEdgeMeshSettings( edgeMeshSettings );
+  settings.setNativeMeshSettings( nativeMeshSettings );
   settings.setTriangularMeshSettings( triangularMeshSettings );
 
   settings.setActiveScalarDataset( activeScalarDatasetIndex );
@@ -120,13 +129,23 @@ void QgsRendererMeshPropertiesWidget::syncToLayer()
   mMeshRendererActiveDatasetWidget->syncToLayer();
   mNativeMeshSettingsWidget->syncToLayer();
   mTriangularMeshSettingsWidget->syncToLayer();
+  mEdgeMeshSettingsWidget->syncToLayer();
   m3dAveragingSettingsWidget->syncToLayer();
 
   mNativeMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().nativeMeshSettings().isEnabled() : false );
   mTriangularMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().triangularMeshSettings().isEnabled() : false );
+  mEdgeMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().edgeMeshSettings().isEnabled() : false );
 
   onActiveScalarGroupChanged( mMeshRendererActiveDatasetWidget->activeScalarDatasetGroup() );
   onActiveVectorGroupChanged( mMeshRendererActiveDatasetWidget->activeVectorDatasetGroup() );
+
+  bool hasFaces = ( mMeshLayer->dataProvider() &&
+                    mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) );
+  mFaceMeshGroupBox->setVisible( hasFaces );
+
+  bool hasEdges = ( mMeshLayer->dataProvider() &&
+                    mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) );
+  mEdgeMeshGroupBox->setVisible( hasEdges );
 }
 
 void QgsRendererMeshPropertiesWidget::onActiveScalarGroupChanged( int groupIndex )

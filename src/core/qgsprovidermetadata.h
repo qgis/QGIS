@@ -62,6 +62,7 @@ class CORE_EXPORT QgsMeshDriverMetadata
     {
       CanWriteFaceDatasets = 1 << 0, //!< If the driver can persist datasets defined on faces
       CanWriteVertexDatasets = 1 << 1, //!< If the driver can persist datasets defined on vertices
+      CanWriteEdgeDatasets = 1 << 2, //!< If the driver can persist datasets defined on edges \since QGIS 3.14
     };
 
     Q_ENUM( MeshDriverCapability )

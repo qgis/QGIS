@@ -35,7 +35,6 @@
 #include "qgstriangularmesh.h"
 #include "qgsmesh3daveraging.h"
 
-
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
@@ -165,13 +164,17 @@ QgsTriangularMesh *QgsMeshLayer::triangularMesh( double minimumTriangleSize ) co
 
 void  QgsMeshLayer::updateTriangularMesh( const QgsCoordinateTransform &transform )
 {
+  // Native mesh
+  if ( !mNativeMesh )
+  {
+    // lazy loading of mesh data
+    fillNativeMesh();
+  }
+
+  // Triangular mesh
   if ( mTriangularMeshes.empty() )
   {
     QgsTriangularMesh *baseMesh = new QgsTriangularMesh;
-
-    if ( !mNativeMesh )
-      fillNativeMesh();
-
     mTriangularMeshes.emplace_back( baseMesh );
   }
 
@@ -220,6 +223,11 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
 
   if ( mesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
   {
+    if ( dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    {
+      // Identify for edges not implemented yet
+      return value;
+    }
     int faceIndex = mesh->faceIndexForPoint( point ) ;
     if ( faceIndex >= 0 )
     {
@@ -368,16 +376,10 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
 
 QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
-  // Native mesh
-  if ( !mNativeMesh )
-  {
-    // lazy loading of mesh data
-    fillNativeMesh();
-  }
-
   // Triangular mesh
   updateTriangularMesh( rendererContext.coordinateTransform() );
-  //build overview triangular meshes if needed
+
+  // Build overview triangular meshes if needed
   createSimplifiedMeshes();
 
   // Cache

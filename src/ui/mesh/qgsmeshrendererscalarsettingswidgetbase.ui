@@ -14,24 +14,44 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
+   <item>
+    <widget class="QGroupBox" name="mScalarEdgeWidthGroupBox">
+     <property name="title">
+      <string>1D Mesh</string>
+     </property>
+     <layout class="QHBoxLayout" name="mScalarEdgeSettingsLayout">
+      <item>
+       <widget class="QLabel" name="mScalarEdgeLabel">
+        <property name="text">
+         <string>Line Width</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsDoubleSpinBox" name="mScalarEdgeWidthSpinBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsUnitSelectionWidget" name="mScalarEdgeWidthUnitSelectionWidget"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="mOpacityLabel">
        <property name="text">
         <string>Opacity</string>
+       </property>
+       <property name="buddy">
+        <cstring>mScalarEdgeWidthGroupBox</cstring>
        </property>
       </widget>
      </item>
@@ -110,6 +130,16 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QComboBox</extends>
+   <header>qgsunitselectionwidget.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsOpacityWidget</class>
    <extends>QWidget</extends>

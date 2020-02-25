@@ -118,6 +118,7 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
   // FIND OUT IF UPDATE IS NEEDED
   if ( mTriangularMesh.vertices.size() >= nativeMesh->vertices.size() &&
        mTriangularMesh.faces.size() >= nativeMesh->faces.size() &&
+       mTriangularMesh.edges.size() == nativeMesh->edges.size() &&
        mCoordinateTransform.sourceCrs() == transform.sourceCrs() &&
        mCoordinateTransform.destinationCrs() == transform.destinationCrs() &&
        mCoordinateTransform.isValid() == transform.isValid() )
@@ -126,8 +127,11 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
   // CLEAN-UP
   mTriangularMesh.vertices.clear();
   mTriangularMesh.faces.clear();
+  mTriangularMesh.edges.clear();
   mTrianglesToNativeFaces.clear();
+  mEdgesToNativeEdges.clear();
   mNativeMeshFaceCentroids.clear();
+  mNativeMeshEdgeCentroids.clear();
 
   // TRANSFORM VERTICES
   mCoordinateTransform = transform;
@@ -185,10 +189,37 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
   }
 
   // CALCULATE SPATIAL INDEX
-  mSpatialIndex = QgsMeshSpatialIndex( mTriangularMesh );
+  mSpatialFaceIndex = QgsMeshSpatialIndex( mTriangularMesh, nullptr, QgsMesh::ElementType::Face );
 
   // SET ALL TRIANGLE CCW AND COMPUTE AVERAGE SIZE
   finalizeTriangles();
+
+  // CREATE EDGES
+  // remove all edges with invalid vertices
+  const QVector<QgsMeshEdge> edges = nativeMesh->edges;
+  for ( int nativeIndex = 0; nativeIndex < edges.size(); ++nativeIndex )
+  {
+    const QgsMeshEdge &edge = edges.at( nativeIndex );
+    if ( !( std::isnan( mTriangularMesh.vertex( edge.first ).x() )  ||
+            std::isnan( mTriangularMesh.vertex( edge.second ).x() ) ) )
+    {
+      mTriangularMesh.edges.push_back( edge );
+      mEdgesToNativeEdges.push_back( nativeIndex );
+    }
+  }
+
+  // CALCULATE CENTROIDS
+  mNativeMeshEdgeCentroids.resize( nativeMesh->edgeCount() );
+  for ( int i = 0; i < nativeMesh->edgeCount(); ++i )
+  {
+    const QgsMeshEdge &edge = mTriangularMesh.edges.at( i ) ;
+    const QgsPoint &a = mTriangularMesh.vertices[edge.first];
+    const QgsPoint &b = mTriangularMesh.vertices[edge.second];
+    mNativeMeshEdgeCentroids[i] = QgsMeshVertex( ( a.x() + b.x() ) / 2.0, ( a.y() + b.y() ) / 2.0, ( a.z() + b.z() ) / 2.0 );
+  }
+
+  // CALCULATE SPATIAL INDEX
+  mSpatialEdgeIndex = QgsMeshSpatialIndex( mTriangularMesh, nullptr, QgsMesh::ElementType::Edge );
 
   return true;
 }
@@ -229,6 +260,19 @@ int QgsTriangularMesh::levelOfDetail() const
   return mLod;
 }
 
+bool QgsTriangularMesh::contains( const QgsMesh::ElementType &type ) const
+{
+  switch ( type )
+  {
+    case QgsMesh::ElementType::Vertex:
+      return mTriangularMesh.vertexCount() != 0;
+    case QgsMesh::ElementType::Edge:
+      return mTriangularMesh.edgeCount() != 0;
+    case QgsMesh::ElementType::Face:
+      return mTriangularMesh.faceCount() != 0;
+  }
+}
+
 const QVector<QgsMeshVertex> &QgsTriangularMesh::vertices() const
 {
   return mTriangularMesh.vertices;
@@ -239,9 +283,24 @@ const QVector<QgsMeshFace> &QgsTriangularMesh::triangles() const
   return mTriangularMesh.faces;
 }
 
+const QVector<QgsMeshEdge> &QgsTriangularMesh::edges() const
+{
+  return mTriangularMesh.edges;
+}
+
 const QVector<QgsMeshVertex> &QgsTriangularMesh::centroids() const
 {
+  return faceCentroids();
+}
+
+const QVector<QgsMeshVertex> &QgsTriangularMesh::faceCentroids() const
+{
   return mNativeMeshFaceCentroids;
+}
+
+const QVector<QgsMeshVertex> &QgsTriangularMesh::edgeCentroids() const
+{
+  return mNativeMeshEdgeCentroids;
 }
 
 const QVector<int> &QgsTriangularMesh::trianglesToNativeFaces() const
@@ -249,9 +308,14 @@ const QVector<int> &QgsTriangularMesh::trianglesToNativeFaces() const
   return mTrianglesToNativeFaces;
 }
 
+const QVector<int> &QgsTriangularMesh::edgesToNativeEdges() const
+{
+  return mEdgesToNativeEdges;
+}
+
 int QgsTriangularMesh::faceIndexForPoint( const QgsPointXY &point ) const
 {
-  const QList<int> faceIndexes = mSpatialIndex.intersects( QgsRectangle( point, point ) );
+  const QList<int> faceIndexes = mSpatialFaceIndex.intersects( QgsRectangle( point, point ) );
   for ( const int faceIndex : faceIndexes )
   {
     const QgsMeshFace &face = mTriangularMesh.faces.at( faceIndex );
@@ -264,7 +328,7 @@ int QgsTriangularMesh::faceIndexForPoint( const QgsPointXY &point ) const
 
 int QgsTriangularMesh::faceIndexForPoint_v2( const QgsPointXY &point ) const
 {
-  const QList<int> faceIndexes = mSpatialIndex.intersects( QgsRectangle( point, point ) );
+  const QList<int> faceIndexes = mSpatialFaceIndex.intersects( QgsRectangle( point, point ) );
 
   for ( const int faceIndex : faceIndexes )
   {
@@ -277,7 +341,12 @@ int QgsTriangularMesh::faceIndexForPoint_v2( const QgsPointXY &point ) const
 
 QList<int> QgsTriangularMesh::faceIndexesForRectangle( const QgsRectangle &rectangle ) const
 {
-  return mSpatialIndex.intersects( rectangle );
+  return mSpatialFaceIndex.intersects( rectangle );
+}
+
+QList<int> QgsTriangularMesh::edgeIndexesForRectangle( const QgsRectangle &rectangle ) const
+{
+  return mSpatialEdgeIndex.intersects( rectangle );
 }
 
 QVector<QVector3D> QgsTriangularMesh::vertexNormals( float vertScale ) const
@@ -309,6 +378,9 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
 {
   QVector<QgsTriangularMesh *> simplifiedMeshes;
 
+  if ( mTriangularMesh.edgeCount() != 0 )
+    return simplifiedMeshes;
+
   if ( !( reductionFactor > 1 ) )
     return simplifiedMeshes;
 
@@ -338,8 +410,6 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
   {
     QgsTriangularMesh *simplifiedMesh = new QgsTriangularMesh( *this );
     size_t maxNumberOfIndexes = baseIndexCount / pow( reductionFactor, path + 1 );
-    QTime time;
-    time.start();
 
     if ( indexes.size() <= int( maxNumberOfIndexes ) )
       break;
@@ -377,7 +447,7 @@ QVector<QgsTriangularMesh *> QgsTriangularMesh::simplifyMesh( double reductionFa
     }
 
     simplifiedMesh->mTriangularMesh = newMesh;
-    simplifiedMesh->mSpatialIndex = QgsMeshSpatialIndex( simplifiedMesh->mTriangularMesh );
+    simplifiedMesh->mSpatialFaceIndex = QgsMeshSpatialIndex( simplifiedMesh->mTriangularMesh );
     simplifiedMesh->finalizeTriangles();
     simplifiedMeshes.push_back( simplifiedMesh );
 
@@ -445,16 +515,27 @@ QgsGeometry QgsMeshUtils::toGeometry( const QgsMeshFace &face, const QVector<Qgs
   return QgsGeometry( QgsMeshUtils::toPolygon( face, vertices ) );
 }
 
-QList<int> QgsMeshUtils::nativeFacesFromTriangles( const QList<int> &triangleIndexes, const QVector<int> &trianglesToNativeFaces )
+static QSet<int> _nativeElementsFromElements( const QList<int> &indexes, const QVector<int> &elementToNativeElements )
 {
-  QSet<int> nativeFaces;
-  for ( const int triangleIndex : triangleIndexes )
+  QSet<int> nativeElements;
+  for ( const int index : indexes )
   {
-    const int nativeIndex = trianglesToNativeFaces[triangleIndex];
-    nativeFaces.insert( nativeIndex );
+    const int nativeIndex = elementToNativeElements[index];
+    nativeElements.insert( nativeIndex );
   }
-  return nativeFaces.toList();
+  return nativeElements;
 }
+
+QSet<int> QgsMeshUtils::nativeFacesFromTriangles( const QList<int> &triangleIndexes, const QVector<int> &trianglesToNativeFaces )
+{
+  return _nativeElementsFromElements( triangleIndexes, trianglesToNativeFaces );
+}
+
+QSet<int> QgsMeshUtils::nativeEdgesFromEdges( const QList<int> &edgesIndexes, const QVector<int> &edgesToNativeEdges )
+{
+  return _nativeElementsFromElements( edgesIndexes, edgesToNativeEdges );
+}
+
 
 static double _isLeft2D( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p )
 {
@@ -484,4 +565,30 @@ bool QgsMeshUtils::isInTriangleFace( const QgsPointXY point, const QgsMeshFace &
   const QgsPoint p( point.x(), point.y() );
 
   return _isInTriangle2D( p, triangle );
+}
+
+QSet<int> QgsMeshUtils::nativeVerticesFromTriangles( const QList<int> &triangleIndexes, const QVector<QgsMeshFace> &triangles )
+{
+  QSet<int> uniqueVertices;
+  for ( int triangleIndex : triangleIndexes )
+  {
+    const QgsMeshFace triangle = triangles[triangleIndex];
+    for ( int i : triangle )
+    {
+      uniqueVertices.insert( i );
+    }
+  }
+  return uniqueVertices;
+}
+
+QSet<int> QgsMeshUtils::nativeVerticesFromEdges( const QList<int> &edgesIndexes, const QVector<QgsMeshEdge> &edges )
+{
+  QSet<int> uniqueVertices;
+  for ( int edgeIndex : edgesIndexes )
+  {
+    const QgsMeshEdge edge = edges[edgeIndex];
+    uniqueVertices.insert( edge.first );
+    uniqueVertices.insert( edge.second );
+  }
+  return uniqueVertices;
 }

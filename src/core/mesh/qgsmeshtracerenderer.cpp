@@ -1245,7 +1245,7 @@ QgsMeshVectorTraceAnimationGenerator::QgsMeshVectorTraceAnimationGenerator( QgsM
     vectorDatasetValues = cache->mVectorDatasetValues;
     scalarActiveFaceFlagValues = cache->mScalarActiveFaceFlagValues;
     magMax = cache->mVectorDatasetMagMaximum;
-    vectorDataOnVertices = cache->mVectorDataOnVertices;
+    vectorDataOnVertices = cache->mVectorDataType == QgsMeshDatasetGroupMetadata::DataOnVertices;
   }
   else
   {

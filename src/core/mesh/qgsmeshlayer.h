@@ -169,21 +169,21 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QString providerType() const;
 
     /**
-     * Returns native mesh (NULLPTR before rendering)
+     * Returns native mesh (NULLPTR before rendering or calling to updateMesh)
      *
      * \note Not available in Python bindings
      */
     QgsMesh *nativeMesh() SIP_SKIP;
 
     /**
-     * Returns native mesh (NULLPTR before rendering)
+     * Returns native mesh (NULLPTR before rendering or calling to updateMesh)
      *
      * \note Not available in Python bindings
      */
     const QgsMesh *nativeMesh() const SIP_SKIP;
 
     /**
-     * Returns triangular mesh (NULLPTR before rendering).
+     * Returns triangular mesh (NULLPTR before rendering or calling to updateMesh).
      *
      * If the parameter triangleSize is provided, among the base triangular mesh
      * and the simplified triangular meshes, the one returned is which has the average triangle size just greater than triangleSize.
@@ -197,9 +197,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsTriangularMesh *triangularMesh( double minimumTriangleSize = 0 ) const SIP_SKIP;
 
     /**
-     * Update the base triangular mesh, create one if it doesn't exist
+     * Gets native mesh and updates (creates if it doesn't exist) the base triangular mesh
+     *
      * \param transform Transformation from layer CRS to destination (e.g. map) CRS. With invalid transform, it keeps the native mesh CRS
-     * \since QGIS 3.14
      */
     void updateTriangularMesh( const QgsCoordinateTransform &transform = QgsCoordinateTransform() );
 
@@ -234,7 +234,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      *
      * \since QGIS 3.14
      */
-
     QgsMeshSimplificationSettings meshSimplificationSettings() const SIP_SKIP;
 
     /**
@@ -242,7 +241,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      *
      * \since QGIS 3.14
      */
-
     void setMeshSimplificationSettings( const QgsMeshSimplificationSettings &meshSimplificationSettings ) SIP_SKIP;
 
     /**
@@ -295,7 +293,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \since QGIS 3.8
      */
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
-
 
   signals:
 

@@ -21,6 +21,8 @@
 #include <QVector>
 #include <QString>
 #include <QMap>
+#include <QPair>
+
 #include <limits>
 
 #include "qgis_core.h"
@@ -66,28 +68,70 @@ typedef QgsPoint QgsMeshVertex;
 typedef QVector<int> QgsMeshFace;
 
 /**
+ * Edge is a straight line seqment between 2 points.
+ * Stores the pair of vertex indexes
+ * \since QGIS 3.14
+ */
+typedef QPair<int, int> QgsMeshEdge;
+
+/**
  * \ingroup core
  *
- *  Mesh - vertices and faces
+ *  Mesh - vertices, edges and faces
  *
  * \since QGIS 3.6
  */
 struct CORE_EXPORT QgsMesh
 {
+
+  /**
+   * Defines type of mesh elements
+   *  \since QGIS 3.14
+   */
+  enum ElementType
+  {
+    Vertex = 1,
+    Edge   = 2,
+    Face   = 4
+  };
+
+  /**
+   * Returns whether the mesh contains at mesh elements of given type
+   *  \since QGIS 3.14
+   */
+  bool contains( const ElementType &type ) const;
+
   //! Returns number of vertices
   int vertexCount() const;
   //! Returns number of faces
   int faceCount() const;
+
+  /**
+   * Returns number of edge
+   * \since QGIS 3.14
+   */
+  int edgeCount() const;
 
   //! Returns a vertex at the index
   QgsMeshVertex vertex( int index ) const;
   //! Returns a face at the index
   QgsMeshFace face( int index ) const;
 
-  //! vertices
-  QVector<QgsMeshVertex> vertices SIP_SKIP;
-  //! faces
-  QVector<QgsMeshFace> faces SIP_SKIP;
+  /**
+   * Returns an edge at the index
+   * \since QGIS 3.14
+   */
+  QgsMeshEdge edge( int index ) const;
+
+  /**
+    * Remove all vertices, edges and faces
+    * \since QGIS 3.14
+    */
+  void clear();
+
+  QVector<QgsMeshVertex> vertices;
+  QVector<QgsMeshEdge> edges;
+  QVector<QgsMeshFace> faces;
 };
 
 /**
@@ -382,7 +426,8 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
     {
       DataOnFaces = 0, //!< Data is defined on faces
       DataOnVertices,  //!< Data is defined on vertices
-      DataOnVolumes    //!< Data is defined on volumes \since QGIS 3.12
+      DataOnVolumes,   //!< Data is defined on volumes \since QGIS 3.12
+      DataOnEdges      //!< Data is defined on edges \since QGIS 3.14
     };
 
     //! Constructs an empty metadata object
@@ -543,9 +588,10 @@ class CORE_EXPORT QgsMeshDatasetMetadata
  *
  * Interface for mesh data sources
  *
- * Mesh is a collection of vertices and faces in 2D or 3D space
+ * Mesh is a collection of vertices, edges and faces in 2D or 3D space
  *  - vertex - XY(Z) point (in the mesh's coordinate reference system)
- *  - faces - sets of vertices forming a closed shape - typically triangles or quadrilaterals
+ *  - edge   - two XY(Z) points (in the mesh's coordinate reference system) representing straight seqment
+ *  - faces  - sets of vertices forming a closed shape - typically triangles or quadrilaterals
  *
  * Base on the underlying data provider/format, whole mesh is either stored in memory or
  * read on demand
@@ -561,6 +607,12 @@ class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
     virtual ~QgsMeshDataSourceInterface() = default;
 
     /**
+     * Returns whether the mesh contains at mesh elements of given type
+     *  \since QGIS 3.14
+     */
+    bool contains( const QgsMesh::ElementType &type ) const;
+
+    /**
      * \brief Returns number of vertices in the native mesh
      * \returns Number of vertices in the mesh
      */
@@ -573,7 +625,15 @@ class CORE_EXPORT QgsMeshDataSourceInterface SIP_ABSTRACT
     virtual int faceCount() const = 0;
 
     /**
-     * Populates the mesh vertices and faces
+     * \brief Returns number of edges in the native mesh
+     * \returns Number of edges in the mesh
+     *
+     * \since QGIS 3.14
+     */
+    virtual int edgeCount() const = 0;
+
+    /**
+     * Populates the mesh vertices, edges and faces
      * \since QGIS 3.6
      */
     virtual void populateMesh( QgsMesh *mesh ) const = 0;
