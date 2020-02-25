@@ -435,6 +435,20 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  '-b 1 -a elev -i 5.0 -snodata 9999.0 -f "ESRI Shapefile" ' +
                  source + ' ' +
                  outdir + '/check.shp'])
+            # with CREATE_POLYGON
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'BAND': 1,
+                                        'FIELD_NAME': 'elev',
+                                        'FIELD_NAME_MIN': 'min',
+                                        'FIELD_NAME_MAX': 'max',
+                                        'INTERVAL': 5,
+                                        'CREATE_POLYGON': True,
+                                        'OUTPUT': outdir + '/check.shp'}, context, feedback),
+                ['gdal_contour',
+                 '-b 1 -i 5.0 -p -amin min -amax max -f "ESRI Shapefile" ' +
+                 source + ' ' +
+                 outdir + '/check.shp'])
             # with "0" NODATA value
             self.assertEqual(
                 alg.getConsoleCommands({'INPUT': source,
