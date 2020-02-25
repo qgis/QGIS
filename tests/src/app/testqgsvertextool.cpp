@@ -144,9 +144,11 @@ class TestQgsVertexTool : public QObject
     QgsVectorLayer *mLayerPolygon = nullptr;
     QgsVectorLayer *mLayerPoint = nullptr;
     QgsVectorLayer *mLayerLineZ = nullptr;
+    QgsVectorLayer *mLayerLineReprojected = nullptr;
     QgsFeatureId mFidLineZF1 = 0;
     QgsFeatureId mFidLineZF2 = 0;
     QgsFeatureId mFidLineF1 = 0;
+    QgsFeatureId mFidLineF13857 = 0;
     QgsFeatureId mFidPolygonF1 = 0;
     QgsFeatureId mFidPointF1 = 0;
 };
@@ -176,18 +178,26 @@ void TestQgsVertexTool::initTestCase()
   // make testing layers
   mLayerLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerLine->isValid() );
+  mLayerLineReprojected = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3857" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerLineReprojected->isValid() );
   mLayerPolygon = new QgsVectorLayer( QStringLiteral( "Polygon?crs=EPSG:27700" ), QStringLiteral( "layer polygon" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPolygon->isValid() );
   mLayerPoint = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:27700" ), QStringLiteral( "layer point" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerPoint->isValid() );
   mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
   QVERIFY( mLayerLineZ->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << mLayerLineZ );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << mLayerLineZ << mLayerLineReprojected );
 
   QgsPolylineXY line1;
   line1 << QgsPointXY( 2, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 3 );
   QgsFeature lineF1;
   lineF1.setGeometry( QgsGeometry::fromPolylineXY( line1 ) );
+
+  QgsCoordinateTransform ct( mLayerLine->crs(), mLayerLineReprojected->crs(), QgsCoordinateTransformContext() );
+  QgsGeometry line3857 = lineF1.geometry();
+  line3857.transform( ct );
+  QgsFeature lineF13857;
+  lineF13857.setGeometry( line3857 );
 
   QgsPolygonXY polygon1;
   QgsPolylineXY polygon1exterior;
@@ -212,6 +222,11 @@ void TestQgsVertexTool::initTestCase()
   mLayerLine->addFeature( lineF1 );
   mFidLineF1 = lineF1.id();
   QCOMPARE( mLayerLine->featureCount(), ( long )1 );
+
+  mLayerLineReprojected->startEditing();
+  mLayerLineReprojected->addFeature( lineF13857 );
+  mFidLineF13857 = lineF13857.id();
+  QCOMPARE( mLayerLineReprojected->featureCount(), ( long )1 );
 
   mLayerPolygon->startEditing();
   mLayerPolygon->addFeature( polygonF1 );
@@ -245,7 +260,7 @@ void TestQgsVertexTool::initTestCase()
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerPolygon << mLayerPoint << mLayerLineZ );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineReprojected << mLayerPolygon << mLayerPoint << mLayerLineZ );
 
   // TODO: set up snapping
 
@@ -660,6 +675,10 @@ void TestQgsVertexTool::testMoveMultipleVertices()
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
+
+  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-841256 6405990, -841259 6405988)" ) );
+  mLayerLineReprojected->undoStack()->undo();
+  QCOMPARE( mLayerLineReprojected->getFeature( mFidLineF13857 ).geometry().asWkt( 0 ), QStringLiteral( "LineString (-841256 6405990, -841258 6405990)" ) );
 }
 
 void TestQgsVertexTool::testMoveMultipleVertices2()
