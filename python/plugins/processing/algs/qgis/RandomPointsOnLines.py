@@ -94,7 +94,7 @@ class RandomPointsOnLines(QgisAlgorithm):
                                                             type=QgsProcessing.TypeVectorPoint))
         self.addOutput(QgsProcessingOutputNumber(self.OUTPUT_POINTS,
                                                  self.tr('Number of point generated')
-                       ))
+                                                 ))
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
