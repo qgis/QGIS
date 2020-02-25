@@ -277,7 +277,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsapplayertreeviewmenuprovider.h
   qgsattributeactiondialog.h
   qgsattributeactionpropertiesdialog.h
-  qgsattributerelationedit.h
   qgsattributesforminitcode.h
   qgsattributetabledialog.h
   qgsbookmarks.h
