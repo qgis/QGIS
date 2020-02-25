@@ -277,7 +277,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsapplayertreeviewmenuprovider.h
   qgsattributeactiondialog.h
   qgsattributeactionpropertiesdialog.h
-  qgsattributetypedialog.h
   qgsattributerelationedit.h
   qgsattributesforminitcode.h
   qgsattributetabledialog.h
@@ -390,6 +389,11 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolregularpolygon2points.h
   qgsmaptoolregularpolygoncenterpoint.h
   qgsmaptoolregularpolygoncentercorner.h
+  
+  attributeformconfig/qgsattributetypedialog.h
+  attributeformconfig/qgsattributeformcontaineredit.h
+  attributeformconfig/qgsattributerelationedit.h
+  attributeformconfig/qgsattributewidgetedit.h
 
   decorations/qgsdecorationitem.h
   decorations/qgsdecorationtitle.h
