@@ -272,6 +272,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterCoordinateOperation;
     else if ( sipCpp->type() == QgsProcessingParameterMapTheme::typeName() )
       sipType = sipType_QgsProcessingParameterMapTheme;
+    else if ( sipCpp->type() == QgsProcessingParameterDateTime::typeName() )
+      sipType = sipType_QgsProcessingParameterDateTime;
     else
       sipType = nullptr;
     SIP_END
