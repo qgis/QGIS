@@ -4742,10 +4742,14 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
 
   if ( mFlags & FlagNoMText )
   {
+    txt.replace( QChar( QChar::LineFeed ), ' ' );
+    txt.replace( QChar( QChar::CarriageReturn ), ' ' );
     writeText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getHeight(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
   }
   else
   {
+    txt.replace( QString( QChar( QChar::CarriageReturn ) ) + QString( QChar( QChar::LineFeed ) ), QStringLiteral( "\\P" ) );
+    txt.replace( QChar( QChar::CarriageReturn ), QStringLiteral( "\\P" ) );
     txt = txt.replace( wrapchr, QLatin1String( "\\P" ) );
     txt.replace( " ", "\\~" );
 
