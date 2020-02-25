@@ -36,7 +36,7 @@ class EditModelAction(ContextAction):
         self.name = QCoreApplication.translate('EditModelAction', 'Edit Model…')
 
     def isEnabled(self):
-        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() == "model"
+        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() in ("model", "project")
 
     def execute(self):
         alg = self.itemData
