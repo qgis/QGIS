@@ -20,6 +20,7 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgspathresolver.h"
 #include "qgsproject.h"
+#include "qgslayertree.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgssettings.h"
 #include "qgsunittypes.h"
@@ -483,6 +484,18 @@ void TestQgsProject::testEmbeddedLayerGroupFromQgz()
 
   QCOMPARE( p1.layerIsEmbedded( points->id() ), path );
   QCOMPARE( p1.layerIsEmbedded( polys->id() ), path );
+
+  // test embedded layers when origin project is something like ../XXX
+  path = QString( TEST_DATA_DIR ) + QStringLiteral( "/embedded_layers/project.qgz" );
+  QgsProject p2;
+  p2.read( path );
+
+  QgsMapLayer *points2 = p0.mapLayersByName( "points" )[0];
+  bool saveFlag = p2.mEmbeddedLayers[points2->id()].second;
+  QCOMPARE( saveFlag, true );
+
+  bool valid = p2.loadEmbeddedNodes( p2.layerTreeRoot() );
+  QCOMPARE( valid, true );
 }
 
 void TestQgsProject::testSetGetCrs()
