@@ -278,9 +278,16 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   for ( int row = 0, nRows = ui.tableWidgetErrors->rowCount(); row < nRows; ++row )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( row, 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
-    QgsVectorLayer *srcLayer = mChecker->featurePools()[error->layerId()]->layer();
+    QString layerName = QString();
+    const QString layerId = error->layerId();
+    if ( mChecker->featurePools().keys().contains( layerId ) )
+    {
+      QgsVectorLayer *srcLayer = mChecker->featurePools()[layerId]->layer();
+      layerName = srcLayer->name();
+    }
+
     QgsFeature f( layer->fields() );
-    f.setAttribute( fieldLayer, srcLayer->name() );
+    f.setAttribute( fieldLayer, layerName );
     f.setAttribute( fieldFeatureId, error->featureId() );
     f.setAttribute( fieldErrDesc, error->description() );
     QgsGeometry geom( new QgsPoint( error->location() ) );
