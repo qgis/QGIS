@@ -462,8 +462,8 @@ void QgsMeshTerrain3dGeometry::init()
     return;
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  Qt3DRender::QBuffer *mVertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
-  Qt3DRender::QBuffer *mIndexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, this );
+  Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
+  Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, this );
 #else
   Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer( this );
   Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer( this );
