@@ -64,6 +64,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
   context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
   context.setMapCanvas( QgisApp::instance()->mapCanvas() );
   context.setCadDockWidget( QgisApp::instance()->cadDockWidget() );
+  context.setMainMessageBar( QgisApp::instance()->messageBar() );
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
