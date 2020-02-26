@@ -175,10 +175,11 @@ class CORE_EXPORT QgsMeshLayerUtils
      * \returns magnitude values of the dataset on all the vertices
      * \since QGIS 3.14
      */
-    static QVector<double> calculateMagnitudeOnVertices( const QgsMeshLayer *meshLayer,
-        const QgsMeshDatasetIndex index,
-        QgsMeshDataBlock *activeFaceFlagValues,
-        const QgsMeshRendererScalarSettings::DataInterpolationMethod method = QgsMeshRendererScalarSettings::NeighbourAverage );
+    static QVector<double> calculateMagnitudeOnVertices(
+      const QgsMeshLayer *meshLayer,
+      const QgsMeshDatasetIndex index,
+      QgsMeshDataBlock *activeFaceFlagValues,
+      const QgsMeshRendererScalarSettings::DataInterpolationMethod method = QgsMeshRendererScalarSettings::NeighbourAverage );
 
     /**
      * Calculates the bounding box of the triangle
@@ -201,6 +202,20 @@ class CORE_EXPORT QgsMeshLayerUtils
       * \since QGIS 3.12
       */
     static QDateTime firstReferenceTime( QgsMeshLayer *meshLayer );
+
+    /**
+     * Calculates the normals on the vertices using vertical magnitudes instead Z value of vertices
+     * \param triangularMesh the triangular mesh
+     * \param verticalMagnitude the vertical magnitude values used instead Z value of vertices
+     * \param isRelative true if the vertical magnitude is relative to the Z value of vertices
+     * \returns normales (3D vector) on all the vertices
+     * \since QGIS 3.14
+     */
+    static QVector<QVector3D> calculateNormals(
+      const QgsTriangularMesh &triangularMesh,
+      const QVector<double> &verticalMagnitude,
+      bool isRelative );
+
 
 };
 
