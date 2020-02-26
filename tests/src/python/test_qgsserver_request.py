@@ -194,6 +194,21 @@ class QgsServerRequestTest(QgsServerTestBase):
         _check_links(params)
         _check_links(params, 'POST')
 
+    def test_fcgiRequestBody(self):
+        """Test request body"""
+        data = '<Literal>+1</Literal>'
+        self._set_env({
+            'SERVER_NAME': 'www.myserver.com',
+            'SERVICE': 'WFS',
+            'REQUEST_BODY': data,
+            'CONTENT_LENGTH': str(len(data)),
+            'REQUEST_METHOD': 'POST',
+        })
+        request = QgsFcgiServerRequest()
+        response = QgsBufferServerResponse()
+        self.server.handleRequest(request, response)
+        self.assertEqual(request.parameter('REQUEST_BODY'), '<Literal>+1</Literal>')
+
     def test_add_parameters(self):
         request = QgsServerRequest()
         request.setParameter('FOOBAR', 'foobar')
