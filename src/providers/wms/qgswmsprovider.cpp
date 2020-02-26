@@ -154,11 +154,14 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     // Setup temporal properties for layers in WMS-T
     if ( mSettings.mIsTemporal )
     {
-      temporalCapabilities()->setFixedTemporalRange( mSettings.mFixedRange );
-      if ( mSettings.mIsBiTemporal )
+      if ( temporalCapabilities() )
       {
-        temporalCapabilities()->setFixedReferenceTemporalRange( mSettings.mFixedReferenceRange );
-        temporalCapabilities()->setHasReference( true );
+        temporalCapabilities()->setFixedTemporalRange( mSettings.mFixedRange );
+        if ( mSettings.mIsBiTemporal )
+        {
+          temporalCapabilities()->setFixedReferenceTemporalRange( mSettings.mFixedReferenceRange );
+          temporalCapabilities()->setHasReference( true );
+        }
       }
     }
   }
@@ -1044,7 +1047,8 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   setQueryItem( query, QStringLiteral( "STYLES" ), styles );
 
   // For WMS-T layers
-  if ( temporalCapabilities()->isActive() )
+  if ( temporalCapabilities() &&
+       temporalCapabilities()->isActive() )
   {
     addWmstParameters( query );
   }
@@ -1105,7 +1109,7 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 
     if ( referenceRange.begin() == referenceRange.end() )
       setQueryItem( query, QStringLiteral( "DIM_REFERENCE_TIME" ),
-                    range.begin().toString( format ) );
+                    referenceRange.begin().toString( format ) );
     else
     {
       QString extent = referenceRange.begin().toString( format );

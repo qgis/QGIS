@@ -272,13 +272,18 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   metadataFrame->setLayout( layout );
 
   // Temporal options
-
-  if ( mRasterLayer->temporalProperties()->isActive() ||
-       mRasterLayer->dataProvider()->temporalCapabilities()->isActive() )
+  // Check if temporal properties of the raster layer are available and active,
+  // if not check if the layer has temporal capabilities from its provider
+  // and they are active.
+  if ( ( mRasterLayer->temporalProperties() &&
+         mRasterLayer->temporalProperties()->isActive() ) ||
+       ( mRasterLayer->dataProvider() &&
+         mRasterLayer->dataProvider()->temporalCapabilities() &&
+         mRasterLayer->dataProvider()->temporalCapabilities()->isActive()
+       ) )
   {
     QVBoxLayout *temporalLayout = new QVBoxLayout( temporalFrame );
     mTemporalWidget = new QgsRasterLayerTemporalPropertiesWidget( this, mRasterLayer );
-    mTemporalWidget->setMapCanvas( mMapCanvas );
     temporalLayout->addWidget( mTemporalWidget );
 
   }

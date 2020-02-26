@@ -46,8 +46,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
 
     virtual ~QgsRasterDataProviderTemporalCapabilities() = default;
 
-//    QgsRasterDataProviderTemporalCapabilities  &operator=( const QgsRasterDataProviderTemporalProperties &other );
-
     /**
      * Sets the current active datetime range for the temporal properties.
      *

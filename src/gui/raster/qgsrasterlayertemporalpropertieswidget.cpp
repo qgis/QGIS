@@ -87,39 +87,42 @@ void QgsRasterLayerTemporalPropertiesWidget::init()
 void QgsRasterLayerTemporalPropertiesWidget::setDateTimeInputsLimit()
 {
   QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( mLayer );
-  QgsDateTimeRange fixedRange = layer->dataProvider()->temporalCapabilities()->fixedTemporalRange();
-  QgsDateTimeRange fixedReferenceRange = layer->dataProvider()->temporalCapabilities()->fixedReferenceTemporalRange();
-
-  QgsDateTimeRange range = layer->dataProvider()->temporalCapabilities()->temporalRange();
-  QgsDateTimeRange referenceRange = layer->dataProvider()->temporalCapabilities()->temporalRange();
-
-  // Set initial date time input values to the layers temporal range only if the
-  // ranges are valid
-  if ( range.begin().isValid() && range.end().isValid() )
+  if ( layer->dataProvider() && layer->dataProvider()->temporalCapabilities() )
   {
-    mStartTemporalDateTimeEdit->setDateTime( range.begin() );
-    mEndTemporalDateTimeEdit->setDateTime( range.end() );
-  }
-  else
-  {
-    if ( fixedRange.begin().isValid() && fixedRange.end().isValid() )
+    QgsDateTimeRange fixedRange = layer->dataProvider()->temporalCapabilities()->fixedTemporalRange();
+    QgsDateTimeRange fixedReferenceRange = layer->dataProvider()->temporalCapabilities()->fixedReferenceTemporalRange();
+
+    QgsDateTimeRange range = layer->dataProvider()->temporalCapabilities()->temporalRange();
+    QgsDateTimeRange referenceRange = layer->dataProvider()->temporalCapabilities()->referenceTemporalRange();
+
+    // Set initial date time input values to the layers temporal range only if the
+    // ranges are valid
+    if ( range.begin().isValid() && range.end().isValid() )
     {
-      mStartTemporalDateTimeEdit->setDateTime( fixedRange.begin() );
-      mEndTemporalDateTimeEdit->setDateTime( fixedRange.end() );
+      mStartTemporalDateTimeEdit->setDateTime( range.begin() );
+      mEndTemporalDateTimeEdit->setDateTime( range.end() );
     }
-  }
-
-  if ( referenceRange.begin().isValid() && referenceRange.end().isValid() )
-  {
-    mStartTemporalDateTimeEdit->setDateTime( referenceRange.begin() );
-    mEndTemporalDateTimeEdit->setDateTime( referenceRange.end() );
-  }
-  else
-  {
-    if ( fixedReferenceRange.begin().isValid() && fixedReferenceRange.end().isValid() )
+    else
     {
-      mStartReferenceDateTimeEdit->setDateTime( fixedReferenceRange.begin() );
-      mEndReferenceDateTimeEdit->setDateTime( fixedReferenceRange.end() );
+      if ( fixedRange.begin().isValid() && fixedRange.end().isValid() )
+      {
+        mStartTemporalDateTimeEdit->setDateTime( fixedRange.begin() );
+        mEndTemporalDateTimeEdit->setDateTime( fixedRange.end() );
+      }
+    }
+
+    if ( referenceRange.begin().isValid() && referenceRange.end().isValid() )
+    {
+      mStartReferenceDateTimeEdit->setDateTime( referenceRange.begin() );
+      mEndReferenceDateTimeEdit->setDateTime( referenceRange.end() );
+    }
+    else
+    {
+      if ( fixedReferenceRange.begin().isValid() && fixedReferenceRange.end().isValid() )
+      {
+        mStartReferenceDateTimeEdit->setDateTime( fixedReferenceRange.begin() );
+        mEndReferenceDateTimeEdit->setDateTime( fixedReferenceRange.end() );
+      }
     }
   }
 }
@@ -140,50 +143,50 @@ void QgsRasterLayerTemporalPropertiesWidget::setInputWidgetState( TemporalDimens
   }
 }
 
-void QgsRasterLayerTemporalPropertiesWidget::setMapCanvas( QgsMapCanvas *canvas )
-{
-  mCanvas = canvas;
-}
-
 void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
 {
   if ( mLayerRadioButton->isChecked() )
   {
-    if ( mLayer->type() == QgsMapLayerType::RasterLayer &&
-         mLayer->providerType() == "wms" )
+    if ( mLayer->type() == QgsMapLayerType::RasterLayer )
     {
       QgsDateTimeRange normalRange = QgsDateTimeRange( mStartTemporalDateTimeEdit->dateTime(),
                                      mEndTemporalDateTimeEdit->dateTime() );
       QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( mLayer );
-      rasterLayer->dataProvider()->temporalCapabilities()->setTemporalRange( normalRange );
 
-      if ( mDisableTime->isChecked() )
-        rasterLayer->dataProvider()->temporalCapabilities()->setEnableTime( false );
-      else
-        rasterLayer->dataProvider()->temporalCapabilities()->setEnableTime( true );
-
-      // Update current selection label
-      updateRangeLabel( TemporalRangeSource::Layer, mRangeLabel );
-
-      if ( mReferenceCheckBox->isChecked() )
+      if ( rasterLayer->dataProvider() && rasterLayer->dataProvider()->temporalCapabilities() )
       {
-        QgsDateTimeRange referenceRange = QgsDateTimeRange( mStartReferenceDateTimeEdit->dateTime(),
-                                          mEndReferenceDateTimeEdit->dateTime() );
-        rasterLayer->dataProvider()->temporalCapabilities()->setReferenceTemporalRange( referenceRange );
-        rasterLayer->dataProvider()->temporalCapabilities()->setReferenceEnable( true );
+        rasterLayer->dataProvider()->temporalCapabilities()->setTemporalRange( normalRange );
+
+        if ( mDisableTime->isChecked() )
+          rasterLayer->dataProvider()->temporalCapabilities()->setEnableTime( false );
+        else
+          rasterLayer->dataProvider()->temporalCapabilities()->setEnableTime( true );
+
+        // Update current selection label
+        updateRangeLabel( TemporalRangeSource::Layer, mRangeLabel );
+
+        if ( mReferenceCheckBox->isChecked() )
+        {
+          QgsDateTimeRange referenceRange = QgsDateTimeRange( mStartReferenceDateTimeEdit->dateTime(),
+                                            mEndReferenceDateTimeEdit->dateTime() );
+
+          rasterLayer->dataProvider()->temporalCapabilities()->setReferenceEnable( true );
+          rasterLayer->dataProvider()->temporalCapabilities()->setReferenceTemporalRange( referenceRange );
+        }
+        else
+          rasterLayer->dataProvider()->temporalCapabilities()->setReferenceEnable( false );
       }
-      else
-        rasterLayer->dataProvider()->temporalCapabilities()->setReferenceEnable( false );
     }
+  }
 
-    if ( mProjectRadioButton->isChecked() )
+  if ( mProjectRadioButton->isChecked() )
+  {
+    if ( mLayer->type() == QgsMapLayerType::RasterLayer )
     {
-      if ( mLayer->type() == QgsMapLayerType::RasterLayer &&
-           mLayer->providerType() == "wms" )
-      {
-        QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *> ( mLayer );
+      QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *> ( mLayer );
 //      rasterLayer->dataProvider()->temporalCapabilities()->setTemporalRange( projectRange );
-
+      if ( rasterLayer->dataProvider() && rasterLayer->dataProvider()->temporalCapabilities() )
+      {
         if ( mReferenceCheckBox->isChecked() )
           rasterLayer->dataProvider()->temporalCapabilities()->setReferenceEnable( true );
         else
@@ -201,14 +204,18 @@ void QgsRasterLayerTemporalPropertiesWidget::updateRangeLabel( TemporalRangeSour
          mLayer->providerType() == "wms" )
     {
       QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *> ( mLayer );
-      QgsDateTimeRange range = rasterLayer->dataProvider()->temporalCapabilities()->temporalRange();
 
-      if ( range.begin().isValid() && range.end().isValid() )
-        label->setText( tr( "Current layer range: %1 to %2" ).arg(
-                          range.begin().toString(),
-                          range.end().toString() ) );
-      else
-        label->setText( tr( "Layer temporal range is not set" ) );
+      if ( rasterLayer->dataProvider() && rasterLayer->dataProvider()->temporalCapabilities() )
+      {
+        QgsDateTimeRange range = rasterLayer->dataProvider()->temporalCapabilities()->temporalRange();
+
+        if ( range.begin().isValid() && range.end().isValid() )
+          label->setText( tr( "Current layer range: %1 to %2" ).arg(
+                            range.begin().toString(),
+                            range.end().toString() ) );
+        else
+          label->setText( tr( "Layer temporal range is not set" ) );
+      }
     }
   }
   else if ( source == TemporalRangeSource::Project )

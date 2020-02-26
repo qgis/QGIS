@@ -342,7 +342,7 @@ class QgsWmsProvider final: public QgsRasterDataProvider
     void createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
 
     /**
-      * Add WMS-T parameters to the query, if provider has temporal properties
+      * Add WMS-T parameters to the \a query, if provider has temporal properties
       *
       * \since QGIS 3.14
       */
