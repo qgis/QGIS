@@ -45,7 +45,9 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-enabled" ), mWireframeEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-line-width" ), mWireframeLineWidth );
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-line-color" ), QgsSymbolLayerUtils::encodeColor( mWireframeLineColor ) );
-  elemAdvancedSettings.setAttribute( QStringLiteral( "verticale-scale" ), mVerticaleScale );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-scale" ), mVerticalScale );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-group-index" ), mVerticalDatasetGroupIndex );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "vertical-relative" ), mIsVerticalMagnitudeRelative ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "texture-type" ), mRenderingStyle );
   elemAdvancedSettings.appendChild( mColorRampShader.writeXml( doc ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "min-color-ramp-shader" ), mColorRampShader.minimumValue() );
@@ -77,7 +79,9 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
   mWireframeEnabled = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-enabled" ) ).toInt();
   mWireframeLineWidth = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-line-width" ) ).toDouble();
   mWireframeLineColor = QgsSymbolLayerUtils::decodeColor( elemAdvancedSettings.attribute( QStringLiteral( "wireframe-line-color" ) ) );
-  mVerticaleScale = elemAdvancedSettings.attribute( "verticale-scale" ).toDouble();
+  mVerticalScale = elemAdvancedSettings.attribute( "vertical-scale" ).toDouble();
+  mVerticalDatasetGroupIndex = elemAdvancedSettings.attribute( "vertical-group-index" ).toInt();
+  mIsVerticalMagnitudeRelative = elemAdvancedSettings.attribute( "vertical-relative" ).toInt();
   mRenderingStyle = static_cast<QgsMesh3DSymbol::RenderingStyle>( elemAdvancedSettings.attribute( QStringLiteral( "texture-type" ) ).toInt() );
   mColorRampShader.readXml( elemAdvancedSettings.firstChildElement( "colorrampshader" ) );
   mColorRampShader.setMinimumValue( elemAdvancedSettings.attribute( QStringLiteral( "min-color-ramp-shader" ) ).toDouble() );
@@ -129,14 +133,14 @@ void QgsMesh3DSymbol::setWireframeLineColor( const QColor &wireframeLineColor )
   mWireframeLineColor = wireframeLineColor;
 }
 
-double QgsMesh3DSymbol::verticaleScale() const
+double QgsMesh3DSymbol::verticalScale() const
 {
-  return mVerticaleScale;
+  return mVerticalScale;
 }
 
-void QgsMesh3DSymbol::setVerticaleScale( double verticaleScale )
+void QgsMesh3DSymbol::setVerticalScale( double verticalScale )
 {
-  mVerticaleScale = verticaleScale;
+  mVerticalScale = verticalScale;
 }
 
 QgsColorRampShader QgsMesh3DSymbol::colorRampShader() const
@@ -167,4 +171,24 @@ QgsMesh3DSymbol::RenderingStyle QgsMesh3DSymbol::renderingStyle() const
 void QgsMesh3DSymbol::setRenderingStyle( const QgsMesh3DSymbol::RenderingStyle &coloringType )
 {
   mRenderingStyle = coloringType;
+}
+
+int QgsMesh3DSymbol::verticalDatasetGroupIndex() const
+{
+  return mVerticalDatasetGroupIndex;
+}
+
+void QgsMesh3DSymbol::setVerticalDatasetGroupIndex( int verticalDatasetGroupIndex )
+{
+  mVerticalDatasetGroupIndex = verticalDatasetGroupIndex;
+}
+
+bool QgsMesh3DSymbol::isVerticalMagnitudeRelative() const
+{
+  return mIsVerticalMagnitudeRelative;
+}
+
+void QgsMesh3DSymbol::setIsVerticalMagnitudeRelative( bool isVerticalScaleIsRelative )
+{
+  mIsVerticalMagnitudeRelative = isVerticalScaleIsRelative;
 }

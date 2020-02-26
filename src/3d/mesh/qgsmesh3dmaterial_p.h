@@ -64,11 +64,12 @@ class QgsMesh3dMaterial : public Qt3DRender::QMaterial
     };
 
     //! Constructor
-    QgsMesh3dMaterial( const QgsMesh3DSymbol &symbol );
+    QgsMesh3dMaterial( const QgsMesh3DSymbol &symbol, MagnitudeType magnitudeType = ZValue );
 
   private:
     QgsMesh3DSymbol mSymbol;
     Qt3DRender::QTechnique *mTechnique;
+    MagnitudeType mMagnitudeType = ZValue;
 
     void configure();
 };

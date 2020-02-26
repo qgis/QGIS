@@ -20,7 +20,7 @@
 
 #include "ui_qgsmesh3dpropswidget.h"
 
-
+class QgsMeshDatasetGroupListModel;
 class QgsMesh3DSymbol;
 class QgsMeshLayer;
 
@@ -37,10 +37,12 @@ class QgsMesh3dSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
     QgsMeshLayer *meshLayer() const;
     void setSymbol( const QgsMesh3DSymbol &symbol );
 
-    void enableVerticalSetting( bool isEnable );
+    void configureForTerrain();
+    void configureForDataset();
 
   public slots:
     void reloadColorRampShaderMinMax();
+    void enableVerticalSetting( bool isEnable );
 
   signals:
     void changed();
@@ -54,6 +56,8 @@ class QgsMesh3dSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
     double lineEditValue( const QLineEdit *lineEdit ) const;
     void setColorRampMinMax( double min, double max );
     QgsMeshLayer *mLayer = nullptr;
+    QgsMeshDatasetGroupListModel *mDatasetGroupListModel = nullptr;
+
 };
 
 #endif // QGSMESH3DSYMBOLWIDGET_H

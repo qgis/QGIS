@@ -66,10 +66,10 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   connect( mMeshLayer, &QgsMeshLayer::dataChanged, this, &QgsMeshLayerProperties::syncAndRepaint );
 
 #ifdef HAVE_3D
-  mVector3DWidget = new QgsMeshLayer3DRendererWidget( mMeshLayer, canvas, mOptsPage_3DView );
+  mMesh3DWidget = new QgsMeshLayer3DRendererWidget( mMeshLayer, canvas, mOptsPage_3DView );
 
   mOptsPage_3DView->setLayout( new QVBoxLayout( mOptsPage_3DView ) );
-  mOptsPage_3DView->layout()->addWidget( mVector3DWidget );
+  mOptsPage_3DView->layout()->addWidget( mMesh3DWidget );
 #else
   delete mOptsPage_3DView;  // removes both the "3d view" list item and its page
 #endif
@@ -144,7 +144,7 @@ void QgsMeshLayerProperties::syncToLayer()
    * 3D View Tab
    */
 #ifdef HAVE_3D
-  mVector3DWidget->setLayer( mMeshLayer );
+  mMesh3DWidget->setLayer( mMeshLayer );
 #endif
 
   QgsDebugMsgLevel( QStringLiteral( "populate rendering tab" ), 4 );
@@ -208,7 +208,7 @@ void QgsMeshLayerProperties::apply()
    * 3D View Tab
    */
 #ifdef HAVE_3D
-  mVector3DWidget->apply();
+  mMesh3DWidget->apply();
 #endif
 
   QgsDebugMsgLevel( QStringLiteral( "processing rendering tab" ), 4 );
