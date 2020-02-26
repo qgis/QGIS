@@ -112,7 +112,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     QDoubleSpinBox *minLimitSp = new QDoubleSpinBox( parent );
     minLimitSp->setDecimals( 5 );
     minLimitSp->setMaximum( 99999999.990000 );
-    minLimitSp->setToolTip( tr( "Snapping scale range min" ) );
+    minLimitSp->setToolTip( tr( "Min Scale" ) );
     return minLimitSp;
   }
 
@@ -121,7 +121,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     QDoubleSpinBox *maxLimitSp = new QDoubleSpinBox( parent );
     maxLimitSp->setDecimals( 5 );
     maxLimitSp->setMaximum( 99999999.990000 );
-    maxLimitSp->setToolTip( tr( "Snapping scale range max" ) );
+    maxLimitSp->setToolTip( tr( "Max Scale" ) );
     return maxLimitSp;
   }
 
@@ -460,11 +460,11 @@ QVariant QgsSnappingLayerTreeModel::headerData( int section, Qt::Orientation ori
         case 4:
           return tr( "Avoid overlap" );
         case 5:
-          return tr( "Activate snapping on scale range" );
+          return tr( "Scale range limit" );
         case 6:
-          return tr( "Range min" );
+          return tr( "Min Scale" );
         case 7:
-          return tr( "Range max" );
+          return tr( "Max Scale" );
         default:
           return QVariant();
       }
