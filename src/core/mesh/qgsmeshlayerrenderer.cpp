@@ -78,7 +78,7 @@ void QgsMeshLayerRenderer::calculateOutputSize()
 {
   // figure out image size
   QgsRenderContext &context = *renderContext();
-  QgsRectangle extent = context.extent();  // this is extent in layer's coordinate system - but we need it in map coordinate system
+  QgsRectangle extent = context.mapExtent();
   QgsMapToPixel mapToPixel = context.mapToPixel();
   QgsPointXY topleft = mapToPixel.transform( extent.xMinimum(), extent.yMaximum() );
   QgsPointXY bottomright = mapToPixel.transform( extent.xMaximum(), extent.yMinimum() );
