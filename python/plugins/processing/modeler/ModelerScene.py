@@ -152,6 +152,7 @@ class ModelerScene(QGraphicsScene):
             for depend in alg.dependencies():
                 arrow = ModelerArrowItem(self.algItems[depend], -1,
                                          self.algItems[alg.childId()], -1)
+                arrow.setPenStyle(Qt.DotLine)
                 self.algItems[depend].addArrow(arrow)
                 self.algItems[alg.childId()].addArrow(arrow)
                 arrow.updatePath()
