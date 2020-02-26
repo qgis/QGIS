@@ -167,6 +167,16 @@ namespace pal
       std::size_t createCandidatesOverPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition> > &lPos, double angle );
 
       /**
+       * Generate one candidate centered over the specified point.
+       * \param x x coordinate of the point
+       * \param y y coordinate of the point
+       * \param lPos pointer to an array of candidates, will be filled by generated candidate
+       * \param angle orientation of the label
+       * \returns the number of generated candidates (always 1)
+       */
+      std::size_t createCandidateCenteredOverPoint( double x, double y, std::vector<std::unique_ptr<LabelPosition> > &lPos, double angle );
+
+      /**
        * Creates a single candidate using the "point on sruface" algorithm.
        *
        * \note Unlike the other create candidates methods, this method
