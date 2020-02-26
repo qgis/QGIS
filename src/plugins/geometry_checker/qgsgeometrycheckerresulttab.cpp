@@ -278,7 +278,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   for ( int row = 0, nRows = ui.tableWidgetErrors->rowCount(); row < nRows; ++row )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( row, 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
-    QString layerName = QString( "" );
+    QString layerName = QString();
     const QString layerId = error->layerId();
     if ( mChecker->featurePools().keys().contains( layerId ) )
     {
