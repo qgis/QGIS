@@ -166,7 +166,7 @@ class CORE_EXPORT QgsTriangularMesh
      * Skips the input face if it is not possible to triangulate
      * with the given algorithm (e.g. only 2 vertices, polygon with holes)
      */
-    void triangulate( const QgsMeshFace &face, int nativeIndex );
+    void triangulate( const QgsMeshFace &face, int nativeIndex, const QSet<int> &invalidVertexIndexes = QSet<int>() );
 
     // check clock wise and calculate average size of triangles
     void finalizeTriangles();
