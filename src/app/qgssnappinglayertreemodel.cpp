@@ -100,6 +100,31 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     return w;
   }
 
+  if ( index.column() == QgsSnappingLayerTreeModel::LimitToScaleRangeColumn )
+  {
+    QCheckBox *cbUseLimit = new QCheckBox( parent );
+    cbUseLimit->setChecked( false );
+    return cbUseLimit;
+  }
+
+  if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
+  {
+    QDoubleSpinBox *minLimitSp = new QDoubleSpinBox( parent );
+    minLimitSp->setDecimals( 5 );
+    minLimitSp->setMaximum( 99999999.990000 );
+    minLimitSp->setToolTip( tr( "Snapping scale range min" ) );
+    return minLimitSp;
+  }
+
+  if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
+  {
+    QDoubleSpinBox *maxLimitSp = new QDoubleSpinBox( parent );
+    maxLimitSp->setDecimals( 5 );
+    maxLimitSp->setMaximum( 99999999.990000 );
+    maxLimitSp->setToolTip( tr( "Snapping scale range max" ) );
+    return maxLimitSp;
+  }
+
   return nullptr;
 }
 
@@ -139,6 +164,23 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
     if ( w )
     {
       w->setCurrentIndex( w->findData( units ) );
+    }
+  }
+  else if ( index.column() == QgsSnappingLayerTreeModel::LimitToScaleRangeColumn )
+  {
+    QCheckBox *w = qobject_cast<QCheckBox *>( editor );
+    if ( w )
+    {
+      w->setChecked( val.toBool() );
+    }
+  }
+  else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn ||
+            index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
+  {
+    QDoubleSpinBox *w = qobject_cast<QDoubleSpinBox *>( editor );
+    if ( w )
+    {
+      w->setValue( val.toDouble() );
     }
   }
 }
@@ -183,6 +225,23 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
       model->setData( index, w->value(), Qt::EditRole );
     }
   }
+  else if ( index.column() == QgsSnappingLayerTreeModel::LimitToScaleRangeColumn )
+  {
+    QCheckBox *w = qobject_cast<QCheckBox *>( editor );
+    if ( w )
+    {
+      model->setData( index, w->isChecked(), Qt::EditRole );
+    }
+  }
+  else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn ||
+            index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
+  {
+    QDoubleSpinBox *w = qobject_cast<QDoubleSpinBox *>( editor );
+    if ( w )
+    {
+      model->setData( index, w->value(), Qt::EditRole );
+    }
+  }
 }
 
 
@@ -200,7 +259,7 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QgsMa
 int QgsSnappingLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
-  return 5;
+  return 8;
 }
 
 Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
@@ -400,6 +459,12 @@ QVariant QgsSnappingLayerTreeModel::headerData( int section, Qt::Orientation ori
           return tr( "Units" );
         case 4:
           return tr( "Avoid overlap" );
+        case 5:
+          return tr( "Activate snapping on scale range" );
+        case 6:
+          return tr( "Range min" );
+        case 7:
+          return tr( "Range max" );
         default:
           return QVariant();
       }
@@ -579,6 +644,45 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
         }
       }
     }
+
+    if ( idx.column() == LimitToScaleRangeColumn )
+    {
+      if ( role == Qt::DisplayRole )
+      {
+        return  QString::number( ls.limitToScaleRange() );
+      }
+
+      if ( role == Qt::UserRole )
+      {
+        return ls.limitToScaleRange();
+      }
+    }
+
+    if ( idx.column() == MinScaleColumn )
+    {
+      if ( role == Qt::DisplayRole )
+      {
+        return QString::number( ls.minScale() );
+      }
+
+      if ( role == Qt::UserRole )
+      {
+        return ls.minScale();
+      }
+    }
+
+    if ( idx.column() == MaxScaleColumn )
+    {
+      if ( role == Qt::DisplayRole )
+      {
+        return QString::number( ls.maxScale() );
+      }
+
+      if ( role == Qt::UserRole )
+      {
+        return ls.maxScale();
+      }
+    }
   }
 
   return QVariant();
@@ -707,6 +811,69 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
         avoidIntersectionsList.removeAll( vl );
 
       mProject->setAvoidIntersectionsLayers( avoidIntersectionsList );
+      emit dataChanged( index, index );
+      return true;
+    }
+  }
+
+  if ( index.column() == LimitToScaleRangeColumn && role == Qt::EditRole )
+  {
+    QgsVectorLayer *vl = vectorLayer( index );
+    if ( vl )
+    {
+      if ( !mIndividualLayerSettings.contains( vl ) )
+        return false;
+
+      QgsSnappingConfig::IndividualLayerSettings ls = mIndividualLayerSettings.value( vl );
+      if ( !ls.valid() )
+        return false;
+
+      ls.setLimitToScaleRange( value.toBool() );
+      QgsSnappingConfig config = mProject->snappingConfig();
+      config.setIndividualLayerSettings( vl, ls );
+      mProject->setSnappingConfig( config );
+      emit dataChanged( index, index );
+      return true;
+    }
+  }
+
+  if ( index.column() == MinScaleColumn && role == Qt::EditRole )
+  {
+    QgsVectorLayer *vl = vectorLayer( index );
+    if ( vl )
+    {
+      if ( !mIndividualLayerSettings.contains( vl ) )
+        return false;
+
+      QgsSnappingConfig::IndividualLayerSettings ls = mIndividualLayerSettings.value( vl );
+      if ( !ls.valid() )
+        return false;
+
+      ls.setMinScale( value.toDouble() );
+      QgsSnappingConfig config = mProject->snappingConfig();
+      config.setIndividualLayerSettings( vl, ls );
+      mProject->setSnappingConfig( config );
+      emit dataChanged( index, index );
+      return true;
+    }
+  }
+
+  if ( index.column() == MaxScaleColumn && role == Qt::EditRole )
+  {
+    QgsVectorLayer *vl = vectorLayer( index );
+    if ( vl )
+    {
+      if ( !mIndividualLayerSettings.contains( vl ) )
+        return false;
+
+      QgsSnappingConfig::IndividualLayerSettings ls = mIndividualLayerSettings.value( vl );
+      if ( !ls.valid() )
+        return false;
+
+      ls.setMaxScale( value.toDouble() );
+      QgsSnappingConfig config = mProject->snappingConfig();
+      config.setIndividualLayerSettings( vl, ls );
+      mProject->setSnappingConfig( config );
       emit dataChanged( index, index );
       return true;
     }

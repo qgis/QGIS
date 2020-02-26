@@ -56,7 +56,10 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
       TypeColumn,
       ToleranceColumn,
       UnitsColumn,
-      AvoidIntersectionColumn
+      AvoidIntersectionColumn,
+      LimitToScaleRangeColumn,
+      MinScaleColumn,
+      MaxScaleColumn
     };
 
     QgsSnappingLayerTreeModel( QgsProject *project, QgsMapCanvas *canvas, QObject *parent = nullptr );

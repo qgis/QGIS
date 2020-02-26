@@ -118,7 +118,7 @@ class CORE_EXPORT QgsSnappingConfig
          * \param units
          * \deprecated since QGIS 3.12 use the method with SnappingTypeFlag instead.
          */
-        Q_DECL_DEPRECATED IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units ) SIP_DEPRECATED;
+        Q_DECL_DEPRECATED IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units, bool limitToScaleRange, double minScale, double maxScale  ) SIP_DEPRECATED;
 
         /**
          * \brief IndividualLayerSettings
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsSnappingConfig
          * \param units
          * \since QGIS 3.12
          */
-        IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units );
+        IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units, bool limitToScaleRange, double minScale, double maxScale  );
 
         /**
          * Constructs an invalid setting
@@ -180,6 +180,24 @@ class CORE_EXPORT QgsSnappingConfig
         //! Sets the type of units
         void setUnits( QgsTolerance::UnitType units );
 
+        //! Returns whether the snapping is limited on a scale iterval
+        bool limitToScaleRange() const;
+
+        //! Sets whether the scale limites are used or not
+        void setLimitToScaleRange( bool p_uselimit );
+
+        //! Returns min scale on which snapping is limited
+        double minScale() const;
+
+        //! Sets the min scale value on which snapping is used
+        void setMinScale( double p_minScale );
+
+        //! Returns max scale on which snapping is limite
+        double maxScale() const;
+
+        //! Sets the max scale value on which snapping is used
+        void setMaxScale( double p_maxScale );
+
         /**
          * Compare this configuration to other.
          */
@@ -193,6 +211,9 @@ class CORE_EXPORT QgsSnappingConfig
         SnappingTypeFlag mType = VertexFlag;
         double mTolerance = 0;
         QgsTolerance::UnitType mUnits = QgsTolerance::Pixels;
+        bool mLimitToScaleRange = false;
+        double mMinScale = 0;
+        double mMaxScale = 0;
     };
 
     /**

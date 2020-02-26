@@ -73,7 +73,7 @@ This is a container of advanced configuration (per layer) of the snapping of the
 %End
       public:
 
- IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units ) /Deprecated/;
+ IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units, bool limitToScaleRange, double minScale, double maxScale  ) /Deprecated/;
 %Docstring
 IndividualLayerSettings
 
@@ -86,7 +86,7 @@ IndividualLayerSettings
    use the method with SnappingTypeFlag instead.
 %End
 
-        IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units );
+        IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units, bool limitToScaleRange, double minScale, double maxScale  );
 %Docstring
 IndividualLayerSettings
 
@@ -166,6 +166,36 @@ Returns the type of units
         void setUnits( QgsTolerance::UnitType units );
 %Docstring
 Sets the type of units
+%End
+
+        bool limitToScaleRange() const;
+%Docstring
+Returns whether the snapping is limited on a scale iterval
+%End
+
+        void setLimitToScaleRange( bool p_uselimit );
+%Docstring
+Sets whether the scale limites are used or not
+%End
+
+        double minScale() const;
+%Docstring
+Returns min scale on which snapping is limited
+%End
+
+        void setMinScale( double p_minScale );
+%Docstring
+Sets the min scale value on which snapping is used
+%End
+
+        double maxScale() const;
+%Docstring
+Returns max scale on which snapping is limite
+%End
+
+        void setMaxScale( double p_maxScale );
+%Docstring
+Sets the max scale value on which snapping is used
 %End
 
         bool operator!= ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
