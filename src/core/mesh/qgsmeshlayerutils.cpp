@@ -429,4 +429,45 @@ QDateTime QgsMeshLayerUtils::firstReferenceTime( QgsMeshLayer *meshLayer )
   return QDateTime();
 }
 
+QVector<QVector3D> QgsMeshLayerUtils::calculateNormals( const QgsTriangularMesh &triangularMesh, const QVector<double> &verticalMagnitude, bool isRelative )
+{
+  QVector<QVector3D> normals( triangularMesh.vertices().count() );
+  for ( const auto &face : triangularMesh.triangles() )
+  {
+    for ( int i = 0; i < 3; i++ )
+    {
+      int index( face.at( i ) );
+      int index1( face.at( ( i + 1 ) % 3 ) );
+      int index2( face.at( ( i + 2 ) % 3 ) );
+
+      const QgsMeshVertex &vert( triangularMesh.vertices().at( index ) );
+      const QgsMeshVertex &otherVert1( triangularMesh.vertices().at( index1 ) );
+      const QgsMeshVertex &otherVert2( triangularMesh.vertices().at( index2 ) );
+
+      float adjustRelative = 0;
+      float adjustRelative1 = 0;
+      float adjustRelative2 = 0;
+
+      if ( isRelative )
+      {
+        adjustRelative = vert.z();
+        adjustRelative1 = otherVert1.z();
+        adjustRelative2 = otherVert2.z();
+      }
+
+      QVector3D v1( float( otherVert1.x() - vert.x() ),
+                    float( otherVert1.y() - vert.y() ),
+                    float( verticalMagnitude[index1] - verticalMagnitude[index] + adjustRelative1 - adjustRelative ) );
+      QVector3D v2( float( otherVert2.x() - vert.x() ),
+                    float( otherVert2.y() - vert.y() ),
+                    float( verticalMagnitude[index2] - verticalMagnitude[index] + adjustRelative2 - adjustRelative ) );
+
+      normals[index] += QVector3D::crossProduct( v1, v2 );
+    }
+  }
+
+  return normals;
+}
+
+
 ///@endcond

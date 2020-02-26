@@ -67,7 +67,7 @@ static QByteArray createTerrainVertexData( const QgsTriangularMesh &mesh,
 }
 
 static QByteArray createDatasetVertexData( const QgsTriangularMesh &mesh,
-    const QVector<double> verticaleMagnitude,
+    const QVector<double> verticalMagnitude,
     const QVector<double> scalarMagnitude,
     const QgsVector3D &origin,
     float vertScale,
@@ -76,40 +76,7 @@ static QByteArray createDatasetVertexData( const QgsTriangularMesh &mesh,
   const int nVerts = mesh.vertices().count();
 
   //Calculate normales with Z value equal to verticaleMagnitude
-  QVector<QVector3D> normals( nVerts );
-  for ( const auto &face : mesh.triangles() )
-  {
-    for ( int i = 0; i < 3; i++ )
-    {
-      int index( face.at( i ) );
-      int index1( face.at( ( i + 1 ) % 3 ) );
-      int index2( face.at( ( i + 2 ) % 3 ) );
-
-      const QgsMeshVertex &vert( mesh.vertices().at( index ) );
-      const QgsMeshVertex &otherVert1( mesh.vertices().at( index1 ) );
-      const QgsMeshVertex &otherVert2( mesh.vertices().at( index2 ) );
-
-      float adjustRelative = 0;
-      float adjustRelative1 = 0;
-      float adjustRelative2 = 0;
-
-      if ( verticalRelative )
-      {
-        adjustRelative = vert.z();
-        adjustRelative1 = otherVert1.z();
-        adjustRelative2 = otherVert2.z();
-      }
-
-      QVector3D v1( float( otherVert1.x() - vert.x() ),
-                    float( otherVert1.y() - vert.y() ),
-                    vertScale * float( verticaleMagnitude[index1] - verticaleMagnitude[index] + adjustRelative1 - adjustRelative ) );
-      QVector3D v2( float( otherVert2.x() - vert.x() ),
-                    float( otherVert2.y() - vert.y() ),
-                    vertScale * float( verticaleMagnitude[index2] - verticaleMagnitude[index] + adjustRelative2 - adjustRelative ) );
-
-      normals[index] += QVector3D::crossProduct( v1, v2 );
-    }
-  }
+  QVector<QVector3D> normals = QgsMeshLayerUtils::calculateNormals( mesh, verticalMagnitude, verticalRelative );
 
   // Populate a buffer with the interleaved per-vertex data with
   // vec3 pos, vec3 normal, float magnitude
@@ -118,13 +85,12 @@ static QByteArray createDatasetVertexData( const QgsTriangularMesh &mesh,
   QByteArray bufferBytes;
   bufferBytes.resize( stride * nVerts );
 
-
   float *fptr = reinterpret_cast<float *>( bufferBytes.data() );
 
   for ( int i = 0; i < nVerts; i++ )
   {
     const QgsMeshVertex &vert = mesh.vertices().at( i );
-    double vertMag = verticaleMagnitude.at( i );
+    double vertMag = verticalMagnitude.at( i );
     double scalarMag = scalarMagnitude.at( i );
     if ( verticalRelative )
       vertMag += vert.z();
