@@ -37,10 +37,10 @@
       <item>
        <widget class="QCheckBox" name="cbForceSuppressFormPopup">
         <property name="statusTip">
-         <string>Do not open a new attribute form after digitizing a new feature, overrides all other options </string>
+         <string>Do not open a new attribute form after digitizing a new feature, overrides all other options</string>
         </property>
         <property name="text">
-         <string>Hide form for new features</string>
+         <string>Force hide form on add feature</string>
         </property>
        </widget>
       </item>
