@@ -294,7 +294,7 @@ void QgsFeatureFilterModel::updateCompleter()
     int firstRow = 0;
 
     // Move the extra entry to the first position
-    if ( mExtraIdentifierValueIndex != -1 )
+    if ( mExtraIdentifierValueIndex != -1 && currentEntryInNewList != -1 )
     {
       if ( mExtraIdentifierValueIndex != 0 )
       {
@@ -308,6 +308,12 @@ void QgsFeatureFilterModel::updateCompleter()
     // Remove all entries (except for extra entry if existent)
     beginRemoveRows( QModelIndex(), firstRow, mEntries.size() - firstRow );
     mEntries.remove( firstRow, mEntries.size() - firstRow );
+
+    // we need to reset mExtraIdentifierValueIndex variable if we remove all rows
+    // before endRemoveRows, if not setExtraIdentifierValuesUnguarded will be called
+    // and a null value will be added to mEntries
+    mExtraIdentifierValueIndex = firstRow > 0 ? mExtraIdentifierValueIndex : 0;
+
     endRemoveRows();
 
     if ( currentEntryInNewList == -1 )
@@ -315,7 +321,7 @@ void QgsFeatureFilterModel::updateCompleter()
       beginInsertRows( QModelIndex(), 1, entries.size() + 1 );
       mEntries += entries;
       endInsertRows();
-      setExtraIdentifierValuesIndex( 0 );
+      setExtraIdentifierValuesIndex( mAllowNull && !mEntries.isEmpty() ? 1 : 0 );
     }
     else
     {
