@@ -300,7 +300,6 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
       bool inRange = mMapSettings.scale() >= layerSettings.minScale() && mMapSettings.scale() <= layerSettings.maxScale();
       if ( !layerSettings.limitToScaleRange() || inRange )
       {
-        QgsDebugMsg( "Adding layer " );
         double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
         layers << qMakePair( layerConfig.layer, _areaOfInterest( pointMap, tolerance ) );
       }
