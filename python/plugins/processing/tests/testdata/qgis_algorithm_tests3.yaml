@@ -588,6 +588,21 @@ tests:
         type: vector
         name: randompointsinextent.gml
 
+  - algorithm: qgis:randompointsonlines
+    name: Random points on lines
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+      MAX_TRIES_PER_POINT: 10
+      MIN_DISTANCE: 1.0e-06
+      POINTS_NUMBER: 10
+      SEED: 1
+    results:
+      OUTPUT:
+        name: expected/randompointsonlines.gml
+        type: vector
+
   - algorithm: native:randomextract
     name: Random extract by number
     params:
