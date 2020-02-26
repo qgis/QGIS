@@ -258,7 +258,7 @@ void QgsMeshLayerRenderer::renderMesh()
     return;
 
   // triangular mesh
-  const QList<int> trianglesInExtent = mTriangularMesh.faceIndexesForRectangle( renderContext()->extent() );
+  const QList<int> trianglesInExtent = mTriangularMesh.faceIndexesForRectangle( renderContext()->mapExtent() );
   if ( mRendererSettings.triangularMeshSettings().isEnabled() )
   {
     renderMesh( mRendererSettings.triangularMeshSettings(),
@@ -362,7 +362,7 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   renderer.setClassificationMax( scalarSettings.classificationMaximum() );
   renderer.setOpacity( scalarSettings.opacity() );
 
-  std::unique_ptr<QgsRasterBlock> bl( renderer.block( 0, context.extent(), mOutputSize.width(), mOutputSize.height(), mFeedback.get() ) );
+  std::unique_ptr<QgsRasterBlock> bl( renderer.block( 0, context.mapExtent(), mOutputSize.width(), mOutputSize.height(), mFeedback.get() ) );
   QImage img = bl->image();
 
   context.painter()->drawImage( 0, 0, img );
