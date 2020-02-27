@@ -33,7 +33,7 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent )
 
 void QgsPhongMaterialWidget::setDiffuseVisible( bool visible )
 {
-  label->setVisible( visible );
+  lblDiffuse->setVisible( visible );
   btnDiffuse->setVisible( visible );
 }
 
