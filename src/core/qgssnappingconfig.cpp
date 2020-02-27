@@ -475,7 +475,7 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
       QgsSnappingConfig::SnappingTypeFlag type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( settingElement.attribute( QStringLiteral( "type" ) ).toInt() );
       double tolerance = settingElement.attribute( QStringLiteral( "tolerance" ) ).toDouble();
       QgsTolerance::UnitType units = ( QgsTolerance::UnitType )settingElement.attribute( QStringLiteral( "units" ) ).toInt();
-      bool limitSnappingToScale = settingElement.attribute( QStringLiteral( "limitSnappingToScale" ) ) == QLatin1String( "1" );
+      bool limitToScaleRange = settingElement.attribute( QStringLiteral( "limitToScaleRange" ) ) == QLatin1String( "1" );
       double minScale = settingElement.attribute( QStringLiteral( "minScale" ) ).toDouble();
       double maxScale = settingElement.attribute( QStringLiteral( "maxScale" ) ).toDouble();
 
@@ -486,7 +486,7 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
 
       IndividualLayerSettings setting = IndividualLayerSettings( enabled, type, tolerance, units,
-                                        limitSnappingToScale, minScale, maxScale );
+                                        limitToScaleRange, minScale, maxScale );
       mIndividualLayerSettings.insert( vl, setting );
     }
   }
@@ -514,6 +514,9 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
     layerElement.setAttribute( QStringLiteral( "type" ), static_cast<int>( setting.typeFlag() ) );
     layerElement.setAttribute( QStringLiteral( "tolerance" ), setting.tolerance() );
     layerElement.setAttribute( QStringLiteral( "units" ), static_cast<int>( setting.units() ) );
+    layerElement.setAttribute( QStringLiteral( "limitToScaleRange" ), QString::number( setting.limitToScaleRange() ) );
+    layerElement.setAttribute( QStringLiteral( "minScale" ), setting.minScale() );
+    layerElement.setAttribute( QStringLiteral( "maxScale" ), setting.maxScale() );
     ilsElement.appendChild( layerElement );
   }
   snapSettingsElem.appendChild( ilsElement );
