@@ -2615,7 +2615,8 @@ bool QgsOracleProvider::getGeometryDetails()
   }
 
   // Do not re-check geometry type if it is already known (f.e. when re-loading a project)
-  if ( mRequestedGeomType != QgsWkbTypes::Unknown && mSrid > 0 ) {
+  if ( mRequestedGeomType != QgsWkbTypes::Unknown && mSrid > 0 )
+  {
     mHasSpatialIndex = true; // default value is false
     mDetectedGeomType = mRequestedGeomType;
     mValid = true;
