@@ -381,6 +381,7 @@ void QgsAttributesFormProperties::loadAttributeRelationEdit()
   }
 
   mAttributeRelationEdit->setCardinality( cfg.mCardinality );
+  mAttributeRelationEdit->setForceSuppressFormPopup( cfg.mForceSuppressFormPopup );
 
   mAttributeRelationEdit->layout()->setMargin( 0 );
   mAttributeTypeFrame->layout()->setMargin( 0 );
@@ -397,6 +398,7 @@ void QgsAttributesFormProperties::storeAttributeRelationEdit()
   RelationConfig cfg;
 
   cfg.mCardinality = mAttributeRelationEdit->cardinality();
+  cfg.mForceSuppressFormPopup = mAttributeRelationEdit->forceSuppressFormPopup();
 
   QTreeWidgetItem *relationContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 1 );
 
@@ -921,6 +923,7 @@ void QgsAttributesFormProperties::apply()
 
     QVariantMap cfg;
     cfg[QStringLiteral( "nm-rel" )] = relCfg.mCardinality.toString();
+    cfg[QStringLiteral( "force-suppress-popup" )] = relCfg.mForceSuppressFormPopup;
 
     editFormConfig.setWidgetConfig( itemData.name(), cfg );
   }

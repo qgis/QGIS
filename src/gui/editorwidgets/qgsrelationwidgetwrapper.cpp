@@ -121,6 +121,11 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 
   QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed ) );
 
+  if ( config( QStringLiteral( "force-suppress-popup" ), false ).toBool() )
+  {
+    const_cast<QgsVectorLayerTools *>( myContext.vectorLayerTools() )->setForceSuppressFormPopup( true );
+  }
+
   w->setEditorContext( myContext );
 
   mNmRelation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "nm-rel" ) ).toString() );
