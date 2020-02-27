@@ -7,6 +7,12 @@ assignees: ''
 
 ---
 <!--
+IMPORTANT: Do NOT use GitHub to post any questions or support requests!
+           They will be closed immediately and ignored.
+
+Questions should go to the qgis-user mailing list at https://lists.osgeo.org/mailman/listinfo/qgis-user
+or other support forums. GitHub issues are for bug reports and suggestions for new features.
+
 Bug fixing and feature development is a community responsibility, and not the responsibility of the QGIS project alone.
 If this bug report or feature request is high-priority for you, we suggest engaging a QGIS developer or support organisation and financially sponsoring a fix
 
