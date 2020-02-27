@@ -963,7 +963,9 @@ QgsAttributesFormProperties::RelationConfig::RelationConfig() = default;
 QgsAttributesFormProperties::RelationConfig::RelationConfig( QgsVectorLayer *layer, const QString &relationId )
 {
   const QVariant nmrelcfg = layer->editFormConfig().widgetConfig( relationId ).value( QStringLiteral( "nm-rel" ) );
+  const QVariant forceSuppressFormPopup = layer->editFormConfig().widgetConfig( relationId ).value( QStringLiteral( "force-suppress-popup" ), false );
 
+  mForceSuppressFormPopup = forceSuppressFormPopup.toBool();
   mCardinality = nmrelcfg;
 }
 
