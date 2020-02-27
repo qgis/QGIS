@@ -14953,6 +14953,15 @@ void TestQgsGeometry::multiPolygon()
   QVERIFY( it2.hasNext() );
   QCOMPARE( it2.next(), QgsPoint( 10.8, 10.8 ) );
   QVERIFY( !it2.hasNext() );
+
+  //removeDuplicateNodes
+  QgsMultiPolygon dn1;
+  QVERIFY( dn1.fromWkt( QStringLiteral( "MultiPolygonZ (((0 0 0, 10 10 0, 11 9 0, 9 8 0, 9 8 0, 1 -1 0, 0 0 0)),((7 -1 0, 12 7 0, 13 6 0, 13 6 0, 8 -3 0, 7 -1 0)))" ) ) );
+  QCOMPARE( dn1.numGeometries(), 2 );
+  // First call should remove all duplicate nodes (one per part)
+  QVERIFY( dn1.removeDuplicateNodes( 0.001, false ) );
+  QVERIFY( !dn1.removeDuplicateNodes( 0.001, false ) );
+  QCOMPARE( dn1.asWkt(), QStringLiteral( "MultiPolygonZ (((0 0 0, 10 10 0, 11 9 0, 9 8 0, 1 -1 0, 0 0 0)),((7 -1 0, 12 7 0, 13 6 0, 8 -3 0, 7 -1 0)))" ) );
 }
 
 void TestQgsGeometry::geometryCollection()
