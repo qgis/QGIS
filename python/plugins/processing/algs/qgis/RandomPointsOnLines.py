@@ -142,13 +142,11 @@ class RandomPointsOnLines(QgisAlgorithm):
             lineGeoms = []  # vector of line elements (>=1 for multi)
             fGeom = f.geometry()  # get the geometry
             if fGeom is None:
-                feedback.reportError('Null geometry - skipping!',
-                                             False)
+                feedback.reportError('Null geometry - skipping!', False)
                 continue
             if fGeom.isEmpty():
-                feedback.reportError('Empty geometry - skipping!',
-                                             False)
-                continue            
+                feedback.reportError('Empty geometry - skipping!', False)
+                continue
             totLineLength = fGeom.length()
             if fGeom.isMultipart():
                 # Explode multi-part geometry
@@ -255,6 +253,5 @@ class RandomPointsOnLines(QgisAlgorithm):
         if totNPoints < pointCount * featureCount:
             feedback.pushInfo(str(totNPoints) + ' (out of ' +
                               str(pointCount * featureCount) +
-                              ') requested points were generated.',
-                              False)
+                              ') requested points were generated.')
         return {self.OUTPUT: dest_id, self.OUTPUT_POINTS: totNPoints}
