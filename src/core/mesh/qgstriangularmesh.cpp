@@ -130,7 +130,6 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
   mNativeMeshFaceCentroids.clear();
 
   // TRANSFORM VERTICES
-  QSet<int> invalidVertexIndexes;
   mCoordinateTransform = transform;
   mTriangularMesh.vertices.resize( nativeMesh->vertices.size() );
   for ( int i = 0; i < nativeMesh->vertices.size(); ++i )
