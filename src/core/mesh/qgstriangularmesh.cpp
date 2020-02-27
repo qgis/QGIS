@@ -83,14 +83,24 @@ void QgsTriangularMesh::triangulate( const QgsMeshFace &face, int nativeIndex )
   {
     // clip one ear from last 2 and first vertex
     const QgsMeshFace ear = { face[vertexCount - 2], face[vertexCount - 1], face[0] };
-    mTriangularMesh.faces.push_back( ear );
-    mTrianglesToNativeFaces.push_back( nativeIndex );
+    if ( !( std::isnan( mTriangularMesh.vertex( ear[0] ).x() )  ||
+            std::isnan( mTriangularMesh.vertex( ear[1] ).x() )  ||
+            std::isnan( mTriangularMesh.vertex( ear[2] ).x() ) ) )
+    {
+      mTriangularMesh.faces.push_back( ear );
+      mTrianglesToNativeFaces.push_back( nativeIndex );
+    }
     --vertexCount;
   }
 
   const QgsMeshFace triangle = { face[1], face[2], face[0] };
-  mTriangularMesh.faces.push_back( triangle );
-  mTrianglesToNativeFaces.push_back( nativeIndex );
+  if ( !( std::isnan( mTriangularMesh.vertex( triangle[0] ).x() )  ||
+          std::isnan( mTriangularMesh.vertex( triangle[1] ).x() )  ||
+          std::isnan( mTriangularMesh.vertex( triangle[2] ).x() ) ) )
+  {
+    mTriangularMesh.faces.push_back( triangle );
+    mTrianglesToNativeFaces.push_back( nativeIndex );
+  }
 }
 
 double QgsTriangularMesh::averageTriangleSize() const
@@ -120,6 +130,7 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
   mNativeMeshFaceCentroids.clear();
 
   // TRANSFORM VERTICES
+  QSet<int> invalidVertexIndexes;
   mCoordinateTransform = transform;
   mTriangularMesh.vertices.resize( nativeMesh->vertices.size() );
   for ( int i = 0; i < nativeMesh->vertices.size(); ++i )
@@ -139,7 +150,7 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
       {
         Q_UNUSED( cse )
         QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
-        mTriangularMesh.vertices[i] = vertex;
+        mTriangularMesh.vertices[i] = QgsMeshVertex();
       }
     }
     else
