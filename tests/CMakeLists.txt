@@ -1,11 +1,5 @@
 IF (ENABLE_TESTS)
 
-  #create a variable to specify where our test data is
-  #so that unit tests can use TEST_DATA_DIR to locate
-  #the test data. See CMakeLists in test dirs for more info
-  #TEST_DATA_DIR is also used by QgsRenderChecker currently in core
-  SET (TEST_DATA_DIR "${CMAKE_BUILD_DIR}/output/testdata")
-
   IF (WITH_CORE)
     ADD_SUBDIRECTORY(src)
     ADD_SUBDIRECTORY(bench)

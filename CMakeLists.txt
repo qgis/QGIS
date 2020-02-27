@@ -913,6 +913,12 @@ ENDIF (WITH_CORE)
 #############################################################
 # process subdirs
 
+#create a variable to specify where our test data is
+#so that unit tests can use TEST_DATA_DIR to locate
+#the test data. See CMakeLists in test dirs for more info
+#TEST_DATA_DIR is also used by QgsRenderChecker currently in core
+SET (TEST_DATA_DIR "${CMAKE_BUILD_DIR}/output/testdata")
+
 ADD_SUBDIRECTORY(doc)
 
 IF (WITH_CORE)
