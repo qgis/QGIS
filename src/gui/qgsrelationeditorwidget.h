@@ -204,6 +204,18 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void setMapTool( QgsMapTool *mapTool );
     void unsetMapTool();
 
+    /**
+     * Returns TRUE if the parent (referenced) feature is not yet saved and the
+     * referenced layer is not part of a transaction group.
+     */
+    bool saveReferencedLayerRequired();
+
+    /**
+     * If saveReferencedLayerRequired() is TRUE, ask the user to save the parent layer,
+     * returns TRUE unless the user has chosen to cancel (abort) the operation.
+     */
+    bool checkSaveParentFeature( );
+
     QgsDualView *mDualView = nullptr;
     QPointer<QgsMessageBarItem> mMessageBarItem;
     QgsDualView::ViewMode mViewMode = QgsDualView::AttributeEditor;

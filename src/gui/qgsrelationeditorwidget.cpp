@@ -808,27 +808,88 @@ void QgsRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &featureids )
   }
 }
 
-void QgsRelationEditorWidget::toggleEditing( bool state )
+void QgsRelationEditorWidget::toggleEditing( bool startEditing )
 {
-  if ( state )
+  if ( startEditing )
   {
+
     mEditorContext.vectorLayerTools()->startEditing( mRelation.referencingLayer() );
+
     if ( mNmRelation.isValid() )
+    {
       mEditorContext.vectorLayerTools()->startEditing( mNmRelation.referencedLayer() );
+    }
+
+  }
+  else  // stop editing
+  {
+    if ( checkSaveParentFeature() )
+    {
+      mEditorContext.vectorLayerTools()->stopEditing( mRelation.referencingLayer() );
+      if ( mNmRelation.isValid() )
+      {
+        mEditorContext.vectorLayerTools()->stopEditing( mNmRelation.referencedLayer() );
+      }
+    }
+  }
+}
+
+bool QgsRelationEditorWidget::saveReferencedLayerRequired()
+{
+  // Check if the parent needs saving before saving children
+  if ( mRelation.referencedLayer()->isEditable() &&
+       mEditorContext.relationMode() != QgsAttributeEditorContext::RelationMode::Undefined &&
+       mEditorContext.formMode() == QgsAttributeEditorContext::FormMode::Embed &&
+       mFeature.id() <= 0 )
+  {
+    // Check if the parent layer is part of a transaction group, we can defer saving in that case
+    return QgsProject::instance()->transactionGroups().constFind( qMakePair( mRelation.referencedLayer()->providerType(),
+           QgsDataSourceUri( mRelation.referencedLayer()->source() ).connectionInfo() ) ) ==
+           QgsProject::instance()->transactionGroups().constEnd();
   }
   else
   {
-    mEditorContext.vectorLayerTools()->stopEditing( mRelation.referencingLayer() );
-    if ( mNmRelation.isValid() )
-      mEditorContext.vectorLayerTools()->stopEditing( mNmRelation.referencedLayer() );
+    return false;
   }
+}
+
+bool QgsRelationEditorWidget::checkSaveParentFeature()
+{
+  if ( saveReferencedLayerRequired() )
+  {
+
+    const QMessageBox::StandardButton result { QMessageBox::question( this,
+        tr( "Save parent layer" ),
+        tr( "The parent feature currently edited in layer '%1' was not saved, do you want to save it first?" )
+        .arg( mRelation.referencedLayer()->name() ),
+        QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes ) };
+
+    if ( result == QMessageBox::Cancel )
+    {
+      return false;
+    }
+    else if ( result == QMessageBox::Yes )
+    {
+      mEditorContext.vectorLayerTools()->saveEdits( mRelation.referencedLayer() );
+    }
+  }
+  return true;
 }
 
 void QgsRelationEditorWidget::saveEdits()
 {
+
+  if ( ! checkSaveParentFeature() )
+  {
+    return;
+  }
+
   mEditorContext.vectorLayerTools()->saveEdits( mRelation.referencingLayer() );
+
   if ( mNmRelation.isValid() )
+  {
     mEditorContext.vectorLayerTools()->saveEdits( mNmRelation.referencedLayer() );
+  }
 }
 
 void QgsRelationEditorWidget::onCollapsedStateChanged( bool collapsed )
