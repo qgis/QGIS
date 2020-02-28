@@ -70,6 +70,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     {
       bool showLinkButton = true;
       bool showUnlinkButton = true;
+      bool showSaveChildEditsButton = true;
     };
 
     struct QmlElementEditorConfiguration

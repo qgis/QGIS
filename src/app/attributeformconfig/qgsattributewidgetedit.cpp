@@ -32,6 +32,7 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
   // hide specific configs
   mRelationShowLinkCheckBox->hide();
   mRelationShowUnlinkCheckBox->hide();
+  mRelationShowSaveChildEditsCheckBox->hide();
 
   switch ( itemData.type() )
   {
@@ -39,8 +40,10 @@ QgsAttributeWidgetEdit::QgsAttributeWidgetEdit( QTreeWidgetItem *item, QWidget *
     {
       mRelationShowLinkCheckBox->show();
       mRelationShowUnlinkCheckBox->show();
+      mRelationShowSaveChildEditsCheckBox->show();
       mRelationShowLinkCheckBox->setChecked( itemData.relationEditorConfiguration().showLinkButton );
       mRelationShowUnlinkCheckBox->setChecked( itemData.relationEditorConfiguration().showUnlinkButton );
+      mRelationShowSaveChildEditsCheckBox->setChecked( itemData.relationEditorConfiguration().showSaveChildEditsButton );
     }
     break;
 
@@ -70,6 +73,7 @@ void QgsAttributeWidgetEdit::updateItemData()
       QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
       relEdCfg.showLinkButton = mRelationShowLinkCheckBox->isChecked();
       relEdCfg.showUnlinkButton = mRelationShowUnlinkCheckBox->isChecked();
+      relEdCfg.showSaveChildEditsButton = mRelationShowSaveChildEditsCheckBox->isChecked();
       itemData.setRelationEditorConfiguration( relEdCfg );
     }
     break;
