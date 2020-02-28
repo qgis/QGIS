@@ -61,7 +61,7 @@ QgsMeshVectorArrowRenderer::QgsMeshVectorArrowRenderer( const QgsTriangularMesh 
   , mCfg( settings )
   , mDataOnVertices( dataIsOnVertices )
   , mOutputSize( size )
-  , mBufferedExtent( context.extent() )
+  , mBufferedExtent( context.mapExtent() )
 {
   // should be checked in caller
   Q_ASSERT( !mDatasetValuesMag.empty() );
