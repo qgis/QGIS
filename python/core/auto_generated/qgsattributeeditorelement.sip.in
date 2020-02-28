@@ -370,7 +370,7 @@ Determines if the "save child layer edits" button should be shown
 
     bool showSaveChildEditsButton( ) const;
 %Docstring
-Returns ``True`` if the "save child layer edits" button flag should be shown.
+Returns ``True`` if the "save child layer edits" button should be shown.
 
 .. versionadded:: 3.14
 %End

@@ -427,7 +427,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     void setShowSaveChildEditsButton( bool showSaveChildEditsButton );
 
     /**
-     * Returns TRUE if the "save child layer edits" button flag should be shown.
+     * Returns TRUE if the "save child layer edits" button should be shown.
      *
      * \since QGIS 3.14
      */
