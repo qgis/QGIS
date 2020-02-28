@@ -94,7 +94,7 @@ class OracleDBPlugin(DBPlugin):
         host, port, database, username, password = [
             settings.value(x, "", type=str) for x in settingsList]
 
-        # get all of the connexion options
+        # get all of the connection options
 
         useEstimatedMetadata = settings.value(
             "estimatedMetadata", False, type=bool)

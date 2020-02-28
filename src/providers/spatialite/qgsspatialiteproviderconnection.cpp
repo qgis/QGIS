@@ -251,7 +251,7 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
         viewNames.push_back( tn.first().toString() );
       }
 
-      // Another wierdness: table names are converted to lowercase when out of spatialite gaia functions, let's get them back to their real case here,
+      // Another weirdness: table names are converted to lowercase when out of spatialite gaia functions, let's get them back to their real case here,
       // may need LAUNDER on open, but let's try to make it consistent with how GPKG works.
       QgsStringMap tableNotLowercaseNames;
       for ( const auto &tn : executeSqlPrivate( QStringLiteral( "SELECT name FROM sqlite_master WHERE LOWER(name) != name" ) ) )
