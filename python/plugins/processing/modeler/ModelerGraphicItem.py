@@ -59,6 +59,8 @@ class ModelerGraphicItem(QGraphicsItem):
         self.model = model
         self.scene = scene
         self.element = element
+        self.box_width = ModelerGraphicItem.BOX_WIDTH
+        self.box_height = ModelerGraphicItem.BOX_HEIGHT
         self.item_font = QFont()
         self.item_font.setPixelSize(12)
         self.pixmap = None
@@ -104,20 +106,20 @@ class ModelerGraphicItem(QGraphicsItem):
             picture = QPicture()
             painter = QPainter(picture)
             svg.render(painter)
-            pt = QPointF(ModelerGraphicItem.BOX_WIDTH / 2 -
-                         FlatButtonGraphicItem.WIDTH / 2,
-                         ModelerGraphicItem.BOX_HEIGHT / 2 -
-                         FlatButtonGraphicItem.HEIGHT / 2)
+            pt = QPointF(self.box_width / 2
+                         - FlatButtonGraphicItem.WIDTH / 2,
+                         self.box_height / 2
+                         - FlatButtonGraphicItem.HEIGHT / 2)
             self.editButton = FlatButtonGraphicItem(picture, pt, self.editElement)
             self.editButton.setParentItem(self)
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'delete.svg'))
             picture = QPicture()
             painter = QPainter(picture)
             svg.render(painter)
-            pt = QPointF(ModelerGraphicItem.BOX_WIDTH / 2 -
-                         FlatButtonGraphicItem.WIDTH / 2,
-                         FlatButtonGraphicItem.HEIGHT / 2 -
-                         ModelerGraphicItem.BOX_HEIGHT / 2)
+            pt = QPointF(self.box_width / 2
+                         - FlatButtonGraphicItem.WIDTH / 2,
+                         FlatButtonGraphicItem.HEIGHT / 2
+                         - self.box_height / 2)
             self.deleteButton = FlatButtonGraphicItem(picture, pt,
                                                       self.removeElement)
             self.deleteButton.setParentItem(self)
@@ -171,10 +173,10 @@ class ModelerGraphicItem(QGraphicsItem):
 
         hUp = fm.height() * 1.2 * (numParams + 2)
         hDown = fm.height() * 1.2 * (numOutputs + 2)
-        rect = QRectF(-(ModelerGraphicItem.BOX_WIDTH + 2) / 2,
-                      -(ModelerGraphicItem.BOX_HEIGHT + 2) / 2 - hUp,
-                      ModelerGraphicItem.BOX_WIDTH + 2,
-                      ModelerGraphicItem.BOX_HEIGHT + hDown + hUp)
+        rect = QRectF(-(self.box_width + 2) / 2,
+                      -(self.box_height + 2) / 2 - hUp,
+                      self.box_width + 2,
+                      self.box_height + hDown + hUp)
         return rect
 
     def mouseDoubleClickEvent(self, event):
@@ -301,10 +303,10 @@ class ModelerGraphicItem(QGraphicsItem):
         alg.setParametersCollapsed(existing_child.parametersCollapsed())
         alg.setOutputsCollapsed(existing_child.outputsCollapsed())
         for i, out in enumerate(alg.modelOutputs().keys()):
-            alg.modelOutput(out).setPosition(alg.modelOutput(out).position() or
-                                             alg.position() + QPointF(
-                ModelerGraphicItem.BOX_WIDTH,
-                (i + 1.5) * ModelerGraphicItem.BOX_HEIGHT))
+            alg.modelOutput(out).setPosition(alg.modelOutput(out).position()
+                                             or alg.position() + QPointF(
+                self.box_width,
+                (i + 1.5) * self.box_height))
         self.model.setChildAlgorithm(alg)
 
     def removeElement(self):
@@ -343,16 +345,16 @@ class ModelerGraphicItem(QGraphicsItem):
 
         text = text[0:-3] + '…'
         w = fm.width(text)
-        while w > self.BOX_WIDTH - 25 - FlatButtonGraphicItem.WIDTH:
+        while w > self.box_width - 25 - FlatButtonGraphicItem.WIDTH:
             text = text[0:-4] + '…'
             w = fm.width(text)
         return text
 
     def itemRect(self):
-        return QRectF(-(ModelerGraphicItem.BOX_WIDTH + 2) / 2.0,
-                      -(ModelerGraphicItem.BOX_HEIGHT + 2) / 2.0,
-                      ModelerGraphicItem.BOX_WIDTH + 2,
-                      ModelerGraphicItem.BOX_HEIGHT + 2)
+        return QRectF(-(self.box_width + 2) / 2.0,
+                      -(self.box_height + 2) / 2.0,
+                      self.box_width + 2,
+                      self.box_height + 2)
 
     def paint(self, painter, option, widget=None):
         rect = self.itemRect()
@@ -386,13 +388,13 @@ class ModelerGraphicItem(QGraphicsItem):
         fm = QFontMetricsF(self.item_font)
         text = self.getAdjustedText(self.text)
         h = fm.ascent()
-        pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 25, ModelerGraphicItem.BOX_HEIGHT / 2.0 - h + 1)
+        pt = QPointF(-self.box_width / 2 + 25, self.box_height / 2.0 - h + 1)
         painter.drawText(pt, text)
         painter.setPen(QPen(QApplication.palette().color(QPalette.WindowText)))
         if isinstance(self.element, QgsProcessingModelChildAlgorithm):
             h = -(fm.height() * 1.2)
-            h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
-            pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 25, h)
+            h = h - self.box_height / 2.0 + 5
+            pt = QPointF(-self.box_width / 2 + 25, h)
             painter.drawText(pt, 'In')
             i = 1
             if not self.element.parametersCollapsed():
@@ -400,26 +402,26 @@ class ModelerGraphicItem(QGraphicsItem):
                     if not param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                         text = self.getAdjustedText(param.description())
                         h = -(fm.height() * 1.2) * (i + 1)
-                        h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
-                        pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 33, h)
+                        h = h - self.box_height / 2.0 + 5
+                        pt = QPointF(-self.box_width / 2 + 33, h)
                         painter.drawText(pt, text)
                         i += 1
             h = fm.height() * 1.1
-            h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
-            pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 25, h)
+            h = h + self.box_height / 2.0
+            pt = QPointF(-self.box_width / 2 + 25, h)
             painter.drawText(pt, 'Out')
             if not self.element.outputsCollapsed():
                 for i, out in enumerate(self.element.algorithm().outputDefinitions()):
                     text = self.getAdjustedText(out.description())
                     h = fm.height() * 1.2 * (i + 2)
-                    h = h + ModelerGraphicItem.BOX_HEIGHT / 2.0
-                    pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 33, h)
+                    h = h + self.box_height / 2.0
+                    pt = QPointF(-self.box_width / 2 + 33, h)
                     painter.drawText(pt, text)
         if self.pixmap:
-            painter.drawPixmap(-(ModelerGraphicItem.BOX_WIDTH / 2.0) + 3, -8,
+            painter.drawPixmap(-(self.box_width / 2.0) + 3, -8,
                                self.pixmap)
         elif self.picture:
-            painter.drawPicture(-(ModelerGraphicItem.BOX_WIDTH / 2.0) + 3, -8,
+            painter.drawPicture(-(self.box_width / 2.0) + 3, -8,
                                 self.picture)
 
     def getLinkPointForParameter(self, paramIndex):
@@ -433,10 +435,10 @@ class ModelerGraphicItem(QGraphicsItem):
         fm = QFontMetricsF(self.item_font)
         if isinstance(self.element, QgsProcessingModelChildAlgorithm):
             h = -(fm.height() * 1.2) * (paramIndex + 2) - fm.height() / 2.0 + 8
-            h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0
+            h = h - self.box_height / 2.0
         else:
             h = 0
-        return QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + offsetX, h)
+        return QPointF(-self.box_width / 2 + offsetX, h)
 
     def getLinkPointForOutput(self, outputIndex):
         if isinstance(self.element, QgsProcessingModelChildAlgorithm) and self.element.algorithm().outputDefinitions():
@@ -445,8 +447,8 @@ class ModelerGraphicItem(QGraphicsItem):
             fm = QFontMetricsF(self.item_font)
             w = fm.width(text)
             h = fm.height() * 1.2 * (outputIndex + 1) + fm.height() / 2.0
-            y = h + ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
-            x = (-ModelerGraphicItem.BOX_WIDTH / 2 + 33 + w + 5
+            y = h + self.box_height / 2.0 + 5
+            x = (-self.box_width / 2 + 33 + w + 5
                  if not self.element.outputsCollapsed()
                  else 10)
             return QPointF(x, y)
@@ -480,16 +482,16 @@ class ModelerGraphicItem(QGraphicsItem):
         hUp = fm.height() * 1.2 * (len(self.element.parameters) + 2)
         hDown = fm.height() * 1.2 * (len(self.element.outputs) + 2)
         pol = QPolygonF([
-            QPointF(-(ModelerGraphicItem.BOX_WIDTH + 2) / 2,
-                    -(ModelerGraphicItem.BOX_HEIGHT + 2) / 2 - hUp),
-            QPointF(-(ModelerGraphicItem.BOX_WIDTH + 2) / 2,
-                    (ModelerGraphicItem.BOX_HEIGHT + 2) / 2 + hDown),
-            QPointF((ModelerGraphicItem.BOX_WIDTH + 2) / 2,
-                    (ModelerGraphicItem.BOX_HEIGHT + 2) / 2 + hDown),
-            QPointF((ModelerGraphicItem.BOX_WIDTH + 2) / 2,
-                    -(ModelerGraphicItem.BOX_HEIGHT + 2) / 2 - hUp),
-            QPointF(-(ModelerGraphicItem.BOX_WIDTH + 2) / 2,
-                    -(ModelerGraphicItem.BOX_HEIGHT + 2) / 2 - hUp)
+            QPointF(-(self.box_width + 2) / 2,
+                    -(self.box_height + 2) / 2 - hUp),
+            QPointF(-(self.box_width + 2) / 2,
+                    (self.box_height + 2) / 2 + hDown),
+            QPointF((self.box_width + 2) / 2,
+                    (self.box_height + 2) / 2 + hDown),
+            QPointF((self.box_width + 2) / 2,
+                    -(self.box_height + 2) / 2 - hUp),
+            QPointF(-(self.box_width + 2) / 2,
+                    -(self.box_height + 2) / 2 - hUp)
         ])
         return pol
 
