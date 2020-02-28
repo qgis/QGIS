@@ -199,7 +199,8 @@ void QgsVectorDataProvider::setEncoding( const QString &e )
 
   if ( !mEncoding && e != QLatin1String( "System" ) )
   {
-    QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
+    if ( !e.isEmpty() )
+      QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
     mEncoding = QTextCodec::codecForName( "System" );
   }
 

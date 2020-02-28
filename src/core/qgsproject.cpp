@@ -1558,8 +1558,8 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   if ( clean )
     setDirty( false );
 
-  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUser ) );
-  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUserFull ) );
+  QgsDebugMsgLevel( QString( "Project save user: %1" ).arg( mSaveUser ), 2 );
+  QgsDebugMsgLevel( QString( "Project save user: %1" ).arg( mSaveUserFull ), 2 );
 
   Q_NOWARN_DEPRECATED_PUSH
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
@@ -2138,7 +2138,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   dump_( mProperties );
 #endif
 
-  QgsDebugMsgLevel( QStringLiteral( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ), 2 );
 
   if ( !mProperties.isEmpty() ) // only worry about properties if we
     // actually have any properties

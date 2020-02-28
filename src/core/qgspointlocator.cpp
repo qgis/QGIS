@@ -690,7 +690,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   QElapsedTimer t;
   t.start();
 
-  QgsDebugMsg( QStringLiteral( "RebuildIndex start : %1" ).arg( mSource->id() ) );
+  QgsDebugMsgLevel( QStringLiteral( "RebuildIndex start : %1" ).arg( mSource->id() ), 2 );
 
   destroyIndex();
 
@@ -810,7 +810,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     mRenderer->stopRender( *ctx );
   }
 
-  QgsDebugMsg( QStringLiteral( "RebuildIndex end : %1 ms (%2)" ).arg( t.elapsed() ).arg( mSource->id() ) );
+  QgsDebugMsgLevel( QStringLiteral( "RebuildIndex end : %1 ms (%2)" ).arg( t.elapsed() ).arg( mSource->id() ), 2 );
 
   return true;
 }
