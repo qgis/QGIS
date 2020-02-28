@@ -176,6 +176,21 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      */
     void setShowUnlinkButton( bool showUnlinkButton );
 
+    /**
+     * Determines if the "Save child layer edits" button should be shown
+     *
+     * \since QGIS 3.14
+     */
+    void setShowSaveChildEditsButton( bool showChildEdits );
+
+    /**
+     * Determines if the "Save child layer edits" button should be shown
+     *
+     * \since QGIS 3.14
+     */
+    bool showSaveChildEditsButton() const;
+
+
   private slots:
     void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}
     void updateButtons();
