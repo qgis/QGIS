@@ -59,6 +59,8 @@ class TestQgsRelationReferenceWidget : public QObject
     std::unique_ptr<QgsVectorLayer> mLayer1;
     std::unique_ptr<QgsVectorLayer> mLayer2;
     std::unique_ptr<QgsRelation> mRelation;
+    QgsMapCanvas *mMapCanvas = nullptr;
+    QgsAdvancedDigitizingDockWidget *mCadWidget = nullptr;
 };
 
 void TestQgsRelationReferenceWidget::initTestCase()
@@ -66,10 +68,14 @@ void TestQgsRelationReferenceWidget::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsGui::editorWidgetRegistry()->initEditors();
+  mMapCanvas = new QgsMapCanvas();
+  mCadWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas );
 }
 
 void TestQgsRelationReferenceWidget::cleanupTestCase()
 {
+  delete mCadWidget;
+  delete mMapCanvas;
   QgsApplication::exitQgis();
 }
 
@@ -331,11 +337,16 @@ void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
 void TestQgsRelationReferenceWidget::testInvalidRelation()
 {
   QgsVectorLayer vl( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
-  QgsMapCanvas canvas;
+
   QgsRelationReferenceWidget editor( new QWidget() );
 
   // initWidget with an invalid relation
-  QgsRelationReferenceWidgetWrapper ww( &vl, 10, &editor, &canvas, nullptr, nullptr );
+  QgsRelationReferenceWidgetWrapper ww( &vl, 10, &editor, mMapCanvas, nullptr, nullptr );
+
+  QgsAttributeEditorContext context = ww.context();
+  context.setCadDockWidget( mCadWidget );
+  ww.setContext( context );
+
   ww.initWidget( nullptr );
 }
 
