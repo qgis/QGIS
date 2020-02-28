@@ -339,8 +339,11 @@ void QgsFeatureFilterModel::updateCompleter()
 
 void QgsFeatureFilterModel::gathererThreadFinished()
 {
-  delete mGatherer;
-  mGatherer = nullptr;
+  if ( mGatherer )
+  {
+    delete mGatherer;
+    mGatherer = nullptr;
+  }
   emit isLoadingChanged();
 }
 
