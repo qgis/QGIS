@@ -154,7 +154,7 @@
        <item row="3" column="0">
         <widget class="QgsCollapsibleGroupBox" name="groupTerrainShading">
          <property name="title">
-          <string>Terrain shading</string>
+          <string>Terrain Shading</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -319,7 +319,7 @@
        <item row="2" column="0">
         <widget class="QgsCollapsibleGroupBox" name="groupMeshTerrainShading">
          <property name="title">
-          <string>Mesh terrain settings</string>
+          <string>Mesh Terrain Settings</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <property name="leftMargin">
