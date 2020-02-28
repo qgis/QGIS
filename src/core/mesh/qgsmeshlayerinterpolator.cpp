@@ -205,7 +205,7 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
       0,
       nativeMesh->faces.count() );
 
-  QgsMeshLayerInterpolator iterpolator(
+  QgsMeshLayerInterpolator interpolator(
     *( triangularMesh.get() ),
     datasetValues,
     activeFaceFlagValues,
@@ -214,5 +214,5 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
     QSize( widthPixel, heightPixel )
   );
 
-  return iterpolator.block( 0, extent, widthPixel, heightPixel, feedback );
+  return interpolator.block( 0, extent, widthPixel, heightPixel, feedback );
 }
