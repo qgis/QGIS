@@ -589,7 +589,7 @@ tests:
         name: randompointsinextent.gml
 
   - algorithm: qgis:randompointsonlines
-    name: Random points on lines
+    name: Random points on lines, seed 1, multilines - one empty geom
     params:
       INPUT:
         name: multilines.gml
