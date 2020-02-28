@@ -291,9 +291,13 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
   }
   else if ( mSnappingConfig.mode() == QgsSnappingConfig::AdvancedConfiguration )
   {
+    typedef QList<LayerConfig>::const_iterator LayerConfigIterator;
     QList<LayerAndAreaOfInterest> layers;
-    for ( const LayerConfig &layerConfig : qgis::as_const( mLayers ) )
+    QList<LayerConfigIterator> filteredConfigs;
+
+    for ( LayerConfigIterator it = mLayers.begin(); it != mLayers.end(); ++it )
     {
+      const LayerConfig &layerConfig = *it;
       QgsSnappingConfig::IndividualLayerSettings layerSettings = mSnappingConfig.individualLayerSettings( layerConfig.layer );
 
       //Add the layers only if snapping scale limit is disabled or scale is in specified range
@@ -302,6 +306,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
       {
         double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
         layers << qMakePair( layerConfig.layer, _areaOfInterest( pointMap, tolerance ) );
+        filteredConfigs << it;
       }
     }
     prepareIndex( layers, relaxed );
@@ -310,24 +315,18 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     QgsPointLocator::MatchList edges; // for snap on intersection
     double maxSnapIntTolerance = 0;
 
-    for ( const LayerConfig &layerConfig : qgis::as_const( mLayers ) )
+    for ( LayerConfigIterator &it : filteredConfigs )
     {
-      QgsSnappingConfig::IndividualLayerSettings layerSettings = mSnappingConfig.individualLayerSettings( layerConfig.layer );
-
-      //Add the layers only if snapping scale limit is disabled or scale is in specified range
-      bool inRange = mMapSettings.scale() >= layerSettings.minScale() && mMapSettings.scale() <= layerSettings.maxScale();
-      if ( !layerSettings.limitToScaleRange() || inRange )
+      const LayerConfig &layerConfig = *it;
+      double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
+      if ( QgsPointLocator *loc = locatorForLayerUsingStrategy( layerConfig.layer, pointMap, tolerance ) )
       {
-        double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
-        if ( QgsPointLocator *loc = locatorForLayerUsingStrategy( layerConfig.layer, pointMap, tolerance ) )
-        {
-          _updateBestMatch( bestMatch, pointMap, loc, layerConfig.type, tolerance, filter, relaxed );
+        _updateBestMatch( bestMatch, pointMap, loc, layerConfig.type, tolerance, filter, relaxed );
 
-          if ( mSnappingConfig.intersectionSnapping() )
-          {
-            edges << loc->edgesInRect( pointMap, tolerance );
-            maxSnapIntTolerance = std::max( maxSnapIntTolerance, tolerance );
-          }
+        if ( mSnappingConfig.intersectionSnapping() )
+        {
+          edges << loc->edgesInRect( pointMap, tolerance );
+          maxSnapIntTolerance = std::max( maxSnapIntTolerance, tolerance );
         }
       }
     }
