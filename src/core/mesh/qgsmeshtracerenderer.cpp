@@ -259,7 +259,7 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
-    //if the transform fail, the whole map is considered
+    //if the transform fails, consider the whole map
     layerExtent = mMapExtent;
   }
 
