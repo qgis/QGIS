@@ -75,6 +75,7 @@ class QgsMapLayer;
 class QgsBookmarkManager;
 class QgsProjectViewSettings;
 class QgsProjectDisplaySettings;
+class QgsProjectTimeSettings;
 
 /**
  * \ingroup core

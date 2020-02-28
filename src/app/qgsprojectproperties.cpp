@@ -2499,9 +2499,8 @@ void QgsProjectProperties::mButtonAddColor_clicked()
 void QgsProjectProperties::calculateFromLayersButton_clicked()
 {
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
-
   QgsMapLayer *currentLayer = nullptr;
-  QgsRasterLayer *rasterLayer = nullptr;
+
   QList< QDateTime > dates;
 
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
@@ -2513,7 +2512,7 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
          currentLayer->dataProvider() &&
          currentLayer->dataProvider()->temporalCapabilities() )
     {
-      rasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
+      QgsRasterLayer *rasterLayer  = qobject_cast<QgsRasterLayer *>( currentLayer );
       if ( rasterLayer->dataProvider()->temporalCapabilities()->isActive() )
       {
         QgsDateTimeRange layerRange = rasterLayer->dataProvider()->temporalCapabilities()->fixedTemporalRange();
@@ -2529,7 +2528,7 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
   }
 
   // No layer with temporal properties
-  if ( dates.size() <= 0 )
+  if ( dates.empty() )
     return;
   QgsDateTimeRange range;
 

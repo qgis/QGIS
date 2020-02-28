@@ -301,6 +301,7 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
     mMasterModel->loadLayer();
   }
 
+
   // disable the browsing auto pan/scale if the list only shows visible items
   switch ( filterMode )
   {

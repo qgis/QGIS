@@ -285,16 +285,43 @@ void FeaturePart::setTotalRepeats( int totalRepeats )
   mTotalRepeats = totalRepeats;
 }
 
+std::size_t FeaturePart::createCandidateCenteredOverPoint( double x, double y, std::vector< std::unique_ptr< LabelPosition > > &lPos, double angle )
+{
+  // get from feature
+  double labelW = getLabelWidth( angle );
+  double labelH = getLabelHeight( angle );
+
+  double cost = 0.00005;
+  int id = lPos.size();
+
+  double xdiff = -labelW / 2.0;
+  double ydiff = -labelH / 2.0;
+
+  feature()->setAnchorPosition( QgsPointXY( x, y ) );
+
+  double lx = x + xdiff;
+  double ly = y + ydiff;
+
+  if ( mLF->permissibleZonePrepared() )
+  {
+    if ( !GeomFunction::containsCandidate( mLF->permissibleZonePrepared(), lx, ly, labelW, labelH, angle ) )
+    {
+      return 0;
+    }
+  }
+
+  lPos.emplace_back( qgis::make_unique< LabelPosition >( id, lx, ly, labelW, labelH, angle, cost, this, false, LabelPosition::QuadrantOver ) );
+  return 1;
+}
+
 std::size_t FeaturePart::createCandidatesOverPoint( double x, double y, std::vector< std::unique_ptr< LabelPosition > > &lPos, double angle )
 {
-  std::size_t nbp = 1;
-
   // get from feature
   double labelW = getLabelWidth( angle );
   double labelH = getLabelHeight( angle );
 
   double cost = 0.0001;
-  int id = 0;
+  int id = lPos.size();
 
   double xdiff = -labelW / 2.0;
   double ydiff = -labelH / 2.0;
@@ -363,7 +390,7 @@ std::size_t FeaturePart::createCandidatesOverPoint( double x, double y, std::vec
   }
 
   lPos.emplace_back( qgis::make_unique< LabelPosition >( id, lx, ly, labelW, labelH, angle, cost, this, false, quadrantFromOffset() ) );
-  return nbp;
+  return 1;
 }
 
 std::unique_ptr<LabelPosition> FeaturePart::createCandidatePointOnSurface( PointSet *mapShape )
@@ -534,6 +561,7 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
 
   int icost = 0;
   int inc = 2;
+  int id = lPos.size();
 
   double candidateAngleIncrement = 2 * M_PI / maxNumberCandidates; /* angle bw 2 pos */
 
@@ -649,7 +677,7 @@ std::size_t FeaturePart::createCandidatesAroundPoint( double x, double y, std::v
       }
     }
 
-    lPos.emplace_back( qgis::make_unique< LabelPosition >( i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant ) );
+    lPos.emplace_back( qgis::make_unique< LabelPosition >( id + i, labelX, labelY, labelWidth, labelHeight, angle, cost, this, false, quadrant ) );
     numberCandidatesGenerated++;
 
     icost += inc;
@@ -1790,14 +1818,21 @@ std::vector< std::unique_ptr< LabelPosition > > FeaturePart::createCandidates( P
         switch ( mLF->layer()->arrangement() )
         {
           case QgsPalLayerSettings::AroundPoint:
-          case QgsPalLayerSettings::OverPoint:
+          {
             double cx, cy;
             getCentroid( cx, cy, mLF->layer()->centroidInside() );
-            if ( mLF->layer()->arrangement() == QgsPalLayerSettings::OverPoint )
-              createCandidatesOverPoint( cx, cy, lPos, angle );
-            else
-              createCandidatesAroundPoint( cx, cy, lPos, angle );
+            if ( qgsDoubleNear( mLF->distLabel(), 0.0 ) )
+              createCandidateCenteredOverPoint( cx, cy, lPos, angle );
+            createCandidatesAroundPoint( cx, cy, lPos, angle );
             break;
+          }
+          case QgsPalLayerSettings::OverPoint:
+          {
+            double cx, cy;
+            getCentroid( cx, cy, mLF->layer()->centroidInside() );
+            createCandidatesOverPoint( cx, cy, lPos, angle );
+            break;
+          }
           case QgsPalLayerSettings::Line:
             createCandidatesAlongLine( lPos, this, false, pal );
             break;

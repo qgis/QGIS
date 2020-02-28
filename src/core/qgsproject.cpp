@@ -59,6 +59,7 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsprojectdisplaysettings.h"
+#include "qgsprojecttimesettings.h"
 
 #include <algorithm>
 #include <QApplication>

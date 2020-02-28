@@ -16,6 +16,7 @@ SET(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/cdt.cc
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep_context.cc
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
+  ${CMAKE_SOURCE_DIR}/external/meshOptimizer/simplifier.cpp
 
   callouts/qgscallout.cpp
   callouts/qgscalloutsregistry.cpp
@@ -70,7 +71,6 @@ SET(QGIS_CORE_SRCS
   symbology/qgssymbollayerutils.cpp
   symbology/qgssymbol.cpp
   symbology/qgsvectorfieldsymbollayer.cpp
-
   simplify/effectivearea.cpp
 
   diagram/qgsdiagram.cpp
@@ -555,6 +555,7 @@ SET(QGIS_CORE_SRCS
   mesh/qgstriangularmesh.cpp
   mesh/qgsmeshtimesettings.cpp
   mesh/qgsmeshtracerenderer.cpp
+  mesh/qgsmeshsimplificationsettings.cpp
 
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
@@ -1150,6 +1151,7 @@ SET(QGIS_CORE_HDRS
   mesh/qgsmeshvectorrenderer.h
   mesh/qgstriangularmesh.h
   mesh/qgsmeshtracerenderer.h
+  mesh/qgsmeshsimplificationsettings.h
 
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h
@@ -1386,6 +1388,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/poly2tri
   ${CMAKE_SOURCE_DIR}/external/rtree/include
+  ${CMAKE_SOURCE_DIR}/external/meshOptimizer
 )
 
 INCLUDE_DIRECTORIES(SYSTEM

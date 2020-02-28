@@ -68,6 +68,8 @@ class QgsMeshLayerInterpolator : public QgsRasterInterface SIP_SKIP
     int bandCount() const override;
     QgsRasterBlock *block( int, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
+    void setSpatialIndexActive( bool active );
+
   private:
     const QgsTriangularMesh &mTriangularMesh;
     const QVector<double> &mDatasetValues;
@@ -75,6 +77,7 @@ class QgsMeshLayerInterpolator : public QgsRasterInterface SIP_SKIP
     const QgsRenderContext &mContext;
     bool mDataOnVertices = true;
     QSize mOutputSize;
+    bool mSpatialIndexActive = false;
 };
 
 ///@endcond
