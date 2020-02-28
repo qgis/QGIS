@@ -374,7 +374,7 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
       QRegularExpressionMatch match = re.match( version );
       if ( match.hasMatch() )
       {
-        if ( ( match.captured( 1 ).toInt() <= 3 ) && ( match.captured( 2 ).toInt() < 14 ) )
+        if ( ( match.captured( 1 ).toInt() <= 3 ) && ( match.captured( 2 ).toInt() <= 12 ) )
           before3_14 = true;
       }
     }
