@@ -186,7 +186,11 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   std::unique_ptr<QgsMesh> nativeMesh = qgis::make_unique<QgsMesh>();
   layer.dataProvider()->populateMesh( nativeMesh.get() );
   std::unique_ptr<QgsTriangularMesh> triangularMesh = qgis::make_unique<QgsTriangularMesh>();
+<<<<<<< HEAD
   triangularMesh->update( nativeMesh.get(), &renderContext );
+=======
+  triangularMesh->update( nativeMesh.get(), transform );
+>>>>>>> ec31fbd71b... [BUG] Fix On The Fly Issues with mesh layer (#34727)
 
   const QgsMeshDatasetGroupMetadata metadata = layer.dataProvider()->datasetGroupMetadata( datasetIndex );
   bool scalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
@@ -202,7 +206,7 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
       0,
       nativeMesh->faces.count() );
 
-  QgsMeshLayerInterpolator iterpolator(
+  QgsMeshLayerInterpolator interpolator(
     *( triangularMesh.get() ),
     datasetValues,
     activeFaceFlagValues,
@@ -211,5 +215,5 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
     QSize( widthPixel, heightPixel )
   );
 
-  return iterpolator.block( 0, extent, widthPixel, heightPixel, feedback );
+  return interpolator.block( 0, extent, widthPixel, heightPixel, feedback );
 }
