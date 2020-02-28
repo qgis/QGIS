@@ -57,7 +57,6 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
       ToleranceColumn,
       UnitsColumn,
       AvoidIntersectionColumn,
-      LimitToScaleRangeColumn,
       MinScaleColumn,
       MaxScaleColumn
     };

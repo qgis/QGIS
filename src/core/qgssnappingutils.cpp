@@ -300,9 +300,9 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
       const LayerConfig &layerConfig = *it;
       QgsSnappingConfig::IndividualLayerSettings layerSettings = mSnappingConfig.individualLayerSettings( layerConfig.layer );
 
-      //Add the layers only if snapping scale limit is disabled or scale is in specified range
-      bool inRange = mMapSettings.scale() >= layerSettings.minScale() && mMapSettings.scale() <= layerSettings.maxScale();
-      if ( !layerSettings.limitToScaleRange() || inRange )
+      //Add the layers only if scale is in specified range. Value < 0.0 disable the limit.
+      bool inRange = ( layerSettings.minScale() < 0.0 || mMapSettings.scale() >= layerSettings.minScale() ) && ( layerSettings.maxScale() < 0.0 || mMapSettings.scale() <= layerSettings.maxScale() );
+      if ( inRange )
       {
         double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
         layers << qMakePair( layerConfig.layer, _areaOfInterest( pointMap, tolerance ) );

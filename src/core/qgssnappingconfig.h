@@ -116,9 +116,11 @@ class CORE_EXPORT QgsSnappingConfig
          * \param type
          * \param tolerance
          * \param units
+         * \param minScale
+         * \param maxScale
          * \deprecated since QGIS 3.12 use the method with SnappingTypeFlag instead.
          */
-        Q_DECL_DEPRECATED IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units, bool limitToScaleRange, double minScale, double maxScale  ) SIP_DEPRECATED;
+        Q_DECL_DEPRECATED IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units, double minScale, double maxScale  ) SIP_DEPRECATED;
 
         /**
          * \brief IndividualLayerSettings
@@ -126,9 +128,11 @@ class CORE_EXPORT QgsSnappingConfig
          * \param type
          * \param tolerance
          * \param units
+         * \param minScale
+         * \param maxScale
          * \since QGIS 3.12
          */
-        IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units, bool limitToScaleRange, double minScale, double maxScale  );
+        IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units, double minScale, double maxScale  );
 
         /**
          * Constructs an invalid setting
@@ -180,12 +184,6 @@ class CORE_EXPORT QgsSnappingConfig
         //! Sets the type of units
         void setUnits( QgsTolerance::UnitType units );
 
-        //! Returns whether the snapping is limited on a scale iterval
-        bool limitToScaleRange() const;
-
-        //! Sets whether the scale limites are used or not
-        void setLimitToScaleRange( bool p_uselimit );
-
         //! Returns min scale on which snapping is limited
         double minScale() const;
 
@@ -211,9 +209,8 @@ class CORE_EXPORT QgsSnappingConfig
         SnappingTypeFlag mType = VertexFlag;
         double mTolerance = 0;
         QgsTolerance::UnitType mUnits = QgsTolerance::Pixels;
-        bool mLimitToScaleRange = false;
-        double mMinScale = 0;
-        double mMaxScale = 0;
+        double mMinScale = -1.0;
+        double mMaxScale = -1.0;
     };
 
     /**

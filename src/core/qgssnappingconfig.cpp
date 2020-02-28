@@ -25,22 +25,23 @@
 #include "qgsapplication.h"
 
 
-QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units, bool limitToScaleRange, double minScale, double maxScale )
+QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units, double minScale, double maxScale )
   : mValid( true )
   , mEnabled( enabled )
   , mType( type )
   , mTolerance( tolerance )
   , mUnits( units )
-  , mLimitToScaleRange( limitToScaleRange )
   , mMinScale( minScale )
   , mMaxScale( maxScale )
 {}
 
-QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units )
+QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units, double minScale, double maxScale )
   : mValid( true )
   , mEnabled( enabled )
   , mTolerance( tolerance )
   , mUnits( units )
+  , mMinScale( minScale )
+  , mMaxScale( maxScale )
 {
   Q_NOWARN_DEPRECATED_PUSH
   setType( type );
@@ -122,16 +123,6 @@ void QgsSnappingConfig::IndividualLayerSettings::setUnits( QgsTolerance::UnitTyp
   mUnits = units;
 }
 
-bool QgsSnappingConfig::IndividualLayerSettings::limitToScaleRange() const
-{
-  return mLimitToScaleRange;
-}
-
-void QgsSnappingConfig::IndividualLayerSettings::setLimitToScaleRange( bool p_uselimit )
-{
-  mLimitToScaleRange = p_uselimit;
-}
-
 double QgsSnappingConfig::IndividualLayerSettings::minScale() const
 {
   return mMinScale;
@@ -159,7 +150,6 @@ bool QgsSnappingConfig::IndividualLayerSettings::operator !=( const QgsSnappingC
          || mType != other.mType
          || mTolerance != other.mTolerance
          || mUnits != other.mUnits
-         || mLimitToScaleRange != other.mLimitToScaleRange
          || mMinScale != other.mMinScale
          || mMaxScale != other.mMaxScale;
 }
@@ -171,7 +161,6 @@ bool QgsSnappingConfig::IndividualLayerSettings::operator ==( const QgsSnappingC
          && mType == other.mType
          && mTolerance == other.mTolerance
          && mUnits == other.mUnits
-         && mLimitToScaleRange == other.mLimitToScaleRange
          && mMinScale == other.mMinScale
          && mMaxScale == other.mMaxScale;
 }
@@ -236,7 +225,7 @@ void QgsSnappingConfig::reset()
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
       if ( vl )
       {
-        mIndividualLayerSettings.insert( vl, IndividualLayerSettings( enabled, type, tolerance, units, false, 0.0, 0.0 ) );
+        mIndividualLayerSettings.insert( vl, IndividualLayerSettings( enabled, type, tolerance, units, -1.0, -1.0 ) );
       }
     }
   }
@@ -475,7 +464,6 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
       QgsSnappingConfig::SnappingTypeFlag type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( settingElement.attribute( QStringLiteral( "type" ) ).toInt() );
       double tolerance = settingElement.attribute( QStringLiteral( "tolerance" ) ).toDouble();
       QgsTolerance::UnitType units = ( QgsTolerance::UnitType )settingElement.attribute( QStringLiteral( "units" ) ).toInt();
-      bool limitToScaleRange = settingElement.attribute( QStringLiteral( "limitToScaleRange" ) ) == QLatin1String( "1" );
       double minScale = settingElement.attribute( QStringLiteral( "minScale" ) ).toDouble();
       double maxScale = settingElement.attribute( QStringLiteral( "maxScale" ) ).toDouble();
 
@@ -485,8 +473,7 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
 
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
 
-      IndividualLayerSettings setting = IndividualLayerSettings( enabled, type, tolerance, units,
-                                        limitToScaleRange, minScale, maxScale );
+      IndividualLayerSettings setting = IndividualLayerSettings( enabled, type, tolerance, units, minScale, maxScale );
       mIndividualLayerSettings.insert( vl, setting );
     }
   }
@@ -514,7 +501,6 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
     layerElement.setAttribute( QStringLiteral( "type" ), static_cast<int>( setting.typeFlag() ) );
     layerElement.setAttribute( QStringLiteral( "tolerance" ), setting.tolerance() );
     layerElement.setAttribute( QStringLiteral( "units" ), static_cast<int>( setting.units() ) );
-    layerElement.setAttribute( QStringLiteral( "limitToScaleRange" ), QString::number( setting.limitToScaleRange() ) );
     layerElement.setAttribute( QStringLiteral( "minScale" ), setting.minScale() );
     layerElement.setAttribute( QStringLiteral( "maxScale" ), setting.maxScale() );
     ilsElement.appendChild( layerElement );
@@ -538,7 +524,7 @@ bool QgsSnappingConfig::addLayers( const QList<QgsMapLayer *> &layers )
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
     if ( vl && vl->isSpatial() )
     {
-      mIndividualLayerSettings.insert( vl, IndividualLayerSettings( enabled, type, tolerance, units, false, 0.0, 0.0 ) );
+      mIndividualLayerSettings.insert( vl, IndividualLayerSettings( enabled, type, tolerance, units, -1.0, -1.0 ) );
       changed = true;
     }
   }
@@ -613,7 +599,7 @@ void QgsSnappingConfig::readLegacySettings()
                                            )
                                          );
 
-    mIndividualLayerSettings.insert( vlayer, IndividualLayerSettings( *enabledIt == QLatin1String( "enabled" ), t, tolIt->toDouble(), static_cast<QgsTolerance::UnitType>( tolUnitIt->toInt() ), false, 0.0, 0.0 ) );
+    mIndividualLayerSettings.insert( vlayer, IndividualLayerSettings( *enabledIt == QLatin1String( "enabled" ), t, tolIt->toDouble(), static_cast<QgsTolerance::UnitType>( tolUnitIt->toInt() ), -1.0, -1.0 ) );
   }
 
   QString snapType = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapType" ), QStringLiteral( "off" ) );
