@@ -1861,6 +1861,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       // below directly alter the widget and check for it.
       rww->setShowLinkButton( relDef->showLinkButton() );
       rww->setShowUnlinkButton( relDef->showUnlinkButton() );
+      rww->setShowSaveChildEditsButton( relDef->showSaveChildEditsButton() );
 
       mWidgets.append( rww );
       mFormWidgets.append( formWidget );

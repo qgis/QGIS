@@ -492,6 +492,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       RelationEditorConfiguration relEdConfig;
       relEdConfig.showLinkButton = relationEditor->showLinkButton();
       relEdConfig.showUnlinkButton = relationEditor->showUnlinkButton();
+      relEdConfig.showSaveChildEditsButton = relationEditor->showSaveChildEditsButton( );
       itemData.setRelationEditorConfiguration( relEdConfig );
       newWidget = tree->addItem( parent, itemData );
       break;
@@ -720,6 +721,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
       QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
       relDef->setShowLinkButton( itemData.relationEditorConfiguration().showLinkButton );
       relDef->setShowUnlinkButton( itemData.relationEditorConfiguration().showUnlinkButton );
+      relDef->setShowSaveChildEditsButton( itemData.relationEditorConfiguration().showSaveChildEditsButton );
       widgetDef = relDef;
       break;
     }
@@ -1192,8 +1194,11 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       showLinkButton->setChecked( itemData.relationEditorConfiguration().showLinkButton );
       QCheckBox *showUnlinkButton = new QCheckBox( tr( "Show unlink button" ) );
       showUnlinkButton->setChecked( itemData.relationEditorConfiguration().showUnlinkButton );
+      QCheckBox *showSaveChildEditsButton = new QCheckBox( tr( "Show save child layer edits button" ) );
+      showSaveChildEditsButton->setChecked( itemData.relationEditorConfiguration().showSaveChildEditsButton );
       layout->addRow( showLinkButton );
       layout->addRow( showUnlinkButton );
+      layout->addRow( showSaveChildEditsButton );
 
       QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
 
@@ -1207,6 +1212,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
         QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
         relEdCfg.showLinkButton = showLinkButton->isChecked();
         relEdCfg.showUnlinkButton = showUnlinkButton->isChecked();
+        relEdCfg.showSaveChildEditsButton = showSaveChildEditsButton->isChecked();
         itemData.setShowLabel( showLabelCheckbox->isChecked() );
         itemData.setRelationEditorConfiguration( relEdCfg );
 

@@ -892,6 +892,16 @@ bool QgsRelationEditorWidget::showUnlinkButton() const
   return mUnlinkFeatureButton->isVisible();
 }
 
+void QgsRelationEditorWidget::setShowSaveChildEditsButton( bool showChildEdits )
+{
+  mSaveEditsButton->setVisible( showChildEdits );
+}
+
+bool QgsRelationEditorWidget::showSaveChildEditsButton() const
+{
+  return mSaveEditsButton->isVisible();
+}
+
 void QgsRelationEditorWidget::setShowUnlinkButton( bool showUnlinkButton )
 {
   mUnlinkFeatureButton->setVisible( showUnlinkButton );
