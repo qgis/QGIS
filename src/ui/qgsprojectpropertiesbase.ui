@@ -273,7 +273,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-151</y>
                 <width>671</width>
                 <height>832</height>
                </rect>
@@ -972,8 +972,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>681</height>
+                <width>290</width>
+                <height>552</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1548,8 +1548,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>681</height>
+                <width>178</width>
+                <height>54</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1610,8 +1610,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>671</width>
-                <height>2709</height>
+                <width>653</width>
+                <height>2716</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2877,20 +2877,11 @@
          <widget class="QWidget" name="mTemporalOptions">
           <layout class="QVBoxLayout" name="verticalLayout_20">
            <item>
-            <widget class="QgsCollapsibleGroupBox" name="mTemporalOptionsGroup">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
+            <widget class="QGroupBox" name="mTemporalOptionsGroup">
              <property name="title">
               <string>Temporal Options</string>
              </property>
-             <property name="syncGroup">
-              <string notr="true">projgeneral</string>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_9">
+             <layout class="QVBoxLayout" name="verticalLayout_22">
               <item>
                <widget class="QLabel" name="mCurrentRangeLabel">
                 <property name="styleSheet">
