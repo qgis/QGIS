@@ -275,9 +275,9 @@ qgis:randomextractwithinsubsets: >
   The percentage/count value is not applied to the whole layer, but instead to each category. Categories are defined according to a given attribute, which is also specified as an input parameter for the algorithm.
 
 qgis:randompointsalongline: >
-  This algorithm creates a new point layer, with points placed in the lines of another layer.
+  This algorithm creates a point layer with a given "Number of points" placed on the lines of the "Input layer".
 
-  For each line in the input layer, a given number of points is added to the resulting layer. A minimum distance can be specified to avoid point being too close to each other.
+  The location of each point is determined by randomly selecting a feature, then a segment of the line geometry of that feature, and finally a random position on that segment. A minimum distance between the points can be specified (Euclidean distance).
 
 qgis:randompointsinlayerbounds: >
   This algorithm creates a new point layer with a given number of random points, all of them within the extent of a given layer. A distance factor can be specified, to avoid points being too close to each other.
