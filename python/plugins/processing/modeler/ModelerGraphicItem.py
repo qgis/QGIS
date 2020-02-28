@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 
 """
 ***************************************************************************
@@ -60,13 +59,16 @@ class ModelerGraphicItem(QGraphicsItem):
         self.model = model
         self.scene = scene
         self.element = element
+        self.item_font = QFont()
+        self.item_font.setPixelSize(12)
+        self.pixmap = None
+        self.picture = None
         self.hover_over_item = False
         if isinstance(element, QgsProcessingModelParameter):
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'input.svg'))
             self.picture = QPicture()
             painter = QPainter(self.picture)
             svg.render(painter)
-            self.pixmap = None
             paramDef = self.model.parameterDefinition(element.parameterName())
             if paramDef:
                 self.text = paramDef.description()
@@ -78,7 +80,6 @@ class ModelerGraphicItem(QGraphicsItem):
             self.picture = QPicture()
             painter = QPainter(self.picture)
             svg.render(painter)
-            self.pixmap = None
             self.text = element.name()
         else:
             if element.algorithm().svgIconPath():
@@ -162,9 +163,7 @@ class ModelerGraphicItem(QGraphicsItem):
         self.arrows.append(arrow)
 
     def boundingRect(self):
-        font = QFont('Verdana', 8)
-        font.setPixelSize(12)
-        fm = QFontMetricsF(font)
+        fm = QFontMetricsF(self.item_font)
         unfolded = isinstance(self.element, QgsProcessingModelChildAlgorithm) and not self.element.parametersCollapsed()
         numParams = len([a for a in self.element.algorithm().parameterDefinitions() if not a.isDestination()]) if unfolded else 0
         unfolded = isinstance(self.element, QgsProcessingModelChildAlgorithm) and not self.element.outputsCollapsed()
@@ -337,9 +336,7 @@ class ModelerGraphicItem(QGraphicsItem):
             self.scene.dialog.repaintModel()
 
     def getAdjustedText(self, text):
-        font = QFont('Verdana', 8)
-        font.setPixelSize(12)
-        fm = QFontMetricsF(font)
+        fm = QFontMetricsF(self.item_font)
         w = fm.width(text)
         if w < self.BOX_WIDTH - 25 - FlatButtonGraphicItem.WIDTH:
             return text
@@ -380,15 +377,13 @@ class ModelerGraphicItem(QGraphicsItem):
         painter.setPen(QPen(stroke, 0))  # 0 width "cosmetic" pen
         painter.setBrush(QBrush(color, Qt.SolidPattern))
         painter.drawRect(rect)
-        font = QFont('Verdana', 8)
-        font.setPixelSize(12)
-        painter.setFont(font)
+        painter.setFont(self.item_font)
         painter.setPen(QPen(Qt.black))
         text = self.getAdjustedText(self.text)
         if isinstance(self.element, QgsProcessingModelChildAlgorithm) and not self.element.isActive():
             painter.setPen(QPen(Qt.gray))
             text = text + "\n(deactivated)"
-        fm = QFontMetricsF(font)
+        fm = QFontMetricsF(self.item_font)
         text = self.getAdjustedText(self.text)
         h = fm.ascent()
         pt = QPointF(-ModelerGraphicItem.BOX_WIDTH / 2 + 25, ModelerGraphicItem.BOX_HEIGHT / 2.0 - h + 1)
@@ -435,9 +430,7 @@ class ModelerGraphicItem(QGraphicsItem):
         if isinstance(self.element, QgsProcessingModelParameter):
             paramIndex = -1
             offsetX = 0
-        font = QFont('Verdana', 8)
-        font.setPixelSize(12)
-        fm = QFontMetricsF(font)
+        fm = QFontMetricsF(self.item_font)
         if isinstance(self.element, QgsProcessingModelChildAlgorithm):
             h = -(fm.height() * 1.2) * (paramIndex + 2) - fm.height() / 2.0 + 8
             h = h - ModelerGraphicItem.BOX_HEIGHT / 2.0
@@ -449,9 +442,7 @@ class ModelerGraphicItem(QGraphicsItem):
         if isinstance(self.element, QgsProcessingModelChildAlgorithm) and self.element.algorithm().outputDefinitions():
             outputIndex = (outputIndex if not self.element.outputsCollapsed() else -1)
             text = self.getAdjustedText(self.element.algorithm().outputDefinitions()[outputIndex].description())
-            font = QFont('Verdana', 8)
-            font.setPixelSize(12)
-            fm = QFontMetricsF(font)
+            fm = QFontMetricsF(self.item_font)
             w = fm.width(text)
             h = fm.height() * 1.2 * (outputIndex + 1) + fm.height() / 2.0
             y = h + ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
@@ -485,9 +476,7 @@ class ModelerGraphicItem(QGraphicsItem):
         return super().itemChange(change, value)
 
     def polygon(self):
-        font = QFont('Verdana', 8)
-        font.setPixelSize(12)
-        fm = QFontMetricsF(font)
+        fm = QFontMetricsF(self.item_font)
         hUp = fm.height() * 1.2 * (len(self.element.parameters) + 2)
         hDown = fm.height() * 1.2 * (len(self.element.outputs) + 2)
         pol = QPolygonF([
