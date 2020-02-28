@@ -498,7 +498,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /**
      * Returns temporal properties associated with the raster layer.
      */
-    QgsRasterLayerTemporalProperties *temporalProperties() override { return mTemporalProperties.get(); }
+    QgsRasterLayerTemporalProperties *temporalProperties() override;
 
   public slots:
     void showStatusMessage( const QString &message );

@@ -197,6 +197,15 @@
             <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Temporal</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/temporal.svg</normaloff>:/images/themes/default/propertyicons/temporal.svg</iconset>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -236,7 +245,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>9</number>
          </property>
          <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -264,9 +273,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-327</y>
+                <y>0</y>
                 <width>671</width>
-                <height>1084</height>
+                <height>832</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout">
@@ -814,84 +823,6 @@
                 </widget>
                </item>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="mTemporalOptionsGroup_2">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="title">
-                  <string>Temporal Options</string>
-                 </property>
-                 <property name="syncGroup">
-                  <string notr="true">projgeneral</string>
-                 </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_9">
-                  <item>
-                   <widget class="QLabel" name="mCurrentRangeLabel">
-                    <property name="styleSheet">
-                     <string notr="true">color:rgb(136, 138, 133);
-</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QGroupBox" name="startDateTimeGroupBox">
-                    <property name="title">
-                     <string>Start date</string>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_10">
-                     <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_21">
-                       <item>
-                        <widget class="QgsDateTimeEdit" name="mStartDateTimeEdit_2"/>
-                       </item>
-                       <item>
-                        <widget class="QWidget" name="widget" native="true"/>
-                       </item>
-                      </layout>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QGroupBox" name="endDateTimeGroupBox">
-                    <property name="title">
-                     <string>End date</string>
-                    </property>
-                    <layout class="QVBoxLayout" name="verticalLayout_8">
-                     <item>
-                      <layout class="QHBoxLayout" name="horizontalLayout_20">
-                       <item>
-                        <widget class="QgsDateTimeEdit" name="mEndDateTimeEdit"/>
-                       </item>
-                       <item>
-                        <widget class="QPushButton" name="mSameAsStartButton">
-                         <property name="text">
-                          <string>Same as start</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="mCalculateFromLayerButton">
-                    <property name="text">
-                     <string>Calculate from layers</string>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item>
                 <widget class="QGroupBox" name="groupBox_6">
                  <property name="title">
                   <string>Generate Project Translation File</string>
@@ -1041,8 +972,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>290</width>
-                <height>552</height>
+                <width>685</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1617,8 +1548,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>178</width>
-                <height>54</height>
+                <width>685</width>
+                <height>681</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1679,8 +1610,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>653</width>
-                <height>2716</height>
+                <width>671</width>
+                <height>2709</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2940,6 +2871,91 @@
               </layout>
              </widget>
             </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mTemporalOptions">
+          <layout class="QVBoxLayout" name="verticalLayout_20">
+           <item>
+            <widget class="QgsCollapsibleGroupBox" name="mTemporalOptionsGroup">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Temporal Options</string>
+             </property>
+             <property name="syncGroup">
+              <string notr="true">projgeneral</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_9">
+              <item>
+               <widget class="QLabel" name="mCurrentRangeLabel">
+                <property name="styleSheet">
+                 <string notr="true">color:rgb(136, 138, 133);
+</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="startDateTimeGroupBox">
+                <property name="title">
+                 <string>Start date</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_10">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_21">
+                   <item>
+                    <widget class="QgsDateTimeEdit" name="mStartDateTimeEdit"/>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QGroupBox" name="endDateTimeGroupBox">
+                <property name="title">
+                 <string>End date</string>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_8">
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_20">
+                   <item>
+                    <widget class="QgsDateTimeEdit" name="mEndDateTimeEdit"/>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="mCalculateFromLayerButton">
+                <property name="text">
+                 <string>Calculate from layers</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>

@@ -11316,6 +11316,7 @@ QMap< QString, QString > QgisApp::projectPropertiesPagesMap()
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Variables" ), QStringLiteral( "mTab_Variables" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Macros" ), QStringLiteral( "mProjOptsMacros" ) );
     sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "QGIS Server" ), QStringLiteral( "mProjOptsOWS" ) );
+    sProjectPropertiesPagesMap.insert( QCoreApplication::translate( "QgsProjectPropertiesBase", "Temporal" ), QStringLiteral( "mTemporalOptions" ) );
   } );
 
   return sProjectPropertiesPagesMap;

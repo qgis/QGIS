@@ -177,14 +177,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void mButtonAddColor_clicked();
 
     /**
-     * Sets the end date input same as the start date input value
-     * in the time settings
-     *
-     * \since QGIS 3.14
-     */
-    void setEndAsStartButton_clicked();
-
-    /**
      * Sets the start and end dates input values from the project
      * temporal layers.
      *

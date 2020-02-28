@@ -121,7 +121,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mButtonAddColor, &QToolButton::clicked, this, &QgsProjectProperties::mButtonAddColor_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectProperties::showHelp );
   connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsProjectProperties::customizeBearingFormat );
-  connect( mSameAsStartButton, &QPushButton::clicked, this, &QgsProjectProperties::setEndAsStartButton_clicked );
   connect( mCalculateFromLayerButton, &QPushButton::clicked, this, &QgsProjectProperties::calculateFromLayersButton_clicked );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -2497,22 +2496,13 @@ void QgsProjectProperties::mButtonAddColor_clicked()
   mTreeProjectColors->addColor( newColor, QgsSymbolLayerUtils::colorToName( newColor ) );
 }
 
-void QgsProjectProperties::setEndAsStartButton_clicked()
-{
-  mEndDateTimeEdit->setDateTime( mStartDateTimeEdit->dateTime() );
-
-  mCurrentRangeLabel->setText( tr( "Current range: %1 to %2" ).arg(
-                                 mStartDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ),
-                                 mEndDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ) ) );
-
-}
-
 void QgsProjectProperties::calculateFromLayersButton_clicked()
 {
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
-  QList< QDateTime > dates;
 
   QgsMapLayer *currentLayer = nullptr;
+  QgsRasterLayer *rasterLayer = nullptr;
+  QList< QDateTime > dates;
 
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
@@ -2520,9 +2510,10 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
 
     // Checking for WMS-T layers only, as of time writing this, they have full temporal support.
     if ( currentLayer->type() == QgsMapLayerType::RasterLayer &&
-         currentLayer->providerType() ==    "wms" )
+         currentLayer->dataProvider() &&
+         currentLayer->dataProvider()->temporalCapabilities() )
     {
-      QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
+      rasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
       if ( rasterLayer->dataProvider()->temporalCapabilities()->isActive() )
       {
         QgsDateTimeRange layerRange = rasterLayer->dataProvider()->temporalCapabilities()->fixedTemporalRange();
@@ -2538,7 +2529,7 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
   }
 
   // No layer with temporal properties
-  if ( dates.empty() )
+  if ( dates.size() <= 0 )
     return;
   QgsDateTimeRange range;
 

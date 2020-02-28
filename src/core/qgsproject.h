@@ -48,6 +48,7 @@
 #include "qgsprojecttranslator.h"
 #include "qgsattributeeditorelement.h"
 #include "qgscolorscheme.h"
+#include "qgsprojecttimesettings.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -74,7 +75,6 @@ class QgsMapLayer;
 class QgsBookmarkManager;
 class QgsProjectViewSettings;
 class QgsProjectDisplaySettings;
-class QgsProjectTimeSettings;
 
 /**
  * \ingroup core

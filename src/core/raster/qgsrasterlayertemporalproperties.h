@@ -92,18 +92,6 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     **/
     const QgsDateTimeRange &fixedTemporalRange() const;
 
-    /**
-     * Sets the raster layer properties with WMS-T temporal settings.
-     *
-     * \param dimension contains text content indicating WMS layer available time value(s).
-     *
-     * \warning This is to be used to support WMS-T layers only. Applicable when
-     * TemporalMode is QgsRasterLayerTemporalProperties::ModeFixedTemporalRange or
-     * QgsRasterLayerTemporalProperties::ModeTemporalRangesList
-     *
-    **/
-    void setWmstRelatedSettings( const QString &dimension );
-
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;

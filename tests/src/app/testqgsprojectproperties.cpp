@@ -23,6 +23,7 @@
 #include "qgsprojectdisplaysettings.h"
 #include "qgsbearingnumericformat.h"
 #include "qgsrasterlayer.h"
+#include "qgsprojecttimesettings.h"
 
 /**
  * \ingroup UnitTests
