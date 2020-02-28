@@ -269,8 +269,7 @@ QgsBackgroundCachedFeatureIterator::QgsBackgroundCachedFeatureIterator(
     // backup current request because combine filter expression will remove the fid(s) filtering
     if ( mRequest.filterType() == QgsFeatureRequest::FilterFid || mRequest.filterType() == QgsFeatureRequest::FilterFids )
     {
-      mAdditionalRequest = mRequest;
-      mRequest = QgsFeatureRequest( shared->clientSideFilterExpression() );
+      mAdditionalRequest = QgsFeatureRequest( shared->clientSideFilterExpression() );
     }
     else
     {
