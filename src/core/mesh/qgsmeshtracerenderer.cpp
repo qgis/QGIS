@@ -259,7 +259,8 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
-    layerExtent = mLayerExtent;
+    //if the transform fail, the whole map is considered
+    layerExtent = mMapExtent;
   }
 
   QgsRectangle interestZoneExtent;
@@ -298,8 +299,16 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
   if ( fieldHeightInDeviceCoordinate % mFieldResolution > 0 )
     fieldHeight++;
 
-  mFieldSize.setWidth( fieldWidth );
-  mFieldSize.setHeight( fieldHeight );
+  if ( fieldWidth == 0 || fieldHeight == 0 )
+  {
+    mFieldSize = QSize();
+  }
+  else
+  {
+    mFieldSize.setWidth( fieldWidth );
+    mFieldSize.setHeight( fieldHeight );
+  }
+
 
   double mapUnitPerFieldPixel;
   if ( interestZoneExtent.width() > 0 )
