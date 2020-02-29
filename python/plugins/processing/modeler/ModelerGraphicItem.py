@@ -37,7 +37,9 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProject)
 from qgis.gui import (
     QgsProcessingParameterDefinitionDialog,
-    QgsProcessingParameterWidgetContext
+    QgsProcessingParameterWidgetContext,
+    QgsModelDesignerFlatButtonGraphicItem,
+    QgsModelDesignerFoldButtonGraphicItem
 )
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -51,6 +53,9 @@ class ModelerGraphicItem(QGraphicsItem):
 
     BOX_HEIGHT = 30
     BOX_WIDTH = 200
+
+    BUTTON_WIDTH = 16
+    BUTTON_HEIGHT = 16
 
     def __init__(self, element, model, controls, scene=None):
         super(ModelerGraphicItem, self).__init__(None)
@@ -71,6 +76,7 @@ class ModelerGraphicItem(QGraphicsItem):
             self.picture = QPicture()
             painter = QPainter(self.picture)
             svg.render(painter)
+            painter.end()
             paramDef = self.model.parameterDefinition(element.parameterName())
             if paramDef:
                 self.text = paramDef.description()
@@ -82,6 +88,7 @@ class ModelerGraphicItem(QGraphicsItem):
             self.picture = QPicture()
             painter = QPainter(self.picture)
             svg.render(painter)
+            painter.end()
             self.text = element.name()
         else:
             if element.algorithm().svgIconPath():
@@ -91,6 +98,7 @@ class ModelerGraphicItem(QGraphicsItem):
                 painter = QPainter(self.picture)
                 painter.scale(16 / size.width(), 16 / size.width())
                 svg.render(painter)
+                painter.end()
                 self.pixmap = None
             else:
                 self.pixmap = element.algorithm().icon().pixmap(15, 15)
@@ -106,23 +114,24 @@ class ModelerGraphicItem(QGraphicsItem):
             picture = QPicture()
             painter = QPainter(picture)
             svg.render(painter)
+            painter.end()
             pt = QPointF(self.box_width / 2
-                         - FlatButtonGraphicItem.WIDTH / 2,
+                         - ModelerGraphicItem.BUTTON_WIDTH / 2,
                          self.box_height / 2
-                         - FlatButtonGraphicItem.HEIGHT / 2)
-            self.editButton = FlatButtonGraphicItem(picture, pt, self.editElement)
-            self.editButton.setParentItem(self)
+                         - ModelerGraphicItem.BUTTON_HEIGHT / 2)
+            self.editButton = QgsModelDesignerFlatButtonGraphicItem(self, picture, pt)
+            self.editButton.clicked.connect(self.editElement)
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'delete.svg'))
             picture = QPicture()
             painter = QPainter(picture)
             svg.render(painter)
+            painter.end()
             pt = QPointF(self.box_width / 2
-                         - FlatButtonGraphicItem.WIDTH / 2,
-                         FlatButtonGraphicItem.HEIGHT / 2
+                         - ModelerGraphicItem.BUTTON_WIDTH / 2,
+                         ModelerGraphicItem.BUTTON_HEIGHT / 2
                          - self.box_height / 2)
-            self.deleteButton = FlatButtonGraphicItem(picture, pt,
-                                                      self.removeElement)
-            self.deleteButton.setParentItem(self)
+            self.deleteButton = QgsModelDesignerFlatButtonGraphicItem(self, picture, pt)
+            self.deleteButton.clicked.connect(self.removeElement)
 
         if isinstance(element, QgsProcessingModelChildAlgorithm):
             alg = element.algorithm()
@@ -130,14 +139,14 @@ class ModelerGraphicItem(QGraphicsItem):
                 pt = self.getLinkPointForParameter(-1)
                 pt = QPointF(0, pt.y())
                 if controls:
-                    self.inButton = FoldButtonGraphicItem(pt, self.foldInput, self.element.parametersCollapsed())
-                    self.inButton.setParentItem(self)
+                    self.inButton = QgsModelDesignerFoldButtonGraphicItem(self, self.element.parametersCollapsed(), pt)
+                    self.inButton.folded.connect(self.foldInput)
             if alg.outputDefinitions():
                 pt = self.getLinkPointForOutput(-1)
                 pt = QPointF(0, pt.y())
                 if controls:
-                    self.outButton = FoldButtonGraphicItem(pt, self.foldOutput, self.element.outputsCollapsed())
-                    self.outButton.setParentItem(self)
+                    self.outButton = QgsModelDesignerFoldButtonGraphicItem(self, self.element.outputsCollapsed(), pt)
+                    self.outButton.folded.connect(self.foldOutput)
 
     def foldInput(self, folded):
         self.element.setParametersCollapsed(folded)
@@ -340,12 +349,12 @@ class ModelerGraphicItem(QGraphicsItem):
     def getAdjustedText(self, text):
         fm = QFontMetricsF(self.item_font)
         w = fm.width(text)
-        if w < self.BOX_WIDTH - 25 - FlatButtonGraphicItem.WIDTH:
+        if w < self.BOX_WIDTH - 25 - ModelerGraphicItem.BUTTON_WIDTH:
             return text
 
         text = text[0:-3] + '…'
         w = fm.width(text)
-        while w > self.box_width - 25 - FlatButtonGraphicItem.WIDTH:
+        while w > self.box_width - 25 - ModelerGraphicItem.BUTTON_WIDTH:
             text = text[0:-4] + '…'
             w = fm.width(text)
         return text
@@ -494,79 +503,3 @@ class ModelerGraphicItem(QGraphicsItem):
                     -(self.box_height + 2) / 2 - hUp)
         ])
         return pol
-
-
-class FlatButtonGraphicItem(QGraphicsItem):
-
-    WIDTH = 16
-    HEIGHT = 16
-
-    def __init__(self, picture, position, action):
-        super(FlatButtonGraphicItem, self).__init__(None)
-        self.setAcceptHoverEvents(True)
-        self.setFlag(QGraphicsItem.ItemIsMovable, False)
-        self.picture = picture
-        self.position = position
-        self.isIn = False
-        self.action = action
-
-    def mousePressEvent(self, event):
-        self.action()
-
-    def paint(self, painter, option, widget=None):
-        pt = QPointF(-math.floor(self.WIDTH / 2), -math.floor(self.HEIGHT / 2)) + self.position
-        rect = QRectF(pt.x(), pt.y(), self.WIDTH, self.HEIGHT)
-        if self.isIn:
-            painter.setPen(QPen(Qt.transparent, 1))
-            painter.setBrush(QBrush(QColor(55, 55, 55, 33),
-                                    Qt.SolidPattern))
-        else:
-            painter.setPen(QPen(Qt.transparent, 1))
-            painter.setBrush(QBrush(Qt.transparent,
-                                    Qt.SolidPattern))
-        painter.drawRect(rect)
-        painter.drawPicture(pt.x(), pt.y(), self.picture)
-
-    def boundingRect(self):
-        rect = QRectF(self.position.x() - math.floor(self.WIDTH / 2),
-                      self.position.y() - math.floor(self.HEIGHT / 2),
-                      self.WIDTH,
-                      self.HEIGHT)
-        return rect
-
-    def hoverEnterEvent(self, event):
-        self.isIn = True
-        self.update()
-
-    def hoverLeaveEvent(self, event):
-        self.isIn = False
-        self.update()
-
-
-class FoldButtonGraphicItem(FlatButtonGraphicItem):
-
-    WIDTH = 11
-    HEIGHT = 11
-
-    def __init__(self, position, action, folded):
-        plus = QPicture()
-        minus = QPicture()
-
-        svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'plus.svg'))
-        painter = QPainter(plus)
-        svg.render(painter)
-        svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'minus.svg'))
-        painter = QPainter(minus)
-        svg.render(painter)
-
-        self.pictures = {True: plus,
-                         False: minus}
-
-        self.folded = folded
-        picture = self.pictures[self.folded]
-        super(FoldButtonGraphicItem, self).__init__(picture, position, action)
-
-    def mousePressEvent(self, event):
-        self.folded = not self.folded
-        self.picture = self.pictures[self.folded]
-        self.action(self.folded)
