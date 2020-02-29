@@ -144,12 +144,10 @@ QgsGeometryCollection *QgsGeometryCollection::snappedToGrid( double hSpacing, do
 
 bool QgsGeometryCollection::removeDuplicateNodes( double epsilon, bool useZValues )
 {
-  bool partResult = false;
   bool result = false;
   for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
-    partResult = geom->removeDuplicateNodes( epsilon, useZValues );
-    if ( partResult ) result = true;
+    if ( geom->removeDuplicateNodes( epsilon, useZValues ) ) result = true;
   }
   return result;
 }
