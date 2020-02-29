@@ -62,7 +62,7 @@ class ModelerGraphicItem(QGraphicsItem):
         self.box_width = ModelerGraphicItem.BOX_WIDTH
         self.box_height = ModelerGraphicItem.BOX_HEIGHT
         self.item_font = QFont()
-        self.item_font.setPointSize(10)
+        self.item_font.setPixelSize(12)
         self.pixmap = None
         self.picture = None
         self.hover_over_item = False
