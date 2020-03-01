@@ -426,7 +426,7 @@ class PostGisDBConnector(DBConnector):
 
         # get all tables and views
         sql = u"""SELECT
-                                                cla.relname, nsp.nspname, cla.relkind,
+                                                cla.relname, nsp.nspname, cla.relkind::text,
                                                 pg_get_userbyid(relowner), reltuples, relpages,
                                                 pg_catalog.obj_description(cla.oid)
                                         FROM pg_class AS cla
