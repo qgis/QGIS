@@ -27,15 +27,16 @@ from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelChildParameterSource,
                        QgsExpression)
+from qgis.gui import QgsModelGraphicsScene
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
 from processing.tools.dataobjects import createContext
 
 
-class ModelerScene(QGraphicsScene):
+class ModelerScene(QgsModelGraphicsScene):
 
     def __init__(self, parent=None, dialog=None):
-        super(ModelerScene, self).__init__(parent)
+        super().__init__(parent)
         self.paramItems = {}
         self.algItems = {}
         self.outputItems = {}

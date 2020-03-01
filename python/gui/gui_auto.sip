@@ -309,7 +309,9 @@
 %Include auto_generated/processing/qgsprocessingtoolboxmodel.sip
 %Include auto_generated/processing/qgsprocessingtoolboxtreeview.sip
 %Include auto_generated/processing/qgsprocessingwidgetwrapper.sip
+%Include auto_generated/processing/models/qgsmodelcomponentgraphicitem.sip
 %Include auto_generated/processing/models/qgsmodelgraphicitem.sip
+%Include auto_generated/processing/models/qgsmodelgraphicsscene.sip
 %Include auto_generated/raster/qgscolorrampshaderwidget.sip
 %Include auto_generated/raster/qgshillshaderendererwidget.sip
 %Include auto_generated/raster/qgsmultibandcolorrendererwidget.sip

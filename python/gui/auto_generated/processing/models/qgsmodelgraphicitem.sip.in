@@ -27,7 +27,7 @@ A flat button graphic item for use in the Processing model designer.
 %End
   public:
 
-    QgsModelDesignerFlatButtonGraphicItem( QGraphicsItem *parent, const QPicture &picture, const QPointF &position,
+    QgsModelDesignerFlatButtonGraphicItem( QGraphicsItem *parent /TransferThis/, const QPicture &picture, const QPointF &position,
                                            const QSizeF &size = QSizeF( 16, 16 ) );
 %Docstring
 Constructor for QgsModelDesignerFlatButtonGraphicItem, with the specified ``parent`` item.
@@ -81,7 +81,7 @@ A button allowing folding or expanding component graphics in the Processing mode
 %End
   public:
 
-    QgsModelDesignerFoldButtonGraphicItem( QGraphicsItem *parent, bool folded, const QPointF &position,
+    QgsModelDesignerFoldButtonGraphicItem( QGraphicsItem *parent /TransferThis/, bool folded, const QPointF &position,
                                            const QSizeF &size = QSizeF( 11, 11 ) );
 %Docstring
 Constructor for QgsModelDesignerFoldButtonGraphicItem, with the specified ``parent`` item.
