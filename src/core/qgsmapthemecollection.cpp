@@ -35,6 +35,7 @@ QgsMapThemeCollection::QgsMapThemeCollection( QgsProject *project )
 QgsMapThemeCollection::MapThemeLayerRecord QgsMapThemeCollection::createThemeLayerRecord( QgsLayerTreeLayer *nodeLayer, QgsLayerTreeModel *model )
 {
   MapThemeLayerRecord layerRec( nodeLayer->layer() );
+  layerRec.isVisible = nodeLayer->isVisible();
   layerRec.usingCurrentStyle = true;
   layerRec.currentStyle = nodeLayer->layer()->styleManager()->currentStyle();
   layerRec.expandedLayerNode = nodeLayer->isExpanded();
@@ -124,15 +125,20 @@ bool QgsMapThemeCollection::findRecordForLayer( QgsMapLayer *layer, const QgsMap
 void QgsMapThemeCollection::applyThemeToLayer( QgsLayerTreeLayer *nodeLayer, QgsLayerTreeModel *model, const QgsMapThemeCollection::MapThemeRecord &rec )
 {
   MapThemeLayerRecord layerRec;
-  bool isVisible = findRecordForLayer( nodeLayer->layer(), rec, layerRec );
+  const bool recordExists = findRecordForLayer( nodeLayer->layer(), rec, layerRec );
 
   // Make sure the whole tree is visible
-  if ( isVisible )
-    nodeLayer->setItemVisibilityCheckedParentRecursive( isVisible );
+  if ( recordExists )
+  {
+    if ( rec.hasCheckedStateInfo() )
+      nodeLayer->setItemVisibilityChecked( true );
+    else
+      nodeLayer->setItemVisibilityCheckedParentRecursive( true );
+  }
   else
-    nodeLayer->setItemVisibilityChecked( isVisible );
+    nodeLayer->setItemVisibilityChecked( false );
 
-  if ( !isVisible )
+  if ( !recordExists )
     return;
 
   if ( layerRec.usingCurrentStyle )
@@ -322,7 +328,7 @@ QList<QgsMapLayer *> QgsMapThemeCollection::mapThemeVisibleLayers( const QString
     const auto records {mMapThemes.value( name ).mLayerRecords};
     for ( const MapThemeLayerRecord &layerRec : records )
     {
-      if ( layerRec.layer() )
+      if ( layerRec.isVisible && layerRec.layer() )
         layers << layerRec.layer();
     }
   }
@@ -334,7 +340,7 @@ QList<QgsMapLayer *> QgsMapThemeCollection::mapThemeVisibleLayers( const QString
       const auto constRecs = recs;
       for ( const MapThemeLayerRecord &layerRec : constRecs )
       {
-        if ( layerRec.layer() == layer )
+        if ( layerRec.isVisible && layerRec.layer() == layer )
           layers << layerRec.layer();
       }
     }
@@ -448,6 +454,7 @@ void QgsMapThemeCollection::readXml( const QDomDocument &doc )
       if ( QgsMapLayer *layer = mProject->mapLayer( layerID ) )
       {
         layerRecords[layerID] = MapThemeLayerRecord( layer );
+        layerRecords[layerID].isVisible = visPresetLayerElem.attribute( QStringLiteral( "visible" ), QStringLiteral( "1" ) ).toInt();
 
         if ( visPresetLayerElem.hasAttribute( QStringLiteral( "style" ) ) )
         {
@@ -575,6 +582,7 @@ void QgsMapThemeCollection::writeXml( QDomDocument &doc )
       QString layerID = layerRec.layer()->id();
       QDomElement layerElem = doc.createElement( QStringLiteral( "layer" ) );
       layerElem.setAttribute( QStringLiteral( "id" ), layerID );
+      layerElem.setAttribute( QStringLiteral( "visible" ), layerRec.isVisible ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
       if ( layerRec.usingCurrentStyle )
         layerElem.setAttribute( QStringLiteral( "style" ), layerRec.currentStyle );
       visPresetElem.appendChild( layerElem );
