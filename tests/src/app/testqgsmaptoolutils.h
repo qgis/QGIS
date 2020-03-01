@@ -97,12 +97,12 @@ class TestQgsMapToolAdvancedDigitizingUtils
       mouseRelease( mapX, mapY, button, stateKey, snap );
     }
 
-    void keyClick( int key )
+    void keyClick( int key, modifier = Qt::KeyboardModifiers() )
     {
-      QKeyEvent e1( QEvent::KeyPress, key, Qt::KeyboardModifiers() );
+      QKeyEvent e1( QEvent::KeyPress, key, modifier );
       mMapTool->keyPressEvent( &e1 );
 
-      QKeyEvent e2( QEvent::KeyRelease, key, Qt::KeyboardModifiers() );
+      QKeyEvent e2( QEvent::KeyRelease, key, modifier );
       mMapTool->keyReleaseEvent( &e2 );
     }
 

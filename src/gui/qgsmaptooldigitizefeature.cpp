@@ -94,7 +94,7 @@ void QgsMapToolDigitizeFeature::setCheckGeometryType( bool checkGeometryType )
 
 void QgsMapToolDigitizeFeature::keyPressEvent( QKeyEvent *e )
 {
-  if ( e && e->key() == Qt::Key_C )
+  if ( e && e->key() == Qt::Key_C && e->modifiers() == Qt::ShiftModifier )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
     if ( !vlayer )
