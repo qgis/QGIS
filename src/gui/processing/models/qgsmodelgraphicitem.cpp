@@ -20,9 +20,6 @@
 
 ///@cond NOT_STABLE
 
-
-///@endcond
-
 QgsModelDesignerFlatButtonGraphicItem::QgsModelDesignerFlatButtonGraphicItem( QGraphicsItem *parent, const QPicture &picture, const QPointF &position, const QSizeF &size )
   : QGraphicsObject( parent )
   , mPicture( picture )
@@ -113,3 +110,6 @@ void QgsModelDesignerFoldButtonGraphicItem::mousePressEvent( QGraphicsSceneMouse
   emit folded( mFolded );
   QgsModelDesignerFlatButtonGraphicItem::mousePressEvent( event );
 }
+
+///@endcond
+
