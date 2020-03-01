@@ -397,12 +397,18 @@ class VectorTableInfo(TableInfo):
                 self.table.blockSignals(False)
 
             if self.table.estimatedExtent is not None and self.table.estimatedExtent[0] is not None:
-                estimated_extent_str = '%.5f, %.5f - %.5f, %.5f' % self.table.estimatedExtent
+                if isinstance(self.table.estimatedExtent, list):
+                    estimated_extent_str = ', '.join('%.5f' % e for e in self.table.estimatedExtent)
+                else:
+                    estimated_extent_str = '%.5f, %.5f - %.5f, %.5f' % self.table.estimatedExtent
                 tbl.append((QApplication.translate("DBManagerPlugin", "Estimated extent:"), estimated_extent_str))
 
         # extent
         if self.table.extent is not None and self.table.extent[0] is not None:
-            extent_str = '%.5f, %.5f - %.5f, %.5f' % self.table.extent
+            if isinstance(self.table.extent, list):
+                extent_str = ', '.join('%.5f' % e for e in self.table.extent)
+            else:
+                extent_str = '%.5f, %.5f - %.5f, %.5f' % self.table.extent
         else:
             extent_str = QApplication.translate("DBManagerPlugin",
                                                 '(unknown) (<a href="action:extent/get">find out</a>)')
