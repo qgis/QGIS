@@ -1,0 +1,46 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodelcomponentgraphicitem.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsModelComponentGraphicItem : QGraphicsObject
+{
+%Docstring
+Base class for graphic items representing model components in the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelcomponentgraphicitem.h"
+%End
+  public:
+
+    QgsModelComponentGraphicItem( QgsProcessingModelComponent *component /Transfer/, QGraphicsItem *parent /TransferThis/ );
+%Docstring
+Constructor for QgsModelComponentGraphicItem for the specified ``component``, with the specified ``parent`` item.
+
+Ownership of ``component`` is transferred to the item.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodelcomponentgraphicitem.h             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

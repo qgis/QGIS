@@ -41,7 +41,7 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
      * The \a picture argument specifies a QPicture object containing the graphic to render
      * for the button. The button will be rendered at the specified \a position and \a size.
      */
-    QgsModelDesignerFlatButtonGraphicItem( QGraphicsItem *parent, const QPicture &picture, const QPointF &position,
+    QgsModelDesignerFlatButtonGraphicItem( QGraphicsItem *parent SIP_TRANSFERTHIS, const QPicture &picture, const QPointF &position,
                                            const QSizeF &size = QSizeF( 16, 16 ) );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesigner
      *
      * The button will be rendered at the specified \a position and \a size.
      */
-    QgsModelDesignerFoldButtonGraphicItem( QGraphicsItem *parent, bool folded, const QPointF &position,
+    QgsModelDesignerFoldButtonGraphicItem( QGraphicsItem *parent SIP_TRANSFERTHIS, bool folded, const QPointF &position,
                                            const QSizeF &size = QSizeF( 11, 11 ) );
 
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
