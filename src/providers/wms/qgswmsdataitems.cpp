@@ -98,7 +98,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
       QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
       QgsDataItem *layer = nullptr;
 
-      if ( layerProperty.name.isEmpty() )
+      if ( layerProperty.name.isEmpty() || !layerProperty.layer.isEmpty() )
         layer = new QgsWMSLayerCollectionItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
       else
         layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
@@ -285,7 +285,7 @@ QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QStri
 
     QgsDataItem *layer = nullptr;
 
-    if ( layerProperty.name.isEmpty() )
+    if ( layerProperty.name.isEmpty() || !layerProperty.layer.isEmpty() )
       layer = new QgsWMSLayerCollectionItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, dataSourceUri, layerProperty );
     else
       layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, mCapabilitiesProperty, dataSourceUri, layerProperty );
