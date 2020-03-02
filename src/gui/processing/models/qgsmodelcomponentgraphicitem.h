@@ -47,7 +47,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     {
       Normal, //!< Normal state
       Selected, //!< Item is selected
-      Hover, //!< Cursor is hovering over an unselected item
+      Hover, //!< Cursor is hovering over an deselected item
     };
 
     /**
@@ -61,6 +61,8 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QgsModelComponentGraphicItem( QgsProcessingModelComponent *component SIP_TRANSFER,
                                   QgsProcessingModelAlgorithm *model,
                                   QGraphicsItem *parent SIP_TRANSFERTHIS );
+
+    ~QgsModelComponentGraphicItem() override;
 
     /**
      * Returns the model component associated with this item.

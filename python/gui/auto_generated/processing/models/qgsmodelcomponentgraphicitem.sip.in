@@ -46,6 +46,8 @@ it must exist for the lifetime of this object.
 Ownership of ``component`` is transferred to the item.
 %End
 
+    ~QgsModelComponentGraphicItem();
+
     QgsProcessingModelComponent *component();
 %Docstring
 Returns the model component associated with this item.
