@@ -353,6 +353,8 @@ void QgsFeatureFilterModel::updateCompleter()
 
 void QgsFeatureFilterModel::gathererThreadFinished()
 {
+  // It's possible that gatherer run method is not completely over, so we wait
+  mGatherer->wait();
   delete mGatherer;
   mGatherer = nullptr;
   emit isLoadingChanged();
