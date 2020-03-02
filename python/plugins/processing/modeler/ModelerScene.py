@@ -88,17 +88,24 @@ class ModelerScene(QgsModelGraphicsScene):
                         items.extend(self.getItemsFromParamValue(variables[v].source, child_id, context))
         return items
 
+    def requestModelRepaint(self):
+        self.dialog.repaintModel()
+
+    def componentChanged(self):
+        self.dialog.haschanged = True
+
     def paintModel(self, model):
         self.model = model
         context = createContext()
         # Inputs
         for inp in list(model.parameterComponents().values()):
-            item = ModelerGraphicItem(inp.clone(), model, scene=self)
-            item.setFlag(QGraphicsItem.ItemIsMovable, True)
-            item.setFlag(QGraphicsItem.ItemIsSelectable, True)
+            item = ModelerGraphicItem(inp.clone(), model)
             self.addItem(item)
             item.setPos(inp.position().x(), inp.position().y())
             self.paramItems[inp.parameterName()] = item
+
+            item.requestModelRepaint.connect(self.requestModelRepaint)
+            item.changed.connect(self.componentChanged)
 
         # Input dependency arrows
         for input_name in list(model.parameterComponents().keys()):
@@ -128,12 +135,13 @@ class ModelerScene(QgsModelGraphicsScene):
 
         # We add the algs
         for alg in list(model.childAlgorithms().values()):
-            item = ModelerGraphicItem(alg.clone(), model, scene=self)
-            item.setFlag(QGraphicsItem.ItemIsMovable, True)
-            item.setFlag(QGraphicsItem.ItemIsSelectable, True)
+            item = ModelerGraphicItem(alg.clone(), model)
             self.addItem(item)
             item.setPos(alg.position().x(), alg.position().y())
             self.algItems[alg.childId()] = item
+
+            item.requestModelRepaint.connect(self.requestModelRepaint)
+            item.changed.connect(self.componentChanged)
 
         # And then the arrows
 
@@ -169,9 +177,10 @@ class ModelerScene(QgsModelGraphicsScene):
 
             for key, out in outputs.items():
                 if out is not None:
-                    item = ModelerGraphicItem(out.clone(), model, scene=self)
-                    item.setFlag(QGraphicsItem.ItemIsMovable, True)
-                    item.setFlag(QGraphicsItem.ItemIsSelectable, True)
+                    item = ModelerGraphicItem(out.clone(), model)
+                    item.requestModelRepaint.connect(self.requestModelRepaint)
+                    item.changed.connect(self.componentChanged)
+
                     self.addItem(item)
                     pos = out.position()
 

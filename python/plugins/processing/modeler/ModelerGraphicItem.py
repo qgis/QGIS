@@ -56,9 +56,8 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
     BUTTON_WIDTH = 16
     BUTTON_HEIGHT = 16
 
-    def __init__(self, element, model, scene=None):
+    def __init__(self, element, model):
         super().__init__(element, model, None)
-        self.scene = scene
         self.box_width = ModelerGraphicItem.BOX_WIDTH
         self.box_height = ModelerGraphicItem.BOX_HEIGHT
         self.item_font = QFont()
@@ -223,11 +222,11 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
 
     def deactivateAlgorithm(self):
         self.model().deactivateChildAlgorithm(self.component().childId())
-        self.scene.dialog.repaintModel()
+        self.requestModelRepaint.emit()
 
     def activateAlgorithm(self):
         if self.model().activateChildAlgorithm(self.component().childId()):
-            self.scene.dialog.repaintModel()
+            self.requestModelRepaint.emit()
         else:
             QMessageBox.warning(None, 'Could not activate Algorithm',
                                 'The selected algorithm depends on other currently non-active algorithms.\n'
@@ -272,7 +271,7 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
                 self.component().setDescription(new_param.name())
                 self.model().addModelParameter(new_param, self.component())
                 self.text = new_param.description()
-                self.scene.dialog.repaintModel()
+                self.requestModelRepaint.emit()
         elif isinstance(self.component(), QgsProcessingModelChildAlgorithm):
             elemAlg = self.component().algorithm()
             dlg = ModelerParametersDialog(elemAlg, self.model(), self.component().childId(), self.component().configuration())
@@ -280,7 +279,7 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
                 alg = dlg.createAlgorithm()
                 alg.setChildId(self.component().childId())
                 self.updateAlgorithm(alg)
-                self.scene.dialog.repaintModel()
+                self.requestModelRepaint.emit()
 
         elif isinstance(self.component(), QgsProcessingModelOutput):
             child_alg = self.model().childAlgorithm(self.component().childId())
@@ -318,21 +317,21 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
                                     'Remove them before trying to remove it.')
             else:
                 self.model().removeModelParameter(self.component().parameterName())
-                self.scene.dialog.haschanged = True
-                self.scene.dialog.repaintModel()
+                self.changed.emit()
+                self.requestModelRepaint.emit()
         elif isinstance(self.component(), QgsProcessingModelChildAlgorithm):
             if not self.model().removeChildAlgorithm(self.component().childId()):
                 QMessageBox.warning(None, 'Could not remove element',
                                     'Other elements depend on the selected one.\n'
                                     'Remove them before trying to remove it.')
             else:
-                self.scene.dialog.haschanged = True
-                self.scene.dialog.repaintModel()
+                self.changed.emit()
+                self.requestModelRepaint.emit()
         elif isinstance(self.component(), QgsProcessingModelOutput):
             self.model().childAlgorithm(self.component().childId()).removeModelOutput(self.component().name())
             self.model().updateDestinationParameters()
-            self.scene.dialog.haschanged = True
-            self.scene.dialog.repaintModel()
+            self.changed.emit()
+            self.requestModelRepaint.emit()
 
     def getAdjustedText(self, text):
         fm = QFontMetricsF(self.item_font)

@@ -50,6 +50,21 @@ Returns the model component associated with this item.
 Returns the model associated with this item.
 %End
 
+  signals:
+
+
+    void requestModelRepaint();
+%Docstring
+Emitted by the item to request a repaint of the parent model scene.
+%End
+
+
+    void changed();
+%Docstring
+Emitted when the definition of the associated component is changed
+by the item.
+%End
+
 };
 
 class QgsModelParameterGraphicItem : QgsModelComponentGraphicItem
