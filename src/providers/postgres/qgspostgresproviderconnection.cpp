@@ -228,7 +228,6 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
           if ( typeRes.size() > 0 && typeRes.first().size() > 0 )
           {
             static const QStringList intTypes = { QStringLiteral( "oid" ),
-                                                  QStringLiteral( "char" ),
                                                   QStringLiteral( "int2" ),
                                                   QStringLiteral( "int4" ),
                                                   QStringLiteral( "int8" )
@@ -262,6 +261,10 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             else if ( typName == QStringLiteral( "bool" ) )
             {
               vType = QVariant::Bool;
+            }
+            else if ( typName == QStringLiteral( "char" ) )
+            {
+              vType = QVariant::Char;
             }
             else
             {
