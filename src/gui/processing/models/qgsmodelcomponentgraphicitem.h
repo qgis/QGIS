@@ -63,6 +63,23 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     QgsProcessingModelAlgorithm *model();
 
+  signals:
+
+    // TEMPORARY ONLY during refactoring
+
+    /**
+     * Emitted by the item to request a repaint of the parent model scene.
+     */
+    void requestModelRepaint();
+
+    // TEMPORARY ONLY during refactoring
+
+    /**
+     * Emitted when the definition of the associated component is changed
+     * by the item.
+     */
+    void changed();
+
   private:
 
     std::unique_ptr< QgsProcessingModelComponent > mComponent;
