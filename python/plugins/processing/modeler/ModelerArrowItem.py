@@ -94,9 +94,9 @@ class ModelerArrowItem(QGraphicsPathItem):
             if self.startIndex != -1:
                 controlPoints.append(self.startItem.pos() + startPt)
                 controlPoints.append(self.startItem.pos() + startPt +
-                                     QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                     QPointF(self.startItem.component().size().width() / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt -
-                                     QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                     QPointF(self.endItem.component().size().width() / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt)
                 pt = QPointF(self.startItem.pos() + startPt + QPointF(-3, -3))
                 self.endPoints.append(pt)
@@ -107,16 +107,16 @@ class ModelerArrowItem(QGraphicsPathItem):
                 # on an output
                 controlPoints.append(self.startItem.pos() + startPt)
                 controlPoints.append(self.startItem.pos() + startPt +
-                                     QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                     QPointF(self.startItem.component().size().width() / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt -
-                                     QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                     QPointF(self.endItem.component().size().height() / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt)
         else:
             controlPoints.append(self.startItem.pos())
             controlPoints.append(self.startItem.pos() +
-                                 QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                 QPointF(self.startItem.component().size().width() / 3, 0))
             controlPoints.append(self.endItem.pos() + endPt -
-                                 QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                 QPointF(self.endItem.component().size().width() / 3, 0))
             controlPoints.append(self.endItem.pos() + endPt)
             pt = QPointF(self.endItem.pos() + endPt + QPointF(-3, -3))
             self.endPoints.append(pt)

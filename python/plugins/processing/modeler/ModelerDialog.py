@@ -895,9 +895,13 @@ class ModelerDialog(BASE, WIDGET):
             else:
                 alg.setPosition(pos)
             from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
-            for i, out in enumerate(alg.modelOutputs()):
-                alg.modelOutput(out).setPosition(alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5) *
-                                                                          ModelerGraphicItem.BOX_HEIGHT))
+
+            output_offset_x = alg.size().width()
+            output_offset_y = 1.5 * alg.size().height()
+            for out in alg.modelOutputs():
+                alg.modelOutput(out).setPosition(alg.position() + QPointF(output_offset_x, output_offset_y))
+                output_offset_y += 1.5 * alg.modelOutput(out).size().height()
+
             self.model.addChildAlgorithm(alg)
             self.repaintModel()
             self.hasChanged = True

@@ -208,7 +208,7 @@ class ModelerScene(QgsModelGraphicsScene):
                             break
 
                     if pos is None:
-                        pos = (alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, 0) +
+                        pos = (alg.position() + QPointF(alg.size().width(), 0) +
                                self.algItems[alg.childId()].getLinkPointForOutput(idx))
                     item.setPos(pos)
                     outputItems[key] = item
