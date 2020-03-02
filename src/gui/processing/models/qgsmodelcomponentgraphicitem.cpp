@@ -15,6 +15,7 @@
 
 #include "qgsmodelcomponentgraphicitem.h"
 #include "qgsprocessingmodelcomponent.h"
+#include "qgsmodelgraphicsscene.h"
 
 ///@cond NOT_STABLE
 
@@ -22,7 +23,11 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
   : QGraphicsObject( parent )
   , mComponent( component )
 {
-
+  setAcceptHoverEvents( true );
+  setFlag( QGraphicsItem::ItemIsMovable, true );
+  setFlag( QGraphicsItem::ItemIsSelectable, true );
+  setFlag( QGraphicsItem::ItemSendsGeometryChanges, true );
+  setZValue( QgsModelGraphicsScene::ZValues::ModelComponent );
 }
 
 QgsProcessingModelComponent *QgsModelComponentGraphicItem::component()

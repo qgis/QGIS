@@ -46,9 +46,9 @@
 ***************************************************************************
 """
 
-from qgis.core import (QgsProcessingModelAlgorithm,
-                       QgsProcessingModelChildAlgorithm,
+from qgis.core import (QgsProcessingModelChildAlgorithm,
                        QgsProcessingModelParameter)
+from qgis.gui import QgsModelGraphicsScene
 from qgis.PyQt.QtCore import Qt, QPointF
 from qgis.PyQt.QtWidgets import QApplication, QGraphicsPathItem, QGraphicsItem
 from qgis.PyQt.QtGui import QPen, QPainterPath, QPolygonF, QPainter, QPalette
@@ -71,7 +71,7 @@ class ModelerArrowItem(QGraphicsPathItem):
         self.myColor.setAlpha(150)
         self.setPen(QPen(self.myColor, 1, Qt.SolidLine,
                          Qt.RoundCap, Qt.RoundJoin))
-        self.setZValue(0)
+        self.setZValue(QgsModelGraphicsScene.ArrowLink)
 
     def setPenStyle(self, style):
         pen = self.pen()
