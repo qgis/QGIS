@@ -321,7 +321,7 @@ class GeoDB(object):
         if not self.has_postgis:
             # Get all tables and views
             sql = """SELECT pg_class.relname, pg_namespace.nspname,
-                            pg_class.relkind::text, pg_get_userbyid(relowner),
+                            pg_class.relkind, pg_get_userbyid(relowner),
                             reltuples, relpages, NULL, NULL, NULL, NULL
                   FROM pg_class
                   JOIN pg_namespace ON pg_namespace.oid = pg_class.relnamespace
@@ -331,7 +331,7 @@ class GeoDB(object):
             # Discovery of all tables and whether they contain a
             # geometry column
             sql = """SELECT pg_class.relname, pg_namespace.nspname,
-                            pg_class.relkind::text, pg_get_userbyid(relowner),
+                            pg_class.relkind, pg_get_userbyid(relowner),
                             reltuples, relpages, pg_attribute.attname,
                             pg_attribute.atttypid::regtype, NULL, NULL
                   FROM pg_class
@@ -350,7 +350,7 @@ class GeoDB(object):
 
         # Get geometry info from geometry_columns if exists
         if self.has_postgis:
-            sql = """SELECT relname, nspname, relkind::text,
+            sql = """SELECT relname, nspname, relkind,
                             pg_get_userbyid(relowner), reltuples, relpages,
                             geometry_columns.f_geometry_column,
                             geometry_columns.type,
@@ -360,7 +360,7 @@ class GeoDB(object):
                   JOIN pg_namespace ON relnamespace=pg_namespace.oid
                   LEFT OUTER JOIN geometry_columns ON
                       relname=f_table_name AND nspname=f_table_schema
-                  WHERE relkind IN ('r','v','m','p') """ \
+                  WHERE relkind IN ('r','v','m','p','f') """ \
                   + schema_where + 'ORDER BY nspname, relname, \
                   f_geometry_column'
             self._exec_sql(c, sql)

@@ -200,7 +200,7 @@ class PGTable(Table):
     def __init__(self, row, db, schema=None):
         Table.__init__(self, db, schema)
         self.name, schema_name, self._relationType, self.owner, self.estimatedRowCount, self.pages, self.comment = row
-        self.isView = self._relationType in set(['v', 'm'])
+        self.isView = self._relationType in set(['v', 'm', 'f'])
         self.estimatedRowCount = int(self.estimatedRowCount)
 
     def runVacuumAnalyze(self):
