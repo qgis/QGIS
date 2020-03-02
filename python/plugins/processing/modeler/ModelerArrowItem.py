@@ -83,14 +83,14 @@ class ModelerArrowItem(QGraphicsPathItem):
         self.endPoints = []
         controlPoints = []
         endPt = self.endItem.getLinkPointForParameter(self.endIndex)
-        if isinstance(self.startItem.element, QgsProcessingModelParameter):
+        if isinstance(self.startItem.component(), QgsProcessingModelParameter):
             startPt = self.startItem.getLinkPointForParameter(self.startIndex)
         else:
             startPt = self.startItem.getLinkPointForOutput(self.startIndex)
-        if isinstance(self.endItem.element, QgsProcessingModelParameter):
+        if isinstance(self.endItem.component(), QgsProcessingModelParameter):
             endPt = self.endItem.getLinkPointForParameter(self.startIndex)
 
-        if isinstance(self.startItem.element, QgsProcessingModelChildAlgorithm):
+        if isinstance(self.startItem.component(), QgsProcessingModelChildAlgorithm):
             if self.startIndex != -1:
                 controlPoints.append(self.startItem.pos() + startPt)
                 controlPoints.append(self.startItem.pos() + startPt +

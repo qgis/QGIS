@@ -14,12 +14,9 @@
  ***************************************************************************/
 
 #include "qgsmodelcomponentgraphicitem.h"
+#include "qgsprocessingmodelcomponent.h"
 
 ///@cond NOT_STABLE
-
-
-///@endcond
-
 
 QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelComponent *component, QGraphicsItem *parent )
   : QGraphicsObject( parent )
@@ -27,3 +24,10 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
 {
 
 }
+
+QgsProcessingModelComponent *QgsModelComponentGraphicItem::component()
+{
+  return mComponent.get();
+}
+
+///@endcond
