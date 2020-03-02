@@ -56,9 +56,8 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
     BUTTON_WIDTH = 16
     BUTTON_HEIGHT = 16
 
-    def __init__(self, element, model, controls, scene=None):
+    def __init__(self, element, model, scene=None):
         super().__init__(element, model, None)
-        self.controls = controls
         self.scene = scene
         self.box_width = ModelerGraphicItem.BOX_WIDTH
         self.box_height = ModelerGraphicItem.BOX_HEIGHT
@@ -101,44 +100,41 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
             self.text = element.description()
         self.arrows = []
 
-        if controls:
-            svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'edit.svg'))
-            picture = QPicture()
-            painter = QPainter(picture)
-            svg.render(painter)
-            painter.end()
-            pt = QPointF(self.box_width / 2 -
-                         ModelerGraphicItem.BUTTON_WIDTH / 2,
-                         self.box_height / 2 -
-                         ModelerGraphicItem.BUTTON_HEIGHT / 2)
-            self.editButton = QgsModelDesignerFlatButtonGraphicItem(self, picture, pt)
-            self.editButton.clicked.connect(self.editElement)
-            svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'delete.svg'))
-            picture = QPicture()
-            painter = QPainter(picture)
-            svg.render(painter)
-            painter.end()
-            pt = QPointF(self.box_width / 2 -
-                         ModelerGraphicItem.BUTTON_WIDTH / 2,
-                         ModelerGraphicItem.BUTTON_HEIGHT / 2 -
-                         self.box_height / 2)
-            self.deleteButton = QgsModelDesignerFlatButtonGraphicItem(self, picture, pt)
-            self.deleteButton.clicked.connect(self.removeElement)
+        svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'edit.svg'))
+        picture = QPicture()
+        painter = QPainter(picture)
+        svg.render(painter)
+        painter.end()
+        pt = QPointF(self.box_width / 2 -
+                     ModelerGraphicItem.BUTTON_WIDTH / 2,
+                     self.box_height / 2 -
+                     ModelerGraphicItem.BUTTON_HEIGHT / 2)
+        self.editButton = QgsModelDesignerFlatButtonGraphicItem(self, picture, pt)
+        self.editButton.clicked.connect(self.editElement)
+        svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'delete.svg'))
+        picture = QPicture()
+        painter = QPainter(picture)
+        svg.render(painter)
+        painter.end()
+        pt = QPointF(self.box_width / 2 -
+                     ModelerGraphicItem.BUTTON_WIDTH / 2,
+                     ModelerGraphicItem.BUTTON_HEIGHT / 2 -
+                     self.box_height / 2)
+        self.deleteButton = QgsModelDesignerFlatButtonGraphicItem(self, picture, pt)
+        self.deleteButton.clicked.connect(self.removeElement)
 
         if isinstance(element, QgsProcessingModelChildAlgorithm):
             alg = element.algorithm()
             if [a for a in alg.parameterDefinitions() if not a.isDestination()]:
                 pt = self.getLinkPointForParameter(-1)
                 pt = QPointF(0, pt.y())
-                if controls:
-                    self.inButton = QgsModelDesignerFoldButtonGraphicItem(self, self.component().parametersCollapsed(), pt)
-                    self.inButton.folded.connect(self.foldInput)
+                self.inButton = QgsModelDesignerFoldButtonGraphicItem(self, self.component().parametersCollapsed(), pt)
+                self.inButton.folded.connect(self.foldInput)
             if alg.outputDefinitions():
                 pt = self.getLinkPointForOutput(-1)
                 pt = QPointF(0, pt.y())
-                if controls:
-                    self.outButton = QgsModelDesignerFoldButtonGraphicItem(self, self.component().outputsCollapsed(), pt)
-                    self.outButton.folded.connect(self.foldOutput)
+                self.outButton = QgsModelDesignerFoldButtonGraphicItem(self, self.component().outputsCollapsed(), pt)
+                self.outButton.folded.connect(self.foldOutput)
 
     def foldInput(self, folded):
         self.component().setParametersCollapsed(folded)

@@ -88,7 +88,8 @@ from qgis.gui import (QgsMessageBar,
                       QgsProcessingToolboxProxyModel,
                       QgsProcessingParameterDefinitionDialog,
                       QgsVariableEditorWidget,
-                      QgsProcessingParameterWidgetContext)
+                      QgsProcessingParameterWidgetContext,
+                      QgsModelGraphicsScene)
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
@@ -783,7 +784,10 @@ class ModelerDialog(BASE, WIDGET):
         self.scene = ModelerScene(self, dialog=self)
         self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE,
                                        self.CANVAS_SIZE))
-        self.scene.paintModel(self.model, controls)
+
+        if not controls:
+            self.scene.setFlag(QgsModelGraphicsScene.FlagHideControls)
+        self.scene.paintModel(self.model)
         self.view.setScene(self.scene)
 
     def addInput(self):

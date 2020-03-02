@@ -42,13 +42,47 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
       ModelComponent = 1, //!< Model components (e.g. algorithms, inputs and outputs)
     };
 
+    //! Flags for controlling how the scene is rendered and scene behavior
+    enum Flag
+    {
+      FlagHideControls = 1 << 1,  //!< If set, item interactive controls will be hidden
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     /**
      * Constructor for QgsModelGraphicsScene with the specified \a parent object.
      */
     QgsModelGraphicsScene( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
+    /**
+     * Sets the combination of \a flags controlling how the scene is rendered and behaves.
+     * \see setFlag()
+     * \see flags()
+     */
+    void setFlags( QgsModelGraphicsScene::Flags flags ) { mFlags = flags; }
+
+    /**
+     * Enables or disables a particular \a flag for the scene. Other existing
+     * flags are not affected.
+     * \see setFlags()
+     * \see flags()
+     */
+    void setFlag( QgsModelGraphicsScene::Flag flag, bool on = true );
+
+    /**
+     * Returns the current combination of flags set for the scene.
+     * \see setFlags()
+     * \see setFlag()
+     */
+    QgsModelGraphicsScene::Flags flags() const { return mFlags; }
+
+  private:
+
+    Flags mFlags = nullptr;
 
 };
+
+Q_DECLARE_METATYPE( QgsModelGraphicsScene::Flags )
 
 ///@endcond
 

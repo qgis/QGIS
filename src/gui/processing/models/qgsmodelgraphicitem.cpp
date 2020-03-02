@@ -15,6 +15,7 @@
 
 #include "qgsmodelgraphicitem.h"
 #include "qgsapplication.h"
+#include "qgsmodelgraphicsscene.h"
 #include <QPainter>
 #include <QSvgRenderer>
 
@@ -33,6 +34,12 @@ QgsModelDesignerFlatButtonGraphicItem::QgsModelDesignerFlatButtonGraphicItem( QG
 
 void QgsModelDesignerFlatButtonGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
+  if ( QgsModelGraphicsScene *modelScene = qobject_cast< QgsModelGraphicsScene * >( scene() ) )
+  {
+    if ( modelScene->flags() & QgsModelGraphicsScene::FlagHideControls )
+      return;
+  }
+
   if ( mHoverState )
   {
     painter->setPen( QPen( Qt::transparent, 1.0 ) );
