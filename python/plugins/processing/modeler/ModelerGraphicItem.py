@@ -57,9 +57,8 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
     BUTTON_HEIGHT = 16
 
     def __init__(self, element, model, controls, scene=None):
-        super().__init__(element, None)
+        super().__init__(element, model, None)
         self.controls = controls
-        self.model = model
         self.scene = scene
         self.box_width = ModelerGraphicItem.BOX_WIDTH
         self.box_height = ModelerGraphicItem.BOX_HEIGHT
@@ -74,7 +73,7 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
             painter = QPainter(self.picture)
             svg.render(painter)
             painter.end()
-            paramDef = self.model.parameterDefinition(element.parameterName())
+            paramDef = self.model().parameterDefinition(element.parameterName())
             if paramDef:
                 self.text = paramDef.description()
             else:
@@ -144,7 +143,7 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
     def foldInput(self, folded):
         self.component().setParametersCollapsed(folded)
         #also need to update the model's stored component
-        self.model.childAlgorithm(self.component().childId()).setParametersCollapsed(folded)
+        self.model().childAlgorithm(self.component().childId()).setParametersCollapsed(folded)
         self.prepareGeometryChange()
         if self.component().algorithm().outputDefinitions():
             pt = self.getLinkPointForOutput(-1)
@@ -157,7 +156,7 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
     def foldOutput(self, folded):
         self.component().setOutputsCollapsed(folded)
         # also need to update the model's stored component
-        self.model.childAlgorithm(self.component().childId()).setOutputsCollapsed(folded)
+        self.model().childAlgorithm(self.component().childId()).setOutputsCollapsed(folded)
         self.prepareGeometryChange()
         for arrow in self.arrows:
             arrow.updatePath()
@@ -227,11 +226,11 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
         popupmenu.exec_(event.screenPos())
 
     def deactivateAlgorithm(self):
-        self.model.deactivateChildAlgorithm(self.component().childId())
+        self.model().deactivateChildAlgorithm(self.component().childId())
         self.scene.dialog.repaintModel()
 
     def activateAlgorithm(self):
-        if self.model.activateChildAlgorithm(self.component().childId()):
+        if self.model().activateChildAlgorithm(self.component().childId()):
             self.scene.dialog.repaintModel()
         else:
             QMessageBox.warning(None, 'Could not activate Algorithm',
@@ -246,16 +245,16 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
         widget_context.setProject(QgsProject.instance())
         if iface is not None:
             widget_context.setMapCanvas(iface.mapCanvas())
-        widget_context.setModel(self.model)
+        widget_context.setModel(self.model())
         return widget_context
 
     def editElement(self):
         if isinstance(self.component(), QgsProcessingModelParameter):
-            existing_param = self.model.parameterDefinition(self.component().parameterName())
+            existing_param = self.model().parameterDefinition(self.component().parameterName())
             new_param = None
             if ModelerParameterDefinitionDialog.use_legacy_dialog(param=existing_param):
                 # boo, old api
-                dlg = ModelerParameterDefinitionDialog(self.model,
+                dlg = ModelerParameterDefinitionDialog(self.model(),
                                                        param=existing_param)
                 if dlg.exec_():
                     new_param = dlg.param
@@ -267,20 +266,20 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
                                                              context=context,
                                                              widgetContext=widget_context,
                                                              definition=existing_param,
-                                                             algorithm=self.model)
+                                                             algorithm=self.model())
                 if dlg.exec_():
                     new_param = dlg.createParameter(existing_param.name())
 
             if new_param is not None:
-                self.model.removeModelParameter(self.component().parameterName())
+                self.model().removeModelParameter(self.component().parameterName())
                 self.component().setParameterName(new_param.name())
                 self.component().setDescription(new_param.name())
-                self.model.addModelParameter(new_param, self.component())
+                self.model().addModelParameter(new_param, self.component())
                 self.text = new_param.description()
                 self.scene.dialog.repaintModel()
         elif isinstance(self.component(), QgsProcessingModelChildAlgorithm):
             elemAlg = self.component().algorithm()
-            dlg = ModelerParametersDialog(elemAlg, self.model, self.component().childId(), self.component().configuration())
+            dlg = ModelerParametersDialog(elemAlg, self.model(), self.component().childId(), self.component().configuration())
             if dlg.exec_():
                 alg = dlg.createAlgorithm()
                 alg.setChildId(self.component().childId())
@@ -288,19 +287,19 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
                 self.scene.dialog.repaintModel()
 
         elif isinstance(self.component(), QgsProcessingModelOutput):
-            child_alg = self.model.childAlgorithm(self.component().childId())
+            child_alg = self.model().childAlgorithm(self.component().childId())
             param_name = '{}:{}'.format(self.component().childId(), self.component().name())
-            dlg = ModelerParameterDefinitionDialog(self.model,
-                                                   param=self.model.parameterDefinition(param_name))
+            dlg = ModelerParameterDefinitionDialog(self.model(),
+                                                   param=self.model().parameterDefinition(param_name))
             if dlg.exec_() and dlg.param is not None:
                 model_output = child_alg.modelOutput(self.component().name())
                 model_output.setDescription(dlg.param.description())
                 model_output.setDefaultValue(dlg.param.defaultValue())
                 model_output.setMandatory(not (dlg.param.flags() & QgsProcessingParameterDefinition.FlagOptional))
-                self.model.updateDestinationParameters()
+                self.model().updateDestinationParameters()
 
     def updateAlgorithm(self, alg):
-        existing_child = self.model.childAlgorithm(alg.childId())
+        existing_child = self.model().childAlgorithm(alg.childId())
         alg.setPosition(existing_child.position())
         alg.setParametersCollapsed(existing_child.parametersCollapsed())
         alg.setOutputsCollapsed(existing_child.outputsCollapsed())
@@ -309,24 +308,24 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
                                              alg.position() + QPointF(
                 self.box_width,
                 (i + 1.5) * self.box_height))
-        self.model.setChildAlgorithm(alg)
+        self.model().setChildAlgorithm(alg)
 
     def removeElement(self):
         if isinstance(self.component(), QgsProcessingModelParameter):
-            if self.model.childAlgorithmsDependOnParameter(self.component().parameterName()):
+            if self.model().childAlgorithmsDependOnParameter(self.component().parameterName()):
                 QMessageBox.warning(None, 'Could not remove input',
                                     'Algorithms depend on the selected input.\n'
                                     'Remove them before trying to remove it.')
-            elif self.model.otherParametersDependOnParameter(self.component().parameterName()):
+            elif self.model().otherParametersDependOnParameter(self.component().parameterName()):
                 QMessageBox.warning(None, 'Could not remove input',
                                     'Other inputs depend on the selected input.\n'
                                     'Remove them before trying to remove it.')
             else:
-                self.model.removeModelParameter(self.component().parameterName())
+                self.model().removeModelParameter(self.component().parameterName())
                 self.scene.dialog.haschanged = True
                 self.scene.dialog.repaintModel()
         elif isinstance(self.component(), QgsProcessingModelChildAlgorithm):
-            if not self.model.removeChildAlgorithm(self.component().childId()):
+            if not self.model().removeChildAlgorithm(self.component().childId()):
                 QMessageBox.warning(None, 'Could not remove element',
                                     'Other elements depend on the selected one.\n'
                                     'Remove them before trying to remove it.')
@@ -334,8 +333,8 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
                 self.scene.dialog.haschanged = True
                 self.scene.dialog.repaintModel()
         elif isinstance(self.component(), QgsProcessingModelOutput):
-            self.model.childAlgorithm(self.component().childId()).removeModelOutput(self.component().name())
-            self.model.updateDestinationParameters()
+            self.model().childAlgorithm(self.component().childId()).removeModelOutput(self.component().name())
+            self.model().updateDestinationParameters()
             self.scene.dialog.haschanged = True
             self.scene.dialog.repaintModel()
 
@@ -469,11 +468,11 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
 
             # also need to update the model's stored component's position
             if isinstance(self.component(), QgsProcessingModelChildAlgorithm):
-                self.model.childAlgorithm(self.component().childId()).setPosition(self.pos())
+                self.model().childAlgorithm(self.component().childId()).setPosition(self.pos())
             elif isinstance(self.component(), QgsProcessingModelParameter):
-                self.model.parameterComponent(self.component().parameterName()).setPosition(self.pos())
+                self.model().parameterComponent(self.component().parameterName()).setPosition(self.pos())
             elif isinstance(self.component(), QgsProcessingModelOutput):
-                self.model.childAlgorithm(self.component().childId()).modelOutput(self.component().name()).setPosition(self.pos())
+                self.model().childAlgorithm(self.component().childId()).modelOutput(self.component().name()).setPosition(self.pos())
         elif change == QGraphicsItem.ItemSelectedChange:
             self.repaintArrows()
 
