@@ -254,6 +254,13 @@ Expands the rectangle so that it covers both the original rectangle and the give
 .. versionadded:: 3.2
 %End
 
+    double distance( const QgsPointXY &point ) const;
+%Docstring
+Returns the distance from ``point`` to the nearest point on the boundary of the rectangle.
+
+.. versionadded:: 3.14
+%End
+
     QgsRectangle operator-( QgsVector v ) const;
 
     QgsRectangle operator+( QgsVector v ) const;

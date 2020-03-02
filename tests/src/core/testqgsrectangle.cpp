@@ -42,6 +42,7 @@ class TestQgsRectangle: public QObject
     void dataStream();
     void scale();
     void snappedToGrid();
+    void distanceToPoint();
 };
 
 void TestQgsRectangle::isEmpty()
@@ -380,6 +381,27 @@ void TestQgsRectangle::snappedToGrid()
   QVERIFY( qgsDoubleNear( snapped.yMaximum(), control.yMaximum(), 0.000001 ) );
 
   QCOMPARE( QgsRectangle().snappedToGrid( 0.1 ), QgsRectangle() );
+}
+
+void TestQgsRectangle::distanceToPoint()
+{
+  QgsRectangle rect( 10, 100, 20, 110 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 10, 100 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 20, 100 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 15, 100 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 10, 110 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 20, 110 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 15, 110 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 10, 105 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 20, 100 ) ), 0.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 0, 100 ) ), 10.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 35, 100 ) ), 15.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 15, 95 ) ), 5.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 15, 120 ) ), 10.0, 0.000000001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 5, 95 ) ), 7.071068, 0.00001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 25, 95 ) ), 7.071068, 0.00001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 5, 115 ) ), 7.071068, 0.00001 );
+  QGSCOMPARENEAR( rect.distance( QgsPointXY( 25, 115 ) ), 7.071068, 0.00001 );
 }
 
 QGSTEST_MAIN( TestQgsRectangle )
