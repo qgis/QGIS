@@ -38,6 +38,8 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
   setFlag( QGraphicsItem::ItemSendsGeometryChanges, true );
   setZValue( QgsModelGraphicsScene::ZValues::ModelComponent );
 
+  mFont.setPixelSize( 12 );
+
   QSvgRenderer svg( QgsApplication::iconPath( QStringLiteral( "mActionEditModelComponent.svg" ) ) );
   QPicture editPicture;
   QPainter painter( &editPicture );
@@ -68,6 +70,36 @@ QgsProcessingModelAlgorithm *QgsModelComponentGraphicItem::model()
 {
   return mModel;
 }
+
+QFont QgsModelComponentGraphicItem::font() const
+{
+  return mFont;
+}
+
+void QgsModelComponentGraphicItem::setFont( const QFont &font )
+{
+  mFont = font;
+  update();
+}
+
+QString QgsModelComponentGraphicItem::truncatedTextForItem( const QString &text ) const
+{
+  QFontMetricsF fm( mFont );
+  double width = fm.boundingRect( text ).width();
+  if ( width < mComponent->size().width() - 25 - mButtonSize.width() )
+    return text;
+
+  QString t = text;
+  t = t.left( t.length() - 3 ) + QChar( 0x2026 );
+  width = fm.boundingRect( t ).width();
+  while ( width > mComponent->size().width() - 25 - mButtonSize.width() )
+  {
+    t = t.left( t.length() - 4 ) + QChar( 0x2026 );
+    width = fm.boundingRect( t ).width();
+  }
+  return t;
+}
+
 
 QgsModelParameterGraphicItem::QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( parameter, model, parent )

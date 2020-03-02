@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include <QGraphicsObject>
+#include <QFont>
 
 class QgsProcessingModelComponent;
 class QgsProcessingModelParameter;
@@ -63,6 +64,18 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     QgsProcessingModelAlgorithm *model();
 
+    /**
+     * Returns the font used to render text in the item.
+     * \see setFont()
+     */
+    QFont font() const;
+
+    /**
+     * Sets the \a font used to render text in the item.
+     * \see font()
+     */
+    void setFont( const QFont &font );
+
   signals:
 
     // TEMPORARY ONLY during refactoring
@@ -96,6 +109,14 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     virtual void deleteComponent() {}
 
+  protected:
+
+    /**
+     * Truncates a \a text string so that it fits nicely within the item's width,
+     * accounting for margins and interactive buttons.
+     */
+    QString truncatedTextForItem( const QString &text ) const;
+
   private:
 
     std::unique_ptr< QgsProcessingModelComponent > mComponent;
@@ -107,6 +128,8 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     static constexpr double DEFAULT_BUTTON_WIDTH = 16;
     static constexpr double DEFAULT_BUTTON_HEIGHT = 16;
     QSizeF mButtonSize { DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT };
+
+    QFont mFont;
 
 };
 
