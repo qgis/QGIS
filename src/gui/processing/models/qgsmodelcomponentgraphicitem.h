@@ -88,6 +88,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
+    QVariant itemChange( GraphicsItemChange change, const QVariant &value ) override;
 
     /**
      * Returns the rectangle representing the body of the item.

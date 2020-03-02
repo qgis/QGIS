@@ -171,24 +171,6 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
         else:
             return QPointF(0, 0)
 
-    def itemChange(self, change, value):
-        if change == QGraphicsItem.ItemPositionHasChanged:
-            self.updateArrowPaths.emit()
-            self.component().setPosition(self.pos())
-
-            # also need to update the model's stored component's position
-            if isinstance(self.component(), QgsProcessingModelChildAlgorithm):
-                self.model().childAlgorithm(self.component().childId()).setPosition(self.pos())
-            elif isinstance(self.component(), QgsProcessingModelParameter):
-                self.model().parameterComponent(self.component().parameterName()).setPosition(self.pos())
-            elif isinstance(self.component(), QgsProcessingModelOutput):
-                self.model().childAlgorithm(self.component().childId()).modelOutput(
-                    self.component().name()).setPosition(self.pos())
-        elif change == QGraphicsItem.ItemSelectedChange:
-            self.repaintArrows.emit()
-
-        return super().itemChange(change, value)
-
 
 class ModelerInputGraphicItem(ModelerGraphicItem):
 

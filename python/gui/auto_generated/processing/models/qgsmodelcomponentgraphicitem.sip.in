@@ -78,6 +78,8 @@ Sets the ``font`` used to render text in the item.
 
     virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
 
+    virtual QVariant itemChange( GraphicsItemChange change, const QVariant &value );
+
 
     QRectF itemRect() const;
 %Docstring
