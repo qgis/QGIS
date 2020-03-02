@@ -63,6 +63,8 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
   connect( mDeleteButton, &QgsModelDesignerFlatButtonGraphicItem::clicked, this, &QgsModelComponentGraphicItem::deleteComponent );
 }
 
+QgsModelComponentGraphicItem::~QgsModelComponentGraphicItem() = default;
+
 QgsProcessingModelComponent *QgsModelComponentGraphicItem::component()
 {
   return mComponent.get();
