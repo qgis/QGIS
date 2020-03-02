@@ -18,8 +18,9 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "qgsprocessingmodelcomponent.h"
 #include <QGraphicsObject>
+
+class QgsProcessingModelComponent;
 
 
 ///@cond NOT_STABLE
@@ -42,6 +43,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Ownership of \a component is transferred to the item.
      */
     QgsModelComponentGraphicItem( QgsProcessingModelComponent *component SIP_TRANSFER, QGraphicsItem *parent SIP_TRANSFERTHIS );
+
+    /**
+     * Returns the model component associated with this item.
+     */
+    QgsProcessingModelComponent *component();
 
   private:
 

@@ -10,6 +10,7 @@
 
 
 
+
 class QgsModelComponentGraphicItem : QGraphicsObject
 {
 %Docstring
@@ -32,6 +33,11 @@ Base class for graphic items representing model components in the model designer
 Constructor for QgsModelComponentGraphicItem for the specified ``component``, with the specified ``parent`` item.
 
 Ownership of ``component`` is transferred to the item.
+%End
+
+    QgsProcessingModelComponent *component();
+%Docstring
+Returns the model component associated with this item.
 %End
 
 };
