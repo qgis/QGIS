@@ -21,6 +21,7 @@
 #include "qgsmodelgraphicsscene.h"
 #include "qgsapplication.h"
 #include "qgsmodelgraphicitem.h"
+#include "qgsprocessingmodelalgorithm.h"
 #include <QSvgRenderer>
 #include <QPicture>
 #include <QPainter>
@@ -107,6 +108,39 @@ void QgsModelComponentGraphicItem::hoverLeaveEvent( QGraphicsSceneHoverEvent * )
     update();
     emit repaintArrows();
   }
+}
+
+QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemChange change, const QVariant &value )
+{
+  switch ( change )
+  {
+    case QGraphicsItem::ItemPositionHasChanged:
+    {
+      emit updateArrowPaths();
+      mComponent->setPosition( pos() );
+
+      // also need to update the model's stored component's position
+      // TODO - this is not so nice, consider moving this to model class
+      if ( QgsProcessingModelChildAlgorithm *child = dynamic_cast< QgsProcessingModelChildAlgorithm * >( mComponent.get() ) )
+        mModel->childAlgorithm( child->childId() ).setPosition( pos() );
+      else if ( QgsProcessingModelParameter *param = dynamic_cast< QgsProcessingModelParameter * >( mComponent.get() ) )
+        mModel->parameterComponent( param->parameterName() ).setPosition( pos() );
+      else if ( QgsProcessingModelOutput *output = dynamic_cast< QgsProcessingModelOutput * >( mComponent.get() ) )
+        mModel->childAlgorithm( output->childId() ).modelOutput( output->name() ).setPosition( pos() );
+
+      break;
+    }
+    case QGraphicsItem::ItemSelectedChange:
+    {
+      emit repaintArrows();
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  return QGraphicsObject::itemChange( change, value );
 }
 
 QRectF QgsModelComponentGraphicItem::itemRect() const
