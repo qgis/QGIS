@@ -757,6 +757,33 @@ class PostGisDBConnector(DBConnector):
 
         c = self._execute(None, sql)
         res = self._fetchone(c)
+        if not res:
+            # if it's a Foreign Table,
+            # return the underlying Foreign Server and Table information
+            schema_where = u" AND c.relnamespace=%s::regnamespace " % self.quoteString(
+                schema) if schema is not None else ""
+            sql = u"""SELECT 'Foreign Data Wrapper: ' || f.fdw_name || '
+Foreign Server: ' || f.srvname || '
+Foreign Server Options: ' || f.srvoptions::text || '
+Foreign Table: ' || f.ft_name || '
+Foreign Table Options: ' || f.ftoptions::text
+FROM
+(SELECT
+fdw.fdwname AS fdw_name, fs.srvname, fs.srvoptions , ft.ftrelid::regclass AS ft_name, ft.ftoptions
+FROM pg_class c ,
+pg_foreign_table ft,
+pg_foreign_server fs,
+pg_foreign_data_wrapper fdw
+WHERE c.oid = ft.ftrelid
+AND ft.ftserver = fs.oid
+AND fs.srvfdw = fdw.oid
+AND c.relname=%s %s
+AND c.relkind = 'f'
+) AS f
+            """ % (
+                self.quoteString(tablename), schema_where)
+            c = self._execute(None, sql)
+            res = self._fetchone(c)
         self._close_cursor(c)
         return res[0] if res is not None else None
 
