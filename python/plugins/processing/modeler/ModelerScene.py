@@ -22,17 +22,19 @@ __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 from qgis.PyQt.QtCore import QPointF, Qt
-from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
+from qgis.PyQt.QtWidgets import QGraphicsScene
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelChildParameterSource,
                        QgsExpression)
 from qgis.gui import (
-    QgsModelGraphicsScene,
-    QgsModelParameterGraphicItem,
-    QgsModelChildAlgorithmGraphicItem,
-    QgsModelOutputGraphicItem
+    QgsModelGraphicsScene
 )
-from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
+from processing.modeler.ModelerGraphicItem import (
+    ModelerGraphicItem,
+    ModelerInputGraphicItem,
+    ModelerOutputGraphicItem,
+    ModelerChildAlgorithmGraphicItem
+)
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
 from processing.tools.dataobjects import createContext
 
@@ -99,7 +101,7 @@ class ModelerScene(QgsModelGraphicsScene):
         context = createContext()
         # Inputs
         for inp in list(model.parameterComponents().values()):
-            item = ModelerGraphicItem(inp.clone(), model)
+            item = ModelerInputGraphicItem(inp.clone(), model)
             self.addItem(item)
             item.setPos(inp.position().x(), inp.position().y())
             self.paramItems[inp.parameterName()] = item
@@ -135,7 +137,7 @@ class ModelerScene(QgsModelGraphicsScene):
 
         # We add the algs
         for alg in list(model.childAlgorithms().values()):
-            item = ModelerGraphicItem(alg.clone(), model)
+            item = ModelerChildAlgorithmGraphicItem(alg.clone(), model)
             self.addItem(item)
             item.setPos(alg.position().x(), alg.position().y())
             self.algItems[alg.childId()] = item
@@ -177,7 +179,7 @@ class ModelerScene(QgsModelGraphicsScene):
 
             for key, out in outputs.items():
                 if out is not None:
-                    item = ModelerGraphicItem(out.clone(), model)
+                    item = ModelerOutputGraphicItem(out.clone(), model)
                     item.requestModelRepaint.connect(self.requestModelRepaint)
                     item.changed.connect(self.componentChanged)
 
