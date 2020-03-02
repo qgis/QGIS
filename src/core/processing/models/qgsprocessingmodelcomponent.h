@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include <QPointF>
+#include <QSizeF>
 
 ///@cond NOT_STABLE
 
@@ -60,6 +61,20 @@ class CORE_EXPORT QgsProcessingModelComponent
     void setPosition( QPointF position );
 
     /**
+     * Returns the size of the model component within the graphical modeler.
+     * \see setSize()
+     * \since QGIS 3.14
+     */
+    QSizeF size() const;
+
+    /**
+     * Sets the \a size of the model component within the graphical modeler.
+     * \see size()
+     * \since QGIS 3.14
+     */
+    void setSize( QSizeF size );
+
+    /**
      * Clones the component.
      *
      * Ownership is transferred to the caller.
@@ -91,10 +106,15 @@ class CORE_EXPORT QgsProcessingModelComponent
 
   private:
 
+    static constexpr double DEFAULT_COMPONENT_WIDTH = 200;
+    static constexpr double DEFAULT_COMPONENT_HEIGHT = 30;
+
     //! Position of component within model
     QPointF mPosition;
 
     QString mDescription;
+
+    QSizeF mSize = QSizeF( DEFAULT_COMPONENT_WIDTH, DEFAULT_COMPONENT_HEIGHT );
 
 };
 

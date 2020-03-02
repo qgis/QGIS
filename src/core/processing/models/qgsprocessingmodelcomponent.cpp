@@ -43,11 +43,23 @@ void QgsProcessingModelComponent::setPosition( QPointF position )
   mPosition = position;
 }
 
+QSizeF QgsProcessingModelComponent::size() const
+{
+  return mSize;
+}
+
+void QgsProcessingModelComponent::setSize( QSizeF size )
+{
+  mSize = size;
+}
+
 void QgsProcessingModelComponent::saveCommonProperties( QVariantMap &map ) const
 {
   map.insert( QStringLiteral( "component_pos_x" ), mPosition.x() );
   map.insert( QStringLiteral( "component_pos_y" ), mPosition.y() );
   map.insert( QStringLiteral( "component_description" ), mDescription );
+  map.insert( QStringLiteral( "component_width" ), mSize.width() );
+  map.insert( QStringLiteral( "component_height" ), mSize.height() );
 }
 
 void QgsProcessingModelComponent::restoreCommonProperties( const QVariantMap &map )
@@ -57,6 +69,8 @@ void QgsProcessingModelComponent::restoreCommonProperties( const QVariantMap &ma
   pos.setY( map.value( QStringLiteral( "component_pos_y" ) ).toDouble() );
   mPosition = pos;
   mDescription = map.value( QStringLiteral( "component_description" ) ).toString();
+  mSize.setWidth( map.value( QStringLiteral( "component_width" ), QString::number( DEFAULT_COMPONENT_WIDTH ) ).toDouble() );
+  mSize.setHeight( map.value( QStringLiteral( "component_height" ), QString::number( DEFAULT_COMPONENT_HEIGHT ) ).toDouble() );
 }
 
 ///@endcond
