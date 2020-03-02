@@ -23,5 +23,13 @@ QgsModelGraphicsScene::QgsModelGraphicsScene( QObject *parent )
 
 }
 
+void QgsModelGraphicsScene::setFlag( QgsModelGraphicsScene::Flag flag, bool on )
+{
+  if ( on )
+    mFlags |= flag;
+  else
+    mFlags &= ~flag;
+}
+
 ///@endcond
 

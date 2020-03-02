@@ -88,12 +88,12 @@ class ModelerScene(QgsModelGraphicsScene):
                         items.extend(self.getItemsFromParamValue(variables[v].source, child_id, context))
         return items
 
-    def paintModel(self, model, controls=True):
+    def paintModel(self, model):
         self.model = model
         context = createContext()
         # Inputs
         for inp in list(model.parameterComponents().values()):
-            item = ModelerGraphicItem(inp.clone(), model, controls, scene=self)
+            item = ModelerGraphicItem(inp.clone(), model, scene=self)
             item.setFlag(QGraphicsItem.ItemIsMovable, True)
             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
@@ -128,7 +128,7 @@ class ModelerScene(QgsModelGraphicsScene):
 
         # We add the algs
         for alg in list(model.childAlgorithms().values()):
-            item = ModelerGraphicItem(alg.clone(), model, controls, scene=self)
+            item = ModelerGraphicItem(alg.clone(), model, scene=self)
             item.setFlag(QGraphicsItem.ItemIsMovable, True)
             item.setFlag(QGraphicsItem.ItemIsSelectable, True)
             self.addItem(item)
@@ -169,7 +169,7 @@ class ModelerScene(QgsModelGraphicsScene):
 
             for key, out in outputs.items():
                 if out is not None:
-                    item = ModelerGraphicItem(out.clone(), model, controls, scene=self)
+                    item = ModelerGraphicItem(out.clone(), model, scene=self)
                     item.setFlag(QGraphicsItem.ItemIsMovable, True)
                     item.setFlag(QGraphicsItem.ItemIsSelectable, True)
                     self.addItem(item)
