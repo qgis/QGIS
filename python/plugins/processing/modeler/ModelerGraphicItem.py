@@ -23,7 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 
-from qgis.PyQt.QtCore import Qt, QPointF, QRectF
+from qgis.PyQt.QtCore import Qt, QPointF, QRectF, pyqtSignal
 from qgis.PyQt.QtGui import QFont, QFontMetricsF, QPen, QBrush, QColor, QPicture, QPainter, QPalette
 from qgis.PyQt.QtWidgets import QApplication, QGraphicsItem, QMessageBox, QMenu
 from qgis.PyQt.QtSvg import QSvgRenderer
@@ -54,6 +54,9 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
     BUTTON_WIDTH = 16
     BUTTON_HEIGHT = 16
 
+    repaintArrows = pyqtSignal()
+    updateArrowPaths = pyqtSignal()
+
     def __init__(self, element, model):
         super().__init__(element, model, None)
         self.box_width = ModelerGraphicItem.BOX_WIDTH
@@ -63,7 +66,6 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
         self.pixmap = None
         self.picture = None
         self.hover_over_item = False
-        self.arrows = []
 
         svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'edit.svg'))
         picture = QPicture()
@@ -87,9 +89,6 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
                      self.box_height / 2)
         self.deleteButton = QgsModelDesignerFlatButtonGraphicItem(self, picture, pt)
         self.deleteButton.clicked.connect(self.removeComponent)
-
-    def addArrow(self, arrow):
-        self.arrows.append(arrow)
 
     def boundingRect(self):
         fm = QFontMetricsF(self.item_font)
@@ -123,7 +122,7 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
         if self.hover_over_item:
             self.hover_over_item = False
             self.update()
-            self.repaintArrows()
+            self.repaintArrows.emit()
 
     def updateToolTip(self, event):
         prev_status = self.hover_over_item
@@ -135,7 +134,7 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
             self.hover_over_item = False
         if self.hover_over_item != prev_status:
             self.update()
-            self.repaintArrows()
+            self.repaintArrows.emit()
 
     def getAdjustedText(self, text):
         fm = QFontMetricsF(self.item_font)
@@ -256,14 +255,9 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
         else:
             return QPointF(0, 0)
 
-    def repaintArrows(self):
-        for arrow in self.arrows:
-            arrow.update()
-
     def itemChange(self, change, value):
         if change == QGraphicsItem.ItemPositionHasChanged:
-            for arrow in self.arrows:
-                arrow.updatePath()
+            self.updateArrowPaths.emit()
             self.component().setPosition(self.pos())
 
             # also need to update the model's stored component's position
@@ -275,7 +269,7 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
                 self.model().childAlgorithm(self.component().childId()).modelOutput(
                     self.component().name()).setPosition(self.pos())
         elif change == QGraphicsItem.ItemSelectedChange:
-            self.repaintArrows()
+            self.repaintArrows.emit()
 
         return super().itemChange(change, value)
 
@@ -398,8 +392,8 @@ class ModelerChildAlgorithmGraphicItem(ModelerGraphicItem):
             pt = self.getLinkPointForOutput(-1)
             pt = QPointF(0, pt.y())
             self.outButton.position = pt
-        for arrow in self.arrows:
-            arrow.updatePath()
+
+        self.updateArrowPaths.emit()
         self.update()
 
     def foldOutput(self, folded):
@@ -407,8 +401,7 @@ class ModelerChildAlgorithmGraphicItem(ModelerGraphicItem):
         # also need to update the model's stored component
         self.model().childAlgorithm(self.component().childId()).setOutputsCollapsed(folded)
         self.prepareGeometryChange()
-        for arrow in self.arrows:
-            arrow.updatePath()
+        self.updateArrowPaths.emit()
         self.update()
 
     def editComponent(self):

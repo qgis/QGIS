@@ -129,8 +129,12 @@ class ModelerScene(QgsModelGraphicsScene):
                     input_item = self.paramItems[input_name]
                     parent_item = self.paramItems[parent_name]
                     arrow = ModelerArrowItem(parent_item, -1, input_item, -1)
-                    input_item.addArrow(arrow)
-                    parent_item.addArrow(arrow)
+
+                    input_item.repaintArrows.connect(arrow.update)
+                    input_item.updateArrowPaths.connect(arrow.updatePath)
+                    parent_item.repaintArrows.connect(arrow.update)
+                    parent_item.updateArrowPaths.connect(arrow.updatePath)
+
                     arrow.setPenStyle(Qt.DotLine)
                     arrow.updatePath()
                     self.addItem(arrow)
@@ -159,16 +163,25 @@ class ModelerScene(QgsModelGraphicsScene):
                         sourceItems = self.getItemsFromParamValue(source, alg.childId(), context)
                         for sourceItem, sourceIdx in sourceItems:
                             arrow = ModelerArrowItem(sourceItem, sourceIdx, self.algItems[alg.childId()], idx)
-                            sourceItem.addArrow(arrow)
-                            self.algItems[alg.childId()].addArrow(arrow)
+
+                            sourceItem.repaintArrows.connect(arrow.update)
+                            sourceItem.updateArrowPaths.connect(arrow.updatePath)
+
+                            self.algItems[alg.childId()].repaintArrows.connect(arrow.update)
+                            self.algItems[alg.childId()].updateArrowPaths.connect(arrow.updatePath)
+
                             arrow.updatePath()
                             self.addItem(arrow)
                         idx += 1
             for depend in alg.dependencies():
                 arrow = ModelerArrowItem(self.algItems[depend], -1,
                                          self.algItems[alg.childId()], -1)
-                self.algItems[depend].addArrow(arrow)
-                self.algItems[alg.childId()].addArrow(arrow)
+                self.algItems[depend].repaintArrows.connect(arrow.update)
+                self.algItems[depend].updateArrowPaths.connect(arrow.updatePath)
+
+                self.algItems[alg.childId()].repaintArrows.connect(arrow.update)
+                self.algItems[alg.childId()].updateArrowPaths.connect(arrow.updatePath)
+
                 arrow.updatePath()
                 self.addItem(arrow)
 
@@ -201,8 +214,13 @@ class ModelerScene(QgsModelGraphicsScene):
                     outputItems[key] = item
                     arrow = ModelerArrowItem(self.algItems[alg.childId()], idx, item,
                                              -1)
-                    self.algItems[alg.childId()].addArrow(arrow)
-                    item.addArrow(arrow)
+
+                    self.algItems[alg.childId()].repaintArrows.connect(arrow.update)
+                    self.algItems[alg.childId()].updateArrowPaths.connect(arrow.updatePath)
+
+                    item.repaintArrows.connect(arrow.update)
+                    item.updateArrowPaths.connect(arrow.updatePath)
+
                     arrow.updatePath()
                     self.addItem(arrow)
                 else:
