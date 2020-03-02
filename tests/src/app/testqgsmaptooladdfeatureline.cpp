@@ -69,7 +69,6 @@ class TestQgsMapToolAddFeatureLine : public QObject
     void testZMSnapping();
     void testTopologicalEditingZ();
     void testCloseLine();
-    void testCloseLineShiftRigthClick();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -492,23 +491,6 @@ void TestQgsMapToolAddFeatureLine::testTopologicalEditingZ()
 }
 
 void TestQgsMapToolAddFeatureLine::testCloseLine()
-{
-  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
-
-  mCanvas->setCurrentLayer( mLayerCloseLine );
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
-  utils.mouseClick( 1, 1, Qt::LeftButton );
-  utils.mouseClick( 5, 1, Qt::LeftButton );
-  utils.mouseClick( 5, 5, Qt::LeftButton );
-  utils.keyClick( Qt::Key_C, Qt::ShiftModifier );
-  QgsFeatureId newFid = utils.newFeatureId( oldFids );
-
-  QString wkt = "LineString (1 1, 5 1, 5 5, 1 1)";
-  QCOMPARE( mLayerCloseLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
-
-  mLayerCloseLine->undoStack()->undo();
-}
-void TestQgsMapToolAddFeatureLine::testCloseLineShiftRigthClick()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
