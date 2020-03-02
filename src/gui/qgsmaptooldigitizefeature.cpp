@@ -131,6 +131,7 @@ void QgsMapToolDigitizeFeature::keyPressEvent( QKeyEvent *e )
   else
     QgsMapToolCapture::keyPressEvent( e );
 }
+
 void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
@@ -313,7 +314,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         return;
       }
 
-      if ( mode() == CapturePolygon )
+      if ( mode() == CapturePolygon || e->modifiers() == Qt::ShiftModifier )
       {
         closePolygon();
       }
