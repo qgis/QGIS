@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -27,7 +26,12 @@ from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelChildParameterSource,
                        QgsExpression)
-from qgis.gui import QgsModelGraphicsScene
+from qgis.gui import (
+    QgsModelGraphicsScene,
+    QgsModelParameterGraphicItem,
+    QgsModelChildAlgorithmGraphicItem,
+    QgsModelOutputGraphicItem
+)
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
 from processing.tools.dataobjects import createContext

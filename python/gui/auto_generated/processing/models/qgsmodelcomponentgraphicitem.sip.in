@@ -28,9 +28,14 @@ Base class for graphic items representing model components in the model designer
 %End
   public:
 
-    QgsModelComponentGraphicItem( QgsProcessingModelComponent *component /Transfer/, QGraphicsItem *parent /TransferThis/ );
+    QgsModelComponentGraphicItem( QgsProcessingModelComponent *component /Transfer/,
+                                  QgsProcessingModelAlgorithm *model,
+                                  QGraphicsItem *parent /TransferThis/ );
 %Docstring
 Constructor for QgsModelComponentGraphicItem for the specified ``component``, with the specified ``parent`` item.
+
+The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
+it must exist for the lifetime of this object.
 
 Ownership of ``component`` is transferred to the item.
 %End
@@ -40,8 +45,106 @@ Ownership of ``component`` is transferred to the item.
 Returns the model component associated with this item.
 %End
 
+    QgsProcessingModelAlgorithm *model();
+%Docstring
+Returns the model associated with this item.
+%End
+
 };
 
+class QgsModelParameterGraphicItem : QgsModelComponentGraphicItem
+{
+%Docstring
+A graphic item representing a model parameter (input) in the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelcomponentgraphicitem.h"
+%End
+  public:
+
+    QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter /Transfer/,
+                                  QgsProcessingModelAlgorithm *model,
+                                  QGraphicsItem *parent /TransferThis/ );
+%Docstring
+Constructor for QgsModelParameterGraphicItem for the specified ``parameter``, with the specified ``parent`` item.
+
+The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
+it must exist for the lifetime of this object.
+
+Ownership of ``parameter`` is transferred to the item.
+%End
+
+};
+
+class QgsModelChildAlgorithmGraphicItem : QgsModelComponentGraphicItem
+{
+%Docstring
+A graphic item representing a child algorithm in the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelcomponentgraphicitem.h"
+%End
+  public:
+
+    QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child /Transfer/,
+                                       QgsProcessingModelAlgorithm *model,
+                                       QGraphicsItem *parent /TransferThis/ );
+%Docstring
+Constructor for QgsModelChildAlgorithmGraphicItem for the specified ``child``, with the specified ``parent`` item.
+
+The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
+it must exist for the lifetime of this object.
+
+Ownership of ``child`` is transferred to the item.
+%End
+
+};
+
+
+class QgsModelOutputGraphicItem : QgsModelComponentGraphicItem
+{
+%Docstring
+A graphic item representing a model output in the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelcomponentgraphicitem.h"
+%End
+  public:
+
+    QgsModelOutputGraphicItem( QgsProcessingModelOutput *output /Transfer/,
+                               QgsProcessingModelAlgorithm *model,
+                               QGraphicsItem *parent /TransferThis/ );
+%Docstring
+Constructor for QgsModelOutputGraphicItem for the specified ``output``, with the specified ``parent`` item.
+
+The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
+it must exist for the lifetime of this object.
+
+Ownership of ``output`` is transferred to the item.
+%End
+
+};
 
 /************************************************************************
  * This file has been generated automatically from                      *
