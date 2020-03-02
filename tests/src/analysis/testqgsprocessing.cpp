@@ -7680,6 +7680,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QVERIFY( !child.isActive() );
   child.setPosition( QPointF( 1, 2 ) );
   QCOMPARE( child.position(), QPointF( 1, 2 ) );
+  child.setSize( QSizeF( 3, 4 ) );
+  QCOMPARE( child.size(), QSizeF( 3, 4 ) );
   QVERIFY( child.parametersCollapsed() );
   child.setParametersCollapsed( false );
   QVERIFY( !child.parametersCollapsed() );
@@ -7865,11 +7867,14 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelAlgorithm alg1a( "test", "testGroup" );
   QgsProcessingModelParameter bool1;
   bool1.setPosition( QPointF( 1, 2 ) );
+  bool1.setSize( QSizeF( 11, 12 ) );
   alg1a.addModelParameter( new QgsProcessingParameterBoolean( "p1", "desc" ), bool1 );
   QCOMPARE( alg1a.parameterDefinitions().count(), 1 );
   QCOMPARE( alg1a.parameterDefinition( "p1" )->type(), QStringLiteral( "boolean" ) );
   QCOMPARE( alg1a.parameterComponent( "p1" ).position().x(), 1.0 );
   QCOMPARE( alg1a.parameterComponent( "p1" ).position().y(), 2.0 );
+  QCOMPARE( alg1a.parameterComponent( "p1" ).size().width(), 11.0 );
+  QCOMPARE( alg1a.parameterComponent( "p1" ).size().height(), 12.0 );
   alg1a.updateModelParameter( new QgsProcessingParameterBoolean( "p1", "descx" ) );
   QCOMPARE( alg1a.parameterDefinition( "p1" )->description(), QStringLiteral( "descx" ) );
   alg1a.removeModelParameter( "bad" );
@@ -8085,10 +8090,12 @@ void TestQgsProcessing::modelerAlgorithm()
   alg5c1.setParametersCollapsed( true );
   alg5c1.setDescription( "child 1" );
   alg5c1.setPosition( QPointF( 1, 2 ) );
+  alg5c1.setSize( QSizeF( 11, 21 ) );
   QMap<QString, QgsProcessingModelOutput> alg5c1outputs;
   QgsProcessingModelOutput alg5c1out1;
   alg5c1out1.setDescription( QStringLiteral( "my output" ) );
   alg5c1out1.setPosition( QPointF( 3, 4 ) );
+  alg5c1out1.setSize( QSizeF( 31, 41 ) );
   alg5c1outputs.insert( QStringLiteral( "a" ), alg5c1out1 );
   alg5c1.setModelOutputs( alg5c1outputs );
   alg5.addChildAlgorithm( alg5c1 );
@@ -8104,6 +8111,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelParameter alg5pc1;
   alg5pc1.setParameterName( QStringLiteral( "my_param" ) );
   alg5pc1.setPosition( QPointF( 11, 12 ) );
+  alg5pc1.setSize( QSizeF( 21, 22 ) );
   alg5.addModelParameter( new QgsProcessingParameterBoolean( QStringLiteral( "my_param" ) ), alg5pc1 );
 
   QDomDocument doc = QDomDocument( "model" );
@@ -8126,6 +8134,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6c1.description(), QStringLiteral( "child 1" ) );
   QCOMPARE( alg6c1.position().x(), 1.0 );
   QCOMPARE( alg6c1.position().y(), 2.0 );
+  QCOMPARE( alg6c1.size().width(), 11.0 );
+  QCOMPARE( alg6c1.size().height(), 21.0 );
   QCOMPARE( alg6c1.parameterSources().count(), 5 );
   QCOMPARE( alg6c1.parameterSources().value( "x" ).at( 0 ).source(), QgsProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( alg6c1.parameterSources().value( "x" ).at( 0 ).parameterName(), QStringLiteral( "p1" ) );
@@ -8155,7 +8165,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6c1.modelOutput( "a" ).description(), QStringLiteral( "my output" ) );
   QCOMPARE( alg6c1.modelOutput( "a" ).position().x(), 3.0 );
   QCOMPARE( alg6c1.modelOutput( "a" ).position().y(), 4.0 );
-
+  QCOMPARE( alg6c1.modelOutput( "a" ).size().width(), 31.0 );
+  QCOMPARE( alg6c1.modelOutput( "a" ).size().height(), 41.0 );
 
   QgsProcessingModelChildAlgorithm alg6c2 = alg6.childAlgorithm( "cx2" );
   QCOMPARE( alg6c2.childId(), QStringLiteral( "cx2" ) );
@@ -8169,6 +8180,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6.parameterComponent( "my_param" ).parameterName(), QStringLiteral( "my_param" ) );
   QCOMPARE( alg6.parameterComponent( "my_param" ).position().x(), 11.0 );
   QCOMPARE( alg6.parameterComponent( "my_param" ).position().y(), 12.0 );
+  QCOMPARE( alg6.parameterComponent( "my_param" ).size().width(), 21.0 );
+  QCOMPARE( alg6.parameterComponent( "my_param" ).size().height(), 22.0 );
   QCOMPARE( alg6.parameterDefinitions().count(), 1 );
   QCOMPARE( alg6.parameterDefinitions().at( 0 )->type(), QStringLiteral( "boolean" ) );
 
