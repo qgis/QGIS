@@ -176,8 +176,13 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
   w_municipality.widget();
   w_municipality.setEnabled( true );
 
-  QCOMPARE( w_municipality.mCache.size(), 2 );
-  QCOMPARE( w_municipality.mComboBox->count(), 2 );
+  QCOMPARE( w_municipality.mCache.size(), 0 );
+  QCOMPARE( w_municipality.mComboBox->count(), 0 );
+
+  // Set a feature
+  w_municipality.setFeature( vl2.getFeature( 1 ) );
+  QCOMPARE( w_municipality.mCache.size(), 1 );
+  QCOMPARE( w_municipality.mComboBox->count(), 1 );
 
   // check that valueChanged signal is correctly triggered
   QSignalSpy spy( &w_municipality, &QgsEditorWidgetWrapper::valuesChanged );

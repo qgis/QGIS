@@ -124,7 +124,10 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      */
     void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
 
-    void setFeature( const QgsFeature &feature );
+    /**
+     * Sets the \a feature being edited and updates the UI unless \a update is set to FALSE
+     */
+    void setFeature( const QgsFeature &feature, bool update = true );
 
     void setEditorContext( const QgsAttributeEditorContext &context );
 
@@ -190,6 +193,21 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      */
     bool showSaveChildEditsButton() const;
 
+    /*
+     * Returns the widget's current feature
+     *
+     * \since QGIS 3.14
+     */
+    QgsFeature feature() const;
+
+  public slots:
+
+    /**
+     * Called when an \a attribute value in the parent widget has changed to \a newValue
+     *
+     * \since QGIS 3.14
+     */
+    void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
 
   private slots:
     void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}

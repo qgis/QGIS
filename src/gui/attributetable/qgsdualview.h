@@ -259,6 +259,16 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void cancelProgress( );
 
+    /**
+     * Called in embedded forms when an \a attribute \a value in the parent form has changed.
+     *
+     * Notify the form widgets that something has changed in case they
+     * have filter expression that depend on the parent form scope.
+     *
+     * \since QGIS 3.14
+     */
+    void parentFormValueChanged( const QString &attribute, const QVariant &value );
+
   signals:
 
     /**

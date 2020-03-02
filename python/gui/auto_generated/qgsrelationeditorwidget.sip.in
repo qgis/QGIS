@@ -63,7 +63,10 @@ inserting and deleting entries on the intermediate table as required.
 :param nmrelation: Optional reference from the referencing table to a 3rd N:M table
 %End
 
-    void setFeature( const QgsFeature &feature );
+    void setFeature( const QgsFeature &feature, bool update = true );
+%Docstring
+Sets the ``feature`` being edited and updates the UI unless ``update`` is set to ``False``
+%End
 
     void setEditorContext( const QgsAttributeEditorContext &context );
 
@@ -129,6 +132,21 @@ Determines if the "Save child layer edits" button should be shown
 .. versionadded:: 3.14
 %End
 
+    QgsFeature feature() const;
+%Docstring
+Returns the widget's current feature
+
+.. versionadded:: 3.14
+%End
+
+  public slots:
+
+    void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
+%Docstring
+Called when an ``attribute`` value in the parent widget has changed to ``newValue``
+
+.. versionadded:: 3.14
+%End
 
 };
 

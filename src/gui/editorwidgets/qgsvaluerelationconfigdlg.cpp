@@ -111,11 +111,14 @@ void QgsValueRelationConfigDlg::editExpression()
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vl ) );
   context << QgsExpressionContextUtils::formScope( );
+  context << QgsExpressionContextUtils::parentFormScope( );
 
-  context.setHighlightedFunctions( QStringList() << QStringLiteral( "current_value" ) );
+  context.setHighlightedFunctions( QStringList() << QStringLiteral( "current_value" ) << QStringLiteral( "current_parent_value" ) );
   context.setHighlightedVariables( QStringList() << QStringLiteral( "current_geometry" )
                                    << QStringLiteral( "current_feature" )
-                                   << QStringLiteral( "form_mode" ) );
+                                   << QStringLiteral( "form_mode" )
+                                   << QStringLiteral( "current_parent_geometry" )
+                                   << QStringLiteral( "current_parent_feature" ) );
 
   QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Edit Filter Expression" ) );
