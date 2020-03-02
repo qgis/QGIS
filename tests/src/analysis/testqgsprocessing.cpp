@@ -7705,6 +7705,9 @@ void TestQgsProcessing::modelerAlgorithm()
 
   QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), QStringLiteral( "    # desc\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ) );
 
+  std::unique_ptr< QgsProcessingModelChildAlgorithm > childClone( child.clone() );
+  QCOMPARE( childClone->toVariant(), child.toVariant() );
+
   QgsProcessingModelOutput testModelOut;
   testModelOut.setChildId( QStringLiteral( "my_id" ) );
   QCOMPARE( testModelOut.childId(), QStringLiteral( "my_id" ) );
@@ -7714,6 +7717,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( testModelOut.defaultValue().toString(), QStringLiteral( "my_value" ) );
   testModelOut.setMandatory( true );
   QVERIFY( testModelOut.isMandatory() );
+  std::unique_ptr< QgsProcessingModelOutput > outputClone( testModelOut.clone() );
+  QCOMPARE( outputClone->toVariant(), testModelOut.toVariant() );
 
   QgsProcessingOutputLayerDefinition layerDef( QStringLiteral( "my_path" ) );
   layerDef.createOptions["fileEncoding"] = QStringLiteral( "my_encoding" );
@@ -7841,6 +7846,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelParameter pc1;
   pc1.setParameterName( QStringLiteral( "my_param" ) );
   QCOMPARE( pc1.parameterName(), QStringLiteral( "my_param" ) );
+  std::unique_ptr< QgsProcessingModelParameter > paramClone( pc1.clone() );
+  QCOMPARE( paramClone->toVariant(), pc1.toVariant() );
   pComponents.insert( QStringLiteral( "my_param" ), pc1 );
   alg.setParameterComponents( pComponents );
   QCOMPARE( alg.parameterComponents().count(), 1 );
