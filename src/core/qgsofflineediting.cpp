@@ -1453,9 +1453,8 @@ void QgsOfflineEditing::committedAttributesAdded( const QString &qgisLayerId, co
   int layerId = getOrCreateLayerId( database.get(), qgisLayerId );
   int commitNo = getCommitNo( database.get() );
 
-  for ( QList<QgsField>::const_iterator it = addedAttributes.begin(); it != addedAttributes.end(); ++it )
+  for ( const QgsField &field : addedAttributes )
   {
-    QgsField field = *it;
     QString sql = QStringLiteral( "INSERT INTO 'log_added_attrs' VALUES ( %1, %2, '%3', %4, %5, %6, '%7' )" )
                   .arg( layerId )
                   .arg( commitNo )
@@ -1516,19 +1515,19 @@ void QgsOfflineEditing::committedFeaturesRemoved( const QString &qgisLayerId, co
   // insert log
   int layerId = getOrCreateLayerId( database.get(), qgisLayerId );
 
-  for ( QgsFeatureIds::const_iterator it = deletedFeatureIds.begin(); it != deletedFeatureIds.end(); ++it )
+  for ( QgsFeatureId id : deletedFeatureIds )
   {
-    if ( isAddedFeature( database.get(), layerId, *it ) )
+    if ( isAddedFeature( database.get(), layerId, id ) )
     {
       // remove from added features log
-      QString sql = QStringLiteral( "DELETE FROM 'log_added_features' WHERE \"layer_id\" = %1 AND \"fid\" = %2" ).arg( layerId ).arg( *it );
+      QString sql = QStringLiteral( "DELETE FROM 'log_added_features' WHERE \"layer_id\" = %1 AND \"fid\" = %2" ).arg( layerId ).arg( id );
       sqlExec( database.get(), sql );
     }
     else
     {
       QString sql = QStringLiteral( "INSERT INTO 'log_removed_features' VALUES ( %1, %2)" )
                     .arg( layerId )
-                    .arg( *it );
+                    .arg( id );
       sqlExec( database.get(), sql );
     }
   }
