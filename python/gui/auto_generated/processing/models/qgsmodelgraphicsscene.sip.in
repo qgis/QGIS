@@ -27,6 +27,12 @@ QGraphicsScene subclass representing the model designer.
 %End
   public:
 
+    enum ZValues
+    {
+      ArrowLink,
+      ModelComponent,
+    };
+
     QgsModelGraphicsScene( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsModelGraphicsScene with the specified ``parent`` object.

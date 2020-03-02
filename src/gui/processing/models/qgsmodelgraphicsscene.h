@@ -35,6 +35,13 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
   public:
 
+    //! Z values for scene items
+    enum ZValues
+    {
+      ArrowLink = 0, //!< An arrow linking model items
+      ModelComponent = 1, //!< Model components (e.g. algorithms, inputs and outputs)
+    };
+
     /**
      * Constructor for QgsModelGraphicsScene with the specified \a parent object.
      */

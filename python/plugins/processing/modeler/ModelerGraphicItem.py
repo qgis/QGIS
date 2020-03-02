@@ -23,17 +23,15 @@ __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
-import math
 
 from qgis.PyQt.QtCore import Qt, QPointF, QRectF
-from qgis.PyQt.QtGui import QFont, QFontMetricsF, QPen, QBrush, QColor, QPolygonF, QPicture, QPainter, QPalette
+from qgis.PyQt.QtGui import QFont, QFontMetricsF, QPen, QBrush, QColor, QPicture, QPainter, QPalette
 from qgis.PyQt.QtWidgets import QApplication, QGraphicsItem, QMessageBox, QMenu
 from qgis.PyQt.QtSvg import QSvgRenderer
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelParameter,
                        QgsProcessingModelOutput,
                        QgsProcessingModelChildAlgorithm,
-                       QgsProcessingModelAlgorithm,
                        QgsProject)
 from qgis.gui import (
     QgsProcessingParameterDefinitionDialog,
@@ -60,7 +58,6 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
 
     def __init__(self, element, model, controls, scene=None):
         super().__init__(element, None)
-        self.setAcceptHoverEvents(True)
         self.controls = controls
         self.model = model
         self.scene = scene
@@ -104,10 +101,6 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
                 self.pixmap = element.algorithm().icon().pixmap(15, 15)
             self.text = element.description()
         self.arrows = []
-        self.setFlag(QGraphicsItem.ItemIsMovable, True)
-        self.setFlag(QGraphicsItem.ItemIsSelectable, True)
-        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
-        self.setZValue(1000)
 
         if controls:
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'edit.svg'))
@@ -115,10 +108,10 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
             painter = QPainter(picture)
             svg.render(painter)
             painter.end()
-            pt = QPointF(self.box_width / 2
-                         - ModelerGraphicItem.BUTTON_WIDTH / 2,
-                         self.box_height / 2
-                         - ModelerGraphicItem.BUTTON_HEIGHT / 2)
+            pt = QPointF(self.box_width / 2 -
+                         ModelerGraphicItem.BUTTON_WIDTH / 2,
+                         self.box_height / 2 -
+                         ModelerGraphicItem.BUTTON_HEIGHT / 2)
             self.editButton = QgsModelDesignerFlatButtonGraphicItem(self, picture, pt)
             self.editButton.clicked.connect(self.editElement)
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'delete.svg'))
@@ -126,10 +119,10 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
             painter = QPainter(picture)
             svg.render(painter)
             painter.end()
-            pt = QPointF(self.box_width / 2
-                         - ModelerGraphicItem.BUTTON_WIDTH / 2,
-                         ModelerGraphicItem.BUTTON_HEIGHT / 2
-                         - self.box_height / 2)
+            pt = QPointF(self.box_width / 2 -
+                         ModelerGraphicItem.BUTTON_WIDTH / 2,
+                         ModelerGraphicItem.BUTTON_HEIGHT / 2 -
+                         self.box_height / 2)
             self.deleteButton = QgsModelDesignerFlatButtonGraphicItem(self, picture, pt)
             self.deleteButton.clicked.connect(self.removeElement)
 
@@ -312,8 +305,8 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
         alg.setParametersCollapsed(existing_child.parametersCollapsed())
         alg.setOutputsCollapsed(existing_child.outputsCollapsed())
         for i, out in enumerate(alg.modelOutputs().keys()):
-            alg.modelOutput(out).setPosition(alg.modelOutput(out).position()
-                                             or alg.position() + QPointF(
+            alg.modelOutput(out).setPosition(alg.modelOutput(out).position() or
+                                             alg.position() + QPointF(
                 self.box_width,
                 (i + 1.5) * self.box_height))
         self.model.setChildAlgorithm(alg)
@@ -485,21 +478,3 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
             self.repaintArrows()
 
         return super().itemChange(change, value)
-
-    def polygon(self):
-        fm = QFontMetricsF(self.item_font)
-        hUp = fm.height() * 1.2 * (len(self.component().parameters) + 2)
-        hDown = fm.height() * 1.2 * (len(self.component().outputs) + 2)
-        pol = QPolygonF([
-            QPointF(-(self.box_width + 2) / 2,
-                    -(self.box_height + 2) / 2 - hUp),
-            QPointF(-(self.box_width + 2) / 2,
-                    (self.box_height + 2) / 2 + hDown),
-            QPointF((self.box_width + 2) / 2,
-                    (self.box_height + 2) / 2 + hDown),
-            QPointF((self.box_width + 2) / 2,
-                    -(self.box_height + 2) / 2 - hUp),
-            QPointF(-(self.box_width + 2) / 2,
-                    -(self.box_height + 2) / 2 - hUp)
-        ])
-        return pol
