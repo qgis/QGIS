@@ -15,8 +15,10 @@
  ***************************************************************************/
 
 #include <QComboBox>
+#include <QToolButton>
 #include <QDoubleSpinBox>
-
+#include <QMenu>
+#include <QAction>
 #include "qgssnappinglayertreemodel.h"
 
 #include "qgslayertree.h"
@@ -39,11 +41,30 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
 
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
   {
-    QComboBox *w = new QComboBox( parent );
-    w->addItem( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), tr( "vertex" ), QgsSnappingConfig::Vertex );
-    w->addItem( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertexAndSegment.svg" ) ), tr( "vertex and segment" ), QgsSnappingConfig::VertexAndSegment );
-    w->addItem( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), tr( "segment" ), QgsSnappingConfig::Segment );
-    return w;
+    // type button
+    QToolButton *mTypeButton = new QToolButton( parent );
+    mTypeButton->setToolTip( tr( "Snapping Type" ) );
+    mTypeButton->setPopupMode( QToolButton::InstantPopup );
+    QMenu *typeMenu = new QMenu( tr( "Set Snapping Mode" ), parent );
+    QAction *mVertexAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingVertex.svg" ) ), tr( "Vertex" ), typeMenu );
+    QAction *mSegmentAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingSegment.svg" ) ), tr( "Segment" ), typeMenu );
+    QAction *mAreaAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingArea.svg" ) ), tr( "Area" ), typeMenu );
+    QAction *mCentroidAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingCentroid.svg" ) ), tr( "Centroid" ), typeMenu );
+    QAction *mMiddleAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingMiddle.svg" ) ), tr( "Middle of Segments" ), typeMenu );
+    mVertexAction->setCheckable( true );
+    mSegmentAction->setCheckable( true );
+    mAreaAction->setCheckable( true );
+    mCentroidAction->setCheckable( true );
+    mMiddleAction->setCheckable( true );
+    typeMenu->addAction( mVertexAction );
+    typeMenu->addAction( mSegmentAction );
+    typeMenu->addAction( mAreaAction );
+    typeMenu->addAction( mCentroidAction );
+    typeMenu->addAction( mMiddleAction );
+    mTypeButton->setMenu( typeMenu );
+    mTypeButton->setObjectName( QStringLiteral( "SnappingTypeButton" ) );
+    mTypeButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+    return mTypeButton;
   }
 
   if ( index.column() == QgsSnappingLayerTreeModel::ToleranceColumn )
@@ -90,11 +111,17 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
 
   if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
   {
-    QgsSnappingConfig::SnappingType type = static_cast<QgsSnappingConfig::SnappingType>( val.toInt() );
-    QComboBox *cb = qobject_cast<QComboBox *>( editor );
-    if ( cb )
+    QgsSnappingConfig::SnappingTypeFlag type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( val.toInt() );
+    QToolButton *tb = qobject_cast<QToolButton *>( editor );
+    if ( tb )
     {
-      cb->setCurrentIndex( cb->findData( type ) );
+      QList<QAction *>actions = tb->menu()->actions();
+
+      actions.at( 0 )->setChecked( type & QgsSnappingConfig::VertexFlag );
+      actions.at( 1 )->setChecked( type & QgsSnappingConfig::SegmentFlag );
+      actions.at( 2 )->setChecked( type & QgsSnappingConfig::AreaFlag );
+      actions.at( 3 )->setChecked( type & QgsSnappingConfig::CentroidFlag );
+      actions.at( 4 )->setChecked( type & QgsSnappingConfig::MiddleOfSegmentFlag );
     }
   }
   else if ( index.column() == QgsSnappingLayerTreeModel::ToleranceColumn )
@@ -118,8 +145,29 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
 
 void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn ||
-       index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
+  if ( index.column() == QgsSnappingLayerTreeModel::TypeColumn )
+  {
+    QToolButton *t = qobject_cast<QToolButton *>( editor );
+    if ( t )
+    {
+      QList<QAction *> actions = t->menu()->actions();
+      QgsSnappingConfig::SnappingTypeFlag type = QgsSnappingConfig::NoSnapFlag;
+      if ( actions.at( 0 )->isChecked() )
+        type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( type | QgsSnappingConfig::VertexFlag );
+      if ( actions.at( 1 )->isChecked() )
+        type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( type | QgsSnappingConfig::SegmentFlag );
+      if ( actions.at( 2 )->isChecked() )
+        type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( type | QgsSnappingConfig::AreaFlag );
+      if ( actions.at( 3 )->isChecked() )
+        type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( type | QgsSnappingConfig::CentroidFlag );
+      if ( actions.at( 4 )->isChecked() )
+        type = static_cast<QgsSnappingConfig::SnappingTypeFlag>( type | QgsSnappingConfig::MiddleOfSegmentFlag );
+      model->setData( index, static_cast<int>( type ), Qt::EditRole );
+    }
+
+  }
+  else if (
+    index.column() == QgsSnappingLayerTreeModel::UnitsColumn )
   {
     QComboBox *w = qobject_cast<QComboBox *>( editor );
     if ( w )
@@ -446,19 +494,38 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     {
       if ( role == Qt::DisplayRole )
       {
-        switch ( ls.type() )
+        if ( ls.typeFlag() == QgsSnappingConfig::NoSnapFlag )
         {
-          case QgsSnappingConfig::Vertex:
-            return tr( "vertex" );
-          case QgsSnappingConfig::VertexAndSegment:
-            return tr( "vertex and segment" );
-          case QgsSnappingConfig::Segment:
-            return tr( "segment" );
+          return QgsSnappingConfig::snappingTypeFlagToString( ls.typeFlag() );
+        }
+        else
+        {
+          QString modes;
+          int activeTypes = 0;
+
+          QMetaEnum snappingTypeEnum = QMetaEnum::fromType<QgsSnappingConfig::SnappingTypeFlag>();
+          for ( int i = 0; i < snappingTypeEnum.keyCount(); ++i )
+          {
+            if ( ls.typeFlag() & snappingTypeEnum.value( i ) )
+            {
+              if ( activeTypes == 2 )
+              {
+                modes.append( tr( ", …" ) );
+                break;
+              }
+              if ( activeTypes > 0 )
+                modes.append( tr( ", " ) );
+              modes.append( QgsSnappingConfig::snappingTypeFlagToString( ls.typeFlag() ) );
+              activeTypes++;
+            }
+          }
+
+          return modes;
         }
       }
 
       if ( role == Qt::UserRole )
-        return ls.type();
+        return static_cast<int>( ls.typeFlag() );
     }
 
     // tolerance
@@ -573,7 +640,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       if ( !ls.valid() )
         return false;
 
-      ls.setType( static_cast<QgsSnappingConfig::SnappingType>( value.toInt() ) );
+      ls.setTypeFlag( static_cast<QgsSnappingConfig::SnappingTypeFlag>( value.toInt() ) );
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );
