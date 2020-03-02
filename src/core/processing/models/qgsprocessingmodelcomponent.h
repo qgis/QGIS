@@ -75,6 +75,19 @@ class CORE_EXPORT QgsProcessingModelComponent
     void setSize( QSizeF size );
 
     /**
+     * Returns TRUE if the link points for the specified \a edge should be shown collapsed or not.
+     * \see setLinksCollapsed()
+     */
+    bool linksCollapsed( Qt::Edge edge ) const;
+
+    /**
+     * Sets whether the link points for the specified \a edge for this component should be shown collapsed
+     * in the graphical modeler.
+     * \see linksCollapsed()
+     */
+    void setLinksCollapsed( Qt::Edge edge, bool collapsed );
+
+    /**
      * Clones the component.
      *
      * Ownership is transferred to the caller.
@@ -115,6 +128,9 @@ class CORE_EXPORT QgsProcessingModelComponent
     QString mDescription;
 
     QSizeF mSize = QSizeF( DEFAULT_COMPONENT_WIDTH, DEFAULT_COMPONENT_HEIGHT );
+
+    bool mTopEdgeLinksCollapsed = true;
+    bool mBottomEdgeLinksCollapsed = true;
 
 };
 
