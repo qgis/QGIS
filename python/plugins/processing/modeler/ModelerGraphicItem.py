@@ -48,21 +48,17 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 class ModelerGraphicItem(QgsModelComponentGraphicItem):
 
-    BUTTON_WIDTH = 16
-
     repaintArrows = pyqtSignal()
     updateArrowPaths = pyqtSignal()
 
     def __init__(self, element, model):
         super().__init__(element, model, None)
-        self.item_font = QFont()
-        self.item_font.setPixelSize(12)
         self.pixmap = None
         self.picture = None
         self.hover_over_item = False
 
     def boundingRect(self):
-        fm = QFontMetricsF(self.item_font)
+        fm = QFontMetricsF(self.font())
         unfolded = isinstance(self.component(),
                               QgsProcessingModelChildAlgorithm) and not self.component().parametersCollapsed()
         numParams = len([a for a in self.component().algorithm().parameterDefinitions() if
@@ -107,19 +103,6 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
             self.update()
             self.repaintArrows.emit()
 
-    def getAdjustedText(self, text):
-        fm = QFontMetricsF(self.item_font)
-        w = fm.width(text)
-        if w < self.component().size().width() - 25 - ModelerGraphicItem.BUTTON_WIDTH:
-            return text
-
-        text = text[0:-3] + '…'
-        w = fm.width(text)
-        while w > self.component().size().width() - 25 - ModelerGraphicItem.BUTTON_WIDTH:
-            text = text[0:-4] + '…'
-            w = fm.width(text)
-        return text
-
     def itemRect(self):
         return QRectF(-(self.component().size().width() + 2) / 2.0,
                       -(self.component().size().height() + 2) / 2.0,
@@ -149,14 +132,14 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
         painter.setPen(QPen(stroke, 0))  # 0 width "cosmetic" pen
         painter.setBrush(QBrush(color, Qt.SolidPattern))
         painter.drawRect(rect)
-        painter.setFont(self.item_font)
+        painter.setFont(self.font())
         painter.setPen(QPen(Qt.black))
-        text = self.getAdjustedText(self.text)
+        text = self.truncatedTextForItem(self.text)
         if isinstance(self.component(), QgsProcessingModelChildAlgorithm) and not self.component().isActive():
             painter.setPen(QPen(Qt.gray))
             text = text + "\n(deactivated)"
-        fm = QFontMetricsF(self.item_font)
-        text = self.getAdjustedText(self.text)
+        fm = QFontMetricsF(self.font())
+        text = self.truncatedTextForItem(self.text)
         h = fm.ascent()
         pt = QPointF(-self.component().size().width() / 2 + 25, self.component().size().height() / 2.0 - h + 1)
         painter.drawText(pt, text)
@@ -170,7 +153,7 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
             if not self.component().parametersCollapsed():
                 for param in [p for p in self.component().algorithm().parameterDefinitions() if not p.isDestination()]:
                     if not param.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                        text = self.getAdjustedText(param.description())
+                        text = self.truncatedTextForItem(param.description())
                         h = -(fm.height() * 1.2) * (i + 1)
                         h = h - self.component().size().height() / 2.0 + 5
                         pt = QPointF(-self.component().size().width() / 2 + 33, h)
@@ -182,7 +165,7 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
             painter.drawText(pt, 'Out')
             if not self.component().outputsCollapsed():
                 for i, out in enumerate(self.component().algorithm().outputDefinitions()):
-                    text = self.getAdjustedText(out.description())
+                    text = self.truncatedTextForItem(out.description())
                     h = fm.height() * 1.2 * (i + 2)
                     h = h + self.component().size().height() / 2.0
                     pt = QPointF(-self.component().size().width() / 2 + 33, h)
@@ -202,7 +185,7 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
         if isinstance(self.component(), QgsProcessingModelParameter):
             paramIndex = -1
             offsetX = 0
-        fm = QFontMetricsF(self.item_font)
+        fm = QFontMetricsF(self.font())
         if isinstance(self.component(), QgsProcessingModelChildAlgorithm):
             h = -(fm.height() * 1.2) * (paramIndex + 2) - fm.height() / 2.0 + 8
             h = h - self.component().size().height() / 2.0
@@ -214,8 +197,8 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
         if isinstance(self.component(),
                       QgsProcessingModelChildAlgorithm) and self.component().algorithm().outputDefinitions():
             outputIndex = (outputIndex if not self.component().outputsCollapsed() else -1)
-            text = self.getAdjustedText(self.component().algorithm().outputDefinitions()[outputIndex].description())
-            fm = QFontMetricsF(self.item_font)
+            text = self.truncatedTextForItem(self.component().algorithm().outputDefinitions()[outputIndex].description())
+            fm = QFontMetricsF(self.font())
             w = fm.width(text)
             h = fm.height() * 1.2 * (outputIndex + 1) + fm.height() / 2.0
             y = h + self.component().size().height() / 2.0 + 5

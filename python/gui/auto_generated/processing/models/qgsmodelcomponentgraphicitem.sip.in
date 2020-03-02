@@ -49,6 +49,20 @@ Returns the model component associated with this item.
 Returns the model associated with this item.
 %End
 
+    QFont font() const;
+%Docstring
+Returns the font used to render text in the item.
+
+.. seealso:: :py:func:`setFont`
+%End
+
+    void setFont( const QFont &font );
+%Docstring
+Sets the ``font`` used to render text in the item.
+
+.. seealso:: :py:func:`font`
+%End
+
   signals:
 
 
@@ -78,6 +92,14 @@ The default implementation does nothing.
 Called when the component should be deleted.
 
 The default implementation does nothing.
+%End
+
+  protected:
+
+    QString truncatedTextForItem( const QString &text ) const;
+%Docstring
+Truncates a ``text`` string so that it fits nicely within the item's width,
+accounting for margins and interactive buttons.
 %End
 
 };
