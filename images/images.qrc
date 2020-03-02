@@ -815,6 +815,8 @@
         <file>themes/default/mActionAddManualTable.svg</file>
         <file>themes/default/mIconModelerCollapse.svg</file>
         <file>themes/default/mIconModelerExpand.svg</file>
+        <file>themes/default/mActionDeleteModelComponent.svg</file>
+        <file>themes/default/mActionEditModelComponent.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

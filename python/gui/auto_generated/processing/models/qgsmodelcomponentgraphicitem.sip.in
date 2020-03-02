@@ -10,7 +10,6 @@
 
 
 
-
 class QgsModelComponentGraphicItem : QGraphicsObject
 {
 %Docstring
@@ -63,6 +62,22 @@ Emitted by the item to request a repaint of the parent model scene.
 %Docstring
 Emitted when the definition of the associated component is changed
 by the item.
+%End
+
+  protected slots:
+
+    virtual void editComponent();
+%Docstring
+Called when the component should be edited.
+
+The default implementation does nothing.
+%End
+
+    virtual void deleteComponent();
+%Docstring
+Called when the component should be deleted.
+
+The default implementation does nothing.
 %End
 
 };

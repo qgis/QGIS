@@ -25,7 +25,7 @@ class QgsProcessingModelParameter;
 class QgsProcessingModelChildAlgorithm;
 class QgsProcessingModelOutput;
 class QgsProcessingModelAlgorithm;
-
+class QgsModelDesignerFlatButtonGraphicItem;
 
 ///@cond NOT_STABLE
 
@@ -80,11 +80,33 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void changed();
 
+  protected slots:
+
+    /**
+     * Called when the component should be edited.
+     *
+     * The default implementation does nothing.
+     */
+    virtual void editComponent() {}
+
+    /**
+     * Called when the component should be deleted.
+     *
+     * The default implementation does nothing.
+     */
+    virtual void deleteComponent() {}
+
   private:
 
     std::unique_ptr< QgsProcessingModelComponent > mComponent;
     QgsProcessingModelAlgorithm *mModel = nullptr;
 
+    QgsModelDesignerFlatButtonGraphicItem *mEditButton = nullptr;
+    QgsModelDesignerFlatButtonGraphicItem *mDeleteButton = nullptr;
+
+    static constexpr double DEFAULT_BUTTON_WIDTH = 16;
+    static constexpr double DEFAULT_BUTTON_HEIGHT = 16;
+    QSizeF mButtonSize { DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT };
 
 };
 

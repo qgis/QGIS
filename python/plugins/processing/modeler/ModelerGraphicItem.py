@@ -35,7 +35,6 @@ from qgis.core import (QgsProcessingParameterDefinition,
 from qgis.gui import (
     QgsProcessingParameterDefinitionDialog,
     QgsProcessingParameterWidgetContext,
-    QgsModelDesignerFlatButtonGraphicItem,
     QgsModelDesignerFoldButtonGraphicItem,
     QgsModelComponentGraphicItem
 )
@@ -50,7 +49,6 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class ModelerGraphicItem(QgsModelComponentGraphicItem):
 
     BUTTON_WIDTH = 16
-    BUTTON_HEIGHT = 16
 
     repaintArrows = pyqtSignal()
     updateArrowPaths = pyqtSignal()
@@ -62,29 +60,6 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
         self.pixmap = None
         self.picture = None
         self.hover_over_item = False
-
-        svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'edit.svg'))
-        picture = QPicture()
-        painter = QPainter(picture)
-        svg.render(painter)
-        painter.end()
-        pt = QPointF(self.component().size().width() / 2 -
-                     ModelerGraphicItem.BUTTON_WIDTH / 2,
-                     self.component().size().height() / 2 -
-                     ModelerGraphicItem.BUTTON_HEIGHT / 2)
-        self.editButton = QgsModelDesignerFlatButtonGraphicItem(self, picture, pt)
-        self.editButton.clicked.connect(self.editComponent)
-        svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'delete.svg'))
-        picture = QPicture()
-        painter = QPainter(picture)
-        svg.render(painter)
-        painter.end()
-        pt = QPointF(self.component().size().width() / 2 -
-                     ModelerGraphicItem.BUTTON_WIDTH / 2,
-                     ModelerGraphicItem.BUTTON_HEIGHT / 2 -
-                     self.component().size().height() / 2)
-        self.deleteButton = QgsModelDesignerFlatButtonGraphicItem(self, picture, pt)
-        self.deleteButton.clicked.connect(self.removeComponent)
 
     def boundingRect(self):
         fm = QFontMetricsF(self.item_font)
@@ -326,7 +301,7 @@ class ModelerInputGraphicItem(ModelerGraphicItem):
             self.text = new_param.description()
             self.requestModelRepaint.emit()
 
-    def removeComponent(self):
+    def deleteComponent(self):
         if self.model().childAlgorithmsDependOnParameter(self.component().parameterName()):
             QMessageBox.warning(None, 'Could not remove input',
                                 'Algorithms depend on the selected input.\n'
@@ -343,7 +318,7 @@ class ModelerInputGraphicItem(ModelerGraphicItem):
     def contextMenuEvent(self, event):
         popupmenu = QMenu()
         removeAction = popupmenu.addAction('Remove')
-        removeAction.triggered.connect(self.removeComponent)
+        removeAction.triggered.connect(self.deleteComponent)
         editAction = popupmenu.addAction('Edit')
         editAction.triggered.connect(self.editComponent)
         popupmenu.exec_(event.screenPos())
@@ -422,7 +397,7 @@ class ModelerChildAlgorithmGraphicItem(ModelerGraphicItem):
                 (i + 1.5) * self.component().size().height()))
         self.model().setChildAlgorithm(alg)
 
-    def removeComponent(self):
+    def deleteComponent(self):
         if not self.model().removeChildAlgorithm(self.component().childId()):
             QMessageBox.warning(None, 'Could not remove element',
                                 'Other elements depend on the selected one.\n'
@@ -434,7 +409,7 @@ class ModelerChildAlgorithmGraphicItem(ModelerGraphicItem):
     def contextMenuEvent(self, event):
         popupmenu = QMenu()
         removeAction = popupmenu.addAction('Remove')
-        removeAction.triggered.connect(self.removeComponent)
+        removeAction.triggered.connect(self.deleteComponent)
         editAction = popupmenu.addAction('Edit')
         editAction.triggered.connect(self.editComponent)
 
@@ -485,7 +460,7 @@ class ModelerOutputGraphicItem(ModelerGraphicItem):
             model_output.setMandatory(not (dlg.param.flags() & QgsProcessingParameterDefinition.FlagOptional))
             self.model().updateDestinationParameters()
 
-    def removeComponent(self):
+    def deleteComponent(self):
         self.model().childAlgorithm(self.component().childId()).removeModelOutput(self.component().name())
         self.model().updateDestinationParameters()
         self.changed.emit()
