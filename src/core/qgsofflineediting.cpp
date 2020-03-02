@@ -1480,7 +1480,8 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, cons
 
   // get new feature ids from db
   QgsMapLayer *layer = QgsProject::instance()->mapLayer( qgisLayerId );
-  QgsDataSourceUri uri = QgsDataSourceUri( layer->source() );
+  QString dataSourceString = layer->source();
+  QgsDataSourceUri uri = QgsDataSourceUri( dataSourceString );
 
   QString offlinePath = QgsProject::instance()->readPath( QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH ) );
   QString tableName;
@@ -1491,7 +1492,15 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, cons
   }
   else
   {
-    tableName = uri.param( offlinePath + "|layername" );
+    if ( dataSourceString.indexOf( QLatin1String( "|layername=" ) ) != -1 )
+    {
+      QRegularExpression regex( QStringLiteral( "\\|layername=([^|]*)" ) );
+      tableName = regex.match( dataSourceString ).captured( 1 );
+    }
+    else
+    {
+      showWarning( tr( "Could not deduce table name from data source %1." ).arg( dataSourceString ) );
+    }
   }
 
   // only store feature ids
