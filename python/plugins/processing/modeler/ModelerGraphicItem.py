@@ -23,13 +23,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 
-from qgis.PyQt.QtCore import Qt, QPointF, QRectF, pyqtSignal
-from qgis.PyQt.QtGui import QFont, QFontMetricsF, QPen, QBrush, QColor, QPicture, QPainter, QPalette
-from qgis.PyQt.QtWidgets import QApplication, QGraphicsItem, QMessageBox, QMenu
+from qgis.PyQt.QtCore import Qt, QPointF, QRectF
+from qgis.PyQt.QtGui import QFontMetricsF, QPen, QBrush, QColor, QPicture, QPainter, QPalette
+from qgis.PyQt.QtWidgets import QApplication, QMessageBox, QMenu
 from qgis.PyQt.QtSvg import QSvgRenderer
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelParameter,
-                       QgsProcessingModelOutput,
                        QgsProcessingModelChildAlgorithm,
                        QgsProject)
 from qgis.gui import (
@@ -52,24 +51,6 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
         super().__init__(element, model, None)
         self.pixmap = None
         self.picture = None
-
-    def boundingRect(self):
-        fm = QFontMetricsF(self.font())
-        unfolded = isinstance(self.component(),
-                              QgsProcessingModelChildAlgorithm) and not self.component().parametersCollapsed()
-        numParams = len([a for a in self.component().algorithm().parameterDefinitions() if
-                         not a.isDestination()]) if unfolded else 0
-        unfolded = isinstance(self.component(),
-                              QgsProcessingModelChildAlgorithm) and not self.component().outputsCollapsed()
-        numOutputs = len(self.component().algorithm().outputDefinitions()) if unfolded else 0
-
-        hUp = fm.height() * 1.2 * (numParams + 2)
-        hDown = fm.height() * 1.2 * (numOutputs + 2)
-        rect = QRectF(-(self.component().size().width() + 2) / 2,
-                      -(self.component().size().height() + 2) / 2 - hUp,
-                      self.component().size().width() + 2,
-                      self.component().size().height() + hDown + hUp)
-        return rect
 
     def paint(self, painter, option, widget=None):
         rect = self.itemRect()
@@ -106,32 +87,34 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
         pt = QPointF(-self.component().size().width() / 2 + 25, self.component().size().height() / 2.0 - h + 1)
         painter.drawText(pt, text)
         painter.setPen(QPen(QApplication.palette().color(QPalette.WindowText)))
-        if isinstance(self.component(), QgsProcessingModelChildAlgorithm):
+
+        if self.linkPointCount(Qt.TopEdge) or self.linkPointCount(Qt.BottomEdge):
             h = -(fm.height() * 1.2)
             h = h - self.component().size().height() / 2.0 + 5
             pt = QPointF(-self.component().size().width() / 2 + 25, h)
             painter.drawText(pt, 'In')
             i = 1
-            if not self.component().parametersCollapsed():
-                for param in [p for p in self.component().algorithm().parameterDefinitions() if not p.isDestination()]:
-                    if not param.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                        text = self.truncatedTextForItem(param.description())
-                        h = -(fm.height() * 1.2) * (i + 1)
-                        h = h - self.component().size().height() / 2.0 + 5
-                        pt = QPointF(-self.component().size().width() / 2 + 33, h)
-                        painter.drawText(pt, text)
-                        i += 1
+            if not self.component().linksCollapsed(Qt.TopEdge):
+                for idx in range(self.linkPointCount(Qt.TopEdge)):
+                    text = self.linkPointText(Qt.TopEdge, idx)
+                    h = -(fm.height() * 1.2) * (i + 1)
+                    h = h - self.component().size().height() / 2.0 + 5
+                    pt = QPointF(-self.component().size().width() / 2 + 33, h)
+                    painter.drawText(pt, text)
+                    i += 1
+
             h = fm.height() * 1.1
             h = h + self.component().size().height() / 2.0
             pt = QPointF(-self.component().size().width() / 2 + 25, h)
             painter.drawText(pt, 'Out')
-            if not self.component().outputsCollapsed():
-                for i, out in enumerate(self.component().algorithm().outputDefinitions()):
-                    text = self.truncatedTextForItem(out.description())
-                    h = fm.height() * 1.2 * (i + 2)
+            if not self.component().linksCollapsed(Qt.BottomEdge):
+                for idx in range(self.linkPointCount(Qt.BottomEdge)):
+                    text = self.linkPointText(Qt.BottomEdge, idx)
+                    h = fm.height() * 1.2 * (idx + 2)
                     h = h + self.component().size().height() / 2.0
                     pt = QPointF(-self.component().size().width() / 2 + 33, h)
                     painter.drawText(pt, text)
+
         if self.pixmap:
             painter.drawPixmap(-(self.component().size().width() / 2.0) + 3, -8,
                                self.pixmap)
@@ -141,7 +124,8 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
 
     def getLinkPointForParameter(self, paramIndex):
         offsetX = 25
-        if isinstance(self.component(), QgsProcessingModelChildAlgorithm) and self.component().parametersCollapsed():
+        if isinstance(self.component(), QgsProcessingModelChildAlgorithm) and self.component().linksCollapsed(
+                Qt.TopEdge):
             paramIndex = -1
             offsetX = 17
         if isinstance(self.component(), QgsProcessingModelParameter):
@@ -154,22 +138,6 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
         else:
             h = 0
         return QPointF(-self.component().size().width() / 2 + offsetX, h)
-
-    def getLinkPointForOutput(self, outputIndex):
-        if isinstance(self.component(),
-                      QgsProcessingModelChildAlgorithm) and self.component().algorithm().outputDefinitions():
-            outputIndex = (outputIndex if not self.component().outputsCollapsed() else -1)
-            text = self.truncatedTextForItem(self.component().algorithm().outputDefinitions()[outputIndex].description())
-            fm = QFontMetricsF(self.font())
-            w = fm.width(text)
-            h = fm.height() * 1.2 * (outputIndex + 1) + fm.height() / 2.0
-            y = h + self.component().size().height() / 2.0 + 5
-            x = (-self.component().size().width() / 2 + 33 + w + 5
-                 if not self.component().outputsCollapsed()
-                 else 10)
-            return QPointF(x, y)
-        else:
-            return QPointF(0, 0)
 
 
 class ModelerInputGraphicItem(ModelerGraphicItem):
@@ -273,21 +241,40 @@ class ModelerChildAlgorithmGraphicItem(ModelerGraphicItem):
         if [a for a in alg.parameterDefinitions() if not a.isDestination()]:
             pt = self.getLinkPointForParameter(-1)
             pt = QPointF(0, pt.y())
-            self.inButton = QgsModelDesignerFoldButtonGraphicItem(self, self.component().parametersCollapsed(), pt)
+            self.inButton = QgsModelDesignerFoldButtonGraphicItem(self, self.component().linksCollapsed(Qt.TopEdge), pt)
             self.inButton.folded.connect(self.foldInput)
         if alg.outputDefinitions():
-            pt = self.getLinkPointForOutput(-1)
+            pt = self.linkPoint(Qt.BottomEdge, -1)
             pt = QPointF(0, pt.y())
-            self.outButton = QgsModelDesignerFoldButtonGraphicItem(self, self.component().outputsCollapsed(), pt)
+            self.outButton = QgsModelDesignerFoldButtonGraphicItem(self, self.component().linksCollapsed(Qt.BottomEdge),
+                                                                   pt)
             self.outButton.folded.connect(self.foldOutput)
 
+    def linkPointCount(self, edge):
+        if edge == Qt.BottomEdge:
+            return len(self.component().algorithm().outputDefinitions())
+        elif edge == Qt.TopEdge:
+            return len([p for p in self.component().algorithm().parameterDefinitions() if
+                        not p.isDestination() and not p.flags() & QgsProcessingParameterDefinition.FlagHidden])
+
+        return 0
+
+    def linkPointText(self, edge, index):
+        if edge == Qt.TopEdge:
+            param = [p for p in self.component().algorithm().parameterDefinitions() if
+                     not p.isDestination() and not p.flags() & QgsProcessingParameterDefinition.FlagHidden][index]
+            return self.truncatedTextForItem(param.description())
+        elif edge == Qt.BottomEdge:
+            out = self.component().algorithm().outputDefinitions()[index]
+            return self.truncatedTextForItem(out.description())
+
     def foldInput(self, folded):
-        self.component().setParametersCollapsed(folded)
+        self.component().setLinksCollapsed(Qt.TopEdge, folded)
         # also need to update the model's stored component
-        self.model().childAlgorithm(self.component().childId()).setParametersCollapsed(folded)
+        self.model().childAlgorithm(self.component().childId()).setLinksCollapsed(Qt.TopEdge, folded)
         self.prepareGeometryChange()
         if self.component().algorithm().outputDefinitions():
-            pt = self.getLinkPointForOutput(-1)
+            pt = self.linkPoint(Qt.BottomEdge, -1)
             pt = QPointF(0, pt.y())
             self.outButton.position = pt
 
@@ -295,9 +282,9 @@ class ModelerChildAlgorithmGraphicItem(ModelerGraphicItem):
         self.update()
 
     def foldOutput(self, folded):
-        self.component().setOutputsCollapsed(folded)
+        self.component().setLinksCollapsed(Qt.BottomEdge, folded)
         # also need to update the model's stored component
-        self.model().childAlgorithm(self.component().childId()).setOutputsCollapsed(folded)
+        self.model().childAlgorithm(self.component().childId()).setLinksCollapsed(Qt.BottomEdge, folded)
         self.prepareGeometryChange()
         self.updateArrowPaths.emit()
         self.update()
@@ -315,11 +302,11 @@ class ModelerChildAlgorithmGraphicItem(ModelerGraphicItem):
     def updateAlgorithm(self, alg):
         existing_child = self.model().childAlgorithm(alg.childId())
         alg.setPosition(existing_child.position())
-        alg.setParametersCollapsed(existing_child.parametersCollapsed())
-        alg.setOutputsCollapsed(existing_child.outputsCollapsed())
+        alg.setLinksCollapsed(Qt.TopEdge, existing_child.linksCollapsed(Qt.TopEdge))
+        alg.setLinksCollapsed(Qt.BottomEdge, existing_child.linksCollapsed(Qt.BottomEdge))
         for i, out in enumerate(alg.modelOutputs().keys()):
-            alg.modelOutput(out).setPosition(alg.modelOutput(out).position() or
-                                             alg.position() + QPointF(
+            alg.modelOutput(out).setPosition(alg.modelOutput(out).position()
+                                             or alg.position() + QPointF(
                 self.component().size().width(),
                 (i + 1.5) * self.component().size().height()))
         self.model().setChildAlgorithm(alg)

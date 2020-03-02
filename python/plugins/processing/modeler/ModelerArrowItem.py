@@ -46,8 +46,6 @@
 ***************************************************************************
 """
 
-from qgis.core import (QgsProcessingModelChildAlgorithm,
-                       QgsProcessingModelParameter)
 from qgis.gui import (
     QgsModelGraphicsScene,
     QgsModelComponentGraphicItem
@@ -59,19 +57,21 @@ from qgis.PyQt.QtGui import QPen, QPainterPath, QPolygonF, QPainter, QPalette
 
 class ModelerArrowItem(QGraphicsPathItem):
 
-    def __init__(self, startItem, startIndex, endItem, endIndex,
+    def __init__(self, startItem, start_edge, startIndex, endItem, end_edge, endIndex,
                  parent=None):
         super(ModelerArrowItem, self).__init__(parent)
         self.arrowHead = QPolygonF()
         self.endIndex = endIndex
         self.startIndex = startIndex
+        self.start_edge = start_edge
         self.startItem = startItem
         self.endItem = endItem
+        self.end_edge = end_edge
         self.endPoints = []
         self.setFlag(QGraphicsItem.ItemIsSelectable, False)
         self.myColor = QApplication.palette().color(QPalette.WindowText)
         self.myColor.setAlpha(150)
-        self.setPen(QPen(self.myColor, 1, Qt.SolidLine,
+        self.setPen(QPen(self.myColor, 4, Qt.SolidLine,
                          Qt.RoundCap, Qt.RoundJoin))
         self.setZValue(QgsModelGraphicsScene.ArrowLink)
 
@@ -84,44 +84,59 @@ class ModelerArrowItem(QGraphicsPathItem):
     def updatePath(self):
         self.endPoints = []
         controlPoints = []
-        endPt = self.endItem.getLinkPointForParameter(self.endIndex)
-        if isinstance(self.startItem.component(), QgsProcessingModelParameter):
-            startPt = self.startItem.getLinkPointForParameter(self.startIndex)
-        else:
-            startPt = self.startItem.getLinkPointForOutput(self.startIndex)
-        if isinstance(self.endItem.component(), QgsProcessingModelParameter):
-            endPt = self.endItem.getLinkPointForParameter(self.startIndex)
 
-        if isinstance(self.startItem.component(), QgsProcessingModelChildAlgorithm):
-            if self.startIndex != -1:
-                controlPoints.append(self.startItem.pos() + startPt)
-                controlPoints.append(self.startItem.pos() + startPt +
-                                     QPointF(self.startItem.component().size().width() / 3, 0))
-                controlPoints.append(self.endItem.pos() + endPt -
-                                     QPointF(self.endItem.component().size().width() / 3, 0))
-                controlPoints.append(self.endItem.pos() + endPt)
-                pt = QPointF(self.startItem.pos() + startPt + QPointF(-3, -3))
-                self.endPoints.append(pt)
-                pt = QPointF(self.endItem.pos() + endPt + QPointF(-3, -3))
-                self.endPoints.append(pt)
+        # is there a fixed start or end point?
+        startPt = None
+        if self.start_edge is not None and self.startIndex is not None:
+            startPt = self.startItem.linkPoint(self.start_edge, self.startIndex)
+        endPt = None
+        if self.end_edge is not None and self.endIndex is not None:
+            endPt = self.endItem.linkPoint(self.end_edge, self.endIndex)
+
+        if startPt is None:
+            # find closest edge
+            if endPt is None:
+                pt, edge = self.startItem.calculateAutomaticLinkPoint(self.endItem)
             else:
-                # Case where there is a dependency on an algorithm not
-                # on an output
-                controlPoints.append(self.startItem.pos() + startPt)
-                controlPoints.append(self.startItem.pos() + startPt +
-                                     QPointF(self.startItem.component().size().width() / 3, 0))
-                controlPoints.append(self.endItem.pos() + endPt -
-                                     QPointF(self.endItem.component().size().height() / 3, 0))
-                controlPoints.append(self.endItem.pos() + endPt)
+                pt, edge = self.startItem.calculateAutomaticLinkPoint(endPt + self.endItem.pos())
+            controlPoints.append(pt)
+            self.endPoints.append(pt)
+            if edge == Qt.LeftEdge:
+                controlPoints.append(pt - QPointF(50, 0))
+            elif edge == Qt.RightEdge:
+                controlPoints.append(pt + QPointF(50, 0))
+            elif edge == Qt.BottomEdge:
+                controlPoints.append(pt + QPointF(0, 30))
+            else:
+                controlPoints.append(pt + QPointF(0, -30))
         else:
-            controlPoints.append(self.startItem.pos())
-            controlPoints.append(self.startItem.pos() +
+            self.endPoints.append(self.startItem.pos() + startPt)
+            controlPoints.append(self.startItem.pos() + startPt)
+            controlPoints.append(self.startItem.pos() + startPt +
                                  QPointF(self.startItem.component().size().width() / 3, 0))
+
+        if endPt is None:
+            # find closest edge
+            if startPt is None:
+                pt, edge = self.endItem.calculateAutomaticLinkPoint(self.startItem)
+            else:
+                pt, edge = self.endItem.calculateAutomaticLinkPoint(startPt + self.startItem.pos())
+            if edge == Qt.LeftEdge:
+                controlPoints.append(pt - QPointF(50, 0))
+            elif edge == Qt.RightEdge:
+                controlPoints.append(pt + QPointF(50, 0))
+            elif edge == Qt.BottomEdge:
+                controlPoints.append(pt + QPointF(0, 30))
+            else:
+                controlPoints.append(pt + QPointF(0, -30))
+            controlPoints.append(pt)
+            self.endPoints.append(pt)
+        else:
+            self.endPoints.append(self.endItem.pos() + endPt)
             controlPoints.append(self.endItem.pos() + endPt -
                                  QPointF(self.endItem.component().size().width() / 3, 0))
             controlPoints.append(self.endItem.pos() + endPt)
-            pt = QPointF(self.endItem.pos() + endPt + QPointF(-3, -3))
-            self.endPoints.append(pt)
+
         path = QPainterPath()
         path.moveTo(controlPoints[0])
         path.cubicTo(*controlPoints[1:])
@@ -139,12 +154,13 @@ class ModelerArrowItem(QGraphicsPathItem):
 
         myPen = self.pen()
         myPen.setColor(color)
+        myPen.setWidth(1)
         painter.setPen(myPen)
         painter.setBrush(color)
         painter.setRenderHint(QPainter.Antialiasing)
 
         for point in self.endPoints:
-            painter.drawEllipse(point.x(), point.y(), 6, 6)
+            painter.drawEllipse(point, 3.0, 3.0)
 
         painter.setBrush(Qt.NoBrush)
         painter.drawPath(self.path())

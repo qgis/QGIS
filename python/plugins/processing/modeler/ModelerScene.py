@@ -74,14 +74,14 @@ class ModelerScene(QgsModelGraphicsScene):
                 items.extend(self.getItemsFromParamValue(v, child_id, context))
         elif isinstance(value, QgsProcessingModelChildParameterSource):
             if value.source() == QgsProcessingModelChildParameterSource.ModelParameter:
-                items.append((self.paramItems[value.parameterName()], 0))
+                items.append((self.paramItems[value.parameterName()], None, 0))
             elif value.source() == QgsProcessingModelChildParameterSource.ChildOutput:
                 outputs = self.model.childAlgorithm(value.outputChildId()).algorithm().outputDefinitions()
                 for i, out in enumerate(outputs):
                     if out.name() == value.outputName():
                         break
                 if value.outputChildId() in self.algItems:
-                    items.append((self.algItems[value.outputChildId()], i))
+                    items.append((self.algItems[value.outputChildId()], Qt.BottomEdge, i))
             elif value.source() == QgsProcessingModelChildParameterSource.Expression:
                 variables = self.model.variablesForChildAlgorithm(child_id, context)
                 exp = QgsExpression(value.expression())
@@ -128,7 +128,7 @@ class ModelerScene(QgsModelGraphicsScene):
                 if input_name in self.paramItems and parent_name in self.paramItems:
                     input_item = self.paramItems[input_name]
                     parent_item = self.paramItems[parent_name]
-                    arrow = ModelerArrowItem(parent_item, -1, input_item, -1)
+                    arrow = ModelerArrowItem(parent_item, None, None, input_item, None, None)
 
                     input_item.repaintArrows.connect(arrow.update)
                     input_item.updateArrowPaths.connect(arrow.updatePath)
@@ -161,8 +161,8 @@ class ModelerScene(QgsModelGraphicsScene):
                         sources = []
                     for source in sources:
                         sourceItems = self.getItemsFromParamValue(source, alg.childId(), context)
-                        for sourceItem, sourceIdx in sourceItems:
-                            arrow = ModelerArrowItem(sourceItem, sourceIdx, self.algItems[alg.childId()], idx)
+                        for sourceItem, sourceEdge, sourceIdx in sourceItems:
+                            arrow = ModelerArrowItem(sourceItem, sourceEdge, sourceIdx, self.algItems[alg.childId()], Qt.TopEdge, idx)
 
                             sourceItem.repaintArrows.connect(arrow.update)
                             sourceItem.updateArrowPaths.connect(arrow.updatePath)
@@ -174,8 +174,8 @@ class ModelerScene(QgsModelGraphicsScene):
                             self.addItem(arrow)
                         idx += 1
             for depend in alg.dependencies():
-                arrow = ModelerArrowItem(self.algItems[depend], -1,
-                                         self.algItems[alg.childId()], -1)
+                arrow = ModelerArrowItem(self.algItems[depend], None, None,
+                                         self.algItems[alg.childId()], None, None)
                 self.algItems[depend].repaintArrows.connect(arrow.update)
                 self.algItems[depend].updateArrowPaths.connect(arrow.updatePath)
 
@@ -208,12 +208,11 @@ class ModelerScene(QgsModelGraphicsScene):
                             break
 
                     if pos is None:
-                        pos = (alg.position() + QPointF(alg.size().width(), 0) +
-                               self.algItems[alg.childId()].getLinkPointForOutput(idx))
+                        pos = (alg.position() + QPointF(alg.size().width(), 0)
+                               + self.algItems[alg.childId()].linkPoint(Qt.BottomEdge, idx))
                     item.setPos(pos)
                     outputItems[key] = item
-                    arrow = ModelerArrowItem(self.algItems[alg.childId()], idx, item,
-                                             -1)
+                    arrow = ModelerArrowItem(self.algItems[alg.childId()], Qt.BottomEdge, idx, item, None, None)
 
                     self.algItems[alg.childId()].repaintArrows.connect(arrow.update)
                     self.algItems[alg.childId()].updateArrowPaths.connect(arrow.updatePath)

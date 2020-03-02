@@ -91,6 +91,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
     QVariant itemChange( GraphicsItemChange change, const QVariant &value ) override;
+    QRectF boundingRect() const override;
 
     /**
      * Returns the rectangle representing the body of the item.
@@ -115,6 +116,39 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Returns the item's current state.
      */
     State state() const;
+
+    /**
+     * Returns the number of link points associated with the component on the specified \a edge.
+     */
+    virtual int linkPointCount( Qt::Edge edge ) const;
+
+    /**
+     * Returns the text to use for the link point with the specified \a index on the specified \a edge.
+     */
+    virtual QString linkPointText( Qt::Edge edge, int index ) const;
+
+    /**
+     * Returns the location of the link point with the specified \a index on the specified \a edge.
+     */
+    QPointF linkPoint( Qt::Edge edge, int index ) const;
+
+    /**
+     * Returns the best link point to use for a link originating at a specified \a other item.
+     *
+     * \param other item at other end of link
+     * \param edge item edge for calculated best link point
+     * \returns calculated link point in item coordinates.
+     */
+    QPointF calculateAutomaticLinkPoint( QgsModelComponentGraphicItem *other, Qt::Edge &edge SIP_OUT ) const;
+
+    /**
+     * Returns the best link point to use for a link originating at a specified \a other point.
+     *
+     * \param other point for other end of link (in scene coordinates)
+     * \param edge item edge for calculated best link point
+     * \returns calculated link point in item coordinates.
+     */
+    QPointF calculateAutomaticLinkPoint( const QPointF &point, Qt::Edge &edge SIP_OUT ) const;
 
   signals:
 
