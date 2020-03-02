@@ -71,6 +71,21 @@ Sets the ``size`` of the model component within the graphical modeler.
 .. versionadded:: 3.14
 %End
 
+    bool linksCollapsed( Qt::Edge edge ) const;
+%Docstring
+Returns ``True`` if the link points for the specified ``edge`` should be shown collapsed or not.
+
+.. seealso:: :py:func:`setLinksCollapsed`
+%End
+
+    void setLinksCollapsed( Qt::Edge edge, bool collapsed );
+%Docstring
+Sets whether the link points for the specified ``edge`` for this component should be shown collapsed
+in the graphical modeler.
+
+.. seealso:: :py:func:`linksCollapsed`
+%End
+
     virtual QgsProcessingModelComponent *clone() = 0 /Factory/;
 %Docstring
 Clones the component.

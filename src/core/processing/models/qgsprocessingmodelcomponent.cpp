@@ -53,6 +53,41 @@ void QgsProcessingModelComponent::setSize( QSizeF size )
   mSize = size;
 }
 
+bool QgsProcessingModelComponent::linksCollapsed( Qt::Edge edge ) const
+{
+  switch ( edge )
+  {
+    case Qt::TopEdge:
+      return mTopEdgeLinksCollapsed;
+
+    case Qt::BottomEdge:
+      return mBottomEdgeLinksCollapsed;
+
+    case Qt::LeftEdge:
+    case Qt::RightEdge:
+      return false;
+  }
+  return false;
+}
+
+void QgsProcessingModelComponent::setLinksCollapsed( Qt::Edge edge, bool collapsed )
+{
+  switch ( edge )
+  {
+    case Qt::TopEdge:
+      mTopEdgeLinksCollapsed = collapsed;
+      break;
+
+    case Qt::BottomEdge:
+      mBottomEdgeLinksCollapsed = collapsed;
+      break;
+
+    case Qt::LeftEdge:
+    case Qt::RightEdge:
+      break;
+  }
+}
+
 void QgsProcessingModelComponent::saveCommonProperties( QVariantMap &map ) const
 {
   map.insert( QStringLiteral( "component_pos_x" ), mPosition.x() );
@@ -60,6 +95,8 @@ void QgsProcessingModelComponent::saveCommonProperties( QVariantMap &map ) const
   map.insert( QStringLiteral( "component_description" ), mDescription );
   map.insert( QStringLiteral( "component_width" ), mSize.width() );
   map.insert( QStringLiteral( "component_height" ), mSize.height() );
+  map.insert( QStringLiteral( "parameters_collapsed" ), mTopEdgeLinksCollapsed );
+  map.insert( QStringLiteral( "outputs_collapsed" ), mBottomEdgeLinksCollapsed );
 }
 
 void QgsProcessingModelComponent::restoreCommonProperties( const QVariantMap &map )
@@ -71,6 +108,8 @@ void QgsProcessingModelComponent::restoreCommonProperties( const QVariantMap &ma
   mDescription = map.value( QStringLiteral( "component_description" ) ).toString();
   mSize.setWidth( map.value( QStringLiteral( "component_width" ), QString::number( DEFAULT_COMPONENT_WIDTH ) ).toDouble() );
   mSize.setHeight( map.value( QStringLiteral( "component_height" ), QString::number( DEFAULT_COMPONENT_HEIGHT ) ).toDouble() );
+  mTopEdgeLinksCollapsed = map.value( QStringLiteral( "parameters_collapsed" ) ).toBool();
+  mBottomEdgeLinksCollapsed = map.value( QStringLiteral( "outputs_collapsed" ) ).toBool();
 }
 
 ///@endcond
