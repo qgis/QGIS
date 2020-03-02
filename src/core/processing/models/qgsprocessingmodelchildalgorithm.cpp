@@ -56,6 +56,11 @@ QgsProcessingModelChildAlgorithm &QgsProcessingModelChildAlgorithm::operator=( c
   return *this;
 }
 
+QgsProcessingModelChildAlgorithm *QgsProcessingModelChildAlgorithm::clone()
+{
+  return new QgsProcessingModelChildAlgorithm( *this );
+}
+
 const QgsProcessingAlgorithm *QgsProcessingModelChildAlgorithm::algorithm() const
 {
   return mAlgorithm.get();

@@ -191,7 +191,7 @@ It supports the following formats:
 - "EPSG:<code>" - handled with createFromOgcWms()
 - "POSTGIS:<srid>" - handled with createFromSrid()
 - "INTERNAL:<srsid>" - handled with createFromSrsId()
-- "PROJ4:<proj4>" - handled with createFromProj()
+- "PROJ:<proj>" - handled with createFromProj()
 - "WKT:<wkt>" - handled with createFromWkt()
 
 If no prefix is specified, WKT definition is assumed.
@@ -485,7 +485,7 @@ It supports the following formats:
 - "EPSG:<code>" - handled with createFromOgcWms()
 - "POSTGIS:<srid>" - handled with createFromSrid()
 - "INTERNAL:<srsid>" - handled with createFromSrsId()
-- "PROJ4:<proj4>" - handled with createFromProj()
+- "PROJ:<proj>" - handled with createFromProj()
 - "WKT:<wkt>" - handled with createFromWkt()
 
 If no prefix is specified, WKT definition is assumed.
@@ -648,7 +648,14 @@ Returns the descriptive name of the CRS, e.g., "WGS 84" or "GDA 94 / Vicgrid94".
 .. seealso:: :py:func:`userFriendlyIdentifier`
 %End
 
-    QString userFriendlyIdentifier( bool shortString = false ) const;
+    enum IdentifierType
+    {
+      ShortString,
+      MediumString,
+      FullString,
+    };
+
+    QString userFriendlyIdentifier( IdentifierType type = MediumString ) const;
 %Docstring
 Returns a user friendly identifier for the CRS.
 
@@ -658,8 +665,6 @@ of the CRS.
 
 In most cases this is the best method to use when showing a friendly identifier for the CRS to a
 user.
-
-If ``shortString`` is ``True`` than an abbreviated identifier will be returned.
 
 .. seealso:: :py:func:`description`
 

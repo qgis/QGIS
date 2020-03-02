@@ -88,7 +88,8 @@ from qgis.gui import (QgsMessageBar,
                       QgsProcessingToolboxProxyModel,
                       QgsProcessingParameterDefinitionDialog,
                       QgsVariableEditorWidget,
-                      QgsProcessingParameterWidgetContext)
+                      QgsProcessingParameterWidgetContext,
+                      QgsModelGraphicsScene)
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
@@ -783,7 +784,10 @@ class ModelerDialog(BASE, WIDGET):
         self.scene = ModelerScene(self, dialog=self)
         self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE,
                                        self.CANVAS_SIZE))
-        self.scene.paintModel(self.model, controls)
+
+        if not controls:
+            self.scene.setFlag(QgsModelGraphicsScene.FlagHideControls)
+        self.scene.paintModel(self.model)
         self.view.setScene(self.scene)
 
     def addInput(self):
@@ -891,9 +895,13 @@ class ModelerDialog(BASE, WIDGET):
             else:
                 alg.setPosition(pos)
             from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
-            for i, out in enumerate(alg.modelOutputs()):
-                alg.modelOutput(out).setPosition(alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, (i + 1.5) *
-                                                                          ModelerGraphicItem.BOX_HEIGHT))
+
+            output_offset_x = alg.size().width()
+            output_offset_y = 1.5 * alg.size().height()
+            for out in alg.modelOutputs():
+                alg.modelOutput(out).setPosition(alg.position() + QPointF(output_offset_x, output_offset_y))
+                output_offset_y += 1.5 * alg.modelOutput(out).size().height()
+
             self.model.addChildAlgorithm(alg)
             self.repaintModel()
             self.hasChanged = True

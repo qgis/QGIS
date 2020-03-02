@@ -626,7 +626,8 @@ void QgsVectorLayerProperties::syncToLayer()
   mSimplifyDrawingSpinBox->setValue( simplifyMethod.threshold() );
 
   QString remark = QStringLiteral( " (%1)" ).arg( tr( "Not supported" ) );
-  if ( !( mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) )
+  const QgsVectorDataProvider *provider = mLayer->dataProvider();
+  if ( !( provider && ( provider->capabilities() & QgsVectorDataProvider::SimplifyGeometries ) ) )
   {
     mSimplifyDrawingAtProvider->setChecked( false );
     mSimplifyDrawingAtProvider->setEnabled( false );

@@ -30,6 +30,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/src/app
+  ${CMAKE_SOURCE_DIR}/src/app/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/app/labeling
   ${CMAKE_SOURCE_DIR}/src/app/mesh
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
@@ -137,3 +138,4 @@ ADD_QGIS_TEST(layoutvaliditychecks testqgsapplayoutvaliditychecks.cpp)
 ADD_QGIS_TEST(meshcalculator testqgsmeshcalculatordialog.cpp)
 ADD_QGIS_TEST(meshlayerpropertiesdialog testqgsmeshlayerpropertiesdialog.cpp)
 ADD_QGIS_TEST(gpsinformationwidget testqgsgpsinformationwidget.cpp)
+ADD_QGIS_TEST(labelpropertydialog testqgslabelpropertydialog.cpp)

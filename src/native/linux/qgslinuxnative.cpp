@@ -222,7 +222,7 @@ QDBusArgument &operator<<( QDBusArgument &arg, const QImage &image )
   arg << i.depth() / channels;
   arg << channels;
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
-  arg << QByteArray( reinterpret_cast<const char *>( i.bits() ), i.numBytes() );
+  arg << QByteArray( reinterpret_cast<const char *>( i.bits() ), i.byteCount() );
 #else
   arg << QByteArray( reinterpret_cast<const char *>( i.bits() ), i.sizeInBytes() );
 #endif

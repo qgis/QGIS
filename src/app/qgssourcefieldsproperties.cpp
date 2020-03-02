@@ -410,8 +410,10 @@ void QgsSourceFieldsProperties::attributesListCellPressed( int /*row*/, int /*co
 //NICE FUNCTIONS
 void QgsSourceFieldsProperties::updateButtons()
 {
-
-  int cap = mLayer->dataProvider()->capabilities();
+  QgsVectorDataProvider *provider = mLayer->dataProvider();
+  if ( !provider )
+    return;
+  const int cap = provider->capabilities();
 
   mToggleEditingButton->setEnabled( ( cap & QgsVectorDataProvider::ChangeAttributeValues ) && !mLayer->readOnly() );
 

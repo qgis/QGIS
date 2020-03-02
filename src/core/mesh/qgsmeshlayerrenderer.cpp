@@ -49,8 +49,19 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContex
   Q_ASSERT( layer->dataProvider() );
 
   mNativeMesh = *( layer->nativeMesh() );
-  mTriangularMesh = *( layer->triangularMesh() );
   mLayerExtent = layer->extent();
+  //handle level of details of mesh
+  QgsMeshSimplificationSettings simplificationSettings = layer->meshSimplificationSettings();
+  if ( simplificationSettings.isEnabled() )
+  {
+    double triangleSize = simplificationSettings.meshResolution() * context.mapToPixel().mapUnitsPerPixel();
+    mTriangularMesh = *( layer->triangularMesh( triangleSize ) );
+    mIsMeshSimplificationActive = true;
+  }
+  else
+  {
+    mTriangularMesh = *( layer->triangularMesh() );
+  }
 
   copyScalarDatasetValues( layer );
   copyVectorDatasetValues( layer );
@@ -67,7 +78,7 @@ void QgsMeshLayerRenderer::calculateOutputSize()
 {
   // figure out image size
   QgsRenderContext &context = *renderContext();
-  QgsRectangle extent = context.extent();  // this is extent in layer's coordinate system - but we need it in map coordinate system
+  QgsRectangle extent = context.mapExtent();
   QgsMapToPixel mapToPixel = context.mapToPixel();
   QgsPointXY topleft = mapToPixel.transform( extent.xMinimum(), extent.yMaximum() );
   QgsPointXY bottomright = mapToPixel.transform( extent.xMaximum(), extent.yMinimum() );
@@ -247,7 +258,7 @@ void QgsMeshLayerRenderer::renderMesh()
     return;
 
   // triangular mesh
-  const QList<int> trianglesInExtent = mTriangularMesh.faceIndexesForRectangle( renderContext()->extent() );
+  const QList<int> trianglesInExtent = mTriangularMesh.faceIndexesForRectangle( renderContext()->mapExtent() );
   if ( mRendererSettings.triangularMeshSettings().isEnabled() )
   {
     renderMesh( mRendererSettings.triangularMeshSettings(),
@@ -256,10 +267,11 @@ void QgsMeshLayerRenderer::renderMesh()
   }
 
   // native mesh
-  if ( mRendererSettings.nativeMeshSettings().isEnabled() )
+  if ( mRendererSettings.nativeMeshSettings().isEnabled() && mTriangularMesh.levelOfDetail() == 0 )
   {
     const QList<int> nativeFacesInExtent = QgsMeshUtils::nativeFacesFromTriangles( trianglesInExtent,
                                            mTriangularMesh.trianglesToNativeFaces() );
+
     renderMesh( mRendererSettings.nativeMeshSettings(),
                 mNativeMesh.faces,
                 nativeFacesInExtent );
@@ -344,12 +356,13 @@ void QgsMeshLayerRenderer::renderScalarDataset()
                                          mScalarDataOnVertices,
                                          context,
                                          mOutputSize );
+  interpolator.setSpatialIndexActive( mIsMeshSimplificationActive );
   QgsSingleBandPseudoColorRenderer renderer( &interpolator, 0, sh );  // takes ownership of sh
   renderer.setClassificationMin( scalarSettings.classificationMinimum() );
   renderer.setClassificationMax( scalarSettings.classificationMaximum() );
   renderer.setOpacity( scalarSettings.opacity() );
 
-  std::unique_ptr<QgsRasterBlock> bl( renderer.block( 0, context.extent(), mOutputSize.width(), mOutputSize.height(), mFeedback.get() ) );
+  std::unique_ptr<QgsRasterBlock> bl( renderer.block( 0, context.mapExtent(), mOutputSize.width(), mOutputSize.height(), mFeedback.get() ) );
   QImage img = bl->image();
 
   context.painter()->drawImage( 0, 0, img );

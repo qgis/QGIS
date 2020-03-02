@@ -665,20 +665,20 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSMaxAtlasFeaturesSpinBox->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), 1 ) );
 
   QString defaultValueToolTip = tr( "In case of no other information to evaluate the map unit sized symbols, it uses default scale (on projected CRS) or default map units per mm (on geographic CRS)." );
-  mWMSDefaultMapUnitsPerMm = new QDoubleSpinBox();
-  mWMSDefaultMapUnitsPerMm->setDecimals( 4 );
-  mWMSDefaultMapUnitsPerMm->setSingleStep( 0.001 );
-  mWMSDefaultMapUnitsPerMm->setValue( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) );
-  mWMSDefaultMapUnitsPerMm->setToolTip( defaultValueToolTip );
-  mWMSDefaultMapUnitScale = new QgsScaleWidget();
-  mWMSDefaultMapUnitScale->setScale( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) * QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters ) );
-  mWMSDefaultMapUnitScale->setToolTip( defaultValueToolTip );
   if ( QgsProject::instance()->crs().isGeographic() )
   {
+    mWMSDefaultMapUnitsPerMm = new QDoubleSpinBox();
+    mWMSDefaultMapUnitsPerMm->setDecimals( 4 );
+    mWMSDefaultMapUnitsPerMm->setSingleStep( 0.001 );
+    mWMSDefaultMapUnitsPerMm->setValue( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) );
+    mWMSDefaultMapUnitsPerMm->setToolTip( defaultValueToolTip );
     mWMSDefaultMapUnitsPerMmLayout->addWidget( mWMSDefaultMapUnitsPerMm );
   }
   else
   {
+    mWMSDefaultMapUnitScale = new QgsScaleWidget();
+    mWMSDefaultMapUnitScale->setScale( QgsProject::instance()->readDoubleEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), 1 ) * QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters ) );
+    mWMSDefaultMapUnitScale->setToolTip( defaultValueToolTip );
     mWMSDefaultMapUnitsPerMmLayout->addWidget( mWMSDefaultMapUnitScale );
     mWMSDefaultMapUnitsPerMmLabel->setText( tr( "Default scale for legend" ) );
   }
@@ -766,9 +766,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   QStringList wfstInsertLayerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "WFSTLayers" ), QStringLiteral( "Insert" ) );
   QStringList wfstDeleteLayerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "WFSTLayers" ), QStringLiteral( "Delete" ) );
 
-  QSignalMapper *smPublied = new QSignalMapper( this );
-  connect( smPublied, SIGNAL( mapped( int ) ), this, SLOT( cbxWFSPubliedStateChanged( int ) ) );
-
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
 
   twWFSLayers->setColumnCount( 6 );
@@ -795,9 +792,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       QCheckBox *cbp = new QCheckBox();
       cbp->setChecked( wfsLayerIdList.contains( currentLayer->id() ) );
       twWFSLayers->setCellWidget( j, 1, cbp );
-
-      smPublied->setMapping( cbp, j );
-      connect( cbp, SIGNAL( stateChanged( int ) ), smPublied, SLOT( map() ) );
+      connect( cbp, &QCheckBox::stateChanged, this, [ = ] { cbxWCSPubliedStateChanged( j ); } );
 
       QSpinBox *psb = new QSpinBox();
       psb->setValue( QgsProject::instance()->readNumEntry( QStringLiteral( "WFSLayersPrecision" ), "/" + currentLayer->id(), 8 ) );
@@ -833,9 +828,6 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWCSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WCSUrl" ), QStringLiteral( "/" ), QString() ) );
   QStringList wcsLayerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "WCSLayers" ), QStringLiteral( "/" ) );
 
-  QSignalMapper *smWcsPublied = new QSignalMapper( this );
-  connect( smWcsPublied, SIGNAL( mapped( int ) ), this, SLOT( cbxWCSPubliedStateChanged( int ) ) );
-
   twWCSLayers->setColumnCount( 2 );
   twWCSLayers->horizontalHeader()->setVisible( true );
   twWCSLayers->setRowCount( mapLayers.size() );
@@ -860,8 +852,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       cbp->setChecked( wcsLayerIdList.contains( currentLayer->id() ) );
       twWCSLayers->setCellWidget( j, 1, cbp );
 
-      smWcsPublied->setMapping( cbp, j );
-      connect( cbp, SIGNAL( stateChanged( int ) ), smWcsPublied, SLOT( map() ) );
+      connect( cbp, &QCheckBox::stateChanged, this, [ = ] { cbxWCSPubliedStateChanged( j ); } );
 
       j++;
     }
@@ -1339,17 +1330,15 @@ void QgsProjectProperties::apply()
   int maxAtlasFeatures = mWMSMaxAtlasFeaturesSpinBox->value();
   QgsProject::instance()->writeEntry( QStringLiteral( "WMSMaxAtlasFeatures" ), QStringLiteral( "/" ), maxAtlasFeatures );
 
-  double defaultMapUnitsPerMm;
-  if ( QgsProject::instance()->crs().isGeographic() )
+  if ( QgsProject::instance()->crs().isGeographic() && mWMSDefaultMapUnitsPerMm )
   {
-    defaultMapUnitsPerMm = mWMSDefaultMapUnitsPerMm->value();
+    QgsProject::instance()->writeEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), mWMSDefaultMapUnitsPerMm->value() );
   }
-  else
+  else if ( mWMSDefaultMapUnitScale )
   {
-    defaultMapUnitsPerMm = mWMSDefaultMapUnitScale->scale() / QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters );
+    double defaultMapUnitsPerMm = mWMSDefaultMapUnitScale->scale() / QgsUnitTypes::fromUnitToUnitFactor( QgsProject::instance()->crs().mapUnits(), QgsUnitTypes::DistanceMillimeters );
+    QgsProject::instance()->writeEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), defaultMapUnitsPerMm );
   }
-
-  QgsProject::instance()->writeEntry( QStringLiteral( "WMSDefaultMapUnitsPerMm" ), QStringLiteral( "/" ), defaultMapUnitsPerMm );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSUrl" ), QStringLiteral( "/" ), mWMTSUrlLineEdit->text() );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSMinScale" ), QStringLiteral( "/" ), mWMTSMinScaleLineEdit->value() );

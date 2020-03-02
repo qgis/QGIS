@@ -42,7 +42,7 @@ namespace QTest
   // pretty printing of geometries in comparison tests
   template<> char *toString( const QgsGeometry &geom )
   {
-    QByteArray ba = geom.asWkt().toAscii();
+    QByteArray ba = geom.asWkt().toLatin1();
     return qstrdup( ba.data() );
   }
 }
@@ -68,6 +68,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
     void testZ();
     void testZMSnapping();
     void testTopologicalEditingZ();
+    void testCloseLine();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -80,6 +81,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
     QgsVectorLayer *mLayerPointZM = nullptr;
     QgsVectorLayer *mLayerTopoZ = nullptr;
     QgsVectorLayer *mLayerLine2D = nullptr;
+    QgsVectorLayer *mLayerCloseLine = nullptr;
     QgsFeatureId mFidLineF1 = 0;
 };
 
@@ -136,6 +138,11 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   mLayerLineZ->startEditing();
   mLayerLineZ->addFeature( lineF2 );
   QCOMPARE( mLayerLineZ->featureCount(), ( long )1 );
+
+  mLayerCloseLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line Closed" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerCloseLine->isValid() );
+  mLayerCloseLine->startEditing();
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerCloseLine );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
@@ -481,6 +488,24 @@ void TestQgsMapToolAddFeatureLine::testTopologicalEditingZ()
   cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );
   cfg.project()->setTopologicalEditing( topologicalEditing );
+}
+
+void TestQgsMapToolAddFeatureLine::testCloseLine()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerCloseLine );
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 5, 1, Qt::LeftButton );
+  utils.mouseClick( 5, 5, Qt::LeftButton );
+  utils.keyClick( Qt::Key_C );
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QString wkt = "LineString (1 1, 5 1, 5 5, 1 1)";
+  QCOMPARE( mLayerCloseLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerCloseLine->undoStack()->undo();
 }
 QGSTEST_MAIN( TestQgsMapToolAddFeatureLine )
 #include "testqgsmaptooladdfeatureline.moc"

@@ -1024,6 +1024,11 @@ QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
 
 QString QgsSpatiaLiteProvider::defaultValueClause( int fieldIndex ) const
 {
+  if ( ! mAttributeFields.exists( fieldIndex ) )
+  {
+    return QString();
+  }
+
   if ( mAttributeFields.at( fieldIndex ).name() == mPrimaryKey && mPrimaryKeyAutoIncrement )
   {
     return tr( "Autogenerate" );
@@ -4006,13 +4011,13 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   char *errMsg = nullptr;
   bool toCommit = false;
   QString baseValues;
-  QString separator;
   int ia, ret;
   // SQL for single row
   QString sql;
 
   if ( flist.isEmpty() )
     return true;
+
   QgsAttributes attributevec = flist[0].attributes();
 
   ret = sqlite3_exec( mSqliteHandle, "BEGIN", nullptr, nullptr, &errMsg );
@@ -4022,18 +4027,20 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
     QString baseSql { QStringLiteral( "INSERT INTO %1(" ).arg( QgsSqliteUtils::quotedIdentifier( mTableName ) ) };
     baseValues = QStringLiteral( ") VALUES (" );
-    separator.clear();
+
+    QChar baseSeparator { ' ' };
 
     if ( !mGeometryColumn.isEmpty() )
     {
-      baseSql += separator + QgsSqliteUtils::quotedIdentifier( mGeometryColumn );
-      baseValues += separator + geomParam();
-      separator = ',';
+      baseSql += QgsSqliteUtils::quotedIdentifier( mGeometryColumn );
+      baseValues += geomParam();
+      baseSeparator = ',';
     }
 
     for ( QgsFeatureList::iterator feature = flist.begin(); feature != flist.end(); ++feature )
     {
 
+      QChar separator { baseSeparator };
       QString values { baseValues };
       sql = baseSql;
 
@@ -4045,7 +4052,9 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       for ( int i = 0; i < attributevec.count(); ++i )
       {
-        if ( mDefaultValues.contains( i ) && mDefaultValues.value( i ) == attributevec.at( i ).toString() )
+        if ( mDefaultValues.contains( i ) && (
+               mDefaultValues.value( i ) == attributevec.at( i ).toString() ||
+               ! attributevec.at( i ).isValid() ) )
         {
           defaultIndexes.push_back( i );
           continue;
@@ -4105,7 +4114,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             continue;
           }
 
-          QVariant v = attributevec.at( i );
+          const QVariant v = attributevec.at( i );
 
           // binding values for each attribute
           if ( i >= mAttributeFields.count() )

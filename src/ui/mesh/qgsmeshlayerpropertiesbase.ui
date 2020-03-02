@@ -131,6 +131,15 @@
             <normaloff>:/images/themes/default/3d.svg</normaloff>:/images/themes/default/3d.svg</iconset>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Rendering</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -170,7 +179,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -206,8 +215,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>270</width>
-                <height>175</height>
+                <width>643</width>
+                <height>729</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -337,8 +346,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>634</width>
-                <height>711</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10"/>
@@ -348,6 +357,84 @@ border-radius: 2px;</string>
           </layout>
          </widget>
          <widget class="QWidget" name="mOptsPage_3DView"/>
+         <widget class="QWidget" name="mOptspage_Rendering">
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <widget class="QgsCollapsibleGroupBox" name="mSimplifyMeshGroupBox">
+             <property name="title">
+              <string>Simplify Mesh</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>Reduction Factor</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>Maximal Mesh Resolution</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QSpinBox" name="mSimplifyMeshResolutionSpinBox">
+                <property name="suffix">
+                 <string> pixels/triangle</string>
+                </property>
+                <property name="minimum">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <number>200</number>
+                </property>
+                <property name="value">
+                 <number>5</number>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QDoubleSpinBox" name="mSimplifyReductionFactorSpinBox">
+                <property name="decimals">
+                 <number>1</number>
+                </property>
+                <property name="minimum">
+                 <double>1.100000000000000</double>
+                </property>
+                <property name="maximum">
+                 <double>1000000.000000000000000</double>
+                </property>
+                <property name="value">
+                 <double>10.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -397,6 +484,12 @@ border-radius: 2px;</string>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>

@@ -161,14 +161,33 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
     case QVariant::LongLong:
     case QVariant::ULongLong:
     case QVariant::String:
-    case QVariant::Char:
       element.setAttribute( QStringLiteral( "type" ), QVariant::typeToName( value.type() ) );
       element.setAttribute( QStringLiteral( "value" ), value.toString() );
+      break;
+
+    case QVariant::Char:
+      element.setAttribute( QStringLiteral( "type" ), QVariant::typeToName( value.type() ) );
+      element.setAttribute( QStringLiteral( "value" ), value.isNull() ? QString() : value.toString() );
       break;
 
     case QVariant::Color:
       element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "color" ) );
       element.setAttribute( QStringLiteral( "value" ), value.value< QColor >().isValid() ? QgsSymbolLayerUtils::encodeColor( value.value< QColor >() ) : QString() );
+      break;
+
+    case QVariant::DateTime:
+      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "datetime" ) );
+      element.setAttribute( QStringLiteral( "value" ), value.value< QDateTime >().isValid() ? value.toDateTime().toString( Qt::ISODate ) : QString() );
+      break;
+
+    case QVariant::Date:
+      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "date" ) );
+      element.setAttribute( QStringLiteral( "value" ), value.value< QDate >().isValid() ? value.toDate().toString( Qt::ISODate ) : QString() );
+      break;
+
+    case QVariant::Time:
+      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "time" ) );
+      element.setAttribute( QStringLiteral( "value" ), value.value< QTime >().isValid() ? value.toTime().toString( Qt::ISODate ) : QString() );
       break;
 
     case QVariant::UserType:
@@ -249,6 +268,18 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
   else if ( type == QLatin1String( "color" ) )
   {
     return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QColor() : QgsSymbolLayerUtils::decodeColor( element.attribute( QStringLiteral( "value" ) ) );
+  }
+  else if ( type == QLatin1String( "datetime" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QDateTime() : QDateTime::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
+  }
+  else if ( type == QLatin1String( "date" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QDate() : QDate::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
+  }
+  else if ( type == QLatin1String( "time" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QTime() : QTime::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
   }
   else if ( type == QLatin1String( "Map" ) )
   {

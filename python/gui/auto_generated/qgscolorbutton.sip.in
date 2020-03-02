@@ -415,6 +415,8 @@ Sets color to null.
 
 .. seealso:: :py:func:`setToNoColor`
 
+.. seealso:: :py:func:`cleared`
+
 .. versionadded:: 2.16
 %End
 
@@ -448,6 +450,15 @@ Emitted when the button is clicked, if the button's behavior is set to SignalOnl
 .. seealso:: :py:func:`setBehavior`
 
 .. seealso:: :py:func:`behavior`
+%End
+
+    void cleared();
+%Docstring
+Emitted when the color is cleared (set to null).
+
+.. seealso:: :py:func:`setToNull`
+
+.. versionadded:: 3.12
 %End
 
     void unlinked();

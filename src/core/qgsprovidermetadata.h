@@ -270,7 +270,15 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Breaks a provider data source URI into its component paths (e.g. file path, layer name).
      * \param uri uri string
-     * \returns map containing components. Standard components include "path", "layerName", "url".
+     * \returns map containing components. Standard components may include:
+     * - "path": file path
+     * - "layerName"
+     * - "url": base URL, for online services
+     * - "referer": referrer string, for HTTP requests
+     * - "host": hostname, for database services
+     * - "bounds": hardcoded layer bounds (as a QgsRectangle)
+     * - "crs": CRS definition
+     * - "authcfg": authentication configuration ID
      * \note this function may not be supported by all providers, an empty map will be returned in such case
      * \since QGIS 3.10
      */

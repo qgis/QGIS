@@ -43,6 +43,7 @@ class TestQgsTableEditor: public QObject
     void numericFormat();
     void rowHeight();
     void columnWidth();
+    void headers();
 
   private:
 
@@ -988,6 +989,41 @@ void TestQgsTableEditor::columnWidth()
   QCOMPARE( w.tableColumnWidth( 2 ), 0.0 );
   w.selectionModel()->select( w.model()->index( 2, 2 ), QItemSelectionModel::Select );
   QCOMPARE( w.selectionColumnWidth(), -1.0 );
+}
+
+void TestQgsTableEditor::headers()
+{
+  QgsTableEditorWidget w;
+  QVERIFY( w.tableContents().isEmpty() );
+
+  QSignalSpy spy( &w, &QgsTableEditorWidget::tableChanged );
+  w.setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell( 1 ) << QgsTableCell( 2 ) << QgsTableCell( 3 ) )
+                      << ( QgsTableRow() << QgsTableCell( 4 )  << QgsTableCell( 5 ) << QgsTableCell( 6 ) ) );
+  QCOMPARE( spy.count(), 1 );
+
+  w.setIncludeTableHeader( true );
+  QCOMPARE( w.tableHeaders(), QVariantList() << QVariant() << QVariant() << QVariant() );
+
+  w.setTableHeaders( QVariantList() << QVariant( 11 ) << QVariant( 12 ) << QVariant( 13 ) );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( w.tableHeaders(), QVariantList() << QVariant( 11 ) << QVariant( 12 ) << QVariant( 13 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content(), QVariant( 1 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content(), QVariant( 2 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content(), QVariant( 3 ) );
+  QCOMPARE( w.tableContents().at( 1 ).at( 0 ).content(), QVariant( 4 ) );
+  QCOMPARE( w.tableContents().at( 1 ).at( 1 ).content(), QVariant( 5 ) );
+  QCOMPARE( w.tableContents().at( 1 ).at( 2 ).content(), QVariant( 6 ) );
+
+  w.setIncludeTableHeader( false );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( w.tableHeaders(), QVariantList() );
+  QCOMPARE( w.tableContents().at( 0 ).at( 0 ).content(), QVariant( 1 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 1 ).content(), QVariant( 2 ) );
+  QCOMPARE( w.tableContents().at( 0 ).at( 2 ).content(), QVariant( 3 ) );
+  QCOMPARE( w.tableContents().at( 1 ).at( 0 ).content(), QVariant( 4 ) );
+  QCOMPARE( w.tableContents().at( 1 ).at( 1 ).content(), QVariant( 5 ) );
+  QCOMPARE( w.tableContents().at( 1 ).at( 2 ).content(), QVariant( 6 ) );
+
 }
 
 

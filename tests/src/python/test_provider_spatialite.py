@@ -237,9 +237,15 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         INSERT INTO test_bigint (id, value, position) VALUES
         (987654321012345, 1, ST_GeomFromtext('LINESTRINGM(10.416255 55.3786316 1577093516, 10.516255 55.4786316 157709)', 4326) ),
         (987654321012346, 2, ST_GeomFromtext('LINESTRINGM(10.316255 55.3786316 1577093516, 11.216255 56.3786316 157709)', 4326) )"""
-
         cur.execute(sql)
 
+        # no fields table
+        sql = "CREATE TABLE \"test_nofields\"(pkuid integer primary key autoincrement)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_nofields', 'geometry', 4326, 'POINT', 'XY')"
+        cur.execute(sql)
+
+        # Commit all test data
         cur.execute("COMMIT")
         con.close()
 
@@ -1234,6 +1240,60 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(feature.attribute(3).startswith(now.strftime('%Y-%m-%d')))
         self.assertEqual(feature.attribute(4), 123)
         self.assertEqual(feature.attribute(5), 'My default')
+
+    def testSpatialiteAspatialMultipleAdd(self):
+        """Add multiple features in aspatial table. See GH #34379"""
+
+        # Create the test table
+
+        dbname = os.path.join(tempfile.gettempdir(), "test_aspatial_multiple_edits.sqlite")
+        if os.path.exists(dbname):
+            os.remove(dbname)
+        con = spatialite_connect(dbname, isolation_level=None)
+        cur = con.cursor()
+        cur.execute("BEGIN")
+        sql = "SELECT InitSpatialMetadata()"
+        cur.execute(sql)
+
+        # simple table with primary key
+        sql = """
+        CREATE TABLE "test_aspatial_multiple_edits"(pkuid integer primary key autoincrement,"id" integer,"note" text)
+        """
+        cur.execute(sql)
+        cur.execute("COMMIT")
+        con.close()
+
+        vl = QgsVectorLayer("dbname='%s' table='test_aspatial_multiple_edits'" % dbname, 'test_aspatial_multiple_edits', 'spatialite')
+        self.assertTrue(vl.isValid())
+
+        self.assertTrue(vl.startEditing())
+        f1 = QgsFeature(vl.fields())
+        f1.setAttribute('note', 'a note')
+        f1.setAttribute('id', 123)
+        f2 = QgsFeature(vl.fields())
+        f2.setAttribute('note', 'another note')
+        f2.setAttribute('id', 456)
+        self.assertTrue(vl.addFeatures([f1, f2]))
+        self.assertTrue(vl.commitChanges())
+
+        # Verify
+        self.assertEqual(vl.getFeature(1).attributes(), [1, 123, 'a note'])
+        self.assertEqual(vl.getFeature(2).attributes(), [2, 456, 'another note'])
+
+    def testAddFeatureNoFields(self):
+        """Test regression #34696"""
+
+        vl = QgsVectorLayer("dbname=%s table='test_nofields' (geometry)" % self.dbname, "test_nofields", "spatialite")
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.startEditing())
+        f = QgsFeature(vl.fields())
+        g = QgsGeometry.fromWkt('point(9 45)')
+        f.setGeometry(g)
+        self.assertTrue(vl.addFeatures([f]))
+        self.assertTrue(vl.commitChanges())
+        vl = QgsVectorLayer("dbname=%s table='test_nofields' (geometry)" % self.dbname, "test_nofields", "spatialite")
+        self.assertEqual(vl.featureCount(), 1)
+        self.assertEqual(vl.getFeature(1).geometry().asWkt().upper(), 'POINT (9 45)')
 
 
 if __name__ == '__main__':

@@ -224,6 +224,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
   qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
   qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
+  qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
 
   ( void ) resolvePkgPath();
 

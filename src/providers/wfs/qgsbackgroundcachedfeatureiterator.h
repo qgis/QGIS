@@ -262,7 +262,7 @@ class QgsBackgroundCachedFeatureSource;
     downloader to receive 'fresh' features, and to a iterator on the features
     already cached. It will actually start by consuming cache features for
     initial feedback, and then process the live downloaded features. */
-class QgsBackgroundCachedFeatureIterator : public QObject,
+class QgsBackgroundCachedFeatureIterator final: public QObject,
   public QgsAbstractFeatureIteratorFromSource<QgsBackgroundCachedFeatureSource>
 {
     Q_OBJECT
@@ -335,7 +335,7 @@ class QgsBackgroundCachedFeatureIterator : public QObject,
 
 
 //! Feature source
-class QgsBackgroundCachedFeatureSource : public QgsAbstractFeatureSource
+class QgsBackgroundCachedFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsBackgroundCachedFeatureSource( std::shared_ptr<QgsBackgroundCachedSharedData> shared );

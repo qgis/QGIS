@@ -102,7 +102,9 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     {
       try
       {
-        myProjectedViewExtent = rendererContext.coordinateTransform().transformBoundingBox( rendererContext.extent() );
+        QgsCoordinateTransform ct = rendererContext.coordinateTransform();
+        ct.setBallparkTransformsAreAppropriate( true );
+        myProjectedViewExtent = ct.transformBoundingBox( rendererContext.extent() );
       }
       catch ( QgsCsException &cs )
       {
@@ -113,7 +115,9 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
     try
     {
-      myProjectedLayerExtent = rendererContext.coordinateTransform().transformBoundingBox( layer->extent() );
+      QgsCoordinateTransform ct = rendererContext.coordinateTransform();
+      ct.setBallparkTransformsAreAppropriate( true );
+      myProjectedLayerExtent = ct.transformBoundingBox( layer->extent() );
     }
     catch ( QgsCsException &cs )
     {

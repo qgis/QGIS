@@ -104,6 +104,7 @@
 %Include auto_generated/qgsmaplayerstore.sip
 %Include auto_generated/qgsmaplayerstyle.sip
 %Include auto_generated/qgsmaplayerstylemanager.sip
+%Include auto_generated/qgsmaplayertemporalproperties.sip
 %Include auto_generated/qgsmaprenderercache.sip
 %Include auto_generated/qgsmaprenderercustompainterjob.sip
 %Include auto_generated/qgsmaprendererjob.sip
@@ -189,6 +190,8 @@
 %Include auto_generated/qgsstringutils.sip
 %Include auto_generated/qgstablecell.sip
 %Include auto_generated/qgstaskmanager.sip
+%Include auto_generated/qgstemporalproperty.sip
+%Include auto_generated/qgstemporalrangeobject.sip
 %Include auto_generated/qgstessellator.sip
 %Include auto_generated/qgstestutils.sip
 %Include auto_generated/qgstextrenderer.sip
@@ -452,6 +455,7 @@
 %Include auto_generated/raster/qgsrasterinterface.sip
 %Include auto_generated/raster/qgsrasteriterator.sip
 %Include auto_generated/raster/qgsrasterlayer.sip
+%Include auto_generated/raster/qgsrasterlayertemporalproperties.sip
 %Include auto_generated/raster/qgsrasterminmaxorigin.sip
 %Include auto_generated/raster/qgsrasternuller.sip
 %Include auto_generated/raster/qgsrasterpipe.sip

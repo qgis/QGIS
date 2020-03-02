@@ -23,6 +23,8 @@ Represents a component of a model algorithm.
 %End
   public:
 
+    virtual ~QgsProcessingModelComponent();
+
     QString description() const;
 %Docstring
 Returns the friendly description text for the component.
@@ -49,6 +51,31 @@ Returns the position of the model component within the graphical modeler.
 Sets the ``position`` of the model component within the graphical modeler.
 
 .. seealso:: :py:func:`position`
+%End
+
+    QSizeF size() const;
+%Docstring
+Returns the size of the model component within the graphical modeler.
+
+.. seealso:: :py:func:`setSize`
+
+.. versionadded:: 3.14
+%End
+
+    void setSize( QSizeF size );
+%Docstring
+Sets the ``size`` of the model component within the graphical modeler.
+
+.. seealso:: :py:func:`size`
+
+.. versionadded:: 3.14
+%End
+
+    virtual QgsProcessingModelComponent *clone() = 0 /Factory/;
+%Docstring
+Clones the component.
+
+Ownership is transferred to the caller.
 %End
 
   protected:

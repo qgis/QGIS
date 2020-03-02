@@ -73,7 +73,7 @@ QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 
 void QgsAttributeTableDialog::updateMultiEditButtonState()
 {
-  if ( ! mLayer || ( mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout ) )
+  if ( ! mLayer || ( mLayer->editFormConfig().layout() == QgsEditFormConfig::EditorLayout::UiFileLayout ) )
     return;
 
   mActionToggleMultiEdit->setEnabled( mLayer->isEditable() );
@@ -320,7 +320,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
     connect( mActionSearchForm, &QAction::toggled, mMainView, &QgsDualView::toggleSearchMode );
     updateMultiEditButtonState();
 
-    if ( mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout )
+    if ( mLayer->editFormConfig().layout() == QgsEditFormConfig::EditorLayout::UiFileLayout )
     {
       //not supported with custom UI
       mActionToggleMultiEdit->setEnabled( false );

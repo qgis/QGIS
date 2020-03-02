@@ -25,6 +25,7 @@
 #include <QStringList>
 #include <QRegExp>
 #include <QUrl>
+#include <QUrlQuery>
 
 QgsDataSourceUri::QgsDataSourceUri()
 {

@@ -511,6 +511,48 @@ void TestQgsGeometryUtils::testVerticesAtDistance()
   QCOMPARE( previous, QgsVertexId( 0, 0, 4 ) );
   QCOMPARE( next, QgsVertexId( 0, 0, 4 ) );
 
+  // with ring
+  QgsLineString *ring1 = new QgsLineString();
+  ring1->setPoints( QVector<QgsPoint>() << QgsPoint( 1.1, 1.1 ) << QgsPoint( 1.1, 1.2 ) << QgsPoint( 1.2, 1.2 ) << QgsPoint( 1.2, 1.1 ) << QgsPoint( 1.1, 1.1 ) );
+  polygon1.addInteriorRing( ring1 );
+  QVERIFY( QgsGeometryUtils::verticesAtDistance( polygon1, 4, previous, next ) );
+  QCOMPARE( previous, QgsVertexId( 0, 0, 4 ) );
+  QCOMPARE( next, QgsVertexId( 0, 0, 4 ) );
+  QVERIFY( QgsGeometryUtils::verticesAtDistance( polygon1, 4.01, previous, next ) );
+  QCOMPARE( previous, QgsVertexId( 0, 1, 0 ) );
+  QCOMPARE( next, QgsVertexId( 0, 1, 1 ) );
+  QVERIFY( QgsGeometryUtils::verticesAtDistance( polygon1, 4.11, previous, next ) );
+  QCOMPARE( previous, QgsVertexId( 0, 1, 1 ) );
+  QCOMPARE( next, QgsVertexId( 0, 1, 2 ) );
+
+  // multipolygon
+  outerRing1 = new QgsLineString();
+  outerRing1->setPoints( QVector<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
+  QgsPolygon *polygon2 = new QgsPolygon();
+  polygon2->setExteriorRing( outerRing1 );
+
+  QgsLineString *outerRing2 = new QgsLineString();
+  outerRing2->setPoints( QVector<QgsPoint>() << QgsPoint( 10, 10 ) << QgsPoint( 10, 20 ) << QgsPoint( 20, 20 ) << QgsPoint( 20, 10 ) << QgsPoint( 10, 10 ) );
+  QgsPolygon *polygon3 = new QgsPolygon();
+  polygon3->setExteriorRing( outerRing2 );
+
+  QgsLineString *innerRing2 = new QgsLineString();
+  innerRing2->setPoints( QVector<QgsPoint>() << QgsPoint( 14, 14 ) << QgsPoint( 14, 16 ) << QgsPoint( 16, 16 ) << QgsPoint( 16, 14 ) << QgsPoint( 14, 14 ) );
+  polygon3->setInteriorRings( QVector<QgsCurve *>() << innerRing2 );
+
+  QgsMultiPolygon mpg;
+  mpg.addGeometry( polygon2 );
+  mpg.addGeometry( polygon3 );
+  QVERIFY( QgsGeometryUtils::verticesAtDistance( mpg, 0.1, previous, next ) );
+  QCOMPARE( previous, QgsVertexId( 0, 0, 0 ) );
+  QCOMPARE( next, QgsVertexId( 0, 0, 1 ) );
+  QVERIFY( QgsGeometryUtils::verticesAtDistance( mpg, 5, previous, next ) );
+  QCOMPARE( previous, QgsVertexId( 1, 0, 0 ) );
+  QCOMPARE( next, QgsVertexId( 1, 0, 1 ) );
+  QVERIFY( QgsGeometryUtils::verticesAtDistance( mpg, 45, previous, next ) );
+  QCOMPARE( previous, QgsVertexId( 1, 1, 0 ) );
+  QCOMPARE( next, QgsVertexId( 1, 1, 1 ) );
+
   //test with point
   QgsPoint point( 1, 2 );
   QVERIFY( !QgsGeometryUtils::verticesAtDistance( point, .5, previous, next ) );

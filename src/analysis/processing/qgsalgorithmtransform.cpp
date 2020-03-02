@@ -100,8 +100,10 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
   {
     mCreatedTransform = true;
     if ( !mCoordOp.isEmpty() )
-      mTransformContext.addCoordinateOperation( sourceCrs(), mDestCrs, mCoordOp );
+      mTransformContext.addCoordinateOperation( sourceCrs(), mDestCrs, mCoordOp, false );
     mTransform = QgsCoordinateTransform( sourceCrs(), mDestCrs, mTransformContext );
+
+    mTransform.disableFallbackOperationHandler( true );
   }
 
   if ( feature.hasGeometry() )
@@ -116,6 +118,14 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
       else
       {
         feature.clearGeometry();
+      }
+
+      if ( !mWarnedAboutFallbackTransform && mTransform.fallbackOperationOccurred() )
+      {
+        feedback->reportError( QObject::tr( "An alternative, ballpark-only transform was used when transforming coordinates for one or more features. "
+                                            "(Possibly an incorrect choice of operation was made for transformations between these reference systems - check "
+                                            "that the selected operation is valid for the full extent of the input layer.)" ) );
+        mWarnedAboutFallbackTransform = true; // only warn once to avoid flooding the log
       }
     }
     catch ( QgsCsException & )

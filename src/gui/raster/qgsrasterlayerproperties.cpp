@@ -76,6 +76,7 @@
 #include <QVector>
 #include <QUrl>
 #include <QMenu>
+#include <QScreen>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( QStringLiteral( "RasterLayerProperties" ), parent, fl )
@@ -440,7 +441,14 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
 #ifdef WITH_QTWEBKIT
   // Setup information tab
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
+#else
+  QScreen *screen = QGuiApplication::screenAt( mapToGlobal( QPoint( width() / 2, 0 ) ) );
+  const int horizontalDpi = screen->logicalDotsPerInchX();
+#endif
+
   // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
   if ( horizontalDpi > 96 )
   {
@@ -663,8 +671,12 @@ void QgsRasterLayerProperties::sync()
 {
   QgsSettings myQSettings;
 
-  if ( mRasterLayer->dataProvider()->dataType( 1 ) == Qgis::ARGB32
-       || mRasterLayer->dataProvider()->dataType( 1 ) == Qgis::ARGB32_Premultiplied )
+  const QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
+  if ( !provider )
+    return;
+
+  if ( provider->dataType( 1 ) == Qgis::ARGB32
+       || provider->dataType( 1 ) == Qgis::ARGB32_Premultiplied )
   {
     gboxNoDataValue->setEnabled( false );
     gboxCustomTransparency->setEnabled( false );
@@ -672,7 +684,7 @@ void QgsRasterLayerProperties::sync()
   }
 
   // TODO: Wouldn't it be better to just removeWidget() the tabs than delete them? [LS]
-  if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
+  if ( !( provider->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
   {
     if ( mOptsPage_Pyramids )
     {
@@ -681,7 +693,7 @@ void QgsRasterLayerProperties::sync()
     }
   }
 
-  if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size ) )
+  if ( !( provider->capabilities() & QgsRasterDataProvider::Size ) )
   {
     if ( mOptsPage_Histogram )
     {
@@ -722,23 +734,23 @@ void QgsRasterLayerProperties::sync()
   //add current NoDataValue to NoDataValue line edit
   // TODO: should be per band
   // TODO: no data ranges
-  if ( mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) )
+  if ( provider->sourceHasNoDataValue( 1 ) )
   {
-    lblSrcNoDataValue->setText( QgsRasterBlock::printValue( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) ) );
+    lblSrcNoDataValue->setText( QgsRasterBlock::printValue( provider->sourceNoDataValue( 1 ) ) );
   }
   else
   {
     lblSrcNoDataValue->setText( tr( "not defined" ) );
   }
 
-  mSrcNoDataValueCheckBox->setChecked( mRasterLayer->dataProvider()->useSourceNoDataValue( 1 ) );
+  mSrcNoDataValueCheckBox->setChecked( provider->useSourceNoDataValue( 1 ) );
 
-  bool enableSrcNoData = mRasterLayer->dataProvider()->sourceHasNoDataValue( 1 ) && !std::isnan( mRasterLayer->dataProvider()->sourceNoDataValue( 1 ) );
+  bool enableSrcNoData = provider->sourceHasNoDataValue( 1 ) && !std::isnan( provider->sourceNoDataValue( 1 ) );
 
   mSrcNoDataValueCheckBox->setEnabled( enableSrcNoData );
   lblSrcNoDataValue->setEnabled( enableSrcNoData );
 
-  QgsRasterRangeList noDataRangeList = mRasterLayer->dataProvider()->userNoDataValues( 1 );
+  QgsRasterRangeList noDataRangeList = provider->userNoDataValues( 1 );
   QgsDebugMsg( QStringLiteral( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
   if ( !noDataRangeList.isEmpty() )
   {

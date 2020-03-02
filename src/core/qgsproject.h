@@ -565,7 +565,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsRelationManager *relationManager() const;
 
     /**
-     * Returns the project's layout manager, which manages compositions within
+     * Returns the project's layout manager, which manages print layouts, atlases and reports within
      * the project.
      * \note not available in Python bindings
      * \since QGIS 3.0
@@ -573,7 +573,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     const QgsLayoutManager *layoutManager() const SIP_SKIP;
 
     /**
-     * Returns the project's layout manager, which manages compositions within
+     * Returns the project's layout manager, which manages print layouts, atlases and reports within
      * the project.
      * \since QGIS 3.0
      */
@@ -1749,7 +1749,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The optional \a flags argument can be used to control layer reading behavior.
      * \note not available in Python bindings
      */
-    void loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags = nullptr ) SIP_SKIP;
+    bool loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags = nullptr ) SIP_SKIP;
 
     //! Read .qgs file
     bool readProjectFile( const QString &filename, QgsProject::ReadFlags flags = nullptr );
@@ -1849,6 +1849,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     // Required by QGIS Server for switching the current project instance
     friend class QgsConfigCache;
+
+    friend class TestQgsProject;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProject::ReadFlags )

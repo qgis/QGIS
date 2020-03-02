@@ -96,7 +96,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -425,7 +425,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -457,7 +457,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
       sipRes = false;
     }
@@ -486,7 +486,7 @@ class CORE_EXPORT QgsFeature
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else

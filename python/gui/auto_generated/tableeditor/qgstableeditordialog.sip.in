@@ -80,11 +80,44 @@ This should be called after a call to setTableContents().
 .. seealso:: :py:func:`tableColumnWidth`
 %End
 
+    bool includeTableHeader() const;
+%Docstring
+Returns ``True`` if the table includes a header row.
+
+.. seealso:: :py:func:`setIncludeTableHeader`
+%End
+
+    void setIncludeTableHeader( bool included );
+%Docstring
+Sets whether the table includes a header row.
+
+.. seealso:: :py:func:`includeTableHeader`
+%End
+
+    QVariantList tableHeaders() const;
+%Docstring
+Returns the table header values.
+
+.. seealso:: :py:func:`setTableHeaders`
+%End
+
+    void setTableHeaders( const QVariantList &headers );
+%Docstring
+Sets the table ``headers``.
+
+.. seealso:: :py:func:`tableHeaders`
+%End
+
   signals:
 
     void tableChanged();
 %Docstring
 Emitted whenever the table contents are changed.
+%End
+
+    void includeHeaderChanged( bool included );
+%Docstring
+Emitted whenever the "include table header" setting is changed.
 %End
 
 };

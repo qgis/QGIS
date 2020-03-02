@@ -18,6 +18,8 @@
 
 #include "qgis_analysis.h"
 #include "qgspointxy.h"
+
+#include <QObject>
 #include <QString>
 #include <QVariant>
 #include <QVariantMap>
@@ -29,6 +31,8 @@
  */
 class ANALYSIS_EXPORT QgsExifTools
 {
+    Q_GADGET
+
   public:
 
 #if 0
@@ -46,6 +50,13 @@ class ANALYSIS_EXPORT QgsExifTools
      * \see geoTagImage()
      */
     static QgsPoint getGeoTag( const QString &imagePath, bool &ok SIP_OUT );
+
+    /**
+     * Returns TRUE if the image at \a imagePath contains a valid geotag.
+     *
+     * \see getGeoTag()
+     */
+    Q_INVOKABLE static bool hasGeoTag( const QString &imagePath );
 
     /**
      * Extended image geotag details.

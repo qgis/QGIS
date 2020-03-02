@@ -411,7 +411,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
 
   // manual table item
 
-  auto manualTableItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutManualTable, QObject::tr( "Fixed Table" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) ),
+  auto manualTableItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutManualTable, QObject::tr( "Fixed Table" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddManualTable.svg" ) ),
                                  [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
     return new QgsLayoutManualTableWidget( qobject_cast< QgsLayoutFrame * >( item ) );

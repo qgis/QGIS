@@ -41,6 +41,8 @@ class CORE_EXPORT QgsLayoutItemManualTable: public QgsLayoutTable
      */
     QgsLayoutItemManualTable( QgsLayout *layout SIP_TRANSFERTHIS );
 
+    ~QgsLayoutItemManualTable() override;
+
     int type() const override;
     QIcon icon() const override;
     QString displayName() const override;
@@ -106,6 +108,32 @@ class CORE_EXPORT QgsLayoutItemManualTable: public QgsLayoutTable
      */
     void setColumnWidths( const QList< double > &widths );
 
+    /**
+     * Returns TRUE if the table includes a header row.
+     *
+     * \see setIncludeTableHeader()
+     */
+    bool includeTableHeader() const;
+
+    /**
+     * Sets whether the table includes a header row.
+     *
+     * \see includeTableHeader()
+     */
+    void setIncludeTableHeader( bool included );
+
+    /**
+     * Returns a reference to the list of headers shown in the table
+     * \see setHeaders()
+     */
+    QgsLayoutTableColumns &headers();
+
+    /**
+     * Replaces the headers in the table with a specified list of QgsLayoutTableColumns.
+     * \see headers()
+     */
+    void setHeaders( const QgsLayoutTableColumns &headers );
+
   protected:
 
     bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
@@ -115,9 +143,11 @@ class CORE_EXPORT QgsLayoutItemManualTable: public QgsLayoutTable
   private:
 
     QgsTableContents mContents;
+    QgsLayoutTableColumns mHeaders;
 
     QList< double > mRowHeights;
     QList< double > mColumnWidths;
+    bool mIncludeHeader = false;
 
     void refreshColumns();
 

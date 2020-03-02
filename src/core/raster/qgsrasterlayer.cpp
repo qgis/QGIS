@@ -213,7 +213,8 @@ int QgsRasterLayer::bandCount() const
 
 QString QgsRasterLayer::bandName( int bandNo ) const
 {
-  return dataProvider()->generateBandName( bandNo );
+  if ( !mDataProvider ) return QString();
+  return mDataProvider->generateBandName( bandNo );
 }
 
 void QgsRasterLayer::setRendererForDrawingStyle( QgsRaster::DrawingStyle drawingStyle )
@@ -322,7 +323,7 @@ QString QgsRasterLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) % tr( "CRS" ) + QStringLiteral( "</td><td>" );
   if ( crs().isValid() )
   {
-    myMetadata += crs().userFriendlyIdentifier() % QStringLiteral( " - " );
+    myMetadata += crs().userFriendlyIdentifier( QgsCoordinateReferenceSystem::FullString ) % QStringLiteral( " - " );
     if ( crs().isGeographic() )
       myMetadata += tr( "Geographic" );
     else
@@ -485,7 +486,8 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int bandNumber )
 
   // Only do this for the GDAL provider?
   // Maybe WMS can do this differently using QImage::numColors and QImage::color()
-  if ( mDataProvider->colorInterpretation( bandNumber ) == QgsRaster::PaletteIndex )
+  if ( mDataProvider &&
+       mDataProvider->colorInterpretation( bandNumber ) == QgsRaster::PaletteIndex )
   {
     QgsDebugMsgLevel( QStringLiteral( "....found paletted image" ), 4 );
     QgsColorRampShader myShader;
@@ -545,7 +547,8 @@ double QgsRasterLayer::rasterUnitsPerPixelX() const
 // We can only use one of the mGeoTransform[], so go with the
 // horisontal one.
 
-  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && !qgsDoubleNear( mDataProvider->xSize(), 0.0 ) )
+  if ( mDataProvider &&
+       mDataProvider->capabilities() & QgsRasterDataProvider::Size && !qgsDoubleNear( mDataProvider->xSize(), 0.0 ) )
   {
     return mDataProvider->extent().width() / mDataProvider->xSize();
   }
@@ -554,7 +557,8 @@ double QgsRasterLayer::rasterUnitsPerPixelX() const
 
 double QgsRasterLayer::rasterUnitsPerPixelY() const
 {
-  if ( mDataProvider->capabilities() & QgsRasterDataProvider::Size && !qgsDoubleNear( mDataProvider->ySize(), 0.0 ) )
+  if ( mDataProvider &&
+       mDataProvider->capabilities() & QgsRasterDataProvider::Size && !qgsDoubleNear( mDataProvider->ySize(), 0.0 ) )
   {
     return mDataProvider->extent().height() / mDataProvider->ySize();
   }
@@ -572,6 +576,8 @@ void QgsRasterLayer::init()
   //Initialize the last view port structure, should really be a class
   mLastViewPort.mWidth = 0;
   mLastViewPort.mHeight = 0;
+
+  mTemporalProperties = qgis::make_unique<QgsRasterLayerTemporalProperties>();
 }
 
 void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
@@ -908,6 +914,8 @@ void QgsRasterLayer::computeMinMax( int band,
 
   min = std::numeric_limits<double>::quiet_NaN();
   max = std::numeric_limits<double>::quiet_NaN();
+  if ( !mDataProvider )
+    return;
 
   if ( limits == QgsRasterMinMaxOrigin::MinMax )
   {
@@ -935,6 +943,11 @@ void QgsRasterLayer::computeMinMax( int band,
 bool QgsRasterLayer::ignoreExtents() const
 {
   return mDataProvider ? mDataProvider->ignoreExtents() : false;
+}
+
+QgsRasterLayerTemporalProperties *QgsRasterLayer::temporalProperties()
+{
+  return mTemporalProperties.get();
 }
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )
@@ -1312,6 +1325,8 @@ void QgsRasterLayer::setSubLayerVisibility( const QString &name, bool vis )
 
 QDateTime QgsRasterLayer::timestamp() const
 {
+  if ( !mDataProvider )
+    return QDateTime();
   return mDataProvider->timestamp();
 }
 
@@ -1559,6 +1574,8 @@ void QgsRasterLayer::setTransformContext( const QgsCoordinateTransformContext &t
 
 QStringList QgsRasterLayer::subLayers() const
 {
+  if ( ! mDataProvider )
+    return QStringList();
   return mDataProvider->subLayers();
 }
 
@@ -1981,6 +1998,9 @@ bool QgsRasterLayer::writeXml( QDomNode &layer_node,
     layer_node.appendChild( noData );
   }
 
+  // write temporal properties
+  mTemporalProperties->writeXml( mapLayerNode, document, context );
+
   writeStyleManager( layer_node, document );
 
   //write out the symbology
@@ -2305,7 +2325,7 @@ bool QgsRasterLayer::update()
 {
   QgsDebugMsgLevel( QStringLiteral( "entered." ), 4 );
   // Check if data changed
-  if ( mDataProvider->dataTimestamp() > mDataProvider->timestamp() )
+  if ( mDataProvider && mDataProvider->dataTimestamp() > mDataProvider->timestamp() )
   {
     QgsDebugMsgLevel( QStringLiteral( "reload data" ), 4 );
     closeDataProvider();

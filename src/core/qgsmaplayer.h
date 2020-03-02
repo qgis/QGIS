@@ -47,6 +47,7 @@ class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;
 class QgsProject;
 class QgsStyleEntityVisitorInterface;
+class QgsMapLayerTemporalProperties;
 
 class QDomDocument;
 class QKeyEvent;
@@ -1172,6 +1173,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \since QGIS 3.10
      */
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
+
+    /**
+     * Returns the layer's temporal properties. This may be NULLPTR, depending on the layer type.
+     *
+     * \since QGIS 3.14
+     */
+    virtual QgsMapLayerTemporalProperties *temporalProperties() { return nullptr; }
 
   public slots:
 

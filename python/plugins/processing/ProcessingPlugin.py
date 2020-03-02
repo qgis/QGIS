@@ -306,11 +306,6 @@ class ProcessingPlugin:
         self.toolbox.deleteLater()
         self.menu.deleteLater()
 
-        # delete temporary output files
-        folder = QgsProcessingUtils.tempFolder()
-        if QDir(folder).exists():
-            shutil.rmtree(folder, True)
-
         # also delete temporary help files
         folder = tempHelpFolder()
         if QDir(folder).exists():

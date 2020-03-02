@@ -209,6 +209,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsfieldcalculator.h"
 #include "qgsfieldformatter.h"
 #include "qgsfieldformatterregistry.h"
+#include "qgsfileutils.h"
 #include "qgsformannotation.h"
 #include "qgsgeos.h"
 #include "qgsguiutils.h"
@@ -1132,7 +1133,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
   else
   {
-    QDialog *dialog = new QDialog( this );
+    QDialog *dialog = new QDialog( this, Qt::Tool );
+    dialog->setObjectName( QStringLiteral( "snappingSettings" ) );
     dialog->setWindowTitle( tr( "Project Snapping Settings" ) );
     QgsGui::instance()->enableAutoGeometryRestore( dialog );
     QVBoxLayout *layout = new QVBoxLayout( dialog );
@@ -2044,12 +2046,19 @@ const QList<QgsVectorLayerRef> QgisApp::findBrokenLayerDependencies( QgsVectorLa
         const QList<QgsVectorLayerRef> constDependencies { fieldFormatter->layerDependencies( setup.config() ) };
         for ( const QgsVectorLayerRef &dependency : constDependencies )
         {
-          const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
-                                          QgsProject::instance(),
-                                          QgsVectorLayerRef::MatchType::Name ) };
-          if ( ! depVl || ! depVl->isValid() )
+          // I guess we need and isNull()/isValid() method for the ref
+          if ( dependency.layer ||
+               ! dependency.name.isEmpty() ||
+               ! dependency.source.isEmpty() ||
+               ! dependency.layerId.isEmpty() )
           {
-            brokenDependencies.append( dependency );
+            const QgsVectorLayer *depVl { QgsVectorLayerRef( dependency ).resolveWeakly(
+                                            QgsProject::instance(),
+                                            QgsVectorLayerRef::MatchType::Name ) };
+            if ( ! depVl || ! depVl->isValid() )
+            {
+              brokenDependencies.append( dependency );
+            }
           }
         }
       }
@@ -5275,10 +5284,11 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
     if ( layer->isValid() )
     {
       userAskedToAddLayers = true;
-      layer->setProviderEncoding( enc );
+      if ( !enc.isEmpty() )
+        layer->setProviderEncoding( enc );
 
       QStringList sublayers = layer->dataProvider()->subLayers();
-      QgsDebugMsg( QStringLiteral( "got valid layer with %1 sublayers" ).arg( sublayers.count() ) );
+      QgsDebugMsgLevel( QStringLiteral( "got valid layer with %1 sublayers" ).arg( sublayers.count() ), 2 );
 
       // If the newly created layer has more than 1 layer of data available, we show the
       // sublayers selection dialog so the user can select the sublayers to actually load.
@@ -5505,7 +5515,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
     }
     else if ( layerItem->providerKey() == QLatin1String( "ogr" ) )
     {
-      if ( addVectorLayers( QStringList( item->path() ), QStringLiteral( "System" ), QStringLiteral( "file" ) ) )
+      if ( addVectorLayers( QStringList( item->path() ), QString(), QStringLiteral( "file" ) ) )
         ok = true;
     }
   }
@@ -7054,7 +7064,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   {
     if ( allowInteractive )
     {
-      ok = ok || addVectorLayersPrivate( QStringList( fileName ), QStringLiteral( "System" ), QStringLiteral( "file" ), false );
+      ok = ok || addVectorLayersPrivate( QStringList( fileName ), QString(), QStringLiteral( "file" ), false );
     }
     else
     {
@@ -7107,7 +7117,7 @@ void QgisApp::openFile( const QString &fileName, const QString &fileTypeHint )
   }
   else
   {
-    QgsDebugMsg( "Adding " + fileName + " to the map canvas" );
+    QgsDebugMsgLevel( "Adding " + fileName + " to the map canvas", 2 );
     openLayer( fileName, true );
   }
 }
@@ -7693,7 +7703,17 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
   QgsMapLayerType layerType( layer->type() );
 
   QgsDataSourceSelectDialog dlg( mBrowserModel, true, layerType );
-  dlg.setDescription( tr( "Original source URI: %1" ).arg( layer->publicSource() ) );
+
+  const QVariantMap sourceParts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->publicSource() );
+  QString source = layer->publicSource();
+  if ( sourceParts.contains( QStringLiteral( "path" ) ) )
+  {
+    const QString path = sourceParts.value( QStringLiteral( "path" ) ).toString();
+    const QString closestPath = QFile::exists( path ) ? path : QgsFileUtils::findClosestExistingPath( path );
+    source.replace( path, QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( closestPath ).toString(),
+                    path ) );
+  }
+  dlg.setDescription( tr( "Original source URI: %1" ).arg( source ) );
 
   const QVariantMap originalSourceParts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
 
@@ -7716,7 +7736,7 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
         {
           subsetString = vlayer->dataProvider()->subsetString();
         }
-        if ( subsetString.isEmpty() )
+        if ( vlayer && subsetString.isEmpty() )
         {
           // actually -- the above isn't true in all situations. If a layer was invalid at the time
           // that the subset string was set, then ONLY the layer has knowledge of this subset string!
@@ -8933,7 +8953,7 @@ void QgisApp::setupLayoutManagerConnections()
 
 void QgisApp::setupDuplicateFeaturesAction()
 {
-  mDuplicateFeatureAction.reset( new QgsMapLayerAction( tr( "Duplicate feature" ),
+  mDuplicateFeatureAction.reset( new QgsMapLayerAction( tr( "Duplicate Feature" ),
                                  nullptr, QgsMapLayerAction::SingleFeature,
                                  QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeature.svg" ) ), QgsMapLayerAction::EnabledOnlyWhenEditable ) );
 
@@ -8944,7 +8964,7 @@ void QgisApp::setupDuplicateFeaturesAction()
   }
          );
 
-  mDuplicateFeatureDigitizeAction.reset( new QgsMapLayerAction( tr( "Duplicate feature and digitize" ),
+  mDuplicateFeatureDigitizeAction.reset( new QgsMapLayerAction( tr( "Duplicate Feature and Digitize" ),
                                          nullptr, QgsMapLayerAction::SingleFeature,
                                          QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeatureDigitized.svg" ) ), QgsMapLayerAction::EnabledOnlyWhenEditable ) );
 
@@ -8969,7 +8989,7 @@ void QgisApp::setupAtlasMapLayerAction( QgsPrintLayout *layout, bool enableActio
 
   if ( enableAction )
   {
-    action = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( layout->name() ),
+    action = new QgsMapLayerAction( QString( tr( "Set as Atlas Feature for %1" ) ).arg( layout->name() ),
                                     this, layout->atlas()->coverageLayer(), QgsMapLayerAction::SingleFeature,
                                     QgsApplication::getThemeIcon( QStringLiteral( "/mIconAtlas.svg" ) ) );
     mAtlasFeatureActions.insert( layout, action );
@@ -12902,12 +12922,16 @@ void QgisApp::removeWebToolBarIcon( QAction *qAction )
 
 void QgisApp::updateCrsStatusBar()
 {
-  if ( QgsProject::instance()->crs().isValid() )
+  const QgsCoordinateReferenceSystem projectCrs = QgsProject::instance()->crs();
+  if ( projectCrs.isValid() )
   {
-    mOnTheFlyProjectionStatusButton->setText( QgsProject::instance()->crs().authid() );
+    if ( !projectCrs.authid().isEmpty() )
+      mOnTheFlyProjectionStatusButton->setText( projectCrs.authid() );
+    else
+      mOnTheFlyProjectionStatusButton->setText( QObject::tr( "Unknown CRS" ) );
 
     mOnTheFlyProjectionStatusButton->setToolTip(
-      tr( "Current CRS: %1" ).arg( QgsProject::instance()->crs().userFriendlyIdentifier() ) );
+      tr( "Current CRS: %1" ).arg( projectCrs.userFriendlyIdentifier() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconProjectionEnabled.svg" ) ) );
   }
   else
@@ -13033,6 +13057,10 @@ void QgisApp::showRotation()
 
 void QgisApp::showPanMessage( double distance, QgsUnitTypes::DistanceUnit unit, double bearing )
 {
+  const bool showMessage = QgsSettings().value( QStringLiteral( "showPanDistanceInStatusBar" ), true, QgsSettings::App ).toBool();
+  if ( !showMessage )
+    return;
+
   const double distanceInProjectUnits = distance * QgsUnitTypes::fromUnitToUnitFactor( unit, QgsProject::instance()->distanceUnits() );
   const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
   const QString distanceString = QgsDistanceArea::formatDistance( distanceInProjectUnits, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
@@ -13644,10 +13672,13 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     case QgsMapLayerType::RasterLayer:
     {
       const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
-      if ( rlayer->dataProvider()->dataType( 1 ) != Qgis::ARGB32
-           && rlayer->dataProvider()->dataType( 1 ) != Qgis::ARGB32_Premultiplied )
+      const QgsRasterDataProvider *dprovider = rlayer->dataProvider();
+
+      if ( dprovider
+           && dprovider->dataType( 1 ) != Qgis::ARGB32
+           && dprovider->dataType( 1 ) != Qgis::ARGB32_Premultiplied )
       {
-        if ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
+        if ( dprovider->capabilities() & QgsRasterDataProvider::Size )
         {
           mActionFullHistogramStretch->setEnabled( true );
         }
@@ -13698,6 +13729,24 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionAddFeature->setEnabled( false );
       mActionCircularStringCurvePoint->setEnabled( false );
       mActionCircularStringRadius->setEnabled( false );
+      mActionCircle2Points->setEnabled( false );
+      mActionCircle3Points->setEnabled( false );
+      mActionCircle3Tangents->setEnabled( false );
+      mActionCircle2TangentsPoint->setEnabled( false );
+      mActionCircleCenterPoint->setEnabled( false );
+      mActionEllipseCenter2Points->setEnabled( false );
+      mActionEllipseCenterPoint->setEnabled( false );
+      mActionEllipseExtent->setEnabled( false );
+      mActionEllipseFoci->setEnabled( false );
+      mActionRectangleCenterPoint->setEnabled( false );
+      mActionRectangleExtent->setEnabled( false );
+      mActionRectangle3PointsDistance->setEnabled( false );
+      mActionRectangle3PointsProjected->setEnabled( false );
+      mActionRegularPolygon2Points->setEnabled( false );
+      mActionRegularPolygonCenterPoint->setEnabled( false );
+      mActionRegularPolygonCenterCorner->setEnabled( false );
+      mActionReverseLine->setEnabled( false );
+      mActionTrimExtendFeature->setEnabled( false );
       mActionDeleteSelected->setEnabled( false );
       mActionAddRing->setEnabled( false );
       mActionFillRing->setEnabled( false );
@@ -13733,8 +13782,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       QgsMapToolIdentify::IdentifyMode identifyMode = settings.enumValue( QStringLiteral( "Map/identifyMode" ), QgsMapToolIdentify::ActiveLayer );
       if ( identifyMode == QgsMapToolIdentify::ActiveLayer )
       {
-        const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
-        const QgsRasterDataProvider *dprovider = rlayer->dataProvider();
         if ( dprovider )
         {
           // does provider allow the identify map tool?

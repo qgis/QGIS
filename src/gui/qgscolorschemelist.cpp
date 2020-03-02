@@ -710,7 +710,12 @@ void QgsColorSwatchDelegate::paint( QPainter *painter, const QStyleOptionViewIte
   }
 
   QRect rect = option.rect;
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   const int iconSize = Qgis::UI_SCALE_FACTOR * option.fontMetrics.width( 'X' ) * 4;
+#else
+  const int iconSize = Qgis::UI_SCALE_FACTOR * option.fontMetrics.horizontalAdvance( 'X' ) * 4;
+#endif
+
   const int cornerSize = iconSize / 6;
   //center it
   rect.setLeft( option.rect.center().x() - iconSize / 2 );
@@ -749,7 +754,11 @@ QSize QgsColorSwatchDelegate::sizeHint( const QStyleOptionViewItem &option, cons
 {
   Q_UNUSED( index )
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   const int iconSize = Qgis::UI_SCALE_FACTOR * option.fontMetrics.width( 'X' ) * 4;
+#else
+  const int iconSize = Qgis::UI_SCALE_FACTOR * option.fontMetrics.horizontalAdvance( 'X' ) * 4;
+#endif
   return QSize( iconSize, iconSize * 32 / 30.0 );
 }
 

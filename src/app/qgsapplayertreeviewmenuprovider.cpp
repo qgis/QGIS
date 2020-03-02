@@ -12,9 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <QClipboard>
 
 #include "qgsapplayertreeviewmenuprovider.h"
-
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -22,6 +22,7 @@
 #include "qgscolorwidgets.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorswatchgrid.h"
+#include "qgsgui.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
@@ -42,7 +43,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsxmlutils.h"
 
-#include <QClipboard>
+
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )
@@ -226,8 +227,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         attributeTable->setEnabled( vlayer->isValid() );
 
         // allow editing
-        unsigned int cap = vlayer->dataProvider()->capabilities();
-        if ( cap & QgsVectorDataProvider::EditingCapabilities )
+        const QgsVectorDataProvider *provider = vlayer->dataProvider();
+        if ( provider &&
+             ( provider->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
         {
           if ( toggleEditingAction )
           {
@@ -244,7 +246,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( allEditsAction->isEnabled() )
           menu->addAction( allEditsAction );
 
-        if ( vlayer->dataProvider()->supportsSubsetString() )
+        if ( provider && provider->supportsSubsetString() )
         {
           QAction *action = menu->addAction( tr( "&Filter…" ), QgisApp::instance(), &QgisApp::layerSubsetString );
           action->setEnabled( !vlayer->isEditable() );
@@ -269,6 +271,34 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           } );
         }
         menu->addAction( a );
+      }
+
+      // actions on the selection
+      if ( vlayer && vlayer->selectedFeatureCount() > 0 )
+      {
+        int selectionCount = vlayer->selectedFeatureCount();
+        QgsMapLayerAction::Target target;
+        if ( selectionCount == 1 )
+          target = QgsMapLayerAction::Target::SingleFeature;
+        else
+          target = QgsMapLayerAction::Target::MultipleFeatures;
+
+        const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer, target );
+        if ( !constRegisteredActions.isEmpty() )
+        {
+          QMenu *actionMenu = menu->addMenu( tr( "Actions on Selection (%1)" ).arg( selectionCount ) );
+          for ( QgsMapLayerAction *action : constRegisteredActions )
+          {
+            if ( target == QgsMapLayerAction::Target::SingleFeature )
+            {
+              actionMenu->addAction( action->text(), action, [ = ]() { action->triggerForFeature( vlayer,  vlayer->selectedFeatures().at( 0 ) ); } );
+            }
+            else if ( target == QgsMapLayerAction::Target::MultipleFeatures )
+            {
+              actionMenu->addAction( action->text(), action, [ = ]() {action->triggerForFeatures( vlayer, vlayer->selectedFeatures() );} );
+            }
+          }
+        }
       }
 
       menu->addSeparator();

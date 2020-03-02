@@ -42,9 +42,13 @@ class TestQgsMapToolEllipse : public QObject
     void cleanupTestCase();
 
     void testEllipseFromCenterAndPoint();
+    void testEllipseFromCenterAndPointWithDeletedVertex();
     void testEllipseFromCenterAnd2Points();
+    void testEllipseFromCenterAnd2PointsWithDeletedVertex();
     void testEllipseFromExtent();
+    void testEllipseFromExtentWithDeletedVertex();
     void testEllipseFromFoci();
+    void testEllipseFromFociWithDeletedVertex();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -112,6 +116,37 @@ void TestQgsMapToolEllipse::testEllipseFromCenterAndPoint()
   mLayer->rollBack();
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
 }
+void TestQgsMapToolEllipse::testEllipseFromCenterAndPointWithDeletedVertex()
+{
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+  mLayer->startEditing();
+
+  QgsMapToolEllipseCenterPoint mapTool( mParentTool, mCanvas );
+  mCanvas->setMapTool( &mapTool );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.keyClick( Qt::Key_Backspace );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 1, -1 );
+  utils.mouseClick( 1, -1, Qt::RightButton );
+  QgsFeatureId newFid = utils.newFeatureId();
+
+  QCOMPARE( mLayer->featureCount(), ( long )1 );
+  QgsFeature f = mLayer->getFeature( newFid );
+
+  QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
+  QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
+
+  for ( const QgsPoint &pt : pts )
+  {
+    QCOMPARE( pt.z(), ( double )333 );
+  }
+
+  mLayer->rollBack();
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+}
+
 
 void TestQgsMapToolEllipse::testEllipseFromCenterAnd2Points()
 {
@@ -122,6 +157,38 @@ void TestQgsMapToolEllipse::testEllipseFromCenterAnd2Points()
   mCanvas->setMapTool( &mapTool );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 1, Qt::LeftButton );
+  utils.mouseMove( 0, -1 );
+  utils.mouseClick( 0, -1, Qt::RightButton );
+  QgsFeatureId newFid = utils.newFeatureId();
+
+  QCOMPARE( mLayer->featureCount(), ( long )1 );
+  QgsFeature f = mLayer->getFeature( newFid );
+
+  QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
+  QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
+
+  for ( const QgsPoint &pt : pts )
+  {
+    QCOMPARE( pt.z(), ( double )111 );
+  }
+
+  mLayer->rollBack();
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+}
+
+void TestQgsMapToolEllipse::testEllipseFromCenterAnd2PointsWithDeletedVertex()
+{
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 111 );
+  mLayer->startEditing();
+
+  QgsMapToolEllipseCenter2Points mapTool( mParentTool, mCanvas );
+  mCanvas->setMapTool( &mapTool );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.keyClick( Qt::Key_Backspace );
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseClick( 0, 1, Qt::LeftButton );
   utils.mouseMove( 0, -1 );
@@ -172,6 +239,37 @@ void TestQgsMapToolEllipse::testEllipseFromExtent()
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
 }
 
+void TestQgsMapToolEllipse::testEllipseFromExtentWithDeletedVertex()
+{
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 222 );
+  mLayer->startEditing();
+
+  QgsMapToolEllipseExtent mapTool( mParentTool, mCanvas );
+  mCanvas->setMapTool( &mapTool );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.keyClick( Qt::Key_Backspace );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 2, 2 );
+  utils.mouseClick( 2, 2, Qt::RightButton );
+  QgsFeatureId newFid = utils.newFeatureId();
+
+  QCOMPARE( mLayer->featureCount(), ( long )1 );
+  QgsFeature f = mLayer->getFeature( newFid );
+
+  QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
+  QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
+
+  for ( const QgsPoint &pt : pts )
+  {
+    QCOMPARE( pt.z(), ( double )222 );
+  }
+
+  mLayer->rollBack();
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+}
+
 void TestQgsMapToolEllipse::testEllipseFromFoci()
 {
   QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
@@ -181,6 +279,38 @@ void TestQgsMapToolEllipse::testEllipseFromFoci()
   mCanvas->setMapTool( &mapTool );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 2, Qt::LeftButton );
+  utils.mouseMove( 0, -1 );
+  utils.mouseClick( 0, -1, Qt::RightButton );
+  QgsFeatureId newFid = utils.newFeatureId();
+
+  QCOMPARE( mLayer->featureCount(), ( long )1 );
+  QgsFeature f = mLayer->getFeature( newFid );
+
+  QString wkt = f.geometry().asWkt().replace( "LineStringZ (", "" ).replace( ")", "" );
+  QgsPointSequence pts = QgsGeometryUtils::pointsFromWKT( wkt, true, false );
+
+  for ( const QgsPoint &pt : pts )
+  {
+    QCOMPARE( pt.z(), ( double )444 );
+  }
+
+  mLayer->rollBack();
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 0 );
+}
+
+void TestQgsMapToolEllipse::testEllipseFromFociWithDeletedVertex()
+{
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 444 );
+  mLayer->startEditing();
+
+  QgsMapToolEllipseFoci mapTool( mParentTool, mCanvas );
+  mCanvas->setMapTool( &mapTool );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( &mapTool );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.keyClick( Qt::Key_Backspace );
   utils.mouseClick( 0, 0, Qt::LeftButton );
   utils.mouseClick( 0, 2, Qt::LeftButton );
   utils.mouseMove( 0, -1 );

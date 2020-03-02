@@ -105,6 +105,8 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     void copyVectorDatasetValues( QgsMeshLayer *layer );
     void calculateOutputSize();
 
+    bool mIsMeshSimplificationActive = false;
+
   protected:
     //! feedback class for cancellation
     std::unique_ptr<QgsMeshLayerRendererFeedback> mFeedback;

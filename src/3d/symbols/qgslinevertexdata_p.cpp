@@ -70,14 +70,14 @@ QByteArray QgsLineVertexData::createIndexBuffer()
 
 Qt3DRender::QGeometry *QgsLineVertexData::createGeometry( Qt3DCore::QNode *parent )
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, parent );
 #else
   Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer( parent );
 #endif
   vertexBuffer->setData( createVertexBuffer() );
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, parent );
 #else
   Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer( parent );

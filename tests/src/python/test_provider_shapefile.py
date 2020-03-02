@@ -19,6 +19,7 @@ import osgeo.gdal
 import osgeo.ogr
 import sys
 
+from osgeo import gdal
 from qgis.core import (
     QgsApplication,
     QgsSettings,
@@ -625,6 +626,62 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             # force close of data provider
             vl.setDataSource('', 'test', 'ogr')
 
+    def testEncoding(self):
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'iso-8859-1.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'iso-8859-1_ldid.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'latin1.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'utf8.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'UTF-8')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252_ldid.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        if int(gdal.VersionInfo('VERSION_NUM')) >= GDAL_COMPUTE_VERSION(3, 1, 0):
+            # correct autodetection of vsizip based shapefiles depends on GDAL 3.1
+            file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252.zip')
+            vl = QgsVectorLayer('/vsizip/{}'.format(file_path))
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
+            self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'system_encoding.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        # no encoding hints, so it should default to UTF-8 (which is wrong for this particular file, but the correct guess to make first!)
+        self.assertEqual(vl.dataProvider().encoding(), 'UTF-8')
+        self.assertNotEqual(next(vl.getFeatures())[1], 'äöü')
+        # set to correct encoding
+        vl.dataProvider().setEncoding('ISO-8859-1')
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
     def testCreateAttributeIndex(self):
         tmpdir = tempfile.mkdtemp()
         self.dirs_to_cleanup.append(tmpdir)
@@ -711,6 +768,27 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         # This was failing in bug 17863
         self.assertEqual(_lessdigits(subSet_vl.extent().toString()), filtered_extent)
         self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
+
+    def testMalformedSubsetStrings(self):
+        """Test that invalid where clauses always return false"""
+
+        testPath = TEST_DATA_DIR + '/' + 'lines.shp'
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.setSubsetString(''))
+        self.assertTrue(vl.setSubsetString('"Name" = \'Arterial\''))
+        self.assertTrue(vl.setSubsetString('select * from lines where "Name" = \'Arterial\''))
+        self.assertFalse(vl.setSubsetString('this is invalid sql'))
+        self.assertFalse(vl.setSubsetString('select * from lines where "NonExistentField" = \'someValue\''))
+        self.assertFalse(vl.setSubsetString('select * from lines where "Name" = \'Arte...'))
+        self.assertFalse(vl.setSubsetString('select * from lines where "Name" in (\'Arterial\', \'Highway\' '))
+        self.assertFalse(vl.setSubsetString('select * from NonExistentTable'))
+        self.assertFalse(vl.setSubsetString('select NonExistentField from lines'))
+        self.assertFalse(vl.setSubsetString('"NonExistentField" = \'someValue\''))
+        self.assertFalse(vl.setSubsetString('"Name" = \'Arte...'))
+        self.assertFalse(vl.setSubsetString('"Name" in (\'Arterial\', \'Highway\' '))
+        self.assertTrue(vl.setSubsetString(''))
 
     def testMultipatch(self):
         """Check that we can deal with multipatch shapefiles, returned natively by OGR as GeometryCollection of TIN"""

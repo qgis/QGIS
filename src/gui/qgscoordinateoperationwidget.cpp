@@ -24,6 +24,7 @@
 #include "qgsguiutils.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsinstallgridshiftdialog.h"
 
 #include <QDir>
 #include <QPushButton>
@@ -40,8 +41,15 @@ QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
 
   mLabelSrcDescription->setTextInteractionFlags( Qt::TextBrowserInteraction );
   mLabelSrcDescription->setOpenExternalLinks( true );
+  mInstallGridButton->hide();
 
 #if PROJ_VERSION_MAJOR>=6
+  connect( mInstallGridButton, &QPushButton::clicked, this, &QgsCoordinateOperationWidget::installGrid );
+  connect( mAllowFallbackCheckBox, &QCheckBox::toggled, this, [ = ]
+  {
+    if ( !mBlockSignals )
+      emit operationChanged();
+  } );
   mCoordinateOperationTableWidget->setColumnCount( 3 );
 #else
   mCoordinateOperationTableWidget->setColumnCount( 2 );
@@ -62,16 +70,11 @@ QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
 #if PROJ_VERSION_MAJOR>=6
   // proj 6 doesn't provide deprecated operations
   mHideDeprecatedCheckBox->setVisible( false );
-
-#if PROJ_VERSION_MAJOR>6 || PROJ_VERSION_MINOR>=2
   mShowSupersededCheckBox->setVisible( true );
-#else
-  mShowSupersededCheckBox->setVisible( false );
-#endif
-
   mLabelDstDescription->hide();
 #else
   mShowSupersededCheckBox->setVisible( false );
+  mAllowFallbackCheckBox->setVisible( false );
   QgsSettings settings;
   mHideDeprecatedCheckBox->setChecked( settings.value( QStringLiteral( "Windows/DatumTransformDialog/hideDeprecated" ), true ).toBool() );
 #endif
@@ -103,7 +106,7 @@ void QgsCoordinateOperationWidget::setMapCanvas( QgsMapCanvas *canvas )
       // reproject extent
       QgsCoordinateTransform ct( QgsProject::instance()->crs(),
                                  QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
-
+      ct.setBallparkTransformsAreAppropriate( true );
       g = g.densifyByCount( 5 );
       try
       {
@@ -201,10 +204,17 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     if ( !transform.isAvailable )
     {
       QStringList gridMessages;
+      QStringList missingGrids;
+      QStringList missingGridPackages;
+      QStringList missingGridUrls;
+
       for ( const QgsDatumTransform::GridDetails &grid : transform.grids )
       {
         if ( !grid.isAvailable )
         {
+          missingGrids << grid.shortName;
+          missingGridPackages << grid.packageName;
+          missingGridUrls << grid.url;
           QString m = tr( "This transformation requires the grid file “%1”, which is not available for use on the system." ).arg( grid.shortName );
           if ( !grid.url.isEmpty() )
           {
@@ -220,6 +230,10 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
           gridMessages << m;
         }
       }
+
+      item->setData( MissingGridsRole, missingGrids );
+      item->setData( MissingGridPackageNamesRole, missingGridPackages );
+      item->setData( MissingGridUrlsRole, missingGridUrls );
 
       if ( gridMessages.count() > 1 )
       {
@@ -237,7 +251,6 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     QStringList areasOfUse;
     QStringList authorityCodes;
 
-#if PROJ_VERSION_MAJOR > 6 || PROJ_VERSION_MINOR >= 2
     QStringList opText;
     for ( const QgsDatumTransform::SingleOperationDetails &singleOpDetails : transform.operationDetails )
     {
@@ -291,7 +304,6 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
       for ( int k = 0; k < opText.count(); ++k )
         opText[k] = QStringLiteral( "<li>%1</li>" ).arg( opText.at( k ) );
     }
-#endif
 
     if ( !transform.areaOfUse.isEmpty() && !areasOfUse.contains( transform.areaOfUse ) )
       areasOfUse << transform.areaOfUse;
@@ -301,7 +313,6 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     if ( !id.isEmpty() && !authorityCodes.contains( id ) )
       authorityCodes << id;
 
-#if PROJ_VERSION_MAJOR > 6 || PROJ_VERSION_MINOR >= 2
     const QColor disabled = palette().color( QPalette::Disabled, QPalette::Text );
     const QColor active = palette().color( QPalette::Active, QPalette::Text );
 
@@ -314,13 +325,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
                                   + ( !authorityCodes.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Identifiers" ), authorityCodes.join( QStringLiteral( ", " ) ) ) : QString() )
                                   + ( !missingMessage.isEmpty() ? QStringLiteral( "<p><b style=\"color: red\">%1</b></p>" ).arg( missingMessage ) : QString() )
                                   + QStringLiteral( "<p><code style=\"color: %1\">%2</code></p>" ).arg( codeColor.name(), transform.proj );
-#else
-    const QString toolTipString = QStringLiteral( "<b>%1</b>%2%3%4<p><code>%5</code></p>" ).arg( transform.name,
-                                  ( !transform.areaOfUse.isEmpty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Area of use" ), transform.areaOfUse ) : QString() ),
-                                  ( !id.isEmpty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Identifier" ), id ) : QString() ),
-                                  ( !missingMessage.isEmpty() ? QStringLiteral( "<p><b style=\"color: red\">%1</b></p>" ).arg( missingMessage ) : QString() ),
-                                  transform.proj );
-#endif
+
     item->setToolTip( toolTipString );
     mCoordinateOperationTableWidget->setRowCount( row + 1 );
     mCoordinateOperationTableWidget->setItem( row, 0, item.release() );
@@ -556,6 +561,7 @@ QgsCoordinateOperationWidget::OperationDetails QgsCoordinateOperationWidget::sel
     op.destinationTransformId = destItem ? destItem->data( TransformIdRole ).toInt() : -1;
     op.proj = srcItem ? srcItem->data( ProjRole ).toString() : QString();
     op.isAvailable = srcItem ? srcItem->data( AvailableRole ).toBool() : true;
+    op.allowFallback = mAllowFallbackCheckBox->isChecked();
   }
   else
   {
@@ -566,8 +572,10 @@ QgsCoordinateOperationWidget::OperationDetails QgsCoordinateOperationWidget::sel
   return op;
 }
 
-void QgsCoordinateOperationWidget::setSelectedOperation( const QgsCoordinateOperationWidget::OperationDetails &operation ) const
+void QgsCoordinateOperationWidget::setSelectedOperation( const QgsCoordinateOperationWidget::OperationDetails &operation )
 {
+  int prevRow = mCoordinateOperationTableWidget->currentRow();
+  mBlockSignals++;
   for ( int row = 0; row < mCoordinateOperationTableWidget->rowCount(); ++row )
   {
     QTableWidgetItem *srcItem = mCoordinateOperationTableWidget->item( row, 0 );
@@ -600,6 +608,13 @@ void QgsCoordinateOperationWidget::setSelectedOperation( const QgsCoordinateOper
     }
 #endif
   }
+
+  bool fallbackChanged = mAllowFallbackCheckBox->isChecked() != operation.allowFallback;
+  mAllowFallbackCheckBox->setChecked( operation.allowFallback );
+  mBlockSignals--;
+
+  if ( mCoordinateOperationTableWidget->currentRow() != prevRow || fallbackChanged )
+    emit operationChanged();
 }
 
 void QgsCoordinateOperationWidget::setSelectedOperationUsingContext( const QgsCoordinateTransformContext &context )
@@ -610,6 +625,7 @@ void QgsCoordinateOperationWidget::setSelectedOperationUsingContext( const QgsCo
   {
     OperationDetails deets;
     deets.proj = op;
+    deets.allowFallback = context.allowFallbackTransform( mSourceCrs, mDestinationCrs );
     setSelectedOperation( deets );
   }
   else
@@ -633,6 +649,11 @@ void QgsCoordinateOperationWidget::setSelectedOperationUsingContext( const QgsCo
     setSelectedOperation( defaultOperation() );
   }
 #endif
+}
+
+void QgsCoordinateOperationWidget::setShowFallbackOption( bool visible )
+{
+  mAllowFallbackCheckBox->setVisible( visible );
 }
 
 bool QgsCoordinateOperationWidget::gridShiftTransformation( const QString &itemText ) const
@@ -702,6 +723,7 @@ void QgsCoordinateOperationWidget::tableCurrentItemChanged( QTableWidgetItem *, 
     mLabelDstDescription->clear();
 #if PROJ_VERSION_MAJOR>=6
     mAreaCanvas->hide();
+    mInstallGridButton->hide();
 #endif
   }
   else
@@ -721,6 +743,13 @@ void QgsCoordinateOperationWidget::tableCurrentItemChanged( QTableWidgetItem *, 
       mAreaCanvas->setPreviewRect( rect );
 #if PROJ_VERSION_MAJOR>=6
       mAreaCanvas->show();
+
+      const QStringList missingGrids = srcItem->data( MissingGridsRole ).toStringList();
+      mInstallGridButton->setVisible( !missingGrids.empty() );
+      if ( !missingGrids.empty() )
+      {
+        mInstallGridButton->setText( tr( "Install “%1” Grid…" ).arg( missingGrids.at( 0 ) ) );
+      }
 #endif
     }
     else
@@ -728,6 +757,7 @@ void QgsCoordinateOperationWidget::tableCurrentItemChanged( QTableWidgetItem *, 
       mAreaCanvas->setPreviewRect( QgsRectangle() );
 #if PROJ_VERSION_MAJOR>=6
       mAreaCanvas->hide();
+      mInstallGridButton->hide();
 #endif
     }
     QTableWidgetItem *destItem = mCoordinateOperationTableWidget->item( row, 1 );
@@ -735,7 +765,7 @@ void QgsCoordinateOperationWidget::tableCurrentItemChanged( QTableWidgetItem *, 
   }
   OperationDetails newOp = selectedOperation();
 #if PROJ_VERSION_MAJOR>=6
-  if ( newOp.proj != mPreviousOp.proj )
+  if ( newOp.proj != mPreviousOp.proj && !mBlockSignals )
     emit operationChanged();
 #else
   if ( newOp.sourceTransformId != mPreviousOp.sourceTransformId ||
@@ -781,4 +811,43 @@ void QgsCoordinateOperationWidget::showSupersededToggled( bool )
   Q_NOWARN_DEPRECATED_POP
 #endif
   loadAvailableOperations();
+}
+
+void QgsCoordinateOperationWidget::installGrid()
+{
+#if PROJ_VERSION_MAJOR>=6
+  int row = mCoordinateOperationTableWidget->currentRow();
+  QTableWidgetItem *srcItem = mCoordinateOperationTableWidget->item( row, 0 );
+  if ( !srcItem )
+    return;
+
+  const QStringList missingGrids = srcItem->data( MissingGridsRole ).toStringList();
+  if ( missingGrids.empty() )
+    return;
+
+  const QStringList missingGridPackagesNames = srcItem->data( MissingGridPackageNamesRole ).toStringList();
+  const QString packageName = missingGridPackagesNames.value( 0 );
+  const QStringList missingGridUrls = srcItem->data( MissingGridUrlsRole ).toStringList();
+  const QString gridUrl = missingGridUrls.value( 0 );
+
+  QString downloadMessage;
+  if ( !packageName.isEmpty() )
+  {
+    downloadMessage = tr( "This grid is part of the “<i>%1</i>” package, available for download from <a href=\"%2\">%2</a>." ).arg( packageName, gridUrl );
+  }
+  else if ( !gridUrl.isEmpty() )
+  {
+    downloadMessage = tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( gridUrl );
+  }
+
+  const QString longMessage = tr( "<p>This transformation requires the grid file “%1”, which is not available for use on the system.</p>" ).arg( missingGrids.at( 0 ) );
+
+  QgsInstallGridShiftFileDialog *dlg = new QgsInstallGridShiftFileDialog( missingGrids.at( 0 ), this );
+  dlg->setAttribute( Qt::WA_DeleteOnClose );
+  dlg->setWindowTitle( tr( "Install Grid File" ) );
+  dlg->setDescription( longMessage );
+  dlg->setDownloadMessage( downloadMessage );
+  dlg->exec();
+
+#endif
 }

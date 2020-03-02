@@ -1000,7 +1000,7 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
       height = bounds.height();
     }
 
-    pt2 = pt1;
+    pt1 = pt2;
   }
 
   QgsGeometry minBounds = QgsGeometry::fromRect( minRect );
@@ -2125,7 +2125,7 @@ QgsGeometry QgsGeometry::subdivide( int maxNodes ) const
   return QgsGeometry( std::move( result ) );
 }
 
-QgsGeometry QgsGeometry::interpolate( const double distance ) const
+QgsGeometry QgsGeometry::interpolate( double distance ) const
 {
   if ( !d->geometry )
   {
@@ -2143,11 +2143,21 @@ QgsGeometry QgsGeometry::interpolate( const double distance ) const
   const QgsCurve *curve = nullptr;
   if ( line.isMultipart() )
   {
-    // if multi part, just use first part
+    // if multi part, iterate through parts to find target part
     const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( line.constGet() );
-    if ( collection && collection->numGeometries() > 0 )
+    for ( int part = 0; part < collection->numGeometries(); ++part )
     {
-      curve = qgsgeometry_cast< const QgsCurve * >( collection->geometryN( 0 ) );
+      const QgsCurve *candidate = qgsgeometry_cast< const QgsCurve * >( collection->geometryN( part ) );
+      if ( !candidate )
+        continue;
+      const double candidateLength = candidate->length();
+      if ( candidateLength >= distance )
+      {
+        curve = candidate;
+        break;
+      }
+
+      distance -= candidateLength;
     }
   }
   else

@@ -149,9 +149,20 @@ class TestQgsCoordinateTransform(unittest.TestCase):
 
         transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28354'), QgsCoordinateReferenceSystem('EPSG:28353'), context)
         self.assertEqual(list(transform.context().coordinateOperations().keys()), [('EPSG:28356', 'EPSG:4283')])
-
         # should be no coordinate operation
         self.assertEqual(transform.coordinateOperation(), '')
+        # should default to allowing fallback transforms
+        self.assertTrue(transform.allowFallbackTransforms())
+
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                           QgsCoordinateReferenceSystem('EPSG:4283'), context)
+        self.assertTrue(transform.allowFallbackTransforms())
+        context.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                       QgsCoordinateReferenceSystem('EPSG:4283'),
+                                       'proj', False)
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                           QgsCoordinateReferenceSystem('EPSG:4283'), context)
+        self.assertFalse(transform.allowFallbackTransforms())
 
         # matching source
         transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'), QgsCoordinateReferenceSystem('EPSG:28353'), context)
@@ -168,6 +179,10 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         # test manual overwriting
         transform.setCoordinateOperation('proj2')
         self.assertEqual(transform.coordinateOperation(), 'proj2')
+        transform.setAllowFallbackTransforms(False)
+        self.assertFalse(transform.allowFallbackTransforms())
+        transform.setAllowFallbackTransforms(True)
+        self.assertTrue(transform.allowFallbackTransforms())
 
         # test that auto operation setting occurs when updating src/dest crs
         transform.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:28356'))

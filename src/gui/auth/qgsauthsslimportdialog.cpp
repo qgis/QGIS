@@ -192,7 +192,9 @@ void QgsAuthSslImportDialog::secureConnect()
              this, &QgsAuthSslImportDialog::socketReadyRead );
   }
 
-  mSocket->setCaCertificates( mTrustedCAs );
+  QSslConfiguration sslConfig = mSocket->sslConfiguration();
+  sslConfig.setCaCertificates( mTrustedCAs );
+  mSocket->setSslConfiguration( sslConfig );
 
   if ( !mTimer )
   {

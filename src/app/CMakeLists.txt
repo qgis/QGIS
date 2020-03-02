@@ -7,6 +7,11 @@ SET(QGIS_APP_SRCS
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
   ${CMAKE_SOURCE_DIR}/external/nmea/time.c
 
+  attributeformconfig/qgsattributeformcontaineredit.cpp
+  attributeformconfig/qgsattributerelationedit.cpp
+  attributeformconfig/qgsattributetypedialog.cpp
+  attributeformconfig/qgsattributewidgetedit.cpp
+
   qgisapp.cpp
   qgisappinterface.cpp
   qgisappstylesheet.cpp
@@ -26,8 +31,6 @@ SET(QGIS_APP_SRCS
   qgsappsslerrorhandler.cpp
   qgsattributeactiondialog.cpp
   qgsattributeactionpropertiesdialog.cpp
-  qgsattributetypedialog.cpp
-  qgsattributerelationedit.cpp
   qgsattributesforminitcode.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
@@ -53,7 +56,6 @@ SET(QGIS_APP_SRCS
   qgssourcefieldsproperties.cpp
   qgsattributesformproperties.cpp
   qgsidentifyresultsdialog.cpp
-  qgsinstallgridshiftdialog.cpp
   qgsfeatureaction.cpp
   qgslayercapabilitiesmodel.cpp
   qgslayertreeviewindicatorprovider.cpp
@@ -393,6 +395,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_SOURCE_DIR}/src/app
+  ${CMAKE_SOURCE_DIR}/src/app/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/app/decorations
   ${CMAKE_SOURCE_DIR}/src/app/labeling
   ${CMAKE_SOURCE_DIR}/src/app/layout

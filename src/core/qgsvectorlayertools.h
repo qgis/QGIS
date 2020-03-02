@@ -113,6 +113,29 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      */
     virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request SIP_INOUT, double dx = 0, double dy = 0, QString *errorMsg SIP_OUT = nullptr, const bool topologicalEditing = false, QgsVectorLayer *topologicalLayer = nullptr ) const;
 
+    /**
+     * Returns force suppress form popup status.
+     *
+     * \returns TRUE if force suppress form popup is set.
+     * \since QGIS 3.14
+     */
+    bool forceSuppressFormPopup() const;
+
+    /**
+     * Sets force suppress form popup status to \a forceSuppressFormPopup.
+     *
+     * This flag will override the layer and general settings regarding the automatic
+     * opening of the attribute form dialog when digitizing is completed.
+     *
+     * \since QGIS 3.14
+     */
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+
+  private:
+
+    bool mForceSuppressFormPopup { false };
+
+
 };
 
 #endif // QGSVECTORLAYERTOOLS_H

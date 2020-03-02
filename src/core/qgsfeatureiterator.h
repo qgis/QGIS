@@ -310,7 +310,7 @@ class CORE_EXPORT QgsFeatureIterator
      *
      * \since QGIS 3.0
      */
-    virtual bool isValid() const;
+    bool isValid() const;
 
     //! find out whether the iterator is still valid or closed already
     bool isClosed() const;

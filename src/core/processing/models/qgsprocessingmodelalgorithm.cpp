@@ -316,14 +316,12 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       bool ok = false;
       std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
       QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok, child.configuration() );
-      childAlg.reset( nullptr );
       if ( !ok )
       {
-        QString error = QObject::tr( "Error encountered while running %1" ).arg( child.description() );
-        if ( feedback )
-          feedback->reportError( error );
+        const QString error = childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
         throw QgsProcessingException( error );
       }
+      childAlg.reset( nullptr );
       childResults.insert( childId, results );
 
       // look through child alg's outputs to determine whether any of these should be copied
@@ -682,6 +680,9 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
         { QStringLiteral( "QgsGeometry" ), QStringLiteral( "from qgis.core import QgsGeometry" ) },
         { QStringLiteral( "QgsProcessingOutputLayerDefinition" ), QStringLiteral( "from qgis.core import QgsProcessingOutputLayerDefinition" ) },
         { QStringLiteral( "QColor" ), QStringLiteral( "from qgis.PyQt.QtGui import QColor" ) },
+        { QStringLiteral( "QDateTime" ), QStringLiteral( "from qgis.PyQt.QtCore import QDateTime" ) },
+        { QStringLiteral( "QDate" ), QStringLiteral( "from qgis.PyQt.QtCore import QDate" ) },
+        { QStringLiteral( "QTime" ), QStringLiteral( "from qgis.PyQt.QtCore import QTime" ) },
       };
 
       for ( auto it = sAdditionalImports.constBegin(); it != sAdditionalImports.constEnd(); ++it )

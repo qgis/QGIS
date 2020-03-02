@@ -1962,7 +1962,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   }
   geos_geom_clone = QgsGeos::asGeos( geom );
 
-  if ( isObstacle )
+  if ( isObstacle || ( geom.type() == QgsWkbTypes::PointGeometry && offsetType == FromSymbolBounds ) )
   {
     if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
     {
@@ -2363,7 +2363,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   ( *labelFeature )->setOverrunDistance( overrunDistanceEval );
   ( *labelFeature )->setOverrunSmoothDistance( overrunSmoothDist );
   ( *labelFeature )->setLabelAllParts( labelAll );
-  if ( geom.type() == QgsWkbTypes::PointGeometry && isObstacle && !obstacleGeometry.isNull() )
+  if ( geom.type() == QgsWkbTypes::PointGeometry && !obstacleGeometry.isNull() )
   {
     //register symbol size
     ( *labelFeature )->setSymbolSize( QSizeF( obstacleGeometry.boundingBox().width(),
@@ -2919,6 +2919,11 @@ void QgsPalLayerSettings::parseTextBuffer( QgsRenderContext &context )
   if ( dataDefinedValEval( DDBool, QgsPalLayerSettings::BufferDraw, exprVal, context.expressionContext(), buffer.enabled() ) )
   {
     drawBuffer = exprVal.toBool();
+  }
+  else if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::BufferDraw ) && exprVal.isNull() )
+  {
+    drawBuffer = false;
+    dataDefinedValues.insert( QgsPalLayerSettings::BufferDraw, QVariant( drawBuffer ) );
   }
 
   if ( !drawBuffer )

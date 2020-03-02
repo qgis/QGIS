@@ -1,0 +1,86 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodelgraphicsscene.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsModelGraphicsScene : QGraphicsScene
+{
+%Docstring
+QGraphicsScene subclass representing the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelgraphicsscene.h"
+%End
+  public:
+
+    enum ZValues
+    {
+      ArrowLink,
+      ModelComponent,
+    };
+
+    enum Flag
+    {
+      FlagHideControls,
+    };
+    typedef QFlags<QgsModelGraphicsScene::Flag> Flags;
+
+
+    QgsModelGraphicsScene( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsModelGraphicsScene with the specified ``parent`` object.
+%End
+
+    void setFlags( QgsModelGraphicsScene::Flags flags );
+%Docstring
+Sets the combination of ``flags`` controlling how the scene is rendered and behaves.
+
+.. seealso:: :py:func:`setFlag`
+
+.. seealso:: :py:func:`flags`
+%End
+
+    void setFlag( QgsModelGraphicsScene::Flag flag, bool on = true );
+%Docstring
+Enables or disables a particular ``flag`` for the scene. Other existing
+flags are not affected.
+
+.. seealso:: :py:func:`setFlags`
+
+.. seealso:: :py:func:`flags`
+%End
+
+    QgsModelGraphicsScene::Flags flags() const;
+%Docstring
+Returns the current combination of flags set for the scene.
+
+.. seealso:: :py:func:`setFlags`
+
+.. seealso:: :py:func:`setFlag`
+%End
+
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodelgraphicsscene.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

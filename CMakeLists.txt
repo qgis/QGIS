@@ -15,7 +15,7 @@ SET(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 SET(CPACK_PACKAGE_VERSION_MAJOR "3")
-SET(CPACK_PACKAGE_VERSION_MINOR "11")
+SET(CPACK_PACKAGE_VERSION_MINOR "13")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
@@ -401,7 +401,11 @@ IF(WITH_CORE)
   IF (APPLE)
     FIND_PACKAGE(Qt5MacExtras REQUIRED)
   ENDIF (APPLE)
-  INCLUDE("cmake/modules/ECMQt4To5Porting.cmake")
+
+  # get the Qt plugins directory
+  GET_TARGET_PROPERTY(QMAKE_EXECUTABLE Qt5::qmake LOCATION)
+  EXEC_PROGRAM(${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_PLUGINS" RETURN_VALUE return_code OUTPUT_VARIABLE QT_PLUGINS_DIR )
+
   MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
   IF (WITH_QUICK)
     FIND_PACKAGE(Qt5Qml REQUIRED)
@@ -545,6 +549,8 @@ IF (PEDANTIC)
 
     # c++ only warnings
 
+    SET(_warnings "${_warnings} -Wnon-virtual-dtor")
+
     # unavoidable - we can't avoid these, as older, supported compilers do not support removing the redundant move
     SET(_warnings "${_warnings} -Wno-redundant-move")
 
@@ -604,6 +610,11 @@ IF(MSVC)
   # disable macros that offend std::numeric_limits<T>::min()/max()
   ADD_DEFINITIONS(-DNOMINMAX)
 ENDIF(MSVC)
+
+# Prevent build when Qt api deprecated before this Qt version is used:
+ADD_DEFINITIONS(-DQT_DEPRECATED_WARNINGS)
+# Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
+ADD_DEFINITIONS(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
 
 IF(ENABLE_COVERAGE)
   INCLUDE("cmake/modules/coverage/CodeCoverage.cmake")

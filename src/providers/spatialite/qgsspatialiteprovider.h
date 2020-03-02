@@ -54,7 +54,7 @@ class QgsSpatiaLiteFeatureIterator;
   interface defined in the QgsDataProvider class to provide access to spatial
   data residing in a SQLite/SpatiaLite enabled database.
   */
-class QgsSpatiaLiteProvider: public QgsVectorDataProvider
+class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -390,7 +390,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     virtual QString defaultValueClause( int fieldIndex ) const override;
 };
 
-class QgsSpatiaLiteProviderMetadata: public QgsProviderMetadata
+class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsSpatiaLiteProviderMetadata();

@@ -64,6 +64,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmextractvertices.cpp
   processing/qgsalgorithmextractspecificvertices.cpp
   processing/qgsalgorithmfiledownloader.cpp
+  processing/qgsalgorithmfillnodata.cpp
   processing/qgsalgorithmfilter.cpp
   processing/qgsalgorithmfiltervertices.cpp
   processing/qgsalgorithmfixgeometries.cpp
@@ -107,6 +108,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpoleofinaccessibility.cpp
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
+  processing/qgsalgorithmraiseexception.cpp
   processing/qgsalgorithmrandomextract.cpp
   processing/qgsalgorithmrandompointsextent.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
@@ -131,11 +133,13 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsegmentize.cpp
   processing/qgsalgorithmserviceareafromlayer.cpp
   processing/qgsalgorithmserviceareafrompoint.cpp
+  processing/qgsalgorithmsetlayerencoding.cpp
   processing/qgsalgorithmsetmvalue.cpp
   processing/qgsalgorithmsetzvalue.cpp
   processing/qgsalgorithmshortestpathlayertopoint.cpp
   processing/qgsalgorithmshortestpathpointtolayer.cpp
   processing/qgsalgorithmshortestpathpointtopoint.cpp
+  processing/qgsalgorithmshpencodinginfo.cpp
   processing/qgsalgorithmsimplify.cpp
   processing/qgsalgorithmsinglesidedbuffer.cpp
   processing/qgsalgorithmslope.cpp

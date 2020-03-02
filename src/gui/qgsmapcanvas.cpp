@@ -194,6 +194,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   // Enable touch event on Windows.
   // Qt on Windows needs to be told it can take touch events or else it ignores them.
   grabGesture( Qt::PinchGesture );
+  grabGesture( Qt::TapAndHoldGesture );
   viewport()->setAttribute( Qt::WA_AcceptTouchEvents );
 #endif
 
@@ -211,6 +212,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   // make sure we have the same default in QgsMapSettings and the scene's background brush
   // (by default map settings has white bg color, scene background brush is black)
   setCanvasColor( mSettings.backgroundColor() );
+
+  setTemporalRange( mSettings.temporalRange() );
 
   refresh();
 
@@ -723,6 +726,21 @@ void QgsMapCanvas::setPreviewJobsEnabled( bool enabled )
 void QgsMapCanvas::setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler> > &handlers )
 {
   mDropHandlers = handlers;
+}
+
+void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
+{
+  if ( temporalRange() == dateTimeRange )
+    return;
+
+  mTemporalRangeObject.setTemporalRange( dateTimeRange );
+
+  emit temporalRangeChanged();
+}
+
+const QgsDateTimeRange &QgsMapCanvas::temporalRange() const
+{
+  return mTemporalRangeObject.temporalRange();
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
@@ -2337,6 +2355,14 @@ bool QgsMapCanvas::event( QEvent *e )
   {
     if ( e->type() == QEvent::Gesture )
     {
+      if ( QTapAndHoldGesture *tapAndHoldGesture = qobject_cast< QTapAndHoldGesture * >( static_cast<QGestureEvent *>( e )->gesture( Qt::TapAndHoldGesture ) ) )
+      {
+        QPointF pos = tapAndHoldGesture->position();
+        pos = mapFromGlobal( QPoint( pos.x(), pos.y() ) );
+        QgsPointXY mapPoint = getCoordinateTransform()->toMapCoordinates( pos.x(), pos.y() );
+        emit tapAndHoldGestureOccurred( mapPoint, tapAndHoldGesture );
+      }
+
       // call handler of current map tool
       if ( mMapTool )
       {
@@ -2464,7 +2490,8 @@ void QgsMapCanvas::startPreviewJob( int number )
   for ( QgsMapLayer *layer : layers )
   {
     context.lastRenderingTimeMs = mLastLayerRenderTime.value( layer->id(), 0 );
-    if ( !layer->dataProvider()->renderInPreview( context ) )
+    QgsDataProvider *provider = layer->dataProvider();
+    if ( provider && !provider->renderInPreview( context ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "Layer %1 not rendered because it does not match the renderInPreview criterion %2" ).arg( layer->id() ).arg( mLastLayerRenderTime.value( layer->id() ) ), 3 );
       continue;

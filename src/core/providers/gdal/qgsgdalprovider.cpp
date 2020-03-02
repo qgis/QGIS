@@ -156,7 +156,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const ProviderOptions &opt
   mGeoTransform[4] = 0;
   mGeoTransform[5] = -1;
 
-  QgsDebugMsgLevel( "constructing with uri '" + uri + "'.", 1 );
+  QgsDebugMsgLevel( "constructing with uri '" + uri + "'.", 2 );
 
   QgsGdalProviderBase::registerGdalDrivers();
 
@@ -306,7 +306,7 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
       QString authid = QStringLiteral( "%1:%2" )
                        .arg( OSRGetAuthorityName( hCRS, nullptr ),
                              OSRGetAuthorityCode( hCRS, nullptr ) );
-      QgsDebugMsgLevel( "authid recognized as " + authid, 1 );
+      QgsDebugMsgLevel( "authid recognized as " + authid, 2 );
       mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authid );
     }
     else
@@ -314,7 +314,7 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
       // get the proj4 text
       char *pszProj4 = nullptr;
       OSRExportToProj4( hCRS, &pszProj4 );
-      QgsDebugMsgLevel( pszProj4, 1 );
+      QgsDebugMsgLevel( pszProj4, 2 );
       CPLFree( pszProj4 );
 
       char *pszWkt = nullptr;
@@ -852,6 +852,11 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   {
     srcBottom = static_cast<int>( std::floor( -1. * ( mExtent.yMaximum() - rasterExtent.yMinimum() ) / srcYRes ) );
   }
+
+  // srcBottom must be less than raster height or we'll get a raster I/O error,
+  // this may happen because of rounding errors with the floating point operations used above
+  // See: issue GH #34435
+  srcBottom = std::min( mHeight - 1, srcBottom );
 
   QgsDebugMsgLevel( QStringLiteral( "srcTop = %1 srcBottom = %2 srcLeft = %3 srcRight = %4" ).arg( srcTop ).arg( srcBottom ).arg( srcLeft ).arg( srcRight ), 5 );
 
@@ -2632,7 +2637,7 @@ bool QgsGdalProvider::initIfNeeded()
     return false;
   }
 
-  QgsDebugMsg( QStringLiteral( "GdalDataset opened" ) );
+  QgsDebugMsgLevel( QStringLiteral( "GdalDataset opened" ), 2 );
 
   initBaseDataset();
   return mValid;

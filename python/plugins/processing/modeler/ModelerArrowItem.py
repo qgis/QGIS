@@ -46,19 +46,21 @@
 ***************************************************************************
 """
 
-from qgis.core import (QgsProcessingModelAlgorithm,
-                       QgsProcessingModelChildAlgorithm,
+from qgis.core import (QgsProcessingModelChildAlgorithm,
                        QgsProcessingModelParameter)
+from qgis.gui import (
+    QgsModelGraphicsScene,
+    QgsModelComponentGraphicItem
+)
 from qgis.PyQt.QtCore import Qt, QPointF
 from qgis.PyQt.QtWidgets import QApplication, QGraphicsPathItem, QGraphicsItem
 from qgis.PyQt.QtGui import QPen, QPainterPath, QPolygonF, QPainter, QPalette
-from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 
 
 class ModelerArrowItem(QGraphicsPathItem):
 
     def __init__(self, startItem, startIndex, endItem, endIndex,
-                 parent=None, scene=None):
+                 parent=None):
         super(ModelerArrowItem, self).__init__(parent)
         self.arrowHead = QPolygonF()
         self.endIndex = endIndex
@@ -71,7 +73,7 @@ class ModelerArrowItem(QGraphicsPathItem):
         self.myColor.setAlpha(150)
         self.setPen(QPen(self.myColor, 1, Qt.SolidLine,
                          Qt.RoundCap, Qt.RoundJoin))
-        self.setZValue(0)
+        self.setZValue(QgsModelGraphicsScene.ArrowLink)
 
     def setPenStyle(self, style):
         pen = self.pen()
@@ -83,20 +85,20 @@ class ModelerArrowItem(QGraphicsPathItem):
         self.endPoints = []
         controlPoints = []
         endPt = self.endItem.getLinkPointForParameter(self.endIndex)
-        if isinstance(self.startItem.element, QgsProcessingModelParameter):
+        if isinstance(self.startItem.component(), QgsProcessingModelParameter):
             startPt = self.startItem.getLinkPointForParameter(self.startIndex)
         else:
             startPt = self.startItem.getLinkPointForOutput(self.startIndex)
-        if isinstance(self.endItem.element, QgsProcessingModelParameter):
+        if isinstance(self.endItem.component(), QgsProcessingModelParameter):
             endPt = self.endItem.getLinkPointForParameter(self.startIndex)
 
-        if isinstance(self.startItem.element, QgsProcessingModelChildAlgorithm):
+        if isinstance(self.startItem.component(), QgsProcessingModelChildAlgorithm):
             if self.startIndex != -1:
                 controlPoints.append(self.startItem.pos() + startPt)
                 controlPoints.append(self.startItem.pos() + startPt +
-                                     QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                     QPointF(self.startItem.component().size().width() / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt -
-                                     QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                     QPointF(self.endItem.component().size().width() / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt)
                 pt = QPointF(self.startItem.pos() + startPt + QPointF(-3, -3))
                 self.endPoints.append(pt)
@@ -107,16 +109,16 @@ class ModelerArrowItem(QGraphicsPathItem):
                 # on an output
                 controlPoints.append(self.startItem.pos() + startPt)
                 controlPoints.append(self.startItem.pos() + startPt +
-                                     QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                     QPointF(self.startItem.component().size().width() / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt -
-                                     QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                     QPointF(self.endItem.component().size().height() / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt)
         else:
             controlPoints.append(self.startItem.pos())
             controlPoints.append(self.startItem.pos() +
-                                 QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                 QPointF(self.startItem.component().size().width() / 3, 0))
             controlPoints.append(self.endItem.pos() + endPt -
-                                 QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
+                                 QPointF(self.endItem.component().size().width() / 3, 0))
             controlPoints.append(self.endItem.pos() + endPt)
             pt = QPointF(self.endItem.pos() + endPt + QPointF(-3, -3))
             self.endPoints.append(pt)
@@ -128,9 +130,9 @@ class ModelerArrowItem(QGraphicsPathItem):
     def paint(self, painter, option, widget=None):
         color = self.myColor
 
-        if self.startItem.isSelected() or self.endItem.isSelected():
+        if self.startItem.state() == QgsModelComponentGraphicItem.Selected or self.endItem.state() == QgsModelComponentGraphicItem.Selected:
             color.setAlpha(220)
-        elif self.startItem.hover_over_item or self.endItem.hover_over_item:
+        elif self.startItem.state() == QgsModelComponentGraphicItem.Hover or self.endItem.state() == QgsModelComponentGraphicItem.Hover:
             color.setAlpha(150)
         else:
             color.setAlpha(80)

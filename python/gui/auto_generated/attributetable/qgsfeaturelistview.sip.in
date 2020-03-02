@@ -92,11 +92,11 @@ Sets if the currently shown form has received any edit events so far.
 :param state: The state
 %End
 
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 %Docstring
 setFeatureSelectionManager
 
-:param featureSelectionManager: We will take ownership
+:param featureSelectionManager:
 %End
 
   protected:

@@ -67,6 +67,7 @@
 #include "qgsmessagebar.h"
 #include "qgsfieldcombobox.h"
 #include "qgsmapthemecollection.h"
+#include "qgsdatetimeedit.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -197,6 +198,7 @@ class TestProcessingGui : public QObject
     void mapLayerComboBox();
     void paramConfigWidget();
     void testMapThemeWrapper();
+    void testDateTimeWrapper();
 
   private:
 
@@ -216,7 +218,7 @@ void TestProcessingGui::initTestCase()
   // make QGIS_AUTH_DB_DIR_PATH temp dir for qgis - auth.db and master password file
   QDir tmpDir = QDir::temp();
   QVERIFY2( tmpDir.mkpath( mTempDir ), "Couldn't make temp directory" );
-  qputenv( "QGIS_AUTH_DB_DIR_PATH", mTempDir.toAscii() );
+  qputenv( "QGIS_AUTH_DB_DIR_PATH", mTempDir.toLatin1() );
 
   // init app and auth manager
   QgsApplication::init();
@@ -244,7 +246,7 @@ void TestProcessingGui::initTestCase()
     QTextStream fout( &passfile );
     fout << QString( mPass ) << "\r\n";
     passfile.close();
-    qputenv( "QGIS_AUTH_PASSWORD_FILE", passfilepath.toAscii() );
+    qputenv( "QGIS_AUTH_PASSWORD_FILE", passfilepath.toLatin1() );
   }
   // qDebug( "QGIS_AUTH_PASSWORD_FILE=%s", qgetenv( "QGIS_AUTH_PASSWORD_FILE" ).constData() );
 
@@ -3675,25 +3677,25 @@ void TestProcessingGui::testCoordinateOperationWrapper()
 
     QgsProcessingContext context;
     QWidget *w = wrapper.createWrappedWidget( context );
-    wrapper.setSourceCrsParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28355" ) ) );
-    wrapper.setDestinationCrsParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:7855" ) ) );
+    wrapper.setSourceCrsParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:26745" ) ) );
+    wrapper.setDestinationCrsParameterValue( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
 
     QSignalSpy spy( &wrapper, &QgsProcessingCoordinateOperationWidgetWrapper::widgetValueHasChanged );
-    wrapper.setWidgetValue( QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80" ), context );
+    wrapper.setWidgetValue( QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ), context );
     QCOMPARE( spy.count(), 1 );
-    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80" ) );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
     switch ( type )
     {
       case QgsProcessingGui::Standard:
       {
-        QCOMPARE( static_cast< QgsCoordinateOperationWidget * >( wrapper.wrappedWidget() )->selectedOperation().proj, QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80" ) );
-        wrapper.setWidgetValue( QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=push +v_3 +step +proj=cart +ellps=GRS80 +step +proj=helmert +x=0.06155 +y=-0.01087 +z=-0.04019 +rx=-0.0394924 +ry=-0.0327221 +rz=-0.0328979 +s=-0.009994 +convention=coordinate_frame +step +inv +proj=cart +ellps=GRS80 +step +proj=pop +v_3 +step +proj=utm +zone=55 +south +ellps=GRS80" ), context );
+        QCOMPARE( static_cast< QgsCoordinateOperationWidget * >( wrapper.wrappedWidget() )->selectedOperation().proj, QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
+        wrapper.setWidgetValue( QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ), context );
         QCOMPARE( spy.count(), 2 );
-        QCOMPARE( static_cast< QgsCoordinateOperationWidget * >( wrapper.wrappedWidget() )->selectedOperation().proj, QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=push +v_3 +step +proj=cart +ellps=GRS80 +step +proj=helmert +x=0.06155 +y=-0.01087 +z=-0.04019 +rx=-0.0394924 +ry=-0.0327221 +rz=-0.0328979 +s=-0.009994 +convention=coordinate_frame +step +inv +proj=cart +ellps=GRS80 +step +proj=pop +v_3 +step +proj=utm +zone=55 +south +ellps=GRS80" ) );
+        QCOMPARE( static_cast< QgsCoordinateOperationWidget * >( wrapper.wrappedWidget() )->selectedOperation().proj, QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
 
         // check signal
         QgsCoordinateOperationWidget::OperationDetails deets;
-        deets.proj = QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80" );
+        deets.proj = QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" );
         static_cast< QgsCoordinateOperationWidget * >( wrapper.wrappedWidget() )->setSelectedOperation( deets );
         QCOMPARE( spy.count(), 3 );
         break;
@@ -3702,13 +3704,13 @@ void TestProcessingGui::testCoordinateOperationWrapper()
       case QgsProcessingGui::Modeler:
       case QgsProcessingGui::Batch:
       {
-        QCOMPARE( wrapper.mLineEdit->text(), QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80" ) );
-        wrapper.setWidgetValue( QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=push +v_3 +step +proj=cart +ellps=GRS80 +step +proj=helmert +x=0.06155 +y=-0.01087 +z=-0.04019 +rx=-0.0394924 +ry=-0.0327221 +rz=-0.0328979 +s=-0.009994 +convention=coordinate_frame +step +inv +proj=cart +ellps=GRS80 +step +proj=pop +v_3 +step +proj=utm +zone=55 +south +ellps=GRS80" ), context );
+        QCOMPARE( wrapper.mLineEdit->text(), QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
+        wrapper.setWidgetValue( QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ), context );
         QCOMPARE( spy.count(), 2 );
-        QCOMPARE( wrapper.mLineEdit->text(), QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=push +v_3 +step +proj=cart +ellps=GRS80 +step +proj=helmert +x=0.06155 +y=-0.01087 +z=-0.04019 +rx=-0.0394924 +ry=-0.0327221 +rz=-0.0328979 +s=-0.009994 +convention=coordinate_frame +step +inv +proj=cart +ellps=GRS80 +step +proj=pop +v_3 +step +proj=utm +zone=55 +south +ellps=GRS80" ) );
+        QCOMPARE( wrapper.mLineEdit->text(), QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
 
         // check signal
-        wrapper.mLineEdit->setText( QStringLiteral( "+proj=pipeline +step +inv +proj=utm +zone=55 +south +ellps=GRS80 +step +proj=hgridshift +grids=GDA94_GDA2020_conformal_and_distortion.gsb +step +proj=utm +zone=55 +south +ellps=GRS80" ) );
+        wrapper.mLineEdit->setText( QStringLiteral( "+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=160 +z=176 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84" ) );
         QCOMPARE( spy.count(), 3 );
         break;
       }
@@ -3754,7 +3756,7 @@ void TestProcessingGui::testCoordinateOperationWrapper()
   QVERIFY( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->destinationCrsParameterName().isEmpty() ); // should default to not set
 
   // using a parameter definition as initial values
-  QgsProcessingParameterCoordinateOperation coordParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QStringLiteral( "+proj" ), QStringLiteral( "a" ), QStringLiteral( "b" ), QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3857" ), false );
+  QgsProcessingParameterCoordinateOperation coordParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QStringLiteral( "+proj" ), QStringLiteral( "a" ), QStringLiteral( "b" ), QStringLiteral( "EPSG:26745" ), QStringLiteral( "EPSG:4326" ), false );
   widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "coordinateoperation" ), context, widgetContext, &coordParam );
   def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
   QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
@@ -3764,8 +3766,8 @@ void TestProcessingGui::testCoordinateOperationWrapper()
   QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->defaultValue().toString(), QStringLiteral( "+proj" ) );
   QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->sourceCrsParameterName(), QStringLiteral( "a" ) );
   QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->destinationCrsParameterName(), QStringLiteral( "b" ) );
-  QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->sourceCrs().value< QgsCoordinateReferenceSystem >( ).authid(), QStringLiteral( "EPSG:3111" ) );
-  QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->destinationCrs().value< QgsCoordinateReferenceSystem >( ).authid(), QStringLiteral( "EPSG:3857" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->sourceCrs().value< QgsCoordinateReferenceSystem >( ).authid(), QStringLiteral( "EPSG:26745" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterCoordinateOperation * >( def.get() )->destinationCrs().value< QgsCoordinateReferenceSystem >( ).authid(), QStringLiteral( "EPSG:4326" ) );
   coordParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
   widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "coordinateoperation" ), context, widgetContext, &coordParam );
   def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
@@ -4407,6 +4409,156 @@ void TestProcessingGui::testMapThemeWrapper()
   widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "maptheme" ), context, widgetContext, &themeParam );
   def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
   QVERIFY( !static_cast< QgsProcessingParameterMapTheme * >( def.get() )->defaultValue().isValid() );
+}
+
+void TestProcessingGui::testDateTimeWrapper()
+{
+  auto testWrapper = [ = ]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional, no existing themes
+    QgsProcessingParameterDateTime param( QStringLiteral( "datetime" ), QStringLiteral( "datetime" ), QgsProcessingParameterDateTime::DateTime, QVariant(), false );
+
+    QgsProcessingDateTimeWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingDateTimeWidgetWrapper::widgetValueHasChanged );
+    // not a date value
+    wrapper.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy.count(), 0 );
+    // not optional, so an invalid value gets a date anyway...
+    QVERIFY( wrapper.widgetValue().isValid() );
+    wrapper.setWidgetValue( QStringLiteral( "2019-08-07" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QVERIFY( wrapper.widgetValue().isValid() );
+    QCOMPARE( wrapper.widgetValue().toDateTime(), QDateTime( QDate( 2019, 8, 7 ) ) );
+    QCOMPARE( static_cast< QgsDateTimeEdit * >( wrapper.wrappedWidget() )->dateTime(), QDateTime( QDate( 2019, 8, 7 ) ) );
+    wrapper.setWidgetValue( QStringLiteral( "2019-08-07" ), context );
+    QCOMPARE( spy.count(), 1 );
+
+    // check signal
+    static_cast< QgsDateTimeEdit * >( wrapper.wrappedWidget() )->setDateTime( QDateTime( QDate( 2019, 8, 9 ) ) );
+    QCOMPARE( spy.count(), 2 );
+
+    delete w;
+
+    // optional
+    QgsProcessingParameterDateTime param2( QStringLiteral( "datetime" ), QStringLiteral( "datetime" ), QgsProcessingParameterDateTime::DateTime, QVariant(), true );
+    QgsProcessingDateTimeWidgetWrapper wrapper3( &param2, type );
+    w = wrapper3.createWrappedWidget( context );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    QSignalSpy spy3( &wrapper3, &QgsProcessingDateTimeWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy3.count(), 0 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    QVERIFY( !static_cast< QgsDateTimeEdit * >( wrapper3.wrappedWidget() )->dateTime().isValid() );
+    wrapper3.setWidgetValue( QStringLiteral( "2019-03-20" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toDateTime(), QDateTime( QDate( 2019, 3, 20 ) ) );
+    QCOMPARE( static_cast< QgsDateTimeEdit * >( wrapper3.wrappedWidget() )->dateTime(), QDateTime( QDate( 2019, 3, 20 ) ) );
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 2 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    delete w;
+
+    // date mode
+    QgsProcessingParameterDateTime param3( QStringLiteral( "datetime" ), QStringLiteral( "datetime" ), QgsProcessingParameterDateTime::Date, QVariant(), true );
+    QgsProcessingDateTimeWidgetWrapper wrapper4( &param3, type );
+    w = wrapper4.createWrappedWidget( context );
+    QVERIFY( !wrapper4.widgetValue().isValid() );
+    QSignalSpy spy4( &wrapper4, &QgsProcessingDateTimeWidgetWrapper::widgetValueHasChanged );
+    wrapper4.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy4.count(), 0 );
+    QVERIFY( !wrapper4.widgetValue().isValid() );
+    QVERIFY( !static_cast< QgsDateEdit * >( wrapper4.wrappedWidget() )->date().isValid() );
+    wrapper4.setWidgetValue( QStringLiteral( "2019-03-20" ), context );
+    QCOMPARE( spy4.count(), 1 );
+    QCOMPARE( wrapper4.widgetValue().toDate(), QDate( 2019, 3, 20 ) );
+    QCOMPARE( static_cast< QgsDateEdit * >( wrapper4.wrappedWidget() )->date(), QDate( 2019, 3, 20 ) );
+    wrapper4.setWidgetValue( QDate( 2020, 1, 3 ), context );
+    QCOMPARE( spy4.count(), 2 );
+    QCOMPARE( wrapper4.widgetValue().toDate(), QDate( 2020, 1, 3 ) );
+    QCOMPARE( static_cast< QgsDateEdit * >( wrapper4.wrappedWidget() )->date(), QDate( 2020, 1, 3 ) );
+    wrapper4.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy4.count(), 3 );
+    QVERIFY( !wrapper4.widgetValue().isValid() );
+    delete w;
+
+    // time mode
+    QgsProcessingParameterDateTime param4( QStringLiteral( "datetime" ), QStringLiteral( "datetime" ), QgsProcessingParameterDateTime::Time, QVariant(), true );
+    QgsProcessingDateTimeWidgetWrapper wrapper5( &param4, type );
+    w = wrapper5.createWrappedWidget( context );
+    QVERIFY( !wrapper5.widgetValue().isValid() );
+    QSignalSpy spy5( &wrapper5, &QgsProcessingDateTimeWidgetWrapper::widgetValueHasChanged );
+    wrapper5.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy5.count(), 0 );
+    QVERIFY( !wrapper5.widgetValue().isValid() );
+    QVERIFY( !static_cast< QgsTimeEdit * >( wrapper5.wrappedWidget() )->time().isValid() );
+    wrapper5.setWidgetValue( QStringLiteral( "11:34:56" ), context );
+    QCOMPARE( spy5.count(), 1 );
+    QCOMPARE( wrapper5.widgetValue().toTime(), QTime( 11, 34, 56 ) );
+    QCOMPARE( static_cast< QgsTimeEdit * >( wrapper5.wrappedWidget() )->time(), QTime( 11, 34, 56 ) );
+    wrapper5.setWidgetValue( QTime( 9, 34, 56 ), context );
+    QCOMPARE( spy5.count(), 2 );
+    QCOMPARE( wrapper5.widgetValue().toTime(), QTime( 9, 34, 56 ) );
+    QCOMPARE( static_cast< QgsTimeEdit * >( wrapper5.wrappedWidget() )->time(), QTime( 9, 34, 56 ) );
+    wrapper5.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy5.count(), 3 );
+    QVERIFY( !wrapper5.widgetValue().isValid() );
+    delete w;
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "datetime" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  QgsProcessingContext context;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "datetime" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QVERIFY( !static_cast< QgsProcessingParameterDateTime * >( def.get() )->defaultValue().isValid() );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterDateTime datetimeParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QgsProcessingParameterDateTime::Date, QVariant(), false );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "datetime" ), context, widgetContext, &datetimeParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterDateTime * >( def.get() )->dataType(), QgsProcessingParameterDateTime::Date );
+  datetimeParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  datetimeParam.setDefaultValue( QStringLiteral( "xxx" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "datetime" ), context, widgetContext, &datetimeParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterDateTime * >( def.get() )->dataType(), QgsProcessingParameterDateTime::Date );
 }
 
 void TestProcessingGui::cleanupTempDir()

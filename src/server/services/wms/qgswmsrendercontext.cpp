@@ -296,7 +296,7 @@ void QgsWmsRenderContext::initNicknameLayers()
 {
   for ( QgsMapLayer *ml : mProject->mapLayers() )
   {
-    mNicknameLayers[ layerNickname( *ml ) ] = ml;
+    mNicknameLayers.insert( layerNickname( *ml ), ml );
   }
 
   // init groups
@@ -412,14 +412,15 @@ void QgsWmsRenderContext::searchLayersToRender()
 
   if ( mFlags & AddQueryLayers )
   {
-    const auto constLayers { flattenedQueryLayers() };
-    for ( const QString &layer : constLayers )
+    const QStringList queryLayerNames { flattenedQueryLayers() };
+    for ( const QString &layerName : queryLayerNames )
     {
-      if ( mNicknameLayers.contains( layer )
-           && !mLayersToRender.contains( mNicknameLayers[layer] ) )
-      {
-        mLayersToRender.append( mNicknameLayers[layer] );
-      }
+      const QList<QgsMapLayer *> layers = mNicknameLayers.values( layerName );
+      for ( QgsMapLayer *lyr : layers )
+        if ( !mLayersToRender.contains( lyr ) )
+        {
+          mLayersToRender.append( lyr );
+        }
     }
   }
 }
@@ -455,7 +456,7 @@ void QgsWmsRenderContext::searchLayersToRenderSld()
       if ( mNicknameLayers.contains( lname ) )
       {
         mSlds[lname] = namedElem;
-        mLayersToRender.append( mNicknameLayers[ lname ] );
+        mLayersToRender.append( mNicknameLayers.values( lname ) );
       }
       else if ( mLayerGroups.contains( lname ) )
       {
@@ -491,7 +492,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
         mStyles[nickname] = style;
       }
 
-      mLayersToRender.append( mNicknameLayers[ nickname ] );
+      mLayersToRender.append( mNicknameLayers.values( nickname ) );
     }
     else if ( mLayerGroups.contains( nickname ) )
     {
@@ -509,7 +510,7 @@ void QgsWmsRenderContext::searchLayersToRenderStyle()
 
       for ( const auto &name : layersFromGroup )
       {
-        mLayersToRender.append( mNicknameLayers[ name ] );
+        mLayersToRender.append( mNicknameLayers.values( name ) );
       }
     }
     else
@@ -531,13 +532,16 @@ bool QgsWmsRenderContext::layerScaleVisibility( const QString &name ) const
     return visible;
   }
 
-  const QgsMapLayer *layer = mNicknameLayers[ name ];
-  bool scaleBasedVisibility = layer->hasScaleBasedVisibility();
-  bool useScaleConstraint = ( scaleDenominator() > 0 && scaleBasedVisibility );
-
-  if ( !useScaleConstraint || layer->isInScaleRange( scaleDenominator() ) )
+  const QList<QgsMapLayer *>layers = mNicknameLayers.values( name );
+  for ( QgsMapLayer *layer : layers )
   {
-    visible = true;
+    bool scaleBasedVisibility = layer->hasScaleBasedVisibility();
+    bool useScaleConstraint = ( scaleDenominator() > 0 && scaleBasedVisibility );
+
+    if ( !useScaleConstraint || layer->isInScaleRange( scaleDenominator() ) )
+    {
+      visible = true;
+    }
   }
 
   return visible;

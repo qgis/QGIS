@@ -16,6 +16,7 @@ SET(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/cdt.cc
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep_context.cc
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
+  ${CMAKE_SOURCE_DIR}/external/meshOptimizer/simplifier.cpp
 
   callouts/qgscallout.cpp
   callouts/qgscalloutsregistry.cpp
@@ -70,7 +71,6 @@ SET(QGIS_CORE_SRCS
   symbology/qgssymbollayerutils.cpp
   symbology/qgssymbol.cpp
   symbology/qgsvectorfieldsymbollayer.cpp
-
   simplify/effectivearea.cpp
 
   diagram/qgsdiagram.cpp
@@ -289,6 +289,7 @@ SET(QGIS_CORE_SRCS
   qgsmaplayerstore.cpp
   qgsmaplayerstyle.cpp
   qgsmaplayerstylemanager.cpp
+  qgsmaplayertemporalproperties.cpp
   qgsmaprenderercache.cpp
   qgsmaprenderercustompainterjob.cpp
   qgsmaprendererjob.cpp
@@ -376,6 +377,8 @@ SET(QGIS_CORE_SRCS
   qgsstringutils.cpp
   qgstablecell.cpp
   qgstaskmanager.cpp
+  qgstemporalproperty.cpp
+  qgstemporalrangeobject.cpp
   qgstessellator.cpp
   qgstextrenderer.cpp
   qgstilecache.cpp
@@ -511,6 +514,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrasteriterator.cpp
   raster/qgsrasterlayer.cpp
   raster/qgsrasterlayerrenderer.cpp
+  raster/qgsrasterlayertemporalproperties.cpp
   raster/qgsrasterminmaxorigin.cpp
   raster/qgsrasternuller.cpp
   raster/qgsrasterpipe.cpp
@@ -548,6 +552,7 @@ SET(QGIS_CORE_SRCS
   mesh/qgstriangularmesh.cpp
   mesh/qgsmeshtimesettings.cpp
   mesh/qgsmeshtracerenderer.cpp
+  mesh/qgsmeshsimplificationsettings.cpp
 
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
@@ -792,6 +797,7 @@ SET(QGIS_CORE_HDRS
   qgsmaplayerstore.h
   qgsmaplayerstyle.h
   qgsmaplayerstylemanager.h
+  qgsmaplayertemporalproperties.h
   qgsmaprenderercache.h
   qgsmaprenderercustompainterjob.h
   qgsmaprendererjob.h
@@ -886,6 +892,8 @@ SET(QGIS_CORE_HDRS
   qgsstringutils.h
   qgstablecell.h
   qgstaskmanager.h
+  qgstemporalproperty.h
+  qgstemporalrangeobject.h
   qgstessellator.h
   qgstestutils.h
   qgstextrenderer.h
@@ -1138,6 +1146,7 @@ SET(QGIS_CORE_HDRS
   mesh/qgsmeshvectorrenderer.h
   mesh/qgstriangularmesh.h
   mesh/qgsmeshtracerenderer.h
+  mesh/qgsmeshsimplificationsettings.h
 
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h
@@ -1216,6 +1225,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasteriterator.h
   raster/qgsrasterlayer.h
   raster/qgsrasterlayerrenderer.h
+  raster/qgsrasterlayertemporalproperties.h
   raster/qgsrasterminmaxorigin.h
   raster/qgsrasternuller.h
   raster/qgsrasterpipe.h
@@ -1372,6 +1382,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/poly2tri
   ${CMAKE_SOURCE_DIR}/external/rtree/include
+  ${CMAKE_SOURCE_DIR}/external/meshOptimizer
 )
 
 INCLUDE_DIRECTORIES(SYSTEM

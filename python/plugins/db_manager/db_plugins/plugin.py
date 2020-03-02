@@ -243,7 +243,7 @@ class DbItemObject(QObject):
     deleted = pyqtSignal()
 
     def __init__(self, parent=None):
-        QObject.__init__(self, parent)
+        super().__init__(parent)
 
     def database(self):
         return None
@@ -264,7 +264,7 @@ class DbItemObject(QObject):
 class Database(DbItemObject):
 
     def __init__(self, dbplugin, uri):
-        DbItemObject.__init__(self, dbplugin)
+        super().__init__(dbplugin)
         self.connector = self.connectorsFactory(uri)
 
     def connectorsFactory(self, uri):

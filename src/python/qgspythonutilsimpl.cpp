@@ -294,30 +294,38 @@ void QgsPythonUtilsImpl::uninstallErrorHook()
   runString( QStringLiteral( "qgis.utils.uninstallErrorHook()" ) );
 }
 
-bool QgsPythonUtilsImpl::runStringUnsafe( const QString &command, bool single )
+QString QgsPythonUtilsImpl::runStringUnsafe( const QString &command, bool single )
 {
   // acquire global interpreter lock to ensure we are in a consistent state
   PyGILState_STATE gstate;
   gstate = PyGILState_Ensure();
+  QString ret;
 
   // TODO: convert special characters from unicode strings u"…" to \uXXXX
   // so that they're not mangled to utf-8
   // (non-unicode strings can be mangled)
   PyObject *obj = PyRun_String( command.toUtf8().constData(), single ? Py_single_input : Py_file_input, mMainDict, mMainDict );
-  bool res = nullptr == PyErr_Occurred();
+  PyObject *errobj = PyErr_Occurred();
+  if ( nullptr != errobj )
+  {
+    ret = getTraceback();
+  }
   Py_XDECREF( obj );
 
   // we are done calling python API, release global interpreter lock
   PyGILState_Release( gstate );
 
-  return res;
+  return ret;
 }
 
 bool QgsPythonUtilsImpl::runString( const QString &command, QString msgOnError, bool single )
 {
-  bool res = runStringUnsafe( command, single );
-  if ( res )
+  bool res = true;
+  QString traceback = runStringUnsafe( command, single );
+  if ( traceback.isEmpty() )
     return true;
+  else
+    res = false;
 
   if ( msgOnError.isEmpty() )
   {
@@ -327,7 +335,6 @@ bool QgsPythonUtilsImpl::runString( const QString &command, QString msgOnError, 
 
   // TODO: use python implementation
 
-  QString traceback = getTraceback();
   QString path, version;
   evalString( QStringLiteral( "str(sys.path)" ), path );
   evalString( QStringLiteral( "sys.version" ), version );
@@ -352,10 +359,6 @@ QString QgsPythonUtilsImpl::getTraceback()
 {
 #define TRACEBACK_FETCH_ERROR(what) {errMsg = what; goto done;}
 
-  // acquire global interpreter lock to ensure we are in a consistent state
-  PyGILState_STATE gstate;
-  gstate = PyGILState_Ensure();
-
   QString errMsg;
   QString result;
 
@@ -364,7 +367,7 @@ QString QgsPythonUtilsImpl::getTraceback()
   PyObject *obStringIO = nullptr;
   PyObject *obResult = nullptr;
 
-  PyObject *type, *value, *traceback;
+  PyObject *type = nullptr, *value = nullptr, *traceback = nullptr;
 
   PyErr_Fetch( &type, &value, &traceback );
   PyErr_NormalizeException( &type, &value, &traceback );
@@ -422,9 +425,6 @@ done:
   Py_XDECREF( value );
   Py_XDECREF( traceback );
   Py_XDECREF( type );
-
-  // we are done calling python API, release global interpreter lock
-  PyGILState_Release( gstate );
 
   return result;
 }

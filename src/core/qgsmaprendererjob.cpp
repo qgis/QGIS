@@ -812,7 +812,7 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
       {
         QPainter tempPainter;
 
-        // resue the first pass painter, if available
+        // reuse the first pass painter, if available
         QPainter *painter1 = job.firstPassJob->context.painter();
         if ( ! painter1 )
         {

@@ -91,6 +91,8 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
     mFormattingWidget->setColumnWidth( mTableWidget->selectionColumnWidth() );
 
     updateActionNamesFromSelection();
+
+    mFormattingWidget->setEnabled( !mTableWidget->isHeaderCellSelected() );
   } );
   updateActionNamesFromSelection();
 
@@ -107,6 +109,11 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   connect( mActionSelectColumn, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::expandColumnSelection );
   connect( mActionSelectAll, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::selectAll );
   connect( mActionClear, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::clearSelectedCells );
+  connect( mActionIncludeHeader, &QAction::toggled, this, [ = ]( bool checked )
+  {
+    mTableWidget->setIncludeTableHeader( checked );
+    emit includeHeaderChanged( checked );
+  } );
 }
 
 void QgsTableEditorDialog::setTableContents( const QgsTableContents &contents )
@@ -141,6 +148,26 @@ void QgsTableEditorDialog::setTableRowHeight( int row, double height )
 void QgsTableEditorDialog::setTableColumnWidth( int column, double width )
 {
   mTableWidget->setTableColumnWidth( column, width );
+}
+
+bool QgsTableEditorDialog::includeTableHeader() const
+{
+  return mActionIncludeHeader->isChecked();
+}
+
+void QgsTableEditorDialog::setIncludeTableHeader( bool included )
+{
+  mActionIncludeHeader->setChecked( included );
+}
+
+QVariantList QgsTableEditorDialog::tableHeaders() const
+{
+  return mTableWidget->tableHeaders();
+}
+
+void QgsTableEditorDialog::setTableHeaders( const QVariantList &headers )
+{
+  mTableWidget->setTableHeaders( headers );
 }
 
 void QgsTableEditorDialog::updateActionNamesFromSelection()

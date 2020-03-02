@@ -233,6 +233,52 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData(
   return res;
 }
 
+QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices( const QgsMeshLayer *meshLayer,
+    const QgsMeshDatasetIndex index,
+    QgsMeshDataBlock *activeFaceFlagValues,
+    const QgsMeshRendererScalarSettings::DataInterpolationMethod method )
+{
+  QVector<double> ret;
+
+  if ( !meshLayer && !index.isValid() )
+    return ret;
+
+  const QgsTriangularMesh *triangularMesh = meshLayer->triangularMesh();
+  const QgsMesh *nativeMesh = meshLayer->nativeMesh();
+  if ( !triangularMesh || !nativeMesh )
+    return ret;
+
+  const QgsMeshDatasetGroupMetadata metadata = meshLayer->dataProvider()->datasetGroupMetadata( index );
+  bool scalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
+
+  // populate scalar values
+  int datacount = scalarDataOnVertices ? nativeMesh->vertices.count() : nativeMesh->faces.count();
+  QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                            meshLayer,
+                            index,
+                            0,
+                            datacount );
+
+  if ( vals.isValid() )
+  {
+    ret = QgsMeshLayerUtils::calculateMagnitudes( vals );
+    QgsMeshDataBlock scalarActiveFaceFlagValues =
+      meshLayer->dataProvider()->areFacesActive( index, 0, nativeMesh->faces.count() );
+
+    if ( !scalarDataOnVertices )
+    {
+      //Need to interpolate data on vertices
+      ret = QgsMeshLayerUtils::interpolateFromFacesData(
+              ret,
+              nativeMesh,
+              triangularMesh,
+              activeFaceFlagValues,
+              method );
+    }
+  }
+  return ret;
+}
+
 QgsRectangle QgsMeshLayerUtils::triangleBoundingBox( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 )
 {
   // p1
@@ -382,5 +428,46 @@ QDateTime QgsMeshLayerUtils::firstReferenceTime( QgsMeshLayer *meshLayer )
 
   return QDateTime();
 }
+
+QVector<QVector3D> QgsMeshLayerUtils::calculateNormals( const QgsTriangularMesh &triangularMesh, const QVector<double> &verticalMagnitude, bool isRelative )
+{
+  QVector<QVector3D> normals( triangularMesh.vertices().count() );
+  for ( const auto &face : triangularMesh.triangles() )
+  {
+    for ( int i = 0; i < 3; i++ )
+    {
+      int index( face.at( i ) );
+      int index1( face.at( ( i + 1 ) % 3 ) );
+      int index2( face.at( ( i + 2 ) % 3 ) );
+
+      const QgsMeshVertex &vert( triangularMesh.vertices().at( index ) );
+      const QgsMeshVertex &otherVert1( triangularMesh.vertices().at( index1 ) );
+      const QgsMeshVertex &otherVert2( triangularMesh.vertices().at( index2 ) );
+
+      float adjustRelative = 0;
+      float adjustRelative1 = 0;
+      float adjustRelative2 = 0;
+
+      if ( isRelative )
+      {
+        adjustRelative = vert.z();
+        adjustRelative1 = otherVert1.z();
+        adjustRelative2 = otherVert2.z();
+      }
+
+      QVector3D v1( float( otherVert1.x() - vert.x() ),
+                    float( otherVert1.y() - vert.y() ),
+                    float( verticalMagnitude[index1] - verticalMagnitude[index] + adjustRelative1 - adjustRelative ) );
+      QVector3D v2( float( otherVert2.x() - vert.x() ),
+                    float( otherVert2.y() - vert.y() ),
+                    float( verticalMagnitude[index2] - verticalMagnitude[index] + adjustRelative2 - adjustRelative ) );
+
+      normals[index] += QVector3D::crossProduct( v1, v2 );
+    }
+  }
+
+  return normals;
+}
+
 
 ///@endcond

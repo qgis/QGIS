@@ -152,6 +152,7 @@ class TestQgsGeometry : public QObject
     void reshapeGeometryLineMerge();
     void createCollectionOfType();
 
+    void orientedMinimumBoundingBox( );
     void minimalEnclosingCircle( );
     void splitGeometry();
     void snappedToGrid();
@@ -10740,6 +10741,13 @@ void TestQgsGeometry::compoundCurve()
   QCOMPARE( ls26r->startPoint(), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 2, 3 ) );
   QCOMPARE( ls26r->endPoint(), QgsPoint( QgsWkbTypes::PointZM, 31, 42, 4, 5 ) );
 
+  //add vertex at the end of linestring
+  QVERIFY( c26.insertVertex( QgsVertexId( 0, 0, 2 ), QgsPoint( QgsWkbTypes::PointZM, 35, 43, 4, 5 ) ) );
+  ls26r = dynamic_cast< const QgsLineString * >( c26.curveAt( 0 ) );
+  QCOMPARE( ls26r->numPoints(), 3 );
+  QCOMPARE( ls26r->startPoint(), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 2, 3 ) );
+  QCOMPARE( ls26r->endPoint(), QgsPoint( QgsWkbTypes::PointZM, 35, 43, 4, 5 ) );
+
   c26.clear();
   ls26.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 2, 3 )
                   << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 4, 5 )
@@ -17398,6 +17406,35 @@ void TestQgsGeometry::createCollectionOfType()
   QVERIFY( dynamic_cast< QgsMultiSurface *>( collect.get() ) );
 }
 
+void TestQgsGeometry::orientedMinimumBoundingBox()
+{
+  QgsGeometry geomTest;
+  QgsGeometry result, resultTest;
+  // empty
+  result = geomTest.orientedMinimumBoundingBox( );
+  QVERIFY( result.isEmpty() );
+
+  // oriented rectangle
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( " Polygon(0 0, 5 5, -2.07106781186547462 12.07106781186547551, -7.07106781186547462 7.07106781186547551, 0 0) " ) );
+  result = geomTest.orientedMinimumBoundingBox( );
+  QgsPolygonXY geomXY, resultXY;
+  geomXY = geomTest.asPolygon();
+  resultXY = result.asPolygon();
+
+  QCOMPARE( geomXY.count(), resultXY.count() );
+  // can't strictly compare, use tolerance
+  for ( int i = 0 ; i < geomXY.count() ; ++i )
+  {
+    QVERIFY( geomXY.at( 0 ).at( i ).compare( resultXY.at( 0 ).at( i ), 1E-8 ) );
+  }
+
+  // Issue https://github.com/qgis/QGIS/issues/33532
+  geomTest = QgsGeometry::fromWkt( QStringLiteral( " Polygon ((264 -525, 248 -521, 244 -519, 233 -508, 231 -504, 210 -445, 196 -396, 180 -332, 178 -322, 176 -310, 174 -296, 174 -261, 176 -257, 178 -255, 183 -251, 193 -245, 197 -243, 413 -176, 439 -168, 447 -166, 465 -164, 548 -164, 552 -166, 561 -175, 567 -187, 602 -304, 618 -379, 618 -400, 616 -406, 612 -414, 606 -420, 587 -430, 575 -436, 547 -446, 451 -474, 437 -478, 321 -511, 283 -521, 275 -523, 266 -525, 264 -525)) " ) );
+  result = geomTest.orientedMinimumBoundingBox( );
+  QString resultTestWKT = QStringLiteral( "Polygon ((153.56814721430669124 -251.04910547836090018, 236.58928384252226351 -536.38483199428605985, 635.81698325140541783 -420.2257453523852746, 552.79584662318995925 -134.89001883646011493, 153.56814721430669124 -251.04910547836090018))" );
+  QCOMPARE( result.asWkt(), resultTestWKT );
+
+}
 void TestQgsGeometry::minimalEnclosingCircle()
 {
   QgsGeometry geomTest;

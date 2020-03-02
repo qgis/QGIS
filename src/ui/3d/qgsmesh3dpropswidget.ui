@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>370</width>
-    <height>439</height>
+    <width>387</width>
+    <height>459</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,36 +33,36 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="1" column="0" colspan="2">
-       <widget class="QGroupBox" name="groupBoxWireframe">
+       <widget class="QGroupBox" name="mGroupBoxWireframe">
         <property name="title">
-         <string>Wireframe line width and color</string>
+         <string>Wireframe Line Width And Color</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QgsDoubleSpinBox" name="spinBoxWireframeLineWidth">
-           <property name="suffix">
+          <widget class="QgsDoubleSpinBox" name="mSpinBoxWireframeLineWidth" native="true">
+           <property name="suffix" stdset="0">
             <string> px</string>
            </property>
-           <property name="value">
+           <property name="value" stdset="0">
             <double>1.000000000000000</double>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QgsColorButton" name="colorButtonWireframe"/>
+          <widget class="QgsColorButton" name="mColorButtonWireframe"/>
          </item>
         </layout>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QCheckBox" name="chkWireframe">
+       <widget class="QCheckBox" name="mChkWireframe">
         <property name="text">
          <string>Wireframe</string>
         </property>
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="QCheckBox" name="chkSmoothTriangles">
+       <widget class="QCheckBox" name="mChkSmoothTriangles">
         <property name="text">
          <string>Smooth triangles</string>
         </property>
@@ -80,17 +80,34 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Vertical scale</string>
+         <string>Vertical Scale</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QgsDoubleSpinBox" name="spinBoxVerticaleScale">
-        <property name="maximum">
+       <widget class="QgsDoubleSpinBox" name="mSpinBoxVerticaleScale" native="true">
+        <property name="maximum" stdset="0">
          <double>9999999.990000000223517</double>
         </property>
-        <property name="value">
+        <property name="value" stdset="0">
          <double>1.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Dataset Group For Vertical Value</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="mComboBoxDatasetVertical"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="mCheckBoxVerticalMagnitudeRelative">
+        <property name="text">
+         <string>Dataset Value Relative To Vertices Z Value</string>
         </property>
        </widget>
       </item>
@@ -98,7 +115,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QgsCollapsibleGroupBox" name="mgroupBoxTextureSettings">
+    <widget class="QgsCollapsibleGroupBox" name="mGroupBoxTextureSettings">
      <property name="title">
       <string>Rendering Color Settings</string>
      </property>
@@ -106,23 +123,12 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Rendering style</string>
+         <string>Rendering Style</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="mComboBoxTextureType">
-        <item>
-         <property name="text">
-          <string>Single Color</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Ramp Color Shader</string>
-         </property>
-        </item>
-       </widget>
+       <widget class="QComboBox" name="mComboBoxTextureType"/>
       </item>
       <item row="1" column="0" colspan="2">
        <widget class="QGroupBox" name="mGroupBoxColorRampShader">
@@ -217,7 +223,7 @@
          <item>
           <widget class="QLabel" name="label_6">
            <property name="text">
-            <string>Mesh color</string>
+            <string>Mesh Color</string>
            </property>
           </widget>
          </item>
@@ -267,6 +273,11 @@
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QWidget</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

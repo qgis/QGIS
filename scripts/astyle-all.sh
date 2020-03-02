@@ -37,4 +37,6 @@ find python src tests -type f -print | while read -r f; do
 	astyle.sh "$f" || true
 done
 
+remove_temporary_files.sh
+
 echo

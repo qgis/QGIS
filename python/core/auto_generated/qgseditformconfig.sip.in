@@ -18,6 +18,9 @@ class QgsEditFormConfig
 #include "qgseditformconfig.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum EditorLayout
     {

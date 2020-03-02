@@ -684,8 +684,11 @@ void QgsTaskManager::taskStatusChanged( int status )
   mTaskMutex->lock();
   QgsTaskRunnableWrapper *runnable = mTasks.value( id ).runnable;
   mTaskMutex->unlock();
-  if ( runnable )
-    QThreadPool::globalInstance()->cancel( runnable );
+  if ( runnable && QThreadPool::globalInstance()->tryTake( runnable ) )
+  {
+    delete runnable;
+    mTasks[ id ].runnable = nullptr;
+  }
 
   if ( status == QgsTask::Terminated || status == QgsTask::Complete )
   {
@@ -788,8 +791,12 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   }
   else
   {
-    if ( runnable )
-      QThreadPool::globalInstance()->cancel( runnable );
+    if ( runnable && QThreadPool::globalInstance()->tryTake( runnable ) )
+    {
+      delete runnable;
+      mTasks[ id ].runnable = nullptr;
+    }
+
     if ( isParent )
     {
       //task already finished, kill it

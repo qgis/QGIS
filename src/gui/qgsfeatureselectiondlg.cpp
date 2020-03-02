@@ -50,6 +50,9 @@ QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer *vl, const QgsAtt
   connect( mActionSelectedToTop, &QAction::toggled, this, [this]( bool checked ) { mDualView->setSelectedOnTop( checked ); } );
   connect( mActionZoomMapToSelectedRows, &QAction::triggered, this, &QgsFeatureSelectionDlg::mActionZoomMapToSelectedRows_triggered );
   connect( mActionPanMapToSelectedRows, &QAction::triggered, this, &QgsFeatureSelectionDlg::mActionPanMapToSelectedRows_triggered );
+
+  connect( mDualView, &QgsDualView::filterExpressionSet, this, &QgsFeatureSelectionDlg::setFilterExpression );
+  connect( mDualView, &QgsDualView::formModeChanged, this, &QgsFeatureSelectionDlg::viewModeChanged );
 }
 
 void QgsFeatureSelectionDlg::keyPressEvent( QKeyEvent *evt )
@@ -127,4 +130,14 @@ void QgsFeatureSelectionDlg::mActionZoomMapToSelectedRows_triggered()
 void QgsFeatureSelectionDlg::mActionPanMapToSelectedRows_triggered()
 {
   mContext.mapCanvas()->panToSelected( mVectorLayer );
+}
+
+void QgsFeatureSelectionDlg::setFilterExpression( const QString &filter, QgsAttributeForm::FilterType type )
+{
+  mFeatureFilterWidget->setFilterExpression( filter, type, true );
+}
+
+void QgsFeatureSelectionDlg::viewModeChanged( QgsAttributeEditorContext::Mode mode )
+{
+  mActionSearchForm->setChecked( mode == QgsAttributeEditorContext::SearchMode );
 }

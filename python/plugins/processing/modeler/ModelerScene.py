@@ -17,25 +17,32 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 from qgis.PyQt.QtCore import QPointF, Qt
-from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
+from qgis.PyQt.QtWidgets import QGraphicsScene
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelChildParameterSource,
                        QgsExpression)
-from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
+from qgis.gui import (
+    QgsModelGraphicsScene
+)
+from processing.modeler.ModelerGraphicItem import (
+    ModelerGraphicItem,
+    ModelerInputGraphicItem,
+    ModelerOutputGraphicItem,
+    ModelerChildAlgorithmGraphicItem
+)
 from processing.modeler.ModelerArrowItem import ModelerArrowItem
 from processing.tools.dataobjects import createContext
 
 
-class ModelerScene(QGraphicsScene):
+class ModelerScene(QgsModelGraphicsScene):
 
     def __init__(self, parent=None, dialog=None):
-        super(ModelerScene, self).__init__(parent)
+        super().__init__(parent)
         self.paramItems = {}
         self.algItems = {}
         self.outputItems = {}
@@ -83,17 +90,24 @@ class ModelerScene(QGraphicsScene):
                         items.extend(self.getItemsFromParamValue(variables[v].source, child_id, context))
         return items
 
-    def paintModel(self, model, controls=True):
+    def requestModelRepaint(self):
+        self.dialog.repaintModel()
+
+    def componentChanged(self):
+        self.dialog.haschanged = True
+
+    def paintModel(self, model):
         self.model = model
         context = createContext()
         # Inputs
         for inp in list(model.parameterComponents().values()):
-            item = ModelerGraphicItem(inp, model, controls, scene=self)
-            item.setFlag(QGraphicsItem.ItemIsMovable, True)
-            item.setFlag(QGraphicsItem.ItemIsSelectable, True)
+            item = ModelerInputGraphicItem(inp.clone(), model)
             self.addItem(item)
             item.setPos(inp.position().x(), inp.position().y())
             self.paramItems[inp.parameterName()] = item
+
+            item.requestModelRepaint.connect(self.requestModelRepaint)
+            item.changed.connect(self.componentChanged)
 
         # Input dependency arrows
         for input_name in list(model.parameterComponents().keys()):
@@ -115,20 +129,25 @@ class ModelerScene(QGraphicsScene):
                     input_item = self.paramItems[input_name]
                     parent_item = self.paramItems[parent_name]
                     arrow = ModelerArrowItem(parent_item, -1, input_item, -1)
-                    input_item.addArrow(arrow)
-                    parent_item.addArrow(arrow)
+
+                    input_item.repaintArrows.connect(arrow.update)
+                    input_item.updateArrowPaths.connect(arrow.updatePath)
+                    parent_item.repaintArrows.connect(arrow.update)
+                    parent_item.updateArrowPaths.connect(arrow.updatePath)
+
                     arrow.setPenStyle(Qt.DotLine)
                     arrow.updatePath()
                     self.addItem(arrow)
 
         # We add the algs
         for alg in list(model.childAlgorithms().values()):
-            item = ModelerGraphicItem(alg, model, controls, scene=self)
-            item.setFlag(QGraphicsItem.ItemIsMovable, True)
-            item.setFlag(QGraphicsItem.ItemIsSelectable, True)
+            item = ModelerChildAlgorithmGraphicItem(alg.clone(), model)
             self.addItem(item)
             item.setPos(alg.position().x(), alg.position().y())
             self.algItems[alg.childId()] = item
+
+            item.requestModelRepaint.connect(self.requestModelRepaint)
+            item.changed.connect(self.componentChanged)
 
         # And then the arrows
 
@@ -144,16 +163,25 @@ class ModelerScene(QGraphicsScene):
                         sourceItems = self.getItemsFromParamValue(source, alg.childId(), context)
                         for sourceItem, sourceIdx in sourceItems:
                             arrow = ModelerArrowItem(sourceItem, sourceIdx, self.algItems[alg.childId()], idx)
-                            sourceItem.addArrow(arrow)
-                            self.algItems[alg.childId()].addArrow(arrow)
+
+                            sourceItem.repaintArrows.connect(arrow.update)
+                            sourceItem.updateArrowPaths.connect(arrow.updatePath)
+
+                            self.algItems[alg.childId()].repaintArrows.connect(arrow.update)
+                            self.algItems[alg.childId()].updateArrowPaths.connect(arrow.updatePath)
+
                             arrow.updatePath()
                             self.addItem(arrow)
                         idx += 1
             for depend in alg.dependencies():
                 arrow = ModelerArrowItem(self.algItems[depend], -1,
                                          self.algItems[alg.childId()], -1)
-                self.algItems[depend].addArrow(arrow)
-                self.algItems[alg.childId()].addArrow(arrow)
+                self.algItems[depend].repaintArrows.connect(arrow.update)
+                self.algItems[depend].updateArrowPaths.connect(arrow.updatePath)
+
+                self.algItems[alg.childId()].repaintArrows.connect(arrow.update)
+                self.algItems[alg.childId()].updateArrowPaths.connect(arrow.updatePath)
+
                 arrow.updatePath()
                 self.addItem(arrow)
 
@@ -161,26 +189,40 @@ class ModelerScene(QGraphicsScene):
         for alg in list(model.childAlgorithms().values()):
             outputs = alg.modelOutputs()
             outputItems = {}
-            idx = 0
+
             for key, out in outputs.items():
                 if out is not None:
-                    item = ModelerGraphicItem(out, model, controls, scene=self)
-                    item.setFlag(QGraphicsItem.ItemIsMovable, True)
-                    item.setFlag(QGraphicsItem.ItemIsSelectable, True)
+                    item = ModelerOutputGraphicItem(out.clone(), model)
+                    item.requestModelRepaint.connect(self.requestModelRepaint)
+                    item.changed.connect(self.componentChanged)
+
                     self.addItem(item)
                     pos = out.position()
+
+                    # find the actual index of the linked output from the child algorithm it comes from
+                    source_child_alg_outputs = alg.algorithm().outputDefinitions()
+                    idx = -1
+                    for i, child_alg_output in enumerate(source_child_alg_outputs):
+                        if child_alg_output.name() == out.childOutputName():
+                            idx = i
+                            break
+
                     if pos is None:
-                        pos = (alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, 0) +
+                        pos = (alg.position() + QPointF(alg.size().width(), 0) +
                                self.algItems[alg.childId()].getLinkPointForOutput(idx))
                     item.setPos(pos)
                     outputItems[key] = item
                     arrow = ModelerArrowItem(self.algItems[alg.childId()], idx, item,
                                              -1)
-                    self.algItems[alg.childId()].addArrow(arrow)
-                    item.addArrow(arrow)
+
+                    self.algItems[alg.childId()].repaintArrows.connect(arrow.update)
+                    self.algItems[alg.childId()].updateArrowPaths.connect(arrow.updatePath)
+
+                    item.repaintArrows.connect(arrow.update)
+                    item.updateArrowPaths.connect(arrow.updatePath)
+
                     arrow.updatePath()
                     self.addItem(arrow)
-                    idx += 1
                 else:
                     outputItems[key] = None
             self.outputItems[alg.childId()] = outputItems

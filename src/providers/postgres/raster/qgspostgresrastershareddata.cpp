@@ -122,7 +122,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
 
     if ( dataResult.PQntuples() != missingTileIds.size() )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Missing tiles where not found while fetching tile data from backend.\nSQL: %1" )
+      QgsMessageLog::logMessage( QObject::tr( "Missing tiles were not found while fetching tile data from backend.\nSQL: %1" )
                                  .arg( sql ), QObject::tr( "PostGIS" ), Qgis::Critical );
     }
 
@@ -132,13 +132,13 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
       const TileIdType tileId { dataResult.PQgetvalue( row, 0 ) };
       if ( tileId.isEmpty() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "TileID (%1) is empty while fetching tile data from backend.\nSQL: %2" )
+        QgsMessageLog::logMessage( QObject::tr( "Tile with ID (%1) is empty while fetching tile data from backend.\nSQL: %2" )
                                    .arg( dataResult.PQgetvalue( row, 0 ) )
                                    .arg( sql ), QObject::tr( "PostGIS" ), Qgis::Critical );
       }
 
       int dataRead;
-      GByte *binaryData { CPLHexToBinary( dataResult.PQgetvalue( row, 1 ).toAscii().constData(), &dataRead ) };
+      GByte *binaryData { CPLHexToBinary( dataResult.PQgetvalue( row, 1 ).toLatin1().constData(), &dataRead ) };
       Tile const *tilePtr { setTileData( request.overviewFactor, tileId, QByteArray::fromRawData( reinterpret_cast<char *>( binaryData ), dataRead ) ) };
       CPLFree( binaryData );
 
@@ -332,7 +332,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
           );
 
       int dataRead;
-      GByte *binaryData { CPLHexToBinary( dataResult.PQgetvalue( row, 11 ).toAscii().constData(), &dataRead ) };
+      GByte *binaryData { CPLHexToBinary( dataResult.PQgetvalue( row, 11 ).toLatin1().constData(), &dataRead ) };
       const QVariantMap parsedData { QgsPostgresRasterUtils::parseWkb( QByteArray::fromRawData( reinterpret_cast<char *>( binaryData ), dataRead ) ) };
       CPLFree( binaryData );
       for ( int bandCnt = 1; bandCnt <= tile->numBands; ++bandCnt )

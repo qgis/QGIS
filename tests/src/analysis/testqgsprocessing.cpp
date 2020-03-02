@@ -565,6 +565,7 @@ class TestQgsProcessing: public QObject
     void parameterColor();
     void parameterCoordinateOperation();
     void parameterMapTheme();
+    void parameterDateTime();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -4913,6 +4914,18 @@ void TestQgsProcessing::parameterField()
   fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
   QCOMPARE( fields, QStringList() << "def" );
 
+  // optional with string list default
+  def.reset( new QgsProcessingParameterField( "optional", QString(), QStringList() << QStringLiteral( "def" ) << QStringLiteral( "abc" ), QString(), QgsProcessingParameterField::Any, true, true ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringList() << "a" << "b" ) );
+  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  QCOMPARE( fields, QStringList() << "def" << "abc" );
+  params.insert( "optional",  QVariantList() << "f" << "h" );
+  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  QCOMPARE( fields, QStringList() << "f" << "h" );
+  params.insert( "optional",  QStringList() << "g" << "h" );
+  fields = QgsProcessingParameters::parameterAsFields( def.get(), params, context );
+  QCOMPARE( fields, QStringList() << "g" << "h" );
+
   // optional, no default
   def.reset( new QgsProcessingParameterField( "optional", QString(), QVariant(), QString(), QgsProcessingParameterField::Any, false, true ) );
   params.insert( "optional",  QVariant() );
@@ -6860,6 +6873,359 @@ void TestQgsProcessing::parameterMapTheme()
   QVERIFY( def->checkValueIsAcceptable( QVariant() ) ); // should be valid, falls back to valid default
 }
 
+void TestQgsProcessing::parameterDateTime()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterDateTime > def( new QgsProcessingParameterDateTime( "non_optional", QString(), QgsProcessingParameterDateTime::DateTime, QDateTime( QDate( 2010, 4, 3 ), QTime( 12, 11, 10 ) ), false ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "1.1" ) );
+  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QDate( 2020, 2, 2 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QTime( 13, 14, 15 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( "2020-02-03" ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProperty::fromExpression( "to_date( '2010-02-03') +  to_interval( '2 days')" ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) ); // should be acceptable, falls back to default value
+
+  // QDateTime value
+  QVariantMap params;
+  params.insert( "non_optional", QDateTime( QDate( 2010, 3, 4 ), QTime( 12, 11, 10 ) ) );
+  QDateTime d = QgsProcessingParameters::parameterAsDateTime( def.get(), params, context );
+  QCOMPARE( d, QDateTime( QDate( 2010, 3, 4 ), QTime( 12, 11, 10 ) ) );
+  QTime t = QgsProcessingParameters::parameterAsTime( def.get(), params, context );
+  QCOMPARE( t, QTime( 12, 11, 10 ) );
+
+  params.insert( "non_optional", QDateTime( QDate( 2010, 3, 4 ) ) );
+  d = QgsProcessingParameters::parameterAsDateTime( def.get(), params, context );
+  QCOMPARE( d, QDateTime( QDate( 2010, 3, 4 ), QTime() ) );
+
+  // string representing a datetime
+  params.insert( "non_optional", QString( "2010-03-04" ) );
+  d = QgsProcessingParameters::parameterAsDateTime( def.get(), params, context );
+  QCOMPARE( d, QDateTime( QDate( 2010, 3, 4 ), QTime() ) );
+
+  // expression
+  params.insert( "non_optional", QgsProperty::fromExpression( "to_date( '2010-02-03') +  to_interval( '2 days')" ) );
+  d = QgsProcessingParameters::parameterAsDateTime( def.get(), params, context );
+  QCOMPARE( d, QDateTime( QDate( 2010, 2, 5 ), QTime() ) );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a datetime, and nothing you can do will make me one" ) );
+  d = QgsProcessingParameters::parameterAsDateTime( def.get(), params, context );
+  QCOMPARE( d, QDateTime( QDate( 2010, 4, 3 ), QTime( 12, 11, 10 ) ) );
+
+  // with min value
+  def->setMinimum( QDateTime( QDate( 2015, 1, 1 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QDateTime( QDate( 2014, 12, 31 ) ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "2014-12-31" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 12, 31 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringLiteral( "2020-12-31" ) ) );
+  // with max value
+  def->setMaximum( QDateTime( QDate( 2015, 12, 31 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QDateTime( QDate( 2014, 12, 31 ) ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "2014-12-31" ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QDateTime( QDate( 2016, 1, 1 ) ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "2016-01-01" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2015, 12, 31 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringLiteral( "2015-12-31" ) ) );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( QDateTime( QDate( 2014, 12, 31 ) ), context ), QStringLiteral( "QDateTime(QDate(2014, 12, 31), QTime(0, 0, 0))" ) );
+  QCOMPARE( def->valueAsPythonString( QDateTime( QDate( 2014, 12, 31 ), QTime( 12, 11, 10 ) ), context ), QStringLiteral( "QDateTime(QDate(2014, 12, 31), QTime(12, 11, 10))" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "2015-12-31" ), context ), QStringLiteral( "2015-12-31" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDateTime('non_optional', '', type=QgsProcessingParameterDateTime.DateTime, minValue=QDateTime(QDate(2015, 1, 1), QTime(0, 0, 0)), maxValue=QDateTime(QDate(2015, 12, 31), QTime(0, 0, 0)), defaultValue=QDateTime(QDate(2010, 4, 3), QTime(12, 11, 10)))" ) );
+
+  QString code = def->asScriptCode();
+  QCOMPARE( code.left( 43 ), QStringLiteral( "##non_optional=datetime 2010-04-03T12:11:10" ) );
+  std::unique_ptr< QgsProcessingParameterDateTime > fromCode( dynamic_cast< QgsProcessingParameterDateTime * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterDateTime fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.minimum(), def->minimum() );
+  QCOMPARE( fromMap.maximum(), def->maximum() );
+  QCOMPARE( fromMap.dataType(), def->dataType() );
+  def.reset( dynamic_cast< QgsProcessingParameterDateTime *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterDateTime *>( def.get() ) );
+
+  // optional
+  def.reset( new QgsProcessingParameterDateTime( "optional", QString(), QgsProcessingParameterDateTime::DateTime, QDateTime( QDate( 2018, 5, 6 ), QTime( 4, 5, 6 ) ), true ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "1.1" ) );
+  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QDate( 2020, 2, 2 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( "2020-02-03" ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProperty::fromExpression( "to_date( '2010-02-03') +  to_interval( '2 days')" ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  params.insert( "optional",  QVariant() );
+  d = QgsProcessingParameters::parameterAsDateTime( def.get(), params, context );
+  QCOMPARE( d, QDateTime( QDate( 2018, 5, 6 ), QTime( 4, 5, 6 ) ) );
+  params.insert( "optional",  QString() );
+  d = QgsProcessingParameters::parameterAsDateTime( def.get(), params, context );
+  QCOMPARE( d, QDateTime( QDate( 2018, 5, 6 ), QTime( 4, 5, 6 ) ) );
+  params.insert( "optional",  QVariant( "aaaa" ) );
+  d = QgsProcessingParameters::parameterAsDateTime( def.get(), params, context );
+  QCOMPARE( d, QDateTime( QDate( 2018, 5, 6 ), QTime( 4, 5, 6 ) ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDateTime('optional', '', optional=True, type=QgsProcessingParameterDateTime.DateTime, defaultValue=QDateTime(QDate(2018, 5, 6), QTime(4, 5, 6)))" ) );
+
+  code = def->asScriptCode();
+  QCOMPARE( code.left( 48 ), QStringLiteral( "##optional=optional datetime 2018-05-06T04:05:06" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterDateTime * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterDateTime * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##optional=optional datetime None" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QVERIFY( !fromCode->defaultValue().isValid() );
+
+  // non-optional, invalid default
+  def.reset( new QgsProcessingParameterDateTime( "non_optional", QString(), QgsProcessingParameterDateTime::DateTime, QVariant(), false ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "1.1" ) );
+  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QDate( 2020, 2, 2 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( "2020-02-03" ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProperty::fromExpression( "to_date( '2010-02-03') +  to_interval( '2 days')" ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) ); // should NOT be acceptable, falls back to invalid default value
+
+
+  // date only mode
+
+  // not optional!
+  def.reset( new QgsProcessingParameterDateTime( "non_optional", QString(), QgsProcessingParameterDateTime::Date, QDate( 2010, 4, 3 ), false ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "1.1" ) );
+  QVERIFY( def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QDate( 2020, 2, 2 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QTime( 13, 14, 15 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( "2020-02-03" ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProperty::fromExpression( "to_date( '2010-02-03') +  to_interval( '2 days')" ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) ); // should be acceptable, falls back to default value
+
+  // QDateTime value
+  params.insert( "non_optional", QDateTime( QDate( 2010, 3, 4 ), QTime( 12, 11, 10 ) ) );
+  QDate dt = QgsProcessingParameters::parameterAsDate( def.get(), params, context );
+  QCOMPARE( dt, QDate( 2010, 3, 4 ) );
+
+  params.insert( "non_optional", QDate( 2010, 3, 4 ) );
+  dt = QgsProcessingParameters::parameterAsDate( def.get(), params, context );
+  QCOMPARE( dt, QDate( 2010, 3, 4 ) );
+
+  // string representing a date
+  params.insert( "non_optional", QString( "2010-03-04" ) );
+  dt = QgsProcessingParameters::parameterAsDate( def.get(), params, context );
+  QCOMPARE( dt, QDate( 2010, 3, 4 ) );
+
+  // expression
+  params.insert( "non_optional", QgsProperty::fromExpression( "to_date( '2010-02-03') +  to_interval( '2 days')" ) );
+  dt = QgsProcessingParameters::parameterAsDate( def.get(), params, context );
+  QCOMPARE( dt, QDate( 2010, 2, 5 ) );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a datetime, and nothing you can do will make me one" ) );
+  dt = QgsProcessingParameters::parameterAsDate( def.get(), params, context );
+  QCOMPARE( dt, QDate( QDate( 2010, 4, 3 ) ) );
+
+  // with min value
+  def->setMinimum( QDateTime( QDate( 2015, 1, 1 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QDate( 2014, 12, 31 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "2014-12-31" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QDate( 2020, 12, 31 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringLiteral( "2020-12-31" ) ) );
+  // with max value
+  def->setMaximum( QDateTime( QDate( 2015, 12, 31 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QDate( 2014, 12, 31 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "2014-12-31" ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QDate( 2016, 1, 1 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "2016-01-01" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QDate( 2015, 12, 31 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringLiteral( "2015-12-31" ) ) );
+
+  QCOMPARE( def->valueAsPythonString( QDate( 2014, 12, 31 ), context ), QStringLiteral( "QDate(2014, 12, 31)" ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDateTime('non_optional', '', type=QgsProcessingParameterDateTime.Date, minValue=QDateTime(QDate(2015, 1, 1), QTime(0, 0, 0)), maxValue=QDateTime(QDate(2015, 12, 31), QTime(0, 0, 0)), defaultValue=QDate(2010, 4, 3))" ) );
+
+  map = def->toVariantMap();
+  fromMap =  QgsProcessingParameterDateTime( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.minimum(), def->minimum() );
+  QCOMPARE( fromMap.maximum(), def->maximum() );
+  QCOMPARE( fromMap.dataType(), def->dataType() );
+  def.reset( dynamic_cast< QgsProcessingParameterDateTime *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterDateTime *>( def.get() ) );
+
+  // optional
+  def.reset( new QgsProcessingParameterDateTime( "optional", QString(), QgsProcessingParameterDateTime::Date, QDate( 2018, 5, 6 ), true ) );
+
+  params.insert( "optional",  QVariant() );
+  dt = QgsProcessingParameters::parameterAsDate( def.get(), params, context );
+  QCOMPARE( dt, QDate( 2018, 5, 6 ) );
+  params.insert( "optional",  QString() );
+  dt = QgsProcessingParameters::parameterAsDate( def.get(), params, context );
+  QCOMPARE( dt, QDate( 2018, 5, 6 ) );
+  params.insert( "optional",  QVariant( "aaaa" ) );
+  dt = QgsProcessingParameters::parameterAsDate( def.get(), params, context );
+  QCOMPARE( dt, QDate( 2018, 5, 6 ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDateTime('optional', '', optional=True, type=QgsProcessingParameterDateTime.Date, defaultValue=QDate(2018, 5, 6))" ) );
+
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##optional=optional datetime 2018-05-06" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterDateTime * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterDateTime * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##optional=optional datetime None" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QVERIFY( !fromCode->defaultValue().isValid() );
+
+  // time only mode
+
+  // not optional!
+  def.reset( new QgsProcessingParameterDateTime( "non_optional", QString(), QgsProcessingParameterDateTime::Time, QTime( 12, 11, 13 ), false ) );
+  QVERIFY( !def->checkValueIsAcceptable( 5 ) );
+  QVERIFY( !def->checkValueIsAcceptable( "1.1" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QDateTime( QDate( 2020, 2, 2 ) ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QDate( 2020, 2, 2 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QTime( 13, 14, 15 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( "13:14:15" ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProperty::fromExpression( "to_time('12:30:01') +  to_interval( '2 minutes')" ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( "layer12312312" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) ); // should be acceptable, falls back to default value
+
+  // QTime value
+  params.insert( "non_optional", QTime( 12, 11, 10 ) );
+  t = QgsProcessingParameters::parameterAsTime( def.get(), params, context );
+  QCOMPARE( t, QTime( 12, 11, 10 ) );
+
+  params.insert( "non_optional", QDate( 2010, 3, 4 ) );
+  t = QgsProcessingParameters::parameterAsTime( def.get(), params, context );
+  QCOMPARE( t, QTime( 12, 11, 13 ) );
+
+  // string representing a time
+  params.insert( "non_optional", QString( "13:14:15" ) );
+  t = QgsProcessingParameters::parameterAsTime( def.get(), params, context );
+  QCOMPARE( t, QTime( 13, 14, 15 ) );
+
+  // expression
+  params.insert( "non_optional", QgsProperty::fromExpression( "to_time('12:30:01') +  to_interval( '2 minutes')" ) );
+  t = QgsProcessingParameters::parameterAsTime( def.get(), params, context );
+  QCOMPARE( t, QTime( 12, 32, 1 ) );
+
+  // nonsense string
+  params.insert( "non_optional", QString( "i'm not a datetime, and nothing you can do will make me one" ) );
+  t = QgsProcessingParameters::parameterAsTime( def.get(), params, context );
+  QCOMPARE( t, QTime( 12, 11, 13 ) );
+
+  // with min value
+  def->setMinimum( QDateTime( QDate( 1, 1, 1 ), QTime( 10, 0, 0 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QTime( 9, 0, 0 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "9:00:00" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QTime( 12, 0, 0 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringLiteral( "12:00:00" ) ) );
+  // with max value
+  def->setMaximum( QDateTime( QDate( 1, 1, 1 ), QTime( 11, 0, 0 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QTime( 9, 0, 0 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "9:00:00" ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QTime( 11, 0, 1 ) ) );
+  QVERIFY( !def->checkValueIsAcceptable( QStringLiteral( "11:00:01" ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QTime( 10, 40, 1 ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QStringLiteral( "10:40:01" ) ) );
+
+  QCOMPARE( def->valueAsPythonString( QTime( 13, 14, 15 ), context ), QStringLiteral( "QTime(13, 14, 15)" ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDateTime('non_optional', '', type=QgsProcessingParameterDateTime.Time, minValue=QDateTime(QDate(1, 1, 1), QTime(10, 0, 0)), maxValue=QDateTime(QDate(1, 1, 1), QTime(11, 0, 0)), defaultValue=QTime(12, 11, 13))" ) );
+
+  map = def->toVariantMap();
+  fromMap =  QgsProcessingParameterDateTime( "x" );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.minimum(), def->minimum() );
+  QCOMPARE( fromMap.maximum(), def->maximum() );
+  QCOMPARE( fromMap.dataType(), def->dataType() );
+  def.reset( dynamic_cast< QgsProcessingParameterDateTime *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterDateTime *>( def.get() ) );
+
+  // optional
+  def.reset( new QgsProcessingParameterDateTime( "optional", QString(), QgsProcessingParameterDateTime::Time, QTime( 14, 15, 16 ), true ) );
+
+  params.insert( "optional",  QVariant() );
+  t = QgsProcessingParameters::parameterAsTime( def.get(), params, context );
+  QCOMPARE( t, QTime( 14, 15, 16 ) );
+  params.insert( "optional",  QString() );
+  t = QgsProcessingParameters::parameterAsTime( def.get(), params, context );
+  QCOMPARE( t, QTime( 14, 15, 16 ) );
+  params.insert( "optional",  QVariant( "aaaa" ) );
+  t = QgsProcessingParameters::parameterAsTime( def.get(), params, context );
+  QCOMPARE( t, QTime( 14, 15, 16 ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDateTime('optional', '', optional=True, type=QgsProcessingParameterDateTime.Time, defaultValue=QTime(14, 15, 16))" ) );
+
+  code = def->asScriptCode();
+  QCOMPARE( code.left( 37 ), QStringLiteral( "##optional=optional datetime 14:15:16" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterDateTime * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterDateTime * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##optional=optional datetime None" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QVERIFY( !fromCode->defaultValue().isValid() );
+}
+
 void TestQgsProcessing::checkParamValues()
 {
   DummyAlgorithm a( "asd" );
@@ -7314,6 +7680,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QVERIFY( !child.isActive() );
   child.setPosition( QPointF( 1, 2 ) );
   QCOMPARE( child.position(), QPointF( 1, 2 ) );
+  child.setSize( QSizeF( 3, 4 ) );
+  QCOMPARE( child.size(), QSizeF( 3, 4 ) );
   QVERIFY( child.parametersCollapsed() );
   child.setParametersCollapsed( false );
   QVERIFY( !child.parametersCollapsed() );
@@ -7339,6 +7707,9 @@ void TestQgsProcessing::modelerAlgorithm()
 
   QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), QStringLiteral( "    # desc\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ) );
 
+  std::unique_ptr< QgsProcessingModelChildAlgorithm > childClone( child.clone() );
+  QCOMPARE( childClone->toVariant(), child.toVariant() );
+
   QgsProcessingModelOutput testModelOut;
   testModelOut.setChildId( QStringLiteral( "my_id" ) );
   QCOMPARE( testModelOut.childId(), QStringLiteral( "my_id" ) );
@@ -7348,6 +7719,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( testModelOut.defaultValue().toString(), QStringLiteral( "my_value" ) );
   testModelOut.setMandatory( true );
   QVERIFY( testModelOut.isMandatory() );
+  std::unique_ptr< QgsProcessingModelOutput > outputClone( testModelOut.clone() );
+  QCOMPARE( outputClone->toVariant(), testModelOut.toVariant() );
 
   QgsProcessingOutputLayerDefinition layerDef( QStringLiteral( "my_path" ) );
   layerDef.createOptions["fileEncoding"] = QStringLiteral( "my_encoding" );
@@ -7475,6 +7848,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelParameter pc1;
   pc1.setParameterName( QStringLiteral( "my_param" ) );
   QCOMPARE( pc1.parameterName(), QStringLiteral( "my_param" ) );
+  std::unique_ptr< QgsProcessingModelParameter > paramClone( pc1.clone() );
+  QCOMPARE( paramClone->toVariant(), pc1.toVariant() );
   pComponents.insert( QStringLiteral( "my_param" ), pc1 );
   alg.setParameterComponents( pComponents );
   QCOMPARE( alg.parameterComponents().count(), 1 );
@@ -7492,11 +7867,14 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelAlgorithm alg1a( "test", "testGroup" );
   QgsProcessingModelParameter bool1;
   bool1.setPosition( QPointF( 1, 2 ) );
+  bool1.setSize( QSizeF( 11, 12 ) );
   alg1a.addModelParameter( new QgsProcessingParameterBoolean( "p1", "desc" ), bool1 );
   QCOMPARE( alg1a.parameterDefinitions().count(), 1 );
   QCOMPARE( alg1a.parameterDefinition( "p1" )->type(), QStringLiteral( "boolean" ) );
   QCOMPARE( alg1a.parameterComponent( "p1" ).position().x(), 1.0 );
   QCOMPARE( alg1a.parameterComponent( "p1" ).position().y(), 2.0 );
+  QCOMPARE( alg1a.parameterComponent( "p1" ).size().width(), 11.0 );
+  QCOMPARE( alg1a.parameterComponent( "p1" ).size().height(), 12.0 );
   alg1a.updateModelParameter( new QgsProcessingParameterBoolean( "p1", "descx" ) );
   QCOMPARE( alg1a.parameterDefinition( "p1" )->description(), QStringLiteral( "descx" ) );
   alg1a.removeModelParameter( "bad" );
@@ -7712,10 +8090,12 @@ void TestQgsProcessing::modelerAlgorithm()
   alg5c1.setParametersCollapsed( true );
   alg5c1.setDescription( "child 1" );
   alg5c1.setPosition( QPointF( 1, 2 ) );
+  alg5c1.setSize( QSizeF( 11, 21 ) );
   QMap<QString, QgsProcessingModelOutput> alg5c1outputs;
   QgsProcessingModelOutput alg5c1out1;
   alg5c1out1.setDescription( QStringLiteral( "my output" ) );
   alg5c1out1.setPosition( QPointF( 3, 4 ) );
+  alg5c1out1.setSize( QSizeF( 31, 41 ) );
   alg5c1outputs.insert( QStringLiteral( "a" ), alg5c1out1 );
   alg5c1.setModelOutputs( alg5c1outputs );
   alg5.addChildAlgorithm( alg5c1 );
@@ -7731,6 +8111,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelParameter alg5pc1;
   alg5pc1.setParameterName( QStringLiteral( "my_param" ) );
   alg5pc1.setPosition( QPointF( 11, 12 ) );
+  alg5pc1.setSize( QSizeF( 21, 22 ) );
   alg5.addModelParameter( new QgsProcessingParameterBoolean( QStringLiteral( "my_param" ) ), alg5pc1 );
 
   QDomDocument doc = QDomDocument( "model" );
@@ -7753,6 +8134,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6c1.description(), QStringLiteral( "child 1" ) );
   QCOMPARE( alg6c1.position().x(), 1.0 );
   QCOMPARE( alg6c1.position().y(), 2.0 );
+  QCOMPARE( alg6c1.size().width(), 11.0 );
+  QCOMPARE( alg6c1.size().height(), 21.0 );
   QCOMPARE( alg6c1.parameterSources().count(), 5 );
   QCOMPARE( alg6c1.parameterSources().value( "x" ).at( 0 ).source(), QgsProcessingModelChildParameterSource::ModelParameter );
   QCOMPARE( alg6c1.parameterSources().value( "x" ).at( 0 ).parameterName(), QStringLiteral( "p1" ) );
@@ -7782,7 +8165,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6c1.modelOutput( "a" ).description(), QStringLiteral( "my output" ) );
   QCOMPARE( alg6c1.modelOutput( "a" ).position().x(), 3.0 );
   QCOMPARE( alg6c1.modelOutput( "a" ).position().y(), 4.0 );
-
+  QCOMPARE( alg6c1.modelOutput( "a" ).size().width(), 31.0 );
+  QCOMPARE( alg6c1.modelOutput( "a" ).size().height(), 41.0 );
 
   QgsProcessingModelChildAlgorithm alg6c2 = alg6.childAlgorithm( "cx2" );
   QCOMPARE( alg6c2.childId(), QStringLiteral( "cx2" ) );
@@ -7796,6 +8180,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6.parameterComponent( "my_param" ).parameterName(), QStringLiteral( "my_param" ) );
   QCOMPARE( alg6.parameterComponent( "my_param" ).position().x(), 11.0 );
   QCOMPARE( alg6.parameterComponent( "my_param" ).position().y(), 12.0 );
+  QCOMPARE( alg6.parameterComponent( "my_param" ).size().width(), 21.0 );
+  QCOMPARE( alg6.parameterComponent( "my_param" ).size().height(), 22.0 );
   QCOMPARE( alg6.parameterDefinitions().count(), 1 );
   QCOMPARE( alg6.parameterDefinitions().at( 0 )->type(), QStringLiteral( "boolean" ) );
 
@@ -8536,12 +8922,16 @@ void TestQgsProcessing::tempUtils()
   QVERIFY( tempFile3.startsWith( tempFolder ) );
 
   // change temp folder in the settings
+  std::unique_ptr< QTemporaryDir > dir = qgis::make_unique< QTemporaryDir >();
+  const QString tempDirPath = dir->path();
+  dir.reset();
+
   QgsSettings settings;
-  QString alternative_tempFolder1 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/alternative_temp_test_one" );
-  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), alternative_tempFolder1 );
+  QString alternative_tempFolder1 = tempDirPath + QStringLiteral( "/alternative_temp_test_one" );
+  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ), alternative_tempFolder1 );
   // check folder and if it's constant with alternative temp folder 1
   tempFolder = QgsProcessingUtils::tempFolder();
-  QVERIFY( tempFolder.startsWith( alternative_tempFolder1 ) );
+  QCOMPARE( tempFolder.left( alternative_tempFolder1.length() ), alternative_tempFolder1 );
   QCOMPARE( QgsProcessingUtils::tempFolder(), tempFolder );
   // create file
   QString alternativeTempFile1 = QgsProcessingUtils::generateTempFilename( "alternative_temptest.txt" );
@@ -8549,17 +8939,19 @@ void TestQgsProcessing::tempUtils()
   QVERIFY( alternativeTempFile1.startsWith( tempFolder ) );
   QVERIFY( alternativeTempFile1.startsWith( alternative_tempFolder1 ) );
   // change temp folder in the settings again
-  QString alternative_tempFolder2 = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/alternative_temp_test_two" );
-  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH" ), alternative_tempFolder2 );
+  QString alternative_tempFolder2 =  tempDirPath + QStringLiteral( "/alternative_temp_test_two" );
+  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ), alternative_tempFolder2 );
   // check folder and if it's constant constant with alternative temp folder 2
   tempFolder = QgsProcessingUtils::tempFolder();
-  QVERIFY( tempFolder.startsWith( alternative_tempFolder2 ) );
+  QCOMPARE( tempFolder.left( alternative_tempFolder2.length() ), alternative_tempFolder2 );
   QCOMPARE( QgsProcessingUtils::tempFolder(), tempFolder );
   // create file
   QString alternativeTempFile2 = QgsProcessingUtils::generateTempFilename( "alternative_temptest.txt" );
   QVERIFY( alternativeTempFile2.endsWith( "alternative_temptest.txt" ) );
   QVERIFY( alternativeTempFile2.startsWith( tempFolder ) );
   QVERIFY( alternativeTempFile2.startsWith( alternative_tempFolder2 ) );
+  settings.setValue( QStringLiteral( "Processing/Configuration/TEMP_PATH2" ), QString() );
+
 }
 
 void TestQgsProcessing::convertCompatible()
