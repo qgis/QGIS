@@ -9269,8 +9269,8 @@ void QgisApp::modifyAttributesOfSelectedFeatures()
   QgsAttributeEditorContext context;
   context.setAllowCustomUi( false );
   context.setVectorLayerTools( mVectorLayerTools );
-  context.setCadDockWidget(mAdvancedDigitizingDockWidget);
-  context.setMapCanvas(mMapCanvas);
+  context.setCadDockWidget( mAdvancedDigitizingDockWidget );
+  context.setMapCanvas( mMapCanvas );
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( vl, &f, false, this, true, context );
   dialog->setMode( QgsAttributeEditorContext::MultiEditMode );
@@ -9570,7 +9570,7 @@ void QgisApp::selectByForm()
   QgsAttributeEditorContext context;
   context.setDistanceArea( myDa );
   context.setVectorLayerTools( mVectorLayerTools );
-  context.setCadDockWidget(mAdvancedDigitizingDockWidget);
+  context.setCadDockWidget( mAdvancedDigitizingDockWidget );
   context.setMapCanvas( mMapCanvas );
 
   QgsSelectByFormDialog *dlg = new QgsSelectByFormDialog( vlayer, context, this );
