@@ -33,6 +33,8 @@ class CORE_EXPORT QgsProcessingModelComponent
 {
   public:
 
+    virtual ~QgsProcessingModelComponent() = default;
+
     /**
      * Returns the friendly description text for the component.
      * \see setDescription()
@@ -56,6 +58,13 @@ class CORE_EXPORT QgsProcessingModelComponent
      * \see position()
      */
     void setPosition( QPointF position );
+
+    /**
+     * Clones the component.
+     *
+     * Ownership is transferred to the caller.
+     */
+    virtual QgsProcessingModelComponent *clone() = 0 SIP_FACTORY;
 
   protected:
 

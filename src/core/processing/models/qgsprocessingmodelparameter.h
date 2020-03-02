@@ -40,6 +40,8 @@ class CORE_EXPORT QgsProcessingModelParameter : public QgsProcessingModelCompone
      */
     QgsProcessingModelParameter( const QString &parameterName = QString() );
 
+    QgsProcessingModelParameter *clone() override SIP_FACTORY;
+
     /**
      * Returns the associated parameter name. The parameter name should match one of the
      * parameters from the parent model.
