@@ -48,14 +48,10 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 class ModelerGraphicItem(QgsModelComponentGraphicItem):
 
-    repaintArrows = pyqtSignal()
-    updateArrowPaths = pyqtSignal()
-
     def __init__(self, element, model):
         super().__init__(element, model, None)
         self.pixmap = None
         self.picture = None
-        self.hover_over_item = False
 
     def boundingRect(self):
         fm = QFontMetricsF(self.font())
@@ -75,40 +71,6 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
                       self.component().size().height() + hDown + hUp)
         return rect
 
-    def mouseDoubleClickEvent(self, event):
-        self.editComponent()
-
-    def hoverEnterEvent(self, event):
-        self.updateToolTip(event)
-
-    def hoverMoveEvent(self, event):
-        self.updateToolTip(event)
-
-    def hoverLeaveEvent(self, event):
-        self.setToolTip('')
-        if self.hover_over_item:
-            self.hover_over_item = False
-            self.update()
-            self.repaintArrows.emit()
-
-    def updateToolTip(self, event):
-        prev_status = self.hover_over_item
-        if self.itemRect().contains(event.pos()):
-            self.setToolTip(self.text)
-            self.hover_over_item = True
-        else:
-            self.setToolTip('')
-            self.hover_over_item = False
-        if self.hover_over_item != prev_status:
-            self.update()
-            self.repaintArrows.emit()
-
-    def itemRect(self):
-        return QRectF(-(self.component().size().width() + 2) / 2.0,
-                      -(self.component().size().height() + 2) / 2.0,
-                      self.component().size().width() + 2,
-                      self.component().size().height() + 2)
-
     def paint(self, painter, option, widget=None):
         rect = self.itemRect()
 
@@ -124,22 +86,22 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
             color = QColor(172, 196, 114)
             stroke = QColor(90, 140, 90)
             selected = QColor(42, 65, 42)
-        if self.isSelected():
+        if self.state() == QgsModelComponentGraphicItem.Selected:
             stroke = selected
             color = color.darker(110)
-        if self.hover_over_item:
+        if self.state() == QgsModelComponentGraphicItem.Hover:
             color = color.darker(105)
         painter.setPen(QPen(stroke, 0))  # 0 width "cosmetic" pen
         painter.setBrush(QBrush(color, Qt.SolidPattern))
         painter.drawRect(rect)
         painter.setFont(self.font())
         painter.setPen(QPen(Qt.black))
-        text = self.truncatedTextForItem(self.text)
+        text = self.truncatedTextForItem(self.label())
         if isinstance(self.component(), QgsProcessingModelChildAlgorithm) and not self.component().isActive():
             painter.setPen(QPen(Qt.gray))
             text = text + "\n(deactivated)"
         fm = QFontMetricsF(self.font())
-        text = self.truncatedTextForItem(self.text)
+        text = self.truncatedTextForItem(self.label())
         h = fm.ascent()
         pt = QPointF(-self.component().size().width() / 2 + 25, self.component().size().height() / 2.0 - h + 1)
         painter.drawText(pt, text)
@@ -240,9 +202,9 @@ class ModelerInputGraphicItem(ModelerGraphicItem):
         painter.end()
         paramDef = self.model().parameterDefinition(element.parameterName())
         if paramDef:
-            self.text = paramDef.description()
+            self.setLabel(paramDef.description())
         else:
-            self.text = 'Error ({})'.format(element.parameterName())
+            self.setLabel('Error ({})'.format(element.parameterName()))
 
     def create_widget_context(self):
         """
@@ -281,7 +243,7 @@ class ModelerInputGraphicItem(ModelerGraphicItem):
             self.component().setParameterName(new_param.name())
             self.component().setDescription(new_param.name())
             self.model().addModelParameter(new_param, self.component())
-            self.text = new_param.description()
+            self.setLabel(new_param.description())
             self.requestModelRepaint.emit()
 
     def deleteComponent(self):
@@ -323,7 +285,7 @@ class ModelerChildAlgorithmGraphicItem(ModelerGraphicItem):
             self.pixmap = None
         else:
             self.pixmap = element.algorithm().icon().pixmap(15, 15)
-        self.text = element.description()
+        self.setLabel(element.description())
 
         alg = element.algorithm()
         if [a for a in alg.parameterDefinitions() if not a.isDestination()]:
@@ -429,7 +391,7 @@ class ModelerOutputGraphicItem(ModelerGraphicItem):
         painter = QPainter(self.picture)
         svg.render(painter)
         painter.end()
-        self.text = element.name()
+        self.setLabel(element.name())
 
     def editComponent(self):
         child_alg = self.model().childAlgorithm(self.component().childId())

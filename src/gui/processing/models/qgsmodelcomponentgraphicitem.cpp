@@ -24,6 +24,7 @@
 #include <QSvgRenderer>
 #include <QPicture>
 #include <QPainter>
+#include <QGraphicsSceneHoverEvent>
 
 ///@cond NOT_STABLE
 
@@ -82,6 +83,40 @@ void QgsModelComponentGraphicItem::setFont( const QFont &font )
   update();
 }
 
+void QgsModelComponentGraphicItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent * )
+{
+  editComponent();
+}
+
+void QgsModelComponentGraphicItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
+{
+  updateToolTip( event->pos() );
+}
+
+void QgsModelComponentGraphicItem::hoverMoveEvent( QGraphicsSceneHoverEvent *event )
+{
+  updateToolTip( event->pos() );
+}
+
+void QgsModelComponentGraphicItem::hoverLeaveEvent( QGraphicsSceneHoverEvent * )
+{
+  setToolTip( QString() );
+  if ( mIsHovering )
+  {
+    mIsHovering = false;
+    update();
+    emit repaintArrows();
+  }
+}
+
+QRectF QgsModelComponentGraphicItem::itemRect() const
+{
+  return QRectF( -( mComponent->size().width() + 2 ) / 2.0,
+                 -( mComponent->size().height() + 2 ) / 2.0,
+                 mComponent->size().width() + 2,
+                 mComponent->size().height() + 2 );
+}
+
 QString QgsModelComponentGraphicItem::truncatedTextForItem( const QString &text ) const
 {
   QFontMetricsF fm( mFont );
@@ -98,6 +133,47 @@ QString QgsModelComponentGraphicItem::truncatedTextForItem( const QString &text 
     width = fm.boundingRect( t ).width();
   }
   return t;
+}
+
+void QgsModelComponentGraphicItem::updateToolTip( const QPointF &pos )
+{
+  const bool prevHoverStatus = mIsHovering;
+  if ( itemRect().contains( pos ) )
+  {
+    setToolTip( mLabel );
+    mIsHovering = true;
+  }
+  else
+  {
+    setToolTip( QString() );
+    mIsHovering = false;
+  }
+  if ( mIsHovering != prevHoverStatus )
+  {
+    update();
+    emit repaintArrows();
+  }
+}
+
+QString QgsModelComponentGraphicItem::label() const
+{
+  return mLabel;
+}
+
+void QgsModelComponentGraphicItem::setLabel( const QString &label )
+{
+  mLabel = label;
+  update();
+}
+
+QgsModelComponentGraphicItem::State QgsModelComponentGraphicItem::state() const
+{
+  if ( isSelected() )
+    return Selected;
+  else if ( mIsHovering )
+    return Hover;
+  else
+    return Normal;
 }
 
 
