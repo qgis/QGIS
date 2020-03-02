@@ -82,6 +82,8 @@ Sets the ``font`` used to render text in the item.
 
     virtual QVariant itemChange( GraphicsItemChange change, const QVariant &value );
 
+    virtual QRectF boundingRect() const;
+
 
     QRectF itemRect() const;
 %Docstring
@@ -105,6 +107,41 @@ Returns the item's ``label`` text.
     State state() const;
 %Docstring
 Returns the item's current state.
+%End
+
+    virtual int linkPointCount( Qt::Edge edge ) const;
+%Docstring
+Returns the number of link points associated with the component on the specified ``edge``.
+%End
+
+    virtual QString linkPointText( Qt::Edge edge, int index ) const;
+%Docstring
+Returns the text to use for the link point with the specified ``index`` on the specified ``edge``.
+%End
+
+    QPointF linkPoint( Qt::Edge edge, int index ) const;
+%Docstring
+Returns the location of the link point with the specified ``index`` on the specified ``edge``.
+%End
+
+    QPointF calculateAutomaticLinkPoint( QgsModelComponentGraphicItem *other, Qt::Edge &edge /Out/ ) const;
+%Docstring
+Returns the best link point to use for a link originating at a specified ``other`` item.
+
+:param other: item at other end of link
+
+:return: - calculated link point in item coordinates.
+         - edge: item edge for calculated best link point
+%End
+
+    QPointF calculateAutomaticLinkPoint( const QPointF &point, Qt::Edge &edge /Out/ ) const;
+%Docstring
+Returns the best link point to use for a link originating at a specified ``other`` point.
+
+:param other: point for other end of link (in scene coordinates)
+
+:return: - calculated link point in item coordinates.
+         - edge: item edge for calculated best link point
 %End
 
   signals:
