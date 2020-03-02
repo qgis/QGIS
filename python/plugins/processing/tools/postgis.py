@@ -321,17 +321,17 @@ class GeoDB(object):
         if not self.has_postgis:
             # Get all tables and views
             sql = """SELECT pg_class.relname, pg_namespace.nspname,
-                            pg_class.relkind, pg_get_userbyid(relowner),
+                            pg_class.relkind::text, pg_get_userbyid(relowner),
                             reltuples, relpages, NULL, NULL, NULL, NULL
                   FROM pg_class
                   JOIN pg_namespace ON pg_namespace.oid = pg_class.relnamespace
-                  WHERE pg_class.relkind IN ('v', 'r', 'm', 'p')""" \
+                  WHERE pg_class.relkind IN ('v', 'r', 'm', 'p', 'f')""" \
                   + schema_where + 'ORDER BY nspname, relname'
         else:
             # Discovery of all tables and whether they contain a
             # geometry column
             sql = """SELECT pg_class.relname, pg_namespace.nspname,
-                            pg_class.relkind, pg_get_userbyid(relowner),
+                            pg_class.relkind::text, pg_get_userbyid(relowner),
                             reltuples, relpages, pg_attribute.attname,
                             pg_attribute.atttypid::regtype, NULL, NULL
                   FROM pg_class
@@ -342,7 +342,7 @@ class GeoDB(object):
                       OR pg_attribute.atttypid IN
                           (SELECT oid FROM pg_type
                            WHERE typbasetype='geometry'::regtype))
-                  WHERE pg_class.relkind IN ('v', 'r', 'm', 'p') """ \
+                  WHERE pg_class.relkind IN ('v', 'r', 'm', 'p', 'f') """ \
                   + schema_where + 'ORDER BY nspname, relname, attname'
 
         self._exec_sql(c, sql)
@@ -350,7 +350,7 @@ class GeoDB(object):
 
         # Get geometry info from geometry_columns if exists
         if self.has_postgis:
-            sql = """SELECT relname, nspname, relkind,
+            sql = """SELECT relname, nspname, relkind::text,
                             pg_get_userbyid(relowner), reltuples, relpages,
                             geometry_columns.f_geometry_column,
                             geometry_columns.type,

@@ -58,6 +58,7 @@ class PGTableInfo(TableInfo):
             (QApplication.translate("DBManagerPlugin", "Relation type:"),
              QApplication.translate("DBManagerPlugin", "View") if self.table._relationType == 'v' else
              QApplication.translate("DBManagerPlugin", "Materialized view") if self.table._relationType == 'm' else
+             QApplication.translate("DBManagerPlugin", "Foreign Table") if self.table._relationType == 'f' else
              QApplication.translate("DBManagerPlugin", "Table")),
             (QApplication.translate("DBManagerPlugin", "Owner:"), self.table.owner)
         ]

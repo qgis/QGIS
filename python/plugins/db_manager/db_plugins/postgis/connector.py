@@ -431,7 +431,7 @@ class PostGisDBConnector(DBConnector):
                                                 pg_catalog.obj_description(cla.oid)
                                         FROM pg_class AS cla
                                         JOIN pg_namespace AS nsp ON nsp.oid = cla.relnamespace
-                                        WHERE cla.relkind IN ('v', 'r', 'm', 'p') """ + schema_where + """
+                                        WHERE cla.relkind IN ('v', 'r', 'm', 'p', 'f') """ + schema_where + """
                                         ORDER BY nsp.nspname, cla.relname"""
 
         c = self._execute(None, sql)
@@ -498,7 +498,7 @@ class PostGisDBConnector(DBConnector):
 
                                         """ + geometry_column_from + """
 
-                                        WHERE cla.relkind IN ('v', 'r', 'm', 'p') """ + schema_where + """
+                                        WHERE cla.relkind IN ('v', 'r', 'm', 'p', 'f') """ + schema_where + """
                                         ORDER BY nsp.nspname, cla.relname, att.attname"""
 
         items = []
@@ -570,7 +570,7 @@ class PostGisDBConnector(DBConnector):
 
                                         """ + raster_column_from + """
 
-                                        WHERE cla.relkind IN ('v', 'r', 'm', 'p') """ + schema_where + """
+                                        WHERE cla.relkind IN ('v', 'r', 'm', 'p', 'f') """ + schema_where + """
                                         ORDER BY nsp.nspname, cla.relname, att.attname"""
 
         items = []
@@ -747,7 +747,7 @@ class PostGisDBConnector(DBConnector):
 
         sql = u"""SELECT pg_get_viewdef(c.oid) FROM pg_class c
                                                 JOIN pg_namespace nsp ON c.relnamespace = nsp.oid
-                        WHERE relname=%s %s AND (relkind='v' OR relkind='m') """ % (
+                        WHERE relname=%s %s AND (relkind='v' OR relkind='m')""" % (
             self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
@@ -1170,7 +1170,7 @@ class PostGisDBConnector(DBConnector):
         # get schemas, tables and field names
         items = []
         sql = u"""SELECT nspname FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema'
-UNION SELECT relname FROM pg_class WHERE relkind IN ('v', 'r', 'm', 'p')
+UNION SELECT relname FROM pg_class WHERE relkind IN ('v', 'r', 'm', 'p', 'f')
 UNION SELECT attname FROM pg_attribute WHERE attnum > 0"""
         c = self._execute(None, sql)
         for row in self._fetchall(c):
