@@ -27,6 +27,13 @@ Base class for graphic items representing model components in the model designer
 %End
   public:
 
+    enum State
+    {
+      Normal,
+      Selected,
+      Hover,
+    };
+
     QgsModelComponentGraphicItem( QgsProcessingModelComponent *component /Transfer/,
                                   QgsProcessingModelAlgorithm *model,
                                   QGraphicsItem *parent /TransferThis/ );
@@ -63,6 +70,39 @@ Sets the ``font`` used to render text in the item.
 .. seealso:: :py:func:`font`
 %End
 
+    virtual void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
+
+    virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
+
+    virtual void hoverMoveEvent( QGraphicsSceneHoverEvent *event );
+
+    virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
+
+
+    QRectF itemRect() const;
+%Docstring
+Returns the rectangle representing the body of the item.
+%End
+
+    QString label() const;
+%Docstring
+Returns the item's label text.
+
+.. seealso:: :py:func:`setLabel`
+%End
+
+    void setLabel( const QString &label );
+%Docstring
+Returns the item's ``label`` text.
+
+.. seealso:: :py:func:`label`
+%End
+
+    State state() const;
+%Docstring
+Returns the item's current state.
+%End
+
   signals:
 
 
@@ -71,11 +111,20 @@ Sets the ``font`` used to render text in the item.
 Emitted by the item to request a repaint of the parent model scene.
 %End
 
-
     void changed();
 %Docstring
 Emitted when the definition of the associated component is changed
 by the item.
+%End
+
+    void repaintArrows();
+%Docstring
+Emitted when item requests that all connected arrows are repainted.
+%End
+
+    void updateArrowPaths();
+%Docstring
+Emitted when item requires that all connected arrow paths are recalculated.
 %End
 
   protected slots:

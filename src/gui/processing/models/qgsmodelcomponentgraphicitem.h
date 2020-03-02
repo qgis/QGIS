@@ -42,6 +42,14 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
   public:
 
+    //! Available item states
+    enum State
+    {
+      Normal, //!< Normal state
+      Selected, //!< Item is selected
+      Hover, //!< Cursor is hovering over an unselected item
+    };
+
     /**
      * Constructor for QgsModelComponentGraphicItem for the specified \a component, with the specified \a parent item.
      *
@@ -76,22 +84,59 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void setFont( const QFont &font );
 
+    void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
+    void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;
+    void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;
+    void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
+
+    /**
+     * Returns the rectangle representing the body of the item.
+     */
+    QRectF itemRect() const;
+
+    /**
+     * Returns the item's label text.
+     *
+     * \see setLabel()
+     */
+    QString label() const;
+
+    /**
+     * Returns the item's \a label text.
+     *
+     * \see label()
+     */
+    void setLabel( const QString &label );
+
+    /**
+     * Returns the item's current state.
+     */
+    State state() const;
+
   signals:
 
-    // TEMPORARY ONLY during refactoring
+    // TODO - rework this, should be triggered externally when the model actually changes!
 
     /**
      * Emitted by the item to request a repaint of the parent model scene.
      */
     void requestModelRepaint();
 
-    // TEMPORARY ONLY during refactoring
-
     /**
      * Emitted when the definition of the associated component is changed
      * by the item.
      */
     void changed();
+
+    /**
+     * Emitted when item requests that all connected arrows are repainted.
+     */
+    void repaintArrows();
+
+    /**
+     * Emitted when item requires that all connected arrow paths are recalculated.
+     */
+    void updateArrowPaths();
 
   protected slots:
 
@@ -119,8 +164,12 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
   private:
 
+    void updateToolTip( const QPointF &pos );
+
     std::unique_ptr< QgsProcessingModelComponent > mComponent;
     QgsProcessingModelAlgorithm *mModel = nullptr;
+
+    QString mLabel;
 
     QgsModelDesignerFlatButtonGraphicItem *mEditButton = nullptr;
     QgsModelDesignerFlatButtonGraphicItem *mDeleteButton = nullptr;
@@ -130,6 +179,8 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QSizeF mButtonSize { DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT };
 
     QFont mFont;
+
+    bool mIsHovering = false;
 
 };
 

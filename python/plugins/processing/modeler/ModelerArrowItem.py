@@ -48,17 +48,19 @@
 
 from qgis.core import (QgsProcessingModelChildAlgorithm,
                        QgsProcessingModelParameter)
-from qgis.gui import QgsModelGraphicsScene
+from qgis.gui import (
+    QgsModelGraphicsScene,
+    QgsModelComponentGraphicItem
+)
 from qgis.PyQt.QtCore import Qt, QPointF
 from qgis.PyQt.QtWidgets import QApplication, QGraphicsPathItem, QGraphicsItem
 from qgis.PyQt.QtGui import QPen, QPainterPath, QPolygonF, QPainter, QPalette
-from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 
 
 class ModelerArrowItem(QGraphicsPathItem):
 
     def __init__(self, startItem, startIndex, endItem, endIndex,
-                 parent=None, scene=None):
+                 parent=None):
         super(ModelerArrowItem, self).__init__(parent)
         self.arrowHead = QPolygonF()
         self.endIndex = endIndex
@@ -128,9 +130,9 @@ class ModelerArrowItem(QGraphicsPathItem):
     def paint(self, painter, option, widget=None):
         color = self.myColor
 
-        if self.startItem.isSelected() or self.endItem.isSelected():
+        if self.startItem.state() == QgsModelComponentGraphicItem.Selected or self.endItem.state() == QgsModelComponentGraphicItem.Selected:
             color.setAlpha(220)
-        elif self.startItem.hover_over_item or self.endItem.hover_over_item:
+        elif self.startItem.state() == QgsModelComponentGraphicItem.Hover or self.endItem.state() == QgsModelComponentGraphicItem.Hover:
             color.setAlpha(150)
         else:
             color.setAlpha(80)
