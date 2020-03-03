@@ -39,7 +39,7 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
      */
     QgsProcessingModelOutput( const QString &name = QString(), const QString &description = QString() );
 
-    QgsProcessingModelOutput *clone() override SIP_FACTORY;
+    QgsProcessingModelOutput *clone() const override SIP_FACTORY;
 
     /**
      * Returns the model output name.

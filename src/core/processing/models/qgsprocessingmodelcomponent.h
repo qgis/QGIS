@@ -92,7 +92,7 @@ class CORE_EXPORT QgsProcessingModelComponent
      *
      * Ownership is transferred to the caller.
      */
-    virtual QgsProcessingModelComponent *clone() = 0 SIP_FACTORY;
+    virtual QgsProcessingModelComponent *clone() const = 0 SIP_FACTORY;
 
   protected:
 

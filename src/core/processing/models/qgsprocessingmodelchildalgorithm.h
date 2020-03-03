@@ -48,7 +48,7 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     QgsProcessingModelChildAlgorithm( const QgsProcessingModelChildAlgorithm &other );
     QgsProcessingModelChildAlgorithm &operator=( const QgsProcessingModelChildAlgorithm &other );
 
-    QgsProcessingModelChildAlgorithm *clone() override SIP_FACTORY;
+    QgsProcessingModelChildAlgorithm *clone() const override SIP_FACTORY;
 
     /**
      * Returns the child algorithm's unique ID string, used the identify
