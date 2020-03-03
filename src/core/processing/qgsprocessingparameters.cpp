@@ -6130,6 +6130,16 @@ QString QgsProcessingParameterCoordinateOperation::asPythonString( QgsProcessing
   return QString();
 }
 
+QStringList QgsProcessingParameterCoordinateOperation::dependsOnOtherParameters() const
+{
+  QStringList res;
+  if ( !mSourceParameterName.isEmpty() )
+    res << mSourceParameterName;
+  if ( !mDestParameterName.isEmpty() )
+    res << mDestParameterName;
+  return res;
+}
+
 QVariantMap QgsProcessingParameterCoordinateOperation::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
