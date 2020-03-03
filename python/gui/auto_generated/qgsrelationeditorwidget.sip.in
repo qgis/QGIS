@@ -51,6 +51,9 @@ Gets the view mode for the dual view
 %End
 
     void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
+%Docstring
+Sets the ``relation`` and the ``feature``
+%End
 
     void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
 %Docstring
@@ -69,6 +72,9 @@ Sets the ``feature`` being edited and updates the UI unless ``update`` is set to
 %End
 
     void setEditorContext( const QgsAttributeEditorContext &context );
+%Docstring
+Sets the editor ``context``
+%End
 
     QgsIFeatureSelectionManager *featureSelectionManager();
 %Docstring

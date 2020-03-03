@@ -111,6 +111,9 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     //! Gets the view mode for the dual view
     QgsDualView::ViewMode viewMode() {return mViewMode;}
 
+    /**
+     * Sets the \a relation and the \a feature
+     */
     void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
 
     /**
@@ -129,6 +132,9 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      */
     void setFeature( const QgsFeature &feature, bool update = true );
 
+    /**
+     * Sets the editor \a context
+     */
     void setEditorContext( const QgsAttributeEditorContext &context );
 
     /**
@@ -193,7 +199,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      */
     bool showSaveChildEditsButton() const;
 
-    /*
+    /**
      * Returns the widget's current feature
      *
      * \since QGIS 3.14
