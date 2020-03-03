@@ -27,15 +27,14 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelChildParameterSource,
                        QgsExpression)
 from qgis.gui import (
-    QgsModelGraphicsScene
+    QgsModelGraphicsScene,
+    QgsModelArrowItem
 )
 from processing.modeler.ModelerGraphicItem import (
-    ModelerGraphicItem,
     ModelerInputGraphicItem,
     ModelerOutputGraphicItem,
     ModelerChildAlgorithmGraphicItem
 )
-from processing.modeler.ModelerArrowItem import ModelerArrowItem
 from processing.tools.dataobjects import createContext
 
 
@@ -128,15 +127,8 @@ class ModelerScene(QgsModelGraphicsScene):
                 if input_name in self.paramItems and parent_name in self.paramItems:
                     input_item = self.paramItems[input_name]
                     parent_item = self.paramItems[parent_name]
-                    arrow = ModelerArrowItem(parent_item, None, None, input_item, None, None)
-
-                    input_item.repaintArrows.connect(arrow.update)
-                    input_item.updateArrowPaths.connect(arrow.updatePath)
-                    parent_item.repaintArrows.connect(arrow.update)
-                    parent_item.updateArrowPaths.connect(arrow.updatePath)
-
+                    arrow = QgsModelArrowItem(parent_item, input_item)
                     arrow.setPenStyle(Qt.DotLine)
-                    arrow.updatePath()
                     self.addItem(arrow)
 
         # We add the algs
@@ -162,27 +154,14 @@ class ModelerScene(QgsModelGraphicsScene):
                     for source in sources:
                         sourceItems = self.getItemsFromParamValue(source, alg.childId(), context)
                         for sourceItem, sourceEdge, sourceIdx in sourceItems:
-                            arrow = ModelerArrowItem(sourceItem, sourceEdge, sourceIdx, self.algItems[alg.childId()], Qt.TopEdge, idx)
-
-                            sourceItem.repaintArrows.connect(arrow.update)
-                            sourceItem.updateArrowPaths.connect(arrow.updatePath)
-
-                            self.algItems[alg.childId()].repaintArrows.connect(arrow.update)
-                            self.algItems[alg.childId()].updateArrowPaths.connect(arrow.updatePath)
-
-                            arrow.updatePath()
+                            if sourceEdge is None:
+                                arrow = QgsModelArrowItem(sourceItem, self.algItems[alg.childId()], Qt.TopEdge, idx)
+                            else:
+                                arrow = QgsModelArrowItem(sourceItem, sourceEdge, sourceIdx, self.algItems[alg.childId()], Qt.TopEdge, idx)
                             self.addItem(arrow)
                         idx += 1
             for depend in alg.dependencies():
-                arrow = ModelerArrowItem(self.algItems[depend], None, None,
-                                         self.algItems[alg.childId()], None, None)
-                self.algItems[depend].repaintArrows.connect(arrow.update)
-                self.algItems[depend].updateArrowPaths.connect(arrow.updatePath)
-
-                self.algItems[alg.childId()].repaintArrows.connect(arrow.update)
-                self.algItems[alg.childId()].updateArrowPaths.connect(arrow.updatePath)
-
-                arrow.updatePath()
+                arrow = QgsModelArrowItem(self.algItems[depend], self.algItems[alg.childId()])
                 self.addItem(arrow)
 
         # And finally the outputs
@@ -212,15 +191,8 @@ class ModelerScene(QgsModelGraphicsScene):
                                + self.algItems[alg.childId()].linkPoint(Qt.BottomEdge, idx))
                     item.setPos(pos)
                     outputItems[key] = item
-                    arrow = ModelerArrowItem(self.algItems[alg.childId()], Qt.BottomEdge, idx, item, None, None)
 
-                    self.algItems[alg.childId()].repaintArrows.connect(arrow.update)
-                    self.algItems[alg.childId()].updateArrowPaths.connect(arrow.updatePath)
-
-                    item.repaintArrows.connect(arrow.update)
-                    item.updateArrowPaths.connect(arrow.updatePath)
-
-                    arrow.updatePath()
+                    arrow = QgsModelArrowItem(self.algItems[alg.childId()], Qt.BottomEdge, idx, item)
                     self.addItem(arrow)
                 else:
                     outputItems[key] = None
