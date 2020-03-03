@@ -84,6 +84,11 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
 
+    /**
+     * Populates the scene by creating items representing the specified \a model.
+     */
+    void createItems( QgsProcessingModelAlgorithm *model, QgsProcessingContext &context );
+
   signals:
 
     /**
@@ -98,13 +103,22 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
 
   protected:
 
-    virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelParameter *param ) const SIP_FACTORY;
-    virtual QgsModelComponentGraphicItem *createChildAlgGraphicItem( QgsProcessingModelChildAlgorithm *child ) const  SIP_FACTORY;
-    virtual QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelOutput *output ) const SIP_FACTORY;
+    /**
+     * Creates a new graphic item for a model parameter.
+     */
+    virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const SIP_FACTORY;
+
+    /**
+     * Creates a new graphic item for a model child algorithm.
+     */
+    virtual QgsModelComponentGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  SIP_FACTORY;
+
+    /**
+     * Creates a new graphic item for a model output.
+     */
+    virtual QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const SIP_FACTORY;
 
   private:
-
-    void createItems( QgsProcessingContext &context );
 
     struct LinkSource
     {
@@ -112,12 +126,9 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
       Qt::Edge edge = Qt::LeftEdge;
       int linkIndex = -1;
     };
-    QList< LinkSource > linkSourcesForParameterValue( const QVariant &value, const QString &childId, QgsProcessingContext &context ) const;
-
+    QList< LinkSource > linkSourcesForParameterValue( QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context ) const;
 
     Flags mFlags = nullptr;
-
-    QgsProcessingModelAlgorithm *mModel = nullptr;
 
     QMap< QString, QgsModelComponentGraphicItem * > mParameterItems;
     QMap< QString, QgsModelComponentGraphicItem * > mChildAlgorithmItems;

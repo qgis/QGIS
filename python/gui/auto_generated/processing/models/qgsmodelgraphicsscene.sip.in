@@ -76,6 +76,11 @@ Returns the current combination of flags set for the scene.
     virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
 
 
+    void createItems( QgsProcessingModelAlgorithm *model, QgsProcessingContext &context );
+%Docstring
+Populates the scene by creating items representing the specified ``model``.
+%End
+
   signals:
 
     void rebuildRequired();
@@ -90,9 +95,20 @@ Emitted whenever a component of the model is changed.
 
   protected:
 
-    virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelParameter *param ) const /Factory/;
-    virtual QgsModelComponentGraphicItem *createChildAlgGraphicItem( QgsProcessingModelChildAlgorithm *child ) const  /Factory/;
-    virtual QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelOutput *output ) const /Factory/;
+    virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const /Factory/;
+%Docstring
+Creates a new graphic item for a model parameter.
+%End
+
+    virtual QgsModelComponentGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  /Factory/;
+%Docstring
+Creates a new graphic item for a model child algorithm.
+%End
+
+    virtual QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const /Factory/;
+%Docstring
+Creates a new graphic item for a model output.
+%End
 
 };
 
