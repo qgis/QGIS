@@ -23,7 +23,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import codecs
 import sys
-import operator
 import os
 import warnings
 
@@ -73,7 +72,6 @@ from qgis.core import (Qgis,
                        QgsProject,
                        QgsSettings,
                        QgsMessageLog,
-                       QgsProcessingUtils,
                        QgsProcessingModelAlgorithm,
                        QgsProcessingModelParameter,
                        QgsProcessingParameterType,
@@ -789,7 +787,9 @@ class ModelerDialog(BASE, WIDGET):
 
         if not controls:
             self.scene.setFlag(QgsModelGraphicsScene.FlagHideControls)
-        self.scene.paintModel(self.model)
+
+        context = createContext()
+        self.scene.createItems(self.model, context)
         self.view.setScene(self.scene)
 
         self.scene.rebuildRequired.connect(self.repaintModel)

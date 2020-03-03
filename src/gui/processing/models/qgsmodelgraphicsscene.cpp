@@ -43,27 +43,28 @@ void QgsModelGraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
   QGraphicsScene::mousePressEvent( event );
 }
 
-QgsModelComponentGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem( QgsProcessingModelParameter *param ) const
+QgsModelComponentGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const
 {
-  return new QgsModelParameterGraphicItem( param, mModel, nullptr );
+  return new QgsModelParameterGraphicItem( param, model, nullptr );
 }
 
-QgsModelComponentGraphicItem *QgsModelGraphicsScene::createChildAlgGraphicItem( QgsProcessingModelChildAlgorithm *child ) const
+QgsModelComponentGraphicItem *QgsModelGraphicsScene::createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const
 {
-  return new QgsModelChildAlgorithmGraphicItem( child, mModel, nullptr );
+  return new QgsModelChildAlgorithmGraphicItem( child, model, nullptr );
 }
 
-QgsModelComponentGraphicItem *QgsModelGraphicsScene::createOutputGraphicItem( QgsProcessingModelOutput *output ) const
+QgsModelComponentGraphicItem *QgsModelGraphicsScene::createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const
 {
-  return new QgsModelOutputGraphicItem( output, mModel, nullptr );
+  return new QgsModelOutputGraphicItem( output, model, nullptr );
 }
 
-void QgsModelGraphicsScene::createItems( QgsProcessingContext &context )
+void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, QgsProcessingContext &context )
 {
-  const QMap<QString, QgsProcessingModelParameter> params = mModel->parameterComponents();
+  // model input parameters
+  const QMap<QString, QgsProcessingModelParameter> params = model->parameterComponents();
   for ( auto it = params.constBegin(); it != params.constEnd(); ++it )
   {
-    QgsModelComponentGraphicItem *item = createParameterGraphicItem( it.value().clone() );
+    QgsModelComponentGraphicItem *item = createParameterGraphicItem( model, it.value().clone() );
     addItem( item );
     item->setPos( it.value().position().x(), it.value().position().y() );
     mParameterItems.insert( it.value().parameterName(), item );
@@ -71,10 +72,27 @@ void QgsModelGraphicsScene::createItems( QgsProcessingContext &context )
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
   }
 
-  const QMap<QString, QgsProcessingModelChildAlgorithm> childAlgs = mModel->childAlgorithms();
+  // input dependency arrows
+  for ( auto it = params.constBegin(); it != params.constEnd(); ++it )
+  {
+    const QgsProcessingParameterDefinition *parameterDef = model->parameterDefinition( it.key() );
+    const QStringList parameterLinks = parameterDef->dependsOnOtherParameters();
+    for ( const QString &otherName : parameterLinks )
+    {
+      if ( mParameterItems.contains( it.key() ) && mParameterItems.contains( otherName ) )
+      {
+        std::unique_ptr< QgsModelArrowItem > arrow = qgis::make_unique< QgsModelArrowItem >( mParameterItems.value( otherName ), mParameterItems.value( it.key() ) );
+        arrow->setPenStyle( Qt::DotLine );
+        addItem( arrow.release() );
+      }
+    }
+  }
+
+  // child algorithms
+  const QMap<QString, QgsProcessingModelChildAlgorithm> childAlgs = model->childAlgorithms();
   for ( auto it = childAlgs.constBegin(); it != childAlgs.constEnd(); ++it )
   {
-    QgsModelComponentGraphicItem *item = createChildAlgGraphicItem( it.value().clone() );
+    QgsModelComponentGraphicItem *item = createChildAlgGraphicItem( model, it.value().clone() );
     addItem( item );
     item->setPos( it.value().position().x(), it.value().position().y() );
     mChildAlgorithmItems.insert( it.value().childId(), item );
@@ -82,6 +100,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingContext &context )
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
   }
 
+  // arrows linking child algorithms
   for ( auto it = childAlgs.constBegin(); it != childAlgs.constEnd(); ++it )
   {
     int idx = 0;
@@ -95,7 +114,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingContext &context )
           sources = it.value().parameterSources()[parameter->name()];
         for ( const QgsProcessingModelChildParameterSource &source : sources )
         {
-          const QList< LinkSource > sourceItems = linkSourcesForParameterValue( QVariant::fromValue( source ), it.value().childId(), context );
+          const QList< LinkSource > sourceItems = linkSourcesForParameterValue( model, QVariant::fromValue( source ), it.value().childId(), context );
           for ( const LinkSource &link : sourceItems )
           {
             QgsModelArrowItem *arrow = nullptr;
@@ -116,6 +135,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingContext &context )
     }
   }
 
+  // and finally the model outputs
   for ( auto it = childAlgs.constBegin(); it != childAlgs.constEnd(); ++it )
   {
     const QMap<QString, QgsProcessingModelOutput> outputs = it.value().modelOutputs();
@@ -123,7 +143,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingContext &context )
 
     for ( auto outputIt = outputs.constBegin(); outputIt != outputs.constEnd(); ++outputIt )
     {
-      QgsModelComponentGraphicItem *item = createOutputGraphicItem( outputIt.value().clone() );
+      QgsModelComponentGraphicItem *item = createOutputGraphicItem( model, outputIt.value().clone() );
       addItem( item );
       connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
       connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
@@ -157,20 +177,20 @@ void QgsModelGraphicsScene::createItems( QgsProcessingContext &context )
   }
 }
 
-QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForParameterValue( const QVariant &value, const QString &childId, QgsProcessingContext &context ) const
+QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForParameterValue( QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context ) const
 {
   QList<QgsModelGraphicsScene::LinkSource> res;
   if ( value.type() == QVariant::List )
   {
     const QVariantList list = value.toList();
     for ( const QVariant &v : list )
-      res.append( linkSourcesForParameterValue( v, childId, context ) );
+      res.append( linkSourcesForParameterValue( model, v, childId, context ) );
   }
   else if ( value.type() == QVariant::StringList )
   {
     const QStringList list = value.toStringList();
     for ( const QString &v : list )
-      res.append( linkSourcesForParameterValue( v, childId, context ) );
+      res.append( linkSourcesForParameterValue( model, v, childId, context ) );
   }
   else if ( value.canConvert< QgsProcessingModelChildParameterSource >() )
   {
@@ -186,7 +206,7 @@ QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForPa
       }
       case QgsProcessingModelChildParameterSource::ChildOutput:
       {
-        const QgsProcessingOutputDefinitions outputs = mModel->childAlgorithm( source.outputChildId() ).algorithm()->outputDefinitions();
+        const QgsProcessingOutputDefinitions outputs = model->childAlgorithm( source.outputChildId() ).algorithm()->outputDefinitions();
         int i = 0;
         for ( const QgsProcessingOutputDefinition *output : outputs )
         {
@@ -208,14 +228,14 @@ QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForPa
 
       case QgsProcessingModelChildParameterSource::Expression:
       {
-        const QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = mModel->variablesForChildAlgorithm( childId, context );
+        const QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> variables = model->variablesForChildAlgorithm( childId, context );
         QgsExpression exp( source.expression() );
         const QSet<QString> vars = exp.referencedVariables();
         for ( const QString &v : vars )
         {
           if ( variables.contains( v ) )
           {
-            res.append( linkSourcesForParameterValue( QVariant::fromValue( variables.value( v ).source ), childId, context ) );
+            res.append( linkSourcesForParameterValue( model, QVariant::fromValue( variables.value( v ).source ), childId, context ) );
           }
         }
         break;
