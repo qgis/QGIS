@@ -92,6 +92,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
     QVariant itemChange( GraphicsItemChange change, const QVariant &value ) override;
     QRectF boundingRect() const override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
     /**
      * Returns the rectangle representing the body of the item.
@@ -198,6 +199,31 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * accounting for margins and interactive buttons.
      */
     QString truncatedTextForItem( const QString &text ) const;
+
+    /**
+     * Returns the fill color for the item for the specified \a state.
+     */
+    virtual QColor fillColor( State state ) const = 0;
+
+    /**
+     * Returns the stroke color for the item for the specified \a state.
+     */
+    virtual QColor strokeColor( State state ) const = 0;
+
+    /**
+     * Returns the label text color for the item for the specified \a state.
+     */
+    virtual QColor textColor( State state ) const = 0;
+
+    /**
+     * Returns a QPicture version of the item's icon, if available.
+     */
+    virtual QPicture iconPicture() const;
+
+    /**
+     * Returns a QPixmap version of the item's icon, if available.
+     */
+    virtual QPixmap iconPixmap() const;
 
   private:
 

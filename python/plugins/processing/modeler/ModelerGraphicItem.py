@@ -24,8 +24,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 import os
 
 from qgis.PyQt.QtCore import Qt, QPointF
-from qgis.PyQt.QtGui import QFontMetricsF, QPen, QBrush, QColor, QPicture, QPainter, QPalette
-from qgis.PyQt.QtWidgets import QApplication, QMessageBox, QMenu
+from qgis.PyQt.QtGui import QFontMetricsF, QColor, QPicture, QPainter, QPixmap
+from qgis.PyQt.QtWidgets import QMessageBox, QMenu
 from qgis.PyQt.QtSvg import QSvgRenderer
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelParameter,
@@ -49,78 +49,6 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
 
     def __init__(self, element, model):
         super().__init__(element, model, None)
-        self.pixmap = None
-        self.picture = None
-
-    def paint(self, painter, option, widget=None):
-        rect = self.itemRect()
-
-        if isinstance(self.component(), QgsProcessingModelParameter):
-            color = QColor(238, 242, 131)
-            stroke = QColor(234, 226, 118)
-            selected = QColor(116, 113, 68)
-        elif isinstance(self.component(), QgsProcessingModelChildAlgorithm):
-            color = QColor(255, 255, 255)
-            stroke = Qt.gray
-            selected = QColor(50, 50, 50)
-        else:
-            color = QColor(172, 196, 114)
-            stroke = QColor(90, 140, 90)
-            selected = QColor(42, 65, 42)
-        if self.state() == QgsModelComponentGraphicItem.Selected:
-            stroke = selected
-            color = color.darker(110)
-        if self.state() == QgsModelComponentGraphicItem.Hover:
-            color = color.darker(105)
-        painter.setPen(QPen(stroke, 0))  # 0 width "cosmetic" pen
-        painter.setBrush(QBrush(color, Qt.SolidPattern))
-        painter.drawRect(rect)
-        painter.setFont(self.font())
-        painter.setPen(QPen(Qt.black))
-        text = self.truncatedTextForItem(self.label())
-        if isinstance(self.component(), QgsProcessingModelChildAlgorithm) and not self.component().isActive():
-            painter.setPen(QPen(Qt.gray))
-            text = text + "\n(deactivated)"
-        fm = QFontMetricsF(self.font())
-        text = self.truncatedTextForItem(self.label())
-        h = fm.ascent()
-        pt = QPointF(-self.component().size().width() / 2 + 25, self.component().size().height() / 2.0 - h + 1)
-        painter.drawText(pt, text)
-        painter.setPen(QPen(QApplication.palette().color(QPalette.WindowText)))
-
-        if self.linkPointCount(Qt.TopEdge) or self.linkPointCount(Qt.BottomEdge):
-            h = -(fm.height() * 1.2)
-            h = h - self.component().size().height() / 2.0 + 5
-            pt = QPointF(-self.component().size().width() / 2 + 25, h)
-            painter.drawText(pt, 'In')
-            i = 1
-            if not self.component().linksCollapsed(Qt.TopEdge):
-                for idx in range(self.linkPointCount(Qt.TopEdge)):
-                    text = self.linkPointText(Qt.TopEdge, idx)
-                    h = -(fm.height() * 1.2) * (i + 1)
-                    h = h - self.component().size().height() / 2.0 + 5
-                    pt = QPointF(-self.component().size().width() / 2 + 33, h)
-                    painter.drawText(pt, text)
-                    i += 1
-
-            h = fm.height() * 1.1
-            h = h + self.component().size().height() / 2.0
-            pt = QPointF(-self.component().size().width() / 2 + 25, h)
-            painter.drawText(pt, 'Out')
-            if not self.component().linksCollapsed(Qt.BottomEdge):
-                for idx in range(self.linkPointCount(Qt.BottomEdge)):
-                    text = self.linkPointText(Qt.BottomEdge, idx)
-                    h = fm.height() * 1.2 * (idx + 2)
-                    h = h + self.component().size().height() / 2.0
-                    pt = QPointF(-self.component().size().width() / 2 + 33, h)
-                    painter.drawText(pt, text)
-
-        if self.pixmap:
-            painter.drawPixmap(-(self.component().size().width() / 2.0) + 3, -8,
-                               self.pixmap)
-        elif self.picture:
-            painter.drawPicture(-(self.component().size().width() / 2.0) + 3, -8,
-                                self.picture)
 
     def getLinkPointForParameter(self, paramIndex):
         offsetX = 25
@@ -155,6 +83,26 @@ class ModelerInputGraphicItem(ModelerGraphicItem):
             self.setLabel(paramDef.description())
         else:
             self.setLabel('Error ({})'.format(element.parameterName()))
+
+    def fillColor(self, state):
+        c = QColor(238, 242, 131)
+        if state == QgsModelComponentGraphicItem.Selected:
+            c = c.darker(110)
+        elif state == QgsModelComponentGraphicItem.Hover:
+            c = c.darker(105)
+        return c
+
+    def strokeColor(self, state):
+        if state == QgsModelComponentGraphicItem.Selected:
+            return QColor(116, 113, 68)
+        else:
+            return QColor(234, 226, 118)
+
+    def textColor(self, state):
+        return Qt.black
+
+    def iconPicture(self):
+        return self.picture
 
     def create_widget_context(self):
         """
@@ -250,6 +198,30 @@ class ModelerChildAlgorithmGraphicItem(ModelerGraphicItem):
                                                                    pt)
             self.outButton.folded.connect(self.foldOutput)
 
+    def iconPicture(self):
+        return self.picture if self.picture is not None else QPicture()
+
+    def iconPixmap(self):
+        return self.pixmap if self.pixmap is not None else QPixmap()
+
+    def fillColor(self, state):
+        c = QColor(255, 255, 255)
+        if state == QgsModelComponentGraphicItem.Selected:
+            c = c.darker(110)
+        elif state == QgsModelComponentGraphicItem.Hover:
+            c = c.darker(105)
+
+        return c
+
+    def strokeColor(self, state):
+        if state == QgsModelComponentGraphicItem.Selected:
+            return QColor(50, 50, 50)
+        else:
+            return Qt.gray
+
+    def textColor(self, state):
+        return Qt.black if self.component().isActive() else Qt.gray
+
     def linkPointCount(self, edge):
         if edge == Qt.BottomEdge:
             return len(self.component().algorithm().outputDefinitions())
@@ -305,8 +277,8 @@ class ModelerChildAlgorithmGraphicItem(ModelerGraphicItem):
         alg.setLinksCollapsed(Qt.TopEdge, existing_child.linksCollapsed(Qt.TopEdge))
         alg.setLinksCollapsed(Qt.BottomEdge, existing_child.linksCollapsed(Qt.BottomEdge))
         for i, out in enumerate(alg.modelOutputs().keys()):
-            alg.modelOutput(out).setPosition(alg.modelOutput(out).position()
-                                             or alg.position() + QPointF(
+            alg.modelOutput(out).setPosition(alg.modelOutput(out).position() or
+                                             alg.position() + QPointF(
                 self.component().size().width(),
                 (i + 1.5) * self.component().size().height()))
         self.model().setChildAlgorithm(alg)
@@ -361,6 +333,27 @@ class ModelerOutputGraphicItem(ModelerGraphicItem):
         svg.render(painter)
         painter.end()
         self.setLabel(element.name())
+
+    def iconPicture(self):
+        return self.picture
+
+    def fillColor(self, state):
+        c = QColor(172, 196, 114)
+        if state == QgsModelComponentGraphicItem.Selected:
+            c = c.darker(110)
+        elif state == QgsModelComponentGraphicItem.Hover:
+            c = c.darker(105)
+
+        return c
+
+    def strokeColor(self, state):
+        if state == QgsModelComponentGraphicItem.Selected:
+            return QColor(42, 65, 42)
+        else:
+            return QColor(90, 140, 90)
+
+    def textColor(self, state):
+        return Qt.black
 
     def editComponent(self):
         child_alg = self.model().childAlgorithm(self.component().childId())

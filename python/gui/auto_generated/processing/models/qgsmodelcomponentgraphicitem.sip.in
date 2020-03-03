@@ -84,6 +84,8 @@ Sets the ``font`` used to render text in the item.
 
     virtual QRectF boundingRect() const;
 
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+
 
     QRectF itemRect() const;
 %Docstring
@@ -190,6 +192,31 @@ The default implementation does nothing.
 %Docstring
 Truncates a ``text`` string so that it fits nicely within the item's width,
 accounting for margins and interactive buttons.
+%End
+
+    virtual QColor fillColor( State state ) const = 0;
+%Docstring
+Returns the fill color for the item for the specified ``state``.
+%End
+
+    virtual QColor strokeColor( State state ) const = 0;
+%Docstring
+Returns the stroke color for the item for the specified ``state``.
+%End
+
+    virtual QColor textColor( State state ) const = 0;
+%Docstring
+Returns the label text color for the item for the specified ``state``.
+%End
+
+    virtual QPicture iconPicture() const;
+%Docstring
+Returns a QPicture version of the item's icon, if available.
+%End
+
+    virtual QPixmap iconPixmap() const;
+%Docstring
+Returns a QPixmap version of the item's icon, if available.
 %End
 
 };
