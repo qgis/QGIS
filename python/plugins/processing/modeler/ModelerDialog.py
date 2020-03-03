@@ -329,8 +329,10 @@ class ModelerDialog(BASE, WIDGET):
         self.restoreState(settings.value("/Processing/stateModeler", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryModeler", QByteArray()))
 
-        self.scene = ModelerScene(self, dialog=self)
+        self.scene = ModelerScene(self)
         self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE, self.CANVAS_SIZE))
+        self.scene.rebuildRequired.connect(self.repaintModel)
+        self.scene.componentChanged.connect(self.componentChanged)
 
         self.view.setScene(self.scene)
         self.view.setAcceptDrops(True)
@@ -781,7 +783,7 @@ class ModelerDialog(BASE, WIDGET):
                                          'See the log for more information.'))
 
     def repaintModel(self, controls=True):
-        self.scene = ModelerScene(self, dialog=self)
+        self.scene = ModelerScene(self)
         self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE,
                                        self.CANVAS_SIZE))
 
@@ -789,6 +791,12 @@ class ModelerDialog(BASE, WIDGET):
             self.scene.setFlag(QgsModelGraphicsScene.FlagHideControls)
         self.scene.paintModel(self.model)
         self.view.setScene(self.scene)
+
+        self.scene.rebuildRequired.connect(self.repaintModel)
+        self.scene.componentChanged.connect(self.componentChanged)
+
+    def componentChanged(self):
+        self.hasChanged = True
 
     def addInput(self):
         item = self.inputsTree.currentItem()

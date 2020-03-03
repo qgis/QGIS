@@ -22,7 +22,6 @@ __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 from qgis.PyQt.QtCore import QPointF, Qt
-from qgis.PyQt.QtWidgets import QGraphicsScene
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelChildParameterSource,
                        QgsExpression)
@@ -40,31 +39,11 @@ from processing.tools.dataobjects import createContext
 
 class ModelerScene(QgsModelGraphicsScene):
 
-    def __init__(self, parent=None, dialog=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.paramItems = {}
         self.algItems = {}
         self.outputItems = {}
-        self.setItemIndexMethod(QGraphicsScene.NoIndex)
-        self.dialog = dialog
-
-    def getParameterPositions(self):
-        return {key: item.pos() for key, item in self.paramItems.items()}
-
-    def getAlgorithmPositions(self):
-        return {key: item.pos() for key, item in self.algItems.items()}
-
-    def getOutputPositions(self):
-        pos = {}
-        for algName, outputs in self.outputItems.items():
-            outputPos = {}
-            for key, value in outputs.items():
-                if value is not None:
-                    outputPos[key] = value.pos()
-                else:
-                    outputPos[key] = None
-            pos[algName] = outputPos
-        return pos
 
     def getItemsFromParamValue(self, value, child_id, context):
         items = []
@@ -89,12 +68,6 @@ class ModelerScene(QgsModelGraphicsScene):
                         items.extend(self.getItemsFromParamValue(variables[v].source, child_id, context))
         return items
 
-    def requestModelRepaint(self):
-        self.dialog.repaintModel()
-
-    def componentChanged(self):
-        self.dialog.haschanged = True
-
     def paintModel(self, model):
         self.model = model
         context = createContext()
@@ -105,7 +78,7 @@ class ModelerScene(QgsModelGraphicsScene):
             item.setPos(inp.position().x(), inp.position().y())
             self.paramItems[inp.parameterName()] = item
 
-            item.requestModelRepaint.connect(self.requestModelRepaint)
+            item.requestModelRepaint.connect(self.rebuildRequired)
             item.changed.connect(self.componentChanged)
 
         # Input dependency arrows
@@ -138,7 +111,7 @@ class ModelerScene(QgsModelGraphicsScene):
             item.setPos(alg.position().x(), alg.position().y())
             self.algItems[alg.childId()] = item
 
-            item.requestModelRepaint.connect(self.requestModelRepaint)
+            item.requestModelRepaint.connect(self.rebuildRequired)
             item.changed.connect(self.componentChanged)
 
         # And then the arrows
@@ -172,7 +145,7 @@ class ModelerScene(QgsModelGraphicsScene):
             for key, out in outputs.items():
                 if out is not None:
                     item = ModelerOutputGraphicItem(out.clone(), model)
-                    item.requestModelRepaint.connect(self.requestModelRepaint)
+                    item.requestModelRepaint.connect(self.rebuildRequired)
                     item.changed.connect(self.componentChanged)
 
                     self.addItem(item)
@@ -197,8 +170,3 @@ class ModelerScene(QgsModelGraphicsScene):
                 else:
                     outputItems[key] = None
             self.outputItems[alg.childId()] = outputItems
-
-    def mousePressEvent(self, mouseEvent):
-        if mouseEvent.button() != Qt.LeftButton:
-            return
-        super(ModelerScene, self).mousePressEvent(mouseEvent)
