@@ -18,9 +18,5 @@
 """
 
 
-class WrongModelException(Exception):
-    pass
-
-
 class UndefinedParameterException(Exception):
     pass
