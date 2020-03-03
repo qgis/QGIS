@@ -87,6 +87,7 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
             self.model().addModelParameter(new_param, self.component())
             self.setLabel(new_param.description())
             self.requestModelRepaint.emit()
+            self.changed.emit()
 
 
 class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
@@ -109,6 +110,7 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
             alg.setChildId(self.component().childId())
             self.updateAlgorithm(alg)
             self.requestModelRepaint.emit()
+            self.changed.emit()
 
     def updateAlgorithm(self, alg):
         existing_child = self.model().childAlgorithm(alg.childId())
@@ -145,3 +147,4 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
             model_output.setDefaultValue(dlg.param.defaultValue())
             model_output.setMandatory(not (dlg.param.flags() & QgsProcessingParameterDefinition.FlagOptional))
             self.model().updateDestinationParameters()
+            self.changed.emit()
