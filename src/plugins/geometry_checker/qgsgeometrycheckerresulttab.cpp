@@ -106,10 +106,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
   ui.tableWidgetErrors->horizontalHeader()->setSortIndicator( 0, Qt::AscendingOrder );
   ui.tableWidgetErrors->resizeColumnToContents( 0 );
   ui.tableWidgetErrors->resizeColumnToContents( 1 );
-  ui.tableWidgetErrors->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::Stretch );
-  ui.tableWidgetErrors->horizontalHeader()->setSectionResizeMode( 3, QHeaderView::Stretch );
-  ui.tableWidgetErrors->horizontalHeader()->setSectionResizeMode( 4, QHeaderView::Stretch );
-  ui.tableWidgetErrors->horizontalHeader()->setSectionResizeMode( 5, QHeaderView::Stretch );
+  ui.tableWidgetErrors->horizontalHeader()->setStretchLastSection( true );
   // Not sure why, but this is needed...
   ui.tableWidgetErrors->setSortingEnabled( true );
   ui.tableWidgetErrors->setSortingEnabled( false );
