@@ -20,6 +20,7 @@
 #include "qgis_gui.h"
 #include <QGraphicsObject>
 #include <QFont>
+#include <QPicture>
 
 class QgsProcessingModelComponent;
 class QgsProcessingModelParameter;
@@ -69,6 +70,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Returns the model component associated with this item.
      */
     QgsProcessingModelComponent *component();
+
+    /**
+     * Returns the model component associated with this item.
+     */
+    const QgsProcessingModelComponent *component() const SIP_SKIP;
 
     /**
      * Returns the model associated with this item.
@@ -278,6 +284,22 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
                                   QgsProcessingModelAlgorithm *model,
                                   QGraphicsItem *parent SIP_TRANSFERTHIS );
 
+    void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
+
+  protected:
+
+    QColor fillColor( State state ) const override;
+    QColor strokeColor( State state ) const override;
+    QColor textColor( State state ) const override;
+    QPicture iconPicture() const override;
+
+  protected slots:
+
+    void deleteComponent() override;
+
+  private:
+    QPicture mPicture;
+
 };
 
 /**
@@ -303,7 +325,30 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child SIP_TRANSFER,
                                        QgsProcessingModelAlgorithm *model,
                                        QGraphicsItem *parent SIP_TRANSFERTHIS );
+    void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
 
+  protected:
+
+    QColor fillColor( State state ) const override;
+    QColor strokeColor( State state ) const override;
+    QColor textColor( State state ) const override;
+    QPixmap iconPixmap() const override;
+    QPicture iconPicture() const override;
+
+    int linkPointCount( Qt::Edge edge ) const override;
+    QString linkPointText( Qt::Edge edge, int index ) const override;
+
+  protected slots:
+
+    void deleteComponent() override;
+
+  private slots:
+    void deactivateAlgorithm();
+    void activateAlgorithm();
+
+  private:
+    QPicture mPicture;
+    QPixmap mPixmap;
 };
 
 
@@ -331,6 +376,20 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
                                QgsProcessingModelAlgorithm *model,
                                QGraphicsItem *parent SIP_TRANSFERTHIS );
 
+  protected:
+
+    QColor fillColor( State state ) const override;
+    QColor strokeColor( State state ) const override;
+    QColor textColor( State state ) const override;
+    QPicture iconPicture() const override;
+
+  protected slots:
+
+    void deleteComponent() override;
+
+  private:
+
+    QPicture mPicture;
 };
 ///@endcond
 

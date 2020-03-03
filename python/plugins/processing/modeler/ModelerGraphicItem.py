@@ -21,71 +21,32 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-import os
-
 from qgis.PyQt.QtCore import Qt, QPointF
-from qgis.PyQt.QtGui import QFontMetricsF, QColor, QPicture, QPainter, QPixmap
-from qgis.PyQt.QtWidgets import QMessageBox, QMenu
-from qgis.PyQt.QtSvg import QSvgRenderer
 from qgis.core import (QgsProcessingParameterDefinition,
-                       QgsProcessingModelParameter,
-                       QgsProcessingModelChildAlgorithm,
                        QgsProject)
 from qgis.gui import (
     QgsProcessingParameterDefinitionDialog,
     QgsProcessingParameterWidgetContext,
-    QgsModelDesignerFoldButtonGraphicItem,
-    QgsModelComponentGraphicItem
+    QgsModelParameterGraphicItem,
+    QgsModelChildAlgorithmGraphicItem,
+    QgsModelOutputGraphicItem
 )
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.tools.dataobjects import createContext
 from qgis.utils import iface
 
-pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
+class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
+    """
+    IMPORTANT! This is intentionally a MINIMAL class, only containing code which HAS TO BE HERE
+    because it contains Python code for compatibility with deprecated methods ONLY.
 
-class ModelerGraphicItem(QgsModelComponentGraphicItem):
+    Don't add anything here -- edit the c++ base class instead!
+    """
 
     def __init__(self, element, model):
         super().__init__(element, model, None)
-
-
-class ModelerInputGraphicItem(ModelerGraphicItem):
-
-    def __init__(self, element, model):
-        super().__init__(element, model)
-
-        svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'input.svg'))
-        self.picture = QPicture()
-        painter = QPainter(self.picture)
-        svg.render(painter)
-        painter.end()
-        paramDef = self.model().parameterDefinition(element.parameterName())
-        if paramDef:
-            self.setLabel(paramDef.description())
-        else:
-            self.setLabel('Error ({})'.format(element.parameterName()))
-
-    def fillColor(self, state):
-        c = QColor(238, 242, 131)
-        if state == QgsModelComponentGraphicItem.Selected:
-            c = c.darker(110)
-        elif state == QgsModelComponentGraphicItem.Hover:
-            c = c.darker(105)
-        return c
-
-    def strokeColor(self, state):
-        if state == QgsModelComponentGraphicItem.Selected:
-            return QColor(116, 113, 68)
-        else:
-            return QColor(234, 226, 118)
-
-    def textColor(self, state):
-        return Qt.black
-
-    def iconPicture(self):
-        return self.picture
 
     def create_widget_context(self):
         """
@@ -127,88 +88,17 @@ class ModelerInputGraphicItem(ModelerGraphicItem):
             self.setLabel(new_param.description())
             self.requestModelRepaint.emit()
 
-    def deleteComponent(self):
-        if self.model().childAlgorithmsDependOnParameter(self.component().parameterName()):
-            QMessageBox.warning(None, 'Could not remove input',
-                                'Algorithms depend on the selected input.\n'
-                                'Remove them before trying to remove it.')
-        elif self.model().otherParametersDependOnParameter(self.component().parameterName()):
-            QMessageBox.warning(None, 'Could not remove input',
-                                'Other inputs depend on the selected input.\n'
-                                'Remove them before trying to remove it.')
-        else:
-            self.model().removeModelParameter(self.component().parameterName())
-            self.changed.emit()
-            self.requestModelRepaint.emit()
 
-    def contextMenuEvent(self, event):
-        popupmenu = QMenu()
-        removeAction = popupmenu.addAction('Remove')
-        removeAction.triggered.connect(self.deleteComponent)
-        editAction = popupmenu.addAction('Edit')
-        editAction.triggered.connect(self.editComponent)
-        popupmenu.exec_(event.screenPos())
+class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
+    """
+    IMPORTANT! This is intentionally a MINIMAL class, only containing code which HAS TO BE HERE
+    because it contains Python code for compatibility with deprecated methods ONLY.
 
-
-class ModelerChildAlgorithmGraphicItem(ModelerGraphicItem):
+    Don't add anything here -- edit the c++ base class instead!
+    """
 
     def __init__(self, element, model):
-        super().__init__(element, model)
-
-        if element.algorithm().svgIconPath():
-            svg = QSvgRenderer(element.algorithm().svgIconPath())
-            size = svg.defaultSize()
-            self.picture = QPicture()
-            painter = QPainter(self.picture)
-            painter.scale(16 / size.width(), 16 / size.width())
-            svg.render(painter)
-            painter.end()
-            self.pixmap = None
-        else:
-            self.pixmap = element.algorithm().icon().pixmap(15, 15)
-        self.setLabel(element.description())
-
-    def iconPicture(self):
-        return self.picture if self.picture is not None else QPicture()
-
-    def iconPixmap(self):
-        return self.pixmap if self.pixmap is not None else QPixmap()
-
-    def fillColor(self, state):
-        c = QColor(255, 255, 255)
-        if state == QgsModelComponentGraphicItem.Selected:
-            c = c.darker(110)
-        elif state == QgsModelComponentGraphicItem.Hover:
-            c = c.darker(105)
-
-        return c
-
-    def strokeColor(self, state):
-        if state == QgsModelComponentGraphicItem.Selected:
-            return QColor(50, 50, 50)
-        else:
-            return Qt.gray
-
-    def textColor(self, state):
-        return Qt.black if self.component().isActive() else Qt.gray
-
-    def linkPointCount(self, edge):
-        if edge == Qt.BottomEdge:
-            return len(self.component().algorithm().outputDefinitions())
-        elif edge == Qt.TopEdge:
-            return len([p for p in self.component().algorithm().parameterDefinitions() if
-                        not p.isDestination() and not p.flags() & QgsProcessingParameterDefinition.FlagHidden])
-
-        return 0
-
-    def linkPointText(self, edge, index):
-        if edge == Qt.TopEdge:
-            param = [p for p in self.component().algorithm().parameterDefinitions() if
-                     not p.isDestination() and not p.flags() & QgsProcessingParameterDefinition.FlagHidden][index]
-            return self.truncatedTextForItem(param.description())
-        elif edge == Qt.BottomEdge:
-            out = self.component().algorithm().outputDefinitions()[index]
-            return self.truncatedTextForItem(out.description())
+        super().__init__(element, model, None)
 
     def editComponent(self):
         elemAlg = self.component().algorithm()
@@ -226,83 +116,23 @@ class ModelerChildAlgorithmGraphicItem(ModelerGraphicItem):
         alg.setLinksCollapsed(Qt.TopEdge, existing_child.linksCollapsed(Qt.TopEdge))
         alg.setLinksCollapsed(Qt.BottomEdge, existing_child.linksCollapsed(Qt.BottomEdge))
         for i, out in enumerate(alg.modelOutputs().keys()):
-            alg.modelOutput(out).setPosition(alg.modelOutput(out).position() or
-                                             alg.position() + QPointF(
+            alg.modelOutput(out).setPosition(alg.modelOutput(out).position()
+                                             or alg.position() + QPointF(
                 self.component().size().width(),
                 (i + 1.5) * self.component().size().height()))
         self.model().setChildAlgorithm(alg)
 
-    def deleteComponent(self):
-        if not self.model().removeChildAlgorithm(self.component().childId()):
-            QMessageBox.warning(None, 'Could not remove element',
-                                'Other elements depend on the selected one.\n'
-                                'Remove them before trying to remove it.')
-        else:
-            self.changed.emit()
-            self.requestModelRepaint.emit()
 
-    def contextMenuEvent(self, event):
-        popupmenu = QMenu()
-        removeAction = popupmenu.addAction('Remove')
-        removeAction.triggered.connect(self.deleteComponent)
-        editAction = popupmenu.addAction('Edit')
-        editAction.triggered.connect(self.editComponent)
+class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
+    """
+    IMPORTANT! This is intentionally a MINIMAL class, only containing code which HAS TO BE HERE
+    because it contains Python code for compatibility with deprecated methods ONLY.
 
-        if not self.component().isActive():
-            removeAction = popupmenu.addAction('Activate')
-            removeAction.triggered.connect(self.activateAlgorithm)
-        else:
-            deactivateAction = popupmenu.addAction('Deactivate')
-            deactivateAction.triggered.connect(self.deactivateAlgorithm)
-
-        popupmenu.exec_(event.screenPos())
-
-    def deactivateAlgorithm(self):
-        self.model().deactivateChildAlgorithm(self.component().childId())
-        self.requestModelRepaint.emit()
-
-    def activateAlgorithm(self):
-        if self.model().activateChildAlgorithm(self.component().childId()):
-            self.requestModelRepaint.emit()
-        else:
-            QMessageBox.warning(None, 'Could not activate Algorithm',
-                                'The selected algorithm depends on other currently non-active algorithms.\n'
-                                'Activate them them before trying to activate it.')
-
-
-class ModelerOutputGraphicItem(ModelerGraphicItem):
+    Don't add anything here -- edit the c++ base class instead!
+    """
 
     def __init__(self, element, model):
-        super().__init__(element, model)
-
-        # Output name
-        svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'output.svg'))
-        self.picture = QPicture()
-        painter = QPainter(self.picture)
-        svg.render(painter)
-        painter.end()
-        self.setLabel(element.name())
-
-    def iconPicture(self):
-        return self.picture
-
-    def fillColor(self, state):
-        c = QColor(172, 196, 114)
-        if state == QgsModelComponentGraphicItem.Selected:
-            c = c.darker(110)
-        elif state == QgsModelComponentGraphicItem.Hover:
-            c = c.darker(105)
-
-        return c
-
-    def strokeColor(self, state):
-        if state == QgsModelComponentGraphicItem.Selected:
-            return QColor(42, 65, 42)
-        else:
-            return QColor(90, 140, 90)
-
-    def textColor(self, state):
-        return Qt.black
+        super().__init__(element, model, None)
 
     def editComponent(self):
         child_alg = self.model().childAlgorithm(self.component().childId())
@@ -315,12 +145,3 @@ class ModelerOutputGraphicItem(ModelerGraphicItem):
             model_output.setDefaultValue(dlg.param.defaultValue())
             model_output.setMandatory(not (dlg.param.flags() & QgsProcessingParameterDefinition.FlagOptional))
             self.model().updateDestinationParameters()
-
-    def deleteComponent(self):
-        self.model().childAlgorithm(self.component().childId()).removeModelOutput(self.component().name())
-        self.model().updateDestinationParameters()
-        self.changed.emit()
-        self.requestModelRepaint.emit()
-
-    def contextMenuEvent(self, event):
-        return

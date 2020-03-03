@@ -28,6 +28,8 @@
 #include <QGraphicsSceneHoverEvent>
 #include <QApplication>
 #include <QPalette>
+#include <QMessageBox>
+#include <QMenu>
 
 ///@cond NOT_STABLE
 
@@ -68,6 +70,11 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
 QgsModelComponentGraphicItem::~QgsModelComponentGraphicItem() = default;
 
 QgsProcessingModelComponent *QgsModelComponentGraphicItem::component()
+{
+  return mComponent.get();
+}
+
+const QgsProcessingModelComponent *QgsModelComponentGraphicItem::component() const
 {
   return mComponent.get();
 }
@@ -489,7 +496,91 @@ QPointF QgsModelComponentGraphicItem::calculateAutomaticLinkPoint( const QPointF
 QgsModelParameterGraphicItem::QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( parameter, model, parent )
 {
+  QSvgRenderer svg( QgsApplication::iconPath( QStringLiteral( "mIconModelInput.svg" ) ) );
+  QPainter painter( &mPicture );
+  svg.render( &painter );
+  painter.end();
 
+  if ( const QgsProcessingParameterDefinition *paramDef = model->parameterDefinition( parameter->parameterName() ) )
+    setLabel( paramDef->description() );
+  else
+    setLabel( QObject::tr( "Error (%1)" ).arg( parameter->parameterName() ) );
+}
+
+void QgsModelParameterGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
+{
+  QMenu *popupmenu = new QMenu( event->widget() );
+  QAction *removeAction = popupmenu->addAction( QObject::tr( "Remove" ) );
+  connect( removeAction, &QAction::triggered, this, &QgsModelParameterGraphicItem::deleteComponent );
+  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit" ) );
+  connect( editAction, &QAction::triggered, this, &QgsModelParameterGraphicItem::editComponent );
+  popupmenu->exec( event->screenPos() );
+}
+
+QColor QgsModelParameterGraphicItem::fillColor( QgsModelComponentGraphicItem::State state ) const
+{
+  QColor c( 238, 242, 131 );
+  switch ( state )
+  {
+    case Selected:
+      c = c.darker( 110 );
+      break;
+    case Hover:
+      c = c.darker( 105 );
+      break;
+
+    case Normal:
+      break;
+  }
+  return c;
+}
+
+QColor QgsModelParameterGraphicItem::strokeColor( QgsModelComponentGraphicItem::State state ) const
+{
+  switch ( state )
+  {
+    case Selected:
+      return QColor( 116, 113, 68 );
+    case Hover:
+    case Normal:
+      return QColor( 234, 226, 118 );
+  }
+  return QColor();
+}
+
+QColor QgsModelParameterGraphicItem::textColor( QgsModelComponentGraphicItem::State ) const
+{
+  return Qt::black;
+}
+
+QPicture QgsModelParameterGraphicItem::iconPicture() const
+{
+  return mPicture;
+}
+
+void QgsModelParameterGraphicItem::deleteComponent()
+{
+  if ( const QgsProcessingModelParameter *param = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
+  {
+    if ( model()->childAlgorithmsDependOnParameter( param->parameterName() ) )
+    {
+      QMessageBox::warning( nullptr, QObject::tr( "Could not remove input" ),
+                            QObject::tr( "Algorithms depend on the selected input.\n"
+                                         "Remove them before trying to remove it." ) );
+    }
+    else if ( model()->otherParametersDependOnParameter( param->parameterName() ) )
+    {
+      QMessageBox::warning( nullptr, QObject::tr( "Could not remove input" ),
+                            QObject::tr( "Other inputs depend on the selected input.\n"
+                                         "Remove them before trying to remove it." ) );
+    }
+    else
+    {
+      model()->removeModelParameter( param->parameterName() );
+      emit changed();
+      emit requestModelRepaint();
+    }
+  }
 }
 
 
@@ -497,13 +588,258 @@ QgsModelParameterGraphicItem::QgsModelParameterGraphicItem( QgsProcessingModelPa
 QgsModelChildAlgorithmGraphicItem::QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( child, model, parent )
 {
+  if ( !child->algorithm()->svgIconPath().isEmpty() )
+  {
+    QSvgRenderer svg( child->algorithm()->svgIconPath() );
+    const QSizeF size = svg.defaultSize();
+    QPainter painter( &mPicture );
+    painter.scale( 16.0 / size.width(), 16.0 / size.width() );
+    svg.render( &painter );
+    painter.end();
+  }
+  else
+  {
+    mPixmap = child->algorithm()->icon().pixmap( 15, 15 );
+  }
 
+  setLabel( child->description() );
+}
+
+void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
+{
+  QMenu *popupmenu = new QMenu( event->widget() );
+  QAction *removeAction = popupmenu->addAction( QObject::tr( "Remove" ) );
+  connect( removeAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::deleteComponent );
+  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit" ) );
+  connect( editAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::editComponent );
+
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
+  {
+    if ( !child->isActive() )
+    {
+      QAction *activateAction = popupmenu->addAction( QObject::tr( "Activate" ) );
+      connect( activateAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::activateAlgorithm );
+    }
+    else
+    {
+      QAction *deactivateAction = popupmenu->addAction( QObject::tr( "Deactivate" ) );
+      connect( deactivateAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::deactivateAlgorithm );
+    }
+  }
+
+  popupmenu->exec( event->screenPos() );
+}
+
+QColor QgsModelChildAlgorithmGraphicItem::fillColor( QgsModelComponentGraphicItem::State state ) const
+{
+  QColor c( 255, 255, 255 );
+  switch ( state )
+  {
+    case Selected:
+      c = c.darker( 110 );
+      break;
+    case Hover:
+      c = c.darker( 105 );
+      break;
+
+    case Normal:
+      break;
+  }
+  return c;
+}
+
+QColor QgsModelChildAlgorithmGraphicItem::strokeColor( QgsModelComponentGraphicItem::State state ) const
+{
+  switch ( state )
+  {
+    case Selected:
+      return QColor( 50, 50, 50 );
+    case Hover:
+    case Normal:
+      return Qt::gray;
+  }
+  return QColor();
+}
+
+QColor QgsModelChildAlgorithmGraphicItem::textColor( QgsModelComponentGraphicItem::State ) const
+{
+  return dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() )->isActive() ? Qt::black : Qt::gray;
+}
+
+QPixmap QgsModelChildAlgorithmGraphicItem::iconPixmap() const
+{
+  return mPixmap;
+}
+
+QPicture QgsModelChildAlgorithmGraphicItem::iconPicture() const
+{
+  return mPicture;
+}
+
+int QgsModelChildAlgorithmGraphicItem::linkPointCount( Qt::Edge edge ) const
+{
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
+  {
+    switch ( edge )
+    {
+      case Qt::BottomEdge:
+        return child->algorithm()->outputDefinitions().size();
+      case Qt::TopEdge:
+      {
+        QgsProcessingParameterDefinitions params = child->algorithm()->parameterDefinitions();
+        params.erase( std::remove_if( params.begin(), params.end(), []( const QgsProcessingParameterDefinition * param )
+        {
+          return param->flags() & QgsProcessingParameterDefinition::FlagHidden || param->isDestination();
+        } ), params.end() );
+        return params.size();
+      }
+
+      case Qt::LeftEdge:
+      case Qt::RightEdge:
+        break;
+    }
+  }
+  return 0;
+}
+
+QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int index ) const
+{
+  if ( index < 0 )
+    return QString();
+
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
+  {
+    switch ( edge )
+    {
+      case Qt::BottomEdge:
+        return truncatedTextForItem( child->algorithm()->outputDefinitions().at( index )->description() );
+
+      case Qt::TopEdge:
+      {
+        QgsProcessingParameterDefinitions params = child->algorithm()->parameterDefinitions();
+        params.erase( std::remove_if( params.begin(), params.end(), []( const QgsProcessingParameterDefinition * param )
+        {
+          return param->flags() & QgsProcessingParameterDefinition::FlagHidden || param->isDestination();
+        } ), params.end() );
+
+        return truncatedTextForItem( params.at( index )->description() );
+      }
+
+      case Qt::LeftEdge:
+      case Qt::RightEdge:
+        break;
+    }
+  }
+  return QString();
+}
+
+void QgsModelChildAlgorithmGraphicItem::deleteComponent()
+{
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
+  {
+    if ( !model()->removeChildAlgorithm( child->childId() ) )
+    {
+      QMessageBox::warning( nullptr, QObject::tr( "Could not remove algorithm" ),
+                            QObject::tr( "Other algorithms depend on the selected one.\n"
+                                         "Remove them before trying to remove it." ) );
+    }
+    else
+    {
+      emit changed();
+      emit requestModelRepaint();
+    }
+  }
+}
+
+void QgsModelChildAlgorithmGraphicItem::deactivateAlgorithm()
+{
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
+  {
+    model()->deactivateChildAlgorithm( child->childId() );
+    emit requestModelRepaint();
+  }
+}
+
+void QgsModelChildAlgorithmGraphicItem::activateAlgorithm()
+{
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
+  {
+    if ( model()->activateChildAlgorithm( child->childId() ) )
+    {
+      emit requestModelRepaint();
+    }
+    else
+    {
+      QMessageBox::warning( nullptr, QObject::tr( "Could not activate algorithm" ),
+                            QObject::tr( "The selected algorithm depends on other currently non-active algorithms.\n"
+                                         "Activate them them before trying to activate it.." ) );
+    }
+  }
 }
 
 
 QgsModelOutputGraphicItem::QgsModelOutputGraphicItem( QgsProcessingModelOutput *output, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( output, model, parent )
 {
+  QSvgRenderer svg( QgsApplication::iconPath( QStringLiteral( "mIconModelOutput.svg" ) ) );
+  QPainter painter( &mPicture );
+  svg.render( &painter );
+  painter.end();
+  setLabel( output->name() );
 }
+
+
+QColor QgsModelOutputGraphicItem::fillColor( QgsModelComponentGraphicItem::State state ) const
+{
+  QColor c( 172, 196, 114 );
+  switch ( state )
+  {
+    case Selected:
+      c = c.darker( 110 );
+      break;
+    case Hover:
+      c = c.darker( 105 );
+      break;
+
+    case Normal:
+      break;
+  }
+  return c;
+}
+
+QColor QgsModelOutputGraphicItem::strokeColor( QgsModelComponentGraphicItem::State state ) const
+{
+  switch ( state )
+  {
+    case Selected:
+      return QColor( 42, 65, 42 );
+    case Hover:
+    case Normal:
+      return QColor( 90, 140, 90 );
+  }
+  return QColor();
+}
+
+QColor QgsModelOutputGraphicItem::textColor( QgsModelComponentGraphicItem::State ) const
+{
+  return Qt::black;
+}
+
+QPicture QgsModelOutputGraphicItem::iconPicture() const
+{
+  return mPicture;
+}
+
+void QgsModelOutputGraphicItem::deleteComponent()
+{
+  if ( const QgsProcessingModelOutput *output = dynamic_cast< const QgsProcessingModelOutput * >( component() ) )
+  {
+    model()->childAlgorithm( output->childId() ).removeModelOutput( output->name() );
+    model()->updateDestinationParameters();
+    emit changed();
+    emit requestModelRepaint();
+  }
+}
+
 
 ///@endcond
