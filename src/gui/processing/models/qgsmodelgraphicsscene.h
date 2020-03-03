@@ -18,8 +18,14 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgsprocessingcontext.h"
 #include <QGraphicsScene>
 
+class QgsProcessingModelAlgorithm;
+class QgsModelComponentGraphicItem;
+class QgsProcessingModelParameter;
+class QgsProcessingModelChildAlgorithm;
+class QgsProcessingModelOutput;
 
 ///@cond NOT_STABLE
 
@@ -90,9 +96,32 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     void componentChanged();
 
+  protected:
+
+    virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelParameter *param ) const SIP_FACTORY;
+    virtual QgsModelComponentGraphicItem *createChildAlgGraphicItem( QgsProcessingModelChildAlgorithm *child ) const  SIP_FACTORY;
+    virtual QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelOutput *output ) const SIP_FACTORY;
+
   private:
 
+    void createItems( QgsProcessingContext &context );
+
+    struct LinkSource
+    {
+      QgsModelComponentGraphicItem *item = nullptr;
+      Qt::Edge edge = Qt::LeftEdge;
+      int linkIndex = -1;
+    };
+    QList< LinkSource > linkSourcesForParameterValue( const QVariant &value, const QString &childId, QgsProcessingContext &context ) const;
+
+
     Flags mFlags = nullptr;
+
+    QgsProcessingModelAlgorithm *mModel = nullptr;
+
+    QMap< QString, QgsModelComponentGraphicItem * > mParameterItems;
+    QMap< QString, QgsModelComponentGraphicItem * > mChildAlgorithmItems;
+    QMap< QString, QMap< QString, QgsModelComponentGraphicItem * > > mOutputItems;
 
 };
 

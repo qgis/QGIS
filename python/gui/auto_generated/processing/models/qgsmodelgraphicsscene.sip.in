@@ -88,6 +88,12 @@ Emitted when a change in the model requires a full rebuild of the scene.
 Emitted whenever a component of the model is changed.
 %End
 
+  protected:
+
+    virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelParameter *param ) const /Factory/;
+    virtual QgsModelComponentGraphicItem *createChildAlgGraphicItem( QgsProcessingModelChildAlgorithm *child ) const  /Factory/;
+    virtual QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelOutput *output ) const /Factory/;
+
 };
 
 
