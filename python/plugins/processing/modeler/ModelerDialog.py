@@ -894,7 +894,6 @@ class ModelerDialog(BASE, WIDGET):
                 alg.setPosition(self.getPositionForAlgorithmItem())
             else:
                 alg.setPosition(pos)
-            from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 
             output_offset_x = alg.size().width()
             output_offset_y = 1.5 * alg.size().height()

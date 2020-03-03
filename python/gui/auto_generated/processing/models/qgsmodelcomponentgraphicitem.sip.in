@@ -53,6 +53,7 @@ Ownership of ``component`` is transferred to the item.
 Returns the model component associated with this item.
 %End
 
+
     QgsProcessingModelAlgorithm *model();
 %Docstring
 Returns the model associated with this item.
@@ -250,6 +251,25 @@ it must exist for the lifetime of this object.
 Ownership of ``parameter`` is transferred to the item.
 %End
 
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
+
+
+  protected:
+
+    virtual QColor fillColor( State state ) const;
+
+    virtual QColor strokeColor( State state ) const;
+
+    virtual QColor textColor( State state ) const;
+
+    virtual QPicture iconPicture() const;
+
+
+  protected slots:
+
+    virtual void deleteComponent();
+
+
 };
 
 class QgsModelChildAlgorithmGraphicItem : QgsModelComponentGraphicItem
@@ -280,6 +300,31 @@ it must exist for the lifetime of this object.
 
 Ownership of ``child`` is transferred to the item.
 %End
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
+
+
+  protected:
+
+    virtual QColor fillColor( State state ) const;
+
+    virtual QColor strokeColor( State state ) const;
+
+    virtual QColor textColor( State state ) const;
+
+    virtual QPixmap iconPixmap() const;
+
+    virtual QPicture iconPicture() const;
+
+
+    virtual int linkPointCount( Qt::Edge edge ) const;
+
+    virtual QString linkPointText( Qt::Edge edge, int index ) const;
+
+
+  protected slots:
+
+    virtual void deleteComponent();
+
 
 };
 
@@ -312,6 +357,22 @@ it must exist for the lifetime of this object.
 
 Ownership of ``output`` is transferred to the item.
 %End
+
+  protected:
+
+    virtual QColor fillColor( State state ) const;
+
+    virtual QColor strokeColor( State state ) const;
+
+    virtual QColor textColor( State state ) const;
+
+    virtual QPicture iconPicture() const;
+
+
+  protected slots:
+
+    virtual void deleteComponent();
+
 
 };
 
