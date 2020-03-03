@@ -3344,6 +3344,8 @@ Returns the type name for the parameter class.
 
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
+    virtual QStringList dependsOnOtherParameters() const;
+
 
     virtual QVariantMap toVariantMap() const;
 
