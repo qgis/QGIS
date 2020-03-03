@@ -1,4 +1,6 @@
 
+CREATE SCHEMA IF NOT EXISTS idro;
+
 --
 -- Name: cosmo_i5_snow; Type: TABLE; Schema: idro; Owner: -
 --

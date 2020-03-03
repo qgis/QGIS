@@ -44,12 +44,29 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestPyQgsPostgresRasterProvider(unittest.TestCase):
 
     @classmethod
+    def _load_test_table(cls, schemaname, tablename, basename=None):
+
+        postgres_conn = cls.dbconn + " sslmode=disable "
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(postgres_conn, {})
+
+        if basename is None:
+            basename = tablename
+
+        if tablename not in [n.tableName() for n in conn.tables(schemaname)]:
+            with open(os.path.join(TEST_DATA_DIR, 'provider', 'postgresraster', basename + '.sql'), 'r') as f:
+                sql = f.read()
+                conn.executeSql(sql)
+            assert (tablename in [n.tableName() for n in conn.tables(schemaname)])
+
+    @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layers
+        cls._load_test_table('public', 'raster_tiled_3035')
         cls.rl = QgsRasterLayer(cls.dbconn + ' sslmode=disable key=\'rid\' srid=3035  table="public"."raster_tiled_3035" sql=', 'test', 'postgresraster')
         assert cls.rl.isValid()
         cls.source = cls.rl.dataProvider()
@@ -100,18 +117,21 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
     def testNoConstraintRaster(self):
         """Read unconstrained raster layer"""
 
+        self._load_test_table('public', 'raster_3035_no_constraints')
         rl = QgsRasterLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=3035  table="public"."raster_3035_no_constraints" sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
 
     def testPkGuessing(self):
         """Read raster layer with no pkey in uri"""
 
+        self._load_test_table('public', 'raster_tiled_3035')
         rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_tiled_3035" sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
 
     def testWhereCondition(self):
         """Read raster layer with where condition"""
 
+        self._load_test_table('public', 'raster_3035_tiled_no_overviews')
         rl_nowhere = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_3035_tiled_no_overviews"' +
                                     'sql=', 'test', 'postgresraster')
         self.assertTrue(rl_nowhere.isValid())
@@ -131,6 +151,7 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
     def testNoPk(self):
         """Read raster with no PK"""
 
+        self._load_test_table('public', 'raster_3035_tiled_no_pk')
         rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_3035_tiled_no_pk"' +
                             'sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
@@ -138,6 +159,7 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
     def testCompositeKey(self):
         """Read raster with composite pks"""
 
+        self._load_test_table('public', 'raster_3035_tiled_composite_pk')
         rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_3035_tiled_composite_pk"' +
                             'sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
@@ -202,20 +224,9 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         """Test that a layer in a different schema than public can be loaded
         See: GH #34823"""
 
-        postgres_conn = "service='qgis_test' sslmode=disable "
-        md = QgsProviderRegistry.instance().providerMetadata('postgres')
-        conn = md.createConnection(postgres_conn, {})
+        self._load_test_table('idro', 'cosmo_i5_snow', 'bug_34823_pg_raster')
 
-        if 'idro' not in conn.schemas():
-            conn.executeSql('CREATE SCHEMA idro')
-
-        if 'cosmo_i5_snow' not in [n.tableName() for n in conn.tables('idro')]:
-            with open(os.path.join(TEST_DATA_DIR, 'provider', 'bug_34823_pg_raster.sql'), 'r') as f:
-                sql = f.read()
-                conn.executeSql(sql)
-            self.assertTrue('cosmo_i5_snow' in [n.tableName() for n in conn.tables('idro')])
-
-        rl = QgsRasterLayer(postgres_conn + "table={table} schema={schema}".format(table='cosmo_i5_snow', schema='idro'), 'pg_layer', 'postgresraster')
+        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema}".format(table='cosmo_i5_snow', schema='idro'), 'pg_layer', 'postgresraster')
         self.assertTrue(rl.isValid())
         self.assertTrue(compareWkt(rl.extent().asWktPolygon(), 'POLYGON((-64.79286766849691048 -77.26689086732433509, -62.18292922825105506 -77.26689086732433509, -62.18292922825105506 -74.83694818157819384, -64.79286766849691048 -74.83694818157819384, -64.79286766849691048 -77.26689086732433509))'))
 
