@@ -869,7 +869,7 @@ bool QgsPostgresRasterProvider::init()
           // Try to determine extent from raster
           const QString extentSql { QStringLiteral( "SELECT ST_Envelope( %1 ) "
                                     "FROM %2 WHERE %3" )
-                                    .arg( quotedValue( mRasterColumn ) )
+                                    .arg( quotedIdentifier( mRasterColumn ) )
                                     .arg( mQuery )
                                     .arg( mSqlWhereClause.isEmpty() ? "'t'" : mSqlWhereClause ) };
 
@@ -915,8 +915,8 @@ bool QgsPostgresRasterProvider::init()
         }
 
         // Compute raster size
-        mHeight = static_cast<long>( mExtent.height() / std::abs( mScaleY ) );
-        mWidth = static_cast<long>( mExtent.width() / std::abs( mScaleX ) );
+        mHeight = static_cast<long>( std::round( mExtent.height() / std::abs( mScaleY ) ) );
+        mWidth = static_cast<long>( std::round( mExtent.width() / std::abs( mScaleX ) ) );
         // is tiled?
         mIsTiled = ( mWidth != mTileWidth ) || ( mHeight != mTileHeight );
 
