@@ -58,7 +58,7 @@ namespace MDAL
 
       virtual ~DriverGdal() override = default;
       bool canReadMesh( const std::string &uri ) override;
-      std::unique_ptr< Mesh > load( const std::string &fileName, MDAL_Status *status ) override;
+      std::unique_ptr< Mesh > load( const std::string &fileName ) override;
 
     protected:
       typedef std::map<std::string, std::string> metadata_hash; // KEY, VALUE

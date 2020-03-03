@@ -28,8 +28,8 @@ namespace MDAL
       bool canReadMesh( const std::string &uri ) override;
       bool canReadDatasets( const std::string &uri ) override;
 
-      std::unique_ptr< Mesh > load( const std::string &resultsFile, MDAL_Status *status ) override;
-      void load( const std::string &uri, Mesh *mesh, MDAL_Status *status ) override;
+      std::unique_ptr< Mesh > load( const std::string &resultsFile ) override;
+      void load( const std::string &uri, Mesh *mesh ) override;
       bool persist( DatasetGroup *group ) override;
 
     private:
