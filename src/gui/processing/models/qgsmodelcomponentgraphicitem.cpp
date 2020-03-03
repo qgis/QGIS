@@ -140,6 +140,29 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
       break;
     }
 
+    case QGraphicsItem::ItemSceneChange:
+    {
+      if ( !mInitialized )
+      {
+        // ideally would be in constructor, but cannot call virtual methods from that...
+        if ( linkPointCount( Qt::TopEdge ) )
+        {
+          QPointF pt = linkPoint( Qt::TopEdge, -1 );
+          pt = QPointF( 0, pt.y() );
+          mExpandTopButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::TopEdge ), pt );
+          connect( mExpandTopButton, &QgsModelDesignerFoldButtonGraphicItem::folded, this, [ = ]( bool folded ) { fold( Qt::TopEdge, folded ); } );
+        }
+        if ( linkPointCount( Qt::BottomEdge ) )
+        {
+          QPointF pt = linkPoint( Qt::BottomEdge, -1 );
+          pt = QPointF( 0, pt.y() );
+          mExpandBottomButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::BottomEdge ), pt );
+          connect( mExpandBottomButton, &QgsModelDesignerFoldButtonGraphicItem::folded, this, [ = ]( bool folded ) { fold( Qt::BottomEdge, folded ); } );
+        }
+      }
+      break;
+    }
+
     default:
       break;
   }
@@ -289,6 +312,24 @@ void QgsModelComponentGraphicItem::updateToolTip( const QPointF &pos )
     update();
     emit repaintArrows();
   }
+}
+
+void QgsModelComponentGraphicItem::fold( Qt::Edge edge, bool folded )
+{
+  mComponent->setLinksCollapsed( edge, folded );
+  // also need to update the model's stored component
+
+  // TODO - this is not so nice, consider moving this to model class
+  if ( QgsProcessingModelChildAlgorithm *child = dynamic_cast< QgsProcessingModelChildAlgorithm * >( mComponent.get() ) )
+    mModel->childAlgorithm( child->childId() ).setLinksCollapsed( edge, folded );
+  else if ( QgsProcessingModelParameter *param = dynamic_cast< QgsProcessingModelParameter * >( mComponent.get() ) )
+    mModel->parameterComponent( param->parameterName() ).setLinksCollapsed( edge, folded );
+  else if ( QgsProcessingModelOutput *output = dynamic_cast< QgsProcessingModelOutput * >( mComponent.get() ) )
+    mModel->childAlgorithm( output->childId() ).modelOutput( output->name() ).setLinksCollapsed( edge, folded );
+
+  prepareGeometryChange();
+  emit updateArrowPaths();
+  update();
 }
 
 QString QgsModelComponentGraphicItem::label() const

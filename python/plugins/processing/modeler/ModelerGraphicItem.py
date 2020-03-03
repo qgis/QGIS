@@ -50,23 +50,6 @@ class ModelerGraphicItem(QgsModelComponentGraphicItem):
     def __init__(self, element, model):
         super().__init__(element, model, None)
 
-    def getLinkPointForParameter(self, paramIndex):
-        offsetX = 25
-        if isinstance(self.component(), QgsProcessingModelChildAlgorithm) and self.component().linksCollapsed(
-                Qt.TopEdge):
-            paramIndex = -1
-            offsetX = 17
-        if isinstance(self.component(), QgsProcessingModelParameter):
-            paramIndex = -1
-            offsetX = 0
-        fm = QFontMetricsF(self.font())
-        if isinstance(self.component(), QgsProcessingModelChildAlgorithm):
-            h = -(fm.height() * 1.2) * (paramIndex + 2) - fm.height() / 2.0 + 8
-            h = h - self.component().size().height() / 2.0
-        else:
-            h = 0
-        return QPointF(-self.component().size().width() / 2 + offsetX, h)
-
 
 class ModelerInputGraphicItem(ModelerGraphicItem):
 
@@ -185,19 +168,6 @@ class ModelerChildAlgorithmGraphicItem(ModelerGraphicItem):
             self.pixmap = element.algorithm().icon().pixmap(15, 15)
         self.setLabel(element.description())
 
-        alg = element.algorithm()
-        if [a for a in alg.parameterDefinitions() if not a.isDestination()]:
-            pt = self.getLinkPointForParameter(-1)
-            pt = QPointF(0, pt.y())
-            self.inButton = QgsModelDesignerFoldButtonGraphicItem(self, self.component().linksCollapsed(Qt.TopEdge), pt)
-            self.inButton.folded.connect(self.foldInput)
-        if alg.outputDefinitions():
-            pt = self.linkPoint(Qt.BottomEdge, -1)
-            pt = QPointF(0, pt.y())
-            self.outButton = QgsModelDesignerFoldButtonGraphicItem(self, self.component().linksCollapsed(Qt.BottomEdge),
-                                                                   pt)
-            self.outButton.folded.connect(self.foldOutput)
-
     def iconPicture(self):
         return self.picture if self.picture is not None else QPicture()
 
@@ -239,27 +209,6 @@ class ModelerChildAlgorithmGraphicItem(ModelerGraphicItem):
         elif edge == Qt.BottomEdge:
             out = self.component().algorithm().outputDefinitions()[index]
             return self.truncatedTextForItem(out.description())
-
-    def foldInput(self, folded):
-        self.component().setLinksCollapsed(Qt.TopEdge, folded)
-        # also need to update the model's stored component
-        self.model().childAlgorithm(self.component().childId()).setLinksCollapsed(Qt.TopEdge, folded)
-        self.prepareGeometryChange()
-        if self.component().algorithm().outputDefinitions():
-            pt = self.linkPoint(Qt.BottomEdge, -1)
-            pt = QPointF(0, pt.y())
-            self.outButton.position = pt
-
-        self.updateArrowPaths.emit()
-        self.update()
-
-    def foldOutput(self, folded):
-        self.component().setLinksCollapsed(Qt.BottomEdge, folded)
-        # also need to update the model's stored component
-        self.model().childAlgorithm(self.component().childId()).setLinksCollapsed(Qt.BottomEdge, folded)
-        self.prepareGeometryChange()
-        self.updateArrowPaths.emit()
-        self.update()
 
     def editComponent(self):
         elemAlg = self.component().algorithm()
