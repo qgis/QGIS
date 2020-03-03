@@ -76,6 +76,20 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     QgsModelGraphicsScene::Flags flags() const { return mFlags; }
 
+    void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
+
+  signals:
+
+    /**
+     * Emitted when a change in the model requires a full rebuild of the scene.
+     */
+    void rebuildRequired();
+
+    /**
+     * Emitted whenever a component of the model is changed.
+     */
+    void componentChanged();
+
   private:
 
     Flags mFlags = nullptr;

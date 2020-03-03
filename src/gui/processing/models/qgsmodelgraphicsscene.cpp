@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgsmodelgraphicsscene.h"
+#include <QGraphicsSceneMouseEvent>
 
 ///@cond NOT_STABLE
 
 QgsModelGraphicsScene::QgsModelGraphicsScene( QObject *parent )
   : QGraphicsScene( parent )
 {
-
+  setItemIndexMethod( QGraphicsScene::NoIndex );
 }
 
 void QgsModelGraphicsScene::setFlag( QgsModelGraphicsScene::Flag flag, bool on )
@@ -29,6 +30,13 @@ void QgsModelGraphicsScene::setFlag( QgsModelGraphicsScene::Flag flag, bool on )
     mFlags |= flag;
   else
     mFlags &= ~flag;
+}
+
+void QgsModelGraphicsScene::mousePressEvent( QGraphicsSceneMouseEvent *event )
+{
+  if ( event->button() != Qt::LeftButton )
+    return;
+  QGraphicsScene::mousePressEvent( event );
 }
 
 ///@endcond
