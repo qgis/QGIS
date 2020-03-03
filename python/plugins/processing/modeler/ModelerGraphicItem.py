@@ -23,7 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 
-from qgis.PyQt.QtCore import Qt, QPointF, QRectF
+from qgis.PyQt.QtCore import Qt, QPointF
 from qgis.PyQt.QtGui import QFontMetricsF, QPen, QBrush, QColor, QPicture, QPainter, QPalette
 from qgis.PyQt.QtWidgets import QApplication, QMessageBox, QMenu
 from qgis.PyQt.QtSvg import QSvgRenderer
