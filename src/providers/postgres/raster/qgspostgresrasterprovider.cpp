@@ -385,7 +385,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
       bandNo,
       rasterExtent,
       overviewFactor,
-      quotedIdentifier( pkSql() ),
+      pkSql(),  // already quoted
       quotedIdentifier( mRasterColumn ),
       tableToQuery,
       QString::number( mCrs.postgisSrid() ),
@@ -864,9 +864,22 @@ bool QgsPostgresRasterProvider::init()
         const QByteArray hexAscii { result.PQgetvalue( 0, 5 ).toLatin1().mid( 2 ) };
         QgsConstWkbPtr ptr { QByteArray::fromHex( hexAscii ) };
 
-        if ( ! p.fromWkb( ptr ) )
+        if ( hexAscii.isEmpty() || ! p.fromWkb( ptr ) )
         {
-          throw QgsPostgresRasterProviderException( tr( "Cannot get extent from raster_columns" ) );
+          // Try to determine extent from raster
+          const QString extentSql { QStringLiteral( "SELECT ST_Envelope( %1 ) "
+                                    "FROM %2 WHERE %3" )
+                                    .arg( quotedValue( mRasterColumn ) )
+                                    .arg( mQuery )
+                                    .arg( mSqlWhereClause.isEmpty() ? "'t'" : mSqlWhereClause ) };
+
+          QgsPostgresResult extentResult( connectionRO()->PQexec( extentSql ) );
+          const QByteArray extentHexAscii { extentResult.PQgetvalue( 0, 0 ).toLatin1() };
+          QgsConstWkbPtr extentPtr { QByteArray::fromHex( extentHexAscii ) };
+          if ( extentHexAscii.isEmpty() || ! p.fromWkb( extentPtr ) )
+          {
+            throw QgsPostgresRasterProviderException( tr( "Cannot get extent from raster" ) );
+          }
         }
 
         mExtent = p.boundingBox();
@@ -1344,6 +1357,10 @@ bool QgsPostgresRasterProvider::determinePrimaryKey()
         {
           pkType = QgsPostgresPrimaryKeyType::PktUint64;
         }
+        else if ( fieldTypeName == QLatin1String( "text" ) )
+        {
+          pkType = QgsPostgresPrimaryKeyType::PktFidMap;
+        }
         // Always use PktFidMap for multi-field keys
         mPrimaryKeyType = i ? QgsPostgresPrimaryKeyType::PktFidMap : pkType;
         mPrimaryKeyAttrs << name;
@@ -1410,9 +1427,14 @@ QString QgsPostgresRasterProvider::pkSql()
   Q_ASSERT( ! mPrimaryKeyAttrs.isEmpty() );
   if ( mPrimaryKeyAttrs.count( ) > 1 )
   {
-    return mPrimaryKeyAttrs.join( ',' ).prepend( '(' ).append( ')' );
+    QStringList pkeys;
+    for ( const auto &k : qgis::as_const( mPrimaryKeyAttrs ) )
+    {
+      pkeys.push_back( quotedIdentifier( k ) );
+    }
+    return pkeys.join( ',' ).prepend( '(' ).append( ')' );
   }
-  return mPrimaryKeyAttrs.first();
+  return quotedIdentifier( mPrimaryKeyAttrs.first() );
 }
 
 

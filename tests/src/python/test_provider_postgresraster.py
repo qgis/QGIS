@@ -32,9 +32,10 @@ from qgis.core import (
     QgsRasterLayer,
     QgsPointXY,
     QgsRaster,
+    QgsProviderRegistry,
 )
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, compareWkt
 
 QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -140,8 +141,10 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_3035_tiled_composite_pk"' +
                             'sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
+        data = rl.dataProvider().block(1, rl.extent(), 3, 3)
+        self.assertEqual(int(data.value(0, 0)), 142)
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Performance test is disabled in Travis environment')
+    @unittest.skip('Performance test is disabled in Travis environment')
     def testSpeed(self):
         """Compare speed with GDAL provider, this test was used during development"""
 
@@ -151,7 +154,7 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             speed_db='qgis_test'
         )
 
-        table = 'eu_dem_tiled'
+        table = 'basic_map_tiled'
         schema = 'public'
 
         def _speed_check(schema, table, width, height):
@@ -194,6 +197,27 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             print('-' * 80)
 
         _speed_check(schema, table, 1000, 1000)
+
+    def testOtherSchema(self):
+        """Test that a layer in a different schema than public can be loaded
+        See: GH #34823"""
+
+        postgres_conn = "service='qgis_test' sslmode=disable "
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(postgres_conn, {})
+
+        if 'idro' not in conn.schemas():
+            conn.executeSql('CREATE SCHEMA idro')
+
+        if 'cosmo_i5_snow' not in [n.tableName() for n in conn.tables('idro')]:
+            with open(os.path.join(TEST_DATA_DIR, 'provider', 'bug_34823_pg_raster.sql'), 'r') as f:
+                sql = f.read()
+                conn.executeSql(sql)
+            self.assertTrue('cosmo_i5_snow' in [n.tableName() for n in conn.tables('idro')])
+
+        rl = QgsRasterLayer(postgres_conn + "table={table} schema={schema}".format(table='cosmo_i5_snow', schema='idro'), 'pg_layer', 'postgresraster')
+        self.assertTrue(rl.isValid())
+        self.assertTrue(compareWkt(rl.extent().asWktPolygon(), 'POLYGON((-64.79286766849691048 -77.26689086732433509, -62.18292922825105506 -77.26689086732433509, -62.18292922825105506 -74.83694818157819384, -64.79286766849691048 -74.83694818157819384, -64.79286766849691048 -77.26689086732433509))'))
 
 
 if __name__ == '__main__':
