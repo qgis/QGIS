@@ -77,6 +77,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  * 1. **Geographic coordinate systems** - based on a geodetic datum, normally with coordinates being
  *    latitude/longitude in degrees. The most common one is World Geodetic System 84 (WGS84).
+ *
  * 2. **Projected coordinate systems** - based on a geodetic datum with coordinates projected to a plane,
  *    typically using meters or feet as units. Common projected coordinate systems are Universal
  *    Transverse Mercator or Albers Equal Area.
@@ -126,15 +127,19 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *    is best avoided or used with caution as the IDs are not permanent and they refer to different CRS
  *    on different machines or user profiles.
  *
- *    See authid() and createFromOgcWmsCrs() methods.
+ *    \see authid()
+ *    \see createFromOgcWmsCrs()
  *
  * 2. **PROJ string.** This is a string consisting of a series of key/value pairs in the following
  *    format: `+param1=value1 +param2=value2 [...]`. This is the format natively used by the
  *    underlying proj library. For example, the definition of WGS84 looks like this:
  *
- *        +proj=longlat +datum=WGS84 +no_defs
+ *    \code
+ *    +proj=longlat +datum=WGS84 +no_defs
+ *    \endcode
  *
- *    See toProj() and createFromProj() methods.
+ *    \see toProj()
+ *    \see createFromProj()
  *
  * 3. **Well-known text (WKT).** Defined by Open Geospatial Consortium (OGC), this is another common
  *    format to define CRS. For WGS84 the OGC WKT definition is the following:
@@ -147,7 +152,8 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *               UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],
  *               AUTHORITY["EPSG","4326"]]
  *
- *    See toWkt() and createFromWkt() methods.
+ *    \see toWkt()
+ *    \see createFromWkt()
  *
  * CRS Database and Custom CRS
  * ===========================
@@ -199,6 +205,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  * \see QgsCoordinateTransform
  */
+
 class CORE_EXPORT QgsCoordinateReferenceSystem
 {
     Q_GADGET
@@ -234,6 +241,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Constructs a CRS object from a string definition using createFromString()
      *
      * It supports the following formats:
+     *
      * - "EPSG:<code>" - handled with createFromOgcWms()
      * - "POSTGIS:<srid>" - handled with createFromSrid()
      * - "INTERNAL:<srsid>" - handled with createFromSrsId()
@@ -249,7 +257,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     // TODO QGIS 4: remove type and always use EPSG code
 
     /**
-     * Constructor a CRS object using a PostGIS SRID, an EPSG code or an internal QGIS CRS ID.
+     * Constructor
+     *
+     * A CRS object using a PostGIS SRID, an EPSG code or an internal QGIS CRS ID.
      * \note We encourage you to use EPSG code or WKT to describe CRSes in your code
      * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile,
      * and proj strings are a lossy format.
@@ -412,15 +422,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * We try to match the Proj string to internal QGIS CRS ID using the following logic:
      *
      * - ask the Proj library to identify the CRS to a standard registered CRS (e.g. EPSG codes)
-     * - if no match is found, compare the CRS to all user CRSes, using the Proj library
-     * to determine CRS equivalence (hence making the match parameter order insensitive)
-     * - if none of the above match, use the Proj string to create the CRS and do not
-     * associated an internal CRS ID to it.
+     * - if no match is found, compare the CRS to all user CRSes, using the Proj library to determine CRS equivalence (hence making the match parameter order insensitive)
+     * - if none of the above match, use the Proj string to create the CRS and do not associated an internal CRS ID to it.
      *
      * \param projString A Proj format string
      * \returns TRUE on success else FALSE
      * \note Some members may be left blank if no match can be found in CRS database.
-     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
+     * \note This method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromProj()
      * \deprecated Use createFromProj() instead
      */
@@ -439,15 +447,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * We try to match the Proj string to internal QGIS CRS ID using the following logic:
      *
      * - ask the Proj library to identify the CRS to a standard registered CRS (e.g. EPSG codes)
-     * - if no match is found, compare the CRS to all user CRSes, using the Proj library
-     * to determine CRS equivalence (hence making the match parameter order insensitive)
-     * - if none of the above match, use the Proj string to create the CRS and do not
-     * associated an internal CRS ID to it.
+     * - if no match is found, compare the CRS to all user CRSes, using the Proj library to determine CRS equivalence (hence making the match parameter order insensitive)
+     * - if none of the above match, use the Proj string to create the CRS and do not associated an internal CRS ID to it.
      *
      * \param projString A Proj format string
      * \returns TRUE on success else FALSE
      * \note Some members may be left blank if no match can be found in CRS database.
-     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
+     * \note This method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromProj()
      * \since QGIS 3.10.3
      */
