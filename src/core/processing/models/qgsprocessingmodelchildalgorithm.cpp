@@ -35,8 +35,6 @@ QgsProcessingModelChildAlgorithm::QgsProcessingModelChildAlgorithm( const QgsPro
   , mModelOutputs( other.mModelOutputs )
   , mActive( other.mActive )
   , mDependencies( other.mDependencies )
-  , mParametersCollapsed( other.mParametersCollapsed )
-  , mOutputsCollapsed( other.mOutputsCollapsed )
 {
   setAlgorithmId( other.algorithmId() );
 }
@@ -51,8 +49,6 @@ QgsProcessingModelChildAlgorithm &QgsProcessingModelChildAlgorithm::operator=( c
   mModelOutputs = other.mModelOutputs;
   mActive = other.mActive;
   mDependencies = other.mDependencies;
-  mParametersCollapsed = other.mParametersCollapsed;
-  mOutputsCollapsed = other.mOutputsCollapsed;
   return *this;
 }
 
@@ -93,8 +89,6 @@ QVariant QgsProcessingModelChildAlgorithm::toVariant() const
   map.insert( QStringLiteral( "alg_config" ), mConfiguration );
   map.insert( QStringLiteral( "active" ), mActive );
   map.insert( QStringLiteral( "dependencies" ), mDependencies );
-  map.insert( QStringLiteral( "parameters_collapsed" ), mParametersCollapsed );
-  map.insert( QStringLiteral( "outputs_collapsed" ), mOutputsCollapsed );
 
   saveCommonProperties( map );
 
@@ -132,8 +126,6 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   setAlgorithmId( map.value( QStringLiteral( "alg_id" ) ).toString() );
   mActive = map.value( QStringLiteral( "active" ) ).toBool();
   mDependencies = map.value( QStringLiteral( "dependencies" ) ).toStringList();
-  mParametersCollapsed = map.value( QStringLiteral( "parameters_collapsed" ) ).toBool();
-  mOutputsCollapsed = map.value( QStringLiteral( "outputs_collapsed" ) ).toBool();
 
   restoreCommonProperties( map );
 

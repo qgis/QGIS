@@ -252,6 +252,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingwidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapperimpl.cpp
 
+  processing/models/qgsmodelarrowitem.cpp
   processing/models/qgsmodelcomponentgraphicitem.cpp
   processing/models/qgsmodelgraphicitem.cpp
   processing/models/qgsmodelgraphicsscene.cpp
@@ -882,6 +883,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingwidgetwrapper.h
   processing/qgsprocessingwidgetwrapperimpl.h
 
+  processing/models/qgsmodelarrowitem.h
   processing/models/qgsmodelcomponentgraphicitem.h
   processing/models/qgsmodelgraphicitem.h
   processing/models/qgsmodelgraphicsscene.h

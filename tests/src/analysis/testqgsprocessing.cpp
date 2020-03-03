@@ -7682,12 +7682,12 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( child.position(), QPointF( 1, 2 ) );
   child.setSize( QSizeF( 3, 4 ) );
   QCOMPARE( child.size(), QSizeF( 3, 4 ) );
-  QVERIFY( child.parametersCollapsed() );
-  child.setParametersCollapsed( false );
-  QVERIFY( !child.parametersCollapsed() );
-  QVERIFY( child.outputsCollapsed() );
-  child.setOutputsCollapsed( false );
-  QVERIFY( !child.outputsCollapsed() );
+  QVERIFY( child.linksCollapsed( Qt::TopEdge ) );
+  child.setLinksCollapsed( Qt::TopEdge, false );
+  QVERIFY( !child.linksCollapsed( Qt::TopEdge ) );
+  QVERIFY( child.linksCollapsed( Qt::BottomEdge ) );
+  child.setLinksCollapsed( Qt::BottomEdge, false );
+  QVERIFY( !child.linksCollapsed( Qt::BottomEdge ) );
 
   child.setChildId( QStringLiteral( "my_id" ) );
   QCOMPARE( child.childId(), QStringLiteral( "my_id" ) );
@@ -8086,8 +8086,8 @@ void TestQgsProcessing::modelerAlgorithm()
                               << QgsProcessingModelChildParameterSource::fromExpression( "1+2" )
                               << QgsProcessingModelChildParameterSource::fromStaticValue( QgsProperty::fromExpression( "1+8" ) ) );
   alg5c1.setActive( true );
-  alg5c1.setOutputsCollapsed( true );
-  alg5c1.setParametersCollapsed( true );
+  alg5c1.setLinksCollapsed( Qt::BottomEdge, true );
+  alg5c1.setLinksCollapsed( Qt::TopEdge, true );
   alg5c1.setDescription( "child 1" );
   alg5c1.setPosition( QPointF( 1, 2 ) );
   alg5c1.setSize( QSizeF( 11, 21 ) );
@@ -8103,8 +8103,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelChildAlgorithm alg5c2;
   alg5c2.setChildId( "cx2" );
   alg5c2.setActive( false );
-  alg5c2.setOutputsCollapsed( false );
-  alg5c2.setParametersCollapsed( false );
+  alg5c2.setLinksCollapsed( Qt::BottomEdge, false );
+  alg5c2.setLinksCollapsed( Qt::TopEdge, false );
   alg5c2.setDependencies( QStringList() << "a" << "b" );
   alg5.addChildAlgorithm( alg5c2 );
 
@@ -8129,8 +8129,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6c1.algorithmId(), QStringLiteral( "buffer" ) );
   QCOMPARE( alg6c1.configuration(), myConfig );
   QVERIFY( alg6c1.isActive() );
-  QVERIFY( alg6c1.outputsCollapsed() );
-  QVERIFY( alg6c1.parametersCollapsed() );
+  QVERIFY( alg6c1.linksCollapsed( Qt::BottomEdge ) );
+  QVERIFY( alg6c1.linksCollapsed( Qt::TopEdge ) );
   QCOMPARE( alg6c1.description(), QStringLiteral( "child 1" ) );
   QCOMPARE( alg6c1.position().x(), 1.0 );
   QCOMPARE( alg6c1.position().y(), 2.0 );
@@ -8171,8 +8171,8 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelChildAlgorithm alg6c2 = alg6.childAlgorithm( "cx2" );
   QCOMPARE( alg6c2.childId(), QStringLiteral( "cx2" ) );
   QVERIFY( !alg6c2.isActive() );
-  QVERIFY( !alg6c2.outputsCollapsed() );
-  QVERIFY( !alg6c2.parametersCollapsed() );
+  QVERIFY( !alg6c2.linksCollapsed( Qt::BottomEdge ) );
+  QVERIFY( !alg6c2.linksCollapsed( Qt::TopEdge ) );
   QCOMPARE( alg6c2.dependencies(), QStringList() << "a" << "b" );
 
   QCOMPARE( alg6.parameterComponents().count(), 1 );

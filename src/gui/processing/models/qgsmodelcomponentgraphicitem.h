@@ -20,6 +20,7 @@
 #include "qgis_gui.h"
 #include <QGraphicsObject>
 #include <QFont>
+#include <QPicture>
 
 class QgsProcessingModelComponent;
 class QgsProcessingModelParameter;
@@ -27,6 +28,7 @@ class QgsProcessingModelChildAlgorithm;
 class QgsProcessingModelOutput;
 class QgsProcessingModelAlgorithm;
 class QgsModelDesignerFlatButtonGraphicItem;
+class QgsModelDesignerFoldButtonGraphicItem;
 
 ///@cond NOT_STABLE
 
@@ -70,6 +72,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QgsProcessingModelComponent *component();
 
     /**
+     * Returns the model component associated with this item.
+     */
+    const QgsProcessingModelComponent *component() const SIP_SKIP;
+
+    /**
      * Returns the model associated with this item.
      */
     QgsProcessingModelAlgorithm *model();
@@ -91,6 +98,8 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
     QVariant itemChange( GraphicsItemChange change, const QVariant &value ) override;
+    QRectF boundingRect() const override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
     /**
      * Returns the rectangle representing the body of the item.
@@ -115,6 +124,39 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Returns the item's current state.
      */
     State state() const;
+
+    /**
+     * Returns the number of link points associated with the component on the specified \a edge.
+     */
+    virtual int linkPointCount( Qt::Edge edge ) const;
+
+    /**
+     * Returns the text to use for the link point with the specified \a index on the specified \a edge.
+     */
+    virtual QString linkPointText( Qt::Edge edge, int index ) const;
+
+    /**
+     * Returns the location of the link point with the specified \a index on the specified \a edge.
+     */
+    QPointF linkPoint( Qt::Edge edge, int index ) const;
+
+    /**
+     * Returns the best link point to use for a link originating at a specified \a other item.
+     *
+     * \param other item at other end of link
+     * \param edge item edge for calculated best link point
+     * \returns calculated link point in item coordinates.
+     */
+    QPointF calculateAutomaticLinkPoint( QgsModelComponentGraphicItem *other, Qt::Edge &edge SIP_OUT ) const;
+
+    /**
+     * Returns the best link point to use for a link originating at a specified \a other point.
+     *
+     * \param other point for other end of link (in scene coordinates)
+     * \param edge item edge for calculated best link point
+     * \returns calculated link point in item coordinates.
+     */
+    QPointF calculateAutomaticLinkPoint( const QPointF &point, Qt::Edge &edge SIP_OUT ) const;
 
   signals:
 
@@ -165,12 +207,43 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     QString truncatedTextForItem( const QString &text ) const;
 
+    /**
+     * Returns the fill color for the item for the specified \a state.
+     */
+    virtual QColor fillColor( State state ) const = 0;
+
+    /**
+     * Returns the stroke color for the item for the specified \a state.
+     */
+    virtual QColor strokeColor( State state ) const = 0;
+
+    /**
+     * Returns the label text color for the item for the specified \a state.
+     */
+    virtual QColor textColor( State state ) const = 0;
+
+    /**
+     * Returns a QPicture version of the item's icon, if available.
+     */
+    virtual QPicture iconPicture() const;
+
+    /**
+     * Returns a QPixmap version of the item's icon, if available.
+     */
+    virtual QPixmap iconPixmap() const;
+
   private:
 
     void updateToolTip( const QPointF &pos );
 
+    void fold( Qt::Edge edge, bool folded );
+
     std::unique_ptr< QgsProcessingModelComponent > mComponent;
     QgsProcessingModelAlgorithm *mModel = nullptr;
+
+    bool mInitialized = false;
+    QgsModelDesignerFoldButtonGraphicItem *mExpandTopButton = nullptr;
+    QgsModelDesignerFoldButtonGraphicItem *mExpandBottomButton = nullptr;
 
     QString mLabel;
 
@@ -211,6 +284,22 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
                                   QgsProcessingModelAlgorithm *model,
                                   QGraphicsItem *parent SIP_TRANSFERTHIS );
 
+    void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
+
+  protected:
+
+    QColor fillColor( State state ) const override;
+    QColor strokeColor( State state ) const override;
+    QColor textColor( State state ) const override;
+    QPicture iconPicture() const override;
+
+  protected slots:
+
+    void deleteComponent() override;
+
+  private:
+    QPicture mPicture;
+
 };
 
 /**
@@ -236,7 +325,30 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child SIP_TRANSFER,
                                        QgsProcessingModelAlgorithm *model,
                                        QGraphicsItem *parent SIP_TRANSFERTHIS );
+    void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
 
+  protected:
+
+    QColor fillColor( State state ) const override;
+    QColor strokeColor( State state ) const override;
+    QColor textColor( State state ) const override;
+    QPixmap iconPixmap() const override;
+    QPicture iconPicture() const override;
+
+    int linkPointCount( Qt::Edge edge ) const override;
+    QString linkPointText( Qt::Edge edge, int index ) const override;
+
+  protected slots:
+
+    void deleteComponent() override;
+
+  private slots:
+    void deactivateAlgorithm();
+    void activateAlgorithm();
+
+  private:
+    QPicture mPicture;
+    QPixmap mPixmap;
 };
 
 
@@ -264,6 +376,20 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
                                QgsProcessingModelAlgorithm *model,
                                QGraphicsItem *parent SIP_TRANSFERTHIS );
 
+  protected:
+
+    QColor fillColor( State state ) const override;
+    QColor strokeColor( State state ) const override;
+    QColor textColor( State state ) const override;
+    QPicture iconPicture() const override;
+
+  protected slots:
+
+    void deleteComponent() override;
+
+  private:
+
+    QPicture mPicture;
 };
 ///@endcond
 

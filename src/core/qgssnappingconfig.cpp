@@ -39,7 +39,9 @@ QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enable
   , mTolerance( tolerance )
   , mUnits( units )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   setType( type );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 bool QgsSnappingConfig::IndividualLayerSettings::valid() const
