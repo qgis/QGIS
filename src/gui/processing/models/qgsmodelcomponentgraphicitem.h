@@ -27,6 +27,7 @@ class QgsProcessingModelChildAlgorithm;
 class QgsProcessingModelOutput;
 class QgsProcessingModelAlgorithm;
 class QgsModelDesignerFlatButtonGraphicItem;
+class QgsModelDesignerFoldButtonGraphicItem;
 
 ///@cond NOT_STABLE
 
@@ -229,8 +230,14 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
     void updateToolTip( const QPointF &pos );
 
+    void fold( Qt::Edge edge, bool folded );
+
     std::unique_ptr< QgsProcessingModelComponent > mComponent;
     QgsProcessingModelAlgorithm *mModel = nullptr;
+
+    bool mInitialized = false;
+    QgsModelDesignerFoldButtonGraphicItem *mExpandTopButton = nullptr;
+    QgsModelDesignerFoldButtonGraphicItem *mExpandBottomButton = nullptr;
 
     QString mLabel;
 
