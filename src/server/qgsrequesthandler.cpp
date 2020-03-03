@@ -252,7 +252,7 @@ void QgsRequestHandler::parseInput()
 
           mRequest.setParameter( attrName.toUpper(), attr.value() );
         }
-        mRequest.setParameter( QStringLiteral( "REQUEST_BODY" ), inputString );
+        mRequest.setParameter( QStringLiteral( "REQUEST_BODY" ), inputString.replace( '+', QStringLiteral( "%2B" ) ) );
       }
     }
   }
