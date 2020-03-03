@@ -150,8 +150,9 @@ void QgsDxfExport::writeGroup( const QColor &color, int exactMatchCode, int rgbC
 
   int c = ( color.red() & 0xff ) * 0x10000 + ( color.green() & 0xff ) * 0x100 + ( color.blue() & 0xff );
   writeGroup( rgbCode, c );
-  if ( transparencyCode != -1 && color.alpha() < 255 )
-    writeGroup( transparencyCode, 0x2000000 | color.alpha() );
+  // transparency group code 440 leads to ACAD error (#34841)
+  //if ( transparencyCode != -1 && color.alpha() < 255 )
+  //  writeGroup( transparencyCode, 0x2000000 | color.alpha() );
 }
 
 void QgsDxfExport::writeGroupCode( int code )
@@ -1262,7 +1263,24 @@ void QgsDxfExport::writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QS
 
 void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::LabelPosition *label, const QgsPalLayerSettings &layerSettings, const QgsExpressionContext &expressionContext )
 {
-
+  // calc count of lines in label (#34841)
+  QString ltext = text;
+  int lines_count = 1;
+  int start_pos = ltext.indexOf(QLatin1String("\r\n"));
+  while (start_pos >= 0)
+  {
+    start_pos = ltext.indexOf(QLatin1String("\r\n"), start_pos + 1);
+    lines_count++;
+  }
+  ltext.replace(QLatin1String("\r\n"), QLatin1String(" "));
+  start_pos = ltext.indexOf('\n');
+  while (start_pos >= 0)
+  {
+    start_pos = ltext.indexOf('\n', start_pos + 1);
+    lines_count++;
+  }
+  ltext.replace('\n', ' ');
+  
   double lblX = label->getX();
   double lblY = label->getY();
 
@@ -1381,7 +1399,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
     }
   }
 
-  writeText( layer, text, QgsPoint( lblX, lblY ), label->getHeight(), label->getAlpha() * 180.0 / M_PI, layerSettings.format().color(), hali, vali );
+  writeText( layer, ltext, QgsPoint( lblX, lblY ), label->getHeight() / float(lines_count), label->getAlpha() * 180.0 / M_PI, layerSettings.format().color(), hali, vali );
 }
 
 void QgsDxfExport::writePoint( const QString &layer, const QColor &color, const QgsPoint &pt )
@@ -2119,6 +2137,7 @@ QString QgsDxfExport::dxfLayerName( const QString &name )
   layerName.replace( '|', '_' );
   layerName.replace( '=', '_' );
   layerName.replace( '\'', '_' );
+  layerName.replace( ',', '_' ); // remove comma from layer name (#34841)
 
   // also remove newline characters (#15067)
   layerName.replace( QLatin1String( "\r\n" ), QLatin1String( "_" ) );
@@ -2314,8 +2333,9 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
 
   if ( mFlags & FlagNoMText )
   {
-    txt.replace( QChar( QChar::LineFeed ), ' ' );
-    txt.replace( QChar( QChar::CarriageReturn ), ' ' );
+    // move this code to writeText(...):
+    //txt.replace( QChar( QChar::LineFeed ), ' ' );
+    //txt.replace( QChar( QChar::CarriageReturn ), ' ' );
     writeText( dxfLayer, txt, label, tmpLyr, context.expressionContext() );
   }
   else
