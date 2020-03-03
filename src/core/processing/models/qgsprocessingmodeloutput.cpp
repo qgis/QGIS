@@ -24,7 +24,7 @@ QgsProcessingModelOutput::QgsProcessingModelOutput( const QString &name, const Q
   , mName( name )
 {}
 
-QgsProcessingModelOutput *QgsProcessingModelOutput::clone()
+QgsProcessingModelOutput *QgsProcessingModelOutput::clone() const
 {
   return new QgsProcessingModelOutput( *this );
 }

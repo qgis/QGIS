@@ -32,7 +32,7 @@ should be set to a QgsProcessingAlgorithm algorithm ID.
 
     QgsProcessingModelChildAlgorithm( const QgsProcessingModelChildAlgorithm &other );
 
-    virtual QgsProcessingModelChildAlgorithm *clone() /Factory/;
+    virtual QgsProcessingModelChildAlgorithm *clone() const /Factory/;
 
 
     QString childId() const;

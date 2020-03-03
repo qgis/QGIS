@@ -86,7 +86,7 @@ in the graphical modeler.
 .. seealso:: :py:func:`linksCollapsed`
 %End
 
-    virtual QgsProcessingModelComponent *clone() = 0 /Factory/;
+    virtual QgsProcessingModelComponent *clone() const = 0 /Factory/;
 %Docstring
 Clones the component.
 
