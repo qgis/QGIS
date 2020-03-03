@@ -26,6 +26,8 @@
 #include <QPicture>
 #include <QPainter>
 #include <QGraphicsSceneHoverEvent>
+#include <QApplication>
+#include <QPalette>
 
 ///@cond NOT_STABLE
 
@@ -159,6 +161,80 @@ QRectF QgsModelComponentGraphicItem::boundingRect() const
                  mComponent->size().height() + hDown + hUp );
 }
 
+void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
+{
+  const QRectF rect = itemRect();
+  QColor color = fillColor( state() );
+  QColor stroke = strokeColor( state() );
+
+  painter->setPen( QPen( stroke, 0 ) ); // 0 width "cosmetic" pen
+  painter->setBrush( QBrush( color, Qt::SolidPattern ) );
+  painter->drawRect( rect );
+  painter->setFont( font() );
+  painter->setPen( QPen( textColor( state() ) ) );
+
+  QString text = truncatedTextForItem( label() );
+
+  const QSizeF componentSize = mComponent->size();
+
+  QFontMetricsF fm( font() );
+  double h = fm.ascent();
+  QPointF pt( -componentSize.width() / 2 + 25, componentSize.height() / 2.0 - h + 1 );
+  painter->drawText( pt, text );
+  painter->setPen( QPen( QApplication::palette().color( QPalette::WindowText ) ) );
+
+  if ( linkPointCount( Qt::TopEdge ) || linkPointCount( Qt::BottomEdge ) )
+  {
+    h = -( fm.height() * 1.2 );
+    h = h - componentSize.height() / 2.0 + 5;
+    pt = QPointF( -componentSize.width() / 2 + 25, h );
+    painter->drawText( pt, QObject::tr( "In" ) );
+    int i = 1;
+    if ( !mComponent->linksCollapsed( Qt::TopEdge ) )
+    {
+      for ( int idx = 0; idx < linkPointCount( Qt::TopEdge ); ++idx )
+      {
+        text = linkPointText( Qt::TopEdge, idx );
+        h = -( fm.height() * 1.2 ) * ( i + 1 );
+        h = h - componentSize.height() / 2.0 + 5;
+        pt = QPointF( -componentSize.width() / 2 + 33, h );
+        painter->drawText( pt, text );
+        i += 1;
+      }
+    }
+
+    h = fm.height() * 1.1;
+    h = h + componentSize.height() / 2.0;
+    pt = QPointF( -componentSize.width() / 2 + 25, h );
+    painter->drawText( pt, QObject::tr( "Out" ) );
+    if ( !mComponent->linksCollapsed( Qt::BottomEdge ) )
+    {
+      for ( int idx = 0; idx < linkPointCount( Qt::BottomEdge ); ++idx )
+      {
+        text = linkPointText( Qt::BottomEdge, idx );
+        h = fm.height() * 1.2 * ( idx + 2 );
+        h = h + componentSize.height() / 2.0;
+        pt = QPointF( -componentSize.width() / 2 + 33, h );
+        painter->drawText( pt, text );
+      }
+    }
+  }
+
+  const QPixmap px = iconPixmap();
+  if ( !px.isNull() )
+  {
+    painter->drawPixmap( -( componentSize.width() / 2.0 ) + 3, -8, px );
+  }
+  else
+  {
+    const QPicture pic = iconPicture();
+    if ( !pic.isNull() )
+    {
+      painter->drawPicture( -( componentSize.width() / 2.0 ) + 3, -8, pic );
+    }
+  }
+}
+
 QRectF QgsModelComponentGraphicItem::itemRect() const
 {
   return QRectF( -( mComponent->size().width() + 2 ) / 2.0,
@@ -183,6 +259,16 @@ QString QgsModelComponentGraphicItem::truncatedTextForItem( const QString &text 
     width = fm.boundingRect( t ).width();
   }
   return t;
+}
+
+QPicture QgsModelComponentGraphicItem::iconPicture() const
+{
+  return QPicture();
+}
+
+QPixmap QgsModelComponentGraphicItem::iconPixmap() const
+{
+  return QPixmap();
 }
 
 void QgsModelComponentGraphicItem::updateToolTip( const QPointF &pos )
