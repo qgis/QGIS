@@ -230,6 +230,29 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         self.assertTrue(rl.isValid())
         self.assertTrue(compareWkt(rl.extent().asWktPolygon(), 'POLYGON((-64.79286766849691048 -77.26689086732433509, -62.18292922825105506 -77.26689086732433509, -62.18292922825105506 -74.83694818157819384, -64.79286766849691048 -74.83694818157819384, -64.79286766849691048 -77.26689086732433509))'))
 
+    def testUntiledMultipleRows(self):
+        """Test multiple rasters (one per row)"""
+
+        self._load_test_table('public', 'raster_3035_untiled_multiple_rows')
+
+        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} sql=\"pk\" = 1".format(table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
+        self.assertTrue(rl.isValid())
+        block = rl.dataProvider().block(1, rl.extent(), 2, 2)
+        data = []
+        for i in range(2):
+            for j in range(2):
+                data.append(int(block.value(i, j)))
+        self.assertEqual(data, [136, 142, 145, 153])
+
+        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} sql=\"pk\" = 2".format(table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
+        self.assertTrue(rl.isValid())
+        block = rl.dataProvider().block(1, rl.extent(), 2, 2)
+        data = []
+        for i in range(2):
+            for j in range(2):
+                data.append(int(block.value(i, j)))
+        self.assertEqual(data, [136, 142, 161, 169])
+
 
 if __name__ == '__main__':
     unittest.main()
