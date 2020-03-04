@@ -209,7 +209,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         srcCrs = self.inLayer.crs()
         if not srcCrs.isValid():
-            srcCrs = QgsCoordinateReferenceSystem(4326)
+            srcCrs = QgsCoordinateReferenceSystem("EPSG:4326")
         self.widgetSourceSrid.setCrs(srcCrs)
         self.widgetTargetSrid.setCrs(srcCrs)
 
