@@ -83,8 +83,13 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
                                                          widgetContext=widget_context,
                                                          definition=existing_param,
                                                          algorithm=self.model())
+            dlg.setComments(comment)
+            if edit_comment:
+                dlg.switchToCommentTab()
+
             if dlg.exec_():
                 new_param = dlg.createParameter(existing_param.name())
+                comment = dlg.comments()
 
         if new_param is not None:
             self.model().removeModelParameter(self.component().parameterName())
@@ -139,11 +144,15 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
         alg.setPosition(existing_child.position())
         alg.setLinksCollapsed(Qt.TopEdge, existing_child.linksCollapsed(Qt.TopEdge))
         alg.setLinksCollapsed(Qt.BottomEdge, existing_child.linksCollapsed(Qt.BottomEdge))
-        alg.comment().setPosition(existing_child.comment().position())
+        alg.comment().setPosition(existing_child.comment().position() or
+                                  alg.position() + QPointF(
+            self.component().size().width(),
+            -1.5 * self.component().size().height())
+        )
         alg.comment().setSize(existing_child.comment().size())
         for i, out in enumerate(alg.modelOutputs().keys()):
-            alg.modelOutput(out).setPosition(existing_child.modelOutput(out).position()
-                                             or alg.position() + QPointF(
+            alg.modelOutput(out).setPosition(existing_child.modelOutput(out).position() or
+                                             alg.position() + QPointF(
                 self.component().size().width(),
                 (i + 1.5) * self.component().size().height()))
             alg.modelOutput(out).comment().setDescription(existing_child.modelOutput(out).comment().description())

@@ -129,6 +129,8 @@ class ModelerParameterDefinitionDialog(QDialog):
 
     def switchToCommentTab(self):
         self.tab.setCurrentIndex(1)
+        self.commentEdit.setFocus()
+        self.commentEdit.selectAll()
 
     def setupUi(self):
         type_metadata = QgsApplication.processingRegistry().parameterType(self.param.type() if self.param else self.paramType)

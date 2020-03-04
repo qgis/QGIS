@@ -104,6 +104,8 @@ class ModelerParametersDialog(QDialog):
 
     def switchToCommentTab(self):
         self.tab.setCurrentIndex(1)
+        self.commentEdit.setFocus()
+        self.commentEdit.selectAll()
 
     def setupUi(self):
         self.checkBoxes = {}
