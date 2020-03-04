@@ -33,6 +33,7 @@ from qgis.core import (
     QgsPointXY,
     QgsRaster,
     QgsProviderRegistry,
+    QgsRasterBandStats,
 )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, compareWkt
@@ -148,6 +149,16 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
 
         self.assertAlmostEqual(rl.dataProvider().identify(rl.extent().center(), QgsRaster.IdentifyFormatValue).results()[1], 223.38, 2)
 
+        self.assertTrue(compareWkt(rl_nowhere.extent().asWktPolygon(), 'POLYGON((4080050 2430625, 4080200 2430625, 4080200 2430750, 4080050 2430750, 4080050 2430625))'))
+
+        self.assertTrue(compareWkt(rl.extent().asWktPolygon(), 'POLYGON((4080150 2430625, 4080200 2430625, 4080200 2430650, 4080150 2430650, 4080150 2430625))'))
+
+        self.assertNotEqual(rl.extent(), rl_nowhere.extent())
+
+        # Now check if setSubsetString updates the extent
+        self.assertTrue(rl_nowhere.setSubsetString('"category" = \'cat2\''))
+        self.assertEqual(rl.extent(), rl_nowhere.extent())
+
     def testNoPk(self):
         """Read raster with no PK"""
 
@@ -252,6 +263,45 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             for j in range(2):
                 data.append(int(block.value(i, j)))
         self.assertEqual(data, [136, 142, 161, 169])
+
+    def testSetSubsetString(self):
+        """Test setSubsetString"""
+
+        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} sql=\"pk\" = 2".format(table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
+        self.assertTrue(rl.isValid())
+
+        block = rl.dataProvider().block(1, rl.extent(), 2, 2)
+        data = []
+        for i in range(2):
+            for j in range(2):
+                data.append(int(block.value(i, j)))
+        self.assertEqual(data, [136, 142, 161, 169])
+
+        stats = rl.dataProvider().bandStatistics(1, QgsRasterBandStats.Min | QgsRasterBandStats.Max, rl.extent())
+        self.assertEqual(int(stats.minimumValue), 136)
+        self.assertEqual(int(stats.maximumValue), 169)
+
+        self.assertTrue(rl.setSubsetString('"pk" = 1'))
+        block = rl.dataProvider().block(1, rl.extent(), 2, 2)
+        data = []
+        for i in range(2):
+            for j in range(2):
+                data.append(int(block.value(i, j)))
+        self.assertEqual(data, [136, 142, 145, 153])
+
+        # Check that we have new statistics
+        stats = rl.dataProvider().bandStatistics(1, QgsRasterBandStats.Min | QgsRasterBandStats.Max, rl.extent())
+        self.assertEqual(int(stats.minimumValue), 136)
+        self.assertEqual(int(stats.maximumValue), 153)
+
+        # Set invalid filter
+        self.assertFalse(rl.setSubsetString('"pk_wrong" = 1'))
+        block = rl.dataProvider().block(1, rl.extent(), 2, 2)
+        data = []
+        for i in range(2):
+            for j in range(2):
+                data.append(int(block.value(i, j)))
+        self.assertEqual(data, [136, 142, 145, 153])
 
 
 if __name__ == '__main__':

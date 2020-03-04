@@ -154,8 +154,8 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
 
     bool supportsSubsetString() const override { return true; }
 
-    virtual QString subsetString() const override;
-    virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
+    QString subsetString() const override;
+    bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
 
     bool hasSufficientPermsAndCapabilities();
     void disconnectDb();

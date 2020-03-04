@@ -808,6 +808,12 @@ void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProv
   //mark the layer as valid
   mValid = true;
 
+  if ( mDataProvider->supportsSubsetString() )
+    connect( this, &QgsRasterLayer::subsetStringChanged, this, &QgsMapLayer::configChanged, Qt::UniqueConnection );
+  else
+    disconnect( this, &QgsRasterLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
+
+
   QgsDebugMsgLevel( QStringLiteral( "exiting." ), 4 );
 }
 
@@ -891,6 +897,7 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
     {
       setDefaultContrastEnhancement();
     }
+
     emit statusChanged( tr( "QgsRasterLayer created" ) );
   }
   emit dataSourceChanged();
@@ -1265,9 +1272,9 @@ bool QgsRasterLayer::setSubsetString( const QString &subset )
   // get the updated data source string from the provider
   mDataSource = mDataProvider->dataSourceUri();
 
-
   if ( res )
   {
+    setExtent( mDataProvider->extent() );
     emit subsetStringChanged();
     triggerRepaint();
   }

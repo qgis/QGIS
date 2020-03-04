@@ -32,7 +32,8 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
   : QgsRasterDataProvider( uri, providerOptions )
   , mShared( new QgsPostgresRasterSharedData )
 {
-  mUri = QgsDataSourceUri( uri );
+
+  mUri = uri;
 
   // populate members from the uri structure
   mSchemaName = mUri.schema();
@@ -703,7 +704,14 @@ bool QgsPostgresRasterProvider::setSubsetString( const QString &subset, bool upd
     init();
     return false;
   }
+
+  mStatistics.clear();
   mShared->invalidateCache();
+
+  // Update datasource uri too
+  mUri.setSql( subset );
+  setDataSourceUri( mUri.uri( false ) );
+
   return true;
 }
 
@@ -1589,7 +1597,7 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int st
   // Query the backend
   QString where { extent.isEmpty() ? QString() : QStringLiteral( "WHERE %1 && ST_GeomFromText( %2, %3 )" )
                   .arg( quotedIdentifier( mRasterColumn ) )
-                  .arg( extent.asWktPolygon() )
+                  .arg( quotedValue( extent.asWktPolygon() ) )
                   .arg( mCrs.postgisSrid() ) };
 
   if ( ! mSqlWhereClause.isEmpty() )
