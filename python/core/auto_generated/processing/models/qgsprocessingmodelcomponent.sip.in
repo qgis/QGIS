@@ -10,6 +10,7 @@
 
 
 
+
 class QgsProcessingModelComponent
 {
 %Docstring
@@ -84,6 +85,21 @@ Sets whether the link points for the specified ``edge`` for this component shoul
 in the graphical modeler.
 
 .. seealso:: :py:func:`linksCollapsed`
+%End
+
+
+    virtual QgsProcessingModelComment *comment();
+%Docstring
+Returns the comment attached to this component (may be ``None``)
+
+.. seealso:: :py:func:`setComment`
+%End
+
+    virtual void setComment( const QgsProcessingModelComment &comment );
+%Docstring
+Sets the ``comment`` attached to this component.
+
+.. seealso:: :py:func:`comment`
 %End
 
     virtual QgsProcessingModelComponent *clone() const = 0 /Factory/;

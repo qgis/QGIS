@@ -23,6 +23,8 @@
 #include <QPointF>
 #include <QSizeF>
 
+class QgsProcessingModelComment;
+
 ///@cond NOT_STABLE
 
 /**
@@ -86,6 +88,24 @@ class CORE_EXPORT QgsProcessingModelComponent
      * \see linksCollapsed()
      */
     void setLinksCollapsed( Qt::Edge edge, bool collapsed );
+
+    /**
+     * Returns the comment attached to this component (may be NULLPTR)
+     * \see setComment()
+     */
+    SIP_SKIP virtual const QgsProcessingModelComment *comment() const { return nullptr; }
+
+    /**
+     * Returns the comment attached to this component (may be NULLPTR)
+     * \see setComment()
+     */
+    virtual QgsProcessingModelComment *comment() { return nullptr; }
+
+    /**
+     * Sets the \a comment attached to this component.
+     * \see comment()
+     */
+    virtual void setComment( const QgsProcessingModelComment &comment );
 
     /**
      * Clones the component.

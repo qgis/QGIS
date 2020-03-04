@@ -21,11 +21,13 @@
 #include <QGraphicsObject>
 #include <QFont>
 #include <QPicture>
+#include <QPointer>
 
 class QgsProcessingModelComponent;
 class QgsProcessingModelParameter;
 class QgsProcessingModelChildAlgorithm;
 class QgsProcessingModelOutput;
+class QgsProcessingModelComment;
 class QgsProcessingModelAlgorithm;
 class QgsModelDesignerFlatButtonGraphicItem;
 class QgsModelDesignerFoldButtonGraphicItem;
@@ -158,6 +160,13 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     QPointF calculateAutomaticLinkPoint( const QPointF &point, Qt::Edge &edge SIP_OUT ) const;
 
+    /**
+     * Called when the comment attached to the item should be edited.
+     *
+     * The default implementation does nothing.
+     */
+    virtual void editComment() {}
+
   signals:
 
     // TODO - rework this, should be triggered externally when the model actually changes!
@@ -223,6 +232,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     virtual QColor textColor( State state ) const = 0;
 
     /**
+     * Returns the stroke style to use while rendering the outline of the item.
+     */
+    virtual Qt::PenStyle strokeStyle( State state ) const;
+
+    /**
      * Returns a QPicture version of the item's icon, if available.
      */
     virtual QPicture iconPicture() const;
@@ -231,6 +245,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Returns a QPixmap version of the item's icon, if available.
      */
     virtual QPixmap iconPixmap() const;
+
+    /**
+     * Updates the position stored in the model for the associated comment
+     */
+    virtual void updateStoredComponentPosition( const QPointF &pos ) = 0;
 
   private:
 
@@ -292,6 +311,7 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
     QPicture iconPicture() const override;
+    void updateStoredComponentPosition( const QPointF &pos ) override;
 
   protected slots:
 
@@ -337,6 +357,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
 
     int linkPointCount( Qt::Edge edge ) const override;
     QString linkPointText( Qt::Edge edge, int index ) const override;
+    void updateStoredComponentPosition( const QPointF &pos ) override;
 
   protected slots:
 
@@ -382,6 +403,7 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
     QPicture iconPicture() const override;
+    void updateStoredComponentPosition( const QPointF &pos ) override;
 
   protected slots:
 
@@ -390,6 +412,57 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
   private:
 
     QPicture mPicture;
+};
+
+
+
+/**
+ * \ingroup gui
+ * \brief A graphic item representing a model comment in the model designer.
+ * \warning Not stable API
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicItem
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsModelCommentGraphicItem for the specified \a comment, with the specified \a parent item.
+     *
+     * The \a model argument specifies the associated processing model. Ownership of \a model is not transferred, and
+     * it must exist for the lifetime of this object.
+     *
+     * Ownership of \a output is transferred to the item.
+     */
+    QgsModelCommentGraphicItem( QgsProcessingModelComment *comment SIP_TRANSFER,
+                                QgsModelComponentGraphicItem *parentItem,
+                                QgsProcessingModelAlgorithm *model,
+                                QGraphicsItem *parent SIP_TRANSFERTHIS );
+    ~QgsModelCommentGraphicItem() override;
+    void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
+
+  protected:
+
+    QColor fillColor( State state ) const override;
+    QColor strokeColor( State state ) const override;
+    QColor textColor( State state ) const override;
+    Qt::PenStyle strokeStyle( State state ) const override;
+    void updateStoredComponentPosition( const QPointF &pos ) override;
+
+  protected slots:
+
+    void deleteComponent() override;
+    void editComponent() override;
+  private:
+
+    QgsProcessingModelComment *modelComponent();
+
+    std::unique_ptr< QgsProcessingModelComponent > mParentComponent;
+    QPointer< QgsModelComponentGraphicItem > mParentItem;
+
+
 };
 ///@endcond
 

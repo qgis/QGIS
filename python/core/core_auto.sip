@@ -415,6 +415,7 @@
 %Include auto_generated/processing/models/qgsprocessingmodelalgorithm.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildalgorithm.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildparametersource.sip
+%Include auto_generated/processing/models/qgsprocessingmodelcomment.sip
 %Include auto_generated/processing/models/qgsprocessingmodelcomponent.sip
 %Include auto_generated/processing/models/qgsprocessingmodeloutput.sip
 %Include auto_generated/processing/models/qgsprocessingmodelparameter.sip

@@ -127,6 +127,9 @@ Loads this output from a QVariantMap.
 .. seealso:: :py:func:`toVariant`
 %End
 
+    virtual QgsProcessingModelComment *comment();
+    virtual void setComment( const QgsProcessingModelComment &comment );
+
 };
 
 

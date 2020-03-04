@@ -131,14 +131,7 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
       mComponent->setPosition( pos() );
 
       // also need to update the model's stored component's position
-      // TODO - this is not so nice, consider moving this to model class
-      if ( QgsProcessingModelChildAlgorithm *child = dynamic_cast< QgsProcessingModelChildAlgorithm * >( mComponent.get() ) )
-        mModel->childAlgorithm( child->childId() ).setPosition( pos() );
-      else if ( QgsProcessingModelParameter *param = dynamic_cast< QgsProcessingModelParameter * >( mComponent.get() ) )
-        mModel->parameterComponent( param->parameterName() ).setPosition( pos() );
-      else if ( QgsProcessingModelOutput *output = dynamic_cast< QgsProcessingModelOutput * >( mComponent.get() ) )
-        mModel->childAlgorithm( output->childId() ).modelOutput( output->name() ).setPosition( pos() );
-
+      updateStoredComponentPosition( pos() );
       break;
     }
     case QGraphicsItem::ItemSelectedChange:
@@ -197,7 +190,9 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   QColor color = fillColor( state() );
   QColor stroke = strokeColor( state() );
 
-  painter->setPen( QPen( stroke, 0 ) ); // 0 width "cosmetic" pen
+  QPen strokePen = QPen( stroke, 0 ) ; // 0 width "cosmetic" pen
+  strokePen.setStyle( strokeStyle( state() ) );
+  painter->setPen( strokePen );
   painter->setBrush( QBrush( color, Qt::SolidPattern ) );
   painter->drawRect( rect );
   painter->setFont( font() );
@@ -289,6 +284,11 @@ QString QgsModelComponentGraphicItem::truncatedTextForItem( const QString &text 
     width = fm.boundingRect( t ).width();
   }
   return t;
+}
+
+Qt::PenStyle QgsModelComponentGraphicItem::strokeStyle( QgsModelComponentGraphicItem::State ) const
+{
+  return Qt::SolidLine;
 }
 
 QPicture QgsModelComponentGraphicItem::iconPicture() const
@@ -558,6 +558,12 @@ QPicture QgsModelParameterGraphicItem::iconPicture() const
   return mPicture;
 }
 
+void QgsModelParameterGraphicItem::updateStoredComponentPosition( const QPointF &pos )
+{
+  if ( QgsProcessingModelParameter *param = dynamic_cast< QgsProcessingModelParameter * >( component() ) )
+    model()->parameterComponent( param->parameterName() ).setPosition( pos );
+}
+
 void QgsModelParameterGraphicItem::deleteComponent()
 {
   if ( const QgsProcessingModelParameter *param = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
@@ -733,6 +739,12 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
   return QString();
 }
 
+void QgsModelChildAlgorithmGraphicItem::updateStoredComponentPosition( const QPointF &pos )
+{
+  if ( QgsProcessingModelChildAlgorithm *child = dynamic_cast< QgsProcessingModelChildAlgorithm * >( component() ) )
+    model()->childAlgorithm( child->childId() ).setPosition( pos );
+}
+
 void QgsModelChildAlgorithmGraphicItem::deleteComponent()
 {
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
@@ -830,6 +842,12 @@ QPicture QgsModelOutputGraphicItem::iconPicture() const
   return mPicture;
 }
 
+void QgsModelOutputGraphicItem::updateStoredComponentPosition( const QPointF &pos )
+{
+  if ( QgsProcessingModelOutput *output = dynamic_cast< QgsProcessingModelOutput * >( component() ) )
+    model()->childAlgorithm( output->childId() ).modelOutput( output->name() ).setPosition( pos );
+}
+
 void QgsModelOutputGraphicItem::deleteComponent()
 {
   if ( const QgsProcessingModelOutput *output = dynamic_cast< const QgsProcessingModelOutput * >( component() ) )
@@ -839,6 +857,117 @@ void QgsModelOutputGraphicItem::deleteComponent()
     emit changed();
     emit requestModelRepaint();
   }
+}
+
+
+
+
+QgsModelCommentGraphicItem::QgsModelCommentGraphicItem( QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
+  : QgsModelComponentGraphicItem( comment, model, parent )
+  , mParentComponent( parentItem->component()->clone() )
+  , mParentItem( parentItem )
+{
+  setLabel( comment->description() );
+
+  QFont f = font();
+  f.setPixelSize( 9 );
+  setFont( f );
+}
+
+void QgsModelCommentGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
+{
+  QMenu *popupmenu = new QMenu( event->widget() );
+  QAction *removeAction = popupmenu->addAction( QObject::tr( "Remove" ) );
+  connect( removeAction, &QAction::triggered, this, &QgsModelCommentGraphicItem::deleteComponent );
+  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit" ) );
+  connect( editAction, &QAction::triggered, this, &QgsModelCommentGraphicItem::editComponent );
+  popupmenu->exec( event->screenPos() );
+}
+
+QgsModelCommentGraphicItem::~QgsModelCommentGraphicItem() = default;
+
+QColor QgsModelCommentGraphicItem::fillColor( QgsModelComponentGraphicItem::State state ) const
+{
+  QColor c( 230, 230, 230 );
+  switch ( state )
+  {
+    case Selected:
+      c = c.darker( 110 );
+      break;
+    case Hover:
+      c = c.darker( 105 );
+      break;
+
+    case Normal:
+      break;
+  }
+  return c;
+}
+
+QColor QgsModelCommentGraphicItem::strokeColor( QgsModelComponentGraphicItem::State state ) const
+{
+  switch ( state )
+  {
+    case Selected:
+      return QColor( 50, 50, 50 );
+    case Hover:
+    case Normal:
+      return QColor( 150, 150, 150 );
+  }
+  return QColor();
+}
+
+QColor QgsModelCommentGraphicItem::textColor( QgsModelComponentGraphicItem::State ) const
+{
+  return QColor( 100, 100, 100 );
+}
+
+Qt::PenStyle QgsModelCommentGraphicItem::strokeStyle( QgsModelComponentGraphicItem::State ) const
+{
+  return Qt::DotLine;
+}
+
+void QgsModelCommentGraphicItem::updateStoredComponentPosition( const QPointF &pos )
+{
+  if ( QgsProcessingModelComment *comment = modelComponent() )
+  {
+    comment->setPosition( pos );
+  }
+}
+
+void QgsModelCommentGraphicItem::deleteComponent()
+{
+  if ( QgsProcessingModelComment *comment = modelComponent() )
+  {
+    comment->setDescription( QString() );
+    emit changed();
+    emit requestModelRepaint();
+  }
+}
+
+void QgsModelCommentGraphicItem::editComponent()
+{
+  if ( mParentItem )
+  {
+    mParentItem->editComment();
+  }
+}
+
+QgsProcessingModelComment *QgsModelCommentGraphicItem::modelComponent()
+{
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( mParentComponent.get() ) )
+  {
+    return model()->childAlgorithm( child->childId() ).comment();
+  }
+  else if ( const QgsProcessingModelParameter *param = dynamic_cast< const QgsProcessingModelParameter * >( mParentComponent.get() ) )
+  {
+    return model()->parameterComponent( param->parameterName() ).comment();
+  }
+  else if ( const QgsProcessingModelOutput *output = dynamic_cast< const QgsProcessingModelOutput * >( mParentComponent.get() ) )
+  {
+    return model()->childAlgorithm( output->childId() ).modelOutput( output->name() ).comment();
+  }
+  return nullptr;
 }
 
 

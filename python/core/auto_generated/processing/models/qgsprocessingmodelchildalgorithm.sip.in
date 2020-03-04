@@ -275,6 +275,9 @@ The ``currentIndent`` and ``indentSize`` are used to set the base line indent an
 The ``friendlyChildNames`` argument gives a map of child id to a friendly algorithm name, to be used in the code to identify that algorithm instead of the raw child id.
 %End
 
+    virtual QgsProcessingModelComment *comment();
+    virtual void setComment( const QgsProcessingModelComment &comment );
+
 };
 
 
