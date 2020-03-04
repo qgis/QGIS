@@ -21,6 +21,7 @@
 #include "qgslayertreeview.h"
 #include "qgsquerybuilder.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
 
 
 QgsLayerTreeViewFilterIndicatorProvider::QgsLayerTreeViewFilterIndicatorProvider( QgsLayerTreeView *view )
@@ -35,14 +36,41 @@ void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIn
     return;
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
-  if ( !vlayer || vlayer->isEditable() )
-    return;
+  if ( vlayer && !vlayer->isEditable() )
+  {
+    QgsQueryBuilder qb( vlayer );
+    qb.setSql( vlayer->subsetString() );
+    if ( qb.exec() )
+      vlayer->setSubsetString( qb.sql() );
+  }
 
-  // launch the query builder
-  QgsQueryBuilder qb( vlayer );
-  qb.setSql( vlayer->subsetString() );
-  if ( qb.exec() )
-    vlayer->setSubsetString( qb.sql() );
+  // raster
+  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( QgsLayerTree::toLayer( node )->layer() );
+  if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() )
+  {
+    // PG raster is the only one for now
+    if ( rlayer->dataProvider()->name() == QStringLiteral( "postgresraster" ) )
+    {
+      QgsDataSourceUri vectorUri { rlayer->dataProvider()->dataSourceUri() };
+      vectorUri.setGeometryColumn( QString() );
+      vectorUri.setSrid( QString() );
+      QgsVectorLayer vlayer { vectorUri.uri( ), QStringLiteral( "pgrasterlayer" ), QStringLiteral( "postgres" ) };
+      if ( vlayer.isValid( ) )
+      {
+        // launch the query builder
+        QgsQueryBuilder qb { &vlayer };
+        QString subsetBefore = vlayer.subsetString();
+
+        // Set the sql in the query builder to the same in the prop dialog
+        // (in case the user has already changed it)
+        qb.setSql( rlayer->subsetString() );
+        if ( qb.exec() && subsetBefore != qb.sql() )
+        {
+          rlayer->setSubsetString( qb.sql() );
+        }
+      }
+    }
+  }
 }
 
 QString QgsLayerTreeViewFilterIndicatorProvider::iconName( QgsMapLayer *layer )
@@ -54,34 +82,55 @@ QString QgsLayerTreeViewFilterIndicatorProvider::iconName( QgsMapLayer *layer )
 QString QgsLayerTreeViewFilterIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
-    return QString();
-  return  QStringLiteral( "<b>%1:</b><br>%2" ).arg( tr( "Filter" ), vlayer->subsetString().toHtmlEscaped() );
+  if ( vlayer )
+    return QStringLiteral( "<b>%1:</b><br>%2" ).arg( tr( "Filter" ), vlayer->subsetString().toHtmlEscaped() );
+
+  // PG raster
+  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() )
+    return QStringLiteral( "<b>%1:</b><br>%2" ).arg( tr( "Filter" ), rlayer->subsetString().toHtmlEscaped() );
+
+  return QString();
 }
 
 void QgsLayerTreeViewFilterIndicatorProvider::connectSignals( QgsMapLayer *layer )
 {
   QgsLayerTreeViewIndicatorProvider::connectSignals( layer );
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
-    return;
-  connect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
+  if ( vlayer )
+    connect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
+
+  // PG raster
+  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() )
+    connect( rlayer, &QgsRasterLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
+
 }
 
 void QgsLayerTreeViewFilterIndicatorProvider::disconnectSignals( QgsMapLayer *layer )
 {
   QgsLayerTreeViewIndicatorProvider::disconnectSignals( layer );
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
-    return;
-  disconnect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
+  if ( vlayer )
+    disconnect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
+
+  // PG raster
+  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() )
+    disconnect( rlayer, &QgsRasterLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
 }
 
 bool QgsLayerTreeViewFilterIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
-    return false;
-  return ! vlayer->subsetString().isEmpty();
+  if ( vlayer )
+    return ! vlayer->subsetString().isEmpty();
+
+  // PG raster
+  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() )
+    return ! rlayer->subsetString().isEmpty();
+
+  return false;
 }
 

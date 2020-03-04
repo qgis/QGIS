@@ -176,6 +176,14 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
   return result;
 }
 
+void QgsPostgresRasterSharedData::invalidateCache()
+{
+  QMutexLocker locker( &mMutex );
+  mSpatialIndexes.clear();
+  mTiles.clear();
+  mLoadedIndexBounds.clear();
+}
+
 
 QgsPostgresRasterSharedData::Tile const *QgsPostgresRasterSharedData::setTileData( unsigned int overviewFactor, TileIdType tileId, const QByteArray &data )
 {

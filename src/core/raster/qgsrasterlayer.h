@@ -385,6 +385,23 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent ) SIP_SKIP;
 
     /**
+     * Returns the string (typically sql) used to define a subset of the layer.
+     * \returns The subset string or null QString if not implemented by the provider
+     * \since QGIS 3.10
+     */
+    virtual QString subsetString() const;
+
+    /**
+     * Sets the string (typically sql) used to define a subset of the layer
+     * \param subset The subset string. This may be the where clause of a sql statement
+     *               or other definition string specific to the underlying dataprovider
+     *               and data store.
+     * \returns TRUE, when setting the subset string was successful, FALSE otherwise
+     * \since QGIS 3.10
+     */
+    virtual bool setSubsetString( const QString &subset );
+
+    /**
      * Returns default contrast enhancement settings for that type of raster.
      *  \note not available in Python bindings
      */
@@ -443,6 +460,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \since QGIS 3.8
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
+
+  signals:
+
+    /**
+     * Emitted when the layer's subset string has changed.
+     * \since QGIS 3.10
+     */
+    void subsetStringChanged();
+
 
   protected:
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;

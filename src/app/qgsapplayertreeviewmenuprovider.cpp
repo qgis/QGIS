@@ -253,6 +253,14 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         }
       }
 
+      // PG raster: activate filter
+      if ( rlayer &&
+           rlayer->dataProvider() &&
+           rlayer->dataProvider()->supportsSubsetString() )
+      {
+        menu->addAction( tr( "&Filter…" ), QgisApp::instance(), &QgisApp::layerSubsetString );
+      }
+
       // change data source is only supported for vectors and rasters
       if ( vlayer || rlayer )
       {

@@ -1229,6 +1229,52 @@ void QgsRasterLayer::refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer,
   }
 }
 
+QString QgsRasterLayer::subsetString() const
+{
+  if ( !mValid || !mDataProvider )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider" ), 3 );
+    return customProperty( QStringLiteral( "storedSubsetString" ) ).toString();
+  }
+  if ( !mDataProvider->supportsSubsetString() )
+  {
+    return QString();
+  }
+  return mDataProvider->subsetString();
+}
+
+bool QgsRasterLayer::setSubsetString( const QString &subset )
+{
+  if ( !mValid || !mDataProvider )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "invoked with invalid layer or null mDataProvider or while editing" ), 3 );
+    setCustomProperty( QStringLiteral( "storedSubsetString" ), subset );
+    return false;
+  }
+
+  if ( !mDataProvider->supportsSubsetString() )
+  {
+    return false;
+  }
+
+  if ( subset == mDataProvider->subsetString() )
+    return true;
+
+  bool res = mDataProvider->setSubsetString( subset );
+
+  // get the updated data source string from the provider
+  mDataSource = mDataProvider->dataSourceUri();
+
+
+  if ( res )
+  {
+    emit subsetStringChanged();
+    triggerRepaint();
+  }
+
+  return res;
+}
+
 bool QgsRasterLayer::defaultContrastEnhancementSettings(
   QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
   QgsRasterMinMaxOrigin::Limits &myLimits ) const

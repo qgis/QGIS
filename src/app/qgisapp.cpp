@@ -10483,7 +10483,50 @@ void QgisApp::layerSubsetString()
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !vlayer )
+  {
+    // Try PG raster
+    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( activeLayer() );
+    if ( rlayer )
+    {
+      QgsRasterDataProvider *provider = rlayer->dataProvider();
+      if ( provider &&
+           provider->supportsSubsetString() )
+      {
+        // PG raster is the only one for now
+        if ( provider->name() == QStringLiteral( "postgresraster" ) )
+        {
+          // We need a vector for the sql editor
+          QgsDataSourceUri vectorUri { provider->dataSourceUri() };
+          vectorUri.setGeometryColumn( QString() );
+          vectorUri.setSrid( QString() );
+          QgsVectorLayer vlayer { vectorUri.uri( ), QStringLiteral( "pgrasterlayer" ), QStringLiteral( "postgres" ) };
+          if ( vlayer.isValid( ) )
+          {
+            // launch the query builder
+            QgsQueryBuilder qb { &vlayer };
+            QString subsetBefore = vlayer.subsetString();
+
+            // Set the sql in the query builder to the same in the prop dialog
+            // (in case the user has already changed it)
+            qb.setSql( rlayer->subsetString() );
+            // Open the query builder and refresh symbology if sql has changed
+            // Note: repaintRequested is emitted directly from QgsQueryBuilder
+            //       when the sql is set in the layer.
+            if ( qb.exec() && ( subsetBefore != qb.sql() ) && mLayerTreeView )
+            {
+              if ( rlayer->setSubsetString( qb.sql() ) )
+              {
+                mLayerTreeView->refreshLayerSymbology( rlayer->id() );
+                activateDeactivateLayerRelatedActions( rlayer );
+              }
+            }
+          }
+        }
+      }
+    }
     return;
+  }
+
 
   bool joins = !vlayer->vectorJoins().isEmpty();
   if ( vlayer->vectorJoins().size() == 1 )

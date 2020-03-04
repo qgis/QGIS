@@ -152,6 +152,11 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     QgsPostgresConn *connectionRO() const;
     QgsPostgresConn *connectionRW();
 
+    bool supportsSubsetString() const override { return true; }
+
+    virtual QString subsetString() const override;
+    virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
+
     bool hasSufficientPermsAndCapabilities();
     void disconnectDb();
     //! Initialize the raster by fetching metadata and creating spatial indexes.

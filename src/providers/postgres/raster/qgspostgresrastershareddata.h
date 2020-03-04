@@ -92,6 +92,11 @@ class QgsPostgresRasterSharedData
      */
     TilesResponse tiles( const TilesRequest &request );
 
+    /**
+     * Invalidate the cache, for example when case the subset string changes
+     */
+    void invalidateCache();
+
   private:
 
     //! Protect access to tiles

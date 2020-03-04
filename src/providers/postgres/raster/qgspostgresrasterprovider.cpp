@@ -685,6 +685,28 @@ QgsPostgresConn *QgsPostgresRasterProvider::connectionRW()
   return mConnectionRW;
 }
 
+QString QgsPostgresRasterProvider::subsetString() const
+{
+  return mSqlWhereClause;
+}
+
+bool QgsPostgresRasterProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
+{
+  Q_UNUSED( updateFeatureCount )
+  const QString oldSql { mSqlWhereClause };
+  mSqlWhereClause = subset;
+  // Recalculate extent and other metadata calling init()
+  if ( !init() )
+  {
+    // Restore
+    mSqlWhereClause = oldSql;
+    init();
+    return false;
+  }
+  mShared->invalidateCache();
+  return true;
+}
+
 void QgsPostgresRasterProvider::disconnectDb()
 {
   if ( mConnectionRO )
