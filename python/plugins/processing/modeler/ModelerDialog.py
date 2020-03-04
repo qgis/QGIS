@@ -462,6 +462,7 @@ class ModelerDialog(BASE, WIDGET):
         ctrlEquals = QShortcut(QKeySequence("Ctrl+="), self)
         ctrlEquals.activated.connect(self.zoomIn)
 
+        self.mActionClose.triggered.connect(self.close)
         self.mActionOpen.triggered.connect(self.openModel)
         self.mActionSave.triggered.connect(self.save)
         self.mActionSaveAs.triggered.connect(self.saveAs)
