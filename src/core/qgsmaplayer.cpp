@@ -1871,7 +1871,6 @@ bool QgsMapLayer::accept( QgsStyleEntityVisitorInterface * ) const
   return true;
 }
 
-
 void QgsMapLayer::setProviderType( const QString &providerType )
 {
   mProviderKey = providerType;
