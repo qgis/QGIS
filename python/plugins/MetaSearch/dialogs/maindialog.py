@@ -735,9 +735,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         if sname in keys:  # duplicate found
             msg = self.tr('Connection {0} exists. Overwrite?').format(sname)
             res = QMessageBox.warning(self, self.tr('Saving server'), msg,
-                                      QMessageBox.Yes | QMessageBox.No)
-            if res != QMessageBox.Yes:  # assign new name with serial
+                                      QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+            if res == QMessageBox.No:  # assign new name with serial
                 sname = serialize_string(sname)
+            elif res == QMessageBox.Cancel:
+                return
 
         # no dups detected or overwrite is allowed
         if caller in ['mActionAddAms', 'mActionAddAfs']:
