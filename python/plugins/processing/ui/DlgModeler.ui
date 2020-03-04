@@ -35,6 +35,53 @@
     </item>
    </layout>
   </widget>
+  <widget class="QMenuBar" name="mMenu">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>891</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_Model">
+    <property name="title">
+     <string>&amp;Model</string>
+    </property>
+    <widget class="QMenu" name="menuExport">
+     <property name="title">
+      <string>Export</string>
+     </property>
+     <addaction name="mActionExportImage"/>
+     <addaction name="mActionExportPdf"/>
+     <addaction name="mActionExportSvg"/>
+     <addaction name="separator"/>
+     <addaction name="mActionExportPython"/>
+    </widget>
+    <addaction name="mActionRun"/>
+    <addaction name="separator"/>
+    <addaction name="mActionOpen"/>
+    <addaction name="mActionSave"/>
+    <addaction name="mActionSaveAs"/>
+    <addaction name="mActionSaveInProject"/>
+    <addaction name="mActionEditHelp"/>
+    <addaction name="separator"/>
+    <addaction name="menuExport"/>
+    <addaction name="separator"/>
+    <addaction name="mActionClose"/>
+   </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="mActionZoomIn"/>
+    <addaction name="mActionZoomOut"/>
+    <addaction name="mActionZoomActual"/>
+    <addaction name="mActionZoomToItems"/>
+   </widget>
+   <addaction name="menu_Model"/>
+   <addaction name="menu_View"/>
+  </widget>
   <widget class="QToolBar" name="mToolbar">
    <property name="windowTitle">
     <string>Navigation</string>
@@ -65,7 +112,7 @@
   </widget>
   <action name="mActionOpen">
    <property name="text">
-    <string>Open model…</string>
+    <string>Open Model…</string>
    </property>
    <property name="toolTip">
     <string>Open model (Ctrl+O)</string>
@@ -76,7 +123,7 @@
   </action>
   <action name="mActionSave">
    <property name="text">
-    <string>Save model</string>
+    <string>Save Model</string>
    </property>
    <property name="toolTip">
     <string>Save model (Ctrl+S)</string>
@@ -87,7 +134,7 @@
   </action>
   <action name="mActionSaveAs">
    <property name="text">
-    <string>Save model as…</string>
+    <string>Save Model as…</string>
    </property>
    <property name="toolTip">
     <string>Save model as (Ctrl+S)</string>
@@ -109,7 +156,7 @@
   </action>
   <action name="mActionZoomIn">
    <property name="text">
-    <string>Zoom in</string>
+    <string>Zoom In</string>
    </property>
    <property name="toolTip">
     <string>Zoom in</string>
@@ -120,7 +167,7 @@
   </action>
   <action name="mActionZoomOut">
    <property name="text">
-    <string>Zoom out</string>
+    <string>Zoom Out</string>
    </property>
    <property name="toolTip">
     <string>Zoom out</string>
@@ -131,7 +178,7 @@
   </action>
   <action name="mActionExportImage">
    <property name="text">
-    <string>Export as image…</string>
+    <string>Export as Image…</string>
    </property>
    <property name="toolTip">
     <string>Export as image</string>
@@ -139,7 +186,7 @@
   </action>
   <action name="mActionZoomToItems">
    <property name="text">
-    <string>Zoom full</string>
+    <string>Zoom Full</string>
    </property>
    <property name="toolTip">
     <string>Zoom full</string>
@@ -174,7 +221,7 @@
   </action>
   <action name="mActionEditHelp">
    <property name="text">
-    <string>Edit model help…</string>
+    <string>Edit Model Help…</string>
    </property>
    <property name="toolTip">
     <string>Edit model help</string>
@@ -182,7 +229,7 @@
   </action>
   <action name="mActionRun">
    <property name="text">
-    <string>Run model…</string>
+    <string>Run Model…</string>
    </property>
    <property name="toolTip">
     <string>Run model (F5)</string>
@@ -193,10 +240,15 @@
   </action>
   <action name="mActionSaveInProject">
    <property name="text">
-    <string>Save model in project</string>
+    <string>Save Model in Project</string>
    </property>
    <property name="toolTip">
     <string>Save model in project</string>
+   </property>
+  </action>
+  <action name="mActionClose">
+   <property name="text">
+    <string>Close</string>
    </property>
   </action>
  </widget>
