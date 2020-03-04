@@ -869,10 +869,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setRenderer( QgsFeatureRenderer *r SIP_TRANSFER );
 
     //! Returns point, line or polygon
-    QgsWkbTypes::GeometryType geometryType() const;
+    Q_INVOKABLE QgsWkbTypes::GeometryType geometryType() const;
 
     //! Returns the WKBType or WKBUnknown in case of error
-    QgsWkbTypes::Type wkbType() const FINAL;
+    Q_INVOKABLE QgsWkbTypes::Type wkbType() const FINAL;
 
     QgsCoordinateReferenceSystem sourceCrs() const FINAL;
     QString sourceName() const FINAL;
