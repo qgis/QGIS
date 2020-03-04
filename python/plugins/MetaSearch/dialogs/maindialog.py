@@ -392,7 +392,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         if crsid != 4326:  # reproject to EPSG:4326
             src = QgsCoordinateReferenceSystem(crsid)
-            dest = QgsCoordinateReferenceSystem(4326)
+            dest = QgsCoordinateReferenceSystem("EPSG:4326")
             xform = QgsCoordinateTransform(src, dest, QgsProject.instance())
             minxy = xform.transform(QgsPointXY(extent.xMinimum(),
                                                extent.yMinimum()))
@@ -562,7 +562,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         if record.bbox is not None:
             points = bbox_to_polygon(record.bbox)
             if points is not None:
-                src = QgsCoordinateReferenceSystem(4326)
+                src = QgsCoordinateReferenceSystem("EPSG:4326")
                 dst = self.map.mapSettings().destinationCrs()
                 geom = QgsGeometry.fromWkt(points)
                 if src.postgisSrid() != dst.postgisSrid():
