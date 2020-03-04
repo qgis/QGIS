@@ -140,11 +140,15 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
         alg.setLinksCollapsed(Qt.TopEdge, existing_child.linksCollapsed(Qt.TopEdge))
         alg.setLinksCollapsed(Qt.BottomEdge, existing_child.linksCollapsed(Qt.BottomEdge))
         alg.comment().setPosition(existing_child.comment().position())
+        alg.comment().setSize(existing_child.comment().size())
         for i, out in enumerate(alg.modelOutputs().keys()):
-            alg.modelOutput(out).setPosition(alg.modelOutput(out).position()
+            alg.modelOutput(out).setPosition(existing_child.modelOutput(out).position()
                                              or alg.position() + QPointF(
                 self.component().size().width(),
                 (i + 1.5) * self.component().size().height()))
+            alg.modelOutput(out).comment().setDescription(existing_child.modelOutput(out).comment().description())
+            alg.modelOutput(out).comment().setSize(existing_child.modelOutput(out).comment().size())
+            alg.modelOutput(out).comment().setPosition(existing_child.modelOutput(out).comment().position())
         self.model().setChildAlgorithm(alg)
 
 
