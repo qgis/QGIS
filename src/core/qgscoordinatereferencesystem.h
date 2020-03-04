@@ -265,7 +265,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * and proj strings are a lossy format.
      * \param id The ID valid for the chosen CRS ID type
      * \param type One of the types described in CrsType
-     * \deprecated We encourage you to use EPSG codes or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
+     * \deprecated QGIS 3.10 We encourage you to use EPSG codes or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
      */
     Q_DECL_DEPRECATED explicit QgsCoordinateReferenceSystem( long id, CrsType type = PostgisCrsId ) SIP_DEPRECATED;
 
@@ -313,7 +313,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Creates a CRS from a proj style formatted string.
      * \returns matching CRS, or an invalid CRS if string could not be matched
      * \see createFromProj()
-     * \deprecated Use fromProj() instead.
+     * \deprecated QGIS 3.10 Use fromProj() instead.
     */
     Q_DECL_DEPRECATED static QgsCoordinateReferenceSystem fromProj4( const QString &proj4 ) SIP_DEPRECATED;
 
@@ -352,7 +352,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Sets this CRS by lookup of the given ID in the CRS database.
      * \returns TRUE on success else FALSE
-     * \deprecated We encourage you to use EPSG code or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
+     * \deprecated QGIS 3.10 We encourage you to use EPSG code or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
      */
     Q_DECL_DEPRECATED bool createFromId( long id, CrsType type = PostgisCrsId ) SIP_DEPRECATED;
 
@@ -377,7 +377,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param srid The PostGIS SRID for the desired spatial reference system.
      * \returns TRUE on success else FALSE
      *
-     * \deprecated Use alternative methods for SRS construction instead -- this method was specifically created for use by the postgres provider alone, and using it elsewhere will lead to subtle bugs.
+     * \deprecated QGIS 3.10 Use alternative methods for SRS construction instead -- this method was specifically created for use by the postgres provider alone, and using it elsewhere will lead to subtle bugs.
      */
     Q_DECL_DEPRECATED bool createFromSrid( long srid ) SIP_DEPRECATED;
 
@@ -430,7 +430,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \note Some members may be left blank if no match can be found in CRS database.
      * \note This method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromProj()
-     * \deprecated Use createFromProj() instead
+     * \deprecated QGIS 3.10 Use createFromProj() instead
      */
     Q_DECL_DEPRECATED bool createFromProj4( const QString &projString ) SIP_DEPRECATED;
 
@@ -500,7 +500,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \note This function sets CPL config option GDAL_FIX_ESRI_WKT to a proper value,
      * unless it has been set by the user through the commandline or an environment variable.
      * For more details refer to OGRSpatialReference::morphFromESRI() .
-     * \deprecated Not used on builds based on Proj version 6 or later
+     * \deprecated QGIS 3.10 Not used on builds based on Proj version 6 or later
      */
     Q_DECL_DEPRECATED static void setupESRIWktFix() SIP_DEPRECATED;
 
@@ -528,7 +528,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *  pieces of information about CRS.
      *  \note The ellipsoid and projection acronyms must be set as well as the proj string!
      *  \returns long the SrsId of the matched CRS, zero if no match was found
-     * \deprecated Not used in Proj >= 6 based builds
+     * \deprecated QGIS 3.10 Not used in Proj >= 6 based builds
      */
     Q_DECL_DEPRECATED long findMatchingProj() SIP_DEPRECATED;
 
@@ -691,7 +691,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \warning Not all CRS definitions can be represented by Proj strings. An empty
      * string will be returned if the CRS could not be represented by a Proj string.
      * \see toWkt()
-     * \deprecated use toProj() instead.
+     * \deprecated QGIS 3.10 Use toProj() instead.
      */
     Q_DECL_DEPRECATED QString toProj4() const SIP_DEPRECATED;
 
@@ -799,7 +799,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**
      * Returns a list of recently used projections
      * \returns list of srsid for recently used projections
-     * \deprecated use recentCoordinateReferenceSystems() instead.
+     * \deprecated QGIS 3.10 Use recentCoordinateReferenceSystems() instead.
      */
     Q_DECL_DEPRECATED static QStringList recentProjections() SIP_DEPRECATED;
 
