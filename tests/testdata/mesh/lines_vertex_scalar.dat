@@ -5,10 +5,14 @@ BEGSCL
 ND 4
 NC 3
 NAME "VertexScalarDataset"
-TIMEUNITS se
 TS 0        0.000000
 1
 2
 3
 4
+TS 1        1.000000
+2
+3
+4
+5
 ENDDS

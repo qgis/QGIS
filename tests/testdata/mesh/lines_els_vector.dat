@@ -6,8 +6,12 @@ ND 4
 NC 3
 NAME "EdgeVectorDataset"
 TIMEUNITS 1
-TS 0        60.000000
+TS 0        0.000000
 1 1
 2 2
 3 3
+TS 1        60.000000
+2 2
+3 3
+4 4
 ENDDS

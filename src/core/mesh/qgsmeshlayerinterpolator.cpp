@@ -35,12 +35,12 @@
 #include "qgsmeshdataprovider.h"
 
 QgsMeshLayerInterpolator::QgsMeshLayerInterpolator(
-    const QgsTriangularMesh &m,
-    const QVector<double> &datasetValues,
-    const QgsMeshDataBlock &activeFaceFlagValues,
-    QgsMeshDatasetGroupMetadata::DataType dataType,
-    const QgsRenderContext &context,
-    const QSize &size )
+  const QgsTriangularMesh &m,
+  const QVector<double> &datasetValues,
+  const QgsMeshDataBlock &activeFaceFlagValues,
+  QgsMeshDatasetGroupMetadata::DataType dataType,
+  const QgsRenderContext &context,
+  const QSize &size )
   : mTriangularMesh( m ),
     mDatasetValues( datasetValues ),
     mActiveFaceFlagValues( activeFaceFlagValues ),
@@ -86,6 +86,11 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
   else
   {
     indexCount = mTriangularMesh.triangles().count();
+  }
+
+  if ( mTriangularMesh.contains( QgsMesh::ElementType::Edge ) )
+  {
+    return outputBlock.release();
   }
 
   const QVector<QgsMeshVertex> &vertices = mTriangularMesh.vertices();
@@ -154,8 +159,6 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
                   p
                 );
         }
-        // TODO data on edges!
-
         if ( !std::isnan( val ) )
         {
           line[k] = val;
@@ -212,7 +215,7 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
 
   const QgsMeshDatasetGroupMetadata metadata = layer.dataProvider()->datasetGroupMetadata( datasetIndex );
   QgsMeshDatasetGroupMetadata::DataType scalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
-  const int count =  QgsMeshLayerUtils::datasetValuesCount(nativeMesh.get(), scalarDataType);
+  const int count =  QgsMeshLayerUtils::datasetValuesCount( nativeMesh.get(), scalarDataType );
   QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
                             &layer,
                             datasetIndex,

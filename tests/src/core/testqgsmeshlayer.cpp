@@ -54,12 +54,14 @@ class TestQgsMeshLayer : public QObject
     QString readFile( const QString &fname ) const;
 
     void test_write_read_project();
+
     void test_read_1d_edge_vector_dataset();
     void test_read_1d_edge_scalar_dataset();
     void test_read_1d_vertex_vector_dataset();
     void test_read_1d_vertex_scalar_dataset();
     void test_read_1d_bed_elevation_dataset();
     void test_read_1d_mesh();
+
     void test_read_mesh();
     void test_read_flower_mesh();
     void test_read_bed_elevation_dataset();
@@ -269,10 +271,10 @@ void TestQgsMeshLayer::test_read_1d_vertex_scalar_dataset()
       QVERIFY( dmeta.isValid() );
 
       // We have 4 values, since dp->vertexCount() = 4
-      QCOMPARE( QgsMeshDatasetValue( 1.0 ), dp->datasetValue( ds, 0 ) );
-      QCOMPARE( QgsMeshDatasetValue( 2.0 ), dp->datasetValue( ds, 1 ) );
-      QCOMPARE( QgsMeshDatasetValue( 3.0 ), dp->datasetValue( ds, 2 ) );
-      QCOMPARE( QgsMeshDatasetValue( 4.0 ), dp->datasetValue( ds, 3 ) );
+      QCOMPARE( QgsMeshDatasetValue( 1.0 + i ), dp->datasetValue( ds, 0 ) );
+      QCOMPARE( QgsMeshDatasetValue( 2.0 + i ), dp->datasetValue( ds, 1 ) );
+      QCOMPARE( QgsMeshDatasetValue( 3.0 + i ), dp->datasetValue( ds, 2 ) );
+      QCOMPARE( QgsMeshDatasetValue( 4.0 + i ), dp->datasetValue( ds, 3 ) );
     }
   }
 }
@@ -304,10 +306,10 @@ void TestQgsMeshLayer::test_read_1d_vertex_vector_dataset()
       QVERIFY( dmeta.isValid() );
 
       // We have 4 values, since dp->vertexCount() = 4
-      QCOMPARE( QgsMeshDatasetValue( 1, 1 ), dp->datasetValue( ds, 0 ) );
-      QCOMPARE( QgsMeshDatasetValue( 2, 1 ), dp->datasetValue( ds, 1 ) );
-      QCOMPARE( QgsMeshDatasetValue( 3, 2 ), dp->datasetValue( ds, 2 ) );
-      QCOMPARE( QgsMeshDatasetValue( 2, 2 ), dp->datasetValue( ds, 3 ) );
+      QCOMPARE( QgsMeshDatasetValue( 1 + i, 1 + i ), dp->datasetValue( ds, 0 ) );
+      QCOMPARE( QgsMeshDatasetValue( 2 + i, 1 + i ), dp->datasetValue( ds, 1 ) );
+      QCOMPARE( QgsMeshDatasetValue( 3 + i, 2 + i ), dp->datasetValue( ds, 2 ) );
+      QCOMPARE( QgsMeshDatasetValue( 2 + i, 2 + i ), dp->datasetValue( ds, 3 ) );
     }
   }
 }
@@ -341,9 +343,9 @@ void TestQgsMeshLayer::test_read_1d_edge_scalar_dataset()
       QVERIFY( dmeta.isValid() );
 
       // We have 3 values, since dp->edgeCount() = 3
-      QCOMPARE( QgsMeshDatasetValue( 1 ), dp->datasetValue( ds, 0 ) );
-      QCOMPARE( QgsMeshDatasetValue( 2 ), dp->datasetValue( ds, 1 ) );
-      QCOMPARE( QgsMeshDatasetValue( 3 ), dp->datasetValue( ds, 1 ) );
+      QCOMPARE( QgsMeshDatasetValue( 1 + i ), dp->datasetValue( ds, 0 ) );
+      QCOMPARE( QgsMeshDatasetValue( 2 + i ), dp->datasetValue( ds, 1 ) );
+      QCOMPARE( QgsMeshDatasetValue( 3 + i ), dp->datasetValue( ds, 2 ) );
     }
   }
 }
@@ -378,9 +380,9 @@ void TestQgsMeshLayer::test_read_1d_edge_vector_dataset()
       QVERIFY( dmeta.isValid() );
 
       // We have 3 values, since dp->edgeCount() = 3
-      QCOMPARE( QgsMeshDatasetValue( 1, 1 ), dp->datasetValue( ds, 0 ) );
-      QCOMPARE( QgsMeshDatasetValue( 2, 2 ), dp->datasetValue( ds, 1 ) );
-      QCOMPARE( QgsMeshDatasetValue( 3, 3 ), dp->datasetValue( ds, 2 ) );
+      QCOMPARE( QgsMeshDatasetValue( 1 + i, 1 + i ), dp->datasetValue( ds, 0 ) );
+      QCOMPARE( QgsMeshDatasetValue( 2 + i, 2 + i ), dp->datasetValue( ds, 1 ) );
+      QCOMPARE( QgsMeshDatasetValue( 3 + i, 3 + i ), dp->datasetValue( ds, 2 ) );
     }
   }
 }
@@ -941,7 +943,7 @@ void TestQgsMeshLayer::test_mesh_simplification()
   QCOMPARE( simplifiedMeshes.at( 4 )->triangles().count(), 5 );
 
   // Delete simplified meshes
-  for ( QgsTriangularMesh * m : simplifiedMeshes )
+  for ( QgsTriangularMesh *m : simplifiedMeshes )
     delete m;
 }
 

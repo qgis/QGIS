@@ -70,21 +70,28 @@ QgsMeshDataBlock QgsMeshLayerUtils::datasetValues(
   if ( !provider )
     return block;
 
-  // try to get directly 2D dataset block
-  block = provider->datasetValues( index, valueIndex, count );
-  if ( block.isValid() )
+  if ( !index.isValid() )
     return block;
 
-  const QgsMesh3dAveragingMethod *averagingMethod = meshLayer->rendererSettings().averagingMethod();
-  // try to get 2D block
-  if ( !averagingMethod )
-    return block;
+  const QgsMeshDatasetGroupMetadata meta = meshLayer->dataProvider()->datasetGroupMetadata( index.group() );
+  if ( meta.dataType() != QgsMeshDatasetGroupMetadata::DataType::DataOnVolumes )
+  {
+    block = provider->datasetValues( index, valueIndex, count );
+    if ( block.isValid() )
+      return block;
+  }
+  else
+  {
+    const QgsMesh3dAveragingMethod *averagingMethod = meshLayer->rendererSettings().averagingMethod();
+    if ( !averagingMethod )
+      return block;
 
-  QgsMesh3dDataBlock block3d = provider->dataset3dValues( index, valueIndex, count );
-  if ( !block3d.isValid() )
-    return block;
+    QgsMesh3dDataBlock block3d = provider->dataset3dValues( index, valueIndex, count );
+    if ( !block3d.isValid() )
+      return block;
 
-  block = averagingMethod->calculate( block3d );
+    block = averagingMethod->calculate( block3d );
+  }
   return block;
 }
 

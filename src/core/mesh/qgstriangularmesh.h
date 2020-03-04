@@ -78,6 +78,8 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
 
     /**
      * Returns centroids of the native faces in map CRS
+     *
+     * \deprecated since QGIS 3.14 use faceCentroids() instead
      */
     Q_DECL_DEPRECATED const QVector<QgsMeshVertex> &centroids() const ;
 

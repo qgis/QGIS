@@ -47,11 +47,11 @@ QgsCoordinateReferenceSystem QgsMeshMemoryDataProvider::crs() const
 QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri, const ProviderOptions &options )
   : QgsMeshDataProvider( uri, options )
 {
-  QString data(uri);
+  QString data( uri );
   // see QgsMeshLayer::setDataProvider how mDataSource is created for memory layers
-  if (uri.contains("&uid="))
+  if ( uri.contains( "&uid=" ) )
   {
-    data = uri.split("&uid=")[0];
+    data = uri.split( "&uid=" )[0];
   }
   mIsValid = splitMeshSections( data );
 }
@@ -299,7 +299,7 @@ bool QgsMeshMemoryDataProvider::checkDatasetValidity( std::shared_ptr<QgsMeshMem
                           QStringLiteral( "Mesh Memory Provider" ) ) );
     }
   }
-  else if (dataType == QgsMeshDatasetGroupMetadata::DataOnFaces)
+  else if ( dataType == QgsMeshDatasetGroupMetadata::DataOnFaces )
   {
     // on faces
     if ( dataset->values.count() != faceCount() )
@@ -308,7 +308,8 @@ bool QgsMeshMemoryDataProvider::checkDatasetValidity( std::shared_ptr<QgsMeshMem
       setError( QgsError( tr( "Dataset defined on faces has {} values, but mesh {}" ).arg( dataset->values.count(), faceCount() ),
                           QStringLiteral( "Mesh Memory Provider" ) ) );
     }
-  } else if ( dataType == QgsMeshDatasetGroupMetadata::DataOnEdges )
+  }
+  else if ( dataType == QgsMeshDatasetGroupMetadata::DataOnEdges )
   {
     // on edges
     if ( dataset->values.count() != edgeCount() )
@@ -322,15 +323,15 @@ bool QgsMeshMemoryDataProvider::checkDatasetValidity( std::shared_ptr<QgsMeshMem
   return valid;
 }
 
-bool QgsMeshMemoryDataProvider::checkVertexId( int vertex_id )
+bool QgsMeshMemoryDataProvider::checkVertexId( int vertexIndex )
 {
-  if ( vertex_id < 0 )
+  if ( vertexIndex < 0 )
   {
     setError( QgsError( tr( "Invalid mesh definition, vertex index must be positive value" ),
                         QStringLiteral( "Mesh Memory Provider" ) ) );
     return false;
   }
-  if ( mVertices.size() < vertex_id )
+  if ( mVertices.size() <= vertexIndex )
   {
     setError( QgsError( tr( "Invalid mesh definition, missing vertex id defined in face" ),
                         QStringLiteral( "Mesh Memory Provider" ) ) );

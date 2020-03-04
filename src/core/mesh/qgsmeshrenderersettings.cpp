@@ -74,7 +74,7 @@ void QgsMeshRendererMeshSettings::readXml( const QDomElement &elem )
   mEnabled = elem.attribute( QStringLiteral( "enabled" ) ).toInt();
   mLineWidth = elem.attribute( QStringLiteral( "line-width" ) ).toDouble();
   mColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "color" ) ) );
-  mLineWidthUnit = QgsUnitTypes::decodeRenderUnit( QStringLiteral( "line-width-unit" ) );
+  mLineWidthUnit = QgsUnitTypes::decodeRenderUnit( elem.attribute( QStringLiteral( "line-width-unit" ) ) );
 }
 // ---------------------------------------------------------------------
 
@@ -143,7 +143,7 @@ void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem )
   mClassificationMaximum = elem.attribute( QStringLiteral( "max-val" ) ).toDouble();
   mOpacity = elem.attribute( QStringLiteral( "opacity" ) ).toDouble();
   mEdgeWidth = elem.attribute( QStringLiteral( "edge-width" ) ).toDouble();
-  mEdgeWidthUnit = QgsUnitTypes::decodeRenderUnit( QStringLiteral( "edge-width-unit" ) );
+  mEdgeWidthUnit = QgsUnitTypes::decodeRenderUnit( elem.attribute( QStringLiteral( "edge-width-unit" ) ) );
 
   QString methodTxt = elem.attribute( QStringLiteral( "interpolation-method" ) );
   if ( QStringLiteral( "neighbour-average" ) == methodTxt )

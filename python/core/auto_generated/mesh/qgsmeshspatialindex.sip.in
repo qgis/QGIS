@@ -45,7 +45,7 @@ Constructor for :py:class:`QgsSpatialIndex`. Creates an empty R-tree index.
 %Docstring
 Constructor - creates R-tree and bulk loads faces or edges from the specified mesh
 
-Not implemented to contruct R-tree for vertices
+Not implemented to construct R-tree for vertices
 Since QGIS 3.14 possibility to create R-tree for edges
 
 The optional ``feedback`` object can be used to allow cancellation of bulk face loading. Ownership

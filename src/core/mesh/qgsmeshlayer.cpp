@@ -238,8 +238,11 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
         switch ( dataType )
         {
           case QgsMeshDatasetGroupMetadata::DataOnFaces:
+          {
             value = dataProvider()->datasetValue( index, nativeFaceIndex );
-            break;
+          }
+          break;
+
           case QgsMeshDatasetGroupMetadata::DataOnVertices:
           {
             const QgsMeshFace &face = mesh->triangles()[faceIndex];
@@ -257,7 +260,9 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
             value = QgsMeshDatasetValue( x, y );
           }
           break;
+
           case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+          {
             const QgsMesh3dAveragingMethod *avgMethod = mRendererSettings.averagingMethod();
             if ( avgMethod )
             {
@@ -268,6 +273,10 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
                 value = block2d.value( 0 );
               }
             }
+          }
+          break;
+
+          default:
             break;
         }
       }

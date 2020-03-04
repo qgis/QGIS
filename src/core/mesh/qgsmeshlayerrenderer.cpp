@@ -510,7 +510,7 @@ void QgsMeshLayerRenderer::renderScalarDatasetOnEdges( const QgsMeshRendererScal
               double fraction = ( item.value - valVertexStart ) / valDiff;
               if ( ( fraction > 0.0 ) && ( fraction < 1.0 ) )
               {
-                QgsPointXY point = fractionPoint( lineStart, lineEnd, fraction, 0.0 );
+                QgsPointXY point = fractionPoint( lineStart, lineEnd, fraction );
                 pen.setColor( item.color );
                 painter->setPen( pen );
                 painter->drawPoint( point.toQPointF() );
@@ -531,7 +531,7 @@ void QgsMeshLayerRenderer::renderScalarDatasetOnEdges( const QgsMeshRendererScal
               double fraction = ( item.value - valVertexStart ) / valDiff;
               if ( ( fraction > 0.0 ) && ( fraction < 1.0 ) )
               {
-                QgsPointXY endPoint = fractionPoint( lineStart, lineEnd, fraction, 0.0 );
+                QgsPointXY endPoint = fractionPoint( lineStart, lineEnd, fraction );
                 pen.setColor( color );
                 painter->setPen( pen );
                 painter->drawLine( startPoint.toQPointF(), endPoint.toQPointF() );
@@ -591,31 +591,10 @@ QColor QgsMeshLayerRenderer::colorAt( QgsColorRampShader *shader, double val ) c
   return QColor();
 }
 
-QgsPointXY QgsMeshLayerRenderer::fractionPoint( const QgsPointXY &p1, const QgsPointXY &p2, double fraction, double overlayMagniture ) const
+QgsPointXY QgsMeshLayerRenderer::fractionPoint( const QgsPointXY &p1, const QgsPointXY &p2, double fraction ) const
 {
-  double overlayX = 0.0;
-  double overlayY = 0.0;
-  if ( ( fraction > 0.0 ) || fraction < 1.0 )
-  {
-    // p1 and p2 are in pixels
-    double magX = std::abs( ( p2.x() - p1.x() ) );
-    if ( magX > 1e-6 )
-    {
-      double directionX = ( p2.x() - p1.x() ) / magX;
-      overlayX = directionX * overlayMagniture;
-    }
-    double magY = std::abs( ( p2.y() - p1.y() ) );
-    if ( magY > 1e-6 )
-    {
-      double directionY = ( p2.y() - p1.y() ) / std::abs( ( p2.y() - p1.y() ) );
-      overlayY = directionY * overlayMagniture;
-    }
-  }
-
-  const QgsPointXY pt( p1.x() + fraction * ( p2.x() - p1.x() ) + overlayX,
-                       p1.y() + fraction * ( p2.y() - p1.y() ) + overlayY );
-
-
+  const QgsPointXY pt( p1.x() + fraction * ( p2.x() - p1.x() ),
+                       p1.y() + fraction * ( p2.y() - p1.y() ) );
   return pt;
 }
 
