@@ -2683,24 +2683,47 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   if ( !p )
     return;
 
-  bool hasDataDefinedSize = false;
-  double scaledSize = calculateSize( context, hasDataDefinedSize );
-  double width = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
-  bool hasDataDefinedAspectRatio = false;
-  double aspectRatio = calculateAspectRatio( context, scaledSize, hasDataDefinedAspectRatio );
-  double height = width * ( preservedAspectRatio() ? defaultAspectRatio() : aspectRatio );
-
-  //don't render symbols with size below one or above 10,000 pixels
-  if ( static_cast< int >( width ) < 1 || 10000.0 < width )
-  {
-    return;
-  }
-
   QString path = mPath;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
   {
     context.setOriginalValueVariable( mPath );
     path = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext(), mPath );
+  }
+
+  if ( path.isEmpty() )
+    return;
+
+  double width = 0.0;
+  double height = 0.0;
+  double scaledSize = 0.0;
+  double aspectRatio = 0.0;
+
+  // RenderPercentage Unit Type takes original image size
+  if ( mSizeUnit == QgsUnitTypes::RenderPercentage )
+  {
+    QSize size = QgsApplication::imageCache()->originalSize( path );
+    if ( size.isNull() || !size.isValid() || size.width() == 0 || size.height() == 0 )
+      return;
+
+    scaledSize = ( mSize * static_cast<double>( size.width() ) ) / 100.0;
+    width = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
+
+    height = ( mSize * static_cast<double>( size.height() ) ) / 100.0;
+    height = context.renderContext().convertToPainterUnits( height, mSizeUnit, mSizeMapUnitScale );
+
+    // don't render symbols with size below one or above 10,000 pixels
+    if ( static_cast< int >( width ) < 1 || 10000.0 < width || static_cast< int >( height ) < 1 || 10000.0 < height )
+      return;
+  }
+  else
+  {
+    bool hasDataDefinedSize = false;
+    scaledSize = calculateSize( context, hasDataDefinedSize );
+    width = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
+    bool hasDataDefinedAspectRatio = false;
+    aspectRatio = calculateAspectRatio( context, scaledSize, hasDataDefinedAspectRatio );
+    height = width * ( preservedAspectRatio() ? defaultAspectRatio() : aspectRatio );
+
     if ( preservedAspectRatio() && path != mPath )
     {
       QSize size = QgsApplication::imageCache()->originalSize( path );
@@ -2709,10 +2732,11 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
         height = width * ( static_cast< double >( size.height() ) / static_cast< double >( size.width() ) );
       }
     }
-  }
 
-  if ( path.isEmpty() )
-    return;
+    // don't render symbols with size below one or above 10,000 pixels
+    if ( static_cast< int >( width ) < 1 || 10000.0 < width )
+      return;
+  }
 
   p->save();
 
@@ -2735,7 +2759,7 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   opacity *= context.opacity();
 
   bool cached;
-  QImage img = QgsApplication::imageCache()->pathAsImage( path, QSize( width, preservedAspectRatio() ? 0 : width * aspectRatio ), preservedAspectRatio(), opacity, cached, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
+  QImage img = QgsApplication::imageCache()->pathAsImage( path, QSize( width, height ), preservedAspectRatio(), opacity, cached, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
   if ( !img.isNull() )
   {
     if ( context.selected() )
