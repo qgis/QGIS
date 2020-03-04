@@ -447,6 +447,7 @@ Emitted when the layer's subset string has changed.
 
     virtual QString decodedSource( const QString &source, const QString &provider,  const QgsReadWriteContext &context ) const;
 
+
 };
 
 

@@ -281,6 +281,11 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         self.assertEqual(int(stats.minimumValue), 136)
         self.assertEqual(int(stats.maximumValue), 169)
 
+        ce = rl.renderer().contrastEnhancement()
+        min_max = int(ce.minimumValue()), int(ce.maximumValue())
+        self.assertEqual(min_max, (136, 169))
+
+        # Change filter:
         self.assertTrue(rl.setSubsetString('"pk" = 1'))
         block = rl.dataProvider().block(1, rl.extent(), 2, 2)
         data = []
@@ -293,6 +298,12 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         stats = rl.dataProvider().bandStatistics(1, QgsRasterBandStats.Min | QgsRasterBandStats.Max, rl.extent())
         self.assertEqual(int(stats.minimumValue), 136)
         self.assertEqual(int(stats.maximumValue), 153)
+
+        # Check that the renderer has been updated
+        ce = rl.renderer().contrastEnhancement()
+        new_min_max = int(ce.minimumValue()), int(ce.maximumValue())
+        self.assertNotEqual(new_min_max, min_max)
+        self.assertEqual(new_min_max, (136, 153))
 
         # Set invalid filter
         self.assertFalse(rl.setSubsetString('"pk_wrong" = 1'))

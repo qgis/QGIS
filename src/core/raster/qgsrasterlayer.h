@@ -481,6 +481,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
     QString decodedSource( const QString &source, const QString &provider,  const QgsReadWriteContext &context ) const override;
+
   private:
     //! \brief Initialize default values
     void init();
@@ -500,6 +501,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                                  int sampleSize,
                                  bool generateLookupTableFlag,
                                  QgsRasterRenderer *rasterRenderer );
+
+    //! Refresh renderer
+    void refreshRenderer( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent );
 
     void computeMinMax( int band,
                         const QgsRasterMinMaxOrigin &mmo,
