@@ -58,6 +58,11 @@ QgsModelComponentGraphicItem *QgsModelGraphicsScene::createOutputGraphicItem( Qg
   return new QgsModelOutputGraphicItem( output, model, nullptr );
 }
 
+QgsModelComponentGraphicItem *QgsModelGraphicsScene::createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem ) const
+{
+  return new QgsModelCommentGraphicItem( comment, parentItem, model, nullptr );
+}
+
 void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, QgsProcessingContext &context )
 {
   // model input parameters
@@ -70,6 +75,8 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     mParameterItems.insert( it.value().parameterName(), item );
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
+
+    addCommentItemForComponent( model, it.value(), item );
   }
 
   // input dependency arrows
@@ -98,6 +105,8 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
     mChildAlgorithmItems.insert( it.value().childId(), item );
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
+
+    addCommentItemForComponent( model, it.value(), item );
   }
 
   // arrows linking child algorithms
@@ -148,6 +157,8 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
       connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
 
+      addCommentItemForComponent( model, outputIt.value(), item );
+
       QPointF pos = outputIt.value().position();
 
       // find the actual index of the linked output from the child algorithm it comes from
@@ -164,12 +175,7 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
         i++;
       }
 
-#if 0
-    if pos is None:
-      pos = ( alg.position() + QPointF( alg.size().width(), 0 )
-              + self.algItems[alg.childId()].linkPoint( Qt.BottomEdge, idx ) )
-#endif
-              item->setPos( pos );
+      item->setPos( pos );
       outputItems.insert( outputIt.key(), item );
       addItem( new QgsModelArrowItem( mChildAlgorithmItems[it.value().childId()], Qt::BottomEdge, idx, item ) );
     }
@@ -247,6 +253,22 @@ QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForPa
     }
   }
   return res;
+}
+
+void QgsModelGraphicsScene::addCommentItemForComponent( QgsProcessingModelAlgorithm *model, const QgsProcessingModelComponent &component, QgsModelComponentGraphicItem *parentItem )
+{
+  if ( !component.comment() || component.comment()->description().isEmpty() )
+    return;
+
+  QgsModelComponentGraphicItem *commentItem = createCommentGraphicItem( model, component.comment()->clone(), parentItem );
+  commentItem->setPos( component.comment()->position().x(), component.comment()->position().y() );
+  addItem( commentItem );
+  connect( commentItem, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
+  connect( commentItem, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
+
+  std::unique_ptr< QgsModelArrowItem > arrow = qgis::make_unique< QgsModelArrowItem >( parentItem, commentItem );
+  arrow->setPenStyle( Qt::DotLine );
+  addItem( arrow.release() );
 }
 
 ///@endcond

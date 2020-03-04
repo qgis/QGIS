@@ -147,6 +147,13 @@ Returns the best link point to use for a link originating at a specified ``other
          - edge: item edge for calculated best link point
 %End
 
+    virtual void editComment();
+%Docstring
+Called when the comment attached to the item should be edited.
+
+The default implementation does nothing.
+%End
+
   signals:
 
 
@@ -210,6 +217,11 @@ Returns the stroke color for the item for the specified ``state``.
 Returns the label text color for the item for the specified ``state``.
 %End
 
+    virtual Qt::PenStyle strokeStyle( State state ) const;
+%Docstring
+Returns the stroke style to use while rendering the outline of the item.
+%End
+
     virtual QPicture iconPicture() const;
 %Docstring
 Returns a QPicture version of the item's icon, if available.
@@ -218,6 +230,11 @@ Returns a QPicture version of the item's icon, if available.
     virtual QPixmap iconPixmap() const;
 %Docstring
 Returns a QPixmap version of the item's icon, if available.
+%End
+
+    virtual void updateStoredComponentPosition( const QPointF &pos ) = 0;
+%Docstring
+Updates the position stored in the model for the associated comment
 %End
 
 };
@@ -263,6 +280,8 @@ Ownership of ``parameter`` is transferred to the item.
     virtual QColor textColor( State state ) const;
 
     virtual QPicture iconPicture() const;
+
+    virtual void updateStoredComponentPosition( const QPointF &pos );
 
 
   protected slots:
@@ -320,6 +339,8 @@ Ownership of ``child`` is transferred to the item.
 
     virtual QString linkPointText( Qt::Edge edge, int index ) const;
 
+    virtual void updateStoredComponentPosition( const QPointF &pos );
+
 
   protected slots:
 
@@ -368,11 +389,69 @@ Ownership of ``output`` is transferred to the item.
 
     virtual QPicture iconPicture() const;
 
+    virtual void updateStoredComponentPosition( const QPointF &pos );
+
 
   protected slots:
 
     virtual void deleteComponent();
 
+
+};
+
+
+
+class QgsModelCommentGraphicItem : QgsModelComponentGraphicItem
+{
+%Docstring
+A graphic item representing a model comment in the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelcomponentgraphicitem.h"
+%End
+  public:
+
+    QgsModelCommentGraphicItem( QgsProcessingModelComment *comment /Transfer/,
+                                QgsModelComponentGraphicItem *parentItem,
+                                QgsProcessingModelAlgorithm *model,
+                                QGraphicsItem *parent /TransferThis/ );
+%Docstring
+Constructor for QgsModelCommentGraphicItem for the specified ``comment``, with the specified ``parent`` item.
+
+The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
+it must exist for the lifetime of this object.
+
+Ownership of ``output`` is transferred to the item.
+%End
+    ~QgsModelCommentGraphicItem();
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
+
+
+  protected:
+
+    virtual QColor fillColor( State state ) const;
+
+    virtual QColor strokeColor( State state ) const;
+
+    virtual QColor textColor( State state ) const;
+
+    virtual Qt::PenStyle strokeStyle( State state ) const;
+
+    virtual void updateStoredComponentPosition( const QPointF &pos );
+
+
+  protected slots:
+
+    virtual void deleteComponent();
+
+    virtual void editComponent();
 
 };
 

@@ -29,7 +29,8 @@ from qgis.gui import (
     QgsProcessingParameterWidgetContext,
     QgsModelParameterGraphicItem,
     QgsModelChildAlgorithmGraphicItem,
-    QgsModelOutputGraphicItem
+    QgsModelOutputGraphicItem,
+    QgsModelCommentGraphicItem
 )
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -59,15 +60,20 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
         widget_context.setModel(self.model())
         return widget_context
 
-    def editComponent(self):
+    def edit(self, edit_comment=False):
         existing_param = self.model().parameterDefinition(self.component().parameterName())
+        comment = self.component().comment().description()
         new_param = None
         if ModelerParameterDefinitionDialog.use_legacy_dialog(param=existing_param):
             # boo, old api
             dlg = ModelerParameterDefinitionDialog(self.model(),
                                                    param=existing_param)
+            dlg.setComments(comment)
+            if edit_comment:
+                dlg.switchToCommentTab()
             if dlg.exec_():
                 new_param = dlg.param
+                comment = dlg.comments()
         else:
             # yay, use new API!
             context = createContext()
@@ -84,10 +90,17 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
             self.model().removeModelParameter(self.component().parameterName())
             self.component().setParameterName(new_param.name())
             self.component().setDescription(new_param.name())
+            self.component().comment().setDescription(comment)
             self.model().addModelParameter(new_param, self.component())
             self.setLabel(new_param.description())
             self.requestModelRepaint.emit()
             self.changed.emit()
+
+    def editComponent(self):
+        self.edit()
+
+    def editComment(self):
+        self.edit(edit_comment=True)
 
 
 class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
@@ -101,10 +114,13 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
     def __init__(self, element, model):
         super().__init__(element, model, None)
 
-    def editComponent(self):
+    def edit(self, edit_comment=False):
         elemAlg = self.component().algorithm()
         dlg = ModelerParametersDialog(elemAlg, self.model(), self.component().childId(),
                                       self.component().configuration())
+        dlg.setComments(self.component().comment().description())
+        if edit_comment:
+            dlg.switchToCommentTab()
         if dlg.exec_():
             alg = dlg.createAlgorithm()
             alg.setChildId(self.component().childId())
@@ -112,11 +128,18 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
             self.requestModelRepaint.emit()
             self.changed.emit()
 
+    def editComponent(self):
+        self.edit()
+
+    def editComment(self):
+        self.edit(edit_comment=True)
+
     def updateAlgorithm(self, alg):
         existing_child = self.model().childAlgorithm(alg.childId())
         alg.setPosition(existing_child.position())
         alg.setLinksCollapsed(Qt.TopEdge, existing_child.linksCollapsed(Qt.TopEdge))
         alg.setLinksCollapsed(Qt.BottomEdge, existing_child.linksCollapsed(Qt.BottomEdge))
+        alg.comment().setPosition(existing_child.comment().position())
         for i, out in enumerate(alg.modelOutputs().keys()):
             alg.modelOutput(out).setPosition(alg.modelOutput(out).position()
                                              or alg.position() + QPointF(
@@ -136,15 +159,42 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
     def __init__(self, element, model):
         super().__init__(element, model, None)
 
-    def editComponent(self):
+    def edit(self, edit_comment=False):
         child_alg = self.model().childAlgorithm(self.component().childId())
         param_name = '{}:{}'.format(self.component().childId(), self.component().name())
         dlg = ModelerParameterDefinitionDialog(self.model(),
                                                param=self.model().parameterDefinition(param_name))
-        if dlg.exec_() and dlg.param is not None:
+        dlg.setComments(self.component().comment().description())
+        if edit_comment:
+            dlg.switchToCommentTab()
+
+        if dlg.exec_():
             model_output = child_alg.modelOutput(self.component().name())
             model_output.setDescription(dlg.param.description())
             model_output.setDefaultValue(dlg.param.defaultValue())
             model_output.setMandatory(not (dlg.param.flags() & QgsProcessingParameterDefinition.FlagOptional))
+            model_output.comment().setDescription(dlg.comments())
             self.model().updateDestinationParameters()
+            self.requestModelRepaint.emit()
             self.changed.emit()
+
+    def editComponent(self):
+        self.edit()
+
+    def editComment(self):
+        self.edit(edit_comment=True)
+
+
+class ModelerCommentGraphicItem(QgsModelCommentGraphicItem):
+    """
+    IMPORTANT! This is intentionally a MINIMAL class, only containing code which HAS TO BE HERE
+    because it contains Python code for compatibility with deprecated methods ONLY.
+
+    Don't add anything here -- edit the c++ base class instead!
+    """
+
+    def __init__(self, model, element, parent_component):
+        super().__init__(element, parent_component, model, None)
+
+    def editComponent(self):
+        pass

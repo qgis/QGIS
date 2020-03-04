@@ -1,8 +1,8 @@
 /***************************************************************************
-                         qgsprocessingmodelparameter.cpp
-                         ------------------------------
-    begin                : June 2017
-    copyright            : (C) 2017 by Nyall Dawson
+                         qgsprocessingmodelcomment.cpp
+                         --------------------------
+    begin                : February 2020
+    copyright            : (C) 2020 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
@@ -15,36 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsprocessingmodelparameter.h"
+#include "qgsprocessingmodelcomment.h"
 
 ///@cond NOT_STABLE
 
-QgsProcessingModelParameter::QgsProcessingModelParameter( const QString &parameterName )
-  : mParameterName( parameterName )
+QgsProcessingModelComment::QgsProcessingModelComment( const QString &description )
+  : QgsProcessingModelComponent( description )
 {
-
+  setSize( QSizeF( 100, 60 ) );
 }
 
-QgsProcessingModelParameter *QgsProcessingModelParameter::clone() const
+QgsProcessingModelComment *QgsProcessingModelComment::clone() const
 {
-  return new QgsProcessingModelParameter( *this );
+  return new QgsProcessingModelComment( *this );
 }
 
-QVariant QgsProcessingModelParameter::toVariant() const
+QVariant QgsProcessingModelComment::toVariant() const
 {
   QVariantMap map;
-  map.insert( QStringLiteral( "name" ), mParameterName );
-  map.insert( QStringLiteral( "comment" ), mComment.toVariant() );
   saveCommonProperties( map );
   return map;
 }
 
-bool QgsProcessingModelParameter::loadVariant( const QVariantMap &map )
+bool QgsProcessingModelComment::loadVariant( const QVariantMap &map )
 {
-  mParameterName = map.value( QStringLiteral( "name" ) ).toString();
-  mComment.loadVariant( map.value( QStringLiteral( "comment" ) ).toMap() );
   restoreCommonProperties( map );
   return true;
 }
+
 
 ///@endcond

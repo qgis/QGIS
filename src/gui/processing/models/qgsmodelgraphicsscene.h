@@ -26,6 +26,8 @@ class QgsModelComponentGraphicItem;
 class QgsProcessingModelParameter;
 class QgsProcessingModelChildAlgorithm;
 class QgsProcessingModelOutput;
+class QgsProcessingModelComponent;
+class QgsProcessingModelComment;
 
 ///@cond NOT_STABLE
 
@@ -118,6 +120,13 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     virtual QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const SIP_FACTORY;
 
+    /**
+     * Creates a new graphic item for a model comment.
+     */
+    virtual QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment,
+        QgsModelComponentGraphicItem *parentItem ) const SIP_FACTORY;
+
+
   private:
 
     struct LinkSource
@@ -127,6 +136,8 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
       int linkIndex = -1;
     };
     QList< LinkSource > linkSourcesForParameterValue( QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context ) const;
+
+    void addCommentItemForComponent( QgsProcessingModelAlgorithm *model, const QgsProcessingModelComponent &component, QgsModelComponentGraphicItem *parentItem );
 
     Flags mFlags = nullptr;
 
