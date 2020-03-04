@@ -33,6 +33,7 @@ Holds metadata about mesh driver
     {
       CanWriteFaceDatasets,
       CanWriteVertexDatasets,
+      CanWriteEdgeDatasets,
     };
 
     typedef QFlags<QgsMeshDriverMetadata::MeshDriverCapability> MeshDriverCapabilities;
