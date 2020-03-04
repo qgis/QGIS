@@ -129,9 +129,9 @@ struct CORE_EXPORT QgsMesh
     */
   void clear();
 
-  QVector<QgsMeshVertex> vertices;
-  QVector<QgsMeshEdge> edges;
-  QVector<QgsMeshFace> faces;
+  QVector<QgsMeshVertex> vertices SIP_SKIP;
+  QVector<QgsMeshEdge> edges SIP_SKIP;
+  QVector<QgsMeshFace> faces SIP_SKIP;
 };
 
 /**

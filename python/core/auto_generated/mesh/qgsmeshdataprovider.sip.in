@@ -112,9 +112,6 @@ Remove all vertices, edges and faces
 .. versionadded:: 3.14
 %End
 
-  QVector<QgsMeshVertex> vertices;
-  QVector<QgsMeshEdge> edges;
-  QVector<QgsMeshFace> faces;
 };
 
 class QgsMeshDatasetValue
