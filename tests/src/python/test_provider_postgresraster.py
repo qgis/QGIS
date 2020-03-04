@@ -32,9 +32,10 @@ from qgis.core import (
     QgsRasterLayer,
     QgsPointXY,
     QgsRaster,
+    QgsProviderRegistry,
 )
 from qgis.testing import start_app, unittest
-from utilities import unitTestDataPath
+from utilities import unitTestDataPath, compareWkt
 
 QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -43,12 +44,29 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestPyQgsPostgresRasterProvider(unittest.TestCase):
 
     @classmethod
+    def _load_test_table(cls, schemaname, tablename, basename=None):
+
+        postgres_conn = cls.dbconn + " sslmode=disable "
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(postgres_conn, {})
+
+        if basename is None:
+            basename = tablename
+
+        if tablename not in [n.tableName() for n in conn.tables(schemaname)]:
+            with open(os.path.join(TEST_DATA_DIR, 'provider', 'postgresraster', basename + '.sql'), 'r') as f:
+                sql = f.read()
+                conn.executeSql(sql)
+            assert (tablename in [n.tableName() for n in conn.tables(schemaname)])
+
+    @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layers
+        cls._load_test_table('public', 'raster_tiled_3035')
         cls.rl = QgsRasterLayer(cls.dbconn + ' sslmode=disable key=\'rid\' srid=3035  table="public"."raster_tiled_3035" sql=', 'test', 'postgresraster')
         assert cls.rl.isValid()
         cls.source = cls.rl.dataProvider()
@@ -99,18 +117,21 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
     def testNoConstraintRaster(self):
         """Read unconstrained raster layer"""
 
+        self._load_test_table('public', 'raster_3035_no_constraints')
         rl = QgsRasterLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=3035  table="public"."raster_3035_no_constraints" sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
 
     def testPkGuessing(self):
         """Read raster layer with no pkey in uri"""
 
+        self._load_test_table('public', 'raster_tiled_3035')
         rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_tiled_3035" sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
 
     def testWhereCondition(self):
         """Read raster layer with where condition"""
 
+        self._load_test_table('public', 'raster_3035_tiled_no_overviews')
         rl_nowhere = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_3035_tiled_no_overviews"' +
                                     'sql=', 'test', 'postgresraster')
         self.assertTrue(rl_nowhere.isValid())
@@ -130,6 +151,7 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
     def testNoPk(self):
         """Read raster with no PK"""
 
+        self._load_test_table('public', 'raster_3035_tiled_no_pk')
         rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_3035_tiled_no_pk"' +
                             'sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
@@ -137,11 +159,14 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
     def testCompositeKey(self):
         """Read raster with composite pks"""
 
+        self._load_test_table('public', 'raster_3035_tiled_composite_pk')
         rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_3035_tiled_composite_pk"' +
                             'sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
+        data = rl.dataProvider().block(1, rl.extent(), 3, 3)
+        self.assertEqual(int(data.value(0, 0)), 142)
 
-    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Performance test is disabled in Travis environment')
+    @unittest.skip('Performance test is disabled in Travis environment')
     def testSpeed(self):
         """Compare speed with GDAL provider, this test was used during development"""
 
@@ -151,7 +176,7 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             speed_db='qgis_test'
         )
 
-        table = 'eu_dem_tiled'
+        table = 'basic_map_tiled'
         schema = 'public'
 
         def _speed_check(schema, table, width, height):
@@ -194,6 +219,39 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             print('-' * 80)
 
         _speed_check(schema, table, 1000, 1000)
+
+    def testOtherSchema(self):
+        """Test that a layer in a different schema than public can be loaded
+        See: GH #34823"""
+
+        self._load_test_table('idro', 'cosmo_i5_snow', 'bug_34823_pg_raster')
+
+        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema}".format(table='cosmo_i5_snow', schema='idro'), 'pg_layer', 'postgresraster')
+        self.assertTrue(rl.isValid())
+        self.assertTrue(compareWkt(rl.extent().asWktPolygon(), 'POLYGON((-64.79286766849691048 -77.26689086732433509, -62.18292922825105506 -77.26689086732433509, -62.18292922825105506 -74.83694818157819384, -64.79286766849691048 -74.83694818157819384, -64.79286766849691048 -77.26689086732433509))'))
+
+    def testUntiledMultipleRows(self):
+        """Test multiple rasters (one per row)"""
+
+        self._load_test_table('public', 'raster_3035_untiled_multiple_rows')
+
+        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} sql=\"pk\" = 1".format(table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
+        self.assertTrue(rl.isValid())
+        block = rl.dataProvider().block(1, rl.extent(), 2, 2)
+        data = []
+        for i in range(2):
+            for j in range(2):
+                data.append(int(block.value(i, j)))
+        self.assertEqual(data, [136, 142, 145, 153])
+
+        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} sql=\"pk\" = 2".format(table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
+        self.assertTrue(rl.isValid())
+        block = rl.dataProvider().block(1, rl.extent(), 2, 2)
+        data = []
+        for i in range(2):
+            for j in range(2):
+                data.append(int(block.value(i, j)))
+        self.assertEqual(data, [136, 142, 161, 169])
 
 
 if __name__ == '__main__':
