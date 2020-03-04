@@ -67,6 +67,11 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
   connect( mDeleteButton, &QgsModelDesignerFlatButtonGraphicItem::clicked, this, &QgsModelComponentGraphicItem::deleteComponent );
 }
 
+QgsModelComponentGraphicItem::Flags QgsModelComponentGraphicItem::flags() const
+{
+  return nullptr;
+}
+
 QgsModelComponentGraphicItem::~QgsModelComponentGraphicItem() = default;
 
 QgsProcessingModelComponent *QgsModelComponentGraphicItem::component()
@@ -198,14 +203,26 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   painter->setFont( font() );
   painter->setPen( QPen( textColor( state() ) ) );
 
-  QString text = truncatedTextForItem( label() );
+  QString text;
 
   const QSizeF componentSize = mComponent->size();
 
   QFontMetricsF fm( font() );
   double h = fm.ascent();
   QPointF pt( -componentSize.width() / 2 + 25, componentSize.height() / 2.0 - h + 1 );
-  painter->drawText( pt, text );
+
+  if ( flags() & FlagMultilineText )
+  {
+    QRectF labelRect = QRectF( rect.left() + 4, rect.top() + 4, rect.width() - 8 - mButtonSize.width(), rect.height() - 8 );
+    text = label();
+    painter->drawText( labelRect, Qt::TextWordWrap, text );
+  }
+  else
+  {
+    text = truncatedTextForItem( label() );
+    painter->drawText( pt, text );
+  }
+
   painter->setPen( QPen( QApplication::palette().color( QPalette::WindowText ) ) );
 
   if ( linkPointCount( Qt::TopEdge ) || linkPointCount( Qt::BottomEdge ) )
@@ -512,8 +529,11 @@ void QgsModelParameterGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEv
   QMenu *popupmenu = new QMenu( event->widget() );
   QAction *removeAction = popupmenu->addAction( QObject::tr( "Remove" ) );
   connect( removeAction, &QAction::triggered, this, &QgsModelParameterGraphicItem::deleteComponent );
-  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit" ) );
+  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit…" ) );
   connect( editAction, &QAction::triggered, this, &QgsModelParameterGraphicItem::editComponent );
+  QAction *editCommentAction = popupmenu->addAction( component()->comment()->description().isEmpty() ? QObject::tr( "Add Comment…" ) : QObject::tr( "Edit Comment…" ) );
+  connect( editCommentAction, &QAction::triggered, this, &QgsModelParameterGraphicItem::editComment );
+
   popupmenu->exec( event->screenPos() );
 }
 
@@ -616,8 +636,11 @@ void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextM
   QMenu *popupmenu = new QMenu( event->widget() );
   QAction *removeAction = popupmenu->addAction( QObject::tr( "Remove" ) );
   connect( removeAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::deleteComponent );
-  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit" ) );
+  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit…" ) );
   connect( editAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::editComponent );
+  QAction *editCommentAction = popupmenu->addAction( component()->comment()->description().isEmpty() ? QObject::tr( "Add Comment…" ) : QObject::tr( "Edit Comment…" ) );
+  connect( editCommentAction, &QAction::triggered, this, &QgsModelParameterGraphicItem::editComment );
+  popupmenu->addSeparator();
 
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
   {
@@ -879,9 +902,14 @@ void QgsModelCommentGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEven
   QMenu *popupmenu = new QMenu( event->widget() );
   QAction *removeAction = popupmenu->addAction( QObject::tr( "Remove" ) );
   connect( removeAction, &QAction::triggered, this, &QgsModelCommentGraphicItem::deleteComponent );
-  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit" ) );
+  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit…" ) );
   connect( editAction, &QAction::triggered, this, &QgsModelCommentGraphicItem::editComponent );
   popupmenu->exec( event->screenPos() );
+}
+
+QgsModelCommentGraphicItem::Flags QgsModelCommentGraphicItem::flags() const
+{
+  return FlagMultilineText;
 }
 
 QgsModelCommentGraphicItem::~QgsModelCommentGraphicItem() = default;

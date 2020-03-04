@@ -54,6 +54,13 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
       Hover, //!< Cursor is hovering over an deselected item
     };
 
+    //! Available flags
+    enum Flag
+    {
+      FlagMultilineText = 1 << 0, //!< Show multiline text in label
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     /**
      * Constructor for QgsModelComponentGraphicItem for the specified \a component, with the specified \a parent item.
      *
@@ -67,6 +74,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
                                   QGraphicsItem *parent SIP_TRANSFERTHIS );
 
     ~QgsModelComponentGraphicItem() override;
+
+    /**
+     * Returns item flags.
+     */
+    virtual Flags flags() const;
 
     /**
      * Returns the model component associated with this item.
@@ -278,6 +290,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     bool mIsHovering = false;
 
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsModelComponentGraphicItem::Flags )
 
 /**
  * \ingroup gui
@@ -442,7 +455,7 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
                                 QGraphicsItem *parent SIP_TRANSFERTHIS );
     ~QgsModelCommentGraphicItem() override;
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
-
+    Flags flags() const override;
   protected:
 
     QColor fillColor( State state ) const override;

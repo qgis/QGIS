@@ -25,8 +25,7 @@ from qgis.gui import QgsModelGraphicsScene
 from processing.modeler.ModelerGraphicItem import (
     ModelerInputGraphicItem,
     ModelerOutputGraphicItem,
-    ModelerChildAlgorithmGraphicItem,
-    ModelerCommentGraphicItem
+    ModelerChildAlgorithmGraphicItem
 )
 
 
@@ -49,6 +48,3 @@ class ModelerScene(QgsModelGraphicsScene):
 
     def createOutputGraphicItem(self, model, output):
         return ModelerOutputGraphicItem(output.clone(), model)
-
-    #def createCommentGraphicItem(self, model, comment, parent):
-    #    return ModelerCommentGraphicItem(model, comment.clone(), parent)
