@@ -88,9 +88,39 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * \warning To be used only when mode() is
      * QgsRasterLayerTemporalProperties::ModeFixedTemporalRange
      *
-     *\see setFixedTemporalRange()
+     * \see setFixedTemporalRange()
     **/
     const QgsDateTimeRange &fixedTemporalRange() const;
+
+    /**
+     * Sets the current active datetime range for the temporal properties.
+     *
+     * \see temporalRange()
+    */
+    void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
+
+    /**
+     * Returns the current active datetime range for these temporal properties.
+     *
+     * \see setTemporalRange()
+    */
+    const QgsDateTimeRange &temporalRange() const;
+
+    /**
+     * Sets the current active reference datetime range for the temporal properties.
+     *
+     * This will be used by bi-temporal dimensional data providers.
+     *
+     * \see referenceTemporalRange()
+    */
+    void setReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange );
+
+    /**
+     * Returns the current active reference datetime range for these temporal properties.
+     *
+     * \see setReferenceTemporalRange()
+    */
+    const QgsDateTimeRange &referenceTemporalRange() const;
 
     QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
@@ -101,7 +131,15 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     //! Temporal layer mode.
     TemporalMode mMode = TemporalMode::ModeFixedTemporalRange;
 
-    //! Represents datetime range member.
+    //! Represents fixed datetime range member.
+    QgsDateTimeRange mFixedRange;
+
+    /**
+     * Stores reference temporal range
+     */
+    QgsDateTimeRange mReferenceRange;
+
+    //! Represents current active datetime range member.
     QgsDateTimeRange mRange;
 
     /**

@@ -271,22 +271,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   layout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( layout );
 
-  // Temporal options
-  // Check if temporal properties of the raster layer are available and active,
-  // if not check if the layer has temporal capabilities from its provider
-  // and they are active.
-  if ( ( mRasterLayer->temporalProperties() &&
-         mRasterLayer->temporalProperties()->isActive() ) ||
-       ( mRasterLayer->dataProvider() &&
-         mRasterLayer->dataProvider()->temporalCapabilities() &&
-         mRasterLayer->dataProvider()->temporalCapabilities()->isActive()
-       ) )
-  {
-    QVBoxLayout *temporalLayout = new QVBoxLayout( temporalFrame );
-    mTemporalWidget = new QgsRasterLayerTemporalPropertiesWidget( this, mRasterLayer );
-    temporalLayout->addWidget( mTemporalWidget );
-
-  }
+  QVBoxLayout *temporalLayout = new QVBoxLayout( temporalFrame );
+  mTemporalWidget = new QgsRasterLayerTemporalPropertiesWidget( this, mRasterLayer );
+  temporalLayout->addWidget( mTemporalWidget );
 
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().userFriendlyIdentifier() );

@@ -56,13 +56,6 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
     void init();
 
     /**
-     * Map canvas associtated with this temporal widget.
-     *
-     * This can be used to get current project map settings.
-     */
-    QgsMapCanvas *mCanvas = nullptr;
-
-    /**
      * The corresponding map layer with temporal attributes
      */
     QgsMapLayer *mLayer = nullptr;

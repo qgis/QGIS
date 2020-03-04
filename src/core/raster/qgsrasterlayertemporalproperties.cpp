@@ -36,15 +36,51 @@ void QgsRasterLayerTemporalProperties::setMode( QgsRasterLayerTemporalProperties
 
 void  QgsRasterLayerTemporalProperties::setFixedTemporalRange( const QgsDateTimeRange &range )
 {
-  if ( range == mRange )
-    return;
-
-  mRange = range;
+  mFixedRange = range;
 }
 
 const QgsDateTimeRange &QgsRasterLayerTemporalProperties::fixedTemporalRange() const
 {
+  return mFixedRange;
+}
+
+void QgsRasterLayerTemporalProperties::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
+{
+  // Don't set temporal range outside fixed temporal range limits,
+  // instead set equal to the fixed temporal range
+  QDateTime begin;
+  QDateTime end;
+
+  if ( mFixedRange.begin().isValid() &&
+       ( dateTimeRange.begin() < mFixedRange.begin() ) )
+    begin = mFixedRange.begin();
+  else
+    begin = dateTimeRange.begin();
+
+  if ( mFixedRange.end().isValid() &&
+       ( dateTimeRange.end() > mFixedRange.end() ) )
+    end = mFixedRange.end();
+  else
+    end = dateTimeRange.end();
+
+  mRange = QgsDateTimeRange( begin, end );
+
+}
+
+const QgsDateTimeRange &QgsRasterLayerTemporalProperties::temporalRange() const
+{
   return mRange;
+}
+
+
+void QgsRasterLayerTemporalProperties::setReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
+{
+  mReferenceRange = dateTimeRange;
+}
+
+const QgsDateTimeRange &QgsRasterLayerTemporalProperties::referenceTemporalRange() const
+{
+  return mReferenceRange;
 }
 
 bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
@@ -57,46 +93,64 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
   TemporalMode mode = indexToMode( temporalNode.toElement().attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
   setMode( mode );
 
-  QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "range" ) );
+  for ( QString rangeString : { "fixedRange", "normalRange", "referenceRange" } )
+  {
+    QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( rangeString ) );
 
-  QDomNode begin = rangeElement.namedItem( QStringLiteral( "start" ) );
-  QDomNode end = rangeElement.namedItem( QStringLiteral( "end" ) );
+    QDomNode begin = rangeElement.namedItem( QStringLiteral( "start" ) );
+    QDomNode end = rangeElement.namedItem( QStringLiteral( "end" ) );
 
-  QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
-  QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
+    QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
+    QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
 
-  QgsDateTimeRange range = QgsDateTimeRange( beginDate, endDate );
+    QgsDateTimeRange range = QgsDateTimeRange( beginDate, endDate );
 
-  setFixedTemporalRange( range );
-
+    if ( rangeString == QLatin1String( "fixedRange" ) )
+      setFixedTemporalRange( range );
+    if ( rangeString == QLatin1String( "normalRange" ) )
+      setTemporalRange( range );
+    if ( rangeString == QLatin1String( "referenceRange" ) )
+      setReferenceTemporalRange( range );
+  }
   return true;
 }
 
 QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( context );
+  Q_UNUSED( context )
   if ( element.isNull() )
     return QDomElement();
 
   QDomElement temporalElement = document.createElement( QStringLiteral( "temporal" ) );
   temporalElement.setAttribute( QStringLiteral( "mode" ), QString::number( mMode ) );
 
-  QDomElement rangeElement = document.createElement( QStringLiteral( "range" ) );
+  for ( QString rangeString : { "fixedRange", "normalRange", "referenceRange" } )
+  {
+    QgsDateTimeRange range;
 
-  QDomElement startElement = document.createElement( QStringLiteral( "start" ) );
-  QDomElement endElement = document.createElement( QStringLiteral( "end" ) );
+    if ( rangeString == QLatin1String( "fixedRange" ) )
+      range = mFixedRange;
+    if ( rangeString == QLatin1String( "normalRange" ) )
+      range = mRange;
+    if ( rangeString == QLatin1String( "referenceRange" ) )
+      range = mReferenceRange;
 
-  QDomText startText = document.createTextNode( mRange.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
-  QDomText endText = document.createTextNode( mRange.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+    QDomElement rangeElement = document.createElement( QStringLiteral( rangeString ) );
 
-  startElement.appendChild( startText );
-  endElement.appendChild( endText );
+    QDomElement startElement = document.createElement( QStringLiteral( "start" ) );
+    QDomElement endElement = document.createElement( QStringLiteral( "end" ) );
 
-  rangeElement.appendChild( startElement );
-  rangeElement.appendChild( endElement );
+    QDomText startText = document.createTextNode( range.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+    QDomText endText = document.createTextNode( range.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
 
-  temporalElement.appendChild( rangeElement );
+    startElement.appendChild( startText );
+    endElement.appendChild( endText );
 
+    rangeElement.appendChild( startElement );
+    rangeElement.appendChild( endElement );
+
+    temporalElement.appendChild( rangeElement );
+  }
   element.appendChild( temporalElement );
 
   return element;
