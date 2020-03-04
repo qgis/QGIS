@@ -96,9 +96,13 @@ void TestQgsRasterDataProviderTemporalCapabilities::checkTemporalRange()
   QCOMPARE( temporalCapabilities->fixedTemporalRange(), fixedDateTimeRange );
   QCOMPARE( temporalCapabilities->requestedTemporalRange(), dateTimeRange );
 
-//   Test setting out of fixed temporal range limits, should default to
-//   using fixed temporal range
+  // Test setting out of fixed temporal range limits, should not update the temporal range.
   temporalCapabilities->setRequestedTemporalRange( outOfLimitsRange );
+  QCOMPARE( temporalCapabilities->requestedTemporalRange(), dateTimeRange );
+
+  // Test if setting the requested temporal range with the fixed temporal range object,
+  // will result in to setting the requested temporal range with the fixed temporal range.
+  temporalCapabilities->setRequestedTemporalRange( fixedDateTimeRange );
   QCOMPARE( temporalCapabilities->requestedTemporalRange(), fixedDateTimeRange );
 }
 
@@ -108,12 +112,20 @@ void TestQgsRasterDataProviderTemporalCapabilities::checkReferenceTemporalRange(
                                         QDateTime( QDate( 2020, 12, 31 ) ) );
   QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
                                    QDateTime( QDate( 2020, 3, 1 ) ) );
+  QgsDateTimeRange outOfLimitsRange = QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ) ),
+                                      QDateTime( QDate( 2021, 3, 1 ) ) );
 
-  temporalCapabilities->setFixedReferenceTemporalRange( dateTimeRange );
   temporalCapabilities->setFixedReferenceTemporalRange( fixedDateTimeRange );
+  temporalCapabilities->setRequestedReferenceTemporalRange( dateTimeRange );
 
-  QCOMPARE( temporalCapabilities->fixedReferenceTemporalRange(), dateTimeRange );
   QCOMPARE( temporalCapabilities->fixedReferenceTemporalRange(), fixedDateTimeRange );
+  QCOMPARE( temporalCapabilities->requestedReferenceTemporalRange(), dateTimeRange );
+
+  temporalCapabilities->setRequestedReferenceTemporalRange( outOfLimitsRange );
+  QCOMPARE( temporalCapabilities->requestedReferenceTemporalRange(), dateTimeRange );
+
+  temporalCapabilities->setRequestedReferenceTemporalRange( fixedDateTimeRange );
+  QCOMPARE( temporalCapabilities->requestedReferenceTemporalRange(), fixedDateTimeRange );
 }
 
 QGSTEST_MAIN( TestQgsRasterDataProviderTemporalCapabilities )

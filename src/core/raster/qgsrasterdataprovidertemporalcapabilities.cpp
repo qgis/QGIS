@@ -58,7 +58,6 @@ const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::fixedReferenc
   return mFixedReferenceRange;
 }
 
-
 void QgsRasterDataProviderTemporalCapabilities::setRequestedTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( mFixedRange.contains( dateTimeRange ) )
