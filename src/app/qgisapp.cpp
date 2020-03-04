@@ -9675,7 +9675,10 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
          || ( field.constraints().constraints() & QgsFieldConstraints::ConstraintNotNull && field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) & QgsFieldConstraints::ConstraintStrengthHard )
          || ( field.constraints().constraints() & QgsFieldConstraints::ConstraintExpression && !field.constraints().constraintExpression().isEmpty() && field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) & QgsFieldConstraints::ConstraintStrengthHard )
        )
+    {
       hasStrongConstraints = true;
+      break;
+    }
   }
 
   if ( hasStrongConstraints )
