@@ -267,6 +267,8 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
     def testSetSubsetString(self):
         """Test setSubsetString"""
 
+        self._load_test_table('public', 'raster_3035_untiled_multiple_rows')
+
         rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} sql=\"pk\" = 2".format(table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
         self.assertTrue(rl.isValid())
 
