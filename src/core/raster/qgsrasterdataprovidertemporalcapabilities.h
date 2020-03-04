@@ -47,36 +47,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     virtual ~QgsRasterDataProviderTemporalCapabilities() = default;
 
     /**
-     * Sets the current active datetime range for the temporal properties.
-     *
-     * \see temporalRange()
-    */
-    void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
-
-    /**
-     * Returns the current active datetime range for these temporal properties.
-     *
-     * \see setTemporalRange()
-    */
-    const QgsDateTimeRange &temporalRange() const;
-
-    /**
-     * Sets the current active reference datetime range for the temporal properties.
-     *
-     * This will be used by bi-temporal dimensional data providers.
-     *
-     * \see referenceTemporalRange()
-    */
-    void setReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange );
-
-    /**
-     * Returns the current active reference datetime range for these temporal properties.
-     *
-     * \see setReferenceTemporalRange()
-    */
-    const QgsDateTimeRange &referenceTemporalRange() const;
-
-    /**
      * Sets the fixed datetime range for the temporal properties.
      *
      * \see fixedTemporalRange()
@@ -147,8 +117,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     bool isReferenceEnable() const;
 
   private:
-    //! Represents current active datetime range member.
-    QgsDateTimeRange mRange;
 
     /**
      * Represents fixed data provider datetime range.
@@ -170,11 +138,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      *  no time part.
      */
     bool mEnableTime = true;
-
-    /**
-     * Stores reference temporal range
-     */
-    QgsDateTimeRange mReferenceRange;
 
     /**
      * Stores the fixed reference temporal range
