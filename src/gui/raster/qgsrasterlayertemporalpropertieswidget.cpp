@@ -87,13 +87,13 @@ void QgsRasterLayerTemporalPropertiesWidget::init()
 void QgsRasterLayerTemporalPropertiesWidget::setDateTimeInputsLimit()
 {
   QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( mLayer );
-  if ( layer->dataProvider() && layer->dataProvider()->temporalCapabilities() )
+  if ( layer && layer->temporalProperties() )
   {
-    QgsDateTimeRange fixedRange = layer->dataProvider()->temporalCapabilities()->fixedTemporalRange();
-    QgsDateTimeRange fixedReferenceRange = layer->dataProvider()->temporalCapabilities()->fixedReferenceTemporalRange();
+    QgsDateTimeRange fixedRange = layer->temporalProperties()->fixedTemporalRange();
+    QgsDateTimeRange fixedReferenceRange = layer->temporalProperties()->fixedReferenceTemporalRange();
 
-    QgsDateTimeRange range = layer->dataProvider()->temporalCapabilities()->temporalRange();
-    QgsDateTimeRange referenceRange = layer->dataProvider()->temporalCapabilities()->referenceTemporalRange();
+    QgsDateTimeRange range = layer->temporalProperties()->temporalRange();
+    QgsDateTimeRange referenceRange = layer->temporalProperties()->referenceTemporalRange();
 
     // Set initial date time input values to the layers temporal range only if the
     // ranges are valid
@@ -153,14 +153,15 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
                                      mEndTemporalDateTimeEdit->dateTime() );
       QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( mLayer );
 
-      if ( rasterLayer->dataProvider() && rasterLayer->dataProvider()->temporalCapabilities() )
+      if ( rasterLayer && rasterLayer->temporalProperties() )
       {
-        rasterLayer->dataProvider()->temporalCapabilities()->setTemporalRange( normalRange );
+        rasterLayer->temporalProperties()->setTemporalRange( normalRange );
 
-        if ( mDisableTime->isChecked() )
-          rasterLayer->dataProvider()->temporalCapabilities()->setEnableTime( false );
-        else
-          rasterLayer->dataProvider()->temporalCapabilities()->setEnableTime( true );
+        if ( rasterLayer->dataProvider() && rasterLayer->dataProvider()->temporalCapabilities() )
+        {
+          rasterLayer->dataProvider()->temporalCapabilities()->setEnableTime( !mDisableTime->isChecked() );
+          rasterLayer->dataProvider()->temporalCapabilities()->setReferenceEnable( mReferenceCheckBox->isChecked() );
+        }
 
         // Update current selection label
         updateRangeLabel( TemporalRangeSource::Layer, mRangeLabel );
@@ -169,12 +170,8 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
         {
           QgsDateTimeRange referenceRange = QgsDateTimeRange( mStartReferenceDateTimeEdit->dateTime(),
                                             mEndReferenceDateTimeEdit->dateTime() );
-
-          rasterLayer->dataProvider()->temporalCapabilities()->setReferenceEnable( true );
-          rasterLayer->dataProvider()->temporalCapabilities()->setReferenceTemporalRange( referenceRange );
+          rasterLayer->temporalProperties()->setReferenceTemporalRange( referenceRange );
         }
-        else
-          rasterLayer->dataProvider()->temporalCapabilities()->setReferenceEnable( false );
       }
     }
   }
@@ -200,14 +197,13 @@ void QgsRasterLayerTemporalPropertiesWidget::updateRangeLabel( TemporalRangeSour
 {
   if ( source == TemporalRangeSource::Layer )
   {
-    if ( mLayer->type() == QgsMapLayerType::RasterLayer &&
-         mLayer->providerType() == "wms" )
+    if ( mLayer->type() == QgsMapLayerType::RasterLayer )
     {
       QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *> ( mLayer );
 
-      if ( rasterLayer->dataProvider() && rasterLayer->dataProvider()->temporalCapabilities() )
+      if ( rasterLayer->temporalProperties() )
       {
-        QgsDateTimeRange range = rasterLayer->dataProvider()->temporalCapabilities()->temporalRange();
+        QgsDateTimeRange range = rasterLayer->temporalProperties()->temporalRange();
 
         if ( range.begin().isValid() && range.end().isValid() )
           label->setText( tr( "Current layer range: %1 to %2" ).arg(
@@ -230,5 +226,3 @@ void QgsRasterLayerTemporalPropertiesWidget::updateRangeLabel( TemporalRangeSour
 //      label->setText( tr( "Date time range from the project is invalid, change it in Project options before using it here." ) );
   }
 }
-
-

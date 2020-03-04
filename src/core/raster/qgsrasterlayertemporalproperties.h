@@ -78,6 +78,8 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * \warning This setting is only effective when mode() is
      * QgsRasterLayerTemporalProperties::ModeFixedTemporalRange
      *
+     * \note This setting is not set by user. Provider can set this, if it is coming from there.
+     *
      * \see fixedTemporalRange()
      */
     void setFixedTemporalRange( const QgsDateTimeRange &range );
@@ -93,7 +95,36 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     const QgsDateTimeRange &fixedTemporalRange() const;
 
     /**
+     * Sets a fixed reference temporal \a range to apply to the whole layer. All bands from
+     * the raster layer will be rendered whenever the current datetime range of
+     * a render context intersects the specified \a range.
+     *
+     * For the case of WMS-T layers, this set up will cause new WMS layer to be fetched
+     * with which the range of the render context intersects the specified \a range.
+     *
+     * \warning This setting is only effective when mode() is
+     * QgsRasterLayerTemporalProperties::ModeFixedTemporalRange
+     *
+     * \note This setting is not set by user. Provider can set this, if it is coming from there.
+     *
+     * \see fixedReferenceTemporalRange()
+     */
+    void setFixedReferenceTemporalRange( const QgsDateTimeRange &range );
+
+    /**
+     * Returns the fixed reference temporal range for the layer.
+     *
+     * \warning To be used only when mode() is
+     * QgsRasterLayerTemporalProperties::ModeFixedTemporalRange
+     *
+     * \see setFixedReferenceTemporalRange()
+    **/
+    const QgsDateTimeRange &fixedReferenceTemporalRange() const;
+
+    /**
      * Sets the current active datetime range for the temporal properties.
+     *
+     * \note This can be set by user, through raster layer properties widget.
      *
      * \see temporalRange()
     */
@@ -109,7 +140,9 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     /**
      * Sets the current active reference datetime range for the temporal properties.
      *
-     * This will be used by bi-temporal dimensional data providers.
+     * This will be used by bi-temporal data.
+     *
+     * \note This can be set by user, through raster layer properties widget.
      *
      * \see referenceTemporalRange()
     */
@@ -131,8 +164,11 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     //! Temporal layer mode.
     TemporalMode mMode = TemporalMode::ModeFixedTemporalRange;
 
-    //! Represents fixed datetime range member.
+    //! Represents fixed temporal range.
     QgsDateTimeRange mFixedRange;
+
+    //! Represents fixed reference temporal range member.
+    QgsDateTimeRange mFixedReferenceRange;
 
     /**
      * Stores reference temporal range
