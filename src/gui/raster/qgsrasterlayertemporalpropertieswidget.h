@@ -20,7 +20,6 @@
 
 #include "ui_qgsrasterlayertemporalpropertieswidgetbase.h"
 #include "qgis_gui.h"
-#include "qgsmapcanvas.h"
 #include "qgsrasterlayer.h"
 
 class QgsMapLayer;

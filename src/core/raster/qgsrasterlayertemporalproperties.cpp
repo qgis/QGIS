@@ -44,27 +44,25 @@ const QgsDateTimeRange &QgsRasterLayerTemporalProperties::fixedTemporalRange() c
   return mFixedRange;
 }
 
+void  QgsRasterLayerTemporalProperties::setFixedReferenceTemporalRange( const QgsDateTimeRange &range )
+{
+  mFixedReferenceRange = range;
+}
+
+const QgsDateTimeRange &QgsRasterLayerTemporalProperties::fixedReferenceTemporalRange() const
+{
+  return mFixedReferenceRange;
+}
+
 void QgsRasterLayerTemporalProperties::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   // Don't set temporal range outside fixed temporal range limits,
   // instead set equal to the fixed temporal range
-  QDateTime begin;
-  QDateTime end;
 
-  if ( mFixedRange.begin().isValid() &&
-       ( dateTimeRange.begin() < mFixedRange.begin() ) )
-    begin = mFixedRange.begin();
+  if ( mFixedRange.contains( dateTimeRange ) )
+    mRange = dateTimeRange;
   else
-    begin = dateTimeRange.begin();
-
-  if ( mFixedRange.end().isValid() &&
-       ( dateTimeRange.end() > mFixedRange.end() ) )
-    end = mFixedRange.end();
-  else
-    end = dateTimeRange.end();
-
-  mRange = QgsDateTimeRange( begin, end );
-
+    mRange = mFixedRange;
 }
 
 const QgsDateTimeRange &QgsRasterLayerTemporalProperties::temporalRange() const
@@ -72,10 +70,10 @@ const QgsDateTimeRange &QgsRasterLayerTemporalProperties::temporalRange() const
   return mRange;
 }
 
-
 void QgsRasterLayerTemporalProperties::setReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
-  mReferenceRange = dateTimeRange;
+  if ( mFixedReferenceRange.contains( dateTimeRange ) )
+    mReferenceRange = dateTimeRange;
 }
 
 const QgsDateTimeRange &QgsRasterLayerTemporalProperties::referenceTemporalRange() const
@@ -93,9 +91,9 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
   TemporalMode mode = indexToMode( temporalNode.toElement().attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
   setMode( mode );
 
-  for ( QString rangeString : { "fixedRange", "normalRange", "referenceRange" } )
+  for ( QString rangeString : { "fixedRange", "fixedReferenceRange", "normalRange", "referenceRange" } )
   {
-    QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( rangeString ) );
+    QDomNode rangeElement = temporalNode.namedItem( rangeString );
 
     QDomNode begin = rangeElement.namedItem( QStringLiteral( "start" ) );
     QDomNode end = rangeElement.namedItem( QStringLiteral( "end" ) );
@@ -109,6 +107,8 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
       setFixedTemporalRange( range );
     if ( rangeString == QLatin1String( "normalRange" ) )
       setTemporalRange( range );
+    if ( rangeString == QLatin1String( "fixedReferenceRange" ) )
+      setFixedReferenceTemporalRange( range );
     if ( rangeString == QLatin1String( "referenceRange" ) )
       setReferenceTemporalRange( range );
   }
@@ -124,18 +124,20 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
   QDomElement temporalElement = document.createElement( QStringLiteral( "temporal" ) );
   temporalElement.setAttribute( QStringLiteral( "mode" ), QString::number( mMode ) );
 
-  for ( QString rangeString : { "fixedRange", "normalRange", "referenceRange" } )
+  for ( QString rangeString : { "fixedRange", "fixedReferenceRange", "normalRange", "referenceRange" } )
   {
     QgsDateTimeRange range;
 
     if ( rangeString == QLatin1String( "fixedRange" ) )
       range = mFixedRange;
+    if ( rangeString == QLatin1String( "fixedReferenceRange" ) )
+      range = mFixedReferenceRange;
     if ( rangeString == QLatin1String( "normalRange" ) )
       range = mRange;
     if ( rangeString == QLatin1String( "referenceRange" ) )
       range = mReferenceRange;
 
-    QDomElement rangeElement = document.createElement( QStringLiteral( rangeString ) );
+    QDomElement rangeElement = document.createElement( rangeString );
 
     QDomElement startElement = document.createElement( QStringLiteral( "start" ) );
     QDomElement endElement = document.createElement( QStringLiteral( "end" ) );

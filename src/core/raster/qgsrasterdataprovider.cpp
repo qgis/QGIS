@@ -518,13 +518,14 @@ void QgsRasterDataProvider::copyBaseSettings( const QgsRasterDataProvider &other
   mExtent = other.mExtent;
 
   // copy temporal properties
-  mTemporalCapabilities->setIsActive( other.mTemporalCapabilities->isActive() );
-  mTemporalCapabilities->setTemporalRange( other.mTemporalCapabilities->temporalRange() );
-  mTemporalCapabilities->setFixedTemporalRange( other.mTemporalCapabilities->fixedTemporalRange() );
-  mTemporalCapabilities->setEnableTime( other.mTemporalCapabilities->isTimeEnabled() );
-  mTemporalCapabilities->setHasReference( other.mTemporalCapabilities->hasReference() );
-  mTemporalCapabilities->setReferenceTemporalRange( other.mTemporalCapabilities->referenceTemporalRange() );
-  mTemporalCapabilities->setFixedReferenceTemporalRange( other.mTemporalCapabilities->fixedReferenceTemporalRange() );
+  if ( mTemporalCapabilities && other.mTemporalCapabilities )
+  {
+    mTemporalCapabilities->setIsActive( other.mTemporalCapabilities->isActive() );
+    mTemporalCapabilities->setFixedTemporalRange( other.mTemporalCapabilities->fixedTemporalRange() );
+    mTemporalCapabilities->setEnableTime( other.mTemporalCapabilities->isTimeEnabled() );
+    mTemporalCapabilities->setReferenceEnable( other.mTemporalCapabilities->isReferenceEnable() );
+    mTemporalCapabilities->setFixedReferenceTemporalRange( other.mTemporalCapabilities->fixedReferenceTemporalRange() );
+  }
 }
 
 // ENDS
