@@ -125,4 +125,3 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
                     else:
                         QgsMessageLog.logMessage(self.tr('Could not load model {0}', 'ModelerAlgorithmProvider').format(descriptionFile),
                                                  self.tr('Processing'), Qgis.Critical)
-
