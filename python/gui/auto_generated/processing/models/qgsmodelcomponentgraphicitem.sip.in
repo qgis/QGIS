@@ -34,6 +34,13 @@ Base class for graphic items representing model components in the model designer
       Hover,
     };
 
+    enum Flag
+    {
+      FlagMultilineText,
+    };
+    typedef QFlags<QgsModelComponentGraphicItem::Flag> Flags;
+
+
     QgsModelComponentGraphicItem( QgsProcessingModelComponent *component /Transfer/,
                                   QgsProcessingModelAlgorithm *model,
                                   QGraphicsItem *parent /TransferThis/ );
@@ -47,6 +54,11 @@ Ownership of ``component`` is transferred to the item.
 %End
 
     ~QgsModelComponentGraphicItem();
+
+    virtual Flags flags() const;
+%Docstring
+Returns item flags.
+%End
 
     QgsProcessingModelComponent *component();
 %Docstring
@@ -238,6 +250,8 @@ Updates the position stored in the model for the associated comment
 %End
 
 };
+QFlags<QgsModelComponentGraphicItem::Flag> operator|(QgsModelComponentGraphicItem::Flag f1, QFlags<QgsModelComponentGraphicItem::Flag> f2);
+
 
 class QgsModelParameterGraphicItem : QgsModelComponentGraphicItem
 {
@@ -433,6 +447,7 @@ Ownership of ``output`` is transferred to the item.
     ~QgsModelCommentGraphicItem();
     virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
 
+    virtual Flags flags() const;
 
   protected:
 

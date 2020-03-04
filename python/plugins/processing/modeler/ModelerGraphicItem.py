@@ -144,15 +144,15 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
         alg.setPosition(existing_child.position())
         alg.setLinksCollapsed(Qt.TopEdge, existing_child.linksCollapsed(Qt.TopEdge))
         alg.setLinksCollapsed(Qt.BottomEdge, existing_child.linksCollapsed(Qt.BottomEdge))
-        alg.comment().setPosition(existing_child.comment().position() or
-                                  alg.position() + QPointF(
+        alg.comment().setPosition(existing_child.comment().position()
+                                  or alg.position() + QPointF(
             self.component().size().width(),
             -1.5 * self.component().size().height())
         )
         alg.comment().setSize(existing_child.comment().size())
         for i, out in enumerate(alg.modelOutputs().keys()):
-            alg.modelOutput(out).setPosition(existing_child.modelOutput(out).position() or
-                                             alg.position() + QPointF(
+            alg.modelOutput(out).setPosition(existing_child.modelOutput(out).position()
+                                             or alg.position() + QPointF(
                 self.component().size().width(),
                 (i + 1.5) * self.component().size().height()))
             alg.modelOutput(out).comment().setDescription(existing_child.modelOutput(out).comment().description())
@@ -196,18 +196,3 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
 
     def editComment(self):
         self.edit(edit_comment=True)
-
-
-class ModelerCommentGraphicItem(QgsModelCommentGraphicItem):
-    """
-    IMPORTANT! This is intentionally a MINIMAL class, only containing code which HAS TO BE HERE
-    because it contains Python code for compatibility with deprecated methods ONLY.
-
-    Don't add anything here -- edit the c++ base class instead!
-    """
-
-    def __init__(self, model, element, parent_component):
-        super().__init__(element, parent_component, model, None)
-
-    def editComponent(self):
-        pass
