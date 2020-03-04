@@ -177,6 +177,9 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
 
   if ( !description().isEmpty() )
     lines << baseIndent + QStringLiteral( "# %1" ).arg( description() );
+  if ( !mComment.description().isEmpty() )
+    lines << baseIndent + QStringLiteral( "# %1" ).arg( mComment.description() );
+
   QStringList paramParts;
   for ( auto paramIt = mParams.constBegin(); paramIt != mParams.constEnd(); ++paramIt )
   {

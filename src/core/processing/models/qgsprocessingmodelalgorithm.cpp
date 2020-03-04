@@ -465,6 +465,11 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
             friendlyOutputNames.insert( defClone->name(), friendlyName );
             defClone->setName( friendlyName );
           }
+          else
+          {
+            if ( !mParameterComponents.value( defClone->name() ).comment()->description().isEmpty() )
+              lines << indent + indent + QStringLiteral( "# %1" ).arg( mParameterComponents.value( defClone->name() ).comment()->description() );
+          }
 
           if ( defClone->flags() & QgsProcessingParameterDefinition::FlagAdvanced )
           {
