@@ -47,10 +47,7 @@ class contour(GdalAlgorithm):
     BAND = 'BAND'
     INTERVAL = 'INTERVAL'
     FIELD_NAME = 'FIELD_NAME'
-    FIELD_NAME_MIN = 'FIELD_NAME_MIN'
-    FIELD_NAME_MAX = 'FIELD_NAME_MAX'
     CREATE_3D = 'CREATE_3D'
-    CREATE_POLYGON = 'CREATE_POLYGON'
     IGNORE_NODATA = 'IGNORE_NODATA'
     NODATA = 'NODATA'
     OFFSET = 'OFFSET'
@@ -78,27 +75,12 @@ class contour(GdalAlgorithm):
                                                        defaultValue='ELEV',
                                                        optional=True))
 
-        self.addParameter(QgsProcessingParameterString(self.FIELD_NAME_MIN,
-                                                       self.tr('Attribute name to use for the minimum elevation of contour polygons (if not set, no elevation attribute is attached)'),
-                                                       defaultValue='ELEV_MIN',
-                                                       optional=True))
-
-        self.addParameter(QgsProcessingParameterString(self.FIELD_NAME_MAX,
-                                                       self.tr('Attribute name to use for the maximum elevation of contour polygons (if not set, no elevation attribute is attached)'),
-                                                       defaultValue='ELEV_MAX',
-                                                       optional=True))
-
         create_3d_param = QgsProcessingParameterBoolean(self.CREATE_3D,
                                                         self.tr('Produce 3D vector'),
                                                         defaultValue=False)
         create_3d_param.setFlags(create_3d_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(create_3d_param)
 
-        create_polygon_param = QgsProcessingParameterBoolean(self.CREATE_POLYGON,
-                                                             self.tr('Produce contour polygons instead of lines'),
-                                                             defaultValue=False)
-        create_polygon_param.setFlags(create_polygon_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
-        self.addParameter(create_polygon_param)
 
         ignore_nodata_param = QgsProcessingParameterBoolean(self.IGNORE_NODATA,
                                                             self.tr('Treat all raster values as valid'),
@@ -158,7 +140,7 @@ class contour(GdalAlgorithm):
     def commandName(self):
         return 'gdal_contour'
 
-    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+    def _buildArgsList(self, parameters, context, feedback, executing):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
@@ -178,9 +160,7 @@ class contour(GdalAlgorithm):
         arguments.append('-b')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
-        create_polygons = self.parameterAsBoolean(parameters, self.CREATE_POLYGON, context)
-
-        if fieldName and not create_polygons:
+        if fieldName:
             arguments.append('-a')
             arguments.append(fieldName)
 
@@ -189,20 +169,6 @@ class contour(GdalAlgorithm):
 
         if self.parameterAsBoolean(parameters, self.CREATE_3D, context):
             arguments.append('-3d')
-
-        if create_polygons:
-            arguments.append('-p')
-
-            fieldNameMin = self.parameterAsString(parameters, self.FIELD_NAME_MIN, context)
-            fieldNameMax = self.parameterAsString(parameters, self.FIELD_NAME_MAX, context)
-
-            if fieldNameMin:
-                arguments.append('-amin')
-                arguments.append(fieldNameMin)
-
-            if fieldNameMax:
-                arguments.append('-amax')
-                arguments.append(fieldNameMax)
 
         if self.parameterAsBoolean(parameters, self.IGNORE_NODATA, context):
             arguments.append('-inodata')
@@ -227,5 +193,63 @@ class contour(GdalAlgorithm):
 
         arguments.append(inLayer.source())
         arguments.append(output)
+        return arguments
+
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        arguments = self._buildArgsList(parameters, context, feedback, executing)
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
+
+
+class contour_polygon(contour):
+
+    FIELD_NAME_MIN = 'FIELD_NAME_MIN'
+    FIELD_NAME_MAX = 'FIELD_NAME_MAX'
+    OUTPUT = 'OUTPUT'
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        super().initAlgorithm(config)
+        # FIELD_NAME isn't used in polygon mode
+        self.removeParameter(contour.FIELD_NAME)
+
+        self.addParameter(QgsProcessingParameterString(self.FIELD_NAME_MIN,
+                                                       self.tr('Attribute name to use for the minimum elevation of contour polygons (if not set, no elevation attribute is attached)'),
+                                                       defaultValue='ELEV_MIN',
+                                                       optional=True))
+
+        self.addParameter(QgsProcessingParameterString(self.FIELD_NAME_MAX,
+                                                       self.tr('Attribute name to use for the maximum elevation of contour polygons (if not set, no elevation attribute is attached)'),
+                                                       defaultValue='ELEV_MAX',
+                                                       optional=True))
+
+        # Need to replace the output parameter, as we are producing a different type of output
+        self.removeParameter(contour.OUTPUT)
+        self.addParameter(QgsProcessingParameterVectorDestination(
+            self.OUTPUT, self.tr('Contours'), QgsProcessing.TypeVectorPolygon))
+
+    def name(self):
+        return 'contour_polygon'
+
+    def displayName(self):
+        return self.tr('Contour Polygons')
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        arguments = self._buildArgsList(parameters, context, feedback, executing)
+
+        fieldNameMin = self.parameterAsString(parameters, self.FIELD_NAME_MIN, context)
+        fieldNameMax = self.parameterAsString(parameters, self.FIELD_NAME_MAX, context)
+
+        if fieldNameMin:
+            arguments.insert(0, fieldNameMin)
+            arguments.insert(0, '-amin')
+
+        if fieldNameMax:
+            arguments.insert(0, fieldNameMax)
+            arguments.insert(0, '-amax')
+
+        arguments.insert(0, "-p")
 
         return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
