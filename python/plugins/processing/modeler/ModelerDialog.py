@@ -831,10 +831,12 @@ class ModelerDialog(BASE, WIDGET):
 
     def addInputOfType(self, paramType, pos=None):
         new_param = None
+        comment = None
         if ModelerParameterDefinitionDialog.use_legacy_dialog(paramType=paramType):
             dlg = ModelerParameterDefinitionDialog(self.model, paramType)
             if dlg.exec_():
                 new_param = dlg.param
+                comment = dlg.comments()
         else:
             # yay, use new API!
             context = createContext()
@@ -846,6 +848,7 @@ class ModelerDialog(BASE, WIDGET):
             if dlg.exec_():
                 new_param = dlg.createParameter()
                 self.autogenerate_parameter_name(new_param)
+                comment = dlg.comments()
 
         if new_param is not None:
             if pos is None:
@@ -855,6 +858,12 @@ class ModelerDialog(BASE, WIDGET):
             component = QgsProcessingModelParameter(new_param.name())
             component.setDescription(new_param.name())
             component.setPosition(pos)
+
+            component.comment().setDescription(comment)
+            component.comment().setPosition(component.position() + QPointF(
+                component.size().width(),
+                -1.5 * component.size().height()))
+
             self.model.addModelParameter(new_param, component)
             self.repaintModel()
             # self.view.ensureVisible(self.scene.getLastParameterItem())
@@ -902,6 +911,10 @@ class ModelerDialog(BASE, WIDGET):
                 alg.setPosition(self.getPositionForAlgorithmItem())
             else:
                 alg.setPosition(pos)
+
+            alg.comment().setPosition(alg.position() + QPointF(
+                alg.size().width(),
+                -1.5 * alg.size().height()))
 
             output_offset_x = alg.size().width()
             output_offset_y = 1.5 * alg.size().height()
