@@ -41,7 +41,7 @@ from qgis.PyQt.QtGui import QColor, QCursor
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPointXY,
                        QgsProviderRegistry, QgsSettings, QgsProject)
-from qgis.gui import QgsRubberBand
+from qgis.gui import QgsRubberBand, QgsGui
 from qgis.utils import OverrideCursor
 
 with warnings.catch_warnings():
@@ -748,8 +748,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.settings.endGroup()
 
         # open provider window
-        ows_provider = QgsProviderRegistry.instance().createSelectionWidget(stype[2],
-                                                                            self)
+        ows_provider = QgsGui.providerGuiRegistry().sourceSelectProviders(stype[2])[0].createDataSourceWidget()
         service_type = stype[0]
 
         # connect dialog signals to iface slots
@@ -777,8 +776,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             ows_provider.addVectorLayer.connect(addAfsLayer)
             conn_cmb = ows_provider.findChild(QComboBox)
             connect = 'connectToServer'
-        ows_provider.setModal(False)
-        ows_provider.show()
 
         # open provider dialogue against added OWS
         index = conn_cmb.findText(sname)
@@ -790,6 +787,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             elif service_type in ['ESRI:ArcGIS:MapServer', 'ESRI:ArcGIS:FeatureServer']:
                 ows_provider.cmbConnections_activated(index)
         getattr(ows_provider, connect)()
+
+        ows_provider.setWindowModality(Qt.WindowModal)
+        ows_provider.exec_()
 
     def add_gis_file(self):
         """add GIS file from result"""
