@@ -387,7 +387,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /**
      * Returns the string (typically sql) used to define a subset of the layer.
      * \returns The subset string or null QString if not implemented by the provider
-     * \since QGIS 3.10
+     * \since QGIS 3.12
      */
     virtual QString subsetString() const;
 
@@ -397,7 +397,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *               or other definition string specific to the underlying dataprovider
      *               and data store.
      * \returns TRUE, when setting the subset string was successful, FALSE otherwise
-     * \since QGIS 3.10
+     * \since QGIS 3.12
      */
     virtual bool setSubsetString( const QString &subset );
 
@@ -465,7 +465,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /**
      * Emitted when the layer's subset string has changed.
-     * \since QGIS 3.10
+     * \since QGIS 3.12
      */
     void subsetStringChanged();
 

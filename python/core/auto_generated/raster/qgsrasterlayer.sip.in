@@ -338,7 +338,7 @@ Returns the string (typically sql) used to define a subset of the layer.
 
 :return: The subset string or null QString if not implemented by the provider
 
-.. versionadded:: 3.10
+.. versionadded:: 3.12
 %End
 
     virtual bool setSubsetString( const QString &subset );
@@ -351,7 +351,7 @@ Sets the string (typically sql) used to define a subset of the layer
 
 :return: ``True``, when setting the subset string was successful, ``False`` otherwise
 
-.. versionadded:: 3.10
+.. versionadded:: 3.12
 %End
 
 
@@ -426,7 +426,7 @@ Sets the coordinate transform context to ``transformContext``
 %Docstring
 Emitted when the layer's subset string has changed.
 
-.. versionadded:: 3.10
+.. versionadded:: 3.12
 %End
 
 
