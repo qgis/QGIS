@@ -398,6 +398,32 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      */
     void setVariables( const QVariantMap &variables );
 
+    /**
+     * Returns the parameter values to use as default values when running this model through the
+     * designer dialog.
+     *
+     * This usually corresponds to the last set of parameter values used when the model was
+     * run through the designer.
+     *
+     * \see setDesignerParameterValues()
+     *
+     * \since QGIS 3.14
+     */
+    QVariantMap designerParameterValues() const { return mDesignerParameterValues; }
+
+    /**
+     * Sets the parameter \a values to use as default values when running this model through the
+     * designer dialog.
+     *
+     * This usually corresponds to the last set of parameter values used when the model was
+     * run through the designer.
+     *
+     * \see designerParameterValues()
+     *
+     * \since QGIS 3.14
+     */
+    void setDesignerParameterValues( const QVariantMap &values ) { mDesignerParameterValues = values; }
+
   protected:
 
     QgsProcessingAlgorithm *createInstance() const override SIP_FACTORY;
@@ -423,6 +449,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QVariantMap mResults;
 
     QVariantMap mVariables;
+
+    QVariantMap mDesignerParameterValues;
 
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;

@@ -1162,6 +1162,8 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
 
   map.insert( QStringLiteral( "modelVariables" ), mVariables );
 
+  map.insert( QStringLiteral( "designerParameterValues" ), mDesignerParameterValues );
+
   return map;
 }
 
@@ -1175,6 +1177,7 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   mHelpContent = map.value( QStringLiteral( "help" ) ).toMap();
 
   mVariables = map.value( QStringLiteral( "modelVariables" ) ).toMap();
+  mDesignerParameterValues = map.value( QStringLiteral( "designerParameterValues" ) ).toMap();
 
   mChildAlgorithms.clear();
   QVariantMap childMap = map.value( QStringLiteral( "children" ) ).toMap();

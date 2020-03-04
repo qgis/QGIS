@@ -543,7 +543,11 @@ class ModelerDialog(BASE, WIDGET):
             return
 
         dlg = AlgorithmDialog(self.model.create(), parent=iface.mainWindow())
+        dlg.setParameters(self.model.designerParameterValues())
         dlg.exec_()
+
+        if dlg.wasExecuted():
+            self.model.setDesignerParameterValues(dlg.getParameterValues())
 
     def save(self):
         self.saveModel(False)
