@@ -23,12 +23,10 @@
 #include "qgis_sip.h"
 #include "qgstemporalproperty.h"
 
-#include <QDomElement>
-
 /**
  * \class QgsDataProviderTemporalCapabilities
  * \ingroup core
- * Class for handling data providers temporal capabilities.
+ * Base class for handling properties relating to a data provider's temporal capabilities.
  *
  * \since QGIS 3.14
  */
@@ -39,6 +37,8 @@ class CORE_EXPORT QgsDataProviderTemporalCapabilities : public QgsTemporalProper
 
     /**
      * Constructor for QgsDataProviderTemporalCapabilities.
+     *
+    * The \a enabled argument specifies whether the data provider has temporal capabilities.
      */
     QgsDataProviderTemporalCapabilities( bool enabled = false );
 

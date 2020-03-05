@@ -173,11 +173,13 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
     /**
-     * Returns data provider temporal capabilities. This may be NULLPTR, depending on the data provider.
+     * Returns the provider's temporal capabilities.
+     *
+     * This may be NULLPTR, depending on the data provider.
      *
      * \since QGIS 3.14
      */
-    virtual QgsDataProviderTemporalCapabilities *temporalCapabilities() { return nullptr; }
+    virtual QgsDataProviderTemporalCapabilities *temporalCapabilities();
 
     /**
      * Returns the extent of the layer
