@@ -733,14 +733,13 @@ void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
   if ( temporalRange() == dateTimeRange )
     return;
 
-  mTemporalRangeObject.setTemporalRange( dateTimeRange );
-
+  mSettings.setTemporalRange( dateTimeRange );
   emit temporalRangeChanged();
 }
 
 const QgsDateTimeRange &QgsMapCanvas::temporalRange() const
 {
-  return mTemporalRangeObject.temporalRange();
+  return mSettings.temporalRange();
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
