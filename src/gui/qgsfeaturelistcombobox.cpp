@@ -236,6 +236,7 @@ bool QgsFeatureListComboBox::allowNull() const
 void QgsFeatureListComboBox::setAllowNull( bool allowNull )
 {
   mModel->setAllowNull( allowNull );
+  mLineEdit->setClearMode( allowNull ? QgsFilterLineEdit::ClearToNull : QgsFilterLineEdit::ClearToDefault );
 }
 
 QVariant QgsFeatureListComboBox::identifierValue() const
