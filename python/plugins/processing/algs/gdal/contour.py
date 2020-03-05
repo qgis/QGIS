@@ -81,7 +81,6 @@ class contour(GdalAlgorithm):
         create_3d_param.setFlags(create_3d_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(create_3d_param)
 
-
         ignore_nodata_param = QgsProcessingParameterBoolean(self.IGNORE_NODATA,
                                                             self.tr('Treat all raster values as valid'),
                                                             defaultValue=False)
@@ -194,7 +193,6 @@ class contour(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(output)
         return arguments
-
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = self._buildArgsList(parameters, context, feedback, executing)

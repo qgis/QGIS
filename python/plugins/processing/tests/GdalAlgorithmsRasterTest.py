@@ -404,7 +404,6 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  source + ' ' +
                  outdir + '/check.jpg'])
 
-
     def testContourPolygon(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()
@@ -423,7 +422,6 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                     '-p -amax max -amin min -b 1 -i 5.0 -f "ESRI Shapefile" ' +
                     source + ' ' +
                     outdir + '/check.shp'])
-
 
     def testContour(self):
         context = QgsProcessingContext()
