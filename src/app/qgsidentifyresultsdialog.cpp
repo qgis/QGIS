@@ -956,8 +956,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
 #else
-    QScreen *screen = QGuiApplication::screenAt( mapToGlobal( QPoint( width() / 2, 0 ) ) );
-    const int horizontalDpi = screen->logicalDotsPerInchX();
+    const int horizontalDpi = logicalDpiX();
 #endif
 
 
