@@ -41,6 +41,19 @@ tests:
         name: expected/removed_duplicated_nodes_line.gml
         type: vector
 
+  - algorithm: native:removeduplicatevertices
+    name: Remove duplicate vertices from all parts
+    params:
+      INPUT:
+        name: custom/multi_polygons_with_duplicate_nodes_per_part.gml
+        type: vector
+      TOLERANCE: 0.001
+      USE_Z_VALUE: false
+    results:
+      OUTPUT:
+        name: expected/multi_polygons_without_duplicate_nodes.gml
+        type: vector
+
   - algorithm: qgis:keepnbiggestparts
     name: Keep N biggest parts
     params:
