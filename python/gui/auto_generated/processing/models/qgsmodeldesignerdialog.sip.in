@@ -9,6 +9,7 @@
 
 
 
+
 class QgsModelDesignerDialog : QMainWindow
 {
 %Docstring
@@ -26,11 +27,26 @@ Model designer dialog base class
 %End
   public:
 
-    QgsModelDesignerDialog( QWidget *parent = 0, Qt::WindowFlags flags = 0 );
+    QgsModelDesignerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = 0 );
 
   protected:
 
+    virtual void repaintModel( bool showControls = true ) = 0;
+    virtual QgsProcessingModelAlgorithm *model() = 0;
+    virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
+    virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
+
     QToolBar *toolbar();
+    QAction *actionOpen();
+    QAction *actionSave();
+    QAction *actionSaveAs();
+    QAction *actionSaveInProject();
+    QAction *actionEditHelp();
+    QAction *actionRun();
+    QAction *actionExportImage();
+
+    QgsMessageBar *messageBar();
+    QGraphicsView *view();
 
 };
 

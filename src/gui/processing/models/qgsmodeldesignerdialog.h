@@ -20,6 +20,9 @@
 #include "qgis_gui.h"
 #include "ui_qgsmodeldesignerdialogbase.h"
 
+class QgsMessageBar;
+class QgsProcessingModelAlgorithm;
+
 ///@cond NOT_STABLE
 
 /**
@@ -32,11 +35,41 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 {
   public:
 
-    QgsModelDesignerDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    QgsModelDesignerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
 
   protected:
 
+    virtual void repaintModel( bool showControls = true ) = 0;
+    virtual QgsProcessingModelAlgorithm *model() = 0;
+    virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
+    virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
+
     QToolBar *toolbar() { return mToolbar; }
+    QAction *actionOpen() { return mActionOpen; }
+    QAction *actionSave() { return mActionSave; }
+    QAction *actionSaveAs() { return mActionSaveAs; }
+    QAction *actionSaveInProject() { return mActionSaveInProject; }
+    QAction *actionEditHelp() { return mActionEditHelp; }
+    QAction *actionRun() { return mActionRun; }
+    QAction *actionExportImage() { return mActionExportImage; }
+
+    QgsMessageBar *messageBar() { return mMessageBar; }
+    QGraphicsView *view() { return mView; }
+
+  private slots:
+
+    void zoomIn();
+    void zoomOut();
+    void zoomActual();
+    void zoomFull();
+    void exportToImage();
+    void exportToPdf();
+    void exportToSvg();
+    void exportAsPython();
+
+  private:
+
+    QgsMessageBar *mMessageBar = nullptr;
 
 };
 

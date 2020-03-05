@@ -1,0 +1,70 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodelgraphicsview.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsModelGraphicsView : QGraphicsView
+{
+%Docstring
+QGraphicsView subclass representing the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelgraphicsview.h"
+%End
+  public:
+
+    QgsModelGraphicsView( QWidget *parent = 0 );
+%Docstring
+Constructor for QgsModelGraphicsView, with the specified ``parent`` widget.
+%End
+
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+    virtual void dropEvent( QDropEvent *event );
+
+    virtual void dragMoveEvent( QDragMoveEvent *event );
+
+    virtual void wheelEvent( QWheelEvent *event );
+
+    virtual void enterEvent( QEvent *event );
+
+    virtual void mousePressEvent( QMouseEvent *event );
+
+    virtual void mouseMoveEvent( QMouseEvent *event );
+
+
+  signals:
+
+    void algorithmDropped( const QString &algorithmId, const QPointF &pos );
+%Docstring
+Emitted when an algorithm is dropped onto the view.
+%End
+
+    void inputDropped( const QString &inputId, const QPointF &pos );
+%Docstring
+Emitted when an input parameter is dropped onto the view.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodelgraphicsview.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

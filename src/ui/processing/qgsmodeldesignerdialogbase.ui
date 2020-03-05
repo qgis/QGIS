@@ -14,7 +14,7 @@
    <string>Graphical Modeler</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_1">
+   <layout class="QVBoxLayout" name="mainLayout">
     <property name="spacing">
      <number>3</number>
     </property>
@@ -31,7 +31,7 @@
      <number>2</number>
     </property>
     <item>
-     <widget class="QGraphicsView" name="view"/>
+     <widget class="QgsModelGraphicsView" name="mView"/>
     </item>
    </layout>
   </widget>
@@ -279,8 +279,8 @@
   </action>
   <action name="mActionRun">
    <property name="icon">
-    <iconset resource="../../plugins/georeferencer/georeferencer.qrc">
-     <normaloff>:/icons/default/mActionStartGeoref.png</normaloff>:/icons/default/mActionStartGeoref.png</iconset>
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionStart.svg</normaloff>:/images/themes/default/mActionStart.svg</iconset>
    </property>
    <property name="text">
     <string>Run Model…</string>
@@ -318,9 +318,15 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsModelGraphicsView</class>
+   <extends>QGraphicsView</extends>
+   <header>qgsmodelgraphicsview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../../images/images.qrc"/>
-  <include location="../../plugins/georeferencer/georeferencer.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
