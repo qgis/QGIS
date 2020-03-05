@@ -732,11 +732,15 @@ for the canvas.
 %End
 
 
-    void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
+    void setTemporalRange( const QgsDateTimeRange &range );
 %Docstring
-Set datetime range for the map canvas.
+Set datetime ``range`` for the map canvas.
 
-Emits temporalRangeChanged(), after a successful update.
+The temporalRangeChanged() signal will be emitted if the temporal range has been changed.
+
+.. note::
+
+   Calling setTemporalRange() does not automatically trigger a map refresh.
 
 .. seealso:: :py:func:`temporalRange`
 
