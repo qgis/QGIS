@@ -1225,6 +1225,18 @@ void QgsAttributeForm::refreshFeature()
   setFeature( mFeature );
 }
 
+void QgsAttributeForm::parentFormValueChanged( const QString &attribute, const QVariant &newValue )
+{
+  for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
+  {
+    QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
+    if ( eww )
+    {
+      eww->parentFormValueChanged( attribute, newValue );
+    }
+  }
+}
+
 void QgsAttributeForm::synchronizeEnabledState()
 {
   bool isEditable = ( mFeature.isValid()

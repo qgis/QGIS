@@ -259,9 +259,12 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
 
 void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
-  mDualView->init( layer, mEditorContext.mapCanvas(), request, mEditorContext );
+  QgsAttributeEditorContext ctx { mEditorContext };
+  ctx.setParentFormFeature( mFeature );
+  mDualView->init( layer, mEditorContext.mapCanvas(), request, ctx );
   mFeatureSelectionMgr = new QgsFilteredSelectionManager( layer, request, mDualView );
   mDualView->setFeatureSelectionManager( mFeatureSelectionMgr );
+
   connect( mFeatureSelectionMgr, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
 
   QIcon icon;
@@ -380,11 +383,14 @@ void QgsRelationEditorWidget::setViewMode( QgsDualView::ViewMode mode )
   mViewMode = mode;
 }
 
-void QgsRelationEditorWidget::setFeature( const QgsFeature &feature )
+void QgsRelationEditorWidget::setFeature( const QgsFeature &feature, bool update )
 {
   mFeature = feature;
 
-  updateUi();
+  mEditorContext.setFormFeature( feature );
+
+  if ( update )
+    updateUi();
 }
 
 void QgsRelationEditorWidget::updateButtons()
@@ -907,6 +913,11 @@ void QgsRelationEditorWidget::setShowUnlinkButton( bool showUnlinkButton )
   mUnlinkFeatureButton->setVisible( showUnlinkButton );
 }
 
+void QgsRelationEditorWidget::parentFormValueChanged( const QString &attribute, const QVariant &newValue )
+{
+  mDualView->parentFormValueChanged( attribute, newValue );
+}
+
 bool QgsRelationEditorWidget::showLabel() const
 {
   return mShowLabel;
@@ -956,6 +967,11 @@ void QgsRelationEditorWidget::unsetMapTool()
 
   disconnect( mapCanvas, &QgsMapCanvas::keyPressed, this, &QgsRelationEditorWidget::onKeyPressed );
   disconnect( mMapToolDigitize, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsRelationEditorWidget::onDigitizingCompleted );
+}
+
+QgsFeature QgsRelationEditorWidget::feature() const
+{
+  return mFeature;
 }
 
 void QgsRelationEditorWidget::onKeyPressed( QKeyEvent *e )

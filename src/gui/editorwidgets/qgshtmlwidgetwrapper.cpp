@@ -82,9 +82,13 @@ void QgsHtmlWidgetWrapper::setHtmlContext( )
   if ( !mWidget )
     return;
 
-  QgsAttributeEditorContext attributecontext = context();
+  const QgsAttributeEditorContext attributecontext = context();
   QgsExpressionContext expressionContext = layer()->createExpressionContext();
   expressionContext << QgsExpressionContextUtils::formScope( mFeature, attributecontext.attributeFormModeString() );
+  if ( attributecontext.parentFormFeature().isValid() )
+  {
+    expressionContext << QgsExpressionContextUtils::parentFormScope( attributecontext.parentFormFeature() );
+  }
   expressionContext.setFeature( mFeature );
 
   HtmlExpression *htmlExpression = new HtmlExpression();

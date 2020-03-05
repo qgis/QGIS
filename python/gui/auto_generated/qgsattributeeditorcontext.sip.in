@@ -237,6 +237,24 @@ Set current ``feature`` for the currently edited form or table row
 .. versionadded:: 3.2
 %End
 
+    QgsFeature parentFormFeature() const;
+%Docstring
+Returns the feature of the currently edited parent form in its actual state
+
+.. seealso:: :py:func:`setParentFormFeature`
+
+.. versionadded:: 3.14
+%End
+
+    void setParentFormFeature( const QgsFeature &feature );
+%Docstring
+Sets the ``feature`` of the currently edited parent form
+
+.. seealso:: :py:func:`parentFormFeature`
+
+.. versionadded:: 3.14
+%End
+
     Mode attributeFormMode() const;
 %Docstring
 Returns current attributeFormMode

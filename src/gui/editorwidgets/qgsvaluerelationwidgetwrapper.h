@@ -73,6 +73,10 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
     void setEnabled( bool enabled ) override;
 
+  public slots:
+
+    void parentFormValueChanged( const QString &attribute, const QVariant &value ) override;
+
   protected:
     QWidget *createWidget( QWidget *parent ) override;
     void initWidget( QWidget *editor ) override;
