@@ -75,6 +75,7 @@ email                : sherman at mrcc.com
 #include "qgscustomdrophandler.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsmaplayertemporalproperties.h"
 
 /**
  * \ingroup gui
@@ -734,6 +735,19 @@ void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
     return;
 
   mSettings.setTemporalRange( dateTimeRange );
+
+  if ( mCache )
+  {
+    // we need to discard any previously cached images which have temporal properties enabled, so that these will be updated when
+    // the canvas is redrawn
+    const QList<QgsMapLayer *> layers;
+    for ( QgsMapLayer *layer : layers )
+    {
+      if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
+        mCache->invalidateCacheForLayer( layer );
+    }
+  }
+
   emit temporalRangeChanged();
 }
 
