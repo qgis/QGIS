@@ -2507,7 +2507,6 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
   {
     currentLayer = it.value();
 
-    // Checking for WMS-T layers only, as of time writing this, they have full temporal support.
     if ( currentLayer->type() == QgsMapLayerType::RasterLayer &&
          currentLayer->dataProvider() &&
          currentLayer->dataProvider()->temporalCapabilities() )
@@ -2524,7 +2523,6 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
           dates.append( layerRange.end() );
       }
     }
-
   }
 
   // No layer with temporal properties
