@@ -677,7 +677,9 @@
         <file>themes/default/mIconSnappingActiveLayer.svg</file>
         <file>themes/default/mIconSnappingAdvanced.svg</file>
         <file>themes/default/mIconSnappingAllLayers.svg</file>
-        <file>themes/default/mIconSnappingVertexAndSegment.svg</file>
+        <file>themes/default/mIconSnappingArea.svg</file>
+        <file>themes/default/mIconSnappingCentroid.svg</file>
+        <file>themes/default/mIconSnappingMiddle.svg</file>
         <file>themes/default/mIconSnappingVertex.svg</file>
         <file>themes/default/mIconSnappingSegment.svg</file>
         <file>themes/default/mIconTopologicalEditing.svg</file>
@@ -814,6 +816,12 @@
         <file>themes/default/mIconHamburgerMenu.svg</file>
         <file>themes/default/mActionAddManualTable.svg</file>
         <file>themes/default/propertyicons/temporal.svg</file>
+        <file>themes/default/mIconModelerCollapse.svg</file>
+        <file>themes/default/mIconModelerExpand.svg</file>
+        <file>themes/default/mActionDeleteModelComponent.svg</file>
+        <file>themes/default/mActionEditModelComponent.svg</file>
+        <file>themes/default/mIconModelOutput.svg</file>
+        <file>themes/default/mIconModelInput.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

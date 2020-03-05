@@ -439,7 +439,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     renderer->stopRender( context );
   }
 
-  QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );
+  QgsDebugMsgLevel( "Feature count on identify: " + QString::number( featureCount ), 2 );
 
   QApplication::restoreOverrideCursor();
   return featureCount > 0;

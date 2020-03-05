@@ -5288,7 +5288,7 @@ bool QgisApp::addVectorLayersPrivate( const QStringList &layerQStringList, const
         layer->setProviderEncoding( enc );
 
       QStringList sublayers = layer->dataProvider()->subLayers();
-      QgsDebugMsg( QStringLiteral( "got valid layer with %1 sublayers" ).arg( sublayers.count() ) );
+      QgsDebugMsgLevel( QStringLiteral( "got valid layer with %1 sublayers" ).arg( sublayers.count() ), 2 );
 
       // If the newly created layer has more than 1 layer of data available, we show the
       // sublayers selection dialog so the user can select the sublayers to actually load.
@@ -7117,7 +7117,7 @@ void QgisApp::openFile( const QString &fileName, const QString &fileTypeHint )
   }
   else
   {
-    QgsDebugMsg( "Adding " + fileName + " to the map canvas" );
+    QgsDebugMsgLevel( "Adding " + fileName + " to the map canvas", 2 );
     openLayer( fileName, true );
   }
 }
@@ -9675,7 +9675,10 @@ void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
          || ( field.constraints().constraints() & QgsFieldConstraints::ConstraintNotNull && field.constraints().constraintStrength( QgsFieldConstraints::ConstraintNotNull ) & QgsFieldConstraints::ConstraintStrengthHard )
          || ( field.constraints().constraints() & QgsFieldConstraints::ConstraintExpression && !field.constraints().constraintExpression().isEmpty() && field.constraints().constraintStrength( QgsFieldConstraints::ConstraintExpression ) & QgsFieldConstraints::ConstraintStrengthHard )
        )
+    {
       hasStrongConstraints = true;
+      break;
+    }
   }
 
   if ( hasStrongConstraints )

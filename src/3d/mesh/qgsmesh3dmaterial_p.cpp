@@ -32,12 +32,11 @@ class ColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
 {
 
   public:
-    ColorRampTextureGenerator( const QgsColorRampShader &colorRampShader ): mColorRampShader( colorRampShader )
-    {
+    ColorRampTextureGenerator( const QgsColorRampShader &colorRampShader, double verticalScale = 1 ):
+      mColorRampShader( colorRampShader ),
+      mVerticalScale( verticalScale )
+    {}
 
-    }
-
-    // QTextureImageDataGenerator interface
   public:
     Qt3DRender::QTextureImageDataPtr operator()() override
     {
@@ -61,7 +60,7 @@ class ColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
 
       for ( int i = 0; i < colorItemList.count(); ++i )
       {
-        float mag = float( colorItemList.at( i ).value );
+        float mag = float( colorItemList.at( i ).value * mVerticalScale );
 
         QColor color = colorItemList.at( i ).color;
         float rf = float( color.redF() );
@@ -79,7 +78,6 @@ class ColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
 
       return dataPtr;
     }
-
 
     bool operator ==( const Qt3DRender::QTextureImageDataGenerator &other ) const override
     {
@@ -100,8 +98,13 @@ class ColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
       QList<QgsColorRampShader::ColorRampItem> otherColorItemList = otherColorRampShader.colorRampItemList();
       for ( int i = 0; i < colorItemList.count(); ++i )
       {
-        if ( colorItemList.at( i ).color != otherColorItemList.at( i ).color ||
-             colorItemList.at( i ).value != otherColorItemList.at( i ).value )
+        const QColor color = colorItemList.at( i ).color;
+        const QColor otherColor = otherColorItemList.at( i ).color;
+        double value = colorItemList.at( i ).value;
+        double otherValue = otherColorItemList.at( i ).value;
+        if ( color != otherColor ||
+             ( !std::isnan( value ) && !std::isnan( otherValue ) && colorItemList.at( i ).value != otherColorItemList.at( i ).value ) ||
+             ( std::isnan( value ) != std::isnan( otherValue ) ) )
           return false;
       }
 
@@ -112,15 +115,17 @@ class ColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
 
   private:
     QgsColorRampShader mColorRampShader;
-
+    double mVerticalScale = 1;
 };
+
 
 class ColorRampTexture: public Qt3DRender::QAbstractTextureImage
 {
   public:
-    ColorRampTexture( const QgsColorRampShader &colorRampShader, Qt3DCore::QNode *parent = nullptr ):
+    ColorRampTexture( const QgsColorRampShader &colorRampShader, double verticalScale = 1, Qt3DCore::QNode *parent = nullptr ):
       Qt3DRender::QAbstractTextureImage( parent ),
-      mColorRampShader( colorRampShader )
+      mColorRampShader( colorRampShader ),
+      mVerticalScale( verticalScale )
     {
 
     }
@@ -128,16 +133,18 @@ class ColorRampTexture: public Qt3DRender::QAbstractTextureImage
   protected:
     Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override
     {
-      return Qt3DRender::QTextureImageDataGeneratorPtr( new ColorRampTextureGenerator( mColorRampShader ) );
+      return Qt3DRender::QTextureImageDataGeneratorPtr( new ColorRampTextureGenerator( mColorRampShader, mVerticalScale ) );
     }
 
   private:
     QgsColorRampShader mColorRampShader;
+    double mVerticalScale = 1;
 };
 
 
-QgsMesh3dMaterial::QgsMesh3dMaterial( const QgsMesh3DSymbol &symbol ):
-  mSymbol( symbol )
+QgsMesh3dMaterial::QgsMesh3dMaterial( const QgsMesh3DSymbol &symbol, MagnitudeType magnitudeType ):
+  mSymbol( symbol ),
+  mMagnitudeType( magnitudeType )
 {
   Qt3DRender::QEffect *eff = new Qt3DRender::QEffect( this );
 
@@ -148,12 +155,30 @@ QgsMesh3dMaterial::QgsMesh3dMaterial( const QgsMesh3DSymbol &symbol ):
 
 void QgsMesh3dMaterial::configure()
 {
-  Qt3DRender::QTexture1D *colorRampTexture = new Qt3DRender::QTexture1D;
-  colorRampTexture->addTextureImage( new ColorRampTexture( mSymbol.colorRampShader() ) );
-  colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
-  colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
+  // Create the texture to pass the color ramp
+  Qt3DRender::QTexture1D *colorRampTexture = nullptr;
+  if ( mSymbol.colorRampShader().colorRampItemList().count() > 0 )
+  {
+    colorRampTexture = new Qt3DRender::QTexture1D( this );
+    switch ( mMagnitudeType )
+    {
+      case QgsMesh3dMaterial::ZValue:
+        // if the color shading is done with the Z value of vertices, the color ramp has to be adapted with vertical scale
+        colorRampTexture->addTextureImage( new ColorRampTexture( mSymbol.colorRampShader(), mSymbol.verticalScale() ) );
+        break;
+      case QgsMesh3dMaterial::ScalarDataSet:
+        // if the color shading is done with scalar dataset, no vertical scale to use
+        colorRampTexture->addTextureImage( new ColorRampTexture( mSymbol.colorRampShader(), 1 ) );
+        break;
+    }
 
-  // Create and configure wireframe technique
+    colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
+    colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
+  }
+
+
+
+  // Create and configure technique
   mTechnique = new Qt3DRender::QTechnique();
   mTechnique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
   mTechnique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
@@ -178,19 +203,20 @@ void QgsMesh3dMaterial::configure()
   renderPass->setShaderProgram( shaderProgram );
   mTechnique->addRenderPass( renderPass );
 
-  // Parameter
+  // Parameters
   mTechnique->addParameter( new Qt3DRender::QParameter( "flatTriangles", ( !mSymbol.smoothedTriangles() ) ) );
   QColor wireframecolor = mSymbol.wireframeLineColor();
   mTechnique->addParameter( new Qt3DRender::QParameter( "lineWidth", float( mSymbol.wireframeLineWidth() ) ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "lineColor", QVector4D( wireframecolor.redF(), wireframecolor.greenF(), wireframecolor.blueF(), 1.0f ) ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "wireframeEnabled", mSymbol.wireframeEnabled() ) );
   mTechnique->addParameter( new Qt3DRender::QParameter( "textureType", int( mSymbol.renderingStyle() ) ) );
-  mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampTexture", colorRampTexture ) ) ;
+  if ( colorRampTexture )
+    mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampTexture", colorRampTexture ) ) ;
   mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampCount", mSymbol.colorRampShader().colorRampItemList().count() ) );
   int colorRampType = mSymbol.colorRampShader().colorRampType();
   mTechnique->addParameter( new Qt3DRender::QParameter( "colorRampType", colorRampType ) );
   QColor meshColor = mSymbol.singleMeshColor();
   mTechnique->addParameter( new Qt3DRender::QParameter( "meshColor", QVector4D( meshColor.redF(), meshColor.greenF(), meshColor.blueF(), 1.0f ) ) );
-  mTechnique->addParameter( new Qt3DRender::QParameter( "verticaleScale", float( mSymbol.verticaleScale() ) ) );
+  mTechnique->addParameter( new Qt3DRender::QParameter( "isScalarMagnitude", ( mMagnitudeType == QgsMesh3dMaterial::ScalarDataSet ) ) );
 }
 

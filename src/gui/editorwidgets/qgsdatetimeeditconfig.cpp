@@ -318,7 +318,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
                       "</td>"
                       "<td bgcolor=\"#f6f6f6\" style=\"vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;\">"
                       "<p><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e; background-color:#f6f6f6;\">" )
-    + tr( "the milliseconds without leading zeroes (0 to 999)" )
+    + tr( "the milliseconds without trailing zeroes (0 to 999)" )
     + QStringLiteral( "</span></p>"
                       "</td>"
                       "</tr>"
@@ -328,7 +328,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
                       "</td>"
                       "<td bgcolor=\"#ffffff\" style=\"vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;\">"
                       "<p><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e; background-color:#ffffff;\">" )
-    + tr( "the milliseconds with leading zeroes (000 to 999)" )
+    + tr( "the milliseconds with trailing zeroes (000 to 999)" )
     + QStringLiteral( "</span></p>"
                       "</td>"
                       "</tr><tr>"

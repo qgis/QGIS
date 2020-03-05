@@ -381,6 +381,7 @@ void QgsAttributesFormProperties::loadAttributeRelationEdit()
   }
 
   mAttributeRelationEdit->setCardinality( cfg.mCardinality );
+  mAttributeRelationEdit->setForceSuppressFormPopup( cfg.mForceSuppressFormPopup );
 
   mAttributeRelationEdit->layout()->setMargin( 0 );
   mAttributeTypeFrame->layout()->setMargin( 0 );
@@ -397,6 +398,7 @@ void QgsAttributesFormProperties::storeAttributeRelationEdit()
   RelationConfig cfg;
 
   cfg.mCardinality = mAttributeRelationEdit->cardinality();
+  cfg.mForceSuppressFormPopup = mAttributeRelationEdit->forceSuppressFormPopup();
 
   QTreeWidgetItem *relationContainer = mAvailableWidgetsTree->invisibleRootItem()->child( 1 );
 
@@ -446,7 +448,8 @@ void QgsAttributesFormProperties::loadAttributeContainerEdit()
 
   QTreeWidgetItem *currentItem = mFormLayoutTree->selectedItems().at( 0 );
   mAttributeContainerEdit = new QgsAttributeFormContainerEdit( currentItem, this );
-  mAttributeTypeFrame->layout()->setMargin( 0 );
+  mAttributeContainerEdit->layout()->setContentsMargins( 0, 0, 0, 0 );
+  mAttributeTypeFrame->layout()->setContentsMargins( 0, 0, 0, 0 );
   mAttributeTypeFrame->layout()->addWidget( mAttributeContainerEdit );
 }
 
@@ -489,6 +492,7 @@ QTreeWidgetItem *QgsAttributesFormProperties::loadAttributeEditorTreeItem( QgsAt
       RelationEditorConfiguration relEdConfig;
       relEdConfig.showLinkButton = relationEditor->showLinkButton();
       relEdConfig.showUnlinkButton = relationEditor->showUnlinkButton();
+      relEdConfig.showSaveChildEditsButton = relationEditor->showSaveChildEditsButton( );
       itemData.setRelationEditorConfiguration( relEdConfig );
       newWidget = tree->addItem( parent, itemData );
       break;
@@ -717,6 +721,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
       QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
       relDef->setShowLinkButton( itemData.relationEditorConfiguration().showLinkButton );
       relDef->setShowUnlinkButton( itemData.relationEditorConfiguration().showUnlinkButton );
+      relDef->setShowSaveChildEditsButton( itemData.relationEditorConfiguration().showSaveChildEditsButton );
       widgetDef = relDef;
       break;
     }
@@ -921,6 +926,7 @@ void QgsAttributesFormProperties::apply()
 
     QVariantMap cfg;
     cfg[QStringLiteral( "nm-rel" )] = relCfg.mCardinality.toString();
+    cfg[QStringLiteral( "force-suppress-popup" )] = relCfg.mForceSuppressFormPopup;
 
     editFormConfig.setWidgetConfig( itemData.name(), cfg );
   }
@@ -960,7 +966,9 @@ QgsAttributesFormProperties::RelationConfig::RelationConfig() = default;
 QgsAttributesFormProperties::RelationConfig::RelationConfig( QgsVectorLayer *layer, const QString &relationId )
 {
   const QVariant nmrelcfg = layer->editFormConfig().widgetConfig( relationId ).value( QStringLiteral( "nm-rel" ) );
+  const QVariant forceSuppressFormPopup = layer->editFormConfig().widgetConfig( relationId ).value( QStringLiteral( "force-suppress-popup" ), false );
 
+  mForceSuppressFormPopup = forceSuppressFormPopup.toBool();
   mCardinality = nmrelcfg;
 }
 
@@ -1186,8 +1194,11 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
       showLinkButton->setChecked( itemData.relationEditorConfiguration().showLinkButton );
       QCheckBox *showUnlinkButton = new QCheckBox( tr( "Show unlink button" ) );
       showUnlinkButton->setChecked( itemData.relationEditorConfiguration().showUnlinkButton );
+      QCheckBox *showSaveChildEditsButton = new QCheckBox( tr( "Show save child layer edits button" ) );
+      showSaveChildEditsButton->setChecked( itemData.relationEditorConfiguration().showSaveChildEditsButton );
       layout->addRow( showLinkButton );
       layout->addRow( showUnlinkButton );
+      layout->addRow( showSaveChildEditsButton );
 
       QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
 
@@ -1201,6 +1212,7 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
         QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
         relEdCfg.showLinkButton = showLinkButton->isChecked();
         relEdCfg.showUnlinkButton = showUnlinkButton->isChecked();
+        relEdCfg.showSaveChildEditsButton = showSaveChildEditsButton->isChecked();
         itemData.setShowLabel( showLabelCheckbox->isChecked() );
         itemData.setRelationEditorConfiguration( relEdCfg );
 

@@ -140,7 +140,9 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mTypeAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mVertexAction = nullptr;
     QAction *mSegmentAction = nullptr;
-    QAction *mVertexAndSegmentAction = nullptr;
+    QAction *mAreaAction = nullptr;
+    QAction *mCentroidAction = nullptr;
+    QAction *mMiddleAction = nullptr;
     QDoubleSpinBox *mToleranceSpinBox = nullptr;
     QAction *mToleranceAction = nullptr; // hide widget does not work on toolbar, action needed
     QComboBox *mUnitsComboBox = nullptr;

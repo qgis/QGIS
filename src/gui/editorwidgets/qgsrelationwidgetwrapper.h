@@ -67,6 +67,20 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     void setShowLinkButton( bool showLinkButton );
 
     /**
+     * Determines if the "save child layer edits" button should be shown
+     *
+     * \since QGIS 3.14
+     */
+    bool showSaveChildEditsButton() const;
+
+    /**
+     * Determines if the "save child layer edits" button should be shown
+     *
+     * \since QGIS 3.14
+     */
+    void setShowSaveChildEditsButton( bool showSaveChildEditsButton );
+
+    /**
      * Determines if the "unlink feature" button should be shown
      *
      * \since QGIS 2.18

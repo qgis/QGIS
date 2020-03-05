@@ -70,6 +70,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     {
       bool showLinkButton = true;
       bool showUnlinkButton = true;
+      bool showSaveChildEditsButton = true;
     };
 
     struct QmlElementEditorConfiguration
@@ -187,6 +188,11 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       RelationConfig( QgsVectorLayer *layer, const QString &relationId );
 
       QVariant mCardinality;
+
+      /**
+       * Force suppress form popup open overriding other options.
+       */
+      bool mForceSuppressFormPopup;
 
       operator QVariant();
     };

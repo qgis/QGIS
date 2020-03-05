@@ -32,6 +32,9 @@ should be set to a QgsProcessingAlgorithm algorithm ID.
 
     QgsProcessingModelChildAlgorithm( const QgsProcessingModelChildAlgorithm &other );
 
+    virtual QgsProcessingModelChildAlgorithm *clone() /Factory/;
+
+
     QString childId() const;
 %Docstring
 Returns the child algorithm's unique ID string, used the identify
@@ -196,46 +199,6 @@ algorithm is dependent. The list should contain the id() of the
 dependent algorithms.
 
 .. seealso:: :py:func:`dependencies`
-%End
-
-    bool parametersCollapsed() const;
-%Docstring
-Returns ``True`` if the list of parameters for this algorithm should be collapsed
-in the graphical modeler.
-
-.. seealso:: :py:func:`setParametersCollapsed`
-
-.. seealso:: :py:func:`outputsCollapsed`
-%End
-
-    void setParametersCollapsed( bool collapsed );
-%Docstring
-Sets whether the list of parameters for this algorithm should be collapsed
-in the graphical modeler.
-
-.. seealso:: :py:func:`parametersCollapsed`
-
-.. seealso:: :py:func:`setOutputsCollapsed`
-%End
-
-    bool outputsCollapsed() const;
-%Docstring
-Returns ``True`` if the list of outputs for this algorithm should be collapsed
-in the graphical modeler.
-
-.. seealso:: :py:func:`setParametersCollapsed`
-
-.. seealso:: :py:func:`parametersCollapsed`
-%End
-
-    void setOutputsCollapsed( bool collapsed );
-%Docstring
-Sets whether the list of outputs for this algorithm should be collapsed
-in the graphical modeler.
-
-.. seealso:: :py:func:`outputsCollapsed`
-
-.. seealso:: :py:func:`setParametersCollapsed`
 %End
 
     QMap<QString, QgsProcessingModelOutput> modelOutputs() const;

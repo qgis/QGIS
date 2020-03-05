@@ -17,25 +17,31 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 from qgis.PyQt.QtCore import QPointF, Qt
-from qgis.PyQt.QtWidgets import QGraphicsItem, QGraphicsScene
+from qgis.PyQt.QtWidgets import QGraphicsScene
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelChildParameterSource,
                        QgsExpression)
-from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
-from processing.modeler.ModelerArrowItem import ModelerArrowItem
+from qgis.gui import (
+    QgsModelGraphicsScene,
+    QgsModelArrowItem
+)
+from processing.modeler.ModelerGraphicItem import (
+    ModelerInputGraphicItem,
+    ModelerOutputGraphicItem,
+    ModelerChildAlgorithmGraphicItem
+)
 from processing.tools.dataobjects import createContext
 
 
-class ModelerScene(QGraphicsScene):
+class ModelerScene(QgsModelGraphicsScene):
 
     def __init__(self, parent=None, dialog=None):
-        super(ModelerScene, self).__init__(parent)
+        super().__init__(parent)
         self.paramItems = {}
         self.algItems = {}
         self.outputItems = {}
@@ -67,14 +73,14 @@ class ModelerScene(QGraphicsScene):
                 items.extend(self.getItemsFromParamValue(v, child_id, context))
         elif isinstance(value, QgsProcessingModelChildParameterSource):
             if value.source() == QgsProcessingModelChildParameterSource.ModelParameter:
-                items.append((self.paramItems[value.parameterName()], 0))
+                items.append((self.paramItems[value.parameterName()], None, 0))
             elif value.source() == QgsProcessingModelChildParameterSource.ChildOutput:
                 outputs = self.model.childAlgorithm(value.outputChildId()).algorithm().outputDefinitions()
                 for i, out in enumerate(outputs):
                     if out.name() == value.outputName():
                         break
                 if value.outputChildId() in self.algItems:
-                    items.append((self.algItems[value.outputChildId()], i))
+                    items.append((self.algItems[value.outputChildId()], Qt.BottomEdge, i))
             elif value.source() == QgsProcessingModelChildParameterSource.Expression:
                 variables = self.model.variablesForChildAlgorithm(child_id, context)
                 exp = QgsExpression(value.expression())
@@ -83,17 +89,24 @@ class ModelerScene(QGraphicsScene):
                         items.extend(self.getItemsFromParamValue(variables[v].source, child_id, context))
         return items
 
-    def paintModel(self, model, controls=True):
+    def requestModelRepaint(self):
+        self.dialog.repaintModel()
+
+    def componentChanged(self):
+        self.dialog.haschanged = True
+
+    def paintModel(self, model):
         self.model = model
         context = createContext()
         # Inputs
         for inp in list(model.parameterComponents().values()):
-            item = ModelerGraphicItem(inp, model, controls, scene=self)
-            item.setFlag(QGraphicsItem.ItemIsMovable, True)
-            item.setFlag(QGraphicsItem.ItemIsSelectable, True)
+            item = ModelerInputGraphicItem(inp.clone(), model)
             self.addItem(item)
             item.setPos(inp.position().x(), inp.position().y())
             self.paramItems[inp.parameterName()] = item
+
+            item.requestModelRepaint.connect(self.requestModelRepaint)
+            item.changed.connect(self.componentChanged)
 
         # Input dependency arrows
         for input_name in list(model.parameterComponents().keys()):
@@ -114,21 +127,19 @@ class ModelerScene(QGraphicsScene):
                 if input_name in self.paramItems and parent_name in self.paramItems:
                     input_item = self.paramItems[input_name]
                     parent_item = self.paramItems[parent_name]
-                    arrow = ModelerArrowItem(parent_item, -1, input_item, -1)
-                    input_item.addArrow(arrow)
-                    parent_item.addArrow(arrow)
+                    arrow = QgsModelArrowItem(parent_item, input_item)
                     arrow.setPenStyle(Qt.DotLine)
-                    arrow.updatePath()
                     self.addItem(arrow)
 
         # We add the algs
         for alg in list(model.childAlgorithms().values()):
-            item = ModelerGraphicItem(alg, model, controls, scene=self)
-            item.setFlag(QGraphicsItem.ItemIsMovable, True)
-            item.setFlag(QGraphicsItem.ItemIsSelectable, True)
+            item = ModelerChildAlgorithmGraphicItem(alg.clone(), model)
             self.addItem(item)
             item.setPos(alg.position().x(), alg.position().y())
             self.algItems[alg.childId()] = item
+
+            item.requestModelRepaint.connect(self.requestModelRepaint)
+            item.changed.connect(self.componentChanged)
 
         # And then the arrows
 
@@ -142,19 +153,15 @@ class ModelerScene(QGraphicsScene):
                         sources = []
                     for source in sources:
                         sourceItems = self.getItemsFromParamValue(source, alg.childId(), context)
-                        for sourceItem, sourceIdx in sourceItems:
-                            arrow = ModelerArrowItem(sourceItem, sourceIdx, self.algItems[alg.childId()], idx)
-                            sourceItem.addArrow(arrow)
-                            self.algItems[alg.childId()].addArrow(arrow)
-                            arrow.updatePath()
+                        for sourceItem, sourceEdge, sourceIdx in sourceItems:
+                            if sourceEdge is None:
+                                arrow = QgsModelArrowItem(sourceItem, self.algItems[alg.childId()], Qt.TopEdge, idx)
+                            else:
+                                arrow = QgsModelArrowItem(sourceItem, sourceEdge, sourceIdx, self.algItems[alg.childId()], Qt.TopEdge, idx)
                             self.addItem(arrow)
                         idx += 1
             for depend in alg.dependencies():
-                arrow = ModelerArrowItem(self.algItems[depend], -1,
-                                         self.algItems[alg.childId()], -1)
-                self.algItems[depend].addArrow(arrow)
-                self.algItems[alg.childId()].addArrow(arrow)
-                arrow.updatePath()
+                arrow = QgsModelArrowItem(self.algItems[depend], self.algItems[alg.childId()])
                 self.addItem(arrow)
 
         # And finally the outputs
@@ -164,9 +171,10 @@ class ModelerScene(QGraphicsScene):
 
             for key, out in outputs.items():
                 if out is not None:
-                    item = ModelerGraphicItem(out, model, controls, scene=self)
-                    item.setFlag(QGraphicsItem.ItemIsMovable, True)
-                    item.setFlag(QGraphicsItem.ItemIsSelectable, True)
+                    item = ModelerOutputGraphicItem(out.clone(), model)
+                    item.requestModelRepaint.connect(self.requestModelRepaint)
+                    item.changed.connect(self.componentChanged)
+
                     self.addItem(item)
                     pos = out.position()
 
@@ -179,15 +187,12 @@ class ModelerScene(QGraphicsScene):
                             break
 
                     if pos is None:
-                        pos = (alg.position() + QPointF(ModelerGraphicItem.BOX_WIDTH, 0) +
-                               self.algItems[alg.childId()].getLinkPointForOutput(idx))
+                        pos = (alg.position() + QPointF(alg.size().width(), 0)
+                               + self.algItems[alg.childId()].linkPoint(Qt.BottomEdge, idx))
                     item.setPos(pos)
                     outputItems[key] = item
-                    arrow = ModelerArrowItem(self.algItems[alg.childId()], idx, item,
-                                             -1)
-                    self.algItems[alg.childId()].addArrow(arrow)
-                    item.addArrow(arrow)
-                    arrow.updatePath()
+
+                    arrow = QgsModelArrowItem(self.algItems[alg.childId()], Qt.BottomEdge, idx, item)
                     self.addItem(arrow)
                 else:
                     outputItems[key] = None

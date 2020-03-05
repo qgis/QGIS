@@ -141,7 +141,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          * Returns the default name for the table entry
          *
          * It is usually the table name but in case there are multiple geometry
-         * columns, the geometry column name is appendend to the table name.
+         * columns, the geometry column name is appended to the table name.
          * \see geometryColumnCount()
          */
         QString defaultName() const;

@@ -42,9 +42,27 @@ class APP_EXPORT QgsAttributeRelationEdit: public QWidget, private Ui::QgsAttrib
     void setCardinality( const QVariant &auserData = QVariant() );
 
     /**
+     * Sets force suppress form popup status to \a forceSuppressFormPopup.
+     *
+     * This flag will override the layer and general settings regarding the automatic
+     * opening of the attribute form dialog when digitizing is completed.
+     *
+     * \since QGIS 3.14
+     */
+    void setForceSuppressFormPopup( bool forceSuppressFormPopup );
+
+    /**
      * Getter for combo cardinality
      */
     QVariant cardinality();
+
+    /**
+     * Returns force suppress form popup status.
+     *
+     * \returns TRUE if force suppress form popup is set.
+     * \since QGIS 3.14
+     */
+    bool forceSuppressFormPopup();
 
     QString mRelationId;
   private:

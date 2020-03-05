@@ -239,6 +239,3 @@ QgsRasterLayerTemporalPropertiesWidget::TemporalRangeSource QgsRasterLayerTempor
 {
   return mSource;
 }
-
-
-

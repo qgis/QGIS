@@ -253,6 +253,11 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingwidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapperimpl.cpp
 
+  processing/models/qgsmodelarrowitem.cpp
+  processing/models/qgsmodelcomponentgraphicitem.cpp
+  processing/models/qgsmodelgraphicitem.cpp
+  processing/models/qgsmodelgraphicsscene.cpp
+
   providers/gdal/qgsgdalsourceselect.cpp
   providers/gdal/qgsgdalguiprovider.cpp
 
@@ -879,6 +884,11 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingwidgetwrapper.h
   processing/qgsprocessingwidgetwrapperimpl.h
 
+  processing/models/qgsmodelarrowitem.h
+  processing/models/qgsmodelcomponentgraphicitem.h
+  processing/models/qgsmodelgraphicitem.h
+  processing/models/qgsmodelgraphicsscene.h
+
   providers/gdal/qgsgdalguiprovider.h
   providers/gdal/qgsgdalsourceselect.h
   providers/ogr/qgsgeopackageitemguiprovider.h
@@ -1052,6 +1062,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/processing
+  ${CMAKE_SOURCE_DIR}/src/gui/processing/models
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/raster
@@ -1069,6 +1080,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/processing
+  ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory

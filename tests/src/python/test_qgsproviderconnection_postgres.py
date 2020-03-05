@@ -38,6 +38,7 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+
         TestPyQgsProviderConnectionBase.setUpClass()
         cls.postgres_conn = "service='qgis_test'"
         if 'QGIS_PGTEST_DB' in os.environ:
@@ -219,6 +220,7 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         self.assertEqual(conn.executeSql('SELECT NULL::bool'), [[None]])
         self.assertEqual(conn.executeSql('SELECT NULL::text'), [[None]])
         self.assertEqual(conn.executeSql('SELECT NULL::bytea'), [[None]])
+        self.assertEqual(conn.executeSql('SELECT NULL::char'), [[None]])
 
     def test_pk_cols_order(self):
         """Test that PKs are returned in consistent order: see GH #34167"""
@@ -227,6 +229,13 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         conn = md.createConnection(self.uri, {})
         self.assertEqual(conn.table('qgis_test', 'bikes_view').primaryKeyColumns(), ['pk', 'name'])
         self.assertEqual(conn.table('qgis_test', 'some_poly_data_view').primaryKeyColumns(), ['pk', 'geom'])
+
+    def test_char_type_conversion(self):
+        """Test char types: see GH #34806"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+        self.assertEqual(conn.executeSql("SELECT relname, relkind FROM pg_class c, pg_namespace n WHERE n.oid = c.relnamespace AND relname = 'bikes_view' AND c.relkind IN ('t', 'v', 'm')"), [['bikes_view', 'v']])
 
 
 if __name__ == '__main__':

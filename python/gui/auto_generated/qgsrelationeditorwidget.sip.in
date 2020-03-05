@@ -115,6 +115,21 @@ Determines if the "unlink feature" button should be shown
 .. versionadded:: 2.18
 %End
 
+    void setShowSaveChildEditsButton( bool showChildEdits );
+%Docstring
+Determines if the "Save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+%End
+
+    bool showSaveChildEditsButton() const;
+%Docstring
+Determines if the "Save child layer edits" button should be shown
+
+.. versionadded:: 3.14
+%End
+
+
 };
 
 /************************************************************************

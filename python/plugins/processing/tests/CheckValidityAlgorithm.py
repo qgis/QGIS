@@ -62,7 +62,7 @@ class TestQgsProcessingCheckValidity(unittest.TestCase):
         wkb_type = getattr(QgsWkbTypes, layer_wkb_name)
         fields.append(QgsField('int_f', QVariant.Int))
         layer = QgsMemoryProviderUtils.createMemoryLayer(
-            '%s_layer' % layer_wkb_name, fields, wkb_type, QgsCoordinateReferenceSystem(4326))
+            '%s_layer' % layer_wkb_name, fields, wkb_type, QgsCoordinateReferenceSystem("EPSG:4326"))
         self.assertTrue(layer.isValid())
         self.assertEqual(layer.wkbType(), wkb_type)
         return layer

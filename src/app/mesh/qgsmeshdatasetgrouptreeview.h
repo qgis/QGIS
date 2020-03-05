@@ -200,4 +200,20 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView : public QTreeView
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
 };
 
+class QgsMeshDatasetGroupListModel: public QAbstractListModel
+{
+  public:
+    explicit QgsMeshDatasetGroupListModel( QObject *parent ): QAbstractListModel( parent )
+    {}
+
+    //! Add groups to the model from mesh layer
+    void syncToLayer( QgsMeshLayer *layer );
+
+    int rowCount( const QModelIndex &parent ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+
+  private:
+    QgsMeshLayer *mLayer = nullptr;
+};
+
 #endif // QGSMESHDATASETGROUPTREE_H

@@ -419,6 +419,20 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      */
     void setShowUnlinkButton( bool showUnlinkButton );
 
+    /**
+     * Determines if the "save child layer edits" button should be shown
+     *
+     * \since QGIS 3.14
+     */
+    void setShowSaveChildEditsButton( bool showSaveChildEditsButton );
+
+    /**
+     * Returns TRUE if the "save child layer edits" button should be shown.
+     *
+     * \since QGIS 3.14
+     */
+    bool showSaveChildEditsButton( ) const;
+
 
   private:
     void saveConfiguration( QDomElement &elem ) const override;
@@ -427,6 +441,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QgsRelation mRelation;
     bool mShowLinkButton = true;
     bool mShowUnlinkButton = true;
+    bool mShowSaveChildEditsButton = true;
 };
 
 /**
