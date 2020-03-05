@@ -353,7 +353,7 @@ int main( int argc, char *argv[] )
             const int headerColonPos { headerLine.indexOf( ':' ) };
             if ( headerColonPos > 0 )
             {
-              headers.insert( headerLine.left( headerColonPos ), headerLine.mid( headerColonPos + 1 ) );
+              headers.insert( headerLine.left( headerColonPos ), headerLine.mid( headerColonPos + 2 ) );
             }
           }
 
