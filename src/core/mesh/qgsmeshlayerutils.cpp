@@ -306,8 +306,6 @@ QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices( const QgsMeshLa
   if ( vals.isValid() )
   {
     ret = QgsMeshLayerUtils::calculateMagnitudes( vals );
-    QgsMeshDataBlock scalarActiveFaceFlagValues =
-      meshLayer->dataProvider()->areFacesActive( index, 0, nativeMesh->faces.count() );
 
     if ( !scalarDataOnVertices )
     {
