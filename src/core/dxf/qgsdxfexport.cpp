@@ -1190,14 +1190,14 @@ void QgsDxfExport::writePolygon( const QgsRingSequence &polygon, const QString &
   writeGroup( 330, mBlockHandle );
   writeGroup( 100, QStringLiteral( "AcDbEntity" ) );
   writeGroup( 8, layer );           // Layer name
-  writeGroup( color );              // Color
+  writeGroup( color, true );              // Color
   writeGroup( 100, QStringLiteral( "AcDbHatch" ) );
 
   writeGroup( 0, QgsPoint( QgsWkbTypes::PointZ, 0.0, 0.0, 0.0 ) ); // Elevation point (in OCS)
   writeGroup( 200, QgsPoint( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );
 
   writeGroup( 2, hatchPattern );  // Hatch pattern name
-  writeGroup( 70, hatchPattern == QLatin1String( "SOLID" ) ); // Solid fill flag (solid fill = 1; pattern fill = 0)
+  writeGroup( 70, ((hatchPattern == QLatin1String("SOLID") ? 1 : 0))); // Solid fill flag (solid fill = 1; pattern fill = 0)
   writeGroup( 71, 0 );    // Associativity flag (associative = 1; non-associative = 0)
 
   writeGroup( 91, polygon.size() );  // Number of boundary paths (loops)
