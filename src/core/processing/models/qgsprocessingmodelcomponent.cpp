@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingmodelcomponent.h"
+#include "qgsprocessingmodelcomment.h"
 
 ///@cond NOT_STABLE
 
@@ -115,6 +116,21 @@ void QgsProcessingModelComponent::restoreCommonProperties( const QVariantMap &ma
   mSize.setHeight( map.value( QStringLiteral( "component_height" ), QString::number( DEFAULT_COMPONENT_HEIGHT ) ).toDouble() );
   mTopEdgeLinksCollapsed = map.value( QStringLiteral( "parameters_collapsed" ) ).toBool();
   mBottomEdgeLinksCollapsed = map.value( QStringLiteral( "outputs_collapsed" ) ).toBool();
+}
+
+void QgsProcessingModelComponent::copyNonDefinitionProperties( const QgsProcessingModelComponent &other )
+{
+  setPosition( other.position() );
+  setLinksCollapsed( Qt::TopEdge, other.linksCollapsed( Qt::TopEdge ) );
+  setLinksCollapsed( Qt::BottomEdge, other.linksCollapsed( Qt::BottomEdge ) );
+  if ( comment() && other.comment() )
+  {
+    if ( !other.comment()->position().isNull() )
+      comment()->setPosition( other.comment()->position() );
+    else
+      comment()->setPosition( other.position() + QPointF( size().width(), -1.5 * size().height() ) );
+    comment()->setSize( other.comment()->size() );
+  }
 }
 
 ///@endcond

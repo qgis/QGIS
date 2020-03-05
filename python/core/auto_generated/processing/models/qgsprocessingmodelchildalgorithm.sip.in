@@ -35,6 +35,16 @@ should be set to a QgsProcessingAlgorithm algorithm ID.
     virtual QgsProcessingModelChildAlgorithm *clone() const /Factory/;
 
 
+    void copyNonDefinitionPropertiesFromModel( QgsProcessingModelAlgorithm *model );
+%Docstring
+Copies all non-specific definition properties from the the matching component from a ``model``.
+
+This includes properties like the size and position of the component, but not properties
+like the specific algorithm or input details.
+
+.. versionadded:: 3.14
+%End
+
     QString childId() const;
 %Docstring
 Returns the child algorithm's unique ID string, used the identify

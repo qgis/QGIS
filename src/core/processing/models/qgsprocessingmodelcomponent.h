@@ -137,6 +137,16 @@ class CORE_EXPORT QgsProcessingModelComponent
      */
     void restoreCommonProperties( const QVariantMap &map );
 
+    /**
+     * Copies all non-specific definition properties from the \a other component definition.
+     *
+     * This includes properties like the size and position of the component, but not properties
+     * like the specific algorithm or input details.
+     *
+     * \since QGIS 3.14
+     */
+    void copyNonDefinitionProperties( const QgsProcessingModelComponent &other );
+
   private:
 
     static constexpr double DEFAULT_COMPONENT_WIDTH = 200;
