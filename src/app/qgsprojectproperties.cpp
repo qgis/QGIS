@@ -2508,20 +2508,17 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
     currentLayer = it.value();
 
     if ( currentLayer->type() == QgsMapLayerType::RasterLayer &&
-         currentLayer->dataProvider() &&
-         currentLayer->dataProvider()->temporalCapabilities() )
+         currentLayer->temporalProperties() )
     {
       QgsRasterLayer *rasterLayer  = qobject_cast<QgsRasterLayer *>( currentLayer );
-      if ( rasterLayer->dataProvider()->temporalCapabilities()->isActive() )
-      {
-        QgsDateTimeRange layerRange = rasterLayer->dataProvider()->temporalCapabilities()->fixedTemporalRange();
 
-        if ( layerRange.begin().isValid() )
-          dates.append( layerRange.begin() );
+      QgsDateTimeRange layerRange = rasterLayer->temporalProperties()->temporalRange();
 
-        if ( layerRange.end().isValid() )
-          dates.append( layerRange.end() );
-      }
+      if ( layerRange.begin().isValid() )
+        dates.append( layerRange.begin() );
+
+      if ( layerRange.end().isValid() )
+        dates.append( layerRange.end() );
     }
   }
 
