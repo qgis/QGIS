@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DlgModeler</class>
- <widget class="QMainWindow" name="DlgModeler">
+ <class>QgsModelDesignerDialogBase</class>
+ <widget class="QMainWindow" name="QgsModelDesignerDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -78,6 +78,8 @@
     <addaction name="mActionZoomOut"/>
     <addaction name="mActionZoomActual"/>
     <addaction name="mActionZoomToItems"/>
+    <addaction name="separator"/>
+    <addaction name="mActionShowComments"/>
    </widget>
    <addaction name="menu_Model"/>
    <addaction name="menu_View"/>
@@ -111,6 +113,10 @@
    <addaction name="mActionRun"/>
   </widget>
   <action name="mActionOpen">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+   </property>
    <property name="text">
     <string>Open Model…</string>
    </property>
@@ -122,6 +128,10 @@
    </property>
   </action>
   <action name="mActionSave">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
+   </property>
    <property name="text">
     <string>Save Model</string>
    </property>
@@ -133,6 +143,10 @@
    </property>
   </action>
   <action name="mActionSaveAs">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileSaveAs.svg</normaloff>:/images/themes/default/mActionFileSaveAs.svg</iconset>
+   </property>
    <property name="text">
     <string>Save Model as…</string>
    </property>
@@ -144,6 +158,10 @@
    </property>
   </action>
   <action name="mActionZoomActual">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomActual.svg</normaloff>:/images/themes/default/mActionZoomActual.svg</iconset>
+   </property>
    <property name="text">
     <string>Zoom to &amp;100%</string>
    </property>
@@ -155,6 +173,10 @@
    </property>
   </action>
   <action name="mActionZoomIn">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomIn.svg</normaloff>:/images/themes/default/mActionZoomIn.svg</iconset>
+   </property>
    <property name="text">
     <string>Zoom In</string>
    </property>
@@ -166,6 +188,10 @@
    </property>
   </action>
   <action name="mActionZoomOut">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomOut.svg</normaloff>:/images/themes/default/mActionZoomOut.svg</iconset>
+   </property>
    <property name="text">
     <string>Zoom Out</string>
    </property>
@@ -177,6 +203,10 @@
    </property>
   </action>
   <action name="mActionExportImage">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
+   </property>
    <property name="text">
     <string>Export as Image…</string>
    </property>
@@ -185,6 +215,10 @@
    </property>
   </action>
   <action name="mActionZoomToItems">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionZoomFullExtent.svg</normaloff>:/images/themes/default/mActionZoomFullExtent.svg</iconset>
+   </property>
    <property name="text">
     <string>Zoom Full</string>
    </property>
@@ -196,6 +230,10 @@
    </property>
   </action>
   <action name="mActionExportPdf">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
+   </property>
    <property name="text">
     <string>Export as PDF…</string>
    </property>
@@ -204,6 +242,10 @@
    </property>
   </action>
   <action name="mActionExportSvg">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
+   </property>
    <property name="text">
     <string>Export as SVG…</string>
    </property>
@@ -212,6 +254,10 @@
    </property>
   </action>
   <action name="mActionExportPython">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsPython.svg</normaloff>:/images/themes/default/mActionSaveAsPython.svg</iconset>
+   </property>
    <property name="text">
     <string>Export as Python Script…</string>
    </property>
@@ -220,6 +266,10 @@
    </property>
   </action>
   <action name="mActionEditHelp">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditHelpContent.svg</normaloff>:/images/themes/default/mActionEditHelpContent.svg</iconset>
+   </property>
    <property name="text">
     <string>Edit Model Help…</string>
    </property>
@@ -228,6 +278,10 @@
    </property>
   </action>
   <action name="mActionRun">
+   <property name="icon">
+    <iconset resource="../../plugins/georeferencer/georeferencer.qrc">
+     <normaloff>:/icons/default/mActionStartGeoref.png</normaloff>:/icons/default/mActionStartGeoref.png</iconset>
+   </property>
    <property name="text">
     <string>Run Model…</string>
    </property>
@@ -239,6 +293,10 @@
    </property>
   </action>
   <action name="mActionSaveInProject">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mAddToProject.svg</normaloff>:/images/themes/default/mAddToProject.svg</iconset>
+   </property>
    <property name="text">
     <string>Save Model in Project</string>
    </property>
@@ -251,7 +309,20 @@
     <string>Close</string>
    </property>
   </action>
+  <action name="mActionShowComments">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Comments</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../plugins/georeferencer/georeferencer.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>
