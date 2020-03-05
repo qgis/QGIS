@@ -1,0 +1,44 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodeldesignerdialog.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsModelDesignerDialog : QMainWindow
+{
+%Docstring
+Model designer dialog base class
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodeldesignerdialog.h"
+%End
+  public:
+
+    QgsModelDesignerDialog( QWidget *parent = 0, Qt::WindowFlags flags = 0 );
+
+  protected:
+
+    QToolBar *toolbar();
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodeldesignerdialog.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

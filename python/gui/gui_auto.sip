@@ -311,6 +311,7 @@
 %Include auto_generated/processing/qgsprocessingwidgetwrapper.sip
 %Include auto_generated/processing/models/qgsmodelarrowitem.sip
 %Include auto_generated/processing/models/qgsmodelcomponentgraphicitem.sip
+%Include auto_generated/processing/models/qgsmodeldesignerdialog.sip
 %Include auto_generated/processing/models/qgsmodelgraphicitem.sip
 %Include auto_generated/processing/models/qgsmodelgraphicsscene.sip
 %Include auto_generated/raster/qgscolorrampshaderwidget.sip

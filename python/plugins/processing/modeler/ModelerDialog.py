@@ -87,7 +87,8 @@ from qgis.gui import (QgsMessageBar,
                       QgsProcessingParameterDefinitionDialog,
                       QgsVariableEditorWidget,
                       QgsProcessingParameterWidgetContext,
-                      QgsModelGraphicsScene)
+                      QgsModelGraphicsScene,
+                      QgsModelDesignerDialog)
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
@@ -102,10 +103,6 @@ from qgis.utils import iface
 
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=DeprecationWarning)
-    WIDGET, BASE = uic.loadUiType(
-        os.path.join(pluginPath, 'ui', 'DlgModeler.ui'))
 
 
 class ModelerToolboxModel(QgsProcessingToolboxProxyModel):
@@ -124,7 +121,7 @@ class ModelerToolboxModel(QgsProcessingToolboxProxyModel):
         return Qt.CopyAction
 
 
-class ModelerDialog(BASE, WIDGET):
+class ModelerDialog(QgsModelDesignerDialog):
     ALG_ITEM = 'ALG_ITEM'
     PROVIDER_ITEM = 'PROVIDER_ITEM'
     GROUP_ITEM = 'GROUP_ITEM'
@@ -140,8 +137,6 @@ class ModelerDialog(BASE, WIDGET):
     def __init__(self, model=None):
         super().__init__(None)
         self.setAttribute(Qt.WA_DeleteOnClose)
-
-        self.setupUi(self)
 
         self._variables_scope = None
 
@@ -273,7 +268,7 @@ class ModelerDialog(BASE, WIDGET):
             pass
 
         if iface is not None:
-            self.mToolbar.setIconSize(iface.iconSize())
+            self.toolbar().setIconSize(iface.iconSize())
             self.setStyleSheet(iface.mainWindow().styleSheet())
 
         self.toolbutton_export_to_script = QToolButton()
@@ -281,37 +276,8 @@ class ModelerDialog(BASE, WIDGET):
         self.export_to_script_algorithm_action = QAction(QCoreApplication.translate('ModelerDialog', 'Export as Script Algorithm…'))
         self.toolbutton_export_to_script.addActions([self.export_to_script_algorithm_action])
         self.toolbutton_export_to_script.setDefaultAction(self.export_to_script_algorithm_action)
-        self.mToolbar.insertWidget(self.mActionExportImage, self.toolbutton_export_to_script)
+        self.toolbar().insertWidget(self.mActionExportImage, self.toolbutton_export_to_script)
         self.export_to_script_algorithm_action.triggered.connect(self.export_as_script_algorithm)
-
-        self.mActionOpen.setIcon(
-            QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
-        self.mActionSave.setIcon(
-            QgsApplication.getThemeIcon('/mActionFileSave.svg'))
-        self.mActionSaveAs.setIcon(
-            QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
-        self.mActionSaveInProject.setIcon(
-            QgsApplication.getThemeIcon('/mAddToProject.svg'))
-        self.mActionZoomActual.setIcon(
-            QgsApplication.getThemeIcon('/mActionZoomActual.svg'))
-        self.mActionZoomIn.setIcon(
-            QgsApplication.getThemeIcon('/mActionZoomIn.svg'))
-        self.mActionZoomOut.setIcon(
-            QgsApplication.getThemeIcon('/mActionZoomOut.svg'))
-        self.mActionExportImage.setIcon(
-            QgsApplication.getThemeIcon('/mActionSaveMapAsImage.svg'))
-        self.mActionZoomToItems.setIcon(
-            QgsApplication.getThemeIcon('/mActionZoomFullExtent.svg'))
-        self.mActionExportPdf.setIcon(
-            QgsApplication.getThemeIcon('/mActionSaveAsPDF.svg'))
-        self.mActionExportSvg.setIcon(
-            QgsApplication.getThemeIcon('/mActionSaveAsSVG.svg'))
-        self.toolbutton_export_to_script.setIcon(
-            QgsApplication.getThemeIcon('/mActionSaveAsPython.svg'))
-        self.mActionEditHelp.setIcon(
-            QgsApplication.getThemeIcon('/mActionEditHelpContent.svg'))
-        self.mActionRun.setIcon(
-            QgsApplication.getThemeIcon('/mActionStart.svg'))
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.propertiesDock)
         self.addDockWidget(Qt.LeftDockWidgetArea, self.inputsDock)
