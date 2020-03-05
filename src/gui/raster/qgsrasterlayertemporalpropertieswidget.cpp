@@ -157,12 +157,6 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
       {
         rasterLayer->temporalProperties()->setTemporalRange( normalRange );
 
-        if ( rasterLayer->dataProvider() && rasterLayer->dataProvider()->temporalCapabilities() )
-        {
-          rasterLayer->dataProvider()->temporalCapabilities()->setEnableTime( !mDisableTime->isChecked() );
-          rasterLayer->dataProvider()->temporalCapabilities()->setReferenceEnable( mReferenceCheckBox->isChecked() );
-        }
-
         // Update current selection label
         updateRangeLabel( TemporalRangeSource::Layer, mRangeLabel );
 
@@ -180,15 +174,8 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
   {
     if ( mLayer->type() == QgsMapLayerType::RasterLayer )
     {
-      QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *> ( mLayer );
+//      QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *> ( mLayer );
 //      rasterLayer->dataProvider()->temporalCapabilities()->setTemporalRange( projectRange );
-      if ( rasterLayer->dataProvider() && rasterLayer->dataProvider()->temporalCapabilities() )
-      {
-        if ( mReferenceCheckBox->isChecked() )
-          rasterLayer->dataProvider()->temporalCapabilities()->setReferenceEnable( true );
-        else
-          rasterLayer->dataProvider()->temporalCapabilities()->setReferenceEnable( false );
-      }
     }
   }
 }
