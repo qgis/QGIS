@@ -670,14 +670,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler >> &handlers ) SIP_SKIP;
 
     /**
-     * Set datetime range for the map canvas.
+     * Set datetime \a range for the map canvas.
      *
-     * Emits temporalRangeChanged(), after a successful update.
+     * The temporalRangeChanged() signal will be emitted if the temporal range has been changed.
+     *
+     * \note Calling setTemporalRange() does not automatically trigger a map refresh.
      *
      * \see temporalRange()
      * \since QGIS 3.14
     */
-    void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
+    void setTemporalRange( const QgsDateTimeRange &range );
 
     /**
      * Returns map canvas datetime range.
