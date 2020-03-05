@@ -258,6 +258,7 @@ SET(QGIS_GUI_SRCS
   processing/models/qgsmodeldesignerdialog.cpp
   processing/models/qgsmodelgraphicitem.cpp
   processing/models/qgsmodelgraphicsscene.cpp
+  processing/models/qgsmodelgraphicsview.cpp
 
   providers/gdal/qgsgdalsourceselect.cpp
   providers/gdal/qgsgdalguiprovider.cpp
@@ -890,6 +891,7 @@ SET(QGIS_GUI_HDRS
   processing/models/qgsmodeldesignerdialog.h
   processing/models/qgsmodelgraphicitem.h
   processing/models/qgsmodelgraphicsscene.h
+  processing/models/qgsmodelgraphicsview.h
 
   providers/gdal/qgsgdalguiprovider.h
   providers/gdal/qgsgdalsourceselect.h
