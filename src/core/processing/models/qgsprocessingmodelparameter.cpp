@@ -34,7 +34,6 @@ QVariant QgsProcessingModelParameter::toVariant() const
 {
   QVariantMap map;
   map.insert( QStringLiteral( "name" ), mParameterName );
-  map.insert( QStringLiteral( "comment" ), mComment.toVariant() );
   saveCommonProperties( map );
   return map;
 }
@@ -42,7 +41,6 @@ QVariant QgsProcessingModelParameter::toVariant() const
 bool QgsProcessingModelParameter::loadVariant( const QVariantMap &map )
 {
   mParameterName = map.value( QStringLiteral( "name" ) ).toString();
-  mComment.loadVariant( map.value( QStringLiteral( "comment" ) ).toMap() );
   restoreCommonProperties( map );
   return true;
 }

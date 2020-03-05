@@ -6637,10 +6637,13 @@ void TestQgsProcessing::parameterCoordinateOperation()
   QVERIFY( def->checkValueIsAcceptable( "test" ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->dependsOnOtherParameters().isEmpty() );
   def->setSourceCrsParameterName( QStringLiteral( "src" ) );
   QCOMPARE( def->sourceCrsParameterName(), QStringLiteral( "src" ) );
+  QCOMPARE( def->dependsOnOtherParameters(), QStringList() << QStringLiteral( "src" ) );
   def->setDestinationCrsParameterName( QStringLiteral( "dest" ) );
   QCOMPARE( def->destinationCrsParameterName(), QStringLiteral( "dest" ) );
+  QCOMPARE( def->dependsOnOtherParameters(), QStringList() << QStringLiteral( "src" ) << QStringLiteral( "dest" ) );
   def->setSourceCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:7855" ) ) );
   QCOMPARE( def->sourceCrs().value< QgsCoordinateReferenceSystem >().authid(), QStringLiteral( "EPSG:7855" ) );
   def->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28355" ) ) );
@@ -7647,6 +7650,25 @@ void TestQgsProcessing::modelerAlgorithm()
   QVERIFY( QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "a" ) ) !=
            QgsProcessingModelChildParameterSource::fromStaticValue( QStringLiteral( "b" ) ) );
 
+  // a comment
+  QgsProcessingModelComment comment;
+  comment.setSize( QSizeF( 9, 8 ) );
+  QCOMPARE( comment.size(), QSizeF( 9, 8 ) );
+  comment.setPosition( QPointF( 11, 14 ) );
+  QCOMPARE( comment.position(), QPointF( 11, 14 ) );
+  comment.setDescription( QStringLiteral( "a comment" ) );
+  QCOMPARE( comment.description(), QStringLiteral( "a comment" ) );
+  std::unique_ptr< QgsProcessingModelComment > commentClone( comment.clone() );
+  QCOMPARE( commentClone->toVariant(), comment.toVariant() );
+  QCOMPARE( commentClone->size(), QSizeF( 9, 8 ) );
+  QCOMPARE( commentClone->position(), QPointF( 11, 14 ) );
+  QCOMPARE( commentClone->description(), QStringLiteral( "a comment" ) );
+  QgsProcessingModelComment comment2;
+  comment2.loadVariant( comment.toVariant().toMap() );
+  QCOMPARE( comment2.size(), QSizeF( 9, 8 ) );
+  QCOMPARE( comment2.position(), QPointF( 11, 14 ) );
+  QCOMPARE( comment2.description(), QStringLiteral( "a comment" ) );
+
   QMap< QString, QString > friendlyOutputNames;
   QgsProcessingModelChildAlgorithm child( QStringLiteral( "some_id" ) );
   QCOMPARE( child.algorithmId(), QStringLiteral( "some_id" ) );
@@ -7688,6 +7710,30 @@ void TestQgsProcessing::modelerAlgorithm()
   QVERIFY( child.linksCollapsed( Qt::BottomEdge ) );
   child.setLinksCollapsed( Qt::BottomEdge, false );
   QVERIFY( !child.linksCollapsed( Qt::BottomEdge ) );
+  child.comment()->setDescription( QStringLiteral( "com" ) );
+  QCOMPARE( child.comment()->description(), QStringLiteral( "com" ) );
+  child.comment()->setSize( QSizeF( 56, 78 ) );
+  child.comment()->setPosition( QPointF( 111, 122 ) );
+
+  QgsProcessingModelChildAlgorithm other;
+  other.setChildId( QStringLiteral( "diff" ) );
+  other.setDescription( QStringLiteral( "d2" ) );
+  other.setAlgorithmId( QStringLiteral( "alg33" ) );
+  other.setLinksCollapsed( Qt::BottomEdge, true );
+  other.setLinksCollapsed( Qt::TopEdge, true );
+  other.comment()->setDescription( QStringLiteral( "other comment" ) );
+  other.copyNonDefinitionProperties( child );
+  // only subset of properties should have been copied!
+  QCOMPARE( other.description(), QStringLiteral( "d2" ) );
+  QCOMPARE( other.position(), QPointF( 1, 2 ) );
+  QCOMPARE( other.size(), QSizeF( 3, 4 ) );
+  QVERIFY( !other.linksCollapsed( Qt::TopEdge ) );
+  QVERIFY( !other.linksCollapsed( Qt::BottomEdge ) );
+  QCOMPARE( other.comment()->description(), QStringLiteral( "other comment" ) );
+  QCOMPARE( other.comment()->position(), QPointF( 111, 122 ) );
+  QCOMPARE( other.comment()->size(), QSizeF( 56, 78 ) );
+
+  child.comment()->setDescription( QString() );
 
   child.setChildId( QStringLiteral( "my_id" ) );
   QCOMPARE( child.childId(), QStringLiteral( "my_id" ) );
@@ -7706,9 +7752,12 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( child.parameterSources().value( QStringLiteral( "b" ) ).at( 1 ).staticValue().toInt(), 9 );
 
   QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), QStringLiteral( "    # desc\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ) );
+  child.comment()->setDescription( QStringLiteral( "do something useful" ) );
+  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), QStringLiteral( "    # desc\n    # do something useful\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)" ) );
 
   std::unique_ptr< QgsProcessingModelChildAlgorithm > childClone( child.clone() );
   QCOMPARE( childClone->toVariant(), child.toVariant() );
+  QCOMPARE( childClone->comment()->description(), QStringLiteral( "do something useful" ) );
 
   QgsProcessingModelOutput testModelOut;
   testModelOut.setChildId( QStringLiteral( "my_id" ) );
@@ -7719,8 +7768,14 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( testModelOut.defaultValue().toString(), QStringLiteral( "my_value" ) );
   testModelOut.setMandatory( true );
   QVERIFY( testModelOut.isMandatory() );
+  testModelOut.comment()->setDescription( QStringLiteral( "my comm" ) );
+  QCOMPARE( testModelOut.comment()->description(), QStringLiteral( "my comm" ) );
   std::unique_ptr< QgsProcessingModelOutput > outputClone( testModelOut.clone() );
   QCOMPARE( outputClone->toVariant(), testModelOut.toVariant() );
+  QCOMPARE( outputClone->comment()->description(), QStringLiteral( "my comm" ) );
+  QgsProcessingModelOutput testModelOutV;
+  testModelOutV.loadVariant( testModelOut.toVariant().toMap() );
+  QCOMPARE( testModelOutV.comment()->description(), QStringLiteral( "my comm" ) );
 
   QgsProcessingOutputLayerDefinition layerDef( QStringLiteral( "my_path" ) );
   layerDef.createOptions["fileEncoding"] = QStringLiteral( "my_encoding" );
@@ -7747,13 +7802,13 @@ void TestQgsProcessing::modelerAlgorithm()
   child.modelOutput( "a" ).setDescription( QStringLiteral( "my output 2" ) );
   QCOMPARE( child.modelOutput( "a" ).description(), QStringLiteral( "my output 2" ) );
   qDebug() << child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' );
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), QStringLiteral( "    # desc\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']" ) );
+  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), QStringLiteral( "    # desc\n    # do something useful\n    alg_params = {\n      'a': 5,\n      'b': [7,9],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']" ) );
 
   // ensure friendly name is used if present
   child.addParameterSources( QStringLiteral( "b" ), QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromChildOutput( "a", "out" ) );
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), QStringLiteral( "    # desc\n    alg_params = {\n      'a': 5,\n      'b': outputs['alga']['out'],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']" ) );
+  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), QStringLiteral( "    # desc\n    # do something useful\n    alg_params = {\n      'a': 5,\n      'b': outputs['alga']['out'],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']" ) );
   friendlyNames.remove( "a" );
-  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), QStringLiteral( "    # desc\n    alg_params = {\n      'a': 5,\n      'b': outputs['a']['out'],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']" ) );
+  QCOMPARE( child.asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, extraParams, 4, 2, friendlyNames, friendlyOutputNames ).join( '\n' ), QStringLiteral( "    # desc\n    # do something useful\n    alg_params = {\n      'a': 5,\n      'b': outputs['a']['out'],\n      'SOMETHING': SOMETHING_ELSE,\n      'SOMETHING2': SOMETHING_ELSE2\n    }\n    outputs['my_id'] = processing.run('native:centroids', alg_params, context=context, feedback=feedback, is_child_algorithm=True)\n    results['my_id:a'] = outputs['my_id']['']" ) );
 
   // no existent
   child.modelOutput( "b" ).setDescription( QStringLiteral( "my output 3" ) );
@@ -7792,12 +7847,23 @@ void TestQgsProcessing::modelerAlgorithm()
   a1.setDescription( QStringLiteral( "alg1" ) );
   QgsProcessingModelChildAlgorithm a2;
   a2.setDescription( QStringLiteral( "alg2" ) );
+  a2.setPosition( QPointF( 112, 131 ) );
+  a2.setSize( QSizeF( 44, 55 ) );
   algs.insert( QStringLiteral( "a" ), a1 );
   algs.insert( QStringLiteral( "b" ), a2 );
   alg.setChildAlgorithms( algs );
   QCOMPARE( alg.childAlgorithms().count(), 2 );
   QCOMPARE( alg.childAlgorithms().value( QStringLiteral( "a" ) ).description(), QStringLiteral( "alg1" ) );
   QCOMPARE( alg.childAlgorithms().value( QStringLiteral( "b" ) ).description(), QStringLiteral( "alg2" ) );
+
+  QgsProcessingModelChildAlgorithm a2other;
+  a2other.setChildId( QStringLiteral( "b" ) );
+  a2other.setDescription( QStringLiteral( "alg2 other" ) );
+  a2other.copyNonDefinitionPropertiesFromModel( &alg );
+  QCOMPARE( a2other.description(), QStringLiteral( "alg2 other" ) );
+  QCOMPARE( a2other.position(), QPointF( 112, 131 ) );
+  QCOMPARE( a2other.size(), QSizeF( 44, 55 ) );
+
   QgsProcessingModelChildAlgorithm a3;
   a3.setChildId( QStringLiteral( "c" ) );
   a3.setDescription( QStringLiteral( "alg3" ) );
@@ -7848,8 +7914,14 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelParameter pc1;
   pc1.setParameterName( QStringLiteral( "my_param" ) );
   QCOMPARE( pc1.parameterName(), QStringLiteral( "my_param" ) );
+  pc1.comment()->setDescription( QStringLiteral( "my comment" ) );
+  QCOMPARE( pc1.comment()->description(), QStringLiteral( "my comment" ) );
   std::unique_ptr< QgsProcessingModelParameter > paramClone( pc1.clone() );
   QCOMPARE( paramClone->toVariant(), pc1.toVariant() );
+  QCOMPARE( paramClone->comment()->description(), QStringLiteral( "my comment" ) );
+  QgsProcessingModelParameter pcc1;
+  pcc1.loadVariant( pc1.toVariant().toMap() );
+  QCOMPARE( pcc1.comment()->description(), QStringLiteral( "my comment" ) );
   pComponents.insert( QStringLiteral( "my_param" ), pc1 );
   alg.setParameterComponents( pComponents );
   QCOMPARE( alg.parameterComponents().count(), 1 );
@@ -8294,7 +8366,9 @@ void TestQgsProcessing::modelExecution()
 
   // test parametersForChildAlgorithm
   QgsProcessingModelAlgorithm model2;
-  model2.addModelParameter( new QgsProcessingParameterFeatureSource( "SOURCE_LAYER" ), QgsProcessingModelParameter( "SOURCE_LAYER" ) );
+  QgsProcessingModelParameter sourceParam( "SOURCE_LAYER" );
+  sourceParam.comment()->setDescription( QStringLiteral( "an input" ) );
+  model2.addModelParameter( new QgsProcessingParameterFeatureSource( "SOURCE_LAYER" ), sourceParam );
   model2.addModelParameter( new QgsProcessingParameterNumber( "DIST", QString(), QgsProcessingParameterNumber::Double ), QgsProcessingModelParameter( "DIST" ) );
   QgsProcessingParameterCrs *p = new QgsProcessingParameterCrs( "CRS", QString(), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28355" ) ) );
   p->setFlags( p->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
@@ -8514,6 +8588,7 @@ void TestQgsProcessing::modelExecution()
                               "class MyModel(QgsProcessingAlgorithm):\n"
                               "\n"
                               "  def initAlgorithm(self, config=None):\n"
+                              "    # an input\n"
                               "    self.addParameter(QgsProcessingParameterFeatureSource('SOURCE_LAYER', '', defaultValue=None))\n"
                               "    self.addParameter(QgsProcessingParameterNumber('DIST', '', type=QgsProcessingParameterNumber.Double, defaultValue=None))\n"
                               "    param = QgsProcessingParameterCrs('CRS', '', defaultValue=QgsCoordinateReferenceSystem('EPSG:28355'))\n"

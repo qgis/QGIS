@@ -117,7 +117,6 @@ QVariant QgsProcessingModelChildAlgorithm::toVariant() const
   map.insert( QStringLiteral( "alg_config" ), mConfiguration );
   map.insert( QStringLiteral( "active" ), mActive );
   map.insert( QStringLiteral( "dependencies" ), mDependencies );
-  map.insert( QStringLiteral( "comment" ), mComment.toVariant() );
 
   saveCommonProperties( map );
 
@@ -155,7 +154,6 @@ bool QgsProcessingModelChildAlgorithm::loadVariant( const QVariant &child )
   setAlgorithmId( map.value( QStringLiteral( "alg_id" ) ).toString() );
   mActive = map.value( QStringLiteral( "active" ) ).toBool();
   mDependencies = map.value( QStringLiteral( "dependencies" ) ).toStringList();
-  mComment.loadVariant( map.value( QStringLiteral( "comment" ) ).toMap() );
 
   restoreCommonProperties( map );
 

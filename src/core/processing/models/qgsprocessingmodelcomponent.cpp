@@ -103,6 +103,8 @@ void QgsProcessingModelComponent::saveCommonProperties( QVariantMap &map ) const
   map.insert( QStringLiteral( "component_height" ), mSize.height() );
   map.insert( QStringLiteral( "parameters_collapsed" ), mTopEdgeLinksCollapsed );
   map.insert( QStringLiteral( "outputs_collapsed" ), mBottomEdgeLinksCollapsed );
+  if ( comment() )
+    map.insert( QStringLiteral( "comment" ), comment()->toVariant() );
 }
 
 void QgsProcessingModelComponent::restoreCommonProperties( const QVariantMap &map )
@@ -116,11 +118,14 @@ void QgsProcessingModelComponent::restoreCommonProperties( const QVariantMap &ma
   mSize.setHeight( map.value( QStringLiteral( "component_height" ), QString::number( DEFAULT_COMPONENT_HEIGHT ) ).toDouble() );
   mTopEdgeLinksCollapsed = map.value( QStringLiteral( "parameters_collapsed" ) ).toBool();
   mBottomEdgeLinksCollapsed = map.value( QStringLiteral( "outputs_collapsed" ) ).toBool();
+  if ( comment() )
+    comment()->loadVariant( map.value( QStringLiteral( "comment" ) ).toMap() );
 }
 
 void QgsProcessingModelComponent::copyNonDefinitionProperties( const QgsProcessingModelComponent &other )
 {
   setPosition( other.position() );
+  setSize( other.size() );
   setLinksCollapsed( Qt::TopEdge, other.linksCollapsed( Qt::TopEdge ) );
   setLinksCollapsed( Qt::BottomEdge, other.linksCollapsed( Qt::BottomEdge ) );
   if ( comment() && other.comment() )
