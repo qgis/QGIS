@@ -17,8 +17,7 @@
 
 #include "qgsdataprovidertemporalcapabilities.h"
 
-QgsDataProviderTemporalCapabilities::QgsDataProviderTemporalCapabilities( bool enabled )
-  : QgsTemporalProperty( enabled )
+QgsDataProviderTemporalCapabilities::QgsDataProviderTemporalCapabilities( bool available )
+  : mHasTemporalCapabilities( available )
 {
 }
-

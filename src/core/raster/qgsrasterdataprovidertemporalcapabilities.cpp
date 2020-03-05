@@ -24,8 +24,8 @@ QgsRasterDataProviderTemporalCapabilities::QgsRasterDataProviderTemporalCapabili
 
 void QgsRasterDataProviderTemporalCapabilities::setFixedTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
-  if ( !isActive() )
-    setIsActive( true );
+  if ( !hasTemporalCapabilities() )
+    setHasTemporalCapabilities( true );
 
   mFixedRange = dateTimeRange;
 }
@@ -47,8 +47,8 @@ bool QgsRasterDataProviderTemporalCapabilities::isTimeEnabled() const
 
 void QgsRasterDataProviderTemporalCapabilities::setFixedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
-  if ( !isActive() )
-    setIsActive( true );
+  if ( !hasTemporalCapabilities() )
+    setHasTemporalCapabilities( true );
 
   mFixedReferenceRange = dateTimeRange;
 }

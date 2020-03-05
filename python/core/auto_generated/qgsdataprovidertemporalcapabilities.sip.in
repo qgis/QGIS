@@ -11,7 +11,7 @@
 
 
 
-class QgsDataProviderTemporalCapabilities : QgsTemporalProperty
+class QgsDataProviderTemporalCapabilities
 {
 %Docstring
 Base class for handling properties relating to a data provider's temporal capabilities.
@@ -24,14 +24,32 @@ Base class for handling properties relating to a data provider's temporal capabi
 %End
   public:
 
-    QgsDataProviderTemporalCapabilities( bool enabled = false );
+    QgsDataProviderTemporalCapabilities( bool available = false );
 %Docstring
 Constructor for QgsDataProviderTemporalCapabilities.
 
-The ``enabled`` argument specifies whether the data provider has temporal capabilities.
+The ``available`` argument specifies whether the data provider has temporal capabilities. Set to
+``True`` to indicate that the provider has temporal capabilities available for use.
 %End
 
     virtual ~QgsDataProviderTemporalCapabilities();
+
+    bool hasTemporalCapabilities() const;
+%Docstring
+Returns ``True`` if the provider has temporal capabilities available.
+
+.. seealso:: :py:func:`setHasTemporalCapabilities`
+%End
+
+    void setHasTemporalCapabilities( bool available );
+%Docstring
+Sets whether the provider has temporal capabilities ``available``.
+
+Set ``available`` to ``True`` to indicate that the provider has temporal capabilities available for use.
+
+.. seealso:: :py:func:`hasTemporalCapabilities`
+%End
+
 };
 
 /************************************************************************
