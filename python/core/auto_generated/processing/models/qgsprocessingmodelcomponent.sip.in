@@ -136,6 +136,16 @@ Restores the component properties from a QVariantMap.
 .. seealso:: :py:func:`saveCommonProperties`
 %End
 
+    void copyNonDefinitionProperties( const QgsProcessingModelComponent &other );
+%Docstring
+Copies all non-specific definition properties from the ``other`` component definition.
+
+This includes properties like the size and position of the component, but not properties
+like the specific algorithm or input details.
+
+.. versionadded:: 3.14
+%End
+
 };
 
 

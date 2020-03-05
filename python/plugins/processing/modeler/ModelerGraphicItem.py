@@ -29,8 +29,7 @@ from qgis.gui import (
     QgsProcessingParameterWidgetContext,
     QgsModelParameterGraphicItem,
     QgsModelChildAlgorithmGraphicItem,
-    QgsModelOutputGraphicItem,
-    QgsModelCommentGraphicItem
+    QgsModelOutputGraphicItem
 )
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -129,7 +128,8 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
         if dlg.exec_():
             alg = dlg.createAlgorithm()
             alg.setChildId(self.component().childId())
-            self.updateAlgorithm(alg)
+            alg.copyNonDefinitionPropertiesFromModel(self.model())
+            self.model().setChildAlgorithm(alg)
             self.requestModelRepaint.emit()
             self.changed.emit()
 
@@ -138,27 +138,6 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
 
     def editComment(self):
         self.edit(edit_comment=True)
-
-    def updateAlgorithm(self, alg):
-        existing_child = self.model().childAlgorithm(alg.childId())
-        alg.setPosition(existing_child.position())
-        alg.setLinksCollapsed(Qt.TopEdge, existing_child.linksCollapsed(Qt.TopEdge))
-        alg.setLinksCollapsed(Qt.BottomEdge, existing_child.linksCollapsed(Qt.BottomEdge))
-        alg.comment().setPosition(existing_child.comment().position()
-                                  or alg.position() + QPointF(
-            self.component().size().width(),
-            -1.5 * self.component().size().height())
-        )
-        alg.comment().setSize(existing_child.comment().size())
-        for i, out in enumerate(alg.modelOutputs().keys()):
-            alg.modelOutput(out).setPosition(existing_child.modelOutput(out).position()
-                                             or alg.position() + QPointF(
-                self.component().size().width(),
-                (i + 1.5) * self.component().size().height()))
-            alg.modelOutput(out).comment().setDescription(existing_child.modelOutput(out).comment().description())
-            alg.modelOutput(out).comment().setSize(existing_child.modelOutput(out).comment().size())
-            alg.modelOutput(out).comment().setPosition(existing_child.modelOutput(out).comment().position())
-        self.model().setChildAlgorithm(alg)
 
 
 class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):

@@ -59,6 +59,32 @@ QgsProcessingModelChildAlgorithm *QgsProcessingModelChildAlgorithm::clone() cons
   return new QgsProcessingModelChildAlgorithm( *this );
 }
 
+void QgsProcessingModelChildAlgorithm::copyNonDefinitionPropertiesFromModel( QgsProcessingModelAlgorithm *model )
+{
+  const QgsProcessingModelChildAlgorithm existingChild = model->childAlgorithm( mId );
+  copyNonDefinitionProperties( existingChild );
+
+  int i = 0;
+  for ( auto it = mModelOutputs.begin(); it != mModelOutputs.end(); ++it )
+  {
+    if ( !existingChild.modelOutputs().value( it.key() ).position().isNull() )
+      it.value().setPosition( existingChild.modelOutputs().value( it.key() ).position() );
+    else
+      it.value().setPosition( position() + QPointF( size().width(), ( i + 1.5 ) * size().height() ) );
+
+    if ( QgsProcessingModelComment *comment = it.value().comment() )
+    {
+      if ( const QgsProcessingModelComment *existingComment = existingChild.modelOutputs().value( it.key() ).comment() )
+      {
+        comment->setDescription( existingComment->description() );
+        comment->setSize( existingComment->size() );
+        comment->setPosition( existingComment->position() );
+      }
+    }
+    i++;
+  }
+}
+
 const QgsProcessingAlgorithm *QgsProcessingModelChildAlgorithm::algorithm() const
 {
   return mAlgorithm.get();
