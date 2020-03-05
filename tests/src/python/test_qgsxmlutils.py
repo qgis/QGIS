@@ -15,6 +15,7 @@ from qgis.core import (QgsXmlUtils,
                        QgsProperty,
                        QgsGeometry,
                        QgsCoordinateReferenceSystem,
+                       QgsProcessingOutputLayerDefinition,
                        NULL)
 
 from qgis.PyQt.QtCore import QDateTime, QDate, QTime
@@ -240,6 +241,20 @@ class TestQgsXmlUtils(unittest.TestCase):
         elem = QgsXmlUtils.writeVariant(QTime(), doc)
         c = QgsXmlUtils.readVariant(elem)
         self.assertEqual(c, NULL)
+
+    def test_output_layer_definition(self):
+        """
+        Test that QgsProcessingOutputLayerDefinition values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        definition = QgsProcessingOutputLayerDefinition(QgsProperty.fromValue('my sink'))
+        definition.createOptions = {'opt': 1, 'opt2': 2}
+
+        elem = QgsXmlUtils.writeVariant(definition, doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c.sink.staticValue(), 'my sink')
+        self.assertEqual(c.createOptions, {'opt': 1, 'opt2': 2})
 
 
 if __name__ == '__main__':

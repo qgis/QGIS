@@ -48,7 +48,6 @@ QVariant QgsProcessingModelOutput::toVariant() const
   map.insert( QStringLiteral( "child_id" ), mChildId );
   map.insert( QStringLiteral( "output_name" ), mOutputName );
   map.insert( QStringLiteral( "mandatory" ), mMandatory );
-  map.insert( QStringLiteral( "comment" ), mComment.toVariant() );
   saveCommonProperties( map );
   return map;
 }
@@ -80,7 +79,6 @@ bool QgsProcessingModelOutput::loadVariant( const QVariantMap &map )
   mChildId = map.value( QStringLiteral( "child_id" ) ).toString();
   mOutputName = map.value( QStringLiteral( "output_name" ) ).toString();
   mMandatory = map.value( QStringLiteral( "mandatory" ), false ).toBool();
-  mComment.loadVariant( map.value( QStringLiteral( "comment" ) ).toMap() );
   restoreCommonProperties( map );
   return true;
 }
