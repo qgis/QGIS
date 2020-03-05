@@ -50,6 +50,7 @@ void TestQgsDataSourceUri::checkparser_data()
   QTest::addColumn<QgsDataSourceUri::SslMode>( "sslmode" );
   QTest::addColumn<QString>( "sql" );
   QTest::addColumn<QString>( "myparam" );
+  QTest::addColumn<QString>( "schema" );
 
 
   QTest::newRow( "oci" )
@@ -71,6 +72,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << QgsDataSourceUri::SslPrefer // sslmode
       << "" // sql
       << "myvalue" // myparam
+      << "myschema"
       ;
 
   QTest::newRow( "pgrast" )
@@ -92,7 +94,9 @@ void TestQgsDataSourceUri::checkparser_data()
       << QgsDataSourceUri::SslPrefer // sslmode
       << "" // sql
       << "" // myparam
+      << "public"
       ;
+
 
   QTest::newRow( "pgmlsz" )
       << "PG: dbname=mydb host=myhost user=myname password=mypasswd port=5432 mode=2 schema=public column=geom table=mytable type=MultiLineStringZ"
@@ -113,6 +117,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << QgsDataSourceUri::SslPrefer // sslmode
       << "" // sql
       << "" // myparam
+      << "public"
       ;
 
   QTest::newRow( "DB2" )
@@ -134,6 +139,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << QgsDataSourceUri::SslPrefer // sslmode
       << "" // sql
       << "myvalue" // myparam
+      << "TEST"
       ;
 }
 
@@ -157,6 +163,7 @@ void TestQgsDataSourceUri::checkparser()
   QFETCH( QgsDataSourceUri::SslMode, sslmode );
   QFETCH( QString, sql );
   QFETCH( QString, myparam );
+  QFETCH( QString, schema );
 
   QgsDataSourceUri ds( uri );
   QCOMPARE( ds.table(), table );
