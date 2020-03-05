@@ -22,6 +22,7 @@
 #include "qgsquerybuilder.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
+#include "qgisapp.h"
 
 
 QgsLayerTreeViewFilterIndicatorProvider::QgsLayerTreeViewFilterIndicatorProvider( QgsLayerTreeView *view )
@@ -35,42 +36,8 @@ void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIn
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
-  if ( vlayer && !vlayer->isEditable() )
-  {
-    QgsQueryBuilder qb( vlayer );
-    qb.setSql( vlayer->subsetString() );
-    if ( qb.exec() )
-      vlayer->setSubsetString( qb.sql() );
-  }
+  QgisApp::instance()->layerSubsetString( QgsLayerTree::toLayer( node )->layer() );
 
-  // raster
-  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( QgsLayerTree::toLayer( node )->layer() );
-  if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() )
-  {
-    // PG raster is the only one for now
-    if ( rlayer->dataProvider()->name() == QStringLiteral( "postgresraster" ) )
-    {
-      QgsDataSourceUri vectorUri { rlayer->dataProvider()->dataSourceUri() };
-      vectorUri.setGeometryColumn( QString() );
-      vectorUri.setSrid( QString() );
-      QgsVectorLayer vlayer { vectorUri.uri( ), QStringLiteral( "pgrasterlayer" ), QStringLiteral( "postgres" ) };
-      if ( vlayer.isValid( ) )
-      {
-        // launch the query builder
-        QgsQueryBuilder qb { &vlayer };
-        QString subsetBefore = vlayer.subsetString();
-
-        // Set the sql in the query builder to the same in the prop dialog
-        // (in case the user has already changed it)
-        qb.setSql( rlayer->subsetString() );
-        if ( qb.exec() && subsetBefore != qb.sql() )
-        {
-          rlayer->setSubsetString( qb.sql() );
-        }
-      }
-    }
-  }
 }
 
 QString QgsLayerTreeViewFilterIndicatorProvider::iconName( QgsMapLayer *layer )
@@ -114,7 +81,6 @@ void QgsLayerTreeViewFilterIndicatorProvider::disconnectSignals( QgsMapLayer *la
   if ( vlayer )
     disconnect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
 
-  // PG raster
   QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->supportsSubsetString() )
     disconnect( rlayer, &QgsRasterLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerChanged );
