@@ -482,5 +482,23 @@ void TestQgsMapToolAddFeatureLine::testTopologicalEditingZ()
   mCanvas->snappingUtils()->setConfig( cfg );
   cfg.project()->setTopologicalEditing( topologicalEditing );
 }
+
+void TestQgsMapToolAddFeatureLine::testCloseLine()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerCloseLine );
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 5, 1, Qt::LeftButton );
+  utils.mouseClick( 5, 5, Qt::LeftButton );
+  utils.mouseClick( 5, 5, Qt::RightButton, Qt::ShiftModifier );
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QString wkt = "LineString (1 1, 5 1, 5 5, 1 1)";
+  QCOMPARE( mLayerCloseLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerCloseLine->undoStack()->undo();
+}
 QGSTEST_MAIN( TestQgsMapToolAddFeatureLine )
 #include "testqgsmaptooladdfeatureline.moc"
