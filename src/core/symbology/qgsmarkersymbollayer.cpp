@@ -2695,9 +2695,12 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
 
   double width = 0.0;
   double height = 0.0;
-  
+
   bool hasDataDefinedSize = false;
   double scaledSize = calculateSize( context, hasDataDefinedSize );
+
+  bool hasDataDefinedAspectRatio = false;
+  double aspectRatio = calculateAspectRatio( context, scaledSize, hasDataDefinedAspectRatio );
 
   // RenderPercentage Unit Type takes original image size
   if ( mSizeUnit == QgsUnitTypes::RenderPercentage )
@@ -2716,8 +2719,6 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   else
   {
     width = context.renderContext().convertToPainterUnits( scaledSize, mSizeUnit, mSizeMapUnitScale );
-    bool hasDataDefinedAspectRatio = false;
-    double aspectRatio = calculateAspectRatio( context, scaledSize, hasDataDefinedAspectRatio );
     height = width * ( preservedAspectRatio() ? defaultAspectRatio() : aspectRatio );
 
     if ( preservedAspectRatio() && path != mPath )
@@ -2755,7 +2756,7 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   opacity *= context.opacity();
 
   bool cached;
-  QImage img = QgsApplication::imageCache()->pathAsImage( path, QSize( width, height ), preservedAspectRatio(), opacity, cached, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
+  QImage img = QgsApplication::imageCache()->pathAsImage( path, QSize( width, preservedAspectRatio() ? 0 : width * aspectRatio ), preservedAspectRatio(), opacity, cached, ( context.renderContext().flags() & QgsRenderContext::RenderBlocking ) );
   if ( !img.isNull() )
   {
     if ( context.selected() )
