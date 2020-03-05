@@ -360,6 +360,17 @@ class CORE_EXPORT QgsDxfExport
     void writeGroup( const QColor &color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
 
     /**
+     * Write a group code with color value
+     * \param color color
+     * \param withTransparency must be true for polygon fill color only
+     * \param exactMatch group code to use if the color has an exact match in the dxf palette
+     * \param rgbCode group code to use if the color doesn't have an exact match or has a transparency component
+     * \param transparencyCode group code to use for transparency component
+     * \note available in Python bindings as writeGroupPoint
+     */
+    void writeGroup( const QColor &color, bool withTransparency, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
+
+    /**
      * Write a group code
      * \param code group code value
      */
