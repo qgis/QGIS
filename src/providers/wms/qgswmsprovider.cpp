@@ -154,13 +154,12 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     // Setup temporal properties for layers in WMS-T
     if ( mSettings.mIsTemporal )
     {
-      if ( temporalCapabilities() )
+      Q_ASSERT_X( temporalCapabilities(), "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
+      temporalCapabilities()->setHasTemporalCapabilities( true );
+      temporalCapabilities()->setFixedTemporalRange( mSettings.mFixedRange );
+      if ( mSettings.mIsBiTemporal )
       {
-        temporalCapabilities()->setFixedTemporalRange( mSettings.mFixedRange );
-        if ( mSettings.mIsBiTemporal )
-        {
-          temporalCapabilities()->setFixedReferenceTemporalRange( mSettings.mFixedReferenceRange );
-        }
+        temporalCapabilities()->setFixedReferenceTemporalRange( mSettings.mFixedReferenceRange );
       }
     }
   }
@@ -1046,7 +1045,7 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
 
   // For WMS-T layers
   if ( temporalCapabilities() &&
-       temporalCapabilities()->isActive() )
+       temporalCapabilities()->hasTemporalCapabilities() )
   {
     addWmstParameters( query );
   }
