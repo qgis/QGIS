@@ -750,7 +750,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.settings.endGroup()
 
         # open provider window
-        ows_provider = QgsGui.providerGuiRegistry().sourceSelectProviders(stype[2])[0].createDataSourceWidget()
+        ows_provider = QgsGui.sourceSelectProviderRegistry().createSelectionWidget(
+            stype[2],
+            self,
+            Qt.Widget,
+            QgsProviderRegistry.WidgetMode.Embedded)
         service_type = stype[0]
 
         # connect dialog signals to iface slots
@@ -779,6 +783,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             conn_cmb = ows_provider.findChild(QComboBox)
             connect = 'connectToServer'
 
+        ows_provider.setModal(False)
+        ows_provider.show()
+
         # open provider dialogue against added OWS
         index = conn_cmb.findText(sname)
         if index > -1:
@@ -789,9 +796,6 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             elif service_type in ['ESRI:ArcGIS:MapServer', 'ESRI:ArcGIS:FeatureServer']:
                 ows_provider.cmbConnections_activated(index)
         getattr(ows_provider, connect)()
-
-        ows_provider.setWindowModality(Qt.WindowModal)
-        ows_provider.exec_()
 
     def add_gis_file(self):
         """add GIS file from result"""
