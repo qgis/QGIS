@@ -28,6 +28,7 @@ QgsProjectTimeSettings::QgsProjectTimeSettings( QObject *parent )
 void QgsProjectTimeSettings::reset()
 {
   mRange = QgsDateTimeRange();
+  emit temporalRangeChanged();
 }
 
 QgsDateTimeRange QgsProjectTimeSettings::temporalRange() const
@@ -37,7 +38,9 @@ QgsDateTimeRange QgsProjectTimeSettings::temporalRange() const
 
 void QgsProjectTimeSettings::setTemporalRange( const QgsDateTimeRange &range )
 {
-  mRange = range;
+    if ( range == mRange )
+       return;
+    mRange = range;
 
   emit temporalRangeChanged();
 }

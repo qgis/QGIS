@@ -48,7 +48,6 @@
 #include "qgsprojecttranslator.h"
 #include "qgsattributeeditorelement.h"
 #include "qgscolorscheme.h"
-#include "qgsprojecttimesettings.h"
 
 class QFileInfo;
 class QDomDocument;

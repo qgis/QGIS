@@ -176,6 +176,14 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     void mButtonAddColor_clicked();
 
+  signals:
+    //! Signal used to inform listeners that the mouse display precision may have changed
+    void displayPrecisionChanged();
+
+  private slots:
+
+    void customizeBearingFormat();
+
     /**
      * Sets the start and end dates input values from the project
      * temporal layers.
@@ -187,14 +195,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      * \since QGIS 3.14
      */
     void calculateFromLayersButton_clicked();
-
-  signals:
-    //! Signal used to inform listeners that the mouse display precision may have changed
-    void displayPrecisionChanged();
-
-  private slots:
-
-    void customizeBearingFormat();
 
   private:
 

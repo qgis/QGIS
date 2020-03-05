@@ -2501,51 +2501,38 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
   QgsMapLayer *currentLayer = nullptr;
 
-  QList< QDateTime > dates;
+  QDateTime minDate;
+  QDateTime maxDate;
 
   for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
   {
     currentLayer = it.value();
 
-    if ( currentLayer->type() == QgsMapLayerType::RasterLayer &&
-         currentLayer->temporalProperties() )
+    if ( !currentLayer->temporalProperties() || !currentLayer->temporalProperties()->isActive() )
+        continue;
+
+    if ( currentLayer->type() == QgsMapLayerType::RasterLayer )
     {
       QgsRasterLayer *rasterLayer  = qobject_cast<QgsRasterLayer *>( currentLayer );
 
       QgsDateTimeRange layerRange = rasterLayer->temporalProperties()->temporalRange();
 
-      if ( layerRange.begin().isValid() )
-        dates.append( layerRange.begin() );
-
-      if ( layerRange.end().isValid() )
-        dates.append( layerRange.end() );
-    }
+      if ( !minDate.isValid() ||  layerRange.begin() < minDate )
+          minDate = layerRange.begin();
+      if ( !maxDate.isValid() ||  layerRange.end() > maxDate )
+          maxDate = layerRange.end();
+     }
   }
 
-  // No layer with temporal properties
-  if ( dates.empty() )
-    return;
-  QgsDateTimeRange range;
+  if ( !minDate.isValid() || !maxDate.isValid() )
+      return;
 
-  if ( dates.size() > 1 )
-  {
-    std::sort( dates.begin(), dates.end() );
-    range = QgsDateTimeRange( dates.first(), dates.last() );
-  }
-  else
-  {
-    range = QgsDateTimeRange( dates.first(), dates.first() );
-  }
-
-  QgsProject::instance()->timeSettings()->setTemporalRange( range );
-
-  mStartDateTimeEdit->setDateTime( range.begin() );
-  mEndDateTimeEdit->setDateTime( range.end() );
+  mStartDateTimeEdit->setDateTime( minDate );
+  mEndDateTimeEdit->setDateTime( maxDate );
 
   mCurrentRangeLabel->setText( tr( "Current range: %1 to %2" ).arg(
                                  mStartDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ),
                                  mEndDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ) ) );
-
 
 }
 
