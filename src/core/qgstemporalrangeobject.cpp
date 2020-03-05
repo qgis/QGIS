@@ -44,3 +44,4 @@ const QgsDateTimeRange &QgsTemporalRangeObject::temporalRange() const
 {
   return mDateTimeRange;
 }
+

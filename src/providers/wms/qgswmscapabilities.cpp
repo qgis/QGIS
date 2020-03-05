@@ -283,7 +283,6 @@ QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
     {
       resolution.year = resolutionValue;
       found = true;
-
     }
     if ( datesSymbol  == 'M' && item.contains( 'M' ) )
     {
@@ -309,7 +308,6 @@ QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
                    number.length() );
       found = false;
     }
-
   }
   if ( !item.contains( 'T' ) )
     return resolution;
@@ -353,12 +351,12 @@ QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
 
 QDateTime QgsWmsSettings::parseWmstDateTimes( QString item )
 {
-  // Standard item will have YYYY-MM-DDThh:mm:ss.SSSZ
-  //  format a Qt::ISODateWithMs
+  // Standard item will have a YYYY-MM-DDThh:mm:ss.SSSZ
+  // format similar to Qt::ISODateWithMs
 
   QString format = "YYYY-MM-DDThh:mm:ss.SSSZ";
 
-  // Check if it does not have time part
+  // Check if it does not have the time part
   if ( !item.contains( 'T' ) )
     return QDateTime::fromString( item, "yyyy-MM-dd" );
   else

@@ -366,17 +366,14 @@ QString QgsWMSLayerItem::createUri()
   mDataSourceUri.setParam( QStringLiteral( "styles" ), style );
 
   // Check for layer dimensions
-  if ( !mLayerProperty.dimensions.empty() )
+  for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( mLayerProperty.dimensions ) )
   {
-    for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( mLayerProperty.dimensions ) )
+    // add temporal dimensions only
+    if ( dimension.name == QLatin1String( "time" ) || dimension.name == QLatin1String( "reference_time" ) )
     {
-      // add temporal dimensions only
-      if ( dimension.name == "time" || dimension.name == "reference_time" )
-      {
-        if ( !( mDataSourceUri.param( "type" ) == "wmst" ) )
-          mDataSourceUri.setParam( "type", "wmst" );
-        mDataSourceUri.setParam( dimension.name, dimension.extent );
-      }
+      if ( !( mDataSourceUri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) ) )
+        mDataSourceUri.setParam( QLatin1String( "type" ), QLatin1String( "wmst" ) );
+      mDataSourceUri.setParam( dimension.name, dimension.extent );
     }
   }
 

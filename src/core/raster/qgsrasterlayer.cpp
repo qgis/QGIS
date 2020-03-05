@@ -79,8 +79,6 @@ email                : tim at linfiniti.com
 #include <QRegExp>
 #include <QSlider>
 
-
-
 #define ERR(message) QGS_ERROR_MESSAGE(message,"Raster layer")
 
 const double QgsRasterLayer::SAMPLE_SIZE = 250000;

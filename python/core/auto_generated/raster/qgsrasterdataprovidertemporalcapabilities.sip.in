@@ -34,36 +34,6 @@ Constructor for :py:class:`QgsRasterDataProviderTemporalProperties`.
 
     virtual ~QgsRasterDataProviderTemporalCapabilities();
 
-    void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
-%Docstring
-Sets the current active datetime range for the temporal properties.
-
-.. seealso:: :py:func:`temporalRange`
-%End
-
-    const QgsDateTimeRange &temporalRange() const;
-%Docstring
-Returns the current active datetime range for these temporal properties.
-
-.. seealso:: :py:func:`setTemporalRange`
-%End
-
-    void setReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange );
-%Docstring
-Sets the current active reference datetime range for the temporal properties.
-
-This will be used by bi-temporal dimensional data providers.
-
-.. seealso:: :py:func:`referenceTemporalRange`
-%End
-
-    const QgsDateTimeRange &referenceTemporalRange() const;
-%Docstring
-Returns the current active reference datetime range for these temporal properties.
-
-.. seealso:: :py:func:`setReferenceTemporalRange`
-%End
-
     void setFixedTemporalRange( const QgsDateTimeRange &dateTimeRange );
 %Docstring
 Sets the fixed datetime range for the temporal properties.
@@ -80,25 +50,66 @@ Returns the fixed datetime range for these temporal properties.
 
     void setFixedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange );
 %Docstring
-Sets the fixed reference datetime range for the temporal properties.
+Sets the fixed reference datetime range. This is to be used for
+bi-temporal based data. Where data can have both nominal and reference times.
 
 .. seealso:: :py:func:`fixedReferenceTemporalRange`
 %End
 
     const QgsDateTimeRange &fixedReferenceTemporalRange() const;
 %Docstring
-Returns the fixed reference datetime range for these temporal properties.
+Returns the fixed reference datetime range.
 
 .. seealso:: :py:func:`setFixedReferenceTemporalRange`
+%End
+
+    void setRequestedTemporalRange( const QgsDateTimeRange &dateTimeRange );
+%Docstring
+Sets the requested temporal range to retrieve when
+returning data from the associated data provider.
+
+.. note::
+
+   this is not normally manually set, and is intended for use by
+   QgsRasterLayerRenderer to automatically set the requested temporal range
+   on a clone of the data provider during a render job.
+
+.. seealso:: :py:func:`requestedTemporalRange`
+%End
+
+    const QgsDateTimeRange &requestedTemporalRange() const;
+%Docstring
+Returns the requested temporal range.
+Intended to be used by the provider in fetching data.
+
+.. seealso:: :py:func:`setRequestedTemporalRange`
+%End
+
+    void setRequestedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange );
+%Docstring
+Sets the requested reference temporal range to retrieve when
+returning data from the associated data provider.
+
+.. note::
+
+   this is not normally manually set, and is intended for use by
+   QgsRasterLayerRenderer to automatically set the requested temporal range
+   on a clone of the data provider during a render job.
+
+.. seealso:: :py:func:`requestedReferenceTemporalRange`
+%End
+
+    const QgsDateTimeRange &requestedReferenceTemporalRange() const;
+%Docstring
+Returns the requested reference temporal range.
+Intended to be used by the provider in fetching data.
+
+.. seealso:: :py:func:`setRequestedReferenceTemporalRange`
 %End
 
     void setEnableTime( bool enabled );
 %Docstring
 Sets the time enabled status.
-This enables whether time part in the temporal range should be
-used when updated the temporal range of these capabilities.
-
-This is useful in some temporal layers who use dates only.
 
 .. seealso:: :py:func:`isTimeEnabled`
 %End
@@ -108,20 +119,6 @@ This is useful in some temporal layers who use dates only.
 Returns the temporal property status.
 
 .. seealso:: :py:func:`setEnableTime`
-%End
-
-    void setHasReference( bool enabled );
-%Docstring
-Sets the reference range status.
-
-.. seealso:: :py:func:`hasReference`
-%End
-
-    bool hasReference() const;
-%Docstring
-Returns the reference range presence status.
-
-.. seealso:: :py:func:`setHasReference`
 %End
 
     void setReferenceEnable( bool enabled );

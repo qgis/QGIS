@@ -47,36 +47,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     virtual ~QgsRasterDataProviderTemporalCapabilities() = default;
 
     /**
-     * Sets the current active datetime range for the temporal properties.
-     *
-     * \see temporalRange()
-    */
-    void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
-
-    /**
-     * Returns the current active datetime range for these temporal properties.
-     *
-     * \see setTemporalRange()
-    */
-    const QgsDateTimeRange &temporalRange() const;
-
-    /**
-     * Sets the current active reference datetime range for the temporal properties.
-     *
-     * This will be used by bi-temporal dimensional data providers.
-     *
-     * \see referenceTemporalRange()
-    */
-    void setReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange );
-
-    /**
-     * Returns the current active reference datetime range for these temporal properties.
-     *
-     * \see setReferenceTemporalRange()
-    */
-    const QgsDateTimeRange &referenceTemporalRange() const;
-
-    /**
      * Sets the fixed datetime range for the temporal properties.
      *
      * \see fixedTemporalRange()
@@ -91,25 +61,62 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     const QgsDateTimeRange &fixedTemporalRange() const;
 
     /**
-     * Sets the fixed reference datetime range for the temporal properties.
+     * Sets the fixed reference datetime range. This is to be used for
+     * bi-temporal based data. Where data can have both nominal and reference times.
      *
      * \see fixedReferenceTemporalRange()
     */
     void setFixedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange );
 
     /**
-     * Returns the fixed reference datetime range for these temporal properties.
+     * Returns the fixed reference datetime range.
      *
      * \see setFixedReferenceTemporalRange()
     */
     const QgsDateTimeRange &fixedReferenceTemporalRange() const;
 
     /**
-     * Sets the time enabled status.
-     * This enables whether time part in the temporal range should be
-     * used when updated the temporal range of these capabilities.
+     * Sets the requested temporal range to retrieve when
+     * returning data from the associated data provider.
      *
-     * This is useful in some temporal layers who use dates only.
+     * \note this is not normally manually set, and is intended for use by
+     * QgsRasterLayerRenderer to automatically set the requested temporal range
+     *  on a clone of the data provider during a render job.
+     *
+     * \see requestedTemporalRange()
+    */
+    void setRequestedTemporalRange( const QgsDateTimeRange &dateTimeRange );
+
+    /**
+     * Returns the requested temporal range.
+     * Intended to be used by the provider in fetching data.
+     *
+     * \see setRequestedTemporalRange()
+    */
+    const QgsDateTimeRange &requestedTemporalRange() const;
+
+    /**
+     * Sets the requested reference temporal range to retrieve when
+     * returning data from the associated data provider.
+     *
+     * \note this is not normally manually set, and is intended for use by
+     * QgsRasterLayerRenderer to automatically set the requested temporal range
+     *  on a clone of the data provider during a render job.
+     *
+     * \see requestedReferenceTemporalRange()
+    */
+    void setRequestedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange );
+
+    /**
+     * Returns the requested reference temporal range.
+     * Intended to be used by the provider in fetching data.
+     *
+     * \see setRequestedReferenceTemporalRange()
+    */
+    const QgsDateTimeRange &requestedReferenceTemporalRange() const;
+
+    /**
+     * Sets the time enabled status.
      *
      * \see isTimeEnabled()
      */
@@ -121,20 +128,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      * \see setEnableTime()
     */
     bool isTimeEnabled() const;
-
-    /**
-     * Sets the reference range status.
-     *
-     * \see hasReference()
-     */
-    void setHasReference( bool enabled );
-
-    /**
-     * Returns the reference range presence status.
-     *
-     * \see setHasReference()
-    */
-    bool hasReference() const;
 
     /**
      * Sets the usage status of the reference range.
@@ -151,8 +144,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     bool isReferenceEnable() const;
 
   private:
-    //! Represents current active datetime range member.
-    QgsDateTimeRange mRange;
 
     /**
      * Represents fixed data provider datetime range.
@@ -175,18 +166,16 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      */
     bool mEnableTime = true;
 
-    /**
-     * Stores reference temporal range
-     */
-    QgsDateTimeRange mReferenceRange;
+    //! Represents the requested temporal range.
+    QgsDateTimeRange mRequestedRange;
+
+    //! Represents the requested reference temporal range.
+    QgsDateTimeRange mRequestedReferenceRange;
 
     /**
      * Stores the fixed reference temporal range
      */
     QgsDateTimeRange mFixedReferenceRange;
-
-    //! If these properties has reference temporal range
-    bool mHasReferenceRange = false;
 
     //! If reference range has been enabled to be used in these properties
     bool mReferenceEnable = false;

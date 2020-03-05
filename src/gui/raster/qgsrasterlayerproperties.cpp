@@ -271,16 +271,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   layout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( layout );
 
-  // Temporal options
-
-  if ( mRasterLayer->temporalProperties()->isActive() ||
-       mRasterLayer->dataProvider()->temporalCapabilities()->isActive() )
-  {
-    QVBoxLayout *temporalLayout = new QVBoxLayout( temporalFrame );
-    mTemporalWidget = new QgsRasterLayerTemporalPropertiesWidget( this, mRasterLayer );
-    temporalLayout->addWidget( mTemporalWidget );
-
-  }
+  QVBoxLayout *temporalLayout = new QVBoxLayout( temporalFrame );
+  mTemporalWidget = new QgsRasterLayerTemporalPropertiesWidget( this, mRasterLayer );
+  temporalLayout->addWidget( mTemporalWidget );
 
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().userFriendlyIdentifier() );

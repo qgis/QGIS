@@ -48,7 +48,6 @@ class QByteArray;
 class QgsPointXY;
 class QgsRasterIdentifyResult;
 class QgsMapSettings;
-class QgsWmsProvider;
 
 /**
  * \brief Handles asynchronous download of images

@@ -15,6 +15,7 @@
 
 #include <QMutexLocker>
 #include "qgsdataprovider.h"
+#include "qgsdataprovidertemporalcapabilities.h"
 
 #define SUBLAYER_SEPARATOR QStringLiteral( "!!::!!" )
 

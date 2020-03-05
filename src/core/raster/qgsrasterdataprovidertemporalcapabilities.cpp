@@ -22,44 +22,12 @@ QgsRasterDataProviderTemporalCapabilities::QgsRasterDataProviderTemporalCapabili
 {
 }
 
-void QgsRasterDataProviderTemporalCapabilities::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
-{
-  if ( !isActive() )
-    setIsActive( true );
-
-  // Don't set temporal range outside fixed temporal range limits,
-  // instead set equal to the fixed temporal range
-  QDateTime begin;
-  QDateTime end;
-
-  if ( mFixedRange.begin().isValid() &&
-       ( dateTimeRange.begin() < mFixedRange.begin() ) )
-    begin = mFixedRange.begin();
-  else
-    begin = dateTimeRange.begin();
-
-  if ( mFixedRange.end().isValid() &&
-       ( dateTimeRange.end() > mFixedRange.end() ) )
-    end = mFixedRange.end();
-  else
-    end = dateTimeRange.end();
-
-  mRange = QgsDateTimeRange( begin, end );
-
-}
-
-const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::temporalRange() const
-{
-  return mRange;
-}
-
 void QgsRasterDataProviderTemporalCapabilities::setFixedTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( !isActive() )
     setIsActive( true );
 
   mFixedRange = dateTimeRange;
-
 }
 
 const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::fixedTemporalRange() const
@@ -77,27 +45,12 @@ bool QgsRasterDataProviderTemporalCapabilities::isTimeEnabled() const
   return mEnableTime;
 }
 
-void QgsRasterDataProviderTemporalCapabilities::setReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
-{
-  if ( !isActive() )
-    setIsActive( true );
-
-  mReferenceRange = dateTimeRange;
-
-}
-
-const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::referenceTemporalRange() const
-{
-  return mReferenceRange;
-}
-
 void QgsRasterDataProviderTemporalCapabilities::setFixedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( !isActive() )
     setIsActive( true );
 
   mFixedReferenceRange = dateTimeRange;
-
 }
 
 const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::fixedReferenceTemporalRange() const
@@ -105,15 +58,26 @@ const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::fixedReferenc
   return mFixedReferenceRange;
 }
 
-
-void QgsRasterDataProviderTemporalCapabilities::setHasReference( bool enabled )
+void QgsRasterDataProviderTemporalCapabilities::setRequestedTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
-  mHasReferenceRange = enabled;
+  if ( mFixedRange.contains( dateTimeRange ) )
+    mRequestedRange = dateTimeRange;
 }
 
-bool QgsRasterDataProviderTemporalCapabilities::hasReference() const
+const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::requestedTemporalRange() const
 {
-  return mHasReferenceRange;
+  return mRequestedRange;
+}
+
+void QgsRasterDataProviderTemporalCapabilities::setRequestedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
+{
+  if ( mFixedReferenceRange.contains( dateTimeRange ) )
+    mRequestedReferenceRange = dateTimeRange;
+}
+
+const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::requestedReferenceTemporalRange() const
+{
+  return mRequestedReferenceRange;
 }
 
 void QgsRasterDataProviderTemporalCapabilities::setReferenceEnable( bool enabled )
@@ -125,4 +89,3 @@ bool QgsRasterDataProviderTemporalCapabilities::isReferenceEnable() const
 {
   return mReferenceEnable;
 }
-
