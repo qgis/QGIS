@@ -34,24 +34,25 @@
  *
  * \since QGIS 3.14
  */
-
 class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProviderTemporalCapabilities
 {
   public:
 
     /**
      * Constructor for QgsRasterDataProviderTemporalProperties.
+     *
+     * The \a enabled argument specifies whether the data provider has temporal capabilities.
      */
     QgsRasterDataProviderTemporalCapabilities( bool enabled = false );
 
     virtual ~QgsRasterDataProviderTemporalCapabilities() = default;
 
     /**
-     * Sets the fixed datetime range for the temporal properties.
+     * Sets the fixed datetime \a range for the temporal properties.
      *
      * \see fixedTemporalRange()
     */
-    void setFixedTemporalRange( const QgsDateTimeRange &dateTimeRange );
+    void setFixedTemporalRange( const QgsDateTimeRange &range );
 
     /**
      * Returns the fixed datetime range for these temporal properties.
@@ -61,12 +62,12 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     const QgsDateTimeRange &fixedTemporalRange() const;
 
     /**
-     * Sets the fixed reference datetime range. This is to be used for
+     * Sets the fixed reference datetime \a range. This is to be used for
      * bi-temporal based data. Where data can have both nominal and reference times.
      *
      * \see fixedReferenceTemporalRange()
     */
-    void setFixedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange );
+    void setFixedReferenceTemporalRange( const QgsDateTimeRange &range );
 
     /**
      * Returns the fixed reference datetime range.
@@ -76,7 +77,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     const QgsDateTimeRange &fixedReferenceTemporalRange() const;
 
     /**
-     * Sets the requested temporal range to retrieve when
+     * Sets the requested temporal \a range to retrieve when
      * returning data from the associated data provider.
      *
      * \note this is not normally manually set, and is intended for use by
@@ -85,7 +86,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      *
      * \see requestedTemporalRange()
     */
-    void setRequestedTemporalRange( const QgsDateTimeRange &dateTimeRange );
+    void setRequestedTemporalRange( const QgsDateTimeRange &range );
 
     /**
      * Returns the requested temporal range.
@@ -96,7 +97,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     const QgsDateTimeRange &requestedTemporalRange() const;
 
     /**
-     * Sets the requested reference temporal range to retrieve when
+     * Sets the requested reference temporal \a range to retrieve when
      * returning data from the associated data provider.
      *
      * \note this is not normally manually set, and is intended for use by
@@ -105,7 +106,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      *
      * \see requestedReferenceTemporalRange()
     */
-    void setRequestedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange );
+    void setRequestedReferenceTemporalRange( const QgsDateTimeRange &range );
 
     /**
      * Returns the requested reference temporal range.

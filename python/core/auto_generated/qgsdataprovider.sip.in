@@ -118,7 +118,9 @@ Gets the data source specification.
 
     virtual QgsDataProviderTemporalCapabilities *temporalCapabilities();
 %Docstring
-Returns data provider temporal capabilities. This may be ``None``, depending on the data provider.
+Returns the provider's temporal capabilities.
+
+This may be ``None``, depending on the data provider.
 
 .. versionadded:: 3.14
 %End

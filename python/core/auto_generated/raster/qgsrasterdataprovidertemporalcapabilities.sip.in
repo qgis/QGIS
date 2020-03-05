@@ -9,7 +9,6 @@
 
 
 
-
 class QgsRasterDataProviderTemporalCapabilities : QgsDataProviderTemporalCapabilities
 {
 %Docstring
@@ -30,13 +29,15 @@ and should only be set by the QgsDataProvider itself.
     QgsRasterDataProviderTemporalCapabilities( bool enabled = false );
 %Docstring
 Constructor for :py:class:`QgsRasterDataProviderTemporalProperties`.
+
+The ``enabled`` argument specifies whether the data provider has temporal capabilities.
 %End
 
     virtual ~QgsRasterDataProviderTemporalCapabilities();
 
-    void setFixedTemporalRange( const QgsDateTimeRange &dateTimeRange );
+    void setFixedTemporalRange( const QgsDateTimeRange &range );
 %Docstring
-Sets the fixed datetime range for the temporal properties.
+Sets the fixed datetime ``range`` for the temporal properties.
 
 .. seealso:: :py:func:`fixedTemporalRange`
 %End
@@ -48,9 +49,9 @@ Returns the fixed datetime range for these temporal properties.
 .. seealso:: :py:func:`setFixedTemporalRange`
 %End
 
-    void setFixedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange );
+    void setFixedReferenceTemporalRange( const QgsDateTimeRange &range );
 %Docstring
-Sets the fixed reference datetime range. This is to be used for
+Sets the fixed reference datetime ``range``. This is to be used for
 bi-temporal based data. Where data can have both nominal and reference times.
 
 .. seealso:: :py:func:`fixedReferenceTemporalRange`
@@ -63,9 +64,9 @@ Returns the fixed reference datetime range.
 .. seealso:: :py:func:`setFixedReferenceTemporalRange`
 %End
 
-    void setRequestedTemporalRange( const QgsDateTimeRange &dateTimeRange );
+    void setRequestedTemporalRange( const QgsDateTimeRange &range );
 %Docstring
-Sets the requested temporal range to retrieve when
+Sets the requested temporal ``range`` to retrieve when
 returning data from the associated data provider.
 
 .. note::
@@ -85,9 +86,9 @@ Intended to be used by the provider in fetching data.
 .. seealso:: :py:func:`setRequestedTemporalRange`
 %End
 
-    void setRequestedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange );
+    void setRequestedReferenceTemporalRange( const QgsDateTimeRange &range );
 %Docstring
-Sets the requested reference temporal range to retrieve when
+Sets the requested reference temporal ``range`` to retrieve when
 returning data from the associated data provider.
 
 .. note::

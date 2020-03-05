@@ -11,11 +11,10 @@
 
 
 
-
 class QgsDataProviderTemporalCapabilities : QgsTemporalProperty
 {
 %Docstring
-Class for handling data providers temporal capabilities.
+Base class for handling properties relating to a data provider's temporal capabilities.
 
 .. versionadded:: 3.14
 %End
@@ -28,6 +27,8 @@ Class for handling data providers temporal capabilities.
     QgsDataProviderTemporalCapabilities( bool enabled = false );
 %Docstring
 Constructor for QgsDataProviderTemporalCapabilities.
+
+The ``enabled`` argument specifies whether the data provider has temporal capabilities.
 %End
 
     virtual ~QgsDataProviderTemporalCapabilities();

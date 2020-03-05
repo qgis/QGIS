@@ -194,6 +194,7 @@ their own layers, such as WMS
 %End
 
     virtual QgsRasterDataProviderTemporalCapabilities *temporalCapabilities();
+
 %Docstring
 Returns temporal capabilities associated with the data provider.
 %End

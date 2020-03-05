@@ -25,6 +25,11 @@ QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::Pro
 {
 }
 
+QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities()
+{
+  return nullptr;
+}
+
 void QgsDataProvider::reloadData()
 {
   reloadProviderData();

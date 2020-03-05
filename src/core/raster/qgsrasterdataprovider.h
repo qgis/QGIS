@@ -264,7 +264,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Returns temporal capabilities associated with the data provider.
      */
-    QgsRasterDataProviderTemporalCapabilities *temporalCapabilities() override { return mTemporalCapabilities.get(); }
+    QgsRasterDataProviderTemporalCapabilities *temporalCapabilities() override;
 
     //! \brief Returns whether the provider supplies a legend graphic
     virtual bool supportsLegendGraphic() const { return false; }
