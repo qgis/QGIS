@@ -228,13 +228,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   if ( rasterRenderer && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob ) )
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
 
-  if ( layer && mPipe->provider() && mPipe->provider()->temporalCapabilities() )
+  if ( renderContext()->isTemporal() && mPipe->provider()->temporalCapabilities() )
   {
-    mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( layer->temporalProperties()->temporalRange() );
+    mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( rendererContext.temporalRange() );
     mPipe->provider()->temporalCapabilities()->setRequestedReferenceTemporalRange( layer->temporalProperties()->referenceTemporalRange() );
-
-    layer->temporalProperties()->setFixedTemporalRange( mPipe->provider()->temporalCapabilities()->fixedTemporalRange() );
-    layer->temporalProperties()->setFixedReferenceTemporalRange( mPipe->provider()->temporalCapabilities()->fixedReferenceTemporalRange() );
   }
 
 }
