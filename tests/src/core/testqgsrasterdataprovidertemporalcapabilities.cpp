@@ -77,8 +77,10 @@ void TestQgsRasterDataProviderTemporalCapabilities::cleanupTestCase()
 
 void TestQgsRasterDataProviderTemporalCapabilities::checkActiveStatus()
 {
-  temporalCapabilities->setIsActive( false );
-  QCOMPARE( temporalCapabilities->isActive(), false );
+  temporalCapabilities->setHasTemporalCapabilities( false );
+  QCOMPARE( temporalCapabilities->hasTemporalCapabilities(), false );
+  temporalCapabilities->setHasTemporalCapabilities( true );
+  QCOMPARE( temporalCapabilities->hasTemporalCapabilities(), true );
 }
 
 void TestQgsRasterDataProviderTemporalCapabilities::checkTemporalRange()
