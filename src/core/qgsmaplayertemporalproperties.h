@@ -63,6 +63,32 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
      */
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
 
+    /**
+     * Source of the temporal range of these properties.
+     */
+    enum TemporalSource
+    {
+      Layer, //! Defined from layer .
+      Project//! Defined from project time settings;
+    };
+
+    /**
+     * Returns the temporal properties temporal range source, can be layer or project.
+     *
+     *\see setTemporalSource()
+    **/
+    TemporalSource temporalSource() const;
+
+    /**
+     * Sets the temporal properties temporal range \a source.
+     *
+     *\see temporalSource()
+    **/
+    void setTemporalSource( TemporalSource source );
+  private:
+
+    TemporalSource mSource = TemporalSource::Layer;
+
 };
 
 #endif // QGSMAPLAYERTEMPORALPROPERTIES_H
