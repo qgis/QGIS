@@ -169,7 +169,7 @@ json QgsWfs3APIHandler::schema( const QgsServerApiContext &context ) const
                 {
                   "content", {
                     {
-                      "application/openapi+json;version=3.0", {
+                      "application/vnd.oai.openapi+json;version=3.0", {
                         {
                           "schema",  {
                             { "type", "object" }
