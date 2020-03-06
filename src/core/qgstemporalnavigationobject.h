@@ -21,6 +21,7 @@
 
 #include "qgsrange.h"
 #include <QList>
+#include "qgstemporalcontroller.h"
 
 class QgsMapLayer;
 
@@ -30,7 +31,7 @@ class QgsMapLayer;
  *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsTemporalNavigationObject
+class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
 {
 
   public:
@@ -114,7 +115,7 @@ class CORE_EXPORT QgsTemporalNavigationObject
     /**
      * Returns the calculated temporal range from the current mode.
      */
-    QgsDateTimeRange rangeFromMode( QgsMapLayer *layer, QDateTime dateTime, QString time, int value  );
+    QgsDateTimeRange rangeFromMode( QgsMapLayer *layer, QDateTime dateTime, QString time, int value );
 
     /**
      * Returns the nearest datetime from the list of \a datetimes that is less than

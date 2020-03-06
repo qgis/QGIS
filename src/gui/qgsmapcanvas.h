@@ -27,6 +27,7 @@
 #include "qgsgeometry.h"
 #include "qgscustomdrophandler.h"
 #include "qgstemporalrangeobject.h"
+#include "qgstemporalcontroller.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -122,6 +123,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \since QGIS 2.4
      */
     const QgsMapSettings &mapSettings() const SIP_KEEPREFERENCE;
+
+    /**
+     * Sets the temporal controller, this controller will be used to
+     * update the canvas temporal range.
+     *
+     * \since QGIS 3.14
+     */
+    void setTemporalController( QgsTemporalController *controller );
 
     /**
      * sets destination coordinate reference system
@@ -1000,6 +1009,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void projectThemesChanged();
 
     void startPreviewJob( int number );
+
+    void updateTemporalRange( const QgsDateTimeRange &range );
 
   private:
 

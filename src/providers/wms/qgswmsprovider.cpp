@@ -157,6 +157,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
       Q_ASSERT_X( temporalCapabilities(), "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
       temporalCapabilities()->setHasTemporalCapabilities( true );
       temporalCapabilities()->setFixedTemporalRange( mSettings.mFixedRange );
+      temporalCapabilities()->setDateTimes( mSettings.mDateTimes );
       if ( mSettings.mIsBiTemporal )
       {
         temporalCapabilities()->setFixedReferenceTemporalRange( mSettings.mFixedReferenceRange );
@@ -220,7 +221,6 @@ QgsWmsProvider *QgsWmsProvider::clone() const
   QgsDataProvider::ProviderOptions options;
   QgsWmsProvider *provider = new QgsWmsProvider( dataSourceUri(), options, mCaps.isValid() ? &mCaps : nullptr );
   provider->copyBaseSettings( *this );
-
   return provider;
 }
 
