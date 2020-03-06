@@ -7841,6 +7841,12 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg.shortDescription(), QStringLiteral( "short" ) );
   QCOMPARE( alg.helpUrl(), QStringLiteral( "url" ) );
 
+  QVariantMap lastParams;
+  lastParams.insert( QStringLiteral( "a" ), 2 );
+  lastParams.insert( QStringLiteral( "b" ), 4 );
+  alg.setDesignerParameterValues( lastParams );
+  QCOMPARE( alg.designerParameterValues(), lastParams );
+
   // child algorithms
   QMap<QString, QgsProcessingModelChildAlgorithm> algs;
   QgsProcessingModelChildAlgorithm a1;
@@ -8185,6 +8191,7 @@ void TestQgsProcessing::modelerAlgorithm()
   alg5pc1.setPosition( QPointF( 11, 12 ) );
   alg5pc1.setSize( QSizeF( 21, 22 ) );
   alg5.addModelParameter( new QgsProcessingParameterBoolean( QStringLiteral( "my_param" ) ), alg5pc1 );
+  alg5.setDesignerParameterValues( lastParams );
 
   QDomDocument doc = QDomDocument( "model" );
   QDomElement elem = QgsXmlUtils::writeVariant( alg5.toVariant(), doc );
@@ -8196,6 +8203,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6.group(), QStringLiteral( "testGroup" ) );
   QCOMPARE( alg6.helpContent(), alg5.helpContent() );
   QCOMPARE( alg6.variables(), variables );
+  QCOMPARE( alg6.designerParameterValues(), lastParams );
   QgsProcessingModelChildAlgorithm alg6c1 = alg6.childAlgorithm( "cx1" );
   QCOMPARE( alg6c1.childId(), QStringLiteral( "cx1" ) );
   QCOMPARE( alg6c1.algorithmId(), QStringLiteral( "buffer" ) );
