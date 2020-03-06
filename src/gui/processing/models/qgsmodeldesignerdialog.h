@@ -52,9 +52,15 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QAction *actionEditHelp() { return mActionEditHelp; }
     QAction *actionRun() { return mActionRun; }
     QAction *actionExportImage() { return mActionExportImage; }
+    QLineEdit *textName() { return mNameEdit; }
+    QLineEdit *textGroup() { return mGroupEdit; }
+    QScrollArea *inputsScrollArea() { return mInputsScrollArea; }
+    QgsProcessingToolboxTreeView *algorithmsTree() { return mAlgorithmsTree; }
 
     QgsMessageBar *messageBar() { return mMessageBar; }
     QGraphicsView *view() { return mView; }
+
+    void updateVariablesGui();
 
   private slots:
 

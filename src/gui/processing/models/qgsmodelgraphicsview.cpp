@@ -94,7 +94,7 @@ void QgsModelGraphicsView::wheelEvent( QWheelEvent *event )
 
   //calculate zoom scale factor
   bool zoomIn = event->angleDelta().y() > 0;
-  double scaleFactor = ( zoomIn ? 1 / zoomFactor : zoomFactor );
+  double scaleFactor = ( !zoomIn ? 1 / zoomFactor : zoomFactor );
 
   scale( scaleFactor, scaleFactor );
 }

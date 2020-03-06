@@ -38,15 +38,9 @@ from qgis.PyQt.QtWidgets import (QTreeWidget,
                                  QMessageBox,
                                  QFileDialog,
                                  QTreeWidgetItem,
-                                 QSizePolicy,
-                                 QMainWindow,
-                                 QLabel,
                                  QDockWidget,
                                  QWidget,
                                  QVBoxLayout,
-                                 QGridLayout,
-                                 QFrame,
-                                 QLineEdit,
                                  QToolButton,
                                  QAction)
 from qgis.PyQt.QtGui import QIcon
@@ -63,9 +57,6 @@ from qgis.core import (Qgis,
                        QgsExpressionContext
                        )
 from qgis.gui import (QgsDockWidget,
-                      QgsScrollArea,
-                      QgsFilterLineEdit,
-                      QgsProcessingToolboxTreeView,
                       QgsProcessingToolboxProxyModel,
                       QgsProcessingParameterDefinitionDialog,
                       QgsVariableEditorWidget,
@@ -80,7 +71,6 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.ProjectProvider import PROJECT_PROVIDER_ID
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
-from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.dataobjects import createContext
 from qgis.utils import iface
 
@@ -132,65 +122,8 @@ class ModelerDialog(QgsModelDesignerDialog):
 
     def __init__(self, model=None, parent=None):
         super().__init__(parent)
-        self._variables_scope = None
         self._model = None
 
-        # LOTS of bug reports when we include the dock creation in the UI file
-        # see e.g. #16428, #19068
-        # So just roll it all by hand......!
-        self.propertiesDock = QgsDockWidget(self)
-        self.propertiesDock.setFeatures(
-            QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
-        self.propertiesDock.setObjectName("propertiesDock")
-        propertiesDockContents = QWidget()
-        self.verticalDockLayout_1 = QVBoxLayout(propertiesDockContents)
-        self.verticalDockLayout_1.setContentsMargins(0, 0, 0, 0)
-        self.verticalDockLayout_1.setSpacing(0)
-        self.scrollArea_1 = QgsScrollArea(propertiesDockContents)
-        sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding,
-                                 QSizePolicy.MinimumExpanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.scrollArea_1.sizePolicy().hasHeightForWidth())
-        self.scrollArea_1.setSizePolicy(sizePolicy)
-        self.scrollArea_1.setFocusPolicy(Qt.WheelFocus)
-        self.scrollArea_1.setFrameShape(QFrame.NoFrame)
-        self.scrollArea_1.setFrameShadow(QFrame.Plain)
-        self.scrollArea_1.setWidgetResizable(True)
-        self.scrollAreaWidgetContents_1 = QWidget()
-        self.gridLayout = QGridLayout(self.scrollAreaWidgetContents_1)
-        self.gridLayout.setContentsMargins(6, 6, 6, 6)
-        self.gridLayout.setSpacing(4)
-        self.label_1 = QLabel(self.scrollAreaWidgetContents_1)
-        self.gridLayout.addWidget(self.label_1, 0, 0, 1, 1)
-        self.textName = QLineEdit(self.scrollAreaWidgetContents_1)
-        self.gridLayout.addWidget(self.textName, 0, 1, 1, 1)
-        self.label_2 = QLabel(self.scrollAreaWidgetContents_1)
-        self.gridLayout.addWidget(self.label_2, 1, 0, 1, 1)
-        self.textGroup = QLineEdit(self.scrollAreaWidgetContents_1)
-        self.gridLayout.addWidget(self.textGroup, 1, 1, 1, 1)
-        self.label_1.setText(self.tr("Name"))
-        self.textName.setToolTip(self.tr("Enter model name here"))
-        self.label_2.setText(self.tr("Group"))
-        self.textGroup.setToolTip(self.tr("Enter group name here"))
-        self.scrollArea_1.setWidget(self.scrollAreaWidgetContents_1)
-        self.verticalDockLayout_1.addWidget(self.scrollArea_1)
-        self.propertiesDock.setWidget(propertiesDockContents)
-        self.propertiesDock.setWindowTitle(self.tr("Model Properties"))
-
-        self.inputsDock = QgsDockWidget(self)
-        self.inputsDock.setFeatures(QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
-        self.inputsDock.setObjectName("inputsDock")
-        self.inputsDockContents = QWidget()
-        self.verticalLayout_3 = QVBoxLayout(self.inputsDockContents)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.scrollArea_2 = QgsScrollArea(self.inputsDockContents)
-        sizePolicy.setHeightForWidth(self.scrollArea_2.sizePolicy().hasHeightForWidth())
-        self.scrollArea_2.setSizePolicy(sizePolicy)
-        self.scrollArea_2.setFocusPolicy(Qt.WheelFocus)
-        self.scrollArea_2.setFrameShape(QFrame.NoFrame)
-        self.scrollArea_2.setFrameShadow(QFrame.Plain)
-        self.scrollArea_2.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -199,64 +132,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.inputsTree.setAlternatingRowColors(True)
         self.inputsTree.header().setVisible(False)
         self.verticalLayout.addWidget(self.inputsTree)
-        self.scrollArea_2.setWidget(self.scrollAreaWidgetContents_2)
-        self.verticalLayout_3.addWidget(self.scrollArea_2)
-        self.inputsDock.setWidget(self.inputsDockContents)
-        self.addDockWidget(Qt.DockWidgetArea(1), self.inputsDock)
-        self.inputsDock.setWindowTitle(self.tr("Inputs"))
-
-        self.algorithmsDock = QgsDockWidget(self)
-        self.algorithmsDock.setFeatures(QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
-        self.algorithmsDock.setObjectName("algorithmsDock")
-        self.algorithmsDockContents = QWidget()
-        self.verticalLayout_4 = QVBoxLayout(self.algorithmsDockContents)
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.scrollArea_3 = QgsScrollArea(self.algorithmsDockContents)
-        sizePolicy.setHeightForWidth(self.scrollArea_3.sizePolicy().hasHeightForWidth())
-        self.scrollArea_3.setSizePolicy(sizePolicy)
-        self.scrollArea_3.setFocusPolicy(Qt.WheelFocus)
-        self.scrollArea_3.setFrameShape(QFrame.NoFrame)
-        self.scrollArea_3.setFrameShadow(QFrame.Plain)
-        self.scrollArea_3.setWidgetResizable(True)
-        self.scrollAreaWidgetContents_3 = QWidget()
-        self.verticalLayout_2 = QVBoxLayout(self.scrollAreaWidgetContents_3)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_2.setSpacing(4)
-        self.searchBox = QgsFilterLineEdit(self.scrollAreaWidgetContents_3)
-        self.verticalLayout_2.addWidget(self.searchBox)
-        self.algorithmTree = QgsProcessingToolboxTreeView(None,
-                                                          QgsApplication.processingRegistry())
-        self.algorithmTree.setAlternatingRowColors(True)
-        self.algorithmTree.header().setVisible(False)
-        self.verticalLayout_2.addWidget(self.algorithmTree)
-        self.scrollArea_3.setWidget(self.scrollAreaWidgetContents_3)
-        self.verticalLayout_4.addWidget(self.scrollArea_3)
-        self.algorithmsDock.setWidget(self.algorithmsDockContents)
-        self.addDockWidget(Qt.DockWidgetArea(1), self.algorithmsDock)
-        self.algorithmsDock.setWindowTitle(self.tr("Algorithms"))
-        self.searchBox.setToolTip(self.tr("Enter algorithm name to filter list"))
-        self.searchBox.setShowSearchIcon(True)
-
-        self.variables_dock = QgsDockWidget(self)
-        self.variables_dock.setFeatures(QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
-        self.variables_dock.setObjectName("variablesDock")
-        self.variables_dock_contents = QWidget()
-        vl_v = QVBoxLayout()
-        vl_v.setContentsMargins(0, 0, 0, 0)
-        self.variables_editor = QgsVariableEditorWidget()
-        vl_v.addWidget(self.variables_editor)
-        self.variables_dock_contents.setLayout(vl_v)
-        self.variables_dock.setWidget(self.variables_dock_contents)
-        self.addDockWidget(Qt.DockWidgetArea(1), self.variables_dock)
-        self.variables_dock.setWindowTitle(self.tr("Variables"))
-        self.addDockWidget(Qt.DockWidgetArea(1), self.propertiesDock)
-        self.tabifyDockWidget(self.propertiesDock, self.variables_dock)
-        self.variables_editor.scopeChanged.connect(self.variables_changed)
-
-        try:
-            self.setDockOptions(self.dockOptions() | QMainWindow.GroupedDragging)
-        except:
-            pass
+        self.inputsScrollArea().setWidget(self.scrollAreaWidgetContents_2)
 
         if iface is not None:
             self.toolbar().setIconSize(iface.iconSize())
@@ -270,12 +146,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.toolbutton_export_to_script.setDefaultAction(self.export_to_script_algorithm_action)
         self.toolbar().insertWidget(self.actionExportImage(), self.toolbutton_export_to_script)
         self.export_to_script_algorithm_action.triggered.connect(self.export_as_script_algorithm)
-
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.propertiesDock)
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.inputsDock)
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.algorithmsDock)
-        self.tabifyDockWidget(self.inputsDock, self.algorithmsDock)
-        self.inputsDock.raise_()
 
         self.scene = ModelerScene(self)
         self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE, self.CANVAS_SIZE))
@@ -298,26 +168,10 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.inputsTree.setDropIndicatorShown(True)
 
         self.algorithms_model = ModelerToolboxModel(self, QgsApplication.processingRegistry())
-        self.algorithmTree.setToolboxProxyModel(self.algorithms_model)
-        self.algorithmTree.setDragDropMode(QTreeWidget.DragOnly)
-        self.algorithmTree.setDropIndicatorShown(True)
-
-        filters = QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterModeler)
-        if ProcessingConfig.getSetting(ProcessingConfig.SHOW_ALGORITHMS_KNOWN_ISSUES):
-            filters |= QgsProcessingToolboxProxyModel.FilterShowKnownIssues
-        self.algorithmTree.setFilters(filters)
-
-        if hasattr(self.searchBox, 'setPlaceholderText'):
-            self.searchBox.setPlaceholderText(QCoreApplication.translate('ModelerDialog', 'Search…'))
-        if hasattr(self.textName, 'setPlaceholderText'):
-            self.textName.setPlaceholderText(self.tr('Enter model name here'))
-        if hasattr(self.textGroup, 'setPlaceholderText'):
-            self.textGroup.setPlaceholderText(self.tr('Enter group name here'))
+        self.algorithmsTree().setToolboxProxyModel(self.algorithms_model)
 
         # Connect signals and slots
         self.inputsTree.doubleClicked.connect(self._addInput)
-        self.searchBox.textChanged.connect(self.algorithmTree.setFilterString)
-        self.algorithmTree.doubleClicked.connect(self._addAlgorithm)
 
         self.actionOpen().triggered.connect(self.openModel)
         self.actionSave().triggered.connect(self.save)
@@ -332,14 +186,14 @@ class ModelerDialog(QgsModelDesignerDialog):
         if model is not None:
             self._model = model.create()
             self._model.setSourceFilePath(model.sourceFilePath())
-            self.textGroup.setText(self._model.group())
-            self.textName.setText(self._model.displayName())
+            self.textGroup().setText(self._model.group())
+            self.textName().setText(self._model.displayName())
             self.repaintModel()
 
         else:
             self._model = QgsProcessingModelAlgorithm()
             self._model.setProvider(QgsApplication.processingRegistry().providerById('model'))
-        self.update_variables_gui()
+        self.updateVariablesGui()
 
         self.fillInputsTree()
 
@@ -376,18 +230,6 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.model().setHelpContent(dlg.descriptions)
             self.hasChanged = True
 
-    def update_variables_gui(self):
-        variables_scope = QgsExpressionContextScope(self.tr('Model Variables'))
-        for k, v in self.model().variables().items():
-            variables_scope.setVariable(k, v)
-        variables_context = QgsExpressionContext()
-        variables_context.appendScope(variables_scope)
-        self.variables_editor.setContext(variables_context)
-        self.variables_editor.setEditableScopeIndex(0)
-
-    def variables_changed(self):
-        self.model().setVariables(self.variables_editor.variablesInActiveScope())
-
     def runModel(self):
         if len(self.model().childAlgorithms()) == 0:
             self.messageBar().pushMessage("", self.tr(
@@ -412,8 +254,8 @@ class ModelerDialog(QgsModelDesignerDialog):
         if not self.can_save():
             return
 
-        self.model().setName(str(self.textName.text()))
-        self.model().setGroup(str(self.textGroup.text()))
+        self.model().setName(str(self.textName().text()))
+        self.model().setGroup(str(self.textGroup().text()))
         self.model().setSourceFilePath(None)
 
         project_provider = QgsApplication.processingRegistry().providerById(PROJECT_PROVIDER_ID)
@@ -431,7 +273,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         Tests whether a model can be saved, or if it is not yet valid
         :return: bool
         """
-        if str(self.textName.text()).strip() == '':
+        if str(self.textName().text()).strip() == '':
             self.messageBar().pushWarning(
                 "", self.tr('Please a enter model name before saving')
             )
@@ -442,8 +284,8 @@ class ModelerDialog(QgsModelDesignerDialog):
     def saveModel(self, saveAs):
         if not self.can_save():
             return
-        self.model().setName(str(self.textName.text()))
-        self.model().setGroup(str(self.textGroup.text()))
+        self.model().setName(str(self.textName().text()))
+        self.model().setGroup(str(self.textGroup().text()))
         if self.model().sourceFilePath() and not saveAs:
             filename = self.model().sourceFilePath()
         else:
@@ -490,11 +332,11 @@ class ModelerDialog(QgsModelDesignerDialog):
         if alg.fromFile(filename):
             self._model = alg
             self._model.setProvider(QgsApplication.processingRegistry().providerById('model'))
-            self.textGroup.setText(alg.group())
-            self.textName.setText(alg.name())
+            self.textGroup().setText(alg.group())
+            self.textName().setText(alg.name())
             self.repaintModel()
 
-            self.update_variables_gui()
+            self.updateVariablesGui()
 
             self.view().centerOn(0, 0)
             self.hasChanged = False
@@ -626,9 +468,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.inputsTree.addTopLevelItem(parametersItem)
         parametersItem.setExpanded(True)
 
-    def _addAlgorithm(self):
-        self.addAlgorithm(self.algorithmTree.selectedAlgorithm())
-
     def addAlgorithm(self, alg_id, pos=None):
         alg = QgsApplication.processingRegistry().createAlgorithmById(alg_id)
         if not alg:
@@ -637,7 +476,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         dlg = ModelerParametersDialog(alg, self.model())
         if dlg.exec_():
             alg = dlg.createAlgorithm()
-            if pos is None:
+            if pos is None or not pos:
                 alg.setPosition(self.getPositionForAlgorithmItem())
             else:
                 alg.setPosition(pos)
@@ -664,8 +503,8 @@ class ModelerDialog(QgsModelDesignerDialog):
             maxX = max([alg.position().x() for alg in list(self.model().childAlgorithms().values())])
             maxY = max([alg.position().y() for alg in list(self.model().childAlgorithms().values())])
             newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
-            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE
-                       - BOX_HEIGHT)
+            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE -
+                       BOX_HEIGHT)
         else:
             newX = MARGIN + BOX_WIDTH / 2
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2

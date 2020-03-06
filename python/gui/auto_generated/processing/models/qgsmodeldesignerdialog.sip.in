@@ -44,9 +44,15 @@ Model designer dialog base class
     QAction *actionEditHelp();
     QAction *actionRun();
     QAction *actionExportImage();
+    QLineEdit *textName();
+    QLineEdit *textGroup();
+    QScrollArea *inputsScrollArea();
+    QgsProcessingToolboxTreeView *algorithmsTree();
 
     QgsMessageBar *messageBar();
     QGraphicsView *view();
+
+    void updateVariablesGui();
 
 };
 
