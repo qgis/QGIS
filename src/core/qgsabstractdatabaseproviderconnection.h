@@ -57,6 +57,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       Raster = 1 << 3,            //!< Raster table
       View = 1 << 4,              //!< View table
       MaterializedView = 1 << 5,  //!< Materialized view table
+      Foreign = 1 << 6,           //!< Foreign data wrapper
     };
 
     Q_ENUMS( TableFlag )

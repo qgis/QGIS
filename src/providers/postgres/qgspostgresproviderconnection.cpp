@@ -362,7 +362,10 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
         {
           prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::MaterializedView );
         }
-        // Table type
+        if ( pr.isForeignTable )
+        {
+          prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::Foreign );
+        }
         if ( pr.isRaster )
         {
           prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::Raster );

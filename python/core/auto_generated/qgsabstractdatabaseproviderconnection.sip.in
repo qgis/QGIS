@@ -38,6 +38,7 @@ is not supported or cannot be performed without errors.
       Raster,
       View,
       MaterializedView,
+      Foreign,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::TableFlag> TableFlags;
