@@ -46,7 +46,7 @@ Model designer dialog base class
     QAction *actionExportImage();
     QLineEdit *textName();
     QLineEdit *textGroup();
-    QScrollArea *inputsScrollArea();
+    QTreeWidget *inputsTree();
     QgsProcessingToolboxTreeView *algorithmsTree();
 
     QgsMessageBar *messageBar();

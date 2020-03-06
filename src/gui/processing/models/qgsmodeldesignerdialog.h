@@ -54,7 +54,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QAction *actionExportImage() { return mActionExportImage; }
     QLineEdit *textName() { return mNameEdit; }
     QLineEdit *textGroup() { return mGroupEdit; }
-    QScrollArea *inputsScrollArea() { return mInputsScrollArea; }
+    QTreeWidget *inputsTree() { return mInputsTreeWidget; }
     QgsProcessingToolboxTreeView *algorithmsTree() { return mAlgorithmsTree; }
 
     QgsMessageBar *messageBar() { return mMessageBar; }

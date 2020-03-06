@@ -29,18 +29,13 @@ from qgis.PyQt.QtCore import (
     QCoreApplication,
     QDir,
     QRectF,
-    QMimeData,
     QPoint,
     QPointF,
     pyqtSignal,
     QUrl)
-from qgis.PyQt.QtWidgets import (QTreeWidget,
-                                 QMessageBox,
+from qgis.PyQt.QtWidgets import (QMessageBox,
                                  QFileDialog,
                                  QTreeWidgetItem,
-                                 QDockWidget,
-                                 QWidget,
-                                 QVBoxLayout,
                                  QToolButton,
                                  QAction)
 from qgis.PyQt.QtGui import QIcon
@@ -53,13 +48,9 @@ from qgis.core import (Qgis,
                        QgsProcessingModelAlgorithm,
                        QgsProcessingModelParameter,
                        QgsProcessingParameterType,
-                       QgsExpressionContextScope,
-                       QgsExpressionContext
                        )
-from qgis.gui import (QgsDockWidget,
-                      QgsProcessingToolboxProxyModel,
+from qgis.gui import (QgsProcessingToolboxProxyModel,
                       QgsProcessingParameterDefinitionDialog,
-                      QgsVariableEditorWidget,
                       QgsProcessingParameterWidgetContext,
                       QgsModelGraphicsScene,
                       QgsModelDesignerDialog)
@@ -124,16 +115,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         super().__init__(parent)
         self._model = None
 
-        self.scrollAreaWidgetContents_2 = QWidget()
-        self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents_2)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout.setSpacing(0)
-        self.inputsTree = QTreeWidget(self.scrollAreaWidgetContents_2)
-        self.inputsTree.setAlternatingRowColors(True)
-        self.inputsTree.header().setVisible(False)
-        self.verticalLayout.addWidget(self.inputsTree)
-        self.inputsScrollArea().setWidget(self.scrollAreaWidgetContents_2)
-
         if iface is not None:
             self.toolbar().setIconSize(iface.iconSize())
             self.setStyleSheet(iface.mainWindow().styleSheet())
@@ -156,22 +137,11 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.view().ensureVisible(0, 0, 10, 10)
         self.view().scale(QgsApplication.desktop().logicalDpiX() / 96, QgsApplication.desktop().logicalDpiX() / 96)
 
-        def _mimeDataInput(items):
-            mimeData = QMimeData()
-            text = items[0].data(0, Qt.UserRole)
-            mimeData.setText(text)
-            return mimeData
-
-        self.inputsTree.mimeData = _mimeDataInput
-
-        self.inputsTree.setDragDropMode(QTreeWidget.DragOnly)
-        self.inputsTree.setDropIndicatorShown(True)
-
         self.algorithms_model = ModelerToolboxModel(self, QgsApplication.processingRegistry())
         self.algorithmsTree().setToolboxProxyModel(self.algorithms_model)
 
         # Connect signals and slots
-        self.inputsTree.doubleClicked.connect(self._addInput)
+        self.inputsTree().doubleClicked.connect(self._addInput)
 
         self.actionOpen().triggered.connect(self.openModel)
         self.actionSave().triggered.connect(self.save)
@@ -367,7 +337,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.hasChanged = True
 
     def _addInput(self):
-        item = self.inputsTree.currentItem()
+        item = self.inputsTree().currentItem()
         param = item.data(0, Qt.UserRole)
         self.addInput(param)
 
@@ -465,7 +435,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                 paramItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
                 paramItem.setToolTip(0, param.description())
                 parametersItem.addChild(paramItem)
-        self.inputsTree.addTopLevelItem(parametersItem)
+        self.inputsTree().addTopLevelItem(parametersItem)
         parametersItem.setExpanded(True)
 
     def addAlgorithm(self, alg_id, pos=None):

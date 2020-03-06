@@ -32,6 +32,7 @@
 
 ///@cond NOT_STABLE
 
+
 QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags flags )
   : QMainWindow( parent, flags )
 {
@@ -53,6 +54,11 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mAlgorithmSearchEdit->setShowSearchIcon( true );
   mAlgorithmSearchEdit->setPlaceholderText( tr( "Search…" ) );
   connect( mAlgorithmSearchEdit, &QgsFilterLineEdit::textChanged, mAlgorithmsTree, &QgsProcessingToolboxTreeView::setFilterString );
+
+  mInputsTreeWidget->header()->setVisible( false );
+  mInputsTreeWidget->setAlternatingRowColors( true );
+  mInputsTreeWidget->setDragDropMode( QTreeWidget::DragOnly );
+  mInputsTreeWidget->setDropIndicatorShown( true );
 
   mNameEdit->setPlaceholderText( tr( "Enter model name here" ) );
   mGroupEdit->setPlaceholderText( tr( "Enter group name here" ) );
@@ -271,3 +277,4 @@ void QgsModelDesignerDialog::exportAsPython()
 
 
 ///@endcond
+
