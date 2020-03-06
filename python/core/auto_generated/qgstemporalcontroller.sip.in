@@ -1,0 +1,44 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstemporalcontroller.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsTemporalController : QObject
+{
+%Docstring
+
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstemporalcontroller.h"
+%End
+  public:
+
+    QgsTemporalController();
+%Docstring
+Constructor for QgsTemporalController.
+%End
+
+    virtual ~QgsTemporalController();
+
+  signals:
+    void updateTemporalRange( const QgsDateTimeRange &range );
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstemporalcontroller.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

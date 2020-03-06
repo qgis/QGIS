@@ -1,0 +1,134 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstemporalnavigationobject.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsTemporalNavigationObject : QgsTemporalController
+{
+%Docstring
+The QgsTemporalNavigationObject class
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstemporalnavigationobject.h"
+%End
+  public:
+
+    QgsTemporalNavigationObject();
+%Docstring
+Constructor for QgsTemporalNavigationObject
+%End
+
+    enum NavigationStatus
+    {
+      Forward,
+      BackWard,
+      Next,
+      Previous,
+      Idle
+    };
+
+    enum Mode
+    {
+      NearestPreviousProduct,
+      Snapshot,
+      Composite
+    };
+
+    void setNavigationStatus( NavigationStatus status );
+%Docstring
+Sets the current VCR widget navigation status.
+
+.. seealso:: :py:func:`navigationStatus`
+%End
+
+    NavigationStatus navigationStatus() const;
+%Docstring
+Returns the current VCR widget navigation status.
+
+.. seealso:: :py:func:`setNavigationStatus`
+%End
+
+    void setMode( Mode mode );
+%Docstring
+Sets the current VCR mode.
+
+.. seealso:: :py:func:`mode`
+%End
+
+    Mode mode() const;
+%Docstring
+Returns the current VCR mode.
+
+.. seealso:: :py:func:`setMode`
+%End
+
+    void setIsPlaying( bool playing );
+%Docstring
+Sets the play status.
+
+.. seealso:: :py:func:`isPlaying`
+%End
+
+    bool isPlaying() const;
+%Docstring
+Returns the play status.
+
+.. seealso:: :py:func:`setIsPlaying`
+%End
+
+    void updateLayersTemporalRange( QDateTime dateTime, QString time, int value );
+%Docstring
+Updates the project temporal layers with the given ``datetime``.
+%End
+
+    QDateTime addToDateTime( QDateTime dateTime, QString time, int value );
+%Docstring
+Returns the datetime after adding time value to the passed ``datetime``.
+%End
+
+    QgsDateTimeRange rangeFromMode( QgsMapLayer *layer, QDateTime dateTime, QString time, int value );
+%Docstring
+Returns the calculated temporal range from the current mode.
+%End
+
+    QDateTime lessNearestDateTime( QList<QDateTime> dateTimes, QDateTime dateTime );
+%Docstring
+Returns the nearest datetime from the list of ``datetimes`` that is less than
+the ``datetime``.
+%End
+
+    QList<QDateTime> dateTimes() const;
+%Docstring
+Returns the list of datetimes, which VCR widget will navigate upon.
+
+.. seealso:: :py:func:`setDateTimes`
+%End
+
+    void setDateTimes( QList<QDateTime> dateTimes );
+%Docstring
+Sets the list of datetimes, which VCR widget will use to update the
+temporal layers.
+
+.. seealso:: :py:func:`dateTimes`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstemporalnavigationobject.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

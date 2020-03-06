@@ -32,6 +32,7 @@
 
 class CORE_EXPORT QgsTemporalController : public QObject
 {
+    Q_OBJECT
 
   public:
 

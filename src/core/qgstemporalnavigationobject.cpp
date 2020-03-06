@@ -61,14 +61,10 @@ void QgsTemporalNavigationObject::updateLayersTemporalRange( QDateTime datetime,
     currentLayer = it.value();
     if ( !mPlayActive )
       break;
-    if ( currentLayer->type() == QgsMapLayerType::RasterLayer &&
-         currentLayer->dataProvider() &&
-         currentLayer->dataProvider()->temporalCapabilities() )
+    if ( currentLayer->type() == QgsMapLayerType::RasterLayer )
     {
       QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
-      if ( rasterLayer && rasterLayer->dataProvider() &&
-           rasterLayer->dataProvider()->temporalCapabilities() &&
-           rasterLayer->dataProvider()->temporalCapabilities()->isActive() )
+      if ( rasterLayer && rasterLayer->temporalProperties() )
       {
         QgsDateTimeRange range = rangeFromMode( rasterLayer, datetime, time, value );
         if ( range.begin().isValid() && range.end().isValid() )
