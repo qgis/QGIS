@@ -160,7 +160,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     /**
      * Returns the list of the available datetimes.
      *
-     * \see setDateTime()
+     * \see setDateTimes()
     */
     const QList<QDateTime> dateTimes() const;
 

@@ -56,7 +56,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
     enum Mode
     {
       NearestPreviousProduct, //! Get the nearest previous data if the requested one is not available
-      Snapshot, //! Return the layer data whic match exactly the datetime value in the request
+      Snapshot, //! Return the layer data which match exactly the datetime value in the request
       Composite //! Get the range of datetimes, using the specified time steps
     };
 
