@@ -132,7 +132,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         if len(self.model().childAlgorithms()) == 0:
             self.messageBar().pushMessage("", self.tr(
                 "Model doesn't contain any algorithm and/or parameter and can't be executed"), level=Qgis.Warning,
-                                          duration=5)
+                duration=5)
             return
 
         dlg = AlgorithmDialog(self.model().create(), parent=self)
@@ -205,7 +205,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             if saveAs:
                 self.messageBar().pushMessage("", self.tr("Model was correctly saved to <a href=\"{}\">{}</a>").format(
                     QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success,
-                                              duration=5)
+                    duration=5)
             else:
                 self.messageBar().pushMessage("", self.tr("Model was correctly saved"), level=Qgis.Success, duration=5)
 
@@ -377,8 +377,8 @@ class ModelerDialog(QgsModelDesignerDialog):
             maxX = max([alg.position().x() for alg in list(self.model().childAlgorithms().values())])
             maxY = max([alg.position().y() for alg in list(self.model().childAlgorithms().values())])
             newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
-            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE -
-                       BOX_HEIGHT)
+            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE
+                       - BOX_HEIGHT)
         else:
             newX = MARGIN + BOX_WIDTH / 2
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
