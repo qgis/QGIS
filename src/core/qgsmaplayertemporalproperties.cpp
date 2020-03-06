@@ -22,3 +22,13 @@ QgsMapLayerTemporalProperties::QgsMapLayerTemporalProperties( bool enabled )
 {
 }
 
+void QgsMapLayerTemporalProperties::setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource source )
+{
+  mSource = source;
+}
+
+QgsMapLayerTemporalProperties::TemporalSource QgsMapLayerTemporalProperties::temporalSource() const
+{
+  return mSource;
+}
+
