@@ -122,8 +122,10 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMeshDriverMetadata::MeshDriverCapabilities )
  * library object.
  *
  */
-class CORE_EXPORT QgsProviderMetadata
+class CORE_EXPORT QgsProviderMetadata : public QObject
 {
+    Q_OBJECT
+
   public:
 
     /**
@@ -400,17 +402,19 @@ class CORE_EXPORT QgsProviderMetadata
      * the newly created connection is not automatically stored in the settings, call
      * saveConnection() to save it.
      * Ownership is transferred to the caller.
+     * \throws QgsProviderConnectionException
      * \see saveConnection()
      * \since QGIS 3.10
      */
-    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) SIP_FACTORY;
+    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) SIP_THROW( QgsProviderConnectionException ) SIP_FACTORY;
 
     /**
      * Creates a new connection by loading the connection with the given \a name from the settings.
      * Ownership is transferred to the caller.
+     * \throws QgsProviderConnectionException
      * \see findConnection()
      */
-    virtual QgsAbstractProviderConnection *createConnection( const QString &name );
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Removes the connection with the given \a name from the settings.
@@ -424,9 +428,45 @@ class CORE_EXPORT QgsProviderMetadata
      * Stores the connection in the settings
      * \param connection the connection to be stored in the settings
      * \param name the name under which the connection will be stored
+     * \throws QgsProviderConnectionException
      * \since QGIS 3.10
      */
-    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name );
+    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) SIP_THROW( QgsProviderConnectionException );
+
+  signals:
+
+    /**
+     * Emitted when a connection with the specified \a name is created.
+     *
+     * \note Only providers which implement the connection handling API will emit this signal.
+     * \since QGIS 3.14
+     */
+    void connectionCreated( const QString &name );
+
+    /**
+     * Emitted when the connection with the specified \a name is about to be deleted.
+     *
+     * \note Only providers which implement the connection handling API will emit this signal.
+     * \since QGIS 3.14
+     */
+    void connectionAboutToBeDeleted( const QString &name );
+
+    /**
+     * Emitted when the connection with the specified \a name was deleted.
+     *
+     * \note Only providers which implement the connection handling API will emit this signal.
+     * \since QGIS 3.14
+     */
+    void connectionDeleted( const QString &name );
+
+    /**
+     * Emitted when the connection with the specified \a name is changed, e.g. the settings
+     * relating to the connection have been updated.
+     *
+     * \note Only providers which implement the connection handling API will emit this signal.
+     * \since QGIS 3.14
+     */
+    void connectionChanged( const QString &name );
 
   protected:
 
@@ -456,8 +496,10 @@ class CORE_EXPORT QgsProviderMetadata
     template <class T_provider_conn> void deleteConnectionProtected( const QString &name )
     {
       T_provider_conn conn( name );
+      emit connectionAboutToBeDeleted( name );
       conn.remove( name );
       mProviderConnections.clear();
+      emit connectionDeleted( name );
     }
     virtual void saveConnectionProtected( const QgsAbstractProviderConnection *connection, const QString &name );
     //! Provider connections cache
