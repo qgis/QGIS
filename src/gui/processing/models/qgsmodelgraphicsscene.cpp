@@ -257,7 +257,7 @@ QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForPa
 
 void QgsModelGraphicsScene::addCommentItemForComponent( QgsProcessingModelAlgorithm *model, const QgsProcessingModelComponent &component, QgsModelComponentGraphicItem *parentItem )
 {
-  if ( !component.comment() || component.comment()->description().isEmpty() )
+  if ( mFlags & FlagHideComments || !component.comment() || component.comment()->description().isEmpty() )
     return;
 
   QgsModelComponentGraphicItem *commentItem = createCommentGraphicItem( model, component.comment()->clone(), parentItem );

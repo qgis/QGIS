@@ -87,6 +87,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void exportToPdf();
     void exportToSvg();
     void exportAsPython();
+    void toggleComments( bool show );
 
   private:
 
