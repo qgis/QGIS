@@ -49,6 +49,7 @@ SET(QGIS_APP_SRCS
   qgslayertreeviewnocrsindicator.cpp
   qgslayertreeviewnonremovableindicator.cpp
   qgslayertreeviewbadlayerindicator.cpp
+  qgslayertreeviewtemporalindicator.cpp
   qgsmapcanvasdockwidget.cpp
   qgsmapsavedialog.cpp
   qgsprojectlistitemdelegate.cpp
