@@ -50,6 +50,25 @@ Reads temporal properties from a DOM ``element`` previously written by writeXml(
 .. seealso:: :py:func:`writeXml`
 %End
 
+    enum TemporalSource
+    {
+      Layer,
+      Project
+    };
+
+    TemporalSource temporalSource() const;
+%Docstring
+Returns the temporal properties temporal range source, can be layer or project.
+
+.. seealso:: :py:func:`setTemporalSource`
+%End
+
+    void setTemporalSource( TemporalSource source );
+%Docstring
+Sets the temporal properties temporal range ``source``.
+
+.. seealso:: :py:func:`temporalSource`
+%End
 };
 
 /************************************************************************
