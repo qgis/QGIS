@@ -815,6 +815,7 @@
         <file>themes/default/mIconHtml.svg</file>
         <file>themes/default/mIconHamburgerMenu.svg</file>
         <file>themes/default/mActionAddManualTable.svg</file>
+        <file>themes/default/propertyicons/temporal.svg</file>
         <file>themes/default/mIconModelerCollapse.svg</file>
         <file>themes/default/mIconModelerExpand.svg</file>
         <file>themes/default/mActionDeleteModelComponent.svg</file>

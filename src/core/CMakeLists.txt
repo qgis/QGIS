@@ -341,6 +341,7 @@ SET(QGIS_CORE_SRCS
   qgsprojectproperty.cpp
   qgsprojectstorage.cpp
   qgsprojectstorageregistry.cpp
+  qgsprojecttimesettings.cpp
   qgsprojectversion.cpp
   qgsprojectviewsettings.cpp
   qgsprojutils.cpp
@@ -853,6 +854,7 @@ SET(QGIS_CORE_HDRS
   qgsprojectproperty.h
   qgsprojectstorage.h
   qgsprojectstorageregistry.h
+  qgsprojecttimesettings.h
   qgsprojecttranslator.h
   qgsprojectversion.h
   qgsprojectviewsettings.h

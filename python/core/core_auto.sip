@@ -152,6 +152,7 @@
 %Include auto_generated/qgsprojectproperty.sip
 %Include auto_generated/qgsprojectstorage.sip
 %Include auto_generated/qgsprojectstorageregistry.sip
+%Include auto_generated/qgsprojecttimesettings.sip
 %Include auto_generated/qgsprojecttranslator.sip
 %Include auto_generated/qgsprojectversion.sip
 %Include auto_generated/qgsprojectviewsettings.sip

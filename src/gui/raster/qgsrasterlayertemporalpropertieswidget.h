@@ -83,6 +83,23 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
       Project //! Using Project time settings temporal range
     };
 
+    /**
+     * Sets the properties temporal range input source, it can be from layer or project.
+     *
+     * \see temporalRangeSource()
+     */
+    void setTemporalRangeSource( TemporalRangeSource source );
+
+    /**
+     * Returns the temporal range source.
+     *
+     * \see setTemporalRangeSource()
+     */
+    TemporalRangeSource temporalRangeSource() const;
+
+
+    TemporalRangeSource mSource = Layer;
+
   private slots:
 
     /**
@@ -123,7 +140,7 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
      * Updates the range label with current set datetime range.
      *
      **/
-    void updateRangeLabel( TemporalRangeSource source, QLabel *label );
+    void updateRangeLabel( QLabel *label );
 
     /**
      * Sets the temporal date time inputs with layer's lower and upper
