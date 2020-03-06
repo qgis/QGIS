@@ -2307,6 +2307,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
     QgsBrowserDockWidget *mBrowserWidget2 = nullptr;
 
+    QgsTemporalVcrDockWidget *mTemporalVcrWidget = nullptr;
+
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     QgsStatisticalSummaryDockWidget *mStatisticalSummaryDockWidget = nullptr;
     QgsBookmarks *mBookMarksDockWidget = nullptr;

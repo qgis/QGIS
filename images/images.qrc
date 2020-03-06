@@ -824,6 +824,11 @@
         <file>themes/default/mIconModelInput.svg</file>
         <file>themes/default/mIndicatorTemporal.svg</file>
         <file>themes/default/mIndicatorTimeFromProject.svg</file>
+        <file>themes/default/temporal_navigation/back.svg</file>
+        <file>themes/default/temporal_navigation/forward.svg</file>
+        <file>themes/default/temporal_navigation/next.svg</file>
+        <file>themes/default/temporal_navigation/stop.svg</file>
+        <file>themes/default/temporal_navigation/previous.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
