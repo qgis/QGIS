@@ -36,6 +36,7 @@ QGraphicsScene subclass representing the model designer.
     enum Flag
     {
       FlagHideControls,
+      FlagHideComments,
     };
     typedef QFlags<QgsModelGraphicsScene::Flag> Flags;
 

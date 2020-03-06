@@ -38,10 +38,10 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessing,
                        QgsProject,
-                       QgsSettings,
                        QgsMessageLog,
                        QgsProcessingModelAlgorithm,
                        QgsProcessingModelParameter,
+                       QgsSettings
                        )
 from qgis.gui import (QgsProcessingParameterDefinitionDialog,
                       QgsProcessingParameterWidgetContext,
@@ -102,9 +102,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.actionEditHelp().triggered.connect(self.editHelp)
         self.actionRun().triggered.connect(self.runModel)
 
-        #        self.mActionShowComments.toggled.connect(self.showComments)
-        # self.mActionShowComments.setChecked(settings.value("/Processing/stateModeler", self.saveState())))
-
         if model is not None:
             self._model = model.create()
             self._model.setSourceFilePath(model.sourceFilePath())
@@ -135,7 +132,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         if len(self.model().childAlgorithms()) == 0:
             self.messageBar().pushMessage("", self.tr(
                 "Model doesn't contain any algorithm and/or parameter and can't be executed"), level=Qgis.Warning,
-                duration=5)
+                                          duration=5)
             return
 
         dlg = AlgorithmDialog(self.model().create(), parent=self)
@@ -208,7 +205,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             if saveAs:
                 self.messageBar().pushMessage("", self.tr("Model was correctly saved to <a href=\"{}\">{}</a>").format(
                     QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.Success,
-                    duration=5)
+                                              duration=5)
             else:
                 self.messageBar().pushMessage("", self.tr("Model was correctly saved"), level=Qgis.Success, duration=5)
 
@@ -250,6 +247,10 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         if not showControls:
             self.scene.setFlag(QgsModelGraphicsScene.FlagHideControls)
+
+        showComments = QgsSettings().value("/Processing/Modeler/ShowComments", True, bool)
+        if not showComments:
+            self.scene.setFlag(QgsModelGraphicsScene.FlagHideComments)
 
         context = createContext()
         self.scene.createItems(self.model(), context)

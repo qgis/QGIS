@@ -161,6 +161,9 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   toolbuttonExportToScript->setDefaultAction( mActionExportAsScriptAlgorithm );
   mToolbar->insertWidget( mActionExportImage, toolbuttonExportToScript );
   connect( mActionExportAsScriptAlgorithm, &QAction::triggered, this, &QgsModelDesignerDialog::exportAsScriptAlgorithm );
+
+  mActionShowComments->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/ShowComments" ), true ).toBool() );
+  connect( mActionShowComments, &QAction::toggled, this, &QgsModelDesignerDialog::toggleComments );
 }
 
 void QgsModelDesignerDialog::closeEvent( QCloseEvent *event )
@@ -219,7 +222,6 @@ void QgsModelDesignerDialog::zoomIn()
   const double factor = settings.value( QStringLiteral( "/qgis/zoom_favor" ), 2.0 ).toDouble();
   mView->scale( factor, factor );
   mView->centerOn( point );
-  repaintModel();
 }
 
 void QgsModelDesignerDialog::zoomOut()
@@ -230,7 +232,6 @@ void QgsModelDesignerDialog::zoomOut()
   const double factor = 1.0 / settings.value( QStringLiteral( "/qgis/zoom_favor" ), 2.0 ).toDouble();
   mView->scale( factor, factor );
   mView->centerOn( point );
-  repaintModel();
 }
 
 void QgsModelDesignerDialog::zoomActual()
@@ -353,6 +354,13 @@ void QgsModelDesignerDialog::exportAsPython()
   outFile.close();
 
   mMessageBar->pushMessage( QString(), tr( "Successfully exported model as Python script to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::Success, 5 );
+}
+
+void QgsModelDesignerDialog::toggleComments( bool show )
+{
+  QgsSettings().setValue( QStringLiteral( "/Processing/Modeler/ShowComments" ), show );
+
+  repaintModel( true );
 }
 
 void QgsModelDesignerDialog::fillInputsTree()

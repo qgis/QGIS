@@ -54,6 +54,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     enum Flag
     {
       FlagHideControls = 1 << 1,  //!< If set, item interactive controls will be hidden
+      FlagHideComments = 1 << 2, //!< If set, comments will be hidden
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
