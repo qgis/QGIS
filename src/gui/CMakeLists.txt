@@ -492,6 +492,7 @@ SET(QGIS_GUI_SRCS
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
   qgstaskmanagerwidget.cpp
+  qgstemporalvcrdockwidget.cpp
   qgstextformatwidget.cpp
   qgstextpreview.cpp
   qgstreewidgetitem.cpp
@@ -711,6 +712,7 @@ SET(QGIS_GUI_HDRS
   qgstablewidgetitem.h
   qgstabwidget.h
   qgstaskmanagerwidget.h
+  qgstemporalvcrdockwidget.h
   qgstextformatwidget.h
   qgstextpreview.h
   qgstreewidgetitem.h

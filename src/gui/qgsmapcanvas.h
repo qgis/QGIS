@@ -1020,6 +1020,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! owns pixmap with rendered map and controls rendering
     QgsMapCanvasMap *mMap = nullptr;
 
+    /**
+     * Temporal controller for tracking update of temporal objects
+     * which relates with canvas
+     */
+    QgsTemporalController *mController = nullptr;
+
     //! Flag indicating if the map canvas is frozen.
     bool mFrozen = false;
 

@@ -72,6 +72,14 @@ Gets access to properties used for map rendering
 .. versionadded:: 2.4
 %End
 
+    void setTemporalController( QgsTemporalController *controller );
+%Docstring
+Sets the temporal controller, this controller will be used to
+update the canvas temporal range.
+
+.. versionadded:: 3.14
+%End
+
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 sets destination coordinate reference system

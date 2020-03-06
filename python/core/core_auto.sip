@@ -195,6 +195,8 @@
 %Include auto_generated/qgsstringutils.sip
 %Include auto_generated/qgstablecell.sip
 %Include auto_generated/qgstaskmanager.sip
+%Include auto_generated/qgstemporalcontroller.sip
+%Include auto_generated/qgstemporalnavigationobject.sip
 %Include auto_generated/qgstemporalproperty.sip
 %Include auto_generated/qgstemporalrangeobject.sip
 %Include auto_generated/qgstessellator.sip

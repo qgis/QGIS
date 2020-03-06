@@ -416,14 +416,14 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   emit destinationCrsChanged();
 }
 
-void QgsMapCanvas::setTemporalController( const QgsTemporalController &controller )
+void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
 {
   mController = controller;
 
-  connect( mController, SIGNAL( updateTemporalRange( const QgsDateTimeRange & ), this, SLOT( updateTemporalRange( const QgsDateTimeRange & ) );
+  connect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::updateTemporalRange );
 }
 
-         void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
+void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
 {
   mSettings.setFlags( flags );
   clearCache();
@@ -2468,6 +2468,12 @@ void QgsMapCanvas::setLabelingEngineSettings( const QgsLabelingEngineSettings &s
 const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
 {
   return mSettings.labelingEngineSettings();
+}
+
+void QgsMapCanvas::updateTemporalRange( const QgsDateTimeRange &range )
+{
+  mSettings.setTemporalRange( range );
+  autoRefreshTriggered();
 }
 
 void QgsMapCanvas::startPreviewJobs()
