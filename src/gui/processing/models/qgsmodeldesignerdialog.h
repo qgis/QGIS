@@ -52,29 +52,30 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     QgsModelDesignerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
 
+    void closeEvent( QCloseEvent *event ) override;
+
   protected:
 
     virtual void repaintModel( bool showControls = true ) = 0;
     virtual QgsProcessingModelAlgorithm *model() = 0;
     virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
     virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
+    virtual void exportAsScriptAlgorithm() = 0;
+    virtual void saveModel( bool saveAs = false ) = 0;
 
     QToolBar *toolbar() { return mToolbar; }
     QAction *actionOpen() { return mActionOpen; }
-    QAction *actionSave() { return mActionSave; }
-    QAction *actionSaveAs() { return mActionSaveAs; }
     QAction *actionSaveInProject() { return mActionSaveInProject; }
     QAction *actionEditHelp() { return mActionEditHelp; }
     QAction *actionRun() { return mActionRun; }
-    QAction *actionExportImage() { return mActionExportImage; }
     QLineEdit *textName() { return mNameEdit; }
     QLineEdit *textGroup() { return mGroupEdit; }
-    QTreeWidget *inputsTree() { return mInputsTreeWidget; }
-
     QgsMessageBar *messageBar() { return mMessageBar; }
     QGraphicsView *view() { return mView; }
 
     void updateVariablesGui();
+
+    void setDirty( bool dirty );
 
   private slots:
 
@@ -91,6 +92,10 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     QgsMessageBar *mMessageBar = nullptr;
     QgsModelerToolboxModel *mAlgorithmsModel = nullptr;
+
+    bool mHasChanged = false;
+
+    void fillInputsTree();
 
 };
 
