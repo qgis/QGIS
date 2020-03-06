@@ -157,6 +157,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
       Q_ASSERT_X( temporalCapabilities(), "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
       temporalCapabilities()->setHasTemporalCapabilities( true );
       temporalCapabilities()->setFixedTemporalRange( mSettings.mFixedRange );
+
       temporalCapabilities()->setDateTimes( mSettings.mDateTimes );
       if ( mSettings.mIsBiTemporal )
       {
