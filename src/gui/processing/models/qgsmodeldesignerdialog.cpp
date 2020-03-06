@@ -33,6 +33,30 @@
 ///@cond NOT_STABLE
 
 
+QgsModelerToolboxModel::QgsModelerToolboxModel( QObject *parent )
+  : QgsProcessingToolboxProxyModel( parent )
+{
+
+}
+
+Qt::ItemFlags QgsModelerToolboxModel::flags( const QModelIndex &index ) const
+{
+  Qt::ItemFlags f = QgsProcessingToolboxProxyModel::flags( index );
+  const QModelIndex sourceIndex = mapToSource( index );
+  if ( toolboxModel()->isAlgorithm( sourceIndex ) )
+  {
+    f = f | Qt::ItemIsDragEnabled;
+  }
+  return f;
+}
+
+Qt::DropActions QgsModelerToolboxModel::supportedDragActions() const
+{
+  return Qt::CopyAction;
+}
+
+
+
 QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags flags )
   : QMainWindow( parent, flags )
 {
@@ -88,6 +112,9 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mAlgorithmsTree->setFilters( filters );
   mAlgorithmsTree->setDragDropMode( QTreeWidget::DragOnly );
   mAlgorithmsTree->setDropIndicatorShown( true );
+
+  mAlgorithmsModel = new QgsModelerToolboxModel( this );
+  mAlgorithmsTree->setToolboxProxyModel( mAlgorithmsModel );
 
   connect( mView, &QgsModelGraphicsView::algorithmDropped, this, [ = ]( const QString & algorithmId, const QPointF & pos )
   {

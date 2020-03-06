@@ -20,10 +20,25 @@
 #include "qgis_gui.h"
 #include "ui_qgsmodeldesignerdialogbase.h"
 
+#include "qgsprocessingtoolboxmodel.h"
+
 class QgsMessageBar;
 class QgsProcessingModelAlgorithm;
 
 ///@cond NOT_STABLE
+
+#ifndef SIP_RUN
+
+class GUI_EXPORT QgsModelerToolboxModel : public QgsProcessingToolboxProxyModel
+{
+  public:
+    explicit QgsModelerToolboxModel( QObject *parent = nullptr );
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    Qt::DropActions supportedDragActions() const override;
+
+};
+
+#endif
 
 /**
  * \ingroup gui
@@ -55,7 +70,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QLineEdit *textName() { return mNameEdit; }
     QLineEdit *textGroup() { return mGroupEdit; }
     QTreeWidget *inputsTree() { return mInputsTreeWidget; }
-    QgsProcessingToolboxTreeView *algorithmsTree() { return mAlgorithmsTree; }
 
     QgsMessageBar *messageBar() { return mMessageBar; }
     QGraphicsView *view() { return mView; }
@@ -76,6 +90,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
   private:
 
     QgsMessageBar *mMessageBar = nullptr;
+    QgsModelerToolboxModel *mAlgorithmsModel = nullptr;
 
 };
 

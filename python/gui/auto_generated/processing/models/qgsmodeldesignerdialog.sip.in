@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsModelDesignerDialog : QMainWindow
 {
 %Docstring
@@ -47,7 +49,6 @@ Model designer dialog base class
     QLineEdit *textName();
     QLineEdit *textGroup();
     QTreeWidget *inputsTree();
-    QgsProcessingToolboxTreeView *algorithmsTree();
 
     QgsMessageBar *messageBar();
     QGraphicsView *view();

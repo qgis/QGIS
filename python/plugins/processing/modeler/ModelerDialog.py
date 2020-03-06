@@ -49,8 +49,7 @@ from qgis.core import (Qgis,
                        QgsProcessingModelParameter,
                        QgsProcessingParameterType,
                        )
-from qgis.gui import (QgsProcessingToolboxProxyModel,
-                      QgsProcessingParameterDefinitionDialog,
+from qgis.gui import (QgsProcessingParameterDefinitionDialog,
                       QgsProcessingParameterWidgetContext,
                       QgsModelGraphicsScene,
                       QgsModelDesignerDialog)
@@ -66,22 +65,6 @@ from processing.tools.dataobjects import createContext
 from qgis.utils import iface
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-
-
-class ModelerToolboxModel(QgsProcessingToolboxProxyModel):
-
-    def __init__(self, parent=None, registry=None, recentLog=None):
-        super().__init__(parent, registry, recentLog)
-
-    def flags(self, index):
-        f = super().flags(index)
-        source_index = self.mapToSource(index)
-        if self.toolboxModel().isAlgorithm(source_index):
-            f = f | Qt.ItemIsDragEnabled
-        return f
-
-    def supportedDragActions(self):
-        return Qt.CopyAction
 
 
 class ModelerDialog(QgsModelDesignerDialog):
@@ -136,9 +119,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.view().setScene(self.scene)
         self.view().ensureVisible(0, 0, 10, 10)
         self.view().scale(QgsApplication.desktop().logicalDpiX() / 96, QgsApplication.desktop().logicalDpiX() / 96)
-
-        self.algorithms_model = ModelerToolboxModel(self, QgsApplication.processingRegistry())
-        self.algorithmsTree().setToolboxProxyModel(self.algorithms_model)
 
         # Connect signals and slots
         self.inputsTree().doubleClicked.connect(self._addInput)
@@ -473,8 +453,8 @@ class ModelerDialog(QgsModelDesignerDialog):
             maxX = max([alg.position().x() for alg in list(self.model().childAlgorithms().values())])
             maxY = max([alg.position().y() for alg in list(self.model().childAlgorithms().values())])
             newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
-            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE -
-                       BOX_HEIGHT)
+            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE
+                       - BOX_HEIGHT)
         else:
             newX = MARGIN + BOX_WIDTH / 2
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
