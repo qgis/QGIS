@@ -23,6 +23,8 @@
 #include "qgsrange.h"
 #include "qgsdataprovidertemporalcapabilities.h"
 
+#include <QList>
+
 /**
  * \class QgsRasterDataProviderTemporalCapabilities
  * \ingroup core
@@ -118,6 +120,10 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
 
     /**
      * Sets the time enabled status.
+     * This enables whether time part in the temporal range should be
+     * used when updated the temporal range of these capabilities.
+     *
+     * This is useful in some temporal layers who use dates only.
      *
      * \see isTimeEnabled()
      */
@@ -144,7 +150,23 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     */
     bool isReferenceEnable() const;
 
+    /**
+     * Sets the list of available datetimes.
+     *
+     * \see dateTimes()
+     */
+    void setDateTimes( QList<QDateTime> dateTimes );
+
+    /**
+     * Returns the list of the available datetimes.
+     *
+     * \see setDateTime()
+    */
+    const QList<QDateTime> dateTimes() const;
+
   private:
+    //! Represents current active datetime range member.
+    QgsDateTimeRange mRange;
 
     /**
      * Represents fixed data provider datetime range.
@@ -180,6 +202,9 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
 
     //! If reference range has been enabled to be used in these properties
     bool mReferenceEnable = false;
+
+    //! All available datetimes in the capabilities.
+    QList<QDateTime> mDateTimes;
 
 };
 

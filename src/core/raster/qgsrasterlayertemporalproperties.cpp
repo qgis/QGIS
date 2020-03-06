@@ -64,8 +64,6 @@ void QgsRasterLayerTemporalProperties::setTemporalRange( const QgsDateTimeRange 
 
   if ( mFixedRange.contains( dateTimeRange ) )
     mRange = dateTimeRange;
-  else
-    mRange = mFixedRange;
 }
 
 const QgsDateTimeRange &QgsRasterLayerTemporalProperties::temporalRange() const

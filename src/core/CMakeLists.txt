@@ -383,6 +383,7 @@ SET(QGIS_CORE_SRCS
   qgsstringutils.cpp
   qgstablecell.cpp
   qgstaskmanager.cpp
+  qgstemporalcontroller.cpp
   qgstemporalnavigationobject.cpp
   qgstemporalproperty.cpp
   qgstemporalrangeobject.cpp
@@ -905,6 +906,7 @@ SET(QGIS_CORE_HDRS
   qgsstringutils.h
   qgstablecell.h
   qgstaskmanager.h
+  qgstemporalcontroller.h
   qgstemporalnavigationobject.h
   qgstemporalproperty.h
   qgstemporalrangeobject.h

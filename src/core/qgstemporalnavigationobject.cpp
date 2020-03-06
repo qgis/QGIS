@@ -73,15 +73,14 @@ void QgsTemporalNavigationObject::updateLayersTemporalRange( QDateTime datetime,
         QgsDateTimeRange range = rangeFromMode( rasterLayer, datetime, time, value );
         if ( range.begin().isValid() && range.end().isValid() )
         {
-          rasterLayer->dataProvider()->temporalCapabilities()->setTemporalRange( range );
-          rasterLayer->triggerRepaint();
+          rasterLayer->temporalProperties()->setTemporalRange( range );
         }
       }
     }
   }
 }
 
-QgsDateTimeRange QgsTemporalNavigationObject::rangeFromMode( QgsMapLayer *layer, QDateTime dateTime, QString time, int value  )
+QgsDateTimeRange QgsTemporalNavigationObject::rangeFromMode( QgsMapLayer *layer, QDateTime dateTime, QString time, int value )
 {
   QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
   QList<QDateTime> availableTimes;
@@ -94,6 +93,7 @@ QgsDateTimeRange QgsTemporalNavigationObject::rangeFromMode( QgsMapLayer *layer,
 
   if ( mode() == Mode::Snapshot )
   {
+    dateTime.setOffsetFromUtc( 0 );
     if ( availableTimes.contains( dateTime ) )
       return QgsDateTimeRange( dateTime,  dateTime );
     else
@@ -178,10 +178,10 @@ void QgsTemporalNavigationObject::setDateTimes( QList<QDateTime> dateTimes )
 
 void QgsTemporalNavigationObject::setIsPlaying( bool playing )
 {
-    mPlayActive = playing;
+  mPlayActive = playing;
 }
 
 bool QgsTemporalNavigationObject::isPlaying() const
 {
-    return mPlayActive;
+  return mPlayActive;
 }
