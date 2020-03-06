@@ -35,20 +35,23 @@ class TestQgsProjectTimeSettings(unittest.TestCase):
     def testTemporalRange(self):
         p = QgsProjectTimeSettings()
         self.assertTrue(p.temporalRange().isInfinite())
-
         spy = QSignalSpy(p.temporalRangeChanged)
-        p.setTemporalRange(QgsDateTimeRange())
-        self.assertEqual(len(spy), 0)
-        p.setTemporalRange(False)
-        self.assertEqual(len(spy), 0)
 
         r = QgsDateTimeRange(
             QDateTime(QDate(2020, 1, 1), QTime(8, 0, 0)),
             QDateTime(QDate(2020, 12, 1), QTime(8, 0, 0))
         )
 
+        rc = QgsDateTimeRange(
+            QDateTime(QDate(2020, 1, 1), QTime(8, 0, 0)),
+            QDateTime(QDate(2020, 12, 1), QTime(8, 0, 0))
+        )
+
         p.setTemporalRange(r)
-        self.assertEqual(p.temporaRange(), r)
+        self.assertEqual(p.temporalRange(), r)
+        self.assertEqual(len(spy), 1)
+
+        p.setTemporalRange(rc)
         self.assertEqual(len(spy), 1)
 
         p.reset()
@@ -56,14 +59,14 @@ class TestQgsProjectTimeSettings(unittest.TestCase):
 
     def testReadWrite(self):
         p = QgsProjectTimeSettings()
-        self.assertFalse(p.temporalRange())
+        self.assertTrue(p.temporalRange().isInfinite())
         doc = QDomDocument("testdoc")
         elem = p.writeXml(doc, QgsReadWriteContext())
 
         p2 = QgsProjectTimeSettings()
         spy = QSignalSpy(p2.temporalRangeChanged)
         self.assertTrue(p2.readXml(elem, QgsReadWriteContext()))
-        self.assertFalse(p2.temporalRange())
+        self.assertEqual(p2.temporalRange(), p.temporalRange())
         self.assertEqual(len(spy), 0)
 
         r = QgsDateTimeRange(

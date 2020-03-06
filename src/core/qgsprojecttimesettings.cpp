@@ -56,12 +56,8 @@ bool QgsProjectTimeSettings::readXml( const QDomElement &element, const QgsReadW
     QDateTime beginDate = QDateTime::fromString( begin.toElement().text(), Qt::ISODate );
     QDateTime endDate = QDateTime::fromString( end.toElement().text(), Qt::ISODate );
 
-    mRange = QgsDateTimeRange( beginDate, endDate );
+    setTemporalRange( QgsDateTimeRange( beginDate, endDate ) );
 
-  }
-  else
-  {
-    mRange = QgsDateTimeRange();
   }
 
   return true;
