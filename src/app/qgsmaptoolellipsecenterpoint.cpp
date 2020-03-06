@@ -59,6 +59,7 @@ void QgsMapToolEllipseCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     {
       mParentTool->canvasReleaseEvent( e );
     }
+    activate();
   }
 }
 

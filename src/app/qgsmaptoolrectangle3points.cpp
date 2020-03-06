@@ -71,6 +71,7 @@ void QgsMapToolRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     {
       mParentTool->canvasReleaseEvent( e );
     }
+    activate();
   }
 }
 

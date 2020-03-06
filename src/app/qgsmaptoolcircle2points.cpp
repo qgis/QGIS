@@ -61,6 +61,7 @@ void QgsMapToolCircle2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     {
       mParentTool->canvasReleaseEvent( e );
     }
+    activate();
   }
 }
 

@@ -70,6 +70,7 @@ void QgsMapToolRegularPolygonCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEven
     {
       mParentTool->canvasReleaseEvent( e );
     }
+    activate();
   }
 }
 

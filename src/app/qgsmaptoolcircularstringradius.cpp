@@ -100,6 +100,7 @@ void QgsMapToolCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
     {
       mParentTool->canvasReleaseEvent( e );
     }
+    activate();
   }
 }
 

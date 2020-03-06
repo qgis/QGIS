@@ -81,6 +81,7 @@ void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     {
       mParentTool->canvasReleaseEvent( e );
     }
+    activate();
   }
 }
 

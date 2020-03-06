@@ -68,6 +68,7 @@ void QgsMapToolRegularPolygonCenterCorner::cadCanvasReleaseEvent( QgsMapMouseEve
     {
       mParentTool->canvasReleaseEvent( e );
     }
+    activate();
   }
 }
 

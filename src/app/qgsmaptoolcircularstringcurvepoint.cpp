@@ -87,6 +87,7 @@ void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent
     {
       mParentTool->canvasReleaseEvent( e );
     }
+    activate();
   }
 }
 
