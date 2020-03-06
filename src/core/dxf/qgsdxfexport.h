@@ -357,7 +357,7 @@ class CORE_EXPORT QgsDxfExport
      * \param transparencyCode group code to use for transparency component
      * \note available in Python bindings as writeGroupPoint
      */
-    void writeGroup( const QColor &color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
+    void writeGroup( const QColor &color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 ) SIP_PYNAME( writeGroupColor );
 
     /**
      * Write a group code with color and transparency value
@@ -368,7 +368,7 @@ class CORE_EXPORT QgsDxfExport
      * \param transparencyCode group code to use for transparency component
      * \note available in Python bindings as writeGroupPoint
      */
-    void writeGroup( const QColor &color, bool withTransparency, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
+    void writeGroup( const QColor &color, bool withTransparency, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 ) SIP_PYNAME( writeGroupColorFill );
 
     /**
      * Write a group code
