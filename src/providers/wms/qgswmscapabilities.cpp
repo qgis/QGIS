@@ -86,13 +86,36 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   {
     mIsTemporal = true;
     mTemporalExtent = uri.param( QStringLiteral( "time" ) );
-    mFixedRange = parseTemporalExtent( mTimeDimensionExtent, mTemporalExtent );
+    mTimeDimensionExtent = parseTemporalExtent( mTemporalExtent );
+
+    if ( mTimeDimensionExtent.datesResolutionList.first().dates.dateTimes.size() > 0 )
+    {
+      QDateTime begin = mTimeDimensionExtent.datesResolutionList.first().dates.dateTimes.first();
+      QDateTime end = mTimeDimensionExtent.datesResolutionList.last().dates.dateTimes.last();
+
+      mFixedRange =  QgsDateTimeRange( begin, end );
+    }
+    else
+      mFixedRange = QgsDateTimeRange();
+
+    mDateTimes = dateTimesFromExtent( mTimeDimensionExtent );
 
     if ( uri.param( QStringLiteral( "reference_time" ) ) != QString() )
     {
       QString referenceExtent = uri.param( QStringLiteral( "reference_time" ) );
-      mFixedReferenceRange = parseTemporalExtent( mReferenceTimeDimensionExtent,
-                             referenceExtent );
+
+      mReferenceTimeDimensionExtent = parseTemporalExtent( referenceExtent );
+
+      if ( mReferenceTimeDimensionExtent.datesResolutionList.first().dates.dateTimes.size() > 0 )
+      {
+        QDateTime begin = mReferenceTimeDimensionExtent.datesResolutionList.first().dates.dateTimes.first();
+        QDateTime end = mReferenceTimeDimensionExtent.datesResolutionList.last().dates.dateTimes.last();
+
+        mFixedReferenceRange =  QgsDateTimeRange( begin, end );
+      }
+      else
+        mFixedReferenceRange = QgsDateTimeRange();
+
       mIsBiTemporal = true;
     }
   }
@@ -176,11 +199,11 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   return true;
 }
 
-QgsDateTimeRange QgsWmsSettings::parseTemporalExtent( QgsWmstDimensionExtent dimensionExtent,
-    QString extent )
+QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( QString extent )
 {
+  QgsWmstDimensionExtent dimensionExtent;
   if ( extent.isNull() )
-    return QgsDateTimeRange();
+    return dimensionExtent;
 
   bool containResolution = false;
 
@@ -255,18 +278,60 @@ QgsDateTimeRange QgsWmsSettings::parseTemporalExtent( QgsWmstDimensionExtent dim
     containResolution = false;
   }
 
-  // Return the provider temporal take the date in first temporal range and
-  // and the date in last temporal range in the dimension ranges list
+  return dimensionExtent;
+}
 
-  if ( dimensionExtent.datesResolutionList.first().dates.dateTimes.size() > 0 )
+QList<QDateTime> QgsWmsSettings::dateTimesFromExtent( QgsWmstDimensionExtent dimensionExtent )
+{
+  QList<QDateTime> dates;
+
+  for ( QgsWmstExtentPair pair : dimensionExtent.datesResolutionList )
   {
-    QDateTime begin = dimensionExtent.datesResolutionList.first().dates.dateTimes.first();
-    QDateTime end = dimensionExtent.datesResolutionList.last().dates.dateTimes.last();
+    if ( !pair.dates.dateTimes.isEmpty() )
+    {
+      if ( pair.dates.dateTimes.size() < 2 )
+        dates.append( pair.dates.dateTimes.at( 0 ) );
+      else
+      {
+        QDateTime first = QDateTime( pair.dates.dateTimes.at( 0 ) );
+        QDateTime last = QDateTime( pair.dates.dateTimes.at( 1 ) );
 
-    return QgsDateTimeRange( begin, end );
+        while ( first < last )
+        {
+          if ( pair.resolution.active() )
+            first = addTime( first, pair.resolution );
+          else
+            break;
+
+          if ( first <= last )
+            dates.append( first );
+        }
+      }
+    }
   }
 
-  return QgsDateTimeRange();
+  return dates;
+
+}
+
+QDateTime QgsWmsSettings::addTime( QDateTime dateTime, QgsWmstResolution resolution )
+{
+  QDateTime resultDateTime = QDateTime( dateTime );
+
+  if ( resolution.year != -1 )
+    resultDateTime = resultDateTime.addYears( resolution.year );
+  if ( resolution.month != -1 )
+    resultDateTime = resultDateTime.addMonths( resolution.month );
+  if ( resolution.day != -1 )
+    resultDateTime = resultDateTime.addDays( resolution.day );
+  if ( resolution.hour != -1 )
+    resultDateTime = resultDateTime.addSecs( resolution.hour * 60 * 60 );
+  if ( resolution.minutes != -1 )
+    resultDateTime = resultDateTime.addSecs( resolution.minutes * 60 );
+  if ( resolution.seconds != -1 )
+    resultDateTime = resultDateTime.addSecs( resolution.seconds );
+
+  return resultDateTime;
 }
 
 QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
@@ -351,12 +416,12 @@ QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
 
 QDateTime QgsWmsSettings::parseWmstDateTimes( QString item )
 {
-  // Standard item will have a YYYY-MM-DDThh:mm:ss.SSSZ
-  // format similar to Qt::ISODateWithMs
+  // Standard item will have YYYY-MM-DDThh:mm:ss.SSSZ
+  //  format a Qt::ISODateWithMs
 
   QString format = "YYYY-MM-DDThh:mm:ss.SSSZ";
 
-  // Check if it does not have the time part
+  // Check if it does not have time part
   if ( !item.contains( 'T' ) )
     return QDateTime::fromString( item, "yyyy-MM-dd" );
   else

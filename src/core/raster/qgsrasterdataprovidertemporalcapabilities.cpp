@@ -89,3 +89,14 @@ bool QgsRasterDataProviderTemporalCapabilities::isReferenceEnable() const
 {
   return mReferenceEnable;
 }
+
+void QgsRasterDataProviderTemporalCapabilities::setDateTimes( QList<QDateTime> dateTimes )
+{
+  mDateTimes = dateTimes;
+}
+
+const QList<QDateTime> QgsRasterDataProviderTemporalCapabilities::dateTimes() const
+{
+  return mDateTimes;
+}
+

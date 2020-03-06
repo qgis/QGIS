@@ -416,7 +416,14 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   emit destinationCrsChanged();
 }
 
-void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
+void QgsMapCanvas::setTemporalController( const QgsTemporalController &controller )
+{
+  mController = controller;
+
+  connect( mController, SIGNAL( updateTemporalRange( const QgsDateTimeRange & ), this, SLOT( updateTemporalRange( const QgsDateTimeRange & ) );
+}
+
+         void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
 {
   mSettings.setFlags( flags );
   clearCache();
