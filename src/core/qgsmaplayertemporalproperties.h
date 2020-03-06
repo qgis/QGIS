@@ -87,7 +87,7 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
     void setTemporalSource( TemporalSource source );
   private:
 
-    TemporalSource mSource = TemporalSource::Layer;
+    TemporalSource mSource = Layer;
 
 };
 
