@@ -26,6 +26,8 @@
 /**
  * \class QgsTemporalController
  * \ingroup core
+ * A controller base class for temporal objects, contains a signal for notifying
+ * updates of the objects temporal range.
  *
  * \since QGIS 3.14
  */
@@ -45,6 +47,11 @@ class CORE_EXPORT QgsTemporalController : public QObject
     virtual ~QgsTemporalController() = default;
 
   signals:
+
+    /**
+     * Signals that a temporal \a range has changed and need to be updated to
+     * the related objects.
+     */
     void updateTemporalRange( const QgsDateTimeRange &range );
 
 };
