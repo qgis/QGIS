@@ -39,9 +39,24 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   QgsGui::enableAutoGeometryRestore( this );
 
   setAttribute( Qt::WA_DeleteOnClose );
+  setDockOptions( dockOptions() | QMainWindow::GroupedDragging );
   setWindowFlags( Qt::WindowMinimizeButtonHint |
                   Qt::WindowMaximizeButtonHint |
                   Qt::WindowCloseButtonHint );
+
+  mPropertiesDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
+  mInputsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
+  mAlgorithmsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
+  mVariablesDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
+
+  mAlgorithmsTree->header()->setVisible( false );
+  mAlgorithmSearchEdit->setShowSearchIcon( true );
+  mAlgorithmSearchEdit->setPlaceholderText( tr( "Search…" ) );
+  connect( mAlgorithmSearchEdit, &QgsFilterLineEdit::textChanged, mAlgorithmsTree, &QgsProcessingToolboxTreeView::setFilterString );
+
+  mNameEdit->setPlaceholderText( tr( "Enter model name here" ) );
+  mGroupEdit->setPlaceholderText( tr( "Enter group name here" ) );
+
   mMessageBar = new QgsMessageBar();
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   mainLayout->insertWidget( 0, mMessageBar );
@@ -58,15 +73,56 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionExportSvg, &QAction::triggered, this, &QgsModelDesignerDialog::exportToSvg );
   connect( mActionExportPython, &QAction::triggered, this, &QgsModelDesignerDialog::exportAsPython );
 
+  QgsSettings settings;
+  QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::FilterModeler;
+  if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_ALGORITHMS_KNOWN_ISSUES" ), false ).toBool() )
+  {
+    filters |= QgsProcessingToolboxProxyModel::FilterShowKnownIssues;
+  }
+  mAlgorithmsTree->setFilters( filters );
+  mAlgorithmsTree->setDragDropMode( QTreeWidget::DragOnly );
+  mAlgorithmsTree->setDropIndicatorShown( true );
+
   connect( mView, &QgsModelGraphicsView::algorithmDropped, this, [ = ]( const QString & algorithmId, const QPointF & pos )
   {
     addAlgorithm( algorithmId, pos );
   } );
+  connect( mAlgorithmsTree, &QgsProcessingToolboxTreeView::doubleClicked, this, [ = ]()
+  {
+    if ( mAlgorithmsTree->selectedAlgorithm() )
+      addAlgorithm( mAlgorithmsTree->selectedAlgorithm()->id(), QPointF() );
+  } );
+
+
   connect( mView, &QgsModelGraphicsView::inputDropped, this, &QgsModelDesignerDialog::addInput );
 
 // Ctrl+= should also trigger a zoom in action
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
   connect( ctrlEquals, &QShortcut::activated, this, &QgsModelDesignerDialog::zoomIn );
+
+  tabifyDockWidget( mPropertiesDock, mVariablesDock );
+  tabifyDockWidget( mInputsDock, mAlgorithmsDock );
+  mInputsDock->raise();
+
+  connect( mVariablesEditor, &QgsVariableEditorWidget::scopeChanged, this, [ = ]
+  {
+    if ( model() )
+      model()->setVariables( mVariablesEditor->variablesInActiveScope() );
+  } );
+}
+
+void QgsModelDesignerDialog::updateVariablesGui()
+{
+  std::unique_ptr< QgsExpressionContextScope > variablesScope = qgis::make_unique< QgsExpressionContextScope >( tr( "Model Variables" ) );
+  const QVariantMap modelVars = model()->variables();
+  for ( auto it = modelVars.constBegin(); it != modelVars.constEnd(); ++it )
+  {
+    variablesScope->setVariable( it.key(), it.value() );
+  }
+  QgsExpressionContext variablesContext;
+  variablesContext.appendScope( variablesScope.release() );
+  mVariablesEditor->setContext( &variablesContext );
+  mVariablesEditor->setEditableScopeIndex( 0 );
 }
 
 void QgsModelDesignerDialog::zoomIn()
