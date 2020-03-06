@@ -31,6 +31,7 @@ from qgis.core import (
     QgsProviderConnectionException,
 )
 from qgis.PyQt import QtCore
+from qgis.PyQt.QtTest import QSignalSpy
 
 
 class TestPyQgsProviderConnectionBase():
@@ -59,10 +60,20 @@ class TestPyQgsProviderConnectionBase():
     def _test_save_load(self, md, uri):
         """Common tests on connection save and load"""
         conn = md.createConnection(self.uri, {})
+        created_spy = QSignalSpy(md.connectionCreated)
+        changed_spy = QSignalSpy(md.connectionChanged)
         md.saveConnection(conn, 'qgis_test1')
         # Check that we retrieve the new connection
         self.assertTrue('qgis_test1' in md.connections().keys())
         self.assertTrue('qgis_test1' in md.dbConnections().keys())
+        self.assertEqual(len(created_spy), 1)
+        self.assertEqual(len(changed_spy), 0)
+
+        # if we try to save again, the connectionChanged signal should be emitted instead of connectionCreated
+        md.saveConnection(conn, 'qgis_test1')
+        self.assertEqual(len(created_spy), 1)
+        self.assertEqual(len(changed_spy), 1)
+
         return md.connections()['qgis_test1']
 
     def _table_names(self, table_properties):
@@ -259,8 +270,10 @@ class TestPyQgsProviderConnectionBase():
         self.assertTrue(isinstance(list(conns.values())[0], QgsAbstractDatabaseProviderConnection))
 
         # Remove connection
+        spy_deleted = QSignalSpy(md.connectionDeleted)
         md.deleteConnection('qgis_test1')
         self.assertEqual(list(md.connections().values()), [])
+        self.assertEqual(len(spy_deleted), 1)
 
     def test_errors(self):
         """Test SQL errors"""
