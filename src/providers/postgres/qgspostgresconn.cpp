@@ -667,6 +667,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     layerProperty.sql.clear();
     layerProperty.relKind = relkind;
     layerProperty.isView = isView;
+    layerProperty.isForeignTable = isForeignTable;
     layerProperty.isRaster = isRaster;
     layerProperty.isMaterializedView = isMaterializedView;
     layerProperty.tableComment = comment;
@@ -706,7 +707,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                                   " JOIN pg_namespace n ON n.oid=c.relnamespace"
                                   " JOIN pg_type t ON t.oid=a.atttypid"
                                   " LEFT JOIN pg_type b ON b.oid=t.typbasetype"
-                                  " WHERE c.relkind IN ('v','r','m','p')"
+                                  " WHERE c.relkind IN ('v','r','m','p','f')"
                                   " AND has_schema_privilege( n.nspname, 'usage' )"
                                   " AND has_table_privilege( c.oid, 'select' )"
                                   " AND (t.typname IN (%1) OR b.typname IN (%1))" )
@@ -781,6 +782,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.geometryColName = column;
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
+      layerProperty.isForeignTable = isForeignTable;
       layerProperty.isRaster = coltype == QLatin1String( "raster" );
       layerProperty.isMaterializedView = isMaterializedView;
       layerProperty.tableComment = comment;
@@ -840,7 +842,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                                   " WHERE pg_namespace.oid=pg_class.relnamespace"
                                   " AND has_schema_privilege(pg_namespace.nspname,'usage')"
                                   " AND has_table_privilege(pg_class.oid,'select')"
-                                  " AND pg_class.relkind IN ('v','r','m','p')"
+                                  " AND pg_class.relkind IN ('v','r','m','p','f')"
                                   " AND pg_class.oid = a.attrelid"
                                   " AND NOT a.attisdropped"
                                   " AND a.attnum > 0" )
@@ -890,6 +892,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.nSpCols = 0;
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
+      layerProperty.isForeignTable = isForeignTable;
       layerProperty.isRaster = false;
       layerProperty.isMaterializedView = isMaterializedView;
       layerProperty.tableComment = comment;
