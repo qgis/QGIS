@@ -59,6 +59,9 @@ void QgsRasterLayerTemporalProperties::setTemporalRange( const QgsDateTimeRange 
   // Don't set temporal range outside fixed temporal range limits,
   // instead set equal to the fixed temporal range
 
+  if ( !isActive() )
+    setIsActive( true );
+
   if ( mFixedRange.contains( dateTimeRange ) )
     mRange = dateTimeRange;
   else

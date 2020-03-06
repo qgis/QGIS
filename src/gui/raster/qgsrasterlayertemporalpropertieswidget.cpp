@@ -18,6 +18,7 @@
 #include "qgsrasterlayertemporalpropertieswidget.h"
 #include "qgsgui.h"
 #include "qgsproject.h"
+#include "qgsprojecttimesettings.h"
 
 QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( QWidget *parent, QgsMapLayer *layer )
   : QWidget( parent )

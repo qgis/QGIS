@@ -15,11 +15,11 @@ import qgis  # NOQA
 from qgis.core import (QgsProject,
                        QgsProjectTimeSettings,
                        QgsReadWriteContext,
-                       QgsDateTimeRange )
+                       QgsDateTimeRange)
 
 from qgis.PyQt.QtCore import (QDate,
-                             QTime,
-                             QDateTime)
+                              QTime,
+                              QDateTime)
 
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
@@ -34,21 +34,21 @@ class TestQgsProjectTimeSettings(unittest.TestCase):
 
     def testTemporalRange(self):
         p = QgsProjectTimeSettings()
-        self.assertTrue(p.temporalRange().isInfinite()))
+        self.assertTrue(p.temporalRange().isInfinite())
 
         spy = QSignalSpy(p.temporalRangeChanged)
-        p.setTemporalRange( QgsDateTimeRange () )
+        p.setTemporalRange(QgsDateTimeRange())
         self.assertEqual(len(spy), 0)
         p.setTemporalRange(False)
         self.assertEqual(len(spy), 0)
 
         r = QgsDateTimeRange(
-        QDateTime(QDate(2020, 1, 1), QTime(8, 0, 0)),
-        QDateTime(QDate(2020, 12, 1), QTime(8, 0, 0))
+            QDateTime(QDate(2020, 1, 1), QTime(8, 0, 0)),
+            QDateTime(QDate(2020, 12, 1), QTime(8, 0, 0))
         )
 
-        p.setTemporalRange( r )
-        self.assertEqual(p.temporaRange(), r )
+        p.setTemporalRange(r)
+        self.assertEqual(p.temporaRange(), r)
         self.assertEqual(len(spy), 1)
 
         p.reset()
@@ -67,8 +67,8 @@ class TestQgsProjectTimeSettings(unittest.TestCase):
         self.assertEqual(len(spy), 0)
 
         r = QgsDateTimeRange(
-        QDateTime(QDate(2020, 1, 1), QTime(8, 0, 0)),
-        QDateTime(QDate(2020, 12, 1), QTime(8, 0, 0))
+            QDateTime(QDate(2020, 1, 1), QTime(8, 0, 0)),
+            QDateTime(QDate(2020, 12, 1), QTime(8, 0, 0))
         )
         p.setTemporalRange(r)
         elem = p.writeXml(doc, QgsReadWriteContext())
@@ -78,6 +78,7 @@ class TestQgsProjectTimeSettings(unittest.TestCase):
         self.assertTrue(p2.readXml(elem, QgsReadWriteContext()))
         self.assertEqual(p2.temporalRange(), r)
         self.assertEqual(len(spy), 1)
+
 
 if __name__ == '__main__':
     unittest.main()

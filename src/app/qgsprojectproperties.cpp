@@ -69,6 +69,7 @@
 #include "qgsnumericformatwidget.h"
 #include "qgsbearingnumericformat.h"
 #include "qgsprojectdisplaysettings.h"
+#include "qgsprojecttimesettings.h"
 
 //qt includes
 #include <QInputDialog>
@@ -2509,7 +2510,7 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
     currentLayer = it.value();
 
     if ( !currentLayer->temporalProperties() || !currentLayer->temporalProperties()->isActive() )
-        continue;
+      continue;
 
     if ( currentLayer->type() == QgsMapLayerType::RasterLayer )
     {
@@ -2518,14 +2519,14 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
       QgsDateTimeRange layerRange = rasterLayer->temporalProperties()->temporalRange();
 
       if ( !minDate.isValid() ||  layerRange.begin() < minDate )
-          minDate = layerRange.begin();
+        minDate = layerRange.begin();
       if ( !maxDate.isValid() ||  layerRange.end() > maxDate )
-          maxDate = layerRange.end();
-     }
+        maxDate = layerRange.end();
+    }
   }
 
   if ( !minDate.isValid() || !maxDate.isValid() )
-      return;
+    return;
 
   mStartDateTimeEdit->setDateTime( minDate );
   mEndDateTimeEdit->setDateTime( maxDate );
@@ -2533,7 +2534,6 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
   mCurrentRangeLabel->setText( tr( "Current range: %1 to %2" ).arg(
                                  mStartDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ),
                                  mEndDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ) ) );
-
 }
 
 QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const QString &newScale )

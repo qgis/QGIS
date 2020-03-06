@@ -38,9 +38,9 @@ QgsDateTimeRange QgsProjectTimeSettings::temporalRange() const
 
 void QgsProjectTimeSettings::setTemporalRange( const QgsDateTimeRange &range )
 {
-    if ( range == mRange )
-       return;
-    mRange = range;
+  if ( range == mRange )
+    return;
+  mRange = range;
 
   emit temporalRangeChanged();
 }

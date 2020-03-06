@@ -279,13 +279,14 @@ void TestQgsProjectProperties::testTimeSettings()
   QgsDateTimeRange thirdRange = QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ) ),
                                 QDateTime( QDate( 2020, 2, 28 ) ) );
 
-  firstLayer->dataProvider()->temporalCapabilities()->setFixedTemporalRange( firstRange );
-  secondLayer->dataProvider()->temporalCapabilities()->setFixedTemporalRange( secondRange );
-  thirdLayer->dataProvider()->temporalCapabilities()->setFixedTemporalRange( thirdRange );
+  firstLayer->temporalProperties()->setTemporalRange( firstRange );
+  secondLayer->temporalProperties()->setTemporalRange( secondRange );
+  thirdLayer->temporalProperties()->setTemporalRange( thirdRange );
 
   QgsProject::instance()->addMapLayers( { firstLayer, secondLayer, thirdLayer } );
 
   projectProperties->calculateFromLayersButton_clicked();
+  projectProperties->apply();
 
   QgsDateTimeRange expectedRange = QgsDateTimeRange( thirdRange.begin(), secondRange.end() );
 
