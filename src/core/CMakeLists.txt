@@ -348,6 +348,7 @@ SET(QGIS_CORE_SRCS
   qgsproperty.cpp
   qgspropertycollection.cpp
   qgspropertytransformer.cpp
+  qgsproviderconnectionmodel.cpp
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
   qgsproxyprogresstask.cpp
@@ -862,6 +863,7 @@ SET(QGIS_CORE_HDRS
   qgsproperty.h
   qgspropertycollection.h
   qgspropertytransformer.h
+  qgsproviderconnectionmodel.h
   qgsprovidermetadata.h
   qgsproviderregistry.h
   qgsproxyprogresstask.h
