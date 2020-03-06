@@ -579,6 +579,15 @@
     <string>Show Comments</string>
    </property>
   </action>
+  <action name="mActionExportAsScriptAlgorithm">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsPython.svg</normaloff>:/images/themes/default/mActionSaveAsPython.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export as Script Algorithm…</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

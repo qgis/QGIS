@@ -25,7 +25,6 @@ import sys
 import os
 
 from qgis.PyQt.QtCore import (
-    Qt,
     QCoreApplication,
     QDir,
     QRectF,
@@ -34,11 +33,7 @@ from qgis.PyQt.QtCore import (
     pyqtSignal,
     QUrl)
 from qgis.PyQt.QtWidgets import (QMessageBox,
-                                 QFileDialog,
-                                 QTreeWidgetItem,
-                                 QToolButton,
-                                 QAction)
-from qgis.PyQt.QtGui import QIcon
+                                 QFileDialog)
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessing,
@@ -47,7 +42,6 @@ from qgis.core import (Qgis,
                        QgsMessageLog,
                        QgsProcessingModelAlgorithm,
                        QgsProcessingModelParameter,
-                       QgsProcessingParameterType,
                        )
 from qgis.gui import (QgsProcessingParameterDefinitionDialog,
                       QgsProcessingParameterWidgetContext,
@@ -68,14 +62,6 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class ModelerDialog(QgsModelDesignerDialog):
-    ALG_ITEM = 'ALG_ITEM'
-    PROVIDER_ITEM = 'PROVIDER_ITEM'
-    GROUP_ITEM = 'GROUP_ITEM'
-
-    NAME_ROLE = Qt.UserRole
-    TAG_ROLE = Qt.UserRole + 1
-    TYPE_ROLE = Qt.UserRole + 2
-
     CANVAS_SIZE = 4000
 
     update_model = pyqtSignal()
@@ -102,15 +88,6 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.toolbar().setIconSize(iface.iconSize())
             self.setStyleSheet(iface.mainWindow().styleSheet())
 
-        self.toolbutton_export_to_script = QToolButton()
-        self.toolbutton_export_to_script.setPopupMode(QToolButton.InstantPopup)
-        self.export_to_script_algorithm_action = QAction(
-            QCoreApplication.translate('ModelerDialog', 'Export as Script Algorithm…'))
-        self.toolbutton_export_to_script.addActions([self.export_to_script_algorithm_action])
-        self.toolbutton_export_to_script.setDefaultAction(self.export_to_script_algorithm_action)
-        self.toolbar().insertWidget(self.actionExportImage(), self.toolbutton_export_to_script)
-        self.export_to_script_algorithm_action.triggered.connect(self.export_as_script_algorithm)
-
         self.scene = ModelerScene(self)
         self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE, self.CANVAS_SIZE))
         self.scene.rebuildRequired.connect(self.repaintModel)
@@ -120,12 +97,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.view().ensureVisible(0, 0, 10, 10)
         self.view().scale(QgsApplication.desktop().logicalDpiX() / 96, QgsApplication.desktop().logicalDpiX() / 96)
 
-        # Connect signals and slots
-        self.inputsTree().doubleClicked.connect(self._addInput)
-
         self.actionOpen().triggered.connect(self.openModel)
-        self.actionSave().triggered.connect(self.save)
-        self.actionSaveAs().triggered.connect(self.saveAs)
         self.actionSaveInProject().triggered.connect(self.saveInProject)
         self.actionEditHelp().triggered.connect(self.editHelp)
         self.actionRun().triggered.connect(self.runModel)
@@ -145,29 +117,8 @@ class ModelerDialog(QgsModelDesignerDialog):
             self._model.setProvider(QgsApplication.processingRegistry().providerById('model'))
         self.updateVariablesGui()
 
-        self.fillInputsTree()
-
         self.view().centerOn(0, 0)
         self.help = None
-
-        self.hasChanged = False
-
-    def closeEvent(self, evt):
-        if self.hasChanged:
-            ret = QMessageBox.question(
-                self, self.tr('Save Model?'),
-                self.tr('There are unsaved changes in this model. Do you want to keep those?'),
-                QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
-
-            if ret == QMessageBox.Save:
-                self.saveModel(False)
-                evt.accept()
-            elif ret == QMessageBox.Discard:
-                evt.accept()
-            else:
-                evt.ignore()
-        else:
-            evt.accept()
 
     def model(self):
         return self._model
@@ -178,7 +129,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         dlg.exec_()
         if dlg.descriptions:
             self.model().setHelpContent(dlg.descriptions)
-            self.hasChanged = True
+            self.setDirty(True)
 
     def runModel(self):
         if len(self.model().childAlgorithms()) == 0:
@@ -193,12 +144,6 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         if dlg.wasExecuted():
             self.model().setDesignerParameterValues(dlg.getParameterValues())
-
-    def save(self):
-        self.saveModel(False)
-
-    def saveAs(self):
-        self.saveModel(True)
 
     def saveInProject(self):
         if not self.can_save():
@@ -215,7 +160,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.messageBar().pushMessage("", self.tr("Model was saved inside current project"), level=Qgis.Success,
                                       duration=5)
 
-        self.hasChanged = False
+        self.setDirty(False)
         QgsProject.instance().setDirty(True)
 
     def can_save(self):
@@ -267,7 +212,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             else:
                 self.messageBar().pushMessage("", self.tr("Model was correctly saved"), level=Qgis.Success, duration=5)
 
-            self.hasChanged = False
+            self.setDirty(False)
 
     def openModel(self):
         filename, selected_filter = QFileDialog.getOpenFileName(self,
@@ -289,7 +234,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.updateVariablesGui()
 
             self.view().centerOn(0, 0)
-            self.hasChanged = False
+            self.setDirty(False)
         else:
             QgsMessageLog.logMessage(self.tr('Could not load model {0}').format(filename),
                                      self.tr('Processing'),
@@ -314,12 +259,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.scene.componentChanged.connect(self.componentChanged)
 
     def componentChanged(self):
-        self.hasChanged = True
-
-    def _addInput(self):
-        item = self.inputsTree().currentItem()
-        param = item.data(0, Qt.UserRole)
-        self.addInput(param)
+        self.setDirty(True)
 
     def create_widget_context(self):
         """
@@ -372,7 +312,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                 comment = dlg.comments()
 
         if new_param is not None:
-            if pos is None:
+            if pos is None or not pos:
                 pos = self.getPositionForParameterItem()
             if isinstance(pos, QPoint):
                 pos = QPointF(pos)
@@ -388,7 +328,7 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.model().addModelParameter(new_param, component)
             self.repaintModel()
             # self.view().ensureVisible(self.scene.getLastParameterItem())
-            self.hasChanged = True
+            self.setDirty(True)
 
     def getPositionForParameterItem(self):
         MARGIN = 20
@@ -400,23 +340,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         else:
             newX = MARGIN + BOX_WIDTH / 2
         return QPointF(newX, MARGIN + BOX_HEIGHT / 2)
-
-    def fillInputsTree(self):
-        icon = QIcon(os.path.join(pluginPath, 'images', 'input.svg'))
-        parametersItem = QTreeWidgetItem()
-        parametersItem.setText(0, self.tr('Parameters'))
-        sortedParams = sorted(QgsApplication.instance().processingRegistry().parameterTypes(), key=lambda pt: pt.name())
-        for param in sortedParams:
-            if param.flags() & QgsProcessingParameterType.ExposeToModeler:
-                paramItem = QTreeWidgetItem()
-                paramItem.setText(0, param.name())
-                paramItem.setData(0, Qt.UserRole, param.id())
-                paramItem.setIcon(0, icon)
-                paramItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
-                paramItem.setToolTip(0, param.description())
-                parametersItem.addChild(paramItem)
-        self.inputsTree().addTopLevelItem(parametersItem)
-        parametersItem.setExpanded(True)
 
     def addAlgorithm(self, alg_id, pos=None):
         alg = QgsApplication.processingRegistry().createAlgorithmById(alg_id)
@@ -443,7 +366,7 @@ class ModelerDialog(QgsModelDesignerDialog):
 
             self.model().addChildAlgorithm(alg)
             self.repaintModel()
-            self.hasChanged = True
+            self.setDirty(True)
 
     def getPositionForAlgorithmItem(self):
         MARGIN = 20
@@ -453,14 +376,14 @@ class ModelerDialog(QgsModelDesignerDialog):
             maxX = max([alg.position().x() for alg in list(self.model().childAlgorithms().values())])
             maxY = max([alg.position().y() for alg in list(self.model().childAlgorithms().values())])
             newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
-            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE
-                       - BOX_HEIGHT)
+            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE -
+                       BOX_HEIGHT)
         else:
             newX = MARGIN + BOX_WIDTH / 2
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
         return QPointF(newX, newY)
 
-    def export_as_script_algorithm(self):
+    def exportAsScriptAlgorithm(self):
         dlg = ScriptEditorDialog(None)
 
         dlg.editor.setText('\n'.join(self.model().asPythonCode(QgsProcessing.PythonQgsProcessingAlgorithmSubclass, 4)))

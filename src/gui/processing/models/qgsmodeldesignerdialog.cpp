@@ -22,6 +22,7 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsgui.h"
+#include "qgsprocessingparametertype.h"
 
 #include <QShortcut>
 #include <QDesktopWidget>
@@ -29,6 +30,9 @@
 #include <QFileDialog>
 #include <QPrinter>
 #include <QSvgGenerator>
+#include <QToolButton>
+#include <QCloseEvent>
+#include <QMessageBox>
 
 ///@cond NOT_STABLE
 
@@ -102,6 +106,8 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionExportPdf, &QAction::triggered, this, &QgsModelDesignerDialog::exportToPdf );
   connect( mActionExportSvg, &QAction::triggered, this, &QgsModelDesignerDialog::exportToSvg );
   connect( mActionExportPython, &QAction::triggered, this, &QgsModelDesignerDialog::exportAsPython );
+  connect( mActionSave, &QAction::triggered, this, [ = ] { saveModel( false ); } );
+  connect( mActionSaveAs, &QAction::triggered, this, [ = ] { saveModel( true ); } );
 
   QgsSettings settings;
   QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::FilterModeler;
@@ -125,11 +131,15 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     if ( mAlgorithmsTree->selectedAlgorithm() )
       addAlgorithm( mAlgorithmsTree->selectedAlgorithm()->id(), QPointF() );
   } );
-
+  connect( mInputsTreeWidget, &QgsModelDesignerInputsTreeWidget::doubleClicked, this, [ = ]( const QModelIndex & )
+  {
+    const QString parameterType = mInputsTreeWidget->currentItem()->data( 0, Qt::UserRole ).toString();
+    addInput( parameterType, QPointF() );
+  } );
 
   connect( mView, &QgsModelGraphicsView::inputDropped, this, &QgsModelDesignerDialog::addInput );
 
-// Ctrl+= should also trigger a zoom in action
+  // Ctrl+= should also trigger a zoom in action
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
   connect( ctrlEquals, &QShortcut::activated, this, &QgsModelDesignerDialog::zoomIn );
 
@@ -142,6 +152,44 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     if ( model() )
       model()->setVariables( mVariablesEditor->variablesInActiveScope() );
   } );
+
+  fillInputsTree();
+
+  QToolButton *toolbuttonExportToScript = new QToolButton();
+  toolbuttonExportToScript->setPopupMode( QToolButton::InstantPopup );
+  toolbuttonExportToScript->addAction( mActionExportAsScriptAlgorithm );
+  toolbuttonExportToScript->setDefaultAction( mActionExportAsScriptAlgorithm );
+  mToolbar->insertWidget( mActionExportImage, toolbuttonExportToScript );
+  connect( mActionExportAsScriptAlgorithm, &QAction::triggered, this, &QgsModelDesignerDialog::exportAsScriptAlgorithm );
+}
+
+void QgsModelDesignerDialog::closeEvent( QCloseEvent *event )
+{
+  if ( mHasChanged )
+  {
+    QMessageBox::StandardButton ret = QMessageBox::question( this, tr( "Save Model?" ),
+                                      tr( "There are unsaved changes in this model. Do you want to keep those?" ),
+                                      QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard, QMessageBox::Cancel );
+    switch ( ret )
+    {
+      case QMessageBox::Save:
+        saveModel( false );
+        event->accept();
+        break;
+
+      case QMessageBox::Discard:
+        event->accept();
+        break;
+
+      default:
+        event->ignore();
+        break;
+    }
+  }
+  else
+  {
+    event->accept();
+  }
 }
 
 void QgsModelDesignerDialog::updateVariablesGui()
@@ -156,6 +204,11 @@ void QgsModelDesignerDialog::updateVariablesGui()
   variablesContext.appendScope( variablesScope.release() );
   mVariablesEditor->setContext( &variablesContext );
   mVariablesEditor->setEditableScopeIndex( 0 );
+}
+
+void QgsModelDesignerDialog::setDirty( bool dirty )
+{
+  mHasChanged = dirty;
 }
 
 void QgsModelDesignerDialog::zoomIn()
@@ -300,6 +353,34 @@ void QgsModelDesignerDialog::exportAsPython()
   outFile.close();
 
   mMessageBar->pushMessage( QString(), tr( "Successfully exported model as Python script to <a href=\"{}\">{}</a>" ).arg( QUrl::fromLocalFile( filename ).toString(), QDir::toNativeSeparators( filename ) ), Qgis::Success, 5 );
+}
+
+void QgsModelDesignerDialog::fillInputsTree()
+{
+  const QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "mIconModelInput.svg" ) );
+  std::unique_ptr< QTreeWidgetItem > parametersItem = qgis::make_unique< QTreeWidgetItem >();
+  parametersItem->setText( 0, tr( "Parameters" ) );
+  QList<QgsProcessingParameterType *> available = QgsApplication::processingRegistry()->parameterTypes();
+  std::sort( available.begin(), available.end(), []( const QgsProcessingParameterType * a, const QgsProcessingParameterType * b ) -> bool
+  {
+    return QString::localeAwareCompare( a->name(), b->name() ) < 0;
+  } );
+
+  for ( QgsProcessingParameterType *param : qgis::as_const( available ) )
+  {
+    if ( param->flags() & QgsProcessingParameterType::ExposeToModeler )
+    {
+      std::unique_ptr< QTreeWidgetItem > paramItem = qgis::make_unique< QTreeWidgetItem >();
+      paramItem->setText( 0, param->name() );
+      paramItem->setData( 0, Qt::UserRole, param->id() );
+      paramItem->setIcon( 0, icon );
+      paramItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
+      paramItem->setToolTip( 0, param->description() );
+      parametersItem->addChild( paramItem.release() );
+    }
+  }
+  mInputsTreeWidget->addTopLevelItem( parametersItem.release() );
+  mInputsTreeWidget->topLevelItem( 0 )->setExpanded( true );
 }
 
 
