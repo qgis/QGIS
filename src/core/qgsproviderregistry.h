@@ -436,3 +436,4 @@ class CORE_EXPORT QgsProviderRegistry
 }; // class QgsProviderRegistry
 
 #endif //QGSPROVIDERREGISTRY_H
+
