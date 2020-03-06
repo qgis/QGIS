@@ -160,6 +160,7 @@
 %Include auto_generated/qgsproperty.sip
 %Include auto_generated/qgspropertycollection.sip
 %Include auto_generated/qgspropertytransformer.sip
+%Include auto_generated/qgsproviderconnectionmodel.sip
 %Include auto_generated/qgsprovidermetadata.sip
 %Include auto_generated/qgsproviderregistry.sip
 %Include auto_generated/qgsproxyprogresstask.sip
