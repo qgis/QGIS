@@ -1031,6 +1031,9 @@ void QgsRasterLayerProperties::apply()
     hueSaturationFilter->setColorizeStrength( sliderColorizeStrength->value() );
   }
 
+  // Update temporal properties
+  mTemporalWidget->saveTemporalProperties();
+
   //set the blend mode for the layer
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
 
@@ -1098,9 +1101,6 @@ void QgsRasterLayerProperties::apply()
 
   mRasterLayer->setCustomProperty( "WMSPublishDataSourceUrl", mPublishDataSourceUrlCheckBox->isChecked() );
   mRasterLayer->setCustomProperty( "WMSBackgroundLayer", mBackgroundLayerCheckBox->isChecked() );
-
-  // Update temporal properties
-  mTemporalWidget->saveTemporalProperties();
 
   // Force a redraw of the legend
   mRasterLayer->setLegend( QgsMapLayerLegend::defaultRasterLegend( mRasterLayer ) );

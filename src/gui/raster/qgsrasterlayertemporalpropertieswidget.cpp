@@ -160,6 +160,7 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
       if ( rasterLayer && rasterLayer->temporalProperties() )
       {
         rasterLayer->temporalProperties()->setTemporalRange( normalRange );
+        rasterLayer->temporalProperties()->setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Layer );
 
         if ( mReferenceCheckBox->isChecked() )
         {
@@ -183,10 +184,11 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
 
       if ( rasterLayer && rasterLayer->temporalProperties() )
       {
-        rasterLayer->temporalProperties()->setTemporalRange( projectRange );
-
         if ( !projectRange.begin().isValid() || !projectRange.end().isValid() )
           return;
+
+        rasterLayer->temporalProperties()->setTemporalRange( projectRange );
+        rasterLayer->temporalProperties()->setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Project );
 
         if ( mReferenceCheckBox->isChecked() )
         {
