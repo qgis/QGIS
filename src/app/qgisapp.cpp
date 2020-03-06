@@ -364,6 +364,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslocaldefaultsettings.h"
 #include "qgsbearingnumericformat.h"
 #include "qgsprojectdisplaysettings.h"
+#include "qgstemporalvcrdockwidget.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -1151,6 +1152,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), mBrowserModel, this );
   mBrowserWidget->setObjectName( QStringLiteral( "Browser" ) );
   mBrowserWidget->setMessageBar( mInfoBar );
+
+  mTemporalVcrWidget = new QgsTemporalVcrDockWidget( tr( "Temporal VCR" ), this );
+  mTemporalVcrWidget->setObjectName( QStringLiteral( "Temporal VCR" ) );
+  addDockWidget( Qt::BottomDockWidgetArea, mTemporalVcrWidget );
+  mTemporalVcrWidget->hide();
 
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsAppDirectoryItemGuiProvider() );
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsProjectHomeItemGuiProvider() );

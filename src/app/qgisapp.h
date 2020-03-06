@@ -119,6 +119,7 @@ class QgsAdvancedDigitizingDockWidget;
 class QgsGpsInformationWidget;
 class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
+class QgsTemporalVcrDockWidget;
 
 class QgsDecorationItem;
 class QgsMessageLogViewer;
