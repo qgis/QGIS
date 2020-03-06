@@ -301,7 +301,7 @@ void QgsWfs3LandingPageHandler::handleRequest( const QgsServerApiContext &contex
   } );
   data["links"].push_back(
   {
-    { "href", href( context, "/api" )},
+    { "href", href( context, "/api.json" )},
     { "rel", QgsServerOgcApi::relToString( QgsServerOgcApi::Rel::service_desc ) },
     { "type", QgsServerOgcApi::mimeType( QgsServerOgcApi::ContentType::OPENAPI3 ) },
     { "title", "API description" },
