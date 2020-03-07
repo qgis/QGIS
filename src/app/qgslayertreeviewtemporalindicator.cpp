@@ -53,22 +53,26 @@ bool QgsLayerTreeViewTemporalIndicatorProvider::acceptLayer( QgsMapLayer *layer 
 {
   if ( !layer )
     return false;
-  if ( layer->temporalProperties() &&
-       layer->temporalProperties()->temporalSource() ==
-       QgsMapLayerTemporalProperties::TemporalSource::Layer )
+  if ( layer->temporalProperties() )
     return true;
   return false;
 }
 
 QString QgsLayerTreeViewTemporalIndicatorProvider::iconName( QgsMapLayer *layer )
 {
-  Q_UNUSED( layer );
+  if ( layer->temporalProperties()->temporalSource() ==
+       QgsMapLayerTemporalProperties::TemporalSource::Project )
+    return QStringLiteral( "/mIndicatorTimeFromProject.svg" );
+
   return QStringLiteral( "/mIndicatorTemporal.svg" );
 }
 
 QString QgsLayerTreeViewTemporalIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
-  Q_UNUSED( layer );
+  if ( layer->temporalProperties()->temporalSource() ==
+       QgsMapLayerTemporalProperties::TemporalSource::Project )
+    return tr( "<b>Temporal layer using Project time </b>" );
+
   return tr( "<b>Temporal layer</b>" );
 }
 
