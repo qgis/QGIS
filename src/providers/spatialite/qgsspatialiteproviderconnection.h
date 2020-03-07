@@ -42,6 +42,7 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     void vacuum( const QString &schema, const QString &name ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
         const TableFlags &flags = nullptr ) const override;
+    QIcon icon() const override;
 
   private:
 

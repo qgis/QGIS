@@ -52,7 +52,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     QStringList schemas( ) const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
-
+    QIcon icon() const override;
 
   private:
 

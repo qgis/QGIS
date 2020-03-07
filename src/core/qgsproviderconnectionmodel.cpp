@@ -83,6 +83,16 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
       return connectionName;
     }
 
+    case Qt::DecorationRole:
+      if ( const QgsAbstractProviderConnection *connection =  mMetadata->findConnection( connectionName ) )
+      {
+        return connection->icon();
+      }
+      else
+      {
+        return QIcon();
+      }
+
     case Qt::ToolTipRole:
     case RoleUri:
     {
