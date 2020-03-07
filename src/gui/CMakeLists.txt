@@ -434,6 +434,7 @@ SET(QGIS_GUI_SRCS
   qgsproviderguiregistry.cpp
   qgsproviderguimetadata.cpp
   qgsprojectstorageguiregistry.cpp
+  qgsproviderconnectioncombobox.cpp
   qgsproxystyle.cpp
   qgsquerybuilder.cpp
   qgsrasterformatsaveoptionswidget.cpp
@@ -639,6 +640,7 @@ SET(QGIS_GUI_HDRS
   qgsprojectstorageguiregistry.h
   qgspropertyassistantwidget.h
   qgspropertyoverridebutton.h
+  qgsproviderconnectioncombobox.h
   qgsproviderguimetadata.h
   qgsproviderguiregistry.h
   qgsproxystyle.h
