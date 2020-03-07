@@ -18,7 +18,6 @@ from qgis.core import (
     QgsDatabaseTableModel,
     QgsProviderRegistry,
     QgsCoordinateReferenceSystem,
-    QgsAbstractDatabaseProviderConnection,
     QgsWkbTypes,
     QgsFields,
     QgsField
@@ -73,8 +72,7 @@ class TestPyQgsDatabaseTableModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
                                     QgsDatabaseTableModel.RoleCustomInfo), {})
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleTableFlags),
-                         QgsAbstractDatabaseProviderConnection.TableFlag.Vector)
+                                    QgsDatabaseTableModel.RoleTableFlags), 4)
         self.assertEqual(model.data(model.index(tables.index('qgis_test.someData'), 0, QModelIndex()),
                                     QgsDatabaseTableModel.RoleWkbType), QgsWkbTypes.Point)
         self.assertEqual(model.data(model.index(tables.index('qgis_test.some_poly_data'), 0, QModelIndex()),
@@ -157,8 +155,7 @@ class TestPyQgsDatabaseTableModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(tables.index('someData'), 0, QModelIndex()),
                                     QgsDatabaseTableModel.RoleCustomInfo), {})
         self.assertEqual(model.data(model.index(tables.index('someData'), 0, QModelIndex()),
-                                    QgsDatabaseTableModel.RoleTableFlags),
-                         QgsAbstractDatabaseProviderConnection.TableFlag.Vector)
+                                    QgsDatabaseTableModel.RoleTableFlags), 4)
         self.assertEqual(model.data(model.index(tables.index('someData'), 0, QModelIndex()),
                                     QgsDatabaseTableModel.RoleWkbType), QgsWkbTypes.Point)
         self.assertEqual(model.data(model.index(tables.index('some_poly_data'), 0, QModelIndex()),

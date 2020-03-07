@@ -162,6 +162,7 @@
 %Include auto_generated/qgsprojectstorageguiregistry.sip
 %Include auto_generated/qgspropertyassistantwidget.sip
 %Include auto_generated/qgspropertyoverridebutton.sip
+%Include auto_generated/qgsproviderconnectioncombobox.sip
 %Include auto_generated/qgsproviderguimetadata.sip
 %Include auto_generated/qgsproviderguiregistry.sip
 %Include auto_generated/qgsproxystyle.sip
