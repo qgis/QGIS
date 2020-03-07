@@ -101,6 +101,14 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         dlg.show()
         dlg.exec_()
 
+    def resetAdditionalGui(self):
+        if not self.in_place:
+            self.runAsBatchButton.setEnabled(True)
+
+    def blockAdditionalControlsWhileRunning(self):
+        if not self.in_place:
+            self.runAsBatchButton.setEnabled(False)
+
     def setParameters(self, parameters):
         self.mainWidget().setParameters(parameters)
 

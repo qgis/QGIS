@@ -87,6 +87,12 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         dlg.show()
         dlg.exec_()
 
+    def resetAdditionalGui(self):
+        self.btnRunSingle.setEnabled(True)
+
+    def blockAdditionalControlsWhileRunning(self):
+        self.btnRunSingle.setEnabled(False)
+
     def runAlgorithm(self):
         alg_parameters = []
 

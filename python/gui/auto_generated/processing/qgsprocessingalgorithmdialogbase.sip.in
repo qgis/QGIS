@@ -256,6 +256,12 @@ Displays an info ``message`` in the dialog's log.
 Resets the dialog's gui, ready for another algorithm execution.
 %End
 
+    virtual void resetAdditionalGui();
+%Docstring
+For subclasses to register their own GUI controls to be reset, ready
+for another algorithm execution.
+%End
+
     void updateRunButtonVisibility();
 %Docstring
 Sets visibility for mutually exclusive buttons Run and Change Parameters.
@@ -265,6 +271,12 @@ Sets visibility for mutually exclusive buttons Run and Change Parameters.
 %Docstring
 Blocks run and changeParameters buttons and parameters tab while the
 algorithm is running.
+%End
+
+    virtual void blockAdditionalControlsWhileRunning();
+%Docstring
+For subclasses to register their own GUI controls to be blocked while
+the algorithm is running.
 %End
 
     QgsMessageBar *messageBar();

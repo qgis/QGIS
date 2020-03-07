@@ -300,6 +300,12 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     void resetGui();
 
     /**
+     * For subclasses to register their own GUI controls to be reset, ready
+     * for another algorithm execution.
+     */
+    virtual void resetAdditionalGui();
+
+    /**
      * Sets visibility for mutually exclusive buttons Run and Change Parameters.
      */
     void updateRunButtonVisibility();
@@ -309,6 +315,12 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * algorithm is running.
      */
     void blockControlsWhileRunning();
+
+    /**
+     * For subclasses to register their own GUI controls to be blocked while
+     * the algorithm is running.
+     */
+    virtual void blockAdditionalControlsWhileRunning();
 
     /**
      * Returns the dialog's message bar.

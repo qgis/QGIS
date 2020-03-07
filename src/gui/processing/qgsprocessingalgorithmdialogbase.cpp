@@ -583,6 +583,7 @@ void QgsProcessingAlgorithmDialogBase::resetGui()
   mButtonClose->setEnabled( true );
   mTabWidget->setTabEnabled( 0, true ); // Enable Parameters tab
   updateRunButtonVisibility();
+  resetAdditionalGui();
 }
 
 void QgsProcessingAlgorithmDialogBase::updateRunButtonVisibility()
@@ -593,11 +594,22 @@ void QgsProcessingAlgorithmDialogBase::updateRunButtonVisibility()
   mButtonChangeParameters->setVisible( !runButtonVisible && mExecutedAnyResult );
 }
 
+void QgsProcessingAlgorithmDialogBase::resetAdditionalGui()
+{
+
+}
+
 void QgsProcessingAlgorithmDialogBase::blockControlsWhileRunning()
 {
   mButtonRun->setEnabled( false );
   mButtonChangeParameters->setEnabled( false );
   mTabWidget->setTabEnabled( 0, false ); // Disable Parameters tab
+  blockAdditionalControlsWhileRunning();
+}
+
+void QgsProcessingAlgorithmDialogBase::blockAdditionalControlsWhileRunning()
+{
+
 }
 
 QgsMessageBar *QgsProcessingAlgorithmDialogBase::messageBar()
