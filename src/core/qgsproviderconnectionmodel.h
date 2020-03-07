@@ -41,6 +41,14 @@ class CORE_EXPORT QgsProviderConnectionModel : public QAbstractItemModel
 
   public:
 
+    //! Model roles
+    enum Role
+    {
+      RoleConnectionName = Qt::UserRole, //!< Connection name
+      RoleUri, //!< Connection URI string
+      RoleConfiguration, //!< Connection configuration variant map
+    };
+
     /**
      * Constructor for QgsProviderConnectionModel, for the specified \a provider.
      *
