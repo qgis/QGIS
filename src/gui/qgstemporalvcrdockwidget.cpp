@@ -45,6 +45,7 @@ QgsTemporalVcrDockWidget::QgsTemporalVcrDockWidget( const QString &name, QWidget
   connect( mModeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsTemporalVcrDockWidget::modeComboBox_currentIndexChanged );
   connect( mTimeSlider, &QSlider::valueChanged, this, &QgsTemporalVcrDockWidget::timeSlider_valueChanged );
   connect( mSettings, &QPushButton::clicked, this, &QgsTemporalVcrDockWidget::settings_clicked );
+  connect( mSetToProjectTimeButton, &QPushButton::clicked, this, &QgsTemporalVcrDockWidget::setProjectTime );
 
   connect( mStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalVcrDockWidget::startDateTime_changed );
   connect( mEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalVcrDockWidget::endDateTime_changed );
@@ -76,6 +77,8 @@ void QgsTemporalVcrDockWidget::init()
     mStartDateTime->setDateTime( range.begin() );
     mEndDateTime->setDateTime( range.end() );
   }
+
+  mSetToProjectTimeButton->setToolTip( tr( "Set to project time" ) );
 
   QStringList listSteps = ( QStringList() << tr( "Minutes" ) << tr( "Hours" ) << tr( "Days" ) <<
                             tr( "Months" ) << ( "Years" ) );
@@ -199,7 +202,12 @@ void QgsTemporalVcrDockWidget::endDateTime_changed( const QDateTime &datetime )
   setSliderRange();
 }
 
-void QgsTemporalVcrDockWidget::updateDatesLabels( bool useProjectTime )
+void QgsTemporalVcrDockWidget::setProjectTime()
+{
+  updateDatesInputs( true );
+}
+
+void QgsTemporalVcrDockWidget::updateDatesInputs( bool useProjectTime )
 {
   if ( useProjectTime )
   {
