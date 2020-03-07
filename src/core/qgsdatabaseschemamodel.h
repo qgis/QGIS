@@ -53,6 +53,11 @@ class CORE_EXPORT QgsDatabaseSchemaModel : public QAbstractItemModel
      */
     explicit QgsDatabaseSchemaModel( const QString &provider, const QString &connection, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
+    /**
+     * Constructor for QgsDatabaseSchemaModel, for the specified \a connection.
+     *
+     * Ownership of \a connection is transferred to the model.
+     */
     explicit QgsDatabaseSchemaModel( QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     // QAbstractItemModel interface

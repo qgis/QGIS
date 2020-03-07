@@ -39,6 +39,11 @@ Constructor for QgsDatabaseSchemaModel, for the specified ``provider`` and ``con
 %End
 
     explicit QgsDatabaseSchemaModel( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDatabaseSchemaModel, for the specified ``connection``.
+
+Ownership of ``connection`` is transferred to the model.
+%End
 
     virtual QModelIndex parent( const QModelIndex &child ) const;
 
