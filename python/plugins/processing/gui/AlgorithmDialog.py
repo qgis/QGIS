@@ -90,6 +90,8 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.buttonBox().button(QDialogButtonBox.Close).setText(QCoreApplication.translate("AlgorithmDialog", "Cancel"))
             self.setWindowTitle(self.windowTitle() + ' | ' + self.active_layer.name())
 
+        self.updateRunButtonVisibility()
+
     def getParametersPanel(self, alg, parent):
         return ParametersPanel(parent, alg, self.in_place)
 
@@ -189,7 +191,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 QMessageBox.warning(
                     self, self.tr('Unable to execute algorithm'), msg)
                 return
-            self.runButton().setEnabled(False)
+
+            self.blockControlsWhileRunning()
+            self.setExecutedAnyResult(True)
             self.cancelButton().setEnabled(False)
             buttons = self.mainWidget().iterateButtons
             self.iterateParam = None

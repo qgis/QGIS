@@ -75,6 +75,11 @@ Returns the main widget for the dialog, usually a panel for configuring algorith
 Switches the dialog to the log page.
 %End
 
+    void showParameters();
+%Docstring
+Switches the dialog to the parameters page.
+%End
+
     bool wasExecuted() const;
 %Docstring
 Returns ``True`` if an algorithm was executed in the dialog.
@@ -197,6 +202,11 @@ Returns the dialog's run button.
 Returns the dialog's cancel button.
 %End
 
+    QPushButton *changeParametersButton();
+%Docstring
+Returns the dialog's change parameters button.
+%End
+
     QDialogButtonBox *buttonBox();
 %Docstring
 Returns the dialog's button box.
@@ -221,6 +231,12 @@ Sets whether the algorithm was executed through the dialog.
 .. seealso:: :py:func:`setResults`
 %End
 
+    void setExecutedAnyResult( bool executedAnyResult );
+%Docstring
+Sets whether the algorithm was executed through the dialog (no matter the result).
+%End
+
+
     void setResults( const QVariantMap &results );
 %Docstring
 Sets the algorithm results.
@@ -238,6 +254,17 @@ Displays an info ``message`` in the dialog's log.
     void resetGui();
 %Docstring
 Resets the dialog's gui, ready for another algorithm execution.
+%End
+
+    void updateRunButtonVisibility();
+%Docstring
+Sets visibility for mutually exclusive buttons Run and Change Parameters.
+%End
+
+    void blockControlsWhileRunning();
+%Docstring
+Blocks run and changeParameters buttons and parameters tab while the
+algorithm is running.
 %End
 
     QgsMessageBar *messageBar();

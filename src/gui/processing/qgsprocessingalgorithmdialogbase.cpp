@@ -105,6 +105,10 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   buttonCancel->setEnabled( false );
   mButtonClose = mButtonBox->button( QDialogButtonBox::Close );
 
+  mButtonChangeParameters = new QPushButton( tr( "Change Parameters" ) );
+  mButtonBox->addButton( mButtonChangeParameters, QDialogButtonBox::ActionRole );
+
+  connect( mButtonChangeParameters, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::showParameters );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProcessingAlgorithmDialogBase::openHelp );
   connect( mButtonCollapse, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::toggleCollapsed );
   connect( splitter, &QSplitter::splitterMoved, this, &QgsProcessingAlgorithmDialogBase::splitterChanged );
@@ -112,6 +116,8 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   connect( mButtonSaveLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::saveLog );
   connect( mButtonCopyLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::copyLogToClipboard );
   connect( mButtonClearLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::clearLog );
+
+  connect( mTabWidget, &QTabWidget::currentChanged, this, &QgsProcessingAlgorithmDialogBase::mTabWidget_currentChanged );
 
   mMessageBar = new QgsMessageBar();
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
@@ -239,6 +245,11 @@ void QgsProcessingAlgorithmDialogBase::showLog()
   mTabWidget->setCurrentIndex( 1 );
 }
 
+void QgsProcessingAlgorithmDialogBase::showParameters()
+{
+  mTabWidget->setCurrentIndex( 0 );
+}
+
 QPushButton *QgsProcessingAlgorithmDialogBase::runButton()
 {
   return mButtonRun;
@@ -249,6 +260,11 @@ QPushButton *QgsProcessingAlgorithmDialogBase::cancelButton()
   return buttonCancel;
 }
 
+QPushButton *QgsProcessingAlgorithmDialogBase::changeParametersButton()
+{
+  return mButtonChangeParameters;
+}
+
 void QgsProcessingAlgorithmDialogBase::clearProgress()
 {
   progressBar->setMaximum( 0 );
@@ -257,6 +273,11 @@ void QgsProcessingAlgorithmDialogBase::clearProgress()
 void QgsProcessingAlgorithmDialogBase::setExecuted( bool executed )
 {
   mExecuted = executed;
+}
+
+void QgsProcessingAlgorithmDialogBase::setExecutedAnyResult( bool executedAnyResult )
+{
+  mExecutedAnyResult = executedAnyResult;
 }
 
 void QgsProcessingAlgorithmDialogBase::setResults( const QVariantMap &results )
@@ -309,6 +330,11 @@ void QgsProcessingAlgorithmDialogBase::splitterChanged( int, int )
     mHelpCollapsed = false;
     mButtonCollapse->setArrowType( Qt::RightArrow );
   }
+}
+
+void QgsProcessingAlgorithmDialogBase::mTabWidget_currentChanged( int )
+{
+  updateRunButtonVisibility();
 }
 
 void QgsProcessingAlgorithmDialogBase::linkClicked( const QUrl &url )
@@ -553,7 +579,25 @@ void QgsProcessingAlgorithmDialogBase::resetGui()
   progressBar->setMaximum( 100 );
   progressBar->setValue( 0 );
   mButtonRun->setEnabled( true );
+  mButtonChangeParameters->setEnabled( true );
   mButtonClose->setEnabled( true );
+  mTabWidget->setTabEnabled( 0, true ); // Enable Parameters tab
+  updateRunButtonVisibility();
+}
+
+void QgsProcessingAlgorithmDialogBase::updateRunButtonVisibility()
+{
+  // Activate run button if current tab is Parameters
+  bool runButtonVisible = mTabWidget->currentIndex() == 0;
+  mButtonRun->setVisible( runButtonVisible );
+  mButtonChangeParameters->setVisible( !runButtonVisible && mExecutedAnyResult );
+}
+
+void QgsProcessingAlgorithmDialogBase::blockControlsWhileRunning()
+{
+  mButtonRun->setEnabled( false );
+  mButtonChangeParameters->setEnabled( false );
+  mTabWidget->setTabEnabled( 0, false ); // Disable Parameters tab
 }
 
 QgsMessageBar *QgsProcessingAlgorithmDialogBase::messageBar()

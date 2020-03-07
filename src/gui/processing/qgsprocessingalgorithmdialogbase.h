@@ -134,6 +134,11 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     void showLog();
 
     /**
+     * Switches the dialog to the parameters page.
+     */
+    void showParameters();
+
+    /**
      * Returns TRUE if an algorithm was executed in the dialog.
      * \see results()
      * \see setExecuted()
@@ -245,6 +250,11 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     QPushButton *cancelButton();
 
     /**
+     * Returns the dialog's change parameters button.
+     */
+    QPushButton *changeParametersButton();
+
+    /**
      * Returns the dialog's button box.
      */
     QDialogButtonBox *buttonBox();
@@ -267,6 +277,12 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     void setExecuted( bool executed );
 
     /**
+     * Sets whether the algorithm was executed through the dialog (no matter the result).
+     */
+    void setExecutedAnyResult( bool executedAnyResult );
+
+
+    /**
      * Sets the algorithm results.
      * \see results()
      * \see setExecuted()
@@ -282,6 +298,17 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * Resets the dialog's gui, ready for another algorithm execution.
      */
     void resetGui();
+
+    /**
+     * Sets visibility for mutually exclusive buttons Run and Change Parameters.
+     */
+    void updateRunButtonVisibility();
+
+    /**
+     * Blocks run and changeParameters buttons and parameters tab while the
+     * algorithm is running.
+     */
+    void blockControlsWhileRunning();
 
     /**
      * Returns the dialog's message bar.
@@ -324,6 +351,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     void toggleCollapsed();
 
     void splitterChanged( int pos, int index );
+    void mTabWidget_currentChanged( int index );
     void linkClicked( const QUrl &url );
     void algExecuted( bool successful, const QVariantMap &results );
     void taskTriggered( QgsTask *task );
@@ -333,11 +361,13 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
 
     QPushButton *mButtonRun = nullptr;
     QPushButton *mButtonClose = nullptr;
+    QPushButton *mButtonChangeParameters = nullptr;
     QByteArray mSplitterState;
     QToolButton *mButtonCollapse = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
 
     bool mExecuted = false;
+    bool mExecutedAnyResult = false;
     QVariantMap mResults;
     QWidget *mMainWidget = nullptr;
     std::unique_ptr< QgsProcessingAlgorithm > mAlgorithm;
