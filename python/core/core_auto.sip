@@ -37,6 +37,7 @@
 %Include auto_generated/qgscredentials.sip
 %Include auto_generated/qgsdartmeasurement.sip
 %Include auto_generated/qgsdatabaseschemamodel.sip
+%Include auto_generated/qgsdatabasetablemodel.sip
 %Include auto_generated/qgsdatadefinedsizelegend.sip
 %Include auto_generated/qgsdataitem.sip
 %Include auto_generated/qgsdataitemprovider.sip

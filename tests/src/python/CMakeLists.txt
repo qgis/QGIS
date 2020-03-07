@@ -304,6 +304,7 @@ IF (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsAuthManagerOgrPostgresTest test_authmanager_ogr_postgres.py)
   ADD_PYTHON_TEST(PyQgsDbManagerPostgis test_db_manager_postgis.py)
   ADD_PYTHON_TEST(PyQgsDatabaseSchemaModel test_qgsdatabaseschemamodel.py)
+  ADD_PYTHON_TEST(PyQgsDatabaseTableModel test_qgsdatabasetablemodel.py)
   ADD_PYTHON_TEST(PyQgsProviderConnectionPostgres test_qgsproviderconnection_postgres.py)
 ENDIF (ENABLE_PGTEST)
 

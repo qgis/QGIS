@@ -209,6 +209,7 @@ This information is calculated from the geometry columns types.
 .. seealso:: :py:func:`geometryColumnTypes`
 %End
 
+        bool operator==( const QgsAbstractDatabaseProviderConnection::TableProperty &other ) const;
 
     };
 

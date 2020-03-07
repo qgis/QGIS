@@ -247,6 +247,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          */
         int maxCoordinateDimensions() const;
 
+        bool operator==( const QgsAbstractDatabaseProviderConnection::TableProperty &other ) const;
 
       private:
 
