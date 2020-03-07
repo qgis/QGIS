@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1133</width>
+    <width>1167</width>
     <height>134</height>
    </rect>
   </property>
@@ -145,7 +145,11 @@
        </widget>
       </item>
       <item>
-       <widget class="QDateTimeEdit" name="mStartDateTime"/>
+       <widget class="QDateTimeEdit" name="mStartDateTime">
+        <property name="displayFormat">
+         <string>M/d/yyyy h:mm AP</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_5">
@@ -155,7 +159,22 @@
        </widget>
       </item>
       <item>
-       <widget class="QDateTimeEdit" name="mEndDateTime"/>
+       <widget class="QDateTimeEdit" name="mEndDateTime">
+        <property name="displayFormat">
+         <string>M/d/yyyy h:mm AP</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="mSetToProjectTimeButton">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/propertyicons/temporal.svg</normaloff>:/images/themes/default/propertyicons/temporal.svg</iconset>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
