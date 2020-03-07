@@ -26,6 +26,8 @@
 
 class QgsMapLayer;
 class QgsTemporalNavigationObject;
+class QgsTemporalMapSettingsWidget;
+class QgsTemporalMapSettingsDialog;
 
 /**
  * \ingroup gui
@@ -74,10 +76,19 @@ class GUI_EXPORT QgsTemporalVcrDockWidget : public QgsDockWidget, private Ui::Qg
      **/
     void setDateInputsEnable( bool enabled );
 
+    /**
+     * Sets the VCR settings dialog
+     **/
+    void settingsDialog();
+
     //! Timer to set navigation time interval
     QTimer *mTimer = nullptr;
 
+    //! Handles all non ui navigation logic
     QgsTemporalNavigationObject *mNavigationObject = nullptr;
+
+    //! Dialog for temporal map settings
+    QgsTemporalMapSettingsDialog *mSettingsDialog = nullptr;
 
   private slots:
 
@@ -146,9 +157,14 @@ class GUI_EXPORT QgsTemporalVcrDockWidget : public QgsDockWidget, private Ui::Qg
     void startDateTime_changed( const QDateTime &datetime );
 
     /**
-     *Handles the input change on the end date time input.
+     * Handles the input change on the end date time input.
      **/
     void endDateTime_changed( const QDateTime &datetime );
+
+    /**
+     * Loads a temporal map settings dialog
+     **/
+    void settings_clicked();
 
 };
 

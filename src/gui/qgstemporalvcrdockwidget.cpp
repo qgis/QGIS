@@ -22,6 +22,9 @@
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 #include "qgstemporalnavigationobject.h"
+#include "qgstemporalmapsettingswidget.h"
+
+#include "qgstemporalmapsettingsdialog.h"
 
 QgsTemporalVcrDockWidget::QgsTemporalVcrDockWidget( const QString &name, QWidget *parent )
   : QgsDockWidget( parent )
@@ -30,6 +33,7 @@ QgsTemporalVcrDockWidget::QgsTemporalVcrDockWidget( const QString &name, QWidget
   setWindowTitle( name );
 
   mNavigationObject = new QgsTemporalNavigationObject();
+  settingsDialog();
 
   connect( mForwardButton, &QPushButton::clicked, this, &QgsTemporalVcrDockWidget::forwardButton_clicked );
   connect( mBackButton, &QPushButton::clicked, this, &QgsTemporalVcrDockWidget::backButton_clicked );
@@ -40,6 +44,7 @@ QgsTemporalVcrDockWidget::QgsTemporalVcrDockWidget( const QString &name, QWidget
   connect( mTimeStepsComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsTemporalVcrDockWidget::timeStepsComboBox_currentIndexChanged );
   connect( mModeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsTemporalVcrDockWidget::modeComboBox_currentIndexChanged );
   connect( mTimeSlider, &QSlider::valueChanged, this, &QgsTemporalVcrDockWidget::timeSlider_valueChanged );
+  connect( mSettings, &QPushButton::clicked, this, &QgsTemporalVcrDockWidget::settings_clicked );
 
   connect( mStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalVcrDockWidget::startDateTime_changed );
   connect( mEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalVcrDockWidget::endDateTime_changed );
@@ -56,6 +61,7 @@ QgsTemporalVcrDockWidget::~QgsTemporalVcrDockWidget()
 {
   mTimer->stop();
   delete mNavigationObject;
+  delete mSettingsDialog;
 }
 
 void QgsTemporalVcrDockWidget::init()
@@ -90,6 +96,17 @@ void QgsTemporalVcrDockWidget::init()
   mSpinBox->setEnabled( true );
 
   setSliderRange();
+}
+
+void QgsTemporalVcrDockWidget::settingsDialog()
+{
+  mSettingsDialog = new QgsTemporalMapSettingsDialog( this );
+
+}
+
+void QgsTemporalVcrDockWidget::settings_clicked()
+{
+  mSettingsDialog->setVisible( !mSettingsDialog->isVisible() );
 }
 
 void QgsTemporalVcrDockWidget::timerTimeout()
@@ -227,7 +244,7 @@ void QgsTemporalVcrDockWidget::forwardButton_clicked()
       if ( ( mTimeSlider->value() + 1 ) < mNavigationObject->dateTimes().size() )
       {
         mTimeSlider->setValue( mTimeSlider->value() + 1 );
-        mTimer->start( 1000 );
+        mTimer->start( mSettingsDialog->frameRateValue() );
       }
       updateButtonsEnable( true );
       setDateInputsEnable( true );

@@ -196,6 +196,8 @@
 %Include auto_generated/qgstablewidgetitem.sip
 %Include auto_generated/qgstabwidget.sip
 %Include auto_generated/qgstaskmanagerwidget.sip
+%Include auto_generated/qgstemporalmapsettingsdialog.sip
+%Include auto_generated/qgstemporalmapsettingswidget.sip
 %Include auto_generated/qgstemporalvcrdockwidget.sip
 %Include auto_generated/qgstextformatwidget.sip
 %Include auto_generated/qgstextpreview.sip
