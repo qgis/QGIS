@@ -20,7 +20,7 @@
 #include "qgssettings.h"
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
-
+#include "qgsapplication.h"
 
 QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
@@ -315,6 +315,11 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
     } ), tableInfo.end() );
   }
   return tableInfo ;
+}
+
+QIcon QgsSpatiaLiteProviderConnection::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconSpatialite.svg" ) );
 }
 
 void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()

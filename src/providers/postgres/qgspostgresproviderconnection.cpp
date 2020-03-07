@@ -19,7 +19,7 @@
 #include "qgssettings.h"
 #include "qgspostgresprovider.h"
 #include "qgsexception.h"
-
+#include "qgsapplication.h"
 
 extern "C"
 {
@@ -494,5 +494,10 @@ void QgsPostgresProviderConnection::store( const QString &name ) const
 void QgsPostgresProviderConnection::remove( const QString &name ) const
 {
   QgsPostgresConn::deleteConnection( name );
+}
+
+QIcon QgsPostgresProviderConnection::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconPostgis.svg" ) );
 }
 
