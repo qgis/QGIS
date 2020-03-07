@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1076</width>
-    <height>128</height>
+    <width>1133</width>
+    <height>134</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,6 +17,17 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="mSettings">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/temporal_navigation/vcr_settings.svg</normaloff>:/images/themes/default/temporal_navigation/vcr_settings.svg</iconset>
+        </property>
+       </widget>
+      </item>
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">

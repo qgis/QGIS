@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgstemporalcontroller.h                                     *
+ * src/gui/qgstemporalmapsettingswidget.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,33 +10,35 @@
 
 
 
-class QgsTemporalController : QObject
+
+class QgsTemporalMapSettingsWidget : QWidget
 {
 %Docstring
-A controller base class for temporal objects, contains a signal for notifying
-updates of the objects temporal range.
+The QgsTemporalMapSettingsWidget class
 
 .. versionadded:: 3.14
 %End
 
 %TypeHeaderCode
-#include "qgstemporalcontroller.h"
+#include "qgstemporalmapsettingswidget.h"
 %End
   public:
 
-    QgsTemporalController();
+    QgsTemporalMapSettingsWidget( QWidget *parent = 0 );
 %Docstring
-Constructor for QgsTemporalController.
+Constructor for QgsTemporalMapSettingsWidget
 %End
 
-    virtual ~QgsTemporalController();
+    ~QgsTemporalMapSettingsWidget();
 
-  signals:
-
-    void updateTemporalRange( const QgsDateTimeRange &range );
+    double frameRateValue();
 %Docstring
-Signals that a temporal ``range`` has changed and need to be updated to
-the related objects.
+Returns the value of frame rate from widget input
+%End
+
+    void setFrameRateValue( double value );
+%Docstring
+Sets the value of frame rate from the vcr widget.
 %End
 
 };
@@ -44,7 +46,7 @@ the related objects.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/qgstemporalcontroller.h                                     *
+ * src/gui/qgstemporalmapsettingswidget.h                               *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
