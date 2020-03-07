@@ -241,7 +241,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     mEndDateTimeEdit->setDateTime( range.end() );
   }
 
-  mCurrentRangeLabel->setText( tr( "Current range: %1 to %2" ).arg(
+  mCurrentRangeLabel->setText( tr( "Current selection range: %1 to %2" ).arg(
                                  mStartDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ),
                                  mEndDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ) ) );
 

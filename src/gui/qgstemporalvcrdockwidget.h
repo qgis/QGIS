@@ -59,7 +59,7 @@ class GUI_EXPORT QgsTemporalVcrDockWidget : public QgsDockWidget, private Ui::Qg
      * Updates the VCR dates time inputs.
      * Checks if it should update the inputs using project time settings.
      */
-    void updateDatesLabels( bool useProjectTime );
+    void updateDatesInputs( bool useProjectTime );
 
     /**
      * Sets the VCR widget time slider.
@@ -162,9 +162,14 @@ class GUI_EXPORT QgsTemporalVcrDockWidget : public QgsDockWidget, private Ui::Qg
     void endDateTime_changed( const QDateTime &datetime );
 
     /**
-     * Loads a temporal map settings dialog
+     * Loads a temporal map settings dialog.
      **/
     void settings_clicked();
+
+    /**
+     * Updates on the widget temporal range from project time.
+     **/
+    void setProjectTime();
 
 };
 

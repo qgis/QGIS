@@ -13,17 +13,11 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="leftMargin">
     <number>0</number>
    </property>
    <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -39,17 +33,11 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>752</width>
-        <height>787</height>
+        <width>743</width>
+        <height>778</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
-       <property name="topMargin">
-        <number>9</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QgsCollapsibleGroupBox" name="mTemporalGroupBox">
          <property name="enabled">
@@ -71,7 +59,7 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
          <property name="saveCollapsedState" stdset="0">
           <bool>true</bool>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
            <widget class="QLabel" name="mRangeLabel">
             <property name="text">
@@ -84,132 +72,109 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
             <property name="text">
              <string>Specify time range</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Start date</string>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
-             <widget class="QDateTimeEdit" name="mStartTemporalDateTimeEdit">
-              <property name="dateTime">
-               <datetime>
-                <hour>0</hour>
-                <minute>0</minute>
-                <second>0</second>
-                <year>2020</year>
-                <month>1</month>
-                <day>1</day>
-               </datetime>
-              </property>
-              <property name="date">
-               <date>
-                <year>2020</year>
-                <month>1</month>
-                <day>1</day>
-               </date>
-              </property>
-              <property name="displayFormat">
-               <string>M.d.yy h:mm AP</string>
-              </property>
-              <property name="calendarPopup">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QWidget" name="widget" native="true"/>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>End date</string>
+           <widget class="QFrame" name="frame_2">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
             </property>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QDateTimeEdit" name="mEndTemporalDateTimeEdit">
-              <property name="dateTime">
-               <datetime>
-                <hour>0</hour>
-                <minute>0</minute>
-                <second>0</second>
-                <year>2020</year>
-                <month>12</month>
-                <day>31</day>
-               </datetime>
-              </property>
-              <property name="date">
-               <date>
-                <year>2020</year>
-                <month>12</month>
-                <day>31</day>
-               </date>
-              </property>
-              <property name="time">
-               <time>
-                <hour>0</hour>
-                <minute>0</minute>
-                <second>0</second>
-               </time>
-              </property>
-              <property name="displayFormat">
-               <string>M.d.yy h:mm AP</string>
-              </property>
-              <property name="calendarPopup">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="mSetEndAsStartNormalButton">
-              <property name="text">
-               <string>Set end same as start</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QCheckBox" name="mDisableTime">
-            <property name="text">
-             <string>Use date only</string>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QTextBrowser" name="textBrowser">
-            <property name="maximumSize">
-             <size>
-              <width>674</width>
-              <height>70</height>
-             </size>
+            <property name="lineWidth">
+             <number>0</number>
             </property>
-            <property name="styleSheet">
-             <string notr="true">background: transparent;</string>
-            </property>
-            <property name="html">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+            <layout class="QVBoxLayout" name="verticalLayout_5">
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Start date</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QgsDateTimeEdit" name="mStartTemporalDateTimeEdit">
+                 <property name="displayFormat">
+                  <string>M/d/yyyy h:mm AP</string>
+                 </property>
+                 <property name="timeSpec">
+                  <enum>Qt::LocalTime</enum>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QWidget" name="widget" native="true"/>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>End date</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QgsDateTimeEdit" name="mEndTemporalDateTimeEdit">
+                 <property name="displayFormat">
+                  <string>M/d/yyyy h:mm AP</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="mSetEndAsStartNormalButton">
+                 <property name="text">
+                  <string>Set end same as start</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="mDisableTime">
+               <property name="text">
+                <string>Use date only</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QTextBrowser" name="textBrowser">
+               <property name="maximumSize">
+                <size>
+                 <width>674</width>
+                 <height>70</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background: transparent;</string>
+               </property>
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Note:  If the capabilities of this layer move out of this time range, the range will be reset to layer's advertised  default layer time range.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
           <item>
            <widget class="QRadioButton" name="mProjectRadioButton">
             <property name="text">
              <string>Use Project time</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -231,7 +196,7 @@ p, li { white-space: pre-wrap; }
             <property name="collapsed" stdset="0">
              <bool>false</bool>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_2">
+            <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
               <widget class="QCheckBox" name="mReferenceCheckBox">
                <property name="text">
@@ -259,29 +224,12 @@ p, li { white-space: pre-wrap; }
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_4">
                <item>
-                <widget class="QDateTimeEdit" name="mStartReferenceDateTimeEdit">
-                 <property name="dateTime">
-                  <datetime>
-                   <hour>0</hour>
-                   <minute>0</minute>
-                   <second>0</second>
-                   <year>2020</year>
-                   <month>1</month>
-                   <day>1</day>
-                  </datetime>
-                 </property>
-                 <property name="date">
-                  <date>
-                   <year>2020</year>
-                   <month>1</month>
-                   <day>1</day>
-                  </date>
-                 </property>
+                <widget class="QgsDateTimeEdit" name="mStartReferenceDateTimeEdit">
                  <property name="displayFormat">
-                  <string>M.d.yy h:mm AP</string>
+                  <string>M/d/yyyy h:mm AP</string>
                  </property>
                  <property name="calendarPopup">
-                  <bool>true</bool>
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>
@@ -300,36 +248,9 @@ p, li { white-space: pre-wrap; }
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_2">
                <item>
-                <widget class="QDateTimeEdit" name="mEndReferenceDateTimeEdit">
-                 <property name="dateTime">
-                  <datetime>
-                   <hour>0</hour>
-                   <minute>0</minute>
-                   <second>0</second>
-                   <year>2020</year>
-                   <month>12</month>
-                   <day>31</day>
-                  </datetime>
-                 </property>
-                 <property name="date">
-                  <date>
-                   <year>2020</year>
-                   <month>12</month>
-                   <day>31</day>
-                  </date>
-                 </property>
-                 <property name="time">
-                  <time>
-                   <hour>0</hour>
-                   <minute>0</minute>
-                   <second>0</second>
-                  </time>
-                 </property>
+                <widget class="QgsDateTimeEdit" name="mEndReferenceDateTimeEdit">
                  <property name="displayFormat">
-                  <string>M.d.yy h:mm AP</string>
-                 </property>
-                 <property name="calendarPopup">
-                  <bool>true</bool>
+                  <string>M/d/yyyy h:mm AP</string>
                  </property>
                 </widget>
                </item>
@@ -345,21 +266,21 @@ p, li { white-space: pre-wrap; }
             </layout>
            </widget>
           </item>
-          <item>
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
          </layout>
         </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -379,6 +300,11 @@ p, li { white-space: pre-wrap; }
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

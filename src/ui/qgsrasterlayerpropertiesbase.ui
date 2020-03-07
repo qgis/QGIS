@@ -275,8 +275,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>681</height>
+                <width>634</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -329,7 +329,7 @@ border-radius: 2px;</string>
                 </layout>
                </item>
                <item>
-                <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
+                <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
                  <property name="focusPolicy">
                   <enum>Qt::StrongFocus</enum>
                  </property>
@@ -403,8 +403,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>533</width>
-                <height>524</height>
+                <width>568</width>
+                <height>532</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -419,7 +419,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Band Rendering</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rasterstyle</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_14">
@@ -464,13 +464,13 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Color Rendering</string>
                  </property>
-                 <property name="collapsed">
+                 <property name="collapsed" stdset="0">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rasterstyle</string>
                  </property>
-                 <property name="saveCollapsedState">
+                 <property name="saveCollapsedState" stdset="0">
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_2">
@@ -766,13 +766,13 @@ border-radius: 2px;</string>
                  <property name="checkable">
                   <bool>false</bool>
                  </property>
-                 <property name="collapsed">
+                 <property name="collapsed" stdset="0">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rasterstyle</string>
                  </property>
-                 <property name="saveCollapsedState">
+                 <property name="saveCollapsedState" stdset="0">
                   <bool>true</bool>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout">
@@ -991,8 +991,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>361</width>
-                <height>476</height>
+                <width>377</width>
+                <height>467</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1007,12 +1007,12 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Global Opacity</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastertransp</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
                   <item row="0" column="0">
-                   <widget class="QgsOpacityWidget" name="mOpacityWidget">
+                   <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -1026,7 +1026,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>No Data Value</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastertransp</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
@@ -1098,7 +1098,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Custom Transparency Options</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastertransp</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_3">
@@ -1338,8 +1338,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>98</width>
-                <height>44</height>
+                <width>86</width>
+                <height>45</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1383,7 +1383,7 @@ border-radius: 2px;</string>
              <property name="checked">
               <bool>false</bool>
              </property>
-             <property name="syncGroup">
+             <property name="syncGroup" stdset="0">
               <string notr="true">rastergeneral</string>
              </property>
              <layout class="QGridLayout" name="_5">
@@ -1403,7 +1403,7 @@ border-radius: 2px;</string>
                <number>6</number>
               </property>
               <item row="0" column="0" colspan="2">
-               <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
+               <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
                 <property name="toolTip">
                  <string/>
                 </property>
@@ -1503,8 +1503,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>597</width>
-                <height>201</height>
+                <width>649</width>
+                <height>205</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1703,8 +1703,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>388</width>
-                <height>668</height>
+                <width>382</width>
+                <height>685</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -1713,7 +1713,7 @@ p, li { white-space: pre-wrap; }
                  <property name="title">
                   <string>Description</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastermeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_5">
@@ -1849,7 +1849,7 @@ p, li { white-space: pre-wrap; }
                  <property name="title">
                   <string>Attribution</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
@@ -1895,7 +1895,7 @@ p, li { white-space: pre-wrap; }
                  <property name="title">
                   <string>MetadataUrl</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_9">
@@ -2149,6 +2149,12 @@ p, li { white-space: pre-wrap; }
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
@@ -2180,12 +2186,6 @@ p, li { white-space: pre-wrap; }
    <class>QgsScaleRangeWidget</class>
    <extends>QWidget</extends>
    <header>qgsscalerangewidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsLayerTreeEmbeddedConfigWidget</class>
