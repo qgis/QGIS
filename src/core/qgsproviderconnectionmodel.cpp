@@ -78,11 +78,13 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
   switch ( role )
   {
     case Qt::DisplayRole:
+    case RoleConnectionName:
     {
       return connectionName;
     }
 
     case Qt::ToolTipRole:
+    case RoleUri:
     {
       if ( const QgsAbstractProviderConnection *connection =  mMetadata->findConnection( connectionName ) )
       {
@@ -93,6 +95,19 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
         return QString();
       }
     }
+
+    case RoleConfiguration:
+    {
+      if ( const QgsAbstractProviderConnection *connection =  mMetadata->findConnection( connectionName ) )
+      {
+        return connection->configuration();
+      }
+      else
+      {
+        return QVariant();
+      }
+    }
+
   }
 
   return QVariant();

@@ -73,6 +73,9 @@ class TestPyQgsProviderConnectionModel(unittest.TestCase):
         self.assertEqual(model.columnCount(), 1)
         self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'qgis_test1')
         self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.ToolTipRole), self.gpkg_path)
+        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsProviderConnectionModel.RoleConnectionName), 'qgis_test1')
+        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsProviderConnectionModel.RoleUri), self.gpkg_path)
+        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsProviderConnectionModel.RoleConfiguration), {})
 
         md.saveConnection(conn, 'qgis_test1')
         self.assertEqual(model.rowCount(), 1)
@@ -83,8 +86,12 @@ class TestPyQgsProviderConnectionModel(unittest.TestCase):
         self.assertEqual(model.rowCount(), 2)
         self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.DisplayRole), 'qgis_test1')
         self.assertEqual(model.data(model.index(0, 0, QModelIndex()), Qt.ToolTipRole), self.gpkg_path)
+        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsProviderConnectionModel.RoleConnectionName), 'qgis_test1')
+        self.assertEqual(model.data(model.index(0, 0, QModelIndex()), QgsProviderConnectionModel.RoleUri), self.gpkg_path)
         self.assertEqual(model.data(model.index(1, 0, QModelIndex()), Qt.DisplayRole), 'qgis_test2')
         self.assertEqual(model.data(model.index(1, 0, QModelIndex()), Qt.ToolTipRole), self.gpkg_path2)
+        self.assertEqual(model.data(model.index(1, 0, QModelIndex()), QgsProviderConnectionModel.RoleConnectionName), 'qgis_test2')
+        self.assertEqual(model.data(model.index(1, 0, QModelIndex()), QgsProviderConnectionModel.RoleUri), self.gpkg_path2)
 
         md.deleteConnection('qgis_test1')
         self.assertEqual(model.rowCount(), 1)
