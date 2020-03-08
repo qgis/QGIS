@@ -33,27 +33,29 @@ void QgsLayerTreeViewTemporalIndicatorProvider::connectSignals( QgsMapLayer *lay
   if ( !( qobject_cast<QgsVectorLayer *>( layer ) || qobject_cast<QgsRasterLayer *>( layer ) ) )
     return;
   QgsMapLayer *mapLayer = layer;
-  connect( mapLayer, &QgsMapLayer::dataSourceChanged, this, &QgsLayerTreeViewTemporalIndicatorProvider::onLayerChanged );
+  connect( mapLayer->temporalProperties(), &QgsMapLayerTemporalProperties::changed, this, [ this, mapLayer ]( ) { this->onLayerChanged( mapLayer ); } );
 
-  if ( mapLayer && mapLayer->dataProvider() )
-  {
-    mLayer = mapLayer;
-    QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider *>( mapLayer->dataProvider() );
-    connect( provider, &QgsRasterDataProvider::statusChanged,
-             this, &QgsLayerTreeViewTemporalIndicatorProvider::onLayerChanged );
-  }
 }
 
 void QgsLayerTreeViewTemporalIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
 {
-  Q_UNUSED( index )
+  QgsLayerTreeNode *node = mLayerTreeView->layerTreeModel()->index2node( index );
+  if ( !QgsLayerTree::isLayer( node ) )
+    return;
+
+  QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( QgsLayerTree::toLayer( node )->layer() );
+  if ( !rasterLayer || !rasterLayer->isValid() )
+    return;
+
+  QgisApp::instance()->showLayerProperties( rasterLayer );
 }
 
 bool QgsLayerTreeViewTemporalIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 {
   if ( !layer )
     return false;
-  if ( layer->temporalProperties() )
+  if ( layer->temporalProperties() &&
+       layer->temporalProperties()->isActive() )
     return true;
   return false;
 }
@@ -71,23 +73,14 @@ QString QgsLayerTreeViewTemporalIndicatorProvider::tooltipText( QgsMapLayer *lay
 {
   if ( layer->temporalProperties()->temporalSource() ==
        QgsMapLayerTemporalProperties::TemporalSource::Project )
-    return tr( "<b>Temporal layer using Project time </b>" );
+    return tr( "<b>Temporal layer using project's time range</b>" );
 
   return tr( "<b>Temporal layer</b>" );
 }
 
-void QgsLayerTreeViewTemporalIndicatorProvider::onLayerChanged()
+void QgsLayerTreeViewTemporalIndicatorProvider::onLayerChanged( QgsMapLayer *layer )
 {
-  QgsMapLayer *mapLayer = qobject_cast<QgsMapLayer *>( sender() );
-  QgsMapLayer *mapLayerFromIndicator = qobject_cast<QgsMapLayer *>( mLayer );
-
-  if ( !mapLayer )
-  {
-    if ( !mapLayerFromIndicator )
-      return;
-    else
-      updateLayerIndicator( mapLayerFromIndicator );
-  }
-  else
-    updateLayerIndicator( mapLayer );
+  if ( !layer )
+    return;
+  updateLayerIndicator( layer );
 }

@@ -38,6 +38,7 @@
  */
 class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
 {
+
   public:
 
     /**
@@ -47,7 +48,7 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
      */
     QgsMapLayerTemporalProperties( bool enabled = false );
 
-    virtual ~QgsMapLayerTemporalProperties() = default;
+    ~QgsMapLayerTemporalProperties() override;
 
     /**
      * Writes the properties to a DOM \a element, to be used later with readXml().
@@ -85,8 +86,10 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
      *\see temporalSource()
     **/
     void setTemporalSource( TemporalSource source );
+
   private:
 
+    //! Source of the properties temporal range
     TemporalSource mSource = Layer;
 
 };
