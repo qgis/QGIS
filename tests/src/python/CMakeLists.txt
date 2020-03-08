@@ -307,6 +307,7 @@ IF (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsDatabaseSchemaModel test_qgsdatabaseschemamodel.py)
   ADD_PYTHON_TEST(PyQgsDatabaseTableModel test_qgsdatabasetablemodel.py)
   ADD_PYTHON_TEST(PyQgsDatabaseSchemaComboBox test_qgsdatabaseschemacombobox.py)
+  ADD_PYTHON_TEST(PyQgsDatabaseTableComboBox test_qgsdatabasetablecombobox.py)
   ADD_PYTHON_TEST(PyQgsProviderConnectionPostgres test_qgsproviderconnection_postgres.py)
 ENDIF (ENABLE_PGTEST)
 
