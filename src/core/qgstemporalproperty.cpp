@@ -18,14 +18,18 @@
 
 #include "qgstemporalproperty.h"
 
-QgsTemporalProperty::QgsTemporalProperty( bool active )
-  :  mActive( active )
+QgsTemporalProperty::QgsTemporalProperty( bool enabled )
+  : mActive( enabled )
 {
 }
 
 void QgsTemporalProperty::setIsActive( bool active )
 {
-  mActive = active;
+  if ( mActive != active )
+  {
+    mActive = active;
+    emit changed();
+  }
 }
 
 bool QgsTemporalProperty::isActive() const

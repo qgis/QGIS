@@ -34,7 +34,7 @@ Constructor for QgsMapLayerTemporalProperties.
 The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see isActive()).
 %End
 
-    virtual ~QgsMapLayerTemporalProperties();
+    ~QgsMapLayerTemporalProperties();
 
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
 %Docstring
@@ -69,6 +69,7 @@ Sets the temporal properties temporal range ``source``.
 
 .. seealso:: :py:func:`temporalSource`
 %End
+
 };
 
 /************************************************************************

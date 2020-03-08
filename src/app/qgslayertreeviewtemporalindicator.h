@@ -36,14 +36,13 @@ class QgsLayerTreeViewTemporalIndicatorProvider : public QgsLayerTreeViewIndicat
     void onIndicatorClicked( const QModelIndex &index ) override;
 
     //! Adds/removes indicator of a layer
-    void onLayerChanged();
+    void onLayerChanged( QgsMapLayer *layer );
 
   private:
     bool acceptLayer( QgsMapLayer *layer ) override;
     QString iconName( QgsMapLayer *layer ) override;
     QString tooltipText( QgsMapLayer *layer ) override;
 
-    QgsMapLayer *mLayer = nullptr;
 };
 
 #endif // QGSLAYERTREEVIEWTEMPORALINDICATOR_H

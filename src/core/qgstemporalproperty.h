@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <QObject>
 
 /**
  * \class QgsTemporalProperty
@@ -31,8 +32,10 @@
  * \since QGIS 3.14
  */
 
-class CORE_EXPORT QgsTemporalProperty
+class CORE_EXPORT QgsTemporalProperty : public QObject
 {
+    Q_OBJECT
+
   public:
 
     /**
@@ -40,9 +43,7 @@ class CORE_EXPORT QgsTemporalProperty
      *
      * The \a active argument specifies whether the property is initially active (see isActive()).
      */
-    QgsTemporalProperty( bool active = false );
-
-    virtual ~QgsTemporalProperty() = default;
+    QgsTemporalProperty( bool enabled = false );
 
     /**
      * Sets whether the temporal property is \a active.
@@ -58,8 +59,16 @@ class CORE_EXPORT QgsTemporalProperty
     */
     bool isActive() const;
 
+  signals:
+
+    /**
+     * Emitted when the temporal properties have changed.
+     */
+    void changed();
+
   private:
 
+    //! Active status of the properties
     bool mActive = false;
 
 };
