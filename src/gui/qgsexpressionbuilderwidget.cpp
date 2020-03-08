@@ -633,7 +633,8 @@ void QgsExpressionBuilderWidget::loadRecent( const QString &collection )
   int i = 0;
   for ( const QString &expression : expressions )
   {
-    registerItem( name, expression, expression, expression, QgsExpressionItem::ExpressionNode, false, i );
+    QString help = formatRecentExpressionHelp(expression, expression);
+    registerItem( name, expression, expression, help, QgsExpressionItem::ExpressionNode, false, i );
     i++;
   }
 }
@@ -659,7 +660,7 @@ void QgsExpressionBuilderWidget::loadUserExpressions( )
   {
     settings.beginGroup( label );
     expression = settings.value( QStringLiteral( "expression" ) ).toString();
-    helpText = settings.value( QStringLiteral( "helpText" ) ).toString();
+    helpText = formatUserExpressionHelp( label, expression, settings.value( QStringLiteral( "helpText" ) ).toString() );
     registerItem( QStringLiteral( "UserGroup" ), label, expression, helpText, QgsExpressionItem::ExpressionNode, false, i++ );
     settings.endGroup();
   }
@@ -771,6 +772,7 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
       name += '(';
     else if ( !name.startsWith( '$' ) )
       name += QLatin1String( "()" );
+    // this is where the functions are being registered, including functions under "Custom"
     registerItemForAllGroups( func->groups(), func->name(), ' ' + name + ' ', func->helpText(), QgsExpressionItem::ExpressionNode, mExpressionContext.isHighlightedFunction( func->name() ), 1, QgsExpression::tags( func->name() ) );
   }
 
@@ -906,7 +908,7 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
   for ( const QString &variable : constVariableNames )
   {
     registerItem( QStringLiteral( "Variables" ), variable, " @" + variable + ' ',
-                  QgsExpression::formatVariableHelp( mExpressionContext.description( variable ), true, mExpressionContext.variable( variable ) ),
+                  formatVariableHelp( variable, mExpressionContext.description( variable ), true, mExpressionContext.variable( variable ) ),
                   QgsExpressionItem::ExpressionNode,
                   mExpressionContext.isHighlightedVariable( variable ) );
   }
@@ -937,15 +939,66 @@ void QgsExpressionBuilderWidget::registerItemForAllGroups( const QStringList &gr
 
 QString QgsExpressionBuilderWidget::formatRelationHelp( const QgsRelation &relation ) const
 {
-  QString text = QStringLiteral( "<p>%1</p>" ).arg( tr( "Inserts the relation ID for the relation named '%1'." ).arg( relation.name() ) );
-  text.append( QStringLiteral( "<p>%1</p>" ).arg( tr( "Current value: '%1'" ).arg( relation.id() ) ) );
+  QString text = QStringLiteral( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
+    .arg( QCoreApplication::translate( "relation_help", "relation %1" ).arg( relation.name() ),
+      tr( "Inserts the relation ID for the relation named '%1'." ).arg( relation.name() ) );
+
+  text += QStringLiteral( "<h4>%1</h4><div class=\"description\"><pre>%2</pre></div>" )
+    .arg( tr( "Current value" ), relation.id() );
+
   return text;
 }
 
 QString QgsExpressionBuilderWidget::formatLayerHelp( const QgsMapLayer *layer ) const
 {
-  QString text = QStringLiteral( "<p>%1</p>" ).arg( tr( "Inserts the layer ID for the layer named '%1'." ).arg( layer->name() ) );
-  text.append( QStringLiteral( "<p>%1</p>" ).arg( tr( "Current value: '%1'" ).arg( layer->id() ) ) );
+  QString text = QStringLiteral( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
+    .arg( QCoreApplication::translate( "layer_help", "map layer %1" ).arg( layer->name() ),
+      tr( "Inserts the layer ID for the layer named '%1'." ).arg( layer->name() ) );
+
+  text += QStringLiteral( "<h4>%1</h4><div class=\"description\"><pre>%2</pre></div>" )
+    .arg( tr( "Current value" ), layer->id() );
+
+  return text;
+}
+
+QString QgsExpressionBuilderWidget::formatRecentExpressionHelp( const QString &label, const QString &expression ) const
+{
+  QString text = QStringLiteral( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
+    .arg( QCoreApplication::translate( "recent_expression_help", "expression %1" ).arg( label),
+      QCoreApplication::translate( "recent_expression_help", "Recently used expression." ) );
+
+  text += QStringLiteral( "<h4>%1</h4><div class=\"description\"><pre>%2</pre></div>" )
+    .arg( tr( "Expression" ), expression );
+
+  return text;
+}
+
+QString QgsExpressionBuilderWidget::formatUserExpressionHelp( const QString &label, const QString &expression, const QString &description ) const
+{
+  QString text = QStringLiteral( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
+    .arg( QCoreApplication::translate( "user_expression_help", "expression %1" ).arg( label ), description );
+
+  text += QStringLiteral( "<h4>%1</h4><div class=\"description\"><pre>%2</pre></div>" )
+    .arg( tr( "Expression" ), expression );
+
+  return text;
+}
+
+QString QgsExpressionBuilderWidget::formatVariableHelp( const QString &variable, const QString &description, bool showValue, const QVariant &value ) const
+{
+  QString text = QStringLiteral( "<h3>%1</h3>\n<div class=\"description\"><p>%2</p></div>" )
+    .arg( QCoreApplication::translate( "variable_help", "variable %1" ).arg( variable ), description );
+
+  if ( showValue )
+  {
+    QString valueString = !value.isValid()
+      ? QCoreApplication::translate( "variable_help", "not set" )
+      : QStringLiteral( "<pre>%1</pre>" ).arg( QgsExpression::formatPreviewString( value ) );
+
+    text += QStringLiteral( "<h4>%1</h4><div class=\"description\"><p>%2</p></div>" )
+      .arg( tr( "Current value" ), valueString);
+  }
+
   return text;
 }
 
