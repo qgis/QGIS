@@ -581,7 +581,10 @@ void QgsProcessingAlgorithmDialogBase::resetGui()
   mButtonRun->setEnabled( true );
   mButtonChangeParameters->setEnabled( true );
   mButtonClose->setEnabled( true );
-  mTabWidget->setTabEnabled( 0, true ); // Enable Parameters tab
+  if ( mMainWidget )
+  {
+    mMainWidget->setEnabled( true );
+  }
   updateRunButtonVisibility();
   resetAdditionalGui();
 }
@@ -591,7 +594,7 @@ void QgsProcessingAlgorithmDialogBase::updateRunButtonVisibility()
   // Activate run button if current tab is Parameters
   bool runButtonVisible = mTabWidget->currentIndex() == 0;
   mButtonRun->setVisible( runButtonVisible );
-  mButtonChangeParameters->setVisible( !runButtonVisible && mExecutedAnyResult );
+  mButtonChangeParameters->setVisible( !runButtonVisible && mExecutedAnyResult && mButtonChangeParameters->isEnabled() );
 }
 
 void QgsProcessingAlgorithmDialogBase::resetAdditionalGui()
@@ -603,7 +606,10 @@ void QgsProcessingAlgorithmDialogBase::blockControlsWhileRunning()
 {
   mButtonRun->setEnabled( false );
   mButtonChangeParameters->setEnabled( false );
-  mTabWidget->setTabEnabled( 0, false ); // Disable Parameters tab
+  if ( mMainWidget )
+  {
+    mMainWidget->setEnabled( false );
+  }
   blockAdditionalControlsWhileRunning();
 }
 
