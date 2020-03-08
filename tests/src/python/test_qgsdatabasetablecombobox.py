@@ -55,15 +55,17 @@ class TestQgsDatabaseTableComboBox(unittest.TestCase):
         md.saveConnection(conn, 'mycon')
 
         m = QgsDatabaseTableComboBox('postgres', 'mycon')
-        spy = QSignalSpy(m.tableChanged)
         self.assertGreaterEqual(m.comboBox().count(), 3)
 
         text = [m.comboBox().itemText(i) for i in range(m.comboBox().count())]
         self.assertIn('information_schema.attributes', text)
         self.assertIn('qgis_test.some_poly_data', text)
         self.assertLess(text.index('information_schema.attributes'), text.index('qgis_test.some_poly_data'))
-        self.assertEqual(m.currentSchema(), 'information_schema')
-        self.assertEqual(m.currentTable(), '_pg_foreign_data_wrappers')
+        self.assertTrue(m.currentSchema())
+        self.assertTrue(m.currentTable())
+
+        m.setSchema('information_schema')
+        spy = QSignalSpy(m.tableChanged)
 
         m.setSchema('qgis_test')
         text = [m.comboBox().itemText(i) for i in range(m.comboBox().count())]
@@ -141,15 +143,16 @@ class TestQgsDatabaseTableComboBox(unittest.TestCase):
         md.saveConnection(conn, 'mycon2')
 
         m = QgsDatabaseTableComboBox('postgres', 'mycon2')
-        spy = QSignalSpy(m.tableChanged)
         self.assertGreaterEqual(m.comboBox().count(), 3)
 
         text = [m.comboBox().itemText(i) for i in range(m.comboBox().count())]
         self.assertIn('information_schema.attributes', text)
         self.assertIn('qgis_test.some_poly_data', text)
         self.assertLess(text.index('information_schema.attributes'), text.index('qgis_test.some_poly_data'))
-        self.assertEqual(m.currentSchema(), 'information_schema')
-        self.assertEqual(m.currentTable(), '_pg_foreign_data_wrappers')
+        self.assertTrue(m.currentSchema())
+        self.assertTrue(m.currentTable())
+
+        spy = QSignalSpy(m.tableChanged)
 
         m.setTable('')
         self.assertEqual(m.currentTable(), '')
