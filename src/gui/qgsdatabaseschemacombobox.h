@@ -88,7 +88,7 @@ class GUI_EXPORT QgsDatabaseSchemaComboBox : public QWidget
     //! Emitted whenever the currently selected schema changes.
     void schemaChanged( const QString &schema );
 
-  protected slots:
+  private slots:
     void indexChanged( int i );
     void rowsChanged();
 

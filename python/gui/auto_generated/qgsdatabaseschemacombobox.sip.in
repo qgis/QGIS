@@ -80,10 +80,6 @@ Refreshes the list of available schemas.
 Emitted whenever the currently selected schema changes.
 %End
 
-  protected slots:
-    void indexChanged( int i );
-    void rowsChanged();
-
 };
 
 /************************************************************************
