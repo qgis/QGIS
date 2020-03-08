@@ -19,6 +19,7 @@
 #include "qgsvectorlayersaveasdialog.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsvectordataprovider.h"
+#include "qgsogrdataitems.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
@@ -292,7 +293,23 @@ void QgsVectorLayerSaveAsDialog::accept()
         if ( ret == QMessageBox::Cancel )
           return;
         if ( msgBox.clickedButton() == overwriteFileButton )
+        {
+          const QList<QgsOgrDbLayerInfo *> subLayers = QgsOgrLayerItem::subLayers( filename(), format() );
+          QStringList layerList = QStringList();
+          for ( const auto layer : subLayers )
+          {
+            layerList.append( layer->name() );
+          }
+          if ( layerList.length() > 1 && QMessageBox::warning( this,
+               tr( "Overwrite file" ),
+               tr( "This file contains %1 layers that will be discarded!\n"
+                   "The following layers will be permanently lost:\n"
+                   "\n%2" ).arg( QString::number( layerList.length() ), layerList.join( ", " ) ),
+               QMessageBox::Ok | QMessageBox::Cancel,
+               QMessageBox::Cancel ) == QMessageBox::Cancel )
+            return;
           mActionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
+        }
         else if ( msgBox.clickedButton() == overwriteLayerButton )
           mActionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteLayer;
       }
@@ -322,7 +339,23 @@ void QgsVectorLayerSaveAsDialog::accept()
         if ( ret == QMessageBox::Cancel )
           return;
         if ( msgBox.clickedButton() == overwriteFileButton )
+        {
+          const QList<QgsOgrDbLayerInfo *> subLayers = QgsOgrLayerItem::subLayers( filename(), format() );
+          QStringList layerList = QStringList();
+          for ( const auto layer : subLayers )
+          {
+            layerList.append( layer->name() );
+          }
+          if ( layerList.length() > 1 && QMessageBox::warning( this,
+               tr( "Overwrite file" ),
+               tr( "This file contains %1 layers that will be discarded!\n"
+                   "The following layers will be permanently lost:\n"
+                   "\n%2" ).arg( QString::number( layerList.length() ), layerList.join( ", " ) ),
+               QMessageBox::Ok | QMessageBox::Cancel,
+               QMessageBox::Cancel ) == QMessageBox::Cancel )
+            return;
           mActionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
+        }
         else if ( msgBox.clickedButton() == overwriteLayerButton )
           mActionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteLayer;
         else if ( msgBox.clickedButton() == appendToLayerButton )
@@ -342,7 +375,23 @@ void QgsVectorLayerSaveAsDialog::accept()
         if ( ret == QMessageBox::Cancel )
           return;
         if ( msgBox.clickedButton() == overwriteFileButton )
+        {
+          const QList<QgsOgrDbLayerInfo *> subLayers = QgsOgrLayerItem::subLayers( filename(), format() );
+          QStringList layerList = QStringList();
+          for ( const auto layer : subLayers )
+          {
+            layerList.append( layer->name() );
+          }
+          if ( layerList.length() > 1 && QMessageBox::warning( this,
+               tr( "Overwrite file" ),
+               tr( "This file contains %1 layers that will be discarded!\n"
+                   "The following layers will be permanently lost:\n"
+                   "\n%2" ).arg( QString::number( layerList.length() ), layerList.join( ", " ) ),
+               QMessageBox::Ok | QMessageBox::Cancel,
+               QMessageBox::Cancel ) == QMessageBox::Cancel )
+            return;
           mActionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
+        }
         else if ( msgBox.clickedButton() == appendToLayerButton )
           mActionOnExistingFile = QgsVectorFileWriter::AppendToLayerNoNewFields;
       }
