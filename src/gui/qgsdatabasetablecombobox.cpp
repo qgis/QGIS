@@ -16,6 +16,7 @@
 #include "qgsdatabasetablecombobox.h"
 #include "qgsdatabasetablemodel.h"
 #include "qgsapplication.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 #include <QHBoxLayout>
 #include <QToolButton>
 

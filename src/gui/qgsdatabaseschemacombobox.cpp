@@ -15,6 +15,7 @@
 
 #include "qgsdatabaseschemacombobox.h"
 #include "qgsdatabaseschemamodel.h"
+#include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsapplication.h"
 #include <QHBoxLayout>
 #include <QToolButton>
