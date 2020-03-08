@@ -15,7 +15,9 @@
 
 #include "qgsdatabaseschemacombobox.h"
 #include "qgsdatabaseschemamodel.h"
+#include "qgsapplication.h"
 #include <QHBoxLayout>
+#include <QToolButton>
 
 QgsDatabaseSchemaComboBox::QgsDatabaseSchemaComboBox( const QString &provider, const QString &connection, QWidget *parent )
   : QWidget( parent )
@@ -49,7 +51,15 @@ void QgsDatabaseSchemaComboBox::init()
   QHBoxLayout *l = new QHBoxLayout();
   l->setContentsMargins( 0, 0, 0, 0 );
   l->addWidget( mComboBox );
+
+  QToolButton *refreshButton = new QToolButton();
+  refreshButton->setAutoRaise( true );
+  refreshButton->setToolTip( tr( "Refresh schemas" ) );
+  refreshButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRefresh.svg" ) ) );
+  l->addWidget( refreshButton );
   setLayout( l );
+
+  connect( refreshButton, &QToolButton::clicked, this, &QgsDatabaseSchemaComboBox::refreshSchemas );
 
   connect( mComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsDatabaseSchemaComboBox::indexChanged );
   connect( mSortModel, &QAbstractItemModel::rowsInserted, this, &QgsDatabaseSchemaComboBox::rowsChanged );
