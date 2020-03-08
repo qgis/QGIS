@@ -322,6 +322,7 @@ SET(QGIS_GUI_SRCS
   qgscustomdrophandler.cpp
   qgscurveeditorwidget.cpp
   qgsdatabaseschemacombobox.cpp
+  qgsdatabasetablecombobox.cpp
   qgsdataitemguiprovider.cpp
   qgsdataitemguiproviderregistry.cpp
   qgsdatumtransformdialog.cpp
@@ -527,6 +528,7 @@ SET(QGIS_GUI_HDRS
   qgscurveeditorwidget.h
   qgscustomdrophandler.h
   qgsdatabaseschemacombobox.h
+  qgsdatabasetablecombobox.h
   qgsdataitemguiprovider.h
   qgsdataitemguiproviderregistry.h
   qgsdatasourcemanagerdialog.h

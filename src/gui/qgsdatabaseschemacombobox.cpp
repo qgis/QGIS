@@ -78,7 +78,7 @@ void QgsDatabaseSchemaComboBox::setSchema( const QString &schema )
     return;
   }
 
-  QModelIndexList idx = mSortModel->match( mSortModel->index( 0, 0 ), Qt::DisplayRole, schema, Qt::MatchFixedString | Qt::MatchCaseSensitive );
+  QModelIndexList idx = mSortModel->match( mSortModel->index( 0, 0 ), Qt::DisplayRole, schema, 1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
   if ( !idx.empty() )
   {
     QModelIndex proxyIdx = idx.at( 0 );
