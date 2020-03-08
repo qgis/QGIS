@@ -68,7 +68,7 @@ class GUI_EXPORT QgsProviderConnectionComboBox : public QComboBox
     //! Emitted whenever the currently selected connection changes.
     void connectionChanged( const QString &connection );
 
-  protected slots:
+  private slots:
     void indexChanged( int i );
     void rowsChanged();
 

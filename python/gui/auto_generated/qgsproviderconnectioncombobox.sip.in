@@ -61,10 +61,6 @@ Sets the current connection selected in the combo box.
 Emitted whenever the currently selected connection changes.
 %End
 
-  protected slots:
-    void indexChanged( int i );
-    void rowsChanged();
-
 };
 
 /************************************************************************

@@ -104,7 +104,7 @@ class GUI_EXPORT QgsDatabaseTableComboBox : public QWidget
     //! Emitted whenever the currently selected table changes.
     void tableChanged( const QString &table, const QString &schema = QString() );
 
-  protected slots:
+  private slots:
     void indexChanged( int i );
     void rowsChanged();
 

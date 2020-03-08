@@ -96,10 +96,6 @@ Refreshes the list of available tables.
 Emitted whenever the currently selected table changes.
 %End
 
-  protected slots:
-    void indexChanged( int i );
-    void rowsChanged();
-
 };
 
 /************************************************************************
