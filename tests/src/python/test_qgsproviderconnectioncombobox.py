@@ -32,7 +32,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsMapLayerComboBox(unittest.TestCase):
+class TestQgsProviderConnectionComboBox(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
