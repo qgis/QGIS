@@ -65,6 +65,7 @@ class TestQgsDatabaseTableComboBox(unittest.TestCase):
         self.assertTrue(m.currentTable())
 
         m.setSchema('information_schema')
+        m.setTable('attributes')
         spy = QSignalSpy(m.tableChanged)
 
         m.setSchema('qgis_test')
