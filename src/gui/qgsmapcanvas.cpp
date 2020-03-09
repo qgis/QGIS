@@ -2466,6 +2466,12 @@ const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
 void QgsMapCanvas::startPreviewJobs()
 {
   stopPreviewJobs(); //just in case still running
+
+  //canvas preview jobs aren't compatible with rotation
+  // TODO fix this
+  if ( !qgsDoubleNear( mSettings.rotation(), 0.0 ) )
+    return;
+
   schedulePreviewJob( 0 );
 }
 
