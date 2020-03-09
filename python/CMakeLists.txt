@@ -152,6 +152,7 @@ IF (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/gui/processing
     ${CMAKE_SOURCE_DIR}/src/gui/processing/models
     ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
+    ${CMAKE_SOURCE_DIR}/src/gui/vector
 
     ${CMAKE_BINARY_DIR}/src/gui
   )

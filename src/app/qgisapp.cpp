@@ -110,6 +110,7 @@
 #include "qgs3dmaptoolmeasureline.h"
 #include "layout/qgslayout3dmapwidget.h"
 #include "layout/qgslayoutviewrubberband.h"
+#include "qgsvectorlayer3drendererwidget.h"
 #endif
 
 #include "qgsgui.h"
@@ -332,6 +333,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
+#include "qgsvectorlayerdigitizingproperties.h"
 #include "qgsmapthemes.h"
 #include "qgsmessagelogviewer.h"
 #include "qgsdataitem.h"
@@ -1237,6 +1239,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   // add this window to Window menu
   addWindow( mWindowAction );
+#endif
+
+  registerMapLayerPropertiesFactory( new QgsVectorLayerDigitizingPropertiesFactory( this ) );
+#ifdef HAVE_3D
+  registerMapLayerPropertiesFactory( new QgsVectorLayer3DRendererWidgetFactory( this ) );
 #endif
 
   activateDeactivateLayerRelatedActions( nullptr ); // after members were created
@@ -14835,7 +14842,21 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer )
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
-      QgsVectorLayerProperties *vectorLayerPropertiesDialog = new QgsVectorLayerProperties( vlayer, this );
+      QgsVectorLayerProperties *vectorLayerPropertiesDialog = new QgsVectorLayerProperties( mMapCanvas, visibleMessageBar(), vlayer, this );
+      connect(
+        vectorLayerPropertiesDialog, static_cast<void ( QgsVectorLayerProperties::* )( QgsMapLayer * )>( &QgsVectorLayerProperties::toggleEditing ),
+      this, [ = ]( QgsMapLayer * layer ) { toggleEditing( layer ); }
+      );
+      connect( vectorLayerPropertiesDialog, &QgsVectorLayerProperties::exportAuxiliaryLayer, this, [ = ]( QgsAuxiliaryLayer * layer )
+      {
+        if ( layer )
+        {
+          std::unique_ptr<QgsVectorLayer> clone;
+          clone.reset( layer->toSpatialLayer() );
+
+          saveAsFile( clone.get() );
+        }
+      } );
       for ( QgsMapLayerConfigWidgetFactory *factory : qgis::as_const( mMapLayerPanelFactories ) )
       {
         vectorLayerPropertiesDialog->addPropertiesPageFactory( factory );

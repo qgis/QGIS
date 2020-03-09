@@ -14,6 +14,20 @@ SET(QGIS_GUI_SRCS
   raster/qgsrastertransparencywidget.cpp
   raster/qgshillshaderendererwidget.cpp
 
+  vector/qgsattributeactiondialog.cpp
+  vector/qgsattributeactionpropertiesdialog.cpp
+  vector/qgsattributesforminitcode.cpp
+  vector/qgsattributesformproperties.cpp
+  vector/qgsdiagramproperties.cpp
+  vector/qgsfieldcalculator.cpp
+  vector/qgsjoindialog.cpp
+  vector/qgssourcefieldsproperties.cpp
+  vector/qgsvectorlayerlegendwidget.cpp
+  vector/qgsvectorlayerloadstyledialog.cpp
+  vector/qgsvectorlayerproperties.cpp
+  vector/qgsvectorlayersavestyledialog.cpp
+  vector/qgswmsdimensiondialog.cpp
+
   symbology/qgs25drendererwidget.cpp
   symbology/characterwidget.cpp
   symbology/qgsarrowsymbollayerwidget.cpp
@@ -56,6 +70,11 @@ SET(QGIS_GUI_SRCS
   effects/qgspainteffectwidget.cpp
 
   callouts/qgscalloutwidget.cpp
+
+  attributeformconfig/qgsattributeformcontaineredit.cpp
+  attributeformconfig/qgsattributerelationedit.cpp
+  attributeformconfig/qgsattributetypedialog.cpp
+  attributeformconfig/qgsattributewidgetedit.cpp
 
   attributetable/qgsattributetabledelegate.cpp
   attributetable/qgsattributetablefiltermodel.cpp
@@ -162,9 +181,12 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsvaluerelationsearchwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
 
+  labeling/qgslabelengineconfigdialog.cpp
   labeling/qgslabelinggui.cpp
+  labeling/qgslabelingwidget.cpp
   labeling/qgslabelobstaclesettingswidget.cpp
   labeling/qgslabelsettingswidgetbase.cpp
+  labeling/qgsrulebasedlabelingwidget.cpp
 
   layertree/qgscustomlayerorderwidget.cpp
   layertree/qgslayertreeembeddedconfigwidget.cpp
@@ -279,6 +301,8 @@ SET(QGIS_GUI_SRCS
 
   qgisinterface.cpp
   qgsactionmenu.cpp
+  qgsaddattrdialog.cpp
+  qgsaddtaborgroup.cpp
   qgsadvanceddigitizingcanvasitem.cpp
   qgsadvanceddigitizingdockwidget.cpp
   qgsadvanceddigitizingfloater.cpp
@@ -385,10 +409,12 @@ SET(QGIS_GUI_SRCS
   qgsmaplayeractionregistry.cpp
   qgsmaplayercombobox.cpp
   qgsmaplayerconfigwidgetfactory.cpp
+  qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmaplayerstylemanagerwidget.cpp
   qgsmapmouseevent.cpp
   qgsmapoverviewcanvas.cpp
+  qgsmaskingwidget.cpp
   qgsmaptip.cpp
   qgsmaptool.cpp
   qgsmaptooladvanceddigitizing.cpp
@@ -408,6 +434,7 @@ SET(QGIS_GUI_SRCS
   qgsmessagelogviewer.cpp
   qgsmessageviewer.cpp
   qgsmetadatawidget.cpp
+  qgsmasksourceselectionwidget.cpp
   qgsnewauxiliarylayerdialog.cpp
   qgsnewauxiliaryfielddialog.cpp
   qgsnewhttpconnection.cpp
@@ -460,6 +487,7 @@ SET(QGIS_GUI_SRCS
   qgssqlcomposerdialog.cpp
   qgsstatusbar.cpp
   qgssymbolbutton.cpp
+  qgssymbollayerselectionwidget.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
@@ -486,6 +514,8 @@ SET(QGIS_GUI_HDRS
 
   qgsabstractdatasourcewidget.h
   qgsactionmenu.h
+  qgsaddattrdialog.h
+  qgsaddtaborgroup.h
   qgsadvanceddigitizingdockwidget.h
   qgsadvanceddigitizingfloater.h
   qgsaggregatetoolbutton.h
@@ -594,6 +624,7 @@ SET(QGIS_GUI_HDRS
   qgsmaplayercombobox.h
   qgsmaplayerconfigwidget.h
   qgsmaplayerconfigwidgetfactory.h
+  qgsmaplayerstylecategoriesmodel.h
   qgsmaplayerstyleguiutils.h
   qgsmaplayerstylemanagerwidget.h
   qgsmapmouseevent.h
@@ -610,12 +641,14 @@ SET(QGIS_GUI_HDRS
   qgsmaptoolidentifyfeature.h
   qgsmaptoolpan.h
   qgsmaptoolzoom.h
+  qgsmaskingwidget.h
   qgsmenuheader.h
   qgsmessagebar.h
   qgsmessagebaritem.h
   qgsmessagelogviewer.h
   qgsmessageviewer.h
   qgsmetadatawidget.h
+  qgsmasksourceselectionwidget.h
   qgsnewauxiliaryfielddialog.h
   qgsnewauxiliarylayerdialog.h
   qgsnewgeopackagelayerdialog.h
@@ -673,6 +706,7 @@ SET(QGIS_GUI_HDRS
   qgssublayersdialog.h
   qgssubstitutionlistwidget.h
   qgssymbolbutton.h
+  qgssymbollayerselectionwidget.h
   qgstablewidgetbase.h
   qgstablewidgetitem.h
   qgstabwidget.h
@@ -687,6 +721,11 @@ SET(QGIS_GUI_HDRS
   qgsvertexmarker.h
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
+
+  attributeformconfig/qgsattributeformcontaineredit.h
+  attributeformconfig/qgsattributerelationedit.h
+  attributeformconfig/qgsattributetypedialog.h
+  attributeformconfig/qgsattributewidgetedit.h
 
   attributetable/qgsattributetabledelegate.h
   attributetable/qgsattributetablefiltermodel.h
@@ -801,9 +840,12 @@ SET(QGIS_GUI_HDRS
   effects/qgspainteffectpropertieswidget.h
   effects/qgspainteffectwidget.h
 
+  labeling/qgslabelengineconfigdialog.h
   labeling/qgslabelinggui.h
+  labeling/qgslabelingwidget.h
   labeling/qgslabelobstaclesettingswidget.h
   labeling/qgslabelsettingswidgetbase.h
+  labeling/qgsrulebasedlabelingwidget.h
 
   layertree/qgscustomlayerorderwidget.h
   layertree/qgslayertreeembeddedconfigwidget.h
@@ -926,6 +968,20 @@ SET(QGIS_GUI_HDRS
   raster/qgssinglebandpseudocolorrendererwidget.h
   raster/qgsrasterlayerproperties.h
   raster/qgsrasterlayertemporalpropertieswidget.h
+
+  vector/qgsattributeactiondialog.h
+  vector/qgsattributeactionpropertiesdialog.h
+  vector/qgsattributesforminitcode.h
+  vector/qgsattributesformproperties.h
+  vector/qgsdiagramproperties.h
+  vector/qgsfieldcalculator.h
+  vector/qgsjoindialog.h
+  vector/qgssourcefieldsproperties.h
+  vector/qgsvectorlayerlegendwidget.h
+  vector/qgsvectorlayerloadstyledialog.h
+  vector/qgsvectorlayerproperties.h
+  vector/qgsvectorlayersavestyledialog.h
+  vector/qgswmsdimensiondialog.h
 
   symbology/characterwidget.h
   symbology/qgs25drendererwidget.h
@@ -1051,6 +1107,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspdfexportoptions.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrenderercontainerbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectorlayerpropertiesbase.h
 )
 
 IF(ENABLE_MODELTEST)
@@ -1062,6 +1119,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
@@ -1078,6 +1136,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/vector
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations

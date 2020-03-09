@@ -332,6 +332,7 @@
 %Include auto_generated/raster/qgssinglebandpseudocolorrendererwidget.sip
 %Include auto_generated/raster/qgsrasterlayerproperties.sip
 %Include auto_generated/raster/qgsrasterlayertemporalpropertieswidget.sip
+%Include auto_generated/vector/qgsvectorlayerproperties.sip
 %Include auto_generated/symbology/characterwidget.sip
 %Include auto_generated/symbology/qgs25drendererwidget.sip
 %Include auto_generated/symbology/qgsarrowsymbollayerwidget.sip
