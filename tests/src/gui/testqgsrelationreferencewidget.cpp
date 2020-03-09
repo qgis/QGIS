@@ -511,8 +511,9 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
   QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(12)" ) );
   QCOMPARE( spy.count(), 2 );
 
-  w.setForeignKeys( QVariantList() << QVariant( QVariant::Int ) );
-  Q_ASSERT( w.foreignKeys().at( 0 ).isNull() );
+  w.setForeignKeys( QVariantList() << QVariant() );
+  QVERIFY( w.foreignKeys().at( 0 ).isNull() );
+  QVERIFY( w.foreignKeys().at( 0 ).isValid() );
   QCOMPARE( spy.count(), 3 );
 }
 
