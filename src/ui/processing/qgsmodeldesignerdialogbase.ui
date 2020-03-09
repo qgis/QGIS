@@ -81,7 +81,13 @@
     <addaction name="separator"/>
     <addaction name="mActionShowComments"/>
    </widget>
+   <widget class="QMenu" name="mMenuEdit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+   </widget>
    <addaction name="menu_Model"/>
+   <addaction name="mMenuEdit"/>
    <addaction name="menu_View"/>
   </widget>
   <widget class="QToolBar" name="mToolbar">
@@ -150,7 +156,7 @@
           <x>0</x>
           <y>0</y>
           <width>256</width>
-          <height>128</height>
+          <height>97</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout">
@@ -240,7 +246,7 @@
           <x>0</x>
           <y>0</y>
           <width>256</width>
-          <height>70</height>
+          <height>153</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -310,7 +316,7 @@
           <x>0</x>
           <y>0</y>
           <width>256</width>
-          <height>231</height>
+          <height>180</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">

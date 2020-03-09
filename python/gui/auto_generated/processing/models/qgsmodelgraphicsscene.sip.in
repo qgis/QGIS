@@ -89,6 +89,14 @@ Populates the scene by creating items representing the specified ``model``.
 Emitted when a change in the model requires a full rebuild of the scene.
 %End
 
+    void componentAboutToChange( const QString &text, int id = 0 );
+%Docstring
+Emitted whenever a component of the model is about to be changed.
+
+The ``text`` argument gives the translated text describing the change about to occur, and the
+optional ``id`` can be used to group the associated undo commands.
+%End
+
     void componentChanged();
 %Docstring
 Emitted whenever a component of the model is changed.

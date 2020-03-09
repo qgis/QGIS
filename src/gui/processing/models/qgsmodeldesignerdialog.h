@@ -24,6 +24,8 @@
 
 class QgsMessageBar;
 class QgsProcessingModelAlgorithm;
+class QgsModelUndoCommand;
+class QUndoView;
 
 ///@cond NOT_STABLE
 
@@ -51,8 +53,19 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
   public:
 
     QgsModelDesignerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
+    ~QgsModelDesignerDialog() override;
 
     void closeEvent( QCloseEvent *event ) override;
+
+    /**
+     * Starts an undo command. This should be called before any changes are made to the model.
+     */
+    void beginUndoCommand( const QString &text, int id = 0 );
+
+    /**
+     * Ends the current undo command. This should be called after changes are made to the model.
+     */
+    void endUndoCommand();
 
   protected:
 
@@ -95,6 +108,16 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QgsModelerToolboxModel *mAlgorithmsModel = nullptr;
 
     bool mHasChanged = false;
+    QUndoStack *mUndoStack = nullptr;
+    std::unique_ptr< QgsModelUndoCommand > mActiveCommand;
+
+    QAction *mUndoAction = nullptr;
+    QAction *mRedoAction = nullptr;
+    QUndoView *mUndoView = nullptr;
+    QgsDockWidget *mUndoDock = nullptr;
+
+    int mBlockUndoCommands = 0;
+    int mIgnoreUndoStackChanges = 0;
 
     void fillInputsTree();
 

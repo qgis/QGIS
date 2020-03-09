@@ -100,6 +100,14 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     void rebuildRequired();
 
     /**
+     * Emitted whenever a component of the model is about to be changed.
+     *
+    * The \a text argument gives the translated text describing the change about to occur, and the
+    * optional \a id can be used to group the associated undo commands.
+     */
+    void componentAboutToChange( const QString &text, int id = 0 );
+
+    /**
      * Emitted whenever a component of the model is changed.
      */
     void componentChanged();

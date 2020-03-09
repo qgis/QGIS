@@ -105,6 +105,16 @@ void QgsModelComponentGraphicItem::mouseDoubleClickEvent( QGraphicsSceneMouseEve
   editComponent();
 }
 
+void QgsModelComponentGraphicItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
+{
+  if ( mIsMoving && event->button() == Qt::LeftButton )
+  {
+    // released the move drag button, so we've finalised the move operation
+    emit changed();
+    mIsMoving = false;
+  }
+}
+
 void QgsModelComponentGraphicItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
   updateToolTip( event->pos() );
@@ -133,10 +143,23 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
     case QGraphicsItem::ItemPositionHasChanged:
     {
       emit updateArrowPaths();
+
+      if ( !mInitialized || pos() == mComponent->position() )
+        break;
+
       mComponent->setPosition( pos() );
 
       // also need to update the model's stored component's position
+      if ( !mIsMoving )
+      {
+        // we are just starting a move operation - so create the undo command using the existing state
+        emit aboutToChange( tr( "Move %1" ).arg( mComponent->description() ) );
+      }
       updateStoredComponentPosition( pos() );
+
+      // we don't emit the changed signal to trigger the end of the undo command until the whole move operation finishes
+      // (i.e. we do that in mouseReleaseEvent)
+      mIsMoving = true;
       break;
     }
     case QGraphicsItem::ItemSelectedChange:
@@ -164,6 +187,7 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
           mExpandBottomButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::BottomEdge ), pt );
           connect( mExpandBottomButton, &QgsModelDesignerFoldButtonGraphicItem::folded, this, [ = ]( bool folded ) { fold( Qt::BottomEdge, folded ); } );
         }
+        mInitialized = true;
       }
       break;
     }
@@ -340,6 +364,7 @@ void QgsModelComponentGraphicItem::updateToolTip( const QPointF &pos )
 
 void QgsModelComponentGraphicItem::fold( Qt::Edge edge, bool folded )
 {
+  emit aboutToChange( !folded ? tr( "Expand Item" ) : tr( "Collapse Item" ) );
   mComponent->setLinksCollapsed( edge, folded );
   // also need to update the model's stored component
 
@@ -353,6 +378,7 @@ void QgsModelComponentGraphicItem::fold( Qt::Edge edge, bool folded )
 
   prepareGeometryChange();
   emit updateArrowPaths();
+  emit changed();
   update();
 }
 
@@ -602,6 +628,7 @@ void QgsModelParameterGraphicItem::deleteComponent()
     }
     else
     {
+      emit aboutToChange( tr( "Delete Input %1" ).arg( param->description() ) );
       model()->removeModelParameter( param->parameterName() );
       emit changed();
       emit requestModelRepaint();
@@ -772,6 +799,7 @@ void QgsModelChildAlgorithmGraphicItem::deleteComponent()
 {
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
   {
+    emit aboutToChange( tr( "Remove %1" ).arg( child->algorithm() ? child->algorithm()->displayName() : tr( "Algorithm" ) ) );
     if ( !model()->removeChildAlgorithm( child->childId() ) )
     {
       QMessageBox::warning( nullptr, QObject::tr( "Could not remove algorithm" ),
@@ -875,6 +903,7 @@ void QgsModelOutputGraphicItem::deleteComponent()
 {
   if ( const QgsProcessingModelOutput *output = dynamic_cast< const QgsProcessingModelOutput * >( component() ) )
   {
+    emit aboutToChange( tr( "Delete Output %1" ).arg( output->description() ) );
     model()->childAlgorithm( output->childId() ).removeModelOutput( output->name() );
     model()->updateDestinationParameters();
     emit changed();
@@ -967,6 +996,7 @@ void QgsModelCommentGraphicItem::deleteComponent()
 {
   if ( QgsProcessingModelComment *comment = modelComponent() )
   {
+    emit aboutToChange( tr( "Delete Comment" ) );
     comment->setDescription( QString() );
     emit changed();
     emit requestModelRepaint();
