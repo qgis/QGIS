@@ -239,31 +239,10 @@ QgsModelDesignerDialog::~QgsModelDesignerDialog()
 
 void QgsModelDesignerDialog::closeEvent( QCloseEvent *event )
 {
-  if ( isDirty() )
-  {
-    QMessageBox::StandardButton ret = QMessageBox::question( this, tr( "Save Model?" ),
-                                      tr( "There are unsaved changes in this model. Do you want to keep those?" ),
-                                      QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard, QMessageBox::Cancel );
-    switch ( ret )
-    {
-      case QMessageBox::Save:
-        saveModel( false );
-        event->accept();
-        break;
-
-      case QMessageBox::Discard:
-        event->accept();
-        break;
-
-      default:
-        event->ignore();
-        break;
-    }
-  }
-  else
-  {
+  if ( checkForUnsavedChanges() )
     event->accept();
-  }
+  else
+    event->ignore();
 }
 
 void QgsModelDesignerDialog::beginUndoCommand( const QString &text, int id )
@@ -357,6 +336,32 @@ bool QgsModelDesignerDialog::validateSave()
   }
 
   return true;
+}
+
+bool QgsModelDesignerDialog::checkForUnsavedChanges()
+{
+  if ( isDirty() )
+  {
+    QMessageBox::StandardButton ret = QMessageBox::question( this, tr( "Save Model?" ),
+                                      tr( "There are unsaved changes in this model. Do you want to keep those?" ),
+                                      QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard, QMessageBox::Cancel );
+    switch ( ret )
+    {
+      case QMessageBox::Save:
+        saveModel( false );
+        return true;
+
+      case QMessageBox::Discard:
+        return true;
+
+      default:
+        return false;
+    }
+  }
+  else
+  {
+    return true;
+  }
 }
 
 void QgsModelDesignerDialog::zoomIn()
@@ -522,7 +527,7 @@ void QgsModelDesignerDialog::updateWindowTitle()
 
 bool QgsModelDesignerDialog::isDirty() const
 {
-  return mHasChanged && mUndoStack->index() == -1;
+  return mHasChanged && mUndoStack->index() != -1;
 }
 
 void QgsModelDesignerDialog::fillInputsTree()

@@ -107,6 +107,13 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      */
     bool validateSave();
 
+    /**
+     * Checks if there are unsaved changes in the model, and if so, prompts the user to save them.
+     *
+     * Returns FALSE if the cancel option was selected
+     */
+    bool checkForUnsavedChanges();
+
   private slots:
     void zoomIn();
     void zoomOut();
