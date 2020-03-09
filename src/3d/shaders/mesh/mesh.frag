@@ -211,12 +211,12 @@ float arrows()
 {
     ivec2 size=textureSize(arrowsGridTexture,0);
 
-    float posX=(fs_in.worldPosition.x-arrowsMinCorner.x)/arrowsSpacing;
-    float posY=(-fs_in.worldPosition.z+arrowsMinCorner.y)/arrowsSpacing;
-    int gridPosX=int(posX+0.5);
-    int gridPosY=int(posY+0.5);
+    float posX=(fs_in.worldPosition.x-arrowsMinCorner.x)/arrowsSpacing+0.5;
+    float posY=(-fs_in.worldPosition.z+arrowsMinCorner.y)/arrowsSpacing+0.5;
+    int gridPosX=int(posX);
+    int gridPosY=int(posY);
 
-    if (gridPosX<0 || gridPosX>=size.x || gridPosY<0 || gridPosY>=size.y)
+    if (gridPosX<0 || gridPosX>size.x || gridPosY<0 || gridPosY>size.y)
         return 0.0;
 
     ivec2 textureGridPosition=ivec2(gridPosX,gridPosY);
@@ -230,7 +230,7 @@ float arrows()
     float c = cos(angle);
     vec2 pivot=vec2(0.5,0.5);
     mat2 rotationMatrix = mat2( c, -s, s,  c);
-
+    textureArrowPosition=textureArrowPosition-pivot;
     textureArrowPosition=rotationMatrix*(textureArrowPosition);
     textureArrowPosition/=scale;
     textureArrowPosition=textureArrowPosition+pivot;

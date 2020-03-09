@@ -350,8 +350,8 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer )
     else
       gridSize.setHeight( desiredYSize );
 
-    double xMin = gridExtent.xMinimum() + ( gridExtent.width() - gridSize.width() * xSpacing ) / 2;
-    double yMin = gridExtent.yMinimum() + ( gridExtent.height() - gridSize.height() * ySpacing ) / 2;
+    double xMin = gridExtent.xMinimum() + xSpacing / 2;
+    double yMin = gridExtent.yMinimum() + ySpacing / 2;
     minCorner = QgsPointXY( xMin, yMin );
 
     vectors = QgsMeshLayerUtils::griddedVectorValues(
@@ -372,7 +372,7 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer )
 
   Qt3DRender::QTexture2D *arrowTexture = new Qt3DRender::QTexture2D( this );
   Qt3DRender::QTextureImage *arrowTextureImage = new Qt3DRender::QTextureImage( this );
-  arrowTextureImage->setSource( QStringLiteral( "qrc:/images/themes/default/mesh/arrow.png" ) );
+  arrowTextureImage->setSource( QStringLiteral( "qrc:/textures/arrow.png" ) );
   arrowTexture->addTextureImage( arrowTextureImage );
   arrowTexture->setMinificationFilter( Qt3DRender::QTexture2D::Nearest );
   arrowTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Nearest );
