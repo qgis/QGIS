@@ -271,6 +271,8 @@ bool QgsTriangularMesh::contains( const QgsMesh::ElementType &type ) const
     case QgsMesh::ElementType::Face:
       return mTriangularMesh.faceCount() != 0;
   }
+
+  return false;
 }
 
 const QVector<QgsMeshVertex> &QgsTriangularMesh::vertices() const

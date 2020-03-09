@@ -370,6 +370,7 @@ bool QgsMesh::contains( const QgsMesh::ElementType &type ) const
     case ElementType::Face:
       return !faces.isEmpty();
   }
+  return false;
 }
 
 int QgsMesh::vertexCount() const
@@ -511,4 +512,5 @@ bool QgsMeshDataSourceInterface::contains( const QgsMesh::ElementType &type ) co
     case QgsMesh::ElementType::Face:
       return faceCount() != 0;
   }
+  return false;
 }

@@ -45,6 +45,7 @@ int QgsMeshLayerUtils::datasetValuesCount( const QgsMesh *mesh, QgsMeshDatasetGr
     case QgsMeshDatasetGroupMetadata::DataType::DataOnVolumes:
       return mesh->faceCount(); // because they are averaged to faces
   }
+  return 0;
 }
 
 QgsMeshDatasetGroupMetadata::DataType QgsMeshLayerUtils::datasetValuesType( const QgsMeshDatasetGroupMetadata::DataType &type )
