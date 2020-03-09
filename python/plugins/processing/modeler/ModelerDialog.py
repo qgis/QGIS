@@ -82,7 +82,6 @@ class ModelerDialog(QgsModelDesignerDialog):
 
     def __init__(self, model=None, parent=None):
         super().__init__(parent)
-        self._model = None
 
         if iface is not None:
             self.toolbar().setIconSize(iface.iconSize())
@@ -104,22 +103,11 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.actionRun().triggered.connect(self.runModel)
 
         if model is not None:
-            self._model = model.create()
-            self._model.setSourceFilePath(model.sourceFilePath())
-            self.textGroup().setText(self._model.group())
-            self.textName().setText(self._model.displayName())
-            self.repaintModel()
-
-        else:
-            self._model = QgsProcessingModelAlgorithm()
-            self._model.setProvider(QgsApplication.processingRegistry().providerById('model'))
-        self.updateVariablesGui()
+            _model = model.create()
+            _model.setSourceFilePath(model.sourceFilePath())
+            self.setModel(_model)
 
         self.view().centerOn(0, 0)
-        self.help = None
-
-    def model(self):
-        return self._model
 
     def editHelp(self):
         alg = self.model()
@@ -145,11 +133,9 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.model().setDesignerParameterValues(dlg.getParameterValues())
 
     def saveInProject(self):
-        if not self.can_save():
+        if not self.validateSave():
             return
 
-        self.model().setName(str(self.textName().text()))
-        self.model().setGroup(str(self.textGroup().text()))
         self.model().setSourceFilePath(None)
 
         project_provider = QgsApplication.processingRegistry().providerById(PROJECT_PROVIDER_ID)
@@ -162,24 +148,9 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.setDirty(False)
         QgsProject.instance().setDirty(True)
 
-    def can_save(self):
-        """
-        Tests whether a model can be saved, or if it is not yet valid
-        :return: bool
-        """
-        if str(self.textName().text()).strip() == '':
-            self.messageBar().pushWarning(
-                "", self.tr('Please a enter model name before saving')
-            )
-            return False
-
-        return True
-
     def saveModel(self, saveAs):
-        if not self.can_save():
+        if not self.validateSave():
             return
-        self.model().setName(str(self.textName().text()))
-        self.model().setGroup(str(self.textGroup().text()))
         if self.model().sourceFilePath() and not saveAs:
             filename = self.model().sourceFilePath()
         else:
@@ -220,27 +191,6 @@ class ModelerDialog(QgsModelDesignerDialog):
                                                                 self.tr('Processing models (*.model3 *.MODEL3)'))
         if filename:
             self.loadModel(filename)
-
-    def loadModel(self, filename):
-        alg = QgsProcessingModelAlgorithm()
-        if alg.fromFile(filename):
-            self._model = alg
-            self._model.setProvider(QgsApplication.processingRegistry().providerById('model'))
-            self.textGroup().setText(alg.group())
-            self.textName().setText(alg.name())
-            self.repaintModel()
-
-            self.updateVariablesGui()
-
-            self.view().centerOn(0, 0)
-            self.setDirty(False)
-        else:
-            QgsMessageLog.logMessage(self.tr('Could not load model {0}').format(filename),
-                                     self.tr('Processing'),
-                                     Qgis.Critical)
-            QMessageBox.critical(self, self.tr('Open Model'),
-                                 self.tr('The selected model could not be loaded.\n'
-                                         'See the log for more information.'))
 
     def repaintModel(self, showControls=True):
         self.scene = ModelerScene(self)
