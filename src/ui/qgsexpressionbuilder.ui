@@ -357,6 +357,19 @@
                     </widget>
                    </item>
                    <item>
+                    <widget class="QToolButton" name="btnEditExpression">
+                     <property name="enabled">
+                      <bool>false</bool>
+                     </property>
+                     <property name="toolTip">
+                      <string>Edit selected expression from user expressions</string>
+                     </property>
+                     <property name="text">
+                      <string>Edit</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QToolButton" name="btnRemoveExpression">
                      <property name="enabled">
                       <bool>false</bool>

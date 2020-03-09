@@ -381,6 +381,13 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void removeSelectedUserExpression( );
 
     /**
+     * Edits the selected expression from the stored user expressions,
+     * the selected expression must be a user stored expression.
+     * \since QGIS 3.14
+     */
+    void editSelectedUserExpression();
+
+    /**
      * Returns the list of expression items matching a \a label.
      * \since QGIS 3.12
      */

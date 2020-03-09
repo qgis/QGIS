@@ -381,6 +381,14 @@ the selected expression must be a user stored expression.
 .. versionadded:: 3.12
 %End
 
+    void editSelectedUserExpression();
+%Docstring
+Edits the selected expression from the stored user expressions,
+the selected expression must be a user stored expression.
+
+.. versionadded:: 3.14
+%End
+
     const QList<QgsExpressionItem *> findExpressions( const QString &label );
 %Docstring
 Returns the list of expression items matching a ``label``.

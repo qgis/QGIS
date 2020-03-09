@@ -61,6 +61,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( lblPreview, &QLabel::linkActivated, this, &QgsExpressionBuilderWidget::lblPreview_linkActivated );
   connect( mValuesListView, &QListView::doubleClicked, this, &QgsExpressionBuilderWidget::mValuesListView_doubleClicked );
   connect( btnSaveExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::storeCurrentUserExpression );
+  connect( btnEditExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::editSelectedUserExpression );
   connect( btnRemoveExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::removeSelectedUserExpression );
   connect( btnClearEditor, &QPushButton::pressed, txtExpressionString, &QgsCodeEditorExpression::clear );
 
@@ -83,6 +84,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   // Set icons for tool buttons
   btnSaveExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ) );
+  btnEditExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionToggleEditing.svg" ) ) );
   btnRemoveExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionDeleteSelected.svg" ) ) );
   btnClearEditor->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileNew.svg" ) ) );
 
@@ -267,8 +269,10 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   QString help = loadFunctionHelp( item );
   txtHelpText->setText( help );
 
-  btnRemoveExpression->setEnabled( item->parent() &&
-                                   item->parent()->text() == mUserExpressionsGroupName );
+  bool isUserExpression = item->parent() && item->parent()->text() == mUserExpressionsGroupName;
+
+  btnRemoveExpression->setEnabled( isUserExpression );
+  btnEditExpression->setEnabled( isUserExpression );
 
 }
 
@@ -1343,6 +1347,28 @@ void QgsExpressionBuilderWidget::storeCurrentUserExpression()
 {
   const QString expression { this->expressionText() };
   QgsExpressionStoreDialog dlg { expression, expression, QString( ), mUserExpressionLabels };
+  if ( dlg.exec() == QDialog::DialogCode::Accepted )
+  {
+    saveToUserExpressions( dlg.label(), dlg.expression(), dlg.helpText() );
+  }
+}
+
+void QgsExpressionBuilderWidget::editSelectedUserExpression()
+{
+  // Get the item
+  QModelIndex idx = mProxyModel->mapToSource( expressionTree->currentIndex() );
+  QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  if ( !item )
+    return;
+
+  // Don't handle remove if we are on a header node or the parent
+  // is not the user group
+  if ( item->getItemType() == QgsExpressionItem::Header ||
+       ( item->parent() && item->parent()->text() != mUserExpressionsGroupName ) )
+    return;
+
+  QgsExpressionStoreDialog dlg { item->text(), item->getExpressionText(), item->getHelpText(), QStringList() };
+
   if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
     saveToUserExpressions( dlg.label(), dlg.expression(), dlg.helpText() );
