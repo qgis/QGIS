@@ -37,7 +37,7 @@ uniform bool arrowsEnabled;
 uniform sampler2D arrowsGridTexture;
 // Sets the location of the minimum corner of the grid
 uniform vec2 arrowsMinCorner;
-// Sets the spacing beteen arrows in map unit
+// Sets the spacing between arrows in map unit
 uniform float arrowsSpacing;
 // Sets the texture used for drawing arrows
 uniform sampler2D arrowTexture;
