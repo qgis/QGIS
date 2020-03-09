@@ -153,7 +153,26 @@ bool QgsBrowserProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &s
   if ( !filterAcceptsProviderKey( sourceIndex ) || !filterRootAcceptsProviderKey( sourceIndex ) )
     return false;
 
+  if ( ! mShowLayers )
+  {
+    QgsDataItem *item = mModel->dataItem( sourceIndex );
+    if ( qobject_cast< QgsLayerItem * >( item ) )
+    {
+      return false;
+    }
+  }
+
   return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex );
+}
+
+bool QgsBrowserProxyModel::showLayers() const
+{
+  return mShowLayers;
+}
+
+void QgsBrowserProxyModel::setShowLayers( bool showLayers )
+{
+  mShowLayers = showLayers;
 }
 
 QgsMapLayerType QgsBrowserProxyModel::layerType() const

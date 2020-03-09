@@ -144,19 +144,38 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     void setLayerType( QgsMapLayerType type );
 
     /**
-     * Sets the customization filters for data items based on item's data provider key
+     * Sets a filter to hide data items based on on item's data provider key.
      *
-     * By default browser model shows all items from all available data items provider and few special
-     * items (e.g. Favourites). To customize the behavior, set the filter to not load certain data items.
+     * By default browser model shows all items from all available data item providers and few special
+     * items (e.g. Favourites).
+     * To customize the behavior, set the filter to not load certain data items.
      * The items that are not based on data item providers have prefix "special:", for example
-     * "special:Favourites", "special:Home", "PostGIS", "MSSQL"
+     * "special:Favorites", "special:Home", "PostGIS", "MSSQL"
      *
      * All items created by the providers listed in filter are hidden from the layer tree.
      * This filter is always evaluated.
      *
+     * \param hiddenItemsFilter a list of data provider prefixes that will be hidden.
+     *
      * \since QGIS 3.12
      */
-    void setDataItemProviderKeyFilter( const QStringList &filter );
+    void setDataItemProviderKeyFilter( const QStringList &hiddenItemsFilter );
+
+    /**
+     * Returns TRUE if layers must be shown, this flag is TRUE by default.
+     *
+     * \see setShowLayers()
+     * \since QGIS 3.14
+     */
+    bool showLayers() const;
+
+    /**
+     * Sets show layers to \a showLayers
+     *
+     * \see showLayers()
+     * \since QGIS 3.14
+     */
+    void setShowLayers( bool showLayers );
 
   protected:
 
@@ -172,6 +191,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     Qt::CaseSensitivity mCaseSensitivity = Qt::CaseInsensitive;
 
     bool mFilterByLayerType = false;
+    bool mShowLayers = true;
     QgsMapLayerType mLayerType = QgsMapLayerType::VectorLayer;
 
     //! Update filter
@@ -194,6 +214,8 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
 
     //! Root item accepts provider key.
     bool filterRootAcceptsProviderKey( const QModelIndex &sourceIndex ) const;
+
+
 };
 
 #endif // QGSBROWSERPROXYMODEL_H
