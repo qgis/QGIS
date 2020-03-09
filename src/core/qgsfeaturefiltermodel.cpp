@@ -623,7 +623,7 @@ QVariantList QgsFeatureFilterModel::extraIdentifierValues() const
   {
     QVariantList nullValues;
     for ( int i = 0; i < mIdentifierFields.count(); i++ )
-      nullValues << QVariant();
+      nullValues << QVariant( QVariant::Int );
     return nullValues;
   }
   return mExtraIdentifierValues;
