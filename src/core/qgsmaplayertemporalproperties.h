@@ -38,6 +38,7 @@
  */
 class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
 {
+    Q_OBJECT
 
   public:
 
@@ -46,7 +47,7 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
      *
      * The \a enabled argument specifies whether the temporal properties are initially enabled or not (see isActive()).
      */
-    QgsMapLayerTemporalProperties( bool enabled = false );
+    QgsMapLayerTemporalProperties( QObject *parent, bool enabled = false );
 
     ~QgsMapLayerTemporalProperties() override;
 

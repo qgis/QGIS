@@ -17,8 +17,8 @@
 
 #include "qgsmaplayertemporalproperties.h"
 
-QgsMapLayerTemporalProperties::QgsMapLayerTemporalProperties( bool enabled )
-  : QgsTemporalProperty( enabled )
+QgsMapLayerTemporalProperties::QgsMapLayerTemporalProperties( QObject *parent, bool enabled )
+  : QgsTemporalProperty( parent, enabled )
 {
 }
 
@@ -28,8 +28,11 @@ QgsMapLayerTemporalProperties::~QgsMapLayerTemporalProperties()
 
 void QgsMapLayerTemporalProperties::setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource source )
 {
-  mSource = source;
-  emit changed();
+  if ( mSource != source )
+  {
+    mSource = source;
+    emit changed();
+  }
 }
 
 QgsMapLayerTemporalProperties::TemporalSource QgsMapLayerTemporalProperties::temporalSource() const

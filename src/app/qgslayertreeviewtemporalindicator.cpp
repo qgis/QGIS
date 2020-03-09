@@ -32,9 +32,8 @@ void QgsLayerTreeViewTemporalIndicatorProvider::connectSignals( QgsMapLayer *lay
 {
   if ( !( qobject_cast<QgsVectorLayer *>( layer ) || qobject_cast<QgsRasterLayer *>( layer ) ) )
     return;
-  QgsMapLayer *mapLayer = layer;
-  connect( mapLayer->temporalProperties(), &QgsMapLayerTemporalProperties::changed, this, [ this, mapLayer ]( ) { this->onLayerChanged( mapLayer ); } );
 
+  connect( layer->temporalProperties(), &QgsMapLayerTemporalProperties::changed, this, [ this, layer ]( ) { this->onLayerChanged( layer ); } );
 }
 
 void QgsLayerTreeViewTemporalIndicatorProvider::onIndicatorClicked( const QModelIndex &index )

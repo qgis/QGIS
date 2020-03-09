@@ -18,8 +18,9 @@
 
 #include "qgstemporalproperty.h"
 
-QgsTemporalProperty::QgsTemporalProperty( bool enabled )
-  : mActive( enabled )
+QgsTemporalProperty::QgsTemporalProperty( QObject *parent, bool enabled )
+  : QObject( parent )
+  , mActive( enabled )
 {
 }
 
