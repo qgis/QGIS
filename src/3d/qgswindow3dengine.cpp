@@ -74,3 +74,8 @@ QSize QgsWindow3DEngine::size() const
 {
   return mWindow3D->size();
 }
+
+QSurface *QgsWindow3DEngine::surface() const
+{
+  return mWindow3D;
+}

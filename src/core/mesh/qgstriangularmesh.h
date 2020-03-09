@@ -191,6 +191,15 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
     int levelOfDetail() const;
 
     /**
+     * Returns the extent of the triangular mesh in map coordinates
+     *
+     * \returns bounding box of the triangular mesh
+     *
+     * \since QGIS 3.14
+     */
+    QgsRectangle extent() const;
+
+    /**
      * Returns whether the mesh contains at mesh elements of given type
      *  \since QGIS 3.14
      */
@@ -228,6 +237,8 @@ class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
     QgsMeshSpatialIndex mSpatialFaceIndex;
     QgsMeshSpatialIndex mSpatialEdgeIndex;
     QgsCoordinateTransform mCoordinateTransform; //coordinate transform used to convert native mesh vertices to map vertices
+
+    QgsRectangle mExtent;
 
     // average size of the triangles
     double mAverageTriangleSize = 0;

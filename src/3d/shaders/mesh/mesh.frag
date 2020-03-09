@@ -11,16 +11,38 @@ in treatedVertex {
 
 out vec4 fragColor;
 
+//Uniforms
+// Sets if the wireframe is enabled
 uniform bool wireframeEnabled;
+// Sets if the line width of the wireframe
 uniform float lineWidth;
+// Sets the color of the wireframe
 uniform vec4 lineColor;
 
+// Sets the redering style, 0: unique color, 1: color ramp shader of terrain, 2: color ramp shader of 2D rendering
 uniform int textureType;
-uniform int colorRampType;
-uniform vec4 meshColor;
 
+// Sets the color ramp type, 0: linear, 1: discrete, 2: exact
+uniform int colorRampType;
+// Sets the unique mesh color
+uniform vec4 meshColor;
+// Sets the texture that stores the color ramp
 uniform sampler1D colorRampTexture;
+// Sets the color ramp value count, used to check the if not void
 uniform int colorRampCount;
+
+// Sets if the arrow rendering is enabled
+uniform bool arrowsEnabled;
+// Sets the texture used to store vector values
+uniform sampler2D arrowsGridTexture;
+// Sets the location of the minimum corner of the grid
+uniform vec2 arrowsMinCorner;
+// Sets the spacing beteen arrows in map unit
+uniform float arrowsSpacing;
+// Sets the texture used for drawing arrows
+uniform sampler2D arrowTexture;
+// Sets the arrows color
+uniform vec4 arrowsColor;
 
 #pragma include ../light.inc.frag
 
@@ -84,15 +106,15 @@ vec3 linearColorRamp()
 
    if (colorRampSize==1)
    {
-     vec4 colorRampLine=texture(colorRampTexture,(0.5)/colorRampSize);
+     vec4 colorRampLine=texelFetch(colorRampTexture,0,0);
      return colorRampLine.yzw;
    }
 
 
    for (int i=0;i<(colorRampSize-1);++i)
    {
-      vec4 colorRampLine1=texture(colorRampTexture,(i+0.5)/colorRampSize);
-      vec4 colorRampLine2=texture(colorRampTexture,(i+1.5)/colorRampSize);
+      vec4 colorRampLine1=texelFetch(colorRampTexture,i,0);
+      vec4 colorRampLine2=texelFetch(colorRampTexture,i+1,0);
 
       vec3 color1=colorRampLine1.yzw;
       vec3 color2=colorRampLine2.yzw;
@@ -111,7 +133,7 @@ vec3 linearColorRamp()
     }
 
    //last color if no value is found
-   vec4 colorRampLine=texture(colorRampTexture,(colorRampSize-0.5)/colorRampSize);
+   vec4 colorRampLine=texelFetch(colorRampTexture,colorRampSize-1,0);
    return colorRampLine.yzw;
 
 
@@ -127,7 +149,7 @@ vec3 discreteColorRamp()
 
     for (int i=0;i<(colorRampSize);++i)
     {
-        vec4 colorRampLine=texture(colorRampTexture,(i+0.5)/colorRampSize);
+        vec4 colorRampLine=texelFetch(colorRampTexture,i,0);
 
         color=colorRampLine.yzw;
         float value=colorRampLine.x;
@@ -147,7 +169,7 @@ vec3 exactColorRamp()
 
     for (int i=0;i<(colorRampSize);++i)
     {
-        vec4 colorRampLine=texture(colorRampTexture,(i+0.5)/colorRampSize);
+        vec4 colorRampLine=texelFetch(colorRampTexture,i,0);
 
         vec3 color=colorRampLine.yzw;
         float value=colorRampLine.x;
@@ -185,6 +207,37 @@ vec4 colorRamp()
     return vec4(colorRampResult,1);
 }
 
+float arrows()
+{
+    ivec2 size=textureSize(arrowsGridTexture,0);
+
+    float posX=(fs_in.worldPosition.x-arrowsMinCorner.x)/arrowsSpacing;
+    float posY=(-fs_in.worldPosition.z+arrowsMinCorner.y)/arrowsSpacing;
+    int gridPosX=int(posX+0.5);
+    int gridPosY=int(posY+0.5);
+
+    if (gridPosX<0 || gridPosX>=size.x || gridPosY<0 || gridPosY>=size.y)
+        return 0.0;
+
+    ivec2 textureGridPosition=ivec2(gridPosX,gridPosY);
+    vec4 gridValue=texelFetch(arrowsGridTexture,textureGridPosition,0);
+    float scale=gridValue.x;
+    float angle=gridValue.y-1.570796;
+
+    vec2 textureArrowPosition=vec2(posX-gridPosX,posY-gridPosY);
+
+    float s = sin(angle);
+    float c = cos(angle);
+    vec2 pivot=vec2(0.5,0.5);
+    mat2 rotationMatrix = mat2( c, -s, s,  c);
+
+    textureArrowPosition=rotationMatrix*(textureArrowPosition);
+    textureArrowPosition/=scale;
+    textureArrowPosition=textureArrowPosition+pivot;
+
+    return texture(arrowTexture,textureArrowPosition).a;
+}
+
 void main()
 {
     vec4 color;
@@ -208,6 +261,12 @@ void main()
 
     if (wireframeEnabled)
       color = wireframeShadeLine( color );
+
+    if (arrowsEnabled)
+    {
+      float a=arrows();
+      color=a*arrowsColor+(1-a)*color;
+    }
 
     fragColor=color;
 }

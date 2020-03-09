@@ -83,6 +83,27 @@ class CORE_EXPORT QgsMeshLayerUtils
       int count );
 
     /**
+     * \brief Returns gridded vector values, if extentInMap is default, uses the triangular mesh extent
+     *
+     * \param meshLayer pointer to the mesh layer
+     * \param index dataset index
+     * \param xSpacing the spacing on X coordinate in map unit
+     * \param ySpacing the spacing on Y coordinate in map unit
+     * \param size contains the size (count of rows and columns) of the grid supporting the vectors
+     * \param minCorner coordinates of the corner with x minimum and y miminum
+     * \returns vectors on a grid, empty if dataset is no vector values
+     *
+     * \since QGIS 3.14
+     */
+    static QVector<QgsVector> griddedVectorValues(
+      const QgsMeshLayer *meshLayer,
+      const QgsMeshDatasetIndex index,
+      double xSpacing,
+      double ySpacing,
+      const QSize &size,
+      const QgsPointXY &minCorner );
+
+    /**
      * Calculates magnitude values from the given QgsMeshDataBlock.
      *
      * \since QGIS 3.6

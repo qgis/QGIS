@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>340</width>
-    <height>773</height>
+    <width>322</width>
+    <height>760</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,7 +64,14 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
-       <widget class="QgsDoubleSpinBox" name="mLineWidthSpinBox"/>
+       <widget class="QgsDoubleSpinBox" name="mLineWidthSpinBox" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QgsColorButton" name="mColorWidget"/>
@@ -547,13 +554,13 @@
  <customwidgets>
   <customwidget>
    <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
+   <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
+   <extends>QWidget</extends>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
