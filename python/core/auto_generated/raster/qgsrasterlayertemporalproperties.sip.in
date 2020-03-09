@@ -23,7 +23,7 @@ Implementation of map layer temporal properties for raster layers.
 %End
   public:
 
-    QgsRasterLayerTemporalProperties( bool enabled = false );
+    QgsRasterLayerTemporalProperties( QObject *parent = 0, bool enabled = false );
 %Docstring
 Constructor for QgsRasterLayerTemporalProperties.
 

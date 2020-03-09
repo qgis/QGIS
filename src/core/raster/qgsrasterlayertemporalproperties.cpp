@@ -17,8 +17,8 @@
 
 #include "qgsrasterlayertemporalproperties.h"
 
-QgsRasterLayerTemporalProperties::QgsRasterLayerTemporalProperties( bool enabled )
-  :  QgsMapLayerTemporalProperties( enabled )
+QgsRasterLayerTemporalProperties::QgsRasterLayerTemporalProperties( QObject *parent, bool enabled )
+  :  QgsMapLayerTemporalProperties( parent, enabled )
 {
 }
 

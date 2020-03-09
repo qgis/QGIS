@@ -577,7 +577,7 @@ void QgsRasterLayer::init()
   mLastViewPort.mWidth = 0;
   mLastViewPort.mHeight = 0;
 
-  mTemporalProperties = qgis::make_unique<QgsRasterLayerTemporalProperties>();
+  mTemporalProperties = new QgsRasterLayerTemporalProperties( this );
 }
 
 void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
@@ -955,7 +955,7 @@ bool QgsRasterLayer::ignoreExtents() const
 
 QgsRasterLayerTemporalProperties *QgsRasterLayer::temporalProperties()
 {
-  return mTemporalProperties.get();
+  return mTemporalProperties;
 }
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )

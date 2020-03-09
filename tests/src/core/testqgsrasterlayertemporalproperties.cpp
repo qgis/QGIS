@@ -39,6 +39,7 @@ class TestQgsRasterLayerTemporalProperties : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void checkSettingTemporalRange();
+    void testChangedSignal();
 
   private:
     QgsRasterLayerTemporalProperties *temporalProperties = nullptr;
@@ -80,6 +81,20 @@ void TestQgsRasterLayerTemporalProperties::checkSettingTemporalRange()
   temporalProperties->setFixedTemporalRange( dateTimeRange );
 
   QCOMPARE( temporalProperties->fixedTemporalRange(), dateTimeRange );
+}
+
+void TestQgsRasterLayerTemporalProperties::testChangedSignal()
+{
+  QCOMPARE( temporalProperties->temporalSource(), QgsMapLayerTemporalProperties::TemporalSource::Layer );
+  QSignalSpy spy( temporalProperties, SIGNAL( changed() ) );
+
+  temporalProperties->setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Layer );
+  QCOMPARE( spy.count(), 0 );
+  temporalProperties->setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Project );
+  QCOMPARE( spy.count(), 1 );
+
+  temporalProperties->setIsActive( true );
+  QCOMPARE( spy.count(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsRasterLayerTemporalProperties )

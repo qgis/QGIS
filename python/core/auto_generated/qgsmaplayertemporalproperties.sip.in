@@ -27,7 +27,7 @@ how an individual QgsMapLayer behaves in a temporal context, e.g. while animatin
 %End
   public:
 
-    QgsMapLayerTemporalProperties( bool enabled = false );
+    QgsMapLayerTemporalProperties( QObject *parent, bool enabled = false );
 %Docstring
 Constructor for QgsMapLayerTemporalProperties.
 

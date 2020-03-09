@@ -43,7 +43,7 @@ class CORE_EXPORT QgsTemporalProperty : public QObject
      *
      * The \a active argument specifies whether the property is initially active (see isActive()).
      */
-    QgsTemporalProperty( bool enabled = false );
+    QgsTemporalProperty( QObject *parent = nullptr, bool enabled = false );
 
     /**
      * Sets whether the temporal property is \a active.

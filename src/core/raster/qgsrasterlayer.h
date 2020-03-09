@@ -520,7 +520,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QgsRasterDataProvider *mDataProvider = nullptr;
 
     //! Pointer to temporal properties
-    std::unique_ptr< QgsRasterLayerTemporalProperties > mTemporalProperties;
+    QgsRasterLayerTemporalProperties *mTemporalProperties = nullptr;
 
     //! [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created
     QDateTime mLastModified;

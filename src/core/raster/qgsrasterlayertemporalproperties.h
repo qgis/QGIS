@@ -33,6 +33,8 @@
  */
 class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalProperties
 {
+    Q_OBJECT
+
   public:
 
     /**
@@ -40,7 +42,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      *
      * The \a enabled argument specifies whether the temporal properties are initially enabled or not (see isActive()).
      */
-    QgsRasterLayerTemporalProperties( bool enabled = false );
+    QgsRasterLayerTemporalProperties( QObject *parent = nullptr, bool enabled = false );
 
     virtual ~QgsRasterLayerTemporalProperties() = default;
 
