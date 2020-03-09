@@ -505,6 +505,11 @@ FOREACH (QFW ${QTLISTQG})
     INSTALLNAMETOOL_CHANGE ("${QFW_CHG}" "${QFW_CHG_TO}" "${QPLUGDIR}/../iconengines/libqsvgicon.dylib")
     INSTALLNAMETOOL_CHANGE ("${QFW_CHG}" "${QFW_CHG_TO}" "${QPLUGDIR}/../phonon_backend/libphonon_qt7.dylib")
     INSTALLNAMETOOL_CHANGE ("${QFW_CHG}" "${QFW_CHG_TO}" "${QPLUGDIR}/../styles/libqmacstyle.dylib")
+    # quick plugin
+    IF (@OSX_HAVE_LOADERPATH@)
+        SET (QFW_CHG_TO "${ATLOADER}/../../../${LIBPOST}")
+    ENDIF ()
+    INSTALLNAMETOOL_CHANGE ("${QFW_CHG}" "${QFW_CHG_TO}" "${QAPPDIR}/qml/QgsQuick/libqgis_quick_plugin.dylib")
     # qt fw
     IF (@OSX_HAVE_LOADERPATH@)
         SET (QFW_CHG_TO "${ATLOADER}/../../../${LIBPOST}")
