@@ -125,6 +125,10 @@ QVector<QgsVector> QgsMeshLayerUtils::griddedVectorValues( const QgsMeshLayer *m
 
   const QgsMeshDataBlock isFacesActive = meshLayer->dataProvider()->areFacesActive( index, 0, nativeMesh->faceCount() );
   const QgsMeshDatasetGroupMetadata::DataType dataType = meta.dataType();
+
+  if ( dataType == QgsMeshDatasetGroupMetadata::DataOnEdges )
+    return vectors;
+
   vectors.reserve( size.height()*size.width() );
   for ( int iy = 0; iy < size.height(); ++iy )
   {
@@ -159,6 +163,8 @@ QVector<QgsVector> QgsMeshLayerUtils::griddedVectorValues( const QgsMeshLayer *m
             value = QgsMeshDatasetValue( x, y );
           }
           break;
+          case QgsMeshDatasetGroupMetadata::DataOnEdges:
+            break;
         }
       }
       vectors.append( QgsVector( value.x(), value.y() ) );

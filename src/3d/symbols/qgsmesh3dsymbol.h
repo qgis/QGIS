@@ -293,6 +293,7 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
      * \since QGIS 3.14
      */
     bool arrowsFixedSize() const;
+
     /**
      * Sets if the arrow size is fixed
      *
