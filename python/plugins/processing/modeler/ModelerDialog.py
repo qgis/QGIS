@@ -38,8 +38,6 @@ from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessing,
                        QgsProject,
-                       QgsMessageLog,
-                       QgsProcessingModelAlgorithm,
                        QgsProcessingModelParameter,
                        QgsSettings
                        )
@@ -185,6 +183,9 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.setDirty(False)
 
     def openModel(self):
+        if not self.checkForUnsavedChanges():
+            return
+
         filename, selected_filter = QFileDialog.getOpenFileName(self,
                                                                 self.tr('Open Model'),
                                                                 ModelerUtils.modelsFolders()[0],

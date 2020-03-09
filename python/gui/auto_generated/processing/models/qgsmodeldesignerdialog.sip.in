@@ -85,6 +85,13 @@ Loads a model into the designer from the specified file ``path``.
 Checks if the model can current be saved, and returns ``True`` if it can.
 %End
 
+    bool checkForUnsavedChanges();
+%Docstring
+Checks if there are unsaved changes in the model, and if so, prompts the user to save them.
+
+Returns ``False`` if the cancel option was selected
+%End
+
 };
 
 
