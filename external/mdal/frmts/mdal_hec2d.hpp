@@ -43,7 +43,7 @@ namespace MDAL
       DriverHec2D *create() override;
 
       bool canReadMesh( const std::string &uri ) override;
-      std::unique_ptr< Mesh > load( const std::string &resultsFile, MDAL_Status *status ) override;
+      std::unique_ptr< Mesh > load( const std::string &resultsFile ) override;
 
     private:
       std::unique_ptr< MDAL::MemoryMesh > mMesh;

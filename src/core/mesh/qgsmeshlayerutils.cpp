@@ -29,6 +29,33 @@
 
 ///@cond PRIVATE
 
+int QgsMeshLayerUtils::datasetValuesCount( const QgsMesh *mesh, QgsMeshDatasetGroupMetadata::DataType dataType )
+{
+  if ( !mesh )
+    return 0;
+
+  switch ( dataType )
+  {
+    case QgsMeshDatasetGroupMetadata::DataType::DataOnEdges:
+      return mesh->edgeCount();
+    case QgsMeshDatasetGroupMetadata::DataType::DataOnFaces:
+      return mesh->faceCount();
+    case QgsMeshDatasetGroupMetadata::DataType::DataOnVertices:
+      return mesh->vertexCount();
+    case QgsMeshDatasetGroupMetadata::DataType::DataOnVolumes:
+      return mesh->faceCount(); // because they are averaged to faces
+  }
+}
+
+QgsMeshDatasetGroupMetadata::DataType QgsMeshLayerUtils::datasetValuesType( const QgsMeshDatasetGroupMetadata::DataType &type )
+{
+  // data on volumes are averaged to 2D data on faces
+  if ( type == QgsMeshDatasetGroupMetadata::DataType::DataOnVolumes )
+    return QgsMeshDatasetGroupMetadata::DataType::DataOnFaces;
+
+  return type;
+}
+
 QgsMeshDataBlock QgsMeshLayerUtils::datasetValues(
   const QgsMeshLayer *meshLayer,
   QgsMeshDatasetIndex index,
@@ -43,21 +70,28 @@ QgsMeshDataBlock QgsMeshLayerUtils::datasetValues(
   if ( !provider )
     return block;
 
-  // try to get directly 2D dataset block
-  block = provider->datasetValues( index, valueIndex, count );
-  if ( block.isValid() )
+  if ( !index.isValid() )
     return block;
 
-  const QgsMesh3dAveragingMethod *averagingMethod = meshLayer->rendererSettings().averagingMethod();
-  // try to get 2D block
-  if ( !averagingMethod )
-    return block;
+  const QgsMeshDatasetGroupMetadata meta = meshLayer->dataProvider()->datasetGroupMetadata( index.group() );
+  if ( meta.dataType() != QgsMeshDatasetGroupMetadata::DataType::DataOnVolumes )
+  {
+    block = provider->datasetValues( index, valueIndex, count );
+    if ( block.isValid() )
+      return block;
+  }
+  else
+  {
+    const QgsMesh3dAveragingMethod *averagingMethod = meshLayer->rendererSettings().averagingMethod();
+    if ( !averagingMethod )
+      return block;
 
-  QgsMesh3dDataBlock block3d = provider->dataset3dValues( index, valueIndex, count );
-  if ( !block3d.isValid() )
-    return block;
+    QgsMesh3dDataBlock block3d = provider->dataset3dValues( index, valueIndex, count );
+    if ( !block3d.isValid() )
+      return block;
 
-  block = averagingMethod->calculate( block3d );
+    block = averagingMethod->calculate( block3d );
+  }
   return block;
 }
 
@@ -147,6 +181,16 @@ double QgsMeshLayerUtils::interpolateFromVerticesData( const QgsPointXY &p1, con
 
   return lam1 * val3 + lam2 * val2 + lam3 * val1;
 }
+
+double QgsMeshLayerUtils::interpolateFromVerticesData( double fraction, double val1, double val2 )
+{
+  if ( std::isnan( val1 ) || std::isnan( val2 ) || ( fraction < 0 ) || ( fraction > 1 ) )
+  {
+    return std::numeric_limits<double>::quiet_NaN();
+  }
+  return val1 + ( val2 - val1 ) * fraction;
+}
+
 
 QgsVector QgsMeshLayerUtils::interpolateVectorFromVerticesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3, QgsVector vect1, QgsVector vect2, QgsVector vect3, const QgsPointXY &pt )
 {

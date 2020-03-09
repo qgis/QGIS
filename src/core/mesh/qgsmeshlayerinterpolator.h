@@ -58,7 +58,7 @@ class QgsMeshLayerInterpolator : public QgsRasterInterface SIP_SKIP
     QgsMeshLayerInterpolator( const QgsTriangularMesh &m,
                               const QVector<double> &datasetValues,
                               const QgsMeshDataBlock &activeFaceFlagValues,
-                              bool dataIsOnVertices,
+                              QgsMeshDatasetGroupMetadata::DataType dataType,
                               const QgsRenderContext &context,
                               const QSize &size );
     ~QgsMeshLayerInterpolator() override;
@@ -75,7 +75,7 @@ class QgsMeshLayerInterpolator : public QgsRasterInterface SIP_SKIP
     const QVector<double> &mDatasetValues;
     const QgsMeshDataBlock &mActiveFaceFlagValues;
     const QgsRenderContext &mContext;
-    bool mDataOnVertices = true;
+    QgsMeshDatasetGroupMetadata::DataType mDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
     QSize mOutputSize;
     bool mSpatialIndexActive = false;
 };

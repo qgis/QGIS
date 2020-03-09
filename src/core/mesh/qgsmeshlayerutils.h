@@ -50,13 +50,28 @@ class CORE_EXPORT QgsMeshLayerUtils
   public:
 
     /**
+     * Returns (maximum) number of values that can be extracted from the mesh by type
+     *
+     * It is assumed that 3D values are averaged to face values
+     * \see datasetValues()
+     *
+     * \since QGIS 3.14
+     */
+    static int datasetValuesCount( const QgsMesh *mesh, QgsMeshDatasetGroupMetadata::DataType dataType );
+
+    /**
+     * Returns the type of values the datasetValues() returns
+     *
+     * \see datasetValues()
+     * \since QGIS 3.14
+     */
+    static QgsMeshDatasetGroupMetadata::DataType datasetValuesType( const QgsMeshDatasetGroupMetadata::DataType &type );
+
+    /**
      * \brief Returns N vector/scalar values from the index from the dataset
      *
-     * caller is responsible to set correct value index value:
-     * for DataOnFaces -> native face index
-     * for DataOnVertices -> native vertex index
-     * for DataOnVolumes -> native face index
-     *
+     * See QgsMeshLayerUtils::datasetValuesCount() to determine maximum number of values to be requested
+     * See QgsMeshLayerUtils::datasetValuesType() to see the the type of values the function returns
      * See QgsMeshDatasetGroupMetadata::isVector() to check if the returned value is vector or scalar
      *
      * \since QGIS 3.12
@@ -89,6 +104,17 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QSize &outputSize,
       const QgsRectangle &bbox,
       int &leftLim, int &rightLim, int &topLim, int &bottomLim );
+
+    /**
+    * Interpolates value based on known values on the vertices of a edge
+    * \returns value on the point pt a or NaN
+    *
+    * \since QGIS 3.14
+    */
+    static double interpolateFromVerticesData(
+      double fraction,
+      double val1, double val2
+    );
 
     /**
     * Interpolates value based on known values on the vertices of a triangle

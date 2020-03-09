@@ -74,10 +74,17 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings 
 {
   QgsMeshLayer *meshLayer = layer();
 
-  if ( !meshLayer )
+  if ( !meshLayer || !meshLayer->dataProvider() )
     return nullptr;
 
+  if ( meshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+  {
+    // 3D not implemented for 1D meshes
+    return nullptr;
+  }
+
   Qt3DCore::QEntity *entity = nullptr;
+
 
   QgsCoordinateTransform coordTrans( meshLayer->crs(), map.crs(), map.transformContext() );
   meshLayer->updateTriangularMesh( coordTrans );

@@ -54,6 +54,20 @@ Returns color used for rendering
 Sets color used for rendering of the mesh
 %End
 
+    QgsUnitTypes::RenderUnit lineWidthUnit() const;
+%Docstring
+Returns units of the width of the mesh frame
+
+.. versionadded:: 3.14
+%End
+
+    void setLineWidthUnit( const QgsUnitTypes::RenderUnit &lineWidthUnit );
+%Docstring
+Sets units of the width of the mesh frame
+
+.. versionadded:: 3.14
+%End
+
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Writes configuration to a new DOM element
@@ -144,6 +158,34 @@ Writes configuration to a new DOM element
     void readXml( const QDomElement &elem );
 %Docstring
 Reads configuration from the given DOM element
+%End
+
+    double edgeWidth() const;
+%Docstring
+Returns width of the edge
+
+.. versionadded:: 3.14
+%End
+
+    void setEdgeWidth( double edgeWidth );
+%Docstring
+Sets width of the edge
+
+.. versionadded:: 3.14
+%End
+
+    QgsUnitTypes::RenderUnit edgeWidthUnit() const;
+%Docstring
+Returns length units of the width of the edge
+
+.. versionadded:: 3.14
+%End
+
+    void setEdgeWidthUnit( const QgsUnitTypes::RenderUnit &edgeWidthUnit );
+%Docstring
+Sets length units of the width of the edge
+
+.. versionadded:: 3.14
 %End
 
 };
@@ -402,7 +444,7 @@ Represents a renderer settings for vector datasets
       Arrows,
       //! Displaying vector dataset with streamlines
       Streamlines,
-      //! Displaying vector dataset with streamlines
+      //! Displaying vector dataset with particle traces
       Traces
     };
 
@@ -574,20 +616,34 @@ Constructs renderer with default single layer averaging method
 
     QgsMeshRendererMeshSettings nativeMeshSettings() const;
 %Docstring
-Returns renderer settings
+Returns native mesh renderer settings
 %End
     void setNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
 %Docstring
-Sets new renderer settings, triggers repaint
+Sets new native mesh  renderer settings, triggers repaint
 %End
 
     QgsMeshRendererMeshSettings triangularMeshSettings() const;
 %Docstring
-Returns renderer settings
+Returns triangular mesh renderer settings
 %End
     void setTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
 %Docstring
-Sets new renderer settings
+Sets new triangular mesh renderer settings
+%End
+
+    QgsMeshRendererMeshSettings edgeMeshSettings() const;
+%Docstring
+Returns edge mesh renderer settings
+
+.. versionadded:: 3.14
+%End
+
+    void setEdgeMeshSettings( const QgsMeshRendererMeshSettings &settings );
+%Docstring
+Sets new edge mesh renderer settings
+
+.. versionadded:: 3.14
 %End
 
     QgsMeshRendererScalarSettings scalarSettings( int groupIndex ) const;
