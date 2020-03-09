@@ -36,6 +36,7 @@
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingmodelerparameterwidget.h"
 #include "qgsprocessingparameters.h"
+#include "qgsmodelundocommand.h"
 #include "qgsprocessingmaplayercombobox.h"
 #include "qgsnativealgorithms.h"
 #include "processing/models/qgsprocessingmodelalgorithm.h"
@@ -167,6 +168,7 @@ class TestProcessingGui : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
+    void testModelUndo();
     void testSetGetConfig();
     void testFilterAlgorithmConfig();
     void testWrapperFactoryRegistry();
@@ -281,6 +283,41 @@ void TestProcessingGui::init()
 void TestProcessingGui::cleanup()
 {
 
+}
+
+void TestProcessingGui::testModelUndo()
+{
+  // make a little model
+  QgsProcessingModelAlgorithm model( QStringLiteral( "test" ), QStringLiteral( "testGroup" ) );
+  QMap<QString, QgsProcessingModelChildAlgorithm> algs;
+  QgsProcessingModelChildAlgorithm a1( "native:buffer" );
+  a1.setDescription( QStringLiteral( "alg1" ) );
+  a1.setChildId( QStringLiteral( "alg1" ) );
+  QgsProcessingModelChildAlgorithm a2;
+  a2.setDescription( QStringLiteral( "alg2" ) );
+  a2.setChildId( QStringLiteral( "alg2" ) );
+  QgsProcessingModelChildAlgorithm a3( QStringLiteral( "native:buffer" ) );
+  a3.setDescription( QStringLiteral( "alg3" ) );
+  a3.setChildId( QStringLiteral( "alg3" ) );
+  algs.insert( QStringLiteral( "alg1" ), a1 );
+  algs.insert( QStringLiteral( "alg2" ), a2 );
+  algs.insert( QStringLiteral( "alg3" ), a3 );
+  model.setChildAlgorithms( algs );
+
+  QgsModelUndoCommand command( &model, QStringLiteral( "undo" ) );
+  model.childAlgorithm( QStringLiteral( "alg1" ) ).setDescription( QStringLiteral( "new desc" ) );
+  command.saveAfterState();
+
+  QCOMPARE( model.childAlgorithm( QStringLiteral( "alg1" ) ).description(), QStringLiteral( "new desc" ) );
+  command.undo();
+  QCOMPARE( model.childAlgorithm( QStringLiteral( "alg1" ) ).description(), QStringLiteral( "alg1" ) );
+
+  // first redo should have no effect -- we ignore it, since it's automatically triggered when the
+  // command is added to the stack (yet we apply the initial change to the models outside of the undo stack)
+  command.redo();
+  QCOMPARE( model.childAlgorithm( QStringLiteral( "alg1" ) ).description(), QStringLiteral( "alg1" ) );
+  command.redo();
+  QCOMPARE( model.childAlgorithm( QStringLiteral( "alg1" ) ).description(), QStringLiteral( "new desc" ) );
 }
 
 void TestProcessingGui::testSetGetConfig()

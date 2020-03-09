@@ -108,6 +108,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     void setFont( const QFont &font );
 
     void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
+    void mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) override;
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
@@ -187,6 +188,15 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Emitted by the item to request a repaint of the parent model scene.
      */
     void requestModelRepaint();
+
+    /**
+     * Emitted when the definition of the associated component is about to be changed
+     * by the item.
+     *
+     * The \a text argument gives the translated text describing the change about to occur, and the
+     * optional \a id can be used to group the associated undo commands.
+     */
+    void aboutToChange( const QString &text, int id = 0 );
 
     /**
      * Emitted when the definition of the associated component is changed
@@ -288,6 +298,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QFont mFont;
 
     bool mIsHovering = false;
+    bool mIsMoving = false;
 
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsModelComponentGraphicItem::Flags )

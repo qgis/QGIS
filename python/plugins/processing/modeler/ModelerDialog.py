@@ -91,6 +91,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.scene = ModelerScene(self)
         self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE, self.CANVAS_SIZE))
         self.scene.rebuildRequired.connect(self.repaintModel)
+        self.scene.componentAboutToChange.connect(self.componentAboutToChange)
         self.scene.componentChanged.connect(self.componentChanged)
 
         self.view().setScene(self.scene)
@@ -125,8 +126,9 @@ class ModelerDialog(QgsModelDesignerDialog):
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
         if dlg.descriptions:
+            self.beginUndoCommand(self.tr('Edit Model Help'))
             self.model().setHelpContent(dlg.descriptions)
-            self.setDirty(True)
+            self.endUndoCommand()
 
     def runModel(self):
         if len(self.model().childAlgorithms()) == 0:
@@ -257,10 +259,14 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.view().setScene(self.scene)
 
         self.scene.rebuildRequired.connect(self.repaintModel)
+        self.scene.componentAboutToChange.connect(self.componentAboutToChange)
         self.scene.componentChanged.connect(self.componentChanged)
 
+    def componentAboutToChange(self, description, id):
+        self.beginUndoCommand(description, id)
+
     def componentChanged(self):
-        self.setDirty(True)
+        self.endUndoCommand()
 
     def create_widget_context(self):
         """
@@ -326,10 +332,11 @@ class ModelerDialog(QgsModelDesignerDialog):
                 component.size().width(),
                 -1.5 * component.size().height()))
 
+            self.beginUndoCommand(self.tr('Add Model Input'))
             self.model().addModelParameter(new_param, component)
             self.repaintModel()
             # self.view().ensureVisible(self.scene.getLastParameterItem())
-            self.setDirty(True)
+            self.endUndoCommand()
 
     def getPositionForParameterItem(self):
         MARGIN = 20
@@ -365,9 +372,10 @@ class ModelerDialog(QgsModelDesignerDialog):
                 alg.modelOutput(out).setPosition(alg.position() + QPointF(output_offset_x, output_offset_y))
                 output_offset_y += 1.5 * alg.modelOutput(out).size().height()
 
+            self.beginUndoCommand(self.tr('Add Algorithm'))
             self.model().addChildAlgorithm(alg)
             self.repaintModel()
-            self.setDirty(True)
+            self.endUndoCommand()
 
     def getPositionForAlgorithmItem(self):
         MARGIN = 20

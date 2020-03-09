@@ -90,6 +90,7 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
                 comment = dlg.comments()
 
         if new_param is not None:
+            self.aboutToChange.emit(self.tr('Edit {}').format(new_param.description()))
             self.model().removeModelParameter(self.component().parameterName())
             self.component().setParameterName(new_param.name())
             self.component().setDescription(new_param.name())
@@ -128,6 +129,7 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
             alg = dlg.createAlgorithm()
             alg.setChildId(self.component().childId())
             alg.copyNonDefinitionPropertiesFromModel(self.model())
+            self.aboutToChange.emit(self.tr('Edit {}').format(alg.description()))
             self.model().setChildAlgorithm(alg)
             self.requestModelRepaint.emit()
             self.changed.emit()
@@ -165,6 +167,7 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
             model_output.setDefaultValue(dlg.param.defaultValue())
             model_output.setMandatory(not (dlg.param.flags() & QgsProcessingParameterDefinition.FlagOptional))
             model_output.comment().setDescription(dlg.comments())
+            self.aboutToChange.emit(self.tr('Edit {}').format(model_output.description()))
             self.model().updateDestinationParameters()
             self.requestModelRepaint.emit()
             self.changed.emit()

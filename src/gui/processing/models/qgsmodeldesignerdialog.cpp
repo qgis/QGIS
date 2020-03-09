@@ -23,6 +23,7 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsgui.h"
 #include "qgsprocessingparametertype.h"
+#include "qgsmodelundocommand.h"
 
 #include <QShortcut>
 #include <QDesktopWidget>
@@ -33,6 +34,7 @@
 #include <QToolButton>
 #include <QCloseEvent>
 #include <QMessageBox>
+#include <QUndoView>
 
 ///@cond NOT_STABLE
 
@@ -73,6 +75,16 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
                   Qt::WindowMaximizeButtonHint |
                   Qt::WindowCloseButtonHint );
 
+  mUndoStack = new QUndoStack( this );
+  connect( mUndoStack, &QUndoStack::indexChanged, this, [ = ]
+  {
+    if ( mIgnoreUndoStackChanges )
+      return;
+
+    updateVariablesGui();
+    repaintModel();
+  } );
+
   mPropertiesDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
   mInputsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
   mAlgorithmsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
@@ -109,6 +121,19 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionSave, &QAction::triggered, this, [ = ] { saveModel( false ); } );
   connect( mActionSaveAs, &QAction::triggered, this, [ = ] { saveModel( true ); } );
 
+  mUndoAction = mUndoStack->createUndoAction( this );
+  mUndoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
+  mUndoAction->setShortcuts( QKeySequence::Undo );
+  mRedoAction = mUndoStack->createRedoAction( this );
+  mRedoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRedo.svg" ) ) );
+  mRedoAction->setShortcuts( QKeySequence::Redo );
+
+  mMenuEdit->addAction( mRedoAction );
+  mMenuEdit->addAction( mUndoAction );
+  mToolbar->insertAction( mActionZoomIn, mUndoAction );
+  mToolbar->insertAction( mActionZoomIn, mRedoAction );
+  mToolbar->insertSeparator( mActionZoomIn );
+
   QgsSettings settings;
   QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::FilterModeler;
   if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_ALGORITHMS_KNOWN_ISSUES" ), false ).toBool() )
@@ -143,14 +168,27 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   QShortcut *ctrlEquals = new QShortcut( QKeySequence( QStringLiteral( "Ctrl+=" ) ), this );
   connect( ctrlEquals, &QShortcut::activated, this, &QgsModelDesignerDialog::zoomIn );
 
-  tabifyDockWidget( mPropertiesDock, mVariablesDock );
+  mUndoDock = new QgsDockWidget( tr( "Undo History" ), this );
+  mUndoDock->setObjectName( QStringLiteral( "UndoDock" ) );
+  mUndoView = new QUndoView( mUndoStack, this );
+  mUndoDock->setWidget( mUndoView );
+  mUndoDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
+  addDockWidget( Qt::DockWidgetArea::LeftDockWidgetArea, mUndoDock );
+
+  tabifyDockWidget( mUndoDock, mPropertiesDock );
+  tabifyDockWidget( mVariablesDock, mPropertiesDock );
+  mPropertiesDock->raise();
   tabifyDockWidget( mInputsDock, mAlgorithmsDock );
   mInputsDock->raise();
 
   connect( mVariablesEditor, &QgsVariableEditorWidget::scopeChanged, this, [ = ]
   {
     if ( model() )
+    {
+      beginUndoCommand( tr( "Change Model Variables" ) );
       model()->setVariables( mVariablesEditor->variablesInActiveScope() );
+      endUndoCommand();
+    }
   } );
 
   fillInputsTree();
@@ -164,6 +202,11 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
   mActionShowComments->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/ShowComments" ), true ).toBool() );
   connect( mActionShowComments, &QAction::toggled, this, &QgsModelDesignerDialog::toggleComments );
+}
+
+QgsModelDesignerDialog::~QgsModelDesignerDialog()
+{
+  mIgnoreUndoStackChanges++;
 }
 
 void QgsModelDesignerDialog::closeEvent( QCloseEvent *event )
@@ -195,8 +238,31 @@ void QgsModelDesignerDialog::closeEvent( QCloseEvent *event )
   }
 }
 
+void QgsModelDesignerDialog::beginUndoCommand( const QString &text, int id )
+{
+  if ( mBlockUndoCommands || !mUndoStack )
+    return;
+
+  if ( mActiveCommand )
+    endUndoCommand();
+
+  mActiveCommand = qgis::make_unique< QgsModelUndoCommand >( model(), text, id );
+}
+
+void QgsModelDesignerDialog::endUndoCommand()
+{
+  if ( !mActiveCommand || !mUndoStack )
+    return;
+
+  mActiveCommand->saveAfterState();
+  mUndoStack->push( mActiveCommand.release() );
+  setDirty( true );
+}
+
 void QgsModelDesignerDialog::updateVariablesGui()
 {
+  mBlockUndoCommands++;
+
   std::unique_ptr< QgsExpressionContextScope > variablesScope = qgis::make_unique< QgsExpressionContextScope >( tr( "Model Variables" ) );
   const QVariantMap modelVars = model()->variables();
   for ( auto it = modelVars.constBegin(); it != modelVars.constEnd(); ++it )
@@ -207,6 +273,8 @@ void QgsModelDesignerDialog::updateVariablesGui()
   variablesContext.appendScope( variablesScope.release() );
   mVariablesEditor->setContext( &variablesContext );
   mVariablesEditor->setEditableScopeIndex( 0 );
+
+  mBlockUndoCommands--;
 }
 
 void QgsModelDesignerDialog::setDirty( bool dirty )
