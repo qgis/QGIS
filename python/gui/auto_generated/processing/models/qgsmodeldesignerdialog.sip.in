@@ -45,10 +45,26 @@ Starts an undo command. This should be called before any changes are made to the
 Ends the current undo command. This should be called after changes are made to the model.
 %End
 
+    QgsProcessingModelAlgorithm *model();
+%Docstring
+Returns the model shown in the dialog.
+%End
+
+    void setModel( QgsProcessingModelAlgorithm *model /Transfer/ );
+%Docstring
+Sets the ``model`` shown in the dialog.
+
+Ownership of ``model`` is transferred to the dialog.
+%End
+
+    void loadModel( const QString &path );
+%Docstring
+Loads a model into the designer from the specified file ``path``.
+%End
+
   protected:
 
     virtual void repaintModel( bool showControls = true ) = 0;
-    virtual QgsProcessingModelAlgorithm *model() = 0;
     virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
     virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
     virtual void exportAsScriptAlgorithm() = 0;
@@ -59,14 +75,15 @@ Ends the current undo command. This should be called after changes are made to t
     QAction *actionSaveInProject();
     QAction *actionEditHelp();
     QAction *actionRun();
-    QLineEdit *textName();
-    QLineEdit *textGroup();
     QgsMessageBar *messageBar();
     QGraphicsView *view();
 
-    void updateVariablesGui();
-
     void setDirty( bool dirty );
+
+    bool validateSave();
+%Docstring
+Checks if the model can current be saved, and returns ``True`` if it can.
+%End
 
 };
 

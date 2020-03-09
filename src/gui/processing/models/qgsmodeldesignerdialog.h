@@ -67,10 +67,26 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      */
     void endUndoCommand();
 
+    /**
+     * Returns the model shown in the dialog.
+     */
+    QgsProcessingModelAlgorithm *model();
+
+    /**
+     * Sets the \a model shown in the dialog.
+     *
+     * Ownership of \a model is transferred to the dialog.
+     */
+    void setModel( QgsProcessingModelAlgorithm *model SIP_TRANSFER );
+
+    /**
+     * Loads a model into the designer from the specified file \a path.
+     */
+    void loadModel( const QString &path );
+
   protected:
 
     virtual void repaintModel( bool showControls = true ) = 0;
-    virtual QgsProcessingModelAlgorithm *model() = 0;
     virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
     virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
     virtual void exportAsScriptAlgorithm() = 0;
@@ -81,17 +97,17 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QAction *actionSaveInProject() { return mActionSaveInProject; }
     QAction *actionEditHelp() { return mActionEditHelp; }
     QAction *actionRun() { return mActionRun; }
-    QLineEdit *textName() { return mNameEdit; }
-    QLineEdit *textGroup() { return mGroupEdit; }
     QgsMessageBar *messageBar() { return mMessageBar; }
     QGraphicsView *view() { return mView; }
 
-    void updateVariablesGui();
-
     void setDirty( bool dirty );
 
-  private slots:
+    /**
+     * Checks if the model can current be saved, and returns TRUE if it can.
+     */
+    bool validateSave();
 
+  private slots:
     void zoomIn();
     void zoomOut();
     void zoomActual();
@@ -101,8 +117,16 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void exportToSvg();
     void exportAsPython();
     void toggleComments( bool show );
-
+    void updateWindowTitle();
   private:
+
+    enum UndoCommand
+    {
+      NameChanged = 1,
+      GroupChanged
+    };
+
+    std::unique_ptr< QgsProcessingModelAlgorithm > mModel;
 
     QgsMessageBar *mMessageBar = nullptr;
     QgsModelerToolboxModel *mAlgorithmsModel = nullptr;
@@ -119,8 +143,12 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     int mBlockUndoCommands = 0;
     int mIgnoreUndoStackChanges = 0;
 
-    void fillInputsTree();
+    QString mTitle;
 
+    bool isDirty() const;
+
+    void fillInputsTree();
+    void updateVariablesGui();
 };
 
 ///@endcond

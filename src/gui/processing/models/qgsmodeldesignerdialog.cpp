@@ -75,13 +75,20 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
                   Qt::WindowMaximizeButtonHint |
                   Qt::WindowCloseButtonHint );
 
+  mModel = qgis::make_unique< QgsProcessingModelAlgorithm >();
+  mModel->setProvider( QgsApplication::processingRegistry()->providerById( QStringLiteral( "model" ) ) );
+
   mUndoStack = new QUndoStack( this );
   connect( mUndoStack, &QUndoStack::indexChanged, this, [ = ]
   {
     if ( mIgnoreUndoStackChanges )
       return;
 
+    mBlockUndoCommands++;
     updateVariablesGui();
+    mGroupEdit->setText( mModel->group() );
+    mNameEdit->setText( mModel->displayName() );
+    mBlockUndoCommands--;
     repaintModel();
   } );
 
@@ -183,10 +190,29 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
   connect( mVariablesEditor, &QgsVariableEditorWidget::scopeChanged, this, [ = ]
   {
-    if ( model() )
+    if ( mModel )
     {
       beginUndoCommand( tr( "Change Model Variables" ) );
-      model()->setVariables( mVariablesEditor->variablesInActiveScope() );
+      mModel->setVariables( mVariablesEditor->variablesInActiveScope() );
+      endUndoCommand();
+    }
+  } );
+  connect( mNameEdit, &QLineEdit::textChanged, this, [ = ]( const QString & name )
+  {
+    if ( mModel )
+    {
+      beginUndoCommand( tr( "Change Model Name" ), NameChanged );
+      mModel->setName( name );
+      endUndoCommand();
+      updateWindowTitle();
+    }
+  } );
+  connect( mGroupEdit, &QLineEdit::textChanged, this, [ = ]( const QString & group )
+  {
+    if ( mModel )
+    {
+      beginUndoCommand( tr( "Change Model Group" ), GroupChanged );
+      mModel->setGroup( group );
       endUndoCommand();
     }
   } );
@@ -202,6 +228,8 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
   mActionShowComments->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/ShowComments" ), true ).toBool() );
   connect( mActionShowComments, &QAction::toggled, this, &QgsModelDesignerDialog::toggleComments );
+
+  updateWindowTitle();
 }
 
 QgsModelDesignerDialog::~QgsModelDesignerDialog()
@@ -211,7 +239,7 @@ QgsModelDesignerDialog::~QgsModelDesignerDialog()
 
 void QgsModelDesignerDialog::closeEvent( QCloseEvent *event )
 {
-  if ( mHasChanged )
+  if ( isDirty() )
   {
     QMessageBox::StandardButton ret = QMessageBox::question( this, tr( "Save Model?" ),
                                       tr( "There are unsaved changes in this model. Do you want to keep those?" ),
@@ -246,7 +274,7 @@ void QgsModelDesignerDialog::beginUndoCommand( const QString &text, int id )
   if ( mActiveCommand )
     endUndoCommand();
 
-  mActiveCommand = qgis::make_unique< QgsModelUndoCommand >( model(), text, id );
+  mActiveCommand = qgis::make_unique< QgsModelUndoCommand >( mModel.get(), text, id );
 }
 
 void QgsModelDesignerDialog::endUndoCommand()
@@ -259,12 +287,49 @@ void QgsModelDesignerDialog::endUndoCommand()
   setDirty( true );
 }
 
+QgsProcessingModelAlgorithm *QgsModelDesignerDialog::model()
+{
+  return mModel.get();
+}
+
+void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
+{
+  mModel.reset( model );
+
+  mGroupEdit->setText( mModel->group() );
+  mNameEdit->setText( mModel->displayName() );
+  repaintModel();
+  updateVariablesGui();
+
+  mView->centerOn( 0, 0 );
+  setDirty( false );
+  mUndoStack->clear();
+
+  updateWindowTitle();
+}
+
+void QgsModelDesignerDialog::loadModel( const QString &path )
+{
+  std::unique_ptr< QgsProcessingModelAlgorithm > alg = qgis::make_unique< QgsProcessingModelAlgorithm >();
+  if ( alg->fromFile( path ) )
+  {
+    alg->setProvider( QgsApplication::processingRegistry()->providerById( QStringLiteral( "model" ) ) );
+    setModel( alg.release() );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Could not load model %1" ).arg( path ), tr( "Processing" ), Qgis::Critical );
+    QMessageBox::critical( this, tr( "Open Model" ), tr( "The selected model could not be loaded.\n"
+                           "See the log for more information." ) );
+  }
+}
+
 void QgsModelDesignerDialog::updateVariablesGui()
 {
   mBlockUndoCommands++;
 
   std::unique_ptr< QgsExpressionContextScope > variablesScope = qgis::make_unique< QgsExpressionContextScope >( tr( "Model Variables" ) );
-  const QVariantMap modelVars = model()->variables();
+  const QVariantMap modelVars = mModel->variables();
   for ( auto it = modelVars.constBegin(); it != modelVars.constEnd(); ++it )
   {
     variablesScope->setVariable( it.key(), it.value() );
@@ -280,6 +345,18 @@ void QgsModelDesignerDialog::updateVariablesGui()
 void QgsModelDesignerDialog::setDirty( bool dirty )
 {
   mHasChanged = dirty;
+  updateWindowTitle();
+}
+
+bool QgsModelDesignerDialog::validateSave()
+{
+  if ( mNameEdit->text().trimmed().isEmpty() )
+  {
+    mMessageBar->pushWarning( QString(), tr( "Please a enter model name before saving" ) );
+    return false;
+  }
+
+  return true;
 }
 
 void QgsModelDesignerDialog::zoomIn()
@@ -392,7 +469,7 @@ void QgsModelDesignerDialog::exportToSvg()
   svg.setFileName( filename );
   svg.setSize( QSize( totalRect.width(), totalRect.height() ) );
   svg.setViewBox( svgRect );
-  svg.setTitle( model()->displayName() );
+  svg.setTitle( mModel->displayName() );
 
   QPainter painter( &svg );
   mView->scene()->render( &painter, svgRect, totalRect );
@@ -410,7 +487,7 @@ void QgsModelDesignerDialog::exportAsPython()
 
   filename = QgsFileUtils::ensureFileNameHasExtension( filename, QStringList() << QStringLiteral( "py" ) );
 
-  const QString text = model()->asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, 4 ).join( '\n' );
+  const QString text = mModel->asPythonCode( QgsProcessing::PythonQgsProcessingAlgorithmSubclass, 4 ).join( '\n' );
 
   QFile outFile( filename );
   if ( !outFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -429,6 +506,23 @@ void QgsModelDesignerDialog::toggleComments( bool show )
   QgsSettings().setValue( QStringLiteral( "/Processing/Modeler/ShowComments" ), show );
 
   repaintModel( true );
+}
+
+void QgsModelDesignerDialog::updateWindowTitle()
+{
+  QString title = tr( "Model Designer" );
+  if ( !mModel->name().isEmpty() )
+    title = QStringLiteral( "%1 - %2" ).arg( title, mModel->name() );
+
+  if ( isDirty() )
+    title.prepend( '*' );
+
+  setWindowTitle( title );
+}
+
+bool QgsModelDesignerDialog::isDirty() const
+{
+  return mHasChanged && mUndoStack->index() == -1;
 }
 
 void QgsModelDesignerDialog::fillInputsTree()
