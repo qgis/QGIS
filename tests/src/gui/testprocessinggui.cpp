@@ -318,6 +318,15 @@ void TestProcessingGui::testModelUndo()
   QCOMPARE( model.childAlgorithm( QStringLiteral( "alg1" ) ).description(), QStringLiteral( "alg1" ) );
   command.redo();
   QCOMPARE( model.childAlgorithm( QStringLiteral( "alg1" ) ).description(), QStringLiteral( "new desc" ) );
+
+  // the last used parameter values setting should not be affected by undo stack changes
+  QVariantMap params;
+  params.insert( QStringLiteral( "a" ), 1 );
+  model.setDesignerParameterValues( params );
+  command.undo();
+  QCOMPARE( model.designerParameterValues(), params );
+  command.redo();
+  QCOMPARE( model.designerParameterValues(), params );
 }
 
 void TestProcessingGui::testSetGetConfig()
