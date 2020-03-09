@@ -95,6 +95,77 @@ QgsMeshDataBlock QgsMeshLayerUtils::datasetValues(
   return block;
 }
 
+QVector<QgsVector> QgsMeshLayerUtils::griddedVectorValues( const QgsMeshLayer *meshLayer,
+    const QgsMeshDatasetIndex index,
+    double xSpacing,
+    double ySpacing,
+    const QSize &size,
+    const QgsPointXY &minCorner )
+{
+  QVector<QgsVector> vectors;
+
+  if ( !meshLayer || !index.isValid() )
+    return vectors;
+
+  const QgsTriangularMesh *triangularMesh = meshLayer->triangularMesh();
+  const QgsMesh *nativeMesh = meshLayer->nativeMesh();
+
+  if ( !triangularMesh || !nativeMesh )
+    return vectors;
+
+  QgsMeshDatasetGroupMetadata meta = meshLayer->dataProvider()->datasetGroupMetadata( index );
+  if ( !meta.isVector() )
+    return vectors;
+
+  // extract vector dataset
+  bool vectorDataOnVertices = meta.DataOnVertices;
+  int datacount = vectorDataOnVertices ? nativeMesh->vertices.count() : nativeMesh->faces.count();
+  const QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues( meshLayer, index, 0, datacount );
+
+  const QgsMeshDataBlock isFacesActive = meshLayer->dataProvider()->areFacesActive( index, 0, nativeMesh->faceCount() );
+  const QgsMeshDatasetGroupMetadata::DataType dataType = meta.dataType();
+  vectors.reserve( size.height()*size.width() );
+  for ( int iy = 0; iy < size.height(); ++iy )
+  {
+    double y = minCorner.y() + iy * ySpacing;
+    for ( int ix = 0; ix < size.width(); ++ix )
+    {
+      double x = minCorner.x() + ix * xSpacing;
+      QgsPoint point( x, y );
+      int faceIndex = triangularMesh->faceIndexForPoint_v2( point );
+      int nativeFaceIndex = -1;
+      if ( faceIndex != -1 )
+        nativeFaceIndex = triangularMesh->trianglesToNativeFaces().at( faceIndex );
+      QgsMeshDatasetValue value;
+      if ( nativeFaceIndex != -1 && isFacesActive.active( nativeFaceIndex ) )
+      {
+        switch ( dataType )
+        {
+          case QgsMeshDatasetGroupMetadata::DataOnFaces:
+          case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+            value = vals.value( nativeFaceIndex );
+            break;
+          case QgsMeshDatasetGroupMetadata::DataOnVertices:
+          {
+            const QgsMeshFace &face = triangularMesh->triangles()[faceIndex];
+            const int v1 = face[0], v2 = face[1], v3 = face[2];
+            const QgsPoint p1 = triangularMesh->vertices()[v1], p2 = triangularMesh->vertices()[v2], p3 = triangularMesh->vertices()[v3];
+            const QgsMeshDatasetValue val1 = vals.value( v1 );
+            const QgsMeshDatasetValue val2 = vals.value( v2 );
+            const QgsMeshDatasetValue val3 = vals.value( v3 );
+            const double x = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, val1.x(), val2.x(), val3.x(), point );
+            const double y = QgsMeshLayerUtils::interpolateFromVerticesData( p1, p2, p3, val1.y(), val2.y(), val3.y(), point );
+            value = QgsMeshDatasetValue( x, y );
+          }
+          break;
+        }
+      }
+      vectors.append( QgsVector( value.x(), value.y() ) );
+    }
+  }
+  return vectors;
+}
+
 QVector<double> QgsMeshLayerUtils::calculateMagnitudes( const QgsMeshDataBlock &block )
 {
   Q_ASSERT( QgsMeshDataBlock::ActiveFlagInteger != block.type() );

@@ -136,6 +136,7 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
   // TRANSFORM VERTICES
   mCoordinateTransform = transform;
   mTriangularMesh.vertices.resize( nativeMesh->vertices.size() );
+  mExtent.setMinimal();
   for ( int i = 0; i < nativeMesh->vertices.size(); ++i )
   {
     const QgsMeshVertex &vertex = nativeMesh->vertices.at( i );
@@ -148,6 +149,7 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
         mapVertex.addZValue( vertex.z() );
         mapVertex.setM( vertex.m() );
         mTriangularMesh.vertices[i] = mapVertex;
+        mExtent.include( mapPoint );
       }
       catch ( QgsCsException &cse )
       {
@@ -159,6 +161,7 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
     else
     {
       mTriangularMesh.vertices[i] = vertex;
+      mExtent.include( vertex );
     }
   }
 
@@ -253,6 +256,11 @@ void QgsTriangularMesh::finalizeTriangles()
     }
   }
   mAverageTriangleSize /= mTriangularMesh.faceCount();
+}
+
+QgsRectangle QgsTriangularMesh::extent() const
+{
+  return mExtent;
 }
 
 int QgsTriangularMesh::levelOfDetail() const

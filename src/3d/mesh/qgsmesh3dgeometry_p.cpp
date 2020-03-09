@@ -354,8 +354,6 @@ void QgsMeshDataset3dGeometry::init()
 
   QgsTriangularMesh triangularMesh = *layer->triangularMesh();
 
-//Extract data from render cache
-
   if ( verticaleMagnitude.count() != triangularMesh.vertices().count()  ||
        scalarMagnitude.count() != triangularMesh.vertices().count() )
     return;
