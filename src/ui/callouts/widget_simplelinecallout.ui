@@ -309,6 +309,12 @@
   <tabstop>mOffsetFromLabelSpin</tabstop>
   <tabstop>mOffsetFromLabelUnitWidget</tabstop>
   <tabstop>mOffsetFromLabelDDBtn</tabstop>
+  <tabstop>mDrawToAllPartsCheck</tabstop>
+  <tabstop>mDrawToAllPartsDDBtn</tabstop>
+  <tabstop>mAnchorPointComboBox</tabstop>
+  <tabstop>mAnchorPointDDBtn</tabstop>
+  <tabstop>mLabelAnchorPointComboBox</tabstop>
+  <tabstop>mLabelAnchorPointDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>
