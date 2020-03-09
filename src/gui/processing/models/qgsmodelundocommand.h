@@ -22,8 +22,9 @@
 
 class QgsProcessingModelAlgorithm;
 
-///@cond NOT_STABLE
+#define SIP_NO_FILE
 
+///@cond NOT_STABLE
 
 /**
  * \ingroup gui
