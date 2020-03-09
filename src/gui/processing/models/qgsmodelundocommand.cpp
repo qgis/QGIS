@@ -39,7 +39,13 @@ int QgsModelUndoCommand::id() const
 void QgsModelUndoCommand::undo()
 {
   QUndoCommand::undo();
+
+  // some settings must live "outside" the undo stack
+  const QVariantMap params = mModel->designerParameterValues();
+
   mModel->loadVariant( mBeforeState );
+
+  mModel->setDesignerParameterValues( params );
 }
 
 void QgsModelUndoCommand::redo()
@@ -50,7 +56,13 @@ void QgsModelUndoCommand::redo()
     return;
   }
   QUndoCommand::redo();
+
+  // some settings must live "outside" the undo stack
+  const QVariantMap params = mModel->designerParameterValues();
+
   mModel->loadVariant( mAfterState );
+
+  mModel->setDesignerParameterValues( params );
 }
 
 bool QgsModelUndoCommand::mergeWith( const QUndoCommand *other )
