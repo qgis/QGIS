@@ -322,6 +322,11 @@ void TestQgs3DRendering::testExtrudedPolygons()
   engine.setRootEntity( scene );
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 250 ), 500, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QVERIFY( renderCheck( "polygon3d_extrusion", img, 40 ) );
