@@ -371,7 +371,7 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer )
   arrowsGridTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Nearest );
 
   Qt3DRender::QTexture2D *arrowTexture = new Qt3DRender::QTexture2D( this );
-  Qt3DRender::QTextureImage *arrowTextureImage = new Qt3DRender::QTextureImage( this );
+  Qt3DRender::QTextureImage *arrowTextureImage = new Qt3DRender::QTextureImage();
   arrowTextureImage->setSource( QStringLiteral( "qrc:/textures/arrow.png" ) );
   arrowTexture->addTextureImage( arrowTextureImage );
   arrowTexture->setMinificationFilter( Qt3DRender::QTexture2D::Nearest );
