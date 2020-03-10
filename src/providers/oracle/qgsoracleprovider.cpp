@@ -1028,12 +1028,12 @@ bool QgsOracleProvider::determineAlwaysGeneratedKeys()
     return false;
   }
 
+  mValid = true;
   // check to see if there is an unique index on the relation, which
   // can be used as a key into the table. Primary keys are always
   // unique indices, so we catch them as well.
   QgsOracleConn *conn = connectionRO();
   QSqlQuery qry( *conn );
-
   QString sql = QStringLiteral( "SELECT a.column_name "
                                 "FROM all_tab_identity_cols a "
                                 "WHERE a.owner = '%1' "
@@ -1956,13 +1956,10 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
   QOCISpatialGeometry g;
 
   QgsGeometry convertedGeom;
-  QgsWkbTypes::Type geomWkbType = geom.wkbType();
-  if ( ( geomWkbType != QgsWkbTypes::CircularString ) &&
-       ( geomWkbType != QgsWkbTypes::CircularStringZ ) &&
-       ( geomWkbType != QgsWkbTypes::CompoundCurve ) &&
-       ( geomWkbType != QgsWkbTypes::CompoundCurveZ ) )
-    convertedGeom = convertToProviderType( geom );
-  QByteArray wkb( !convertedGeom.isNull() ? convertedGeom.asWkb() : geom.asWkb() );
+  convertedGeom = convertToProviderType( geom );
+  if ( convertedGeom.isNull() )
+    convertedGeom = geom;
+  QByteArray wkb( convertedGeom.asWkb() );
 
   wkbPtr ptr;
   ptr.ucPtr = !geom.isEmpty() ? reinterpret_cast< unsigned char * >( const_cast<char *>( wkb.constData() ) ) : nullptr;
@@ -2049,7 +2046,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
         int nPolygons = 1;
         const QgsMultiPolygon *multipoly =
           ( QgsWkbTypes::flatType( type ) == QgsWkbTypes::MultiPolygon ) ?
-          dynamic_cast<const QgsMultiPolygon *>( convertedGeom.isNull() ? geom.constGet() : convertedGeom.constGet() ) : nullptr;
+          dynamic_cast<const QgsMultiPolygon *>( convertedGeom.constGet() ) : nullptr;
         if ( multipoly )
         {
           g.gtype = SDO_GTYPE( dim, GtMultiPolygon );
@@ -2063,7 +2060,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
         {
           const QgsPolygon *poly = multipoly ?
                                    dynamic_cast<const QgsPolygon *>( multipoly->geometryN( iPolygon ) ) :
-                                   dynamic_cast<const QgsPolygon *>( geom.constGet() );
+                                   dynamic_cast<const QgsPolygon *>( convertedGeom.constGet() );
           for ( int iRing = 0, nRings = *ptr.iPtr++; iRing < nRings; iRing++ )
           {
             g.eleminfo << iOrdinate << ( iRing == 0 ? 1003 : 2003 ) << 1;
@@ -2223,7 +2220,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
         int nSurfaces = 1;
         const QgsMultiSurface *multisurface =
           ( QgsWkbTypes::flatType( type ) == QgsWkbTypes::MultiSurface ) ?
-          dynamic_cast<const QgsMultiSurface *>( convertedGeom.isNull() ? geom.constGet() : convertedGeom.constGet() ) : nullptr;
+          dynamic_cast<const QgsMultiSurface *>( convertedGeom.constGet() ) : nullptr;
         if ( multisurface )
         {
           g.gtype = SDO_GTYPE( dim, GtMultiPolygon );
@@ -2234,7 +2231,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
         {
           const QgsCurvePolygon *curvepoly = multisurface ?
                                              dynamic_cast<const QgsCurvePolygon *>( multisurface->geometryN( iSurface ) ) :
-                                             dynamic_cast<const QgsCurvePolygon *>( geom.constGet() );
+                                             dynamic_cast<const QgsCurvePolygon *>( convertedGeom.constGet() );
 
           const int nRings = ( curvepoly->exteriorRing() ? 1 : 0 ) + curvepoly->numInteriorRings();
 
@@ -2497,7 +2494,7 @@ long QgsOracleProvider::featureCount() const
   QVariantList args;
   if ( !mIsQuery && mUseEstimatedMetadata )
   {
-    sql = QString( "SELECT num_rows FROM all_tables WHERE owner=? AND table_name=? FEATUREREQUEST" );
+    sql = QString( "SELECT num_rows FROM all_tables WHERE owner=? AND table_name=?" );
     args << mOwnerName << mTableName;
   }
   else
@@ -2508,15 +2505,18 @@ long QgsOracleProvider::featureCount() const
     {
       sql += " WHERE " + mSqlWhereClause;
     }
-  }
-
-  if ( mRequestedGeomType != mDetectedGeomType )
-  {
-    if ( mSqlWhereClause.isEmpty() )
+    if ( mRequestedGeomType != mDetectedGeomType )
     {
-      sql += " WHERE ";
+      if ( mSqlWhereClause.isEmpty() )
+      {
+        sql += " WHERE ";
+      }
+      else
+      {
+        sql += " AND ";
+      }
+      sql += conn->databaseTypeFilter( QStringLiteral( "FEATUREREQUEST" ), mGeometryColumn, mRequestedGeomType );
     }
-    sql += conn->databaseTypeFilter( QStringLiteral( "FEATUREREQUEST" ), mGeometryColumn, mRequestedGeomType );
   }
 
   QSqlQuery qry( *conn );
@@ -2671,9 +2671,8 @@ bool QgsOracleProvider::getGeometryDetails()
                                  .arg( qry.lastQuery() ), tr( "Oracle" ) );
     }
 
-    if ( exec( qry, QString( mUseEstimatedMetadata
-                             ?  "SELECT DISTINCT gtype FROM (SELECT t.%1.sdo_gtype AS gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<100 GROUP BY t.%1.sdo_gtype ) WHERE rownum<=2"
-                             :  "SELECT DISTINCT t.%1.sdo_gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<=100" ).arg( quotedIdentifier( geomCol ) ).arg( mQuery ), QVariantList() ) )
+    // The use of rownum was wrong here, explained here : https://github.com/qgis/QGIS/pull/34358#discussion_r390160872
+    if ( exec( qry, QString( "SELECT DISTINCT t.%1.sdo_gtype FROM %2 t WHERE t.%1 IS NOT NULL GROUP BY t.%1.sdo_gtype" ).arg( quotedIdentifier( geomCol ) ).arg( mQuery ), QVariantList() ) )
     {
       if ( qry.next() )
       {
