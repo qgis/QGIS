@@ -30,15 +30,6 @@ QgsModelGraphicsView *QgsModelViewRubberBand::view() const
   return mView;
 }
 
-QgsProcessingAlgorithmModel *QgsModelViewRubberBand::model() const
-{
-#if 0
-  return mView->currentLayout();
-#endif
-
-  return nullptr;
-}
-
 QRectF QgsModelViewRubberBand::updateRect( QPointF start, QPointF position, bool constrainSquare, bool fromCenter )
 {
   double x = 0;

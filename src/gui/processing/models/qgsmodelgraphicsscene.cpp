@@ -186,6 +186,63 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
   }
 }
 
+QList<QgsModelComponentGraphicItem *> QgsModelGraphicsScene::selectedComponentItems()
+{
+  QList<QgsModelComponentGraphicItem *> componentItemList;
+
+  const QList<QGraphicsItem *> graphicsItemList = selectedItems();
+  for ( QGraphicsItem *item : graphicsItemList )
+  {
+    if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+    {
+      componentItemList.push_back( componentItem );
+    }
+  }
+
+  return componentItemList;
+}
+
+QgsModelComponentGraphicItem *QgsModelGraphicsScene::componentItemAt( QPointF position ) const
+{
+  //get a list of items which intersect the specified position, in descending z order
+  const QList<QGraphicsItem *> itemList = items( position, Qt::IntersectsItemShape, Qt::DescendingOrder );
+
+  for ( QGraphicsItem *graphicsItem : itemList )
+  {
+    if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( graphicsItem ) )
+    {
+      return componentItem;
+    }
+  }
+  return nullptr;
+}
+
+void QgsModelGraphicsScene::deselectAll()
+{
+  //we can't use QGraphicsScene::clearSelection, as that emits no signals
+  //and we don't know which items are being deselected
+  //instead, do the clear selection manually...
+  const QList<QGraphicsItem *> selectedItemList = selectedItems();
+  for ( QGraphicsItem *item : selectedItemList )
+  {
+    if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+    {
+      componentItem->setSelected( false );
+    }
+  }
+  emit selectedItemChanged( nullptr );
+}
+
+void QgsModelGraphicsScene::setSelectedItem( QgsModelComponentGraphicItem *item )
+{
+  whileBlocking( this )->deselectAll();
+  if ( item )
+  {
+    item->setSelected( true );
+  }
+  emit selectedItemChanged( item );
+}
+
 QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForParameterValue( QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context ) const
 {
   QList<QgsModelGraphicsScene::LinkSource> res;

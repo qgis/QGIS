@@ -58,8 +58,8 @@ class GUI_EXPORT QgsModelViewToolSelect : public QgsModelViewTool
      */
     QgsModelViewMouseHandles *mouseHandles();
 
-    //! Sets the a \a model.
-    void setModel( QgsProcessingAlgorithmModel *model );
+    //! Sets the a \a scene.
+    void setScene( QgsModelGraphicsScene *scene );
 
   private:
 

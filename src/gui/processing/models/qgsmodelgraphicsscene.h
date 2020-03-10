@@ -93,6 +93,29 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     void createItems( QgsProcessingModelAlgorithm *model, QgsProcessingContext &context );
 
+    /**
+     * Returns list of selected component items.
+     */
+    QList<QgsModelComponentGraphicItem *> selectedComponentItems();
+
+    /**
+     * Returns the topmost component item at a specified \a position.
+     */
+    QgsModelComponentGraphicItem *componentItemAt( QPointF position ) const;
+
+    /**
+     * Clears any selected items in the scene.
+     *
+     * Call this method rather than QGraphicsScene::clearSelection, as the latter does
+     * not correctly emit signals to allow the scene's model to update.
+    */
+    void deselectAll();
+
+    /**
+     * Clears any selected items and sets \a item as the current selection.
+    */
+    void setSelectedItem( QgsModelComponentGraphicItem *item );
+
   signals:
 
     /**
@@ -112,6 +135,12 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      * Emitted whenever a component of the model is changed.
      */
     void componentChanged();
+
+    /**
+     * Emitted whenever the selected item changes.
+     * If NULLPTR, no item is selected.
+     */
+    void selectedItemChanged( QgsModelComponentGraphicItem *selected );
 
   protected:
 

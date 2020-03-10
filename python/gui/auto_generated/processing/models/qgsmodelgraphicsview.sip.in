@@ -54,30 +54,15 @@ Constructor for QgsModelGraphicsView, with the specified ``parent`` widget.
     virtual void keyReleaseEvent( QKeyEvent *event );
 
 
-    QgsModelViewTool *tool();
+    QgsModelGraphicsScene *modelScene() const;
 %Docstring
-Returns the currently active tool for the view.
+Returns the scene associated with the tool.
 
-.. seealso:: :py:func:`setTool`
+.. seealso:: :py:func:`view`
 %End
 
-    void setTool( QgsModelViewTool *tool );
-%Docstring
-Sets the ``tool`` currently being used in the view.
 
-.. seealso:: :py:func:`unsetTool`
 
-.. seealso:: :py:func:`tool`
-%End
-
-    void unsetTool( QgsModelViewTool *tool );
-%Docstring
-Unsets the current view tool, if it matches the specified ``tool``.
-
-This is called from destructor of view tools to make sure
-that the tool won't be used any more.
-You don't have to call it manually, QgsModelViewTool takes care of it.
-%End
 
   signals:
 
@@ -91,12 +76,6 @@ Emitted when an algorithm is dropped onto the view.
 Emitted when an input parameter is dropped onto the view.
 %End
 
-    void toolSet( QgsModelViewTool *tool );
-%Docstring
-Emitted when the current ``tool`` is changed.
-
-.. seealso:: :py:func:`setTool`
-%End
 
     void itemFocused( QgsModelComponentGraphicItem *item );
 %Docstring

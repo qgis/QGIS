@@ -27,8 +27,8 @@ class QWheelEvent;
 class QKeyEvent;
 class QgsModelGraphicsView;
 class QgsModelViewMouseEvent;
-class QgsProcessingAlgorithmModel;
 class QgsModelComponentGraphicItem;
+class QgsModelGraphicsScene;
 
 #define SIP_NO_FILE
 
@@ -149,15 +149,15 @@ class GUI_EXPORT QgsModelViewTool : public QObject
 
     /**
      * Returns the view associated with the tool.
-     * \see model()
+     * \see scene()
      */
     QgsModelGraphicsView *view() const;
 
     /**
-     * Returns the model associated with the tool.
+     * Returns the scene associated with the tool.
      * \see view()
      */
-    QgsProcessingAlgorithmModel *model() const;
+    QgsModelGraphicsScene *scene() const;
 
   signals:
 
