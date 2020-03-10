@@ -40,12 +40,10 @@ class GUI_EXPORT QgsTemporalMapSettingsDialog : public QDialog, private Ui::QgsT
       */
     QgsTemporalMapSettingsDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
-    ~QgsTemporalMapSettingsDialog() override;
-
     /**
-     * Returns the value of frame rate from widget.
+     * Returns the widget used in getting settings input from user.
      */
-    double frameRateValue();
+    QgsTemporalMapSettingsWidget *mapSettingsWidget();
 
   private slots:
 

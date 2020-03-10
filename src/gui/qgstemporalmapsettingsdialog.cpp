@@ -38,19 +38,15 @@ QgsTemporalMapSettingsDialog::QgsTemporalMapSettingsDialog( QWidget *parent, Qt:
   hide();
 }
 
-QgsTemporalMapSettingsDialog::~QgsTemporalMapSettingsDialog()
-{
-}
-
 void QgsTemporalMapSettingsDialog::apply()
 {
 }
 
 void QgsTemporalMapSettingsDialog::onCancel()
 {
-
 }
-double QgsTemporalMapSettingsDialog::frameRateValue()
+
+QgsTemporalMapSettingsWidget *QgsTemporalMapSettingsDialog::mapSettingsWidget()
 {
-  return mTemporalMapSettingsWidget->frameRateValue();
+  return mTemporalMapSettingsWidget;
 }

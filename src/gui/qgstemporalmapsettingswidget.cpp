@@ -17,11 +17,14 @@
 
 #include "qgstemporalmapsettingswidget.h"
 #include "qgsgui.h"
+#include "qgis.h"
 
 QgsTemporalMapSettingsWidget::QgsTemporalMapSettingsWidget( QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
+
+  connect( mFrameSpinBox,  qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalMapSettingsWidget::frameRateChange );
 }
 
 QgsTemporalMapSettingsWidget::~QgsTemporalMapSettingsWidget()
@@ -36,4 +39,9 @@ double QgsTemporalMapSettingsWidget::frameRateValue()
 void QgsTemporalMapSettingsWidget::setFrameRateValue( double value )
 {
   mFrameSpinBox->setValue( value );
+}
+
+void QgsTemporalMapSettingsWidget::frameRateChange()
+{
+  emit frameRateChanged();
 }

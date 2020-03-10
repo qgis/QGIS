@@ -19,9 +19,12 @@
 #ifndef QGSTEMPORALNAVIGATIONOBJECT_H
 #define QGSTEMPORALNAVIGATIONOBJECT_H
 
+#include "qgis_core.h"
 #include "qgsrange.h"
+#include "qgsinterval.h"
+
 #include <QList>
-#include "qgstemporalcontroller.h"
+#include <QTimer>
 
 class QgsMapLayer;
 
@@ -31,8 +34,9 @@ class QgsMapLayer;
  *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
+class CORE_EXPORT QgsTemporalNavigationObject : public QObject
 {
+    Q_OBJECT
 
   public:
 
@@ -40,117 +44,153 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
       * Constructor for QgsTemporalNavigationObject
       *
       */
-    QgsTemporalNavigationObject();
+    QgsTemporalNavigationObject( QObject *parent = nullptr );
 
-    //! Represents the current VCR navigation status
-    enum NavigationStatus
+    //! Represents the current playback mode
+    enum PlaybackMode
     {
-      Forward, //! When the forward button is clicked
-      BackWard, //! When the back button is clicked
-      Next, //! When the next button is clicked
-      Previous, //! When the previous button is clicked
-      Idle //! When no button has been clicked
-    };
-
-    //! Represents the VCR modes in getting data from layers
-    enum Mode
-    {
-      NearestPreviousProduct, //! Get the nearest previous data if the requested one is not available
-      Snapshot, //! Return the layer data which match exactly the datetime value in the request
-      Composite //! Get the range of datetimes, using the specified time steps
+      Forward, //! When the forward button is clicked.
+      Reverse, //! When the back button is clicked.
+      Idle, //! When navigation is idle.
     };
 
     /**
-     * Sets the current VCR widget navigation status.
+     * Sets the current playback mode.
      *
-     * \see navigationStatus()
+     * \see playBackMode()
      */
-    void setNavigationStatus( NavigationStatus status );
+    void setPlayBackMode( PlaybackMode mode );
 
     /**
-     * Returns the current VCR widget navigation status.
+     * Returns the current playback mode.
      *
-     * \see setNavigationStatus()
+     * \see setPlayBackMode()
      */
-    NavigationStatus navigationStatus() const;
+    PlaybackMode playBackMode() const;
 
     /**
-     * Sets the current VCR mode.
+     * Sets the navigation temporal extents.
      *
-     * \see mode()
+     * \see temporalExtents()
      */
-    void setMode( Mode mode );
+    void setTemporalExtents( QgsDateTimeRange temporalExtents );
 
     /**
-     * Returns the current VCR mode.
+     * Returns the navigation temporal extent.
      *
-     * \see setMode()
+     * \see setTemporalExtents()
      */
-    Mode mode() const;
+    QgsDateTimeRange temporalExtents() const;
 
     /**
-     * Sets the play status.
+     * Sets the current frame value.
      *
-     * \see isPlaying()
+     * \see currentFrameNumber()
      */
-    void setIsPlaying( bool playing );
+    void setCurrentFrameNumber( long long frameNumber );
 
     /**
-     * Returns the play status.
+     * Returns the current set frame value.
      *
-     * \see setIsPlaying()
+     * \see setCurrentFrameNumber();
      */
-    bool isPlaying() const;
+    long long currentFrameNumber() const;
 
     /**
-     * Updates the project temporal layers with the given \a datetime.
-     */
-    void updateLayersTemporalRange( QDateTime dateTime, QString time, int value );
-
-    /**
-     * Returns the datetime after adding time value to the passed \a datetime.
-     */
-    QDateTime addToDateTime( QDateTime dateTime, QString time, int value );
-
-    /**
-     * Returns the calculated temporal range from the current mode.
-     */
-    QgsDateTimeRange rangeFromMode( QgsMapLayer *layer, QDateTime dateTime, QString time, int value );
-
-    /**
-     * Returns the nearest datetime from the list of \a datetimes that is less than
-     * the \a datetime.
-     */
-    QDateTime lessNearestDateTime( QList<QDateTime> dateTimes, QDateTime dateTime );
-
-    /**
-     * Returns the list of datetimes, which VCR widget will navigate upon.
+     * Sets the frame duration
      *
-     * \see setDateTimes()
+     * \see frameDuration()
      */
-    QList<QDateTime> dateTimes() const;
+    void setFrameDuration( QgsInterval frameDuration );
 
     /**
-     * Sets the list of datetimes, which VCR widget will use to update the
-     * temporal layers.
+     * Returns the current set frame value.
      *
-     * \see dateTimes()
+     * \see setFrameDuration()
      */
-    void setDateTimes( QList<QDateTime> dateTimes );
+    QgsInterval frameDuration() const;
+
+    /**
+     * Calculate the temporal range from the navigation start time, using
+     * current frame number and the frame duration.
+     *
+     */
+    QgsDateTimeRange dateTimeRangeForFrameNumber( long long frame ) const;
+
+    /**
+     * Sets the frames per seconds value. This is used to define
+     * the navigation frame rate.
+     *
+     * \see framesPerSeconds()
+     */
+    void setFramesPerSeconds( double framesPerSeconds );
+
+    /**
+     * Returns the set frames per seconds value.
+     *
+     * \see setFramesPerSeconds();
+     */
+    double framesPerSeconds() const;
+
+    /**
+     * Returns the total number of frames for the navigation.
+     *
+     */
+    long long totalFrameCount();
+
+  public slots:
+
+    //! Plays the temporal navigation
+    void play();
+
+    //! Stops the temporal navigation.
+    void pause();
+
+    //! Forward the temporal navigation up till the end of frames.
+    void forward();
+
+    //! Decrement the temporal navigation till the end of frames.
+    void backward();
+
+    //! Forward the temporal navigation by one frame.
+    void next();
+
+    //! Decrement the temporal navigation by one frame.
+    void previous();
+
+    //! Rewind the temporal navigation to start of the temporal extent.
+    void rewindToStart();
+
+    //! Skips the temporal navigation to end of the temporal extent.
+    void skipToEnd();
+
+    //! Handles logic when the temporal navigation timer emit a timeout signal.
+    void timerTimeout();
+
+  signals:
+
+    //! Emitted when navigation range changes.
+    void updateTemporalRange( QgsDateTimeRange temporalRange );
 
   private:
 
-    //! Holds the list of datetimes to navigate.
-    QList <QDateTime> mDateTimes;
+    //! The controller temporal navigation extent range.
+    QgsDateTimeRange mTemporalExtents;
 
-    //! Navigation status.
-    NavigationStatus mStatus = Idle;
+    //! The current set frame value
+    long long mCurrentFrameNumber = 0;
 
-    //! VCR mode.
-    Mode mMode = Snapshot;
+    //! Frame duration
+    QgsInterval mFrameDuration;
 
-    //! Whether navigation is in play.
-    bool mPlayActive = false;
+    //! Member for frame rate
+    double mFramesPerSecond;
+
+    //! Timer to set navigation time interval
+    QTimer *mNewFrameTimer;
+
+    //! Navigation playback mode member
+    PlaybackMode mPlayBackMode = Idle;
 
 };
 

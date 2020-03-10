@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgstemporalvcrdockwidget.h
+                         qgstemporalcontrollerdockwidget.h
                          ---------------
     begin                : February 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
@@ -15,14 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSTEMPORALVCRDOCKWIDGET_H
-#define QGSTEMPORALVCRDOCKWIDGET_H
+#ifndef QGSTEMPORALCONTROLLERDOCKWIDGET_H
+#define QGSTEMPORALCONTROLLERDOCKWIDGET_H
 
-#include "ui_qgstemporalvcrdockwidgetbase.h"
+#include "ui_qgstemporalcontrollerdockwidgetbase.h"
 
 #include "qgsdockwidget.h"
 #include "qgis_gui.h"
 #include "qgsrange.h"
+#include "qgsinterval.h"
 
 class QgsMapLayer;
 class QgsTemporalNavigationObject;
@@ -31,22 +32,27 @@ class QgsTemporalMapSettingsDialog;
 
 /**
  * \ingroup gui
- * The QgsTemporalVcrDockWidget class
+ * The QgsTemporalControllerDockWidget class
  *
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsTemporalVcrDockWidget : public QgsDockWidget, private Ui::QgsTemporalVcrDockWidgetBase
+class GUI_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget, private Ui::QgsTemporalControllerDockWidgetBase
 {
     Q_OBJECT
   public:
 
     /**
-      * Constructor for QgsTemporalVcrDockWidget
+      * Constructor for QgsTemporalControllerDockWidget
       *
       */
-    QgsTemporalVcrDockWidget( const QString &name, QWidget *parent = nullptr );
+    QgsTemporalControllerDockWidget( const QString &name, QWidget *parent = nullptr );
 
-    ~QgsTemporalVcrDockWidget() override;
+    ~QgsTemporalControllerDockWidget() override;
+
+    /**
+     * Returns the temporal controller object used by this object in navigation.
+     */
+    QgsTemporalNavigationObject *temporalController();
 
   private:
 
@@ -56,18 +62,7 @@ class GUI_EXPORT QgsTemporalVcrDockWidget : public QgsDockWidget, private Ui::Qg
     void init();
 
     /**
-     * Updates the VCR dates time inputs.
-     * Checks if it should update the inputs using project time settings.
-     */
-    void updateDatesInputs( bool useProjectTime );
-
-    /**
-     * Sets the VCR widget time slider.
-     */
-    void setSliderRange();
-
-    /**
-     * Updates the VCR widget navigation buttons enabled status.
+     * Updates the controller widget navigation buttons enabled status.
      */
     void updateButtonsEnable( bool enabled );
 
@@ -77,14 +72,17 @@ class GUI_EXPORT QgsTemporalVcrDockWidget : public QgsDockWidget, private Ui::Qg
     void setDateInputsEnable( bool enabled );
 
     /**
-     * Sets the VCR settings dialog
+     * Sets the controller settings dialog
      **/
     void settingsDialog();
 
-    //! Timer to set navigation time interval
-    QTimer *mTimer = nullptr;
+    /**
+     * Returns the time interval using the passed \a value and \a time
+     * to determine the interval duration.
+     */
+    QgsInterval interval( QString time, int value );
 
-    //! Handles all non ui navigation logic
+    //! Handles all non gui navigation logic
     QgsTemporalNavigationObject *mNavigationObject = nullptr;
 
     //! Dialog for temporal map settings
@@ -124,42 +122,9 @@ class GUI_EXPORT QgsTemporalVcrDockWidget : public QgsDockWidget, private Ui::Qg
 
     /**
      * Handles the action to be done when the
-     * spin box value on the widget has changed.
-     **/
-    void spinBox_valueChanged( int value );
-
-    /**
-     * Handles the action to be done when the
-     * time steps combo box index has changed.
-     **/
-    void timeStepsComboBox_currentIndexChanged( int index );
-
-    /**
-     * Handles the action to be done when the
-     * mode combo box index has changed.
-     **/
-    void modeComboBox_currentIndexChanged( int index );
-
-    /**
-     * Handles the action to be done when the
      * time slider value has changed.
      **/
     void timeSlider_valueChanged( int value );
-
-    /**
-     * Called when this widget timer has timeout.
-     **/
-    void timerTimeout();
-
-    /**
-     * Handles the input change on the start date time input.
-     **/
-    void startDateTime_changed( const QDateTime &datetime );
-
-    /**
-     * Handles the input change on the end date time input.
-     **/
-    void endDateTime_changed( const QDateTime &datetime );
 
     /**
      * Loads a temporal map settings dialog.
@@ -167,10 +132,35 @@ class GUI_EXPORT QgsTemporalVcrDockWidget : public QgsDockWidget, private Ui::Qg
     void settings_clicked();
 
     /**
-     * Updates on the widget temporal range from project time.
+     * Updates the controller dates time inputs.
+     */
+    void setDatesToProjectTime();
+
+    /**
+     * Updates the value of the slider
      **/
-    void setProjectTime();
+    void updateSlider( const QgsDateTimeRange &range );
+
+    /**
+     * Updates the current range label
+     **/
+    void updateRangeLabel( const QgsDateTimeRange &range );
+
+    /**
+     * Updates the frames per seconds value for the navigation object.
+     **/
+    void updateFrameRate();
+
+    /**
+     * Updates the navigation temporal extent.
+     **/
+    void updateTemporalExtent();
+
+    /**
+     * Updates the navigation frame duration.
+     **/
+    void updateFrameDuration();
 
 };
 
-#endif // QGSTEMPORALVCRDOCKWIDGET_H
+#endif // QGSTEMPORALCONTROLLERDOCKWIDGET_H

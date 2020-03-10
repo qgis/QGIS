@@ -41,6 +41,13 @@ Returns the value of frame rate from widget input
 Sets the value of frame rate from the vcr widget.
 %End
 
+  signals:
+
+    void frameRateChanged();
+%Docstring
+Emitted when frame rate value on the spin box has changed.
+%End
+
 };
 
 /************************************************************************

@@ -158,7 +158,6 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
       temporalCapabilities()->setHasTemporalCapabilities( true );
       temporalCapabilities()->setFixedTemporalRange( mSettings.mFixedRange );
 
-      temporalCapabilities()->setDateTimes( mSettings.mDateTimes );
       if ( mSettings.mIsBiTemporal )
       {
         temporalCapabilities()->setFixedReferenceTemporalRange( mSettings.mFixedReferenceRange );

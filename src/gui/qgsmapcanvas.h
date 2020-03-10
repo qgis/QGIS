@@ -27,7 +27,7 @@
 #include "qgsgeometry.h"
 #include "qgscustomdrophandler.h"
 #include "qgstemporalrangeobject.h"
-#include "qgstemporalcontroller.h"
+#include "qgstemporalnavigationobject.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -130,7 +130,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *
      * \since QGIS 3.14
      */
-    void setTemporalController( QgsTemporalController *controller );
+    void setTemporalController( QgsTemporalNavigationObject *controller );
 
     /**
      * sets destination coordinate reference system
@@ -1024,7 +1024,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * Temporal controller for tracking update of temporal objects
      * which relates with canvas
      */
-    QgsTemporalController *mController = nullptr;
+    QgsTemporalNavigationObject *mController = nullptr;
 
     //! Flag indicating if the map canvas is frozen.
     bool mFrozen = false;

@@ -150,20 +150,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     */
     bool isReferenceEnable() const;
 
-    /**
-     * Sets the list of available datetimes.
-     *
-     * \see dateTimes()
-     */
-    void setDateTimes( QList<QDateTime> dateTimes );
-
-    /**
-     * Returns the list of the available datetimes.
-     *
-     * \see setDateTimes()
-    */
-    const QList<QDateTime> dateTimes() const;
-
   private:
     //! Represents current active datetime range member.
     QgsDateTimeRange mRange;
@@ -202,9 +188,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
 
     //! If reference range has been enabled to be used in these properties
     bool mReferenceEnable = false;
-
-    //! All available datetimes in the capabilities.
-    QList<QDateTime> mDateTimes;
 
 };
 
