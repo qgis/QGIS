@@ -9283,6 +9283,7 @@ void QgisApp::modifyAttributesOfSelectedFeatures()
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( vl, &f, false, this, true, context );
   dialog->setMode( QgsAttributeEditorContext::MultiEditMode );
+  dialog->setAttribute( Qt::WA_DeleteOnClose );
   dialog->exec();
 }
 
