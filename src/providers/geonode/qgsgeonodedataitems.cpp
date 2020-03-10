@@ -66,7 +66,7 @@ QVector<QgsDataItem *> QgsGeoNodeConnectionItem::createChildren()
 
 
 QgsGeoNodeServiceItem::QgsGeoNodeServiceItem( QgsDataItem *parent, QgsGeoNodeConnection *conn, QString serviceName, QString path )
-  : QgsDataCollectionItem( parent, serviceName, path, QStringLiteral( "geonode" ) )
+  : QgsDataCollectionItem( parent, serviceName, path, QStringLiteral( "GeoNode" ) )
   , mName( conn->connectionName() )
   , mServiceName( serviceName )
   , mConnection( conn )
