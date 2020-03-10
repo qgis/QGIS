@@ -141,20 +141,6 @@ Returns the enabled status of the reference range.
 .. seealso:: :py:func:`setReferenceEnable`
 %End
 
-    void setDateTimes( QList<QDateTime> dateTimes );
-%Docstring
-Sets the list of available datetimes.
-
-.. seealso:: :py:func:`dateTimes`
-%End
-
-    const QList<QDateTime> dateTimes() const;
-%Docstring
-Returns the list of the available datetimes.
-
-.. seealso:: :py:func:`setDateTimes`
-%End
-
 };
 
 /************************************************************************

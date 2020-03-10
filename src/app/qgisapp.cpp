@@ -364,7 +364,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslocaldefaultsettings.h"
 #include "qgsbearingnumericformat.h"
 #include "qgsprojectdisplaysettings.h"
-#include "qgstemporalvcrdockwidget.h"
+#include "qgstemporalcontrollerdockwidget.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -1153,10 +1153,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mBrowserWidget->setObjectName( QStringLiteral( "Browser" ) );
   mBrowserWidget->setMessageBar( mInfoBar );
 
-  mTemporalVcrWidget = new QgsTemporalVcrDockWidget( tr( "Temporal VCR" ), this );
-  mTemporalVcrWidget->setObjectName( QStringLiteral( "Temporal VCR" ) );
-  addDockWidget( Qt::BottomDockWidgetArea, mTemporalVcrWidget );
-  mTemporalVcrWidget->hide();
+  mTemporalControllerWidget = new QgsTemporalControllerDockWidget( tr( "Temporal VCR" ), this );
+  mTemporalControllerWidget->setObjectName( QStringLiteral( "Temporal VCR" ) );
+  addDockWidget( Qt::BottomDockWidgetArea, mTemporalControllerWidget );
+  mTemporalControllerWidget->hide();
+
+  mMapCanvas->setTemporalController( mTemporalControllerWidget->temporalController() );
+
+  connect( mActionTemporalController, &QAction::triggered, this, [this] { this->mTemporalControllerWidget->show(); } );
 
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsAppDirectoryItemGuiProvider() );
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsProjectHomeItemGuiProvider() );
@@ -3917,6 +3921,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionDecorationGrid->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/grid.svg" ) ) );
   mActionReverseLine->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionReverseLine.svg" ) ) );
   mActionTrimExtendFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionTrimExtendFeature.svg" ) ) );
+  mActionTemporalController->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/temporal.svg" ) ) );
 
   emit currentThemeChanged( themeName );
 }

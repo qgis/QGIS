@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsTemporalVcrDockWidgetBase</class>
- <widget class="QgsDockWidget" name="QgsTemporalVcrDockWidgetBase">
+ <class>QgsTemporalControllerDockWidgetBase</class>
+ <widget class="QgsDockWidget" name="QgsTemporalControllerDockWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1167</width>
+    <width>1205</width>
     <height>134</height>
    </rect>
   </property>
@@ -24,7 +24,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/temporal_navigation/vcr_settings.svg</normaloff>:/images/themes/default/temporal_navigation/vcr_settings.svg</iconset>
+          <normaloff>:/images/themes/default/propertyicons/settings.svg</normaloff>:/images/themes/default/propertyicons/settings.svg</iconset>
         </property>
        </widget>
       </item>
@@ -42,7 +42,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="mCurrentDateTime">
+       <widget class="QLabel" name="mCurrentRangeLabel">
         <property name="text">
          <string/>
         </property>
@@ -128,16 +128,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Mode</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QComboBox" name="mModeComboBox"/>
-      </item>
-      <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>Currently set from </string>
@@ -194,7 +184,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
-       <widget class="QSlider" name="mTimeSlider">
+       <widget class="QSlider" name="mSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>

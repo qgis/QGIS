@@ -16,168 +16,160 @@
  ***************************************************************************/
 
 #include "qgstemporalnavigationobject.h"
-#include "qgsproject.h"
-#include "qgsprojecttimesettings.h"
-#include "qgsmaplayer.h"
-#include "qgsrasterlayer.h"
+#include "qgis.h"
 
-QgsTemporalNavigationObject::QgsTemporalNavigationObject()
+QgsTemporalNavigationObject::QgsTemporalNavigationObject( QObject *parent )
+  : QObject( parent )
 {
+  mNewFrameTimer = new QTimer( this );
+
+  connect( mNewFrameTimer, &QTimer::timeout,
+           this,  qgis::overload<>::of( &QgsTemporalNavigationObject::timerTimeout ) );
 }
 
-QDateTime QgsTemporalNavigationObject::addToDateTime( QDateTime datetime, QString time, int value )
-{
-  if ( time == QString( "Minutes" ) )
-  {
-    return datetime.addSecs( value * 60 );
-  }
-  if ( time == QString( "Hours" ) )
-  {
-    return datetime.addSecs( value * 3600 );
-  }
-  if ( time == QString( "Days" ) )
-  {
-    return datetime.addDays( value );
-  }
-  if ( time == QString( "Months" ) )
-  {
-    return datetime.addMonths( value );
-  }
-  if ( time == QString( "Years" ) )
-  {
-    return datetime.addYears( value );
-  }
 
-  return datetime;
+void QgsTemporalNavigationObject::timerTimeout()
+{
+  if ( mPlayBackMode == PlaybackMode::Forward )
+    forward();
+  if ( mPlayBackMode == PlaybackMode::Reverse )
+    backward();
+  return;
 }
 
-void QgsTemporalNavigationObject::updateLayersTemporalRange( QDateTime datetime, QString time, int value )
+QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long long frame ) const
 {
-  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
-  QgsMapLayer *currentLayer = nullptr;
+  QDateTime start = mTemporalExtents.begin();
 
-  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
-  {
-    currentLayer = it.value();
-    if ( !mPlayActive )
-      break;
-    if ( currentLayer->type() == QgsMapLayerType::RasterLayer )
-    {
-      QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( currentLayer );
-      if ( rasterLayer && rasterLayer->temporalProperties() )
-      {
-        QgsDateTimeRange range = rangeFromMode( rasterLayer, datetime, time, value );
-        if ( range.begin().isValid() && range.end().isValid() )
-        {
-          rasterLayer->temporalProperties()->setTemporalRange( range );
-        }
-      }
-    }
-  }
+  long long pastFrame = frame - 1;
+  if ( pastFrame < 0 )
+    pastFrame = 0;
+
+  QDateTime begin = start.addSecs( pastFrame * mFrameDuration.seconds() );
+  QDateTime end = start.addSecs( frame * mFrameDuration.seconds() );
+
+  if ( end <= mTemporalExtents.end() )
+    return QgsDateTimeRange( begin, end );
+
+  return mTemporalExtents;
 }
 
-QgsDateTimeRange QgsTemporalNavigationObject::rangeFromMode( QgsMapLayer *layer, QDateTime dateTime, QString time, int value )
+void QgsTemporalNavigationObject::setTemporalExtents( QgsDateTimeRange temporalExtents )
 {
-  QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
-  QList<QDateTime> availableTimes;
+  mTemporalExtents = temporalExtents;
+}
 
-  if ( rasterLayer &&
-       rasterLayer->dataProvider() &&
-       rasterLayer->dataProvider()->temporalCapabilities()
-     )
-    availableTimes = rasterLayer->dataProvider()->temporalCapabilities()->dateTimes();
+QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const
+{
+  return mTemporalExtents;
+}
 
-  if ( mode() == Mode::Snapshot )
+void QgsTemporalNavigationObject::setCurrentFrameNumber( long long frameNumber )
+{
+  if ( frameNumber < 0 ||
+       frameNumber >= totalFrameCount() )
   {
-    dateTime.setOffsetFromUtc( 0 );
-    if ( availableTimes.contains( dateTime ) )
-      return QgsDateTimeRange( dateTime,  dateTime );
-    else
-      return QgsDateTimeRange();
+    pause();
+    return;
   }
 
-  if ( mode() == Mode::Composite )
+  if ( mCurrentFrameNumber != frameNumber )
   {
-    QDateTime endDateTime = addToDateTime( dateTime, time, value );
-    return QgsDateTimeRange( dateTime,  endDateTime );
+    mCurrentFrameNumber = frameNumber;
+    QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
+    emit updateTemporalRange( range );
   }
-
-  if ( mode() == Mode::NearestPreviousProduct )
-  {
-    if ( availableTimes.contains( dateTime ) )
-      return QgsDateTimeRange( dateTime,  dateTime );
-    else
-    {
-      QDateTime nearest = lessNearestDateTime( availableTimes, dateTime );
-      return  QgsDateTimeRange( nearest,  nearest );
-    }
-  }
-
-  return QgsDateTimeRange();
 }
 
-QDateTime QgsTemporalNavigationObject::lessNearestDateTime( QList<QDateTime> dateTimes, QDateTime dateTime )
+long long QgsTemporalNavigationObject::currentFrameNumber() const
 {
-  int difference;
-  int lowest = 0;
-  bool found = false;
-  QDateTime result;
-
-  if ( dateTimes.empty() )
-    return dateTime;
-
-  for ( QDateTime currentDateTime : dateTimes )
-  {
-    difference = dateTime.msecsTo( currentDateTime );
-    if ( difference < 0 && difference < lowest )
-    {
-      result = currentDateTime;
-      found = true;
-    }
-  }
-
-  if ( !found )
-    result = dateTimes.at( 0 );
-
-  return result;
+  return mCurrentFrameNumber;
 }
 
-void QgsTemporalNavigationObject::setNavigationStatus( NavigationStatus status )
+void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
 {
-  mStatus = status;
+  mFrameDuration = frameDuration;
 }
 
-QgsTemporalNavigationObject::NavigationStatus QgsTemporalNavigationObject::navigationStatus() const
+QgsInterval QgsTemporalNavigationObject::frameDuration() const
 {
-  return mStatus;
+  return mFrameDuration;
 }
 
-void QgsTemporalNavigationObject::setMode( Mode mode )
+void QgsTemporalNavigationObject::setFramesPerSeconds( double framesPerSeconds )
 {
-  mMode = mode;
+  if ( framesPerSeconds > 0 )
+    mFramesPerSecond = framesPerSeconds;
 }
 
-QgsTemporalNavigationObject::Mode QgsTemporalNavigationObject::mode() const
+double QgsTemporalNavigationObject::framesPerSeconds() const
 {
-  return mMode;
+  return mFramesPerSecond;
 }
 
-QList<QDateTime> QgsTemporalNavigationObject::dateTimes() const
+void QgsTemporalNavigationObject::play()
 {
-  return mDateTimes;
+  mNewFrameTimer->start( ( 1.0 / mFramesPerSecond ) * 1000 );
 }
 
-void QgsTemporalNavigationObject::setDateTimes( QList<QDateTime> dateTimes )
+void QgsTemporalNavigationObject::pause()
 {
-  mDateTimes = dateTimes;
+  mNewFrameTimer->stop();
+  setPlayBackMode( PlaybackMode::Idle );
 }
 
-void QgsTemporalNavigationObject::setIsPlaying( bool playing )
+void QgsTemporalNavigationObject::forward()
 {
-  mPlayActive = playing;
+  setPlayBackMode( PlaybackMode::Forward );
+  play();
+  next();
 }
 
-bool QgsTemporalNavigationObject::isPlaying() const
+void QgsTemporalNavigationObject::backward()
 {
-  return mPlayActive;
+  setPlayBackMode( PlaybackMode::Reverse );
+  play();
+  previous();
+}
+
+void QgsTemporalNavigationObject::next()
+{
+  long long frame = mCurrentFrameNumber + 1;
+  setCurrentFrameNumber( frame );
+}
+
+void QgsTemporalNavigationObject::previous()
+{
+  long long frame = mCurrentFrameNumber - 1;
+  setCurrentFrameNumber( frame );
+}
+
+void QgsTemporalNavigationObject::rewindToStart()
+{
+  long long frame = 0;
+  setCurrentFrameNumber( frame );
+}
+
+void QgsTemporalNavigationObject::skipToEnd()
+{
+  long long frame = totalFrameCount();
+  setCurrentFrameNumber( frame );
+}
+
+long long QgsTemporalNavigationObject::totalFrameCount()
+{
+  QgsInterval totalAnimationLength = mTemporalExtents.end() - mTemporalExtents.begin();
+  long long totalFrameCount = std::ceil( totalAnimationLength.seconds() / mFrameDuration.seconds() ) + 1;
+
+  return totalFrameCount;
+}
+
+void QgsTemporalNavigationObject::setPlayBackMode( PlaybackMode mode )
+{
+  mPlayBackMode = mode;
+}
+
+QgsTemporalNavigationObject::PlaybackMode QgsTemporalNavigationObject::playBackMode() const
+{
+  return mPlayBackMode;
 }

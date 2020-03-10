@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgstemporalmapsettingsdialog.h                               *
+ * src/gui/qgstemporalcontrollerdockwidget.h                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -10,27 +10,30 @@
 
 
 
-class QgsTemporalMapSettingsDialog : QDialog
+
+class QgsTemporalControllerDockWidget : QgsDockWidget
 {
 %Docstring
-The QgsTemporalMapSettingsDialog class
+The QgsTemporalControllerDockWidget class
 
 .. versionadded:: 3.14
 %End
 
 %TypeHeaderCode
-#include "qgstemporalmapsettingsdialog.h"
+#include "qgstemporalcontrollerdockwidget.h"
 %End
   public:
 
-    QgsTemporalMapSettingsDialog( QWidget *parent = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsTemporalControllerDockWidget( const QString &name, QWidget *parent = 0 );
 %Docstring
-Constructor for QgsTemporalMapSettingsDialog
+Constructor for QgsTemporalControllerDockWidget
 %End
 
-    QgsTemporalMapSettingsWidget *mapSettingsWidget();
+    ~QgsTemporalControllerDockWidget();
+
+    QgsTemporalNavigationObject *temporalController();
 %Docstring
-Returns the widget used in getting settings input from user.
+Returns the temporal controller object used by this object in navigation.
 %End
 
 };
@@ -38,7 +41,7 @@ Returns the widget used in getting settings input from user.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgstemporalmapsettingsdialog.h                               *
+ * src/gui/qgstemporalcontrollerdockwidget.h                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

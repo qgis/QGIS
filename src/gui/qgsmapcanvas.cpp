@@ -416,11 +416,11 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   emit destinationCrsChanged();
 }
 
-void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
+void QgsMapCanvas::setTemporalController( QgsTemporalNavigationObject *controller )
 {
   mController = controller;
 
-  connect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::updateTemporalRange );
+  connect( mController, &QgsTemporalNavigationObject::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
 }
 
 void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
@@ -756,6 +756,8 @@ void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
   }
 
   emit temporalRangeChanged();
+
+  autoRefreshTriggered();
 }
 
 const QgsDateTimeRange &QgsMapCanvas::temporalRange() const

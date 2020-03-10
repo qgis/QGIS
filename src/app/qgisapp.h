@@ -119,7 +119,7 @@ class QgsAdvancedDigitizingDockWidget;
 class QgsGpsInformationWidget;
 class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
-class QgsTemporalVcrDockWidget;
+class QgsTemporalControllerDockWidget;
 
 class QgsDecorationItem;
 class QgsMessageLogViewer;
@@ -2307,7 +2307,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
     QgsBrowserDockWidget *mBrowserWidget2 = nullptr;
 
-    QgsTemporalVcrDockWidget *mTemporalVcrWidget = nullptr;
+    QgsTemporalControllerDockWidget *mTemporalControllerWidget = nullptr;
 
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     QgsStatisticalSummaryDockWidget *mStatisticalSummaryDockWidget = nullptr;
