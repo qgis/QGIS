@@ -46,6 +46,11 @@ QString QgsGeoPackageDataItemProvider::name()
   return QStringLiteral( "GPKG" );
 }
 
+QString QgsGeoPackageDataItemProvider::dataProviderKey() const
+{
+  return QStringLiteral( "ogr" );
+}
+
 int QgsGeoPackageDataItemProvider::capabilities() const
 {
   return QgsDataProvider::Database;
@@ -62,7 +67,7 @@ QgsDataItem *QgsGeoPackageDataItemProvider::createDataItem( const QString &path,
 }
 
 QgsGeoPackageRootItem::QgsGeoPackageRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "GPKG" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mGeoPackage.svg" );
@@ -97,7 +102,7 @@ void QgsGeoPackageRootItem::newConnection()
 }
 
 QgsGeoPackageCollectionItem::QgsGeoPackageCollectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "GPKG" ) )
 {
   mToolTip = path;
   mCapabilities |= Collapse;
@@ -367,3 +372,9 @@ bool QgsGeoPackageVectorLayerItem::executeDeleteLayer( QString &errCause )
 }
 
 ///@endcond
+
+
+bool QgsGeoPackageCollectionItem::layerCollection() const
+{
+  return true;
+}

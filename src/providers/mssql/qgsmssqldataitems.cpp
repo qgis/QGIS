@@ -41,7 +41,7 @@
 
 // ---------------------------------------------------------------------------
 QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "MSSQL" ) )
   , mUseGeometryColumns( false )
   , mUseEstimatedMetadata( false )
   , mAllowGeometrylessTables( true )
@@ -520,7 +520,7 @@ QString QgsMssqlLayerItem::createUri()
 
 // ---------------------------------------------------------------------------
 QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "MSSQL" ) )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
   //not fertile, since children are created by QgsMssqlConnectionItem
@@ -599,7 +599,7 @@ QgsMssqlLayerItem *QgsMssqlSchemaItem::addLayer( const QgsMssqlLayerProperty &la
 
 // ---------------------------------------------------------------------------
 QgsMssqlRootItem::QgsMssqlRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "MSSQL" ) )
 {
   mIconName = QStringLiteral( "mIconMssql.svg" );
   populate();
@@ -637,6 +637,11 @@ QString QgsMssqlDataItemProvider::name()
   return QStringLiteral( "MSSQL" );
 }
 
+QString QgsMssqlDataItemProvider::dataProviderKey() const
+{
+  return QStringLiteral( "mssql" );
+}
+
 int QgsMssqlDataItemProvider::capabilities() const
 {
   return QgsDataProvider::Database;
@@ -646,4 +651,10 @@ QgsDataItem *QgsMssqlDataItemProvider::createDataItem( const QString &pathIn, Qg
 {
   Q_UNUSED( pathIn )
   return new QgsMssqlRootItem( parentItem, QStringLiteral( "MSSQL" ), QStringLiteral( "mssql:" ) );
+}
+
+
+bool QgsMssqlSchemaItem::layerCollection() const
+{
+  return true;
 }

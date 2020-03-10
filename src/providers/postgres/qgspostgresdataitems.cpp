@@ -161,7 +161,7 @@ bool QgsPostgresUtils::deleteSchema( const QString &schema, const QgsDataSourceU
 
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "PostGIS" ) )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
@@ -367,7 +367,7 @@ QString QgsPGLayerItem::createUri()
 
 // ---------------------------------------------------------------------------
 QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem *parent, const QString &connectionName, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "PostGIS" ) )
   , mConnectionName( connectionName )
 {
   mIconName = QStringLiteral( "mIconDbSchema.svg" );
@@ -526,7 +526,7 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
 
 // ---------------------------------------------------------------------------
 QgsPGRootItem::QgsPGRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "PostGIS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconPostgis.svg" );
@@ -555,6 +555,11 @@ QString QgsPostgresDataItemProvider::name()
   return QStringLiteral( "PostGIS" );
 }
 
+QString QgsPostgresDataItemProvider::dataProviderKey() const
+{
+  return QStringLiteral( "postgres" );
+}
+
 int QgsPostgresDataItemProvider::capabilities() const
 {
   return QgsDataProvider::Database;
@@ -564,4 +569,10 @@ QgsDataItem *QgsPostgresDataItemProvider::createDataItem( const QString &pathIn,
 {
   Q_UNUSED( pathIn )
   return new QgsPGRootItem( parentItem, QStringLiteral( "PostGIS" ), QStringLiteral( "pg:" ) );
+}
+
+
+bool QgsPGSchemaItem::layerCollection() const
+{
+  return true;
 }

@@ -69,6 +69,14 @@ The optional ``providerKey`` string (added in QGIS 3.12) can be used to specify 
 
     bool hasChildren();
 
+    virtual bool layerCollection() const;
+%Docstring
+Returns ``True`` if the data item is a collection of layers
+The default implementation returns ``False``, subclasses must implement this method if their children are layers.
+
+.. versionadded:: 3.14
+%End
+
     int rowCount();
 
     virtual QVector<QgsDataItem *> createChildren() /Factory/;

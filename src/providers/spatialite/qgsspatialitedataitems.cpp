@@ -61,7 +61,7 @@ bool SpatiaLiteUtils::deleteLayer( const QString &dbPath, const QString &tableNa
 }
 
 QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType )
-  : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "spatialite" ) )
+  : QgsLayerItem( parent, name, path, uri, layerType, QStringLiteral( "SPATIALITE" ) )
 {
   mCapabilities |= Delete;
   setState( Populated ); // no children are expected
@@ -70,7 +70,7 @@ QgsSLLayerItem::QgsSLLayerItem( QgsDataItem *parent, const QString &name, const 
 // ------
 
 QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "SPATIALITE" ) )
 {
   mDbPath = QgsSpatiaLiteConnection::connectionPath( name );
   mToolTip = mDbPath;
@@ -162,7 +162,7 @@ bool QgsSLConnectionItem::equal( const QgsDataItem *other )
 // ---------------------------------------------------------------------------
 
 QgsSLRootItem::QgsSLRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "spatialite" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconSpatialite.svg" );
@@ -279,6 +279,11 @@ QString QgsSpatiaLiteDataItemProvider::name()
   return QStringLiteral( "SPATIALITE" );
 }
 
+QString QgsSpatiaLiteDataItemProvider::dataProviderKey() const
+{
+  return QStringLiteral( "spatialite" );
+}
+
 int QgsSpatiaLiteDataItemProvider::capabilities() const
 {
   return QgsDataProvider::Database;
@@ -288,4 +293,10 @@ QgsDataItem *QgsSpatiaLiteDataItemProvider::createDataItem( const QString &pathI
 {
   Q_UNUSED( pathIn )
   return new QgsSLRootItem( parentItem, QStringLiteral( "SpatiaLite" ), QStringLiteral( "spatialite:" ) );
+}
+
+
+bool QgsSLConnectionItem::layerCollection() const
+{
+  return true;
 }
