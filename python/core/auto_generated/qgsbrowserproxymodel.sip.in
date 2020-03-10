@@ -174,6 +174,9 @@ Sets show layers to ``showLayers``
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
 
+  public:
+    virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
+
 };
 
 /************************************************************************

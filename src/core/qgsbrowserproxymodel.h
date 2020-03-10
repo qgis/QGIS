@@ -216,6 +216,10 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     bool filterRootAcceptsProviderKey( const QModelIndex &sourceIndex ) const;
 
 
+
+    // QAbstractItemModel interface
+  public:
+    bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
 };
 
 #endif // QGSBROWSERPROXYMODEL_H
