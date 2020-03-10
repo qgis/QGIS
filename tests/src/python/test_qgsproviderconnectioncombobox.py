@@ -114,6 +114,64 @@ class TestQgsProviderConnectionComboBox(unittest.TestCase):
         self.assertEqual(len(spy), 4)
         self.assertEqual(spy[-1][0], 'aaa_qgis_test2')
 
+        md.deleteConnection('aaa_qgis_test2')
+
+    def testComboWithEmpty(self):
+        """ test combobox functionality with empty entry """
+        m = QgsProviderConnectionComboBox('ogr')
+        m.setAllowEmptyConnection(True)
+        spy = QSignalSpy(m.connectionChanged)
+        self.assertEqual(m.count(), 1)
+        self.assertFalse(m.currentConnection())
+        self.assertFalse(m.currentConnectionUri())
+
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        conn = md.createConnection(self.gpkg_path, {})
+        md.saveConnection(conn, 'qgis_test1')
+
+        self.assertEqual(m.count(), 2)
+        self.assertFalse(m.itemText(0))
+        self.assertEqual(m.itemText(1), 'qgis_test1')
+        self.assertFalse(m.currentConnection())
+        self.assertFalse(m.currentConnectionUri())
+        self.assertEqual(len(spy), 0)
+
+        m.setConnection('qgis_test1')
+        self.assertEqual(len(spy), 1)
+        m.setConnection('')
+        self.assertFalse(m.currentConnection())
+        self.assertFalse(m.currentConnectionUri())
+        self.assertEqual(len(spy), 2)
+        self.assertFalse(spy[-1][0])
+        m.setConnection('')
+        self.assertEqual(m.currentIndex(), 0)
+        self.assertEqual(len(spy), 2)
+        self.assertFalse(m.currentConnection())
+        self.assertFalse(m.currentConnectionUri())
+
+        m.setConnection('qgis_test1')
+        self.assertEqual(len(spy), 3)
+        self.assertEqual(m.currentConnection(), 'qgis_test1')
+        self.assertEqual(m.currentConnectionUri(), self.gpkg_path)
+        self.assertEqual(spy[-1][0], 'qgis_test1')
+
+        conn2 = md.createConnection(self.gpkg_path2, {})
+        md.saveConnection(conn2, 'aaa_qgis_test2')
+        self.assertEqual(m.count(), 3)
+        self.assertFalse(m.itemText(0))
+        self.assertEqual(m.itemText(1), 'aaa_qgis_test2')
+        self.assertEqual(m.itemText(2), 'qgis_test1')
+
+        self.assertEqual(m.currentConnection(), 'qgis_test1')
+        self.assertEqual(m.currentConnectionUri(), self.gpkg_path)
+        self.assertEqual(len(spy), 3)
+
+        md.deleteConnection('qgis_test1')
+        self.assertEqual(m.currentConnection(), 'aaa_qgis_test2')
+        self.assertEqual(m.currentConnectionUri(), self.gpkg_path2)
+        self.assertEqual(len(spy), 4)
+        self.assertEqual(spy[-1][0], 'aaa_qgis_test2')
+
 
 if __name__ == '__main__':
     unittest.main()

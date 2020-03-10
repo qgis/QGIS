@@ -10,6 +10,7 @@
 
 
 
+
 class QgsProviderConnectionComboBox : QComboBox
 {
 %Docstring
@@ -36,6 +37,20 @@ Constructor for QgsProviderConnectionComboBox, for the specified ``provider``.
 
    The provider must support the connection API methods in its QgsProviderMetadata implementation
    in order for the model to work correctly.
+%End
+
+    void setAllowEmptyConnection( bool allowEmpty );
+%Docstring
+Sets whether an optional empty connection ("not set") option is present in the combobox.
+
+.. seealso:: :py:func:`allowEmptyConnection`
+%End
+
+    bool allowEmptyConnection() const;
+%Docstring
+Returns ``True`` if the combobox allows the empty connection ("not set") choice.
+
+.. seealso:: :py:func:`setAllowEmptyConnection`
 %End
 
     QString currentConnection() const;
