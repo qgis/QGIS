@@ -20,6 +20,11 @@ The table name is validated for uniqueness and the selected
 data item provider, schema and table names can be retrieved with
 getters.
 
+.. warning::
+
+   The data provider that originated the data item provider
+   must support the connections API
+
 .. versionadded:: 3.14
 %End
 
@@ -35,8 +40,9 @@ getters.
 Constructs a new QgsNewDatabaseTableNameWidget
 
 :param browserModel: an existing browser model (typically from app), if NULL an instance will be created
-:param providersFilter: optional white list of item provider names (not data providers!) that should be
-                        shown in the widget, if not specified all providers data items with database capabilities will be shown
+:param providersFilter: optional white list of data provider keys that should be
+                        shown in the widget, if not specified all providers data items with database
+                        capabilities will be shown
 :param parent: optional parent for this widget
 %End
 
@@ -50,9 +56,9 @@ Returns the currently selected schema for the new table
 Returns the current name of the new table
 %End
 
-    QString dataItemProviderName();
+    QString dataProviderKey();
 %Docstring
-Returns the currently selected data item provider name (which is NOT the data provider key!) for the new table
+Returns the currently selected data item provider key
 %End
 
     bool isValid() const;
@@ -86,6 +92,14 @@ This signal is emitted when the user selects a schema.
 This signal is emitted when the user enters a table name
 
 :param tableName: the name of the new table
+%End
+
+    void providerKeyChanged( const QString &providerKey );
+%Docstring
+This signal is emitted when the selects a data provider or a schema name
+that has a different data provider than the previously selected one.
+
+:param providerKey: the data provider key of the selected schema
 %End
 
 

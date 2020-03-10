@@ -34,6 +34,9 @@
  * data item provider, schema and table names can be retrieved with
  * getters.
  *
+ * \warning The data provider that originated the data item provider
+ *          must support the connections API
+ *
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QWidget, private Ui::QgsNewDatabaseTableNameWidget
@@ -46,8 +49,9 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QWidget, private Ui::Qgs
      * Constructs a new QgsNewDatabaseTableNameWidget
      *
      * \param browserModel an existing browser model (typically from app), if NULL an instance will be created
-     * \param providersFilter optional white list of item provider names (not data providers!) that should be
-     *        shown in the widget, if not specified all providers data items with database capabilities will be shown
+     * \param providersFilter optional white list of data provider keys that should be
+     *        shown in the widget, if not specified all providers data items with database
+     *        capabilities will be shown
      * \param parent optional parent for this widget
      */
     explicit QgsNewDatabaseTableNameWidget( QgsBrowserGuiModel *browserModel = nullptr,
@@ -65,9 +69,9 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QWidget, private Ui::Qgs
     QString table();
 
     /**
-     * Returns the currently selected data item provider name (which is NOT the data provider key!) for the new table
+     * Returns the currently selected data item provider key
      */
-    QString dataItemProviderName();
+    QString dataProviderKey();
 
     /**
      * Returns TRUE if the widget contains a valid new table name
@@ -102,6 +106,14 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QWidget, private Ui::Qgs
       */
     void tableNameChanged( const QString &tableName );
 
+    /**
+      * This signal is emitted when the selects a data provider or a schema name
+      * that has a different data provider than the previously selected one.
+      *
+      * \param providerKey the data provider key of the selected schema
+      */
+    void providerKeyChanged( const QString &providerKey );
+
 
   private:
 
@@ -109,12 +121,16 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QWidget, private Ui::Qgs
     QgsBrowserGuiModel *mBrowserModel = nullptr;
     void validate();
     QStringList tableNames();
-    QString mDataProviderName;
+    QString mDataProviderKey;
     QString mTableName;
     QString mSchemaName;
+    //! List of data provider keys of shown providers
     QSet<QString> mShownProviders;
     bool mIsValid = false;
     QString mValidationError;
+    //! Table names cache
+    QMap<QString, QStringList> mTableNamesCache;
+
 
     // For testing:
     friend class TestQgsNewDatabaseTableNameWidget;

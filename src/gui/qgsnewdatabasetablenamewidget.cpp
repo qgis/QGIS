@@ -20,6 +20,8 @@
 #include "qgsapplication.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsdataitemprovider.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
 
 QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   QgsBrowserGuiModel *browserModel,
@@ -27,7 +29,6 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   QWidget *parent )
   : QWidget( parent )
 {
-
 
   // Initalize the browser
   if ( ! browserModel )
@@ -43,6 +44,8 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
 
   setupUi( this );
 
+  mValidationResults->setStyleSheet( QStringLiteral( "* { font-weight: bold; color: red; }" ) );
+
   QStringList hiddenProviders
   {
     QStringLiteral( "special:Favorites" ),
@@ -55,15 +58,26 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   const auto providerList { QgsApplication::dataItemProviderRegistry()->providers() };
   for ( const auto &provider : providerList )
   {
+    if ( provider->dataProviderKey().isEmpty() )
+    {
+      hiddenProviders.push_back( provider->name() );
+      continue;
+    }
+    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( provider->dataProviderKey() ) };
+    if ( ! md )
+    {
+      hiddenProviders.push_back( provider->name() );
+      continue;
+    }
     if ( provider->capabilities() & QgsDataProvider::DataCapability::Database )
     {
-      if ( ! providersFilter.isEmpty() && ! providersFilter.contains( provider->name() ) )
+      if ( ! providersFilter.isEmpty() && ! providersFilter.contains( provider->dataProviderKey() ) )
       {
         hiddenProviders.push_back( provider->name() );
       }
       else
       {
-        mShownProviders.insert( provider->name() );
+        mShownProviders.insert( provider->dataProviderKey() );
       }
     }
     else
@@ -98,26 +112,41 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
         const QgsDataCollectionItem *collectionItem = qobject_cast<const QgsDataCollectionItem *>( dataItem );
         if ( collectionItem )
         {
-          if ( mShownProviders.contains( collectionItem->name() ) )
+          const QString providerKey { QgsApplication::dataItemProviderRegistry()->dataProviderKey( dataItem->providerKey() ) };
+          if ( mShownProviders.contains( providerKey ) )
           {
-            if ( mDataProviderName != collectionItem->name() )
+            bool validationRequired { false };
+            const QString oldSchema { mSchemaName };
+
+            if ( mDataProviderKey != providerKey )
             {
               mSchemaName.clear();
-              mDataProviderName = collectionItem->name();
+              emit providerKeyChanged( providerKey );
+              mDataProviderKey = providerKey;
+              validate();
+            }
+
+            if ( collectionItem->layerCollection( ) )
+            {
+              mSchemaName = collectionItem->name(); // it may be cleared
+              if ( oldSchema != collectionItem->name() )
+              {
+                emit schemaNameChanged( mSchemaName );
+                validationRequired = true;
+              }
+            }
+
+            if ( validationRequired )
+            {
+              validate();
             }
           }
-          else
-          {
-            mSchemaName = collectionItem->name();
-            emit schemaNameChanged( mSchemaName );
-          }
-          validate();
         }
       }
     }
   } );
 
-  mValidationResults->hide();
+  validate();
 
 }
 
@@ -131,16 +160,17 @@ QString QgsNewDatabaseTableNameWidget::table()
   return mTableName;
 }
 
-QString QgsNewDatabaseTableNameWidget::dataItemProviderName()
+QString QgsNewDatabaseTableNameWidget::dataProviderKey()
 {
-  return mDataProviderName;
+  return mDataProviderKey;
 }
 
 void QgsNewDatabaseTableNameWidget::validate()
 {
+  const bool wasValid { mIsValid };
   // Check table uniqueness
-  mIsValid = ! mDataProviderName.isEmpty() &&
-             mShownProviders.contains( mDataProviderName ) &&
+  mIsValid = ! mDataProviderKey.isEmpty() &&
+             mShownProviders.contains( mDataProviderKey ) &&
              ! mSchemaName.isEmpty() &&
              ! mTableName.isEmpty() &&
              ! tableNames( ).contains( mTableName );
@@ -149,14 +179,23 @@ void QgsNewDatabaseTableNameWidget::validate()
 
   if ( ! mIsValid )
   {
-
-    if ( mTableName.isEmpty() )
+    if ( mTableName.isEmpty() && mSchemaName.isEmpty() )
     {
-      mValidationError = tr( "Enter a unique name for the new table" );
+      mValidationError = tr( "Select a database schema and enter a unique name for the new table" );
+    }
+    else if ( ! mTableName.isEmpty() &&
+              ! mSchemaName.isEmpty() &&
+              tableNames( ).contains( mTableName ) )
+    {
+      mValidationError = tr( "A table named '%1' already exists" ).arg( mTableName );
     }
     else if ( mSchemaName.isEmpty() )
     {
       mValidationError = tr( "Select a database schema" );
+    }
+    else if ( mTableName.isEmpty() )
+    {
+      mValidationError = tr( "Enter a unique name for the new table" );
     }
     else if ( tableNames( ).contains( mTableName ) )
     {
@@ -164,12 +203,15 @@ void QgsNewDatabaseTableNameWidget::validate()
     }
     else
     {
-      mValidationError = tr( "Select a schema and enter a unique name for the new table" );
+      mValidationError = tr( "Select a database schema and enter a unique name for the new table" );
     }
   }
   mValidationResults->setText( mValidationError );
   mValidationResults->setVisible( ! mIsValid );
-  emit validationChanged( mIsValid );
+  if ( wasValid != mIsValid )
+  {
+    emit validationChanged( mIsValid );
+  }
 }
 
 QStringList QgsNewDatabaseTableNameWidget::tableNames()
@@ -178,16 +220,34 @@ QStringList QgsNewDatabaseTableNameWidget::tableNames()
   QModelIndex index { mBrowserTreeView->currentIndex() };
   if ( index.isValid() )
   {
-    for ( int row = 0; row < mBrowserProxyModel.rowCount( ); ++row )
+    QgsDataItem *dataItem { mBrowserProxyModel.dataItem( index ) };
+    if ( dataItem )
     {
-      // Column 1 contains the
-      index = mBrowserProxyModel.index( row, 1, index );
-      if ( index.isValid() )
+      const QString dataProviderKey { QgsApplication::dataItemProviderRegistry()->dataProviderKey( dataItem->providerKey() ) };
+      if ( ! dataProviderKey.isEmpty() )
       {
-        const QgsDataItem *dataItem { mBrowserProxyModel.dataItem( index ) };
-        if ( dataItem )
+        QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( dataProviderKey ) };
+        if ( md )
         {
-          tableNames.push_back( dataItem->name() );
+          QgsDataItem *parentDataItem { dataItem->parent() };
+          if ( parentDataItem )
+          {
+            QgsAbstractProviderConnection *conn { md->findConnection( parentDataItem->name() ) };
+            const QString cacheKey { conn->uri() + dataItem->name() };
+            if ( mTableNamesCache.contains( cacheKey ) )
+            {
+              tableNames = mTableNamesCache.value( cacheKey );
+            }
+            else if ( conn && static_cast<QgsAbstractDatabaseProviderConnection *>( conn ) )
+            {
+              const auto tables { static_cast<QgsAbstractDatabaseProviderConnection *>( conn )->tables( dataItem->name() ) };
+              for ( const auto &tp : tables )
+              {
+                tableNames.push_back( tp.tableName() );
+              }
+              mTableNamesCache[ cacheKey ] = tableNames;
+            }
+          }
         }
       }
     }

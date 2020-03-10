@@ -30,8 +30,6 @@ class TestQgsNewDatabaseTableNameWidget: public QObject
   public:
     TestQgsNewDatabaseTableNameWidget() = default;
 
-    void testWidget();
-
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
@@ -74,14 +72,14 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetFilters()
   QCOMPARE( w->mBrowserProxyModel.rowCount(), 0 );
   std::unique_ptr<QgsNewDatabaseTableNameWidget> w2 { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr ) };
   QVERIFY( w2->mBrowserProxyModel.rowCount() > 0 );
-  std::unique_ptr<QgsNewDatabaseTableNameWidget> w3 { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "PostGIS" } ) };
+  std::unique_ptr<QgsNewDatabaseTableNameWidget> w3 { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "postgres" } ) };
   QVERIFY( w3->mBrowserProxyModel.rowCount() > 0 );
 }
 
 
 void TestQgsNewDatabaseTableNameWidget::testWidgetSignals()
 {
-  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "PostGIS" } ) };
+  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "postgres" } ) };
 
   auto index = w->mBrowserModel->findPath( QStringLiteral( "pg:/PG_1" ) );
   QVERIFY( index.isValid() );
@@ -93,6 +91,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignals()
   QSignalSpy validationSpy( w.get(), SIGNAL( validationChanged( bool ) ) );
   QSignalSpy schemaSpy( w.get(), SIGNAL( schemaNameChanged( QString ) ) );
   QSignalSpy tableSpy( w.get(), SIGNAL( tableNameChanged( QString ) ) );
+  QSignalSpy providerSpy( w.get(), SIGNAL( providerKeyChanged( QString ) ) );
 
   index = w->mBrowserProxyModel.mapToSource( w->mBrowserProxyModel.index( 0, 0 ) );
   QVERIFY( index.isValid() );
@@ -103,10 +102,12 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignals()
 
   QVERIFY( ! w->isValid() );
 
-  QCOMPARE( validationSpy.count(), 1 );
-  auto arguments = validationSpy.takeLast();
-  QCOMPARE( arguments.at( 0 ).toBool(), false );
+  QCOMPARE( providerSpy.count(), 1 );
+  QCOMPARE( tableSpy.count(), 0 );
   QCOMPARE( schemaSpy.count(), 0 );
+  QCOMPARE( validationSpy.count(), 0 );
+  auto arguments = providerSpy.takeLast();
+  QCOMPARE( arguments.at( 0 ).toString(), QString( "postgres" ) );
 
   // Find qgis_test schema item
   index = w->mBrowserModel->findPath( QStringLiteral( "pg:/PG_1/qgis_test" ), Qt::MatchFlag::MatchStartsWith );
@@ -115,9 +116,10 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignals()
   rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
   QVERIFY( rect.isValid() );
   QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, 0, rect.center() );
-  QCOMPARE( validationSpy.count(), 1 );
-  arguments = validationSpy.takeLast();
-  QCOMPARE( arguments.at( 0 ).toBool(), false );
+
+  QVERIFY( ! w->isValid() );
+
+  QCOMPARE( validationSpy.count(), 0 );
   QCOMPARE( schemaSpy.count(), 1 );
   arguments = schemaSpy.takeLast();
   QCOMPARE( arguments.at( 0 ).toString(), QString( "qgis_test" ) );
@@ -126,37 +128,48 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignals()
   QCOMPARE( tableSpy.count(), 1 );
   arguments = tableSpy.takeLast();
   QCOMPARE( arguments.at( 0 ).toString(), QString( "someNewTableData" ) );
-
+  QCOMPARE( validationSpy.count(), 1 );
+  arguments = validationSpy.takeLast();
+  QCOMPARE( arguments.at( 0 ).toBool(), true );
   QVERIFY( w->isValid() );
 
-  // Test unique
+  // Test getters
+  QCOMPARE( w->table(), QString( "someNewTableData" ) );
+  QCOMPARE( w->schema(), QString( "qgis_test" ) );
+  QCOMPARE( w->dataProviderKey(), QString( "postgres" ) );
+
+  // Test unique and make it invalid again so we get a status change
   w->mNewTableName->setText( QStringLiteral( "someData" ) );
+  QVERIFY( ! w->isValid() );
   QCOMPARE( tableSpy.count(), 1 );
   arguments = tableSpy.takeLast();
   QCOMPARE( arguments.at( 0 ).toString(), QString( "someData" ) );
+  QCOMPARE( validationSpy.count(), 1 );
+  arguments = validationSpy.takeLast();
+  QCOMPARE( arguments.at( 0 ).toBool(), false );
 
-  QVERIFY( ! w->isValid() );
+  // Now select another schema
+  index = w->mBrowserModel->findPath( QStringLiteral( "pg:/PG_1/public" ), Qt::MatchFlag::MatchStartsWith );
+  QVERIFY( index.isValid() );
+  w->mBrowserTreeView->scrollTo( w->mBrowserProxyModel.mapFromSource( index ) );
+  rect = w->mBrowserTreeView->visualRect( w->mBrowserProxyModel.mapFromSource( index ) );
+  QVERIFY( rect.isValid() );
+  QTest::mouseClick( w->mBrowserTreeView->viewport(), Qt::LeftButton, 0, rect.center() );
+  QCOMPARE( w->schema(), QString( "public" ) );
+  QVERIFY( w->isValid() );
+  QCOMPARE( validationSpy.count(), 1 );
+  arguments = validationSpy.takeLast();
+  QCOMPARE( arguments.at( 0 ).toBool(), true );
+  QCOMPARE( schemaSpy.count(), 1 );
+  arguments = schemaSpy.takeLast();
+  QCOMPARE( arguments.at( 0 ).toString(), QString( "public" ) );
 
   // Test getters
   QCOMPARE( w->table(), QString( "someData" ) );
-  QCOMPARE( w->schema(), QString( "qgis_test" ) );
-  QCOMPARE( w->dataItemProviderName(), QString( "postgres" ) );
+  QCOMPARE( w->schema(), QString( "public" ) );
+  QCOMPARE( w->dataProviderKey(), QString( "postgres" ) );
 
 }
-
-
-void TestQgsNewDatabaseTableNameWidget::testWidget()
-{
-  QDialog d;
-  QVBoxLayout layout;
-  d.setLayout( &layout );
-  std::unique_ptr<QgsNewDatabaseTableNameWidget> w { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "PostGIS" } ) };
-  d.layout()->addWidget( w.get() );
-
-  d.exec();
-
-}
-
 
 QGSTEST_MAIN( TestQgsNewDatabaseTableNameWidget )
 #include "testqgsnewdatabasetablewidget.moc"
