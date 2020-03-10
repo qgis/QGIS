@@ -394,6 +394,7 @@ SET(QGIS_GUI_SRCS
   qgsgeometryrubberband.cpp
   qgsgradientcolorrampdialog.cpp
   qgsgradientstopeditor.cpp
+  qgsgraphicsviewmousehandles.cpp
   qgsgroupwmsdatadialog.cpp
   qgsgui.cpp
   qgsguiutils.cpp
@@ -608,6 +609,7 @@ SET(QGIS_GUI_HDRS
   qgsgeometryrubberband.h
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
+  qgsgraphicsviewmousehandles.h
   qgsgroupwmsdatadialog.h
   qgsgui.h
   qgsguiutils.h
