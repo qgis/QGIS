@@ -4,18 +4,18 @@ from qgis.testing.mocked import get_iface
 from qgis.core import QgsRasterLayer, QgsProject, QgsMultiBandColorRenderer, QgsRasterRenderer, QgsSingleBandGrayRenderer
 from qgis.gui import QgsRendererRasterPropertiesWidget, QgsMapCanvas, QgsMultiBandColorRendererWidget, QgsRasterRendererWidget
 
+
 class QgsRendererRasterPropertiesTestCases(TestCase):
 
     def setUp(self):
         self.iface = get_iface()
 
-    def multibandRasterLayer(self)->QgsRasterLayer:
+    def multibandRasterLayer(self) -> QgsRasterLayer:
 
-        path = None
         try:
             from utilities import unitTestDataPath
             path = pathlib.Path(unitTestDataPath()) / 'landsat_4326.tif'
-        except:
+        except ModuleNotFoundError:
             path = pathlib.Path(__file__).parent / 'landsat_4326.tif'
 
         assert isinstance(path, pathlib.Path) and path.is_file()
@@ -63,7 +63,6 @@ class QgsRendererRasterPropertiesTestCases(TestCase):
         r = w.currentRenderWidget().renderer()
         assert isinstance(r, QgsMultiBandColorRenderer)
         assert r.usesBands() == [3, 1, 2]
-
 
 
 if __name__ == '__main__':
