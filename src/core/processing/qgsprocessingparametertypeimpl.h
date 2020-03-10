@@ -1838,4 +1838,57 @@ class CORE_EXPORT QgsProcessingParameterTypeDateTime : public QgsProcessingParam
     }
 
 };
+
+
+/**
+ * A provider connection name parameter for processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('providerconnection')
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsProcessingParameterTypeProviderConnection : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterProviderConnection( name, QString(), QString() );
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A connection name parameter, for registered database connections." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Connection Name" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "providerconnection" );
+    }
+
+    QString pythonImportString() const override
+    {
+      return QStringLiteral( "from qgis.core import QgsProcessingParameterProviderConnection" );
+    }
+
+    QString className() const override
+    {
+      return QStringLiteral( "QgsProcessingParameterProviderConnection" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+    QStringList acceptedStringValues() const override
+    {
+      return QStringList() << QObject::tr( "Name of registered database connection" );
+    }
+
+};
 #endif // QGSPROCESSINGPARAMETERTYPEIMPL_H

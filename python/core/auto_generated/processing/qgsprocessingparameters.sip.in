@@ -197,6 +197,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterMapTheme;
     else if ( sipCpp->type() == QgsProcessingParameterDateTime::typeName() )
       sipType = sipType_QgsProcessingParameterDateTime;
+    else if ( sipCpp->type() == QgsProcessingParameterProviderConnection::typeName() )
+      sipType = sipType_QgsProcessingParameterProviderConnection;
     else
       sipType = nullptr;
 %End
@@ -1186,6 +1188,20 @@ Returns the color associated with an point parameter value, or an invalid color 
 Returns the color associated with an color parameter value, or an invalid color if the parameter was not set.
 
 .. versionadded:: 3.10
+%End
+
+    static QString parameterAsConnectionName( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a connection name string.
+
+.. versionadded:: 3.14
+%End
+
+    static QString parameterAsConnectionName( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a connection name string.
+
+.. versionadded:: 3.14
 %End
 
     static QgsProcessingParameterDefinition *parameterFromVariantMap( const QVariantMap &map ) /Factory/;
@@ -3592,6 +3608,75 @@ Sets the acceptable data ``type`` for the parameter.
 
 
     static QgsProcessingParameterDateTime *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+};
+
+
+class QgsProcessingParameterProviderConnection : QgsProcessingParameterDefinition
+{
+%Docstring
+A data provider connection parameter for processing algorithms, allowing users to select from available registered
+connections for a particular data provider.
+
+QgsProcessingParameterProviderConnection should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsConnectionName()`
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterProviderConnection( const QString &name, const QString &description, const QString &provider, const QVariant &defaultValue = QVariant(),
+        bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterProviderConnection, for the specified ``provider`` type.
+
+.. warning::
+
+   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   in order for the model to work correctly. This is only implemented for a subset of current data providers.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    QString providerId() const;
+%Docstring
+Returns the ID of the provider associated with the connections.
+
+.. seealso:: :py:func:`setProvider`
+%End
+
+    void setProviderId( const QString &provider );
+%Docstring
+Sets the ID of the ``provider`` associated with the connections.
+
+.. seealso:: :py:func:`provider`
+%End
+
+    static QgsProcessingParameterProviderConnection *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End

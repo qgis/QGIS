@@ -274,6 +274,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterMapTheme;
     else if ( sipCpp->type() == QgsProcessingParameterDateTime::typeName() )
       sipType = sipType_QgsProcessingParameterDateTime;
+    else if ( sipCpp->type() == QgsProcessingParameterProviderConnection::typeName() )
+      sipType = sipType_QgsProcessingParameterProviderConnection;
     else
       sipType = nullptr;
     SIP_END
@@ -1221,6 +1223,20 @@ class CORE_EXPORT QgsProcessingParameters
      * \since QGIS 3.10
      */
     static QColor parameterAsColor( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a connection name string.
+     *
+     * \since QGIS 3.14
+     */
+    static QString parameterAsConnectionName( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a connection name string.
+     *
+     * \since QGIS 3.14
+     */
+    static QString parameterAsConnectionName( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 
     /**
      * Creates a new QgsProcessingParameterDefinition using the configuration from a
@@ -3350,6 +3366,65 @@ class CORE_EXPORT QgsProcessingParameterDateTime : public QgsProcessingParameter
     QDateTime mMin;
     QDateTime mMax;
     Type mDataType = DateTime;
+};
+
+
+/**
+ * \class QgsProcessingParameterProviderConnection
+ * \ingroup core
+ * A data provider connection parameter for processing algorithms, allowing users to select from available registered
+ * connections for a particular data provider.
+ *
+ * QgsProcessingParameterProviderConnection should be evaluated by calling QgsProcessingAlgorithm::parameterAsConnectionName().
+ *
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsProcessingParameterProviderConnection : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterProviderConnection, for the specified \a provider type.
+     *
+     * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation
+     * in order for the model to work correctly. This is only implemented for a subset of current data providers.
+     */
+    QgsProcessingParameterProviderConnection( const QString &name, const QString &description, const QString &provider, const QVariant &defaultValue = QVariant(),
+        bool optional = false );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "providerconnection" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Returns the ID of the provider associated with the connections.
+     * \see setProvider()
+     */
+    QString providerId() const { return mProviderId; }
+
+    /**
+     * Sets the ID of the \a provider associated with the connections.
+     * \see provider()
+     */
+    void setProviderId( const QString &provider ) { mProviderId = provider; }
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterProviderConnection *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+
+    QString mProviderId;
 };
 
 
