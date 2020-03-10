@@ -26,6 +26,7 @@ class QgsModelViewToolTemporaryKeyPan;
 class QgsModelViewToolTemporaryKeyZoom;
 class QgsModelViewToolTemporaryMousePan;
 class QgsModelComponentGraphicItem;
+class QgsModelGraphicsScene;
 
 ///@cond NOT_STABLE
 
@@ -59,17 +60,23 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     void keyReleaseEvent( QKeyEvent *event ) override;
 
     /**
+     * Returns the scene associated with the tool.
+     * \see view()
+     */
+    QgsModelGraphicsScene *modelScene() const;
+
+    /**
      * Returns the currently active tool for the view.
      * \see setTool()
      */
-    QgsModelViewTool *tool();
+    QgsModelViewTool *tool() SIP_SKIP;
 
     /**
      * Sets the \a tool currently being used in the view.
      * \see unsetTool()
      * \see tool()
      */
-    void setTool( QgsModelViewTool *tool );
+    void setTool( QgsModelViewTool *tool ) SIP_SKIP;
 
     /**
      * Unsets the current view tool, if it matches the specified \a tool.
@@ -78,7 +85,7 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      * that the tool won't be used any more.
      * You don't have to call it manually, QgsModelViewTool takes care of it.
      */
-    void unsetTool( QgsModelViewTool *tool );
+    void unsetTool( QgsModelViewTool *tool ) SIP_SKIP;
 
   signals:
 
@@ -96,7 +103,7 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      * Emitted when the current \a tool is changed.
      * \see setTool()
      */
-    void toolSet( QgsModelViewTool *tool );
+    void toolSet( QgsModelViewTool *tool ) SIP_SKIP;
 
     /**
      * Emitted when an \a item is "focused" in the view, i.e. it becomes the active

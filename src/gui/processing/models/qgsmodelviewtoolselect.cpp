@@ -17,7 +17,8 @@
 #include "qgsmodelviewmouseevent.h"
 #include "qgsmodelgraphicsview.h"
 #include "qgsprocessingmodelalgorithm.h"
-
+#include "qgsmodelgraphicsscene.h"
+#include "qgsmodelcomponentgraphicitem.h"
 
 QgsModelViewToolSelect::QgsModelViewToolSelect( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Select" ) )
@@ -73,14 +74,13 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
     return;
   }
 
-#if 0
-  QgsLayoutItem *selectedItem = nullptr;
-  QgsLayoutItem *previousSelectedItem = nullptr;
 
-  QList<QgsLayoutItem *> selectedItems = layout()->selectedLayoutItems();
+  QgsModelComponentGraphicItem *selectedItem = nullptr;
+
+  QList<QgsModelComponentGraphicItem *> selectedItems = scene()->selectedComponentItems();
 
   //select topmost item at position of event
-  selectedItem = layout()->layoutItemAt( event->layoutPoint(), true );
+  selectedItem = scene()->componentItemAt( event->modelPoint() );
 
   if ( !selectedItem )
   {
@@ -97,7 +97,7 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
     selectedItem->setSelected( false );
 
     //Check if we have any remaining selected items, and if so, update the item panel
-    const QList<QgsLayoutItem *> selectedItems = layout()->selectedLayoutItems();
+    const QList<QgsModelComponentGraphicItem *> selectedItems = scene()->selectedComponentItems();
     if ( !selectedItems.isEmpty() )
     {
       emit itemFocused( selectedItems.at( 0 ) );
@@ -112,7 +112,7 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
     if ( ( !selectedItem->isSelected() ) &&       //keep selection if an already selected item pressed
          !( event->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
     {
-      layout()->setSelectedItem( selectedItem ); // clears existing selection
+      scene()->setSelectedItem( selectedItem ); // clears existing selection
     }
     else
     {
@@ -121,7 +121,7 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
     event->ignore();
     emit itemFocused( selectedItem );
   }
-#endif
+
   event->ignore();
 }
 
@@ -153,8 +153,6 @@ void QgsModelViewToolSelect::modelReleaseEvent( QgsModelViewMouseEvent *event )
     return;
   }
 
-#if 0
-
   mIsSelecting = false;
   bool wasClick = !isClickAndDrag( mMousePressStartPos, event->pos() );
 
@@ -175,7 +173,7 @@ void QgsModelViewToolSelect::modelReleaseEvent( QgsModelViewMouseEvent *event )
   else
   {
     //not adding to or removing from selection, so clear current selection
-    whileBlocking( layout() )->deselectAll();
+    whileBlocking( scene() )->deselectAll();
   }
 
   //determine item selection mode, default to intersection
@@ -189,36 +187,31 @@ void QgsModelViewToolSelect::modelReleaseEvent( QgsModelViewMouseEvent *event )
   //find all items in rect
   QList<QGraphicsItem *> itemList;
   if ( wasClick )
-    itemList = layout()->items( rect.center(), selectionMode );
+    itemList = scene()->items( rect.center(), selectionMode );
   else
-    itemList = layout()->items( rect, selectionMode );
+    itemList = scene()->items( rect, selectionMode );
   for ( QGraphicsItem *item : qgis::as_const( itemList ) )
   {
-    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
-    QgsLayoutItemPage *paperItem = dynamic_cast<QgsLayoutItemPage *>( item );
-    if ( layoutItem && !paperItem )
+    if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
     {
-      if ( !layoutItem->isLocked() )
+      if ( subtractingSelection )
       {
-        if ( subtractingSelection )
-        {
-          layoutItem->setSelected( false );
-        }
-        else
-        {
-          layoutItem->setSelected( true );
-        }
-        if ( wasClick )
-        {
-          // found an item, and only a click - nothing more to do
-          break;
-        }
+        componentItem->setSelected( false );
+      }
+      else
+      {
+        componentItem->setSelected( true );
+      }
+      if ( wasClick )
+      {
+        // found an item, and only a click - nothing more to do
+        break;
       }
     }
   }
 
   //update item panel
-  const QList<QgsLayoutItem *> selectedItemList = layout()->selectedLayoutItems();
+  const QList<QgsModelComponentGraphicItem *> selectedItemList = scene()->selectedComponentItems();
   if ( !selectedItemList.isEmpty() )
   {
     emit itemFocused( selectedItemList.at( 0 ) );
@@ -227,6 +220,7 @@ void QgsModelViewToolSelect::modelReleaseEvent( QgsModelViewMouseEvent *event )
   {
     emit itemFocused( nullptr );
   }
+#if 0
   mMouseHandles->selectionChanged();
 #endif
 }
@@ -281,7 +275,7 @@ QgsModelViewMouseHandles *QgsModelViewToolSelect::mouseHandles()
   return nullptr; //mMouseHandles;
 }
 
-void QgsModelViewToolSelect::setModel( QgsProcessingAlgorithmModel *model )
+void QgsModelViewToolSelect::setScene( QgsModelGraphicsScene *model )
 {
 #if 0
   // existing handles are owned by previous layout

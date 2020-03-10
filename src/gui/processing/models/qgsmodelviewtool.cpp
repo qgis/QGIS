@@ -15,6 +15,7 @@
 
 #include "qgsmodelviewtool.h"
 #include "qgsmodelgraphicsview.h"
+#include "qgsmodelgraphicsscene.h"
 #include "qgsmodelviewmouseevent.h"
 
 QgsModelViewTool::QgsModelViewTool( QgsModelGraphicsView *view, const QString &name )
@@ -40,9 +41,9 @@ QgsModelGraphicsView *QgsModelViewTool::view() const
   return mView;
 }
 
-QgsProcessingAlgorithmModel *QgsModelViewTool::model() const
+QgsModelGraphicsScene *QgsModelViewTool::scene() const
 {
-  return nullptr;// mView->currentLayout();
+  return qobject_cast< QgsModelGraphicsScene * >( mView->scene() );
 }
 
 QgsModelViewTool::~QgsModelViewTool()

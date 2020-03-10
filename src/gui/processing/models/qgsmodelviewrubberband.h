@@ -28,7 +28,6 @@ class QgsModelGraphicsView;
 class QGraphicsRectItem;
 class QGraphicsEllipseItem;
 class QGraphicsPolygonItem;
-class QgsProcessingAlgorithmModel;
 
 /**
  * \ingroup gui
@@ -76,15 +75,8 @@ class GUI_EXPORT QgsModelViewRubberBand : public QObject
 
     /**
      * Returns the view associated with the rubber band.
-     * \see model()
      */
     QgsModelGraphicsView *view() const;
-
-    /**
-     * Returns the model associated with the rubber band.
-     * \see view()
-     */
-    QgsProcessingAlgorithmModel *model() const;
 
     /**
      * Returns the brush used for drawing the rubber band.

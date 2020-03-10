@@ -83,6 +83,29 @@ Returns the current combination of flags set for the scene.
 Populates the scene by creating items representing the specified ``model``.
 %End
 
+    QList<QgsModelComponentGraphicItem *> selectedComponentItems();
+%Docstring
+Returns list of selected component items.
+%End
+
+    QgsModelComponentGraphicItem *componentItemAt( QPointF position ) const;
+%Docstring
+Returns the topmost component item at a specified ``position``.
+%End
+
+    void deselectAll();
+%Docstring
+Clears any selected items in the scene.
+
+Call this method rather than QGraphicsScene.clearSelection, as the latter does
+not correctly emit signals to allow the scene's model to update.
+%End
+
+    void setSelectedItem( QgsModelComponentGraphicItem *item );
+%Docstring
+Clears any selected items and sets ``item`` as the current selection.
+%End
+
   signals:
 
     void rebuildRequired();
@@ -101,6 +124,12 @@ optional ``id`` can be used to group the associated undo commands.
     void componentChanged();
 %Docstring
 Emitted whenever a component of the model is changed.
+%End
+
+    void selectedItemChanged( QgsModelComponentGraphicItem *selected );
+%Docstring
+Emitted whenever the selected item changes.
+If ``None``, no item is selected.
 %End
 
   protected:

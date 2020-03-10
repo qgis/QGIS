@@ -21,6 +21,7 @@
 #include "qgsmodelviewtooltemporarymousepan.h"
 #include "qgsmodelviewtooltemporarykeyzoom.h"
 #include "qgsmodelcomponentgraphicitem.h"
+#include "qgsmodelgraphicsscene.h"
 
 #include <QDragEnterEvent>
 #include <QScrollBar>
@@ -98,10 +99,8 @@ void QgsModelGraphicsView::dragMoveEvent( QDragMoveEvent *event )
 
 void QgsModelGraphicsView::wheelEvent( QWheelEvent *event )
 {
-#if 0
-  if ( !currentLayout() )
+  if ( !scene() )
     return;
-#endif
 
   if ( mTool )
   {
@@ -168,10 +167,8 @@ void QgsModelGraphicsView::scaleSafe( double scale )
 
 void QgsModelGraphicsView::mousePressEvent( QMouseEvent *event )
 {
-#if 0
-  if ( !currentLayout() )
+  if ( !modelScene() )
     return;
-#endif
 
   if ( mTool )
   {
@@ -197,10 +194,8 @@ void QgsModelGraphicsView::mousePressEvent( QMouseEvent *event )
 
 void QgsModelGraphicsView::mouseReleaseEvent( QMouseEvent *event )
 {
-#if 0
-  if ( !currentLayout() )
+  if ( !modelScene() )
     return;
-#endif
 
   if ( mTool )
   {
@@ -215,10 +210,8 @@ void QgsModelGraphicsView::mouseReleaseEvent( QMouseEvent *event )
 
 void QgsModelGraphicsView::mouseMoveEvent( QMouseEvent *event )
 {
-#if 0
-  if ( !currentLayout() )
+  if ( !modelScene() )
     return;
-#endif
 
   mMouseCurrentXY = event->pos();
 
@@ -260,10 +253,9 @@ void QgsModelGraphicsView::mouseMoveEvent( QMouseEvent *event )
 
 void QgsModelGraphicsView::mouseDoubleClickEvent( QMouseEvent *event )
 {
-#if 0
-  if ( !currentLayout() )
+  if ( !modelScene() )
     return;
-#endif
+
   if ( mTool )
   {
     std::unique_ptr<QgsModelViewMouseEvent> me( new QgsModelViewMouseEvent( this, event, mTool->flags() & QgsModelViewTool::FlagSnaps ) );
@@ -277,10 +269,8 @@ void QgsModelGraphicsView::mouseDoubleClickEvent( QMouseEvent *event )
 
 void QgsModelGraphicsView::keyPressEvent( QKeyEvent *event )
 {
-#if 0
-  if ( !currentLayout() )
+  if ( !modelScene() )
     return;
-#endif
 
   if ( mTool )
   {
@@ -330,10 +320,8 @@ void QgsModelGraphicsView::keyPressEvent( QKeyEvent *event )
 
 void QgsModelGraphicsView::keyReleaseEvent( QKeyEvent *event )
 {
-#if 0
-  if ( !currentLayout() )
+  if ( !modelScene() )
     return;
-#endif
 
   if ( mTool )
   {
@@ -342,6 +330,11 @@ void QgsModelGraphicsView::keyReleaseEvent( QKeyEvent *event )
 
   if ( !mTool || !event->isAccepted() )
     QGraphicsView::keyReleaseEvent( event );
+}
+
+QgsModelGraphicsScene *QgsModelGraphicsView::modelScene() const
+{
+  return qobject_cast< QgsModelGraphicsScene * >( QgsModelGraphicsView::scene() );
 }
 
 QgsModelViewTool *QgsModelGraphicsView::tool()
