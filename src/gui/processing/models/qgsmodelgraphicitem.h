@@ -21,6 +21,8 @@
 #include <QGraphicsObject>
 #include <QPicture>
 
+class QgsModelGraphicsView;
+
 ///@cond NOT_STABLE
 
 
@@ -49,6 +51,11 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
+
+    /**
+     * Returns the associated model view.
+     */
+    QgsModelGraphicsView *view();
 
   signals:
 

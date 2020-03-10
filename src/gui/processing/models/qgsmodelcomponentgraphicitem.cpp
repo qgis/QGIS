@@ -22,6 +22,9 @@
 #include "qgsapplication.h"
 #include "qgsmodelgraphicitem.h"
 #include "qgsprocessingmodelalgorithm.h"
+#include "qgsmodelgraphicsview.h"
+#include "qgsmodelviewtool.h"
+
 #include <QSvgRenderer>
 #include <QPicture>
 #include <QPainter>
@@ -89,6 +92,11 @@ QgsProcessingModelAlgorithm *QgsModelComponentGraphicItem::model()
   return mModel;
 }
 
+QgsModelGraphicsView *QgsModelComponentGraphicItem::view()
+{
+  return qobject_cast< QgsModelGraphicsView * >( scene()->views().first() );
+}
+
 QFont QgsModelComponentGraphicItem::font() const
 {
   return mFont;
@@ -102,7 +110,8 @@ void QgsModelComponentGraphicItem::setFont( const QFont &font )
 
 void QgsModelComponentGraphicItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent * )
 {
-  editComponent();
+  if ( view()->tool() && view()->tool()->allowItemInteraction() )
+    editComponent();
 }
 
 void QgsModelComponentGraphicItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
@@ -117,22 +126,27 @@ void QgsModelComponentGraphicItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *
 
 void QgsModelComponentGraphicItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
-  updateToolTip( event->pos() );
+  if ( view()->tool() && view()->tool()->allowItemInteraction() )
+    updateToolTip( event->pos() );
 }
 
 void QgsModelComponentGraphicItem::hoverMoveEvent( QGraphicsSceneHoverEvent *event )
 {
-  updateToolTip( event->pos() );
+  if ( view()->tool() && view()->tool()->allowItemInteraction() )
+    updateToolTip( event->pos() );
 }
 
 void QgsModelComponentGraphicItem::hoverLeaveEvent( QGraphicsSceneHoverEvent * )
 {
-  setToolTip( QString() );
-  if ( mIsHovering )
+  if ( view()->tool() && view()->tool()->allowItemInteraction() )
   {
-    mIsHovering = false;
-    update();
-    emit repaintArrows();
+    setToolTip( QString() );
+    if ( mIsHovering )
+    {
+      mIsHovering = false;
+      update();
+      emit repaintArrows();
+    }
   }
 }
 

@@ -24,6 +24,7 @@
 #include "qgsgui.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsmodelundocommand.h"
+#include "qgsmodelviewtoolselect.h"
 
 #include <QShortcut>
 #include <QDesktopWidget>
@@ -228,6 +229,13 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
   mActionShowComments->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/ShowComments" ), true ).toBool() );
   connect( mActionShowComments, &QAction::toggled, this, &QgsModelDesignerDialog::toggleComments );
+
+  mSelectTool = new QgsModelViewToolSelect( mView );
+#if 0
+  mSelectTool->setAction( mActionSelectMoveItem );
+#endif
+  mView->setTool( mSelectTool );
+  mView->setFocus();
 
   updateWindowTitle();
 }

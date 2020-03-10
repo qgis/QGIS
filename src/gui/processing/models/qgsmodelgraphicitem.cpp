@@ -16,6 +16,8 @@
 #include "qgsmodelgraphicitem.h"
 #include "qgsapplication.h"
 #include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgraphicsview.h"
+#include "qgsmodelviewtool.h"
 #include <QPainter>
 #include <QSvgRenderer>
 
@@ -68,7 +70,10 @@ QRectF QgsModelDesignerFlatButtonGraphicItem::boundingRect() const
 
 void QgsModelDesignerFlatButtonGraphicItem::hoverEnterEvent( QGraphicsSceneHoverEvent * )
 {
-  mHoverState = true;
+  if ( view()->tool() && !view()->tool()->allowItemInteraction() )
+    mHoverState = false;
+  else
+    mHoverState = true;
   update();
 }
 
@@ -80,7 +85,13 @@ void QgsModelDesignerFlatButtonGraphicItem::hoverLeaveEvent( QGraphicsSceneHover
 
 void QgsModelDesignerFlatButtonGraphicItem::mousePressEvent( QGraphicsSceneMouseEvent * )
 {
-  emit clicked();
+  if ( view()->tool() && view()->tool()->allowItemInteraction() )
+    emit clicked();
+}
+
+QgsModelGraphicsView *QgsModelDesignerFlatButtonGraphicItem::view()
+{
+  return qobject_cast< QgsModelGraphicsView * >( scene()->views().first() );
 }
 
 void QgsModelDesignerFlatButtonGraphicItem::setPicture( const QPicture &picture )

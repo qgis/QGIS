@@ -21,6 +21,12 @@
 #include "qgsprocessingcontext.h"
 #include <QGraphicsView>
 
+class QgsModelViewTool;
+class QgsModelViewToolTemporaryKeyPan;
+class QgsModelViewToolTemporaryKeyZoom;
+class QgsModelViewToolTemporaryMousePan;
+class QgsModelComponentGraphicItem;
+
 ///@cond NOT_STABLE
 
 /**
@@ -39,14 +45,40 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      * Constructor for QgsModelGraphicsView, with the specified \a parent widget.
      */
     QgsModelGraphicsView( QWidget *parent = nullptr );
+    ~QgsModelGraphicsView() override;
 
     void dragEnterEvent( QDragEnterEvent *event ) override;
     void dropEvent( QDropEvent *event ) override;
     void dragMoveEvent( QDragMoveEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
-    void enterEvent( QEvent *event ) override;
     void mousePressEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
+    void mouseDoubleClickEvent( QMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+    void keyReleaseEvent( QKeyEvent *event ) override;
+
+    /**
+     * Returns the currently active tool for the view.
+     * \see setTool()
+     */
+    QgsModelViewTool *tool();
+
+    /**
+     * Sets the \a tool currently being used in the view.
+     * \see unsetTool()
+     * \see tool()
+     */
+    void setTool( QgsModelViewTool *tool );
+
+    /**
+     * Unsets the current view tool, if it matches the specified \a tool.
+     *
+     * This is called from destructor of view tools to make sure
+     * that the tool won't be used any more.
+     * You don't have to call it manually, QgsModelViewTool takes care of it.
+     */
+    void unsetTool( QgsModelViewTool *tool );
 
   signals:
 
@@ -60,8 +92,42 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      */
     void inputDropped( const QString &inputId, const QPointF &pos );
 
+    /**
+     * Emitted when the current \a tool is changed.
+     * \see setTool()
+     */
+    void toolSet( QgsModelViewTool *tool );
+
+    /**
+     * Emitted when an \a item is "focused" in the view, i.e. it becomes the active
+     * item and should have its properties displayed in any designer windows.
+     */
+    void itemFocused( QgsModelComponentGraphicItem *item );
+
+    /**
+     * Emitted in the destructor when the view is about to be deleted,
+     * but is still in a perfectly valid state.
+     */
+    void willBeDeleted();
+
   private:
-    QPoint mPreviousMousePos;
+
+    //! Zoom layout from a mouse wheel event
+    void wheelZoom( QWheelEvent *event );
+
+    /**
+     * Scales the view in a safe way, by limiting the acceptable range
+     * of the scale applied. The \a scale parameter specifies the zoom factor to scale the view by.
+     */
+    void scaleSafe( double scale );
+
+    QPointer< QgsModelViewTool > mTool;
+
+    QgsModelViewToolTemporaryKeyPan *mSpacePanTool = nullptr;
+    QgsModelViewToolTemporaryMousePan *mMidMouseButtonPanTool = nullptr;
+    QgsModelViewToolTemporaryKeyZoom *mSpaceZoomTool = nullptr;
+
+    QPoint mMouseCurrentXY;
 
 };
 

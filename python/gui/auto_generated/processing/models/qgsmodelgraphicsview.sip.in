@@ -9,6 +9,7 @@
 
 
 
+
 class QgsModelGraphicsView : QGraphicsView
 {
 %Docstring
@@ -30,6 +31,7 @@ QGraphicsView subclass representing the model designer.
 %Docstring
 Constructor for QgsModelGraphicsView, with the specified ``parent`` widget.
 %End
+    ~QgsModelGraphicsView();
 
     virtual void dragEnterEvent( QDragEnterEvent *event );
 
@@ -39,12 +41,43 @@ Constructor for QgsModelGraphicsView, with the specified ``parent`` widget.
 
     virtual void wheelEvent( QWheelEvent *event );
 
-    virtual void enterEvent( QEvent *event );
-
     virtual void mousePressEvent( QMouseEvent *event );
+
+    virtual void mouseReleaseEvent( QMouseEvent *event );
 
     virtual void mouseMoveEvent( QMouseEvent *event );
 
+    virtual void mouseDoubleClickEvent( QMouseEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+    virtual void keyReleaseEvent( QKeyEvent *event );
+
+
+    QgsModelViewTool *tool();
+%Docstring
+Returns the currently active tool for the view.
+
+.. seealso:: :py:func:`setTool`
+%End
+
+    void setTool( QgsModelViewTool *tool );
+%Docstring
+Sets the ``tool`` currently being used in the view.
+
+.. seealso:: :py:func:`unsetTool`
+
+.. seealso:: :py:func:`tool`
+%End
+
+    void unsetTool( QgsModelViewTool *tool );
+%Docstring
+Unsets the current view tool, if it matches the specified ``tool``.
+
+This is called from destructor of view tools to make sure
+that the tool won't be used any more.
+You don't have to call it manually, QgsModelViewTool takes care of it.
+%End
 
   signals:
 
@@ -56,6 +89,25 @@ Emitted when an algorithm is dropped onto the view.
     void inputDropped( const QString &inputId, const QPointF &pos );
 %Docstring
 Emitted when an input parameter is dropped onto the view.
+%End
+
+    void toolSet( QgsModelViewTool *tool );
+%Docstring
+Emitted when the current ``tool`` is changed.
+
+.. seealso:: :py:func:`setTool`
+%End
+
+    void itemFocused( QgsModelComponentGraphicItem *item );
+%Docstring
+Emitted when an ``item`` is "focused" in the view, i.e. it becomes the active
+item and should have its properties displayed in any designer windows.
+%End
+
+    void willBeDeleted();
+%Docstring
+Emitted in the destructor when the view is about to be deleted,
+but is still in a perfectly valid state.
 %End
 
 };
