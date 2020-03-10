@@ -76,12 +76,7 @@ void QgsMapToolCircle3Tangents::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         mTempRubberBand = nullptr;
       }
     }
-    deactivate();
-    if ( mParentTool )
-    {
-      mParentTool->canvasReleaseEvent( e );
-    }
-    activate();
+    release( e );
   }
 }
 

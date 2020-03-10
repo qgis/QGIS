@@ -101,14 +101,9 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
     qDeleteAll( mRubberBands );
     mRubberBands.clear();
 
-    deactivate();
     deleteRadiusSpinBox();
     mCenters.clear();
-    if ( mParentTool )
-    {
-      mParentTool->canvasReleaseEvent( e );
-    }
-    activate();
+    release( e );
   }
 }
 

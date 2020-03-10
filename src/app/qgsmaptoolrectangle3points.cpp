@@ -66,12 +66,7 @@ void QgsMapToolRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   }
   else if ( e->button() == Qt::RightButton )
   {
-    deactivate( );
-    if ( mParentTool )
-    {
-      mParentTool->canvasReleaseEvent( e );
-    }
-    activate();
+    release( e );
   }
 }
 
