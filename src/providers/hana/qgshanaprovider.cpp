@@ -101,13 +101,13 @@ static void createCoordinateSystem( ConnectionRef &conn, const QgsCoordinateRefe
 {
   OGRSpatialReferenceH hCRS = nullptr;
   hCRS = OSRNewSpatialReference( nullptr );
-  int errcode = OSRImportFromProj4( hCRS, srs.toProj4().toUtf8() );
+  int errcode = OSRImportFromProj4( hCRS, srs.toProj().toUtf8() );
 
   if ( errcode != OGRERR_NONE )
     throw exception();
 
   QgsCoordinateReferenceSystem srsWGS84;
-  srsWGS84.createFromSrid( 4326 );
+  srsWGS84.createFromString( "EPSG:4326" );
 
   QgsCoordinateTransform transform;
   transform.setSourceCrs( srsWGS84 );
@@ -133,7 +133,7 @@ static void createCoordinateSystem( ConnectionRef &conn, const QgsCoordinateRefe
                       srs.isGeographic() ? QStringLiteral( "ROUND EARTH" ) : QStringLiteral( "PLANAR" ),
                       QStringLiteral( "%1 AND %2" ).arg( QString::number( bounds.xMinimum() ), QString::number( bounds.xMaximum() ) ),
                       QStringLiteral( "%1 AND %2" ).arg( QString::number( bounds.yMinimum() ), QString::number( bounds.yMaximum() ) ),
-                      srs.toWkt(), srs.toProj4() );
+                      srs.toWkt(), srs.toProj() );
 
   StatementRef stmt = conn->createStatement();
   stmt->execute( sql.toStdString().c_str() );
@@ -1429,31 +1429,27 @@ long QgsHanaProvider::getFeatureCount( const QString &whereClause ) const
 
 QgsCoordinateReferenceSystem QgsHanaProvider::crs() const
 {
-  int srid = mSrid;
   QgsCoordinateReferenceSystem srs;
-  srs.createFromSrid( srid );
-  if ( srs.isValid() )
-    return srs;
 
   static QMutex sMutex;
   QMutexLocker locker( &sMutex );
   static QMap<int, QgsCoordinateReferenceSystem> sCrsCache;
-  if ( sCrsCache.contains( srid ) )
-    srs = sCrsCache.value( srid );
+  if ( sCrsCache.contains( mSrid ) )
+    srs = sCrsCache.value( mSrid );
   else
   {
     QgsHanaConnectionRef connRef( mUri );
     ConnectionRef &conn = connRef->getNativeRef();
     StatementRef stmt = conn->createStatement();
-    QString sql = QStringLiteral( "SELECT TRANSFORM_DEFINITION FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = %1" ).arg( srid );
+    QString sql = QStringLiteral( "SELECT DEFINITION FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = %1" ).arg( mSrid );
     ResultSetRef rs = stmt->executeQuery( sql.toStdString().c_str() );
     if ( rs->next() )
     {
       String str = rs->getString( 1 );
       if ( !str.isNull() )
       {
-        srs = QgsCoordinateReferenceSystem::fromProj4( str->c_str() );
-        sCrsCache.insert( srid, srs );
+        srs = QgsCoordinateReferenceSystem::fromWkt( str->c_str() );
+        sCrsCache.insert( mSrid, srs );
       }
     }
     rs->close();
