@@ -45,6 +45,12 @@ class CORE_EXPORT QgsDatabaseSchemaModel : public QAbstractItemModel
 
   public:
 
+    //! Model roles
+    enum Role
+    {
+      RoleEmpty = Qt::UserRole, //!< Entry is an empty entry
+    };
+
     /**
      * Constructor for QgsDatabaseSchemaModel, for the specified \a provider and \a connection name.
      *
@@ -67,6 +73,18 @@ class CORE_EXPORT QgsDatabaseSchemaModel : public QAbstractItemModel
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
 
+    /**
+     * Sets whether an optional empty schema ("not set") option is present in the model.
+     * \see allowEmptySchema()
+     */
+    void setAllowEmptySchema( bool allowEmpty );
+
+    /**
+     * Returns TRUE if the model allows the empty schema ("not set") choice.
+     * \see setAllowEmptySchema()
+     */
+    bool allowEmptySchema() const { return mAllowEmpty; }
+
   public slots:
 
     /**
@@ -78,6 +96,7 @@ class CORE_EXPORT QgsDatabaseSchemaModel : public QAbstractItemModel
     void init();
     std::unique_ptr< QgsAbstractDatabaseProviderConnection > mConnection;
     QStringList mSchemas;
+    bool mAllowEmpty = false;
 };
 
 #endif // QGSDATABASESCHEMAMODEL_H
