@@ -80,7 +80,7 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     //! Snapping indicators
     std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
-    //! The layer being maniuplated
+    //! The layer being manipulated
     QgsVectorLayer *mSourceLayer = nullptr;
 
     //! Geometry to manipulate

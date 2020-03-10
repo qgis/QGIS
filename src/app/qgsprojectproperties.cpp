@@ -69,6 +69,7 @@
 #include "qgsnumericformatwidget.h"
 #include "qgsbearingnumericformat.h"
 #include "qgsprojectdisplaysettings.h"
+#include "qgsprojecttimesettings.h"
 
 //qt includes
 #include <QInputDialog>
@@ -77,6 +78,8 @@
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QAbstractListModel>
+#include <QList>
+#include <QtCore>
 
 const char *QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );
 
@@ -119,6 +122,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mButtonAddColor, &QToolButton::clicked, this, &QgsProjectProperties::mButtonAddColor_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectProperties::showHelp );
   connect( mCustomizeBearingFormatButton, &QPushButton::clicked, this, &QgsProjectProperties::customizeBearingFormat );
+  connect( mCalculateFromLayerButton, &QPushButton::clicked, this, &QgsProjectProperties::calculateFromLayersButton_clicked );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -228,6 +232,18 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
       mAutoTransaction->setToolTip( tr( "Layers are in edit mode. Stop edit mode on all layers to toggle transactional editing." ) );
     }
   }
+
+  // Set time settings input
+  QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
+  if ( range.begin().isValid() && range.end().isValid() )
+  {
+    mStartDateTimeEdit->setDateTime( range.begin() );
+    mEndDateTimeEdit->setDateTime( range.end() );
+  }
+
+  mCurrentRangeLabel->setText( tr( "Current range: %1 to %2" ).arg(
+                                 mStartDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ),
+                                 mEndDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ) ) );
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
@@ -1016,6 +1032,12 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->setAutoTransaction( mAutoTransaction->isChecked() );
   QgsProject::instance()->setEvaluateDefaultValues( mEvaluateDefaultValues->isChecked() );
   QgsProject::instance()->setTrustLayerMetadata( mTrustProjectCheckBox->isChecked() );
+
+  // Time settings
+  QDateTime start =  mStartDateTimeEdit->dateTime();
+  QDateTime end = mEndDateTimeEdit->dateTime();
+
+  QgsProject::instance()->timeSettings()->setTemporalRange( QgsDateTimeRange( start, end ) );
 
   // set the mouse display precision method and the
   // number of decimal places for the manual option
@@ -2473,6 +2495,45 @@ void QgsProjectProperties::mButtonAddColor_clicked()
   activateWindow();
 
   mTreeProjectColors->addColor( newColor, QgsSymbolLayerUtils::colorToName( newColor ) );
+}
+
+void QgsProjectProperties::calculateFromLayersButton_clicked()
+{
+  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
+  QgsMapLayer *currentLayer = nullptr;
+
+  QDateTime minDate;
+  QDateTime maxDate;
+
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
+  {
+    currentLayer = it.value();
+
+    if ( !currentLayer->temporalProperties() || !currentLayer->temporalProperties()->isActive() )
+      continue;
+
+    if ( currentLayer->type() == QgsMapLayerType::RasterLayer )
+    {
+      QgsRasterLayer *rasterLayer  = qobject_cast<QgsRasterLayer *>( currentLayer );
+
+      QgsDateTimeRange layerRange = rasterLayer->temporalProperties()->temporalRange();
+
+      if ( !minDate.isValid() ||  layerRange.begin() < minDate )
+        minDate = layerRange.begin();
+      if ( !maxDate.isValid() ||  layerRange.end() > maxDate )
+        maxDate = layerRange.end();
+    }
+  }
+
+  if ( !minDate.isValid() || !maxDate.isValid() )
+    return;
+
+  mStartDateTimeEdit->setDateTime( minDate );
+  mEndDateTimeEdit->setDateTime( maxDate );
+
+  mCurrentRangeLabel->setText( tr( "Current range: %1 to %2" ).arg(
+                                 mStartDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ),
+                                 mEndDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ) ) );
 }
 
 QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const QString &newScale )

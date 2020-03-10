@@ -1,0 +1,69 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodeldesignerdialog.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsModelDesignerDialog : QMainWindow
+{
+%Docstring
+Model designer dialog base class
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodeldesignerdialog.h"
+%End
+  public:
+
+    QgsModelDesignerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = 0 );
+
+    virtual void closeEvent( QCloseEvent *event );
+
+
+  protected:
+
+    virtual void repaintModel( bool showControls = true ) = 0;
+    virtual QgsProcessingModelAlgorithm *model() = 0;
+    virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
+    virtual void addInput( const QString &inputId, const QPointF &pos ) = 0;
+    virtual void exportAsScriptAlgorithm() = 0;
+    virtual void saveModel( bool saveAs = false ) = 0;
+
+    QToolBar *toolbar();
+    QAction *actionOpen();
+    QAction *actionSaveInProject();
+    QAction *actionEditHelp();
+    QAction *actionRun();
+    QLineEdit *textName();
+    QLineEdit *textGroup();
+    QgsMessageBar *messageBar();
+    QGraphicsView *view();
+
+    void updateVariablesGui();
+
+    void setDirty( bool dirty );
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/models/qgsmodeldesignerdialog.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

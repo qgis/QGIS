@@ -86,7 +86,6 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
         }
         else
         {
-          mSchema.clear();
           mTable = pval;
         }
 
@@ -117,6 +116,10 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
         {
           mGeometryColumn = QString();
         }
+      }
+      else if ( pname == QLatin1String( "schema" ) )
+      {
+        mSchema = pval;
       }
       else if ( pname == QLatin1String( "key" ) )
       {

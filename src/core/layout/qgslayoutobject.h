@@ -191,6 +191,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       ScalebarLineWidth, //!< Scalebar line width,
       //table item
       AttributeTableSourceLayer, //!< Attribute table source layer
+      MapCrs, //!< Map CRS
     };
 
     /**

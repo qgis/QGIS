@@ -365,7 +365,12 @@ void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
 void QgsFeatureListView::ensureEditSelection( bool inSelection )
 {
   if ( !mModel->rowCount() )
+  {
+    // not sure this is the best place to emit from
+    // this will allow setting the counter to zero in the browsing panel
+    emit currentEditSelectionProgressChanged( 0, 0 );
     return;
+  }
 
   const QModelIndexList selectedIndexes = mCurrentEditSelectionModel->selectedIndexes();
 

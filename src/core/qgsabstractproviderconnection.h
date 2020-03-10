@@ -90,6 +90,11 @@ class CORE_EXPORT QgsAbstractProviderConnection
     virtual void remove( const QString &name ) const = 0;
 
     /**
+     * Returns an icon representing the connection.
+     */
+    virtual QIcon icon() const;
+
+    /**
      * Returns the connection data source URI string representation
      */
     QString uri() const;

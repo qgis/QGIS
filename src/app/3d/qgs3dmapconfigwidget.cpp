@@ -40,7 +40,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   Q_ASSERT( mainCanvas );
 
   mMeshSymbolWidget = new QgsMesh3dSymbolWidget( nullptr, groupMeshTerrainShading );
-  mMeshSymbolWidget->enableVerticalSetting( false );
+  mMeshSymbolWidget->configureForTerrain();
 
   spinCameraFieldOfView->setClearValue( 45.0 );
   spinTerrainScale->setClearValue( 1.0 );
@@ -83,7 +83,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
     cboTerrainLayer->setLayer( meshTerrain->meshLayer() );
     mMeshSymbolWidget->setLayer( meshTerrain->meshLayer(), false );
     mMeshSymbolWidget->setSymbol( meshTerrain->symbol() );
-    spinTerrainScale->setValue( meshTerrain->symbol().verticaleScale() );
+    spinTerrainScale->setValue( meshTerrain->symbol().verticalScale() );
   }
   else
   {
@@ -201,7 +201,7 @@ void Qgs3DMapConfigWidget::apply()
       QgsMeshTerrainGenerator *newTerrainGenerator = new QgsMeshTerrainGenerator;
       newTerrainGenerator->setLayer( meshLayer );
       QgsMesh3DSymbol symbol = mMeshSymbolWidget->symbol();
-      symbol.setVerticaleScale( spinTerrainScale->value() );
+      symbol.setVerticalScale( spinTerrainScale->value() );
       newTerrainGenerator->setSymbol( symbol );
       mMap->setTerrainGenerator( newTerrainGenerator );
       needsUpdateOrigin = true;

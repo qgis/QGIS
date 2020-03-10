@@ -259,7 +259,8 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
-    layerExtent = mLayerExtent;
+    //if the transform fails, consider the whole map
+    layerExtent = mMapExtent;
   }
 
   QgsRectangle interestZoneExtent;
@@ -298,8 +299,16 @@ void QgsMeshStreamField::updateSize( const QgsRenderContext &renderContext )
   if ( fieldHeightInDeviceCoordinate % mFieldResolution > 0 )
     fieldHeight++;
 
-  mFieldSize.setWidth( fieldWidth );
-  mFieldSize.setHeight( fieldHeight );
+  if ( fieldWidth == 0 || fieldHeight == 0 )
+  {
+    mFieldSize = QSize();
+  }
+  else
+  {
+    mFieldSize.setWidth( fieldWidth );
+    mFieldSize.setHeight( fieldHeight );
+  }
+
 
   double mapUnitPerFieldPixel;
   if ( interestZoneExtent.width() > 0 )
@@ -1236,7 +1245,7 @@ QgsMeshVectorTraceAnimationGenerator::QgsMeshVectorTraceAnimationGenerator( QgsM
     vectorDatasetValues = cache->mVectorDatasetValues;
     scalarActiveFaceFlagValues = cache->mScalarActiveFaceFlagValues;
     magMax = cache->mVectorDatasetMagMaximum;
-    vectorDataOnVertices = cache->mVectorDataOnVertices;
+    vectorDataOnVertices = cache->mVectorDataType == QgsMeshDatasetGroupMetadata::DataOnVertices;
   }
   else
   {

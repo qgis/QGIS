@@ -26,6 +26,7 @@ struct QgsMesh;
 #include "qgis_core.h"
 #include <QList>
 #include <QSharedDataPointer>
+#include "qgsmeshdataprovider.h"
 
 class QgsMeshSpatialIndexData;
 
@@ -33,7 +34,7 @@ class QgsMeshSpatialIndexData;
  * \ingroup core
  * \class QgsMeshSpatialIndex
  *
- * A spatial index for QgsMeshFace objects.
+ * A spatial index for QgsMeshFace or QgsMeshEdge objects.
  *
  * QgsMeshSpatialIndex objects are implicitly shared and can be inexpensively copied.
  *
@@ -55,13 +56,16 @@ class CORE_EXPORT QgsMeshSpatialIndex
     QgsMeshSpatialIndex();
 
     /**
-     * Constructor - creates R-tree and bulk loads faces from the specified mesh
+     * Constructor - creates R-tree and bulk loads faces or edges from the specified mesh
+     *
+     * Not implemented to construct R-tree for vertices
+     * Since QGIS 3.14 possibility to create R-tree for edges
      *
      * The optional \a feedback object can be used to allow cancellation of bulk face loading. Ownership
      * of \a feedback is not transferred, and callers must take care that the lifetime of feedback exceeds
      * that of the spatial index construction.
      */
-    explicit QgsMeshSpatialIndex( const QgsMesh &triangularMesh, QgsFeedback *feedback = nullptr );
+    explicit QgsMeshSpatialIndex( const QgsMesh &mesh, QgsFeedback *feedback = nullptr, QgsMesh::ElementType elementType = QgsMesh::ElementType::Face );
 
     //! Copy constructor
     QgsMeshSpatialIndex( const QgsMeshSpatialIndex &other );
@@ -89,7 +93,15 @@ class CORE_EXPORT QgsMeshSpatialIndex
      */
     QList<int> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;
 
+    /**
+     * Returns the type of mesh elements that are indexed
+     *
+     * \since QGIS 3.14
+     */
+    QgsMesh::ElementType elementType() const;
+
   private:
+    QgsMesh::ElementType mElementType = QgsMesh::ElementType::Face;
     QSharedDataPointer<QgsMeshSpatialIndexData> d;
 };
 

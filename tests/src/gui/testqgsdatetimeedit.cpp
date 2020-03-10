@@ -116,6 +116,54 @@ void TestQgsDateTimeEdit::nullValues()
   QCOMPARE( timeEdit->date(), date.date() );
 
   delete timeEdit;
+
+  // QgsDateEdit
+
+  QgsDateEdit *dateEdit = new QgsDateEdit();
+
+  // Allow null with a null datetime
+  QVERIFY( dateEdit->allowNull() );
+  dateEdit->setDate( QDate() );
+  QCOMPARE( dateEdit->date(), QDate() );
+
+  // Not null with not null datetime
+  QDate dt( 2019, 7, 6 );
+  dateEdit->setAllowNull( false );
+  QVERIFY( !dateEdit->allowNull() );
+  dateEdit->setDate( dt );
+  QCOMPARE( dateEdit->date(), dt );
+
+  // Not null with null date
+  dateEdit->setAllowNull( false );
+  QVERIFY( !dateEdit->allowNull() );
+  dateEdit->setDate( QDate() );
+  QCOMPARE( dateEdit->date(), dt );
+
+  delete dateEdit;
+
+  // QgsTimeEdit
+
+  QgsTimeEdit *tEdit = new QgsTimeEdit();
+
+  // Allow null with a null datetime
+  QVERIFY( tEdit->allowNull() );
+  tEdit->setTime( QTime() );
+  QCOMPARE( tEdit->time(), QTime() );
+
+  // Not null with not null datetime
+  QTime t( 8, 30, 0 );
+  tEdit->setAllowNull( false );
+  QVERIFY( !tEdit->allowNull() );
+  tEdit->setTime( t );
+  QCOMPARE( tEdit->time(), t );
+
+  // Not null with null date
+  tEdit->setAllowNull( false );
+  QVERIFY( !tEdit->allowNull() );
+  tEdit->setTime( QTime() );
+  QCOMPARE( tEdit->time(), t );
+
+  delete tEdit;
 }
 
 void TestQgsDateTimeEdit::focus()

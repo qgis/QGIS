@@ -20,7 +20,6 @@
 #include "qgsmeshlayerutils.h"
 #include "qgsmessagelog.h"
 
-
 QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidget *parent )
   : QWidget( parent )
 
@@ -32,6 +31,12 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
   mScalarInterpolationTypeComboBox->addItem( tr( "Neighbour Average" ), QgsMeshRendererScalarSettings::NeighbourAverage );
   mScalarInterpolationTypeComboBox->setCurrentIndex( 0 );
 
+  mScalarEdgeWidthUnitSelectionWidget->setUnits( QgsUnitTypes::RenderUnitList()
+      << QgsUnitTypes::RenderMillimeters
+      << QgsUnitTypes::RenderMetersInMapUnits
+      << QgsUnitTypes::RenderPixels
+      << QgsUnitTypes::RenderPoints );
+
   // connect
   connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked );
   connect( mScalarMinLineEdit, &QLineEdit::textChanged, this, &QgsMeshRendererScalarSettingsWidget::minMaxChanged );
@@ -41,6 +46,10 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
   connect( mScalarColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
   connect( mScalarInterpolationTypeComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
+  connect( mScalarEdgeWidthUnitSelectionWidget, &QgsUnitSelectionWidget::changed,
+           this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
+  connect( mScalarEdgeWidthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+           this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
 }
 
 void QgsMeshRendererScalarSettingsWidget::setLayer( QgsMeshLayer *layer )
@@ -62,6 +71,8 @@ QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() co
   settings.setClassificationMinimumMaximum( lineEditValue( mScalarMinLineEdit ), lineEditValue( mScalarMaxLineEdit ) );
   settings.setOpacity( mOpacityWidget->opacity() );
   settings.setDataInterpolationMethod( dataIntepolationMethod() );
+  settings.setEdgeWidth( mScalarEdgeWidthSpinBox->value() );
+  settings.setEdgeWidthUnit( mScalarEdgeWidthUnitSelectionWidget->unit() );
   return settings;
 }
 
@@ -78,6 +89,10 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   const QgsColorRampShader shader = settings.colorRampShader();
   const double min = settings.classificationMinimum();
   const double max = settings.classificationMaximum();
+
+  whileBlocking( mScalarEdgeWidthSpinBox )->setValue( settings.edgeWidth() );
+  whileBlocking( mScalarEdgeWidthUnitSelectionWidget )->setUnit( settings.edgeWidthUnit() );
+
   whileBlocking( mScalarMinLineEdit )->setText( QString::number( min ) );
   whileBlocking( mScalarMaxLineEdit )->setText( QString::number( max ) );
   whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );
@@ -85,6 +100,10 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   whileBlocking( mOpacityWidget )->setOpacity( settings.opacity() );
   int index = mScalarInterpolationTypeComboBox->findData( settings.dataInterpolationMethod() );
   whileBlocking( mScalarInterpolationTypeComboBox )->setCurrentIndex( index );
+
+  bool hasEdges = ( mMeshLayer->dataProvider() &&
+                    mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) );
+  mScalarEdgeWidthGroupBox->setVisible( hasEdges );
 }
 
 double QgsMeshRendererScalarSettingsWidget::lineEditValue( const QLineEdit *lineEdit ) const

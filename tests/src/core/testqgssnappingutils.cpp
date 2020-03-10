@@ -116,7 +116,7 @@ class TestQgsSnappingUtils : public QObject
 
       // now enable snapping
       snappingConfig.setEnabled( true );
-      snappingConfig.setType( QgsSnappingConfig::Vertex );
+      snappingConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
       u.setConfig( snappingConfig );
 
       QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
@@ -131,7 +131,7 @@ class TestQgsSnappingUtils : public QObject
       // do not consider edges in the following test - on 32-bit platforms
       // result was an edge match very close to (1,0) instead of being exactly (1,0)
 
-      snappingConfig.setType( QgsSnappingConfig::Vertex );
+      snappingConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
       u.setConfig( snappingConfig );
 
       // test with filtering
@@ -188,7 +188,7 @@ class TestQgsSnappingUtils : public QObject
 
       // now enable snapping
       snappingConfig.setEnabled( true );
-      snappingConfig.setType( QgsSnappingConfig::Vertex );
+      snappingConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
       u.setConfig( snappingConfig );
 
       QgsPointLocator::Match m5 = u.snapToMap( QPoint( 2, 2 ) );
@@ -220,6 +220,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       u.setMapSettings( mapSettings );
       snappingConfig.setEnabled( true );
+      snappingConfig.setTypeFlag( QgsSnappingConfig::VertexFlag );
       snappingConfig.setMode( QgsSnappingConfig::AllLayers );
       u.setConfig( snappingConfig );
 
@@ -249,7 +250,7 @@ class TestQgsSnappingUtils : public QObject
       u.setMapSettings( mapSettings );
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::Vertex, 10, QgsTolerance::Pixels ) );
+      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels ) );
       u.setConfig( snappingConfig );
 
       QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
@@ -296,7 +297,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::Vertex, 0.1, QgsTolerance::ProjectUnits );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::VertexFlag, 0.1, QgsTolerance::ProjectUnits );
       snappingConfig.setIndividualLayerSettings( vl, layerSettings );
       u.setConfig( snappingConfig );
 
@@ -348,7 +349,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::Vertex, 0.2, QgsTolerance::ProjectUnits );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::VertexFlag, 0.2, QgsTolerance::ProjectUnits );
       snappingConfig.setIntersectionSnapping( true );
       snappingConfig.setIndividualLayerSettings( vCurveZ.get(), layerSettings );
       u.setConfig( snappingConfig );
@@ -385,7 +386,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::Vertex, 0.2, QgsTolerance::ProjectUnits );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::VertexFlag, 0.2, QgsTolerance::ProjectUnits );
       snappingConfig.setIntersectionSnapping( true );
       snappingConfig.setIndividualLayerSettings( vMulti.get(), layerSettings );
       u.setConfig( snappingConfig );
@@ -399,6 +400,43 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m2.isValid() );
       QCOMPARE( m2.type(), QgsPointLocator::Vertex );
       QCOMPARE( m2.point(), QgsPointXY( 5.0, 2.5 ) );
+
+    }
+    void testSnapOnCentroidAndMiddleSegment()
+    {
+      std::unique_ptr<QgsVectorLayer> vSnapCentroidMiddle( new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "m" ), QStringLiteral( "memory" ) ) );
+      QgsFeature f1;
+      QgsGeometry f1g = QgsGeometry::fromWkt( "LineString (0 0, 0 5, 5 5, 5 0, 0 0)" );
+      f1.setGeometry( f1g );
+
+      QgsFeatureList flist;
+      flist << f1;
+      vSnapCentroidMiddle->dataProvider()->addFeatures( flist );
+      QVERIFY( vSnapCentroidMiddle->dataProvider()->featureCount() == 1 );
+
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setMapSettings( mapSettings );
+      QgsSnappingConfig snappingConfig = u.config();
+      snappingConfig.setEnabled( true );
+      snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::MiddleOfSegmentFlag | QgsSnappingConfig::CentroidFlag ), 0.2, QgsTolerance::ProjectUnits );
+      snappingConfig.setIndividualLayerSettings( vSnapCentroidMiddle.get(), layerSettings );
+      u.setConfig( snappingConfig );
+
+      QgsPointLocator::Match m = u.snapToMap( QgsPointXY( 0, 2.6 ) );
+      QVERIFY( m.isValid() );
+      QCOMPARE( m.type(), QgsPointLocator::MiddleOfSegment );
+      QCOMPARE( m.point(), QgsPointXY( 0.0, 2.5 ) );
+
+      QgsPointLocator::Match m2 = u.snapToMap( QgsPointXY( 2.5, 2.6 ) );
+      QVERIFY( m2.isValid() );
+      QCOMPARE( m2.type(), QgsPointLocator::Centroid );
+      QCOMPARE( m2.point(), QgsPointXY( 2.5, 2.5 ) );
 
     }
 

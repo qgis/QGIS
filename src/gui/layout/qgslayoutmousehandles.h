@@ -50,7 +50,7 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
     Q_OBJECT
   public:
 
-    //! Describes the action (move or resize in different directon) to be done during mouse move
+    //! Describes the action (move or resize in different direction) to be done during mouse move
     enum MouseAction
     {
       MoveItem,

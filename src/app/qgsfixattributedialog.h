@@ -60,7 +60,7 @@ class APP_EXPORT QgsFixAttributeDialog : public QDialog
     QgsFeatureList fixedFeatures() { return mFixedFeatures; }
 
     /**
-     * Returns unfixed features (canceled or not handeled)
+     * Returns unfixed features (canceled or not handled)
      */
     QgsFeatureList unfixedFeatures() { return mUnfixedFeatures; }
 

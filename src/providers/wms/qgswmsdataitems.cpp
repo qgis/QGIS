@@ -98,7 +98,7 @@ QVector<QgsDataItem *> QgsWMSConnectionItem::createChildren()
       QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
       QgsDataItem *layer = nullptr;
 
-      if ( layerProperty.name.isEmpty() )
+      if ( layerProperty.name.isEmpty() || !layerProperty.layer.isEmpty() )
         layer = new QgsWMSLayerCollectionItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
       else
         layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, uri, layerProperty );
@@ -285,7 +285,7 @@ QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QStri
 
     QgsDataItem *layer = nullptr;
 
-    if ( layerProperty.name.isEmpty() )
+    if ( layerProperty.name.isEmpty() || !layerProperty.layer.isEmpty() )
       layer = new QgsWMSLayerCollectionItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, dataSourceUri, layerProperty );
     else
       layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, mCapabilitiesProperty, dataSourceUri, layerProperty );
@@ -364,6 +364,18 @@ QString QgsWMSLayerItem::createUri()
   mDataSourceUri.setParam( QStringLiteral( "layers" ), mLayerProperty.name );
   QString style = !mLayerProperty.style.isEmpty() ? mLayerProperty.style.at( 0 ).name : QString();
   mDataSourceUri.setParam( QStringLiteral( "styles" ), style );
+
+  // Check for layer dimensions
+  for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( mLayerProperty.dimensions ) )
+  {
+    // add temporal dimensions only
+    if ( dimension.name == QLatin1String( "time" ) || dimension.name == QLatin1String( "reference_time" ) )
+    {
+      if ( !( mDataSourceUri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) ) )
+        mDataSourceUri.setParam( QLatin1String( "type" ), QLatin1String( "wmst" ) );
+      mDataSourceUri.setParam( dimension.name, dimension.extent );
+    }
+  }
 
   QString format;
   // get first supported by qt and server

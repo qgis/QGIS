@@ -167,6 +167,18 @@ QgsSimpleLineCalloutWidget::QgsSimpleLineCalloutWidget( QgsVectorLayer *vl, QWid
   mAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast< int >( QgsCallout::Centroid ) );
   connect( mAnchorPointComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineCalloutWidget::mAnchorPointComboBox_currentIndexChanged );
 
+  mLabelAnchorPointComboBox->addItem( tr( "Closest Point" ), static_cast< int >( QgsCallout::LabelPointOnExterior ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Centroid" ), static_cast< int >( QgsCallout::LabelCentroid ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Top Left" ), static_cast< int >( QgsCallout::LabelTopLeft ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Top Center" ), static_cast< int >( QgsCallout::LabelTopMiddle ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Top Right" ), static_cast< int >( QgsCallout::LabelTopRight ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Left Middle" ), static_cast< int >( QgsCallout::LabelMiddleLeft ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Right Middle" ), static_cast< int >( QgsCallout::LabelMiddleRight ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Bottom Left" ), static_cast< int >( QgsCallout::LabelBottomLeft ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Bottom Center" ), static_cast< int >( QgsCallout::LabelBottomMiddle ) );
+  mLabelAnchorPointComboBox->addItem( tr( "Bottom Right" ), static_cast< int >( QgsCallout::LabelBottomRight ) );
+  connect( mLabelAnchorPointComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSimpleLineCalloutWidget::mLabelAnchorPointComboBox_currentIndexChanged );
+
   connect( mCalloutLineStyleButton, &QgsSymbolButton::changed, this, &QgsSimpleLineCalloutWidget::lineSymbolChanged );
 }
 
@@ -202,12 +214,14 @@ void QgsSimpleLineCalloutWidget::setCallout( QgsCallout *callout )
   whileBlocking( mDrawToAllPartsCheck )->setChecked( mCallout->drawCalloutToAllParts() );
 
   whileBlocking( mAnchorPointComboBox )->setCurrentIndex( mAnchorPointComboBox->findData( static_cast< int >( callout->anchorPoint() ) ) );
+  whileBlocking( mLabelAnchorPointComboBox )->setCurrentIndex( mLabelAnchorPointComboBox->findData( static_cast< int >( callout->labelAnchorPoint() ) ) );
 
   registerDataDefinedButton( mMinCalloutLengthDDBtn, QgsCallout::MinimumCalloutLength );
   registerDataDefinedButton( mOffsetFromAnchorDDBtn, QgsCallout::OffsetFromAnchor );
   registerDataDefinedButton( mOffsetFromLabelDDBtn, QgsCallout::OffsetFromLabel );
   registerDataDefinedButton( mDrawToAllPartsDDBtn, QgsCallout::DrawCalloutToAllParts );
   registerDataDefinedButton( mAnchorPointDDBtn, QgsCallout::AnchorPointPosition );
+  registerDataDefinedButton( mLabelAnchorPointDDBtn, QgsCallout::LabelAnchorPointPosition );
 }
 
 void QgsSimpleLineCalloutWidget::setGeometryType( QgsWkbTypes::GeometryType type )
@@ -277,6 +291,12 @@ void QgsSimpleLineCalloutWidget::mAnchorPointComboBox_currentIndexChanged( int i
   emit changed();
 }
 
+void QgsSimpleLineCalloutWidget::mLabelAnchorPointComboBox_currentIndexChanged( int index )
+{
+  mCallout->setLabelAnchorPoint( static_cast<QgsCallout::LabelAnchorPoint>( mLabelAnchorPointComboBox->itemData( index ).toInt() ) );
+  emit changed();
+}
+
 void QgsSimpleLineCalloutWidget::drawToAllPartsToggled( bool active )
 {
   mCallout->setDrawCalloutToAllParts( active );
@@ -296,3 +316,4 @@ QgsManhattanLineCalloutWidget::QgsManhattanLineCalloutWidget( QgsVectorLayer *vl
 
 
 ///@endcond
+

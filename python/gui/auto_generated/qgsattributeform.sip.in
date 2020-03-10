@@ -280,6 +280,18 @@ Resets the search/filter form values.
 reload current feature
 %End
 
+    void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
+%Docstring
+Is called in embedded forms when an ``attribute`` value in the parent form
+has changed to ``newValue``.
+
+Notify the form widgets that something has changed in case they
+have filter expressions that depend on the parent form scope.
+
+.. versionadded:: 3.14
+%End
+
+
 };
 
 

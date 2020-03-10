@@ -26,7 +26,7 @@ namespace MDAL
       DriverUgrid();
       ~DriverUgrid() override = default;
       DriverUgrid *create() override;
-      void save( const std::string &uri, Mesh *mesh, MDAL_Status *status ) override;
+      void save( const std::string &uri, Mesh *mesh ) override;
 
     private:
       CFDimensions populateDimensions( ) override;

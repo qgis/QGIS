@@ -482,6 +482,21 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QString formatLayerHelp( const QgsMapLayer *layer ) const;
 
     /**
+     * Returns a HTML formatted string for use as a \a recent \a expression item help.
+     */
+    QString formatRecentExpressionHelp( const QString &label, const QString &expression ) const;
+
+    /**
+     * Returns a HTML formatted string for use as a \a user \a expression item help.
+     */
+    QString formatUserExpressionHelp( const QString &label, const QString &expression, const QString &description ) const;
+
+    /**
+     * Returns a HTML formatted string for use as a \a variable item help.
+     */
+    QString formatVariableHelp( const QString &variable, const QString &description, bool showValue, const QVariant &value ) const;
+
+    /**
      * Will be set to TRUE if the current expression text reported an eval error
      * with the context.
      *

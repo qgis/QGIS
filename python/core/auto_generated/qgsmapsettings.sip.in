@@ -35,7 +35,7 @@ Constructor for a label blocking region
 };
 
 
-class QgsMapSettings
+class QgsMapSettings : QgsTemporalRangeObject
 {
 %Docstring
 The QgsMapSettings class contains configuration for rendering of the map.

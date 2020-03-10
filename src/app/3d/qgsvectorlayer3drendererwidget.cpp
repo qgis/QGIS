@@ -38,6 +38,7 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QWidget *paren
   widgetSymbol = new QgsSymbol3DWidget( this );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
+  layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( widgetSymbol );
 
   connect( widgetSymbol, &QgsSymbol3DWidget::widgetChanged, this, &QgsSingleSymbol3DRendererWidget::widgetChanged );
@@ -66,7 +67,7 @@ QgsAbstract3DSymbol *QgsSingleSymbol3DRendererWidget::symbol()
 
 // -------
 
-QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
+QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setPanelTitle( tr( "3D View" ) );
@@ -102,21 +103,26 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsVectorLayer *
 }
 
 
-void QgsVectorLayer3DRendererWidget::setLayer( QgsVectorLayer *layer )
+void QgsVectorLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer )
+  {
+    return;
+  }
   mLayer = layer;
 
   int pageIndex;
-  QgsAbstract3DRenderer *r = layer->renderer3D();
+  QgsAbstract3DRenderer *r = vlayer->renderer3D();
   if ( r && r->type() == QLatin1String( "vector" ) )
   {
     pageIndex = 1;
-    widgetSingleSymbolRenderer->setLayer( layer );
+    widgetSingleSymbolRenderer->setLayer( vlayer );
   }
   else if ( r && r->type() == QLatin1String( "rulebased" ) )
   {
     pageIndex = 2;
-    widgetRuleBasedRenderer->setLayer( layer );
+    widgetRuleBasedRenderer->setLayer( vlayer );
   }
   else
   {
@@ -184,4 +190,23 @@ void QgsVectorLayer3DRendererWidget::onRendererTypeChanged( int index )
       Q_ASSERT( false );
   }
   emit widgetChanged();
+}
+
+
+QgsVectorLayer3DRendererWidgetFactory::QgsVectorLayer3DRendererWidgetFactory( QObject *parent )
+  : QObject( parent )
+{
+  setIcon( QIcon( ":/images/themes/default/3d.svg" ) );
+  setTitle( tr( "3D View" ) );
+}
+
+QgsMapLayerConfigWidget *QgsVectorLayer3DRendererWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const
+{
+  Q_UNUSED( dockWidget )
+  return new QgsVectorLayer3DRendererWidget( layer, canvas, parent );
+}
+
+bool QgsVectorLayer3DRendererWidgetFactory::supportsLayer( QgsMapLayer *layer ) const
+{
+  return layer->type() == QgsMapLayerType::VectorLayer;
 }

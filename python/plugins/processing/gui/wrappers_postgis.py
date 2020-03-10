@@ -18,8 +18,7 @@
 """
 
 
-from qgis.core import (QgsSettings,
-                       QgsProcessingParameterNumber,
+from qgis.core import (QgsProcessingParameterNumber,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterField,
                        QgsProcessingParameterExpression,
@@ -33,39 +32,6 @@ from processing.gui.wrappers import (
     DIALOG_MODELER,
 )
 from processing.tools.postgis import GeoDB
-
-
-class ConnectionWidgetWrapper(WidgetWrapper):
-    """
-    WidgetWrapper for ParameterString that create and manage a combobox widget
-    with existing postgis connections.
-    """
-
-    def createWidget(self):
-        self._combo = QComboBox()
-        for group in self.items():
-            self._combo.addItem(*group)
-        self._combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
-        return self._combo
-
-    def items(self):
-        settings = QgsSettings()
-        settings.beginGroup('/PostgreSQL/connections/')
-        items = [(group, group) for group in settings.childGroups()]
-
-        if self.dialogType == DIALOG_MODELER:
-            strings = self.dialog.getAvailableValuesOfType(
-                [QgsProcessingParameterString, QgsProcessingParameterNumber, QgsProcessingParameterFile,
-                 QgsProcessingParameterField, QgsProcessingParameterExpression], QgsProcessingOutputString)
-            items = items + [(self.dialog.resolveValueDescription(s), s) for s in strings]
-
-        return items
-
-    def setValue(self, value):
-        self.setComboValue(value, self._combo)
-
-    def value(self):
-        return self.comboValue(combobox=self._combo)
 
 
 class SchemaWidgetWrapper(WidgetWrapper):

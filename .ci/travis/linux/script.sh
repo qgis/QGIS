@@ -32,7 +32,7 @@ docker run -t --name qgis_container \
 docker commit qgis_container qgis_image
 echo "travis_fold:end:docker_build_qgis"
 
-# running QGIS tests in commited image
+# running QGIS tests in committed image
 echo "travis_fold:start:docker_test_qgis"
 echo "${bold}Docker run tests${endbold}"
 docker-compose -f ${TRAVIS_BUILD_DIR}/.ci/travis/linux/docker-compose.travis.yml run qgis-deps /root/QGIS/.ci/travis/linux/scripts/docker-qgis-test.sh

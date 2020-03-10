@@ -396,6 +396,17 @@ class CORE_EXPORT QgsRectangle
     }
 
     /**
+     * Returns the distance from \a point to the nearest point on the boundary of the rectangle.
+     * \since QGIS 3.14
+     */
+    double distance( const QgsPointXY &point ) const
+    {
+      const double dx = std::max( std::max( mXmin - point.x(), 0.0 ), point.x() - mXmax );
+      const double dy = std::max( std::max( mYmin - point.y(), 0.0 ), point.y() - mYmax );
+      return std::sqrt( dx * dx + dy * dy );
+    }
+
+    /**
      * Returns a rectangle offset from this one in the direction of the reversed vector.
      * \since QGIS 3.0
      */

@@ -134,7 +134,7 @@ void QgsCodeEditorPython::loadAPIs( const QList<QString> &filenames )
 
 bool QgsCodeEditorPython::loadScript( const QString &script )
 {
-  QgsDebugMsg( QStringLiteral( "The script file: %1" ).arg( script ) );
+  QgsDebugMsgLevel( QStringLiteral( "The script file: %1" ).arg( script ), 2 );
   QFile file( script );
   if ( !file.open( QIODevice::ReadOnly ) )
   {

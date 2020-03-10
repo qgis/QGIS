@@ -476,7 +476,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
               mVector3DWidget->setDockMode( true );
               connect( mVector3DWidget, &QgsVectorLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
             }
-            mVector3DWidget->setLayer( vlayer );
+            mVector3DWidget->syncToLayer( vlayer );
             mWidgetStack->setMainPanel( mVector3DWidget );
             break;
           }

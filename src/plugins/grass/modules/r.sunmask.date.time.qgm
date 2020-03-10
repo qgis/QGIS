@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Calculate shadow maps from sun position determinated by date/time" module="r.sunmask">
+<qgisgrassmodule label="Calculate shadow maps from sun position determined by date/time" module="r.sunmask">
 	<option key="elevation" />
 	<option key="year" />
 	<option key="month" />

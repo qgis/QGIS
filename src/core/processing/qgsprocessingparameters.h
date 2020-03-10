@@ -272,6 +272,10 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterCoordinateOperation;
     else if ( sipCpp->type() == QgsProcessingParameterMapTheme::typeName() )
       sipType = sipType_QgsProcessingParameterMapTheme;
+    else if ( sipCpp->type() == QgsProcessingParameterDateTime::typeName() )
+      sipType = sipType_QgsProcessingParameterDateTime;
+    else if ( sipCpp->type() == QgsProcessingParameterProviderConnection::typeName() )
+      sipType = sipType_QgsProcessingParameterProviderConnection;
     else
       sipType = nullptr;
     SIP_END
@@ -681,6 +685,66 @@ class CORE_EXPORT QgsProcessingParameters
      * \since QGIS 3.4
      */
     static QList<int> parameterAsInts( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a static datetime value.
+     *
+     * \see parameterAsDate()
+     * \see parameterAsTime()
+     *
+     * \since QGIS 3.14
+     */
+    static QDateTime parameterAsDateTime( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a static datetime value.
+     *
+     * \see parameterAsDate()
+     * \see parameterAsTime()
+     *
+     * \since QGIS 3.14
+     */
+    static QDateTime parameterAsDateTime( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a static date value.
+     *
+     * \see parameterAsDateTime()
+     * \see parameterAsTime()
+     *
+     * \since QGIS 3.14
+     */
+    static QDate parameterAsDate( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a static date value.
+     *
+     * \see parameterAsDateTime()
+     * \see parameterAsTime()
+     *
+     * \since QGIS 3.14
+     */
+    static QDate parameterAsDate( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a static time value.
+     *
+     * \see parameterAsDateTime()
+     * \see parameterAsDate()
+     *
+     * \since QGIS 3.14
+     */
+    static QTime parameterAsTime( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a static time value.
+     *
+     * \see parameterAsDateTime()
+     * \see parameterAsDate()
+     *
+     * \since QGIS 3.14
+     */
+    static QTime parameterAsTime( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 
     /**
      * Evaluates the parameter with matching \a definition to a enum value.
@@ -1159,6 +1223,20 @@ class CORE_EXPORT QgsProcessingParameters
      * \since QGIS 3.10
      */
     static QColor parameterAsColor( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a connection name string.
+     *
+     * \since QGIS 3.14
+     */
+    static QString parameterAsConnectionName( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a connection name string.
+     *
+     * \since QGIS 3.14
+     */
+    static QString parameterAsConnectionName( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 
     /**
      * Creates a new QgsProcessingParameterDefinition using the configuration from a
@@ -3060,6 +3138,7 @@ class CORE_EXPORT QgsProcessingParameterCoordinateOperation : public QgsProcessi
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QStringList dependsOnOtherParameters() const override;
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -3176,6 +3255,177 @@ class CORE_EXPORT QgsProcessingParameterMapTheme : public QgsProcessingParameter
 
 };
 
+
+/**
+ * \class QgsProcessingParameterDateTime
+ * \ingroup core
+ * A datetime (or pure date or time) parameter for processing algorithms.
+ *
+ * * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsProcessingParameterDateTime : public QgsProcessingParameterDefinition
+{
+  public:
+
+    //! Datetime data type
+    enum Type
+    {
+      DateTime, //!< Datetime values
+      Date, //!< Date values
+      Time, //!< Time values
+    };
+
+    /**
+     * Constructor for QgsProcessingParameterDateTime.
+     */
+    explicit QgsProcessingParameterDateTime( const QString &name, const QString &description = QString(),
+        Type type = DateTime,
+        const QVariant &defaultValue = QVariant(),
+        bool optional = false,
+        const QDateTime &minValue = QDateTime(),
+        const QDateTime &maxValue = QDateTime()
+                                           );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "datetime" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString toolTip() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+
+    /**
+     * Returns the minimum value acceptable by the parameter.
+     *
+     * An invalid QDateTime value indicates no minimum value.
+     *
+     * \see setMinimum()
+     */
+    QDateTime minimum() const;
+
+    /**
+     * Sets the \a minimum value acceptable by the parameter.
+     *
+     * An invalid QDateTime value indicates no minimum value.
+     *
+     * If the dataType() is QgsProcessingParameterDateTime::Time, then the date component of \a minimum
+     * must be set to any valid date (but this date will not actually be considered when comparing parameter
+     * values to the specified minimum value, only the time component will be considered).
+     *
+     * \see minimum()
+     */
+    void setMinimum( const QDateTime &minimum );
+
+    /**
+     * Returns the maximum value acceptable by the parameter.
+     *
+     * An invalid QDateTime value indicates no maximum value.
+     *
+     * \see setMaximum()
+     */
+    QDateTime maximum() const;
+
+    /**
+     * Sets the \a maximum value acceptable by the parameter.
+     *
+     * An invalid QDateTime value indicates no maximum value.
+     *
+     * If the dataType() is QgsProcessingParameterDateTime::Time, then the date component of \a maximum
+     * must be set to any valid date (but this date will not actually be considered when comparing parameter
+     * values to the specified maximum value, only the time component will be considered).
+     *
+     * \see maximum()
+     */
+    void setMaximum( const QDateTime &maximum );
+
+    /**
+     * Returns the acceptable data type for the parameter.
+     * \see setDataType()
+     */
+    Type dataType() const;
+
+    /**
+     * Sets the acceptable data \a type for the parameter.
+     * \see dataType()
+     */
+    void setDataType( Type type );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterDateTime *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+
+    QDateTime mMin;
+    QDateTime mMax;
+    Type mDataType = DateTime;
+};
+
+
+/**
+ * \class QgsProcessingParameterProviderConnection
+ * \ingroup core
+ * A data provider connection parameter for processing algorithms, allowing users to select from available registered
+ * connections for a particular data provider.
+ *
+ * QgsProcessingParameterProviderConnection should be evaluated by calling QgsProcessingAlgorithm::parameterAsConnectionName().
+ *
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsProcessingParameterProviderConnection : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterProviderConnection, for the specified \a provider type.
+     *
+     * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation
+     * in order for the model to work correctly. This is only implemented for a subset of current data providers.
+     */
+    QgsProcessingParameterProviderConnection( const QString &name, const QString &description, const QString &provider, const QVariant &defaultValue = QVariant(),
+        bool optional = false );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "providerconnection" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Returns the ID of the provider associated with the connections.
+     * \see setProviderId()
+     */
+    QString providerId() const { return mProviderId; }
+
+    /**
+     * Sets the ID of the \a provider associated with the connections.
+     * \see providerId()
+     */
+    void setProviderId( const QString &provider ) { mProviderId = provider; }
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterProviderConnection *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+
+    QString mProviderId;
+};
 
 
 // clazy:excludeall=qstring-allocations

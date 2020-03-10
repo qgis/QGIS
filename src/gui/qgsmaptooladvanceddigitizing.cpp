@@ -25,6 +25,7 @@ QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas
   : QgsMapToolEdit( canvas )
   , mCadDockWidget( cadDockWidget )
 {
+  Q_ASSERT( cadDockWidget );
   connect( canvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapToolAdvancedDigitizing::onCurrentLayerChanged );
 }
 

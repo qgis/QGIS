@@ -150,6 +150,18 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
     {
       return;
     }
+
+    // Setup temporal properties for layers in WMS-T
+    if ( mSettings.mIsTemporal )
+    {
+      Q_ASSERT_X( temporalCapabilities(), "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
+      temporalCapabilities()->setHasTemporalCapabilities( true );
+      temporalCapabilities()->setFixedTemporalRange( mSettings.mFixedRange );
+      if ( mSettings.mIsBiTemporal )
+      {
+        temporalCapabilities()->setFixedReferenceTemporalRange( mSettings.mFixedReferenceRange );
+      }
+    }
   }
 
   // setImageCrs is using mTiled !!!
@@ -208,9 +220,9 @@ QgsWmsProvider *QgsWmsProvider::clone() const
   QgsDataProvider::ProviderOptions options;
   QgsWmsProvider *provider = new QgsWmsProvider( dataSourceUri(), options, mCaps.isValid() ? &mCaps : nullptr );
   provider->copyBaseSettings( *this );
+
   return provider;
 }
-
 
 QString QgsWmsProvider::getMapUrl() const
 {
@@ -1031,6 +1043,14 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   setQueryItem( query, QStringLiteral( "HEIGHT" ), QString::number( pixelHeight ) );
   setQueryItem( query, QStringLiteral( "LAYERS" ), layers );
   setQueryItem( query, QStringLiteral( "STYLES" ), styles );
+
+  // For WMS-T layers
+  if ( temporalCapabilities() &&
+       temporalCapabilities()->hasTemporalCapabilities() )
+  {
+    addWmstParameters( query );
+  }
+
   setFormatQueryItem( query );
 
   if ( mDpi != -1 )
@@ -1057,6 +1077,48 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
   return url;
 }
 
+void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
+{
+  QgsDateTimeRange range = temporalCapabilities()->requestedTemporalRange();
+  QString format = "yyyy-MM-ddThh:mm:ssZ";
+
+  if ( !temporalCapabilities()->isTimeEnabled() )
+    format = "yyyy-MM-dd";
+
+  if ( range.begin().isValid() && range.end().isValid() )
+  {
+    if ( range.begin() == range.end() )
+      setQueryItem( query, QStringLiteral( "TIME" ),
+                    range.begin().toString( format ) );
+    else
+    {
+      QString extent = range.begin().toString( format );
+      extent.append( "/" );
+      extent.append( range.end().toString( format ) );
+
+      setQueryItem( query, QStringLiteral( "TIME" ), extent );
+    }
+  }
+  // If the data provider has bi-temporal properties and they are enabled
+  if ( temporalCapabilities()->isReferenceEnable() )
+  {
+    QgsDateTimeRange referenceRange = temporalCapabilities()->requestedReferenceTemporalRange();
+    if ( referenceRange.begin().isValid() && referenceRange.end().isValid() )
+    {
+      if ( referenceRange.begin() == referenceRange.end() )
+        setQueryItem( query, QStringLiteral( "DIM_REFERENCE_TIME" ),
+                      referenceRange.begin().toString( format ) );
+      else
+      {
+        QString extent = referenceRange.begin().toString( format );
+        extent.append( "/" );
+        extent.append( referenceRange.end().toString( format ) );
+
+        setQueryItem( query, QStringLiteral( "DIM_REFERENCE_TIME" ), extent );
+      }
+    }
+  }
+}
 
 void QgsWmsProvider::createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests )
 {
@@ -1674,7 +1736,6 @@ bool QgsWmsProvider::isValid() const
 {
   return mValid;
 }
-
 
 QString QgsWmsProvider::wmsVersion()
 {

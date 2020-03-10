@@ -5,6 +5,7 @@ SET(QGIS_GUI_SRCS
   raster/qgsrasterbandcombobox.cpp
   raster/qgsrasterhistogramwidget.cpp
   raster/qgsrasterlayerproperties.cpp
+  raster/qgsrasterlayertemporalpropertieswidget.cpp
   raster/qgsrasterminmaxwidget.cpp
   raster/qgsrasterrendererwidget.cpp
   raster/qgssinglebandgrayrendererwidget.cpp
@@ -12,6 +13,20 @@ SET(QGIS_GUI_SRCS
   raster/qgsrendererrasterpropertieswidget.cpp
   raster/qgsrastertransparencywidget.cpp
   raster/qgshillshaderendererwidget.cpp
+
+  vector/qgsattributeactiondialog.cpp
+  vector/qgsattributeactionpropertiesdialog.cpp
+  vector/qgsattributesforminitcode.cpp
+  vector/qgsattributesformproperties.cpp
+  vector/qgsdiagramproperties.cpp
+  vector/qgsfieldcalculator.cpp
+  vector/qgsjoindialog.cpp
+  vector/qgssourcefieldsproperties.cpp
+  vector/qgsvectorlayerlegendwidget.cpp
+  vector/qgsvectorlayerloadstyledialog.cpp
+  vector/qgsvectorlayerproperties.cpp
+  vector/qgsvectorlayersavestyledialog.cpp
+  vector/qgswmsdimensiondialog.cpp
 
   symbology/qgs25drendererwidget.cpp
   symbology/characterwidget.cpp
@@ -55,6 +70,11 @@ SET(QGIS_GUI_SRCS
   effects/qgspainteffectwidget.cpp
 
   callouts/qgscalloutwidget.cpp
+
+  attributeformconfig/qgsattributeformcontaineredit.cpp
+  attributeformconfig/qgsattributerelationedit.cpp
+  attributeformconfig/qgsattributetypedialog.cpp
+  attributeformconfig/qgsattributewidgetedit.cpp
 
   attributetable/qgsattributetabledelegate.cpp
   attributetable/qgsattributetablefiltermodel.cpp
@@ -161,9 +181,12 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsvaluerelationsearchwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
 
+  labeling/qgslabelengineconfigdialog.cpp
   labeling/qgslabelinggui.cpp
+  labeling/qgslabelingwidget.cpp
   labeling/qgslabelobstaclesettingswidget.cpp
   labeling/qgslabelsettingswidgetbase.cpp
+  labeling/qgsrulebasedlabelingwidget.cpp
 
   layertree/qgscustomlayerorderwidget.cpp
   layertree/qgslayertreeembeddedconfigwidget.cpp
@@ -252,6 +275,14 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingwidgetwrapper.cpp
   processing/qgsprocessingwidgetwrapperimpl.cpp
 
+  processing/models/qgsmodelarrowitem.cpp
+  processing/models/qgsmodelcomponentgraphicitem.cpp
+  processing/models/qgsmodeldesignerdialog.cpp
+  processing/models/qgsmodeldesignerinputstreewidget.cpp
+  processing/models/qgsmodelgraphicitem.cpp
+  processing/models/qgsmodelgraphicsscene.cpp
+  processing/models/qgsmodelgraphicsview.cpp
+
   providers/gdal/qgsgdalsourceselect.cpp
   providers/gdal/qgsgdalguiprovider.cpp
 
@@ -270,6 +301,8 @@ SET(QGIS_GUI_SRCS
 
   qgisinterface.cpp
   qgsactionmenu.cpp
+  qgsaddattrdialog.cpp
+  qgsaddtaborgroup.cpp
   qgsadvanceddigitizingcanvasitem.cpp
   qgsadvanceddigitizingdockwidget.cpp
   qgsadvanceddigitizingfloater.cpp
@@ -312,6 +345,8 @@ SET(QGIS_GUI_SRCS
   qgscredentialdialog.cpp
   qgscustomdrophandler.cpp
   qgscurveeditorwidget.cpp
+  qgsdatabaseschemacombobox.cpp
+  qgsdatabasetablecombobox.cpp
   qgsdataitemguiprovider.cpp
   qgsdataitemguiproviderregistry.cpp
   qgsdatumtransformdialog.cpp
@@ -374,10 +409,12 @@ SET(QGIS_GUI_SRCS
   qgsmaplayeractionregistry.cpp
   qgsmaplayercombobox.cpp
   qgsmaplayerconfigwidgetfactory.cpp
+  qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmaplayerstylemanagerwidget.cpp
   qgsmapmouseevent.cpp
   qgsmapoverviewcanvas.cpp
+  qgsmaskingwidget.cpp
   qgsmaptip.cpp
   qgsmaptool.cpp
   qgsmaptooladvanceddigitizing.cpp
@@ -397,6 +434,7 @@ SET(QGIS_GUI_SRCS
   qgsmessagelogviewer.cpp
   qgsmessageviewer.cpp
   qgsmetadatawidget.cpp
+  qgsmasksourceselectionwidget.cpp
   qgsnewauxiliarylayerdialog.cpp
   qgsnewauxiliaryfielddialog.cpp
   qgsnewhttpconnection.cpp
@@ -425,6 +463,7 @@ SET(QGIS_GUI_SRCS
   qgsproviderguiregistry.cpp
   qgsproviderguimetadata.cpp
   qgsprojectstorageguiregistry.cpp
+  qgsproviderconnectioncombobox.cpp
   qgsproxystyle.cpp
   qgsquerybuilder.cpp
   qgsrasterformatsaveoptionswidget.cpp
@@ -448,6 +487,7 @@ SET(QGIS_GUI_SRCS
   qgssqlcomposerdialog.cpp
   qgsstatusbar.cpp
   qgssymbolbutton.cpp
+  qgssymbollayerselectionwidget.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
@@ -474,6 +514,8 @@ SET(QGIS_GUI_HDRS
 
   qgsabstractdatasourcewidget.h
   qgsactionmenu.h
+  qgsaddattrdialog.h
+  qgsaddtaborgroup.h
   qgsadvanceddigitizingdockwidget.h
   qgsadvanceddigitizingfloater.h
   qgsaggregatetoolbutton.h
@@ -515,6 +557,8 @@ SET(QGIS_GUI_HDRS
   qgscredentialdialog.h
   qgscurveeditorwidget.h
   qgscustomdrophandler.h
+  qgsdatabaseschemacombobox.h
+  qgsdatabasetablecombobox.h
   qgsdataitemguiprovider.h
   qgsdataitemguiproviderregistry.h
   qgsdatasourcemanagerdialog.h
@@ -580,6 +624,7 @@ SET(QGIS_GUI_HDRS
   qgsmaplayercombobox.h
   qgsmaplayerconfigwidget.h
   qgsmaplayerconfigwidgetfactory.h
+  qgsmaplayerstylecategoriesmodel.h
   qgsmaplayerstyleguiutils.h
   qgsmaplayerstylemanagerwidget.h
   qgsmapmouseevent.h
@@ -596,12 +641,14 @@ SET(QGIS_GUI_HDRS
   qgsmaptoolidentifyfeature.h
   qgsmaptoolpan.h
   qgsmaptoolzoom.h
+  qgsmaskingwidget.h
   qgsmenuheader.h
   qgsmessagebar.h
   qgsmessagebaritem.h
   qgsmessagelogviewer.h
   qgsmessageviewer.h
   qgsmetadatawidget.h
+  qgsmasksourceselectionwidget.h
   qgsnewauxiliaryfielddialog.h
   qgsnewauxiliarylayerdialog.h
   qgsnewgeopackagelayerdialog.h
@@ -630,6 +677,7 @@ SET(QGIS_GUI_HDRS
   qgsprojectstorageguiregistry.h
   qgspropertyassistantwidget.h
   qgspropertyoverridebutton.h
+  qgsproviderconnectioncombobox.h
   qgsproviderguimetadata.h
   qgsproviderguiregistry.h
   qgsproxystyle.h
@@ -658,6 +706,7 @@ SET(QGIS_GUI_HDRS
   qgssublayersdialog.h
   qgssubstitutionlistwidget.h
   qgssymbolbutton.h
+  qgssymbollayerselectionwidget.h
   qgstablewidgetbase.h
   qgstablewidgetitem.h
   qgstabwidget.h
@@ -672,6 +721,11 @@ SET(QGIS_GUI_HDRS
   qgsvertexmarker.h
   qgsvscrollarea.h
   qgswindowmanagerinterface.h
+
+  attributeformconfig/qgsattributeformcontaineredit.h
+  attributeformconfig/qgsattributerelationedit.h
+  attributeformconfig/qgsattributetypedialog.h
+  attributeformconfig/qgsattributewidgetedit.h
 
   attributetable/qgsattributetabledelegate.h
   attributetable/qgsattributetablefiltermodel.h
@@ -786,9 +840,12 @@ SET(QGIS_GUI_HDRS
   effects/qgspainteffectpropertieswidget.h
   effects/qgspainteffectwidget.h
 
+  labeling/qgslabelengineconfigdialog.h
   labeling/qgslabelinggui.h
+  labeling/qgslabelingwidget.h
   labeling/qgslabelobstaclesettingswidget.h
   labeling/qgslabelsettingswidgetbase.h
+  labeling/qgsrulebasedlabelingwidget.h
 
   layertree/qgscustomlayerorderwidget.h
   layertree/qgslayertreeembeddedconfigwidget.h
@@ -878,6 +935,14 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingwidgetwrapper.h
   processing/qgsprocessingwidgetwrapperimpl.h
 
+  processing/models/qgsmodelarrowitem.h
+  processing/models/qgsmodelcomponentgraphicitem.h
+  processing/models/qgsmodeldesignerdialog.h
+  processing/models/qgsmodeldesignerinputstreewidget.h
+  processing/models/qgsmodelgraphicitem.h
+  processing/models/qgsmodelgraphicsscene.h
+  processing/models/qgsmodelgraphicsview.h
+
   providers/gdal/qgsgdalguiprovider.h
   providers/gdal/qgsgdalsourceselect.h
   providers/ogr/qgsgeopackageitemguiprovider.h
@@ -902,6 +967,21 @@ SET(QGIS_GUI_HDRS
   raster/qgssinglebandgrayrendererwidget.h
   raster/qgssinglebandpseudocolorrendererwidget.h
   raster/qgsrasterlayerproperties.h
+  raster/qgsrasterlayertemporalpropertieswidget.h
+
+  vector/qgsattributeactiondialog.h
+  vector/qgsattributeactionpropertiesdialog.h
+  vector/qgsattributesforminitcode.h
+  vector/qgsattributesformproperties.h
+  vector/qgsdiagramproperties.h
+  vector/qgsfieldcalculator.h
+  vector/qgsjoindialog.h
+  vector/qgssourcefieldsproperties.h
+  vector/qgsvectorlayerlegendwidget.h
+  vector/qgsvectorlayerloadstyledialog.h
+  vector/qgsvectorlayerproperties.h
+  vector/qgsvectorlayersavestyledialog.h
+  vector/qgswmsdimensiondialog.h
 
   symbology/characterwidget.h
   symbology/qgs25drendererwidget.h
@@ -1027,6 +1107,7 @@ SET(QGIS_GUI_UI_HDRS
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgspdfexportoptions.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgslayoutwidgetbase.h
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsrenderercontainerbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsvectorlayerpropertiesbase.h
 )
 
 IF(ENABLE_MODELTEST)
@@ -1038,6 +1119,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
@@ -1050,9 +1132,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/processing
+  ${CMAKE_SOURCE_DIR}/src/gui/processing/models
   ${CMAKE_SOURCE_DIR}/src/gui/providers/gdal
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/vector
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
@@ -1067,6 +1151,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/processing
+  ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
@@ -1092,6 +1177,7 @@ INCLUDE_DIRECTORIES(
 INCLUDE_DIRECTORIES(SYSTEM
   ${PROJ_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${QWT_INCLUDE_DIR}

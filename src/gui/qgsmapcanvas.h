@@ -26,6 +26,7 @@
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
 #include "qgscustomdrophandler.h"
+#include "qgstemporalrangeobject.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>
@@ -668,6 +669,26 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler >> &handlers ) SIP_SKIP;
 
+    /**
+     * Set datetime \a range for the map canvas.
+     *
+     * The temporalRangeChanged() signal will be emitted if the temporal range has been changed.
+     *
+     * \note Calling setTemporalRange() does not automatically trigger a map refresh.
+     *
+     * \see temporalRange()
+     * \since QGIS 3.14
+    */
+    void setTemporalRange( const QgsDateTimeRange &range );
+
+    /**
+     * Returns map canvas datetime range.
+     *
+     * \see setTemporalRange()
+     * \since QGIS 3.14
+    */
+    const QgsDateTimeRange &temporalRange() const;
+
   public slots:
 
     //! Repaints the canvas map
@@ -921,6 +942,13 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \since QGIS 3.12
      */
     void tapAndHoldGestureOccurred( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
+
+    /**
+     * Emitted when the map canvas temporal range changes.
+    *
+    * \since QGIS 3.14
+    */
+    void temporalRangeChanged();
 
   protected:
 

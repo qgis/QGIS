@@ -75,6 +75,7 @@ email                : sherman at mrcc.com
 #include "qgscustomdrophandler.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsmaplayertemporalproperties.h"
 
 /**
  * \ingroup gui
@@ -212,6 +213,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   // make sure we have the same default in QgsMapSettings and the scene's background brush
   // (by default map settings has white bg color, scene background brush is black)
   setCanvasColor( mSettings.backgroundColor() );
+
+  setTemporalRange( mSettings.temporalRange() );
 
   refresh();
 
@@ -724,6 +727,33 @@ void QgsMapCanvas::setPreviewJobsEnabled( bool enabled )
 void QgsMapCanvas::setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler> > &handlers )
 {
   mDropHandlers = handlers;
+}
+
+void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
+{
+  if ( temporalRange() == dateTimeRange )
+    return;
+
+  mSettings.setTemporalRange( dateTimeRange );
+
+  if ( mCache )
+  {
+    // we need to discard any previously cached images which have temporal properties enabled, so that these will be updated when
+    // the canvas is redrawn
+    const QList<QgsMapLayer *> layers;
+    for ( QgsMapLayer *layer : layers )
+    {
+      if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
+        mCache->invalidateCacheForLayer( layer );
+    }
+  }
+
+  emit temporalRangeChanged();
+}
+
+const QgsDateTimeRange &QgsMapCanvas::temporalRange() const
+{
+  return mSettings.temporalRange();
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
@@ -2436,6 +2466,12 @@ const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
 void QgsMapCanvas::startPreviewJobs()
 {
   stopPreviewJobs(); //just in case still running
+
+  //canvas preview jobs aren't compatible with rotation
+  // TODO fix this
+  if ( !qgsDoubleNear( mSettings.rotation(), 0.0 ) )
+    return;
+
   schedulePreviewJob( 0 );
 }
 

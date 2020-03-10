@@ -122,7 +122,7 @@ class ProcessingModelItem(QgsDataItem):
         ProcessingDropHandler.runAlg(self.path())
 
     def editModel(self):
-        dlg = ModelerDialog()
+        dlg = ModelerDialog.create()
         dlg.loadModel(self.path())
         dlg.show()
 
@@ -332,7 +332,7 @@ class ProcessingPlugin:
         self.toolboxAction.setChecked(visible)
 
     def openModeler(self):
-        dlg = ModelerDialog()
+        dlg = ModelerDialog.create()
         dlg.update_model.connect(self.updateModel)
         dlg.show()
 

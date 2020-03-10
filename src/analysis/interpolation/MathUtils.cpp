@@ -75,7 +75,7 @@ bool MathUtils::BarycentricToXY( double u, double v, double w, QgsPoint *p1, Qgs
         py = ( 2 * v * area - px * ( p3->y() - p1->y() ) - p3->x() * p1->y() + p1->x() * p3->y() ) / ( p1->x() - p3->x() );
       }
     }
-    else//dorp out px in the two equations(maybe this possibility occurs only, if p1, p2 and p3 are coplanar
+    else//drop out px in the two equations(maybe this possibility occurs only, if p1, p2 and p3 are coplanar
     {
       py = ( 2 * u * area * ( p3->y() - p1->y() ) - 2 * v * area * ( p2->y() - p3->y() ) - p2->x() * p3->y() * ( p3->y() - p1->y() ) + p3->x() * p1->y() * ( p2->y() - p3->y() ) + p3->x() * p2->y() * ( p3->y() - p1->y() ) - p1->x() * p3->y() * ( p2->y() - p3->y() ) ) / ( ( p3->x() - p2->x() ) * ( p3->y() - p1->y() ) - ( p1->x() - p3->x() ) * ( p2->y() - p3->y() ) );
       if ( ( p2->y() - p3->y() ) != 0 )

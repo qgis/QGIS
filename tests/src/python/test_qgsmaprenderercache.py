@@ -123,6 +123,27 @@ class TestQgsMapRendererCache(unittest.TestCase):
         layer.triggerRepaint(True)
         self.assertFalse(cache.hasCacheImage('xxx'))
 
+    def testInvalidateCacheForLayer(self):
+        """ test invalidating the cache for a layer """
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer", "memory")
+        QgsProject.instance().addMapLayers([layer])
+        self.assertTrue(layer.isValid())
+
+        # add image to cache
+        cache = QgsMapRendererCache()
+        im = QImage(200, 200, QImage.Format_RGB32)
+        cache.setCacheImage('xxx', im, [layer])
+        self.assertFalse(cache.cacheImage('xxx').isNull())
+        self.assertTrue(cache.hasCacheImage('xxx'))
+
+        # invalidate cache for layer
+        cache.invalidateCacheForLayer(layer)
+        # cache image should be cleared
+        self.assertTrue(cache.cacheImage('xxx').isNull())
+        self.assertFalse(cache.hasCacheImage('xxx'))
+        QgsProject.instance().removeMapLayer(layer.id())
+
     def testRequestRepaintMultiple(self):
         """ test requesting repaint with multiple dependent layers """
         layer1 = QgsVectorLayer("Point?field=fldtxt:string",
