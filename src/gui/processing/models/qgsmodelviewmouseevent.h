@@ -46,9 +46,28 @@ class GUI_EXPORT QgsModelViewMouseEvent : public QMouseEvent
     QgsModelViewMouseEvent( QgsModelGraphicsView *view, QMouseEvent *event, bool snaps );
 
     /**
+     * Manually triggers a snap for the mouse event position using the model's snapper.
+     */
+    void snapPoint();
+
+    /**
      * Returns the event point location in model coordinates.
      */
     QPointF modelPoint() const;
+
+    /**
+     * Returns the snapped event point location in model coordinates. The snapped point will consider
+     * all possible snapping methods, such as snapping to grid.
+     * \see isSnapped()
+     */
+    QPointF snappedPoint() const { return mSnappedPoint; }
+
+    /**
+     * Returns TRUE if point was snapped, e.g. to grid.
+     * \see snappedPoint()
+     */
+    bool isSnapped() const { return mSnapped; }
+
 
   private:
 
@@ -56,7 +75,8 @@ class GUI_EXPORT QgsModelViewMouseEvent : public QMouseEvent
     QgsModelGraphicsView *mView = nullptr;
 
     QPointF mModelPoint;
-
+    bool mSnapped = false;
+    QPointF mSnappedPoint;
 };
 
 #endif // QGSMODELVIEWMOUSEEVENT_H

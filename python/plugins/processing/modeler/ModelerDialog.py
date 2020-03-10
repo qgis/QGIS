@@ -85,13 +85,10 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.toolbar().setIconSize(iface.iconSize())
             self.setStyleSheet(iface.mainWindow().styleSheet())
 
-        self.scene = ModelerScene(self)
-        self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE, self.CANVAS_SIZE))
-        self.scene.rebuildRequired.connect(self.repaintModel)
-        self.scene.componentAboutToChange.connect(self.componentAboutToChange)
-        self.scene.componentChanged.connect(self.componentChanged)
+        scene = ModelerScene(self)
+        scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE, self.CANVAS_SIZE))
+        self.setModelScene(scene)
 
-        self.view().setScene(self.scene)
         self.view().ensureVisible(0, 0, 10, 10)
         self.view().scale(QgsApplication.desktop().logicalDpiX() / 96, QgsApplication.desktop().logicalDpiX() / 96)
 
@@ -194,24 +191,20 @@ class ModelerDialog(QgsModelDesignerDialog):
             self.loadModel(filename)
 
     def repaintModel(self, showControls=True):
-        self.scene = ModelerScene(self)
-        self.scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE,
-                                       self.CANVAS_SIZE))
+        scene = ModelerScene(self)
+        scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE,
+                                  self.CANVAS_SIZE))
 
         if not showControls:
-            self.scene.setFlag(QgsModelGraphicsScene.FlagHideControls)
+            scene.setFlag(QgsModelGraphicsScene.FlagHideControls)
 
         showComments = QgsSettings().value("/Processing/Modeler/ShowComments", True, bool)
         if not showComments:
             self.scene.setFlag(QgsModelGraphicsScene.FlagHideComments)
 
         context = createContext()
-        self.scene.createItems(self.model(), context)
-        self.view().setScene(self.scene)
-
-        self.scene.rebuildRequired.connect(self.repaintModel)
-        self.scene.componentAboutToChange.connect(self.componentAboutToChange)
-        self.scene.componentChanged.connect(self.componentChanged)
+        scene.createItems(self.model(), context)
+        self.setModelScene(scene)
 
     def componentAboutToChange(self, description, id):
         self.beginUndoCommand(description, id)

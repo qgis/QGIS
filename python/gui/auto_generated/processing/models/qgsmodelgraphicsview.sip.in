@@ -54,12 +54,18 @@ Constructor for QgsModelGraphicsView, with the specified ``parent`` widget.
     virtual void keyReleaseEvent( QKeyEvent *event );
 
 
+    void setModelScene( QgsModelGraphicsScene *scene );
+%Docstring
+Sets the related ``scene``.
+%End
+
     QgsModelGraphicsScene *modelScene() const;
 %Docstring
 Returns the scene associated with the tool.
 
 .. seealso:: :py:func:`view`
 %End
+
 
 
 
@@ -90,6 +96,26 @@ but is still in a perfectly valid state.
 %End
 
 };
+
+
+class QgsModelViewSnapMarker : QGraphicsRectItem
+{
+%Docstring
+A simple graphics item rendered as an 'x'.
+%End
+
+%TypeHeaderCode
+#include "qgsmodelgraphicsview.h"
+%End
+  public:
+
+    QgsModelViewSnapMarker();
+
+    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
+
+
+};
+
 
 
 /************************************************************************

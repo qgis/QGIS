@@ -85,6 +85,11 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      */
     void loadModel( const QString &path );
 
+    /**
+     * Sets the related \a scene.
+     */
+    void setModelScene( QgsModelGraphicsScene *scene SIP_TRANSFER );
+
   protected:
 
     virtual void repaintModel( bool showControls = true ) = 0;
@@ -139,6 +144,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QgsMessageBar *mMessageBar = nullptr;
     QgsModelerToolboxModel *mAlgorithmsModel = nullptr;
     QgsModelViewToolSelect *mSelectTool = nullptr;
+    QgsModelGraphicsScene *mScene = nullptr;
 
     bool mHasChanged = false;
     QUndoStack *mUndoStack = nullptr;

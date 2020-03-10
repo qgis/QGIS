@@ -25,6 +25,7 @@
 #include "qgsprocessingparametertype.h"
 #include "qgsmodelundocommand.h"
 #include "qgsmodelviewtoolselect.h"
+#include "qgsmodelgraphicsscene.h"
 
 #include <QShortcut>
 #include <QDesktopWidget>
@@ -309,6 +310,22 @@ void QgsModelDesignerDialog::loadModel( const QString &path )
     QMessageBox::critical( this, tr( "Open Model" ), tr( "The selected model could not be loaded.\n"
                            "See the log for more information." ) );
   }
+}
+
+void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
+{
+  QgsModelGraphicsScene *oldScene = mScene;
+
+  mScene = scene;
+  mScene->setParent( this );
+
+  mView->setModelScene( mScene );
+
+  connect( mScene, &QgsModelGraphicsScene::rebuildRequired, this, [ = ] { repaintModel(); } );
+  connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [ = ] { setDirty(); } );
+
+  if ( oldScene )
+    oldScene->deleteLater();
 }
 
 void QgsModelDesignerDialog::updateVariablesGui()
