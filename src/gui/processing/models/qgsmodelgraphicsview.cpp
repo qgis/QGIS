@@ -165,6 +165,48 @@ void QgsModelGraphicsView::scaleSafe( double scale )
   setTransform( QTransform::fromScale( scale, scale ) );
 }
 
+QPointF QgsModelGraphicsView::deltaForKeyEvent( QKeyEvent *event )
+{
+  // increment used for cursor key item movement
+  double increment = 1.0;
+  if ( event->modifiers() & Qt::ShiftModifier )
+  {
+    //holding shift while pressing cursor keys results in a big step
+    increment = 10.0;
+  }
+  else if ( event->modifiers() & Qt::AltModifier )
+  {
+    //holding alt while pressing cursor keys results in a 1 pixel step
+    double viewScale = transform().m11();
+    if ( viewScale > 0 )
+    {
+      increment = 1 / viewScale;
+    }
+  }
+
+  double deltaX = 0;
+  double deltaY = 0;
+  switch ( event->key() )
+  {
+    case Qt::Key_Left:
+      deltaX = -increment;
+      break;
+    case Qt::Key_Right:
+      deltaX = increment;
+      break;
+    case Qt::Key_Up:
+      deltaY = -increment;
+      break;
+    case Qt::Key_Down:
+      deltaY = increment;
+      break;
+    default:
+      break;
+  }
+
+  return QPointF( deltaX, deltaY );
+}
+
 void QgsModelGraphicsView::mousePressEvent( QMouseEvent *event )
 {
   if ( !modelScene() )
@@ -294,28 +336,34 @@ void QgsModelGraphicsView::keyPressEvent( QKeyEvent *event )
     }
     event->accept();
   }
-#if 0
   else if ( event->key() == Qt::Key_Left
             || event->key() == Qt::Key_Right
             || event->key() == Qt::Key_Up
             || event->key() == Qt::Key_Down )
   {
-    QgsLayout *l = currentLayout();
-    const QList<QgsLayoutItem *> layoutItemList = l->selectedLayoutItems();
+    QgsModelGraphicsScene *s = modelScene();
+    const QList<QgsModelComponentGraphicItem *> itemList = s->selectedComponentItems();
 
     QPointF delta = deltaForKeyEvent( event );
 
+#if 0
     l->undoStack()->beginMacro( tr( "Move Item" ) );
-    for ( QgsLayoutItem *item : layoutItemList )
+#endif
+    for ( QgsModelComponentGraphicItem *item : itemList )
     {
+#if 0
       l->undoStack()->beginCommand( item, tr( "Move Item" ), QgsLayoutItem::UndoIncrementalMove );
-      item->attemptMoveBy( delta.x(), delta.y() );
+#endif
+      item->moveBy( delta.x(), delta.y() );
+#if 0
       l->undoStack()->endCommand();
+#endif
     }
+#if 0
     l->undoStack()->endMacro();
+#endif
     event->accept();
   }
-#endif
 }
 
 void QgsModelGraphicsView::keyReleaseEvent( QKeyEvent *event )
