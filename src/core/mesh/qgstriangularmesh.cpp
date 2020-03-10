@@ -119,9 +119,10 @@ bool QgsTriangularMesh::update( QgsMesh *nativeMesh, const QgsCoordinateTransfor
   if ( mTriangularMesh.vertices.size() >= nativeMesh->vertices.size() &&
        mTriangularMesh.faces.size() >= nativeMesh->faces.size() &&
        mTriangularMesh.edges.size() == nativeMesh->edges.size() &&
-       mCoordinateTransform.sourceCrs() == transform.sourceCrs() &&
-       mCoordinateTransform.destinationCrs() == transform.destinationCrs() &&
-       mCoordinateTransform.isValid() == transform.isValid() )
+       ( ( !mCoordinateTransform.isValid() && !transform.isValid() ) ||
+         ( mCoordinateTransform.sourceCrs() == transform.sourceCrs() &&
+           mCoordinateTransform.destinationCrs() == transform.destinationCrs() &&
+           mCoordinateTransform.isValid() == transform.isValid() ) ) )
     return false;
 
   // CLEAN-UP
