@@ -865,6 +865,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QString parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a name to a database schema name string.
+     *
+     * \since QGIS 3.14
+     */
+    QString parameterAsSchema( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
      * Evaluates the parameter with matching \a name to a DateTime, or returns an invalid date time if the parameter was not set.
      *
      * \since QGIS 3.14

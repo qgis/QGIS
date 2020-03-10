@@ -276,6 +276,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterDateTime;
     else if ( sipCpp->type() == QgsProcessingParameterProviderConnection::typeName() )
       sipType = sipType_QgsProcessingParameterProviderConnection;
+    else if ( sipCpp->type() == QgsProcessingParameterDatabaseSchema::typeName() )
+      sipType = sipType_QgsProcessingParameterDatabaseSchema;
     else
       sipType = nullptr;
     SIP_END
@@ -1237,6 +1239,20 @@ class CORE_EXPORT QgsProcessingParameters
      * \since QGIS 3.14
      */
     static QString parameterAsConnectionName( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition to a database schema name.
+     *
+     * \since QGIS 3.14
+     */
+    static QString parameterAsSchema( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a definition and \a value to a database schema name.
+     *
+     * \since QGIS 3.14
+     */
+    static QString parameterAsSchema( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 
     /**
      * Creates a new QgsProcessingParameterDefinition using the configuration from a
@@ -3428,6 +3444,68 @@ class CORE_EXPORT QgsProcessingParameterProviderConnection : public QgsProcessin
   private:
 
     QString mProviderId;
+};
+
+
+/**
+ * \class QgsProcessingParameterDatabaseSchema
+ * \ingroup core
+ * A database schema parameter for processing algorithms, allowing users to select from existing schemas
+ * on a registered database connection.
+ *
+ * QgsProcessingParameterDatabaseSchema should be evaluated by calling QgsProcessingAlgorithm::parameterAsSchema().
+ *
+ * \since QGIS 3.14
+ */
+class CORE_EXPORT QgsProcessingParameterDatabaseSchema : public QgsProcessingParameterDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterDatabaseSchema.
+     *
+     * The \a connectionParameterName specifies the name of the parent QgsProcessingParameterProviderConnection parameter.
+     *
+     * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation
+     * in order for the model to work correctly. This is only implemented for a subset of current data providers.
+     */
+    QgsProcessingParameterDatabaseSchema( const QString &name, const QString &description, const QString &connectionParameterName = QString(), const QVariant &defaultValue = QVariant(),
+                                          bool optional = false );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "databaseschema" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+    QStringList dependsOnOtherParameters() const override;
+
+    /**
+     * Returns the name of the parent connection parameter, or an empty string if this is not set.
+     * \see setParentConnectionParameterName()
+     */
+    QString parentConnectionParameterName() const;
+
+    /**
+     * Sets the \a name of the parent connection parameter. Use an empty string if this is not required.
+     * \see parentConnectionParameterName()
+     */
+    void setParentConnectionParameterName( const QString &name );
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterDatabaseSchema *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
+  private:
+
+    QString mParentConnectionParameterName;
 };
 
 

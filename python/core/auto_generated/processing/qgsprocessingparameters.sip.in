@@ -199,6 +199,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterDateTime;
     else if ( sipCpp->type() == QgsProcessingParameterProviderConnection::typeName() )
       sipType = sipType_QgsProcessingParameterProviderConnection;
+    else if ( sipCpp->type() == QgsProcessingParameterDatabaseSchema::typeName() )
+      sipType = sipType_QgsProcessingParameterDatabaseSchema;
     else
       sipType = nullptr;
 %End
@@ -1202,6 +1204,20 @@ Evaluates the parameter with matching ``definition`` to a connection name string
     static QString parameterAsConnectionName( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a connection name string.
+
+.. versionadded:: 3.14
+%End
+
+    static QString parameterAsSchema( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a database schema name.
+
+.. versionadded:: 3.14
+%End
+
+    static QString parameterAsSchema( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a database schema name.
 
 .. versionadded:: 3.14
 %End
@@ -3682,6 +3698,79 @@ Sets the ID of the ``provider`` associated with the connections.
 %End
 
     static QgsProcessingParameterProviderConnection *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+};
+
+
+class QgsProcessingParameterDatabaseSchema : QgsProcessingParameterDefinition
+{
+%Docstring
+A database schema parameter for processing algorithms, allowing users to select from existing schemas
+on a registered database connection.
+
+QgsProcessingParameterDatabaseSchema should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsSchema()`
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterDatabaseSchema( const QString &name, const QString &description, const QString &connectionParameterName = QString(), const QVariant &defaultValue = QVariant(),
+                                          bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterDatabaseSchema.
+
+The ``connectionParameterName`` specifies the name of the parent QgsProcessingParameterProviderConnection parameter.
+
+.. warning::
+
+   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   in order for the model to work correctly. This is only implemented for a subset of current data providers.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QStringList dependsOnOtherParameters() const;
+
+
+    QString parentConnectionParameterName() const;
+%Docstring
+Returns the name of the parent connection parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setParentConnectionParameterName`
+%End
+
+    void setParentConnectionParameterName( const QString &name );
+%Docstring
+Sets the ``name`` of the parent connection parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`parentConnectionParameterName`
+%End
+
+    static QgsProcessingParameterDatabaseSchema *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End
