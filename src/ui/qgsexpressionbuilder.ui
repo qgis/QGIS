@@ -331,6 +331,21 @@
                     <number>0</number>
                    </property>
                    <item>
+                    <widget class="QToolButton" name="btnImportExportExpressions">
+                     <property name="toolTip">
+                      <string>Import/Export User Expressions</string>
+                     </property>
+                     <property name="text">
+                      <string>Import/Export</string>
+                     </property>
+                     <property name="popupMode">
+                      <enum>QToolButton::InstantPopup</enum>
+                     </property>
+                     <addaction name="mActionImportUserExpressions"/>
+                     <addaction name="mActionExportUserExpressions"/>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QToolButton" name="btnClearEditor">
                      <property name="enabled">
                       <bool>false</bool>
@@ -946,6 +961,19 @@ Saved scripts are auto loaded on QGIS startup.</string>
     </widget>
    </item>
   </layout>
+  <action name="mActionImportUserExpressions">
+   <property name="text">
+    <string>Import user expressions</string>
+   </property>
+  </action>
+  <action name="mActionExportUserExpressions">
+   <property name="text">
+    <string>Export user expressions</string>
+   </property>
+   <property name="toolTip">
+    <string>Export user expressions</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

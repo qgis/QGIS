@@ -39,7 +39,7 @@ class GUI_EXPORT QgsExpressionStoreDialog : public QDialog, private Ui::QgsExpre
     QgsExpressionStoreDialog( const QString &label,
                               const QString &expression,
                               const QString &helpText,
-                              const QStringList &existingLabels,
+                              const QStringList &existingLabels = QStringList(),
                               QWidget *parent = nullptr );
 
     /**

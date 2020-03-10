@@ -388,6 +388,48 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void editSelectedUserExpression();
 
     /**
+     * Display a file dialog to choose where to store the exported expressions JSON file
+     * and saves them to the selected destination.
+     * \since QGIS 3.14
+     */
+    void exportUserExpressions_pressed();
+
+    /**
+     * Create the expressions JSON document storing all the user expressions to be exported.
+     * \since QGIS 3.14
+     * \returns the created expressions JSON file
+     */
+    QJsonDocument *exportUserExpressions();
+
+    /**
+     * Display a file dialog to choose where to load the expression JSON file from
+     * and adds them to user expressions group.
+     * \since QGIS 3.14
+     */
+    void importUserExpressions_pressed();
+
+    /**
+     * Load and permanently store the expressions from the expressions JSON document.
+     * \since QGIS 3.14
+     * \param expressionsDocument the parsed expressions JSON file
+     */
+    void loadExpressionsFromJson( const QJsonDocument &expressionsDocument );
+
+    /**
+     * Display a message box to ask the user what to do when an expression
+     * with the same \a label already exists. Answering "Yes" will replace
+     * the old expression with the one from the file, while "No" will keep
+     * the old expression.
+     * \since QGIS 3.14
+     * \param isApplyToAll whether the decision of the user should be applied to any future label collision
+     * \param isOkToOverwrite whether to overwrite the old expression with the new one in case of label collision
+     * \param label the label of the expression
+     * \param oldExpression the old expression for a given label
+     * \param newExpression the new expression for a given label
+     */
+    void showMessageBoxConfirmExpressionOverwrite( bool &isApplyToAll, bool &isOkToOverwrite, const QString &label, QString &oldExpression, QString &newExpression );
+
+    /**
      * Returns the list of expression items matching a \a label.
      * \since QGIS 3.12
      */
