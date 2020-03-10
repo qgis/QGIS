@@ -48,6 +48,7 @@
 #include "qgsfieldcombobox.h"
 #include "qgsmapthemecollection.h"
 #include "qgsdatetimeedit.h"
+#include "qgsproviderconnectioncombobox.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -195,7 +196,8 @@ QStringList QgsProcessingBooleanWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterRasterLayer::typeName()
          << QgsProcessingParameterVectorLayer::typeName()
          << QgsProcessingParameterMeshLayer::typeName()
-         << QgsProcessingParameterExpression::typeName();
+         << QgsProcessingParameterExpression::typeName()
+         << QgsProcessingParameterProviderConnection::typeName();
 }
 
 QStringList QgsProcessingBooleanWidgetWrapper::compatibleOutputTypes() const
@@ -480,7 +482,8 @@ QStringList QgsProcessingStringWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterFile::typeName()
          << QgsProcessingParameterField::typeName()
          << QgsProcessingParameterExpression::typeName()
-         << QgsProcessingParameterCoordinateOperation::typeName();
+         << QgsProcessingParameterCoordinateOperation::typeName()
+         << QgsProcessingParameterProviderConnection::typeName();
 }
 
 QStringList QgsProcessingStringWidgetWrapper::compatibleOutputTypes() const
@@ -1674,7 +1677,8 @@ QStringList QgsProcessingExpressionWidgetWrapper::compatibleParameterTypes() con
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterNumber::typeName()
          << QgsProcessingParameterDistance::typeName()
-         << QgsProcessingParameterScale::typeName();
+         << QgsProcessingParameterScale::typeName()
+         << QgsProcessingParameterProviderConnection::typeName();
 }
 
 QStringList QgsProcessingExpressionWidgetWrapper::compatibleOutputTypes() const
@@ -3876,5 +3880,168 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingDateTimeWidgetWrapper:
 {
   return new QgsProcessingDateTimeWidgetWrapper( parameter, type );
 }
+
+
+
+//
+// QgsProcessingProviderConnectionWidgetWrapper
+//
+
+QgsProcessingProviderConnectionParameterDefinitionWidget::QgsProcessingProviderConnectionParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  const QgsProcessingParameterProviderConnection *connectionParam = dynamic_cast< const QgsProcessingParameterProviderConnection *>( definition );
+
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Provider" ) ) );
+  mProviderComboBox = new QComboBox();
+  mProviderComboBox->addItem( QObject::tr( "Postgres" ), QStringLiteral( "postgres" ) );
+  mProviderComboBox->addItem( QObject::tr( "GeoPackage" ), QStringLiteral( "ogr" ) );
+  mProviderComboBox->addItem( QObject::tr( "Spatialite" ), QStringLiteral( "spatialite" ) );
+
+  vlayout->addWidget( mProviderComboBox );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultEdit = new QLineEdit();
+  vlayout->addWidget( mDefaultEdit );
+  setLayout( vlayout );
+
+  if ( connectionParam )
+  {
+    mProviderComboBox->setCurrentIndex( mProviderComboBox->findData( connectionParam->providerId() ) );
+    mDefaultEdit->setText( connectionParam->defaultValue().toString() );
+  }
+}
+
+QgsProcessingParameterDefinition *QgsProcessingProviderConnectionParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  QVariant defaultVal;
+  if ( mDefaultEdit->text().isEmpty() )
+    defaultVal = QVariant();
+  else
+    defaultVal = mDefaultEdit->text();
+  auto param = qgis::make_unique< QgsProcessingParameterProviderConnection>( name, description, mProviderComboBox->currentData().toString(), defaultVal );
+  param->setFlags( flags );
+  return param.release();
+}
+
+
+QgsProcessingProviderConnectionWidgetWrapper::QgsProcessingProviderConnectionWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingProviderConnectionWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterProviderConnection *connectionParam = dynamic_cast< const QgsProcessingParameterProviderConnection *>( parameterDefinition() );
+
+  mProviderComboBox = new QgsProviderConnectionComboBox( connectionParam->providerId() );
+  if ( connectionParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+    mProviderComboBox->setAllowEmptyConnection( true );
+
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+      break;
+    case QgsProcessingGui::Modeler:
+      mProviderComboBox->setEditable( true );
+      break;
+  }
+
+  mProviderComboBox->setToolTip( parameterDefinition()->toolTip() );
+  connect( mProviderComboBox, &QgsProviderConnectionComboBox::currentTextChanged, this, [ = ]( const QString & )
+  {
+    if ( mBlockSignals )
+      return;
+
+    emit widgetValueHasChanged( this );
+  } );
+
+  return mProviderComboBox;
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingProviderConnectionWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingProviderConnectionParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
+
+void QgsProcessingProviderConnectionWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QString v = QgsProcessingParameters::parameterAsConnectionName( parameterDefinition(), value, context );
+
+  if ( !value.isValid() )
+    mProviderComboBox->setCurrentIndex( -1 );
+  else
+  {
+    if ( mProviderComboBox->isEditable() )
+    {
+      const QString prev = mProviderComboBox->currentText();
+      mBlockSignals++;
+      mProviderComboBox->setConnection( v );
+      mProviderComboBox->setCurrentText( v );
+
+      mBlockSignals--;
+      if ( prev != v )
+        emit widgetValueHasChanged( this );
+    }
+    else
+      mProviderComboBox->setConnection( v );
+  }
+}
+
+QVariant QgsProcessingProviderConnectionWidgetWrapper::widgetValue() const
+{
+  if ( mProviderComboBox )
+    if ( mProviderComboBox->isEditable() )
+      return mProviderComboBox->currentText().isEmpty() ? QVariant() : QVariant( mProviderComboBox->currentText() );
+    else
+      return mProviderComboBox->currentConnection().isEmpty() ? QVariant() : QVariant( mProviderComboBox->currentConnection() );
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingProviderConnectionWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterProviderConnection::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterExpression::typeName();
+}
+
+QStringList QgsProcessingProviderConnectionWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingProviderConnectionWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingProviderConnectionWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "connection name as a string value" );
+}
+
+QString QgsProcessingProviderConnectionWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterProviderConnection::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingProviderConnectionWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingProviderConnectionWidgetWrapper( parameter, type );
+}
+
+
+
+
 
 ///@endcond PRIVATE
