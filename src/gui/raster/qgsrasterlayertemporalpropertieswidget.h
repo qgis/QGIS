@@ -149,5 +149,12 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
      **/
     void setDateTimeInputsLimit();
 
+    /**
+     * Sets the temporal date time inputs with the default
+     * locale from the system.
+     *
+     **/
+    void setDateTimeInputsLocale();
+
 };
 #endif // QGSRASTERLAYERTEMPORALPROPERTIESWIDGET_H

@@ -11,7 +11,8 @@
 
 
 
-class QgsTemporalNavigationObject : QgsTemporalController
+
+class QgsTemporalNavigationObject : QObject
 {
 %Docstring
 The QgsTemporalNavigationObject class
@@ -24,103 +25,152 @@ The QgsTemporalNavigationObject class
 %End
   public:
 
-    QgsTemporalNavigationObject();
+    QgsTemporalNavigationObject( QObject *parent = 0 );
 %Docstring
 Constructor for QgsTemporalNavigationObject
 %End
 
-    enum NavigationStatus
+    enum PlaybackMode
     {
       Forward,
-      BackWard,
-      Next,
-      Previous,
-      Idle
+      Reverse,
+      Idle,
     };
 
-    enum Mode
-    {
-      NearestPreviousProduct,
-      Snapshot,
-      Composite
-    };
-
-    void setNavigationStatus( NavigationStatus status );
+    void setPlayBackMode( PlaybackMode mode );
 %Docstring
-Sets the current VCR widget navigation status.
+Sets the current playback mode.
 
-.. seealso:: :py:func:`navigationStatus`
+.. seealso:: :py:func:`playBackMode`
 %End
 
-    NavigationStatus navigationStatus() const;
+    PlaybackMode playBackMode() const;
 %Docstring
-Returns the current VCR widget navigation status.
+Returns the current playback mode.
 
-.. seealso:: :py:func:`setNavigationStatus`
+.. seealso:: :py:func:`setPlayBackMode`
 %End
 
-    void setMode( Mode mode );
+    void setTemporalExtents( QgsDateTimeRange temporalExtents );
 %Docstring
-Sets the current VCR mode.
+Sets the navigation temporal extents.
 
-.. seealso:: :py:func:`mode`
+.. seealso:: :py:func:`temporalExtents`
 %End
 
-    Mode mode() const;
+    QgsDateTimeRange temporalExtents() const;
 %Docstring
-Returns the current VCR mode.
+Returns the navigation temporal extent.
 
-.. seealso:: :py:func:`setMode`
+.. seealso:: :py:func:`setTemporalExtents`
 %End
 
-    void setIsPlaying( bool playing );
+    void setCurrentFrameNumber( long long frameNumber );
 %Docstring
-Sets the play status.
+Sets the current frame value.
 
-.. seealso:: :py:func:`isPlaying`
+.. seealso:: :py:func:`currentFrameNumber`
 %End
 
-    bool isPlaying() const;
+    long long currentFrameNumber() const;
 %Docstring
-Returns the play status.
+Returns the current set frame value.
 
-.. seealso:: :py:func:`setIsPlaying`
+.. seealso:: :py:func:`setCurrentFrameNumber`
 %End
 
-    void updateLayersTemporalRange( QDateTime dateTime, QString time, int value );
+    void setFrameDuration( QgsInterval frameDuration );
 %Docstring
-Updates the project temporal layers with the given ``datetime``.
+Sets the frame duration
+
+.. seealso:: :py:func:`frameDuration`
 %End
 
-    QDateTime addToDateTime( QDateTime dateTime, QString time, int value );
+    QgsInterval frameDuration() const;
 %Docstring
-Returns the datetime after adding time value to the passed ``datetime``.
+Returns the current set frame value.
+
+.. seealso:: :py:func:`setFrameDuration`
 %End
 
-    QgsDateTimeRange rangeFromMode( QgsMapLayer *layer, QDateTime dateTime, QString time, int value );
+    QgsDateTimeRange dateTimeRangeForFrameNumber( long long frame ) const;
 %Docstring
-Returns the calculated temporal range from the current mode.
+Calculate the temporal range from the navigation start time, using
+current frame number and the frame duration.
 %End
 
-    QDateTime lessNearestDateTime( QList<QDateTime> dateTimes, QDateTime dateTime );
+    void setFramesPerSeconds( double framesPerSeconds );
 %Docstring
-Returns the nearest datetime from the list of ``datetimes`` that is less than
-the ``datetime``.
+Sets the frames per seconds value. This is used to define
+the navigation frame rate.
+
+.. seealso:: :py:func:`framesPerSeconds`
 %End
 
-    QList<QDateTime> dateTimes() const;
+    double framesPerSeconds() const;
 %Docstring
-Returns the list of datetimes, which VCR widget will navigate upon.
+Returns the set frames per seconds value.
 
-.. seealso:: :py:func:`setDateTimes`
+.. seealso:: :py:func:`setFramesPerSeconds`
 %End
 
-    void setDateTimes( QList<QDateTime> dateTimes );
+    long long totalFrameCount();
 %Docstring
-Sets the list of datetimes, which VCR widget will use to update the
-temporal layers.
+Returns the total number of frames for the navigation.
+%End
 
-.. seealso:: :py:func:`dateTimes`
+  public slots:
+
+    void play();
+%Docstring
+Plays the temporal navigation
+%End
+
+    void pause();
+%Docstring
+Stops the temporal navigation.
+%End
+
+    void forward();
+%Docstring
+Forward the temporal navigation up till the end of frames.
+%End
+
+    void backward();
+%Docstring
+Decrement the temporal navigation till the end of frames.
+%End
+
+    void next();
+%Docstring
+Forward the temporal navigation by one frame.
+%End
+
+    void previous();
+%Docstring
+Decrement the temporal navigation by one frame.
+%End
+
+    void rewindToStart();
+%Docstring
+Rewind the temporal navigation to start of the temporal extent.
+%End
+
+    void skipToEnd();
+%Docstring
+Skips the temporal navigation to end of the temporal extent.
+%End
+
+    void timerTimeout();
+%Docstring
+Handles logic when the temporal navigation timer emit a timeout signal.
+%End
+
+  signals:
+
+    void updateTemporalRange( QgsDateTimeRange temporalRange );
+%Docstring
+Emitted when navigation range changes.
 %End
 
 };

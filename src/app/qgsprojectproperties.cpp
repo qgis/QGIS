@@ -235,15 +235,24 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   // Set time settings input
   QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
+  QLocale locale;
+
+  mStartDateTimeEdit->setDisplayFormat( locale.dateTimeFormat() );
+  mEndDateTimeEdit->setDisplayFormat( locale.dateTimeFormat() );
+
   if ( range.begin().isValid() && range.end().isValid() )
   {
     mStartDateTimeEdit->setDateTime( range.begin() );
     mEndDateTimeEdit->setDateTime( range.end() );
-  }
 
-  mCurrentRangeLabel->setText( tr( "Current selection range: %1 to %2" ).arg(
-                                 mStartDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ),
-                                 mEndDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ) ) );
+    mCurrentRangeLabel->setText( tr( "Current selected range: %1 to %2" ).arg(
+                                   mStartDateTimeEdit->dateTime().toString( locale.dateTimeFormat() ),
+                                   mEndDateTimeEdit->dateTime().toString( locale.dateTimeFormat() ) ) );
+  }
+  else
+  {
+    mCurrentRangeLabel->setText( tr( "Project range is not set" ) );
+  }
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );

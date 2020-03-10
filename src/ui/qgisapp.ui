@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1033</width>
+    <width>847</width>
     <height>506</height>
    </rect>
   </property>
@@ -16,8 +16,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1033</width>
-     <height>24</height>
+     <width>847</width>
+     <height>23</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -525,6 +525,7 @@
    <addaction name="mActionNewMapCanvas"/>
    <addaction name="mActionNewBookmark"/>
    <addaction name="mActionShowBookmarks"/>
+   <addaction name="mActionTemporalController"/>
    <addaction name="mActionDraw"/>
   </widget>
   <widget class="QToolBar" name="mAttributesToolBar">
@@ -3254,6 +3255,19 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Reselect Features from Current Layer</string>
+   </property>
+  </action>
+  <action name="mActionTemporalController">
+   <property name="icon">
+    <iconset>
+     <normalon>:/images/themes/default/propertyicons/temporal.svg</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Temporal Controller</string>
+   </property>
+   <property name="toolTip">
+    <string>Temporal Controller Panel</string>
    </property>
   </action>
  </widget>
