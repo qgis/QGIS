@@ -28,7 +28,8 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterField,
                        QgsProcessingParameterExtent,
-                       QgsProcessingParameterBoolean)
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterProviderConnection)
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -80,12 +81,9 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
 
-        db_param = QgsProcessingParameterString(
+        db_param = QgsProcessingParameterProviderConnection(
             self.DATABASE,
-            self.tr('Database (connection name)'))
-        db_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
+            self.tr('Database (connection name)'), 'postgres')
         self.addParameter(db_param)
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'),
@@ -202,7 +200,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         return 'vectormiscellaneous'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        connection = self.parameterAsString(parameters, self.DATABASE, context)
+        connection = self.parameterAsConnectionName(parameters, self.DATABASE, context)
         uri = uri_from_name(connection)
         if executing:
             # to get credentials input when needed

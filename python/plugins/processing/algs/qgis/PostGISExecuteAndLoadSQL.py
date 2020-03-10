@@ -33,6 +33,7 @@ from qgis.core import (Qgis,
                        QgsProcessingException,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingContext,
+                       QgsProcessingParameterProviderConnection,
                        QgsProcessingFeedback)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import postgis
@@ -56,12 +57,9 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        db_param = QgsProcessingParameterString(
+        db_param = QgsProcessingParameterProviderConnection(
             self.DATABASE,
-            self.tr('Database (connection name)'))
-        db_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
+            self.tr('Database (connection name)'), 'postgres')
         self.addParameter(db_param)
         self.addParameter(QgsProcessingParameterString(
             self.SQL,
@@ -94,7 +92,7 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
         return self.tr('postgis,table,database').split(',')
 
     def processAlgorithm(self, parameters, context, feedback):
-        connection = self.parameterAsString(parameters, self.DATABASE, context)
+        connection = self.parameterAsConnectionName(parameters, self.DATABASE, context)
         id_field = self.parameterAsString(parameters, self.ID_FIELD, context)
         geom_field = self.parameterAsString(
             parameters, self.GEOMETRY_FIELD, context)
