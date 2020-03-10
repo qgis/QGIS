@@ -206,12 +206,6 @@ class ModelerDialog(QgsModelDesignerDialog):
         scene.createItems(self.model(), context)
         self.setModelScene(scene)
 
-    def componentAboutToChange(self, description, id):
-        self.beginUndoCommand(description, id)
-
-    def componentChanged(self):
-        self.endUndoCommand()
-
     def create_widget_context(self):
         """
         Returns a new widget context for use in the model editor
