@@ -128,6 +128,12 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      */
     void scaleSafe( double scale );
 
+    /**
+     * Returns the delta (in model coordinates) by which to move items
+     * for the given key \a event.
+     */
+    QPointF deltaForKeyEvent( QKeyEvent *event );
+
     QPointer< QgsModelViewTool > mTool;
 
     QgsModelViewToolTemporaryKeyPan *mSpacePanTool = nullptr;
