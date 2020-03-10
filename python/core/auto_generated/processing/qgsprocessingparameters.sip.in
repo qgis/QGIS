@@ -3666,14 +3666,14 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the ID of the provider associated with the connections.
 
-.. seealso:: :py:func:`setProvider`
+.. seealso:: :py:func:`setProviderId`
 %End
 
     void setProviderId( const QString &provider );
 %Docstring
 Sets the ID of the ``provider`` associated with the connections.
 
-.. seealso:: :py:func:`provider`
+.. seealso:: :py:func:`providerId`
 %End
 
     static QgsProcessingParameterProviderConnection *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
