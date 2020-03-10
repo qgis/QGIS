@@ -24,7 +24,8 @@ QgsDatabaseSchemaComboBox::QgsDatabaseSchemaComboBox( const QString &provider, c
   : QWidget( parent )
   , mProvider( provider )
 {
-  mModel = new QgsDatabaseSchemaModel( provider, connection, this );
+  if ( !provider.isEmpty() && !connection.isEmpty() )
+    mModel = new QgsDatabaseSchemaModel( provider, connection, this );
   init();
 }
 
@@ -37,12 +38,14 @@ QgsDatabaseSchemaComboBox::QgsDatabaseSchemaComboBox( QgsAbstractDatabaseProvide
 
 void QgsDatabaseSchemaComboBox::setAllowEmptySchema( bool allowEmpty )
 {
-  mModel->setAllowEmptySchema( allowEmpty );
+  mAllowEmpty = allowEmpty;
+  if ( mModel )
+    mModel->setAllowEmptySchema( mAllowEmpty );
 }
 
 bool QgsDatabaseSchemaComboBox::allowEmptySchema() const
 {
-  return mModel->allowEmptySchema();
+  return mAllowEmpty;
 }
 
 void QgsDatabaseSchemaComboBox::init()
@@ -50,7 +53,10 @@ void QgsDatabaseSchemaComboBox::init()
   mComboBox = new QComboBox();
 
   mSortModel = new QgsDatabaseSchemaComboBoxSortModel( this );
-  mSortModel->setSourceModel( mModel );
+
+  if ( mModel )
+    mSortModel->setSourceModel( mModel );
+
   mSortModel->setSortRole( Qt::DisplayRole );
   mSortModel->setSortLocaleAware( true );
   mSortModel->setSortCaseSensitivity( Qt::CaseInsensitive );
@@ -84,7 +90,7 @@ void QgsDatabaseSchemaComboBox::setSchema( const QString &schema )
 
   if ( schema.isEmpty() )
   {
-    if ( mModel->allowEmptySchema() )
+    if ( mAllowEmpty )
       mComboBox->setCurrentIndex( 0 );
     else
       mComboBox->setCurrentIndex( -1 );
@@ -116,9 +122,11 @@ void QgsDatabaseSchemaComboBox::setConnectionName( const QString &connection, co
   const QString oldSchema = currentSchema();
   QgsDatabaseSchemaModel *oldModel = mModel;
   mModel = new QgsDatabaseSchemaModel( mProvider, connection, this );
-  mModel->setAllowEmptySchema( oldModel->allowEmptySchema() );
+  mModel->setAllowEmptySchema( mAllowEmpty );
   mSortModel->setSourceModel( mModel );
-  oldModel->deleteLater();
+  if ( oldModel )
+    oldModel->deleteLater();
+
   if ( currentSchema() != oldSchema )
     setSchema( oldSchema );
 }
@@ -126,7 +134,8 @@ void QgsDatabaseSchemaComboBox::setConnectionName( const QString &connection, co
 void QgsDatabaseSchemaComboBox::refreshSchemas()
 {
   const QString oldSchema = currentSchema();
-  mModel->refresh();
+  if ( mModel )
+    mModel->refresh();
   setSchema( oldSchema );
 }
 
@@ -149,7 +158,7 @@ void QgsDatabaseSchemaComboBox::indexChanged( int i )
 
 void QgsDatabaseSchemaComboBox::rowsChanged()
 {
-  if ( mComboBox->count() == 1 || ( mModel->allowEmptySchema() && mComboBox->count() == 2 && mComboBox->currentIndex() == 1 ) )
+  if ( mComboBox->count() == 1 || ( mAllowEmpty && mComboBox->count() == 2 && mComboBox->currentIndex() == 1 ) )
   {
     //currently selected connection item has changed
     emit schemaChanged( currentSchema() );

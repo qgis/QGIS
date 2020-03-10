@@ -120,6 +120,7 @@ class GUI_EXPORT QgsDatabaseSchemaComboBox : public QWidget
   private:
     void init();
 
+    bool mAllowEmpty = false;
     QString mProvider;
     QgsDatabaseSchemaModel *mModel = nullptr;
     QSortFilterProxyModel *mSortModel = nullptr;
