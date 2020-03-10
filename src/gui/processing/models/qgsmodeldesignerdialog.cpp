@@ -321,6 +321,8 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 
   mView->setModelScene( mScene );
 
+  mSelectTool->setScene( mScene );
+
   connect( mScene, &QgsModelGraphicsScene::rebuildRequired, this, [ = ] { repaintModel(); } );
   connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [ = ] { setDirty(); } );
 
