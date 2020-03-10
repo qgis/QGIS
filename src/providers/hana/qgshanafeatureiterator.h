@@ -89,6 +89,7 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     bool mHasGeometryColumn = false;
     bool mExpressionCompiled = false;
     bool mOrderByCompiled = false;
+    double mSelectivity = 0;
 };
 
 #endif // QGSHANAFEATUREITERATOR_H

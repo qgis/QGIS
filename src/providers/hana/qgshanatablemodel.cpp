@@ -37,9 +37,6 @@ QgsHanaTableModel::QgsHanaTableModel()
 
 void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty )
 {
-  // is there already a root item with the given scheme Name?
-  QStandardItem *schemaItem = nullptr;
-
   QgsWkbTypes::Type wkbType = layerProperty.type;
   int srid = layerProperty.srid;
 
@@ -133,22 +130,20 @@ void QgsHanaTableModel::addTableEntry( const QgsHanaLayerProperty &layerProperty
     }
   }
 
-  if ( !schemaItem )
-  {
-    QList<QStandardItem *> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, DbtmSchema );
+  QStandardItem *schemaItem = nullptr;
+  QList<QStandardItem *> schemaItems = findItems( layerProperty.schemaName, Qt::MatchExactly, DbtmSchema );
 
-    // there is already an item for this schema
-    if ( !schemaItems.isEmpty() )
-    {
-      schemaItem = schemaItems.at( DbtmSchema );
-    }
-    else
-    {
-      // create a new toplevel item for this schema
-      schemaItem = new QStandardItem( layerProperty.schemaName );
-      schemaItem->setFlags( Qt::ItemIsEnabled );
-      invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), schemaItem );
-    }
+  // there is already an item for this schema
+  if ( !schemaItems.isEmpty() )
+  {
+    schemaItem = schemaItems.at( DbtmSchema );
+  }
+  else
+  {
+    // create a new toplevel item for this schema
+    schemaItem = new QStandardItem( layerProperty.schemaName );
+    schemaItem->setFlags( Qt::ItemIsEnabled );
+    invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), schemaItem );
   }
 
   schemaItem->appendRow( childItemList );
@@ -332,9 +327,4 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   uri.disableSelectAtId( !selectAtId );
 
   return uri.uri();
-}
-
-QgsWkbTypes::Type QgsHanaTableModel::wkbTypeFromHana( const QString &type )
-{
-  return QgsWkbTypes::parseType( type.toUpper() );
 }

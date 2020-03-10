@@ -23,7 +23,6 @@
 #include <qstring.h>
 #include <QVariant>
 #include <QVersionNumber>
-#include <string.h>
 
 #include "odbc/Types.h"
 
@@ -69,7 +68,7 @@ class QgsHanaUtils
     static QVersionNumber toHANAVersion( const QString &dbVersion );
     static int toPlanarSRID( int srid );
     static bool convertField( QgsField &field );
-    static int countFieldsInUppercase( const QgsFields &fields );
+    static int countFieldsWithFirstLetterInUppercase( const QgsFields &fields );
     static QString formatErrorMessage( const char *message, bool withPrefix = true );
 };
 

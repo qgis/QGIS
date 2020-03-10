@@ -94,8 +94,6 @@ class QgsHanaTableModel : public QStandardItemModel
 
     static QIcon iconForWkbType( QgsWkbTypes::Type type );
 
-    static QgsWkbTypes::Type wkbTypeFromHana( const QString &dbType );
-
   private:
     //! Number of tables in the model
     int mTableCount = 0;

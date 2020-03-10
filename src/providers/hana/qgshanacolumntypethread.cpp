@@ -19,11 +19,16 @@
 #include "qgshanasettings.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include <mutex>
 
 QgsHanaColumnTypeThread::QgsHanaColumnTypeThread( const QgsHanaSettings &settings )
   : mSettings( settings )
 {
-  qRegisterMetaType<QgsHanaLayerProperty>( "QgsHanaLayerProperty" );
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]( )
+  {
+    qRegisterMetaType<QgsHanaLayerProperty>( "QgsHanaLayerProperty" );
+  } );
 }
 
 void QgsHanaColumnTypeThread::stop()

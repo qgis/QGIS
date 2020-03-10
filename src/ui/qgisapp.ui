@@ -1625,7 +1625,7 @@
     <string>Add HANA Spatial Layer…</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+Shift+3</string>
+    <string>Ctrl+Shift+G</string>
    </property>
   </action>
   <action name="mActionAddWmsLayer">

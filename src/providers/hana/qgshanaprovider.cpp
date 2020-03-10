@@ -1512,7 +1512,7 @@ QgsVectorLayerExporter::ExportError QgsHanaProvider::createEmptyLayer(
   bool fieldsInUpperCase = false;
   if ( fields.size() > 0 )
   {
-    int count = QgsHanaUtils::countFieldsInUppercase( fields );
+    int count = QgsHanaUtils::countFieldsWithFirstLetterInUppercase( fields );
     fieldsInUpperCase = count > fields.size() / 2;
   }
 

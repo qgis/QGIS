@@ -164,7 +164,7 @@ bool QgsHanaConnectionItem::handleDrop( const QMimeData *data, const QString &to
 
       if ( srcLayer->isValid() )
       {
-        bool fieldsInUpperCase = QgsHanaUtils::countFieldsInUppercase( srcLayer->fields() ) > srcLayer->fields().size() / 2;
+        bool fieldsInUpperCase = QgsHanaUtils::countFieldsWithFirstLetterInUppercase( srcLayer->fields() ) > srcLayer->fields().size() / 2;
 
         uri.setWkbType( srcLayer->wkbType() );
         uri.setDataSource( !toSchema.isNull() ? toSchema : nullptr,

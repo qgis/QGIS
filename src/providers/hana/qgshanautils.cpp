@@ -268,7 +268,12 @@ QVariant QgsHanaUtils::toVariant( const String &value, int type, bool isSigned )
       if ( isNull )
         return QVariant( QVariant::Char );
       else
-        return QVariant( QChar( value->operator[]( 0 ) ) );
+      {
+        QString str = QString( value->c_str() );
+        if ( str.isEmpty() )
+          return QVariant( QVariant::Char );
+        return QVariant( str.at( 0 ) );
+      }
     case SQLDataTypes::VarChar:
     case SQLDataTypes::WVarChar:
     case SQLDataTypes::LongVarChar:
@@ -276,7 +281,7 @@ QVariant QgsHanaUtils::toVariant( const String &value, int type, bool isSigned )
       if ( isNull )
         return QVariant( QVariant::String );
       else
-        return QVariant( value->c_str() );
+        return QVariant( QString( value->c_str() ) );
     case SQLDataTypes::Binary:
     case SQLDataTypes::VarBinary:
       return QVariant( QByteArray( value->c_str(), static_cast< int >( value->length() ) ) );
@@ -343,7 +348,6 @@ QgsWkbTypes::Type QgsHanaUtils::toWkbType( const QString &hanaType )
 QVersionNumber QgsHanaUtils::toHANAVersion( const QString &dbVersion )
 {
   QString version = dbVersion;
-  version.replace( " ", "." );
   QStringList strs = version.replace( " ", "." ).split( "." );
 
   if ( strs.length() < 3 )
@@ -424,7 +428,7 @@ bool QgsHanaUtils::convertField( QgsField &field )
       else
       {
         if ( field.length() > 0 && field.precision() >= 0 )
-          fieldType = QStringLiteral( "DECIMAL(%2,%3)" ).arg( field.length(), field.precision() );
+          fieldType = QStringLiteral( "DECIMAL(%1,%2)" ).arg( field.length(), field.precision() );
         else
           fieldType = QStringLiteral( "DECIMAL" );
       }
@@ -445,7 +449,7 @@ bool QgsHanaUtils::convertField( QgsField &field )
   return true;
 }
 
-int QgsHanaUtils::countFieldsInUppercase( const QgsFields &fields )
+int QgsHanaUtils::countFieldsWithFirstLetterInUppercase( const QgsFields &fields )
 {
   int count = 0;
   for ( int i = 0, n = fields.size(); i < n; ++i )
@@ -453,7 +457,7 @@ int QgsHanaUtils::countFieldsInUppercase( const QgsFields &fields )
     QString name = fields.at( i ).name();
     if ( name.isEmpty() )
       continue;
-    if ( isupper( name.at( 0 ).toAscii() ) )
+    if ( name.at( 0 ).isUpper() )
       ++count;
   }
   return count;
