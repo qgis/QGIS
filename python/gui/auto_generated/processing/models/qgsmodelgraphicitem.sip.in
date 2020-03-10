@@ -10,6 +10,7 @@
 
 
 
+
 class QgsModelDesignerFlatButtonGraphicItem : QGraphicsObject
 {
 %Docstring
@@ -46,6 +47,11 @@ for the button. The button will be rendered at the specified ``position`` and ``
 
     virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
 
+
+    QgsModelGraphicsView *view();
+%Docstring
+Returns the associated model view.
+%End
 
   signals:
 

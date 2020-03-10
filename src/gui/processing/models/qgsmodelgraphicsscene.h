@@ -48,6 +48,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     {
       ArrowLink = 0, //!< An arrow linking model items
       ModelComponent = 1, //!< Model components (e.g. algorithms, inputs and outputs)
+      RubberBand = 100, //!< Rubber band item
     };
 
     //! Flags for controlling how the scene is rendered and scene behavior

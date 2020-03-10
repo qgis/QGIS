@@ -283,6 +283,14 @@ SET(QGIS_GUI_SRCS
   processing/models/qgsmodelgraphicsscene.cpp
   processing/models/qgsmodelgraphicsview.cpp
   processing/models/qgsmodelundocommand.cpp
+  processing/models/qgsmodelviewmouseevent.cpp
+  processing/models/qgsmodelviewrubberband.cpp
+  processing/models/qgsmodelviewtool.cpp
+  processing/models/qgsmodelviewtoolselect.cpp
+  processing/models/qgsmodelviewtooltemporarykeypan.cpp
+  processing/models/qgsmodelviewtooltemporarykeyzoom.cpp
+  processing/models/qgsmodelviewtooltemporarymousepan.cpp
+  processing/models/qgsmodelviewtoolzoom.cpp
 
   providers/gdal/qgsgdalsourceselect.cpp
   providers/gdal/qgsgdalguiprovider.cpp
@@ -944,6 +952,14 @@ SET(QGIS_GUI_HDRS
   processing/models/qgsmodelgraphicsscene.h
   processing/models/qgsmodelgraphicsview.h
   processing/models/qgsmodelundocommand.h
+  processing/models/qgsmodelviewmouseevent.h
+  processing/models/qgsmodelviewrubberband.h
+  processing/models/qgsmodelviewtool.h
+  processing/models/qgsmodelviewtoolselect.h
+  processing/models/qgsmodelviewtooltemporarykeypan.h
+  processing/models/qgsmodelviewtooltemporarykeyzoom.h
+  processing/models/qgsmodelviewtooltemporarymousepan.h
+  processing/models/qgsmodelviewtoolzoom.h
 
   providers/gdal/qgsgdalguiprovider.h
   providers/gdal/qgsgdalsourceselect.h

@@ -31,6 +31,7 @@ class QgsProcessingModelComment;
 class QgsProcessingModelAlgorithm;
 class QgsModelDesignerFlatButtonGraphicItem;
 class QgsModelDesignerFoldButtonGraphicItem;
+class QgsModelGraphicsView;
 
 ///@cond NOT_STABLE
 
@@ -94,6 +95,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Returns the model associated with this item.
      */
     QgsProcessingModelAlgorithm *model();
+
+    /**
+     * Returns the associated view.
+     */
+    QgsModelGraphicsView *view();
 
     /**
      * Returns the font used to render text in the item.
