@@ -566,6 +566,7 @@ class TestQgsProcessing: public QObject
     void parameterCoordinateOperation();
     void parameterMapTheme();
     void parameterDateTime();
+    void parameterProviderConnection();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -6875,6 +6876,135 @@ void TestQgsProcessing::parameterMapTheme()
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant() ) ); // should be valid, falls back to valid default
 }
+
+void TestQgsProcessing::parameterProviderConnection()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterProviderConnection > def( new QgsProcessingParameterProviderConnection( "non_optional", QString(), QStringLiteral( "ogr" ), QVariant(), false ) );
+  QCOMPARE( def->providerId(), QStringLiteral( "ogr" ) );
+  def->setProviderId( QStringLiteral( "postgres" ) );
+  QCOMPARE( def->providerId(), QStringLiteral( "postgres" ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+
+  // string value
+  QVariantMap params;
+  params.insert( "non_optional", QString( "abcdef" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsConnectionName( def.get(), params, context ), QString( "abcdef" ) );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( 5, context ), QStringLiteral( "'5'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc\ndef" ), context ), QStringLiteral( "'abc\\ndef'" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
+  QCOMPARE( def->valueAsPythonString( "uri='complex' username=\"complex\"", context ), QStringLiteral( "'uri=\\'complex\\' username=\\\"complex\\\"'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QStringLiteral( "'c:\\\\test\\\\new data\\\\test.dat'" ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterProviderConnection('non_optional', '', 'postgres', defaultValue=None)" ) );
+
+  QString code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=providerconnection postgres" ) );
+  std::unique_ptr< QgsProcessingParameterProviderConnection > fromCode( dynamic_cast< QgsProcessingParameterProviderConnection * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->providerId(), QStringLiteral( "postgres" ) );
+
+  QVariantMap map = def->toVariantMap();
+  QgsProcessingParameterProviderConnection fromMap( "x", QString(), QString() );
+  QVERIFY( fromMap.fromVariantMap( map ) );
+  QCOMPARE( fromMap.name(), def->name() );
+  QCOMPARE( fromMap.description(), def->description() );
+  QCOMPARE( fromMap.flags(), def->flags() );
+  QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
+  QCOMPARE( fromMap.providerId(), QStringLiteral( "postgres" ) );
+  def.reset( dynamic_cast< QgsProcessingParameterProviderConnection *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
+  QVERIFY( dynamic_cast< QgsProcessingParameterProviderConnection *>( def.get() ) );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterProviderConnection * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=providerconnection postgres None" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QVERIFY( !fromCode->defaultValue().isValid() );
+  QCOMPARE( fromCode->providerId(), QStringLiteral( "postgres" ) );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterProviderConnection * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=providerconnection postgres it's mario" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "it's mario" ) );
+  QCOMPARE( fromCode->providerId(), QStringLiteral( "postgres" ) );
+
+  def->setDefaultValue( QStringLiteral( "it's mario" ) );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterProviderConnection('non_optional', '', 'postgres', defaultValue='it\\'s mario')" ) );
+  code = def->asScriptCode();
+  fromCode.reset( dynamic_cast< QgsProcessingParameterProviderConnection * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->providerId(), QStringLiteral( "postgres" ) );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterProviderConnection * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=providerconnection postgres 'my val'" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "my val" ) );
+  QCOMPARE( fromCode->providerId(), QStringLiteral( "postgres" ) );
+
+  fromCode.reset( dynamic_cast< QgsProcessingParameterProviderConnection * >( QgsProcessingParameters::parameterFromScriptCode( QStringLiteral( "##non_optional=providerconnection postgres \"my val\"" ) ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue().toString(), QStringLiteral( "my val" ) );
+  QCOMPARE( fromCode->providerId(), QStringLiteral( "postgres" ) );
+
+  // optional
+  def.reset( new QgsProcessingParameterProviderConnection( "optional", QString(), QStringLiteral( "ogr" ), QString( "default" ), true ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsConnectionName( def.get(), params, context ), QString( "default" ) );
+  params.insert( "optional",  QString() ); //empty string should not result in default value
+  QCOMPARE( QgsProcessingParameters::parameterAsConnectionName( def.get(), params, context ), QString() );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterProviderConnection('optional', '', 'ogr', optional=True, defaultValue='default')" ) );
+
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##optional=optional providerconnection ogr default" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterProviderConnection * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->providerId(), QStringLiteral( "ogr" ) );
+
+  // not optional, valid default!
+  def.reset( new QgsProcessingParameterProviderConnection( "non_optional", QString(), QStringLiteral( "ogr" ), QString( "def" ), false ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) ); // should be valid, falls back to valid default
+}
+
 
 void TestQgsProcessing::parameterDateTime()
 {

@@ -856,6 +856,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QColor parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a name to a connection name string.
+     *
+     * \since QGIS 3.14
+     */
+    QString parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
      * Returns a user-friendly string to use as an error when a source parameter could
      * not be loaded.
      *

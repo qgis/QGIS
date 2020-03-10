@@ -1770,6 +1770,21 @@ QColor QgsProcessingParameters::parameterAsColor( const QgsProcessingParameterDe
   return c;
 }
 
+QString QgsProcessingParameters::parameterAsConnectionName( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QString();
+
+  return parameterAsConnectionName( definition, parameters.value( definition->name() ), context );
+}
+
+QString QgsProcessingParameters::parameterAsConnectionName( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context )
+{
+  // for now it's just treated identical to strings, but in future we may want flexibility to amend this
+  // (hence the new method)
+  return parameterAsString( definition, value, context );
+}
+
 QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantMap( const QVariantMap &map )
 {
   QString type = map.value( QStringLiteral( "parameter_type" ) ).toString();
@@ -1936,6 +1951,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterMapTheme::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "datetime" ) )
     return QgsProcessingParameterDateTime::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "providerconnection" ) )
+    return QgsProcessingParameterProviderConnection::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -6489,3 +6506,121 @@ QgsProcessingParameterDateTime *QgsProcessingParameterDateTime::fromScriptCode( 
   return new QgsProcessingParameterDateTime( name, description, DateTime, definition.isEmpty() ? QVariant()
          : ( definition.toLower().trimmed() == QStringLiteral( "none" ) ? QVariant() : definition ), isOptional );
 }
+
+
+
+//
+// QgsProcessingParameterProviderConnection
+//
+
+QgsProcessingParameterProviderConnection::QgsProcessingParameterProviderConnection( const QString &name, const QString &description, const QString &provider, const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mProviderId( provider )
+{
+
+}
+
+
+QgsProcessingParameterDefinition *QgsProcessingParameterProviderConnection::clone() const
+{
+  return new QgsProcessingParameterProviderConnection( *this );
+}
+
+bool QgsProcessingParameterProviderConnection::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() && !mDefault.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( ( input.type() == QVariant::String && input.toString().isEmpty() )
+       || ( !input.isValid() && mDefault.type() == QVariant::String && mDefault.toString().isEmpty() ) )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
+QString QgsProcessingParameterProviderConnection::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+}
+
+QString QgsProcessingParameterProviderConnection::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += QStringLiteral( "providerconnection " );
+  code += mProviderId + ' ';
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
+QString QgsProcessingParameterProviderConnection::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterProviderConnection('%1', '%2', '%3'" ).arg( name(), description(), mProviderId );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+
+      return code;
+    }
+  }
+  return QString();
+}
+
+QVariantMap QgsProcessingParameterProviderConnection::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "provider" ), mProviderId );
+  return map;
+}
+
+bool QgsProcessingParameterProviderConnection::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mProviderId = map.value( QStringLiteral( "provider" ) ).toString();
+  return true;
+}
+
+QgsProcessingParameterProviderConnection *QgsProcessingParameterProviderConnection::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  QString parent;
+
+  QString def = definition;
+  QString provider;
+  if ( def.contains( ' ' ) )
+  {
+    provider = def.left( def.indexOf( ' ' ) );
+    def = def.mid( def.indexOf( ' ' ) + 1 );
+  }
+  else
+  {
+    provider = def;
+    def.clear();
+  }
+
+  if ( def.startsWith( '"' ) || def.startsWith( '\'' ) )
+    def = def.mid( 1 );
+  if ( def.endsWith( '"' ) || def.endsWith( '\'' ) )
+    def.chop( 1 );
+
+  QVariant defaultValue = def;
+
+  if ( defaultValue == QStringLiteral( "None" ) || defaultValue.toString().isEmpty() )
+    defaultValue = QVariant();
+
+  return new QgsProcessingParameterProviderConnection( name, description, provider, defaultValue, isOptional );
+}
+
