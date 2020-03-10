@@ -113,6 +113,13 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void setFont( const QFont &font );
 
+    /**
+     * Moves the component by the specified \a dx and \a dy.
+     *
+     * \warning Call this method, not QGraphicsItem::moveBy!
+     */
+    void moveComponentBy( qreal dx, qreal dy );
+
     void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
     void mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) override;
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;

@@ -90,6 +90,15 @@ Sets the ``font`` used to render text in the item.
 .. seealso:: :py:func:`font`
 %End
 
+    void moveComponentBy( qreal dx, qreal dy );
+%Docstring
+Moves the component by the specified ``dx`` and ``dy``.
+
+.. warning::
+
+   Call this method, not QGraphicsItem.moveBy!
+%End
+
     virtual void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
 
     virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );

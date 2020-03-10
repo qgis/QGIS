@@ -271,7 +271,9 @@ void QgsModelDesignerDialog::endUndoCommand()
     return;
 
   mActiveCommand->saveAfterState();
+  mIgnoreUndoStackChanges++;
   mUndoStack->push( mActiveCommand.release() );
+  mIgnoreUndoStackChanges--;
   setDirty( true );
 }
 
@@ -291,7 +293,10 @@ void QgsModelDesignerDialog::setModel( QgsProcessingModelAlgorithm *model )
 
   mView->centerOn( 0, 0 );
   setDirty( false );
+
+  mIgnoreUndoStackChanges++;
   mUndoStack->clear();
+  mIgnoreUndoStackChanges--;
 
   updateWindowTitle();
 }
