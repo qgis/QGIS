@@ -111,6 +111,13 @@ void QgsModelComponentGraphicItem::setFont( const QFont &font )
   update();
 }
 
+void QgsModelComponentGraphicItem::moveComponentBy( qreal dx, qreal dy )
+{
+  mIsMoving = true;
+  moveBy( dx, dy );
+  mIsMoving = false;
+}
+
 void QgsModelComponentGraphicItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent * )
 {
   if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )

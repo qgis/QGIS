@@ -341,25 +341,17 @@ void QgsModelGraphicsView::keyPressEvent( QKeyEvent *event )
   {
     QgsModelGraphicsScene *s = modelScene();
     const QList<QgsModelComponentGraphicItem *> itemList = s->selectedComponentItems();
-
-    QPointF delta = deltaForKeyEvent( event );
-
-#if 0
-    l->undoStack()->beginMacro( tr( "Move Item" ) );
-#endif
-    for ( QgsModelComponentGraphicItem *item : itemList )
+    if ( !itemList.empty() )
     {
-#if 0
-      l->undoStack()->beginCommand( item, tr( "Move Item" ), QgsLayoutItem::UndoIncrementalMove );
-#endif
-      item->moveBy( delta.x(), delta.y() );
-#if 0
-      l->undoStack()->endCommand();
-#endif
+      QPointF delta = deltaForKeyEvent( event );
+
+      itemList.at( 0 )->aboutToChange( tr( "Move Items" ) );
+      for ( QgsModelComponentGraphicItem *item : itemList )
+      {
+        item->moveComponentBy( delta.x(), delta.y() );
+      }
+      itemList.at( 0 )->changed();
     }
-#if 0
-    l->undoStack()->endMacro();
-#endif
     event->accept();
   }
 }
