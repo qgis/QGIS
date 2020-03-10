@@ -54,7 +54,7 @@ int QgsDatabaseSchemaModel::rowCount( const QModelIndex &parent ) const
   if ( parent.isValid() )
     return 0;
 
-  return mSchemas.count();
+  return mSchemas.count() + ( mAllowEmpty ? 1 : 0 );
 }
 
 int QgsDatabaseSchemaModel::columnCount( const QModelIndex &parent ) const
@@ -69,10 +69,22 @@ QVariant QgsDatabaseSchemaModel::data( const QModelIndex &index, int role ) cons
   if ( !index.isValid() )
     return QVariant();
 
-  const QString schemaName = mSchemas.value( index.row() );
+  if ( index.row() == 0 && mAllowEmpty )
+  {
+    if ( role == RoleEmpty )
+      return true;
+
+    return QVariant();
+  }
+
+  const QString schemaName = mSchemas.value( index.row() - ( mAllowEmpty ? 1 : 0 ) );
   switch ( role )
   {
+    case RoleEmpty:
+      return false;
+
     case Qt::DisplayRole:
+    case Qt::EditRole:
     case Qt::ToolTipRole:
     {
       return schemaName;
@@ -92,6 +104,25 @@ QModelIndex QgsDatabaseSchemaModel::index( int row, int column, const QModelInde
   return QModelIndex();
 }
 
+void QgsDatabaseSchemaModel::setAllowEmptySchema( bool allowEmpty )
+{
+  if ( allowEmpty == mAllowEmpty )
+    return;
+
+  if ( allowEmpty )
+  {
+    beginInsertRows( QModelIndex(), 0, 0 );
+    mAllowEmpty = true;
+    endInsertRows();
+  }
+  else
+  {
+    beginRemoveRows( QModelIndex(), 0, 0 );
+    mAllowEmpty = false;
+    endRemoveRows();
+  }
+}
+
 void QgsDatabaseSchemaModel::refresh()
 {
   const QStringList newSchemas = mConnection->schemas();
@@ -101,8 +132,8 @@ void QgsDatabaseSchemaModel::refresh()
   {
     if ( !newSchemas.contains( oldSchema ) )
     {
-      int r = mSchemas.indexOf( oldSchema );
-      beginRemoveRows( QModelIndex(), r, r );
+      int r = mSchemas.indexOf( oldSchema ) ;
+      beginRemoveRows( QModelIndex(), r + ( mAllowEmpty ? 1 : 0 ), r + ( mAllowEmpty ? 1 : 0 ) );
       mSchemas.removeAt( r );
       endRemoveRows();
     }
@@ -112,7 +143,7 @@ void QgsDatabaseSchemaModel::refresh()
   {
     if ( !mSchemas.contains( newSchema ) )
     {
-      beginInsertRows( QModelIndex(), mSchemas.count(), mSchemas.count() );
+      beginInsertRows( QModelIndex(), mSchemas.count() + ( mAllowEmpty ? 1 : 0 ), mSchemas.count() + ( mAllowEmpty ? 1 : 0 ) );
       mSchemas.append( newSchema );
       endInsertRows();
     }

@@ -20,10 +20,23 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include <QSortFilterProxyModel>
 
 class QgsDatabaseSchemaModel;
-class QSortFilterProxyModel;
 class QgsAbstractDatabaseProviderConnection;
+
+///@cond PRIVATE
+#ifndef SIP_RUN
+class GUI_EXPORT QgsDatabaseSchemaComboBoxSortModel: public QSortFilterProxyModel
+{
+  public:
+    explicit QgsDatabaseSchemaComboBoxSortModel( QObject *parent = nullptr );
+  protected:
+    bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
+
+};
+#endif
+///@endcond
 
 /**
  * \ingroup gui
@@ -54,6 +67,18 @@ class GUI_EXPORT QgsDatabaseSchemaComboBox : public QWidget
      * Ownership of \a connection is transferred to the combobox.
      */
     explicit QgsDatabaseSchemaComboBox( QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets whether an optional empty schema ("not set") option is present in the combobox.
+     * \see allowEmptySchema()
+     */
+    void setAllowEmptySchema( bool allowEmpty );
+
+    /**
+     * Returns TRUE if the combobox allows the empty schema ("not set") choice.
+     * \see setAllowEmptySchema()
+     */
+    bool allowEmptySchema() const;
 
     /**
      * Returns the name of the current schema selected in the combo box.

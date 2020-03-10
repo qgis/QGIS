@@ -28,6 +28,11 @@ called.
 %End
   public:
 
+    enum Role
+    {
+      RoleEmpty,
+    };
+
     explicit QgsDatabaseSchemaModel( const QString &provider, const QString &connection, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDatabaseSchemaModel, for the specified ``provider`` and ``connection`` name.
@@ -55,6 +60,20 @@ Ownership of ``connection`` is transferred to the model.
 
     virtual QModelIndex index( int row, int column, const QModelIndex &parent ) const;
 
+
+    void setAllowEmptySchema( bool allowEmpty );
+%Docstring
+Sets whether an optional empty schema ("not set") option is present in the model.
+
+.. seealso:: :py:func:`allowEmptySchema`
+%End
+
+    bool allowEmptySchema() const;
+%Docstring
+Returns ``True`` if the model allows the empty schema ("not set") choice.
+
+.. seealso:: :py:func:`setAllowEmptySchema`
+%End
 
   public slots:
 
