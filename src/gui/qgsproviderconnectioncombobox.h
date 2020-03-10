@@ -20,9 +20,22 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include <QSortFilterProxyModel>
 
 class QgsProviderConnectionModel;
-class QSortFilterProxyModel;
+
+///@cond PRIVATE
+#ifndef SIP_RUN
+class GUI_EXPORT QgsProviderConnectionComboBoxSortModel: public QSortFilterProxyModel
+{
+  public:
+    explicit QgsProviderConnectionComboBoxSortModel( QObject *parent = nullptr );
+  protected:
+    bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
+
+};
+#endif
+///@endcond
 
 /**
  * \ingroup gui
@@ -46,6 +59,18 @@ class GUI_EXPORT QgsProviderConnectionComboBox : public QComboBox
     * in order for the model to work correctly.
      */
     explicit QgsProviderConnectionComboBox( const QString &provider, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets whether an optional empty connection ("not set") option is present in the combobox.
+     * \see allowEmptyConnection()
+     */
+    void setAllowEmptyConnection( bool allowEmpty );
+
+    /**
+     * Returns TRUE if the combobox allows the empty connection ("not set") choice.
+     * \see setAllowEmptyConnection()
+     */
+    bool allowEmptyConnection() const;
 
     /**
      * Returns the name of the current connection selected in the combo box.

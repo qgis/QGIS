@@ -29,20 +29,39 @@ QgsProviderConnectionModel::QgsProviderConnectionModel( const QString &provider,
   mConnections = mMetadata->connections().keys();
 }
 
+void QgsProviderConnectionModel::setAllowEmptyConnection( bool allowEmpty )
+{
+  if ( allowEmpty == mAllowEmpty )
+    return;
+
+  if ( allowEmpty )
+  {
+    beginInsertRows( QModelIndex(), 0, 0 );
+    mAllowEmpty = true;
+    endInsertRows();
+  }
+  else
+  {
+    beginRemoveRows( QModelIndex(), 0, 0 );
+    mAllowEmpty = false;
+    endRemoveRows();
+  }
+}
+
 void QgsProviderConnectionModel::removeConnection( const QString &connection )
 {
   int index = mConnections.indexOf( connection );
   if ( index < 0 )
     return;
 
-  beginRemoveRows( QModelIndex(), index, index );
+  beginRemoveRows( QModelIndex(), index + ( mAllowEmpty ? 1 : 0 ), index + ( mAllowEmpty ? 1 : 0 ) );
   mConnections.removeAt( index );
   endRemoveRows();
 }
 
 void QgsProviderConnectionModel::addConnection( const QString &connection )
 {
-  beginInsertRows( QModelIndex(), mConnections.count(), mConnections.count() );
+  beginInsertRows( QModelIndex(), mConnections.count() + ( mAllowEmpty ? 1 : 0 ), mConnections.count() + ( mAllowEmpty ? 1 : 0 ) );
   mConnections.append( connection );
   endInsertRows();
 }
@@ -59,7 +78,7 @@ int QgsProviderConnectionModel::rowCount( const QModelIndex &parent ) const
   if ( parent.isValid() )
     return 0;
 
-  return mConnections.count();
+  return mConnections.count() + ( mAllowEmpty ? 1 : 0 );
 }
 
 int QgsProviderConnectionModel::columnCount( const QModelIndex &parent ) const
@@ -74,10 +93,22 @@ QVariant QgsProviderConnectionModel::data( const QModelIndex &index, int role ) 
   if ( !index.isValid() )
     return QVariant();
 
-  const QString connectionName = mConnections.value( index.row() );
+  if ( index.row() == 0 && mAllowEmpty )
+  {
+    if ( role == RoleEmpty )
+      return true;
+
+    return QVariant();
+  }
+
+  const QString connectionName = mConnections.value( index.row() - ( mAllowEmpty ? 1 : 0 ) );
   switch ( role )
   {
+    case RoleEmpty:
+      return false;
+
     case Qt::DisplayRole:
+    case Qt::EditRole:
     case RoleConnectionName:
     {
       return connectionName;

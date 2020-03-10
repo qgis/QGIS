@@ -21,7 +21,7 @@ QgsProviderConnectionComboBox::QgsProviderConnectionComboBox( const QString &pro
 {
   mModel = new QgsProviderConnectionModel( provider, this );
 
-  mSortModel = new QSortFilterProxyModel( this );
+  mSortModel = new QgsProviderConnectionComboBoxSortModel( this );
   mSortModel->setSourceModel( mModel );
   mSortModel->setSortRole( Qt::DisplayRole );
   mSortModel->setSortLocaleAware( true );
@@ -36,6 +36,16 @@ QgsProviderConnectionComboBox::QgsProviderConnectionComboBox( const QString &pro
   connect( mSortModel, &QAbstractItemModel::rowsRemoved, this, &QgsProviderConnectionComboBox::rowsChanged );
 }
 
+void QgsProviderConnectionComboBox::setAllowEmptyConnection( bool allowEmpty )
+{
+  mModel->setAllowEmptyConnection( allowEmpty );
+}
+
+bool QgsProviderConnectionComboBox::allowEmptyConnection() const
+{
+  return mModel->allowEmptyConnection();
+}
+
 void QgsProviderConnectionComboBox::setConnection( const QString &connection )
 {
   if ( connection == currentConnection() )
@@ -43,7 +53,10 @@ void QgsProviderConnectionComboBox::setConnection( const QString &connection )
 
   if ( connection.isEmpty() )
   {
-    setCurrentIndex( -1 );
+    if ( mModel->allowEmptyConnection() )
+      setCurrentIndex( 0 );
+    else
+      setCurrentIndex( -1 );
     emit connectionChanged( QString() );
     return;
   }
@@ -93,7 +106,7 @@ void QgsProviderConnectionComboBox::indexChanged( int i )
 
 void QgsProviderConnectionComboBox::rowsChanged()
 {
-  if ( count() == 1 )
+  if ( count() == 1 || ( mModel->allowEmptyConnection() && count() == 2 && currentIndex() == 1 ) )
   {
     //currently selected connection item has changed
     emit connectionChanged( currentConnection() );
@@ -103,3 +116,28 @@ void QgsProviderConnectionComboBox::rowsChanged()
     emit connectionChanged( QString() );
   }
 }
+
+
+///@cond PRIVATE
+QgsProviderConnectionComboBoxSortModel::QgsProviderConnectionComboBoxSortModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+
+}
+
+bool QgsProviderConnectionComboBoxSortModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+{
+  // empty row is always first
+  if ( sourceModel()->data( left, QgsProviderConnectionModel::RoleEmpty ).toBool() )
+    return true;
+  else if ( sourceModel()->data( right, QgsProviderConnectionModel::RoleEmpty ).toBool() )
+    return false;
+
+  // default mode is alphabetical order
+  QString leftStr = sourceModel()->data( left ).toString();
+  QString rightStr = sourceModel()->data( right ).toString();
+  return QString::localeAwareCompare( leftStr, rightStr ) < 0;
+}
+
+
+///@endcond

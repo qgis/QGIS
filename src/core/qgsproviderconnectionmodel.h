@@ -47,6 +47,7 @@ class CORE_EXPORT QgsProviderConnectionModel : public QAbstractItemModel
       RoleConnectionName = Qt::UserRole, //!< Connection name
       RoleUri, //!< Connection URI string
       RoleConfiguration, //!< Connection configuration variant map
+      RoleEmpty, //!< Entry is an empty entry
     };
 
     /**
@@ -56,6 +57,18 @@ class CORE_EXPORT QgsProviderConnectionModel : public QAbstractItemModel
      * in order for the model to work correctly.
      */
     explicit QgsProviderConnectionModel( const QString &provider, QObject *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets whether an optional empty connection ("not set") option is present in the model.
+     * \see allowEmptyConnection()
+     */
+    void setAllowEmptyConnection( bool allowEmpty );
+
+    /**
+     * Returns TRUE if the model allows the empty connection ("not set") choice.
+     * \see setAllowEmptyConnection()
+     */
+    bool allowEmptyConnection() const { return mAllowEmpty; }
 
     // QAbstractItemModel interface
     QModelIndex parent( const QModelIndex &child ) const override;
@@ -71,6 +84,7 @@ class CORE_EXPORT QgsProviderConnectionModel : public QAbstractItemModel
     QString mProvider;
     QgsProviderMetadata *mMetadata = nullptr;
     QStringList mConnections;
+    bool mAllowEmpty = false;
 };
 
 #endif // QGSPROVIDERCONNECTIONMODEL_H
