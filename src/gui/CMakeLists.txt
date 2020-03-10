@@ -282,6 +282,7 @@ SET(QGIS_GUI_SRCS
   processing/models/qgsmodelgraphicitem.cpp
   processing/models/qgsmodelgraphicsscene.cpp
   processing/models/qgsmodelgraphicsview.cpp
+  processing/models/qgsmodelsnapper.cpp
   processing/models/qgsmodelundocommand.cpp
   processing/models/qgsmodelviewmouseevent.cpp
   processing/models/qgsmodelviewrubberband.cpp
@@ -951,6 +952,7 @@ SET(QGIS_GUI_HDRS
   processing/models/qgsmodelgraphicitem.h
   processing/models/qgsmodelgraphicsscene.h
   processing/models/qgsmodelgraphicsview.h
+  processing/models/qgsmodelsnapper.h
   processing/models/qgsmodelundocommand.h
   processing/models/qgsmodelviewmouseevent.h
   processing/models/qgsmodelviewrubberband.h

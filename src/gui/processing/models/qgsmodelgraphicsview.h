@@ -19,7 +19,9 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "qgsprocessingcontext.h"
+#include "qgsmodelsnapper.h"
 #include <QGraphicsView>
+#include <QGraphicsRectItem>
 
 class QgsModelViewTool;
 class QgsModelViewToolTemporaryKeyPan;
@@ -27,6 +29,7 @@ class QgsModelViewToolTemporaryKeyZoom;
 class QgsModelViewToolTemporaryMousePan;
 class QgsModelComponentGraphicItem;
 class QgsModelGraphicsScene;
+class QgsModelViewSnapMarker;
 
 ///@cond NOT_STABLE
 
@@ -60,6 +63,11 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     void keyReleaseEvent( QKeyEvent *event ) override;
 
     /**
+     * Sets the related \a scene.
+     */
+    void setModelScene( QgsModelGraphicsScene *scene );
+
+    /**
      * Returns the scene associated with the tool.
      * \see view()
      */
@@ -86,6 +94,11 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      * You don't have to call it manually, QgsModelViewTool takes care of it.
      */
     void unsetTool( QgsModelViewTool *tool ) SIP_SKIP;
+
+    /**
+     * Returns the view's coordinate snapper.
+     */
+    QgsModelSnapper *snapper() SIP_SKIP;
 
   signals:
 
@@ -142,7 +155,29 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
 
     QPoint mMouseCurrentXY;
 
+    QgsModelSnapper mSnapper;
+    QgsModelViewSnapMarker *mSnapMarker = nullptr;
 };
+
+
+/**
+ * \ingroup gui
+ * A simple graphics item rendered as an 'x'.
+ */
+class GUI_EXPORT QgsModelViewSnapMarker : public QGraphicsRectItem
+{
+  public:
+
+    QgsModelViewSnapMarker();
+
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
+
+  private:
+
+    int mSize = 0;
+
+};
+
 
 ///@endcond
 

@@ -43,6 +43,7 @@ QgsModelGraphicsView::QgsModelGraphicsView( QWidget *parent )
   mMidMouseButtonPanTool = new QgsModelViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsModelViewToolTemporaryKeyZoom( this );
 
+  mSnapper.setSnapToGrid( true );
 }
 
 QgsModelGraphicsView::~QgsModelGraphicsView()
@@ -261,11 +262,9 @@ void QgsModelGraphicsView::mouseMoveEvent( QMouseEvent *event )
   if ( mTool )
   {
     std::unique_ptr<QgsModelViewMouseEvent> me( new QgsModelViewMouseEvent( this, event, false ) );
-#if 0
     if ( mTool->flags() & QgsModelViewTool::FlagSnaps )
     {
-
-      me->snapPoint( mHorizontalSnapLine, mVerticalSnapLine, mTool->ignoredSnapItems() );
+      me->snapPoint();
     }
     if ( mTool->flags() & QgsModelViewTool::FlagSnaps )
     {
@@ -284,7 +283,6 @@ void QgsModelGraphicsView::mouseMoveEvent( QMouseEvent *event )
         mSnapMarker->setVisible( false );
       }
     }
-#endif
     mTool->modelMoveEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -380,6 +378,17 @@ void QgsModelGraphicsView::keyReleaseEvent( QKeyEvent *event )
     QGraphicsView::keyReleaseEvent( event );
 }
 
+void QgsModelGraphicsView::setModelScene( QgsModelGraphicsScene *scene )
+{
+  setScene( scene );
+
+  // IMPORTANT!
+  // previous snap markers, snap lines are owned by previous layout - so don't delete them here!
+  mSnapMarker = new QgsModelViewSnapMarker();
+  mSnapMarker->hide();
+  scene->addItem( mSnapMarker );
+}
+
 QgsModelGraphicsScene *QgsModelGraphicsView::modelScene() const
 {
   return qobject_cast< QgsModelGraphicsScene * >( QgsModelGraphicsView::scene() );
@@ -417,6 +426,40 @@ void QgsModelGraphicsView::unsetTool( QgsModelViewTool *tool )
     emit toolSet( nullptr );
     setCursor( Qt::ArrowCursor );
   }
+}
+
+QgsModelSnapper *QgsModelGraphicsView::snapper()
+{
+  return &mSnapper;
+}
+
+
+QgsModelViewSnapMarker::QgsModelViewSnapMarker()
+  : QGraphicsRectItem( QRectF( 0, 0, 0, 0 ) )
+{
+  QFont f;
+  QFontMetrics fm( f );
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  mSize = fm.width( QStringLiteral( "X" ) );
+#else
+  mSize = fm.horizontalAdvance( 'X' );
+#endif
+  setPen( QPen( Qt::transparent, mSize ) );
+
+  setFlags( flags() | QGraphicsItem::ItemIgnoresTransformations );
+  setZValue( QgsModelGraphicsScene::ZSnapIndicator );
+}
+
+void QgsModelViewSnapMarker::paint( QPainter *p, const QStyleOptionGraphicsItem *, QWidget * )
+{
+  QPen pen( QColor( 255, 0, 0 ) );
+  pen.setWidth( 0 );
+  p->setPen( pen );
+  p->setBrush( Qt::NoBrush );
+
+  double halfSize = mSize / 2.0;
+  p->drawLine( QLineF( -halfSize, -halfSize, halfSize, halfSize ) );
+  p->drawLine( QLineF( -halfSize, halfSize, halfSize, -halfSize ) );
 }
 
 

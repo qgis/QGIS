@@ -62,6 +62,11 @@ Ownership of ``model`` is transferred to the dialog.
 Loads a model into the designer from the specified file ``path``.
 %End
 
+    void setModelScene( QgsModelGraphicsScene *scene /Transfer/ );
+%Docstring
+Sets the related ``scene``.
+%End
+
   protected:
 
     virtual void repaintModel( bool showControls = true ) = 0;
