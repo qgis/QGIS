@@ -54,6 +54,19 @@ tests:
         name: expected/multi_polygons_without_duplicate_nodes.gml
         type: vector
 
+  - algorithm: native:removeduplicatevertices
+    name: Remove duplicate vertices from all interior rings
+    params:
+      INPUT:
+        name: custom/polygons_with_duplicate_nodes_in_several_holes.gml
+        type: vector
+      TOLERANCE: 0.001
+      USE_Z_VALUE: false
+    results:
+      OUTPUT:
+        name: expected/polygons_without_duplicate_nodes_in_holes.gml
+        type: vector
+
   - algorithm: qgis:keepnbiggestparts
     name: Keep N biggest parts
     params:
