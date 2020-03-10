@@ -324,7 +324,8 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   mSelectTool->setScene( mScene );
 
   connect( mScene, &QgsModelGraphicsScene::rebuildRequired, this, [ = ] { repaintModel(); } );
-  connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [ = ] { setDirty(); } );
+  connect( mScene, &QgsModelGraphicsScene::componentAboutToChange, this, [ = ]( const QString & description, int id ) { beginUndoCommand( description, id ); } );
+  connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [ = ] { endUndoCommand(); } );
 
   if ( oldScene )
     oldScene->deleteLater();

@@ -94,6 +94,9 @@ QgsProcessingModelAlgorithm *QgsModelComponentGraphicItem::model()
 
 QgsModelGraphicsView *QgsModelComponentGraphicItem::view()
 {
+  if ( scene()->views().isEmpty() )
+    return nullptr;
+
   return qobject_cast< QgsModelGraphicsView * >( scene()->views().first() );
 }
 
@@ -110,7 +113,7 @@ void QgsModelComponentGraphicItem::setFont( const QFont &font )
 
 void QgsModelComponentGraphicItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent * )
 {
-  if ( view()->tool() && view()->tool()->allowItemInteraction() )
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
     editComponent();
 }
 
@@ -126,19 +129,19 @@ void QgsModelComponentGraphicItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *
 
 void QgsModelComponentGraphicItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
-  if ( view()->tool() && view()->tool()->allowItemInteraction() )
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
     updateToolTip( event->pos() );
 }
 
 void QgsModelComponentGraphicItem::hoverMoveEvent( QGraphicsSceneHoverEvent *event )
 {
-  if ( view()->tool() && view()->tool()->allowItemInteraction() )
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
     updateToolTip( event->pos() );
 }
 
 void QgsModelComponentGraphicItem::hoverLeaveEvent( QGraphicsSceneHoverEvent * )
 {
-  if ( view()->tool() && view()->tool()->allowItemInteraction() )
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
   {
     setToolTip( QString() );
     if ( mIsHovering )
