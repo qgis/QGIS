@@ -49,6 +49,7 @@
 #include "qgsmapthemecollection.h"
 #include "qgsdatetimeedit.h"
 #include "qgsproviderconnectioncombobox.h"
+#include "qgsdatabaseschemacombobox.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -2863,7 +2864,7 @@ QgsProcessingCoordinateOperationParameterDefinitionWidget::QgsProcessingCoordina
     const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
     for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
     {
-      if ( it->parameterName() == definition->name() )
+      if ( definition && it->parameterName() == definition->name() )
         continue;
 
       // TODO - we should probably filter this list?
@@ -4038,6 +4039,247 @@ QString QgsProcessingProviderConnectionWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingProviderConnectionWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingProviderConnectionWidgetWrapper( parameter, type );
+}
+
+
+
+
+//
+// QgsProcessingDatabaseSchemaWidgetWrapper
+//
+
+QgsProcessingDatabaseSchemaParameterDefinitionWidget::QgsProcessingDatabaseSchemaParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  const QgsProcessingParameterDatabaseSchema *schemaParam = dynamic_cast< const QgsProcessingParameterDatabaseSchema *>( definition );
+
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  mConnectionParamComboBox = new QComboBox();
+  QString initialConnection;
+  if ( schemaParam )
+  {
+    initialConnection = schemaParam->parentConnectionParameterName();
+  }
+
+  if ( widgetContext.model() )
+  {
+    // populate combo box with other model input choices
+    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
+    {
+      if ( definition && it->parameterName() == definition->name() )
+        continue;
+
+      if ( !dynamic_cast< const QgsProcessingParameterProviderConnection * >( widgetContext.model()->parameterDefinition( it->parameterName() ) ) )
+        continue;
+
+      mConnectionParamComboBox->addItem( it->parameterName(), it->parameterName() );
+      if ( !initialConnection.isEmpty() && initialConnection == it->parameterName() )
+      {
+        mConnectionParamComboBox->setCurrentIndex( mConnectionParamComboBox->count() - 1 );
+      }
+    }
+  }
+
+  if ( mConnectionParamComboBox->count() == 0 && !initialConnection.isEmpty() )
+  {
+    // if no candidates found, we just add the existing one as a placeholder
+    mConnectionParamComboBox->addItem( initialConnection, initialConnection );
+    mConnectionParamComboBox->setCurrentIndex( mConnectionParamComboBox->count() - 1 );
+  }
+
+  vlayout->addWidget( new QLabel( tr( "Provider connection parameter" ) ) );
+  vlayout->addWidget( mConnectionParamComboBox );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultEdit = new QLineEdit();
+  vlayout->addWidget( mDefaultEdit );
+  setLayout( vlayout );
+
+  if ( schemaParam )
+  {
+    mDefaultEdit->setText( schemaParam->defaultValue().toString() );
+  }
+}
+
+QgsProcessingParameterDefinition *QgsProcessingDatabaseSchemaParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  QVariant defaultVal;
+  if ( mDefaultEdit->text().isEmpty() )
+    defaultVal = QVariant();
+  else
+    defaultVal = mDefaultEdit->text();
+  auto param = qgis::make_unique< QgsProcessingParameterDatabaseSchema>( name, description, mConnectionParamComboBox->currentData().toString(), defaultVal );
+  param->setFlags( flags );
+  return param.release();
+}
+
+
+QgsProcessingDatabaseSchemaWidgetWrapper::QgsProcessingDatabaseSchemaWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingDatabaseSchemaWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterDatabaseSchema *schemaParam = dynamic_cast< const QgsProcessingParameterDatabaseSchema *>( parameterDefinition() );
+
+  mSchemaComboBox = new QgsDatabaseSchemaComboBox( QString(), QString() );
+  if ( schemaParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+    mSchemaComboBox->setAllowEmptySchema( true );
+
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+      break;
+    case QgsProcessingGui::Modeler:
+      mSchemaComboBox->comboBox()->setEditable( true );
+      break;
+  }
+
+  mSchemaComboBox->setToolTip( parameterDefinition()->toolTip() );
+  connect( mSchemaComboBox->comboBox(), &QComboBox::currentTextChanged, this, [ = ]( const QString & )
+  {
+    if ( mBlockSignals )
+      return;
+
+    emit widgetValueHasChanged( this );
+  } );
+
+  return mSchemaComboBox;
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingDatabaseSchemaWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingDatabaseSchemaParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
+
+void QgsProcessingDatabaseSchemaWidgetWrapper::setParentConnectionWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
+{
+  // evaluate value to connection
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  QVariant value = parentWrapper->parameterValue();
+  const QString connection = QgsProcessingParameters::parameterAsConnectionName( parentWrapper->parameterDefinition(), value, *context );
+
+  if ( mSchemaComboBox )
+    mSchemaComboBox->setConnectionName( connection, dynamic_cast< const QgsProcessingParameterProviderConnection * >( parentWrapper->parameterDefinition() )->providerId() );
+
+  const QgsProcessingParameterDatabaseSchema *schemaParam = static_cast< const QgsProcessingParameterDatabaseSchema * >( parameterDefinition() );
+  if ( schemaParam->defaultValue().isValid() )
+    setWidgetValue( parameterDefinition()->defaultValue(), *context );
+}
+
+void QgsProcessingDatabaseSchemaWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QString v = QgsProcessingParameters::parameterAsSchema( parameterDefinition(), value, context );
+
+  if ( !value.isValid() )
+    mSchemaComboBox->comboBox()->setCurrentIndex( -1 );
+  else
+  {
+    if ( mSchemaComboBox->comboBox()->isEditable() )
+    {
+      const QString prev = mSchemaComboBox->comboBox()->currentText();
+      mBlockSignals++;
+      mSchemaComboBox->setSchema( v );
+      mSchemaComboBox->comboBox()->setCurrentText( v );
+
+      mBlockSignals--;
+      if ( prev != v )
+        emit widgetValueHasChanged( this );
+    }
+    else
+      mSchemaComboBox->setSchema( v );
+  }
+}
+
+QVariant QgsProcessingDatabaseSchemaWidgetWrapper::widgetValue() const
+{
+  if ( mSchemaComboBox )
+    if ( mSchemaComboBox->comboBox()->isEditable() )
+      return mSchemaComboBox->comboBox()->currentText().isEmpty() ? QVariant() : QVariant( mSchemaComboBox->comboBox()->currentText() );
+    else
+      return mSchemaComboBox->currentSchema().isEmpty() ? QVariant() : QVariant( mSchemaComboBox->currentSchema() );
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingDatabaseSchemaWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterProviderConnection::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterExpression::typeName();
+}
+
+QStringList QgsProcessingDatabaseSchemaWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingDatabaseSchemaWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingDatabaseSchemaWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "database schema name as a string value" );
+}
+
+QString QgsProcessingDatabaseSchemaWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterDatabaseSchema::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingDatabaseSchemaWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingDatabaseSchemaWidgetWrapper( parameter, type );
+}
+
+void QgsProcessingDatabaseSchemaWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
+      {
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterDatabaseSchema * >( parameterDefinition() )->parentConnectionParameterName() )
+        {
+          setParentConnectionWrapperValue( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
+          {
+            setParentConnectionWrapperValue( wrapper );
+          } );
+          break;
+        }
+      }
+      break;
+    }
+
+    case QgsProcessingGui::Modeler:
+      break;
+  }
 }
 
 
