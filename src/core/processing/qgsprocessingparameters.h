@@ -3407,13 +3407,13 @@ class CORE_EXPORT QgsProcessingParameterProviderConnection : public QgsProcessin
 
     /**
      * Returns the ID of the provider associated with the connections.
-     * \see setProvider()
+     * \see setProviderId()
      */
     QString providerId() const { return mProviderId; }
 
     /**
      * Sets the ID of the \a provider associated with the connections.
-     * \see provider()
+     * \see providerId()
      */
     void setProviderId( const QString &provider ) { mProviderId = provider; }
 
