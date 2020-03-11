@@ -89,7 +89,7 @@
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsMapCanvas *canvas,
-  QgsMessageBar* messageBar,
+  QgsMessageBar *messageBar,
   QgsVectorLayer *lyr,
   QWidget *parent,
   Qt::WindowFlags fl
@@ -415,7 +415,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   mAuxiliaryLayerActionExport = new QAction( tr( "Export" ), this );
   menu->addAction( mAuxiliaryLayerActionExport );
-  connect( mAuxiliaryLayerActionExport, &QAction::triggered, this, [=]{ emit exportAuxiliaryLayer( mLayer->auxiliaryLayer() ); } );
+  connect( mAuxiliaryLayerActionExport, &QAction::triggered, this, [ = ] { emit exportAuxiliaryLayer( mLayer->auxiliaryLayer() ); } );
 
   mAuxiliaryStorageActions->setMenu( menu );
 
@@ -1255,7 +1255,7 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
             else
             {
               mMessageBar->pushMessage( infoWindowTitle, tr( "Style '%1' saved" ).arg( styleName ),
-                  Qgis::Info, timeout );
+                                        Qgis::Info, timeout );
             }
             break;
           }
@@ -1271,30 +1271,9 @@ void QgsVectorLayerProperties::saveMultipleStylesAs()
 void QgsVectorLayerProperties::aboutToShowStyleMenu()
 {
   // this should be unified with QgsRasterLayerProperties::aboutToShowStyleMenu()
-
   QMenu *m = qobject_cast<QMenu *>( sender() );
-  if ( !m )
-    return;
 
-  // first get rid of previously added style manager actions (they are dynamic)
-  bool gotFirstSeparator = false;
-  QList<QAction *> actions = m->actions();
-  for ( int i = 0; i < actions.count(); ++i )
-  {
-    if ( actions[i]->isSeparator() )
-    {
-      if ( gotFirstSeparator )
-      {
-        // remove all actions after second separator (including it)
-        while ( actions.count() != i )
-          delete actions.takeAt( i );
-        break;
-      }
-      else
-        gotFirstSeparator = true;
-    }
-  }
-
+  QgsMapLayerStyleGuiUtils::instance()->removesExtraMenuSeparators( m );
   // re-add style manager actions!
   m->addSeparator();
   QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( m, mLayer );
