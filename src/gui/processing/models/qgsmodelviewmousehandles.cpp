@@ -37,6 +37,7 @@ QgsModelViewMouseHandles::QgsModelViewMouseHandles( QgsModelGraphicsView *view )
 {
   //listen for selection changes, and update handles accordingly
   connect( modelScene(), &QGraphicsScene::selectionChanged, this, &QgsModelViewMouseHandles::selectionChanged );
+  setHandleSize( 5 );
 }
 
 QgsModelGraphicsScene *QgsModelViewMouseHandles::modelScene() const

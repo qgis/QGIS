@@ -54,9 +54,7 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
   QPainter painter( &editPicture );
   svg.render( &painter );
   painter.end();
-  mEditButton = new QgsModelDesignerFlatButtonGraphicItem( this, editPicture,
-      QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0,
-               itemSize().height() / 2.0 - mButtonSize.height() / 2.0 ) );
+  mEditButton = new QgsModelDesignerFlatButtonGraphicItem( this, editPicture, QPointF( 0, 0 ) );
   connect( mEditButton, &QgsModelDesignerFlatButtonGraphicItem::clicked, this, &QgsModelComponentGraphicItem::editComponent );
 
   QSvgRenderer svg2( QgsApplication::iconPath( QStringLiteral( "mActionDeleteModelComponent.svg" ) ) );
@@ -64,10 +62,10 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
   painter.begin( &deletePicture );
   svg2.render( &painter );
   painter.end();
-  mDeleteButton = new QgsModelDesignerFlatButtonGraphicItem( this, deletePicture,
-      QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0,
-               mButtonSize.height() / 2.0 - itemSize().height() / 2.0 ) );
+  mDeleteButton = new QgsModelDesignerFlatButtonGraphicItem( this, deletePicture, QPointF( 0, 0 ) );
   connect( mDeleteButton, &QgsModelDesignerFlatButtonGraphicItem::clicked, this, &QgsModelComponentGraphicItem::deleteComponent );
+
+  updateButtonPositions();
 }
 
 QgsModelComponentGraphicItem::Flags QgsModelComponentGraphicItem::flags() const
@@ -228,19 +226,16 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
         // ideally would be in constructor, but cannot call virtual methods from that...
         if ( linkPointCount( Qt::TopEdge ) )
         {
-          QPointF pt = linkPoint( Qt::TopEdge, -1 );
-          pt = QPointF( 0, pt.y() );
-          mExpandTopButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::TopEdge ), pt );
+          mExpandTopButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::TopEdge ), QPointF( 0, 0 ) );
           connect( mExpandTopButton, &QgsModelDesignerFoldButtonGraphicItem::folded, this, [ = ]( bool folded ) { fold( Qt::TopEdge, folded ); } );
         }
         if ( linkPointCount( Qt::BottomEdge ) )
         {
-          QPointF pt = linkPoint( Qt::BottomEdge, -1 );
-          pt = QPointF( 0, pt.y() );
-          mExpandBottomButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::BottomEdge ), pt );
+          mExpandBottomButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::BottomEdge ), QPointF( 0, 0 ) );
           connect( mExpandBottomButton, &QgsModelDesignerFoldButtonGraphicItem::folded, this, [ = ]( bool folded ) { fold( Qt::BottomEdge, folded ); } );
         }
         mInitialized = true;
+        updateButtonPositions();
       }
       break;
     }
@@ -409,10 +404,10 @@ QPixmap QgsModelComponentGraphicItem::iconPixmap() const
 
 void QgsModelComponentGraphicItem::updateButtonPositions()
 {
-  mEditButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0,
-                                     itemSize().height() / 2.0 - mButtonSize.height() / 2.0 ) );
-  mDeleteButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0,
-                                       mButtonSize.height() / 2.0 - itemSize().height() / 2.0 ) );
+  mEditButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0 - 2,
+                                     itemSize().height() / 2.0 - mButtonSize.height() / 2.0  - 2 ) );
+  mDeleteButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0  - 2,
+                                       mButtonSize.height() / 2.0 - itemSize().height() / 2.0 + 2 ) );
 
   if ( mExpandTopButton )
   {
