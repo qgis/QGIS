@@ -131,6 +131,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void exportAsPython();
     void toggleComments( bool show );
     void updateWindowTitle();
+    void deleteSelected();
+
   private:
 
     enum UndoCommand
@@ -159,6 +161,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     int mIgnoreUndoStackChanges = 0;
 
     QString mTitle;
+
+    int mBlockRepaints = 0;
 
     bool isDirty() const;
 

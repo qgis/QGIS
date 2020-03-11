@@ -405,8 +405,8 @@ QPixmap QgsModelComponentGraphicItem::iconPixmap() const
 void QgsModelComponentGraphicItem::updateButtonPositions()
 {
   mEditButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0 - 2,
-                                     itemSize().height() / 2.0 - mButtonSize.height() / 2.0  - 2 ) );
-  mDeleteButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0  - 2,
+                                     itemSize().height() / 2.0 - mButtonSize.height() / 2.0 - 2 ) );
+  mDeleteButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0 - 2,
                                        mButtonSize.height() / 2.0 - itemSize().height() / 2.0 + 2 ) );
 
   if ( mExpandTopButton )
@@ -697,6 +697,26 @@ void QgsModelParameterGraphicItem::updateStoredComponentPosition( const QPointF 
   }
 }
 
+bool QgsModelParameterGraphicItem::canDeleteComponent()
+{
+  if ( const QgsProcessingModelParameter *param = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
+  {
+    if ( model()->childAlgorithmsDependOnParameter( param->parameterName() ) )
+    {
+      return false;
+    }
+    else if ( model()->otherParametersDependOnParameter( param->parameterName() ) )
+    {
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 void QgsModelParameterGraphicItem::deleteComponent()
 {
   if ( const QgsProcessingModelParameter *param = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
@@ -728,7 +748,7 @@ void QgsModelParameterGraphicItem::deleteComponent()
 QgsModelChildAlgorithmGraphicItem::QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( child, model, parent )
 {
-  if ( !child->algorithm()->svgIconPath().isEmpty() )
+  if ( child->algorithm() && !child->algorithm()->svgIconPath().isEmpty() )
   {
     QSvgRenderer svg( child->algorithm()->svgIconPath() );
     const QSizeF size = svg.defaultSize();
@@ -737,7 +757,7 @@ QgsModelChildAlgorithmGraphicItem::QgsModelChildAlgorithmGraphicItem( QgsProcess
     svg.render( &painter );
     painter.end();
   }
-  else
+  else if ( child->algorithm() )
   {
     mPixmap = child->algorithm()->icon().pixmap( 15, 15 );
   }
@@ -823,6 +843,9 @@ int QgsModelChildAlgorithmGraphicItem::linkPointCount( Qt::Edge edge ) const
 {
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
   {
+    if ( !child->algorithm() )
+      return 0;
+
     switch ( edge )
     {
       case Qt::BottomEdge:
@@ -852,6 +875,9 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
 
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
   {
+    if ( !child->algorithm() )
+      return 0;
+
     switch ( edge )
     {
       case Qt::BottomEdge:
@@ -883,6 +909,15 @@ void QgsModelChildAlgorithmGraphicItem::updateStoredComponentPosition( const QPo
     model()->childAlgorithm( child->childId() ).setPosition( pos );
     model()->childAlgorithm( child->childId() ).setSize( size );
   }
+}
+
+bool QgsModelChildAlgorithmGraphicItem::canDeleteComponent()
+{
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
+  {
+    return model()->dependentChildAlgorithms( child->childId() ).empty();
+  }
+  return false;
 }
 
 void QgsModelChildAlgorithmGraphicItem::deleteComponent()
@@ -941,7 +976,6 @@ QgsModelOutputGraphicItem::QgsModelOutputGraphicItem( QgsProcessingModelOutput *
   setLabel( output->name() );
 }
 
-
 QColor QgsModelOutputGraphicItem::fillColor( QgsModelComponentGraphicItem::State state ) const
 {
   QColor c( 172, 196, 114 );
@@ -990,6 +1024,15 @@ void QgsModelOutputGraphicItem::updateStoredComponentPosition( const QPointF &po
     model()->childAlgorithm( output->childId() ).modelOutput( output->name() ).setPosition( pos );
     model()->childAlgorithm( output->childId() ).modelOutput( output->name() ).setSize( size );
   }
+}
+
+bool QgsModelOutputGraphicItem::canDeleteComponent()
+{
+  if ( dynamic_cast< const QgsProcessingModelOutput * >( component() ) )
+  {
+    return true;
+  }
+  return false;
 }
 
 void QgsModelOutputGraphicItem::deleteComponent()
@@ -1079,6 +1122,15 @@ void QgsModelCommentGraphicItem::updateStoredComponentPosition( const QPointF &p
     comment->setPosition( pos );
     comment->setSize( size );
   }
+}
+
+bool QgsModelCommentGraphicItem::canDeleteComponent()
+{
+  if ( modelComponent() )
+  {
+    return true;
+  }
+  return false;
 }
 
 void QgsModelCommentGraphicItem::deleteComponent()

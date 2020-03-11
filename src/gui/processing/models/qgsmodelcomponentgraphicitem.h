@@ -229,6 +229,18 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     virtual void editComment() {}
 
+    /**
+     * Returns TRUE if the component can be deleted.
+     */
+    virtual bool canDeleteComponent() { return false; }
+
+    /**
+     * Called when the component should be deleted.
+     *
+     * The default implementation does nothing.
+     */
+    virtual void deleteComponent() {}
+
   signals:
 
     // TODO - rework this, should be triggered externally when the model actually changes!
@@ -271,13 +283,6 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * The default implementation does nothing.
      */
     virtual void editComponent() {}
-
-    /**
-     * Called when the component should be deleted.
-     *
-     * The default implementation does nothing.
-     */
-    virtual void deleteComponent() {}
 
   protected:
 
@@ -385,6 +390,7 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
                                   QGraphicsItem *parent SIP_TRANSFERTHIS );
 
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
+    bool canDeleteComponent() override;
 
   protected:
 
@@ -427,6 +433,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
                                        QgsProcessingModelAlgorithm *model,
                                        QGraphicsItem *parent SIP_TRANSFERTHIS );
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
+    bool canDeleteComponent() override;
 
   protected:
 
@@ -478,6 +485,8 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
                                QgsProcessingModelAlgorithm *model,
                                QGraphicsItem *parent SIP_TRANSFERTHIS );
 
+    bool canDeleteComponent() override;
+
   protected:
 
     QColor fillColor( State state ) const override;
@@ -523,6 +532,7 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
                                 QGraphicsItem *parent SIP_TRANSFERTHIS );
     ~QgsModelCommentGraphicItem() override;
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
+    bool canDeleteComponent() override;
   protected:
 
     QColor fillColor( State state ) const override;

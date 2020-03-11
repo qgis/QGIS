@@ -26,6 +26,7 @@
 #include "qgsmodelundocommand.h"
 #include "qgsmodelviewtoolselect.h"
 #include "qgsmodelgraphicsscene.h"
+#include "qgsmodelcomponentgraphicitem.h"
 
 #include <QShortcut>
 #include <QDesktopWidget>
@@ -129,6 +130,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionExportPython, &QAction::triggered, this, &QgsModelDesignerDialog::exportAsPython );
   connect( mActionSave, &QAction::triggered, this, [ = ] { saveModel( false ); } );
   connect( mActionSaveAs, &QAction::triggered, this, [ = ] { saveModel( true ); } );
+  connect( mActionDeleteComponents, &QAction::triggered, this, &QgsModelDesignerDialog::deleteSelected );
 
   mUndoAction = mUndoStack->createUndoAction( this );
   mUndoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
@@ -137,8 +139,9 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mRedoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRedo.svg" ) ) );
   mRedoAction->setShortcuts( QKeySequence::Redo );
 
-  mMenuEdit->addAction( mRedoAction );
-  mMenuEdit->addAction( mUndoAction );
+  mMenuEdit->insertAction( mActionDeleteComponents, mRedoAction );
+  mMenuEdit->insertAction( mActionDeleteComponents, mUndoAction );
+  mMenuEdit->insertSeparator( mActionDeleteComponents );
   mToolbar->insertAction( mActionZoomIn, mUndoAction );
   mToolbar->insertAction( mActionZoomIn, mRedoAction );
   mToolbar->insertSeparator( mActionZoomIn );
@@ -282,7 +285,7 @@ void QgsModelDesignerDialog::beginUndoCommand( const QString &text, int id )
 
 void QgsModelDesignerDialog::endUndoCommand()
 {
-  if ( !mActiveCommand || !mUndoStack )
+  if ( mBlockUndoCommands || !mActiveCommand || !mUndoStack )
     return;
 
   mActiveCommand->saveAfterState();
@@ -341,9 +344,16 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 
   mView->setModelScene( mScene );
 
+  mSelectTool->resetCache();
   mSelectTool->setScene( mScene );
 
-  connect( mScene, &QgsModelGraphicsScene::rebuildRequired, this, [ = ] { repaintModel(); } );
+  connect( mScene, &QgsModelGraphicsScene::rebuildRequired, this, [ = ]
+  {
+    if ( mBlockRepaints )
+      return;
+
+    repaintModel();
+  } );
   connect( mScene, &QgsModelGraphicsScene::componentAboutToChange, this, [ = ]( const QString & description, int id ) { beginUndoCommand( description, id ); } );
   connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [ = ] { endUndoCommand(); } );
 
@@ -571,6 +581,84 @@ void QgsModelDesignerDialog::updateWindowTitle()
     title.prepend( '*' );
 
   setWindowTitle( title );
+}
+
+void QgsModelDesignerDialog::deleteSelected()
+{
+  QList< QgsModelComponentGraphicItem * > items = mScene->selectedComponentItems();
+  if ( items.empty() )
+    return;
+
+  if ( items.size() == 1 )
+  {
+    items.at( 0 )->deleteComponent();
+    return;
+  }
+
+  std::sort( items.begin(), items.end(), []( QgsModelComponentGraphicItem * p1, QgsModelComponentGraphicItem * p2 )
+  {
+    // try to delete the easy stuff first, so comments, then outputs, as nothing will depend on these...
+    if ( dynamic_cast< QgsModelCommentGraphicItem *>( p1 ) )
+      return true;
+    else if ( dynamic_cast< QgsModelCommentGraphicItem *>( p2 ) )
+      return false;
+    else if ( dynamic_cast< QgsModelOutputGraphicItem *>( p1 ) )
+      return true;
+    else if ( dynamic_cast< QgsModelOutputGraphicItem *>( p2 ) )
+      return false;
+    else if ( dynamic_cast< QgsModelChildAlgorithmGraphicItem *>( p1 ) )
+      return true;
+    else if ( dynamic_cast< QgsModelChildAlgorithmGraphicItem *>( p2 ) )
+      return false;
+    return false;
+  } );
+
+
+  beginUndoCommand( tr( "Delete Components" ) );
+
+  QVariant prevState = mModel->toVariant();
+  mBlockUndoCommands++;
+  mBlockRepaints = true;
+  bool failed = false;
+  while ( !items.empty() )
+  {
+    QgsModelComponentGraphicItem *toDelete = nullptr;
+    for ( QgsModelComponentGraphicItem *item : items )
+    {
+      if ( item->canDeleteComponent() )
+      {
+        toDelete = item;
+        break;
+      }
+    }
+
+    if ( !toDelete )
+    {
+      failed = true;
+      break;
+    }
+
+    toDelete->deleteComponent();
+    items.removeAll( toDelete );
+  }
+
+  if ( failed )
+  {
+    mModel->loadVariant( prevState );
+    QMessageBox::warning( nullptr, QObject::tr( "Could not remove components" ),
+                          QObject::tr( "Components depend on the selected items.\n"
+                                       "Try to remove them before trying deleting these components." ) );
+    mBlockUndoCommands--;
+    mActiveCommand.reset();
+  }
+  else
+  {
+    mBlockUndoCommands--;
+    endUndoCommand();
+  }
+
+  mBlockRepaints = false;
+  repaintModel();
 }
 
 bool QgsModelDesignerDialog::isDirty() const

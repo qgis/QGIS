@@ -361,4 +361,9 @@ void QgsModelViewToolSelect::setScene( QgsModelGraphicsScene *scene )
   mMouseHandles->setZValue( QgsModelGraphicsScene::MouseHandles );
   scene->addItem( mMouseHandles );
 }
+
+void QgsModelViewToolSelect::resetCache()
+{
+  mHoverEnteredItems.clear();
+}
 ///@endcond

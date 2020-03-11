@@ -63,6 +63,8 @@ class GUI_EXPORT QgsModelViewToolSelect : public QgsModelViewTool
     //! Sets the a \a scene.
     void setScene( QgsModelGraphicsScene *scene );
 
+    void resetCache();
+
   private:
 
     bool mIsSelecting = false;

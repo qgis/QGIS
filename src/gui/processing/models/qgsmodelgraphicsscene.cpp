@@ -115,6 +115,9 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
   for ( auto it = childAlgs.constBegin(); it != childAlgs.constEnd(); ++it )
   {
     int idx = 0;
+    if ( !it.value().algorithm() )
+      continue;
+
     const QgsProcessingParameterDefinitions parameters = it.value().algorithm()->parameterDefinitions();
     for ( const QgsProcessingParameterDefinition *parameter : parameters )
     {
@@ -163,19 +166,21 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       addCommentItemForComponent( model, outputIt.value(), item );
 
       QPointF pos = outputIt.value().position();
-
-      // find the actual index of the linked output from the child algorithm it comes from
-      const QgsProcessingOutputDefinitions sourceChildAlgOutputs = it.value().algorithm()->outputDefinitions();
       int idx = -1;
       int i = 0;
-      for ( const QgsProcessingOutputDefinition *childAlgOutput : sourceChildAlgOutputs )
+      // find the actual index of the linked output from the child algorithm it comes from
+      if ( it.value().algorithm() )
       {
-        if ( childAlgOutput->name() == outputIt.value().childOutputName() )
+        const QgsProcessingOutputDefinitions sourceChildAlgOutputs = it.value().algorithm()->outputDefinitions();
+        for ( const QgsProcessingOutputDefinition *childAlgOutput : sourceChildAlgOutputs )
         {
-          idx = i;
-          break;
+          if ( childAlgOutput->name() == outputIt.value().childOutputName() )
+          {
+            idx = i;
+            break;
+          }
+          i++;
         }
-        i++;
       }
 
       item->setPos( pos );
@@ -272,6 +277,9 @@ QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForPa
       }
       case QgsProcessingModelChildParameterSource::ChildOutput:
       {
+        if ( !model->childAlgorithm( source.outputChildId() ).algorithm() )
+          break;
+
         const QgsProcessingOutputDefinitions outputs = model->childAlgorithm( source.outputChildId() ).algorithm()->outputDefinitions();
         int i = 0;
         for ( const QgsProcessingOutputDefinition *output : outputs )
