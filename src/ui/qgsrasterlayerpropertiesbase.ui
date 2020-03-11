@@ -92,6 +92,9 @@
          <property name="wordWrap">
           <bool>true</bool>
          </property>
+         <property name="currentRow">
+          <number>0</number>
+         </property>
          <item>
           <property name="text">
            <string>Information</string>
@@ -1338,7 +1341,7 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>86</width>
+                <width>98</width>
                 <height>45</height>
                </rect>
               </property>

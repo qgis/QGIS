@@ -87,17 +87,23 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
     void setEndAsStartReferenceButton_clicked();
 
     /**
-     *  Handles actions to follow when layer radio button is clicked.
+     *  Handles actions to follow when layer radio button is toggled.
      **/
-    void layerRadioButton_clicked();
+    void layerRadioButton_toggled( bool checked );
 
     /**
-     *  Handles actions to follow when project radio button is clicked.
+     * Updates the ui states to show current project temporal range, which is
+     * intended to be assigned to the layer
      **/
-    void projectRadioButton_clicked();
+    void projectRadioButton_toggled( bool checked );
 
     /**
-     *  Handles actions to follow when reference checkbox is clicked.
+     *  Resets the datetimes inputs to the layer's fixed temporal range.
+     **/
+    void resetDatesButton_clicked();
+
+    /**
+     *  Enabled inputs in reference datetimes group.
      **/
     void referenceCheckBox_clicked();
 
