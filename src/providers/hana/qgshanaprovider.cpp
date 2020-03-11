@@ -1194,19 +1194,10 @@ bool QgsHanaProvider::isSrsRoundEarth( int srsId ) const
     return false;
 
   QgsHanaConnectionRef connRef( mUri );
-  ConnectionRef &conn = connRef->getNativeRef();
-  StatementRef stmt = conn->createStatement();
   QString sql = QStringLiteral( "SELECT ROUND_EARTH FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS "
                                 "WHERE SRS_ID = %1" ).arg( QString::number( srsId ) );
-  ResultSetRef rsRoundEarth = stmt->executeQuery( sql.toStdString().c_str() );
-  bool ret = true;
-  while ( rsRoundEarth->next() )
-  {
-    ret = ( *rsRoundEarth->getString( 1 ) == "TRUE" );
-  }
-  rsRoundEarth->close();
-
-  return ret;
+  QVariant roundEarth = executeScalar( connRef->getNativeRef(), sql );
+  return roundEarth.toString() == "TRUE";
 }
 
 int QgsHanaProvider::readSrid()
@@ -1219,17 +1210,8 @@ int QgsHanaProvider::readSrid()
   if ( !mGeometryColumn.isEmpty() )
     sql += QStringLiteral( " AND COLUMN_NAME='%1'" ).arg( mGeometryColumn );
   QgsHanaConnectionRef connRef( mUri );
-  ConnectionRef &conn = connRef->getNativeRef();
-  StatementRef stmt = conn->createStatement();
-  ResultSetRef rs = stmt->executeQuery( sql.toStdString().c_str() );
-  int ret = -1;
-  while ( rs->next() )
-  {
-    ret = *rs->getInt( 1 );
-    break;
-  }
-  rs->close();
-  return ret;
+  QVariant srid = executeScalar( connRef->getNativeRef(), sql );
+  return srid.isNull() ? -1 : srid.toInt();
 }
 
 void QgsHanaProvider::readAttributeFields()
@@ -1367,18 +1349,10 @@ void QgsHanaProvider::readGeometryType()
 void QgsHanaProvider::readMetadata()
 {
   QgsHanaConnectionRef connRef( mUri );
-  ConnectionRef &conn = connRef->getNativeRef();
-  StatementRef stmt = conn->createStatement();
   QString sql = QStringLiteral( "SELECT COMMENTS FROM TABLES WHERE SCHEMA_NAME = '%1' AND TABLE_NAME='%2'" ).arg( mSchemaName, mTableName );
-  ResultSetRef rs = stmt->executeQuery( sql.toStdString().c_str() );
-  if ( rs->next() )
-  {
-    NString comment = rs->getNString( 1 );
-    if ( !comment.isNull() )
-      mLayerMetadata.setAbstract( QString::fromUtf16( comment->c_str() ) );
-  }
-  rs->close();
-
+  QVariant comment = executeScalar( connRef->getNativeRef(), sql );
+  if ( !comment.isNull() )
+    mLayerMetadata.setAbstract( comment.toString() );
   mLayerMetadata.setType( QStringLiteral( "dataset" ) );
   mLayerMetadata.setCrs( crs() );
 }
@@ -1412,7 +1386,6 @@ void QgsHanaProvider::readSrsInformation()
   if ( isRoundEarth )
   {
     int srid = QgsHanaUtils::toPlanarSRID( mSrid );
-
     sql = QStringLiteral( "SELECT COUNT(*) FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS "
                           "WHERE SRS_ID = %1" ).arg( QString::number( srid ) );
     mHasSrsPlanarEquivalent = executeCountQuery( conn, sql ) > 0;
@@ -1435,25 +1408,45 @@ QgsCoordinateReferenceSystem QgsHanaProvider::crs() const
   QMutexLocker locker( &sMutex );
   static QMap<int, QgsCoordinateReferenceSystem> sCrsCache;
   if ( sCrsCache.contains( mSrid ) )
-    srs = sCrsCache.value( mSrid );
-  else
   {
-    QgsHanaConnectionRef connRef( mUri );
-    ConnectionRef &conn = connRef->getNativeRef();
-    StatementRef stmt = conn->createStatement();
-    QString sql = QStringLiteral( "SELECT DEFINITION FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = %1" ).arg( mSrid );
-    ResultSetRef rs = stmt->executeQuery( sql.toStdString().c_str() );
-    if ( rs->next() )
+    srs = sCrsCache.value( mSrid );
+    return srs;
+  }
+
+  QgsHanaConnectionRef connRef( mUri );
+  ConnectionRef &conn = connRef->getNativeRef();
+  StatementRef stmt = conn->createStatement();
+  QString sql = QStringLiteral( "SELECT ORGANIZATION, ORGANIZATION_COORDSYS_ID, DEFINITION, TRANSFORM_DEFINITION FROM SYS.ST_SPATIAL_REFERENCE_SYSTEMS WHERE SRS_ID = %1" ).arg( mSrid );
+  ResultSetRef rsSrs = stmt->executeQuery( sql.toStdString().c_str() );
+
+  if ( rsSrs->next() )
+  {
+    odbc::String organization = rsSrs->getString( 1 );
+    if ( !organization.isNull() )
     {
-      String str = rs->getString( 1 );
-      if ( !str.isNull() )
+      QString srid = QStringLiteral( "%1:%2" ).arg( QgsHanaUtils::toQString( organization ).toLower(), QString::number( *rsSrs->getInt( 2 ) ) );
+      srs.createFromString( srid );
+    }
+
+    if ( !srs.isValid() )
+    {
+      odbc::String wkt = rsSrs->getString( 3 );
+      if ( !wkt.isNull() )
+        srs = QgsCoordinateReferenceSystem::fromWkt( QgsHanaUtils::toQString( wkt ) );
+
+      if ( !srs.isValid() )
       {
-        srs = QgsCoordinateReferenceSystem::fromWkt( str->c_str() );
-        sCrsCache.insert( mSrid, srs );
+        odbc::String proj = rsSrs->getString( 4 );
+        if ( !proj.isNull() )
+          srs = QgsCoordinateReferenceSystem::fromProj( QgsHanaUtils::toQString( proj ) );
       }
     }
-    rs->close();
   }
+  rsSrs->close();
+
+  if ( srs.isValid() )
+    sCrsCache.insert( mSrid, srs );
+
   return srs;
 }
 
