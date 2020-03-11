@@ -244,6 +244,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 QgsModelDesignerDialog::~QgsModelDesignerDialog()
 {
   mIgnoreUndoStackChanges++;
+  delete mSelectTool; // delete mouse handles before everything else
 }
 
 void QgsModelDesignerDialog::closeEvent( QCloseEvent *event )

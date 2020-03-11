@@ -38,7 +38,7 @@ QgsModelViewToolSelect::~QgsModelViewToolSelect()
     // want to force them to be removed from the scene
     if ( mMouseHandles->scene() )
       mMouseHandles->scene()->removeItem( mMouseHandles );
-    mMouseHandles->deleteLater();
+    delete mMouseHandles;
   }
 }
 
