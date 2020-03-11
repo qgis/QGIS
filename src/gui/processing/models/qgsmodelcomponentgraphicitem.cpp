@@ -42,7 +42,6 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
   , mModel( model )
 {
   setAcceptHoverEvents( true );
-  setFlag( QGraphicsItem::ItemIsMovable, true );
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   setFlag( QGraphicsItem::ItemSendsGeometryChanges, true );
   setZValue( QgsModelGraphicsScene::ZValues::ModelComponent );
@@ -113,9 +112,14 @@ void QgsModelComponentGraphicItem::setFont( const QFont &font )
 
 void QgsModelComponentGraphicItem::moveComponentBy( qreal dx, qreal dy )
 {
-  mIsMoving = true;
   moveBy( dx, dy );
-  mIsMoving = false;
+  mComponent->setPosition( pos() );
+
+  emit aboutToChange( tr( "Move %1" ).arg( mComponent->description() ) );
+  updateStoredComponentPosition( pos() );
+  emit changed();
+
+  emit updateArrowPaths();
 }
 
 void QgsModelComponentGraphicItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent * )
@@ -164,28 +168,6 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
 {
   switch ( change )
   {
-    case QGraphicsItem::ItemPositionHasChanged:
-    {
-      emit updateArrowPaths();
-
-      if ( !mInitialized || pos() == mComponent->position() )
-        break;
-
-      mComponent->setPosition( pos() );
-
-      // also need to update the model's stored component's position
-      if ( !mIsMoving )
-      {
-        // we are just starting a move operation - so create the undo command using the existing state
-        emit aboutToChange( tr( "Move %1" ).arg( mComponent->description() ) );
-      }
-      updateStoredComponentPosition( pos() );
-
-      // we don't emit the changed signal to trigger the end of the undo command until the whole move operation finishes
-      // (i.e. we do that in mouseReleaseEvent)
-      mIsMoving = true;
-      break;
-    }
     case QGraphicsItem::ItemSelectedChange:
     {
       emit repaintArrows();
