@@ -48,48 +48,38 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
 
   setupUi( this );
 
-  QStringList hiddenProviders
-  {
-    QStringLiteral( "special:Favorites" ),
-    QStringLiteral( "special:Drives" ),
-    QStringLiteral( "special:Volumes" ),
-    QStringLiteral( "special:Home" ),
-    QStringLiteral( "special:ProjectHome" )
-  };
+  QStringList shownDataItemProvidersFilter;
 
   const auto providerList { QgsApplication::dataItemProviderRegistry()->providers() };
   for ( const auto &provider : providerList )
   {
     if ( provider->dataProviderKey().isEmpty() )
     {
-      hiddenProviders.push_back( provider->name() );
       continue;
     }
     QgsProviderMetadata *metadata { QgsProviderRegistry::instance()->providerMetadata( provider->dataProviderKey() ) };
     if ( ! metadata )
     {
-      hiddenProviders.push_back( provider->name() );
       continue;
     }
     if ( provider->capabilities() & QgsDataProvider::DataCapability::Database )
     {
-      if ( ! providersFilter.isEmpty() && ! providersFilter.contains( provider->dataProviderKey() ) )
-      {
-        hiddenProviders.push_back( provider->name() );
-      }
-      else
+      if ( providersFilter.isEmpty() || providersFilter.contains( provider->dataProviderKey() ) )
       {
         mShownProviders.insert( provider->dataProviderKey() );
+        shownDataItemProvidersFilter.push_back( provider->name() );
       }
-    }
-    else
-    {
-      hiddenProviders.push_back( provider->name() );
     }
   }
 
   mBrowserProxyModel.setBrowserModel( mBrowserModel );
-  mBrowserProxyModel.setDataItemProviderKeyFilter( hiddenProviders );
+  // If a filter was specified but the data provider could not be found
+  // this makes sure no providers are shown instead of ALL of them
+  if ( ! providersFilter.isEmpty() && shownDataItemProvidersFilter.isEmpty() )
+  {
+    shownDataItemProvidersFilter = providersFilter;
+  }
+  mBrowserProxyModel.setShownDataItemProviderKeyFilter( shownDataItemProvidersFilter );
   mBrowserProxyModel.setShowLayers( false );
   mBrowserTreeView->setHeaderHidden( true );
   mBrowserTreeView->setModel( &mBrowserProxyModel );
