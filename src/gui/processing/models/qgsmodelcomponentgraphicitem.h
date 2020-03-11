@@ -125,6 +125,16 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void previewItemMove( qreal dx, qreal dy );
 
+    /**
+     * Sets a new scene \a rect for the item.
+     */
+    void setItemRect( QRectF rect );
+
+    /**
+     * Shows a preview of setting a new \a rect for the item.
+     */
+    void previewItemRectChange( QRectF rect );
+
     void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;
@@ -136,7 +146,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     /**
      * Returns the rectangle representing the body of the item.
      */
-    QRectF itemRect() const;
+    QRectF itemRect( bool storedRect = false ) const;
 
     /**
      * Returns the item's label text.
@@ -286,11 +296,13 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     virtual QPixmap iconPixmap() const;
 
     /**
-     * Updates the position stored in the model for the associated comment
+     * Updates the position and size stored in the model for the associated comment
      */
-    virtual void updateStoredComponentPosition( const QPointF &pos ) = 0;
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) = 0;
 
   private:
+
+    QSizeF itemSize() const;
 
     void updateToolTip( const QPointF &pos );
 
@@ -316,6 +328,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
     bool mIsHovering = false;
     bool mIsMoving = false;
+    QSizeF mTempSize;
 
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsModelComponentGraphicItem::Flags )
@@ -352,7 +365,7 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
     QPicture iconPicture() const override;
-    void updateStoredComponentPosition( const QPointF &pos ) override;
+    void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:
 
@@ -398,7 +411,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
 
     int linkPointCount( Qt::Edge edge ) const override;
     QString linkPointText( Qt::Edge edge, int index ) const override;
-    void updateStoredComponentPosition( const QPointF &pos ) override;
+    void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:
 
@@ -444,7 +457,7 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
     QPicture iconPicture() const override;
-    void updateStoredComponentPosition( const QPointF &pos ) override;
+    void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:
 
@@ -490,7 +503,7 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
     Qt::PenStyle strokeStyle( State state ) const override;
-    void updateStoredComponentPosition( const QPointF &pos ) override;
+    void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:
 

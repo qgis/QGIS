@@ -99,9 +99,22 @@ Moves the component by the specified ``dx`` and ``dy``.
    Call this method, not QGraphicsItem.moveBy!
 %End
 
-    virtual void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
+    void previewItemMove( qreal dx, qreal dy );
+%Docstring
+Shows a preview of moving the item from its stored position by ``dx``, ``dy``.
+%End
 
-    virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
+    void setItemRect( QRectF rect );
+%Docstring
+Sets a new scene ``rect`` for the item.
+%End
+
+    void previewItemRectChange( QRectF rect );
+%Docstring
+Shows a preview of setting a new ``rect`` for the item.
+%End
+
+    virtual void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
 
     virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
 
@@ -116,7 +129,7 @@ Moves the component by the specified ``dx`` and ``dy``.
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 
 
-    QRectF itemRect() const;
+    QRectF itemRect( bool storedRect = false ) const;
 %Docstring
 Returns the rectangle representing the body of the item.
 %End
@@ -269,9 +282,9 @@ Returns a QPicture version of the item's icon, if available.
 Returns a QPixmap version of the item's icon, if available.
 %End
 
-    virtual void updateStoredComponentPosition( const QPointF &pos ) = 0;
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) = 0;
 %Docstring
-Updates the position stored in the model for the associated comment
+Updates the position and size stored in the model for the associated comment
 %End
 
 };
@@ -320,7 +333,7 @@ Ownership of ``parameter`` is transferred to the item.
 
     virtual QPicture iconPicture() const;
 
-    virtual void updateStoredComponentPosition( const QPointF &pos );
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
 
 
   protected slots:
@@ -378,7 +391,7 @@ Ownership of ``child`` is transferred to the item.
 
     virtual QString linkPointText( Qt::Edge edge, int index ) const;
 
-    virtual void updateStoredComponentPosition( const QPointF &pos );
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
 
 
   protected slots:
@@ -428,7 +441,7 @@ Ownership of ``output`` is transferred to the item.
 
     virtual QPicture iconPicture() const;
 
-    virtual void updateStoredComponentPosition( const QPointF &pos );
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
 
 
   protected slots:
@@ -484,7 +497,7 @@ Ownership of ``output`` is transferred to the item.
 
     virtual Qt::PenStyle strokeStyle( State state ) const;
 
-    virtual void updateStoredComponentPosition( const QPointF &pos );
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
 
 
   protected slots:

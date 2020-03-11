@@ -116,9 +116,11 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     virtual bool itemIsLocked( QGraphicsItem *item ) { Q_UNUSED( item ); return false; }
     virtual bool itemIsGroupMember( QGraphicsItem *item ) { Q_UNUSED( item ); return false; }
     virtual QRectF itemRect( QGraphicsItem *item ) const = 0;
+    virtual QRectF storedItemRect( QGraphicsItem *item ) const;
     virtual void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) = 0;
     virtual void previewItemMove( QGraphicsItem *item, double deltaX, double deltaY );
     virtual void setItemRect( QGraphicsItem *item, QRectF rect ) = 0;
+    virtual void previewSetItemRect( QGraphicsItem *item, QRectF rect );
     virtual void startMacroCommand( const QString &text );
     virtual void endMacroCommand();
     virtual void createItemCommand( QGraphicsItem *item );
