@@ -60,8 +60,8 @@ void QgsTemporalControllerDockWidget::init()
     range = QgsProject::instance()->timeSettings()->temporalRange();
   QLocale locale;
 
-  mStartDateTime->setDisplayFormat( locale.dateTimeFormat() );
-  mEndDateTime->setDisplayFormat( locale.dateTimeFormat() );
+  mStartDateTime->setDisplayFormat( locale.dateTimeFormat( QLocale::ShortFormat ) );
+  mEndDateTime->setDisplayFormat( locale.dateTimeFormat( QLocale::ShortFormat ) );
 
   if ( range.begin().isValid() && range.end().isValid() )
   {
@@ -69,7 +69,7 @@ void QgsTemporalControllerDockWidget::init()
     mEndDateTime->setDateTime( range.end() );
   }
 
-  mSetToProjectTimeButton->setToolTip( tr( "Set to project time" ) );
+  mSetToProjectTimeButton->setToolTip( tr( "Set datetimes inputs to match project time" ) );
 
   mTimeStepsComboBox->addItem( tr( "Seconds" ), QgsTemporalControllerDockWidget::Seconds );
   mTimeStepsComboBox->addItem( tr( "Minutes" ), QgsTemporalControllerDockWidget::Minutes );
@@ -85,6 +85,12 @@ void QgsTemporalControllerDockWidget::init()
   mSpinBox->setSingleStep( 1 );
   mSpinBox->setValue( 1 );
   mSpinBox->setEnabled( true );
+
+  mForwardButton->setToolTip( tr( "Play" ) );
+  mBackButton->setToolTip( tr( "Reverse" ) );
+  mNextButton->setToolTip( tr( "Go to next frame" ) );
+  mPreviousButton->setToolTip( tr( "Go to previous frame" ) );
+  mStopButton->setToolTip( tr( "Pause" ) );
 
   updateTemporalExtent();
   updateFrameDuration();
@@ -130,12 +136,16 @@ void QgsTemporalControllerDockWidget::settings_clicked()
 
   QgsTemporalMapSettingsDialog *dialog =  new QgsTemporalMapSettingsDialog( this );
   dialog->setAttribute( Qt::WA_DeleteOnClose );
+
+  if ( dialog->mapSettingsWidget() )
+    dialog->mapSettingsWidget()->setFrameRateValue(
+      mNavigationObject->framesPerSeconds() );
+
   dialog->setVisible( true );
 
   connect( dialog->mapSettingsWidget(), &QgsTemporalMapSettingsWidget::frameRateChanged, this, [ this, dialog ]()
   {
     mNavigationObject->setFramesPerSeconds( dialog->mapSettingsWidget()->frameRateValue() );
-    mSlider->setValue( 0 );
   } );
 }
 

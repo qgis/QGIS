@@ -107,7 +107,10 @@ QgsInterval QgsTemporalNavigationObject::frameDuration() const
 void QgsTemporalNavigationObject::setFramesPerSeconds( double framesPerSeconds )
 {
   if ( framesPerSeconds > 0 )
+  {
     mFramesPerSecond = framesPerSeconds;
+    mNewFrameTimer->setInterval( ( 1.0 / mFramesPerSecond ) * 1000 );
+  }
 }
 
 double QgsTemporalNavigationObject::framesPerSeconds() const
