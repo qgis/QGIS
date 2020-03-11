@@ -72,9 +72,9 @@ QString QgsLayerTreeViewTemporalIndicatorProvider::tooltipText( QgsMapLayer *lay
 {
   if ( layer->temporalProperties()->temporalSource() ==
        QgsMapLayerTemporalProperties::TemporalSource::Project )
-    return tr( "<b>Temporal layer using project's time range</b>" );
+    return tr( "<b>Temporal layer, currently using project's time range </b>" );
 
-  return tr( "<b>Temporal layer</b>" );
+  return tr( "<b>Temporal layer </b>");
 }
 
 void QgsLayerTreeViewTemporalIndicatorProvider::onLayerChanged( QgsMapLayer *layer )

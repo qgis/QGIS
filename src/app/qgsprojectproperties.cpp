@@ -237,8 +237,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
   QLocale locale;
 
-  mStartDateTimeEdit->setDisplayFormat( locale.dateTimeFormat() );
-  mEndDateTimeEdit->setDisplayFormat( locale.dateTimeFormat() );
+  mStartDateTimeEdit->setDisplayFormat(
+    locale.dateTimeFormat( QLocale::ShortFormat ) );
+  mEndDateTimeEdit->setDisplayFormat(
+    locale.dateTimeFormat( QLocale::ShortFormat ) );
 
   if ( range.begin().isValid() && range.end().isValid() )
   {
@@ -2525,7 +2527,7 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
     {
       QgsRasterLayer *rasterLayer  = qobject_cast<QgsRasterLayer *>( currentLayer );
 
-      QgsDateTimeRange layerRange = rasterLayer->temporalProperties()->temporalRange();
+      QgsDateTimeRange layerRange = rasterLayer->temporalProperties()->fixedTemporalRange();
 
       if ( !minDate.isValid() ||  layerRange.begin() < minDate )
         minDate = layerRange.begin();
@@ -2542,8 +2544,10 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
 
   QLocale locale;
   mCurrentRangeLabel->setText( tr( "Current selected range: %1 to %2" ).arg(
-                                 mStartDateTimeEdit->dateTime().toString( locale.dateTimeFormat() ),
-                                 mEndDateTimeEdit->dateTime().toString( locale.dateTimeFormat() ) ) );
+                                 mStartDateTimeEdit->dateTime().toString(
+                                   locale.dateTimeFormat( QLocale::ShortFormat ) ),
+                                 mEndDateTimeEdit->dateTime().toString(
+                                   locale.dateTimeFormat( QLocale::ShortFormat ) ) ) );
 }
 
 QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const QString &newScale )

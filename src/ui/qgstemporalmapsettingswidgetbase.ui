@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>231</width>
-    <height>134</height>
+    <width>354</width>
+    <height>194</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Frame rate</string>
+        <string>Frame rate (frames per second)</string>
        </property>
       </widget>
      </item>
