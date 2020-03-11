@@ -24,12 +24,10 @@ updates of the objects temporal range.
 %End
   public:
 
-    QgsTemporalController();
+    QgsTemporalController( QObject *parent = 0 );
 %Docstring
 Constructor for QgsTemporalController.
 %End
-
-    virtual ~QgsTemporalController();
 
   signals:
 

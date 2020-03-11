@@ -2540,9 +2540,10 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
   mStartDateTimeEdit->setDateTime( minDate );
   mEndDateTimeEdit->setDateTime( maxDate );
 
-  mCurrentRangeLabel->setText( tr( "Current range: %1 to %2" ).arg(
-                                 mStartDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ),
-                                 mEndDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ) ) );
+  QLocale locale;
+  mCurrentRangeLabel->setText( tr( "Current selected range: %1 to %2" ).arg(
+                                 mStartDateTimeEdit->dateTime().toString( locale.dateTimeFormat() ),
+                                 mEndDateTimeEdit->dateTime().toString( locale.dateTimeFormat() ) ) );
 }
 
 QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const QString &newScale )

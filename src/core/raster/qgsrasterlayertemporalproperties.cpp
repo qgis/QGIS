@@ -34,6 +34,18 @@ void QgsRasterLayerTemporalProperties::setMode( QgsRasterLayerTemporalProperties
   mMode = mode;
 }
 
+QgsRasterLayerTemporalProperties::FetchMode QgsRasterLayerTemporalProperties::fetchMode() const
+{
+  return mFetchMode;
+}
+
+void QgsRasterLayerTemporalProperties::setFetchMode( FetchMode mode )
+{
+  if ( mFetchMode == mode )
+    return;
+  mFetchMode = mode;
+}
+
 void  QgsRasterLayerTemporalProperties::setFixedTemporalRange( const QgsDateTimeRange &range )
 {
   mFixedRange = range;
@@ -94,6 +106,16 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
   TemporalMode mode = indexToMode( temporalNode.toElement().attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
   setMode( mode );
 
+  FetchMode fetchMode = indexToFetchMode( temporalNode.toElement().attribute( QStringLiteral( "fetchMode" ), QStringLiteral( "0" ) ). toInt() );
+  setFetchMode( fetchMode );
+
+  int sourceIndex = temporalNode.toElement().attribute( QStringLiteral( "source" ), QStringLiteral( "0" ) ).toInt();
+
+  if ( sourceIndex == 0 )
+    setTemporalSource( TemporalSource::Layer );
+  else
+    setTemporalSource( TemporalSource::Project );
+
   for ( QString rangeString : { "fixedRange", "fixedReferenceRange", "normalRange", "referenceRange" } )
   {
     QDomNode rangeElement = temporalNode.namedItem( rangeString );
@@ -126,6 +148,8 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
 
   QDomElement temporalElement = document.createElement( QStringLiteral( "temporal" ) );
   temporalElement.setAttribute( QStringLiteral( "mode" ), QString::number( mMode ) );
+  temporalElement.setAttribute( QStringLiteral( "source" ), QString::number( temporalSource() ) );
+  temporalElement.setAttribute( QStringLiteral( "fetchMode" ), QString::number( fetchMode() ) );
 
   for ( QString rangeString : { "fixedRange", "fixedReferenceRange", "normalRange", "referenceRange" } )
   {
@@ -161,9 +185,9 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
   return element;
 }
 
-QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties::indexToMode( int number )
+QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties::indexToMode( int index )
 {
-  switch ( number )
+  switch ( index )
   {
     case 0:
       return TemporalMode::ModeFixedTemporalRange;
@@ -171,5 +195,20 @@ QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties:
       return TemporalMode::ModeTemporalRangeFromDataProvider;
     default:
       return TemporalMode::ModeFixedTemporalRange;
+  }
+}
+
+QgsRasterLayerTemporalProperties::FetchMode QgsRasterLayerTemporalProperties::indexToFetchMode( int index )
+{
+  switch ( index )
+  {
+    case 0:
+      return Earliest;
+    case 1:
+      return Latest;
+    case 2:
+      return Range;
+    default:
+      return Earliest;
   }
 }

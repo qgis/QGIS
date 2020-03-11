@@ -27,10 +27,6 @@ QgsTemporalMapSettingsWidget::QgsTemporalMapSettingsWidget( QWidget *parent )
   connect( mFrameSpinBox,  qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalMapSettingsWidget::frameRateChange );
 }
 
-QgsTemporalMapSettingsWidget::~QgsTemporalMapSettingsWidget()
-{
-}
-
 double QgsTemporalMapSettingsWidget::frameRateValue()
 {
   return mFrameSpinBox->value();

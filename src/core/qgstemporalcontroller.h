@@ -42,9 +42,7 @@ class CORE_EXPORT QgsTemporalController : public QObject
      * Constructor for QgsTemporalController.
      *
     */
-    QgsTemporalController();
-
-    virtual ~QgsTemporalController() = default;
+    QgsTemporalController( QObject *parent = nullptr );
 
   signals:
 

@@ -70,6 +70,31 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     void setMode( TemporalMode mode );
 
     /**
+     * Mode to used to fetch the data from provider. This is applicable for wms based layers.
+     *
+     **/
+    enum FetchMode
+    {
+      Earliest = 0, //! Use the start datetime in the temporal range.
+      Latest = 1, //! Use the end datetime in the temporal range.
+      Range = 2 //! Use the datetimes in temporal range as range.
+    };
+
+    /**
+     * Returns the temporal properties fetch mode.
+     *
+     *\see setFetchMode()
+    **/
+    FetchMode fetchMode() const;
+
+    /**
+     * Sets the temporal properties fetch \a mode.
+     *
+     *\see fetchMode()
+    **/
+    void setFetchMode( FetchMode mode );
+
+    /**
      * Sets a temporal \a range to apply to the whole layer. All bands from
      * the raster layer will be rendered whenever the current datetime range of
      * a render context intersects the specified \a range.
@@ -161,10 +186,23 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
+    /**
+     * Returns the temporal mode given index
+     **/
+    TemporalMode indexToMode( int index );
+
+    /**
+     * Returns the temporal fetch mode given index
+     **/
+    FetchMode indexToFetchMode( int index );
+
   private:
 
     //! Temporal layer mode.
-    TemporalMode mMode = TemporalMode::ModeFixedTemporalRange;
+    TemporalMode mMode = ModeFixedTemporalRange;
+
+    //! Temporal layer data fetch mode.
+    FetchMode mFetchMode = Range;
 
     //! Represents fixed temporal range.
     QgsDateTimeRange mFixedRange;
@@ -180,10 +218,6 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     //! Represents current active datetime range member.
     QgsDateTimeRange mRange;
 
-    /**
-     * Returns the temporal mode given index
-     **/
-    TemporalMode indexToMode( int index );
 };
 
 #endif // QGSRASTERLAYERTEMPORALPROPERTIES_H

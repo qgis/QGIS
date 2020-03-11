@@ -31,10 +31,20 @@ Constructor for QgsTemporalControllerDockWidget
 
     ~QgsTemporalControllerDockWidget();
 
-    QgsTemporalNavigationObject *temporalController();
+    QgsTemporalController *temporalController();
 %Docstring
 Returns the temporal controller object used by this object in navigation.
 %End
+
+    enum TimeUnit
+    {
+      Seconds,
+      Minutes,
+      Hours,
+      Days,
+      Months,
+      Years
+    };
 
 };
 
