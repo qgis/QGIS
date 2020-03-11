@@ -399,7 +399,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * \returns the created expressions JSON file
      * \since QGIS 3.14
      */
-    QJsonDocument *exportUserExpressions();
+    std::unique_ptr< QJsonDocument > exportUserExpressions();
 
     /**
      * Display a file dialog to choose where to load the expression JSON file from

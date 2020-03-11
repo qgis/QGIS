@@ -963,15 +963,12 @@ Saved scripts are auto loaded on QGIS startup.</string>
   </layout>
   <action name="mActionImportUserExpressions">
    <property name="text">
-    <string>Import user expressions</string>
+    <string>Import User Expressions</string>
    </property>
   </action>
   <action name="mActionExportUserExpressions">
    <property name="text">
-    <string>Export user expressions</string>
-   </property>
-   <property name="toolTip">
-    <string>Export user expressions</string>
+    <string>Export User Expressions</string>
    </property>
   </action>
  </widget>

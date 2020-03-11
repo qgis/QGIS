@@ -1415,7 +1415,7 @@ void QgsExpressionBuilderWidget::exportUserExpressions_pressed()
   QString lastSaveDir = settings.value( QStringLiteral( "lastExportExpressionsDir" ), QDir::homePath(), QgsSettings::App ).toString();
   QString saveFileName = QFileDialog::getSaveFileName(
                            this,
-                           tr( "Save user expressions" ),
+                           tr( "Export User Expressions" ),
                            lastSaveDir,
                            tr( "User expressions" ) + " (*.json)" );
 
@@ -1432,7 +1432,7 @@ void QgsExpressionBuilderWidget::exportUserExpressions_pressed()
 
   settings.setValue( QStringLiteral( "lastExportExpressionsDir" ), saveFileInfo.absolutePath(), QgsSettings::App );
 
-  QJsonDocument *exportJson = exportUserExpressions();
+  std::unique_ptr< QJsonDocument > exportJson = exportUserExpressions();
   QFile jsonFile( saveFileName );
 
   if ( !jsonFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
@@ -1442,12 +1442,10 @@ void QgsExpressionBuilderWidget::exportUserExpressions_pressed()
     QMessageBox::warning( this, tr( "Export user expressions" ), tr( "Error while creating the expressions file." ) );
   else
     jsonFile.close();
-
-  delete exportJson;
 }
 
 
-QJsonDocument *QgsExpressionBuilderWidget::exportUserExpressions()
+std::unique_ptr< QJsonDocument > QgsExpressionBuilderWidget::exportUserExpressions()
 {
   const QString group = QStringLiteral( "user" );
   QgsSettings settings;
@@ -1484,7 +1482,7 @@ QJsonDocument *QgsExpressionBuilderWidget::exportUserExpressions()
   }
 
   exportObject["expressions"] = exportList;
-  QJsonDocument *exportJson = new QJsonDocument( exportObject );
+  std::unique_ptr< QJsonDocument > exportJson = qgis::make_unique< QJsonDocument >( exportObject );
 
   return exportJson;
 }
@@ -1495,21 +1493,21 @@ void QgsExpressionBuilderWidget::importUserExpressions_pressed()
   QString lastSaveDir = settings.value( QStringLiteral( "lastImportExpressionsDir" ), QDir::homePath(), QgsSettings::App ).toString();
   QString loadFileName = QFileDialog::getOpenFileName(
                            this,
-                           tr( "Save user expressions" ),
+                           tr( "Import User Expressions" ),
                            lastSaveDir,
                            tr( "User expressions" ) + " (*.json)" );
 
   if ( loadFileName.isEmpty() )
     return;
 
-  QFileInfo saveFileInfo( loadFileName );
+  QFileInfo loadFileInfo( loadFileName );
 
-  settings.setValue( QStringLiteral( "lastImportExpressionsDir" ), saveFileInfo.absolutePath(), QgsSettings::App );
+  settings.setValue( QStringLiteral( "lastImportExpressionsDir" ), loadFileInfo.absolutePath(), QgsSettings::App );
 
   QFile jsonFile( loadFileName );
 
   if ( !jsonFile.open( QFile::ReadOnly ) )
-    QMessageBox::warning( this, tr( "Import user expressions" ), tr( "Error while reading the expressions file." ) );
+    QMessageBox::warning( this, tr( "Import User Expressions" ), tr( "Error while reading the expressions file." ) );
 
   QTextStream jsonStream( &jsonFile );
   QString jsonString = jsonFile.readAll();
@@ -1519,7 +1517,7 @@ void QgsExpressionBuilderWidget::importUserExpressions_pressed()
 
   if ( importJson.isNull() )
   {
-    QMessageBox::warning( this, tr( "Import user expressions" ), tr( "Error while reading the expressions file." ) );
+    QMessageBox::warning( this, tr( "Import User Expressions" ), tr( "Error while reading the expressions file." ) );
     return;
   }
 
@@ -1554,7 +1552,7 @@ void QgsExpressionBuilderWidget::loadExpressionsFromJson( const QJsonDocument &e
                                     tr( "QGIS Version Mismatch" ),
                                     tr( "The imported expressions are from newer version of QGIS (%1) "
                                         "and some of the expression might not work the current version (%2). "
-                                        "Do you want to continue?" ).arg( qgisJsonVersion.toString(), qgisVersion.toString() ), buttons ) )
+                                        "Are you sure you want to continue?" ).arg( qgisJsonVersion.toString(), qgisVersion.toString() ), buttons ) )
     {
       case QMessageBox::No:
         return;
@@ -1655,8 +1653,6 @@ void QgsExpressionBuilderWidget::loadExpressionsFromJson( const QJsonDocument &e
 
   loadUserExpressions( );
 
-  QgsLogger::warning( QString::number( skippedExpressionLabels.count() ) + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
-
   if ( ! skippedExpressionLabels.isEmpty() )
   {
     QStringList skippedExpressionLabelsQuoted;
@@ -1664,7 +1660,7 @@ void QgsExpressionBuilderWidget::loadExpressionsFromJson( const QJsonDocument &e
       skippedExpressionLabelsQuoted.append( QString( "'%1'" ).arg( skippedExpressionLabel ) );
 
     QMessageBox::information( this,
-                              tr( "Skipped expressions" ),
+                              tr( "Skipped Expression Imports" ),
                               QString( "%1\n%2" ).arg( tr( "The following expressions have been skipped:" ),
                                   skippedExpressionLabelsQuoted.join( ", " ) ) );
   }
@@ -1679,7 +1675,7 @@ void QgsExpressionBuilderWidget::showMessageBoxConfirmExpressionOverwrite(
 {
   QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll;
   switch ( QMessageBox::question( this,
-                                  tr( "Expression overwrite" ),
+                                  tr( "Expression Overwrite" ),
                                   tr( "The expression with label '%1' was already defined."
                                       "The old expression \"%2\" will be overwritten by \"%3\"."
                                       "Are you sure you want to overwrite the expression?" ).arg( label, oldExpression, newExpression ), buttons ) )
