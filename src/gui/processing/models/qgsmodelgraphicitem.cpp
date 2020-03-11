@@ -109,7 +109,7 @@ void QgsModelDesignerFlatButtonGraphicItem::modelPressEvent( QgsModelViewMouseEv
 {
   if ( view()->tool() && view()->tool()->allowItemInteraction() && event->button() == Qt::LeftButton )
   {
-    QMetaObject::invokeMethod( this, &QgsModelDesignerFlatButtonGraphicItem::clicked, Qt::QueuedConnection );
+    QMetaObject::invokeMethod( this, "clicked", Qt::QueuedConnection );
     mHoverState = false;
     update();
   }
