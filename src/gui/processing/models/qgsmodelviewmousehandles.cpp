@@ -53,6 +53,24 @@ void QgsModelViewMouseHandles::paint( QPainter *painter, const QStyleOptionGraph
 
 void QgsModelViewMouseHandles::selectionChanged()
 {
+  //listen out for selected items' size and rotation changed signals
+  const QList<QGraphicsItem *> itemList = mView->items();
+  for ( QGraphicsItem *graphicsItem : itemList )
+  {
+    QgsModelComponentGraphicItem *item = dynamic_cast<QgsModelComponentGraphicItem *>( graphicsItem );
+    if ( !item )
+      continue;
+
+    if ( item->isSelected() )
+    {
+      connect( item, &QgsModelComponentGraphicItem::sizePositionChanged, this, &QgsModelViewMouseHandles::selectedItemSizeChanged );
+    }
+    else
+    {
+      disconnect( item, &QgsModelComponentGraphicItem::sizePositionChanged, this, &QgsModelViewMouseHandles::selectedItemSizeChanged );
+    }
+  }
+
   resetStatusBar();
   updateHandles();
 }

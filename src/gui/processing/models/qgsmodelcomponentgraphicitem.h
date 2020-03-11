@@ -275,6 +275,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void updateArrowPaths();
 
+    /**
+     * Emitted when the item's size or position changes.
+     */
+    void sizePositionChanged();
+
   protected slots:
 
     /**
