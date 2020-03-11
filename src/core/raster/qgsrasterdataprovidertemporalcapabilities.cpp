@@ -89,3 +89,39 @@ bool QgsRasterDataProviderTemporalCapabilities::isReferenceEnable() const
 {
   return mReferenceEnable;
 }
+
+QgsRasterDataProviderTemporalCapabilities::TemporalMode QgsRasterDataProviderTemporalCapabilities::mode() const
+{
+  return mMode;
+}
+
+void QgsRasterDataProviderTemporalCapabilities::setMode( TemporalMode mode )
+{
+  if ( mMode == mode )
+    return;
+  mMode = mode;
+}
+
+QgsRasterDataProviderTemporalCapabilities::FetchMode QgsRasterDataProviderTemporalCapabilities::fetchMode() const
+{
+  return mFetchMode;
+}
+
+void QgsRasterDataProviderTemporalCapabilities::setFetchMode( FetchMode mode )
+{
+  if ( mFetchMode == mode )
+    return;
+  mFetchMode = mode;
+}
+
+QgsRasterDataProviderTemporalCapabilities::TimeInterval QgsRasterDataProviderTemporalCapabilities::timeInterval() const
+{
+  return mTimeInteval;
+}
+
+void QgsRasterDataProviderTemporalCapabilities::setTimeInterval( TimeInterval interval )
+{
+  if ( mTimeInteval == interval )
+    return;
+  mTimeInteval = interval;
+}

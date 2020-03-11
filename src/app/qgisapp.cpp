@@ -1153,8 +1153,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mBrowserWidget->setObjectName( QStringLiteral( "Browser" ) );
   mBrowserWidget->setMessageBar( mInfoBar );
 
-  mTemporalControllerWidget = new QgsTemporalControllerDockWidget( tr( "Temporal VCR" ), this );
-  mTemporalControllerWidget->setObjectName( QStringLiteral( "Temporal VCR" ) );
+  mTemporalControllerWidget = new QgsTemporalControllerDockWidget( tr( "Temporal Controller" ), this );
+  mTemporalControllerWidget->setObjectName( QStringLiteral( "Temporal Controller" ) );
   addDockWidget( Qt::BottomDockWidgetArea, mTemporalControllerWidget );
   mTemporalControllerWidget->hide();
 

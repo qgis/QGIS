@@ -23,8 +23,6 @@
 #include "qgsrange.h"
 #include "qgsdataprovidertemporalcapabilities.h"
 
-#include <QList>
-
 /**
  * \class QgsRasterDataProviderTemporalCapabilities
  * \ingroup core
@@ -48,6 +46,80 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     QgsRasterDataProviderTemporalCapabilities( bool enabled = false );
 
     virtual ~QgsRasterDataProviderTemporalCapabilities() = default;
+
+    /**
+     * Mode of the temporal capabilities
+     **/
+    enum TemporalMode
+    {
+      ModeFixedTemporalRange = 0, //! Mode when temporal capabilities have fixed start and end datetimes.
+      ModeTemporalRangeFromDataProvider = 1 //! Mode when temporal capabilities provides the temporal range .
+    };
+
+    /**
+     * Returns the temporal mode.
+     *
+     *\see setMode()
+    **/
+    TemporalMode mode() const;
+
+    /**
+     * Sets the temporal \a mode.
+     *
+     *\see mode()
+    **/
+    void setMode( TemporalMode mode );
+
+    /**
+     * Mode to used to fetch the data from provider. This is applicable for wms based layers.
+     *
+     **/
+    enum FetchMode
+    {
+      Earliest = 0, //! Use the start datetime in the temporal range.
+      Latest = 1, //! Use the end datetime in the temporal range.
+      Range = 2 //! Use the datetimes in temporal range as range.
+    };
+
+    /**
+     * Returns the temporal capabilities fetch mode.
+     *
+     *\see setFetchMode()
+    **/
+    FetchMode fetchMode() const;
+
+    /**
+     * Sets the temporal properties fetch \a mode.
+     *
+     *\see fetchMode()
+    **/
+    void setFetchMode( FetchMode mode );
+
+    //! Stores the capabilities time interval duration in the temporal ranges.
+    enum TimeInterval
+    {
+      Seconds = 0,  //! For seconds
+      Minutes = 1,  //! For minutes
+      Hours = 2,    //! For hours
+      Days = 3,     //! For days
+      Months = 4,   //! For months
+      Years = 5,    //! For years
+      None = 6     //! if there is no time interval
+    };
+
+    /**
+     * Returns the temporal interval.
+     *
+     *\see setTimeInterval()
+    **/
+    TimeInterval timeInterval() const;
+
+    /**
+     * Sets the temporal time \a interval.
+     *
+     *\see timeInterval()
+    **/
+    void setTimeInterval( TimeInterval interval );
 
     /**
      * Sets the fixed datetime \a range for the temporal properties.
@@ -151,8 +223,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     bool isReferenceEnable() const;
 
   private:
-    //! Represents current active datetime range member.
-    QgsDateTimeRange mRange;
 
     /**
      * Represents fixed data provider datetime range.
@@ -188,6 +258,15 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
 
     //! If reference range has been enabled to be used in these properties
     bool mReferenceEnable = false;
+
+    //! Data fetch mode.
+    FetchMode mFetchMode = Earliest;
+
+    //! Temporal capabilities mode.
+    TemporalMode mMode = ModeTemporalRangeFromDataProvider;
+
+    //! Member for time interval.
+    TimeInterval mTimeInteval = None;
 
 };
 

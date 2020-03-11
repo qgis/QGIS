@@ -17,6 +17,7 @@
 
 #include "qgstemporalcontroller.h"
 
-QgsTemporalController::QgsTemporalController( )
+QgsTemporalController::QgsTemporalController( QObject *parent )
+  : QObject( parent )
 {
 }

@@ -2905,6 +2905,9 @@
                 <property name="displayFormat">
                  <string>M/d/yyyy h:mm AP</string>
                 </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
+                </property>
                </widget>
               </item>
               <item>
@@ -2918,6 +2921,9 @@
                <widget class="QgsDateTimeEdit" name="mEndDateTimeEdit">
                 <property name="displayFormat">
                  <string>M/d/yyyy h:mm AP</string>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
                 </property>
                </widget>
               </item>
@@ -3008,6 +3014,11 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
@@ -3023,11 +3034,6 @@
    <extends>QWidget</extends>
    <header>qgsopacitywidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDateTimeEdit</class>
-   <extends>QDateTimeEdit</extends>
-   <header>qgsdatetimeedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorSchemeList</class>

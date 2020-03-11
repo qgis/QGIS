@@ -115,7 +115,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="mSpinBox"/>
+       <widget class="QDoubleSpinBox" name="mSpinBox"/>
       </item>
       <item>
        <widget class="QComboBox" name="mTimeStepsComboBox">
@@ -139,6 +139,9 @@
         <property name="displayFormat">
          <string>M/d/yyyy h:mm AP</string>
         </property>
+        <property name="timeSpec">
+         <enum>Qt::UTC</enum>
+        </property>
        </widget>
       </item>
       <item>
@@ -152,6 +155,9 @@
        <widget class="QDateTimeEdit" name="mEndDateTime">
         <property name="displayFormat">
          <string>M/d/yyyy h:mm AP</string>
+        </property>
+        <property name="timeSpec">
+         <enum>Qt::UTC</enum>
         </property>
        </widget>
       </item>

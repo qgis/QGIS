@@ -12,7 +12,7 @@
 
 
 
-class QgsTemporalNavigationObject : QObject
+class QgsTemporalNavigationObject : QgsTemporalController
 {
 %Docstring
 The QgsTemporalNavigationObject class
@@ -123,7 +123,8 @@ Returns the total number of frames for the navigation.
 
     void play();
 %Docstring
-Plays the temporal navigation
+Starts playing the temporal navigation from its current frame,
+using the direction specified by playBackMode()
 %End
 
     void pause();
@@ -133,12 +134,12 @@ Stops the temporal navigation.
 
     void forward();
 %Docstring
-Forward the temporal navigation up till the end of frames.
+Starts the animation playing in a forward direction up till the end of frames.
 %End
 
     void backward();
 %Docstring
-Decrement the temporal navigation till the end of frames.
+Starts the animation playing in a reverse direction until the beginning of the time range.
 %End
 
     void next();
@@ -159,18 +160,6 @@ Rewind the temporal navigation to start of the temporal extent.
     void skipToEnd();
 %Docstring
 Skips the temporal navigation to end of the temporal extent.
-%End
-
-    void timerTimeout();
-%Docstring
-Handles logic when the temporal navigation timer emit a timeout signal.
-%End
-
-  signals:
-
-    void updateTemporalRange( QgsDateTimeRange temporalRange );
-%Docstring
-Emitted when navigation range changes.
 %End
 
 };

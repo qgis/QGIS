@@ -19,44 +19,54 @@
 #include "qgis.h"
 
 QgsTemporalNavigationObject::QgsTemporalNavigationObject( QObject *parent )
-  : QObject( parent )
+  : QgsTemporalController( parent )
 {
   mNewFrameTimer = new QTimer( this );
 
   connect( mNewFrameTimer, &QTimer::timeout,
-           this,  qgis::overload<>::of( &QgsTemporalNavigationObject::timerTimeout ) );
+           this, &QgsTemporalNavigationObject::timerTimeout );
 }
 
 
 void QgsTemporalNavigationObject::timerTimeout()
 {
-  if ( mPlayBackMode == PlaybackMode::Forward )
-    forward();
-  if ( mPlayBackMode == PlaybackMode::Reverse )
-    backward();
-  return;
+  switch ( mPlayBackMode )
+  {
+    case PlaybackMode::Forward:
+      forward();
+      break;
+
+    case PlaybackMode::Reverse:
+      backward();
+      break;
+
+    case PlaybackMode::Idle:
+      pause();
+      break;
+  }
 }
 
 QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long long frame ) const
 {
   QDateTime start = mTemporalExtents.begin();
 
-  long long pastFrame = frame - 1;
-  if ( pastFrame < 0 )
-    pastFrame = 0;
+  if ( frame < 0 )
+    frame = 0;
+  long long nextFrame = frame + 1;
 
-  QDateTime begin = start.addSecs( pastFrame * mFrameDuration.seconds() );
-  QDateTime end = start.addSecs( frame * mFrameDuration.seconds() );
+  QDateTime begin = start.addSecs( frame * mFrameDuration.seconds() );
+  QDateTime end = start.addSecs( nextFrame * mFrameDuration.seconds() );
 
   if ( end <= mTemporalExtents.end() )
     return QgsDateTimeRange( begin, end );
 
-  return mTemporalExtents;
+  return QgsDateTimeRange( begin, mTemporalExtents.end() );
 }
 
 void QgsTemporalNavigationObject::setTemporalExtents( QgsDateTimeRange temporalExtents )
 {
   mTemporalExtents = temporalExtents;
+  setCurrentFrameNumber( 0 );
 }
 
 QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const
@@ -68,10 +78,7 @@ void QgsTemporalNavigationObject::setCurrentFrameNumber( long long frameNumber )
 {
   if ( frameNumber < 0 ||
        frameNumber >= totalFrameCount() )
-  {
-    pause();
     return;
-  }
 
   if ( mCurrentFrameNumber != frameNumber )
   {
@@ -89,6 +96,7 @@ long long QgsTemporalNavigationObject::currentFrameNumber() const
 void QgsTemporalNavigationObject::setFrameDuration( QgsInterval frameDuration )
 {
   mFrameDuration = frameDuration;
+  setCurrentFrameNumber( 0 );
 }
 
 QgsInterval QgsTemporalNavigationObject::frameDuration() const

@@ -9,7 +9,6 @@
 
 
 
-
 class QgsRasterDataProviderTemporalCapabilities : QgsDataProviderTemporalCapabilities
 {
 %Docstring
@@ -35,6 +34,72 @@ The ``enabled`` argument specifies whether the data provider has temporal capabi
 %End
 
     virtual ~QgsRasterDataProviderTemporalCapabilities();
+
+    enum TemporalMode
+    {
+      ModeFixedTemporalRange,
+      ModeTemporalRangeFromDataProvider
+    };
+
+    TemporalMode mode() const;
+%Docstring
+Returns the temporal mode.
+
+.. seealso:: :py:func:`setMode`
+%End
+
+    void setMode( TemporalMode mode );
+%Docstring
+Sets the temporal ``mode``.
+
+.. seealso:: :py:func:`mode`
+%End
+
+    enum FetchMode
+    {
+      Earliest,
+      Latest,
+      Range
+    };
+
+    FetchMode fetchMode() const;
+%Docstring
+Returns the temporal capabilities fetch mode.
+
+.. seealso:: :py:func:`setFetchMode`
+%End
+
+    void setFetchMode( FetchMode mode );
+%Docstring
+Sets the temporal properties fetch ``mode``.
+
+.. seealso:: :py:func:`fetchMode`
+%End
+
+    enum TimeInterval
+    {
+      Seconds,
+      Minutes,
+      Hours,
+      Days,
+      Months,
+      Years,
+      None
+    };
+
+    TimeInterval timeInterval() const;
+%Docstring
+Returns the temporal interval.
+
+.. seealso:: :py:func:`setTimeInterval`
+%End
+
+    void setTimeInterval( TimeInterval interval );
+%Docstring
+Sets the temporal time ``interval``.
+
+.. seealso:: :py:func:`timeInterval`
+%End
 
     void setFixedTemporalRange( const QgsDateTimeRange &range );
 %Docstring

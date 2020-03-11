@@ -76,6 +76,7 @@ email                : sherman at mrcc.com
 #include "qgsreferencedgeometry.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgstemporalcontroller.h"
 
 /**
  * \ingroup gui
@@ -416,11 +417,11 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   emit destinationCrsChanged();
 }
 
-void QgsMapCanvas::setTemporalController( QgsTemporalNavigationObject *controller )
+void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
 {
   mController = controller;
 
-  connect( mController, &QgsTemporalNavigationObject::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
+  connect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
 }
 
 void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
@@ -2470,12 +2471,6 @@ void QgsMapCanvas::setLabelingEngineSettings( const QgsLabelingEngineSettings &s
 const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
 {
   return mSettings.labelingEngineSettings();
-}
-
-void QgsMapCanvas::updateTemporalRange( const QgsDateTimeRange &range )
-{
-  mSettings.setTemporalRange( range );
-  autoRefreshTriggered();
 }
 
 void QgsMapCanvas::startPreviewJobs()

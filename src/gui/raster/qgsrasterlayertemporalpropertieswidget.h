@@ -73,33 +73,6 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
       BiTemporal
     };
 
-    /**
-     * Source where the temporal range will be taken from to update the layers
-     * temporal range.
-     */
-    enum TemporalRangeSource
-    {
-      Layer, //! When current temporal range is from layer properties.
-      Project //! Using Project time settings temporal range
-    };
-
-    /**
-     * Sets the properties temporal range input source, it can be from layer or project.
-     *
-     * \see temporalRangeSource()
-     */
-    void setTemporalRangeSource( TemporalRangeSource source );
-
-    /**
-     * Returns the temporal range source.
-     *
-     * \see setTemporalRangeSource()
-     */
-    TemporalRangeSource temporalRangeSource() const;
-
-
-    TemporalRangeSource mSource = Layer;
-
   private slots:
 
     /**
