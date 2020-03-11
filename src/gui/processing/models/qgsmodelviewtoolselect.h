@@ -63,6 +63,9 @@ class GUI_EXPORT QgsModelViewToolSelect : public QgsModelViewTool
     //! Sets the a \a scene.
     void setScene( QgsModelGraphicsScene *scene );
 
+    /**
+     * Resets the internal cache following a scene change.
+     */
     void resetCache();
 
   private:
