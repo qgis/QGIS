@@ -70,6 +70,16 @@ Returns the scene associated with the tool.
 
 
 
+    void startMacroCommand( const QString &text );
+%Docstring
+Starts a macro command, containing a group of interactions in the view.
+%End
+
+    void endMacroCommand();
+%Docstring
+Ends a macro command, containing a group of interactions in the view.
+%End
+
   signals:
 
     void algorithmDropped( const QString &algorithmId, const QPointF &pos );
@@ -93,6 +103,16 @@ item and should have its properties displayed in any designer windows.
 %Docstring
 Emitted in the destructor when the view is about to be deleted,
 but is still in a perfectly valid state.
+%End
+
+    void macroCommandStarted( const QString &text );
+%Docstring
+Emitted when a macro command containing a group of interactions is started in the view.
+%End
+
+    void macroCommandEnded();
+%Docstring
+Emitted when a macro command containing a group of interactions in the view has ended.
 %End
 
 };

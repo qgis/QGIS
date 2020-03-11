@@ -100,6 +100,16 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      */
     QgsModelSnapper *snapper() SIP_SKIP;
 
+    /**
+     * Starts a macro command, containing a group of interactions in the view.
+     */
+    void startMacroCommand( const QString &text );
+
+    /**
+     * Ends a macro command, containing a group of interactions in the view.
+     */
+    void endMacroCommand();
+
   signals:
 
     /**
@@ -129,6 +139,16 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      * but is still in a perfectly valid state.
      */
     void willBeDeleted();
+
+    /**
+     * Emitted when a macro command containing a group of interactions is started in the view.
+     */
+    void macroCommandStarted( const QString &text );
+
+    /**
+     * Emitted when a macro command containing a group of interactions in the view has ended.
+     */
+    void macroCommandEnded();
 
   private:
 
