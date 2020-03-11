@@ -1157,10 +1157,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mTemporalControllerWidget->setObjectName( QStringLiteral( "Temporal Controller" ) );
   addDockWidget( Qt::BottomDockWidgetArea, mTemporalControllerWidget );
   mTemporalControllerWidget->hide();
+  mTemporalControllerWidget->setToggleVisibilityAction( mActionTemporalController );
 
   mMapCanvas->setTemporalController( mTemporalControllerWidget->temporalController() );
 
-  connect( mActionTemporalController, &QAction::triggered, this, [this] { this->mTemporalControllerWidget->show(); } );
 
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsAppDirectoryItemGuiProvider() );
   QgsGui::instance()->dataItemGuiProviderRegistry()->addProvider( new QgsProjectHomeItemGuiProvider() );
