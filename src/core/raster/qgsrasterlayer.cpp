@@ -866,6 +866,10 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
 
   setDataProvider( provider, options );
 
+  if ( mDataProvider )
+    setDefaultsFromDataProviderTemporalCapabilities(
+      mDataProvider->temporalCapabilities() );
+
   if ( mValid )
   {
     // load default style
@@ -956,6 +960,39 @@ bool QgsRasterLayer::ignoreExtents() const
 QgsRasterLayerTemporalProperties *QgsRasterLayer::temporalProperties()
 {
   return mTemporalProperties;
+}
+
+void QgsRasterLayer::setDefaultsFromDataProviderTemporalCapabilities(
+  QgsRasterDataProviderTemporalCapabilities *temporalCapabilities )
+{
+
+  mTemporalProperties->setFixedTemporalRange( temporalCapabilities->fixedTemporalRange() );
+  mTemporalProperties->setFixedReferenceTemporalRange( temporalCapabilities->fixedReferenceTemporalRange() );
+  switch ( temporalCapabilities->mode() )
+  {
+    case QgsRasterDataProviderTemporalCapabilities::ModeTemporalRangeFromDataProvider:
+      mTemporalProperties->setMode( QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider );
+      break;
+
+    case QgsRasterDataProviderTemporalCapabilities::ModeFixedTemporalRange:
+      mTemporalProperties->setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
+      break;
+  }
+
+  switch ( temporalCapabilities->fetchMode() )
+  {
+    case QgsRasterDataProviderTemporalCapabilities::Earliest:
+      mTemporalProperties->setFetchMode( QgsRasterLayerTemporalProperties::Earliest );
+      break;
+
+    case QgsRasterDataProviderTemporalCapabilities::Latest:
+      mTemporalProperties->setFetchMode( QgsRasterLayerTemporalProperties::Latest );
+      break;
+
+    case QgsRasterDataProviderTemporalCapabilities::Range:
+      mTemporalProperties->setFetchMode( QgsRasterLayerTemporalProperties::Range );
+      break;
+  }
 }
 
 void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm, QgsRasterMinMaxOrigin::Limits limits, const QgsRectangle &extent, int sampleSize, bool generateLookupTableFlag )

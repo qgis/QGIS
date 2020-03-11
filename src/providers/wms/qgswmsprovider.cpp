@@ -158,6 +158,11 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
       temporalCapabilities()->setHasTemporalCapabilities( true );
       temporalCapabilities()->setFixedTemporalRange( mSettings.mFixedRange );
 
+      temporalCapabilities()->setMode(
+        QgsRasterDataProviderTemporalCapabilities::ModeTemporalRangeFromDataProvider );
+      temporalCapabilities()->setFetchMode(
+        QgsRasterDataProviderTemporalCapabilities::Earliest );
+
       if ( mSettings.mIsBiTemporal )
       {
         temporalCapabilities()->setFixedReferenceTemporalRange( mSettings.mFixedReferenceRange );
@@ -1081,6 +1086,11 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 {
   QgsDateTimeRange range = temporalCapabilities()->requestedTemporalRange();
   QString format = "yyyy-MM-ddThh:mm:ssZ";
+
+  if ( temporalCapabilities()->fetchMode() == QgsRasterDataProviderTemporalCapabilities::Earliest )
+    range = QgsDateTimeRange( range.begin(), range.begin() );
+  else if ( temporalCapabilities()->fetchMode() == QgsRasterDataProviderTemporalCapabilities::Latest )
+    range = QgsDateTimeRange( range.end(), range.end() );
 
   if ( !temporalCapabilities()->isTimeEnabled() )
     format = "yyyy-MM-dd";

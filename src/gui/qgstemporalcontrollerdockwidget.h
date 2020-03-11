@@ -29,6 +29,7 @@ class QgsMapLayer;
 class QgsTemporalNavigationObject;
 class QgsTemporalMapSettingsWidget;
 class QgsTemporalMapSettingsDialog;
+class QgsTemporalController;
 
 /**
  * \ingroup gui
@@ -47,12 +48,23 @@ class GUI_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget, private
       */
     QgsTemporalControllerDockWidget( const QString &name, QWidget *parent = nullptr );
 
-    ~QgsTemporalControllerDockWidget() override;
+    ~QgsTemporalControllerDockWidget() = default;
 
     /**
      * Returns the temporal controller object used by this object in navigation.
      */
-    QgsTemporalNavigationObject *temporalController();
+    QgsTemporalController *temporalController();
+
+    //! Stores the used time unit in the animation frame duration.
+    enum TimeUnit
+    {
+      Seconds = 0, //! For seconds
+      Minutes = 1, //! For minutes
+      Hours = 2,   //! For hours
+      Days = 3,    //! For days
+      Months = 4,  //! For months
+      Years = 5    //! For years
+    };
 
   private:
 
@@ -72,21 +84,13 @@ class GUI_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget, private
     void setDateInputsEnable( bool enabled );
 
     /**
-     * Sets the controller settings dialog
-     **/
-    void settingsDialog();
-
-    /**
      * Returns the time interval using the passed \a value and \a time
      * to determine the interval duration.
      */
-    QgsInterval interval( QString time, int value );
+    QgsInterval interval( int time, double value );
 
     //! Handles all non gui navigation logic
     QgsTemporalNavigationObject *mNavigationObject = nullptr;
-
-    //! Dialog for temporal map settings
-    QgsTemporalMapSettingsDialog *mSettingsDialog = nullptr;
 
   private slots:
 
@@ -145,11 +149,6 @@ class GUI_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget, private
      * Updates the current range label
      **/
     void updateRangeLabel( const QgsDateTimeRange &range );
-
-    /**
-     * Updates the frames per seconds value for the navigation object.
-     **/
-    void updateFrameRate();
 
     /**
      * Updates the navigation temporal extent.

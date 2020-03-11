@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgsrange.h"
 #include "qgsinterval.h"
+#include "qgstemporalcontroller.h"
 
 #include <QList>
 #include <QTimer>
@@ -34,7 +35,7 @@ class QgsMapLayer;
  *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsTemporalNavigationObject : public QObject
+class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
 {
     Q_OBJECT
 
@@ -49,9 +50,9 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QObject
     //! Represents the current playback mode
     enum PlaybackMode
     {
-      Forward, //! When the forward button is clicked.
-      Reverse, //! When the back button is clicked.
-      Idle, //! When navigation is idle.
+      Forward, //! Animation is playing forward.
+      Reverse, //! Animation is playing in reverse.
+      Idle, //! Animation is paused.
     };
 
     /**
@@ -140,16 +141,19 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QObject
 
   public slots:
 
-    //! Plays the temporal navigation
+    /**
+     * Starts playing the temporal navigation from its current frame,
+     * using the direction specified by playBackMode()
+     */
     void play();
 
     //! Stops the temporal navigation.
     void pause();
 
-    //! Forward the temporal navigation up till the end of frames.
+    //! Starts the animation playing in a forward direction up till the end of frames.
     void forward();
 
-    //! Decrement the temporal navigation till the end of frames.
+    //! Starts the animation playing in a reverse direction until the beginning of the time range.
     void backward();
 
     //! Forward the temporal navigation by one frame.
@@ -164,13 +168,10 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QObject
     //! Skips the temporal navigation to end of the temporal extent.
     void skipToEnd();
 
+  private slots:
+
     //! Handles logic when the temporal navigation timer emit a timeout signal.
     void timerTimeout();
-
-  signals:
-
-    //! Emitted when navigation range changes.
-    void updateTemporalRange( QgsDateTimeRange temporalRange );
 
   private:
 
@@ -184,10 +185,10 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QObject
     QgsInterval mFrameDuration;
 
     //! Member for frame rate
-    double mFramesPerSecond;
+    double mFramesPerSecond = 1;
 
     //! Timer to set navigation time interval
-    QTimer *mNewFrameTimer;
+    QTimer *mNewFrameTimer = nullptr;
 
     //! Navigation playback mode member
     PlaybackMode mPlayBackMode = Idle;

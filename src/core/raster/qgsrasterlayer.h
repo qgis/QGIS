@@ -502,6 +502,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                                  bool generateLookupTableFlag,
                                  QgsRasterRenderer *rasterRenderer );
 
+    /**
+     * Sets the defaults capabilities from the provider temporal capabilities
+     * into layer's temporal properties.
+     */
+    void setDefaultsFromDataProviderTemporalCapabilities(
+      QgsRasterDataProviderTemporalCapabilities *temporalCapabilities );
+
     //! Refresh renderer
     void refreshRenderer( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent );
 

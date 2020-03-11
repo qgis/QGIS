@@ -30,12 +30,9 @@ QgsTemporalMapSettingsDialog::QgsTemporalMapSettingsDialog( QWidget *parent, Qt:
   QVBoxLayout *layout = new QVBoxLayout();
   mTemporalMapSettingsWidget = new QgsTemporalMapSettingsWidget( this );
   layout->addWidget( mTemporalMapSettingsWidget );
-  setLayout( layout );
   setWindowTitle( tr( "Temporal Map Settings" ) );
 
   mTemporalMapSettingsWidget->setFrameRateValue( 1 );
-
-  hide();
 }
 
 void QgsTemporalMapSettingsDialog::apply()

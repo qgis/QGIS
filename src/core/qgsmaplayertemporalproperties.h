@@ -70,8 +70,8 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
      */
     enum TemporalSource
     {
-      Layer, //! Defined from layer .
-      Project//! Defined from project time settings;
+      Layer = 0, //! Defined from layer .
+      Project = 1//! Defined from project time settings;
     };
 
     /**
