@@ -120,6 +120,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void moveComponentBy( qreal dx, qreal dy );
 
+    /**
+     * Shows a preview of moving the item from its stored position by \a dx, \a dy.
+     */
+    void previewItemMove( qreal dx, qreal dy );
+
     void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;

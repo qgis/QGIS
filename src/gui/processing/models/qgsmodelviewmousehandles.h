@@ -59,6 +59,7 @@ class GUI_EXPORT QgsModelViewMouseHandles: public QgsGraphicsViewMouseHandles
     QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const override;
     QRectF itemRect( QGraphicsItem *item ) const override;
     void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) override;
+    void previewItemMove( QGraphicsItem *item, double deltaX, double deltaY ) override;
     void setItemRect( QGraphicsItem *item, QRectF rect ) override;
 
   public slots:

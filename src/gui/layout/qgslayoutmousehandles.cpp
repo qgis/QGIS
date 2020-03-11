@@ -54,7 +54,7 @@ QgsLayoutMouseHandles::QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *
 void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
   paintInternal( painter, mLayout->renderContext().isPreviewRender(),
-                 mLayout->renderContext().boundingBoxesVisible(), option, widget );
+                 mLayout->renderContext().boundingBoxesVisible(), true, option, widget );
 }
 
 void QgsLayoutMouseHandles::selectionChanged()

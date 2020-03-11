@@ -47,7 +47,7 @@ QgsModelGraphicsScene *QgsModelViewMouseHandles::modelScene() const
 void QgsModelViewMouseHandles::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
   paintInternal( painter, !( modelScene()->flags() & QgsModelGraphicsScene::FlagHideControls ),
-                 !( modelScene()->flags() & QgsModelGraphicsScene::FlagHideControls ), option, widget );
+                 false, false, option, widget );
 }
 
 void QgsModelViewMouseHandles::selectionChanged()
@@ -121,6 +121,14 @@ void QgsModelViewMouseHandles::moveItem( QGraphicsItem *item, double deltaX, dou
   if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
   {
     componentItem->moveComponentBy( deltaX, deltaY );
+  }
+}
+
+void QgsModelViewMouseHandles::previewItemMove( QGraphicsItem *item, double deltaX, double deltaY )
+{
+  if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
+  {
+    componentItem->previewItemMove( deltaX, deltaY );
   }
 }
 
