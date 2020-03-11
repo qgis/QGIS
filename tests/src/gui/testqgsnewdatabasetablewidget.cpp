@@ -160,20 +160,20 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
   arguments = uriSpy.takeLast();
   QVERIFY( ! arguments.at( 0 ).toString().isEmpty() );
 
-  w->mNewTableName->setText( QStringLiteral( "someNewTableData" ) );
+  w->mNewTableName->setText( QStringLiteral( "someNewTableData" ) ); //#spellok
   QCOMPARE( tableSpy.count(), 1 );
   arguments = tableSpy.takeLast();
-  QCOMPARE( arguments.at( 0 ).toString(), QString( "someNewTableData" ) );
+  QCOMPARE( arguments.at( 0 ).toString(), QString( "someNewTableData" ) ); //#spellok
   QCOMPARE( validationSpy.count(), 1 );
   arguments = validationSpy.takeLast();
   QCOMPARE( arguments.at( 0 ).toBool(), true );
   QVERIFY( w->isValid() );
 
   // Test getters
-  QCOMPARE( w->table(), QString( "someNewTableData" ) );
+  QCOMPARE( w->table(), QString( "someNewTableData" ) ); //#spellok
   QCOMPARE( w->schema(), QString( "qgis_test" ) );
   QCOMPARE( w->dataProviderKey(), QString( "postgres" ) );
-  QVERIFY( w->uri().contains( R"("qgis_test"."someNewTableData")" ) );
+  QVERIFY( w->uri().contains( R"("qgis_test"."someNewTableData")" ) ); //#spellok
 
   // Test unique and make it invalid again so we get a status change
   w->mNewTableName->setText( QStringLiteral( "someData" ) );
