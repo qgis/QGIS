@@ -652,7 +652,7 @@ void QgsExpressionBuilderWidget::loadRecent( const QString &collection )
   }
 }
 
-// this is potentially very slow if there are thousands of user expressions, everytime entire cleanup and load
+// this is potentially very slow if there are thousands of user expressions, every time entire cleanup and load
 void QgsExpressionBuilderWidget::loadUserExpressions( )
 {
   // Cleanup
@@ -1568,7 +1568,7 @@ void QgsExpressionBuilderWidget::loadExpressionsFromJson( const QJsonDocument &e
   }
 
   // we store the number of
-  QStringList skippedExpressions;
+  QStringList skippedExpressionLabels;
   bool isApplyToAll = false;
   bool isOkToOverwrite = false;
 
@@ -1578,12 +1578,11 @@ void QgsExpressionBuilderWidget::loadExpressionsFromJson( const QJsonDocument &e
 
   for ( const QJsonValue &expressionValue : expressionsObject["expressions"].toArray() )
   {
-    QgsLogger::warning( "" + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
     // validate the type of the array element, can be anything
     if ( ! expressionValue.isObject() )
     {
       // try to stringify and put and indicator what happened
-      skippedExpressions.append( expressionValue.toString() );
+      skippedExpressionLabels.append( expressionValue.toString() );
       continue;
     }
 
@@ -1598,9 +1597,9 @@ void QgsExpressionBuilderWidget::loadExpressionsFromJson( const QJsonDocument &e
     {
       // try to stringify and put an indicator what happened. Try to stringify the name, if fails, go with the expression.
       if ( ! expressionObj["name"].toString().isEmpty() )
-        skippedExpressions.append( expressionObj["name"].toString() );
+        skippedExpressionLabels.append( expressionObj["name"].toString() );
       else
-        skippedExpressions.append( expressionObj["expression"].toString() );
+        skippedExpressionLabels.append( expressionObj["expression"].toString() );
 
       continue;
     }
@@ -1608,39 +1607,43 @@ void QgsExpressionBuilderWidget::loadExpressionsFromJson( const QJsonDocument &e
     // we want to import only items of type expression for now
     if ( expressionObj["type"].toString() != "expression" )
     {
-      skippedExpressions.append( expressionObj["name"].toString() );
+      skippedExpressionLabels.append( expressionObj["name"].toString() );
       continue;
     }
 
     // we want to import only items of type expression for now
     if ( expressionObj["group"].toString() != "user" )
     {
-      skippedExpressions.append( expressionObj["name"].toString() );
+      skippedExpressionLabels.append( expressionObj["name"].toString() );
       continue;
     }
 
-    QString label = expressionObj["name"].toString();
-    QString expression = expressionObj["expression"].toString();
-    QString helpText = expressionObj["description"].toString();
+    const QString label = expressionObj["name"].toString();
+    const QString expression = expressionObj["expression"].toString();
+    const QString helpText = expressionObj["description"].toString();
 
     // make sure they have valid name
     if ( label.contains( "\\" ) || label.contains( "/" ) )
     {
-      QgsLogger::warning( "" + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
-      skippedExpressions.append( expressionObj["name"].toString() );
+      skippedExpressionLabels.append( expressionObj["name"].toString() );
       continue;
     }
 
-    if ( mUserExpressionLabels.contains( label ) )
+    settings.beginGroup( label );
+    const QString oldExpression = settings.value( QStringLiteral( "expression" ) ).toString();
+    settings.endGroup();
+
+    // TODO would be nice to skip the cases when labels and expressions match
+    if ( mUserExpressionLabels.contains( label ) && expression != oldExpression )
     {
       if ( ! isApplyToAll )
-        showMessageBoxConfirmExpressionOverwrite( isApplyToAll, isOkToOverwrite, label, expression, expression );
+        showMessageBoxConfirmExpressionOverwrite( isApplyToAll, isOkToOverwrite, label, oldExpression, expression );
 
       if ( isOkToOverwrite )
         saveToUserExpressions( label, expression, helpText );
       else
       {
-        skippedExpressions.append( label );
+        skippedExpressionLabels.append( label );
         continue;
       }
     }
@@ -1650,22 +1653,35 @@ void QgsExpressionBuilderWidget::loadExpressionsFromJson( const QJsonDocument &e
     }
   }
 
-  QgsLogger::warning( "" + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
   loadUserExpressions( );
+
+  QgsLogger::warning( QString::number( skippedExpressionLabels.count() ) + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
+
+  if ( ! skippedExpressionLabels.isEmpty() )
+  {
+    QStringList skippedExpressionLabelsQuoted;
+    for ( const QString &skippedExpressionLabel : skippedExpressionLabels )
+      skippedExpressionLabelsQuoted.append( QString( "'%1'" ).arg( skippedExpressionLabel ) );
+
+    QMessageBox::information( this,
+                              tr( "Skipped expressions" ),
+                              QString( "%1\n%2" ).arg( tr( "The following expressions have been skipped:" ),
+                                  skippedExpressionLabelsQuoted.join( ", " ) ) );
+  }
 }
 
 void QgsExpressionBuilderWidget::showMessageBoxConfirmExpressionOverwrite(
   bool &isApplyToAll,
   bool &isOkToOverwrite,
   const QString &label,
-  QString &oldExpression,
-  QString &newExpression )
+  const QString &oldExpression,
+  const QString &newExpression )
 {
   QMessageBox::StandardButtons buttons = QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll;
   switch ( QMessageBox::question( this,
-                                  tr( "Expression override" ),
+                                  tr( "Expression overwrite" ),
                                   tr( "The expression with label '%1' was already defined."
-                                      "The old expression \"%2\" will be overriden by \"%3\"."
+                                      "The old expression \"%2\" will be overwritten by \"%3\"."
                                       "Are you sure you want to overwrite the expression?" ).arg( label, oldExpression, newExpression ), buttons ) )
   {
     case QMessageBox::NoToAll:

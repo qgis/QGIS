@@ -396,8 +396,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /**
      * Create the expressions JSON document storing all the user expressions to be exported.
-     * \since QGIS 3.14
      * \returns the created expressions JSON file
+     * \since QGIS 3.14
      */
     QJsonDocument *exportUserExpressions();
 
@@ -410,8 +410,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /**
      * Load and permanently store the expressions from the expressions JSON document.
-     * \since QGIS 3.14
      * \param expressionsDocument the parsed expressions JSON file
+     * \since QGIS 3.14
      */
     void loadExpressionsFromJson( const QJsonDocument &expressionsDocument );
 
@@ -427,7 +427,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * \param oldExpression the old expression for a given label
      * \param newExpression the new expression for a given label
      */
-    void showMessageBoxConfirmExpressionOverwrite( bool &isApplyToAll, bool &isOkToOverwrite, const QString &label, QString &oldExpression, QString &newExpression );
+    void showMessageBoxConfirmExpressionOverwrite( bool &isApplyToAll, bool &isOkToOverwrite, const QString &label, const QString &oldExpression, const QString &newExpression );
 
     /**
      * Returns the list of expression items matching a \a label.
