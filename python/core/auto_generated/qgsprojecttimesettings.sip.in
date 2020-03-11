@@ -13,7 +13,7 @@ class QgsProjectTimeSettings : QObject
 {
 %Docstring
 Contains temporal settings and properties for the project,
-this will be used in animating/showing temporal layers.
+this may be used when animating maps or showing temporal layers.
 
 .. versionadded:: 3.14
 %End
@@ -23,7 +23,7 @@ this will be used in animating/showing temporal layers.
 %End
   public:
 
-    QgsProjectTimeSettings( QObject *parent = 0 );
+    QgsProjectTimeSettings( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProjectTimeSettings with the specified ``parent`` object.
 %End
@@ -35,21 +35,39 @@ Resets the settings to a default state.
 
     QgsDateTimeRange temporalRange() const;
 %Docstring
-Returns the project temporal range.
+Returns the project's temporal range, which indicates the earliest
+and latest datetime ranges associated with the project.
+
+.. note::
+
+   This is a manual, use-set property, and does not necessarily
+   coincide with the earliest and latest temporal ranges set for
+   individual layers in the project.
 
 .. seealso:: :py:func:`setTemporalRange`
+
+.. seealso:: :py:func:`temporalRangeChanged`
 %End
 
-    void setTemporalRange( const QgsDateTimeRange &extent );
+    void setTemporalRange( const QgsDateTimeRange &range );
 %Docstring
-Sets the project temporal range
+Sets the project's temporal ``range``, which indicates the earliest
+and latest datetime ranges associated with the project.
+
+.. note::
+
+   This is a manual, use-set property, and does not necessarily
+   coincide with the earliest and latest temporal ranges set for
+   individual layers in the project.
 
 .. seealso:: :py:func:`temporalRange`
+
+.. seealso:: :py:func:`temporalRangeChanged`
 %End
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
-Reads the settings's state from a DOM element.
+Reads the settings's state from a DOM ``element``.
 
 .. seealso:: :py:func:`writeXml`
 %End
@@ -61,17 +79,17 @@ Returns a DOM element representing the settings.
 .. seealso:: :py:func:`readXml`
 %End
 
-
   signals:
 
     void temporalRangeChanged();
 %Docstring
-Emitted when temporal range changes.
+Emitted when the temporal range changes.
 
 .. seealso:: :py:func:`temporalRange`
 
 .. seealso:: :py:func:`setTemporalRange`
 %End
+
 };
 
 

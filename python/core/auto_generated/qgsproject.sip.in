@@ -603,8 +603,8 @@ relating to how a QgsProject should be viewed and behave inside a map canvas
 
     QgsProjectTimeSettings *timeSettings();
 %Docstring
-Returns the project's time settings, contains temporal range, which can
-be used in constraining temporal properties from temporal layers in the project.
+Returns the project's time settings, which contains the project's temporal range and other
+time based settings.
 
 .. versionadded:: 3.14
 %End
