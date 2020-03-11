@@ -105,7 +105,8 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
 
   protected:
 
-    void paintInternal( QPainter *painter, bool showHandles, bool showBoundingBoxes, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr );
+    void paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes,
+                        bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr );
 
     //! Sets the mouse cursor for the QGraphicsView attached to the composition
     virtual void setViewportCursor( Qt::CursorShape cursor ) = 0;
@@ -116,6 +117,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     virtual bool itemIsGroupMember( QGraphicsItem *item ) { Q_UNUSED( item ); return false; }
     virtual QRectF itemRect( QGraphicsItem *item ) const = 0;
     virtual void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) = 0;
+    virtual void previewItemMove( QGraphicsItem *item, double deltaX, double deltaY );
     virtual void setItemRect( QGraphicsItem *item, QRectF rect ) = 0;
     virtual void startMacroCommand( const QString &text );
     virtual void endMacroCommand();

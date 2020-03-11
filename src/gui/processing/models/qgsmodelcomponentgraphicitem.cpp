@@ -112,7 +112,7 @@ void QgsModelComponentGraphicItem::setFont( const QFont &font )
 
 void QgsModelComponentGraphicItem::moveComponentBy( qreal dx, qreal dy )
 {
-  moveBy( dx, dy );
+  setPos( mComponent->position().x() + dx, mComponent->position().y() + dy );
   mComponent->setPosition( pos() );
 
   emit aboutToChange( tr( "Move %1" ).arg( mComponent->description() ) );
@@ -122,20 +122,16 @@ void QgsModelComponentGraphicItem::moveComponentBy( qreal dx, qreal dy )
   emit updateArrowPaths();
 }
 
+void QgsModelComponentGraphicItem::previewItemMove( qreal dx, qreal dy )
+{
+  setPos( mComponent->position().x() + dx, mComponent->position().y() + dy );
+  emit updateArrowPaths();
+}
+
 void QgsModelComponentGraphicItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent * )
 {
   if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
     editComponent();
-}
-
-void QgsModelComponentGraphicItem::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
-{
-  if ( mIsMoving && event->button() == Qt::LeftButton )
-  {
-    // released the move drag button, so we've finalised the move operation
-    emit changed();
-    mIsMoving = false;
-  }
 }
 
 void QgsModelComponentGraphicItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )

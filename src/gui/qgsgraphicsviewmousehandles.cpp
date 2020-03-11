@@ -34,25 +34,30 @@ QgsGraphicsViewMouseHandles::QgsGraphicsViewMouseHandles( QGraphicsView *view )
   setAcceptHoverEvents( true );
 }
 
-void QgsGraphicsViewMouseHandles::paintInternal( QPainter *painter, bool showHandles, bool showBoundingBoxes, const QStyleOptionGraphicsItem *, QWidget * )
+void QgsGraphicsViewMouseHandles::paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes, bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *, QWidget * )
 {
   if ( !showHandles )
   {
     return;
   }
 
-  if ( showBoundingBoxes )
+  if ( showStaticBoundingBoxes )
   {
     //draw resize handles around bounds of entire selection
     double rectHandlerSize = rectHandlerBorderTolerance();
     drawHandles( painter, rectHandlerSize );
   }
 
-  if ( mIsResizing || mIsDragging || showBoundingBoxes )
+  if ( showTemporaryBoundingBoxes && ( mIsResizing || mIsDragging || showStaticBoundingBoxes ) )
   {
     //draw dotted boxes around selected items
     drawSelectedItemBounds( painter );
   }
+}
+
+void QgsGraphicsViewMouseHandles::previewItemMove( QGraphicsItem *, double, double )
+{
+
 }
 
 void QgsGraphicsViewMouseHandles::startMacroCommand( const QString & )
@@ -727,6 +732,11 @@ void QgsGraphicsViewMouseHandles::dragMouseMove( QPointF currentPosition, bool l
   moveTransform.translate( moveRectX, moveRectY );
   setTransform( moveTransform );
 
+  const QList<QGraphicsItem *> selectedItems = selectedSceneItems( false );
+  for ( QGraphicsItem *item : selectedItems )
+  {
+    previewItemMove( item, moveRectX, moveRectY );
+  }
   //show current displacement of selection in status bar
   showStatusMessage( tr( "dx: %1 mm dy: %2 mm" ).arg( moveRectX ).arg( moveRectY ) );
 }
