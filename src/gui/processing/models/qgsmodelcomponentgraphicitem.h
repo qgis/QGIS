@@ -32,6 +32,7 @@ class QgsProcessingModelAlgorithm;
 class QgsModelDesignerFlatButtonGraphicItem;
 class QgsModelDesignerFoldButtonGraphicItem;
 class QgsModelGraphicsView;
+class QgsModelViewMouseEvent;
 
 ///@cond NOT_STABLE
 
@@ -134,6 +135,28 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void previewItemRectChange( QRectF rect );
 
+#ifndef SIP_RUN
+
+    /**
+     * Handles a model hover enter \a event.
+     */
+    virtual void modelHoverEnterEvent( QgsModelViewMouseEvent *event );
+
+    /**
+     * Handles a model hover move \a event.
+     */
+    virtual void modelHoverMoveEvent( QgsModelViewMouseEvent *event );
+
+    /**
+     * Handles a model hover leave \a event.
+     */
+    virtual void modelHoverLeaveEvent( QgsModelViewMouseEvent *event );
+
+    /**
+     * Handles a model double click \a event.
+     */
+    virtual void modelDoubleClickEvent( QgsModelViewMouseEvent *event );
+#endif
     void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;

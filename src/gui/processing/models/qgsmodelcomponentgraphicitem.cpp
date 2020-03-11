@@ -24,6 +24,7 @@
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsmodelgraphicsview.h"
 #include "qgsmodelviewtool.h"
+#include "qgsmodelviewmouseevent.h"
 
 #include <QSvgRenderer>
 #include <QPicture>
@@ -155,6 +156,38 @@ void QgsModelComponentGraphicItem::previewItemRectChange( QRectF rect )
   emit updateArrowPaths();
 }
 
+void QgsModelComponentGraphicItem::modelHoverEnterEvent( QgsModelViewMouseEvent *event )
+{
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
+    updateToolTip( mapFromScene( event->modelPoint() ) );
+}
+
+void QgsModelComponentGraphicItem::modelHoverMoveEvent( QgsModelViewMouseEvent *event )
+{
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
+    updateToolTip( mapFromScene( event->modelPoint() ) );
+}
+
+void QgsModelComponentGraphicItem::modelHoverLeaveEvent( QgsModelViewMouseEvent * )
+{
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
+  {
+    setToolTip( QString() );
+    if ( mIsHovering )
+    {
+      mIsHovering = false;
+      update();
+      emit repaintArrows();
+    }
+  }
+}
+
+void QgsModelComponentGraphicItem::modelDoubleClickEvent( QgsModelViewMouseEvent * )
+{
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
+    editComponent();
+}
+
 void QgsModelComponentGraphicItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent * )
 {
   if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
@@ -175,16 +208,7 @@ void QgsModelComponentGraphicItem::hoverMoveEvent( QGraphicsSceneHoverEvent *eve
 
 void QgsModelComponentGraphicItem::hoverLeaveEvent( QGraphicsSceneHoverEvent * )
 {
-  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
-  {
-    setToolTip( QString() );
-    if ( mIsHovering )
-    {
-      mIsHovering = false;
-      update();
-      emit repaintArrows();
-    }
-  }
+  modelHoverLeaveEvent( nullptr );
 }
 
 QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemChange change, const QVariant &value )

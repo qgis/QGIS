@@ -20,6 +20,7 @@
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodelviewmousehandles.h"
+#include "qgsmodelgraphicitem.h"
 
 QgsModelViewToolSelect::QgsModelViewToolSelect( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Select" ) )
@@ -117,6 +118,26 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
     }
     event->ignore();
     emit itemFocused( selectedItem );
+
+    if ( !( event->modifiers() & Qt::ShiftModifier ) )
+    {
+      // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate events
+      // to multiple items
+      QList< QGraphicsItem * > items = scene()->items( event->modelPoint() );
+      for ( QGraphicsItem *item : items )
+      {
+        if ( QgsModelDesignerFlatButtonGraphicItem *button = dynamic_cast< QgsModelDesignerFlatButtonGraphicItem * >( item ) )
+        {
+          // arghhh - if the event happens outside the mouse handles bounding rect, then it's ALREADY passed on!
+          if ( mMouseHandles->sceneBoundingRect().contains( event->modelPoint() ) )
+          {
+            button->modelPressEvent( event );
+            event->accept();
+            return;
+          }
+        }
+      }
+    }
   }
 
   event->ignore();
@@ -130,7 +151,72 @@ void QgsModelViewToolSelect::modelMoveEvent( QgsModelViewMouseEvent *event )
   }
   else
   {
+    // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate events
+    // to multiple items
+    QList< QGraphicsItem * > items = scene()->items( event->modelPoint() );
+    for ( QGraphicsItem *item : items )
+    {
+      if ( mHoverEnteredItems.contains( item ) )
+      {
+        if ( QgsModelComponentGraphicItem *component = dynamic_cast< QgsModelComponentGraphicItem * >( item ) )
+        {
+          component->modelHoverMoveEvent( event );
+        }
+      }
+      else
+      {
+        mHoverEnteredItems.append( item );
+        if ( QgsModelComponentGraphicItem *component = dynamic_cast< QgsModelComponentGraphicItem * >( item ) )
+        {
+          component->modelHoverEnterEvent( event );
+        }
+        else if ( QgsModelDesignerFlatButtonGraphicItem *button = dynamic_cast<QgsModelDesignerFlatButtonGraphicItem *>( item ) )
+        {
+          // arghhh - if the event happens outside the mouse handles bounding rect, then it's ALREADY passed on!
+          if ( mMouseHandles->sceneBoundingRect().contains( event->modelPoint() ) )
+            button->modelHoverEnterEvent( event );
+        }
+      }
+    }
+    const QList< QGraphicsItem * > prevHovered = mHoverEnteredItems;
+    for ( QGraphicsItem *item : prevHovered )
+    {
+      if ( ! items.contains( item ) )
+      {
+        mHoverEnteredItems.removeAll( item );
+        if ( QgsModelComponentGraphicItem *component = dynamic_cast< QgsModelComponentGraphicItem * >( item ) )
+        {
+          component->modelHoverLeaveEvent( event );
+        }
+        else if ( QgsModelDesignerFlatButtonGraphicItem *button = dynamic_cast<QgsModelDesignerFlatButtonGraphicItem *>( item ) )
+        {
+          // arghhh - if the event happens outside the mouse handles bounding rect, then it's ALREADY passed on!
+          if ( mMouseHandles->sceneBoundingRect().contains( event->modelPoint() ) )
+            button->modelHoverLeaveEvent( event );
+        }
+      }
+    }
+
     event->ignore();
+  }
+}
+
+void QgsModelViewToolSelect::modelDoubleClickEvent( QgsModelViewMouseEvent *event )
+{
+  if ( !mIsSelecting )
+  {
+    // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate events
+    // to multiple items
+    QList< QGraphicsItem * > items = scene()->items( event->modelPoint() );
+    for ( QGraphicsItem *item : items )
+    {
+      if ( QgsModelComponentGraphicItem *component = dynamic_cast< QgsModelComponentGraphicItem * >( item ) )
+      {
+        scene()->setSelectedItem( component ); // clears existing selection
+        component->modelDoubleClickEvent( event );
+        break;
+      }
+    }
   }
 }
 
