@@ -452,6 +452,12 @@ void QgsGraphicsViewMouseHandles::hoverLeaveEvent( QGraphicsSceneHoverEvent *eve
 
 void QgsGraphicsViewMouseHandles::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
+  if ( event->button() != Qt::LeftButton )
+  {
+    event->ignore();
+    return;
+  }
+
   //save current cursor position
   mMouseMoveStartPos = event->lastScenePos();
   mLastMouseEventPos = event->lastScenePos();
@@ -526,6 +532,12 @@ void QgsGraphicsViewMouseHandles::mouseMoveEvent( QGraphicsSceneMouseEvent *even
 
 void QgsGraphicsViewMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
 {
+  if ( event->button() != Qt::LeftButton )
+  {
+    event->ignore();
+    return;
+  }
+
   QPointF mouseMoveStopPoint = event->lastScenePos();
   double diffX = mouseMoveStopPoint.x() - mMouseMoveStartPos.x();
   double diffY = mouseMoveStopPoint.y() - mMouseMoveStartPos.y();
