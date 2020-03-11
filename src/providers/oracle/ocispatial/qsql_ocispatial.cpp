@@ -2409,10 +2409,10 @@ QOCISpatialCols::CurveParts QOCISpatialCols::getCurveParts( int &iElem, const QV
     // CompoundCurve
     baseType = WKBCompoundCurve;
     int compoundParts = n;
-    iElem += 3;
     CurveParts parts;
-    for ( int k = 0; k < compoundParts; k += 1, iElem += 3 )
+    for ( int k = 0; k < compoundParts; k += 1 )
     {
+      iElem += 3;
       if ( !getElemInfoElem( iElem, vElems, nOrds, startOffset, endOffset, etype, n ) )
       {
         qWarning() << "could not fetch element info" << iElem;
@@ -2960,11 +2960,11 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
         isCurved = true;
         isCompoundCurve = true;
         int compoundParts = n;
-        i += 3;
-        currentPartWkbType = WKBCurvePolygon;
+        currentPartWkbType = ( nDims == 2 ? WKBCurvePolygon : WKBCurvePolygonZ );
         CurveParts parts;
-        for ( int k = 0; k < compoundParts; k += 1, i += 3 )
+        for ( int k = 0; k < compoundParts; k += 1 )
         {
+          i += 3;
           if ( !getElemInfoElem( i, elems, nOrds, startOffset, endOffset, etype, n ) )
           {
             qWarning() << "could not fetch element info" << i;
@@ -2973,7 +2973,9 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
 
           if ( etype == 2 && ( n == 1 || n == 2 ) )
           {
-            WKBType partType = ( n == 1 ) ? WKBLineString : WKBCircularString;
+            WKBType partType = ( n == 1 ) ?
+                               ( nDims == 2 ? WKBLineString : WKBLineString25D ) :
+                               ( nDims == 2 ? WKBCircularString : WKBCircularStringZ );
             PointSequence points;
             points.reserve( 1 + ( endOffset - startOffset ) / nDims );
             for ( int j = startOffset; j < endOffset; j += nDims )
@@ -3006,10 +3008,11 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
 
     int wkbSize = 1 + 2 * sizeof( int );
     const int nPolygons = parts.size();
+    const bool isMultiPolygon = iType == GtMultiPolygon;
     for ( int part = 0; part < nPolygons; ++part )
     {
       SurfaceRings &rings = parts[ part ].second;
-      if ( nPolygons > 1 )
+      if ( isMultiPolygon )
         wkbSize += 1 + 2 * sizeof( int );
       for ( int ringIdx = 0; ringIdx < rings.size(); ++ringIdx )
       {
@@ -3039,7 +3042,8 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
 
     ptr.cPtr = ba.data();
     *ptr.ucPtr++ = byteorder();
-    if ( nPolygons == 1 )
+
+    if ( !isMultiPolygon )
     {
       if ( isCurved )
         *ptr.iPtr++ = nDims == 2 ? WKBCurvePolygon : WKBCurvePolygonZ;
@@ -3057,7 +3061,7 @@ bool QOCISpatialCols::convertToWkb( QVariant &v, int index )
 
     for ( const QPair< WKBType, SurfaceRings > &rings : qAsConst( parts ) )
     {
-      if ( nPolygons > 1 )
+      if ( isMultiPolygon )
       {
         *ptr.ucPtr++ = byteorder();
         *ptr.iPtr++ = rings.first;
