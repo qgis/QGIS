@@ -425,6 +425,16 @@ QgsModelSnapper *QgsModelGraphicsView::snapper()
   return &mSnapper;
 }
 
+void QgsModelGraphicsView::startMacroCommand( const QString &text )
+{
+  emit macroCommandStarted( text );
+}
+
+void QgsModelGraphicsView::endMacroCommand()
+{
+  emit macroCommandEnded();
+}
+
 
 QgsModelViewSnapMarker::QgsModelViewSnapMarker()
   : QGraphicsRectItem( QRectF( 0, 0, 0, 0 ) )

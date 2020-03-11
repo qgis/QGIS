@@ -238,6 +238,16 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mView->setTool( mSelectTool );
   mView->setFocus();
 
+  connect( mView, &QgsModelGraphicsView::macroCommandStarted, this, [ = ]( const QString & text )
+  {
+    mUndoStack->beginMacro( text );
+  } );
+  connect( mView, &QgsModelGraphicsView::macroCommandEnded, this, [ = ]
+  {
+    mUndoStack->endMacro();
+  } );
+
+
   updateWindowTitle();
 }
 

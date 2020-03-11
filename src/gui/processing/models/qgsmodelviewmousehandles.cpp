@@ -140,5 +140,15 @@ void QgsModelViewMouseHandles::setItemRect( QGraphicsItem *item, QRectF rect )
   }
 }
 
+void QgsModelViewMouseHandles::startMacroCommand( const QString &text )
+{
+  mView->startMacroCommand( text );
+}
+
+void QgsModelViewMouseHandles::endMacroCommand()
+{
+  mView->endMacroCommand();
+}
+
 
 ///@endcond PRIVATE
