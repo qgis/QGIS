@@ -3261,6 +3261,9 @@ class CORE_EXPORT QgsProcessingParameterMapTheme : public QgsProcessingParameter
  * \ingroup core
  * A datetime (or pure date or time) parameter for processing algorithms.
  *
+ * QgsProcessingParameterDateTime should be evaluated by calling QgsProcessingAlgorithm::parameterAsDateTime(),
+ * which will return a date time value.
+ *
  * * \since QGIS 3.14
  */
 class CORE_EXPORT QgsProcessingParameterDateTime : public QgsProcessingParameterDefinition

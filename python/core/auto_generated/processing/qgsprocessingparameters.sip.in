@@ -3502,6 +3502,9 @@ class QgsProcessingParameterDateTime : QgsProcessingParameterDefinition
 %Docstring
 A datetime (or pure date or time) parameter for processing algorithms.
 
+QgsProcessingParameterDateTime should be evaluated by calling QgsProcessingAlgorithm.parameterAsDateTime(),
+which will return a date time value.
+
 .. versionadded:: 3.14
 %End
 
