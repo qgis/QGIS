@@ -42,6 +42,7 @@ class GUI_EXPORT QgsModelViewMouseEvent : public QMouseEvent
      * Constructor for QgsModelViewMouseEvent. Should only be required to be called from the QgsModelGraphicsView.
      * \param view The view in which the event occurred.
      * \param event The original mouse event
+     * \param snaps set to TRUE if the event should be snapped
      */
     QgsModelViewMouseEvent( QgsModelGraphicsView *view, QMouseEvent *event, bool snaps );
 
