@@ -46,6 +46,7 @@
 #include "qgsquickscalebarkit.h"
 #include "qgsquicksubmodel.h"
 #include "qgsquickutils.h"
+#include "qgsquickvaluerelationlistmodel.h"
 
 static QObject *_utilsProvider( QQmlEngine *engine, QJSEngine *scriptEngine )
 {
@@ -87,6 +88,7 @@ void QgsQuickPlugin::registerTypes( const char *uri )
   qmlRegisterType< QgsQuickScaleBarKit >( uri, 0, 1, "ScaleBarKit" );
   qmlRegisterType< QgsQuickSubModel >( uri, 0, 1, "SubModel" );
   qmlRegisterType< QgsVectorLayer >( uri, 0, 1, "VectorLayer" );
+  qmlRegisterType< QgsQuickValueRelationListModel > ( uri, 0, 1, "ValueRelationListModel" );
 
   qmlRegisterSingletonType< QgsQuickUtils >( uri, 0, 1, "Utils", _utilsProvider );
 }
