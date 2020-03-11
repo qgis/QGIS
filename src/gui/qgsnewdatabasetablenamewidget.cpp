@@ -23,6 +23,10 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 
+
+// List of data item provider keys that are filesystem based
+QStringList QgsNewDatabaseTableNameWidget::FILESYSTEM_BASED_DATAITEM_PROVIDERS { QStringLiteral( "GPKG" ), QStringLiteral( "SPATIALITE" ) };
+
 QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   QgsBrowserGuiModel *browserModel,
   const QStringList &providersFilter,
@@ -44,8 +48,6 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
 
   setupUi( this );
 
-  mValidationResults->setStyleSheet( QStringLiteral( "* { font-weight: bold; color: red; }" ) );
-
   QStringList hiddenProviders
   {
     QStringLiteral( "special:Favorites" ),
@@ -63,8 +65,8 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
       hiddenProviders.push_back( provider->name() );
       continue;
     }
-    QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( provider->dataProviderKey() ) };
-    if ( ! md )
+    QgsProviderMetadata *metadata { QgsProviderRegistry::instance()->providerMetadata( provider->dataProviderKey() ) };
+    if ( ! metadata )
     {
       hiddenProviders.push_back( provider->name() );
       continue;
@@ -90,7 +92,6 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   mBrowserProxyModel.setDataItemProviderKeyFilter( hiddenProviders );
   mBrowserProxyModel.setShowLayers( false );
   mBrowserTreeView->setHeaderHidden( true );
-  mBrowserTreeView->setExpandsOnDoubleClick( false );
   mBrowserTreeView->setModel( &mBrowserProxyModel );
   mBrowserTreeView->setBrowserModel( mBrowserModel );
 
@@ -99,6 +100,7 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   {
     mTableName = mNewTableName->text();
     emit tableNameChanged( mTableName );
+    updateUri();
     validate();
   } );
 
@@ -106,40 +108,39 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   {
     if ( index.isValid() )
     {
-      const QgsDataItem *dataItem( mBrowserProxyModel.dataItem( index ) );
-      if ( dataItem )
+      if ( const QgsDataItem *dataItem = mBrowserProxyModel.dataItem( index ) )
       {
-        const QgsDataCollectionItem *collectionItem = qobject_cast<const QgsDataCollectionItem *>( dataItem );
-        if ( collectionItem )
+        if ( const QgsDataCollectionItem *collectionItem = qobject_cast<const QgsDataCollectionItem *>( dataItem ) )
         {
           const QString providerKey { QgsApplication::dataItemProviderRegistry()->dataProviderKey( dataItem->providerKey() ) };
-          if ( mShownProviders.contains( providerKey ) )
+          bool validationRequired { false };
+          const QString oldSchema { mSchemaName };
+
+          if ( mDataProviderKey != providerKey )
           {
-            bool validationRequired { false };
-            const QString oldSchema { mSchemaName };
+            mSchemaName.clear();
+            mDataProviderKey = providerKey;
+            emit providerKeyChanged( providerKey );
+            validationRequired = true;
+          }
 
-            if ( mDataProviderKey != providerKey )
+          if ( collectionItem->layerCollection( ) )
+          {
+            mIsFilePath = FILESYSTEM_BASED_DATAITEM_PROVIDERS.contains( collectionItem->providerKey() );
+            // Data items for filesystem based items are in the form gpkg://path/to/file.gpkg
+            mSchemaName = mIsFilePath ? collectionItem->path().remove( QRegularExpression( QStringLiteral( "^[A-z]+:/" ) ) ) : collectionItem->name(); // it may be cleared
+            mConnectionName = mIsFilePath ? collectionItem->name() : collectionItem->parent()->name();
+            if ( oldSchema != mSchemaName )
             {
-              mSchemaName.clear();
-              emit providerKeyChanged( providerKey );
-              mDataProviderKey = providerKey;
-              validate();
+              emit schemaNameChanged( mSchemaName );
+              validationRequired = true;
             }
+          }
 
-            if ( collectionItem->layerCollection( ) )
-            {
-              mSchemaName = collectionItem->name(); // it may be cleared
-              if ( oldSchema != collectionItem->name() )
-              {
-                emit schemaNameChanged( mSchemaName );
-                validationRequired = true;
-              }
-            }
-
-            if ( validationRequired )
-            {
-              validate();
-            }
+          if ( validationRequired )
+          {
+            updateUri();
+            validate();
           }
         }
       }
@@ -147,20 +148,59 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   } );
 
   validate();
-
 }
 
-QString QgsNewDatabaseTableNameWidget::schema()
+void QgsNewDatabaseTableNameWidget::updateUri()
+{
+  const QString oldUri { mUri };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( mDataProviderKey ) };
+  if ( md )
+  {
+    QgsAbstractProviderConnection *conn { md->findConnection( mConnectionName ) };
+    if ( conn )
+    {
+      QVariantMap uriParts { md->decodeUri( conn->uri() ) };
+      uriParts[ QStringLiteral( "layerName" ) ] = mTableName;
+      uriParts[ QStringLiteral( "schema" ) ] = mSchemaName;
+      uriParts[ QStringLiteral( "table" ) ] = mTableName;
+      if ( mIsFilePath )
+      {
+        uriParts[ QStringLiteral( "dbname" ) ] = mSchemaName;
+      }
+      mUri = md->encodeUri( uriParts );
+    }
+    else
+    {
+      mUri = QString();
+    }
+  }
+  else
+  {
+    mUri = QString();
+  }
+
+  if ( mUri != oldUri )
+  {
+    emit uriChanged( mUri );
+  }
+}
+
+QString QgsNewDatabaseTableNameWidget::schema() const
 {
   return mSchemaName;
 }
 
-QString QgsNewDatabaseTableNameWidget::table()
+QString QgsNewDatabaseTableNameWidget::uri() const
+{
+  return mUri;
+}
+
+QString QgsNewDatabaseTableNameWidget::table() const
 {
   return mTableName;
 }
 
-QString QgsNewDatabaseTableNameWidget::dataProviderKey()
+QString QgsNewDatabaseTableNameWidget::dataProviderKey() const
 {
   return mDataProviderKey;
 }
@@ -177,6 +217,9 @@ void QgsNewDatabaseTableNameWidget::validate()
 
   mValidationError.clear();
 
+  // Whether to show it red
+  bool isError { false };
+
   if ( ! mIsValid )
   {
     if ( mTableName.isEmpty() && mSchemaName.isEmpty() )
@@ -187,6 +230,7 @@ void QgsNewDatabaseTableNameWidget::validate()
               ! mSchemaName.isEmpty() &&
               tableNames( ).contains( mTableName ) )
     {
+      isError = true;
       mValidationError = tr( "A table named '%1' already exists" ).arg( mTableName );
     }
     else if ( mSchemaName.isEmpty() )
@@ -206,6 +250,11 @@ void QgsNewDatabaseTableNameWidget::validate()
       mValidationError = tr( "Select a database schema and enter a unique name for the new table" );
     }
   }
+
+  mValidationResults->setStyleSheet( isError ?
+                                     QStringLiteral( "* { color: red; }" ) :
+                                     QString() );
+
   mValidationResults->setText( mValidationError );
   mValidationResults->setVisible( ! mIsValid );
   if ( wasValid != mIsValid )
@@ -226,26 +275,29 @@ QStringList QgsNewDatabaseTableNameWidget::tableNames()
       const QString dataProviderKey { QgsApplication::dataItemProviderRegistry()->dataProviderKey( dataItem->providerKey() ) };
       if ( ! dataProviderKey.isEmpty() )
       {
-        QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( dataProviderKey ) };
-        if ( md )
+        QgsProviderMetadata *metadata { QgsProviderRegistry::instance()->providerMetadata( dataProviderKey ) };
+        if ( metadata )
         {
-          QgsDataItem *parentDataItem { dataItem->parent() };
+          QgsDataItem *parentDataItem { mIsFilePath ? dataItem : dataItem->parent() };
           if ( parentDataItem )
           {
-            QgsAbstractProviderConnection *conn { md->findConnection( parentDataItem->name() ) };
-            const QString cacheKey { conn->uri() + dataItem->name() };
-            if ( mTableNamesCache.contains( cacheKey ) )
+            QgsAbstractProviderConnection *conn { metadata->findConnection( parentDataItem->name() ) };
+            if ( conn )
             {
-              tableNames = mTableNamesCache.value( cacheKey );
-            }
-            else if ( conn && static_cast<QgsAbstractDatabaseProviderConnection *>( conn ) )
-            {
-              const auto tables { static_cast<QgsAbstractDatabaseProviderConnection *>( conn )->tables( dataItem->name() ) };
-              for ( const auto &tp : tables )
+              const QString cacheKey { conn->uri() + dataItem->name() };
+              if ( mTableNamesCache.contains( cacheKey ) )
               {
-                tableNames.push_back( tp.tableName() );
+                tableNames = mTableNamesCache.value( cacheKey );
               }
-              mTableNamesCache[ cacheKey ] = tableNames;
+              else if ( conn && static_cast<QgsAbstractDatabaseProviderConnection *>( conn ) )
+              {
+                const auto tables { static_cast<QgsAbstractDatabaseProviderConnection *>( conn )->tables( dataItem->name() ) };
+                for ( const auto &tp : tables )
+                {
+                  tableNames.push_back( tp.tableName() );
+                }
+                mTableNamesCache[ cacheKey ] = tableNames;
+              }
             }
           }
         }
@@ -260,7 +312,7 @@ bool QgsNewDatabaseTableNameWidget::isValid() const
   return mIsValid;
 }
 
-QString QgsNewDatabaseTableNameWidget::validationError()
+QString QgsNewDatabaseTableNameWidget::validationError() const
 {
   return mValidationError;
 }

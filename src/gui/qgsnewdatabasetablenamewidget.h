@@ -59,19 +59,25 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QWidget, private Ui::Qgs
                                             QWidget *parent = nullptr );
 
     /**
-     * Returns the currently selected schema for the new table
+     * Returns the currently selected schema or file path (in case of filesystem-based DBs like spatialite or GPKG) for the new table
      */
-    QString schema();
+    QString schema() const;
+
+    /**
+     * Returns the (possibly blank) string representation of the new table data source URI.
+     * The URI might be invalid in case the widget is not in a valid state.
+     */
+    QString uri() const;
 
     /**
      * Returns the current name of the new table
      */
-    QString table();
+    QString table() const;
 
     /**
      * Returns the currently selected data item provider key
      */
-    QString dataProviderKey();
+    QString dataProviderKey() const;
 
     /**
      * Returns TRUE if the widget contains a valid new table name
@@ -81,7 +87,9 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QWidget, private Ui::Qgs
     /**
      * Returns the validation error or an empty string is the widget status is valid
      */
-    QString validationError();
+    QString validationError() const;
+
+
 
   signals:
 
@@ -93,7 +101,7 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QWidget, private Ui::Qgs
     void validationChanged( bool isValid );
 
     /**
-      * This signal is emitted when the user selects a schema.
+      * This signal is emitted when the user selects a schema (or file path for filesystem-based DBs like spatialite or GPKG).
       *
       * \param schemaName the name of the selected schema
       */
@@ -114,16 +122,28 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QWidget, private Ui::Qgs
       */
     void providerKeyChanged( const QString &providerKey );
 
+    /**
+     * This signal is emitted when the URI of the new table changes, whether or not it is a valid one.
+     *
+     * \param uri URI string representation
+     */
+    void uriChanged( const QString &uri );
+
 
   private:
 
-    QgsBrowserProxyModel mBrowserProxyModel;
-    QgsBrowserGuiModel *mBrowserModel = nullptr;
+    void updateUri();
     void validate();
     QStringList tableNames();
+
+    QgsBrowserProxyModel mBrowserProxyModel;
+    QgsBrowserGuiModel *mBrowserModel = nullptr;
     QString mDataProviderKey;
     QString mTableName;
     QString mSchemaName;
+    QString mConnectionName;
+    bool mIsFilePath = false;
+    QString mUri;
     //! List of data provider keys of shown providers
     QSet<QString> mShownProviders;
     bool mIsValid = false;
@@ -131,6 +151,7 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QWidget, private Ui::Qgs
     //! Table names cache
     QMap<QString, QStringList> mTableNamesCache;
 
+    static QStringList FILESYSTEM_BASED_DATAITEM_PROVIDERS;
 
     // For testing:
     friend class TestQgsNewDatabaseTableNameWidget;

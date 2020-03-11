@@ -46,17 +46,23 @@ Constructs a new QgsNewDatabaseTableNameWidget
 :param parent: optional parent for this widget
 %End
 
-    QString schema();
+    QString schema() const;
 %Docstring
-Returns the currently selected schema for the new table
+Returns the currently selected schema or file path (in case of filesystem-based DBs like spatialite or GPKG) for the new table
 %End
 
-    QString table();
+    QString uri() const;
+%Docstring
+Returns the (possibly blank) string representation of the new table data source URI.
+The URI might be invalid in case the widget is not in a valid state.
+%End
+
+    QString table() const;
 %Docstring
 Returns the current name of the new table
 %End
 
-    QString dataProviderKey();
+    QString dataProviderKey() const;
 %Docstring
 Returns the currently selected data item provider key
 %End
@@ -66,10 +72,12 @@ Returns the currently selected data item provider key
 Returns ``True`` if the widget contains a valid new table name
 %End
 
-    QString validationError();
+    QString validationError() const;
 %Docstring
 Returns the validation error or an empty string is the widget status is valid
 %End
+
+
 
   signals:
 
@@ -82,7 +90,7 @@ This signal is emitted whenever the validation status of the widget changes.
 
     void schemaNameChanged( const QString &schemaName );
 %Docstring
-This signal is emitted when the user selects a schema.
+This signal is emitted when the user selects a schema (or file path for filesystem-based DBs like spatialite or GPKG).
 
 :param schemaName: the name of the selected schema
 %End
@@ -100,6 +108,13 @@ This signal is emitted when the selects a data provider or a schema name
 that has a different data provider than the previously selected one.
 
 :param providerKey: the data provider key of the selected schema
+%End
+
+    void uriChanged( const QString &uri );
+%Docstring
+This signal is emitted when the URI of the new table changes, whether or not it is a valid one.
+
+:param uri: URI string representation
 %End
 
 
