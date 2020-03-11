@@ -27,21 +27,20 @@ QgsTemporalNavigationObject::QgsTemporalNavigationObject( QObject *parent )
            this, &QgsTemporalNavigationObject::timerTimeout );
 }
 
-
 void QgsTemporalNavigationObject::timerTimeout()
 {
   switch ( mPlayBackMode )
   {
-    case PlaybackMode::Forward:
-      forward();
+    case AnimationState::Forward:
+      next();
       break;
 
-    case PlaybackMode::Reverse:
-      backward();
+    case AnimationState::Reverse:
+      previous();
       break;
 
-    case PlaybackMode::Idle:
-      pause();
+    case AnimationState::Idle:
+      // should not happen - in an idle state the timeout won't occur
       break;
   }
 }
@@ -76,10 +75,6 @@ QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const
 
 void QgsTemporalNavigationObject::setCurrentFrameNumber( long long frameNumber )
 {
-  if ( frameNumber < 0 ||
-       frameNumber >= totalFrameCount() )
-    return;
-
   if ( mCurrentFrameNumber != frameNumber )
   {
     mCurrentFrameNumber = frameNumber;
@@ -133,14 +128,12 @@ void QgsTemporalNavigationObject::playForward()
 {
   setAnimationState( AnimationState::Forward );
   play();
-  next();
 }
 
 void QgsTemporalNavigationObject::playBackward()
 {
   setAnimationState( AnimationState::Reverse );
   play();
-  previous();
 }
 
 void QgsTemporalNavigationObject::next()
