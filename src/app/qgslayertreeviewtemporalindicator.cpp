@@ -30,7 +30,7 @@ QgsLayerTreeViewTemporalIndicatorProvider::QgsLayerTreeViewTemporalIndicatorProv
 
 void QgsLayerTreeViewTemporalIndicatorProvider::connectSignals( QgsMapLayer *layer )
 {
-  if ( !( qobject_cast<QgsVectorLayer *>( layer ) || qobject_cast<QgsRasterLayer *>( layer ) ) || !layer->temporalProperties() )
+  if ( !layer->temporalProperties() )
     return;
 
   connect( layer->temporalProperties(), &QgsMapLayerTemporalProperties::changed, this, [ this, layer ]( ) { this->onLayerChanged( layer ); } );
@@ -42,11 +42,21 @@ void QgsLayerTreeViewTemporalIndicatorProvider::onIndicatorClicked( const QModel
   if ( !QgsLayerTree::isLayer( node ) )
     return;
 
-  QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( QgsLayerTree::toLayer( node )->layer() );
-  if ( !rasterLayer || !rasterLayer->isValid() )
+  QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+  if ( !layer )
     return;
 
-  QgisApp::instance()->showLayerProperties( rasterLayer );
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::RasterLayer:
+      QgisApp::instance()->showLayerProperties( qobject_cast<QgsRasterLayer *>( layer ) );
+      break;
+
+    case QgsMapLayerType::VectorLayer:
+    case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::PluginLayer:
+      break;
+  }
 }
 
 bool QgsLayerTreeViewTemporalIndicatorProvider::acceptLayer( QgsMapLayer *layer )
@@ -61,20 +71,28 @@ bool QgsLayerTreeViewTemporalIndicatorProvider::acceptLayer( QgsMapLayer *layer 
 
 QString QgsLayerTreeViewTemporalIndicatorProvider::iconName( QgsMapLayer *layer )
 {
-  if ( layer->temporalProperties()->temporalSource() ==
-       QgsMapLayerTemporalProperties::TemporalSource::Project )
-    return QStringLiteral( "/mIndicatorTimeFromProject.svg" );
+  switch ( layer->temporalProperties()->temporalSource() )
+  {
+    case QgsMapLayerTemporalProperties::TemporalSource::Project:
+      return QStringLiteral( "/mIndicatorTimeFromProject.svg" );
 
-  return QStringLiteral( "/mIndicatorTemporal.svg" );
+    case QgsMapLayerTemporalProperties::TemporalSource::Layer:
+      return QStringLiteral( "/mIndicatorTemporal.svg" );
+  }
+
+  return QString();
 }
 
 QString QgsLayerTreeViewTemporalIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
-  if ( layer->temporalProperties()->temporalSource() ==
-       QgsMapLayerTemporalProperties::TemporalSource::Project )
-    return tr( "<b>Temporal layer, currently using project's time range </b>" );
+  switch ( layer->temporalProperties()->temporalSource() )
+  {
+    case QgsMapLayerTemporalProperties::TemporalSource::Project:
+      return tr( "<b>Temporal layer, currently using project's time range </b>" );
 
-  return tr( "<b>Temporal layer </b>");
+    case QgsMapLayerTemporalProperties::TemporalSource::Layer:
+      return tr( "<b>Temporal layer </b>" );
+  }
 }
 
 void QgsLayerTreeViewTemporalIndicatorProvider::onLayerChanged( QgsMapLayer *layer )
