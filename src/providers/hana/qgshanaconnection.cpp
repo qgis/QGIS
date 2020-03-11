@@ -44,19 +44,19 @@ using namespace std;
 static const uint8_t CREDENTIALS_INPUT_MAX_ATTEMPTS = 5;
 
 static void addNewLayer( QVector<QgsHanaLayerProperty> &list,
-                const QgsHanaLayerProperty &layerProperty, bool checkDuplicates = false )
+                         const QgsHanaLayerProperty &layerProperty, bool checkDuplicates = false )
 {
-    if ( checkDuplicates )
-    {
-      auto res = std::find_if( list.begin(), list.end(),
-                               [&]( const QgsHanaLayerProperty & lp )
-      { return ( lp.schemaName == layerProperty.schemaName && lp.tableName == layerProperty.tableName ); } );
+  if ( checkDuplicates )
+  {
+    auto res = std::find_if( list.begin(), list.end(),
+                             [&]( const QgsHanaLayerProperty & lp )
+    { return ( lp.schemaName == layerProperty.schemaName && lp.tableName == layerProperty.tableName ); } );
 
-      if ( res != list.end() )
-        return;
-    }
+    if ( res != list.end() )
+      return;
+  }
 
-    list << layerProperty;
+  list << layerProperty;
 }
 
 bool QgsHanaConnection::sConnectionAttemptCanceled = false;
