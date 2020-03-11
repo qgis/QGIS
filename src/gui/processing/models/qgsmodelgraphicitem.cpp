@@ -89,6 +89,13 @@ void QgsModelDesignerFlatButtonGraphicItem::mousePressEvent( QGraphicsSceneMouse
     emit clicked();
 }
 
+void QgsModelDesignerFlatButtonGraphicItem::setPosition( const QPointF &position )
+{
+  mPosition = position;
+  prepareGeometryChange();
+  update();
+}
+
 QgsModelGraphicsView *QgsModelDesignerFlatButtonGraphicItem::view()
 {
   return qobject_cast< QgsModelGraphicsView * >( scene()->views().first() );

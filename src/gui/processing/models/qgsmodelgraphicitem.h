@@ -53,6 +53,11 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
 
     /**
+     * Sets the button's \a position.
+     */
+    void setPosition( const QPointF &position );
+
+    /**
      * Returns the associated model view.
      */
     QgsModelGraphicsView *view();

@@ -58,7 +58,6 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     //! Available flags
     enum Flag
     {
-      FlagMultilineText = 1 << 0, //!< Show multiline text in label
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -300,6 +299,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) = 0;
 
+    /**
+     * Updates the item's button positions, based on the current item rect.
+     */
+    void updateButtonPositions();
+
   private:
 
     QSizeF itemSize() const;
@@ -496,7 +500,6 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
                                 QGraphicsItem *parent SIP_TRANSFERTHIS );
     ~QgsModelCommentGraphicItem() override;
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
-    Flags flags() const override;
   protected:
 
     QColor fillColor( State state ) const override;

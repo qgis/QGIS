@@ -48,6 +48,11 @@ for the button. The button will be rendered at the specified ``position`` and ``
     virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
 
 
+    void setPosition( const QPointF &position );
+%Docstring
+Sets the button's ``position``.
+%End
+
     QgsModelGraphicsView *view();
 %Docstring
 Returns the associated model view.

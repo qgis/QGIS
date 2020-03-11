@@ -36,7 +36,6 @@ Base class for graphic items representing model components in the model designer
 
     enum Flag
     {
-      FlagMultilineText,
     };
     typedef QFlags<QgsModelComponentGraphicItem::Flag> Flags;
 
@@ -287,6 +286,11 @@ Returns a QPixmap version of the item's icon, if available.
 Updates the position and size stored in the model for the associated comment
 %End
 
+    void updateButtonPositions();
+%Docstring
+Updates the item's button positions, based on the current item rect.
+%End
+
 };
 QFlags<QgsModelComponentGraphicItem::Flag> operator|(QgsModelComponentGraphicItem::Flag f1, QFlags<QgsModelComponentGraphicItem::Flag> f2);
 
@@ -484,8 +488,6 @@ Ownership of ``output`` is transferred to the item.
 %End
     ~QgsModelCommentGraphicItem();
     virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
-
-    virtual Flags flags() const;
 
   protected:
 
