@@ -194,6 +194,18 @@ Called when the comment attached to the item should be edited.
 The default implementation does nothing.
 %End
 
+    virtual bool canDeleteComponent();
+%Docstring
+Returns ``True`` if the component can be deleted.
+%End
+
+    virtual void deleteComponent();
+%Docstring
+Called when the component should be deleted.
+
+The default implementation does nothing.
+%End
+
   signals:
 
 
@@ -232,13 +244,6 @@ Emitted when item requires that all connected arrow paths are recalculated.
     virtual void editComponent();
 %Docstring
 Called when the component should be edited.
-
-The default implementation does nothing.
-%End
-
-    virtual void deleteComponent();
-%Docstring
-Called when the component should be deleted.
 
 The default implementation does nothing.
 %End
@@ -326,6 +331,8 @@ Ownership of ``parameter`` is transferred to the item.
 
     virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
 
+    virtual bool canDeleteComponent();
+
 
   protected:
 
@@ -376,6 +383,8 @@ it must exist for the lifetime of this object.
 Ownership of ``child`` is transferred to the item.
 %End
     virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
+
+    virtual bool canDeleteComponent();
 
 
   protected:
@@ -435,6 +444,9 @@ it must exist for the lifetime of this object.
 Ownership of ``output`` is transferred to the item.
 %End
 
+    virtual bool canDeleteComponent();
+
+
   protected:
 
     virtual QColor fillColor( State state ) const;
@@ -488,6 +500,8 @@ Ownership of ``output`` is transferred to the item.
 %End
     ~QgsModelCommentGraphicItem();
     virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
+
+    virtual bool canDeleteComponent();
 
   protected:
 
