@@ -31,6 +31,7 @@ class QGraphicsView;
 class QgsLayoutView;
 class QgsLayoutItem;
 class QInputEvent;
+class QgsAbstractLayoutUndoCommand;
 
 ///@cond PRIVATE
 
@@ -67,21 +68,26 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QgsGraphicsViewMouseHandles
 
   protected:
 
-    void mouseMoveEvent( QGraphicsSceneMouseEvent *event ) override;
-    void mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) override;
-    void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
-
-    void drawSelectedItemBounds( QPainter *painter ) override;
     void setViewportCursor( Qt::CursorShape cursor ) override;
     QList<QGraphicsItem *> sceneItemsAtPoint( QPointF scenePoint ) override;
-
+    QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const override;
+    bool itemIsLocked( QGraphicsItem *item ) override;
+    bool itemIsGroupMember( QGraphicsItem *item ) override;
+    QRectF itemRect( QGraphicsItem *item ) const override;
+    void expandItemList( const QList< QGraphicsItem * > &items, QList< QGraphicsItem * > &collected ) const override;
+    void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) override;
+    void setItemRect( QGraphicsItem *item, QRectF rect ) override;
+    void showStatusMessage( const QString &message ) override;
+    void hideAlignItems() override;
+    QPointF snapPoint( QPointF originalPoint, SnapGuideMode mode, bool snapHorizontal = true, bool snapVertical = true ) override;
+    void createItemCommand( QGraphicsItem *item ) override;
+    void endItemCommand( QGraphicsItem *item ) override;
+    void startMacroCommand( const QString &text ) override;
+    void endMacroCommand() override;
   public slots:
 
     //! Sets up listeners to sizeChanged signal for all selected items
     void selectionChanged();
-
-    //! Redraws handles when selected item size changes
-    void selectedItemSizeChanged();
 
     //! Redraws handles when selected item rotation changes
     void selectedItemRotationChanged();
@@ -95,32 +101,7 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QgsGraphicsViewMouseHandles
     QGraphicsLineItem *mHorizontalSnapLine = nullptr;
     QGraphicsLineItem *mVerticalSnapLine = nullptr;
 
-    //! Returns the mouse handle bounds of current selection
-    QRectF selectionBounds() const;
-
-    //! Returns TRUE if all selected items have same rotation, and if so, updates passed rotation variable
-    bool selectionRotation( double &rotation ) const;
-
-    //! Redraws or hides the handles based on the current selection
-    void updateHandles();
-
-    //! Handles dragging of items during mouse move
-    void dragMouseMove( QPointF currentPosition, bool lockMovement, bool preventSnap );
-
-    //! Handles resizing of items during mouse move
-    void resizeMouseMove( QPointF currentPosition, bool lockAspect, bool fromCenter );
-
-    //resets the layout designer status bar to the default message
-    void resetStatusBar();
-
-    //! Snaps an item or point (depending on mode) originating at originalPoint to the grid or align rulers
-    QPointF snapPoint( QPointF originalPoint, SnapGuideMode mode, bool snapHorizontal = true, bool snapVertical = true );
-
-    void hideAlignItems();
-
-    //! Collects all items from a list of \a items, exploring for any group members and adding them too
-    void collectItems( const QList< QgsLayoutItem * > &items, QList< QgsLayoutItem * > &collected );
-
+    std::unique_ptr< QgsAbstractLayoutUndoCommand > mItemCommand;
 };
 
 ///@endcond PRIVATE
