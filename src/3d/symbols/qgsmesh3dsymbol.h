@@ -76,6 +76,20 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
+    /**
+     * Returns if the 3d rendering is enabled
+     *
+     * \since QGIS 3.14
+     */
+    bool renderer3dEnabled() const;
+
+    /**
+     * Sets if the 3d rendering is enabled
+     *
+     * \since QGIS 3.14
+     */
+    void setRenderer3dEnabled( bool mRenderer3dEnabled );
+
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
     Qgs3DTypes::AltitudeClamping altitudeClamping() const { return mAltClamping; }
     //! Sets method that determines altitude (whether to clamp to feature to terrain)
@@ -308,6 +322,8 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     float mHeight = 0.0f;           //!< Base height of triangles
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
     bool mAddBackFaces = false;
+
+    bool mRenderer3dEnabled = true;
 
     //! Triangles settings
     bool mSmoothedTriangles = false;
