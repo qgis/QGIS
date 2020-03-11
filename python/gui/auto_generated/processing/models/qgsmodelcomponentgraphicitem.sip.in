@@ -239,6 +239,11 @@ Emitted when item requests that all connected arrows are repainted.
 Emitted when item requires that all connected arrow paths are recalculated.
 %End
 
+    void sizePositionChanged();
+%Docstring
+Emitted when the item's size or position changes.
+%End
+
   protected slots:
 
     virtual void editComponent();

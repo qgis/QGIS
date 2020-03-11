@@ -118,6 +118,7 @@ void QgsModelComponentGraphicItem::moveComponentBy( qreal dx, qreal dy )
   updateStoredComponentPosition( pos(), mComponent->size() );
   emit changed();
 
+  emit sizePositionChanged();
   emit updateArrowPaths();
 }
 
@@ -141,6 +142,7 @@ void QgsModelComponentGraphicItem::setItemRect( QRectF )
 
   emit changed();
 
+  emit sizePositionChanged();
   emit updateArrowPaths();
 }
 
