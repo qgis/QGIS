@@ -68,8 +68,8 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
      */
     enum TemporalSource
     {
-      Layer = 0, //! Defined from layer .
-      Project = 1//! Defined from project time settings;
+      Layer = 0, //!< Layer's temporal range has been manually defined
+      Project = 1 //!< Layer should inherit its temporal range from the project's time settings
     };
 
     /**

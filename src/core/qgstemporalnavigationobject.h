@@ -31,7 +31,7 @@ class QgsMapLayer;
 
 /**
  * \ingroup core
- * The QgsTemporalNavigationObject class
+ * Implements a temporal controller based on a frame by frame navigation and animation.
  *
  * \since QGIS 3.14
  */
@@ -42,100 +42,113 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
   public:
 
     /**
-      * Constructor for QgsTemporalNavigationObject
-      *
+      * Constructor for QgsTemporalNavigationObject, with the specified \a parent object.
       */
-    QgsTemporalNavigationObject( QObject *parent = nullptr );
+    QgsTemporalNavigationObject( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! Represents the current playback mode
-    enum PlaybackMode
+    //! Represents the current animation state.
+    enum AnimationState
     {
-      Forward, //! Animation is playing forward.
-      Reverse, //! Animation is playing in reverse.
-      Idle, //! Animation is paused.
+      Forward, //!< Animation is playing forward.
+      Reverse, //!< Animation is playing in reverse.
+      Idle, //!< Animation is paused.
     };
 
     /**
-     * Sets the current playback mode.
+     * Sets the current animation \a state.
      *
-     * \see playBackMode()
+     * \see animationState()
      */
-    void setPlayBackMode( PlaybackMode mode );
+    void setAnimationState( AnimationState state );
 
     /**
-     * Returns the current playback mode.
+     * Returns the current animation state.
      *
-     * \see setPlayBackMode()
+     * \see setAnimationState()
      */
-    PlaybackMode playBackMode() const;
+    AnimationState animationState() const;
 
     /**
-     * Sets the navigation temporal extents.
+     * Sets the navigation temporal \a extents, which dictate the earliest
+     * and latest date time possible in the animation.
+     *
+     * \note Calling this will reset the currentFrameNumber() to the first frame.
      *
      * \see temporalExtents()
      */
-    void setTemporalExtents( QgsDateTimeRange temporalExtents );
+    void setTemporalExtents( const QgsDateTimeRange &extents );
 
     /**
-     * Returns the navigation temporal extent.
+     * Returns the navigation temporal extents, which dictate the earliest
+     * and latest date time possible in the animation.
      *
      * \see setTemporalExtents()
      */
     QgsDateTimeRange temporalExtents() const;
 
     /**
-     * Sets the current frame value.
+     * Sets the current animation \a frame number.
+     *
+     * Caling this method will change the controllers current datetime range to match, based on the
+     * temporalExtents() and frameDuration() values.
      *
      * \see currentFrameNumber()
      */
-    void setCurrentFrameNumber( long long frameNumber );
+    void setCurrentFrameNumber( long long frame );
 
     /**
-     * Returns the current set frame value.
+     * Returns the current frame number.
      *
-     * \see setCurrentFrameNumber();
+     * \see setCurrentFrameNumber()
      */
     long long currentFrameNumber() const;
 
     /**
-     * Sets the frame duration
+     * Sets the frame \a duration, which dictates the temporal length of each frame in the animation.
+     *
+     * \note Calling this will reset the currentFrameNumber() to the first frame.
      *
      * \see frameDuration()
      */
-    void setFrameDuration( QgsInterval frameDuration );
+    void setFrameDuration( QgsInterval duration );
 
     /**
-     * Returns the current set frame value.
+     * Returns the current set frame duration, which dictates the temporal length of each frame in the animation.
      *
      * \see setFrameDuration()
      */
     QgsInterval frameDuration() const;
 
     /**
-     * Calculate the temporal range from the navigation start time, using
-     * current frame number and the frame duration.
+     * Calculates the temporal range associated with a particular animation \a frame.
      *
+     * This is calculated from the navigation start time (taken from temporalExtents()),
+     * the specified \a frame number, and the frame duration (see frameDuration()).
      */
     QgsDateTimeRange dateTimeRangeForFrameNumber( long long frame ) const;
 
     /**
-     * Sets the frames per seconds value. This is used to define
-     * the navigation frame rate.
+     * Sets the animation frame \a rate, in frames per second.
+     *
+     * This setting controls the overall playback speed of the animation, i.e. how quickly
+     * a playing animation will advance to the next frame.
      *
      * \see framesPerSeconds()
      */
-    void setFramesPerSeconds( double framesPerSeconds );
+    void setFramesPerSeconds( double rate );
 
     /**
-     * Returns the set frames per seconds value.
+     * Returns the animation frame rate, in frames per second.
      *
-     * \see setFramesPerSeconds();
+     * This setting controls the overall playback speed of the animation, i.e. how quickly
+     * a playing animation will advance to the next frame.
+     *
+     * \see setFramesPerSeconds()
      */
     double framesPerSeconds() const;
 
     /**
      * Returns the total number of frames for the navigation.
-     *
      */
     long long totalFrameCount();
 
@@ -143,29 +156,55 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
 
     /**
      * Starts playing the temporal navigation from its current frame,
-     * using the direction specified by playBackMode()
+     * using the direction specified by animationState()
      */
     void play();
 
-    //! Stops the temporal navigation.
+    /**
+     * Pauses the temporal navigation.
+     *
+     * Calling this slot changes the animation state to idle, preventing
+     * automatic advancement of frames.
+     *
+     * It does not affect the current animation frame number or the current
+     * temporal range of the controller.
+     */
     void pause();
 
-    //! Starts the animation playing in a forward direction up till the end of frames.
-    void forward();
+    /**
+     * Starts the animation playing in a forward direction up till the end of all frames.
+     */
+    void playForward();
 
-    //! Starts the animation playing in a reverse direction until the beginning of the time range.
-    void backward();
+    /**
+     * Starts the animation playing in a reverse direction until the beginning of the time range.
+     */
+    void playBackward();
 
-    //! Forward the temporal navigation by one frame.
+    /**
+     * Advances to the next frame.
+     *
+     * \note Calling this slot does not change the current animation state, i.e. a paused animation
+     * will remain paused.
+     */
     void next();
 
-    //! Decrement the temporal navigation by one frame.
+    /**
+     * Jumps back to the previous frame.
+     *
+     * \note Calling this slot does not change the current animation state, i.e. a paused animation
+     * will remain paused.
+     */
     void previous();
 
-    //! Rewind the temporal navigation to start of the temporal extent.
+    /**
+     * Rewinds the temporal navigation to start of the temporal extent.
+     */
     void rewindToStart();
 
-    //! Skips the temporal navigation to end of the temporal extent.
+    /**
+     * Skips the temporal navigation to end of the temporal extent.
+     */
     void skipToEnd();
 
   private slots:
@@ -191,7 +230,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
     QTimer *mNewFrameTimer = nullptr;
 
     //! Navigation playback mode member
-    PlaybackMode mPlayBackMode = Idle;
+    AnimationState mPlayBackMode = Idle;
 
 };
 

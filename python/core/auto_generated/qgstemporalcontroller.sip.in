@@ -24,17 +24,17 @@ updates of the objects temporal range.
 %End
   public:
 
-    QgsTemporalController( QObject *parent = 0 );
+    QgsTemporalController( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsTemporalController.
+Constructor for QgsTemporalController, with the specified ``parent`` object.
 %End
 
   signals:
 
     void updateTemporalRange( const QgsDateTimeRange &range );
 %Docstring
-Signals that a temporal ``range`` has changed and need to be updated to
-the related objects.
+Signals that a temporal ``range`` has changed and needs to be updated in
+all connected objects.
 %End
 
 };

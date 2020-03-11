@@ -39,16 +39,16 @@ class CORE_EXPORT QgsTemporalController : public QObject
   public:
 
     /**
-     * Constructor for QgsTemporalController.
+     * Constructor for QgsTemporalController, with the specified \a parent object.
      *
     */
-    QgsTemporalController( QObject *parent = nullptr );
+    QgsTemporalController( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
   signals:
 
     /**
-     * Signals that a temporal \a range has changed and need to be updated to
-     * the related objects.
+     * Signals that a temporal \a range has changed and needs to be updated in
+     * all connected objects.
      */
     void updateTemporalRange( const QgsDateTimeRange &range );
 
