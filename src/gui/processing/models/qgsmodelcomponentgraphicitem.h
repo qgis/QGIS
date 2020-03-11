@@ -153,7 +153,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     virtual void modelHoverLeaveEvent( QgsModelViewMouseEvent *event );
 
     /**
-     * Handles a model double click \a event.
+     * Handles a model double-click \a event.
      */
     virtual void modelDoubleClickEvent( QgsModelViewMouseEvent *event );
 #endif
