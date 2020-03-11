@@ -38,21 +38,19 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
   public:
 
     /**
-     * Constructor for QgsRasterLayerTemporalProperties.
+     * Constructor for QgsRasterLayerTemporalProperties, with the specified \a parent object.
      *
      * The \a enabled argument specifies whether the temporal properties are initially enabled or not (see isActive()).
      */
-    QgsRasterLayerTemporalProperties( QObject *parent = nullptr, bool enabled = false );
-
-    virtual ~QgsRasterLayerTemporalProperties() = default;
+    QgsRasterLayerTemporalProperties( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enabled = false );
 
     /**
      * Mode of the raster temporal properties
      **/
     enum TemporalMode
     {
-      ModeFixedTemporalRange = 0, //! Mode when temporal properties have fixed start and end datetimes.
-      ModeTemporalRangeFromDataProvider = 1, //! Mode when raster layer depends on temporal range from its dataprovider.
+      ModeFixedTemporalRange = 0, //!< Mode when temporal properties have fixed start and end datetimes.
+      ModeTemporalRangeFromDataProvider = 1, //!< Mode when raster layer depends on temporal range from its dataprovider.
     };
 
     /**
@@ -75,9 +73,9 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      **/
     enum FetchMode
     {
-      Earliest = 0, //! Use the start datetime in the temporal range.
-      Latest = 1, //! Use the end datetime in the temporal range.
-      Range = 2 //! Use the datetimes in temporal range as range.
+      Earliest = 0, //!< Use the start datetime in the temporal range.
+      Latest = 1, //!< Use the end datetime in the temporal range.
+      Range = 2 //!< Use the datetimes in temporal range as range.
     };
 
     /**

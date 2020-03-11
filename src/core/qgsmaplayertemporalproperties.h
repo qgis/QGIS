@@ -31,7 +31,7 @@
  * \ingroup core
  * Base class for storage of map layer temporal properties.
  *
- * QgsMapLayerTemporalProperties expose user-configurable settings for controlling
+ * QgsMapLayerTemporalProperties exposes user-configurable settings for controlling
  * how an individual QgsMapLayer behaves in a temporal context, e.g. while animating a map object.
  *
  * \since QGIS 3.14
@@ -43,13 +43,11 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
   public:
 
     /**
-     * Constructor for QgsMapLayerTemporalProperties.
+     * Constructor for QgsMapLayerTemporalProperties, with the specified \a parent object.
      *
      * The \a enabled argument specifies whether the temporal properties are initially enabled or not (see isActive()).
      */
-    QgsMapLayerTemporalProperties( QObject *parent, bool enabled = false );
-
-    ~QgsMapLayerTemporalProperties() override;
+    QgsMapLayerTemporalProperties( QObject *parent SIP_TRANSFERTHIS, bool enabled = false );
 
     /**
      * Writes the properties to a DOM \a element, to be used later with readXml().

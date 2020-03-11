@@ -16,7 +16,7 @@ class QgsMapLayerTemporalProperties : QgsTemporalProperty
 %Docstring
 Base class for storage of map layer temporal properties.
 
-QgsMapLayerTemporalProperties expose user-configurable settings for controlling
+QgsMapLayerTemporalProperties exposes user-configurable settings for controlling
 how an individual QgsMapLayer behaves in a temporal context, e.g. while animating a map object.
 
 .. versionadded:: 3.14
@@ -27,14 +27,12 @@ how an individual QgsMapLayer behaves in a temporal context, e.g. while animatin
 %End
   public:
 
-    QgsMapLayerTemporalProperties( QObject *parent, bool enabled = false );
+    QgsMapLayerTemporalProperties( QObject *parent /TransferThis/, bool enabled = false );
 %Docstring
-Constructor for QgsMapLayerTemporalProperties.
+Constructor for QgsMapLayerTemporalProperties, with the specified ``parent`` object.
 
 The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see isActive()).
 %End
-
-    ~QgsMapLayerTemporalProperties();
 
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
 %Docstring

@@ -22,10 +22,6 @@ QgsMapLayerTemporalProperties::QgsMapLayerTemporalProperties( QObject *parent, b
 {
 }
 
-QgsMapLayerTemporalProperties::~QgsMapLayerTemporalProperties()
-{
-}
-
 void QgsMapLayerTemporalProperties::setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource source )
 {
   if ( mSource != source )

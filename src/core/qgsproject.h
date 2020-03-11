@@ -613,8 +613,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsProjectViewSettings *viewSettings();
 
     /**
-     * Returns the project's time settings, contains temporal range, which can
-     * be used in constraining temporal properties from temporal layers in the project.
+     * Returns the project's time settings, which contains the project's temporal range and other
+     * time based settings.
      *
      * \note not available in Python bindings
      * \since QGIS 3.14
@@ -622,8 +622,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     const QgsProjectTimeSettings *timeSettings() const SIP_SKIP;
 
     /**
-     * Returns the project's time settings, contains temporal range, which can
-     * be used in constraining temporal properties from temporal layers in the project.
+     * Returns the project's time settings, which contains the project's temporal range and other
+     * time based settings.
      *
      * \since QGIS 3.14
      */

@@ -23,14 +23,12 @@ Implementation of map layer temporal properties for raster layers.
 %End
   public:
 
-    QgsRasterLayerTemporalProperties( QObject *parent = 0, bool enabled = false );
+    QgsRasterLayerTemporalProperties( QObject *parent /TransferThis/ = 0, bool enabled = false );
 %Docstring
-Constructor for QgsRasterLayerTemporalProperties.
+Constructor for QgsRasterLayerTemporalProperties, with the specified ``parent`` object.
 
 The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see isActive()).
 %End
-
-    virtual ~QgsRasterLayerTemporalProperties();
 
     enum TemporalMode
     {

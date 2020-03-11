@@ -27,7 +27,7 @@ class QDomDocument;
 
 /**
  * Contains temporal settings and properties for the project,
- * this will be used in animating/showing temporal layers.
+ * this may be used when animating maps or showing temporal layers.
  *
  * \ingroup core
  * \since QGIS 3.14
@@ -41,7 +41,7 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
     /**
      * Constructor for QgsProjectTimeSettings with the specified \a parent object.
      */
-    QgsProjectTimeSettings( QObject *parent = nullptr );
+    QgsProjectTimeSettings( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Resets the settings to a default state.
@@ -49,21 +49,33 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
     void reset();
 
     /**
-     * Returns the project temporal range.
+     * Returns the project's temporal range, which indicates the earliest
+     * and latest datetime ranges associated with the project.
+     *
+     * \note This is a manual, use-set property, and does not necessarily
+     * coincide with the earliest and latest temporal ranges set for
+     * individual layers in the project.
      *
      * \see setTemporalRange()
+     * \see temporalRangeChanged()
      */
     QgsDateTimeRange temporalRange() const;
 
     /**
-     * Sets the project temporal range
+     * Sets the project's temporal \a range, which indicates the earliest
+     * and latest datetime ranges associated with the project.
+     *
+     * \note This is a manual, use-set property, and does not necessarily
+     * coincide with the earliest and latest temporal ranges set for
+     * individual layers in the project.
      *
      * \see temporalRange()
+     * \see temporalRangeChanged()
      */
-    void setTemporalRange( const QgsDateTimeRange &extent );
+    void setTemporalRange( const QgsDateTimeRange &range );
 
     /**
-     * Reads the settings's state from a DOM element.
+     * Reads the settings's state from a DOM \a element.
      * \see writeXml()
      */
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
@@ -74,16 +86,16 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
      */
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 
-
   signals:
 
     /**
-     * Emitted when temporal range changes.
+     * Emitted when the temporal range changes.
      *
      * \see temporalRange()
      * \see setTemporalRange()
      */
     void temporalRangeChanged();
+
   private:
 
     QgsDateTimeRange mRange;

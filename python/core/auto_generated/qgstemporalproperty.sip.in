@@ -25,9 +25,9 @@ Base class for temporal property.
 %End
   public:
 
-    QgsTemporalProperty( QObject *parent = 0, bool enabled = false );
+    QgsTemporalProperty( QObject *parent /TransferThis/ = 0, bool enabled = false );
 %Docstring
-Constructor for QgsTemporalProperty.
+Constructor for QgsTemporalProperty, with the specified ``parent`` object.
 
 The ``active`` argument specifies whether the property is initially active (see isActive()).
 %End
