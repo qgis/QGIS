@@ -95,20 +95,61 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
 
     bool shouldBlockEvent( QInputEvent *event ) const;
 
+  public slots:
+
+    //! Redraws handles when selected item size changes
+    void selectedItemSizeChanged();
+
+    //! Redraws handles when selected item rotation changes
+    void selectedItemRotationChanged();
+
   protected:
 
     void paintInternal( QPainter *painter, bool showHandles, bool showBoundingBoxes, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr );
 
-    //! Draw outlines for selected items
-    virtual void drawSelectedItemBounds( QPainter *painter ) = 0;
     //! Sets the mouse cursor for the QGraphicsView attached to the composition
     virtual void setViewportCursor( Qt::CursorShape cursor ) = 0;
 
     virtual QList<QGraphicsItem *> sceneItemsAtPoint( QPointF scenePoint ) = 0;
+    virtual QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const = 0;
+    virtual bool itemIsLocked( QGraphicsItem *item ) { Q_UNUSED( item ); return false; }
+    virtual bool itemIsGroupMember( QGraphicsItem *item ) { Q_UNUSED( item ); return false; }
+    virtual QRectF itemRect( QGraphicsItem *item ) const = 0;
+    virtual void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) = 0;
+    virtual void setItemRect( QGraphicsItem *item, QRectF rect ) = 0;
+    virtual void startMacroCommand( const QString &text );
+    virtual void endMacroCommand();
+    virtual void createItemCommand( QGraphicsItem *item );
+    virtual void endItemCommand( QGraphicsItem *item );
+    virtual void showStatusMessage( const QString &message ) { Q_UNUSED( message ) }
+    virtual void hideAlignItems() {}
+    //! Snaps an item or point (depending on mode) originating at originalPoint to the grid or align rulers
+    virtual QPointF snapPoint( QPointF originalPoint, SnapGuideMode mode, bool snapHorizontal = true, bool snapVertical = true );
+
+    //! Collects all items from a list of \a items, exploring for any group members and adding them too
+    virtual void expandItemList( const QList< QGraphicsItem * > &items, QList< QGraphicsItem * > &collected ) const;
 
     void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
     void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
+    void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
+    void mouseMoveEvent( QGraphicsSceneMouseEvent *event ) override;
+    void mouseReleaseEvent( QGraphicsSceneMouseEvent *event ) override;
+
+    //resets the layout designer status bar to the default message
+    void resetStatusBar();
+
+    //! Returns TRUE if all selected items have same rotation, and if so, updates passed rotation variable
+    bool selectionRotation( double &rotation ) const;
+
+    //! Redraws or hides the handles based on the current selection
+    void updateHandles();
+
+    //! Handles dragging of items during mouse move
+    void dragMouseMove( QPointF currentPosition, bool lockMovement, bool preventSnap );
+
+    //! Handles resizing of items during mouse move
+    void resizeMouseMove( QPointF currentPosition, bool lockAspect, bool fromCenter );
 
 
     QSizeF mCursorOffset;
@@ -146,12 +187,39 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     //! Calculates the distance of the mouse cursor from thed edge of the mouse handles
     QSizeF calcCursorEdgeOffset( QPointF cursorPos );
 
+    //! Returns the mouse handle bounds of current selection
+    QRectF selectionBounds() const;
+
+    /**
+     * Resizes a QRectF relative to a resized bounding rectangle.
+     * \param rectToResize QRectF to resize, contained within boundsBefore. The
+     * rectangle is linearly scaled to retain its relative position and size within
+     * boundsAfter.
+     * \param boundsBefore QRectF of bounds before resize
+     * \param boundsAfter QRectF of bounds after resize
+     */
+    static void relativeResizeRect( QRectF &rectToResize, const QRectF &boundsBefore, const QRectF &boundsAfter );
+
+    /**
+     * Returns a scaled position given a before and after range
+     * \param position initial position within before range to scale
+     * \param beforeMin minimum value in before range
+     * \param beforeMax maximum value in before range
+     * \param afterMin minimum value in after range
+     * \param afterMax maximum value in after range
+     * \returns position scaled to range specified by afterMin and afterMax
+     */
+    static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
+
   private:
 
     QGraphicsView *mView = nullptr;
 
     //! Draws the handles
     void drawHandles( QPainter *painter, double rectHandlerSize );
+
+    //! Draw outlines for selected items
+    void drawSelectedItemBounds( QPainter *painter );
 
     /**
      * Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
