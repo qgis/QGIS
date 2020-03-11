@@ -1875,7 +1875,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       rww->setShowLinkButton( relDef->showLinkButton() );
       rww->setShowUnlinkButton( relDef->showUnlinkButton() );
       rww->setShowSaveChildEditsButton( relDef->showSaveChildEditsButton() );
-      
+
       mWidgets.append( rww );
       mFormWidgets.append( formWidget );
 
