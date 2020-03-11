@@ -875,6 +875,14 @@ Evaluates the parameter with matching ``name`` to a connection name string.
 .. versionadded:: 3.14
 %End
 
+    QDateTime parameterAsDateTime( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``name`` to a DateTime, or returns an invalid date time if the parameter was not set.
+
+.. versionadded:: 3.14
+%End
+
+
     static QString invalidSourceError( const QVariantMap &parameters, const QString &name );
 %Docstring
 Returns a user-friendly string to use as an error when a source parameter could
