@@ -52,8 +52,8 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      **/
     enum TemporalMode
     {
-      ModeFixedTemporalRange = 0, //! Mode when temporal capabilities have fixed start and end datetimes.
-      ModeTemporalRangeFromDataProvider = 1 //! Mode when temporal capabilities provides the temporal range .
+      ModeFixedTemporalRange = 0, //!< Mode when temporal capabilities have fixed start and end datetimes.
+      ModeTemporalRangeFromDataProvider = 1 //!< Mode when temporal capabilities provides the temporal range .
     };
 
     /**
@@ -76,9 +76,9 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      **/
     enum FetchMode
     {
-      Earliest = 0, //! Use the start datetime in the temporal range.
-      Latest = 1, //! Use the end datetime in the temporal range.
-      Range = 2 //! Use the datetimes in temporal range as range.
+      Earliest = 0, //!< Use the start datetime in the temporal range.
+      Latest = 1, //!< Use the end datetime in the temporal range.
+      Range = 2 //!< Use the datetimes in temporal range as range.
     };
 
     /**

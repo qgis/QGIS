@@ -63,7 +63,7 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
   return QgsDateTimeRange( begin, mTemporalExtents.end() );
 }
 
-void QgsTemporalNavigationObject::setTemporalExtents( QgsDateTimeRange temporalExtents )
+void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &temporalExtents )
 {
   mTemporalExtents = temporalExtents;
   setCurrentFrameNumber( 0 );
@@ -126,61 +126,56 @@ void QgsTemporalNavigationObject::play()
 void QgsTemporalNavigationObject::pause()
 {
   mNewFrameTimer->stop();
-  setPlayBackMode( PlaybackMode::Idle );
+  setAnimationState( AnimationState::Idle );
 }
 
-void QgsTemporalNavigationObject::forward()
+void QgsTemporalNavigationObject::playForward()
 {
-  setPlayBackMode( PlaybackMode::Forward );
+  setAnimationState( AnimationState::Forward );
   play();
   next();
 }
 
-void QgsTemporalNavigationObject::backward()
+void QgsTemporalNavigationObject::playBackward()
 {
-  setPlayBackMode( PlaybackMode::Reverse );
+  setAnimationState( AnimationState::Reverse );
   play();
   previous();
 }
 
 void QgsTemporalNavigationObject::next()
 {
-  long long frame = mCurrentFrameNumber + 1;
-  setCurrentFrameNumber( frame );
+  setCurrentFrameNumber( mCurrentFrameNumber + 1 );
 }
 
 void QgsTemporalNavigationObject::previous()
 {
-  long long frame = mCurrentFrameNumber - 1;
-  setCurrentFrameNumber( frame );
+  setCurrentFrameNumber( mCurrentFrameNumber - 1 );
 }
 
 void QgsTemporalNavigationObject::rewindToStart()
 {
-  long long frame = 0;
-  setCurrentFrameNumber( frame );
+  setCurrentFrameNumber( 0 );
 }
 
 void QgsTemporalNavigationObject::skipToEnd()
 {
-  long long frame = totalFrameCount();
+  const long long frame = totalFrameCount();
   setCurrentFrameNumber( frame );
 }
 
 long long QgsTemporalNavigationObject::totalFrameCount()
 {
   QgsInterval totalAnimationLength = mTemporalExtents.end() - mTemporalExtents.begin();
-  long long totalFrameCount = std::ceil( totalAnimationLength.seconds() / mFrameDuration.seconds() ) + 1;
-
-  return totalFrameCount;
+  return std::ceil( totalAnimationLength.seconds() / mFrameDuration.seconds() ) + 1;
 }
 
-void QgsTemporalNavigationObject::setPlayBackMode( PlaybackMode mode )
+void QgsTemporalNavigationObject::setAnimationState( AnimationState mode )
 {
   mPlayBackMode = mode;
 }
 
-QgsTemporalNavigationObject::PlaybackMode QgsTemporalNavigationObject::playBackMode() const
+QgsTemporalNavigationObject::AnimationState QgsTemporalNavigationObject::animationState() const
 {
   return mPlayBackMode;
 }

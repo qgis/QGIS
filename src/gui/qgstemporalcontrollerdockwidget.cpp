@@ -208,12 +208,12 @@ void QgsTemporalControllerDockWidget::stopButton_clicked()
 
 void QgsTemporalControllerDockWidget::forwardButton_clicked()
 {
-  mNavigationObject->forward();
+  mNavigationObject->playForward();
 }
 
 void QgsTemporalControllerDockWidget::backButton_clicked()
 {
-  mNavigationObject->backward();
+  mNavigationObject->playBackward();
 }
 
 void QgsTemporalControllerDockWidget::nextButton_clicked()
