@@ -550,8 +550,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
     // fall back to default
     if ( !definition )
     {
-      QgsMessageLog::logMessage( QObject::tr( "No parameter definition for the sink" ) );
-      return nullptr;
+      throw QgsProcessingException( QObject::tr( "No parameter definition for the sink" ) );
     }
     dest = definition->defaultValue().toString();
   }
