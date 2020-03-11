@@ -203,7 +203,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     //! Returns TRUE if at least one ancestor is accepted by filter
     bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const;
 
-    //! Returns TRUE if at least one descendant s accepted by filter
+    //! Returns TRUE if at least one descendant is accepted by filter
     bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const;
 
     //! Filter accepts item name
