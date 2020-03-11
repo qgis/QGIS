@@ -38,6 +38,13 @@ QgsDataItemProviderRegistry is not usually directly created, but rather accessed
 Returns the list of available providers.
 %End
 
+    QgsDataItemProvider *provider( const QString &providerName ) const;
+%Docstring
+Returns the (possibly NULL) data item provider named ``providerName``
+
+.. versionadded:: 3.14
+%End
+
     void addProvider( QgsDataItemProvider *provider /Transfer/ );
 %Docstring
 Adds a ``provider`` implementation to the registry. Ownership of the provider

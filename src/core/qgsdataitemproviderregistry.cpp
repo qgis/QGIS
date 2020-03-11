@@ -47,6 +47,18 @@ QgsDataItemProviderRegistry::~QgsDataItemProviderRegistry()
 
 QList<QgsDataItemProvider *> QgsDataItemProviderRegistry::providers() const { return mProviders; }
 
+QgsDataItemProvider *QgsDataItemProviderRegistry::provider( const QString &providerName ) const
+{
+  for ( const auto &p : qgis::as_const( mProviders ) )
+  {
+    if ( p->name() == providerName )
+    {
+      return p;
+    }
+  }
+  return nullptr;
+}
+
 void QgsDataItemProviderRegistry::addProvider( QgsDataItemProvider *provider )
 {
   if ( ! provider->dataProviderKey().isEmpty() )
