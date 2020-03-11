@@ -82,7 +82,7 @@ QVector<QgsDataItem *> QgsHanaConnectionItem::createChildren()
   }
   catch ( const QException &ex )
   {
-    QgsErrorItem *itemError = new QgsErrorItem( this, tr( "Server error occured" ), mPath + "/error" );
+    QgsErrorItem *itemError = new QgsErrorItem( this, tr( "Server error occurred" ), mPath + "/error" );
     itemError->setToolTip( ex.what() );
     items.append( itemError );
   }
