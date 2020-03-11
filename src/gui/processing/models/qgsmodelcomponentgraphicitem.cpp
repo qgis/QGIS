@@ -137,6 +137,9 @@ void QgsModelComponentGraphicItem::setItemRect( QRectF )
 
   emit aboutToChange( tr( "Resize %1" ).arg( mComponent->description() ) );
   updateStoredComponentPosition( pos(), mComponent->size() );
+
+  updateButtonPositions();
+
   emit changed();
 
   emit updateArrowPaths();
@@ -148,6 +151,7 @@ void QgsModelComponentGraphicItem::previewItemRectChange( QRectF rect )
   prepareGeometryChange();
   mTempSize = rect.size();
 
+  updateButtonPositions();
   emit updateArrowPaths();
 }
 
@@ -260,7 +264,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   double h = fm.ascent();
   QPointF pt( -componentSize.width() / 2 + 25, componentSize.height() / 2.0 - h + 1 );
 
-  if ( flags() & FlagMultilineText )
+  if ( iconPicture().isNull() && iconPixmap().isNull() )
   {
     QRectF labelRect = QRectF( rect.left() + 4, rect.top() + 4, rect.width() - 8 - mButtonSize.width(), rect.height() - 8 );
     text = label();
@@ -268,8 +272,9 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   }
   else
   {
-    text = truncatedTextForItem( label() );
-    painter->drawText( pt, text );
+    QRectF labelRect = QRectF( rect.left() + 25, rect.top() + 4, rect.width() - 8 - mButtonSize.width(), rect.height() - 8 );
+    text = label();
+    painter->drawText( labelRect, Qt::TextWordWrap | Qt::AlignVCenter, text );
   }
 
   painter->setPen( QPen( QApplication::palette().color( QPalette::WindowText ) ) );
@@ -376,6 +381,25 @@ QPicture QgsModelComponentGraphicItem::iconPicture() const
 QPixmap QgsModelComponentGraphicItem::iconPixmap() const
 {
   return QPixmap();
+}
+
+void QgsModelComponentGraphicItem::updateButtonPositions()
+{
+  mEditButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0,
+                                     itemSize().height() / 2.0 - mButtonSize.height() / 2.0 ) );
+  mDeleteButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0,
+                                       mButtonSize.height() / 2.0 - itemSize().height() / 2.0 ) );
+
+  if ( mExpandTopButton )
+  {
+    QPointF pt = linkPoint( Qt::TopEdge, -1 );
+    mExpandTopButton->setPosition( QPointF( 0, pt.y() ) );
+  }
+  if ( mExpandBottomButton )
+  {
+    QPointF pt = linkPoint( Qt::BottomEdge, -1 );
+    mExpandBottomButton->setPosition( QPointF( 0, pt.y() ) );
+  }
 }
 
 QSizeF QgsModelComponentGraphicItem::itemSize() const
@@ -984,11 +1008,6 @@ void QgsModelCommentGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEven
   QAction *editAction = popupmenu->addAction( QObject::tr( "Edit…" ) );
   connect( editAction, &QAction::triggered, this, &QgsModelCommentGraphicItem::editComponent );
   popupmenu->exec( event->screenPos() );
-}
-
-QgsModelCommentGraphicItem::Flags QgsModelCommentGraphicItem::flags() const
-{
-  return FlagMultilineText;
 }
 
 QgsModelCommentGraphicItem::~QgsModelCommentGraphicItem() = default;
