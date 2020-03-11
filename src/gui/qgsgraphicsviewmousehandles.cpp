@@ -60,6 +60,11 @@ void QgsGraphicsViewMouseHandles::startMacroCommand( const QString & )
 
 }
 
+void QgsGraphicsViewMouseHandles::endMacroCommand()
+{
+
+}
+
 void QgsGraphicsViewMouseHandles::endItemCommand( QGraphicsItem * )
 {
 

@@ -152,34 +152,6 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     void resizeMouseMove( QPointF currentPosition, bool lockAspect, bool fromCenter );
 
 
-    QSizeF mCursorOffset;
-    double mResizeMoveX = 0;
-    double mResizeMoveY = 0;
-
-    //! Width and height of layout handles at beginning of resize
-    double mBeginHandleWidth = 0;
-    double mBeginHandleHeight = 0;
-
-    QRectF mResizeRect;
-
-    //! Start point of the last mouse move action (in scene coordinates)
-    QPointF mMouseMoveStartPos;
-
-    //! Position of the last mouse move event (in scene coordinates)
-    QPointF mLastMouseEventPos;
-
-    MouseAction mCurrentMouseMoveAction = NoAction;
-
-    //! True if user is currently dragging items
-    bool mIsDragging = false;
-    //! True is user is currently resizing items
-    bool mIsResizing = false;
-
-    //! Position of the mouse at beginning of move/resize (in scene coordinates)
-    QPointF mBeginMouseEventPos;
-
-    //! Position of layout handles at beginning of move/resize (in scene coordinates)
-    QPointF mBeginHandlePos;
 
     //! Finds out which mouse move action to choose depending on the cursor position inside the widget
     MouseAction mouseActionForPosition( QPointF itemCoordPos );
@@ -214,6 +186,35 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
   private:
 
     QGraphicsView *mView = nullptr;
+
+    QSizeF mCursorOffset;
+    double mResizeMoveX = 0;
+    double mResizeMoveY = 0;
+
+    //! Width and height of layout handles at beginning of resize
+    double mBeginHandleWidth = 0;
+    double mBeginHandleHeight = 0;
+
+    QRectF mResizeRect;
+
+    //! Start point of the last mouse move action (in scene coordinates)
+    QPointF mMouseMoveStartPos;
+
+    //! Position of the last mouse move event (in scene coordinates)
+    QPointF mLastMouseEventPos;
+
+    MouseAction mCurrentMouseMoveAction = NoAction;
+
+    //! True if user is currently dragging items
+    bool mIsDragging = false;
+    //! True is user is currently resizing items
+    bool mIsResizing = false;
+
+    //! Position of the mouse at beginning of move/resize (in scene coordinates)
+    QPointF mBeginMouseEventPos;
+
+    //! Position of layout handles at beginning of move/resize (in scene coordinates)
+    QPointF mBeginHandlePos;
 
     //! Draws the handles
     void drawHandles( QPainter *painter, double rectHandlerSize );

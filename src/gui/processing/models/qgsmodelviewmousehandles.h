@@ -1,8 +1,8 @@
 /***************************************************************************
-                             qgslayoutmousehandles.h
+                             qgsmodelviewmousehandles.h
                              -----------------------
-    begin                : September 2017
-    copyright            : (C) 2017 by Nyall Dawson
+    begin                : March 2020
+    copyright            : (C) 2020 by Nyall Dawson
     email                : nyall.dawson@gmail.com
  ***************************************************************************/
 
@@ -14,10 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSLAYOUTMOUSEHANDLES_H
-#define QGSLAYOUTMOUSEHANDLES_H
+#ifndef QGSMODELVIEWMOUSEHANDLES_H
+#define QGSMODELVIEWMOUSEHANDLES_H
 
-// We don't want to expose this in the public API
 #define SIP_NO_FILE
 
 #include "qgsgraphicsviewmousehandles.h"
@@ -26,43 +25,30 @@
 
 #include "qgis_gui.h"
 
-class QgsLayout;
-class QGraphicsView;
-class QgsLayoutView;
-class QgsLayoutItem;
+class QgsModelGraphicsView;
+class QgsModelGraphicsScene;
 class QInputEvent;
-class QgsAbstractLayoutUndoCommand;
+
+class QgsLayoutItem;
 
 ///@cond PRIVATE
 
 /**
  * \ingroup gui
- * Handles drawing of selection outlines and mouse handles in a QgsLayoutView
+ * Handles drawing of selection outlines and mouse handles in a QgsModelGraphicsView
  *
  * Also is responsible for mouse interactions such as resizing and moving selected items.
  *
  * \note not available in Python bindings
  *
- * \since QGIS 3.0
+ * \since QGIS 3.14
 */
-class GUI_EXPORT QgsLayoutMouseHandles: public QgsGraphicsViewMouseHandles
+class GUI_EXPORT QgsModelViewMouseHandles: public QgsGraphicsViewMouseHandles
 {
     Q_OBJECT
   public:
 
-    QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *view );
-
-    /**
-     * Sets the \a layout for the handles.
-     * \see layout()
-     */
-    void setLayout( QgsLayout *layout ) { mLayout = layout; }
-
-    /**
-     * Returns the layout for the handles.
-     * \see setLayout()
-     */
-    QgsLayout *layout() { return mLayout; }
+    QgsModelViewMouseHandles( QgsModelGraphicsView *view );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
@@ -71,36 +57,21 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QgsGraphicsViewMouseHandles
     void setViewportCursor( Qt::CursorShape cursor ) override;
     QList<QGraphicsItem *> sceneItemsAtPoint( QPointF scenePoint ) override;
     QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const override;
-    bool itemIsLocked( QGraphicsItem *item ) override;
-    bool itemIsGroupMember( QGraphicsItem *item ) override;
     QRectF itemRect( QGraphicsItem *item ) const override;
-    void expandItemList( const QList< QGraphicsItem * > &items, QList< QGraphicsItem * > &collected ) const override;
     void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) override;
     void setItemRect( QGraphicsItem *item, QRectF rect ) override;
-    void showStatusMessage( const QString &message ) override;
-    void hideAlignItems() override;
-    QPointF snapPoint( QPointF originalPoint, SnapGuideMode mode, bool snapHorizontal = true, bool snapVertical = true ) override;
-    void createItemCommand( QGraphicsItem *item ) override;
-    void endItemCommand( QGraphicsItem *item ) override;
-    void startMacroCommand( const QString &text ) override;
-    void endMacroCommand() override;
+
   public slots:
 
     //! Sets up listeners to sizeChanged signal for all selected items
     void selectionChanged();
 
   private:
+    QgsModelGraphicsScene *modelScene() const;
 
-    QgsLayout *mLayout = nullptr;
-    QPointer< QgsLayoutView > mView;
-
-    //! Align snap lines
-    QGraphicsLineItem *mHorizontalSnapLine = nullptr;
-    QGraphicsLineItem *mVerticalSnapLine = nullptr;
-
-    std::unique_ptr< QgsAbstractLayoutUndoCommand > mItemCommand;
+    QPointer< QgsModelGraphicsView > mView;
 };
 
 ///@endcond PRIVATE
 
-#endif // QGSLAYOUTMOUSEHANDLES_H
+#endif // QGSMODELVIEWMOUSEHANDLES_H
