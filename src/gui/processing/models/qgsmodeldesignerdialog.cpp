@@ -240,11 +240,15 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
 
   connect( mView, &QgsModelGraphicsView::macroCommandStarted, this, [ = ]( const QString & text )
   {
+    mIgnoreUndoStackChanges++;
     mUndoStack->beginMacro( text );
+    mIgnoreUndoStackChanges--;
   } );
   connect( mView, &QgsModelGraphicsView::macroCommandEnded, this, [ = ]
   {
+    mIgnoreUndoStackChanges++;
     mUndoStack->endMacro();
+    mIgnoreUndoStackChanges--;
   } );
 
 

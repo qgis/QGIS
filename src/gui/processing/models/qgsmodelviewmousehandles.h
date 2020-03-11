@@ -58,9 +58,11 @@ class GUI_EXPORT QgsModelViewMouseHandles: public QgsGraphicsViewMouseHandles
     QList<QGraphicsItem *> sceneItemsAtPoint( QPointF scenePoint ) override;
     QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const override;
     QRectF itemRect( QGraphicsItem *item ) const override;
+    QRectF storedItemRect( QGraphicsItem *item ) const override;
     void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) override;
     void previewItemMove( QGraphicsItem *item, double deltaX, double deltaY ) override;
     void setItemRect( QGraphicsItem *item, QRectF rect ) override;
+    void previewSetItemRect( QGraphicsItem *item, QRectF rect ) override;
     void startMacroCommand( const QString &text ) override;
     void endMacroCommand() override;
 

@@ -55,7 +55,17 @@ void QgsGraphicsViewMouseHandles::paintInternal( QPainter *painter, bool showHan
   }
 }
 
+QRectF QgsGraphicsViewMouseHandles::storedItemRect( QGraphicsItem *item ) const
+{
+  return itemRect( item );
+}
+
 void QgsGraphicsViewMouseHandles::previewItemMove( QGraphicsItem *, double, double )
+{
+
+}
+
+void QgsGraphicsViewMouseHandles::previewSetItemRect( QGraphicsItem *, QRectF )
 {
 
 }
@@ -1004,6 +1014,17 @@ void QgsGraphicsViewMouseHandles::resizeMouseMove( QPointF currentPosition, bool
   }
 
   setRect( 0, 0, std::fabs( mBeginHandleWidth + rx ), std::fabs( mBeginHandleHeight + ry ) );
+
+  const QList<QGraphicsItem *> selectedItems = selectedSceneItems( false );
+  for ( QGraphicsItem *item : selectedItems )
+  {
+    //get stored item bounds in mouse handle item's coordinate system
+    QRectF thisItemRect = mapRectFromScene( storedItemRect( item ) );
+    //now, resize it relative to the current resized dimensions of the mouse handles
+    relativeResizeRect( thisItemRect, QRectF( -mResizeMoveX, -mResizeMoveY, mBeginHandleWidth, mBeginHandleHeight ), mResizeRect );
+
+    previewSetItemRect( item, mapRectToScene( thisItemRect ) );
+  }
 
   //show current size of selection in status bar
   showStatusMessage( tr( "width: %1 mm height: %2 mm" ).arg( rect().width() ).arg( rect().height() ) );
