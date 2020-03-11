@@ -31,8 +31,10 @@ QGraphicsScene subclass representing the model designer.
     {
       ArrowLink,
       ModelComponent,
+      MouseHandles,
       RubberBand,
       ZSnapIndicator,
+
     };
 
     enum Flag

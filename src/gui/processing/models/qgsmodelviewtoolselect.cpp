@@ -19,6 +19,7 @@
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
+#include "qgsmodelviewmousehandles.h"
 
 QgsModelViewToolSelect::QgsModelViewToolSelect( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Select" ) )
@@ -32,7 +33,6 @@ QgsModelViewToolSelect::QgsModelViewToolSelect( QgsModelGraphicsView *view )
 
 QgsModelViewToolSelect::~QgsModelViewToolSelect()
 {
-#if 0
   if ( mMouseHandles )
   {
     // want to force them to be removed from the scene
@@ -40,12 +40,10 @@ QgsModelViewToolSelect::~QgsModelViewToolSelect()
       mMouseHandles->scene()->removeItem( mMouseHandles );
     mMouseHandles->deleteLater();
   }
-#endif
 }
 
 void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
 {
-#if 0
   if ( mMouseHandles->shouldBlockEvent( event ) )
   {
     //swallow clicks while dragging/resizing items
@@ -55,18 +53,17 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
   if ( mMouseHandles->isVisible() )
   {
     //selection handles are being shown, get mouse action for current cursor position
-    QgsLayoutMouseHandles::MouseAction mouseAction = mMouseHandles->mouseActionForScenePos( event->layoutPoint() );
+    QgsGraphicsViewMouseHandles::MouseAction mouseAction = mMouseHandles->mouseActionForScenePos( event->modelPoint() );
 
-    if ( mouseAction != QgsLayoutMouseHandles::MoveItem
-         && mouseAction != QgsLayoutMouseHandles::NoAction
-         && mouseAction != QgsLayoutMouseHandles::SelectItem )
+    if ( mouseAction != QgsGraphicsViewMouseHandles::MoveItem
+         && mouseAction != QgsGraphicsViewMouseHandles::NoAction
+         && mouseAction != QgsGraphicsViewMouseHandles::SelectItem )
     {
       //mouse is over a resize handle, so propagate event onward
       event->ignore();
       return;
     }
   }
-#endif
 
   if ( event->button() != Qt::LeftButton )
   {
@@ -139,13 +136,11 @@ void QgsModelViewToolSelect::modelMoveEvent( QgsModelViewMouseEvent *event )
 
 void QgsModelViewToolSelect::modelReleaseEvent( QgsModelViewMouseEvent *event )
 {
-#if 0
   if ( event->button() != Qt::LeftButton && mMouseHandles->shouldBlockEvent( event ) )
   {
     //swallow clicks while dragging/resizing items
     return;
   }
-#endif
 
   if ( !mIsSelecting || event->button() != Qt::LeftButton )
   {
@@ -220,21 +215,17 @@ void QgsModelViewToolSelect::modelReleaseEvent( QgsModelViewMouseEvent *event )
   {
     emit itemFocused( nullptr );
   }
-#if 0
   mMouseHandles->selectionChanged();
-#endif
 }
 
 void QgsModelViewToolSelect::wheelEvent( QWheelEvent *event )
 {
-#if 0
   if ( mMouseHandles->shouldBlockEvent( event ) )
   {
     //ignore wheel events while dragging/resizing items
     return;
   }
   else
-#endif
   {
     event->ignore();
   }
@@ -242,14 +233,11 @@ void QgsModelViewToolSelect::wheelEvent( QWheelEvent *event )
 
 void QgsModelViewToolSelect::keyPressEvent( QKeyEvent *event )
 {
-
-#if 0
   if ( mMouseHandles->isDragging() || mMouseHandles->isResizing() )
   {
     return;
   }
   else
-#endif
   {
     event->ignore();
   }
@@ -272,21 +260,19 @@ bool QgsModelViewToolSelect::allowItemInteraction()
 
 QgsModelViewMouseHandles *QgsModelViewToolSelect::mouseHandles()
 {
-  return nullptr; //mMouseHandles;
+  return mMouseHandles;
 }
 
-void QgsModelViewToolSelect::setScene( QgsModelGraphicsScene *model )
+void QgsModelViewToolSelect::setScene( QgsModelGraphicsScene *scene )
 {
-#if 0
   // existing handles are owned by previous layout
   if ( mMouseHandles )
     mMouseHandles->deleteLater();
 
-  //add mouse selection handles to layout, and initially hide
-  mMouseHandles = new QgsLayoutMouseHandles( layout, view() );
+  //add mouse selection handles to scene, and initially hide
+  mMouseHandles = new QgsModelViewMouseHandles( view() );
   mMouseHandles->hide();
-  mMouseHandles->setZValue( QgsLayout::ZMouseHandles );
-  layout->addItem( mMouseHandles );
-#endif
+  mMouseHandles->setZValue( QgsModelGraphicsScene::MouseHandles );
+  scene->addItem( mMouseHandles );
 }
 ///@endcond
