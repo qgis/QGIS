@@ -18,6 +18,7 @@
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgraphicsview.h"
 #include "qgsmodelviewtool.h"
+#include "qgsmodelviewmouseevent.h"
 #include <QPainter>
 #include <QSvgRenderer>
 
@@ -89,6 +90,31 @@ void QgsModelDesignerFlatButtonGraphicItem::mousePressEvent( QGraphicsSceneMouse
     emit clicked();
 }
 
+void QgsModelDesignerFlatButtonGraphicItem::modelHoverEnterEvent( QgsModelViewMouseEvent * )
+{
+  if ( view()->tool() && !view()->tool()->allowItemInteraction() )
+    mHoverState = false;
+  else
+    mHoverState = true;
+  update();
+}
+
+void QgsModelDesignerFlatButtonGraphicItem::modelHoverLeaveEvent( QgsModelViewMouseEvent * )
+{
+  mHoverState = false;
+  update();
+}
+
+void QgsModelDesignerFlatButtonGraphicItem::modelPressEvent( QgsModelViewMouseEvent *event )
+{
+  if ( view()->tool() && view()->tool()->allowItemInteraction() && event->button() == Qt::LeftButton )
+  {
+    QMetaObject::invokeMethod( this, &QgsModelDesignerFlatButtonGraphicItem::clicked, Qt::QueuedConnection );
+    mHoverState = false;
+    update();
+  }
+}
+
 void QgsModelDesignerFlatButtonGraphicItem::setPosition( const QPointF &position )
 {
   mPosition = position;
@@ -134,6 +160,14 @@ void QgsModelDesignerFoldButtonGraphicItem::mousePressEvent( QGraphicsSceneMouse
   setPicture( mFolded ? mPlusPicture : mMinusPicture );
   emit folded( mFolded );
   QgsModelDesignerFlatButtonGraphicItem::mousePressEvent( event );
+}
+
+void QgsModelDesignerFoldButtonGraphicItem::modelPressEvent( QgsModelViewMouseEvent *event )
+{
+  mFolded = !mFolded;
+  setPicture( mFolded ? mPlusPicture : mMinusPicture );
+  emit folded( mFolded );
+  QgsModelDesignerFlatButtonGraphicItem::modelPressEvent( event );
 }
 
 ///@endcond

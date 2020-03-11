@@ -24,6 +24,7 @@
 #include <memory>
 
 class QgsModelViewMouseHandles;
+class QGraphicsItem;
 
 #define SIP_NO_FILE
 
@@ -47,6 +48,7 @@ class GUI_EXPORT QgsModelViewToolSelect : public QgsModelViewTool
 
     void modelPressEvent( QgsModelViewMouseEvent *event ) override;
     void modelMoveEvent( QgsModelViewMouseEvent *event ) override;
+    void modelDoubleClickEvent( QgsModelViewMouseEvent *event ) override;
     void modelReleaseEvent( QgsModelViewMouseEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
@@ -75,6 +77,7 @@ class GUI_EXPORT QgsModelViewToolSelect : public QgsModelViewTool
     QPointF mRubberBandStartPos;
 
     QPointer< QgsModelViewMouseHandles > mMouseHandles; //owned by scene
+    QList< QGraphicsItem * > mHoverEnteredItems;
 };
 
 #endif // QGSMODELVIEWTOOLSELECT_H

@@ -22,6 +22,7 @@
 #include <QPicture>
 
 class QgsModelGraphicsView;
+class QgsModelViewMouseEvent;
 
 ///@cond NOT_STABLE
 
@@ -51,6 +52,24 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
+
+#ifndef SIP_RUN
+
+    /**
+     * Handles a model hover enter \a event.
+     */
+    virtual void modelHoverEnterEvent( QgsModelViewMouseEvent *event );
+
+    /**
+     * Handles a model hover leave \a event.
+     */
+    virtual void modelHoverLeaveEvent( QgsModelViewMouseEvent *event );
+
+    /**
+     * Handles a model mouse press \a event.
+     */
+    virtual void modelPressEvent( QgsModelViewMouseEvent *event );
+#endif
 
     /**
      * Sets the button's \a position.
@@ -108,6 +127,9 @@ class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesigner
                                            const QSizeF &size = QSizeF( 11, 11 ) );
 
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
+#ifndef SIP_RUN
+    void modelPressEvent( QgsModelViewMouseEvent *event ) override;
+#endif
 
   signals:
 
