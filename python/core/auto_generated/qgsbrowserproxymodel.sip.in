@@ -133,9 +133,9 @@ filterByLayerType() is ``True``.
 .. seealso:: :py:func:`setFilterByLayerType`
 %End
 
-    void setDataItemProviderKeyFilter( const QStringList &hiddenItemsFilter );
+    void setHiddenDataItemProviderKeyFilter( const QStringList &hiddenItemsFilter );
 %Docstring
-Sets a filter to hide data items based on on item's data provider key.
+Sets a filter to hide data items based on on item's data item provider key.
 
 By default browser model shows all items from all available data item providers and few special
 items (e.g. Favourites).
@@ -149,6 +149,24 @@ This filter is always evaluated.
 :param hiddenItemsFilter: a list of data provider prefixes that will be hidden.
 
 .. versionadded:: 3.12
+%End
+
+    void setShownDataItemProviderKeyFilter( const QStringList &shownItemsFilter );
+%Docstring
+Sets a filter to show data items based on on item's data item provider key.
+
+By default browser model shows all items from all available data item providers and few special
+items (e.g. Favourites).
+To customize the behavior, set the filter to load only certain data items.
+The items that are not based on data item providers have prefix "special:", for example
+"special:Favorites", "special:Home", "PostGIS", "MSSQL"
+
+Only the items created by the providers listed in filter are shown in the layer tree.
+This filter is always evaluated.
+
+:param shownItemsFilter: a list of data provider prefixes that will be hidden.
+
+.. versionadded:: 3.14
 %End
 
     bool showLayers() const;

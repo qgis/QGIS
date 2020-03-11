@@ -144,7 +144,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
     void setLayerType( QgsMapLayerType type );
 
     /**
-     * Sets a filter to hide data items based on on item's data provider key.
+     * Sets a filter to hide data items based on on item's data item provider key.
      *
      * By default browser model shows all items from all available data item providers and few special
      * items (e.g. Favourites).
@@ -159,7 +159,25 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
      *
      * \since QGIS 3.12
      */
-    void setDataItemProviderKeyFilter( const QStringList &hiddenItemsFilter );
+    void setHiddenDataItemProviderKeyFilter( const QStringList &hiddenItemsFilter );
+
+    /**
+     * Sets a filter to show data items based on on item's data item provider key.
+     *
+     * By default browser model shows all items from all available data item providers and few special
+     * items (e.g. Favourites).
+     * To customize the behavior, set the filter to load only certain data items.
+     * The items that are not based on data item providers have prefix "special:", for example
+     * "special:Favorites", "special:Home", "PostGIS", "MSSQL"
+     *
+     * Only the items created by the providers listed in filter are shown in the layer tree.
+     * This filter is always evaluated.
+     *
+     * \param shownItemsFilter a list of data provider prefixes that will be hidden.
+     *
+     * \since QGIS 3.14
+     */
+    void setShownDataItemProviderKeyFilter( const QStringList &shownItemsFilter );
 
     /**
      * Returns TRUE if layers must be shown, this flag is TRUE by default.
@@ -184,6 +202,7 @@ class CORE_EXPORT QgsBrowserProxyModel : public QSortFilterProxyModel
 
   private:
     QStringList mHiddenDataItemsKeys;
+    QStringList mShownDataItemsKeys;
     QgsBrowserModel *mModel = nullptr;
     QString mFilter; //filter string provided
     QVector<QRegExp> mREList; //list of filters, separated by "|"

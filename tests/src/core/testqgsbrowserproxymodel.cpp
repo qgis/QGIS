@@ -268,16 +268,30 @@ void TestQgsBrowserProxyModel::testModel()
   proxy.setFilterByLayerType( false );
 
   // provider filtering
-  proxy.setDataItemProviderKeyFilter( QStringList( {QStringLiteral( "provider1" )} ) );
+  proxy.setHiddenDataItemProviderKeyFilter( QStringList( {QStringLiteral( "provider1" )} ) );
   QCOMPARE( proxy.rowCount(), 2 );
   root1Index = proxy.index( 0, 0 );
   QCOMPARE( proxy.rowCount( root1Index ), 1 );
-  proxy.setDataItemProviderKeyFilter( QStringList( {QStringLiteral( "provider2" )} ) );
+  proxy.setHiddenDataItemProviderKeyFilter( QStringList( {QStringLiteral( "provider2" )} ) );
   QCOMPARE( proxy.rowCount(), 1 );
   root1Index = proxy.index( 0, 0 );
   QCOMPARE( proxy.rowCount( root1Index ), 2 );
-  proxy.setDataItemProviderKeyFilter( QStringList() );
+  proxy.setHiddenDataItemProviderKeyFilter( QStringList() );
   QCOMPARE( proxy.rowCount(), 2 );
+
+  // provider filtering
+  proxy.setHiddenDataItemProviderKeyFilter( QStringList( ) );
+  proxy.setShownDataItemProviderKeyFilter( QStringList( {QStringLiteral( "provider2" )} ) );
+  QCOMPARE( proxy.rowCount(), 2 );
+  root1Index = proxy.index( 0, 0 );
+  QCOMPARE( proxy.rowCount( root1Index ), 1 );
+  proxy.setShownDataItemProviderKeyFilter( QStringList( {QStringLiteral( "provider1" )} ) );
+  QCOMPARE( proxy.rowCount(), 1 );
+  root1Index = proxy.index( 0, 0 );
+  QCOMPARE( proxy.rowCount( root1Index ), 2 );
+  proxy.setShownDataItemProviderKeyFilter( QStringList() );
+  QCOMPARE( proxy.rowCount(), 2 );
+
 }
 
 void TestQgsBrowserProxyModel::testShowLayers()
