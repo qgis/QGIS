@@ -308,7 +308,6 @@ void QgsMeshLayerProperties::saveStyleAs()
   if ( defaultLoadedFlag )
   {
     settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( outputFileName ).absolutePath() );
-    sync();
   }
   else
     QMessageBox::information( this, tr( "Save Style" ), message );
