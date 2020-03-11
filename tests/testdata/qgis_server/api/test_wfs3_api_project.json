@@ -1,4 +1,4 @@
-Content-Type: application/openapi+json;version=3.0
+Content-Type: application/vnd.oai.openapi+json;version=3.0
 
 {
   "components": {
