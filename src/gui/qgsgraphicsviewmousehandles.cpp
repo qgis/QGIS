@@ -211,7 +211,7 @@ double QgsGraphicsViewMouseHandles::rectHandlerBorderTolerance()
   double viewScaleFactor = mView->transform().m11();
 
   //size of handle boxes depends on zoom level in layout view
-  double rectHandlerSize = 10.0 / viewScaleFactor;
+  double rectHandlerSize = mHandleSize / viewScaleFactor;
 
   //make sure the boxes don't get too large
   if ( rectHandlerSize > ( rect().width() / 3 ) )
@@ -1041,6 +1041,11 @@ void QgsGraphicsViewMouseHandles::resizeMouseMove( QPointF currentPosition, bool
   //show current size of selection in status bar
   showStatusMessage( tr( "width: %1 mm height: %2 mm" ).arg( rect().width() ).arg( rect().height() ) );
 
+}
+
+void QgsGraphicsViewMouseHandles::setHandleSize( double size )
+{
+  mHandleSize = size;
 }
 
 void QgsGraphicsViewMouseHandles::mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event )

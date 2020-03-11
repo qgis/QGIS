@@ -155,7 +155,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     //! Handles resizing of items during mouse move
     void resizeMouseMove( QPointF currentPosition, bool lockAspect, bool fromCenter );
 
-
+    void setHandleSize( double size );
 
     //! Finds out which mouse move action to choose depending on the cursor position inside the widget
     MouseAction mouseActionForPosition( QPointF itemCoordPos );
@@ -190,6 +190,8 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
   private:
 
     QGraphicsView *mView = nullptr;
+
+    double mHandleSize = 10;
 
     QSizeF mCursorOffset;
     double mResizeMoveX = 0;
