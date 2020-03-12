@@ -95,7 +95,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/temporal_navigation/stop.svg</normaloff>:/images/themes/default/temporal_navigation/stop.svg</iconset>
+          <normaloff>:/images/themes/default/temporal_navigation/pause.svg</normaloff>:/images/themes/default/temporal_navigation/pause.svg</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>
