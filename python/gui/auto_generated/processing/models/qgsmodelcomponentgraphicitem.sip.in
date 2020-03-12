@@ -125,6 +125,8 @@ Shows a preview of setting a new ``rect`` for the item.
 
     virtual QRectF boundingRect() const;
 
+    virtual bool contains( const QPointF &point ) const;
+
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 
 

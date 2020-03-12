@@ -163,6 +163,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
     QVariant itemChange( GraphicsItemChange change, const QVariant &value ) override;
     QRectF boundingRect() const override;
+    bool contains( const QPointF &point ) const override;
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
     /**
@@ -359,6 +360,9 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
 
     static constexpr double DEFAULT_BUTTON_WIDTH = 16;
     static constexpr double DEFAULT_BUTTON_HEIGHT = 16;
+    static constexpr double BUTTON_MARGIN = 2;
+    static constexpr double TEXT_MARGIN = 4;
+    static constexpr double RECT_PEN_SIZE = 2;
     QSizeF mButtonSize { DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT };
 
     QFont mFont;
