@@ -81,7 +81,7 @@ void QgsTemporalNavigationObject::setCurrentFrameNumber( long long frameNumber )
 {
   if ( mCurrentFrameNumber != frameNumber )
   {
-    mCurrentFrameNumber = frameNumber;
+    mCurrentFrameNumber = std::max( 0LL, std::min( frameNumber, totalFrameCount() - 1 ) );
     QgsDateTimeRange range = dateTimeRangeForFrameNumber( mCurrentFrameNumber );
     emit updateTemporalRange( range );
   }
@@ -157,7 +157,7 @@ void QgsTemporalNavigationObject::rewindToStart()
 
 void QgsTemporalNavigationObject::skipToEnd()
 {
-  const long long frame = totalFrameCount();
+  const long long frame = totalFrameCount() - 1;
   setCurrentFrameNumber( frame );
 }
 
