@@ -11,6 +11,7 @@
 
 
 
+
 class QgsMapLayerTemporalProperties : QgsTemporalProperty
 {
 %Docstring
@@ -71,6 +72,12 @@ Sets the temporal properties temporal range ``source``.
     virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
 %Docstring
 Returns ``True`` if the layer should be visible and rendered for the specified time ``range``.
+%End
+
+    virtual void setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities ) = 0;
+%Docstring
+Sets the layers temporal settings to appropriate defaults based on
+a provider's temporal ``capabilities``.
 %End
 
 };
