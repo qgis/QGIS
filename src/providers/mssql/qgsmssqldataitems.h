@@ -107,6 +107,10 @@ class QgsMssqlSchemaItem : public QgsDataCollectionItem
     QgsMssqlLayerItem *addLayer( const QgsMssqlLayerProperty &layerProperty, bool refresh );
     void refresh() override {} // do not refresh directly
     void addLayers( QgsDataItem *newLayers );
+
+    // QgsDataItem interface
+  public:
+    bool layerCollection() const override;
 };
 
 class QgsMssqlLayerItem : public QgsLayerItem
@@ -134,6 +138,8 @@ class QgsMssqlDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
+
+    QString dataProviderKey() const override;
 
     int capabilities() const override;
 

@@ -410,6 +410,11 @@ QString QgsOgrDataItemProvider::name()
   return QStringLiteral( "OGR" );
 }
 
+QString QgsOgrDataItemProvider::dataProviderKey() const
+{
+  return QStringLiteral( "ogr" );
+}
+
 int QgsOgrDataItemProvider::capabilities() const
 {
   return QgsDataProvider::File | QgsDataProvider::Dir | QgsDataProvider::Net;

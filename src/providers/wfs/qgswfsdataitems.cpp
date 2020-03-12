@@ -137,7 +137,7 @@ void QgsWfsLayerItem::copyStyle()
 //
 
 QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WFS" ) )
   , mUri( uri )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
@@ -228,7 +228,7 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
 //
 
 QgsWfsRootItem::QgsWfsRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WFS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconWfs.svg" );
@@ -271,6 +271,11 @@ void QgsWfsRootItem::onConnectionsChanged()
 //
 
 QString QgsWfsDataItemProvider::name()
+{
+  return QStringLiteral( "WFS" );
+}
+
+QString QgsWfsDataItemProvider::dataProviderKey() const
 {
   return QStringLiteral( "WFS" );
 }
@@ -352,4 +357,10 @@ QVector<QgsDataItem *> QgsWfsDataItemProvider::createDataItems( const QString &p
   }
 
   return items;
+}
+
+
+bool QgsWfsConnectionItem::layerCollection() const
+{
+  return true;
 }
