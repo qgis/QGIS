@@ -169,7 +169,11 @@ long long QgsTemporalNavigationObject::totalFrameCount()
 
 void QgsTemporalNavigationObject::setAnimationState( AnimationState mode )
 {
-  mPlayBackMode = mode;
+  if ( mode != mPlayBackMode )
+  {
+    mPlayBackMode = mode;
+    emit stateChanged( mPlayBackMode );
+  }
 }
 
 QgsTemporalNavigationObject::AnimationState QgsTemporalNavigationObject::animationState() const

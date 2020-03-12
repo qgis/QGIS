@@ -152,6 +152,13 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
      */
     long long totalFrameCount();
 
+  signals:
+
+    /**
+     * Emitted whenever the animation \a state changes.
+     */
+    void stateChanged( AnimationState state );
+
   public slots:
 
     /**
