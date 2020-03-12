@@ -71,6 +71,8 @@ class APP_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
     QgsMeshLayer3DRendererWidget *mMesh3DWidget = nullptr;
 
     friend class TestQgsMeshLayerPropertiesDialog;
+
+    void showHelp();
 };
 
 
