@@ -80,6 +80,8 @@
     <addaction name="mActionZoomToItems"/>
     <addaction name="separator"/>
     <addaction name="mActionShowComments"/>
+    <addaction name="separator"/>
+    <addaction name="mActionSnappingEnabled"/>
    </widget>
    <widget class="QMenu" name="mMenuEdit">
     <property name="title">
@@ -608,6 +610,14 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
+   </property>
+  </action>
+  <action name="mActionSnappingEnabled">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Enable Snapping</string>
    </property>
   </action>
  </widget>
