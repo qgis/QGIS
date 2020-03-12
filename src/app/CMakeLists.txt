@@ -7,6 +7,11 @@ SET(QGIS_APP_SRCS
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
   ${CMAKE_SOURCE_DIR}/external/nmea/time.c
 
+  attributeformconfig/qgsattributeformcontaineredit.cpp
+  attributeformconfig/qgsattributerelationedit.cpp
+  attributeformconfig/qgsattributetypedialog.cpp
+  attributeformconfig/qgsattributewidgetedit.cpp
+
   qgisapp.cpp
   qgisappinterface.cpp
   qgisappstylesheet.cpp
@@ -26,8 +31,6 @@ SET(QGIS_APP_SRCS
   qgsappsslerrorhandler.cpp
   qgsattributeactiondialog.cpp
   qgsattributeactionpropertiesdialog.cpp
-  qgsattributetypedialog.cpp
-  qgsattributerelationedit.cpp
   qgsattributesforminitcode.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
@@ -274,8 +277,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsapplayertreeviewmenuprovider.h
   qgsattributeactiondialog.h
   qgsattributeactionpropertiesdialog.h
-  qgsattributetypedialog.h
-  qgsattributerelationedit.h
   qgsattributesforminitcode.h
   qgsattributetabledialog.h
   qgsbookmarks.h
@@ -387,6 +388,11 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolregularpolygon2points.h
   qgsmaptoolregularpolygoncenterpoint.h
   qgsmaptoolregularpolygoncentercorner.h
+  
+  attributeformconfig/qgsattributetypedialog.h
+  attributeformconfig/qgsattributeformcontaineredit.h
+  attributeformconfig/qgsattributerelationedit.h
+  attributeformconfig/qgsattributewidgetedit.h
 
   decorations/qgsdecorationitem.h
   decorations/qgsdecorationtitle.h
@@ -686,6 +692,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external
 
   ${CMAKE_SOURCE_DIR}/src/app
+  ${CMAKE_SOURCE_DIR}/src/app/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/app/decorations
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager

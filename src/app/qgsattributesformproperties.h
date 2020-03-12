@@ -39,14 +39,17 @@
 #include "qgsfieldcalculator.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsaddtaborgroup.h"
-#include "qgsattributetypedialog.h"
-#include "qgsattributerelationedit.h"
 #include "qgsattributesforminitcode.h"
 #include "qgsgui.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsrelationmanager.h"
 
+
+class QgsAttributeFormContainerEdit;
+class QgsAttributeTypeDialog;
+class QgsAttributeRelationEdit;
+class QgsAttributeWidgetEdit;
 class DnDTree;
 
 class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAttributesFormProperties
@@ -86,9 +89,10 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         {
           Field,
           Relation,
-          Container,
+          Container, //!< Container for the form
           QmlWidget,
-          HtmlWidget
+          HtmlWidget,
+          WidgetType //!< In the widget tree, the type of widget
         };
 
         //do we need that
@@ -215,21 +219,33 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     DnDTree *mAvailableWidgetsTree = nullptr;
     DnDTree *mFormLayoutTree = nullptr;
 
+    QgsAttributeWidgetEdit *mAttributeWidgetEdit = nullptr;
     QgsAttributeTypeDialog *mAttributeTypeDialog = nullptr;
     QgsAttributeRelationEdit *mAttributeRelationEdit = nullptr;
+    QgsAttributeFormContainerEdit *mAttributeContainerEdit = nullptr;
 
   private slots:
 
     void onInvertSelectionButtonClicked( bool checked );
+    void loadAttributeSpecificEditor( DnDTree *emitter, DnDTree *receiver );
     void onAttributeSelectionChanged();
+    void onFormLayoutSelectionChanged();
 
   private:
+    //! this will clean the right panel
+    void clearAttributeTypeFrame();
+
+    void loadAttributeWidgetEdit();
+    void storeAttributeWidgetEdit();
 
     void loadAttributeTypeDialog();
     void storeAttributeTypeDialog( );
 
     void loadAttributeRelationEdit();
     void storeAttributeRelationEdit( );
+
+    void storeAttributeContainerEdit();
+    void loadAttributeContainerEdit();
 
     QgsEditFormConfig::PythonInitCodeSource mInitCodeSource = QgsEditFormConfig::CodeSourceNone;
     QString mInitFunction;
@@ -283,6 +299,9 @@ class DnDTree : public QTreeWidget
 
     Type type() const;
     void setType( DnDTree::Type value );
+
+  public slots:
+    void selectFirstMatchingItem( const QgsAttributesFormProperties::DnDTreeItemData &data );
 
   protected:
     void dragMoveEvent( QDragMoveEvent *event ) override;

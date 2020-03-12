@@ -36,7 +36,6 @@
 %Include auto_generated/qgsdbfilterproxymodel.sip
 %Include auto_generated/qgsdiagramrenderer.sip
 %Include auto_generated/qgsdistancearea.sip
-%Include auto_generated/qgseditformconfig.sip
 %Include auto_generated/qgseditorwidgetsetup.sip
 %Include auto_generated/qgsellipsoidutils.sip
 %Include auto_generated/qgserror.sip
@@ -352,6 +351,7 @@
 %Include auto_generated/qgsdataprovider.sip
 %Include auto_generated/qgsdatasourceuri.sip
 %Include auto_generated/qgsdefaultvalue.sip
+%Include auto_generated/qgseditformconfig.sip
 %Include auto_generated/qgsfeature.sip
 %Include auto_generated/qgsfeedback.sip
 %Include auto_generated/qgsfield.sip
