@@ -33,10 +33,14 @@ void QgsTemporalNavigationObject::timerTimeout()
   {
     case AnimationState::Forward:
       next();
+      if ( mCurrentFrameNumber >= totalFrameCount() - 1 )
+        pause();
       break;
 
     case AnimationState::Reverse:
       previous();
+      if ( mCurrentFrameNumber <= 0 )
+        pause();
       break;
 
     case AnimationState::Idle:
