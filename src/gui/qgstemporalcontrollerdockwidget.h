@@ -23,13 +23,13 @@
 #include "qgsdockwidget.h"
 #include "qgis_gui.h"
 #include "qgsrange.h"
-#include "qgsinterval.h"
 
 class QgsMapLayer;
 class QgsTemporalNavigationObject;
 class QgsTemporalMapSettingsWidget;
 class QgsTemporalMapSettingsDialog;
 class QgsTemporalController;
+class QgsInterval;
 
 /**
  * \ingroup gui
@@ -43,35 +43,18 @@ class GUI_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget, private
   public:
 
     /**
-      * Constructor for QgsTemporalControllerDockWidget
-      *
+      * Constructor for QgsTemporalControllerDockWidget, with the specified \a parent widget.
       */
-    QgsTemporalControllerDockWidget( const QString &name, QWidget *parent = nullptr );
-
-    ~QgsTemporalControllerDockWidget() = default;
+    QgsTemporalControllerDockWidget( const QString &name, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the temporal controller object used by this object in navigation.
+     *
+     * The dock widget retains ownership of the returned object.
      */
     QgsTemporalController *temporalController();
 
-    //! Stores the used time unit in the animation frame duration.
-    enum TimeUnit
-    {
-      Seconds = 0, //! For seconds
-      Minutes = 1, //! For minutes
-      Hours = 2,   //! For hours
-      Days = 3,    //! For days
-      Months = 4,  //! For months
-      Years = 5    //! For years
-    };
-
   private:
-
-    /**
-     * Initialize the widget with default state.
-     */
-    void init();
 
     /**
      * Updates the controller widget navigation buttons enabled status.
@@ -82,12 +65,6 @@ class GUI_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget, private
      * Sets the enable status of the widget date time inputs.
      **/
     void setDateInputsEnable( bool enabled );
-
-    /**
-     * Returns the time interval using the passed \a value and \a time
-     * to determine the interval duration.
-     */
-    QgsInterval interval( int time, double value );
 
     //! Handles all non gui navigation logic
     QgsTemporalNavigationObject *mNavigationObject = nullptr;

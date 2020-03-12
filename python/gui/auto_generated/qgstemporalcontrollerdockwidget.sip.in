@@ -24,27 +24,17 @@ The QgsTemporalControllerDockWidget class
 %End
   public:
 
-    QgsTemporalControllerDockWidget( const QString &name, QWidget *parent = 0 );
+    QgsTemporalControllerDockWidget( const QString &name, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsTemporalControllerDockWidget
+Constructor for QgsTemporalControllerDockWidget, with the specified ``parent`` widget.
 %End
-
-    ~QgsTemporalControllerDockWidget();
 
     QgsTemporalController *temporalController();
 %Docstring
 Returns the temporal controller object used by this object in navigation.
-%End
 
-    enum TimeUnit
-    {
-      Seconds,
-      Minutes,
-      Hours,
-      Days,
-      Months,
-      Years
-    };
+The dock widget retains ownership of the returned object.
+%End
 
 };
 
