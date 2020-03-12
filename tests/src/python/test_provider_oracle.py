@@ -726,6 +726,37 @@ class TestPyQgsOracleProvider(unittest.TestCase, ProviderTestCase):
         feature = vl.getFeature(2)
         self.assertTrue(feature.isValid())
 
+    def testDeterminePKOnView(self):
+        """
+        Determine primary key on a view if primary key constraint (disabled) exists on view
+        """
+
+        self.execSQLCommand('DROP TABLE "QGIS"."TABLE_TESTPKS"', ignore_errors=True)
+        self.execSQLCommand("""CREATE TABLE "QGIS"."TABLE_TESTPKS" (pk1 INTEGER, DESCRIPTION VARCHAR2(25), pk2 NUMBER, CONSTRAINT cons_pk PRIMARY KEY(pk1, pk2))""")
+        self.execSQLCommand("""INSERT INTO "QGIS"."TABLE_TESTPKS" VALUES(1000,'Desc for 1st record', 1)""")
+        self.execSQLCommand("""INSERT INTO "QGIS"."TABLE_TESTPKS" VALUES(2000,'Desc for 2nd record', 2)""")
+        self.execSQLCommand("""CREATE OR REPLACE VIEW "QGIS"."VIEW_TESTPKS" AS SELECT * FROM "QGIS"."TABLE_TESTPKS" """)
+
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable table="QGIS"."TABLE_TESTPKS" sql=',
+            'test', 'oracle')
+
+        self.assertEqual(vl.dataProvider().pkAttributeIndexes(), [0, 2])
+
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable table="QGIS"."VIEW_TESTPKS" sql=',
+            'test', 'oracle')
+
+        self.assertEqual(vl.dataProvider().pkAttributeIndexes(), [])
+
+        self.execSQLCommand("""ALTER VIEW VIEW_TESTPKS ADD CONSTRAINT const_view_pks PRIMARY KEY (pk1,pk2) DISABLE""")
+
+        vl = QgsVectorLayer(
+            self.dbconn + ' sslmode=disable table="QGIS"."VIEW_TESTPKS" sql=',
+            'test', 'oracle')
+
+        self.assertEqual(vl.dataProvider().pkAttributeIndexes(), [0, 2])
+
 
 if __name__ == '__main__':
     unittest.main()
