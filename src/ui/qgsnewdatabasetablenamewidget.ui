@@ -77,36 +77,6 @@
     <string>Refresh</string>
    </property>
   </action>
-  <action name="mActionShowFilter">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFilter2.svg</normaloff>:/images/themes/default/mActionFilter2.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Filter Browser</string>
-   </property>
-   <property name="iconText">
-    <string>Filter Browser</string>
-   </property>
-   <property name="toolTip">
-    <string>Filter Browser</string>
-   </property>
-  </action>
-  <action name="mActionCollapse">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCollapseTree.svg</normaloff>:/images/themes/default/mActionCollapseTree.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Collapse All</string>
-   </property>
-   <property name="toolTip">
-    <string>Collapse All</string>
-   </property>
-  </action>
  </widget>
  <customwidgets>
   <customwidget>
