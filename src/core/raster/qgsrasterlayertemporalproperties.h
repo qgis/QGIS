@@ -168,11 +168,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
-    /**
-     * Sets the layers temporal settings to appropriate defaults based on
-     * a provider's temporal \a capabilities.
-     */
-    void setDefaultsFromDataProviderTemporalCapabilities( QgsRasterDataProviderTemporalCapabilities *capabilities );
+    void setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities ) override;
 
   private:
 

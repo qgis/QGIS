@@ -199,15 +199,18 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
   return element;
 }
 
-void QgsRasterLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabilities( QgsRasterDataProviderTemporalCapabilities *capabilities )
+void QgsRasterLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities )
 {
-  setFixedTemporalRange( capabilities->availableTemporalRange() );
-  setFixedReferenceTemporalRange( capabilities->availableReferenceTemporalRange() );
-
-  if ( capabilities->hasTemporalCapabilities() )
+  if ( const QgsRasterDataProviderTemporalCapabilities *rasterCaps = dynamic_cast< const QgsRasterDataProviderTemporalCapabilities *>( capabilities ) )
   {
-    setMode( ModeTemporalRangeFromDataProvider );
-  }
+    setFixedTemporalRange( rasterCaps->availableTemporalRange() );
+    setFixedReferenceTemporalRange( rasterCaps->availableReferenceTemporalRange() );
 
-  mIntervalHandlingMethod = capabilities->intervalHandlingMethod();
+    if ( rasterCaps->hasTemporalCapabilities() )
+    {
+      setMode( ModeTemporalRangeFromDataProvider );
+    }
+
+    mIntervalHandlingMethod = rasterCaps->intervalHandlingMethod();
+  }
 }
