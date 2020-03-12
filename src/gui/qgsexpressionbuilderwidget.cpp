@@ -1432,20 +1432,20 @@ void QgsExpressionBuilderWidget::exportUserExpressions_pressed()
 
   settings.setValue( QStringLiteral( "lastExportExpressionsDir" ), saveFileInfo.absolutePath(), QgsSettings::App );
 
-  std::unique_ptr< QJsonDocument > exportJson = exportUserExpressions();
+  QJsonDocument exportJson = exportUserExpressions();
   QFile jsonFile( saveFileName );
 
   if ( !jsonFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
     QMessageBox::warning( this, tr( "Export user expressions" ), tr( "Error while creating the expressions file." ) );
 
-  if ( ! jsonFile.write( exportJson->toJson() ) )
+  if ( ! jsonFile.write( exportJson.toJson() ) )
     QMessageBox::warning( this, tr( "Export user expressions" ), tr( "Error while creating the expressions file." ) );
   else
     jsonFile.close();
 }
 
 
-std::unique_ptr< QJsonDocument > QgsExpressionBuilderWidget::exportUserExpressions()
+QJsonDocument QgsExpressionBuilderWidget::exportUserExpressions()
 {
   const QString group = QStringLiteral( "user" );
   QgsSettings settings;
@@ -1482,7 +1482,7 @@ std::unique_ptr< QJsonDocument > QgsExpressionBuilderWidget::exportUserExpressio
   }
 
   exportObject["expressions"] = exportList;
-  std::unique_ptr< QJsonDocument > exportJson = qgis::make_unique< QJsonDocument >( exportObject );
+  QJsonDocument exportJson = QJsonDocument( exportObject );
 
   return exportJson;
 }
