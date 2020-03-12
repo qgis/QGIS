@@ -895,8 +895,8 @@ bool QgsOracleProvider::determinePrimaryKey()
   if ( !mIsQuery )
   {
     if ( !exec( qry, QString( "SELECT column_name"
-                              " FROM all_ind_columns a"
-                              " JOIN all_constraints b ON a.index_name=constraint_name AND a.index_owner=b.owner"
+                              " FROM all_cons_columns a"
+                              " JOIN all_constraints b ON a.constraint_name=b.constraint_name AND a.owner=b.owner"
                               " WHERE b.constraint_type='P' AND b.owner=? AND b.table_name=?" ),
                 QVariantList() << mOwnerName << mTableName ) )
     {
