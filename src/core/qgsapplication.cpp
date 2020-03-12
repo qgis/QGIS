@@ -224,6 +224,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
   qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
   qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
+  qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
 
   ( void ) resolvePkgPath();
 
@@ -1365,20 +1366,20 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                             "  color: #93b023;"  // from http://qgis.org/en/site/getinvolved/styleguide.html
                             "  font-weight: bold;"
                             "  font-size: large;"
-                            "  text-align: right;"
+                            "  text-align: left;"
                             "  border-bottom: 5px solid #DCEB5C;"
                             "}"
                             "h4{  background-color: #F6F6F6;"
                             "  color: #93b023;"  // from http://qgis.org/en/site/getinvolved/styleguide.html
                             "  font-weight: bold;"
                             "  font-size: medium;"
-                            "  text-align: right;"
+                            "  text-align: left;"
                             "}"
                             "h5{    background-color: #F6F6F6;"
                             "   color: #93b023;"  // from http://qgis.org/en/site/getinvolved/styleguide.html
                             "   font-weight: bold;"
                             "   font-size: small;"
-                            "   text-align: right;"
+                            "   text-align: left;"
                             "}"
                             "a{  color: #729FCF;"
                             "  font-family: arial,sans-serif;"
@@ -1398,7 +1399,7 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                             "  border-top: 1px solid black;"
                             "}"
                             ".list-view .highlight {"
-                            "  text-align: right;"
+                            "  text-align: left;"
                             "  border: 0px;"
                             "  width: 20%;"
                             "  padding-right: 15px;"

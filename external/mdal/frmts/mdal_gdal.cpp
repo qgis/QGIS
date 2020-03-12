@@ -12,6 +12,7 @@
 #include "ogr_srs_api.h"
 #include "gdal_alg.h"
 #include "mdal_utils.hpp"
+#include "mdal_logger.hpp"
 
 #define MDAL_NODATA -9999
 
@@ -21,7 +22,7 @@ void MDAL::GdalDataset::init( const std::string &dsName )
 
   // Open dataset
   mHDataset = GDALOpen( dsName.data(), GA_ReadOnly );
-  if ( !mHDataset ) throw MDAL_Status::Err_UnknownFormat;
+  if ( !mHDataset ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to open dataset " + mDatasetName + " (unknown format)" );
 
   // Now parse it
   parseParameters();
@@ -31,15 +32,15 @@ void MDAL::GdalDataset::init( const std::string &dsName )
 void MDAL::GdalDataset::parseParameters()
 {
   mNBands = static_cast<unsigned int>( GDALGetRasterCount( mHDataset ) );
-  if ( mNBands == 0 ) throw MDAL_Status::Err_InvalidData;
+  if ( mNBands == 0 ) throw MDAL::Error( MDAL_Status::Err_InvalidData, "Unable to get parameters from dataset" );
 
   GDALGetGeoTransform( mHDataset, mGT ); // in case of error it returns Identid
 
   mXSize = static_cast<unsigned int>( GDALGetRasterXSize( mHDataset ) ); //raster width in pixels
-  if ( mXSize == 0 ) throw MDAL_Status::Err_InvalidData;
+  if ( mXSize == 0 ) throw MDAL::Error( MDAL_Status::Err_InvalidData, "Raster width is zero" );
 
   mYSize = static_cast<unsigned int>( GDALGetRasterYSize( mHDataset ) ); //raster height in pixels
-  if ( mYSize == 0 ) throw MDAL_Status::Err_InvalidData;
+  if ( mYSize == 0 ) throw MDAL::Error( MDAL_Status::Err_InvalidData, "Raster height is zero" );
 
   mNPoints = mXSize * mYSize;
   mNVolumes = ( mXSize - 1 ) * ( mYSize - 1 );
@@ -203,7 +204,7 @@ void MDAL::DriverGdal::parseRasterBands( const MDAL::GdalDataset *cfGDALDataset 
     GDALRasterBandH gdalBand = GDALGetRasterBand( cfGDALDataset->mHDataset, static_cast<int>( i ) );
     if ( !gdalBand )
     {
-      throw MDAL_Status::Err_InvalidData;
+      throw MDAL::Error( MDAL_Status::Err_InvalidData, "Invalid GDAL band" );
     }
 
     // Reference time
@@ -364,7 +365,7 @@ void MDAL::DriverGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared
                  );
     if ( err != CE_None )
     {
-      throw MDAL_Status::Err_InvalidData;
+      throw MDAL::Error( MDAL_Status::Err_InvalidData, "Error while buffering data to output" );
     }
 
     for ( unsigned int x = 0; x < mXSize; ++x )
@@ -411,7 +412,7 @@ void MDAL::DriverGdal::addDatasetGroups()
                                             mFileName,
                                             band->first
                                           );
-    group->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
+    group->setDataLocation( MDAL_DataLocation::DataOnVertices );
     bool is_vector = ( band->second.begin()->second.size() > 1 );
     group->setIsScalar( !is_vector );
 
@@ -448,6 +449,7 @@ void MDAL::DriverGdal::createMesh()
   mMesh.reset( new MemoryMesh(
                  name(),
                  vertices.size(),
+                 0,
                  faces.size(),
                  4, //maximum quads
                  computeExtent( vertices ),
@@ -481,7 +483,7 @@ std::vector<std::string> MDAL::DriverGdal::parseDatasetNames( const std::string 
   std::vector<std::string> ret;
 
   GDALDatasetH hDataset = GDALOpen( gdal_name.data(), GA_ReadOnly );
-  if ( hDataset == nullptr ) throw MDAL_Status::Err_UnknownFormat;
+  if ( hDataset == nullptr ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to open dataset " + gdal_name );
 
   metadata_hash metadata = parseMetadata( hDataset, "SUBDATASETS" );
 
@@ -512,7 +514,7 @@ void MDAL::DriverGdal::registerDriver()
   GDALAllRegister();
   // check that our driver exists
   GDALDriverH hDriver = GDALGetDriverByName( mGdalDriverName.data() );
-  if ( !hDriver ) throw MDAL_Status::Err_MissingDriver;
+  if ( !hDriver ) throw MDAL::Error( MDAL_Status::Err_MissingDriver, "No such driver with name " + mGdalDriverName );
 }
 
 const MDAL::GdalDataset *MDAL::DriverGdal::meshGDALDataset()
@@ -541,13 +543,18 @@ bool MDAL::DriverGdal::canReadMesh( const std::string &uri )
   {
     return false;
   }
+  catch ( MDAL::Error )
+  {
+    return false;
+  }
+
   return true;
 }
 
-std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName, MDAL_Status *status )
+std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName )
 {
   mFileName = fileName;
-  if ( status ) *status = MDAL_Status::None ;
+  MDAL::Log::resetLastStatus();
 
   mPafScanline = nullptr;
   mMesh.reset();
@@ -602,7 +609,12 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName,
   }
   catch ( MDAL_Status error )
   {
-    if ( status ) *status = ( error );
+    MDAL::Log::error( error, name(), "error occured while loading " + fileName );
+    mMesh.reset();
+  }
+  catch ( MDAL::Error err )
+  {
+    MDAL::Log::error( err, name() );
     mMesh.reset();
   }
 
@@ -613,7 +625,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverGdal::load( const std::string &fileName,
   // do not allow mesh without any valid datasets
   if ( mMesh && ( mMesh->datasetGroups.empty() ) )
   {
-    if ( status ) *status = MDAL_Status::Err_InvalidData;
+    MDAL::Log::error( MDAL_Status::Err_InvalidData, name(), "Mesh does not have any valid dataset" );
     mMesh.reset();
   }
   return std::unique_ptr<Mesh>( mMesh.release() );

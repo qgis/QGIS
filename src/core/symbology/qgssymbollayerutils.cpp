@@ -2767,7 +2767,7 @@ bool QgsSymbolLayerUtils::createFunctionElement( QDomDocument &doc, QDomElement 
 
 bool QgsSymbolLayerUtils::functionFromSldElement( QDomElement &element, QString &function )
 {
-  // check if ogc:Filter or containe ogc:Filters
+  // check if ogc:Filter or contains ogc:Filters
   QDomElement elem = element;
   if ( element.tagName() != QLatin1String( "Filter" ) )
   {

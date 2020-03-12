@@ -59,6 +59,8 @@
 #include "qgsfileutils.h"
 #include "qgswebview.h"
 
+#include "qgsrasterlayertemporalpropertieswidget.h"
+
 #include <QDesktopServices>
 #include <QTableWidgetItem>
 #include <QHeaderView>
@@ -269,6 +271,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   layout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( layout );
 
+  QVBoxLayout *temporalLayout = new QVBoxLayout( temporalFrame );
+  mTemporalWidget = new QgsRasterLayerTemporalPropertiesWidget( this, mRasterLayer );
+  temporalLayout->addWidget( mTemporalWidget );
+
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().userFriendlyIdentifier() );
   mCrsSelector->setCrs( mRasterLayer->crs() );
@@ -445,8 +451,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
 #else
-  QScreen *screen = QGuiApplication::screenAt( mapToGlobal( QPoint( width() / 2, 0 ) ) );
-  const int horizontalDpi = screen->logicalDotsPerInchX();
+  const int horizontalDpi = logicalDpiX();
 #endif
 
   // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
@@ -1025,6 +1030,9 @@ void QgsRasterLayerProperties::apply()
     hueSaturationFilter->setColorizeColor( btnColorizeColor->color() );
     hueSaturationFilter->setColorizeStrength( sliderColorizeStrength->value() );
   }
+
+  // Update temporal properties
+  mTemporalWidget->saveTemporalProperties();
 
   //set the blend mode for the layer
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );

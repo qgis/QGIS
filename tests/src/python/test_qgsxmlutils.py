@@ -14,8 +14,11 @@ import qgis  # NOQA switch sip api
 from qgis.core import (QgsXmlUtils,
                        QgsProperty,
                        QgsGeometry,
-                       QgsCoordinateReferenceSystem)
+                       QgsCoordinateReferenceSystem,
+                       QgsProcessingOutputLayerDefinition,
+                       NULL)
 
+from qgis.PyQt.QtCore import QDateTime, QDate, QTime
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QColor
 
@@ -199,6 +202,59 @@ class TestQgsXmlUtils(unittest.TestCase):
         elem = QgsXmlUtils.writeVariant(QColor(), doc)
         c = QgsXmlUtils.readVariant(elem)
         self.assertFalse(c.isValid())
+
+    def test_datetime(self):
+        """
+        Test that QDateTime values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        elem = QgsXmlUtils.writeVariant(QDateTime(QDate(2019, 5, 7), QTime(12, 11, 10)), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, QDateTime(QDate(2019, 5, 7), QTime(12, 11, 10)))
+        elem = QgsXmlUtils.writeVariant(QDateTime(), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, NULL)
+
+    def test_date(self):
+        """
+        Test that QDate values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        elem = QgsXmlUtils.writeVariant(QDate(2019, 5, 7), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, QDate(2019, 5, 7))
+        elem = QgsXmlUtils.writeVariant(QDate(), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, NULL)
+
+    def test_time(self):
+        """
+        Test that QTime values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        elem = QgsXmlUtils.writeVariant(QTime(12, 11, 10), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, QTime(12, 11, 10))
+        elem = QgsXmlUtils.writeVariant(QTime(), doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c, NULL)
+
+    def test_output_layer_definition(self):
+        """
+        Test that QgsProcessingOutputLayerDefinition values are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+
+        definition = QgsProcessingOutputLayerDefinition(QgsProperty.fromValue('my sink'))
+        definition.createOptions = {'opt': 1, 'opt2': 2}
+
+        elem = QgsXmlUtils.writeVariant(definition, doc)
+        c = QgsXmlUtils.readVariant(elem)
+        self.assertEqual(c.sink.staticValue(), 'my sink')
+        self.assertEqual(c.createOptions, {'opt': 1, 'opt2': 2})
 
 
 if __name__ == '__main__':

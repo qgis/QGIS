@@ -152,6 +152,7 @@ class GUI_EXPORT QgsSimpleLineCalloutWidget : public QgsCalloutWidget, private U
     void offsetFromLabelChanged();
     void lineSymbolChanged();
     void mAnchorPointComboBox_currentIndexChanged( int index );
+    void mLabelAnchorPointComboBox_currentIndexChanged( int index );
     void drawToAllPartsToggled( bool active );
 
   private:

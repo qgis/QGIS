@@ -47,6 +47,8 @@
 #include "qgsdatumtransformdialog.h"
 #include "qgsfieldcombobox.h"
 #include "qgsmapthemecollection.h"
+#include "qgsdatetimeedit.h"
+#include "qgsproviderconnectioncombobox.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -194,7 +196,8 @@ QStringList QgsProcessingBooleanWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterRasterLayer::typeName()
          << QgsProcessingParameterVectorLayer::typeName()
          << QgsProcessingParameterMeshLayer::typeName()
-         << QgsProcessingParameterExpression::typeName();
+         << QgsProcessingParameterExpression::typeName()
+         << QgsProcessingParameterProviderConnection::typeName();
 }
 
 QStringList QgsProcessingBooleanWidgetWrapper::compatibleOutputTypes() const
@@ -479,7 +482,8 @@ QStringList QgsProcessingStringWidgetWrapper::compatibleParameterTypes() const
          << QgsProcessingParameterFile::typeName()
          << QgsProcessingParameterField::typeName()
          << QgsProcessingParameterExpression::typeName()
-         << QgsProcessingParameterCoordinateOperation::typeName();
+         << QgsProcessingParameterCoordinateOperation::typeName()
+         << QgsProcessingParameterProviderConnection::typeName();
 }
 
 QStringList QgsProcessingStringWidgetWrapper::compatibleOutputTypes() const
@@ -1673,7 +1677,8 @@ QStringList QgsProcessingExpressionWidgetWrapper::compatibleParameterTypes() con
          << QgsProcessingParameterString::typeName()
          << QgsProcessingParameterNumber::typeName()
          << QgsProcessingParameterDistance::typeName()
-         << QgsProcessingParameterScale::typeName();
+         << QgsProcessingParameterScale::typeName()
+         << QgsProcessingParameterProviderConnection::typeName();
 }
 
 QStringList QgsProcessingExpressionWidgetWrapper::compatibleOutputTypes() const
@@ -2937,6 +2942,7 @@ QWidget *QgsProcessingCoordinateOperationWidgetWrapper::createWidget()
     {
       mOperationWidget = new QgsCoordinateOperationWidget( nullptr );
       mOperationWidget->setShowMakeDefault( false );
+      mOperationWidget->setShowFallbackOption( false );
       mOperationWidget->setToolTip( parameterDefinition()->toolTip() );
       mOperationWidget->setSourceCrs( mSourceCrs );
       mOperationWidget->setDestinationCrs( mDestCrs );
@@ -3327,41 +3333,65 @@ void QgsProcessingFieldWidgetWrapper::setParentLayerWrapperValue( const QgsAbstr
     context = tmpContext.get();
   }
 
-  const QVariant value = parentWrapper->parameterValue();
-  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), value, *context );
-  if ( !layer || !layer->isValid() )
-  {
-    if ( mComboBox )
-      mComboBox->setLayer( nullptr );
-    else if ( mPanel )
-      mPanel->setFields( QgsFields() );
+  QVariant value = parentWrapper->parameterValue();
 
-    if ( value.isValid() && widgetContext().messageBar() )
-    {
-      widgetContext().messageBar()->clearWidgets();
-      widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent field could not be populated" ),
-          Qgis::Warning, 5 );
-    }
-    return;
+  if ( value.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - source from it.
+    // this is normally discouraged, and algorithms should NEVER do this -- but in this case we can make
+    // certain assumptions due to the fact that we're calling this outside of algorithm/model execution and all sources
+    // should be real map layers at this stage
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
+    value = fromVar.source;
   }
-
-  // need to grab ownership of layer if required - otherwise layer may be deleted when context
-  // goes out of scope
-  std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
-  if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::VectorLayer )
+  QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( parentWrapper->parameterDefinition(), value, *context );
+  if ( layer && layer->isValid() )
   {
-    mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
-    layer = mParentLayer.get();
+    // need to grab ownership of layer if required - otherwise layer may be deleted when context
+    // goes out of scope
+    std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
+    if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::VectorLayer )
+    {
+      mParentLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
+      layer = mParentLayer.get();
+    }
+    else
+    {
+      // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
+    }
+
+    if ( mComboBox )
+      mComboBox->setLayer( layer );
+    else if ( mPanel )
+      mPanel->setFields( filterFields( layer->fields() ) );
   }
   else
   {
-    // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
-  }
+    std::unique_ptr< QgsProcessingFeatureSource > source( QgsProcessingParameters::parameterAsSource( parentWrapper->parameterDefinition(), value, *context ) );
+    if ( source )
+    {
+      const QgsFields fields = source->fields();
+      if ( mComboBox )
+        mComboBox->setFields( fields );
+      else if ( mPanel )
+        mPanel->setFields( filterFields( fields ) );
+    }
+    else
+    {
+      if ( mComboBox )
+        mComboBox->setLayer( nullptr );
+      else if ( mPanel )
+        mPanel->setFields( QgsFields() );
 
-  if ( mComboBox )
-    mComboBox->setLayer( layer );
-  else if ( mPanel )
-    mPanel->setFields( filterFields( layer->fields() ) );
+      if ( value.isValid() && widgetContext().messageBar() )
+      {
+        widgetContext().messageBar()->clearWidgets();
+        widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent field could not be populated" ),
+            Qgis::Warning, 5 );
+      }
+    }
+    return;
+  }
 
   const QgsProcessingParameterField *fieldParam = static_cast< const QgsProcessingParameterField * >( parameterDefinition() );
   if ( mPanel && fieldParam->defaultToAllFields() )
@@ -3669,6 +3699,349 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMapThemeWidgetWrapp
 {
   return new QgsProcessingMapThemeParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
+
+
+
+//
+// QgsProcessingDateTimeWidgetWrapper
+//
+
+
+QgsProcessingDateTimeParameterDefinitionWidget::QgsProcessingDateTimeParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Type" ) ) );
+
+  mTypeComboBox = new QComboBox();
+  mTypeComboBox->addItem( tr( "Date and Time" ), QgsProcessingParameterDateTime::DateTime );
+  mTypeComboBox->addItem( tr( "Date" ), QgsProcessingParameterDateTime::Date );
+  mTypeComboBox->addItem( tr( "Time" ), QgsProcessingParameterDateTime::Time );
+  if ( const QgsProcessingParameterDateTime *datetimeParam = dynamic_cast<const QgsProcessingParameterDateTime *>( definition ) )
+    mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( datetimeParam->dataType() ) );
+  else
+    mTypeComboBox->setCurrentIndex( 0 );
+  vlayout->addWidget( mTypeComboBox );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingDateTimeParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterDateTime >( name, description );
+  param->setDataType( static_cast< QgsProcessingParameterDateTime::Type >( mTypeComboBox->currentData().toInt() ) );
+  param->setFlags( flags );
+  return param.release();
+}
+
+
+QgsProcessingDateTimeWidgetWrapper::QgsProcessingDateTimeWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingDateTimeWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterDateTime *dateTimeParam = dynamic_cast< const QgsProcessingParameterDateTime *>( parameterDefinition() );
+
+  QgsDateTimeEdit *widget = nullptr;
+  switch ( dateTimeParam->dataType() )
+  {
+    case QgsProcessingParameterDateTime::DateTime:
+      mDateTimeEdit = new QgsDateTimeEdit();
+      widget = mDateTimeEdit;
+      break;
+
+    case QgsProcessingParameterDateTime::Date:
+      mDateEdit = new QgsDateEdit();
+      widget = mDateEdit;
+      break;
+
+    case QgsProcessingParameterDateTime::Time:
+      mTimeEdit = new QgsTimeEdit();
+      widget = mTimeEdit;
+      break;
+  }
+
+  if ( dateTimeParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+  {
+    widget->setNullRepresentation( tr( "[Not selected]" ) );
+    widget->setAllowNull( true );
+  }
+  else
+  {
+    widget->setAllowNull( false );
+  }
+  widget->setToolTip( parameterDefinition()->toolTip() );
+
+  if ( mDateTimeEdit )
+  {
+    connect( mDateTimeEdit, &QgsDateTimeEdit::valueChanged, this, [ = ]( const QDateTime & )
+    {
+      emit widgetValueHasChanged( this );
+    } );
+  }
+  else if ( mDateEdit )
+  {
+    connect( mDateEdit, &QgsDateEdit::dateValueChanged, this, [ = ]( const QDate & )
+    {
+      emit widgetValueHasChanged( this );
+    } );
+  }
+  else if ( mTimeEdit )
+  {
+    connect( mTimeEdit, &QgsTimeEdit::timeValueChanged, this, [ = ]( const QTime & )
+    {
+      emit widgetValueHasChanged( this );
+    } );
+  }
+
+  return widget;
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingDateTimeWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingDateTimeParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
+
+void QgsProcessingDateTimeWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mDateTimeEdit )
+  {
+    mDateTimeEdit->setDateTime( QgsProcessingParameters::parameterAsDateTime( parameterDefinition(), value, context ) );
+  }
+  else if ( mDateEdit )
+  {
+    mDateEdit->setDate( QgsProcessingParameters::parameterAsDate( parameterDefinition(), value, context ) );
+  }
+  else if ( mTimeEdit )
+  {
+    mTimeEdit->setTime( QgsProcessingParameters::parameterAsTime( parameterDefinition(), value, context ) );
+  }
+}
+
+QVariant QgsProcessingDateTimeWidgetWrapper::widgetValue() const
+{
+  if ( mDateTimeEdit )
+    return !mDateTimeEdit->dateTime().isNull() && mDateTimeEdit->dateTime().isValid() ? QVariant( mDateTimeEdit->dateTime() ) : QVariant();
+  else if ( mDateEdit )
+    return !mDateEdit->date().isNull() && mDateEdit->date().isValid() ? QVariant( mDateEdit->date() ) : QVariant();
+  else if ( mTimeEdit )
+    return !mTimeEdit->time().isNull() && mTimeEdit->time().isValid() ? QVariant( mTimeEdit->time() ) : QVariant();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingDateTimeWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterDateTime::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingDateTimeWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingDateTimeWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingDateTimeWidgetWrapper::modelerExpressionFormatString() const
+{
+  const QgsProcessingParameterDateTime *dateTimeParam = dynamic_cast< const QgsProcessingParameterDateTime *>( parameterDefinition() );
+  switch ( dateTimeParam->dataType() )
+  {
+    case QgsProcessingParameterDateTime::DateTime:
+      return tr( "datetime value, or a ISO string representation of a datetime" );
+
+    case QgsProcessingParameterDateTime::Date:
+      return tr( "date value, or a ISO string representation of a date" );
+
+    case QgsProcessingParameterDateTime::Time:
+      return tr( "time value, or a ISO string representation of a time" );
+  }
+  return QString();
+}
+
+QString QgsProcessingDateTimeWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterDateTime::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingDateTimeWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingDateTimeWidgetWrapper( parameter, type );
+}
+
+
+
+//
+// QgsProcessingProviderConnectionWidgetWrapper
+//
+
+QgsProcessingProviderConnectionParameterDefinitionWidget::QgsProcessingProviderConnectionParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  const QgsProcessingParameterProviderConnection *connectionParam = dynamic_cast< const QgsProcessingParameterProviderConnection *>( definition );
+
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Provider" ) ) );
+  mProviderComboBox = new QComboBox();
+  mProviderComboBox->addItem( QObject::tr( "Postgres" ), QStringLiteral( "postgres" ) );
+  mProviderComboBox->addItem( QObject::tr( "GeoPackage" ), QStringLiteral( "ogr" ) );
+  mProviderComboBox->addItem( QObject::tr( "Spatialite" ), QStringLiteral( "spatialite" ) );
+
+  vlayout->addWidget( mProviderComboBox );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultEdit = new QLineEdit();
+  vlayout->addWidget( mDefaultEdit );
+  setLayout( vlayout );
+
+  if ( connectionParam )
+  {
+    mProviderComboBox->setCurrentIndex( mProviderComboBox->findData( connectionParam->providerId() ) );
+    mDefaultEdit->setText( connectionParam->defaultValue().toString() );
+  }
+}
+
+QgsProcessingParameterDefinition *QgsProcessingProviderConnectionParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  QVariant defaultVal;
+  if ( mDefaultEdit->text().isEmpty() )
+    defaultVal = QVariant();
+  else
+    defaultVal = mDefaultEdit->text();
+  auto param = qgis::make_unique< QgsProcessingParameterProviderConnection>( name, description, mProviderComboBox->currentData().toString(), defaultVal );
+  param->setFlags( flags );
+  return param.release();
+}
+
+
+QgsProcessingProviderConnectionWidgetWrapper::QgsProcessingProviderConnectionWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingProviderConnectionWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterProviderConnection *connectionParam = dynamic_cast< const QgsProcessingParameterProviderConnection *>( parameterDefinition() );
+
+  mProviderComboBox = new QgsProviderConnectionComboBox( connectionParam->providerId() );
+  if ( connectionParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+    mProviderComboBox->setAllowEmptyConnection( true );
+
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+      break;
+    case QgsProcessingGui::Modeler:
+      mProviderComboBox->setEditable( true );
+      break;
+  }
+
+  mProviderComboBox->setToolTip( parameterDefinition()->toolTip() );
+  connect( mProviderComboBox, &QgsProviderConnectionComboBox::currentTextChanged, this, [ = ]( const QString & )
+  {
+    if ( mBlockSignals )
+      return;
+
+    emit widgetValueHasChanged( this );
+  } );
+
+  return mProviderComboBox;
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingProviderConnectionWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingProviderConnectionParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
+
+void QgsProcessingProviderConnectionWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  const QString v = QgsProcessingParameters::parameterAsConnectionName( parameterDefinition(), value, context );
+
+  if ( !value.isValid() )
+    mProviderComboBox->setCurrentIndex( -1 );
+  else
+  {
+    if ( mProviderComboBox->isEditable() )
+    {
+      const QString prev = mProviderComboBox->currentText();
+      mBlockSignals++;
+      mProviderComboBox->setConnection( v );
+      mProviderComboBox->setCurrentText( v );
+
+      mBlockSignals--;
+      if ( prev != v )
+        emit widgetValueHasChanged( this );
+    }
+    else
+      mProviderComboBox->setConnection( v );
+  }
+}
+
+QVariant QgsProcessingProviderConnectionWidgetWrapper::widgetValue() const
+{
+  if ( mProviderComboBox )
+    if ( mProviderComboBox->isEditable() )
+      return mProviderComboBox->currentText().isEmpty() ? QVariant() : QVariant( mProviderComboBox->currentText() );
+    else
+      return mProviderComboBox->currentConnection().isEmpty() ? QVariant() : QVariant( mProviderComboBox->currentConnection() );
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingProviderConnectionWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterProviderConnection::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterExpression::typeName();
+}
+
+QStringList QgsProcessingProviderConnectionWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingProviderConnectionWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingProviderConnectionWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "connection name as a string value" );
+}
+
+QString QgsProcessingProviderConnectionWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterProviderConnection::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingProviderConnectionWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingProviderConnectionWidgetWrapper( parameter, type );
+}
+
+
+
 
 
 ///@endcond PRIVATE

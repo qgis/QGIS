@@ -234,6 +234,16 @@ Cancel the progress dialog (if any)
 .. versionadded:: 3.0
 %End
 
+    void parentFormValueChanged( const QString &attribute, const QVariant &value );
+%Docstring
+Called in embedded forms when an ``attribute`` ``value`` in the parent form has changed.
+
+Notify the form widgets that something has changed in case they
+have filter expression that depend on the parent form scope.
+
+.. versionadded:: 3.14
+%End
+
   signals:
 
     void displayExpressionChanged( const QString &expression );

@@ -88,6 +88,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      */
     QList<QgsFeatureId> selectedFeaturesIds() const;
 
+
   protected:
 
     /**

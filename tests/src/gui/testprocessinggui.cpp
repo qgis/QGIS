@@ -36,6 +36,7 @@
 #include "qgsprocessingwidgetwrapperimpl.h"
 #include "qgsprocessingmodelerparameterwidget.h"
 #include "qgsprocessingparameters.h"
+#include "qgsmodelundocommand.h"
 #include "qgsprocessingmaplayercombobox.h"
 #include "qgsnativealgorithms.h"
 #include "processing/models/qgsprocessingmodelalgorithm.h"
@@ -67,6 +68,10 @@
 #include "qgsmessagebar.h"
 #include "qgsfieldcombobox.h"
 #include "qgsmapthemecollection.h"
+#include "qgsdatetimeedit.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderconnectioncombobox.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -163,6 +168,7 @@ class TestProcessingGui : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
+    void testModelUndo();
     void testSetGetConfig();
     void testFilterAlgorithmConfig();
     void testWrapperFactoryRegistry();
@@ -197,6 +203,8 @@ class TestProcessingGui : public QObject
     void mapLayerComboBox();
     void paramConfigWidget();
     void testMapThemeWrapper();
+    void testDateTimeWrapper();
+    void testProviderConnectionWrapper();
 
   private:
 
@@ -275,6 +283,50 @@ void TestProcessingGui::init()
 void TestProcessingGui::cleanup()
 {
 
+}
+
+void TestProcessingGui::testModelUndo()
+{
+  // make a little model
+  QgsProcessingModelAlgorithm model( QStringLiteral( "test" ), QStringLiteral( "testGroup" ) );
+  QMap<QString, QgsProcessingModelChildAlgorithm> algs;
+  QgsProcessingModelChildAlgorithm a1( "native:buffer" );
+  a1.setDescription( QStringLiteral( "alg1" ) );
+  a1.setChildId( QStringLiteral( "alg1" ) );
+  QgsProcessingModelChildAlgorithm a2;
+  a2.setDescription( QStringLiteral( "alg2" ) );
+  a2.setChildId( QStringLiteral( "alg2" ) );
+  QgsProcessingModelChildAlgorithm a3( QStringLiteral( "native:buffer" ) );
+  a3.setDescription( QStringLiteral( "alg3" ) );
+  a3.setChildId( QStringLiteral( "alg3" ) );
+  algs.insert( QStringLiteral( "alg1" ), a1 );
+  algs.insert( QStringLiteral( "alg2" ), a2 );
+  algs.insert( QStringLiteral( "alg3" ), a3 );
+  model.setChildAlgorithms( algs );
+
+  QgsModelUndoCommand command( &model, QStringLiteral( "undo" ) );
+  model.childAlgorithm( QStringLiteral( "alg1" ) ).setDescription( QStringLiteral( "new desc" ) );
+  command.saveAfterState();
+
+  QCOMPARE( model.childAlgorithm( QStringLiteral( "alg1" ) ).description(), QStringLiteral( "new desc" ) );
+  command.undo();
+  QCOMPARE( model.childAlgorithm( QStringLiteral( "alg1" ) ).description(), QStringLiteral( "alg1" ) );
+
+  // first redo should have no effect -- we ignore it, since it's automatically triggered when the
+  // command is added to the stack (yet we apply the initial change to the models outside of the undo stack)
+  command.redo();
+  QCOMPARE( model.childAlgorithm( QStringLiteral( "alg1" ) ).description(), QStringLiteral( "alg1" ) );
+  command.redo();
+  QCOMPARE( model.childAlgorithm( QStringLiteral( "alg1" ) ).description(), QStringLiteral( "new desc" ) );
+
+  // the last used parameter values setting should not be affected by undo stack changes
+  QVariantMap params;
+  params.insert( QStringLiteral( "a" ), 1 );
+  model.setDesignerParameterValues( params );
+  command.undo();
+  QCOMPARE( model.designerParameterValues(), params );
+  command.redo();
+  QCOMPARE( model.designerParameterValues(), params );
 }
 
 void TestProcessingGui::testSetGetConfig()
@@ -4407,6 +4459,288 @@ void TestProcessingGui::testMapThemeWrapper()
   widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "maptheme" ), context, widgetContext, &themeParam );
   def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
   QVERIFY( !static_cast< QgsProcessingParameterMapTheme * >( def.get() )->defaultValue().isValid() );
+}
+
+void TestProcessingGui::testDateTimeWrapper()
+{
+  auto testWrapper = [ = ]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional, no existing themes
+    QgsProcessingParameterDateTime param( QStringLiteral( "datetime" ), QStringLiteral( "datetime" ), QgsProcessingParameterDateTime::DateTime, QVariant(), false );
+
+    QgsProcessingDateTimeWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingDateTimeWidgetWrapper::widgetValueHasChanged );
+    // not a date value
+    wrapper.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy.count(), 0 );
+    // not optional, so an invalid value gets a date anyway...
+    QVERIFY( wrapper.widgetValue().isValid() );
+    wrapper.setWidgetValue( QStringLiteral( "2019-08-07" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QVERIFY( wrapper.widgetValue().isValid() );
+    QCOMPARE( wrapper.widgetValue().toDateTime(), QDateTime( QDate( 2019, 8, 7 ) ) );
+    QCOMPARE( static_cast< QgsDateTimeEdit * >( wrapper.wrappedWidget() )->dateTime(), QDateTime( QDate( 2019, 8, 7 ) ) );
+    wrapper.setWidgetValue( QStringLiteral( "2019-08-07" ), context );
+    QCOMPARE( spy.count(), 1 );
+
+    // check signal
+    static_cast< QgsDateTimeEdit * >( wrapper.wrappedWidget() )->setDateTime( QDateTime( QDate( 2019, 8, 9 ) ) );
+    QCOMPARE( spy.count(), 2 );
+
+    delete w;
+
+    // optional
+    QgsProcessingParameterDateTime param2( QStringLiteral( "datetime" ), QStringLiteral( "datetime" ), QgsProcessingParameterDateTime::DateTime, QVariant(), true );
+    QgsProcessingDateTimeWidgetWrapper wrapper3( &param2, type );
+    w = wrapper3.createWrappedWidget( context );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    QSignalSpy spy3( &wrapper3, &QgsProcessingDateTimeWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy3.count(), 0 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    QVERIFY( !static_cast< QgsDateTimeEdit * >( wrapper3.wrappedWidget() )->dateTime().isValid() );
+    wrapper3.setWidgetValue( QStringLiteral( "2019-03-20" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toDateTime(), QDateTime( QDate( 2019, 3, 20 ) ) );
+    QCOMPARE( static_cast< QgsDateTimeEdit * >( wrapper3.wrappedWidget() )->dateTime(), QDateTime( QDate( 2019, 3, 20 ) ) );
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 2 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    delete w;
+
+    // date mode
+    QgsProcessingParameterDateTime param3( QStringLiteral( "datetime" ), QStringLiteral( "datetime" ), QgsProcessingParameterDateTime::Date, QVariant(), true );
+    QgsProcessingDateTimeWidgetWrapper wrapper4( &param3, type );
+    w = wrapper4.createWrappedWidget( context );
+    QVERIFY( !wrapper4.widgetValue().isValid() );
+    QSignalSpy spy4( &wrapper4, &QgsProcessingDateTimeWidgetWrapper::widgetValueHasChanged );
+    wrapper4.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy4.count(), 0 );
+    QVERIFY( !wrapper4.widgetValue().isValid() );
+    QVERIFY( !static_cast< QgsDateEdit * >( wrapper4.wrappedWidget() )->date().isValid() );
+    wrapper4.setWidgetValue( QStringLiteral( "2019-03-20" ), context );
+    QCOMPARE( spy4.count(), 1 );
+    QCOMPARE( wrapper4.widgetValue().toDate(), QDate( 2019, 3, 20 ) );
+    QCOMPARE( static_cast< QgsDateEdit * >( wrapper4.wrappedWidget() )->date(), QDate( 2019, 3, 20 ) );
+    wrapper4.setWidgetValue( QDate( 2020, 1, 3 ), context );
+    QCOMPARE( spy4.count(), 2 );
+    QCOMPARE( wrapper4.widgetValue().toDate(), QDate( 2020, 1, 3 ) );
+    QCOMPARE( static_cast< QgsDateEdit * >( wrapper4.wrappedWidget() )->date(), QDate( 2020, 1, 3 ) );
+    wrapper4.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy4.count(), 3 );
+    QVERIFY( !wrapper4.widgetValue().isValid() );
+    delete w;
+
+    // time mode
+    QgsProcessingParameterDateTime param4( QStringLiteral( "datetime" ), QStringLiteral( "datetime" ), QgsProcessingParameterDateTime::Time, QVariant(), true );
+    QgsProcessingDateTimeWidgetWrapper wrapper5( &param4, type );
+    w = wrapper5.createWrappedWidget( context );
+    QVERIFY( !wrapper5.widgetValue().isValid() );
+    QSignalSpy spy5( &wrapper5, &QgsProcessingDateTimeWidgetWrapper::widgetValueHasChanged );
+    wrapper5.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy5.count(), 0 );
+    QVERIFY( !wrapper5.widgetValue().isValid() );
+    QVERIFY( !static_cast< QgsTimeEdit * >( wrapper5.wrappedWidget() )->time().isValid() );
+    wrapper5.setWidgetValue( QStringLiteral( "11:34:56" ), context );
+    QCOMPARE( spy5.count(), 1 );
+    QCOMPARE( wrapper5.widgetValue().toTime(), QTime( 11, 34, 56 ) );
+    QCOMPARE( static_cast< QgsTimeEdit * >( wrapper5.wrappedWidget() )->time(), QTime( 11, 34, 56 ) );
+    wrapper5.setWidgetValue( QTime( 9, 34, 56 ), context );
+    QCOMPARE( spy5.count(), 2 );
+    QCOMPARE( wrapper5.widgetValue().toTime(), QTime( 9, 34, 56 ) );
+    QCOMPARE( static_cast< QgsTimeEdit * >( wrapper5.wrappedWidget() )->time(), QTime( 9, 34, 56 ) );
+    wrapper5.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy5.count(), 3 );
+    QVERIFY( !wrapper5.widgetValue().isValid() );
+    delete w;
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "datetime" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  QgsProcessingContext context;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "datetime" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QVERIFY( !static_cast< QgsProcessingParameterDateTime * >( def.get() )->defaultValue().isValid() );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterDateTime datetimeParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QgsProcessingParameterDateTime::Date, QVariant(), false );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "datetime" ), context, widgetContext, &datetimeParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterDateTime * >( def.get() )->dataType(), QgsProcessingParameterDateTime::Date );
+  datetimeParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  datetimeParam.setDefaultValue( QStringLiteral( "xxx" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "datetime" ), context, widgetContext, &datetimeParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterDateTime * >( def.get() )->dataType(), QgsProcessingParameterDateTime::Date );
+}
+
+void TestProcessingGui::testProviderConnectionWrapper()
+{
+  // register some connections
+  QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+  QgsAbstractProviderConnection *conn = md->createConnection( QStringLiteral( "test uri" ), QVariantMap() );
+  md->saveConnection( conn, QStringLiteral( "aa" ) );
+  md->saveConnection( conn, QStringLiteral( "bb" ) );
+
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingParameterProviderConnection param( QStringLiteral( "conn" ), QStringLiteral( "connection" ), QStringLiteral( "ogr" ), false );
+
+    QgsProcessingProviderConnectionWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingProviderConnectionWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "bb" ) );
+    QCOMPARE( static_cast< QgsProviderConnectionComboBox * >( wrapper.wrappedWidget() )->currentConnection(), QStringLiteral( "bb" ) );
+    wrapper.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy.count(), 1 );
+    wrapper.setWidgetValue( QStringLiteral( "aa" ), context );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "aa" ) );
+    QCOMPARE( spy.count(), 2 );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+      {
+        // batch or standard mode, only valid connections can be set!
+        // not valid
+        wrapper.setWidgetValue( QStringLiteral( "cc" ), context );
+        QCOMPARE( spy.count(), 3 );
+        QVERIFY( !wrapper.widgetValue().isValid() );
+        QCOMPARE( static_cast< QComboBox * >( wrapper.wrappedWidget() )->currentIndex(), -1 );
+        break;
+
+      }
+      case QgsProcessingGui::Modeler:
+        // invalid connections permitted
+        wrapper.setWidgetValue( QStringLiteral( "cc" ), context );
+        QCOMPARE( spy.count(), 3 );
+        QCOMPARE( static_cast< QgsProviderConnectionComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "cc" ) );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "cc" ) );
+        wrapper.setWidgetValue( QStringLiteral( "aa" ), context );
+        QCOMPARE( spy.count(), 4 );
+        QCOMPARE( static_cast< QgsProviderConnectionComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "aa" ) );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "aa" ) );
+        break;
+    }
+
+    delete w;
+    // optional
+    QgsProcessingParameterProviderConnection param2( QStringLiteral( "conn" ), QStringLiteral( "connection" ), QStringLiteral( "ogr" ), QVariant(), true );
+    QgsProcessingProviderConnectionWidgetWrapper wrapper3( &param2, type );
+    w = wrapper3.createWrappedWidget( context );
+
+    QSignalSpy spy3( &wrapper3, &QgsProcessingEnumWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toString(), QStringLiteral( "bb" ) );
+    QCOMPARE( static_cast< QComboBox * >( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
+    wrapper3.setWidgetValue( QStringLiteral( "aa" ), context );
+    QCOMPARE( spy3.count(), 2 );
+    QCOMPARE( wrapper3.widgetValue().toString(), QStringLiteral( "aa" ) );
+    QCOMPARE( static_cast< QComboBox * >( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "aa" ) );
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 3 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    delete w;
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "connection" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  QgsProcessingContext context;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "providerconnection" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QVERIFY( !static_cast< QgsProcessingParameterProviderConnection * >( def.get() )->defaultValue().isValid() );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterProviderConnection connParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QStringLiteral( "spatialite" ), QStringLiteral( "aaa" ), false );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "providerconnection" ), context, widgetContext, &connParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterProviderConnection * >( def.get() )->defaultValue().toString(), QStringLiteral( "aaa" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterProviderConnection * >( def.get() )->providerId(), QStringLiteral( "spatialite" ) );
+  connParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  connParam.setDefaultValue( QStringLiteral( "xxx" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "providerconnection" ), context, widgetContext, &connParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterProviderConnection * >( def.get() )->defaultValue().toString(), QStringLiteral( "xxx" ) );
+  connParam.setDefaultValue( QVariant() );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "providerconnection" ), context, widgetContext, &connParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QVERIFY( !static_cast< QgsProcessingParameterProviderConnection * >( def.get() )->defaultValue().isValid() );
 }
 
 void TestProcessingGui::cleanupTempDir()

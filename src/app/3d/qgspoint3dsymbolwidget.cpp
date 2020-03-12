@@ -257,7 +257,7 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
              << labelBillboardHeight << spinBillboardHeight << labelBillboardSymbol << btnChangeSymbol;
 
   widgetMaterial->setEnabled( true );
-  widgetMaterial->show();
+  materialsGroupBox->show();
   transformationWidget->show();
   QList<QWidget *> activeWidgets;
   switch ( cboShape->currentIndex() )
@@ -287,7 +287,7 @@ void QgsPoint3DSymbolWidget::onShapeChanged()
     case 7:  // billboard
       activeWidgets << labelBillboardHeight << spinBillboardHeight << labelBillboardSymbol << btnChangeSymbol;
       // Always hide material and transformationwidget for billboard
-      widgetMaterial->hide();
+      materialsGroupBox->hide();
       transformationWidget->hide();
       break;
   }

@@ -33,12 +33,16 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_datetime.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_memory_data_model.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_driver_manager.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/mdal_logger.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/mdal_logger.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_driver.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_2dm.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_selafin.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_esri_tin.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xms_tin.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xms_tin.hpp
   )
 
   SET(MDAL_LIB_HDRS

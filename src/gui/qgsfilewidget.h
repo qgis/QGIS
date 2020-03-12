@@ -67,6 +67,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
       GetMultipleFiles, //!< Select multiple files
       SaveFile, //!< Select a single new or pre-existing file
     };
+    Q_ENUM( StorageMode )
 
     /**
      * \brief The RelativeStorage enum determines if path is absolute, relative to the current project path or relative to a defined default path.
@@ -77,6 +78,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
       RelativeProject,
       RelativeDefaultPath
     };
+    Q_ENUM( RelativeStorage )
 
     /**
      * \brief QgsFileWidget creates a widget for selecting a file or a folder.

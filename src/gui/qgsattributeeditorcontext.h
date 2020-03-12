@@ -243,6 +243,20 @@ class GUI_EXPORT QgsAttributeEditorContext
     void setFormFeature( const QgsFeature &feature ) { mFormFeature = feature ; }
 
     /**
+     * Returns the feature of the currently edited parent form in its actual state
+     * \see setParentFormFeature()
+     * \since QGIS 3.14
+     */
+    QgsFeature parentFormFeature() const { return mParentFormFeature; }
+
+    /**
+     * Sets the \a feature of the currently edited parent form
+     * \see parentFormFeature()
+     * \since QGIS 3.14
+     */
+    void setParentFormFeature( const QgsFeature &feature ) { mParentFormFeature = feature ; }
+
+    /**
      * Returns current attributeFormMode
      * \since QGIS 3.4
      */
@@ -288,6 +302,8 @@ class GUI_EXPORT QgsAttributeEditorContext
     RelationMode mRelationMode = Undefined;
     //! Store the values of the currently edited form or table row
     QgsFeature mFormFeature;
+    //! Store the values of the currently edited parent form or table row
+    QgsFeature mParentFormFeature;
     FormMode mFormMode = Embed;
     bool mAllowCustomUi = true;
     Mode mAttributeFormMode = SingleEditMode;

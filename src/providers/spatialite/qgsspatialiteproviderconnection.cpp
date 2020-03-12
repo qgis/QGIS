@@ -20,7 +20,7 @@
 #include "qgssettings.h"
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
-
+#include "qgsapplication.h"
 
 QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
@@ -251,7 +251,7 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
         viewNames.push_back( tn.first().toString() );
       }
 
-      // Another wierdness: table names are converted to lowercase when out of spatialite gaia functions, let's get them back to their real case here,
+      // Another weirdness: table names are converted to lowercase when out of spatialite gaia functions, let's get them back to their real case here,
       // may need LAUNDER on open, but let's try to make it consistent with how GPKG works.
       QgsStringMap tableNotLowercaseNames;
       for ( const auto &tn : executeSqlPrivate( QStringLiteral( "SELECT name FROM sqlite_master WHERE LOWER(name) != name" ) ) )
@@ -315,6 +315,11 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
     } ), tableInfo.end() );
   }
   return tableInfo ;
+}
+
+QIcon QgsSpatiaLiteProviderConnection::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconSpatialite.svg" ) );
 }
 
 void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()

@@ -58,6 +58,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void mShowLabelChkbx_toggled( bool chkd );
     void mAlwaysShowChkbx_toggled( bool chkd );
     void labelAllPartsToggled( bool checked );
+    void bufferDrawToggled( bool chkd );
     void showCalloutToggled( bool chkd );
     void minScaleChanged( double scale );
     void maxScaleChanged( double scale );
@@ -120,6 +121,8 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     bool mIsPinned = false;
     bool mCanSetHAlignment = false;
     bool mCanSetVAlignment = false;
+
+    friend class TestQgsLabelPropertyDialog;
 };
 
 #endif // QGSLAYERPROPERTYDIALOG_H

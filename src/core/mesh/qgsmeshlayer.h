@@ -25,6 +25,7 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
 #include "qgsmeshtimesettings.h"
+#include "qgsmeshsimplificationsettings.h"
 
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
@@ -168,32 +169,39 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QString providerType() const;
 
     /**
-     * Returns native mesh (NULLPTR before rendering)
+     * Returns native mesh (NULLPTR before rendering or calling to updateMesh)
      *
      * \note Not available in Python bindings
      */
     QgsMesh *nativeMesh() SIP_SKIP;
 
     /**
-     * Returns native mesh (NULLPTR before rendering)
+     * Returns native mesh (NULLPTR before rendering or calling to updateMesh)
      *
      * \note Not available in Python bindings
      */
     const QgsMesh *nativeMesh() const SIP_SKIP;
 
     /**
-     * Returns triangular mesh (NULLPTR before rendering)
+     * Returns triangular mesh (NULLPTR before rendering or calling to updateMesh).
      *
+     * If the parameter triangleSize is provided, among the base triangular mesh
+     * and the simplified triangular meshes, the one returned is which has the average triangle size just greater than triangleSize.
+     * The size of a triangle is the maximum between the height and the width of the triangle bounding box
+     * For default parameter (=0), it returns base triangular mesh.
+     * \param minimumTriangleSize is the average size criteria in canvas map units
+     * \returns triangular mesh, the layer keeps the ownership
+     * \note triangular size added in QGIS 3.14
      * \note Not available in Python bindings
      */
-    QgsTriangularMesh *triangularMesh() SIP_SKIP;
+    QgsTriangularMesh *triangularMesh( double minimumTriangleSize = 0 ) const SIP_SKIP;
 
     /**
-     * Returns triangular mesh (NULLPTR before rendering)
+     * Gets native mesh and updates (creates if it doesn't exist) the base triangular mesh
      *
-     * \note Not available in Python bindings
+     * \param transform Transformation from layer CRS to destination (e.g. map) CRS. With invalid transform, it keeps the native mesh CRS
      */
-    const QgsTriangularMesh *triangularMesh() const SIP_SKIP;
+    void updateTriangularMesh( const QgsCoordinateTransform &transform = QgsCoordinateTransform() );
 
     /**
      * Returns native mesh (NULLPTR before rendering)
@@ -220,6 +228,20 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \since QGIS 3.8
      */
     void setTimeSettings( const QgsMeshTimeSettings &settings );
+
+    /**
+     * Returns mesh simplification settings
+     *
+     * \since QGIS 3.14
+     */
+    QgsMeshSimplificationSettings meshSimplificationSettings() const SIP_SKIP;
+
+    /**
+     * Sets mesh simplification settings
+     *
+     * \since QGIS 3.14
+     */
+    void setMeshSimplificationSettings( const QgsMeshSimplificationSettings &meshSimplificationSettings ) SIP_SKIP;
 
     /**
      * Returns (date) time in hours formatted to human readable form
@@ -272,7 +294,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      */
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
-
   signals:
 
     /**
@@ -318,6 +339,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     void fillNativeMesh();
     void assignDefaultStyleToDatasetGroup( int groupIndex );
     void setDefaultRendererSettings();
+    void createSimplifiedMeshes();
+    int levelsOfDetailsIndex( double partOfMeshInView ) const;
+
+    bool hasSimplifiedMeshes() const;
 
   private slots:
     void onDatasetGroupsAdded( int count );
@@ -329,8 +354,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! Pointer to native mesh structure, used as cache for rendering
     std::unique_ptr<QgsMesh> mNativeMesh;
 
-    //! Pointer to derived mesh structure
-    std::unique_ptr<QgsTriangularMesh> mTriangularMesh;
+    //! Pointer to derived mesh structures (the first one is the base mesh, others are simplified meshes with decreasing level of detail)
+    std::vector<std::unique_ptr<QgsTriangularMesh>> mTriangularMeshes;
 
     //! Pointer to the cache with data used for last rendering
     std::unique_ptr<QgsMeshLayerRendererCache> mRendererCache;
@@ -340,6 +365,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     //! Time format configuration
     QgsMeshTimeSettings mTimeSettings;
+
+    //! Simplify mesh configuration
+    QgsMeshSimplificationSettings mSimplificationSettings;
 };
 
 #endif //QGSMESHLAYER_H

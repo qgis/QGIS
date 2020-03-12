@@ -59,6 +59,7 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsprojectdisplaysettings.h"
+#include "qgsprojecttimesettings.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -364,6 +365,7 @@ QgsProject::QgsProject( QObject *parent )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mViewSettings( new QgsProjectViewSettings( this ) )
+  , mTimeSettings( new QgsProjectTimeSettings( this ) )
   , mDisplaySettings( new QgsProjectDisplaySettings( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
@@ -762,6 +764,7 @@ void QgsProject::clear()
   mLayoutManager->clear();
   mBookmarkManager->clear();
   mViewSettings->reset();
+  mTimeSettings->reset();
   mDisplaySettings->reset();
   mSnappingConfig.reset();
   emit snappingConfigChanged( mSnappingConfig );
@@ -1005,7 +1008,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
 
     if ( element.attribute( QStringLiteral( "embedded" ) ) == QLatin1String( "1" ) )
     {
-      createEmbeddedLayer( element.attribute( QStringLiteral( "id" ) ), readPath( element.attribute( QStringLiteral( "project" ) ) ), brokenNodes, flags );
+      createEmbeddedLayer( element.attribute( QStringLiteral( "id" ) ), readPath( element.attribute( QStringLiteral( "project" ) ) ), brokenNodes, true, flags );
     }
     else
     {
@@ -1539,6 +1542,11 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   if ( !viewSettingsElement.isNull() )
     mViewSettings->readXml( viewSettingsElement, context );
 
+  // restore time settings
+  QDomElement timeSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectTimeSettings" ) );
+  if ( !timeSettingsElement.isNull() )
+    mTimeSettings->readXml( timeSettingsElement, context );
+
   QDomElement displaySettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectDisplaySettings" ) );
   if ( !displaySettingsElement.isNull() )
     mDisplaySettings->readXml( displaySettingsElement, context );
@@ -1558,8 +1566,8 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   if ( clean )
     setDirty( false );
 
-  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUser ) );
-  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUserFull ) );
+  QgsDebugMsgLevel( QString( "Project save user: %1" ).arg( mSaveUser ), 2 );
+  QgsDebugMsgLevel( QString( "Project save user: %1" ).arg( mSaveUserFull ), 2 );
 
   Q_NOWARN_DEPRECATED_PUSH
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
@@ -1585,9 +1593,9 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 }
 
 
-void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags )
+bool QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags )
 {
-
+  bool valid = true;
   const auto constChildren = group->children();
   for ( QgsLayerTreeNode *child : constChildren )
   {
@@ -1621,11 +1629,16 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFl
       if ( child->customProperty( QStringLiteral( "embedded" ) ).toInt() )
       {
         QList<QDomNode> brokenNodes;
-        createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), child->customProperty( QStringLiteral( "embedded_project" ) ).toString(), brokenNodes, flags );
+        if ( ! createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), readPath( child->customProperty( QStringLiteral( "embedded_project" ) ).toString() ), brokenNodes, true, flags ) )
+        {
+          valid = valid && false;
+        }
       }
     }
 
   }
+
+  return valid;
 }
 
 QVariantMap QgsProject::customVariables() const
@@ -2133,7 +2146,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   dump_( mProperties );
 #endif
 
-  QgsDebugMsgLevel( QStringLiteral( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ), 2 );
 
   if ( !mProperties.isEmpty() ) // only worry about properties if we
     // actually have any properties
@@ -2160,6 +2173,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   QDomElement viewSettingsElem = mViewSettings->writeXml( *doc, context );
   qgisNode.appendChild( viewSettingsElem );
+
+  QDomElement timeSettingsElement = mTimeSettings->writeXml( *doc, context );
+  qgisNode.appendChild( timeSettingsElement );
 
   QDomElement displaySettingsElem = mDisplaySettings->writeXml( *doc, context );
   qgisNode.appendChild( displaySettingsElem );
@@ -2866,6 +2882,16 @@ const QgsProjectViewSettings *QgsProject::viewSettings() const
 QgsProjectViewSettings *QgsProject::viewSettings()
 {
   return mViewSettings;
+}
+
+const QgsProjectTimeSettings *QgsProject::timeSettings() const
+{
+  return mTimeSettings;
+}
+
+QgsProjectTimeSettings *QgsProject::timeSettings()
+{
+  return mTimeSettings;
 }
 
 const QgsProjectDisplaySettings *QgsProject::displaySettings() const

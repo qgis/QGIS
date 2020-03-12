@@ -54,6 +54,7 @@
 #include "qgsguiutils.h"
 #include "qgsproxyprogresstask.h"
 #include "qgisapp.h"
+#include "qgsorganizetablecolumnsdialog.h"
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
@@ -105,6 +106,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mActionSelectedToTop, &QAction::toggled, this, &QgsAttributeTableDialog::mActionSelectedToTop_toggled );
   connect( mActionAddAttribute, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddAttribute_triggered );
   connect( mActionRemoveAttribute, &QAction::triggered, this, &QgsAttributeTableDialog::mActionRemoveAttribute_triggered );
+  connect( mActionOrganizeColumns, &QAction::triggered, this, &QgsAttributeTableDialog::mActionOrganizeColumns_triggered );
   connect( mActionOpenFieldCalculator, &QAction::triggered, this, &QgsAttributeTableDialog::mActionOpenFieldCalculator_triggered );
   connect( mActionDeleteSelected, &QAction::triggered, this, &QgsAttributeTableDialog::mActionDeleteSelected_triggered );
   connect( mMainView, &QgsDualView::currentChanged, this, &QgsAttributeTableDialog::mMainView_currentChanged );
@@ -835,6 +837,20 @@ void QgsAttributeTableDialog::mActionRemoveAttribute_triggered()
   }
 }
 
+void QgsAttributeTableDialog::mActionOrganizeColumns_triggered()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QgsOrganizeTableColumnsDialog dlg( mLayer, mLayer->attributeTableConfig(), this );
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    QgsAttributeTableConfig config = dlg.config();
+    mMainView->setAttributeTableConfig( config );
+  }
+}
 
 void QgsAttributeTableDialog::openConditionalStyles()
 {

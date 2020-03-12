@@ -152,6 +152,11 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     QgsPostgresConn *connectionRO() const;
     QgsPostgresConn *connectionRW();
 
+    bool supportsSubsetString() const override { return true; }
+
+    QString subsetString() const override;
+    bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
+
     bool hasSufficientPermsAndCapabilities();
     void disconnectDb();
     //! Initialize the raster by fetching metadata and creating spatial indexes.
@@ -181,7 +186,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     void determinePrimaryKeyFromUriKeyColumn();
 
     /**
-     * Returns the SQL frament to retrieve the PK from the raster table
+     * Returns the quoted SQL frament to retrieve the PK from the raster table
      */
     QString pkSql();
 

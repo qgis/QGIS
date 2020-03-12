@@ -553,7 +553,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     // The following query returns only tables that exist and the user has SELECT privilege on.
     // Can't use regclass here because table must exist, else error occurs.
     sql = QString( "SELECT %1,%2,%3,%4,%5,%6,c.relkind,obj_description(c.oid),"
-                   "array_agg(a.attname ORDER BY a.attnum), "
+                   "%10, "
                    "count(CASE WHEN t.typname IN (%9) THEN 1 ELSE NULL END) "
                    ", %8 "
                    " FROM %7 l,pg_class c,pg_namespace n,pg_attribute a,pg_type t"
@@ -570,6 +570,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
           .arg( tableName, schemaName, columnName, typeName, sridName, dimName, gtableName )
           .arg( 1 )
           .arg( supportedSpatialTypes().join( ',' ) )
+          .arg( mPostgresqlVersion >= 90000 ? "array_agg(a.attname ORDER BY a.attnum)" : "(SELECT array_agg(attname) FROM (SELECT unnest(array_agg(a.attname)) AS attname ORDER BY unnest(array_agg(a.attnum))) AS attname)" )
           ;
 
     if ( searchPublicOnly )
@@ -582,7 +583,9 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
     foundInTables |= 1 << i;
 
-    if ( ! query.isEmpty() ) query += " UNION ";
+    if ( ! query.isEmpty() )
+      query += " UNION ";
+
     query += sql;
   }
 
@@ -616,11 +619,16 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     QgsPostgresGeometryColumnType columnType = SctNone;
 
     int columnTypeInt = result.PQgetvalue( idx, 10 ).toInt();
-    if ( columnTypeInt == SctGeometry ) columnType = SctGeometry;
-    else if ( columnTypeInt == SctGeography ) columnType = SctGeography;
-    else if ( columnTypeInt == SctTopoGeometry ) columnType = SctTopoGeometry;
-    else if ( columnTypeInt == SctPcPatch ) columnType = SctPcPatch;
-    else if ( columnTypeInt == SctRaster ) columnType = SctRaster;
+    if ( columnTypeInt == SctGeometry )
+      columnType = SctGeometry;
+    else if ( columnTypeInt == SctGeography )
+      columnType = SctGeography;
+    else if ( columnTypeInt == SctTopoGeometry )
+      columnType = SctTopoGeometry;
+    else if ( columnTypeInt == SctPcPatch )
+      columnType = SctPcPatch;
+    else if ( columnTypeInt == SctRaster )
+      columnType = SctRaster;
     else
     {
       QgsDebugMsg( QStringLiteral( "Unhandled columnType index %1" )
@@ -659,6 +667,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     layerProperty.sql.clear();
     layerProperty.relKind = relkind;
     layerProperty.isView = isView;
+    layerProperty.isForeignTable = isForeignTable;
     layerProperty.isRaster = isRaster;
     layerProperty.isMaterializedView = isMaterializedView;
     layerProperty.tableComment = comment;
@@ -698,7 +707,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                                   " JOIN pg_namespace n ON n.oid=c.relnamespace"
                                   " JOIN pg_type t ON t.oid=a.atttypid"
                                   " LEFT JOIN pg_type b ON b.oid=t.typbasetype"
-                                  " WHERE c.relkind IN ('v','r','m','p')"
+                                  " WHERE c.relkind IN ('v','r','m','p','f')"
                                   " AND has_schema_privilege( n.nspname, 'usage' )"
                                   " AND has_table_privilege( c.oid, 'select' )"
                                   " AND (t.typname IN (%1) OR b.typname IN (%1))" )
@@ -773,6 +782,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.geometryColName = column;
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
+      layerProperty.isForeignTable = isForeignTable;
       layerProperty.isRaster = coltype == QLatin1String( "raster" );
       layerProperty.isMaterializedView = isMaterializedView;
       layerProperty.tableComment = comment;
@@ -819,23 +829,24 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
   if ( allowGeometrylessTables )
   {
-    QString sql = "SELECT "
-                  "pg_class.relname"
-                  ",pg_namespace.nspname"
-                  ",pg_class.relkind"
-                  ",obj_description(pg_class.oid)"
-                  ",array_agg(a.attname ORDER BY a.attnum)"
-                  " FROM "
-                  " pg_class"
-                  ",pg_namespace"
-                  ",pg_attribute a"
-                  " WHERE pg_namespace.oid=pg_class.relnamespace"
-                  " AND has_schema_privilege(pg_namespace.nspname,'usage')"
-                  " AND has_table_privilege(pg_class.oid,'select')"
-                  " AND pg_class.relkind IN ('v','r','m','p')"
-                  " AND pg_class.oid = a.attrelid"
-                  " AND NOT a.attisdropped"
-                  " AND a.attnum > 0";
+    QString sql = QStringLiteral( "SELECT "
+                                  "pg_class.relname"
+                                  ",pg_namespace.nspname"
+                                  ",pg_class.relkind"
+                                  ",obj_description(pg_class.oid)"
+                                  ",%1"
+                                  " FROM "
+                                  " pg_class"
+                                  ",pg_namespace"
+                                  ",pg_attribute a"
+                                  " WHERE pg_namespace.oid=pg_class.relnamespace"
+                                  " AND has_schema_privilege(pg_namespace.nspname,'usage')"
+                                  " AND has_table_privilege(pg_class.oid,'select')"
+                                  " AND pg_class.relkind IN ('v','r','m','p','f')"
+                                  " AND pg_class.oid = a.attrelid"
+                                  " AND NOT a.attisdropped"
+                                  " AND a.attnum > 0" )
+                  .arg( mPostgresqlVersion >= 90000 ? "array_agg(a.attname ORDER BY a.attnum)" : "(SELECT array_agg(attname) FROM (SELECT unnest(array_agg(a.attname)) AS attname ORDER BY unnest(array_agg(a.attnum))) AS attname)" );
 
     // user has select privilege
     if ( searchPublicOnly )
@@ -881,6 +892,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.nSpCols = 0;
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
+      layerProperty.isForeignTable = isForeignTable;
       layerProperty.isRaster = false;
       layerProperty.isMaterializedView = isMaterializedView;
       layerProperty.tableComment = comment;
@@ -1121,8 +1133,16 @@ WHERE c.relnamespace = n.oid
   QgsDebugMsg( QStringLiteral( "Checking for raster support" ) );
   if ( mPostgisVersionMajor >= 2 )
   {
-    QgsPostgresResult result( PQexec( QStringLiteral( "SELECT oid FROM pg_catalog.pg_type WHERE typname='raster'" ) ) );
-    if ( result.PQntuples() >= 1 )
+    result = PQexec( QStringLiteral( R"(
+SELECT
+ has_table_privilege(c.oid, 'select')
+FROM pg_class c, pg_namespace n, pg_type t
+WHERE c.relnamespace = n.oid
+  AND n.oid = t.typnamespace
+  AND c.relname = 'raster_columns'
+  AND t.typname = 'raster'
+    )" ), false );
+    if ( result.PQntuples() >= 1 && result.PQgetvalue( 0, 0 ) == QLatin1String( "t" ) )
     {
       mRasterAvailable = true;
       QgsDebugMsg( QStringLiteral( "Raster support available!" ) );
@@ -1677,7 +1697,8 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
   {
     QgsPostgresLayerProperty &layerProperty = *layerPropertyPtr;
 
-    if ( i++ ) query += " UNION ";
+    if ( i++ )
+      query += " UNION ";
 
     if ( !layerProperty.schemaName.isEmpty() )
     {
@@ -1691,7 +1712,8 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       table = layerProperty.tableName;
     }
 
-    if ( layerProperty.geometryColName.isEmpty() ) continue;
+    if ( layerProperty.geometryColName.isEmpty() )
+      continue;
 
     if ( layerProperty.isRaster )
     {
@@ -1797,9 +1819,7 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       QgsDebugMsg( "Geometry types,srids and dims query: " + sql );
 
       query += sql;
-
     }
-
   }
 
   QgsDebugMsgLevel( "Layer types,srids and dims query: " + query, 3 );
@@ -1845,7 +1865,8 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
                         , 3
                       );
 
-      if ( sridAndTypeString == "NULL" ) continue;
+      if ( sridAndTypeString == "NULL" )
+        continue;
 
       QStringList sridAndType = sridAndTypeString.split( ':' );
       int srid = sridAndType[0].toInt();
@@ -1867,9 +1888,12 @@ void QgsPostgresConn::retrieveLayerTypes( QVector<QgsPostgresLayerProperty *> &l
       for ( j = 0; j < foundCombinations.length(); j++ )
       {
         auto foundPair = foundCombinations.at( j );
-        if ( foundPair.second != srid ) continue; // srid must match
+        if ( foundPair.second != srid )
+          continue; // srid must match
+
         auto knownType = foundPair.first;
-        if ( type == knownType ) break; // found
+        if ( type == knownType )
+          break; // found
 
         auto knownMultiType = QgsWkbTypes::multiType( knownType );
         auto knownCurveType = QgsWkbTypes::curveType( knownType );

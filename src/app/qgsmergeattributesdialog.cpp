@@ -186,6 +186,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
       if ( v.isValid() )
       {
         mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::DisplayRole, v );
+        mTableWidget->item( mTableWidget->rowCount() - 1, j )->setData( Qt::UserRole, v );
         setToManual = true;
       }
     }

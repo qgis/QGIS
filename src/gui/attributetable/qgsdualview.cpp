@@ -159,6 +159,10 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
 
   // This slows down load of the attribute table heaps and uses loads of memory.
   //mTableView->resizeColumnsToContents();
+
+  if ( mFeatureListModel->rowCount( ) > 0 )
+    mFeatureListView->setEditSelection( QgsFeatureIds() << mFeatureListModel->data( mFeatureListModel->index( 0, 0 ), QgsFeatureListModel::Role::FeatureRole ).value<QgsFeature>().id() );
+
 }
 
 void QgsDualView::columnBoxInit()
@@ -299,6 +303,22 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
     mMasterModel->setRequest( r );
     whileBlocking( mLayerCache )->setCacheGeometry( needsGeometry );
     mMasterModel->loadLayer();
+  }
+
+
+  // disable the browsing auto pan/scale if the list only shows visible items
+  switch ( filterMode )
+  {
+    case QgsAttributeTableFilterModel::ShowVisible:
+      setBrowsingAutoPanScaleAllowed( false );
+      break;
+
+    case QgsAttributeTableFilterModel::ShowAll:
+    case QgsAttributeTableFilterModel::ShowEdited:
+    case QgsAttributeTableFilterModel::ShowFilteredList:
+    case QgsAttributeTableFilterModel::ShowSelected:
+      setBrowsingAutoPanScaleAllowed( true );
+      break;
   }
 
   //update filter model
@@ -464,7 +484,7 @@ void QgsDualView::panOrZoomToFeature( const QgsFeatureIds &featureset )
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();
   if ( canvas && view() == AttributeEditor && featureset != mLastFeatureSet )
   {
-    if ( filterMode() != QgsAttributeTableFilterModel::ShowVisible )
+    if ( mBrowsingAutoPanScaleAllowed )
     {
       if ( mAutoPanButton->isChecked() )
         QTimer::singleShot( 0, this, [ = ]()
@@ -484,6 +504,22 @@ void QgsDualView::panOrZoomToFeature( const QgsFeatureIds &featureset )
     } );
     mLastFeatureSet = featureset;
   }
+}
+
+void QgsDualView::setBrowsingAutoPanScaleAllowed( bool allowed )
+{
+  if ( mBrowsingAutoPanScaleAllowed == allowed )
+    return;
+
+  mBrowsingAutoPanScaleAllowed = allowed;
+
+  mAutoPanButton->setEnabled( allowed );
+  mAutoZoomButton->setEnabled( allowed );
+
+  QString disabledHint = tr( "(disabled when attribute table only shows features visible in the current map canvas extent)" );
+
+  mAutoPanButton->setToolTip( tr( "Automatically pan to the current feature" ) + ( allowed ? QString() : QString( ' ' ) + disabledHint ) );
+  mAutoZoomButton->setToolTip( tr( "Automatically zoom to the current feature" ) + ( allowed ? QString() : QString( ' ' ) + disabledHint ) );
 }
 
 void QgsDualView::panZoomGroupButtonToggled( QAbstractButton *button, bool checked )
@@ -649,6 +685,14 @@ void QgsDualView::cancelProgress()
 {
   if ( mProgressDlg )
     mProgressDlg->cancel();
+}
+
+void QgsDualView::parentFormValueChanged( const QString &attribute, const QVariant &newValue )
+{
+  if ( mAttributeForm )
+  {
+    mAttributeForm->parentFormValueChanged( attribute, newValue );
+  }
 }
 
 void QgsDualView::hideEvent( QHideEvent *event )

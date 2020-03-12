@@ -50,13 +50,28 @@ class CORE_EXPORT QgsMeshLayerUtils
   public:
 
     /**
+     * Returns (maximum) number of values that can be extracted from the mesh by type
+     *
+     * It is assumed that 3D values are averaged to face values
+     * \see datasetValues()
+     *
+     * \since QGIS 3.14
+     */
+    static int datasetValuesCount( const QgsMesh *mesh, QgsMeshDatasetGroupMetadata::DataType dataType );
+
+    /**
+     * Returns the type of values the datasetValues() returns
+     *
+     * \see datasetValues()
+     * \since QGIS 3.14
+     */
+    static QgsMeshDatasetGroupMetadata::DataType datasetValuesType( const QgsMeshDatasetGroupMetadata::DataType &type );
+
+    /**
      * \brief Returns N vector/scalar values from the index from the dataset
      *
-     * caller is responsible to set correct value index value:
-     * for DataOnFaces -> native face index
-     * for DataOnVertices -> native vertex index
-     * for DataOnVolumes -> native face index
-     *
+     * See QgsMeshLayerUtils::datasetValuesCount() to determine maximum number of values to be requested
+     * See QgsMeshLayerUtils::datasetValuesType() to see the the type of values the function returns
      * See QgsMeshDatasetGroupMetadata::isVector() to check if the returned value is vector or scalar
      *
      * \since QGIS 3.12
@@ -66,6 +81,27 @@ class CORE_EXPORT QgsMeshLayerUtils
       QgsMeshDatasetIndex index,
       int valueIndex,
       int count );
+
+    /**
+     * \brief Returns gridded vector values, if extentInMap is default, uses the triangular mesh extent
+     *
+     * \param meshLayer pointer to the mesh layer
+     * \param index dataset index
+     * \param xSpacing the spacing on X coordinate in map unit
+     * \param ySpacing the spacing on Y coordinate in map unit
+     * \param size contains the size (count of rows and columns) of the grid supporting the vectors
+     * \param minCorner coordinates of the corner with x minimum and y miminum
+     * \returns vectors on a grid, empty if dataset is no vector values
+     *
+     * \since QGIS 3.14
+     */
+    static QVector<QgsVector> griddedVectorValues(
+      const QgsMeshLayer *meshLayer,
+      const QgsMeshDatasetIndex index,
+      double xSpacing,
+      double ySpacing,
+      const QSize &size,
+      const QgsPointXY &minCorner );
 
     /**
      * Calculates magnitude values from the given QgsMeshDataBlock.
@@ -89,6 +125,17 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QSize &outputSize,
       const QgsRectangle &bbox,
       int &leftLim, int &rightLim, int &topLim, int &bottomLim );
+
+    /**
+    * Interpolates value based on known values on the vertices of a edge
+    * \returns value on the point pt a or NaN
+    *
+    * \since QGIS 3.14
+    */
+    static double interpolateFromVerticesData(
+      double fraction,
+      double val1, double val2
+    );
 
     /**
     * Interpolates value based on known values on the vertices of a triangle
@@ -166,6 +213,22 @@ class CORE_EXPORT QgsMeshLayerUtils
     );
 
     /**
+     * Calculates magnitude values ont vertices from the given QgsMeshDataBlock.
+     * If the values are defined on faces,
+     * \param meshLayer the mesh layer
+     * \param index the dataset index that contains the data
+     * \param activeFaceFlagValues pointer to the QVector containing active face flag values
+     * \param method used to inteprolate the values on vertices if needed
+     * \returns magnitude values of the dataset on all the vertices
+     * \since QGIS 3.14
+     */
+    static QVector<double> calculateMagnitudeOnVertices(
+      const QgsMeshLayer *meshLayer,
+      const QgsMeshDatasetIndex index,
+      QgsMeshDataBlock *activeFaceFlagValues,
+      const QgsMeshRendererScalarSettings::DataInterpolationMethod method = QgsMeshRendererScalarSettings::NeighbourAverage );
+
+    /**
      * Calculates the bounding box of the triangle
      * \param p1 first vertex of the triangle
      * \param p2 second vertex of the triangle
@@ -186,6 +249,20 @@ class CORE_EXPORT QgsMeshLayerUtils
       * \since QGIS 3.12
       */
     static QDateTime firstReferenceTime( QgsMeshLayer *meshLayer );
+
+    /**
+     * Calculates the normals on the vertices using vertical magnitudes instead Z value of vertices
+     * \param triangularMesh the triangular mesh
+     * \param verticalMagnitude the vertical magnitude values used instead Z value of vertices
+     * \param isRelative true if the vertical magnitude is relative to the Z value of vertices
+     * \returns normales (3D vector) on all the vertices
+     * \since QGIS 3.14
+     */
+    static QVector<QVector3D> calculateNormals(
+      const QgsTriangularMesh &triangularMesh,
+      const QVector<double> &verticalMagnitude,
+      bool isRelative );
+
 
 };
 

@@ -57,6 +57,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       Raster = 1 << 3,            //!< Raster table
       View = 1 << 4,              //!< View table
       MaterializedView = 1 << 5,  //!< Materialized view table
+      Foreign = 1 << 6,           //!< Foreign data wrapper
     };
 
     Q_ENUMS( TableFlag )
@@ -141,7 +142,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          * Returns the default name for the table entry
          *
          * It is usually the table name but in case there are multiple geometry
-         * columns, the geometry column name is appendend to the table name.
+         * columns, the geometry column name is appended to the table name.
          * \see geometryColumnCount()
          */
         QString defaultName() const;
@@ -247,6 +248,7 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
          */
         int maxCoordinateDimensions() const;
 
+        bool operator==( const QgsAbstractDatabaseProviderConnection::TableProperty &other ) const;
 
       private:
 

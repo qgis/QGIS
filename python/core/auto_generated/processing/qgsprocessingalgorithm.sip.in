@@ -46,6 +46,7 @@ Abstract base class for processing algorithms.
       FlagDisplayNameIsLiteral,
       FlagSupportsInPlaceEdits,
       FlagKnownIssues,
+      FlagCustomException,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
@@ -865,6 +866,13 @@ Evaluates the parameter with matching ``name`` to a print layout item, taken fro
 Evaluates the parameter with matching ``name`` to a color, or returns an invalid color if the parameter was not set.
 
 .. versionadded:: 3.10
+%End
+
+    QString parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``name`` to a connection name string.
+
+.. versionadded:: 3.14
 %End
 
     static QString invalidSourceError( const QVariantMap &parameters, const QString &name );

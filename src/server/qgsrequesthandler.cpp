@@ -160,8 +160,6 @@ void QgsRequestHandler::setupParameters()
     QString formatString = mFormatString;
     if ( !formatString.isEmpty() )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "formatString is: %1" ).arg( formatString ) );
-
       //remove the image/ in front of the format
       if ( formatString.contains( QLatin1String( "image/png" ), Qt::CaseInsensitive ) || formatString.compare( QLatin1String( "png" ), Qt::CaseInsensitive ) == 0 )
       {
@@ -252,7 +250,7 @@ void QgsRequestHandler::parseInput()
 
           mRequest.setParameter( attrName.toUpper(), attr.value() );
         }
-        mRequest.setParameter( QStringLiteral( "REQUEST_BODY" ), inputString );
+        mRequest.setParameter( QStringLiteral( "REQUEST_BODY" ), inputString.replace( '+', QStringLiteral( "%2B" ) ) );
       }
     }
   }

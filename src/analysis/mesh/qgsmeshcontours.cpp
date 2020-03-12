@@ -28,6 +28,7 @@
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsfeedback.h"
+#include "qgsproject.h"
 
 #include <limits>
 
@@ -40,16 +41,15 @@ QgsMeshContours::QgsMeshContours( QgsMeshLayer *layer )
   if ( !mMeshLayer ||  !mMeshLayer->dataProvider() || !mMeshLayer->dataProvider()->isValid() )
     return;
 
+  // Support for meshes with edges is not implemented
+  if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    return;
+
   mNativeMesh.reset( new QgsMesh() );
   mMeshLayer->dataProvider()->populateMesh( mNativeMesh.get() );
 
-  QgsMapSettings mapSettings;
-  mapSettings.setExtent( mMeshLayer->extent() );
-  mapSettings.setDestinationCrs( mMeshLayer->crs() );
-  mapSettings.setOutputDpi( 96 );
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-  mTriangularMesh.reset( new QgsTriangularMesh() );
-  mTriangularMesh->update( mNativeMesh.get(), &context );
+  mTriangularMesh.reset( new QgsTriangularMesh );
+  mTriangularMesh->update( mNativeMesh.get() );
 }
 
 QgsMeshContours::~QgsMeshContours() = default;

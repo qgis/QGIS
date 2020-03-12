@@ -57,6 +57,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QgsCoordinateReferenceSystem crs() const override;
 
     int vertexCount() const override;
+    int edgeCount() const override;
     int faceCount() const override;
     void populateMesh( QgsMesh *mesh ) const override;
 
@@ -107,6 +108,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
 
   private:
     QVector<QgsMeshVertex> vertices( ) const;
+    QVector<QgsMeshEdge> edges( ) const;
     QVector<QgsMeshFace> faces( ) const;
     void loadData();
     MeshH mMeshH;

@@ -56,6 +56,8 @@ QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   addParameterType( new QgsProcessingParameterTypeCoordinateOperation() );
 #endif
   addParameterType( new QgsProcessingParameterTypeMapTheme() );
+  addParameterType( new QgsProcessingParameterTypeDateTime() );
+  addParameterType( new QgsProcessingParameterTypeProviderConnection() );
 }
 
 QgsProcessingRegistry::~QgsProcessingRegistry()

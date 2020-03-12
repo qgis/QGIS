@@ -30,6 +30,7 @@ from qgis.core import (QgsVectorLayerExporter,
                        QgsProcessingParameterString,
                        QgsProcessingParameterField,
                        QgsProcessingParameterBoolean,
+                       QgsProcessingParameterProviderConnection,
                        QgsWkbTypes)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -64,12 +65,10 @@ class ImportIntoPostGIS(QgisAlgorithm):
                                                               self.tr('Layer to import'),
                                                               types=[QgsProcessing.TypeVector]))
 
-        db_param = QgsProcessingParameterString(
+        db_param = QgsProcessingParameterProviderConnection(
             self.DATABASE,
-            self.tr('Database (connection name)'))
-        db_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
+            self.tr('Database (connection name)'), 'postgres'
+        )
         self.addParameter(db_param)
 
         schema_param = QgsProcessingParameterString(
@@ -123,7 +122,7 @@ class ImportIntoPostGIS(QgisAlgorithm):
         return self.tr('import,postgis,table,layer,into,copy').split(',')
 
     def processAlgorithm(self, parameters, context, feedback):
-        connection = self.parameterAsString(parameters, self.DATABASE, context)
+        connection = self.parameterAsConnectionName(parameters, self.DATABASE, context)
         db = postgis.GeoDB.from_name(connection)
 
         schema = self.parameterAsString(parameters, self.SCHEMA, context)

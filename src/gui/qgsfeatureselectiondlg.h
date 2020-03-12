@@ -105,6 +105,16 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
      */
     void mActionExpressionSelect_triggered();
 
+    /**
+     * Set form filter expression
+     */
+    void setFilterExpression( const QString &filter, QgsAttributeForm::FilterType type );
+
+    /**
+     * View mode has changed
+     */
+    void viewModeChanged( QgsAttributeEditorContext::Mode mode );
+
   private:
 
     QgsVectorLayerSelectionManager *mFeatureSelection = nullptr;

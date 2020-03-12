@@ -778,6 +778,19 @@ void TestQgsCoordinateReferenceSystem::fromString()
   QVERIFY( crs.isValid() );
   QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3111" ) );
 
+  crs.createFromString( QStringLiteral( "proj4:+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs" ) );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3111" ) );
+
+  crs.createFromString( QStringLiteral( "PROJ4:+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3111" ) );
+  crs.createFromString( QStringLiteral( "proj:+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3111" ) );
+  crs.createFromString( QStringLiteral( "PROJ:+proj=lcc +lat_0=-37 +lon_0=145 +lat_1=-36 +lat_2=-38 +x_0=2500000 +y_0=2500000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3111" ) );
+
 #if PROJ_VERSION_MAJOR>=6
   crs.createFromString( QStringLiteral( "esri:102499" ) );
   QVERIFY( crs.isValid() );

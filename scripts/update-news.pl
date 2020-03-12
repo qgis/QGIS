@@ -28,7 +28,7 @@ while(<$in>) {
 	last if /^Last Change/;
 }
 
-my $content = `curl -s http://changelog.qgis.org/en/qgis/version/$version/gnu/`;
+my $content = `curl -A Mozilla -s https://changelog.qgis.org/en/qgis/version/$version/gnu/`;
 die "Couldn't get it!" unless defined $content;
 
 print $news "\n= What's new in Version $version '$releasename'? =\n\n";

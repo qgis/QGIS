@@ -82,6 +82,21 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     return true;
   }
 
+  if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "wmst" ) )
+  {
+    mIsTemporal = true;
+    mTemporalExtent = uri.param( QStringLiteral( "time" ) );
+    mFixedRange = parseTemporalExtent( mTimeDimensionExtent, mTemporalExtent );
+
+    if ( uri.param( QStringLiteral( "reference_time" ) ) != QString() )
+    {
+      QString referenceExtent = uri.param( QStringLiteral( "reference_time" ) );
+      mFixedReferenceRange = parseTemporalExtent( mReferenceTimeDimensionExtent,
+                             referenceExtent );
+      mIsBiTemporal = true;
+    }
+  }
+
   mTiled = false;
   mTileDimensionValues.clear();
 
@@ -159,6 +174,200 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   mFeatureCount = uri.param( QStringLiteral( "featureCount" ) ).toInt(); // default to 0
 
   return true;
+}
+
+QgsDateTimeRange QgsWmsSettings::parseTemporalExtent( QgsWmstDimensionExtent dimensionExtent,
+    QString extent )
+{
+  if ( extent.isNull() )
+    return QgsDateTimeRange();
+
+  bool containResolution = false;
+
+  QStringList parts;
+
+  if ( extent.contains( ',' ) )
+    parts = extent.split( ',' );
+  else
+    parts.append( extent );
+
+  QStringListIterator iter( parts );
+
+  while ( iter.hasNext() )
+  {
+    QString item = iter.next();
+    QStringList itemParts;
+
+    // If item contain '/' content separator, it is an interval
+    if ( item.contains( '/' ) )
+    {
+      itemParts = item.split( '/' );
+      QStringListIterator itemIter( itemParts );
+      QgsWmstExtentPair itemPair;
+
+      QgsWmstResolution itemResolution = itemPair.resolution;
+      QgsWmstDates itemDatesList = itemPair.dates;
+
+      bool itemContainResolution = false;
+
+      while ( itemIter.hasNext() )
+      {
+        QString itemContent = itemIter.next();
+
+        if ( itemContent.startsWith( 'P' ) )
+        {
+          itemResolution = parseWmstResolution( itemContent );
+          itemContainResolution = true;
+        }
+        else
+        {
+          itemDatesList.dateTimes.append( parseWmstDateTimes( itemContent ) );
+        }
+      }
+
+      if ( itemContainResolution )
+        dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( itemDatesList, itemResolution ) );
+      else
+        dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( itemDatesList, QgsWmstResolution() ) );
+      itemContainResolution = false;
+      continue;
+    }
+
+    QgsWmstExtentPair pair;
+
+    QgsWmstResolution resolution = pair.resolution;
+    QgsWmstDates datesList = pair.dates;
+
+    if ( item.startsWith( 'P' ) )
+    {
+      resolution = parseWmstResolution( item );
+      containResolution = true;
+    }
+    else
+    {
+      datesList.dateTimes.append( parseWmstDateTimes( item ) );
+    }
+
+    if ( containResolution )
+      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( datesList, resolution ) );
+    else
+      dimensionExtent.datesResolutionList.append( QgsWmstExtentPair( datesList, QgsWmstResolution() ) );
+    containResolution = false;
+  }
+
+  // Return the provider temporal take the date in first temporal range and
+  // and the date in last temporal range in the dimension ranges list
+
+  if ( dimensionExtent.datesResolutionList.first().dates.dateTimes.size() > 0 )
+  {
+    QDateTime begin = dimensionExtent.datesResolutionList.first().dates.dateTimes.first();
+    QDateTime end = dimensionExtent.datesResolutionList.last().dates.dateTimes.last();
+
+    return QgsDateTimeRange( begin, end );
+  }
+
+  return QgsDateTimeRange();
+}
+
+QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
+{
+  QgsWmstResolution resolution;
+  bool found = false;
+
+  for ( char datesSymbol : { 'Y', 'M', 'D' } )
+  {
+    QString number = item.left( item.indexOf( datesSymbol ) );
+    int resolutionValue = number.remove( 'P' ).toInt();
+
+    if ( datesSymbol  == 'Y' && item.contains( 'Y' ) )
+    {
+      resolution.year = resolutionValue;
+      found = true;
+    }
+    if ( datesSymbol  == 'M' && item.contains( 'M' ) )
+    {
+      // Symbol M is used to both represent either month or minutes
+      // The check below is for determining whether it means month or minutes
+      if ( item.contains( 'T' ) &&
+           item.indexOf( 'T' ) < item.indexOf( 'M' ) )
+        continue;
+      resolution.month = resolutionValue;
+      found = true;
+    }
+    if ( datesSymbol  == 'D' && item.contains( 'D' ) )
+    {
+      resolution.day = resolutionValue;
+      found = true;
+    }
+
+    if ( found )
+    {
+      int symbolIndex = item.indexOf( datesSymbol );
+      item.remove( symbolIndex, 1 );
+      item.remove( symbolIndex - number.length(),
+                   number.length() );
+      found = false;
+    }
+  }
+  if ( !item.contains( 'T' ) )
+    return resolution;
+  else
+    item.remove( 'T' );
+
+  bool foundTime = false;
+
+  for ( char timeSymbol : { 'H', 'M', 'S' } )
+  {
+    QString number = item.left( item.indexOf( timeSymbol ) );
+    int resolutionValue = number.remove( 'P' ).toInt();
+
+    if ( timeSymbol == 'H' && item.contains( 'H' ) )
+    {
+      resolution.hour = resolutionValue;
+      foundTime = true;
+    }
+    if ( timeSymbol == 'M' && item.contains( 'M' ) )
+    {
+      resolution.minutes = resolutionValue;
+      foundTime = true;
+    }
+    if ( timeSymbol == 'S' && item.contains( 'S' ) )
+    {
+      resolution.seconds = resolutionValue;
+      foundTime = true;
+    }
+
+    if ( foundTime )
+    {
+      int symbolIndex = item.indexOf( timeSymbol );
+      item.remove( symbolIndex, 1 );
+      item.remove( symbolIndex - number.length(),
+                   number.length() );
+      foundTime = false;
+    }
+  }
+  return resolution;
+}
+
+QDateTime QgsWmsSettings::parseWmstDateTimes( QString item )
+{
+  // Standard item will have a YYYY-MM-DDThh:mm:ss.SSSZ
+  // format similar to Qt::ISODateWithMs
+
+  QString format = "YYYY-MM-DDThh:mm:ss.SSSZ";
+
+  // Check if it does not have the time part
+  if ( !item.contains( 'T' ) )
+    return QDateTime::fromString( item, "yyyy-MM-dd" );
+  else
+  {
+    if ( item.contains( '.' ) )
+      return QDateTime::fromString( item, Qt::ISODateWithMs );
+    else
+      return QDateTime::fromString( item, Qt::ISODate );
+  }
+
+  return QDateTime::fromString( item, format );
 }
 
 

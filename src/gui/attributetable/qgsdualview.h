@@ -259,6 +259,16 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void cancelProgress( );
 
+    /**
+     * Called in embedded forms when an \a attribute \a value in the parent form has changed.
+     *
+     * Notify the form widgets that something has changed in case they
+     * have filter expression that depend on the parent form scope.
+     *
+     * \since QGIS 3.14
+     */
+    void parentFormValueChanged( const QString &attribute, const QVariant &value );
+
   signals:
 
     /**
@@ -387,6 +397,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void insertRecentlyUsedDisplayExpression( const QString &expression );
     void updateEditSelectionProgress( int progress, int count );
     void panOrZoomToFeature( const QgsFeatureIds &featureset );
+    //! disable/enable the buttons of the browsing toolbar (feature list view)
+    void setBrowsingAutoPanScaleAllowed( bool allowed );
 
     QgsFieldConditionalFormatWidget *mConditionalFormatWidget = nullptr;
     QgsAttributeEditorContext mEditorContext;
@@ -409,6 +421,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     // we will temporarily save it in here and set it on init
     QgsFeature mTempAttributeFormFeature;
     QgsFeatureIds mLastFeatureSet;
+    bool mBrowsingAutoPanScaleAllowed = true;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeTable;

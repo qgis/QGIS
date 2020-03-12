@@ -20,7 +20,7 @@ from qgis.core import (QgsField,
                        QgsEditorWidgetSetup,
                        QgsProject,
                        QgsVectorLayerJoinInfo)
-from qgis.PyQt.QtCore import QVariant, Qt
+from qgis.PyQt.QtCore import QVariant, Qt, QModelIndex
 
 from qgis.testing import start_app, unittest
 
@@ -63,6 +63,13 @@ class TestQgsFieldModel(unittest.TestCase):
         self.assertTrue(m.allowEmptyFieldName())
         m.setAllowEmptyFieldName(False)
         self.assertFalse(m.allowEmptyFieldName())
+
+        fields = QgsFields()
+        fields.append(QgsField('test1', QVariant.String))
+        fields.append(QgsField('test2', QVariant.String))
+        m.setFields(fields)
+        self.assertIsNone(m.layer())
+        self.assertEqual(m.fields(), fields)
 
     def testIndexFromName(self):
         l, m = create_model()
@@ -250,6 +257,16 @@ class TestQgsFieldModel(unittest.TestCase):
         self.assertEqual(m.data(m.indexFromName('an expression'), Qt.DisplayRole), 'an expression')
         m.setAllowEmptyFieldName(True)
         self.assertFalse(m.data(m.indexFromName(None), Qt.DisplayRole))
+
+    def testManualFields(self):
+        _, m = create_model()
+        fields = QgsFields()
+        fields.append(QgsField('f1', QVariant.String))
+        fields.append(QgsField('f2', QVariant.String))
+        m.setFields(fields)
+        self.assertEqual(m.rowCount(), 2)
+        self.assertEqual(m.data(m.index(0, 0, QModelIndex()), Qt.DisplayRole), 'f1')
+        self.assertEqual(m.data(m.index(1, 0, QModelIndex()), Qt.DisplayRole), 'f2')
 
     def testEditorWidgetTypeRole(self):
         l, m = create_model()

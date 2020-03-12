@@ -4017,6 +4017,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
   if ( flist.isEmpty() )
     return true;
+
   QgsAttributes attributevec = flist[0].attributes();
 
   ret = sqlite3_exec( mSqliteHandle, "BEGIN", nullptr, nullptr, &errMsg );
@@ -4027,15 +4028,19 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     QString baseSql { QStringLiteral( "INSERT INTO %1(" ).arg( QgsSqliteUtils::quotedIdentifier( mTableName ) ) };
     baseValues = QStringLiteral( ") VALUES (" );
 
+    QChar baseSeparator { ' ' };
+
     if ( !mGeometryColumn.isEmpty() )
     {
-      baseSql += QgsSqliteUtils::quotedIdentifier( mGeometryColumn ) + ',';
-      baseValues += geomParam() + ',';
+      baseSql += QgsSqliteUtils::quotedIdentifier( mGeometryColumn );
+      baseValues += geomParam();
+      baseSeparator = ',';
     }
 
     for ( QgsFeatureList::iterator feature = flist.begin(); feature != flist.end(); ++feature )
     {
 
+      QChar separator { baseSeparator };
       QString values { baseValues };
       sql = baseSql;
 
@@ -4047,7 +4052,9 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       for ( int i = 0; i < attributevec.count(); ++i )
       {
-        if ( mDefaultValues.contains( i ) && mDefaultValues.value( i ) == attributevec.at( i ).toString() )
+        if ( mDefaultValues.contains( i ) && (
+               mDefaultValues.value( i ) == attributevec.at( i ).toString() ||
+               ! attributevec.at( i ).isValid() ) )
         {
           defaultIndexes.push_back( i );
           continue;
@@ -4062,9 +4069,9 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           continue;
         }
 
-        const QChar separator {  i > 0 ? ',' : ' ' };
         sql += separator + QgsSqliteUtils::quotedIdentifier( fieldname );
         values += separator + '?';
+        separator = ',';
       }
 
       sql += values;
@@ -4107,7 +4114,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
             continue;
           }
 
-          QVariant v = attributevec.at( i );
+          const QVariant v = attributevec.at( i );
 
           // binding values for each attribute
           if ( i >= mAttributeFields.count() )

@@ -122,7 +122,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
 
     if ( dataResult.PQntuples() != missingTileIds.size() )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Missing tiles where not found while fetching tile data from backend.\nSQL: %1" )
+      QgsMessageLog::logMessage( QObject::tr( "Missing tiles were not found while fetching tile data from backend.\nSQL: %1" )
                                  .arg( sql ), QObject::tr( "PostGIS" ), Qgis::Critical );
     }
 
@@ -132,7 +132,7 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
       const TileIdType tileId { dataResult.PQgetvalue( row, 0 ) };
       if ( tileId.isEmpty() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "TileID (%1) is empty while fetching tile data from backend.\nSQL: %2" )
+        QgsMessageLog::logMessage( QObject::tr( "Tile with ID (%1) is empty while fetching tile data from backend.\nSQL: %2" )
                                    .arg( dataResult.PQgetvalue( row, 0 ) )
                                    .arg( sql ), QObject::tr( "PostGIS" ), Qgis::Critical );
       }
@@ -174,6 +174,14 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
   }
 
   return result;
+}
+
+void QgsPostgresRasterSharedData::invalidateCache()
+{
+  QMutexLocker locker( &mMutex );
+  mSpatialIndexes.clear();
+  mTiles.clear();
+  mLoadedIndexBounds.clear();
 }
 
 

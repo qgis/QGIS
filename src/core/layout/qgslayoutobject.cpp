@@ -90,6 +90,7 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::ScalebarLineColor, QgsPropertyDefinition( "dataDefinedScalebarLineColor", QObject::tr( "Line color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsLayoutObject::ScalebarLineWidth, QgsPropertyDefinition( "dataDefinedScalebarLineWidth", QObject::tr( "Line width" ), QgsPropertyDefinition::StrokeWidth ) },
     { QgsLayoutObject::AttributeTableSourceLayer, QgsPropertyDefinition( "dataDefinedAttributeTableSourceLayer", QObject::tr( "Table source layer" ), QgsPropertyDefinition::String ) },
+    { QgsLayoutObject::MapCrs, QgsPropertyDefinition( "dataDefinedCrs", QgsPropertyDefinition::DataTypeString, QObject::tr( "Map CRS" ), QObject::tr( "string representing a CRS, either an authority/id pair (e.g. \"EPSG:4326\"), a proj string prefixes by \"PROJ:\" (e.g. \"PROJ: +proj=...\") or a WKT string prefixed by \"WKT:\" (e.g. \"WKT:GEOGCS[\"WGS 84\"...)" ) ) },
   };
 }
 

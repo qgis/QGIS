@@ -1,3 +1,4 @@
+
 /***************************************************************************
      testqgsvectorfilewriter.cpp
      --------------------------------------
@@ -43,6 +44,7 @@
 #include "qgsrastershader.h"
 #include "qgsrastertransparency.h"
 #include "qgspalettedrasterrenderer.h"
+#include "qgsrasterlayertemporalproperties.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
@@ -95,6 +97,7 @@ class TestQgsRasterLayer : public QObject
     void regression992(); //test for issue #992 - GeoJP2 images improperly displayed as all black
     void testRefreshRendererIfNeeded();
     void sample();
+    void testTemporalProperties();
 
 
   private:
@@ -111,6 +114,7 @@ class TestQgsRasterLayer : public QObject
     QgsRasterLayer *mpFloat32RasterLayer = nullptr;
     QgsRasterLayer *mPngRasterLayer = nullptr;
     QgsRasterLayer *mGeoJp2RasterLayer = nullptr;
+    QgsRasterLayer *mTemporalRasterLayer = nullptr;
 
     QgsMapSettings *mMapSettings = nullptr;
     QString mReport;
@@ -190,6 +194,9 @@ void TestQgsRasterLayer::initTestCase()
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mpRasterLayer );
   mReport += QLatin1String( "<h1>Raster Layer Tests</h1>\n" );
   mReport += "<p>" + mySettings + "</p>";
+
+  mTemporalRasterLayer = new QgsRasterLayer();
+
 }
 //runs after all tests
 void TestQgsRasterLayer::cleanupTestCase()
@@ -995,6 +1002,39 @@ void TestQgsRasterLayer::sample()
   rl->dataProvider()->setUserNoDataValue( 2, QgsRasterRangeList() << QgsRasterRange( 130, 140 ) );
   QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 2, &ok ) ) );
   QVERIFY( !ok );
+}
+
+void TestQgsRasterLayer::testTemporalProperties()
+{
+  QgsRasterLayerTemporalProperties *temporalProperties = mTemporalRasterLayer->temporalProperties();
+  QVERIFY( !mTemporalRasterLayer->temporalProperties()->isActive() );
+
+  QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
+                                   QDateTime( QDate( 2020, 12, 31 ) ) );
+
+  temporalProperties->setFixedTemporalRange( dateTimeRange );
+
+  QCOMPARE( mTemporalRasterLayer->temporalProperties()->fixedTemporalRange().begin(), dateTimeRange.begin() );
+  QCOMPARE( mTemporalRasterLayer->temporalProperties()->fixedTemporalRange().end(), dateTimeRange.end() );
+
+  // writing and reading from xml
+  QDomDocument document;
+  QDomElement elementRoot = document.createElement( "maplayer" );
+  document.appendChild( elementRoot );
+
+  QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeFixedTemporalRange );
+
+  temporalProperties->setMode( QgsRasterLayerTemporalProperties::TemporalMode::ModeTemporalRangeFromDataProvider );
+
+  // Change temporal properties, save the xml
+  QDomElement element = temporalProperties->writeXml( elementRoot, document, QgsReadWriteContext() );
+
+  // Restore
+  QVERIFY( temporalProperties->readXml( element, QgsReadWriteContext() ) );
+  QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeTemporalRangeFromDataProvider );
+
+  QCOMPARE( mTemporalRasterLayer->temporalProperties()->fixedTemporalRange().begin(), dateTimeRange.begin() );
+  QCOMPARE( mTemporalRasterLayer->temporalProperties()->fixedTemporalRange().end(), dateTimeRange.end() );
 }
 
 QGSTEST_MAIN( TestQgsRasterLayer )

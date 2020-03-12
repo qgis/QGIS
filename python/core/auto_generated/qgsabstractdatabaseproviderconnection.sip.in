@@ -38,6 +38,7 @@ is not supported or cannot be performed without errors.
       Raster,
       View,
       MaterializedView,
+      Foreign,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::TableFlag> TableFlags;
@@ -102,7 +103,7 @@ Sets the geometry column types to ``geometryColumnTypes``
 Returns the default name for the table entry
 
 It is usually the table name but in case there are multiple geometry
-columns, the geometry column name is appendend to the table name.
+columns, the geometry column name is appended to the table name.
 
 .. seealso:: :py:func:`geometryColumnCount`
 %End
@@ -209,6 +210,7 @@ This information is calculated from the geometry columns types.
 .. seealso:: :py:func:`geometryColumnTypes`
 %End
 
+        bool operator==( const QgsAbstractDatabaseProviderConnection::TableProperty &other ) const;
 
     };
 

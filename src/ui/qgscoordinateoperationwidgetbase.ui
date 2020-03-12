@@ -139,7 +139,7 @@
      <item>
       <widget class="QCheckBox" name="mShowSupersededCheckBox">
        <property name="text">
-        <string>Show superseded transformations</string>
+        <string>Show superseded transforms</string>
        </property>
       </widget>
      </item>
@@ -155,6 +155,22 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mAllowFallbackCheckBox">
+       <property name="toolTip">
+        <string>Sets whether &quot;ballpark&quot; fallback transformations can be
+used in the case that the specified coordinate operation fails
+(such as when coordinates from outside a required grid shift
+file are transformed).</string>
+       </property>
+       <property name="text">
+        <string>Allow fallback transforms if preferred operation fails</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="mMakeDefaultCheckBox">

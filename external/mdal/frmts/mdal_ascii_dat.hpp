@@ -31,9 +31,11 @@ namespace MDAL
    * both scalar vector. The new format is recognized by keyword
    * "DATASET" on the first line of the file.
    *
-   * BASEMENT solver also stores data defined on faces. To recognize
+   * BASEMENT solver also stores data defined on elements. Element is
+   * either face or edge. To recognize
    * such dataset, the dataset name contains "_els_" substring
-   * (e.g. depth_els_1.dat)
+   * (e.g. depth_els_1.dat). We do not support reading element data for
+   * meshes with combined 2D (faces) and 1D elements (edges)
    *
    * HYDRO_AS-2D solver can have mesh that has numbering gaps, but
    * speficies values for even missing indexes in dataset file
@@ -54,15 +56,15 @@ namespace MDAL
       DriverAsciiDat *create() override;
 
       bool canReadDatasets( const std::string &uri ) override;
-      void load( const std::string &datFile, Mesh *mesh, MDAL_Status *status ) override;
+      void load( const std::string &datFile, Mesh *mesh ) override;
       bool persist( DatasetGroup *group ) override;
 
     private:
       bool canReadOldFormat( const std::string &line ) const;
       bool canReadNewFormat( const std::string &line ) const;
 
-      void loadOldFormat( std::ifstream &in, Mesh *mesh, MDAL_Status *status ) const;
-      void loadNewFormat( std::ifstream &in, Mesh *mesh, MDAL_Status *status ) const;
+      void loadOldFormat( std::ifstream &in, Mesh *mesh ) const;
+      void loadNewFormat( std::ifstream &in, Mesh *mesh ) const;
 
       //! Gets maximum (native) index.
       //! For meshes without indexing gap it is vertexCount - 1
@@ -77,11 +79,11 @@ namespace MDAL
                                bool hasStatus,
                                std::ifstream &stream ) const;
 
-      void readFaceTimestep( const Mesh *mesh,
-                             std::shared_ptr<DatasetGroup> group,
-                             RelativeTimestamp t,
-                             bool isVector,
-                             std::ifstream &stream ) const;
+      void readElementTimestep( const Mesh *mesh,
+                                std::shared_ptr<DatasetGroup> group,
+                                RelativeTimestamp t,
+                                bool isVector,
+                                std::ifstream &stream ) const;
 
       std::string mDatFile;
   };

@@ -368,6 +368,30 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
          .arg( mMeshLayer->formatTime( time ) )
          .arg( time );
 
+  QString definedOnMesh;
+  if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) )
+  {
+    if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    {
+      definedOnMesh = tr( "faces and edges" );
+    }
+    else
+    {
+      definedOnMesh = tr( "faces" );
+    }
+  }
+  else if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+  {
+    definedOnMesh = tr( "edges" );
+  }
+  else
+  {
+    definedOnMesh = tr( "invalid mesh" );
+  }
+  msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
+         .arg( tr( "Mesh type" ) )
+         .arg( definedOnMesh );
+
   const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
   QString definedOn;
   switch ( gmeta.dataType() )
@@ -380,6 +404,9 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
       break;
     case QgsMeshDatasetGroupMetadata::DataOnVolumes:
       definedOn = tr( "volumes" );
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnEdges:
+      definedOn = tr( "edges" );
       break;
   }
   msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )

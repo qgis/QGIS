@@ -35,7 +35,6 @@
 #include "qgstriangularmesh.h"
 #include "qgsmesh3daveraging.h"
 
-
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
@@ -71,6 +70,28 @@ void QgsMeshLayer::setDefaultRendererSettings()
     meshSettings.setEnabled( true );
     mRendererSettings.setNativeMeshSettings( meshSettings );
   }
+}
+
+void QgsMeshLayer::createSimplifiedMeshes()
+{
+  if ( mSimplificationSettings.isEnabled() && !hasSimplifiedMeshes() )
+  {
+    double reductionFactor = mSimplificationSettings.reductionFactor();
+
+    QVector<QgsTriangularMesh *> simplifyMeshes =
+      mTriangularMeshes[0]->simplifyMesh( reductionFactor );
+
+    for ( int i = 0; i < simplifyMeshes.count() ; ++i )
+    {
+      mTriangularMeshes.emplace_back( simplifyMeshes[i] );
+    }
+  }
+}
+
+bool QgsMeshLayer::hasSimplifiedMeshes() const
+{
+  //First mesh is the base mesh, so if size>1, there is no simplified meshes
+  return ( mTriangularMeshes.size() > 1 );
 }
 
 QgsMeshLayer::~QgsMeshLayer()
@@ -127,14 +148,38 @@ const QgsMesh *QgsMeshLayer::nativeMesh() const
   return mNativeMesh.get();
 }
 
-QgsTriangularMesh *QgsMeshLayer::triangularMesh()
+QgsTriangularMesh *QgsMeshLayer::triangularMesh( double minimumTriangleSize ) const
 {
-  return mTriangularMesh.get();
+  for ( const std::unique_ptr<QgsTriangularMesh> &lod : mTriangularMeshes )
+  {
+    if ( lod && lod->averageTriangleSize() > minimumTriangleSize )
+      return lod.get();
+  }
+
+  if ( !mTriangularMeshes.empty() )
+    return mTriangularMeshes.back().get();
+  else
+    return nullptr;
 }
 
-const QgsTriangularMesh *QgsMeshLayer::triangularMesh() const
+void  QgsMeshLayer::updateTriangularMesh( const QgsCoordinateTransform &transform )
 {
-  return mTriangularMesh.get();
+  // Native mesh
+  if ( !mNativeMesh )
+  {
+    // lazy loading of mesh data
+    fillNativeMesh();
+  }
+
+  // Triangular mesh
+  if ( mTriangularMeshes.empty() )
+  {
+    QgsTriangularMesh *baseMesh = new QgsTriangularMesh;
+    mTriangularMeshes.emplace_back( baseMesh );
+  }
+
+  if ( mTriangularMeshes[0].get()->update( mNativeMesh.get(), transform ) )
+    mTriangularMeshes.resize( 1 ); //if the base triangular mesh is effectivly updated, remove simplified meshes
 }
 
 QgsMeshLayerRendererCache *QgsMeshLayer::rendererCache()
@@ -174,25 +219,35 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
 {
   QgsMeshDatasetValue value;
 
-  if ( mTriangularMesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
+  const QgsTriangularMesh *mesh = triangularMesh();
+
+  if ( mesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
   {
-    int faceIndex = mTriangularMesh->faceIndexForPoint( point ) ;
+    if ( dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    {
+      // Identify for edges not implemented yet
+      return value;
+    }
+    int faceIndex = mesh->faceIndexForPoint( point ) ;
     if ( faceIndex >= 0 )
     {
-      int nativeFaceIndex = mTriangularMesh->trianglesToNativeFaces().at( faceIndex );
+      int nativeFaceIndex = mesh->trianglesToNativeFaces().at( faceIndex );
       const QgsMeshDatasetGroupMetadata::DataType dataType = dataProvider()->datasetGroupMetadata( index ).dataType();
       if ( dataProvider()->isFaceActive( index, nativeFaceIndex ) )
       {
         switch ( dataType )
         {
           case QgsMeshDatasetGroupMetadata::DataOnFaces:
+          {
             value = dataProvider()->datasetValue( index, nativeFaceIndex );
-            break;
+          }
+          break;
+
           case QgsMeshDatasetGroupMetadata::DataOnVertices:
           {
-            const QgsMeshFace &face = mTriangularMesh->triangles()[faceIndex];
+            const QgsMeshFace &face = mesh->triangles()[faceIndex];
             const int v1 = face[0], v2 = face[1], v3 = face[2];
-            const QgsPoint p1 = mTriangularMesh->vertices()[v1], p2 = mTriangularMesh->vertices()[v2], p3 = mTriangularMesh->vertices()[v3];
+            const QgsPoint p1 = mesh->vertices()[v1], p2 = mesh->vertices()[v2], p3 = mesh->vertices()[v3];
             const QgsMeshDatasetValue val1 = dataProvider()->datasetValue( index, v1 );
             const QgsMeshDatasetValue val2 = dataProvider()->datasetValue( index, v2 );
             const QgsMeshDatasetValue val3 = dataProvider()->datasetValue( index, v3 );
@@ -205,7 +260,9 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
             value = QgsMeshDatasetValue( x, y );
           }
           break;
+
           case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+          {
             const QgsMesh3dAveragingMethod *avgMethod = mRendererSettings.averagingMethod();
             if ( avgMethod )
             {
@@ -216,6 +273,10 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
                 value = block2d.value( 0 );
               }
             }
+          }
+          break;
+
+          default:
             break;
         }
       }
@@ -229,15 +290,17 @@ QgsMesh3dDataBlock QgsMeshLayer::dataset3dValue( const QgsMeshDatasetIndex &inde
 {
   QgsMesh3dDataBlock block3d;
 
-  if ( mTriangularMesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
+  const QgsTriangularMesh *baseTriangularMesh = triangularMesh();
+
+  if ( baseTriangularMesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
   {
     const QgsMeshDatasetGroupMetadata::DataType dataType = dataProvider()->datasetGroupMetadata( index ).dataType();
     if ( dataType == QgsMeshDatasetGroupMetadata::DataOnVolumes )
     {
-      int faceIndex = mTriangularMesh->faceIndexForPoint( point ) ;
+      int faceIndex = baseTriangularMesh->faceIndexForPoint( point ) ;
       if ( faceIndex >= 0 )
       {
-        int nativeFaceIndex = mTriangularMesh->trianglesToNativeFaces().at( faceIndex );
+        int nativeFaceIndex = baseTriangularMesh->trianglesToNativeFaces().at( faceIndex );
         block3d = dataProvider()->dataset3dValues( index, nativeFaceIndex, 1 );
       }
     }
@@ -269,6 +332,16 @@ void QgsMeshLayer::onDatasetGroupsAdded( int count )
   int newDatasetGroupCount = mDataProvider->datasetGroupCount();
   for ( int i = newDatasetGroupCount - count; i < newDatasetGroupCount; ++i )
     assignDefaultStyleToDatasetGroup( i );
+}
+
+QgsMeshSimplificationSettings QgsMeshLayer::meshSimplificationSettings() const
+{
+  return mSimplificationSettings;
+}
+
+void QgsMeshLayer::setMeshSimplificationSettings( const QgsMeshSimplificationSettings &simplifySettings )
+{
+  mSimplificationSettings = simplifySettings;
 }
 
 static QgsColorRamp *_createDefaultColorRamp()
@@ -312,18 +385,11 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
 
 QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
-  // Native mesh
-  if ( !mNativeMesh )
-  {
-    // lazy loading of mesh data
-    fillNativeMesh();
-  }
-
   // Triangular mesh
-  if ( !mTriangularMesh )
-    mTriangularMesh.reset( new QgsTriangularMesh() );
+  updateTriangularMesh( rendererContext.coordinateTransform() );
 
-  mTriangularMesh->update( mNativeMesh.get(), &rendererContext );
+  // Build overview triangular meshes if needed
+  createSimplifiedMeshes();
 
   // Cache
   if ( !mRendererCache )
@@ -349,6 +415,10 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
   QDomElement elemTimeSettings = elem.firstChildElement( "mesh-time-settings" );
   if ( !elemTimeSettings.isNull() )
     mTimeSettings.readXml( elemTimeSettings, context );
+
+  QDomElement elemSimplifySettings = elem.firstChildElement( "mesh-simplify-settings" );
+  if ( !elemSimplifySettings.isNull() )
+    mSimplificationSettings.readXml( elemSimplifySettings, context );
 
   // get and set the blend mode if it exists
   QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
@@ -376,6 +446,9 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
 
   QDomElement elemTimeSettings = mTimeSettings.writeXml( doc, context );
   elem.appendChild( elemTimeSettings );
+
+  QDomElement elemSimplifySettings = mSimplificationSettings.writeXml( doc, context );
+  elem.appendChild( elemSimplifySettings );
 
   // add blend mode node
   QDomElement blendModeElement  = doc.createElement( QStringLiteral( "blendMode" ) );
@@ -501,7 +574,6 @@ void QgsMeshLayer::reload()
 {
   if ( mDataProvider && mDataProvider->isValid() )
   {
-
     mDataProvider->reloadData();
 
     //reload the mesh structure
@@ -510,8 +582,8 @@ void QgsMeshLayer::reload()
 
     dataProvider()->populateMesh( mNativeMesh.get() );
 
-    //clear the TriangularMesh
-    mTriangularMesh.reset( new QgsTriangularMesh() );
+    //clear the TriangularMeshes
+    mTriangularMeshes.clear();
 
     //clear the rendererCache
     mRendererCache.reset( new QgsMeshLayerRendererCache() );

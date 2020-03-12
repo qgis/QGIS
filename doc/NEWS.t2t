@@ -38,6 +38,41 @@ Change history for the QGIS Project
 Last Updated: @NOW@
 Last Change : @MODTIME@
 
+= What's new in Version 3.12 'București'? =
+
+This release has following new features:
+
+- User Interface: Deselecting tables when adding PostgreSQL data after add button is clicked.
+- Symbology: Vector Trace Animation and Streamlines for Mesh Layer
+- Rendering: Play/Stop Buttons for Mesh Layer Playback
+- Rendering: On the Fly Resampling of Data Defined on Faces to Vertices (Mesh Layer)
+- Rendering: Support for Mesh Reference Time
+- 3D Features: 3D Mesh Layer Terrain Renderer
+- 3D Features: Harmonize 3D map view widget with 2D ones to display the map theme drop-down menu
+- Expressions: Search Tags for Functions
+- Expressions: List Referenced Layer Values
+- Expressions: New functions to check if a geometry is empty or null
+- Expressions: Hash expressions
+- Digitizing: Edit Invalid Attributes on Copy/Paste to Another Layer
+- Digitizing: Snapping cache parallelization
+- Data Management: DXF Export Improvements
+- Forms and Widgets: Create geometric feature from the relation editor
+- Forms and Widgets: Improve feature selection dialog
+- Analysis Tools: Smooth Export of the Contours from Mesh Layer
+- Analysis Tools: Support of Datasets Defined on Faces in QGIS Mesh Calculator
+- Processing: Package new layers to existing GeoPackage
+- Browser: Customization of the items shown in browser
+- Data Providers: Changed WMTS layer collection icon
+- Data Providers: Added Metadata URL property in the layer metadata tab for WMS / WMTS and WCS  services
+- Data Providers: Fetch and show dimensions metadata  for a WMS layer metadata
+- Data Providers: Added refresh action to OGC services entries
+- Data Providers: 3d Stacked Meshes
+- Data Providers: Oracle curve type edition support
+- Programmability: Exposes shape digitizing methods to QgisInterface
+- Notable Fixes: Bug fixes by Stephen Knox
+-
+
+
 = What's new in Version 3.10 'A Coruña'? =
 
 This release has following new features:
@@ -2089,7 +2124,7 @@ Added ifdef's for WIN32 around dynamic_casts in the vector renderer
 
 2004-11-09 [timlinux] 0.5.0devel21
 Added options to graticule builder to allow you to define origin and
-enpoints and to set the graticule size at < 1 degree. Note that there is
+endpoints and to set the graticule size at < 1 degree. Note that there is
 little error checking in there still, so putting in dodgy numbers may cause
 qgis to crash.
 
