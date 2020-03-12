@@ -1,0 +1,43 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstemporalutils.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsTemporalUtils
+{
+%Docstring
+Contains utility methods for working with temporal layers and projects.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstemporalutils.h"
+%End
+  public:
+
+    static QgsDateTimeRange calculateTemporalRangeForProject( QgsProject *project );
+%Docstring
+Calculates the temporal range for a ``project``.
+
+This method considers the temporal range available from layers contained within the project and
+returns the maximal combined temporal extent of these layers.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstemporalutils.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
