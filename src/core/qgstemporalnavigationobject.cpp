@@ -34,19 +34,39 @@ void QgsTemporalNavigationObject::timerTimeout()
     case AnimationState::Forward:
       next();
       if ( mCurrentFrameNumber >= totalFrameCount() - 1 )
-        pause();
+      {
+        if ( mLoopAnimation )
+          mCurrentFrameNumber = -1; // we don't jump immediately to frame 0, instead we delay that till the next timeout
+        else
+          pause();
+      }
       break;
 
     case AnimationState::Reverse:
       previous();
       if ( mCurrentFrameNumber <= 0 )
-        pause();
+      {
+        if ( mLoopAnimation )
+          mCurrentFrameNumber = totalFrameCount(); // we don't jump immediately to real last frame..., instead we delay that till the next timeout
+        else
+          pause();
+      }
       break;
 
     case AnimationState::Idle:
       // should not happen - in an idle state the timeout won't occur
       break;
   }
+}
+
+bool QgsTemporalNavigationObject::isLooping() const
+{
+  return mLoopAnimation;
+}
+
+void QgsTemporalNavigationObject::setLooping( bool loopAnimation )
+{
+  mLoopAnimation = loopAnimation;
 }
 
 QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long long frame ) const

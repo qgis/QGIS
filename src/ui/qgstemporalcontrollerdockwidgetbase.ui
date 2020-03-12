@@ -139,6 +139,16 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="mLoopingCheckBox">
+        <property name="toolTip">
+         <string>Automatically reset and repeat the animation endlessly</string>
+        </property>
+        <property name="text">
+         <string>Loop</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>Time steps of</string>

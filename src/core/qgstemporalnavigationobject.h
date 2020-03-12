@@ -152,6 +152,20 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
      */
     long long totalFrameCount();
 
+    /**
+     * Returns TRUE if the animation should loop after hitting the end or start frame.
+     *
+     * \see setLooping()
+     */
+    bool isLooping() const;
+
+    /**
+     * Sets whether the animation should \a loop after hitting the end or start frame.
+     *
+     * \see looping()
+     */
+    void setLooping( bool loop );
+
   signals:
 
     /**
@@ -238,6 +252,8 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
 
     //! Navigation playback mode member
     AnimationState mPlayBackMode = Idle;
+
+    bool mLoopAnimation = false;
 
 };
 
