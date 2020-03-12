@@ -90,26 +90,14 @@ bool QgsRasterDataProviderTemporalCapabilities::isReferenceEnable() const
   return mReferenceEnable;
 }
 
-QgsRasterDataProviderTemporalCapabilities::TemporalMode QgsRasterDataProviderTemporalCapabilities::mode() const
-{
-  return mMode;
-}
-
-void QgsRasterDataProviderTemporalCapabilities::setMode( TemporalMode mode )
-{
-  if ( mMode == mode )
-    return;
-  mMode = mode;
-}
-
 QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod QgsRasterDataProviderTemporalCapabilities::intervalHandlingMethod() const
 {
-  return mFetchMode;
+  return mIntervalMatchMethod;
 }
 
 void QgsRasterDataProviderTemporalCapabilities::setIntervalHandlingMethod( IntervalHandlingMethod mode )
 {
-  if ( mFetchMode == mode )
+  if ( mIntervalMatchMethod == mode )
     return;
-  mFetchMode = mode;
+  mIntervalMatchMethod = mode;
 }
