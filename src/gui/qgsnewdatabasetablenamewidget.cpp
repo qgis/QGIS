@@ -34,7 +34,7 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   : QWidget( parent )
 {
 
-  // Initalize the browser
+  // Initialize the browser
   if ( ! browserModel )
   {
     mBrowserModel = new QgsBrowserGuiModel( this );
