@@ -49,11 +49,6 @@ QgsTemporalControllerDockWidget::QgsTemporalControllerDockWidget( const QString 
   connect( mSettings, &QPushButton::clicked, this, &QgsTemporalControllerDockWidget::settings_clicked );
   connect( mSetToProjectTimeButton, &QPushButton::clicked, this, &QgsTemporalControllerDockWidget::setDatesToProjectTime );
 
-  init();
-}
-
-void QgsTemporalControllerDockWidget::init()
-{
   QgsDateTimeRange range;
 
   if ( QgsProject::instance()->timeSettings() )
@@ -71,20 +66,29 @@ void QgsTemporalControllerDockWidget::init()
 
   mSetToProjectTimeButton->setToolTip( tr( "Set datetimes inputs to match project time" ) );
 
-  mTimeStepsComboBox->addItem( tr( "Seconds" ), QgsTemporalControllerDockWidget::Seconds );
-  mTimeStepsComboBox->addItem( tr( "Minutes" ), QgsTemporalControllerDockWidget::Minutes );
-  mTimeStepsComboBox->addItem( tr( "Hours" ), QgsTemporalControllerDockWidget::Hours );
-  mTimeStepsComboBox->addItem( tr( "Days" ), QgsTemporalControllerDockWidget::Days );
-  mTimeStepsComboBox->addItem( tr( "Months" ), QgsTemporalControllerDockWidget::Months );
-  mTimeStepsComboBox->addItem( tr( "Years" ), QgsTemporalControllerDockWidget::Years );
+  for ( QgsUnitTypes::TemporalUnit u :
+        {
+          QgsUnitTypes::TemporalMilliseconds,
+          QgsUnitTypes::TemporalSeconds,
+          QgsUnitTypes::TemporalMinutes,
+          QgsUnitTypes::TemporalHours,
+          QgsUnitTypes::TemporalDays,
+          QgsUnitTypes::TemporalWeeks,
+          QgsUnitTypes::TemporalMonths,
+          QgsUnitTypes::TemporalYears,
+          QgsUnitTypes::TemporalDecades,
+          QgsUnitTypes::TemporalCenturies
+        } )
+  {
+    mTimeStepsComboBox->addItem( QgsUnitTypes::toString( u ), u );
+  }
 
-  mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData(
-                                         QgsTemporalControllerDockWidget::Hours ) );
+  // TODO: might want to choose an appropriate default unit based on the range
+  mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( QgsUnitTypes::TemporalHours ) );
 
   mSpinBox->setMinimum( 0.0000001 );
   mSpinBox->setSingleStep( 1 );
   mSpinBox->setValue( 1 );
-  mSpinBox->setEnabled( true );
 
   mForwardButton->setToolTip( tr( "Play" ) );
   mBackButton->setToolTip( tr( "Reverse" ) );
@@ -92,7 +96,6 @@ void QgsTemporalControllerDockWidget::init()
   mPreviousButton->setToolTip( tr( "Go to previous frame" ) );
   mStopButton->setToolTip( tr( "Pause" ) );
 
-  updateTemporalExtent();
   updateFrameDuration();
 }
 
@@ -107,8 +110,7 @@ void QgsTemporalControllerDockWidget::updateTemporalExtent()
 
 void QgsTemporalControllerDockWidget::updateFrameDuration()
 {
-  mNavigationObject->setFrameDuration( interval( mTimeStepsComboBox->currentData().toInt(),
-                                       mSpinBox->value() ) );
+  mNavigationObject->setFrameDuration( QgsInterval( mSpinBox->value(), static_cast< QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() ) ) );
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
 }
 
@@ -133,59 +135,19 @@ QgsTemporalController *QgsTemporalControllerDockWidget::temporalController()
 
 void QgsTemporalControllerDockWidget::settings_clicked()
 {
+  QgsTemporalMapSettingsDialog dialog( this );
+  dialog.mapSettingsWidget()->setFrameRateValue( mNavigationObject->framesPerSeconds() );
 
-  QgsTemporalMapSettingsDialog *dialog =  new QgsTemporalMapSettingsDialog( this );
-  dialog->setAttribute( Qt::WA_DeleteOnClose );
-
-  if ( dialog->mapSettingsWidget() )
-    dialog->mapSettingsWidget()->setFrameRateValue(
-      mNavigationObject->framesPerSeconds() );
-
-  dialog->setVisible( true );
-
-  connect( dialog->mapSettingsWidget(), &QgsTemporalMapSettingsWidget::frameRateChanged, this, [ this, dialog ]()
+  if ( dialog.exec() )
   {
-    mNavigationObject->setFramesPerSeconds( dialog->mapSettingsWidget()->frameRateValue() );
-  } );
+    mNavigationObject->setFramesPerSeconds( dialog.mapSettingsWidget()->frameRateValue() );
+  }
 }
 
 void QgsTemporalControllerDockWidget::timeSlider_valueChanged( int value )
 {
   mNavigationObject->setCurrentFrameNumber( value );
 }
-
-QgsInterval QgsTemporalControllerDockWidget::interval( int time, double value )
-{
-  QgsInterval interval;
-
-  if ( time == QgsTemporalControllerDockWidget::Seconds )
-  {
-    interval.setSeconds( value );
-  }
-  if ( time == QgsTemporalControllerDockWidget::Minutes )
-  {
-    interval.setMinutes( value );
-  }
-  if ( time == QgsTemporalControllerDockWidget::Hours )
-  {
-    interval.setHours( value );
-  }
-  if ( time == QgsTemporalControllerDockWidget::Days )
-  {
-    interval.setDays( value );
-  }
-  if ( time == QgsTemporalControllerDockWidget::Months )
-  {
-    interval.setMonths( value );
-  }
-  if ( time == QgsTemporalControllerDockWidget::Years )
-  {
-    interval.setYears( value );
-  }
-
-  return interval;
-}
-
 
 void QgsTemporalControllerDockWidget::setDatesToProjectTime()
 {
