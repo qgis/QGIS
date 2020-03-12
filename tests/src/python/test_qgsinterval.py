@@ -40,7 +40,7 @@ class TestQgsInterval(unittest.TestCase):
         # constructor with unit type
         i = QgsInterval(56, QgsUnitTypes.TemporalMilliseconds)
         self.assertTrue(i.isValid())
-        self.assertEqual(i.seconds(), 56000)
+        self.assertEqual(i.seconds(), 0.056)
 
     def testSettersGetters(self):
         # setters and getters
