@@ -70,6 +70,7 @@
 #include "qgsbearingnumericformat.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgsprojecttimesettings.h"
+#include "qgstemporalutils.h"
 
 //qt includes
 #include <QInputDialog>
@@ -2510,41 +2511,9 @@ void QgsProjectProperties::mButtonAddColor_clicked()
 
 void QgsProjectProperties::calculateFromLayersButton_clicked()
 {
-  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
-  QgsMapLayer *currentLayer = nullptr;
-
-  QDateTime minDate;
-  QDateTime maxDate;
-
-  for ( QMap<QString, QgsMapLayer *>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); ++it )
-  {
-    currentLayer = it.value();
-
-    if ( !currentLayer->temporalProperties() || !currentLayer->temporalProperties()->isActive() )
-      continue;
-
-    if ( currentLayer->type() == QgsMapLayerType::RasterLayer )
-    {
-      QgsRasterLayer *rasterLayer  = qobject_cast<QgsRasterLayer *>( currentLayer );
-
-      QgsDateTimeRange layerRange;
-      switch ( rasterLayer->temporalProperties()->mode() )
-      {
-        case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
-          layerRange = rasterLayer->temporalProperties()->fixedTemporalRange();
-          break;
-
-        case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
-          layerRange = rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
-          break;
-      }
-
-      if ( !minDate.isValid() ||  layerRange.begin() < minDate )
-        minDate = layerRange.begin();
-      if ( !maxDate.isValid() ||  layerRange.end() > maxDate )
-        maxDate = layerRange.end();
-    }
-  }
+  const QgsDateTimeRange range = QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject::instance() );
+  const QDateTime minDate = range.begin();
+  const QDateTime maxDate = range.end();
 
   if ( !minDate.isValid() || !maxDate.isValid() )
     return;

@@ -199,6 +199,7 @@
 %Include auto_generated/qgstemporalnavigationobject.sip
 %Include auto_generated/qgstemporalproperty.sip
 %Include auto_generated/qgstemporalrangeobject.sip
+%Include auto_generated/qgstemporalutils.sip
 %Include auto_generated/qgstessellator.sip
 %Include auto_generated/qgstestutils.sip
 %Include auto_generated/qgstextrenderer.sip

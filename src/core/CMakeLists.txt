@@ -387,6 +387,7 @@ SET(QGIS_CORE_SRCS
   qgstemporalnavigationobject.cpp
   qgstemporalproperty.cpp
   qgstemporalrangeobject.cpp
+  qgstemporalutils.cpp
   qgstessellator.cpp
   qgstextrenderer.cpp
   qgstilecache.cpp
@@ -911,6 +912,7 @@ SET(QGIS_CORE_HDRS
   qgstemporalnavigationobject.h
   qgstemporalproperty.h
   qgstemporalrangeobject.h
+  qgstemporalutils.h
   qgstessellator.h
   qgstestutils.h
   qgstextrenderer.h
