@@ -109,6 +109,8 @@ QgsTemporalControllerDockWidget::QgsTemporalControllerDockWidget( const QString 
   mFastForwardButton->setToolTip( tr( "Fast forward to end" ) );
 
   updateFrameDuration();
+
+  connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsTemporalControllerDockWidget::setWidgetStateFromProject );
 }
 
 void QgsTemporalControllerDockWidget::updateTemporalExtent()
@@ -122,8 +124,27 @@ void QgsTemporalControllerDockWidget::updateTemporalExtent()
 
 void QgsTemporalControllerDockWidget::updateFrameDuration()
 {
-  mNavigationObject->setFrameDuration( QgsInterval( mSpinBox->value(), static_cast< QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() ) ) );
+  if ( mBlockSettingUpdates )
+    return;
+
+  // save new settings into project
+  QgsProject::instance()->timeSettings()->setTimeStepUnit( static_cast< QgsUnitTypes::TemporalUnit>( mTimeStepsComboBox->currentData().toInt() ) );
+  QgsProject::instance()->timeSettings()->setTimeStep( mSpinBox->value() );
+
+  mNavigationObject->setFrameDuration( QgsInterval( QgsProject::instance()->timeSettings()->timeStep(),
+                                       QgsProject::instance()->timeSettings()->timeStepUnit() ) );
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
+}
+
+void QgsTemporalControllerDockWidget::setWidgetStateFromProject()
+{
+  mBlockSettingUpdates++;
+  mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( QgsProject::instance()->timeSettings()->timeStepUnit() ) );
+  mSpinBox->setValue( QgsProject::instance()->timeSettings()->timeStep() );
+  mBlockSettingUpdates--;
+  updateFrameDuration();
+
+  mNavigationObject->setFramesPerSecond( QgsProject::instance()->timeSettings()->framesPerSecond() );
 }
 
 void QgsTemporalControllerDockWidget::updateSlider( const QgsDateTimeRange &range )
@@ -148,11 +169,14 @@ QgsTemporalController *QgsTemporalControllerDockWidget::temporalController()
 void QgsTemporalControllerDockWidget::settings_clicked()
 {
   QgsTemporalMapSettingsDialog dialog( this );
-  dialog.mapSettingsWidget()->setFrameRateValue( mNavigationObject->framesPerSeconds() );
+  dialog.mapSettingsWidget()->setFrameRateValue( mNavigationObject->framesPerSecond() );
 
   if ( dialog.exec() )
   {
-    mNavigationObject->setFramesPerSeconds( dialog.mapSettingsWidget()->frameRateValue() );
+    // save new settings into project
+    QgsProject::instance()->timeSettings()->setFramesPerSecond( dialog.mapSettingsWidget()->frameRateValue() );
+
+    mNavigationObject->setFramesPerSecond( QgsProject::instance()->timeSettings()->framesPerSecond() );
   }
 }
 
