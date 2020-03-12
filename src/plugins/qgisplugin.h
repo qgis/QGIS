@@ -214,4 +214,10 @@ typedef QString icon_t();
 //! Typedef for getting the experimental status without instantiating the plugin
 typedef QString experimental_t();
 
+//! Typedef for getting the create date without instantiating the plugin
+typedef QString create_date_t();
+
+//! Typedef for getting the update date status without instantiating the plugin
+typedef QString update_date_t();
+
 #endif // QGISPLUGIN_H

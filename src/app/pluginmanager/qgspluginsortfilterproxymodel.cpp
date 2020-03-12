@@ -155,6 +155,22 @@ void QgsPluginSortFilterProxyModel::sortPluginsByStatus()
 
 
 
+void QgsPluginSortFilterProxyModel::sortPluginsByDateCreated()
+{
+  setAcceptedSpacers();
+  sort( 0, Qt::DescendingOrder );
+  setSortRole( PLUGIN_CREATE_DATE );
+}
+
+
+void QgsPluginSortFilterProxyModel::sortPluginsByDateUpdated()
+{
+  setAcceptedSpacers();
+  sort( 0, Qt::DescendingOrder );
+  setSortRole( PLUGIN_UPDATE_DATE );
+}
+
+
 bool QgsPluginSortFilterProxyModel::lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const
 {
   // Always move deprecated plugins to bottom, regardless of the sort order.
