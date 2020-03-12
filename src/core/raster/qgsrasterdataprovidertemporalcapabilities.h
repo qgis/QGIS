@@ -177,14 +177,14 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
   private:
 
     /**
-     * Represents fixed data provider datetime range.
+     * Represents available data provider datetime range.
      *
      * This is for determining the providers lower and upper datetime bounds,
      * any updates on the mRange should get out the range bound defined
      * by this member.
      *
      */
-    QgsDateTimeRange mFixedRange;
+    QgsDateTimeRange mAvailableTemporalRange;
 
     /**
      * If the stored time part in temporal ranges should be taked into account.
@@ -204,9 +204,9 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     QgsDateTimeRange mRequestedReferenceRange;
 
     /**
-     * Stores the fixed reference temporal range
+     * Stores the available reference temporal range
      */
-    QgsDateTimeRange mFixedReferenceRange;
+    QgsDateTimeRange mAvailableReferenceRange;
 
     //! If reference range has been enabled to be used in these properties
     bool mReferenceEnable = false;

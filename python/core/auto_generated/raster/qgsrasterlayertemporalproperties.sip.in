@@ -72,18 +72,10 @@ Sets a temporal ``range`` to apply to the whole layer. All bands from
 the raster layer will be rendered whenever the current datetime range of
 a render context intersects the specified ``range``.
 
-For the case of WMS-T layers, this set up will cause new WMS layer to be fetched
-with which the range of the render context intersects the specified ``range``.
-
 .. warning::
 
    This setting is only effective when mode() is
    QgsRasterLayerTemporalProperties.ModeFixedTemporalRange
-
-.. note::
-
-   This setting is not set by user. Provider can set this, if it is coming from there.
-
 
 .. seealso:: :py:func:`fixedTemporalRange`
 %End
@@ -106,18 +98,10 @@ Sets a fixed reference temporal ``range`` to apply to the whole layer. All bands
 the raster layer will be rendered whenever the current datetime range of
 a render context intersects the specified ``range``.
 
-For the case of WMS-T layers, this set up will cause new WMS layer to be fetched
-with which the range of the render context intersects the specified ``range``.
-
 .. warning::
 
    This setting is only effective when mode() is
    QgsRasterLayerTemporalProperties.ModeFixedTemporalRange
-
-.. note::
-
-   This setting is not set by user. Provider can set this, if it is coming from there.
-
 
 .. seealso:: :py:func:`fixedReferenceTemporalRange`
 %End
