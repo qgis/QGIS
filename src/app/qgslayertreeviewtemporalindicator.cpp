@@ -93,6 +93,7 @@ QString QgsLayerTreeViewTemporalIndicatorProvider::tooltipText( QgsMapLayer *lay
     case QgsMapLayerTemporalProperties::TemporalSource::Layer:
       return tr( "<b>Temporal layer </b>" );
   }
+  return QString();
 }
 
 void QgsLayerTreeViewTemporalIndicatorProvider::onLayerChanged( QgsMapLayer *layer )
