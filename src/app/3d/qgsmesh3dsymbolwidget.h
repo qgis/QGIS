@@ -58,7 +58,7 @@ class QgsMesh3dSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
     void setColorRampMinMax( double min, double max );
     QgsMeshLayer *mLayer = nullptr;
     QgsMeshDatasetGroupListModel *mDatasetGroupListModel = nullptr;
-    QgsMesh3DSymbol mSymbol; // used to store and returns the settings that are not handled by the widget
+    QgsMesh3DSymbol mSymbol;
 
 };
 

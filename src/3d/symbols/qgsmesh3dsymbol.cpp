@@ -41,7 +41,7 @@ void QgsMesh3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext &co
 
   //Advanced symbol
   QDomElement elemAdvancedSettings = doc.createElement( QStringLiteral( "advanced-settings" ) );
-  elemAdvancedSettings.setAttribute( QStringLiteral( "renderer-3d-enabled" ), mRenderer3dEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  elemAdvancedSettings.setAttribute( QStringLiteral( "renderer-3d-enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "smoothed-triangle" ), mSmoothedTriangles ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-enabled" ), mWireframeEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   elemAdvancedSettings.setAttribute( QStringLiteral( "wireframe-line-width" ), mWireframeLineWidth );
@@ -79,7 +79,7 @@ void QgsMesh3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteContex
 
   //Advanced symbol
   QDomElement elemAdvancedSettings = elem.firstChildElement( QStringLiteral( "advanced-settings" ) );
-  mRenderer3dEnabled = elemAdvancedSettings.attribute( QStringLiteral( "renderer-3d-enabled" ) ).toInt();
+  mEnabled = elemAdvancedSettings.attribute( QStringLiteral( "renderer-3d-enabled" ) ).toInt();
   mSmoothedTriangles = elemAdvancedSettings.attribute( QStringLiteral( "smoothed-triangle" ) ).toInt();
   mWireframeEnabled = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-enabled" ) ).toInt();
   mWireframeLineWidth = elemAdvancedSettings.attribute( QStringLiteral( "wireframe-line-width" ) ).toDouble();
@@ -240,12 +240,12 @@ void QgsMesh3DSymbol::setArrowsFixedSize( bool arrowsFixeSize )
   mArrowsFixedSize = arrowsFixeSize;
 }
 
-bool QgsMesh3DSymbol::renderer3dEnabled() const
+bool QgsMesh3DSymbol::isEnabled() const
 {
-  return mRenderer3dEnabled;
+  return mEnabled;
 }
 
-void QgsMesh3DSymbol::setRenderer3dEnabled( bool enable3dRenderer )
+void QgsMesh3DSymbol::setEnabled( bool enabled )
 {
-  mRenderer3dEnabled = enable3dRenderer;
+  mEnabled = enabled;
 }

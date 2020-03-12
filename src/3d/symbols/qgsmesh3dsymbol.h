@@ -81,14 +81,14 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
      *
      * \since QGIS 3.14
      */
-    bool renderer3dEnabled() const;
+    bool isEnabled() const;
 
     /**
      * Sets if the 3d rendering is enabled
      *
      * \since QGIS 3.14
      */
-    void setRenderer3dEnabled( bool mRenderer3dEnabled );
+    void setEnabled( bool enabled );
 
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
     Qgs3DTypes::AltitudeClamping altitudeClamping() const { return mAltClamping; }
@@ -323,7 +323,7 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
     bool mAddBackFaces = false;
 
-    bool mRenderer3dEnabled = true;
+    bool mEnabled = true;
 
     //! Triangles settings
     bool mSmoothedTriangles = false;
