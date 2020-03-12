@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1205</width>
-    <height>134</height>
+    <height>136</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,6 +53,17 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
+       <widget class="QPushButton" name="mRewindButton">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/temporal_navigation/previous.svg</normaloff>:/images/themes/default/temporal_navigation/previous.svg</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="mPreviousButton">
         <property name="text">
          <string/>
@@ -72,6 +83,9 @@
          <iconset resource="../../images/images.qrc">
           <normaloff>:/images/themes/default/temporal_navigation/back.svg</normaloff>:/images/themes/default/temporal_navigation/back.svg</iconset>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
@@ -82,6 +96,9 @@
         <property name="icon">
          <iconset resource="../../images/images.qrc">
           <normaloff>:/images/themes/default/temporal_navigation/stop.svg</normaloff>:/images/themes/default/temporal_navigation/stop.svg</iconset>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -94,10 +111,24 @@
          <iconset resource="../../images/images.qrc">
           <normaloff>:/images/themes/default/temporal_navigation/forward.svg</normaloff>:/images/themes/default/temporal_navigation/forward.svg</iconset>
         </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="mNextButton">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/temporal_navigation/next.svg</normaloff>:/images/themes/default/temporal_navigation/next.svg</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="mFastForwardButton">
         <property name="text">
          <string/>
         </property>
@@ -228,6 +259,8 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

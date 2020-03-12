@@ -32,11 +32,20 @@ QgsTemporalControllerDockWidget::QgsTemporalControllerDockWidget( const QString 
 
   mNavigationObject = new QgsTemporalNavigationObject( this );
 
-  connect( mForwardButton, &QPushButton::clicked, this, &QgsTemporalControllerDockWidget::forwardButton_clicked );
-  connect( mBackButton, &QPushButton::clicked, this, &QgsTemporalControllerDockWidget::backButton_clicked );
-  connect( mNextButton, &QPushButton::clicked, this, &QgsTemporalControllerDockWidget::nextButton_clicked );
-  connect( mPreviousButton, &QPushButton::clicked, this, &QgsTemporalControllerDockWidget::previousButton_clicked );
-  connect( mStopButton, &QPushButton::clicked, this, &QgsTemporalControllerDockWidget::stopButton_clicked );
+  connect( mForwardButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::playForward );
+  connect( mBackButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::playBackward );
+  connect( mNextButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::next );
+  connect( mPreviousButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::previous );
+  connect( mStopButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::pause );
+  connect( mFastForwardButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::skipToEnd );
+  connect( mRewindButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::rewindToStart );
+
+  connect( mNavigationObject, &QgsTemporalNavigationObject::stateChanged, this, [ = ]( QgsTemporalNavigationObject::AnimationState state )
+  {
+    mForwardButton->setChecked( state == QgsTemporalNavigationObject::Forward );
+    mBackButton->setChecked( state == QgsTemporalNavigationObject::Reverse );
+    mStopButton->setChecked( state == QgsTemporalNavigationObject::Idle );
+  } );
 
   connect( mStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerDockWidget::updateTemporalExtent );
   connect( mEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerDockWidget::updateTemporalExtent );
@@ -95,6 +104,8 @@ QgsTemporalControllerDockWidget::QgsTemporalControllerDockWidget( const QString 
   mNextButton->setToolTip( tr( "Go to next frame" ) );
   mPreviousButton->setToolTip( tr( "Go to previous frame" ) );
   mStopButton->setToolTip( tr( "Pause" ) );
+  mRewindButton->setToolTip( tr( "Rewind to start" ) );
+  mFastForwardButton->setToolTip( tr( "Fast forward to end" ) );
 
   updateFrameDuration();
 }
@@ -160,32 +171,6 @@ void QgsTemporalControllerDockWidget::setDatesToProjectTime()
     mStartDateTime->setDateTime( range.begin() );
     mEndDateTime->setDateTime( range.end() );
   }
-}
-
-void QgsTemporalControllerDockWidget::stopButton_clicked()
-{
-  updateButtonsEnable( true );
-  mNavigationObject->pause();
-}
-
-void QgsTemporalControllerDockWidget::forwardButton_clicked()
-{
-  mNavigationObject->playForward();
-}
-
-void QgsTemporalControllerDockWidget::backButton_clicked()
-{
-  mNavigationObject->playBackward();
-}
-
-void QgsTemporalControllerDockWidget::nextButton_clicked()
-{
-  mNavigationObject->next();
-}
-
-void QgsTemporalControllerDockWidget::previousButton_clicked()
-{
-  mNavigationObject->previous();
 }
 
 void QgsTemporalControllerDockWidget::setDateInputsEnable( bool enabled )

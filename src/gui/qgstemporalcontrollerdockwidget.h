@@ -73,36 +73,6 @@ class GUI_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget, private
 
     /**
      * Handles the action to be done when the
-     * previous button on the widget is clicked.
-     **/
-    void previousButton_clicked();
-
-    /**
-     * Handles the action to be done when the
-     * next button on the widget is clicked.
-     **/
-    void nextButton_clicked();
-
-    /**
-     * Handles the action to be done when the
-     * stop button on the widget is clicked.
-     **/
-    void stopButton_clicked();
-
-    /**
-     * Handles the action to be done when the
-     * back button on the widget is clicked.
-     **/
-    void backButton_clicked();
-
-    /**
-     * Handles the action to be done when the
-     * forward button on the widget is clicked.
-     **/
-    void forwardButton_clicked();
-
-    /**
-     * Handles the action to be done when the
      * time slider value has changed.
      **/
     void timeSlider_valueChanged( int value );
