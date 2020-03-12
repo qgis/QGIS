@@ -594,12 +594,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
   QgsDebugMsg( "getting table info from layer registries: " + query );
   result = PQexec( query, true );
-  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
-  {
-    PQexecNR( QStringLiteral( "COMMIT" ) );
-    return false;
-  }
-
+  // NOTE: we intentionally continue if the query fails
+  //       (for example because PostGIS is not installed)
   for ( int idx = 0; idx < result.PQntuples(); idx++ )
   {
     QString tableName = result.PQgetvalue( idx, 0 );
