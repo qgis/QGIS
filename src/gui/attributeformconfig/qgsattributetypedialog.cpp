@@ -71,6 +71,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   }
 
   mExpressionWidget->registerExpressionContextGenerator( this );
+  mExpressionWidget->setLayer( mLayer );
 
   connect( mExpressionWidget, &QgsExpressionLineEdit::expressionChanged, this, &QgsAttributeTypeDialog::defaultExpressionChanged );
   connect( mUniqueCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
