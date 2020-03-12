@@ -14050,6 +14050,11 @@ bool QgisApp::addRasterLayer( QgsRasterLayer *rasterLayer )
   myList << rasterLayer;
   QgsProject::instance()->addMapLayers( myList );
 
+  // connect the temporal range changes of the this layer to the map canvas
+  if ( rasterLayer->temporalProperties() )
+    connect( rasterLayer->temporalProperties(), &QgsRasterLayerTemporalProperties::temporalRangeChanged,
+             mMapCanvas, &QgsMapCanvas::setTemporalRange );
+
   askUserForDatumTransform( rasterLayer->crs(), QgsProject::instance()->crs(), rasterLayer );
 
   return true;

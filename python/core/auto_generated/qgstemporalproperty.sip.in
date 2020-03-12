@@ -53,6 +53,11 @@ Returns ``True`` if the temporal property is active.
 Emitted when the temporal properties have changed.
 %End
 
+    void temporalRangeChanged( const QgsDateTimeRange &range );
+%Docstring
+Emitted when the temporal range in the properties have changed.
+%End
+
 };
 
 /************************************************************************

@@ -21,6 +21,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsrange.h"
 
 #include <QObject>
 
@@ -65,6 +66,11 @@ class CORE_EXPORT QgsTemporalProperty : public QObject
      * Emitted when the temporal properties have changed.
      */
     void changed();
+
+    /**
+     * Emitted when the temporal range in the properties have changed.
+     */
+    void temporalRangeChanged( const QgsDateTimeRange &range );
 
   private:
 

@@ -76,7 +76,10 @@ void QgsRasterLayerTemporalProperties::setTemporalRange( const QgsDateTimeRange 
     setIsActive( true );
 
   if ( mFixedRange.contains( dateTimeRange ) )
+  {
     mRange = dateTimeRange;
+    emit temporalRangeChanged( dateTimeRange );
+  }
   else
     mRange = mFixedRange;
 }
