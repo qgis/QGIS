@@ -25,7 +25,7 @@
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
-class GUI_EXPORT QgsTemporalMapSettingsWidget : public QWidget, private Ui::QgsTemporalMapSettingsWidgetBase
+class GUI_EXPORT QgsTemporalMapSettingsWidget : public QgsPanelWidget, private Ui::QgsTemporalMapSettingsWidgetBase
 {
     Q_OBJECT
   public:
