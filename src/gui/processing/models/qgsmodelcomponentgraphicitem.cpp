@@ -252,15 +252,32 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
 QRectF QgsModelComponentGraphicItem::boundingRect() const
 {
   QFontMetricsF fm( mFont );
-  const int linksAbove = mComponent->linksCollapsed( Qt::TopEdge ) ? 0 : linkPointCount( Qt::TopEdge );
-  const int linksBelow = mComponent->linksCollapsed( Qt::BottomEdge ) ? 0 : linkPointCount( Qt::BottomEdge );
+  const int linksAbove = linkPointCount( Qt::TopEdge );
+  const int linksBelow = linkPointCount( Qt::BottomEdge );
 
-  const double hUp = fm.height() * 1.2 * ( linksAbove + 2 );
-  const double hDown = fm.height() * 1.2 * ( linksBelow + 2 );
-  return QRectF( -( itemSize().width() + 2 ) / 2,
-                 -( itemSize().height() + 2 ) / 2 - hUp,
-                 itemSize().width() + 2,
-                 itemSize().height() + hDown + hUp );
+  const double hUp = linksAbove == 0 ? 0 :
+                     fm.height() * 1.2 * ( ( mComponent->linksCollapsed( Qt::TopEdge ) ? 0 : linksAbove ) + 2 );
+  const double hDown = linksBelow == 0 ? 0 :
+                       fm.height() * 1.2 * ( ( mComponent->linksCollapsed( Qt::BottomEdge ) ? 0 : linksBelow ) + 2 );
+  return QRectF( -( itemSize().width() ) / 2 - RECT_PEN_SIZE,
+                 -( itemSize().height() ) / 2 - hUp - RECT_PEN_SIZE,
+                 itemSize().width() + 2 * RECT_PEN_SIZE,
+                 itemSize().height() + hDown + hUp + 2 * RECT_PEN_SIZE );
+}
+
+bool QgsModelComponentGraphicItem::contains( const QPointF &point ) const
+{
+  QRectF paintingBounds = boundingRect();
+  if ( point.x() < paintingBounds.left() + RECT_PEN_SIZE )
+    return false;
+  if ( point.x() > paintingBounds.right() - RECT_PEN_SIZE )
+    return false;
+  if ( point.y() < paintingBounds.top() + RECT_PEN_SIZE )
+    return false;
+  if ( point.y() > paintingBounds.bottom() - RECT_PEN_SIZE )
+    return false;
+
+  return true;
 }
 
 void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
@@ -287,13 +304,14 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
 
   if ( iconPicture().isNull() && iconPixmap().isNull() )
   {
-    QRectF labelRect = QRectF( rect.left() + 4, rect.top() + 4, rect.width() - 8 - mButtonSize.width(), rect.height() - 8 );
+    QRectF labelRect = QRectF( rect.left() + TEXT_MARGIN, rect.top() + TEXT_MARGIN, rect.width() - 2 * TEXT_MARGIN - mButtonSize.width() - BUTTON_MARGIN, rect.height() - 2 * TEXT_MARGIN );
     text = label();
     painter->drawText( labelRect, Qt::TextWordWrap, text );
   }
   else
   {
-    QRectF labelRect = QRectF( rect.left() + 25, rect.top() + 4, rect.width() - 8 - mButtonSize.width(), rect.height() - 8 );
+    QRectF labelRect = QRectF( rect.left() + 21 + TEXT_MARGIN, rect.top() + TEXT_MARGIN,
+                               rect.width() - 2 * TEXT_MARGIN - mButtonSize.width() - BUTTON_MARGIN - 21, rect.height() - 2 * TEXT_MARGIN );
     text = label();
     painter->drawText( labelRect, Qt::TextWordWrap | Qt::AlignVCenter, text );
   }
@@ -340,14 +358,14 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   const QPixmap px = iconPixmap();
   if ( !px.isNull() )
   {
-    painter->drawPixmap( -( componentSize.width() / 2.0 ) + 3, -8, px );
+    painter->drawPixmap( QPointF( -( componentSize.width() / 2.0 ) + 3, -8 ), px );
   }
   else
   {
     const QPicture pic = iconPicture();
     if ( !pic.isNull() )
     {
-      painter->drawPicture( -( componentSize.width() / 2.0 ) + 3, -8, pic );
+      painter->drawPicture( QPointF( -( componentSize.width() / 2.0 ) + 3, -8 ), pic );
     }
   }
 }
@@ -356,16 +374,16 @@ QRectF QgsModelComponentGraphicItem::itemRect( bool storedRect ) const
 {
   if ( storedRect )
   {
-    return QRectF( mComponent->position().x() - ( mComponent->size().width() + 2 ) / 2.0,
-                   mComponent->position().y()  - ( mComponent->size().height() + 2 ) / 2.0,
-                   mComponent->size().width() + 2,
-                   mComponent->size().height() + 2 );
+    return QRectF( mComponent->position().x() - ( mComponent->size().width() ) / 2.0,
+                   mComponent->position().y()  - ( mComponent->size().height() ) / 2.0,
+                   mComponent->size().width(),
+                   mComponent->size().height() );
   }
   else
-    return QRectF( -( itemSize().width() + 2 ) / 2.0,
-                   -( itemSize().height() + 2 ) / 2.0,
-                   itemSize().width() + 2,
-                   itemSize().height() + 2 );
+    return QRectF( -( itemSize().width() ) / 2.0,
+                   -( itemSize().height() ) / 2.0,
+                   itemSize().width(),
+                   itemSize().height() );
 }
 
 QString QgsModelComponentGraphicItem::truncatedTextForItem( const QString &text ) const
@@ -406,10 +424,10 @@ QPixmap QgsModelComponentGraphicItem::iconPixmap() const
 
 void QgsModelComponentGraphicItem::updateButtonPositions()
 {
-  mEditButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0 - 2,
-                                     itemSize().height() / 2.0 - mButtonSize.height() / 2.0 - 2 ) );
-  mDeleteButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0 - 2,
-                                       mButtonSize.height() / 2.0 - itemSize().height() / 2.0 + 2 ) );
+  mEditButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0 - BUTTON_MARGIN,
+                                     itemSize().height() / 2.0 - mButtonSize.height() / 2.0 - BUTTON_MARGIN ) );
+  mDeleteButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0 - BUTTON_MARGIN,
+                                       mButtonSize.height() / 2.0 - itemSize().height() / 2.0 + BUTTON_MARGIN ) );
 
   if ( mExpandTopButton )
   {
