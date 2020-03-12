@@ -507,7 +507,7 @@ SET(QGIS_GUI_SRCS
   qgstaskmanagerwidget.cpp
   qgstemporalmapsettingsdialog.cpp
   qgstemporalmapsettingswidget.cpp
-  qgstemporalcontrollerdockwidget.cpp
+  qgstemporalcontrollerwidget.cpp
   qgstextformatwidget.cpp
   qgstextpreview.cpp
   qgstreewidgetitem.cpp
@@ -731,7 +731,7 @@ SET(QGIS_GUI_HDRS
   qgstaskmanagerwidget.h
   qgstemporalmapsettingsdialog.h
   qgstemporalmapsettingswidget.h
-  qgstemporalcontrollerdockwidget.h
+  qgstemporalcontrollerwidget.h
   qgstextformatwidget.h
   qgstextpreview.h
   qgstreewidgetitem.h

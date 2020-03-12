@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgstemporalcontrollerdockwidget.cpp
+                         qgstemporalcontrollerwidget.cpp
                          ------------------------------
     begin                : February 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstemporalcontrollerdockwidget.h"
+#include "qgstemporalcontrollerwidget.h"
 #include "qgsgui.h"
 #include "qgsproject.h"
 #include "qgsprojecttimesettings.h"
@@ -24,11 +24,10 @@
 
 #include "qgstemporalmapsettingsdialog.h"
 
-QgsTemporalControllerDockWidget::QgsTemporalControllerDockWidget( const QString &name, QWidget *parent )
-  : QgsDockWidget( parent )
+QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
+  : QgsPanelWidget( parent )
 {
   setupUi( this );
-  setWindowTitle( name );
 
   mNavigationObject = new QgsTemporalNavigationObject( this );
 
@@ -48,16 +47,16 @@ QgsTemporalControllerDockWidget::QgsTemporalControllerDockWidget( const QString 
     mStopButton->setChecked( state == QgsTemporalNavigationObject::Idle );
   } );
 
-  connect( mStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerDockWidget::updateTemporalExtent );
-  connect( mEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerDockWidget::updateTemporalExtent );
-  connect( mSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalControllerDockWidget::updateFrameDuration );
-  connect( mTimeStepsComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsTemporalControllerDockWidget::updateFrameDuration );
-  connect( mSlider, &QSlider::valueChanged, this, &QgsTemporalControllerDockWidget::timeSlider_valueChanged );
+  connect( mStartDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::updateTemporalExtent );
+  connect( mEndDateTime, &QDateTimeEdit::dateTimeChanged, this, &QgsTemporalControllerWidget::updateTemporalExtent );
+  connect( mSpinBox, qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalControllerWidget::updateFrameDuration );
+  connect( mTimeStepsComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &QgsTemporalControllerWidget::updateFrameDuration );
+  connect( mSlider, &QSlider::valueChanged, this, &QgsTemporalControllerWidget::timeSlider_valueChanged );
 
-  connect( mNavigationObject, &QgsTemporalNavigationObject::updateTemporalRange, this, &QgsTemporalControllerDockWidget::updateSlider );
+  connect( mNavigationObject, &QgsTemporalNavigationObject::updateTemporalRange, this, &QgsTemporalControllerWidget::updateSlider );
 
-  connect( mSettings, &QPushButton::clicked, this, &QgsTemporalControllerDockWidget::settings_clicked );
-  connect( mSetToProjectTimeButton, &QPushButton::clicked, this, &QgsTemporalControllerDockWidget::setDatesToProjectTime );
+  connect( mSettings, &QPushButton::clicked, this, &QgsTemporalControllerWidget::settings_clicked );
+  connect( mSetToProjectTimeButton, &QPushButton::clicked, this, &QgsTemporalControllerWidget::setDatesToProjectTime );
 
   QgsDateTimeRange range;
 
@@ -110,10 +109,10 @@ QgsTemporalControllerDockWidget::QgsTemporalControllerDockWidget( const QString 
 
   updateFrameDuration();
 
-  connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsTemporalControllerDockWidget::setWidgetStateFromProject );
+  connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsTemporalControllerWidget::setWidgetStateFromProject );
 }
 
-void QgsTemporalControllerDockWidget::updateTemporalExtent()
+void QgsTemporalControllerWidget::updateTemporalExtent()
 {
   QgsDateTimeRange temporalExtent = QgsDateTimeRange( mStartDateTime->dateTime(),
                                     mEndDateTime->dateTime() );
@@ -122,7 +121,7 @@ void QgsTemporalControllerDockWidget::updateTemporalExtent()
   mSlider->setValue( 0 );
 }
 
-void QgsTemporalControllerDockWidget::updateFrameDuration()
+void QgsTemporalControllerWidget::updateFrameDuration()
 {
   if ( mBlockSettingUpdates )
     return;
@@ -136,7 +135,7 @@ void QgsTemporalControllerDockWidget::updateFrameDuration()
   mSlider->setRange( 0, mNavigationObject->totalFrameCount() - 1 );
 }
 
-void QgsTemporalControllerDockWidget::setWidgetStateFromProject()
+void QgsTemporalControllerWidget::setWidgetStateFromProject()
 {
   mBlockSettingUpdates++;
   mTimeStepsComboBox->setCurrentIndex( mTimeStepsComboBox->findData( QgsProject::instance()->timeSettings()->timeStepUnit() ) );
@@ -147,13 +146,13 @@ void QgsTemporalControllerDockWidget::setWidgetStateFromProject()
   mNavigationObject->setFramesPerSecond( QgsProject::instance()->timeSettings()->framesPerSecond() );
 }
 
-void QgsTemporalControllerDockWidget::updateSlider( const QgsDateTimeRange &range )
+void QgsTemporalControllerWidget::updateSlider( const QgsDateTimeRange &range )
 {
   whileBlocking( mSlider )->setValue( mNavigationObject->currentFrameNumber() );
   updateRangeLabel( range );
 }
 
-void QgsTemporalControllerDockWidget::updateRangeLabel( const QgsDateTimeRange &range )
+void QgsTemporalControllerWidget::updateRangeLabel( const QgsDateTimeRange &range )
 {
   QLocale locale;
   mCurrentRangeLabel->setText( tr( "%1 to %2" ).arg(
@@ -161,12 +160,12 @@ void QgsTemporalControllerDockWidget::updateRangeLabel( const QgsDateTimeRange &
                                  range.end().toString( locale.dateTimeFormat( QLocale::NarrowFormat ) ) ) );
 }
 
-QgsTemporalController *QgsTemporalControllerDockWidget::temporalController()
+QgsTemporalController *QgsTemporalControllerWidget::temporalController()
 {
   return mNavigationObject;
 }
 
-void QgsTemporalControllerDockWidget::settings_clicked()
+void QgsTemporalControllerWidget::settings_clicked()
 {
   QgsTemporalMapSettingsDialog dialog( this );
   dialog.mapSettingsWidget()->setFrameRateValue( mNavigationObject->framesPerSecond() );
@@ -180,12 +179,12 @@ void QgsTemporalControllerDockWidget::settings_clicked()
   }
 }
 
-void QgsTemporalControllerDockWidget::timeSlider_valueChanged( int value )
+void QgsTemporalControllerWidget::timeSlider_valueChanged( int value )
 {
   mNavigationObject->setCurrentFrameNumber( value );
 }
 
-void QgsTemporalControllerDockWidget::setDatesToProjectTime()
+void QgsTemporalControllerWidget::setDatesToProjectTime()
 {
   QgsDateTimeRange range;
   if ( QgsProject::instance()->timeSettings() )
@@ -198,13 +197,13 @@ void QgsTemporalControllerDockWidget::setDatesToProjectTime()
   }
 }
 
-void QgsTemporalControllerDockWidget::setDateInputsEnable( bool enabled )
+void QgsTemporalControllerWidget::setDateInputsEnable( bool enabled )
 {
   mStartDateTime->setEnabled( enabled );
   mEndDateTime->setEnabled( enabled );
 }
 
-void QgsTemporalControllerDockWidget::updateButtonsEnable( bool enabled )
+void QgsTemporalControllerWidget::updateButtonsEnable( bool enabled )
 {
   mPreviousButton->setEnabled( enabled );
   mNextButton->setEnabled( enabled );

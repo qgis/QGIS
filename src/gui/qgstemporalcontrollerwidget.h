@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgstemporalcontrollerdockwidget.h
+                         qgstemporalcontrollerwidget.h
                          ---------------
     begin                : February 2020
     copyright            : (C) 2020 by Samweli Mwakisambwe
@@ -15,37 +15,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSTEMPORALCONTROLLERDOCKWIDGET_H
-#define QGSTEMPORALCONTROLLERDOCKWIDGET_H
+#ifndef QGSTEMPORALCONTROLLERWIDGET_H
+#define QGSTEMPORALCONTROLLERWIDGET_H
 
-#include "ui_qgstemporalcontrollerdockwidgetbase.h"
+#include "ui_qgstemporalcontrollerwidgetbase.h"
 
-#include "qgsdockwidget.h"
 #include "qgis_gui.h"
 #include "qgsrange.h"
 
 class QgsMapLayer;
 class QgsTemporalNavigationObject;
-class QgsTemporalMapSettingsWidget;
-class QgsTemporalMapSettingsDialog;
 class QgsTemporalController;
 class QgsInterval;
 
 /**
  * \ingroup gui
- * The QgsTemporalControllerDockWidget class
+ * A widget for controlling playback properties of a QgsTemporalController.
  *
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget, private Ui::QgsTemporalControllerDockWidgetBase
+class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui::QgsTemporalControllerWidgetBase
 {
     Q_OBJECT
   public:
 
     /**
-      * Constructor for QgsTemporalControllerDockWidget, with the specified \a parent widget.
+      * Constructor for QgsTemporalControllerWidget, with the specified \a parent widget.
       */
-    QgsTemporalControllerDockWidget( const QString &name, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsTemporalControllerWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the temporal controller object used by this object in navigation.
@@ -110,8 +107,6 @@ class GUI_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget, private
     void updateFrameDuration();
 
     void setWidgetStateFromProject();
-
-
 };
 
-#endif // QGSTEMPORALCONTROLLERDOCKWIDGET_H
+#endif // QGSTEMPORALCONTROLLERWIDGET_H
