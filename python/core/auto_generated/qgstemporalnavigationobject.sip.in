@@ -139,6 +139,13 @@ a playing animation will advance to the next frame.
 Returns the total number of frames for the navigation.
 %End
 
+  signals:
+
+    void stateChanged( AnimationState state );
+%Docstring
+Emitted whenever the animation ``state`` changes.
+%End
+
   public slots:
 
     void play();
