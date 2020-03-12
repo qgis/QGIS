@@ -30,6 +30,9 @@ Constructor for QgsRasterLayerTemporalProperties, with the specified ``parent`` 
 The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see isActive()).
 %End
 
+    virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
+
+
     enum TemporalMode
     {
       ModeFixedTemporalRange,

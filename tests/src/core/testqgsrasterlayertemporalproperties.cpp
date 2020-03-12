@@ -40,6 +40,7 @@ class TestQgsRasterLayerTemporalProperties : public QObject
 
     void checkSettingTemporalRange();
     void testChangedSignal();
+    void testVisibleInTimeRange();
 
   private:
     QgsRasterLayerTemporalProperties *temporalProperties = nullptr;
@@ -95,6 +96,51 @@ void TestQgsRasterLayerTemporalProperties::testChangedSignal()
 
   temporalProperties->setIsActive( true );
   QCOMPARE( spy.count(), 2 );
+}
+
+void TestQgsRasterLayerTemporalProperties::testVisibleInTimeRange()
+{
+  QgsRasterLayerTemporalProperties props;
+  // by default, should be visible regardless of time range
+  QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange() ) );
+  QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
+           QDateTime( QDate( 2020, 1, 1 ) ) ) ) );
+
+  // when in data provider time handling mode, we also should always render regardless of time range
+  props.setIsActive( true );
+  props.setMode( QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider );
+  QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange() ) );
+  QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
+           QDateTime( QDate( 2020, 1, 1 ) ) ) ) );
+  // fix temporal range should be ignored while in ModeTemporalRangeFromDataProvider
+  props.setFixedTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
+                               QDateTime( QDate( 2020, 1, 5 ) ) ) );
+  QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange() ) );
+  QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ) ),
+           QDateTime( QDate( 2019, 1, 2 ) ) ) ) );
+
+  // switch to fixed time mode
+  props.setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
+  // should be visible in infinite time ranges
+  QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange() ) );
+  // should not be visible -- outside of fixed time range
+  QVERIFY( !props.isVisibleInTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ) ),
+           QDateTime( QDate( 2019, 1, 2 ) ) ) ) );
+  // should be visible -- intersects fixed time range
+  QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 2 ) ),
+           QDateTime( QDate( 2020, 1, 3 ) ) ) ) );
+  QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 2 ) ),
+           QDateTime( ) ) ) );
+  QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange( QDateTime(),
+           QDateTime( QDate( 2020, 1, 3 ) ) ) ) );
+  QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2019, 1, 2 ) ),
+           QDateTime( QDate( 2020, 1, 3 ) ) ) ) );
+  QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2019, 1, 2 ) ),
+           QDateTime( QDate( 2021, 1, 3 ) ) ) ) );
+  QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
+           QDateTime( QDate( 2020, 1, 1 ) ) ) ) );
+  QVERIFY( props.isVisibleInTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 5 ) ),
+           QDateTime( QDate( 2020, 1, 5 ) ) ) ) );
 }
 
 QGSTEST_MAIN( TestQgsRasterLayerTemporalProperties )

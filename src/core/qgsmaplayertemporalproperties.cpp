@@ -31,6 +31,11 @@ void QgsMapLayerTemporalProperties::setTemporalSource( QgsMapLayerTemporalProper
   }
 }
 
+bool QgsMapLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTimeRange & ) const
+{
+  return true;
+}
+
 QgsMapLayerTemporalProperties::TemporalSource QgsMapLayerTemporalProperties::temporalSource() const
 {
   return mSource;

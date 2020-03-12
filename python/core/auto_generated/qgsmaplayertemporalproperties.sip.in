@@ -68,6 +68,11 @@ Sets the temporal properties temporal range ``source``.
 .. seealso:: :py:func:`temporalSource`
 %End
 
+    virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
+%Docstring
+Returns ``True`` if the layer should be visible and rendered for the specified time ``range``.
+%End
+
 };
 
 /************************************************************************
