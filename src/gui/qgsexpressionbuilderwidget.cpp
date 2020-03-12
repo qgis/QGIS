@@ -258,7 +258,7 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
 
   // Get the item
   QModelIndex idx = mProxyModel->mapToSource( index );
-  QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  QgsExpressionItem *item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
   if ( !item )
     return;
 
@@ -355,8 +355,8 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString &path )
   {
     // Create default sample entry.
     newFunctionFile( "default" );
-    txtPython->setText( QString( "'''\n#Sample custom function file\n "
-                                 "(uncomment to use and customize or Add button to create a new file) \n%1 \n '''" ).arg( txtPython->text() ) );
+    txtPython->setText( QStringLiteral( "'''\n#Sample custom function file\n "
+                                        "(uncomment to use and customize or Add button to create a new file) \n%1 \n '''" ).arg( txtPython->text() ) );
     saveFunctionFile( "default" );
   }
 }
@@ -416,7 +416,7 @@ void QgsExpressionBuilderWidget::loadFunctionCode( const QString &code )
 void QgsExpressionBuilderWidget::expressionTree_doubleClicked( const QModelIndex &index )
 {
   QModelIndex idx = mProxyModel->mapToSource( index );
-  QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  QgsExpressionItem *item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
   if ( !item )
     return;
 
@@ -1250,7 +1250,7 @@ void QgsExpressionBuilderWidget::showContextMenu( QPoint pt )
 {
   QModelIndex idx = expressionTree->indexAt( pt );
   idx = mProxyModel->mapToSource( idx );
-  QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  QgsExpressionItem *item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
   if ( !item )
     return;
 
@@ -1272,7 +1272,7 @@ void QgsExpressionBuilderWidget::showContextMenu( QPoint pt )
 void QgsExpressionBuilderWidget::loadSampleValues()
 {
   QModelIndex idx = mProxyModel->mapToSource( expressionTree->currentIndex() );
-  QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  QgsExpressionItem *item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
   if ( !mLayer || !item )
@@ -1285,7 +1285,7 @@ void QgsExpressionBuilderWidget::loadSampleValues()
 void QgsExpressionBuilderWidget::loadAllValues()
 {
   QModelIndex idx = mProxyModel->mapToSource( expressionTree->currentIndex() );
-  QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  QgsExpressionItem *item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
   if ( !mLayer || !item )
@@ -1298,7 +1298,7 @@ void QgsExpressionBuilderWidget::loadAllValues()
 void QgsExpressionBuilderWidget::loadSampleUsedValues()
 {
   QModelIndex idx = mProxyModel->mapToSource( expressionTree->currentIndex() );
-  QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  QgsExpressionItem *item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
   if ( !mLayer || !item )
@@ -1311,7 +1311,7 @@ void QgsExpressionBuilderWidget::loadSampleUsedValues()
 void QgsExpressionBuilderWidget::loadAllUsedValues()
 {
   QModelIndex idx = mProxyModel->mapToSource( expressionTree->currentIndex() );
-  QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  QgsExpressionItem *item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
   if ( !mLayer || !item )
@@ -1367,7 +1367,7 @@ void QgsExpressionBuilderWidget::editSelectedUserExpression()
 {
   // Get the item
   QModelIndex idx = mProxyModel->mapToSource( expressionTree->currentIndex() );
-  QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  QgsExpressionItem *item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
   if ( !item )
     return;
 
@@ -1390,7 +1390,7 @@ void QgsExpressionBuilderWidget::removeSelectedUserExpression()
 
 // Get the item
   QModelIndex idx = mProxyModel->mapToSource( expressionTree->currentIndex() );
-  QgsExpressionItem *item = dynamic_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
+  QgsExpressionItem *item = static_cast<QgsExpressionItem *>( mModel->itemFromIndex( idx ) );
   if ( !item )
     return;
 
@@ -1603,14 +1603,14 @@ void QgsExpressionBuilderWidget::loadExpressionsFromJson( const QJsonDocument &e
     }
 
     // we want to import only items of type expression for now
-    if ( expressionObj["type"].toString() != "expression" )
+    if ( expressionObj["type"].toString() != QStringLiteral( "expression" ) )
     {
       skippedExpressionLabels.append( expressionObj["name"].toString() );
       continue;
     }
 
     // we want to import only items of type expression for now
-    if ( expressionObj["group"].toString() != "user" )
+    if ( expressionObj["group"].toString() != QStringLiteral( "user" ) )
     {
       skippedExpressionLabels.append( expressionObj["name"].toString() );
       continue;
@@ -1621,7 +1621,7 @@ void QgsExpressionBuilderWidget::loadExpressionsFromJson( const QJsonDocument &e
     const QString helpText = expressionObj["description"].toString();
 
     // make sure they have valid name
-    if ( label.contains( "\\" ) || label.contains( "/" ) )
+    if ( label.contains( "\\" ) || label.contains( '/' ) )
     {
       skippedExpressionLabels.append( expressionObj["name"].toString() );
       continue;
@@ -1657,11 +1657,11 @@ void QgsExpressionBuilderWidget::loadExpressionsFromJson( const QJsonDocument &e
   {
     QStringList skippedExpressionLabelsQuoted;
     for ( const QString &skippedExpressionLabel : skippedExpressionLabels )
-      skippedExpressionLabelsQuoted.append( QString( "'%1'" ).arg( skippedExpressionLabel ) );
+      skippedExpressionLabelsQuoted.append( QStringLiteral( "'%1'" ).arg( skippedExpressionLabel ) );
 
     QMessageBox::information( this,
                               tr( "Skipped Expression Imports" ),
-                              QString( "%1\n%2" ).arg( tr( "The following expressions have been skipped:" ),
+                              QStringLiteral( "%1\n%2" ).arg( tr( "The following expressions have been skipped:" ),
                                   skippedExpressionLabelsQuoted.join( ", " ) ) );
   }
 }
@@ -1711,7 +1711,7 @@ const QList<QgsExpressionItem *> QgsExpressionBuilderWidget::findExpressions( co
   const QList<QStandardItem *> found { mModel->findItems( label, Qt::MatchFlag::MatchRecursive ) };
   for ( const auto &item : qgis::as_const( found ) )
   {
-    result.push_back( dynamic_cast<QgsExpressionItem *>( item ) );
+    result.push_back( static_cast<QgsExpressionItem *>( item ) );
   }
   return result;
 }

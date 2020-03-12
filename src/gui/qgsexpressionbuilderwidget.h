@@ -416,12 +416,14 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void operatorButtonClicked();
     void btnRun_pressed();
     void btnNewFile_pressed();
+
     /**
      * Display a file dialog to choose where to store the exported expressions JSON file
      * and saves them to the selected destination.
      * \since QGIS 3.14
      */
     void exportUserExpressions_pressed();
+
     /**
      * Display a file dialog to choose where to load the expression JSON file from
      * and adds them to user expressions group.
