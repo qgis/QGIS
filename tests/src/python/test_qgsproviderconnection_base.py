@@ -59,20 +59,13 @@ class TestPyQgsProviderConnectionBase():
 
     def _test_save_load(self, md, uri):
         """Common tests on connection save and load"""
-        conn = md.createConnection(self.uri, {})
-        created_spy = QSignalSpy(md.connectionCreated)
-        changed_spy = QSignalSpy(md.connectionChanged)
+
+        conn = md.createConnection(uri, {})
+
         md.saveConnection(conn, 'qgis_test1')
         # Check that we retrieve the new connection
         self.assertTrue('qgis_test1' in md.connections().keys())
         self.assertTrue('qgis_test1' in md.dbConnections().keys())
-        self.assertEqual(len(created_spy), 1)
-        self.assertEqual(len(changed_spy), 0)
-
-        # if we try to save again, the connectionChanged signal should be emitted instead of connectionCreated
-        md.saveConnection(conn, 'qgis_test1')
-        self.assertEqual(len(created_spy), 1)
-        self.assertEqual(len(changed_spy), 1)
 
         return md.connections()['qgis_test1']
 
@@ -295,8 +288,21 @@ class TestPyQgsProviderConnectionBase():
 
     def test_connections(self):
         """Main test"""
+
         md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
 
         # Run common tests
+        created_spy = QSignalSpy(md.connectionCreated)
+        changed_spy = QSignalSpy(md.connectionChanged)
+
         conn = self._test_save_load(md, self.uri)
+
+        self.assertEqual(len(created_spy), 1)
+        self.assertEqual(len(changed_spy), 0)
+
+        # if we try to save again, the connectionChanged signal should be emitted instead of connectionCreated
+        md.saveConnection(conn, 'qgis_test1')
+        self.assertEqual(len(created_spy), 1)
+        self.assertEqual(len(changed_spy), 1)
+
         self._test_operations(md, conn)

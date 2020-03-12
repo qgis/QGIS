@@ -314,6 +314,7 @@ ENDIF (ENABLE_PGTEST)
 
 IF (ENABLE_MSSQLTEST)
   ADD_PYTHON_TEST(PyQgsMssqlProvider test_provider_mssql.py)
+  ADD_PYTHON_TEST(PyQgsProviderConnectionMssql test_qgsproviderconnection_mssql.py)
 ENDIF (ENABLE_MSSQLTEST)
 
 IF (ENABLE_ORACLETEST)
