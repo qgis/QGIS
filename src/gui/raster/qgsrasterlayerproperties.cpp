@@ -1032,9 +1032,6 @@ void QgsRasterLayerProperties::apply()
     hueSaturationFilter->setColorizeStrength( sliderColorizeStrength->value() );
   }
 
-  // Update temporal properties
-  mTemporalWidget->saveTemporalProperties();
-
   //set the blend mode for the layer
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
 
