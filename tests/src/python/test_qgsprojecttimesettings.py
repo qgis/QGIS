@@ -13,6 +13,7 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 import qgis  # NOQA
 
 from qgis.core import (QgsProject,
+                       QgsUnitTypes,
                        QgsProjectTimeSettings,
                        QgsReadWriteContext,
                        QgsDateTimeRange)
@@ -57,6 +58,16 @@ class TestQgsProjectTimeSettings(unittest.TestCase):
         p.reset()
         self.assertEqual(len(spy), 2)
 
+    def testGettersSetters(self):
+        p = QgsProjectTimeSettings()
+
+        p.setTimeStep(4.8)
+        self.assertEqual(p.timeStep(), 4.8)
+        p.setTimeStepUnit(QgsUnitTypes.TemporalDecades)
+        self.assertEqual(p.timeStepUnit(), QgsUnitTypes.TemporalDecades)
+        p.setFramesPerSecond(90)
+        self.assertEqual(p.framesPerSecond(), 90)
+
     def testReadWrite(self):
         p = QgsProjectTimeSettings()
         self.assertTrue(p.temporalRange().isInfinite())
@@ -74,6 +85,9 @@ class TestQgsProjectTimeSettings(unittest.TestCase):
             QDateTime(QDate(2020, 12, 1), QTime(8, 0, 0))
         )
         p.setTemporalRange(r)
+        p.setTimeStep(4.8)
+        p.setTimeStepUnit(QgsUnitTypes.TemporalDecades)
+        p.setFramesPerSecond(90)
         elem = p.writeXml(doc, QgsReadWriteContext())
 
         p2 = QgsProjectTimeSettings()
@@ -81,6 +95,9 @@ class TestQgsProjectTimeSettings(unittest.TestCase):
         self.assertTrue(p2.readXml(elem, QgsReadWriteContext()))
         self.assertEqual(p2.temporalRange(), r)
         self.assertEqual(len(spy), 1)
+        self.assertEqual(p2.timeStep(), 4.8)
+        self.assertEqual(p2.timeStepUnit(), QgsUnitTypes.TemporalDecades)
+        self.assertEqual(p2.framesPerSecond(), 90)
 
 
 if __name__ == '__main__':
