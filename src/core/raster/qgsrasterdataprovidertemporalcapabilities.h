@@ -45,31 +45,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      */
     QgsRasterDataProviderTemporalCapabilities( bool enabled = false );
 
-    virtual ~QgsRasterDataProviderTemporalCapabilities() = default;
-
-    /**
-     * Mode of the temporal capabilities
-     **/
-    enum TemporalMode
-    {
-      ModeFixedTemporalRange = 0, //!< Mode when temporal capabilities have fixed start and end datetimes.
-      ModeTemporalRangeFromDataProvider = 1 //!< Mode when temporal capabilities provides the temporal range .
-    };
-
-    /**
-     * Returns the temporal mode.
-     *
-     *\see setMode()
-    **/
-    TemporalMode mode() const;
-
-    /**
-     * Sets the temporal \a mode.
-     *
-     *\see mode()
-    **/
-    void setMode( TemporalMode mode );
-
     /**
      * Method to use when resolving a temporal range to a data provider layer or band.
      **/
@@ -237,10 +212,7 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     bool mReferenceEnable = false;
 
     //! Interval handling method
-    IntervalHandlingMethod mFetchMode = MatchUsingWholeRange;
-
-    //! Temporal capabilities mode.
-    TemporalMode mMode = ModeTemporalRangeFromDataProvider;
+    IntervalHandlingMethod mIntervalMatchMethod = MatchUsingWholeRange;
 
 };
 
