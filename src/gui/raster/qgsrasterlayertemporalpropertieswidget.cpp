@@ -230,8 +230,8 @@ void QgsRasterLayerTemporalPropertiesWidget::resetDatesButton_clicked()
     mEndTemporalDateTimeEdit->setDateTime( layerFixedRange.end() );
   }
   else
-    mLabel->setText( tr( "Cant reset dates, there is no valid layer's "
-                         "capabilities temporal range" ) );
+    mLabel->setText( tr( "Cannot reset dates - no temporal metadata "
+                         "is available for this layer" ) );
 }
 
 void QgsRasterLayerTemporalPropertiesWidget::referenceCheckBox_clicked()

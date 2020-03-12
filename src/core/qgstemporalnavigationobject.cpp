@@ -123,7 +123,7 @@ QgsInterval QgsTemporalNavigationObject::frameDuration() const
   return mFrameDuration;
 }
 
-void QgsTemporalNavigationObject::setFramesPerSeconds( double framesPerSeconds )
+void QgsTemporalNavigationObject::setFramesPerSecond( double framesPerSeconds )
 {
   if ( framesPerSeconds > 0 )
   {
@@ -132,7 +132,7 @@ void QgsTemporalNavigationObject::setFramesPerSeconds( double framesPerSeconds )
   }
 }
 
-double QgsTemporalNavigationObject::framesPerSeconds() const
+double QgsTemporalNavigationObject::framesPerSecond() const
 {
   return mFramesPerSecond;
 }
