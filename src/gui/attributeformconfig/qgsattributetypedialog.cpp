@@ -79,15 +79,16 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     mCheckBoxEnforceUnique->setEnabled( checked );
     if ( !checked )
       mCheckBoxEnforceUnique->setChecked( false );
-  }
-         );
+  } );
   connect( notNullCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
   {
     mCheckBoxEnforceNotNull->setEnabled( checked );
     if ( !checked )
       mCheckBoxEnforceNotNull->setChecked( false );
-  }
-         );
+  } );
+
+  mWarnDefaultValueHasFieldsWidget->setVisible( false );
+  connect( mApplyDefaultValueOnUpdateCheckBox, &QCheckBox::stateChanged, this, &QgsAttributeTypeDialog::defaultExpressionChanged );
 
   constraintExpressionWidget->setAllowEmptyFieldName( true );
   constraintExpressionWidget->setLayer( vl );
@@ -358,6 +359,8 @@ void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )
 
 void QgsAttributeTypeDialog::defaultExpressionChanged()
 {
+  mWarnDefaultValueHasFieldsWidget->hide();
+
   QString expression = mExpressionWidget->expression();
   if ( expression.isEmpty() )
   {
@@ -391,6 +394,11 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
     mDefaultPreviewLabel->setText( "<i>" + exp.evalErrorString() + "</i>" );
     return;
   }
+
+  // if the expression uses fields and it's not on update,
+  // there is no warranty that the field will be available
+  bool expressionHasFields = exp.referencedAttributeIndexes( mLayer->fields() ).count() > 0;
+  mWarnDefaultValueHasFieldsWidget->setVisible( expressionHasFields && !mApplyDefaultValueOnUpdateCheckBox->isChecked() );
 
   QgsFieldFormatter *fieldFormatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( editorWidgetType() );
 
