@@ -153,13 +153,13 @@ void QgsDxfExport::writeGroup( const QColor &color, int exactMatchCode, int rgbC
 
   if ( transparencyCode > 0 )
     return;
-  
+
 }
 
 void QgsDxfExport::writeGroup( const QColor &color, bool withTransparency, int exactMatchCode, int rgbCode, int transparencyCode )
 {
   writeGroup( color, exactMatchCode, rgbCode, transparencyCode );
-  if (withTransparency && transparencyCode != -1 && color.alpha() < 255 )
+  if ( withTransparency && transparencyCode != -1 && color.alpha() < 255 )
     writeGroup( transparencyCode, 0x2000000 | color.alpha() );
 }
 
@@ -1178,7 +1178,7 @@ void QgsDxfExport::writePolygon( const QgsRingSequence &polygon, const QString &
   writeGroup( 200, QgsPoint( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );
 
   writeGroup( 2, hatchPattern );  // Hatch pattern name
-  writeGroup( 70, ((hatchPattern == QLatin1String("SOLID") ? 1 : 0))); // Solid fill flag (solid fill = 1; pattern fill = 0)
+  writeGroup( 70, ( ( hatchPattern == QLatin1String( "SOLID" ) ? 1 : 0 ) ) ); // Solid fill flag (solid fill = 1; pattern fill = 0)
   writeGroup( 71, 0 );    // Associativity flag (associative = 1; non-associative = 0)
 
   writeGroup( 91, polygon.size() );  // Number of boundary paths (loops)
@@ -1217,7 +1217,7 @@ void QgsDxfExport::writePolygon( const QgsCurvePolygon &polygon, const QString &
   writeGroup( 200, QgsPoint( QgsWkbTypes::PointZ, 0.0, 0.0, 1.0 ) );
 
   writeGroup( 2, hatchPattern );  // Hatch pattern name
-  writeGroup( 70, (hatchPattern == QLatin1String( "SOLID" ) ? 1 : 0)); // Solid fill flag (solid fill = 1; pattern fill = 0)
+  writeGroup( 70, ( hatchPattern == QLatin1String( "SOLID" ) ? 1 : 0 ) ); // Solid fill flag (solid fill = 1; pattern fill = 0)
   writeGroup( 71, 0 );    // Associativity flag (associative = 1; non-associative = 0)
 
   QVector<QVector<QgsPoint>> points;
@@ -1274,25 +1274,25 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
   // calc count of lines in label (#34841)
   QString ltext = text;
   int lines_count = 1;
-  
-  int start_pos = ltext.indexOf(QLatin1String("\r\n"));
-  while (start_pos >= 0)
+
+  int start_pos = ltext.indexOf( QLatin1String( "\r\n" ) );
+  while ( start_pos >= 0 )
   {
-    start_pos = ltext.indexOf(QLatin1String("\r\n"), start_pos + 1);
+    start_pos = ltext.indexOf( QLatin1String( "\r\n" ), start_pos + 1 );
     lines_count++;
   }
-  ltext.replace(QLatin1String("\r\n"), QLatin1String(" "));
-  
-  start_pos = ltext.indexOf('\n');
-  while (start_pos >= 0)
+  ltext.replace( QLatin1String( "\r\n" ), QLatin1String( " " ) );
+
+  start_pos = ltext.indexOf( '\n' );
+  while ( start_pos >= 0 )
   {
-    start_pos = ltext.indexOf('\n', start_pos + 1);
+    start_pos = ltext.indexOf( '\n', start_pos + 1 );
     lines_count++;
   }
-  ltext.replace('\n', ' ');
-  
-  ltext.replace('\r', ' ');
-  
+  ltext.replace( '\n', ' ' );
+
+  ltext.replace( '\r', ' ' );
+
   double lblX = label->getX();
   double lblY = label->getY();
 
@@ -1411,7 +1411,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
     }
   }
 
-  writeText( layer, ltext, QgsPoint( lblX, lblY ), label->getHeight() / float(lines_count), label->getAlpha() * 180.0 / M_PI, layerSettings.format().color(), hali, vali );
+  writeText( layer, ltext, QgsPoint( lblX, lblY ), label->getHeight() / float( lines_count ), label->getAlpha() * 180.0 / M_PI, layerSettings.format().color(), hali, vali );
 }
 
 void QgsDxfExport::writePoint( const QString &layer, const QColor &color, const QgsPoint &pt )
