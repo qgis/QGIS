@@ -139,6 +139,20 @@ a playing animation will advance to the next frame.
 Returns the total number of frames for the navigation.
 %End
 
+    bool isLooping() const;
+%Docstring
+Returns ``True`` if the animation should loop after hitting the end or start frame.
+
+.. seealso:: :py:func:`setLooping`
+%End
+
+    void setLooping( bool loop );
+%Docstring
+Sets whether the animation should ``loop`` after hitting the end or start frame.
+
+.. seealso:: :py:func:`looping`
+%End
+
   signals:
 
     void stateChanged( AnimationState state );

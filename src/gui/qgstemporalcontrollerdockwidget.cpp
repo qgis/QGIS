@@ -39,6 +39,7 @@ QgsTemporalControllerDockWidget::QgsTemporalControllerDockWidget( const QString 
   connect( mStopButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::pause );
   connect( mFastForwardButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::skipToEnd );
   connect( mRewindButton, &QPushButton::clicked, mNavigationObject, &QgsTemporalNavigationObject::rewindToStart );
+  connect( mLoopingCheckBox, &QCheckBox::toggled, this, [ = ]( bool state ) { mNavigationObject->setLooping( state ); } );
 
   connect( mNavigationObject, &QgsTemporalNavigationObject::stateChanged, this, [ = ]( QgsTemporalNavigationObject::AnimationState state )
   {
