@@ -242,3 +242,13 @@ void QgsMapToolAddCircularString::removeCenterPointRubberBand()
   delete mCenterPointRubberBand;
   mCenterPointRubberBand = nullptr;
 }
+
+void QgsMapToolAddCircularString::release( QgsMapMouseEvent *e )
+{
+  deactivate();
+  if ( mParentTool )
+  {
+    mParentTool->canvasReleaseEvent( e );
+  }
+  activate();
+}

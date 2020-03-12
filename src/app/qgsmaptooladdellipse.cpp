@@ -139,3 +139,13 @@ void QgsMapToolAddEllipse::clean()
   if ( vLayer )
     mLayerType = vLayer->geometryType();
 }
+
+void QgsMapToolAddEllipse::release( QgsMapMouseEvent *e )
+{
+  deactivate();
+  if ( mParentTool )
+  {
+    mParentTool->canvasReleaseEvent( e );
+  }
+  activate();
+}
