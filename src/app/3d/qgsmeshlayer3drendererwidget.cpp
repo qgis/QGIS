@@ -52,7 +52,7 @@ void QgsMeshLayer3DRendererWidget::setLayer( QgsMeshLayer *layer )
   {
     QgsMeshLayer3DRenderer *meshRenderer = static_cast<QgsMeshLayer3DRenderer *>( r );
     setRenderer( meshRenderer );
-    mWidgetMesh->setEnabled( meshRenderer->symbol()->renderer3dEnabled() );
+    mWidgetMesh->setEnabled( meshRenderer->symbol()->isEnabled() );
   }
   else
   {
@@ -63,13 +63,13 @@ void QgsMeshLayer3DRendererWidget::setLayer( QgsMeshLayer *layer )
 void QgsMeshLayer3DRendererWidget::setRenderer( const QgsMeshLayer3DRenderer *renderer )
 {
   mRenderer.reset( renderer ? renderer->clone() : nullptr );
-  whileBlocking( mChkEnabled )->setChecked( renderer ? renderer->symbol()->renderer3dEnabled() : false );
+  whileBlocking( mChkEnabled )->setChecked( renderer ? renderer->symbol()->isEnabled() : false );
 }
 
 QgsMeshLayer3DRenderer *QgsMeshLayer3DRendererWidget::renderer()
 {
   QgsMesh3DSymbol *sym = new QgsMesh3DSymbol( mWidgetMesh->symbol() );
-  sym->setRenderer3dEnabled( mChkEnabled->isChecked() );
+  sym->setEnabled( mChkEnabled->isChecked() );
   mRenderer.reset( new QgsMeshLayer3DRenderer( sym ) );
   mRenderer->setLayer( qobject_cast<QgsMeshLayer *>( mLayer ) );
   return mRenderer.get();

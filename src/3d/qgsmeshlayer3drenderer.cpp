@@ -78,7 +78,7 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( const Qgs3DMapSettings 
     return nullptr;
 
   if ( meshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) ||
-       !mSymbol->renderer3dEnabled() )
+       !mSymbol->isEnabled() )
   {
     // 3D not implemented for 1D meshes
     return nullptr;
