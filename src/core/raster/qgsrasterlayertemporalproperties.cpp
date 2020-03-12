@@ -204,7 +204,7 @@ void QgsRasterLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabi
   setFixedTemporalRange( capabilities->availableTemporalRange() );
   setFixedReferenceTemporalRange( capabilities->availableReferenceTemporalRange() );
 
-  if ( capabilities->isTimeEnabled() )
+  if ( capabilities->hasTemporalCapabilities() )
   {
     setMode( ModeTemporalRangeFromDataProvider );
   }
