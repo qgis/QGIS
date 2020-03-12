@@ -61,6 +61,7 @@ SET(QGIS_APP_SRCS
   qgsstatusbarmagnifierwidget.cpp
   qgsstatusbarscalewidget.cpp
   qgstemplateprojectsmodel.cpp
+  qgstemporalcontrollerdockwidget.cpp
   qgsversioninfo.cpp
   qgsrecentprojectsitemsmodel.cpp
   qgsvectorlayerdigitizingproperties.cpp

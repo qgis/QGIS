@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgstemporalcontrollerdockwidget.h                            *
+ * src/gui/qgstemporalcontrollerwidget.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -11,22 +11,22 @@
 
 
 
-class QgsTemporalControllerDockWidget : QgsDockWidget
+class QgsTemporalControllerWidget : QgsPanelWidget
 {
 %Docstring
-The QgsTemporalControllerDockWidget class
+A widget for controlling playback properties of a QgsTemporalController.
 
 .. versionadded:: 3.14
 %End
 
 %TypeHeaderCode
-#include "qgstemporalcontrollerdockwidget.h"
+#include "qgstemporalcontrollerwidget.h"
 %End
   public:
 
-    QgsTemporalControllerDockWidget( const QString &name, QWidget *parent /TransferThis/ = 0 );
+    QgsTemporalControllerWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsTemporalControllerDockWidget, with the specified ``parent`` widget.
+Constructor for QgsTemporalControllerWidget, with the specified ``parent`` widget.
 %End
 
     QgsTemporalController *temporalController();
@@ -41,7 +41,7 @@ The dock widget retains ownership of the returned object.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgstemporalcontrollerdockwidget.h                            *
+ * src/gui/qgstemporalcontrollerwidget.h                                *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

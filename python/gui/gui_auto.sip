@@ -197,7 +197,7 @@
 %Include auto_generated/qgstablewidgetitem.sip
 %Include auto_generated/qgstabwidget.sip
 %Include auto_generated/qgstaskmanagerwidget.sip
-%Include auto_generated/qgstemporalcontrollerdockwidget.sip
+%Include auto_generated/qgstemporalcontrollerwidget.sip
 %Include auto_generated/qgstextformatwidget.sip
 %Include auto_generated/qgstextpreview.sip
 %Include auto_generated/qgstreewidgetitem.sip
