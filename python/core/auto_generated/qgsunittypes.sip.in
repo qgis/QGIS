@@ -40,6 +40,7 @@ Helper functions for various unit types.
       TypeArea,
       TypeVolume,
       TypeUnknown,
+      TypeTemporal,
     };
 
     enum DistanceUnit
@@ -105,6 +106,21 @@ Helper functions for various unit types.
       AngleMilliradiansSI,
       AngleMilNATO,
       AngleUnknownUnit,
+    };
+
+    enum TemporalUnit
+    {
+      TemporalMilliseconds,
+      TemporalSeconds,
+      TemporalMinutes,
+      TemporalHours,
+      TemporalDays,
+      TemporalWeeks,
+      TemporalMonths,
+      TemporalYears,
+      TemporalDecades,
+      TemporalCenturies,
+      TemporalUnknownUnit
     };
 
     enum RenderUnit
@@ -344,6 +360,84 @@ Converts an area unit to its corresponding distance unit, e.g., square meters to
 %End
 
 
+    static QString encodeUnit( QgsUnitTypes::TemporalUnit unit );
+%Docstring
+Encodes a temporal ``unit`` to a string.
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeTemporalUnit`
+
+.. versionadded:: 3.14
+%End
+
+    static QgsUnitTypes::TemporalUnit decodeTemporalUnit( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a temporal unit from a ``string``.
+
+:param string: string to decode
+
+:return: - decoded units
+         - ok: boolean, will be set to ``True`` if string was converted successfully
+
+.. seealso:: :py:func:`encodeUnit`
+
+.. versionadded:: 3.14
+%End
+
+    static QString toString( QgsUnitTypes::TemporalUnit unit );
+%Docstring
+Returns a translated string representing a temporal ``unit``.
+
+.. seealso:: :py:func:`stringToTemporalUnit`
+
+.. versionadded:: 3.14
+%End
+
+    static QString toAbbreviatedString( QgsUnitTypes::TemporalUnit unit );
+%Docstring
+Returns a translated abbreviation representing a temporal ``unit``.
+
+.. seealso:: :py:func:`stringToTemporalUnit`
+
+.. versionadded:: 3.14
+%End
+
+    static QgsUnitTypes::TemporalUnit stringToTemporalUnit( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Converts a translated ``string`` to a temporal unit.
+
+:param string: string representing a volume unit
+
+:return: - the temporal unit
+         - ok: boolean, will be set to ``True`` if string was converted successfully
+
+.. seealso:: :py:func:`toString`
+
+.. versionadded:: 3.14
+%End
+
+    static double fromUnitToUnitFactor( QgsUnitTypes::TemporalUnit fromUnit, QgsUnitTypes::TemporalUnit toUnit );
+%Docstring
+Returns the conversion factor between the specified temporal units.
+
+.. note::
+
+   Conversion to or from month units assumes a 30 day month length.
+
+.. note::
+
+   Conversion to or from year based units assumes a 365.25 day year length.
+
+:param fromUnit: temporal unit to convert from
+:param toUnit: temporal unit to convert to
+
+:return: multiplication factor to convert between units
+
+.. versionadded:: 3.14
+%End
+
+
     static QgsUnitTypes::DistanceUnitType unitType( QgsUnitTypes::VolumeUnit unit );
 %Docstring
 Returns the type for an volume unit.
@@ -396,7 +490,7 @@ Returns a translated abbreviation representing a volume ``unit``.
 
     static QgsUnitTypes::VolumeUnit stringToVolumeUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
-Converts a translated`` ``string to a volume unit.
+Converts a translated ``string`` to a volume unit.
 
 :param string: string representing a volume unit
 

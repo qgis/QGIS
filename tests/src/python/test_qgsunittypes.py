@@ -28,6 +28,7 @@ class TestQgsUnitTypes(unittest.TestCase):
         units = [QgsUnitTypes.TypeDistance,
                  QgsUnitTypes.TypeArea,
                  QgsUnitTypes.TypeVolume,
+                 QgsUnitTypes.TypeTemporal,
                  QgsUnitTypes.TypeUnknown]
 
         for u in units:
@@ -273,6 +274,64 @@ class TestQgsUnitTypes(unittest.TestCase):
         res, ok = QgsUnitTypes.stringToVolumeUnit(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.VolumeBarrel).upper()))
         assert ok
         self.assertEqual(res, QgsUnitTypes.VolumeBarrel)
+
+    def testEncodeDecodeTemporalUnits(self):
+        """Test encoding and decoding temporal units"""
+        units = [QgsUnitTypes.TemporalMilliseconds,
+                 QgsUnitTypes.TemporalSeconds,
+                 QgsUnitTypes.TemporalMinutes,
+                 QgsUnitTypes.TemporalHours,
+                 QgsUnitTypes.TemporalDays,
+                 QgsUnitTypes.TemporalWeeks,
+                 QgsUnitTypes.TemporalMonths,
+                 QgsUnitTypes.TemporalYears,
+                 QgsUnitTypes.TemporalDecades,
+                 QgsUnitTypes.TemporalCenturies,
+                 QgsUnitTypes.TemporalUnknownUnit]
+
+        for u in units:
+            res, ok = QgsUnitTypes.decodeTemporalUnit(QgsUnitTypes.encodeUnit(u))
+            assert ok
+            self.assertEqual(res, u)
+
+        # Test decoding bad units
+        res, ok = QgsUnitTypes.decodeTemporalUnit('bad')
+        self.assertFalse(ok)
+        self.assertEqual(res, QgsUnitTypes.TemporalUnknownUnit)
+
+        # Test that string is cleaned before decoding
+        res, ok = QgsUnitTypes.decodeTemporalUnit(' min  ')
+        assert ok
+        self.assertEqual(res, QgsUnitTypes.TemporalMinutes)
+
+    def testTemporalUnitsToFromString(self):
+        """Test converting temporal units to and from translated strings"""
+        units = [QgsUnitTypes.TemporalMilliseconds,
+                 QgsUnitTypes.TemporalSeconds,
+                 QgsUnitTypes.TemporalMinutes,
+                 QgsUnitTypes.TemporalHours,
+                 QgsUnitTypes.TemporalDays,
+                 QgsUnitTypes.TemporalWeeks,
+                 QgsUnitTypes.TemporalMonths,
+                 QgsUnitTypes.TemporalYears,
+                 QgsUnitTypes.TemporalDecades,
+                 QgsUnitTypes.TemporalCenturies,
+                 QgsUnitTypes.TemporalUnknownUnit]
+
+        for u in units:
+            res, ok = QgsUnitTypes.stringToTemporalUnit(QgsUnitTypes.toString(u))
+            assert ok
+            self.assertEqual(res, u)
+
+        # Test converting bad strings
+        res, ok = QgsUnitTypes.stringToTemporalUnit('bad')
+        self.assertFalse(ok)
+        self.assertEqual(res, QgsUnitTypes.TemporalUnknownUnit)
+
+        # Test that string is cleaned before conversion
+        res, ok = QgsUnitTypes.stringToTemporalUnit(' {}  '.format(QgsUnitTypes.toString(QgsUnitTypes.TemporalDecades).upper()))
+        assert ok
+        self.assertEqual(res, QgsUnitTypes.TemporalDecades)
 
     def testEncodeDecodeRenderUnits(self):
         """Test encoding and decoding render units"""
@@ -816,6 +875,157 @@ class TestQgsUnitTypes(unittest.TestCase):
                                                                                                                 QgsUnitTypes.toString(to_unit)))
                 # test conversion to unknown units
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.VolumeUnknownUnit)
+                self.assertAlmostEqual(res,
+                                       1.0,
+                                       msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, QgsUnitTypes.toString(from_unit)))
+
+    def testTemporalFromUnitToUnitFactor(self):
+        """Test calculation of conversion factor between temporal units"""
+
+        expected = {
+            QgsUnitTypes.TemporalMilliseconds: {
+                QgsUnitTypes.TemporalMilliseconds: 1.0,
+                QgsUnitTypes.TemporalSeconds: 0.001,
+                QgsUnitTypes.TemporalMinutes: 1.66667e-5,
+                QgsUnitTypes.TemporalHours: 2.7777777777777776e-07,
+                QgsUnitTypes.TemporalDays: 1.157554211999884014e-8,
+                QgsUnitTypes.TemporalWeeks: 1.65344e-9,
+                QgsUnitTypes.TemporalMonths: 3.805172816249e-10,
+                QgsUnitTypes.TemporalYears: 3.170980821917834278e-11,
+                QgsUnitTypes.TemporalDecades: 3.170980821917834117e-12,
+                QgsUnitTypes.TemporalCenturies: 3.170980821917834319e-13,
+                QgsUnitTypes.TemporalUnknownUnit: 1.0
+            },
+            QgsUnitTypes.TemporalSeconds: {
+                QgsUnitTypes.TemporalMilliseconds: 1000.0,
+                QgsUnitTypes.TemporalSeconds: 1,
+                QgsUnitTypes.TemporalMinutes: 0.016666675200000136831,
+                QgsUnitTypes.TemporalHours: 0.00027777792000000228051,
+                QgsUnitTypes.TemporalDays: 1.157408000000009502e-5,
+                QgsUnitTypes.TemporalWeeks: 1.653440000000013514e-6,
+                QgsUnitTypes.TemporalMonths: 3.805172816248999917e-7,
+                QgsUnitTypes.TemporalYears: 3.170980821917834046e-8,
+                QgsUnitTypes.TemporalDecades: 3.170980821917834046e-9,
+                QgsUnitTypes.TemporalCenturies: 3.170980821917834149e-10,
+                QgsUnitTypes.TemporalUnknownUnit: 1.0
+            },
+            QgsUnitTypes.TemporalMinutes: {
+                QgsUnitTypes.TemporalMilliseconds: 60000.0,
+                QgsUnitTypes.TemporalSeconds: 60,
+                QgsUnitTypes.TemporalMinutes: 1,
+                QgsUnitTypes.TemporalHours: 0.016666666666666666,
+                QgsUnitTypes.TemporalDays: 0.0006944444444444445,
+                QgsUnitTypes.TemporalWeeks: 9.921893245713293505e-5,
+                QgsUnitTypes.TemporalMonths: 2.3148148148148147e-05,
+                QgsUnitTypes.TemporalYears: 1.902828841643645226e-6,
+                QgsUnitTypes.TemporalDecades: 1.902828841643645332e-7,
+                QgsUnitTypes.TemporalCenturies: 1.9028288416436452e-8,
+                QgsUnitTypes.TemporalUnknownUnit: 1.0
+            },
+            QgsUnitTypes.TemporalHours: {
+                QgsUnitTypes.TemporalMilliseconds: 3600000.0,
+                QgsUnitTypes.TemporalSeconds: 3600,
+                QgsUnitTypes.TemporalMinutes: 60,
+                QgsUnitTypes.TemporalHours: 1,
+                QgsUnitTypes.TemporalDays: 0.041666700000240003421,
+                QgsUnitTypes.TemporalWeeks: 0.0059523857143200008604,
+                QgsUnitTypes.TemporalMonths: 0.001388888888888889,
+                QgsUnitTypes.TemporalYears: 0.00011407711613050422,
+                QgsUnitTypes.TemporalDecades: 1.141553424664109737e-5,
+                QgsUnitTypes.TemporalCenturies: 1.141553424664109737e-6,
+                QgsUnitTypes.TemporalUnknownUnit: 1.0
+            },
+            QgsUnitTypes.TemporalDays: {
+                QgsUnitTypes.TemporalMilliseconds: 8.64e+7,
+                QgsUnitTypes.TemporalSeconds: 86400,
+                QgsUnitTypes.TemporalMinutes: 1440,
+                QgsUnitTypes.TemporalHours: 24,
+                QgsUnitTypes.TemporalDays: 1,
+                QgsUnitTypes.TemporalWeeks: 0.14285714285714285,
+                QgsUnitTypes.TemporalMonths: 0.03333333333333333,
+                QgsUnitTypes.TemporalYears: 0.0027378507871321013,
+                QgsUnitTypes.TemporalDecades: 0.0002737850787132101,
+                QgsUnitTypes.TemporalCenturies: 2.739723287683189167e-5,
+                QgsUnitTypes.TemporalUnknownUnit: 1.0
+            },
+            QgsUnitTypes.TemporalWeeks: {
+                QgsUnitTypes.TemporalMilliseconds: 6.048e+8,
+                QgsUnitTypes.TemporalSeconds: 604800,
+                QgsUnitTypes.TemporalMinutes: 10080,
+                QgsUnitTypes.TemporalHours: 168,
+                QgsUnitTypes.TemporalDays: 7,
+                QgsUnitTypes.TemporalWeeks: 1,
+                QgsUnitTypes.TemporalMonths: 0.23333333333333334,
+                QgsUnitTypes.TemporalYears: 0.019164955509924708,
+                QgsUnitTypes.TemporalDecades: 0.0019164955509924709,
+                QgsUnitTypes.TemporalCenturies: 0.0001916495550992471,
+                QgsUnitTypes.TemporalUnknownUnit: 1.0
+            },
+            QgsUnitTypes.TemporalMonths: {
+                QgsUnitTypes.TemporalMilliseconds: 2592000000.0,
+                QgsUnitTypes.TemporalSeconds: 2592000.0,
+                QgsUnitTypes.TemporalMinutes: 43200.0,
+                QgsUnitTypes.TemporalHours: 720.0,
+                QgsUnitTypes.TemporalDays: 30.0,
+                QgsUnitTypes.TemporalWeeks: 4.285714285714286,
+                QgsUnitTypes.TemporalMonths: 1,
+                QgsUnitTypes.TemporalYears: 0.08213552361396304,
+                QgsUnitTypes.TemporalDecades: 0.008213552361396304,
+                QgsUnitTypes.TemporalCenturies: 0.0008213552361396304,
+                QgsUnitTypes.TemporalUnknownUnit: 1.0
+            },
+            QgsUnitTypes.TemporalYears: {
+                QgsUnitTypes.TemporalMilliseconds: 31557600000.0,
+                QgsUnitTypes.TemporalSeconds: 31557600.0,
+                QgsUnitTypes.TemporalMinutes: 525960.0,
+                QgsUnitTypes.TemporalHours: 8766.0,
+                QgsUnitTypes.TemporalDays: 365.25,
+                QgsUnitTypes.TemporalWeeks: 52.17857142857143,
+                QgsUnitTypes.TemporalMonths: 12.175,
+                QgsUnitTypes.TemporalYears: 1,
+                QgsUnitTypes.TemporalDecades: 0.1,
+                QgsUnitTypes.TemporalCenturies: 0.01,
+                QgsUnitTypes.TemporalUnknownUnit: 1.0
+            },
+            QgsUnitTypes.TemporalDecades: {
+                QgsUnitTypes.TemporalMilliseconds: 315576000000.0,
+                QgsUnitTypes.TemporalSeconds: 315576000.0,
+                QgsUnitTypes.TemporalMinutes: 5259600.0,
+                QgsUnitTypes.TemporalHours: 87660.0,
+                QgsUnitTypes.TemporalDays: 3652.5,
+                QgsUnitTypes.TemporalWeeks: 521.7857142857143,
+                QgsUnitTypes.TemporalMonths: 121.75,
+                QgsUnitTypes.TemporalYears: 10,
+                QgsUnitTypes.TemporalDecades: 1,
+                QgsUnitTypes.TemporalCenturies: 0.1,
+                QgsUnitTypes.TemporalUnknownUnit: 1.0
+            },
+            QgsUnitTypes.TemporalCenturies: {
+                QgsUnitTypes.TemporalMilliseconds: 3155760000000.0,
+                QgsUnitTypes.TemporalSeconds: 3155760000.0,
+                QgsUnitTypes.TemporalMinutes: 52596000.0,
+                QgsUnitTypes.TemporalHours: 876600.0,
+                QgsUnitTypes.TemporalDays: 36525.0,
+                QgsUnitTypes.TemporalWeeks: 5217.857142857143,
+                QgsUnitTypes.TemporalMonths: 1217.5,
+                QgsUnitTypes.TemporalYears: 100,
+                QgsUnitTypes.TemporalDecades: 10,
+                QgsUnitTypes.TemporalCenturies: 1,
+                QgsUnitTypes.TemporalUnknownUnit: 1.0
+            }
+        }
+
+        for from_unit in list(expected.keys()):
+            for to_unit in list(expected[from_unit].keys()):
+                expected_factor = expected[from_unit][to_unit]
+                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, to_unit)
+                self.assertAlmostEqual(res,
+                                       expected_factor,
+                                       msg='got {:.15f}, expected {:.15f} when converting from {} to {}'.format(res, expected_factor,
+                                                                                                                QgsUnitTypes.toString(from_unit),
+                                                                                                                QgsUnitTypes.toString(to_unit)))
+                # test conversion to unknown units
+                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.TemporalUnknownUnit)
                 self.assertAlmostEqual(res,
                                        1.0,
                                        msg='got {:.7f}, expected 1.0 when converting from {} to unknown units'.format(res, QgsUnitTypes.toString(from_unit)))
