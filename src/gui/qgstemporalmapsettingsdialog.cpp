@@ -24,14 +24,18 @@
 QgsTemporalMapSettingsDialog::QgsTemporalMapSettingsDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
-  setupUi( this );
-
-  connect( this, &QDialog::accepted, this, &QgsTemporalMapSettingsDialog::accept );
-  connect( this, &QDialog::rejected, this, &QgsTemporalMapSettingsDialog::reject );
+  QVBoxLayout *vl = new QVBoxLayout( );
 
   mTemporalMapSettingsWidget = new QgsTemporalMapSettingsWidget( this );
-  QVBoxLayout *layout = new QVBoxLayout( frame );
-  layout->addWidget( mTemporalMapSettingsWidget );
+
+  vl->addWidget( mTemporalMapSettingsWidget, 1 );
+
+  QDialogButtonBox *box = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  vl->addWidget( box );
+  setLayout( vl );
+
+  connect( box, &QDialogButtonBox::accepted, this, &QgsTemporalMapSettingsDialog::accept );
+  connect( box, &QDialogButtonBox::rejected, this, &QgsTemporalMapSettingsDialog::reject );
 
   setWindowTitle( tr( "Temporal Map Settings" ) );
 }

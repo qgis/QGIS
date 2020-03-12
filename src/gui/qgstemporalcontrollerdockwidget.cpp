@@ -123,9 +123,9 @@ void QgsTemporalControllerDockWidget::updateSlider( const QgsDateTimeRange &rang
 void QgsTemporalControllerDockWidget::updateRangeLabel( const QgsDateTimeRange &range )
 {
   QLocale locale;
-  mCurrentRangeLabel->setText( tr( "Current temporal range is from %1 to %2" ).arg(
-                                 range.begin().toString( locale.dateTimeFormat() ),
-                                 range.end().toString( locale.dateTimeFormat() ) ) );
+  mCurrentRangeLabel->setText( tr( "%1 to %2" ).arg(
+                                 range.begin().toString( locale.dateTimeFormat( QLocale::NarrowFormat ) ),
+                                 range.end().toString( locale.dateTimeFormat( QLocale::NarrowFormat ) ) ) );
 }
 
 QgsTemporalController *QgsTemporalControllerDockWidget::temporalController()
