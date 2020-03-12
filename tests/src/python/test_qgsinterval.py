@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsInterval
+from qgis.core import QgsInterval, QgsUnitTypes
 from qgis.testing import unittest
 
 
@@ -36,6 +36,11 @@ class TestQgsInterval(unittest.TestCase):
         i = QgsInterval(56)
         self.assertTrue(i.isValid())
         self.assertEqual(i.seconds(), 56)
+
+        # constructor with unit type
+        i = QgsInterval(56, QgsUnitTypes.TemporalMilliseconds)
+        self.assertTrue(i.isValid())
+        self.assertEqual(i.seconds(), 56000)
 
     def testSettersGetters(self):
         # setters and getters
