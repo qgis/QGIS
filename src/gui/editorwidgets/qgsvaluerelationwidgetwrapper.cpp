@@ -365,7 +365,8 @@ void QgsValueRelationWidgetWrapper::populate( )
     for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : qgis::as_const( mCache ) )
     {
       whileBlocking( mComboBox )->addItem( element.value, element.key );
-      mComboBox->setItemData( mComboBox->count() - 1, element.description, Qt::ToolTipRole );
+      if ( !element.description.isEmpty() )
+        mComboBox->setItemData( mComboBox->count() - 1, element.description, Qt::ToolTipRole );
     }
 
   }
