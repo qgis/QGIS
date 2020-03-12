@@ -360,7 +360,7 @@ class CORE_EXPORT QgsDxfExport
     void writeGroup( const QColor &color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 ) SIP_PYNAME( writeGroupColor );
 
     /**
-     * Write a group code with color and transparency value
+     * Write a group code with color and transparency value (for polygon fill color)
      * \param color color
      * \param withTransparency must be true for polygon fill color only
      * \param exactMatch group code to use if the color has an exact match in the dxf palette
