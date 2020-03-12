@@ -147,7 +147,7 @@ bool QgsGeometryCollection::removeDuplicateNodes( double epsilon, bool useZValue
   bool result = false;
   for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
   {
-    result = result || geom->removeDuplicateNodes( epsilon, useZValues );
+    if ( geom->removeDuplicateNodes( epsilon, useZValues ) ) result = true;
   }
   return result;
 }
@@ -443,6 +443,19 @@ json QgsGeometryCollection::asJsonObject( int precision ) const
     { "type",  "GeometryCollection" },
     { "geometries", coordinates }
   };
+}
+
+QString QgsGeometryCollection::asKml( int precision ) const
+{
+  QString kml;
+  kml.append( QLatin1String( "<MultiGeometry>" ) );
+  const QVector< QgsAbstractGeometry * > &geometries = mGeometries;
+  for ( const QgsAbstractGeometry *geometry : geometries )
+  {
+    kml.append( geometry->asKml( precision ) );
+  }
+  kml.append( QLatin1String( "</MultiGeometry>" ) );
+  return kml;
 }
 
 QgsRectangle QgsGeometryCollection::boundingBox() const

@@ -159,6 +159,10 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
 
   // This slows down load of the attribute table heaps and uses loads of memory.
   //mTableView->resizeColumnsToContents();
+
+  if ( mFeatureListModel->rowCount( ) > 0 )
+    mFeatureListView->setEditSelection( QgsFeatureIds() << mFeatureListModel->data( mFeatureListModel->index( 0, 0 ), QgsFeatureListModel::Role::FeatureRole ).value<QgsFeature>().id() );
+
 }
 
 void QgsDualView::columnBoxInit()
@@ -299,6 +303,22 @@ void QgsDualView::setFilterMode( QgsAttributeTableFilterModel::FilterMode filter
     mMasterModel->setRequest( r );
     whileBlocking( mLayerCache )->setCacheGeometry( needsGeometry );
     mMasterModel->loadLayer();
+  }
+
+
+  // disable the browsing auto pan/scale if the list only shows visible items
+  switch ( filterMode )
+  {
+    case QgsAttributeTableFilterModel::ShowVisible:
+      setBrowsingAutoPanScaleAllowed( false );
+      break;
+
+    case QgsAttributeTableFilterModel::ShowAll:
+    case QgsAttributeTableFilterModel::ShowEdited:
+    case QgsAttributeTableFilterModel::ShowFilteredList:
+    case QgsAttributeTableFilterModel::ShowSelected:
+      setBrowsingAutoPanScaleAllowed( true );
+      break;
   }
 
   //update filter model
@@ -464,7 +484,7 @@ void QgsDualView::panOrZoomToFeature( const QgsFeatureIds &featureset )
   QgsMapCanvas *canvas = mFilterModel->mapCanvas();
   if ( canvas && view() == AttributeEditor && featureset != mLastFeatureSet )
   {
-    if ( filterMode() != QgsAttributeTableFilterModel::ShowVisible )
+    if ( mBrowsingAutoPanScaleAllowed )
     {
       if ( mAutoPanButton->isChecked() )
         QTimer::singleShot( 0, this, [ = ]()
@@ -484,6 +504,22 @@ void QgsDualView::panOrZoomToFeature( const QgsFeatureIds &featureset )
     } );
     mLastFeatureSet = featureset;
   }
+}
+
+void QgsDualView::setBrowsingAutoPanScaleAllowed( bool allowed )
+{
+  if ( mBrowsingAutoPanScaleAllowed == allowed )
+    return;
+
+  mBrowsingAutoPanScaleAllowed = allowed;
+
+  mAutoPanButton->setEnabled( allowed );
+  mAutoZoomButton->setEnabled( allowed );
+
+  QString disabledHint = tr( "(disabled when attribute table only shows features visible in the current map canvas extent)" );
+
+  mAutoPanButton->setToolTip( tr( "Automatically pan to the current feature" ) + ( allowed ? QString() : QString( ' ' ) + disabledHint ) );
+  mAutoZoomButton->setToolTip( tr( "Automatically zoom to the current feature" ) + ( allowed ? QString() : QString( ' ' ) + disabledHint ) );
 }
 
 void QgsDualView::panZoomGroupButtonToggled( QAbstractButton *button, bool checked )
@@ -651,25 +687,28 @@ void QgsDualView::cancelProgress()
     mProgressDlg->cancel();
 }
 
+void QgsDualView::parentFormValueChanged( const QString &attribute, const QVariant &newValue )
+{
+  if ( mAttributeForm )
+  {
+    mAttributeForm->parentFormValueChanged( attribute, newValue );
+  }
+}
+
 void QgsDualView::hideEvent( QHideEvent *event )
 {
   Q_UNUSED( event )
   saveRecentDisplayExpressions();
 }
 
-void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QgsFeatureId featureId )
+void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atIndex )
 {
   if ( !menu )
   {
     return;
   }
 
-  QModelIndex sourceIndex = mFilterModel->fidToIndex( featureId );
-
-  if ( ! sourceIndex.isValid() )
-  {
-    return;
-  }
+  QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
 
   QAction *copyContentAction = new QAction( tr( "Copy Cell Content" ), this );
   copyContentAction->setData( QVariant::fromValue<QModelIndex>( sourceIndex ) );
@@ -705,9 +744,13 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QgsFeatureId featu
       menu->addAction( action.name(), a, &QgsAttributeTableAction::execute );
     }
   }
-
+  QModelIndex rowSourceIndex = mFilterModel->fidToIndex( mFilterModel->rowToId( atIndex ) );
+  if ( ! rowSourceIndex.isValid() )
+  {
+    return;
+  }
   //add actions from QgsMapLayerActionRegistry to context menu
-  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer );
+  QList<QgsMapLayerAction *> registeredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::Layer | QgsMapLayerAction::SingleFeature );
   if ( !registeredActions.isEmpty() )
   {
     //add a separator between user defined and standard actions
@@ -716,20 +759,39 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QgsFeatureId featu
     const auto constRegisteredActions = registeredActions;
     for ( QgsMapLayerAction *action : constRegisteredActions )
     {
-      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( action->text(), this, action, sourceIndex );
+      QgsAttributeTableMapLayerAction *a = new QgsAttributeTableMapLayerAction( action->text(), this, action, rowSourceIndex );
       menu->addAction( action->text(), a, &QgsAttributeTableMapLayerAction::execute );
     }
   }
 
+  // entries for multiple features layer actions
+  // only show if the context menu is shown over a selected row
+  QgsFeatureId currentFid = masterModel()->rowToId( sourceIndex.row() );
+  if ( mLayer->selectedFeatureCount() > 1 && mLayer->selectedFeatureIds().contains( currentFid ) )
+  {
+    const QList<QgsMapLayerAction *> constRegisteredActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::MultipleFeatures );
+    if ( !constRegisteredActions.isEmpty() )
+    {
+      menu->addSeparator();
+      QAction *action = menu->addAction( tr( "Actions on Selection (%1)" ).arg( mLayer->selectedFeatureCount() ) );
+      action->setEnabled( false );
+
+      for ( QgsMapLayerAction *action : constRegisteredActions )
+      {
+        menu->addAction( action->text(), action, [ = ]() {action->triggerForFeatures( mLayer, mLayer->selectedFeatures() );} );
+      }
+    }
+  }
+
   menu->addSeparator();
-  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open Form" ), this, QString(), sourceIndex );
+  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open Form" ), this, QString(), rowSourceIndex );
   menu->addAction( tr( "Open Form" ), a, &QgsAttributeTableAction::featureForm );
 }
 
 
-void QgsDualView::widgetWillShowContextMenu( QgsActionMenu *menu, const QgsFeatureId featureId )
+void QgsDualView::widgetWillShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex )
 {
-  emit showContextMenuExternally( menu, featureId );
+  emit showContextMenuExternally( menu, mFilterModel->rowToId( atIndex ) );
 }
 
 

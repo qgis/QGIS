@@ -250,7 +250,11 @@ QSet<int> QgsExpression::referencedAttributeIndexes( const QgsFields &fields ) c
       referencedIndexes = fields.allAttributesList().toSet();
       break;
     }
-    referencedIndexes << fields.lookupField( fieldName );
+    const int idx = fields.lookupField( fieldName );
+    if ( idx >= 0 )
+    {
+      referencedIndexes << idx;
+    }
   }
 
   return referencedIndexes;
@@ -756,6 +760,10 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts()->insert( QStringLiteral( "map_layer_ids" ), QCoreApplication::translate( "variable_help", "List of map layer IDs visible in the map." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "map_layers" ), QCoreApplication::translate( "variable_help", "List of map layers visible in the map." ) );
 
+  sVariableHelpTexts()->insert( QStringLiteral( "map_start_time" ), QCoreApplication::translate( "variable_help", "Start of the map's temporal time range (as a datetime value)" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "map_end_time" ), QCoreApplication::translate( "variable_help", "End of the map's temporal time range (as a datetime value)" ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "map_interval" ), QCoreApplication::translate( "variable_help", "Duration of the map's temporal time range (as an interval value)" ) );
+
   sVariableHelpTexts()->insert( QStringLiteral( "row_number" ), QCoreApplication::translate( "variable_help", "Stores the number of the current row." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_number" ), QCoreApplication::translate( "variable_help", "Current grid annotation value." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "grid_axis" ), QCoreApplication::translate( "variable_help", "Current grid annotation axis (e.g., 'x' for longitude, 'y' for latitude)." ) );
@@ -821,6 +829,22 @@ void QgsExpression::initVariableHelp()
   //form context variable
   sVariableHelpTexts()->insert( QStringLiteral( "current_geometry" ), QCoreApplication::translate( "current_geometry", "Represents the geometry of the feature currently being edited in the form or the table row. Can be used in a form/row context to filter the related features." ) );
   sVariableHelpTexts()->insert( QStringLiteral( "current_feature" ), QCoreApplication::translate( "current_feature", "Represents the feature currently being edited in the form or the table row. Can be used in a form/row context to filter the related features." ) );
+
+  //parent form context variable
+  sVariableHelpTexts()->insert( QStringLiteral( "current_parent_geometry" ), QCoreApplication::translate( "current_parent_geometry",
+                                "Only usable in an embedded form context, "
+                                "represents the geometry of the feature currently being edited in the parent form.\n"
+                                "Can be used in a form/row context to filter the related features using a value "
+                                "from the feature currently edited in the parent form, to make sure that the filter "
+                                "still works with standalone forms it is recommended to wrap this variable in a "
+                                "'coalesce()'." ) );
+  sVariableHelpTexts()->insert( QStringLiteral( "current_parent_feature" ), QCoreApplication::translate( "current_parent_feature",
+                                "Only usable in an embedded form context, "
+                                "represents the feature currently being edited in the parent form.\n"
+                                "Can be used in a form/row context to filter the related features using a value "
+                                "from the feature currently edited in the parent form, to make sure that the filter "
+                                "still works with standalone forms it is recommended to wrap this variable in a "
+                                "'coalesce()'." ) );
 
   //form variable
   sVariableHelpTexts()->insert( QStringLiteral( "form_mode" ), QCoreApplication::translate( "form_mode", "What the form is used for, like AddFeatureMode, SingleEditMode, MultiEditMode, SearchMode, AggregateSearchMode or IdentifyMode as string." ) );

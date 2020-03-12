@@ -69,6 +69,8 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
   connect( ui.listWidgetInputLayers, &QListWidget::itemChanged, this, &QgsGeometryCheckerSetupTab::validateInput );
   connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsGeometryCheckerSetupTab::updateLayers );
   connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersRemoved ), this, &QgsGeometryCheckerSetupTab::updateLayers );
+  connect( ui.pushButtonSelectAllLayers, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::selectAllLayers );
+  connect( ui.pushButtonDeselectAllLayers, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::deselectAllLayers );
   connect( ui.radioButtonOutputNew, &QAbstractButton::toggled, ui.frameOutput, &QWidget::setEnabled );
   connect( ui.buttonGroupOutput, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsGeometryCheckerSetupTab::validateInput );
   connect( ui.pushButtonOutputDirectory, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::selectOutputDirectory );
@@ -133,16 +135,8 @@ void QgsGeometryCheckerSetupTab::updateLayers()
     item->setData( LayerIdRole, layer->id() );
     if ( supportedGeometryType )
     {
-      if ( mCheckerDialog->isVisible() )
-      {
-        // If dialog is visible, only set item to checked if it previously was
-        item->setCheckState( prevCheckedLayers.contains( layer->id() ) ? Qt::Checked : Qt::Unchecked );
-      }
-      else
-      {
-        // Otherwise, set item to checked
-        item->setCheckState( Qt::Checked );
-      }
+      // Only set item to checked if it previously was
+      item->setCheckState( prevCheckedLayers.contains( layer->id() ) ? Qt::Checked : Qt::Unchecked );
     }
     else
     {
@@ -152,6 +146,30 @@ void QgsGeometryCheckerSetupTab::updateLayers()
     ui.listWidgetInputLayers->addItem( item );
   }
   validateInput();
+}
+
+void QgsGeometryCheckerSetupTab::selectAllLayers()
+{
+  for ( int row = 0, nRows = ui.listWidgetInputLayers->count(); row < nRows; ++row )
+  {
+    QListWidgetItem *item = ui.listWidgetInputLayers->item( row );
+    if ( item->flags().testFlag( Qt::ItemIsEnabled ) )
+    {
+      item->setCheckState( Qt::Checked );
+    }
+  }
+}
+
+void QgsGeometryCheckerSetupTab::deselectAllLayers()
+{
+  for ( int row = 0, nRows = ui.listWidgetInputLayers->count(); row < nRows; ++row )
+  {
+    QListWidgetItem *item = ui.listWidgetInputLayers->item( row );
+    if ( item->flags().testFlag( Qt::ItemIsEnabled ) )
+    {
+      item->setCheckState( Qt::Unchecked );
+    }
+  }
 }
 
 QList<QgsVectorLayer *> QgsGeometryCheckerSetupTab::getSelectedLayers()
@@ -316,7 +334,11 @@ void QgsGeometryCheckerSetupTab::runChecks()
 
       // Create output layer
       QString errMsg;
-      QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormat( layer, outputPath, layer->dataProvider()->encoding(), layer->crs(), outputDriverName, selectedOnly, &errMsg );
+      QgsVectorFileWriter::SaveVectorOptions saveOptions;
+      saveOptions.fileEncoding = layer->dataProvider()->encoding();
+      saveOptions.driverName = outputDriverName;
+      saveOptions.onlySelectedFeatures = selectedOnly;
+      QgsVectorFileWriter::WriterError err =  QgsVectorFileWriter::writeAsVectorFormatV2( layer, outputPath, layer->transformContext(), saveOptions, nullptr, nullptr, &errMsg );
       if ( err != QgsVectorFileWriter::NoError )
       {
         createErrors.append( errMsg );

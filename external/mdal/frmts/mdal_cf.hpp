@@ -113,7 +113,7 @@ namespace MDAL
                 const int capabilities );
       virtual ~DriverCF() override;
       bool canReadMesh( const std::string &uri ) override;
-      std::unique_ptr< Mesh > load( const std::string &fileName, MDAL_Status *status ) override;
+      std::unique_ptr< Mesh > load( const std::string &fileName ) override;
 
     protected:
       virtual CFDimensions populateDimensions( ) = 0;
@@ -136,9 +136,14 @@ namespace MDAL
         const MDAL::CFDatasetGroupInfo &dsi,
         double fill_val_x, double fill_val_y );
 
+      //! Returns the default reference time
+      virtual DateTime defaultReferenceTime() const;
+
       void setProjection( MDAL::Mesh *m );
       cfdataset_info_map parseDatasetGroupInfo();
-      DateTime parseTime( std::vector<RelativeTimestamp> &times ); //Return the reference time
+
+      //! Populates the times array and returns the reference time
+      DateTime parseTime( std::vector<RelativeTimestamp> &times );
       void addDatasetGroups( Mesh *mesh,
                              const std::vector<RelativeTimestamp> &times,
                              const cfdataset_info_map &dsinfo_map, const DateTime &referenceTime );

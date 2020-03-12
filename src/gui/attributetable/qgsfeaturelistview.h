@@ -117,9 +117,9 @@ class GUI_EXPORT QgsFeatureListView : public QListView
 
     /**
      * \brief setFeatureSelectionManager
-     * \param featureSelectionManager We will take ownership
+     * \param featureSelectionManager
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 
   protected:
     void mouseMoveEvent( QMouseEvent *event ) override;
@@ -156,9 +156,9 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Emitted when the context menu is created to add the specific actions to it
      * \param menu is the already created context menu
-     * \param featureId is the ID of the current feature
+     * \param atIndex is the position of the current feature in the model
      */
-    void willShowContextMenu( QgsActionMenu *menu, const QgsFeatureId featureId );
+    void willShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex );
 
   public slots:
 
@@ -239,6 +239,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QgsFeatureListModel *mModel = nullptr;
     QItemSelectionModel *mCurrentEditSelectionModel = nullptr;
     QgsFeatureSelectionModel *mFeatureSelectionModel = nullptr;
+    QgsIFeatureSelectionManager *mOwnedFeatureSelectionManager = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsFeatureListViewDelegate *mItemDelegate = nullptr;
     bool mEditSelectionDrag = false; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing //!< TODO

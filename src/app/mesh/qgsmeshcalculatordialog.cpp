@@ -486,6 +486,7 @@ void QgsMeshCalculatorDialog::getMeshDrivers()
     for ( const QgsMeshDriverMetadata &meta : allDrivers )
     {
       if ( meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets ) ||
+           meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets ) ||
            meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets ) )
         mMeshDrivers[meta.name()] = meta;
     }
@@ -497,8 +498,7 @@ void QgsMeshCalculatorDialog::populateDriversComboBox( )
 
   whileBlocking( mOutputFormatComboBox )->clear();
 
-  const auto &vals = mMeshDrivers.values();
-
+  const QList< QgsMeshDriverMetadata > vals = mMeshDrivers.values();
   for ( const QgsMeshDriverMetadata &meta : vals )
   {
     whileBlocking( mOutputFormatComboBox )->addItem( meta.description(), meta.name() );

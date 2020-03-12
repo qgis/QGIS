@@ -54,12 +54,20 @@ class CORE_EXPORT QgsExpressionContextUtils
     static QgsExpressionContextScope *globalScope() SIP_FACTORY;
 
     /**
-     * Creates a new scope which contains functions and variables from the current attribute form/table \a feature.
+     * Creates a new scope which contains functions and variables from the current attribute form/table \a formFeature.
      * The variables and values in this scope will reflect the current state of the form/row being edited.
      * The \a formMode (SingleEditMode etc.) is passed as text
      * \since QGIS 3.2
      */
     static QgsExpressionContextScope *formScope( const QgsFeature &formFeature = QgsFeature( ), const QString &formMode = QString() ) SIP_FACTORY;
+
+    /**
+     * Creates a new scope which contains functions and variables from the current parent attribute form/table \a formFeature.
+     * The variables and values in this scope will reflect the current state of the parent form/row being edited.
+     * The \a formMode (SingleEditMode etc.) is passed as text
+     * \since QGIS 3.14
+     */
+    static QgsExpressionContextScope *parentFormScope( const QgsFeature &formFeature = QgsFeature( ), const QString &formMode = QString() ) SIP_FACTORY;
 
     /**
      * Sets a global context variable. This variable will be contained within scopes retrieved via
@@ -327,7 +335,7 @@ class CORE_EXPORT QgsExpressionContextUtils
 
         QList< QPointer< QgsMapLayer > > mLayers;
         QMap< QPointer< QgsMapLayer >, QPair< double, double > > mScaleBasedVisibilityDetails;
-        double mScale;
+        double mScale = 0.0;
 
     };
 

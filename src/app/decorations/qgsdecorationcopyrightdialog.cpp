@@ -130,5 +130,5 @@ void QgsDecorationCopyrightDialog::apply()
 
 void QgsDecorationCopyrightDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#copyright-label" ) );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#copyright-and-title-labels" ) );
 }

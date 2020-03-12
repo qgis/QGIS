@@ -34,6 +34,7 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgspathresolver.h"
 #include "qgssymbollayerreference.h"
+#include "qgstemporalrangeobject.h"
 
 class QPainter;
 class QgsAbstractGeometry;
@@ -51,8 +52,8 @@ class QgsMaskIdProvider;
  * The context of a rendering operation defines properties such as
  * the conversion ratio between screen and map units, the extents
  * to be rendered etc.
- **/
-class CORE_EXPORT QgsRenderContext
+ */
+class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 {
   public:
     QgsRenderContext();
@@ -169,6 +170,16 @@ class CORE_EXPORT QgsRenderContext
      * \see setPainter()
     */
     QPainter *painter() {return mPainter;}
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns the const destination QPainter for the render operation.
+     * \see setPainter()
+    * \since QGIS 3.12
+    */
+    const QPainter *painter() const { return mPainter; }
+#endif
 
     /**
      * Returns a mask QPainter for the render operation.
@@ -321,11 +332,15 @@ class CORE_EXPORT QgsRenderContext
 
     /**
      * Returns TRUE if advanced effects such as blend modes such be used
+     *
+     * \see setUseAdvancedEffects()
      */
     bool useAdvancedEffects() const;
 
     /**
      * Used to enable or disable advanced effects such as blend modes
+     *
+     * \see useAdvancedEffects()
      */
     void setUseAdvancedEffects( bool enabled );
 
@@ -509,9 +524,16 @@ class CORE_EXPORT QgsRenderContext
 
     /**
      * Returns TRUE if the rendering optimization (geometry simplification) can be executed
+     *
+     * \see setUseRenderingOptimization()
      */
     bool useRenderingOptimization() const;
 
+    /**
+     * Sets whether the rendering optimization (geometry simplification) should be executed
+     *
+     * \see useRenderingOptimization()
+     */
     void setUseRenderingOptimization( bool enabled );
 
     /**
@@ -587,16 +609,30 @@ class CORE_EXPORT QgsRenderContext
 
     /**
      * Sets the segmentation tolerance applied when rendering curved geometries
-    \param tolerance the segmentation tolerance*/
+     * \param tolerance the segmentation tolerance
+     * \see segmentationTolerance()
+     * \see segmentationToleranceType()
+     */
     void setSegmentationTolerance( double tolerance ) { mSegmentationTolerance = tolerance; }
-    //! Gets the segmentation tolerance applied when rendering curved geometries
+
+    /**
+     * Gets the segmentation tolerance applied when rendering curved geometries
+     * \see setSegmentationTolerance()
+     */
     double segmentationTolerance() const { return mSegmentationTolerance; }
 
     /**
      * Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-    \param type the segmentation tolerance typename*/
+     * \param type the segmentation tolerance typename
+     * \see segmentationToleranceType()
+     * \see segmentationTolerance()
+     */
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type ) { mSegmentationToleranceType = type; }
-    //! Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+
+    /**
+     * Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+     * \see setSegmentationToleranceType()
+     */
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const { return mSegmentationToleranceType; }
 
     // Conversions
@@ -723,6 +759,31 @@ class CORE_EXPORT QgsRenderContext
      */
     bool isGuiPreview() const { return mIsGuiPreview; }
 
+    /**
+     * Gets custom rendering flags. Layers might honour these to alter their rendering.
+     * \returns a map of custom flags
+     * \see setCustomRenderingFlag()
+     * \since QGIS 3.12
+     */
+    QVariantMap customRenderingFlags() const { return mCustomRenderingFlags; }
+
+    /**
+     * Sets a custom rendering flag. Layers might honour these to alter their rendering.
+     * \param flag the flag name
+     * \param value the flag value
+     * \see customRenderingFlags()
+     * \since QGIS 3.12
+     */
+    void setCustomRenderingFlag( const QString &flag, const QVariant &value ) { mCustomRenderingFlags[flag] = value; }
+
+    /**
+     * Clears the specified custom rendering flag.
+     * \param flag the flag name
+     * \see setCustomRenderingFlag()
+     * \since QGIS 3.12
+     */
+    void clearCustomRenderingFlag( const QString &flag ) { mCustomRenderingFlags.remove( flag ); }
+
   private:
 
     Flags mFlags;
@@ -810,6 +871,7 @@ class CORE_EXPORT QgsRenderContext
     TextRenderFormat mTextRenderFormat = TextFormatAlwaysOutlines;
     QList< QgsRenderedFeatureHandlerInterface * > mRenderedFeatureHandlers;
     bool mHasRenderedFeatureHandlers = false;
+    QVariantMap mCustomRenderingFlags;
 
     QSet<const QgsSymbolLayer *> mDisabledSymbolLayers;
 

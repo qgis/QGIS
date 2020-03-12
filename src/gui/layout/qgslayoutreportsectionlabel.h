@@ -17,6 +17,7 @@
 #ifndef QGSLAYOUTREPORTSECTIONLABEL_H
 #define QGSLAYOUTREPORTSECTIONLABEL_H
 
+// We don't want to expose this in the public API
 #define SIP_NO_FILE
 
 #include <QGraphicsRectItem>

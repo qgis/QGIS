@@ -112,7 +112,7 @@ void QgsBrowserModel::addRootItems()
     if ( QgsDirectoryItem::hiddenPath( path ) )
       continue;
 
-    QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, QString(), path, QStringLiteral( "special:Drives" ) );
+    QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path, path, QStringLiteral( "special:Drives" ) );
     item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
     mDriveItems.insert( path, item );
 
@@ -122,7 +122,7 @@ void QgsBrowserModel::addRootItems()
 
 #ifdef Q_OS_MAC
   QString path = QString( "/Volumes" );
-  QgsDirectoryItem *vols = new QgsDirectoryItem( nullptr, path, QString(), path, QStringLiteral( "special:Volumes" ) );
+  QgsDirectoryItem *vols = new QgsDirectoryItem( nullptr, path, path, path, QStringLiteral( "special:Volumes" ) );
   mRootItems << vols;
 #endif
 
@@ -466,7 +466,7 @@ void QgsBrowserModel::refreshDrives()
     // does an item for this drive already exist?
     if ( !mDriveItems.contains( path ) )
     {
-      QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path );
+      QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path, path, QStringLiteral( "special:Drives" ) );
       item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
 
       mDriveItems.insert( path, item );

@@ -1,0 +1,57 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckresolutionmethod.h *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsGeometryCheckResolutionMethod
+{
+%Docstring
+This class implements a resolution for problems detected in geometry checks.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrycheckresolutionmethod.h"
+%End
+  public:
+
+    QgsGeometryCheckResolutionMethod( int id, const QString &name, const QString &description, bool isStable = true );
+%Docstring
+Creates a new method with the specified parameters.
+%End
+
+    int id() const;
+%Docstring
+An id that is unique per check. This will be used to trigger resolutions.
+%End
+
+    bool isStable() const;
+%Docstring
+If this fix is stable enough to be listed by default.
+%End
+
+    QString name() const;
+%Docstring
+A human readable and translated name for this fix.
+%End
+
+    QString description() const;
+%Docstring
+A human readable and translated description for this fix.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/geometry_checker/qgsgeometrycheckresolutionmethod.h *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

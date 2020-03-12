@@ -1297,6 +1297,13 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+    virtual QgsMapLayerTemporalProperties *temporalProperties();
+%Docstring
+Returns the layer's temporal properties. This may be ``None``, depending on the layer type.
+
+.. versionadded:: 3.14
+%End
+
   public slots:
 
     void setMinimumScale( double scale );

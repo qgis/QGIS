@@ -83,6 +83,8 @@
     <addaction name="menuInsert_Columns"/>
     <addaction name="mActionDeleteRows"/>
     <addaction name="mActionDeleteColumns"/>
+    <addaction name="separator"/>
+    <addaction name="mActionIncludeHeader"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
@@ -177,6 +179,14 @@
   <action name="mActionClear">
    <property name="text">
     <string>Clear Cell(s)</string>
+   </property>
+  </action>
+  <action name="mActionIncludeHeader">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Include Header Row</string>
    </property>
   </action>
  </widget>

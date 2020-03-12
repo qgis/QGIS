@@ -150,7 +150,9 @@ IF (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/gui/locator
     ${CMAKE_SOURCE_DIR}/src/gui/numericformats
     ${CMAKE_SOURCE_DIR}/src/gui/processing
+    ${CMAKE_SOURCE_DIR}/src/gui/processing/models
     ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
+    ${CMAKE_SOURCE_DIR}/src/gui/vector
 
     ${CMAKE_BINARY_DIR}/src/gui
   )
@@ -405,4 +407,11 @@ FOREACH(module ${PY_MODULES})
     )
   ENDFOREACH(pyfile)
   PY_COMPILE(py${module} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}")
+
+  # install source sip files
+  IF(SIP_GLOBAL_INSTALL)
+    FILE(GLOB sip_files ${CMAKE_CURRENT_BINARY_DIR}/${module}/*.sip)
+    INSTALL(FILES ${sip_files} DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
+    INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${module}/auto_generated DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
+  ENDIF(SIP_GLOBAL_INSTALL)
 ENDFOREACH(module)

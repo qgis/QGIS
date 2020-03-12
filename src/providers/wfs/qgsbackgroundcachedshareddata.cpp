@@ -21,6 +21,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsspatialiteutils.h"
 #include "qgsvectorfilewriter.h"
+#include "qgswfsutils.h" // for isCompatibleType()
 
 #include <QCryptographicHash>
 #include <QDir>
@@ -30,6 +31,7 @@
 
 #include <cpl_vsi.h>
 #include <cpl_conv.h>
+#include <gdal.h>
 #include <ogr_api.h>
 
 #include <sqlite3.h>
@@ -143,16 +145,6 @@ bool QgsBackgroundCachedSharedData::getUserVisibleIdFromSpatialiteId( QgsFeature
   return false;
 }
 
-// We have an issue with GDAL 1.10 and older that is using spatialite_init() which is
-// incompatible with how the QGIS SpatiaLite provider works.
-// The symptom of the issue is the error message
-// 'Unable to Initialize SpatiaLite Metadata: no such function: InitSpatialMetadata'
-// So in that case we must use only QGIS functions to avoid the conflict
-// The difference is that in the QGIS way we have to create the template database
-// on disk, which is a slightly bit slower. But due to later caching, this is
-// not so a big deal.
-#define USE_OGR_FOR_DB_CREATION
-
 static QString quotedIdentifier( QString id )
 {
   id.replace( '\"', QLatin1String( "\"\"" ) );
@@ -181,6 +173,10 @@ bool QgsBackgroundCachedSharedData::createCache()
       // it to a String
       type = QVariant::LongLong;
     }
+    else if ( type == QVariant::List && field.subType() == QVariant::String )
+    {
+      type = QVariant::StringList;
+    }
 
     // Make sure we don't have several field names that only differ by their case
     QString sqliteFieldName( field.name() );
@@ -202,109 +198,49 @@ bool QgsBackgroundCachedSharedData::createCache()
   if ( mDistinctSelect )
     cacheFields.append( QgsField( QgsBackgroundCachedFeatureIteratorConstants::FIELD_MD5, QVariant::String, QStringLiteral( "string" ) ) );
 
-  bool ogrWaySuccessful = false;
+  // Creating a SpatiaLite database can be quite slow on some file systems
+  // so we create a GDAL in-memory file, and then copy it on
+  // the file system.
+  GDALDriverH hDrv = GDALGetDriverByName( "SQLite" );
+  if ( !hDrv )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache." ), mComponentTranslated );
+    return false;
+  }
+  QString vsimemFilename;
+  vsimemFilename.sprintf( "/vsimem/qgis_cache_template_%p/features.sqlite", this );
+  mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
+  VSIUnlink( vsimemFilename.toStdString().c_str() );
+  const char *apszOptions[] = { "INIT_WITH_EPSG=NO", "SPATIALITE=YES", nullptr };
+  GDALDatasetH hDS = GDALCreate( hDrv, vsimemFilename.toUtf8().constData(), 0, 0, 0, GDT_Unknown, const_cast<char **>( apszOptions ) );
+  if ( !hDS )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache." ), mComponentTranslated );
+    return false;
+  }
+  GDALClose( hDS );
+
+  // Copy the temporary database back to disk
+  vsi_l_offset nLength = 0;
+  GByte *pabyData = VSIGetMemFileBuffer( vsimemFilename.toStdString().c_str(), &nLength, TRUE );
+  Q_ASSERT( !QFile::exists( mCacheDbname ) );
+  VSILFILE *fp = VSIFOpenL( mCacheDbname.toStdString().c_str(), "wb " );
+  if ( fp )
+  {
+    VSIFWriteL( pabyData, 1, nLength, fp );
+    VSIFCloseL( fp );
+    CPLFree( pabyData );
+  }
+  else
+  {
+    CPLFree( pabyData );
+    QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache" ), mComponentTranslated );
+    return false;
+  }
+
+
   QString fidName( QStringLiteral( "__ogc_fid" ) );
   QString geometryFieldname( QStringLiteral( "__spatialite_geometry" ) );
-#ifdef USE_OGR_FOR_DB_CREATION
-  // Only GDAL >= 2.0 can use an alternate geometry or FID field name
-  // but QgsVectorFileWriter will refuse anyway to create a ogc_fid, so we will
-  // do it manually
-  bool useReservedNames = cacheFields.lookupField( QStringLiteral( "ogc_fid" ) ) >= 0;
-  if ( !useReservedNames )
-  {
-    // Creating a SpatiaLite database can be quite slow on some file systems
-    // so we create a GDAL in-memory file, and then copy it on
-    // the file system.
-    QString vsimemFilename;
-    QStringList datasourceOptions;
-    QStringList layerOptions;
-    datasourceOptions.push_back( QStringLiteral( "INIT_WITH_EPSG=NO" ) );
-    layerOptions.push_back( QStringLiteral( "LAUNDER=NO" ) ); // to get exact matches for field names, especially regarding case
-    layerOptions.push_back( QStringLiteral( "FID=__ogc_fid" ) );
-    layerOptions.push_back( QStringLiteral( "GEOMETRY_NAME=__spatialite_geometry" ) );
-    vsimemFilename.sprintf( "/vsimem/qgis_cache_template_%p/features.sqlite", this );
-    mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
-    VSIUnlink( vsimemFilename.toStdString().c_str() );
-    std::unique_ptr< QgsVectorFileWriter > writer = qgis::make_unique< QgsVectorFileWriter >( vsimemFilename, QString(),
-        cacheFields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem(), QStringLiteral( "SpatiaLite" ), datasourceOptions, layerOptions );
-    if ( writer->hasError() == QgsVectorFileWriter::NoError )
-    {
-      writer.reset();
-
-      // Copy the temporary database back to disk
-      vsi_l_offset nLength = 0;
-      GByte *pabyData = VSIGetMemFileBuffer( vsimemFilename.toStdString().c_str(), &nLength, TRUE );
-      Q_ASSERT( !QFile::exists( mCacheDbname ) );
-      VSILFILE *fp = VSIFOpenL( mCacheDbname.toStdString().c_str(), "wb " );
-      if ( fp )
-      {
-        VSIFWriteL( pabyData, 1, nLength, fp );
-        VSIFCloseL( fp );
-        CPLFree( pabyData );
-      }
-      else
-      {
-        CPLFree( pabyData );
-        QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache" ), mComponentTranslated );
-        return false;
-      }
-
-      ogrWaySuccessful = true;
-    }
-    else
-    {
-      // Be tolerant on failures. Some (Windows) GDAL >= 1.11 builds may
-      // not define SPATIALITE_412_OR_LATER, and thus the call to
-      // spatialite_init() may cause failures, which will require using the
-      // slower method
-      writer.reset();
-      VSIUnlink( vsimemFilename.toStdString().c_str() );
-    }
-  }
-#endif
-  if ( !ogrWaySuccessful )
-  {
-    static QMutex sMutexDBnameCreation;
-    static QByteArray sCachedDBTemplate;
-    QMutexLocker mutexDBnameCreationHolder( &sMutexDBnameCreation );
-    if ( sCachedDBTemplate.size() == 0 )
-    {
-      // Create a template SpatiaLite DB
-      QTemporaryFile tempFile;
-      tempFile.open();
-      tempFile.setAutoRemove( false );
-      tempFile.close();
-
-      QString errCause;
-      bool created = QgsProviderRegistry::instance()->createDb( QStringLiteral( "spatialite" ), tempFile.fileName(), errCause );
-      if ( !created )
-      {
-        QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache" ), mComponentTranslated );
-        return false;
-      }
-
-      // Ingest it in a buffer
-      QFile file( tempFile.fileName() );
-      if ( file.open( QIODevice::ReadOnly ) )
-        sCachedDBTemplate = file.readAll();
-      file.close();
-      QFile::remove( tempFile.fileName() );
-    }
-
-    // Copy the in-memory template SpatiaLite DB into the target DB
-    Q_ASSERT( !QFile::exists( mCacheDbname ) );
-    QFile dbFile( mCacheDbname );
-    if ( !dbFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
-    {
-      QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache" ), mComponentTranslated );
-      return false;
-    }
-    if ( dbFile.write( sCachedDBTemplate ) < 0 )
-    {
-      QgsMessageLog::logMessage( QObject::tr( "Cannot create temporary SpatiaLite cache" ), mComponentTranslated );
-      return false;
-    }
-  }
 
   spatialite_database_unique_ptr database;
   bool ret = true;
@@ -319,47 +255,47 @@ bool QgsBackgroundCachedSharedData::createCache()
 
     ( void )sqlite3_exec( database.get(), "BEGIN", nullptr, nullptr, nullptr );
 
-    if ( !ogrWaySuccessful )
+    mCacheTablename = QStringLiteral( "features" );
+    sql = QStringLiteral( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename, fidName );
+
+    for ( const QgsField &field : qgis::as_const( cacheFields ) )
     {
-      mCacheTablename = QStringLiteral( "features" );
-      sql = QStringLiteral( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename, fidName );
+      QString type( QStringLiteral( "VARCHAR" ) );
+      if ( field.type() == QVariant::Int )
+        type = QStringLiteral( "INTEGER" );
+      else if ( field.type() == QVariant::LongLong )
+        type = QStringLiteral( "BIGINT" );
+      else if ( field.type() == QVariant::Double )
+        type = QStringLiteral( "REAL" );
+      else if ( field.type() == QVariant::StringList )
+        type = QStringLiteral( "JSONSTRINGLIST" );
 
-      for ( const QgsField &field : qgis::as_const( cacheFields ) )
-      {
-        QString type( QStringLiteral( "VARCHAR" ) );
-        if ( field.type() == QVariant::Int )
-          type = QStringLiteral( "INTEGER" );
-        else if ( field.type() == QVariant::LongLong )
-          type = QStringLiteral( "BIGINT" );
-        else if ( field.type() == QVariant::Double )
-          type = QStringLiteral( "REAL" );
-
-        sql += QStringLiteral( ", %1 %2" ).arg( quotedIdentifier( field.name() ), type );
-      }
-      sql += QLatin1String( ")" );
-      rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
-      if ( rc != SQLITE_OK )
-      {
-        QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
-        ret = false;
-      }
-
-      sql = QStringLiteral( "SELECT AddGeometryColumn('%1','%2',0,'POLYGON',2)" ).arg( mCacheTablename, geometryFieldname );
-      rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
-      if ( rc != SQLITE_OK )
-      {
-        QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
-        ret = false;
-      }
-
-      sql = QStringLiteral( "SELECT CreateSpatialIndex('%1','%2')" ).arg( mCacheTablename, geometryFieldname );
-      rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
-      if ( rc != SQLITE_OK )
-      {
-        QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
-        ret = false;
-      }
+      sql += QStringLiteral( ", %1 %2" ).arg( quotedIdentifier( field.name() ), type );
     }
+    sql += QLatin1String( ")" );
+    rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
+    if ( rc != SQLITE_OK )
+    {
+      QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      ret = false;
+    }
+
+    sql = QStringLiteral( "SELECT AddGeometryColumn('%1','%2',0,'POLYGON',2)" ).arg( mCacheTablename, geometryFieldname );
+    rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
+    if ( rc != SQLITE_OK )
+    {
+      QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      ret = false;
+    }
+
+    sql = QStringLiteral( "SELECT CreateSpatialIndex('%1','%2')" ).arg( mCacheTablename, geometryFieldname );
+    rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
+    if ( rc != SQLITE_OK )
+    {
+      QgsDebugMsg( QStringLiteral( "%1 failed" ).arg( sql ) );
+      ret = false;
+    }
+
 
     // We need an index on the uniqueId, since we will check for duplicates, particularly
     // useful in the case we do overlapping BBOX requests
@@ -661,12 +597,13 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
       if ( idx >= 0 )
       {
         const QVariant &v = srcFeature.attributes().value( i );
+        const QVariant::Type fieldType = dataProviderFields.at( idx ).type();
         if ( v.type() == QVariant::DateTime && !v.isNull() )
           cachedFeature.setAttribute( idx, QVariant( v.toDateTime().toMSecsSinceEpoch() ) );
-        else if ( v.type() != dataProviderFields.at( idx ).type() )
-          cachedFeature.setAttribute( idx, QgsVectorDataProvider::convertValue( dataProviderFields.at( idx ).type(), v.toString() ) );
-        else
+        else if ( QgsWFSUtils::isCompatibleType( v.type(), fieldType ) )
           cachedFeature.setAttribute( idx, v );
+        else
+          cachedFeature.setAttribute( idx, QgsVectorDataProvider::convertValue( fieldType, v.toString() ) );
       }
     }
 
@@ -1191,9 +1128,14 @@ QString QgsBackgroundCachedSharedData::getMD5( const QgsFeature &f )
       qint64 val = v.toLongLong();
       hash.addData( QByteArray( ( const char * )&val, sizeof( val ) ) );
     }
-    else  if ( v.type() == QVariant::String )
+    else if ( v.type() == QVariant::String )
     {
       hash.addData( v.toByteArray() );
+    }
+    else if ( v.type() == QVariant::StringList )
+    {
+      for ( const QString &s : v.toStringList() )
+        hash.addData( s.toUtf8() );
     }
   }
 

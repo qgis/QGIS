@@ -2534,12 +2534,7 @@ bool QgsAuthManager::removeCertAuthority( const QSslCertificate &cert )
 
 const QList<QSslCertificate> QgsAuthManager::systemRootCAs()
 {
-#ifndef Q_OS_MAC
-  return QSslSocket::systemCaCertificates();
-#else
-  QNetworkRequest req;
-  return req.sslConfiguration().caCertificates();
-#endif
+  return QSslConfiguration::systemCaCertificates();
 }
 
 const QList<QSslCertificate> QgsAuthManager::extraFileCAs()
@@ -2563,7 +2558,10 @@ const QList<QSslCertificate> QgsAuthManager::extraFileCAs()
   // only CAs or certs capable of signing other certs are allowed
   for ( const auto &cert : qgis::as_const( filecerts ) )
   {
-    if ( !allowinvalid.toBool() && !cert.isValid() )
+    if ( !allowinvalid.toBool() && ( cert.isBlacklisted()
+                                     || cert.isNull()
+                                     || cert.expiryDate() <= QDateTime::currentDateTime()
+                                     || cert.effectiveDate() > QDateTime::currentDateTime() ) )
     {
       continue;
     }

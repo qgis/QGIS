@@ -66,11 +66,7 @@ void QgsTerrainTileLoader::loadTexture()
 
 void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity, bool isShadingEnabled, const QgsPhongMaterialSettings &shadingMaterial )
 {
-  Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D( entity );
-  QgsTerrainTextureImage *textureImage = new QgsTerrainTextureImage( mTextureImage, mExtentMapCrs, mTileDebugText );
-  texture->addTextureImage( textureImage );
-  texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
-  texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
+  Qt3DRender::QTexture2D *texture = createTexture( entity );
 
   Qt3DRender::QMaterial *material = nullptr;
   if ( isShadingEnabled )
@@ -90,8 +86,20 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
     material = textureMaterial;
   }
 
-  entity->setTextureImage( textureImage );
   entity->addComponent( material ); // takes ownership if the component has no parent
+}
+
+Qt3DRender::QTexture2D *QgsTerrainTileLoader::createTexture( QgsTerrainTileEntity *entity )
+{
+  Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D;
+  QgsTerrainTextureImage *textureImage = new QgsTerrainTextureImage( mTextureImage, mExtentMapCrs, mTileDebugText );
+  texture->addTextureImage( textureImage );//texture take the ownership of textureImage if has no parant
+  texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
+  texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
+
+  entity->setTextureImage( textureImage );
+
+  return texture;
 }
 
 void QgsTerrainTileLoader::onImageReady( int jobId, const QImage &image )

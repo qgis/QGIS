@@ -42,7 +42,7 @@ class QgsFeature;
  *  * layerFilterExpression() - To get an additional expression filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature)
  *  * layerFilterSQL() - To get an additional SQL filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature) for layer that support SQL
  *  * layerPermissions() - To give the general layer permissins (read / update / insert / delete)
- *  * authorizedLayerAttributes() - Tho filter the attributes (WMS/GetFeatureInfo, WFS/GetFeature)
+ *  * authorizedLayerAttributes() - To filter the attributes (WMS/GetFeatureInfo, WFS/GetFeature)
  *  * allowToEdit() - (all WFS-T requests)
  *  * cacheKey()
  */

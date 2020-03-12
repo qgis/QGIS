@@ -60,6 +60,7 @@ class TestQgsMapSettings: public QObject
     void testLabelBoundary();
     void testExpressionContext();
     void testRenderedFeatureHandlers();
+    void testCustomRenderingFlags();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -530,6 +531,29 @@ void TestQgsMapSettings::testExpressionContext()
 #else
   QCOMPARE( r.toString(), QStringLiteral( "WGS84" ) );
 #endif
+
+  e = QgsExpression( QStringLiteral( "@map_start_time" ) );
+  r = e.evaluate( &c );
+  QVERIFY( !r.isValid() );
+  e = QgsExpression( QStringLiteral( "@map_end_time" ) );
+  r = e.evaluate( &c );
+  QVERIFY( !r.isValid() );
+  e = QgsExpression( QStringLiteral( "@map_interval" ) );
+  r = e.evaluate( &c );
+  QVERIFY( !r.isValid() );
+
+  ms.setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2002, 3, 4 ) ), QDateTime( QDate( 2010, 6, 7 ) ) ) );
+  c = QgsExpressionContext();
+  c << QgsExpressionContextUtils::mapSettingsScope( ms );
+  e = QgsExpression( QStringLiteral( "@map_start_time" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDateTime(), QDateTime( QDate( 2002, 3, 4 ) ) );
+  e = QgsExpression( QStringLiteral( "@map_end_time" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDateTime(), QDateTime( QDate( 2010, 6, 7 ) ) );
+  e = QgsExpression( QStringLiteral( "@map_interval" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.value< QgsInterval >(), QgsInterval( QDateTime( QDate( 2010, 6, 7 ) ) - QDateTime( QDate( 2002, 3, 4 ) ) ) );
 }
 
 void TestQgsMapSettings::testRenderedFeatureHandlers()
@@ -546,6 +570,22 @@ void TestQgsMapSettings::testRenderedFeatureHandlers()
   //ownership should NOT be transferred, i.e. it won't delete the registered handlers upon QgsMapSettings destruction
   mapSettings.reset();
   // should be no double-delete here
+}
+
+void TestQgsMapSettings::testCustomRenderingFlags()
+{
+  QgsMapSettings settings;
+  settings.setCustomRenderingFlag( QStringLiteral( "myexport" ), true );
+  settings.setCustomRenderingFlag( QStringLiteral( "omitgeometries" ), QStringLiteral( "points" ) );
+  QVERIFY( settings.customRenderingFlags()[ QStringLiteral( "myexport" ) ].toBool() == true );
+  QVERIFY( settings.customRenderingFlags()[ QStringLiteral( "omitgeometries" ) ].toString() == QStringLiteral( "points" ) );
+
+  // Test deprecated API
+  Q_NOWARN_DEPRECATED_PUSH
+  settings.setCustomRenderFlags( QStringLiteral( "myexport;omitpoints" ) );
+  QVERIFY( settings.customRenderFlags().split( ";" ).contains( QStringLiteral( "myexport" ) ) );
+  QVERIFY( settings.customRenderFlags().split( ";" ).contains( QStringLiteral( "omitpoints" ) ) );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )

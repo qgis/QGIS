@@ -37,7 +37,8 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterdataprovider.h"
-
+#include "qgsrasterlayer.h"
+#include "qgsrasterrenderer.h"
 #include "qgsvectorlayerserverproperties.h"
 
 
@@ -1901,6 +1902,9 @@ namespace QgsWms
           //geometry type
           layerElem.setAttribute( QStringLiteral( "geometryType" ), QgsWkbTypes::displayString( vLayer->wkbType() ) );
 
+          //opacity
+          layerElem.setAttribute( QStringLiteral( "opacity" ), QString::number( vLayer->opacity() ) );
+
           layerElem.appendChild( attributesElem );
           break;
         }
@@ -1939,6 +1943,14 @@ namespace QgsWms
             QDomText wmsPrintLayerText = doc.createTextNode( wmsPrintLayer.toString() );
             wmsPrintLayerElem.appendChild( wmsPrintLayerText );
             layerElem.appendChild( wmsPrintLayerElem );
+          }
+
+          //opacity
+          QgsRasterLayer *rl = static_cast<QgsRasterLayer *>( currentLayer );
+          QgsRasterRenderer *rasterRenderer = rl->renderer();
+          if ( rasterRenderer )
+          {
+            layerElem.setAttribute( QStringLiteral( "opacity" ), QString::number( rasterRenderer->opacity() ) );
           }
           break;
         }

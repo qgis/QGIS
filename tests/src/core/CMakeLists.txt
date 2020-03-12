@@ -204,7 +204,9 @@ SET(TESTS
  testqgsrastermarker.cpp
  testqgsrasteriterator.cpp
  testqgsrasterblock.cpp
+ testqgsrasterdataprovidertemporalcapabilities.cpp
  testqgsrasterlayer.cpp
+ testqgsrasterlayertemporalproperties.cpp
  testqgsrastersublayer.cpp
  testqgsrectangle.cpp
  testqgsrelationreferencefieldformatter.cpp
@@ -223,6 +225,8 @@ SET(TESTS
  testqgssvgmarker.cpp
  testqgssymbol.cpp
  testqgstaskmanager.cpp
+ testqgstemporalproperty.cpp
+ testqgstemporalrangeobject.cpp
  testqgstracer.cpp
  testqgstriangularmesh.cpp
  testqgsfontutils.cpp

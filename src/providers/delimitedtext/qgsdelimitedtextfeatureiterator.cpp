@@ -536,10 +536,12 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   QUrl url = p->mFile->url();
 
   // make sure watcher not created when using iterator (e.g. for rendering, see issue #15558)
-  if ( url.hasQueryItem( QStringLiteral( "watchFile" ) ) )
+  QUrlQuery query( url );
+  if ( query.hasQueryItem( QStringLiteral( "watchFile" ) ) )
   {
-    url.removeQueryItem( QStringLiteral( "watchFile" ) );
+    query.removeQueryItem( QStringLiteral( "watchFile" ) );
   }
+  url.setQuery( query );
 
   mFile.reset( new QgsDelimitedTextFile() );
   mFile->setFromUrl( url );

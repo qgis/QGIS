@@ -36,7 +36,8 @@ QgsTask::QgsTask( const QString &name, Flags flags )
 QgsTask::~QgsTask()
 {
   Q_ASSERT_X( mStatus != Running, "delete", QStringLiteral( "status was %1" ).arg( mStatus ).toLatin1() );
-  mNotFinishedMutex.tryLock(); // we're not guaranteed to already have the lock in place here
+  // even here we are not sure that task start method has ended
+  mNotFinishedMutex.lock();
   const auto constMSubTasks = mSubTasks;
   for ( const SubTask &subTask : constMSubTasks )
   {
@@ -58,7 +59,7 @@ qint64 QgsTask::elapsedTime() const
 
 void QgsTask::start()
 {
-  mNotFinishedMutex.lock();
+  QMutexLocker locker( &mNotFinishedMutex );
   mNotStartedMutex.release();
   mStartCount++;
   Q_ASSERT( mStartCount == 1 );
@@ -91,7 +92,9 @@ void QgsTask::cancel()
   if ( mOverallStatus == Complete || mOverallStatus == Terminated )
     return;
 
+  mShouldTerminateMutex.lock();
   mShouldTerminate = true;
+  mShouldTerminateMutex.unlock();
   if ( mStatus == Queued || mStatus == OnHold )
   {
     // immediately terminate unstarted jobs
@@ -109,6 +112,12 @@ void QgsTask::cancel()
   {
     subTask.task->cancel();
   }
+}
+
+bool QgsTask::isCanceled() const
+{
+  QMutexLocker locker( &mShouldTerminateMutex );
+  return mShouldTerminate;
 }
 
 void QgsTask::hold()
@@ -172,6 +181,7 @@ bool QgsTask::waitForFinished( int timeout )
     if ( mNotFinishedMutex.tryLock( timeout ) )
     {
       mNotFinishedMutex.unlock();
+      QCoreApplication::sendPostedEvents( this );
       rv = true;
     }
     else
@@ -254,7 +264,7 @@ void QgsTask::setProgress( double progress )
 void QgsTask::completed()
 {
   mStatus = Complete;
-  processSubTasksForCompletion();
+  QMetaObject::invokeMethod( this, "processSubTasksForCompletion" );
 }
 
 void QgsTask::processSubTasksForCompletion()
@@ -277,8 +287,6 @@ void QgsTask::processSubTasksForCompletion()
     setProgress( 100.0 );
     emit statusChanged( Complete );
     emit taskCompleted();
-    mNotFinishedMutex.tryLock(); // we're not guaranteed to already have the lock in place here
-    mNotFinishedMutex.unlock();
   }
   else if ( mStatus == Complete )
   {
@@ -306,8 +314,6 @@ void QgsTask::processSubTasksForTermination()
 
     emit statusChanged( Terminated );
     emit taskTerminated();
-    mNotFinishedMutex.tryLock(); // we're not guaranteed to already have the lock in place here
-    mNotFinishedMutex.unlock();
   }
   else if ( mStatus == Terminated && !subTasksTerminated )
   {
@@ -344,7 +350,7 @@ void QgsTask::processSubTasksForHold()
 void QgsTask::terminated()
 {
   mStatus = Terminated;
-  processSubTasksForTermination();
+  QMetaObject::invokeMethod( this, "processSubTasksForTermination" );
 }
 
 
@@ -684,8 +690,11 @@ void QgsTaskManager::taskStatusChanged( int status )
   mTaskMutex->lock();
   QgsTaskRunnableWrapper *runnable = mTasks.value( id ).runnable;
   mTaskMutex->unlock();
-  if ( runnable )
-    QThreadPool::globalInstance()->cancel( runnable );
+  if ( runnable && QThreadPool::globalInstance()->tryTake( runnable ) )
+  {
+    delete runnable;
+    mTasks[ id ].runnable = nullptr;
+  }
 
   if ( status == QgsTask::Terminated || status == QgsTask::Complete )
   {
@@ -788,8 +797,12 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   }
   else
   {
-    if ( runnable )
-      QThreadPool::globalInstance()->cancel( runnable );
+    if ( runnable && QThreadPool::globalInstance()->tryTake( runnable ) )
+    {
+      delete runnable;
+      mTasks[ id ].runnable = nullptr;
+    }
+
     if ( isParent )
     {
       //task already finished, kill it

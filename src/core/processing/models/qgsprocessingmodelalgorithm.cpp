@@ -246,7 +246,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       toExecute.insert( childIt->childId() );
   }
 
-  QTime totalTime;
+  QElapsedTimer totalTime;
   totalTime.start();
 
   QgsProcessingMultiStepFeedback modelFeedback( toExecute.count(), feedback );
@@ -310,20 +310,18 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( params.join( QStringLiteral( ", " ) ) ) );
       }
 
-      QTime childTime;
+      QElapsedTimer childTime;
       childTime.start();
 
       bool ok = false;
       std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
       QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok, child.configuration() );
-      childAlg.reset( nullptr );
       if ( !ok )
       {
-        QString error = QObject::tr( "Error encountered while running %1" ).arg( child.description() );
-        if ( feedback )
-          feedback->reportError( error );
+        const QString error = childAlg->flags() & QgsProcessingAlgorithm::FlagCustomException ? QString() : QObject::tr( "Error encountered while running %1" ).arg( child.description() );
         throw QgsProcessingException( error );
       }
+      childAlg.reset( nullptr );
       childResults.insert( childId, results );
 
       // look through child alg's outputs to determine whether any of these should be copied
@@ -466,6 +464,11 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
             const QString &friendlyName = !defClone->description().isEmpty() ? uniqueSafeName( defClone->description(), true, friendlyOutputNames ) : defClone->name();
             friendlyOutputNames.insert( defClone->name(), friendlyName );
             defClone->setName( friendlyName );
+          }
+          else
+          {
+            if ( !mParameterComponents.value( defClone->name() ).comment()->description().isEmpty() )
+              lines << indent + indent + QStringLiteral( "# %1" ).arg( mParameterComponents.value( defClone->name() ).comment()->description() );
           }
 
           if ( defClone->flags() & QgsProcessingParameterDefinition::FlagAdvanced )
@@ -682,6 +685,9 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
         { QStringLiteral( "QgsGeometry" ), QStringLiteral( "from qgis.core import QgsGeometry" ) },
         { QStringLiteral( "QgsProcessingOutputLayerDefinition" ), QStringLiteral( "from qgis.core import QgsProcessingOutputLayerDefinition" ) },
         { QStringLiteral( "QColor" ), QStringLiteral( "from qgis.PyQt.QtGui import QColor" ) },
+        { QStringLiteral( "QDateTime" ), QStringLiteral( "from qgis.PyQt.QtCore import QDateTime" ) },
+        { QStringLiteral( "QDate" ), QStringLiteral( "from qgis.PyQt.QtCore import QDate" ) },
+        { QStringLiteral( "QTime" ), QStringLiteral( "from qgis.PyQt.QtCore import QTime" ) },
       };
 
       for ( auto it = sAdditionalImports.constBegin(); it != sAdditionalImports.constEnd(); ++it )
@@ -1156,6 +1162,8 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
 
   map.insert( QStringLiteral( "modelVariables" ), mVariables );
 
+  map.insert( QStringLiteral( "designerParameterValues" ), mDesignerParameterValues );
+
   return map;
 }
 
@@ -1169,6 +1177,7 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
   mHelpContent = map.value( QStringLiteral( "help" ) ).toMap();
 
   mVariables = map.value( QStringLiteral( "modelVariables" ) ).toMap();
+  mDesignerParameterValues = map.value( QStringLiteral( "designerParameterValues" ) ).toMap();
 
   mChildAlgorithms.clear();
   QVariantMap childMap = map.value( QStringLiteral( "children" ) ).toMap();

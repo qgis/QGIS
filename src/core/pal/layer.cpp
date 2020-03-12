@@ -470,8 +470,8 @@ void Layer::chopFeaturesAtRepeatDistance()
         repeatParts.push_back( newfpart );
       }
 
-      for ( FeaturePart *part : repeatParts )
-        part->setTotalRepeats( repeatParts.count() );
+      for ( FeaturePart *partPtr : repeatParts )
+        partPtr->setTotalRepeats( repeatParts.count() );
     }
     else
     {

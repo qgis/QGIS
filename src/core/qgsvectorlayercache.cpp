@@ -100,7 +100,7 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
 
     int i = 0;
 
-    QTime t;
+    QElapsedTimer t;
     t.start();
 
     QgsFeature f;

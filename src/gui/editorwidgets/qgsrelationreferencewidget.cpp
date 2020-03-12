@@ -396,7 +396,7 @@ void QgsRelationReferenceWidget::deleteForeignKeys()
   mRemoveFKButton->setEnabled( false );
   updateAttributeEditorFrame( QgsFeature() );
 
-  emitForeignKeysChanged( foreignKeys(), true );
+  emitForeignKeysChanged( foreignKeys() );
 }
 
 QgsFeature QgsRelationReferenceWidget::referencedFeature() const
@@ -793,9 +793,9 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature &feature )
     }
     mLineEdit->setText( title );
     mForeignKeys.clear();
+    mFeature = feature;
     for ( const QString &fieldName : qgis::as_const( mReferencedFields ) )
       mForeignKeys << mFeature.attribute( fieldName );
-    mFeature = feature;
   }
   else
   {

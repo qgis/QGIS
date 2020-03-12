@@ -74,6 +74,7 @@ class QgsMapLayer;
 class QgsBookmarkManager;
 class QgsProjectViewSettings;
 class QgsProjectDisplaySettings;
+class QgsProjectTimeSettings;
 
 /**
  * \ingroup core
@@ -106,6 +107,29 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QColor selectionColor READ selectionColor WRITE setSelectionColor NOTIFY selectionColorChanged )
 
   public:
+
+    /**
+     * Flags which control project read behavior.
+     * \since QGIS 3.10
+     */
+    enum class ReadFlag SIP_MONKEYPATCH_SCOPEENUM
+    {
+      FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
+      FlagDontLoadLayouts = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
+    };
+    Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
+
+    /**
+     * Flags which control project read behavior.
+     * \since QGIS 3.12
+     */
+    enum class FileFormat
+    {
+      Qgz, //!< Archive file format, supports auxiliary data
+      Qgs, //!< Project saved in a clear text, does not support auxiliary data
+    };
+    Q_ENUM( FileFormat )
+
     //! Returns the QgsProject singleton instance
     static QgsProject *instance();
 
@@ -136,6 +160,24 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \note Since QGIS 3.2 this is just a shortcut to retrieving the title from the project's metadata().
     */
     QString title() const;
+
+    /**
+    * Returns the user name that did the last save.
+    *
+    * \see saveUserFullName()
+    *
+    * \since QGIS 3.12
+    */
+    QString saveUser() const;
+
+    /**
+    * Returns the full user name that did the last save.
+    *
+    * \see saveUser()
+    *
+    * \since QGIS 3.12
+    */
+    QString saveUserFullName() const;
 
     /**
      * Returns TRUE if the project has been modified since the last write()
@@ -268,17 +310,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 2.4
      */
     void clear();
-
-    /**
-     * Flags which control project read behavior.
-     * \since QGIS 3.10
-     */
-    enum ReadFlag
-    {
-      FlagDontResolveLayers = 1 << 0, //!< Don't resolve layer paths (i.e. don't load any layer content). Dramatically improves project read time if the actual data from the layers is not required.
-      FlagDontLoadLayouts = 1 << 1, //!< Don't load print layouts. Improves project read time if layouts are not required, and allows projects to be safely read in background threads (since print layouts are not thread safe).
-    };
-    Q_DECLARE_FLAGS( ReadFlags, ReadFlag )
 
     /**
      * Reads given project file from the given file.
@@ -535,7 +566,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsRelationManager *relationManager() const;
 
     /**
-     * Returns the project's layout manager, which manages compositions within
+     * Returns the project's layout manager, which manages print layouts, atlases and reports within
      * the project.
      * \note not available in Python bindings
      * \since QGIS 3.0
@@ -543,7 +574,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     const QgsLayoutManager *layoutManager() const SIP_SKIP;
 
     /**
-     * Returns the project's layout manager, which manages compositions within
+     * Returns the project's layout manager, which manages print layouts, atlases and reports within
      * the project.
      * \since QGIS 3.0
      */
@@ -580,6 +611,23 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.10.1
      */
     QgsProjectViewSettings *viewSettings();
+
+    /**
+     * Returns the project's time settings, contains temporal range, which can
+     * be used in constraining temporal properties from temporal layers in the project.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.14
+     */
+    const QgsProjectTimeSettings *timeSettings() const SIP_SKIP;
+
+    /**
+     * Returns the project's time settings, contains temporal range, which can
+     * be used in constraining temporal properties from temporal layers in the project.
+     *
+     * \since QGIS 3.14
+     */
+    QgsProjectTimeSettings *timeSettings();
 
     /**
      * Returns the project's display settings, which settings and properties relating
@@ -1719,7 +1767,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The optional \a flags argument can be used to control layer reading behavior.
      * \note not available in Python bindings
      */
-    void loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags = nullptr ) SIP_SKIP;
+    bool loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags = nullptr ) SIP_SKIP;
 
     //! Read .qgs file
     bool readProjectFile( const QString &filename, QgsProject::ReadFlags flags = nullptr );
@@ -1760,6 +1808,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsProjectViewSettings *mViewSettings = nullptr;
 
+    QgsProjectTimeSettings *mTimeSettings = nullptr;
+
     QgsProjectDisplaySettings *mDisplaySettings = nullptr;
 
     QgsLayerTree *mRootGroup = nullptr;
@@ -1780,6 +1830,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     std::unique_ptr<QgsAuxiliaryStorage> mAuxiliaryStorage;
 
     QFile mFile;                 // current physical project file
+
+    QString mSaveUser;              // last saved user.
+    QString mSaveUserFull;          // last saved user full name.
 
     /**
      * Manual override for project home path - if empty, home path is automatically
@@ -1816,6 +1869,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     // Required by QGIS Server for switching the current project instance
     friend class QgsConfigCache;
+
+    friend class TestQgsProject;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProject::ReadFlags )

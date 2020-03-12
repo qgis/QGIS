@@ -127,7 +127,7 @@ const QString QgsCrashReport::crashID() const
   if ( data.isNull() )
     return QStringLiteral( "ID not generated due to missing information" );
 
-  QString hash = QString( QCryptographicHash::hash( data.toAscii(), QCryptographicHash::Sha1 ).toHex() );
+  QString hash = QString( QCryptographicHash::hash( data.toLatin1(), QCryptographicHash::Sha1 ).toHex() );
   return hash;
 }
 

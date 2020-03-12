@@ -134,6 +134,31 @@ class GetCurrentFormFieldValue : public QgsScopedExpressionFunction
 
 };
 
+class GetCurrentParentFormFieldValue : public QgsScopedExpressionFunction
+{
+  public:
+    GetCurrentParentFormFieldValue( )
+      : QgsScopedExpressionFunction( QStringLiteral( "current_parent_value" ), QgsExpressionFunction::ParameterList() << QStringLiteral( "field_name" ), QStringLiteral( "Form" ) )
+    {}
+
+    QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * ) override
+    {
+      QString fieldName( values.at( 0 ).toString() );
+      const QgsFeature feat( context->variable( QStringLiteral( "current_parent_feature" ) ).value<QgsFeature>() );
+      if ( fieldName.isEmpty() || ! feat.isValid( ) )
+      {
+        return QVariant();
+      }
+      return feat.attribute( fieldName ) ;
+    }
+
+    QgsScopedExpressionFunction *clone() const override
+    {
+      return new GetCurrentParentFormFieldValue( );
+    }
+
+};
+
 
 class GetProcessingParameterValue : public QgsScopedExpressionFunction
 {
@@ -169,6 +194,17 @@ QgsExpressionContextScope *QgsExpressionContextUtils::formScope( const QgsFeatur
   scope->setVariable( QStringLiteral( "current_geometry" ), formFeature.geometry( ), true );
   scope->setVariable( QStringLiteral( "current_feature" ), formFeature, true );
   scope->setVariable( QStringLiteral( "form_mode" ), formMode, true );
+  return scope;
+}
+
+
+QgsExpressionContextScope *QgsExpressionContextUtils::parentFormScope( const QgsFeature &parentFormFeature, const QString &parentFormMode )
+{
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Parent Form" ) );
+  scope->addFunction( QStringLiteral( "current_parent_value" ), new GetCurrentParentFormFieldValue( ) );
+  scope->setVariable( QStringLiteral( "current_parent_geometry" ), parentFormFeature.geometry( ), true );
+  scope->setVariable( QStringLiteral( "current_parent_feature" ), parentFormFeature, true );
+  scope->setVariable( QStringLiteral( "parent_form_mode" ), parentFormMode, true );
   return scope;
 }
 
@@ -371,6 +407,13 @@ QgsExpressionContextScope *QgsExpressionContextUtils::mapSettingsScope( const Qg
   // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
 
   scope->addFunction( QStringLiteral( "is_layer_visible" ), new GetLayerVisibility( mapSettings.layers(), mapSettings.scale() ) );
+
+  // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
+  // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
+
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_start_time" ), mapSettings.isTemporal() ? mapSettings.temporalRange().begin() : QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_end_time" ), mapSettings.isTemporal() ? mapSettings.temporalRange().end() : QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_interval" ), mapSettings.isTemporal() ? ( mapSettings.temporalRange().end() - mapSettings.temporalRange().begin() ) : QVariant(), true ) );
 
   // IMPORTANT: ANY CHANGES HERE ALSO NEED TO BE MADE TO QgsLayoutItemMap::createExpressionContext()
   // (rationale is described in QgsLayoutItemMap::createExpressionContext() )
@@ -766,6 +809,7 @@ void QgsExpressionContextUtils::registerContextFunctions()
   QgsExpression::registerFunction( new GetLayerVisibility( QList<QgsMapLayer *>(), 0.0 ) );
   QgsExpression::registerFunction( new GetProcessingParameterValue( QVariantMap() ) );
   QgsExpression::registerFunction( new GetCurrentFormFieldValue( ) );
+  QgsExpression::registerFunction( new GetCurrentParentFormFieldValue( ) );
 }
 
 bool QgsScopedExpressionFunction::usesGeometry( const QgsExpressionNodeFunction *node ) const

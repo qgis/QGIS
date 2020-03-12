@@ -36,6 +36,9 @@ class QgsEditFormConfigPrivate;
  */
 class CORE_EXPORT QgsEditFormConfig
 {
+
+    Q_GADGET
+
   public:
 
     //! The different types to layout the attribute editor.
@@ -45,6 +48,7 @@ class CORE_EXPORT QgsEditFormConfig
       TabLayout = 1,       //!< Use a layout with tabs and group boxes. Needs to be configured.
       UiFileLayout = 2     //!< Load a .ui file for the layout. Needs to be configured.
     };
+    Q_ENUM( EditorLayout )
 
     struct GroupData
     {
@@ -81,6 +85,7 @@ class CORE_EXPORT QgsEditFormConfig
       SuppressOn = 1,      //!< Suppress feature form
       SuppressOff = 2      //!< Do not suppress feature form
     };
+    Q_ENUM( FeatureFormSuppress )
 
     /**
      * The Python init code source options.
@@ -92,6 +97,7 @@ class CORE_EXPORT QgsEditFormConfig
       CodeSourceDialog = 2,           //!< Use the Python code provided in the dialog
       CodeSourceEnvironment = 3       //!< Use the Python code available in the Python environment
     };
+    Q_ENUM( PythonInitCodeSource )
 
     /**
      * Copy constructor

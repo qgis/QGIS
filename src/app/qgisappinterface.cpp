@@ -759,6 +759,8 @@ QgsAttributeDialog *QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeat
   context.setDistanceArea( myDa );
   context.setVectorLayerTools( qgis->vectorLayerTools() );
   context.setMapCanvas( qgis->mapCanvas() );
+  context.setCadDockWidget( qgis->cadDockWidget() );
+  context.setMainMessageBar( qgis->messageBar() );
   QgsAttributeDialog *dialog = new QgsAttributeDialog( l, &feature, false, qgis, true, context );
   if ( !feature.isValid() )
   {

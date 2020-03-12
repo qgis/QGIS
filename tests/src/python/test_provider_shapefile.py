@@ -19,6 +19,7 @@ import osgeo.gdal
 import osgeo.ogr
 import sys
 
+from osgeo import gdal
 from qgis.core import (
     QgsApplication,
     QgsSettings,
@@ -625,6 +626,62 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
             # force close of data provider
             vl.setDataSource('', 'test', 'ogr')
 
+    def testEncoding(self):
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'iso-8859-1.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'iso-8859-1_ldid.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'latin1.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'utf8.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'UTF-8')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252_ldid.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        if int(gdal.VersionInfo('VERSION_NUM')) >= GDAL_COMPUTE_VERSION(3, 1, 0):
+            # correct autodetection of vsizip based shapefiles depends on GDAL 3.1
+            file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'windows-1252.zip')
+            vl = QgsVectorLayer('/vsizip/{}'.format(file_path))
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.dataProvider().encoding(), 'windows-1252')
+            self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
+        file_path = os.path.join(TEST_DATA_DIR, 'shapefile', 'system_encoding.shp')
+        vl = QgsVectorLayer(file_path)
+        self.assertTrue(vl.isValid())
+        # no encoding hints, so it should default to UTF-8 (which is wrong for this particular file, but the correct guess to make first!)
+        self.assertEqual(vl.dataProvider().encoding(), 'UTF-8')
+        self.assertNotEqual(next(vl.getFeatures())[1], 'äöü')
+        # set to correct encoding
+        vl.dataProvider().setEncoding('ISO-8859-1')
+        self.assertEqual(vl.dataProvider().encoding(), 'ISO-8859-1')
+        self.assertEqual(next(vl.getFeatures())[1], 'äöü')
+
     def testCreateAttributeIndex(self):
         tmpdir = tempfile.mkdtemp()
         self.dirs_to_cleanup.append(tmpdir)
@@ -711,6 +768,27 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         # This was failing in bug 17863
         self.assertEqual(_lessdigits(subSet_vl.extent().toString()), filtered_extent)
         self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
+
+    def testMalformedSubsetStrings(self):
+        """Test that invalid where clauses always return false"""
+
+        testPath = TEST_DATA_DIR + '/' + 'lines.shp'
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.setSubsetString(''))
+        self.assertTrue(vl.setSubsetString('"Name" = \'Arterial\''))
+        self.assertTrue(vl.setSubsetString('select * from lines where "Name" = \'Arterial\''))
+        self.assertFalse(vl.setSubsetString('this is invalid sql'))
+        self.assertFalse(vl.setSubsetString('select * from lines where "NonExistentField" = \'someValue\''))
+        self.assertFalse(vl.setSubsetString('select * from lines where "Name" = \'Arte...'))
+        self.assertFalse(vl.setSubsetString('select * from lines where "Name" in (\'Arterial\', \'Highway\' '))
+        self.assertFalse(vl.setSubsetString('select * from NonExistentTable'))
+        self.assertFalse(vl.setSubsetString('select NonExistentField from lines'))
+        self.assertFalse(vl.setSubsetString('"NonExistentField" = \'someValue\''))
+        self.assertFalse(vl.setSubsetString('"Name" = \'Arte...'))
+        self.assertFalse(vl.setSubsetString('"Name" in (\'Arterial\', \'Highway\' '))
+        self.assertTrue(vl.setSubsetString(''))
 
     def testMultipatch(self):
         """Check that we can deal with multipatch shapefiles, returned natively by OGR as GeometryCollection of TIN"""
@@ -897,7 +975,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         # Failing case: add a real multi to the shapefile and try to force to single
         self.assertTrue(shapefile_layer.startEditing())
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromWkt('MultiPolygon (((0 0, 0 1, 1 1, 1 0, 0 0)), ((0 0, 0 1.5, 1 1.5, 1 0, 0 0)))'))
+        ft.setGeometry(QgsGeometry.fromWkt('MultiPolygon (((0 0, 0 1, 1 1, 1 0, 0 0)), ((-10 -10,-10 -9,-9 -9,-10 -10)))'))
         ft.setAttributes([2])
         self.assertTrue(shapefile_layer.addFeatures([ft]))
         self.assertTrue(shapefile_layer.commitChanges())
@@ -914,6 +992,53 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
                                                                          })
         self.assertTrue(QgsWkbTypes.isMultiType(multi_layer.wkbType()))
         self.assertEqual(write_result, QgsVectorLayerExporter.ErrFeatureWriteFailed, "Failed to transform a feature with ID '1' to single part. Writing stopped.")
+
+    def testReadingLayerGeometryTypes(self):
+
+        tests = [(osgeo.ogr.wkbPoint, 'Point (0 0)', QgsWkbTypes.Point, 'Point (0 0)'),
+                 (osgeo.ogr.wkbPoint25D, 'Point Z (0 0 1)', QgsWkbTypes.PointZ, 'PointZ (0 0 1)'),
+                 (osgeo.ogr.wkbPointM, 'Point M (0 0 1)', QgsWkbTypes.PointM, 'PointM (0 0 1)'),
+                 (osgeo.ogr.wkbPointZM, 'Point ZM (0 0 1 2)', QgsWkbTypes.PointZM, 'PointZM (0 0 1 2)'),
+                 (osgeo.ogr.wkbLineString, 'LineString (0 0, 1 1)', QgsWkbTypes.MultiLineString, 'MultiLineString ((0 0, 1 1))'),
+                 (osgeo.ogr.wkbLineString25D, 'LineString Z (0 0 10, 1 1 10)', QgsWkbTypes.MultiLineStringZ, 'MultiLineStringZ ((0 0 10, 1 1 10))'),
+                 (osgeo.ogr.wkbLineStringM, 'LineString M (0 0 10, 1 1 10)', QgsWkbTypes.MultiLineStringM, 'MultiLineStringM ((0 0 10, 1 1 10))'),
+                 (osgeo.ogr.wkbLineStringZM, 'LineString ZM (0 0 10 20, 1 1 10 20)', QgsWkbTypes.MultiLineStringZM, 'MultiLineStringZM ((0 0 10 20, 1 1 10 20))'),
+                 (osgeo.ogr.wkbPolygon, 'Polygon ((0 0,0 1,1 1,0 0))', QgsWkbTypes.MultiPolygon, 'MultiPolygon (((0 0, 0 1, 1 1, 0 0)))'),
+                 (osgeo.ogr.wkbPolygon25D, 'Polygon Z ((0 0 10, 0 1 10, 1 1 10, 0 0 10))', QgsWkbTypes.MultiPolygonZ, 'MultiPolygonZ (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
+                 (osgeo.ogr.wkbPolygonM, 'Polygon M ((0 0 10, 0 1 10, 1 1 10, 0 0 10))', QgsWkbTypes.MultiPolygonM, 'MultiPolygonM (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
+                 (osgeo.ogr.wkbPolygonZM, 'Polygon ZM ((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20))', QgsWkbTypes.MultiPolygonZM, 'MultiPolygonZM (((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20)))'),
+                 (osgeo.ogr.wkbMultiPoint, 'MultiPoint (0 0,1 1)', QgsWkbTypes.MultiPoint, 'MultiPoint ((0 0),(1 1))'),
+                 (osgeo.ogr.wkbMultiPoint25D, 'MultiPoint Z ((0 0 10), (1 1 10))', QgsWkbTypes.MultiPointZ, 'MultiPointZ ((0 0 10),(1 1 10))'),
+                 (osgeo.ogr.wkbMultiPointM, 'MultiPoint M ((0 0 10), (1 1 10))', QgsWkbTypes.MultiPointM, 'MultiPointM ((0 0 10),(1 1 10))'),
+                 (osgeo.ogr.wkbMultiPointZM, 'MultiPoint ZM ((0 0 10 20), (1 1 10 20))', QgsWkbTypes.MultiPointZM, 'MultiPointZM ((0 0 10 20),(1 1 10 20))'),
+                 (osgeo.ogr.wkbMultiLineString, 'MultiLineString ((0 0, 1 1))', QgsWkbTypes.MultiLineString, 'MultiLineString ((0 0, 1 1))'),
+                 (osgeo.ogr.wkbMultiLineString25D, 'MultiLineString Z ((0 0 10, 1 1 10))', QgsWkbTypes.MultiLineStringZ, 'MultiLineStringZ ((0 0 10, 1 1 10))'),
+                 (osgeo.ogr.wkbMultiLineStringM, 'MultiLineString M ((0 0 10, 1 1 10))', QgsWkbTypes.MultiLineStringM, 'MultiLineStringM ((0 0 10, 1 1 10))'),
+                 (osgeo.ogr.wkbMultiLineStringZM, 'MultiLineString ZM ((0 0 10 20, 1 1 10 20))', QgsWkbTypes.MultiLineStringZM, 'MultiLineStringZM ((0 0 10 20, 1 1 10 20))'),
+                 (osgeo.ogr.wkbMultiPolygon, 'MultiPolygon (((0 0,0 1,1 1,0 0)))', QgsWkbTypes.MultiPolygon, 'MultiPolygon (((0 0, 0 1, 1 1, 0 0)))'),
+                 (osgeo.ogr.wkbMultiPolygon25D, 'MultiPolygon Z (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))', QgsWkbTypes.MultiPolygonZ, 'MultiPolygonZ (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
+                 (osgeo.ogr.wkbMultiPolygonM, 'MultiPolygon M (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))', QgsWkbTypes.MultiPolygonM, 'MultiPolygonM (((0 0 10, 0 1 10, 1 1 10, 0 0 10)))'),
+                 (osgeo.ogr.wkbMultiPolygonZM, 'MultiPolygon ZM (((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20)))', QgsWkbTypes.MultiPolygonZM, 'MultiPolygonZM (((0 0 10 20, 0 1 10 20, 1 1 10 20, 0 0 10 20)))'),
+                 ]
+        for ogr_type, wkt, qgis_type, expected_wkt in tests:
+
+            filename = 'testPromoteToMulti'
+            tmpfile = os.path.join(self.basetestpath, filename)
+            ds = osgeo.ogr.GetDriverByName('ESRI Shapefile').CreateDataSource(tmpfile)
+            lyr = ds.CreateLayer(filename, geom_type=ogr_type)
+            f = osgeo.ogr.Feature(lyr.GetLayerDefn())
+            f.SetGeometry(osgeo.ogr.CreateGeometryFromWkt(wkt))
+            lyr.CreateFeature(f)
+            ds = None
+
+            vl = QgsVectorLayer(tmpfile, 'test', 'ogr')
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.wkbType(), qgis_type)
+            f = next(vl.getFeatures())
+            self.assertEqual(f.geometry().constGet().asWkt(), expected_wkt)
+            del vl
+
+            osgeo.ogr.GetDriverByName('ESRI Shapefile').DeleteDataSource(tmpfile)
 
 
 if __name__ == '__main__':

@@ -230,6 +230,9 @@ void QgsAbout::setWhatsNew()
 {
   txtWhatsNew->clear();
   txtWhatsNew->document()->setDefaultStyleSheet( QgsApplication::reportStyleSheet() );
+  if ( !QFile::exists( QgsApplication::pkgDataPath() + "/doc/NEWS.html" ) )
+    return;
+
   txtWhatsNew->setSource( "file:///" + QgsApplication::pkgDataPath() + "/doc/NEWS.html" );
 }
 

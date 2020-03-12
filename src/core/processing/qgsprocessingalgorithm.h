@@ -76,6 +76,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagDisplayNameIsLiteral = 1 << 7, //!< Algorithm's display name is a static literal string, and should not be translated or automatically formatted. For use with algorithms named after commands, e.g. GRASS 'v.in.ogr'.
       FlagSupportsInPlaceEdits = 1 << 8, //!< Algorithm supports in-place editing
       FlagKnownIssues = 1 << 9, //!< Algorithm has known issues
+      FlagCustomException = 1 << 10, //!< Algorithm raises custom exception notices, don't use the standard ones
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -525,9 +526,8 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * This method will not be called if the prepareAlgorithm() step failed (returned FALSE).
      *
-     * c++ implementations of processAlgorithm can throw the QgsProcessingException exception
-     * to indicate that a fatal error occurred within the execution. Python based subclasses
-     * should raise GeoAlgorithmExecutionException for the same purpose.
+     * Implementations of processAlgorithm can throw the QgsProcessingException exception
+     * to indicate that a fatal error occurred within the execution.
      *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
      * values such as statistical calculations. Unless the algorithm subclass overrides
@@ -854,6 +854,13 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \since QGIS 3.10
      */
     QColor parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a name to a connection name string.
+     *
+     * \since QGIS 3.14
+     */
+    QString parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
 
     /**
      * Returns a user-friendly string to use as an error when a source parameter could

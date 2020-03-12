@@ -22,7 +22,7 @@ import socketserver
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
 os.environ['QT_HASH_SEED'] = '1'
 
-from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime
+from qgis.PyQt.QtCore import QCoreApplication, Qt, QObject, QDateTime, QEventLoop
 
 from qgis.core import (
     QgsWkbTypes,
@@ -1651,6 +1651,11 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # Check that we get a log message
         with MessageLogger('WFS') as logger:
             [f for f in vl.getFeatures()]
+
+            # Let signals to be notified to QgsVectorDataProvider
+            loop = QEventLoop()
+            loop.processEvents()
+
             self.assertEqual(len(logger.messages()), 1, logger.messages())
             self.assertTrue(logger.messages()[0].decode('UTF-8').find('The download limit has been reached') >= 0, logger.messages())
 
@@ -1696,6 +1701,11 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         # Failed download: test that error is propagated to the data provider, so as to get application notification
         [f['INTFIELD'] for f in vl.getFeatures()]
+
+        # Let signals to be notified to QgsVectorDataProvider
+        loop = QEventLoop()
+        loop.processEvents()
+
         errors = vl.dataProvider().errors()
         self.assertEqual(len(errors), 1, errors)
 
@@ -2585,6 +2595,9 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(features), 2)
 
         reference = QgsGeometry.fromRect(QgsRectangle(500000, 4500000, 510000, 4510000))
+        # Let signals to be notified to QgsVectorLayer
+        loop = QEventLoop()
+        loop.processEvents()
         vl_extent = QgsGeometry.fromRect(vl.extent())
         assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
         self.assertEqual(features[0]['intfield'], 1)
@@ -4244,6 +4257,81 @@ java.io.IOExceptionCannot do natural order without a primary key, please add it 
 
         errors = vl.dataProvider().errors()
         self.assertEqual(len(errors), 0, errors)
+
+    def testWFS20CaseInsensitiveKVP(self):
+        """Test an URL with non standard query string arguments where the server exposes
+        the same parameters with different case: see https://github.com/qgis/QGIS/issues/34148
+        """
+        endpoint = self.__class__.basetestpath + '/fake_qgis_http_endpoint_WFS_case_insensitive_kvp_2.0'
+
+        get_cap = """
+<WFS_Capabilities version="1.0.0" xmlns="http://www.opengis.net/wfs" xmlns:ogc="http://www.opengis.net/ogc">
+  <FeatureTypeList>
+    <FeatureType>
+      <Name>my:typename</Name>
+      <Title>Title</Title>
+      <Abstract>Abstract</Abstract>
+      <SRS>EPSG:32631</SRS>
+      <!-- in WFS 1.0, LatLongBoundingBox is in SRS units, not necessarily lat/long... -->
+      <LatLongBoundingBox minx="400000" miny="5400000" maxx="450000" maxy="5500000"/>
+    </FeatureType>
+  </FeatureTypeList>
+  <OperationsMetadata>
+    <Operation name="DescribeFeatureType">
+      <DCP>
+        <HTTP>
+          <Get type="simple" href="http://{0}?PARAMETER1=Value1&amp;PARAMETER2=Value2&amp;"/>
+          <Post type="simple" href="http://{0}?PARAMETER1=Value1&amp;PARAMETER2=Value2&amp;"/>
+        </HTTP>
+      </DCP>
+    </Operation>
+    <Operation name="GetFeature">
+      <DCP>
+        <HTTP>
+          <Get type="simple" href="http://{0}?PARAMETER1=Value1&amp;PARAMETER2=Value2&amp;"/>
+          <Post type="simple" href="http://{0}?PARAMETER1=Value1&amp;PARAMETER2=Value2&amp;"/>
+        </HTTP>
+      </DCP>
+    </Operation>
+  </OperationsMetadata></WFS_Capabilities>""".format(endpoint).encode('UTF-8')
+
+        with open(sanitize(endpoint, '?PARAMETER1=Value1&PARAMETER2=Value2&FOO=BAR&SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0'), 'wb') as f:
+            f.write(get_cap)
+
+        with open(sanitize(endpoint, '?Parameter1=Value1&Parameter2=Value2&FOO=BAR&SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0'), 'wb') as f:
+            f.write(get_cap)
+
+        with open(sanitize(endpoint, '?PARAMETER1=Value1&PARAMETER2=Value2&FOO=BAR&SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.0.0&TYPENAME=my:typename'), 'wb') as f:
+            f.write("""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="typenameType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="INTFIELD" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="GEOMETRY" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="longfield" nillable="true" type="xsd:long"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="stringfield" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="datetimefield" nillable="true" type="xsd:dateTime"/>
+          <!-- use geometry that is the default SpatiaLite geometry name -->
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometry" nillable="true" type="gml:PointPropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
+</xsd:schema>
+""".encode('UTF-8'))
+
+        vl = QgsVectorLayer("url='http://" + endpoint + "?Parameter1=Value1&Parameter2=Value2&FOO=BAR&SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.1.0" + "' typename='my:typename' version='1.0.0'", 'test', 'WFS')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(len(vl.fields()), 5)
+        self.assertEqual(vl.featureCount(), 0)
+        reference = QgsGeometry.fromRect(QgsRectangle(400000.0, 5400000.0, 450000.0, 5500000.0))
+        vl_extent = QgsGeometry.fromRect(vl.extent())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
 
 
 if __name__ == '__main__':

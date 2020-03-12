@@ -108,13 +108,13 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
   tag2.replace( QRegExp( ".*:" ), QString() );
   if ( tag1 != tag2 )
   {
-    qDebug( "Different tag names: %s, %s", tag1.toAscii().data(), tag2.toAscii().data() );
+    qDebug( "Different tag names: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
     return false ;
   }
 
   if ( element1.hasAttributes() != element2.hasAttributes() )
   {
-    qDebug( "Different hasAttributes: %s, %s", tag1.toAscii().data(), tag2.toAscii().data() );
+    qDebug( "Different hasAttributes: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
     return false;
   }
 
@@ -125,7 +125,7 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
     if ( attrs1.size() != attrs2.size() )
     {
-      qDebug( "Different attributes size: %s, %s", tag1.toAscii().data(), tag2.toAscii().data() );
+      qDebug( "Different attributes size: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
       return false;
     }
 
@@ -136,13 +136,13 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
       if ( !element2.hasAttribute( attr1.name() ) )
       {
-        qDebug( "Element2 has not attribute: %s, %s, %s", tag1.toAscii().data(), tag2.toAscii().data(), attr1.name().toAscii().data() );
+        qDebug( "Element2 has not attribute: %s, %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data(), attr1.name().toLatin1().data() );
         return false;
       }
 
       if ( element2.attribute( attr1.name() ) != attr1.value() )
       {
-        qDebug( "Element2 attribute has not the same value: %s, %s, %s", tag1.toAscii().data(), tag2.toAscii().data(), attr1.name().toAscii().data() );
+        qDebug( "Element2 attribute has not the same value: %s, %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data(), attr1.name().toLatin1().data() );
         return false;
       }
     }
@@ -150,7 +150,7 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
   if ( element1.hasChildNodes() != element2.hasChildNodes() )
   {
-    qDebug( "Different childNodes: %s, %s", tag1.toAscii().data(), tag2.toAscii().data() );
+    qDebug( "Different childNodes: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
     return false;
   }
 
@@ -161,7 +161,7 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
     if ( nodes1.size() != nodes2.size() )
     {
-      qDebug( "Different childNodes size: %s, %s", tag1.toAscii().data(), tag2.toAscii().data() );
+      qDebug( "Different childNodes size: %s, %s", tag1.toLatin1().data(), tag2.toLatin1().data() );
       return false;
     }
 
@@ -184,8 +184,8 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
         if ( txt1.data() != txt2.data() )
         {
-          qDebug( "Different text data: %s %s", tag1.toAscii().data(), txt1.data().toAscii().data() );
-          qDebug( "Different text data: %s %s", tag2.toAscii().data(), txt2.data().toAscii().data() );
+          qDebug( "Different text data: %s %s", tag1.toLatin1().data(), txt1.data().toLatin1().data() );
+          qDebug( "Different text data: %s %s", tag2.toLatin1().data(), txt2.data().toLatin1().data() );
           return false;
         }
       }
@@ -194,8 +194,8 @@ static bool compareElements( QDomElement &element1, QDomElement &element2 )
 
   if ( element1.text() != element2.text() )
   {
-    qDebug( "Different text: %s %s", tag1.toAscii().data(), element1.text().toAscii().data() );
-    qDebug( "Different text: %s %s", tag2.toAscii().data(), element2.text().toAscii().data() );
+    qDebug( "Different text: %s %s", tag1.toLatin1().data(), element1.text().toLatin1().data() );
+    qDebug( "Different text: %s %s", tag2.toLatin1().data(), element2.text().toLatin1().data() );
     return false;
   }
 
@@ -313,11 +313,11 @@ void TestQgsOgcUtils::testExpressionFromOgcFilterWFS20()
   std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, QgsOgcUtils::FILTER_FES_2_0, &layer ) );
   QVERIFY( expr.get() );
 
-  qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
-  qDebug( "EXPR-DUMP: %s", expr->expression().toAscii().data() );
+  qDebug( "OGC XML  : %s", xmlText.toLatin1().data() );
+  qDebug( "EXPR-DUMP: %s", expr->expression().toLatin1().data() );
 
   if ( expr->hasParserError() )
-    qDebug( "ERROR: %s ", expr->parserErrorString().toAscii().data() );
+    qDebug( "ERROR: %s ", expr->parserErrorString().toLatin1().data() );
   QVERIFY( !expr->hasParserError() );
 
   QCOMPARE( dumpText, expr->expression() );
@@ -463,6 +463,25 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
                                           "<Literal>+2</Literal>"
                                           "</PropertyIsEqualTo></Filter>" )
                                         << QStringLiteral( "LITERAL = '+2'" );
+
+  QTest::newRow( "not or list" ) << QStringLiteral( "<ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\">"
+                                 "<ogc:Not>"
+                                 " <ogc:Or>"
+                                 "  <ogc:PropertyIsEqualTo>"
+                                 "   <ogc:PropertyName>A</ogc:PropertyName>"
+                                 "   <ogc:Literal>1</ogc:Literal>"
+                                 "  </ogc:PropertyIsEqualTo>"
+                                 "  <ogc:PropertyIsEqualTo>"
+                                 "   <ogc:PropertyName>A</ogc:PropertyName>"
+                                 "   <ogc:Literal>2</ogc:Literal>"
+                                 "  </ogc:PropertyIsEqualTo>"
+                                 "  <ogc:PropertyIsEqualTo>"
+                                 "   <ogc:PropertyName>A</ogc:PropertyName>"
+                                 "   <ogc:Literal>3</ogc:Literal>"
+                                 "  </ogc:PropertyIsEqualTo>"
+                                 " </ogc:Or>"
+                                 "</ogc:Not>"
+                                 "</ogc:Filter>" ) << QStringLiteral( "NOT ( A = 1 OR A = 2 OR A = 3 )" );
 }
 
 void TestQgsOgcUtils::testExpressionFromOgcFilter()
@@ -479,11 +498,11 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter()
   std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
   QVERIFY( expr.get() );
 
-  qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
-  qDebug( "EXPR-DUMP: %s", expr->expression().toAscii().data() );
+  qDebug( "OGC XML  : %s", xmlText.toLatin1().data() );
+  qDebug( "EXPR-DUMP: %s", expr->expression().toLatin1().data() );
 
   if ( expr->hasParserError() )
-    qDebug( "ERROR: %s ", expr->parserErrorString().toAscii().data() );
+    qDebug( "ERROR: %s ", expr->parserErrorString().toLatin1().data() );
   QVERIFY( !expr->hasParserError() );
 
   QCOMPARE( dumpText, expr->expression() );
@@ -529,11 +548,11 @@ void TestQgsOgcUtils::testExpressionFromOgcFilterWithLongLong()
   std::unique_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
   QVERIFY( expr.get() );
 
-  qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
-  qDebug( "EXPR-DUMP: %s", expr->expression().toAscii().data() );
+  qDebug( "OGC XML  : %s", xmlText.toLatin1().data() );
+  qDebug( "EXPR-DUMP: %s", expr->expression().toLatin1().data() );
 
   if ( expr->hasParserError() )
-    qDebug( "ERROR: %s ", expr->parserErrorString().toAscii().data() );
+    qDebug( "ERROR: %s ", expr->parserErrorString().toLatin1().data() );
   QVERIFY( !expr->hasParserError() );
 
   QCOMPARE( dumpText, expr->expression() );
@@ -552,14 +571,14 @@ void TestQgsOgcUtils::testExpressionToOgcFilter()
   QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter( exp, doc, &errorMsg );
 
   if ( !errorMsg.isEmpty() )
-    qDebug( "ERROR: %s", errorMsg.toAscii().data() );
+    qDebug( "ERROR: %s", errorMsg.toLatin1().data() );
 
   QVERIFY( !filterElem.isNull() );
 
   doc.appendChild( filterElem );
 
-  qDebug( "EXPR: %s", exp.expression().toAscii().data() );
-  qDebug( "OGC : %s", doc.toString( -1 ).toAscii().data() );
+  qDebug( "EXPR: %s", exp.expression().toLatin1().data() );
+  qDebug( "OGC : %s", doc.toString( -1 ).toLatin1().data() );
 
 
   QDomElement xmlElem = comparableElement( xmlText );
@@ -716,15 +735,15 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS11()
                            QgsOgcUtils::GML_3_1_0, QgsOgcUtils::FILTER_OGC_1_1, QStringLiteral( "my_geometry_name" ), srsName, true, false, &errorMsg );
 
   if ( !errorMsg.isEmpty() )
-    qDebug( "ERROR: %s", errorMsg.toAscii().data() );
+    qDebug( "ERROR: %s", errorMsg.toLatin1().data() );
 
   QVERIFY( !filterElem.isNull() );
 
   doc.appendChild( filterElem );
 
-  qDebug( "EXPR: %s", exp.expression().toAscii().data() );
-  qDebug( "SRSNAME: %s", srsName.toAscii().data() );
-  qDebug( "OGC : %s", doc.toString( -1 ).toAscii().data() );
+  qDebug( "EXPR: %s", exp.expression().toLatin1().data() );
+  qDebug( "SRSNAME: %s", srsName.toLatin1().data() );
+  qDebug( "OGC : %s", doc.toString( -1 ).toLatin1().data() );
 
 
   QDomElement xmlElem = comparableElement( xmlText );
@@ -768,15 +787,15 @@ void TestQgsOgcUtils::testExpressionToOgcFilterWFS20()
                            QgsOgcUtils::GML_3_2_1, QgsOgcUtils::FILTER_FES_2_0, QStringLiteral( "my_geometry_name" ), srsName, true, false, &errorMsg );
 
   if ( !errorMsg.isEmpty() )
-    qDebug( "ERROR: %s", errorMsg.toAscii().data() );
+    qDebug( "ERROR: %s", errorMsg.toLatin1().data() );
 
   QVERIFY( !filterElem.isNull() );
 
   doc.appendChild( filterElem );
 
-  qDebug( "EXPR: %s", exp.expression().toAscii().data() );
-  qDebug( "SRSNAME: %s", srsName.toAscii().data() );
-  qDebug( "OGC : %s", doc.toString( -1 ).toAscii().data() );
+  qDebug( "EXPR: %s", exp.expression().toLatin1().data() );
+  qDebug( "SRSNAME: %s", srsName.toLatin1().data() );
+  qDebug( "OGC : %s", doc.toString( -1 ).toLatin1().data() );
 
   QDomElement xmlElem = comparableElement( xmlText );
   QDomElement ogcElem = comparableElement( doc.toString( -1 ) );
@@ -843,7 +862,7 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter()
   QgsSQLStatement statement( statementText );
   if ( !statement.hasParserError() )
   {
-    qDebug( "%s", statement.parserErrorString().toAscii().data() );
+    qDebug( "%s", statement.parserErrorString().toLatin1().data() );
     QVERIFY( !statement.hasParserError() );
   }
 
@@ -865,20 +884,20 @@ void TestQgsOgcUtils::testSQLStatementToOgcFilter()
                            &errorMsg );
 
   if ( !errorMsg.isEmpty() )
-    qDebug( "ERROR: %s", errorMsg.toAscii().data() );
+    qDebug( "ERROR: %s", errorMsg.toLatin1().data() );
 
   QVERIFY( !filterElem.isNull() );
 
   doc.appendChild( filterElem );
 
-  qDebug( "SQL:    %s", statement.statement().toAscii().data() );
+  qDebug( "SQL:    %s", statement.statement().toLatin1().data() );
   qDebug( "GML:    %s", gmlVersion == QgsOgcUtils::GML_2_1_2 ? "2.1.2" :
           gmlVersion == QgsOgcUtils::GML_3_1_0 ? "3.1.0" :
           gmlVersion == QgsOgcUtils::GML_3_2_1 ? "3.2.1" : "unknown" );
   qDebug( "FILTER: %s", filterVersion == QgsOgcUtils::FILTER_OGC_1_0 ? "OGC 1.0" :
           filterVersion == QgsOgcUtils::FILTER_OGC_1_1 ? "OGC 1.1" :
           filterVersion == QgsOgcUtils::FILTER_FES_2_0 ? "FES 2.0" : "unknown" );
-  qDebug( "OGC :   %s", doc.toString( -1 ).toAscii().data() );
+  qDebug( "OGC :   %s", doc.toString( -1 ).toLatin1().data() );
 
   QDomElement xmlElem = comparableElement( xmlText );
   QDomElement ogcElem = comparableElement( doc.toString( -1 ) );

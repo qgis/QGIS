@@ -25,6 +25,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsexpressioncontextutils.h"
 
 //TODO 4.0 add explicitly qobject parent to constructor
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )
@@ -278,11 +279,15 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     }
   }
 
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  QgsExpression exp( layer->displayExpression() );
+  exp.prepare( &context );
+  context.setFeature( results[0].mFeature );
   // use a menu only if actions will be listed
   if ( !createMenu )
   {
     // case 1
-    QString featureTitle = results[0].mFeature.attribute( layer->displayField() ).toString();
+    QString featureTitle = exp.evaluate( &context ).toString();
     if ( featureTitle.isEmpty() )
       featureTitle = QStringLiteral( "%1" ).arg( results[0].mFeature.id() );
     layerAction = new QAction( QStringLiteral( "%1 (%2)" ).arg( layer->name(), featureTitle ), this );
@@ -304,7 +309,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
       // case 2b
       else
       {
-        QString featureTitle = results[0].mFeature.attribute( layer->displayField() ).toString();
+        QString featureTitle = exp.evaluate( &context ).toString();
         if ( featureTitle.isEmpty() )
           featureTitle = QStringLiteral( "%1" ).arg( results[0].mFeature.id() );
         layerMenu = new QMenu( QStringLiteral( "%1 (%2)" ).arg( layer->name(), featureTitle ), this );
@@ -364,7 +369,8 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     }
 
     // feature title
-    QString featureTitle = result.mFeature.attribute( layer->displayField() ).toString();
+    context.setFeature( result.mFeature );
+    QString featureTitle = exp.evaluate( &context ).toString();
     if ( featureTitle.isEmpty() )
       featureTitle = QStringLiteral( "%1" ).arg( result.mFeature.id() );
 
@@ -498,7 +504,7 @@ void QgsIdentifyMenu::triggerMapLayerAction()
       {
         if ( result.mFeature.id() == actData.mFeatureId )
         {
-          actData.mMapLayerAction->triggerForFeature( actData.mLayer, new QgsFeature( result.mFeature ) );
+          actData.mMapLayerAction->triggerForFeature( actData.mLayer, result.mFeature );
           return;
         }
       }

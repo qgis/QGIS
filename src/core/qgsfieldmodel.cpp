@@ -411,6 +411,10 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       {
         return mLayer->attributeDisplayName( index.row() - fieldOffset );
       }
+      else if ( mFields.size() > index.row() - fieldOffset )
+      {
+        return mFields.field( index.row() - fieldOffset ).displayName();
+      }
       else
         return QVariant();
     }
@@ -489,4 +493,17 @@ QString QgsFieldModel::fieldToolTip( const QgsField &field )
   }
   toolTip += QStringLiteral( "<p>%1</p>" ).arg( typeString );
   return toolTip;
+}
+
+void QgsFieldModel::setFields( const QgsFields &fields )
+{
+  setLayer( nullptr );
+  beginResetModel();
+  mFields = fields;
+  endResetModel();
+}
+
+QgsFields QgsFieldModel::fields() const
+{
+  return mFields;
 }

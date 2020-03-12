@@ -59,6 +59,7 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsprojectdisplaysettings.h"
+#include "qgsprojecttimesettings.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -364,6 +365,7 @@ QgsProject::QgsProject( QObject *parent )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mViewSettings( new QgsProjectViewSettings( this ) )
+  , mTimeSettings( new QgsProjectTimeSettings( this ) )
   , mDisplaySettings( new QgsProjectDisplaySettings( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
@@ -471,6 +473,16 @@ void QgsProject::setTitle( const QString &title )
 QString QgsProject::title() const
 {
   return mMetadata.title();
+}
+
+QString QgsProject::saveUser() const
+{
+  return mSaveUser;
+}
+
+QString QgsProject::saveUserFullName() const
+{
+  return mSaveUserFull;
 }
 
 bool QgsProject::isDirty() const
@@ -725,6 +737,8 @@ void QgsProject::clear()
   mProjectScope.reset();
   mFile.setFileName( QString() );
   mProperties.clearKeys();
+  mSaveUser.clear();
+  mSaveUserFull.clear();
   mHomePath.clear();
   mCachedHomePath.clear();
   mAutoTransaction = false;
@@ -750,6 +764,7 @@ void QgsProject::clear()
   mLayoutManager->clear();
   mBookmarkManager->clear();
   mViewSettings->reset();
+  mTimeSettings->reset();
   mDisplaySettings->reset();
   mSnappingConfig.reset();
   emit snappingConfigChanged( mSnappingConfig );
@@ -900,6 +915,24 @@ static void _getTitle( const QDomDocument &doc, QString &title )
 
 }
 
+static void readProjectFileMetadata( const QDomDocument &doc, QString &lastUser, QString &lastUserFull )
+{
+  QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
+
+  if ( !nl.count() )
+  {
+    QgsDebugMsg( "unable to find qgis element" );
+    return;
+  }
+
+  QDomNode qgisNode = nl.item( 0 ); // there should only be one, so zeroth element OK
+
+  QDomElement qgisElement = qgisNode.toElement(); // qgis node should be element
+  lastUser = qgisElement.attribute( QStringLiteral( "saveUser" ), QString() );
+  lastUserFull = qgisElement.attribute( QStringLiteral( "saveUserFull" ), QString() );
+}
+
+
 QgsProjectVersion getVersion( const QDomDocument &doc )
 {
   QDomNodeList nl = doc.elementsByTagName( QStringLiteral( "qgis" ) );
@@ -975,7 +1008,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
 
     if ( element.attribute( QStringLiteral( "embedded" ) ) == QLatin1String( "1" ) )
     {
-      createEmbeddedLayer( element.attribute( QStringLiteral( "id" ) ), readPath( element.attribute( QStringLiteral( "project" ) ) ), brokenNodes, flags );
+      createEmbeddedLayer( element.attribute( QStringLiteral( "id" ) ), readPath( element.attribute( QStringLiteral( "project" ) ) ), brokenNodes, true, flags );
     }
     else
     {
@@ -1046,12 +1079,12 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   // have the layer restore state that is stored in Dom node
   QgsMapLayer::ReadFlags layerFlags = nullptr;
-  if ( flags & QgsProject::FlagDontResolveLayers )
+  if ( flags & QgsProject::ReadFlag::FlagDontResolveLayers )
     layerFlags |= QgsMapLayer::FlagDontResolveLayers;
   bool layerIsValid = mapLayer->readLayerXml( layerElem, context, layerFlags ) && mapLayer->isValid();
   QList<QgsMapLayer *> newLayers;
   newLayers << mapLayer.get();
-  if ( layerIsValid || flags & QgsProject::FlagDontResolveLayers )
+  if ( layerIsValid || flags & QgsProject::ReadFlag::FlagDontResolveLayers )
   {
     emit readMapLayer( mapLayer.get(), layerElem );
     addMapLayers( newLayers );
@@ -1234,6 +1267,8 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   // get older style project title
   QString oldTitle;
   _getTitle( *doc, oldTitle );
+
+  readProjectFileMetadata( *doc, mSaveUser, mSaveUserFull );
 
   QDomNodeList homePathNl = doc->elementsByTagName( QStringLiteral( "homePath" ) );
   if ( homePathNl.count() > 0 )
@@ -1472,7 +1507,7 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   emit labelingEngineSettingsChanged();
 
   mAnnotationManager->readXml( doc->documentElement(), context );
-  if ( !( flags & QgsProject::FlagDontLoadLayouts ) )
+  if ( !( flags & QgsProject::ReadFlag::FlagDontLoadLayouts ) )
     mLayoutManager->readXml( doc->documentElement(), *doc );
   mBookmarkManager->readXml( doc->documentElement(), *doc );
 
@@ -1507,6 +1542,11 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   if ( !viewSettingsElement.isNull() )
     mViewSettings->readXml( viewSettingsElement, context );
 
+  // restore time settings
+  QDomElement timeSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectTimeSettings" ) );
+  if ( !timeSettingsElement.isNull() )
+    mTimeSettings->readXml( timeSettingsElement, context );
+
   QDomElement displaySettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectDisplaySettings" ) );
   if ( !displaySettingsElement.isNull() )
     mDisplaySettings->readXml( displaySettingsElement, context );
@@ -1525,6 +1565,9 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   // if all went well, we're allegedly in pristine state
   if ( clean )
     setDirty( false );
+
+  QgsDebugMsgLevel( QString( "Project save user: %1" ).arg( mSaveUser ), 2 );
+  QgsDebugMsgLevel( QString( "Project save user: %1" ).arg( mSaveUserFull ), 2 );
 
   Q_NOWARN_DEPRECATED_PUSH
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
@@ -1550,9 +1593,9 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
 }
 
 
-void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags )
+bool QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFlags flags )
 {
-
+  bool valid = true;
   const auto constChildren = group->children();
   for ( QgsLayerTreeNode *child : constChildren )
   {
@@ -1586,11 +1629,16 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group, QgsProject::ReadFl
       if ( child->customProperty( QStringLiteral( "embedded" ) ).toInt() )
       {
         QList<QDomNode> brokenNodes;
-        createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), child->customProperty( QStringLiteral( "embedded_project" ) ).toString(), brokenNodes, flags );
+        if ( ! createEmbeddedLayer( QgsLayerTree::toLayer( child )->layerId(), readPath( child->customProperty( QStringLiteral( "embedded_project" ) ).toString() ), brokenNodes, true, flags ) )
+        {
+          valid = valid && false;
+        }
       }
     }
 
   }
+
+  return valid;
 }
 
 QVariantMap QgsProject::customVariables() const
@@ -1952,6 +2000,21 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.setAttribute( QStringLiteral( "projectname" ), title() );
   qgisNode.setAttribute( QStringLiteral( "version" ), QStringLiteral( "%1" ).arg( Qgis::version() ) );
 
+  QgsSettings settings;
+  if ( !settings.value( QStringLiteral( "projects/anonymize_saved_projects" ), false, QgsSettings::Core ).toBool() )
+  {
+    QString newSaveUser = QgsApplication::userLoginName();
+    QString newSaveUserFull = QgsApplication::userFullName();
+    qgisNode.setAttribute( QStringLiteral( "saveUser" ), newSaveUser );
+    qgisNode.setAttribute( QStringLiteral( "saveUserFull" ), newSaveUserFull );
+    mSaveUser = newSaveUser;
+    mSaveUserFull = newSaveUserFull;
+  }
+  else
+  {
+    mSaveUser.clear();
+    mSaveUserFull.clear();
+  }
   doc->appendChild( qgisNode );
 
   QDomElement homePathNode = doc->createElement( QStringLiteral( "homePath" ) );
@@ -2083,7 +2146,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   dump_( mProperties );
 #endif
 
-  QgsDebugMsgLevel( QStringLiteral( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ), 2 );
 
   if ( !mProperties.isEmpty() ) // only worry about properties if we
     // actually have any properties
@@ -2110,6 +2173,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   QDomElement viewSettingsElem = mViewSettings->writeXml( *doc, context );
   qgisNode.appendChild( viewSettingsElem );
+
+  QDomElement timeSettingsElement = mTimeSettings->writeXml( *doc, context );
+  qgisNode.appendChild( timeSettingsElement );
 
   QDomElement displaySettingsElem = mDisplaySettings->writeXml( *doc, context );
   qgisNode.appendChild( displaySettingsElem );
@@ -2191,7 +2257,6 @@ bool QgsProject::writeProjectFile( const QString &filename )
   setDirty( false );               // reset to pristine state
 
   emit projectSaved();
-
   return true;
 }
 
@@ -2817,6 +2882,16 @@ const QgsProjectViewSettings *QgsProject::viewSettings() const
 QgsProjectViewSettings *QgsProject::viewSettings()
 {
   return mViewSettings;
+}
+
+const QgsProjectTimeSettings *QgsProject::timeSettings() const
+{
+  return mTimeSettings;
+}
+
+QgsProjectTimeSettings *QgsProject::timeSettings()
+{
+  return mTimeSettings;
 }
 
 const QgsProjectDisplaySettings *QgsProject::displaySettings() const

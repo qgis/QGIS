@@ -671,3 +671,33 @@ CREATE VIEW qgis_test.b31799_test_view_ctid AS (SELECT ctid, geom, random() FROM
 CREATE VIEW qgis_test.b32523 AS
   SELECT pk, random()
   FROM qgis_test.some_poly_data;
+
+----------------------------------------------
+--
+-- IDENTITY pk
+-- See https://github.com/qgis/QGIS/issues/29560
+--
+
+CREATE TABLE qgis_test.b29560 (
+    gid int8 NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    geom geometry(polygon)
+);
+
+INSERT INTO qgis_test.b29560 (geom)
+VALUES ('POLYGON EMPTY'::geometry);
+
+
+---------------------------------------------
+--
+-- Aspatial table with default values
+--
+
+CREATE TABLE test_table_default_values (
+    id SERIAL primary key,
+    comment TEXT,
+    created_at_01 text DEFAULT now(),
+    created_at_02 text DEFAULT CURRENT_TIMESTAMP,
+    anumber INTEGER DEFAULT 123,
+    atext TEXT default 'My default'
+)
+

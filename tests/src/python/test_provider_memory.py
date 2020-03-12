@@ -10,6 +10,7 @@ __author__ = 'Matthias Kuhn'
 __date__ = '2015-04-23'
 __copyright__ = 'Copyright 2015, The QGIS Project'
 
+from urllib.parse import parse_qs
 
 from qgis.core import (
     QgsField,
@@ -651,6 +652,24 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexNotPresent)
         vl.dataProvider().createSpatialIndex()
         self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresent)
+
+    def testClone(self):
+        """Test that a cloned layer has a single new id and
+        the same fields as the source layer"""
+
+        vl = QgsVectorLayer(
+            'Point?crs=epsg:4326',
+            'test', 'memory')
+        self.assertTrue(vl.isValid)
+        dp = vl.dataProvider()
+        self.assertTrue(dp.addAttributes([QgsField("name", QVariant.String),
+                                          QgsField("age", QVariant.Int),
+                                          QgsField("size", QVariant.Double)]))
+        vl2 = vl.clone()
+        self.assertTrue('memory?geometry=Point&crs=EPSG:4326&field=name:(0,0)&field=age:(0,0)&field=size:(0,0)' in vl2.publicSource())
+        self.assertEqual(len(parse_qs(vl.publicSource())['uid']), 1)
+        self.assertEqual(len(parse_qs(vl2.publicSource())['uid']), 1)
+        self.assertNotEqual(parse_qs(vl2.publicSource())['uid'][0], parse_qs(vl.publicSource())['uid'][0])
 
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):

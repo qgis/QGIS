@@ -19,6 +19,7 @@
 #include "qgsogrprovider.h"
 #include "qgsmessagelog.h"
 #include "qgsproviderregistry.h"
+#include "qgsapplication.h"
 
 QgsGeoPackageProviderConnection::QgsGeoPackageProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
@@ -260,6 +261,11 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
     } ), tableInfo.end() );
   }
   return tableInfo ;
+}
+
+QIcon QgsGeoPackageProviderConnection::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mGeoPackage.svg" ) );
 }
 
 void QgsGeoPackageProviderConnection::setDefaultCapabilities()

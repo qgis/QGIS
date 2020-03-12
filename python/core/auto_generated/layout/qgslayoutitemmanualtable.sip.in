@@ -29,6 +29,8 @@ Constructor for QgsLayoutItemManualTable, attached to the specified ``layout``.
 Ownership is transferred to the layout.
 %End
 
+    ~QgsLayoutItemManualTable();
+
     virtual int type() const;
 
     virtual QIcon icon() const;
@@ -99,6 +101,34 @@ A width of 0 indicates that the column width should be automatically calculated.
 .. seealso:: :py:func:`columnWidths`
 
 .. seealso:: :py:func:`setColumnWidths`
+%End
+
+    bool includeTableHeader() const;
+%Docstring
+Returns ``True`` if the table includes a header row.
+
+.. seealso:: :py:func:`setIncludeTableHeader`
+%End
+
+    void setIncludeTableHeader( bool included );
+%Docstring
+Sets whether the table includes a header row.
+
+.. seealso:: :py:func:`includeTableHeader`
+%End
+
+    QgsLayoutTableColumns &headers();
+%Docstring
+Returns a reference to the list of headers shown in the table
+
+.. seealso:: :py:func:`setHeaders`
+%End
+
+    void setHeaders( const QgsLayoutTableColumns &headers );
+%Docstring
+Replaces the headers in the table with a specified list of :py:class:`QgsLayoutTableColumns`.
+
+.. seealso:: :py:func:`headers`
 %End
 
   protected:

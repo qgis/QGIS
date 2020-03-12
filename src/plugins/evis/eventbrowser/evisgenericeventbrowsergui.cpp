@@ -1157,7 +1157,7 @@ void eVisGenericEventBrowserGui::renderSymbol( QPainter *painter )
       QPixmap myTempPixmap( mPointerSymbol.height(), mPointerSymbol.height() );
       myTempPixmap.fill( QColor( 255, 255, 255, 0 ) );
       QPainter p( &myTempPixmap );
-      QMatrix wm;
+      QTransform wm;
       wm.translate( myTempPixmap.width() / 2, myTempPixmap.height() / 2 ); // really center
 
       double myBearing = mCompassBearing;
@@ -1183,7 +1183,7 @@ void eVisGenericEventBrowserGui::renderSymbol( QPainter *painter )
 
       wm.rotate( myBearing );
 
-      p.setWorldMatrix( wm );
+      p.setWorldTransform( wm );
       p.drawPixmap( -mPointerSymbol.width() / 2, -mPointerSymbol.height() / 2, mPointerSymbol );
 
       int xShift = static_cast<int>( myPoint.x() ) - ( myTempPixmap.width() / 2 );

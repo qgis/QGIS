@@ -109,7 +109,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Duplicates the current layer</string>
+          <string>Duplicate symbol layer</string>
          </property>
          <property name="text">
           <string/>
@@ -128,7 +128,7 @@
           </size>
          </property>
          <property name="sizeType">
-           <enum>QSizePolicy::Preferred</enum>       
+          <enum>QSizePolicy::Preferred</enum>
          </property>
         </spacer>
        </item>
@@ -174,7 +174,7 @@
           </size>
          </property>
          <property name="toolTip">
-          <string>Lock layer's color</string>
+          <string>Lock symbol layer's color</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
@@ -193,7 +193,7 @@
           </size>
          </property>
          <property name="sizeType">
-           <enum>QSizePolicy::Preferred</enum>       
+          <enum>QSizePolicy::Preferred</enum>
          </property>
         </spacer>
        </item>

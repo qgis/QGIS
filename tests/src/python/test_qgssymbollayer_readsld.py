@@ -442,10 +442,17 @@ class TestQgsSymbolLayerReadSld(unittest.TestCase):
         self.assertFalse(font.italic())
 
         self.assertEqual(format.size(), 18)
+        self.assertEqual(format.sizeUnit(), QgsUnitTypes.RenderPixels)
 
-        self.assertEqual(settings.placement, QgsPalLayerSettings.OverPoint)
+        # the layer contains lines
+        # from qgis.core import QgsWkbTypes
+        # self.assertEqual(layer.geometryType(), QgsWkbTypes.LineGeometry)
+        # the placement should be QgsPalLayerSettings.Line
+        self.assertEqual(settings.placement, QgsPalLayerSettings.AroundPoint)
+
         self.assertEqual(settings.xOffset, 1)
         self.assertEqual(settings.yOffset, 0)
+        self.assertEqual(settings.offsetUnits, QgsUnitTypes.RenderPixels)
 
 
 if __name__ == '__main__':

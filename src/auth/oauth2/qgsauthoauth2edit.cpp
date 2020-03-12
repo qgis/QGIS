@@ -798,8 +798,8 @@ void QgsAuthOAuth2Edit::exportOAuthConfig()
     QgsDebugMsg( QStringLiteral( "FAILED to export OAuth2 config file" ) );
   }
   // clear temp changes
-  mOAuthConfigCustom->setId( QString::null );
-  mOAuthConfigCustom->setName( QString::null );
+  mOAuthConfigCustom->setId( QString() );
+  mOAuthConfigCustom->setName( QString() );
 }
 
 

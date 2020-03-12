@@ -19,7 +19,7 @@
 #include "qgssettings.h"
 #include "qgspostgresprovider.h"
 #include "qgsexception.h"
-
+#include "qgsapplication.h"
 
 extern "C"
 {
@@ -117,25 +117,7 @@ QString QgsPostgresProviderConnection::tableUri( const QString &schema, const QS
   QgsDataSourceUri dsUri( uri() );
   dsUri.setTable( name );
   dsUri.setSchema( schema );
-  if ( tableInfo.flags().testFlag( QgsAbstractDatabaseProviderConnection::TableFlag::Raster ) )
-  {
-    const QRegularExpression removePartsRe { R"raw(\s*sql=\s*|\s*table=("[^"]+"\.?)*\s*)raw" };
-    if ( tableInfo.geometryColumn().isEmpty() )
-    {
-      throw QgsProviderConnectionException( QObject::tr( "Raster table '%1' in schema '%2' has no geometry column." )
-                                            .arg( name )
-                                            .arg( schema ) );
-    }
-    return QStringLiteral( "PG: %1 mode=2 schema='%2' table='%4' column='%3'" )
-           .arg( dsUri.uri( false ).replace( removePartsRe, QString() ) )
-           .arg( schema )
-           .arg( tableInfo.geometryColumn() )
-           .arg( name );
-  }
-  else
-  {
-    return dsUri.uri( false );
-  }
+  return dsUri.uri( false );
 }
 
 void QgsPostgresProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
@@ -246,7 +228,6 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
           if ( typeRes.size() > 0 && typeRes.first().size() > 0 )
           {
             static const QStringList intTypes = { QStringLiteral( "oid" ),
-                                                  QStringLiteral( "char" ),
                                                   QStringLiteral( "int2" ),
                                                   QStringLiteral( "int4" ),
                                                   QStringLiteral( "int8" )
@@ -281,6 +262,14 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             {
               vType = QVariant::Bool;
             }
+            else if ( typName == QStringLiteral( "char" ) )
+            {
+              vType = QVariant::Char;
+            }
+            else
+            {
+              QgsDebugMsg( QStringLiteral( "Unhandled PostgreSQL type %1" ).arg( typName ) );
+            }
           }
           typeMap[ rowIdx ] = vType;
         }
@@ -295,9 +284,12 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             const QVariant::Type vType { typeMap.value( colIdx, QVariant::Type::String ) };
             QVariant val { res.PQgetvalue( rowIdx, colIdx ) };
             // Special case for bools: 'f' and 't'
-            if ( vType == QVariant::Bool && ! val.isNull() )
+            if ( vType == QVariant::Bool )
             {
-              val = val.toString() == 't';
+              if ( ! val.toString().isEmpty() )
+              {
+                val = val.toString() == 't';
+              }
             }
             else if ( val.canConvert( static_cast<int>( vType ) ) )
             {
@@ -370,7 +362,10 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
         {
           prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::MaterializedView );
         }
-        // Table type
+        if ( pr.isForeignTable )
+        {
+          prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::Foreign );
+        }
         if ( pr.isRaster )
         {
           prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::Raster );
@@ -502,5 +497,10 @@ void QgsPostgresProviderConnection::store( const QString &name ) const
 void QgsPostgresProviderConnection::remove( const QString &name ) const
 {
   QgsPostgresConn::deleteConnection( name );
+}
+
+QIcon QgsPostgresProviderConnection::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconPostgis.svg" ) );
 }
 

@@ -907,6 +907,14 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         vl.dataProvider().createSpatialIndex()
         self.assertEqual(vl.hasSpatialIndex(), QgsFeatureSource.SpatialIndexPresent)
 
+    def testEncodeuri(self):
+        # URI decoding
+        filename = '/home/to/path/test.csv'
+        registry = QgsProviderRegistry.instance()
+        parts = {'path': filename}
+        uri = registry.encodeUri('delimitedtext', parts)
+        self.assertEqual(uri, 'file://' + filename)
+
 
 if __name__ == '__main__':
     unittest.main()

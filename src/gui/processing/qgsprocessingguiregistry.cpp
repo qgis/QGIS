@@ -46,6 +46,8 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingCoordinateOperationWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingFieldWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingMapThemeWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDateTimeWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingProviderConnectionWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

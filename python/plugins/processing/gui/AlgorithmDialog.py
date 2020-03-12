@@ -259,10 +259,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
                     self.cancelButton().setEnabled(False)
 
-                    if not self.in_place:
-                        self.finish(ok, results, self.context, self.feedback)
-                    elif ok:
-                        self.close()
+                    self.finish(ok, results, self.context, self.feedback, in_place=self.in_place)
 
                     self.feedback = None
                     self.context = None
@@ -316,10 +313,10 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.messageBar().pushMessage("", e.message,
                                           level=Qgis.Warning, duration=5)
 
-    def finish(self, successful, result, context, feedback):
+    def finish(self, successful, result, context, feedback, in_place=False):
         keepOpen = not successful or ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
-        if self.iterateParam is None:
+        if not in_place and self.iterateParam is None:
 
             # add html results to results dock
             for out in self.algorithm().outputDefinitions():
@@ -334,7 +331,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.setResults(result)
         self.setInfo(self.tr('Algorithm \'{0}\' finished').format(self.algorithm().displayName()), escapeHtml=False)
 
-        if not keepOpen:
+        if not in_place and not keepOpen:
             self.close()
         else:
             self.resetGui()

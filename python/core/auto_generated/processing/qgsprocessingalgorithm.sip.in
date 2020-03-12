@@ -46,6 +46,7 @@ Abstract base class for processing algorithms.
       FlagDisplayNameIsLiteral,
       FlagSupportsInPlaceEdits,
       FlagKnownIssues,
+      FlagCustomException,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
@@ -529,9 +530,8 @@ algorithm should be canceled and exited early.
 
 This method will not be called if the prepareAlgorithm() step failed (returned ``False``).
 
-c++ implementations of processAlgorithm can throw the QgsProcessingException exception
-to indicate that a fatal error occurred within the execution. Python based subclasses
-should raise GeoAlgorithmExecutionException for the same purpose.
+Implementations of processAlgorithm can throw the QgsProcessingException exception
+to indicate that a fatal error occurred within the execution.
 
 :return: A map of algorithm outputs. These may be output layer references, or calculated
          values such as statistical calculations. Unless the algorithm subclass overrides
@@ -866,6 +866,13 @@ Evaluates the parameter with matching ``name`` to a print layout item, taken fro
 Evaluates the parameter with matching ``name`` to a color, or returns an invalid color if the parameter was not set.
 
 .. versionadded:: 3.10
+%End
+
+    QString parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``name`` to a connection name string.
+
+.. versionadded:: 3.14
 %End
 
     static QString invalidSourceError( const QVariantMap &parameters, const QString &name );

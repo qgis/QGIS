@@ -94,6 +94,13 @@ Returns an expression context scope used to resolve underlying actions.
 .. versionadded:: 3.0
 %End
 
+    QList<QgsAction> menuActions();
+%Docstring
+Returns menu actions
+
+.. versionadded:: 3.12
+%End
+
   signals:
     void reinit();
 

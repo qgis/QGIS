@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsvectorfilewritertask.h"
-
+#include "qgsvectorlayer.h"
 
 QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer *layer, const QString &fileName, const QgsVectorFileWriter::SaveVectorOptions &options )
   : QgsTask( tr( "Saving %1" ).arg( fileName ), QgsTask::CanCancel )
@@ -36,6 +36,11 @@ QgsVectorFileWriterTask::QgsVectorFileWriterTask( QgsVectorLayer *layer, const Q
     mOptions.feedback = mOwnedFeedback.get();
   }
 
+  if ( layer )
+  {
+    mTransformContext = layer->transformContext();
+  }
+
   mError = QgsVectorFileWriter::prepareWriteAsVectorFormat( layer, mOptions, mWriterDetails );
 }
 
@@ -53,8 +58,8 @@ bool QgsVectorFileWriterTask::run()
   connect( mOptions.feedback, &QgsFeedback::progressChanged, this, &QgsVectorFileWriterTask::setProgress );
 
 
-  mError = QgsVectorFileWriter::writeAsVectorFormat(
-             mWriterDetails, mDestFileName, mOptions, &mNewFilename, &mErrorMessage, &mNewLayer );
+  mError = QgsVectorFileWriter::writeAsVectorFormatV2(
+             mWriterDetails, mDestFileName, mTransformContext, mOptions, &mNewFilename, &mNewLayer, &mErrorMessage );
   return mError == QgsVectorFileWriter::NoError;
 }
 

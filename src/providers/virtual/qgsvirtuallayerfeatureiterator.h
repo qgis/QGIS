@@ -25,7 +25,7 @@ email                : hugo dot mercier at oslandia dot com
 #include <memory>
 #include <QPointer>
 
-class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
+class QgsVirtualLayerFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     QgsVirtualLayerFeatureSource( const QgsVirtualLayerProvider *p );
@@ -52,7 +52,7 @@ class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
     friend class QgsVirtualLayerFeatureIterator;
 };
 
-class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsVirtualLayerFeatureSource>
+class QgsVirtualLayerFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsVirtualLayerFeatureSource>
 {
   public:
     QgsVirtualLayerFeatureIterator( QgsVirtualLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );

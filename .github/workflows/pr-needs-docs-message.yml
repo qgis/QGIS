@@ -7,7 +7,7 @@ on:
       - labeled
 jobs:
   test:
-    if: contains( github.event.pull_request.labels.*.name, 'Needs Documentation')
+    if: github.event.label.name == 'Needs Documentation'
     runs-on: ubuntu-latest
     steps:
       # obfuscate the github token so it can be used on jobs triggered from forks

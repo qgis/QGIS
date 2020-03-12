@@ -132,13 +132,14 @@ QVariant CustomLayerOrderModel::data( const QModelIndex &index, int role ) const
 
 bool CustomLayerOrderModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
+  Q_UNUSED( value ); // Toggle
   if ( role == Qt::CheckStateRole )
   {
     QString id = mOrder.at( index.row() );
     QgsLayerTreeLayer *nodeLayer = mBridge->rootGroup()->findLayer( id );
     if ( nodeLayer )
     {
-      nodeLayer->setItemVisibilityChecked( static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked );
+      nodeLayer->setItemVisibilityChecked( ! nodeLayer->itemVisibilityChecked() );
       return true;
     }
   }

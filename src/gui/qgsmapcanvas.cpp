@@ -75,6 +75,7 @@ email                : sherman at mrcc.com
 #include "qgscustomdrophandler.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsmaplayertemporalproperties.h"
 
 /**
  * \ingroup gui
@@ -194,6 +195,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   // Enable touch event on Windows.
   // Qt on Windows needs to be told it can take touch events or else it ignores them.
   grabGesture( Qt::PinchGesture );
+  grabGesture( Qt::TapAndHoldGesture );
   viewport()->setAttribute( Qt::WA_AcceptTouchEvents );
 #endif
 
@@ -211,6 +213,8 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   // make sure we have the same default in QgsMapSettings and the scene's background brush
   // (by default map settings has white bg color, scene background brush is black)
   setCanvasColor( mSettings.backgroundColor() );
+
+  setTemporalRange( mSettings.temporalRange() );
 
   refresh();
 
@@ -723,6 +727,33 @@ void QgsMapCanvas::setPreviewJobsEnabled( bool enabled )
 void QgsMapCanvas::setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler> > &handlers )
 {
   mDropHandlers = handlers;
+}
+
+void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
+{
+  if ( temporalRange() == dateTimeRange )
+    return;
+
+  mSettings.setTemporalRange( dateTimeRange );
+
+  if ( mCache )
+  {
+    // we need to discard any previously cached images which have temporal properties enabled, so that these will be updated when
+    // the canvas is redrawn
+    const QList<QgsMapLayer *> layers;
+    for ( QgsMapLayer *layer : layers )
+    {
+      if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
+        mCache->invalidateCacheForLayer( layer );
+    }
+  }
+
+  emit temporalRangeChanged();
+}
+
+const QgsDateTimeRange &QgsMapCanvas::temporalRange() const
+{
+  return mSettings.temporalRange();
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
@@ -1639,7 +1670,7 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
     return;
   }
 
-  double zoomFactor = mWheelZoomFactor;
+  double zoomFactor = e->angleDelta().y() > 0 ? 1. / zoomInFactor() : zoomOutFactor();
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
   zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( e->angleDelta().y() );
@@ -1670,13 +1701,13 @@ void QgsMapCanvas::setWheelFactor( double factor )
 void QgsMapCanvas::zoomIn()
 {
   // magnification is alreday handled in zoomByFactor
-  zoomByFactor( 1 / mWheelZoomFactor );
+  zoomByFactor( zoomInFactor() );
 }
 
 void QgsMapCanvas::zoomOut()
 {
   // magnification is alreday handled in zoomByFactor
-  zoomByFactor( mWheelZoomFactor );
+  zoomByFactor( zoomOutFactor() );
 }
 
 void QgsMapCanvas::zoomScale( double newScale )
@@ -1686,7 +1717,7 @@ void QgsMapCanvas::zoomScale( double newScale )
 
 void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
 {
-  double scaleFactor = ( zoomIn ? 1 / mWheelZoomFactor : mWheelZoomFactor );
+  double scaleFactor = ( zoomIn ? zoomInFactor() : zoomOutFactor() );
 
   if ( mScaleLocked )
   {
@@ -1771,22 +1802,24 @@ void QgsMapCanvas::setMapTool( QgsMapTool *tool, bool clean )
 
   // set new map tool and activate it
   mMapTool = tool;
+  emit mapToolSet( mMapTool, oldTool );
   if ( mMapTool )
   {
     connect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
     mMapTool->activate();
   }
 
-  emit mapToolSet( mMapTool, oldTool );
 } // setMapTool
 
 void QgsMapCanvas::unsetMapTool( QgsMapTool *tool )
 {
   if ( mMapTool && mMapTool == tool )
   {
-    mMapTool->deactivate();
+    disconnect( mMapTool, &QObject::destroyed, this, &QgsMapCanvas::mapToolDestroyed );
+    QgsMapTool *oldTool = mMapTool;
     mMapTool = nullptr;
-    emit mapToolSet( nullptr, mMapTool );
+    oldTool->deactivate();
+    emit mapToolSet( nullptr, oldTool );
     setCursor( Qt::ArrowCursor );
   }
 
@@ -2335,6 +2368,14 @@ bool QgsMapCanvas::event( QEvent *e )
   {
     if ( e->type() == QEvent::Gesture )
     {
+      if ( QTapAndHoldGesture *tapAndHoldGesture = qobject_cast< QTapAndHoldGesture * >( static_cast<QGestureEvent *>( e )->gesture( Qt::TapAndHoldGesture ) ) )
+      {
+        QPointF pos = tapAndHoldGesture->position();
+        pos = mapFromGlobal( QPoint( pos.x(), pos.y() ) );
+        QgsPointXY mapPoint = getCoordinateTransform()->toMapCoordinates( pos.x(), pos.y() );
+        emit tapAndHoldGestureOccurred( mapPoint, tapAndHoldGesture );
+      }
+
       // call handler of current map tool
       if ( mMapTool )
       {
@@ -2425,6 +2466,12 @@ const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
 void QgsMapCanvas::startPreviewJobs()
 {
   stopPreviewJobs(); //just in case still running
+
+  //canvas preview jobs aren't compatible with rotation
+  // TODO fix this
+  if ( !qgsDoubleNear( mSettings.rotation(), 0.0 ) )
+    return;
+
   schedulePreviewJob( 0 );
 }
 
@@ -2462,7 +2509,8 @@ void QgsMapCanvas::startPreviewJob( int number )
   for ( QgsMapLayer *layer : layers )
   {
     context.lastRenderingTimeMs = mLastLayerRenderTime.value( layer->id(), 0 );
-    if ( !layer->dataProvider()->renderInPreview( context ) )
+    QgsDataProvider *provider = layer->dataProvider();
+    if ( provider && !provider->renderInPreview( context ) )
     {
       QgsDebugMsgLevel( QStringLiteral( "Layer %1 not rendered because it does not match the renderInPreview criterion %2" ).arg( layer->id() ).arg( mLastLayerRenderTime.value( layer->id() ) ), 3 );
       continue;
@@ -2519,4 +2567,51 @@ bool QgsMapCanvas::panOperationInProgress()
   }
 
   return false;
+}
+
+int QgsMapCanvas::nextZoomLevel( const QList<double> &resolutions, bool zoomIn ) const
+{
+  int resolutionLevel = -1;
+  double currentResolution = mapUnitsPerPixel();
+
+  for ( int i = 0, n = resolutions.size(); i < n; ++i )
+  {
+    if ( qgsDoubleNear( resolutions[i], currentResolution, 0.0001 ) )
+    {
+      resolutionLevel = zoomIn ? ( i - 1 ) : ( i + 1 );
+      break;
+    }
+    else if ( currentResolution <= resolutions[i] )
+    {
+      resolutionLevel = zoomIn ? ( i - 1 ) : i;
+      break;
+    }
+  }
+  return ( resolutionLevel < 0 || resolutionLevel >= resolutions.size() ) ? -1 : resolutionLevel;
+}
+
+double QgsMapCanvas::zoomInFactor() const
+{
+  if ( !mZoomResolutions.isEmpty() )
+  {
+    int zoomLevel = nextZoomLevel( mZoomResolutions, true );
+    if ( zoomLevel != -1 )
+    {
+      return mZoomResolutions.at( zoomLevel ) / mapUnitsPerPixel();
+    }
+  }
+  return 1 / mWheelZoomFactor;
+}
+
+double QgsMapCanvas::zoomOutFactor() const
+{
+  if ( !mZoomResolutions.isEmpty() )
+  {
+    int zoomLevel = nextZoomLevel( mZoomResolutions, false );
+    if ( zoomLevel != -1 )
+    {
+      return mZoomResolutions.at( zoomLevel ) / mapUnitsPerPixel();
+    }
+  }
+  return mWheelZoomFactor;
 }

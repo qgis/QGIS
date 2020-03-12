@@ -108,7 +108,8 @@ QString QgsWFSFeatureDownloaderImpl::sanitizeFilter( QString filter )
 QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, int maxFeatures, bool forHits )
 {
   QUrl getFeatureUrl( mShared->mURI.requestUrl( QStringLiteral( "GetFeature" ) ) );
-  getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
+  QUrlQuery query( getFeatureUrl );
+  query.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
 
   QString typenames;
   QString namespaces;
@@ -127,12 +128,12 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, int maxFeatures, 
     }
   }
   if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
-    getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ),  typenames );
-  getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAME" ),  typenames );
+    query.addQueryItem( QStringLiteral( "TYPENAMES" ),  typenames );
+  query.addQueryItem( QStringLiteral( "TYPENAME" ),  typenames );
 
   if ( forHits )
   {
-    getFeatureUrl.addQueryItem( QStringLiteral( "RESULTTYPE" ), QStringLiteral( "hits" ) );
+    query.addQueryItem( QStringLiteral( "RESULTTYPE" ), QStringLiteral( "hits" ) );
   }
   else if ( maxFeatures > 0 )
   {
@@ -144,20 +145,20 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, int maxFeatures, 
       // For example http://demo.opengeo.org/geoserver/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=ne:ne_10m_admin_0_countries&STARTINDEX=0&COUNT=253
       // doesn't include ne_10m_admin_0_countries.99, as expected since it is
       // at index 254.
-      getFeatureUrl.addQueryItem( QStringLiteral( "STARTINDEX" ), QString::number( startIndex ) );
+      query.addQueryItem( QStringLiteral( "STARTINDEX" ), QString::number( startIndex ) );
     }
     if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
-      getFeatureUrl.addQueryItem( QStringLiteral( "COUNT" ), QString::number( maxFeatures ) );
+      query.addQueryItem( QStringLiteral( "COUNT" ), QString::number( maxFeatures ) );
     else
-      getFeatureUrl.addQueryItem( QStringLiteral( "MAXFEATURES" ), QString::number( maxFeatures ) );
+      query.addQueryItem( QStringLiteral( "MAXFEATURES" ), QString::number( maxFeatures ) );
   }
   QString srsName( mShared->srsName() );
   if ( !srsName.isEmpty() && !forHits )
   {
-    getFeatureUrl.addQueryItem( QStringLiteral( "SRSNAME" ), srsName );
+    query.addQueryItem( QStringLiteral( "SRSNAME" ), srsName );
   }
 
-  const auto &rect = mShared->currentRect();
+  const QgsRectangle &rect = mShared->currentRect();
 
   // In case we must issue a BBOX and we have a filter, we must combine
   // both as a single filter, as both BBOX and FILTER aren't supported together
@@ -211,7 +212,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, int maxFeatures, 
     andElem.appendChild( filterNode );
     doc.firstChildElement().appendChild( andElem );
 
-    getFeatureUrl.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( doc.toString() ) );
+    query.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( doc.toString() ) );
   }
   else if ( !rect.isNull() )
   {
@@ -248,21 +249,21 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, int maxFeatures, 
       // it. See #15464
       bbox += "," + mShared->srsName();
     }
-    getFeatureUrl.addQueryItem( QStringLiteral( "BBOX" ),  bbox );
+    query.addQueryItem( QStringLiteral( "BBOX" ),  bbox );
   }
   else if ( !mShared->mWFSFilter.isEmpty() )
   {
-    getFeatureUrl.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( mShared->mWFSFilter ) );
+    query.addQueryItem( QStringLiteral( "FILTER" ), sanitizeFilter( mShared->mWFSFilter ) );
   }
 
   if ( !mShared->mSortBy.isEmpty() && !forHits )
   {
-    getFeatureUrl.addQueryItem( QStringLiteral( "SORTBY" ), mShared->mSortBy );
+    query.addQueryItem( QStringLiteral( "SORTBY" ), mShared->mSortBy );
   }
 
   if ( !forHits && !mShared->mURI.outputFormat().isEmpty() )
   {
-    getFeatureUrl.addQueryItem( QStringLiteral( "OUTPUTFORMAT" ), mShared->mURI.outputFormat() );
+    query.addQueryItem( QStringLiteral( "OUTPUTFORMAT" ), mShared->mURI.outputFormat() );
   }
   else if ( !forHits && mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
   {
@@ -279,8 +280,8 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, int maxFeatures, 
     {
       if ( mShared->mCaps.outputFormats.contains( format ) )
       {
-        getFeatureUrl.addQueryItem( QStringLiteral( "OUTPUTFORMAT" ),
-                                    format );
+        query.addQueryItem( QStringLiteral( "OUTPUTFORMAT" ),
+                            format );
         break;
       }
     }
@@ -289,12 +290,12 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, int maxFeatures, 
   if ( !namespaces.isEmpty() )
   {
     if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
-      getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaces );
-    getFeatureUrl.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaces );
+      query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaces );
+    query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaces );
   }
 
+  getFeatureUrl.setQuery( query );
   QgsDebugMsgLevel( QStringLiteral( "WFS GetFeature URL: %1" ).arg( getFeatureUrl.toDisplayString( ) ), 2 );
-
   return getFeatureUrl;
 }
 
@@ -417,7 +418,9 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures )
     // Small hack for testing purposes
     if ( retryIter > 0 && url.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
     {
-      url.addQueryItem( QStringLiteral( "RETRY" ), QString::number( retryIter ) );
+      QUrlQuery query( url );
+      query.addQueryItem( QStringLiteral( "RETRY" ), QString::number( retryIter ) );
+      url.setQuery( query );
     }
 
     sendGET( url,

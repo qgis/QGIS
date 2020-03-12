@@ -57,7 +57,7 @@ class QgsSpatialIndex;
  * between QgsDelimitedTextFile and QgsDelimitedTextProvider.
  *
  */
-class QgsDelimitedTextProvider : public QgsVectorDataProvider
+class QgsDelimitedTextProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -234,12 +234,13 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     friend class QgsDelimitedTextFeatureSource;
 };
 
-class QgsDelimitedTextProviderMetadata: public QgsProviderMetadata
+class QgsDelimitedTextProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsDelimitedTextProviderMetadata();
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
 };
 
 #endif

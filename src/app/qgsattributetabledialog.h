@@ -34,7 +34,6 @@ class QPushButton;
 class QLineEdit;
 class QComboBox;
 class QMenu;
-class QSignalMapper;
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
 class QgsRubberBand;
@@ -153,6 +152,11 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * deletes the selected features
      */
     void mActionDeleteSelected_triggered();
+
+    /**
+     * Opens organize columns dialog
+     */
+    void mActionOrganizeColumns_triggered();
 
     /**
      * Called when the current index changes in the main view

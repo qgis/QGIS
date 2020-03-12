@@ -58,6 +58,10 @@ class Datasources2Vrt(GdalAlgorithm):
     def tags(self):
         return ['ogr', 'gdal', 'vrt', 'create']
 
+    def shortHelpString(self):
+        return self.tr("This algorithm creates a virtual layer that contains a set of vector layers.\n\n"
+                       "The output virtual layer will not be opened in the current project.")
+
     def __init__(self):
         super().__init__()
 

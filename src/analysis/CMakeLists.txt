@@ -43,6 +43,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmdeleteduplicategeometries.cpp
   processing/qgsalgorithmdensifygeometriesbycount.cpp
   processing/qgsalgorithmdensifygeometriesbyinterval.cpp
+  processing/qgsalgorithmdetectdatasetchanges.cpp
   processing/qgsalgorithmdifference.cpp
   processing/qgsalgorithmdissolve.cpp
   processing/qgsalgorithmdrape.cpp
@@ -63,6 +64,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmextractvertices.cpp
   processing/qgsalgorithmextractspecificvertices.cpp
   processing/qgsalgorithmfiledownloader.cpp
+  processing/qgsalgorithmfillnodata.cpp
   processing/qgsalgorithmfilter.cpp
   processing/qgsalgorithmfiltervertices.cpp
   processing/qgsalgorithmfixgeometries.cpp
@@ -106,6 +108,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpoleofinaccessibility.cpp
   processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
+  processing/qgsalgorithmraiseexception.cpp
   processing/qgsalgorithmrandomextract.cpp
   processing/qgsalgorithmrandompointsextent.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
@@ -115,6 +118,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrastersurfacevolume.cpp
   processing/qgsalgorithmrasterzonalstats.cpp
   processing/qgsalgorithmreclassifybylayer.cpp
+  processing/qgsalgorithmrectanglesovalsdiamonds.cpp
   processing/qgsalgorithmremoveduplicatesbyattribute.cpp
   processing/qgsalgorithmremoveduplicatevertices.cpp
   processing/qgsalgorithmremoveholes.cpp
@@ -129,11 +133,13 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsegmentize.cpp
   processing/qgsalgorithmserviceareafromlayer.cpp
   processing/qgsalgorithmserviceareafrompoint.cpp
+  processing/qgsalgorithmsetlayerencoding.cpp
   processing/qgsalgorithmsetmvalue.cpp
   processing/qgsalgorithmsetzvalue.cpp
   processing/qgsalgorithmshortestpathlayertopoint.cpp
   processing/qgsalgorithmshortestpathpointtolayer.cpp
   processing/qgsalgorithmshortestpathpointtopoint.cpp
+  processing/qgsalgorithmshpencodinginfo.cpp
   processing/qgsalgorithmsimplify.cpp
   processing/qgsalgorithmsinglesidedbuffer.cpp
   processing/qgsalgorithmslope.cpp
@@ -206,6 +212,7 @@ SET(QGIS_ANALYSIS_SRCS
   vector/geometry_checker/qgsgeometryanglecheck.cpp
   vector/geometry_checker/qgsgeometryareacheck.cpp
   vector/geometry_checker/qgsgeometrycheck.cpp
+  vector/geometry_checker/qgsgeometrycheckresolutionmethod.cpp
   vector/geometry_checker/qgsgeometrycheckcontext.cpp
   vector/geometry_checker/qgsgeometrychecker.cpp
   vector/geometry_checker/qgsgeometrycheckerror.cpp
@@ -298,6 +305,7 @@ SET(QGIS_ANALYSIS_HDRS
   vector/geometry_checker/qgsgeometryanglecheck.h
   vector/geometry_checker/qgsgeometryareacheck.h
   vector/geometry_checker/qgsgeometrycheck.h
+  vector/geometry_checker/qgsgeometrycheckresolutionmethod.h
   vector/geometry_checker/qgsgeometrycheckcontext.h
   vector/geometry_checker/qgsgeometrychecker.h
   vector/geometry_checker/qgsgeometrycheckerror.h

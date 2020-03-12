@@ -19,7 +19,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsapplication.h"
 #include "qgswebframe.h"
-
+#include <QScreen>
 
 QgsHtmlWidgetWrapper::QgsHtmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
@@ -46,13 +46,20 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget->setHtml( mHtmlCode );
 #ifdef WITH_QTWEBKIT
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
+#else
+  const int horizontalDpi = mWidget->logicalDpiX();
+#endif
+
   mWidget->setZoomFactor( horizontalDpi / 96.0 );
 
   QWebPage *page = mWidget->page();
   connect( page, &QWebPage::contentsChanged, this, &QgsHtmlWidgetWrapper::fixHeight, Qt::ConnectionType::UniqueConnection );
-#endif
+  connect( page, &QWebPage::loadFinished, this, [ = ]( bool ) { fixHeight(); }, Qt::ConnectionType::UniqueConnection );
 
+#endif
 }
 
 
@@ -74,9 +81,13 @@ void QgsHtmlWidgetWrapper::setHtmlContext( )
   if ( !mWidget )
     return;
 
-  QgsAttributeEditorContext attributecontext = context();
+  const QgsAttributeEditorContext attributecontext = context();
   QgsExpressionContext expressionContext = layer()->createExpressionContext();
   expressionContext << QgsExpressionContextUtils::formScope( mFeature, attributecontext.attributeFormModeString() );
+  if ( attributecontext.parentFormFeature().isValid() )
+  {
+    expressionContext << QgsExpressionContextUtils::parentFormScope( attributecontext.parentFormFeature() );
+  }
   expressionContext.setFeature( mFeature );
 
   HtmlExpression *htmlExpression = new HtmlExpression();

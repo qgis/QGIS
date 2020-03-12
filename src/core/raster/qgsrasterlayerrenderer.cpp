@@ -48,7 +48,7 @@ void QgsRasterLayerRendererFeedback::onNewData()
   // TODO: update only the area that got new data
 
   QgsDebugMsgLevel( QStringLiteral( "new raster preview! %1" ).arg( mLastPreview.msecsTo( QTime::currentTime() ) ), 3 );
-  QTime t;
+  QElapsedTimer t;
   t.start();
   QgsRasterBlockFeedback feedback;
   feedback.setPreviewOnly( true );
@@ -102,7 +102,9 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     {
       try
       {
-        myProjectedViewExtent = rendererContext.coordinateTransform().transformBoundingBox( rendererContext.extent() );
+        QgsCoordinateTransform ct = rendererContext.coordinateTransform();
+        ct.setBallparkTransformsAreAppropriate( true );
+        myProjectedViewExtent = ct.transformBoundingBox( rendererContext.extent() );
       }
       catch ( QgsCsException &cs )
       {
@@ -113,7 +115,9 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
     try
     {
-      myProjectedLayerExtent = rendererContext.coordinateTransform().transformBoundingBox( layer->extent() );
+      QgsCoordinateTransform ct = rendererContext.coordinateTransform();
+      ct.setBallparkTransformsAreAppropriate( true );
+      myProjectedLayerExtent = ct.transformBoundingBox( layer->extent() );
     }
     catch ( QgsCsException &cs )
     {
@@ -223,6 +227,24 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   QgsRasterRenderer *rasterRenderer = mPipe->renderer();
   if ( rasterRenderer && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob ) )
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
+
+  if ( layer->temporalProperties()->isActive() && renderContext()->isTemporal() )
+  {
+    switch ( layer->temporalProperties()->mode() )
+    {
+      case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+        break;
+
+      case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+        // in this mode we need to pass on the desired render temporal range to the data provider
+        if ( mPipe->provider()->temporalCapabilities() )
+        {
+          mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( rendererContext.temporalRange() );
+          mPipe->provider()->temporalCapabilities()->setRequestedReferenceTemporalRange( layer->temporalProperties()->referenceTemporalRange() );
+        }
+        break;
+    }
+  }
 }
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
@@ -240,7 +262,7 @@ bool QgsRasterLayerRenderer::render()
 
   //R->draw( mPainter, mRasterViewPort, &mMapToPixel );
 
-  QTime time;
+  QElapsedTimer time;
   time.start();
   //
   //

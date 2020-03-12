@@ -128,7 +128,7 @@ void QgsServiceRegistry::registerService( QgsService *service )
     return;
   }
 
-  QgsMessageLog::logMessage( QStringLiteral( "Adding service %1 %2" ).arg( name, version ) );
+  QgsMessageLog::logMessage( QStringLiteral( "Adding service %1 %2" ).arg( name, version ), QStringLiteral( "Server" ), Qgis::Info );
   mServices.insert( key, std::shared_ptr<QgsService>( service ) );
 
   // Check the default version

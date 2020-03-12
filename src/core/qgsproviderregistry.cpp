@@ -94,7 +94,7 @@ QgsProviderRegistry::QgsProviderRegistry( const QString &pluginPath )
   QString baseDir = appDir.left( bin );
   QString mLibraryDirectory = baseDir + "/lib";
 #endif
-  mLibraryDirectory = pluginPath;
+  mLibraryDirectory.setPath( pluginPath );
   init();
 }
 
@@ -403,6 +403,15 @@ QVariantMap QgsProviderRegistry::decodeUri( const QString &providerKey, const QS
     return meta->decodeUri( uri );
   else
     return QVariantMap();
+}
+
+QString QgsProviderRegistry::encodeUri( const QString &providerKey, const QVariantMap &parts )
+{
+  QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
+  if ( meta )
+    return meta->encodeUri( parts );
+  else
+    return QString();
 }
 
 QgsVectorLayerExporter::ExportError QgsProviderRegistry::createEmptyLayer( const QString &providerKey,

@@ -61,6 +61,7 @@ class TestQgsMapCanvas : public QObject
     void testZoomByWheel();
     void testShiftZoom();
     void testDragDrop();
+    void testZoomResolutions();
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
@@ -512,6 +513,27 @@ void TestQgsMapCanvas::testDragDrop()
   mCanvas->dropEvent( dropEvent.get() );
   // is accepted!
   QVERIFY( dropEvent->isAccepted() );
+}
+
+void TestQgsMapCanvas::testZoomResolutions()
+{
+  mCanvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
+  double resolution = mCanvas->mapSettings().mapUnitsPerPixel();
+
+  double nextResolution = qCeil( resolution ) + 1;
+  QList<double> resolutions = QList<double>() << nextResolution << ( 2.5 * nextResolution ) << ( 3.6 * nextResolution ) << ( 4.7 * nextResolution );
+  mCanvas->setZoomResolutions( resolutions );
+
+  mCanvas->zoomOut();
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[0], 0.0001 );
+
+  mCanvas->zoomOut();
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[1], 0.0001 );
+
+  mCanvas->zoomIn();
+  QGSCOMPARENEAR( mCanvas->mapSettings().mapUnitsPerPixel(), resolutions[0], 0.0001 );
+
+  QCOMPARE( mCanvas->zoomResolutions(), resolutions );
 }
 
 QGSTEST_MAIN( TestQgsMapCanvas )

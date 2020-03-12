@@ -126,15 +126,15 @@ void QgsOapifItemsRequest::processReply()
     const json j = json::parse( utf8Text.toStdString() );
     if ( j.is_object() && j.contains( "features" ) )
     {
-      const auto features = j["features"];
+      const json features = j["features"];
       if ( features.is_array() && features.size() == mFeatures.size() )
       {
         for ( size_t i = 0; i < features.size(); i++ )
         {
-          const auto &jFeature = features[i];
+          const json &jFeature = features[i];
           if ( jFeature.is_object() && jFeature.contains( "id" ) )
           {
-            const auto id = jFeature["id"];
+            const json id = jFeature["id"];
             if ( id.is_string() )
             {
               mFeatures[i].second = QString::fromStdString( id.get<std::string>() );

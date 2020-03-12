@@ -44,6 +44,17 @@ class QgsAttributeForm : QWidget
 
     const QgsFeature &feature();
 
+    void displayWarning( const QString &message );
+%Docstring
+Displays a warning message in the form message bar
+
+:param message: message string
+
+.. seealso:: :py:func:`mode`
+
+.. versionadded:: 3.12
+%End
+
 
     void hideButtonBox();
 %Docstring
@@ -268,6 +279,18 @@ Resets the search/filter form values.
 %Docstring
 reload current feature
 %End
+
+    void parentFormValueChanged( const QString &attribute, const QVariant &newValue );
+%Docstring
+Is called in embedded forms when an ``attribute`` value in the parent form
+has changed to ``newValue``.
+
+Notify the form widgets that something has changed in case they
+have filter expressions that depend on the parent form scope.
+
+.. versionadded:: 3.14
+%End
+
 
 };
 

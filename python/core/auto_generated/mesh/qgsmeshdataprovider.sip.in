@@ -11,6 +11,7 @@
 
 
 
+
 class QgsMeshDatasetIndex
 {
 %Docstring
@@ -53,8 +54,25 @@ typedef QgsPoint QgsMeshVertex;
 
 typedef QVector<int> QgsMeshFace;
 
+typedef QPair<int, int> QgsMeshEdge;
+
 struct QgsMesh
 {
+
+  enum ElementType
+  {
+    Vertex,
+    Edge,
+    Face
+  };
+
+  bool contains( const ElementType &type ) const;
+%Docstring
+Returns whether the mesh contains at mesh elements of given type
+
+.. versionadded:: 3.14
+%End
+
   int vertexCount() const;
 %Docstring
 Returns number of vertices
@@ -64,6 +82,13 @@ Returns number of vertices
 Returns number of faces
 %End
 
+  int edgeCount() const;
+%Docstring
+Returns number of edge
+
+.. versionadded:: 3.14
+%End
+
   QgsMeshVertex vertex( int index ) const;
 %Docstring
 Returns a vertex at the index
@@ -71,6 +96,20 @@ Returns a vertex at the index
   QgsMeshFace face( int index ) const;
 %Docstring
 Returns a face at the index
+%End
+
+  QgsMeshEdge edge( int index ) const;
+%Docstring
+Returns an edge at the index
+
+.. versionadded:: 3.14
+%End
+
+  void clear();
+%Docstring
+Remove all vertices, edges and faces
+
+.. versionadded:: 3.14
 %End
 
 };
@@ -413,7 +452,8 @@ such as whether the data is vector or scalar, name
     {
       DataOnFaces,
       DataOnVertices,
-      DataOnVolumes
+      DataOnVolumes,
+      DataOnEdges
     };
 
     QgsMeshDatasetGroupMetadata();
@@ -569,9 +609,10 @@ class QgsMeshDataSourceInterface /Abstract/
 
 Interface for mesh data sources
 
-Mesh is a collection of vertices and faces in 2D or 3D space
+Mesh is a collection of vertices, edges and faces in 2D or 3D space
 - vertex - XY(Z) point (in the mesh's coordinate reference system)
-- faces - sets of vertices forming a closed shape - typically triangles or quadrilaterals
+- edge   - two XY(Z) points (in the mesh's coordinate reference system) representing straight seqment
+- faces  - sets of vertices forming a closed shape - typically triangles or quadrilaterals
 
 Base on the underlying data provider/format, whole mesh is either stored in memory or
 read on demand
@@ -589,6 +630,13 @@ read on demand
   public:
     virtual ~QgsMeshDataSourceInterface();
 
+    bool contains( const QgsMesh::ElementType &type ) const;
+%Docstring
+Returns whether the mesh contains at mesh elements of given type
+
+.. versionadded:: 3.14
+%End
+
     virtual int vertexCount() const = 0;
 %Docstring
 Returns number of vertices in the native mesh
@@ -603,9 +651,18 @@ Returns number of faces in the native mesh
 :return: Number of faces in the mesh
 %End
 
+    virtual int edgeCount() const = 0;
+%Docstring
+Returns number of edges in the native mesh
+
+:return: Number of edges in the mesh
+
+.. versionadded:: 3.14
+%End
+
     virtual void populateMesh( QgsMesh *mesh ) const = 0;
 %Docstring
-Populates the mesh vertices and faces
+Populates the mesh vertices, edges and faces
 
 .. versionadded:: 3.6
 %End

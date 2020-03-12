@@ -63,7 +63,7 @@ class QgsEditFormConfigPrivate : public QSharedData
     QMap<QString, QVariantMap > mWidgetConfigs;
 
     //! Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated)
-    QgsEditFormConfig::EditorLayout mEditorLayout = QgsEditFormConfig::GeneratedLayout;
+    QgsEditFormConfig::EditorLayout mEditorLayout = QgsEditFormConfig::EditorLayout::GeneratedLayout;
 
     //! Path or URL to the UI form
     QString mUiFormPath;
@@ -72,12 +72,12 @@ class QgsEditFormConfigPrivate : public QSharedData
     //! Path of the Python external file to be loaded
     QString mInitFilePath;
     //! Choose the source of the init founction
-    QgsEditFormConfig::PythonInitCodeSource mInitCodeSource = QgsEditFormConfig::CodeSourceNone;
+    QgsEditFormConfig::PythonInitCodeSource mInitCodeSource = QgsEditFormConfig::PythonInitCodeSource::CodeSourceNone;
     //! Python init code provided in the dialog
     QString mInitCode;
 
     //! Type of feature form suppression after feature creation
-    QgsEditFormConfig::FeatureFormSuppress mSuppressForm = QgsEditFormConfig::SuppressDefault;
+    QgsEditFormConfig::FeatureFormSuppress mSuppressForm = QgsEditFormConfig::FeatureFormSuppress::SuppressDefault;
 
     QgsFields mFields;
 };

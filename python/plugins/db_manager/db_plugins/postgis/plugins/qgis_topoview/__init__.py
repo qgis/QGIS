@@ -33,21 +33,20 @@ import os
 
 current_path = os.path.dirname(__file__)
 
-
 # The load function is called when the "db" database or either one of its
 # children db objects (table o schema) is selected by the user.
 # @param db is the selected database
 # @param mainwindow is the DBManager mainwindow
+
+
 def load(db, mainwindow):
     # check whether the selected database supports topology
     # (search for topology.topology)
     sql = u"""SELECT count(*)
                 FROM pg_class AS cls JOIN pg_namespace AS nsp ON nsp.oid = cls.relnamespace
                 WHERE cls.relname = 'topology' AND nsp.nspname = 'topology'"""
-    c = db.connector._get_cursor()
-    db.connector._execute(c, sql)
-    res = db.connector._fetchone(c)
-    if res is None or int(res[0]) <= 0:
+    res = db.executeSql(sql)
+    if res is None or len(res) < 1 or int(res[0][0]) <= 0:
         return
 
     # add the action to the DBManager menu
@@ -78,10 +77,8 @@ def run(item, action, mainwindow):
 
     if item.schema() is not None:
         sql = u"SELECT srid FROM topology.topology WHERE name = %s" % quoteStr(item.schema().name)
-        c = db.connector._get_cursor()
-        db.connector._execute(c, sql)
-        res = db.connector._fetchone(c)
-        isTopoSchema = res is not None
+        res = db.executeSql(sql)
+        isTopoSchema = len(res) > 0
 
     if not isTopoSchema:
         mainwindow.infoBar.pushMessage("Invalid topology",
@@ -90,11 +87,11 @@ def run(item, action, mainwindow):
                                        mainwindow.iface.messageTimeout())
         return False
 
-    if (res[0] < 0):
+    if (res[0][0] < 0):
         mainwindow.infoBar.pushMessage("WARNING", u'Topology "{0}" is registered as having a srid of {1} in topology.topology, we will assume 0 (for unknown)'.format(item.schema().name, res[0]), Qgis.Warning, mainwindow.iface.messageTimeout())
         toposrid = '0'
     else:
-        toposrid = str(res[0])
+        toposrid = str(res[0][0])
 
     # load layers into the current project
     toponame = item.schema().name

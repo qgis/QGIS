@@ -68,8 +68,9 @@ const QgsProject *QgsConfigCache::project( const QString &path )
         }
         if ( !unrestrictedBadLayers.isEmpty() )
         {
-          const QString errorMsg = QStringLiteral( "Layer(s) %1 not valid" ).arg( unrestrictedBadLayers.join( ',' ) );
-          QgsMessageLog::logMessage( errorMsg, QStringLiteral( "Server" ), Qgis::Critical );
+          QgsMessageLog::logMessage(
+            QStringLiteral( "Error, Layer(s) %1 not valid in project %2" ).arg( unrestrictedBadLayers.join( QStringLiteral( ", " ) ), path ),
+            QStringLiteral( "Server" ), Qgis::Critical );
           throw QgsServerException( QStringLiteral( "Layer(s) not valid" ) );
         }
       }
@@ -79,7 +80,7 @@ const QgsProject *QgsConfigCache::project( const QString &path )
     else
     {
       QgsMessageLog::logMessage(
-        tr( "Error when loading project file '%1': %2 " ).arg( path, prj->error() ),
+        QStringLiteral( "Error when loading project file '%1': %2 " ).arg( path, prj->error() ),
         QStringLiteral( "Server" ), Qgis::Critical );
     }
   }

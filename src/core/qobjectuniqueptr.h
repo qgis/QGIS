@@ -23,7 +23,7 @@
 
 #define SIP_NO_FILE
 
-#include <qsharedpointer.h>
+#include <QPointer>
 #include <qtypeinfo.h>
 
 class QVariant;
@@ -52,7 +52,7 @@ class QObjectUniquePtr
       typedef const QObject Type;
     };
     typedef typename TypeSelector<T>::Type QObjectType;
-    QWeakPointer<QObjectType> mPtr;
+    QPointer<QObjectType> mPtr;
   public:
 
     /**

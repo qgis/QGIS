@@ -238,6 +238,7 @@ int QgsDemHeightMapGenerator::render( int x, int y, int z )
   QFutureWatcher<QByteArray> *fw = new QFutureWatcher<QByteArray>( nullptr );
   fw->setFuture( jd.future );
   connect( fw, &QFutureWatcher<QByteArray>::finished, this, &QgsDemHeightMapGenerator::onFutureFinished );
+  connect( fw, &QFutureWatcher<QByteArray>::finished, fw, &QObject::deleteLater );
 
   mJobs.insert( fw, jd );
 

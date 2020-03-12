@@ -1291,13 +1291,13 @@ namespace QgsWms
         if ( ! mContext.parameters().queryLayersNickname().contains( queryLayer ) )
         {
           // Find which group this layer belongs to
-          const auto &constNicks { mContext.parameters().queryLayersNickname() };
-          for ( const auto &ql : constNicks )
+          const QStringList constNicks { mContext.parameters().queryLayersNickname() };
+          for ( const QString &ql : constNicks )
           {
             if ( mContext.layerGroups().contains( ql ) )
             {
-              const auto &constLayers { mContext.layerGroups()[ql] };
-              for ( const auto &ml : constLayers )
+              const QList<QgsMapLayer *> constLayers { mContext.layerGroups()[ql] };
+              for ( const QgsMapLayer *ml : constLayers )
               {
                 if ( ( ! ml->shortName().isEmpty() &&  ml->shortName() == queryLayer ) || ( ml->name() == queryLayer ) )
                 {
@@ -1424,7 +1424,7 @@ namespace QgsWms
     bool segmentizeWktGeometry = QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( *mProject );
     const QSet<QString> &excludedAttributes = layer->excludeAttributesWms();
 
-    bool hasGeometry = addWktGeometry || featureBBox || layerFilterGeom;
+    bool hasGeometry = QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) || addWktGeometry || featureBBox || layerFilterGeom;
     fReq.setFlags( ( ( hasGeometry ) ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) | QgsFeatureRequest::ExactIntersect );
 
     if ( ! searchRect.isEmpty() )
@@ -1582,7 +1582,8 @@ namespace QgsWms
         }
 
         //append feature bounding box to feature info xml
-        if ( layer->wkbType() != QgsWkbTypes::NoGeometry && hasGeometry )
+        if ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) &&
+             layer->wkbType() != QgsWkbTypes::NoGeometry && hasGeometry )
         {
           QDomElement bBoxElem = infoDocument.createElement( QStringLiteral( "BoundingBox" ) );
           bBoxElem.setAttribute( version == QLatin1String( "1.1.1" ) ? "SRS" : "CRS", outputCrs.authid() );
@@ -2314,8 +2315,11 @@ namespace QgsWms
       expressionContext << QgsExpressionContextUtils::layerScope( layer );
     expressionContext.setFeature( *feat );
 
-    // always add bounding box info if feature contains geometry
-    if ( !geom.isNull() && geom.type() != QgsWkbTypes::UnknownGeometry && geom.type() != QgsWkbTypes::NullGeometry )
+    // always add bounding box info if feature contains geometry and has been
+    // explicitly configured in the project
+    if ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) &&
+         !geom.isNull() && geom.type() != QgsWkbTypes::UnknownGeometry &&
+         geom.type() != QgsWkbTypes::NullGeometry )
     {
       QgsRectangle box = feat->geometry().boundingBox();
       if ( transform.isValid() )

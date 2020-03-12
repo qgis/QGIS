@@ -389,6 +389,11 @@ void MDAL::DriverTuflowFV::populateFaces( MDAL::Faces &faces )
   }
 }
 
+MDAL::DateTime MDAL::DriverTuflowFV::defaultReferenceTime() const
+{
+  return DateTime( 1990, 1, 1 );
+}
+
 void MDAL::DriverTuflowFV::calculateMaximumLevelCount()
 {
   if ( mMaximumLevelsCount < 0 )

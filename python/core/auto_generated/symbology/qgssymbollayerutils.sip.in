@@ -171,7 +171,7 @@ Encodes a render unit into an SLD unit of measure string.
 .. seealso:: :py:func:`decodeSldUom`
 %End
 
-    static QgsUnitTypes::RenderUnit decodeSldUom( const QString &str, double *scaleFactor );
+    static QgsUnitTypes::RenderUnit decodeSldUom( const QString &str, double *scaleFactor = 0 );
 %Docstring
 Decodes a SLD unit of measure string to a render unit.
 

@@ -1957,12 +1957,12 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   {
     geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines );
 
-    if ( geom.isNull() )
+    if ( geom.isEmpty() )
       return;
   }
   geos_geom_clone = QgsGeos::asGeos( geom );
 
-  if ( isObstacle )
+  if ( isObstacle || ( geom.type() == QgsWkbTypes::PointGeometry && offsetType == FromSymbolBounds ) )
   {
     if ( !obstacleGeometry.isNull() && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, ct, doClip ? extentGeom : QgsGeometry(), mergeLines ) )
     {
@@ -2012,8 +2012,12 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   bool ddXPos = false, ddYPos = false;
   double quadOffsetX = 0.0, quadOffsetY = 0.0;
   double offsetX = 0.0, offsetY = 0.0;
-  QgsPointXY anchorPosition = geom.centroid().asPoint();
+  QgsPointXY anchorPosition;
 
+  if ( placement == QgsPalLayerSettings::OverPoint )
+  {
+    anchorPosition = geom.centroid().asPoint();
+  }
   //x/y shift in case of alignment
   double xdiff = 0.0;
   double ydiff = 0.0;
@@ -2359,7 +2363,7 @@ void QgsPalLayerSettings::registerFeature( const QgsFeature &f, QgsRenderContext
   ( *labelFeature )->setOverrunDistance( overrunDistanceEval );
   ( *labelFeature )->setOverrunSmoothDistance( overrunSmoothDist );
   ( *labelFeature )->setLabelAllParts( labelAll );
-  if ( geom.type() == QgsWkbTypes::PointGeometry && isObstacle && !obstacleGeometry.isNull() )
+  if ( geom.type() == QgsWkbTypes::PointGeometry && !obstacleGeometry.isNull() )
   {
     //register symbol size
     ( *labelFeature )->setSymbolSize( QSizeF( obstacleGeometry.boundingBox().width(),
@@ -2915,6 +2919,11 @@ void QgsPalLayerSettings::parseTextBuffer( QgsRenderContext &context )
   if ( dataDefinedValEval( DDBool, QgsPalLayerSettings::BufferDraw, exprVal, context.expressionContext(), buffer.enabled() ) )
   {
     drawBuffer = exprVal.toBool();
+  }
+  else if ( mDataDefinedProperties.isActive( QgsPalLayerSettings::BufferDraw ) && exprVal.isNull() )
+  {
+    drawBuffer = false;
+    dataDefinedValues.insert( QgsPalLayerSettings::BufferDraw, QVariant( drawBuffer ) );
   }
 
   if ( !drawBuffer )
@@ -3577,7 +3586,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
          || ( !qgsDoubleNear( m2p.mapRotation(), 0 ) && !clipGeometry.contains( geom ) ) ) )
   {
     QgsGeometry clipGeom = geom.intersection( clipGeometry ); // creates new geometry
-    if ( clipGeom.isNull() )
+    if ( clipGeom.isEmpty() )
     {
       return QgsGeometry();
     }

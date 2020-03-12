@@ -81,6 +81,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   Q_ASSERT( mMapCanvas ); // precondition
   setupUi( this );
   connect( mConnectButton, &QPushButton::toggled, this, &QgsGpsInformationWidget::mConnectButton_toggled );
+  connect( mRecenterButton, &QPushButton::clicked, this, &QgsGpsInformationWidget::recenter );
+  connect( mConnectButton, &QAbstractButton::toggled, mRecenterButton, &QWidget::setEnabled );
   connect( mBtnTrackColor, &QgsColorButton::colorChanged, this, &QgsGpsInformationWidget::trackColorChanged );
   connect( mSpinTrackWidth, qgis::overload< int >::of( &QSpinBox::valueChanged ), this, &QgsGpsInformationWidget::mSpinTrackWidth_valueChanged );
   connect( mBtnPosition, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnPosition_clicked );
@@ -94,6 +96,9 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidg
   connect( mBtnResetFeature, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnResetFeature_clicked );
   connect( mBtnLogFile, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnLogFile_clicked );
   connect( mMapCanvas, &QgsMapCanvas::xyCoordinates, this, &QgsGpsInformationWidget::cursorCoordinateChanged );
+  connect( mMapCanvas, &QgsMapCanvas::tapAndHoldGestureOccurred, this, &QgsGpsInformationWidget::tapAndHold );
+
+  mRecenterButton->setEnabled( false );
 
   mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
 
@@ -548,6 +553,20 @@ void QgsGpsInformationWidget::mConnectButton_toggled( bool flag )
   else
   {
     disconnectGps();
+  }
+}
+
+void QgsGpsInformationWidget::recenter()
+{
+  try
+  {
+    const QgsPointXY center = mCanvasToWgs84Transform.transform( mLastGpsPosition, QgsCoordinateTransform::ReverseTransform );
+    mMapCanvas->setCenter( center );
+    mMapCanvas->refresh();
+  }
+  catch ( QgsCsException & )
+  {
+
   }
 }
 
@@ -1513,12 +1532,12 @@ void QgsGpsInformationWidget::updateGpsDistanceStatusMessage()
 
   const double distance = mDistanceCalculator.convertLengthMeasurement( mDistanceCalculator.measureLine( QVector< QgsPointXY >() << mLastCursorPosWgs84 << mLastGpsPosition ),
                           QgsProject::instance()->distanceUnits() );
-  const double bearing = 180 * mDistanceCalculator.bearing( mLastCursorPosWgs84, mLastGpsPosition ) / M_PI;
+  const double bearing = 180 * mDistanceCalculator.bearing( mLastGpsPosition, mLastCursorPosWgs84 ) / M_PI;
   const int distanceDecimalPlaces = QgsSettings().value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
   const QString distanceString = QgsDistanceArea::formatDistance( distance, distanceDecimalPlaces, QgsProject::instance()->distanceUnits() );
   const QString bearingString = mBearingNumericFormat->formatDouble( bearing, QgsNumericFormatContext() );
 
-  QgisApp::instance()->statusBarIface()->showMessage( tr( "Distance to GPS location %1 (%2)" ).arg( distanceString, bearingString ), 2000 );
+  QgisApp::instance()->statusBarIface()->showMessage( tr( "%1 (%2) from GPS location" ).arg( distanceString, bearingString ), 2000 );
 }
 
 void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *mapLayer )
@@ -1553,6 +1572,22 @@ void QgsGpsInformationWidget::updateTimestampDestinationFields( QgsMapLayer *map
     }
   }
   mPopulatingFields = false;
+}
+
+void QgsGpsInformationWidget::tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture * )
+{
+  if ( !mNmea )
+    return;
+
+  try
+  {
+    mLastCursorPosWgs84 = mCanvasToWgs84Transform.transform( mapPoint );
+    updateGpsDistanceStatusMessage();
+  }
+  catch ( QgsCsException & )
+  {
+
+  }
 }
 
 void QgsGpsInformationWidget::switchAcquisition()

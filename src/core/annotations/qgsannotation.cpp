@@ -493,13 +493,15 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWr
   }
 
   //marker symbol
-  QDomElement symbolElem = annotationElem.firstChildElement( QStringLiteral( "symbol" ) );
-  if ( !symbolElem.isNull() )
   {
-    QgsMarkerSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context );
-    if ( symbol )
+    QDomElement symbolElem = annotationElem.firstChildElement( QStringLiteral( "symbol" ) );
+    if ( !symbolElem.isNull() )
     {
-      mMarkerSymbol.reset( symbol );
+      QgsMarkerSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context );
+      if ( symbol )
+      {
+        mMarkerSymbol.reset( symbol );
+      }
     }
   }
 

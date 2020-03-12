@@ -48,7 +48,6 @@ void QgsMapToolAddRegularPolygon::createNumberSidesSpinBox()
   mNumberSidesSpinBox->setPrefix( tr( "Number of sides: " ) );
   mNumberSidesSpinBox->setValue( mNumberSides );
   QgisApp::instance()->addUserInputWidget( mNumberSidesSpinBox.get() );
-  mNumberSidesSpinBox->setFocus( Qt::TabFocusReason );
 }
 
 void QgsMapToolAddRegularPolygon::deleteNumberSidesSpinBox()
@@ -69,6 +68,28 @@ void QgsMapToolAddRegularPolygon::keyPressEvent( QKeyEvent *e )
   if ( e && e->key() == Qt::Key_Escape )
   {
     clean();
+    if ( mParentTool )
+      mParentTool->keyPressEvent( e );
+  }
+
+  if ( e && e->key() == Qt::Key_Backspace )
+  {
+    if ( mPoints.size() == 1 )
+    {
+
+      if ( mTempRubberBand )
+      {
+        delete mTempRubberBand;
+        mTempRubberBand = nullptr;
+      }
+
+      mPoints.clear();
+    }
+    else if ( mPoints.size() > 1 )
+    {
+      mPoints.removeLast();
+
+    }
     if ( mParentTool )
       mParentTool->keyPressEvent( e );
   }

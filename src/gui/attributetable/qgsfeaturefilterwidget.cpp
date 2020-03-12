@@ -46,7 +46,6 @@ QgsFeatureFilterWidget::QgsFeatureFilterWidget( QWidget *parent )
   setupUi( this );
 
   // Initialize filter gui elements
-  mFilterActionMapper = new QSignalMapper( this );
   mFilterColumnsMenu = new QMenu( this );
   mActionFilterColumnsMenu->setMenu( mFilterColumnsMenu );
   mStoredFilterExpressionMenu = new QMenu( this );
@@ -74,7 +73,6 @@ QgsFeatureFilterWidget::QgsFeatureFilterWidget( QWidget *parent )
   connect( mActionSelectedFilter, &QAction::triggered, this, &QgsFeatureFilterWidget::filterSelected );
   connect( mActionVisibleFilter, &QAction::triggered, this, &QgsFeatureFilterWidget::filterVisible );
   connect( mActionEditedFilter, &QAction::triggered, this, &QgsFeatureFilterWidget::filterEdited );
-  connect( mFilterActionMapper, SIGNAL( mapped( QObject * ) ), SLOT( filterColumnChanged( QObject * ) ) );
   connect( mFilterQuery, &QLineEdit::returnPressed, this, &QgsFeatureFilterWidget::filterQueryAccepted );
   connect( mActionApplyFilter, &QAction::triggered, this, &QgsFeatureFilterWidget::filterQueryAccepted );
   connect( mFilterQuery, &QLineEdit::textChanged, this, &QgsFeatureFilterWidget::onFilterQueryTextChanged );
@@ -186,7 +184,6 @@ void QgsFeatureFilterWidget::columnBoxInit()
   for ( QAction *a : constActions )
   {
     mFilterColumnsMenu->removeAction( a );
-    mFilterActionMapper->removeMappings( a );
     mFilterButton->removeAction( a );
     delete a;
   }
@@ -219,8 +216,8 @@ void QgsFeatureFilterWidget::columnBoxInit()
       // Generate action for the filter popup button
       QAction *filterAction = new QAction( icon, alias, mFilterButton );
       filterAction->setData( field.name() );
-      mFilterActionMapper->setMapping( filterAction, filterAction );
-      connect( filterAction, SIGNAL( triggered() ), mFilterActionMapper, SLOT( map() ) );
+
+      connect( filterAction, &QAction::triggered, this, [ = ] { filterColumnChanged( filterAction ); } );
       mFilterColumnsMenu->addAction( filterAction );
     }
   }
@@ -283,9 +280,9 @@ void QgsFeatureFilterWidget::storeExpressionButtonInit()
 }
 
 
-void QgsFeatureFilterWidget::filterColumnChanged( QObject *filterAction )
+void QgsFeatureFilterWidget::filterColumnChanged( QAction *filterAction )
 {
-  mFilterButton->setDefaultAction( qobject_cast<QAction *>( filterAction ) );
+  mFilterButton->setDefaultAction( filterAction );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
   // replace the search line edit with a search widget that is suited to the selected field
   // delete previous widget

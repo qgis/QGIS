@@ -25,6 +25,7 @@
 #include <QStringList>
 #include <QRegExp>
 #include <QUrl>
+#include <QUrlQuery>
 
 QgsDataSourceUri::QgsDataSourceUri()
 {
@@ -85,7 +86,6 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
         }
         else
         {
-          mSchema.clear();
           mTable = pval;
         }
 
@@ -93,7 +93,7 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
         {
           i++;
 
-          int start = i;
+          start = i;
           while ( i < uri.length() && uri[i] != ')' )
           {
             if ( uri[i] == '\\' )
@@ -116,6 +116,10 @@ QgsDataSourceUri::QgsDataSourceUri( const QString &u )
         {
           mGeometryColumn = QString();
         }
+      }
+      else if ( pname == QLatin1String( "schema" ) )
+      {
+        mSchema = pval;
       }
       else if ( pname == QLatin1String( "key" ) )
       {
@@ -591,9 +595,17 @@ QString QgsDataSourceUri::uri( bool expandAuthConfig ) const
   return uri;
 }
 
+// from qurl.h
+QByteArray toLatin1_helper( const QString &string )
+{
+  if ( string.isEmpty() )
+    return string.isNull() ? QByteArray() : QByteArray( "" );
+  return string.toLatin1();
+}
+
 QByteArray QgsDataSourceUri::encodedUri() const
 {
-  QUrl url;
+  QUrlQuery url;
   for ( auto it = mParams.constBegin(); it != mParams.constEnd(); ++it )
   {
     url.addQueryItem( it.key(), it.value() );
@@ -608,7 +620,7 @@ QByteArray QgsDataSourceUri::encodedUri() const
   if ( !mAuthConfigId.isEmpty() )
     url.addQueryItem( QStringLiteral( "authcfg" ), mAuthConfigId );
 
-  return url.encodedQuery();
+  return toLatin1_helper( url.toString( QUrl::FullyEncoded ) );
 }
 
 void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
@@ -619,9 +631,10 @@ void QgsDataSourceUri::setEncodedUri( const QByteArray &uri )
   mAuthConfigId.clear();
 
   QUrl url;
-  url.setEncodedQuery( uri );
+  url.setQuery( QString::fromLatin1( uri ) );
+  const QUrlQuery query( url );
 
-  const auto constQueryItems = url.queryItems();
+  const auto constQueryItems = query.queryItems();
   for ( const QPair<QString, QString> &item : constQueryItems )
   {
     if ( item.first == QLatin1String( "username" ) )

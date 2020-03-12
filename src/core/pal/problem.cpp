@@ -162,7 +162,6 @@ void ignoreLabel( const LabelPosition *lp, PriorityQueue &list, PalRtree< LabelP
  */
 void Problem::init_sol_falp()
 {
-  int i, j;
   int label;
 
   mSol.init( mFeatureCount );
@@ -174,8 +173,8 @@ void Problem::init_sol_falp()
 
   LabelPosition *lp = nullptr;
 
-  for ( i = 0; i < static_cast< int >( mFeatureCount ); i++ )
-    for ( j = 0; j < mFeatNbLp[i]; j++ )
+  for ( int i = 0; i < static_cast< int >( mFeatureCount ); i++ )
+    for ( int j = 0; j < mFeatNbLp[i]; j++ )
     {
       label = mFeatStartId[i] + j;
       try
@@ -207,7 +206,7 @@ void Problem::init_sol_falp()
     int probFeatId = lp->getProblemFeatureId();
     mSol.activeLabelIds[probFeatId] = label;
 
-    for ( i = mFeatStartId[probFeatId]; i < mFeatStartId[probFeatId] + mFeatNbLp[probFeatId]; i++ )
+    for ( int i = mFeatStartId[probFeatId]; i < mFeatStartId[probFeatId] + mFeatNbLp[probFeatId]; i++ )
     {
       ignoreLabel( mLabelPositions[ i ].get(), list, mAllCandidatesIndex );
     }
@@ -280,9 +279,6 @@ void Problem::init_sol_falp()
 
 inline Chain *Problem::chain( int seed )
 {
-  int i;
-  int j;
-
   int lid;
 
   double delta;
@@ -323,7 +319,7 @@ inline Chain *Problem::chain( int seed )
     else
       delta -= mLabelPositions.at( tmpsol[seed] )->cost();
 
-    for ( i = -1; i < seedNbLp; i++ )
+    for ( int i = -1; i < seedNbLp; i++ )
     {
       try
       {
@@ -387,7 +383,7 @@ inline Chain *Problem::chain( int seed )
                 retainedChain->label = new int[retainedChain->degree];
                 QLinkedList<ElemTrans *>::iterator current = currentChain.begin();
                 ElemTrans *move = nullptr;
-                j = 0;
+                int j = 0;
                 while ( current != currentChain.end() )
                 {
                   move = *current;
@@ -426,7 +422,7 @@ inline Chain *Problem::chain( int seed )
               newChain->label = new int[newChain->degree];
               QLinkedList<ElemTrans *>::iterator current = currentChain.begin();
               ElemTrans *move = nullptr;
-              j = 0;
+              int j = 0;
 
               while ( current != currentChain.end() )
               {
@@ -487,7 +483,7 @@ inline Chain *Problem::chain( int seed )
               retainedChain->label = new int[retainedChain->degree];
               QLinkedList<ElemTrans *>::iterator current = currentChain.begin();
               ElemTrans *move = nullptr;
-              j = 0;
+              int j = 0;
               while ( current != currentChain.end() )
               {
                 move = *current;
@@ -503,9 +499,8 @@ inline Chain *Problem::chain( int seed )
           }
         }
       }
-      catch ( int i )
+      catch ( int )
       {
-        Q_UNUSED( i )
         conflicts.clear();
       }
     } // end foreach labelposition

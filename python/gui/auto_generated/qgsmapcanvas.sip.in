@@ -732,6 +732,30 @@ for the canvas.
 %End
 
 
+    void setTemporalRange( const QgsDateTimeRange &range );
+%Docstring
+Set datetime ``range`` for the map canvas.
+
+The temporalRangeChanged() signal will be emitted if the temporal range has been changed.
+
+.. note::
+
+   Calling setTemporalRange() does not automatically trigger a map refresh.
+
+.. seealso:: :py:func:`temporalRange`
+
+.. versionadded:: 3.14
+%End
+
+    const QgsDateTimeRange &temporalRange() const;
+%Docstring
+Returns map canvas datetime range.
+
+.. seealso:: :py:func:`setTemporalRange`
+
+.. versionadded:: 3.14
+%End
+
   public slots:
 
     void refresh();
@@ -841,6 +865,25 @@ Zoom out with fixed factor
 Zoom to the extent of the selected features of provided (vector) layer.
 
 :param layer: optionally specify different than current layer
+%End
+
+    void setZoomResolutions( const QList<double> &resolutions );
+%Docstring
+Set a list of resolutions (map units per pixel) to which to "snap to" when zooming the map
+
+:param resolutions: A list of resolutions
+
+.. versionadded:: 3.12
+%End
+
+    const QList<double> &zoomResolutions() const;
+%Docstring
+
+:return: List of resolutions to which to "snap to" when zooming the map
+
+.. seealso:: :py:func:`setZoomResolutions`
+
+.. versionadded:: 3.12
 %End
 
   signals:
@@ -1002,6 +1045,20 @@ giving the total distance and bearing between the map position at the
 start of the pan and the current pan position.
 
 .. versionadded:: 3.12
+%End
+
+    void tapAndHoldGestureOccurred( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
+%Docstring
+Emitted whenever a tap and hold ``gesture`` occurs at the specified map point.
+
+.. versionadded:: 3.12
+%End
+
+    void temporalRangeChanged();
+%Docstring
+Emitted when the map canvas temporal range changes.
+
+.. versionadded:: 3.14
 %End
 
   protected:

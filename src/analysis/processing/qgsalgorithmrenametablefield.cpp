@@ -90,7 +90,7 @@ QgsFields QgsRenameTableFieldAlgorithm::outputFields( const QgsFields &inputFiel
   if ( outFields.lookupField( mNewName ) >= 0 )
     throw QgsProcessingException( QObject::tr( "A field already exists with the name %1" ).arg( mNewName ) );
 
-  outFields[ index ].setName( mNewName );
+  outFields.rename( index, mNewName );
   return outFields;
 }
 

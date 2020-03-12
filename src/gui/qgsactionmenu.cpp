@@ -93,7 +93,7 @@ void QgsActionMenu::triggerAction()
   if ( data.actionType == MapLayerAction )
   {
     QgsMapLayerAction *mapLayerAction = data.actionData.value<QgsMapLayerAction *>();
-    mapLayerAction->triggerForFeature( data.mapLayer, &mFeature );
+    mapLayerAction->triggerForFeature( data.mapLayer, mFeature );
   }
   else if ( data.actionType == AttributeAction )
   {
@@ -204,4 +204,9 @@ void QgsActionMenu::setExpressionContextScope( const QgsExpressionContextScope &
 QgsExpressionContextScope QgsActionMenu::expressionContextScope() const
 {
   return mExpressionContextScope;
+}
+
+QList<QgsAction> QgsActionMenu::menuActions()
+{
+  return mActions;
 }

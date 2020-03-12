@@ -31,6 +31,7 @@ from qgis.core import (
     QgsProviderConnectionException,
 )
 from qgis.PyQt import QtCore
+from qgis.PyQt.QtTest import QSignalSpy
 
 
 class TestPyQgsProviderConnectionBase():
@@ -59,10 +60,20 @@ class TestPyQgsProviderConnectionBase():
     def _test_save_load(self, md, uri):
         """Common tests on connection save and load"""
         conn = md.createConnection(self.uri, {})
+        created_spy = QSignalSpy(md.connectionCreated)
+        changed_spy = QSignalSpy(md.connectionChanged)
         md.saveConnection(conn, 'qgis_test1')
         # Check that we retrieve the new connection
         self.assertTrue('qgis_test1' in md.connections().keys())
         self.assertTrue('qgis_test1' in md.dbConnections().keys())
+        self.assertEqual(len(created_spy), 1)
+        self.assertEqual(len(changed_spy), 0)
+
+        # if we try to save again, the connectionChanged signal should be emitted instead of connectionCreated
+        md.saveConnection(conn, 'qgis_test1')
+        self.assertEqual(len(created_spy), 1)
+        self.assertEqual(len(changed_spy), 1)
+
         return md.connections()['qgis_test1']
 
     def _table_names(self, table_properties):
@@ -145,7 +156,8 @@ class TestPyQgsProviderConnectionBase():
             self.assertEqual(table_property.tableName(), 'myNewTable')
             self.assertEqual(table_property.geometryColumnCount(), 1)
             self.assertEqual(table_property.geometryColumnTypes()[0].wkbType, QgsWkbTypes.LineString)
-            self.assertEqual(table_property.geometryColumnTypes()[0].crs, QgsCoordinateReferenceSystem.fromEpsgId(3857))
+            cols = table_property.geometryColumnTypes()
+            self.assertEqual(cols[0].crs, QgsCoordinateReferenceSystem.fromEpsgId(3857))
             self.assertEqual(table_property.defaultName(), 'myNewTable')
 
             # Check aspatial tables
@@ -158,8 +170,9 @@ class TestPyQgsProviderConnectionBase():
             self.assertEqual(table_property.geometryColumnCount(), 0)
             self.assertEqual(table_property.geometryColumn(), '')
             self.assertEqual(table_property.defaultName(), 'myNewAspatialTable')
-            self.assertEqual(table_property.geometryColumnTypes()[0].wkbType, QgsWkbTypes.NoGeometry)
-            self.assertFalse(table_property.geometryColumnTypes()[0].crs.isValid())
+            cols = table_property.geometryColumnTypes()
+            self.assertEqual(cols[0].wkbType, QgsWkbTypes.NoGeometry)
+            self.assertFalse(cols[0].crs.isValid())
             self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Raster)
             self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Vector)
             self.assertTrue(table_property.flags() & QgsAbstractDatabaseProviderConnection.Aspatial)
@@ -257,8 +270,10 @@ class TestPyQgsProviderConnectionBase():
         self.assertTrue(isinstance(list(conns.values())[0], QgsAbstractDatabaseProviderConnection))
 
         # Remove connection
+        spy_deleted = QSignalSpy(md.connectionDeleted)
         md.deleteConnection('qgis_test1')
         self.assertEqual(list(md.connections().values()), [])
+        self.assertEqual(len(spy_deleted), 1)
 
     def test_errors(self):
         """Test SQL errors"""

@@ -83,7 +83,7 @@ void QgsWFSNewConnection::capabilitiesReplyFinished()
     return;
   }
 
-  const auto &caps = mCapabilities->capabilities();
+  const QgsWfsCapabilities::Capabilities &caps = mCapabilities->capabilities();
   int versionIdx = WFS_VERSION_MAX;
   wfsPageSizeLineEdit()->clear();
   if ( caps.version.startsWith( QLatin1String( "1.0" ) ) )

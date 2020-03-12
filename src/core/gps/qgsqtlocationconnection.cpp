@@ -124,9 +124,8 @@ void QgsQtLocationConnection::satellitesInUseUpdated(
   mLastGPSInformation.satellitesUsed = QString::number( satellites.count() ).toInt();
 
   mLastGPSInformation.satPrn.clear();
-  for ( int i = 0; i < satellites.size(); ++i )
+  for ( const QGeoSatelliteInfo &currentSatellite : satellites )
   {
-    QGeoSatelliteInfo currentSatellite = satellites.at( i );
     //add pnr to mLastGPSInformation.satPrn
 #if defined(HAVE_QT_MOBILITY_LOCATION )
     mLastGPSInformation.satPrn.append( currentSatellite.prnNumber() );
@@ -135,9 +134,8 @@ void QgsQtLocationConnection::satellitesInUseUpdated(
 #endif
 
     //set QgsSatelliteInfo.inuse to true for the satellites in use
-    for ( int i = 0; i < mLastGPSInformation.satellitesInView.size(); ++i )
+    for ( QgsSatelliteInfo &satInView : mLastGPSInformation.satellitesInView )
     {
-      QgsSatelliteInfo satInView = mLastGPSInformation.satellitesInView.at( i );
 #if defined(HAVE_QT_MOBILITY_LOCATION )
       if ( satInView.id == currentSatellite.prnNumber() )
 #else // QtPositioning

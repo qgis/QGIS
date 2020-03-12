@@ -174,7 +174,7 @@ std::unique_ptr<QgsMesh3dAveragingMethod> QgsMeshRenderer3dAveragingWidget::aver
       averaging.reset( new QgsMeshSigmaAveragingMethod( startFraction, endFraction ) );
       break;
     }
-    case 5: // depth (from sufrace)
+    case 5: // depth (from surface)
     {
       const double startDepth = mDepthStartSpinBox->value();
       const double endDepth = mDepthEndSpinBox->value();

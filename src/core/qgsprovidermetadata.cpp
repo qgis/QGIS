@@ -94,6 +94,11 @@ QVariantMap QgsProviderMetadata::decodeUri( const QString & )
   return QVariantMap();
 }
 
+QString QgsProviderMetadata::encodeUri( const QVariantMap & )
+{
+  return QString();
+}
+
 QgsVectorLayerExporter::ExportError QgsProviderMetadata::createEmptyLayer(
   const QString &, const QgsFields &,
   QgsWkbTypes::Type, const QgsCoordinateReferenceSystem &,
@@ -222,8 +227,14 @@ void QgsProviderMetadata::saveConnection( const QgsAbstractProviderConnection *c
 ///@cond PRIVATE
 void QgsProviderMetadata::saveConnectionProtected( const QgsAbstractProviderConnection *conn, const QString &name )
 {
+  const bool isNewConnection = !connections().contains( name );
   conn->store( name );
   mProviderConnections.clear();
+
+  if ( !isNewConnection )
+    emit connectionChanged( name );
+  else
+    emit connectionCreated( name );
 }
 ///@endcond
 

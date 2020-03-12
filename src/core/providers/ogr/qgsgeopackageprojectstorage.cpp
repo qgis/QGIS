@@ -255,9 +255,9 @@ bool QgsGeoPackageProjectStorage::writeProject( const QString &uri, QIODevice *d
   errCause = _executeSql( projectUri.database, sql );
   if ( !errCause.isEmpty() )
   {
-    const QString errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database: %2" )
-                             .arg( uri,
-                                   errCause );
+    errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database: %2" )
+               .arg( uri,
+                     errCause );
 
     context.pushMessage( errCause, Qgis::Critical );
     return false;

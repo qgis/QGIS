@@ -16,6 +16,7 @@
 #ifndef QGSLAYOUT3DMAPWIDGET_H
 #define QGSLAYOUT3DMAPWIDGET_H
 
+#include "qgis_gui.h"
 #include "qgslayoutitemwidget.h"
 #include "ui_qgslayout3dmapwidgetbase.h"
 #include "qgslayoutitem3dmap.h"

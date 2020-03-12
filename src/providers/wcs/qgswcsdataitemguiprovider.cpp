@@ -33,6 +33,12 @@ void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
   if ( QgsWCSConnectionItem *connItem = qobject_cast< QgsWCSConnectionItem * >( item ) )
   {
+    QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
+    connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
+    menu->addAction( actionRefresh );
+
+    menu->addSeparator();
+
     QAction *actionEdit = new QAction( tr( "Edit…" ), this );
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
@@ -73,4 +79,12 @@ void QgsWcsDataItemGuiProvider::deleteConnection( QgsDataItem *item )
   QgsOwsConnection::deleteConnection( QStringLiteral( "WCS" ), item->name() );
   // the parent should be updated
   item->parent()->refreshConnections();
+}
+
+void QgsWcsDataItemGuiProvider::refreshConnection( QgsDataItem *item )
+{
+  item->refresh();
+  // the parent should be updated
+  if ( item->parent() )
+    item->parent()->refreshConnections();
 }

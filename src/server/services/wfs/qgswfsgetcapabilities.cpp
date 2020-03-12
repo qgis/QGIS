@@ -126,8 +126,7 @@ namespace QgsWfs
     QStringList spatialOperators;
     spatialOperators << QStringLiteral( "Equals" ) << QStringLiteral( "Disjoint" ) << QStringLiteral( "Touches" )
                      << QStringLiteral( "Within" ) << QStringLiteral( "Overlaps" ) << QStringLiteral( "Crosses" )
-                     << QStringLiteral( "Intersects" ) << QStringLiteral( "Contains" ) << QStringLiteral( "DWithin" )
-                     << QStringLiteral( "Beyond" ) << QStringLiteral( "BBOX" );
+                     << QStringLiteral( "Intersects" ) << QStringLiteral( "Contains" ) << QStringLiteral( "BBOX" );
     QDomElement spatialOperatorsElem = doc.createElement( QStringLiteral( "ogc:SpatialOperators" ) );
     for ( const QString &spatialOperator : spatialOperators )
     {
@@ -579,14 +578,6 @@ namespace QgsWfs
       }
 
       layerElem.appendChild( operationsElement );
-
-      //create OutputFormats element
-      QDomElement outputFormatsElem = doc.createElement( QStringLiteral( "OutputFormats" ) );
-      QDomElement outputFormatElem = doc.createElement( QStringLiteral( "Format" ) );
-      QDomText outputFormatText = doc.createTextNode( QStringLiteral( "text/xml; subtype=gml/3.1.1" ) );
-      outputFormatElem.appendChild( outputFormatText );
-      outputFormatsElem.appendChild( outputFormatElem );
-      layerElem.appendChild( outputFormatsElem );
 
       //create WGS84BoundingBox
       QgsRectangle layerExtent = layer->extent();

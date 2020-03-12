@@ -148,7 +148,7 @@ void QgsMapRendererParallelJob::waitForFinished()
   {
     disconnect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderLayersFinished );
 
-    QTime t;
+    QElapsedTimer t;
     t.start();
 
     mFutureWatcher.waitForFinished();
@@ -162,7 +162,7 @@ void QgsMapRendererParallelJob::waitForFinished()
   {
     disconnect( &mLabelingFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderingFinished );
 
-    QTime t;
+    QElapsedTimer t;
     t.start();
 
     mLabelingFutureWatcher.waitForFinished();
@@ -176,7 +176,7 @@ void QgsMapRendererParallelJob::waitForFinished()
   {
     disconnect( &mSecondPassFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsMapRendererParallelJob::renderLayersSecondPassFinished );
 
-    QTime t;
+    QElapsedTimer t;
     t.start();
 
     mSecondPassFutureWatcher.waitForFinished();
@@ -345,7 +345,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
     job.imageInitialized = true;
   }
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
   QgsDebugMsgLevel( QStringLiteral( "job %1 start (layer %2)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.layerId ), 2 );
   try
@@ -379,7 +379,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
 
   if ( !job.cached )
   {
-    QTime labelTime;
+    QElapsedTimer labelTime;
     labelTime.start();
 
     QPainter painter;

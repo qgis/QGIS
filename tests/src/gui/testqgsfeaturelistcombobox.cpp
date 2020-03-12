@@ -155,6 +155,29 @@ void TestQgsFeatureListComboBox::testMultipleForeignKeys()
 
   cb->setIdentifierValues( QVariantList() << "gold" << 777 << "rush" );
   QCOMPARE( cb->identifierValues(), QVariantList() << "gold" << 777 << "rush" );
+
+  cb->setIdentifierValuesToNull();
+  QCOMPARE( cb->identifierValues().count(), 3 );
+  QCOMPARE( cb->identifierValues(), QVariantList() << QVariant() << QVariant() << QVariant() );
+
+  cb->setIdentifierValues( QVariantList() << "silver" << 888 << "fish" );
+  QCOMPARE( cb->identifierValues(), QVariantList() << "silver" << 888 << "fish" );
+
+  cb->setIdentifierValuesToNull();
+  QCOMPARE( cb->identifierValues().count(), 3 );
+  QCOMPARE( cb->identifierValues(), QVariantList() << QVariant() << QVariant() << QVariant() );
+
+  cb->setIdentifierFields( QStringList() << "material" << "raccord" );
+  cb->setDisplayExpression( "\"material\" || ' ' || \"raccord\"" );
+  cb->setAllowNull( true );
+
+  cb->setIdentifierValues( QVariantList() << "gold" << "fish" );
+  QCOMPARE( cb->identifierValues().count(), 2 );
+  QCOMPARE( cb->identifierValues(), QVariantList() << "gold" << "fish" );
+
+  cb->setIdentifierValuesToNull();
+  QCOMPARE( cb->identifierValues().count(), 2 );
+  QCOMPARE( cb->identifierValues(), QVariantList() << QVariant() << QVariant() );
 }
 
 void TestQgsFeatureListComboBox::testAllowNull()

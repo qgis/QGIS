@@ -47,7 +47,7 @@ class QgsMssqlFeatureIterator;
 \brief Data provider for mssql server.
 *
 */
-class QgsMssqlProvider : public QgsVectorDataProvider
+class QgsMssqlProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -227,7 +227,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     static int sConnectionId;
 };
 
-class QgsMssqlProviderMetadata: public QgsProviderMetadata
+class QgsMssqlProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsMssqlProviderMetadata();

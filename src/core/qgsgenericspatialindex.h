@@ -41,7 +41,7 @@ class QgsRectangle;
  * \since QGIS 3.12
  */
 template <typename T>
-class CORE_EXPORT QgsGenericSpatialIndex
+class QgsGenericSpatialIndex
 {
   public:
 
@@ -128,6 +128,15 @@ class CORE_EXPORT QgsGenericSpatialIndex
       QMutexLocker locker( &mMutex );
       mRTree->intersectsWithQuery( r, visitor );
       return true;
+    }
+
+    /**
+     * Returns TRUE if the index contains no items.
+     */
+    bool isEmpty( ) const
+    {
+      QMutexLocker locker( &mMutex );
+      return mIdToData.isEmpty();
     }
 
   private:

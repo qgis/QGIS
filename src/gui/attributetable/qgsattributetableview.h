@@ -58,9 +58,9 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
     /**
      * \brief setFeatureSelectionManager
-     * \param featureSelectionManager We will take ownership
+     * \param featureSelectionManager
      */
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 
     /**
      * This event filter is installed on the verticalHeader to intercept mouse press and release
@@ -87,6 +87,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * \since QGIS 3.4
      */
     QList<QgsFeatureId> selectedFeaturesIds() const;
+
 
   protected:
 
@@ -144,9 +145,10 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      * Emitted in order to provide a hook to add additional* menu entries to the context menu.
      *
      * \param menu     If additional QMenuItems are added, they will show up in the context menu.
-     * \param  featureId The ID of the current feature
+     * \param atIndex  The QModelIndex, to which the context menu belongs. Relative to the source model.
+     *                 In most cases, this will be a QgsAttributeTableFilterModel
      */
-    void willShowContextMenu( QMenu *menu, const QgsFeatureId featureId );
+    void willShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
 
     /**
      * Emitted when a column in the view has been resized.
@@ -180,6 +182,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     void selectRow( int row, bool anchor );
     QgsAttributeTableFilterModel *mFilterModel = nullptr;
     QgsFeatureSelectionModel *mFeatureSelectionModel = nullptr;
+    QgsIFeatureSelectionManager *mOwnedFeatureSelectionManager = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsAttributeTableDelegate *mTableDelegate = nullptr;
     QMenu *mActionPopup = nullptr;

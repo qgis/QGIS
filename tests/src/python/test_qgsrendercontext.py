@@ -22,8 +22,9 @@ from qgis.core import (QgsRenderContext,
                        QgsProject,
                        QgsRectangle,
                        QgsVectorSimplifyMethod,
-                       QgsRenderedFeatureHandlerInterface)
-from qgis.PyQt.QtCore import QSize
+                       QgsRenderedFeatureHandlerInterface,
+                       QgsDateTimeRange)
+from qgis.PyQt.QtCore import QSize, QDateTime
 from qgis.PyQt.QtGui import QPainter, QImage
 from qgis.testing import start_app, unittest
 import math
@@ -72,6 +73,13 @@ class TestQgsRenderContext(unittest.TestCase):
         c2 = QgsRenderContext(c1)
         self.assertEqual(c2.textRenderFormat(), QgsRenderContext.TextFormatAlwaysOutlines)
 
+        c1.setIsTemporal(True)
+        c1.setTemporalRange(QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
+        c2 = QgsRenderContext(c1)
+
+        self.assertEqual(c2.isTemporal(), True)
+        self.assertEqual(c2.temporalRange(), QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
+
     def testFromQPainter(self):
         """ test QgsRenderContext.fromQPainter """
 
@@ -117,6 +125,14 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextFormatAlwaysOutlines)
 
         self.assertEqual(rc.mapExtent(), QgsRectangle(10000, 20000, 30000, 40000))
+
+        ms.setIsTemporal(True)
+        rc = QgsRenderContext.fromMapSettings(ms)
+        self.assertEqual(rc.isTemporal(), True)
+
+        ms.setTemporalRange(QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
+        rc = QgsRenderContext.fromMapSettings(ms)
+        self.assertEqual(rc.temporalRange(), QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
 
     def testVectorSimplification(self):
         """
@@ -463,6 +479,26 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(sf, 600.0, places=5)
         sf = r.convertToMapUnits(1, QgsUnitTypes.RenderPixels, c)
         self.assertAlmostEqual(sf, 2.0, places=5)
+
+    def testCustomRenderingFlags(self):
+        rc = QgsRenderContext()
+        rc.setCustomRenderingFlag('myexport', True)
+        rc.setCustomRenderingFlag('omitgeometries', 'points')
+        self.assertTrue(rc.customRenderingFlags()['myexport'])
+        self.assertEqual(rc.customRenderingFlags()['omitgeometries'], 'points')
+
+        # test that custom flags are correctly copied from settings
+        settings = QgsMapSettings()
+        settings.setCustomRenderingFlag('myexport', True)
+        settings.setCustomRenderingFlag('omitgeometries', 'points')
+        rc = QgsRenderContext.fromMapSettings(settings)
+        self.assertTrue(rc.customRenderingFlags()['myexport'])
+        self.assertEqual(rc.customRenderingFlags()['omitgeometries'], 'points')
+
+    def testTemporalState(self):
+        rc = QgsRenderContext()
+        self.assertEqual(rc.isTemporal(), False)
+        self.assertIsNotNone(rc.temporalRange())
 
 
 if __name__ == '__main__':

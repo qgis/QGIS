@@ -573,5 +573,5 @@ void QgsMapSaveDialog::onAccepted()
 
 void QgsMapSaveDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/getting_started.html#output" ) );
+  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_gui.html#exporting-the-map-view" ) );
 }

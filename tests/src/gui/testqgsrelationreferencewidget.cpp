@@ -46,6 +46,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void testChainFilter();
+    void testChainFilter_data();
     void testChainFilterRefreshed();
     void testChainFilterDeleteForeignKey();
     void testInvalidRelation();
@@ -59,6 +60,8 @@ class TestQgsRelationReferenceWidget : public QObject
     std::unique_ptr<QgsVectorLayer> mLayer1;
     std::unique_ptr<QgsVectorLayer> mLayer2;
     std::unique_ptr<QgsRelation> mRelation;
+    QgsMapCanvas *mMapCanvas = nullptr;
+    QgsAdvancedDigitizingDockWidget *mCadWidget = nullptr;
 };
 
 void TestQgsRelationReferenceWidget::initTestCase()
@@ -66,10 +69,14 @@ void TestQgsRelationReferenceWidget::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsGui::editorWidgetRegistry()->initEditors();
+  mMapCanvas = new QgsMapCanvas();
+  mCadWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas );
 }
 
 void TestQgsRelationReferenceWidget::cleanupTestCase()
 {
+  delete mCadWidget;
+  delete mMapCanvas;
   QgsApplication::exitQgis();
 }
 
@@ -141,8 +148,18 @@ void TestQgsRelationReferenceWidget::cleanup()
   QgsProject::instance()->removeMapLayer( mLayer2.get() );
 }
 
+void TestQgsRelationReferenceWidget::testChainFilter_data()
+{
+  QTest::addColumn<bool>( "allowNull" );
+
+  QTest::newRow( "allowNull=true" ) << true;
+  QTest::newRow( "allowNull=false" ) << false;
+}
+
 void TestQgsRelationReferenceWidget::testChainFilter()
 {
+  QFETCH( bool, allowNull );
+
   // init a relation reference widget
   QStringList filterFields = { "material", "diameter", "raccord" };
 
@@ -150,7 +167,7 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   QgsRelationReferenceWidget w( &parentWidget );
   w.setChainFilters( true );
   w.setFilterFields( filterFields );
-  w.setRelation( *mRelation, true );
+  w.setRelation( *mRelation, allowNull );
   w.init();
 
   // check default status for comboboxes
@@ -197,7 +214,7 @@ void TestQgsRelationReferenceWidget::testChainFilter()
 
   cbs[0]->setCurrentIndex( 0 );
   loop.exec();
-  QCOMPARE( w.mComboBox->currentText(), QString( "NULL" ) );
+  QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
 
   cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
   loop.exec();
@@ -223,15 +240,15 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   loop.exec();
   QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
 
-  // combobox should propose NULL, 10 and 11 because the filter is now:
+  // combobox should propose NULL (if allowNull is true), 10 and 11 because the filter is now:
   // "material" == 'iron'
-  QCOMPARE( w.mComboBox->count(), 3 );
+  QCOMPARE( w.mComboBox->count(), allowNull ? 3 : 2 );
 
   // if there's no filter at all, all features' id should be proposed
   cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "material" ) ) );
   loop.exec();
-  QCOMPARE( w.mComboBox->count(), 4 );
-  QCOMPARE( w.mComboBox->currentText(), QString( "NULL" ) );
+  QCOMPARE( w.mComboBox->count(), allowNull ? 4 : 3 );
+  QCOMPARE( w.mComboBox->currentText(), allowNull ? QString( "NULL" ) : QString( "10" ) );
 }
 
 void TestQgsRelationReferenceWidget::testChainFilterRefreshed()
@@ -310,16 +327,37 @@ void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
 
   QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
   QCOMPARE( cbs[2]->isEnabled(), false );
+
+  // set a foreign key
+  w.setForeignKeys( QVariantList() << QVariant( 11 ) );
+
+  QCOMPARE( cbs[0]->currentText(), QString( "iron" ) );
+  QCOMPARE( cbs[1]->currentText(), QString( "120" ) );
+  QCOMPARE( cbs[2]->currentText(), QString( "sleeve" ) );
+
+  // set a null foreign key
+  w.setForeignKeys( QVariantList() << QVariant( QVariant::Int ) );
+  QCOMPARE( cbs[0]->currentText(), QString( "material" ) );
+  QCOMPARE( cbs[0]->isEnabled(), true );
+  QCOMPARE( cbs[1]->currentText(), QString( "diameter" ) );
+  QCOMPARE( cbs[1]->isEnabled(), false );
+  QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
+  QCOMPARE( cbs[2]->isEnabled(), false );
 }
 
 void TestQgsRelationReferenceWidget::testInvalidRelation()
 {
   QgsVectorLayer vl( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
-  QgsMapCanvas canvas;
+
   QgsRelationReferenceWidget editor( new QWidget() );
 
   // initWidget with an invalid relation
-  QgsRelationReferenceWidgetWrapper ww( &vl, 10, &editor, &canvas, nullptr, nullptr );
+  QgsRelationReferenceWidgetWrapper ww( &vl, 10, &editor, mMapCanvas, nullptr, nullptr );
+
+  QgsAttributeEditorContext context = ww.context();
+  context.setCadDockWidget( mCadWidget );
+  ww.setContext( context );
+
   ww.initWidget( nullptr );
 }
 
@@ -346,7 +384,6 @@ void TestQgsRelationReferenceWidget::testSetGetForeignKey()
   Q_ASSERT( w.foreignKeys().at( 0 ).isNull() );
   QCOMPARE( spy.count(), 3 );
 }
-
 
 // Test issue https://github.com/qgis/QGIS/issues/29884
 // Relation reference widget wrong feature when "on map identification"
@@ -377,6 +414,24 @@ void TestQgsRelationReferenceWidget::testIdentifyOnMap()
   w.featureIdentified( feature );
   QCOMPARE( w.mComboBox->currentData( Qt::DisplayRole ).toInt(), 10 );
 
+  w.setReadOnlySelector( true );
+
+  mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 11 ) ).nextFeature( feature );
+  QVERIFY( feature.isValid() );
+  QCOMPARE( feature.attribute( QStringLiteral( "pk" ) ).toInt(), 11 );
+  w.featureIdentified( feature );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "11" ) );
+  QCOMPARE( w.mForeignKeys.count(), 1 );
+  QCOMPARE( w.mForeignKeys.at( 0 ).toInt(), 11 );
+
+  mLayer2->getFeatures( QStringLiteral( "pk = %1" ).arg( 10 ) ).nextFeature( feature );
+  QVERIFY( feature.isValid() );
+  QCOMPARE( feature.attribute( QStringLiteral( "pk" ) ).toInt(), 10 );
+  w.featureIdentified( feature );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "10" ) );
+  QCOMPARE( w.mForeignKeys.count(), 1 );
+  QCOMPARE( w.mForeignKeys.at( 0 ).toInt(), 10 );
+
   mLayer1->rollBack();
 }
 
@@ -396,9 +451,9 @@ class DummyVectorLayerTools : public QgsVectorLayerTools // clazy:exclude=missin
 
     bool startEditing( QgsVectorLayer * ) const override {return true;}
 
-    bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;};
+    bool stopEditing( QgsVectorLayer *, bool = true ) const override {return true;}
 
-    bool saveEdits( QgsVectorLayer * ) const override {return true;};
+    bool saveEdits( QgsVectorLayer * ) const override {return true;}
 };
 
 void TestQgsRelationReferenceWidget::testAddEntry()

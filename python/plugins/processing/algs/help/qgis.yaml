@@ -28,11 +28,6 @@ qgis:boundary: >
 qgis:boxplot: >
   This algorithm creates a box plot from a category and a layer field.
 
-qgis:buildvirtualvector: >
-  This algorithm creates a virtual layer that contains a set of vector layer.
-
-  The output virtual layer will not be open in the current project.
-
 qgis:centroids: >
   This algorithm creates a new point layer, with points representing the centroid of the geometries in an input layer.
 
@@ -67,16 +62,13 @@ qgis:convertgeometrytype: >
 
   See the "Polygonize" or "Lines to polygons" algorithm for alternative options.
 
-qgis:creategrid: >
-  This algorithm creates a vector layer with a grid covering a given extent. Elements in the grid can be points, lines or polygons.The size and/or placement of each element in the grid is defined using a horizontal and vertical spacing. The CRS of the output layer must be defined. The grid extent and the spacing values must be expressed in the coordinates and units of this CRS. The top-left point (minX, maxY) is used as the reference point. That means that, at that point, an element is guaranteed to be placed. Unless the width and height of the selected extent is a multiple of the selected spacing, that is not true for the other points that define that extent.
-
 qgis:createpointslayerfromtable: >
   This algorithm creates points layer from a table with columns that contain coordinates fields. Besides X and Y coordinates you can also specify Z and M fields.
 
 qgis:definecurrentprojection: >
-  This algorithm sets an existing layer's projection to the provided CRS. Contrary to the "Assign projection" algorithm, it will not output a new layer.
+  This algorithm sets an existing Shapefile's projection to the provided CRS. Contrary to the "Assign projection" algorithm, it will not output a new layer.
 
-  For shapefile datasets, the .prj and .qpj files will be overwritten - or created if missing - to match the provided CRS.
+  The .prj and .qpj files associated with the Shapefile will be overwritten - or created if missing - to match the provided CRS.
 
 qgis:delaunaytriangulation: >
   This algorithm creates a polygon layer with the delaunay triangulation corresponding to a points layer.
@@ -240,11 +232,6 @@ qgis:minimalenclosingcircle: >
 
   As an alternative, the output layer can contain not just a single circle, but one for each input feature, representing the minimum enclosing circle that covers each of them.
 
-qgis:pointsalonglines: >
-  Creates points at regular intervals along line or polygon geometries. Created points will have new attributes added for the distance along the geometry and the angle of the line at the point.
-
-  An optional start and end offset can be specified, which controls how far from the start and end of the geometry the points should be created.
-
 qgis:pointsdisplacement: >
   Offsets nearby point features by moving nearby points by a preset amount to minimize overlapping features.
 
@@ -288,9 +275,9 @@ qgis:randomextractwithinsubsets: >
   The percentage/count value is not applied to the whole layer, but instead to each category. Categories are defined according to a given attribute, which is also specified as an input parameter for the algorithm.
 
 qgis:randompointsalongline: >
-  This algorithm creates a new point layer, with points placed in the lines of another layer.
+  This algorithm creates a point layer with a given "Number of points" placed on the lines of the "Input layer".
 
-  For each line in the input layer, a given number of points is added to the resulting layer. A minimum distance can be specified to avoid point being too close to each other.
+  The location of each point is determined by randomly selecting a feature, then a segment of the line geometry of that feature, and finally a random position on that segment. A minimum distance between the points can be specified (Euclidean distance).
 
 qgis:randompointsinlayerbounds: >
   This algorithm creates a new point layer with a given number of random points, all of them within the extent of a given layer. A distance factor can be specified, to avoid points being too close to each other.

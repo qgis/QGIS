@@ -282,7 +282,11 @@ void QgsProjectionSelectionTreeWidget::setCrs( const QgsCoordinateReferenceSyste
     mBlockSignals = true;
     mCheckBoxNoProjection->setChecked( false );
     mBlockSignals = false;
-    applySelection( AuthidColumn, crs.authid() );
+
+    if ( !crs.authid().isEmpty() )
+      applySelection( AuthidColumn, crs.authid() );
+    else
+      loadUnknownCrs( crs );
     if ( changed )
     {
       emit crsSelected();
@@ -298,35 +302,6 @@ void QgsProjectionSelectionTreeWidget::setPreviewRect( const QgsRectangle &rect 
 QgsRectangle QgsProjectionSelectionTreeWidget::previewRect() const
 {
   return mAreaCanvas->canvasRect();
-}
-
-// Returns the whole proj4 string for the selected projection node
-QString QgsProjectionSelectionTreeWidget::selectedProj4String()
-{
-  // Only return the projection if there is a node in the tree
-  // selected that has an srid. This prevents error if the user
-  // selects a top-level node rather than an actual coordinate
-  // system
-  //
-  // Get the selected node
-  QTreeWidgetItem *item = lstCoordinateSystems->currentItem();
-  if ( !item || item->text( QgisCrsIdColumn ).isEmpty() )
-    return QString();
-
-  long srsId = item->text( QgisCrsIdColumn ).toLong();
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsId );
-  return crs.toProj();
-}
-
-QString QgsProjectionSelectionTreeWidget::selectedWktString()
-{
-  QTreeWidgetItem *item = lstCoordinateSystems->currentItem();
-  if ( !item || item->text( QgisCrsIdColumn ).isEmpty() )
-    return QString();
-
-  long srsId = item->text( QgisCrsIdColumn ).toLong();
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsId );
-  return crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2015, true );
 }
 
 QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &expression ) const
@@ -409,11 +384,26 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
   if ( !mInitialized && mDeferredLoadCrs.isValid() )
     return mDeferredLoadCrs;
 
-  int srid = getSelectedExpression( QStringLiteral( "srs_id" ) ).toLong();
-  if ( srid >= USER_CRS_START_ID )
-    return QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "USER:%1" ).arg( srid ) );
+  const QString srsIdString = getSelectedExpression( QStringLiteral( "srs_id" ) );
+  if ( !srsIdString.isEmpty() )
+  {
+    int srid = srsIdString.toLong();
+    if ( srid >= USER_CRS_START_ID )
+      return QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "USER:%1" ).arg( srid ) );
+    else
+      return QgsCoordinateReferenceSystem::fromOgcWmsCrs( getSelectedExpression( QStringLiteral( "upper(auth_name||':'||auth_id)" ) ) );
+  }
   else
-    return QgsCoordinateReferenceSystem::fromOgcWmsCrs( getSelectedExpression( QStringLiteral( "upper(auth_name||':'||auth_id)" ) ) );
+  {
+    // custom CRS
+    QTreeWidgetItem *lvi = lstCoordinateSystems->currentItem();
+    if ( lvi && lvi->data( 0, RoleWkt ).isValid() )
+      return QgsCoordinateReferenceSystem::fromWkt( lvi->data( 0, RoleWkt ).toString() );
+    else if ( lvi && lvi->data( 0, RoleProj ).isValid() )
+      return QgsCoordinateReferenceSystem::fromProj( lvi->data( 0, RoleProj ).toString() );
+    else
+      return QgsCoordinateReferenceSystem();
+  }
 }
 
 void QgsProjectionSelectionTreeWidget::setShowNoProjection( bool show )
@@ -450,7 +440,7 @@ bool QgsProjectionSelectionTreeWidget::hasValidSelection() const
   else if ( !mInitialized && mDeferredLoadCrs.isValid() )
     return true;
   else
-    return item && !item->text( QgisCrsIdColumn ).isEmpty();
+    return item && ( !item->text( QgisCrsIdColumn ).isEmpty() || item->data( 0, RoleWkt ).isValid() );
 }
 
 long QgsProjectionSelectionTreeWidget::selectedCrsId()
@@ -693,6 +683,25 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
   mProjListDone = true;
 }
 
+void QgsProjectionSelectionTreeWidget::loadUnknownCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  if ( !mUnknownList )
+  {
+    mUnknownList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "Unknown Coordinate Systems" ) ) );
+    QFont fontTemp = mUnknownList->font( 0 );
+    fontTemp.setItalic( true );
+    fontTemp.setBold( true );
+    mUnknownList->setFont( 0, fontTemp );
+    mUnknownList->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ) );
+  }
+
+  QTreeWidgetItem *newItem = new QTreeWidgetItem( mUnknownList, QStringList( QObject::tr( "Unknown CRS" ) ) );
+  newItem->setData( 0, RoleWkt, crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
+  newItem->setData( 0, RoleProj, crs.toProj() );
+
+  lstCoordinateSystems->setCurrentItem( newItem );
+}
+
 // New coordinate system selected from the list
 void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
@@ -716,15 +725,24 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged( 
 
     updateBoundsPreview();
 
-    QList<QTreeWidgetItem *> nodes = lstRecent->findItems( current->text( QgisCrsIdColumn ), Qt::MatchExactly, QgisCrsIdColumn );
-    if ( !nodes.isEmpty() )
+    const QString crsId = current->text( QgisCrsIdColumn );
+    if ( !crsId.isEmpty() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "found srs %1 in recent" ).arg( current->text( QgisCrsIdColumn ) ), 4 );
-      lstRecent->setCurrentItem( nodes.first() );
+      QList<QTreeWidgetItem *> nodes = lstRecent->findItems( current->text( QgisCrsIdColumn ), Qt::MatchExactly, QgisCrsIdColumn );
+      if ( !nodes.isEmpty() )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "found srs %1 in recent" ).arg( current->text( QgisCrsIdColumn ) ), 4 );
+        lstRecent->setCurrentItem( nodes.first() );
+      }
+      else
+      {
+        QgsDebugMsgLevel( QStringLiteral( "srs %1 not recent" ).arg( current->text( QgisCrsIdColumn ) ), 4 );
+        lstRecent->clearSelection();
+        lstCoordinateSystems->setFocus( Qt::OtherFocusReason );
+      }
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "srs %1 not recent" ).arg( current->text( QgisCrsIdColumn ) ), 4 );
       lstRecent->clearSelection();
       lstCoordinateSystems->setFocus( Qt::OtherFocusReason );
     }
@@ -927,7 +945,7 @@ long QgsProjectionSelectionTreeWidget::getLargestCrsIdMatch( const QString &sql 
 void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
 {
   QTreeWidgetItem *lvi = lstCoordinateSystems->currentItem();
-  if ( !lvi || lvi->text( QgisCrsIdColumn ).isEmpty() )
+  if ( !lvi || ( lvi->text( QgisCrsIdColumn ).isEmpty() && !lvi->data( 0, RoleWkt ).isValid() ) )
     return;
 
   QgsCoordinateReferenceSystem currentCrs = crs();
@@ -947,8 +965,8 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   }
 
   const QString extentHtml = QStringLiteral( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Extent" ), extentString );
-  const QString wktString = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "WKT" ), selectedWktString().replace( '\n', QStringLiteral( "<br>" ) ).replace( ' ', QStringLiteral( "&nbsp;" ) ) );
-  const QString proj4String = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "Proj4" ), selectedProj4String() );
+  const QString wktString = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "WKT" ), currentCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, true ).replace( '\n', QStringLiteral( "<br>" ) ).replace( ' ', QStringLiteral( "&nbsp;" ) ) );
+  const QString proj4String = tr( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "Proj4" ), currentCrs.toProj() );
 
 #ifdef Q_OS_WIN
   const int smallerPointSize = std::max( font().pointSize() - 1, 8 ); // bit less on windows, due to poor rendering of small point sizes

@@ -28,7 +28,7 @@ while(<$in>) {
 	last if /^Last Change/;
 }
 
-my $content = `curl -s http://changelog.qgis.org/en/qgis/version/$version/gnu/`;
+my $content = `curl -A Mozilla -s https://changelog.qgis.org/en/qgis/version/$version/gnu/`;
 die "Couldn't get it!" unless defined $content;
 
 print $news "\n= What's new in Version $version '$releasename'? =\n\n";
@@ -61,8 +61,8 @@ close $in;
 
 copy($tempfile, "doc/NEWS.t2t");
 
-system "txt2tags --encoding=utf-8 -odoc/NEWS.html -t html doc/NEWS.t2t";
-system "txt2tags --encoding=utf-8 -oNEWS -t txt doc/NEWS.t2t";
+system "txt2tags -odoc/NEWS.html -t html doc/NEWS.t2t";
+system "txt2tags -oNEWS -t txt doc/NEWS.t2t";
 
 =head1 NAME
 

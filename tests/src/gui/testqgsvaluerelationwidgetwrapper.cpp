@@ -170,7 +170,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
   cfg_municipality.insert( QStringLiteral( "NofColumns" ), 1 );
   cfg_municipality.insert( QStringLiteral( "AllowNull" ), false );
   cfg_municipality.insert( QStringLiteral( "OrderByValue" ), true );
-  cfg_municipality.insert( QStringLiteral( "FilterExpression" ), QStringLiteral( "\"province\" =  current_value('fk_province')" ) );
+  cfg_municipality.insert( QStringLiteral( "FilterExpression" ), QStringLiteral( "\"province\" = current_value('fk_province')" ) );
   cfg_municipality.insert( QStringLiteral( "UseCompleter" ), false );
   w_municipality.setConfig( cfg_municipality );
   w_municipality.widget();
@@ -178,6 +178,11 @@ void TestQgsValueRelationWidgetWrapper::testDrillDown()
 
   QCOMPARE( w_municipality.mCache.size(), 2 );
   QCOMPARE( w_municipality.mComboBox->count(), 2 );
+
+  // Set a feature
+  w_municipality.setFeature( vl2.getFeature( 1 ) );
+  QCOMPARE( w_municipality.mCache.size(), 1 );
+  QCOMPARE( w_municipality.mComboBox->count(), 1 );
 
   // check that valueChanged signal is correctly triggered
   QSignalSpy spy( &w_municipality, &QgsEditorWidgetWrapper::valuesChanged );
@@ -287,11 +292,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
 
   QCOMPARE( w_municipality.mTableWidget->rowCount(), 1 );
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Some Place By The River" ) );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
-  QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 1 } ) ) );
-#else
   QCOMPARE( w_municipality.value(), QVariant( QStringLiteral( "{1}" ) ) );
-#endif
 
   // Filter by geometry
   cfg_municipality[ QStringLiteral( "FilterExpression" ) ] = QStringLiteral( "contains(buffer(@current_geometry, 1 ), $geometry)" );
@@ -315,29 +316,17 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "2" ) );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "Some Place By The River" ) );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "1" ) );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
-  QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 1 } ) ) );
-#else
   QCOMPARE( w_municipality.value(), QVariant( QStringLiteral( "{1}" ) ) );
-#endif
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
   w_municipality.setValues( QStringLiteral( "{1,2}" ), QVariantList() );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
-  QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 2, 1 } ) ) );
-#else
   QCOMPARE( w_municipality.value(), QVariant( QStringLiteral( "{2,1}" ) ) );
-#endif
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
 
   // Check with passing a variant list
   w_municipality.setValues( QVariantList( {1, 2} ), QVariantList() );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
-  QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 2, 1 } ) ) );
-#else
   QCOMPARE( w_municipality.value(), QVariant( QStringLiteral( "{2,1}" ) ) );
-#endif
 
   // Check values are checked
   f3.setAttribute( QStringLiteral( "fk_municipality" ), QStringLiteral( "{1,2}" ) );
@@ -347,13 +336,7 @@ void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "Some Place By The River" ) );
   QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
-  QCOMPARE( w_municipality.value(), QVariant( QVariantList( { 2, 1 } ) ) );
-#else
   QCOMPARE( w_municipality.value(), QVariant( QStringLiteral( "{2,1}" ) ) );
-#endif
-
-
 }
 
 void TestQgsValueRelationWidgetWrapper::testZeroIndexInRelatedTable()
@@ -412,6 +395,7 @@ void TestQgsValueRelationWidgetWrapper::testZeroIndexInRelatedTable()
 
 void TestQgsValueRelationWidgetWrapper::testWithJsonInPostgres()
 {
+#ifdef ENABLE_PGTEST
   //this is only reading
 
   // create pg layers
@@ -522,7 +506,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInPostgres()
 
   // check value from widget wrapper
   QCOMPARE( w_favoriteauthors_b.value().toStringList(), QStringList() << "4" << "5" << "6" );
-
+#endif
 }
 
 void TestQgsValueRelationWidgetWrapper::testWithJsonInGPKG()
@@ -1109,8 +1093,8 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "5adams'singlequote" ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Ken Follett" ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "6follett{}" ) );
-  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel García Márquez" ) );
-  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "7garcìa][" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel Garc%1a M%2rquez" ).arg( QChar( 0x00ED ) ).arg( QChar( 0x00E1 ) ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "7garc%1a][" ).arg( QChar( 0x00EC ) ) );
 
   w_favoriteauthors.setFeature( vl_text->getFeature( 1 ) );
 
@@ -1127,7 +1111,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Ken Follett" ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Unchecked );
-  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel García Márquez" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel Garc%1a M%2rquez" ).arg( QChar( 0x00ED ) ).arg( QChar( 0x00E1 ) ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Unchecked );
 
   //check authors 1,2,4,5,6 means all the super weird ones: "2helm,comma", "3johnson\"quote", "5adams'singlequote", "6follett{}", "7garcìa]["
@@ -1150,14 +1134,14 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Ken Follett" ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Checked );
-  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel García Márquez" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel Garc%1a M%2rquez" ).arg( QChar( 0x00ED ) ).arg( QChar( 0x00E1 ) ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Checked );
 
   //we do jump over the part with QgsAttributeForm::saveEdits
   vl_text->changeAttributeValue( 1, 3, w_favoriteauthors.value() );
 
   //check if everything set correctly
-  QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{\"2helm,comma\",\"3johnson\\\"quote\",\"5adams'singlequote\",\"6follett{}\",\"7garcìa][\"}" ) ) );
+  QCOMPARE( w_favoriteauthors.value(), QVariant( QStringLiteral( "{\"2helm,comma\",\"3johnson\\\"quote\",\"5adams'singlequote\",\"6follett{}\",\"7garc%1a][\"}" ).arg( QChar( 0x00EC ) ) ) );
 
   w_favoriteauthors.setFeature( vl_text->getFeature( 2 ) );
   //check if second feature checked correctly (none)
@@ -1173,7 +1157,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->checkState(), Qt::Unchecked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Ken Follett" ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Unchecked );
-  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel García Márquez" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel Garc%1a M%2rquez" ).arg( QChar( 0x00ED ) ).arg( QChar( 0x00E1 ) ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Unchecked );
 
   w_favoriteauthors.setFeature( vl_text->getFeature( 1 ) );
@@ -1190,12 +1174,12 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Ken Follett" ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Checked );
-  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel García Márquez" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel Garc%1a M%2rquez" ).arg( QChar( 0x00ED ) ).arg( QChar( 0x00E1 ) ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Checked );
 
   // check if stored correctly
   vl_text->commitChanges();
-  QString expected_string = QStringLiteral( "{\"2helm,comma\",\"3johnson\\\"quote\",\"5adams'singlequote\",\"6follett{}\",\"7garcìa][\"}" );
+  QString expected_string = QStringLiteral( "{\"2helm,comma\",\"3johnson\\\"quote\",\"5adams'singlequote\",\"6follett{}\",\"7garc%1a][\"}" ).arg( QChar( 0x00EC ) );
 
   QgsFeature f = vl_text->getFeature( 1 );
   QVariant attribute = f.attribute( QStringLiteral( "PRFEDEA" ) );
@@ -1230,7 +1214,7 @@ void TestQgsValueRelationWidgetWrapper::testWithTextInGPKGWeirdTextFk()
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->checkState(), Qt::Checked );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Ken Follett" ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Checked );
-  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel García Márquez" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel Garc%1a M%2rquez" ).arg( QChar( 0x00ED ) ).arg( QChar( 0x00E1 ) ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->checkState(), Qt::Checked );
 }
 
@@ -1292,7 +1276,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialite()
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "5" ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Ken Follett" ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "6" ) );
-  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel García Márquez" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel Garc%1a M%2rquez" ).arg( QChar( 0x00ED ) ).arg( QChar( 0x00E1 ) ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->checkState(), Qt::Unchecked );
 
   /* Test data:
@@ -1435,8 +1419,8 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 4, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "5adams'singlequote" ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->text(), QStringLiteral( "Ken Follett" ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 5, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "6follett{}" ) );
-  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel García Márquez" ) );
-  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "7garcìa][" ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->text(), QStringLiteral( "Gabriel Garc%1a M%2rquez" ).arg( QChar( 0x00ED ) ).arg( QChar( 0x00E1 ) ) );
+  QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "7garc%1a][" ).arg( QChar( 0x00EC ) ) );
   QCOMPARE( w_favoriteauthors.mTableWidget->item( 6, 0 )->checkState(), Qt::Unchecked );
 
   /* Test data:
@@ -1453,7 +1437,7 @@ void TestQgsValueRelationWidgetWrapper::testWithJsonInSpatialiteTextFk()
     Data:
     1 "[1,3]" "[""1gamma"", ""3johnson\""quote""]
     2 "[2,5]" "[""2helm,comma"", ""5adams'singlequote""]"
-    3 "[4,6,7]" "[""4vlissides"", ""6follett{}"" , ""7garcìa][""]"
+    3 "[4,6,7]" "[""4vlissides"", ""6follett{}"" , ""7garca][""]"
     5
     7 ""  ""
 

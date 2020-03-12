@@ -92,11 +92,11 @@ Sets if the currently shown form has received any edit events so far.
 :param state: The state
 %End
 
-    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager );
 %Docstring
 setFeatureSelectionManager
 
-:param featureSelectionManager: We will take ownership
+:param featureSelectionManager:
 %End
 
   protected:
@@ -138,12 +138,12 @@ Emitted whenever the display expression is successfully changed
 %End
 
 
-    void willShowContextMenu( QgsActionMenu *menu, const QgsFeatureId featureId );
+    void willShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex );
 %Docstring
 Emitted when the context menu is created to add the specific actions to it
 
 :param menu: is the already created context menu
-:param featureId: is the ID of the current feature
+:param atIndex: is the position of the current feature in the model
 %End
 
   public slots:

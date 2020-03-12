@@ -438,5 +438,5 @@ void QgsStyleExportImportDialog::selectionChanged( const QItemSelection &selecte
 
 void QgsStyleExportImportDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#share-symbols" ) );
+  QgsHelp::openHelp( QStringLiteral( "style_library/style_manager.html#sharing-style-items" ) );
 }

@@ -22,9 +22,11 @@
 #include "qgsgui.h"
 #include "qgsguiutils.h"
 #include "qgssettings.h"
+#include "qgsnative.h"
 
 #include <QPushButton>
 #include <QMenu>
+#include <QDesktopServices>
 
 QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
   QgsBrowserGuiModel *browserModel,
@@ -35,21 +37,20 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
 {
   if ( ! browserModel )
   {
-    mBrowserModel = qgis::make_unique<QgsBrowserGuiModel>();
+    mBrowserModel = new QgsBrowserGuiModel( this );
     mBrowserModel->initialize();
-    mOwnModel = true;
   }
   else
   {
-    mBrowserModel.reset( browserModel );
-    mOwnModel = false;
+    mBrowserModel = browserModel;
+    mBrowserModel->initialize();
   }
 
   setupUi( this );
   setWindowTitle( tr( "Select a Data Source" ) );
   QgsGui::enableAutoGeometryRestore( this );
 
-  mBrowserProxyModel.setBrowserModel( mBrowserModel.get() );
+  mBrowserProxyModel.setBrowserModel( mBrowserModel );
   mBrowserTreeView->setHeaderHidden( true );
 
   if ( setFilterByLayerType )
@@ -63,7 +64,7 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
     buttonBox->button( QDialogButtonBox::StandardButton::Ok )->setEnabled( false );
   }
 
-  mBrowserTreeView->setBrowserModel( mBrowserModel.get() );
+  mBrowserTreeView->setBrowserModel( mBrowserModel );
 
   mWidgetFilter->hide();
   mLeFilter->setPlaceholderText( tr( "Type here to filter visible items…" ) );
@@ -116,12 +117,7 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog(
   }
 }
 
-QgsDataSourceSelectDialog::~QgsDataSourceSelectDialog()
-{
-  if ( ! mOwnModel )
-    mBrowserModel.release();
-}
-
+QgsDataSourceSelectDialog::~QgsDataSourceSelectDialog() = default;
 
 void QgsDataSourceSelectDialog::showEvent( QShowEvent *e )
 {
@@ -172,6 +168,16 @@ void QgsDataSourceSelectDialog::setDescription( const QString &description )
       mDescriptionLabel = new QLabel();
       mDescriptionLabel->setWordWrap( true );
       mDescriptionLabel->setMargin( 4 );
+      mDescriptionLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
+      connect( mDescriptionLabel, &QLabel::linkActivated, this, [ = ]( const QString & link )
+      {
+        QUrl url( link );
+        QFileInfo file( url.toLocalFile() );
+        if ( file.exists() && !file.isDir() )
+          QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+        else
+          QDesktopServices::openUrl( url );
+      } );
       verticalLayout->insertWidget( 1, mDescriptionLabel );
     }
     mDescriptionLabel->setText( description );

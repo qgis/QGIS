@@ -62,7 +62,7 @@ class ProcessingConfig:
     MAX_THREADS = 'MAX_THREADS'
     DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DefaultOutputRasterLayerExt'
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DefaultOutputVectorLayerExt'
-    TEMP_PATH = 'TEMP_PATH'
+    TEMP_PATH = 'TEMP_PATH2'
 
     settings = {}
     settingIcons = {}
@@ -171,7 +171,7 @@ class ProcessingConfig:
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.TEMP_PATH,
-            ProcessingConfig.tr('Temporary output folder path'), tempfile.gettempdir(),
+            ProcessingConfig.tr('Override temporary output folder path (leave blank for default)'), None,
             valuetype=Setting.FOLDER))
 
     @staticmethod

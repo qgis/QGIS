@@ -26,7 +26,7 @@
 
 class QgsDb2Provider;
 
-class QgsDb2FeatureSource : public QgsAbstractFeatureSource
+class QgsDb2FeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsDb2FeatureSource( const QgsDb2Provider *p );
@@ -60,7 +60,7 @@ class QgsDb2FeatureSource : public QgsAbstractFeatureSource
     friend class QgsDb2ExpressionCompiler;
 };
 
-class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2FeatureSource>
+class QgsDb2FeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsDb2FeatureSource>
 {
   public:
     QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool ownSource, const QgsFeatureRequest &request );

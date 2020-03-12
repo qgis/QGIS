@@ -36,11 +36,14 @@
 %Include auto_generated/qgscoordinatetransformcontext.sip
 %Include auto_generated/qgscredentials.sip
 %Include auto_generated/qgsdartmeasurement.sip
+%Include auto_generated/qgsdatabaseschemamodel.sip
+%Include auto_generated/qgsdatabasetablemodel.sip
 %Include auto_generated/qgsdatadefinedsizelegend.sip
 %Include auto_generated/qgsdataitem.sip
 %Include auto_generated/qgsdataitemprovider.sip
 %Include auto_generated/qgsdataitemproviderregistry.sip
 %Include auto_generated/qgsdataprovider.sip
+%Include auto_generated/qgsdataprovidertemporalcapabilities.sip
 %Include auto_generated/qgsdatasourceuri.sip
 %Include auto_generated/qgsdatetimestatisticalsummary.sip
 %Include auto_generated/qgsdatumtransform.sip
@@ -104,6 +107,7 @@
 %Include auto_generated/qgsmaplayerstore.sip
 %Include auto_generated/qgsmaplayerstyle.sip
 %Include auto_generated/qgsmaplayerstylemanager.sip
+%Include auto_generated/qgsmaplayertemporalproperties.sip
 %Include auto_generated/qgsmaprenderercache.sip
 %Include auto_generated/qgsmaprenderercustompainterjob.sip
 %Include auto_generated/qgsmaprendererjob.sip
@@ -150,6 +154,7 @@
 %Include auto_generated/qgsprojectproperty.sip
 %Include auto_generated/qgsprojectstorage.sip
 %Include auto_generated/qgsprojectstorageregistry.sip
+%Include auto_generated/qgsprojecttimesettings.sip
 %Include auto_generated/qgsprojecttranslator.sip
 %Include auto_generated/qgsprojectversion.sip
 %Include auto_generated/qgsprojectviewsettings.sip
@@ -157,6 +162,7 @@
 %Include auto_generated/qgsproperty.sip
 %Include auto_generated/qgspropertycollection.sip
 %Include auto_generated/qgspropertytransformer.sip
+%Include auto_generated/qgsproviderconnectionmodel.sip
 %Include auto_generated/qgsprovidermetadata.sip
 %Include auto_generated/qgsproviderregistry.sip
 %Include auto_generated/qgsproxyprogresstask.sip
@@ -189,6 +195,8 @@
 %Include auto_generated/qgsstringutils.sip
 %Include auto_generated/qgstablecell.sip
 %Include auto_generated/qgstaskmanager.sip
+%Include auto_generated/qgstemporalproperty.sip
+%Include auto_generated/qgstemporalrangeobject.sip
 %Include auto_generated/qgstessellator.sip
 %Include auto_generated/qgstestutils.sip
 %Include auto_generated/qgstextrenderer.sip
@@ -411,6 +419,7 @@
 %Include auto_generated/processing/models/qgsprocessingmodelalgorithm.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildalgorithm.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildparametersource.sip
+%Include auto_generated/processing/models/qgsprocessingmodelcomment.sip
 %Include auto_generated/processing/models/qgsprocessingmodelcomponent.sip
 %Include auto_generated/processing/models/qgsprocessingmodeloutput.sip
 %Include auto_generated/processing/models/qgsprocessingmodelparameter.sip
@@ -444,6 +453,7 @@
 %Include auto_generated/raster/qgsrasterblock.sip
 %Include auto_generated/raster/qgsrasterchecker.sip
 %Include auto_generated/raster/qgsrasterdataprovider.sip
+%Include auto_generated/raster/qgsrasterdataprovidertemporalcapabilities.sip
 %Include auto_generated/raster/qgsrasterdrawer.sip
 %Include auto_generated/raster/qgsrasterfilewriter.sip
 %Include auto_generated/raster/qgsrasterfilewritertask.sip
@@ -452,6 +462,7 @@
 %Include auto_generated/raster/qgsrasterinterface.sip
 %Include auto_generated/raster/qgsrasteriterator.sip
 %Include auto_generated/raster/qgsrasterlayer.sip
+%Include auto_generated/raster/qgsrasterlayertemporalproperties.sip
 %Include auto_generated/raster/qgsrasterminmaxorigin.sip
 %Include auto_generated/raster/qgsrasternuller.sip
 %Include auto_generated/raster/qgsrasterpipe.sip

@@ -957,8 +957,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Duplicate map layer(s) in legend
     void duplicateLayers( const QList<QgsMapLayer *> &lyrList = QList<QgsMapLayer *>() );
 
-    //! change layer subset of current vector layer
-    void layerSubsetString();
+    /**
+     * Changes layer subset of \a mapLayer
+     * \since QGIS 3.12
+     */
+    void layerSubsetString( QgsMapLayer *mapLayer );
+
+    //! change layer subset of the active layer
+    void layerSubsetString( );
 
     //! Sets scale visibility of selected layers
     void setLayerScaleVisibility();
@@ -2386,7 +2392,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsStatusBar *mStatusBar = nullptr;
 
-    QTime mLastRenderTime;
+    QElapsedTimer mLastRenderTime;
     double mLastRenderTimeSeconds = 0;
     QTimer mRenderProgressBarTimer;
     QMetaObject::Connection mRenderProgressBarTimerConnection;

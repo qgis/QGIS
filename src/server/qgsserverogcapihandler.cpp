@@ -306,6 +306,11 @@ void QgsServerOgcApiHandler::htmlDump( const json &data, const QgsServerApiConte
       {
         fName.chop( suffix.length() + 1 );
       }
+      // Chop any ending slashes
+      while ( fName.endsWith( '/' ) )
+      {
+        fName.chop( 1 );
+      }
       fName += '/' + QString::number( args.at( 0 )->get<QgsFeatureId>( ) );
       if ( !suffix.isEmpty() )
       {
@@ -505,8 +510,9 @@ QString QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )
     path = path.replace( re, QString() );
   }
   QUrl result( url );
+  QUrlQuery query( result );
   QList<QPair<QString, QString> > qi;
-  const auto constItems { result.queryItems( ) };
+  const auto constItems { query.queryItems( ) };
   for ( const auto &i : constItems )
   {
     if ( i.first.compare( QStringLiteral( "MAP" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
@@ -519,7 +525,9 @@ QString QgsServerOgcApiHandler::parentLink( const QUrl &url, int levels )
   {
     path.append( '/' );
   }
-  result.setQueryItems( qi );
+  QUrlQuery resultQuery;
+  resultQuery.setQueryItems( qi );
+  result.setQuery( resultQuery );
   result.setPath( path );
   return result.toString();
 }

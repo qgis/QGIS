@@ -41,7 +41,7 @@ QString QgsAuthCertUtils::getSslProtocolName( QSsl::SslProtocol protocol )
       return QObject::tr( "SecureProtocols" );
     case QSsl::TlsV1SslV3:
       return QObject::tr( "TlsV1SslV3" );
-    case QSsl::TlsV1:
+    case QSsl::TlsV1_0:
       return QObject::tr( "TlsV1" );
     case QSsl::SslV3:
       return QObject::tr( "SslV3" );
@@ -228,6 +228,11 @@ QSslKey QgsAuthCertUtils::keyFromFile( const QString &keypath,
           case QSsl::KeyAlgorithm::Opaque:
             *algtype = QStringLiteral( "opaque" );
             break;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 13, 0)
+          case QSsl::KeyAlgorithm::Dh:
+            *algtype = QStringLiteral( "dh" );
+            break;
+#endif
         }
       }
       return clientkey;
@@ -545,7 +550,7 @@ QList<QSslCertificate> QgsAuthCertUtils::pkcs12BundleCas( const QString &bundlep
   {
     if ( cert.isCA( ) )
     {
-      result.append( QSslCertificate::fromData( cert.toPEM().toAscii() ) );
+      result.append( QSslCertificate::fromData( cert.toPEM().toLatin1() ) );
     }
   }
   return result;

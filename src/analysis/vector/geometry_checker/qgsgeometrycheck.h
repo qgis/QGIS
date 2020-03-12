@@ -24,8 +24,9 @@
 #include "qgis_analysis.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
-#include "geometry/qgsgeometry.h"
+#include "qgsgeometry.h"
 #include "qgsgeometrycheckerutils.h"
+#include "qgsgeometrycheckresolutionmethod.h"
 #include "qgssettings.h"
 
 class QgsGeometryCheckError;
@@ -307,16 +308,26 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      * Fixes the error \a error with the specified \a method.
      * Is executed on the main thread.
      *
+     * \see availableResolutionMethods()
      * \since QGIS 3.4
      */
     virtual void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes SIP_INOUT ) const SIP_SKIP;
 
     /**
-     * Returns a list of descriptions for available resolutions for errors. The index will be passed as ``method`` to \see fixError().
+     * Returns a list of available resolution methods.
      *
+     * \since QGIS 3.12
+     */
+    virtual QList<QgsGeometryCheckResolutionMethod> availableResolutionMethods() const;
+
+    /**
+     * Returns a list of descriptions for available resolutions for errors.
+     * The index will be passed as ``method`` to \see fixError().
+     *
+     * \deprecated since QGIS 3.12, use availableResolutionMethods() instead
      * \since QGIS 3.4
      */
-    virtual QStringList resolutionMethods() const = 0;
+    Q_DECL_DEPRECATED virtual QStringList resolutionMethods() const SIP_DEPRECATED;
 
     /**
      * Returns a human readable description for this check.

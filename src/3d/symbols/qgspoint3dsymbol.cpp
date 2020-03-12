@@ -138,11 +138,8 @@ QString QgsPoint3DSymbol::shapeToString( QgsPoint3DSymbol::Shape shape )
 
 QMatrix4x4 QgsPoint3DSymbol::billboardTransform() const
 {
-
-  float *md = transform().data();
-
   QMatrix4x4 billboardTransformMatrix;
-  billboardTransformMatrix.translate( QVector3D( 0, md[13], 0 ) );
+  billboardTransformMatrix.translate( QVector3D( 0, mTransform.data()[13], 0 ) );
 
   return billboardTransformMatrix;
 

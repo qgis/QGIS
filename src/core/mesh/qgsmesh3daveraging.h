@@ -120,6 +120,21 @@ class CORE_EXPORT QgsMesh3dAveragingMethod SIP_ABSTRACT
     virtual bool hasValidInputs() const = 0;
 
     /**
+     * For one face, Calculates average of volume values
+     */
+    void averageVolumeValuesForFace(
+      int faceIndex,
+      int volumesBelowFaceCount,
+      int startVolumeIndex,
+      double methodLevelTop,
+      double methodLevelBottom,
+      bool isVector,
+      const QVector<double> &verticalLevelsForFace,
+      const QVector<double> &volumeValues,
+      QVector<double> &valuesFaces
+    ) const;
+
+    /**
      * For one face, calculates absolute vertical levels between which we need to average
      */
     virtual void volumeRangeForFace(

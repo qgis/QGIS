@@ -16,7 +16,7 @@ from qgis.PyQt.QtTest import QSignalSpy
 from qgis.gui import (QgsProjectionSelectionWidget,
                       QgsProjectionSelectionTreeWidget,
                       QgsProjectionSelectionDialog)
-from qgis.core import QgsCoordinateReferenceSystem, QgsProject
+from qgis.core import QgsCoordinateReferenceSystem, QgsProject, QgsProjUtils
 from qgis.testing import start_app, unittest
 
 
@@ -133,6 +133,17 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         w.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(w.crs().authid(), 'EPSG:3111')
         self.assertTrue(w.hasValidSelection())
+
+    @unittest.skipIf(QgsProjUtils.projVersionMajor() < 6, 'Not a proj6 build')
+    def testTreeWidgetUnknownCrs(self):
+        w = QgsProjectionSelectionTreeWidget()
+        w.show()
+        self.assertFalse(w.hasValidSelection())
+        w.setCrs(QgsCoordinateReferenceSystem.fromWkt('GEOGCS["WGS 84",DATUM["unknown",SPHEROID["WGS84",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["degree",0.0174532925199433]]'))
+        self.assertTrue(w.crs().isValid())
+        self.assertFalse(w.crs().authid())
+        self.assertTrue(w.hasValidSelection())
+        self.assertEqual(w.crs().toWkt(QgsCoordinateReferenceSystem.WKT2_2018), 'GEOGCRS["WGS 84",DATUM["unknown",ELLIPSOID["WGS84",6378137,298.257223563,LENGTHUNIT["metre",1,ID["EPSG",9001]]]],PRIMEM["Greenwich",0,ANGLEUNIT["degree",0.0174532925199433]],CS[ellipsoidal,2],AXIS["longitude",east,ORDER[1],ANGLEUNIT["degree",0.0174532925199433]],AXIS["latitude",north,ORDER[2],ANGLEUNIT["degree",0.0174532925199433]]]')
 
     def testTreeWidgetNotSetOption(self):
         """ test allowing no projection option for QgsProjectionSelectionTreeWidget """

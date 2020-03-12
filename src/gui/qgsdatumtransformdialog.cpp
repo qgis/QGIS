@@ -44,7 +44,7 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
     return true;
   }
 
-  QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, false, true, true, qMakePair( -1, -1 ), parent, nullptr, QString(), mapCanvas );
+  QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, false, true, false, qMakePair( -1, -1 ), parent, nullptr, QString(), mapCanvas );
   if ( !windowTitle.isEmpty() )
     dlg.setWindowTitle( windowTitle );
 
@@ -57,7 +57,7 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
       Q_NOWARN_DEPRECATED_PUSH
       context.addSourceDestinationDatumTransform( dt.sourceCrs, dt.destinationCrs, dt.sourceTransformId, dt.destinationTransformId );
       Q_NOWARN_DEPRECATED_POP
-      context.addCoordinateOperation( dt.sourceCrs, dt.destinationCrs, dt.proj );
+      context.addCoordinateOperation( dt.sourceCrs, dt.destinationCrs, dt.proj, dt.allowFallback );
       QgsProject::instance()->setTransformContext( context );
       return true;
     }
@@ -77,7 +77,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
     const QgsCoordinateReferenceSystem &dCrs, const bool allowCrsChanges, const bool showMakeDefault, const bool forceChoice,
     QPair<int, int> selectedDatumTransforms,
     QWidget *parent,
-    Qt::WindowFlags f, const QString &selectedProj, QgsMapCanvas *mapCanvas )
+    Qt::WindowFlags f, const QString &selectedProj, QgsMapCanvas *mapCanvas, bool allowFallback )
   : QDialog( parent, f )
   , mPreviousCursorOverride( qgis::make_unique< QgsTemporaryCursorRestoreOverride >() ) // this dialog is often shown while cursor overrides are in place, so temporarily remove them
 {
@@ -141,6 +141,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   deets.proj = selectedProj;
   deets.sourceTransformId = selectedDatumTransforms.first;
   deets.destinationTransformId = selectedDatumTransforms.second;
+  deets.allowFallback = allowFallback;
   mCoordinateOperationsWidget->setSelectedOperation( deets );
 
   connect( mCoordinateOperationsWidget, &QgsCoordinateOperationWidget::operationDoubleClicked, this, [ = ]
@@ -191,6 +192,7 @@ void QgsDatumTransformDialog::accept()
     settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_srcTransform" ), sourceDatumProj );
     settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_destTransform" ), destinationDatumProj );
     settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_coordinateOp" ), dt.proj );
+    settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_allowFallback" ), dt.allowFallback );
   }
   QDialog::accept();
 }
@@ -254,6 +256,7 @@ QgsDatumTransformDialog::TransformInfo QgsDatumTransformDialog::selectedDatumTra
   sdt.sourceTransformId = selected.sourceTransformId;
   sdt.destinationTransformId = selected.destinationTransformId;
   sdt.proj = selected.proj;
+  sdt.allowFallback = selected.allowFallback;
   return sdt;
 }
 

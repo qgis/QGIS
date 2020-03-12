@@ -96,9 +96,6 @@ Content-Type: text/xml; charset=utf-8
     <Operation>Update</Operation>
     <Operation>Delete</Operation>
    </Operations>
-   <OutputFormats>
-    <Format>text/xml; subtype=gml/3.1.1</Format>
-   </OutputFormats>
    <ows:WGS84BoundingBox dimensions="2">
     <ows:LowerCorner>8.203459 44.901394</ows:LowerCorner>
     <ows:UpperCorner>8.203547 44.901483</ows:UpperCorner>
@@ -122,8 +119,6 @@ Content-Type: text/xml; charset=utf-8
     <ogc:SpatialOperator name="Crosses"/>
     <ogc:SpatialOperator name="Intersects"/>
     <ogc:SpatialOperator name="Contains"/>
-    <ogc:SpatialOperator name="DWithin"/>
-    <ogc:SpatialOperator name="Beyond"/>
     <ogc:SpatialOperator name="BBOX"/>
    </ogc:SpatialOperators>
   </ogc:Spatial_Capabilities>

@@ -61,6 +61,7 @@ class TestQgsMesh3dAveraging: public QObject
 
     void testMeshElevationAveragingMethod_data();
     void testMeshElevationAveragingMethod();
+    void testMeshElevationAveragingMethodVariableMesh();
 
   private:
     void compare( const QgsMesh3dAveragingMethod *method, double expected, bool valid );
@@ -326,6 +327,41 @@ void TestQgsMesh3dAveraging::testMeshElevationAveragingMethod()
 
   QgsMeshElevationAveragingMethod method( startParam, endParam );
   compare( &method, expected, startParam <= 0 );
+}
+
+void TestQgsMesh3dAveraging::testMeshElevationAveragingMethodVariableMesh()
+{
+  // Test the situation when the number of vertical levels is different for
+  // each face and also that for face 1 the vertical levels are outside of
+  // requested elevation range
+  QVector<int> faceToVolumeIndex = { 0, 4, 7 };
+  QVector<double> verticalLevels = { -1.0, -2.0, -3.0, -4.0, -5.0,
+                                     -1.0, -1.1, -1.3, -1.5,
+                                     -1.0, -2.0, -3.0, -4.0, -5.0, -6.0
+                                   };
+
+  QVector<int> verticalLevelsCount = { 4, 3, 5 };
+
+  QgsMesh3dDataBlock scalarBlock2( 3, false );
+  QVector<double> values = { 1, 2, 3, 4,
+                             0, 0, 0,
+                             100, 200, 300, 400, 500
+                           };
+
+  scalarBlock2.setFaceToVolumeIndex( faceToVolumeIndex );
+  scalarBlock2.setVerticalLevelsCount( verticalLevelsCount );
+  scalarBlock2.setVerticalLevels( verticalLevels );
+  scalarBlock2.setValues( values );
+  scalarBlock2.setValid( true );
+
+  QgsMeshElevationAveragingMethod method( -2.0, -6.0 );
+  QgsMeshDataBlock block = method.calculate( scalarBlock2 );
+  QVERIFY( block.isValid() );
+  QVERIFY( block.count() == 3 );
+
+  QCOMPARE( block.value( 0 ).scalar(), ( 2 + 3 + 4 ) / 3.0 );
+  QVERIFY( std::isnan( block.value( 1 ).scalar() ) );
+  QCOMPARE( block.value( 2 ).scalar(), ( 200 + 300 + 400 + 500 ) / 4.0 );
 }
 
 QGSTEST_MAIN( TestQgsMesh3dAveraging )

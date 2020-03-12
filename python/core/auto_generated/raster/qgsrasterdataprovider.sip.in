@@ -193,6 +193,12 @@ Returns the sublayers of this layer - useful for providers that manage
 their own layers, such as WMS
 %End
 
+    virtual QgsRasterDataProviderTemporalCapabilities *temporalCapabilities();
+
+%Docstring
+Returns temporal capabilities associated with the data provider.
+%End
+
     virtual bool supportsLegendGraphic() const;
 %Docstring
 Returns whether the provider supplies a legend graphic
