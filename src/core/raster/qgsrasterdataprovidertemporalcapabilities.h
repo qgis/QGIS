@@ -71,55 +71,31 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     void setMode( TemporalMode mode );
 
     /**
-     * Mode to used to fetch the data from provider. This is applicable for wms based layers.
-     *
+     * Method to use when resolving a temporal range to a data provider layer or band.
      **/
-    enum FetchMode
+    enum IntervalHandlingMethod
     {
-      Earliest = 0, //!< Use the start datetime in the temporal range.
-      Latest = 1, //!< Use the end datetime in the temporal range.
-      Range = 2 //!< Use the datetimes in temporal range as range.
+      MatchUsingWholeRange, //!< Use an exact match to the whole temporal range
+      MatchExactUsingStartOfRange, //!< Match the start of the temporal range to a corresponding layer or band, and only use exact matching results
+      MatchExactUsingEndOfRange, //!< Match the end of the temporal range to a corresponding layer or band, and only use exact matching results
     };
+    // TODO -- add other methods, like "FindClosestMatchToStartOfRange", "FindClosestMatchToEndOfRange", etc
 
     /**
-     * Returns the temporal capabilities fetch mode.
+     * Returns the desired method to use when resolving a temporal interval to matching
+     * layers or bands in the data provider.
      *
-     *\see setFetchMode()
+     *\see setIntervalHandlingMethod()
     **/
-    FetchMode fetchMode() const;
+    IntervalHandlingMethod intervalHandlingMethod() const;
 
     /**
-     * Sets the temporal properties fetch \a mode.
+     * Sets the desired \a method to use when resolving a temporal interval to matching
+     * layers or bands in the data provider.
      *
-     *\see fetchMode()
+     *\see intervalHandlingMethod()
     **/
-    void setFetchMode( FetchMode mode );
-
-    //! Stores the capabilities time interval duration in the temporal ranges.
-    enum TimeInterval
-    {
-      Seconds = 0,  //! For seconds
-      Minutes = 1,  //! For minutes
-      Hours = 2,    //! For hours
-      Days = 3,     //! For days
-      Months = 4,   //! For months
-      Years = 5,    //! For years
-      None = 6     //! if there is no time interval
-    };
-
-    /**
-     * Returns the temporal interval.
-     *
-     *\see setTimeInterval()
-    **/
-    TimeInterval timeInterval() const;
-
-    /**
-     * Sets the temporal time \a interval.
-     *
-     *\see timeInterval()
-    **/
-    void setTimeInterval( TimeInterval interval );
+    void setIntervalHandlingMethod( IntervalHandlingMethod method );
 
     /**
      * Sets the fixed datetime \a range for the temporal properties.
@@ -259,14 +235,11 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     //! If reference range has been enabled to be used in these properties
     bool mReferenceEnable = false;
 
-    //! Data fetch mode.
-    FetchMode mFetchMode = Earliest;
+    //! Interval handling method
+    IntervalHandlingMethod mFetchMode = MatchUsingWholeRange;
 
     //! Temporal capabilities mode.
     TemporalMode mMode = ModeTemporalRangeFromDataProvider;
-
-    //! Member for time interval.
-    TimeInterval mTimeInteval = None;
 
 };
 

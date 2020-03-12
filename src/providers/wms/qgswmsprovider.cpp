@@ -160,8 +160,8 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
 
       temporalCapabilities()->setMode(
         QgsRasterDataProviderTemporalCapabilities::ModeTemporalRangeFromDataProvider );
-      temporalCapabilities()->setFetchMode(
-        QgsRasterDataProviderTemporalCapabilities::Earliest );
+      temporalCapabilities()->setIntervalHandlingMethod(
+        QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange );
 
       if ( mSettings.mIsBiTemporal )
       {
@@ -1087,10 +1087,17 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
   QgsDateTimeRange range = temporalCapabilities()->requestedTemporalRange();
   QString format = "yyyy-MM-ddThh:mm:ssZ";
 
-  if ( temporalCapabilities()->fetchMode() == QgsRasterDataProviderTemporalCapabilities::Earliest )
-    range = QgsDateTimeRange( range.begin(), range.begin() );
-  else if ( temporalCapabilities()->fetchMode() == QgsRasterDataProviderTemporalCapabilities::Latest )
-    range = QgsDateTimeRange( range.end(), range.end() );
+  switch ( temporalCapabilities()->intervalHandlingMethod() )
+  {
+    case QgsRasterDataProviderTemporalCapabilities::MatchUsingWholeRange:
+      break;
+    case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange:
+      range = QgsDateTimeRange( range.begin(), range.begin() );
+      break;
+    case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange:
+      range = QgsDateTimeRange( range.end(), range.end() );
+      break;
+  }
 
   if ( !temporalCapabilities()->isTimeEnabled() )
     format = "yyyy-MM-dd";
