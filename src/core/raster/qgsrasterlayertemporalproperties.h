@@ -23,6 +23,7 @@
 #include "qgis_sip.h"
 #include "qgsrange.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
 
 /**
  * \class QgsRasterLayerTemporalProperties
@@ -68,29 +69,20 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     void setMode( TemporalMode mode );
 
     /**
-     * Mode to used to fetch the data from provider. This is applicable for wms based layers.
+     * Returns the desired method to use when resolving a temporal interval to matching
+     * layers or bands in the data provider.
      *
-     **/
-    enum FetchMode
-    {
-      Earliest = 0, //!< Use the start datetime in the temporal range.
-      Latest = 1, //!< Use the end datetime in the temporal range.
-      Range = 2 //!< Use the datetimes in temporal range as range.
-    };
+     *\see setIntervalHandlingMethod()
+    **/
+    QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod intervalHandlingMethod() const;
 
     /**
-     * Returns the temporal properties fetch mode.
+     * Sets the desired \a method to use when resolving a temporal interval to matching
+     * layers or bands in the data provider.
      *
-     *\see setFetchMode()
+     *\see intervalHandlingMethod()
     **/
-    FetchMode fetchMode() const;
-
-    /**
-     * Sets the temporal properties fetch \a mode.
-     *
-     *\see fetchMode()
-    **/
-    void setFetchMode( FetchMode mode );
+    void setIntervalHandlingMethod( QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod method );
 
     /**
      * Sets a temporal \a range to apply to the whole layer. All bands from
@@ -185,14 +177,10 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) override;
 
     /**
-     * Returns the temporal mode given index
-     **/
-    TemporalMode indexToMode( int index );
-
-    /**
-     * Returns the temporal fetch mode given index
-     **/
-    FetchMode indexToFetchMode( int index );
+     * Sets the layers temporal settings to appropriate defaults based on
+     * a provider's temporal \a capabilities.
+     */
+    void setDefaultsFromDataProviderTemporalCapabilities( QgsRasterDataProviderTemporalCapabilities *capabilities );
 
   private:
 
@@ -200,7 +188,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     TemporalMode mMode = ModeFixedTemporalRange;
 
     //! Temporal layer data fetch mode.
-    FetchMode mFetchMode = Range;
+    QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod mIntervalHandlingMethod = QgsRasterDataProviderTemporalCapabilities::MatchUsingWholeRange;
 
     //! Represents fixed temporal range.
     QgsDateTimeRange mFixedRange;

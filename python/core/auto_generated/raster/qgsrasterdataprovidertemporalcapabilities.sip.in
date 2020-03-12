@@ -55,50 +55,27 @@ Sets the temporal ``mode``.
 .. seealso:: :py:func:`mode`
 %End
 
-    enum FetchMode
+    enum IntervalHandlingMethod
     {
-      Earliest,
-      Latest,
-      Range
+      MatchUsingWholeRange,
+      MatchExactUsingStartOfRange,
+      MatchExactUsingEndOfRange,
     };
 
-    FetchMode fetchMode() const;
+    IntervalHandlingMethod intervalHandlingMethod() const;
 %Docstring
-Returns the temporal capabilities fetch mode.
+Returns the desired method to use when resolving a temporal interval to matching
+layers or bands in the data provider.
 
-.. seealso:: :py:func:`setFetchMode`
+.. seealso:: :py:func:`setIntervalHandlingMethod`
 %End
 
-    void setFetchMode( FetchMode mode );
+    void setIntervalHandlingMethod( IntervalHandlingMethod method );
 %Docstring
-Sets the temporal properties fetch ``mode``.
+Sets the desired ``method`` to use when resolving a temporal interval to matching
+layers or bands in the data provider.
 
-.. seealso:: :py:func:`fetchMode`
-%End
-
-    enum TimeInterval
-    {
-      Seconds,
-      Minutes,
-      Hours,
-      Days,
-      Months,
-      Years,
-      None
-    };
-
-    TimeInterval timeInterval() const;
-%Docstring
-Returns the temporal interval.
-
-.. seealso:: :py:func:`setTimeInterval`
-%End
-
-    void setTimeInterval( TimeInterval interval );
-%Docstring
-Sets the temporal time ``interval``.
-
-.. seealso:: :py:func:`timeInterval`
+.. seealso:: :py:func:`intervalHandlingMethod`
 %End
 
     void setFixedTemporalRange( const QgsDateTimeRange &range );

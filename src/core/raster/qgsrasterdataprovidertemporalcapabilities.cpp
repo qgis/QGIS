@@ -102,26 +102,14 @@ void QgsRasterDataProviderTemporalCapabilities::setMode( TemporalMode mode )
   mMode = mode;
 }
 
-QgsRasterDataProviderTemporalCapabilities::FetchMode QgsRasterDataProviderTemporalCapabilities::fetchMode() const
+QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod QgsRasterDataProviderTemporalCapabilities::intervalHandlingMethod() const
 {
   return mFetchMode;
 }
 
-void QgsRasterDataProviderTemporalCapabilities::setFetchMode( FetchMode mode )
+void QgsRasterDataProviderTemporalCapabilities::setIntervalHandlingMethod( IntervalHandlingMethod mode )
 {
   if ( mFetchMode == mode )
     return;
   mFetchMode = mode;
-}
-
-QgsRasterDataProviderTemporalCapabilities::TimeInterval QgsRasterDataProviderTemporalCapabilities::timeInterval() const
-{
-  return mTimeInteval;
-}
-
-void QgsRasterDataProviderTemporalCapabilities::setTimeInterval( TimeInterval interval )
-{
-  if ( mTimeInteval == interval )
-    return;
-  mTimeInteval = interval;
 }

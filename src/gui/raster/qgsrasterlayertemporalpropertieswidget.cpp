@@ -19,8 +19,11 @@
 #include "qgsgui.h"
 #include "qgsproject.h"
 #include "qgsprojecttimesettings.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
+#include "qgsrasterlayer.h"
 
-QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( QWidget *parent, QgsMapLayer *layer )
+
+QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( QWidget *parent, QgsRasterLayer *layer )
   : QWidget( parent )
   , mLayer( layer )
 {
@@ -41,21 +44,16 @@ void QgsRasterLayerTemporalPropertiesWidget::init()
   setDateTimeInputsLimit();
   setDateTimeInputsLocale();
 
-  mFetchModeComboBox->addItem( tr( "Earliest" ), QgsRasterLayerTemporalProperties::Earliest );
-  mFetchModeComboBox->addItem( tr( "Latest" ), QgsRasterLayerTemporalProperties::Latest );
-  mFetchModeComboBox->addItem( tr( "Range" ), QgsRasterLayerTemporalProperties::Range );
+  mFetchModeComboBox->addItem( tr( "Use Whole Temporal Range" ), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange );
+  mFetchModeComboBox->addItem( tr( "Match to Start of Range" ), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange );
+  mFetchModeComboBox->addItem( tr( "Match to End of Range" ), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange );
 
-  QgsRasterLayerTemporalProperties *temporalProperties = qobject_cast<QgsRasterLayerTemporalProperties *>(
-        mLayer->temporalProperties() );
-  if ( temporalProperties )
-    mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData(
-                                           temporalProperties->fetchMode() ) );
+  if ( QgsRasterLayerTemporalProperties *temporalProperties =  mLayer->temporalProperties() )
+    mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData( temporalProperties->intervalHandlingMethod() ) );
   else
-    mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData(
-                                           QgsRasterLayerTemporalProperties::Earliest ) );
+    mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData( QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange ) );
 
-  if ( mLayer->temporalProperties()->temporalSource() ==
-       QgsMapLayerTemporalProperties::TemporalSource::Project )
+  if ( mLayer->temporalProperties()->temporalSource() == QgsMapLayerTemporalProperties::TemporalSource::Project )
     mProjectRadioButton->setChecked( true );
 
   updateRangeLabel( mLabel );
@@ -259,9 +257,7 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
         rasterLayer->temporalProperties()->setTemporalRange( normalRange );
         rasterLayer->temporalProperties()->setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Layer );
 
-        int fetchModeIndex = mFetchModeComboBox->currentData().toInt();
-        rasterLayer->temporalProperties()->setFetchMode(
-          rasterLayer->temporalProperties()->indexToFetchMode( fetchModeIndex ) );
+        rasterLayer->temporalProperties()->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >( mFetchModeComboBox->currentData().toInt() ) );
 
         if ( mReferenceCheckBox->isChecked() )
         {
@@ -291,9 +287,7 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
         rasterLayer->temporalProperties()->setTemporalRange( projectRange );
         rasterLayer->temporalProperties()->setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Project );
 
-        int fetchModeIndex = mFetchModeComboBox->currentData().toInt();
-        rasterLayer->temporalProperties()->setFetchMode(
-          rasterLayer->temporalProperties()->indexToFetchMode( fetchModeIndex ) );
+        rasterLayer->temporalProperties()->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >( mFetchModeComboBox->currentData().toInt() ) );
 
         if ( mReferenceCheckBox->isChecked() )
         {

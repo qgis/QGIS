@@ -241,22 +241,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
         {
           mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( rendererContext.temporalRange() );
           mPipe->provider()->temporalCapabilities()->setRequestedReferenceTemporalRange( layer->temporalProperties()->referenceTemporalRange() );
-
-          switch ( layer->temporalProperties()->fetchMode() )
-          {
-            case QgsRasterLayerTemporalProperties::Earliest:
-              mPipe->provider()->temporalCapabilities()->setFetchMode(
-                QgsRasterDataProviderTemporalCapabilities::Earliest );
-              break;
-            case QgsRasterLayerTemporalProperties::Latest:
-              mPipe->provider()->temporalCapabilities()->setFetchMode(
-                QgsRasterDataProviderTemporalCapabilities::Latest );
-              break;
-            case QgsRasterLayerTemporalProperties::Range:
-              mPipe->provider()->temporalCapabilities()->setFetchMode(
-                QgsRasterDataProviderTemporalCapabilities::Range );
-              break;
-          }
+          mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( layer->temporalProperties()->intervalHandlingMethod() );
         }
         break;
     }

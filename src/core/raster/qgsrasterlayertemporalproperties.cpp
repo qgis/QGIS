@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsrasterlayertemporalproperties.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
 
 QgsRasterLayerTemporalProperties::QgsRasterLayerTemporalProperties( QObject *parent, bool enabled )
   :  QgsMapLayerTemporalProperties( parent, enabled )
@@ -34,16 +35,16 @@ void QgsRasterLayerTemporalProperties::setMode( QgsRasterLayerTemporalProperties
   mMode = mode;
 }
 
-QgsRasterLayerTemporalProperties::FetchMode QgsRasterLayerTemporalProperties::fetchMode() const
+QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod QgsRasterLayerTemporalProperties::intervalHandlingMethod() const
 {
-  return mFetchMode;
+  return mIntervalHandlingMethod;
 }
 
-void QgsRasterLayerTemporalProperties::setFetchMode( FetchMode mode )
+void QgsRasterLayerTemporalProperties::setIntervalHandlingMethod( QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod method )
 {
-  if ( mFetchMode == mode )
+  if ( mIntervalHandlingMethod == method )
     return;
-  mFetchMode = mode;
+  mIntervalHandlingMethod = method;
 }
 
 void  QgsRasterLayerTemporalProperties::setFixedTemporalRange( const QgsDateTimeRange &range )
@@ -101,15 +102,12 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
   Q_UNUSED( context )
   // TODO add support for raster layers with multi-temporal properties.
 
-  QDomNode temporalNode = element.elementsByTagName( QStringLiteral( "temporal" ) ).at( 0 );
+  QDomElement temporalNode = element.elementsByTagName( QStringLiteral( "temporal" ) ).at( 0 ).toElement();
 
-  TemporalMode mode = indexToMode( temporalNode.toElement().attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
-  setMode( mode );
+  mMode = static_cast< TemporalMode >( temporalNode.attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
+  mIntervalHandlingMethod = static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >( temporalNode.attribute( QStringLiteral( "fetchMode" ), QStringLiteral( "0" ) ). toInt() );
 
-  FetchMode fetchMode = indexToFetchMode( temporalNode.toElement().attribute( QStringLiteral( "fetchMode" ), QStringLiteral( "0" ) ). toInt() );
-  setFetchMode( fetchMode );
-
-  int sourceIndex = temporalNode.toElement().attribute( QStringLiteral( "source" ), QStringLiteral( "0" ) ).toInt();
+  int sourceIndex = temporalNode.attribute( QStringLiteral( "source" ), QStringLiteral( "0" ) ).toInt();
 
   if ( sourceIndex == 0 )
     setTemporalSource( TemporalSource::Layer );
@@ -149,7 +147,7 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
   QDomElement temporalElement = document.createElement( QStringLiteral( "temporal" ) );
   temporalElement.setAttribute( QStringLiteral( "mode" ), QString::number( mMode ) );
   temporalElement.setAttribute( QStringLiteral( "source" ), QString::number( temporalSource() ) );
-  temporalElement.setAttribute( QStringLiteral( "fetchMode" ), QString::number( fetchMode() ) );
+  temporalElement.setAttribute( QStringLiteral( "fetchMode" ), QString::number( mIntervalHandlingMethod ) );
 
   for ( QString rangeString : { "fixedRange", "fixedReferenceRange", "normalRange", "referenceRange" } )
   {
@@ -185,30 +183,15 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
   return element;
 }
 
-QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties::indexToMode( int index )
+void QgsRasterLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabilities( QgsRasterDataProviderTemporalCapabilities *capabilities )
 {
-  switch ( index )
-  {
-    case 0:
-      return TemporalMode::ModeFixedTemporalRange;
-    case 1:
-      return TemporalMode::ModeTemporalRangeFromDataProvider;
-    default:
-      return TemporalMode::ModeFixedTemporalRange;
-  }
-}
+  setFixedTemporalRange( capabilities->fixedTemporalRange() );
+  setFixedReferenceTemporalRange( capabilities->fixedReferenceTemporalRange() );
 
-QgsRasterLayerTemporalProperties::FetchMode QgsRasterLayerTemporalProperties::indexToFetchMode( int index )
-{
-  switch ( index )
+  if ( capabilities->isTimeEnabled() )
   {
-    case 0:
-      return Earliest;
-    case 1:
-      return Latest;
-    case 2:
-      return Range;
-    default:
-      return Earliest;
+    setMode( ModeTemporalRangeFromDataProvider );
   }
+
+  mIntervalHandlingMethod = capabilities->intervalHandlingMethod();
 }

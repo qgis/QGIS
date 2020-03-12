@@ -20,9 +20,8 @@
 
 #include "ui_qgsrasterlayertemporalpropertieswidgetbase.h"
 #include "qgis_gui.h"
-#include "qgsrasterlayer.h"
 
-class QgsMapLayer;
+class QgsRasterLayer;
 
 /**
  * \ingroup gui
@@ -40,7 +39,7 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
     /**
      * Constructor for QgsRasterLayerTemporalPropertiesWidget.
      */
-    QgsRasterLayerTemporalPropertiesWidget( QWidget *parent = nullptr, QgsMapLayer *layer = nullptr );
+    QgsRasterLayerTemporalPropertiesWidget( QWidget *parent = nullptr, QgsRasterLayer *layer = nullptr );
 
     /**
      * Save widget temporal properties inputs.
@@ -57,7 +56,7 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
     /**
      * The corresponding map layer with temporal attributes
      */
-    QgsMapLayer *mLayer = nullptr;
+    QgsRasterLayer *mLayer = nullptr;
 
     /**
      * Mode used to determine if temporal properties dimensional status.
