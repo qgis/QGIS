@@ -115,7 +115,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="mSpinBox"/>
+       <widget class="QgsDoubleSpinBox" name="mSpinBox"/>
       </item>
       <item>
        <widget class="QComboBox" name="mTimeStepsComboBox">
@@ -220,6 +220,11 @@
    <extends>QDockWidget</extends>
    <header>qgsdockwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <resources>
