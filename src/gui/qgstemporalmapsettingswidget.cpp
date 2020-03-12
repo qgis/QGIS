@@ -18,7 +18,7 @@
 #include "qgstemporalmapsettingswidget.h"
 #include "qgsgui.h"
 #include "qgis.h"
-
+///@cond PRIVATE
 QgsTemporalMapSettingsWidget::QgsTemporalMapSettingsWidget( QWidget *parent )
   : QWidget( parent )
 {
@@ -41,3 +41,5 @@ void QgsTemporalMapSettingsWidget::frameRateChange()
 {
   emit frameRateChanged();
 }
+
+///@endcond

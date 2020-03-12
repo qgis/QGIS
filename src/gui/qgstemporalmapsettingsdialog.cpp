@@ -19,32 +19,26 @@
 #include "qgsgui.h"
 #include "qgstemporalmapsettingswidget.h"
 
+///@cond PRIVATE
+
 QgsTemporalMapSettingsDialog::QgsTemporalMapSettingsDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
   setupUi( this );
 
-  connect( this, &QDialog::accepted, this, &QgsTemporalMapSettingsDialog::apply );
-  connect( this, &QDialog::rejected, this, &QgsTemporalMapSettingsDialog::onCancel );
+  connect( this, &QDialog::accepted, this, &QgsTemporalMapSettingsDialog::accept );
+  connect( this, &QDialog::rejected, this, &QgsTemporalMapSettingsDialog::reject );
 
   mTemporalMapSettingsWidget = new QgsTemporalMapSettingsWidget( this );
   QVBoxLayout *layout = new QVBoxLayout( frame );
   layout->addWidget( mTemporalMapSettingsWidget );
 
   setWindowTitle( tr( "Temporal Map Settings" ) );
-
-  mTemporalMapSettingsWidget->setFrameRateValue( 1 );
-}
-
-void QgsTemporalMapSettingsDialog::apply()
-{
-}
-
-void QgsTemporalMapSettingsDialog::onCancel()
-{
 }
 
 QgsTemporalMapSettingsWidget *QgsTemporalMapSettingsDialog::mapSettingsWidget()
 {
   return mTemporalMapSettingsWidget;
 }
+
+///@endcond

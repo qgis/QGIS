@@ -22,21 +22,16 @@
 
 #include "qgis_gui.h"
 
+#define SIP_NO_FILE
 
-/**
- * \ingroup gui
- * The QgsTemporalMapSettingsWidget class
- *
- * \since QGIS 3.14
- */
+///@cond PRIVATE
 class GUI_EXPORT QgsTemporalMapSettingsWidget : public QWidget, private Ui::QgsTemporalMapSettingsWidgetBase
 {
     Q_OBJECT
   public:
 
     /**
-      * Constructor for QgsTemporalMapSettingsWidget
-      *
+      * Constructor for QgsTemporalMapSettingsWidget, with the specified \a parent widget.
       */
     QgsTemporalMapSettingsWidget( QWidget *parent = nullptr );
 
@@ -70,5 +65,6 @@ class GUI_EXPORT QgsTemporalMapSettingsWidget : public QWidget, private Ui::QgsT
 
 
 };
+///@endcond
 
 #endif // QGSTEMPORALMAPSETTINGSWIDGET_H

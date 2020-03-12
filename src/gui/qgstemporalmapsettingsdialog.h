@@ -23,20 +23,17 @@
 
 class QgsTemporalMapSettingsWidget;
 
-/**
- * \ingroup gui
- * The QgsTemporalMapSettingsDialog class
- *
- * \since QGIS 3.14
- */
+#define SIP_NO_FILE
+
+///@cond PRIVATE
+
 class GUI_EXPORT QgsTemporalMapSettingsDialog : public QDialog, private Ui::QgsTemporalMapSettingsDialogBase
 {
     Q_OBJECT
   public:
 
     /**
-      * Constructor for QgsTemporalMapSettingsDialog
-      *
+      * Constructor for QgsTemporalMapSettingsDialog, with the specified \a parent widget.
       */
     QgsTemporalMapSettingsDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
@@ -45,17 +42,12 @@ class GUI_EXPORT QgsTemporalMapSettingsDialog : public QDialog, private Ui::QgsT
      */
     QgsTemporalMapSettingsWidget *mapSettingsWidget();
 
-  private slots:
-
-    //! \brief Applies the settings made in the dialog.
-    void apply();
-    //! \brief Called when cancel button is pressed
-    void onCancel();
-
   private:
 
     //! Widget for handling temporal map settings
     QgsTemporalMapSettingsWidget *mTemporalMapSettingsWidget = nullptr;
 };
+
+///@endcond
 
 #endif // QGSTEMPORALMAPSETTINGSDIALOG_H
