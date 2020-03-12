@@ -133,9 +133,9 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
      * This setting controls the overall playback speed of the animation, i.e. how quickly
      * a playing animation will advance to the next frame.
      *
-     * \see framesPerSeconds()
+     * \see framesPerSecond()
      */
-    void setFramesPerSeconds( double rate );
+    void setFramesPerSecond( double rate );
 
     /**
      * Returns the animation frame rate, in frames per second.
@@ -143,9 +143,9 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
      * This setting controls the overall playback speed of the animation, i.e. how quickly
      * a playing animation will advance to the next frame.
      *
-     * \see setFramesPerSeconds()
+     * \see setFramesPerSecond()
      */
-    double framesPerSeconds() const;
+    double framesPerSecond() const;
 
     /**
      * Returns the total number of frames for the navigation.
@@ -162,7 +162,7 @@ class CORE_EXPORT QgsTemporalNavigationObject : public QgsTemporalController
     /**
      * Sets whether the animation should \a loop after hitting the end or start frame.
      *
-     * \see looping()
+     * \see isLooping()
      */
     void setLooping( bool loop );
 
