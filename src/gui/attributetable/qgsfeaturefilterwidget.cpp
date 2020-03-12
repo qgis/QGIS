@@ -89,6 +89,7 @@ void QgsFeatureFilterWidget::init( QgsVectorLayer *layer, const QgsAttributeEdit
 
   connect( mLayer, &QgsVectorLayer::attributeAdded, this, &QgsFeatureFilterWidget::columnBoxInit );
   connect( mLayer, &QgsVectorLayer::attributeDeleted, this, &QgsFeatureFilterWidget::columnBoxInit );
+  connect( mMainView->masterModel(), &QgsAttributeTableModel::dataChanged, this, &QgsFeatureFilterWidget::filterQueryAccepted );
 
   //set delay on entering text
   mFilterQueryTimer.setSingleShot( true );
