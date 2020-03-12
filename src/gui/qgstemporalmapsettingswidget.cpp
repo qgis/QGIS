@@ -26,7 +26,7 @@ QgsTemporalMapSettingsWidget::QgsTemporalMapSettingsWidget( QWidget *parent )
   setupUi( this );
   setPanelTitle( tr( "Temporal Settings" ) );
 
-  connect( mFrameSpinBox,  qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalMapSettingsWidget::frameRateChange );
+  connect( mFrameSpinBox,  qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalMapSettingsWidget::frameRateChanged );
 }
 
 double QgsTemporalMapSettingsWidget::frameRateValue()
@@ -37,11 +37,6 @@ double QgsTemporalMapSettingsWidget::frameRateValue()
 void QgsTemporalMapSettingsWidget::setFrameRateValue( double value )
 {
   mFrameSpinBox->setValue( value );
-}
-
-void QgsTemporalMapSettingsWidget::frameRateChange()
-{
-  emit frameRateChanged();
 }
 
 ///@endcond

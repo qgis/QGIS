@@ -24,6 +24,7 @@ QgsTemporalControllerDockWidget::QgsTemporalControllerDockWidget( const QString 
 {
   setWindowTitle( name );
   mControllerWidget = new QgsTemporalControllerWidget();
+  mControllerWidget->setDockMode( true );
 
   QgsPanelWidgetStack *stack = new QgsPanelWidgetStack();
   stack->setMainPanel( mControllerWidget );

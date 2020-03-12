@@ -167,16 +167,16 @@ QgsTemporalController *QgsTemporalControllerWidget::temporalController()
 
 void QgsTemporalControllerWidget::settings_clicked()
 {
-  QgsTemporalMapSettingsDialog dialog( this );
-  dialog.mapSettingsWidget()->setFrameRateValue( mNavigationObject->framesPerSecond() );
+  QgsTemporalMapSettingsWidget *settingsWidget = new QgsTemporalMapSettingsWidget( this );
+  settingsWidget->setFrameRateValue( mNavigationObject->framesPerSecond() );
 
-  if ( dialog.exec() )
+  connect( settingsWidget, &QgsTemporalMapSettingsWidget::frameRateChanged, this, [ = ]( double rate )
   {
     // save new settings into project
-    QgsProject::instance()->timeSettings()->setFramesPerSecond( dialog.mapSettingsWidget()->frameRateValue() );
-
-    mNavigationObject->setFramesPerSecond( QgsProject::instance()->timeSettings()->framesPerSecond() );
-  }
+    QgsProject::instance()->timeSettings()->setFramesPerSecond( rate );
+    mNavigationObject->setFramesPerSecond( rate );
+  } );
+  openPanel( settingsWidget );
 }
 
 void QgsTemporalControllerWidget::timeSlider_valueChanged( int value )
