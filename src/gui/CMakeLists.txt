@@ -505,7 +505,6 @@ SET(QGIS_GUI_SRCS
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
   qgstaskmanagerwidget.cpp
-  qgstemporalmapsettingsdialog.cpp
   qgstemporalmapsettingswidget.cpp
   qgstemporalcontrollerwidget.cpp
   qgstextformatwidget.cpp
@@ -729,7 +728,6 @@ SET(QGIS_GUI_HDRS
   qgstablewidgetitem.h
   qgstabwidget.h
   qgstaskmanagerwidget.h
-  qgstemporalmapsettingsdialog.h
   qgstemporalmapsettingswidget.h
   qgstemporalcontrollerwidget.h
   qgstextformatwidget.h
