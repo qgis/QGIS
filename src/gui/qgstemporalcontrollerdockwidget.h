@@ -69,6 +69,8 @@ class GUI_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget, private
     //! Handles all non gui navigation logic
     QgsTemporalNavigationObject *mNavigationObject = nullptr;
 
+    int mBlockSettingUpdates = 0;
+
   private slots:
 
     /**
@@ -106,6 +108,9 @@ class GUI_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget, private
      * Updates the navigation frame duration.
      **/
     void updateFrameDuration();
+
+    void setWidgetStateFromProject();
+
 
 };
 

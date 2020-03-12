@@ -79,6 +79,64 @@ Returns a DOM element representing the settings.
 .. seealso:: :py:func:`readXml`
 %End
 
+    QgsUnitTypes::TemporalUnit timeStepUnit() const;
+%Docstring
+Returns the project's time step (length of one animation frame) unit, which is used as the default value when
+animating the project.
+
+.. seealso:: :py:func:`setTimeStepUnit`
+
+.. seealso:: :py:func:`timeStep`
+%End
+
+    void setTimeStepUnit( QgsUnitTypes::TemporalUnit unit );
+%Docstring
+Sets the project's time step (length of one animation frame) ``unit``, which is used as the default value when
+animating the project.
+
+.. seealso:: :py:func:`timeStepUnit`
+
+.. seealso:: :py:func:`setTimeStep`
+%End
+
+    double timeStep() const;
+%Docstring
+Returns the project's time step (length of one animation frame), which is used as the default value when
+animating the project.
+
+Units are specified via timeStepUnit()
+
+.. seealso:: :py:func:`setTimeStep`
+
+.. seealso:: :py:func:`timeStepUnit`
+%End
+
+    void setTimeStep( double step );
+%Docstring
+Sets the project's time ``step`` (length of one animation frame), which is used as the default value when
+animating the project.
+
+Units are specified via setTimeStepUnit()
+
+.. seealso:: :py:func:`timeStep`
+
+.. seealso:: :py:func:`setTimeStepUnit`
+%End
+
+    void setFramesPerSecond( double rate );
+%Docstring
+Sets the project's default animation frame ``rate``, in frames per second.
+
+.. seealso:: :py:func:`framesPerSecond`
+%End
+
+    double framesPerSecond() const;
+%Docstring
+Returns the project's default animation frame rate, in frames per second.
+
+.. seealso:: :py:func:`setFramesPerSecond`
+%End
+
   signals:
 
     void temporalRangeChanged();

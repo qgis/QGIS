@@ -19,6 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgsrange.h"
+#include "qgsunittypes.h"
 #include <QObject>
 
 class QDomElement;
@@ -86,6 +87,60 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
      */
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 
+    /**
+     * Returns the project's time step (length of one animation frame) unit, which is used as the default value when
+     * animating the project.
+     *
+     * \see setTimeStepUnit()
+     * \see timeStep()
+     */
+    QgsUnitTypes::TemporalUnit timeStepUnit() const;
+
+    /**
+     * Sets the project's time step (length of one animation frame) \a unit, which is used as the default value when
+     * animating the project.
+     *
+     * \see timeStepUnit()
+     * \see setTimeStep()
+     */
+    void setTimeStepUnit( QgsUnitTypes::TemporalUnit unit );
+
+    /**
+     * Returns the project's time step (length of one animation frame), which is used as the default value when
+     * animating the project.
+     *
+     * Units are specified via timeStepUnit()
+     *
+     * \see setTimeStep()
+     * \see timeStepUnit()
+     */
+    double timeStep() const;
+
+    /**
+     * Sets the project's time \a step (length of one animation frame), which is used as the default value when
+     * animating the project.
+     *
+     * Units are specified via setTimeStepUnit()
+     *
+     * \see timeStep()
+     * \see setTimeStepUnit()
+     */
+    void setTimeStep( double step );
+
+    /**
+     * Sets the project's default animation frame \a rate, in frames per second.
+     *
+     * \see framesPerSecond()
+     */
+    void setFramesPerSecond( double rate );
+
+    /**
+     * Returns the project's default animation frame rate, in frames per second.
+     *
+     * \see setFramesPerSecond()
+     */
+    double framesPerSecond() const;
+
   signals:
 
     /**
@@ -99,6 +154,9 @@ class CORE_EXPORT QgsProjectTimeSettings : public QObject
   private:
 
     QgsDateTimeRange mRange;
+    QgsUnitTypes::TemporalUnit mTimeStepUnit = QgsUnitTypes::TemporalHours;
+    double mTimeStep = 1;
+    double mFrameRate = 1;
 };
 
 
