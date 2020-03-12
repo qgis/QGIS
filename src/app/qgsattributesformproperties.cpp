@@ -60,18 +60,6 @@ QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer,
   mFormLayoutTree->setHeaderLabels( QStringList() << tr( "Form Layout" ) );
   mFormLayoutTree->setType( DnDTree::Type::Drop );
 
-  // AttributeTypeDialog
-  mAttributeTypeDialog = new QgsAttributeTypeDialog( mLayer, -1, mAttributeTypeFrame );
-  mAttributeTypeDialog->layout()->setMargin( 0 );
-  mAttributeTypeFrame->layout()->setMargin( 0 );
-  mAttributeTypeFrame->layout()->addWidget( mAttributeTypeDialog );
-
-  // AttributeRelationEdit
-  mAttributeRelationEdit = new QgsAttributeRelationEdit( "", mAttributeTypeFrame );
-  mAttributeRelationEdit->layout()->setMargin( 0 );
-  mAttributeTypeFrame->layout()->setMargin( 0 );
-  mAttributeTypeFrame->layout()->addWidget( mAttributeRelationEdit );
-
   connect( mAvailableWidgetsTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onAttributeSelectionChanged );
   connect( mFormLayoutTree, &QTreeWidget::itemSelectionChanged, this, &QgsAttributesFormProperties::onFormLayoutSelectionChanged );
   connect( mAddTabOrGroupButton, &QAbstractButton::clicked, this, &QgsAttributesFormProperties::addTabOrGroupButton );
@@ -250,12 +238,6 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
   if ( index < 0 )
     return;
 
-  mAttributeTypeDialog = new QgsAttributeTypeDialog( mLayer, index, mAttributeTypeFrame );
-  mAttributeTypeDialog->setEnabled( true );
-
-  // AttributeTypeDialog delete and recreate
-  mAttributeTypeFrame->layout()->removeWidget( mAttributeTypeDialog );
-  delete mAttributeTypeDialog;
   mAttributeTypeDialog = new QgsAttributeTypeDialog( mLayer, index, mAttributeTypeFrame );
 
   QgsFieldConstraints constraints = cfg.mFieldConstraints;
