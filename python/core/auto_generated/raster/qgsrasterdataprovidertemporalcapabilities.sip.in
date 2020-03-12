@@ -78,33 +78,34 @@ layers or bands in the data provider.
 .. seealso:: :py:func:`intervalHandlingMethod`
 %End
 
-    void setFixedTemporalRange( const QgsDateTimeRange &range );
+    void setAvailableTemporalRange( const QgsDateTimeRange &range );
 %Docstring
-Sets the fixed datetime ``range`` for the temporal properties.
+Sets the datetime ``range`` extent from which temporal data is available from the provider.
 
-.. seealso:: :py:func:`fixedTemporalRange`
+.. seealso:: :py:func:`availableTemporalRange`
 %End
 
-    const QgsDateTimeRange &fixedTemporalRange() const;
+    const QgsDateTimeRange &availableTemporalRange() const;
 %Docstring
-Returns the fixed datetime range for these temporal properties.
+Returns the datetime range extent from which temporal data is available from the provider.
 
-.. seealso:: :py:func:`setFixedTemporalRange`
+.. seealso:: :py:func:`setAvailableTemporalRange`
 %End
 
-    void setFixedReferenceTemporalRange( const QgsDateTimeRange &range );
+    void setAvailableReferenceTemporalRange( const QgsDateTimeRange &range );
 %Docstring
-Sets the fixed reference datetime ``range``. This is to be used for
+Sets the available reference datetime ``range``. This is to be used for
 bi-temporal based data. Where data can have both nominal and reference times.
 
-.. seealso:: :py:func:`fixedReferenceTemporalRange`
+.. seealso:: :py:func:`availableReferenceTemporalRange`
 %End
 
-    const QgsDateTimeRange &fixedReferenceTemporalRange() const;
+    const QgsDateTimeRange &availableReferenceTemporalRange() const;
 %Docstring
-Returns the fixed reference datetime range.
+Returns the available reference datetime range, which indicates the maximum
+extent of datetime values available for reference temporal ranges from the provider.
 
-.. seealso:: :py:func:`setFixedReferenceTemporalRange`
+.. seealso:: :py:func:`setAvailableReferenceTemporalRange`
 %End
 
     void setRequestedTemporalRange( const QgsDateTimeRange &range );

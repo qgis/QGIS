@@ -185,8 +185,8 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
 
 void QgsRasterLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabilities( QgsRasterDataProviderTemporalCapabilities *capabilities )
 {
-  setFixedTemporalRange( capabilities->fixedTemporalRange() );
-  setFixedReferenceTemporalRange( capabilities->fixedReferenceTemporalRange() );
+  setFixedTemporalRange( capabilities->availableTemporalRange() );
+  setFixedReferenceTemporalRange( capabilities->availableReferenceTemporalRange() );
 
   if ( capabilities->isTimeEnabled() )
   {

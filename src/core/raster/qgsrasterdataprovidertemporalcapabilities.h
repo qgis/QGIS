@@ -98,33 +98,34 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     void setIntervalHandlingMethod( IntervalHandlingMethod method );
 
     /**
-     * Sets the fixed datetime \a range for the temporal properties.
+     * Sets the datetime \a range extent from which temporal data is available from the provider.
      *
-     * \see fixedTemporalRange()
+     * \see availableTemporalRange()
     */
-    void setFixedTemporalRange( const QgsDateTimeRange &range );
+    void setAvailableTemporalRange( const QgsDateTimeRange &range );
 
     /**
-     * Returns the fixed datetime range for these temporal properties.
+     * Returns the datetime range extent from which temporal data is available from the provider.
      *
-     * \see setFixedTemporalRange()
+     * \see setAvailableTemporalRange()
     */
-    const QgsDateTimeRange &fixedTemporalRange() const;
+    const QgsDateTimeRange &availableTemporalRange() const;
 
     /**
-     * Sets the fixed reference datetime \a range. This is to be used for
+     * Sets the available reference datetime \a range. This is to be used for
      * bi-temporal based data. Where data can have both nominal and reference times.
      *
-     * \see fixedReferenceTemporalRange()
+     * \see availableReferenceTemporalRange()
     */
-    void setFixedReferenceTemporalRange( const QgsDateTimeRange &range );
+    void setAvailableReferenceTemporalRange( const QgsDateTimeRange &range );
 
     /**
-     * Returns the fixed reference datetime range.
+     * Returns the available reference datetime range, which indicates the maximum
+     * extent of datetime values available for reference temporal ranges from the provider.
      *
-     * \see setFixedReferenceTemporalRange()
+     * \see setAvailableReferenceTemporalRange()
     */
-    const QgsDateTimeRange &fixedReferenceTemporalRange() const;
+    const QgsDateTimeRange &availableReferenceTemporalRange() const;
 
     /**
      * Sets the requested temporal \a range to retrieve when

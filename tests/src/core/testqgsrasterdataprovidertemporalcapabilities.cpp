@@ -92,10 +92,10 @@ void TestQgsRasterDataProviderTemporalCapabilities::checkTemporalRange()
   QgsDateTimeRange outOfLimitsRange = QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ) ),
                                       QDateTime( QDate( 2021, 3, 1 ) ) );
 
-  temporalCapabilities->setFixedTemporalRange( fixedDateTimeRange );
+  temporalCapabilities->setAvailableTemporalRange( fixedDateTimeRange );
   temporalCapabilities->setRequestedTemporalRange( dateTimeRange );
 
-  QCOMPARE( temporalCapabilities->fixedTemporalRange(), fixedDateTimeRange );
+  QCOMPARE( temporalCapabilities->availableTemporalRange(), fixedDateTimeRange );
   QCOMPARE( temporalCapabilities->requestedTemporalRange(), dateTimeRange );
 
   // Test setting out of fixed temporal range limits, should not update the temporal range.
@@ -117,10 +117,10 @@ void TestQgsRasterDataProviderTemporalCapabilities::checkReferenceTemporalRange(
   QgsDateTimeRange outOfLimitsRange = QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ) ),
                                       QDateTime( QDate( 2021, 3, 1 ) ) );
 
-  temporalCapabilities->setFixedReferenceTemporalRange( fixedDateTimeRange );
+  temporalCapabilities->setAvailableReferenceTemporalRange( fixedDateTimeRange );
   temporalCapabilities->setRequestedReferenceTemporalRange( dateTimeRange );
 
-  QCOMPARE( temporalCapabilities->fixedReferenceTemporalRange(), fixedDateTimeRange );
+  QCOMPARE( temporalCapabilities->availableReferenceTemporalRange(), fixedDateTimeRange );
   QCOMPARE( temporalCapabilities->requestedReferenceTemporalRange(), dateTimeRange );
 
   temporalCapabilities->setRequestedReferenceTemporalRange( outOfLimitsRange );

@@ -268,9 +268,9 @@ void TestQgsProjectProperties::testTimeSettings()
 
   // Test setting Project temporal range using temporal layers
 
-  QgsRasterLayer *firstLayer = new QgsRasterLayer( "", "firstLayer", "wms" );
-  QgsRasterLayer *secondLayer = new QgsRasterLayer( "", "secondLayer", "wms" );
-  QgsRasterLayer *thirdLayer = new QgsRasterLayer( "", "thirdLayer", "wms" );
+  QgsRasterLayer *firstLayer = new QgsRasterLayer( QString(), QStringLiteral( "firstLayer" ), QStringLiteral( "wms" ) );
+  QgsRasterLayer *secondLayer = new QgsRasterLayer( QString(), QStringLiteral( "secondLayer" ), QStringLiteral( "wms" ) );
+  QgsRasterLayer *thirdLayer = new QgsRasterLayer( QString(), QStringLiteral( "thirdLayer" ), QStringLiteral( "wms" ) );
 
   QgsDateTimeRange firstRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime(), Qt::UTC ),
                                 QDateTime( QDate( 2020, 3, 31 ), QTime(), Qt::UTC ) );
