@@ -80,7 +80,7 @@ class GUI_EXPORT QgsModelSnapper
 
      * \see snapRect()
      */
-    QPointF snapPoint( QPointF point, double scaleFactor, bool &snapped SIP_OUT ) const;
+    QPointF snapPoint( QPointF point, double scaleFactor, bool &snapped SIP_OUT, bool snapHorizontal = true, bool snapVertical = true ) const;
 
     /**
      * Snaps a layout coordinate \a rect. If \a rect was snapped, \a snapped will be set to TRUE.
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsModelSnapper
      *
      * \see snapPoint()
      */
-    QRectF snapRect( const QRectF &rect, double scaleFactor, bool &snapped SIP_OUT ) const;
+    QRectF snapRect( const QRectF &rect, double scaleFactor, bool &snapped SIP_OUT, bool snapHorizontal = true, bool snapVertical = true ) const;
 
     /**
      * Snaps a layout coordinate \a point to the grid. If \a point

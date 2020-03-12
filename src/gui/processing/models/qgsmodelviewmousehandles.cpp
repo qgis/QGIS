@@ -160,5 +160,24 @@ void QgsModelViewMouseHandles::endMacroCommand()
   mView->endMacroCommand();
 }
 
+QPointF QgsModelViewMouseHandles::snapPoint( QPointF originalPoint, QgsGraphicsViewMouseHandles::SnapGuideMode mode, bool snapHorizontal, bool snapVertical )
+{
+  bool snapped = false;
+
+  //depending on the mode, we either snap just the single point, or all the bounds of the selection
+  QPointF snappedPoint;
+  switch ( mode )
+  {
+    case Item:
+      snappedPoint = mView->snapper()->snapRect( rect().translated( originalPoint ), mView->transform().m11(), snapped, snapHorizontal, snapVertical ).topLeft();
+      break;
+    case Point:
+      snappedPoint = mView->snapper()->snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal, snapVertical );
+      break;
+  }
+
+  return snapped ? snappedPoint : originalPoint;
+}
+
 
 ///@endcond PRIVATE

@@ -65,6 +65,7 @@ class GUI_EXPORT QgsModelViewMouseHandles: public QgsGraphicsViewMouseHandles
     QRectF previewSetItemRect( QGraphicsItem *item, QRectF rect ) override;
     void startMacroCommand( const QString &text ) override;
     void endMacroCommand() override;
+    QPointF snapPoint( QPointF originalPoint, SnapGuideMode mode, bool snapHorizontal = true, bool snapVertical = true ) override;
 
   public slots:
 
