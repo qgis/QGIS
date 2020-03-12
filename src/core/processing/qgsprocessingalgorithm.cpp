@@ -727,6 +727,11 @@ QString QgsProcessingAlgorithm::parameterAsConnectionName( const QVariantMap &pa
   return QgsProcessingParameters::parameterAsConnectionName( parameterDefinition( name ), parameters, context );
 }
 
+QDateTime QgsProcessingAlgorithm::parameterAsDateTime( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+{
+  return QgsProcessingParameters::parameterAsDateTime( parameterDefinition( name ), parameters, context );
+}
+
 QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameters, const QString &name )
 {
   if ( !parameters.contains( name ) )
