@@ -50,18 +50,9 @@ class GUI_EXPORT QgsTemporalMapSettingsWidget : public QgsPanelWidget, private U
   signals:
 
     /**
-     * Emitted when frame rate value on the spin box has changed.
+     * Emitted when frame \a rate value on the spin box has changed.
      */
-    void frameRateChanged();
-
-  private slots:
-
-    /**
-     * Emits frame rate change signal.
-     *
-     * \see frameRateChanged()
-     */
-    void frameRateChange();
+    void frameRateChanged( double rate );
 
 
 };
