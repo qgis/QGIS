@@ -103,18 +103,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     const QgsDateTimeRange &availableReferenceTemporalRange() const;
 
     /**
-     * Sets the requested temporal \a range to retrieve when
-     * returning data from the associated data provider.
-     *
-     * \note this is not normally manually set, and is intended for use by
-     * QgsRasterLayerRenderer to automatically set the requested temporal range
-     *  on a clone of the data provider during a render job.
-     *
-     * \see requestedTemporalRange()
-    */
-    void setRequestedTemporalRange( const QgsDateTimeRange &range );
-
-    /**
      * Returns the requested temporal range.
      * Intended to be used by the provider in fetching data.
      *
@@ -177,6 +165,18 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
   private:
 
     /**
+     * Sets the requested temporal \a range to retrieve when
+     * returning data from the associated data provider.
+     *
+     * \note this is not normally manually set, and is intended for use by
+     * QgsRasterLayerRenderer to automatically set the requested temporal range
+     * on a clone of the data provider during a render job.
+     *
+     * \see requestedTemporalRange()
+    */
+    void setRequestedTemporalRange( const QgsDateTimeRange &range );
+
+    /**
      * Represents available data provider datetime range.
      *
      * This is for determining the providers lower and upper datetime bounds,
@@ -213,6 +213,9 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
 
     //! Interval handling method
     IntervalHandlingMethod mIntervalMatchMethod = MatchUsingWholeRange;
+
+    friend class QgsRasterLayerRenderer;
+    friend class TestQgsRasterDataProviderTemporalCapabilities;
 
 };
 
