@@ -64,12 +64,14 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsMeshLayerProperties::apply );
 
   connect( mMeshLayer, &QgsMeshLayer::dataChanged, this, &QgsMeshLayerProperties::syncAndRepaint );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMeshLayerProperties::showHelp );
 
 #ifdef HAVE_3D
   mMesh3DWidget = new QgsMeshLayer3DRendererWidget( mMeshLayer, canvas, mOptsPage_3DView );
 
   mOptsPage_3DView->setLayout( new QVBoxLayout( mOptsPage_3DView ) );
   mOptsPage_3DView->layout()->addWidget( mMesh3DWidget );
+  mOptsPage_3DView->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#d-view-properties" ) );
 #else
   delete mOptsPage_3DView;  // removes both the "3d view" list item and its page
 #endif
@@ -91,6 +93,13 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   if ( !mMeshLayer->styleManager()->isDefault( mMeshLayer->styleManager()->currentStyle() ) )
     title += QStringLiteral( " (%1)" ).arg( mMeshLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
+
+  //Add help page references
+  mOptsPage_Information->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#information-properties" ) );
+  mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#source-properties" ) );
+  mOptsPage_Style->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#symbology-properties" ) );
+  mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#rendering-properties" ) );
+
 }
 
 void QgsMeshLayerProperties::syncToLayer()
@@ -250,4 +259,18 @@ void QgsMeshLayerProperties::syncAndRepaint()
 {
   syncToLayer();
   mMeshLayer->triggerRepaint();
+}
+
+void QgsMeshLayerProperties::showHelp()
+{
+  const QVariant helpPage = mOptionsStackedWidget->currentWidget()->property( "helpPage" );
+
+  if ( helpPage.isValid() )
+  {
+    QgsHelp::openHelp( helpPage.toString() );
+  }
+  else
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_mesh/mesh_properties.html" ) );
+  }
 }
