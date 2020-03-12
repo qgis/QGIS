@@ -279,9 +279,12 @@ void TestQgsProjectProperties::testTimeSettings()
   QgsDateTimeRange thirdRange = QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ), QTime(), Qt::UTC ),
                                 QDateTime( QDate( 2020, 2, 28 ), QTime(), Qt::UTC ) );
 
-  firstLayer->temporalProperties()->setTemporalRange( firstRange );
-  secondLayer->temporalProperties()->setTemporalRange( secondRange );
-  thirdLayer->temporalProperties()->setTemporalRange( thirdRange );
+  firstLayer->temporalProperties()->setIsActive( true );
+  firstLayer->temporalProperties()->setFixedTemporalRange( firstRange );
+  secondLayer->temporalProperties()->setIsActive( true );
+  secondLayer->temporalProperties()->setFixedTemporalRange( secondRange );
+  thirdLayer->temporalProperties()->setIsActive( true );
+  thirdLayer->temporalProperties()->setFixedTemporalRange( thirdRange );
 
   QgsProject::instance()->addMapLayers( { firstLayer, secondLayer, thirdLayer } );
 
