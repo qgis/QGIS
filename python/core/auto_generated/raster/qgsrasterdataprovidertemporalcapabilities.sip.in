@@ -86,20 +86,6 @@ extent of datetime values available for reference temporal ranges from the provi
 .. seealso:: :py:func:`setAvailableReferenceTemporalRange`
 %End
 
-    void setRequestedTemporalRange( const QgsDateTimeRange &range );
-%Docstring
-Sets the requested temporal ``range`` to retrieve when
-returning data from the associated data provider.
-
-.. note::
-
-   this is not normally manually set, and is intended for use by
-   QgsRasterLayerRenderer to automatically set the requested temporal range
-   on a clone of the data provider during a render job.
-
-.. seealso:: :py:func:`requestedTemporalRange`
-%End
-
     const QgsDateTimeRange &requestedTemporalRange() const;
 %Docstring
 Returns the requested temporal range.
