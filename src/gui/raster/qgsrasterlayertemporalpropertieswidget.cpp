@@ -104,9 +104,9 @@ void QgsRasterLayerTemporalPropertiesWidget::setDateTimeInputsLimit()
       layer->temporalProperties()->setMode(
         QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider );
       layer->temporalProperties()->setFixedTemporalRange(
-        layer->dataProvider()->temporalCapabilities()->fixedTemporalRange() );
+        layer->dataProvider()->temporalCapabilities()->availableTemporalRange() );
       layer->temporalProperties()->setFixedReferenceTemporalRange(
-        layer->dataProvider()->temporalCapabilities()->fixedReferenceTemporalRange() );
+        layer->dataProvider()->temporalCapabilities()->availableReferenceTemporalRange() );
     }
 
     QgsDateTimeRange fixedRange = layer->temporalProperties()->fixedTemporalRange();
