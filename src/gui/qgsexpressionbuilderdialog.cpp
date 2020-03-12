@@ -16,6 +16,8 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgssettings.h"
 #include "qgsguiutils.h"
+#include "qgsexpressionutils.h"
+#include "qgsexpressioncontext.h"
 #include "qgsgui.h"
 
 QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent, const QString &key, const QgsExpressionContext &context )
@@ -24,6 +26,10 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
+
+  // if no layer is given, try to get it from the context
+  if ( !layer )
+    layer = QgsExpressionUtils::getVectorLayer( context.variable( QStringLiteral( "layer" ) ), nullptr );
 
   connect( builder, &QgsExpressionBuilderWidget::parserErrorChanged, this, &QgsExpressionBuilderDialog::syncOkButtonEnabledState );
   connect( builder, &QgsExpressionBuilderWidget::evalErrorChanged, this, &QgsExpressionBuilderDialog::syncOkButtonEnabledState );
