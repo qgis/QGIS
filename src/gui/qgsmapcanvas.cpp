@@ -750,8 +750,8 @@ void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
   {
     // we need to discard any previously cached images which have temporal properties enabled, so that these will be updated when
     // the canvas is redrawn
-    const QList<QgsMapLayer *> layers;
-    for ( QgsMapLayer *layer : layers )
+    const QList<QgsMapLayer *> layerList = mapSettings().layers();
+    for ( QgsMapLayer *layer : layerList )
     {
       if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
         mCache->invalidateCacheForLayer( layer );
