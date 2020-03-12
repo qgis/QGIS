@@ -18,11 +18,13 @@
 #include "qgstemporalmapsettingswidget.h"
 #include "qgsgui.h"
 #include "qgis.h"
+
 ///@cond PRIVATE
 QgsTemporalMapSettingsWidget::QgsTemporalMapSettingsWidget( QWidget *parent )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
 {
   setupUi( this );
+  setPanelTitle( tr( "Temporal Settings" ) );
 
   connect( mFrameSpinBox,  qgis::overload<double>::of( &QDoubleSpinBox::valueChanged ), this, &QgsTemporalMapSettingsWidget::frameRateChange );
 }
