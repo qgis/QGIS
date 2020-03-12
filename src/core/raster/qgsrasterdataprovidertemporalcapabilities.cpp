@@ -27,12 +27,12 @@ void QgsRasterDataProviderTemporalCapabilities::setAvailableTemporalRange( const
   if ( !hasTemporalCapabilities() )
     setHasTemporalCapabilities( true );
 
-  mFixedRange = dateTimeRange;
+  mAvailableTemporalRange = dateTimeRange;
 }
 
 const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::availableTemporalRange() const
 {
-  return mFixedRange;
+  return mAvailableTemporalRange;
 }
 
 void QgsRasterDataProviderTemporalCapabilities::setEnableTime( bool enabled )
@@ -50,17 +50,17 @@ void QgsRasterDataProviderTemporalCapabilities::setAvailableReferenceTemporalRan
   if ( !hasTemporalCapabilities() )
     setHasTemporalCapabilities( true );
 
-  mFixedReferenceRange = dateTimeRange;
+  mAvailableReferenceRange = dateTimeRange;
 }
 
 const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::availableReferenceTemporalRange() const
 {
-  return mFixedReferenceRange;
+  return mAvailableReferenceRange;
 }
 
 void QgsRasterDataProviderTemporalCapabilities::setRequestedTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
-  if ( mFixedRange.contains( dateTimeRange ) )
+  if ( mAvailableTemporalRange.contains( dateTimeRange ) )
     mRequestedRange = dateTimeRange;
 }
 
@@ -71,7 +71,7 @@ const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::requestedTemp
 
 void QgsRasterDataProviderTemporalCapabilities::setRequestedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
-  if ( mFixedReferenceRange.contains( dateTimeRange ) )
+  if ( mAvailableReferenceRange.contains( dateTimeRange ) )
     mRequestedReferenceRange = dateTimeRange;
 }
 

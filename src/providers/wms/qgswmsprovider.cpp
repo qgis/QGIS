@@ -157,9 +157,6 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
       Q_ASSERT_X( temporalCapabilities(), "QgsWmsProvider::QgsWmsProvider()", "Data provider temporal capabilities object does not exist" );
       temporalCapabilities()->setHasTemporalCapabilities( true );
       temporalCapabilities()->setAvailableTemporalRange( mSettings.mFixedRange );
-
-      temporalCapabilities()->setMode(
-        QgsRasterDataProviderTemporalCapabilities::ModeTemporalRangeFromDataProvider );
       temporalCapabilities()->setIntervalHandlingMethod(
         QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange );
 

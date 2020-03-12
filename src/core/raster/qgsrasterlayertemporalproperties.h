@@ -51,7 +51,7 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
     enum TemporalMode
     {
       ModeFixedTemporalRange = 0, //!< Mode when temporal properties have fixed start and end datetimes.
-      ModeTemporalRangeFromDataProvider = 1, //!< Mode when raster layer depends on temporal range from its dataprovider.
+      ModeTemporalRangeFromDataProvider = 1, //!< Mode when raster layer delegates temporal range handling to the dataprovider.
     };
 
     /**
@@ -89,13 +89,8 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * the raster layer will be rendered whenever the current datetime range of
      * a render context intersects the specified \a range.
      *
-     * For the case of WMS-T layers, this set up will cause new WMS layer to be fetched
-     * with which the range of the render context intersects the specified \a range.
-     *
      * \warning This setting is only effective when mode() is
      * QgsRasterLayerTemporalProperties::ModeFixedTemporalRange
-     *
-     * \note This setting is not set by user. Provider can set this, if it is coming from there.
      *
      * \see fixedTemporalRange()
      */
@@ -116,13 +111,8 @@ class CORE_EXPORT QgsRasterLayerTemporalProperties : public QgsMapLayerTemporalP
      * the raster layer will be rendered whenever the current datetime range of
      * a render context intersects the specified \a range.
      *
-     * For the case of WMS-T layers, this set up will cause new WMS layer to be fetched
-     * with which the range of the render context intersects the specified \a range.
-     *
      * \warning This setting is only effective when mode() is
      * QgsRasterLayerTemporalProperties::ModeFixedTemporalRange
-     *
-     * \note This setting is not set by user. Provider can set this, if it is coming from there.
      *
      * \see fixedReferenceTemporalRange()
      */
