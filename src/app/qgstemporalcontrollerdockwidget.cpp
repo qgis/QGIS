@@ -17,6 +17,7 @@
 
 #include "qgstemporalcontrollerdockwidget.h"
 #include "qgstemporalcontrollerwidget.h"
+#include "qgspanelwidgetstack.h"
 
 QgsTemporalControllerDockWidget::QgsTemporalControllerDockWidget( const QString &name, QWidget *parent )
   : QgsDockWidget( parent )
@@ -24,7 +25,9 @@ QgsTemporalControllerDockWidget::QgsTemporalControllerDockWidget( const QString 
   setWindowTitle( name );
   mControllerWidget = new QgsTemporalControllerWidget();
 
-  setWidget( mControllerWidget );
+  QgsPanelWidgetStack *stack = new QgsPanelWidgetStack();
+  stack->setMainPanel( mControllerWidget );
+  setWidget( stack );
 }
 
 QgsTemporalController *QgsTemporalControllerDockWidget::temporalController()
