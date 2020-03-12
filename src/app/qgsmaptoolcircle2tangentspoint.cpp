@@ -83,6 +83,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
         QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ), tr( "Segments are parallels" ),
             Qgis::Critical, QgisApp::instance()->messageTimeout() );
         deactivate();
+        activate();
       }
       else
         createRadiusSpinBox();
@@ -100,13 +101,9 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
     qDeleteAll( mRubberBands );
     mRubberBands.clear();
 
-    deactivate();
     deleteRadiusSpinBox();
     mCenters.clear();
-    if ( mParentTool )
-    {
-      mParentTool->canvasReleaseEvent( e );
-    }
+    release( e );
   }
 }
 
