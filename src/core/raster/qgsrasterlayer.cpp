@@ -1960,6 +1960,8 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
     }
   }
 
+  mTemporalProperties->readXml( layer_node.toElement(), context );
+
   readStyleManager( layer_node );
 
   return res;

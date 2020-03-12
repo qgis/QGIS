@@ -102,7 +102,7 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
   Q_UNUSED( context )
   // TODO add support for raster layers with multi-temporal properties.
 
-  QDomElement temporalNode = element.elementsByTagName( QStringLiteral( "temporal" ) ).at( 0 ).toElement();
+  QDomElement temporalNode = element.firstChildElement( QStringLiteral( "temporal" ) );
 
   mMode = static_cast< TemporalMode >( temporalNode.attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
   mIntervalHandlingMethod = static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >( temporalNode.attribute( QStringLiteral( "fetchMode" ), QStringLiteral( "0" ) ). toInt() );
