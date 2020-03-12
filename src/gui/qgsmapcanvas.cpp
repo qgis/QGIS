@@ -419,8 +419,10 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 
 void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
 {
-  mController = controller;
+  if ( mController )
+    disconnect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
 
+  mController = controller;
   connect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
 }
 
