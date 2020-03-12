@@ -36,10 +36,10 @@ class QUICK_EXPORT QgsQuickValueRelationListModel : public QAbstractListModel
 {
     Q_OBJECT
   public:
-    //! Construct an empty list model
+    //! Constructs an empty list model
     QgsQuickValueRelationListModel( QObject *parent = nullptr );
 
-    //! Populate the model from vector layer's widget configuration
+    //! Populates the model from vector layer's widget configuration
     Q_INVOKABLE void populate( const QVariantMap &config, const QgsFeature &formFeature = QgsFeature() );
 
     //! Returns key for the given rown number (invalid variant if outside of the valid range)
