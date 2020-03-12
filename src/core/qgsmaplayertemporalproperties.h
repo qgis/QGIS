@@ -23,6 +23,7 @@
 #include "qgis_sip.h"
 #include "qgstemporalproperty.h"
 #include "qgsreadwritecontext.h"
+#include "qgsrange.h"
 
 #include <QDomElement>
 
@@ -85,6 +86,11 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
      *\see temporalSource()
     **/
     void setTemporalSource( TemporalSource source );
+
+    /**
+     * Returns TRUE if the layer should be visible and rendered for the specified time \a range.
+     */
+    virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
 
   private:
 

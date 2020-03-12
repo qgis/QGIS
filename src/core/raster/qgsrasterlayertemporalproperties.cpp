@@ -23,6 +23,22 @@ QgsRasterLayerTemporalProperties::QgsRasterLayerTemporalProperties( QObject *par
 {
 }
 
+bool QgsRasterLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTimeRange &range ) const
+{
+  if ( !isActive() )
+    return true;
+
+  switch ( mMode )
+  {
+    case ModeFixedTemporalRange:
+      return range.isInfinite() || mFixedRange.isInfinite() || mFixedRange.overlaps( range );
+
+    case ModeTemporalRangeFromDataProvider:
+      return true;
+  }
+  return true;
+}
+
 QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties::mode() const
 {
   return mMode;
