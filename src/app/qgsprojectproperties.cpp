@@ -2527,7 +2527,17 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
     {
       QgsRasterLayer *rasterLayer  = qobject_cast<QgsRasterLayer *>( currentLayer );
 
-      QgsDateTimeRange layerRange = rasterLayer->temporalProperties()->fixedTemporalRange();
+      QgsDateTimeRange layerRange;
+      switch ( rasterLayer->temporalProperties()->mode() )
+      {
+        case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+          layerRange = rasterLayer->temporalProperties()->fixedTemporalRange();
+          break;
+
+        case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+          layerRange = rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
+          break;
+      }
 
       if ( !minDate.isValid() ||  layerRange.begin() < minDate )
         minDate = layerRange.begin();
