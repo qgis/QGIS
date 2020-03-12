@@ -22,8 +22,6 @@
 #include "qgstemporalnavigationobject.h"
 #include "qgstemporalmapsettingswidget.h"
 
-#include "qgstemporalmapsettingsdialog.h"
-
 QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   : QgsPanelWidget( parent )
 {
