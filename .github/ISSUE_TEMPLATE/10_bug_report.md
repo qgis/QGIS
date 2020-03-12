@@ -15,8 +15,7 @@ Checklist before submitting
 - [ ] Search through existing issue reports and gis.stackexchange.com to check whether the issue already exists
 - [ ] Test with a [clean new user profile](https://docs.qgis.org/testing/en/docs/user_manual/introduction/qgis_configuration.html?highlight=profile#working-with-user-profiles).
 - [ ] Create a light and self-contained sample dataset and project file which demonstrates the issue
-
-If the issue concerns a **third party plugin**, then it **cannot** be fixed by the QGIS team. Please raise your issue in the dedicated bug tracker for that specific plugin (as listed in the plugin's description). -->
+-->
 
 **Describe the bug**
 <!-- A clear and concise description of what the bug is. -->
@@ -32,7 +31,7 @@ If the issue concerns a **third party plugin**, then it **cannot** be fixed by t
 
 **QGIS and OS versions**
 
-<!-- In the QGIS menu help/about, click in the dialog, Ctrl+A and then Ctrl+C. Finally paste here -->
+<!-- In the QGIS Help menu -> About, click in the table, Ctrl+A and then Ctrl+C. Finally paste here -->
 
 **Additional context**
 
