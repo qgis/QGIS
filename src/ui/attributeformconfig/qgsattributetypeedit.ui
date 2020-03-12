@@ -235,7 +235,7 @@
          <item>
           <widget class="QLabel" name="label_7">
            <property name="text">
-            <string>The expression is using fields on insert. This behavior is not guaranteed.</string>
+            <string>Using fields in a default value expression only works if "Apply default value on update" is checked.</string>
            </property>
           </widget>
          </item>
