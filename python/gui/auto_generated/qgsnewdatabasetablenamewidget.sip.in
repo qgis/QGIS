@@ -77,7 +77,11 @@ Returns ``True`` if the widget contains a valid new table name
 Returns the validation error or an empty string is the widget status is valid
 %End
 
+    virtual void showEvent( QShowEvent *e );
 
+%Docstring
+Scroll to last selected index and expand it's children
+%End
 
   signals:
 

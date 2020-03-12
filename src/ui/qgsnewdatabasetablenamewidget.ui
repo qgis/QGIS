@@ -11,9 +11,6 @@
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>4</number>
-   </property>
    <property name="leftMargin">
     <number>4</number>
    </property>
@@ -27,26 +24,21 @@
     <number>4</number>
    </property>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <property name="spacing">
-      <number>3</number>
+    <widget class="QToolBar" name="mBrowserToolbar">
+     <property name="iconSize">
+      <size>
+       <width>24</width>
+       <height>24</height>
+      </size>
      </property>
-     <property name="leftMargin">
-      <number>0</number>
+     <property name="floatable">
+      <bool>false</bool>
      </property>
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <property name="rightMargin">
-      <number>0</number>
-     </property>
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QgsBrowserTreeView" name="mBrowserTreeView"/>
-     </item>
-    </layout>
+     <addaction name="mActionRefresh"/>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsBrowserTreeView" name="mBrowserTreeView"/>
    </item>
    <item>
     <widget class="QLabel" name="label">
@@ -124,6 +116,8 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

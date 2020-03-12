@@ -22,6 +22,7 @@
 #include "qgsdataitemprovider.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
+#include "qgssettings.h"
 
 
 // List of data item provider keys that are filesystem based
@@ -57,8 +58,7 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
     {
       continue;
     }
-    QgsProviderMetadata *metadata { QgsProviderRegistry::instance()->providerMetadata( provider->dataProviderKey() ) };
-    if ( ! metadata )
+    if ( ! QgsProviderRegistry::instance()->providerMetadata( provider->dataProviderKey() ) )
     {
       continue;
     }
@@ -94,6 +94,11 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
     validate();
   } );
 
+  connect( mActionRefresh, &QAction::triggered, this, [ = ]
+  {
+    refreshModel( QModelIndex() );
+  } );
+
   connect( mBrowserTreeView, &QgsBrowserTreeView::clicked, this, [ = ]( const QModelIndex & index )
   {
     if ( index.isValid() )
@@ -123,6 +128,9 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
             if ( oldSchema != mSchemaName )
             {
               emit schemaNameChanged( mSchemaName );
+              // Store last viewed item
+              QgsSettings().setValue( QStringLiteral( "newDatabaseTableNameWidgetLastSelectedItem" ),
+                                      mBrowserProxyModel.data( index, QgsBrowserGuiModel::PathRole ).toString(), QgsSettings::Section::Gui );
               validationRequired = true;
             }
           }
@@ -140,16 +148,48 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   validate();
 }
 
+void QgsNewDatabaseTableNameWidget::refreshModel( const QModelIndex &index )
+{
+
+  QgsDataItem *item = mBrowserModel->dataItem( index );
+
+  if ( item && ( item->capabilities2() & QgsDataItem::Fertile ) )
+  {
+    mBrowserModel->refresh( index );
+  }
+
+  for ( int i = 0; i < mBrowserModel->rowCount( index ); i++ )
+  {
+    QModelIndex idx = mBrowserModel->index( i, 0, index );
+    QModelIndex proxyIdx = mBrowserProxyModel.mapFromSource( idx );
+    QgsDataItem *child = mBrowserModel->dataItem( idx );
+
+    // Check also expanded descendants so that the whole expanded path does not get collapsed if one item is collapsed.
+    // Fast items (usually root items) are refreshed so that when collapsed, it is obvious they are if empty (no expand symbol).
+    if ( mBrowserTreeView->isExpanded( proxyIdx ) || mBrowserTreeView->hasExpandedDescendant( proxyIdx ) || ( child && child->capabilities2() & QgsDataItem::Fast ) )
+    {
+      refreshModel( idx );
+    }
+    else
+    {
+      if ( child && ( child->capabilities2() & QgsDataItem::Fertile ) )
+      {
+        child->depopulate();
+      }
+    }
+  }
+}
+
 void QgsNewDatabaseTableNameWidget::updateUri()
 {
   const QString oldUri { mUri };
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( mDataProviderKey ) };
-  if ( md )
+  QgsProviderMetadata *dataProviderMetadata { QgsProviderRegistry::instance()->providerMetadata( mDataProviderKey ) };
+  if ( dataProviderMetadata )
   {
-    QgsAbstractProviderConnection *conn { md->findConnection( mConnectionName ) };
+    QgsAbstractProviderConnection *conn { dataProviderMetadata->findConnection( mConnectionName ) };
     if ( conn )
     {
-      QVariantMap uriParts { md->decodeUri( conn->uri() ) };
+      QVariantMap uriParts { dataProviderMetadata->decodeUri( conn->uri() ) };
       uriParts[ QStringLiteral( "layerName" ) ] = mTableName;
       uriParts[ QStringLiteral( "schema" ) ] = mSchemaName;
       uriParts[ QStringLiteral( "table" ) ] = mTableName;
@@ -157,7 +197,7 @@ void QgsNewDatabaseTableNameWidget::updateUri()
       {
         uriParts[ QStringLiteral( "dbname" ) ] = mSchemaName;
       }
-      mUri = md->encodeUri( uriParts );
+      mUri = dataProviderMetadata->encodeUri( uriParts );
     }
     else
     {
@@ -305,4 +345,29 @@ bool QgsNewDatabaseTableNameWidget::isValid() const
 QString QgsNewDatabaseTableNameWidget::validationError() const
 {
   return mValidationError;
+}
+
+void QgsNewDatabaseTableNameWidget::showEvent( QShowEvent *e )
+{
+  QWidget::showEvent( e );
+  QString lastSelectedPath( QgsSettings().value( QStringLiteral( "newDatabaseTableNameWidgetLastSelectedItem" ),
+                            QString(), QgsSettings::Section::Gui ).toString() );
+  if ( ! lastSelectedPath.isEmpty() )
+  {
+    QModelIndexList items = mBrowserProxyModel.match(
+                              mBrowserProxyModel.index( 0, 0 ),
+                              QgsBrowserGuiModel::PathRole,
+                              QVariant::fromValue( lastSelectedPath ),
+                              1,
+                              Qt::MatchRecursive );
+    if ( items.count( ) > 0 )
+    {
+      QModelIndex expandIndex = items.at( 0 );
+      if ( expandIndex.isValid() )
+      {
+        mBrowserTreeView->scrollTo( expandIndex, QgsBrowserTreeView::ScrollHint::PositionAtTop );
+        mBrowserTreeView->expand( expandIndex );
+      }
+    }
+  }
 }

@@ -89,7 +89,8 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QWidget, private Ui::Qgs
      */
     QString validationError() const;
 
-
+    //! Scroll to last selected index and expand it's children
+    void showEvent( QShowEvent *e ) override;
 
   signals:
 
@@ -135,6 +136,7 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QWidget, private Ui::Qgs
     void updateUri();
     void validate();
     QStringList tableNames();
+    void refreshModel( const QModelIndex &index );
 
     QgsBrowserProxyModel mBrowserProxyModel;
     QgsBrowserGuiModel *mBrowserModel = nullptr;
