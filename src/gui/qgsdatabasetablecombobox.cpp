@@ -38,11 +38,21 @@ QgsDatabaseTableComboBox::QgsDatabaseTableComboBox( QgsAbstractDatabaseProviderC
   init();
 }
 
+void QgsDatabaseTableComboBox::setAllowEmptyTable( bool allowEmpty )
+{
+  mModel->setAllowEmptyTable( allowEmpty );
+}
+
+bool QgsDatabaseTableComboBox::allowEmptyTable() const
+{
+  return mModel->allowEmptyTable();
+}
+
 void QgsDatabaseTableComboBox::init()
 {
   mComboBox = new QComboBox();
 
-  mSortModel = new QSortFilterProxyModel( this );
+  mSortModel = new QgsDatabaseTableComboBoxSortModel( this );
   mSortModel->setSourceModel( mModel );
   mSortModel->setSortRole( Qt::DisplayRole );
   mSortModel->setSortLocaleAware( true );
@@ -77,7 +87,11 @@ void QgsDatabaseTableComboBox::setTable( const QString &table, const QString &sc
 
   if ( table.isEmpty() )
   {
-    mComboBox->setCurrentIndex( -1 );
+    if ( mModel->allowEmptyTable() )
+      mComboBox->setCurrentIndex( 0 );
+    else
+      mComboBox->setCurrentIndex( -1 );
+
     emit tableChanged( QString() );
     return;
   }
@@ -108,6 +122,7 @@ void QgsDatabaseTableComboBox::setConnectionName( const QString &connection, con
   const QString oldSchema = currentSchema();
   QgsDatabaseTableModel *oldModel = mModel;
   mModel = new QgsDatabaseTableModel( mProvider, mConnection, mSchema, this );
+  mModel->setAllowEmptyTable( oldModel->allowEmptyTable() );
   mSortModel->setSourceModel( mModel );
   oldModel->deleteLater();
   if ( currentTable() != oldTable || currentSchema() != oldSchema )
@@ -163,7 +178,7 @@ void QgsDatabaseTableComboBox::indexChanged( int i )
 
 void QgsDatabaseTableComboBox::rowsChanged()
 {
-  if ( mComboBox->count() == 1 )
+  if ( mComboBox->count() == 1 || ( mModel->allowEmptyTable() && mComboBox->count() == 2 && mComboBox->currentIndex() == 1 ) )
   {
     //currently selected connection item has changed
     emit tableChanged( currentTable(), currentSchema() );
@@ -173,3 +188,26 @@ void QgsDatabaseTableComboBox::rowsChanged()
     emit tableChanged( QString() );
   }
 }
+
+///@cond PRIVATE
+QgsDatabaseTableComboBoxSortModel::QgsDatabaseTableComboBoxSortModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+
+}
+
+bool QgsDatabaseTableComboBoxSortModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
+{
+  // empty row is always first
+  if ( sourceModel()->data( left, QgsDatabaseTableModel::RoleEmpty ).toBool() )
+    return true;
+  else if ( sourceModel()->data( right, QgsDatabaseTableModel::RoleEmpty ).toBool() )
+    return false;
+
+  // default mode is alphabetical order
+  QString leftStr = sourceModel()->data( left ).toString();
+  QString rightStr = sourceModel()->data( right ).toString();
+  return QString::localeAwareCompare( leftStr, rightStr ) < 0;
+}
+
+///@endcond

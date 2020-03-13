@@ -213,6 +213,100 @@ class TestQgsDatabaseTableComboBox(unittest.TestCase):
         self.assertFalse(m.currentSchema())
         self.assertFalse(spy[-1][0])
 
+    def testComboWithEmpty(self):
+        """ test combobox functionality with empty choice """
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        md.saveConnection(conn, 'mycon')
+
+        m = QgsDatabaseTableComboBox('postgres', 'mycon')
+        old_count = m.comboBox().count()
+        self.assertGreaterEqual(old_count, 3)
+
+        m.setAllowEmptyTable(True)
+        self.assertEqual(m.comboBox().count(), old_count + 1)
+
+        text = [m.comboBox().itemText(i) for i in range(m.comboBox().count())]
+        self.assertFalse(text[0])
+        self.assertIn('information_schema.attributes', text)
+        self.assertIn('qgis_test.some_poly_data', text)
+        self.assertLess(text.index('information_schema.attributes'), text.index('qgis_test.some_poly_data'))
+        self.assertTrue(m.currentSchema())
+        self.assertTrue(m.currentTable())
+
+        m.setSchema('information_schema')
+        m.setTable('attributes')
+        spy = QSignalSpy(m.tableChanged)
+
+        m.setSchema('qgis_test')
+        text = [m.comboBox().itemText(i) for i in range(m.comboBox().count())]
+        self.assertNotIn('information_schema.attributes', text)
+        self.assertNotIn('attributes', text)
+        self.assertIn('some_poly_data', text)
+
+        self.assertEqual(m.currentTable(), '')
+        self.assertEqual(m.currentSchema(), '')
+        self.assertEqual(len(spy), 1)
+        self.assertFalse(spy[-1][0])
+
+        m.setTable('')
+        self.assertEqual(m.currentTable(), '')
+        self.assertEqual(m.currentSchema(), '')
+        self.assertEqual(len(spy), 1)
+        self.assertFalse(spy[-1][0])
+        m.setTable('someData')
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(m.currentSchema(), 'qgis_test')
+        self.assertEqual(m.currentTable(), 'someData')
+        self.assertEqual(spy[-1][0], 'someData')
+        self.assertEqual(spy[-1][1], 'qgis_test')
+
+        fields = QgsFields()
+        fields.append(QgsField('test', QVariant.String))
+        conn.createVectorTable('qgis_test', 'myNewTable', fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem('EPSG:3857'), False, {})
+
+        text2 = [m.comboBox().itemText(i) for i in range(m.comboBox().count())]
+        # tables are not automatically refreshed
+        self.assertEqual(text2, text)
+
+        # but setting a new connection should fix this!
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn2 = md.createConnection(self.uri, {})
+        md.saveConnection(conn2, 'another')
+        m.setConnectionName('another', 'postgres')
+        # ideally there'd be no extra signal here, but it's a minor issue...
+        self.assertEqual(len(spy), 3)
+        self.assertEqual(m.currentTable(), 'someData')
+        self.assertEqual(m.currentSchema(), 'qgis_test')
+        self.assertEqual(spy[-1][0], 'someData')
+        self.assertEqual(spy[-1][1], 'qgis_test')
+
+        text2 = [m.comboBox().itemText(i) for i in range(m.comboBox().count())]
+        self.assertNotEqual(text2, text)
+        self.assertIn('myNewTable', text2)
+
+        m.setTable('myNewTable')
+        self.assertEqual(len(spy), 4)
+        self.assertEqual(m.currentTable(), 'myNewTable')
+        self.assertEqual(m.currentSchema(), 'qgis_test')
+        self.assertEqual(spy[-1][0], 'myNewTable')
+        self.assertEqual(spy[-1][1], 'qgis_test')
+
+        # no auto drop
+        conn.dropVectorTable('qgis_test', 'myNewTable')
+        self.assertEqual(len(spy), 4)
+        self.assertEqual(m.currentTable(), 'myNewTable')
+        self.assertEqual(m.currentSchema(), 'qgis_test')
+        self.assertEqual(spy[-1][0], 'myNewTable')
+        self.assertEqual(spy[-1][1], 'qgis_test')
+
+        m.refreshTables()
+        text2 = [m.comboBox().itemText(i) for i in range(m.comboBox().count())]
+        self.assertNotIn('myNewTable', text2)
+        self.assertEqual(len(spy), 5)
+        self.assertFalse(m.currentSchema())
+        self.assertFalse(spy[-1][0])
+
 
 if __name__ == '__main__':
     unittest.main()

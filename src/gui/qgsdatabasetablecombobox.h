@@ -20,10 +20,23 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include <QSortFilterProxyModel>
 
 class QgsDatabaseTableModel;
-class QSortFilterProxyModel;
 class QgsAbstractDatabaseProviderConnection;
+
+///@cond PRIVATE
+#ifndef SIP_RUN
+class GUI_EXPORT QgsDatabaseTableComboBoxSortModel: public QSortFilterProxyModel
+{
+  public:
+    explicit QgsDatabaseTableComboBoxSortModel( QObject *parent = nullptr );
+  protected:
+    bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
+
+};
+#endif
+///@endcond
 
 /**
  * \ingroup gui
@@ -58,6 +71,18 @@ class GUI_EXPORT QgsDatabaseTableComboBox : public QWidget
      * Ownership of \a connection is transferred to the combobox.
      */
     explicit QgsDatabaseTableComboBox( QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER, const QString &schema = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets whether an optional empty table ("not set") option is present in the combobox.
+     * \see allowEmptyTable()
+     */
+    void setAllowEmptyTable( bool allowEmpty );
+
+    /**
+     * Returns TRUE if the combobox allows the empty table ("not set") choice.
+     * \see setAllowEmptyTable()
+     */
+    bool allowEmptyTable() const;
 
     /**
      * Returns the name of the current table selected in the combo box.
