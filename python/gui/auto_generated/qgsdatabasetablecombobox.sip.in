@@ -10,6 +10,7 @@
 
 
 
+
 class QgsDatabaseTableComboBox : QWidget
 {
 %Docstring
@@ -47,6 +48,20 @@ Constructor for QgsDatabaseTableComboBox, for the specified ``connection``.
 The optional ``schema`` argument can be used to restrict the listed tables to a specific schema.
 
 Ownership of ``connection`` is transferred to the combobox.
+%End
+
+    void setAllowEmptyTable( bool allowEmpty );
+%Docstring
+Sets whether an optional empty table ("not set") option is present in the combobox.
+
+.. seealso:: :py:func:`allowEmptyTable`
+%End
+
+    bool allowEmptyTable() const;
+%Docstring
+Returns ``True`` if the combobox allows the empty table ("not set") choice.
+
+.. seealso:: :py:func:`setAllowEmptyTable`
 %End
 
     QString currentTable() const;

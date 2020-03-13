@@ -57,7 +57,7 @@ int QgsDatabaseTableModel::rowCount( const QModelIndex &parent ) const
   if ( parent.isValid() )
     return 0;
 
-  return mTables.count();
+  return mTables.count() + ( mAllowEmpty ? 1 : 0 );
 }
 
 int QgsDatabaseTableModel::columnCount( const QModelIndex &parent ) const
@@ -72,14 +72,26 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
   if ( !index.isValid() )
     return QVariant();
 
-  if ( index.row() >= mTables.count() )
+  if ( index.row() == 0 && mAllowEmpty )
+  {
+    if ( role == RoleEmpty )
+      return true;
+
+    return QVariant();
+  }
+
+  if ( index.row() - ( mAllowEmpty ? 1 : 0 ) >= mTables.count() )
     return QVariant();
 
-  const QgsAbstractDatabaseProviderConnection::TableProperty &table = mTables[ index.row() ];
+  const QgsAbstractDatabaseProviderConnection::TableProperty &table = mTables[ index.row() - ( mAllowEmpty ? 1 : 0 ) ];
   switch ( role )
   {
+    case RoleEmpty:
+      return false;
+
     case Qt::DisplayRole:
     case Qt::ToolTipRole:
+    case Qt::EditRole:
     {
       return mSchema.isEmpty() && !table.schema().isEmpty() ? QStringLiteral( "%1.%2" ).arg( table.schema(), table.tableName() ) : table.tableName();
     }
@@ -158,6 +170,25 @@ QModelIndex QgsDatabaseTableModel::index( int row, int column, const QModelIndex
   return QModelIndex();
 }
 
+void QgsDatabaseTableModel::setAllowEmptyTable( bool allowEmpty )
+{
+  if ( allowEmpty == mAllowEmpty )
+    return;
+
+  if ( allowEmpty )
+  {
+    beginInsertRows( QModelIndex(), 0, 0 );
+    mAllowEmpty = true;
+    endInsertRows();
+  }
+  else
+  {
+    beginRemoveRows( QModelIndex(), 0, 0 );
+    mAllowEmpty = false;
+    endRemoveRows();
+  }
+}
+
 void QgsDatabaseTableModel::refresh()
 {
   const QList< QgsAbstractDatabaseProviderConnection::TableProperty > newTables = mConnection->tables( mSchema );
@@ -168,7 +199,7 @@ void QgsDatabaseTableModel::refresh()
     if ( !newTables.contains( oldTable ) )
     {
       int r = mTables.indexOf( oldTable );
-      beginRemoveRows( QModelIndex(), r, r );
+      beginRemoveRows( QModelIndex(), r + ( mAllowEmpty ? 1 : 0 ), r + ( mAllowEmpty ? 1 : 0 ) );
       mTables.removeAt( r );
       endRemoveRows();
     }
@@ -178,7 +209,7 @@ void QgsDatabaseTableModel::refresh()
   {
     if ( !mTables.contains( newTable ) )
     {
-      beginInsertRows( QModelIndex(), mTables.count(), mTables.count() );
+      beginInsertRows( QModelIndex(), mTables.count() + ( mAllowEmpty ? 1 : 0 ), mTables.count() + ( mAllowEmpty ? 1 : 0 ) );
       mTables.append( newTable );
       endInsertRows();
     }

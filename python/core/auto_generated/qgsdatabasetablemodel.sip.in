@@ -36,6 +36,7 @@ called.
       RoleCustomInfo,
       RoleWkbType,
       RoleCrs,
+      RoleEmpty,
     };
 
     explicit QgsDatabaseTableModel( const QString &provider, const QString &connection, const QString &schema = QString(), QObject *parent /TransferThis/ = 0 );
@@ -69,6 +70,20 @@ Ownership of ``connection`` is transferred to the model.
 
     virtual QModelIndex index( int row, int column, const QModelIndex &parent ) const;
 
+
+    void setAllowEmptyTable( bool allowEmpty );
+%Docstring
+Sets whether an optional empty table ("not set") option is present in the model.
+
+.. seealso:: :py:func:`allowEmptyTable`
+%End
+
+    bool allowEmptyTable() const;
+%Docstring
+Returns ``True`` if the model allows the empty table ("not set") choice.
+
+.. seealso:: :py:func:`setAllowEmptyTable`
+%End
 
   public slots:
 

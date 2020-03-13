@@ -52,6 +52,7 @@ class CORE_EXPORT QgsDatabaseTableModel : public QAbstractItemModel
       RoleCustomInfo, //!< Custom info variant map role
       RoleWkbType, //!< WKB type for primary (first) geometry column in table
       RoleCrs, //!< CRS for primary (first) geometry column in table
+      RoleEmpty, //!< Entry is an empty entry
     };
 
     /**
@@ -80,6 +81,18 @@ class CORE_EXPORT QgsDatabaseTableModel : public QAbstractItemModel
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
 
+    /**
+     * Sets whether an optional empty table ("not set") option is present in the model.
+     * \see allowEmptyTable()
+     */
+    void setAllowEmptyTable( bool allowEmpty );
+
+    /**
+     * Returns TRUE if the model allows the empty table ("not set") choice.
+     * \see setAllowEmptyTable()
+     */
+    bool allowEmptyTable() const { return mAllowEmpty; }
+
   public slots:
 
     /**
@@ -92,6 +105,7 @@ class CORE_EXPORT QgsDatabaseTableModel : public QAbstractItemModel
     std::unique_ptr< QgsAbstractDatabaseProviderConnection > mConnection;
     QString mSchema;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> mTables;
+    bool mAllowEmpty = false;
 };
 
 #endif // QGSDATABASETABLEMODEL_H
