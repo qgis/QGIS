@@ -63,7 +63,7 @@
         <number>0</number>
        </property>
        <item row="0" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="mTemporalGroupBox">
+        <widget class="QGroupBox" name="mTemporalGroupBox">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -75,15 +75,6 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
           <string>Temporal</string>
          </property>
          <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>false</bool>
-         </property>
-         <property name="syncGroup" stdset="0">
-          <string notr="true">rastertransp</string>
-         </property>
-         <property name="saveCollapsedState" stdset="0">
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
@@ -197,9 +188,6 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                <property name="text">
                 <string>End date</string>
                </property>
-               <property name="buddy">
-                <cstring>mEndReferenceDateTimeEdit</cstring>
-               </property>
               </widget>
              </item>
              <item row="4" column="1" colspan="2">
@@ -213,9 +201,6 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
               <widget class="QLabel" name="label_5">
                <property name="text">
                 <string>Start date</string>
-               </property>
-               <property name="buddy">
-                <cstring>mStartReferenceDateTimeEdit</cstring>
                </property>
               </widget>
              </item>
@@ -262,18 +247,12 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                <property name="text">
                 <string>Start date</string>
                </property>
-               <property name="buddy">
-                <cstring>mStartTemporalDateTimeEdit</cstring>
-               </property>
               </widget>
              </item>
              <item row="1" column="0">
               <widget class="QLabel" name="label_4">
                <property name="text">
                 <string>End date</string>
-               </property>
-               <property name="buddy">
-                <cstring>mEndTemporalDateTimeEdit</cstring>
                </property>
               </widget>
              </item>
@@ -369,38 +348,5 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
   <tabstop>mTemporalGroupBox</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>mLayerRadioButton</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>frame_2</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>70</x>
-     <y>136</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>115</x>
-     <y>181</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mProjectRadioButton</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>frame</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>64</x>
-     <y>324</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>81</x>
-     <y>344</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
