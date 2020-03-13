@@ -26,7 +26,8 @@ QgsDatabaseTableComboBox::QgsDatabaseTableComboBox( const QString &provider, con
   , mConnection( connection )
   , mSchema( schema )
 {
-  mModel = new QgsDatabaseTableModel( provider, connection, schema, this );
+  if ( !provider.isEmpty() && !connection.isEmpty() )
+    mModel = new QgsDatabaseTableModel( provider, connection, schema, this );
   init();
 }
 
@@ -40,12 +41,14 @@ QgsDatabaseTableComboBox::QgsDatabaseTableComboBox( QgsAbstractDatabaseProviderC
 
 void QgsDatabaseTableComboBox::setAllowEmptyTable( bool allowEmpty )
 {
-  mModel->setAllowEmptyTable( allowEmpty );
+  mAllowEmpty = allowEmpty;
+  if ( mModel )
+    mModel->setAllowEmptyTable( allowEmpty );
 }
 
 bool QgsDatabaseTableComboBox::allowEmptyTable() const
 {
-  return mModel->allowEmptyTable();
+  return mAllowEmpty;
 }
 
 void QgsDatabaseTableComboBox::init()
@@ -53,7 +56,8 @@ void QgsDatabaseTableComboBox::init()
   mComboBox = new QComboBox();
 
   mSortModel = new QgsDatabaseTableComboBoxSortModel( this );
-  mSortModel->setSourceModel( mModel );
+  if ( mModel )
+    mSortModel->setSourceModel( mModel );
   mSortModel->setSortRole( Qt::DisplayRole );
   mSortModel->setSortLocaleAware( true );
   mSortModel->setSortCaseSensitivity( Qt::CaseInsensitive );
@@ -87,7 +91,7 @@ void QgsDatabaseTableComboBox::setTable( const QString &table, const QString &sc
 
   if ( table.isEmpty() )
   {
-    if ( mModel->allowEmptyTable() )
+    if ( mAllowEmpty )
       mComboBox->setCurrentIndex( 0 );
     else
       mComboBox->setCurrentIndex( -1 );
@@ -113,6 +117,9 @@ void QgsDatabaseTableComboBox::setTable( const QString &table, const QString &sc
 
 void QgsDatabaseTableComboBox::setConnectionName( const QString &connection, const QString &provider )
 {
+  if ( provider.isEmpty() && mConnection == connection )
+    return;
+
   if ( !provider.isEmpty() )
     mProvider = provider;
 
@@ -122,29 +129,37 @@ void QgsDatabaseTableComboBox::setConnectionName( const QString &connection, con
   const QString oldSchema = currentSchema();
   QgsDatabaseTableModel *oldModel = mModel;
   mModel = new QgsDatabaseTableModel( mProvider, mConnection, mSchema, this );
-  mModel->setAllowEmptyTable( oldModel->allowEmptyTable() );
+  mModel->setAllowEmptyTable( mAllowEmpty );
   mSortModel->setSourceModel( mModel );
-  oldModel->deleteLater();
+  if ( oldModel )
+    oldModel->deleteLater();
   if ( currentTable() != oldTable || currentSchema() != oldSchema )
     setTable( oldTable, oldSchema );
 }
 
 void QgsDatabaseTableComboBox::setSchema( const QString &schema )
 {
-  const QString oldTable = currentTable();
-  QgsDatabaseTableModel *oldModel = mModel;
+  if ( schema == mSchema )
+    return;
   mSchema = schema;
-  mModel = new QgsDatabaseTableModel( mProvider, mConnection, mSchema, this );
-  mSortModel->setSourceModel( mModel );
-  oldModel->deleteLater();
-  setTable( oldTable );
+
+  if ( !mProvider.isEmpty() && !mConnection.isEmpty() )
+  {
+    const QString oldTable = currentTable();
+    QgsDatabaseTableModel *oldModel = mModel;
+    mModel = new QgsDatabaseTableModel( mProvider, mConnection, mSchema, this );
+    mSortModel->setSourceModel( mModel );
+    oldModel->deleteLater();
+    setTable( oldTable );
+  }
 }
 
 void QgsDatabaseTableComboBox::refreshTables()
 {
   const QString oldSchema = currentSchema();
   const QString oldTable = currentTable();
-  mModel->refresh();
+  if ( mModel )
+    mModel->refresh();
   setTable( oldTable, oldSchema );
 }
 
@@ -178,7 +193,7 @@ void QgsDatabaseTableComboBox::indexChanged( int i )
 
 void QgsDatabaseTableComboBox::rowsChanged()
 {
-  if ( mComboBox->count() == 1 || ( mModel->allowEmptyTable() && mComboBox->count() == 2 && mComboBox->currentIndex() == 1 ) )
+  if ( mComboBox->count() == 1 || ( mAllowEmpty && mComboBox->count() == 2 && mComboBox->currentIndex() == 1 ) )
   {
     //currently selected connection item has changed
     emit tableChanged( currentTable(), currentSchema() );

@@ -136,6 +136,7 @@ class GUI_EXPORT QgsDatabaseTableComboBox : public QWidget
   private:
     void init();
 
+    bool mAllowEmpty = false;
     QString mProvider;
     QString mConnection;
     QString mSchema;

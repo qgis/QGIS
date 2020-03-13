@@ -73,6 +73,7 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderconnectioncombobox.h"
 #include "qgsdatabaseschemacombobox.h"
+#include "qgsdatabasetablecombobox.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -207,6 +208,7 @@ class TestProcessingGui : public QObject
     void testDateTimeWrapper();
     void testProviderConnectionWrapper();
     void testDatabaseSchemaWrapper();
+    void testDatabaseTableWrapper();
 
   private:
 
@@ -4941,6 +4943,215 @@ void TestProcessingGui::testDatabaseSchemaWrapper()
   widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "databaseschema" ), context, widgetContext, &schemaParam );
   def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
   QVERIFY( !static_cast< QgsProcessingParameterDatabaseSchema * >( def.get() )->defaultValue().isValid() );
+#endif
+}
+
+void TestProcessingGui::testDatabaseTableWrapper()
+{
+#ifdef ENABLE_PGTEST
+  // register some connections
+  QgsProviderMetadata *md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
+
+  QString dbConn = getenv( "QGIS_PGTEST_DB" );
+  if ( dbConn.isEmpty() )
+  {
+    dbConn = "service=\"qgis_test\"";
+  }
+  QgsAbstractProviderConnection *conn = md->createConnection( QStringLiteral( "%1 sslmode=disable" ).arg( dbConn ), QVariantMap() );
+  md->saveConnection( conn, QStringLiteral( "aa" ) );
+
+  const QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables = dynamic_cast<QgsAbstractDatabaseProviderConnection *>( conn )->tables( QStringLiteral( "qgis_test" ) );
+  QStringList tableNames;
+  for ( const QgsAbstractDatabaseProviderConnection::TableProperty &prop : tables )
+    tableNames << prop.tableName();
+
+  QVERIFY( !tableNames.isEmpty() );
+
+  auto testWrapper = [&tableNames]( QgsProcessingGui::WidgetType type )
+  {
+    QgsProcessingParameterProviderConnection connParam( QStringLiteral( "conn" ), QStringLiteral( "connection" ), QStringLiteral( "postgres" ), true );
+    TestLayerWrapper connWrapper( &connParam );
+    QgsProcessingParameterDatabaseSchema schemaParam( QStringLiteral( "schema" ), QStringLiteral( "schema" ), QStringLiteral( "connection" ), true );
+    TestLayerWrapper schemaWrapper( &schemaParam );
+
+    QgsProcessingParameterDatabaseTable param( QStringLiteral( "table" ), QStringLiteral( "table" ), QStringLiteral( "conn" ), QStringLiteral( "schema" ), QVariant(), false );
+
+    QgsProcessingDatabaseTableWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+    // no connection associated yet
+    QCOMPARE( static_cast< QgsDatabaseTableComboBox * >( wrapper.wrappedWidget() )->comboBox()->count(), 0 );
+
+    // Set the parent widget connection value
+    connWrapper.setWidgetValue( QStringLiteral( "aa" ), context );
+    wrapper.setParentConnectionWrapperValue( &connWrapper );
+    schemaWrapper.setWidgetValue( QStringLiteral( "qgis_test" ), context );
+    wrapper.setParentSchemaWrapperValue( &schemaWrapper );
+
+    // now we should have tables available
+    QCOMPARE( static_cast< QgsDatabaseTableComboBox * >( wrapper.wrappedWidget() )->comboBox()->count(), tableNames.count() );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingDatabaseTableWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "someData" ), context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "someData" ) );
+    QCOMPARE( static_cast< QgsDatabaseTableComboBox * >( wrapper.wrappedWidget() )->currentTable(), QStringLiteral( "someData" ) );
+    wrapper.setWidgetValue( QStringLiteral( "some_poly_data" ), context );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "some_poly_data" ) );
+    QCOMPARE( static_cast< QgsDatabaseTableComboBox * >( wrapper.wrappedWidget() )->currentTable(), QStringLiteral( "some_poly_data" ) );
+    QCOMPARE( spy.count(), 2 );
+    wrapper.setWidgetValue( QStringLiteral( "some_poly_data" ), context );
+    QCOMPARE( spy.count(), 2 );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+      {
+        // batch or standard mode, only valid tables can be set!
+        // not valid
+        wrapper.setWidgetValue( QStringLiteral( "cc" ), context );
+        QCOMPARE( spy.count(), 3 );
+        QVERIFY( !wrapper.widgetValue().isValid() );
+        QCOMPARE( static_cast< QgsDatabaseTableComboBox * >( wrapper.wrappedWidget() )->comboBox()->currentIndex(), -1 );
+        break;
+
+      }
+      case QgsProcessingGui::Modeler:
+        // invalid tables permitted
+        wrapper.setWidgetValue( QStringLiteral( "cc" ), context );
+        QCOMPARE( spy.count(), 3 );
+        QCOMPARE( static_cast< QgsDatabaseTableComboBox * >( wrapper.wrappedWidget() )->comboBox()->currentText(), QStringLiteral( "cc" ) );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "cc" ) );
+        wrapper.setWidgetValue( QStringLiteral( "someData" ), context );
+        QCOMPARE( spy.count(), 4 );
+        QCOMPARE( static_cast< QgsDatabaseTableComboBox * >( wrapper.wrappedWidget() )->comboBox()->currentText(), QStringLiteral( "someData" ) );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "someData" ) );
+        break;
+    }
+
+    // make sure things are ok if connection is changed back to nothing
+    connWrapper.setWidgetValue( QVariant(), context );
+    wrapper.setParentConnectionWrapperValue( &connWrapper );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+      {
+        QCOMPARE( spy.count(), 3 );
+        break;
+      }
+
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( spy.count(), 5 );
+        break;
+    }
+    QVERIFY( !wrapper.widgetValue().isValid() );
+
+    wrapper.setWidgetValue( QStringLiteral( "some_poly_data" ), context );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+      {
+        QVERIFY( !wrapper.widgetValue().isValid() );
+        break;
+      }
+
+      case QgsProcessingGui::Modeler:
+        // invalid tables permitted
+        QCOMPARE( spy.count(), 6 );
+        QCOMPARE( static_cast< QgsDatabaseTableComboBox * >( wrapper.wrappedWidget() )->comboBox()->currentText(), QStringLiteral( "some_poly_data" ) );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "some_poly_data" ) );
+
+        break;
+    }
+    delete w;
+
+
+    connWrapper.setWidgetValue( QStringLiteral( "aa" ), context );
+
+    // optional
+    QgsProcessingParameterDatabaseTable param2( QStringLiteral( "table" ), QStringLiteral( "table" ), QStringLiteral( "conn" ), QStringLiteral( "schema" ), QVariant(), true );
+    QgsProcessingDatabaseTableWidgetWrapper wrapper3( &param2, type );
+    w = wrapper3.createWrappedWidget( context );
+
+    wrapper3.setParentConnectionWrapperValue( &connWrapper );
+    wrapper3.setParentSchemaWrapperValue( &schemaWrapper );
+
+    QSignalSpy spy3( &wrapper3, &QgsProcessingDatabaseTableWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "someData" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toString(), QStringLiteral( "someData" ) );
+    QCOMPARE( static_cast< QgsDatabaseTableComboBox * >( wrapper3.wrappedWidget() )->comboBox()->currentText(), QStringLiteral( "someData" ) );
+    wrapper3.setWidgetValue( QStringLiteral( "some_poly_data" ), context );
+    QCOMPARE( spy3.count(), 2 );
+    QCOMPARE( wrapper3.widgetValue().toString(), QStringLiteral( "some_poly_data" ) );
+    QCOMPARE( static_cast< QgsDatabaseTableComboBox * >( wrapper3.wrappedWidget() )->comboBox()->currentText(), QStringLiteral( "some_poly_data" ) );
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 3 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+
+    delete w;
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "table" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  QgsProcessingContext context;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "databasetable" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QVERIFY( !static_cast< QgsProcessingParameterDatabaseTable * >( def.get() )->defaultValue().isValid() );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterDatabaseTable tableParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QStringLiteral( "connparam" ), QStringLiteral( "schemaparam" ), QStringLiteral( "aaa" ), false );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "databasetable" ), context, widgetContext, &tableParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterDatabaseTable * >( def.get() )->defaultValue().toString(), QStringLiteral( "aaa" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterDatabaseTable * >( def.get() )->parentConnectionParameterName(), QStringLiteral( "connparam" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterDatabaseTable * >( def.get() )->parentSchemaParameterName(), QStringLiteral( "schemaparam" ) );
+  tableParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  tableParam.setDefaultValue( QStringLiteral( "xxx" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "databasetable" ), context, widgetContext, &tableParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterDatabaseTable * >( def.get() )->defaultValue().toString(), QStringLiteral( "xxx" ) );
+  tableParam.setDefaultValue( QVariant() );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "databasetable" ), context, widgetContext, &tableParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QVERIFY( !static_cast< QgsProcessingParameterDatabaseTable * >( def.get() )->defaultValue().isValid() );
 #endif
 }
 
