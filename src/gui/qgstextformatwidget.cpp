@@ -533,7 +533,12 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
       mOptionsTab->removeTab( 8 );
       mOptionsTab->removeTab( 7 );
       mOptionsTab->removeTab( 6 );
-      mOptionsTab->removeTab( 5 );
+      mOptionsTab->removeTab( 3 );
+      mLabelStackedWidget->removeWidget( mLabelPage_Rendering );
+      mLabelStackedWidget->removeWidget( mLabelPage_Callouts );
+      mLabelStackedWidget->removeWidget( mLabelPage_Mask );
+      mLabelStackedWidget->removeWidget( mLabelPage_Placement );
+      mLabelStackedWidget->setCurrentIndex( 0 );
 
       frameLabelWith->hide();
       mDirectSymbolsFrame->hide();
