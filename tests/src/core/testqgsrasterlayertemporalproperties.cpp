@@ -92,7 +92,7 @@ void TestQgsRasterLayerTemporalProperties::testReadWrite()
   QDomDocument doc( documentType );
 
   QDomElement node = doc.createElement( QStringLiteral( "temp" ) );
-  // read none existant node
+  // read none existent node
   temporalProperties.readXml( node.toElement(), QgsReadWriteContext() );
 
   // must not be active!
