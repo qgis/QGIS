@@ -21,6 +21,19 @@
 #include "qgssettings.h"
 #include "qgsprojutils.h"
 
+QString crsToKey( const QgsCoordinateReferenceSystem &crs )
+{
+  return crs.authid().isEmpty() ? crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) : crs.authid();
+}
+
+template<>
+bool qMapLessThanKey<QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem>>( const QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem> &key1,
+    const QPair<QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem> &key2 )
+{
+  const QPair< QString, QString > key1String = qMakePair( crsToKey( key1.first ), crsToKey( key1.second ) );
+  const QPair< QString, QString > key2String = qMakePair( crsToKey( key2.first ), crsToKey( key2.second ) );
+  return key1String < key2String;
+}
 
 QgsCoordinateTransformContext::QgsCoordinateTransformContext()
   : d( new QgsCoordinateTransformContextPrivate() )
@@ -28,11 +41,11 @@ QgsCoordinateTransformContext::QgsCoordinateTransformContext()
 
 QgsCoordinateTransformContext::~QgsCoordinateTransformContext() = default;
 
-QgsCoordinateTransformContext::QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs ) //NOLINT
+QgsCoordinateTransformContext::QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs )  //NOLINT
   : d( rhs.d )
 {}
 
-QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( const QgsCoordinateTransformContext &rhs ) //NOLINT
+QgsCoordinateTransformContext &QgsCoordinateTransformContext::operator=( const QgsCoordinateTransformContext &rhs )  //NOLINT
 {
   d = rhs.d;
   return *this;
@@ -82,7 +95,7 @@ QMap<QPair<QString, QString>, QString> QgsCoordinateTransformContext::coordinate
   d->mLock.unlock();
   QMap<QPair<QString, QString>, QString> results;
   for ( auto it = res.constBegin(); it != res.constEnd(); ++it )
-    results.insert( it.key(), it.value().operation );
+    results.insert( qMakePair( it.key().first.authid(), it.key().second.authid() ), it.value().operation );
 
   return results;
 #else
@@ -117,7 +130,7 @@ bool QgsCoordinateTransformContext::addCoordinateOperation( const QgsCoordinateR
   QgsCoordinateTransformContextPrivate::OperationDetails details;
   details.operation = coordinateOperationProjString;
   details.allowFallback = allowFallback;
-  d->mSourceDestDatumTransforms.insert( qMakePair( sourceCrs.authid(), destinationCrs.authid() ), details );
+  d->mSourceDestDatumTransforms.insert( qMakePair( sourceCrs, destinationCrs ), details );
   d->mLock.unlock();
   return true;
 #else
@@ -134,7 +147,7 @@ void QgsCoordinateTransformContext::removeSourceDestinationDatumTransform( const
 
 void QgsCoordinateTransformContext::removeCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs )
 {
-  d->mSourceDestDatumTransforms.remove( qMakePair( sourceCrs.authid(), destinationCrs.authid() ) );
+  d->mSourceDestDatumTransforms.remove( qMakePair( sourceCrs, destinationCrs ) );
 }
 
 bool QgsCoordinateTransformContext::hasTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
@@ -178,15 +191,12 @@ QgsDatumTransform::TransformPair QgsCoordinateTransformContext::calculateDatumTr
 QString QgsCoordinateTransformContext::calculateCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
 #if PROJ_VERSION_MAJOR>=6
-  const QString srcKey = source.authid();
-  const QString destKey = destination.authid();
-
   d->mLock.lockForRead();
-  QgsCoordinateTransformContextPrivate::OperationDetails res = d->mSourceDestDatumTransforms.value( qMakePair( srcKey, destKey ), QgsCoordinateTransformContextPrivate::OperationDetails() );
+  QgsCoordinateTransformContextPrivate::OperationDetails res = d->mSourceDestDatumTransforms.value( qMakePair( source, destination ), QgsCoordinateTransformContextPrivate::OperationDetails() );
   if ( res.operation.isEmpty() )
   {
     // try to reverse
-    res = d->mSourceDestDatumTransforms.value( qMakePair( destKey, srcKey ), QgsCoordinateTransformContextPrivate::OperationDetails() );
+    res = d->mSourceDestDatumTransforms.value( qMakePair( destination, source ), QgsCoordinateTransformContextPrivate::OperationDetails() );
   }
   d->mLock.unlock();
   return res.operation;
@@ -200,15 +210,12 @@ QString QgsCoordinateTransformContext::calculateCoordinateOperation( const QgsCo
 bool QgsCoordinateTransformContext::allowFallbackTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
 #if PROJ_VERSION_MAJOR>=6
-  const QString srcKey = source.authid();
-  const QString destKey = destination.authid();
-
   d->mLock.lockForRead();
-  QgsCoordinateTransformContextPrivate::OperationDetails res = d->mSourceDestDatumTransforms.value( qMakePair( srcKey, destKey ), QgsCoordinateTransformContextPrivate::OperationDetails() );
+  QgsCoordinateTransformContextPrivate::OperationDetails res = d->mSourceDestDatumTransforms.value( qMakePair( source, destination ), QgsCoordinateTransformContextPrivate::OperationDetails() );
   if ( res.operation.isEmpty() )
   {
     // try to reverse
-    res = d->mSourceDestDatumTransforms.value( qMakePair( destKey, srcKey ), QgsCoordinateTransformContextPrivate::OperationDetails() );
+    res = d->mSourceDestDatumTransforms.value( qMakePair( destination, source ), QgsCoordinateTransformContextPrivate::OperationDetails() );
   }
   d->mLock.unlock();
   return res.allowFallback;
@@ -222,18 +229,15 @@ bool QgsCoordinateTransformContext::allowFallbackTransform( const QgsCoordinateR
 bool QgsCoordinateTransformContext::mustReverseCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
 #if PROJ_VERSION_MAJOR>=6
-  const QString srcKey = source.authid();
-  const QString destKey = destination.authid();
-
   d->mLock.lockForRead();
-  QgsCoordinateTransformContextPrivate::OperationDetails res = d->mSourceDestDatumTransforms.value( qMakePair( srcKey, destKey ), QgsCoordinateTransformContextPrivate::OperationDetails() );
+  QgsCoordinateTransformContextPrivate::OperationDetails res = d->mSourceDestDatumTransforms.value( qMakePair( source, destination ), QgsCoordinateTransformContextPrivate::OperationDetails() );
   if ( !res.operation.isEmpty() )
   {
     d->mLock.unlock();
     return false;
   }
   // see if the reverse operation is present
-  res = d->mSourceDestDatumTransforms.value( qMakePair( destKey, srcKey ), QgsCoordinateTransformContextPrivate::OperationDetails() );
+  res = d->mSourceDestDatumTransforms.value( qMakePair( destination, source ), QgsCoordinateTransformContextPrivate::OperationDetails() );
   if ( !res.operation.isEmpty() )
   {
     d->mLock.unlock();
@@ -273,10 +277,30 @@ bool QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
   for ( int i = 0; i < srcDestNodes.size(); ++i )
   {
     const QDomElement transformElem = srcDestNodes.at( i ).toElement();
-    const QString key1 = transformElem.attribute( QStringLiteral( "source" ) );
-    const QString key2 = transformElem.attribute( QStringLiteral( "dest" ) );
 
 #if PROJ_VERSION_MAJOR>=6
+    const QDomElement srcElem = transformElem.firstChildElement( QStringLiteral( "src" ) );
+    const QDomElement destElem = transformElem.firstChildElement( QStringLiteral( "dest" ) );
+
+    QgsCoordinateReferenceSystem srcCrs;
+    QgsCoordinateReferenceSystem destCrs;
+    if ( !srcElem.isNull() && !destElem.isNull() )
+    {
+      srcCrs.readXml( srcElem );
+      destCrs.readXml( destElem );
+    }
+    else
+    {
+      // for older project compatibility
+      const QString key1 = transformElem.attribute( QStringLiteral( "source" ) );
+      const QString key2 = transformElem.attribute( QStringLiteral( "dest" ) );
+      srcCrs = QgsCoordinateReferenceSystem( key1 );
+      destCrs = QgsCoordinateReferenceSystem( key2 );
+    }
+
+    if ( !srcCrs.isValid() || !destCrs.isValid() )
+      continue;
+
     const QString coordinateOp = transformElem.attribute( QStringLiteral( "coordinateOp" ) );
     const bool allowFallback = transformElem.attribute( QStringLiteral( "allowFallback" ), QStringLiteral( "1" ) ).toInt();
 
@@ -291,8 +315,11 @@ bool QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
     QgsCoordinateTransformContextPrivate::OperationDetails deets;
     deets.operation = coordinateOp;
     deets.allowFallback = allowFallback;
-    d->mSourceDestDatumTransforms.insert( qMakePair( key1, key2 ), deets );
+    d->mSourceDestDatumTransforms.insert( qMakePair( srcCrs, destCrs ), deets );
 #else
+    const QString key1 = transformElem.attribute( QStringLiteral( "source" ) );
+    const QString key2 = transformElem.attribute( QStringLiteral( "dest" ) );
+
     QString value1 = transformElem.attribute( QStringLiteral( "sourceTransform" ) );
     QString value2 = transformElem.attribute( QStringLiteral( "destTransform" ) );
 
@@ -332,14 +359,24 @@ void QgsCoordinateTransformContext::writeXml( QDomElement &element, const QgsRea
 {
   d->mLock.lockForRead();
 
-  QDomElement contextElem = element.ownerDocument().createElement( QStringLiteral( "transformContext" ) );
+  QDomDocument doc = element.ownerDocument();
+
+  QDomElement contextElem = doc.createElement( QStringLiteral( "transformContext" ) );
 
   //src/dest transforms
   for ( auto it = d->mSourceDestDatumTransforms.constBegin(); it != d->mSourceDestDatumTransforms.constEnd(); ++ it )
   {
-    QDomElement transformElem = element.ownerDocument().createElement( QStringLiteral( "srcDest" ) );
-    transformElem.setAttribute( QStringLiteral( "source" ), it.key().first );
-    transformElem.setAttribute( QStringLiteral( "dest" ), it.key().second );
+    QDomElement transformElem = doc.createElement( QStringLiteral( "srcDest" ) );
+
+    QDomElement srcElem = doc.createElement( QStringLiteral( "src" ) );
+    QDomElement destElem = doc.createElement( QStringLiteral( "dest" ) );
+
+    it.key().first.writeXml( srcElem, doc );
+    it.key().second.writeXml( destElem, doc );
+
+    transformElem.appendChild( srcElem );
+    transformElem.appendChild( destElem );
+
 #if PROJ_VERSION_MAJOR>=6
     transformElem.setAttribute( QStringLiteral( "coordinateOp" ), it.value().operation );
     transformElem.setAttribute( QStringLiteral( "allowFallback" ), it.value().allowFallback ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
@@ -369,7 +406,7 @@ void QgsCoordinateTransformContext::readSettings()
 
   //collect src and dest entries that belong together
 #if PROJ_VERSION_MAJOR>=6
-  QMap< QPair< QString, QString >, QgsCoordinateTransformContextPrivate::OperationDetails > transforms;
+  QMap< QPair< QgsCoordinateReferenceSystem, QgsCoordinateReferenceSystem >, QgsCoordinateTransformContextPrivate::OperationDetails > transforms;
 #else
   QMap< QPair< QString, QString >, QPair< int, int > > transforms;
 #endif
@@ -390,12 +427,15 @@ void QgsCoordinateTransformContext::readSettings()
         destAuthId = split.at( 1 ).split( '_' ).at( 0 );
       }
 
+      if ( srcAuthId.isEmpty() || destAuthId.isEmpty() )
+        continue;
+
       const QString proj = settings.value( *pkeyIt ).toString();
       const bool allowFallback = settings.value( QStringLiteral( "%1//%2_allowFallback" ).arg( srcAuthId, destAuthId ) ).toBool();
       QgsCoordinateTransformContextPrivate::OperationDetails deets;
       deets.operation = proj;
       deets.allowFallback = allowFallback;
-      transforms[ qMakePair( srcAuthId, destAuthId )] = deets;
+      transforms[ qMakePair( QgsCoordinateReferenceSystem( srcAuthId ), QgsCoordinateReferenceSystem( destAuthId ) )] = deets;
     }
 #else
     if ( pkeyIt->contains( QLatin1String( "srcTransform" ) ) || pkeyIt->contains( QLatin1String( "destTransform" ) ) )
@@ -458,8 +498,11 @@ void QgsCoordinateTransformContext::writeSettings()
 
   for ( auto transformIt = d->mSourceDestDatumTransforms.constBegin(); transformIt != d->mSourceDestDatumTransforms.constEnd(); ++transformIt )
   {
-    const QString srcAuthId = transformIt.key().first;
-    const QString destAuthId = transformIt.key().second;
+    const QString srcAuthId = transformIt.key().first.authid();
+    const QString destAuthId = transformIt.key().second.authid();
+
+    if ( srcAuthId.isEmpty() || destAuthId.isEmpty() )
+      continue; // not so nice, but alternative would be to shove whole CRS wkt into the settings values...
 
 #if PROJ_VERSION_MAJOR>=6
     const QString proj = transformIt.value().operation;
