@@ -1304,44 +1304,6 @@ Creates a new parameter using the definition from a script code.
 
 };
 
-class QgsProcessingParameterMapLayer : QgsProcessingParameterDefinition
-{
-%Docstring
-A map layer parameter for processing algorithms.
-
-.. versionadded:: 3.0
-%End
-
-%TypeHeaderCode
-#include "qgsprocessingparameters.h"
-%End
-  public:
-
-    QgsProcessingParameterMapLayer( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
-                                    bool optional = false );
-%Docstring
-Constructor for QgsProcessingParameterMapLayer.
-%End
-
-    static QString typeName();
-%Docstring
-Returns the type name for the parameter class.
-%End
-    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
-
-    virtual QString type() const;
-    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
-
-    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
-
-
-    static QgsProcessingParameterMapLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
-%Docstring
-Creates a new parameter using the definition from a script code.
-%End
-
-};
-
 class QgsProcessingParameterExtent : QgsProcessingParameterDefinition
 {
 %Docstring
@@ -2419,6 +2381,54 @@ Returns the type name for the parameter class.
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End
+};
+
+class QgsProcessingParameterMapLayer : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes
+{
+%Docstring
+A map layer parameter for processing algorithms.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterMapLayer( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                    bool optional = false,
+                                    const QList< int > &types = QList< int >() );
+%Docstring
+Constructor for QgsProcessingParameterMapLayer.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    static QgsProcessingParameterMapLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
 };
 
 class QgsProcessingParameterField : QgsProcessingParameterDefinition
