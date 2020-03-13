@@ -203,6 +203,7 @@ void QgsRasterLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabi
 {
   if ( const QgsRasterDataProviderTemporalCapabilities *rasterCaps = dynamic_cast< const QgsRasterDataProviderTemporalCapabilities *>( capabilities ) )
   {
+    setIsActive( rasterCaps->hasTemporalCapabilities() );
     setFixedTemporalRange( rasterCaps->availableTemporalRange() );
     setFixedReferenceTemporalRange( rasterCaps->availableReferenceTemporalRange() );
 
