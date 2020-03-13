@@ -117,6 +117,10 @@ def getParameterFromString(s, context=''):
             elif clazz == QgsProcessingParameterMapLayer:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
+                    try:
+                        params[4] = [int(p) for p in params[4].split(';')]
+                    except:
+                        params[4] = [getattr(QgsProcessing, p.split(".")[1]) for p in params[4].split(';')]
             elif clazz == QgsProcessingParameterBoolean:
                 if len(params) > 2:
                     params[2] = True if params[2].lower() == 'true' else False
