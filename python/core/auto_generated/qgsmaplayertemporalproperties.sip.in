@@ -26,6 +26,16 @@ how an individual QgsMapLayer behaves in a temporal context, e.g. while animatin
 %TypeHeaderCode
 #include "qgsmaplayertemporalproperties.h"
 %End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsRasterLayerTemporalProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterLayerTemporalProperties;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
   public:
 
     QgsMapLayerTemporalProperties( QObject *parent /TransferThis/, bool enabled = false );
