@@ -101,12 +101,6 @@ class TestPyQgsProviderConnectionMssql(unittest.TestCase, TestPyQgsProviderConne
         vl = QgsVectorLayer(conn.tableUri('qgis_test', 'someData'), 'my', 'mssql')
         self.assertTrue(vl.isValid())
 
-    def test_exec_sql(self):
-
-        md = QgsProviderRegistry.instance().providerMetadata('mssql')
-        conn = md.createConnection(self.uri, {})
-        self.assertNotEqual(conn.executeSql('SELECT * FROM qgis_test.someData'), [])
-
 
 if __name__ == '__main__':
     unittest.main()
