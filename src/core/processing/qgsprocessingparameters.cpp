@@ -6798,10 +6798,11 @@ QgsProcessingParameterDatabaseSchema *QgsProcessingParameterDatabaseSchema::from
 QgsProcessingParameterDatabaseTable::QgsProcessingParameterDatabaseTable( const QString &name, const QString &description,
     const QString &connectionParameterName,
     const QString &schemaParameterName,
-    const QVariant &defaultValue, bool optional )
+    const QVariant &defaultValue, bool optional, bool allowNewTableNames )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
   , mParentConnectionParameterName( connectionParameterName )
   , mParentSchemaParameterName( schemaParameterName )
+  , mAllowNewTableNames( allowNewTableNames )
 {
 
 }
@@ -6859,6 +6860,9 @@ QString QgsProcessingParameterDatabaseTable::asPythonString( const QgsProcessing
       if ( mFlags & FlagOptional )
         code += QStringLiteral( ", optional=True" );
 
+      if ( mAllowNewTableNames )
+        code += QStringLiteral( ", allowNewTableNames=True" );
+
       code += QStringLiteral( ", connectionParameterName='%1'" ).arg( mParentConnectionParameterName );
       code += QStringLiteral( ", schemaParameterName='%1'" ).arg( mParentSchemaParameterName );
       QgsProcessingContext c;
@@ -6907,6 +6911,7 @@ QVariantMap QgsProcessingParameterDatabaseTable::toVariantMap() const
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   map.insert( QStringLiteral( "mParentConnectionParameterName" ), mParentConnectionParameterName );
   map.insert( QStringLiteral( "mParentSchemaParameterName" ), mParentSchemaParameterName );
+  map.insert( QStringLiteral( "mAllowNewTableNames" ), mAllowNewTableNames );
   return map;
 }
 
@@ -6915,6 +6920,7 @@ bool QgsProcessingParameterDatabaseTable::fromVariantMap( const QVariantMap &map
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mParentConnectionParameterName = map.value( QStringLiteral( "mParentConnectionParameterName" ) ).toString();
   mParentSchemaParameterName = map.value( QStringLiteral( "mParentSchemaParameterName" ) ).toString();
+  mAllowNewTableNames = map.value( QStringLiteral( "mAllowNewTableNames" ), false ).toBool();
   return true;
 }
 
@@ -6938,4 +6944,14 @@ QgsProcessingParameterDatabaseTable *QgsProcessingParameterDatabaseTable::fromSc
   }
 
   return new QgsProcessingParameterDatabaseTable( name, description, connection, schema, def.isEmpty() ? QVariant() : def, isOptional );
+}
+
+bool QgsProcessingParameterDatabaseTable::allowNewTableNames() const
+{
+  return mAllowNewTableNames;
+}
+
+void QgsProcessingParameterDatabaseTable::setAllowNewTableNames( bool allowNewTableNames )
+{
+  mAllowNewTableNames = allowNewTableNames;
 }

@@ -744,6 +744,11 @@ QString QgsProcessingAlgorithm::parameterAsSchema( const QVariantMap &parameters
   return QgsProcessingParameters::parameterAsSchema( parameterDefinition( name ), parameters, context );
 }
 
+QString QgsProcessingAlgorithm::parameterAsDatabaseTableName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+{
+  return QgsProcessingParameters::parameterAsDatabaseTableName( parameterDefinition( name ), parameters, context );
+}
+
 QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameters, const QString &name )
 {
   if ( !parameters.contains( name ) )

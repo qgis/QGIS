@@ -5070,7 +5070,6 @@ void TestProcessingGui::testDatabaseTableWrapper()
     }
     delete w;
 
-
     connWrapper.setWidgetValue( QStringLiteral( "aa" ), context );
 
     // optional
@@ -5095,6 +5094,37 @@ void TestProcessingGui::testDatabaseTableWrapper()
     QVERIFY( !wrapper3.widgetValue().isValid() );
 
     delete w;
+
+    // allowing new table names
+    QgsProcessingParameterDatabaseTable param3( QStringLiteral( "table" ), QStringLiteral( "table" ), QStringLiteral( "conn" ), QStringLiteral( "schema" ), QVariant(), false, true );
+    QgsProcessingDatabaseTableWidgetWrapper wrapper4( &param3, type );
+    w = wrapper4.createWrappedWidget( context );
+
+    wrapper4.setParentConnectionWrapperValue( &connWrapper );
+    wrapper4.setParentSchemaWrapperValue( &schemaWrapper );
+
+    QSignalSpy spy4( &wrapper4, &QgsProcessingDatabaseTableWidgetWrapper::widgetValueHasChanged );
+    wrapper4.setWidgetValue( QStringLiteral( "someData" ), context );
+    QCOMPARE( spy4.count(), 1 );
+    QCOMPARE( wrapper4.widgetValue().toString(), QStringLiteral( "someData" ) );
+    QCOMPARE( static_cast< QgsDatabaseTableComboBox * >( wrapper4.wrappedWidget() )->comboBox()->currentText(), QStringLiteral( "someData" ) );
+    wrapper4.setWidgetValue( QStringLiteral( "some_poly_data" ), context );
+    QCOMPARE( spy4.count(), 2 );
+    QCOMPARE( wrapper4.widgetValue().toString(), QStringLiteral( "some_poly_data" ) );
+    QCOMPARE( static_cast< QgsDatabaseTableComboBox * >( wrapper4.wrappedWidget() )->comboBox()->currentText(), QStringLiteral( "some_poly_data" ) );
+    wrapper4.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy4.count(), 3 );
+    QVERIFY( !wrapper4.widgetValue().isValid() );
+    // should always allow non existing table names
+    wrapper4.setWidgetValue( QStringLiteral( "someDataxxxxxxxxxxxxxxxxxxxx" ), context );
+    QCOMPARE( spy4.count(), 4 );
+    QCOMPARE( wrapper4.widgetValue().toString(), QStringLiteral( "someDataxxxxxxxxxxxxxxxxxxxx" ) );
+    QCOMPARE( static_cast< QgsDatabaseTableComboBox * >( wrapper4.wrappedWidget() )->comboBox()->currentText(), QStringLiteral( "someDataxxxxxxxxxxxxxxxxxxxx" ) );
+
+
+    delete w;
+
+
     QLabel *l = wrapper.createWrappedLabel();
     if ( wrapper.type() != QgsProcessingGui::Batch )
     {

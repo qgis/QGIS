@@ -7166,6 +7166,17 @@ void TestQgsProcessing::parameterDatabaseTable()
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
   QCOMPARE( fromCode->parentConnectionParameterName(), def->parentConnectionParameterName() );
   QCOMPARE( fromCode->parentSchemaParameterName(), def->parentSchemaParameterName() );
+
+  // allow new table names
+  def.reset( new QgsProcessingParameterDatabaseTable( "new", QString(), QStringLiteral( "con" ), QStringLiteral( "schema" ), QVariant(), false, true ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDatabaseTable('new', '', allowNewTableNames=True, connectionParameterName='con', schemaParameterName='schema', defaultValue=None)" ) );
+  QVariantMap var = def->toVariantMap();
+  def.reset( dynamic_cast<QgsProcessingParameterDatabaseTable *>( QgsProcessingParameters::parameterFromVariantMap( var ) ) );
+  QCOMPARE( def->parentConnectionParameterName(), QStringLiteral( "con" ) );
+  QCOMPARE( def->parentSchemaParameterName(), QStringLiteral( "schema" ) );
+  QVERIFY( def->allowNewTableNames() );
 }
 
 void TestQgsProcessing::parameterDateTime()

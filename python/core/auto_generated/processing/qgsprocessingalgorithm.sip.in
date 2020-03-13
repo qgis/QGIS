@@ -884,6 +884,13 @@ Evaluates the parameter with matching ``name`` to a database schema name string.
 .. versionadded:: 3.14
 %End
 
+    QString parameterAsDatabaseTableName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``name`` to a database table name string.
+
+.. versionadded:: 3.14
+%End
+
     QDateTime parameterAsDateTime( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``name`` to a DateTime, or returns an invalid date time if the parameter was not set.
