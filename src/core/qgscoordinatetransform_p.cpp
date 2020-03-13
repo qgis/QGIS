@@ -264,9 +264,18 @@ void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTran
 {
   // recalculate datum transforms from context
 #if PROJ_VERSION_MAJOR >= 6
-  mProjCoordinateOperation = context.calculateCoordinateOperation( mSourceCRS, mDestCRS );
-  mShouldReverseCoordinateOperation = context.mustReverseCoordinateOperation( mSourceCRS, mDestCRS );
-  mAllowFallbackTransforms = context.allowFallbackTransform( mSourceCRS, mDestCRS );
+  if ( mSourceCRS.isValid() && mDestCRS.isValid() )
+  {
+    mProjCoordinateOperation = context.calculateCoordinateOperation( mSourceCRS, mDestCRS );
+    mShouldReverseCoordinateOperation = context.mustReverseCoordinateOperation( mSourceCRS, mDestCRS );
+    mAllowFallbackTransforms = context.allowFallbackTransform( mSourceCRS, mDestCRS );
+  }
+  else
+  {
+    mProjCoordinateOperation.clear();
+    mShouldReverseCoordinateOperation = false;
+    mAllowFallbackTransforms = false;
+  }
 #else
   Q_NOWARN_DEPRECATED_PUSH
   QgsDatumTransform::TransformPair transforms = context.calculateDatumTransforms( mSourceCRS, mDestCRS );
