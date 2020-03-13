@@ -14797,7 +14797,7 @@ void QgisApp::readProject( const QDomDocument &doc )
   }
 }
 
-void QgisApp::showLayerProperties( QgsMapLayer *mapLayer )
+void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
 {
   /*
   TODO: Consider reusing the property dialogs again.
@@ -14821,6 +14821,9 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer )
     case QgsMapLayerType::RasterLayer:
     {
       QgsRasterLayerProperties *rasterLayerPropertiesDialog = new QgsRasterLayerProperties( mapLayer, mMapCanvas, this );
+      if ( !page.isEmpty() )
+        rasterLayerPropertiesDialog->setCurrentPage( page );
+
       // Cannot use exec here due to raster transparency map tool:
       // in order to pass focus to the canvas, the dialog needs to
       // be hidden and shown in non-modal mode.
