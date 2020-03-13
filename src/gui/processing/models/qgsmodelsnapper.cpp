@@ -16,6 +16,7 @@
 
 #include "qgsmodelsnapper.h"
 #include "qgssettings.h"
+#include <cmath>
 
 QgsModelSnapper::QgsModelSnapper()
 {
@@ -117,14 +118,14 @@ QPointF QgsModelSnapper::snapPointsToGrid( const QList<QPointF> &points, double 
     double xSnapped = xRatio * gridRes;
     double ySnapped = yRatio * gridRes;
 
-    double currentDiffX = std::abs( xSnapped - point.x() );
+    double currentDiffX = std::fabs( xSnapped - point.x() );
     if ( currentDiffX < smallestDiffX )
     {
       smallestDiffX = currentDiffX;
       deltaX = xSnapped - point.x();
     }
 
-    double currentDiffY = std::abs( ySnapped - point.y() );
+    double currentDiffY = std::fabs( ySnapped - point.y() );
     if ( currentDiffY < smallestDiffY )
     {
       smallestDiffY = currentDiffY;
