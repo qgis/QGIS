@@ -91,7 +91,8 @@ class ModelerParameterDefinitionDialog(QDialog):
                          parameters.PARAMETER_POINT,
                          parameters.PARAMETER_CRS,
                          parameters.PARAMETER_ENUM,
-                         parameters.PARAMETER_MATRIX):
+                         parameters.PARAMETER_MATRIX,
+                         parameters.PARAMETER_MAP_LAYER):
             return True
         elif isinstance(param, (QgsProcessingParameterField,
                                 QgsProcessingParameterBand,
@@ -106,6 +107,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                                 QgsProcessingParameterCrs,
                                 QgsProcessingParameterEnum,
                                 QgsProcessingParameterMatrix,
+                                QgsProcessingParameterMapLayer,
                                 QgsProcessingDestinationParameter)):
             return True
 
@@ -240,6 +242,20 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.datatypeCombo.addItem(self.tr('File'), QgsProcessing.TypeFile)
             if self.param is not None:
                 self.datatypeCombo.setCurrentIndex(self.datatypeCombo.findData(self.param.layerType()))
+            self.verticalLayout.addWidget(self.datatypeCombo)
+        elif (self.paramType == parameters.PARAMETER_MAP_LAYER or
+              isinstance(self.param, QgsProcessingParameterMapLayer)):
+            self.verticalLayout.addWidget(QLabel(self.tr('Data type')))
+            self.datatypeCombo = QComboBox()
+            self.datatypeCombo.addItem(self.tr('Any Map Layer'), QgsProcessing.TypeMapLayer)
+            self.datatypeCombo.addItem(self.tr('Vector (Point)'), QgsProcessing.TypeVectorPoint)
+            self.datatypeCombo.addItem(self.tr('Vector (Line)'), QgsProcessing.TypeVectorLine)
+            self.datatypeCombo.addItem(self.tr('Vector (Polygon)'), QgsProcessing.TypeVectorPolygon)
+            self.datatypeCombo.addItem(self.tr('Vector (Any Geometry Type)'), QgsProcessing.TypeVectorAnyGeometry)
+            self.datatypeCombo.addItem(self.tr('Raster'), QgsProcessing.TypeRaster)
+            self.datatypeCombo.addItem(self.tr('Mesh'), QgsProcessing.TypeMesh)
+            if self.param is not None:
+                self.datatypeCombo.setCurrentIndex(self.datatypeCombo.findData(self.param.dataTypes()[0]))
             self.verticalLayout.addWidget(self.datatypeCombo)
         elif (self.paramType in (parameters.PARAMETER_NUMBER, parameters.PARAMETER_DISTANCE, parameters.PARAMETER_SCALE)
               or isinstance(self.param, (QgsProcessingParameterNumber, QgsProcessingParameterDistance, QgsProcessingParameterScale))):
@@ -453,7 +469,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif (self.paramType == parameters.PARAMETER_MAP_LAYER
               or isinstance(self.param, QgsProcessingParameterMapLayer)):
             self.param = QgsProcessingParameterMapLayer(
-                name, description)
+                name, description, types=[self.datatypeCombo.currentData()])
         elif (self.paramType == parameters.PARAMETER_RASTER
               or isinstance(self.param, QgsProcessingParameterRasterLayer)):
             self.param = QgsProcessingParameterRasterLayer(
