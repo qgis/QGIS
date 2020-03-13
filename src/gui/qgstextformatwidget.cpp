@@ -493,6 +493,11 @@ void QgsTextFormatWidget::initWidget()
   {
     updateShadowFrameStatus();
   } );
+  connect( mCalloutDrawDDBtn, &QgsPropertyOverrideButton::activated, this, &QgsTextFormatWidget::updateCalloutFrameStatus );
+  connect( mCalloutsDrawCheckBox, &QCheckBox::stateChanged, this, [ = ]( int )
+  {
+    updateCalloutFrameStatus();
+  } );
 
   mGeometryGeneratorType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon / MultiPolygon" ), QgsWkbTypes::GeometryType::PolygonGeometry );
   mGeometryGeneratorType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "LineString / MultiLineString" ), QgsWkbTypes::GeometryType::LineGeometry );
@@ -800,6 +805,8 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mZIndexDDBtn, QgsPalLayerSettings::ZIndex );
 
   registerDataDefinedButton( mCalloutDrawDDBtn, QgsPalLayerSettings::CalloutDraw );
+  mCalloutDrawDDBtn->registerCheckedWidget( mCalloutsDrawCheckBox );
+
   registerDataDefinedButton( mLabelAllPartsDDBtn, QgsPalLayerSettings::LabelAllParts );
 }
 
@@ -1730,6 +1737,11 @@ void QgsTextFormatWidget::updateBufferFrameStatus()
 void QgsTextFormatWidget::updateShadowFrameStatus()
 {
   mShadowFrame->setEnabled( mShadowDrawDDBtn->isActive() || mShadowDrawChkBx->isChecked() );
+}
+
+void QgsTextFormatWidget::updateCalloutFrameStatus()
+{
+  mCalloutFrame->setEnabled( mCalloutDrawDDBtn->isActive() || mCalloutsDrawCheckBox->isChecked() );
 }
 
 void QgsTextFormatWidget::setFormatFromStyle( const QString &name, QgsStyle::StyleEntity type )
