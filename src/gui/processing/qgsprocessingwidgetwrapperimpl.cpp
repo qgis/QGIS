@@ -4398,15 +4398,8 @@ QWidget *QgsProcessingDatabaseTableWidgetWrapper::createWidget()
   if ( tableParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
     mTableComboBox->setAllowEmptyTable( true );
 
-  switch ( type() )
-  {
-    case QgsProcessingGui::Standard:
-    case QgsProcessingGui::Batch:
-      break;
-    case QgsProcessingGui::Modeler:
-      mTableComboBox->comboBox()->setEditable( true );
-      break;
-  }
+  if ( type() == QgsProcessingGui::Modeler || tableParam->allowNewTableNames() )
+    mTableComboBox->comboBox()->setEditable( true );
 
   mTableComboBox->setToolTip( parameterDefinition()->toolTip() );
   connect( mTableComboBox->comboBox(), &QComboBox::currentTextChanged, this, [ = ]( const QString & )

@@ -3529,7 +3529,7 @@ class CORE_EXPORT QgsProcessingParameterDatabaseSchema : public QgsProcessingPar
  * \class QgsProcessingParameterDatabaseTable
  * \ingroup core
  * A database table name parameter for processing algorithms, allowing users to select from existing database tables
- * on a registered database connection.
+ * on a registered database connection (or optionally to enter a new table name).
  *
  * QgsProcessingParameterDatabaseTable should be evaluated by calling QgsProcessingAlgorithm::parameterAsDatabaseTableName().
  *
@@ -3552,7 +3552,8 @@ class CORE_EXPORT QgsProcessingParameterDatabaseTable : public QgsProcessingPara
                                          const QString &connectionParameterName = QString(),
                                          const QString &schemaParameterName = QString(),
                                          const QVariant &defaultValue = QVariant(),
-                                         bool optional = false );
+                                         bool optional = false,
+                                         bool allowNewTableNames = false );
 
     /**
      * Returns the type name for the parameter class.
@@ -3597,10 +3598,27 @@ class CORE_EXPORT QgsProcessingParameterDatabaseTable : public QgsProcessingPara
      */
     static QgsProcessingParameterDatabaseTable *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
 
+    /**
+     * Returns TRUE if the parameter allows users to enter names for
+     * a new (non-existing) tables.
+     *
+     * \see setAllowNewTableNames()
+     */
+    bool allowNewTableNames() const;
+
+    /**
+     * Sets whether the parameter allows users to enter names for
+     * a new (non-existing) tables.
+     *
+     * \see allowNewTableNames()
+     */
+    void setAllowNewTableNames( bool allowed );
+
   private:
 
     QString mParentConnectionParameterName;
     QString mParentSchemaParameterName;
+    bool mAllowNewTableNames = false;
 };
 
 
