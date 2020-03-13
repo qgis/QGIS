@@ -4766,7 +4766,7 @@ void TestProcessingGui::testDatabaseSchemaWrapper()
 
   auto testWrapper = [&schemas]( QgsProcessingGui::WidgetType type )
   {
-    QgsProcessingParameterProviderConnection connParam( QStringLiteral( "conn" ), QStringLiteral( "connection" ), QStringLiteral( "postgres" ), true );
+    QgsProcessingParameterProviderConnection connParam( QStringLiteral( "conn" ), QStringLiteral( "connection" ), QStringLiteral( "postgres" ), QVariant(), true );
     TestLayerWrapper connWrapper( &connParam );
 
     QgsProcessingParameterDatabaseSchema param( QStringLiteral( "schema" ), QStringLiteral( "schema" ), QStringLiteral( "conn" ), QVariant(), false );
@@ -4827,6 +4827,7 @@ void TestProcessingGui::testDatabaseSchemaWrapper()
     // make sure things are ok if connection is changed back to nothing
     connWrapper.setWidgetValue( QVariant(), context );
     wrapper.setParentConnectionWrapperValue( &connWrapper );
+    QCOMPARE( static_cast< QgsDatabaseSchemaComboBox * >( wrapper.wrappedWidget() )->comboBox()->count(), 0 );
 
     switch ( type )
     {
@@ -4969,9 +4970,9 @@ void TestProcessingGui::testDatabaseTableWrapper()
 
   auto testWrapper = [&tableNames]( QgsProcessingGui::WidgetType type )
   {
-    QgsProcessingParameterProviderConnection connParam( QStringLiteral( "conn" ), QStringLiteral( "connection" ), QStringLiteral( "postgres" ), true );
+    QgsProcessingParameterProviderConnection connParam( QStringLiteral( "conn" ), QStringLiteral( "connection" ), QStringLiteral( "postgres" ), QVariant(), true );
     TestLayerWrapper connWrapper( &connParam );
-    QgsProcessingParameterDatabaseSchema schemaParam( QStringLiteral( "schema" ), QStringLiteral( "schema" ), QStringLiteral( "connection" ), true );
+    QgsProcessingParameterDatabaseSchema schemaParam( QStringLiteral( "schema" ), QStringLiteral( "schema" ), QStringLiteral( "connection" ), QVariant(), true );
     TestLayerWrapper schemaWrapper( &schemaParam );
 
     QgsProcessingParameterDatabaseTable param( QStringLiteral( "table" ), QStringLiteral( "table" ), QStringLiteral( "conn" ), QStringLiteral( "schema" ), QVariant(), false );
@@ -5034,6 +5035,7 @@ void TestProcessingGui::testDatabaseTableWrapper()
     // make sure things are ok if connection is changed back to nothing
     connWrapper.setWidgetValue( QVariant(), context );
     wrapper.setParentConnectionWrapperValue( &connWrapper );
+    QCOMPARE( static_cast< QgsDatabaseTableComboBox * >( wrapper.wrappedWidget() )->comboBox()->count(), 0 );
 
     switch ( type )
     {
