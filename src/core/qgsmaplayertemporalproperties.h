@@ -43,6 +43,19 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
 {
     Q_OBJECT
 
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsRasterLayerTemporalProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterLayerTemporalProperties;
+    }
+    else
+    {
+      sipType = 0;
+    }
+    SIP_END
+#endif
+
   public:
 
     /**

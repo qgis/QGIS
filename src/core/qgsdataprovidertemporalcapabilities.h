@@ -30,9 +30,22 @@
  *
  * \since QGIS 3.14
  */
-
 class CORE_EXPORT QgsDataProviderTemporalCapabilities
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsRasterDataProviderTemporalCapabilities *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterDataProviderTemporalCapabilities;
+    }
+    else
+    {
+      sipType = 0;
+    }
+    SIP_END
+#endif
+
   public:
 
     /**

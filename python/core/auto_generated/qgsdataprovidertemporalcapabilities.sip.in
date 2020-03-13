@@ -10,7 +10,6 @@
 
 
 
-
 class QgsDataProviderTemporalCapabilities
 {
 %Docstring
@@ -21,6 +20,16 @@ Base class for handling properties relating to a data provider's temporal capabi
 
 %TypeHeaderCode
 #include "qgsdataprovidertemporalcapabilities.h"
+%End
+%ConvertToSubClassCode
+    if ( dynamic_cast<QgsRasterDataProviderTemporalCapabilities *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterDataProviderTemporalCapabilities;
+    }
+    else
+    {
+      sipType = 0;
+    }
 %End
   public:
 
