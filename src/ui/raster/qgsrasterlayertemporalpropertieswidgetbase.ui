@@ -48,8 +48,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>743</width>
-        <height>658</height>
+        <width>729</width>
+        <height>660</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -73,6 +73,9 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
          </property>
          <property name="title">
           <string>Temporal</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
          </property>
          <property name="collapsed" stdset="0">
           <bool>false</bool>
