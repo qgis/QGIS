@@ -6759,14 +6759,14 @@ void QgsProcessingParameterDatabaseSchema::setParentConnectionParameterName( con
 QVariantMap QgsProcessingParameterDatabaseSchema::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
-  map.insert( QStringLiteral( "mParentLayerParameterName" ), mParentConnectionParameterName );
+  map.insert( QStringLiteral( "mParentConnectionParameterName" ), mParentConnectionParameterName );
   return map;
 }
 
 bool QgsProcessingParameterDatabaseSchema::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
-  mParentConnectionParameterName = map.value( QStringLiteral( "mParentLayerParameterName" ) ).toString();
+  mParentConnectionParameterName = map.value( QStringLiteral( "mParentConnectionParameterName" ) ).toString();
   return true;
 }
 
