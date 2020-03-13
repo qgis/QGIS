@@ -21,6 +21,7 @@
 #include "qgsprojecttimesettings.h"
 #include "qgstemporalnavigationobject.h"
 #include "qgstemporalmapsettingswidget.h"
+#include "qgstemporalutils.h"
 
 QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -187,8 +188,16 @@ void QgsTemporalControllerWidget::timeSlider_valueChanged( int value )
 void QgsTemporalControllerWidget::setDatesToProjectTime()
 {
   QgsDateTimeRange range;
+
+  // by default try taking the project's fixed temporal extent
   if ( QgsProject::instance()->timeSettings() )
     range = QgsProject::instance()->timeSettings()->temporalRange();
+
+  // if that's not set, calculate the extent from the project's layers
+  if ( !range.begin().isValid() || !range.end().isValid() )
+  {
+    range = QgsTemporalUtils::calculateTemporalRangeForProject( QgsProject::instance() );
+  }
 
   if ( range.begin().isValid() && range.end().isValid() )
   {
