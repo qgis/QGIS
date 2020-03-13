@@ -36,6 +36,7 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QCompleter>
 
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
@@ -129,6 +130,17 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
     }
     checkOk();
   } );
+
+  settings.beginGroup( "ogr/GPKG/connections", QgsSettings::Providers );
+  QStringList paths;
+  const QStringList groups = settings.childGroups();
+  for ( const QString &group : groups )
+    paths << settings.value( QStringLiteral( "%1/path" ).arg( group ) ).toString();
+  settings.endGroup();
+  QCompleter *completer = new QCompleter( paths );
+  completer->setCompletionMode( QCompleter::PopupCompletion );
+  completer->setFilterMode( Qt::MatchContains );
+  mDatabase->lineEdit()->setCompleter( completer );
 }
 
 void QgsNewGeoPackageLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
