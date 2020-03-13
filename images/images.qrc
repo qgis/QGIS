@@ -684,6 +684,7 @@
         <file>themes/default/mIconSnappingArea.svg</file>
         <file>themes/default/mIconSnappingCentroid.svg</file>
         <file>themes/default/mIconSnappingMiddle.svg</file>
+        <file>themes/default/mIconSnappingOnScale.svg</file>
         <file>themes/default/mIconSnappingVertex.svg</file>
         <file>themes/default/mIconSnappingSegment.svg</file>
         <file>themes/default/mIconTopologicalEditing.svg</file>

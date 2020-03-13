@@ -23,6 +23,7 @@ class QDoubleSpinBox;
 class QFont;
 class QToolButton;
 class QTreeView;
+class QCheckBox;
 
 class QgsDoubleSpinBox;
 class QgsFloatingWidget;
@@ -100,6 +101,12 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void changeTolerance( double tolerance );
 
+    void changeMinScale( double pMinScale );
+
+    void changeMaxScale( double pMaxScale );
+
+    void changeLimitToScale(bool enabled);
+
     void changeUnit( int idx );
 
     void enableTopologicalEditing( bool enabled );
@@ -144,7 +151,13 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mCentroidAction = nullptr;
     QAction *mMiddleAction = nullptr;
     QDoubleSpinBox *mToleranceSpinBox = nullptr;
+    QAction* mLimitToScale = nullptr;
+    QDoubleSpinBox *mMinScaleSpinBox = nullptr;
+    QDoubleSpinBox *mMaxScaleSpinBox = nullptr;
     QAction *mToleranceAction = nullptr; // hide widget does not work on toolbar, action needed
+    QAction *mLimitToScaleAction = nullptr;
+    QAction *mMinScaleAction = nullptr;
+    QAction *mMaxScaleAction = nullptr;
     QComboBox *mUnitsComboBox = nullptr;
     QAction *mUnitAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mTopologicalEditingAction = nullptr;

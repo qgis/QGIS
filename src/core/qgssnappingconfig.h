@@ -265,6 +265,24 @@ class CORE_EXPORT QgsSnappingConfig
     //! Sets the tolerance
     void setTolerance( double tolerance );
 
+    //! Returns the min scale
+    double minScale() const;
+
+    //! Sets the min scale
+    void setMinScale( double pMinScale );
+
+    //! Returns the max scale
+    double maxScale() const;
+
+    //! Set the max scale
+    void setMaxScale( double pMaxScale );
+
+    //! Returns limit to scale
+    bool limitToScale() const;
+
+    //! Set limit to scale
+    void setLimitToScale( bool pLimitSnapping );
+
     //! Returns the type of units
     QgsTolerance::UnitType units() const;
 
@@ -395,6 +413,9 @@ class CORE_EXPORT QgsSnappingConfig
     SnappingMode mMode = ActiveLayer;
     SnappingTypeFlag mType = VertexFlag;
     double mTolerance = 0.0;
+    bool mLimitToScale = false;
+    double mMinScale = 0.0;
+    double mMaxScale = 0.0;
     QgsTolerance::UnitType mUnits = QgsTolerance::ProjectUnits;
     bool mIntersectionSnapping = false;
 

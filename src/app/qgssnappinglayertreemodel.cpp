@@ -104,9 +104,10 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
   {
     QDoubleSpinBox *minLimitSp = new QDoubleSpinBox( parent );
     minLimitSp->setDecimals( 5 );
-    minLimitSp->setMinimum( -1.0 );
+    minLimitSp->setMinimum( 0.0 );
     minLimitSp->setMaximum( 99999999.990000 );
     minLimitSp->setToolTip( tr( "Min Scale" ) );
+    minLimitSp->setSpecialValueText("NULL");
     return minLimitSp;
   }
 
@@ -114,9 +115,10 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
   {
     QDoubleSpinBox *maxLimitSp = new QDoubleSpinBox( parent );
     maxLimitSp->setDecimals( 5 );
-    maxLimitSp->setMinimum( -1.0 );
+    maxLimitSp->setMinimum( 0.0 );
     maxLimitSp->setMaximum( 99999999.990000 );
     maxLimitSp->setToolTip( tr( "Max Scale" ) );
+    maxLimitSp->setSpecialValueText("NULL");
     return maxLimitSp;
   }
 
@@ -626,7 +628,14 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     {
       if ( role == Qt::DisplayRole )
       {
-        return QString::number( ls.minScale() );
+        if( ls.minScale() <= 0.0)
+        {
+          return QString( "NULL" );
+        }
+        else
+        {
+          return QString::number( ls.minScale() );
+        }
       }
 
       if ( role == Qt::UserRole )
@@ -639,7 +648,14 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     {
       if ( role == Qt::DisplayRole )
       {
-        return QString::number( ls.maxScale() );
+        if( ls.maxScale() <= 0.0 )
+        {
+          return QString( "NULL" );
+        }
+        else
+        {
+          return QString::number( ls.maxScale() );
+        }
       }
 
       if ( role == Qt::UserRole )

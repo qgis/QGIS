@@ -295,14 +295,20 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     QList<LayerAndAreaOfInterest> layers;
     QList<LayerConfigIterator> filteredConfigs;
 
+    bool inRangeGlobal = ( mSnappingConfig.minScale() <= 0.0 || mMapSettings.scale() >= mSnappingConfig.minScale() )
+      && ( mSnappingConfig.maxScale() <= 0.0 || mMapSettings.scale() <= mSnappingConfig.maxScale() );
+
     for ( LayerConfigIterator it = mLayers.begin(); it != mLayers.end(); ++it )
     {
       const LayerConfig &layerConfig = *it;
       QgsSnappingConfig::IndividualLayerSettings layerSettings = mSnappingConfig.individualLayerSettings( layerConfig.layer );
 
-      //Add the layers only if scale is in specified range. Value < 0.0 disable the limit.
-      bool inRange = ( layerSettings.minScale() < 0.0 || mMapSettings.scale() >= layerSettings.minScale() ) && ( layerSettings.maxScale() < 0.0 || mMapSettings.scale() <= layerSettings.maxScale() );
-      if ( inRange )
+      //Default value for layer config means it is not set (appears NULL)
+      bool layerSpecificRange = layerSettings.minScale() > 0.0 || layerSettings.maxScale() > 0.0;
+      bool inRangeLayer = ( layerSettings.minScale() < 0.0 || mMapSettings.scale() >= layerSettings.minScale() ) && ( layerSettings.maxScale() < 0.0 || mMapSettings.scale() <= layerSettings.maxScale() );
+
+      //If no per layer config is set use the global one otherwise use the layer config if it is set
+      if ( ( !layerSpecificRange && inRangeGlobal ) || ( layerSpecificRange && inRangeLayer) )
       {
         double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
         layers << qMakePair( layerConfig.layer, _areaOfInterest( pointMap, tolerance ) );
