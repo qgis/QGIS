@@ -3634,7 +3634,7 @@ font-style: italic;</string>
                   </item>
                  </layout>
                 </widget>
-                <widget class="QWidget" name="page">
+                <widget class="QWidget" name="mLabelPage_Callouts">
                  <layout class="QVBoxLayout" name="verticalLayout_14">
                   <property name="leftMargin">
                    <number>0</number>
