@@ -213,6 +213,7 @@
 %Include auto_generated/qgsvector.sip
 %Include auto_generated/qgsvector3d.sip
 %Include auto_generated/qgsvectordataprovider.sip
+%Include auto_generated/qgsvectordataprovidertemporalcapabilities.sip
 %Include auto_generated/qgsvectorfilewriter.sip
 %Include auto_generated/qgsvectorfilewritertask.sip
 %Include auto_generated/qgsvectorlayer.sip

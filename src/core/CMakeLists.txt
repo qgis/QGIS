@@ -400,6 +400,7 @@ SET(QGIS_CORE_SRCS
   qgsvector.cpp
   qgsvector3d.cpp
   qgsvectordataprovider.cpp
+  qgsvectordataprovidertemporalcapabilities.cpp
   qgsvectorfilewriter.cpp
   qgsvectorfilewritertask.cpp
   qgsvectorlayer.cpp
@@ -926,6 +927,7 @@ SET(QGIS_CORE_HDRS
   qgsvector.h
   qgsvector3d.h
   qgsvectordataprovider.h
+  qgsvectordataprovidertemporalcapabilities.h
   qgsvectorfilewriter.h
   qgsvectorfilewritertask.h
   qgsvectorlayer.h
