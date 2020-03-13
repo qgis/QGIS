@@ -1061,7 +1061,6 @@ void TestQgsTaskManager::progressChanged()
   }
   flushEvents();
   QCOMPARE( spy.count(), 6 );
-  QCOMPARE( task2->progress(), 100.0 );
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 2LL );
   QCOMPARE( spy.last().at( 1 ).toDouble(), 100.0 );
 
@@ -1485,11 +1484,7 @@ void TestQgsTaskManager::managerWithSubTasks()
   QCOMPARE( statusSpy.last().at( 0 ).toLongLong(), 1LL );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.last().at( 1 ).toInt() ), QgsTask::Complete );
 
-  subsubTask->finish();
-  subTask->finish();
-  parent->finish();
   delete manager;
-
 }
 
 void TestQgsTaskManager::managerWithSubTasks2()
