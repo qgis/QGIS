@@ -121,9 +121,17 @@ void QgsDatabaseSchemaComboBox::setConnectionName( const QString &connection, co
 
   const QString oldSchema = currentSchema();
   QgsDatabaseSchemaModel *oldModel = mModel;
-  mModel = new QgsDatabaseSchemaModel( mProvider, connection, this );
-  mModel->setAllowEmptySchema( mAllowEmpty );
-  mSortModel->setSourceModel( mModel );
+  if ( !connection.isEmpty() && !mProvider.isEmpty() )
+  {
+    mModel = new QgsDatabaseSchemaModel( mProvider, connection, this );
+    mModel->setAllowEmptySchema( mAllowEmpty );
+    mSortModel->setSourceModel( mModel );
+  }
+  else
+  {
+    mModel = nullptr;
+    mSortModel->setSourceModel( nullptr );
+  }
   if ( oldModel )
     oldModel->deleteLater();
 

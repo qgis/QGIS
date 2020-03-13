@@ -4175,8 +4175,8 @@ void QgsProcessingDatabaseSchemaWidgetWrapper::setParentConnectionWrapperValue( 
     context = tmpContext.get();
   }
 
-  QVariant value = parentWrapper->parameterValue();
-  const QString connection = QgsProcessingParameters::parameterAsConnectionName( parentWrapper->parameterDefinition(), value, *context );
+  const QVariant value = parentWrapper->parameterValue();
+  const QString connection = value.isValid() ? QgsProcessingParameters::parameterAsConnectionName( parentWrapper->parameterDefinition(), value, *context ) : QString();
 
   if ( mSchemaComboBox )
     mSchemaComboBox->setConnectionName( connection, dynamic_cast< const QgsProcessingParameterProviderConnection * >( parentWrapper->parameterDefinition() )->providerId() );
@@ -4433,9 +4433,9 @@ void QgsProcessingDatabaseTableWidgetWrapper::setParentConnectionWrapperValue( c
   }
 
   QVariant value = parentWrapper->parameterValue();
-  mConnection = QgsProcessingParameters::parameterAsConnectionName( parentWrapper->parameterDefinition(), value, *context );
+  mConnection = value.isValid() ? QgsProcessingParameters::parameterAsConnectionName( parentWrapper->parameterDefinition(), value, *context ) : QString();
   mProvider = dynamic_cast< const QgsProcessingParameterProviderConnection * >( parentWrapper->parameterDefinition() )->providerId();
-  if ( mTableComboBox && !mSchema.isEmpty() && !mConnection.isEmpty() )
+  if ( mTableComboBox && !mSchema.isEmpty() )
   {
     mTableComboBox->setSchema( mSchema );
     mTableComboBox->setConnectionName( mConnection, mProvider );
@@ -4461,7 +4461,7 @@ void QgsProcessingDatabaseTableWidgetWrapper::setParentSchemaWrapperValue( const
   }
 
   QVariant value = parentWrapper->parameterValue();
-  mSchema = QgsProcessingParameters::parameterAsSchema( parentWrapper->parameterDefinition(), value, *context );
+  mSchema = value.isValid() ? QgsProcessingParameters::parameterAsSchema( parentWrapper->parameterDefinition(), value, *context ) : QString();
 
   if ( mTableComboBox && !mSchema.isEmpty() && !mConnection.isEmpty() )
   {
