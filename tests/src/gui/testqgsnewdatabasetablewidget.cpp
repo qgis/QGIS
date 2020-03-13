@@ -60,10 +60,13 @@ void TestQgsNewDatabaseTableNameWidget::initTestCase()
   QgsApplication::initQgis();
 
   // Add some connections to test with
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) ) };
+  QgsProviderMetadata *md = nullptr;
+#ifdef ENABLE_PGTEST
+  md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) );
   mPgConn.reset( md->createConnection( qgetenv( "QGIS_PGTEST_DB" ), { } ) );
   md->saveConnection( mPgConn.get(), QStringLiteral( "PG_1" ) );
   md->saveConnection( mPgConn.get(), QStringLiteral( "PG_2" ) );
+#endif
 
   md = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
   QString errCause;
@@ -110,6 +113,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetFilters()
 
 void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
 {
+#ifdef ENABLE_PGTEST
   std::unique_ptr<QgsNewDatabaseTableNameWidget> w { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "postgres" } ) };
 
   auto index = w->mBrowserModel->findPath( QStringLiteral( "pg:/PG_1" ) );
@@ -206,10 +210,12 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsPostgres()
   QCOMPARE( w->schema(), QString( "public" ) );
   QCOMPARE( w->dataProviderKey(), QString( "postgres" ) );
   QVERIFY( w->uri().contains( R"("public"."someData")" ) );
+#endif
 }
 
 void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
 {
+#ifdef ENABLE_PGTEST
   std::unique_ptr<QgsNewDatabaseTableNameWidget> w { qgis::make_unique<QgsNewDatabaseTableNameWidget>( nullptr, QStringList{ "ogr" } ) };
 
   auto index = w->mBrowserModel->findPath( QStringLiteral( "pg:/PG_1" ) );
@@ -260,7 +266,7 @@ void TestQgsNewDatabaseTableNameWidget::testWidgetSignalsGeopackage()
   QCOMPARE( w->schema(), mGpkgPath );
   QCOMPARE( w->dataProviderKey(), QString( "ogr" ) );
   QCOMPARE( w->uri(), mGpkgPath + QStringLiteral( "|layername=newTableName" ) );
-
+#endif
 }
 
 QGSTEST_MAIN( TestQgsNewDatabaseTableNameWidget )
