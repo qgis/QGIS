@@ -1995,14 +1995,18 @@
                   <item row="0" column="2">
                    <widget class="QComboBox" name="cmbScanItemsInBrowser"/>
                   </item>
-                  <item row="2" column="2">
-                   <widget class="QComboBox" name="cmbPromptRasterSublayers">
-                    <item>
-                     <property name="text">
-                      <string/>
-                     </property>
-                    </item>
+                  <item row="6" column="0" colspan="4">
+                   <widget class="QCheckBox" name="cbxEvaluateDefaultValues">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When digitizing a new feature, default values are retrieved from the database. With this option turned on, the default values will be evaluated at the time of digitizing. With this option turned off, the default values will be evaluated at the time of saving.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="text">
+                     <string>Evaluate default values</string>
+                    </property>
                    </widget>
+                  </item>
+                  <item row="1" column="2">
+                   <widget class="QComboBox" name="cmbScanZipInBrowser"/>
                   </item>
                   <item row="1" column="1">
                    <spacer name="horizontalSpacer_3">
@@ -2017,28 +2021,26 @@
                     </property>
                    </spacer>
                   </item>
-                  <item row="1" column="0">
-                   <widget class="QLabel" name="label_29">
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="textLabel1_13">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="text">
-                     <string>Scan for contents of compressed files (.zip) in browser dock</string>
+                     <string>Prompt for sublayers when opening</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="6" column="0" colspan="4">
-                   <widget class="QCheckBox" name="cbxEvaluateDefaultValues">
-                    <property name="toolTip">
-                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When digitizing a new feature, default values are retrieved from the database. With this option turned on, the default values will be evaluated at the time of digitizing. With this option turned off, the default values will be evaluated at the time of saving.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                    <property name="text">
-                     <string>Evaluate default values</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="2">
-                   <widget class="QComboBox" name="cmbScanZipInBrowser">
-                    <property name="currentIndex">
-                     <number>-1</number>
-                    </property>
+                  <item row="2" column="2">
+                   <widget class="QComboBox" name="cmbPromptSublayers">
+                    <item>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </item>
                    </widget>
                   </item>
                   <item row="0" column="0">
@@ -2055,16 +2057,10 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="textLabel1_13">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label_29">
                     <property name="text">
-                     <string>Prompt for raster sublayers when opening</string>
+                     <string>Scan for contents of compressed files (.zip) in browser dock</string>
                     </property>
                    </widget>
                   </item>
@@ -5738,7 +5734,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>leNullValue</tabstop>
   <tabstop>cmbScanItemsInBrowser</tabstop>
   <tabstop>cmbScanZipInBrowser</tabstop>
-  <tabstop>cmbPromptRasterSublayers</tabstop>
+  <tabstop>cmbPromptSublayers</tabstop>
   <tabstop>cbxCompileExpressions</tabstop>
   <tabstop>cbxEvaluateDefaultValues</tabstop>
   <tabstop>mBtnRemoveHiddenPath</tabstop>

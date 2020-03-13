@@ -5595,7 +5595,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
   QVector<QgsDataItem *> childItems;
   QgsZipItem *zipItem = nullptr;
   QgsSettings settings;
-  int promptLayers = settings.value( QStringLiteral( "qgis/promptForRasterSublayers" ), 1 ).toInt();
+  QgsSublayersDialog::PromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), QgsSublayersDialog::PromptAlways );
 
   QgsDebugMsg( "askUserForZipItemLayers( " + path + ')' );
 
@@ -5620,12 +5620,12 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
   }
 
   // if promptLayers=Load all, load all layers without prompting
-  if ( promptLayers == 3 )
+  if ( promptLayers == QgsSublayersDialog::PromptLoadAll )
   {
     childItems = zipItem->children();
   }
   // exit if promptLayers=Never
-  else if ( promptLayers == 2 )
+  else if ( promptLayers == QgsSublayersDialog::PromptNever )
   {
     delete zipItem;
     return false;
@@ -5633,7 +5633,7 @@ bool QgisApp::askUserForZipItemLayers( const QString &path )
   else
   {
     // We initialize a selection dialog and display it.
-    QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Vsifile, QStringLiteral( "vsi" ), this );
+    QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Vsifile, QStringLiteral( "vsi" ), this, nullptr, path );
     QgsSublayersDialog::LayerDefinitionList layers;
 
     for ( int i = 0; i < zipItem->children().size(); i++ )
@@ -5717,14 +5717,14 @@ QList< QgsMapLayer * > QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 
   // if promptLayers=Load all, load all sublayers without prompting
   QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/promptForRasterSublayers" ), 1 ).toInt() == 3 )
+  if ( settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), QgsSublayersDialog::PromptAlways ) == QgsSublayersDialog::PromptLoadAll )
   {
     result.append( loadGDALSublayers( layer->source(), sublayers ) );
     return result;
   }
 
   // We initialize a selection dialog and display it.
-  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Gdal, QStringLiteral( "gdal" ), this );
+  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Gdal, QStringLiteral( "gdal" ), this, nullptr, layer->dataProvider()->dataSourceUri() );
   chooseSublayersDialog.setShowAddToGroupCheckbox( true );
 
   QgsSublayersDialog::LayerDefinitionList layers;
@@ -5841,13 +5841,11 @@ bool QgisApp::shouldAskUserForGDALSublayers( QgsRasterLayer *layer )
     return false;
 
   QgsSettings settings;
-  int promptLayers = settings.value( QStringLiteral( "qgis/promptForRasterSublayers" ), 1 ).toInt();
-  // 0 = Always -> always ask (if there are existing sublayers)
-  // 1 = If needed -> ask if layer has no bands, but has sublayers
-  // 2 = Never -> never prompt, will not load anything
-  // 3 = Load all -> never prompt, but load all sublayers
+  QgsSublayersDialog::PromptMode promptLayers = settings.enumValue( QStringLiteral( "qgis/promptForSublayers" ), QgsSublayersDialog::PromptAlways );
 
-  return promptLayers == 0 || promptLayers == 3 || ( promptLayers == 1 && layer->bandCount() == 0 );
+  return  promptLayers == QgsSublayersDialog::PromptAlways ||
+          promptLayers == QgsSublayersDialog::PromptLoadAll ||
+          ( promptLayers == QgsSublayersDialog::PromptIfNeeded && layer->bandCount() == 0 );
 }
 
 // This method will load with GDAL the layers in parameter.
@@ -5947,7 +5945,7 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
   // Check if the current layer uri contains the
 
   // We initialize a selection dialog and display it.
-  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Ogr, QStringLiteral( "ogr" ), this );
+  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Ogr, QStringLiteral( "ogr" ), this, nullptr, layer->dataProvider()->dataSourceUri() );
   chooseSublayersDialog.setShowAddToGroupCheckbox( true );
   chooseSublayersDialog.populateLayerTable( list );
 
@@ -5984,10 +5982,9 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     }
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
-    QString name = fileName + " " + def.layerName;
     QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
     options.loadDefaultStyle = false;
-    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, QStringLiteral( "ogr" ), options );
+    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, def.layerName, QStringLiteral( "ogr" ), options );
     if ( layer && layer->isValid() )
     {
       result << layer;

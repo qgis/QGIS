@@ -58,6 +58,7 @@
 #include "qgswelcomepage.h"
 #include "qgsnewsfeedparser.h"
 #include "qgsbearingnumericformat.h"
+#include "qgssublayersdialog.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -419,17 +420,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   spinBoxAttrTableRowCache->setValue( mSettings->value( QStringLiteral( "/qgis/attributeTableRowCache" ), 10000 ).toInt() );
   spinBoxAttrTableRowCache->setSpecialValueText( tr( "All" ) );
 
-  // set the prompt for raster sublayers
-  // 0 = Always -> always ask (if there are existing sublayers)
-  // 1 = If needed -> ask if layer has no bands, but has sublayers
-  // 2 = Never -> never prompt, will not load anything
-  // 3 = Load all -> never prompt, but load all sublayers
-  cmbPromptRasterSublayers->clear();
-  cmbPromptRasterSublayers->addItem( tr( "Always" ) );
-  cmbPromptRasterSublayers->addItem( tr( "If needed" ) ); //this means, prompt if there are sublayers but no band in the main dataset
-  cmbPromptRasterSublayers->addItem( tr( "Never" ) );
-  cmbPromptRasterSublayers->addItem( tr( "Load all" ) );
-  cmbPromptRasterSublayers->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/promptForRasterSublayers" ), 0 ).toInt() );
+  cmbPromptSublayers->clear();
+  cmbPromptSublayers->addItem( tr( "Always" ), QgsSublayersDialog::PromptAlways );
+  cmbPromptSublayers->addItem( tr( "If needed" ), QgsSublayersDialog::PromptIfNeeded ); //this means, prompt if there are sublayers but no band in the main dataset
+  cmbPromptSublayers->addItem( tr( "Never" ), QgsSublayersDialog::PromptNever );
+  cmbPromptSublayers->addItem( tr( "Load all" ), QgsSublayersDialog::PromptLoadAll ); // check if this is true
+  cmbPromptSublayers->setCurrentIndex( cmbPromptSublayers->findData( mSettings->enumValue( QStringLiteral( "/qgis/promptForSublayers" ), QgsSublayersDialog::PromptAlways ) ) );
 
   // Scan for valid items in the browser dock
   cmbScanItemsInBrowser->clear();
@@ -1487,7 +1483,8 @@ void QgsOptions::saveOptions()
   mSettings->setEnumValue( QStringLiteral( "/qgis/attributeTableBehavior" ), ( QgsAttributeTableFilterModel::FilterMode )cmbAttrTableBehavior->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableView" ), mAttrTableViewComboBox->currentData() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableRowCache" ), spinBoxAttrTableRowCache->value() );
-  mSettings->setValue( QStringLiteral( "/qgis/promptForRasterSublayers" ), cmbPromptRasterSublayers->currentIndex() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/promptForSublayers" ), ( QgsSublayersDialog::PromptMode )cmbPromptSublayers->currentData().toInt() );
+
   mSettings->setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ),
                        cmbScanItemsInBrowser->currentData().toString() );
   mSettings->setValue( QStringLiteral( "/qgis/scanZipInBrowser2" ),
