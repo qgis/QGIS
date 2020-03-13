@@ -134,7 +134,15 @@ void QgsCoordinateTransformContext::removeSourceDestinationDatumTransform( const
 
 void QgsCoordinateTransformContext::removeCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs )
 {
+<<<<<<< HEAD
   d->mSourceDestDatumTransforms.remove( qMakePair( sourceCrs.authid(), destinationCrs.authid() ) );
+=======
+#if PROJ_VERSION_MAJOR>=6
+  d->mSourceDestDatumTransforms.remove( qMakePair( sourceCrs, destinationCrs ) );
+#else
+  d->mSourceDestDatumTransforms.remove( qMakePair( sourceCrs.authid(), destinationCrs.authid() ) );
+#endif
+>>>>>>> 74411410d2... Fix proj < 6 build
 }
 
 bool QgsCoordinateTransformContext::hasTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
@@ -337,13 +345,30 @@ void QgsCoordinateTransformContext::writeXml( QDomElement &element, const QgsRea
   //src/dest transforms
   for ( auto it = d->mSourceDestDatumTransforms.constBegin(); it != d->mSourceDestDatumTransforms.constEnd(); ++ it )
   {
+<<<<<<< HEAD
     QDomElement transformElem = element.ownerDocument().createElement( QStringLiteral( "srcDest" ) );
     transformElem.setAttribute( QStringLiteral( "source" ), it.key().first );
     transformElem.setAttribute( QStringLiteral( "dest" ), it.key().second );
 #if PROJ_VERSION_MAJOR>=6
+=======
+    QDomElement transformElem = doc.createElement( QStringLiteral( "srcDest" ) );
+#if PROJ_VERSION_MAJOR>=6
+    QDomElement srcElem = doc.createElement( QStringLiteral( "src" ) );
+    QDomElement destElem = doc.createElement( QStringLiteral( "dest" ) );
+
+    it.key().first.writeXml( srcElem, doc );
+    it.key().second.writeXml( destElem, doc );
+
+    transformElem.appendChild( srcElem );
+    transformElem.appendChild( destElem );
+
+>>>>>>> 74411410d2... Fix proj < 6 build
     transformElem.setAttribute( QStringLiteral( "coordinateOp" ), it.value().operation );
     transformElem.setAttribute( QStringLiteral( "allowFallback" ), it.value().allowFallback ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 #else
+    transformElem.setAttribute( QStringLiteral( "source" ), it.key().first );
+    transformElem.setAttribute( QStringLiteral( "dest" ), it.key().second );
+
     Q_NOWARN_DEPRECATED_PUSH
     transformElem.setAttribute( QStringLiteral( "sourceTransform" ), it.value().sourceTransformId < 0 ? QString() : QgsDatumTransform::datumTransformToProj( it.value().sourceTransformId ) );
     transformElem.setAttribute( QStringLiteral( "destTransform" ), it.value().destinationTransformId < 0 ? QString() : QgsDatumTransform::datumTransformToProj( it.value().destinationTransformId ) );
@@ -458,8 +483,21 @@ void QgsCoordinateTransformContext::writeSettings()
 
   for ( auto transformIt = d->mSourceDestDatumTransforms.constBegin(); transformIt != d->mSourceDestDatumTransforms.constEnd(); ++transformIt )
   {
+<<<<<<< HEAD
     const QString srcAuthId = transformIt.key().first;
     const QString destAuthId = transformIt.key().second;
+=======
+#if PROJ_VERSION_MAJOR>=6
+    const QString srcAuthId = transformIt.key().first.authid();
+    const QString destAuthId = transformIt.key().second.authid();
+#else
+    const QString srcAuthId = transformIt.key().first;
+    const QString destAuthId = transformIt.key().second;
+#endif
+
+    if ( srcAuthId.isEmpty() || destAuthId.isEmpty() )
+      continue; // not so nice, but alternative would be to shove whole CRS wkt into the settings values...
+>>>>>>> 74411410d2... Fix proj < 6 build
 
 #if PROJ_VERSION_MAJOR>=6
     const QString proj = transformIt.value().operation;
