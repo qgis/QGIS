@@ -87,10 +87,6 @@ void QgsRasterLayerTemporalProperties::setTemporalRange( const QgsDateTimeRange 
 {
   // Don't set temporal range outside fixed temporal range limits,
   // instead set equal to the fixed temporal range
-
-  if ( !isActive() )
-    setIsActive( true );
-
   if ( mFixedRange.contains( dateTimeRange ) )
     mRange = dateTimeRange;
   else
@@ -119,6 +115,8 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
   // TODO add support for raster layers with multi-temporal properties.
 
   QDomElement temporalNode = element.firstChildElement( QStringLiteral( "temporal" ) );
+
+  setIsActive( temporalNode.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ).toInt() );
 
   mMode = static_cast< TemporalMode >( temporalNode.attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
   mIntervalHandlingMethod = static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >( temporalNode.attribute( QStringLiteral( "fetchMode" ), QStringLiteral( "0" ) ). toInt() );
@@ -161,6 +159,7 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
     return QDomElement();
 
   QDomElement temporalElement = document.createElement( QStringLiteral( "temporal" ) );
+  temporalElement.setAttribute( QStringLiteral( "enabled" ), isActive() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   temporalElement.setAttribute( QStringLiteral( "mode" ), QString::number( mMode ) );
   temporalElement.setAttribute( QStringLiteral( "source" ), QString::number( temporalSource() ) );
   temporalElement.setAttribute( QStringLiteral( "fetchMode" ), QString::number( mIntervalHandlingMethod ) );
