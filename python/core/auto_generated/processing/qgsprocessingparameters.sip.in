@@ -201,6 +201,8 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterProviderConnection;
     else if ( sipCpp->type() == QgsProcessingParameterDatabaseSchema::typeName() )
       sipType = sipType_QgsProcessingParameterDatabaseSchema;
+    else if ( sipCpp->type() == QgsProcessingParameterDatabaseTable::typeName() )
+      sipType = sipType_QgsProcessingParameterDatabaseTable;
     else
       sipType = nullptr;
 %End
@@ -1218,6 +1220,20 @@ Evaluates the parameter with matching ``definition`` to a database schema name.
     static QString parameterAsSchema( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a database schema name.
+
+.. versionadded:: 3.14
+%End
+
+    static QString parameterAsDatabaseTableName( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a database table name.
+
+.. versionadded:: 3.14
+%End
+
+    static QString parameterAsDatabaseTableName( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a database table name.
 
 .. versionadded:: 3.14
 %End
@@ -3771,6 +3787,97 @@ Sets the ``name`` of the parent connection parameter. Use an empty string if thi
 %End
 
     static QgsProcessingParameterDatabaseSchema *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+};
+
+
+class QgsProcessingParameterDatabaseTable : QgsProcessingParameterDefinition
+{
+%Docstring
+A database table name parameter for processing algorithms, allowing users to select from existing database tables
+on a registered database connection.
+
+QgsProcessingParameterDatabaseTable should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsDatabaseTableName()`
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterDatabaseTable( const QString &name, const QString &description,
+                                         const QString &connectionParameterName = QString(),
+                                         const QString &schemaParameterName = QString(),
+                                         const QVariant &defaultValue = QVariant(),
+                                         bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterDatabaseTable.
+
+The ``connectionParameterName`` specifies the name of the parent QgsProcessingParameterProviderConnection parameter.
+The ``schemaParameterName`` specifies the name of the parent QgsProcessingParameterDatabaseSchema parameter.
+
+.. warning::
+
+   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   in order for the model to work correctly. This is only implemented for a subset of current data providers.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QStringList dependsOnOtherParameters() const;
+
+
+    QString parentConnectionParameterName() const;
+%Docstring
+Returns the name of the parent connection parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setParentConnectionParameterName`
+%End
+
+    void setParentConnectionParameterName( const QString &name );
+%Docstring
+Sets the ``name`` of the parent connection parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`parentConnectionParameterName`
+%End
+
+    QString parentSchemaParameterName() const;
+%Docstring
+Returns the name of the parent schema parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setParentSchemaParameterName`
+%End
+
+    void setParentSchemaParameterName( const QString &name );
+%Docstring
+Sets the ``name`` of the parent schema parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`parentSchemaParameterName`
+%End
+
+    static QgsProcessingParameterDatabaseTable *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End
