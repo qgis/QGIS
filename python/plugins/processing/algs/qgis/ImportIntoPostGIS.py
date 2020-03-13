@@ -31,6 +31,8 @@ from qgis.core import (QgsVectorLayerExporter,
                        QgsProcessingParameterField,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterProviderConnection,
+                       QgsProcessingParameterDatabaseSchema,
+                       QgsProcessingParameterDatabaseTable,
                        QgsWkbTypes)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -71,22 +73,15 @@ class ImportIntoPostGIS(QgisAlgorithm):
         )
         self.addParameter(db_param)
 
-        schema_param = QgsProcessingParameterString(
+        schema_param = QgsProcessingParameterDatabaseSchema(
             self.SCHEMA,
-            self.tr('Schema (schema name)'), 'public', False, True)
-        schema_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.SchemaWidgetWrapper',
-                'connection_param': self.DATABASE}})
+            self.tr('Schema (schema name)'), connectionParameterName=self.DATABASE, defaultValue='public', optional=True)
         self.addParameter(schema_param)
 
-        table_param = QgsProcessingParameterString(
+        table_param = QgsProcessingParameterDatabaseTable(
             self.TABLENAME,
-            self.tr('Table to import to (leave blank to use layer name)'), '', False, True)
-        table_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.TableWidgetWrapper',
-                'schema_param': self.SCHEMA}})
+            self.tr('Table to import to (leave blank to use layer name)'), defaultValue=None, connectionParameterName=self.DATABASE,
+            schemaParameterName=self.SCHEMA, optional=True, allowNewTableNames=True)
         self.addParameter(table_param)
 
         self.addParameter(QgsProcessingParameterField(self.PRIMARY_KEY,
@@ -125,7 +120,7 @@ class ImportIntoPostGIS(QgisAlgorithm):
         connection = self.parameterAsConnectionName(parameters, self.DATABASE, context)
         db = postgis.GeoDB.from_name(connection)
 
-        schema = self.parameterAsString(parameters, self.SCHEMA, context)
+        schema = self.parameterAsSchema(parameters, self.SCHEMA, context)
         overwrite = self.parameterAsBoolean(parameters, self.OVERWRITE, context)
         createIndex = self.parameterAsBoolean(parameters, self.CREATEINDEX, context)
         convertLowerCase = self.parameterAsBoolean(parameters, self.LOWERCASE_NAMES, context)
@@ -138,7 +133,7 @@ class ImportIntoPostGIS(QgisAlgorithm):
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
-        table = self.parameterAsString(parameters, self.TABLENAME, context)
+        table = self.parameterAsDatabaseTableName(parameters, self.TABLENAME, context)
         if table:
             table.strip()
         if not table or table == '':
