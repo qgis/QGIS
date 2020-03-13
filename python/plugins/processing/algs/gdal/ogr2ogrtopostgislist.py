@@ -29,7 +29,9 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterField,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingParameterProviderConnection)
+                       QgsProcessingParameterProviderConnection,
+                       QgsProcessingParameterDatabaseSchema,
+                       QgsProcessingParameterDatabaseTable)
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -101,22 +103,15 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterCrs(self.S_SRS,
                                                     self.tr('Override source CRS'), defaultValue='', optional=True))
 
-        schema_param = QgsProcessingParameterString(
+        schema_param = QgsProcessingParameterDatabaseSchema(
             self.SCHEMA,
-            self.tr('Schema (schema name)'), 'public', False, True)
-        schema_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.SchemaWidgetWrapper',
-                'connection_param': self.DATABASE}})
+            self.tr('Schema (schema name)'), defaultValue='public', connectionParameterName=self.DATABASE, optional=True)
         self.addParameter(schema_param)
 
-        table_param = QgsProcessingParameterString(
+        table_param = QgsProcessingParameterDatabaseTable(
             self.TABLE,
-            self.tr('Table to import to (leave blank to use layer name)'), '', False, True)
-        table_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.TableWidgetWrapper',
-                'schema_param': self.SCHEMA}})
+            self.tr('Table to import to (leave blank to use layer name)'), defaultValue=None, connectionParameterName=self.DATABASE,
+            schemaParameterName=self.SCHEMA, optional=True, allowNewTableNames=True)
         self.addParameter(table_param)
 
         self.addParameter(QgsProcessingParameterString(self.PK,
@@ -211,8 +206,8 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         ssrs = self.parameterAsCrs(parameters, self.S_SRS, context)
         tsrs = self.parameterAsCrs(parameters, self.T_SRS, context)
         asrs = self.parameterAsCrs(parameters, self.A_SRS, context)
-        table = self.parameterAsString(parameters, self.TABLE, context)
-        schema = self.parameterAsString(parameters, self.SCHEMA, context)
+        table = self.parameterAsDatabaseTableName(parameters, self.TABLE, context)
+        schema = self.parameterAsSchema(parameters, self.SCHEMA, context)
         pk = self.parameterAsString(parameters, self.PK, context)
         pkstring = "-lco FID=" + pk
         primary_key = self.parameterAsString(parameters, self.PRIMARY_KEY, context)
