@@ -633,7 +633,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLocatorWidget *locatorWidget() { return mLocatorWidget; }
 
     //! show layer properties
-    void showLayerProperties( QgsMapLayer *mapLayer );
+    void showLayerProperties( QgsMapLayer *mapLayer, const QString &page = QString() );
 
     //! returns pointer to map legend
     QgsLayerTreeView *layerTreeView();

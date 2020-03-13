@@ -266,13 +266,13 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   QVBoxLayout *layout = new QVBoxLayout( metadataFrame );
   layout->setMargin( 0 );
   mMetadataWidget = new QgsMetadataWidget( this, mRasterLayer );
-  mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
+  mMetadataWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
   mMetadataWidget->setMapCanvas( mMapCanvas );
   layout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( layout );
 
   QVBoxLayout *temporalLayout = new QVBoxLayout( temporalFrame );
-  temporalLayout->setContentsMargins( -1, 0, -1, 0 );
+  temporalLayout->setContentsMargins( 0, 0, 0, 0 );
   mTemporalWidget = new QgsRasterLayerTemporalPropertiesWidget( this, mRasterLayer );
   temporalLayout->addWidget( mTemporalWidget );
 
@@ -489,6 +489,21 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     title += QStringLiteral( " (%1)" ).arg( mRasterLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
   optionsStackedWidget_CurrentChanged( mOptionsStackedWidget->currentIndex() );
+}
+
+void QgsRasterLayerProperties::setCurrentPage( const QString &page )
+{
+  //find the page with a matching widget name
+  for ( int idx = 0; idx < mOptionsStackedWidget->count(); ++idx )
+  {
+    QWidget *currentPage = mOptionsStackedWidget->widget( idx );
+    if ( currentPage->objectName() == page )
+    {
+      //found the page, set it as current
+      mOptionsStackedWidget->setCurrentIndex( idx );
+      return;
+    }
+  }
 }
 
 void QgsRasterLayerProperties::setupTransparencyTable( int nBands )
