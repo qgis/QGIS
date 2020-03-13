@@ -2901,7 +2901,14 @@
                </widget>
               </item>
               <item>
-               <widget class="QgsDateTimeEdit" name="mStartDateTimeEdit"/>
+               <widget class="QgsDateTimeEdit" name="mStartDateTimeEdit">
+                <property name="displayFormat">
+                 <string>M/d/yyyy h:mm AP</string>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QLabel" name="label_36">
@@ -2911,7 +2918,14 @@
                </widget>
               </item>
               <item>
-               <widget class="QgsDateTimeEdit" name="mEndDateTimeEdit"/>
+               <widget class="QgsDateTimeEdit" name="mEndDateTimeEdit">
+                <property name="displayFormat">
+                 <string>M/d/yyyy h:mm AP</string>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QPushButton" name="mCalculateFromLayerButton">
@@ -3000,15 +3014,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDateTimeEdit</class>
-   <extends>QDateTimeEdit</extends>
-   <header>qgsdatetimeedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>

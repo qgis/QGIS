@@ -256,32 +256,35 @@ void TestQgsProjectProperties::testBearingFormat()
 void TestQgsProjectProperties::testTimeSettings()
 {
   QgsProject::instance()->clear();
-  QgsDateTimeRange range = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
-                           QDateTime( QDate( 2020, 12, 31 ) ) );
+  QgsDateTimeRange range = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime(), Qt::UTC ),
+                           QDateTime( QDate( 2020, 12, 31 ), QTime(), Qt::UTC ) );
 
   QgsProject::instance()->timeSettings()->setTemporalRange( range );
+  QgsDateTimeRange projectRange = QgsProject::instance()->timeSettings()->temporalRange();
 
   std::unique_ptr< QgsProjectProperties > projectProperties = qgis::make_unique< QgsProjectProperties >( mQgisApp->mapCanvas() );
-  projectProperties->apply();
 
-  QCOMPARE( QgsProject::instance()->timeSettings()->temporalRange(), range );
+  QCOMPARE( projectRange, range );
 
   // Test setting Project temporal range using temporal layers
 
-  QgsRasterLayer *firstLayer = new QgsRasterLayer( "", "firstLayer", "wms" );
-  QgsRasterLayer *secondLayer = new QgsRasterLayer( "", "secondLayer", "wms" );
-  QgsRasterLayer *thirdLayer = new QgsRasterLayer( "", "thirdLayer", "wms" );
+  QgsRasterLayer *firstLayer = new QgsRasterLayer( QString(), QStringLiteral( "firstLayer" ), QStringLiteral( "wms" ) );
+  QgsRasterLayer *secondLayer = new QgsRasterLayer( QString(), QStringLiteral( "secondLayer" ), QStringLiteral( "wms" ) );
+  QgsRasterLayer *thirdLayer = new QgsRasterLayer( QString(), QStringLiteral( "thirdLayer" ), QStringLiteral( "wms" ) );
 
-  QgsDateTimeRange firstRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
-                                QDateTime( QDate( 2020, 3, 31 ) ) );
-  QgsDateTimeRange secondRange = QgsDateTimeRange( QDateTime( QDate( 2020, 4, 1 ) ),
-                                 QDateTime( QDate( 2020, 7, 31 ) ) );
-  QgsDateTimeRange thirdRange = QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ) ),
-                                QDateTime( QDate( 2020, 2, 28 ) ) );
+  QgsDateTimeRange firstRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ), QTime(), Qt::UTC ),
+                                QDateTime( QDate( 2020, 3, 31 ), QTime(), Qt::UTC ) );
+  QgsDateTimeRange secondRange = QgsDateTimeRange( QDateTime( QDate( 2020, 4, 1 ), QTime(), Qt::UTC ),
+                                 QDateTime( QDate( 2020, 7, 31 ), QTime(), Qt::UTC ) );
+  QgsDateTimeRange thirdRange = QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ), QTime(), Qt::UTC ),
+                                QDateTime( QDate( 2020, 2, 28 ), QTime(), Qt::UTC ) );
 
-  firstLayer->temporalProperties()->setTemporalRange( firstRange );
-  secondLayer->temporalProperties()->setTemporalRange( secondRange );
-  thirdLayer->temporalProperties()->setTemporalRange( thirdRange );
+  firstLayer->temporalProperties()->setIsActive( true );
+  firstLayer->temporalProperties()->setFixedTemporalRange( firstRange );
+  secondLayer->temporalProperties()->setIsActive( true );
+  secondLayer->temporalProperties()->setFixedTemporalRange( secondRange );
+  thirdLayer->temporalProperties()->setIsActive( true );
+  thirdLayer->temporalProperties()->setFixedTemporalRange( thirdRange );
 
   QgsProject::instance()->addMapLayers( { firstLayer, secondLayer, thirdLayer } );
 
@@ -289,9 +292,9 @@ void TestQgsProjectProperties::testTimeSettings()
   projectProperties->apply();
 
   QgsDateTimeRange expectedRange = QgsDateTimeRange( thirdRange.begin(), secondRange.end() );
+  QgsDateTimeRange secondProjectRange = QgsProject::instance()->timeSettings()->temporalRange();
 
-  QCOMPARE( QgsProject::instance()->timeSettings()->temporalRange(), expectedRange );
-
+  QCOMPARE( secondProjectRange, expectedRange );
 }
 
 QGSTEST_MAIN( TestQgsProjectProperties )

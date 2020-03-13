@@ -60,6 +60,10 @@ bool QgsProjectTimeSettings::readXml( const QDomElement &element, const QgsReadW
 
   }
 
+  mTimeStepUnit = QgsUnitTypes::decodeTemporalUnit( element.attribute( QStringLiteral( "timeStepUnit" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::TemporalHours ) ) );
+  mTimeStep = element.attribute( QStringLiteral( "timeStep" ), "1" ).toDouble();
+  mFrameRate = element.attribute( QStringLiteral( "frameRate" ), "1" ).toDouble();
+
   return true;
 }
 
@@ -85,5 +89,40 @@ QDomElement QgsProjectTimeSettings::writeXml( QDomDocument &document, const QgsR
     element.appendChild( temporalElement );
   }
 
+  element.setAttribute( QStringLiteral( "timeStepUnit" ), QgsUnitTypes::encodeUnit( mTimeStepUnit ) );
+  element.setAttribute( QStringLiteral( "timeStep" ), qgsDoubleToString( mTimeStep ) );
+  element.setAttribute( QStringLiteral( "frameRate" ), qgsDoubleToString( mFrameRate ) );
+
   return element;
 }
+
+QgsUnitTypes::TemporalUnit QgsProjectTimeSettings::timeStepUnit() const
+{
+  return mTimeStepUnit;
+}
+
+void QgsProjectTimeSettings::setTimeStepUnit( QgsUnitTypes::TemporalUnit unit )
+{
+  mTimeStepUnit = unit;
+}
+
+double QgsProjectTimeSettings::timeStep() const
+{
+  return mTimeStep;
+}
+
+void QgsProjectTimeSettings::setTimeStep( double timeStep )
+{
+  mTimeStep = timeStep;
+}
+
+void QgsProjectTimeSettings::setFramesPerSecond( double rate )
+{
+  mFrameRate = rate;
+}
+
+double QgsProjectTimeSettings::framesPerSecond() const
+{
+  return mFrameRate;
+}
+

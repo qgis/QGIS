@@ -56,7 +56,7 @@ class TestQgsCoordinateOperationWidget(unittest.TestCase):
         w.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
         self.assertEqual(len(spy), 1)
         self.assertTrue(w.hasSelection())
-        self.assertGreaterEqual(len(w.availableOperations()), 6)
+        self.assertGreaterEqual(len(w.availableOperations()), 3)
 
         self.assertEqual(w.defaultOperation().proj, '+proj=pipeline +step +proj=unitconvert +xy_in=us-ft +xy_out=m +step +inv +proj=lcc +lat_0=33.5 +lon_0=-118 +lat_1=35.4666666666667 +lat_2=34.0333333333333 +x_0=609601.219202438 +y_0=0 +ellps=clrk66 +step +proj=push +v_3 +step +proj=cart +ellps=clrk66 +step +proj=helmert +x=-8 +y=159 +z=175 +step +inv +proj=cart +ellps=WGS84 +step +proj=pop +v_3 +step +proj=webmerc +lat_0=0 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84')
         self.assertEqual(w.selectedOperation().proj,

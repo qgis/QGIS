@@ -76,6 +76,7 @@ email                : sherman at mrcc.com
 #include "qgsreferencedgeometry.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgstemporalcontroller.h"
 
 /**
  * \ingroup gui
@@ -416,6 +417,15 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   emit destinationCrsChanged();
 }
 
+void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
+{
+  if ( mController )
+    disconnect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
+
+  mController = controller;
+  connect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
+}
+
 void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
 {
   mSettings.setFlags( flags );
@@ -740,8 +750,8 @@ void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
   {
     // we need to discard any previously cached images which have temporal properties enabled, so that these will be updated when
     // the canvas is redrawn
-    const QList<QgsMapLayer *> layers;
-    for ( QgsMapLayer *layer : layers )
+    const QList<QgsMapLayer *> layerList = mapSettings().layers();
+    for ( QgsMapLayer *layer : layerList )
     {
       if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
         mCache->invalidateCacheForLayer( layer );
@@ -749,6 +759,8 @@ void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
   }
 
   emit temporalRangeChanged();
+
+  autoRefreshTriggered();
 }
 
 const QgsDateTimeRange &QgsMapCanvas::temporalRange() const

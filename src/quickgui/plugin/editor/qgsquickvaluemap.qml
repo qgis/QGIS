@@ -41,7 +41,7 @@ Item {
     property var currentValue: value
 
     comboStyle: customStyle.fields
-    textRole: 'text'
+    textRole: 'display'
     height: parent.height
     model: ListModel {
       id: listModel
@@ -57,7 +57,7 @@ Item {
           {
             var currentMap = config['map'][i]
             var currentKey = Object.keys(currentMap)[0]
-            listModel.append( { text: currentKey } )
+            listModel.append( { display: currentKey } )
             reverseConfig[currentMap[currentKey]] = currentKey;
           }
         }
@@ -67,7 +67,7 @@ Item {
           var currentMap = config['map'].length ? config['map'][currentIndex] : config['map']
           var currentKey = Object.keys(currentMap)[0]
           for(var key in config['map']) {
-            listModel.append( { text: key } )
+            listModel.append( { display: key } )
             reverseConfig[config['map'][key]] = key;
           }
         }

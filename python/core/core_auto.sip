@@ -195,6 +195,8 @@
 %Include auto_generated/qgsstringutils.sip
 %Include auto_generated/qgstablecell.sip
 %Include auto_generated/qgstaskmanager.sip
+%Include auto_generated/qgstemporalcontroller.sip
+%Include auto_generated/qgstemporalnavigationobject.sip
 %Include auto_generated/qgstemporalproperty.sip
 %Include auto_generated/qgstemporalrangeobject.sip
 %Include auto_generated/qgstessellator.sip
@@ -211,6 +213,7 @@
 %Include auto_generated/qgsvector.sip
 %Include auto_generated/qgsvector3d.sip
 %Include auto_generated/qgsvectordataprovider.sip
+%Include auto_generated/qgsvectordataprovidertemporalcapabilities.sip
 %Include auto_generated/qgsvectorfilewriter.sip
 %Include auto_generated/qgsvectorfilewritertask.sip
 %Include auto_generated/qgsvectorlayer.sip

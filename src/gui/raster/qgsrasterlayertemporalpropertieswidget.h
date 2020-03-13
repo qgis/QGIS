@@ -20,9 +20,8 @@
 
 #include "ui_qgsrasterlayertemporalpropertieswidgetbase.h"
 #include "qgis_gui.h"
-#include "qgsrasterlayer.h"
 
-class QgsMapLayer;
+class QgsRasterLayer;
 
 /**
  * \ingroup gui
@@ -40,7 +39,7 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
     /**
      * Constructor for QgsRasterLayerTemporalPropertiesWidget.
      */
-    QgsRasterLayerTemporalPropertiesWidget( QWidget *parent = nullptr, QgsMapLayer *layer = nullptr );
+    QgsRasterLayerTemporalPropertiesWidget( QWidget *parent = nullptr, QgsRasterLayer *layer = nullptr );
 
     /**
      * Save widget temporal properties inputs.
@@ -57,7 +56,7 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
     /**
      * The corresponding map layer with temporal attributes
      */
-    QgsMapLayer *mLayer = nullptr;
+    QgsRasterLayer *mLayer = nullptr;
 
     /**
      * Mode used to determine if temporal properties dimensional status.
@@ -73,33 +72,6 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
       BiTemporal
     };
 
-    /**
-     * Source where the temporal range will be taken from to update the layers
-     * temporal range.
-     */
-    enum TemporalRangeSource
-    {
-      Layer, //! When current temporal range is from layer properties.
-      Project //! Using Project time settings temporal range
-    };
-
-    /**
-     * Sets the properties temporal range input source, it can be from layer or project.
-     *
-     * \see temporalRangeSource()
-     */
-    void setTemporalRangeSource( TemporalRangeSource source );
-
-    /**
-     * Returns the temporal range source.
-     *
-     * \see setTemporalRangeSource()
-     */
-    TemporalRangeSource temporalRangeSource() const;
-
-
-    TemporalRangeSource mSource = Layer;
-
   private slots:
 
     /**
@@ -114,17 +86,23 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
     void setEndAsStartReferenceButton_clicked();
 
     /**
-     *  Handles actions to follow when layer radio button is clicked.
+     *  Handles actions to follow when layer radio button is toggled.
      **/
-    void layerRadioButton_clicked();
+    void layerRadioButton_toggled( bool checked );
 
     /**
-     *  Handles actions to follow when project radio button is clicked.
+     * Updates the ui states to show current project temporal range, which is
+     * intended to be assigned to the layer
      **/
-    void projectRadioButton_clicked();
+    void projectRadioButton_toggled( bool checked );
 
     /**
-     *  Handles actions to follow when reference checkbox is clicked.
+     *  Resets the datetimes inputs to the layer's fixed temporal range.
+     **/
+    void resetDatesButton_clicked();
+
+    /**
+     *  Enabled inputs in reference datetimes group.
      **/
     void referenceCheckBox_clicked();
 
@@ -148,6 +126,13 @@ class GUI_EXPORT QgsRasterLayerTemporalPropertiesWidget : public QWidget, privat
      *
      **/
     void setDateTimeInputsLimit();
+
+    /**
+     * Sets the temporal date time inputs with the default
+     * locale from the system.
+     *
+     **/
+    void setDateTimeInputsLocale();
 
 };
 #endif // QGSRASTERLAYERTEMPORALPROPERTIESWIDGET_H

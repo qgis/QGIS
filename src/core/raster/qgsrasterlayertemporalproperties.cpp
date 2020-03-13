@@ -16,10 +16,27 @@
  ***************************************************************************/
 
 #include "qgsrasterlayertemporalproperties.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
 
 QgsRasterLayerTemporalProperties::QgsRasterLayerTemporalProperties( QObject *parent, bool enabled )
   :  QgsMapLayerTemporalProperties( parent, enabled )
 {
+}
+
+bool QgsRasterLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTimeRange &range ) const
+{
+  if ( !isActive() )
+    return true;
+
+  switch ( mMode )
+  {
+    case ModeFixedTemporalRange:
+      return range.isInfinite() || mFixedRange.isInfinite() || mFixedRange.overlaps( range );
+
+    case ModeTemporalRangeFromDataProvider:
+      return true;
+  }
+  return true;
 }
 
 QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties::mode() const
@@ -32,6 +49,18 @@ void QgsRasterLayerTemporalProperties::setMode( QgsRasterLayerTemporalProperties
   if ( mMode == mode )
     return;
   mMode = mode;
+}
+
+QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod QgsRasterLayerTemporalProperties::intervalHandlingMethod() const
+{
+  return mIntervalHandlingMethod;
+}
+
+void QgsRasterLayerTemporalProperties::setIntervalHandlingMethod( QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod method )
+{
+  if ( mIntervalHandlingMethod == method )
+    return;
+  mIntervalHandlingMethod = method;
 }
 
 void  QgsRasterLayerTemporalProperties::setFixedTemporalRange( const QgsDateTimeRange &range )
@@ -89,10 +118,17 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
   Q_UNUSED( context )
   // TODO add support for raster layers with multi-temporal properties.
 
-  QDomNode temporalNode = element.elementsByTagName( QStringLiteral( "temporal" ) ).at( 0 );
+  QDomElement temporalNode = element.firstChildElement( QStringLiteral( "temporal" ) );
 
-  TemporalMode mode = indexToMode( temporalNode.toElement().attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
-  setMode( mode );
+  mMode = static_cast< TemporalMode >( temporalNode.attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
+  mIntervalHandlingMethod = static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >( temporalNode.attribute( QStringLiteral( "fetchMode" ), QStringLiteral( "0" ) ). toInt() );
+
+  int sourceIndex = temporalNode.attribute( QStringLiteral( "source" ), QStringLiteral( "0" ) ).toInt();
+
+  if ( sourceIndex == 0 )
+    setTemporalSource( TemporalSource::Layer );
+  else
+    setTemporalSource( TemporalSource::Project );
 
   for ( QString rangeString : { "fixedRange", "fixedReferenceRange", "normalRange", "referenceRange" } )
   {
@@ -126,6 +162,8 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
 
   QDomElement temporalElement = document.createElement( QStringLiteral( "temporal" ) );
   temporalElement.setAttribute( QStringLiteral( "mode" ), QString::number( mMode ) );
+  temporalElement.setAttribute( QStringLiteral( "source" ), QString::number( temporalSource() ) );
+  temporalElement.setAttribute( QStringLiteral( "fetchMode" ), QString::number( mIntervalHandlingMethod ) );
 
   for ( QString rangeString : { "fixedRange", "fixedReferenceRange", "normalRange", "referenceRange" } )
   {
@@ -161,15 +199,19 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
   return element;
 }
 
-QgsRasterLayerTemporalProperties::TemporalMode QgsRasterLayerTemporalProperties::indexToMode( int number )
+void QgsRasterLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities )
 {
-  switch ( number )
+  if ( const QgsRasterDataProviderTemporalCapabilities *rasterCaps = dynamic_cast< const QgsRasterDataProviderTemporalCapabilities *>( capabilities ) )
   {
-    case 0:
-      return TemporalMode::ModeFixedTemporalRange;
-    case 1:
-      return TemporalMode::ModeTemporalRangeFromDataProvider;
-    default:
-      return TemporalMode::ModeFixedTemporalRange;
+    setIsActive( rasterCaps->hasTemporalCapabilities() );
+    setFixedTemporalRange( rasterCaps->availableTemporalRange() );
+    setFixedReferenceTemporalRange( rasterCaps->availableReferenceTemporalRange() );
+
+    if ( rasterCaps->hasTemporalCapabilities() )
+    {
+      setMode( ModeTemporalRangeFromDataProvider );
+    }
+
+    mIntervalHandlingMethod = rasterCaps->intervalHandlingMethod();
   }
 }

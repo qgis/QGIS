@@ -261,9 +261,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       return QStringList();
     }
 
-    /**
-     * Returns temporal capabilities associated with the data provider.
-     */
     QgsRasterDataProviderTemporalCapabilities *temporalCapabilities() override;
 
     //! \brief Returns whether the provider supplies a legend graphic

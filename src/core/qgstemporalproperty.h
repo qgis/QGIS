@@ -39,11 +39,11 @@ class CORE_EXPORT QgsTemporalProperty : public QObject
   public:
 
     /**
-     * Constructor for QgsTemporalProperty.
+     * Constructor for QgsTemporalProperty, with the specified \a parent object.
      *
      * The \a active argument specifies whether the property is initially active (see isActive()).
      */
-    QgsTemporalProperty( QObject *parent = nullptr, bool enabled = false );
+    QgsTemporalProperty( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enabled = false );
 
     /**
      * Sets whether the temporal property is \a active.

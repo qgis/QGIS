@@ -20,7 +20,7 @@ pr:
 jobs:
 - job: OSGeo4W
   pool:
-    vmImage: vs2015-win2012r2
+    vmImage: vs2017-win2016
   timeoutInMinutes: 360
   strategy:
     maxParallel: 4
@@ -111,9 +111,6 @@ jobs:
   - script: curl --output c:\osgeo4w-setup.exe http://ftp.osuosl.org/pub/osgeo/download/osgeo4w/osgeo4w-setup-%OSGEO4W_ARCH%.exe
     displayName: 'Download OSGeo4W Installer'
 
-  - script: curl --location-trusted --output c:\cmake.msi https://github.com/Kitware/CMake/releases/download/v3.15.5/cmake-3.15.5-win64-x64.msi
-    displayName: 'Download CMake Installer'
-
   - script: curl --location-trusted --output c:\ninja.zip https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-win.zip
     displayName: 'Download Ninja'
 
@@ -153,12 +150,6 @@ jobs:
       rmdir /s /q c:\temp\cygwin
       rmdir /s /q c:\temp\osgeo4w
     displayName: 'Clear package caches'
-
-  - powershell: ms-windows/osgeo4w/runasadmin.ps1 msiexec.exe /X C:\Windows\Installer\146218.msi /qn /norestart /l*v c:\cmake-uninstall.log
-    displayName: 'Uninstalling old CMake'
-
-  - powershell: ms-windows/osgeo4w/runasadmin.ps1 msiexec.exe /I c:\cmake.msi /qn /norestart /l*v c:\cmake-install.log
-    displayName: 'Installing CMake'
 
   - script: c:\cygwin\bin\unzip -o c:\ninja.zip -d %OSGEO4W_ROOT%\bin
     displayName: 'Extracting Ninja'

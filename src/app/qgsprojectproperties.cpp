@@ -235,15 +235,26 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   // Set time settings input
   QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
+  QLocale locale;
+
+  mStartDateTimeEdit->setDisplayFormat(
+    locale.dateTimeFormat( QLocale::ShortFormat ) );
+  mEndDateTimeEdit->setDisplayFormat(
+    locale.dateTimeFormat( QLocale::ShortFormat ) );
+
   if ( range.begin().isValid() && range.end().isValid() )
   {
     mStartDateTimeEdit->setDateTime( range.begin() );
     mEndDateTimeEdit->setDateTime( range.end() );
-  }
 
-  mCurrentRangeLabel->setText( tr( "Current range: %1 to %2" ).arg(
-                                 mStartDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ),
-                                 mEndDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ) ) );
+    mCurrentRangeLabel->setText( tr( "Current selected range: %1 to %2" ).arg(
+                                   mStartDateTimeEdit->dateTime().toString( locale.dateTimeFormat() ),
+                                   mEndDateTimeEdit->dateTime().toString( locale.dateTimeFormat() ) ) );
+  }
+  else
+  {
+    mCurrentRangeLabel->setText( tr( "Project range is not set" ) );
+  }
 
   mAutoTransaction->setChecked( QgsProject::instance()->autoTransaction() );
   title( QgsProject::instance()->title() );
@@ -2516,7 +2527,17 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
     {
       QgsRasterLayer *rasterLayer  = qobject_cast<QgsRasterLayer *>( currentLayer );
 
-      QgsDateTimeRange layerRange = rasterLayer->temporalProperties()->temporalRange();
+      QgsDateTimeRange layerRange;
+      switch ( rasterLayer->temporalProperties()->mode() )
+      {
+        case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+          layerRange = rasterLayer->temporalProperties()->fixedTemporalRange();
+          break;
+
+        case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+          layerRange = rasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
+          break;
+      }
 
       if ( !minDate.isValid() ||  layerRange.begin() < minDate )
         minDate = layerRange.begin();
@@ -2531,9 +2552,12 @@ void QgsProjectProperties::calculateFromLayersButton_clicked()
   mStartDateTimeEdit->setDateTime( minDate );
   mEndDateTimeEdit->setDateTime( maxDate );
 
-  mCurrentRangeLabel->setText( tr( "Current range: %1 to %2" ).arg(
-                                 mStartDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ),
-                                 mEndDateTimeEdit->dateTime().toString( "yyyy-MM-dd hh:mm:ss" ) ) );
+  QLocale locale;
+  mCurrentRangeLabel->setText( tr( "Current selected range: %1 to %2" ).arg(
+                                 mStartDateTimeEdit->dateTime().toString(
+                                   locale.dateTimeFormat( QLocale::ShortFormat ) ),
+                                 mEndDateTimeEdit->dateTime().toString(
+                                   locale.dateTimeFormat( QLocale::ShortFormat ) ) ) );
 }
 
 QListWidgetItem *QgsProjectProperties::addScaleToScaleList( const QString &newScale )

@@ -25,7 +25,7 @@
 
 // ---------------------------------------------------------------------------
 QgsOWSConnectionItem::QgsOWSConnectionItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "OWS" ) )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
@@ -141,7 +141,7 @@ bool QgsOWSConnectionItem::equal( const QgsDataItem *other )
 
 
 QgsOWSRootItem::QgsOWSRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "OWS" ) )
 {
   mCapabilities |= Fast;
   mIconName = QStringLiteral( "mIconOws.svg" );

@@ -19,73 +19,79 @@
 #include "qgsgui.h"
 #include "qgsproject.h"
 #include "qgsprojecttimesettings.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
+#include "qgsrasterlayer.h"
 
-QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( QWidget *parent, QgsMapLayer *layer )
+
+QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( QWidget *parent, QgsRasterLayer *layer )
   : QWidget( parent )
   , mLayer( layer )
 {
   setupUi( this );
   connect( mSetEndAsStartNormalButton, &QPushButton::clicked, this, &QgsRasterLayerTemporalPropertiesWidget::setEndAsStartNormalButton_clicked );
   connect( mSetEndAsStartReferenceButton, &QPushButton::clicked, this, &QgsRasterLayerTemporalPropertiesWidget::setEndAsStartReferenceButton_clicked );
-  connect( mLayerRadioButton, &QRadioButton::clicked, this, &QgsRasterLayerTemporalPropertiesWidget::layerRadioButton_clicked );
-  connect( mProjectRadioButton, &QRadioButton::clicked, this, &QgsRasterLayerTemporalPropertiesWidget::projectRadioButton_clicked );
+  connect( mResetDatesButton, &QPushButton::clicked, this, &QgsRasterLayerTemporalPropertiesWidget::resetDatesButton_clicked );
+  connect( mLayerRadioButton, &QRadioButton::toggled, this, &QgsRasterLayerTemporalPropertiesWidget::layerRadioButton_toggled );
+  connect( mProjectRadioButton, &QRadioButton::toggled, this, &QgsRasterLayerTemporalPropertiesWidget::projectRadioButton_toggled );
   connect( mReferenceCheckBox, &QCheckBox::clicked, this, &QgsRasterLayerTemporalPropertiesWidget::referenceCheckBox_clicked );
 
   init();
 }
 
-void QgsRasterLayerTemporalPropertiesWidget::setEndAsStartNormalButton_clicked()
-{
-  mEndTemporalDateTimeEdit->setDateTime( mStartTemporalDateTimeEdit->dateTime() );
-  // Update current selection label
-  setTemporalRangeSource( TemporalRangeSource::Layer );
-  updateRangeLabel( mRangeLabel );
-}
-
-void QgsRasterLayerTemporalPropertiesWidget::setEndAsStartReferenceButton_clicked()
-{
-  mEndReferenceDateTimeEdit->setDateTime( mStartReferenceDateTimeEdit->dateTime() );
-}
-
-void QgsRasterLayerTemporalPropertiesWidget::layerRadioButton_clicked()
-{
-  if ( mLayerRadioButton->isChecked() )
-  {
-    setInputWidgetState( TemporalDimension::NormalTemporal, true );
-    setTemporalRangeSource( TemporalRangeSource::Layer );
-    updateRangeLabel( mRangeLabel );
-    mProjectRadioButton->setChecked( false );
-  }
-  else
-    setInputWidgetState( TemporalDimension::NormalTemporal, false );
-}
-
-void QgsRasterLayerTemporalPropertiesWidget::projectRadioButton_clicked()
-{
-  if ( mProjectRadioButton->isChecked() )
-  {
-    mLayerRadioButton->setChecked( false );
-    setInputWidgetState( TemporalDimension::NormalTemporal, false );
-    setTemporalRangeSource( TemporalRangeSource::Project );
-    updateRangeLabel( mRangeLabel );
-  }
-}
-
-void QgsRasterLayerTemporalPropertiesWidget::referenceCheckBox_clicked()
-{
-  if ( mReferenceCheckBox->isChecked() )
-    setInputWidgetState( TemporalDimension::BiTemporal, true );
-  else
-    setInputWidgetState( TemporalDimension::BiTemporal, false );
-}
-
 void QgsRasterLayerTemporalPropertiesWidget::init()
 {
-  mLayerRadioButton->setChecked( true );
   setInputWidgetState( TemporalDimension::BiTemporal, false );
   setDateTimeInputsLimit();
+  setDateTimeInputsLocale();
 
-  updateRangeLabel( mRangeLabel );
+  mFetchModeComboBox->addItem( tr( "Use Whole Temporal Range" ), QgsRasterDataProviderTemporalCapabilities::MatchUsingWholeRange );
+  mFetchModeComboBox->addItem( tr( "Match to Start of Range" ), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange );
+  mFetchModeComboBox->addItem( tr( "Match to End of Range" ), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange );
+
+  if ( QgsRasterLayerTemporalProperties *temporalProperties =  mLayer->temporalProperties() )
+    mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData( temporalProperties->intervalHandlingMethod() ) );
+  else
+    mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData( QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange ) );
+
+  if ( mLayer->temporalProperties()->temporalSource() == QgsMapLayerTemporalProperties::TemporalSource::Project )
+    mProjectRadioButton->setChecked( true );
+
+  updateRangeLabel( mLabel );
+
+  mSetEndAsStartNormalButton->setToolTip( tr( "Set the end datetime same as the start datetime" ) );
+  mSetEndAsStartReferenceButton->setToolTip( tr( "Set the end datetime same as the start datetime" ) );
+  mResetDatesButton->setToolTip( tr( "Reset the start and end datetime inputs" ) );
+  mDisableTime->setToolTip( "Use only the date in the datetime inputs to update the temporal range" );
+}
+
+void QgsRasterLayerTemporalPropertiesWidget::setInputWidgetState( TemporalDimension dimension, bool enabled )
+{
+  if ( dimension == TemporalDimension::NormalTemporal )
+  {
+    mStartTemporalDateTimeEdit->setEnabled( enabled );
+    mEndTemporalDateTimeEdit->setEnabled( enabled );
+    mSetEndAsStartNormalButton->setEnabled( enabled );
+  }
+  else if ( dimension == TemporalDimension::BiTemporal )
+  {
+    mStartReferenceDateTimeEdit->setEnabled( enabled );
+    mEndReferenceDateTimeEdit->setEnabled( enabled );
+    mSetEndAsStartReferenceButton->setEnabled( enabled );
+  }
+
+}
+
+void QgsRasterLayerTemporalPropertiesWidget::setDateTimeInputsLocale()
+{
+  QLocale locale;
+  mStartTemporalDateTimeEdit->setDisplayFormat(
+    locale.dateTimeFormat( QLocale::ShortFormat ) );
+  mEndTemporalDateTimeEdit->setDisplayFormat(
+    locale.dateTimeFormat( QLocale::ShortFormat ) );
+  mStartReferenceDateTimeEdit->setDisplayFormat(
+    locale.dateTimeFormat( QLocale::ShortFormat ) );
+  mEndReferenceDateTimeEdit->setDisplayFormat(
+    locale.dateTimeFormat( QLocale::ShortFormat ) );
 }
 
 void QgsRasterLayerTemporalPropertiesWidget::setDateTimeInputsLimit()
@@ -101,6 +107,12 @@ void QgsRasterLayerTemporalPropertiesWidget::setDateTimeInputsLimit()
 
     // Set initial date time input values to the layers temporal range only if the
     // ranges are valid
+
+    mStartTemporalDateTimeEdit->setDateTimeRange( fixedRange.begin(), fixedRange.end() );
+    mEndTemporalDateTimeEdit->setDateTimeRange( fixedRange.begin(), fixedRange.end() );
+    mStartReferenceDateTimeEdit->setDateTimeRange( fixedReferenceRange.begin(), fixedReferenceRange.end() );
+    mEndReferenceDateTimeEdit->setDateTimeRange( fixedReferenceRange.begin(), fixedReferenceRange.end() );
+
     if ( range.begin().isValid() && range.end().isValid() )
     {
       mStartTemporalDateTimeEdit->setDateTime( range.begin() );
@@ -131,20 +143,93 @@ void QgsRasterLayerTemporalPropertiesWidget::setDateTimeInputsLimit()
   }
 }
 
-void QgsRasterLayerTemporalPropertiesWidget::setInputWidgetState( TemporalDimension dimension, bool enabled )
+void QgsRasterLayerTemporalPropertiesWidget::updateRangeLabel( QLabel *label )
 {
-  if ( dimension == TemporalDimension::NormalTemporal )
+  QLocale locale;
+  if ( mLayer->temporalProperties()->temporalSource() ==
+       QgsMapLayerTemporalProperties::TemporalSource::Layer )
   {
-    mStartTemporalDateTimeEdit->setEnabled( enabled );
-    mEndTemporalDateTimeEdit->setEnabled( enabled );
-    mSetEndAsStartNormalButton->setEnabled( enabled );
+    if ( mLayer->type() == QgsMapLayerType::RasterLayer )
+    {
+      QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *> ( mLayer );
+      QgsDateTimeRange range = rasterLayer->temporalProperties()->temporalRange();
+
+      if ( range.begin().isValid() && range.end().isValid() )
+        label->setText( tr( "Current layer range: %1 to %2" ).arg(
+                          range.begin().toString( locale.dateTimeFormat() ),
+                          range.end().toString( locale.dateTimeFormat() ) ) );
+      else
+        label->setText( tr( "Layer temporal range is not set" ) );
+    }
   }
-  else if ( dimension == TemporalDimension::BiTemporal )
+  else if ( mLayer->temporalProperties()->temporalSource() ==
+            QgsMapLayerTemporalProperties::TemporalSource::Project )
   {
-    mStartReferenceDateTimeEdit->setEnabled( enabled );
-    mEndReferenceDateTimeEdit->setEnabled( enabled );
-    mSetEndAsStartReferenceButton->setEnabled( enabled );
+    QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
+
+    if ( range.begin().isValid() && range.end().isValid() )
+      label->setText( tr( "Project time range is from %1 to %2 " ).arg(
+                        range.begin().toString( locale.dateTimeFormat() ),
+                        range.end().toString( locale.dateTimeFormat() ) ) );
+    else
+      label->setText( tr( "Temporal range from the Project time settings is invalid, change it before using it here." ) );
   }
+}
+
+void QgsRasterLayerTemporalPropertiesWidget::setEndAsStartNormalButton_clicked()
+{
+  mEndTemporalDateTimeEdit->setDateTime( mStartTemporalDateTimeEdit->dateTime() );
+  updateRangeLabel( mLabel );
+}
+
+void QgsRasterLayerTemporalPropertiesWidget::setEndAsStartReferenceButton_clicked()
+{
+  mEndReferenceDateTimeEdit->setDateTime( mStartReferenceDateTimeEdit->dateTime() );
+}
+
+void QgsRasterLayerTemporalPropertiesWidget::layerRadioButton_toggled( bool checked )
+{
+  if ( checked )
+  {
+    mLayer->temporalProperties()->setTemporalSource(
+      QgsMapLayerTemporalProperties::TemporalSource::Layer );
+    updateRangeLabel( mLabel );
+  }
+}
+
+void QgsRasterLayerTemporalPropertiesWidget::projectRadioButton_toggled( bool checked )
+{
+  if ( checked )
+  {
+    mLayer->temporalProperties()->setTemporalSource(
+      QgsMapLayerTemporalProperties::TemporalSource::Project );
+    updateRangeLabel( mLabel );
+  }
+}
+
+void QgsRasterLayerTemporalPropertiesWidget::resetDatesButton_clicked()
+{
+  QgsRasterLayer *layer = qobject_cast<QgsRasterLayer *>( mLayer );
+  QgsDateTimeRange layerFixedRange;
+
+  if ( layer && layer->temporalProperties() )
+    layerFixedRange = layer->temporalProperties()->fixedTemporalRange();
+  if ( layerFixedRange.begin().isValid() && layerFixedRange.end().isValid() )
+  {
+    mStartTemporalDateTimeEdit->setDateTime( layerFixedRange.begin() );
+    mEndTemporalDateTimeEdit->setDateTime( layerFixedRange.end() );
+  }
+  else
+    mLabel->setText( tr( "Cannot reset dates - no temporal metadata "
+                         "is available for this layer" ) );
+}
+
+void QgsRasterLayerTemporalPropertiesWidget::referenceCheckBox_clicked()
+{
+  if ( mReferenceCheckBox->isChecked() )
+    setInputWidgetState( TemporalDimension::BiTemporal, true );
+  else
+    setInputWidgetState( TemporalDimension::BiTemporal, false );
 }
 
 void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
@@ -161,6 +246,8 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
       {
         rasterLayer->temporalProperties()->setTemporalRange( normalRange );
         rasterLayer->temporalProperties()->setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Layer );
+
+        rasterLayer->temporalProperties()->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >( mFetchModeComboBox->currentData().toInt() ) );
 
         if ( mReferenceCheckBox->isChecked() )
         {
@@ -190,6 +277,8 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
         rasterLayer->temporalProperties()->setTemporalRange( projectRange );
         rasterLayer->temporalProperties()->setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Project );
 
+        rasterLayer->temporalProperties()->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >( mFetchModeComboBox->currentData().toInt() ) );
+
         if ( mReferenceCheckBox->isChecked() )
         {
           QgsDateTimeRange referenceRange = QgsDateTimeRange( mStartReferenceDateTimeEdit->dateTime(),
@@ -199,46 +288,4 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
       }
     }
   }
-}
-
-void QgsRasterLayerTemporalPropertiesWidget::updateRangeLabel( QLabel *label )
-{
-  if ( mSource == TemporalRangeSource::Layer )
-  {
-    if ( mLayer->type() == QgsMapLayerType::RasterLayer )
-    {
-      QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *> ( mLayer );
-      QgsDateTimeRange range = rasterLayer->temporalProperties()->temporalRange();
-
-      if ( range.begin().isValid() && range.end().isValid() )
-        label->setText( tr( "Current layer range: %1 to %2" ).arg(
-                          range.begin().toString(),
-                          range.end().toString() ) );
-      else
-        label->setText( tr( "Layer temporal range is not set" ) );
-    }
-  }
-  else if ( mSource == TemporalRangeSource::Project )
-  {
-    QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
-
-    if ( range.begin().isValid() && range.end().isValid() )
-      label->setText( tr( "Current selection range: %1 to %2 from the project settings" ).arg(
-                        range.begin().toString(),
-                        range.end().toString() ) );
-    else
-      label->setText( tr( "Temporal range from the Project time settings is invalid, change it before using it here." ) );
-  }
-}
-
-void QgsRasterLayerTemporalPropertiesWidget::setTemporalRangeSource( QgsRasterLayerTemporalPropertiesWidget::TemporalRangeSource source )
-{
-  if ( mSource == source )
-    return;
-  mSource = source;
-}
-
-QgsRasterLayerTemporalPropertiesWidget::TemporalRangeSource QgsRasterLayerTemporalPropertiesWidget::temporalRangeSource() const
-{
-  return mSource;
 }

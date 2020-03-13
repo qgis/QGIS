@@ -765,7 +765,7 @@ class QgsWmsSettings
      *
      * \since 3.14
      */
-    QgsDateTimeRange parseTemporalExtent( QgsWmstDimensionExtent dimensionExtent, QString extent );
+    QgsWmstDimensionExtent parseTemporalExtent( QString extent );
 
     /**
      * Parse the given string item into a resolution structure.
@@ -780,6 +780,10 @@ class QgsWmsSettings
      * \since 3.14
      */
     QDateTime parseWmstDateTimes( QString item );
+
+    QList<QDateTime> dateTimesFromExtent( QgsWmstDimensionExtent dimensionExtent );
+
+    QDateTime addTime( QDateTime dateTime, QgsWmstResolution resolution );
 
   protected:
     QgsWmsParserSettings    mParserSettings;
@@ -803,6 +807,9 @@ class QgsWmsSettings
 
     //! Fixed reference temporal range for the data provider
     QgsDateTimeRange mFixedReferenceRange;
+
+    //! List of all available datetimes.
+    QList<QDateTime> mDateTimes;
 
     //! Stores WMS-T time dimension extent dates
     QgsWmstDimensionExtent mTimeDimensionExtent;

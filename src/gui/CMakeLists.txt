@@ -362,6 +362,7 @@ SET(QGIS_GUI_SRCS
   qgsdataitemguiproviderregistry.cpp
   qgsdatumtransformdialog.cpp
   qgsdatasourceselectdialog.cpp
+  qgsnewdatabasetablenamewidget.cpp
   qgsdetaileditemdata.cpp
   qgsdetaileditemdelegate.cpp
   qgsdetaileditemwidget.cpp
@@ -504,6 +505,9 @@ SET(QGIS_GUI_SRCS
   qgstabwidget.cpp
   qgstablewidgetitem.cpp
   qgstaskmanagerwidget.cpp
+  qgstemporalmapsettingsdialog.cpp
+  qgstemporalmapsettingswidget.cpp
+  qgstemporalcontrollerdockwidget.cpp
   qgstextformatwidget.cpp
   qgstextpreview.cpp
   qgstreewidgetitem.cpp
@@ -575,6 +579,7 @@ SET(QGIS_GUI_HDRS
   qgsdataitemguiproviderregistry.h
   qgsdatasourcemanagerdialog.h
   qgsdatasourceselectdialog.h
+  qgsnewdatabasetablenamewidget.h
   qgsdatumtransformdialog.h
   qgsdetaileditemdata.h
   qgsdetaileditemdelegate.h
@@ -724,6 +729,9 @@ SET(QGIS_GUI_HDRS
   qgstablewidgetitem.h
   qgstabwidget.h
   qgstaskmanagerwidget.h
+  qgstemporalmapsettingsdialog.h
+  qgstemporalmapsettingswidget.h
+  qgstemporalcontrollerdockwidget.h
   qgstextformatwidget.h
   qgstextpreview.h
   qgstreewidgetitem.h

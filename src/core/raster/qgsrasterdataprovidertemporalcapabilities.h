@@ -45,54 +45,66 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      */
     QgsRasterDataProviderTemporalCapabilities( bool enabled = false );
 
-    virtual ~QgsRasterDataProviderTemporalCapabilities() = default;
+    /**
+     * Method to use when resolving a temporal range to a data provider layer or band.
+     **/
+    enum IntervalHandlingMethod
+    {
+      MatchUsingWholeRange, //!< Use an exact match to the whole temporal range
+      MatchExactUsingStartOfRange, //!< Match the start of the temporal range to a corresponding layer or band, and only use exact matching results
+      MatchExactUsingEndOfRange, //!< Match the end of the temporal range to a corresponding layer or band, and only use exact matching results
+    };
+    // TODO -- add other methods, like "FindClosestMatchToStartOfRange", "FindClosestMatchToEndOfRange", etc
 
     /**
-     * Sets the fixed datetime \a range for the temporal properties.
+     * Returns the desired method to use when resolving a temporal interval to matching
+     * layers or bands in the data provider.
      *
-     * \see fixedTemporalRange()
-    */
-    void setFixedTemporalRange( const QgsDateTimeRange &range );
+     *\see setIntervalHandlingMethod()
+    **/
+    IntervalHandlingMethod intervalHandlingMethod() const;
 
     /**
-     * Returns the fixed datetime range for these temporal properties.
+     * Sets the desired \a method to use when resolving a temporal interval to matching
+     * layers or bands in the data provider.
      *
-     * \see setFixedTemporalRange()
-    */
-    const QgsDateTimeRange &fixedTemporalRange() const;
+     *\see intervalHandlingMethod()
+    **/
+    void setIntervalHandlingMethod( IntervalHandlingMethod method );
 
     /**
-     * Sets the fixed reference datetime \a range. This is to be used for
+     * Sets the datetime \a range extent from which temporal data is available from the provider.
+     *
+     * \see availableTemporalRange()
+    */
+    void setAvailableTemporalRange( const QgsDateTimeRange &range );
+
+    /**
+     * Returns the datetime range extent from which temporal data is available from the provider.
+     *
+     * \see setAvailableTemporalRange()
+    */
+    const QgsDateTimeRange &availableTemporalRange() const;
+
+    /**
+     * Sets the available reference datetime \a range. This is to be used for
      * bi-temporal based data. Where data can have both nominal and reference times.
      *
-     * \see fixedReferenceTemporalRange()
+     * \see availableReferenceTemporalRange()
     */
-    void setFixedReferenceTemporalRange( const QgsDateTimeRange &range );
+    void setAvailableReferenceTemporalRange( const QgsDateTimeRange &range );
 
     /**
-     * Returns the fixed reference datetime range.
+     * Returns the available reference datetime range, which indicates the maximum
+     * extent of datetime values available for reference temporal ranges from the provider.
      *
-     * \see setFixedReferenceTemporalRange()
+     * \see setAvailableReferenceTemporalRange()
     */
-    const QgsDateTimeRange &fixedReferenceTemporalRange() const;
-
-    /**
-     * Sets the requested temporal \a range to retrieve when
-     * returning data from the associated data provider.
-     *
-     * \note this is not normally manually set, and is intended for use by
-     * QgsRasterLayerRenderer to automatically set the requested temporal range
-     *  on a clone of the data provider during a render job.
-     *
-     * \see requestedTemporalRange()
-    */
-    void setRequestedTemporalRange( const QgsDateTimeRange &range );
+    const QgsDateTimeRange &availableReferenceTemporalRange() const;
 
     /**
      * Returns the requested temporal range.
      * Intended to be used by the provider in fetching data.
-     *
-     * \see setRequestedTemporalRange()
     */
     const QgsDateTimeRange &requestedTemporalRange() const;
 
@@ -118,6 +130,10 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
 
     /**
      * Sets the time enabled status.
+     * This enables whether time part in the temporal range should be
+     * used when updated the temporal range of these capabilities.
+     *
+     * This is useful in some temporal layers who use dates only.
      *
      * \see isTimeEnabled()
      */
@@ -147,14 +163,26 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
   private:
 
     /**
-     * Represents fixed data provider datetime range.
+     * Sets the requested temporal \a range to retrieve when
+     * returning data from the associated data provider.
+     *
+     * \note this is not normally manually set, and is intended for use by
+     * QgsRasterLayerRenderer to automatically set the requested temporal range
+     * on a clone of the data provider during a render job.
+     *
+     * \see requestedTemporalRange()
+    */
+    void setRequestedTemporalRange( const QgsDateTimeRange &range );
+
+    /**
+     * Represents available data provider datetime range.
      *
      * This is for determining the providers lower and upper datetime bounds,
      * any updates on the mRange should get out the range bound defined
      * by this member.
      *
      */
-    QgsDateTimeRange mFixedRange;
+    QgsDateTimeRange mAvailableTemporalRange;
 
     /**
      * If the stored time part in temporal ranges should be taked into account.
@@ -174,12 +202,18 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     QgsDateTimeRange mRequestedReferenceRange;
 
     /**
-     * Stores the fixed reference temporal range
+     * Stores the available reference temporal range
      */
-    QgsDateTimeRange mFixedReferenceRange;
+    QgsDateTimeRange mAvailableReferenceRange;
 
     //! If reference range has been enabled to be used in these properties
     bool mReferenceEnable = false;
+
+    //! Interval handling method
+    IntervalHandlingMethod mIntervalMatchMethod = MatchUsingWholeRange;
+
+    friend class QgsRasterLayerRenderer;
+    friend class TestQgsRasterDataProviderTemporalCapabilities;
 
 };
 

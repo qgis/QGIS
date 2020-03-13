@@ -38,6 +38,13 @@ or directory being inspected, parent item is a valid QgsDirectoryItem
 Human-readable name of the provider name
 %End
 
+    virtual QString dataProviderKey() const;
+%Docstring
+Returns the data provider key (if the data item provider is associated with a data provider),
+the default implementation returns an empty string.
+
+.. versionadded:: 3.14
+%End
     virtual int capabilities() const = 0;
 %Docstring
 Returns combination of flags from QgsDataProvider.DataCapabilities

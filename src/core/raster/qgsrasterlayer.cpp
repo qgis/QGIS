@@ -868,6 +868,8 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
 
   if ( mValid )
   {
+    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
+
     // load default style
     bool defaultLoadedFlag = false;
     bool restoredStyle = false;
@@ -1957,6 +1959,8 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &c
       mDataProvider->setUserNoDataValue( bandNo, myNoDataRangeList );
     }
   }
+
+  mTemporalProperties->readXml( layer_node.toElement(), context );
 
   readStyleManager( layer_node );
 
