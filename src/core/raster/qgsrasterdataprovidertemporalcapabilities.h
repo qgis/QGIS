@@ -105,8 +105,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     /**
      * Returns the requested temporal range.
      * Intended to be used by the provider in fetching data.
-     *
-     * \see setRequestedTemporalRange()
     */
     const QgsDateTimeRange &requestedTemporalRange() const;
 
