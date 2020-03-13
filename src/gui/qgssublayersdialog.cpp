@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgsproviderregistry.h"
 
 #include <QTableWidgetItem>
 #include <QPushButton>
@@ -43,16 +44,17 @@ class SubLayerItem : public QTreeWidgetItem
 //! @endcond
 
 QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString &name,
-                                        QWidget *parent, Qt::WindowFlags fl )
+                                        QWidget *parent, Qt::WindowFlags fl, const QString providerSource )
   : QDialog( parent, fl )
   , mName( name )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
+  QString title;
   if ( providerType == QgsSublayersDialog::Ogr )
   {
-    setWindowTitle( tr( "Select Vector Layers to Add…" ) );
+    title = tr( "Select Vector Layers to Add…" );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Number of features" ) << tr( "Geometry type" ) << tr( "Description" ) );
     mShowCount = true;
@@ -61,16 +63,20 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   }
   else if ( providerType == QgsSublayersDialog::Gdal )
   {
-    setWindowTitle( tr( "Select Raster Layers to Add…" ) );
+    title = tr( "Select Raster Layers to Add…" );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) );
   }
   else
   {
-    setWindowTitle( tr( "Select Layers to Add…" ) );
+    title = tr( "Select Layers to Add…" );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Type" ) );
     mShowType = true;
   }
+
+  QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( name, providerSource );
+  QString path = uriComponents[QStringLiteral( "path" )].toString();
+  setWindowTitle( path.isEmpty() ? title : QStringLiteral( "%1 | %2" ).arg( title, QDir::toNativeSeparators( path ) ) );
 
   // add a "Select All" button - would be nicer with an icon
   QPushButton *button = new QPushButton( tr( "Select All" ) );
