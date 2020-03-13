@@ -95,9 +95,41 @@ void TestQgsRasterLayerTemporalProperties::testReadWrite()
   // read none existant node
   temporalProperties.readXml( node.toElement(), QgsReadWriteContext() );
 
-  // should not be active
+  // must not be active!
   QVERIFY( !temporalProperties.isActive() );
 
+  temporalProperties.setIsActive( true );
+  temporalProperties.setMode( QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider );
+  temporalProperties.setIntervalHandlingMethod( QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange );
+
+  temporalProperties.writeXml( node, doc, QgsReadWriteContext() );
+
+  QgsRasterLayerTemporalProperties temporalProperties2;
+  temporalProperties2.readXml( node, QgsReadWriteContext() );
+  QVERIFY( temporalProperties2.isActive() );
+  QCOMPARE( temporalProperties2.mode(), QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider );
+  QCOMPARE( temporalProperties2.intervalHandlingMethod(), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange );
+
+  temporalProperties.setIsActive( false );
+  QDomElement node2 = doc.createElement( QStringLiteral( "temp" ) );
+  temporalProperties.writeXml( node2, doc, QgsReadWriteContext() );
+  QgsRasterLayerTemporalProperties temporalProperties3;
+  temporalProperties3.readXml( node2, QgsReadWriteContext() );
+  QVERIFY( !temporalProperties3.isActive() );
+  QCOMPARE( temporalProperties3.mode(), QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider );
+  QCOMPARE( temporalProperties3.intervalHandlingMethod(), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange );
+
+  temporalProperties.setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
+  temporalProperties.setFixedTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
+      QDateTime( QDate( 2020, 12, 31 ) ) ) );
+  QDomElement node3 = doc.createElement( QStringLiteral( "temp" ) );
+  temporalProperties.writeXml( node3, doc, QgsReadWriteContext() );
+  QgsRasterLayerTemporalProperties temporalProperties4;
+  temporalProperties4.readXml( node3, QgsReadWriteContext() );
+  QVERIFY( !temporalProperties4.isActive() );
+  QCOMPARE( temporalProperties4.mode(), QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
+  QCOMPARE( temporalProperties4.fixedTemporalRange(), QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
+            QDateTime( QDate( 2020, 12, 31 ) ) ) );
 
 }
 
