@@ -191,6 +191,9 @@ QgsDatumTransform::TransformPair QgsCoordinateTransformContext::calculateDatumTr
 QString QgsCoordinateTransformContext::calculateCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
 #if PROJ_VERSION_MAJOR>=6
+  if ( !source.isValid() || !destination.isValid() )
+    return QString();
+
   d->mLock.lockForRead();
   QgsCoordinateTransformContextPrivate::OperationDetails res = d->mSourceDestDatumTransforms.value( qMakePair( source, destination ), QgsCoordinateTransformContextPrivate::OperationDetails() );
   if ( res.operation.isEmpty() )
@@ -210,6 +213,9 @@ QString QgsCoordinateTransformContext::calculateCoordinateOperation( const QgsCo
 bool QgsCoordinateTransformContext::allowFallbackTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
 #if PROJ_VERSION_MAJOR>=6
+  if ( !source.isValid() || !destination.isValid() )
+    return false;
+
   d->mLock.lockForRead();
   QgsCoordinateTransformContextPrivate::OperationDetails res = d->mSourceDestDatumTransforms.value( qMakePair( source, destination ), QgsCoordinateTransformContextPrivate::OperationDetails() );
   if ( res.operation.isEmpty() )
@@ -229,6 +235,9 @@ bool QgsCoordinateTransformContext::allowFallbackTransform( const QgsCoordinateR
 bool QgsCoordinateTransformContext::mustReverseCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
 #if PROJ_VERSION_MAJOR>=6
+  if ( !source.isValid() || !destination.isValid() )
+    return false;
+
   d->mLock.lockForRead();
   QgsCoordinateTransformContextPrivate::OperationDetails res = d->mSourceDestDatumTransforms.value( qMakePair( source, destination ), QgsCoordinateTransformContextPrivate::OperationDetails() );
   if ( !res.operation.isEmpty() )
