@@ -568,6 +568,7 @@ class TestQgsProcessing: public QObject
     void parameterDateTime();
     void parameterProviderConnection();
     void parameterDatabaseSchema();
+    void parameterDatabaseTable();
     void checkParamValues();
     void combineLayerExtent();
     void processingFeatureSource();
@@ -7082,6 +7083,89 @@ void TestQgsProcessing::parameterDatabaseSchema()
   QCOMPARE( fromCode->flags(), def->flags() );
   QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
   QCOMPARE( fromCode->parentConnectionParameterName(), def->parentConnectionParameterName() );
+}
+
+void TestQgsProcessing::parameterDatabaseTable()
+{
+  QgsProcessingContext context;
+
+  // not optional!
+  std::unique_ptr< QgsProcessingParameterDatabaseTable > def( new QgsProcessingParameterDatabaseTable( "non_optional", QString(), QString(), QString(), QVariant(), false ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( !def->checkValueIsAcceptable( "" ) );
+  QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+
+  // string
+  QVariantMap params;
+  params.insert( "non_optional", QString( "a" ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsDatabaseTableName( def.get(), params, context ), QStringLiteral( "a" ) );
+
+  QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "abc" ), context ), QStringLiteral( "'abc'" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
+  QCOMPARE( def->valueAsPythonString( "probably\'invalid\"schema", context ), QStringLiteral( "'probably\\'invalid\\\"schema'" ) );
+
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDatabaseTable('non_optional', '', connectionParameterName='', schemaParameterName='', defaultValue=None)" ) );
+
+  QString code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=databasetable none none" ) );
+  std::unique_ptr< QgsProcessingParameterDatabaseTable > fromCode( dynamic_cast< QgsProcessingParameterDatabaseTable * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->parentConnectionParameterName(), def->parentConnectionParameterName() );
+  QCOMPARE( fromCode->parentSchemaParameterName(), def->parentSchemaParameterName() );
+
+  QVERIFY( def->dependsOnOtherParameters().isEmpty() );
+  def->setParentConnectionParameterName( "my_parent" );
+  QCOMPARE( def->dependsOnOtherParameters(), QStringList() << QStringLiteral( "my_parent" ) );
+  def->setParentSchemaParameterName( "my_schema" );
+  QCOMPARE( def->dependsOnOtherParameters(), QStringList() << QStringLiteral( "my_parent" ) << QStringLiteral( "my_schema" ) );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDatabaseTable('non_optional', '', connectionParameterName='my_parent', schemaParameterName='my_schema', defaultValue=None)" ) );
+
+  code = def->asScriptCode();
+  fromCode.reset( dynamic_cast< QgsProcessingParameterDatabaseTable * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "non optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->parentConnectionParameterName(), def->parentConnectionParameterName() );
+  QCOMPARE( fromCode->parentSchemaParameterName(), def->parentSchemaParameterName() );
+
+  // optional
+  def.reset( new QgsProcessingParameterDatabaseTable( "optional", QString(), QString(), QString(), QStringLiteral( "def" ), true ) );
+  QVERIFY( def->checkValueIsAcceptable( 1 ) );
+  QVERIFY( def->checkValueIsAcceptable( "test" ) );
+  QVERIFY( def->checkValueIsAcceptable( "" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant() ) );
+
+  params.insert( "optional",  QVariant() );
+  QCOMPARE( QgsProcessingParameters::parameterAsDatabaseTableName( def.get(), params, context ), QStringLiteral( "def" ) );
+
+  // optional, no default
+  def.reset( new QgsProcessingParameterDatabaseTable( "optional", QString(), QString(), QString(), QVariant(), true ) );
+  params.insert( "optional",  QVariant() );
+  QVERIFY( QgsProcessingParameters::parameterAsDatabaseTableName( def.get(), params, context ).isEmpty() );
+
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterDatabaseTable('optional', '', optional=True, connectionParameterName='', schemaParameterName='', defaultValue=None)" ) );
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##optional=optional databasetable none none" ) );
+  fromCode.reset( dynamic_cast< QgsProcessingParameterDatabaseTable * >( QgsProcessingParameters::parameterFromScriptCode( code ) ) );
+  QVERIFY( fromCode.get() );
+  QCOMPARE( fromCode->name(), def->name() );
+  QCOMPARE( fromCode->description(), QStringLiteral( "optional" ) );
+  QCOMPARE( fromCode->flags(), def->flags() );
+  QCOMPARE( fromCode->defaultValue(), def->defaultValue() );
+  QCOMPARE( fromCode->parentConnectionParameterName(), def->parentConnectionParameterName() );
+  QCOMPARE( fromCode->parentSchemaParameterName(), def->parentSchemaParameterName() );
 }
 
 void TestQgsProcessing::parameterDateTime()

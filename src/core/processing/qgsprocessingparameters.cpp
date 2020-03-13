@@ -1794,12 +1794,27 @@ QString QgsProcessingParameters::parameterAsSchema( const QgsProcessingParameter
   if ( !definition )
     return QString();
 
-  return parameterAsConnectionName( definition, parameters.value( definition->name() ), context );
+  return parameterAsSchema( definition, parameters.value( definition->name() ), context );
 }
 
 QString QgsProcessingParameters::parameterAsSchema( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context )
 {
   // for now it's just treated identical to strings, but in future we may want flexibility to amend this (e.g. if we want to embed connection details into the schema
+  // parameter values, such as via a delimiter separated string)
+  return parameterAsString( definition, value, context );
+}
+
+QString QgsProcessingParameters::parameterAsDatabaseTableName( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QString();
+
+  return parameterAsDatabaseTableName( definition, parameters.value( definition->name() ), context );
+}
+
+QString QgsProcessingParameters::parameterAsDatabaseTableName( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context )
+{
+  // for now it's just treated identical to strings, but in future we may want flexibility to amend this (e.g. if we want to embed connection details into the table name
   // parameter values, such as via a delimiter separated string)
   return parameterAsString( definition, value, context );
 }
@@ -1974,6 +1989,8 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterProviderConnection::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "databaseschema" ) )
     return QgsProcessingParameterDatabaseSchema::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "databasetable" ) )
+    return QgsProcessingParameterDatabaseTable::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -6772,4 +6789,153 @@ QgsProcessingParameterDatabaseSchema *QgsProcessingParameterDatabaseSchema::from
   }
 
   return new QgsProcessingParameterDatabaseSchema( name, description, parent, def.isEmpty() ? QVariant() : def, isOptional );
+}
+
+//
+// QgsProcessingParameterDatabaseTable
+//
+
+QgsProcessingParameterDatabaseTable::QgsProcessingParameterDatabaseTable( const QString &name, const QString &description,
+    const QString &connectionParameterName,
+    const QString &schemaParameterName,
+    const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mParentConnectionParameterName( connectionParameterName )
+  , mParentSchemaParameterName( schemaParameterName )
+{
+
+}
+
+
+QgsProcessingParameterDefinition *QgsProcessingParameterDatabaseTable::clone() const
+{
+  return new QgsProcessingParameterDatabaseTable( *this );
+}
+
+bool QgsProcessingParameterDatabaseTable::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() && !mDefault.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( ( input.type() == QVariant::String && input.toString().isEmpty() )
+       || ( !input.isValid() && mDefault.type() == QVariant::String && mDefault.toString().isEmpty() ) )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
+QString QgsProcessingParameterDatabaseTable::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+}
+
+QString QgsProcessingParameterDatabaseTable::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += QStringLiteral( "databasetable " );
+
+  code += ( mParentConnectionParameterName.isEmpty() ? QStringLiteral( "none" ) : mParentConnectionParameterName ) + ' ';
+  code += ( mParentSchemaParameterName.isEmpty() ? QStringLiteral( "none" ) : mParentSchemaParameterName ) + ' ';
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
+QString QgsProcessingParameterDatabaseTable::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterDatabaseTable('%1', '%2'" ).arg( name(), description() );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+
+      code += QStringLiteral( ", connectionParameterName='%1'" ).arg( mParentConnectionParameterName );
+      code += QStringLiteral( ", schemaParameterName='%1'" ).arg( mParentSchemaParameterName );
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1" ).arg( valueAsPythonString( mDefault, c ) );
+
+      code += ')';
+
+      return code;
+    }
+  }
+  return QString();
+}
+
+QStringList QgsProcessingParameterDatabaseTable::dependsOnOtherParameters() const
+{
+  QStringList depends;
+  if ( !mParentConnectionParameterName.isEmpty() )
+    depends << mParentConnectionParameterName;
+  if ( !mParentSchemaParameterName.isEmpty() )
+    depends << mParentSchemaParameterName;
+  return depends;
+}
+
+QString QgsProcessingParameterDatabaseTable::parentConnectionParameterName() const
+{
+  return mParentConnectionParameterName;
+}
+
+void QgsProcessingParameterDatabaseTable::setParentConnectionParameterName( const QString &name )
+{
+  mParentConnectionParameterName = name;
+}
+
+QString QgsProcessingParameterDatabaseTable::parentSchemaParameterName() const
+{
+  return mParentSchemaParameterName;
+}
+
+void QgsProcessingParameterDatabaseTable::setParentSchemaParameterName( const QString &name )
+{
+  mParentSchemaParameterName = name;
+}
+
+QVariantMap QgsProcessingParameterDatabaseTable::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "mParentConnectionParameterName" ), mParentConnectionParameterName );
+  map.insert( QStringLiteral( "mParentSchemaParameterName" ), mParentSchemaParameterName );
+  return map;
+}
+
+bool QgsProcessingParameterDatabaseTable::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mParentConnectionParameterName = map.value( QStringLiteral( "mParentConnectionParameterName" ) ).toString();
+  mParentSchemaParameterName = map.value( QStringLiteral( "mParentSchemaParameterName" ) ).toString();
+  return true;
+}
+
+QgsProcessingParameterDatabaseTable *QgsProcessingParameterDatabaseTable::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  QString connection;
+  QString schema;
+  QString def = definition;
+
+  QRegularExpression re( QStringLiteral( "(.*?)\\s+(.*+)\\b\\s*(.*)$" ) );
+  QRegularExpressionMatch m = re.match( def );
+  if ( m.hasMatch() )
+  {
+    connection = m.captured( 1 ).trimmed();
+    if ( connection == QLatin1String( "none" ) )
+      connection.clear();
+    schema = m.captured( 2 ).trimmed();
+    if ( schema == QLatin1String( "none" ) )
+      schema.clear();
+    def = m.captured( 3 );
+  }
+
+  return new QgsProcessingParameterDatabaseTable( name, description, connection, schema, def.isEmpty() ? QVariant() : def, isOptional );
 }
