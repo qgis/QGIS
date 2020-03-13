@@ -155,6 +155,11 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void mActionDeleteSelected_triggered();
 
     /**
+     * Opens organize columns dialog
+     */
+    void mActionOrganizeColumns_triggered();
+
+    /**
      * Called when the current index changes in the main view
      * i.e. when the view mode is switched from table to form view
      * or vice versa.
