@@ -1536,28 +1536,8 @@ void QgsRasterLayerProperties::aboutToShowStyleMenu()
   // this should be unified with QgsVectorLayerProperties::aboutToShowStyleMenu()
 
   QMenu *m = qobject_cast<QMenu *>( sender() );
-  if ( !m )
-    return;
 
-  // first get rid of previously added style manager actions (they are dynamic)
-  bool gotFirstSeparator = false;
-  QList<QAction *> actions = m->actions();
-  for ( int i = 0; i < actions.count(); ++i )
-  {
-    if ( actions[i]->isSeparator() )
-    {
-      if ( gotFirstSeparator )
-      {
-        // remove all actions after second separator (including it)
-        while ( actions.count() != i )
-          delete actions.takeAt( i );
-        break;
-      }
-      else
-        gotFirstSeparator = true;
-    }
-  }
-
+  QgsMapLayerStyleGuiUtils::instance()->removesExtraMenuSeparators( m );
   // re-add style manager actions!
   m->addSeparator();
   QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( m, mRasterLayer );

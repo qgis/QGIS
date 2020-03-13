@@ -21,10 +21,12 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfileutils.h"
 #include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmaplayerstyleguiutils.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerproperties.h"
 #include "qgsproject.h"
@@ -100,6 +102,18 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mOptsPage_Style->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#symbology-properties" ) );
   mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#rendering-properties" ) );
 
+
+  QPushButton *btnStyle = new QPushButton( tr( "Style" ) );
+  QMenu *menuStyle = new QMenu( this );
+  menuStyle->addAction( tr( "Load Style…" ), this, &QgsMeshLayerProperties::loadStyle );
+  menuStyle->addAction( tr( "Save Style…" ), this, &QgsMeshLayerProperties::saveStyleAs );
+  menuStyle->addSeparator();
+  menuStyle->addAction( tr( "Save as Default" ), this, &QgsMeshLayerProperties::saveDefaultStyle );
+  menuStyle->addAction( tr( "Restore Default" ), this, &QgsMeshLayerProperties::loadDefaultStyle );
+  btnStyle->setMenu( menuStyle );
+  connect( menuStyle, &QMenu::aboutToShow, this, &QgsMeshLayerProperties::aboutToShowStyleMenu );
+
+  buttonBox->addButton( btnStyle, QDialogButtonBox::ResetRole );
 }
 
 void QgsMeshLayerProperties::syncToLayer()
@@ -179,7 +193,7 @@ void QgsMeshLayerProperties::addDataset()
 
   if ( openFileString.isEmpty() )
   {
-    return; //canceled by the user
+    return; // canceled by the user
   }
 
   QFileInfo openFileInfo( openFileString );
@@ -196,6 +210,107 @@ void QgsMeshLayerProperties::addDataset()
   {
     QMessageBox::warning( this, tr( "Load mesh datasets" ), tr( "Could not read mesh dataset." ) );
   }
+}
+
+void QgsMeshLayerProperties::loadDefaultStyle()
+{
+  bool defaultLoadedFlag = false;
+  QString myMessage = mMeshLayer->loadDefaultStyle( defaultLoadedFlag );
+  // reset if the default style was loaded OK only
+  if ( defaultLoadedFlag )
+  {
+    syncToLayer();
+  }
+  else
+  {
+    // otherwise let the user know what went wrong
+    QMessageBox::information( this,
+                              tr( "Default Style" ),
+                              myMessage
+                            );
+  }
+}
+
+void QgsMeshLayerProperties::saveDefaultStyle()
+{
+  apply(); // make sure the style to save is up-to-date
+
+  // a flag passed by reference
+  bool defaultSavedFlag = false;
+  // after calling this the above flag will be set true for success
+  // or false if the save operation failed
+  QString myMessage = mMeshLayer->saveDefaultStyle( defaultSavedFlag );
+  if ( !defaultSavedFlag )
+  {
+    // let the user know what went wrong
+    QMessageBox::information( this,
+                              tr( "Default Style" ),
+                              myMessage
+                            );
+  }
+}
+
+void QgsMeshLayerProperties::loadStyle()
+{
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+
+  QString fileName = QFileDialog::getOpenFileName(
+                       this,
+                       tr( "Load rendering setting from style file" ),
+                       lastUsedDir,
+                       tr( "QGIS Layer Style File" ) + " (*.qml)" );
+  if ( fileName.isEmpty() )
+    return;
+
+  // ensure the user never omits the extension from the file name
+  if ( !fileName.endsWith( QLatin1String( ".qml" ), Qt::CaseInsensitive ) )
+    fileName += QLatin1String( ".qml" );
+
+  mOldStyle = mMeshLayer->styleManager()->style( mMeshLayer->styleManager()->currentStyle() );
+
+  bool defaultLoadedFlag = false;
+  QString message = mMeshLayer->loadNamedStyle( fileName, defaultLoadedFlag );
+  if ( defaultLoadedFlag )
+  {
+    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( fileName ).absolutePath() );
+    syncToLayer();
+  }
+  else
+  {
+    QMessageBox::information( this, tr( "Load Style" ), message );
+  }
+}
+
+void QgsMeshLayerProperties::saveStyleAs()
+{
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+
+  QString outputFileName = QFileDialog::getSaveFileName(
+                             this,
+                             tr( "Save layer properties as style file" ),
+                             lastUsedDir,
+                             tr( "QGIS Layer Style File" ) + " (*.qml)" );
+  if ( outputFileName.isEmpty() )
+    return;
+
+  // ensure the user never omits the extension from the file name
+  outputFileName = QgsFileUtils::ensureFileNameHasExtension( outputFileName, QStringList() << QStringLiteral( "qml" ) );
+
+  apply(); // make sure the style to save is up-to-date
+
+  // then export style
+  bool defaultLoadedFlag = false;
+  QString message;
+  message = mMeshLayer->saveNamedStyle( outputFileName, defaultLoadedFlag );
+
+  if ( defaultLoadedFlag )
+  {
+    settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( outputFileName ).absolutePath() );
+  }
+  else
+    QMessageBox::information( this, tr( "Save Style" ), message );
 }
 
 void QgsMeshLayerProperties::apply()
@@ -273,4 +388,14 @@ void QgsMeshLayerProperties::showHelp()
   {
     QgsHelp::openHelp( QStringLiteral( "working_with_mesh/mesh_properties.html" ) );
   }
+}
+
+void QgsMeshLayerProperties::aboutToShowStyleMenu()
+{
+  QMenu *m = qobject_cast<QMenu *>( sender() );
+
+  QgsMapLayerStyleGuiUtils::instance()->removesExtraMenuSeparators( m );
+  // re-add style manager actions!
+  m->addSeparator();
+  QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( m, mMeshLayer );
 }
