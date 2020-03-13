@@ -64,6 +64,7 @@ class CORE_EXPORT QgsTask : public QObject
       Complete, //!< Task successfully completed
       Terminated, //!< Task was terminated or errored
     };
+    Q_ENUM( TaskStatus )
 
     //! Task flags
     enum Flag
