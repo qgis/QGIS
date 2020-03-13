@@ -37,6 +37,7 @@
 
 QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options )
   : QgsDataProvider( uri, options )
+  , mTemporalCapabilities( qgis::make_unique< QgsVectorDataProviderTemporalCapabilities >() )
 {
 }
 
@@ -839,4 +840,9 @@ QList<QgsRelation> QgsVectorDataProvider::discoverRelations( const QgsVectorLaye
 void QgsVectorDataProvider::handlePostCloneOperations( QgsVectorDataProvider * )
 {
 
+}
+
+QgsVectorDataProviderTemporalCapabilities *QgsVectorDataProvider::temporalCapabilities()
+{
+  return mTemporalCapabilities.get();
 }

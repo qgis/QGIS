@@ -39,6 +39,10 @@ class CORE_EXPORT QgsDataProviderTemporalCapabilities
     {
       sipType = sipType_QgsRasterDataProviderTemporalCapabilities;
     }
+    else if ( dynamic_cast<QgsVectorDataProviderTemporalCapabilities *>( sipCpp ) )
+    {
+      sipType = sipType_QgsVectorDataProviderTemporalCapabilities;
+    }
     else
     {
       sipType = 0;
