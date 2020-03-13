@@ -90,8 +90,6 @@ extent of datetime values available for reference temporal ranges from the provi
 %Docstring
 Returns the requested temporal range.
 Intended to be used by the provider in fetching data.
-
-.. seealso:: :py:func:`setRequestedTemporalRange`
 %End
 
     void setRequestedReferenceTemporalRange( const QgsDateTimeRange &range );
