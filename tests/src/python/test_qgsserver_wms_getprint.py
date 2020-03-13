@@ -633,6 +633,21 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_TwoMaps")
 
+    def test_wms_getprint_legend_bottomright(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4legend_bottomright",
+            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0:LAYERS": "Country,Hello",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_Basic")
+
     def test_wms_getprint_atlas(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
              "MAP": urllib.parse.quote(self.projectPath),
