@@ -39,11 +39,10 @@ class TestQgsRasterLayerTemporalProperties : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void checkSettingTemporalRange();
+    void testReadWrite();
     void testChangedSignal();
     void testVisibleInTimeRange();
 
-  private:
-    QgsRasterLayerTemporalProperties *temporalProperties = nullptr;
 };
 
 void TestQgsRasterLayerTemporalProperties::initTestCase()
@@ -60,9 +59,6 @@ void TestQgsRasterLayerTemporalProperties::initTestCase()
 
 void TestQgsRasterLayerTemporalProperties::init()
 {
-  // create a temporal property that will be used in all tests...
-
-  temporalProperties = new QgsRasterLayerTemporalProperties();
 }
 
 void TestQgsRasterLayerTemporalProperties::cleanup()
@@ -76,25 +72,47 @@ void TestQgsRasterLayerTemporalProperties::cleanupTestCase()
 
 void TestQgsRasterLayerTemporalProperties::checkSettingTemporalRange()
 {
+  QgsRasterLayerTemporalProperties temporalProperties;
   QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
                                    QDateTime( QDate( 2020, 12, 31 ) ) );
 
-  temporalProperties->setFixedTemporalRange( dateTimeRange );
+  temporalProperties.setFixedTemporalRange( dateTimeRange );
 
-  QCOMPARE( temporalProperties->fixedTemporalRange(), dateTimeRange );
+  QCOMPARE( temporalProperties.fixedTemporalRange(), dateTimeRange );
+}
+
+void TestQgsRasterLayerTemporalProperties::testReadWrite()
+{
+  QgsRasterLayerTemporalProperties temporalProperties;
+
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  QDomDocument doc( documentType );
+
+  QDomElement node = doc.createElement( QStringLiteral( "temp" ) );
+  // read none existant node
+  temporalProperties.readXml( node.toElement(), QgsReadWriteContext() );
+
+  // should not be active
+  QVERIFY( !temporalProperties.isActive() );
+
+
 }
 
 void TestQgsRasterLayerTemporalProperties::testChangedSignal()
 {
-  QCOMPARE( temporalProperties->temporalSource(), QgsMapLayerTemporalProperties::TemporalSource::Layer );
-  QSignalSpy spy( temporalProperties, SIGNAL( changed() ) );
+  QgsRasterLayerTemporalProperties temporalProperties;
+  QCOMPARE( temporalProperties.temporalSource(), QgsMapLayerTemporalProperties::TemporalSource::Layer );
+  QSignalSpy spy( &temporalProperties, &QgsRasterLayerTemporalProperties::changed );
 
-  temporalProperties->setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Layer );
+  temporalProperties.setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Layer );
   QCOMPARE( spy.count(), 0 );
-  temporalProperties->setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Project );
+  temporalProperties.setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Project );
   QCOMPARE( spy.count(), 1 );
 
-  temporalProperties->setIsActive( true );
+  temporalProperties.setIsActive( true );
   QCOMPARE( spy.count(), 2 );
 }
 
