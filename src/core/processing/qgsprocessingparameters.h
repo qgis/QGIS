@@ -757,12 +757,12 @@ class CORE_EXPORT QgsProcessingParameters
      * to the sink, e.g. via calling QgsProcessingUtils::mapLayerFromString().
      *
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
-     *
+     * \throws QgsProcessingException
      * \since QGIS 3.4
      */
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value,
                                             const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = nullptr ) SIP_FACTORY;
+                                            QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT, QgsFeatureSink::SinkFlags sinkFlags = nullptr ) SIP_THROW( QgsProcessingException ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a definition to a feature source.
