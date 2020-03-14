@@ -193,10 +193,7 @@ void QgsAbstractDatabaseProviderConnection::TableProperty::addGeometryColumnType
 
 QList<QgsAbstractDatabaseProviderConnection::TableProperty::GeometryColumnType> QgsAbstractDatabaseProviderConnection::TableProperty::geometryColumnTypes() const
 {
-  if ( ! mGeometryColumn.isEmpty() )
-    return mGeometryColumnTypes;
-  else
-    return {};
+  return mGeometryColumnTypes;
 }
 
 

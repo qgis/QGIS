@@ -201,7 +201,9 @@ class TestPyQgsProviderConnectionBase():
             self.assertEqual(table_property.geometryColumn(), '')
             self.assertEqual(table_property.defaultName(), 'myNewAspatialTable')
             cols = table_property.geometryColumnTypes()
-            self.assertEqual(cols, [])
+            # We always return geom col types, even when there is no geometry
+            self.assertEqual(cols[0].wkbType, QgsWkbTypes.NoGeometry)
+            self.assertFalse(cols[0].crs.isValid())
             self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Raster)
             self.assertFalse(table_property.flags() & QgsAbstractDatabaseProviderConnection.Vector)
             self.assertTrue(table_property.flags() & QgsAbstractDatabaseProviderConnection.Aspatial)

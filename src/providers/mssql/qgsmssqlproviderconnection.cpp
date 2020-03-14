@@ -391,6 +391,9 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
     }
     else
     {
+      // Add an invalid column
+      table.addGeometryColumnType( QgsWkbTypes::Type::NoGeometry,
+                                   QgsCoordinateReferenceSystem() );
       table.setFlag( QgsMssqlProviderConnection::TableFlag::Aspatial );
     }
 
