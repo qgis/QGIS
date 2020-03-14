@@ -103,15 +103,13 @@ void QgsLocatorModelBridge::performSearch( const QString &text )
 {
   setIsRunning( true );
 
-  QString textSimplified = text.simplified();
-
   if ( mLocator->isRunning() )
   {
     // can't do anything while a query is running, and can't block
     // here waiting for the current query to cancel
     // so we queue up this string until cancel has happened
     mLocator->cancelWithoutBlocking();
-    mNextRequestedString = textSimplified;
+    mNextRequestedString = text;
     mHasQueuedRequest = true;
     return;
   }
@@ -119,7 +117,7 @@ void QgsLocatorModelBridge::performSearch( const QString &text )
   {
     emit resultsCleared();
     mLocatorModel->deferredClear();
-    mLocator->fetchResults( textSimplified, createContext() );
+    mLocator->fetchResults( text, createContext() );
   }
 }
 
