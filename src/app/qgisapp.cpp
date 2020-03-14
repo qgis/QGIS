@@ -3110,43 +3110,71 @@ void QgisApp::createToolBars()
 
   mToolbarMenu->addActions( toolbarMenuActions );
 
-  // selection tool button
-
+  // advanced selection tool button
   QToolButton *bt = new QToolButton( mAttributesToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
-  QList<QAction *> selectionActions;
-  selectionActions << mActionSelectByForm << mActionSelectByExpression << mActionSelectAll
-                   << mActionInvertSelection;
-  bt->addActions( selectionActions );
+  bt->addAction( mActionSelectByForm );
+  bt->addAction( mActionSelectByExpression );
+  bt->addAction( mActionSelectAll );
+  bt->addAction( mActionInvertSelection );
 
-  QAction *defSelectionAction = mActionSelectByForm;
+  QAction *defAdvancedSelectionAction = mActionSelectByForm;
   switch ( settings.value( QStringLiteral( "UI/selectionTool" ), 0 ).toInt() )
   {
     case 0:
-      defSelectionAction = mActionSelectByForm;
+      defAdvancedSelectionAction = mActionSelectByForm;
       break;
     case 1:
-      defSelectionAction = mActionSelectByExpression;
+      defAdvancedSelectionAction = mActionSelectByExpression;
       break;
     case 2:
-      defSelectionAction = mActionSelectAll;
+      defAdvancedSelectionAction = mActionSelectAll;
       break;
     case 3:
-      defSelectionAction = mActionInvertSelection;
+      defAdvancedSelectionAction = mActionInvertSelection;
       break;
   }
-  bt->setDefaultAction( defSelectionAction );
-  QAction *selectionAction = mAttributesToolBar->insertWidget( mActionOpenTable, bt );
-  selectionAction->setObjectName( QStringLiteral( "ActionSelection" ) );
+  bt->setDefaultAction( defAdvancedSelectionAction );
+  QAction *advancedSelectionAction = mAttributesToolBar->insertWidget( mActionOpenTable, bt );
+  advancedSelectionAction->setObjectName( QStringLiteral( "ActionSelection" ) );
+  connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
+
+
+  // mouse select tool button
+  bt = new QToolButton( mAttributesToolBar );
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->addAction( mActionSelectFeatures );
+  bt->addAction( mActionSelectPolygon );
+  bt->addAction( mActionSelectFreehand );
+  bt->addAction( mActionSelectRadius );
+
+  QAction *defMouseSelectAction = mActionSelectFeatures;
+  switch ( settings.value( QStringLiteral( "UI/selectTool" ), 1 ).toInt() )
+  {
+    case 1:
+      defMouseSelectAction = mActionSelectFeatures;
+      break;
+    case 2:
+      defMouseSelectAction = mActionSelectRadius;
+      break;
+    case 3:
+      defMouseSelectAction = mActionSelectPolygon;
+      break;
+    case 4:
+      defMouseSelectAction = mActionSelectFreehand;
+      break;
+  }
+  bt->setDefaultAction( defMouseSelectAction );
+  QAction *mouseSelectionAction = mAttributesToolBar->insertWidget( advancedSelectionAction, bt );
+  mouseSelectionAction->setObjectName( QStringLiteral( "ActionSelect" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
 
   // deselection tool button
   bt = new QToolButton( mAttributesToolBar );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
-  QList<QAction *> deselectionActions;
-  deselectionActions << mActionDeselectAll << mActionDeselectActiveLayer;
-  bt->addActions( deselectionActions );
+  bt->addAction( mActionDeselectAll );
+  bt->addAction( mActionDeselectActiveLayer );
 
   QAction *defDeselectionAction = mActionDeselectAll;
   switch ( settings.value( QStringLiteral( "UI/deselectionTool" ), 0 ).toInt() )
@@ -3164,36 +3192,6 @@ void QgisApp::createToolBars()
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
 
-  // select tool button
-
-  bt = new QToolButton( mAttributesToolBar );
-  bt->setPopupMode( QToolButton::MenuButtonPopup );
-  QList<QAction *> selectActions;
-  selectActions << mActionSelectFeatures << mActionSelectPolygon
-                << mActionSelectFreehand << mActionSelectRadius;
-  bt->addActions( selectActions );
-
-  QAction *defSelectAction = mActionSelectFeatures;
-  switch ( settings.value( QStringLiteral( "UI/selectTool" ), 1 ).toInt() )
-  {
-    case 1:
-      defSelectAction = mActionSelectFeatures;
-      break;
-    case 2:
-      defSelectAction = mActionSelectRadius;
-      break;
-    case 3:
-      defSelectAction = mActionSelectPolygon;
-      break;
-    case 4:
-      defSelectAction = mActionSelectFreehand;
-      break;
-  }
-  bt->setDefaultAction( defSelectAction );
-  QAction *selectAction = mAttributesToolBar->insertWidget( deselectionAction, bt );
-  selectAction->setObjectName( QStringLiteral( "ActionSelect" ) );
-  connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-
   // feature action tool button
 
   bt = new QToolButton( mAttributesToolBar );
@@ -3204,7 +3202,7 @@ void QgisApp::createToolBars()
   connect( mFeatureActionMenu, &QMenu::triggered, this, &QgisApp::doFeatureAction );
   connect( mFeatureActionMenu, &QMenu::aboutToShow, this, &QgisApp::refreshFeatureActions );
   bt->setMenu( mFeatureActionMenu );
-  QAction *featureActionAction = mAttributesToolBar->insertWidget( selectAction, bt );
+  QAction *featureActionAction = mAttributesToolBar->insertWidget( mouseSelectionAction, bt );
   featureActionAction->setObjectName( QStringLiteral( "ActionFeatureAction" ) );
 
   // measure tool button
