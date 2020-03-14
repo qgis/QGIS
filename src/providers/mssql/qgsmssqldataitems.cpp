@@ -658,3 +658,4 @@ bool QgsMssqlSchemaItem::layerCollection() const
 {
   return true;
 }
+
