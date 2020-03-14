@@ -48,14 +48,31 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
   const QList<QgsLayerTreeLayer *> layers = tree->findLayers();
   for ( QgsLayerTreeLayer *layer : layers )
   {
-    if ( layer->layer() && ( stringMatches( layer->layer()->name(), string ) || ( context.usingPrefix && string.isEmpty() ) ) )
+    // if the layer is broken, don't include it in the results
+    if ( ! layer->layer() )
+      continue;
+
+    QgsLocatorResult result;
+    result.displayString = layer->layer()->name();
+    result.userData = layer->layerId();
+    result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
+
+    QgsLogger::warning( "Search for" + result.displayString + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
+    // return all the layers in case the string query is empty using an equal default score
+    if ( context.usingPrefix && string.isEmpty() )
     {
-      QgsLocatorResult result;
-      result.displayString = layer->layer()->name();
-      result.userData = layer->layerId();
-      result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
-      result.score = static_cast< double >( string.length() ) / layer->layer()->name().length();
+      QgsLogger::warning( "Using prefix but empty" + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
       emit resultFetched( result );
+      continue;
+    }
+
+    result.score = fuzzyScore( result.displayString, string );
+    QgsLogger::warning( "scored: " + QString::number(result.score) + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
+
+    if ( result.score > 0 )
+    {
+      emit resultFetched( result );
+      continue;
     }
   }
 }
