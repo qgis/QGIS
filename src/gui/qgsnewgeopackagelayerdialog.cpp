@@ -132,9 +132,9 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
     checkOk();
   } );
 
-  QgsProviderConnectionModel *ogrProviderModel = new QgsProviderConnectionModel( QStringLiteral( "ogr" ) );
+  QgsProviderConnectionModel *ogrProviderModel = new QgsProviderConnectionModel( QStringLiteral( "ogr" ), this );
 
-  QCompleter *completer = new QCompleter();
+  QCompleter *completer = new QCompleter( this );
   completer->setModel( ogrProviderModel );
   completer->setCompletionRole( QgsProviderConnectionModel::RoleUri );
   completer->setCompletionMode( QCompleter::PopupCompletion );
