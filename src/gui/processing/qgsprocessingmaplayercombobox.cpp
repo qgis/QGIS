@@ -363,6 +363,9 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
             if ( dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPolygon ) )
               return u.uri;
             break;
+
+          case QgsWkbTypes::NullGeometry:
+            return u.uri;
         }
       }
       else if ( u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" )
