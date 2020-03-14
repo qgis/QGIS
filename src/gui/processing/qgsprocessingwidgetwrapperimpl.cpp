@@ -3857,16 +3857,19 @@ QList<int> QgsProcessingDateTimeWidgetWrapper::compatibleDataTypes() const
 QString QgsProcessingDateTimeWidgetWrapper::modelerExpressionFormatString() const
 {
   const QgsProcessingParameterDateTime *dateTimeParam = dynamic_cast< const QgsProcessingParameterDateTime *>( parameterDefinition() );
-  switch ( dateTimeParam->dataType() )
+  if ( dateTimeParam )
   {
-    case QgsProcessingParameterDateTime::DateTime:
-      return tr( "datetime value, or a ISO string representation of a datetime" );
+    switch ( dateTimeParam->dataType() )
+    {
+      case QgsProcessingParameterDateTime::DateTime:
+        return tr( "datetime value, or a ISO string representation of a datetime" );
 
-    case QgsProcessingParameterDateTime::Date:
-      return tr( "date value, or a ISO string representation of a date" );
+      case QgsProcessingParameterDateTime::Date:
+        return tr( "date value, or a ISO string representation of a date" );
 
-    case QgsProcessingParameterDateTime::Time:
-      return tr( "time value, or a ISO string representation of a time" );
+      case QgsProcessingParameterDateTime::Time:
+        return tr( "time value, or a ISO string representation of a time" );
+    }
   }
   return QString();
 }
