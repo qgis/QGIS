@@ -128,8 +128,14 @@ void QgsDatabaseTableComboBox::setConnectionName( const QString &connection, con
   const QString oldTable = currentTable();
   const QString oldSchema = currentSchema();
   QgsDatabaseTableModel *oldModel = mModel;
-  mModel = new QgsDatabaseTableModel( mProvider, mConnection, mSchema, this );
-  mModel->setAllowEmptyTable( mAllowEmpty );
+  if ( !mConnection.isEmpty() )
+  {
+    mModel = new QgsDatabaseTableModel( mProvider, mConnection, mSchema, this );
+    mModel->setAllowEmptyTable( mAllowEmpty );
+  }
+  else
+    mModel = nullptr;
+
   mSortModel->setSourceModel( mModel );
   if ( oldModel )
     oldModel->deleteLater();

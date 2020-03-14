@@ -603,7 +603,7 @@ QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink( const QVariantMap &para
   {
     return QgsProcessingParameters::parameterAsSink( parameterDefinition( name ), parameters, fields, geometryType, crs, context, destinationIdentifier, sinkFlags );
   }
-  catch ( QgsProcessingException )
+  catch ( QgsProcessingException & )
   {
     throw QgsProcessingException( QObject::tr( "No parameter definition for the sink '%1'" ).arg( name ) );
   }
