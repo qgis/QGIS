@@ -292,6 +292,7 @@
      <addaction name="mActionSelectByForm"/>
      <addaction name="mActionSelectByExpression"/>
      <addaction name="mActionDeselectAll"/>
+     <addaction name="mActionDeselectActiveLayer"/>
      <addaction name="mActionReselect"/>
      <addaction name="mActionSelectAll"/>
      <addaction name="mActionInvertSelection"/>
@@ -542,7 +543,6 @@
     <bool>true</bool>
    </attribute>
    <addaction name="mActionIdentify"/>
-   <addaction name="mActionDeselectAll"/>
    <addaction name="mActionOpenTable"/>
    <addaction name="mActionOpenFieldCalc"/>
    <addaction name="mActionStatisticalSummary"/>
@@ -1211,6 +1211,15 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+  <action name="mActionDeselectActiveLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeselectActiveLayer.svg</normaloff>:/images/themes/default/mActionDeselectActiveLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Deselect Features from the Current Active Layer</string>
    </property>
   </action>
   <action name="mActionSelectAll">

@@ -2549,6 +2549,7 @@ void QgisApp::createActions()
   connect( mActionSelectFreehand, &QAction::triggered, this, &QgisApp::selectByFreehand );
   connect( mActionSelectRadius, &QAction::triggered, this, &QgisApp::selectByRadius );
   connect( mActionDeselectAll, &QAction::triggered, this, &QgisApp::deselectAll );
+  connect( mActionDeselectActiveLayer, &QAction::triggered, this, &QgisApp::deselectActiveLayer );
   connect( mActionSelectAll, &QAction::triggered, this, &QgisApp::selectAll );
   connect( mActionReselect, &QAction::triggered, this, [ = ]
   {
@@ -2806,6 +2807,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionSelectFreehand );
   mMapToolGroup->addAction( mActionSelectRadius );
   mMapToolGroup->addAction( mActionDeselectAll );
+  mMapToolGroup->addAction( mActionDeselectActiveLayer );
   mMapToolGroup->addAction( mActionSelectAll );
   mMapToolGroup->addAction( mActionReselect );
   mMapToolGroup->addAction( mActionInvertSelection );
@@ -3134,9 +3136,33 @@ void QgisApp::createToolBars()
       break;
   }
   bt->setDefaultAction( defSelectionAction );
-  QAction *selectionAction = mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
+  QAction *selectionAction = mAttributesToolBar->insertWidget( mActionOpenTable, bt );
   selectionAction->setObjectName( QStringLiteral( "ActionSelection" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
+
+
+  // deselection tool button
+  bt = new QToolButton( mAttributesToolBar );
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  QList<QAction *> deselectionActions;
+  deselectionActions << mActionDeselectAll << mActionDeselectActiveLayer;
+  bt->addActions( deselectionActions );
+
+  QAction *defDeselectionAction = mActionDeselectAll;
+  switch ( settings.value( QStringLiteral( "UI/deselectionTool" ), 0 ).toInt() )
+  {
+    case 0:
+      defDeselectionAction = mActionDeselectAll;
+      break;
+    case 1:
+      defDeselectionAction = mActionDeselectActiveLayer;
+      break;
+  }
+  bt->setDefaultAction( defDeselectionAction );
+  QAction *deselectionAction = mAttributesToolBar->insertWidget( mActionOpenTable, bt );
+  deselectionAction->setObjectName( QStringLiteral( "ActionDeselection" ) );
+  connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
+
 
   // select tool button
 
@@ -3164,7 +3190,7 @@ void QgisApp::createToolBars()
       break;
   }
   bt->setDefaultAction( defSelectAction );
-  QAction *selectAction = mAttributesToolBar->insertWidget( selectionAction, bt );
+  QAction *selectAction = mAttributesToolBar->insertWidget( deselectionAction, bt );
   selectAction->setObjectName( QStringLiteral( "ActionSelect" ) );
   connect( bt, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
 
@@ -3879,6 +3905,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionSelectFreehand->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectFreehand.svg" ) ) );
   mActionSelectRadius->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectRadius.svg" ) ) );
   mActionDeselectAll->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeselectAll.svg" ) ) );
+  mActionDeselectActiveLayer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeselectActiveLayer.svg" ) ) );
   mActionSelectAll->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSelectAll.svg" ) ) );
   mActionInvertSelection->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionInvertSelection.svg" ) ) );
   mActionSelectByExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ) );
@@ -9519,6 +9546,23 @@ void QgisApp::deselectAll()
   }
 }
 
+void QgisApp::deselectActiveLayer()
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
+
+  if ( !vlayer )
+  {
+    visibleMessageBar()->pushMessage(
+      tr( "No active vector layer" ),
+      tr( "To deselect all features, choose a vector layer in the legend" ),
+      Qgis::Info,
+      messageTimeout() );
+    return;
+  }
+
+  vlayer->removeSelection();
+}
+
 void QgisApp::invertSelection()
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mMapCanvas->currentLayer() );
@@ -15067,6 +15111,10 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( QStringLiteral( "UI/selectionTool" ), 2 );
   else if ( action == mActionInvertSelection )
     settings.setValue( QStringLiteral( "UI/selectionTool" ), 3 );
+  else if ( action == mActionDeselectAll )
+    settings.setValue( QStringLiteral( "UI/deselectionTool" ), 0 );
+  else if ( action == mActionDeselectActiveLayer )
+    settings.setValue( QStringLiteral( "UI/deselectionTool" ), 1 );
   else if ( action == mActionMeasure )
     settings.setValue( QStringLiteral( "UI/measureTool" ), 0 );
   else if ( action == mActionMeasureArea )
