@@ -1503,6 +1503,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! deselect features from all layers
     void deselectAll();
 
+    //! deselect features from the current active layer
+    void deselectActiveLayer();
+
     //! select all features
     void selectAll();
 
