@@ -49,6 +49,7 @@ class CORE_EXPORT QgsProviderConnectionModel : public QAbstractItemModel
       RoleConfiguration, //!< Connection configuration variant map
       RoleEmpty, //!< Entry is an empty entry
     };
+    Q_ENUM( Role )
 
     /**
      * Constructor for QgsProviderConnectionModel, for the specified \a provider.

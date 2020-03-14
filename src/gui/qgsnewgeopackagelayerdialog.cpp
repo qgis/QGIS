@@ -31,6 +31,7 @@
 #include "qgshelp.h"
 #include "qgsogrutils.h"
 #include "qgsgui.h"
+#include "qgsproviderconnectionmodel.h"
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -131,13 +132,11 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
     checkOk();
   } );
 
-  settings.beginGroup( "ogr/GPKG/connections", QgsSettings::Providers );
-  QStringList paths;
-  const QStringList groups = settings.childGroups();
-  for ( const QString &group : groups )
-    paths << settings.value( QStringLiteral( "%1/path" ).arg( group ) ).toString();
-  settings.endGroup();
-  QCompleter *completer = new QCompleter( paths );
+  QgsProviderConnectionModel *ogrProviderModel = new QgsProviderConnectionModel( "ogr" );
+
+  QCompleter *completer = new QCompleter();
+  completer->setModel( ogrProviderModel );
+  completer->setCompletionRole( QgsProviderConnectionModel::RoleUri );
   completer->setCompletionMode( QCompleter::PopupCompletion );
   completer->setFilterMode( Qt::MatchContains );
   mDatabase->lineEdit()->setCompleter( completer );
