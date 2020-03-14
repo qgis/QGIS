@@ -2826,7 +2826,7 @@ QString QgsProject::homePath() const
   }
 
   QFileInfo pfi( fileName() );
-  if ( !pfi.exists() )
+  if ( !pfi.exists() && fileName().isEmpty() )
   {
     mCachedHomePath = mHomePath;
     return mHomePath;
