@@ -504,7 +504,7 @@ class QgsPostgresUtils
 
     static QString andWhereClauses( const QString &c1, const QString &c2 );
 
-    static const qint64 INT32PK_OFFSET = 4294967296;
+    static const qint64 INT32PK_OFFSET = 4294967296; // 2^32
 
     // We shift negative 32bit integers to above the max 32bit
     // positive integer to support the whole range of int32 values
