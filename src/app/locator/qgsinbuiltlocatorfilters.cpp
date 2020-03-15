@@ -142,7 +142,7 @@ QgsActionLocatorFilter *QgsActionLocatorFilter::clone() const
   return new QgsActionLocatorFilter( mActionParents );
 }
 
-void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback * )
+void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
 {
   // collect results in main thread, since this method is inexpensive and
   // accessing the gui actions is not thread safe
