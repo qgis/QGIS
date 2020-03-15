@@ -24,6 +24,9 @@
 #ifndef QGSSTRINGUTILS_H
 #define QGSSTRINGUTILS_H
 
+#define FUZZY_SCORE_WORD_MATCH 5
+#define FUZZY_SCORE_NEW_MATCH 3
+#define FUZZY_SCORE_CONSECUTIVE_MATCH 4
 
 /**
  * \ingroup core
@@ -251,6 +254,15 @@ class CORE_EXPORT QgsStringUtils
      * \returns 4 letter Soundex code
      */
     static QString soundex( const QString &string );
+
+    /**
+     * Tests a \a candidate string to see how likely it is a match for
+     * a specified \a search string. Values are normalized between 0 and 1.
+     * \param candidate candidate string
+     * \param search search term string
+     * \since 3.14
+     */
+    static double fuzzyScore( const QString &candidate, const QString &search );
 
     /**
      * Returns a string with any URL (e.g., http(s)/ftp) and mailto: text converted to valid HTML <a ...>

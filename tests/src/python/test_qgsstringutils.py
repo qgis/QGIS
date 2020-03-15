@@ -175,9 +175,46 @@ class PyQgsStringUtils(unittest.TestCase):
         self.assertEqual(QgsStringUtils.capitalize('    testing abc', QgsStringUtils.ForceFirstLetterToCapital),
                          '    Testing Abc')
 
-    def testSubstituteVerticalCharacters(self):
-        """ test substitute vertical characters """
-        self.assertEqual(QgsStringUtils.substituteVerticalCharacters('123{[(45654)]}321'), '123︷﹇︵45654︶﹈︸321')
+    def testfuzzyScore(self):
+        self.assertEqual(QgsStringUtils.fuzzyScore('', ''), 0)
+        self.assertEqual(QgsStringUtils.fuzzyScore('foo', ''), 0)
+        self.assertEqual(QgsStringUtils.fuzzyScore('', 'foo'), 0)
+        self.assertEqual(QgsStringUtils.fuzzyScore('foo', 'foo'), 1)
+        self.assertEqual(QgsStringUtils.fuzzyScore('bar', 'foo'), 0)
+        self.assertEqual(QgsStringUtils.fuzzyScore('FOO', 'foo'), 1)
+        self.assertEqual(QgsStringUtils.fuzzyScore('foo', 'FOO'), 1)
+        self.assertEqual(QgsStringUtils.fuzzyScore('   foo   ', 'foo'), 1)
+        self.assertEqual(QgsStringUtils.fuzzyScore('foo', '   foo   '), 1)
+        self.assertEqual(QgsStringUtils.fuzzyScore('foo', '   foo   '), 1)
+        self.assertGreater(QgsStringUtils.fuzzyScore('foo bar', 'foo'), 0)
+        self.assertGreater(QgsStringUtils.fuzzyScore('foo bar', 'foobar'), 0)
+        self.assertGreater(QgsStringUtils.fuzzyScore('foo bar', 'fooba'), 0)
+        self.assertEqual(
+            QgsStringUtils.fuzzyScore('foo bar', 'foobar'),
+            QgsStringUtils.fuzzyScore('foo_bar', 'foobar')
+            )
+        self.assertEqual(
+            QgsStringUtils.fuzzyScore('foo bar', 'foobar'),
+            QgsStringUtils.fuzzyScore('foo,bar', 'foobar')
+            )
+        self.assertEqual(
+            QgsStringUtils.fuzzyScore('foo bar', 'foobar'),
+            QgsStringUtils.fuzzyScore('foo!bar', 'foobar')
+            )
+        # note the accent
+        self.assertEqual(
+            QgsStringUtils.fuzzyScore('foo!bér', 'foober'),
+            QgsStringUtils.fuzzyScore('foo!ber', 'foobér')
+            )
+        self.assertGreater(
+            QgsStringUtils.fuzzyScore('abcd efg hig', 'abcd hig'),
+            QgsStringUtils.fuzzyScore('abcd efg hig', 'abcd e h')
+            )
+        #  full words are preferred, even though the same number of characters used
+        self.assertGreater(
+            QgsStringUtils.fuzzyScore('abcd efg hig', 'abcd hig'),
+            QgsStringUtils.fuzzyScore('abcd efg hig', 'abcd e hi')
+            )
 
 
 if __name__ == '__main__':

@@ -30,7 +30,8 @@ from qgis.core import (QgsApplication,
                        QgsProcessing,
                        QgsWkbTypes,
                        QgsMapLayerType,
-                       QgsFields)
+                       QgsFields,
+                       QgsStringUtils)
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -72,17 +73,26 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
                     a.flags() & QgsProcessingAlgorithm.FlagKnownIssues:
                 continue
 
-            if QgsLocatorFilter.stringMatches(a.displayName(), string) or [t for t in a.tags() if QgsLocatorFilter.stringMatches(t, string)] or \
-                    (context.usingPrefix and not string):
-                result = QgsLocatorResult()
-                result.filter = self
-                result.displayString = a.displayName()
-                result.icon = a.icon()
-                result.userData = a.id()
-                if string and QgsLocatorFilter.stringMatches(a.displayName(), string):
-                    result.score = float(len(string)) / len(a.displayName())
-                else:
-                    result.score = 0
+            result = QgsLocatorResult()
+            result.filter = self
+            result.displayString = a.displayName()
+            result.icon = a.icon()
+            result.userData = a.id()
+            result.score = 0
+
+            if (context.usingPrefix and not string):
+                self.resultFetched.emit(result)
+
+            for t in a.tags():
+                result.score = QgsStringUtils.fuzzyMatch(t, string)
+
+                if result.score > 0:
+                    self.resultFetched.emit(result)
+                    continue
+
+            result.score = QgsStringUtils.fuzzyMatch(result.displayString, string)
+
+            if result.score > 0:
                 self.resultFetched.emit(result)
 
     def triggerResult(self, result):
