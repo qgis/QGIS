@@ -122,7 +122,6 @@ from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
-from processing.gui.ParameterGuiUtils import getFileFilter
 
 from processing.tools import dataobjects
 
@@ -249,7 +248,7 @@ class WidgetWrapper(QgsAbstractProcessingParameterWidgetWrapper):
 
         # TODO: should use selectedFilter argument for default file format
         filename, selected_filter = QFileDialog.getOpenFileName(self.widget, self.tr('Select File'),
-                                                                path, getFileFilter(self.parameterDefinition()))
+                                                                path, self.parameterDefinition().createFileFilter())
         if filename:
             settings.setValue('/Processing/LastInputPath',
                               os.path.dirname(str(filename)))

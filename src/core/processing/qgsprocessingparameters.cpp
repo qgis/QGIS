@@ -35,6 +35,7 @@
 #include "qgsprintlayout.h"
 #include "qgssymbollayerutils.h"
 #include "qgsfileutils.h"
+#include "qgsproviderregistry.h"
 #include <functional>
 
 
@@ -2304,6 +2305,32 @@ QString QgsProcessingParameterMapLayer::valueAsPythonString( const QVariant &val
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 
+QString createAllMapLayerFileFilter()
+{
+  QStringList vectors = QgsProviderRegistry::instance()->fileVectorFilters().split( QStringLiteral( ";;" ) );
+  QStringList rasters = QgsProviderRegistry::instance()->fileRasterFilters().split( QStringLiteral( ";;" ) );
+  for ( const QString &raster : rasters )
+  {
+    if ( !vectors.contains( raster ) )
+      vectors << raster;
+  }
+  QStringList meshFilters = QgsProviderRegistry::instance()->fileMeshFilters().split( QStringLiteral( ";;" ) );
+  for ( const QString &mesh : meshFilters )
+  {
+    if ( !vectors.contains( mesh ) )
+      vectors << mesh;
+  }
+  vectors.removeAll( QObject::tr( "All files (*.*)" ) );
+  std::sort( vectors.begin(), vectors.end() );
+
+  return QObject::tr( "All files (*.*)" ) + QStringLiteral( ";;" ) + vectors.join( QStringLiteral( ";;" ) );
+}
+
+QString QgsProcessingParameterMapLayer::createFileFilter() const
+{
+  return createAllMapLayerFileFilter();
+}
+
 QString QgsProcessingParameterMapLayer::asScriptCode() const
 {
   QString code = QStringLiteral( "##%1=" ).arg( mName );
@@ -3147,6 +3174,33 @@ QString QgsProcessingParameterMultipleLayers::asPythonString( const QgsProcessin
   return QString();
 }
 
+QString QgsProcessingParameterMultipleLayers::createFileFilter() const
+{
+  QStringList exts;
+  switch ( mLayerType )
+  {
+    case QgsProcessing::TypeFile:
+      return QObject::tr( "All files (*.*)" );
+
+    case QgsProcessing::TypeRaster:
+      return QgsProviderRegistry::instance()->fileRasterFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+
+    case QgsProcessing::TypeVector:
+    case QgsProcessing::TypeVectorAnyGeometry:
+    case QgsProcessing::TypeVectorPoint:
+    case QgsProcessing::TypeVectorLine:
+    case QgsProcessing::TypeVectorPolygon:
+      return QgsProviderRegistry::instance()->fileVectorFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+
+    case QgsProcessing::TypeMesh:
+      return QgsProviderRegistry::instance()->fileMeshFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+
+    case QgsProcessing::TypeMapLayer:
+      return createAllMapLayerFileFilter();
+  }
+  return QString();
+}
+
 QgsProcessing::SourceType QgsProcessingParameterMultipleLayers::layerType() const
 {
   return mLayerType;
@@ -3527,6 +3581,11 @@ QString QgsProcessingParameterRasterLayer::valueAsPythonString( const QVariant &
   QgsRasterLayer *layer = QgsProcessingParameters::parameterAsRasterLayer( this, p, context );
   return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
+}
+
+QString QgsProcessingParameterRasterLayer::createFileFilter() const
+{
+  return QgsProviderRegistry::instance()->fileRasterFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
 }
 
 QgsProcessingParameterRasterLayer *QgsProcessingParameterRasterLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
@@ -4077,6 +4136,11 @@ QString QgsProcessingParameterVectorLayer::asPythonString( const QgsProcessing::
   return QString();
 }
 
+QString QgsProcessingParameterVectorLayer::createFileFilter() const
+{
+  return QgsProviderRegistry::instance()->fileVectorFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+}
+
 QList<int> QgsProcessingParameterLimitedDataTypes::dataTypes() const
 {
   return mDataTypes;
@@ -4182,6 +4246,11 @@ QString QgsProcessingParameterMeshLayer::valueAsPythonString( const QVariant &va
   QgsMeshLayer *layer = QgsProcessingParameters::parameterAsMeshLayer( this, p, context );
   return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
+}
+
+QString QgsProcessingParameterMeshLayer::createFileFilter() const
+{
+  return QgsProviderRegistry::instance()->fileMeshFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
 }
 
 QgsProcessingParameterMeshLayer *QgsProcessingParameterMeshLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
@@ -4648,6 +4717,11 @@ QString QgsProcessingParameterFeatureSource::asPythonString( const QgsProcessing
   return QString();
 }
 
+QString QgsProcessingParameterFeatureSource::createFileFilter() const
+{
+  return QgsProviderRegistry::instance()->fileVectorFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+}
+
 QgsProcessingParameterLimitedDataTypes::QgsProcessingParameterLimitedDataTypes( const QList<int> &types )
   : mDataTypes( types )
 {
@@ -4860,6 +4934,18 @@ QString QgsProcessingParameterFeatureSink::asPythonString( const QgsProcessing::
   return QString();
 }
 
+QString QgsProcessingParameterFeatureSink::createFileFilter() const
+{
+  const QStringList exts = supportedOutputVectorLayerExtensions();
+  QStringList filters;
+  for ( const QString &ext : exts )
+  {
+    filters << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+  }
+  return filters.join( QStringLiteral( ";;" ) ) + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+
+}
+
 QStringList QgsProcessingParameterFeatureSink::supportedOutputVectorLayerExtensions() const
 {
   if ( originalProvider() )
@@ -5051,6 +5137,17 @@ QString QgsProcessingParameterRasterDestination::defaultFileExtension() const
   }
 }
 
+QString QgsProcessingParameterRasterDestination::createFileFilter() const
+{
+  const QStringList exts = supportedOutputRasterLayerExtensions();
+  QStringList filters;
+  for ( const QString &ext : exts )
+  {
+    filters << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+  }
+  return filters.join( QStringLiteral( ";;" ) ) + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+}
+
 QStringList QgsProcessingParameterRasterDestination::supportedOutputRasterLayerExtensions() const
 {
   if ( originalProvider() )
@@ -5193,6 +5290,11 @@ QString QgsProcessingParameterFileDestination::asPythonString( const QgsProcessi
   return QString();
 }
 
+QString QgsProcessingParameterFileDestination::createFileFilter() const
+{
+  return ( fileFilter().isEmpty() ? QString() : fileFilter() + QStringLiteral( ";;" ) ) + QObject::tr( "All files (*.*)" );
+}
+
 QString QgsProcessingParameterFileDestination::fileFilter() const
 {
   return mFileFilter;
@@ -5322,6 +5424,11 @@ QString QgsProcessingDestinationParameter::asPythonString( const QgsProcessing::
   }
   // oh well, we tried
   return QString();
+}
+
+QString QgsProcessingDestinationParameter::createFileFilter() const
+{
+  return QObject::tr( "Default extension" ) + QStringLiteral( " (*." ) + defaultFileExtension() + ')';
 }
 
 QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
@@ -5493,6 +5600,17 @@ QString QgsProcessingParameterVectorDestination::asPythonString( const QgsProces
     }
   }
   return QString();
+}
+
+QString QgsProcessingParameterVectorDestination::createFileFilter() const
+{
+  const QStringList exts = supportedOutputVectorLayerExtensions();
+  QStringList filters;
+  for ( const QString &ext : exts )
+  {
+    filters << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+  }
+  return filters.join( QStringLiteral( ";;" ) ) + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
 }
 
 QStringList QgsProcessingParameterVectorDestination::supportedOutputVectorLayerExtensions() const
