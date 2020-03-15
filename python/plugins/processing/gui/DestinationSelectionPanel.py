@@ -29,7 +29,10 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, QDir, pyqtSignal, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QAction, QFileDialog, QInputDialog
 from qgis.PyQt.QtGui import QCursor
-from qgis.gui import QgsEncodingSelectionDialog
+from qgis.gui import (
+    QgsEncodingSelectionDialog,
+    QgsNewDatabaseTableNameDialog
+)
 from qgis.core import (QgsProcessing,
                        QgsDataSourceUri,
                        QgsCredentials,
@@ -43,6 +46,7 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterVectorDestination)
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.PostgisTableSelector import PostgisTableSelector
+from qgis.utils import iface
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -169,30 +173,21 @@ class DestinationSelectionPanel(BASE, WIDGET):
         self.destinationChanged.emit()
 
     def saveToPostGIS(self):
-        dlg = PostgisTableSelector(self, self.parameter.name().lower())
-        dlg.exec_()
-        if dlg.connection:
+        dlg = QgsNewDatabaseTableNameDialog(iface.browserModel(), ['postgres'], self)
+        dlg.setWindowTitle(self.tr('Save to PostGIS Table'))
+        if dlg.exec_() and dlg.isValid():
             self.use_temporary = False
-            settings = QgsSettings()
-            mySettings = '/PostgreSQL/connections/' + dlg.connection
-            dbname = settings.value(mySettings + '/database')
-            user = settings.value(mySettings + '/username')
-            host = settings.value(mySettings + '/host')
-            port = settings.value(mySettings + '/port')
-            password = settings.value(mySettings + '/password')
-            uri = QgsDataSourceUri()
-            uri.setConnection(host, str(port), dbname, user, password)
-            uri.setDataSource(dlg.schema, dlg.table,
-                              "the_geom" if isinstance(self.parameter, QgsProcessingParameterFeatureSink) and self.parameter.hasGeometry() else None)
 
-            connInfo = uri.connectionInfo()
-            (success, user, passwd) = QgsCredentials.instance().get(connInfo, None, None)
-            if success:
-                QgsCredentials.instance().put(connInfo, user, passwd)
+            uri = QgsDataSourceUri(dlg.uri())
+            uri.setGeometryColumn("geom" if isinstance(self.parameter,
+                                                       QgsProcessingParameterFeatureSink) and self.parameter.hasGeometry() else None)
             self.leText.setText("postgis:" + uri.uri())
 
             self.skipOutputChanged.emit(False)
             self.destinationChanged.emit()
+
+        dlg.deleteLater()
+        del dlg
 
     def saveToGeopackage(self):
         file_filter = self.tr('GeoPackage files (*.gpkg);;All files (*.*)', 'OutputFile')
