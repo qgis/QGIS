@@ -2406,6 +2406,11 @@ void TestQgsProcessing::parameterMapLayer()
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
 
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.shp" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.tif" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.2dm" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.*" ) ) );
+
   // should be OK
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
   // ... unless we use context, when the check that the layer actually exists is performed
@@ -3309,6 +3314,10 @@ void TestQgsProcessing::parameterLayerList()
   QVERIFY( !def->checkValueIsAcceptable( QStringList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp", &context ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariantList() << "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp", &context ) );
 
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.shp" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.tif" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.2dm" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.*" ) ) );
 
   // using existing map layer ID
   QVariantMap params;
@@ -3453,6 +3462,10 @@ void TestQgsProcessing::parameterLayerList()
   def.reset( new QgsProcessingParameterMultipleLayers( "optional", QString(), QgsProcessing::TypeMapLayer, QVariantList() << v1->id() << r1->publicSource(), true ) );
   params.insert( "optional",  QVariant() );
   QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << v1 << r1 );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.shp" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.tif" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.2dm" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.*" ) ) );
 
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMultipleLayers('optional', '', optional=True, layerType=QgsProcessing.TypeMapLayer, defaultValue=['" ) + r1->publicSource() + "'])" );
@@ -3476,6 +3489,11 @@ void TestQgsProcessing::parameterLayerList()
   QCOMPARE( QgsProcessingParameters::parameterAsLayerList( def.get(), params, context ), QList< QgsMapLayer *>() << v1 << r1 );
 
   def.reset( new QgsProcessingParameterMultipleLayers( "type", QString(), QgsProcessing::TypeRaster ) );
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.shp" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.tif" ) ) );
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.2dm" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.*" ) ) );
+
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMultipleLayers('type', '', layerType=QgsProcessing.TypeRaster, defaultValue=None)" ) );
   code = def->asScriptCode();
@@ -3489,6 +3507,8 @@ void TestQgsProcessing::parameterLayerList()
   QCOMPARE( fromCode->layerType(), QgsProcessing::TypeRaster );
 
   def.reset( new QgsProcessingParameterMultipleLayers( "type", QString(), QgsProcessing::TypeFile ) );
+  QCOMPARE( def->createFileFilter(), QStringLiteral( "All files (*.*)" ) );
+
   pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMultipleLayers('type', '', layerType=QgsProcessing.TypeFile, defaultValue=None)" ) );
   code = def->asScriptCode();
@@ -4076,6 +4096,11 @@ void TestQgsProcessing::parameterRasterLayer()
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
   QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( r1 ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant::fromValue( v1 ) ) );
+
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.shp" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.tif" ) ) );
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.2dm" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.*" ) ) );
 
   // should be OK
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.tif" ) );
@@ -5034,6 +5059,11 @@ void TestQgsProcessing::parameterVectorLayer()
   QVERIFY( def->checkValueIsAcceptable( QgsProperty::fromValue( QStringLiteral( "layer12312312" ) ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QgsProperty::fromValue( QString() ) ) );
 
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.shp" ) ) );
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.tif" ) ) );
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.2dm" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.*" ) ) );
+
   // should be OK
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
   // ... unless we use context, when the check that the layer actually exists is performed
@@ -5163,6 +5193,11 @@ void TestQgsProcessing::parameterMeshLayer()
   // ... unless we use context, when the check that the layer actually exists is performed
   QVERIFY( !def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.2dm", &context ) );
 
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.shp" ) ) );
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.tif" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.2dm" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.*" ) ) );
+
   // using existing map layer ID
   QVariantMap params;
   params.insert( "non_optional",  m1->id() );
@@ -5283,6 +5318,11 @@ void TestQgsProcessing::parameterFeatureSource()
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp" ) );
   // ... unless we use context, when the check that the layer actually exists is performed
   QVERIFY( !def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.shp", &context ) );
+
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.shp" ) ) );
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.tif" ) ) );
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.2dm" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.*" ) ) );
 
   // using existing map layer ID
   QVariantMap params;
@@ -5455,6 +5495,11 @@ void TestQgsProcessing::parameterFeatureSink()
   QVERIFY( def->generateTemporaryDestination().endsWith( QLatin1String( ".gpkg" ) ) );
   QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
 
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.shp" ) ) );
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.tif" ) ) );
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.2dm" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.*" ) ) );
+
   QVariantMap map = def->toVariantMap();
   QgsProcessingParameterFeatureSink fromMap( "x" );
   QVERIFY( fromMap.fromVariantMap( map ) );
@@ -5618,6 +5663,11 @@ void TestQgsProcessing::parameterVectorOut()
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "gpkg" ) );
   QVERIFY( def->generateTemporaryDestination().endsWith( QLatin1String( ".gpkg" ) ) );
   QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
+
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.shp" ) ) );
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.tif" ) ) );
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.2dm" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.*" ) ) );
 
   QVariantMap map = def->toVariantMap();
   QgsProcessingParameterVectorDestination fromMap( "x" );
@@ -5802,6 +5852,11 @@ void TestQgsProcessing::parameterRasterOut()
   QVERIFY( def->generateTemporaryDestination().endsWith( QLatin1String( ".tif" ) ) );
   QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
 
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.shp" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.tif" ) ) );
+  QVERIFY( !def->createFileFilter().contains( QStringLiteral( "*.2dm" ) ) );
+  QVERIFY( def->createFileFilter().contains( QStringLiteral( "*.*" ) ) );
+
   QVariantMap params;
   params.insert( "non_optional", "test.tif" );
   QCOMPARE( QgsProcessingParameters::parameterAsOutputLayer( def.get(), params, context ), QStringLiteral( "test.tif" ) );
@@ -5922,6 +5977,8 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "pcx" ) );
   def->setFileFilter( QStringLiteral( "PCX files (*.pcx *.picx);;BMP files (*.bmp)" ) );
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "pcx" ) );
+  QCOMPARE( def->createFileFilter(), QStringLiteral( "PCX files (*.pcx *.picx);;BMP files (*.bmp);;All files (*.*)" ) );
+
   def->setFileFilter( QString() );
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "file" ) );
   QVERIFY( def->generateTemporaryDestination().endsWith( QLatin1String( ".file" ) ) );
@@ -5941,6 +5998,8 @@ void TestQgsProcessing::parameterFileOut()
   // should be OK with or without context - it's an output file!
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.txt" ) );
   QVERIFY( def->checkValueIsAcceptable( "c:/Users/admin/Desktop/roads_clipped_transformed_v1_reprojected_final_clipped_aAAA.txt", &context ) );
+
+  QCOMPARE( def->createFileFilter(), QStringLiteral( "All files (*.*)" ) );
 
   QVariantMap params;
   params.insert( "non_optional", "test.txt" );

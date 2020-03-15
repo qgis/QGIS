@@ -37,7 +37,6 @@ from qgis.core import (QgsMapLayer,
 from qgis.PyQt.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy, QFileDialog
 
 from processing.gui.AutofillDialog import AutofillDialog
-from processing.gui.ParameterGuiUtils import getFileFilter
 
 
 class BatchOutputSelectionPanel(QWidget):
@@ -70,7 +69,7 @@ class BatchOutputSelectionPanel(QWidget):
             self.selectDirectory()
             return
 
-        filefilter = getFileFilter(self.output)
+        filefilter = self.output.createFileFilter()
         settings = QgsSettings()
         if settings.contains('/Processing/LastBatchOutputPath'):
             path = str(settings.value('/Processing/LastBatchOutputPath'))

@@ -25,6 +25,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfeaturesource.h"
 #include "qgsprocessingutils.h"
+#include "qgsfilefiltergenerator.h"
 #include <QMap>
 #include <limits>
 
@@ -1619,7 +1620,7 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
  * A parameter for processing algorithms which accepts multiple map layers.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingParameterDefinition, public QgsFileFilterGenerator
 {
   public:
 
@@ -1640,6 +1641,7 @@ class CORE_EXPORT QgsProcessingParameterMultipleLayers : public QgsProcessingPar
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QString createFileFilter() const override;
 
     /**
      * Returns the layer type for layers acceptable by the parameter.
@@ -1963,7 +1965,7 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
  * A raster layer parameter for processing algorithms.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterRasterLayer : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterRasterLayer : public QgsProcessingParameterDefinition, public QgsFileFilterGenerator
 {
   public:
 
@@ -1981,6 +1983,7 @@ class CORE_EXPORT QgsProcessingParameterRasterLayer : public QgsProcessingParame
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString createFileFilter() const override;
 
     /**
      * Creates a new parameter using the definition from a script code.
@@ -2243,7 +2246,7 @@ class CORE_EXPORT QgsProcessingParameterLimitedDataTypes
  * the more versatile QgsProcessingParameterFeatureSource wherever possible.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParameterDefinition, public QgsProcessingParameterLimitedDataTypes
+class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParameterDefinition, public QgsProcessingParameterLimitedDataTypes, public QgsFileFilterGenerator
 {
   public:
 
@@ -2265,6 +2268,7 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QString createFileFilter() const override;
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -2282,7 +2286,7 @@ class CORE_EXPORT QgsProcessingParameterVectorLayer : public QgsProcessingParame
  * A mesh layer parameter for processing algorithms.
   * \since QGIS 3.6
  */
-class CORE_EXPORT QgsProcessingParameterMeshLayer : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingParameterMeshLayer : public QgsProcessingParameterDefinition, public QgsFileFilterGenerator
 {
   public:
 
@@ -2302,6 +2306,7 @@ class CORE_EXPORT QgsProcessingParameterMeshLayer : public QgsProcessingParamete
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString createFileFilter() const override;
 
     /**
      * Creates a new parameter using the definition from a script code.
@@ -2315,7 +2320,7 @@ class CORE_EXPORT QgsProcessingParameterMeshLayer : public QgsProcessingParamete
  * A map layer parameter for processing algorithms.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterMapLayer : public QgsProcessingParameterDefinition, public QgsProcessingParameterLimitedDataTypes
+class CORE_EXPORT QgsProcessingParameterMapLayer : public QgsProcessingParameterDefinition, public QgsProcessingParameterLimitedDataTypes, public QgsFileFilterGenerator
 {
   public:
 
@@ -2336,6 +2341,7 @@ class CORE_EXPORT QgsProcessingParameterMapLayer : public QgsProcessingParameter
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QString createFileFilter() const override;
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -2470,7 +2476,7 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
  * An input feature source (such as vector layers) parameter for processing algorithms.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingParameterDefinition, public QgsProcessingParameterLimitedDataTypes
+class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingParameterDefinition, public QgsProcessingParameterLimitedDataTypes, public QgsFileFilterGenerator
 {
   public:
 
@@ -2491,6 +2497,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QString asScriptCode() const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QString createFileFilter() const override;
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -2509,7 +2516,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSource : public QgsProcessingPara
  * which are used for the destination for layers output by an algorithm.
   * \since QGIS 3.0
  */
-class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParameterDefinition
+class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParameterDefinition, public QgsFileFilterGenerator
 {
   public:
 
@@ -2526,6 +2533,7 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QString createFileFilter() const override;
 
     /**
      * Returns a new QgsProcessingOutputDefinition corresponding to the definition of the destination
@@ -2638,6 +2646,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
     QString defaultFileExtension() const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QString createFileFilter() const override;
 
     /**
      * Returns a list of the vector format file extensions supported by this parameter.
@@ -2714,6 +2723,7 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
     QString defaultFileExtension() const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QString createFileFilter() const override;
 
     /**
      * Returns a list of the vector format file extensions supported by this parameter.
@@ -2786,6 +2796,7 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
     QString defaultFileExtension() const override;
+    QString createFileFilter() const override;
 
     /**
      * Returns a list of the raster format file extensions supported for this parameter.
@@ -2834,6 +2845,7 @@ class CORE_EXPORT QgsProcessingParameterFileDestination : public QgsProcessingDe
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
     QString defaultFileExtension() const override;
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+    QString createFileFilter() const override;
 
     /**
      * Returns the file filter string for file destinations compatible with this parameter.

@@ -33,7 +33,6 @@ from qgis.gui import QgsEncodingSelectionDialog
 from qgis.core import (QgsProcessing,
                        QgsDataSourceUri,
                        QgsCredentials,
-                       QgsExpression,
                        QgsSettings,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterRasterDestination,
@@ -43,9 +42,7 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingParameterVectorDestination)
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools.dataobjects import createContext
 from processing.gui.PostgisTableSelector import PostgisTableSelector
-from processing.gui.ParameterGuiUtils import getFileFilter
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -230,7 +227,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             self.destinationChanged.emit()
 
     def selectFile(self):
-        file_filter = getFileFilter(self.parameter)
+        file_filter = self.parameter.createFileFilter()
         settings = QgsSettings()
         if isinstance(self.parameter, (QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
             last_ext_path = '/Processing/LastVectorOutputExt'
