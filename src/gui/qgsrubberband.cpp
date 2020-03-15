@@ -651,7 +651,7 @@ int QgsRubberBand::numberOfVertices() const
   return count;
 }
 
-const QgsPointXY *QgsRubberBand::getPoint( int i, int j, int k ) const
+const QgsPointXY *QgsRubberBand::getPoint( int i, int k, int j ) const
 {
   if ( i < mPoints.size() && j < mPoints.at( i ).size() && k < mPoints.at( i ).at( j ).size() )
     return &mPoints[i][j][k];

@@ -362,10 +362,10 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     /**
      * Returns a vertex
      *  \param i   The geometry index
-     *  \param j   The ring index within geometry i
      *  \param k   The vertex index within ring j
+     *  \param j   The ring index within geometry i
      */
-    const QgsPointXY *getPoint( int i, int j = 0, int k = 0 ) const;
+    const QgsPointXY *getPoint( int i, int k = 0, int j = 0 ) const;
 
     /**
      * Returns the rubberband as a Geometry
