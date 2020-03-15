@@ -63,7 +63,7 @@ void Qgs3DMapToolIdentifyPickHandler::handlePickOnVectorLayer( QgsVectorLayer *v
 Qgs3DMapToolIdentify::Qgs3DMapToolIdentify( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
 {
-  connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolIdentify::onTerrainEntityChanged );
+//  connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolIdentify::onTerrainEntityChanged );
 
   mPickHandler.reset( new Qgs3DMapToolIdentifyPickHandler( this ) );
 }
@@ -102,6 +102,11 @@ void Qgs3DMapToolIdentify::deactivate()
 QCursor Qgs3DMapToolIdentify::cursor() const
 {
   return QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify );
+}
+
+void Qgs3DMapToolIdentify::updateSignalSlots()
+{
+  connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolIdentify::onTerrainEntityChanged );
 }
 
 void Qgs3DMapToolIdentify::onTerrainPicked( Qt3DRender::QPickEvent *event )
