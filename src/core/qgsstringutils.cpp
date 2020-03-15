@@ -489,11 +489,11 @@ double QgsStringUtils::fuzzyScore( const QString &candidate, const QString &sear
     }
 
     // if the search string is covered, check if the last match is end of word
-    if (searchIdx >= searchLength)
+    if ( searchIdx >= searchLength )
     {
-      bool isEndOfWord = (candidateIdx >= candidateLength)
-        ? true
-        : candidateNormalized[candidateIdx].isSpace() || candidateNormalized[candidateIdx].isPunct();
+      bool isEndOfWord = ( candidateIdx >= candidateLength )
+                         ? true
+                         : candidateNormalized[candidateIdx].isSpace() || candidateNormalized[candidateIdx].isPunct();
 
       if ( isEndOfWord )
         score += FUZZY_SCORE_WORD_MATCH;
