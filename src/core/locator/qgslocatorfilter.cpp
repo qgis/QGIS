@@ -23,11 +23,6 @@
 #include "qgsmessagelog.h"
 
 
-#define FUZZY_SCORE_WORD_MATCH 5
-#define FUZZY_SCORE_NEW_MATCH 3
-#define FUZZY_SCORE_CONSECUTIVE_MATCH 4
-
-
 QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
   : QObject( parent )
 {
@@ -69,7 +64,7 @@ double QgsLocatorFilter::fuzzyScore( const QString &candidate, const QString &se
   bool isPreviousIndexMatching = false;
   bool isWordOpen = true;
 
-  // loop throught each candidate char and calculate the potential max score
+  // loop through each candidate char and calculate the potential max score
   while ( candidateIdx < candidateLength )
   {
     QChar candidateChar = candidateNormalized[ candidateIdx++ ];
@@ -84,7 +79,7 @@ double QgsLocatorFilter::fuzzyScore( const QString &candidate, const QString &se
     else
       maxScore += FUZZY_SCORE_CONSECUTIVE_MATCH;
 
-    // we looped through all the characters
+    // we looped all the characters
     if ( searchIdx >= searchLength )
       continue;
 

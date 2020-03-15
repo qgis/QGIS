@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstringutils.h"
+#include "qgslogger.h"
 #include <QVector>
 #include <QRegExp>
 #include <QStringList>
@@ -406,6 +407,109 @@ QString QgsStringUtils::soundex( const QString &string )
 
   return tmp;
 }
+
+
+double QgsStringUtils::fuzzyScore( const QString &candidate, const QString &search )
+{
+  QString candidateNormalized = candidate.simplified().normalized( QString:: NormalizationForm_C ).toLower();
+  QString searchNormalized = search.simplified().normalized( QString:: NormalizationForm_C ).toLower();
+
+  int candidateLength = candidateNormalized.length();
+  int searchLength = searchNormalized.length();
+  int score = 0;
+
+  // if the candidate and the search term are empty, no other option than 0 score
+  if ( candidateLength == 0 || searchLength == 0 )
+    return score;
+
+  int candidateIdx = 0;
+  int searchIdx = 0;
+  // there is always at least one word
+  int maxScore = FUZZY_SCORE_WORD_MATCH;
+
+  bool isPreviousIndexMatching = false;
+  bool isWordOpen = true;
+
+  // loop throught each candidate char and calculate the potential max score
+  while ( candidateIdx < candidateLength )
+  {
+    QChar candidateChar = candidateNormalized[ candidateIdx++ ];
+
+    // the first char is always the default score
+    if ( candidateIdx == 1 )
+      maxScore += FUZZY_SCORE_NEW_MATCH;
+    // every space character, punctuation or end of string is a opportunity for a new word
+    else if ( candidateChar.isSpace() || candidateChar.isPunct() )
+      maxScore += FUZZY_SCORE_WORD_MATCH;
+    // potentially we can match every other character
+    else
+      maxScore += FUZZY_SCORE_CONSECUTIVE_MATCH;
+
+    // we looped through all the characters
+    if ( searchIdx >= searchLength )
+      continue;
+
+    QChar searchChar = searchNormalized[ searchIdx ];
+
+    // match!
+    if ( candidateChar == searchChar )
+    {
+      searchIdx++;
+
+      // if we have just successfully finished a word, give higher score
+      if ( candidateChar.isSpace() || candidateChar.isPunct() )
+      {
+        if ( isWordOpen )
+          score += FUZZY_SCORE_WORD_MATCH;
+        else if ( isPreviousIndexMatching )
+          score += FUZZY_SCORE_CONSECUTIVE_MATCH;
+        else
+          score += FUZZY_SCORE_NEW_MATCH;
+
+        isWordOpen = true;
+      }
+      // if we have consecutive characters matching, give higher score
+      else if ( isPreviousIndexMatching )
+      {
+        score += FUZZY_SCORE_CONSECUTIVE_MATCH;
+      }
+      // normal score for new independent character that matches
+      else
+      {
+        score += FUZZY_SCORE_NEW_MATCH;
+      }
+
+      isPreviousIndexMatching = true;
+    }
+    // if the current character does NOT match, we are sure we cannot build a word for now
+    else
+    {
+      isPreviousIndexMatching = false;
+      isWordOpen = false;
+    }
+
+    // if the search string is covered, check if the last match is end of word
+    if (searchIdx >= searchLength)
+    {
+      bool isEndOfWord = (candidateIdx >= candidateLength)
+        ? true
+        : candidateNormalized[candidateIdx].isSpace() || candidateNormalized[candidateIdx].isPunct();
+
+      if ( isEndOfWord )
+        score += FUZZY_SCORE_WORD_MATCH;
+    }
+
+    // QgsLogger::debug( QStringLiteral( "TMP: %1 | %2" ).arg( candidateChar, QString::number(score) ) + QStringLiteral( __FILE__ ) );
+  }
+
+  // QgsLogger::debug( QStringLiteral( "RES: %1 | % 2" ).arg( QString::number(maxScore),  QString::number(score) ) + QStringLiteral( __FILE__ ) );
+  // we didn't loop through all the search chars, it means, that they are not present in the current candidate
+  if ( searchIdx != searchLength )
+    score = 0;
+
+  return static_cast<float>( std::max( score, 0 ) ) / std::max( maxScore, 1 );
+}
+
 
 QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
 {

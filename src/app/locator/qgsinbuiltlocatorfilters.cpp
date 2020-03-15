@@ -57,23 +57,17 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
     result.userData = layer->layerId();
     result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
 
-    QgsLogger::warning( "Search for" + result.displayString + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
     // return all the layers in case the string query is empty using an equal default score
     if ( context.usingPrefix && string.isEmpty() )
     {
-      QgsLogger::warning( "Using prefix but empty" + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
       emit resultFetched( result );
       continue;
     }
 
-    result.score = fuzzyScore( result.displayString, string );
-    QgsLogger::warning( "scored: " + QString::number( result.score ) + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
+    result.score = QgsStringUtils::fuzzyScore( result.displayString, string );
 
     if ( result.score > 0 )
-    {
       emit resultFetched( result );
-      continue;
-    }
   }
 }
 
@@ -102,15 +96,24 @@ void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocat
   const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
   for ( QgsMasterLayoutInterface *layout : layouts )
   {
-    if ( layout && ( stringMatches( layout->name(), string ) || ( context.usingPrefix && string.isEmpty() ) ) )
+    // if the layout is broken, don't include it in the results
+    if ( ! layout )
+      continue;
+
+    QgsLocatorResult result;
+    result.displayString = layout->name();
+    result.userData = layout->name();
+
+    if ( context.usingPrefix && string.isEmpty() )
     {
-      QgsLocatorResult result;
-      result.displayString = layout->name();
-      result.userData = layout->name();
-      //result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
-      result.score = static_cast< double >( string.length() ) / layout->name().length();
       emit resultFetched( result );
+      continue;
     }
+
+    result.score = QgsStringUtils::fuzzyScore( result.displayString, string );
+
+    if ( result.score > 0 )
+      emit resultFetched( result );
   }
 }
 
@@ -139,7 +142,7 @@ QgsActionLocatorFilter *QgsActionLocatorFilter::clone() const
   return new QgsActionLocatorFilter( mActionParents );
 }
 
-void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
+void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback * )
 {
   // collect results in main thread, since this method is inexpensive and
   // accessing the gui actions is not thread safe
@@ -148,7 +151,7 @@ void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocat
 
   for ( QWidget *object : qgis::as_const( mActionParents ) )
   {
-    searchActions( string,  object, found );
+    searchActions( string, object, found );
   }
 }
 
@@ -208,15 +211,17 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
       searchText += QStringLiteral( " (%1)" ).arg( tooltip.trimmed() );
     }
 
-    if ( stringMatches( searchText, string ) )
+    QgsLocatorResult result;
+    result.displayString = searchText;
+    result.userData = QVariant::fromValue( action );
+    result.icon = action->icon();
+    result.score = fuzzyScore( result.displayString, string );
+
+    if ( result.score > 0 )
     {
-      QgsLocatorResult result;
-      result.displayString = searchText;
-      result.userData = QVariant::fromValue( action );
-      result.icon = action->icon();
-      result.score = static_cast< double >( string.length() ) / searchText.length();
-      emit resultFetched( result );
       found << action;
+      emit resultFetched( result );
+
     }
   }
 }
@@ -541,30 +546,21 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
   for ( auto optionsPagesIterator = optionsPagesMap.constBegin(); optionsPagesIterator != optionsPagesMap.constEnd(); ++optionsPagesIterator )
   {
     QString title = optionsPagesIterator.key();
-    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
-    {
-      matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( QStringLiteral( "optionpage" ), QString::number( optionsPagesIterator.value() ) ) );
-    }
+    matchingSettingsPagesMap.insert( title + " (" + tr( "Options" ) + ")", settingsPage( QStringLiteral( "optionpage" ), QString::number( optionsPagesIterator.value() ) ) );
   }
 
   QMap<QString, QString> projectPropertyPagesMap = QgisApp::instance()->projectPropertiesPagesMap();
   for ( auto projectPropertyPagesIterator = projectPropertyPagesMap.constBegin(); projectPropertyPagesIterator != projectPropertyPagesMap.constEnd(); ++projectPropertyPagesIterator )
   {
     QString title = projectPropertyPagesIterator.key();
-    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
-    {
-      matchingSettingsPagesMap.insert( title + " (" + tr( "Project Properties" ) + ")", settingsPage( QStringLiteral( "projectpropertypage" ), projectPropertyPagesIterator.value() ) );
-    }
+    matchingSettingsPagesMap.insert( title + " (" + tr( "Project Properties" ) + ")", settingsPage( QStringLiteral( "projectpropertypage" ), projectPropertyPagesIterator.value() ) );
   }
 
   QMap<QString, QString> settingPagesMap = QgisApp::instance()->settingPagesMap();
   for ( auto settingPagesIterator = settingPagesMap.constBegin(); settingPagesIterator != settingPagesMap.constEnd(); ++settingPagesIterator )
   {
     QString title = settingPagesIterator.key();
-    if ( stringMatches( title, string ) || ( context.usingPrefix && string.isEmpty() ) )
-    {
-      matchingSettingsPagesMap.insert( title, settingsPage( QStringLiteral( "settingspage" ), settingPagesIterator.value() ) );
-    }
+    matchingSettingsPagesMap.insert( title, settingsPage( QStringLiteral( "settingspage" ), settingPagesIterator.value() ) );
   }
 
   for ( auto matchingSettingsPagesIterator = matchingSettingsPagesMap.constBegin(); matchingSettingsPagesIterator != matchingSettingsPagesMap.constEnd(); ++matchingSettingsPagesIterator )
@@ -575,8 +571,17 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
     result.filter = this;
     result.displayString = title;
     result.userData.setValue( settingsPage );
-    result.score = static_cast< double >( string.length() ) / title.length();
-    emit resultFetched( result );
+
+    if ( context.usingPrefix && string.isEmpty() )
+    {
+      emit resultFetched( result );
+      continue;
+    }
+
+    result.score = QgsStringUtils::fuzzyScore( result.displayString, string );;
+
+    if ( result.score > 0 )
+      emit resultFetched( result );
   }
 }
 
@@ -631,22 +636,28 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
   while ( i.hasNext() )
   {
     i.next();
+
     if ( feedback->isCanceled() )
       return;
 
     QString name = i.key();
+    QModelIndex index = i.value();
+    QgsLocatorResult result;
+    result.filter = this;
+    result.displayString = name;
+    result.userData = index;
+    result.icon = QgsApplication::getThemeIcon( QStringLiteral( "/mItemBookmark.svg" ) );
 
-    if ( stringMatches( name, string ) || ( context.usingPrefix && string.isEmpty() ) )
+    if ( context.usingPrefix && string.isEmpty() )
     {
-      QModelIndex index = i.value();
-      QgsLocatorResult result;
-      result.filter = this;
-      result.displayString = name;
-      result.userData = index;
-      result.icon = QgsApplication::getThemeIcon( QStringLiteral( "/mItemBookmark.svg" ) );
-      result.score = static_cast< double >( string.length() ) / name.length();
       emit resultFetched( result );
+      continue;
     }
+
+    result.score = QgsStringUtils::fuzzyScore( result.displayString, string );
+
+    if ( result.score > 0 )
+      emit resultFetched( result );
   }
 }
 

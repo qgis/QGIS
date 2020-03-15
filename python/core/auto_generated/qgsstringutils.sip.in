@@ -250,6 +250,17 @@ so strings with similar sounds should be represented by the same Soundex code.
 :return: 4 letter Soundex code
 %End
 
+    static double fuzzyScore( const QString &candidate, const QString &search );
+%Docstring
+Tests a ``candidate`` string to see how likely it is a match for
+a specified ``search`` string. Values are normalized between 0 and 1.
+
+:param candidate: candidate string
+:param search: search term string
+
+.. versionadded:: 3.14
+%End
+
     static QString insertLinks( const QString &string, bool *foundLinks = 0 );
 %Docstring
 Returns a string with any URL (e.g., http(s)/ftp) and mailto: text converted to valid HTML <a ...>
