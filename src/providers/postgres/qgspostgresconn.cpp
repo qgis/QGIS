@@ -1638,6 +1638,10 @@ QString QgsPostgresConn::fieldExpression( const QgsField &fld, QString expr )
   {
     return QStringLiteral( "st_astext(%1)" ).arg( expr );
   }
+  else if ( type == QLatin1String( "int8" ) )
+  {
+    return expr;
+  }
   //TODO: add support for hstore
   //TODO: add support for json/jsonb
   else

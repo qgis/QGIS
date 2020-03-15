@@ -280,12 +280,12 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOpti
       key = QStringLiteral( "tid" );
       break;
     case PktInt:
-    case PktInt64:
-    case PktUint64:
       Q_ASSERT( mPrimaryKeyAttrs.size() == 1 );
       Q_ASSERT( mPrimaryKeyAttrs[0] >= 0 && mPrimaryKeyAttrs[0] < mAttributeFields.count() );
       key = mAttributeFields.at( mPrimaryKeyAttrs.at( 0 ) ).name();
       break;
+    case PktInt64:
+    case PktUint64:
     case PktFidMap:
     {
       QString delim;
@@ -453,12 +453,12 @@ QString QgsPostgresProvider::pkParamWhereClause( int offset, const char *alias )
       break;
 
     case PktInt:
-    case PktInt64:
-    case PktUint64:
       Q_ASSERT( mPrimaryKeyAttrs.size() == 1 );
       whereClause = QStringLiteral( "%3%1=$%2" ).arg( quotedIdentifier( field( mPrimaryKeyAttrs[0] ).name() ) ).arg( offset ).arg( aliased );
       break;
 
+    case PktInt64:
+    case PktUint64:
     case PktFidMap:
     {
       QString delim;
@@ -495,8 +495,6 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
   switch ( mPrimaryKeyType )
   {
     case PktOid:
-    case PktInt64:
-    case PktUint64:
       params << QString::number( featureId );
       break;
 
@@ -508,6 +506,8 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
       params << QStringLiteral( "'(%1,%2)'" ).arg( FID_TO_NUMBER( featureId ) >> 16 ).arg( FID_TO_NUMBER( featureId ) & 0xffff );
       break;
 
+    case PktInt64:
+    case PktUint64:
     case PktFidMap:
     {
       QVariantList pkVals = mShared->lookupKey( featureId );
@@ -567,11 +567,22 @@ QString QgsPostgresUtils::whereClause( QgsFeatureId featureId, const QgsFields &
       whereClause = QStringLiteral( "%1=%2" ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) ).arg( FID2PKINT( featureId ) );
       break;
 
-    case PktUint64:
     case PktInt64:
+    case PktUint64:
+    {
       Q_ASSERT( pkAttrs.size() == 1 );
-      whereClause = QStringLiteral( "%1=%2" ).arg( QgsPostgresConn::quotedIdentifier( fields.at( pkAttrs[0] ).name() ) ).arg( featureId );
-      break;
+      QVariantList pkVals = sharedData->lookupKey( featureId );
+      if ( !pkVals.isEmpty() )
+      {
+        QgsField fld = fields.at( pkAttrs[0] );
+        whereClause = conn->fieldExpression( fld );
+        if ( !pkVals[0].isNull() )
+          whereClause += "=" + pkVals[0].toString();
+        else
+          whereClause += QLatin1String( " IS NULL" );
+      }
+    }
+    break;
 
     case PktFidMap:
     {
@@ -618,8 +629,6 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
   {
     case PktOid:
     case PktInt:
-    case PktInt64:
-    case PktUint64:
     {
       QString expr;
 
@@ -632,7 +641,7 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
         const auto constFeatureIds = featureIds;
         for ( const QgsFeatureId featureId : constFeatureIds )
         {
-          expr += delim + FID_TO_STRING( ( pkType == PktOid ? featureId : pkType == PktUint64 ? featureId : FID2PKINT( featureId ) ) );
+          expr += delim + FID_TO_STRING( ( pkType == PktOid ? featureId : FID2PKINT( featureId ) ) );
           delim = ',';
         }
         expr += ')';
@@ -640,6 +649,8 @@ QString QgsPostgresUtils::whereClause( const QgsFeatureIds &featureIds, const Qg
 
       return expr;
     }
+    case PktInt64:
+    case PktUint64:
     case PktFidMap:
     case PktTid:
     case PktUnknown:
@@ -2459,11 +2470,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         {
           QgsAttributes attrs = features->attributes();
 
-          if ( mPrimaryKeyType == PktUint64 || mPrimaryKeyType == PktInt64 )
-          {
-            features->setId( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) );
-          }
-          else if ( mPrimaryKeyType == PktInt )
+          if ( mPrimaryKeyType == PktInt )
           {
             features->setId( PKINT2FID( STRING_TO_FID( attrs.at( mPrimaryKeyAttrs.at( 0 ) ) ) ) );
           }
