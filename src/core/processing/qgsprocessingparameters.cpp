@@ -2277,8 +2277,7 @@ QString QgsProcessingParameterMapLayer::asScriptCode() const
     code += QStringLiteral( "optional " );
   code += QStringLiteral( "layer " );
 
-  const auto constMDataTypes = mDataTypes;
-  for ( int type : constMDataTypes )
+  for ( int type : mDataTypes )
   {
     switch ( type )
     {
@@ -2396,8 +2395,7 @@ QVariantMap QgsProcessingParameterMapLayer::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   QVariantList types;
-  const auto constMDataTypes = mDataTypes;
-  for ( int type : constMDataTypes )
+  for ( int type : mDataTypes )
   {
     types << type;
   }
@@ -2409,9 +2407,8 @@ bool QgsProcessingParameterMapLayer::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mDataTypes.clear();
-  QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
-  const auto constValues = values;
-  for ( const QVariant &val : constValues )
+  const QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
+  for ( const QVariant &val : values )
   {
     mDataTypes << val.toInt();
   }
@@ -4060,8 +4057,7 @@ QVariantMap QgsProcessingParameterVectorLayer::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   QVariantList types;
-  const auto constMDataTypes = mDataTypes;
-  for ( int type : constMDataTypes )
+  for ( int type : mDataTypes )
   {
     types << type;
   }
@@ -4073,9 +4069,8 @@ bool QgsProcessingParameterVectorLayer::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mDataTypes.clear();
-  QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
-  const auto constValues = values;
-  for ( const QVariant &val : constValues )
+  const QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
+  for ( const QVariant &val : values )
   {
     mDataTypes << val.toInt();
   }
@@ -4569,8 +4564,7 @@ QString QgsProcessingParameterFeatureSource::asScriptCode() const
     code += QStringLiteral( "optional " );
   code += QStringLiteral( "source " );
 
-  const auto constMDataTypes = mDataTypes;
-  for ( int type : constMDataTypes )
+  for ( int type : mDataTypes )
   {
     switch ( type )
     {
@@ -4630,8 +4624,7 @@ QVariantMap QgsProcessingParameterFeatureSource::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   QVariantList types;
-  const auto constMDataTypes = mDataTypes;
-  for ( int type : constMDataTypes )
+  for ( int type : mDataTypes )
   {
     types << type;
   }
@@ -4643,9 +4636,8 @@ bool QgsProcessingParameterFeatureSource::fromVariantMap( const QVariantMap &map
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mDataTypes.clear();
-  QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
-  const auto constValues = values;
-  for ( const QVariant &val : constValues )
+  const QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
+  for ( const QVariant &val : values )
   {
     mDataTypes << val.toInt();
   }
