@@ -84,13 +84,13 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
                 self.resultFetched.emit(result)
 
             for t in a.tags():
-                result.score = QgsStringUtils.fuzzyMatch(t, string)
+                result.score = QgsStringUtils.fuzzyScore(t, string)
 
                 if result.score > 0:
                     self.resultFetched.emit(result)
                     continue
 
-            result.score = QgsStringUtils.fuzzyMatch(result.displayString, string)
+            result.score = QgsStringUtils.fuzzyScore(result.displayString, string)
 
             if result.score > 0:
                 self.resultFetched.emit(result)
