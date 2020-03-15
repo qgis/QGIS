@@ -192,29 +192,29 @@ class PyQgsStringUtils(unittest.TestCase):
         self.assertEqual(
             QgsStringUtils.fuzzyScore('foo bar', 'foobar'),
             QgsStringUtils.fuzzyScore('foo_bar', 'foobar')
-            )
+        )
         self.assertEqual(
             QgsStringUtils.fuzzyScore('foo bar', 'foobar'),
             QgsStringUtils.fuzzyScore('foo,bar', 'foobar')
-            )
+        )
         self.assertEqual(
             QgsStringUtils.fuzzyScore('foo bar', 'foobar'),
             QgsStringUtils.fuzzyScore('foo!bar', 'foobar')
-            )
+        )
         # note the accent
         self.assertEqual(
             QgsStringUtils.fuzzyScore('foo!bér', 'foober'),
             QgsStringUtils.fuzzyScore('foo!ber', 'foobér')
-            )
+        )
         self.assertGreater(
             QgsStringUtils.fuzzyScore('abcd efg hig', 'abcd hig'),
             QgsStringUtils.fuzzyScore('abcd efg hig', 'abcd e h')
-            )
+        )
         #  full words are preferred, even though the same number of characters used
         self.assertGreater(
             QgsStringUtils.fuzzyScore('abcd efg hig', 'abcd hig'),
             QgsStringUtils.fuzzyScore('abcd efg hig', 'abcd e hi')
-            )
+        )
 
 
 if __name__ == '__main__':
