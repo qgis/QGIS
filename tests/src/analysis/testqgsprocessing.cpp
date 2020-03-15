@@ -535,7 +535,7 @@ class TestQgsProcessing: public QObject
     void parameterGeneral();
     void parameterBoolean();
     void parameterCrs();
-    void parameterLayer();
+    void parameterMapLayer();
     void parameterExtent();
     void parameterPoint();
     void parameterFile();
@@ -2380,7 +2380,7 @@ void TestQgsProcessing::parameterCrs()
   QVERIFY( !fromCode->defaultValue().isValid() );
 }
 
-void TestQgsProcessing::parameterLayer()
+void TestQgsProcessing::parameterMapLayer()
 {
   // setup a context
   QgsProject p;
@@ -2465,6 +2465,42 @@ void TestQgsProcessing::parameterLayer()
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
   def.reset( dynamic_cast< QgsProcessingParameterMapLayer *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterMapLayer *>( def.get() ) );
+
+  def->setDataTypes( QList< int >() << QgsProcessing::TypeVectorPoint );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMapLayer('non_optional', '', defaultValue='', types=[QgsProcessing.TypeVectorPoint])" ) );
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=layer point" ) );
+  def->setDataTypes( QList< int >() << QgsProcessing::TypeVectorLine );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMapLayer('non_optional', '', defaultValue='', types=[QgsProcessing.TypeVectorLine])" ) );
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=layer line" ) );
+  def->setDataTypes( QList< int >() << QgsProcessing::TypeVectorPolygon );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMapLayer('non_optional', '', defaultValue='', types=[QgsProcessing.TypeVectorPolygon])" ) );
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=layer polygon" ) );
+  def->setDataTypes( QList< int >() << QgsProcessing::TypeVectorAnyGeometry );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMapLayer('non_optional', '', defaultValue='', types=[QgsProcessing.TypeVectorAnyGeometry])" ) );
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=layer hasgeometry" ) );
+  def->setDataTypes( QList< int >() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeVectorLine );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMapLayer('non_optional', '', defaultValue='', types=[QgsProcessing.TypeVectorPoint,QgsProcessing.TypeVectorLine])" ) );
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=layer point line" ) );
+  def->setDataTypes( QList< int >() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeVectorPolygon );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMapLayer('non_optional', '', defaultValue='', types=[QgsProcessing.TypeVectorPoint,QgsProcessing.TypeVectorPolygon])" ) );
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=layer point polygon" ) );
+  def->setDataTypes( QList< int >() << QgsProcessing::TypeRaster << QgsProcessing::TypeVectorPoint );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterMapLayer('non_optional', '', defaultValue='', types=[QgsProcessing.TypeRaster,QgsProcessing.TypeVectorPoint])" ) );
+  code = def->asScriptCode();
+  QCOMPARE( code, QStringLiteral( "##non_optional=layer raster point" ) );
 
   // optional
   def.reset( new QgsProcessingParameterMapLayer( "optional", QString(), v1->id(), true ) );

@@ -1360,38 +1360,6 @@ class CORE_EXPORT QgsProcessingParameterCrs : public QgsProcessingParameterDefin
 };
 
 /**
- * \class QgsProcessingParameterMapLayer
- * \ingroup core
- * A map layer parameter for processing algorithms.
-  * \since QGIS 3.0
- */
-class CORE_EXPORT QgsProcessingParameterMapLayer : public QgsProcessingParameterDefinition
-{
-  public:
-
-    /**
-     * Constructor for QgsProcessingParameterMapLayer.
-     */
-    QgsProcessingParameterMapLayer( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
-                                    bool optional = false );
-
-    /**
-     * Returns the type name for the parameter class.
-     */
-    static QString typeName() { return QStringLiteral( "layer" ); }
-    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
-    QString type() const override { return typeName(); }
-    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
-    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
-
-    /**
-     * Creates a new parameter using the definition from a script code.
-     */
-    static QgsProcessingParameterMapLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
-
-};
-
-/**
  * \class QgsProcessingParameterExtent
  * \ingroup core
  * A rectangular map extent parameter for processing algorithms.
@@ -2339,6 +2307,44 @@ class CORE_EXPORT QgsProcessingParameterMeshLayer : public QgsProcessingParamete
      * Creates a new parameter using the definition from a script code.
      */
     static QgsProcessingParameterMeshLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+};
+
+/**
+ * \class QgsProcessingParameterMapLayer
+ * \ingroup core
+ * A map layer parameter for processing algorithms.
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingParameterMapLayer : public QgsProcessingParameterDefinition, public QgsProcessingParameterLimitedDataTypes
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterMapLayer.
+     */
+    QgsProcessingParameterMapLayer( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                    bool optional = false,
+                                    const QList< int > &types = QList< int >() );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "layer" ); }
+    QgsProcessingParameterDefinition *clone() const override SIP_FACTORY;
+    QString type() const override { return typeName(); }
+    bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
+    QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString asScriptCode() const override;
+    QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const override;
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+    /**
+     * Creates a new parameter using the definition from a script code.
+     */
+    static QgsProcessingParameterMapLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) SIP_FACTORY;
+
 };
 
 /**

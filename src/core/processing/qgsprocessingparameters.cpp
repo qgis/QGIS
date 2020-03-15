@@ -2246,8 +2246,9 @@ QgsProcessingParameterCrs *QgsProcessingParameterCrs::fromScriptCode( const QStr
   return new QgsProcessingParameterCrs( name, description, definition.compare( QLatin1String( "none" ), Qt::CaseInsensitive ) == 0 ? QVariant() : definition, isOptional );
 }
 
-QgsProcessingParameterMapLayer::QgsProcessingParameterMapLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
+QgsProcessingParameterMapLayer::QgsProcessingParameterMapLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, const QList<int> &types )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , QgsProcessingParameterLimitedDataTypes( types )
 {
 
 }
@@ -2303,9 +2304,149 @@ QString QgsProcessingParameterMapLayer::valueAsPythonString( const QVariant &val
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 
+QString QgsProcessingParameterMapLayer::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += QStringLiteral( "layer " );
+
+  for ( int type : mDataTypes )
+  {
+    switch ( type )
+    {
+      case QgsProcessing::TypeVectorAnyGeometry:
+        code += QStringLiteral( "hasgeometry " );
+        break;
+
+      case QgsProcessing::TypeVectorPoint:
+        code += QStringLiteral( "point " );
+        break;
+
+      case QgsProcessing::TypeVectorLine:
+        code += QStringLiteral( "line " );
+        break;
+
+      case QgsProcessing::TypeVectorPolygon:
+        code += QStringLiteral( "polygon " );
+        break;
+
+      case QgsProcessing::TypeRaster:
+        code += QStringLiteral( "raster " );
+        break;
+
+      case QgsProcessing::TypeMesh:
+        code += QStringLiteral( "mesh " );
+        break;
+    }
+  }
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
 QgsProcessingParameterMapLayer *QgsProcessingParameterMapLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterMapLayer( name, description, definition, isOptional );
+  QList< int > types;
+  QString def = definition;
+  while ( true )
+  {
+    if ( def.startsWith( QLatin1String( "hasgeometry" ), Qt::CaseInsensitive ) )
+    {
+      types << QgsProcessing::TypeVectorAnyGeometry;
+      def = def.mid( 12 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "point" ), Qt::CaseInsensitive ) )
+    {
+      types << QgsProcessing::TypeVectorPoint;
+      def = def.mid( 6 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "line" ), Qt::CaseInsensitive ) )
+    {
+      types << QgsProcessing::TypeVectorLine;
+      def = def.mid( 5 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "polygon" ), Qt::CaseInsensitive ) )
+    {
+      types << QgsProcessing::TypeVectorPolygon;
+      def = def.mid( 8 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "raster" ), Qt::CaseInsensitive ) )
+    {
+      types << QgsProcessing::TypeRaster;
+      def = def.mid( 7 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "mesh" ), Qt::CaseInsensitive ) )
+    {
+      types << QgsProcessing::TypeMesh;
+      def = def.mid( 5 );
+      continue;
+    }
+    break;
+  }
+
+  return new QgsProcessingParameterMapLayer( name, description, def, isOptional, types );
+}
+
+QString QgsProcessingParameterMapLayer::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterMapLayer('%1', '%2'" ).arg( name(), description() );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1" ).arg( valueAsPythonString( mDefault, c ) );
+
+      if ( !mDataTypes.empty() )
+      {
+        QStringList options;
+        options.reserve( mDataTypes.size() );
+        for ( int t : mDataTypes )
+          options << QStringLiteral( "QgsProcessing.%1" ).arg( QgsProcessing::sourceTypeToString( static_cast< QgsProcessing::SourceType >( t ) ) );
+        code += QStringLiteral( ", types=[%1])" ).arg( options.join( ',' ) );
+      }
+      else
+      {
+        code += QStringLiteral( ")" );
+      }
+
+      return code;
+    }
+  }
+  return QString();
+}
+
+QVariantMap QgsProcessingParameterMapLayer::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  QVariantList types;
+  for ( int type : mDataTypes )
+  {
+    types << type;
+  }
+  map.insert( QStringLiteral( "data_types" ), types );
+  return map;
+}
+
+bool QgsProcessingParameterMapLayer::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mDataTypes.clear();
+  const QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
+  for ( const QVariant &val : values )
+  {
+    mDataTypes << val.toInt();
+  }
+  return true;
 }
 
 QgsProcessingParameterExtent::QgsProcessingParameterExtent( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -3950,8 +4091,7 @@ QVariantMap QgsProcessingParameterVectorLayer::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   QVariantList types;
-  const auto constMDataTypes = mDataTypes;
-  for ( int type : constMDataTypes )
+  for ( int type : mDataTypes )
   {
     types << type;
   }
@@ -3963,9 +4103,8 @@ bool QgsProcessingParameterVectorLayer::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mDataTypes.clear();
-  QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
-  const auto constValues = values;
-  for ( const QVariant &val : constValues )
+  const QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
+  for ( const QVariant &val : values )
   {
     mDataTypes << val.toInt();
   }
@@ -4459,8 +4598,7 @@ QString QgsProcessingParameterFeatureSource::asScriptCode() const
     code += QStringLiteral( "optional " );
   code += QStringLiteral( "source " );
 
-  const auto constMDataTypes = mDataTypes;
-  for ( int type : constMDataTypes )
+  for ( int type : mDataTypes )
   {
     switch ( type )
     {
@@ -4520,8 +4658,7 @@ QVariantMap QgsProcessingParameterFeatureSource::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   QVariantList types;
-  const auto constMDataTypes = mDataTypes;
-  for ( int type : constMDataTypes )
+  for ( int type : mDataTypes )
   {
     types << type;
   }
@@ -4533,9 +4670,8 @@ bool QgsProcessingParameterFeatureSource::fromVariantMap( const QVariantMap &map
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mDataTypes.clear();
-  QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
-  const auto constValues = values;
-  for ( const QVariant &val : constValues )
+  const QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
+  for ( const QVariant &val : values )
   {
     mDataTypes << val.toInt();
   }
