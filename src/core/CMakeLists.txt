@@ -776,6 +776,7 @@ SET(QGIS_CORE_HDRS
   qgsfieldproxymodel.h
   qgsfields.h
   qgsfiledownloader.h
+  qgsfilefiltergenerator.h
   qgsfileutils.h
   qgsfontutils.h
   qgsgdalutils.h

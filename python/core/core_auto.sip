@@ -77,6 +77,7 @@
 %Include auto_generated/qgsfieldproxymodel.sip
 %Include auto_generated/qgsfields.sip
 %Include auto_generated/qgsfiledownloader.sip
+%Include auto_generated/qgsfilefiltergenerator.sip
 %Include auto_generated/qgsfileutils.sip
 %Include auto_generated/qgsfontutils.sip
 %Include auto_generated/qgsgeometryoptions.sip
