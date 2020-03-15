@@ -45,7 +45,6 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingParameterVectorDestination)
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.gui.PostgisTableSelector import PostgisTableSelector
 from qgis.utils import iface
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
