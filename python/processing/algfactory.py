@@ -59,6 +59,11 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterLayout,
                        QgsProcessingParameterLayoutItem,
                        QgsProcessingParameterDateTime,
+                       QgsProcessingParameterMapTheme,
+                       QgsProcessingParameterProviderConnection,
+                       QgsProcessingParameterDatabaseSchema,
+                       QgsProcessingParameterDatabaseTable,
+                       QgsProcessingParameterCoordinateOperation,
                        QgsProcessingOutputString,
                        QgsProcessingOutputBoolean,
                        QgsProcessingOutputFile,
@@ -328,6 +333,11 @@ class ProcessingAlgFactory():
     LAYOUT = "LAYOUT"
     LAYOUT_ITEM = "LAYOUT_ITEM"
     DATETIME = "DATETIME"
+    MAP_THEME = "MAP_THEME"
+    PROVIDER_CONNECTION = "PROVIDER_CONNECTION"
+    DATABASE_SCHEMA = "DATABASE_SCHEMA"
+    DATABASE_TABLE = "DATABASE_TABLE"
+    COORDINATE_OPERATION = "COORDINATE_OPERATION"
 
     def __init__(self):
         self._current = None
@@ -461,6 +471,11 @@ class ProcessingAlgFactory():
             alg.LAYOUT_ITEM: QgsProcessingParameterLayoutItem
             alg.COLOR: QgsProcessingParameterColor
             alg.DATETIME: QgsProcessingParameterDateTime
+            alg.MAP_THEME: QgsProcessingParameterMapTheme
+            alg.PROVIDER_CONNECTION: QgsProcessingParameterProviderConnection
+            alg.DATABASE_SCHEMA: QgsProcessingParameterDatabaseSchema
+            alg.DATABASE_TABLE: QgsProcessingParameterDatabaseTable
+            alg.COORDINATE_OPERATION: QgsProcessingParameterCoordinateOperation
 
         :param type: The type of the input. This should be a type define on `alg` like alg.STRING, alg.DISTANCE
         :keyword label: The label of the output. Translates into `description` arg.
@@ -512,7 +527,12 @@ input_type_mapping = {
     ProcessingAlgFactory.LAYOUT: QgsProcessingParameterLayout,
     ProcessingAlgFactory.LAYOUT_ITEM: QgsProcessingParameterLayoutItem,
     ProcessingAlgFactory.COLOR: QgsProcessingParameterColor,
-    ProcessingAlgFactory.DATETIME: QgsProcessingParameterDateTime
+    ProcessingAlgFactory.DATETIME: QgsProcessingParameterDateTime,
+    ProcessingAlgFactory.MAP_THEME: QgsProcessingParameterMapTheme,
+    ProcessingAlgFactory.PROVIDER_CONNECTION: QgsProcessingParameterProviderConnection,
+    ProcessingAlgFactory.DATABASE_SCHEMA: QgsProcessingParameterDatabaseSchema,
+    ProcessingAlgFactory.DATABASE_TABLE: QgsProcessingParameterDatabaseTable,
+    ProcessingAlgFactory.COORDINATE_OPERATION: QgsProcessingParameterCoordinateOperation
 }
 
 output_type_mapping = {
