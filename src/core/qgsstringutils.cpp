@@ -430,7 +430,7 @@ double QgsStringUtils::fuzzyScore( const QString &candidate, const QString &sear
   bool isPreviousIndexMatching = false;
   bool isWordOpen = true;
 
-  // loop throught each candidate char and calculate the potential max score
+  // loop trough each candidate char and calculate the potential max score
   while ( candidateIdx < candidateLength )
   {
     QChar candidateChar = candidateNormalized[ candidateIdx++ ];
