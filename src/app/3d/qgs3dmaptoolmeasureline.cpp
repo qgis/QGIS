@@ -127,7 +127,6 @@ void Qgs3DMapToolMeasureLine::updateSignalSlots()
 
   // Update scale if the terrain vertical scale changed
   connect( mCanvas->map(), &Qgs3DMapSettings::terrainVerticalScaleChanged, this, &Qgs3DMapToolMeasureLine::updateMeasurementLayer );
-
 }
 
 void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
