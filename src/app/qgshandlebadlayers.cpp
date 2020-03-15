@@ -113,6 +113,9 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
                                          << tr( "Datasource" )
                                        );
 
+  mLayerList->horizontalHeader()->setSectionMovable( true );
+  mLayerList->horizontalHeader()->setSectionResizeMode( QHeaderView::Interactive );
+
   int j = 0;
   for ( int i = 0; i < mLayers.size(); i++ )
   {
