@@ -3985,7 +3985,7 @@ void TestProcessingGui::mapLayerComboBox()
   param.reset();
 
   // map layer param, only point vector and raster types are acceptable
-  param = qgis::make_unique< QgsProcessingParameterMapLayer> ( QStringLiteral( "param" ), QString(), QVariant(), false, QList< int > << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeRaster );
+  param = qgis::make_unique< QgsProcessingParameterMapLayer> ( QStringLiteral( "param" ), QString(), QVariant(), false, QList< int >() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeRaster );
   combo = qgis::make_unique< QgsProcessingMapLayerComboBox >( param.get() );
   combo->setLayer( point );
   QCOMPARE( combo->currentLayer(), point );
