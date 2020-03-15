@@ -112,7 +112,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>807</width>
+               <width>806</width>
                <height>300</height>
               </rect>
              </property>
@@ -615,7 +615,7 @@
               <item>
                <widget class="QStackedWidget" name="mLabelStackedWidget">
                 <property name="currentIndex">
-                 <number>6</number>
+                 <number>5</number>
                 </property>
                 <widget class="QWidget" name="mLabelPage_Text">
                  <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -644,8 +644,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>775</width>
-                       <height>405</height>
+                       <width>781</width>
+                       <height>395</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1227,8 +1227,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>758</width>
-                       <height>509</height>
+                       <width>767</width>
+                       <height>624</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_42">
@@ -2126,8 +2126,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>775</width>
-                       <height>405</height>
+                       <width>781</width>
+                       <height>395</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2472,8 +2472,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>758</width>
-                       <height>633</height>
+                       <width>767</width>
+                       <height>696</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -3233,8 +3233,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>775</width>
-                       <height>405</height>
+                       <width>767</width>
+                       <height>406</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3661,8 +3661,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>775</width>
-                       <height>405</height>
+                       <width>781</width>
+                       <height>395</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_46">
@@ -3694,47 +3694,6 @@ font-style: italic;</string>
                           </property>
                          </widget>
                         </item>
-                        <item row="2" column="0" colspan="3">
-                         <layout class="QGridLayout" name="gridLayout_45" columnstretch="0,0,0">
-                          <property name="leftMargin">
-                           <number>20</number>
-                          </property>
-                          <property name="topMargin">
-                           <number>0</number>
-                          </property>
-                          <item row="0" column="1" colspan="2">
-                           <widget class="QComboBox" name="mCalloutStyleComboBox"/>
-                          </item>
-                          <item row="0" column="0">
-                           <widget class="QLabel" name="label_11">
-                            <property name="text">
-                             <string>Style</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item row="1" column="0" colspan="3">
-                           <widget class="QStackedWidget" name="mCalloutStackedWidget">
-                            <widget class="QWidget" name="pageDummy">
-                             <layout class="QVBoxLayout" name="verticalLayout_19">
-                              <item>
-                               <widget class="QLabel" name="label_45">
-                                <property name="text">
-                                 <string>This callout type doesn't have any editable properties</string>
-                                </property>
-                                <property name="alignment">
-                                 <set>Qt::AlignCenter</set>
-                                </property>
-                                <property name="wordWrap">
-                                 <bool>true</bool>
-                                </property>
-                               </widget>
-                              </item>
-                             </layout>
-                            </widget>
-                           </widget>
-                          </item>
-                         </layout>
-                        </item>
                         <item row="1" column="0">
                          <widget class="QCheckBox" name="mCalloutsDrawCheckBox">
                           <property name="sizePolicy">
@@ -3760,6 +3719,49 @@ font-style: italic;</string>
                            </size>
                           </property>
                          </spacer>
+                        </item>
+                        <item row="2" column="0" colspan="3">
+                         <widget class="QFrame" name="mCalloutFrame">
+                          <layout class="QGridLayout" name="gridLayout_45" columnstretch="0,0,0">
+                           <property name="leftMargin">
+                            <number>20</number>
+                           </property>
+                           <property name="topMargin">
+                            <number>1</number>
+                           </property>
+                           <item row="0" column="1" colspan="2">
+                            <widget class="QComboBox" name="mCalloutStyleComboBox"/>
+                           </item>
+                           <item row="0" column="0">
+                            <widget class="QLabel" name="label_11">
+                             <property name="text">
+                              <string>Style</string>
+                             </property>
+                            </widget>
+                           </item>
+                           <item row="1" column="0" colspan="3">
+                            <widget class="QStackedWidget" name="mCalloutStackedWidget">
+                             <widget class="QWidget" name="pageDummy">
+                              <layout class="QVBoxLayout" name="verticalLayout_19">
+                               <item>
+                                <widget class="QLabel" name="label_45">
+                                 <property name="text">
+                                  <string>This callout type doesn't have any editable properties</string>
+                                 </property>
+                                 <property name="alignment">
+                                  <set>Qt::AlignCenter</set>
+                                 </property>
+                                 <property name="wordWrap">
+                                  <bool>true</bool>
+                                 </property>
+                                </widget>
+                               </item>
+                              </layout>
+                             </widget>
+                            </widget>
+                           </item>
+                          </layout>
+                         </widget>
                         </item>
                        </layout>
                       </item>
@@ -3808,9 +3810,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-263</y>
-                       <width>758</width>
-                       <height>932</height>
+                       <y>0</y>
+                       <width>767</width>
+                       <height>1035</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5584,8 +5586,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>758</width>
-                       <height>674</height>
+                       <width>767</width>
+                       <height>757</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
