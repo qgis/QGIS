@@ -59,6 +59,10 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterLayout,
                        QgsProcessingParameterLayoutItem,
                        QgsProcessingParameterDateTime,
+                       QgsProcessingParameterDatabaseSchema,
+                       QgsProcessingParameterDatabaseTable,
+                       QgsProcessingParameterMapTheme,
+                       QgsProcessingParameterProviderConnection,
                        QgsProcessingOutputString,
                        QgsProcessingOutputBoolean,
                        QgsProcessingOutputFile,
@@ -328,6 +332,10 @@ class ProcessingAlgFactory():
     LAYOUT = "LAYOUT"
     LAYOUT_ITEM = "LAYOUT_ITEM"
     DATETIME = "DATETIME"
+    DATABASESCHEMA = "DATABASESCHEMA"
+    DATABASETABLE = "DATABASETABLE"
+    MAPTHEME = "MAPTHEME"
+    PROVIDER_CONN = "PROVIDER_CONN"
 
     def __init__(self):
         self._current = None
@@ -461,6 +469,10 @@ class ProcessingAlgFactory():
             alg.LAYOUT_ITEM: QgsProcessingParameterLayoutItem
             alg.COLOR: QgsProcessingParameterColor
             alg.DATETIME: QgsProcessingParameterDateTime
+            alg.DATABASESCHEMA: QgsProcessingParameterDatabaseSchema
+            alg.DATABASETABLE: QgsProcessingParameterDatabaseTable
+            alg.MAPTHEME: QgsProcessingParameterMapTheme
+            alg.PROVIDER_CONN: QgsProcessingParameterProviderConnection
 
         :param type: The type of the input. This should be a type define on `alg` like alg.STRING, alg.DISTANCE
         :keyword label: The label of the output. Translates into `description` arg.
@@ -512,7 +524,11 @@ input_type_mapping = {
     ProcessingAlgFactory.LAYOUT: QgsProcessingParameterLayout,
     ProcessingAlgFactory.LAYOUT_ITEM: QgsProcessingParameterLayoutItem,
     ProcessingAlgFactory.COLOR: QgsProcessingParameterColor,
-    ProcessingAlgFactory.DATETIME: QgsProcessingParameterDateTime
+    ProcessingAlgFactory.DATETIME: QgsProcessingParameterDateTime,
+    ProcessingAlgFactory.DATABASESCHEMA: QgsProcessingParameterDatabaseSchema,
+    ProcessingAlgFactory.DATABASETABLE: QgsProcessingParameterDatabaseTable,
+    ProcessingAlgFactory.MAPTHEME: QgsProcessingParameterMapTheme,
+    ProcessingAlgFactory.PROVIDER_CONN: QgsProcessingParameterProviderConnection
 }
 
 output_type_mapping = {
