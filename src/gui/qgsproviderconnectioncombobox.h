@@ -55,18 +55,23 @@ class GUI_EXPORT QgsProviderConnectionComboBox : public QComboBox
     /**
      * Constructor for QgsProviderConnectionComboBox, for the specified \a provider.
      *
-    * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation
-    * in order for the model to work correctly.
+     * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation
+     * in order for the model to work correctly.
      */
     explicit QgsProviderConnectionComboBox( const QString &provider, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    /**
+     * Constructor for QgsProviderConnectionComboBox.
+     *
+     * \note The combo box will not show any connection until setProvider() is called.
+     */
     explicit QgsProviderConnectionComboBox( QWidget *parent = nullptr ) SIP_SKIP;
 
     /**
      * Sets the provider to be used.
      *
-    * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation
-    * in order for the model to work correctly.
+     * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation
+     * in order for the model to work correctly.
      */
     void setProvider( const QString &provider );
 
