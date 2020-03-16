@@ -328,7 +328,7 @@ void QgsPostgresProviderConnection::createSpatialIndex( const QString &schema, c
   if ( options.geometryColumnName.isEmpty() )
     throw QgsProviderConnectionException( QObject::tr( "Geometry column name not specified while creating spatial index" ) );
 
-  checkCapability( Capability::Vacuum );
+  checkCapability( Capability::CreateSpatialIndex );
 
   const QString indexName = QStringLiteral( "sidx_%1_%2" ).arg( name, options.geometryColumnName );
   executeSql( QStringLiteral( "CREATE INDEX %1 ON %2.%3 USING GIST (%4);" )
