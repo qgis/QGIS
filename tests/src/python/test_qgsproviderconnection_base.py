@@ -273,6 +273,10 @@ class TestPyQgsProviderConnectionBase():
             if capabilities & QgsAbstractDatabaseProviderConnection.Vacuum:
                 conn.vacuum('myNewSchema', 'myNewTable')
 
+            # Create spatial index
+            if capabilities & QgsAbstractDatabaseProviderConnection.CreateSpatialIndex:
+                conn.createSpatialIndex('myNewSchema', 'myNewTable')
+
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema:
                 # Drop schema (should fail)
                 with self.assertRaises(QgsProviderConnectionException) as ex:
