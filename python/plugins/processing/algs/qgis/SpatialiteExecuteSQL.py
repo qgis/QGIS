@@ -31,7 +31,6 @@ from qgis.core import (QgsDataSourceUri,
                        QgsProviderConnectionException)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import spatialite
 
 
 class SpatialiteExecuteSQL(QgisAlgorithm):
