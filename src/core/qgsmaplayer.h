@@ -615,6 +615,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setCustomProperties( const QgsObjectCustomProperties &properties );
 
     /**
+     * Read all custom properties from layer. Properties are stored in a map and saved in project file.
+     * \see setCustomProperties
+     * \since QGIS 3.14
+     */
+    const QgsObjectCustomProperties &customProperties() const;
+
+    /**
      * Remove a custom property from layer. Properties are stored in a map and saved in project file.
      * \see setCustomProperty()
      */
