@@ -284,7 +284,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     {
       if ( isEmpty || exprIdx >= 0 )
       {
-        return "";
+        return QString();
       }
       QgsField field = mFields.at( index.row() - fieldOffset );
       return field.name();
