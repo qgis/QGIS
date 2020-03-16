@@ -69,8 +69,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( btnSaveExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::storeCurrentUserExpression );
   connect( btnEditExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::editSelectedUserExpression );
   connect( btnRemoveExpression, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::removeSelectedUserExpression );
-  connect( mActionImportUserExpressions, &QAction::triggered, this, &QgsExpressionBuilderWidget::importUserExpressions_pressed );
-  connect( mActionExportUserExpressions, &QAction::triggered, this, &QgsExpressionBuilderWidget::exportUserExpressions_pressed );
+  connect( btnImportExpressions, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::importUserExpressions_pressed );
+  connect( btnExportExpressions, &QPushButton::pressed, this, &QgsExpressionBuilderWidget::exportUserExpressions_pressed );
   connect( btnClearEditor, &QPushButton::pressed, txtExpressionString, &QgsCodeEditorExpression::clear );
 
   txtHelpText->setOpenExternalLinks( true );
@@ -94,7 +94,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   btnSaveExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ) );
   btnEditExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionToggleEditing.svg" ) ) );
   btnRemoveExpression->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionDeleteSelected.svg" ) ) );
-  btnImportExportExpressions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSaveAs.svg" ) ) );
+  btnExportExpressions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionSharingExport.svg" ) ) );
+  btnImportExpressions->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionSharingImport.svg" ) ) );
   btnClearEditor->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileNew.svg" ) ) );
 
   expressionTree->setContextMenuPolicy( Qt::CustomContextMenu );
@@ -1377,7 +1378,9 @@ void QgsExpressionBuilderWidget::editSelectedUserExpression()
        ( item->parent() && item->parent()->text() != mUserExpressionsGroupName ) )
     return;
 
-  QgsExpressionStoreDialog dlg { item->text(), item->getExpressionText(), item->getHelpText() };
+  QgsSettings settings;
+  QString helpText = settings.value( QStringLiteral( "user/%1/helpText" ).arg( item->text() ), "", QgsSettings::Section::Expressions ).toString();
+  QgsExpressionStoreDialog dlg { item->text(), item->getExpressionText(), helpText };
 
   if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
@@ -1490,11 +1493,11 @@ QJsonDocument QgsExpressionBuilderWidget::exportUserExpressions()
 void QgsExpressionBuilderWidget::importUserExpressions_pressed()
 {
   QgsSettings settings;
-  QString lastSaveDir = settings.value( QStringLiteral( "lastImportExpressionsDir" ), QDir::homePath(), QgsSettings::App ).toString();
+  QString lastImportDir = settings.value( QStringLiteral( "lastImportExpressionsDir" ), QDir::homePath(), QgsSettings::App ).toString();
   QString loadFileName = QFileDialog::getOpenFileName(
                            this,
                            tr( "Import User Expressions" ),
-                           lastSaveDir,
+                           lastImportDir,
                            tr( "User expressions" ) + " (*.json)" );
 
   if ( loadFileName.isEmpty() )
