@@ -161,17 +161,17 @@ void QgsSpatiaLiteProviderConnection::renameVectorTable( const QString &schema, 
   QString sql( QStringLiteral( "ALTER TABLE %1 RENAME TO %2" )
                .arg( QgsSqliteUtils::quotedIdentifier( name ),
                      QgsSqliteUtils::quotedIdentifier( newName ) ) );
-  executeSqlPrivate( sql );
+  executeSqlDirect( sql );
   sql = QStringLiteral( "UPDATE geometry_columns SET f_table_name = lower(%2) WHERE lower(f_table_name) = lower(%1)" )
         .arg( QgsSqliteUtils::quotedString( name ),
               QgsSqliteUtils::quotedString( newName ) );
-  executeSqlPrivate( sql );
+  executeSqlDirect( sql );
   sql = QStringLiteral( "UPDATE layer_styles SET f_table_name = lower(%2) WHERE f_table_name = lower(%1)" )
         .arg( QgsSqliteUtils::quotedString( name ),
               QgsSqliteUtils::quotedString( newName ) );
   try
   {
-    executeSqlPrivate( sql );
+    executeSqlDirect( sql );
   }
   catch ( QgsProviderConnectionException &ex )
   {
@@ -193,7 +193,7 @@ void QgsSpatiaLiteProviderConnection::vacuum( const QString &schema, const QStri
   {
     QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
   }
-  executeSqlPrivate( QStringLiteral( "VACUUM" ) );
+  executeSqlDirect( QStringLiteral( "VACUUM" ) );
 }
 
 
@@ -389,6 +389,24 @@ QList<QVariantList> QgsSpatiaLiteProviderConnection::executeSqlPrivate( const QS
     throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql ).arg( errCause ) );
   }
   return results;
+}
+
+bool QgsSpatiaLiteProviderConnection::executeSqlDirect( const QString &sql ) const
+{
+  sqlite3_database_unique_ptr database;
+  int result = database.open( pathFromUri() );
+  if ( result != SQLITE_OK )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql ).arg( database.errorMessage() ) );
+  }
+
+  QString errorMessage;
+  result = database.exec( sql, errorMessage );
+  if ( result != SQLITE_OK )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Error executing SQL %1: %2" ).arg( sql ).arg( errorMessage ) );
+  }
+  return true;
 }
 
 QString QgsSpatiaLiteProviderConnection::pathFromUri() const

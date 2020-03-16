@@ -50,6 +50,9 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     //! Use GDAL to execute SQL
     QList<QVariantList> executeSqlPrivate( const QString &sql ) const;
 
+    //! Executes SQL directly using sqlite3 -- avoids the extra consistency checks which GDAL requires when opening a spatialite database
+    bool executeSqlDirect( const QString &sql ) const;
+
     //! extract the path from the DS URI (which is in "PG" form: 'dbname=\'/path_to.sqlite\' table="table_name" (geom_col_name)')
     QString pathFromUri() const;
 
