@@ -132,6 +132,11 @@ void QgsAbstractDatabaseProviderConnection::vacuum( const QString &, const QStri
   checkCapability( Capability::Vacuum );
 }
 
+void QgsAbstractDatabaseProviderConnection::createSpatialIndex( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions & ) const
+{
+  checkCapability( Capability::CreateSpatialIndex );
+}
+
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tables( const QString &, const QgsAbstractDatabaseProviderConnection::TableFlags & ) const
 {
   checkCapability( Capability::Tables );
