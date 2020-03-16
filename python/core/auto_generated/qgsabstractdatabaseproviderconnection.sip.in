@@ -232,6 +232,8 @@ This information is calculated from the geometry columns types.
       TableExists,
       Spatial,
       CreateSpatialIndex,
+      SpatialIndexExists,
+      DeleteSpatialIndex,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
@@ -397,6 +399,32 @@ The ``options`` argument can be used to provide extra options controlling the sp
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 :raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.14
+%End
+
+    virtual bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const throw( QgsProviderConnectionException );
+%Docstring
+Determines whether a spatial index exists for the database table with given ``schema``, ``name`` and ``geometryColumn`` (``schema`` and ``geometryColumn`` are
+ignored if not supported by the backend).
+
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.14
+%End
+
+    virtual void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const throw( QgsProviderConnectionException );
+%Docstring
+Deletes the existing spatial index for the database table with given ``schema``, ``name`` and ``geometryColumn`` (``schema`` and ``geometryColumn`` are
+ignored if not supported by the backend).
+
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.14
 %End
 
 

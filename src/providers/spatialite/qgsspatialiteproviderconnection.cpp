@@ -208,6 +208,19 @@ void QgsSpatiaLiteProviderConnection::createSpatialIndex( const QString &schema,
                      QgsSqliteUtils::quotedString( ( options.geometryColumnName ) ) ) );
 }
 
+bool QgsSpatiaLiteProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
+{
+  checkCapability( Capability::CreateSpatialIndex );
+  if ( ! schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+  }
+  const QList<QVariantList> res = executeSqlPrivate( QStringLiteral( "SELECT spatial_index_enabled FROM geometry_columns WHERE lower(f_table_name) = lower(%1) AND lower(f_geometry_column) = lower(%2)" )
+                                  .arg( QgsSqliteUtils::quotedString( name ),
+                                        QgsSqliteUtils::quotedString( geometryColumn ) ) );
+  return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toInt() == 1;
+}
+
 QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {
   checkCapability( Capability::Tables );
@@ -346,6 +359,7 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
     Capability::TableExists,
     Capability::ExecuteSql,
     Capability::CreateSpatialIndex,
+    Capability::SpatialIndexExists,
   };
 }
 

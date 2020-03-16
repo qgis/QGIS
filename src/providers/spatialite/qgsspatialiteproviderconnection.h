@@ -41,6 +41,7 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     QList<QList<QVariant>> executeSql( const QString &sql ) const override;
     void vacuum( const QString &schema, const QString &name ) const override;
     void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const override;
+    bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
         const TableFlags &flags = nullptr ) const override;
     QIcon icon() const override;

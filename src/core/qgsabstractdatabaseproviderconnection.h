@@ -291,6 +291,8 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
       TableExists = 1 << 14,        //!< Can check if table exists
       Spatial = 1 << 15,            //!< The connection supports spatial tables
       CreateSpatialIndex = 1 << 16, //!< The connection can create spatial indices
+      SpatialIndexExists = 1 << 17, //!< The connection can determine if a spatial index exists
+      DeleteSpatialIndex = 1 << 18, //!< The connection can delete spatial indices for tables
     };
 
     Q_ENUM( Capability )
@@ -430,8 +432,29 @@ class CORE_EXPORT QgsAbstractDatabaseProviderConnection : public QgsAbstractProv
      *
      * Raises a QgsProviderConnectionException if any errors are encountered.
      * \throws QgsProviderConnectionException
+     * \since QGIS 3.14
      */
     virtual void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Determines whether a spatial index exists for the database table with given \a schema, \a name and \a geometryColumn (\a schema and \a geometryColumn are
+     * ignored if not supported by the backend).
+     *
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.14
+     */
+    virtual bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const SIP_THROW( QgsProviderConnectionException );
+
+    /**
+     * Deletes the existing spatial index for the database table with given \a schema, \a name and \a geometryColumn (\a schema and \a geometryColumn are
+     * ignored if not supported by the backend).
+     *
+     * Raises a QgsProviderConnectionException if any errors are encountered.
+     * \throws QgsProviderConnectionException
+     * \since QGIS 3.14
+     */
+    virtual void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const SIP_THROW( QgsProviderConnectionException );
 
     /**
      * Returns information on the tables in the given schema.
