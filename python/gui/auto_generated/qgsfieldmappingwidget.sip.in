@@ -23,16 +23,16 @@ for each set of "destination" fields an expression defines how to obtain the val
 %End
   public:
 
-    explicit QgsFieldMappingWidget(const QgsFields &sourceFields,
-                                   const QgsFields &destinationFields,
-                                   const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
-                                   QWidget *parent = 0);
+    explicit QgsFieldMappingWidget( const QgsFields &sourceFields,
+                                    const QgsFields &destinationFields,
+                                    const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
+                                    QWidget *parent = 0 );
 
     QMap<QString, QgsExpression> expressions() const;
 
   signals:
 
-     public:
+      public:
 };
 
 
@@ -51,32 +51,30 @@ for each set of "destination" fields an expression defines how to obtain the val
 %End
   public:
 
-    QgsFieldMappingModel(const QgsFields &sourceFields,
-                         const QgsFields &destinationFields,
-                         const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
-                         QObject* parent = 0);
+    QgsFieldMappingModel( const QgsFields &sourceFields,
+                          const QgsFields &destinationFields,
+                          const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
+                          QObject *parent = 0 );
 
-    QgsExpressionContextGenerator* contextGenerator();
+    QgsExpressionContextGenerator *contextGenerator() const;
 
-    virtual int rowCount(const QModelIndex& parent) const;
+    virtual int rowCount( const QModelIndex &parent ) const;
 
-    virtual int columnCount(const QModelIndex& parent) const;
+    virtual int columnCount( const QModelIndex &parent ) const;
 
-    virtual QVariant data(const QModelIndex& index, int role) const;
+    virtual QVariant data( const QModelIndex &index, int role ) const;
 
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+    QgsFields sourceFields() const;
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
+
 
 
 
       public:
-  public:
-    virtual Qt::ItemFlags flags(const QModelIndex& index) const;
-
-    QgsFields sourceFields() const;
-
-  public:
-    virtual bool setData(const QModelIndex& index, const QVariant& value, int role);
-
 };
 
 
