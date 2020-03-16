@@ -188,7 +188,29 @@ void QgsGeoPackageProviderConnection::createSpatialIndex( const QString &schema,
   }
   executeGdalSqlPrivate( QStringLiteral( "SELECT CreateSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
                          QgsSqliteUtils::quotedString( ( options.geometryColumnName ) ) ) );
+}
 
+bool QgsGeoPackageProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
+{
+  checkCapability( Capability::CreateSpatialIndex );
+  if ( ! schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+  }
+  const QList<QVariantList> res = executeGdalSqlPrivate( QStringLiteral( "SELECT HasSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
+                                  QgsSqliteUtils::quotedString( geometryColumn ) ) );
+  return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toBool();
+}
+
+void QgsGeoPackageProviderConnection::deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const
+{
+  checkCapability( Capability::DeleteSpatialIndex );
+  if ( ! schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by GPKG, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+  }
+  executeGdalSqlPrivate( QStringLiteral( "SELECT DisableSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
+                         QgsSqliteUtils::quotedString( geometryColumn ) ) );
 }
 
 QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
@@ -207,8 +229,8 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
   try
   {
     const QString sql { QStringLiteral( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name, g.column_name "
-                                        "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
-                                        "WHERE c.table_name NOT IN (%1)" ).arg( excludedTableNames.join( ',' ) ) };
+                                          "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
+                                          "WHERE c.table_name NOT IN (%1)" ).arg( excludedTableNames.join( ',' ) ) };
     results = executeSql( sql );
     for ( const auto &row : qgis::as_const( results ) )
     {
@@ -291,7 +313,9 @@ void QgsGeoPackageProviderConnection::setDefaultCapabilities()
     Capability::Spatial,
     Capability::TableExists,
     Capability::ExecuteSql,
-    Capability::CreateSpatialIndex
+    Capability::CreateSpatialIndex,
+    Capability::SpatialIndexExists,
+    Capability::DeleteSpatialIndex
   };
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,4,0)
   mCapabilities |= Capability::DropRasterTable;

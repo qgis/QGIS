@@ -137,6 +137,17 @@ void QgsAbstractDatabaseProviderConnection::createSpatialIndex( const QString &,
   checkCapability( Capability::CreateSpatialIndex );
 }
 
+void QgsAbstractDatabaseProviderConnection::deleteSpatialIndex( const QString &, const QString &, const QString & ) const
+{
+  checkCapability( Capability::DeleteSpatialIndex );
+}
+
+bool QgsAbstractDatabaseProviderConnection::spatialIndexExists( const QString &, const QString &, const QString & ) const
+{
+  checkCapability( Capability::SpatialIndexExists );
+  return false;
+}
+
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tables( const QString &, const QgsAbstractDatabaseProviderConnection::TableFlags & ) const
 {
   checkCapability( Capability::Tables );
