@@ -199,6 +199,9 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         connection_name = self.parameterAsConnectionName(parameters, self.DATABASE, context)
+        if not connection_name:
+            raise QgsProcessingException(
+                self.tr('No connection specified'))
 
         # resolve connection details to uri
         try:
