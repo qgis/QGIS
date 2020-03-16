@@ -139,3 +139,13 @@ void QgsMapToolAddRectangle::clean()
   if ( vLayer )
     mLayerType = vLayer->geometryType();
 }
+
+void QgsMapToolAddRectangle::release( QgsMapMouseEvent *e )
+{
+  deactivate();
+  if ( mParentTool )
+  {
+    mParentTool->canvasReleaseEvent( e );
+  }
+  activate();
+}
