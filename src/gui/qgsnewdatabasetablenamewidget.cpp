@@ -28,7 +28,7 @@
 #include <QPushButton>
 
 // List of data item provider keys that are filesystem based
-QStringList QgsNewDatabaseTableNameWidget::FILESYSTEM_BASED_DATAITEM_PROVIDERS { QStringLiteral( "GPKG" ), QStringLiteral( "SPATIALITE" ) };
+QStringList QgsNewDatabaseTableNameWidget::FILESYSTEM_BASED_DATAITEM_PROVIDERS { QStringLiteral( "GPKG" ), QStringLiteral( "spatialite" ) };
 
 QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   QgsBrowserGuiModel *browserModel,
