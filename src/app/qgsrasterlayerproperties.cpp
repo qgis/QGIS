@@ -474,6 +474,42 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     title += QStringLiteral( " (%1)" ).arg( mRasterLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
   optionsStackedWidget_CurrentChanged( mOptionsStackedWidget->currentIndex() );
+<<<<<<< HEAD:src/app/qgsrasterlayerproperties.cpp
+=======
+
+  //Add help page references
+  mOptsPage_Information->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#information-properties" ) );
+  mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#source-properties" ) );
+  mOptsPage_Style->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#symbology-properties" ) );
+  mOptsPage_Transparency->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#transparency-properties" ) );
+
+  if ( mOptsPage_Histogram )
+    mOptsPage_Histogram->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#histogram-properties" ) );
+
+  mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#rendering-properties" ) );
+
+  if ( mOptsPage_Pyramids )
+    mOptsPage_Pyramids->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#pyramids-properties" ) );
+
+  mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#metadata-properties" ) );
+  mOptsPage_Legend->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#legend-properties" ) );
+  mOptsPage_Server->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#server-properties" ) );
+}
+
+void QgsRasterLayerProperties::setCurrentPage( const QString &page )
+{
+  //find the page with a matching widget name
+  for ( int idx = 0; idx < mOptionsStackedWidget->count(); ++idx )
+  {
+    QWidget *currentPage = mOptionsStackedWidget->widget( idx );
+    if ( currentPage->objectName() == page )
+    {
+      //found the page, set it as current
+      mOptionsStackedWidget->setCurrentIndex( idx );
+      return;
+    }
+  }
+>>>>>>> 9dc9559593... avoid crash when histogram and pyramid pages have been deleted:src/gui/raster/qgsrasterlayerproperties.cpp
 }
 
 void QgsRasterLayerProperties::setupTransparencyTable( int nBands )
