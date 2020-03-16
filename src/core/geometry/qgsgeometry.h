@@ -893,7 +893,7 @@ class CORE_EXPORT QgsGeometry
      * \param[out] newGeometries list of new geometries that have been created with the split
      * \param topological TRUE if topological editing is enabled
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
-     * \param splitFeature TODO DESCRIPTION: can we really add this parameter to
+     * \param splitFeature Set to True if you want to split a feature, otherwise set to False to split parts
      * fix this bug?
      * \returns OperationResult a result code: success or reason of failure
      */
