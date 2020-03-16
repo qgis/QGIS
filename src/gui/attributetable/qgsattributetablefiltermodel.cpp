@@ -313,12 +313,14 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
   {
     if ( filterMode == ShowVisible )
     {
-      connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::extentsChanged );
+      connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
+      connect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
       generateListOfVisibleFeatures();
     }
     else
     {
-      disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::extentsChanged );
+      disconnect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
+      disconnect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
     }
 
     mFilterMode = filterMode;
@@ -371,7 +373,7 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
   // returns are handled in their respective case statement above
 }
 
-void QgsAttributeTableFilterModel::extentsChanged()
+void QgsAttributeTableFilterModel::reloadVisible()
 {
   generateListOfVisibleFeatures();
   invalidateFilter();

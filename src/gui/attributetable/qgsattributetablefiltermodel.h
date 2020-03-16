@@ -255,10 +255,11 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
   public slots:
 
     /**
-     * Is called upon every change of the visible extents on the map canvas.
+     * Is called upon every change of the visible extents on the map canvas or when data of
+     * the master table model changes.
      * When a change is signalled, the filter is updated and invalidated if needed.
      */
-    void extentsChanged();
+    void reloadVisible();
 
   private slots:
     void selectionChanged();
