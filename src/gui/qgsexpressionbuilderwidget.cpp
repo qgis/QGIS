@@ -432,12 +432,10 @@ void QgsExpressionBuilderWidget::expressionTree_doubleClicked( const QModelIndex
 
 void QgsExpressionBuilderWidget::loadFieldNames()
 {
-  // TODO We should really return a error the user of the widget that
-  // the there is no layer set.
-  if ( !mLayer )
-    return;
-
-  loadFieldNames( mLayer->fields() );
+  if ( mLayer )
+    loadFieldNames( mLayer->fields() );
+  if ( ! mExpressionContext.fields().isEmpty() )
+    loadFieldNames( mExpressionContext.fields() );
 }
 
 
@@ -830,7 +828,6 @@ void QgsExpressionBuilderWidget::setExpressionContext( const QgsExpressionContex
 {
   mExpressionContext = context;
   updateFunctionTree();
-  loadFieldNames();
   loadRecent( mRecentKey );
   loadUserExpressions( );
 }

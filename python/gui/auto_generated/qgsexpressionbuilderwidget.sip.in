@@ -120,7 +120,7 @@ Sets layer in order to get the fields and values
 
     void loadFieldNames();
 %Docstring
-Loads all the field names from the layer.
+Loads all the field names from the layer or from the expression context
 @remarks Should this really be public couldn't we just do this for the user?
 %End
 

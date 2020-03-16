@@ -150,7 +150,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void setLayer( QgsVectorLayer *layer );
 
     /**
-     * Loads all the field names from the layer.
+     * Loads all the field names from the layer or from the expression context
       * @remarks Should this really be public couldn't we just do this for the user?
       */
     void loadFieldNames();
