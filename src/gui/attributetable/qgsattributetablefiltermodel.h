@@ -221,6 +221,12 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 
+    /**
+     * Set the \a expression to be stored in case of the features need to be
+     * filtered (like on filter or on main model data change).
+     */
+    void setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context ) { mFilterExpression = expression; mFilterExpressionContext = context; }
+
   signals:
 
     /**
@@ -261,6 +267,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     void reloadVisible();
 
+    void filterFeatures();
+
   private slots:
     void selectionChanged();
     void onColumnsChanged();
@@ -274,6 +282,9 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     QgsAttributeTableConfig mConfig;
     QVector<int> mColumnMapping;
+    QgsExpression mFilterExpression;
+    QgsExpressionContext mFilterExpressionContext;
+
     int mapColumnToSource( int column ) const;
     int mapColumnFromSource( int column ) const;
 

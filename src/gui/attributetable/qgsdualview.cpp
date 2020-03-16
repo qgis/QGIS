@@ -1076,6 +1076,13 @@ void QgsDualView::setFilteredFeatures( const QgsFeatureIds &filteredFeatures )
   mFilterModel->setFilteredFeatures( filteredFeatures );
 }
 
+void QgsDualView::filterFeatures( const QgsExpression &filterExpression, const QgsExpressionContext &context )
+{
+  mFilterModel->setFilterExpression( filterExpression, context );
+  mFilterModel->filterFeatures();
+}
+
+
 void QgsDualView::setRequest( const QgsFeatureRequest &request )
 {
   mMasterModel->setRequest( request );

@@ -122,12 +122,17 @@ filter restrictions
 :return: Number of features
 %End
 
-    void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
+ void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
 %Docstring
 Set a list of currently visible features
 
 :param filteredFeatures: A list of feature ids
+
+.. deprecated::
+   since filterFeatures is handled in the attribute filter model itself
 %End
+
+    void filterFeatures( const QgsExpression &filterExpression, const QgsExpressionContext &context );
 
     QgsFeatureIds filteredFeatures();
 %Docstring

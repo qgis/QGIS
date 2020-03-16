@@ -26,6 +26,7 @@
 #include "qgsrenderer.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsapplication.h"
 
 //////////////////
 // Filter Model //
@@ -323,6 +324,15 @@ void QgsAttributeTableFilterModel::setFilterMode( FilterMode filterMode )
       disconnect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::reloadVisible );
     }
 
+    if ( filterMode == ShowFilteredList )
+    {
+      connect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::filterFeatures );
+    }
+    else
+    {
+      disconnect( mTableModel, &QgsAttributeTableModel::dataChanged, this, &QgsAttributeTableFilterModel::filterFeatures );
+    }
+
     mFilterMode = filterMode;
     invalidateFilter();
   }
@@ -378,6 +388,58 @@ void QgsAttributeTableFilterModel::reloadVisible()
   generateListOfVisibleFeatures();
   invalidateFilter();
 }
+
+void QgsAttributeTableFilterModel::filterFeatures()
+{
+  if ( !mFilterExpression.isValid() )
+    return;
+
+  QgsFeatureIds filteredFeatures;
+  QgsDistanceArea myDa;
+
+  myDa.setSourceCrs( mTableModel->layer()->crs(), QgsProject::instance()->transformContext() );
+  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+
+  bool fetchGeom = mFilterExpression.needsGeometry();
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  mFilterExpression.setGeomCalculator( &myDa );
+  mFilterExpression.setDistanceUnits( QgsProject::instance()->distanceUnits() );
+  mFilterExpression.setAreaUnits( QgsProject::instance()->areaUnits() );
+  QgsFeatureRequest request( mTableModel->request() );
+  request.setSubsetOfAttributes( mFilterExpression.referencedColumns(), mTableModel->layer()->fields() );
+  if ( !fetchGeom )
+  {
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+  }
+  else
+  {
+    // force geometry extraction if the filter requests it
+    request.setFlags( request.flags() & ~QgsFeatureRequest::NoGeometry );
+  }
+  QgsFeatureIterator featIt = mTableModel->layer()->getFeatures( request );
+
+  QgsFeature f;
+
+  while ( featIt.nextFeature( f ) )
+  {
+    mFilterExpressionContext.setFeature( f );
+    if ( mFilterExpression.evaluate( &mFilterExpressionContext ).toInt() != 0 )
+      filteredFeatures << f.id();
+
+    // check if there were errors during evaluating
+    if ( mFilterExpression.hasEvalError() )
+      break;
+  }
+
+  featIt.close();
+
+  setFilteredFeatures( filteredFeatures );
+
+  QApplication::restoreOverrideCursor();
+}
+
 
 void QgsAttributeTableFilterModel::selectionChanged()
 {
