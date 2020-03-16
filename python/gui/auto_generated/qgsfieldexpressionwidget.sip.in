@@ -202,6 +202,13 @@ sets the current row in the widget
 sets the current field or expression in the widget
 %End
 
+    void setFields( const QgsFields &fields );
+%Docstring
+Sets the fields used in the widget to ``fields``, this allows the widget to work without a layer.
+
+.. versionadded:: 3.14
+%End
+
     void setExpression( const QString &expression );
 %Docstring
 Sets the current expression text and if applicable also the field.
