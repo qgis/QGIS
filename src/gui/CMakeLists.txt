@@ -363,7 +363,6 @@ SET(QGIS_GUI_SRCS
   qgsdataitemguiproviderregistry.cpp
   qgsdatumtransformdialog.cpp
   qgsdatasourceselectdialog.cpp
-  qgsnewdatabasetablenamewidget.cpp
   qgsdetaileditemdata.cpp
   qgsdetaileditemdelegate.cpp
   qgsdetaileditemwidget.cpp
@@ -383,6 +382,7 @@ SET(QGIS_GUI_SRCS
   qgsfeatureselectiondlg.cpp
   qgsfieldcombobox.cpp
   qgsfieldexpressionwidget.cpp
+  qgsfieldmappingwidget.cpp
   qgsfeaturelistcombobox.cpp
   qgsfieldvalidator.cpp
   qgsfieldvalueslineedit.cpp
@@ -451,6 +451,7 @@ SET(QGIS_GUI_SRCS
   qgsmasksourceselectionwidget.cpp
   qgsnewauxiliarylayerdialog.cpp
   qgsnewauxiliaryfielddialog.cpp
+  qgsnewdatabasetablenamewidget.cpp
   qgsnewhttpconnection.cpp
   qgsnewmemorylayerdialog.cpp
   qgsnewnamedialog.cpp
@@ -601,6 +602,7 @@ SET(QGIS_GUI_HDRS
   qgsfeatureselectiondlg.h
   qgsfieldcombobox.h
   qgsfieldexpressionwidget.h
+  qgsfieldmappingwidget.h
   qgsfieldvalidator.h
   qgsfieldvalueslineedit.h
   qgsfilecontentsourcelineedit.h
