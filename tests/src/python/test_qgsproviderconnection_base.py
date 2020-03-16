@@ -275,7 +275,9 @@ class TestPyQgsProviderConnectionBase():
 
             # Create spatial index
             if capabilities & QgsAbstractDatabaseProviderConnection.CreateSpatialIndex:
-                conn.createSpatialIndex('myNewSchema', 'myNewTable')
+                options = QgsAbstractDatabaseProviderConnection.SpatialIndexOptions()
+                options.geometryColumnName = 'geom'
+                conn.createSpatialIndex('myNewSchema', 'myNewTable', options)
 
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema:
                 # Drop schema (should fail)
