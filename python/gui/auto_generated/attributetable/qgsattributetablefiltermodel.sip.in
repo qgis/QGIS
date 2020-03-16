@@ -200,8 +200,8 @@ is shown.
 
     void setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context );
 %Docstring
-Set the ``expression`` to be stored in case of the features need to be
-filtered (like on filter or on main model data change).
+Set the ``expression`` and the ``context`` to be stored in case of the features
+need to be filtered again (like on filter or on main model data change).
 %End
 
   signals:
@@ -243,11 +243,14 @@ selection state of the feature in case selected features are to be shown on top.
     void reloadVisible();
 %Docstring
 Is called upon every change of the visible extents on the map canvas or when data of
-the master table model changes.
+the master table model change.
 When a change is signalled, the filter is updated and invalidated if needed.
 %End
 
     void filterFeatures();
+%Docstring
+Is called when the data changed of the main table moment to update the filter model.
+%End
 
 };
 

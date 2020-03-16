@@ -215,7 +215,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void editSelectionChanged( const QItemSelection &deselected, const QItemSelection &selected );
 
     /**
-     * Emmits the signal for the feature and the selection information
+     * Emits the signal for the feature and the selection information
      */
     void updateEditSelectionDependencies();
 

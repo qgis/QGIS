@@ -222,10 +222,10 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 
     /**
-     * Set the \a expression to be stored in case of the features need to be
-     * filtered (like on filter or on main model data change).
+     * Set the \a expression and the \a context to be stored in case of the features
+     * need to be filtered again (like on filter or on main model data change).
      */
-    void setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context ) { mFilterExpression = expression; mFilterExpressionContext = context; }
+    void setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context );
 
   signals:
 
@@ -262,11 +262,14 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     /**
      * Is called upon every change of the visible extents on the map canvas or when data of
-     * the master table model changes.
+     * the master table model change.
      * When a change is signalled, the filter is updated and invalidated if needed.
      */
     void reloadVisible();
 
+    /**
+     * Is called when the data changed of the main table moment to update the filter model.
+     */
     void filterFeatures();
 
   private slots:

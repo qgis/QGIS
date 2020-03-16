@@ -227,6 +227,12 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
     sort( config.sortExpression(), config.sortOrder() );
 }
 
+void QgsAttributeTableFilterModel::setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context )
+{
+  mFilterExpression = expression;
+  mFilterExpressionContext = context;
+}
+
 void QgsAttributeTableFilterModel::sort( const QString &expression, Qt::SortOrder order )
 {
   if ( order != Qt::AscendingOrder && order != Qt::DescendingOrder )
@@ -395,16 +401,16 @@ void QgsAttributeTableFilterModel::filterFeatures()
     return;
 
   QgsFeatureIds filteredFeatures;
-  QgsDistanceArea myDa;
+  QgsDistanceArea distanceArea;
 
-  myDa.setSourceCrs( mTableModel->layer()->crs(), QgsProject::instance()->transformContext() );
-  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  distanceArea.setSourceCrs( mTableModel->layer()->crs(), QgsProject::instance()->transformContext() );
+  distanceArea.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
-  bool fetchGeom = mFilterExpression.needsGeometry();
+  const bool fetchGeom = mFilterExpression.needsGeometry();
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  mFilterExpression.setGeomCalculator( &myDa );
+  mFilterExpression.setGeomCalculator( &distanceArea );
   mFilterExpression.setDistanceUnits( QgsProject::instance()->distanceUnits() );
   mFilterExpression.setAreaUnits( QgsProject::instance()->areaUnits() );
   QgsFeatureRequest request( mTableModel->request() );
