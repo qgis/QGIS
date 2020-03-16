@@ -47,6 +47,7 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     void renameSchema( const QString &name, const QString &newName ) const override;
     QList<QVariantList> executeSql( const QString &sql ) const override;
     void vacuum( const QString &schema, const QString &name ) const override;
+    void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
         const TableFlags &flags = nullptr ) const override;
     QStringList schemas( ) const override;

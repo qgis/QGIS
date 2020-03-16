@@ -62,7 +62,8 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Capability::Tables,
     Capability::Schemas,
     Capability::Spatial,
-    Capability::TableExists
+    Capability::TableExists,
+    Capability::CreateSpatialIndex
   };
 }
 
@@ -320,6 +321,21 @@ void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString
   executeSql( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" )
               .arg( QgsPostgresConn::quotedIdentifier( schema ) )
               .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
+}
+
+void QgsPostgresProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options ) const
+{
+  if ( options.geometryColumnName.isEmpty() )
+    throw QgsProviderConnectionException( QObject::tr( "Geometry column name not specified while creating spatial index" ) );
+
+  checkCapability( Capability::Vacuum );
+
+  const QString indexName = QStringLiteral( "sidx_%1_%2" ).arg( name, options.geometryColumnName );
+  executeSql( QStringLiteral( "CREATE INDEX %1 ON %2.%3 USING GIST (%4);" )
+              .arg( indexName,
+                    QgsPostgresConn::quotedIdentifier( schema ),
+                    QgsPostgresConn::quotedIdentifier( name ),
+                    QgsPostgresConn::quotedIdentifier( options.geometryColumnName ) ) );
 }
 
 QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
