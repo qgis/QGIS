@@ -186,25 +186,29 @@ class PyQgsStringUtils(unittest.TestCase):
         self.assertEqual(QgsStringUtils.fuzzyScore('   foo   ', 'foo'), 1)
         self.assertEqual(QgsStringUtils.fuzzyScore('foo', '   foo   '), 1)
         self.assertEqual(QgsStringUtils.fuzzyScore('foo', '   foo   '), 1)
+        self.assertEqual(QgsStringUtils.fuzzyScore('foo_bar', 'foo bar'), 1)
         self.assertGreater(QgsStringUtils.fuzzyScore('foo bar', 'foo'), 0)
-        self.assertGreater(QgsStringUtils.fuzzyScore('foo bar', 'foobar'), 0)
         self.assertGreater(QgsStringUtils.fuzzyScore('foo bar', 'fooba'), 0)
+        self.assertGreater(QgsStringUtils.fuzzyScore('foo_bar', 'ob'), 0)
+        self.assertGreater(QgsStringUtils.fuzzyScore('foo bar', 'foobar'), 0)
+        self.assertGreater(QgsStringUtils.fuzzyScore('foo bar', 'foo_bar'), 0)
+        self.assertGreater(QgsStringUtils.fuzzyScore('foo_bar', 'foo bar'), 0)
         self.assertEqual(
             QgsStringUtils.fuzzyScore('foo bar', 'foobar'),
             QgsStringUtils.fuzzyScore('foo_bar', 'foobar')
         )
         self.assertEqual(
-            QgsStringUtils.fuzzyScore('foo bar', 'foobar'),
-            QgsStringUtils.fuzzyScore('foo,bar', 'foobar')
+            QgsStringUtils.fuzzyScore('foo bar', 'foo_bar'),
+            QgsStringUtils.fuzzyScore('foo_bar', 'foo_bar')
         )
         self.assertEqual(
-            QgsStringUtils.fuzzyScore('foo bar', 'foobar'),
-            QgsStringUtils.fuzzyScore('foo!bar', 'foobar')
+            QgsStringUtils.fuzzyScore('foo bar', 'foo bar'),
+            QgsStringUtils.fuzzyScore('foo_bar', 'foo bar')
         )
         # note the accent
         self.assertEqual(
-            QgsStringUtils.fuzzyScore('foo!bér', 'foober'),
-            QgsStringUtils.fuzzyScore('foo!ber', 'foobér')
+            QgsStringUtils.fuzzyScore('foo_bér', 'foober'),
+            QgsStringUtils.fuzzyScore('foo_ber', 'foobér')
         )
         self.assertGreater(
             QgsStringUtils.fuzzyScore('abcd efg hig', 'abcd hig'),

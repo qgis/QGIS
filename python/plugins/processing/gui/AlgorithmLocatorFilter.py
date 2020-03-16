@@ -83,14 +83,16 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
             if (context.usingPrefix and not string):
                 self.resultFetched.emit(result)
 
-            for t in a.tags():
-                result.score = QgsStringUtils.fuzzyScore(t, string)
+            string = string.lower()
+            tagScore = 0
+            tags = [*a.tags(), a.provider().name(), a.group()]
 
-                if result.score > 0:
-                    self.resultFetched.emit(result)
-                    continue
+            for t in tags:
+                if string in t.lower():
+                    tagScore = 1
+                    break
 
-            result.score = QgsStringUtils.fuzzyScore(result.displayString, string)
+            result.score = QgsStringUtils.fuzzyScore(result.displayString, string) * 0.5 + tagScore * 0.5
 
             if result.score > 0:
                 self.resultFetched.emit(result)
