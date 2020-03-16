@@ -610,6 +610,15 @@ Set custom properties for layer. Current properties are dropped.
 .. versionadded:: 3.0
 %End
 
+    const QgsObjectCustomProperties &customProperties() const;
+%Docstring
+Read all custom properties from layer. Properties are stored in a map and saved in project file.
+
+.. seealso:: :py:func:`setCustomProperties`
+
+.. versionadded:: 3.14
+%End
+
     void removeCustomProperty( const QString &key );
 %Docstring
 Remove a custom property from layer. Properties are stored in a map and saved in project file.
