@@ -475,6 +475,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   QList<QVariant> values = mLayer->uniqueValues( fieldIndex, countLimit ).toList();
   std::sort( values.begin(), values.end() );
 
+  mValuesModel->clear();
   for ( const QVariant &value : qgis::as_const( values ) )
   {
     QString strValue;
