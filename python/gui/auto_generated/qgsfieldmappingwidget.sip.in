@@ -1,0 +1,101 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfieldmappingwidget.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsFieldMappingWidget : QWidget
+{
+%Docstring
+The QgsFieldMappingWidget class allows to define a map from one set of QgsFields to another,
+for each set of "destination" fields an expression defines how to obtain the values of the
+"destination" fields.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsfieldmappingwidget.h"
+%End
+  public:
+
+    explicit QgsFieldMappingWidget(const QgsFields &sourceFields,
+                                   const QgsFields &destinationFields,
+                                   const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
+                                   QWidget *parent = 0);
+
+    QMap<QString, QgsExpression> expressions() const;
+
+  signals:
+
+     public:
+};
+
+
+class QgsFieldMappingModel: QAbstractTableModel
+{
+%Docstring
+The QgsFieldMappingModel holds mapping information for mapping from one set of QgsFields to another,
+for each set of "destination" fields an expression defines how to obtain the values of the
+"destination" fields.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsfieldmappingwidget.h"
+%End
+  public:
+
+    QgsFieldMappingModel(const QgsFields &sourceFields,
+                         const QgsFields &destinationFields,
+                         const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
+                         QObject* parent = 0);
+
+    QgsExpressionContextGenerator* contextGenerator();
+
+    virtual int rowCount(const QModelIndex& parent) const;
+
+    virtual int columnCount(const QModelIndex& parent) const;
+
+    virtual QVariant data(const QModelIndex& index, int role) const;
+
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
+
+
+      public:
+  public:
+    virtual Qt::ItemFlags flags(const QModelIndex& index) const;
+
+    QgsFields sourceFields() const;
+
+  public:
+    virtual bool setData(const QModelIndex& index, const QVariant& value, int role);
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfieldmappingwidget.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
