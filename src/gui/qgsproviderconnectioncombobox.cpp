@@ -19,6 +19,25 @@
 QgsProviderConnectionComboBox::QgsProviderConnectionComboBox( const QString &provider, QWidget *parent )
   : QComboBox( parent )
 {
+  setProvider( provider );
+}
+
+QgsProviderConnectionComboBox::QgsProviderConnectionComboBox( QWidget *parent )
+  : QComboBox( parent )
+{
+}
+
+void QgsProviderConnectionComboBox::setProvider( const QString &provider )
+{
+  if ( mSortModel )
+  {
+    disconnect( this, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsProviderConnectionComboBox::indexChanged );
+    disconnect( mSortModel, &QAbstractItemModel::rowsInserted, this, &QgsProviderConnectionComboBox::rowsChanged );
+    disconnect( mSortModel, &QAbstractItemModel::rowsRemoved, this, &QgsProviderConnectionComboBox::rowsChanged );
+    delete mSortModel;
+    delete mModel;
+  }
+
   mModel = new QgsProviderConnectionModel( provider, this );
 
   mSortModel = new QgsProviderConnectionComboBoxSortModel( this );
