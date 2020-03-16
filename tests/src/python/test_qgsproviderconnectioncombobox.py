@@ -116,6 +116,20 @@ class TestQgsProviderConnectionComboBox(unittest.TestCase):
 
         md.deleteConnection('aaa_qgis_test2')
 
+    def testComboSetProvider(self):
+        """ test combobox functionality with empty entry """
+        m = QgsProviderConnectionComboBox('ogr')
+
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
+        conn = md.createConnection(self.gpkg_path, {})
+        md.saveConnection(conn, 'qgis_test_zzz')
+
+        self.assertEqual(m.count(), 1)
+        m.setProvider('ogr')
+        self.assertEqual(m.count(), 1)
+
+        md.deleteConnection('qgis_test_zzz')
+
     def testComboWithEmpty(self):
         """ test combobox functionality with empty entry """
         m = QgsProviderConnectionComboBox('ogr')

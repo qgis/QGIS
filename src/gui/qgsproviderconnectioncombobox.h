@@ -60,6 +60,16 @@ class GUI_EXPORT QgsProviderConnectionComboBox : public QComboBox
      */
     explicit QgsProviderConnectionComboBox( const QString &provider, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    explicit QgsProviderConnectionComboBox( QWidget *parent = nullptr ) SIP_SKIP;
+
+    /**
+     * Sets the provider to be used.
+     *
+    * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation
+    * in order for the model to work correctly.
+     */
+    void setProvider( const QString &provider );
+
     /**
      * Sets whether an optional empty connection ("not set") option is present in the combobox.
      * \see allowEmptyConnection()
