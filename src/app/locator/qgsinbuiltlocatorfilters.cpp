@@ -24,7 +24,6 @@
 #include "qgslayertree.h"
 #include "qgsfeedback.h"
 #include "qgisapp.h"
-#include "qgsstringutils.h"
 #include "qgsmaplayermodel.h"
 #include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
@@ -64,7 +63,7 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
       continue;
     }
 
-    result.score = QgsStringUtils::fuzzyScore( result.displayString, string );
+    result.score = fuzzyScore( result.displayString, string );
 
     if ( result.score > 0 )
       emit resultFetched( result );
@@ -110,7 +109,7 @@ void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocat
       continue;
     }
 
-    result.score = QgsStringUtils::fuzzyScore( result.displayString, string );
+    result.score = fuzzyScore( result.displayString, string );
 
     if ( result.score > 0 )
       emit resultFetched( result );
@@ -126,9 +125,6 @@ void QgsLayoutLocatorFilter::triggerResult( const QgsLocatorResult &result )
 
   QgisApp::instance()->openLayoutDesignerDialog( layout );
 }
-
-
-
 
 QgsActionLocatorFilter::QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent )
   : QgsLocatorFilter( parent )
@@ -221,7 +217,6 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     {
       found << action;
       emit resultFetched( result );
-
     }
   }
 }
@@ -578,7 +573,7 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
       continue;
     }
 
-    result.score = QgsStringUtils::fuzzyScore( result.displayString, string );;
+    result.score = fuzzyScore( result.displayString, string );;
 
     if ( result.score > 0 )
       emit resultFetched( result );
@@ -654,7 +649,7 @@ void QgsBookmarkLocatorFilter::fetchResults( const QString &string, const QgsLoc
       continue;
     }
 
-    result.score = QgsStringUtils::fuzzyScore( result.displayString, string );
+    result.score = fuzzyScore( result.displayString, string );
 
     if ( result.score > 0 )
       emit resultFetched( result );

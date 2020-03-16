@@ -258,6 +258,12 @@ a specified ``search`` string. Values are normalized between 0 and 1.
 :param candidate: candidate string
 :param search: search term string
 
+:return: Normalized value of how likely is the ``search`` to be in the ``candidate``
+
+.. note::
+
+   Use this function only to calculate the fuzzy score between two strings and later compare these values, but do not depend on the actual numbers. They are implementation detail that may change in a future release.
+
 .. versionadded:: 3.14
 %End
 

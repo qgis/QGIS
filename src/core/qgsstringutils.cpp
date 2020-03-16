@@ -434,12 +434,13 @@ double QgsStringUtils::fuzzyScore( const QString &candidate, const QString &sear
   while ( candidateIdx < candidateLength )
   {
     QChar candidateChar = candidateNormalized[ candidateIdx++ ];
+    bool isCandidateCharWordEnd = candidateChar == ' ' || candidateChar.isPunct();
 
     // the first char is always the default score
     if ( candidateIdx == 1 )
       maxScore += FUZZY_SCORE_NEW_MATCH;
-    // every space character, punctuation or end of string is a opportunity for a new word
-    else if ( candidateChar.isSpace() || candidateChar.isPunct() )
+    // every space character or underscore is a opportunity for a new word
+    else if ( isCandidateCharWordEnd )
       maxScore += FUZZY_SCORE_WORD_MATCH;
     // potentially we can match every other character
     else
@@ -450,14 +451,15 @@ double QgsStringUtils::fuzzyScore( const QString &candidate, const QString &sear
       continue;
 
     QChar searchChar = searchNormalized[ searchIdx ];
+    bool isSearchCharWordEnd = searchChar == ' ' || searchChar.isPunct();
 
     // match!
-    if ( candidateChar == searchChar )
+    if ( candidateChar == searchChar || ( isCandidateCharWordEnd && isSearchCharWordEnd ) )
     {
       searchIdx++;
 
       // if we have just successfully finished a word, give higher score
-      if ( candidateChar.isSpace() || candidateChar.isPunct() )
+      if ( isSearchCharWordEnd )
       {
         if ( isWordOpen )
           score += FUZZY_SCORE_WORD_MATCH;
@@ -493,18 +495,18 @@ double QgsStringUtils::fuzzyScore( const QString &candidate, const QString &sear
     {
       bool isEndOfWord = ( candidateIdx >= candidateLength )
                          ? true
-                         : candidateNormalized[candidateIdx].isSpace() || candidateNormalized[candidateIdx].isPunct();
+                         : candidateNormalized[candidateIdx] == ' ' || candidateNormalized[candidateIdx].isPunct();
 
       if ( isEndOfWord )
         score += FUZZY_SCORE_WORD_MATCH;
     }
 
-    // QgsLogger::debug( QStringLiteral( "TMP: %1 | %2" ).arg( candidateChar, QString::number(score) ) + QStringLiteral( __FILE__ ) );
+    // QgsLogger::debug( QStringLiteral( "TMP: %1 | %2 | %3 | %4 | %5" ).arg( candidateChar, searchChar, QString::number(score), QString::number(isCandidateCharWordEnd), QString::number(isSearchCharWordEnd) ) + QStringLiteral( __FILE__ ) );
   }
 
-  // QgsLogger::debug( QStringLiteral( "RES: %1 | % 2" ).arg( QString::number(maxScore),  QString::number(score) ) + QStringLiteral( __FILE__ ) );
+  // QgsLogger::debug( QStringLiteral( "RES: %1 | %2" ).arg( QString::number(maxScore),  QString::number(score) ) + QStringLiteral( __FILE__ ) );
   // we didn't loop through all the search chars, it means, that they are not present in the current candidate
-  if ( searchIdx != searchLength )
+  if ( searchIdx < searchLength )
     score = 0;
 
   return static_cast<float>( std::max( score, 0 ) ) / std::max( maxScore, 1 );
