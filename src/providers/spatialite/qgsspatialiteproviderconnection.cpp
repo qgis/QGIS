@@ -196,6 +196,17 @@ void QgsSpatiaLiteProviderConnection::vacuum( const QString &schema, const QStri
   executeSqlDirect( QStringLiteral( "VACUUM" ) );
 }
 
+void QgsSpatiaLiteProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options ) const
+{
+  Q_UNUSED( name )
+  checkCapability( Capability::Vacuum );
+  if ( ! schema.isEmpty() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "Schema is not supported by Spatialite, ignoring" ), QStringLiteral( "OGR" ), Qgis::Info );
+  }
+  executeSqlPrivate( QStringLiteral( "SELECT CreateSpatialIndex(%1, %2)" ).arg( QgsSqliteUtils::quotedString( name ),
+                     QgsSqliteUtils::quotedString( ( options.geometryColumnName ) ) ) );
+}
 
 QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {
@@ -334,6 +345,7 @@ void QgsSpatiaLiteProviderConnection::setDefaultCapabilities()
     Capability::Spatial,
     Capability::TableExists,
     Capability::ExecuteSql,
+    Capability::CreateSpatialIndex,
   };
 }
 
