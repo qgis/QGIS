@@ -180,7 +180,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mMinScaleSpinBox->setMinimum( 0.0 );
   mMinScaleSpinBox->setToolTip( tr( "Min scale on which snapping is enabled" ) );
   mMinScaleSpinBox->setObjectName( QStringLiteral( "SnappingMinScaleSpinBox" ) );
-  mMinScaleSpinBox->setSpecialValueText("NULL");
+  mMinScaleSpinBox->setSpecialValueText( "NULL" );
   connect( mMinScaleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSnappingWidget::changeMinScale );
 
   mMaxScaleSpinBox = new QDoubleSpinBox();
@@ -189,7 +189,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mMaxScaleSpinBox->setMinimum( 0.0 );
   mMaxScaleSpinBox->setToolTip( tr( "Max scale on which snapping is enabled" ) );
   mMaxScaleSpinBox->setObjectName( QStringLiteral( "SnappingMaxScaleSpinBox" ) );
-  mMaxScaleSpinBox->setSpecialValueText("NULL");
+  mMaxScaleSpinBox->setSpecialValueText( "NULL" );
   connect( mMaxScaleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSnappingWidget::changeMaxScale );
 
 
@@ -447,11 +447,7 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     mMaxScaleSpinBox->setValue( config.maxScale() );
   }
 
-  mLimitToScale->setChecked(config.limitToScale());
-  /*if( mLimitToScale->isChecked() != config.limitToScale() )
-  {
-    mLimitToScale->setCheckState( config.limitToScale() ? Qt::Checked : Qt::Unchecked );
-  }*/
+  mLimitToScale->setChecked( config.limitToScale() );
 
   if ( config.intersectionSnapping() != mIntersectionSnappingAction->isChecked() )
   {
@@ -519,8 +515,8 @@ void QgsSnappingWidget::changeMaxScale( double pMaxScale )
 void QgsSnappingWidget::changeLimitToScale( bool enabled )
 {
   mConfig.setLimitToScale( enabled );
-  mMinScaleSpinBox->setEnabled(mConfig.limitToScale());
-  mMaxScaleSpinBox->setEnabled(mConfig.limitToScale());
+  mMinScaleSpinBox->setEnabled( mConfig.limitToScale() );
+  mMaxScaleSpinBox->setEnabled( mConfig.limitToScale() );
   mProject->setSnappingConfig( mConfig );
 }
 

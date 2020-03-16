@@ -296,19 +296,20 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     QList<LayerConfigIterator> filteredConfigs;
 
     bool inRangeGlobal = ( mSnappingConfig.minScale() <= 0.0 || mMapSettings.scale() >= mSnappingConfig.minScale() )
-      && ( mSnappingConfig.maxScale() <= 0.0 || mMapSettings.scale() <= mSnappingConfig.maxScale() );
+                         && ( mSnappingConfig.maxScale() <= 0.0 || mMapSettings.scale() <= mSnappingConfig.maxScale() );
 
     for ( LayerConfigIterator it = mLayers.begin(); it != mLayers.end(); ++it )
     {
       const LayerConfig &layerConfig = *it;
       QgsSnappingConfig::IndividualLayerSettings layerSettings = mSnappingConfig.individualLayerSettings( layerConfig.layer );
 
-      //Default value for layer config means it is not set (appears NULL)
+      //Default value for layer config means it is not set ( appears NULL ) layerSpecificRange <- false
       bool layerSpecificRange = layerSettings.minScale() > 0.0 || layerSettings.maxScale() > 0.0;
       bool inRangeLayer = ( layerSettings.minScale() < 0.0 || mMapSettings.scale() >= layerSettings.minScale() ) && ( layerSettings.maxScale() < 0.0 || mMapSettings.scale() <= layerSettings.maxScale() );
 
-      //If no per layer config is set use the global one otherwise use the layer config if it is set
-      if ( ( !layerSpecificRange && inRangeGlobal ) || ( layerSpecificRange && inRangeLayer) )
+      //If limit to scale is disabled, snapping activated on all layer
+      //If no per layer config is set use the global one, otherwise use the layer config
+      if ( !mSnappingConfig.limitToScale() || ( ( !layerSpecificRange && inRangeGlobal ) || ( layerSpecificRange && inRangeLayer ) ) )
       {
         double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
         layers << qMakePair( layerConfig.layer, _areaOfInterest( pointMap, tolerance ) );

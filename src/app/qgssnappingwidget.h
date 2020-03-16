@@ -105,7 +105,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void changeMaxScale( double pMaxScale );
 
-    void changeLimitToScale(bool enabled);
+    void changeLimitToScale( bool enabled );
 
     void changeUnit( int idx );
 
@@ -151,7 +151,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mCentroidAction = nullptr;
     QAction *mMiddleAction = nullptr;
     QDoubleSpinBox *mToleranceSpinBox = nullptr;
-    QAction* mLimitToScale = nullptr;
+    QAction *mLimitToScale = nullptr;
     QDoubleSpinBox *mMinScaleSpinBox = nullptr;
     QDoubleSpinBox *mMaxScaleSpinBox = nullptr;
     QAction *mToleranceAction = nullptr; // hide widget does not work on toolbar, action needed

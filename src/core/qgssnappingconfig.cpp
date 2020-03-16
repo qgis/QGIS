@@ -655,7 +655,7 @@ double QgsSnappingConfig::minScale() const
   return mMinScale;
 }
 
-void QgsSnappingConfig::setMinScale(double pMinScale)
+void QgsSnappingConfig::setMinScale( double pMinScale )
 {
   mMinScale = pMinScale;
 }
@@ -665,7 +665,7 @@ double QgsSnappingConfig::maxScale() const
   return mMaxScale;
 }
 
-void QgsSnappingConfig::setMaxScale(double pMaxScale)
+void QgsSnappingConfig::setMaxScale( double pMaxScale )
 {
   mMaxScale = pMaxScale;
 }

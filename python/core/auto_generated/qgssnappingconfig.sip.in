@@ -267,6 +267,36 @@ Returns the tolerance
 Sets the tolerance
 %End
 
+    double minScale() const;
+%Docstring
+Returns the min scale
+%End
+
+    void setMinScale( double pMinScale );
+%Docstring
+Sets the min scale
+%End
+
+    double maxScale() const;
+%Docstring
+Returns the max scale
+%End
+
+    void setMaxScale( double pMaxScale );
+%Docstring
+Set the max scale
+%End
+
+    bool limitToScale() const;
+%Docstring
+Returns limit to scale
+%End
+
+    void setLimitToScale( bool pLimitSnapping );
+%Docstring
+Set limit to scale
+%End
+
     QgsTolerance::UnitType units() const;
 %Docstring
 Returns the type of units

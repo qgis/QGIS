@@ -107,7 +107,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     minLimitSp->setMinimum( 0.0 );
     minLimitSp->setMaximum( 99999999.990000 );
     minLimitSp->setToolTip( tr( "Min Scale" ) );
-    minLimitSp->setSpecialValueText("NULL");
+    minLimitSp->setSpecialValueText( "NULL" );
     return minLimitSp;
   }
 
@@ -118,7 +118,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
     maxLimitSp->setMinimum( 0.0 );
     maxLimitSp->setMaximum( 99999999.990000 );
     maxLimitSp->setToolTip( tr( "Max Scale" ) );
-    maxLimitSp->setSpecialValueText("NULL");
+    maxLimitSp->setSpecialValueText( "NULL" );
     return maxLimitSp;
   }
 
@@ -628,7 +628,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     {
       if ( role == Qt::DisplayRole )
       {
-        if( ls.minScale() <= 0.0)
+        if ( ls.minScale() <= 0.0 )
         {
           return QString( "NULL" );
         }
@@ -648,7 +648,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     {
       if ( role == Qt::DisplayRole )
       {
-        if( ls.maxScale() <= 0.0 )
+        if ( ls.maxScale() <= 0.0 )
         {
           return QString( "NULL" );
         }
