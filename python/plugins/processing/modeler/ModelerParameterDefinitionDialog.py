@@ -38,7 +38,10 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QWidget,
                                  QTextEdit)
 
-from qgis.gui import QgsExpressionLineEdit, QgsProjectionSelectionWidget
+from qgis.gui import (QgsExpressionLineEdit,
+                      QgsProjectionSelectionWidget,
+                      QgsProcessingLayerOutputDestinationWidget
+                      )
 from qgis.core import (QgsApplication,
                        QgsSettings,
                        QgsProcessing,
@@ -68,7 +71,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterVectorDestination)
 
-from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 from processing.gui.enummodelerwidget import EnumModelerWidget
 from processing.gui.matrixmodelerwidget import MatrixModelerWidget
 from processing.core import parameters
@@ -364,7 +366,7 @@ class ModelerParameterDefinitionDialog(QDialog):
 
         elif isinstance(self.param, QgsProcessingDestinationParameter):
             self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
-            self.defaultWidget = DestinationSelectionPanel(self.param, self.alg, default_selection=True)
+            self.defaultWidget = QgsProcessingLayerOutputDestinationWidget(self.param, defaultSelection=True)
             self.verticalLayout.addWidget(self.defaultWidget)
 
         self.verticalLayout.addSpacing(20)
@@ -562,29 +564,29 @@ class ModelerParameterDefinitionDialog(QDialog):
                 name=name,
                 description=self.param.description(),
                 type=self.param.dataType(),
-                defaultValue=self.defaultWidget.getValue())
+                defaultValue=self.defaultWidget.value())
         elif (isinstance(self.param, QgsProcessingParameterFileDestination)):
             self.param = QgsProcessingParameterFileDestination(
                 name=name,
                 description=self.param.description(),
                 fileFilter=self.param.fileFilter(),
-                defaultValue=self.defaultWidget.getValue())
+                defaultValue=self.defaultWidget.value())
         elif (isinstance(self.param, QgsProcessingParameterFolderDestination)):
             self.param = QgsProcessingParameterFolderDestination(
                 name=name,
                 description=self.param.description(),
-                defaultValue=self.defaultWidget.getValue())
+                defaultValue=self.defaultWidget.value())
         elif (isinstance(self.param, QgsProcessingParameterRasterDestination)):
             self.param = QgsProcessingParameterRasterDestination(
                 name=name,
                 description=self.param.description(),
-                defaultValue=self.defaultWidget.getValue())
+                defaultValue=self.defaultWidget.value())
         elif (isinstance(self.param, QgsProcessingParameterVectorDestination)):
             self.param = QgsProcessingParameterVectorDestination(
                 name=name,
                 description=self.param.description(),
                 type=self.param.dataType(),
-                defaultValue=self.defaultWidget.getValue())
+                defaultValue=self.defaultWidget.value())
 
         else:
             if self.paramType:

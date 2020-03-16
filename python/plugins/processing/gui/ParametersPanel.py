@@ -42,7 +42,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingModelAlgorithm,
                        QgsVectorFileWriter)
 from qgis.gui import (QgsProcessingContextGenerator,
-                      QgsProcessingParameterWidgetContext)
+                      QgsProcessingParameterWidgetContext,
+                      QgsProcessingLayerOutputDestinationWidget)
 from qgis.utils import iface
 
 from qgis.PyQt import uic
@@ -52,7 +53,6 @@ from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
 from qgis.PyQt.QtGui import QIcon
 from osgeo import gdal
 
-from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
 from processing.tools.dataobjects import createContext
 
@@ -132,6 +132,7 @@ class ParametersPanel(BASE, WIDGET):
         widget_context.setMessageBar(self.parent.messageBar())
         if isinstance(self.alg, QgsProcessingModelAlgorithm):
             widget_context.setModel(self.alg)
+        widget_context.setBrowserModel(iface.browserModel())
 
         # Create widgets and put them in layouts
         for param in self.alg.parameterDefinitions():
@@ -220,7 +221,9 @@ class ParametersPanel(BASE, WIDGET):
                 continue
 
             label = QLabel(output.description())
-            widget = DestinationSelectionPanel(output, self.alg)
+            widget = QgsProcessingLayerOutputDestinationWidget(output, False)
+            widget.setWidgetContext(widget_context)
+
             self.layoutMain.insertWidget(self.layoutMain.count() - 1, label)
             self.layoutMain.insertWidget(self.layoutMain.count() - 1, widget)
             if isinstance(output, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
@@ -232,7 +235,7 @@ class ParametersPanel(BASE, WIDGET):
                     enabled = not skipped
 
                     # Do not try to open formats that are write-only.
-                    value = widget.getValue()
+                    value = widget.value()
                     if value and isinstance(value, QgsProcessingOutputLayerDefinition) and isinstance(output, (
                             QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
                         filename = value.sink.staticValue()

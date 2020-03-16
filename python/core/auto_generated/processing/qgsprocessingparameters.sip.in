@@ -107,6 +107,8 @@ You can use QgsXmlUtils.readVariant to load it from an XML document.
 
     operator QVariant() const;
 
+    bool operator==( const QgsProcessingOutputLayerDefinition &other ) const;
+
 };
 
 

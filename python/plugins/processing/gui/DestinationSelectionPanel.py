@@ -69,12 +69,11 @@ class DestinationSelectionPanel(BASE, WIDGET):
     skipOutputChanged = pyqtSignal(bool)
     destinationChanged = pyqtSignal()
 
-    def __init__(self, parameter, alg, default_selection=False):
+    def __init__(self, parameter, default_selection=False):
         super(DestinationSelectionPanel, self).__init__(None)
         self.setupUi(self)
 
         self.parameter = parameter
-        self.alg = alg
         self.default_selection = default_selection
         settings = QgsSettings()
         self.encoding = settings.value('/Processing/encoding', 'System')
