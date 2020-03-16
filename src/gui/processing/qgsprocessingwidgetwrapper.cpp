@@ -51,6 +51,16 @@ QgsMessageBar *QgsProcessingParameterWidgetContext::messageBar() const
   return mMessageBar;
 }
 
+void QgsProcessingParameterWidgetContext::setBrowserModel( QgsBrowserGuiModel *model )
+{
+  mBrowserModel = model;
+}
+
+QgsBrowserGuiModel *QgsProcessingParameterWidgetContext::browserModel() const
+{
+  return mBrowserModel;
+}
+
 void QgsProcessingParameterWidgetContext::setProject( QgsProject *project )
 {
   mProject = project;

@@ -54,6 +54,11 @@ bool QgsProcessingOutputLayerDefinition::loadVariant( const QVariantMap &map )
   return true;
 }
 
+bool QgsProcessingOutputLayerDefinition::operator==( const QgsProcessingOutputLayerDefinition &other ) const
+{
+  return sink == other.sink && destinationProject == other.destinationProject && destinationName == other.destinationName && createOptions == other.createOptions;
+}
+
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
 {
   QVariant val = parameters.value( name );
