@@ -59,6 +59,7 @@
 #include "qgsnewsfeedparser.h"
 #include "qgsbookmarkmanager.h"
 #include "qgsstylemodel.h"
+#include "qgsconnectionregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -2178,6 +2179,11 @@ QgsProcessingRegistry *QgsApplication::processingRegistry()
   return members()->mProcessingRegistry;
 }
 
+QgsConnectionRegistry *QgsApplication::connectionRegistry()
+{
+  return members()->mConnectionRegistry;
+}
+
 QgsPageSizeRegistry *QgsApplication::pageSizeRegistry()
 {
   return members()->mPageSizeRegistry;
@@ -2214,6 +2220,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   // will need to be careful with the order of creation/destruction
   mMessageLog = new QgsMessageLog();
   mProfiler = new QgsRuntimeProfiler();
+  mConnectionRegistry = new QgsConnectionRegistry();
   mTaskManager = new QgsTaskManager();
   mActionScopeRegistry = new QgsActionScopeRegistry();
   mNumericFormatRegistry = new QgsNumericFormatRegistry();
@@ -2270,6 +2277,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mClassificationMethodRegistry;
   delete mNumericFormatRegistry;
   delete mBookmarkManager;
+  delete mConnectionRegistry;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()
