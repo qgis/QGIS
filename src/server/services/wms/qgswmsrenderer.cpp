@@ -720,7 +720,7 @@ namespace QgsWms
 
 
     // legends
-    /*QList<QgsLayoutItemLegend *> legends;
+    QList<QgsLayoutItemLegend *> legends;
     c->layoutItems<QgsLayoutItemLegend>( legends );
     for ( const auto &legend : qgis::as_const( legends ) )
     {
@@ -775,7 +775,7 @@ namespace QgsWms
         }
         root->removeChildrenGroupWithoutLayers();
       }
-    }*/
+    }
     return true;
   }
 
