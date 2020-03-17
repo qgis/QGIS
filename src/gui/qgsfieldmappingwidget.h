@@ -44,8 +44,8 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
      * field name to the corresponding expression.
      * \param parent parent object
      */
-    explicit QgsFieldMappingWidget( const QgsFields &sourceFields,
-                                    const QgsFields &destinationFields,
+    explicit QgsFieldMappingWidget( const QgsFields &sourceFields = QgsFields(),
+                                    const QgsFields &destinationFields = QgsFields(),
                                     const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
                                     QWidget *parent = nullptr );
 
@@ -64,6 +64,18 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
     //! Returns the selection model
     QItemSelectionModel *selectionModel();
 
+    //! Set source fields of the underlying mapping model to \a sourceFields
+    void setSourceFields( const QgsFields &sourceFields );
+
+    /**
+     * Set destination fields to \a destinationFields in the underlying model,
+     * initial values for the expressions can be optionally specified through
+     * \a expressions which is a map from the original field name to the
+     * corresponding expression.
+     */
+    void setDestinationFields( const QgsFields &destinationFields,
+                               const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
+
   public slots:
 
     //! Appends a new \a field to the model, with an optional \a expression
@@ -80,9 +92,6 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
 
   private:
 
-    QgsFields mSourceFields;
-    QgsFields mDestinationFields;
-    QMap<QString, QgsExpression> mExpressions;
     QAbstractTableModel *mModel;
     void updateColumns();
 
