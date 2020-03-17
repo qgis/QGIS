@@ -755,11 +755,14 @@ QgsAttributeDialog *QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeat
   myDa.setSourceCrs( l->crs(), QgsProject::instance()->transformContext() );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
-  QgsAttributeEditorContext context;
+  QgsAttributeEditorContext context( QgisApp::instance()->createAttributeEditorContext() );
   context.setDistanceArea( myDa );
+<<<<<<< HEAD
   context.setVectorLayerTools( qgis->vectorLayerTools() );
   context.setMapCanvas( qgis->mapCanvas() );
   context.setCadDockWidget( qgis->cadDockWidget() );
+=======
+>>>>>>> 1c9e032beb... Fixes crash when displaying relation editor
   QgsAttributeDialog *dialog = new QgsAttributeDialog( l, &feature, false, qgis, true, context );
   if ( !feature.isValid() )
   {

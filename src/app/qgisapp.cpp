@@ -9266,7 +9266,7 @@ void QgisApp::modifyAttributesOfSelectedFeatures()
 
   //dummy feature
   QgsFeature f;
-  QgsAttributeEditorContext context;
+  QgsAttributeEditorContext context( createAttributeEditorContext() );
   context.setAllowCustomUi( false );
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( vl, &f, false, this, true, context );
@@ -15475,4 +15475,14 @@ void QgisApp::triggerCrashHandler()
 #ifdef Q_OS_WIN
   RaiseException( 0x12345678, 0, 0, nullptr );
 #endif
+}
+
+QgsAttributeEditorContext QgisApp::createAttributeEditorContext()
+{
+  QgsAttributeEditorContext context;
+  context.setVectorLayerTools( vectorLayerTools() );
+  context.setMapCanvas( mapCanvas() );
+  context.setCadDockWidget( cadDockWidget() );
+  context.setMainMessageBar( messageBar() );
+  return context;
 }

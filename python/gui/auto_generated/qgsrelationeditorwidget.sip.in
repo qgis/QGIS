@@ -66,6 +66,17 @@ inserting and deleting entries on the intermediate table as required.
     void setFeature( const QgsFeature &feature );
 
     void setEditorContext( const QgsAttributeEditorContext &context );
+<<<<<<< HEAD
+=======
+%Docstring
+Sets the editor ``context``
+
+.. note::
+
+   if context cadDockWidget is null, it won't be possible to digitize
+   the geometry of a referencing feature from this widget
+%End
+>>>>>>> 1c9e032beb... Fixes crash when displaying relation editor
 
     QgsIFeatureSelectionManager *featureSelectionManager();
 %Docstring

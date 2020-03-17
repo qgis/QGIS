@@ -126,6 +126,14 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 
     void setFeature( const QgsFeature &feature );
 
+<<<<<<< HEAD
+=======
+    /**
+     * Sets the editor \a context
+     * \note if context cadDockWidget is null, it won't be possible to digitize
+     * the geometry of a referencing feature from this widget
+     */
+>>>>>>> 1c9e032beb... Fixes crash when displaying relation editor
     void setEditorContext( const QgsAttributeEditorContext &context );
 
     /**
