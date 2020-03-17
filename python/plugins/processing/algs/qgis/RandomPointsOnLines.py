@@ -33,6 +33,7 @@ from qgis.core import (QgsFeature,
                        QgsPointXY,
                        QgsProcessing,
                        QgsProcessingException,
+                       QgsProcessingParameterBoolean,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSource,
@@ -52,8 +53,13 @@ class RandomPointsOnLines(QgisAlgorithm):
     MIN_DISTANCE = 'MIN_DISTANCE'
     OUTPUT = 'OUTPUT'
     MAXTRIESPERPOINT = 'MAX_TRIES_PER_POINT'
-    OUTPUT_POINTS = 'NUMBERS_OF_POINTS_GENERATED'
+    OUTPUT_POINTS = 'POINTS_GENERATED'
+    MISSED_POINTS = 'POINTS_MISSED'
+    MISSED_LINES = 'LINES_WITH_MISSED_POINTS'
+    EMPTY_OR_NO_GEOM = 'LINES_WITH_EMPTY_OR_NO_GEOMETRY'
     RANDOM_SEED = 'SEED'
+    INCLUDE_LINE_ATTRIBUTES = 'INCLUDE_LINE_ATTRIBUTES'
+    POINT_ID_FIELD_NAME = 'point_num'
 
     def name(self):
         return 'randompointsonlines'
@@ -89,12 +95,26 @@ class RandomPointsOnLines(QgisAlgorithm):
                                                        self.tr('Random number seed'),
                                                        QgsProcessingParameterNumber.Integer,
                                                        None, True, 1, 1000000000))
+        self.addParameter(QgsProcessingParameterBoolean(self.INCLUDE_LINE_ATTRIBUTES,
+                                                       self.tr('Include line attributes'),
+                                                       False, False))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('Random points'),
                                                             type=QgsProcessing.TypeVectorPoint))
         self.addOutput(QgsProcessingOutputNumber(self.OUTPUT_POINTS,
                                                  self.tr('Total number of points generated')
                                                  ))
+        self.addOutput(QgsProcessingOutputNumber(self.MISSED_POINTS,
+                                                 self.tr('Number of missed points')
+                                                 ))
+        self.addOutput(QgsProcessingOutputNumber(self.MISSED_LINES,
+                                                 self.tr('Number of lines with missed points')
+                                                 ))
+        self.addOutput(QgsProcessingOutputNumber(self.EMPTY_OR_NO_GEOM,
+                                                 self.tr('Number of features with empty or no geometry')
+                                                 ))
+
+
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
@@ -110,8 +130,14 @@ class RandomPointsOnLines(QgisAlgorithm):
         maxTriesPerPoint = self.parameterAsInt(parameters,
                                                self.MAXTRIESPERPOINT,
                                                context)
+        includelineattr = self.parameterAsBoolean(parameters,
+                                               self.INCLUDE_LINE_ATTRIBUTES,
+                                               context)
+
         fields = QgsFields()
-        fields.append(QgsField('id', QVariant.Int, '', 10, 0))
+        if includelineattr:
+            fields = source.fields()
+        fields.append(QgsField(self.POINT_ID_FIELD_NAME, QVariant.Int, '', 10, 0))
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,
                                                context, fields,
@@ -124,6 +150,8 @@ class RandomPointsOnLines(QgisAlgorithm):
 
         totNPoints = 0  # The total number of points generated
         missedPoints = 0  # The number of misses (too close)
+        missedLines = 0  # The number of features with missed points
+        emptyOrNullGeom = 0  # The number of features with empty or no geometry
         featureCount = source.featureCount()
         total = 100.0 / (pointCount * featureCount) if pointCount else 1
         if randSeed:
@@ -136,16 +164,18 @@ class RandomPointsOnLines(QgisAlgorithm):
 
         maxIterations = pointCount * maxTriesPerPoint
         # Go through all the features of the layer
-        for f in source.getFeatures():
+        for feat in source.getFeatures():
             if feedback.isCanceled():
                 break
             lineGeoms = []  # vector of line elements (>=1 for multi)
-            fGeom = f.geometry()  # get the geometry
+            fGeom = feat.geometry()  # get the geometry
             if fGeom is None:
-                feedback.reportError('Null geometry - skipping!', False)
+                emptyOrNullGeom += 1
+                feedback.pushInfo('Null geometry - skipping!')
                 continue
             if fGeom.isEmpty():
-                feedback.reportError('Empty geometry - skipping!', False)
+                emptyOrNullGeom += 1
+                feedback.pushInfo('Empty geometry - skipping!')
                 continue
             totLineLength = fGeom.length()
             if fGeom.isMultipart():
@@ -236,7 +266,11 @@ class RandomPointsOnLines(QgisAlgorithm):
                         f = QgsFeature(totNPoints)
                         f.initAttributes(1)
                         f.setFields(fields)
-                        f.setAttribute('id', totNPoints)
+                        attrs = []
+                        if includelineattr:
+                            attrs.extend(feat.attributes())
+                        attrs.append(totNPoints)
+                        f.setAttributes(attrs)
                         f.setGeometry(QgsGeometry.fromPointXY(p))
                         sink.addFeature(f, QgsFeatureSink.FastInsert)
                         index.addFeature(f)
@@ -250,8 +284,12 @@ class RandomPointsOnLines(QgisAlgorithm):
                 nIterations += 1
             if nPoints < pointCount:
                 missedPoints += pointCount - nPoints
+                missedLines += 1
         if totNPoints < pointCount * featureCount:
             feedback.pushInfo(str(totNPoints) + ' (out of ' +
                               str(pointCount * featureCount) +
                               ') requested points were generated.')
-        return {self.OUTPUT: dest_id, self.OUTPUT_POINTS: totNPoints}
+        if emptyOrNullGeom > 0:
+            feedback.pushInfo('Number of features with empty or no geometry: ' +
+                              str(emptyOrNullGeom))
+        return {self.OUTPUT: dest_id, self.OUTPUT_POINTS: totNPoints, self.MISSED_POINTS: missedPoints, self.MISSED_LINES: missedLines, self.EMPTY_OR_NO_GEOM: emptyOrNullGeom}
