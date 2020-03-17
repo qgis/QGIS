@@ -77,6 +77,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagSupportsInPlaceEdits = 1 << 8, //!< Algorithm supports in-place editing
       FlagKnownIssues = 1 << 9, //!< Algorithm has known issues
       FlagCustomException = 1 << 10, //!< Algorithm raises custom exception notices, don't use the standard ones
+      FlagPruneModelBranchesBasedOnAlgorithmResults = 1 << 11, //!< Algorithm results will cause remaining model branches to be pruned based on the results of running the algorithm
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
