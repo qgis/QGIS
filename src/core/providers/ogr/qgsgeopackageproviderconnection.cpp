@@ -229,8 +229,8 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
   try
   {
     const QString sql { QStringLiteral( "SELECT c.table_name, data_type, description, c.srs_id, g.geometry_type_name, g.column_name "
-                                          "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
-                                          "WHERE c.table_name NOT IN (%1)" ).arg( excludedTableNames.join( ',' ) ) };
+                                        "FROM gpkg_contents c LEFT JOIN gpkg_geometry_columns g ON (c.table_name = g.table_name) "
+                                        "WHERE c.table_name NOT IN (%1)" ).arg( excludedTableNames.join( ',' ) ) };
     results = executeSql( sql );
     for ( const auto &row : qgis::as_const( results ) )
     {
