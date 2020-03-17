@@ -33,7 +33,7 @@ struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
   explicit FilterExcludePoint( const QgsPointXY &p ) : mPoint( p ) {}
 
-  bool acceptMatch( const QgsPointLocator::Match &match ) override { return match.point() != mPoint; }
+  bool acceptMatch( const QgsPointLocator::Match &match ) override { return match.point() != mPoint;  }
 
   QgsPointXY mPoint;
 };
@@ -349,7 +349,7 @@ class TestQgsSnappingUtils : public QObject
       QgsSnappingConfig snappingConfig = u.config();
       snappingConfig.setEnabled( true );
       snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
-      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::VertexFlag, 0.2, QgsTolerance::ProjectUnits, 0.0, 0.0  );
+      QgsSnappingConfig::IndividualLayerSettings layerSettings( true, QgsSnappingConfig::VertexFlag, 0.2, QgsTolerance::ProjectUnits, 0.0, 0.0 );
       snappingConfig.setIntersectionSnapping( true );
       snappingConfig.setIndividualLayerSettings( vCurveZ.get(), layerSettings );
       u.setConfig( snappingConfig );

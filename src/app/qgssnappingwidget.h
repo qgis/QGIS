@@ -131,7 +131,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     DisplayMode mDisplayMode;
 
     //! modeChanged determines if widget are visible or not based on mode
-    void modeChanged();
+    void modeChanged( );
 
     QgsProject *mProject = nullptr;
     QgsSnappingConfig mConfig;

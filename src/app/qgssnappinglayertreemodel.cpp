@@ -156,7 +156,7 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
       w->setCurrentIndex( w->findData( units ) );
     }
   }
-  else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn)
+  else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
   {
     QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
     if ( w )
@@ -214,7 +214,7 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
       model->setData( index, w->value(), Qt::EditRole );
     }
   }
-  else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn)
+  else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
   {
     QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
     if ( w )

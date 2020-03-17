@@ -120,7 +120,7 @@ class CORE_EXPORT QgsSnappingConfig
          * \param maxScale
          * \deprecated since QGIS 3.12 use the method with SnappingTypeFlag instead.
          */
-        Q_DECL_DEPRECATED IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units, double minScale, double maxScale  ) SIP_DEPRECATED;
+        Q_DECL_DEPRECATED IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units, double minScale, double maxScale ) SIP_DEPRECATED;
 
         /**
          * \brief IndividualLayerSettings
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsSnappingConfig
          * \param maxScale
          * \since QGIS 3.12
          */
-        IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units, double minScale, double maxScale  );
+        IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units, double minScale, double maxScale );
 
         /**
          * Constructs an invalid setting
