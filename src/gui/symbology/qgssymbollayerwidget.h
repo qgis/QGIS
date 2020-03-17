@@ -793,6 +793,9 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
     void mStrokeWidthSpinBox_valueChanged( double d );
     void mTextureWidthUnitWidget_changed();
     void mSvgStrokeWidthUnitWidget_changed();
+
+  private:
+    int mIconSize = 30;
 };
 
 //////////
