@@ -647,7 +647,7 @@ void QgsColorRampShaderWidget::setFromShader( const QgsColorRampShader &colorRam
   populateColormapTreeWidget( colorRampShader.colorRampItemList() );
 
   // Those objects are connected to classify() the color ramp shader if they change, or call widget change
-  // need to block them to avoid to classify and to alter the color ramp, or to call dupplicate widget change
+  // need to block them to avoid to classify and to alter the color ramp, or to call duplicate widget change
   whileBlocking( mClipCheckBox )->setChecked( colorRampShader.clip() );
   whileBlocking( mColorInterpolationComboBox )->setCurrentIndex( mColorInterpolationComboBox->findData( colorRampShader.colorRampType() ) );
   mColorInterpolationComboBox_currentIndexChanged( mColorInterpolationComboBox->currentIndex() );
