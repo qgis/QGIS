@@ -74,14 +74,19 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
     mShowType = true;
   }
 
-  QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( name, providerSource );
-  QString path = uriComponents[QStringLiteral( "path" )].toString();
-  setWindowTitle( path.isEmpty() ? title : QStringLiteral( "%1 | %2" ).arg( title, QDir::toNativeSeparators( path ) ) );
+  QString filename = providerType == QgsSublayersDialog::Vsifile
+                     ? providerSource
+                     : QgsProviderRegistry::instance()->decodeUri( name, providerSource )[QStringLiteral( "path" )].toString();
+  filename = QFileInfo( filename ).fileName();
+
+  setWindowTitle( filename.isEmpty() ? title : QStringLiteral( "%1 | %2" ).arg( title, QDir::toNativeSeparators( filename ) ) );
 
   // add a "Select All" button - would be nicer with an icon
   QPushButton *button = new QPushButton( tr( "Select All" ) );
   buttonBox->addButton( button, QDialogButtonBox::ActionRole );
   connect( button, &QAbstractButton::pressed, layersTable, &QTreeView::selectAll );
+  connect( layersTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsSublayersDialog::layersTable_selectionChanged );
+
   // connect( pbnSelectNone, SIGNAL( pressed() ), SLOT( layersTable->selectNone() ) );
 
   // Checkbox about adding sublayers to a group
@@ -180,21 +185,16 @@ int QgsSublayersDialog::exec()
   if ( layersTable->topLevelItemCount() == 0 )
     return QDialog::Rejected;
 
+  layersTable->selectAll();
   // check promptForSublayers settings - perhaps this should be in QgsDataSource instead?
   if ( promptLayers == QLatin1String( "no" ) )
     return QDialog::Rejected;
   else if ( promptLayers == QLatin1String( "all" ) )
-  {
-    layersTable->selectAll();
     return QDialog::Accepted;
-  }
 
   // if there is only 1 sublayer (probably the main layer), just select that one and return
   if ( layersTable->topLevelItemCount() == 1 )
-  {
-    layersTable->selectAll();
     return QDialog::Accepted;
-  }
 
   layersTable->sortByColumn( 1, Qt::AscendingOrder );
   layersTable->setSortingEnabled( true );
@@ -224,4 +224,9 @@ int QgsSublayersDialog::exec()
   if ( mShowAddToGroupCheckbox )
     settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), mCheckboxAddToGroup->isChecked() );
   return ret;
+}
+
+void QgsSublayersDialog::layersTable_selectionChanged( const QItemSelection &, const QItemSelection & )
+{
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( layersTable->selectedItems().length() > 0 );
 }

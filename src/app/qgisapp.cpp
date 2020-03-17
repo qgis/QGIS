@@ -5851,10 +5851,9 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     }
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
-    QString name = fileName + " " + def.layerName;
     QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
     options.loadDefaultStyle = false;
-    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, QStringLiteral( "ogr" ), options );
+    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, def.layerName, QStringLiteral( "ogr" ), options );
     if ( layer && layer->isValid() )
     {
       result << layer;
