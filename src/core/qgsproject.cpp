@@ -2745,6 +2745,8 @@ QString QgsProject::homePath() const
   if ( !mCachedHomePath.isEmpty() )
     return mCachedHomePath;
 
+  QFileInfo pfi( fileName() );
+
   if ( !mHomePath.isEmpty() )
   {
     QFileInfo homeInfo( mHomePath );
@@ -2754,8 +2756,13 @@ QString QgsProject::homePath() const
       return mHomePath;
     }
   }
+  else if ( !fileName().isEmpty() )
+  {
+    mCachedHomePath = pfi.path();
 
-  QFileInfo pfi( fileName() );
+    return mCachedHomePath;
+  }
+
   if ( !pfi.exists() )
   {
     mCachedHomePath = mHomePath;
