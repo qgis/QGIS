@@ -148,6 +148,7 @@ void QgsModelComponentGraphicItem::setItemRect( QRectF )
 
 void QgsModelComponentGraphicItem::previewItemRectChange( QRectF rect )
 {
+  rect = rect.normalized();
   setPos( rect.center() );
   prepareGeometryChange();
   mTempSize = rect.size();
