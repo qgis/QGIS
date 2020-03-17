@@ -22,7 +22,12 @@ from qgis.gui import (
     QgsFieldMappingModel,
 )
 from qgis.PyQt.Qt import Qt
-from qgis.PyQt.QtCore import QCoreApplication, QVariant
+from qgis.PyQt.QtCore import (
+    QCoreApplication,
+    QVariant,
+    QModelIndex,
+    QItemSelectionModel,
+)
 
 from qgis.testing import start_app, unittest
 
@@ -72,6 +77,7 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         """Test the mapping model"""
 
         model = QgsFieldMappingModel(self.source_fields, self.destination_fields)
+        self.assertEqual(model.rowCount(QModelIndex()), 3)
         self.assertIsNone(model.data(model.index(9999, 0), Qt.DisplayRole))
         # We now have this default mapping:
         # source exp        | destination fld
@@ -81,8 +87,8 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         # NOT SET (NULL)    | destination_field3
         self.assertEqual(model.data(model.index(0, 0), Qt.DisplayRole), '"source_field2"')
         self.assertEqual(model.data(model.index(0, 1), Qt.DisplayRole), 'destination_field1')
-        self.assertEqual(model.data(model.index(0, 2), Qt.DisplayRole), 10)
-        self.assertEqual(model.data(model.index(0, 3), Qt.DisplayRole), 8)
+        self.assertEqual(model.data(model.index(0, 3), Qt.DisplayRole), 10)
+        self.assertEqual(model.data(model.index(0, 4), Qt.DisplayRole), 8)
 
         self.assertEqual(model.data(model.index(1, 0), Qt.DisplayRole), '"source_field1"')
         self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'destination_field2')
@@ -94,10 +100,101 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         ctx = model.contextGenerator().createExpressionContext()
         self.assertTrue('source_field1' in ctx.fields().names())
 
+        # Test add fields
+        model.appendField(QgsField('destination_field4', QVariant.String))
+        self.assertEqual(model.rowCount(QModelIndex()), 4)
+        self.assertEqual(model.data(model.index(3, 1), Qt.DisplayRole), 'destination_field4')
+
+        # Test remove field
+        model.removeField(model.index(3, 0))
+        self.assertEqual(model.rowCount(QModelIndex()), 3)
+        self.assertEqual(model.data(model.index(2, 1), Qt.DisplayRole), 'destination_field3')
+
+        # Test edit fields
+        mapping = model.mapping()
+        self.assertEqual(mapping[0].field.name(), 'destination_field1')
+        self.assertEqual(mapping[1].field.name(), 'destination_field2')
+        self.assertEqual(mapping[2].field.name(), 'destination_field3')
+        self.assertEqual(mapping[0].originalName, 'destination_field1')
+        self.assertEqual(mapping[1].originalName, 'destination_field2')
+        self.assertEqual(mapping[2].originalName, 'destination_field3')
+
+        # Test move up or down
+        self.assertFalse(model.moveUp(model.index(0, 0)))
+        self.assertFalse(model.moveUp(model.index(100, 0)))
+        self.assertFalse(model.moveDown(model.index(2, 0)))
+        self.assertFalse(model.moveDown(model.index(100, 0)))
+
+        self.assertTrue(model.moveDown(model.index(0, 0)))
+        mapping = model.mapping()
+        self.assertEqual(mapping[1].field.name(), 'destination_field1')
+        self.assertEqual(mapping[0].field.name(), 'destination_field2')
+        self.assertEqual(mapping[2].field.name(), 'destination_field3')
+        self.assertEqual(mapping[1].originalName, 'destination_field1')
+        self.assertEqual(mapping[0].originalName, 'destination_field2')
+        self.assertEqual(mapping[2].originalName, 'destination_field3')
+
+        self.assertTrue(model.moveUp(model.index(1, 0)))
+        mapping = model.mapping()
+        self.assertEqual(mapping[0].field.name(), 'destination_field1')
+        self.assertEqual(mapping[1].field.name(), 'destination_field2')
+        self.assertEqual(mapping[2].field.name(), 'destination_field3')
+        self.assertEqual(mapping[0].originalName, 'destination_field1')
+        self.assertEqual(mapping[1].originalName, 'destination_field2')
+        self.assertEqual(mapping[2].originalName, 'destination_field3')
+
+        self.assertTrue(model.moveUp(model.index(2, 0)))
+        mapping = model.mapping()
+        self.assertEqual(mapping[0].field.name(), 'destination_field1')
+        self.assertEqual(mapping[2].field.name(), 'destination_field2')
+        self.assertEqual(mapping[1].field.name(), 'destination_field3')
+        self.assertEqual(mapping[0].originalName, 'destination_field1')
+        self.assertEqual(mapping[2].originalName, 'destination_field2')
+        self.assertEqual(mapping[1].originalName, 'destination_field3')
+
     def testWidget(self):
+        """Test widget operations"""
+
+        widget = QgsFieldMappingWidget(QgsFields(), QgsFields())
+        for i in range(10):
+            widget.appendField(QgsField(str(i)))
+        self.assertTrue(widget.model().rowCount(QModelIndex()), 10)
+
+        def _compare(widget, expected):
+            actual = []
+            for field in widget.mapping():
+                actual.append(int(field.originalName))
+            self.assertEqual(actual, expected)
+
+        _compare(widget, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+        selection_model = widget.selectionModel()
+        selection_model.clear()
+        for i in range(0, 10, 2):
+            selection_model.select(widget.model().index(i, 0), QItemSelectionModel.Select)
+
+        self.assertTrue(widget.moveSelectedFieldsDown())
+        _compare(widget, [1, 0, 3, 2, 5, 4, 7, 6, 9, 8])
+
+        selection_model.clear()
+        for i in range(1, 10, 2):
+            selection_model.select(widget.model().index(i, 0), QItemSelectionModel.Select)
+
+        self.assertTrue(widget.moveSelectedFieldsUp())
+        _compare(widget, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+        selection_model.clear()
+        for i in range(0, 10, 2):
+            selection_model.select(widget.model().index(i, 0), QItemSelectionModel.Select)
+
+        self.assertTrue(widget.removeSelectedFields())
+        _compare(widget, [1, 3, 5, 7, 9])
+
+    def __testWidget(self):
         """Test the mapping widget"""
 
         widget = QgsFieldMappingWidget(self.source_fields, self.destination_fields)
+        widget.setDestinationEditable(True)
         self._showDialog(widget)
 
 

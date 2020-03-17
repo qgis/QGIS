@@ -16,7 +16,6 @@
 
 #include "qgsfieldmappingwidget.h"
 #include "qgsfieldexpressionwidget.h"
-#include "qgsexpressioncontextutils.h"
 
 QgsFieldMappingWidget::QgsFieldMappingWidget( const QgsFields &sourceFields,
     const QgsFields &destinationFields,
@@ -32,27 +31,114 @@ QgsFieldMappingWidget::QgsFieldMappingWidget( const QgsFields &sourceFields,
 
   mModel = new QgsFieldMappingModel( sourceFields, destinationFields, expressions, this );
   mTableView->setModel( mModel );
-  mTableView->setItemDelegateForColumn( 0, new ExpressionDelegate( mTableView ) );
+  mTableView->setItemDelegateForColumn( QgsFieldMappingModel::ColumnDataIndex::SourceExpression, new ExpressionDelegate( mTableView ) );
+  mTableView->setItemDelegateForColumn( QgsFieldMappingModel::ColumnDataIndex::DestinationType, new TypeDelegate( mTableView ) );
+  updateColumns();
+}
 
+void QgsFieldMappingWidget::setDestinationEditable( bool editable )
+{
+  qobject_cast<QgsFieldMappingModel *>( mModel )->setDestinationEditable( editable );
+  updateColumns();
+}
+
+bool QgsFieldMappingWidget::destinationEditable() const
+{
+  return qobject_cast<QgsFieldMappingModel *>( mModel )->destinationEditable();
+}
+
+QgsFieldMappingModel *QgsFieldMappingWidget::model() const
+{
+  return qobject_cast<QgsFieldMappingModel *>( mModel );
+}
+
+QList<QgsFieldMappingModel::Field> QgsFieldMappingWidget::mapping() const
+{
+  return model()->mapping();
+}
+
+QItemSelectionModel *QgsFieldMappingWidget::selectionModel()
+{
+  return mTableView->selectionModel();
+}
+
+void QgsFieldMappingWidget::appendField( const QgsField &field, const QgsExpression &expression )
+{
+  model()->appendField( field, expression );
+}
+
+bool QgsFieldMappingWidget::removeSelectedFields()
+{
+  std::list<int> rowsToRemove;
+  const auto constSelection { mTableView->selectionModel()->selectedRows() };
+  for ( const auto &index : constSelection )
+  {
+    rowsToRemove.push_back( index.row() );
+  }
+  rowsToRemove.sort();
+  rowsToRemove.reverse();
+  for ( const auto &row : rowsToRemove )
+  {
+    if ( ! model()->removeField( model()->index( row, 0, QModelIndex() ) ) )
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool QgsFieldMappingWidget::moveSelectedFieldsUp()
+{
+  std::list<int> rowsToMoveUp;
+  const auto constSelection { mTableView->selectionModel()->selectedRows() };
+  for ( const auto &index : constSelection )
+  {
+    rowsToMoveUp.push_back( index.row() );
+  }
+  rowsToMoveUp.sort();
+  for ( const auto &row : rowsToMoveUp )
+  {
+    if ( ! model()->moveUp( model()->index( row, 0, QModelIndex() ) ) )
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool QgsFieldMappingWidget::moveSelectedFieldsDown()
+{
+  std::list<int> rowsToMoveDown;
+  const auto constSelection { mTableView->selectionModel()->selectedRows() };
+  for ( const auto &index : constSelection )
+  {
+    rowsToMoveDown.push_back( index.row() );
+  }
+  rowsToMoveDown.sort();
+  rowsToMoveDown.reverse();
+  for ( const auto &row : rowsToMoveDown )
+  {
+    if ( ! model()->moveDown( model()->index( row, 0, QModelIndex() ) ) )
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+void QgsFieldMappingWidget::updateColumns()
+{
   for ( int i = 0; i < mModel->rowCount(); ++i )
   {
-    mTableView->openPersistentEditor( mModel->index( i, 0 ) );
+    mTableView->openPersistentEditor( mModel->index( i, QgsFieldMappingModel::ColumnDataIndex::SourceExpression ) );
+    if ( destinationEditable() )
+      mTableView->openPersistentEditor( mModel->index( i, QgsFieldMappingModel::ColumnDataIndex::DestinationType ) );
   }
 
   for ( int i = 0; i < mModel->columnCount(); ++i )
   {
     mTableView->resizeColumnToContents( i );
   }
-}
-
-QMap<QString, QgsExpression> QgsFieldMappingWidget::expressions() const
-{
-  QMap<QString, QgsExpression> results;
-  for ( const auto &f : qgis::as_const( mDestinationFields ) )
-  {
-    results[ f.name() ] = mExpressions.value( f.name(), QgsExpression() );
-  }
-  return results;
 }
 
 void QgsFieldMappingWidget::ExpressionDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
@@ -82,12 +168,12 @@ void QgsFieldMappingWidget::ExpressionDelegate::setEditorData( QWidget *editor, 
 
   const auto value = index.model()->data( index, Qt::EditRole );
   editorWidget->setField( value.toString() );
-
 }
 
 QWidget *QgsFieldMappingWidget::ExpressionDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  Q_UNUSED( option )   QgsFieldExpressionWidget *editor = new QgsFieldExpressionWidget( parent );
+  Q_UNUSED( option )
+  QgsFieldExpressionWidget *editor = new QgsFieldExpressionWidget( parent );
   editor->setAutoFillBackground( true );
   editor->setAllowEvalErrors( false );
   editor->setAllowEmptyFieldName( true );
@@ -113,200 +199,52 @@ QgsFieldMappingWidget::ExpressionDelegate::ExpressionDelegate( QObject *parent )
 {
 }
 
-
-QVariant QgsFieldMappingModel::headerData( int section, Qt::Orientation orientation, int role ) const
+QgsFieldMappingWidget::TypeDelegate::TypeDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
 {
-  if ( role == Qt::DisplayRole )
+}
+
+QWidget *QgsFieldMappingWidget::TypeDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  Q_UNUSED( option )
+  QComboBox *editor = new QComboBox( parent );
+  const QgsFieldMappingModel *model { qobject_cast<const QgsFieldMappingModel *>( index.model() ) };
+  Q_ASSERT( model );
+  const auto typeList { model->dataTypes() };
+  int i = 0;
+  for ( const auto &type : typeList.keys() )
   {
-    if ( orientation == Qt::Horizontal )
-    {
-      if ( section == 0 )
-        return tr( "Source expression" );
-      else if ( section == 1 )
-        return tr( "Field name" );
-      else if ( section == 2 )
-        return tr( "Type" );
-      else if ( section == 3 )
-        return tr( "Length" );
-      else if ( section == 4 )
-        return tr( "Precision" );
-      else
-        return QString();
-    }
-    else if ( orientation == Qt::Vertical )
-    {
-      return section;
-    }
+    editor->addItem( typeList[ type ] );
+    editor->setItemData( i, static_cast<int>( type ), Qt::UserRole );
+    ++i;
   }
-  return QVariant();
-}
-
-QgsFields QgsFieldMappingModel::sourceFields() const
-{
-  return mSourceFields;
-}
-
-QgsFieldMappingModel::QgsFieldMappingModel( const QgsFields &sourceFields,
-    const QgsFields &destinationFields,
-    const QMap<QString, QgsExpression> &expressions,
-    QObject *parent )
-  : QAbstractTableModel( parent )
-  , mSourceFields( sourceFields )
-  , mDestinationFields( destinationFields )
-  , mExpressionContextGenerator( new ExpressionContextGenerator( &mSourceFields ) )
-{
-  // Prepare the model data
-  QStringList usedFields;
-  for ( const auto &df : qgis::as_const( destinationFields ) )
+  connect( editor,
+           qgis::overload<int >::of( &QComboBox::currentIndexChanged ),
+           this,
+           [ = ]( int currentIndex )
   {
-    Field f;
-    f.name = df.name();
-    f.type = df.type();
-    f.length = df.length();
-    f.precision = df.precision();
-    if ( expressions.contains( f.name ) )
-    {
-      f.expression = expressions.value( f.name );
-      // if it's source field
-      if ( f.expression.isField() &&
-           mSourceFields.names().contains( f.expression.referencedColumns().toList().first() ) )
-      {
-        usedFields.push_back( f.expression.referencedColumns().toList().first() );
-      }
-    }
-    else
-    {
-      bool found { false };
-      // Search for fields in the source
-      // 1. match by name
-      for ( const auto &sf : qgis::as_const( mSourceFields ) )
-      {
-        if ( sf.name() == f.name )
-        {
-          f.expression = QgsExpression::quotedColumnRef( sf.name() );
-          found = true;
-          usedFields.push_back( sf.name() );
-          break;
-        }
-      }
-      // 2. match by type
-      if ( ! found )
-      {
-        for ( const auto &sf : qgis::as_const( mSourceFields ) )
-        {
-          if ( usedFields.contains( sf.name() ) || sf.type() != f.type )
-            continue;
-          f.expression = QgsExpression::quotedColumnRef( sf.name() );
-          usedFields.push_back( sf.name() );
-          found = true;
-        }
-      }
-    }
-
-    mMapping.push_back( f );
-  }
+    Q_UNUSED( currentIndex )
+    const_cast< QgsFieldMappingWidget::TypeDelegate *>( this )->emit commitData( editor );
+  } );
+  return editor;
 }
 
-int QgsFieldMappingModel::rowCount( const QModelIndex &parent ) const
+void QgsFieldMappingWidget::TypeDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  Q_UNUSED( parent );
-  return mDestinationFields.count();
+  QComboBox *editorWidget { qobject_cast<QComboBox *>( editor ) };
+  if ( ! editorWidget )
+    return;
+
+  const QVariant value { index.model()->data( index, Qt::EditRole ) };
+  editorWidget->setCurrentIndex( editorWidget->findData( value ) );
 }
 
-int QgsFieldMappingModel::columnCount( const QModelIndex &parent ) const
+void QgsFieldMappingWidget::TypeDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  Q_UNUSED( parent );
-  return 4;
-}
+  QComboBox *editorWidget { qobject_cast<QComboBox *>( editor ) };
+  if ( ! editorWidget )
+    return;
 
-QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
-{
-  if ( index.isValid() )
-  {
-
-    const int col { index.column() };
-    const Field &f { mMapping.at( index.row() ) };
-
-    if ( role == Qt::DisplayRole )
-    {
-      // First column is the expression widget
-      if ( col == 0 )
-      {
-        return f.expression.expression();
-      }
-      else if ( col == 1 )
-      {
-        return f.name;
-      }
-      else if ( col == 2 )
-      {
-        return f.length;
-      }
-      else if ( col == 3 )
-      {
-        return f.precision;
-      }
-    }
-
-    if ( role == Qt::EditRole )
-    {
-      if ( col == 0 )
-      {
-        return f.expression.expression();
-      }
-      else
-      {
-        return QVariant();
-      }
-    }
-  }
-  return QVariant();
-}
-
-QgsExpressionContextGenerator *QgsFieldMappingModel::contextGenerator() const
-{
-  return mExpressionContextGenerator.get();
-}
-
-
-QgsFieldMappingModel::ExpressionContextGenerator::ExpressionContextGenerator( const QgsFields *sourceFields )
-{
-  mSourceFields = sourceFields;
-}
-
-QgsExpressionContext QgsFieldMappingModel::ExpressionContextGenerator::createExpressionContext() const
-{
-  QgsExpressionContext ctx;
-  ctx.appendScope( QgsExpressionContextUtils::globalScope() );
-  ctx.setFields( *mSourceFields );
-  QgsFeature feature { *mSourceFields };
-  feature.setValid( true );
-  ctx.setFeature( feature );
-  return ctx;
-}
-
-Qt::ItemFlags QgsFieldMappingModel::flags( const QModelIndex &index ) const
-{
-  if ( index.isValid() && index.column() == 0 )
-    return Qt::ItemFlags( Qt::ItemIsSelectable |
-                          Qt::ItemIsEditable |
-                          Qt::ItemIsEnabled );
-  return Qt::ItemFlags();
-
-}
-
-bool QgsFieldMappingModel::setData( const QModelIndex &index, const QVariant &value, int role )
-{
-
-  if ( index.isValid() )
-  {
-    if ( role == Qt::EditRole )
-    {
-      Field &f { const_cast<Field &>( mMapping.at( index.row() ) ) };
-      const QgsExpression exp { value.toString() };
-      f.expression = exp;
-      emit dataChanged( index, index );
-    }
-  }
-  return true;
+  const QVariant currentValue { editorWidget->currentData( ) };
+  model->setData( index, currentValue, Qt::EditRole );
 }
