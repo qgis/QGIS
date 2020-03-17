@@ -153,7 +153,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                         dest_project = QgsProject.instance()
 
                 widget = self.mainWidget().outputWidgets[param.name()]
-                value = widget.getValue()
+                value = widget.value()
 
                 if value and isinstance(value, QgsProcessingOutputLayerDefinition):
                     value.destinationProject = dest_project

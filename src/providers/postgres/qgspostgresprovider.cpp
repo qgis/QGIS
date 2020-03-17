@@ -3312,6 +3312,19 @@ QgsVectorDataProvider::Capabilities QgsPostgresProvider::capabilities() const
   return mEnabledCapabilities;
 }
 
+QgsFeatureSource::SpatialIndexPresence QgsPostgresProvider::hasSpatialIndex() const
+{
+  QgsPostgresProviderConnection conn( mUri.uri(), QVariantMap() );
+  try
+  {
+    return conn.spatialIndexExists( mUri.schema(), mUri.table(), mUri.geometryColumn() ) ? SpatialIndexPresent : SpatialIndexNotPresent;
+  }
+  catch ( QgsProviderConnectionException & )
+  {
+    return SpatialIndexUnknown;
+  }
+}
+
 bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
   if ( theSQL.trimmed() == mSqlWhereClause )

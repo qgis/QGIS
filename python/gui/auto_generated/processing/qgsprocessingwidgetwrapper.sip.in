@@ -91,6 +91,24 @@ to the user.
 .. versionadded:: 3.12
 %End
 
+    void setBrowserModel( QgsBrowserGuiModel *model );
+%Docstring
+Sets the browser ``model`` associated with the widget. This will usually be the shared app instance of the browser model
+
+.. seealso:: :py:func:`browserModel`
+
+.. versionadded:: 3.14
+%End
+
+    QgsBrowserGuiModel *browserModel() const;
+%Docstring
+Returns the browser model associated with the widget.
+
+.. seealso:: :py:func:`setBrowserModel`
+
+.. versionadded:: 3.12
+%End
+
     void setProject( QgsProject *project );
 %Docstring
 Sets the ``project`` associated with the widget. This allows the widget to retrieve the map layers

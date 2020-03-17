@@ -181,6 +181,8 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
       return QVariant::fromValue( *this );
     }
 
+    bool operator==( const QgsProcessingOutputLayerDefinition &other ) const;
+
 };
 
 Q_DECLARE_METATYPE( QgsProcessingOutputLayerDefinition )

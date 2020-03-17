@@ -273,6 +273,31 @@ class TestPyQgsProviderConnectionBase():
             if capabilities & QgsAbstractDatabaseProviderConnection.Vacuum:
                 conn.vacuum('myNewSchema', 'myNewTable')
 
+            # Spatial index
+            spatial_index_exists = False
+            # we don't initially know if a spatial index exists -- some formats may create them by default, others not
+            if capabilities & QgsAbstractDatabaseProviderConnection.SpatialIndexExists:
+                spatial_index_exists = conn.spatialIndexExists('myNewSchema', 'myNewTable', 'geom')
+            if capabilities & QgsAbstractDatabaseProviderConnection.DeleteSpatialIndex:
+                if spatial_index_exists:
+                    conn.deleteSpatialIndex('myNewSchema', 'myNewTable', 'geom')
+                if capabilities & QgsAbstractDatabaseProviderConnection.SpatialIndexExists:
+                    self.assertFalse(conn.spatialIndexExists('myNewSchema', 'myNewTable', 'geom'))
+
+            if capabilities & QgsAbstractDatabaseProviderConnection.CreateSpatialIndex:
+                options = QgsAbstractDatabaseProviderConnection.SpatialIndexOptions()
+                options.geometryColumnName = 'geom'
+                conn.createSpatialIndex('myNewSchema', 'myNewTable', options)
+
+                if capabilities & QgsAbstractDatabaseProviderConnection.SpatialIndexExists:
+                    self.assertTrue(conn.spatialIndexExists('myNewSchema', 'myNewTable', 'geom'))
+
+                # now we know for certain a spatial index exists, let's retry dropping it
+                if capabilities & QgsAbstractDatabaseProviderConnection.DeleteSpatialIndex:
+                    conn.deleteSpatialIndex('myNewSchema', 'myNewTable', 'geom')
+                    if capabilities & QgsAbstractDatabaseProviderConnection.SpatialIndexExists:
+                        self.assertFalse(conn.spatialIndexExists('myNewSchema', 'myNewTable', 'geom'))
+
             if capabilities & QgsAbstractDatabaseProviderConnection.DropSchema:
                 # Drop schema (should fail)
                 with self.assertRaises(QgsProviderConnectionException) as ex:

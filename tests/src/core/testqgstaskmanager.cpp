@@ -807,7 +807,8 @@ void TestQgsTaskManager::subTaskPartialComplete2()
   QCOMPARE( subsubTask->status(), QgsTask::Running );
 
   subsubTask->finish();
-  while ( subsubTask->status() == QgsTask::Running )
+  while ( subsubTask->status() == QgsTask::Running
+          || subTask->status() == QgsTask::Running )
   {
     QCoreApplication::processEvents();
   }

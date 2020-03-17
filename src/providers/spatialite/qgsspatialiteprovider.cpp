@@ -4273,6 +4273,20 @@ bool QgsSpatiaLiteProvider::createAttributeIndex( int field )
   return true;
 }
 
+QgsFeatureSource::SpatialIndexPresence QgsSpatiaLiteProvider::hasSpatialIndex() const
+{
+  QgsDataSourceUri u = uri();
+  QgsSpatiaLiteProviderConnection conn( u.uri(), QVariantMap() );
+  try
+  {
+    return conn.spatialIndexExists( u.schema(), u.table(), u.geometryColumn() ) ? SpatialIndexPresent : SpatialIndexNotPresent;
+  }
+  catch ( QgsProviderConnectionException & )
+  {
+    return SpatialIndexUnknown;
+  }
+}
+
 bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
 {
   sqlite3_stmt *stmt = nullptr;

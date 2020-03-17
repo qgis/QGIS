@@ -22,7 +22,6 @@ __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 from qgis.core import (QgsVectorLayerExporter,
-                       QgsSettings,
                        QgsFeatureSink,
                        QgsProcessing,
                        QgsProcessingException,
@@ -33,10 +32,13 @@ from qgis.core import (QgsVectorLayerExporter,
                        QgsProcessingParameterProviderConnection,
                        QgsProcessingParameterDatabaseSchema,
                        QgsProcessingParameterDatabaseTable,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsProviderRegistry,
+                       QgsProviderConnectionException,
+                       QgsDataSourceUri,
+                       QgsAbstractDatabaseProviderConnection)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import postgis
 
 
 class ImportIntoPostGIS(QgisAlgorithm):
@@ -117,8 +119,14 @@ class ImportIntoPostGIS(QgisAlgorithm):
         return self.tr('import,postgis,table,layer,into,copy').split(',')
 
     def processAlgorithm(self, parameters, context, feedback):
-        connection = self.parameterAsConnectionName(parameters, self.DATABASE, context)
-        db = postgis.GeoDB.from_name(connection)
+        connection_name = self.parameterAsConnectionName(parameters, self.DATABASE, context)
+
+        # resolve connection details to uri
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata('postgres')
+            conn = md.createConnection(connection_name)
+        except QgsProviderConnectionException:
+            raise QgsProcessingException(self.tr('Could not retrieve connection details for {}').format(connection_name))
 
         schema = self.parameterAsSchema(parameters, self.SCHEMA, context)
         overwrite = self.parameterAsBoolean(parameters, self.OVERWRITE, context)
@@ -161,8 +169,11 @@ class ImportIntoPostGIS(QgisAlgorithm):
         if source.wkbType() == QgsWkbTypes.NoGeometry:
             geomColumn = None
 
-        uri = db.uri
-        uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
+        uri = QgsDataSourceUri(conn.uri())
+        uri.setSchema(schema)
+        uri.setTable(table)
+        uri.setKeyColumn(primaryKeyField)
+        uri.setGeometryColumn(geomColumn)
 
         if encoding:
             options['fileEncoding'] = encoding
@@ -191,13 +202,16 @@ class ImportIntoPostGIS(QgisAlgorithm):
                 self.tr('Error importing to PostGIS\n{0}').format(exporter.errorMessage()))
 
         if geomColumn and createIndex:
-            db.create_spatial_index(table, schema, geomColumn)
+            try:
+                options = QgsAbstractDatabaseProviderConnection.SpatialIndexOptions()
+                options.geometryColumnName = geomColumn
+                conn.createSpatialIndex(schema, table, options)
+            except QgsProviderConnectionException as e:
+                raise QgsProcessingException(self.tr('Error creating spatial index:\n{0}').format(e))
 
-        db.vacuum_analyze(table, schema)
+        try:
+            conn.vacuum(schema, table)
+        except QgsProviderConnectionException as e:
+            feedback.reportError(self.tr('Error vacuuming table:\n{0}').format(e))
 
         return {}
-
-    def dbConnectionNames(self):
-        settings = QgsSettings()
-        settings.beginGroup('/PostgreSQL/connections/')
-        return settings.childGroups()

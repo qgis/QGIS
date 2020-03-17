@@ -31,12 +31,15 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterProviderConnection,
                        QgsProcessingParameterDatabaseSchema,
-                       QgsProcessingParameterDatabaseTable)
+                       QgsProcessingParameterDatabaseTable,
+                       QgsProviderRegistry,
+                       QgsProcessingException,
+                       QgsProviderConnectionException,
+                       QgsDataSourceUri)
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-from processing.tools.postgis import uri_from_name, GeoDB
 from processing.tools.system import isWindows
 
 
@@ -195,11 +198,19 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         return 'vectormiscellaneous'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        connection = self.parameterAsConnectionName(parameters, self.DATABASE, context)
-        uri = uri_from_name(connection)
-        if executing:
-            # to get credentials input when needed
-            uri = GeoDB(uri=uri).uri
+        connection_name = self.parameterAsConnectionName(parameters, self.DATABASE, context)
+        if not connection_name:
+            raise QgsProcessingException(
+                self.tr('No connection specified'))
+
+        # resolve connection details to uri
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata('postgres')
+            conn = md.createConnection(connection_name)
+        except QgsProviderConnectionException:
+            raise QgsProcessingException(self.tr('Could not retrieve connection details for {}').format(connection_name))
+
+        uri = conn.uri()
 
         ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)
@@ -244,7 +255,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         arguments.append('-f')
         arguments.append('PostgreSQL')
         arguments.append('PG:"')
-        for token in uri.connectionInfo(executing).split(' '):
+        for token in QgsDataSourceUri(uri).connectionInfo(executing).split(' '):
             arguments.append(token)
         arguments.append('active_schema={}'.format(schema or 'public'))
         arguments.append('"')

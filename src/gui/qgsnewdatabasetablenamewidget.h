@@ -24,6 +24,7 @@
 #include "qgsbrowserproxymodel.h"
 
 #include <QWidget>
+#include <QDialog>
 
 /**
  * \ingroup gui
@@ -160,4 +161,73 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QWidget, private Ui::Qgs
 
 };
 
+
+/**
+ * \ingroup gui
+ * QgsNewDatabaseTableNameDialog is a dialog which allows selection of a DB schema and a new table name.
+ *
+ * The table name is validated for uniqueness and the selected
+ * data item provider, schema and table names can be retrieved with
+ * getters.
+ *
+ * \warning The data provider that originated the data item provider
+ *          must support the connections API
+ *
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsNewDatabaseTableNameDialog: public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructs a new QgsNewDatabaseTableNameDialog
+     *
+     * \param browserModel an existing browser model (typically from app), if NULL an instance will be created
+     * \param providersFilter optional white list of data provider keys that should be
+     *        shown in the widget, if not specified all providers data items with database
+     *        capabilities will be shown
+     * \param parent optional parent for this widget
+     */
+    explicit QgsNewDatabaseTableNameDialog( QgsBrowserGuiModel *browserModel = nullptr,
+                                            const QStringList &providersFilter = QStringList(),
+                                            QWidget *parent = nullptr );
+
+    /**
+     * Returns the currently selected schema or file path (in case of filesystem-based DBs like spatialite or GPKG) for the new table
+     */
+    QString schema() const;
+
+    /**
+     * Returns the (possibly blank) string representation of the new table data source URI.
+     * The URI might be invalid in case the widget is not in a valid state.
+     */
+    QString uri() const;
+
+    /**
+     * Returns the current name of the new table
+     */
+    QString table() const;
+
+    /**
+     * Returns the currently selected data item provider key
+     */
+    QString dataProviderKey() const;
+
+    /**
+     * Returns TRUE if the widget contains a valid new table name
+     */
+    bool isValid() const;
+
+    /**
+     * Returns the validation error or an empty string is the widget status is valid
+     */
+    QString validationError() const;
+
+  private:
+
+    QgsNewDatabaseTableNameWidget *mWidget = nullptr;
+
+};
 #endif // QGSNEWDATABASETABLENAMEWIDGET_H
