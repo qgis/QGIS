@@ -82,7 +82,7 @@ void QgsProcessingLayerOutputDestinationWidget::setValue( const QVariant &value 
     else if ( value.canConvert< QgsProcessingOutputLayerDefinition >() )
     {
       const QgsProcessingOutputLayerDefinition def = value.value< QgsProcessingOutputLayerDefinition >();
-      if ( def.sink.staticValue().toString() == QStringLiteral( "memory:" ) || def.sink.staticValue().toString().isEmpty() )
+      if ( def.sink.staticValue().toString() == QStringLiteral( "memory:" ) || def.sink.staticValue().toString() == QgsProcessing::TEMPORARY_OUTPUT || def.sink.staticValue().toString().isEmpty() )
       {
         saveToTemporary();
       }
