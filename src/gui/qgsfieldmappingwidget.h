@@ -26,7 +26,7 @@
 
 /**
  * \ingroup gui
- * The QgsFieldMappingWidget class allows to define a map from one set of QgsFields to another,
+ * The QgsFieldMappingWidget class creates a mapping from one set of QgsFields to another,
  * for each set of "destination" fields an expression defines how to obtain the values of the
  * "destination" fields.
  * \since QGIS 3.14
