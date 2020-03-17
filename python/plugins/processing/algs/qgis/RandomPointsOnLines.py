@@ -96,8 +96,8 @@ class RandomPointsOnLines(QgisAlgorithm):
                                                        QgsProcessingParameterNumber.Integer,
                                                        None, True, 1, 1000000000))
         self.addParameter(QgsProcessingParameterBoolean(self.INCLUDE_LINE_ATTRIBUTES,
-                                                       self.tr('Include line attributes'),
-                                                       False, False))
+                                                        self.tr('Include line attributes'),
+                                                        False, False))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('Random points'),
                                                             type=QgsProcessing.TypeVectorPoint))
@@ -114,8 +114,6 @@ class RandomPointsOnLines(QgisAlgorithm):
                                                  self.tr('Number of features with empty or no geometry')
                                                  ))
 
-
-
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
@@ -131,8 +129,8 @@ class RandomPointsOnLines(QgisAlgorithm):
                                                self.MAXTRIESPERPOINT,
                                                context)
         includelineattr = self.parameterAsBoolean(parameters,
-                                               self.INCLUDE_LINE_ATTRIBUTES,
-                                               context)
+                                                  self.INCLUDE_LINE_ATTRIBUTES,
+                                                  context)
 
         fields = QgsFields()
         if includelineattr:
