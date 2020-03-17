@@ -350,7 +350,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       if ( childAlg->flags() & QgsProcessingAlgorithm::FlagPruneModelBranchesBasedOnAlgorithmResults )
       {
         // check if any dependent algorithms should be canceled based on the outputs of this algorithm run
-        // first find all direct dependancies of this algorithm by looking through all remaining child algorithms
+        // first find all direct dependencies of this algorithm by looking through all remaining child algorithms
         for ( const QString &candidateId : qgis::as_const( toExecute ) )
         {
           if ( executed.contains( candidateId ) )
