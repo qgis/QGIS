@@ -41,6 +41,7 @@
 #include "qgssnappingwidget.h"
 #include "qgsunittypes.h"
 #include "qgssettings.h"
+#include "qgsscalewidget.h"
 
 
 QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas, QWidget *parent )
@@ -174,23 +175,15 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mToleranceSpinBox->setObjectName( QStringLiteral( "SnappingToleranceSpinBox" ) );
   connect( mToleranceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSnappingWidget::changeTolerance );
 
-  mMinScaleSpinBox = new QDoubleSpinBox();
-  mMinScaleSpinBox->setDecimals( 2 );
-  mMinScaleSpinBox->setMaximum( 99999999.990000 );
-  mMinScaleSpinBox->setMinimum( 0.0 );
-  mMinScaleSpinBox->setToolTip( tr( "Min scale on which snapping is enabled" ) );
-  mMinScaleSpinBox->setObjectName( QStringLiteral( "SnappingMinScaleSpinBox" ) );
-  mMinScaleSpinBox->setSpecialValueText( "NULL" );
-  connect( mMinScaleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSnappingWidget::changeMinScale );
+  mMinScaleWidget = new QgsScaleWidget();
+  mMinScaleWidget->setToolTip( tr( "Min scale on which snapping is enabled" ) );
+  mMinScaleWidget->setObjectName( QStringLiteral( "SnappingMinScaleSpinBox" ) );
+  connect( mMinScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMinScale );
 
-  mMaxScaleSpinBox = new QDoubleSpinBox();
-  mMaxScaleSpinBox->setDecimals( 2 );
-  mMaxScaleSpinBox->setMaximum( 99999999.990000 );
-  mMaxScaleSpinBox->setMinimum( 0.0 );
-  mMaxScaleSpinBox->setToolTip( tr( "Max scale on which snapping is enabled" ) );
-  mMaxScaleSpinBox->setObjectName( QStringLiteral( "SnappingMaxScaleSpinBox" ) );
-  mMaxScaleSpinBox->setSpecialValueText( "NULL" );
-  connect( mMaxScaleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSnappingWidget::changeMaxScale );
+  mMaxScaleWidget = new QgsScaleWidget();
+  mMaxScaleWidget->setToolTip( tr( "Max scale on which snapping is enabled" ) );
+  mMaxScaleWidget->setObjectName( QStringLiteral( "SnappingMaxScaleSpinBox" ) );
+  connect( mMaxScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMaxScale );
 
 
   mLimitToScale = new QAction( tr( "Toggle Snapping limit on scale" ), this );
@@ -287,9 +280,6 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     mTypeAction = tb->addWidget( mTypeButton );
     mToleranceAction = tb->addWidget( mToleranceSpinBox );
     mUnitAction = tb->addWidget( mUnitsComboBox );
-    tb->addAction( mLimitToScale );
-    mMinScaleAction = tb->addWidget( mMinScaleSpinBox );
-    mMaxScaleAction = tb->addWidget( mMaxScaleSpinBox );
 
     tb->addAction( mTopologicalEditingAction );
     tb->addAction( mIntersectionSnappingAction );
@@ -313,8 +303,8 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     limitToScaleButton->addAction( mLimitToScale );
     limitToScaleButton->setDefaultAction( mLimitToScale );
     layout->addWidget( limitToScaleButton );
-    layout->addWidget( mMinScaleSpinBox );
-    layout->addWidget( mMaxScaleSpinBox );
+    layout->addWidget( mMinScaleWidget );
+    layout->addWidget( mMaxScaleWidget );
 
     QToolButton *topoButton = new QToolButton();
     topoButton->addAction( mTopologicalEditingAction );
@@ -437,14 +427,14 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     mToleranceSpinBox->setValue( config.tolerance() );
   }
 
-  if ( mMinScaleSpinBox->value() != config.minScale() )
+  if ( mMinScaleWidget->scale() != config.minScale() )
   {
-    mMinScaleSpinBox->setValue( config.minScale() );
+    mMinScaleWidget->setScale( config.minScale() );
   }
 
-  if ( mMaxScaleSpinBox->value() != config.maxScale() )
+  if ( mMaxScaleWidget->scale() != config.maxScale() )
   {
-    mMaxScaleSpinBox->setValue( config.maxScale() );
+    mMaxScaleWidget->setScale( config.maxScale() );
   }
 
   mLimitToScale->setChecked( config.limitToScale() );
@@ -479,8 +469,8 @@ void QgsSnappingWidget::toggleSnappingWidgets( bool enabled )
   mTypeButton->setEnabled( enabled );
   mToleranceSpinBox->setEnabled( enabled );
   mLimitToScale->setEnabled( enabled );
-  mMinScaleSpinBox->setEnabled( enabled && mConfig.limitToScale() );
-  mMaxScaleSpinBox->setEnabled( enabled && mConfig.limitToScale() );
+  mMinScaleWidget->setEnabled( enabled && mConfig.limitToScale() );
+  mMaxScaleWidget->setEnabled( enabled && mConfig.limitToScale() );
   mUnitsComboBox->setEnabled( enabled );
   if ( mEditAdvancedConfigAction )
   {
@@ -515,8 +505,8 @@ void QgsSnappingWidget::changeMaxScale( double pMaxScale )
 void QgsSnappingWidget::changeLimitToScale( bool enabled )
 {
   mConfig.setLimitToScale( enabled );
-  mMinScaleSpinBox->setEnabled( mConfig.limitToScale() );
-  mMaxScaleSpinBox->setEnabled( mConfig.limitToScale() );
+  mMinScaleWidget->setEnabled( mConfig.limitToScale() );
+  mMaxScaleWidget->setEnabled( mConfig.limitToScale() );
   mProject->setSnappingConfig( mConfig );
 }
 
@@ -636,9 +626,6 @@ void QgsSnappingWidget::modeChanged()
     mToleranceAction->setVisible( !advanced );
     mUnitAction->setVisible( !advanced );
     mEditAdvancedConfigAction->setVisible( advanced );
-    mMaxScaleAction->setVisible( advanced );
-    mMinScaleAction->setVisible( advanced );
-    mLimitToScale->setVisible( advanced );
   }
   else
   {
@@ -649,8 +636,8 @@ void QgsSnappingWidget::modeChanged()
     {
       mAdvancedConfigWidget->setVisible( advanced );
     }
-    mMinScaleSpinBox->setVisible( advanced );
-    mMaxScaleSpinBox->setVisible( advanced );
+    mMinScaleWidget->setVisible( advanced );
+    mMaxScaleWidget->setVisible( advanced );
     mLimitToScale->setVisible( advanced );
   }
 }

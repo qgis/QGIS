@@ -32,6 +32,7 @@ class QgsLayerTreeNode;
 class QgsLayerTreeView;
 class QgsMapCanvas;
 class QgsProject;
+class QgsScaleWidget;
 
 
 #include "qgssnappingconfig.h"
@@ -152,12 +153,10 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mMiddleAction = nullptr;
     QDoubleSpinBox *mToleranceSpinBox = nullptr;
     QAction *mLimitToScale = nullptr;
-    QDoubleSpinBox *mMinScaleSpinBox = nullptr;
-    QDoubleSpinBox *mMaxScaleSpinBox = nullptr;
+    QgsScaleWidget *mMinScaleWidget = nullptr;
+    QgsScaleWidget *mMaxScaleWidget = nullptr;
     QAction *mToleranceAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mLimitToScaleAction = nullptr;
-    QAction *mMinScaleAction = nullptr;
-    QAction *mMaxScaleAction = nullptr;
     QComboBox *mUnitsComboBox = nullptr;
     QAction *mUnitAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mTopologicalEditingAction = nullptr;

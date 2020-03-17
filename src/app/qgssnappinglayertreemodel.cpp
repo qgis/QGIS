@@ -27,6 +27,7 @@
 #include "qgssnappingconfig.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
+#include "qgsscalewidget.h"
 
 QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent )
   : QItemDelegate( parent )
@@ -102,23 +103,15 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
 
   if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn )
   {
-    QDoubleSpinBox *minLimitSp = new QDoubleSpinBox( parent );
-    minLimitSp->setDecimals( 5 );
-    minLimitSp->setMinimum( 0.0 );
-    minLimitSp->setMaximum( 99999999.990000 );
+    QgsScaleWidget *minLimitSp = new QgsScaleWidget( parent );
     minLimitSp->setToolTip( tr( "Min Scale" ) );
-    minLimitSp->setSpecialValueText( "NULL" );
     return minLimitSp;
   }
 
   if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
   {
-    QDoubleSpinBox *maxLimitSp = new QDoubleSpinBox( parent );
-    maxLimitSp->setDecimals( 5 );
-    maxLimitSp->setMinimum( 0.0 );
-    maxLimitSp->setMaximum( 99999999.990000 );
+    QgsScaleWidget *maxLimitSp = new QgsScaleWidget( parent );
     maxLimitSp->setToolTip( tr( "Max Scale" ) );
-    maxLimitSp->setSpecialValueText( "NULL" );
     return maxLimitSp;
   }
 
@@ -163,13 +156,20 @@ void QgsSnappingLayerDelegate::setEditorData( QWidget *editor, const QModelIndex
       w->setCurrentIndex( w->findData( units ) );
     }
   }
-  else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn ||
-            index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
+  else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn)
   {
-    QDoubleSpinBox *w = qobject_cast<QDoubleSpinBox *>( editor );
+    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
     if ( w )
     {
-      w->setValue( val.toDouble() );
+      w->setScale( val.toDouble() );
+    }
+  }
+  else if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
+  {
+    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
+    if ( w )
+    {
+      w->setScale( val.toDouble() );
     }
   }
 }
@@ -214,13 +214,20 @@ void QgsSnappingLayerDelegate::setModelData( QWidget *editor, QAbstractItemModel
       model->setData( index, w->value(), Qt::EditRole );
     }
   }
-  else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn ||
-            index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
+  else if ( index.column() == QgsSnappingLayerTreeModel::MinScaleColumn)
   {
-    QDoubleSpinBox *w = qobject_cast<QDoubleSpinBox *>( editor );
+    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
     if ( w )
     {
-      model->setData( index, w->value(), Qt::EditRole );
+      model->setData( index, w->scale(), Qt::EditRole );
+    }
+  }
+  else if ( index.column() == QgsSnappingLayerTreeModel::MaxScaleColumn )
+  {
+    QgsScaleWidget *w = qobject_cast<QgsScaleWidget *>( editor );
+    if ( w )
+    {
+      model->setData( index, w->scale(), Qt::EditRole );
     }
   }
 }
@@ -630,7 +637,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       {
         if ( ls.minScale() <= 0.0 )
         {
-          return QString( "NULL" );
+          return QString( "not set" );
         }
         else
         {
@@ -650,7 +657,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       {
         if ( ls.maxScale() <= 0.0 )
         {
-          return QString( "NULL" );
+          return QString( "not set" );
         }
         else
         {
