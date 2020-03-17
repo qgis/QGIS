@@ -383,6 +383,7 @@ SET(QGIS_GUI_SRCS
   qgsfieldcombobox.cpp
   qgsfieldexpressionwidget.cpp
   qgsfieldmappingwidget.cpp
+  qgsfieldmappingmodel.cpp
   qgsfeaturelistcombobox.cpp
   qgsfieldvalidator.cpp
   qgsfieldvalueslineedit.cpp
@@ -603,6 +604,7 @@ SET(QGIS_GUI_HDRS
   qgsfieldcombobox.h
   qgsfieldexpressionwidget.h
   qgsfieldmappingwidget.h
+  qgsfieldmappingmodel.h
   qgsfieldvalidator.h
   qgsfieldvalueslineedit.h
   qgsfilecontentsourcelineedit.h

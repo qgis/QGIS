@@ -81,6 +81,7 @@
 %Include auto_generated/qgsfieldcombobox.sip
 %Include auto_generated/qgsfieldexpressionwidget.sip
 %Include auto_generated/qgsfieldmappingwidget.sip
+%Include auto_generated/qgsfieldmappingmodel.sip
 %Include auto_generated/qgsfieldvalidator.sip
 %Include auto_generated/qgsfieldvalueslineedit.sip
 %Include auto_generated/qgsfilecontentsourcelineedit.sip
