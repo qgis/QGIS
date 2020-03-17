@@ -2365,5 +2365,65 @@ tests:
         name: expected/renamed_field.gml
         type: vector
 
+  - algorithm: native:filterbygeometry
+    name: Filter by geometry type polygon input
+    params:
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      LINES:
+        name: expected/filter_geom_polys_line.gml
+        type: vector
+      NO_GEOMETRY:
+        name: expected/filter_geom_polys_null.gml
+        type: vector
+      POINTS:
+        name: expected/filter_geom_polys_point.gml
+        type: vector
+      POLYGONS:
+        name: expected/filter_geom_polys_poly.gml
+        type: vector
 
+  - algorithm: native:filterbygeometry
+    name: Filter by geometry type point input
+    params:
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+    results:
+      LINES:
+        name: expected/filter_geom_points_line.gml
+        type: vector
+      NO_GEOMETRY:
+        name: expected/filter_geom_points_null.gml
+        type: vector
+      POINTS:
+        name: expected/filter_geom_points_point.gml
+        type: vector
+      POLYGONS:
+        name: expected/filter_geom_points_poly.gml
+        type: vector
+
+  - algorithm: native:filterbygeometry
+    name: Filter by geometry type line input
+    params:
+      INPUT:
+        name: lines.gml|layername=lines
+        type: vector
+    results:
+      LINES:
+        name: expected/filter_geom_lines_line.gml
+        type: vector
+      NO_GEOMETRY:
+        name: expected/filter_geom_lines_null.gml
+        type: vector
+      POINTS:
+        name: expected/filter_geom_lines_point.gml
+        type: vector
+      POLYGONS:
+        name: expected/filter_geom_lines_poly.gml
+        type: vector
+
+  
 # See ../README.md for a description of the file format
