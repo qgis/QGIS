@@ -74,8 +74,8 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
      * field name to the corresponding expression.
      * \param parent parent object
      */
-    QgsFieldMappingModel( const QgsFields &sourceFields,
-                          const QgsFields &destinationFields,
+    QgsFieldMappingModel( const QgsFields &sourceFields = QgsFields(),
+                          const QgsFields &destinationFields = QgsFields(),
                           const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
                           QObject *parent = nullptr );
 
@@ -108,6 +108,17 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
 
     //! Moves up the field at \a index
     bool moveDown( const QModelIndex &index );
+
+    //! Set source fields to \a sourceFields
+    void setSourceFields( const QgsFields &sourceFields );
+
+    /**
+     * Set destination fields to \a destinationFields, initial values for the expressions can be
+     * optionally specified through \a expressions which is a map from the original
+     * field name to the corresponding expression.
+     */
+    void setDestinationFields( const QgsFields &destinationFields,
+                               const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
 
     // QAbstractItemModel interface
     int rowCount( const QModelIndex &parent ) const override;

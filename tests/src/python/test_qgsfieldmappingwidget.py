@@ -155,7 +155,7 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
     def testWidget(self):
         """Test widget operations"""
 
-        widget = QgsFieldMappingWidget(QgsFields(), QgsFields())
+        widget = QgsFieldMappingWidget()
         for i in range(10):
             widget.appendField(QgsField(str(i)))
         self.assertTrue(widget.model().rowCount(QModelIndex()), 10)
@@ -189,6 +189,17 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
 
         self.assertTrue(widget.removeSelectedFields())
         _compare(widget, [1, 3, 5, 7, 9])
+
+        # Test set destination fields
+        widget.setSourceFields(self.source_fields)
+        widget.setDestinationFields(self.destination_fields)
+        mapping = widget.mapping()
+        self.assertEqual(mapping[0].field.name(), 'destination_field1')
+        self.assertEqual(mapping[1].field.name(), 'destination_field2')
+        self.assertEqual(mapping[2].field.name(), 'destination_field3')
+        self.assertEqual(mapping[0].originalName, 'destination_field1')
+        self.assertEqual(mapping[1].originalName, 'destination_field2')
+        self.assertEqual(mapping[2].originalName, 'destination_field3')
 
     def __testWidget(self):
         """Test the mapping widget"""

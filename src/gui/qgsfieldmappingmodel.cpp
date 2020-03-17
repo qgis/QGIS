@@ -26,53 +26,7 @@ QgsFieldMappingModel::QgsFieldMappingModel( const QgsFields &sourceFields,
   , mSourceFields( sourceFields )
   , mExpressionContextGenerator( new ExpressionContextGenerator( &mSourceFields ) )
 {
-  // Prepare the model data
-  QStringList usedFields;
-  for ( const auto &df : qgis::as_const( destinationFields ) )
-  {
-    Field f;
-    f.field = df;
-    f.originalName = df.name();
-    if ( expressions.contains( f.field.name() ) )
-    {
-      f.expression = expressions.value( f.field.name() );
-      // if it's source field
-      if ( f.expression.isField() &&
-           mSourceFields.names().contains( f.expression.referencedColumns().toList().first() ) )
-      {
-        usedFields.push_back( f.expression.referencedColumns().toList().first() );
-      }
-    }
-    else
-    {
-      bool found { false };
-      // Search for fields in the source
-      // 1. match by name
-      for ( const auto &sf : qgis::as_const( mSourceFields ) )
-      {
-        if ( sf.name() == f.field.name() )
-        {
-          f.expression = QgsExpression::quotedColumnRef( sf.name() );
-          found = true;
-          usedFields.push_back( sf.name() );
-          break;
-        }
-      }
-      // 2. match by type
-      if ( ! found )
-      {
-        for ( const auto &sf : qgis::as_const( mSourceFields ) )
-        {
-          if ( usedFields.contains( sf.name() ) || sf.type() != f.field.type() )
-            continue;
-          f.expression = QgsExpression::quotedColumnRef( sf.name() );
-          usedFields.push_back( sf.name() );
-          found = true;
-        }
-      }
-    }
-    mMapping.push_back( f );
-  }
+  setDestinationFields( destinationFields, expressions );
 }
 
 QVariant QgsFieldMappingModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -269,6 +223,66 @@ bool QgsFieldMappingModel::moveUpOrDown( const QModelIndex &index, bool up )
   mMapping.swapItemsAt( row, row + 1 );
   endMoveRows();
   return true;
+}
+
+void QgsFieldMappingModel::setSourceFields( const QgsFields &sourceFields )
+{
+  mSourceFields = sourceFields;
+}
+
+void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFields,
+    const QMap<QString, QgsExpression> &expressions )
+{
+  beginResetModel();
+  mMapping.clear();
+  // Prepare the model data
+  QStringList usedFields;
+  for ( const auto &df : qgis::as_const( destinationFields ) )
+  {
+    Field f;
+    f.field = df;
+    f.originalName = df.name();
+    if ( expressions.contains( f.field.name() ) )
+    {
+      f.expression = expressions.value( f.field.name() );
+      // if it's source field
+      if ( f.expression.isField() &&
+           mSourceFields.names().contains( f.expression.referencedColumns().toList().first() ) )
+      {
+        usedFields.push_back( f.expression.referencedColumns().toList().first() );
+      }
+    }
+    else
+    {
+      bool found { false };
+      // Search for fields in the source
+      // 1. match by name
+      for ( const auto &sf : qgis::as_const( mSourceFields ) )
+      {
+        if ( sf.name() == f.field.name() )
+        {
+          f.expression = QgsExpression::quotedColumnRef( sf.name() );
+          found = true;
+          usedFields.push_back( sf.name() );
+          break;
+        }
+      }
+      // 2. match by type
+      if ( ! found )
+      {
+        for ( const auto &sf : qgis::as_const( mSourceFields ) )
+        {
+          if ( usedFields.contains( sf.name() ) || sf.type() != f.field.type() )
+            continue;
+          f.expression = QgsExpression::quotedColumnRef( sf.name() );
+          usedFields.push_back( sf.name() );
+          found = true;
+        }
+      }
+    }
+    mMapping.push_back( f );
+  }
+  endResetModel();
 }
 
 bool QgsFieldMappingModel::destinationEditable() const

@@ -23,8 +23,8 @@ for each set of "destination" fields an expression defines how to obtain the val
 %End
   public:
 
-    explicit QgsFieldMappingWidget( const QgsFields &sourceFields,
-                                    const QgsFields &destinationFields,
+    explicit QgsFieldMappingWidget( const QgsFields &sourceFields = QgsFields(),
+                                    const QgsFields &destinationFields = QgsFields(),
                                     const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
                                     QWidget *parent = 0 );
 %Docstring
@@ -59,6 +59,20 @@ Returns a list of Field objects representing the current status of the underlyin
     QItemSelectionModel *selectionModel();
 %Docstring
 Returns the selection model
+%End
+
+    void setSourceFields( const QgsFields &sourceFields );
+%Docstring
+Set source fields of the underlying mapping model to ``sourceFields``
+%End
+
+    void setDestinationFields( const QgsFields &destinationFields,
+                               const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
+%Docstring
+Set destination fields to ``destinationFields`` in the underlying model,
+initial values for the expressions can be optionally specified through
+``expressions`` which is a map from the original field name to the
+corresponding expression.
 %End
 
   public slots:

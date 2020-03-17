@@ -22,9 +22,6 @@ QgsFieldMappingWidget::QgsFieldMappingWidget( const QgsFields &sourceFields,
     const QMap<QString, QgsExpression> &expressions,
     QWidget *parent )
   : QWidget( parent )
-  , mSourceFields( sourceFields )
-  , mDestinationFields( destinationFields )
-  , mExpressions( expressions )
 {
 
   setupUi( this );
@@ -60,6 +57,16 @@ QList<QgsFieldMappingModel::Field> QgsFieldMappingWidget::mapping() const
 QItemSelectionModel *QgsFieldMappingWidget::selectionModel()
 {
   return mTableView->selectionModel();
+}
+
+void QgsFieldMappingWidget::setSourceFields( const QgsFields &sourceFields )
+{
+  model()->setSourceFields( sourceFields );
+}
+
+void QgsFieldMappingWidget::setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QgsExpression> &expressions )
+{
+  model()->setDestinationFields( destinationFields, expressions );
 }
 
 void QgsFieldMappingWidget::appendField( const QgsField &field, const QgsExpression &expression )
