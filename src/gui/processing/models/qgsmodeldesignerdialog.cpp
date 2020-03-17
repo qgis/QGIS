@@ -98,7 +98,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mPropertiesDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
   mInputsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
   mAlgorithmsDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
-  mVariablesDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
+  mVariablesDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
 
   mAlgorithmsTree->header()->setVisible( false );
   mAlgorithmSearchEdit->setShowSearchIcon( true );
@@ -184,7 +184,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mUndoDock->setObjectName( QStringLiteral( "UndoDock" ) );
   mUndoView = new QUndoView( mUndoStack, this );
   mUndoDock->setWidget( mUndoView );
-  mUndoDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable );
+  mUndoDock->setFeatures( QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
   addDockWidget( Qt::DockWidgetArea::LeftDockWidgetArea, mUndoDock );
 
   tabifyDockWidget( mUndoDock, mPropertiesDock );
