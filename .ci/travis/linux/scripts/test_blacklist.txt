@@ -4,6 +4,13 @@ PyQgsPalLabelingServer
 qgis_composerutils
 PyQgsAppStartup
 
+# flaky 
+PyQgsPostgresRasterProvider
+
+# intermittent crashes
+PyQgsExpressionBuilderWidget
+PyQgsRulebasedRenderer
+
 # code layout tests are run on separate build
 qgis_spelling
 qgis_sipify
