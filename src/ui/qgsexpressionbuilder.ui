@@ -101,20 +101,7 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,1,0,1">
               <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="0,0">
-                <item>
-                 <spacer name="horizontalSpacer_3">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
+               <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="0">
                 <item>
                  <widget class="QFrame" name="frame_2">
                   <property name="frameShape">
@@ -169,13 +156,6 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="Line" name="line">
-                     <property name="orientation">
-                      <enum>Qt::Vertical</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
                     <widget class="QToolButton" name="btnEditExpression">
                      <property name="enabled">
                       <bool>false</bool>
@@ -220,6 +200,13 @@
                       <string>Export</string>
                      </property>
                     </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_3">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                    </spacer>
                    </item>
                   </layout>
                  </widget>
