@@ -44,6 +44,13 @@ QString QgsFilterByGeometryAlgorithm::groupId() const
   return QStringLiteral( "vectorselection" );
 }
 
+QgsProcessingAlgorithm::Flags QgsFilterByGeometryAlgorithm::flags() const
+{
+  Flags f = QgsProcessingAlgorithm::flags();
+  f |= QgsProcessingAlgorithm::FlagHideFromToolbox;
+  return f;
+}
+
 void QgsFilterByGeometryAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
@@ -208,6 +215,96 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
   outputs.insert( QStringLiteral( "LINE_COUNT" ), lineCount );
   outputs.insert( QStringLiteral( "POLYGON_COUNT" ), polygonCount );
   outputs.insert( QStringLiteral( "NO_GEOMETRY_COUNT" ), nullCount );
+
+  return outputs;
+}
+
+
+
+//
+// QgsFilterByLayerTypeAlgorithm
+//
+
+QString QgsFilterByLayerTypeAlgorithm::name() const
+{
+  return QStringLiteral( "filterlayersbytype" );
+}
+
+QString QgsFilterByLayerTypeAlgorithm::displayName() const
+{
+  return QObject::tr( "Filter layers by type" );
+}
+
+QStringList QgsFilterByLayerTypeAlgorithm::tags() const
+{
+  return QObject::tr( "filter,vector,raster,select" ).split( ',' );
+}
+
+QString QgsFilterByLayerTypeAlgorithm::group() const
+{
+  return QObject::tr( "Layer tools" );
+}
+
+QString QgsFilterByLayerTypeAlgorithm::groupId() const
+{
+  return QStringLiteral( "layertools" );
+}
+
+QgsProcessingAlgorithm::Flags QgsFilterByLayerTypeAlgorithm::flags() const
+{
+  Flags f = QgsProcessingAlgorithm::flags();
+  f |= FlagHideFromToolbox | FlagPruneModelBranchesBasedOnAlgorithmResults;
+  return f;
+}
+
+void QgsFilterByLayerTypeAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+
+  addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "VECTOR" ),  QObject::tr( "Vector features" ),
+                QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, false ) );
+
+  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "RASTER" ),  QObject::tr( "Raster layer" ), QVariant(), true, false ) );
+}
+
+QString QgsFilterByLayerTypeAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm filters layer by their type. Incoming layers will be directed to different "
+                      "outputs based on whether they are a vector or raster layer." );
+}
+
+QString QgsFilterByLayerTypeAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Filters layers by type" );
+}
+
+QgsFilterByLayerTypeAlgorithm *QgsFilterByLayerTypeAlgorithm::createInstance() const
+{
+  return new QgsFilterByLayerTypeAlgorithm();
+}
+
+QVariantMap QgsFilterByLayerTypeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  const QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
+  if ( !layer )
+    throw QgsProcessingException( QObject::tr( "Could not load input layer" ) );
+
+  QVariantMap outputs;
+
+  switch ( layer->type() )
+  {
+    case QgsMapLayerType::VectorLayer:
+      outputs.insert( QStringLiteral( "VECTOR" ), parameters.value( QStringLiteral( "INPUT" ) ) );
+      break;
+
+    case QgsMapLayerType::RasterLayer:
+      outputs.insert( QStringLiteral( "RASTER" ), parameters.value( QStringLiteral( "INPUT" ) ) );
+      break;
+
+    case QgsMapLayerType::PluginLayer:
+    case QgsMapLayerType::MeshLayer:
+      break;
+  }
 
   return outputs;
 }

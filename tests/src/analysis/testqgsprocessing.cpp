@@ -580,6 +580,7 @@ class TestQgsProcessing: public QObject
     void asPythonCommand();
     void modelerAlgorithm();
     void modelExecution();
+    void modelBranchPruning();
     void modelWithProviderWithLimitedTypes();
     void modelVectorOutputIsCompatibleType();
     void modelAcceptableValues();
@@ -9062,6 +9063,134 @@ void TestQgsProcessing::modelExecution()
                               "  def createInstance(self):\n"
                               "    return MyModel()\n" ).arg( Qgis::versionInt() ).split( '\n' );
   QCOMPARE( actualParts, expectedParts );
+}
+
+void TestQgsProcessing::modelBranchPruning()
+{
+  QgsVectorLayer *layer3111 = new QgsVectorLayer( "Point?crs=epsg:3111", "v1", "memory" );
+  QgsProject p;
+  p.addMapLayer( layer3111 );
+
+  QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
+  QString raster1 = testDataDir + "landsat_4326.tif";
+  QFileInfo fi1( raster1 );
+  QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+  QVERIFY( r1->isValid() );
+  p.addMapLayer( r1 );
+
+  QgsProcessingContext context;
+  context.setProject( &p );
+
+  // test that model branches are trimmed for algorithms which return the FlagPruneModelBranchesBasedOnAlgorithmResults flag
+  QgsProcessingModelAlgorithm model1;
+
+  // first add the filter by layer type alg
+  QgsProcessingModelChildAlgorithm algc1;
+  algc1.setChildId( "filter" );
+  algc1.setAlgorithmId( "native:filterlayersbytype" );
+  QgsProcessingModelParameter param;
+  param.setParameterName( QStringLiteral( "LAYER" ) );
+  model1.addModelParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "LAYER" ) ), param );
+  algc1.addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "LAYER" ) ) );
+  model1.addChildAlgorithm( algc1 );
+
+  //then create some branches which come off this, depending on the layer type
+  QgsProcessingModelChildAlgorithm algc2;
+  algc2.setChildId( "buffer" );
+  algc2.setAlgorithmId( "native:buffer" );
+  algc2.addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "filter" ), QStringLiteral( "VECTOR" ) ) );
+  QMap<QString, QgsProcessingModelOutput> outputsc2;
+  QgsProcessingModelOutput outc2( "BUFFER_OUTPUT" );
+  outc2.setChildOutputName( "OUTPUT" );
+  outputsc2.insert( QStringLiteral( "BUFFER_OUTPUT" ), outc2 );
+  algc2.setModelOutputs( outputsc2 );
+  model1.addChildAlgorithm( algc2 );
+  // ...we want a complex branch, so add some more bits to the branch
+  QgsProcessingModelChildAlgorithm algc3;
+  algc3.setChildId( "buffer2" );
+  algc3.setAlgorithmId( "native:buffer" );
+  algc3.addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "buffer" ), QStringLiteral( "OUTPUT" ) ) );
+  QMap<QString, QgsProcessingModelOutput> outputsc3;
+  QgsProcessingModelOutput outc3( "BUFFER2_OUTPUT" );
+  outc3.setChildOutputName( "OUTPUT" );
+  outputsc3.insert( QStringLiteral( "BUFFER2_OUTPUT" ), outc3 );
+  algc3.setModelOutputs( outputsc3 );
+  model1.addChildAlgorithm( algc3 );
+  QgsProcessingModelChildAlgorithm algc4;
+  algc4.setChildId( "buffer3" );
+  algc4.setAlgorithmId( "native:buffer" );
+  algc4.addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "buffer" ), QStringLiteral( "OUTPUT" ) ) );
+  QMap<QString, QgsProcessingModelOutput> outputsc4;
+  QgsProcessingModelOutput outc4( "BUFFER3_OUTPUT" );
+  outc4.setChildOutputName( "OUTPUT" );
+  outputsc4.insert( QStringLiteral( "BUFFER3_OUTPUT" ), outc4 );
+  algc4.setModelOutputs( outputsc4 );
+  model1.addChildAlgorithm( algc4 );
+
+  // now add some bits to the raster branch
+  QgsProcessingModelChildAlgorithm algr2;
+  algr2.setChildId( "fill2" );
+  algr2.setAlgorithmId( "native:fillnodata" );
+  algr2.addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "filter" ), QStringLiteral( "RASTER" ) ) );
+  QMap<QString, QgsProcessingModelOutput> outputsr2;
+  QgsProcessingModelOutput outr2( "RASTER_OUTPUT" );
+  outr2.setChildOutputName( "OUTPUT" );
+  outputsr2.insert( QStringLiteral( "RASTER_OUTPUT" ), outr2 );
+  algr2.setModelOutputs( outputsr2 );
+  model1.addChildAlgorithm( algr2 );
+
+  // some more bits on the raster branch
+  QgsProcessingModelChildAlgorithm algr3;
+  algr3.setChildId( "fill3" );
+  algr3.setAlgorithmId( "native:fillnodata" );
+  algr3.addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "fill2" ), QStringLiteral( "OUTPUT" ) ) );
+  QMap<QString, QgsProcessingModelOutput> outputsr3;
+  QgsProcessingModelOutput outr3( "RASTER_OUTPUT2" );
+  outr3.setChildOutputName( "OUTPUT" );
+  outputsr3.insert( QStringLiteral( "RASTER_OUTPUT2" ), outr3 );
+  algr3.setModelOutputs( outputsr3 );
+  model1.addChildAlgorithm( algr3 );
+
+  QgsProcessingModelChildAlgorithm algr4;
+  algr4.setChildId( "fill4" );
+  algr4.setAlgorithmId( "native:fillnodata" );
+  algr4.addParameterSources( QStringLiteral( "INPUT" ), QList< QgsProcessingModelChildParameterSource >() << QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "fill2" ), QStringLiteral( "OUTPUT" ) ) );
+  QMap<QString, QgsProcessingModelOutput> outputsr4;
+  QgsProcessingModelOutput outr4( "RASTER_OUTPUT3" );
+  outr4.setChildOutputName( "OUTPUT" );
+  outputsr4.insert( QStringLiteral( "RASTER_OUTPUT3" ), outr4 );
+  algr4.setModelOutputs( outputsr4 );
+  model1.addChildAlgorithm( algr4 );
+
+  QgsProcessingFeedback feedback;
+  QVariantMap params;
+  // vector input
+  params.insert( QStringLiteral( "LAYER" ), QStringLiteral( "v1" ) );
+  params.insert( QStringLiteral( "buffer:BUFFER_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  params.insert( QStringLiteral( "buffer2:BUFFER2_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  params.insert( QStringLiteral( "buffer3:BUFFER3_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  params.insert( QStringLiteral( "fill2:RASTER_OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+  params.insert( QStringLiteral( "fill3:RASTER_OUTPUT2" ), QgsProcessing::TEMPORARY_OUTPUT );
+  params.insert( QStringLiteral( "fill4:RASTER_OUTPUT3" ), QgsProcessing::TEMPORARY_OUTPUT );
+  QVariantMap results = model1.run( params, context, &feedback );
+  // we should get the vector branch outputs only
+  QVERIFY( !results.value( QStringLiteral( "buffer:BUFFER_OUTPUT" ) ).toString().isEmpty() );
+  QVERIFY( !results.value( QStringLiteral( "buffer2:BUFFER2_OUTPUT" ) ).toString().isEmpty() );
+  QVERIFY( !results.value( QStringLiteral( "buffer3:BUFFER3_OUTPUT" ) ).toString().isEmpty() );
+  QVERIFY( !results.contains( QStringLiteral( "fill2:RASTER_OUTPUT" ) ) );
+  QVERIFY( !results.contains( QStringLiteral( "fill3:RASTER_OUTPUT2" ) ) );
+  QVERIFY( !results.contains( QStringLiteral( "fill4:RASTER_OUTPUT3" ) ) );
+
+  // raster input
+  params.insert( QStringLiteral( "LAYER" ), QStringLiteral( "R1" ) );
+  results = model1.run( params, context, &feedback );
+  // we should get the raster branch outputs only
+  QVERIFY( !results.value( QStringLiteral( "fill2:RASTER_OUTPUT" ) ).toString().isEmpty() );
+  QVERIFY( !results.value( QStringLiteral( "fill3:RASTER_OUTPUT2" ) ).toString().isEmpty() );
+  QVERIFY( !results.value( QStringLiteral( "fill4:RASTER_OUTPUT3" ) ).toString().isEmpty() );
+  QVERIFY( !results.contains( QStringLiteral( "buffer:BUFFER_OUTPUT" ) ) );
+  QVERIFY( !results.contains( QStringLiteral( "buffer2:BUFFER2_OUTPUT" ) ) );
+  QVERIFY( !results.contains( QStringLiteral( "buffer3:BUFFER3_OUTPUT" ) ) );
 }
 
 void TestQgsProcessing::modelWithProviderWithLimitedTypes()
