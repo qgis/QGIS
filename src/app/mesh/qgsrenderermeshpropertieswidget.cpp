@@ -123,6 +123,9 @@ void QgsRendererMeshPropertiesWidget::apply()
   settings.setAveragingMethod( averagingMethod.get() );
   mMeshLayer->setRendererSettings( settings );
   mMeshLayer->triggerRepaint();
+
+  QgsSettings windowsSettings;
+  windowsSettings.setValue( QStringLiteral( "/Windows/RendererMeshProperties/tab" ), mStyleOptionsTab->currentIndex() );
 }
 
 void QgsRendererMeshPropertiesWidget::syncToLayer()
@@ -147,6 +150,12 @@ void QgsRendererMeshPropertiesWidget::syncToLayer()
   bool hasEdges = ( mMeshLayer->dataProvider() &&
                     mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) );
   mEdgeMeshGroupBox->setVisible( hasEdges );
+
+  QgsSettings settings;
+  if ( !settings.contains( QStringLiteral( "/Windows/RendererMeshProperties/tab" ) ) )
+    settings.setValue( QStringLiteral( "/Windows/RendererMeshProperties/tab" ), 0 );
+  else
+    mStyleOptionsTab->setCurrentIndex( settings.value( QStringLiteral( "/Windows/RendererMeshProperties/tab" ) ).toInt() );
 }
 
 void QgsRendererMeshPropertiesWidget::onActiveScalarGroupChanged( int groupIndex )
