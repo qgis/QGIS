@@ -42,8 +42,8 @@ the mapping expression is editable.
       QgsExpression expression;
     };
 
-    QgsFieldMappingModel( const QgsFields &sourceFields,
-                          const QgsFields &destinationFields,
+    QgsFieldMappingModel( const QgsFields &sourceFields = QgsFields(),
+                          const QgsFields &destinationFields = QgsFields(),
                           const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
                           QObject *parent = 0 );
 %Docstring
@@ -103,6 +103,19 @@ Moves down the field at ``index``
     bool moveDown( const QModelIndex &index );
 %Docstring
 Moves up the field at ``index``
+%End
+
+    void setSourceFields( const QgsFields &sourceFields );
+%Docstring
+Set source fields to ``sourceFields``
+%End
+
+    void setDestinationFields( const QgsFields &destinationFields,
+                               const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
+%Docstring
+Set destination fields to ``destinationFields``, initial values for the expressions can be
+optionally specified through ``expressions`` which is a map from the original
+field name to the corresponding expression.
 %End
 
     virtual int rowCount( const QModelIndex &parent ) const;
