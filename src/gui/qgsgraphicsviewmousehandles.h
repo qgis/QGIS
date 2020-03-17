@@ -120,7 +120,17 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     virtual void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) = 0;
     virtual void previewItemMove( QGraphicsItem *item, double deltaX, double deltaY );
     virtual void setItemRect( QGraphicsItem *item, QRectF rect ) = 0;
-    virtual void previewSetItemRect( QGraphicsItem *item, QRectF rect );
+
+    /**
+     * Called when a resize or move action is in progress and the effects can be previewed for the specified \a item. The
+     * \a rect argument gives the new "transient" rectangular bounds of \a item (in item coordinates).
+     *
+     * If implemented, the method should return the item's calculated desired rect given the specified \a rect. This allows
+     * an item to override the rect results, e.g. by applying a minimum size constraint. The returned value
+     * should be in the item's coordinates.
+     */
+    virtual QRectF previewSetItemRect( QGraphicsItem *item, QRectF rect );
+
     virtual void startMacroCommand( const QString &text );
     virtual void endMacroCommand();
     virtual void createItemCommand( QGraphicsItem *item );

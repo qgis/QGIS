@@ -146,15 +146,24 @@ void QgsModelComponentGraphicItem::setItemRect( QRectF )
   emit updateArrowPaths();
 }
 
-void QgsModelComponentGraphicItem::previewItemRectChange( QRectF rect )
+QRectF QgsModelComponentGraphicItem::previewItemRectChange( QRectF rect )
 {
   rect = rect.normalized();
+
+  if ( rect.width() < MIN_COMPONENT_WIDTH )
+    rect.setWidth( MIN_COMPONENT_WIDTH );
+  if ( rect.height() < MIN_COMPONENT_HEIGHT )
+    rect.setHeight( MIN_COMPONENT_HEIGHT );
+
   setPos( rect.center() );
   prepareGeometryChange();
+
   mTempSize = rect.size();
 
   updateButtonPositions();
   emit updateArrowPaths();
+
+  return rect;
 }
 
 void QgsModelComponentGraphicItem::modelHoverEnterEvent( QgsModelViewMouseEvent *event )

@@ -141,12 +141,13 @@ void QgsModelViewMouseHandles::setItemRect( QGraphicsItem *item, QRectF rect )
   }
 }
 
-void QgsModelViewMouseHandles::previewSetItemRect( QGraphicsItem *item, QRectF rect )
+QRectF QgsModelViewMouseHandles::previewSetItemRect( QGraphicsItem *item, QRectF rect )
 {
   if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
   {
-    componentItem->previewItemRectChange( rect );
+    return componentItem->previewItemRectChange( rect );
   }
+  return rect;
 }
 
 void QgsModelViewMouseHandles::startMacroCommand( const QString &text )

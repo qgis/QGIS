@@ -108,7 +108,7 @@ Shows a preview of moving the item from its stored position by ``dx``, ``dy``.
 Sets a new scene ``rect`` for the item.
 %End
 
-    void previewItemRectChange( QRectF rect );
+    QRectF previewItemRectChange( QRectF rect );
 %Docstring
 Shows a preview of setting a new ``rect`` for the item.
 %End
