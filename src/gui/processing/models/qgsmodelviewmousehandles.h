@@ -62,7 +62,7 @@ class GUI_EXPORT QgsModelViewMouseHandles: public QgsGraphicsViewMouseHandles
     void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) override;
     void previewItemMove( QGraphicsItem *item, double deltaX, double deltaY ) override;
     void setItemRect( QGraphicsItem *item, QRectF rect ) override;
-    void previewSetItemRect( QGraphicsItem *item, QRectF rect ) override;
+    QRectF previewSetItemRect( QGraphicsItem *item, QRectF rect ) override;
     void startMacroCommand( const QString &text ) override;
     void endMacroCommand() override;
 
