@@ -97,7 +97,7 @@ class RandomPointsOnLines(QgisAlgorithm):
                                                        None, True, 1, 1000000000))
         self.addParameter(QgsProcessingParameterBoolean(self.INCLUDE_LINE_ATTRIBUTES,
                                                         self.tr('Include line attributes'),
-                                                        False, False))
+                                                        True, True))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('Random points'),
                                                             type=QgsProcessing.TypeVectorPoint))
