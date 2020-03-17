@@ -30,6 +30,30 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 {
     Q_OBJECT
   public:
+    enum PromptMode
+    {
+
+      /**
+       * always ask if there are existing sublayers
+       */
+      PromptAlways,
+
+      /**
+       * always ask if there are existing sublayers, but skip if there are bands for rasters
+       */
+      PromptIfNeeded,
+
+      /**
+       * never prompt, will not load anything
+       */
+      PromptNever,
+
+      /**
+       * never prompt, but load all sublayers
+       */
+      PromptLoadAll
+    };
+    Q_ENUM( PromptMode )
 
     enum ProviderType
     {
@@ -104,6 +128,9 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 
   public slots:
     int exec() override;
+
+  protected slots:
+    void layersTable_selectionChanged( const QItemSelection &, const QItemSelection & );
 
   protected:
     QString mName;

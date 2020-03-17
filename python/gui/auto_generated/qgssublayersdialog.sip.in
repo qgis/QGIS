@@ -15,6 +15,17 @@ class QgsSublayersDialog : QDialog
 #include "qgssublayersdialog.h"
 %End
   public:
+    enum PromptMode
+    {
+
+      PromptAlways,
+
+      PromptIfNeeded,
+
+      PromptNever,
+
+      PromptLoadAll
+    };
 
     enum ProviderType
     {
@@ -90,6 +101,9 @@ Returns column with count or -1
   public slots:
     virtual int exec();
 
+
+  protected slots:
+    void layersTable_selectionChanged( const QItemSelection &, const QItemSelection & );
 
   protected:
 
