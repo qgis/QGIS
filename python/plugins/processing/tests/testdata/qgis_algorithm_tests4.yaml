@@ -2425,5 +2425,5 @@ tests:
         name: expected/filter_geom_lines_poly.gml
         type: vector
 
-  
+
 # See ../README.md for a description of the file format
