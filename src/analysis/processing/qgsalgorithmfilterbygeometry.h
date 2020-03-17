@@ -26,7 +26,7 @@
 ///@cond PRIVATE
 
 /**
- * Native extract by expression algorithm.
+ * Native filter by geometry type algorithm.
  */
 class QgsFilterByGeometryAlgorithm : public QgsProcessingAlgorithm
 {
@@ -34,6 +34,7 @@ class QgsFilterByGeometryAlgorithm : public QgsProcessingAlgorithm
   public:
 
     QgsFilterByGeometryAlgorithm() = default;
+    Flags flags() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
@@ -43,6 +44,34 @@ class QgsFilterByGeometryAlgorithm : public QgsProcessingAlgorithm
     QString shortHelpString() const override;
     QString shortDescription() const override;
     QgsFilterByGeometryAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+};
+
+
+/**
+ * Native filter by layer type algorithm.
+ */
+class QgsFilterByLayerTypeAlgorithm : public QgsProcessingAlgorithm
+{
+
+  public:
+
+    QgsFilterByLayerTypeAlgorithm() = default;
+    Flags flags() const override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+    QString shortDescription() const override;
+    QgsFilterByLayerTypeAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 

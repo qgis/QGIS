@@ -112,6 +112,8 @@ class TestQgsProcessingAlgs: public QObject
     void raiseException();
     void raiseWarning();
 
+    void filterByLayerType();
+
   private:
 
     QString mPointLayerPath;
@@ -2337,6 +2339,44 @@ void TestQgsProcessingAlgs::raiseWarning()
   QVERIFY( ok );
 
   QCOMPARE( feedback.errors, QStringList() << QStringLiteral( "you mighta screwed up boy, but i aint so sure" ) );
+}
+
+void TestQgsProcessingAlgs::filterByLayerType()
+{
+  QgsProject p;
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  p.addMapLayer( vl );
+  // raster layer
+  QgsRasterLayer *rl = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/tenbytenraster.asc", QStringLiteral( "rl" ) );
+  QVERIFY( rl->isValid() );
+  p.addMapLayer( rl );
+
+
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:filterlayersbytype" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  // vector input
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "vl" ) );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( &p );
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( !results.value( QStringLiteral( "VECTOR" ) ).toString().isEmpty() );
+  QVERIFY( !results.contains( QStringLiteral( "RASTER" ) ) );
+
+  // raster input
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "rl" ) );
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( !results.value( QStringLiteral( "RASTER" ) ).toString().isEmpty() );
+  QVERIFY( !results.contains( QStringLiteral( "VECTOR" ) ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )
