@@ -134,7 +134,7 @@ class RandomPointsOnLines(QgisAlgorithm):
         index = QgsSpatialIndex()
         points = dict()
 
-        maxIterations = pointCount * MaxTriesPerPoint
+        maxIterations = pointCount * maxTriesPerPoint
         # Go through all the features of the layer
         for f in source.getFeatures():
             if feedback.isCanceled():
