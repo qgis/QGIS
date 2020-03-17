@@ -40,7 +40,8 @@
 
 void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
-  QApplication::setOverrideCursor( Qt::ArrowCursor );
+  QgsTemporaryCursorRestoreOverride cursorOverride;
+
   QgsHandleBadLayers *dialog = new QgsHandleBadLayers( layers );
 
   dialog->buttonBox->button( QDialogButtonBox::Ignore )->setToolTip( tr( "Import all unavailable layers unmodified (you can fix them later)." ) );
@@ -66,7 +67,6 @@ void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
   }
 
   delete dialog;
-  QApplication::restoreOverrideCursor();
 }
 
 
