@@ -21,10 +21,8 @@
 #include <QStyledItemDelegate>
 
 #include "qgis_gui.h"
-#include "qgsfields.h"
-#include "qgsexpression.h"
 #include "ui_qgsfieldmappingwidget.h"
-#include "qgsexpressioncontextgenerator.h"
+#include "qgsfieldmappingmodel.h"
 
 /**
  * \ingroup gui
@@ -39,14 +37,46 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
 
   public:
 
+    /**
+     * Constructs a QgsFieldMappingWidget from a set of \a sourceFields
+     * and \a destinationFields, initial values for the expressions can be
+     * optionally specified through \a expressions which is a map from the original
+     * field name to the corresponding expression.
+     * \param parent parent object
+     */
     explicit QgsFieldMappingWidget( const QgsFields &sourceFields,
                                     const QgsFields &destinationFields,
                                     const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
                                     QWidget *parent = nullptr );
 
-    QMap<QString, QgsExpression> expressions() const;
+    //! Sets the destination fields editable state to \a ditable
+    void setDestinationEditable( bool editable );
 
-  signals:
+    //! Returns TRUE if the destination fields are editable in the model
+    bool destinationEditable() const;
+
+    //! Returns the underlying mapping model
+    QgsFieldMappingModel *model() const;
+
+    //! Returns a list of Field objects representing the current status of the underlying mapping model
+    QList<QgsFieldMappingModel::Field> mapping() const;
+
+    //! Returns the selection model
+    QItemSelectionModel *selectionModel();
+
+  public slots:
+
+    //! Appends a new \a field to the model, with an optional \a expression
+    void appendField( const QgsField &field, const QgsExpression &expression = QgsExpression() );
+
+    //! Removes the currently selected field from the model
+    bool removeSelectedFields( );
+
+    //! Moves down currently selected field
+    bool moveSelectedFieldsUp( );
+
+    //! Moves up the currently selected field
+    bool moveSelectedFieldsDown( );
 
   private:
 
@@ -54,6 +84,7 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
     QgsFields mDestinationFields;
     QMap<QString, QgsExpression> mExpressions;
     QAbstractTableModel *mModel;
+    void updateColumns();
 
     class ExpressionDelegate: public QStyledItemDelegate
     {
@@ -68,88 +99,20 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
         void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
     };
 
-
-};
-
-
-/**
- * \ingroup gui
- * The QgsFieldMappingModel holds mapping information for mapping from one set of QgsFields to another,
- * for each set of "destination" fields an expression defines how to obtain the values of the
- * "destination" fields.
- * \since QGIS 3.14
- */
-class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
-{
-
-    Q_OBJECT
-
-  public:
-
-    QgsFieldMappingModel( const QgsFields &sourceFields,
-                          const QgsFields &destinationFields,
-                          const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
-                          QObject *parent = nullptr );
-
-    QgsExpressionContextGenerator *contextGenerator() const;
-
-    // QAbstractItemModel interface
-    int rowCount( const QModelIndex &parent ) const override;
-    int columnCount( const QModelIndex &parent ) const override;
-    QVariant data( const QModelIndex &index, int role ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QgsFields sourceFields() const;
-    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
-
-
-
-  private:
-
-    struct Field
-    {
-      QString name;
-      QVariant type;
-      int length;
-      int precision;
-      QgsExpression expression;
-    };
-
-    QList<Field> mMapping;
-
-    class ExpressionContextGenerator: public QgsExpressionContextGenerator
+    class TypeDelegate: public QStyledItemDelegate
     {
 
       public:
 
-        ExpressionContextGenerator( const QgsFields *sourceFields );
+        TypeDelegate( QObject *parent = nullptr );
 
-        // QgsExpressionContextGenerator interface
-        QgsExpressionContext createExpressionContext() const override;
-
-      private:
-
-        const QgsFields *mSourceFields;
-
+        // QAbstractItemDelegate interface
+        QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+        void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+        void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
     };
 
-    QgsFields mSourceFields;
-    QgsFields mDestinationFields;
-    std::unique_ptr<ExpressionContextGenerator> mExpressionContextGenerator;
-
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #endif // QGSFIELDMAPPINGWIDGET_H

@@ -27,67 +27,65 @@ for each set of "destination" fields an expression defines how to obtain the val
                                     const QgsFields &destinationFields,
                                     const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
                                     QWidget *parent = 0 );
-
-    QMap<QString, QgsExpression> expressions() const;
-
-  signals:
-
-      public:
-};
-
-
-class QgsFieldMappingModel: QAbstractTableModel
-{
 %Docstring
-The QgsFieldMappingModel holds mapping information for mapping from one set of QgsFields to another,
-for each set of "destination" fields an expression defines how to obtain the values of the
-"destination" fields.
+Constructs a QgsFieldMappingWidget from a set of ``sourceFields``
+and ``destinationFields``, initial values for the expressions can be
+optionally specified through ``expressions`` which is a map from the original
+field name to the corresponding expression.
 
-.. versionadded:: 3.14
+:param parent: parent object
 %End
 
-%TypeHeaderCode
-#include "qgsfieldmappingwidget.h"
+    void setDestinationEditable( bool editable );
+%Docstring
+Sets the destination fields editable state to ``ditable``
 %End
-  public:
 
-    QgsFieldMappingModel( const QgsFields &sourceFields,
-                          const QgsFields &destinationFields,
-                          const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
-                          QObject *parent = 0 );
+    bool destinationEditable() const;
+%Docstring
+Returns ``True`` if the destination fields are editable in the model
+%End
 
-    QgsExpressionContextGenerator *contextGenerator() const;
+    QgsFieldMappingModel *model() const;
+%Docstring
+Returns the underlying mapping model
+%End
 
-    virtual int rowCount( const QModelIndex &parent ) const;
+    QList<QgsFieldMappingModel::Field> mapping() const;
+%Docstring
+Returns a list of Field objects representing the current status of the underlying mapping model
+%End
 
-    virtual int columnCount( const QModelIndex &parent ) const;
+    QItemSelectionModel *selectionModel();
+%Docstring
+Returns the selection model
+%End
 
-    virtual QVariant data( const QModelIndex &index, int role ) const;
+  public slots:
 
-    virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
+    void appendField( const QgsField &field, const QgsExpression &expression = QgsExpression() );
+%Docstring
+Appends a new ``field`` to the model, with an optional ``expression``
+%End
 
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+    bool removeSelectedFields( );
+%Docstring
+Removes the currently selected field from the model
+%End
 
-    QgsFields sourceFields() const;
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role );
+    bool moveSelectedFieldsUp( );
+%Docstring
+Moves down currently selected field
+%End
 
-
-
+    bool moveSelectedFieldsDown( );
+%Docstring
+Moves up the currently selected field
+%End
 
       public:
+      public:
 };
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /************************************************************************
