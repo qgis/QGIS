@@ -438,7 +438,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         vl.startEditing()
 
-        statuses = [1, 1, 1, 1]
+        statuses = [-1, -1, -1, -1]
         # changing values...
         for ft in vl.getFeatures():
             if ft['value'] == 'first value':
@@ -468,7 +468,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                 statuses[2] = 1
             elif ft['value'] == '-1th value':
                 statuses[3] = 1
-        self.assertTrue( all ( x == 1 for x in statuses ) )
+        self.assertTrue(all( x == 1 for x in statuses))
 
     def testPktUpdateBigintPkNonFirst(self):
         """Test if we can update objects with positive, zero and negative bigint PKs in tables whose PK is not the first field"""
@@ -479,7 +479,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         vl.startEditing()
 
-        statuses = [1, 1, 1, 1]
+        statuses = [-1, -1, -1, -1]
         # changing values...
         for ft in vl.getFeatures():
             if ft['value'] == 'first value':
@@ -509,7 +509,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                 statuses[2] = 1
             elif ft['value'] == '-1th value':
                 statuses[3] = 1
-        self.assertTrue( all ( x == 1 for x in statuses ) )
+        self.assertTrue(all(x == 1 for x in statuses ))
 
     def testPktMapInsert(self):
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="obj_id" sql='.format(self.dbconn, 'oid_serial_table'), "oid_serial", "postgres")
