@@ -438,7 +438,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         vl.startEditing()
-        
+
         statuses = [1, 1, 1, 1]
         # changing values...
         for ft in vl.getFeatures():
@@ -455,7 +455,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                 vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '-1th value')
                 statuses[3] = 0
         self.assertTrue(vl.commitChanges())
-        self.assertTrue( all(x == 0 for x in statuses) )
+        self.assertTrue(all(x == 0 for x in statuses))
 
         # now, let's see if the values were changed
         vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk", "postgres")
@@ -479,7 +479,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(vl.isValid())
 
         vl.startEditing()
-        
+
         statuses = [1, 1, 1, 1]
         # changing values...
         for ft in vl.getFeatures():
@@ -496,7 +496,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                 vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '-1th value')
                 statuses[3] = 0
         self.assertTrue(vl.commitChanges())
-        self.assertTrue( all(x == 0 for x in statuses) )
+        self.assertTrue(all(x == 0 for x in statuses))
 
         # now, let's see if the values were changed
         vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk", "postgres")
