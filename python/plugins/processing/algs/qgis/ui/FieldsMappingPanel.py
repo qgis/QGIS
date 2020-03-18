@@ -165,7 +165,7 @@ class FieldsMappingPanel(BASE, WIDGET):
         """Load fields from layer"""
         if self.layer:
             self.fieldsView.setDestinationFields(self.layer.fields())
-            self.on_loadLayerFieldsButton_clicked()
+            self.fieldsView.setSourceFields(self.layer.fields())
 
     @pyqtSlot(bool, name='on_loadLayerFieldsButton_clicked')
     def on_loadLayerFieldsButton_clicked(self, checked=False):
