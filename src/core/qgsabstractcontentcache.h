@@ -402,7 +402,12 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
         if ( ok )
         {
           // read the content data
-          mRemoteContentCache.insert( path, new QByteArray( reply->readAll() ) );
+          const QByteArray ba = reply->readAll();
+
+          // because of the fragility listed below in waitForTaskFinished, this slot may get called twice. In that case
+          // the second time will have an empty reply (we've already read it all...)
+          if ( !ba.isEmpty() )
+            mRemoteContentCache.insert( path, new QByteArray( ba ) );
         }
         QMetaObject::invokeMethod( const_cast< QgsAbstractContentCacheBase * >( qobject_cast< const QgsAbstractContentCacheBase * >( this ) ), "onRemoteContentFetched", Qt::QueuedConnection, Q_ARG( QString, path ), Q_ARG( bool, true ) );
       } );
@@ -466,6 +471,8 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
         if ( task->status() == QgsTask::Complete )
         {
           // Fourth step, force the signal fetched to be sure reply has been checked
+
+          // ARGH this is BAD BAD BAD. The connection will get called twice as a result!!!
           task->fetched();
           return true;
         }
