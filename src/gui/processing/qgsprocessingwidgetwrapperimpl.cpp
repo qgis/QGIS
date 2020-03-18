@@ -2558,10 +2558,36 @@ void QgsProcessingPointPanel::pointPicked()
 
 
 
-
 //
 // QgsProcessingPointWidgetWrapper
 //
+
+QgsProcessingPointParameterDefinitionWidget::QgsProcessingPointParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultLineEdit = new QLineEdit();
+  if ( const QgsProcessingParameterPoint *pointParam = dynamic_cast<const QgsProcessingParameterPoint *>( definition ) )
+  {
+    QgsPointXY point = QgsProcessingParameters::parameterAsPoint( pointParam, pointParam->defaultValue(), context );
+    mDefaultLineEdit->setText( QStringLiteral( "%1,%2" ).arg( QString::number( point.x(), 'f' ), QString::number( point.y(), 'f' ) ) );
+  }
+
+  vlayout->addWidget( mDefaultLineEdit );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingPointParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterPoint >( name, description, mDefaultLineEdit->text() );
+  param->setFlags( flags );
+  return param.release();
+}
 
 QgsProcessingPointWidgetWrapper::QgsProcessingPointWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
@@ -2702,6 +2728,10 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingPointWidgetWrapper::cr
   return new QgsProcessingPointWidgetWrapper( parameter, type );
 }
 
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingPointWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingPointParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
 
 
 

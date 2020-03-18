@@ -49,7 +49,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterMapLayer,
                        QgsProcessingParameterExtent,
-                       QgsProcessingParameterPoint,
                        QgsProcessingParameterMatrix,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterNumber,
@@ -89,7 +88,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                          parameters.PARAMETER_DISTANCE,
                          parameters.PARAMETER_SCALE,
                          parameters.PARAMETER_EXPRESSION,
-                         parameters.PARAMETER_POINT,
                          parameters.PARAMETER_ENUM,
                          parameters.PARAMETER_MATRIX,
                          parameters.PARAMETER_MAP_LAYER):
@@ -103,7 +101,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                                 QgsProcessingParameterDistance,
                                 QgsProcessingParameterScale,
                                 QgsProcessingParameterExpression,
-                                QgsProcessingParameterPoint,
                                 QgsProcessingParameterEnum,
                                 QgsProcessingParameterMatrix,
                                 QgsProcessingParameterMapLayer,
@@ -329,13 +326,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                             self.parentCombo.setCurrentIndex(idx)
                     idx += 1
             self.verticalLayout.addWidget(self.parentCombo)
-        elif (self.paramType == parameters.PARAMETER_POINT
-              or isinstance(self.param, QgsProcessingParameterPoint)):
-            self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
-            self.defaultTextBox = QLineEdit()
-            if self.param is not None:
-                self.defaultTextBox.setText(self.param.defaultValue())
-            self.verticalLayout.addWidget(self.defaultTextBox)
         elif self.paramType == parameters.PARAMETER_ENUM or \
                 isinstance(self.param, QgsProcessingParameterEnum):
             self.widget = EnumModelerWidget(self)
@@ -532,10 +522,6 @@ class ModelerParameterDefinitionDialog(QDialog):
         elif (self.paramType == parameters.PARAMETER_EXTENT
               or isinstance(self.param, QgsProcessingParameterExtent)):
             self.param = QgsProcessingParameterExtent(name, description)
-        elif (self.paramType == parameters.PARAMETER_POINT
-              or isinstance(self.param, QgsProcessingParameterPoint)):
-            self.param = QgsProcessingParameterPoint(name, description,
-                                                     str(self.defaultTextBox.text()))
         elif (self.paramType == parameters.PARAMETER_ENUM
                 or isinstance(self.param, QgsProcessingParameterEnum)):
             self.param = QgsProcessingParameterEnum(name, description, self.widget.options(), self.widget.allowMultiple(), self.widget.defaultOptions())
