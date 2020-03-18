@@ -263,11 +263,12 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
   public slots:
 
     /**
-     * Is called upon every change of the visible extents on the map canvas or when data of
-     * the master table model change.
+     * Is called upon every change of the visible extents on the map canvas.
      * When a change is signalled, the filter is updated and invalidated if needed.
+     *
+     * \deprecated since QGIS 3.10.3 - made private as reloadVisible()
      */
-    void reloadVisible();
+    Q_DECL_DEPRECATED void extentsChanged();
 
     /**
      * Updates the filtered features in the filter model. It is called when the data of the
@@ -280,6 +281,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
   private slots:
     void selectionChanged();
     void onColumnsChanged();
+    void reloadVisible();
 
   private:
     QgsFeatureIds mFilteredFeatures;

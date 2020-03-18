@@ -389,6 +389,11 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
   // returns are handled in their respective case statement above
 }
 
+void QgsAttributeTableFilterModel::extentsChanged()
+{
+  reloadVisible();
+}
+
 void QgsAttributeTableFilterModel::reloadVisible()
 {
   generateListOfVisibleFeatures();

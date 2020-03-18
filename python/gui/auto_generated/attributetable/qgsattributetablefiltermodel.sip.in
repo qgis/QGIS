@@ -242,11 +242,13 @@ selection state of the feature in case selected features are to be shown on top.
 
   public slots:
 
-    void reloadVisible();
+ void extentsChanged();
 %Docstring
-Is called upon every change of the visible extents on the map canvas or when data of
-the master table model change.
+Is called upon every change of the visible extents on the map canvas.
 When a change is signalled, the filter is updated and invalidated if needed.
+
+.. deprecated:: QGIS 3.10.3
+   - made private as reloadVisible()
 %End
 
     void filterFeatures();
