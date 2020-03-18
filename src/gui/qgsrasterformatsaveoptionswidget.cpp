@@ -71,7 +71,7 @@ QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget *par
         << QStringLiteral( "COMPRESS=DEFLATE PREDICTOR=2 ZLEVEL=9" ) );
     sBuiltinProfiles[ QStringLiteral( "z_gtiff_4jpeg" )] =
       ( QStringList() << QStringLiteral( "GTiff" ) << tr( "JPEG Compression" )
-        << QStringLiteral( "COMPRESS=JPEG JPEG_QUALITY=75 PHOTOMETRIC=YCBCR" ) );
+        << QStringLiteral( "COMPRESS=JPEG JPEG_QUALITY=75" ) );
 
     // overview compression schemes for GTiff format, see
     // http://www.gdal.org/gdaladdo.html and http://www.gdal.org/frmt_gtiff.html
