@@ -432,8 +432,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def testPktUpdateBigintPk(self):
         """Test if we can update objects with positive, zero and negative bigint PKs."""
         vl = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk", "postgres")
-        dp = vl.dataProvider()
-        flds = dp.fields()
+        flds = vl.fields()
 
         self.assertTrue(vl.isValid())
 
@@ -474,7 +473,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
     def testPktUpdateBigintPkNonFirst(self):
         """Test if we can update objects with positive, zero and negative bigint PKs in tables whose PK is not the first field"""
         vl = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_non_first_pk'), "bigint_non_first_pk", "postgres")
-        flds = vl.dataProvider().fields()
+        flds = vl.fields()
 
         self.assertTrue(vl.isValid())
 
@@ -499,7 +498,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(all(x == 0 for x in statuses))
 
         # now, let's see if the values were changed
-        vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk", "postgres")
+        vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk_nonfirst", "postgres")
         self.assertTrue(vl2.isValid())
         for ft in vl2.getFeatures():
             if ft['value'] == '1st value':
