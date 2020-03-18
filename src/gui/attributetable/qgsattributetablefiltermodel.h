@@ -224,6 +224,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     /**
      * Set the \a expression and the \a context to be stored in case of the features
      * need to be filtered again (like on filter or on main model data change).
+     *
+     * \since QGIS 3.10.3
      */
     void setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context );
 
@@ -268,7 +270,10 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     void reloadVisible();
 
     /**
-     * Is called when the data changed of the main table moment to update the filter model.
+     * Updates the filtered features in the filter model. It is called when the data of the
+     * main table or the filter expression changed.
+     *
+     * \since QGIS 3.10.3
      */
     void filterFeatures();
 

@@ -161,6 +161,12 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     */
     Q_DECL_DEPRECATED void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
 
+    /**
+     * Sets the expression and Updates the filtered features in the filter model.
+     * It is called when the filter expression changed.
+     *
+     * \since QGIS 3.10.3
+     */
     void filterFeatures( const QgsExpression &filterExpression, const QgsExpressionContext &context );
 
     /**

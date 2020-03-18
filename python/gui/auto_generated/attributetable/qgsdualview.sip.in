@@ -133,6 +133,12 @@ Set a list of currently visible features
 %End
 
     void filterFeatures( const QgsExpression &filterExpression, const QgsExpressionContext &context );
+%Docstring
+Sets the expression and Updates the filtered features in the filter model.
+It is called when the filter expression changed.
+
+.. versionadded:: 3.10.3
+%End
 
     QgsFeatureIds filteredFeatures();
 %Docstring
