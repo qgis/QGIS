@@ -125,8 +125,8 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
                                const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
 
     // QAbstractItemModel interface
-    int rowCount( const QModelIndex &parent ) const override;
-    int columnCount( const QModelIndex &parent ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
@@ -153,6 +153,8 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
     QgsFieldConstraints::Constraints fieldConstraints( const QgsField &field ) const;
 
     bool moveUpOrDown( const QModelIndex &index, bool up = true );
+
+    QString bestMatchforField( const QgsFieldMappingModel::Field &field, QStringList &excludedFieldNames );
 
     QList<Field> mMapping;
     bool mDestinationEditable = false;

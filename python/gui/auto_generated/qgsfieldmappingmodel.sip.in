@@ -119,9 +119,9 @@ optionally specified through ``expressions`` which is a map from the original
 field name to the corresponding expression.
 %End
 
-    virtual int rowCount( const QModelIndex &parent ) const;
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
-    virtual int columnCount( const QModelIndex &parent ) const;
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
