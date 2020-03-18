@@ -447,7 +447,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     }
 
     /**
-     * Blocks the current thread until the \a task finishes or an arbitrary setting maximum wait to 5 seconds
+     * Blocks the current thread until the \a task finishes (or user's preset network timeout expires)
      *
      * \warning this method must NEVER be used from GUI based applications (like the main QGIS application)
      * or crashes will result. Only for use in external scripts or QGIS server.
@@ -458,8 +458,8 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
      */
     bool waitForTaskFinished( QgsNetworkContentFetcherTask *task ) const
     {
-      // Second step, wait 5 seconds for task finished
-      if ( task->waitForFinished( 5000 ) )
+      // Wait up to timeout seconds for task finished
+      if ( task->waitForFinished( QgsNetworkAccessManager::timeout() ) )
       {
         // The wait did not time out
         // Third step, check status as complete
