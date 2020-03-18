@@ -119,7 +119,6 @@ class RandomPointsOnLines(QgisAlgorithm):
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters,
                                                                  self.INPUT))
-
         pointCount = self.parameterAsInt(parameters, self.POINTS_NUMBER,
                                          context)
         minDistance = self.parameterAsDouble(parameters, self.MIN_DISTANCE,
@@ -131,12 +130,11 @@ class RandomPointsOnLines(QgisAlgorithm):
         includelineattr = self.parameterAsBoolean(parameters,
                                                   self.INCLUDE_LINE_ATTRIBUTES,
                                                   context)
-
         fields = QgsFields()
         if includelineattr:
             fields = source.fields()
-        fields.append(QgsField(self.POINT_ID_FIELD_NAME, QVariant.Int, '', 10, 0))
-
+        fields.append(QgsField(self.POINT_ID_FIELD_NAME,
+                               QVariant.Int, '', 10, 0))
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,
                                                context, fields,
                                                QgsWkbTypes.Point,
@@ -145,27 +143,23 @@ class RandomPointsOnLines(QgisAlgorithm):
         if sink is None:
             raise QgsProcessingException(
                 self.invalidSinkError(parameters, self.OUTPUT))
-
-        totNPoints = 0  # The total number of points generated
-        missedPoints = 0  # The number of misses (too close)
-        missedLines = 0  # The number of features with missed points
-        emptyOrNullGeom = 0  # The number of features with empty or no geometry
+        totNPoints = 0  # Total number of points generated
+        missedPoints = 0  # Number of misses (too close)
+        missedLines = 0  # Number of features with missed points
+        emptyOrNullGeom = 0  # Number of features with empty or no geometry
         featureCount = source.featureCount()
-        total = 100.0 / (pointCount * featureCount) if pointCount else 1
+        total = 100.0 / (pointCount * featureCount) if (pointCount and
+                                                        featureCount) else 1
         if randSeed:
             random.seed(randSeed)
         else:
             random.seed()
-
         index = QgsSpatialIndex()
         points = dict()
-
-        maxIterations = pointCount * maxTriesPerPoint
         # Go through all the features of the layer
         for feat in source.getFeatures():
             if feedback.isCanceled():
                 break
-            lineGeoms = []  # vector of line elements (>=1 for multi)
             fGeom = feat.geometry()  # get the geometry
             if fGeom is None:
                 emptyOrNullGeom += 1
@@ -176,109 +170,38 @@ class RandomPointsOnLines(QgisAlgorithm):
                 feedback.pushInfo('Empty geometry - skipping!')
                 continue
             totLineLength = fGeom.length()
-            if fGeom.isMultipart():
-                # Explode multi-part geometry
-                for aLine in fGeom.asMultiPolyline():
-                    lineGeoms.append(aLine)
-            else:  # Single-part - just add the line geom
-                lineGeoms.append(fGeom.asPolyline())
 
-            # Generate points on the line geometry / geometries
-            # number of random points generated for this (multi)line
-            nPoints = 0
+            # Generate points on the (multi)line geometry
+            nPoints = 0  # Number of points generated for this geometry
             nIterations = 0  # number of attempts for this geometry
-            while nIterations < maxIterations and nPoints < pointCount:
+            while nIterations < maxTriesPerPoint and nPoints < pointCount:
                 # Try to generate a point
                 if feedback.isCanceled():
                     break
                 # Get the random "position" along the line for this point
                 randomLength = random.random() * totLineLength
-                # To accumulated line length as we move along the geometry:
-                accLength = 0
-                # Go through the parts to find the random point location
-                for l in lineGeoms:
-                    # Check if the point belongs in this part of the
-                    # geometry. If it does, add it and break the loop
-                    if feedback.isCanceled():
-                        break
-                    currGeom = QgsGeometry.fromPolylineXY(l)
-                    lineLength = currGeom.length()
-
-                    # Skip to the next part if we can't get far enough
-                    # on this one
-                    if (accLength + lineLength) < randomLength:
-                        accLength += lineLength
-                        continue
-                    # Now we know that the point belongs on this part.
-                    # We have to go through the vertices to find the
-                    # exact position.
-                    # The point could be at the start of this part, and
-                    # at the end.
-                    vertices = l
-                    remainDist = randomLength - accLength
-                    if len(vertices) == 1:
-                        feedback.reportError('Line with only one point!',
-                                             False)
-                        continue
-                    if len(vertices) == 2:
-                        # One segment only
-                        vid = 0  # first vertex
-                    else:
-                        # More segments, find the right one
-                        vid = 0  # first vertex
-                        while (currGeom.distanceToVertex(vid + 1) <= remainDist
-                               and vid < len(vertices) - 2):
-                            # The next vertex is not far enough away...
-                            vid += 1
-                        remainDist = (remainDist -
-                                      currGeom.distanceToVertex(vid))
-                    # We should now have found the target segment
-                    # (from vertex # vid to # vid+1)
-                    # Shall it be at the start point of the segment?
-                    if remainDist == 0.0:
-                        # A perfect hit!
-                        p = QgsPointXY(vertices[vid])
-                    # Shall it be at the end point of the segment?
-                    elif ((vid == len(vertices) - 2) and
-                          (remainDist == currGeom.distanceToVertex(vid + 1) -
-                           currGeom.distanceToVertex(vid))):
-                        # A perfect hit at the end of this segment
-                        p = QgsPointXY(vertices[vid + 1])
-                    else:
-                        # The point shall be remainDist along this segment
-                        startPoint = vertices[vid]
-                        endPoint = vertices[vid + 1]
-                        length = startPoint.distance(endPoint)
-                        d = remainDist / (length - remainDist)
-                        if (1.0 + d) == 0.0:
-                            continue
-                        rx = (startPoint.x() + d * endPoint.x()) / (1.0 + d)
-                        ry = (startPoint.y() + d * endPoint.y()) / (1.0 + d)
-                        # create the point
-                        p = QgsPointXY(rx, ry)
-                    # check that the point is not too close to an existing
-                    # point
-                    if (minDistance == 0 or
-                        vector.checkMinDistance(p, index, minDistance,
-                                                points)):
-                        f = QgsFeature(totNPoints)
-                        f.initAttributes(1)
-                        f.setFields(fields)
-                        attrs = []
-                        if includelineattr:
-                            attrs.extend(feat.attributes())
-                        attrs.append(totNPoints)
-                        f.setAttributes(attrs)
-                        f.setGeometry(QgsGeometry.fromPointXY(p))
-                        sink.addFeature(f, QgsFeatureSink.FastInsert)
-                        index.addFeature(f)
-                        points[totNPoints] = p
-
-                        nPoints += 1
-                        totNPoints += 1
-                        feedback.setProgress(int((totNPoints + missedPoints) *
-                                                 total))
-                        break  # Point added, so no need to continue
+                # Get the point on the line
+                randPoint = fGeom.interpolate(randomLength)
+                # vector.checkMinDistance requires PointXY:
+                randPointXY = randPoint.asPoint()
+                if (minDistance == 0 or
+                    vector.checkMinDistance(randPointXY, index, minDistance,
+                                            points)):
+                    f = QgsFeature(totNPoints)
+                    f.setFields(fields)
+                    attrs = []
+                    if includelineattr:
+                        attrs.extend(feat.attributes())
+                    attrs.append(totNPoints)
+                    f.setAttributes(attrs)
+                    f.setGeometry(randPoint)
+                    sink.addFeature(f, QgsFeatureSink.FastInsert)
+                    index.addFeature(f)
+                    points[totNPoints] = randPointXY
+                    nPoints += 1
+                    totNPoints += 1
+                    feedback.setProgress(int((totNPoints + missedPoints) *
+                                             total))
                 nIterations += 1
             if nPoints < pointCount:
                 missedPoints += pointCount - nPoints
@@ -288,6 +211,9 @@ class RandomPointsOnLines(QgisAlgorithm):
                               str(pointCount * featureCount) +
                               ') requested points were generated.')
         if emptyOrNullGeom > 0:
-            feedback.pushInfo('Number of features with empty or no geometry: ' +
-                              str(emptyOrNullGeom))
-        return {self.OUTPUT: dest_id, self.OUTPUT_POINTS: totNPoints, self.MISSED_POINTS: missedPoints, self.MISSED_LINES: missedLines, self.EMPTY_OR_NO_GEOM: emptyOrNullGeom}
+            feedback.pushInfo('Number of features with empty or no geometry: '
+                              + str(emptyOrNullGeom))
+        return {self.OUTPUT: dest_id, self.OUTPUT_POINTS: totNPoints,
+                self.MISSED_POINTS: missedPoints,
+                self.MISSED_LINES: missedLines,
+                self.EMPTY_OR_NO_GEOM: emptyOrNullGeom}
