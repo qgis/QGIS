@@ -26,14 +26,16 @@ the mapping expression is editable.
 %End
   public:
 
-    enum ColumnDataIndex
+    enum class ColumnDataIndex
     {
       SourceExpression,
       DestinationName,
       DestinationType,
       DestinationLength,
-      DestinationPrecision
+      DestinationPrecision,
+      DestinationConstraints,
     };
+
 
     struct Field
     {

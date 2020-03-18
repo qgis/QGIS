@@ -37,23 +37,23 @@ QVariant QgsFieldMappingModel::headerData( int section, Qt::Orientation orientat
     {
       switch ( section )
       {
-        case ColumnDataIndex::SourceExpression:
+        case static_cast<int>( ColumnDataIndex::SourceExpression ):
         {
           return tr( "Source expression" );
         }
-        case ColumnDataIndex::DestinationName:
+        case static_cast<int>( ColumnDataIndex::DestinationName ):
         {
           return tr( "Name" );
         }
-        case ColumnDataIndex::DestinationType:
+        case static_cast<int>( ColumnDataIndex::DestinationType ):
         {
           return tr( "Type" );
         }
-        case ColumnDataIndex::DestinationLength:
+        case static_cast<int>( ColumnDataIndex::DestinationLength ):
         {
           return tr( "Length" );
         }
-        case ColumnDataIndex::DestinationPrecision:
+        case static_cast<int>( ColumnDataIndex::DestinationPrecision ):
         {
           return tr( "Precision" );
         }
@@ -81,7 +81,7 @@ int QgsFieldMappingModel::rowCount( const QModelIndex &parent ) const
 int QgsFieldMappingModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  return 5;
+  return 6;
 }
 
 QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
@@ -91,33 +91,63 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
     const int col { index.column() };
     const Field &f { mMapping.at( index.row() ) };
 
+    const QgsFieldConstraints::Constraints constraints { fieldConstraints( f.field ) };
+
     if ( role == Qt::DisplayRole || role == Qt::EditRole )
     {
       switch ( col )
       {
           {
-          case ColumnDataIndex::SourceExpression:
+          case static_cast<int>( ColumnDataIndex::SourceExpression ):
           {
             return f.expression.expression();
           }
-          case ColumnDataIndex::DestinationName:
+          case static_cast<int>( ColumnDataIndex::DestinationName ):
           {
             return f.field.displayName();
           }
-          case ColumnDataIndex::DestinationType:
+          case static_cast<int>( ColumnDataIndex::DestinationType ):
           {
             return static_cast<int>( f.field.type() );
           }
-          case ColumnDataIndex::DestinationLength:
+          case static_cast<int>( ColumnDataIndex::DestinationLength ):
           {
             return f.field.length();
           }
-          case ColumnDataIndex::DestinationPrecision:
+          case static_cast<int>( ColumnDataIndex::DestinationPrecision ):
           {
             return f.field.precision();
           }
+          case static_cast<int>( ColumnDataIndex::DestinationConstraints ):
+          {
+            return constraints != 0 ? tr( "Constraints active" ) : QString();
+          }
         }
       }
+    }
+    else if ( role == Qt::ToolTipRole &&
+              col == static_cast<int>( ColumnDataIndex::DestinationConstraints ) &&
+              constraints != 0 )
+    {
+      QStringList constraintDescription;
+      if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintUnique ) )
+      {
+        constraintDescription.push_back( tr( "Unique" ) );
+      }
+      if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull ) )
+      {
+        constraintDescription.push_back( tr( "Not null" ) );
+      }
+      if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull ) )
+      {
+        constraintDescription.push_back( tr( "Expression" ) );
+      }
+      return constraintDescription.join( QStringLiteral( "<br>" ) );
+    }
+    else if ( role == Qt::BackgroundRole &&
+              constraints != 0 )
+    {
+      return QBrush( QColor( 255, 224, 178 ) );
     }
   }
   return QVariant();
@@ -148,7 +178,8 @@ QgsExpressionContext QgsFieldMappingModel::ExpressionContextGenerator::createExp
 Qt::ItemFlags QgsFieldMappingModel::flags( const QModelIndex &index ) const
 {
   if ( index.isValid() &&
-       ( index.column() == ColumnDataIndex::SourceExpression || destinationEditable() ) )
+       index.column() != static_cast<int>( ColumnDataIndex::DestinationConstraints ) &&
+       ( index.column() == static_cast<int>( ColumnDataIndex::SourceExpression ) || destinationEditable() ) )
   {
     return Qt::ItemFlags( Qt::ItemIsSelectable |
                           Qt::ItemIsEditable |
@@ -166,23 +197,23 @@ bool QgsFieldMappingModel::setData( const QModelIndex &index, const QVariant &va
       Field &f = mMapping[index.row()];
       switch ( index.column() )
       {
-        case ColumnDataIndex::SourceExpression:
+        case static_cast<int>( ColumnDataIndex::SourceExpression ):
         {
           const QgsExpression exp { value.toString() };
           f.expression = exp;
           break;
         }
-        case ColumnDataIndex::DestinationName:
+        case static_cast<int>( ColumnDataIndex::DestinationName ):
         {
           f.field.setName( value.toString() );
           break;
         }
-        case ColumnDataIndex::DestinationType:
+        case static_cast<int>( ColumnDataIndex::DestinationType ):
         {
           f.field.setType( static_cast<QVariant::Type>( value.toInt( ) ) );
           break;
         }
-        case ColumnDataIndex::DestinationLength:
+        case static_cast<int>( ColumnDataIndex::DestinationLength ):
         {
           bool ok;
           const int length { value.toInt( &ok ) };
@@ -190,7 +221,7 @@ bool QgsFieldMappingModel::setData( const QModelIndex &index, const QVariant &va
             f.field.setLength( length );
           break;
         }
-        case ColumnDataIndex::DestinationPrecision:
+        case static_cast<int>( ColumnDataIndex::DestinationPrecision ):
         {
           bool ok;
           const int precision { value.toInt( &ok ) };
@@ -203,6 +234,27 @@ bool QgsFieldMappingModel::setData( const QModelIndex &index, const QVariant &va
     }
   }
   return true;
+}
+
+QgsFieldConstraints::Constraints QgsFieldMappingModel::fieldConstraints( const QgsField &field ) const
+{
+  QgsFieldConstraints::Constraints constraints;
+
+  const QgsFieldConstraints fieldConstraints { field.constraints() };
+
+  if ( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintNotNull &&
+       fieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) & QgsFieldConstraints::ConstraintStrengthHard )
+    constraints.setFlag( QgsFieldConstraints::ConstraintNotNull );
+
+  if ( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintUnique &&
+       fieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) & QgsFieldConstraints::ConstraintStrengthHard )
+    constraints.setFlag( QgsFieldConstraints::ConstraintUnique );
+
+  if ( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintExpression &&
+       fieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) & QgsFieldConstraints::ConstraintStrengthHard )
+    constraints.setFlag( QgsFieldConstraints::ConstraintExpression );
+
+  return constraints;
 }
 
 bool QgsFieldMappingModel::moveUpOrDown( const QModelIndex &index, bool up )
