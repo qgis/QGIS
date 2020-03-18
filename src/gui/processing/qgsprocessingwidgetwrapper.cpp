@@ -125,7 +125,7 @@ QWidget *QgsAbstractProcessingParameterWidgetWrapper::createWrappedWidget( QgsPr
 
   mWidget = createWidget();
   QWidget *wrappedWidget = mWidget;
-  if ( mType != QgsProcessingGui::Batch && mParameterDefinition->isDynamic() )
+  if ( mParameterDefinition->isDynamic() )
   {
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->setMargin( 0 );
