@@ -163,42 +163,40 @@ bool QgsFieldMappingModel::setData( const QModelIndex &index, const QVariant &va
   {
     if ( role == Qt::EditRole )
     {
-      Field &f { const_cast<Field &>( mMapping.at( index.row() ) ) };
+      Field &f = mMapping[index.row()];
       switch ( index.column() )
       {
-          {
-          case ColumnDataIndex::SourceExpression:
-          {
-            const QgsExpression exp { value.toString() };
-            f.expression = exp;
-            break;
-          }
-          case ColumnDataIndex::DestinationName:
-          {
-            f.field.setName( value.toString() );
-            break;
-          }
-          case ColumnDataIndex::DestinationType:
-          {
-            f.field.setType( static_cast<QVariant::Type>( value.toInt( ) ) );
-            break;
-          }
-          case ColumnDataIndex::DestinationLength:
-          {
-            bool ok;
-            const int length { value.toInt( &ok ) };
-            if ( ok )
-              f.field.setLength( length );
-            break;
-          }
-          case ColumnDataIndex::DestinationPrecision:
-          {
-            bool ok;
-            const int precision { value.toInt( &ok ) };
-            if ( ok )
-              f.field.setPrecision( precision );
-            break;
-          }
+        case ColumnDataIndex::SourceExpression:
+        {
+          const QgsExpression exp { value.toString() };
+          f.expression = exp;
+          break;
+        }
+        case ColumnDataIndex::DestinationName:
+        {
+          f.field.setName( value.toString() );
+          break;
+        }
+        case ColumnDataIndex::DestinationType:
+        {
+          f.field.setType( static_cast<QVariant::Type>( value.toInt( ) ) );
+          break;
+        }
+        case ColumnDataIndex::DestinationLength:
+        {
+          bool ok;
+          const int length { value.toInt( &ok ) };
+          if ( ok )
+            f.field.setLength( length );
+          break;
+        }
+        case ColumnDataIndex::DestinationPrecision:
+        {
+          bool ok;
+          const int precision { value.toInt( &ok ) };
+          if ( ok )
+            f.field.setPrecision( precision );
+          break;
         }
       }
       emit dataChanged( index, index );
