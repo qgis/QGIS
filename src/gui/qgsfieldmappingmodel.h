@@ -71,8 +71,8 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
      * Constructs a QgsFieldMappingModel from a set of \a sourceFields
      * and \a destinationFields, initial values for the expressions can be
      * optionally specified through \a expressions which is a map from the original
-     * field name to the corresponding expression.
-     * \param parent parent object
+     * field name to the corresponding expression. A \a parent object
+     * can be also specified.
      */
     QgsFieldMappingModel( const QgsFields &sourceFields = QgsFields(),
                           const QgsFields &destinationFields = QgsFields(),
