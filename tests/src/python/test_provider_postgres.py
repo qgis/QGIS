@@ -429,6 +429,89 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertNotEqual(f[0]['pk'], NULL, f[0].attributes())
         vl.deleteFeatures([f[0].id()])
 
+    def testPktUpdateBigintPk(self):
+        """Test if we can update objects with positive, zero and negative bigint PKs."""
+        vl = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk", "postgres")
+        dp = vl.dataProvider()
+        flds = dp.fields()
+
+        self.assertTrue(vl.isValid())
+
+        vl.startEditing()
+        
+        statuses = [1, 1, 1, 1]
+        # changing values...
+        for ft in vl.getFeatures():
+            if ft['value'] == 'first value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '1st value')
+                statuses[0] = 0
+            elif ft['value'] == 'second value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '2nd value')
+                statuses[1] = 0
+            elif ft['value'] == 'zero value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '0th value')
+                statuses[2] = 0
+            elif ft['value'] == 'negative value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '-1th value')
+                statuses[3] = 0
+        self.assertTrue(vl.commitChanges())
+        self.assertTrue( all(x == 0 for x in statuses) )
+
+        # now, let's see if the values were changed
+        vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk", "postgres")
+        self.assertTrue(vl2.isValid())
+        for ft in vl2.getFeatures():
+            if ft['value'] == '1st value':
+                statuses[0] = 1
+            elif ft['value'] == '2nd value':
+                statuses[1] = 1
+            elif ft['value'] == '0th value':
+                statuses[2] = 1
+            elif ft['value'] == '-1th value':
+                statuses[3] = 1
+        self.assertTrue( all ( x == 1 for x in statuses ) )
+
+    def testPktUpdateBigintPkNonFirst(self):
+        """Test if we can update objects with positive, zero and negative bigint PKs in tables whose PK is not the first field"""
+        vl = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_non_first_pk'), "bigint_non_first_pk", "postgres")
+        flds = vl.dataProvider().fields()
+
+        self.assertTrue(vl.isValid())
+
+        vl.startEditing()
+        
+        statuses = [1, 1, 1, 1]
+        # changing values...
+        for ft in vl.getFeatures():
+            if ft['value'] == 'first value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '1st value')
+                statuses[0] = 0
+            elif ft['value'] == 'second value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '2nd value')
+                statuses[1] = 0
+            elif ft['value'] == 'zero value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '0th value')
+                statuses[2] = 0
+            elif ft['value'] == 'negative value':
+                vl.changeAttributeValue(ft.id(), flds.indexOf('value'), '-1th value')
+                statuses[3] = 0
+        self.assertTrue(vl.commitChanges())
+        self.assertTrue( all(x == 0 for x in statuses) )
+
+        # now, let's see if the values were changed
+        vl2 = QgsVectorLayer('{} sslmode=disable srid=4326 key="pk" table="qgis_test".{} (geom)'.format(self.dbconn, 'bigint_pk'), "bigint_pk", "postgres")
+        self.assertTrue(vl2.isValid())
+        for ft in vl2.getFeatures():
+            if ft['value'] == '1st value':
+                statuses[0] = 1
+            elif ft['value'] == '2nd value':
+                statuses[1] = 1
+            elif ft['value'] == '0th value':
+                statuses[2] = 1
+            elif ft['value'] == '-1th value':
+                statuses[3] = 1
+        self.assertTrue( all ( x == 1 for x in statuses ) )
+
     def testPktMapInsert(self):
         vl = QgsVectorLayer('{} table="qgis_test"."{}" key="obj_id" sql='.format(self.dbconn, 'oid_serial_table'), "oid_serial", "postgres")
         self.assertTrue(vl.isValid())
