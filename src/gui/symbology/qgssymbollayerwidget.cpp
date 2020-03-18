@@ -2336,7 +2336,7 @@ void QgsSvgMarkerSymbolLayerWidget::populateIcons( const QModelIndex &idx )
   QString path = idx.data( Qt::UserRole + 1 ).toString();
 
   QAbstractItemModel *oldModel = viewImages->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( viewImages, path );
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( viewImages, path, mIconSize );
   viewImages->setModel( m );
   delete oldModel;
 
@@ -2708,6 +2708,14 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QW
   mSvgStrokeWidthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMetersInMapUnits << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
                                        << QgsUnitTypes::RenderPoints << QgsUnitTypes::RenderInches );
   mSvgTreeView->setHeaderHidden( true );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
+  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 4 ) ) );
+#else
+  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 4 ) ) );
+#endif
+  mSvgListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
+
   insertIcons();
 
   mRotationSpinBox->setClearValue( 0.0 );
@@ -2832,7 +2840,7 @@ void QgsSVGFillSymbolLayerWidget::insertIcons()
   }
 
   oldModel = mSvgListView->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mSvgListView );
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mSvgListView, mIconSize );
   mSvgListView->setModel( m );
   delete oldModel;
 }
@@ -2842,7 +2850,7 @@ void QgsSVGFillSymbolLayerWidget::populateIcons( const QModelIndex &idx )
   QString path = idx.data( Qt::UserRole + 1 ).toString();
 
   QAbstractItemModel *oldModel = mSvgListView->model();
-  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mSvgListView, path );
+  QgsSvgSelectorListModel *m = new QgsSvgSelectorListModel( mSvgListView, path, mIconSize );
   mSvgListView->setModel( m );
   delete oldModel;
 
