@@ -22,6 +22,7 @@
 #include "qgsfields.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsfieldconstraints.h"
 #include "qgis_gui.h"
 
 
@@ -45,14 +46,17 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
     /**
      * The ColumnDataIndex enum represents the column index for the view
      */
-    enum ColumnDataIndex
+    enum class ColumnDataIndex : int
     {
-      SourceExpression,     //!< Expression
-      DestinationName,      //!< Destination field name
-      DestinationType,      //!< Destination field QVariant::Type casted to (int)
-      DestinationLength,    //!< Destination field length
-      DestinationPrecision  //!< Destination field precision
+      SourceExpression,       //!< Expression
+      DestinationName,        //!< Destination field name
+      DestinationType,        //!< Destination field QVariant::Type casted to (int)
+      DestinationLength,      //!< Destination field length
+      DestinationPrecision,   //!< Destination field precision
+      DestinationConstraints, //!< Destination field constraints
     };
+
+    Q_ENUM( ColumnDataIndex );
 
     /**
      * The Field struct holds information about a mapped field
@@ -145,6 +149,8 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
         const QgsFields *mSourceFields;
 
     };
+
+    QgsFieldConstraints::Constraints fieldConstraints( const QgsField &field ) const;
 
     bool moveUpOrDown( const QModelIndex &index, bool up = true );
 

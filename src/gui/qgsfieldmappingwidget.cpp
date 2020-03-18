@@ -28,8 +28,8 @@ QgsFieldMappingWidget::QgsFieldMappingWidget( const QgsFields &sourceFields,
 
   mModel = new QgsFieldMappingModel( sourceFields, destinationFields, expressions, this );
   mTableView->setModel( mModel );
-  mTableView->setItemDelegateForColumn( QgsFieldMappingModel::ColumnDataIndex::SourceExpression, new ExpressionDelegate( mTableView ) );
-  mTableView->setItemDelegateForColumn( QgsFieldMappingModel::ColumnDataIndex::DestinationType, new TypeDelegate( mTableView ) );
+  mTableView->setItemDelegateForColumn( static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::SourceExpression ), new ExpressionDelegate( mTableView ) );
+  mTableView->setItemDelegateForColumn( static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationType ), new TypeDelegate( mTableView ) );
   updateColumns();
 }
 
@@ -137,9 +137,9 @@ void QgsFieldMappingWidget::updateColumns()
 {
   for ( int i = 0; i < mModel->rowCount(); ++i )
   {
-    mTableView->openPersistentEditor( mModel->index( i, QgsFieldMappingModel::ColumnDataIndex::SourceExpression ) );
+    mTableView->openPersistentEditor( mModel->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::SourceExpression ) ) );
     if ( destinationEditable() )
-      mTableView->openPersistentEditor( mModel->index( i, QgsFieldMappingModel::ColumnDataIndex::DestinationType ) );
+      mTableView->openPersistentEditor( mModel->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationType ) ) );
   }
 
   for ( int i = 0; i < mModel->columnCount(); ++i )
