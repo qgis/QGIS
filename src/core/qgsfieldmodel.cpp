@@ -464,7 +464,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
   }
 }
 
-QString QgsFieldModel::fieldToolTip( const QgsField &field )
+QString QgsFieldModel::fieldToolTip( const QgsField &field, const QString &expression )
 {
   QString toolTip;
   if ( !field.alias().isEmpty() )
@@ -475,23 +475,21 @@ QString QgsFieldModel::fieldToolTip( const QgsField &field )
   {
     toolTip = QStringLiteral( "<b>%1</b>" ).arg( field.name() );
   }
-  QString typeString;
-  if ( field.length() > 0 )
+
+  toolTip += QStringLiteral( "<br><font style='font-family:monospace; white-space: nowrap;'>%3</font>" ).arg( field.displayType( true ) );
+
+  QString comment = field.comment();
+
+  if ( ! comment.isEmpty() )
   {
-    if ( field.precision() > 0 )
-    {
-      typeString = QStringLiteral( "%1 (%2, %3)" ).arg( field.typeName() ).arg( field.length() ).arg( field.precision() );
-    }
-    else
-    {
-      typeString = QStringLiteral( "%1 (%2)" ).arg( field.typeName() ).arg( field.length() );
-    }
+    toolTip += QStringLiteral( "<br><em>%1</em>" ).arg( comment );
   }
-  else
+
+  if ( ! expression.isEmpty() )
   {
-    typeString = field.typeName();
+    toolTip += QStringLiteral( "<br><font style='font-family:monospace;'>%3</font>" ).arg( expression );
   }
-  toolTip += QStringLiteral( "<p>%1</p>" ).arg( typeString );
+
   return toolTip;
 }
 

@@ -78,6 +78,7 @@
 #include "qgsfiledownloaderdialog.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
+#include "qgsfieldmodel.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
@@ -625,8 +626,11 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     QgsTreeWidgetItem *attrItem = new QgsTreeWidgetItem( QStringList() << QString::number( i ) << value );
     featItem->addChild( attrItem );
 
+    QString expressionString = fields.fieldOrigin( i ) == QgsFields::OriginExpression
+                               ? vlayer->expressionField( i )
+                               : QStringLiteral();
     attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
-    attrItem->setToolTip( 0, vlayer->attributeDisplayName( i ) );
+    attrItem->setToolTip( 0, QgsFieldModel::fieldToolTip( fields.at( i ), expressionString ) );
     attrItem->setData( 0, Qt::UserRole, fields.at( i ).name() );
     attrItem->setData( 0, Qt::UserRole + 1, i );
 
