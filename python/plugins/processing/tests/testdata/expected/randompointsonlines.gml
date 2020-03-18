@@ -6,7 +6,7 @@
      xmlns:gml="http://www.opengis.net/gml">
   <gml:boundedBy>
     <gml:Box>
-      <gml:coord><gml:X>-0.9433050469559873</gml:X><gml:Y>-1</gml:Y></gml:coord>
+      <gml:coord><gml:X>-0.9433050469559874</gml:X><gml:Y>-1</gml:Y></gml:coord>
       <gml:coord><gml:X>5.026968753042585</gml:X><gml:Y>4.0738978981886</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
@@ -121,7 +121,7 @@
   </gml:featureMember>
   <gml:featureMember>
     <ogr:randompointsonlines fid="randompointsonlines.18">
-      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.00575341328687,1.3365746772816</gml:coordinates></gml:Point></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>5.00575341328686,1.3365746772816</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:point_num>18</ogr:point_num>
     </ogr:randompointsonlines>
   </gml:featureMember>
