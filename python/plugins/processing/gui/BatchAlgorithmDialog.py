@@ -77,6 +77,8 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.btnRunSingle.clicked.connect(self.runAsSingle)
         self.buttonBox().addButton(self.btnRunSingle, QDialogButtonBox.ResetRole)  # reset role to ensure left alignment
 
+        self.updateRunButtonVisibility()
+
     def runAsSingle(self):
         self.close()
 
@@ -84,6 +86,12 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         dlg = AlgorithmDialog(self.algorithm().create(), parent=iface.mainWindow())
         dlg.show()
         dlg.exec_()
+
+    def resetAdditionalGui(self):
+        self.btnRunSingle.setEnabled(True)
+
+    def blockAdditionalControlsWhileRunning(self):
+        self.btnRunSingle.setEnabled(False)
 
     def runAlgorithm(self):
         alg_parameters = []
@@ -106,7 +114,8 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         with OverrideCursor(Qt.WaitCursor):
 
-            self.mainWidget().setEnabled(False)
+            self.blockControlsWhileRunning()
+            self.setExecutedAnyResult(True)
             self.cancelButton().setEnabled(True)
 
             # Make sure the Log tab is visible before executing the algorithm
@@ -178,7 +187,6 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.loadHTMLResults(results['results'], count)
 
         self.createSummaryTable(algorithm_results, errors)
-        self.mainWidget().setEnabled(True)
         self.resetGui()
 
     def loadHTMLResults(self, results, num):
