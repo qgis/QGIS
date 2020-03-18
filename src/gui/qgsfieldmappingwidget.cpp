@@ -17,10 +17,10 @@
 #include "qgsfieldmappingwidget.h"
 #include "qgsfieldexpressionwidget.h"
 
-QgsFieldMappingWidget::QgsFieldMappingWidget( const QgsFields &sourceFields,
+QgsFieldMappingWidget::QgsFieldMappingWidget( QWidget *parent,
+    const QgsFields &sourceFields,
     const QgsFields &destinationFields,
-    const QMap<QString, QgsExpression> &expressions,
-    QWidget *parent )
+    const QMap<QString, QgsExpression> &expressions )
   : QWidget( parent )
 {
 
@@ -31,6 +31,9 @@ QgsFieldMappingWidget::QgsFieldMappingWidget( const QgsFields &sourceFields,
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::SourceExpression ), new ExpressionDelegate( mTableView ) );
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationType ), new TypeDelegate( mTableView ) );
   updateColumns();
+  // Make sure columns are updated when rows are added
+  connect( mModel, &QgsFieldMappingModel::rowsInserted, this, [ = ] { updateColumns(); } );
+  connect( mModel, &QgsFieldMappingModel::modelReset, this, [ = ] { updateColumns(); } );
 }
 
 void QgsFieldMappingWidget::setDestinationEditable( bool editable )
@@ -67,6 +70,11 @@ void QgsFieldMappingWidget::setSourceFields( const QgsFields &sourceFields )
 void QgsFieldMappingWidget::setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QgsExpression> &expressions )
 {
   model()->setDestinationFields( destinationFields, expressions );
+}
+
+void QgsFieldMappingWidget::scrollTo( const QModelIndex &index ) const
+{
+  mTableView->scrollTo( index );
 }
 
 void QgsFieldMappingWidget::appendField( const QgsField &field, const QgsExpression &expression )
@@ -138,8 +146,7 @@ void QgsFieldMappingWidget::updateColumns()
   for ( int i = 0; i < mModel->rowCount(); ++i )
   {
     mTableView->openPersistentEditor( mModel->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::SourceExpression ) ) );
-    if ( destinationEditable() )
-      mTableView->openPersistentEditor( mModel->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationType ) ) );
+    mTableView->openPersistentEditor( mModel->index( i, static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationType ) ) );
   }
 
   for ( int i = 0; i < mModel->columnCount(); ++i )
@@ -225,14 +232,21 @@ QWidget *QgsFieldMappingWidget::TypeDelegate::createEditor( QWidget *parent, con
     editor->setItemData( i, static_cast<int>( type ), Qt::UserRole );
     ++i;
   }
-  connect( editor,
-           qgis::overload<int >::of( &QComboBox::currentIndexChanged ),
-           this,
-           [ = ]( int currentIndex )
+  if ( ! model->destinationEditable() )
   {
-    Q_UNUSED( currentIndex )
-    const_cast< QgsFieldMappingWidget::TypeDelegate *>( this )->emit commitData( editor );
-  } );
+    editor->setEnabled( false );
+  }
+  else
+  {
+    connect( editor,
+             qgis::overload<int >::of( &QComboBox::currentIndexChanged ),
+             this,
+             [ = ]( int currentIndex )
+    {
+      Q_UNUSED( currentIndex )
+      const_cast< QgsFieldMappingWidget::TypeDelegate *>( this )->emit commitData( editor );
+    } );
+  }
   return editor;
 }
 

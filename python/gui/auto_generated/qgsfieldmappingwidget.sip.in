@@ -23,10 +23,10 @@ for each set of "destination" fields an expression defines how to obtain the val
 %End
   public:
 
-    explicit QgsFieldMappingWidget( const QgsFields &sourceFields = QgsFields(),
+    explicit QgsFieldMappingWidget( QWidget *parent = 0,
+                                    const QgsFields &sourceFields = QgsFields(),
                                     const QgsFields &destinationFields = QgsFields(),
-                                    const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
-                                    QWidget *parent = 0 );
+                                    const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
 %Docstring
 Constructs a QgsFieldMappingWidget from a set of ``sourceFields``
 and ``destinationFields``, initial values for the expressions can be
@@ -72,6 +72,11 @@ Set destination fields to ``destinationFields`` in the underlying model,
 initial values for the expressions can be optionally specified through
 ``expressions`` which is a map from the original field name to the
 corresponding expression.
+%End
+
+    void scrollTo( const QModelIndex &index ) const;
+%Docstring
+Scroll the fields view to ``index``
 %End
 
   public slots:

@@ -57,6 +57,10 @@ QVariant QgsFieldMappingModel::headerData( int section, Qt::Orientation orientat
         {
           return tr( "Precision" );
         }
+        case static_cast<int>( ColumnDataIndex::DestinationConstraints ):
+        {
+          return tr( "Constraints" );
+        }
       }
     }
     else if ( orientation == Qt::Vertical )
@@ -275,9 +279,51 @@ bool QgsFieldMappingModel::moveUpOrDown( const QModelIndex &index, bool up )
   return true;
 }
 
+QString QgsFieldMappingModel::bestMatchforField( const QgsFieldMappingModel::Field &f, QStringList &excludedFieldNames )
+{
+  // Search for fields in the source
+  // 1. match by name
+  for ( const auto &sf : qgis::as_const( mSourceFields ) )
+  {
+    if ( sf.name() == f.field.name() )
+    {
+      return QgsExpression::quotedColumnRef( sf.name() );
+    }
+  }
+  // 2. match by type
+  for ( const auto &sf : qgis::as_const( mSourceFields ) )
+  {
+    if ( excludedFieldNames.contains( sf.name() ) || sf.type() != f.field.type() )
+      continue;
+    excludedFieldNames.push_back( sf.name() );
+    return QgsExpression::quotedColumnRef( sf.name() );
+  }
+  return QString();
+}
+
 void QgsFieldMappingModel::setSourceFields( const QgsFields &sourceFields )
 {
   mSourceFields = sourceFields;
+  QStringList usedFields;
+  beginResetModel();
+  for ( const Field &f : qgis::as_const( mMapping ) )
+  {
+    if ( f.expression.isField() )
+    {
+      usedFields.push_back( f.expression.expression().mid( 1, f.expression.expression().length() - 2 ) );
+    }
+  }
+  // not const on purpose
+  for ( Field &f : mMapping )
+  {
+    if ( f.expression.expression().isEmpty() )
+    {
+      const QString expression { bestMatchforField( f, usedFields ) };
+      if ( ! expression.isEmpty() )
+        f.expression = expression;
+    }
+  }
+  endResetModel();
 }
 
 void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFields,
@@ -304,31 +350,9 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
     }
     else
     {
-      bool found { false };
-      // Search for fields in the source
-      // 1. match by name
-      for ( const auto &sf : qgis::as_const( mSourceFields ) )
-      {
-        if ( sf.name() == f.field.name() )
-        {
-          f.expression = QgsExpression::quotedColumnRef( sf.name() );
-          found = true;
-          usedFields.push_back( sf.name() );
-          break;
-        }
-      }
-      // 2. match by type
-      if ( ! found )
-      {
-        for ( const auto &sf : qgis::as_const( mSourceFields ) )
-        {
-          if ( usedFields.contains( sf.name() ) || sf.type() != f.field.type() )
-            continue;
-          f.expression = QgsExpression::quotedColumnRef( sf.name() );
-          usedFields.push_back( sf.name() );
-          found = true;
-        }
-      }
+      const QString expression { bestMatchforField( f, usedFields ) };
+      if ( ! expression.isEmpty() )
+        f.expression = expression;
     }
     mMapping.push_back( f );
   }

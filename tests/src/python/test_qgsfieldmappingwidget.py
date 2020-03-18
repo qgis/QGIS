@@ -155,6 +155,24 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         self.assertEqual(mapping[2].originalName, 'destination_field2')
         self.assertEqual(mapping[1].originalName, 'destination_field3')
 
+    def testSetSourceFields(self):
+        """Test that changing source fields also empty expressions are updated"""
+
+        model = QgsFieldMappingModel(self.source_fields, self.destination_fields)
+        self.assertEqual(model.data(model.index(2, 0), Qt.DisplayRole), QVariant())
+        self.assertEqual(model.data(model.index(2, 1), Qt.DisplayRole), 'destination_field3')
+
+        f = QgsField('source_field3', QVariant.String)
+        fields = self.source_fields
+        fields.append(f)
+        model.setSourceFields(fields)
+        self.assertEqual(model.data(model.index(0, 0), Qt.DisplayRole), '"source_field2"')
+        self.assertEqual(model.data(model.index(0, 1), Qt.DisplayRole), 'destination_field1')
+        self.assertEqual(model.data(model.index(1, 0), Qt.DisplayRole), '"source_field1"')
+        self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'destination_field2')
+        self.assertEqual(model.data(model.index(2, 0), Qt.DisplayRole), '"source_field3"')
+        self.assertEqual(model.data(model.index(2, 1), Qt.DisplayRole), 'destination_field3')
+
     def testWidget(self):
         """Test widget operations"""
 
@@ -205,7 +223,7 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         self.assertEqual(mapping[2].originalName, 'destination_field3')
 
         # Test constraints
-        f = QgsField('constraint_field')
+        f = QgsField('constraint_field', QVariant.Int)
         constraints = QgsFieldConstraints()
         constraints.setConstraint(QgsFieldConstraints.ConstraintNotNull, QgsFieldConstraints.ConstraintOriginProvider)
         constraints.setConstraint(QgsFieldConstraints.ConstraintExpression, QgsFieldConstraints.ConstraintOriginProvider)
@@ -217,6 +235,8 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.DisplayRole), "Constraints active")
         self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.ToolTipRole), "Unique<br>Not null<br>Expression")
         self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.BackgroundColorRole), QColor(255, 224, 178))
+
+        #self._showDialog(widget)
 
 
 if __name__ == '__main__':
