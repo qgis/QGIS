@@ -41,8 +41,8 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
      * Constructs a QgsFieldMappingWidget from a set of \a sourceFields
      * and \a destinationFields, initial values for the expressions can be
      * optionally specified through \a expressions which is a map from the original
-     * field name to the corresponding expression.
-     * \param parent parent object
+     * field name to the corresponding expression. A \param parent object
+     * can also be specified.
      */
     explicit QgsFieldMappingWidget( const QgsFields &sourceFields = QgsFields(),
                                     const QgsFields &destinationFields = QgsFields(),

@@ -50,9 +50,8 @@ the mapping expression is editable.
 Constructs a QgsFieldMappingModel from a set of ``sourceFields``
 and ``destinationFields``, initial values for the expressions can be
 optionally specified through ``expressions`` which is a map from the original
-field name to the corresponding expression.
-
-:param parent: parent object
+field name to the corresponding expression. A ``parent`` object
+can be also specified.
 %End
 
     QgsExpressionContextGenerator *contextGenerator() const;
