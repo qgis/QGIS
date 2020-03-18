@@ -338,7 +338,7 @@ Write a group code with a point
 .. versionadded:: 2.15
 %End
 
-    void writeGroup( const QColor &color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
+    void writeGroup( const QColor &color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 ) /PyName=writeGroupColor/;
 %Docstring
 Write a group code with color value
 
@@ -349,7 +349,22 @@ Write a group code with color value
 
 .. note::
 
-   available in Python bindings as writeGroupPoint
+   available in Python bindings as writeGroupColor
+%End
+
+    void writeGroup( const QColor &color, bool withTransparency, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 ) /PyName=writeGroupColorFill/;
+%Docstring
+Write a group code with color and transparency value (for polygon fill color)
+
+:param color: color
+:param color: withTransparency must be true for polygon fill color only
+:param exactMatch: group code to use if the color has an exact match in the dxf palette
+:param rgbCode: group code to use if the color doesn't have an exact match or has a transparency component
+:param transparencyCode: group code to use for transparency component
+
+.. note::
+
+   available in Python bindings as writeGroupColorFill
 %End
 
     void writeGroupCode( int code );
