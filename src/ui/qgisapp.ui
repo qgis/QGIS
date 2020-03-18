@@ -1209,9 +1209,6 @@
    <property name="text">
     <string>Deselect Features from All Layers</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+A</string>
-   </property>
   </action>
   <action name="mActionDeselectActiveLayer">
    <property name="icon">
@@ -1220,6 +1217,9 @@
    </property>
    <property name="text">
     <string>Deselect Features from the Current Active Layer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
    </property>
   </action>
   <action name="mActionSelectAll">
