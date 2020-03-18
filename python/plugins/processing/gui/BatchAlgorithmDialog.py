@@ -102,8 +102,11 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         project = QgsProject.instance() if load_layers else None
 
         for row in range(self.mainWidget().batchRowCount()):
-            parameters = self.mainWidget().parametersForRow(row, destinationProject=project, warnOnInvalid=True)
-            alg_parameters.append(parameters)
+            parameters, ok = self.mainWidget().parametersForRow(row, destinationProject=project, warnOnInvalid=True)
+            if ok:
+                alg_parameters.append(parameters)
+        if not alg_parameters:
+            return
 
         task = QgsScopedProxyProgressTask(self.tr('Batch Processing - {0}').format(self.algorithm().displayName()))
         multi_feedback = BatchFeedback(len(alg_parameters), feedback)
