@@ -41,7 +41,7 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
      * Constructs a QgsFieldMappingWidget from a set of \a sourceFields
      * and \a destinationFields, initial values for the expressions can be
      * optionally specified through \a expressions which is a map from the original
-     * field name to the corresponding expression. A \param parent object
+     * field name to the corresponding expression. A \a parent object
      * can also be specified.
      */
     explicit QgsFieldMappingWidget( QWidget *parent = nullptr,
@@ -49,7 +49,7 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
                                     const QgsFields &destinationFields = QgsFields(),
                                     const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
 
-    //! Sets the destination fields editable state to \a ditable
+    //! Sets the destination fields editable state to \a editable
     void setDestinationEditable( bool editable );
 
     //! Returns TRUE if the destination fields are editable in the model
