@@ -81,8 +81,8 @@ IndividualLayerSettings
 :param type:
 :param tolerance:
 :param units:
-:param minScale:
-:param maxScale:
+:param minScale: 0.0 disable scale limit
+:param maxScale: 0.0 disable scale limit
 
 .. deprecated:: QGIS 3.12
    use the method with SnappingTypeFlag instead.
@@ -96,8 +96,8 @@ IndividualLayerSettings
 :param type:
 :param tolerance:
 :param units:
-:param minScale:
-:param maxScale:
+:param minScale: 0.0 disable scale limit
+:param maxScale: 0.0 disable scale limit
 
 .. versionadded:: 3.12
 %End
@@ -179,7 +179,7 @@ Returns min scale on which snapping is limited
 
         void setMinScale( double p_minScale );
 %Docstring
-Sets the min scale value on which snapping is used
+Sets the min scale value on which snapping is used, 0.0 disable scale limit
 %End
 
         double maxScale() const;
@@ -189,7 +189,7 @@ Returns max scale on which snapping is limite
 
         void setMaxScale( double p_maxScale );
 %Docstring
-Sets the max scale value on which snapping is used
+Sets the max scale value on which snapping is used, 0.0 disable scale limit
 %End
 
         bool operator!= ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
@@ -277,7 +277,7 @@ Returns the min scale
 
     void setMinScale( double pMinScale );
 %Docstring
-Sets the min scale
+Sets the min scale on which snapping is enabled, 0.0 disable scale limit
 %End
 
     double maxScale() const;
@@ -287,7 +287,7 @@ Returns the max scale
 
     void setMaxScale( double pMaxScale );
 %Docstring
-Set the max scale
+Set the max scale on which snapping is enabled, 0.0 disable scale limit
 %End
 
     bool limitToScale() const;
@@ -297,7 +297,7 @@ Returns limit to scale
 
     void setLimitToScale( bool pLimitSnapping );
 %Docstring
-Set limit to scale
+Set limit to scale, true means snapping will be limited to the [minScale, maxScale] range
 %End
 
     QgsTolerance::UnitType units() const;
