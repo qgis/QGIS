@@ -234,6 +234,8 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      */
     void showParameters();
 
+    void reject() override;
+
   protected:
 
     void closeEvent( QCloseEvent *e ) override;
