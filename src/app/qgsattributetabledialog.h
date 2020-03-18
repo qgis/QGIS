@@ -216,7 +216,6 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QPointer< QgsVectorLayer > mLayer = nullptr;
     QStringList mVisibleFields;
-    QgsAttributeEditorContext mEditorContext;
 
     void updateMultiEditButtonState();
     void deleteFeature( QgsFeatureId fid );

@@ -755,11 +755,8 @@ QgsAttributeDialog *QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeat
   myDa.setSourceCrs( l->crs(), QgsProject::instance()->transformContext() );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
-  QgsAttributeEditorContext context;
+  QgsAttributeEditorContext context( QgisApp::instance()->createAttributeEditorContext() );
   context.setDistanceArea( myDa );
-  context.setVectorLayerTools( qgis->vectorLayerTools() );
-  context.setMapCanvas( qgis->mapCanvas() );
-  context.setCadDockWidget( qgis->cadDockWidget() );
   QgsAttributeDialog *dialog = new QgsAttributeDialog( l, &feature, false, qgis, true, context );
   if ( !feature.isValid() )
   {
