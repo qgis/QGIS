@@ -238,6 +238,32 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingBooleanWidgetWrappe
 // QgsProcessingCrsWidgetWrapper
 //
 
+QgsProcessingCrsParameterDefinitionWidget::QgsProcessingCrsParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mCrsSelector = new QgsProjectionSelectionWidget();
+  if ( const QgsProcessingParameterCrs *crsParam = dynamic_cast<const QgsProcessingParameterCrs *>( definition ) )
+    mCrsSelector->setCrs( QgsProcessingParameters::parameterAsCrs( crsParam, crsParam->defaultValue(), context ) );
+  else
+    mCrsSelector->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+
+  vlayout->addWidget( mCrsSelector );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingCrsParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterCrs >( name, description, mCrsSelector->crs().authid() );
+  param->setFlags( flags );
+  return param.release();
+}
+
 QgsProcessingCrsWidgetWrapper::QgsProcessingCrsWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
@@ -362,6 +388,11 @@ QString QgsProcessingCrsWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingCrsWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingCrsWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingCrsWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingCrsParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 

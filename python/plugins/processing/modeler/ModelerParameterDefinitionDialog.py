@@ -39,7 +39,6 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QTextEdit)
 
 from qgis.gui import (QgsExpressionLineEdit,
-                      QgsProjectionSelectionWidget,
                       QgsProcessingLayerOutputDestinationWidget
                       )
 from qgis.core import (QgsApplication,
@@ -91,7 +90,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                          parameters.PARAMETER_SCALE,
                          parameters.PARAMETER_EXPRESSION,
                          parameters.PARAMETER_POINT,
-                         parameters.PARAMETER_CRS,
                          parameters.PARAMETER_ENUM,
                          parameters.PARAMETER_MATRIX,
                          parameters.PARAMETER_MAP_LAYER):
@@ -106,7 +104,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                                 QgsProcessingParameterScale,
                                 QgsProcessingParameterExpression,
                                 QgsProcessingParameterPoint,
-                                QgsProcessingParameterCrs,
                                 QgsProcessingParameterEnum,
                                 QgsProcessingParameterMatrix,
                                 QgsProcessingParameterMapLayer,
@@ -339,15 +336,6 @@ class ModelerParameterDefinitionDialog(QDialog):
             if self.param is not None:
                 self.defaultTextBox.setText(self.param.defaultValue())
             self.verticalLayout.addWidget(self.defaultTextBox)
-        elif (self.paramType == parameters.PARAMETER_CRS
-              or isinstance(self.param, QgsProcessingParameterCrs)):
-            self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
-            self.selector = QgsProjectionSelectionWidget()
-            if self.param is not None:
-                self.selector.setCrs(QgsCoordinateReferenceSystem(self.param.defaultValue()))
-            else:
-                self.selector.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
-            self.verticalLayout.addWidget(self.selector)
         elif self.paramType == parameters.PARAMETER_ENUM or \
                 isinstance(self.param, QgsProcessingParameterEnum):
             self.widget = EnumModelerWidget(self)
@@ -548,9 +536,6 @@ class ModelerParameterDefinitionDialog(QDialog):
               or isinstance(self.param, QgsProcessingParameterPoint)):
             self.param = QgsProcessingParameterPoint(name, description,
                                                      str(self.defaultTextBox.text()))
-        elif (self.paramType == parameters.PARAMETER_CRS
-              or isinstance(self.param, QgsProcessingParameterCrs)):
-            self.param = QgsProcessingParameterCrs(name, description, self.selector.crs().authid())
         elif (self.paramType == parameters.PARAMETER_ENUM
                 or isinstance(self.param, QgsProcessingParameterEnum)):
             self.param = QgsProcessingParameterEnum(name, description, self.widget.options(), self.widget.allowMultiple(), self.widget.defaultOptions())
