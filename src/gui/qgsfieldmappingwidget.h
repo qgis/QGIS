@@ -44,10 +44,10 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
      * field name to the corresponding expression. A \param parent object
      * can also be specified.
      */
-    explicit QgsFieldMappingWidget( const QgsFields &sourceFields = QgsFields(),
+    explicit QgsFieldMappingWidget( QWidget *parent = nullptr,
+                                    const QgsFields &sourceFields = QgsFields(),
                                     const QgsFields &destinationFields = QgsFields(),
-                                    const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
-                                    QWidget *parent = nullptr );
+                                    const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
 
     //! Sets the destination fields editable state to \a ditable
     void setDestinationEditable( bool editable );
@@ -75,6 +75,11 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
      */
     void setDestinationFields( const QgsFields &destinationFields,
                                const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
+
+    /**
+     * Scroll the fields view to \a index
+     */
+    void scrollTo( const QModelIndex &index ) const;
 
   public slots:
 
