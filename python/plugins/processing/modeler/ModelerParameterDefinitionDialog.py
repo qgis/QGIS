@@ -38,9 +38,7 @@ from qgis.PyQt.QtWidgets import (QDialog,
                                  QWidget,
                                  QTextEdit)
 
-from qgis.gui import (QgsExpressionLineEdit,
-                      QgsProcessingLayerOutputDestinationWidget
-                      )
+from qgis.gui import (QgsProcessingLayerOutputDestinationWidget)
 from qgis.core import (QgsApplication,
                        QgsSettings,
                        QgsProcessing,
@@ -57,7 +55,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterRange,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterEnum,
-                       QgsProcessingParameterExpression,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource,
@@ -87,7 +84,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                          parameters.PARAMETER_NUMBER,
                          parameters.PARAMETER_DISTANCE,
                          parameters.PARAMETER_SCALE,
-                         parameters.PARAMETER_EXPRESSION,
                          parameters.PARAMETER_ENUM,
                          parameters.PARAMETER_MATRIX,
                          parameters.PARAMETER_MAP_LAYER):
@@ -100,7 +96,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                                 QgsProcessingParameterNumber,
                                 QgsProcessingParameterDistance,
                                 QgsProcessingParameterScale,
-                                QgsProcessingParameterExpression,
                                 QgsProcessingParameterEnum,
                                 QgsProcessingParameterMatrix,
                                 QgsProcessingParameterMapLayer,
@@ -305,27 +300,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                 if default:
                     self.defaultTextBox.setText(str(default))
             self.verticalLayout.addWidget(self.defaultTextBox)
-        elif (self.paramType == parameters.PARAMETER_EXPRESSION
-              or isinstance(self.param, QgsProcessingParameterExpression)):
-            self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
-            self.defaultEdit = QgsExpressionLineEdit()
-            if self.param is not None:
-                self.defaultEdit.setExpression(self.param.defaultValue())
-            self.verticalLayout.addWidget(self.defaultEdit)
-
-            self.verticalLayout.addWidget(QLabel(self.tr('Parent layer')))
-            self.parentCombo = QComboBox()
-            self.parentCombo.addItem(self.tr("None"), None)
-            idx = 1
-            for param in list(self.alg.parameterComponents().values()):
-                definition = self.alg.parameterDefinition(param.parameterName())
-                if isinstance(definition, (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer)):
-                    self.parentCombo.addItem(definition.description(), definition.name())
-                    if self.param is not None:
-                        if self.param.parentLayerParameterName() == definition.name():
-                            self.parentCombo.setCurrentIndex(idx)
-                    idx += 1
-            self.verticalLayout.addWidget(self.parentCombo)
         elif self.paramType == parameters.PARAMETER_ENUM or \
                 isinstance(self.param, QgsProcessingParameterEnum):
             self.widget = EnumModelerWidget(self)
@@ -513,12 +487,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
                 return
-        elif (self.paramType == parameters.PARAMETER_EXPRESSION
-              or isinstance(self.param, QgsProcessingParameterExpression)):
-            parent = self.parentCombo.currentData()
-            self.param = QgsProcessingParameterExpression(name, description,
-                                                          str(self.defaultEdit.expression()),
-                                                          parent)
         elif (self.paramType == parameters.PARAMETER_EXTENT
               or isinstance(self.param, QgsProcessingParameterExtent)):
             self.param = QgsProcessingParameterExtent(name, description)

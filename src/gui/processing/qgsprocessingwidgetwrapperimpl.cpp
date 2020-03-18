@@ -1564,10 +1564,68 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingFileWidgetWrapper::
 
 
 
-
 //
 // QgsProcessingExpressionWidgetWrapper
 //
+
+QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultLineEdit = new QgsExpressionLineEdit();
+  if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
+    mDefaultLineEdit->setExpression( QgsProcessingParameters::parameterAsExpression( expParam, expParam->defaultValue(), context ) );
+  vlayout->addWidget( mDefaultLineEdit );
+
+  vlayout->addWidget( new QLabel( tr( "Parent layer" ) ) );
+
+  mParentLayerComboBox = new QComboBox();
+  mParentLayerComboBox->addItem( tr( "None" ), QVariant() );
+
+  QString initialParent;
+  if ( const QgsProcessingParameterExpression *expParam = dynamic_cast<const QgsProcessingParameterExpression *>( definition ) )
+    initialParent = expParam->parentLayerParameterName();
+
+  if ( widgetContext.model() )
+  {
+    // populate combo box with other model input choices
+    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
+    {
+      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      {
+        mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+        if ( !initialParent.isEmpty() && initialParent == definition->name() )
+        {
+          mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+        }
+      }
+      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      {
+        mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+        if ( !initialParent.isEmpty() && initialParent == definition->name() )
+        {
+          mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+        }
+      }
+    }
+  }
+
+  vlayout->addWidget( mParentLayerComboBox );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingExpressionParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterExpression >( name, description, mDefaultLineEdit->expression(), mParentLayerComboBox->currentData().toString() );
+  param->setFlags( flags );
+  return param.release();
+}
 
 QgsProcessingExpressionWidgetWrapper::QgsProcessingExpressionWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
@@ -1747,6 +1805,11 @@ QString QgsProcessingExpressionWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingExpressionWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingExpressionWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingExpressionWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingExpressionParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 
