@@ -16,6 +16,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (
     QgsFields,
     QgsField,
+    QgsFieldConstraints,
 )
 from qgis.gui import (
     QgsFieldMappingWidget,
@@ -28,7 +29,9 @@ from qgis.PyQt.QtCore import (
     QModelIndex,
     QItemSelectionModel,
 )
-
+from qgis.PyQt.QtGui import (
+    QColor
+)
 from qgis.testing import start_app, unittest
 
 
@@ -201,12 +204,19 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         self.assertEqual(mapping[1].originalName, 'destination_field2')
         self.assertEqual(mapping[2].originalName, 'destination_field3')
 
-    def __testWidget(self):
-        """Test the mapping widget"""
-
-        widget = QgsFieldMappingWidget(self.source_fields, self.destination_fields)
-        widget.setDestinationEditable(True)
-        self._showDialog(widget)
+        # Test constraints
+        f = QgsField('constraint_field')
+        constraints = QgsFieldConstraints()
+        constraints.setConstraint(QgsFieldConstraints.ConstraintNotNull, QgsFieldConstraints.ConstraintOriginProvider)
+        constraints.setConstraint(QgsFieldConstraints.ConstraintExpression, QgsFieldConstraints.ConstraintOriginProvider)
+        constraints.setConstraint(QgsFieldConstraints.ConstraintUnique, QgsFieldConstraints.ConstraintOriginProvider)
+        f.setConstraints(constraints)
+        fields = QgsFields()
+        fields.append(f)
+        widget.setDestinationFields(fields)
+        self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.DisplayRole), "Constraints active")
+        self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.ToolTipRole), "Unique<br>Not null<br>Expression")
+        self.assertEqual(widget.model().data(widget.model().index(0, 5, QModelIndex()), Qt.BackgroundColorRole), QColor(255, 224, 178))
 
 
 if __name__ == '__main__':
