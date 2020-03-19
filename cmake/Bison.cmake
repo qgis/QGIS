@@ -15,7 +15,7 @@ MACRO(FIND_BISON)
 	           PATHS $ENV{LIB_DIR}/bin c:/cygwin/bin $ENV{PROGRAMFILES}/GnuWin32/bin
 	)
     ELSE (MSVC)
-      FIND_PROGRAM(BISON_EXECUTABLE bison)
+      FIND_PROGRAM(BISON_EXECUTABLE bison PATHS $ENV{LIB_DIR}/bin /usr/local/bin)
     ENDIF (MSVC)
     IF (NOT BISON_EXECUTABLE)
 

@@ -31,6 +31,20 @@ ENDIF (APPLE)
 MATH(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
 MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT})")
 
+#############################################################
+IF (APPLE)
+  # QGIS custom dependencies package from qgis/QGIS-Mac-Packager
+  # they can be downloaded from https://qgis.org/downloads/macos/qgis-deps
+  # and extracted to /opt/QGIS/qgis-deps-<deps-version>/stage
+  SET (QGIS_MAC_DEPS_DIR "" CACHE PATH "Path to QGIS Mac custom dependencies directory")
+
+  # Setup LIB_DIR and CMAKE_PREFIX_PATH to help CMake's
+  # find_packages to look for these libraries instead of system libraries
+  IF ( QGIS_MAC_DEPS_DIR )
+    SET(ENV{LIB_DIR} ${QGIS_MAC_DEPS_DIR})
+    SET(CMAKE_PREFIX_PATH "$CMAKE_PREFIX_PATH;${QGIS_MAC_DEPS_DIR}")
+  ENDIF ( QGIS_MAC_DEPS_DIR )
+ENDIF (APPLE)
 
 #############################################################
 # Configure OpenCL if available
@@ -683,8 +697,9 @@ IF (WITH_CORE)
       SET (QGIS_MACAPP_PREFIX ${CMAKE_INSTALL_PREFIX}/${QGIS_APP_NAME}.app/Contents)
       # common prefix for components, let cmake handle it
       SET (CMAKE_INSTALL_PREFIX ${QGIS_MACAPP_PREFIX}/MacOS)
-      # 4 bundling levels, each includes previous
-      #   0  nothing
+      # 5 bundling levels, each includes previous
+      #  -1  nothing
+      #   0  fixup the library paths for all QGIS libraries with @loader_path
       #   1  Qt frameworks
       #   2  non-system libraries, "standard"
       #   3  non-system frameworks, "standalone"
@@ -846,7 +861,7 @@ ENDIF (DISABLE_DEPRECATED)
 #############################################################
 # Python build dependency
 
-FIND_PACKAGE(PythonInterp 3 REQUIRED)
+FIND_PACKAGE(PythonLibrary REQUIRED)
 
 #############################################################
 # Python bindings

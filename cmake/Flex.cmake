@@ -15,11 +15,12 @@ MACRO(FIND_FLEX)
                      PATHS $ENV{LIB_DIR}/bin c:/cygwin/bin $ENV{PROGRAMFILES}/GnuWin32/bin
                     )
       ELSE(MSVC)
-        FIND_PROGRAM(FLEX_EXECUTABLE flex)
+        FIND_PROGRAM(FLEX_EXECUTABLE flex $ENV{LIB_DIR}/bin /usr/local/bin)
       ENDIF (MSVC)
-        IF (NOT FLEX_EXECUTABLE)
-          MESSAGE(FATAL_ERROR "flex not found - aborting")
-        ENDIF (NOT FLEX_EXECUTABLE)
+
+      IF (NOT FLEX_EXECUTABLE)
+        MESSAGE(FATAL_ERROR "flex not found - aborting")
+      ENDIF (NOT FLEX_EXECUTABLE)
     ENDIF(NOT FLEX_EXECUTABLE)
 ENDMACRO(FIND_FLEX)
 

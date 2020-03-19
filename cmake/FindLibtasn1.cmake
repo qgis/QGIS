@@ -29,6 +29,7 @@ find_library(LIBTASN1_LIBRARY
     NAMES tasn1
     PATHS
     ${LIB_DIR}
+    $ENV{LIB_DIR}/lib
     "$ENV{LIB_DIR}"
     $ENV{LIB}
     /usr/local/lib
