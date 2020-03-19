@@ -1003,11 +1003,22 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
     CharacterWidget *widgetChar = nullptr;
 
   private slots:
+
+    /**
+     * Sets the font \a style.
+     * \since QGIS 3.14
+     */
+    void setFontStyle( const QString &style );
+
     void setOffset();
     void mSizeUnitWidget_changed();
     void mOffsetUnitWidget_changed();
     void mStrokeWidthUnitWidget_changed();
     void mStrokeWidthSpinBox_valueChanged( double d );
+
+    void populateFontStyleComboBox();
+    void mFontStyleComboBox_currentIndexChanged( int index );
+
     void mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void mVerticalAnchorComboBox_currentIndexChanged( int index );
     void penJoinStyleChanged();
@@ -1016,6 +1027,9 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, p
   private:
 
     std::shared_ptr< QgsMarkerSymbol > mAssistantPreviewSymbol;
+
+    QFont mRefFont;
+    QFontDatabase mFontDB;
 
 };
 
