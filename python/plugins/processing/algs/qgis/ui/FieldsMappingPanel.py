@@ -48,7 +48,6 @@ from qgis.core import (
     QgsVectorLayer,
     QgsField,
     QgsFields,
-    QgsExpression,
 )
 
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_MODELER
@@ -110,7 +109,7 @@ class FieldsMappingPanel(BASE, WIDGET):
                 'type': f.field.type(),
                 'length': f.field.length(),
                 'precision': f.field.precision(),
-                'expression': f.expression.expression(),
+                'expression': f.expression,
             })
         return results
 
@@ -126,7 +125,7 @@ class FieldsMappingPanel(BASE, WIDGET):
                          field_def.get('length', 0),
                          field_def.get('precision', 0))
             try:
-                expressions[f.name()] = QgsExpression(field_def['expressions'])
+                expressions[f.name()] = field_def['expressions']
             except AttributeError:
                 pass
             destinationFields.append(f)
