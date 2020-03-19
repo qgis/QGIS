@@ -1616,7 +1616,7 @@ QgsProcessingExpressionParameterDefinitionWidget::QgsProcessingExpressionParamet
     }
   }
 
-  if ( mParentLayerComboBox->count() == 0 && !initialParent.isEmpty() )
+  if ( mParentLayerComboBox->count() == 1 && !initialParent.isEmpty() )
   {
     // if no parent candidates found, we just add the existing one as a placeholder
     mParentLayerComboBox->addItem( initialParent, initialParent );
