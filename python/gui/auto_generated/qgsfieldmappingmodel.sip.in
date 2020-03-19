@@ -41,12 +41,12 @@ the mapping expression is editable.
     {
       QString originalName;
       QgsField field;
-      QgsExpression expression;
+      QString expression;
     };
 
     QgsFieldMappingModel( const QgsFields &sourceFields = QgsFields(),
                           const QgsFields &destinationFields = QgsFields(),
-                          const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
+                          const QMap<QString, QString> &expressions = QMap<QString, QString>(),
                           QObject *parent = 0 );
 %Docstring
 Constructs a QgsFieldMappingModel from a set of ``sourceFields``
@@ -54,11 +54,6 @@ and ``destinationFields``, initial values for the expressions can be
 optionally specified through ``expressions`` which is a map from the original
 field name to the corresponding expression. A ``parent`` object
 can be also specified.
-%End
-
-    QgsExpressionContextGenerator *contextGenerator() const;
-%Docstring
-Returns the context generator with the source fields
 %End
 
     bool destinationEditable() const;
@@ -86,7 +81,7 @@ Returns a list of source fields
 Returns a list of Field objects representing the current status of the model
 %End
 
-    void appendField( const QgsField &field, const QgsExpression &expression = QgsExpression() );
+    void appendField( const QgsField &field, const QString &expression = QString() );
 %Docstring
 Appends a new ``field`` to the model, with an optional ``expression``
 %End
@@ -111,8 +106,13 @@ Moves up the field at ``index``
 Set source fields to ``sourceFields``
 %End
 
+    QgsExpressionContextGenerator *contextGenerator() const;
+%Docstring
+Returns the context generator with the source fields
+%End
+
     void setDestinationFields( const QgsFields &destinationFields,
-                               const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
+                               const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 %Docstring
 Set destination fields to ``destinationFields``, initial values for the expressions can be
 optionally specified through ``expressions`` which is a map from the original
@@ -134,6 +134,8 @@ field name to the corresponding expression.
 
       public:
 };
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

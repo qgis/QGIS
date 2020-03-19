@@ -47,7 +47,7 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
     explicit QgsFieldMappingWidget( QWidget *parent = nullptr,
                                     const QgsFields &sourceFields = QgsFields(),
                                     const QgsFields &destinationFields = QgsFields(),
-                                    const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
+                                    const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 
     //! Sets the destination fields editable state to \a editable
     void setDestinationEditable( bool editable );
@@ -74,7 +74,7 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
      * corresponding expression.
      */
     void setDestinationFields( const QgsFields &destinationFields,
-                               const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
+                               const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 
     /**
      * Scroll the fields view to \a index
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
   public slots:
 
     //! Appends a new \a field to the model, with an optional \a expression
-    void appendField( const QgsField &field, const QgsExpression &expression = QgsExpression() );
+    void appendField( const QgsField &field, const QString &expression = QString() );
 
     //! Removes the currently selected field from the model
     bool removeSelectedFields( );

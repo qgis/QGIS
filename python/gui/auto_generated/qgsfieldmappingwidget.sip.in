@@ -26,7 +26,7 @@ for each set of "destination" fields an expression defines how to obtain the val
     explicit QgsFieldMappingWidget( QWidget *parent = 0,
                                     const QgsFields &sourceFields = QgsFields(),
                                     const QgsFields &destinationFields = QgsFields(),
-                                    const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
+                                    const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 %Docstring
 Constructs a QgsFieldMappingWidget from a set of ``sourceFields``
 and ``destinationFields``, initial values for the expressions can be
@@ -66,7 +66,7 @@ Set source fields of the underlying mapping model to ``sourceFields``
 %End
 
     void setDestinationFields( const QgsFields &destinationFields,
-                               const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
+                               const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 %Docstring
 Set destination fields to ``destinationFields`` in the underlying model,
 initial values for the expressions can be optionally specified through
@@ -81,7 +81,7 @@ Scroll the fields view to ``index``
 
   public slots:
 
-    void appendField( const QgsField &field, const QgsExpression &expression = QgsExpression() );
+    void appendField( const QgsField &field, const QString &expression = QString() );
 %Docstring
 Appends a new ``field`` to the model, with an optional ``expression``
 %End

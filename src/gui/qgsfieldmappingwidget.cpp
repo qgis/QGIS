@@ -16,17 +16,27 @@
 
 #include "qgsfieldmappingwidget.h"
 #include "qgsfieldexpressionwidget.h"
+#include "qgsexpression.h"
+
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
 
 QgsFieldMappingWidget::QgsFieldMappingWidget( QWidget *parent,
     const QgsFields &sourceFields,
     const QgsFields &destinationFields,
-    const QMap<QString, QgsExpression> &expressions )
+    const QMap<QString, QString> &expressions )
   : QWidget( parent )
 {
 
   setupUi( this );
 
   mModel = new QgsFieldMappingModel( sourceFields, destinationFields, expressions, this );
+
+#ifdef ENABLE_MODELTEST
+  new ModelTest( mModel, this );
+#endif
+
   mTableView->setModel( mModel );
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::SourceExpression ), new ExpressionDelegate( mTableView ) );
   mTableView->setItemDelegateForColumn( static_cast<int>( QgsFieldMappingModel::ColumnDataIndex::DestinationType ), new TypeDelegate( mTableView ) );
@@ -67,7 +77,7 @@ void QgsFieldMappingWidget::setSourceFields( const QgsFields &sourceFields )
   model()->setSourceFields( sourceFields );
 }
 
-void QgsFieldMappingWidget::setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QgsExpression> &expressions )
+void QgsFieldMappingWidget::setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions )
 {
   model()->setDestinationFields( destinationFields, expressions );
 }
@@ -77,7 +87,7 @@ void QgsFieldMappingWidget::scrollTo( const QModelIndex &index ) const
   mTableView->scrollTo( index );
 }
 
-void QgsFieldMappingWidget::appendField( const QgsField &field, const QgsExpression &expression )
+void QgsFieldMappingWidget::appendField( const QgsField &field, const QString &expression )
 {
   model()->appendField( field, expression );
 }
