@@ -99,6 +99,8 @@ class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMap
 
     QAbstractTableModel *mModel;
     void updateColumns();
+    //! Returns selected row indexes in ascending order
+    std::list<int> selectedRows( );
 
     class ExpressionDelegate: public QStyledItemDelegate
     {

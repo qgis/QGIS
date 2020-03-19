@@ -94,64 +94,75 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
 {
   if ( index.isValid() )
   {
-    const int col { index.column() };
+    const ColumnDataIndex col { static_cast<ColumnDataIndex>( index.column() ) };
     const Field &f { mMapping.at( index.row() ) };
 
     const QgsFieldConstraints::Constraints constraints { fieldConstraints( f.field ) };
 
-    if ( role == Qt::DisplayRole || role == Qt::EditRole )
+    switch ( role )
     {
-      switch ( static_cast<ColumnDataIndex>( col ) )
+      case Qt::DisplayRole:
+      case Qt::EditRole:
       {
-        case ColumnDataIndex::SourceExpression:
+        switch ( col )
         {
-          return f.expression;
+          case ColumnDataIndex::SourceExpression:
+          {
+            return f.expression;
+          }
+          case ColumnDataIndex::DestinationName:
+          {
+            return f.field.displayName();
+          }
+          case ColumnDataIndex::DestinationType:
+          {
+            return static_cast<int>( f.field.type() );
+          }
+          case ColumnDataIndex::DestinationLength:
+          {
+            return f.field.length();
+          }
+          case ColumnDataIndex::DestinationPrecision:
+          {
+            return f.field.precision();
+          }
+          case ColumnDataIndex::DestinationConstraints:
+          {
+            return constraints != 0 ? tr( "Constraints active" ) : QString();
+          }
         }
-        case ColumnDataIndex::DestinationName:
-        {
-          return f.field.displayName();
-        }
-        case ColumnDataIndex::DestinationType:
-        {
-          return static_cast<int>( f.field.type() );
-        }
-        case ColumnDataIndex::DestinationLength:
-        {
-          return f.field.length();
-        }
-        case ColumnDataIndex::DestinationPrecision:
-        {
-          return f.field.precision();
-        }
-        case ColumnDataIndex::DestinationConstraints:
-        {
-          return constraints != 0 ? tr( "Constraints active" ) : QString();
-        }
+        break;
       }
-    }
-    else if ( role == Qt::ToolTipRole &&
-              col == static_cast<int>( ColumnDataIndex::DestinationConstraints ) &&
-              constraints != 0 )
-    {
-      QStringList constraintDescription;
-      if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintUnique ) )
+      case Qt::ToolTipRole:
       {
-        constraintDescription.push_back( tr( "Unique" ) );
+        if ( col == ColumnDataIndex::DestinationConstraints &&
+             constraints != 0 )
+        {
+          QStringList constraintDescription;
+          if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintUnique ) )
+          {
+            constraintDescription.push_back( tr( "Unique" ) );
+          }
+          if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull ) )
+          {
+            constraintDescription.push_back( tr( "Not null" ) );
+          }
+          if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull ) )
+          {
+            constraintDescription.push_back( tr( "Expression" ) );
+          }
+          return constraintDescription.join( QStringLiteral( "<br>" ) );
+        }
+        break;
       }
-      if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull ) )
+      case Qt::BackgroundRole:
       {
-        constraintDescription.push_back( tr( "Not null" ) );
+        if ( constraints != 0 )
+        {
+          return QBrush( QColor( 255, 224, 178 ) );
+        }
+        break;
       }
-      if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull ) )
-      {
-        constraintDescription.push_back( tr( "Expression" ) );
-      }
-      return constraintDescription.join( QStringLiteral( "<br>" ) );
-    }
-    else if ( role == Qt::BackgroundRole &&
-              constraints != 0 )
-    {
-      return QBrush( QColor( 255, 224, 178 ) );
     }
   }
   return QVariant();
