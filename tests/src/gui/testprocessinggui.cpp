@@ -3644,6 +3644,35 @@ void TestProcessingGui::testPointWrapper()
 
   // modeler wrapper
   testWrapper( QgsProcessingGui::Modeler );
+
+  // config widget
+  QgsProcessingContext context;
+  QgsProcessingParameterWidgetContext widgetContext;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "point" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterPoint pointParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QStringLiteral( "1,2" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "point" ), context, widgetContext, &pointParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterPoint * >( def.get() )->defaultValue().toString(), QStringLiteral( "1.000000,2.000000" ) );
+  pointParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  pointParam.setDefaultValue( QStringLiteral( "4,7" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "point" ), context, widgetContext, &pointParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterPoint * >( def.get() )->defaultValue().toString(), QStringLiteral( "4.000000,7.000000" ) );
+
 }
 
 void TestProcessingGui::testColorWrapper()
