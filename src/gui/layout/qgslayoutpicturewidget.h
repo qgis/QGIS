@@ -82,6 +82,7 @@ class GUI_EXPORT QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private
     QPointer< QgsLayoutItemPicture > mPicture;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
     int mIconSize = 30;
+    int mBlockSvgModelChanges = 0;
 
     void updateSvgParamGui( bool resetValues = true );
 };
