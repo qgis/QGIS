@@ -223,10 +223,6 @@ void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 
   connect( mCanvas->scene(), &Qgs3DMapScene::totalPendingJobsCountChanged, this, &Qgs3DMapCanvasDockWidget::onTotalPendingJobsCountChanged );
 
-  // Update the connection after the map is updated
-  mMapToolIdentify->updateSignalSlots();
-  mMapToolMeasureLine->updateSignalSlots();
-
   mAnimationWidget->setCameraController( mCanvas->scene()->cameraController() );
   mAnimationWidget->setMap( map );
 

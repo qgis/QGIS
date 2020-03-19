@@ -44,8 +44,8 @@ class Qgs3DMapTool : public QObject
     //! Mouse cursor to be used when the tool is active
     virtual QCursor cursor() const;
 
-    //! Update the connection to the map canvas's property (scene, map setting)
-    virtual void updateSignalSlots();
+    //! Called when canvas's map setting is changed
+    virtual void onMapSettingsChanged();
 
     /**
      * Whether the default mouse controls to zoom/pan/rotate camera can stay enabled

@@ -57,6 +57,7 @@ Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   mDialog->setWindowFlags( mDialog->windowFlags() | Qt::Tool );
   mDialog->restorePosition();
 
+  connect( canvas, &Qgs3DMapCanvas::mapSettingsChanged, this, &Qgs3DMapToolMeasureLine::onMapSettingsChanged );
 }
 
 Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
@@ -121,7 +122,7 @@ QCursor Qgs3DMapToolMeasureLine::cursor() const
   return Qt::CrossCursor;
 }
 
-void Qgs3DMapToolMeasureLine::updateSignalSlots()
+void Qgs3DMapToolMeasureLine::onMapSettingsChanged()
 {
   connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolMeasureLine::onTerrainEntityChanged );
 
