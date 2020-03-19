@@ -20,6 +20,26 @@
 #include <QList>
 #include <QPainter>
 
+QString QgsSingleBoxScaleBarRenderer::id() const
+{
+  return QStringLiteral( "Single Box" );
+}
+
+QString QgsSingleBoxScaleBarRenderer::visibleName() const
+{
+  return QObject::tr( "Single Box" );
+}
+
+int QgsSingleBoxScaleBarRenderer::sortKey() const
+{
+  return 1;
+}
+
+QgsSingleBoxScaleBarRenderer *QgsSingleBoxScaleBarRenderer::clone() const
+{
+  return new QgsSingleBoxScaleBarRenderer( *this );
+}
+
 void QgsSingleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const ScaleBarContext &scaleContext ) const
 {
   if ( !context.painter() )

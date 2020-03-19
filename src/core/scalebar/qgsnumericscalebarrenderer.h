@@ -36,7 +36,10 @@ class CORE_EXPORT QgsNumericScaleBarRenderer: public QgsScaleBarRenderer
      */
     QgsNumericScaleBarRenderer() = default;
 
-    QString name() const override { return QStringLiteral( "Numeric" ); }
+    QString id() const override;
+    QString visibleName() const override;
+    int sortKey() const override;
+    QgsNumericScaleBarRenderer *clone() const override SIP_FACTORY;
 
     void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,

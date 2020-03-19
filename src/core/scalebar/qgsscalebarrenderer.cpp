@@ -143,6 +143,11 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
   painter->restore();
 }
 
+int QgsScaleBarRenderer::sortKey() const
+{
+  return 100;
+}
+
 QSizeF QgsScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &settings,
     const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
 {

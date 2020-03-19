@@ -20,6 +20,26 @@
 #include <QList>
 #include <QPainter>
 
+QString QgsDoubleBoxScaleBarRenderer::id() const
+{
+  return QStringLiteral( "Double Box" );
+}
+
+QString QgsDoubleBoxScaleBarRenderer::visibleName() const
+{
+  return QObject::tr( "Double Box" );
+}
+
+int QgsDoubleBoxScaleBarRenderer::sortKey() const
+{
+  return 2;
+}
+
+QgsDoubleBoxScaleBarRenderer *QgsDoubleBoxScaleBarRenderer::clone() const
+{
+  return new QgsDoubleBoxScaleBarRenderer( *this );
+}
+
 void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const ScaleBarContext &scaleContext ) const
 {
   if ( !context.painter() )

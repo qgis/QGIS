@@ -16,6 +16,7 @@
 
 #include "qgslayoutitemscalebar.h"
 #include "qgslayoutitemregistry.h"
+#include "qgsscalebarrendererregistry.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
@@ -490,7 +491,7 @@ void QgsLayoutItemScaleBar::resizeToMinimumWidth()
 void QgsLayoutItemScaleBar::update()
 {
   //Don't adjust box size for numeric scale bars:
-  if ( mStyle && mStyle->name() != QLatin1String( "Numeric" ) )
+  if ( mStyle && mStyle->id() != QLatin1String( "Numeric" ) )
   {
     refreshItemSize();
   }
@@ -507,34 +508,10 @@ void QgsLayoutItemScaleBar::updateScale()
 void QgsLayoutItemScaleBar::setStyle( const QString &styleName )
 {
   //switch depending on style name
-  if ( styleName == QLatin1String( "Single Box" ) )
+  std::unique_ptr< QgsScaleBarRenderer> renderer( QgsApplication::scaleBarRendererRegistry()->renderer( styleName ) );
+  if ( renderer )
   {
-    mStyle = qgis::make_unique< QgsSingleBoxScaleBarRenderer >();
-  }
-  else if ( styleName == QLatin1String( "Double Box" ) )
-  {
-    mStyle = qgis::make_unique< QgsDoubleBoxScaleBarRenderer >();
-  }
-  else if ( styleName == QLatin1String( "Line Ticks Middle" )  || styleName == QLatin1String( "Line Ticks Down" ) || styleName == QLatin1String( "Line Ticks Up" ) )
-  {
-    std::unique_ptr< QgsTicksScaleBarRenderer > tickStyle = qgis::make_unique< QgsTicksScaleBarRenderer >();
-    if ( styleName == QLatin1String( "Line Ticks Middle" ) )
-    {
-      tickStyle->setTickPosition( QgsTicksScaleBarRenderer::TicksMiddle );
-    }
-    else if ( styleName == QLatin1String( "Line Ticks Down" ) )
-    {
-      tickStyle->setTickPosition( QgsTicksScaleBarRenderer::TicksDown );
-    }
-    else if ( styleName == QLatin1String( "Line Ticks Up" ) )
-    {
-      tickStyle->setTickPosition( QgsTicksScaleBarRenderer::TicksUp );
-    }
-    mStyle = std::move( tickStyle );
-  }
-  else if ( styleName == QLatin1String( "Numeric" ) )
-  {
-    mStyle = qgis::make_unique< QgsNumericScaleBarRenderer >();
+    mStyle = std::move( renderer );
   }
   refreshItemSize();
   emit changed();
@@ -544,7 +521,7 @@ QString QgsLayoutItemScaleBar::style() const
 {
   if ( mStyle )
   {
-    return mStyle->name();
+    return mStyle->id();
   }
   else
   {
@@ -619,7 +596,7 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   //style
   if ( mStyle )
   {
-    composerScaleBarElem.setAttribute( QStringLiteral( "style" ), mStyle->name() );
+    composerScaleBarElem.setAttribute( QStringLiteral( "style" ), mStyle->id() );
   }
 
   //map id
@@ -817,8 +794,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   }
 
   //style
-  QString styleString = itemElem.attribute( QStringLiteral( "style" ), QString() );
-  setStyle( styleString.toLocal8Bit().data() );
+  setStyle( itemElem.attribute( QStringLiteral( "style" ), QString() ) );
 
   if ( itemElem.attribute( QStringLiteral( "unitType" ) ).isEmpty() )
   {

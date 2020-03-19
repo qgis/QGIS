@@ -72,8 +72,33 @@ class CORE_EXPORT QgsScaleBarRenderer
 
     /**
      * Returns the unique name for this style.
+     * \deprecated use id() instead
      */
-    virtual QString name() const = 0;
+    Q_DECL_DEPRECATED QString name() const SIP_DEPRECATED { return id(); }
+
+    /**
+     * Returns the unique ID for this renderer.
+     * \since QGIS 3.14
+     */
+    virtual QString id() const = 0;
+
+    /**
+     * Returns the user friendly, translated name for the renderer.
+     * \since QGIS 3.14
+     */
+    virtual QString visibleName() const = 0;
+
+    /**
+     * Returns a sorting key value, where renderers with a lower sort key will be shown earlier in lists.
+     *
+     * Generally, subclasses should return QgsScaleBarRenderer::sortKey() as their sorting key.
+     */
+    virtual int sortKey() const;
+
+    /**
+     * Returns a clone of the renderer. The caller takes ownership of the returned value.
+     */
+    virtual QgsScaleBarRenderer *clone() const = 0 SIP_FACTORY;
 
     /**
      * Draws the scalebar using the specified \a settings and \a scaleContext to a destination render \a context.
