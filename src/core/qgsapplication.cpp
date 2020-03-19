@@ -31,6 +31,7 @@
 #include "qgstaskmanager.h"
 #include "qgsnumericformatregistry.h"
 #include "qgsfieldformatterregistry.h"
+#include "qgsscalebarrendererregistry.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
 #include "qgscolorschemeregistry.h"
@@ -2209,6 +2210,11 @@ Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
   return members()->m3DRendererRegistry;
 }
 
+QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry()
+{
+  return members()->mScaleBarRendererRegistry;
+}
+
 QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
 {
   return members()->mProjectStorageRegistry;
@@ -2246,11 +2252,13 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mValidityCheckRegistry = new QgsValidityCheckRegistry();
   mClassificationMethodRegistry = new QgsClassificationMethodRegistry();
   mBookmarkManager = new QgsBookmarkManager( nullptr );
+  mScaleBarRendererRegistry = new QgsScaleBarRendererRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
   delete mStyleModel;
+  delete mScaleBarRendererRegistry;
   delete mValidityCheckRegistry;
   delete mActionScopeRegistry;
   delete m3DRendererRegistry;

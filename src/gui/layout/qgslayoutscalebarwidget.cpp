@@ -17,6 +17,7 @@
 #include "qgslayoutscalebarwidget.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
+#include "qgsscalebarrendererregistry.h"
 #include "qgslayout.h"
 #include "qgsguiutils.h"
 #include "qgsvectorlayer.h"
@@ -70,12 +71,11 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   blockMemberSignals( true );
 
   //style combo box
-  mStyleComboBox->insertItem( 0, tr( "Single Box" ) );
-  mStyleComboBox->insertItem( 1, tr( "Double Box" ) );
-  mStyleComboBox->insertItem( 2, tr( "Line Ticks Middle" ) );
-  mStyleComboBox->insertItem( 3, tr( "Line Ticks Down" ) );
-  mStyleComboBox->insertItem( 4, tr( "Line Ticks Up" ) );
-  mStyleComboBox->insertItem( 5, tr( "Numeric" ) );
+  const QStringList renderers = QgsApplication::scaleBarRendererRegistry()->sortedRendererList();
+  for ( const QString &renderer : renderers )
+  {
+    mStyleComboBox->addItem( QgsApplication::scaleBarRendererRegistry()->visibleName( renderer ), renderer );
+  }
 
   //label vertical/horizontal placement combo box
   mLabelVerticalPlacementComboBox->addItem( tr( "Above Segments" ), static_cast< int >( QgsScaleBarSettings::LabelAboveSegment ) );
@@ -222,8 +222,8 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   mMapItemComboBox->setItem( mScalebar->linkedMap() );
 
   //style...
-  QString style = mScalebar->style();
-  mStyleComboBox->setCurrentIndex( mStyleComboBox->findText( tr( style.toLocal8Bit().data() ) ) );
+  const QString style = mScalebar->style();
+  mStyleComboBox->setCurrentIndex( mStyleComboBox->findData( style ) );
   toggleStyleSpecificControls( style );
 
   //label vertical/horizontal placement
@@ -462,7 +462,7 @@ void QgsLayoutScaleBarWidget::mMapUnitsPerBarUnitSpinBox_valueChanged( double d 
   mScalebar->endCommand();
 }
 
-void QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged( const QString &text )
+void QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged( const QString & )
 {
   if ( !mScalebar )
   {
@@ -471,40 +471,12 @@ void QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged( const QString 
 
   mScalebar->beginCommand( tr( "Set Scalebar Style" ) );
   disconnectUpdateSignal();
-  QString untranslatedStyleName;
-  if ( text == tr( "Single Box" ) )
-  {
-    untranslatedStyleName = QStringLiteral( "Single Box" );
-  }
-  else if ( text == tr( "Double Box" ) )
-  {
-    untranslatedStyleName = QStringLiteral( "Double Box" );
-  }
-  else if ( text == tr( "Line Ticks Middle" ) )
-  {
-    untranslatedStyleName = QStringLiteral( "Line Ticks Middle" );
-  }
-  else if ( text == tr( "Line Ticks Middle" ) )
-  {
-    untranslatedStyleName = QStringLiteral( "Line Ticks Middle" );
-  }
-  else if ( text == tr( "Line Ticks Down" ) )
-  {
-    untranslatedStyleName = QStringLiteral( "Line Ticks Down" );
-  }
-  else if ( text == tr( "Line Ticks Up" ) )
-  {
-    untranslatedStyleName = QStringLiteral( "Line Ticks Up" );
-  }
-  else if ( text == tr( "Numeric" ) )
-  {
-    untranslatedStyleName = QStringLiteral( "Numeric" );
-  }
+  const QString rendererId = mStyleComboBox->currentData().toString();
 
   //disable or enable controls which apply to specific scale bar styles
-  toggleStyleSpecificControls( untranslatedStyleName );
+  toggleStyleSpecificControls( rendererId );
 
-  mScalebar->setStyle( untranslatedStyleName );
+  mScalebar->setStyle( rendererId );
   mScalebar->update();
   connectUpdateSignal();
   mScalebar->endCommand();

@@ -26,7 +26,14 @@ A scale bar style that draws text in the form of '1:XXXXX'.
 Constructor for QgsNumericScaleBarRenderer.
 %End
 
-    virtual QString name() const;
+    virtual QString id() const;
+
+    virtual QString visibleName() const;
+
+    virtual int sortKey() const;
+
+    virtual QgsNumericScaleBarRenderer *clone() const /Factory/;
+
 
      virtual void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,

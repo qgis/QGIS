@@ -488,6 +488,7 @@
 %Include auto_generated/scalebar/qgsdoubleboxscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsnumericscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsscalebarrenderer.sip
+%Include auto_generated/scalebar/qgsscalebarrendererregistry.sip
 %Include auto_generated/scalebar/qgsscalebarsettings.sip
 %Include auto_generated/scalebar/qgssingleboxscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsticksscalebarrenderer.sip

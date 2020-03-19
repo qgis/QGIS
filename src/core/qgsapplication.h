@@ -57,6 +57,7 @@ class QgsBookmarkManager;
 class QgsStyleModel;
 class QgsNumericFormatRegistry;
 class QgsConnectionRegistry;
+class QgsScaleBarRendererRegistry;
 
 /**
  * \ingroup core
@@ -776,6 +777,13 @@ class CORE_EXPORT QgsApplication : public QApplication
     static Qgs3DRendererRegistry *renderer3DRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Gets the registry of available scalebar renderers.
+     *
+     * \since QGIS 3.14
+     */
+    static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() SIP_KEEPREFERENCE;
+
+    /**
      * Returns registry of available project storage implementations.
      * \since QGIS 3.2
      */
@@ -909,6 +917,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
       QgsGpsConnectionRegistry *mGpsConnectionRegistry = nullptr;
       QgsNetworkContentFetcherRegistry *mNetworkContentFetcherRegistry = nullptr;
+      QgsScaleBarRendererRegistry *mScaleBarRendererRegistry = nullptr;
       QgsValidityCheckRegistry *mValidityCheckRegistry = nullptr;
       QgsMessageLog *mMessageLog = nullptr;
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;

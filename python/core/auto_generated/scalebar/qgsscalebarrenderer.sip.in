@@ -42,9 +42,38 @@ Constructor for QgsScaleBarRenderer.
 %End
     virtual ~QgsScaleBarRenderer();
 
-    virtual QString name() const = 0;
+ QString name() const /Deprecated/;
 %Docstring
 Returns the unique name for this style.
+
+.. deprecated::
+   use id() instead
+%End
+
+    virtual QString id() const = 0;
+%Docstring
+Returns the unique ID for this renderer.
+
+.. versionadded:: 3.14
+%End
+
+    virtual QString visibleName() const = 0;
+%Docstring
+Returns the user friendly, translated name for the renderer.
+
+.. versionadded:: 3.14
+%End
+
+    virtual int sortKey() const;
+%Docstring
+Returns a sorting key value, where renderers with a lower sort key will be shown earlier in lists.
+
+Generally, subclasses should return QgsScaleBarRenderer.sortKey() as their sorting key.
+%End
+
+    virtual QgsScaleBarRenderer *clone() const = 0 /Factory/;
+%Docstring
+Returns a clone of the renderer. The caller takes ownership of the returned value.
 %End
 
     virtual void draw( QgsRenderContext &context,

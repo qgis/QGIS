@@ -21,6 +21,26 @@
 #include <QList>
 #include <QPainter>
 
+QString QgsNumericScaleBarRenderer::id() const
+{
+  return QStringLiteral( "Numeric" );
+}
+
+QString QgsNumericScaleBarRenderer::visibleName() const
+{
+  return QObject::tr( "Numeric" );
+}
+
+int QgsNumericScaleBarRenderer::sortKey() const
+{
+  return 7;
+}
+
+QgsNumericScaleBarRenderer *QgsNumericScaleBarRenderer::clone() const
+{
+  return new QgsNumericScaleBarRenderer( *this );
+}
+
 void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const ScaleBarContext &scaleContext ) const
 {
   if ( !context.painter() )
