@@ -210,7 +210,7 @@ class BatchPanelFillWidget(QToolButton):
         expression_context = context.expressionContext()
 
         # use the first row parameter values as a preview during expression creation
-        params = self.panel.parametersForRow(0, warnOnInvalid=False)
+        params, ok = self.panel.parametersForRow(0, warnOnInvalid=False)
         alg_scope = QgsExpressionContextUtils.processingAlgorithmScope(self.panel.alg, params, context)
 
         # create explicit variables corresponding to every parameter
@@ -247,7 +247,7 @@ class BatchPanelFillWidget(QToolButton):
                 self.setRowValue(row + first_row, value, context)
         else:
             for row in range(self.panel.batchRowCount()):
-                params = self.panel.parametersForRow(row, warnOnInvalid=False)
+                params, ok = self.panel.parametersForRow(row, warnOnInvalid=False)
 
                 # remove previous algorithm scope -- we need to rebuild this completely, using the
                 # other parameter values from the current row
@@ -600,7 +600,7 @@ class BatchPanel(BASE, WIDGET):
                                                      self.tr('Wrong or missing parameter value: {0} (row {1})').format(
                                                          param.description(), row + 1),
                                                      level=Qgis.Warning, duration=5)
-                return {}
+                return {}, False
             col += 1
         count_visible_outputs = 0
         for out in self.alg.destinationParameterDefinitions():
@@ -623,5 +623,5 @@ class BatchPanel(BASE, WIDGET):
                 self.parent.messageBar().pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
                     out.description(), row + 1),
                     level=Qgis.Warning, duration=5)
-                return {}
-        return parameters
+                return {}, False
+        return parameters, True
