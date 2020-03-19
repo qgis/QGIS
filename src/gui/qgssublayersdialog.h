@@ -118,7 +118,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
      * If we should add layers in a group
      * \since QGIS 3.0
      */
-    bool addToGroupCheckbox() const { return mCheckboxAddToGroup->isChecked(); }
+    bool addToGroupCheckbox() const { return cbxAddToGroup->isChecked(); }
 
     /**
      * Returns column with count or -1
@@ -129,8 +129,9 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
   public slots:
     int exec() override;
 
-  protected slots:
+  private slots:
     void layersTable_selectionChanged( const QItemSelection &, const QItemSelection & );
+    void btnDeselectAll_pressed();
 
   protected:
     QString mName;
@@ -142,7 +143,6 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
   private:
 
     bool mShowAddToGroupCheckbox = false;   //!< Whether to show the add to group checkbox
-    QCheckBox *mCheckboxAddToGroup = nullptr;
 };
 
 #endif

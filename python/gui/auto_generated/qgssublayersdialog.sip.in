@@ -102,9 +102,6 @@ Returns column with count or -1
     virtual int exec();
 
 
-  protected slots:
-    void layersTable_selectionChanged( const QItemSelection &, const QItemSelection & );
-
   protected:
 
 };

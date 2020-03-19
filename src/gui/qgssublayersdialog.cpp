@@ -77,22 +77,20 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   QString filename = providerType == QgsSublayersDialog::Vsifile
                      ? providerSource
                      : QgsProviderRegistry::instance()->decodeUri( name, providerSource )[QStringLiteral( "path" )].toString();
-  filename = QFileInfo( filename ).fileName();
 
-  setWindowTitle( filename.isEmpty() ? title : QStringLiteral( "%1 | %2" ).arg( title, QDir::toNativeSeparators( filename ) ) );
+  txtFilePath->setText( QDir::toNativeSeparators( QFileInfo( filename ).canonicalFilePath() ) );
+
+  if ( filename.isEmpty() )
+    grpFilePath->setVisible( false );
+
+  setWindowTitle( title );
 
   // add a "Select All" button - would be nicer with an icon
-  QPushButton *button = new QPushButton( tr( "Select All" ) );
-  buttonBox->addButton( button, QDialogButtonBox::ActionRole );
-  connect( button, &QAbstractButton::pressed, layersTable, &QTreeView::selectAll );
+  connect( btnSelectAll, &QAbstractButton::pressed, layersTable, &QTreeView::selectAll );
+  connect( btnDeselectAll, &QAbstractButton::pressed, this, &QgsSublayersDialog::btnDeselectAll_pressed );
   connect( layersTable->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsSublayersDialog::layersTable_selectionChanged );
 
-  // connect( pbnSelectNone, SIGNAL( pressed() ), SLOT( layersTable->selectNone() ) );
-
-  // Checkbox about adding sublayers to a group
-  mCheckboxAddToGroup = new QCheckBox( tr( "Add layers to a group" ), this );
-  buttonBox->addButton( mCheckboxAddToGroup, QDialogButtonBox::ActionRole );
-  mCheckboxAddToGroup->setVisible( false );
+  cbxAddToGroup->setVisible( false );
 }
 
 QgsSublayersDialog::~QgsSublayersDialog()
@@ -213,9 +211,9 @@ int QgsSublayersDialog::exec()
   // Checkbox about adding sublayers to a group
   if ( mShowAddToGroupCheckbox )
   {
-    mCheckboxAddToGroup->setVisible( true );
+    cbxAddToGroup->setVisible( true );
     bool addToGroup = settings.value( QStringLiteral( "/qgis/openSublayersInGroup" ), false ).toBool();
-    mCheckboxAddToGroup->setChecked( addToGroup );
+    cbxAddToGroup->setChecked( addToGroup );
   }
 
   int ret = QDialog::exec();
@@ -223,11 +221,16 @@ int QgsSublayersDialog::exec()
     QApplication::setOverrideCursor( cursor );
 
   if ( mShowAddToGroupCheckbox )
-    settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), mCheckboxAddToGroup->isChecked() );
+    settings.setValue( QStringLiteral( "/qgis/openSublayersInGroup" ), cbxAddToGroup->isChecked() );
   return ret;
 }
 
 void QgsSublayersDialog::layersTable_selectionChanged( const QItemSelection &, const QItemSelection & )
 {
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( layersTable->selectedItems().length() > 0 );
+}
+
+void QgsSublayersDialog::btnDeselectAll_pressed()
+{
+  layersTable->selectionModel()->clear();
 }
