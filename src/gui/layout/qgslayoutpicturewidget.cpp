@@ -338,6 +338,7 @@ void QgsLayoutPictureWidget::setGuiElementValues()
     {
       whileBlocking( mSvgSourceLineEdit )->setSource( mPicture->picturePath() );
 
+      mBlockSvgModelChanges++;
       QAbstractItemModel *m = viewImages->model();
       QItemSelectionModel *selModel = viewImages->selectionModel();
       for ( int i = 0; i < m->rowCount(); i++ )
@@ -350,6 +351,7 @@ void QgsLayoutPictureWidget::setGuiElementValues()
           break;
         }
       }
+      mBlockSvgModelChanges--;
     }
     else if ( mRadioRaster->isChecked() )
     {
@@ -537,6 +539,9 @@ void QgsLayoutPictureWidget::populateIcons( const QModelIndex &idx )
 
 void QgsLayoutPictureWidget::setSvgName( const QModelIndex &idx )
 {
+  if ( mBlockSvgModelChanges )
+    return;
+
   QString name = idx.data( Qt::UserRole ).toString();
   whileBlocking( mSvgSourceLineEdit )->setSource( name );
   svgSourceChanged( name );
