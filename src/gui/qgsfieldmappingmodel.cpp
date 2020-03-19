@@ -33,39 +33,43 @@ QVariant QgsFieldMappingModel::headerData( int section, Qt::Orientation orientat
 {
   if ( role == Qt::DisplayRole )
   {
-    if ( orientation == Qt::Horizontal )
+    switch ( orientation )
     {
-      switch ( static_cast<ColumnDataIndex>( section ) )
+      case Qt::Horizontal:
       {
-        case ColumnDataIndex::SourceExpression:
+        switch ( static_cast<ColumnDataIndex>( section ) )
         {
-          return tr( "Source expression" );
+          case ColumnDataIndex::SourceExpression:
+          {
+            return tr( "Source expression" );
+          }
+          case ColumnDataIndex::DestinationName:
+          {
+            return tr( "Name" );
+          }
+          case ColumnDataIndex::DestinationType:
+          {
+            return tr( "Type" );
+          }
+          case ColumnDataIndex::DestinationLength:
+          {
+            return tr( "Length" );
+          }
+          case ColumnDataIndex::DestinationPrecision:
+          {
+            return tr( "Precision" );
+          }
+          case ColumnDataIndex::DestinationConstraints:
+          {
+            return tr( "Constraints" );
+          }
         }
-        case ColumnDataIndex::DestinationName:
-        {
-          return tr( "Name" );
-        }
-        case ColumnDataIndex::DestinationType:
-        {
-          return tr( "Type" );
-        }
-        case ColumnDataIndex::DestinationLength:
-        {
-          return tr( "Length" );
-        }
-        case ColumnDataIndex::DestinationPrecision:
-        {
-          return tr( "Precision" );
-        }
-        case ColumnDataIndex::DestinationConstraints:
-        {
-          return tr( "Constraints" );
-        }
+        break;
       }
-    }
-    else if ( orientation == Qt::Vertical )
-    {
-      return section;
+      case Qt::Vertical:
+      {
+        return section;
+      }
     }
   }
   return QVariant();
