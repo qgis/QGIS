@@ -508,7 +508,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
   if ( !layItem )
   {
-    layItem = new QTreeWidgetItem( QStringList() << vlayer->name() );
+    layItem = new QTreeWidgetItem( QStringList() << vlayer->name() << tr( "Selected features: %1" ).arg( 0 ) );
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( vlayer ) ) );
     lstResults->addTopLevelItem( layItem );
 
@@ -526,6 +526,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   featItem->setData( 0, Qt::UserRole + 1, mFeatures.size() );
   mFeatures << f;
   layItem->addChild( featItem );
+  layItem->setText( 1, tr( "Selected features: %1" ).arg( layItem->childCount() ) );
 
   if ( derivedAttributes.size() >= 0 )
   {
