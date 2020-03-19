@@ -20,7 +20,6 @@
 #include <QStyledItemDelegate>
 
 #include "qgsfields.h"
-#include "qgsexpression.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsfieldconstraints.h"
 #include "qgis_gui.h"
@@ -68,7 +67,7 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
       //! The field in its current status (it might have been renamed)
       QgsField field;
       //! The expression for the mapped field from the source fields
-      QgsExpression expression;
+      QString expression;
     };
 
     /**
@@ -80,11 +79,8 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
      */
     QgsFieldMappingModel( const QgsFields &sourceFields = QgsFields(),
                           const QgsFields &destinationFields = QgsFields(),
-                          const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>(),
+                          const QMap<QString, QString> &expressions = QMap<QString, QString>(),
                           QObject *parent = nullptr );
-
-    //! Returns the context generator with the source fields
-    QgsExpressionContextGenerator *contextGenerator() const;
 
     //! Returns TRUE if the destination fields are editable
     bool destinationEditable() const;
@@ -102,7 +98,7 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
     QList<QgsFieldMappingModel::Field> mapping() const;
 
     //! Appends a new \a field to the model, with an optional \a expression
-    void appendField( const QgsField &field, const QgsExpression &expression = QgsExpression() );
+    void appendField( const QgsField &field, const QString &expression = QString() );
 
     //! Removes the field at \a index from the model, returns TRUE on success
     bool removeField( const QModelIndex &index );
@@ -116,13 +112,16 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
     //! Set source fields to \a sourceFields
     void setSourceFields( const QgsFields &sourceFields );
 
+    //! Returns the context generator with the source fields
+    QgsExpressionContextGenerator *contextGenerator() const;
+
     /**
      * Set destination fields to \a destinationFields, initial values for the expressions can be
      * optionally specified through \a expressions which is a map from the original
      * field name to the corresponding expression.
      */
     void setDestinationFields( const QgsFields &destinationFields,
-                               const QMap<QString, QgsExpression> &expressions = QMap<QString, QgsExpression>() );
+                               const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 
     // QAbstractItemModel interface
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -150,16 +149,27 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
 
     };
 
+
     QgsFieldConstraints::Constraints fieldConstraints( const QgsField &field ) const;
 
     bool moveUpOrDown( const QModelIndex &index, bool up = true );
 
-    QString bestMatchforField( const QgsFieldMappingModel::Field &field, QStringList &excludedFieldNames );
+    /**
+     * Try to find the best expression for a destination \a field by searching in the
+     * source fields for fields with:
+     * - the same name
+     * - the same type
+     * Returns an expression containing a reference to the field that matches first.
+     */
+    QString findExpressionForDestinationField( const QgsFieldMappingModel::Field &field, QStringList &excludedFieldNames );
 
     QList<Field> mMapping;
     bool mDestinationEditable = false;
     QgsFields mSourceFields;
     std::unique_ptr<ExpressionContextGenerator> mExpressionContextGenerator;
+
 };
+
+
 
 #endif // QGSFIELDMAPPINGMODEL_H

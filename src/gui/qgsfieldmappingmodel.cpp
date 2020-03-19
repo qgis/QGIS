@@ -20,7 +20,7 @@
 
 QgsFieldMappingModel::QgsFieldMappingModel( const QgsFields &sourceFields,
     const QgsFields &destinationFields,
-    const QMap<QString, QgsExpression> &expressions,
+    const QMap<QString, QString> &expressions,
     QObject *parent )
   : QAbstractTableModel( parent )
   , mSourceFields( sourceFields )
@@ -35,29 +35,29 @@ QVariant QgsFieldMappingModel::headerData( int section, Qt::Orientation orientat
   {
     if ( orientation == Qt::Horizontal )
     {
-      switch ( section )
+      switch ( static_cast<ColumnDataIndex>( section ) )
       {
-        case static_cast<int>( ColumnDataIndex::SourceExpression ):
+        case ColumnDataIndex::SourceExpression:
         {
           return tr( "Source expression" );
         }
-        case static_cast<int>( ColumnDataIndex::DestinationName ):
+        case ColumnDataIndex::DestinationName:
         {
           return tr( "Name" );
         }
-        case static_cast<int>( ColumnDataIndex::DestinationType ):
+        case ColumnDataIndex::DestinationType:
         {
           return tr( "Type" );
         }
-        case static_cast<int>( ColumnDataIndex::DestinationLength ):
+        case ColumnDataIndex::DestinationLength:
         {
           return tr( "Length" );
         }
-        case static_cast<int>( ColumnDataIndex::DestinationPrecision ):
+        case ColumnDataIndex::DestinationPrecision:
         {
           return tr( "Precision" );
         }
-        case static_cast<int>( ColumnDataIndex::DestinationConstraints ):
+        case ColumnDataIndex::DestinationConstraints:
         {
           return tr( "Constraints" );
         }
@@ -78,13 +78,15 @@ QgsFields QgsFieldMappingModel::sourceFields() const
 
 int QgsFieldMappingModel::rowCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  if ( parent.isValid() )
+    return 0;
   return mMapping.count();
 }
 
 int QgsFieldMappingModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
+  if ( parent.isValid() )
+    return 0;
   return 6;
 }
 
@@ -99,33 +101,31 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
 
     if ( role == Qt::DisplayRole || role == Qt::EditRole )
     {
-      switch ( col )
+      switch ( static_cast<ColumnDataIndex>( col ) )
       {
-          {
-          case static_cast<int>( ColumnDataIndex::SourceExpression ):
-          {
-            return f.expression.expression();
-          }
-          case static_cast<int>( ColumnDataIndex::DestinationName ):
-          {
-            return f.field.displayName();
-          }
-          case static_cast<int>( ColumnDataIndex::DestinationType ):
-          {
-            return static_cast<int>( f.field.type() );
-          }
-          case static_cast<int>( ColumnDataIndex::DestinationLength ):
-          {
-            return f.field.length();
-          }
-          case static_cast<int>( ColumnDataIndex::DestinationPrecision ):
-          {
-            return f.field.precision();
-          }
-          case static_cast<int>( ColumnDataIndex::DestinationConstraints ):
-          {
-            return constraints != 0 ? tr( "Constraints active" ) : QString();
-          }
+        case ColumnDataIndex::SourceExpression:
+        {
+          return f.expression;
+        }
+        case ColumnDataIndex::DestinationName:
+        {
+          return f.field.displayName();
+        }
+        case ColumnDataIndex::DestinationType:
+        {
+          return static_cast<int>( f.field.type() );
+        }
+        case ColumnDataIndex::DestinationLength:
+        {
+          return f.field.length();
+        }
+        case ColumnDataIndex::DestinationPrecision:
+        {
+          return f.field.precision();
+        }
+        case ColumnDataIndex::DestinationConstraints:
+        {
+          return constraints != 0 ? tr( "Constraints active" ) : QString();
         }
       }
     }
@@ -157,28 +157,6 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
   return QVariant();
 }
 
-QgsExpressionContextGenerator *QgsFieldMappingModel::contextGenerator() const
-{
-  return mExpressionContextGenerator.get();
-}
-
-
-QgsFieldMappingModel::ExpressionContextGenerator::ExpressionContextGenerator( const QgsFields *sourceFields )
-{
-  mSourceFields = sourceFields;
-}
-
-QgsExpressionContext QgsFieldMappingModel::ExpressionContextGenerator::createExpressionContext() const
-{
-  QgsExpressionContext ctx;
-  ctx.appendScope( QgsExpressionContextUtils::globalScope() );
-  ctx.setFields( *mSourceFields );
-  QgsFeature feature { *mSourceFields };
-  feature.setValid( true );
-  ctx.setFeature( feature );
-  return ctx;
-}
-
 Qt::ItemFlags QgsFieldMappingModel::flags( const QModelIndex &index ) const
 {
   if ( index.isValid() &&
@@ -199,25 +177,25 @@ bool QgsFieldMappingModel::setData( const QModelIndex &index, const QVariant &va
     if ( role == Qt::EditRole )
     {
       Field &f = mMapping[index.row()];
-      switch ( index.column() )
+      switch ( static_cast<ColumnDataIndex>( index.column() ) )
       {
-        case static_cast<int>( ColumnDataIndex::SourceExpression ):
+        case ColumnDataIndex::SourceExpression:
         {
           const QgsExpression exp { value.toString() };
           f.expression = exp;
           break;
         }
-        case static_cast<int>( ColumnDataIndex::DestinationName ):
+        case ColumnDataIndex::DestinationName:
         {
           f.field.setName( value.toString() );
           break;
         }
-        case static_cast<int>( ColumnDataIndex::DestinationType ):
+        case ColumnDataIndex::DestinationType:
         {
           f.field.setType( static_cast<QVariant::Type>( value.toInt( ) ) );
           break;
         }
-        case static_cast<int>( ColumnDataIndex::DestinationLength ):
+        case ColumnDataIndex::DestinationLength:
         {
           bool ok;
           const int length { value.toInt( &ok ) };
@@ -225,7 +203,7 @@ bool QgsFieldMappingModel::setData( const QModelIndex &index, const QVariant &va
             f.field.setLength( length );
           break;
         }
-        case static_cast<int>( ColumnDataIndex::DestinationPrecision ):
+        case ColumnDataIndex::DestinationPrecision:
         {
           bool ok;
           const int precision { value.toInt( &ok ) };
@@ -233,11 +211,19 @@ bool QgsFieldMappingModel::setData( const QModelIndex &index, const QVariant &va
             f.field.setPrecision( precision );
           break;
         }
+        case ColumnDataIndex::DestinationConstraints:
+        {
+          // Not editable: do nothing
+        }
       }
       emit dataChanged( index, index );
     }
+    return true;
   }
-  return true;
+  else
+  {
+    return false;
+  }
 }
 
 QgsFieldConstraints::Constraints QgsFieldMappingModel::fieldConstraints( const QgsField &field ) const
@@ -283,11 +269,11 @@ bool QgsFieldMappingModel::moveUpOrDown( const QModelIndex &index, bool up )
   return true;
 }
 
-QString QgsFieldMappingModel::bestMatchforField( const QgsFieldMappingModel::Field &f, QStringList &excludedFieldNames )
+QString QgsFieldMappingModel::findExpressionForDestinationField( const QgsFieldMappingModel::Field &f, QStringList &excludedFieldNames )
 {
   // Search for fields in the source
   // 1. match by name
-  for ( const auto &sf : qgis::as_const( mSourceFields ) )
+  for ( const QgsField &sf : qgis::as_const( mSourceFields ) )
   {
     if ( sf.name() == f.field.name() )
     {
@@ -295,7 +281,7 @@ QString QgsFieldMappingModel::bestMatchforField( const QgsFieldMappingModel::Fie
     }
   }
   // 2. match by type
-  for ( const auto &sf : qgis::as_const( mSourceFields ) )
+  for ( const QgsField &sf : qgis::as_const( mSourceFields ) )
   {
     if ( excludedFieldNames.contains( sf.name() ) || sf.type() != f.field.type() )
       continue;
@@ -312,26 +298,30 @@ void QgsFieldMappingModel::setSourceFields( const QgsFields &sourceFields )
   beginResetModel();
   for ( const Field &f : qgis::as_const( mMapping ) )
   {
-    if ( f.expression.isField() )
+    if ( QgsExpression( f.expression ).isField() )
     {
-      usedFields.push_back( f.expression.expression().mid( 1, f.expression.expression().length() - 2 ) );
+      usedFields.push_back( f.expression.mid( 1, f.expression.length() - 2 ) );
     }
   }
-  // not const on purpose
-  for ( Field &f : mMapping )
+  for ( auto it = mMapping.begin(); it != mMapping.end(); ++it )
   {
-    if ( f.expression.expression().isEmpty() )
+    if ( it->expression.isEmpty() )
     {
-      const QString expression { bestMatchforField( f, usedFields ) };
+      const QString expression { findExpressionForDestinationField( *it, usedFields ) };
       if ( ! expression.isEmpty() )
-        f.expression = expression;
+        it->expression = expression;
     }
   }
   endResetModel();
 }
 
+QgsExpressionContextGenerator *QgsFieldMappingModel::contextGenerator() const
+{
+  return mExpressionContextGenerator.get();
+}
+
 void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFields,
-    const QMap<QString, QgsExpression> &expressions )
+    const QMap<QString, QString> &expressions )
 {
   beginResetModel();
   mMapping.clear();
@@ -345,16 +335,17 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
     if ( expressions.contains( f.field.name() ) )
     {
       f.expression = expressions.value( f.field.name() );
+      const QgsExpression exp { f.expression };
       // if it's source field
-      if ( f.expression.isField() &&
-           mSourceFields.names().contains( f.expression.referencedColumns().toList().first() ) )
+      if ( exp.isField() &&
+           mSourceFields.names().contains( exp.referencedColumns().toList().first() ) )
       {
-        usedFields.push_back( f.expression.referencedColumns().toList().first() );
+        usedFields.push_back( exp.referencedColumns().toList().first() );
       }
     }
     else
     {
-      const QString expression { bestMatchforField( f, usedFields ) };
+      const QString expression { findExpressionForDestinationField( f, usedFields ) };
       if ( ! expression.isEmpty() )
         f.expression = expression;
     }
@@ -395,7 +386,7 @@ QList<QgsFieldMappingModel::Field> QgsFieldMappingModel::mapping() const
   return mMapping;
 }
 
-void QgsFieldMappingModel::appendField( const QgsField &field, const QgsExpression &expression )
+void QgsFieldMappingModel::appendField( const QgsField &field, const QString &expression )
 {
   const int lastRow { rowCount( QModelIndex( ) ) };
   beginInsertRows( QModelIndex(), lastRow, lastRow );
@@ -432,3 +423,18 @@ bool QgsFieldMappingModel::moveDown( const QModelIndex &index )
   return moveUpOrDown( index, false );
 }
 
+QgsFieldMappingModel::ExpressionContextGenerator::ExpressionContextGenerator( const QgsFields *sourceFields )
+  : mSourceFields( sourceFields )
+{
+}
+
+QgsExpressionContext QgsFieldMappingModel::ExpressionContextGenerator::createExpressionContext() const
+{
+  QgsExpressionContext ctx;
+  ctx.appendScope( QgsExpressionContextUtils::globalScope() );
+  ctx.setFields( *mSourceFields );
+  QgsFeature feature { *mSourceFields };
+  feature.setValid( true );
+  ctx.setFeature( feature );
+  return ctx;
+}
