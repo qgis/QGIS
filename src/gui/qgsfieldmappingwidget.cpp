@@ -94,13 +94,10 @@ void QgsFieldMappingWidget::appendField( const QgsField &field, const QString &e
 
 bool QgsFieldMappingWidget::removeSelectedFields()
 {
-  std::list<int> rowsToRemove;
-  const auto constSelection { mTableView->selectionModel()->selectedRows() };
-  for ( const auto &index : constSelection )
-  {
-    rowsToRemove.push_back( index.row() );
-  }
-  rowsToRemove.sort();
+  if ( ! mTableView->selectionModel()->hasSelection() )
+    return false;
+
+  std::list<int> rowsToRemove { selectedRows() };
   rowsToRemove.reverse();
   for ( const auto &row : rowsToRemove )
   {
@@ -114,13 +111,10 @@ bool QgsFieldMappingWidget::removeSelectedFields()
 
 bool QgsFieldMappingWidget::moveSelectedFieldsUp()
 {
-  std::list<int> rowsToMoveUp;
-  const auto constSelection { mTableView->selectionModel()->selectedRows() };
-  for ( const auto &index : constSelection )
-  {
-    rowsToMoveUp.push_back( index.row() );
-  }
-  rowsToMoveUp.sort();
+  if ( ! mTableView->selectionModel()->hasSelection() )
+    return false;
+
+  const std::list<int> rowsToMoveUp { selectedRows() };
   for ( const auto &row : rowsToMoveUp )
   {
     if ( ! model()->moveUp( model()->index( row, 0, QModelIndex() ) ) )
@@ -133,13 +127,10 @@ bool QgsFieldMappingWidget::moveSelectedFieldsUp()
 
 bool QgsFieldMappingWidget::moveSelectedFieldsDown()
 {
-  std::list<int> rowsToMoveDown;
-  const auto constSelection { mTableView->selectionModel()->selectedRows() };
-  for ( const auto &index : constSelection )
-  {
-    rowsToMoveDown.push_back( index.row() );
-  }
-  rowsToMoveDown.sort();
+  if ( ! mTableView->selectionModel()->hasSelection() )
+    return false;
+
+  std::list<int> rowsToMoveDown { selectedRows() };
   rowsToMoveDown.reverse();
   for ( const auto &row : rowsToMoveDown )
   {
@@ -163,6 +154,22 @@ void QgsFieldMappingWidget::updateColumns()
   {
     mTableView->resizeColumnToContents( i );
   }
+}
+
+std::list<int> QgsFieldMappingWidget::selectedRows()
+{
+  std::list<int> rows;
+  if ( mTableView->selectionModel()->hasSelection() )
+  {
+    const auto constSelection { mTableView->selectionModel()->selectedIndexes() };
+    for ( const auto &index : constSelection )
+    {
+      rows.push_back( index.row() );
+    }
+    rows.sort();
+    rows.unique();
+  }
+  return rows;
 }
 
 void QgsFieldMappingWidget::ExpressionDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
