@@ -151,7 +151,7 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
           {
             constraintDescription.push_back( tr( "Not null" ) );
           }
-          if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull ) )
+          if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintExpression ) )
           {
             constraintDescription.push_back( tr( "Expression" ) );
           }
