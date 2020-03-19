@@ -2635,6 +2635,8 @@ QgsProcessingPointParameterDefinitionWidget::QgsProcessingPointParameterDefiniti
   vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
 
   mDefaultLineEdit = new QLineEdit();
+  mDefaultLineEdit->setToolTip( tr( "Point as 'x,y'" ) );
+  mDefaultLineEdit->setPlaceholderText( tr( "Point as 'x,y'" ) );
   if ( const QgsProcessingParameterPoint *pointParam = dynamic_cast<const QgsProcessingParameterPoint *>( definition ) )
   {
     QgsPointXY point = QgsProcessingParameters::parameterAsPoint( pointParam, pointParam->defaultValue(), context );
