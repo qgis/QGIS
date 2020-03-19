@@ -126,6 +126,10 @@ QgsMeshLayer cannot be copied.
                         QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories );
      virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                          const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const;
+    virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const;
+
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories );
+
     virtual QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const;
 
     virtual QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const;
