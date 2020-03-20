@@ -552,8 +552,10 @@ QColor QgsMeshVectorColoring::color( double magnitude ) const
       return mColorRampShader.sourceColorRamp()->color( 0 );
 
     int r, g, b, a;
-    mColorRampShader.shade( magnitude, &r, &g, &b, &a );
-    return QColor( r, g, b, a );
+    if ( mColorRampShader.shade( magnitude, &r, &g, &b, &a ) )
+      return QColor( r, g, b, a );
+    else
+      return QColor( 0, 0, 0, 0 );
   }
   else
   {

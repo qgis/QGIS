@@ -139,9 +139,19 @@ class QgsMeshVectorArrowRenderer : public QgsMeshVectorRenderer
 
 };
 
+/**
+ * \ingroup core
+ *
+ * Class for coloring vector datasets
+ *
+ * \note not available in Python bindings
+ * \since QGIS 3.14
+ */
+
 class QgsMeshVectorColoring
 {
   public:
+    //! Default constructor
     QgsMeshVectorColoring() = default;
     //! Constructor
     QgsMeshVectorColoring( const QgsMeshRendererVectorSettings &settings );

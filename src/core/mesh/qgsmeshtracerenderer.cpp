@@ -1242,7 +1242,7 @@ void QgsMeshParticleTracesField::drawParticleTrace( const QgsMeshTraceParticle &
     QPointF p1 = fieldToDevice( ( *ip1 ) );
     QPointF p2 = fieldToDevice( ( *ip2 ) );
     QColor traceColor = mVectorColoring.color( magnitude( *ip1 ) );
-    traceColor.setAlphaF( transparency );
+    traceColor.setAlphaF( traceColor.alphaF()*transparency );
     mPen.setColor( traceColor );
     mPen.setWidthF( iniWidth - i * dw );
     mPainter->setPen( mPen );
