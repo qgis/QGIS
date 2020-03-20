@@ -475,35 +475,27 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QgsPoint
     fit = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
   }
 
-  QgsGeometry::OperationResult addPartRet = QgsGeometry::OperationResult::Success;
-
   QgsFeature feat;
   while ( fit.nextFeature( feat ) )
   {
     QVector<QgsGeometry> newGeometries;
     QgsPointSequence topologyTestPoints;
     QgsGeometry featureGeom = feat.geometry();
-    splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
-    if ( splitFunctionReturn == 0 )
+    splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints, false );
+
+    if ( splitFunctionReturn == QgsGeometry::OperationResult::Success && !newGeometries.isEmpty() )
     {
-      //add new parts
-      if ( !newGeometries.isEmpty() )
-        featureGeom.convertToMultiType();
+      QgsGeometry newGeom( newGeometries.at( 0 ) );
+      newGeom.convertToMultiType();
 
-      for ( int i = 0; i < newGeometries.size(); ++i )
+      for ( int i = 1; i < newGeometries.size(); ++i )
       {
-        addPartRet = featureGeom.addPart( newGeometries.at( i ) );
-        if ( addPartRet )
-          break;
+        QgsGeometry part = newGeometries.at( i );
+        part.convertToSingleType();
+        newGeom.addPart( part );
       }
 
-      // For test only: Exception already thrown here...
-      // feat.geometry()->asWkb();
-
-      if ( !addPartRet )
-      {
-        mLayer->changeGeometry( feat.id(), featureGeom );
-      }
+      mLayer->changeGeometry( feat.id(), newGeom );
 
       if ( topologicalEditing )
       {
