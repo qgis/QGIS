@@ -27,6 +27,7 @@
 #include <QBrush>
 
 class QgsNumericFormat;
+class QgsLineSymbol;
 
 
 /**
@@ -318,39 +319,64 @@ class CORE_EXPORT QgsScaleBarSettings
     /**
      * Returns the color used for lines in the scalebar.
      * \see setLineColor()
+     * \deprecated use lineSymbol() instead.
      */
-    QColor lineColor() const { return mLineColor; }
+    Q_DECL_DEPRECATED QColor lineColor() const SIP_DEPRECATED;
 
     /**
      * Sets the \a color used for lines in the scalebar.
      * \see lineColor()
+     * \deprecated use setLineSymbol() instead.
      */
-    void setLineColor( const QColor &color ) { mLineColor = color; mPen.setColor( mLineColor ); }
+    Q_DECL_DEPRECATED void setLineColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the line width in millimeters for lines in the scalebar.
      * \see setLineWidth()
+     * \deprecated use lineSymbol() instead.
      */
-    double lineWidth() const { return mLineWidth; }
+    Q_DECL_DEPRECATED double lineWidth() const SIP_DEPRECATED;
 
     /**
      * Sets the line \a width in millimeters for lines in the scalebar.
      * \see lineWidth()
+     * \deprecated use setLineSymbol() instead.
      */
-    void setLineWidth( double width ) { mLineWidth = width; mPen.setWidthF( width ); }
+    Q_DECL_DEPRECATED void setLineWidth( double width ) SIP_DEPRECATED;
 
     /**
      * Returns the pen used for drawing outlines in the scalebar.
      * \see setPen()
      * \see brush()
+     * \deprecated use lineSymbol() instead.
      */
-    QPen pen() const { return mPen; }
+    Q_DECL_DEPRECATED QPen pen() const SIP_DEPRECATED;
 
     /**
      * Sets the pen used for drawing outlines in the scalebar.
      * \see pen()
+     * \deprecated use setLineSymbol() instead.
      */
-    void setPen( const QPen &pen ) { mPen = pen; }
+    Q_DECL_DEPRECATED void setPen( const QPen &pen ) SIP_DEPRECATED;
+
+    /**
+     * Returns the line symbol used to render the scalebar (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setLineSymbol()
+     * \since QGIS 3.14
+     */
+    QgsLineSymbol *lineSymbol() const;
+
+    /**
+     * Sets the line \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see lineSymbol()
+     * \since QGIS 3.14
+     */
+    void setLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the primary brush used for filling the scalebar.
@@ -459,26 +485,30 @@ class CORE_EXPORT QgsScaleBarSettings
     /**
      * Returns the join style used for drawing lines in the scalebar.
      * \see setLineJoinStyle()
+     * \deprecated use lineSymbol() instead
      */
-    Qt::PenJoinStyle lineJoinStyle() const { return mLineJoinStyle; }
+    Q_DECL_DEPRECATED Qt::PenJoinStyle lineJoinStyle() const SIP_DEPRECATED;
 
     /**
      * Sets the join \a style used when drawing the lines in the scalebar
      * \see lineJoinStyle()
+     * \deprecated use setLineSymbol() instead
      */
-    void setLineJoinStyle( Qt::PenJoinStyle style ) { mLineJoinStyle = style; mPen.setJoinStyle( style ); }
+    Q_DECL_DEPRECATED void setLineJoinStyle( Qt::PenJoinStyle style ) SIP_DEPRECATED;
 
     /**
      * Returns the cap style used for drawing lines in the scalebar.
      * \see setLineCapStyle()
+     * \deprecated use lineSymbol() instead
      */
-    Qt::PenCapStyle lineCapStyle() const { return mLineCapStyle; }
+    Q_DECL_DEPRECATED Qt::PenCapStyle lineCapStyle() const SIP_DEPRECATED;
 
     /**
      * Sets the cap \a style used when drawing the lines in the scalebar.
      * \see lineCapStyle()
+     * \deprecated use setLineSymbol() instead
      */
-    void setLineCapStyle( Qt::PenCapStyle style ) { mLineCapStyle = style; mPen.setCapStyle( style ); }
+    Q_DECL_DEPRECATED void setLineCapStyle( Qt::PenCapStyle style ) SIP_DEPRECATED;
 
     /**
      * Returns the numeric format used for numbers in the scalebar.
@@ -525,18 +555,14 @@ class CORE_EXPORT QgsScaleBarSettings
     QColor mFillColor = QColor( 0, 0, 0 );
     //! Secondary fill color
     QColor mFillColor2 = QColor( 255, 255, 255 );
-    //! Line color
-    QColor mLineColor = QColor( 0, 0, 0 );
-    //! Line width
-    double mLineWidth = 0.3;
-    //! Stroke
-    QPen mPen;
     //! Fill
     QBrush mBrush;
     //! Secondary fill
     QBrush mBrush2;
     //! Height of bars/lines
     double mHeight = 3.0;
+
+    std::unique_ptr< QgsLineSymbol > mLineSymbol;
 
     //! Space between bar and Text labels
     double mLabelBarSpace = 3.0;
@@ -552,8 +578,6 @@ class CORE_EXPORT QgsScaleBarSettings
 
     QgsUnitTypes::DistanceUnit mUnits = QgsUnitTypes::DistanceMeters;
 
-    Qt::PenJoinStyle mLineJoinStyle = Qt::MiterJoin;
-    Qt::PenCapStyle mLineCapStyle = Qt::SquareCap;
 
     std::unique_ptr< QgsNumericFormat > mNumericFormat;
 

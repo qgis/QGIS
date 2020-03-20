@@ -187,8 +187,8 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       //scalebar item
       ScalebarFillColor, //!< Scalebar fill color
       ScalebarFillColor2, //!< Scalebar secondary fill color
-      ScalebarLineColor, //!< Scalebar line color
-      ScalebarLineWidth, //!< Scalebar line width,
+      ScalebarLineColor, //!< Scalebar line color (deprecated, use data defined properties on scalebar line symbol instead)
+      ScalebarLineWidth, //!< Scalebar line width (deprecated, use data defined properties on scalebar line symbol instead)
       //table item
       AttributeTableSourceLayer, //!< Attribute table source layer
       MapCrs, //!< Map CRS

@@ -18,14 +18,11 @@
 #include "qgsapplication.h"
 #include "qgsnumericformat.h"
 #include "qgsbasicnumericformat.h"
+#include "qgslinesymbollayer.h"
+#include "qgssymbol.h"
 
 QgsScaleBarSettings::QgsScaleBarSettings()
 {
-  mPen = QPen( mLineColor );
-  mPen.setJoinStyle( mLineJoinStyle );
-  mPen.setCapStyle( mLineCapStyle );
-  mPen.setWidthF( mLineWidth );
-
   mBrush.setColor( mFillColor );
   mBrush.setStyle( Qt::SolidPattern );
 
@@ -37,6 +34,16 @@ QgsScaleBarSettings::QgsScaleBarSettings()
   mTextFormat.setColor( QColor( 0, 0, 0 ) );
 
   mNumericFormat = qgis::make_unique< QgsBasicNumericFormat >();
+
+  mLineSymbol = qgis::make_unique< QgsLineSymbol >();
+  mLineSymbol->setColor( QColor( 0, 0, 0 ) );
+  mLineSymbol->setWidth( 0.3 );
+  if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
+  {
+    line->setPenJoinStyle( Qt::MiterJoin );
+    line->setPenCapStyle( Qt::SquareCap );
+  }
+  mLineSymbol->setOutputUnit( QgsUnitTypes::RenderMillimeters );
 }
 
 QgsScaleBarSettings::QgsScaleBarSettings( const QgsScaleBarSettings &other )
@@ -51,20 +58,16 @@ QgsScaleBarSettings::QgsScaleBarSettings( const QgsScaleBarSettings &other )
   , mTextFormat( other.mTextFormat )
   , mFillColor( other.mFillColor )
   , mFillColor2( other.mFillColor2 )
-  , mLineColor( other.mLineColor )
-  , mLineWidth( other.mLineWidth )
-  , mPen( other.mPen )
   , mBrush( other.mBrush )
   , mBrush2( other.mBrush2 )
   , mHeight( other.mHeight )
+  , mLineSymbol( other.mLineSymbol->clone() )
   , mLabelBarSpace( other.mLabelBarSpace )
   , mLabelVerticalPlacement( other.mLabelVerticalPlacement )
   , mLabelHorizontalPlacement( other.mLabelHorizontalPlacement )
   , mBoxContentSpace( other.mBoxContentSpace )
   , mAlignment( other.mAlignment )
   , mUnits( other.mUnits )
-  , mLineJoinStyle( other.mLineJoinStyle )
-  , mLineCapStyle( other.mLineCapStyle )
   , mNumericFormat( other.mNumericFormat->clone() )
 {
 
@@ -83,11 +86,9 @@ QgsScaleBarSettings &QgsScaleBarSettings::operator=( const QgsScaleBarSettings &
   mTextFormat = other.mTextFormat;
   mFillColor = other.mFillColor;
   mFillColor2 = other.mFillColor2;
-  mLineColor = other.mLineColor;
-  mLineWidth = other.mLineWidth;
-  mPen = other.mPen;
   mBrush = other.mBrush;
   mBrush2 = other.mBrush2;
+  mLineSymbol.reset( other.mLineSymbol->clone() );
   mHeight = other.mHeight;
   mLabelBarSpace = other.mLabelBarSpace;
   mLabelVerticalPlacement = other.mLabelVerticalPlacement;
@@ -95,10 +96,97 @@ QgsScaleBarSettings &QgsScaleBarSettings::operator=( const QgsScaleBarSettings &
   mBoxContentSpace = other.mBoxContentSpace;
   mAlignment = other.mAlignment;
   mUnits = other.mUnits;
-  mLineJoinStyle = other.mLineJoinStyle;
-  mLineCapStyle = other.mLineCapStyle;
   mNumericFormat.reset( other.mNumericFormat->clone() );
   return *this;
+}
+
+QColor QgsScaleBarSettings::lineColor() const
+{
+  return mLineSymbol->color();
+}
+
+void QgsScaleBarSettings::setLineColor( const QColor &color )
+{
+  mLineSymbol->setColor( color );
+}
+
+double QgsScaleBarSettings::lineWidth() const
+{
+  return mLineSymbol->width();
+}
+
+void QgsScaleBarSettings::setLineWidth( double width )
+{
+  mLineSymbol->setWidth( width );
+  mLineSymbol->setOutputUnit( QgsUnitTypes::RenderMillimeters );
+}
+
+QPen QgsScaleBarSettings::pen() const
+{
+  QPen pen( mLineSymbol->color() );
+  if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
+  {
+    pen.setJoinStyle( line->penJoinStyle() );
+    pen.setCapStyle( line->penCapStyle() );
+  }
+  pen.setWidthF( mLineSymbol->width() );
+  return pen;
+}
+
+void QgsScaleBarSettings::setPen( const QPen &pen )
+{
+  mLineSymbol->setColor( pen.color() );
+  mLineSymbol->setWidth( pen.widthF() );
+  mLineSymbol->setOutputUnit( QgsUnitTypes::RenderMillimeters );
+  if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
+  {
+    line->setPenJoinStyle( pen.joinStyle() );
+    line->setPenCapStyle( pen.capStyle() );
+  }
+}
+
+QgsLineSymbol *QgsScaleBarSettings::lineSymbol() const
+{
+  return mLineSymbol.get();
+}
+
+void QgsScaleBarSettings::setLineSymbol( QgsLineSymbol *symbol )
+{
+  mLineSymbol.reset( symbol );
+}
+
+Qt::PenJoinStyle QgsScaleBarSettings::lineJoinStyle() const
+{
+  if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
+  {
+    return line->penJoinStyle();
+  }
+  return Qt::MiterJoin;
+}
+
+void QgsScaleBarSettings::setLineJoinStyle( Qt::PenJoinStyle style )
+{
+  if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
+  {
+    line->setPenJoinStyle( style );
+  }
+}
+
+Qt::PenCapStyle QgsScaleBarSettings::lineCapStyle() const
+{
+  if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
+  {
+    return line->penCapStyle();
+  }
+  return Qt::FlatCap;
+}
+
+void QgsScaleBarSettings::setLineCapStyle( Qt::PenCapStyle style )
+{
+  if ( QgsSimpleLineSymbolLayer *line = dynamic_cast< QgsSimpleLineSymbolLayer * >( mLineSymbol->symbolLayer( 0 ) ) )
+  {
+    line->setPenCapStyle( style );
+  }
 }
 
 const QgsNumericFormat *QgsScaleBarSettings::numericFormat() const
