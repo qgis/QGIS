@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QgsScaleBarRendererRegistry_H
-#define QgsScaleBarRendererRegistry_H
+#ifndef QGSSCALEBARRENDERERREGISTRY_H
+#define QGSSCALEBARRENDERERREGISTRY_H
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -87,4 +87,4 @@ class CORE_EXPORT QgsScaleBarRendererRegistry
   private:
     QHash<QString, QgsScaleBarRenderer *> mRenderers;
 };
-#endif // QgsScaleBarRendererRegistry_H
+#endif // QGSSCALEBARRENDERERREGISTRY_H
