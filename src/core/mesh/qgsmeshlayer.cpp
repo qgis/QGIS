@@ -381,6 +381,13 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
   scalarSettings.setClassificationMinimumMaximum( groupMin, groupMax );
   scalarSettings.setColorRampShader( fcn );
   mRendererSettings.setScalarSettings( groupIndex, scalarSettings );
+
+  if ( metadata.isVector() )
+  {
+    QgsMeshRendererVectorSettings vectorSettings;
+    vectorSettings.setColorRampShader( fcn );
+    mRendererSettings.setVectorSettings( groupIndex, vectorSettings );
+  }
 }
 
 QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &rendererContext )
