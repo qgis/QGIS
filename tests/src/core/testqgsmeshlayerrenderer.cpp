@@ -194,8 +194,8 @@ void TestQgsMeshRenderer::initTestCase()
   shader = vectorSettings.colorRampShader();
   lst = shader.colorRampItemList();
   QCOMPARE( lst.count(), 52 );
-  QCOMPARE( fabs( lst.at( 0 ).value - 1.41421356237 ) < 0.000001, true ); // min group value
-  QCOMPARE( lst.at( lst.count() - 1 ).value, 5 ); // max group value
+  QVERIFY( fabs( lst.at( 0 ).value - 1.41421356237 ) < 0.000001 ); // min group value
+  QCOMPARE( lst.at( lst.count() - 1 ).value, 5. ); // max group value
 }
 
 void TestQgsMeshRenderer::cleanupTestCase()
