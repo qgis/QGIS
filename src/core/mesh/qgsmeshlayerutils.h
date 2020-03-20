@@ -213,6 +213,19 @@ class CORE_EXPORT QgsMeshLayerUtils
     );
 
     /**
+    * Resample values on vertices to values on faces
+    *
+    * \since QGIS 3.14
+    */
+    static QVector<double> resampleFromVerticesToFaces(
+      const QVector<double> valuesOnVertices,
+      const QgsMesh *nativeMesh,
+      const QgsTriangularMesh *triangularMesh,
+      const QgsMeshDataBlock *active,
+      QgsMeshRendererScalarSettings::DataInterpolationMethod method
+    );
+
+    /**
      * Calculates magnitude values ont vertices from the given QgsMeshDataBlock.
      * If the values are defined on faces,
      * \param meshLayer the mesh layer

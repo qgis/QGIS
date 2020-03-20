@@ -55,13 +55,11 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
 void QgsMeshRendererScalarSettingsWidget::setLayer( QgsMeshLayer *layer )
 {
   mMeshLayer = layer;
-  mScalarInterpolationTypeComboBox->setEnabled( dataIsDefinedOnFaces() );
 }
 
 void QgsMeshRendererScalarSettingsWidget::setActiveDatasetGroup( int groupIndex )
 {
   mActiveDatasetGroup = groupIndex;
-  mScalarInterpolationTypeComboBox->setEnabled( dataIsDefinedOnFaces() );
 }
 
 QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() const
@@ -142,16 +140,9 @@ void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
 
 QgsMeshRendererScalarSettings::DataInterpolationMethod QgsMeshRendererScalarSettingsWidget::dataIntepolationMethod() const
 {
-  if ( dataIsDefinedOnFaces() )
-  {
-    const int data = mScalarInterpolationTypeComboBox->currentData().toInt();
-    const QgsMeshRendererScalarSettings::DataInterpolationMethod method = static_cast<QgsMeshRendererScalarSettings::DataInterpolationMethod>( data );
-    return method;
-  }
-  else
-  {
-    return QgsMeshRendererScalarSettings::None;
-  }
+  const int data = mScalarInterpolationTypeComboBox->currentData().toInt();
+  const QgsMeshRendererScalarSettings::DataInterpolationMethod method = static_cast<QgsMeshRendererScalarSettings::DataInterpolationMethod>( data );
+  return method;
 }
 
 bool QgsMeshRendererScalarSettingsWidget::dataIsDefinedOnFaces() const

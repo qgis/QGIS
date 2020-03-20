@@ -355,6 +355,41 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData(
   return res;
 }
 
+QVector<double> QgsMeshLayerUtils::resampleFromVerticesToFaces(
+  const QVector<double> valuesOnVertices,
+  const QgsMesh *nativeMesh,
+  const QgsTriangularMesh *triangularMesh,
+  const QgsMeshDataBlock *active,
+  QgsMeshRendererScalarSettings::DataInterpolationMethod method )
+{
+  Q_UNUSED( triangularMesh )
+  Q_UNUSED( method )
+
+  assert( nativeMesh );
+  assert( method == QgsMeshRendererScalarSettings::NeighbourAverage );
+
+  // assuming that native vertex count = triangular vertex count
+  assert( nativeMesh->vertices.size() == triangularMesh->vertices().size() );
+
+  QVector<double> ret( nativeMesh->faceCount(), std::numeric_limits<double>::quiet_NaN() );
+
+  for ( int i = 0; i < nativeMesh->faces.size(); ++i )
+  {
+    const QgsMeshFace face = nativeMesh->face( i );
+    if ( active->active( i ) && face.count() )
+    {
+      double value = 0;
+      for ( int j = 0; j < face.count(); ++j )
+      {
+        value += valuesOnVertices.at( face.at( j ) );
+      }
+      ret[i] = value / face.count();
+    }
+  }
+
+  return ret;
+}
+
 QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices( const QgsMeshLayer *meshLayer,
     const QgsMeshDatasetIndex index,
     QgsMeshDataBlock *activeFaceFlagValues,

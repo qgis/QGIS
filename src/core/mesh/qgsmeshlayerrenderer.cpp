@@ -153,16 +153,31 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
                                     mNativeMesh.faces.count() );
 
     // for data on faces, there could be request to interpolate the data to vertices
-    if ( ( mScalarDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnFaces ) && ( method != QgsMeshRendererScalarSettings::None ) )
+    if ( method != QgsMeshRendererScalarSettings::None )
     {
-      mScalarDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
-      mScalarDatasetValues = QgsMeshLayerUtils::interpolateFromFacesData(
-                               mScalarDatasetValues,
-                               &mNativeMesh,
-                               &mTriangularMesh,
-                               &mScalarActiveFaceFlagValues,
-                               method
-                             );
+      if ( mScalarDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnFaces )
+      {
+        mScalarDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
+        mScalarDatasetValues = QgsMeshLayerUtils::interpolateFromFacesData(
+                                 mScalarDatasetValues,
+                                 &mNativeMesh,
+                                 &mTriangularMesh,
+                                 &mScalarActiveFaceFlagValues,
+                                 method
+                               );
+      }
+      else if ( mScalarDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
+      {
+        mScalarDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnFaces;
+        mScalarDatasetValues = QgsMeshLayerUtils::resampleFromVerticesToFaces(
+                                 mScalarDatasetValues,
+                                 &mNativeMesh,
+                                 &mTriangularMesh,
+                                 &mScalarActiveFaceFlagValues,
+                                 method
+                               );
+      }
+
     }
 
     const QgsMeshDatasetMetadata datasetMetadata = layer->dataProvider()->datasetMetadata( datasetIndex );
@@ -181,6 +196,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
   cache->mScalarDatasetMaximum = mScalarDatasetMaximum;
   cache->mScalarAveragingMethod.reset( mRendererSettings.averagingMethod() ? mRendererSettings.averagingMethod()->clone() : nullptr );
 }
+
 
 void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 {
