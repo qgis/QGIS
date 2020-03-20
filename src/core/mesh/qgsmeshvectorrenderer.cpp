@@ -518,8 +518,6 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
   return renderer;
 }
 
-///@endcond
-
 QgsMeshVectorColoring::QgsMeshVectorColoring( const QgsMeshRendererVectorSettings &settings )
 {
   switch ( settings.coloringMethod() )
@@ -562,3 +560,5 @@ QColor QgsMeshVectorColoring::color( double magnitude ) const
     return mSingleColor;
   }
 }
+
+///@endcond
