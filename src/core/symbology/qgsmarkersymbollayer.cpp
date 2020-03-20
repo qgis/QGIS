@@ -3058,7 +3058,9 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mOrigSize = mSize; // save in case the size would be data defined
 
   // use caching only when not using a data defined character
-  mUseCachedPath = !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCharacter );
+  mUseCachedPath = !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontFamily ) &&
+                   !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontStyle ) &&
+                   !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCharacter );
   if ( mUseCachedPath )
   {
     QPointF chrOffset = mChrOffset;
@@ -3228,6 +3230,24 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
   else
   {
     p->setPen( Qt::NoPen );
+  }
+
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontFamily ) )
+  {
+    context.setOriginalValueVariable( mFontFamily );
+    QString fontFamily = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFontFamily, context.renderContext().expressionContext(), QString(), &ok );
+    mFont.setFamily( ok ? fontFamily : mFontFamily );
+  }
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontStyle ) )
+  {
+    context.setOriginalValueVariable( mFontStyle );
+    QString fontStyle = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFontStyle, context.renderContext().expressionContext(), QString(), &ok );
+    mFont.setStyleName( QgsFontUtils::translateNamedStyle( ok ? fontStyle : mFontStyle ) );
+  }
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontFamily ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontStyle ) )
+  {
+    delete mFontMetrics;
+    mFontMetrics = new QFontMetrics( mFont );
   }
 
   QPointF chrOffset = mChrOffset;

@@ -3390,6 +3390,8 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
   whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
 
+  registerDataDefinedButton( mFontFamilyDDBtn, QgsSymbolLayer::PropertyFontFamily );
+  registerDataDefinedButton( mFontStyleDDBtn, QgsSymbolLayer::PropertyFontStyle );
   registerDataDefinedButton( mSizeDDBtn, QgsSymbolLayer::PropertySize );
   registerDataDefinedButton( mRotationDDBtn, QgsSymbolLayer::PropertyAngle );
   registerDataDefinedButton( mColorDDBtn, QgsSymbolLayer::PropertyFillColor );
