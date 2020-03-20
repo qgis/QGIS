@@ -1,5 +1,5 @@
 /***************************************************************************
-    QgsScaleBarRendererRegistry.cpp
+    qgsscalebarrendererregistry.cpp
     -----------------------
     begin                : March 2020
     copyright            : (C) 2020 by Nyall Dawson

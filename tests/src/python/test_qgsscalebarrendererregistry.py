@@ -7,7 +7,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 __author__ = 'Nyall Dawson'
-__date__ = '6/01/2020'
+__date__ = '20/03/2020'
 __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
