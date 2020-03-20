@@ -44,9 +44,6 @@ class Qgs3DMapTool : public QObject
     //! Mouse cursor to be used when the tool is active
     virtual QCursor cursor() const;
 
-    //! Called when canvas's map setting is changed
-    virtual void onMapSettingsChanged();
-
     /**
      * Whether the default mouse controls to zoom/pan/rotate camera can stay enabled
      * while the tool is active. This may be useful for some basic tools using just
@@ -56,6 +53,10 @@ class Qgs3DMapTool : public QObject
     virtual bool allowsCameraControls() const { return true; }
 
     Qgs3DMapCanvas *canvas();
+
+  private slots:
+    //! Called when canvas's map setting is changed
+    virtual void onMapSettingsChanged();
 
   protected:
     Qgs3DMapCanvas *mCanvas = nullptr;

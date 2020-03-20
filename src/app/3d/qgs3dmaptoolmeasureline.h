@@ -67,12 +67,11 @@ class Qgs3DMapToolMeasureLine : public Qgs3DMapTool
 
     QCursor cursor() const override;
 
-    void onMapSettingsChanged() override;
-
   private slots:
     void onTerrainPicked( Qt3DRender::QPickEvent *event );
     void onTerrainEntityChanged();
     void handleClick( Qt3DRender::QPickEvent *event, const QgsVector3D &worldIntersection );
+    void onMapSettingsChanged() override;
 
   private:
     std::unique_ptr<Qgs3DMapToolMeasureLinePickHandler> mPickHandler;

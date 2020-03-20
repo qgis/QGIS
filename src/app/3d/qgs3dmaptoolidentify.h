@@ -45,11 +45,10 @@ class Qgs3DMapToolIdentify : public Qgs3DMapTool
 
     QCursor cursor() const override;
 
-    void onMapSettingsChanged() override;
-
   private slots:
     void onTerrainPicked( Qt3DRender::QPickEvent *event );
     void onTerrainEntityChanged();
+    void onMapSettingsChanged() override;
 
   private:
     std::unique_ptr<Qgs3DMapToolIdentifyPickHandler> mPickHandler;
