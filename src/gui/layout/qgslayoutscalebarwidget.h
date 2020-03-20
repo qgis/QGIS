@@ -50,9 +50,8 @@ class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public
     bool setNewItem( QgsLayoutItem *item ) override;
 
   private slots:
-
+    void lineSymbolChanged();
     void mHeightSpinBox_valueChanged( double d );
-    void mLineWidthSpinBox_valueChanged( double d );
     void mSegmentSizeSpinBox_valueChanged( double d );
     void mSegmentsLeftSpinBox_valueChanged( int i );
     void mNumberOfSegmentsSpinBox_valueChanged( int i );
@@ -60,7 +59,6 @@ class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public
     void mMapUnitsPerBarUnitSpinBox_valueChanged( double d );
     void mFillColorButton_colorChanged( const QColor &newColor );
     void mFillColor2Button_colorChanged( const QColor &newColor );
-    void mStrokeColorButton_colorChanged( const QColor &newColor );
     void mStyleComboBox_currentIndexChanged( const QString &text );
     void mLabelBarSpaceSpinBox_valueChanged( double d );
     void mBoxSizeSpinBox_valueChanged( double d );
@@ -68,8 +66,6 @@ class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public
     void mLabelHorizontalPlacementComboBox_currentIndexChanged( int index );
     void alignmentChanged();
     void mUnitsComboBox_currentIndexChanged( int index );
-    void mLineJoinStyleCombo_currentIndexChanged( int index );
-    void mLineCapStyleCombo_currentIndexChanged( int index );
     void mMinWidthSpinBox_valueChanged( double d );
     void mMaxWidthSpinBox_valueChanged( double d );
 

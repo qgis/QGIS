@@ -17,6 +17,7 @@
 #include "qgsdoubleboxscalebarrenderer.h"
 #include "qgsscalebarsettings.h"
 #include "qgslayoututils.h"
+#include "qgssymbol.h"
 #include <QList>
 #include <QPainter>
 
@@ -48,27 +49,30 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   }
   QPainter *painter = context.painter();
 
-  double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
-  double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
-  QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
-  double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelAboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
-  double segmentHeight = context.convertToPainterUnits( settings.height() / 2, QgsUnitTypes::RenderMillimeters );
+  const double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
+  const double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
+  const QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
+  const double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelAboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
+  const double segmentHeight = context.convertToPainterUnits( settings.height() / 2, QgsUnitTypes::RenderMillimeters );
 
   painter->save();
   if ( context.flags() & QgsRenderContext::Antialiasing )
     painter->setRenderHint( QPainter::Antialiasing, true );
 
-  QPen pen = settings.pen();
-  pen.setWidthF( context.convertToPainterUnits( pen.widthF(), QgsUnitTypes::RenderMillimeters ) );
-  painter->setPen( pen );
+  std::unique_ptr< QgsLineSymbol > lineSymbol( settings.lineSymbol()->clone() );
+  lineSymbol->startRender( context );
+
+  painter->setPen( Qt::NoPen );
 
   bool useColor = true; //alternate brush color/white
 
-  double xOffset = firstLabelXOffset( settings, context, scaleContext );
+  const double xOffset = firstLabelXOffset( settings, context, scaleContext );
 
-  QList<double> positions = segmentPositions( scaleContext, settings );
-  QList<double> widths = segmentWidths( scaleContext, settings );
+  const QList<double> positions = segmentPositions( context, scaleContext, settings );
+  const QList<double> widths = segmentWidths( scaleContext, settings );
 
+  double minX = 0;
+  double maxX = 0;
   for ( int i = 0; i < positions.size(); ++i )
   {
     //draw top half
@@ -81,9 +85,15 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
       painter->setBrush( settings.brush2() );
     }
 
-    QRectF segmentRectTop( context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset,
-                           barTopPosition,
-                           context.convertToPainterUnits( widths.at( i ), QgsUnitTypes::RenderMillimeters ), segmentHeight );
+    const double thisX = context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset;
+    const double thisWidth = context.convertToPainterUnits( widths.at( i ), QgsUnitTypes::RenderMillimeters );
+
+    if ( i == 0 )
+      minX = thisX;
+    if ( i == positions.size() - 1 )
+      maxX = thisX + thisWidth;
+
+    const QRectF segmentRectTop( thisX, barTopPosition, thisWidth, segmentHeight );
     painter->drawRect( segmentRectTop );
 
     //draw bottom half
@@ -97,12 +107,44 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
       painter->setBrush( settings.brush() );
     }
 
-    QRectF segmentRectBottom( context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset,
-                              barTopPosition + segmentHeight,
-                              context.convertToPainterUnits( widths.at( i ), QgsUnitTypes::RenderMillimeters ), segmentHeight );
+    const QRectF segmentRectBottom( thisX, barTopPosition + segmentHeight, thisWidth, segmentHeight );
     painter->drawRect( segmentRectBottom );
     useColor = !useColor;
   }
+
+
+  // and then the lines
+  // note that we do this layer-by-layer, to avoid ugliness where the lines touch the outer rect
+  for ( int layer = 0; layer < lineSymbol->symbolLayerCount(); ++layer )
+  {
+    // vertical lines
+    for ( int i = 1; i < positions.size(); ++i )
+    {
+      const double lineX = context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset;
+      lineSymbol->renderPolyline( QPolygonF()
+                                  << QPointF( lineX, barTopPosition )
+                                  << QPointF( lineX, barTopPosition + segmentHeight * 2 ),
+                                  nullptr, context, layer );
+    }
+
+    // middle horizontal line
+    lineSymbol->renderPolyline( QPolygonF()
+                                << QPointF( minX, barTopPosition + segmentHeight )
+                                << QPointF( maxX, barTopPosition + segmentHeight ),
+                                nullptr, context, layer );
+
+
+    // outside line
+    lineSymbol->renderPolyline( QPolygonF()
+                                << QPointF( minX, barTopPosition )
+                                << QPointF( maxX, barTopPosition )
+                                << QPointF( maxX, barTopPosition + segmentHeight * 2 )
+                                << QPointF( minX, barTopPosition + segmentHeight * 2 )
+                                << QPointF( minX, barTopPosition ),
+                                nullptr, context, layer );
+  }
+
+  lineSymbol->stopRender( context );
 
   painter->restore();
 

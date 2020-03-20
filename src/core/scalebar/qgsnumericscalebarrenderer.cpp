@@ -86,7 +86,7 @@ QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &
   double textWidth = QgsLayoutUtils::textWidthMM( font, scaleText( scaleContext.scale, settings ) );
   double textHeight = QgsLayoutUtils::fontAscentMM( font );
 
-  return QSizeF( 2 * settings.boxContentSpace() + 2 * settings.pen().width() + textWidth,
+  return QSizeF( 2 * settings.boxContentSpace() + textWidth,
                  textHeight + 2 * settings.boxContentSpace() );
 }
 

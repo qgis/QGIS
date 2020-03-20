@@ -17,6 +17,7 @@
 #include "qgssingleboxscalebarrenderer.h"
 #include "qgsscalebarsettings.h"
 #include "qgslayoututils.h"
+#include "qgssymbol.h"
 #include <QList>
 #include <QPainter>
 
@@ -48,25 +49,30 @@ void QgsSingleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   }
   QPainter *painter = context.painter();
 
-  double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
-  double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
-  QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
-  double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelAboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
+  const double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
+  const double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
+  const QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
+  const double barTopPosition = scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelAboveSegment ? fontMetrics.ascent() + scaledLabelBarSpace : 0 );
+  const double barHeight = context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
 
   painter->save();
   if ( context.flags() & QgsRenderContext::Antialiasing )
     painter->setRenderHint( QPainter::Antialiasing, true );
 
-  QPen pen = settings.pen();
-  pen.setWidthF( context.convertToPainterUnits( pen.widthF(), QgsUnitTypes::RenderMillimeters ) );
-  painter->setPen( pen );
+  std::unique_ptr< QgsLineSymbol > lineSymbol( settings.lineSymbol()->clone() );
+  lineSymbol->startRender( context );
+
+  painter->setPen( Qt::NoPen );
 
   bool useColor = true; //alternate brush color/white
-  double xOffset = firstLabelXOffset( settings, context, scaleContext );
+  const double xOffset = firstLabelXOffset( settings, context, scaleContext );
 
-  QList<double> positions = segmentPositions( scaleContext, settings );
-  QList<double> widths = segmentWidths( scaleContext, settings );
+  const QList<double> positions = segmentPositions( context, scaleContext, settings );
+  const QList<double> widths = segmentWidths( scaleContext, settings );
 
+  // draw the fill
+  double minX = 0;
+  double maxX = 0;
   for ( int i = 0; i < positions.size(); ++i )
   {
     if ( useColor ) //alternating colors
@@ -78,13 +84,43 @@ void QgsSingleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
       painter->setBrush( settings.brush2() );
     }
 
-    QRectF segmentRect( context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset,
-                        barTopPosition, context.convertToPainterUnits( widths.at( i ), QgsUnitTypes::RenderMillimeters ),
-                        context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters ) );
+    const double thisX = context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset;
+    const double thisWidth = context.convertToPainterUnits( widths.at( i ), QgsUnitTypes::RenderMillimeters );
+
+    if ( i == 0 )
+      minX = thisX;
+    if ( i == positions.size() - 1 )
+      maxX = thisX + thisWidth;
+
+    QRectF segmentRect( thisX, barTopPosition, thisWidth, barHeight );
     painter->drawRect( segmentRect );
     useColor = !useColor;
   }
 
+  // and then the lines
+  // note that we do this layer-by-layer, to avoid ugliness where the lines touch the outer rect
+  for ( int layer = 0; layer < lineSymbol->symbolLayerCount(); ++layer )
+  {
+    for ( int i = 1; i < positions.size(); ++i )
+    {
+      const double lineX = context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset;
+      lineSymbol->renderPolyline( QPolygonF()
+                                  << QPointF( lineX, barTopPosition )
+                                  << QPointF( lineX, barTopPosition + barHeight ),
+                                  nullptr, context, layer );
+    }
+
+    // outside line
+    lineSymbol->renderPolyline( QPolygonF()
+                                << QPointF( minX, barTopPosition )
+                                << QPointF( maxX, barTopPosition )
+                                << QPointF( maxX, barTopPosition + barHeight )
+                                << QPointF( minX, barTopPosition + barHeight )
+                                << QPointF( minX, barTopPosition ),
+                                nullptr, context, layer );
+  }
+
+  lineSymbol->stopRender( context );
   painter->restore();
 
   //draw labels using the default method

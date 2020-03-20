@@ -109,8 +109,18 @@ class CORE_EXPORT QgsScaleBarRenderer
 
     /**
      * Calculates the required box size (in millimeters) for a scalebar using the specified \a settings and \a scaleContext.
+     * \deprecated Use the version with a QgsRenderContext instead.
      */
-    virtual QSizeF calculateBoxSize( const QgsScaleBarSettings &settings,
+    Q_DECL_DEPRECATED virtual QSizeF calculateBoxSize( const QgsScaleBarSettings &settings,
+        const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const SIP_DEPRECATED;
+
+    /**
+     * Calculates the required box size (in millimeters) for a scalebar using the specified \a settings and \a scaleContext.
+     *
+     * \since QGIS 3.14
+     */
+    virtual QSizeF calculateBoxSize( QgsRenderContext &context,
+                                     const QgsScaleBarSettings &settings,
                                      const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 
   protected:
@@ -141,8 +151,15 @@ class CORE_EXPORT QgsScaleBarRenderer
 
     /**
      * Returns a list of positions for each segment within the scalebar.
+     * \deprecated use the version with a QgsRenderContext instead
      */
-    QList<double> segmentPositions( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
+    Q_DECL_DEPRECATED QList<double> segmentPositions( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const SIP_DEPRECATED;
+
+    /**
+     * Returns a list of positions for each segment within the scalebar.
+     * \since QGIS 3.14
+     */
+    QList<double> segmentPositions( QgsRenderContext &context, const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
 
     /**
      * Returns a list of widths of each segment of the scalebar.
