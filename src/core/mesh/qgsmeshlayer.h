@@ -68,11 +68,11 @@ class QgsMesh3dAveragingMethod;
  *      "3.0, 2.0 \n" \
  *      "2.0, 3.0 \n" \
  *      "1.0, 3.0 \n" \
- *      "---"
+ *      "---" \
  *      "0, 1, 3, 4 \n" \
  *      "1, 2, 3 \n"
  *    );
- *    QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "memory_mesh");
+ *    QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "mesh_memory");
  * \endcode
  *
  * \subsection mdal MDAL data provider (mdal)
