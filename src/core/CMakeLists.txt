@@ -1375,10 +1375,11 @@ INCLUDE_DIRECTORIES(
   3d
   annotations
   auth
+  callouts
   classification
   dxf
   effects
-  ${CMAKE_SOURCE_DIR}/src/core/expression
+  expression
   fieldformatter
   geometry
   geocms
