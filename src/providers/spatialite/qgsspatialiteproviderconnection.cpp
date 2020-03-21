@@ -292,7 +292,7 @@ QList<QgsSpatiaLiteProviderConnection::TableProperty> QgsSpatiaLiteProviderConne
         QgsSpatiaLiteProviderConnection::TableProperty property;
         property.setTableName( tableName );
         // Create a layer and get information from it
-        std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique<QgsVectorLayer>( dsUri.uri(), QString(), QLatin1Literal( "spatialite" ) );
+        std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique<QgsVectorLayer>( dsUri.uri(), QString(), QLatin1String( "spatialite" ) );
         if ( vl->isValid() )
         {
           if ( vl->isSpatial() )

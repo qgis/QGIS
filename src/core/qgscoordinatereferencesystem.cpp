@@ -2983,7 +2983,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     if ( name.isEmpty() )
       name = QObject::tr( "Imported from GDAL" );
 
-    bool deprecated = name.contains( QLatin1Literal( "(deprecated)" ) );
+    bool deprecated = name.contains( QLatin1String( "(deprecated)" ) );
 
     sql = QStringLiteral( "SELECT parameters,description,deprecated,noupdate FROM tbl_srs WHERE auth_name='EPSG' AND auth_id='%1'" ).arg( it.key() );
     statement = database.prepare( sql, result );
