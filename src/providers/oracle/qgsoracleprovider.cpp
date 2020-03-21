@@ -2617,7 +2617,7 @@ bool QgsOracleProvider::getGeometryDetails()
 
   // Do not re-check geometry type if it is already known (f.e. when re-loading a project)
   // and trust project data checkbox is enabled in project properties
-  if ( QgsProject()::instance()->trustLayerMetadata() && mRequestedGeomType != QgsWkbTypes::Unknown && mSrid > 0 )
+  if ( QgsProject::instance()->trustLayerMetadata() && mRequestedGeomType != QgsWkbTypes::Unknown && mSrid > 0 )
   {
     mHasSpatialIndex = true; // default value is false
     mDetectedGeomType = mRequestedGeomType;
