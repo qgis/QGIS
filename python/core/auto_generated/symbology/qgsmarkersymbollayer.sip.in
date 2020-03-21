@@ -877,8 +877,6 @@ class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 Constructs a font marker symbol layer.
 %End
 
-    ~QgsFontMarkerSymbolLayer();
-
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
@@ -1059,10 +1057,6 @@ Sets the stroke join ``style``.
 %End
 
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
-
-
-  protected:
-
 
 
 };

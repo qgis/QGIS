@@ -58,6 +58,7 @@ class TestQgsFontMarkerSymbol : public QObject
     void fontMarkerSymbolStyle();
     void fontMarkerSymbolStroke();
     void bounds();
+    void fontMarkerSymbolDataDefinedProperties();
 
   private:
     bool mTestHasError =  false ;
@@ -149,6 +150,30 @@ void TestQgsFontMarkerSymbol::fontMarkerSymbolStyle()
   mFontMarkerLayer->setCharacter( QChar( 'A' ) );
   mFontMarkerLayer->setSize( 12 );
   QVERIFY( imageCheck( "fontmarker_style" ) );
+
+  // Loading both Bold and Oblique in the initTestCase() function creates inconsistent results on windows and linux, this is a workaround
+  QFontDatabase fontDb;
+  fontDb.removeAllApplicationFonts();
+  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
+}
+
+void TestQgsFontMarkerSymbol::fontMarkerSymbolDataDefinedProperties()
+{
+  mReport += QLatin1String( "<h2>Font marker symbol data defined properties layer test</h2>\n" );
+
+  QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) << QStringLiteral( "Oblique" ) );
+  mFontMarkerLayer->setColor( Qt::blue );
+  QFont font = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
+  mFontMarkerLayer->setFontFamily( font.family() );
+  mFontMarkerLayer->setFontStyle( QStringLiteral( "Bold" ) );
+  mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFontStyle, QgsProperty::fromExpression( QStringLiteral( "'Oblique'" ) ) );
+  mFontMarkerLayer->setCharacter( QChar( 'Z' ) );
+  mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyCharacter, QgsProperty::fromExpression( QStringLiteral( "'A'" ) ) );
+  mFontMarkerLayer->setSize( 12 );
+  mFontMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertySize, QgsProperty::fromExpression( QStringLiteral( "12" ) ) );
+  QVERIFY( imageCheck( "fontmarker_datadefinedproperties" ) );
+
+  mFontMarkerLayer->setDataDefinedProperties( QgsPropertyCollection() );
 
   // Loading both Bold and Oblique in the initTestCase() function creates inconsistent results on windows and linux, this is a workaround
   QFontDatabase fontDb;
