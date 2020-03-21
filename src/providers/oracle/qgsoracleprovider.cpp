@@ -29,6 +29,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerexporter.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
 
 #include "qgsoracleprovider.h"
 #include "qgsoracletablemodel.h"
@@ -2615,7 +2616,8 @@ bool QgsOracleProvider::getGeometryDetails()
   }
 
   // Do not re-check geometry type if it is already known (f.e. when re-loading a project)
-  if ( mRequestedGeomType != QgsWkbTypes::Unknown && mSrid > 0 )
+  // and trust project data checkbox is enabled in project properties
+  if ( QgsProject()::instance()->trustLayerMetadata() && mRequestedGeomType != QgsWkbTypes::Unknown && mSrid > 0 )
   {
     mHasSpatialIndex = true; // default value is false
     mDetectedGeomType = mRequestedGeomType;
