@@ -75,11 +75,6 @@ Returns the main widget for the dialog, usually a panel for configuring algorith
 Switches the dialog to the log page.
 %End
 
-    void showParameters();
-%Docstring
-Switches the dialog to the parameters page.
-%End
-
     bool wasExecuted() const;
 %Docstring
 Returns ``True`` if an algorithm was executed in the dialog.
@@ -187,6 +182,11 @@ Copies the current log contents to the clipboard.
 .. versionadded:: 3.2
 %End
 
+    void showParameters();
+%Docstring
+Switches the dialog to the parameters page.
+%End
+
   protected:
 
     virtual void closeEvent( QCloseEvent *e );
@@ -235,7 +235,6 @@ Sets whether the algorithm was executed through the dialog.
 %Docstring
 Sets whether the algorithm was executed through the dialog (no matter the result).
 %End
-
 
     void setResults( const QVariantMap &results );
 %Docstring
