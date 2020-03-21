@@ -502,18 +502,21 @@ void QgsTextFormatWidget::initWidget()
   mGeometryGeneratorType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "LineString / MultiLineString" ), QgsWkbTypes::GeometryType::LineGeometry );
   mGeometryGeneratorType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point / MultiPoint" ), QgsWkbTypes::GeometryType::PointGeometry );
 
+  // set button group for stacked widget
+  QButtonGroup *tabBtuttonGroup = new QButtonGroup( this );
+  tabBtuttonGroup->addButton( mTextButton, 0 );
+  tabBtuttonGroup->addButton( mFormattingButton, 1 );
+  tabBtuttonGroup->addButton( mBufferButton, 2 );
+  tabBtuttonGroup->addButton( mMaskButton, 3 );
+  tabBtuttonGroup->addButton( mBackgroundButton, 4 );
+  tabBtuttonGroup->addButton( mShadowButton, 5 );
+  tabBtuttonGroup->addButton( mCalloutButton, 6 );
+  tabBtuttonGroup->addButton( mPlacementButton, 7 );
+  tabBtuttonGroup->addButton( mRenderButton, 8 );
   // set correct initial tab to match displayed setting page
-  mTabsButtonGroup->buttons().at( mLabelStackedWidget->currentIndex() )->setChecked( true );
-  mTabsButtonGroup->setId( mTextButton, 0 );
-  mTabsButtonGroup->setId( mFormattingButton, 1 );
-  mTabsButtonGroup->setId( mBufferButton, 2 );
-  mTabsButtonGroup->setId( mMaskButton, 3 );
-  mTabsButtonGroup->setId( mBackgroundButton, 4 );
-  mTabsButtonGroup->setId( mShadowButton, 5 );
-  mTabsButtonGroup->setId( mCalloutButton, 6 );
-  mTabsButtonGroup->setId( mPlacementButton, 7 );
-  mTabsButtonGroup->setId( mRenderButton, 8 );
-  connect( mTabsButtonGroup, qgis::overload<int>::of( &QButtonGroup::buttonClicked ), mLabelStackedWidget, &QStackedWidget::setCurrentIndex );
+  tabBtuttonGroup->buttons().at( mLabelStackedWidget->currentIndex() )->setChecked( true );
+
+  connect( tabBtuttonGroup, qgis::overload<int>::of( &QButtonGroup::buttonClicked ), mLabelStackedWidget, &QStackedWidget::setCurrentIndex );
 
   if ( mMapCanvas )
   {
