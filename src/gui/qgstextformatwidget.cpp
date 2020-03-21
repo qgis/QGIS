@@ -589,6 +589,7 @@ void QgsTextFormatWidget::setDockMode( bool enabled )
   mPlacementButton->setToolTip( tr( "Placement" ) );
   mRenderButton->setToolTip( tr( "Rendering" ) );
 
+  mTabsWidget->setVisible( enabled );
   mLabelingOptionsListFrame->setVisible( !enabled );
   groupBox_mPreview->setVisible( !enabled );
   mDockMode = enabled;
