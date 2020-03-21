@@ -28,7 +28,7 @@
 
 class QgsNumericFormat;
 class QgsLineSymbol;
-
+class QgsFillSymbol;
 
 /**
  * \class QgsScaleBarSettings
@@ -292,29 +292,33 @@ class CORE_EXPORT QgsScaleBarSettings
      * Returns the color used for fills in the scalebar.
      * \see setFillColor()
      * \see fillColor2()
+     * \deprecated use fillSymbol1() instead.
      */
-    QColor fillColor() const { return mFillColor; }
+    Q_DECL_DEPRECATED QColor fillColor() const SIP_DEPRECATED;
 
     /**
      * Sets the \a color used for fills in the scalebar.
      * \see fillColor()
      * \see setFillColor2()
+     * \deprecated use setFillSymbol1() instead.
      */
-    void setFillColor( const QColor &color ) { mFillColor = color; mBrush.setColor( color ); }
+    Q_DECL_DEPRECATED void setFillColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the secondary color used for fills in the scalebar.
      * \see setFillColor2()
      * \see fillColor()
+     * \deprecated use fillSymbol2() instead
      */
-    QColor fillColor2() const {return mFillColor2;}
+    Q_DECL_DEPRECATED QColor fillColor2() const SIP_DEPRECATED;
 
     /**
      * Sets the secondary \a color used for fills in the scalebar.
      * \see fillColor2()
      * \see setFillColor2()
+     * \deprecated use setFillSymbol2() instead.
      */
-    void setFillColor2( const QColor &color ) { mFillColor2 = color; mBrush2.setColor( color ); }
+    Q_DECL_DEPRECATED void setFillColor2( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the color used for lines in the scalebar.
@@ -379,32 +383,79 @@ class CORE_EXPORT QgsScaleBarSettings
     void setLineSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
 
     /**
+     * Returns the primary fill symbol used to render the scalebar (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setFillSymbol1()
+     * \see fillSymbol2()
+     * \since QGIS 3.14
+     */
+    QgsFillSymbol *fillSymbol1() const;
+
+    /**
+     * Sets the primary fill \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see fillSymbol1()
+     * \see setFillSymbol2()
+     * \since QGIS 3.14
+     */
+    void setFillSymbol1( QgsFillSymbol *symbol SIP_TRANSFER );
+
+
+    /**
+     * Returns the secondary fill symbol used to render the scalebar (only used for some scalebar types).
+     *
+     * Ownership is not transferred.
+     *
+     * \see setFillSymbol2()
+     * \see fillSymbol1()
+     * \since QGIS 3.14
+     */
+    QgsFillSymbol *fillSymbol2() const;
+
+    /**
+     * Sets the secondary fill \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
+     * transferred to the scalebar.
+     *
+     * \see fillSymbol2()
+     * \see setFillSymbol1()
+     * \since QGIS 3.14
+     */
+    void setFillSymbol2( QgsFillSymbol *symbol SIP_TRANSFER );
+
+    /**
      * Returns the primary brush used for filling the scalebar.
      * \see setBrush()
      * \see brush2()
      * \see pen()
+     * \deprecated use fillSymbol1() instead
      */
-    QBrush brush() const { return mBrush; }
+    Q_DECL_DEPRECATED QBrush brush() const SIP_DEPRECATED;
 
     /**
      * Sets the primary brush used for filling the scalebar.
      * \see brush()
+     * \deprecated use setFillSymbol1() instead
      */
-    void setBrush( const QBrush &brush ) { mBrush = brush; }
+    Q_DECL_DEPRECATED void setBrush( const QBrush &brush ) SIP_DEPRECATED;
 
     /**
      * Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
      * as single and double box styles.
      * \see setBrush2()
      * \see brush()
+     * \deprecated use fillSymbol2() instead
      */
-    QBrush brush2() const { return mBrush2; }
+    Q_DECL_DEPRECATED QBrush brush2() const SIP_DEPRECATED;
 
     /**
      * Sets the secondary brush used for filling the scalebar.
      * \see brush()
+     * \deprecated use setFillSymbol2() instead
      */
-    void setBrush2( const QBrush &brush ) { mBrush2 = brush; }
+    Q_DECL_DEPRECATED void setBrush2( const QBrush &brush ) SIP_DEPRECATED;
 
     /**
      * Returns the scalebar height (in millimeters).
@@ -551,18 +602,12 @@ class CORE_EXPORT QgsScaleBarSettings
     //! Text format
     QgsTextFormat mTextFormat;
 
-    //! Fill color
-    QColor mFillColor = QColor( 0, 0, 0 );
-    //! Secondary fill color
-    QColor mFillColor2 = QColor( 255, 255, 255 );
-    //! Fill
-    QBrush mBrush;
-    //! Secondary fill
-    QBrush mBrush2;
     //! Height of bars/lines
     double mHeight = 3.0;
 
     std::unique_ptr< QgsLineSymbol > mLineSymbol;
+    std::unique_ptr< QgsFillSymbol > mFillSymbol;
+    std::unique_ptr< QgsFillSymbol > mFillSymbol2;
 
     //! Space between bar and Text labels
     double mLabelBarSpace = 3.0;

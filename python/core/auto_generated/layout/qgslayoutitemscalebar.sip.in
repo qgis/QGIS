@@ -231,6 +231,56 @@ transferred to the scalebar.
 .. versionadded:: 3.14
 %End
 
+    QgsFillSymbol *fillSymbol1() const;
+%Docstring
+Returns the primary fill symbol used to render the scalebar (only used for some scalebar types).
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setFillSymbol1`
+
+.. seealso:: :py:func:`fillSymbol2`
+
+.. versionadded:: 3.14
+%End
+
+    void setFillSymbol1( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the primary fill ``symbol`` used to render the scalebar (only used for some scalebar types). Ownership of ``symbol`` is
+transferred to the scalebar.
+
+.. seealso:: :py:func:`fillSymbol1`
+
+.. seealso:: :py:func:`setFillSymbol2`
+
+.. versionadded:: 3.14
+%End
+
+    QgsFillSymbol *fillSymbol2() const;
+%Docstring
+Returns the secondary fill symbol used to render the scalebar (only used for some scalebar types).
+
+Ownership is not transferred.
+
+.. seealso:: :py:func:`setFillSymbol2`
+
+.. seealso:: :py:func:`fillSymbol1`
+
+.. versionadded:: 3.14
+%End
+
+    void setFillSymbol2( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the secondary fill ``symbol`` used to render the scalebar (only used for some scalebar types). Ownership of ``symbol`` is
+transferred to the scalebar.
+
+.. seealso:: :py:func:`fillSymbol2`
+
+.. seealso:: :py:func:`setFillSymbol1`
+
+.. versionadded:: 3.14
+%End
+
  QFont font() const /Deprecated/;
 %Docstring
 Returns the font used for drawing text in the scalebar.
@@ -275,40 +325,52 @@ Sets the ``color`` used for drawing text in the scalebar.
    use setTextFormat() instead
 %End
 
-    QColor fillColor() const;
+ QColor fillColor() const /Deprecated/;
 %Docstring
 Returns the color used for fills in the scalebar.
 
 .. seealso:: :py:func:`setFillColor`
 
 .. seealso:: :py:func:`fillColor2`
+
+.. deprecated::
+   use fillSymbol1() instead
 %End
 
-    void setFillColor( const QColor &color );
+ void setFillColor( const QColor &color ) /Deprecated/;
 %Docstring
 Sets the ``color`` used for fills in the scalebar.
 
 .. seealso:: :py:func:`fillColor`
 
 .. seealso:: :py:func:`setFillColor2`
+
+.. deprecated::
+   use setFillSymbol1() instead
 %End
 
-    QColor fillColor2() const;
+ QColor fillColor2() const /Deprecated/;
 %Docstring
 Returns the secondary color used for fills in the scalebar.
 
 .. seealso:: :py:func:`setFillColor2`
 
 .. seealso:: :py:func:`fillColor`
+
+.. deprecated::
+   use fillSymbol2() instead
 %End
 
-    void setFillColor2( const QColor &color );
+ void setFillColor2( const QColor &color ) /Deprecated/;
 %Docstring
 Sets the secondary ``color`` used for fills in the scalebar.
 
 .. seealso:: :py:func:`fillColor2`
 
 .. seealso:: :py:func:`setFillColor2`
+
+.. deprecated::
+   use setFillSymbol2() instead
 %End
 
  QColor lineColor() const /Deprecated/;
@@ -361,7 +423,7 @@ Returns the pen used for drawing outlines in the scalebar.
    use lineSymbol() instead
 %End
 
-    QBrush brush() const;
+ QBrush brush() const /Deprecated/;
 %Docstring
 Returns the primary brush for the scalebar.
 
@@ -370,9 +432,12 @@ Returns the primary brush for the scalebar.
 .. seealso:: :py:func:`brush2`
 
 .. seealso:: :py:func:`pen`
+
+.. deprecated::
+   use fillSymbol1() instead
 %End
 
-    QBrush brush2() const;
+ QBrush brush2() const /Deprecated/;
 %Docstring
 Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
 as single and double box styles.
@@ -380,6 +445,9 @@ as single and double box styles.
 :return: QBrush used for secondary color areas
 
 .. seealso:: :py:func:`brush`
+
+.. deprecated::
+   use fillSymbol2() instead
 %End
 
     double height() const;

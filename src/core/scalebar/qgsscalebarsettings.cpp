@@ -20,15 +20,10 @@
 #include "qgsbasicnumericformat.h"
 #include "qgslinesymbollayer.h"
 #include "qgssymbol.h"
+#include "qgsfillsymbollayer.h"
 
 QgsScaleBarSettings::QgsScaleBarSettings()
 {
-  mBrush.setColor( mFillColor );
-  mBrush.setStyle( Qt::SolidPattern );
-
-  mBrush2.setColor( mFillColor2 );
-  mBrush2.setStyle( Qt::SolidPattern );
-
   mTextFormat.setSize( 12.0 );
   mTextFormat.setSizeUnit( QgsUnitTypes::RenderPoints );
   mTextFormat.setColor( QColor( 0, 0, 0 ) );
@@ -44,6 +39,19 @@ QgsScaleBarSettings::QgsScaleBarSettings()
     line->setPenCapStyle( Qt::SquareCap );
   }
   mLineSymbol->setOutputUnit( QgsUnitTypes::RenderMillimeters );
+
+  mFillSymbol = qgis::make_unique< QgsFillSymbol >();
+  mFillSymbol->setColor( QColor( 0, 0, 0 ) );
+  if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( mFillSymbol->symbolLayer( 0 ) ) )
+  {
+    fill->setStrokeStyle( Qt::NoPen );
+  }
+  mFillSymbol2 = qgis::make_unique< QgsFillSymbol >();
+  mFillSymbol2->setColor( QColor( 255, 255, 255 ) );
+  if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( mFillSymbol2->symbolLayer( 0 ) ) )
+  {
+    fill->setStrokeStyle( Qt::NoPen );
+  }
 }
 
 QgsScaleBarSettings::QgsScaleBarSettings( const QgsScaleBarSettings &other )
@@ -56,12 +64,10 @@ QgsScaleBarSettings::QgsScaleBarSettings( const QgsScaleBarSettings &other )
   , mMaxBarWidth( other.mMaxBarWidth )
   , mUnitLabeling( other.mUnitLabeling )
   , mTextFormat( other.mTextFormat )
-  , mFillColor( other.mFillColor )
-  , mFillColor2( other.mFillColor2 )
-  , mBrush( other.mBrush )
-  , mBrush2( other.mBrush2 )
   , mHeight( other.mHeight )
   , mLineSymbol( other.mLineSymbol->clone() )
+  , mFillSymbol( other.mFillSymbol->clone() )
+  , mFillSymbol2( other.mFillSymbol2->clone() )
   , mLabelBarSpace( other.mLabelBarSpace )
   , mLabelVerticalPlacement( other.mLabelVerticalPlacement )
   , mLabelHorizontalPlacement( other.mLabelHorizontalPlacement )
@@ -84,11 +90,9 @@ QgsScaleBarSettings &QgsScaleBarSettings::operator=( const QgsScaleBarSettings &
   mMaxBarWidth = other.mMaxBarWidth;
   mUnitLabeling = other.mUnitLabeling;
   mTextFormat = other.mTextFormat;
-  mFillColor = other.mFillColor;
-  mFillColor2 = other.mFillColor2;
-  mBrush = other.mBrush;
-  mBrush2 = other.mBrush2;
   mLineSymbol.reset( other.mLineSymbol->clone() );
+  mFillSymbol.reset( other.mFillSymbol->clone() );
+  mFillSymbol2.reset( other.mFillSymbol2->clone() );
   mHeight = other.mHeight;
   mLabelBarSpace = other.mLabelBarSpace;
   mLabelVerticalPlacement = other.mLabelVerticalPlacement;
@@ -98,6 +102,26 @@ QgsScaleBarSettings &QgsScaleBarSettings::operator=( const QgsScaleBarSettings &
   mUnits = other.mUnits;
   mNumericFormat.reset( other.mNumericFormat->clone() );
   return *this;
+}
+
+QColor QgsScaleBarSettings::fillColor() const
+{
+  return mFillSymbol->color();
+}
+
+void QgsScaleBarSettings::setFillColor( const QColor &color )
+{
+  mFillSymbol->setColor( color );
+}
+
+QColor QgsScaleBarSettings::fillColor2() const
+{
+  return mFillSymbol2->color();
+}
+
+void QgsScaleBarSettings::setFillColor2( const QColor &color )
+{
+  mFillSymbol2->setColor( color );
 }
 
 QColor QgsScaleBarSettings::lineColor() const
@@ -153,6 +177,68 @@ QgsLineSymbol *QgsScaleBarSettings::lineSymbol() const
 void QgsScaleBarSettings::setLineSymbol( QgsLineSymbol *symbol )
 {
   mLineSymbol.reset( symbol );
+}
+
+QgsFillSymbol *QgsScaleBarSettings::fillSymbol1() const
+{
+  return mFillSymbol.get();
+}
+
+void QgsScaleBarSettings::setFillSymbol1( QgsFillSymbol *symbol )
+{
+  mFillSymbol.reset( symbol );
+}
+
+QgsFillSymbol *QgsScaleBarSettings::fillSymbol2() const
+{
+  return mFillSymbol2.get();
+}
+
+void QgsScaleBarSettings::setFillSymbol2( QgsFillSymbol *symbol )
+{
+  mFillSymbol2.reset( symbol );
+}
+
+QBrush QgsScaleBarSettings::brush() const
+{
+  QBrush b;
+  b.setColor( mFillSymbol->color() );
+  if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( mFillSymbol->symbolLayer( 0 ) ) )
+  {
+    b.setStyle( fill->brushStyle() );
+  }
+
+  return b;
+}
+
+void QgsScaleBarSettings::setBrush( const QBrush &brush )
+{
+  mFillSymbol->setColor( brush.color() );
+  if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( mFillSymbol->symbolLayer( 0 ) ) )
+  {
+    fill->setBrushStyle( brush.style() );
+  }
+}
+
+QBrush QgsScaleBarSettings::brush2() const
+{
+  QBrush b;
+  b.setColor( mFillSymbol2->color() );
+  if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( mFillSymbol2->symbolLayer( 0 ) ) )
+  {
+    b.setStyle( fill->brushStyle() );
+  }
+
+  return b;
+}
+
+void QgsScaleBarSettings::setBrush2( const QBrush &brush )
+{
+  mFillSymbol2->setColor( brush.color() );
+  if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( mFillSymbol2->symbolLayer( 0 ) ) )
+  {
+    fill->setBrushStyle( brush.style() );
+  }
 }
 
 Qt::PenJoinStyle QgsScaleBarSettings::lineJoinStyle() const

@@ -185,8 +185,8 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       LegendTitle, //!< Legend title
       LegendColumnCount, //!< Legend column count
       //scalebar item
-      ScalebarFillColor, //!< Scalebar fill color
-      ScalebarFillColor2, //!< Scalebar secondary fill color
+      ScalebarFillColor, //!< Scalebar fill color (deprecated, use data defined properties on scalebar fill symbol 1 instead)
+      ScalebarFillColor2, //!< Scalebar secondary fill color (deprecated, use data defined properties on scalebar fill symbol 2 instead)
       ScalebarLineColor, //!< Scalebar line color (deprecated, use data defined properties on scalebar line symbol instead)
       ScalebarLineWidth, //!< Scalebar line width (deprecated, use data defined properties on scalebar line symbol instead)
       //table item

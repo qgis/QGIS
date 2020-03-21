@@ -1057,12 +1057,12 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      layoutItem->setFillColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+      layoutItem->fillSymbol1()->setColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
     }
   }
   else
   {
-    layoutItem->setFillColor( QColor( itemElem.attribute( QStringLiteral( "brushColor" ), QStringLiteral( "#000000" ) ) ) );
+    layoutItem->fillSymbol1()->setColor( QColor( itemElem.attribute( QStringLiteral( "brushColor" ), QStringLiteral( "#000000" ) ) ) );
   }
 
   //fill color 2
@@ -1080,12 +1080,12 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
-      layoutItem->setFillColor2( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+      layoutItem->fillSymbol2()->setColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
     }
   }
   else
   {
-    layoutItem->setFillColor2( QColor( itemElem.attribute( QStringLiteral( "brush2Color" ), QStringLiteral( "#ffffff" ) ) ) );
+    layoutItem->fillSymbol2()->setColor( QColor( itemElem.attribute( QStringLiteral( "brush2Color" ), QStringLiteral( "#ffffff" ) ) ) );
   }
 
   std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();

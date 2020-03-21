@@ -62,7 +62,14 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   std::unique_ptr< QgsLineSymbol > lineSymbol( settings.lineSymbol()->clone() );
   lineSymbol->startRender( context );
 
+  std::unique_ptr< QgsFillSymbol > fillSymbol1( settings.fillSymbol1()->clone() );
+  fillSymbol1->startRender( context );
+
+  std::unique_ptr< QgsFillSymbol > fillSymbol2( settings.fillSymbol2()->clone() );
+  fillSymbol2->startRender( context );
+
   painter->setPen( Qt::NoPen );
+  painter->setBrush( Qt::NoBrush );
 
   bool useColor = true; //alternate brush color/white
 
@@ -73,16 +80,17 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
 
   double minX = 0;
   double maxX = 0;
+  QgsFillSymbol *currentSymbol = nullptr;
   for ( int i = 0; i < positions.size(); ++i )
   {
     //draw top half
     if ( useColor )
     {
-      painter->setBrush( settings.brush() );
+      currentSymbol = fillSymbol1.get();
     }
-    else //secondary color
+    else //secondary symbol
     {
-      painter->setBrush( settings.brush2() );
+      currentSymbol = fillSymbol2.get();
     }
 
     const double thisX = context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset;
@@ -94,21 +102,35 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
       maxX = thisX + thisWidth;
 
     const QRectF segmentRectTop( thisX, barTopPosition, thisWidth, segmentHeight );
+    currentSymbol->renderPolygon( QPolygonF()
+                                  << segmentRectTop.topLeft()
+                                  << segmentRectTop.topRight()
+                                  << segmentRectTop.bottomRight()
+                                  << segmentRectTop.bottomLeft()
+                                  << segmentRectTop.topLeft(),
+                                  nullptr, nullptr, context );
     painter->drawRect( segmentRectTop );
 
     //draw bottom half
     if ( useColor )
     {
-      //secondary color
-      painter->setBrush( settings.brush2() );
+      //secondary symbol
+      currentSymbol = fillSymbol2.get();
     }
-    else //primary color
+    else //primary symbol
     {
-      painter->setBrush( settings.brush() );
+      currentSymbol = fillSymbol1.get(); ;
     }
 
     const QRectF segmentRectBottom( thisX, barTopPosition + segmentHeight, thisWidth, segmentHeight );
-    painter->drawRect( segmentRectBottom );
+
+    currentSymbol->renderPolygon( QPolygonF()
+                                  << segmentRectBottom.topLeft()
+                                  << segmentRectBottom.topRight()
+                                  << segmentRectBottom.bottomRight()
+                                  << segmentRectBottom.bottomLeft()
+                                  << segmentRectBottom.topLeft(),
+                                  nullptr, nullptr, context );
     useColor = !useColor;
   }
 
@@ -145,6 +167,8 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   }
 
   lineSymbol->stopRender( context );
+  fillSymbol1->stopRender( context );
+  fillSymbol2->stopRender( context );
 
   painter->restore();
 
