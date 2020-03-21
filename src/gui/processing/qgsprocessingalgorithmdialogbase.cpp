@@ -95,20 +95,20 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   mSplitterState = splitter->saveState();
   splitterChanged( 0, 0 );
 
-  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsProcessingAlgorithmDialogBase::closeClicked );
-  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProcessingAlgorithmDialogBase::runAlgorithm );
-
   // Rename OK button to Run
   mButtonRun = mButtonBox->button( QDialogButtonBox::Ok );
   mButtonRun->setText( tr( "Run" ) );
 
+  // Rename Yes button. Yes is used to ensure same position of Run and Change Parameters with respect to Close button.
+  mButtonChangeParameters = mButtonBox->button( QDialogButtonBox::Yes );
+  mButtonChangeParameters->setText( tr( "Change Parameters" ) );
+
   buttonCancel->setEnabled( false );
   mButtonClose = mButtonBox->button( QDialogButtonBox::Close );
 
-  mButtonChangeParameters = new QPushButton( tr( "Change Parameters" ) );
-  mButtonBox->addButton( mButtonChangeParameters, QDialogButtonBox::ActionRole );
-
+  connect( mButtonRun, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::runAlgorithm );
   connect( mButtonChangeParameters, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::showParameters );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsProcessingAlgorithmDialogBase::closeClicked );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProcessingAlgorithmDialogBase::openHelp );
   connect( mButtonCollapse, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::toggleCollapsed );
   connect( splitter, &QSplitter::splitterMoved, this, &QgsProcessingAlgorithmDialogBase::splitterChanged );
