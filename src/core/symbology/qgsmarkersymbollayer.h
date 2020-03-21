@@ -855,6 +855,22 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setFontFamily( const QString &family ) { mFontFamily = family; }
 
     /**
+     * Returns the font style for the associated font which will be used to render the point.
+     *
+     * \see setFontStyle()
+     * \since QGIS 3.14
+     */
+    QString fontStyle() const { return mFontStyle; }
+
+    /**
+     * Sets the font \a style for the font which will be used to render the point.
+     *
+     * \see fontStyle()
+     * \since QGIS 3.14
+     */
+    void setFontStyle( const QString &style ) { mFontStyle = style; }
+
+    /**
      * Returns the character(s) used when rendering points.
      *
      * \see setCharacter()
@@ -959,6 +975,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
   protected:
 
     QString mFontFamily;
+    QString mFontStyle;
     QFontMetrics *mFontMetrics = nullptr;
     QString mString;
 
