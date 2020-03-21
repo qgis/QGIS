@@ -504,15 +504,15 @@ void QgsTextFormatWidget::initWidget()
 
   // set button group for stacked widget
   QButtonGroup *tabBtuttonGroup = new QButtonGroup( this );
-  tabBtuttonGroup->addButton( mTextButton, 0 );
-  tabBtuttonGroup->addButton( mFormattingButton, 1 );
-  tabBtuttonGroup->addButton( mBufferButton, 2 );
-  tabBtuttonGroup->addButton( mMaskButton, 3 );
-  tabBtuttonGroup->addButton( mBackgroundButton, 4 );
-  tabBtuttonGroup->addButton( mShadowButton, 5 );
-  tabBtuttonGroup->addButton( mCalloutButton, 6 );
-  tabBtuttonGroup->addButton( mPlacementButton, 7 );
-  tabBtuttonGroup->addButton( mRenderButton, 8 );
+  QList<QToolButton *> buttons = {mTextButton, mFormattingButton, mBufferButton,
+                                  mMaskButton, mBackgroundButton, mShadowButton,
+                                  mCalloutButton, mPlacementButton, mRenderButton
+                                 };
+  for ( int id = 0; id < buttons.count(); id++ )
+  {
+    tabBtuttonGroup->addButton( buttons.at( id ), id );
+    buttons.at( id )->setIconSize( QSize( iconSize32, iconSize18 ) );
+  }
   // set correct initial tab to match displayed setting page
   tabBtuttonGroup->buttons().at( mLabelStackedWidget->currentIndex() )->setChecked( true );
 
