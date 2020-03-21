@@ -84,7 +84,7 @@ void TestQgsRangeWidgetWrapper::init()
 {
   vl = qgis::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326" ),
                                           QStringLiteral( "myvl" ),
-                                          QLatin1Literal( "memory" ) );
+                                          QLatin1String( "memory" ) );
 
   // add fields
   QList<QgsField> fields;
