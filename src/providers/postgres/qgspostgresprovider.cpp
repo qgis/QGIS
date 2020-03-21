@@ -3312,6 +3312,19 @@ QgsVectorDataProvider::Capabilities QgsPostgresProvider::capabilities() const
   return mEnabledCapabilities;
 }
 
+QgsFeatureSource::SpatialIndexPresence QgsPostgresProvider::hasSpatialIndex() const
+{
+  QgsPostgresProviderConnection conn( mUri.uri(), QVariantMap() );
+  try
+  {
+    return conn.spatialIndexExists( mUri.schema(), mUri.table(), mUri.geometryColumn() ) ? SpatialIndexPresent : SpatialIndexNotPresent;
+  }
+  catch ( QgsProviderConnectionException & )
+  {
+    return SpatialIndexUnknown;
+  }
+}
+
 bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
   if ( theSQL.trimmed() == mSqlWhereClause )
@@ -5342,24 +5355,84 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri )
 {
   const QgsDataSourceUri dsUri { uri };
-  return
-  {
-    { QStringLiteral( "dbname" ), dsUri.database() },
-    { QStringLiteral( "host" ), dsUri.host() },
-    { QStringLiteral( "port" ), dsUri.port() },
-    { QStringLiteral( "service" ), dsUri.service() },
-    { QStringLiteral( "username" ), dsUri.username() },
-    { QStringLiteral( "password" ), dsUri.password() },
-    { QStringLiteral( "authcfg" ), dsUri.authConfigId() },
-    { QStringLiteral( "type" ), dsUri.wkbType() },
-    { QStringLiteral( "selectatid" ), dsUri.selectAtIdDisabled() },
-    { QStringLiteral( "table" ), dsUri.table() },
-    { QStringLiteral( "schema" ), dsUri.schema() },
-    { QStringLiteral( "key" ), dsUri.keyColumn() },
-    { QStringLiteral( "srid" ), dsUri.srid() },
-    { QStringLiteral( "estimatedmetadata" ), dsUri.useEstimatedMetadata() },
-    { QStringLiteral( "sslmode" ), dsUri.sslMode() },
-    { QStringLiteral( "sql" ), dsUri.sql() },
-    { QStringLiteral( "geometrycolumn" ), dsUri.geometryColumn() },
-  };
+  QVariantMap uriParts;
+
+  if ( ! dsUri.database().isEmpty() )
+    uriParts[ QStringLiteral( "dbname" ) ] = dsUri.database();
+  if ( ! dsUri.host().isEmpty() )
+    uriParts[ QStringLiteral( "host" ) ] = dsUri.host();
+  if ( ! dsUri.port().isEmpty() )
+    uriParts[ QStringLiteral( "port" ) ] = dsUri.port();
+  if ( ! dsUri.service().isEmpty() )
+    uriParts[ QStringLiteral( "service" ) ] = dsUri.service();
+  if ( ! dsUri.username().isEmpty() )
+    uriParts[ QStringLiteral( "username" ) ] = dsUri.username();
+  if ( ! dsUri.authConfigId().isEmpty() )
+    uriParts[ QStringLiteral( "authcfg" ) ] = dsUri.authConfigId();
+  if ( dsUri.wkbType() != QgsWkbTypes::Type::Unknown )
+    uriParts[ QStringLiteral( "type" ) ] = dsUri.wkbType();
+
+  uriParts[ QStringLiteral( "selectatid" ) ] = dsUri.selectAtIdDisabled();
+
+  if ( ! dsUri.table().isEmpty() )
+    uriParts[ QStringLiteral( "table" ) ] = dsUri.table();
+  if ( ! dsUri.schema().isEmpty() )
+    uriParts[ QStringLiteral( "schema" ) ] = dsUri.schema();
+  if ( ! dsUri.keyColumn().isEmpty() )
+    uriParts[ QStringLiteral( "key" ) ] = dsUri.keyColumn();
+  if ( ! dsUri.srid().isEmpty() )
+    uriParts[ QStringLiteral( "srid" ) ] = dsUri.srid();
+
+  uriParts[ QStringLiteral( "estimatedmetadata" ) ] = dsUri.useEstimatedMetadata();
+  uriParts[ QStringLiteral( "sslmode" ) ] = dsUri.sslMode();
+
+  if ( ! dsUri.sql().isEmpty() )
+    uriParts[ QStringLiteral( "sql" ) ] = dsUri.sql();
+  if ( ! dsUri.geometryColumn().isEmpty() )
+    uriParts[ QStringLiteral( "geometrycolumn" ) ] = dsUri.geometryColumn();
+
+  return uriParts;
+}
+
+
+QString QgsPostgresProviderMetadata::encodeUri( const QVariantMap &parts )
+{
+  QgsDataSourceUri dsUri;
+  if ( parts.contains( QStringLiteral( "dbname" ) ) )
+    dsUri.setDatabase( parts.value( QStringLiteral( "dbname" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "port" ) ) )
+    dsUri.setParam( QStringLiteral( "port" ), parts.value( QStringLiteral( "port" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "host" ) ) )
+    dsUri.setParam( QStringLiteral( "host" ), parts.value( QStringLiteral( "host" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "service" ) ) )
+    dsUri.setParam( QStringLiteral( "service" ), parts.value( QStringLiteral( "service" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "username" ) ) )
+    dsUri.setUsername( parts.value( QStringLiteral( "username" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "password" ) ) )
+    dsUri.setPassword( parts.value( QStringLiteral( "password" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "authcfg" ) ) )
+    dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "type" ) ) )
+    dsUri.setParam( QStringLiteral( "type" ), QgsWkbTypes::displayString( static_cast<QgsWkbTypes::Type>( parts.value( QStringLiteral( "type" ) ).toInt() ) ) );
+  if ( parts.contains( QStringLiteral( "selectatid" ) ) )
+    dsUri.setParam( QStringLiteral( "selectatid" ), parts.value( QStringLiteral( "selectatid" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "table" ) ) )
+    dsUri.setTable( parts.value( QStringLiteral( "table" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "schema" ) ) )
+    dsUri.setSchema( parts.value( QStringLiteral( "schema" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "key" ) ) )
+    dsUri.setParam( QStringLiteral( "key" ), parts.value( QStringLiteral( "key" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "srid" ) ) )
+    dsUri.setSrid( parts.value( QStringLiteral( "srid" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "estimatedmetadata" ) ) )
+    dsUri.setParam( QStringLiteral( "estimatedmetadata" ), parts.value( QStringLiteral( "estimatedmetadata" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "sslmode" ) ) )
+    dsUri.setParam( QStringLiteral( "sslmode" ), QgsDataSourceUri::encodeSslMode( static_cast<QgsDataSourceUri::SslMode>( parts.value( QStringLiteral( "sslmode" ) ).toInt( ) ) ) );
+  if ( parts.contains( QStringLiteral( "sql" ) ) )
+    dsUri.setSql( parts.value( QStringLiteral( "sql" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "checkPrimaryKeyUnicity" ) ) )
+    dsUri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), parts.value( QStringLiteral( "checkPrimaryKeyUnicity" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "geometrycolumn" ) ) )
+    dsUri.setGeometryColumn( parts.value( QStringLiteral( "geometrycolumn" ) ).toString() );
+  return dsUri.uri();
 }

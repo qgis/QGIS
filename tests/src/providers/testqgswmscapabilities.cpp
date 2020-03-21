@@ -79,6 +79,35 @@ class TestQgsWmsCapabilities: public QObject
                 QString( "http://www.example.com/fb.png" ) );
     }
 
+    void wmstSettings()
+    {
+      QgsWmsSettings settings = QgsWmsSettings();
+
+      QMap<QString, QString> map = { { "2020-02-13T12:00:00Z", "yyyy-MM-ddThh:mm:ssZ" },
+        { "2020-02-13", "yyyy-MM-dd" }
+      };
+      QMapIterator<QString, QString> iterator( map );
+
+      while ( iterator.hasNext() )
+      {
+        iterator.next();
+        QDateTime date = settings.parseWmstDateTimes( iterator.key() );
+        QCOMPARE( date.toString( iterator.value() ), iterator.key() );
+      }
+
+      QList<QString> resolutionList =
+      {
+        "P1D", "P1Y", "PT5M", "P1DT1H",
+        "P1Y1DT3S", "P1MT1M", "PT23H3M", "P26DT23H3M", "PT30S"
+      };
+
+      for ( QString resolutionText : resolutionList )
+      {
+        QgsWmstResolution resolution = settings.parseWmstResolution( resolutionText );
+        QCOMPARE( resolution.text(), resolutionText );
+      }
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsWmsCapabilities )

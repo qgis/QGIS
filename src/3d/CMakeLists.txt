@@ -135,6 +135,7 @@ SET(QGIS_3D_PRIVATE_HDRS
 )
 
 QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
+QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS ../../resources/3d/textures/textures.qrc)
 
 # install headers
 
@@ -170,6 +171,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 
 #############################################################
 # qgis_3d library
+
 
 ADD_LIBRARY(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCC_SRCS} ${QGIS_3D_PRIVATE_HDRS})
 

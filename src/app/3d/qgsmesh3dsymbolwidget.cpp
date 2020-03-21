@@ -59,12 +59,19 @@ QgsMesh3dSymbolWidget::QgsMesh3dSymbolWidget( QgsMeshLayer *meshLayer, QWidget *
 
   connect( mCheckBoxVerticalMagnitudeRelative, &QCheckBox::clicked, this, &QgsMesh3dSymbolWidget::changed );
 
+  connect( mGroupBoxArrowsSettings, &QGroupBox::toggled, this, &QgsMesh3dSymbolWidget::changed );
+
+  connect( mArrowsSpacingSpinBox, static_cast<void ( QDoubleSpinBox::* )()>( &QDoubleSpinBox::editingFinished ),
+           this, &QgsMesh3dSymbolWidget::changed );
+
+  connect( mArrowsFixedSizeCheckBox, &QCheckBox::clicked, this, &QgsMesh3dSymbolWidget::changed );
+
   onColoringTypeChanged();
 }
 
 void QgsMesh3dSymbolWidget::setSymbol( const QgsMesh3DSymbol &symbol )
 {
-  // Advanced symbology
+  mSymbol = symbol;
   mChkSmoothTriangles->setChecked( symbol.smoothedTriangles() );
   mChkWireframe->setChecked( symbol.wireframeEnabled() );
   mColorButtonWireframe->setColor( symbol.wireframeLineColor() );
@@ -79,6 +86,10 @@ void QgsMesh3dSymbolWidget::setSymbol( const QgsMesh3DSymbol &symbol )
   setColorRampMinMax( symbol.colorRampShader().minimumValue(), symbol.colorRampShader().maximumValue() );
   mComboBoxDatasetVertical->setCurrentIndex( symbol.verticalDatasetGroupIndex() );
   mCheckBoxVerticalMagnitudeRelative->setChecked( symbol.isVerticalMagnitudeRelative() );
+
+  mGroupBoxArrowsSettings->setChecked( symbol.arrowsEnabled() );
+  mArrowsSpacingSpinBox->setValue( symbol.arrowsSpacing() );
+  mArrowsFixedSizeCheckBox->setChecked( symbol.arrowsFixedSize() );
 }
 
 void QgsMesh3dSymbolWidget::configureForTerrain()
@@ -132,7 +143,7 @@ double QgsMesh3dSymbolWidget::lineEditValue( const QLineEdit *lineEdit ) const
 
 QgsMesh3DSymbol QgsMesh3dSymbolWidget::symbol() const
 {
-  QgsMesh3DSymbol sym;
+  QgsMesh3DSymbol sym = mSymbol;
 
   sym.setSmoothedTriangles( mChkSmoothTriangles->isChecked() );
   sym.setWireframeEnabled( mChkWireframe->isChecked() );
@@ -146,6 +157,10 @@ QgsMesh3DSymbol QgsMesh3dSymbolWidget::symbol() const
 
   if ( sym.renderingStyle() == QgsMesh3DSymbol::ColorRamp )
     sym.setColorRampShader( mColorRampShaderWidget->shader() );
+
+  sym.setArrowsEnabled( mGroupBoxArrowsSettings->isChecked() );
+  sym.setArrowsSpacing( mArrowsSpacingSpinBox->value() );
+  sym.setArrowsFixedSize( mArrowsFixedSizeCheckBox->isChecked() );
 
   return sym;
 }

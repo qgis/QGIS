@@ -170,7 +170,7 @@ Either the ``parent`` widget must be set or the caller becomes
 responsible for deleting the returned widget.
 
 .. deprecated::
-   QGIS 3.10 - use QgsGui.providerGuiRegistry()->createDataSourceWidget() instead
+   QGIS 3.10 - use QgsGui.sourceSelectProviderRegistry()->createDataSourceWidget() instead
 %End
 
     QList< QgsDataItemProvider * > dataItemProviders( const QString &providerKey ) const /Factory/;

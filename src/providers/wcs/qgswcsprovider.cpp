@@ -575,7 +575,7 @@ bool QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
     // TODO: check also rotated
     if ( cacheCrs.isValid() && !mFixRotate )
     {
-      // using qgsDoubleNear is too precise, example accetable difference:
+      // using qgsDoubleNear is too precise, example acceptable difference:
       // 179.9999999306699863 x 179.9999999306700431
       if ( !qgsDoubleNearSig( cacheExtent.xMinimum(), viewExtent.xMinimum(), 10 ) ||
            !qgsDoubleNearSig( cacheExtent.yMinimum(), viewExtent.yMinimum(), 10 ) ||

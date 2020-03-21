@@ -103,7 +103,7 @@ class QgsOgrDataItemProvider final: public QgsDataItemProvider
 {
   public:
     QString name() override;
-
+    QString dataProviderKey() const override;
     int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;

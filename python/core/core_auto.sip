@@ -30,17 +30,21 @@
 %Include auto_generated/qgscolorscheme.sip
 %Include auto_generated/qgscolorschemeregistry.sip
 %Include auto_generated/qgsconditionalstyle.sip
+%Include auto_generated/qgsconnectionregistry.sip
 %Include auto_generated/qgscoordinateformatter.sip
 %Include auto_generated/qgscoordinatereferencesystem.sip
 %Include auto_generated/qgscoordinatetransform.sip
 %Include auto_generated/qgscoordinatetransformcontext.sip
 %Include auto_generated/qgscredentials.sip
 %Include auto_generated/qgsdartmeasurement.sip
+%Include auto_generated/qgsdatabaseschemamodel.sip
+%Include auto_generated/qgsdatabasetablemodel.sip
 %Include auto_generated/qgsdatadefinedsizelegend.sip
 %Include auto_generated/qgsdataitem.sip
 %Include auto_generated/qgsdataitemprovider.sip
 %Include auto_generated/qgsdataitemproviderregistry.sip
 %Include auto_generated/qgsdataprovider.sip
+%Include auto_generated/qgsdataprovidertemporalcapabilities.sip
 %Include auto_generated/qgsdatasourceuri.sip
 %Include auto_generated/qgsdatetimestatisticalsummary.sip
 %Include auto_generated/qgsdatumtransform.sip
@@ -74,6 +78,7 @@
 %Include auto_generated/qgsfieldproxymodel.sip
 %Include auto_generated/qgsfields.sip
 %Include auto_generated/qgsfiledownloader.sip
+%Include auto_generated/qgsfilefiltergenerator.sip
 %Include auto_generated/qgsfileutils.sip
 %Include auto_generated/qgsfontutils.sip
 %Include auto_generated/qgsgeometryoptions.sip
@@ -151,6 +156,7 @@
 %Include auto_generated/qgsprojectproperty.sip
 %Include auto_generated/qgsprojectstorage.sip
 %Include auto_generated/qgsprojectstorageregistry.sip
+%Include auto_generated/qgsprojecttimesettings.sip
 %Include auto_generated/qgsprojecttranslator.sip
 %Include auto_generated/qgsprojectversion.sip
 %Include auto_generated/qgsprojectviewsettings.sip
@@ -158,6 +164,7 @@
 %Include auto_generated/qgsproperty.sip
 %Include auto_generated/qgspropertycollection.sip
 %Include auto_generated/qgspropertytransformer.sip
+%Include auto_generated/qgsproviderconnectionmodel.sip
 %Include auto_generated/qgsprovidermetadata.sip
 %Include auto_generated/qgsproviderregistry.sip
 %Include auto_generated/qgsproxyprogresstask.sip
@@ -190,8 +197,11 @@
 %Include auto_generated/qgsstringutils.sip
 %Include auto_generated/qgstablecell.sip
 %Include auto_generated/qgstaskmanager.sip
+%Include auto_generated/qgstemporalcontroller.sip
+%Include auto_generated/qgstemporalnavigationobject.sip
 %Include auto_generated/qgstemporalproperty.sip
 %Include auto_generated/qgstemporalrangeobject.sip
+%Include auto_generated/qgstemporalutils.sip
 %Include auto_generated/qgstessellator.sip
 %Include auto_generated/qgstestutils.sip
 %Include auto_generated/qgstextrenderer.sip
@@ -206,6 +216,7 @@
 %Include auto_generated/qgsvector.sip
 %Include auto_generated/qgsvector3d.sip
 %Include auto_generated/qgsvectordataprovider.sip
+%Include auto_generated/qgsvectordataprovidertemporalcapabilities.sip
 %Include auto_generated/qgsvectorfilewriter.sip
 %Include auto_generated/qgsvectorfilewritertask.sip
 %Include auto_generated/qgsvectorlayer.sip
@@ -414,6 +425,7 @@
 %Include auto_generated/processing/models/qgsprocessingmodelalgorithm.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildalgorithm.sip
 %Include auto_generated/processing/models/qgsprocessingmodelchildparametersource.sip
+%Include auto_generated/processing/models/qgsprocessingmodelcomment.sip
 %Include auto_generated/processing/models/qgsprocessingmodelcomponent.sip
 %Include auto_generated/processing/models/qgsprocessingmodeloutput.sip
 %Include auto_generated/processing/models/qgsprocessingmodelparameter.sip
@@ -447,6 +459,7 @@
 %Include auto_generated/raster/qgsrasterblock.sip
 %Include auto_generated/raster/qgsrasterchecker.sip
 %Include auto_generated/raster/qgsrasterdataprovider.sip
+%Include auto_generated/raster/qgsrasterdataprovidertemporalcapabilities.sip
 %Include auto_generated/raster/qgsrasterdrawer.sip
 %Include auto_generated/raster/qgsrasterfilewriter.sip
 %Include auto_generated/raster/qgsrasterfilewritertask.sip
@@ -475,6 +488,7 @@
 %Include auto_generated/scalebar/qgsdoubleboxscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsnumericscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsscalebarrenderer.sip
+%Include auto_generated/scalebar/qgsscalebarrendererregistry.sip
 %Include auto_generated/scalebar/qgsscalebarsettings.sip
 %Include auto_generated/scalebar/qgssingleboxscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsticksscalebarrenderer.sip

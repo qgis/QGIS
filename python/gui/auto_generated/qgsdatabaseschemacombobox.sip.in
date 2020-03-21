@@ -1,0 +1,106 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdatabaseschemacombobox.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsDatabaseSchemaComboBox : QWidget
+{
+%Docstring
+The QgsDatabaseSchemaComboBox class is a combo box which displays the list of schemas for a specific database connection.
+
+.. warning::
+
+   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   in order for the combobox to work correctly.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsdatabaseschemacombobox.h"
+%End
+  public:
+
+    explicit QgsDatabaseSchemaComboBox( const QString &provider, const QString &connection, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDatabaseSchemaComboBox, for the specified ``provider`` and ``connection``.
+
+.. warning::
+
+   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   in order for the model to work correctly.
+%End
+
+    explicit QgsDatabaseSchemaComboBox( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDatabaseSchemaComboBox, for the specified ``connection``.
+
+Ownership of ``connection`` is transferred to the combobox.
+%End
+
+    void setAllowEmptySchema( bool allowEmpty );
+%Docstring
+Sets whether an optional empty schema ("not set") option is present in the combobox.
+
+.. seealso:: :py:func:`allowEmptySchema`
+%End
+
+    bool allowEmptySchema() const;
+%Docstring
+Returns ``True`` if the combobox allows the empty schema ("not set") choice.
+
+.. seealso:: :py:func:`setAllowEmptySchema`
+%End
+
+    QString currentSchema() const;
+%Docstring
+Returns the name of the current schema selected in the combo box.
+%End
+
+    QComboBox *comboBox();
+%Docstring
+Returns the combobox portion of the widget.
+%End
+
+  public slots:
+
+    void setSchema( const QString &schema );
+%Docstring
+Sets the current schema selected in the combo box.
+%End
+
+    void setConnectionName( const QString &connection, const QString &provider = QString() );
+%Docstring
+Sets the database connection name from which to retrieve the available schemas.
+
+Optionally the ``provider`` can be reset too.
+%End
+
+    void refreshSchemas();
+%Docstring
+Refreshes the list of available schemas.
+%End
+
+  signals:
+    void schemaChanged( const QString &schema );
+%Docstring
+Emitted whenever the currently selected schema changes.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdatabaseschemacombobox.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

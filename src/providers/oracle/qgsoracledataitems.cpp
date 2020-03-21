@@ -121,7 +121,7 @@ bool deleteLayer( const QString &uri, QString &errCause )
 
 // ---------------------------------------------------------------------------
 QgsOracleConnectionItem::QgsOracleConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "ORACLE" ) )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
@@ -475,7 +475,7 @@ QString QgsOracleLayerItem::createUri()
 
 // ---------------------------------------------------------------------------
 QgsOracleOwnerItem::QgsOracleOwnerItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "ORACLE" ) )
 {
   mIconName = QStringLiteral( "mIconDbOwner.png" );
   //not fertile, since children are created by QgsOracleConnectionItem
@@ -536,7 +536,7 @@ void QgsOracleOwnerItem::addLayer( const QgsOracleLayerProperty &layerProperty )
 
 // ---------------------------------------------------------------------------
 QgsOracleRootItem::QgsOracleRootItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "ORACLE" ) )
 {
   mIconName = QStringLiteral( "mIconOracle.svg" );
   populate();
@@ -597,7 +597,18 @@ QString QgsOracleDataItemProvider::name()
   return QStringLiteral( "ORACLE" );
 }
 
+QString QgsOracleDataItemProvider::dataProviderKey() const
+{
+  return QStringLiteral( "oracle" );
+}
+
 int QgsOracleDataItemProvider::capabilities() const
 {
   return QgsDataProvider::Database;
+}
+
+
+bool QgsOracleOwnerItem::layerCollection() const
+{
+  return true;
 }

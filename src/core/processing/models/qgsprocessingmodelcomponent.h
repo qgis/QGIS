@@ -21,6 +21,9 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include <QPointF>
+#include <QSizeF>
+
+class QgsProcessingModelComment;
 
 ///@cond NOT_STABLE
 
@@ -32,6 +35,8 @@
 class CORE_EXPORT QgsProcessingModelComponent
 {
   public:
+
+    virtual ~QgsProcessingModelComponent() = default;
 
     /**
      * Returns the friendly description text for the component.
@@ -57,6 +62,58 @@ class CORE_EXPORT QgsProcessingModelComponent
      */
     void setPosition( QPointF position );
 
+    /**
+     * Returns the size of the model component within the graphical modeler.
+     * \see setSize()
+     * \since QGIS 3.14
+     */
+    QSizeF size() const;
+
+    /**
+     * Sets the \a size of the model component within the graphical modeler.
+     * \see size()
+     * \since QGIS 3.14
+     */
+    void setSize( QSizeF size );
+
+    /**
+     * Returns TRUE if the link points for the specified \a edge should be shown collapsed or not.
+     * \see setLinksCollapsed()
+     */
+    bool linksCollapsed( Qt::Edge edge ) const;
+
+    /**
+     * Sets whether the link points for the specified \a edge for this component should be shown collapsed
+     * in the graphical modeler.
+     * \see linksCollapsed()
+     */
+    void setLinksCollapsed( Qt::Edge edge, bool collapsed );
+
+    /**
+     * Returns the comment attached to this component (may be NULLPTR)
+     * \see setComment()
+     */
+    SIP_SKIP virtual const QgsProcessingModelComment *comment() const { return nullptr; }
+
+    /**
+     * Returns the comment attached to this component (may be NULLPTR)
+     * \see setComment()
+     */
+    virtual QgsProcessingModelComment *comment() { return nullptr; }
+
+    /**
+     * Sets the \a comment attached to this component.
+     * \see comment()
+     */
+    virtual void setComment( const QgsProcessingModelComment &comment );
+
+    /**
+     * Clones the component.
+     *
+     * Ownership is transferred to the caller.
+     */
+    virtual QgsProcessingModelComponent *clone() const = 0 SIP_FACTORY;
+
   protected:
 
     //! Only subclasses can be created
@@ -80,12 +137,30 @@ class CORE_EXPORT QgsProcessingModelComponent
      */
     void restoreCommonProperties( const QVariantMap &map );
 
+    /**
+     * Copies all non-specific definition properties from the \a other component definition.
+     *
+     * This includes properties like the size and position of the component, but not properties
+     * like the specific algorithm or input details.
+     *
+     * \since QGIS 3.14
+     */
+    void copyNonDefinitionProperties( const QgsProcessingModelComponent &other );
+
   private:
+
+    static constexpr double DEFAULT_COMPONENT_WIDTH = 200;
+    static constexpr double DEFAULT_COMPONENT_HEIGHT = 30;
 
     //! Position of component within model
     QPointF mPosition;
 
     QString mDescription;
+
+    QSizeF mSize = QSizeF( DEFAULT_COMPONENT_WIDTH, DEFAULT_COMPONENT_HEIGHT );
+
+    bool mTopEdgeLinksCollapsed = true;
+    bool mBottomEdgeLinksCollapsed = true;
 
 };
 

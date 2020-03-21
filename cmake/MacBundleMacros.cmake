@@ -166,6 +166,11 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
         FOREACH (QP ${QGPLUGLIST})
             INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QP}")
         ENDFOREACH (QP)
+        # quick plugin
+        IF (${OSX_HAVE_LOADERPATH})
+            SET (LIB_CHG_TO "${ATLOADER}/../../${LIBMID}/${LIBPOST}")
+        ENDIF ()
+        INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QAPPDIR}/qml/QgsQuick/libqgis_quick_plugin.dylib")
         # qgis python
         IF (${OSX_HAVE_LOADERPATH})
             SET (LIB_CHG_TO "${ATLOADER}/../../${QGIS_DATA_SUBDIR_REV}/${LIBMID}/${LIBPOST}")

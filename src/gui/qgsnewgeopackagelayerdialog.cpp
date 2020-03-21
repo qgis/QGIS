@@ -31,11 +31,13 @@
 #include "qgshelp.h"
 #include "qgsogrutils.h"
 #include "qgsgui.h"
+#include "qgsproviderconnectionmodel.h"
 
 #include <QPushButton>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QCompleter>
 
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
@@ -129,6 +131,15 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
     }
     checkOk();
   } );
+
+  QgsProviderConnectionModel *ogrProviderModel = new QgsProviderConnectionModel( QStringLiteral( "ogr" ), this );
+
+  QCompleter *completer = new QCompleter( this );
+  completer->setModel( ogrProviderModel );
+  completer->setCompletionRole( QgsProviderConnectionModel::RoleUri );
+  completer->setCompletionMode( QCompleter::PopupCompletion );
+  completer->setFilterMode( Qt::MatchContains );
+  mDatabase->lineEdit()->setCompleter( completer );
 }
 
 void QgsNewGeoPackageLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )

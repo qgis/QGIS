@@ -28,6 +28,10 @@
 #include <Qt3DRender/QBuffer>
 #include <QByteArray>
 
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayerutils.h"
+#include "qgstriangularmesh.h"
+
 class ColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
 {
 
@@ -50,7 +54,6 @@ class ColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
       QList<QgsColorRampShader::ColorRampItem> colorItemList = mColorRampShader.colorRampItemList();
       int size = colorItemList.count() ;
 
-      //dataPtr->setWidth( colorItemList.count() );
       dataPtr->setWidth( size );
       dataPtr->setHeight( 1 );
       dataPtr->setDepth( 1 );
@@ -142,13 +145,101 @@ class ColorRampTexture: public Qt3DRender::QAbstractTextureImage
 };
 
 
-QgsMesh3dMaterial::QgsMesh3dMaterial( const QgsMesh3DSymbol &symbol, MagnitudeType magnitudeType ):
+class ArrowsTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
+{
+  public:
+    ArrowsTextureGenerator( const QVector<QgsVector> &vectors, const QSize &size, bool fixedSize, double maxVectorLength ):
+      mVectors( vectors ), mSize( size ), mFixedSize( fixedSize ), mMaxVectorLength( maxVectorLength )
+    {}
+
+    Qt3DRender::QTextureImageDataPtr operator()() override
+    {
+      Qt3DRender::QTextureImageDataPtr dataPtr = Qt3DRender::QTextureImageDataPtr::create();
+      dataPtr->setFormat( QOpenGLTexture::RG32F );
+      dataPtr->setTarget( QOpenGLTexture::Target2D );
+      dataPtr->setPixelFormat( QOpenGLTexture::RG );
+      dataPtr->setPixelType( QOpenGLTexture::Float32 );
+
+      QByteArray data;
+
+      dataPtr->setWidth( mSize.width() );
+      dataPtr->setHeight( mSize.height() );
+      dataPtr->setDepth( 1 );
+      dataPtr->setFaces( 1 );
+      dataPtr->setLayers( 1 );
+      dataPtr->setMipLevels( 1 );
+
+      if ( mSize.isValid() )
+      {
+        data.resize( 2 * mSize.width()*mSize.height()*sizeof( float ) );
+        float *fptr = reinterpret_cast<float *>( data.data() );
+        for ( int i = 0; i < mSize.width()*mSize.height(); ++i )
+        {
+          if ( mFixedSize )
+            *fptr++ = 1;
+          else
+            *fptr++ = mVectors.at( i ).length() / mMaxVectorLength;
+
+          *fptr++ = mVectors.at( i ).angle();
+        }
+      }
+
+      dataPtr->setData( data, sizeof( float ) ); //size is the size of the type, here float
+      return dataPtr;
+    }
+
+    bool operator ==( const Qt3DRender::QTextureImageDataGenerator &other ) const override
+    {
+      const ArrowsTextureGenerator *otherFunctor = functor_cast<ArrowsTextureGenerator>( &other );
+      if ( !otherFunctor )
+        return false;
+
+      return ( otherFunctor->mVectors == mVectors &&
+               otherFunctor->mSize == mSize &&
+               otherFunctor->mFixedSize == mFixedSize );
+    }
+
+  private:
+    const QVector<QgsVector> mVectors;
+    const QSize mSize;
+    const bool mFixedSize;
+    const double mMaxVectorLength;
+
+    QT3D_FUNCTOR( ArrowsTextureGenerator )
+};
+
+
+class ArrowsGridTexture: public Qt3DRender::QAbstractTextureImage
+{
+  public:
+    ArrowsGridTexture( const QVector<QgsVector> &vectors, const QSize &size, bool fixedSize, double maxVectorLength ):
+      mVectors( vectors ), mSize( size ), mFixedSize( fixedSize ), mMaxVectorLength( maxVectorLength )
+    {}
+
+  protected:
+    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override
+    {
+      return Qt3DRender::QTextureImageDataGeneratorPtr( new ArrowsTextureGenerator( mVectors, mSize, mFixedSize, mMaxVectorLength ) );
+    }
+
+  private:
+    const QVector<QgsVector> mVectors;
+    const QSize mSize;
+    const bool mFixedSize;
+    const double mMaxVectorLength;
+};
+
+
+QgsMesh3dMaterial::QgsMesh3dMaterial( QgsMeshLayer *layer, const QgsVector3D &origin, const QgsMesh3DSymbol &symbol, MagnitudeType magnitudeType ):
   mSymbol( symbol ),
-  mMagnitudeType( magnitudeType )
+  mMagnitudeType( magnitudeType ),
+  mOrigin( origin )
 {
   Qt3DRender::QEffect *eff = new Qt3DRender::QEffect( this );
 
   configure();
+  configureArrows( layer );
+
   eff->addTechnique( mTechnique );
   setEffect( eff );
 }
@@ -175,8 +266,6 @@ void QgsMesh3dMaterial::configure()
     colorRampTexture->setMinificationFilter( Qt3DRender::QTexture1D::Linear );
     colorRampTexture->setMagnificationFilter( Qt3DRender::QTexture1D::Linear );
   }
-
-
 
   // Create and configure technique
   mTechnique = new Qt3DRender::QTechnique();
@@ -220,3 +309,74 @@ void QgsMesh3dMaterial::configure()
   mTechnique->addParameter( new Qt3DRender::QParameter( "isScalarMagnitude", ( mMagnitudeType == QgsMesh3dMaterial::ScalarDataSet ) ) );
 }
 
+void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer )
+{
+  if ( !layer )
+    return;
+
+  QgsMeshDatasetIndex datasetIndex = layer->rendererSettings().activeVectorDataset();
+
+  mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsSpacing", float( mSymbol.arrowsSpacing() ) ) ) ;
+  QColor arrowsColor = layer->rendererSettings().vectorSettings( datasetIndex.group() ).color();
+  mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsColor", QVector4D( arrowsColor.redF(), arrowsColor.greenF(), arrowsColor.blueF(), 1.0f ) ) ) ;
+
+  QgsMeshDatasetGroupMetadata meta = layer->dataProvider()->datasetGroupMetadata( datasetIndex );
+
+  QVector<QgsVector> vectors;
+  QSize gridSize;
+  QgsPointXY minCorner;
+  Qt3DRender::QParameter *arrowsEnabledParameter = new Qt3DRender::QParameter( "arrowsEnabled", false );
+  if ( mMagnitudeType != MagnitudeType::ScalarDataSet || !mSymbol.arrowsEnabled() )
+    arrowsEnabledParameter->setValue( false );
+  else
+  {
+    arrowsEnabledParameter->setValue( true );
+    int maxSize = mSymbol.maximumTextureSize();
+    // construct grid
+    QgsRectangle gridExtent = layer->triangularMesh()->extent();
+    gridSize = QSize( maxSize, maxSize );
+    double xSpacing = mSymbol.arrowsSpacing();
+    double ySpacing = mSymbol.arrowsSpacing();
+    // check the size of the grid and adjust the spacing if needed
+    int desiredXSize = int( gridExtent.width() / xSpacing );
+    if ( desiredXSize > maxSize )
+      xSpacing = gridExtent.width() / maxSize;
+    else
+      gridSize.setWidth( desiredXSize );
+
+    int desiredYSize = int( gridExtent.height() / ySpacing );
+    if ( desiredYSize > maxSize )
+      ySpacing = gridExtent.height() / maxSize;
+    else
+      gridSize.setHeight( desiredYSize );
+
+    double xMin = gridExtent.xMinimum() + xSpacing / 2;
+    double yMin = gridExtent.yMinimum() + ySpacing / 2;
+    minCorner = QgsPointXY( xMin, yMin );
+
+    vectors = QgsMeshLayerUtils::griddedVectorValues(
+                layer,
+                datasetIndex,
+                xSpacing,
+                ySpacing,
+                gridSize,
+                minCorner );
+  }
+
+  mTechnique->addParameter( arrowsEnabledParameter )  ;
+
+  Qt3DRender::QTexture2D *arrowsGridTexture = new Qt3DRender::QTexture2D( this );
+  arrowsGridTexture->addTextureImage( new ArrowsGridTexture( vectors, gridSize, mSymbol.arrowsFixedSize(), meta.maximum() ) );
+  arrowsGridTexture->setMinificationFilter( Qt3DRender::QTexture2D::Nearest );
+  arrowsGridTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Nearest );
+
+  Qt3DRender::QTexture2D *arrowTexture = new Qt3DRender::QTexture2D( this );
+  Qt3DRender::QTextureImage *arrowTextureImage = new Qt3DRender::QTextureImage();
+  arrowTextureImage->setSource( QStringLiteral( "qrc:/textures/arrow.png" ) );
+  arrowTexture->addTextureImage( arrowTextureImage );
+  arrowTexture->setMinificationFilter( Qt3DRender::QTexture2D::Nearest );
+  arrowTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Nearest );
+  mTechnique->addParameter( new Qt3DRender::QParameter( "arrowTexture", arrowTexture ) );
+  mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsGridTexture", arrowsGridTexture ) ) ;
+  mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsMinCorner", QVector2D( minCorner.x() - mOrigin.x(), -minCorner.y() + mOrigin.y() ) ) ) ;
+}

@@ -37,14 +37,14 @@ from qgis.core import (QgsProcessingFeedback,
                        QgsProcessingParameterDefinition)
 from qgis.gui import (QgsMessageBar,
                       QgsProjectionSelectionWidget,
-                      QgsProcessingAlgorithmDialogBase)
+                      QgsProcessingAlgorithmDialogBase,
+                      QgsProcessingLayerOutputDestinationWidget)
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.NumberInputPanel import NumberInputPanel
-from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 from processing.gui.wrappers import WidgetWrapper
 from processing.tools.dataobjects import createContext
 
@@ -115,7 +115,7 @@ class GdalParametersPanel(ParametersPanel):
             w.selectionChanged.connect(self.parametersHaveChanged)
         elif isinstance(w, NumberInputPanel):
             w.hasChanged.connect(self.parametersHaveChanged)
-        elif isinstance(w, DestinationSelectionPanel):
+        elif isinstance(w, QgsProcessingLayerOutputDestinationWidget):
             w.destinationChanged.connect(self.parametersHaveChanged)
 
     def parametersHaveChanged(self):

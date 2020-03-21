@@ -275,9 +275,9 @@ qgis:randomextractwithinsubsets: >
   The percentage/count value is not applied to the whole layer, but instead to each category. Categories are defined according to a given attribute, which is also specified as an input parameter for the algorithm.
 
 qgis:randompointsalongline: >
-  This algorithm creates a new point layer, with points placed in the lines of another layer.
+  This algorithm creates a point layer with a given "Number of points" placed on the lines of the "Input layer".
 
-  For each line in the input layer, a given number of points is added to the resulting layer. A minimum distance can be specified to avoid point being too close to each other.
+  The location of each point is determined by randomly selecting a feature, then a segment of the line geometry of that feature, and finally a random position on that segment. A minimum distance between the points can be specified (Euclidean distance).
 
 qgis:randompointsinlayerbounds: >
   This algorithm creates a new point layer with a given number of random points, all of them within the extent of a given layer. A distance factor can be specified, to avoid points being too close to each other.
@@ -330,14 +330,13 @@ qgis:refactorfields: >
 
   The original layer is not modified. A new layer is generated, which contains a modified attribute table, according to the provided fields mapping.
 
+  Rows in orange have constraints in the template layer from which these fields were loaded. Treat this information as a hint during configuration. No constraints will be added on an output layer nor will they be checked or enforced by the algorithm.
+
 qgis:regularpoints: >
   This algorithm creates a point layer with a given number of regular points, all of them within a given extent.
 
 qgis:relief: >
   This algorithm creates a shaded relief layer from digital elevation data.
-
-qgis:removenullgeometries: >
-  This algorithm removes any features which do not have a geometry from a vector layer. All other features will be copied unchanged.
 
 qgis:reprojectlayer: >
   This algorithm reprojects a vector layer. It creates a new layer with the same features as the input one, but with geometries reprojected to a new CRS.

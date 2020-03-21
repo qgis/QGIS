@@ -184,7 +184,7 @@ tests:
         type: rasterhash
 
   - algorithm: native:removenullgeometries
-    name: Remove null geometries
+    name: Remove null geometries (do not remove empty)
     params:
       INPUT:
         name: polys.gml
@@ -192,6 +192,75 @@ tests:
     results:
       OUTPUT:
         name: expected/remove_null_polys.gml
+        type: vector
+
+  - algorithm: native:removenullgeometries
+    name: Remove null geometries (remove empty)
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      REMOVE_EMPTY: true
+    results:
+      OUTPUT:
+        name: expected/remove_null_polys.gml
+        type: vector
+
+  - algorithm: native:removenullgeometries
+    name: Remove null geometries (do not remove empty, but there is empty data)
+    params:
+      INPUT:
+        name: custom/multi_polys_with_empty_geoms.gpkg|layername=multi_polys_with_empty_geoms
+        type: vector
+    results:
+      OUTPUT:
+        name: ogr:dbname='expected/multi_polys_non_null_one_empty.gpkg' table="output" (geom) sql=
+        uri: expected/multi_polys_non_null_one_empty.gpkg|layername=multi_polys_non_null_one_empty
+        type: vector
+
+  - algorithm: native:removenullgeometries
+    name: Remove null geometries (remove empty, and there is empty data)
+    params:
+      INPUT:
+        name: custom/multi_polys_with_empty_geoms.gpkg|layername=multi_polys_with_empty_geoms
+        type: vector
+      REMOVE_EMPTY: true
+    results:
+      OUTPUT:
+        name: expected/multi_polys_non_null_non_empty.gml
+        type: vector
+
+  - algorithm: native:removenullgeometries
+    name: Remove null geometries, 2 outputs (do not remove empty, but there is empty data)
+    params:
+      INPUT:
+        name: custom/multi_polys_with_empty_geoms.gpkg|layername=multi_polys_with_empty_geoms
+        type: vector
+    results:
+      OUTPUT:
+        name: ogr:dbname='expected/results_remove_null_geometries.gpkg' table="output" (geom) sql=
+        uri: expected/results_remove_null_geometries.gpkg|layername=do_not_remove_empty_non_null
+        type: vector
+      NULL_OUTPUT:
+        name: ogr:dbname='expected/results_remove_null_geometries.gpkg' table="output" (geom) sql=
+        uri: expected/results_remove_null_geometries.gpkg|layername=do_not_remove_empty_null
+        type: vector
+
+  - algorithm: native:removenullgeometries
+    name: Remove null geometries, 2 outputs (remove empty, and there is empty data)
+    params:
+      INPUT:
+        name: custom/multi_polys_with_empty_geoms.gpkg|layername=multi_polys_with_empty_geoms
+        type: vector
+      REMOVE_EMPTY: true
+    results:
+      OUTPUT:
+        name: ogr:dbname='expected/results_remove_null_geometries.gpkg' table="output" (geom) sql=
+        uri: expected/results_remove_null_geometries.gpkg|layername=remove_empty_non_null
+        type: vector
+      NULL_OUTPUT:
+        name: ogr:dbname='expected/results_remove_null_geometries.gpkg' table="output" (geom) sql=
+        uri: expected/results_remove_null_geometries.gpkg|layername=remove_empty_null
         type: vector
 
   - algorithm: native:extractbyexpression

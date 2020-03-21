@@ -35,7 +35,6 @@
 #include "qgstriangularmesh.h"
 #include "qgsmesh3daveraging.h"
 
-
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
                             const QString &providerKey,
@@ -165,13 +164,17 @@ QgsTriangularMesh *QgsMeshLayer::triangularMesh( double minimumTriangleSize ) co
 
 void  QgsMeshLayer::updateTriangularMesh( const QgsCoordinateTransform &transform )
 {
+  // Native mesh
+  if ( !mNativeMesh )
+  {
+    // lazy loading of mesh data
+    fillNativeMesh();
+  }
+
+  // Triangular mesh
   if ( mTriangularMeshes.empty() )
   {
     QgsTriangularMesh *baseMesh = new QgsTriangularMesh;
-
-    if ( !mNativeMesh )
-      fillNativeMesh();
-
     mTriangularMeshes.emplace_back( baseMesh );
   }
 
@@ -220,6 +223,11 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
 
   if ( mesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
   {
+    if ( dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    {
+      // Identify for edges not implemented yet
+      return value;
+    }
     int faceIndex = mesh->faceIndexForPoint( point ) ;
     if ( faceIndex >= 0 )
     {
@@ -230,8 +238,11 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
         switch ( dataType )
         {
           case QgsMeshDatasetGroupMetadata::DataOnFaces:
+          {
             value = dataProvider()->datasetValue( index, nativeFaceIndex );
-            break;
+          }
+          break;
+
           case QgsMeshDatasetGroupMetadata::DataOnVertices:
           {
             const QgsMeshFace &face = mesh->triangles()[faceIndex];
@@ -249,7 +260,9 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
             value = QgsMeshDatasetValue( x, y );
           }
           break;
+
           case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+          {
             const QgsMesh3dAveragingMethod *avgMethod = mRendererSettings.averagingMethod();
             if ( avgMethod )
             {
@@ -260,6 +273,10 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
                 value = block2d.value( 0 );
               }
             }
+          }
+          break;
+
+          default:
             break;
         }
       }
@@ -368,16 +385,10 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
 
 QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &rendererContext )
 {
-  // Native mesh
-  if ( !mNativeMesh )
-  {
-    // lazy loading of mesh data
-    fillNativeMesh();
-  }
-
   // Triangular mesh
   updateTriangularMesh( rendererContext.coordinateTransform() );
-  //build overview triangular meshes if needed
+
+  // Build overview triangular meshes if needed
   createSimplifiedMeshes();
 
   // Cache
@@ -446,6 +457,16 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
   node.appendChild( blendModeElement );
 
   return true;
+}
+
+bool QgsMeshLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
+{
+  return writeSymbology( node, doc, errorMessage, context, categories );
+}
+
+bool QgsMeshLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
+{
+  return readSymbology( node, errorMessage, context, categories );
 }
 
 QString QgsMeshLayer::decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const

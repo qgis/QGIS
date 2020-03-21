@@ -29,7 +29,6 @@
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshvectorrenderer.h"
 
-
 ///@cond PRIVATE
 
 #ifndef SIP_RUN
@@ -442,7 +441,7 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
     void storeInField( const QPair<QPoint, FieldData> pixelData ) override;
     void initField() override;
     bool isTraceExists( const QPoint &pixel ) const override;
-    void drawChunkTrace( const std::list<QPair<QPoint, FieldData>> &chunkTrace ) override {Q_UNUSED( chunkTrace );}
+    void drawChunkTrace( const std::list<QPair<QPoint, FieldData>> &chunkTrace ) override {Q_UNUSED( chunkTrace )}
 
     /* Nondimensional time
      * This field store the time spent by the particle in the pixel
@@ -486,6 +485,8 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
  *
  * A class derived from QgsMeshVectorRenderer used to render the particles traces
  *
+ * Not available for data defined on edges
+ *
  * \note not available in Python bindings
  * \since QGIS 3.12
  */
@@ -513,7 +514,9 @@ class QgsMeshVectorStreamlineRenderer: public QgsMeshVectorRenderer
 /**
  * \ingroup core
  *
- * A class derived from QgsMeshVectorRenderer used to render the particles traces
+ * A class derived from QgsMeshVectorRenderer used to render the particles traces.
+ *
+ * Not available for data defined on edges
  *
  * \note not available in Python bindings
  * \since QGIS 3.12

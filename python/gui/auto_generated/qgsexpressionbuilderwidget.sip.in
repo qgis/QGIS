@@ -381,6 +381,32 @@ the selected expression must be a user stored expression.
 .. versionadded:: 3.12
 %End
 
+    void editSelectedUserExpression();
+%Docstring
+Edits the selected expression from the stored user expressions,
+the selected expression must be a user stored expression.
+
+.. versionadded:: 3.14
+%End
+
+    QJsonDocument exportUserExpressions();
+%Docstring
+Create the expressions JSON document storing all the user expressions to be exported.
+
+:return: the created expressions JSON file
+
+.. versionadded:: 3.14
+%End
+
+    void loadExpressionsFromJson( const QJsonDocument &expressionsDocument );
+%Docstring
+Load and permanently store the expressions from the expressions JSON document.
+
+:param expressionsDocument: the parsed expressions JSON file
+
+.. versionadded:: 3.14
+%End
+
     const QList<QgsExpressionItem *> findExpressions( const QString &label );
 %Docstring
 Returns the list of expression items matching a ``label``.

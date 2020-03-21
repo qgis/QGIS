@@ -75,6 +75,8 @@ email                : sherman at mrcc.com
 #include "qgscustomdrophandler.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgstemporalcontroller.h"
 
 /**
  * \ingroup gui
@@ -415,6 +417,15 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   emit destinationCrsChanged();
 }
 
+void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
+{
+  if ( mController )
+    disconnect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
+
+  mController = controller;
+  connect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
+}
+
 void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
 {
   mSettings.setFlags( flags );
@@ -733,14 +744,28 @@ void QgsMapCanvas::setTemporalRange( const QgsDateTimeRange &dateTimeRange )
   if ( temporalRange() == dateTimeRange )
     return;
 
-  mTemporalRangeObject.setTemporalRange( dateTimeRange );
+  mSettings.setTemporalRange( dateTimeRange );
+
+  if ( mCache )
+  {
+    // we need to discard any previously cached images which have temporal properties enabled, so that these will be updated when
+    // the canvas is redrawn
+    const QList<QgsMapLayer *> layerList = mapSettings().layers();
+    for ( QgsMapLayer *layer : layerList )
+    {
+      if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
+        mCache->invalidateCacheForLayer( layer );
+    }
+  }
 
   emit temporalRangeChanged();
+
+  autoRefreshTriggered();
 }
 
 const QgsDateTimeRange &QgsMapCanvas::temporalRange() const
 {
-  return mTemporalRangeObject.temporalRange();
+  return mSettings.temporalRange();
 }
 
 void QgsMapCanvas::mapUpdateTimeout()
@@ -2453,6 +2478,12 @@ const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
 void QgsMapCanvas::startPreviewJobs()
 {
   stopPreviewJobs(); //just in case still running
+
+  //canvas preview jobs aren't compatible with rotation
+  // TODO fix this
+  if ( !qgsDoubleNear( mSettings.rotation(), 0.0 ) )
+    return;
+
   schedulePreviewJob( 0 );
 }
 

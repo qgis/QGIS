@@ -45,6 +45,13 @@ be called for the layer after applying changes. This is true by default, but som
 .. versionadded:: 3.8
 %End
 
+    virtual void syncToLayer( QgsMapLayer *layer );
+%Docstring
+Reset to original (vector layer) values
+
+.. versionadded:: 3.14
+%End
+
   public slots:
 
     virtual void apply() = 0;

@@ -23,9 +23,11 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsCoordinateReferenceSystem,
     QgsRasterLayer,
+    QgsDataSourceUri,
 )
 from qgis.testing import unittest
 from osgeo import gdal
+from qgis.PyQt.QtCore import QTemporaryDir
 
 
 class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderConnectionBase):
@@ -38,6 +40,7 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+
         TestPyQgsProviderConnectionBase.setUpClass()
         cls.postgres_conn = "service='qgis_test'"
         if 'QGIS_PGTEST_DB' in os.environ:
@@ -219,6 +222,7 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         self.assertEqual(conn.executeSql('SELECT NULL::bool'), [[None]])
         self.assertEqual(conn.executeSql('SELECT NULL::text'), [[None]])
         self.assertEqual(conn.executeSql('SELECT NULL::bytea'), [[None]])
+        self.assertEqual(conn.executeSql('SELECT NULL::char'), [[None]])
 
     def test_pk_cols_order(self):
         """Test that PKs are returned in consistent order: see GH #34167"""
@@ -227,6 +231,73 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         conn = md.createConnection(self.uri, {})
         self.assertEqual(conn.table('qgis_test', 'bikes_view').primaryKeyColumns(), ['pk', 'name'])
         self.assertEqual(conn.table('qgis_test', 'some_poly_data_view').primaryKeyColumns(), ['pk', 'geom'])
+
+    def test_char_type_conversion(self):
+        """Test char types: see GH #34806"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+        self.assertEqual(conn.executeSql("SELECT relname, relkind FROM pg_class c, pg_namespace n WHERE n.oid = c.relnamespace AND relname = 'bikes_view' AND c.relkind IN ('t', 'v', 'm')"), [['bikes_view', 'v']])
+
+    def test_foreign_table_csv(self):
+        """Test foreign table"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+        temp_dir = QTemporaryDir()
+        csv_path = os.path.join(temp_dir.path(), 'test.csv')
+        csv = """id,description,geom_x,geom_y
+1,Basic point,10.5,20.82
+2,Integer point,11,22
+3,Final point,13.0,23.0
+"""
+        with open(csv_path, 'w') as f:
+            f.write(csv)
+
+        os.chmod(temp_dir.path(), 0o777)
+        os.chmod(csv_path, 0o777)
+
+        foreign_table_definition = """
+CREATE EXTENSION IF NOT EXISTS file_fdw;
+CREATE SERVER IF NOT EXISTS file_fdw_test_server FOREIGN DATA WRAPPER file_fdw;
+CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
+    id integer not null,
+    name text,
+    x numeric,
+    y numeric ) SERVER file_fdw_test_server OPTIONS ( filename '%s', format 'csv', header 'true' );
+""" % csv_path
+
+        conn.executeSql(foreign_table_definition)
+
+        self.assertNotEquals(conn.tables('public', QgsAbstractDatabaseProviderConnection.Foreign | QgsAbstractDatabaseProviderConnection.Aspatial), [])
+
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Disabled on Travis')
+    def test_foreign_table_server(self):
+        """Test foreign table with server"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+
+        uri = QgsDataSourceUri(conn.uri())
+        host = uri.host()
+        port = uri.port()
+        user = uri.username()
+        dbname = uri.database()
+        password = uri.password()
+        service = uri.service()
+
+        foreign_table_definition = """
+CREATE EXTENSION IF NOT EXISTS postgres_fdw;
+CREATE SERVER IF NOT EXISTS postgres_fdw_test_server FOREIGN DATA WRAPPER postgres_fdw OPTIONS (service '{service}', dbname '{dbname}', host '{host}', port '{port}');
+DROP SCHEMA  IF EXISTS foreign_schema CASCADE;
+CREATE SCHEMA IF NOT EXISTS foreign_schema;
+CREATE USER MAPPING IF NOT EXISTS FOR CURRENT_USER SERVER postgres_fdw_test_server OPTIONS (user '{user}', password '{password}');
+IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
+  FROM SERVER postgres_fdw_test_server
+  INTO foreign_schema;
+""".format(host=host, user=user, port=port, dbname=dbname, password=password, service=service)
+        conn.executeSql(foreign_table_definition)
+        self.assertEquals(conn.tables('foreign_schema', QgsAbstractDatabaseProviderConnection.Foreign)[0].tableName(), 'someData')
 
 
 if __name__ == '__main__':

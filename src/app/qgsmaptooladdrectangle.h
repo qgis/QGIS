@@ -43,6 +43,9 @@ class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
   protected:
     explicit QgsMapToolAddRectangle( QgsMapCanvas *canvas ) = delete; //forbidden
 
+    //! Convenient method to release (activate/deactivate) tools
+    void release( QgsMapMouseEvent *e );
+
     /**
      * The parent map tool, e.g. the add feature tool.
      *  Completed regular shape will be added to this tool by calling its addCurve() method.

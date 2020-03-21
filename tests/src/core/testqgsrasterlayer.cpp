@@ -1,3 +1,4 @@
+
 /***************************************************************************
      testqgsvectorfilewriter.cpp
      --------------------------------------
@@ -1023,19 +1024,18 @@ void TestQgsRasterLayer::testTemporalProperties()
 
   QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeFixedTemporalRange );
 
-  temporalProperties->setMode( QgsRasterLayerTemporalProperties::TemporalMode::ModeTemporalRangesList );
+  temporalProperties->setMode( QgsRasterLayerTemporalProperties::TemporalMode::ModeTemporalRangeFromDataProvider );
 
   // Change temporal properties, save the xml
   QDomElement element = temporalProperties->writeXml( elementRoot, document, QgsReadWriteContext() );
 
   // Restore
   QVERIFY( temporalProperties->readXml( element, QgsReadWriteContext() ) );
-  QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeTemporalRangesList );
+  QCOMPARE( temporalProperties->mode(), QgsRasterLayerTemporalProperties::TemporalMode::ModeTemporalRangeFromDataProvider );
 
   QCOMPARE( mTemporalRasterLayer->temporalProperties()->fixedTemporalRange().begin(), dateTimeRange.begin() );
   QCOMPARE( mTemporalRasterLayer->temporalProperties()->fixedTemporalRange().end(), dateTimeRange.end() );
 }
-
 
 QGSTEST_MAIN( TestQgsRasterLayer )
 #include "testqgsrasterlayer.moc"

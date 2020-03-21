@@ -77,6 +77,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagSupportsInPlaceEdits = 1 << 8, //!< Algorithm supports in-place editing
       FlagKnownIssues = 1 << 9, //!< Algorithm has known issues
       FlagCustomException = 1 << 10, //!< Algorithm raises custom exception notices, don't use the standard ones
+      FlagPruneModelBranchesBasedOnAlgorithmResults = 1 << 11, //!< Algorithm results will cause remaining model branches to be pruned based on the results of running the algorithm
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -628,9 +629,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * to the sink, e.g. via calling QgsProcessingUtils::mapLayerFromString().
      *
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
+     *
+     * \throws QgsProcessingException
      */
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = nullptr ) const SIP_FACTORY;
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = nullptr ) const SIP_THROW( QgsProcessingException ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a name to a feature source.
@@ -854,6 +857,35 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \since QGIS 3.10
      */
     QColor parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a name to a connection name string.
+     *
+     * \since QGIS 3.14
+     */
+    QString parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a name to a database schema name string.
+     *
+     * \since QGIS 3.14
+     */
+    QString parameterAsSchema( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a name to a database table name string.
+     *
+     * \since QGIS 3.14
+     */
+    QString parameterAsDatabaseTableName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a name to a DateTime, or returns an invalid date time if the parameter was not set.
+     *
+     * \since QGIS 3.14
+     */
+    QDateTime parameterAsDateTime( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
 
     /**
      * Returns a user-friendly string to use as an error when a source parameter could

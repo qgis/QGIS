@@ -1521,6 +1521,11 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
 
   scope->addFunction( QStringLiteral( "is_layer_visible" ), new QgsExpressionContextUtils::GetLayerVisibility( layersInMap, scale() ) );
 
+  // maybe one day we'll populate these with real values!
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_start_time" ), QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_end_time" ), QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_interval" ), QVariant(), true ) );
+
   return context;
 }
 

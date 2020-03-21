@@ -19,7 +19,13 @@
 #include "qgslayoututils.h"
 #include <QPainter>
 
-QString QgsTicksScaleBarRenderer::name() const
+QgsTicksScaleBarRenderer::QgsTicksScaleBarRenderer( QgsTicksScaleBarRenderer::TickPosition position )
+  : mTickPosition( position )
+{
+
+}
+
+QString QgsTicksScaleBarRenderer::id() const
 {
   switch ( mTickPosition )
   {
@@ -31,6 +37,40 @@ QString QgsTicksScaleBarRenderer::name() const
       return QStringLiteral( "Line Ticks Middle" );
   }
   return QString();  // to make gcc happy
+}
+
+QString QgsTicksScaleBarRenderer::visibleName() const
+{
+  switch ( mTickPosition )
+  {
+    case TicksUp:
+      return QObject::tr( "Line Ticks Up" );
+    case TicksDown:
+      return QObject::tr( "Line Ticks Down" );
+    case TicksMiddle:
+      return QObject::tr( "Line Ticks Middle" );
+  }
+  return QString();  // to make gcc happy
+
+}
+
+int QgsTicksScaleBarRenderer::sortKey() const
+{
+  switch ( mTickPosition )
+  {
+    case TicksUp:
+      return 5;
+    case TicksDown:
+      return 4;
+    case TicksMiddle:
+      return 3;
+  }
+  return 6;
+}
+
+QgsTicksScaleBarRenderer *QgsTicksScaleBarRenderer::clone() const
+{
+  return new QgsTicksScaleBarRenderer( * this );
 }
 
 void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBarSettings &settings, const ScaleBarContext &scaleContext ) const

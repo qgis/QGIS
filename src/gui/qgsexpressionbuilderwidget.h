@@ -381,6 +381,27 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void removeSelectedUserExpression( );
 
     /**
+     * Edits the selected expression from the stored user expressions,
+     * the selected expression must be a user stored expression.
+     * \since QGIS 3.14
+     */
+    void editSelectedUserExpression();
+
+    /**
+     * Create the expressions JSON document storing all the user expressions to be exported.
+     * \returns the created expressions JSON file
+     * \since QGIS 3.14
+     */
+    QJsonDocument exportUserExpressions();
+
+    /**
+     * Load and permanently store the expressions from the expressions JSON document.
+     * \param expressionsDocument the parsed expressions JSON file
+     * \since QGIS 3.14
+     */
+    void loadExpressionsFromJson( const QJsonDocument &expressionsDocument );
+
+    /**
      * Returns the list of expression items matching a \a label.
      * \since QGIS 3.12
      */
@@ -395,6 +416,20 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void operatorButtonClicked();
     void btnRun_pressed();
     void btnNewFile_pressed();
+
+    /**
+     * Display a file dialog to choose where to store the exported expressions JSON file
+     * and saves them to the selected destination.
+     * \since QGIS 3.14
+     */
+    void exportUserExpressions_pressed();
+
+    /**
+     * Display a file dialog to choose where to load the expression JSON file from
+     * and adds them to user expressions group.
+     * \since QGIS 3.14
+     */
+    void importUserExpressions_pressed();
     void cmbFileNames_currentItemChanged( QListWidgetItem *item, QListWidgetItem *lastitem );
     void expressionTree_doubleClicked( const QModelIndex &index );
     void txtExpressionString_textChanged();
@@ -482,6 +517,21 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QString formatLayerHelp( const QgsMapLayer *layer ) const;
 
     /**
+     * Returns a HTML formatted string for use as a \a recent \a expression item help.
+     */
+    QString formatRecentExpressionHelp( const QString &label, const QString &expression ) const;
+
+    /**
+     * Returns a HTML formatted string for use as a \a user \a expression item help.
+     */
+    QString formatUserExpressionHelp( const QString &label, const QString &expression, const QString &description ) const;
+
+    /**
+     * Returns a HTML formatted string for use as a \a variable item help.
+     */
+    QString formatVariableHelp( const QString &variable, const QString &description, bool showValue, const QVariant &value ) const;
+
+    /**
      * Will be set to TRUE if the current expression text reported an eval error
      * with the context.
      *
@@ -500,6 +550,20 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void loadFieldValues( const QVariantMap &values );
 
     void loadFieldsAndValues( const QMap<QString, QVariantMap> &fieldValues );
+
+    /**
+     * Display a message box to ask the user what to do when an expression
+     * with the same \a label already exists. Answering "Yes" will replace
+     * the old expression with the one from the file, while "No" will keep
+     * the old expression.
+     * \param isApplyToAll whether the decision of the user should be applied to any future label collision
+     * \param isOkToOverwrite whether to overwrite the old expression with the new one in case of label collision
+     * \param label the label of the expression
+     * \param oldExpression the old expression for a given label
+     * \param newExpression the new expression for a given label
+     * \since QGIS 3.14
+     */
+    void showMessageBoxConfirmExpressionOverwrite( bool &isApplyToAll, bool &isOkToOverwrite, const QString &label, const QString &oldExpression, const QString &newExpression );
 
     bool mAutoSave = true;
     QString mFunctionsPath;

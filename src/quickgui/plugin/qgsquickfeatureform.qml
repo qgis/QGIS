@@ -42,6 +42,13 @@ Item {
   property var externalResourceHandler: QtObject {
 
         /**
+         * Called when clicked on the camera icon to capture an image.
+         * \param itemWidget editorWidget for modified field to send valueChanged signal.
+         */
+        property var capturePhoto: function captureImage(itemWidget) {
+        }
+
+        /**
          * Called when clicked on the gallery icon to choose a file in a gallery.
          * \param itemWidget editorWidget for modified field to send valueChanged signal.
          */

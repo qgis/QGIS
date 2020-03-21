@@ -732,7 +732,16 @@ class PostGisDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         schema_part = u"%s," % self.quoteString(schema) if schema is not None else ""
 
-        subquery = u"SELECT st_estimated_extent(%s%s,%s) AS extent" % (
+        pgis_versions = self.getSpatialInfo()[0].split('.')
+        pgis_major_version = int(pgis_versions[0])
+        pgis_minor_version = int(pgis_versions[1])
+        pgis_old = False
+        if pgis_major_version < 2:
+            pgis_old = True
+        elif pgis_major_version == 2 and pgis_minor_version < 1:
+            pgis_old = True
+        subquery = u"SELECT %s(%s%s,%s) AS extent" % (
+            'st_estimated_extent' if pgis_old else 'st_estimatedextent',
             schema_part, self.quoteString(tablename), self.quoteString(geom))
         sql = u"""SELECT st_xmin(extent), st_ymin(extent), st_xmax(extent), st_ymax(extent) FROM (%s) AS subquery """ % subquery
 
@@ -878,7 +887,7 @@ class PostGisDBConnector(DBConnector):
         if comment is None:
             self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS NULL;'.format(schema, tablename))
         else:
-            self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS E\'{2}\';'.format(schema, tablename, comment))
+            self._execute(None, 'COMMENT ON TABLE "{0}"."{1}" IS $escape${2}$escape$;'.format(schema, tablename, comment))
 
     def getComment(self, tablename, field):
         """Returns the comment for a field"""

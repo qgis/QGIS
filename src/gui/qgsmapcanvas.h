@@ -68,6 +68,8 @@ class QgsRubberBand;
 class QgsMapCanvasAnnotationItem;
 class QgsReferencedRectangle;
 
+class QgsTemporalController;
+
 /**
  * \ingroup gui
  * Map canvas is a class for displaying all GIS data types on a canvas.
@@ -122,6 +124,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \since QGIS 2.4
      */
     const QgsMapSettings &mapSettings() const SIP_KEEPREFERENCE;
+
+    /**
+     * Sets the temporal controller, this controller will be used to
+     * update the canvas temporal range.
+     *
+     * \since QGIS 3.14
+     */
+    void setTemporalController( QgsTemporalController *controller );
 
     /**
      * sets destination coordinate reference system
@@ -670,14 +680,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setCustomDropHandlers( const QVector<QPointer<QgsCustomDropHandler >> &handlers ) SIP_SKIP;
 
     /**
-     * Set datetime range for the map canvas.
+     * Set datetime \a range for the map canvas.
      *
-     * Emits temporalRangeChanged(), after a successful update.
+     * The temporalRangeChanged() signal will be emitted if the temporal range has been changed.
+     *
+     * \note Calling setTemporalRange() does not automatically trigger a map refresh.
      *
      * \see temporalRange()
      * \since QGIS 3.14
     */
-    void setTemporalRange( const QgsDateTimeRange &dateTimeRange );
+    void setTemporalRange( const QgsDateTimeRange &range );
 
     /**
      * Returns map canvas datetime range.
@@ -943,9 +955,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Emitted when the map canvas temporal range changes.
-     *
-     * \since QGIS 3.14
-     */
+    *
+    * \since QGIS 3.14
+    */
     void temporalRangeChanged();
 
   protected:
@@ -1007,6 +1019,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! owns pixmap with rendered map and controls rendering
     QgsMapCanvasMap *mMap = nullptr;
 
+    /**
+     * Temporal controller for tracking update of temporal objects
+     * which relates with canvas
+     */
+    QgsTemporalController *mController = nullptr;
+
     //! Flag indicating if the map canvas is frozen.
     bool mFrozen = false;
 
@@ -1037,9 +1055,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! Timer that periodically fires while map rendering is in progress to update the visible map
     QTimer mMapUpdateTimer;
-
-    //! Temporal range object
-    QgsTemporalRangeObject mTemporalRangeObject;
 
     //! Job that takes care of map rendering in background
     QgsMapRendererQImageJob *mJob = nullptr;

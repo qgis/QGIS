@@ -927,6 +927,24 @@ Sets the font ``family`` for the font which will be used to render the point.
 .. seealso:: :py:func:`fontFamily`
 %End
 
+    QString fontStyle() const;
+%Docstring
+Returns the font style for the associated font which will be used to render the point.
+
+.. seealso:: :py:func:`setFontStyle`
+
+.. versionadded:: 3.14
+%End
+
+    void setFontStyle( const QString &style );
+%Docstring
+Sets the font ``style`` for the font which will be used to render the point.
+
+.. seealso:: :py:func:`fontStyle`
+
+.. versionadded:: 3.14
+%End
+
     QString character() const;
 %Docstring
 Returns the character(s) used when rendering points.

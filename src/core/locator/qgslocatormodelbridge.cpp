@@ -102,6 +102,7 @@ void QgsLocatorModelBridge::searchFinished()
 void QgsLocatorModelBridge::performSearch( const QString &text )
 {
   setIsRunning( true );
+
   if ( mLocator->isRunning() )
   {
     // can't do anything while a query is running, and can't block

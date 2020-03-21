@@ -47,6 +47,9 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingFieldWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingMapThemeWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingDateTimeWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingProviderConnectionWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDatabaseSchemaWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDatabaseTableWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

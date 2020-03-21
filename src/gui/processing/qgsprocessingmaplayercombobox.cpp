@@ -91,6 +91,26 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   {
     filters = QgsMapLayerProxyModel::MeshLayer;
   }
+  else if ( mParameter->type() == QgsProcessingParameterMapLayer::typeName() )
+  {
+    QList<int> dataTypes;
+    dataTypes = static_cast< QgsProcessingParameterMapLayer *>( mParameter.get() )->dataTypes();
+
+    if ( dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) )
+      filters |= QgsMapLayerProxyModel::HasGeometry;
+    if ( dataTypes.contains( QgsProcessing::TypeVectorPoint ) )
+      filters |= QgsMapLayerProxyModel::PointLayer;
+    if ( dataTypes.contains( QgsProcessing::TypeVectorLine ) )
+      filters |= QgsMapLayerProxyModel::LineLayer;
+    if ( dataTypes.contains( QgsProcessing::TypeVectorPolygon ) )
+      filters |= QgsMapLayerProxyModel::PolygonLayer;
+    if ( dataTypes.contains( QgsProcessing::TypeRaster ) )
+      filters |= QgsMapLayerProxyModel::RasterLayer;
+    if ( dataTypes.contains( QgsProcessing::TypeMesh ) )
+      filters |= QgsMapLayerProxyModel::MeshLayer;
+    if ( !filters )
+      filters = QgsMapLayerProxyModel::All;
+  }
 
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_CRS_DEF" ), true ).toBool() )
@@ -276,8 +296,7 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
   for ( const QgsMimeDataUtils::Uri &u : uriList )
   {
     if ( ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName()
-           || mParameter->type() == QgsProcessingParameterVectorLayer::typeName()
-           || mParameter->type() == QgsProcessingParameterMapLayer::typeName() )
+           || mParameter->type() == QgsProcessingParameterVectorLayer::typeName() )
          && u.layerType == QLatin1String( "vector" ) && u.providerKey == QLatin1String( "ogr" ) )
     {
       QList< int > dataTypes =  mParameter->type() == QgsProcessingParameterFeatureSource::typeName() ? static_cast< QgsProcessingParameterFeatureSource * >( mParameter.get() )->dataTypes()
@@ -309,14 +328,53 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
           break;
       }
     }
-    else if ( ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName()
-                || mParameter->type() == QgsProcessingParameterMapLayer::typeName() )
+    else if ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName()
               && u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" ) )
       return u.uri;
-    else if ( ( mParameter->type() == QgsProcessingParameterMeshLayer::typeName()
-                || mParameter->type() == QgsProcessingParameterMapLayer::typeName() )
+    else if ( mParameter->type() == QgsProcessingParameterMeshLayer::typeName()
               && u.layerType == QLatin1String( "mesh" ) && u.providerKey == QLatin1String( "mdal" ) )
       return u.uri;
+    else if ( mParameter->type() == QgsProcessingParameterMapLayer::typeName() )
+    {
+      QList< int > dataTypes = static_cast< QgsProcessingParameterMapLayer * >( mParameter.get() )->dataTypes();
+      if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeMapLayer ) )
+      {
+        return u.uri;
+      }
+
+      if ( u.layerType == QLatin1String( "vector" ) && u.providerKey == QLatin1String( "ogr" ) )
+      {
+        switch ( QgsWkbTypes::geometryType( u.wkbType ) )
+        {
+          case QgsWkbTypes::UnknownGeometry:
+            return u.uri;
+
+          case QgsWkbTypes::PointGeometry:
+            if ( dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPoint ) )
+              return u.uri;
+            break;
+
+          case QgsWkbTypes::LineGeometry:
+            if ( dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorLine ) )
+              return u.uri;
+            break;
+
+          case QgsWkbTypes::PolygonGeometry:
+            if ( dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPolygon ) )
+              return u.uri;
+            break;
+
+          case QgsWkbTypes::NullGeometry:
+            return u.uri;
+        }
+      }
+      else if ( u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" )
+                && dataTypes.contains( QgsProcessing::TypeRaster ) )
+        return u.uri;
+      else if ( u.layerType == QLatin1String( "mesh" ) && u.providerKey == QLatin1String( "mdal" )
+                && dataTypes.contains( QgsProcessing::TypeMesh ) )
+        return u.uri;
+    }
   }
   if ( !uriList.isEmpty() )
     return QString();

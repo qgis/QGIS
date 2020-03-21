@@ -186,6 +186,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, 
   connect( mBufferDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mEnableMaskChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mShapeDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
+  connect( mCalloutsDrawCheckBox, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mShadowDrawChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mDirectSymbChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
   connect( mFormatNumChkBx, &QAbstractButton::toggled, this, &QgsLabelingGui::updateUi );
@@ -626,6 +627,7 @@ void QgsLabelingGui::updateUi()
   syncDefinedCheckboxFrame( mEnableMaskDDBtn, mEnableMaskChkBx, mMaskFrame );
   syncDefinedCheckboxFrame( mShapeDrawDDBtn, mShapeDrawChkBx, mShapeFrame );
   syncDefinedCheckboxFrame( mShadowDrawDDBtn, mShadowDrawChkBx, mShadowFrame );
+  syncDefinedCheckboxFrame( mCalloutDrawDDBtn, mCalloutsDrawCheckBox, mCalloutFrame );
 
   syncDefinedCheckboxFrame( mDirectSymbDDBtn, mDirectSymbChkBx, mDirectSymbFrame );
   syncDefinedCheckboxFrame( mFormatNumDDBtn, mFormatNumChkBx, mFormatNumFrame );

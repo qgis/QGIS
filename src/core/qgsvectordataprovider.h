@@ -33,6 +33,7 @@ class QTextCodec;
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
 #include "qgsfeaturerequest.h"
+#include "qgsvectordataprovidertemporalcapabilities.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 typedef QSet<int> QgsAttributeIds SIP_SKIP;
@@ -616,6 +617,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual void handlePostCloneOperations( QgsVectorDataProvider *source );
 
+    QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() override;
+
   signals:
 
     /**
@@ -685,6 +688,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
 
     //! List of errors
     mutable QStringList mErrors;
+
+    std::unique_ptr< QgsVectorDataProviderTemporalCapabilities > mTemporalCapabilities;
 
     static QStringList sEncodings;
 

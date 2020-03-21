@@ -582,6 +582,7 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
     QgsAttributeEditorRelation *relElement = new QgsAttributeEditorRelation( elem.attribute( QStringLiteral( "relation" ), QStringLiteral( "[None]" ) ), parent );
     relElement->setShowLinkButton( elem.attribute( QStringLiteral( "showLinkButton" ), QStringLiteral( "1" ) ).toInt() );
     relElement->setShowUnlinkButton( elem.attribute( QStringLiteral( "showUnlinkButton" ), QStringLiteral( "1" ) ).toInt() );
+    relElement->setShowSaveChildEditsButton( elem.attribute( QStringLiteral( "showSaveChildEditsButton" ), QStringLiteral( "1" ) ).toInt() );
     newElement = relElement;
   }
   else if ( elem.tagName() == QLatin1String( "attributeEditorQmlElement" ) )

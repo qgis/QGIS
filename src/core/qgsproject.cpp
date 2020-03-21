@@ -59,6 +59,7 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsprojectdisplaysettings.h"
+#include "qgsprojecttimesettings.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -364,6 +365,7 @@ QgsProject::QgsProject( QObject *parent )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mViewSettings( new QgsProjectViewSettings( this ) )
+  , mTimeSettings( new QgsProjectTimeSettings( this ) )
   , mDisplaySettings( new QgsProjectDisplaySettings( this ) )
   , mRootGroup( new QgsLayerTree )
   , mLabelingEngineSettings( new QgsLabelingEngineSettings )
@@ -383,18 +385,23 @@ QgsProject::QgsProject( QObject *parent )
 
   // proxy map layer store signals to this
   connect( mLayerStore.get(), qgis::overload<const QStringList &>::of( &QgsMapLayerStore::layersWillBeRemoved ),
-           this, qgis::overload< const QStringList &>::of( &QgsProject::layersWillBeRemoved ) );
+  this, [ = ]( const QStringList & layers ) { mProjectScope.reset(); emit layersWillBeRemoved( layers ); } );
   connect( mLayerStore.get(), qgis::overload< const QList<QgsMapLayer *> & >::of( &QgsMapLayerStore::layersWillBeRemoved ),
-           this, qgis::overload< const QList<QgsMapLayer *> & >::of( &QgsProject::layersWillBeRemoved ) );
+  this, [ = ]( const QList<QgsMapLayer *> &layers ) { mProjectScope.reset(); emit layersWillBeRemoved( layers ); } );
   connect( mLayerStore.get(), qgis::overload< const QString & >::of( &QgsMapLayerStore::layerWillBeRemoved ),
-           this, qgis::overload< const QString & >::of( &QgsProject::layerWillBeRemoved ) );
+  this, [ = ]( const QString & layer ) { mProjectScope.reset(); emit layerWillBeRemoved( layer ); } );
   connect( mLayerStore.get(), qgis::overload< QgsMapLayer * >::of( &QgsMapLayerStore::layerWillBeRemoved ),
-           this, qgis::overload< QgsMapLayer * >::of( &QgsProject::layerWillBeRemoved ) );
-  connect( mLayerStore.get(), qgis::overload<const QStringList & >::of( &QgsMapLayerStore::layersRemoved ), this, &QgsProject::layersRemoved );
-  connect( mLayerStore.get(), &QgsMapLayerStore::layerRemoved, this, &QgsProject::layerRemoved );
-  connect( mLayerStore.get(), &QgsMapLayerStore::allLayersRemoved, this, &QgsProject::removeAll );
-  connect( mLayerStore.get(), &QgsMapLayerStore::layersAdded, this, &QgsProject::layersAdded );
-  connect( mLayerStore.get(), &QgsMapLayerStore::layerWasAdded, this, &QgsProject::layerWasAdded );
+  this, [ = ]( QgsMapLayer * layer ) { mProjectScope.reset(); emit layerWillBeRemoved( layer ); } );
+  connect( mLayerStore.get(), qgis::overload<const QStringList & >::of( &QgsMapLayerStore::layersRemoved ), this,
+  [ = ]( const QStringList & layers ) { mProjectScope.reset(); emit layersRemoved( layers ); } );
+  connect( mLayerStore.get(), &QgsMapLayerStore::layerRemoved, this,
+  [ = ]( const QString & layer ) { mProjectScope.reset(); emit layerRemoved( layer ); } );
+  connect( mLayerStore.get(), &QgsMapLayerStore::allLayersRemoved, this,
+  [ = ]() { mProjectScope.reset(); emit removeAll(); } );
+  connect( mLayerStore.get(), &QgsMapLayerStore::layersAdded, this,
+  [ = ]( const QList< QgsMapLayer * > &layers ) { mProjectScope.reset(); emit layersAdded( layers ); } );
+  connect( mLayerStore.get(), &QgsMapLayerStore::layerWasAdded, this,
+  [ = ]( QgsMapLayer * layer ) { mProjectScope.reset(); emit layerWasAdded( layer ); } );
 
   if ( QgsApplication::instance() )
   {
@@ -762,6 +769,7 @@ void QgsProject::clear()
   mLayoutManager->clear();
   mBookmarkManager->clear();
   mViewSettings->reset();
+  mTimeSettings->reset();
   mDisplaySettings->reset();
   mSnappingConfig.reset();
   emit snappingConfigChanged( mSnappingConfig );
@@ -1539,6 +1547,11 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   if ( !viewSettingsElement.isNull() )
     mViewSettings->readXml( viewSettingsElement, context );
 
+  // restore time settings
+  QDomElement timeSettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectTimeSettings" ) );
+  if ( !timeSettingsElement.isNull() )
+    mTimeSettings->readXml( timeSettingsElement, context );
+
   QDomElement displaySettingsElement = doc->documentElement().firstChildElement( QStringLiteral( "ProjectDisplaySettings" ) );
   if ( !displaySettingsElement.isNull() )
     mDisplaySettings->readXml( displaySettingsElement, context );
@@ -1558,8 +1571,8 @@ bool QgsProject::readProjectFile( const QString &filename, QgsProject::ReadFlags
   if ( clean )
     setDirty( false );
 
-  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUser ) );
-  QgsDebugMsg( QString( "Project save user: %1" ).arg( mSaveUserFull ) );
+  QgsDebugMsgLevel( QString( "Project save user: %1" ).arg( mSaveUser ), 2 );
+  QgsDebugMsgLevel( QString( "Project save user: %1" ).arg( mSaveUserFull ), 2 );
 
   Q_NOWARN_DEPRECATED_PUSH
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
@@ -1676,6 +1689,7 @@ const QgsLabelingEngineSettings &QgsProject::labelingEngineSettings() const
 
 QgsMapLayerStore *QgsProject::layerStore()
 {
+  mProjectScope.reset();
   return mLayerStore.get();
 }
 
@@ -1755,8 +1769,14 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
   QgsCoordinateReferenceSystem projectCrs = crs();
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs" ), projectCrs.authid(), true, true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_definition" ), projectCrs.toProj(), true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_description" ), projectCrs.description(), true, true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_ellipsoid" ), ellipsoid(), true, true ) );
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "_project_transform_context" ), QVariant::fromValue<QgsCoordinateTransformContext>( transformContext() ), true, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_units" ), QgsUnitTypes::toString( projectCrs.mapUnits() ), true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_acronym" ), projectCrs.projectionAcronym(), true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_ellipsoid" ), projectCrs.ellipsoidAcronym(), true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_proj4" ), projectCrs.toProj(), true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_crs_wkt" ), projectCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ), true ) );
 
   // metadata
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_author" ), metadata().author(), true, true ) );
@@ -1772,6 +1792,20 @@ QgsExpressionContextScope *QgsProject::createExpressionContextScope() const
     keywords.insert( it.key(), it.value() );
   }
   mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "project_keywords" ), keywords, true, true ) );
+
+  // layers
+  QVariantList layersIds;
+  QVariantList layers;
+  const QMap<QString, QgsMapLayer *> layersInProject = mLayerStore->mapLayers();
+  layersIds.reserve( layersInProject.count() );
+  layers.reserve( layersInProject.count() );
+  for ( auto it = layersInProject.constBegin(); it != layersInProject.constEnd(); ++it )
+  {
+    layersIds << it.value()->id();
+    layers << QVariant::fromValue<QgsWeakMapLayerPointer>( QgsWeakMapLayerPointer( it.value() ) );
+  }
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layer_ids" ), layersIds, true ) );
+  mProjectScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layers" ), layers, true ) );
 
   mProjectScope->addFunction( QStringLiteral( "project_color" ), new GetNamedProjectColor( this ) );
 
@@ -2138,7 +2172,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   dump_( mProperties );
 #endif
 
-  QgsDebugMsgLevel( QStringLiteral( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ), 1 );
+  QgsDebugMsgLevel( QStringLiteral( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ), 2 );
 
   if ( !mProperties.isEmpty() ) // only worry about properties if we
     // actually have any properties
@@ -2165,6 +2199,9 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   QDomElement viewSettingsElem = mViewSettings->writeXml( *doc, context );
   qgisNode.appendChild( viewSettingsElem );
+
+  QDomElement timeSettingsElement = mTimeSettings->writeXml( *doc, context );
+  qgisNode.appendChild( timeSettingsElement );
 
   QDomElement displaySettingsElem = mDisplaySettings->writeXml( *doc, context );
   qgisNode.appendChild( displaySettingsElem );
@@ -2804,6 +2841,8 @@ QString QgsProject::homePath() const
   if ( !mCachedHomePath.isEmpty() )
     return mCachedHomePath;
 
+  QFileInfo pfi( fileName() );
+
   if ( !mHomePath.isEmpty() )
   {
     QFileInfo homeInfo( mHomePath );
@@ -2813,8 +2852,13 @@ QString QgsProject::homePath() const
       return mHomePath;
     }
   }
+  else if ( !fileName().isEmpty() )
+  {
+    mCachedHomePath = pfi.path();
 
-  QFileInfo pfi( fileName() );
+    return mCachedHomePath;
+  }
+
   if ( !pfi.exists() )
   {
     mCachedHomePath = mHomePath;
@@ -2871,6 +2915,16 @@ const QgsProjectViewSettings *QgsProject::viewSettings() const
 QgsProjectViewSettings *QgsProject::viewSettings()
 {
   return mViewSettings;
+}
+
+const QgsProjectTimeSettings *QgsProject::timeSettings() const
+{
+  return mTimeSettings;
+}
+
+QgsProjectTimeSettings *QgsProject::timeSettings()
+{
+  return mTimeSettings;
 }
 
 const QgsProjectDisplaySettings *QgsProject::displaySettings() const
@@ -3153,6 +3207,8 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
     }
   }
 
+  mProjectScope.reset();
+
   return myResultList;
 }
 
@@ -3168,31 +3224,37 @@ QgsProject::addMapLayer( QgsMapLayer *layer,
 
 void QgsProject::removeMapLayers( const QStringList &layerIds )
 {
+  mProjectScope.reset();
   mLayerStore->removeMapLayers( layerIds );
 }
 
 void QgsProject::removeMapLayers( const QList<QgsMapLayer *> &layers )
 {
+  mProjectScope.reset();
   mLayerStore->removeMapLayers( layers );
 }
 
 void QgsProject::removeMapLayer( const QString &layerId )
 {
+  mProjectScope.reset();
   mLayerStore->removeMapLayer( layerId );
 }
 
 void QgsProject::removeMapLayer( QgsMapLayer *layer )
 {
+  mProjectScope.reset();
   mLayerStore->removeMapLayer( layer );
 }
 
 QgsMapLayer *QgsProject::takeMapLayer( QgsMapLayer *layer )
 {
+  mProjectScope.reset();
   return mLayerStore->takeMapLayer( layer );
 }
 
 void QgsProject::removeAllMapLayers()
 {
+  mProjectScope.reset();
   mLayerStore->removeAllMapLayers();
 }
 

@@ -848,6 +848,9 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       showWarning( newLayer->commitErrors().join( QStringLiteral( "\n" ) ) );
     }
 
+    // copy the custom properties from original layer
+    newLayer->setCustomProperties( layer->customProperties() );
+
     // mark as offline layer
     newLayer->setCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, true );
 

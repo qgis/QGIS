@@ -222,6 +222,11 @@ void QgsLayerTreeViewDefaultActions::checkAndAllParents()
 
 void QgsLayerTreeViewDefaultActions::addGroup()
 {
+  if ( mView->selectedNodes( true ).count() >= 2 )
+  {
+    groupSelected();
+    return;
+  }
   QgsLayerTreeGroup *group = mView->currentGroupNode();
   if ( !group )
     group = mView->layerTreeModel()->rootGroup();

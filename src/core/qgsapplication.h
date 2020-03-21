@@ -56,6 +56,8 @@ class QgsCalloutRegistry;
 class QgsBookmarkManager;
 class QgsStyleModel;
 class QgsNumericFormatRegistry;
+class QgsConnectionRegistry;
+class QgsScaleBarRendererRegistry;
 
 /**
  * \ingroup core
@@ -745,6 +747,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsActionScopeRegistry *actionScopeRegistry() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the application's connection registry, used for managing saved data provider connections.
+     * \since QGIS 3.14
+     */
+    static QgsConnectionRegistry *connectionRegistry();
+
+    /**
      * Returns the application runtime profiler.
      * \since QGIS 3.0
      */
@@ -767,6 +775,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.0
      */
     static Qgs3DRendererRegistry *renderer3DRegistry() SIP_KEEPREFERENCE;
+
+    /**
+     * Gets the registry of available scalebar renderers.
+     *
+     * \since QGIS 3.14
+     */
+    static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() SIP_KEEPREFERENCE;
 
     /**
      * Returns registry of available project storage implementations.
@@ -902,12 +917,14 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
       QgsGpsConnectionRegistry *mGpsConnectionRegistry = nullptr;
       QgsNetworkContentFetcherRegistry *mNetworkContentFetcherRegistry = nullptr;
+      QgsScaleBarRendererRegistry *mScaleBarRendererRegistry = nullptr;
       QgsValidityCheckRegistry *mValidityCheckRegistry = nullptr;
       QgsMessageLog *mMessageLog = nullptr;
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;
       QgsPluginLayerRegistry *mPluginLayerRegistry = nullptr;
       QgsClassificationMethodRegistry *mClassificationMethodRegistry = nullptr;
       QgsProcessingRegistry *mProcessingRegistry = nullptr;
+      QgsConnectionRegistry *mConnectionRegistry = nullptr;
       QgsProjectStorageRegistry *mProjectStorageRegistry = nullptr;
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;

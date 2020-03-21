@@ -124,19 +124,22 @@ void TestQgs3DRendering::initTestCase()
   mProject->addMapLayer( mLayerMeshTerrain );
 
   mLayerMeshDataset = new QgsMeshLayer( dataDir + "/mesh/quad_and_triangle.2dm", "mesh", "mdal" );
-  mLayerMeshDataset->dataProvider()->addDataset( dataDir + "/mesh/quad_and_triangle_vertex_scalar.txt" );
+  mLayerMeshDataset->dataProvider()->addDataset( dataDir + "/mesh/quad_and_triangle_vertex_scalar.dat" );
+  mLayerMeshDataset->dataProvider()->addDataset( dataDir + "/mesh/quad_and_triangle_vertex_vector.dat" );
   QVERIFY( mLayerMeshDataset->isValid() );
   mLayerMeshDataset->setCrs( mLayerDtm->crs() ); // this testing mesh does not have any CRS defined originally
   // disable rendering of scalar 2d datasets for now
   QgsMeshRendererSettings settings = mLayerMeshDataset->rendererSettings();
   settings.setActiveScalarDataset( QgsMeshDatasetIndex( 0, 0 ) );
-  settings.setActiveVectorDataset();
+  settings.setActiveVectorDataset( QgsMeshDatasetIndex( 2, 0 ) );
   mLayerMeshDataset->setRendererSettings( settings );
   mProject->addMapLayer( mLayerMeshDataset );
 
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 0 );
   symbolMesh3d->setVerticalScale( 10 );
+  symbolMesh3d->setArrowsEnabled( true );
+  symbolMesh3d->setArrowsSpacing( 300 );
   QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
   mLayerMeshDataset->setRenderer3D( meshDatasetRenderer3d );
 
@@ -319,6 +322,11 @@ void TestQgs3DRendering::testExtrudedPolygons()
   engine.setRootEntity( scene );
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 250 ), 500, 45, 0 );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QVERIFY( renderCheck( "polygon3d_extrusion", img, 40 ) );

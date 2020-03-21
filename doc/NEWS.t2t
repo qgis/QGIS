@@ -53,8 +53,8 @@ This release has following new features:
 - Expressions: List Referenced Layer Values
 - Expressions: New functions to check if a geometry is empty or null
 - Expressions: Hash expressions
-- Digitising: Edit Invalid Attributes on Copy/Paste to Another Layer
-- Digitising: Snapping cache parallelization
+- Digitizing: Edit Invalid Attributes on Copy/Paste to Another Layer
+- Digitizing: Snapping cache parallelization
 - Data Management: DXF Export Improvements
 - Forms and Widgets: Create geometric feature from the relation editor
 - Forms and Widgets: Improve feature selection dialog
@@ -2124,7 +2124,7 @@ Added ifdef's for WIN32 around dynamic_casts in the vector renderer
 
 2004-11-09 [timlinux] 0.5.0devel21
 Added options to graticule builder to allow you to define origin and
-enpoints and to set the graticule size at < 1 degree. Note that there is
+endpoints and to set the graticule size at < 1 degree. Note that there is
 little error checking in there still, so putting in dodgy numbers may cause
 qgis to crash.
 

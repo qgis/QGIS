@@ -357,7 +357,7 @@ border-radius: 2px;</string>
           </layout>
          </widget>
          <widget class="QWidget" name="mOptsPage_3DView"/>
-         <widget class="QWidget" name="mOptspage_Rendering">
+         <widget class="QWidget" name="mOptsPage_Rendering">
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
             <widget class="QgsCollapsibleGroupBox" name="mSimplifyMeshGroupBox">
@@ -474,7 +474,7 @@ border-radius: 2px;</string>
          <enum>Qt::Horizontal</enum>
         </property>
         <property name="standardButtons">
-         <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+         <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
         </property>
        </widget>
       </item>

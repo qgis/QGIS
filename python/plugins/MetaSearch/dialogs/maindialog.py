@@ -41,7 +41,7 @@ from qgis.PyQt.QtGui import QColor, QCursor
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPointXY,
                        QgsProviderRegistry, QgsSettings, QgsProject)
-from qgis.gui import QgsRubberBand
+from qgis.gui import QgsRubberBand, QgsGui
 from qgis.utils import OverrideCursor
 
 with warnings.catch_warnings():
@@ -392,7 +392,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         if crsid != 4326:  # reproject to EPSG:4326
             src = QgsCoordinateReferenceSystem(crsid)
-            dest = QgsCoordinateReferenceSystem(4326)
+            dest = QgsCoordinateReferenceSystem("EPSG:4326")
             xform = QgsCoordinateTransform(src, dest, QgsProject.instance())
             minxy = xform.transform(QgsPointXY(extent.xMinimum(),
                                                extent.yMinimum()))
@@ -562,7 +562,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         if record.bbox is not None:
             points = bbox_to_polygon(record.bbox)
             if points is not None:
-                src = QgsCoordinateReferenceSystem(4326)
+                src = QgsCoordinateReferenceSystem("EPSG:4326")
                 dst = self.map.mapSettings().destinationCrs()
                 geom = QgsGeometry.fromWkt(points)
                 if src.postgisSrid() != dst.postgisSrid():
@@ -735,9 +735,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         if sname in keys:  # duplicate found
             msg = self.tr('Connection {0} exists. Overwrite?').format(sname)
             res = QMessageBox.warning(self, self.tr('Saving server'), msg,
-                                      QMessageBox.Yes | QMessageBox.No)
-            if res != QMessageBox.Yes:  # assign new name with serial
+                                      QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+            if res == QMessageBox.No:  # assign new name with serial
                 sname = serialize_string(sname)
+            elif res == QMessageBox.Cancel:
+                return
 
         # no dups detected or overwrite is allowed
         if caller in ['mActionAddAms', 'mActionAddAfs']:
@@ -748,8 +750,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.settings.endGroup()
 
         # open provider window
-        ows_provider = QgsProviderRegistry.instance().createSelectionWidget(stype[2],
-                                                                            self)
+        ows_provider = QgsGui.sourceSelectProviderRegistry().createSelectionWidget(
+            stype[2],
+            self,
+            Qt.Widget,
+            QgsProviderRegistry.WidgetMode.Embedded)
         service_type = stype[0]
 
         # connect dialog signals to iface slots
@@ -777,6 +782,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             ows_provider.addVectorLayer.connect(addAfsLayer)
             conn_cmb = ows_provider.findChild(QComboBox)
             connect = 'connectToServer'
+
         ows_provider.setModal(False)
         ows_provider.show()
 

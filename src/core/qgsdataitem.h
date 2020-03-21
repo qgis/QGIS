@@ -103,6 +103,13 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     bool hasChildren();
 
+    /**
+     * Returns TRUE if the data item is a collection of layers
+     * The default implementation returns FALSE, subclasses must implement this method if their children are layers.
+     * \since QGIS 3.14
+     */
+    virtual bool layerCollection() const;
+
     int rowCount();
 
     /**

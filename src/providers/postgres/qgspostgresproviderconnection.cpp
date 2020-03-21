@@ -19,7 +19,7 @@
 #include "qgssettings.h"
 #include "qgspostgresprovider.h"
 #include "qgsexception.h"
-
+#include "qgsapplication.h"
 
 extern "C"
 {
@@ -62,7 +62,10 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Capability::Tables,
     Capability::Schemas,
     Capability::Spatial,
-    Capability::TableExists
+    Capability::TableExists,
+    Capability::CreateSpatialIndex,
+    Capability::SpatialIndexExists,
+    Capability::DeleteSpatialIndex
   };
 }
 
@@ -228,7 +231,6 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
           if ( typeRes.size() > 0 && typeRes.first().size() > 0 )
           {
             static const QStringList intTypes = { QStringLiteral( "oid" ),
-                                                  QStringLiteral( "char" ),
                                                   QStringLiteral( "int2" ),
                                                   QStringLiteral( "int4" ),
                                                   QStringLiteral( "int8" )
@@ -262,6 +264,10 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
             else if ( typName == QStringLiteral( "bool" ) )
             {
               vType = QVariant::Bool;
+            }
+            else if ( typName == QStringLiteral( "char" ) )
+            {
+              vType = QVariant::Char;
             }
             else
             {
@@ -319,6 +325,73 @@ void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString
               .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
 }
 
+void QgsPostgresProviderConnection::createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options ) const
+{
+  if ( options.geometryColumnName.isEmpty() )
+    throw QgsProviderConnectionException( QObject::tr( "Geometry column name not specified while creating spatial index" ) );
+
+  checkCapability( Capability::CreateSpatialIndex );
+
+  const QString indexName = QStringLiteral( "sidx_%1_%2" ).arg( name, options.geometryColumnName );
+  executeSql( QStringLiteral( "CREATE INDEX %1 ON %2.%3 USING GIST (%4);" )
+              .arg( indexName,
+                    QgsPostgresConn::quotedIdentifier( schema ),
+                    QgsPostgresConn::quotedIdentifier( name ),
+                    QgsPostgresConn::quotedIdentifier( options.geometryColumnName ) ) );
+}
+
+bool QgsPostgresProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
+{
+  checkCapability( Capability::SpatialIndexExists );
+
+  const QList<QVariantList> res = executeSql( QStringLiteral( R"""(SELECT COUNT(*)
+                                                              FROM pg_class t, pg_class i, pg_namespace ns, pg_index ix, pg_attribute a
+                                                              WHERE
+                                                                  t.oid=ix.indrelid
+                                                                  AND t.relnamespace=ns.oid
+                                                                  AND i.oid=ix.indexrelid
+                                                                  AND a.attrelid=t.oid
+                                                                  AND a.attnum=ANY(ix.indkey)
+                                                                  AND t.relkind='r'
+                                                                  AND ns.nspname=%1
+                                                                  AND t.relname=%2
+                                                                  AND a.attname=%3;
+                                                              )""" ).arg(
+                                    QgsPostgresConn::quotedValue( schema ),
+                                    QgsPostgresConn::quotedValue( name ),
+                                    QgsPostgresConn::quotedValue( geometryColumn ) ) );
+  return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toBool();
+}
+
+void QgsPostgresProviderConnection::deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const
+{
+  checkCapability( Capability::DeleteSpatialIndex );
+
+  const QList<QVariantList> res = executeSql( QStringLiteral( R"""(SELECT i.relname
+                                                                FROM pg_class t, pg_class i, pg_namespace ns, pg_index ix, pg_attribute a
+                                                                WHERE
+                                                                    t.oid=ix.indrelid
+                                                                    AND t.relnamespace=ns.oid
+                                                                    AND i.oid=ix.indexrelid
+                                                                    AND a.attrelid=t.oid
+                                                                    AND a.attnum=ANY(ix.indkey)
+                                                                    AND t.relkind='r'
+                                                                    AND ns.nspname=%1
+                                                                    AND t.relname=%2
+                                                                    AND a.attname=%3;
+                                                                )""" ).arg(
+                                    QgsPostgresConn::quotedValue( schema ),
+                                    QgsPostgresConn::quotedValue( name ),
+                                    QgsPostgresConn::quotedValue( geometryColumn ) ) );
+  if ( res.isEmpty() )
+    throw QgsProviderConnectionException( QObject::tr( "No spatial index exists for %1.%2" ).arg( schema, name ) );
+
+  const QString indexName = res.at( 0 ).at( 0 ).toString();
+
+  executeSql( QStringLiteral( "DROP INDEX %1.%2" ).arg( QgsPostgresConn::quotedIdentifier( schema ),
+              QgsPostgresConn::quotedIdentifier( indexName ) ) );
+}
+
 QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
 {
   checkCapability( Capability::Tables );
@@ -359,7 +432,10 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
         {
           prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::MaterializedView );
         }
-        // Table type
+        if ( pr.isForeignTable )
+        {
+          prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::Foreign );
+        }
         if ( pr.isRaster )
         {
           prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::Raster );
@@ -491,5 +567,10 @@ void QgsPostgresProviderConnection::store( const QString &name ) const
 void QgsPostgresProviderConnection::remove( const QString &name ) const
 {
   QgsPostgresConn::deleteConnection( name );
+}
+
+QIcon QgsPostgresProviderConnection::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconPostgis.svg" ) );
 }
 

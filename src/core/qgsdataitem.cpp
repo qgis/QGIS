@@ -459,6 +459,11 @@ bool QgsDataItem::hasChildren()
   return ( state() == Populated ? !mChildren.isEmpty() : true );
 }
 
+bool QgsDataItem::layerCollection() const
+{
+  return false;
+}
+
 void QgsDataItem::setParent( QgsDataItem *parent )
 {
   if ( mParent )

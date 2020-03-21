@@ -227,6 +227,25 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   QgsRasterRenderer *rasterRenderer = mPipe->renderer();
   if ( rasterRenderer && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob ) )
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
+
+  if ( layer->temporalProperties()->isActive() && renderContext()->isTemporal() )
+  {
+    switch ( layer->temporalProperties()->mode() )
+    {
+      case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+        break;
+
+      case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+        // in this mode we need to pass on the desired render temporal range to the data provider
+        if ( mPipe->provider()->temporalCapabilities() )
+        {
+          mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( rendererContext.temporalRange() );
+          mPipe->provider()->temporalCapabilities()->setRequestedReferenceTemporalRange( layer->temporalProperties()->referenceTemporalRange() );
+          mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( layer->temporalProperties()->intervalHandlingMethod() );
+        }
+        break;
+    }
+  }
 }
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()

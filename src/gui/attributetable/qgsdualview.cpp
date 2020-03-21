@@ -687,6 +687,14 @@ void QgsDualView::cancelProgress()
     mProgressDlg->cancel();
 }
 
+void QgsDualView::parentFormValueChanged( const QString &attribute, const QVariant &newValue )
+{
+  if ( mAttributeForm )
+  {
+    mAttributeForm->parentFormValueChanged( attribute, newValue );
+  }
+}
+
 void QgsDualView::hideEvent( QHideEvent *event )
 {
   Q_UNUSED( event )

@@ -123,6 +123,10 @@ json QgsServerQueryStringParameter::data() const
   {
     dataType = "string";
   }
+  else if ( dataType == "double" )
+  {
+    dataType = "number";
+  }
   return
   {
     { "name", nameString },

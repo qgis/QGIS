@@ -51,6 +51,16 @@ QgsMessageBar *QgsProcessingParameterWidgetContext::messageBar() const
   return mMessageBar;
 }
 
+void QgsProcessingParameterWidgetContext::setBrowserModel( QgsBrowserGuiModel *model )
+{
+  mBrowserModel = model;
+}
+
+QgsBrowserGuiModel *QgsProcessingParameterWidgetContext::browserModel() const
+{
+  return mBrowserModel;
+}
+
 void QgsProcessingParameterWidgetContext::setProject( QgsProject *project )
 {
   mProject = project;
@@ -115,7 +125,7 @@ QWidget *QgsAbstractProcessingParameterWidgetWrapper::createWrappedWidget( QgsPr
 
   mWidget = createWidget();
   QWidget *wrappedWidget = mWidget;
-  if ( mType != QgsProcessingGui::Batch && mParameterDefinition->isDynamic() )
+  if ( mParameterDefinition->isDynamic() )
   {
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->setMargin( 0 );

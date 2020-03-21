@@ -119,6 +119,7 @@ class QgsAdvancedDigitizingDockWidget;
 class QgsGpsInformationWidget;
 class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
+class QgsTemporalControllerDockWidget;
 
 class QgsDecorationItem;
 class QgsMessageLogViewer;
@@ -632,7 +633,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLocatorWidget *locatorWidget() { return mLocatorWidget; }
 
     //! show layer properties
-    void showLayerProperties( QgsMapLayer *mapLayer );
+    void showLayerProperties( QgsMapLayer *mapLayer, const QString &page = QString() );
 
     //! returns pointer to map legend
     QgsLayerTreeView *layerTreeView();
@@ -957,8 +958,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Duplicate map layer(s) in legend
     void duplicateLayers( const QList<QgsMapLayer *> &lyrList = QList<QgsMapLayer *>() );
 
-    //! change layer subset of current vector layer
-    void layerSubsetString();
+    /**
+     * Changes layer subset of \a mapLayer
+     * \since QGIS 3.12
+     */
+    void layerSubsetString( QgsMapLayer *mapLayer );
+
+    //! change layer subset of the active layer
+    void layerSubsetString( );
 
     //! Sets scale visibility of selected layers
     void setLayerScaleVisibility();
@@ -1101,6 +1108,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Create a new spatial bookmark
     void newBookmark( bool inProject = false );
+
+    /**
+     * Creates a default attribute editor context using the main map canvas and the main edit tools and message bar
+     * \since QGIS 3.12
+     */
+    QgsAttributeEditorContext createAttributeEditorContext();
 
   protected:
 
@@ -1489,6 +1502,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! deselect features from all layers
     void deselectAll();
+
+    //! deselect features from the current active layer
+    void deselectActiveLayer();
 
     //! select all features
     void selectAll();
@@ -2299,6 +2315,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
     QgsBrowserDockWidget *mBrowserWidget2 = nullptr;
+
+    QgsTemporalControllerDockWidget *mTemporalControllerWidget = nullptr;
 
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     QgsStatisticalSummaryDockWidget *mStatisticalSummaryDockWidget = nullptr;

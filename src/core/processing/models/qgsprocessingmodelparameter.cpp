@@ -25,6 +25,11 @@ QgsProcessingModelParameter::QgsProcessingModelParameter( const QString &paramet
 
 }
 
+QgsProcessingModelParameter *QgsProcessingModelParameter::clone() const
+{
+  return new QgsProcessingModelParameter( *this );
+}
+
 QVariant QgsProcessingModelParameter::toVariant() const
 {
   QVariantMap map;

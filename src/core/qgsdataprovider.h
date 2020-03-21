@@ -31,6 +31,7 @@
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
+class QgsDataProviderTemporalCapabilities;
 
 
 /**
@@ -170,6 +171,15 @@ class CORE_EXPORT QgsDataProvider : public QObject
     {
       return QgsDataSourceUri( mDataSourceURI );
     }
+
+    /**
+     * Returns the provider's temporal capabilities.
+     *
+     * This may be NULLPTR, depending on the data provider.
+     *
+     * \since QGIS 3.14
+     */
+    virtual QgsDataProviderTemporalCapabilities *temporalCapabilities();
 
     /**
      * Returns the extent of the layer

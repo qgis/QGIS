@@ -107,6 +107,8 @@ You can use QgsXmlUtils.readVariant to load it from an XML document.
 
     operator QVariant() const;
 
+    bool operator==( const QgsProcessingOutputLayerDefinition &other ) const;
+
 };
 
 
@@ -197,6 +199,12 @@ their acceptable ranges, defaults, etc.
       sipType = sipType_QgsProcessingParameterMapTheme;
     else if ( sipCpp->type() == QgsProcessingParameterDateTime::typeName() )
       sipType = sipType_QgsProcessingParameterDateTime;
+    else if ( sipCpp->type() == QgsProcessingParameterProviderConnection::typeName() )
+      sipType = sipType_QgsProcessingParameterProviderConnection;
+    else if ( sipCpp->type() == QgsProcessingParameterDatabaseSchema::typeName() )
+      sipType = sipType_QgsProcessingParameterDatabaseSchema;
+    else if ( sipCpp->type() == QgsProcessingParameterDatabaseTable::typeName() )
+      sipType = sipType_QgsProcessingParameterDatabaseTable;
     else
       sipType = nullptr;
 %End
@@ -752,7 +760,7 @@ This function creates a new object and the caller takes responsibility for delet
 
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariant &value,
                                             const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs,
-                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = 0 ) /Factory/;
+                                            QgsProcessingContext &context, QString &destinationIdentifier /Out/, QgsFeatureSink::SinkFlags sinkFlags = 0 ) throw( QgsProcessingException ) /Factory/;
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a feature sink.
 
@@ -765,6 +773,8 @@ argument will be set to a string which can be used to retrieve the layer corresp
 to the sink, e.g. via calling :py:func:`QgsProcessingUtils.mapLayerFromString()`
 
 This function creates a new object and the caller takes responsibility for deleting the returned object.
+
+:raises :: py:class:`QgsProcessingException`
 
 .. versionadded:: 3.4
 %End
@@ -1188,6 +1198,48 @@ Returns the color associated with an color parameter value, or an invalid color 
 .. versionadded:: 3.10
 %End
 
+    static QString parameterAsConnectionName( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a connection name string.
+
+.. versionadded:: 3.14
+%End
+
+    static QString parameterAsConnectionName( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a connection name string.
+
+.. versionadded:: 3.14
+%End
+
+    static QString parameterAsSchema( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a database schema name.
+
+.. versionadded:: 3.14
+%End
+
+    static QString parameterAsSchema( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a database schema name.
+
+.. versionadded:: 3.14
+%End
+
+    static QString parameterAsDatabaseTableName( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` to a database table name.
+
+.. versionadded:: 3.14
+%End
+
+    static QString parameterAsDatabaseTableName( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context );
+%Docstring
+Evaluates the parameter with matching ``definition`` and ``value`` to a database table name.
+
+.. versionadded:: 3.14
+%End
+
     static QgsProcessingParameterDefinition *parameterFromVariantMap( const QVariantMap &map ) /Factory/;
 %Docstring
 Creates a new QgsProcessingParameterDefinition using the configuration from a
@@ -1280,44 +1332,6 @@ Returns the type name for the parameter class.
 
 
     static QgsProcessingParameterCrs *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
-%Docstring
-Creates a new parameter using the definition from a script code.
-%End
-
-};
-
-class QgsProcessingParameterMapLayer : QgsProcessingParameterDefinition
-{
-%Docstring
-A map layer parameter for processing algorithms.
-
-.. versionadded:: 3.0
-%End
-
-%TypeHeaderCode
-#include "qgsprocessingparameters.h"
-%End
-  public:
-
-    QgsProcessingParameterMapLayer( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
-                                    bool optional = false );
-%Docstring
-Constructor for QgsProcessingParameterMapLayer.
-%End
-
-    static QString typeName();
-%Docstring
-Returns the type name for the parameter class.
-%End
-    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
-
-    virtual QString type() const;
-    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
-
-    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
-
-
-    static QgsProcessingParameterMapLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End
@@ -1617,7 +1631,7 @@ Creates a new parameter using the definition from a script code.
 
 };
 
-class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition
+class QgsProcessingParameterMultipleLayers : QgsProcessingParameterDefinition, QgsFileFilterGenerator
 {
 %Docstring
 A parameter for processing algorithms which accepts multiple map layers.
@@ -1651,6 +1665,8 @@ Returns the type name for the parameter class.
     virtual QString asScriptCode() const;
 
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QString createFileFilter() const;
 
 
     QgsProcessing::SourceType layerType() const;
@@ -1999,7 +2015,7 @@ Creates a new parameter using the definition from a script code.
 
 };
 
-class QgsProcessingParameterRasterLayer : QgsProcessingParameterDefinition
+class QgsProcessingParameterRasterLayer : QgsProcessingParameterDefinition, QgsFileFilterGenerator
 {
 %Docstring
 A raster layer parameter for processing algorithms.
@@ -2028,6 +2044,8 @@ Returns the type name for the parameter class.
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString createFileFilter() const;
 
 
     static QgsProcessingParameterRasterLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
@@ -2315,7 +2333,7 @@ Sets the geometry ``types`` for sources acceptable by the parameter.
 
 };
 
-class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes
+class QgsProcessingParameterVectorLayer : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes, QgsFileFilterGenerator
 {
 %Docstring
 A vector layer (with or without geometry) parameter for processing algorithms. Consider using
@@ -2351,6 +2369,8 @@ Returns the type name for the parameter class.
 
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
+    virtual QString createFileFilter() const;
+
 
     virtual QVariantMap toVariantMap() const;
 
@@ -2364,7 +2384,7 @@ Creates a new parameter using the definition from a script code.
 
 };
 
-class QgsProcessingParameterMeshLayer : QgsProcessingParameterDefinition
+class QgsProcessingParameterMeshLayer : QgsProcessingParameterDefinition, QgsFileFilterGenerator
 {
 %Docstring
 A mesh layer parameter for processing algorithms.
@@ -2396,11 +2416,63 @@ Returns the type name for the parameter class.
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
 
+    virtual QString createFileFilter() const;
+
 
     static QgsProcessingParameterMeshLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
 %End
+};
+
+class QgsProcessingParameterMapLayer : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes, QgsFileFilterGenerator
+{
+%Docstring
+A map layer parameter for processing algorithms.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterMapLayer( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
+                                    bool optional = false,
+                                    const QList< int > &types = QList< int >() );
+%Docstring
+Constructor for QgsProcessingParameterMapLayer.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QString createFileFilter() const;
+
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    static QgsProcessingParameterMapLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
 };
 
 class QgsProcessingParameterField : QgsProcessingParameterDefinition
@@ -2531,7 +2603,7 @@ Creates a new parameter using the definition from a script code.
 };
 
 
-class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes
+class QgsProcessingParameterFeatureSource : QgsProcessingParameterDefinition, QgsProcessingParameterLimitedDataTypes, QgsFileFilterGenerator
 {
 %Docstring
 An input feature source (such as vector layers) parameter for processing algorithms.
@@ -2566,6 +2638,8 @@ Returns the type name for the parameter class.
 
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
+    virtual QString createFileFilter() const;
+
 
     virtual QVariantMap toVariantMap() const;
 
@@ -2579,7 +2653,7 @@ Creates a new parameter using the definition from a script code.
 
 };
 
-class QgsProcessingDestinationParameter : QgsProcessingParameterDefinition
+class QgsProcessingDestinationParameter : QgsProcessingParameterDefinition, QgsFileFilterGenerator
 {
 %Docstring
 Base class for all parameter definitions which represent file or layer destinations, e.g. parameters
@@ -2608,6 +2682,8 @@ output will not be created by default.
     virtual bool fromVariantMap( const QVariantMap &map );
 
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QString createFileFilter() const;
 
 
     virtual QgsProcessingOutputDefinition *toOutputDefinition() const = 0 /Factory/;
@@ -2720,6 +2796,8 @@ Returns the type name for the parameter class.
 
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
+    virtual QString createFileFilter() const;
+
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 %Docstring
@@ -2812,6 +2890,8 @@ Returns the type name for the parameter class.
 
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
+    virtual QString createFileFilter() const;
+
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 %Docstring
@@ -2895,6 +2975,8 @@ Returns the type name for the parameter class.
 
     virtual QString defaultFileExtension() const;
 
+    virtual QString createFileFilter() const;
+
 
     virtual QStringList supportedOutputRasterLayerExtensions() const;
 %Docstring
@@ -2953,6 +3035,8 @@ Returns the type name for the parameter class.
     virtual QString defaultFileExtension() const;
 
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QString createFileFilter() const;
 
 
     QString fileFilter() const;
@@ -3344,6 +3428,8 @@ Returns the type name for the parameter class.
 
     virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
 
+    virtual QStringList dependsOnOtherParameters() const;
+
 
     virtual QVariantMap toVariantMap() const;
 
@@ -3484,6 +3570,9 @@ class QgsProcessingParameterDateTime : QgsProcessingParameterDefinition
 %Docstring
 A datetime (or pure date or time) parameter for processing algorithms.
 
+QgsProcessingParameterDateTime should be evaluated by calling QgsProcessingAlgorithm.parameterAsDateTime(),
+which will return a date time value.
+
 .. versionadded:: 3.14
 %End
 
@@ -3592,6 +3681,256 @@ Sets the acceptable data ``type`` for the parameter.
     static QgsProcessingParameterDateTime *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
+%End
+
+};
+
+
+class QgsProcessingParameterProviderConnection : QgsProcessingParameterDefinition
+{
+%Docstring
+A data provider connection parameter for processing algorithms, allowing users to select from available registered
+connections for a particular data provider.
+
+QgsProcessingParameterProviderConnection should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsConnectionName()`
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterProviderConnection( const QString &name, const QString &description, const QString &provider, const QVariant &defaultValue = QVariant(),
+        bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterProviderConnection, for the specified ``provider`` type.
+
+.. warning::
+
+   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   in order for the model to work correctly. This is only implemented for a subset of current data providers.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+
+    QString providerId() const;
+%Docstring
+Returns the ID of the provider associated with the connections.
+
+.. seealso:: :py:func:`setProviderId`
+%End
+
+    void setProviderId( const QString &provider );
+%Docstring
+Sets the ID of the ``provider`` associated with the connections.
+
+.. seealso:: :py:func:`providerId`
+%End
+
+    static QgsProcessingParameterProviderConnection *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+};
+
+
+class QgsProcessingParameterDatabaseSchema : QgsProcessingParameterDefinition
+{
+%Docstring
+A database schema parameter for processing algorithms, allowing users to select from existing schemas
+on a registered database connection.
+
+QgsProcessingParameterDatabaseSchema should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsSchema()`
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterDatabaseSchema( const QString &name, const QString &description, const QString &connectionParameterName = QString(), const QVariant &defaultValue = QVariant(),
+                                          bool optional = false );
+%Docstring
+Constructor for QgsProcessingParameterDatabaseSchema.
+
+The ``connectionParameterName`` specifies the name of the parent QgsProcessingParameterProviderConnection parameter.
+
+.. warning::
+
+   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   in order for the model to work correctly. This is only implemented for a subset of current data providers.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QStringList dependsOnOtherParameters() const;
+
+
+    QString parentConnectionParameterName() const;
+%Docstring
+Returns the name of the parent connection parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setParentConnectionParameterName`
+%End
+
+    void setParentConnectionParameterName( const QString &name );
+%Docstring
+Sets the ``name`` of the parent connection parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`parentConnectionParameterName`
+%End
+
+    static QgsProcessingParameterDatabaseSchema *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+};
+
+
+class QgsProcessingParameterDatabaseTable : QgsProcessingParameterDefinition
+{
+%Docstring
+A database table name parameter for processing algorithms, allowing users to select from existing database tables
+on a registered database connection (or optionally to enter a new table name).
+
+QgsProcessingParameterDatabaseTable should be evaluated by calling :py:func:`QgsProcessingAlgorithm.parameterAsDatabaseTableName()`
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingparameters.h"
+%End
+  public:
+
+    QgsProcessingParameterDatabaseTable( const QString &name, const QString &description,
+                                         const QString &connectionParameterName = QString(),
+                                         const QString &schemaParameterName = QString(),
+                                         const QVariant &defaultValue = QVariant(),
+                                         bool optional = false,
+                                         bool allowNewTableNames = false );
+%Docstring
+Constructor for QgsProcessingParameterDatabaseTable.
+
+The ``connectionParameterName`` specifies the name of the parent QgsProcessingParameterProviderConnection parameter.
+The ``schemaParameterName`` specifies the name of the parent QgsProcessingParameterDatabaseSchema parameter.
+
+.. warning::
+
+   The provider must support the connection API methods in its QgsProviderMetadata implementation
+   in order for the model to work correctly. This is only implemented for a subset of current data providers.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the parameter class.
+%End
+    virtual QgsProcessingParameterDefinition *clone() const /Factory/;
+
+    virtual QString type() const;
+    virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
+
+    virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString asScriptCode() const;
+
+    virtual QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonQgsProcessingAlgorithmSubclass ) const;
+
+    virtual QVariantMap toVariantMap() const;
+
+    virtual bool fromVariantMap( const QVariantMap &map );
+
+    virtual QStringList dependsOnOtherParameters() const;
+
+
+    QString parentConnectionParameterName() const;
+%Docstring
+Returns the name of the parent connection parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setParentConnectionParameterName`
+%End
+
+    void setParentConnectionParameterName( const QString &name );
+%Docstring
+Sets the ``name`` of the parent connection parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`parentConnectionParameterName`
+%End
+
+    QString parentSchemaParameterName() const;
+%Docstring
+Returns the name of the parent schema parameter, or an empty string if this is not set.
+
+.. seealso:: :py:func:`setParentSchemaParameterName`
+%End
+
+    void setParentSchemaParameterName( const QString &name );
+%Docstring
+Sets the ``name`` of the parent schema parameter. Use an empty string if this is not required.
+
+.. seealso:: :py:func:`parentSchemaParameterName`
+%End
+
+    static QgsProcessingParameterDatabaseTable *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
+%Docstring
+Creates a new parameter using the definition from a script code.
+%End
+
+    bool allowNewTableNames() const;
+%Docstring
+Returns ``True`` if the parameter allows users to enter names for
+a new (non-existing) tables.
+
+.. seealso:: :py:func:`setAllowNewTableNames`
+%End
+
+    void setAllowNewTableNames( bool allowed );
+%Docstring
+Sets whether the parameter allows users to enter names for
+a new (non-existing) tables.
+
+.. seealso:: :py:func:`allowNewTableNames`
 %End
 
 };

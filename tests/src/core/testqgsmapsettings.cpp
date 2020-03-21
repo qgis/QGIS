@@ -531,6 +531,29 @@ void TestQgsMapSettings::testExpressionContext()
 #else
   QCOMPARE( r.toString(), QStringLiteral( "WGS84" ) );
 #endif
+
+  e = QgsExpression( QStringLiteral( "@map_start_time" ) );
+  r = e.evaluate( &c );
+  QVERIFY( !r.isValid() );
+  e = QgsExpression( QStringLiteral( "@map_end_time" ) );
+  r = e.evaluate( &c );
+  QVERIFY( !r.isValid() );
+  e = QgsExpression( QStringLiteral( "@map_interval" ) );
+  r = e.evaluate( &c );
+  QVERIFY( !r.isValid() );
+
+  ms.setTemporalRange( QgsDateTimeRange( QDateTime( QDate( 2002, 3, 4 ) ), QDateTime( QDate( 2010, 6, 7 ) ) ) );
+  c = QgsExpressionContext();
+  c << QgsExpressionContextUtils::mapSettingsScope( ms );
+  e = QgsExpression( QStringLiteral( "@map_start_time" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDateTime(), QDateTime( QDate( 2002, 3, 4 ) ) );
+  e = QgsExpression( QStringLiteral( "@map_end_time" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.toDateTime(), QDateTime( QDate( 2010, 6, 7 ) ) );
+  e = QgsExpression( QStringLiteral( "@map_interval" ) );
+  r = e.evaluate( &c );
+  QCOMPARE( r.value< QgsInterval >(), QgsInterval( QDateTime( QDate( 2010, 6, 7 ) ) - QDateTime( QDate( 2002, 3, 4 ) ) ) );
 }
 
 void TestQgsMapSettings::testRenderedFeatureHandlers()

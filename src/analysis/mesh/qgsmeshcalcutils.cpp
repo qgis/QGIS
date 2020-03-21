@@ -180,8 +180,20 @@ QgsMeshCalcUtils:: QgsMeshCalcUtils( QgsMeshLayer *layer,
   : mMeshLayer( layer )
   , mIsValid( false )
 {
+  // Layer must be valid
+  if ( !mMeshLayer || !mMeshLayer->dataProvider() )
+    return;
+
   // Resolve output type of the calculation
   mOutputType = determineResultDataType( layer, usedGroupNames );
+
+  // Data on edges are not implemented
+  if ( mOutputType == QgsMeshDatasetGroupMetadata::DataOnEdges )
+    return;
+
+  // Support for meshes with edges are not implemented
+  if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    return;
 
   // First populate group's names map and see if we have all groups present
   // And basically fetch all data from any mesh provider to memory
@@ -1173,6 +1185,10 @@ QgsMeshDatasetGroupMetadata::DataType QgsMeshCalcUtils::determineResultDataType(
       if ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices )
       {
         return QgsMeshDatasetGroupMetadata::DataOnVertices;
+      }
+      else if ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnEdges )
+      {
+        return QgsMeshDatasetGroupMetadata::DataOnEdges;
       }
     }
   }

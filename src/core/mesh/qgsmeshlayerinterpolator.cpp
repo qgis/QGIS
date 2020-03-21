@@ -34,16 +34,18 @@
 #include "qgscoordinatetransform.h"
 #include "qgsmeshdataprovider.h"
 
-QgsMeshLayerInterpolator::QgsMeshLayerInterpolator( const QgsTriangularMesh &m,
-    const QVector<double> &datasetValues, const QgsMeshDataBlock &activeFaceFlagValues,
-    bool dataIsOnVertices,
-    const QgsRenderContext &context,
-    const QSize &size )
+QgsMeshLayerInterpolator::QgsMeshLayerInterpolator(
+  const QgsTriangularMesh &m,
+  const QVector<double> &datasetValues,
+  const QgsMeshDataBlock &activeFaceFlagValues,
+  QgsMeshDatasetGroupMetadata::DataType dataType,
+  const QgsRenderContext &context,
+  const QSize &size )
   : mTriangularMesh( m ),
     mDatasetValues( datasetValues ),
     mActiveFaceFlagValues( activeFaceFlagValues ),
     mContext( context ),
-    mDataOnVertices( dataIsOnVertices ),
+    mDataType( dataType ),
     mOutputSize( size )
 {
 }
@@ -86,10 +88,15 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
     indexCount = mTriangularMesh.triangles().count();
   }
 
+  if ( mTriangularMesh.contains( QgsMesh::ElementType::Edge ) )
+  {
+    return outputBlock.release();
+  }
+
   const QVector<QgsMeshVertex> &vertices = mTriangularMesh.vertices();
 
   // currently expecting that triangulation does not add any new extra vertices on the way
-  if ( mDataOnVertices )
+  if ( mDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
     Q_ASSERT( mDatasetValues.count() == mTriangularMesh.vertices().count() );
 
   for ( int i = 0; i < indexCount; ++i )
@@ -132,7 +139,7 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
       {
         double val;
         const QgsPointXY p = mContext.mapToPixel().toMapCoordinates( k, j );
-        if ( mDataOnVertices )
+        if ( mDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
           val = QgsMeshLayerUtils::interpolateFromVerticesData(
                   p1,
                   p2,
@@ -152,7 +159,6 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
                   p
                 );
         }
-
         if ( !std::isnan( val ) )
         {
           line[k] = val;
@@ -205,11 +211,11 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   std::unique_ptr<QgsMesh> nativeMesh = qgis::make_unique<QgsMesh>();
   layer.dataProvider()->populateMesh( nativeMesh.get() );
   std::unique_ptr<QgsTriangularMesh> triangularMesh = qgis::make_unique<QgsTriangularMesh>();
-  triangularMesh->update( nativeMesh.get(), renderContext.coordinateTransform() );
+  triangularMesh->update( nativeMesh.get(), transform );
 
   const QgsMeshDatasetGroupMetadata metadata = layer.dataProvider()->datasetGroupMetadata( datasetIndex );
-  bool scalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
-  const int count = scalarDataOnVertices ? nativeMesh->vertices.count() : nativeMesh->faces.count();
+  QgsMeshDatasetGroupMetadata::DataType scalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
+  const int count =  QgsMeshLayerUtils::datasetValuesCount( nativeMesh.get(), scalarDataType );
   QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
                             &layer,
                             datasetIndex,
@@ -224,14 +230,14 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
       0,
       nativeMesh->faces.count() );
 
-  QgsMeshLayerInterpolator iterpolator(
+  QgsMeshLayerInterpolator interpolator(
     *( triangularMesh.get() ),
     datasetValues,
     activeFaceFlagValues,
-    scalarDataOnVertices,
+    scalarDataType,
     renderContext,
     QSize( widthPixel, heightPixel )
   );
 
-  return iterpolator.block( 0, extent, widthPixel, heightPixel, feedback );
+  return interpolator.block( 0, extent, widthPixel, heightPixel, feedback );
 }

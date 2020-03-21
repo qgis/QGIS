@@ -11,10 +11,14 @@
 
 
 
+
 class QgsMapLayerTemporalProperties : QgsTemporalProperty
 {
 %Docstring
-An abstract base class for handling map layer temporal properties.
+Base class for storage of map layer temporal properties.
+
+QgsMapLayerTemporalProperties exposes user-configurable settings for controlling
+how an individual QgsMapLayer behaves in a temporal context, e.g. while animating a map object.
 
 .. versionadded:: 3.14
 %End
@@ -22,16 +26,24 @@ An abstract base class for handling map layer temporal properties.
 %TypeHeaderCode
 #include "qgsmaplayertemporalproperties.h"
 %End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsRasterLayerTemporalProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsRasterLayerTemporalProperties;
+    }
+    else
+    {
+      sipType = 0;
+    }
+%End
   public:
 
-    QgsMapLayerTemporalProperties( bool enabled = false );
+    QgsMapLayerTemporalProperties( QObject *parent /TransferThis/, bool enabled = false );
 %Docstring
-Constructor for QgsMapLayerTemporalProperties.
+Constructor for QgsMapLayerTemporalProperties, with the specified ``parent`` object.
 
 The ``enabled`` argument specifies whether the temporal properties are initially enabled or not (see isActive()).
 %End
-
-    virtual ~QgsMapLayerTemporalProperties();
 
     virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
 %Docstring
@@ -45,6 +57,37 @@ Writes the properties to a DOM ``element``, to be used later with readXml().
 Reads temporal properties from a DOM ``element`` previously written by writeXml().
 
 .. seealso:: :py:func:`writeXml`
+%End
+
+    enum TemporalSource
+    {
+      Layer,
+      Project
+    };
+
+    TemporalSource temporalSource() const;
+%Docstring
+Returns the temporal properties temporal range source, can be layer or project.
+
+.. seealso:: :py:func:`setTemporalSource`
+%End
+
+    void setTemporalSource( TemporalSource source );
+%Docstring
+Sets the temporal properties temporal range ``source``.
+
+.. seealso:: :py:func:`temporalSource`
+%End
+
+    virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
+%Docstring
+Returns ``True`` if the layer should be visible and rendered for the specified time ``range``.
+%End
+
+    virtual void setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities ) = 0;
+%Docstring
+Sets the layers temporal settings to appropriate defaults based on
+a provider's temporal ``capabilities``.
 %End
 
 };
