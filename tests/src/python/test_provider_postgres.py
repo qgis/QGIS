@@ -1680,6 +1680,7 @@ class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
             self.assertTrue(idx >= 0)
             self.assertFalse(self.vl.dataProvider().fieldConstraints(idx) & QgsFieldConstraints.ConstraintUnique)
 
+
 class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCase):
 
     @classmethod
@@ -1718,16 +1719,17 @@ class TestPyQgsPostgresProviderBigintSinglePk(unittest.TestCase, ProviderTestCas
         """ truncate/recreate the test data anew, like TestPyQgsPostgresProvider::getSource above. """
         self.execSqlCommand("TRUNCATE TABLE qgis_test.provider_bigint_single_pk")
         self.execSqlCommand("INSERT INTO qgis_test.provider_bigint_single_pk  ( key1, key2, pk, cnt, name, name2, num_char, geom) VALUES"
-"(1, 1, 5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),"
-"(1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL),"
-"(2, 1, 1,  100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),"
-"(2, 2, 2,  200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),"
-"(2, 3, 4,  400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')")
+                            "(1, 1, 5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),"
+                            "(1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL),"
+                            "(2, 1, 1,  100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),"
+                            "(2, 2, 2,  200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),"
+                            "(2, 3, 4,  400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')")
         vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'"pk"\' srid=4326 type=POINT table="qgis_test"."provider_bigint_single_pk" (geom) sql=', 'bigint_pk', 'postgres')
         return vl
 
     def getEditableLayer(self):
         return self.getSource()
+
 
 class TestPyQgsPostgresProviderBiginNonfirstSinglePk(unittest.TestCase, ProviderTestCase):
 
@@ -1760,24 +1762,25 @@ class TestPyQgsPostgresProviderBiginNonfirstSinglePk(unittest.TestCase, Provider
         return set([])
 
     def testConstraints(self):
-        idx = self.vl.dataProvider().fieldNameIndex("pk")
+        idx = self.vl.dataProvider().fieldNameIndex("primkey")
         self.assertTrue(idx >= 0)
 
     def getSource(self):
         """ truncate/recreate the test data anew, like TestPyQgsPostgresProvider::getSource above. """
         self.execSqlCommand("TRUNCATE TABLE qgis_test.provider_bigint_nonfirst_pk")
         self.execSqlCommand("INSERT INTO qgis_test.provider_bigint_nonfirst_pk  (zeroth_field, key1, key2, primkey, cnt, name, name2, num_char, geom) VALUES"
-"(-3, 1, 1, 5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),"
-"(-2, 1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL),"
-"(-1, 2, 1, 1,  100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),"
-"(0, 2, 2, 2,  200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),"
-"(1, 2, 3, 4,  400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')")
+                            "(-3, 1, 1, 5, -200, NULL, 'NuLl', '5', '0101000020E61000001D5A643BDFC751C01F85EB51B88E5340'),"
+                            "(-2, 1, 2, 3,  300, 'Pear', 'PEaR', '3', NULL),"
+                            "(-1, 2, 1, 1,  100, 'Orange', 'oranGe', '1', '0101000020E61000006891ED7C3F9551C085EB51B81E955040'),"
+                            "(0, 2, 2, 2,  200, 'Apple', 'Apple', '2', '0101000020E6100000CDCCCCCCCC0C51C03333333333B35140'),"
+                            "(1, 2, 3, 4,  400, 'Honey', 'Honey', '4', '0101000020E610000014AE47E17A5450C03333333333935340')")
 
         vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'"primkey"\' srid=4326 type=POINT table="qgis_test"."provider_bigint_nonfirst_pk" (geom) sql=', 'bigint_nonfirst_pk', 'postgres')
         return vl
 
     def getEditableLayer(self):
         return self.getSource()
+
 
 if __name__ == '__main__':
     unittest.main()
