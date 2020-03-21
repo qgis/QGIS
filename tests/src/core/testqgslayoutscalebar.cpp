@@ -65,6 +65,7 @@ class TestQgsLayoutScaleBar : public QObject
     void oldDataDefinedProject();
     void textFormat();
     void numericFormat();
+    void steppedLine();
 
   private:
     QString mReport;
@@ -727,6 +728,50 @@ void TestQgsLayoutScaleBar::numericFormat()
   scalebar->setTextFormat( QgsTextFormat::fromQFont( newFont ) );
 
   QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_numericformat" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
+void TestQgsLayoutScaleBar::steppedLine()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 150, 150 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+  map->setExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+
+  QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
+  scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
+  l.addLayoutItem( scalebar );
+  scalebar->setLinkedMap( map );
+  scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnitsPerSegment( 2000 );
+  scalebar->setNumberOfSegmentsLeft( 2 );
+  scalebar->setNumberOfSegments( 2 );
+  scalebar->setHeight( 20 );
+
+  std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
+  lineSymbolLayer->setWidth( 4 );
+  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
+  lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
+
+  lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
+  lineSymbolLayer->setWidth( 2 );
+  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setColor( QColor( 255, 255, 0 ) );
+  lineSymbol->appendSymbolLayer( lineSymbolLayer.release() );
+
+  scalebar->setLineSymbol( lineSymbol.release() );
+
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
+
+  scalebar->setStyle( QStringLiteral( "stepped" ) );
+  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_stepped" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }

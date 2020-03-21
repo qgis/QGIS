@@ -464,8 +464,9 @@ void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style 
     mGroupBoxSegments->setEnabled( true );
     mLabelBarSpaceSpinBox->setEnabled( true );
     mLineStyleButton->setEnabled( true );
-    mFillSymbol1Button->setEnabled( true );
-    mFillSymbol2Button->setEnabled( true );
+    const bool hasFill = style == QLatin1String( "Double Box" ) || style == QLatin1String( "Single Box" ) ;
+    mFillSymbol1Button->setEnabled( hasFill );
+    mFillSymbol2Button->setEnabled( hasFill );
     mLabelVerticalPlacementComboBox->setEnabled( true );
     mLabelHorizontalPlacementComboBox->setEnabled( true );
     mAlignmentComboBox->setEnabled( false );
