@@ -52,7 +52,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QgsFieldExpressionWidget" name="mFieldExpressionWidget" native="true">
+       <widget class="QgsFieldExpressionWidget" name="mFieldExpressionWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -172,7 +172,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>858</width>
+               <width>876</width>
                <height>300</height>
               </rect>
              </property>
@@ -303,7 +303,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QgsScaleWidget" name="mPreviewScaleComboBox" native="true">
+             <widget class="QgsScaleWidget" name="mPreviewScaleComboBox">
               <property name="focusPolicy">
                <enum>Qt::StrongFocus</enum>
               </property>
@@ -380,125 +380,7 @@
           <property name="horizontalSpacing">
            <number>0</number>
           </property>
-          <item row="0" column="0">
-           <widget class="QTabWidget" name="mOptionsTab">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="tabPosition">
-             <enum>QTabWidget::North</enum>
-            </property>
-            <property name="tabShape">
-             <enum>QTabWidget::Rounded</enum>
-            </property>
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-            <property name="elideMode">
-             <enum>Qt::ElideNone</enum>
-            </property>
-            <property name="documentMode">
-             <bool>true</bool>
-            </property>
-            <property name="tabsClosable">
-             <bool>false</bool>
-            </property>
-            <widget class="QWidget" name="textTab">
-             <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/propertyicons/labeltext.svg</normaloff>:/images/themes/default/propertyicons/labeltext.svg</iconset>
-             </attribute>
-             <attribute name="title">
-              <string/>
-             </attribute>
-            </widget>
-            <widget class="QWidget" name="tab_2">
-             <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/propertyicons/labelformatting.svg</normaloff>:/images/themes/default/propertyicons/labelformatting.svg</iconset>
-             </attribute>
-             <attribute name="title">
-              <string/>
-             </attribute>
-            </widget>
-            <widget class="QWidget" name="tab">
-             <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/propertyicons/labelbuffer.svg</normaloff>:/images/themes/default/propertyicons/labelbuffer.svg</iconset>
-             </attribute>
-             <attribute name="title">
-              <string/>
-             </attribute>
-            </widget>
-            <widget class="QWidget" name="maskTab">
-             <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/propertyicons/labelmask.svg</normaloff>:/images/themes/default/propertyicons/labelmask.svg</iconset>
-             </attribute>
-             <attribute name="title">
-              <string/>
-             </attribute>
-            </widget>
-            <widget class="QWidget" name="tab_3">
-             <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/propertyicons/labelbackground.svg</normaloff>:/images/themes/default/propertyicons/labelbackground.svg</iconset>
-             </attribute>
-             <attribute name="title">
-              <string/>
-             </attribute>
-            </widget>
-            <widget class="QWidget" name="tab_4">
-             <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/propertyicons/labelshadow.svg</normaloff>:/images/themes/default/propertyicons/labelshadow.svg</iconset>
-             </attribute>
-             <attribute name="title">
-              <string/>
-             </attribute>
-            </widget>
-            <widget class="QWidget" name="callouts">
-             <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/propertyicons/labelcallout.svg</normaloff>:/images/themes/default/propertyicons/labelcallout.svg</iconset>
-             </attribute>
-             <attribute name="title">
-              <string/>
-             </attribute>
-             <attribute name="toolTip">
-              <string>Callouts</string>
-             </attribute>
-            </widget>
-            <widget class="QWidget" name="widget">
-             <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/propertyicons/labelplacement.svg</normaloff>:/images/themes/default/propertyicons/labelplacement.svg</iconset>
-             </attribute>
-             <attribute name="title">
-              <string/>
-             </attribute>
-            </widget>
-            <widget class="QWidget" name="tab_6">
-             <attribute name="icon">
-              <iconset resource="../../images/images.qrc">
-               <normaloff>:/images/themes/default/propertyicons/render.svg</normaloff>:/images/themes/default/propertyicons/render.svg</iconset>
-             </attribute>
-             <attribute name="title">
-              <string/>
-             </attribute>
-            </widget>
-           </widget>
-          </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QSplitter" name="mLabelingOptionsSplitter">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -723,8 +605,8 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>317</width>
-                       <height>260</height>
+                       <width>351</width>
+                       <height>332</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -1032,13 +914,13 @@
                            <property name="maximum">
                             <double>999999999.000000000000000</double>
                            </property>
-                           <property name="showClearButton" stdset="0">
+                           <property name="showClearButton">
                             <bool>false</bool>
                            </property>
                           </widget>
                          </item>
                          <item row="8" column="1">
-                          <widget class="QgsOpacityWidget" name="mTextOpacityWidget" native="true">
+                          <widget class="QgsOpacityWidget" name="mTextOpacityWidget">
                            <property name="focusPolicy">
                             <enum>Qt::StrongFocus</enum>
                            </property>
@@ -1306,8 +1188,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>348</width>
-                       <height>624</height>
+                       <width>362</width>
+                       <height>762</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_42">
@@ -1698,7 +1580,7 @@ font-style: italic;</string>
                           <property name="singleStep">
                            <double>0.100000000000000</double>
                           </property>
-                          <property name="showClearButton" stdset="0">
+                          <property name="showClearButton">
                            <bool>true</bool>
                           </property>
                          </widget>
@@ -1892,7 +1774,7 @@ font-style: italic;</string>
                           <property name="singleStep">
                            <double>0.100000000000000</double>
                           </property>
-                          <property name="showClearButton" stdset="0">
+                          <property name="showClearButton">
                            <bool>true</bool>
                           </property>
                          </widget>
@@ -2205,8 +2087,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>284</width>
-                       <height>273</height>
+                       <width>286</width>
+                       <height>333</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2455,13 +2337,13 @@ font-style: italic;</string>
                              <property name="singleStep">
                               <double>0.100000000000000</double>
                              </property>
-                             <property name="showClearButton" stdset="0">
+                             <property name="showClearButton">
                               <bool>false</bool>
                              </property>
                             </widget>
                            </item>
                            <item row="4" column="1">
-                            <widget class="QgsOpacityWidget" name="mBufferOpacityWidget" native="true">
+                            <widget class="QgsOpacityWidget" name="mBufferOpacityWidget">
                              <property name="focusPolicy">
                               <enum>Qt::StrongFocus</enum>
                              </property>
@@ -2551,8 +2433,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>830</width>
-                       <height>376</height>
+                       <width>284</width>
+                       <height>292</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_121">
@@ -2716,7 +2598,7 @@ font-style: italic;</string>
                              <property name="singleStep">
                               <double>0.100000000000000</double>
                              </property>
-                             <property name="showClearButton" stdset="0">
+                             <property name="showClearButton">
                               <bool>false</bool>
                              </property>
                             </widget>
@@ -2729,7 +2611,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="2" column="1">
-                            <widget class="QgsOpacityWidget" name="mMaskOpacityWidget" native="true">
+                            <widget class="QgsOpacityWidget" name="mMaskOpacityWidget">
                              <property name="focusPolicy">
                               <enum>Qt::StrongFocus</enum>
                              </property>
@@ -2829,8 +2711,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>816</width>
-                       <height>696</height>
+                       <width>376</width>
+                       <height>878</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -3314,7 +3196,7 @@ font-style: italic;</string>
                              <property name="singleStep">
                               <double>0.100000000000000</double>
                              </property>
-                             <property name="showClearButton" stdset="0">
+                             <property name="showClearButton">
                               <bool>false</bool>
                              </property>
                             </widget>
@@ -3444,7 +3326,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="14" column="1">
-                            <widget class="QgsOpacityWidget" name="mBackgroundOpacityWidget" native="true">
+                            <widget class="QgsOpacityWidget" name="mBackgroundOpacityWidget">
                              <property name="focusPolicy">
                               <enum>Qt::StrongFocus</enum>
                              </property>
@@ -3464,7 +3346,7 @@ font-style: italic;</string>
                              <property name="singleStep">
                               <double>0.100000000000000</double>
                              </property>
-                             <property name="showClearButton" stdset="0">
+                             <property name="showClearButton">
                               <bool>false</bool>
                              </property>
                             </widget>
@@ -3493,7 +3375,7 @@ font-style: italic;</string>
                              <property name="singleStep">
                               <double>0.100000000000000</double>
                              </property>
-                             <property name="showClearButton" stdset="0">
+                             <property name="showClearButton">
                               <bool>false</bool>
                              </property>
                             </widget>
@@ -3590,8 +3472,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>816</width>
-                       <height>406</height>
+                       <width>296</width>
+                       <height>484</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3675,7 +3557,7 @@ font-style: italic;</string>
                              <property name="maximum">
                               <double>999999999.990000009536743</double>
                              </property>
-                             <property name="showClearButton" stdset="0">
+                             <property name="showClearButton">
                               <bool>false</bool>
                              </property>
                             </widget>
@@ -3721,7 +3603,7 @@ font-style: italic;</string>
                              <property name="singleStep">
                               <double>0.100000000000000</double>
                              </property>
-                             <property name="showClearButton" stdset="0">
+                             <property name="showClearButton">
                               <bool>false</bool>
                              </property>
                             </widget>
@@ -3792,7 +3674,7 @@ font-style: italic;</string>
                                <property name="maximum">
                                 <number>360</number>
                                </property>
-                               <property name="showClearButton" stdset="0">
+                               <property name="showClearButton">
                                 <bool>false</bool>
                                </property>
                               </widget>
@@ -3827,7 +3709,7 @@ font-style: italic;</string>
                              <property name="value">
                               <number>100</number>
                              </property>
-                             <property name="showClearButton" stdset="0">
+                             <property name="showClearButton">
                               <bool>false</bool>
                              </property>
                             </widget>
@@ -3954,7 +3836,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="8" column="1">
-                            <widget class="QgsOpacityWidget" name="mShadowOpacityWidget" native="true">
+                            <widget class="QgsOpacityWidget" name="mShadowOpacityWidget">
                              <property name="focusPolicy">
                               <enum>Qt::StrongFocus</enum>
                              </property>
@@ -4019,7 +3901,7 @@ font-style: italic;</string>
                        <x>0</x>
                        <y>0</y>
                        <width>830</width>
-                       <height>376</height>
+                       <height>362</height>
                       </rect>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_46">
@@ -4168,8 +4050,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>431</width>
-                       <height>1108</height>
+                       <width>459</width>
+                       <height>1362</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -5472,7 +5354,7 @@ font-style: italic;</string>
                            <property name="maximum">
                             <double>60.000000000000000</double>
                            </property>
-                           <property name="showClearButton" stdset="0">
+                           <property name="showClearButton">
                             <bool>false</bool>
                            </property>
                           </widget>
@@ -5550,7 +5432,7 @@ font-style: italic;</string>
                            <property name="maximum">
                             <double>95.000000000000000</double>
                            </property>
-                           <property name="showClearButton" stdset="0">
+                           <property name="showClearButton">
                             <bool>false</bool>
                            </property>
                           </widget>
@@ -5643,7 +5525,7 @@ font-style: italic;</string>
                         <property name="flat">
                          <bool>false</bool>
                         </property>
-                        <property name="syncGroup" stdset="0">
+                        <property name="syncGroup">
                          <string notr="true">labelplacementgroup</string>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_4">
@@ -5837,7 +5719,7 @@ font-style: italic;</string>
                         <property name="title">
                          <string>Priority</string>
                         </property>
-                        <property name="syncGroup" stdset="0">
+                        <property name="syncGroup">
                          <string notr="true">labelplacementgroup</string>
                         </property>
                         <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -5993,8 +5875,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>383</width>
-                       <height>624</height>
+                       <width>368</width>
+                       <height>728</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -6012,7 +5894,7 @@ font-style: italic;</string>
                         <property name="title">
                          <string>Label options</string>
                         </property>
-                        <property name="syncGroup" stdset="0">
+                        <property name="syncGroup">
                          <string notr="true">labelrenderinggroup</string>
                         </property>
                         <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -6082,7 +5964,7 @@ font-style: italic;</string>
                                <number>6</number>
                               </property>
                               <item row="1" column="1">
-                               <widget class="QgsScaleWidget" name="mMaxScaleWidget" native="true">
+                               <widget class="QgsScaleWidget" name="mMaxScaleWidget">
                                 <property name="focusPolicy">
                                  <enum>Qt::StrongFocus</enum>
                                 </property>
@@ -6099,7 +5981,7 @@ font-style: italic;</string>
                                </widget>
                               </item>
                               <item row="0" column="1">
-                               <widget class="QgsScaleWidget" name="mMinScaleWidget" native="true">
+                               <widget class="QgsScaleWidget" name="mMinScaleWidget">
                                 <property name="focusPolicy">
                                  <enum>Qt::StrongFocus</enum>
                                 </property>
@@ -6198,7 +6080,7 @@ font-style: italic;</string>
                                 <property name="value">
                                  <number>3</number>
                                 </property>
-                                <property name="showClearButton" stdset="0">
+                                <property name="showClearButton">
                                  <bool>false</bool>
                                 </property>
                                </widget>
@@ -6236,7 +6118,7 @@ font-style: italic;</string>
                                 <property name="value">
                                  <number>10000</number>
                                 </property>
-                                <property name="showClearButton" stdset="0">
+                                <property name="showClearButton">
                                  <bool>false</bool>
                                 </property>
                                </widget>
@@ -6525,7 +6407,7 @@ font-style: italic;</string>
                         <property name="title">
                          <string>Feature options</string>
                         </property>
-                        <property name="syncGroup" stdset="0">
+                        <property name="syncGroup">
                          <string notr="true">labelrenderinggroup</string>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_47">
@@ -6689,7 +6571,7 @@ font-style: italic;</string>
                               <property name="value">
                                <number>2000</number>
                               </property>
-                              <property name="showClearButton" stdset="0">
+                              <property name="showClearButton">
                                <bool>false</bool>
                               </property>
                              </widget>
@@ -6732,6 +6614,176 @@ font-style: italic;</string>
             </widget>
            </widget>
           </item>
+          <item row="0" column="0">
+           <layout class="QGridLayout" name="gridLayout_48">
+            <item row="0" column="7">
+             <widget class="QToolButton" name="mPlacementButton">
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/propertyicons/labelplacement.svg</normaloff>:/images/themes/default/propertyicons/labelplacement.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">mTabsButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QToolButton" name="mTextButton">
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/propertyicons/labeltext.svg</normaloff>:/images/themes/default/propertyicons/labeltext.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">mTabsButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QToolButton" name="mFormattingButton">
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/propertyicons/labelformatting.svg</normaloff>:/images/themes/default/propertyicons/labelformatting.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">mTabsButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item row="0" column="9">
+             <spacer name="horizontalSpacer_6">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="0" column="3">
+             <widget class="QToolButton" name="mMaskButton">
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/propertyicons/labelmask.svg</normaloff>:/images/themes/default/propertyicons/labelmask.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">mTabsButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item row="0" column="4">
+             <widget class="QToolButton" name="mBackgroundButton">
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/propertyicons/labelbackground.svg</normaloff>:/images/themes/default/propertyicons/labelbackground.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">mTabsButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QToolButton" name="mBufferButton">
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/propertyicons/labelbuffer.svg</normaloff>:/images/themes/default/propertyicons/labelbuffer.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">mTabsButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item row="0" column="5">
+             <widget class="QToolButton" name="mShadowButton">
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/propertyicons/labelshadow.svg</normaloff>:/images/themes/default/propertyicons/labelshadow.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">mTabsButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item row="0" column="6">
+             <widget class="QToolButton" name="mCalloutButton">
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/propertyicons/labelcallout.svg</normaloff>:/images/themes/default/propertyicons/labelcallout.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">mTabsButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item row="0" column="8">
+             <widget class="QToolButton" name="mRenderButton">
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/propertyicons/render.svg</normaloff>:/images/themes/default/propertyicons/render.svg</iconset>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">mTabsButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+           </layout>
+          </item>
          </layout>
         </widget>
        </widget>
@@ -6750,15 +6802,9 @@ font-style: italic;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -6767,15 +6813,21 @@ font-style: italic;</string>
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsScaleWidget</class>
@@ -6783,9 +6835,25 @@ font-style: italic;</string>
    <header>qgsscalewidget.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButton</class>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -6798,17 +6866,6 @@ font-style: italic;</string>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPenJoinStyleComboBox</class>
@@ -6832,11 +6889,6 @@ font-style: italic;</string>
    <header>qgsstyleitemslistwidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QgsSymbolButton</class>
-   <extends>QToolButton</extends>
-   <header>qgssymbolbutton.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mFieldExpressionWidget</tabstop>
@@ -6844,7 +6896,6 @@ font-style: italic;</string>
   <tabstop>mPreviewTextBtn</tabstop>
   <tabstop>mPreviewScaleComboBox</tabstop>
   <tabstop>mPreviewBackgroundBtn</tabstop>
-  <tabstop>mOptionsTab</tabstop>
   <tabstop>mLabelingOptionsListWidget</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mFontFamilyCmbBx</tabstop>
@@ -7092,30 +7143,14 @@ font-style: italic;</string>
  </resources>
  <connections>
   <connection>
-   <sender>mOptionsTab</sender>
-   <signal>currentChanged(int)</signal>
-   <receiver>mLabelStackedWidget</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>164</x>
-     <y>205</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>689</x>
-     <y>277</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>mLabelingOptionsListWidget</sender>
    <signal>currentRowChanged(int)</signal>
    <receiver>mLabelStackedWidget</receiver>
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>34</x>
-     <y>599</y>
+     <x>37</x>
+     <y>588</y>
     </hint>
     <hint type="destinationlabel">
      <x>633</x>
@@ -7124,4 +7159,7 @@ font-style: italic;</string>
    </hints>
   </connection>
  </connections>
+ <buttongroups>
+  <buttongroup name="mTabsButtonGroup"/>
+ </buttongroups>
 </ui>

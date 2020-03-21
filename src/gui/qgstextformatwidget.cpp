@@ -95,7 +95,6 @@ void QgsTextFormatWidget::initWidget()
   connect( mKerningCheckBox, &QCheckBox::toggled, this, &QgsTextFormatWidget::kerningToggled );
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
-  mOptionsTab->setIconSize( QSize( iconSize, iconSize ) );
   const int iconSize32 = QgsGuiUtils::scaleIconSize( 32 );
   const int iconSize24 = QgsGuiUtils::scaleIconSize( 24 );
   const int iconSize18 = QgsGuiUtils::scaleIconSize( 18 );
@@ -504,7 +503,17 @@ void QgsTextFormatWidget::initWidget()
   mGeometryGeneratorType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point / MultiPoint" ), QgsWkbTypes::GeometryType::PointGeometry );
 
   // set correct initial tab to match displayed setting page
-  whileBlocking( mOptionsTab )->setCurrentIndex( mLabelStackedWidget->currentIndex() );
+  mTabsButtonGroup->buttons().at( mLabelStackedWidget->currentIndex() )->setChecked( true );
+  mTabsButtonGroup->setId( mTextButton, 0 );
+  mTabsButtonGroup->setId( mFormattingButton, 1 );
+  mTabsButtonGroup->setId( mBufferButton, 2 );
+  mTabsButtonGroup->setId( mMaskButton, 3 );
+  mTabsButtonGroup->setId( mBackgroundButton, 4 );
+  mTabsButtonGroup->setId( mShadowButton, 5 );
+  mTabsButtonGroup->setId( mCalloutButton, 6 );
+  mTabsButtonGroup->setId( mPlacementButton, 7 );
+  mTabsButtonGroup->setId( mRenderButton, 8 );
+  connect( mTabsButtonGroup, qgis::overload<int>::of( &QButtonGroup::buttonClicked ), mLabelStackedWidget, &QStackedWidget::setCurrentIndex );
 
   if ( mMapCanvas )
   {
@@ -535,10 +544,10 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
       delete mLabelingOptionsListWidget->takeItem( 7 ); // placement
       delete mLabelingOptionsListWidget->takeItem( 6 ); // callouts
       delete mLabelingOptionsListWidget->takeItem( 3 ); // mask
-      mOptionsTab->removeTab( 8 );
-      mOptionsTab->removeTab( 7 );
-      mOptionsTab->removeTab( 6 );
-      mOptionsTab->removeTab( 3 );
+      mRenderButton->deleteLater();
+      mPlacementButton->deleteLater();
+      mCalloutButton->deleteLater();
+      mMaskButton->deleteLater();
       mLabelStackedWidget->removeWidget( mLabelPage_Rendering );
       mLabelStackedWidget->removeWidget( mLabelPage_Callouts );
       mLabelStackedWidget->removeWidget( mLabelPage_Mask );
@@ -567,16 +576,15 @@ void QgsTextFormatWidget::toggleDDButtons( bool visible )
 
 void QgsTextFormatWidget::setDockMode( bool enabled )
 {
-  mOptionsTab->setVisible( enabled );
-  mOptionsTab->setTabToolTip( 0, tr( "Text" ) );
-  mOptionsTab->setTabToolTip( 1, tr( "Formatting" ) );
-  mOptionsTab->setTabToolTip( 2, tr( "Buffer" ) );
-  mOptionsTab->setTabToolTip( 3, tr( "Mask" ) );
-  mOptionsTab->setTabToolTip( 4, tr( "Background" ) );
-  mOptionsTab->setTabToolTip( 5, tr( "Shadow" ) );
-  mOptionsTab->setTabToolTip( 6, tr( "Callouts" ) );
-  mOptionsTab->setTabToolTip( 7, tr( "Placement" ) );
-  mOptionsTab->setTabToolTip( 8, tr( "Rendering" ) );
+  mTextButton->setToolTip( tr( "Text" ) );
+  mFormattingButton->setToolTip( tr( "Formatting" ) );
+  mBufferButton->setToolTip( tr( "Buffer" ) );
+  mMaskButton->setToolTip( tr( "Mask" ) );
+  mBackgroundButton->setToolTip( tr( "Background" ) );
+  mShadowButton->setToolTip( tr( "Shadow" ) );
+  mCalloutButton->setToolTip( tr( "Callouts" ) );
+  mPlacementButton->setToolTip( tr( "Placement" ) );
+  mRenderButton->setToolTip( tr( "Rendering" ) );
 
   mLabelingOptionsListFrame->setVisible( !enabled );
   groupBox_mPreview->setVisible( !enabled );
