@@ -186,6 +186,7 @@ SET(QGIS_CORE_SRCS
   scalebar/qgsscalebarrendererregistry.cpp
   scalebar/qgsscalebarsettings.cpp
   scalebar/qgssingleboxscalebarrenderer.cpp
+  scalebar/qgssteppedlinescalebarrenderer.cpp
   scalebar/qgsticksscalebarrenderer.cpp
 
   qgis.cpp
@@ -1276,6 +1277,7 @@ SET(QGIS_CORE_HDRS
   scalebar/qgsscalebarrendererregistry.h
   scalebar/qgsscalebarsettings.h
   scalebar/qgssingleboxscalebarrenderer.h
+  scalebar/qgssteppedlinescalebarrenderer.h
   scalebar/qgsticksscalebarrenderer.h
 
   symbology/qgs25drenderer.h

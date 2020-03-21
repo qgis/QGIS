@@ -491,6 +491,7 @@
 %Include auto_generated/scalebar/qgsscalebarrendererregistry.sip
 %Include auto_generated/scalebar/qgsscalebarsettings.sip
 %Include auto_generated/scalebar/qgssingleboxscalebarrenderer.sip
+%Include auto_generated/scalebar/qgssteppedlinescalebarrenderer.sip
 %Include auto_generated/scalebar/qgsticksscalebarrenderer.sip
 %Include auto_generated/symbology/qgs25drenderer.sip
 %Include auto_generated/symbology/qgsarrowsymbollayer.sip
