@@ -23,6 +23,7 @@
 #include <Qt3DRender/QTexture>
 
 #include <QUrl>
+#include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
 #include <Qt3DRender/QBuffer>
