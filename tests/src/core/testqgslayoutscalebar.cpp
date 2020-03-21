@@ -32,6 +32,7 @@
 #include "qgslinesymbollayer.h"
 #include "qgslayoutmanager.h"
 #include "qgsprintlayout.h"
+#include "qgsfillsymbollayer.h"
 #include <QLocale>
 #include <QObject>
 #include "qgstest.h"
@@ -50,10 +51,12 @@ class TestQgsLayoutScaleBar : public QObject
     void cleanup();// will be called after every testfunction.
     void singleBox();
     void singleBoxLineSymbol();
+    void singleBoxFillSymbol();
     void singleBoxLabelBelowSegment();
     void singleBoxAlpha();
     void doubleBox();
     void doubleBoxLineSymbol();
+    void doubleBoxFillSymbol();
     void doubleBoxLabelCenteredSegment();
     void numeric();
     void tick();
@@ -185,6 +188,49 @@ void TestQgsLayoutScaleBar::singleBoxLineSymbol()
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }
 
+void TestQgsLayoutScaleBar::singleBoxFillSymbol()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 150, 150 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+  map->setExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+
+  QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
+  scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
+  l.addLayoutItem( scalebar );
+  scalebar->setLinkedMap( map );
+  scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnitsPerSegment( 2000 );
+  scalebar->setNumberOfSegmentsLeft( 2 );
+  scalebar->setNumberOfSegments( 2 );
+  scalebar->setHeight( 20 );
+
+  std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >();
+  std::unique_ptr< QgsGradientFillSymbolLayer > fillSymbolLayer = qgis::make_unique< QgsGradientFillSymbolLayer >();
+  fillSymbolLayer->setColor( QColor( 255, 0, 0 ) );
+  fillSymbolLayer->setColor2( QColor( 255, 255, 0 ) );
+  fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
+  scalebar->setFillSymbol1( fillSymbol.release() );
+
+  std::unique_ptr< QgsFillSymbol > fillSymbol2 = qgis::make_unique< QgsFillSymbol >();
+  std::unique_ptr< QgsGradientFillSymbolLayer > fillSymbolLayer2 = qgis::make_unique< QgsGradientFillSymbolLayer >();
+  fillSymbolLayer2->setColor( QColor( 0, 255, 0 ) );
+  fillSymbolLayer2->setColor2( QColor( 255, 255, 255 ) );
+  fillSymbol2->changeSymbolLayer( 0, fillSymbolLayer2.release() );
+  scalebar->setFillSymbol2( fillSymbol2.release() );
+
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
+
+  scalebar->setStyle( QStringLiteral( "Single Box" ) );
+  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_singlebox_fillsymbol" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
 void TestQgsLayoutScaleBar::singleBoxLabelBelowSegment()
 {
   QgsLayout l( QgsProject::instance() );
@@ -245,9 +291,9 @@ void TestQgsLayoutScaleBar::singleBoxAlpha()
   Q_NOWARN_DEPRECATED_POP
 
   scalebar->setStyle( QStringLiteral( "Single Box" ) );
+  Q_NOWARN_DEPRECATED_PUSH
   scalebar->setFillColor( QColor( 255, 0, 0, 100 ) );
   scalebar->setFillColor2( QColor( 0, 255, 0, 50 ) );
-  Q_NOWARN_DEPRECATED_PUSH
   scalebar->setLineColor( QColor( 0, 0, 255, 150 ) );
   scalebar->setLineWidth( 1.0 );
   Q_NOWARN_DEPRECATED_POP
@@ -282,11 +328,8 @@ void TestQgsLayoutScaleBar::doubleBox()
   scalebar->setHeight( 5 );
   Q_NOWARN_DEPRECATED_PUSH
   scalebar->setLineWidth( 1.0 );
-  Q_NOWARN_DEPRECATED_POP
-
   scalebar->setFillColor( Qt::black );
   scalebar->setFillColor2( Qt::white );
-  Q_NOWARN_DEPRECATED_PUSH
   scalebar->setLineColor( Qt::black );
   scalebar->setLineWidth( 1.0 );
   Q_NOWARN_DEPRECATED_POP
@@ -342,6 +385,49 @@ void TestQgsLayoutScaleBar::doubleBoxLineSymbol()
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }
 
+void TestQgsLayoutScaleBar::doubleBoxFillSymbol()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 150, 150 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+  map->setExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+
+  QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
+  scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
+  l.addLayoutItem( scalebar );
+  scalebar->setLinkedMap( map );
+  scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnitsPerSegment( 2000 );
+  scalebar->setNumberOfSegmentsLeft( 2 );
+  scalebar->setNumberOfSegments( 2 );
+  scalebar->setHeight( 20 );
+
+  std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >();
+  std::unique_ptr< QgsGradientFillSymbolLayer > fillSymbolLayer = qgis::make_unique< QgsGradientFillSymbolLayer >();
+  fillSymbolLayer->setColor( QColor( 255, 0, 0 ) );
+  fillSymbolLayer->setColor2( QColor( 255, 255, 0 ) );
+  fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
+  scalebar->setFillSymbol1( fillSymbol.release() );
+
+  std::unique_ptr< QgsFillSymbol > fillSymbol2 = qgis::make_unique< QgsFillSymbol >();
+  std::unique_ptr< QgsGradientFillSymbolLayer > fillSymbolLayer2 = qgis::make_unique< QgsGradientFillSymbolLayer >();
+  fillSymbolLayer2->setColor( QColor( 0, 255, 0 ) );
+  fillSymbolLayer2->setColor2( QColor( 255, 255, 255 ) );
+  fillSymbol2->changeSymbolLayer( 0, fillSymbolLayer2.release() );
+  scalebar->setFillSymbol2( fillSymbol2.release() );
+
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
+
+  scalebar->setStyle( QStringLiteral( "Double Box" ) );
+  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_doublebox_fillsymbol" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
 void TestQgsLayoutScaleBar::doubleBoxLabelCenteredSegment()
 {
   QgsLayout l( QgsProject::instance() );
@@ -366,11 +452,8 @@ void TestQgsLayoutScaleBar::doubleBoxLabelCenteredSegment()
   scalebar->setHeight( 5 );
   Q_NOWARN_DEPRECATED_PUSH
   scalebar->setLineWidth( 1.0 );
-  Q_NOWARN_DEPRECATED_POP
-
   scalebar->setFillColor( Qt::black );
   scalebar->setFillColor2( Qt::white );
-  Q_NOWARN_DEPRECATED_PUSH
   scalebar->setLineColor( Qt::black );
   scalebar->setLineWidth( 1.0 );
   Q_NOWARN_DEPRECATED_POP
@@ -551,33 +634,30 @@ void TestQgsLayoutScaleBar::dataDefined()
   QgsLayoutChecker checker2( QStringLiteral( "layoutscalebar_datadefined" ), &l );
   checker2.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
   QVERIFY( checker2.testLayout( mReport, 0, 0 ) );
-
-  QCOMPARE( scalebar->brush().color().name(), QColor( 255, 0, 0 ).name() );
-  QCOMPARE( scalebar->brush2().color().name(), QColor( 0, 0, 255 ).name() );
 }
 
 void TestQgsLayoutScaleBar::oldDataDefinedProject()
 {
-    QgsProject project;
-    // read a project with the older data defined line width and color
-    project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/scalebar_old_datadefined.qgs" );
-    QgsLayout* l = project.layoutManager()->printLayouts().at( 0 );
-    QList< QgsLayoutItemScaleBar* > scaleBars;
-    l->layoutItems( scaleBars );
-    QgsLayoutItemScaleBar* scaleBar = scaleBars.at( 0 );
+  QgsProject project;
+  // read a project with the older data defined line width and color
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/scalebar_old_datadefined.qgs" );
+  QgsLayout *l = project.layoutManager()->printLayouts().at( 0 );
+  QList< QgsLayoutItemScaleBar * > scaleBars;
+  l->layoutItems( scaleBars );
+  QgsLayoutItemScaleBar *scaleBar = scaleBars.at( 0 );
 
-    // ensure the deprecated scalebar datadefined properties were automatically copied to the scalebar's line symbol
-    QgsLineSymbol* ls = scaleBar->lineSymbol();
-    QgsSimpleLineSymbolLayer* sll = dynamic_cast< QgsSimpleLineSymbolLayer* >( ls->symbolLayer( 0 ) );
+  // ensure the deprecated scalebar datadefined properties were automatically copied to the scalebar's line symbol
+  QgsLineSymbol *ls = scaleBar->lineSymbol();
+  QgsSimpleLineSymbolLayer *sll = dynamic_cast< QgsSimpleLineSymbolLayer * >( ls->symbolLayer( 0 ) );
 
-    QVERIFY( sll->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeWidth ).isActive() );
-    QCOMPARE( sll->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeWidth).asExpression(), QStringLiteral("3"));
-    QVERIFY( sll->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeColor ).isActive() );
-    QCOMPARE( sll->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeColor).asExpression(), QStringLiteral("'red'"));
+  QVERIFY( sll->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeWidth ).isActive() );
+  QCOMPARE( sll->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeWidth ).asExpression(), QStringLiteral( "3" ) );
+  QVERIFY( sll->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeColor ).isActive() );
+  QCOMPARE( sll->dataDefinedProperties().property( QgsSymbolLayer::PropertyStrokeColor ).asExpression(), QStringLiteral( "'red'" ) );
 
-    // deprecated properties should be gone
-    QVERIFY( !scaleBar->dataDefinedProperties().property( QgsLayoutObject::ScalebarLineColor ).isActive() );
-    QVERIFY( !scaleBar->dataDefinedProperties().property( QgsLayoutObject::ScalebarLineWidth ).isActive() );
+  // deprecated properties should be gone
+  QVERIFY( !scaleBar->dataDefinedProperties().property( QgsLayoutObject::ScalebarLineColor ).isActive() );
+  QVERIFY( !scaleBar->dataDefinedProperties().property( QgsLayoutObject::ScalebarLineWidth ).isActive() );
 }
 
 void TestQgsLayoutScaleBar::textFormat()

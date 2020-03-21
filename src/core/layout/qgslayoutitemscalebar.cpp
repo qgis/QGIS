@@ -37,6 +37,7 @@
 #include "qgsnumericformat.h"
 #include "qgsnumericformatregistry.h"
 #include "qgslinesymbollayer.h"
+#include "qgsfillsymbollayer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -90,6 +91,26 @@ void QgsLayoutItemScaleBar::draw( QgsLayoutItemRenderContext &context )
       sym->setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::ScalebarLineColor, expContext, mSettings.lineColor() ) );
     Q_NOWARN_DEPRECATED_POP
     mSettings.setLineSymbol( sym.release() );
+  }
+  if ( dataDefinedProperties().isActive( QgsLayoutObject::ScalebarFillColor ) )
+  {
+    // compatibility code - ScalebarLineColor and ScalebarLineWidth are deprecated
+    QgsExpressionContext expContext = createExpressionContext();
+    std::unique_ptr< QgsFillSymbol > sym( mSettings.fillSymbol1()->clone() );
+    Q_NOWARN_DEPRECATED_PUSH
+    sym->setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::ScalebarFillColor, expContext, mSettings.fillColor() ) );
+    Q_NOWARN_DEPRECATED_POP
+    mSettings.setFillSymbol1( sym.release() );
+  }
+  if ( dataDefinedProperties().isActive( QgsLayoutObject::ScalebarFillColor2 ) )
+  {
+    // compatibility code - ScalebarLineColor and ScalebarLineWidth are deprecated
+    QgsExpressionContext expContext = createExpressionContext();
+    std::unique_ptr< QgsFillSymbol > sym( mSettings.fillSymbol2()->clone() );
+    Q_NOWARN_DEPRECATED_PUSH
+    sym->setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::ScalebarFillColor2, expContext, mSettings.fillColor2() ) );
+    Q_NOWARN_DEPRECATED_POP
+    mSettings.setFillSymbol2( sym.release() );
   }
 
   mStyle->draw( context.renderContext(), mSettings, createScaleContext() );
@@ -176,6 +197,26 @@ void QgsLayoutItemScaleBar::setLineSymbol( QgsLineSymbol *symbol )
   mSettings.setLineSymbol( symbol );
 }
 
+QgsFillSymbol *QgsLayoutItemScaleBar::fillSymbol1() const
+{
+  return mSettings.fillSymbol1();
+}
+
+void QgsLayoutItemScaleBar::setFillSymbol1( QgsFillSymbol *symbol )
+{
+  mSettings.setFillSymbol1( symbol );
+}
+
+QgsFillSymbol *QgsLayoutItemScaleBar::fillSymbol2() const
+{
+  return mSettings.fillSymbol2();
+}
+
+void QgsLayoutItemScaleBar::setFillSymbol2( QgsFillSymbol *symbol )
+{
+  mSettings.setFillSymbol2( symbol );
+}
+
 void QgsLayoutItemScaleBar::setNumberOfSegmentsLeft( int nSegmentsLeft )
 {
   if ( !mStyle )
@@ -236,16 +277,10 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
   //updates data defined properties and redraws item to match
   if ( property == QgsLayoutObject::ScalebarFillColor || property == QgsLayoutObject::AllProperties )
   {
-    QBrush b = mSettings.brush();
-    b.setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::ScalebarFillColor, context, mSettings.fillColor() ) );
-    mSettings.setBrush( b );
     forceUpdate = true;
   }
   if ( property == QgsLayoutObject::ScalebarFillColor2 || property == QgsLayoutObject::AllProperties )
   {
-    QBrush b = mSettings.brush2();
-    b.setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::ScalebarFillColor2, context, mSettings.fillColor2() ) );
-    mSettings.setBrush2( b );
     forceUpdate = true;
   }
   if ( property == QgsLayoutObject::ScalebarLineColor || property == QgsLayoutObject::AllProperties )
@@ -605,6 +640,34 @@ void QgsLayoutItemScaleBar::setFontColor( const QColor &color )
   mSettings.textFormat().setOpacity( color.alphaF() );
 }
 
+QColor QgsLayoutItemScaleBar::fillColor() const
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  return mSettings.fillColor();
+  Q_NOWARN_DEPRECATED_POP
+}
+
+void QgsLayoutItemScaleBar::setFillColor( const QColor &color )
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  mSettings.setFillColor( color );
+  Q_NOWARN_DEPRECATED_POP
+}
+
+QColor QgsLayoutItemScaleBar::fillColor2() const
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  return mSettings.fillColor2();
+  Q_NOWARN_DEPRECATED_POP
+}
+
+void QgsLayoutItemScaleBar::setFillColor2( const QColor &color )
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  mSettings.setFillColor2( color );
+  Q_NOWARN_DEPRECATED_POP
+}
+
 QColor QgsLayoutItemScaleBar::lineColor() const
 {
   Q_NOWARN_DEPRECATED_PUSH
@@ -637,6 +700,20 @@ QPen QgsLayoutItemScaleBar::pen() const
 {
   Q_NOWARN_DEPRECATED_PUSH
   return mSettings.pen();
+  Q_NOWARN_DEPRECATED_POP
+}
+
+QBrush QgsLayoutItemScaleBar::brush() const
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  return mSettings.brush();
+  Q_NOWARN_DEPRECATED_POP
+}
+
+QBrush QgsLayoutItemScaleBar::brush2() const
+{
+  Q_NOWARN_DEPRECATED_PUSH
+  return mSettings.brush2();
   Q_NOWARN_DEPRECATED_POP
 }
 
@@ -692,6 +769,9 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
 
   //colors
 
+  Q_NOWARN_DEPRECATED_PUSH
+  // kept just for allowing projects to open in QGIS < 3.14, remove for 4.0
+
   //fill color
   QDomElement fillColorElem = doc.createElement( QStringLiteral( "fillColor" ) );
   fillColorElem.setAttribute( QStringLiteral( "red" ), QString::number( mSettings.fillColor().red() ) );
@@ -708,6 +788,8 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   fillColor2Elem.setAttribute( QStringLiteral( "alpha" ), QString::number( mSettings.fillColor2().alpha() ) );
   composerScaleBarElem.appendChild( fillColor2Elem );
 
+  Q_NOWARN_DEPRECATED_POP
+
   //label vertical/horizontal placement
   composerScaleBarElem.setAttribute( QStringLiteral( "labelVerticalPlacement" ), QString::number( static_cast< int >( mSettings.labelVerticalPlacement() ) ) );
   composerScaleBarElem.setAttribute( QStringLiteral( "labelHorizontalPlacement" ), QString::number( static_cast< int >( mSettings.labelHorizontalPlacement() ) ) );
@@ -722,6 +804,22 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
                                  rwContext );
   lineSymbol.appendChild( symbolElem );
   composerScaleBarElem.appendChild( lineSymbol );
+
+  QDomElement fillSymbol1Elem = doc.createElement( QStringLiteral( "fillSymbol1" ) );
+  const QDomElement symbol1Elem = QgsSymbolLayerUtils::saveSymbol( QString(),
+                                  mSettings.fillSymbol1(),
+                                  doc,
+                                  rwContext );
+  fillSymbol1Elem.appendChild( symbol1Elem );
+  composerScaleBarElem.appendChild( fillSymbol1Elem );
+
+  QDomElement fillSymbol2Elem = doc.createElement( QStringLiteral( "fillSymbol2" ) );
+  const QDomElement symbol2Elem = QgsSymbolLayerUtils::saveSymbol( QString(),
+                                  mSettings.fillSymbol2(),
+                                  doc,
+                                  rwContext );
+  fillSymbol2Elem.appendChild( symbol2Elem );
+  composerScaleBarElem.appendChild( fillSymbol2Elem );
 
   return true;
 }
@@ -754,8 +852,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   }
   if ( !foundLineSymbol )
   {
-    // old project compatiblity - remove for 4.0
-    Q_NOWARN_DEPRECATED_PUSH
+    // old project compatiblity
     std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
     std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
     lineSymbolLayer->setWidth( itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "0.3" ) ).toDouble() );
@@ -788,9 +885,9 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
 
     // need to translate the deprecated ScalebarLineWidth and ScalebarLineColor properties to symbol properties,
     // and then remove them from the scalebar so they don't interfere and apply to other compatibility workarounds
-    lineSymbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeWidth, dataDefinedProperties().property( QgsLayoutObject::ScalebarLineWidth ));
+    lineSymbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeWidth, dataDefinedProperties().property( QgsLayoutObject::ScalebarLineWidth ) );
     dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarLineWidth, QgsProperty() );
-    lineSymbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, dataDefinedProperties().property( QgsLayoutObject::ScalebarLineColor ));
+    lineSymbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyStrokeColor, dataDefinedProperties().property( QgsLayoutObject::ScalebarLineColor ) );
     dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarLineColor, QgsProperty() );
 
     lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
@@ -832,51 +929,108 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
     mSettings.setNumericFormat( QgsApplication::numericFormatRegistry()->createFromXml( numericFormatElem, context ) );
   }
 
-  //colors
-  //fill color
-  QDomNodeList fillColorList = itemElem.elementsByTagName( QStringLiteral( "fillColor" ) );
-  if ( !fillColorList.isEmpty() )
+  QDomElement fillSymbol1Elem = itemElem.firstChildElement( QStringLiteral( "fillSymbol1" ) );
+  bool foundFillSymbol1 = false;
+  if ( !fillSymbol1Elem.isNull() )
   {
-    QDomElement fillColorElem = fillColorList.at( 0 ).toElement();
-    bool redOk, greenOk, blueOk, alphaOk;
-    int fillRed, fillGreen, fillBlue, fillAlpha;
-
-    fillRed = fillColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
-    fillGreen = fillColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
-    fillBlue = fillColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
-    fillAlpha = fillColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
-
-    if ( redOk && greenOk && blueOk && alphaOk )
+    QDomElement symbolElem = fillSymbol1Elem.firstChildElement( QStringLiteral( "symbol" ) );
+    std::unique_ptr< QgsFillSymbol > fillSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
+    if ( fillSymbol )
     {
-      mSettings.setFillColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+      mSettings.setFillSymbol1( fillSymbol.release() );
+      foundFillSymbol1 = true;
     }
   }
-  else
+  if ( !foundFillSymbol1 )
   {
-    mSettings.setFillColor( QColor( itemElem.attribute( QStringLiteral( "brushColor" ), QStringLiteral( "#000000" ) ) ) );
+    // old project compatiblity
+    std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >();
+    std::unique_ptr< QgsSimpleFillSymbolLayer > fillSymbolLayer = qgis::make_unique< QgsSimpleFillSymbolLayer >();
+    fillSymbolLayer->setStrokeStyle( Qt::NoPen );
+
+    //fill color
+    QDomNodeList fillColorList = itemElem.elementsByTagName( QStringLiteral( "fillColor" ) );
+    if ( !fillColorList.isEmpty() )
+    {
+      QDomElement fillColorElem = fillColorList.at( 0 ).toElement();
+      bool redOk, greenOk, blueOk, alphaOk;
+      int fillRed, fillGreen, fillBlue, fillAlpha;
+
+      fillRed = fillColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+      fillGreen = fillColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+      fillBlue = fillColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+      fillAlpha = fillColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+
+      if ( redOk && greenOk && blueOk && alphaOk )
+      {
+        fillSymbolLayer->setColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+      }
+    }
+    else
+    {
+      fillSymbolLayer->setColor( QColor( itemElem.attribute( QStringLiteral( "brushColor" ), QStringLiteral( "#000000" ) ) ) );
+    }
+
+    // need to translate the deprecated ScalebarFillColor property to symbol properties,
+    // and then remove them from the scalebar so they don't interfere and apply to other compatibility workarounds
+    fillSymbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, dataDefinedProperties().property( QgsLayoutObject::ScalebarFillColor ) );
+    dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarFillColor, QgsProperty() );
+
+    fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
+    mSettings.setFillSymbol1( fillSymbol.release() );
   }
 
-  //fill color 2
-  QDomNodeList fillColor2List = itemElem.elementsByTagName( QStringLiteral( "fillColor2" ) );
-  if ( !fillColor2List.isEmpty() )
+  QDomElement fillSymbol2Elem = itemElem.firstChildElement( QStringLiteral( "fillSymbol2" ) );
+  bool foundFillSymbol2 = false;
+  if ( !fillSymbol2Elem.isNull() )
   {
-    QDomElement fillColor2Elem = fillColor2List.at( 0 ).toElement();
-    bool redOk, greenOk, blueOk, alphaOk;
-    int fillRed, fillGreen, fillBlue, fillAlpha;
-
-    fillRed = fillColor2Elem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
-    fillGreen = fillColor2Elem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
-    fillBlue = fillColor2Elem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
-    fillAlpha = fillColor2Elem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
-
-    if ( redOk && greenOk && blueOk && alphaOk )
+    QDomElement symbolElem = fillSymbol2Elem.firstChildElement( QStringLiteral( "symbol" ) );
+    std::unique_ptr< QgsFillSymbol > fillSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
+    if ( fillSymbol )
     {
-      mSettings.setFillColor2( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+      mSettings.setFillSymbol2( fillSymbol.release() );
+      foundFillSymbol2 = true;
     }
   }
-  else
+  if ( !foundFillSymbol2 )
   {
-    mSettings.setFillColor2( QColor( itemElem.attribute( QStringLiteral( "brush2Color" ), QStringLiteral( "#ffffff" ) ) ) );
+    // old project compatiblity
+    std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >();
+    std::unique_ptr< QgsSimpleFillSymbolLayer > fillSymbolLayer = qgis::make_unique< QgsSimpleFillSymbolLayer >();
+    fillSymbolLayer->setStrokeStyle( Qt::NoPen );
+
+    //fill color 2
+
+    QDomNodeList fillColor2List = itemElem.elementsByTagName( QStringLiteral( "fillColor2" ) );
+    if ( !fillColor2List.isEmpty() )
+    {
+      QDomElement fillColor2Elem = fillColor2List.at( 0 ).toElement();
+      bool redOk, greenOk, blueOk, alphaOk;
+      int fillRed, fillGreen, fillBlue, fillAlpha;
+
+      fillRed = fillColor2Elem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+      fillGreen = fillColor2Elem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+      fillBlue = fillColor2Elem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+      fillAlpha = fillColor2Elem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+
+      if ( redOk && greenOk && blueOk && alphaOk )
+      {
+        fillSymbolLayer->setColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+      }
+    }
+    else
+    {
+      fillSymbolLayer->setColor( QColor( itemElem.attribute( QStringLiteral( "brush2Color" ), QStringLiteral( "#ffffff" ) ) ) );
+    }
+
+    // need to translate the deprecated ScalebarFillColor2 property to symbol properties,
+    // and then remove them from the scalebar so they don't interfere and apply to other compatibility workarounds
+    fillSymbolLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyFillColor, dataDefinedProperties().property( QgsLayoutObject::ScalebarFillColor2 ) );
+    dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarFillColor2, QgsProperty() );
+
+    fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
+    mSettings.setFillSymbol2( fillSymbol.release() );
+
   }
 
   //font color
