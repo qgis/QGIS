@@ -33,7 +33,7 @@ QString QgsNumericScaleBarRenderer::visibleName() const
 
 int QgsNumericScaleBarRenderer::sortKey() const
 {
-  return 9;
+  return 100;
 }
 
 QgsScaleBarRenderer::Flags QgsNumericScaleBarRenderer::flags() const
