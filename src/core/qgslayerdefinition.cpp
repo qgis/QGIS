@@ -211,7 +211,7 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLay
 
   QgsReadWriteContext context;
   bool writeAbsolutePath = QgsProject::instance()->readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
-  context.setPathResolver( QgsPathResolver( writeAbsolutePath ? QStringLiteral( "" ) : path ) );
+  context.setPathResolver( QgsPathResolver( writeAbsolutePath ? QString() : path ) );
 
   QDomDocument doc( QStringLiteral( "qgis-layer-definition" ) );
   if ( !exportLayerDefinition( doc, selectedTreeNodes, errorMessage, context ) )
