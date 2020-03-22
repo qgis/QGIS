@@ -62,10 +62,10 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   std::unique_ptr< QgsLineSymbol > lineSymbol( settings.lineSymbol()->clone() );
   lineSymbol->startRender( context );
 
-  std::unique_ptr< QgsFillSymbol > fillSymbol1( settings.fillSymbol1()->clone() );
+  std::unique_ptr< QgsFillSymbol > fillSymbol1( settings.fillSymbol()->clone() );
   fillSymbol1->startRender( context );
 
-  std::unique_ptr< QgsFillSymbol > fillSymbol2( settings.fillSymbol2()->clone() );
+  std::unique_ptr< QgsFillSymbol > fillSymbol2( settings.alternateFillSymbol()->clone() );
   fillSymbol2->startRender( context );
 
   painter->setPen( Qt::NoPen );

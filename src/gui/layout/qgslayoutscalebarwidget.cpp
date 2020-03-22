@@ -193,7 +193,7 @@ void QgsLayoutScaleBarWidget::fillSymbol1Changed()
     return;
 
   mScalebar->layout()->undoStack()->beginCommand( mScalebar, tr( "Change Scalebar Fill Style" ), QgsLayoutItem::UndoShapeStyle );
-  mScalebar->setFillSymbol1( mFillSymbol1Button->clonedSymbol<QgsFillSymbol>() );
+  mScalebar->setFillSymbol( mFillSymbol1Button->clonedSymbol<QgsFillSymbol>() );
   mScalebar->update();
   mScalebar->layout()->undoStack()->endCommand();
 }
@@ -204,7 +204,7 @@ void QgsLayoutScaleBarWidget::fillSymbol2Changed()
     return;
 
   mScalebar->layout()->undoStack()->beginCommand( mScalebar, tr( "Change Scalebar Fill Style" ), QgsLayoutItem::UndoShapeStyle );
-  mScalebar->setFillSymbol2( mFillSymbol2Button->clonedSymbol<QgsFillSymbol>() );
+  mScalebar->setAlternateFillSymbol( mFillSymbol2Button->clonedSymbol<QgsFillSymbol>() );
   mScalebar->update();
   mScalebar->layout()->undoStack()->endCommand();
 }
@@ -228,8 +228,8 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   mFontButton->setTextFormat( mScalebar->textFormat() );
 
   whileBlocking( mLineStyleButton )->setSymbol( mScalebar->lineSymbol()->clone() );
-  whileBlocking( mFillSymbol1Button )->setSymbol( mScalebar->fillSymbol1()->clone() );
-  whileBlocking( mFillSymbol2Button )->setSymbol( mScalebar->fillSymbol2()->clone() );
+  whileBlocking( mFillSymbol1Button )->setSymbol( mScalebar->fillSymbol()->clone() );
+  whileBlocking( mFillSymbol2Button )->setSymbol( mScalebar->alternateFillSymbol()->clone() );
 
   //map combo box
   mMapItemComboBox->setItem( mScalebar->linkedMap() );

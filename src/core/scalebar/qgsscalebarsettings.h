@@ -292,7 +292,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * Returns the color used for fills in the scalebar.
      * \see setFillColor()
      * \see fillColor2()
-     * \deprecated use fillSymbol1() instead.
+     * \deprecated use fillSymbol() instead.
      */
     Q_DECL_DEPRECATED QColor fillColor() const SIP_DEPRECATED;
 
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * Sets the \a color used for fills in the scalebar.
      * \see fillColor()
      * \see setFillColor2()
-     * \deprecated use setFillSymbol1() instead.
+     * \deprecated use setFillSymbol() instead.
      */
     Q_DECL_DEPRECATED void setFillColor( const QColor &color ) SIP_DEPRECATED;
 
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * Returns the secondary color used for fills in the scalebar.
      * \see setFillColor2()
      * \see fillColor()
-     * \deprecated use fillSymbol2() instead
+     * \deprecated use alternateFillSymbol() instead
      */
     Q_DECL_DEPRECATED QColor fillColor2() const SIP_DEPRECATED;
 
@@ -316,7 +316,7 @@ class CORE_EXPORT QgsScaleBarSettings
      * Sets the secondary \a color used for fills in the scalebar.
      * \see fillColor2()
      * \see setFillColor2()
-     * \deprecated use setFillSymbol2() instead.
+     * \deprecated use setAlternateFillSymbol() instead.
      */
     Q_DECL_DEPRECATED void setFillColor2( const QColor &color ) SIP_DEPRECATED;
 
@@ -387,21 +387,21 @@ class CORE_EXPORT QgsScaleBarSettings
      *
      * Ownership is not transferred.
      *
-     * \see setFillSymbol1()
-     * \see fillSymbol2()
+     * \see setFillSymbol()
+     * \see alternateFillSymbol()
      * \since QGIS 3.14
      */
-    QgsFillSymbol *fillSymbol1() const;
+    QgsFillSymbol *fillSymbol() const;
 
     /**
      * Sets the primary fill \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
      * transferred to the scalebar.
      *
-     * \see fillSymbol1()
-     * \see setFillSymbol2()
+     * \see fillSymbol()
+     * \see setAlternateFillSymbol()
      * \since QGIS 3.14
      */
-    void setFillSymbol1( QgsFillSymbol *symbol SIP_TRANSFER );
+    void setFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
 
     /**
@@ -409,35 +409,35 @@ class CORE_EXPORT QgsScaleBarSettings
      *
      * Ownership is not transferred.
      *
-     * \see setFillSymbol2()
-     * \see fillSymbol1()
+     * \see setAlternateFillSymbol()
+     * \see fillSymbol()
      * \since QGIS 3.14
      */
-    QgsFillSymbol *fillSymbol2() const;
+    QgsFillSymbol *alternateFillSymbol() const;
 
     /**
      * Sets the secondary fill \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
      * transferred to the scalebar.
      *
-     * \see fillSymbol2()
-     * \see setFillSymbol1()
+     * \see alternateFillSymbol()
+     * \see setFillSymbol()
      * \since QGIS 3.14
      */
-    void setFillSymbol2( QgsFillSymbol *symbol SIP_TRANSFER );
+    void setAlternateFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the primary brush used for filling the scalebar.
      * \see setBrush()
      * \see brush2()
      * \see pen()
-     * \deprecated use fillSymbol1() instead
+     * \deprecated use fillSymbol() instead
      */
     Q_DECL_DEPRECATED QBrush brush() const SIP_DEPRECATED;
 
     /**
      * Sets the primary brush used for filling the scalebar.
      * \see brush()
-     * \deprecated use setFillSymbol1() instead
+     * \deprecated use setFillSymbol() instead
      */
     Q_DECL_DEPRECATED void setBrush( const QBrush &brush ) SIP_DEPRECATED;
 
@@ -446,14 +446,14 @@ class CORE_EXPORT QgsScaleBarSettings
      * as single and double box styles.
      * \see setBrush2()
      * \see brush()
-     * \deprecated use fillSymbol2() instead
+     * \deprecated use alternateFillSymbol() instead
      */
     Q_DECL_DEPRECATED QBrush brush2() const SIP_DEPRECATED;
 
     /**
      * Sets the secondary brush used for filling the scalebar.
      * \see brush()
-     * \deprecated use setFillSymbol2() instead
+     * \deprecated use setAlternateFillSymbol() instead
      */
     Q_DECL_DEPRECATED void setBrush2( const QBrush &brush ) SIP_DEPRECATED;
 
@@ -607,7 +607,7 @@ class CORE_EXPORT QgsScaleBarSettings
 
     std::unique_ptr< QgsLineSymbol > mLineSymbol;
     std::unique_ptr< QgsFillSymbol > mFillSymbol;
-    std::unique_ptr< QgsFillSymbol > mFillSymbol2;
+    std::unique_ptr< QgsFillSymbol > mAlternateFillSymbol;
 
     //! Space between bar and Text labels
     double mLabelBarSpace = 3.0;

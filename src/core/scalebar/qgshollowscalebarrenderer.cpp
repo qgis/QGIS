@@ -63,10 +63,10 @@ void QgsHollowScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleB
   std::unique_ptr< QgsLineSymbol > lineSymbol( settings.lineSymbol()->clone() );
   lineSymbol->startRender( context );
 
-  std::unique_ptr< QgsFillSymbol > fillSymbol1( settings.fillSymbol1()->clone() );
+  std::unique_ptr< QgsFillSymbol > fillSymbol1( settings.fillSymbol()->clone() );
   fillSymbol1->startRender( context );
 
-  std::unique_ptr< QgsFillSymbol > fillSymbol2( settings.fillSymbol2()->clone() );
+  std::unique_ptr< QgsFillSymbol > fillSymbol2( settings.alternateFillSymbol()->clone() );
   fillSymbol2->startRender( context );
 
   painter->setPen( Qt::NoPen );
@@ -169,12 +169,12 @@ bool QgsHollowScaleBarRenderer::applyDefaultSettings( QgsScaleBarSettings &setti
   fillSymbolLayer->setBrushStyle( Qt::NoBrush );
   fillSymbolLayer->setStrokeStyle( Qt::NoPen );
   fillSymbol->changeSymbolLayer( 0, fillSymbolLayer->clone() );
-  settings.setFillSymbol1( fillSymbol.release() );
+  settings.setFillSymbol( fillSymbol.release() );
 
   fillSymbol = qgis::make_unique< QgsFillSymbol >();
   fillSymbolLayer->setColor( QColor( 255, 255, 255 ) );
   fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
-  settings.setFillSymbol2( fillSymbol.release() );
+  settings.setAlternateFillSymbol( fillSymbol.release() );
 
   return true;
 }
