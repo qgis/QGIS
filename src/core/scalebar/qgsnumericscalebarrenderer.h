@@ -45,7 +45,8 @@ class CORE_EXPORT QgsNumericScaleBarRenderer: public QgsScaleBarRenderer
                const QgsScaleBarSettings &settings,
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
 
-    QSizeF calculateBoxSize( const QgsScaleBarSettings &settings,
+    QSizeF calculateBoxSize( QgsRenderContext &context,
+                             const QgsScaleBarSettings &settings,
                              const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
 
   private:

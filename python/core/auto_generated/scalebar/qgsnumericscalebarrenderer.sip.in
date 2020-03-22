@@ -39,7 +39,8 @@ Constructor for QgsNumericScaleBarRenderer.
                const QgsScaleBarSettings &settings,
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 
-     virtual QSizeF calculateBoxSize( const QgsScaleBarSettings &settings,
+     virtual QSizeF calculateBoxSize( QgsRenderContext &context,
+                             const QgsScaleBarSettings &settings,
                              const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 
 };

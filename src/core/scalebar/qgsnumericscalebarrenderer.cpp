@@ -78,8 +78,19 @@ void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScale
   painter->restore();
 }
 
-QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &settings,
+QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( QgsRenderContext &, const QgsScaleBarSettings &settings,
     const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
+{
+  QFont font = settings.textFormat().toQFont();
+
+  double textWidth = QgsLayoutUtils::textWidthMM( font, scaleText( scaleContext.scale, settings ) );
+  double textHeight = QgsLayoutUtils::fontAscentMM( font );
+
+  return QSizeF( 2 * settings.boxContentSpace() + textWidth,
+                 textHeight + 2 * settings.boxContentSpace() );
+}
+
+QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
 {
   QFont font = settings.textFormat().toQFont();
 
