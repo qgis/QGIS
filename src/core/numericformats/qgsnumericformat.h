@@ -231,6 +231,8 @@ class CORE_EXPORT QgsNumericFormat
       sipType = sipType_QgsCurrencyNumericFormat;
     else if ( dynamic_cast< QgsBasicNumericFormat * >( sipCpp ) )
       sipType = sipType_QgsBasicNumericFormat;
+    else if ( dynamic_cast< QgsFractionNumericFormat * >( sipCpp ) )
+      sipType = sipType_QgsFractionNumericFormat;
     else
       sipType = NULL;
     SIP_END

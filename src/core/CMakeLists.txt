@@ -108,6 +108,7 @@ SET(QGIS_CORE_SRCS
   numericformats/qgsbearingnumericformat.cpp
   numericformats/qgscurrencynumericformat.cpp
   numericformats/qgsfallbacknumericformat.cpp
+  numericformats/qgsfractionnumericformat.cpp
   numericformats/qgsnumericformat.cpp
   numericformats/qgsnumericformatregistry.cpp
   numericformats/qgspercentagenumericformat.cpp
@@ -1184,6 +1185,7 @@ SET(QGIS_CORE_HDRS
   numericformats/qgsbearingnumericformat.h
   numericformats/qgscurrencynumericformat.h
   numericformats/qgsfallbacknumericformat.h
+  numericformats/qgsfractionnumericformat.h
   numericformats/qgsnumericformat.h
   numericformats/qgsnumericformatregistry.h
   numericformats/qgspercentagenumericformat.h

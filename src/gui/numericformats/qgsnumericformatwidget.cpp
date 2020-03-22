@@ -19,6 +19,7 @@
 #include "qgspercentagenumericformat.h"
 #include "qgsbearingnumericformat.h"
 #include "qgsscientificnumericformat.h"
+#include "qgsfractionnumericformat.h"
 #include "qgsgui.h"
 #include "qgis.h"
 #include <QDialogButtonBox>
@@ -410,3 +411,71 @@ QgsNumericFormat *QgsScientificNumericFormatWidget::format()
 }
 
 
+
+//
+// QgsFractionNumericFormatWidget
+//
+QgsFractionNumericFormatWidget::QgsFractionNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent )
+  : QgsNumericFormatWidget( parent )
+{
+  setupUi( this );
+  setFormat( format->clone() );
+
+  mThousandsLineEdit->setShowClearButton( true );
+
+  connect( mUseDedicatedUnicodeCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    mFormat->setUseDedicatedUnicodeCharacters( checked );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+  connect( mUseUnicodeSupersubscriptCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    mFormat->setUseUnicodeSuperSubscript( checked );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+  connect( mShowPlusCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    mFormat->setShowPlusSign( checked );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+  connect( mShowThousandsCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
+    mFormat->setShowThousandsSeparator( checked );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+  connect( mThousandsLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & text )
+  {
+    mFormat->setThousandsSeparator( text.isEmpty() ? QChar() : text.at( 0 ) );
+    if ( !mBlockSignals )
+      emit changed();
+  } );
+
+}
+
+QgsFractionNumericFormatWidget::~QgsFractionNumericFormatWidget() = default;
+
+void QgsFractionNumericFormatWidget::setFormat( QgsNumericFormat *format )
+{
+  mFormat.reset( static_cast< QgsFractionNumericFormat * >( format ) );
+
+  mBlockSignals = true;
+  mUseDedicatedUnicodeCheckBox->setChecked( mFormat->useDedicatedUnicodeCharacters() );
+  mUseUnicodeSupersubscriptCheckBox->setChecked( mFormat->useUnicodeSuperSubscript() );
+  mShowPlusCheckBox->setChecked( mFormat->showPlusSign() );
+  mShowThousandsCheckBox->setChecked( mFormat->showThousandsSeparator() );
+  mThousandsLineEdit->setText( mFormat->thousandsSeparator().isNull() ? QString() : mFormat->thousandsSeparator() );
+  mBlockSignals = false;
+}
+
+QgsNumericFormat *QgsFractionNumericFormatWidget::format()
+{
+  return mFormat->clone();
+}
