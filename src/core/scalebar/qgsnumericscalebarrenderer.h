@@ -39,6 +39,7 @@ class CORE_EXPORT QgsNumericScaleBarRenderer: public QgsScaleBarRenderer
     QString id() const override;
     QString visibleName() const override;
     int sortKey() const override;
+    Flags flags() const override;
     QgsNumericScaleBarRenderer *clone() const override SIP_FACTORY;
 
     void draw( QgsRenderContext &context,

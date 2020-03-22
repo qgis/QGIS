@@ -30,6 +30,8 @@ Constructor for QgsDoubleBoxScaleBarRenderer.
 
     virtual QString visibleName() const;
 
+    virtual Flags flags() const;
+
     virtual int sortKey() const;
 
     virtual QgsDoubleBoxScaleBarRenderer *clone() const /Factory/;

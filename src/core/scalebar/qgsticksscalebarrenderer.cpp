@@ -69,6 +69,18 @@ int QgsTicksScaleBarRenderer::sortKey() const
   return 6;
 }
 
+QgsScaleBarRenderer::Flags QgsTicksScaleBarRenderer::flags() const
+{
+  return Flag::FlagUsesLineSymbol |
+         Flag::FlagRespectsUnits |
+         Flag::FlagRespectsMapUnitsPerScaleBarUnit |
+         Flag::FlagUsesUnitLabel |
+         Flag::FlagUsesSegments |
+         Flag::FlagUsesLabelBarSpace |
+         Flag::FlagUsesLabelVerticalPlacement |
+         Flag::FlagUsesLabelHorizontalPlacement;
+}
+
 QgsTicksScaleBarRenderer *QgsTicksScaleBarRenderer::clone() const
 {
   return new QgsTicksScaleBarRenderer( * this );

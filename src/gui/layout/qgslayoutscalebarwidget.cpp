@@ -444,44 +444,25 @@ void QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged( const QString 
 
 void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style )
 {
-  if ( style == QLatin1String( "Numeric" ) )
-  {
-    //Disable controls which don't apply to numeric scale bars
-    mUnitsComboBox->setEnabled( false );
-    mUnitsLabel->setEnabled( false );
-    mMapUnitsPerBarUnitSpinBox->setEnabled( false );
-    mMapUnitsPerBarUnitLabel->setEnabled( false );
-    mUnitLabelLineEdit->setEnabled( false );
-    mUnitLabelLabel->setEnabled( false );
-    mGroupBoxSegments->setEnabled( false );
+  std::unique_ptr< QgsScaleBarRenderer > renderer( QgsApplication::scaleBarRendererRegistry()->renderer( style ) );
+
+  //Selectively enable controls which apply to the scale bar style
+  mUnitsComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagRespectsUnits : true );
+  mUnitsLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagRespectsUnits : true );
+  mMapUnitsPerBarUnitSpinBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagRespectsMapUnitsPerScaleBarUnit : true );
+  mMapUnitsPerBarUnitLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagRespectsMapUnitsPerScaleBarUnit : true );
+  mUnitLabelLineEdit->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesUnitLabel : true );
+  mUnitLabelLabel->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesUnitLabel : true );
+  mGroupBoxSegments->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesSegments : true );
+  if ( !mGroupBoxUnits->isEnabled() )
     mGroupBoxSegments->setCollapsed( true );
-    mLabelBarSpaceSpinBox->setEnabled( false );
-    mFillSymbol1Button->setEnabled( false );
-    mFillSymbol2Button->setEnabled( false );
-    mLineStyleButton->setEnabled( false );
-    mLabelVerticalPlacementComboBox->setEnabled( false );
-    mLabelHorizontalPlacementComboBox->setEnabled( false );
-    mAlignmentComboBox->setEnabled( true );
-  }
-  else
-  {
-    //Enable controls
-    mUnitsComboBox->setEnabled( true );
-    mUnitsLabel->setEnabled( true );
-    mMapUnitsPerBarUnitSpinBox->setEnabled( true );
-    mMapUnitsPerBarUnitLabel->setEnabled( true );
-    mUnitLabelLineEdit->setEnabled( true );
-    mUnitLabelLabel->setEnabled( true );
-    mGroupBoxSegments->setEnabled( true );
-    mLabelBarSpaceSpinBox->setEnabled( true );
-    mLineStyleButton->setEnabled( true );
-    const bool hasFill = style == QLatin1String( "Double Box" ) || style == QLatin1String( "Single Box" ) || style == QLatin1String( "hollow" );
-    mFillSymbol1Button->setEnabled( hasFill );
-    mFillSymbol2Button->setEnabled( hasFill );
-    mLabelVerticalPlacementComboBox->setEnabled( true );
-    mLabelHorizontalPlacementComboBox->setEnabled( true );
-    mAlignmentComboBox->setEnabled( false );
-  }
+  mLabelBarSpaceSpinBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelBarSpace : true );
+  mLabelVerticalPlacementComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelVerticalPlacement : true );
+  mLabelHorizontalPlacementComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLabelHorizontalPlacement : true );
+  mAlignmentComboBox->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlignment : true );
+  mFillSymbol1Button->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesFillSymbol : true );
+  mFillSymbol2Button->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesAlternateFillSymbol : true );
+  mLineStyleButton->setEnabled( renderer ? renderer->flags() & QgsScaleBarRenderer::Flag::FlagUsesLineSymbol : true );
 }
 
 void QgsLayoutScaleBarWidget::mLabelBarSpaceSpinBox_valueChanged( double d )

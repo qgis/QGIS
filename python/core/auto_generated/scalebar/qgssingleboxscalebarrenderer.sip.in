@@ -33,6 +33,8 @@ Constructor for QgsSingleBoxScaleBarRenderer.
 
     virtual int sortKey() const;
 
+    virtual Flags flags() const;
+
     virtual QgsSingleBoxScaleBarRenderer *clone() const /Factory/;
 
 

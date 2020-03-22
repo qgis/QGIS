@@ -39,6 +39,8 @@ Constructor for QgsTicksScaleBarRenderer.
 
     virtual int sortKey() const;
 
+    virtual Flags flags() const;
+
     virtual QgsTicksScaleBarRenderer *clone() const /Factory/;
 
 

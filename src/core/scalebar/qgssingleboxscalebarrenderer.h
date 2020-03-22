@@ -40,6 +40,7 @@ class CORE_EXPORT QgsSingleBoxScaleBarRenderer: public QgsScaleBarRenderer
     QString id() const override;
     QString visibleName() const override;
     int sortKey() const override;
+    Flags flags() const override;
     QgsSingleBoxScaleBarRenderer *clone() const override SIP_FACTORY;
 
     void draw( QgsRenderContext &context,

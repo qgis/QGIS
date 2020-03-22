@@ -31,6 +31,20 @@ QString QgsDoubleBoxScaleBarRenderer::visibleName() const
   return QObject::tr( "Double Box" );
 }
 
+QgsScaleBarRenderer::Flags QgsDoubleBoxScaleBarRenderer::flags() const
+{
+  return Flag::FlagUsesLineSymbol |
+         Flag::FlagUsesFillSymbol |
+         Flag::FlagUsesAlternateFillSymbol |
+         Flag::FlagRespectsUnits |
+         Flag::FlagRespectsMapUnitsPerScaleBarUnit |
+         Flag::FlagUsesUnitLabel |
+         Flag::FlagUsesSegments |
+         Flag::FlagUsesLabelBarSpace |
+         Flag::FlagUsesLabelVerticalPlacement |
+         Flag::FlagUsesLabelHorizontalPlacement;
+}
+
 int QgsDoubleBoxScaleBarRenderer::sortKey() const
 {
   return 2;

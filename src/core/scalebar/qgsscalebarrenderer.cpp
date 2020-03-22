@@ -145,6 +145,11 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
   painter->restore();
 }
 
+QgsScaleBarRenderer::Flags QgsScaleBarRenderer::flags() const
+{
+  return nullptr;
+}
+
 int QgsScaleBarRenderer::sortKey() const
 {
   return 100;
