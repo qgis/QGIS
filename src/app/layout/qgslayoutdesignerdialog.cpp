@@ -2651,7 +2651,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   if ( !printAtlas || !printAtlas->enabled() )
     return;
 
-  if ( printAtlas->coverageLayer() )
+  if ( !printAtlas->coverageLayer() )
   {
     QMessageBox::warning( this, tr( "Export Atlas as Image" ),
                           tr( "Error: No coverage layer is set." ),
@@ -2832,7 +2832,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   if ( !printAtlas || !printAtlas->enabled() )
     return;
 
-  if ( printAtlas->coverageLayer() )
+  if ( !printAtlas->coverageLayer() )
   {
     QMessageBox::warning( this, tr( "Export Atlas as Image" ),
                           tr( "Error: No coverage layer is set." ),
@@ -3009,7 +3009,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   if ( !printAtlas || !printAtlas->enabled() )
     return;
 
-  if ( printAtlas->coverageLayer() )
+  if ( !printAtlas->coverageLayer() )
   {
     QMessageBox::warning( this, tr( "Export Atlas as Image" ),
                           tr( "Error: No coverage layer is set." ),
