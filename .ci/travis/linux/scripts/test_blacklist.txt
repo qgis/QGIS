@@ -21,3 +21,11 @@ qgis_openclutilstest
 # Relies on a broken/unreliable 3rd party service
 qgis_layerdefinition
 
+<<<<<<< HEAD
+=======
+# MSSQL requires the MSSQL docker
+PyQgsProviderConnectionMssql
+
+# Needs updating for OTB 7.1
+ProcessingOtbAlgorithmsTest
+>>>>>>> 2b58ee3dc1... Blacklist OTB tests on Travis: need updating for OTB 7.1
