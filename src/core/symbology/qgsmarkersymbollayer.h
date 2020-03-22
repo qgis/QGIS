@@ -808,8 +808,6 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
                               const QColor &color = DEFAULT_FONTMARKER_COLOR,
                               double angle = DEFAULT_FONTMARKER_ANGLE );
 
-    ~QgsFontMarkerSymbolLayer() override;
-
     // static stuff
 
     /**
@@ -972,19 +970,18 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
 
-  protected:
+  private:
 
     QString mFontFamily;
     QString mFontStyle;
-    QFontMetrics *mFontMetrics = nullptr;
+    QFont mFont;
+    std::unique_ptr< QFontMetrics >mFontMetrics;
+
     QString mString;
 
     double mChrWidth = 0;
     QPointF mChrOffset;
-    QFont mFont;
     double mOrigSize;
-
-  private:
 
     QColor mStrokeColor;
     double mStrokeWidth;
