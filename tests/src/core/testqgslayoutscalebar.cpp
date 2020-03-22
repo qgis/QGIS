@@ -218,14 +218,14 @@ void TestQgsLayoutScaleBar::singleBoxFillSymbol()
   fillSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   fillSymbolLayer->setColor2( QColor( 255, 255, 0 ) );
   fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
-  scalebar->setFillSymbol1( fillSymbol.release() );
+  scalebar->setFillSymbol( fillSymbol.release() );
 
   std::unique_ptr< QgsFillSymbol > fillSymbol2 = qgis::make_unique< QgsFillSymbol >();
   std::unique_ptr< QgsGradientFillSymbolLayer > fillSymbolLayer2 = qgis::make_unique< QgsGradientFillSymbolLayer >();
   fillSymbolLayer2->setColor( QColor( 0, 255, 0 ) );
   fillSymbolLayer2->setColor2( QColor( 255, 255, 255 ) );
   fillSymbol2->changeSymbolLayer( 0, fillSymbolLayer2.release() );
-  scalebar->setFillSymbol2( fillSymbol2.release() );
+  scalebar->setAlternateFillSymbol( fillSymbol2.release() );
 
   dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
@@ -415,14 +415,14 @@ void TestQgsLayoutScaleBar::doubleBoxFillSymbol()
   fillSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   fillSymbolLayer->setColor2( QColor( 255, 255, 0 ) );
   fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
-  scalebar->setFillSymbol1( fillSymbol.release() );
+  scalebar->setFillSymbol( fillSymbol.release() );
 
   std::unique_ptr< QgsFillSymbol > fillSymbol2 = qgis::make_unique< QgsFillSymbol >();
   std::unique_ptr< QgsGradientFillSymbolLayer > fillSymbolLayer2 = qgis::make_unique< QgsGradientFillSymbolLayer >();
   fillSymbolLayer2->setColor( QColor( 0, 255, 0 ) );
   fillSymbolLayer2->setColor2( QColor( 255, 255, 255 ) );
   fillSymbol2->changeSymbolLayer( 0, fillSymbolLayer2.release() );
-  scalebar->setFillSymbol2( fillSymbol2.release() );
+  scalebar->setAlternateFillSymbol( fillSymbol2.release() );
 
   dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
@@ -820,14 +820,14 @@ void TestQgsLayoutScaleBar::hollow()
   fillSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   fillSymbolLayer->setColor2( QColor( 255, 255, 0 ) );
   fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
-  scalebar->setFillSymbol1( fillSymbol.release() );
+  scalebar->setFillSymbol( fillSymbol.release() );
 
   std::unique_ptr< QgsFillSymbol > fillSymbol2 = qgis::make_unique< QgsFillSymbol >();
   std::unique_ptr< QgsGradientFillSymbolLayer > fillSymbolLayer2 = qgis::make_unique< QgsGradientFillSymbolLayer >();
   fillSymbolLayer2->setColor( QColor( 0, 255, 0 ) );
   fillSymbolLayer2->setColor2( QColor( 255, 255, 255 ) );
   fillSymbol2->changeSymbolLayer( 0, fillSymbolLayer2.release() );
-  scalebar->setFillSymbol2( fillSymbol2.release() );
+  scalebar->setAlternateFillSymbol( fillSymbol2.release() );
 
   dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
 
@@ -864,21 +864,21 @@ void TestQgsLayoutScaleBar::hollowDefaults()
   fillSymbolLayer->setColor( QColor( 255, 0, 0 ) );
   fillSymbolLayer->setColor2( QColor( 255, 255, 0 ) );
   fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
-  scalebar->setFillSymbol1( fillSymbol.release() );
+  scalebar->setFillSymbol( fillSymbol.release() );
 
   std::unique_ptr< QgsFillSymbol > fillSymbol2 = qgis::make_unique< QgsFillSymbol >();
   std::unique_ptr< QgsGradientFillSymbolLayer > fillSymbolLayer2 = qgis::make_unique< QgsGradientFillSymbolLayer >();
   fillSymbolLayer2->setColor( QColor( 0, 255, 0 ) );
   fillSymbolLayer2->setColor2( QColor( 255, 255, 255 ) );
   fillSymbol2->changeSymbolLayer( 0, fillSymbolLayer2.release() );
-  scalebar->setFillSymbol2( fillSymbol2.release() );
+  scalebar->setAlternateFillSymbol( fillSymbol2.release() );
 
   // reset to renderer defaults
   QgsHollowScaleBarRenderer renderer;
   scalebar->applyDefaultRendererSettings( &renderer );
   // should be reset to "null" fill symbols
-  QCOMPARE( dynamic_cast< QgsSimpleFillSymbolLayer * >( scalebar->fillSymbol1()->symbolLayer( 0 ) )->brushStyle(), Qt::NoBrush );
-  QCOMPARE( dynamic_cast< QgsSimpleFillSymbolLayer * >( scalebar->fillSymbol2()->symbolLayer( 0 ) )->brushStyle(), Qt::NoBrush );
+  QCOMPARE( dynamic_cast< QgsSimpleFillSymbolLayer * >( scalebar->fillSymbol()->symbolLayer( 0 ) )->brushStyle(), Qt::NoBrush );
+  QCOMPARE( dynamic_cast< QgsSimpleFillSymbolLayer * >( scalebar->alternateFillSymbol()->symbolLayer( 0 ) )->brushStyle(), Qt::NoBrush );
   // stroke should be unchanged
   QCOMPARE( dynamic_cast< QgsSimpleLineSymbolLayer * >( scalebar->lineSymbol()->symbolLayer( 0 ) )->color(), QColor( 255, 0, 0 ) );
 

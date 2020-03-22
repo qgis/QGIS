@@ -212,42 +212,42 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      *
      * Ownership is not transferred.
      *
-     * \see setFillSymbol1()
-     * \see fillSymbol2()
+     * \see setFillSymbol()
+     * \see alternateFillSymbol()
      * \since QGIS 3.14
      */
-    QgsFillSymbol *fillSymbol1() const;
+    QgsFillSymbol *fillSymbol() const;
 
     /**
      * Sets the primary fill \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
      * transferred to the scalebar.
      *
-     * \see fillSymbol1()
-     * \see setFillSymbol2()
+     * \see fillSymbol()
+     * \see setAlternateFillSymbol()
      * \since QGIS 3.14
      */
-    void setFillSymbol1( QgsFillSymbol *symbol SIP_TRANSFER );
+    void setFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the secondary fill symbol used to render the scalebar (only used for some scalebar types).
      *
      * Ownership is not transferred.
      *
-     * \see setFillSymbol2()
-     * \see fillSymbol1()
+     * \see setAlternateFillSymbol()
+     * \see fillSymbol()
      * \since QGIS 3.14
      */
-    QgsFillSymbol *fillSymbol2() const;
+    QgsFillSymbol *alternateFillSymbol() const;
 
     /**
      * Sets the secondary fill \a symbol used to render the scalebar (only used for some scalebar types). Ownership of \a symbol is
      * transferred to the scalebar.
      *
-     * \see fillSymbol2()
-     * \see setFillSymbol1()
+     * \see alternateFillSymbol()
+     * \see setFillSymbol()
      * \since QGIS 3.14
      */
-    void setFillSymbol2( QgsFillSymbol *symbol SIP_TRANSFER );
+    void setAlternateFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the font used for drawing text in the scalebar.
@@ -283,7 +283,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * Returns the color used for fills in the scalebar.
      * \see setFillColor()
      * \see fillColor2()
-     * \deprecated use fillSymbol1() instead
+     * \deprecated use fillSymbol() instead
      */
     Q_DECL_DEPRECATED QColor fillColor() const SIP_DEPRECATED;
 
@@ -291,7 +291,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * Sets the \a color used for fills in the scalebar.
      * \see fillColor()
      * \see setFillColor2()
-     * \deprecated use setFillSymbol1() instead
+     * \deprecated use setFillSymbol() instead
      */
     Q_DECL_DEPRECATED void setFillColor( const QColor &color ) SIP_DEPRECATED;
 
@@ -299,7 +299,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * Returns the secondary color used for fills in the scalebar.
      * \see setFillColor2()
      * \see fillColor()
-     * \deprecated use fillSymbol2() instead
+     * \deprecated use alternateFillSymbol() instead
      */
     Q_DECL_DEPRECATED QColor fillColor2() const SIP_DEPRECATED;
 
@@ -307,7 +307,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * Sets the secondary \a color used for fills in the scalebar.
      * \see fillColor2()
      * \see setFillColor2()
-     * \deprecated use setFillSymbol2() instead
+     * \deprecated use setAlternateFillSymbol() instead
      */
     Q_DECL_DEPRECATED void setFillColor2( const QColor &color ) SIP_DEPRECATED;
 
@@ -351,7 +351,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * \returns QBrush used for filling the scalebar
      * \see brush2
      * \see pen
-     * \deprecated use fillSymbol1() instead
+     * \deprecated use fillSymbol() instead
      */
     Q_DECL_DEPRECATED QBrush brush() const SIP_DEPRECATED;
 
@@ -360,7 +360,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * as single and double box styles.
      * \returns QBrush used for secondary color areas
      * \see brush
-     * \deprecated use fillSymbol2() instead
+     * \deprecated use alternateFillSymbol() instead
      */
     Q_DECL_DEPRECATED QBrush brush2() const SIP_DEPRECATED;
 

@@ -93,21 +93,21 @@ void QgsLayoutItemScaleBar::draw( QgsLayoutItemRenderContext &context )
   {
     // compatibility code - ScalebarLineColor and ScalebarLineWidth are deprecated
     QgsExpressionContext expContext = createExpressionContext();
-    std::unique_ptr< QgsFillSymbol > sym( mSettings.fillSymbol1()->clone() );
+    std::unique_ptr< QgsFillSymbol > sym( mSettings.fillSymbol()->clone() );
     Q_NOWARN_DEPRECATED_PUSH
     sym->setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::ScalebarFillColor, expContext, mSettings.fillColor() ) );
     Q_NOWARN_DEPRECATED_POP
-    mSettings.setFillSymbol1( sym.release() );
+    mSettings.setFillSymbol( sym.release() );
   }
   if ( dataDefinedProperties().isActive( QgsLayoutObject::ScalebarFillColor2 ) )
   {
     // compatibility code - ScalebarLineColor and ScalebarLineWidth are deprecated
     QgsExpressionContext expContext = createExpressionContext();
-    std::unique_ptr< QgsFillSymbol > sym( mSettings.fillSymbol2()->clone() );
+    std::unique_ptr< QgsFillSymbol > sym( mSettings.alternateFillSymbol()->clone() );
     Q_NOWARN_DEPRECATED_PUSH
     sym->setColor( mDataDefinedProperties.valueAsColor( QgsLayoutObject::ScalebarFillColor2, expContext, mSettings.fillColor2() ) );
     Q_NOWARN_DEPRECATED_POP
-    mSettings.setFillSymbol2( sym.release() );
+    mSettings.setAlternateFillSymbol( sym.release() );
   }
 
   mStyle->draw( context.renderContext(), mSettings, createScaleContext() );
@@ -194,24 +194,24 @@ void QgsLayoutItemScaleBar::setLineSymbol( QgsLineSymbol *symbol )
   mSettings.setLineSymbol( symbol );
 }
 
-QgsFillSymbol *QgsLayoutItemScaleBar::fillSymbol1() const
+QgsFillSymbol *QgsLayoutItemScaleBar::fillSymbol() const
 {
-  return mSettings.fillSymbol1();
+  return mSettings.fillSymbol();
 }
 
-void QgsLayoutItemScaleBar::setFillSymbol1( QgsFillSymbol *symbol )
+void QgsLayoutItemScaleBar::setFillSymbol( QgsFillSymbol *symbol )
 {
-  mSettings.setFillSymbol1( symbol );
+  mSettings.setFillSymbol( symbol );
 }
 
-QgsFillSymbol *QgsLayoutItemScaleBar::fillSymbol2() const
+QgsFillSymbol *QgsLayoutItemScaleBar::alternateFillSymbol() const
 {
-  return mSettings.fillSymbol2();
+  return mSettings.alternateFillSymbol();
 }
 
-void QgsLayoutItemScaleBar::setFillSymbol2( QgsFillSymbol *symbol )
+void QgsLayoutItemScaleBar::setAlternateFillSymbol( QgsFillSymbol *symbol )
 {
-  mSettings.setFillSymbol2( symbol );
+  mSettings.setAlternateFillSymbol( symbol );
 }
 
 void QgsLayoutItemScaleBar::setNumberOfSegmentsLeft( int nSegmentsLeft )
@@ -809,7 +809,7 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
 
   QDomElement fillSymbol1Elem = doc.createElement( QStringLiteral( "fillSymbol1" ) );
   const QDomElement symbol1Elem = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                  mSettings.fillSymbol1(),
+                                  mSettings.fillSymbol(),
                                   doc,
                                   rwContext );
   fillSymbol1Elem.appendChild( symbol1Elem );
@@ -817,7 +817,7 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
 
   QDomElement fillSymbol2Elem = doc.createElement( QStringLiteral( "fillSymbol2" ) );
   const QDomElement symbol2Elem = QgsSymbolLayerUtils::saveSymbol( QString(),
-                                  mSettings.fillSymbol2(),
+                                  mSettings.alternateFillSymbol(),
                                   doc,
                                   rwContext );
   fillSymbol2Elem.appendChild( symbol2Elem );
@@ -939,7 +939,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
     std::unique_ptr< QgsFillSymbol > fillSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
     if ( fillSymbol )
     {
-      mSettings.setFillSymbol1( fillSymbol.release() );
+      mSettings.setFillSymbol( fillSymbol.release() );
       foundFillSymbol1 = true;
     }
   }
@@ -979,7 +979,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
     dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarFillColor, QgsProperty() );
 
     fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
-    mSettings.setFillSymbol1( fillSymbol.release() );
+    mSettings.setFillSymbol( fillSymbol.release() );
   }
 
   QDomElement fillSymbol2Elem = itemElem.firstChildElement( QStringLiteral( "fillSymbol2" ) );
@@ -990,7 +990,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
     std::unique_ptr< QgsFillSymbol > fillSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context ) );
     if ( fillSymbol )
     {
-      mSettings.setFillSymbol2( fillSymbol.release() );
+      mSettings.setAlternateFillSymbol( fillSymbol.release() );
       foundFillSymbol2 = true;
     }
   }
@@ -1031,7 +1031,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
     dataDefinedProperties().setProperty( QgsLayoutObject::ScalebarFillColor2, QgsProperty() );
 
     fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
-    mSettings.setFillSymbol2( fillSymbol.release() );
+    mSettings.setAlternateFillSymbol( fillSymbol.release() );
 
   }
 

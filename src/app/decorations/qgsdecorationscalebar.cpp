@@ -161,7 +161,7 @@ void QgsDecorationScaleBar::setupScaleBar()
       {
         fill->setStrokeStyle( Qt::NoPen );
       }
-      mSettings.setFillSymbol1( fillSymbol.release() );
+      mSettings.setFillSymbol( fillSymbol.release() );
 
       std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
       lineSymbol->setColor( mColor ); // Compatibility with pre 3.2 configuration
@@ -183,7 +183,7 @@ void QgsDecorationScaleBar::setupScaleBar()
       {
         fill->setStrokeStyle( Qt::NoPen );
       }
-      mSettings.setFillSymbol1( fillSymbol.release() );
+      mSettings.setFillSymbol( fillSymbol.release() );
 
       std::unique_ptr< QgsFillSymbol > fillSymbol2 = qgis::make_unique< QgsFillSymbol >();
       fillSymbol2->setColor( QColor( 255, 255, 255, 0 ) );
@@ -191,7 +191,7 @@ void QgsDecorationScaleBar::setupScaleBar()
       {
         fill->setStrokeStyle( Qt::NoPen );
       }
-      mSettings.setFillSymbol2( fillSymbol2.release() );
+      mSettings.setAlternateFillSymbol( fillSymbol2.release() );
 
       mSettings.setHeight( mStyleIndex == 2 ? 1 : 3 );
       std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
