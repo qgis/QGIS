@@ -499,6 +499,15 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void applyDefaultSettings();
 
     /**
+     * Applies any default settings relating to the specified \a renderer to the item.
+     *
+     * Returns TRUE if settings were applied.
+     *
+     * \since QGIS 3.14
+     */
+    bool applyDefaultRendererSettings( QgsScaleBarRenderer *renderer );
+
+    /**
      * Attempts to guess the most reasonable unit choice for the scalebar, given
      * the current linked map's scale.
      *

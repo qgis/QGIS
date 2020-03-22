@@ -418,9 +418,17 @@ void QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged( const QString 
     return;
   }
 
+  const QString rendererId = mStyleComboBox->currentData().toString();
+  if ( rendererId == mScalebar->style() )
+    return;
+
   mScalebar->beginCommand( tr( "Set Scalebar Style" ) );
   disconnectUpdateSignal();
-  const QString rendererId = mStyleComboBox->currentData().toString();
+
+  bool defaultsApplied = false;
+  std::unique_ptr< QgsScaleBarRenderer > renderer( QgsApplication::scaleBarRendererRegistry()->renderer( rendererId ) );
+  if ( renderer )
+    defaultsApplied = mScalebar->applyDefaultRendererSettings( renderer.get() );
 
   //disable or enable controls which apply to specific scale bar styles
   toggleStyleSpecificControls( rendererId );
@@ -429,6 +437,9 @@ void QgsLayoutScaleBarWidget::mStyleComboBox_currentIndexChanged( const QString 
   mScalebar->update();
   connectUpdateSignal();
   mScalebar->endCommand();
+
+  if ( defaultsApplied )
+    setGuiElements();
 }
 
 void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style )
@@ -464,7 +475,7 @@ void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style 
     mGroupBoxSegments->setEnabled( true );
     mLabelBarSpaceSpinBox->setEnabled( true );
     mLineStyleButton->setEnabled( true );
-    const bool hasFill = style == QLatin1String( "Double Box" ) || style == QLatin1String( "Single Box" ) ;
+    const bool hasFill = style == QLatin1String( "Double Box" ) || style == QLatin1String( "Single Box" ) || style == QLatin1String( "hollow" );
     mFillSymbol1Button->setEnabled( hasFill );
     mFillSymbol2Button->setEnabled( hasFill );
     mLabelVerticalPlacementComboBox->setEnabled( true );
