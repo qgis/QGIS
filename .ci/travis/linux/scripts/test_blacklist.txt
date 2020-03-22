@@ -23,6 +23,3 @@ qgis_layerdefinition
 
 # MSSQL requires the MSSQL docker
 PyQgsProviderConnectionMssql
-
-# Needs updating for OTB 7.1
-ProcessingOtbAlgorithmsTest
