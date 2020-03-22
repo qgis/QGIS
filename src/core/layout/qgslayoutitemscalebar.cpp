@@ -469,6 +469,11 @@ void QgsLayoutItemScaleBar::applyDefaultSettings()
   emit changed();
 }
 
+bool QgsLayoutItemScaleBar::applyDefaultRendererSettings( QgsScaleBarRenderer *renderer )
+{
+  return renderer->applyDefaultSettings( mSettings );
+}
+
 QgsUnitTypes::DistanceUnit QgsLayoutItemScaleBar::guessUnits() const
 {
   if ( !mMap )

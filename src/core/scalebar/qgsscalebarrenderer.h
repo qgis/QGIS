@@ -123,6 +123,15 @@ class CORE_EXPORT QgsScaleBarRenderer
                                      const QgsScaleBarSettings &settings,
                                      const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 
+    /**
+     * Applies any default settings relating to the scalebar to the passed \a settings object.
+     *
+     * Returns TRUE if settings were applied.
+     *
+     * \since QGIS 3.14
+     */
+    virtual bool applyDefaultSettings( QgsScaleBarSettings &settings ) const;
+
   protected:
 
     /**

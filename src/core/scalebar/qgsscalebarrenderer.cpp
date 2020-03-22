@@ -263,6 +263,11 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const Q
   return QSizeF( width, height );
 }
 
+bool QgsScaleBarRenderer::applyDefaultSettings( QgsScaleBarSettings & ) const
+{
+  return false;
+}
+
 QString QgsScaleBarRenderer::firstLabelString( const QgsScaleBarSettings &settings ) const
 {
   if ( settings.numberOfSegmentsLeft() > 0 )

@@ -617,6 +617,15 @@ Applies the default scalebar settings to the scale bar.
 .. seealso:: :py:func:`applyDefaultSize`
 %End
 
+    bool applyDefaultRendererSettings( QgsScaleBarRenderer *renderer );
+%Docstring
+Applies any default settings relating to the specified ``renderer`` to the item.
+
+Returns ``True`` if settings were applied.
+
+.. versionadded:: 3.14
+%End
+
     QgsUnitTypes::DistanceUnit guessUnits() const;
 %Docstring
 Attempts to guess the most reasonable unit choice for the scalebar, given

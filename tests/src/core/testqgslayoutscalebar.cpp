@@ -33,6 +33,7 @@
 #include "qgslayoutmanager.h"
 #include "qgsprintlayout.h"
 #include "qgsfillsymbollayer.h"
+#include "qgshollowscalebarrenderer.h"
 #include <QLocale>
 #include <QObject>
 #include "qgstest.h"
@@ -66,6 +67,8 @@ class TestQgsLayoutScaleBar : public QObject
     void textFormat();
     void numericFormat();
     void steppedLine();
+    void hollow();
+    void hollowDefaults();
 
   private:
     QString mReport;
@@ -774,6 +777,111 @@ void TestQgsLayoutScaleBar::steppedLine()
   QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_stepped" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
+void TestQgsLayoutScaleBar::hollow()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 150, 150 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+  map->setExtent( QgsRectangle( 17.923, 30.160, 18.023, 30.260 ) );
+
+  QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
+  scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
+  l.addLayoutItem( scalebar );
+  scalebar->setLinkedMap( map );
+  scalebar->setTextFormat( QgsTextFormat::fromQFont( QgsFontUtils::getStandardTestFont() ) );
+  scalebar->setUnits( QgsUnitTypes::DistanceMeters );
+  scalebar->setUnitsPerSegment( 2000 );
+  scalebar->setNumberOfSegmentsLeft( 2 );
+  scalebar->setNumberOfSegments( 2 );
+  scalebar->setHeight( 20 );
+
+  std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
+  lineSymbolLayer->setWidth( 4 );
+  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
+  lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
+
+  lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
+  lineSymbolLayer->setWidth( 2 );
+  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setColor( QColor( 255, 255, 0 ) );
+  lineSymbol->appendSymbolLayer( lineSymbolLayer.release() );
+
+  scalebar->setLineSymbol( lineSymbol.release() );
+
+  std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >();
+  std::unique_ptr< QgsGradientFillSymbolLayer > fillSymbolLayer = qgis::make_unique< QgsGradientFillSymbolLayer >();
+  fillSymbolLayer->setColor( QColor( 255, 0, 0 ) );
+  fillSymbolLayer->setColor2( QColor( 255, 255, 0 ) );
+  fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
+  scalebar->setFillSymbol1( fillSymbol.release() );
+
+  std::unique_ptr< QgsFillSymbol > fillSymbol2 = qgis::make_unique< QgsFillSymbol >();
+  std::unique_ptr< QgsGradientFillSymbolLayer > fillSymbolLayer2 = qgis::make_unique< QgsGradientFillSymbolLayer >();
+  fillSymbolLayer2->setColor( QColor( 0, 255, 0 ) );
+  fillSymbolLayer2->setColor2( QColor( 255, 255, 255 ) );
+  fillSymbol2->changeSymbolLayer( 0, fillSymbolLayer2.release() );
+  scalebar->setFillSymbol2( fillSymbol2.release() );
+
+  dynamic_cast< QgsBasicNumericFormat *>( const_cast< QgsNumericFormat * >( scalebar->numericFormat() ) )->setShowThousandsSeparator( false );
+
+  scalebar->setStyle( QStringLiteral( "hollow" ) );
+  QgsLayoutChecker checker( QStringLiteral( "layoutscalebar_hollow" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "layout_scalebar" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
+void TestQgsLayoutScaleBar::hollowDefaults()
+{
+  QgsLayout l( QgsProject::instance() );
+
+  QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
+
+  // apply random symbols
+  std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
+  std::unique_ptr< QgsSimpleLineSymbolLayer > lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
+  lineSymbolLayer->setWidth( 4 );
+  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setColor( QColor( 255, 0, 0 ) );
+  lineSymbol->changeSymbolLayer( 0, lineSymbolLayer.release() );
+
+  lineSymbolLayer = qgis::make_unique< QgsSimpleLineSymbolLayer >();
+  lineSymbolLayer->setWidth( 2 );
+  lineSymbolLayer->setWidthUnit( QgsUnitTypes::RenderMillimeters );
+  lineSymbolLayer->setColor( QColor( 255, 255, 0 ) );
+  lineSymbol->appendSymbolLayer( lineSymbolLayer.release() );
+
+  scalebar->setLineSymbol( lineSymbol.release() );
+
+  std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >();
+  std::unique_ptr< QgsGradientFillSymbolLayer > fillSymbolLayer = qgis::make_unique< QgsGradientFillSymbolLayer >();
+  fillSymbolLayer->setColor( QColor( 255, 0, 0 ) );
+  fillSymbolLayer->setColor2( QColor( 255, 255, 0 ) );
+  fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
+  scalebar->setFillSymbol1( fillSymbol.release() );
+
+  std::unique_ptr< QgsFillSymbol > fillSymbol2 = qgis::make_unique< QgsFillSymbol >();
+  std::unique_ptr< QgsGradientFillSymbolLayer > fillSymbolLayer2 = qgis::make_unique< QgsGradientFillSymbolLayer >();
+  fillSymbolLayer2->setColor( QColor( 0, 255, 0 ) );
+  fillSymbolLayer2->setColor2( QColor( 255, 255, 255 ) );
+  fillSymbol2->changeSymbolLayer( 0, fillSymbolLayer2.release() );
+  scalebar->setFillSymbol2( fillSymbol2.release() );
+
+  // reset to renderer defaults
+  QgsHollowScaleBarRenderer renderer;
+  scalebar->applyDefaultRendererSettings( &renderer );
+  // should be reset to "null" fill symbols
+  QCOMPARE( dynamic_cast< QgsSimpleFillSymbolLayer * >( scalebar->fillSymbol1()->symbolLayer( 0 ) )->brushStyle(), Qt::NoBrush );
+  QCOMPARE( dynamic_cast< QgsSimpleFillSymbolLayer * >( scalebar->fillSymbol2()->symbolLayer( 0 ) )->brushStyle(), Qt::NoBrush );
+  // stroke should be unchanged
+  QCOMPARE( dynamic_cast< QgsSimpleLineSymbolLayer * >( scalebar->lineSymbol()->symbolLayer( 0 ) )->color(), QColor( 255, 0, 0 ) );
+
 }
 
 
