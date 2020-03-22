@@ -21,6 +21,8 @@
 #include <memory>
 #include <QDialog>
 
+class QgsFractionNumericFormat;
+
 /**
  * \ingroup gui
  * \class QgsNumericFormatWidget
@@ -262,4 +264,33 @@ class GUI_EXPORT QgsScientificNumericFormatWidget : public QgsNumericFormatWidge
 };
 
 
+#include "ui_qgsfractionnumericformatwidgetbase.h"
+
+/**
+ * \ingroup gui
+ * \class QgsFractionNumericFormatWidget
+ * A widget which allow control over the properties of a QgsFractionNumericFormat.
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsFractionNumericFormatWidget : public QgsNumericFormatWidget, private Ui::QgsFractionNumericFormatWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsFractionNumericFormatWidget, initially showing the specified \a format.
+     */
+    QgsFractionNumericFormatWidget( const QgsNumericFormat *format, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsFractionNumericFormatWidget() override;
+
+    void setFormat( QgsNumericFormat *format ) override;
+
+    QgsNumericFormat *format() override SIP_FACTORY;
+
+  private:
+    std::unique_ptr< QgsFractionNumericFormat > mFormat;
+    bool mBlockSignals = false;
+
+};
 #endif // QGSNUMERICFORMATWIDGET_H
