@@ -28,7 +28,7 @@
 #include <QMessageBox>
 #include <QMenu>
 
-QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas* canvas, QWidget *parent )
+QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsPanelWidget( parent ), mCanvas( canvas )
 {
   setupUi( this );
@@ -149,7 +149,7 @@ void QgsLabelEngineConfigWidget::showHelp()
 // QgsLabelEngineConfigDialog
 //
 
-QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QgsMapCanvas* canvas, QWidget *parent )
+QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QgsMapCanvas *canvas, QWidget *parent )
   : QDialog( parent )
 {
   mWidget = new QgsLabelEngineConfigWidget( canvas );
