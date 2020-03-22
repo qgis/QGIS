@@ -1,8 +1,8 @@
 # The following has been generated automatically from src/core/scalebar/qgsscalebarrenderer.h
 # monkey patching scoped based enum
-QgsScaleBarRenderer.Flag.FlagUsesLineSymbol.__doc__ = "Renderer utilises the scalebar line symbol (see QgsScaleBarSettings::lineSymbol() )"
-QgsScaleBarRenderer.Flag.FlagUsesFillSymbol.__doc__ = "Renderer utilises the scalebar fill symbol (see QgsScaleBarSettings::fillSymbol() )"
-QgsScaleBarRenderer.Flag.FlagUsesAlternateFillSymbol.__doc__ = "Renderer utilises the alternate scalebar fill symbol (see QgsScaleBarSettings::alternateFillSymbol() )"
+QgsScaleBarRenderer.Flag.FlagUsesLineSymbol.__doc__ = "Renderer utilizes the scalebar line symbol (see QgsScaleBarSettings::lineSymbol() )"
+QgsScaleBarRenderer.Flag.FlagUsesFillSymbol.__doc__ = "Renderer utilizes the scalebar fill symbol (see QgsScaleBarSettings::fillSymbol() )"
+QgsScaleBarRenderer.Flag.FlagUsesAlternateFillSymbol.__doc__ = "Renderer utilizes the alternate scalebar fill symbol (see QgsScaleBarSettings::alternateFillSymbol() )"
 QgsScaleBarRenderer.Flag.FlagRespectsUnits.__doc__ = "Renderer respects the QgsScaleBarSettings::units() setting"
 QgsScaleBarRenderer.Flag.FlagRespectsMapUnitsPerScaleBarUnit.__doc__ = "Renderer respects the QgsScaleBarSettings::mapUnitsPerScaleBarUnit() setting"
 QgsScaleBarRenderer.Flag.FlagUsesUnitLabel.__doc__ = "Renderer uses the QgsScaleBarSettings::unitLabel() setting"
