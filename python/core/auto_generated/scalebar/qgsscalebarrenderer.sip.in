@@ -36,6 +36,23 @@ custom labeling.
 
     };
 
+    enum class Flag
+    {
+      FlagUsesLineSymbol,
+      FlagUsesFillSymbol,
+      FlagUsesAlternateFillSymbol,
+      FlagRespectsUnits,
+      FlagRespectsMapUnitsPerScaleBarUnit,
+      FlagUsesUnitLabel,
+      FlagUsesSegments,
+      FlagUsesLabelBarSpace,
+      FlagUsesLabelVerticalPlacement,
+      FlagUsesLabelHorizontalPlacement,
+      FlagUsesAlignment,
+    };
+    typedef QFlags<QgsScaleBarRenderer::Flag> Flags;
+
+
     QgsScaleBarRenderer();
 %Docstring
 Constructor for QgsScaleBarRenderer.
@@ -60,6 +77,13 @@ Returns the unique ID for this renderer.
     virtual QString visibleName() const = 0;
 %Docstring
 Returns the user friendly, translated name for the renderer.
+
+.. versionadded:: 3.14
+%End
+
+    virtual Flags flags() const;
+%Docstring
+Returns the scalebar rendering flags, which dictates the renderer's behavior.
 
 .. versionadded:: 3.14
 %End
@@ -160,6 +184,9 @@ Returns a list of widths of each segment of the scalebar.
 %End
 
 };
+
+QFlags<QgsScaleBarRenderer::Flag> operator|(QgsScaleBarRenderer::Flag f1, QFlags<QgsScaleBarRenderer::Flag> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

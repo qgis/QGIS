@@ -36,6 +36,18 @@ int QgsSteppedLineScaleBarRenderer::sortKey() const
   return 7;
 }
 
+QgsScaleBarRenderer::Flags QgsSteppedLineScaleBarRenderer::flags() const
+{
+  return Flag::FlagUsesLineSymbol |
+         Flag::FlagRespectsUnits |
+         Flag::FlagRespectsMapUnitsPerScaleBarUnit |
+         Flag::FlagUsesUnitLabel |
+         Flag::FlagUsesSegments |
+         Flag::FlagUsesLabelBarSpace |
+         Flag::FlagUsesLabelVerticalPlacement |
+         Flag::FlagUsesLabelHorizontalPlacement;
+}
+
 QgsSteppedLineScaleBarRenderer *QgsSteppedLineScaleBarRenderer::clone() const
 {
   return new QgsSteppedLineScaleBarRenderer( *this );

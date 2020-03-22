@@ -31,6 +31,8 @@ Constructor for QgsHollowScaleBarRenderer.
 
     virtual QString visibleName() const;
 
+    virtual Flags flags() const;
+
     virtual int sortKey() const;
 
     virtual QgsHollowScaleBarRenderer *clone() const /Factory/;

@@ -36,6 +36,11 @@ int QgsNumericScaleBarRenderer::sortKey() const
   return 9;
 }
 
+QgsScaleBarRenderer::Flags QgsNumericScaleBarRenderer::flags() const
+{
+  return Flag::FlagUsesAlignment;
+}
+
 QgsNumericScaleBarRenderer *QgsNumericScaleBarRenderer::clone() const
 {
   return new QgsNumericScaleBarRenderer( *this );

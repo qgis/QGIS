@@ -36,6 +36,20 @@ int QgsSingleBoxScaleBarRenderer::sortKey() const
   return 1;
 }
 
+QgsScaleBarRenderer::Flags QgsSingleBoxScaleBarRenderer::flags() const
+{
+  return Flag::FlagUsesLineSymbol |
+         Flag::FlagUsesFillSymbol |
+         Flag::FlagUsesAlternateFillSymbol |
+         Flag::FlagRespectsUnits |
+         Flag::FlagRespectsMapUnitsPerScaleBarUnit |
+         Flag::FlagUsesUnitLabel |
+         Flag::FlagUsesSegments |
+         Flag::FlagUsesLabelBarSpace |
+         Flag::FlagUsesLabelVerticalPlacement |
+         Flag::FlagUsesLabelHorizontalPlacement;
+}
+
 QgsSingleBoxScaleBarRenderer *QgsSingleBoxScaleBarRenderer::clone() const
 {
   return new QgsSingleBoxScaleBarRenderer( *this );

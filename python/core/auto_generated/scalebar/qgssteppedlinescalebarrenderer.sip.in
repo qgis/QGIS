@@ -32,7 +32,9 @@ Constructor for QgsSteppedLineScaleBarRenderer.
 
     virtual int sortKey() const;
 
-    virtual QgsSteppedLineScaleBarRenderer* clone() const /Factory/;
+    virtual Flags flags() const;
+
+    virtual QgsSteppedLineScaleBarRenderer *clone() const /Factory/;
 
 
      virtual void draw( QgsRenderContext &context,

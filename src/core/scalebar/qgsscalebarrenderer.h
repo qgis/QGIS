@@ -65,6 +65,26 @@ class CORE_EXPORT QgsScaleBarRenderer
     };
 
     /**
+     * Flags which control scalebar renderer behavior.
+     * \since QGIS 3.14
+     */
+    enum class Flag
+    {
+      FlagUsesLineSymbol = 1 << 0, //!< Renderer utilises the scalebar line symbol (see QgsScaleBarSettings::lineSymbol() )
+      FlagUsesFillSymbol = 1 << 1, //!< Renderer utilises the scalebar fill symbol (see QgsScaleBarSettings::fillSymbol() )
+      FlagUsesAlternateFillSymbol = 1 << 2, //!< Renderer utilises the alternate scalebar fill symbol (see QgsScaleBarSettings::alternateFillSymbol() )
+      FlagRespectsUnits = 1 << 3, //!< Renderer respects the QgsScaleBarSettings::units() setting
+      FlagRespectsMapUnitsPerScaleBarUnit = 1 << 4, //!< Renderer respects the QgsScaleBarSettings::mapUnitsPerScaleBarUnit() setting
+      FlagUsesUnitLabel = 1 << 5, //!< Renderer uses the QgsScaleBarSettings::unitLabel() setting
+      FlagUsesSegments = 1 << 6, //!< Renderer uses the scalebar segments
+      FlagUsesLabelBarSpace = 1 << 7, //!< Renderer uses the QgsScaleBarSettings::labelBarSpace() setting
+      FlagUsesLabelVerticalPlacement = 1 << 8, //!< Renderer uses the QgsScaleBarSettings::labelVerticalPlacement() setting
+      FlagUsesLabelHorizontalPlacement = 1 << 8, //!< Renderer uses the QgsScaleBarSettings::labelHorizontalPlacement() setting
+      FlagUsesAlignment = 1 << 9, //!< Renderer uses the QgsScaleBarSettings::alignment() setting
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
+    /**
      * Constructor for QgsScaleBarRenderer.
      */
     QgsScaleBarRenderer() = default;
@@ -87,6 +107,13 @@ class CORE_EXPORT QgsScaleBarRenderer
      * \since QGIS 3.14
      */
     virtual QString visibleName() const = 0;
+
+    /**
+     * Returns the scalebar rendering flags, which dictates the renderer's behavior.
+     *
+     * \since QGIS 3.14
+     */
+    virtual Flags flags() const;
 
     /**
      * Returns a sorting key value, where renderers with a lower sort key will be shown earlier in lists.
@@ -176,5 +203,7 @@ class CORE_EXPORT QgsScaleBarRenderer
     QList<double> segmentWidths( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
 
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsScaleBarRenderer::Flags )
 
 #endif //QGSSCALEBARRENDERER_H
