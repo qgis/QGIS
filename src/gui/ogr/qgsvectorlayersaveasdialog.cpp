@@ -300,6 +300,7 @@ void QgsVectorLayerSaveAsDialog::accept()
           {
             layerList.append( layer->name() );
           }
+          layerList.sort();
           if ( layerList.length() > 1 && QMessageBox::warning( this,
                tr( "Overwrite file" ),
                tr( "This file contains %1 layers that will be discarded!\n"
@@ -346,6 +347,7 @@ void QgsVectorLayerSaveAsDialog::accept()
           {
             layerList.append( layer->name() );
           }
+          layerList.sort();
           if ( layerList.length() > 1 && QMessageBox::warning( this,
                tr( "Overwrite file" ),
                tr( "This file contains %1 layers that will be discarded!\n"
@@ -382,6 +384,7 @@ void QgsVectorLayerSaveAsDialog::accept()
           {
             layerList.append( layer->name() );
           }
+          layerList.sort();
           if ( layerList.length() > 1 && QMessageBox::warning( this,
                tr( "Overwrite file" ),
                tr( "This file contains %1 layers that will be discarded!\n"
