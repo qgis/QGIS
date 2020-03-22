@@ -49,6 +49,8 @@ class CORE_EXPORT QgsNumericScaleBarRenderer: public QgsScaleBarRenderer
                              const QgsScaleBarSettings &settings,
                              const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
 
+    Q_DECL_DEPRECATED QSizeF calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override SIP_DEPRECATED ;
+
   private:
 
     //! Returns the text for the scale bar or an empty string in case of error
