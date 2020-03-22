@@ -70,9 +70,9 @@ class CORE_EXPORT QgsScaleBarRenderer
      */
     enum class Flag
     {
-      FlagUsesLineSymbol = 1 << 0, //!< Renderer utilises the scalebar line symbol (see QgsScaleBarSettings::lineSymbol() )
-      FlagUsesFillSymbol = 1 << 1, //!< Renderer utilises the scalebar fill symbol (see QgsScaleBarSettings::fillSymbol() )
-      FlagUsesAlternateFillSymbol = 1 << 2, //!< Renderer utilises the alternate scalebar fill symbol (see QgsScaleBarSettings::alternateFillSymbol() )
+      FlagUsesLineSymbol = 1 << 0, //!< Renderer utilizes the scalebar line symbol (see QgsScaleBarSettings::lineSymbol() )
+      FlagUsesFillSymbol = 1 << 1, //!< Renderer utilizes the scalebar fill symbol (see QgsScaleBarSettings::fillSymbol() )
+      FlagUsesAlternateFillSymbol = 1 << 2, //!< Renderer utilizes the alternate scalebar fill symbol (see QgsScaleBarSettings::alternateFillSymbol() )
       FlagRespectsUnits = 1 << 3, //!< Renderer respects the QgsScaleBarSettings::units() setting
       FlagRespectsMapUnitsPerScaleBarUnit = 1 << 4, //!< Renderer respects the QgsScaleBarSettings::mapUnitsPerScaleBarUnit() setting
       FlagUsesUnitLabel = 1 << 5, //!< Renderer uses the QgsScaleBarSettings::unitLabel() setting
