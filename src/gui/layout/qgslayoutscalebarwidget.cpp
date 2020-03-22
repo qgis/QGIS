@@ -189,24 +189,24 @@ void QgsLayoutScaleBarWidget::lineSymbolChanged()
 
 void QgsLayoutScaleBarWidget::fillSymbol1Changed()
 {
-    if ( !mScalebar )
-      return;
+  if ( !mScalebar )
+    return;
 
-    mScalebar->layout()->undoStack()->beginCommand( mScalebar, tr( "Change Scalebar Fill Style" ), QgsLayoutItem::UndoShapeStyle );
-    mScalebar->setFillSymbol1( mFillSymbol1Button->clonedSymbol<QgsFillSymbol>() );
-    mScalebar->update();
-    mScalebar->layout()->undoStack()->endCommand();
+  mScalebar->layout()->undoStack()->beginCommand( mScalebar, tr( "Change Scalebar Fill Style" ), QgsLayoutItem::UndoShapeStyle );
+  mScalebar->setFillSymbol1( mFillSymbol1Button->clonedSymbol<QgsFillSymbol>() );
+  mScalebar->update();
+  mScalebar->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutScaleBarWidget::fillSymbol2Changed()
 {
-    if ( !mScalebar )
-      return;
+  if ( !mScalebar )
+    return;
 
-    mScalebar->layout()->undoStack()->beginCommand( mScalebar, tr( "Change Scalebar Fill Style" ), QgsLayoutItem::UndoShapeStyle );
-    mScalebar->setFillSymbol2( mFillSymbol2Button->clonedSymbol<QgsFillSymbol>() );
-    mScalebar->update();
-    mScalebar->layout()->undoStack()->endCommand();
+  mScalebar->layout()->undoStack()->beginCommand( mScalebar, tr( "Change Scalebar Fill Style" ), QgsLayoutItem::UndoShapeStyle );
+  mScalebar->setFillSymbol2( mFillSymbol2Button->clonedSymbol<QgsFillSymbol>() );
+  mScalebar->update();
+  mScalebar->layout()->undoStack()->endCommand();
 }
 
 void QgsLayoutScaleBarWidget::setGuiElements()
