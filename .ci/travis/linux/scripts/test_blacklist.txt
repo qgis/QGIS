@@ -18,3 +18,14 @@ PyQgsDbManagerPostgis
 # Needs an OpenCL device, the library is not enough
 qgis_openclutilstest
 
+<<<<<<< HEAD
+=======
+# Relies on a broken/unreliable 3rd party service
+qgis_layerdefinition
+
+# MSSQL requires the MSSQL docker
+PyQgsProviderConnectionMssql
+
+# Needs updating for OTB 7.1
+ProcessingOtbAlgorithmsTest
+>>>>>>> 2b58ee3dc1... Blacklist OTB tests on Travis: need updating for OTB 7.1
