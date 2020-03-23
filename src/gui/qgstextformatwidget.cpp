@@ -499,6 +499,8 @@ void QgsTextFormatWidget::initWidget()
 
   // set correct initial tab to match displayed setting page
   whileBlocking( mOptionsTab )->setCurrentIndex( mLabelStackedWidget->currentIndex() );
+  mOptionsTab->tabBar()->setUsesScrollButtons( true );
+
 
   if ( mMapCanvas )
   {
