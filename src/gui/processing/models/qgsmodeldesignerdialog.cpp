@@ -132,12 +132,13 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionSave, &QAction::triggered, this, [ = ] { saveModel( false ); } );
   connect( mActionSaveAs, &QAction::triggered, this, [ = ] { saveModel( true ); } );
   connect( mActionDeleteComponents, &QAction::triggered, this, &QgsModelDesignerDialog::deleteSelected );
+  connect( mActionSnapSelected, &QAction::triggered, mView, &QgsModelGraphicsView::snapSelected );
 
-  mActionSnappingEnabled->setChecked( settings.value( QStringLiteral( "/Processing/modelDesignerEnableSnap" ), true ).toBool() );
+  mActionSnappingEnabled->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/enableSnapToGrid" ), true ).toBool() );
   connect( mActionSnappingEnabled, &QAction::toggled, this, [ = ]( bool enabled )
   {
     mView->snapper()->setSnapToGrid( enabled );
-    QgsSettings().setValue( QStringLiteral( "/Processing/modelDesignerEnableSnap" ), enabled );
+    QgsSettings().setValue( QStringLiteral( "/Processing/Modeler/enableSnapToGrid" ), enabled );
   } );
   mView->snapper()->setSnapToGrid( mActionSnappingEnabled->isChecked() );
 

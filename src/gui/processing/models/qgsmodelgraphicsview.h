@@ -110,6 +110,13 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      */
     void endMacroCommand();
 
+  public slots:
+
+    /**
+     * Snaps the selected items to the grid.
+     */
+    void snapSelected();
+
   signals:
 
     /**

@@ -130,12 +130,17 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void setItemRect( QRectF rect );
 
+#ifndef SIP_RUN
+
     /**
      * Shows a preview of setting a new \a rect for the item.
      */
     QRectF previewItemRectChange( QRectF rect );
 
-#ifndef SIP_RUN
+    /**
+     * Sets a new scene \a rect for the item.
+     */
+    void finalizePreviewedItemRectChange( QRectF rect );
 
     /**
      * Handles a model hover enter \a event.
@@ -359,7 +364,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QgsModelDesignerFlatButtonGraphicItem *mDeleteButton = nullptr;
 
     static constexpr double MIN_COMPONENT_WIDTH = 70;
-    static constexpr double MIN_COMPONENT_HEIGHT = 50;
+    static constexpr double MIN_COMPONENT_HEIGHT = 30;
 
     static constexpr double DEFAULT_BUTTON_WIDTH = 16;
     static constexpr double DEFAULT_BUTTON_HEIGHT = 16;

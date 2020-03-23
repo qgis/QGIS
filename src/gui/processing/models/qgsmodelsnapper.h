@@ -104,6 +104,24 @@ class GUI_EXPORT QgsModelSnapper
     QRectF snapRect( const QRectF &rect, double scaleFactor, bool &snapped SIP_OUT, bool snapHorizontal = true, bool snapVertical = true ) const;
 
     /**
+     * Snaps a layout coordinate \a rect. If \a rect was snapped, \a snapped will be set to TRUE.
+     *
+     * The \a scaleFactor argument should be set to the transformation from
+     * scalar transform from layout coordinates to pixels, i.e. the
+     * graphics view transform().m11() value.
+     *
+     * This method considers snapping to the grid, snap lines, etc.
+     *
+     * If the \a horizontalSnapLine and \a verticalSnapLine arguments are specified, then the snapper
+     * will automatically display and position these lines to indicate snapping positions to item bounds.
+     *
+     * A list of items to ignore during the snapping can be specified via the \a ignoreItems list.
+     *
+     * \see snapPoint()
+     */
+    QRectF snapRectWithResize( const QRectF &rect, double scaleFactor, bool &snapped SIP_OUT, bool snapHorizontal = true, bool snapVertical = true ) const;
+
+    /**
      * Snaps a layout coordinate \a point to the grid. If \a point
      * was snapped horizontally, \a snappedX will be set to TRUE. If \a point
      * was snapped vertically, \a snappedY will be set to TRUE.

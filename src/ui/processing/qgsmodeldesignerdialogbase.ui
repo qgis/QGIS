@@ -88,6 +88,8 @@
      <string>&amp;Edit</string>
     </property>
     <addaction name="mActionDeleteComponents"/>
+    <addaction name="separator"/>
+    <addaction name="mActionSnapSelected"/>
    </widget>
    <addaction name="menu_Model"/>
    <addaction name="mMenuEdit"/>
@@ -159,7 +161,7 @@
           <x>0</x>
           <y>0</y>
           <width>256</width>
-          <height>98</height>
+          <height>97</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout">
@@ -249,7 +251,7 @@
           <x>0</x>
           <y>0</y>
           <width>256</width>
-          <height>152</height>
+          <height>153</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -618,6 +620,11 @@
    </property>
    <property name="text">
     <string>Enable Snapping</string>
+   </property>
+  </action>
+  <action name="mActionSnapSelected">
+   <property name="text">
+    <string>Snap Selected Components to Grid</string>
    </property>
   </action>
  </widget>

@@ -137,7 +137,7 @@ void QgsModelViewMouseHandles::setItemRect( QGraphicsItem *item, QRectF rect )
 {
   if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
   {
-    componentItem->setItemRect( rect );
+    componentItem->finalizePreviewedItemRectChange( rect );
   }
 }
 
@@ -164,13 +164,10 @@ QPointF QgsModelViewMouseHandles::snapPoint( QPointF originalPoint, QgsGraphicsV
 {
   bool snapped = false;
 
-  //depending on the mode, we either snap just the single point, or all the bounds of the selection
   QPointF snappedPoint;
   switch ( mode )
   {
     case Item:
-      snappedPoint = mView->snapper()->snapRect( rect().translated( originalPoint ), mView->transform().m11(), snapped, snapHorizontal, snapVertical ).topLeft();
-      break;
     case Point:
       snappedPoint = mView->snapper()->snapPoint( originalPoint, mView->transform().m11(), snapped, snapHorizontal, snapVertical );
       break;

@@ -80,6 +80,13 @@ Starts a macro command, containing a group of interactions in the view.
 Ends a macro command, containing a group of interactions in the view.
 %End
 
+  public slots:
+
+    void snapSelected();
+%Docstring
+Snaps the selected items to the grid.
+%End
+
   signals:
 
     void algorithmDropped( const QString &algorithmId, const QPointF &pos );
