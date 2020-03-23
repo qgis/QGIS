@@ -2239,13 +2239,6 @@ Sets whether point markers should be ``clipped`` to the current part boundary on
 
 
   protected:
-    struct Part
-    {
-      QPolygonF exterior;
-      QList<QPolygonF> rings;
-    };
-
-    void render( QgsRenderContext &context, const QVector<Part> &parts, const QgsFeature &feature, bool selected );
 
 
 
