@@ -16,6 +16,7 @@
 
 #include "qgsattributeform.h"
 #include "qgsapplication.h"
+#include "qgisapp.h"
 
 #include <QtWidgets/QPushButton>
 
@@ -33,6 +34,7 @@ void QgsFixAttributeDialog::init( QgsVectorLayer *layer )
   setLayout( new QGridLayout() );
   layout()->setMargin( 0 );
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
+  context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
 
   mUnfixedFeatures = mFeatures;
   mCurrentFeature = mFeatures.begin();
