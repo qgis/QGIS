@@ -57,6 +57,11 @@ class GUI_EXPORT QgsAppStyle : public QProxyStyle
     explicit QgsAppStyle( const QString &base );
     QPixmap generatedIconPixmap( QIcon::Mode iconMode, const QPixmap &pixmap, const QStyleOption *opt ) const override;
 
+<<<<<<< HEAD
+=======
+    QString baseStyle() const { return mBaseStyle; }
+
+>>>>>>> c168e756c3... code layout
     /**
      * Returns a new QgsAppStyle instance, with the same base style as this instance.
      *
