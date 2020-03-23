@@ -3491,6 +3491,10 @@ QgsSymbolLayer *QgsCentroidFillSymbolLayer::create( const QgsStringMap &properti
     sl->setPointOnSurface( properties[QStringLiteral( "point_on_surface" )].toInt() != 0 );
   if ( properties.contains( QStringLiteral( "point_on_all_parts" ) ) )
     sl->setPointOnAllParts( properties[QStringLiteral( "point_on_all_parts" )].toInt() != 0 );
+  if ( properties.contains( QStringLiteral( "clip_points" ) ) )
+    sl->setClipPoints( properties[QStringLiteral( "clip_points" )].toInt() != 0 );
+  if ( properties.contains( QStringLiteral( "clip_on_current_part_only" ) ) )
+    sl->setClipOnCurrentPartOnly( properties[QStringLiteral( "clip_on_current_part_only" )].toInt() != 0 );
 
   sl->restoreOldDataDefinedProperties( properties );
 
@@ -3529,41 +3533,118 @@ void QgsCentroidFillSymbolLayer::stopRender( QgsSymbolRenderContext &context )
 
 void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context )
 {
-  if ( !mPointOnAllParts )
+  Part part;
+  part.exterior = points;
+  if ( rings )
+    part.rings = *rings;
+
+  if ( mRenderingFeature )
   {
-    const QgsFeature *feature = context.feature();
-    if ( feature )
+    // in the middle of rendering a possibly multi-part feature, so we collect all the parts and defer the actual rendering
+    // until after we've received the final part
+    mCurrentParts << part;
+  }
+  else
+  {
+    // not rendering a feature, so we can just render the polygon immediately
+    render( context.renderContext(), QVector<Part>() << part, context.feature() ? *context.feature() : QgsFeature(), context.selected() );
+  }
+}
+
+void QgsCentroidFillSymbolLayer::startFeatureRender( const QgsFeature &, QgsRenderContext & )
+{
+  mRenderingFeature = true;
+  mCurrentParts.clear();
+}
+
+void QgsCentroidFillSymbolLayer::stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context )
+{
+  mRenderingFeature = false;
+  render( context, mCurrentParts, feature, false );
+}
+
+void QgsCentroidFillSymbolLayer::render( QgsRenderContext &context, const QVector<QgsCentroidFillSymbolLayer::Part> &parts, const QgsFeature &feature, bool selected )
+{
+  bool pointOnAllParts = mPointOnAllParts;
+  bool pointOnSurface = mPointOnSurface;
+  bool clipPoints = mClipPoints;
+  bool clipOnCurrentPartOnly = mClipOnCurrentPartOnly;
+
+  // TODO add expressions support
+
+  QVector< QgsGeometry > geometryParts;
+  geometryParts.reserve( parts.size() );
+  QPainterPath globalPath;
+
+  int maxArea = 0;
+  int maxAreaPartIdx = 0;
+
+  for ( int i = 0; i < parts.size(); i++ )
+  {
+    const Part part = parts[i];
+    QgsGeometry geom = QgsGeometry::fromQPolygonF( part.exterior );
+
+    if ( !geom.isNull() && !part.rings.empty() )
     {
-      if ( feature->id() != mCurrentFeatureId )
+      QgsPolygon *poly = qgsgeometry_cast< QgsPolygon * >( geom.get() );
+
+      if ( !pointOnAllParts )
       {
-        mCurrentFeatureId = feature->id();
-        mBiggestPartIndex = 1;
+        int area = poly->area();
 
-        if ( context.geometryPartCount() > 1 )
+        if ( area > maxArea )
         {
-          const QgsGeometry geom = feature->geometry();
-          const QgsGeometryCollection *geomCollection = static_cast<const QgsGeometryCollection *>( geom.constGet() );
-
-          double area = 0;
-          double areaBiggest = 0;
-          for ( int i = 0; i < context.geometryPartCount(); ++i )
-          {
-            area = geomCollection->geometryN( i )->area();
-            if ( area > areaBiggest )
-            {
-              areaBiggest = area;
-              mBiggestPartIndex = i + 1;
-            }
-          }
+          maxArea = area;
+          maxAreaPartIdx = i;
         }
+      }
+    }
+
+    if ( clipPoints && !clipOnCurrentPartOnly )
+    {
+      globalPath.addPolygon( part.exterior );
+      for ( const QPolygonF &ring : part.rings )
+      {
+        globalPath.addPolygon( ring );
       }
     }
   }
 
-  if ( mPointOnAllParts || ( context.geometryPartNum() == mBiggestPartIndex ) )
+  for ( int i = 0; i < parts.size(); i++ )
   {
-    QPointF centroid = mPointOnSurface ? QgsSymbolLayerUtils::polygonPointOnSurface( points, rings ) : QgsSymbolLayerUtils::polygonCentroid( points );
-    mMarker->renderPoint( centroid, context.feature(), context.renderContext(), -1, context.selected() );
+    if ( !pointOnAllParts && i != maxAreaPartIdx )
+      continue;
+
+    const Part part = parts[i];
+
+    if ( clipPoints )
+    {
+      QPainterPath path;
+
+      if ( clipOnCurrentPartOnly )
+      {
+        path.addPolygon( part.exterior );
+        for ( const QPolygonF &ring : part.rings )
+        {
+          path.addPolygon( ring );
+        }
+      }
+      else
+      {
+        path = globalPath;
+      }
+
+      context.painter()->save();
+      context.painter()->setClipPath( path );
+    }
+
+    QPointF centroid = pointOnSurface ? QgsSymbolLayerUtils::polygonPointOnSurface( part.exterior, &part.rings ) : QgsSymbolLayerUtils::polygonCentroid( part.exterior );
+    mMarker->renderPoint( centroid, feature.isValid() ? &feature : nullptr, context, -1, selected );
+
+    if ( clipPoints )
+    {
+      context.painter()->restore();
+    }
   }
 }
 
@@ -3572,6 +3653,8 @@ QgsStringMap QgsCentroidFillSymbolLayer::properties() const
   QgsStringMap map;
   map[QStringLiteral( "point_on_surface" )] = QString::number( mPointOnSurface );
   map[QStringLiteral( "point_on_all_parts" )] = QString::number( mPointOnAllParts );
+  map[QStringLiteral( "clip_points" )] = QString::number( mClipPoints );
+  map[QStringLiteral( "clip_on_current_part_only" )] = QString::number( mClipOnCurrentPartOnly );
   return map;
 }
 
@@ -3583,6 +3666,8 @@ QgsCentroidFillSymbolLayer *QgsCentroidFillSymbolLayer::clone() const
   x->setSubSymbol( mMarker->clone() );
   x->setPointOnSurface( mPointOnSurface );
   x->setPointOnAllParts( mPointOnAllParts );
+  x->setClipPoints( mClipPoints );
+  x->setClipOnCurrentPartOnly( mClipOnCurrentPartOnly );
   copyDataDefinedProperties( x.get() );
   copyPaintEffect( x.get() );
   return x.release();
@@ -4093,6 +4178,8 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
 
   if ( clipPoints )
   {
+    QgsLogger::warning( "down2" + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
+    qInfo() << path;
     context.painter()->save();
     context.painter()->setClipPath( path );
   }
