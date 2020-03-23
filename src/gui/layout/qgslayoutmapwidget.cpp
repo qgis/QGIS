@@ -712,7 +712,7 @@ void QgsLayoutMapWidget::viewScaleInCanvas()
   }
 
   const double currentScale = mMapItem->scale();
-  mMapCanvas->zoomScale( currentScale );
+  mMapCanvas->zoomScale( currentScale, true );
 }
 
 void QgsLayoutMapWidget::mXMinLineEdit_editingFinished()
