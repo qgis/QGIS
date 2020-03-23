@@ -96,6 +96,11 @@ Returns list of selected component items.
 Returns the topmost component item at a specified ``position``.
 %End
 
+    void selectAll();
+%Docstring
+Selects all the components in the scene.
+%End
+
     void deselectAll();
 %Docstring
 Clears any selected items in the scene.

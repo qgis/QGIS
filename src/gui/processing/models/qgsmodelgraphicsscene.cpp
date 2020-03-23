@@ -222,6 +222,23 @@ QgsModelComponentGraphicItem *QgsModelGraphicsScene::componentItemAt( QPointF po
   return nullptr;
 }
 
+void QgsModelGraphicsScene::selectAll()
+{
+  //select all items in scene
+  QgsModelComponentGraphicItem *focusedItem = nullptr;
+  const QList<QGraphicsItem *> itemList = items();
+  for ( QGraphicsItem *graphicsItem : itemList )
+  {
+    if ( QgsModelComponentGraphicItem *componentItem = dynamic_cast<QgsModelComponentGraphicItem *>( graphicsItem ) )
+    {
+      componentItem->setSelected( true );
+      if ( !focusedItem )
+        focusedItem = componentItem;
+    }
+  }
+  emit selectedItemChanged( focusedItem );
+}
+
 void QgsModelGraphicsScene::deselectAll()
 {
   //we can't use QGraphicsScene::clearSelection, as that emits no signals

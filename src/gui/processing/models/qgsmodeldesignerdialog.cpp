@@ -142,6 +142,11 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   } );
   mView->snapper()->setSnapToGrid( mActionSnappingEnabled->isChecked() );
 
+  connect( mActionSelectAll, &QAction::triggered, this, [ = ]
+  {
+    mScene->selectAll();
+  } );
+
   mUndoAction = mUndoStack->createUndoAction( this );
   mUndoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
   mUndoAction->setShortcuts( QKeySequence::Undo );
