@@ -72,6 +72,8 @@ void QgsMeshLayer::setDefaultRendererSettings()
   }
 
   // Sets default resample method for scalar dataset
+  if ( !mDataProvider )
+    return;
   for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
   {
     QgsMeshDatasetGroupMetadata meta = mDataProvider->datasetGroupMetadata( i );
@@ -89,7 +91,6 @@ void QgsMeshLayer::setDefaultRendererSettings()
           break;
         case QgsMeshDatasetGroupMetadata::DataOnEdges:
           break;
-
       }
       mRendererSettings.setScalarSettings( i, scalarSettings );
     }

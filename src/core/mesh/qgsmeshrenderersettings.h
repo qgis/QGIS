@@ -98,13 +98,12 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
     {
 
       /**
-       * Use data defined on face centers, do not interpolate to vertices
+       * Does not use interpolation
        */
       None = 0,
 
       /**
-       * For each vertex does a simple average of values defined for all faces that contains
-       * given vertex
+       * Does a simple average of values defined for all surrounding faces/vertices
        */
       NeighbourAverage,
     };
