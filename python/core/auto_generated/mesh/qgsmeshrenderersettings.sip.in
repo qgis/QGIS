@@ -96,6 +96,7 @@ Represents a mesh renderer settings for scalar datasets
 #include "qgsmeshrenderersettings.h"
 %End
   public:
+
     enum DataResamplingMethod
     {
 
@@ -135,7 +136,7 @@ Returns opacity
 Sets opacity
 %End
 
-    DataResamplingMethod dataInterpolationMethod() const;
+    DataResamplingMethod dataResamplingMethod() const;
 %Docstring
 Returns the type of interpolation to use to
 convert face defined datasets to
@@ -144,7 +145,7 @@ values on vertices
 .. versionadded:: 3.12
 %End
 
-    void setDataInterpolationMethod( const DataResamplingMethod &dataInterpolationMethod );
+    void setDataResamplingMethod( const DataResamplingMethod &dataResamplingMethod );
 %Docstring
 Sets data interpolation method
 
