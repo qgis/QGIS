@@ -87,9 +87,11 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="mActionSelectAll"/>
+    <addaction name="mActionSnapSelected"/>
+    <addaction name="separator"/>
     <addaction name="mActionDeleteComponents"/>
     <addaction name="separator"/>
-    <addaction name="mActionSnapSelected"/>
    </widget>
    <addaction name="menu_Model"/>
    <addaction name="mMenuEdit"/>
@@ -625,6 +627,18 @@
   <action name="mActionSnapSelected">
    <property name="text">
     <string>Snap Selected Components to Grid</string>
+   </property>
+  </action>
+  <action name="mActionSelectAll">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectAll.svg</normaloff>:/images/themes/default/mActionSelectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select All</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
    </property>
   </action>
  </widget>
