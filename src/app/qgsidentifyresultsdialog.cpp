@@ -1863,7 +1863,7 @@ void QgsIdentifyResultsDialog::zoomToFeature()
     rect.scale( 0.5, &c );
   }
 
-  mCanvas->setExtent( rect );
+  mCanvas->setExtent( rect, true );
   mCanvas->refresh();
 }
 

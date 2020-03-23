@@ -837,8 +837,32 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     // Pan based on user specified behavior
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
+<<<<<<< HEAD
       QgsCoordinateReferenceSystem mypSRS = mMapCanvas->mapSettings().destinationCrs();
       QgsCoordinateTransform myTransform( mWgs84CRS, mypSRS, QgsProject::instance() ); // use existing WGS84 CRS
+=======
+      try
+      {
+        QgsPointXY myPoint = mCanvasToWgs84Transform.transform( myNewCenter, QgsCoordinateTransform::ReverseTransform );
+        //keep the extent the same just center the map canvas in the display so our feature is in the middle
+        QgsRectangle myRect( myPoint, myPoint );  // empty rect can be used to set new extent that is centered on the point used to construct the rect
+
+        // testing if position is outside some proportion of the map extent
+        // this is a user setting - useful range: 5% to 100% (0.05 to 1.0)
+        QgsRectangle myExtentLimit( mMapCanvas->extent() );
+        myExtentLimit.scale( mSpinMapExtentMultiplier->value() * 0.01 );
+
+        // only change the extents if the point is beyond the current extents to minimize repaints
+        if ( radRecenterMap->isChecked() ||
+             ( radRecenterWhenNeeded->isChecked() && !myExtentLimit.contains( myPoint ) ) )
+        {
+          mMapCanvas->setExtent( myRect, true );
+          mMapCanvas->refresh();
+        }
+      }
+      catch ( QgsCsException & )
+      {
+>>>>>>> ab04656092... Fix "zoom to" actions fail to correctly set canvas extent
 
       QgsPointXY myPoint = myTransform.transform( myNewCenter );
       //keep the extent the same just center the map canvas in the display so our feature is in the middle

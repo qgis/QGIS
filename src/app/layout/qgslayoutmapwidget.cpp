@@ -712,7 +712,11 @@ void QgsLayoutMapWidget::viewScaleInCanvas()
   }
 
   const double currentScale = mMapItem->scale();
+<<<<<<< HEAD:src/app/layout/qgslayoutmapwidget.cpp
   QgisApp::instance()->mapCanvas()->zoomScale( currentScale );
+=======
+  mMapCanvas->zoomScale( currentScale, true );
+>>>>>>> ab04656092... Fix "zoom to" actions fail to correctly set canvas extent:src/gui/layout/qgslayoutmapwidget.cpp
 }
 
 void QgsLayoutMapWidget::mXMinLineEdit_editingFinished()
