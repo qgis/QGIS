@@ -124,7 +124,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
 
     /**
      * Geometry check method to apply to this source. This setting is only
-     * utilised if QgsProcessingFeatureSourceDefinition::overrideDefaultGeometryCheck is TRUE.
+     * utilized if QgsProcessingFeatureSourceDefinition::overrideDefaultGeometryCheck is TRUE.
      *
      * \see overrideDefaultGeometryCheck
      * \since QGIS 3.14
