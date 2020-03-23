@@ -1970,18 +1970,68 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 
     /**
      * Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
+     * \see pointOnAllParts()
      * \since QGIS 2.16 */
     void setPointOnAllParts( bool pointOnAllParts ) { mPointOnAllParts = pointOnAllParts; }
 
     /**
      * Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
+     * \see setPointOnAllParts()
      * \since QGIS 2.16 */
     bool pointOnAllParts() const { return mPointOnAllParts; }
 
+    /**
+     * Returns TRUE if point markers should be clipped to the polygon boundary.
+     *
+     * \see setClipPoints()
+     * \since 3.14
+     */
+    bool clipPoints() const { return mClipPoints; }
+
+    /**
+     * Sets whether point markers should be \a clipped to the polygon boundary.
+     *
+     * \see clipPoints()
+     * \since 3.14
+     */
+    void setClipPoints( bool clipPoints ) { mClipPoints = clipPoints; }
+
+    /**
+     * Returns TRUE if point markers should be clipped to the current part boundary only.
+     *
+     * \see setClipPoints()
+     * \since 3.14
+     */
+    bool clipOnCurrentPartOnly() const { return mClipOnCurrentPartOnly; }
+
+    /**
+     * Sets whether point markers should be \a clipped to the current part boundary only.
+     *
+     * \see clipOnCurrentPartOnly()
+     * \since 3.14
+     */
+    void setClipOnCurrentPartOnly( bool clipOnCurrentPartOnly ) { mClipOnCurrentPartOnly = clipOnCurrentPartOnly; }
+
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+
   protected:
+    struct Part
+    {
+      QPolygonF exterior;
+      QList<QPolygonF> rings;
+    };
+
+    void render( QgsRenderContext &context, const QVector<Part> &parts, const QgsFeature &feature, bool selected );
+
     std::unique_ptr< QgsMarkerSymbol > mMarker;
     bool mPointOnSurface = false;
     bool mPointOnAllParts = true;
+    bool mClipPoints = false;
+    bool mClipOnCurrentPartOnly = false;
+
+    QVector<Part> mCurrentParts;
+    bool mRenderingFeature = false;
 
     QgsFeatureId mCurrentFeatureId = -1;
     int mBiggestPartIndex = -1;
@@ -1990,6 +2040,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 #ifdef SIP_RUN
     QgsCentroidFillSymbolLayer( const QgsCentroidFillSymbolLayer &other );
 #endif
+
 };
 
 #endif

@@ -2183,6 +2183,8 @@ Caller takes ownership of the returned symbol layer.
 %Docstring
 Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
 
+.. seealso:: :py:func:`pointOnAllParts`
+
 .. versionadded:: 2.16
 %End
 
@@ -2190,10 +2192,62 @@ Sets whether a point is drawn for all parts or only on the biggest part of multi
 %Docstring
 Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
 
+.. seealso:: :py:func:`setPointOnAllParts`
+
 .. versionadded:: 2.16
 %End
 
+    bool clipPoints() const;
+%Docstring
+Returns ``True`` if point markers should be clipped to the polygon boundary.
+
+.. seealso:: :py:func:`setClipPoints`
+
+.. versionadded:: 3.14
+%End
+
+    void setClipPoints( bool clipPoints );
+%Docstring
+Sets whether point markers should be ``clipped`` to the polygon boundary.
+
+.. seealso:: :py:func:`clipPoints`
+
+.. versionadded:: 3.14
+%End
+
+    bool clipOnCurrentPartOnly() const;
+%Docstring
+Returns ``True`` if point markers should be clipped to the current part boundary only.
+
+.. seealso:: :py:func:`setClipPoints`
+
+.. versionadded:: 3.14
+%End
+
+    void setClipOnCurrentPartOnly( bool clipOnCurrentPartOnly );
+%Docstring
+Sets whether point markers should be ``clipped`` to the current part boundary only.
+
+.. seealso:: :py:func:`clipOnCurrentPartOnly`
+
+.. versionadded:: 3.14
+%End
+
+    virtual void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+    virtual void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context );
+
+
   protected:
+    struct Part
+    {
+      QPolygonF exterior;
+      QList<QPolygonF> rings;
+    };
+
+    void render( QgsRenderContext &context, const QVector<Part> &parts, const QgsFeature &feature, bool selected );
+
+
 
 
   private:

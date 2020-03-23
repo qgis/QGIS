@@ -32,14 +32,39 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QCheckBox" name="mDrawAllPartsCheckBox">
+       <property name="toolTip">
+        <string>When unchecked, a single point will be drawn on the biggest part of multi-part features</string>
+       </property>
        <property name="text">
         <string>Draw point on every part of multi-part features</string>
        </property>
-       <property name="toolTip">
-        <string>When unchecked, a single point will be drawn on the biggest part of multi-part features</string>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QCheckBox" name="mClipPointsCheckBox">
+       <property name="text">
+        <string>Clip markers to polygon boundary</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QCheckBox" name="mClipOnCurrentPartOnlyCheckBox">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Clip markers to current part boundary only</string>
        </property>
       </widget>
      </item>
@@ -50,16 +75,27 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>350</width>
-       <height>81</height>
-      </size>
-     </property>
     </spacer>
    </item>
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>mClipPointsCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mClipOnCurrentPartOnlyCheckBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>183</x>
+     <y>77</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>183</x>
+     <y>107</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

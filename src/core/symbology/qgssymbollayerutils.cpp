@@ -4008,7 +4008,7 @@ QPointF QgsSymbolLayerUtils::polygonCentroid( const QPolygonF &points )
   return QPointF( cx, cy );
 }
 
-QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points, QList<QPolygonF> *rings )
+QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points, const QList<QPolygonF> *rings )
 {
   QPointF centroid = QgsSymbolLayerUtils::polygonCentroid( points );
 
