@@ -18,3 +18,11 @@ PyQgsDbManagerPostgis
 # Needs an OpenCL device, the library is not enough
 qgis_openclutilstest
 
+<<<<<<< HEAD
+=======
+# Relies on a broken/unreliable 3rd party service
+qgis_layerdefinition
+
+# MSSQL requires the MSSQL docker
+PyQgsProviderConnectionMssql
+>>>>>>> 37470980c3... Re-enable otb tests with stable download link of 7.0
