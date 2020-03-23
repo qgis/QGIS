@@ -25,19 +25,43 @@ Encapsulates settings relating to a feature source input to a processing algorit
 %End
   public:
 
-    QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false );
+    QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
+                                          bool overrideDefaultGeometryCheck = false, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
 %Docstring
-Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string source.
+Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string ``source``.
+
+If ``selectedFeaturesOnly`` is ``True``, then only selected features from the source will be used.
+
+The optional ``featureLimit`` can be set to a value > 0 to place a hard limit on the maximum number
+of features which will be read from the source.
+
+If ``overrideDefaultGeometryCheck`` is ``True``, then the value of ``geometryCheck`` will override
+the default geometry check method (as dictated by :py:class:`QgsProcessingContext`) for this source.
 %End
 
-    QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false );
+    QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
+                                          bool overrideDefaultGeometryCheck = false, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
 %Docstring
 Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty source.
+
+If ``selectedFeaturesOnly`` is ``True``, then only selected features from the source will be used.
+
+The optional ``featureLimit`` can be set to a value > 0 to place a hard limit on the maximum number
+of features which will be read from the source.
+
+If ``overrideDefaultGeometryCheck`` is ``True``, then the value of ``geometryCheck`` will override
+the default geometry check method (as dictated by :py:class:`QgsProcessingContext`) for this source.
 %End
 
     QgsProperty source;
 
     bool selectedFeaturesOnly;
+
+    long long featureLimit;
+
+    bool overrideDefaultGeometryCheck;
+
+    QgsFeatureRequest::InvalidGeometryCheck geometryCheck;
 
     bool operator==( const QgsProcessingFeatureSourceDefinition &other );
 

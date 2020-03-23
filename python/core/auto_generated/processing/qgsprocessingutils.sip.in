@@ -379,13 +379,17 @@ results according to the settings in a :py:class:`QgsProcessingContext`.
     typedef QFlags<QgsProcessingFeatureSource::Flag> Flags;
 
 
-    QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false );
+    QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false,
+                                long long featureLimit = -1 );
 %Docstring
 Constructor for QgsProcessingFeatureSource, accepting an original feature source ``originalSource``
 and processing ``context``.
 Ownership of ``originalSource`` is dictated by ``ownsOriginalSource``. If ``ownsOriginalSource`` is ``False``,
 ownership is not transferred, and callers must ensure that ``originalSource`` exists for the lifetime of this object.
 If ``ownsOriginalSource`` is ``True``, then this object will take ownership of ``originalSource``.
+
+If ``featureLimit`` is set to a value > 0, then a limit is placed on the maximum number of features which will be
+read from the source.
 %End
 
     ~QgsProcessingFeatureSource();
@@ -428,6 +432,13 @@ iterator, eg by restricting the returned attributes or geometry.
     QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
 %Docstring
 Returns an expression context scope suitable for this source.
+%End
+
+    void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck method );
+%Docstring
+Overrides the default geometry check method for the source.
+
+.. versionadded:: 3.14
 %End
 
 };

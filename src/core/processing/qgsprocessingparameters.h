@@ -56,19 +56,43 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
   public:
 
     /**
-     * Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string source.
+     * Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string \a source.
+     *
+     * If \a selectedFeaturesOnly is TRUE, then only selected features from the source will be used.
+     *
+     * The optional \a featureLimit can be set to a value > 0 to place a hard limit on the maximum number
+     * of features which will be read from the source.
+     *
+     * If \a overrideDefaultGeometryCheck is TRUE, then the value of \a geometryCheck will override
+     * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
-    QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false )
+    QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
+                                          bool overrideDefaultGeometryCheck = false, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
       : source( QgsProperty::fromValue( source ) )
       , selectedFeaturesOnly( selectedFeaturesOnly )
+      , featureLimit( featureLimit )
+      , overrideDefaultGeometryCheck( overrideDefaultGeometryCheck )
+      , geometryCheck( geometryCheck )
     {}
 
     /**
      * Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty source.
+     *
+     * If \a selectedFeaturesOnly is TRUE, then only selected features from the source will be used.
+     *
+     * The optional \a featureLimit can be set to a value > 0 to place a hard limit on the maximum number
+     * of features which will be read from the source.
+     *
+     * If \a overrideDefaultGeometryCheck is TRUE, then the value of \a geometryCheck will override
+     * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
-    QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false )
+    QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
+                                          bool overrideDefaultGeometryCheck = false, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
       : source( source )
       , selectedFeaturesOnly( selectedFeaturesOnly )
+      , featureLimit( featureLimit )
+      , overrideDefaultGeometryCheck( overrideDefaultGeometryCheck )
+      , geometryCheck( geometryCheck )
     {}
 
     /**
@@ -81,9 +105,39 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      */
     bool selectedFeaturesOnly;
 
+    /**
+     * If set to a value > 0, places a limit on the maximum number of features which will be
+     * read from the source.
+     *
+     * \since QGIS 3.14
+     */
+    long long featureLimit = -1;
+
+    /**
+     * TRUE if the default geometry check method (as dictated by QgsProcessingContext)
+     * should be overridden for this source.
+     *
+     * \see geometryCheck
+     * \since QGIS 3.14
+     */
+    bool overrideDefaultGeometryCheck = false;
+
+    /**
+     * Geometry check method to apply to this source. This setting is only
+     * utilised if QgsProcessingFeatureSourceDefinition::overrideDefaultGeometryCheck is TRUE.
+     *
+     * \see overrideDefaultGeometryCheck
+     * \since QGIS 3.14
+     */
+    QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
+
     bool operator==( const QgsProcessingFeatureSourceDefinition &other )
     {
-      return source == other.source && selectedFeaturesOnly == other.selectedFeaturesOnly;
+      return source == other.source
+             && selectedFeaturesOnly == other.selectedFeaturesOnly
+             && featureLimit == other.featureLimit
+             && overrideDefaultGeometryCheck == other.overrideDefaultGeometryCheck
+             && geometryCheck == other.geometryCheck;
     }
 
     bool operator!=( const QgsProcessingFeatureSourceDefinition &other )
