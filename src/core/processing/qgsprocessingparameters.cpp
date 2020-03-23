@@ -615,11 +615,13 @@ QString parameterAsCompatibleSourceLayerPathInternal( const QgsProcessingParamet
   QVariant val = parameters.value( definition->name() );
 
   bool selectedFeaturesOnly = false;
+  long long featureLimit = -1;
   if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
   {
     // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
     selectedFeaturesOnly = fromVar.selectedFeaturesOnly;
+    featureLimit = fromVar.featureLimit;
     val = fromVar.source;
   }
   else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
@@ -673,10 +675,10 @@ QString parameterAsCompatibleSourceLayerPathInternal( const QgsProcessingParamet
 
   if ( layerName )
     return QgsProcessingUtils::convertToCompatibleFormatAndLayerName( vl, selectedFeaturesOnly, definition->name(),
-           compatibleFormats, preferredFormat, context, feedback, *layerName );
+           compatibleFormats, preferredFormat, context, feedback, *layerName, featureLimit );
   else
     return QgsProcessingUtils::convertToCompatibleFormat( vl, selectedFeaturesOnly, definition->name(),
-           compatibleFormats, preferredFormat, context, feedback );
+           compatibleFormats, preferredFormat, context, feedback, featureLimit );
 }
 
 QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback )
@@ -4624,26 +4626,51 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
   if ( value.canConvert<QgsProcessingFeatureSourceDefinition>() )
   {
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
+    QString geometryCheckString;
+    switch ( fromVar.geometryCheck )
+    {
+      case QgsFeatureRequest::GeometryNoCheck:
+        geometryCheckString = QStringLiteral( "QgsFeatureRequest.GeometryNoCheck" );
+        break;
+
+      case QgsFeatureRequest::GeometrySkipInvalid:
+        geometryCheckString = QStringLiteral( "QgsFeatureRequest.GeometrySkipInvalid" );
+        break;
+
+      case QgsFeatureRequest::GeometryAbortOnInvalid:
+        geometryCheckString = QStringLiteral( "QgsFeatureRequest.GeometryAbortOnInvalid" );
+        break;
+    }
     if ( fromVar.source.propertyType() == QgsProperty::StaticProperty )
     {
-      if ( fromVar.selectedFeaturesOnly )
+      QString layerString = fromVar.source.staticValue().toString();
+      // prefer to use layer source instead of id if possible (since it's persistent)
+      if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
+        layerString = layer->source();
+
+      if ( fromVar.selectedFeaturesOnly || fromVar.featureLimit != -1 || fromVar.overrideDefaultGeometryCheck )
       {
-        return QStringLiteral( "QgsProcessingFeatureSourceDefinition('%1', True)" ).arg( fromVar.source.staticValue().toString() );
+        return QStringLiteral( "QgsProcessingFeatureSourceDefinition('%1', selectedFeaturesOnly=%2, featureLimit=%3, overrideDefaultGeometryCheck=%4, geometryCheck=%5)" ).arg( layerString,
+               fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ),
+               QString::number( fromVar.featureLimit ),
+               fromVar.overrideDefaultGeometryCheck ? QStringLiteral( "True" ) : QStringLiteral( "False" ),
+               geometryCheckString );
       }
       else
       {
-        QString layerString = fromVar.source.staticValue().toString();
-        // prefer to use layer source instead of id if possible (since it's persistent)
-        if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
-          layerString = layer->source();
         return QgsProcessingUtils::stringToPythonLiteral( layerString );
       }
     }
     else
     {
-      if ( fromVar.selectedFeaturesOnly )
+      if ( fromVar.selectedFeaturesOnly || fromVar.featureLimit != -1 || fromVar.overrideDefaultGeometryCheck )
       {
-        return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('%1'), True)" ).arg( fromVar.source.asExpression() );
+        return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('%1'), selectedFeaturesOnly=%2, featureLimit=%3, overrideDefaultGeometryCheck=%4, geometryCheck=%5)" )
+               .arg( fromVar.source.asExpression(),
+                     fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ),
+                     QString::number( fromVar.featureLimit ),
+                     fromVar.overrideDefaultGeometryCheck ? QStringLiteral( "True" ) : QStringLiteral( "False" ),
+                     geometryCheckString );
       }
       else
       {
