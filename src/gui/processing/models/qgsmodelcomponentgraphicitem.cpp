@@ -128,22 +128,29 @@ void QgsModelComponentGraphicItem::previewItemMove( qreal dx, qreal dy )
   emit updateArrowPaths();
 }
 
-void QgsModelComponentGraphicItem::setItemRect( QRectF )
+void QgsModelComponentGraphicItem::setItemRect( QRectF rect )
 {
-  mComponent->setPosition( pos() );
+  rect = rect.normalized();
+
+  if ( rect.width() < MIN_COMPONENT_WIDTH )
+    rect.setWidth( MIN_COMPONENT_WIDTH );
+  if ( rect.height() < MIN_COMPONENT_HEIGHT )
+    rect.setHeight( MIN_COMPONENT_HEIGHT );
+
+  setPos( rect.center() );
   prepareGeometryChange();
-  mComponent->setSize( mTempSize );
-  mTempSize = QSizeF();
 
   emit aboutToChange( tr( "Resize %1" ).arg( mComponent->description() ) );
+
+  mComponent->setPosition( pos() );
+  mComponent->setSize( rect.size() );
   updateStoredComponentPosition( pos(), mComponent->size() );
 
   updateButtonPositions();
-
   emit changed();
 
-  emit sizePositionChanged();
   emit updateArrowPaths();
+  emit sizePositionChanged();
 }
 
 QRectF QgsModelComponentGraphicItem::previewItemRectChange( QRectF rect )
@@ -164,6 +171,24 @@ QRectF QgsModelComponentGraphicItem::previewItemRectChange( QRectF rect )
   emit updateArrowPaths();
 
   return rect;
+}
+
+void QgsModelComponentGraphicItem::finalizePreviewedItemRectChange( QRectF )
+{
+  mComponent->setPosition( pos() );
+  prepareGeometryChange();
+  mComponent->setSize( mTempSize );
+  mTempSize = QSizeF();
+
+  emit aboutToChange( tr( "Resize %1" ).arg( mComponent->description() ) );
+  updateStoredComponentPosition( pos(), mComponent->size() );
+
+  updateButtonPositions();
+
+  emit changed();
+
+  emit sizePositionChanged();
+  emit updateArrowPaths();
 }
 
 void QgsModelComponentGraphicItem::modelHoverEnterEvent( QgsModelViewMouseEvent *event )
