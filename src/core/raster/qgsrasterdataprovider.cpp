@@ -527,6 +527,8 @@ void QgsRasterDataProvider::copyBaseSettings( const QgsRasterDataProvider &other
   {
     *mTemporalCapabilities = *other.mTemporalCapabilities;
   }
+
+  setDataSourceUri( other.dataSourceUri() );
 }
 
 // ENDS

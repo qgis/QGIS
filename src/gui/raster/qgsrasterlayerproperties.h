@@ -111,6 +111,9 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief slot executed when user presses "Remove Selected Row" button on the transparency page
     void pbnRemoveSelectedRow_clicked();
 
+    //! \brief slot executed when user "Set end same as start" button on time options in source page.
+    void setEndAsStartStaticButton_clicked();
+
     /**
      * \brief slot executed when the single band radio button is pressed.
      * \brief slot executed when the reset null value to file default icon is selected
@@ -224,6 +227,12 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      * Updates the temporal properties for temporal based raster layers.
      */
     void updateTemporalProperties();
+
+    /**
+     * Updates the layers date source URI with the new time.
+     *
+     */
+    void updateSourceStaticTime();
 
     void setupTransparencyTable( int nBands );
 

@@ -1083,17 +1083,35 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 {
   QgsDateTimeRange range = temporalCapabilities()->requestedTemporalRange();
   QString format = "yyyy-MM-ddThh:mm:ssZ";
+  QgsDataSourceUri uri( dataSourceUri() );
 
-  switch ( temporalCapabilities()->intervalHandlingMethod() )
+  if ( !range.isInfinite() )
   {
-    case QgsRasterDataProviderTemporalCapabilities::MatchUsingWholeRange:
-      break;
-    case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange:
-      range = QgsDateTimeRange( range.begin(), range.begin() );
-      break;
-    case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange:
-      range = QgsDateTimeRange( range.end(), range.end() );
-      break;
+    switch ( temporalCapabilities()->intervalHandlingMethod() )
+    {
+      case QgsRasterDataProviderTemporalCapabilities::MatchUsingWholeRange:
+        break;
+      case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange:
+        range = QgsDateTimeRange( range.begin(), range.begin() );
+        break;
+      case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange:
+        range = QgsDateTimeRange( range.end(), range.end() );
+        break;
+    }
+  }
+  else
+  {
+    if ( uri.hasParam( QLatin1String( "time" ) ) &&
+         uri.param( QLatin1String( "time" ) ) != QLatin1String( "" ) )
+    {
+      QString time = uri.param( QLatin1String( "time" ) );
+      QStringList timeParts = time.split( "/" );
+
+      QDateTime start = QDateTime::fromString( timeParts.at( 0 ), Qt::ISODateWithMs );
+      QDateTime end = QDateTime::fromString( timeParts.at( 1 ), Qt::ISODateWithMs );
+
+      range = QgsDateTimeRange( start, end );
+    }
   }
 
   if ( !temporalCapabilities()->isTimeEnabled() )
@@ -1113,23 +1131,19 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
       setQueryItem( query, QStringLiteral( "TIME" ), extent );
     }
   }
-  // If the data provider has bi-temporal properties and they are enabled
-  if ( temporalCapabilities()->isReferenceEnable() )
-  {
-    QgsDateTimeRange referenceRange = temporalCapabilities()->requestedReferenceTemporalRange();
-    if ( referenceRange.begin().isValid() && referenceRange.end().isValid() )
-    {
-      if ( referenceRange.begin() == referenceRange.end() )
-        setQueryItem( query, QStringLiteral( "DIM_REFERENCE_TIME" ),
-                      referenceRange.begin().toString( format ) );
-      else
-      {
-        QString extent = referenceRange.begin().toString( format );
-        extent.append( "/" );
-        extent.append( referenceRange.end().toString( format ) );
 
-        setQueryItem( query, QStringLiteral( "DIM_REFERENCE_TIME" ), extent );
-      }
+  // If the data provider has bi-temporal properties and they are enabled
+  if ( uri.hasParam( "reference_time" ) &&
+       uri.param( QLatin1String( "reference_time" ) ) != QLatin1String( "" ) )
+  {
+    QString time = uri.param( QLatin1String( "reference_time" ) );
+
+    QDateTime dateTime = QDateTime::fromString( time, Qt::ISODateWithMs );
+
+    if ( dateTime.isValid() )
+    {
+        setQueryItem( query, QStringLiteral( "DIM_REFERENCE_TIME" ),
+                      dateTime.toString( format ) );
     }
   }
 }
