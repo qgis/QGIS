@@ -439,9 +439,9 @@ void QgsModelGraphicsView::snapSelected()
 {
   QgsModelGraphicsScene *s = modelScene();
   const QList<QgsModelComponentGraphicItem *> itemList = s->selectedComponentItems();
+  startMacroCommand( tr( "Snap Items" ) );
   if ( !itemList.empty() )
   {
-    itemList.at( 0 )->aboutToChange( tr( "Snap Items" ) );
     bool prevSetting = mSnapper.snapToGrid();
     mSnapper.setSnapToGrid( true );
     for ( QgsModelComponentGraphicItem *item : itemList )
@@ -454,8 +454,8 @@ void QgsModelGraphicsView::snapSelected()
       }
     }
     mSnapper.setSnapToGrid( prevSetting );
-    itemList.at( 0 )->changed();
   }
+  endMacroCommand();
 }
 
 
