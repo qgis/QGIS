@@ -68,8 +68,8 @@ void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
   includeLineAttr_param->setFlags( includeLineAttr_param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( includeLineAttr_param.release() );
 
-  addParameter( new 
-QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Random points on lines" ), QgsProcessing::TypeVectorPoint ) );
+  addParameter( new
+                QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Random points on lines" ), QgsProcessing::TypeVectorPoint ) );
 
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "OUTPUT_POINTS" ), QObject::tr( "Total number of points generated" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "POINTS_MISSED" ), QObject::tr( "Number of missed points" ) ) );
@@ -84,7 +84,7 @@ QString QgsRandomPointsOnLinesAlgorithm::shortHelpString() const
                       "<ul><li>For each feature in the <i>Input line layer</i>, the algorithm attempts to add "
                       "the specified <i>Number of points for each feature</i> to the output layer.</li> "
                       "<li>A <i>Minimum distance between points</i> can be specified.<br> "
-                      "A point will not be generated if there is an already generated point " 
+                      "A point will not be generated if there is an already generated point "
                       "(on any line feature) within this (Euclidean) distance from "
                       "the generated location. "
                       "If the <i>Minimum distance between points</i> is too large, it may not be possible to generate "
@@ -106,7 +106,7 @@ QString QgsRandomPointsOnLinesAlgorithm::shortHelpString() const
                       "<li> The number of features with missing points (LINES_WITH_MISSED_POINTS).</li> "
                       "<li> The number of features with an empty or no geometry (LINES_WITH_EMPTY_OR_NO_GEOMETRY).</li> "
                       "</ul>"
-                      );
+                    );
 }
 
 
@@ -137,7 +137,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   QgsFields fields = QgsFields();
   fields.append( QgsField( QStringLiteral( "rand_point_id" ), QVariant::LongLong ) );
   if ( mIncludeLineAttr )
-    fields.extend(lineSource->fields());
+    fields.extend( lineSource->fields() );
 
   QString ldest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, ldest, fields, QgsWkbTypes::Point, mCrs ) );
@@ -145,7 +145,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   //initialize random engine
-  srand(mRandSeed);
+  srand( mRandSeed );
 
   //index for finding nearest neighbours (mMinDistance > 0)
   QgsSpatialIndex index = QgsSpatialIndex();
@@ -163,28 +163,28 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     featureCount++;
     if ( feedback->isCanceled() )
     {
-      feedback->pushInfo("cancelled");
+      feedback->pushInfo( "canceled" );
       break;
     }
     if ( not lFeat.hasGeometry() )
     {
       // Increment invalid features count
-      feedback->pushInfo("No geometry");
+      feedback->pushInfo( "No geometry" );
       emptyOrNullGeom++;
       continue;
     }
     QgsGeometry lGeom( lFeat.geometry() );
-    if (lGeom.isNull())
+    if ( lGeom.isNull() )
     {
       // Increment invalid features count
-      feedback->pushInfo("Null geometry");
+      feedback->pushInfo( "Null geometry" );
       emptyOrNullGeom++;
       continue;
     }
-    if (lGeom.isEmpty())
+    if ( lGeom.isEmpty() )
     {
       // Increment invalid features count
-      feedback->pushInfo("Empty geometry");
+      feedback->pushInfo( "Empty geometry" );
       emptyOrNullGeom++;
       continue;
     }
@@ -198,7 +198,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
         break;
       }
 
-      float randPos = lineLength * (float) rand() / RAND_MAX;
+      float randPos = lineLength * ( float ) rand() / RAND_MAX;
       QgsGeometry rpGeom = QgsGeometry( lGeom.interpolate( randPos ) );
       //if ( not rpGeom.isNull() and not rpGeom.isEmpty() )
       if ( rpGeom.isNull() or rpGeom.isEmpty() )
@@ -215,7 +215,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
         if ( i > 0 )
         {
           QList<QgsFeatureId> neighbors = index.nearestNeighbor( rPoint, 1, mMinDistance );
-          if (not neighbors.empty() )
+          if ( not neighbors.empty() )
           {
             distCheckIterations++;
             continue;
@@ -225,8 +225,9 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       QgsFeature f = QgsFeature();
       QgsAttributes pAttrs = QgsAttributes();
       pAttrs.append( totNPoints );
-      if ( mIncludeLineAttr ) {
-          pAttrs.append( lFeat.attributes() );
+      if ( mIncludeLineAttr )
+      {
+        pAttrs.append( lFeat.attributes() );
       }
       f.setAttributes( pAttrs );
       f.setGeometry( rpGeom );
@@ -240,7 +241,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       distCheckIterations = 0; //reset distCheckIterations if a point is added
       feedback->setProgress( static_cast<int>( static_cast<double>( totNPoints ) / static_cast<double>( mNumPoints ) * 100 ) );
     }
-    if (i < mNumPoints)
+    if ( i < mNumPoints )
     {
       missedLines++;
     }
@@ -248,9 +249,9 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   missedPoints = mNumPoints * featureCount - totNPoints;
 
   feedback->pushInfo( QObject::tr( "Total number of points generated: "
-         " %1\nNumber of missed points: %2\nLines with missing points: "
-         " %3\nFeatures with empty or missing geometries: %4"
-         ).arg( totNPoints ).arg( missedPoints ).arg( missedLines ).arg( emptyOrNullGeom ) );
+                                   " %1\nNumber of missed points: %2\nLines with missing points: "
+                                   " %3\nFeatures with empty or missing geometries: %4"
+                                  ).arg( totNPoints ).arg( missedPoints ).arg( missedLines ).arg( emptyOrNullGeom ) );
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), ldest );
   outputs.insert( QStringLiteral( "OUTPUT_POINTS" ), totNPoints );
