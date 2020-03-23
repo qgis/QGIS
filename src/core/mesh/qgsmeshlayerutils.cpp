@@ -305,11 +305,8 @@ QVector<double> QgsMeshLayerUtils::interpolateFromFacesData(
   const QgsMesh *nativeMesh,
   const QgsTriangularMesh *triangularMesh,
   QgsMeshDataBlock *active,
-  QgsMeshRendererScalarSettings::DataInterpolationMethod method )
+  QgsMeshRendererScalarSettings::DataResamplingMethod method )
 {
-  Q_UNUSED( triangularMesh )
-  Q_UNUSED( method )
-
   assert( nativeMesh );
   assert( method == QgsMeshRendererScalarSettings::NeighbourAverage );
 
@@ -360,11 +357,8 @@ QVector<double> QgsMeshLayerUtils::resampleFromVerticesToFaces(
   const QgsMesh *nativeMesh,
   const QgsTriangularMesh *triangularMesh,
   const QgsMeshDataBlock *active,
-  QgsMeshRendererScalarSettings::DataInterpolationMethod method )
+  QgsMeshRendererScalarSettings::DataResamplingMethod method )
 {
-  Q_UNUSED( triangularMesh )
-  Q_UNUSED( method )
-
   assert( nativeMesh );
   assert( method == QgsMeshRendererScalarSettings::NeighbourAverage );
 
@@ -376,7 +370,7 @@ QVector<double> QgsMeshLayerUtils::resampleFromVerticesToFaces(
   for ( int i = 0; i < nativeMesh->faces.size(); ++i )
   {
     const QgsMeshFace face = nativeMesh->face( i );
-    if ( active->active( i ) && face.count() )
+    if ( active->active( i ) && face.count() > 2 )
     {
       double value = 0;
       for ( int j = 0; j < face.count(); ++j )
@@ -393,7 +387,7 @@ QVector<double> QgsMeshLayerUtils::resampleFromVerticesToFaces(
 QVector<double> QgsMeshLayerUtils::calculateMagnitudeOnVertices( const QgsMeshLayer *meshLayer,
     const QgsMeshDatasetIndex index,
     QgsMeshDataBlock *activeFaceFlagValues,
-    const QgsMeshRendererScalarSettings::DataInterpolationMethod method )
+    const QgsMeshRendererScalarSettings::DataResamplingMethod method )
 {
   QVector<double> ret;
 

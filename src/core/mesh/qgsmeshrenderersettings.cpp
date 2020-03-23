@@ -102,12 +102,12 @@ double QgsMeshRendererScalarSettings::opacity() const { return mOpacity; }
 
 void QgsMeshRendererScalarSettings::setOpacity( double opacity ) { mOpacity = opacity; }
 
-QgsMeshRendererScalarSettings::DataInterpolationMethod QgsMeshRendererScalarSettings::dataInterpolationMethod() const
+QgsMeshRendererScalarSettings::DataResamplingMethod QgsMeshRendererScalarSettings::dataInterpolationMethod() const
 {
   return mDataInterpolationMethod;
 }
 
-void QgsMeshRendererScalarSettings::setDataInterpolationMethod( const QgsMeshRendererScalarSettings::DataInterpolationMethod &dataInterpolationMethod )
+void QgsMeshRendererScalarSettings::setDataInterpolationMethod( const QgsMeshRendererScalarSettings::DataResamplingMethod &dataInterpolationMethod )
 {
   mDataInterpolationMethod = dataInterpolationMethod;
 }
@@ -148,11 +148,11 @@ void QgsMeshRendererScalarSettings::readXml( const QDomElement &elem )
   QString methodTxt = elem.attribute( QStringLiteral( "interpolation-method" ) );
   if ( QStringLiteral( "neighbour-average" ) == methodTxt )
   {
-    mDataInterpolationMethod = DataInterpolationMethod::NeighbourAverage;
+    mDataInterpolationMethod = DataResamplingMethod::NeighbourAverage;
   }
   else
   {
-    mDataInterpolationMethod = DataInterpolationMethod::None;
+    mDataInterpolationMethod = DataResamplingMethod::None;
   }
   QDomElement elemShader = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
   mColorRampShader.readXml( elemShader );

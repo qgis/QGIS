@@ -209,11 +209,11 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QgsMesh *nativeMesh,
       const QgsTriangularMesh *triangularMesh,
       QgsMeshDataBlock *active,
-      QgsMeshRendererScalarSettings::DataInterpolationMethod method
+      QgsMeshRendererScalarSettings::DataResamplingMethod method
     );
 
     /**
-    * Resample values on vertices to values on faces
+    * Resamples values on vertices to values on faces
     *
     * \since QGIS 3.14
     */
@@ -222,7 +222,7 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QgsMesh *nativeMesh,
       const QgsTriangularMesh *triangularMesh,
       const QgsMeshDataBlock *active,
-      QgsMeshRendererScalarSettings::DataInterpolationMethod method
+      QgsMeshRendererScalarSettings::DataResamplingMethod method
     );
 
     /**
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsMeshLayerUtils
       const QgsMeshLayer *meshLayer,
       const QgsMeshDatasetIndex index,
       QgsMeshDataBlock *activeFaceFlagValues,
-      const QgsMeshRendererScalarSettings::DataInterpolationMethod method = QgsMeshRendererScalarSettings::NeighbourAverage );
+      const QgsMeshRendererScalarSettings::DataResamplingMethod method = QgsMeshRendererScalarSettings::NeighbourAverage );
 
     /**
      * Calculates the bounding box of the triangle

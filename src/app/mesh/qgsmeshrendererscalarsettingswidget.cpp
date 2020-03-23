@@ -55,11 +55,13 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
 void QgsMeshRendererScalarSettingsWidget::setLayer( QgsMeshLayer *layer )
 {
   mMeshLayer = layer;
+  mScalarInterpolationTypeComboBox->setEnabled( !dataIsDefinedOnEdges() );
 }
 
 void QgsMeshRendererScalarSettingsWidget::setActiveDatasetGroup( int groupIndex )
 {
   mActiveDatasetGroup = groupIndex;
+  mScalarInterpolationTypeComboBox->setEnabled( !dataIsDefinedOnEdges() );
 }
 
 QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() const
@@ -138,10 +140,10 @@ void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
   mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );
 }
 
-QgsMeshRendererScalarSettings::DataInterpolationMethod QgsMeshRendererScalarSettingsWidget::dataIntepolationMethod() const
+QgsMeshRendererScalarSettings::DataResamplingMethod QgsMeshRendererScalarSettingsWidget::dataIntepolationMethod() const
 {
   const int data = mScalarInterpolationTypeComboBox->currentData().toInt();
-  const QgsMeshRendererScalarSettings::DataInterpolationMethod method = static_cast<QgsMeshRendererScalarSettings::DataInterpolationMethod>( data );
+  const QgsMeshRendererScalarSettings::DataResamplingMethod method = static_cast<QgsMeshRendererScalarSettings::DataResamplingMethod>( data );
   return method;
 }
 
@@ -156,6 +158,19 @@ bool QgsMeshRendererScalarSettingsWidget::dataIsDefinedOnFaces() const
   QgsMeshDatasetGroupMetadata meta = mMeshLayer->dataProvider()->datasetGroupMetadata( mActiveDatasetGroup );
   const bool onFaces = ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces );
   return onFaces;
+}
+
+bool QgsMeshRendererScalarSettingsWidget::dataIsDefinedOnEdges() const
+{
+  if ( !mMeshLayer || !mMeshLayer->dataProvider() || !mMeshLayer->dataProvider()->isValid() )
+    return false;
+
+  if ( mActiveDatasetGroup < 0 )
+    return false;
+
+  QgsMeshDatasetGroupMetadata meta = mMeshLayer->dataProvider()->datasetGroupMetadata( mActiveDatasetGroup );
+  const bool onEdges = ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnEdges );
+  return onEdges;
 }
 
 
