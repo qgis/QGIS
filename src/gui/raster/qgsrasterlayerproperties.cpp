@@ -60,6 +60,7 @@
 #include "qgswebview.h"
 
 #include "qgsrasterlayertemporalpropertieswidget.h"
+#include "qgsprojecttimesettings.h"
 
 #include <QDesktopServices>
 #include <QTableWidgetItem>
@@ -114,6 +115,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterLayerProperties::showHelp );
+
+  connect( mSetEndAsStartStaticButton, &QPushButton::clicked, this, &QgsRasterLayerProperties::setEndAsStartStaticButton_clicked );
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
@@ -275,6 +278,15 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   temporalLayout->setContentsMargins( 0, 0, 0, 0 );
   mTemporalWidget = new QgsRasterLayerTemporalPropertiesWidget( this, mRasterLayer );
   temporalLayout->addWidget( mTemporalWidget );
+
+  QLocale locale;
+
+  mStartStaticDateTimeEdit->setDisplayFormat(
+    locale.dateTimeFormat( QLocale::ShortFormat ) );
+  mEndStaticDateTimeEdit->setDisplayFormat(
+    locale.dateTimeFormat( QLocale::ShortFormat ) );
+  mReferenceDateTimeEdit->setDisplayFormat(
+    locale.dateTimeFormat( QLocale::ShortFormat ) );
 
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().userFriendlyIdentifier() );
@@ -1071,6 +1083,9 @@ void QgsRasterLayerProperties::apply()
   // Update temporal properties
   mTemporalWidget->saveTemporalProperties();
 
+  updateSourceStaticTime();
+  mRasterLayer->triggerRepaint();
+
   //get the thumbnail for the layer
   QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
   pixmapThumbnail->setPixmap( thumbnail );
@@ -1145,6 +1160,55 @@ void QgsRasterLayerProperties::apply()
   // notify the project we've made a change
   QgsProject::instance()->setDirty( true );
 }//apply
+
+void QgsRasterLayerProperties::updateSourceStaticTime()
+{
+  if ( mTimeGroup->isEnabled() &&
+       mRasterLayer &&
+       mRasterLayer->dataProvider() )
+  {
+      QgsDataSourceUri uri( mRasterLayer->dataProvider()->dataSourceUri() );
+      if ( mStaticTemporalRange->isChecked() )
+      {
+          QString time = mStartStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs ) + "/" +
+                         mEndStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
+          uri.setParam( QLatin1String( "time" ), time );
+      }
+
+      if ( mProjectTemporalRange->isChecked() )
+      {
+          QgsDateTimeRange range;
+
+          if ( QgsProject::instance()->timeSettings() )
+              range = QgsProject::instance()->timeSettings()->temporalRange();
+          if ( range.begin().isValid() && range.end().isValid() )
+          {
+              QString time = range.begin().toString( Qt::ISODateWithMs ) + "/" +
+                             range.end().toString( Qt::ISODateWithMs );
+
+              uri.setParam( QLatin1String( "time" ), time );
+          }
+          else
+              mLabel->setText( tr( "Project temporal range is not valid, can't use it here" ) );
+      }
+
+    if ( mReferenceTime->isChecked() )
+    {
+      QString reference_time = mReferenceDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
+      uri.setParam( QLatin1String( "reference_time" ), reference_time );
+    }
+    if ( mRasterLayer->dataProvider()->temporalCapabilities() )
+        mRasterLayer->dataProvider()->temporalCapabilities()->setEnableTime(
+                    mDisableTime->isChecked() );
+
+    mRasterLayer->dataProvider()->setDataSourceUri( uri.uri() );
+  }
+}
+
+//void QgsRasterLayerProperties::updateSourceStaticTimeState()
+//{
+
+//}
 
 void QgsRasterLayerProperties::mLayerOrigNameLineEd_textEdited( const QString &text )
 {
@@ -1594,6 +1658,11 @@ void QgsRasterLayerProperties::optionsStackedWidget_CurrentChanged( int index )
     //set the metadata contents (which can be expensive)
     updateInformationContent();
   }
+}
+
+void QgsRasterLayerProperties::setEndAsStartStaticButton_clicked()
+{
+  mEndStaticDateTimeEdit->setDateTime( mStartStaticDateTimeEdit->dateTime() );
 }
 
 void QgsRasterLayerProperties::pbnImportTransparentPixelValues_clicked()
