@@ -374,7 +374,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas, const Q
   extent.scale( 1.05 );
 
   //zoom to bounding box
-  canvas->setExtent( extent );
+  canvas->setExtent( extent, true );
   canvas->refresh();
 }
 

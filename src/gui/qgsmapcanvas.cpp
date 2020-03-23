@@ -938,7 +938,7 @@ bool QgsMapCanvas::setReferencedExtent( const QgsReferencedRectangle &extent )
     }
   }
 
-  setExtent( canvasExtent );
+  setExtent( canvasExtent, true );
   return true;
 }
 
@@ -1722,9 +1722,9 @@ void QgsMapCanvas::zoomOut()
   zoomByFactor( zoomOutFactor() );
 }
 
-void QgsMapCanvas::zoomScale( double newScale )
+void QgsMapCanvas::zoomScale( double newScale, bool ignoreScaleLock )
 {
-  zoomByFactor( newScale / scale() );
+  zoomByFactor( newScale / scale(), nullptr, ignoreScaleLock );
 }
 
 void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
@@ -2303,9 +2303,9 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
   // TODO: store only units, extent, projections, dest CRS
 }
 
-void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center )
+void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center, bool ignoreScaleLock )
 {
-  if ( mScaleLocked )
+  if ( mScaleLocked && !ignoreScaleLock )
   {
     // zoom map to mouse cursor by magnifying
     setMagnificationFactor( mapSettings().magnificationFactor() / scaleFactor );
