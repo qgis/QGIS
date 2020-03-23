@@ -93,6 +93,7 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
 class CORE_EXPORT QgsMeshRendererScalarSettings
 {
   public:
+
     /**
      * Resampling of value from dataset
      *
@@ -138,14 +139,14 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
      *
      * \since QGIS 3.12
      */
-    DataResamplingMethod dataInterpolationMethod() const;
+    DataResamplingMethod dataResamplingMethod() const;
 
     /**
      * Sets data interpolation method
      *
      * \since QGIS 3.12
      */
-    void setDataInterpolationMethod( const DataResamplingMethod &dataInterpolationMethod );
+    void setDataResamplingMethod( const DataResamplingMethod &dataResamplingMethod );
 
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
@@ -182,7 +183,7 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 
   private:
     QgsColorRampShader mColorRampShader;
-    DataResamplingMethod mDataInterpolationMethod = DataResamplingMethod::None;
+    DataResamplingMethod mDataResamplingMethod = DataResamplingMethod::None;
     double mClassificationMinimum = 0;
     double mClassificationMaximum = 0;
     double mOpacity = 1;

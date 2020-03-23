@@ -84,10 +84,10 @@ void QgsMeshLayer::setDefaultRendererSettings()
       {
         case QgsMeshDatasetGroupMetadata::DataOnFaces:
         case QgsMeshDatasetGroupMetadata::DataOnVolumes: // data on volumes are averaged to 2D data on faces
-          scalarSettings.setDataInterpolationMethod( QgsMeshRendererScalarSettings::NeighbourAverage );
+          scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::NeighbourAverage );
           break;
         case QgsMeshDatasetGroupMetadata::DataOnVertices:
-          scalarSettings.setDataInterpolationMethod( QgsMeshRendererScalarSettings::None );
+          scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::None );
           break;
         case QgsMeshDatasetGroupMetadata::DataOnEdges:
           break;

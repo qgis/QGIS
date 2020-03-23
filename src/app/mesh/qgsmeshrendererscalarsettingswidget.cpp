@@ -70,7 +70,7 @@ QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() co
   settings.setColorRampShader( mScalarColorRampShaderWidget->shader() );
   settings.setClassificationMinimumMaximum( lineEditValue( mScalarMinLineEdit ), lineEditValue( mScalarMaxLineEdit ) );
   settings.setOpacity( mOpacityWidget->opacity() );
-  settings.setDataInterpolationMethod( dataIntepolationMethod() );
+  settings.setDataResamplingMethod( dataIntepolationMethod() );
   settings.setEdgeWidth( mScalarEdgeWidthSpinBox->value() );
   settings.setEdgeWidthUnit( mScalarEdgeWidthUnitSelectionWidget->unit() );
   return settings;
@@ -98,7 +98,7 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );
   whileBlocking( mScalarColorRampShaderWidget )->setMinimumMaximum( min, max );
   whileBlocking( mOpacityWidget )->setOpacity( settings.opacity() );
-  int index = mScalarInterpolationTypeComboBox->findData( settings.dataInterpolationMethod() );
+  int index = mScalarInterpolationTypeComboBox->findData( settings.dataResamplingMethod() );
   whileBlocking( mScalarInterpolationTypeComboBox )->setCurrentIndex( index );
 
   bool hasEdges = ( mMeshLayer->dataProvider() &&

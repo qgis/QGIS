@@ -371,7 +371,7 @@ void TestQgsMeshRenderer::test_face_scalar_dataset_interpolated_neighbour_averag
   QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
   rendererSettings.setActiveScalarDataset( ds );
   auto scalarRendererSettings = rendererSettings.scalarSettings( 2 );
-  scalarRendererSettings.setDataInterpolationMethod( QgsMeshRendererScalarSettings::NeighbourAverage );
+  scalarRendererSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::NeighbourAverage );
   rendererSettings.setScalarSettings( 2, scalarRendererSettings );
   mMemoryLayer->setRendererSettings( rendererSettings );
 
@@ -535,6 +535,9 @@ void TestQgsMeshRenderer::test_stacked_3d_mesh_single_level_averaging()
   QVERIFY( metadata.name() == "temperature" );
   QVERIFY( metadata.maximumVerticalLevelsCount() == 10 );
   rendererSettings.setActiveScalarDataset( ds );
+  QgsMeshRendererScalarSettings scalarSettings = rendererSettings.scalarSettings( ds.group() );
+  scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::None );
+  rendererSettings.setScalarSettings( ds.group(), scalarSettings );
   // want to set active vector dataset one defined on 3d mesh
   ds = QgsMeshDatasetIndex( 6, 3 );
   metadata = mMdal3DLayer->dataProvider()->datasetGroupMetadata( ds );
