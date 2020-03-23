@@ -2651,6 +2651,18 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   if ( !printAtlas || !printAtlas->enabled() )
     return;
 
+<<<<<<< HEAD
+=======
+  if ( !printAtlas->coverageLayer() )
+  {
+    QMessageBox::warning( this, tr( "Export Atlas" ),
+                          tr( "Error: No coverage layer is set." ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok );
+    return;
+  }
+
+>>>>>>> 24cf1cab95... Generic messagebox title
   // else, it has an atlas to render, so a directory must first be selected
   if ( printAtlas->filenameExpression().isEmpty() )
   {
@@ -2808,6 +2820,18 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   if ( !printAtlas || !printAtlas->enabled() )
     return;
 
+<<<<<<< HEAD
+=======
+  if ( !printAtlas->coverageLayer() )
+  {
+    QMessageBox::warning( this, tr( "Export Atlas" ),
+                          tr( "Error: No coverage layer is set." ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok );
+    return;
+  }
+
+>>>>>>> 24cf1cab95... Generic messagebox title
   if ( containsWmsLayers() )
   {
     showWmsPrintingWarning();
@@ -2976,6 +3000,18 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   if ( !printAtlas || !printAtlas->enabled() )
     return;
 
+<<<<<<< HEAD
+=======
+  if ( !printAtlas->coverageLayer() )
+  {
+    QMessageBox::warning( this, tr( "Export Atlas" ),
+                          tr( "Error: No coverage layer is set." ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok );
+    return;
+  }
+
+>>>>>>> 24cf1cab95... Generic messagebox title
   if ( containsWmsLayers() )
   {
     showWmsPrintingWarning();
