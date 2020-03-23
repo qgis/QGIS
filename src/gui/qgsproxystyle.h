@@ -57,7 +57,7 @@ class GUI_EXPORT QgsAppStyle : public QProxyStyle
     explicit QgsAppStyle( const QString &base );
     QPixmap generatedIconPixmap( QIcon::Mode iconMode, const QPixmap &pixmap, const QStyleOption *opt ) const override;
 
-    QString baseStyle() const {return mBaseStyle;}
+    QString baseStyle() const { return mBaseStyle; }
 
     /**
      * Returns a new QgsAppStyle instance, with the same base style as this instance.
