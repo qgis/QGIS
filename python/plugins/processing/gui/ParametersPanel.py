@@ -256,7 +256,6 @@ class ParametersPanel(BASE, WIDGET):
                 self.layoutMain.insertWidget(self.layoutMain.count() - 1, check)
                 self.checkBoxes[output.name()] = check
 
-            widget.setToolTip(param.toolTip())
             self.outputWidgets[output.name()] = widget
 
         for wrapper in list(self.wrappers.values()):
