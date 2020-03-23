@@ -3635,6 +3635,8 @@ QgsCentroidFillSymbolLayerWidget::QgsCentroidFillSymbolLayerWidget( QgsVectorLay
   setupUi( this );
   connect( mDrawInsideCheckBox, &QCheckBox::stateChanged, this, &QgsCentroidFillSymbolLayerWidget::mDrawInsideCheckBox_stateChanged );
   connect( mDrawAllPartsCheckBox, &QCheckBox::stateChanged, this, &QgsCentroidFillSymbolLayerWidget::mDrawAllPartsCheckBox_stateChanged );
+  connect( mClipPointsCheckBox, &QCheckBox::stateChanged, this, &QgsCentroidFillSymbolLayerWidget::mClipPointsCheckBox_stateChanged );
+  connect( mClipOnCurrentPartOnlyCheckBox, &QCheckBox::stateChanged, this, &QgsCentroidFillSymbolLayerWidget::mClipOnCurrentPartOnlyCheckBox_stateChanged );
 }
 
 void QgsCentroidFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
@@ -3648,6 +3650,8 @@ void QgsCentroidFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   // set values
   whileBlocking( mDrawInsideCheckBox )->setChecked( mLayer->pointOnSurface() );
   whileBlocking( mDrawAllPartsCheckBox )->setChecked( mLayer->pointOnAllParts() );
+  whileBlocking( mClipPointsCheckBox )->setChecked( mLayer->clipPoints() );
+  whileBlocking( mClipOnCurrentPartOnlyCheckBox )->setChecked( mLayer->clipOnCurrentPartOnly() );
 }
 
 QgsSymbolLayer *QgsCentroidFillSymbolLayerWidget::symbolLayer()
@@ -3664,6 +3668,18 @@ void QgsCentroidFillSymbolLayerWidget::mDrawInsideCheckBox_stateChanged( int sta
 void QgsCentroidFillSymbolLayerWidget::mDrawAllPartsCheckBox_stateChanged( int state )
 {
   mLayer->setPointOnAllParts( state == Qt::Checked );
+  emit changed();
+}
+
+void QgsCentroidFillSymbolLayerWidget::mClipPointsCheckBox_stateChanged( int state )
+{
+  mLayer->setClipPoints( state == Qt::Checked );
+  emit changed();
+}
+
+void QgsCentroidFillSymbolLayerWidget::mClipOnCurrentPartOnlyCheckBox_stateChanged( int state )
+{
+  mLayer->setClipOnCurrentPartOnly( state == Qt::Checked );
   emit changed();
 }
 

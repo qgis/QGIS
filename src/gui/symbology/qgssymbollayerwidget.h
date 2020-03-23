@@ -1073,7 +1073,8 @@ class GUI_EXPORT QgsCentroidFillSymbolLayerWidget : public QgsSymbolLayerWidget,
   private slots:
     void mDrawInsideCheckBox_stateChanged( int state );
     void mDrawAllPartsCheckBox_stateChanged( int state );
-
+    void mClipPointsCheckBox_stateChanged( int state );
+    void mClipOnCurrentPartOnlyCheckBox_stateChanged( int state );
 };
 
 
