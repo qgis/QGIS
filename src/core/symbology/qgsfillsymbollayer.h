@@ -2016,13 +2016,6 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
 
   protected:
-    struct Part
-    {
-      QPolygonF exterior;
-      QList<QPolygonF> rings;
-    };
-
-    void render( QgsRenderContext &context, const QVector<Part> &parts, const QgsFeature &feature, bool selected );
 
     std::unique_ptr< QgsMarkerSymbol > mMarker;
     bool mPointOnSurface = false;
@@ -2030,7 +2023,6 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     bool mClipPoints = false;
     bool mClipOnCurrentPartOnly = false;
 
-    QVector<Part> mCurrentParts;
     bool mRenderingFeature = false;
 
     QgsFeatureId mCurrentFeatureId = -1;
@@ -2040,7 +2032,14 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
 #ifdef SIP_RUN
     QgsCentroidFillSymbolLayer( const QgsCentroidFillSymbolLayer &other );
 #endif
+    struct Part
+    {
+      QPolygonF exterior;
+      QList<QPolygonF> rings;
+    };
 
+    void render( QgsRenderContext &context, const QVector<Part> &parts, const QgsFeature &feature, bool selected );
+    QVector<Part> mCurrentParts;
 };
 
 #endif
