@@ -134,8 +134,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   if ( !lineSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  feedback->pushInfo( QObject::tr( "Number of line features: %1" ).arg( lineSource->featureCount() ) );  
-
   QgsFields fields = QgsFields();
   fields.append( QgsField( QStringLiteral( "rand_point_id" ), QVariant::LongLong ) );
   if ( mIncludeLineAttr )
@@ -163,7 +161,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   while ( fitL.nextFeature( lFeat ) )
   {
     featureCount++;
-    feedback->pushInfo( QObject::tr( "featureCount: %1" ).arg( featureCount ) );
     if ( feedback->isCanceled() )
     {
       feedback->pushInfo("cancelled");
@@ -217,7 +214,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       {
         if ( i > 0 )
         {
-          feedback->pushInfo("Checking neighbours...");
           QList<QgsFeatureId> neighbors = index.nearestNeighbor( rPoint, 1, mMinDistance );
           if (not neighbors.empty() )
           {
@@ -243,7 +239,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       i++;
       distCheckIterations = 0; //reset distCheckIterations if a point is added
       feedback->setProgress( static_cast<int>( static_cast<double>( totNPoints ) / static_cast<double>( mNumPoints ) * 100 ) );
-      
     }
     if (i < mNumPoints)
     {
@@ -252,6 +247,10 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   }
   missedPoints = mNumPoints * featureCount - totNPoints;
 
+  feedback->pushInfo( QObject::tr( "Total number of points generated: "
+         " %1\nNumber of missed points: %2\nLines with missing points: "
+         " %3\nFeatures with empty or missing geometries: %4"
+         ).arg( totNPoints ).arg( missedPoints ).arg( missedLines ).arg( emptyOrNullGeom ) )
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), ldest );
   outputs.insert( QStringLiteral( "OUTPUT_POINTS" ), totNPoints );
