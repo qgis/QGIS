@@ -433,9 +433,10 @@ void QgsVertexEditor::updateVertexSelection( const QItemSelection &, const QItem
     try
     {
       QgsRectangle transformedBbox = t.transform( *bbox );
-      QgsRectangle canvasExtent = mCanvas->mapSettings().extent();
+      const QgsRectangle canvasExtent = mCanvas->mapSettings().visibleExtent();
       transformedBbox.combineExtentWith( canvasExtent );
-      mCanvas->setExtent( transformedBbox );
+      mCanvas->setExtent( transformedBbox, true );
+      mCanvas->refresh();
     }
     catch ( QgsCsException &cse )
     {
