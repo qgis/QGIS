@@ -52,6 +52,12 @@ QgsDualView::QgsDualView( QWidget *parent )
   connect( mFeatureListView, &QgsFeatureListView::aboutToChangeEditSelection, this, &QgsDualView::featureListAboutToChangeEditSelection );
   connect( mFeatureListView, &QgsFeatureListView::currentEditSelectionChanged, this, &QgsDualView::featureListCurrentEditSelectionChanged );
   connect( mFeatureListView, &QgsFeatureListView::currentEditSelectionProgressChanged, this, &QgsDualView::updateEditSelectionProgress );
+  connect( mFeatureListView, &QgsFeatureListView::willShowContextMenu, this, &QgsDualView::widgetWillShowContextMenu );
+
+  connect( mTableView, &QgsAttributeTableView::willShowContextMenu, this, &QgsDualView::viewWillShowContextMenu );
+  mTableView->horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mTableView->horizontalHeader(), &QHeaderView::customContextMenuRequested, this, &QgsDualView::showViewHeaderMenu );
+  connect( mTableView, &QgsAttributeTableView::columnResized, this, &QgsDualView::tableColumnResized );
 
   mConditionalFormatWidgetStack->hide();
   mConditionalFormatWidget = new QgsFieldConditionalFormatWidget( this );
@@ -118,12 +124,6 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mLayer = layer;
   mEditorContext = context;
 
-  connect( mTableView, &QgsAttributeTableView::willShowContextMenu, this, &QgsDualView::viewWillShowContextMenu, Qt::UniqueConnection );
-  mTableView->horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( mTableView->horizontalHeader(), &QHeaderView::customContextMenuRequested, this, &QgsDualView::showViewHeaderMenu, Qt::UniqueConnection );
-  connect( mTableView, &QgsAttributeTableView::columnResized, this, &QgsDualView::tableColumnResized, Qt::UniqueConnection );
-  connect( mFeatureListView, &QgsFeatureListView::willShowContextMenu, this, &QgsDualView::widgetWillShowContextMenu, Qt::UniqueConnection );
-
   initLayerCache( !( request.flags() & QgsFeatureRequest::NoGeometry ) || !request.filterRect().isNull() );
   initModels( mapCanvas, request, loadFeatures );
 
@@ -146,11 +146,11 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
     mAttributeEditor->layout()->addWidget( mAttributeForm );
   }
 
-  connect( mAttributeForm, &QgsAttributeForm::widgetValueChanged, this, &QgsDualView::featureFormAttributeChanged, Qt::UniqueConnection );
-  connect( mAttributeForm, &QgsAttributeForm::modeChanged, this, &QgsDualView::formModeChanged, Qt::UniqueConnection );
-  connect( mMasterModel, &QgsAttributeTableModel::modelChanged, mAttributeForm, &QgsAttributeForm::refreshFeature, Qt::UniqueConnection );
-  connect( mAttributeForm, &QgsAttributeForm::filterExpressionSet, this, &QgsDualView::filterExpressionSet, Qt::UniqueConnection );
-  connect( mFilterModel, &QgsAttributeTableFilterModel::sortColumnChanged, this, &QgsDualView::onSortColumnChanged, Qt::UniqueConnection );
+  connect( mAttributeForm, &QgsAttributeForm::widgetValueChanged, this, &QgsDualView::featureFormAttributeChanged );
+  connect( mAttributeForm, &QgsAttributeForm::modeChanged, this, &QgsDualView::formModeChanged );
+  connect( mAttributeForm, &QgsAttributeForm::filterExpressionSet, this, &QgsDualView::filterExpressionSet );
+  connect( mMasterModel, &QgsAttributeTableModel::modelChanged, mAttributeForm, &QgsAttributeForm::refreshFeature );
+  connect( mFilterModel, &QgsAttributeTableFilterModel::sortColumnChanged, this, &QgsDualView::onSortColumnChanged );
 
   if ( mFeatureListPreviewButton->defaultAction() )
     mFeatureListView->setDisplayExpression( mDisplayExpression );
