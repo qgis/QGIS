@@ -32,8 +32,6 @@ from functools import partial
 
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterExtent,
-                       QgsProcessingParameterPoint,
-                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterVectorDestination,
@@ -47,10 +45,11 @@ from qgis.gui import (QgsProcessingContextGenerator,
 from qgis.utils import iface
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QCoreApplication, Qt
-from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
-                                 QLabel, QCheckBox, QSizePolicy)
-from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtWidgets import (
+    QLabel,
+    QCheckBox
+)
 from osgeo import gdal
 
 from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
@@ -65,7 +64,6 @@ with warnings.catch_warnings():
 
 
 class ParametersPanel(BASE, WIDGET):
-
     NOT_SELECTED = QCoreApplication.translate('ParametersPanel', '[Not selected]')
 
     def __init__(self, parent, alg, in_place=False):
@@ -110,12 +108,6 @@ class ParametersPanel(BASE, WIDGET):
                 wrapper.refresh()
             except AttributeError:
                 pass
-
-    def formatParameterTooltip(self, parameter):
-        return '<p><b>{}</b></p><p>{}</p>'.format(
-            parameter.description(),
-            QCoreApplication.translate('ParametersPanel', 'Python identifier: ‘{}’').format('<i>{}</i>'.format(parameter.name()))
-        )
 
     def initWidgets(self):
         # If there are advanced parameters — show corresponding groupbox
@@ -183,8 +175,6 @@ class ParametersPanel(BASE, WIDGET):
                         desc = param.description()
                         if isinstance(param, QgsProcessingParameterExtent):
                             desc += self.tr(' (xmin, xmax, ymin, ymax)')
-                        if isinstance(param, QgsProcessingParameterPoint):
-                            desc += self.tr(' (x, y)')
                         if param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                             desc += self.tr(' [optional]')
                         widget.setText(desc)
@@ -207,7 +197,8 @@ class ParametersPanel(BASE, WIDGET):
 
             self.layoutMain.insertWidget(self.layoutMain.count() - 1, label)
             self.layoutMain.insertWidget(self.layoutMain.count() - 1, widget)
-            if isinstance(output, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
+            if isinstance(output, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink,
+                                   QgsProcessingParameterVectorDestination)):
                 check = QCheckBox()
                 check.setText(QCoreApplication.translate('ParametersPanel', 'Open output file after running algorithm'))
 
@@ -218,7 +209,7 @@ class ParametersPanel(BASE, WIDGET):
                     # Do not try to open formats that are write-only.
                     value = widget.value()
                     if value and isinstance(value, QgsProcessingOutputLayerDefinition) and isinstance(output, (
-                            QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
+                        QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
                         filename = value.sink.staticValue()
                         if filename not in ('memory:', ''):
                             path, ext = os.path.splitext(filename)
