@@ -33,7 +33,8 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterRange,
                        QgsFeature,
-                       QgsVectorLayer,
+                       QgsProcessingModelAlgorithm,
+                       QgsUnitTypes,
                        QgsProject)
 from qgis.analysis import QgsNativeAlgorithms
 
@@ -53,7 +54,7 @@ class AlgorithmDialogTest(unittest.TestCase):
     def testCreation(self):
         alg = QgsApplication.processingRegistry().createAlgorithmById('native:centroids')
         a = AlgorithmDialog(alg)
-        self.assertEqual(a.mainWidget().alg, alg)
+        self.assertEqual(a.mainWidget().algorithm(), alg)
 
 
 class WrappersTest(unittest.TestCase):
