@@ -1061,6 +1061,8 @@ QgsProcessingFeatureSource::QgsProcessingFeatureSource( QgsFeatureSource *origin
                            : context.invalidGeometryCheck() )
   , mInvalidGeometryCallback( context.invalidGeometryCallback() )
   , mTransformErrorCallback( context.transformErrorCallback() )
+  , mInvalidGeometryCallbackSkip( context.defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::GeometrySkipInvalid ) )
+  , mInvalidGeometryCallbackAbort( context.defaultInvalidGeometryCallbackForCheck( QgsFeatureRequest::GeometryAbortOnInvalid ) )
   , mFeatureLimit( featureLimit )
 {}
 
@@ -1191,6 +1193,21 @@ QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextSc
 void QgsProcessingFeatureSource::setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck method )
 {
   mInvalidGeometryCheck = method;
+  switch ( mInvalidGeometryCheck )
+  {
+    case QgsFeatureRequest::GeometryNoCheck:
+      mInvalidGeometryCallback = nullptr;
+      break;
+
+    case QgsFeatureRequest::GeometrySkipInvalid:
+      mInvalidGeometryCallback = mInvalidGeometryCallbackSkip;
+      break;
+
+    case QgsFeatureRequest::GeometryAbortOnInvalid:
+      mInvalidGeometryCallback = mInvalidGeometryCallbackAbort;
+      break;
+
+  }
 }
 
 

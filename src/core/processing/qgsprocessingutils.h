@@ -506,6 +506,10 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck;
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
+
+    std::function< void( const QgsFeature & ) > mInvalidGeometryCallbackSkip;
+    std::function< void( const QgsFeature & ) > mInvalidGeometryCallbackAbort;
+
     long long mFeatureLimit = -1;
 
 };

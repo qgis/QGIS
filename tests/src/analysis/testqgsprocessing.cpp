@@ -1418,6 +1418,19 @@ void TestQgsProcessing::features()
   ids = getIds( source->getFeatures() );
   QVERIFY( !encountered );
 
+  QgsProcessingContext context2;
+  // context wants to skip, source wants to abort
+  context2.setInvalidGeometryCheck( QgsFeatureRequest::GeometrySkipInvalid );
+  params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( polyLayer->id(), false, -1, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck, QgsFeatureRequest::GeometryAbortOnInvalid ) ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
+  try
+  {
+    ids = getIds( source->getFeatures() );
+    QVERIFY( false );
+  }
+  catch ( QgsProcessingException & )
+  {}
+
   // equality operator
   QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true ) == QgsProcessingFeatureSourceDefinition( layer->id(), true ) );
   QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true ) != QgsProcessingFeatureSourceDefinition( "b", true ) );
