@@ -209,16 +209,13 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       QgsPointXY rPoint;
       rPoint = QgsPoint( *qgsgeometry_cast< const QgsPoint * >( rpGeom.constGet() ) );
 
-      if ( mMinDistance != 0 )
+      if ( mMinDistance != 0 && pointsAddedForThisFeature > 0 )
       {
-        if ( pointsAddedForThisFeature > 0 )
+        QList<QgsFeatureId> neighbors = index.nearestNeighbor( rPoint, 1, mMinDistance );
+        if ( not neighbors.empty() )
         {
-          QList<QgsFeatureId> neighbors = index.nearestNeighbor( rPoint, 1, mMinDistance );
-          if ( not neighbors.empty() )
-          {
-            distCheckIterations++;
-            continue;
-          }
+          distCheckIterations++;
+          continue;
         }
       }
       QgsFeature f = QgsFeature();
