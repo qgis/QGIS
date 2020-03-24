@@ -4180,8 +4180,6 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
 
   if ( clipPoints )
   {
-    QgsLogger::warning( "down2" + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
-    qInfo() << path;
     context.painter()->save();
     context.painter()->setClipPath( path );
   }
