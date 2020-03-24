@@ -1145,23 +1145,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             self.combo.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             self.combo.triggerFileSelection.connect(self.selectFile)
 
-            layout = QHBoxLayout()
-            layout.setSpacing(6)
-            layout.setMargin(0)
-            layout.addWidget(self.combo)
-            self.iterate_button = QToolButton()
-            icon = QIcon(os.path.join(pluginPath, 'images', 'iterate.png'))
-            self.iterate_button.setIcon(icon)
-            self.iterate_button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
-            self.iterate_button.setToolTip(
-                self.tr('Iterate over this layer, creating a separate output for every feature in the layer'))
-            self.iterate_button.setCheckable(True)
-            layout.addWidget(self.iterate_button)
-            layout.setAlignment(self.iterate_button, Qt.AlignTop)
-
-            widget = QWidget()
-            widget.setLayout(layout)
-            return widget
+            return self.combo
 
         elif self.dialogType == DIALOG_BATCH:
             widget = BatchInputSelectionPanel(self.parameterDefinition(), self.row, self.col, self.dialog)
@@ -1225,12 +1209,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
 
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
-            v = self.combo.value()
-            if self.iterate_button.isChecked():
-                if not isinstance(v, QgsProcessingFeatureSourceDefinition):
-                    v = QgsProcessingFeatureSourceDefinition(v)
-                v.flags = v.flags | QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature
-            return v
+            return self.combo.value()
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.getValue()
         else:
