@@ -55,6 +55,9 @@ class TestQgsCentroidFillSymbol : public QObject
     void centroidFillSymbol();
     void centroidFillSymbolPointOnSurface();
     void centroidFillSymbolPartBiggest();
+    void centroidFillClipPoints();
+    void centroidFillClipOnCurrentPartOnly();
+    void centroidFillClipOnCurrentPartOnlyBiggest();
 
   private:
     bool mTestHasError =  false ;
@@ -144,6 +147,33 @@ void TestQgsCentroidFillSymbol::centroidFillSymbolPartBiggest()
 {
   mCentroidFill->setPointOnAllParts( false );
   QVERIFY( imageCheck( "symbol_centroidfill_part_biggest" ) );
+  mCentroidFill->setPointOnAllParts( true );
+}
+
+void TestQgsCentroidFillSymbol::centroidFillClipPoints()
+{
+  mCentroidFill->setClipPoints( true );
+  QVERIFY( imageCheck( "symbol_centroidfill_clip_points" ) );
+  mCentroidFill->setClipPoints( false );
+}
+
+void TestQgsCentroidFillSymbol::centroidFillClipOnCurrentPartOnly()
+{
+  mCentroidFill->setClipPoints( true );
+  mCentroidFill->setClipOnCurrentPartOnly( true );
+  QVERIFY( imageCheck( "symbol_centroidfill_clip_current_only" ) );
+  mCentroidFill->setClipPoints( false );
+  mCentroidFill->setClipOnCurrentPartOnly( false );
+}
+
+void TestQgsCentroidFillSymbol::centroidFillClipOnCurrentPartOnlyBiggest()
+{
+  mCentroidFill->setClipPoints( true );
+  mCentroidFill->setClipOnCurrentPartOnly( true );
+  mCentroidFill->setPointOnAllParts( false );
+  QVERIFY( imageCheck( "symbol_centroidfill_clip_current_biggest" ) );
+  mCentroidFill->setClipPoints( false );
+  mCentroidFill->setClipOnCurrentPartOnly( false );
   mCentroidFill->setPointOnAllParts( true );
 }
 
