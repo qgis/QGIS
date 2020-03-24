@@ -134,7 +134,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   if ( !lineSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QgsFields fields = QgsFields();
+  QgsFields fields;
   fields.append( QgsField( QStringLiteral( "rand_point_id" ), QVariant::LongLong ) );
   if ( mIncludeLineAttr )
     fields.extend( lineSource->fields() );
@@ -148,16 +148,16 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   srand( mRandSeed );
 
   //index for finding nearest neighbours (mMinDistance > 0)
-  QgsSpatialIndex index = QgsSpatialIndex();
+  QgsSpatialIndex index;
 
-  int totNPoints = 0;
-  int missedPoints = 0;
-  int missedLines = 0;
-  int emptyOrNullGeom = 0;
+  long totNPoints = 0;
+  long missedPoints = 0;
+  long missedLines = 0;
+  long emptyOrNullGeom = 0;
 
-  int featureCount = 0;
+  long featureCount = 0;
   QgsFeature lFeat;
-  QgsFeatureIterator fitL = lineSource->getFeatures();
+  QgsFeatureIterator fitL = mIncludeLineAttr ? lineSource->getFeatures() : lineSource->getFeatures( QgsFeatureRequest().setNoAttributes();
   while ( fitL.nextFeature( lFeat ) )
   {
     featureCount++;
@@ -166,7 +166,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       feedback->pushInfo( "canceled" );
       break;
     }
-    if ( not lFeat.hasGeometry() )
+    if ( !lFeat.hasGeometry() )
     {
       // Increment invalid features count
       feedback->pushInfo( "No geometry" );
@@ -188,7 +188,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       emptyOrNullGeom++;
       continue;
     }
-    float lineLength = lGeom.length();
+    double lineLength = lGeom.length();
     int distCheckIterations = 0;
     int pointsAddedForThisFeature = 0;
     while ( pointsAddedForThisFeature < mNumPoints && distCheckIterations < mMaxAttempts )
@@ -217,8 +217,8 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
           continue;
         }
       }
-      QgsFeature f = QgsFeature();
-      QgsAttributes pAttrs = QgsAttributes();
+      QgsFeature f;
+      QgsAttributes pAttrs;
       pAttrs.append( totNPoints );
       if ( mIncludeLineAttr )
       {
