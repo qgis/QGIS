@@ -1508,7 +1508,7 @@ void QgsAttributeForm::init()
       // This will also create the widget
       QString expressionString = fields.fieldOrigin( idx ) == QgsFields::OriginExpression
                                  ? mLayer->expressionField( idx )
-                                 : QStringLiteral();
+                                 : QString();
       QLabel *l = new QLabel( labelText );
       l->setToolTip( QgsFieldModel::fieldToolTip( field, expressionString ) );
       QSvgWidget *i = new QSvgWidget();

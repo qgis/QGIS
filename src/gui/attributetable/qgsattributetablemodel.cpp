@@ -626,7 +626,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
       const QgsField field = layer()->fields().at( mAttributes.at( section ) );
       QString expressionString = layer()->fields().fieldOrigin( mAttributes.at( section ) ) == QgsFields::OriginExpression
                                  ? layer()->expressionField( mAttributes.at( section ) )
-                                 : QStringLiteral();
+                                 : QString();
       return QgsFieldModel::fieldToolTip( field, expressionString );
     }
   }
