@@ -32,6 +32,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
+<<<<<<< HEAD
 
 #include <QMenu>
 #include <QFile>
@@ -41,7 +42,25 @@
 #include <QComboBox>
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
+=======
+#include "qgsexpressionstoredialog.h"
+>>>>>>> 6038a7b34c... use transparent color
 
+#include <QMenu>
+#include <QFile>
+#include <QTextStream>
+#include <QDir>
+#include <QInputDialog>
+#include <QComboBox>
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
+#include <QMessageBox>
+#include <QVersionNumber>
+#include <QDateTime>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QFileDialog>
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   : QWidget( parent )
@@ -532,7 +551,11 @@ void QgsExpressionBuilderWidget::registerItem( const QString &group,
     //Recent group should always be last group
     newgroupNode->setData( group.startsWith( QLatin1String( "Recent (" ) ) ? 2 : 1, QgsExpressionItem::CUSTOM_SORT_ROLE );
     newgroupNode->appendRow( item );
+<<<<<<< HEAD
     newgroupNode->setBackground( QBrush( QColor( 238, 238, 238 ) ) );
+=======
+    newgroupNode->setBackground( QBrush( QColor( 150, 150, 150, 150 ) ) );
+>>>>>>> 6038a7b34c... use transparent color
     mModel->appendRow( newgroupNode );
     mExpressionGroups.insert( group, newgroupNode );
   }
