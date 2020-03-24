@@ -13,6 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QMenu>
+#include <QFile>
+#include <QTextStream>
+#include <QDir>
+#include <QInputDialog>
+#include <QComboBox>
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
+#include <QMessageBox>
+#include <QVersionNumber>
+#include <QDateTime>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QFileDialog>
+
 #include "qgsexpressionbuilderwidget.h"
 #include "qgslogger.h"
 #include "qgsexpression.h"
@@ -33,22 +49,9 @@
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
 #include "qgsexpressionstoredialog.h"
+#include "qgsgui.h"
+#include "qgsnative.h"
 
-#include <QMenu>
-#include <QFile>
-#include <QTextStream>
-#include <QDir>
-#include <QInputDialog>
-#include <QComboBox>
-#include <QGraphicsOpacityEffect>
-#include <QPropertyAnimation>
-#include <QMessageBox>
-#include <QVersionNumber>
-#include <QDateTime>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QFileDialog>
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   : QWidget( parent )
@@ -589,7 +592,9 @@ void QgsExpressionBuilderWidget::registerItem( const QString &group,
     //Recent group should always be last group
     newgroupNode->setData( group.startsWith( QLatin1String( "Recent (" ) ) ? 2 : 1, QgsExpressionItem::CUSTOM_SORT_ROLE );
     newgroupNode->appendRow( item );
-    newgroupNode->setBackground( QBrush( QColor( 238, 238, 238 ) ) );
+    bool dark = QgsGui::instance()->nativePlatformInterface()->hasDarkTheme();
+    QColor backgroundColor = !dark ? QColor( 238, 238, 238 ) : QColor( 40, 40, 40 );
+    newgroupNode->setBackground( QBrush( backgroundColor ) );
     mModel->appendRow( newgroupNode );
     mExpressionGroups.insert( group, newgroupNode );
   }
