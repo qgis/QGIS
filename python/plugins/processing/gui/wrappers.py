@@ -22,25 +22,18 @@ __author__ = 'Arnaud Morvan'
 __date__ = 'May 2016'
 __copyright__ = '(C) 2016, Arnaud Morvan'
 
-import locale
 import os
 import re
-from functools import cmp_to_key
 from inspect import isclass
 from copy import deepcopy
 
 from qgis.core import (
     QgsApplication,
-    QgsUnitTypes,
     QgsCoordinateReferenceSystem,
     QgsExpression,
-    QgsExpressionContextGenerator,
     QgsFieldProxyModel,
-    QgsMapLayerProxyModel,
-    QgsWkbTypes,
     QgsSettings,
     QgsProject,
-    QgsMapLayer,
     QgsMapLayerType,
     QgsVectorLayer,
     QgsProcessing,
@@ -53,7 +46,6 @@ from qgis.core import (
     QgsProcessingParameterFile,
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterNumber,
-    QgsProcessingParameterDistance,
     QgsProcessingParameterRasterLayer,
     QgsProcessingParameterEnum,
     QgsProcessingParameterString,
@@ -75,8 +67,6 @@ from qgis.core import (
     QgsProcessingOutputString,
     QgsProcessingOutputNumber,
     QgsProcessingModelChildParameterSource,
-    QgsProcessingModelAlgorithm,
-    QgsRasterDataProvider,
     NULL,
     Qgis)
 
@@ -87,7 +77,6 @@ from qgis.PyQt.QtWidgets import (
     QDialog,
     QFileDialog,
     QHBoxLayout,
-    QVBoxLayout,
     QLineEdit,
     QPlainTextEdit,
     QToolButton,
@@ -109,7 +98,7 @@ from qgis.gui import (
     QgsAbstractProcessingParameterWidgetWrapper,
     QgsProcessingMapLayerComboBox
 )
-from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant, Qt
+from qgis.PyQt.QtCore import QVariant, Qt
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
