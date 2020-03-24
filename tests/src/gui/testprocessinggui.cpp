@@ -4053,6 +4053,22 @@ void TestProcessingGui::mapLayerComboBox()
   combo->setValue( sourceDef, context );
   QVERIFY( !( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature ) );
 
+  // advanced settings
+  sourceDef.featureLimit = 67;
+  combo->setValue( sourceDef, context );
+  QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().featureLimit, 67LL );
+  sourceDef.featureLimit = -1;
+  combo->setValue( sourceDef, context );
+  QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().featureLimit, -1LL );
+  sourceDef.flags |= QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck;
+  sourceDef.geometryCheck = QgsFeatureRequest::GeometrySkipInvalid;
+  combo->setValue( sourceDef, context );
+  QVERIFY( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck );
+  QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().geometryCheck, QgsFeatureRequest::GeometrySkipInvalid );
+  sourceDef.flags = nullptr;
+  combo->setValue( sourceDef, context );
+  QVERIFY( !( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck ) );
+
   combo.reset();
   param.reset();
 
