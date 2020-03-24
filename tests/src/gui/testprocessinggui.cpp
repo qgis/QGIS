@@ -76,6 +76,7 @@
 #include "qgsdatabasetablecombobox.h"
 #include "qgsprocessingoutputdestinationwidget.h"
 #include "qgssettings.h"
+#include "qgsprocessingfeaturesourceoptionswidget.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -216,6 +217,7 @@ class TestProcessingGui : public QObject
     void testOutputDefinitionWidgetRasterOut();
     void testOutputDefinitionWidgetFolder();
     void testOutputDefinitionWidgetFileOut();
+    void testFeatureSourceOptionsWidget();
 
   private:
 
@@ -5944,6 +5946,38 @@ void TestProcessingGui::testOutputDefinitionWidgetFileOut()
   panel3.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   QCOMPARE( skipSpy3.count(), 3 );
   QCOMPARE( changedSpy3.count(), 3 );
+}
+
+void TestProcessingGui::testFeatureSourceOptionsWidget()
+{
+  QgsProcessingFeatureSourceOptionsWidget w;
+  QSignalSpy spy( &w, &QgsProcessingFeatureSourceOptionsWidget::widgetChanged );
+
+  w.setFeatureLimit( 66 );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( w.featureLimit(), 66 );
+  w.setFeatureLimit( 66 );
+  QCOMPARE( spy.count(), 1 );
+  w.setFeatureLimit( -1 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( w.featureLimit(), -1 );
+
+  w.setGeometryCheckMethod( false, QgsFeatureRequest::GeometrySkipInvalid );
+  QCOMPARE( spy.count(), 2 );
+  QVERIFY( !w.isOverridingInvalidGeometryCheck() );
+  w.setGeometryCheckMethod( true, QgsFeatureRequest::GeometrySkipInvalid );
+  QCOMPARE( spy.count(), 3 );
+  QVERIFY( w.isOverridingInvalidGeometryCheck() );
+  QCOMPARE( w.geometryCheckMethod(), QgsFeatureRequest::GeometrySkipInvalid );
+  w.setGeometryCheckMethod( true, QgsFeatureRequest::GeometrySkipInvalid );
+  QCOMPARE( spy.count(), 3 );
+  w.setGeometryCheckMethod( true, QgsFeatureRequest::GeometryAbortOnInvalid );
+  QCOMPARE( spy.count(), 4 );
+  QVERIFY( w.isOverridingInvalidGeometryCheck() );
+  QCOMPARE( w.geometryCheckMethod(), QgsFeatureRequest::GeometryAbortOnInvalid );
+  w.setGeometryCheckMethod( false, QgsFeatureRequest::GeometryAbortOnInvalid );
+  QVERIFY( !w.isOverridingInvalidGeometryCheck() );
+  QCOMPARE( spy.count(), 5 );
 }
 
 void TestProcessingGui::cleanupTempDir()
