@@ -4035,12 +4035,22 @@ void TestProcessingGui::mapLayerComboBox()
   vl->selectAll();
   sourceDef = QgsProcessingFeatureSourceDefinition( vl->id(), true );
   combo->setValue( sourceDef, context );
-  // except "selected only" state to remain
+  // expect "selected only" state to remain
   QVERIFY( combo->value().canConvert< QgsProcessingFeatureSourceDefinition >() );
   QCOMPARE( combo->value().value< QgsProcessingFeatureSourceDefinition >().source.staticValue().toString(), vl->id() );
   QVERIFY( combo->value().value< QgsProcessingFeatureSourceDefinition >().selectedFeaturesOnly );
   QVERIFY( combo->currentText().startsWith( vl->name() ) );
   QCOMPARE( spy.count(), 13 );
+
+  // iterate over features
+  QVERIFY( !( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature ) );
+  sourceDef.flags |= QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature;
+  combo->setValue( sourceDef, context );
+  QVERIFY( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature );
+  sourceDef.flags = nullptr;
+  combo->setValue( sourceDef, context );
+  QVERIFY( !( combo->value().value< QgsProcessingFeatureSourceDefinition >().flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature ) );
+
   combo.reset();
   param.reset();
 

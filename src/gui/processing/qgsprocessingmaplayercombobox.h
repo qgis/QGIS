@@ -120,6 +120,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     std::unique_ptr< QgsProcessingParameterDefinition > mParameter;
     QgsMapLayerComboBox *mCombo = nullptr;
     QToolButton *mSelectButton = nullptr;
+    QToolButton *mIterateButton = nullptr;
     QCheckBox *mUseSelectionCheckBox = nullptr;
     bool mDragActive = false;
     QPointer< QgsMapLayer> mPrevLayer;
