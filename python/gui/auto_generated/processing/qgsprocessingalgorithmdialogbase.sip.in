@@ -56,7 +56,7 @@ Returns the algorithm running in the dialog.
 .. seealso:: :py:func:`setAlgorithm`
 %End
 
-    void setMainWidget( QWidget *widget /Transfer/ );
+    void setMainWidget( QgsPanelWidget *widget /Transfer/ );
 %Docstring
 Sets the main ``widget`` for the dialog, usually a panel for configuring algorithm parameters.
 

@@ -20,7 +20,7 @@
 ///@cond NOT_STABLE
 
 QgsProcessingParametersWidget::QgsProcessingParametersWidget( const QgsProcessingAlgorithm *algorithm, QWidget *parent )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
   , mAlgorithm( algorithm )
 {
   Q_ASSERT( mAlgorithm );

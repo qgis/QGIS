@@ -10,7 +10,7 @@
 
 
 
-class QgsProcessingParametersWidget : QWidget
+class QgsProcessingParametersWidget : QgsPanelWidget
 {
 %Docstring
 A widget which allows users to select the value for the parameters for an algorithm.
