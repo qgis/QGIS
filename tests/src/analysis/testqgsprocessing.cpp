@@ -1412,7 +1412,7 @@ void TestQgsProcessing::features()
   // context wants to filter, but filtering disabled on source definition
   context.setInvalidGeometryCheck( QgsFeatureRequest::GeometryAbortOnInvalid );
   context.setInvalidGeometryCallback( callback );
-  params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( polyLayer->id(), false, -1, true, QgsFeatureRequest::GeometryNoCheck ) ) );
+  params.insert( QStringLiteral( "layer" ), QVariant::fromValue( QgsProcessingFeatureSourceDefinition( polyLayer->id(), false, -1, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck, QgsFeatureRequest::GeometryNoCheck ) ) );
 
   source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   ids = getIds( source->getFeatures() );
@@ -1423,8 +1423,8 @@ void TestQgsProcessing::features()
   QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true ) != QgsProcessingFeatureSourceDefinition( "b", true ) );
   QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true ) != QgsProcessingFeatureSourceDefinition( layer->id(), false ) );
   QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true ) != QgsProcessingFeatureSourceDefinition( layer->id(), true, 5 ) );
-  QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true, 5, false ) != QgsProcessingFeatureSourceDefinition( layer->id(), true, 5, true ) );
-  QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true, 5, true, QgsFeatureRequest::GeometrySkipInvalid ) != QgsProcessingFeatureSourceDefinition( layer->id(), true, 5, true, QgsFeatureRequest::GeometryAbortOnInvalid ) );
+  QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true, 5, nullptr ) != QgsProcessingFeatureSourceDefinition( layer->id(), true, 5, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck ) );
+  QVERIFY( QgsProcessingFeatureSourceDefinition( layer->id(), true, 5, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck, QgsFeatureRequest::GeometrySkipInvalid ) != QgsProcessingFeatureSourceDefinition( layer->id(), true, 5, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck, QgsFeatureRequest::GeometryAbortOnInvalid ) );
 }
 
 void TestQgsProcessing::uniqueValues()
@@ -5439,15 +5439,19 @@ void TestQgsProcessing::parameterFeatureSource()
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( "abc" ) ), context ), QStringLiteral( "'abc'" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( v2->id() ) ), context ), QStringLiteral( "'%1'" ).arg( vector2 ) );
   QCOMPARE( def->valueAsPythonString( v2->id(), context ), QStringLiteral( "'%1'" ).arg( vector2 ) );
-  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), true ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition('abc', selectedFeaturesOnly=True, featureLimit=-1, overrideDefaultGeometryCheck=False, geometryCheck=QgsFeatureRequest.GeometryAbortOnInvalid)" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), true ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition('abc', selectedFeaturesOnly=True, featureLimit=-1, flags=None, geometryCheck=QgsFeatureRequest.GeometryAbortOnInvalid)" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ) ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"abc\" || \"def\"')" ) );
-  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ), true ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('\"abc\" || \"def\"'), selectedFeaturesOnly=True, featureLimit=-1, overrideDefaultGeometryCheck=False, geometryCheck=QgsFeatureRequest.GeometryAbortOnInvalid)" ) );
-  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), false, 11 ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition('abc', selectedFeaturesOnly=False, featureLimit=11, overrideDefaultGeometryCheck=False, geometryCheck=QgsFeatureRequest.GeometryAbortOnInvalid)" ) );
-  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ), false, 11 ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('\"abc\" || \"def\"'), selectedFeaturesOnly=False, featureLimit=11, overrideDefaultGeometryCheck=False, geometryCheck=QgsFeatureRequest.GeometryAbortOnInvalid)" ) );
-  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), false, -1, false, QgsFeatureRequest::GeometrySkipInvalid ) ), context ), QStringLiteral( "'abc'" ) );
-  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ), false, -1, false, QgsFeatureRequest::GeometrySkipInvalid ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"abc\" || \"def\"')" ) );
-  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), false, -1, true, QgsFeatureRequest::GeometrySkipInvalid ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition('abc', selectedFeaturesOnly=False, featureLimit=-1, overrideDefaultGeometryCheck=True, geometryCheck=QgsFeatureRequest.GeometrySkipInvalid)" ) );
-  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ), false, -1, true, QgsFeatureRequest::GeometrySkipInvalid ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('\"abc\" || \"def\"'), selectedFeaturesOnly=False, featureLimit=-1, overrideDefaultGeometryCheck=True, geometryCheck=QgsFeatureRequest.GeometrySkipInvalid)" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ), true ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('\"abc\" || \"def\"'), selectedFeaturesOnly=True, featureLimit=-1, flags=None, geometryCheck=QgsFeatureRequest.GeometryAbortOnInvalid)" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), false, 11 ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition('abc', selectedFeaturesOnly=False, featureLimit=11, flags=None, geometryCheck=QgsFeatureRequest.GeometryAbortOnInvalid)" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ), false, 11 ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('\"abc\" || \"def\"'), selectedFeaturesOnly=False, featureLimit=11, flags=None, geometryCheck=QgsFeatureRequest.GeometryAbortOnInvalid)" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), false, -1, nullptr, QgsFeatureRequest::GeometrySkipInvalid ) ), context ), QStringLiteral( "'abc'" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ), false, -1, nullptr, QgsFeatureRequest::GeometrySkipInvalid ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"abc\" || \"def\"')" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), false, -1, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck, QgsFeatureRequest::GeometrySkipInvalid ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition('abc', selectedFeaturesOnly=False, featureLimit=-1, flags=QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck, geometryCheck=QgsFeatureRequest.GeometrySkipInvalid)" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ), false, -1, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck, QgsFeatureRequest::GeometrySkipInvalid ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('\"abc\" || \"def\"'), selectedFeaturesOnly=False, featureLimit=-1, flags=QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck, geometryCheck=QgsFeatureRequest.GeometrySkipInvalid)" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), false, -1, QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature, QgsFeatureRequest::GeometrySkipInvalid ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition('abc', selectedFeaturesOnly=False, featureLimit=-1, flags=QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature, geometryCheck=QgsFeatureRequest.GeometrySkipInvalid)" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ), false, -1, QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature, QgsFeatureRequest::GeometrySkipInvalid ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('\"abc\" || \"def\"'), selectedFeaturesOnly=False, featureLimit=-1, flags=QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature, geometryCheck=QgsFeatureRequest.GeometrySkipInvalid)" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( "abc" ), false, -1, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck | QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature, QgsFeatureRequest::GeometrySkipInvalid ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition('abc', selectedFeaturesOnly=False, featureLimit=-1, flags=QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck | QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature, geometryCheck=QgsFeatureRequest.GeometrySkipInvalid)" ) );
+  QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( "\"abc\" || \"def\"" ), false, -1, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck | QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature, QgsFeatureRequest::GeometrySkipInvalid ) ), context ), QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('\"abc\" || \"def\"'), selectedFeaturesOnly=False, featureLimit=-1, flags=QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck | QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature, geometryCheck=QgsFeatureRequest.GeometrySkipInvalid)" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( QgsProperty::fromExpression( "\"a\"=1" ) ), context ), QStringLiteral( "QgsProperty.fromExpression('\"a\"=1')" ) );
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( v2 ), context ), QStringLiteral( "'%1'" ).arg( vector2 ) );
   QCOMPARE( def->valueAsPythonString( "uri='complex' username=\"complex\"", context ), QStringLiteral( "'uri=\\'complex\\' username=\\\"complex\\\"'" ) );
@@ -7763,11 +7767,11 @@ void TestQgsProcessing::combineLayerExtent()
 void TestQgsProcessing::processingFeatureSource()
 {
   QString sourceString = QStringLiteral( "test.shp" );
-  QgsProcessingFeatureSourceDefinition fs( sourceString, true, 21, true, QgsFeatureRequest::GeometrySkipInvalid );
+  QgsProcessingFeatureSourceDefinition fs( sourceString, true, 21, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck, QgsFeatureRequest::GeometrySkipInvalid );
   QCOMPARE( fs.source.staticValue().toString(), sourceString );
   QVERIFY( fs.selectedFeaturesOnly );
   QCOMPARE( fs.featureLimit, 21 );
-  QVERIFY( fs.overrideDefaultGeometryCheck );
+  QCOMPARE( fs.flags, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck );
   QCOMPARE( fs.geometryCheck, QgsFeatureRequest::GeometrySkipInvalid );
 
   // test storing QgsProcessingFeatureSource in variant and retrieving
@@ -7778,7 +7782,7 @@ void TestQgsProcessing::processingFeatureSource()
   QCOMPARE( fromVar.source.staticValue().toString(), sourceString );
   QVERIFY( fromVar.selectedFeaturesOnly );
   QCOMPARE( fromVar.featureLimit, 21 );
-  QVERIFY( fromVar.overrideDefaultGeometryCheck );
+  QCOMPARE( fromVar.flags, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck );
   QCOMPARE( fromVar.geometryCheck, QgsFeatureRequest::GeometrySkipInvalid );
 
   // test evaluating parameter as source

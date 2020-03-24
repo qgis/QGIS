@@ -56,6 +56,17 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
   public:
 
     /**
+     * Flags which control source behavior.
+     * \since QGIS 3.14
+     */
+    enum class Flag
+    {
+      FlagOverrideDefaultGeometryCheck = 1 << 0, //!< If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source
+      FlagCreateIndividualOutputPerInputFeature = 1 << 1, //!< If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed.
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
+    /**
      * Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string \a source.
      *
      * If \a selectedFeaturesOnly is TRUE, then only selected features from the source will be used.
@@ -63,15 +74,17 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * The optional \a featureLimit can be set to a value > 0 to place a hard limit on the maximum number
      * of features which will be read from the source.
      *
-     * If \a overrideDefaultGeometryCheck is TRUE, then the value of \a geometryCheck will override
+     * The \a flags argument can be used to specify flags which dictate the source behavior.
+     *
+     * If the QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck is set in \a flags, then the value of \a geometryCheck will override
      * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
     QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          bool overrideDefaultGeometryCheck = false, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = nullptr, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
       : source( QgsProperty::fromValue( source ) )
       , selectedFeaturesOnly( selectedFeaturesOnly )
       , featureLimit( featureLimit )
-      , overrideDefaultGeometryCheck( overrideDefaultGeometryCheck )
+      , flags( flags )
       , geometryCheck( geometryCheck )
     {}
 
@@ -83,15 +96,17 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * The optional \a featureLimit can be set to a value > 0 to place a hard limit on the maximum number
      * of features which will be read from the source.
      *
-     * If \a overrideDefaultGeometryCheck is TRUE, then the value of \a geometryCheck will override
+     * The \a flags argument can be used to specify flags which dictate the source behavior.
+     *
+     * If the QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck is set in \a flags, then the value of \a geometryCheck will override
      * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
     QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          bool overrideDefaultGeometryCheck = false, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = nullptr, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
       : source( source )
       , selectedFeaturesOnly( selectedFeaturesOnly )
       , featureLimit( featureLimit )
-      , overrideDefaultGeometryCheck( overrideDefaultGeometryCheck )
+      , flags( flags )
       , geometryCheck( geometryCheck )
     {}
 
@@ -114,17 +129,16 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
     long long featureLimit = -1;
 
     /**
-     * TRUE if the default geometry check method (as dictated by QgsProcessingContext)
-     * should be overridden for this source.
+     * Flags which dictate source behavior.
      *
-     * \see geometryCheck
      * \since QGIS 3.14
      */
-    bool overrideDefaultGeometryCheck = false;
+    Flags flags = nullptr;
 
     /**
      * Geometry check method to apply to this source. This setting is only
-     * utilized if QgsProcessingFeatureSourceDefinition::overrideDefaultGeometryCheck is TRUE.
+     * utilized if the QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature is
+     * set in QgsProcessingFeatureSourceDefinition::flags.
      *
      * \see overrideDefaultGeometryCheck
      * \since QGIS 3.14
@@ -136,7 +150,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
       return source == other.source
              && selectedFeaturesOnly == other.selectedFeaturesOnly
              && featureLimit == other.featureLimit
-             && overrideDefaultGeometryCheck == other.overrideDefaultGeometryCheck
+             && flags == other.flags
              && geometryCheck == other.geometryCheck;
     }
 
@@ -154,6 +168,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
 };
 
 Q_DECLARE_METATYPE( QgsProcessingFeatureSourceDefinition )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingFeatureSourceDefinition::Flags )
 
 /**
  * \class QgsProcessingOutputLayerDefinition

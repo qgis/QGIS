@@ -85,7 +85,6 @@ class ParametersPanel(BASE, WIDGET):
         self.outputWidgets = {}
         self.checkBoxes = {}
         self.dependentItems = {}
-        self.iterateButtons = {}
 
         self.processing_context = createContext()
 
@@ -167,24 +166,6 @@ class ParametersPanel(BASE, WIDGET):
                 if widget is not None:
                     if is_python_wrapper:
                         widget.setToolTip(param.toolTip())
-
-                    if isinstance(param, QgsProcessingParameterFeatureSource):
-                        layout = QHBoxLayout()
-                        layout.setSpacing(6)
-                        layout.setMargin(0)
-                        layout.addWidget(widget)
-                        button = QToolButton()
-                        icon = QIcon(os.path.join(pluginPath, 'images', 'iterate.png'))
-                        button.setIcon(icon)
-                        button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
-                        button.setToolTip(self.tr('Iterate over this layer, creating a separate output for every feature in the layer'))
-                        button.setCheckable(True)
-                        layout.addWidget(button)
-                        layout.setAlignment(button, Qt.AlignTop)
-                        self.iterateButtons[param.name()] = button
-                        button.toggled.connect(self.buttonToggled)
-                        widget = QWidget()
-                        widget.setLayout(layout)
 
                     label = None
                     if not is_python_wrapper:
@@ -277,10 +258,3 @@ class ParametersPanel(BASE, WIDGET):
             else:
                 dest_widget = self.outputWidgets[param.name()]
                 dest_widget.setValue(parameters[param.name()])
-
-    def buttonToggled(self, value):
-        if value:
-            sender = self.sender()
-            for button in list(self.iterateButtons.values()):
-                if button is not sender:
-                    button.setChecked(False)
