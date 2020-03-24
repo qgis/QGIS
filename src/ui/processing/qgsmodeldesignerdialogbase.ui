@@ -163,7 +163,7 @@
           <x>0</x>
           <y>0</y>
           <width>256</width>
-          <height>97</height>
+          <height>98</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout">
@@ -253,7 +253,7 @@
           <x>0</x>
           <y>0</y>
           <width>256</width>
-          <height>153</height>
+          <height>152</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">

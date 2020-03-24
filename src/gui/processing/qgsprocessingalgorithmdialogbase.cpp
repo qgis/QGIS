@@ -24,6 +24,7 @@
 #include "processing/qgsprocessingalgrunnertask.h"
 #include "qgsstringutils.h"
 #include "qgsapplication.h"
+#include "qgspanelwidget.h"
 #include <QToolButton>
 #include <QDesktopServices>
 #include <QScrollBar>
@@ -174,15 +175,16 @@ QgsProcessingAlgorithm *QgsProcessingAlgorithmDialogBase::algorithm()
   return mAlgorithm.get();
 }
 
-void QgsProcessingAlgorithmDialogBase::setMainWidget( QWidget *widget )
+void QgsProcessingAlgorithmDialogBase::setMainWidget( QgsPanelWidget *widget )
 {
   if ( mMainWidget )
   {
     mMainWidget->deleteLater();
   }
 
+  mPanelStack->setMainPanel( widget );
+
   mMainWidget = widget;
-  mTabWidget->widget( 0 )->layout()->addWidget( mMainWidget );
 }
 
 QWidget *QgsProcessingAlgorithmDialogBase::mainWidget()

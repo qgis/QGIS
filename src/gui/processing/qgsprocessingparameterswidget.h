@@ -32,7 +32,7 @@ class QgsProcessingParameterDefinition;
  * \note Not stable API
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsProcessingParametersWidget : public QWidget, private Ui::QgsProcessingParametersWidgetBase
+class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, private Ui::QgsProcessingParametersWidgetBase
 {
     Q_OBJECT
 

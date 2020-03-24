@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsProcessingParametersWidgetBase</class>
- <widget class="QWidget" name="QgsProcessingParametersWidgetBase">
+ <widget class="QgsPanelWidget" name="QgsProcessingParametersWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -94,6 +94,12 @@
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsPanelWidget</class>
+   <extends>QWidget</extends>
+   <header>qgspanelwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

@@ -119,7 +119,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * Sets the main \a widget for the dialog, usually a panel for configuring algorithm parameters.
      * \see mainWidget()
      */
-    void setMainWidget( QWidget *widget SIP_TRANSFER );
+    void setMainWidget( QgsPanelWidget *widget SIP_TRANSFER );
 
     /**
      * Returns the main widget for the dialog, usually a panel for configuring algorithm parameters.
