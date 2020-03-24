@@ -93,18 +93,24 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
 class CORE_EXPORT QgsMeshRendererScalarSettings
 {
   public:
-    //! Interpolation of value defined on vertices from datasets with data defined on faces
-    enum DataInterpolationMethod
+
+    /**
+     * Resampling of value from dataset
+     *
+     * - for vertices : does a resampling from values defined on surrounding faces
+     * - for faces : does a resampling from values defined on surrounding vertices
+     * - for edges : not supported.
+     */
+    enum DataResamplingMethod
     {
 
       /**
-       * Use data defined on face centers, do not interpolate to vertices
+       * Does not use resampling
        */
       None = 0,
 
       /**
-       * For each vertex does a simple average of values defined for all faces that contains
-       * given vertex
+       * Does a simple average of values defined for all surrounding faces/vertices
        */
       NeighbourAverage,
     };
@@ -133,14 +139,14 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
      *
      * \since QGIS 3.12
      */
-    DataInterpolationMethod dataInterpolationMethod() const;
+    DataResamplingMethod dataResamplingMethod() const;
 
     /**
      * Sets data interpolation method
      *
      * \since QGIS 3.12
      */
-    void setDataInterpolationMethod( const DataInterpolationMethod &dataInterpolationMethod );
+    void setDataResamplingMethod( const DataResamplingMethod &dataResamplingMethod );
 
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
@@ -177,7 +183,7 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 
   private:
     QgsColorRampShader mColorRampShader;
-    DataInterpolationMethod mDataInterpolationMethod = DataInterpolationMethod::None;
+    DataResamplingMethod mDataResamplingMethod = DataResamplingMethod::None;
     double mClassificationMinimum = 0;
     double mClassificationMaximum = 0;
     double mOpacity = 1;
