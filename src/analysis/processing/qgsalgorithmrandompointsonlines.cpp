@@ -209,7 +209,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       QgsPointXY rPoint;
       rPoint = QgsPoint( *qgsgeometry_cast< const QgsPoint * >( rpGeom.constGet() ) );
 
-      if ( not mMinDistance == 0 )
+      if ( mMinDistance != 0 )
       {
         if ( pointsAddedForThisFeature > 0 )
         {
@@ -230,7 +230,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       }
       f.setAttributes( pAttrs );
       f.setGeometry( rpGeom );
-      if ( not mMinDistance == 0 )
+      if ( mMinDistance != 0 )
       {
         index.addFeature( f );
       }
