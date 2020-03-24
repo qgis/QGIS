@@ -117,7 +117,7 @@
              <string>…</string>
             </property>
             <property name="icon">
-             <iconset resource="../../../images/images.qrc">
+             <iconset>
               <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
             </property>
             <property name="autoRaise">
@@ -134,7 +134,7 @@
              <string>…</string>
             </property>
             <property name="icon">
-             <iconset resource="../../../images/images.qrc">
+             <iconset>
               <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
             </property>
             <property name="autoRaise">
@@ -151,7 +151,7 @@
              <string>…</string>
             </property>
             <property name="icon">
-             <iconset resource="../../../images/images.qrc">
+             <iconset>
               <normaloff>:/images/themes/default/console/iconClearConsole.svg</normaloff>:/images/themes/default/console/iconClearConsole.svg</iconset>
             </property>
             <property name="autoRaise">
@@ -228,10 +228,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

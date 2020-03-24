@@ -7783,7 +7783,7 @@ void TestQgsProcessing::processingFeatureSource()
   QgsProcessingFeatureSourceDefinition fs( sourceString, true, 21, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck, QgsFeatureRequest::GeometrySkipInvalid );
   QCOMPARE( fs.source.staticValue().toString(), sourceString );
   QVERIFY( fs.selectedFeaturesOnly );
-  QCOMPARE( fs.featureLimit, 21 );
+  QCOMPARE( fs.featureLimit, 21LL );
   QCOMPARE( fs.flags, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck );
   QCOMPARE( fs.geometryCheck, QgsFeatureRequest::GeometrySkipInvalid );
 
@@ -7797,14 +7797,14 @@ void TestQgsProcessing::processingFeatureSource()
   QVERIFY( dd.loadVariant( res.toMap() ) );
   QCOMPARE( dd.source.staticValue().toString(), sourceString );
   QVERIFY( dd.selectedFeaturesOnly );
-  QCOMPARE( dd.featureLimit, 21 );
+  QCOMPARE( dd.featureLimit, 21LL );
   QCOMPARE( dd.flags, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck );
   QCOMPARE( dd.geometryCheck, QgsFeatureRequest::GeometrySkipInvalid );
 
   QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( fsInVariant );
   QCOMPARE( fromVar.source.staticValue().toString(), sourceString );
   QVERIFY( fromVar.selectedFeaturesOnly );
-  QCOMPARE( fromVar.featureLimit, 21 );
+  QCOMPARE( fromVar.featureLimit, 21LL );
   QCOMPARE( fromVar.flags, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck );
   QCOMPARE( fromVar.geometryCheck, QgsFeatureRequest::GeometrySkipInvalid );
 

@@ -183,6 +183,7 @@ void QgsProcessingAlgorithmDialogBase::setMainWidget( QgsPanelWidget *widget )
   }
 
   mPanelStack->setMainPanel( widget );
+  widget->setDockMode( true );
 
   mMainWidget = widget;
 }
