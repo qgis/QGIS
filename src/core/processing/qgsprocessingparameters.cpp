@@ -39,6 +39,28 @@
 #include <functional>
 
 
+QVariant QgsProcessingFeatureSourceDefinition::toVariant() const
+{
+  QVariantMap map;
+  map.insert( QStringLiteral( "source" ), source.toVariant() );
+  map.insert( QStringLiteral( "selected_only" ), selectedFeaturesOnly );
+  map.insert( QStringLiteral( "feature_limit" ), featureLimit );
+  map.insert( QStringLiteral( "flags" ), static_cast< int >( flags ) );
+  map.insert( QStringLiteral( "geometry_check" ), static_cast< int >( geometryCheck ) );
+  return map;
+}
+
+bool QgsProcessingFeatureSourceDefinition::loadVariant( const QVariantMap &map )
+{
+  source.loadVariant( map.value( QStringLiteral( "source" ) ) );
+  selectedFeaturesOnly = map.value( QStringLiteral( "selected_only" ), false ).toBool();
+  featureLimit = map.value( QStringLiteral( "feature_limit" ), -1 ).toLongLong();
+  flags = static_cast< Flags >( map.value( QStringLiteral( "flags" ), 0 ).toInt() );
+  geometryCheck = static_cast< QgsFeatureRequest::InvalidGeometryCheck >( map.value( QStringLiteral( "geometry_check" ), QgsFeatureRequest::GeometryAbortOnInvalid ).toInt() );
+  return true;
+}
+
+
 QVariant QgsProcessingOutputLayerDefinition::toVariant() const
 {
   QVariantMap map;

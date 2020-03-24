@@ -145,6 +145,22 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      */
     QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
 
+    /**
+     * Saves this source definition to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     * \see loadVariant()
+     * \since QGIS 3.14
+     */
+    QVariant toVariant() const;
+
+    /**
+     * Loads this source definition from a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::readVariant to load it from an XML document.
+     * \see toVariant()
+     * \since QGIS 3.14
+     */
+    bool loadVariant( const QVariantMap &map );
+
     bool operator==( const QgsProcessingFeatureSourceDefinition &other )
     {
       return source == other.source
