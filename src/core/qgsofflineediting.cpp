@@ -135,7 +135,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
 
       QgsSnappingConfig snappingConfig = QgsProject::instance()->snappingConfig();
 
-      // copy selected vector layers to SpatiaLite
+      // copy selected vector layers to offline layer
       for ( int i = 0; i < layerIds.count(); i++ )
       {
         emit layerProgressUpdated( i + 1, layerIds.count() );
@@ -162,7 +162,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
 
       QgsProject::instance()->setSnappingConfig( snappingConfig );
 
-      // restore join info on new SpatiaLite layer
+      // restore join info on new offline layer
       QMap<QString, QgsVectorJoinList >::ConstIterator it;
       for ( it = joinInfoBuffer.constBegin(); it != joinInfoBuffer.constEnd(); ++it )
       {
