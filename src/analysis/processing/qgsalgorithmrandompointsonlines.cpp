@@ -191,7 +191,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     float lineLength = lGeom.length();
     int distCheckIterations = 0;
     int pointsAddedForThisFeature = 0;
-    while ( pointsAddedForThisFeature < mNumPoints and distCheckIterations < mMaxAttempts )
+    while ( pointsAddedForThisFeature < mNumPoints && distCheckIterations < mMaxAttempts )
     {
       if ( feedback->isCanceled() )
       {
@@ -200,17 +200,16 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
 
       float randPos = lineLength * ( float ) rand() / RAND_MAX;
       QgsGeometry rpGeom = QgsGeometry( lGeom.interpolate( randPos ) );
-      if ( rpGeom.isNull() or rpGeom.isEmpty() )
+      if ( rpGeom.isNull() || rpGeom.isEmpty() )
       {
         distCheckIterations++;
         continue;
       }
 
-      QgsPointXY rPoint;
-      rPoint = QgsPoint( *qgsgeometry_cast< const QgsPoint * >( rpGeom.constGet() ) );
-
       if ( mMinDistance != 0 && pointsAddedForThisFeature > 0 )
       {
+        //QgsPointXY rPoint = QgsPoint( *qgsgeometry_cast< const QgsPoint * >( rpGeom.constGet() ) );
+        QgsPointXY rPoint = rpGeom.asPoint();
         QList<QgsFeatureId> neighbors = index.nearestNeighbor( rPoint, 1, mMinDistance );
         if ( not neighbors.empty() )
         {
