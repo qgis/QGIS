@@ -84,7 +84,7 @@ jobs:
           token: ${{ steps.token.outputs.token }}
           owner: qgis
           repo: QGIS-Documentation
-          title: ${{ format('Request in QGIS ({0})', github.event.pull_request.title) }}
+          title: ${{ format('{0} (Request in QGIS)', github.event.pull_request.title) }}
           # do not modify the QGIS version, an action automatically creates a label in the doc repo
           # this is not possible to set labels directly due to security reasons
           # the token is in clear, so no rights are given to qgis-bot
@@ -104,7 +104,17 @@ jobs:
 
       # write comment to ping the PR author
       - name: Create comment
-        if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
+        if: github.event.pull_request.merged && ( ( github.event.action 
+      # write comment to ping the PR author
+      - name: Create comment
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          token: ${{ steps.token.outputs.token }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            @${{ github.event.pull_request.user.login }}
+            This pull request has been tagged as **requiring documentation**.
+            A documentation== 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
         uses: peter-evans/create-or-update-comment@v1
         with:
           token: ${{ steps.token.outputs.token }}
