@@ -76,9 +76,9 @@ void QgsProcessingParametersWidget::addOutputWidget( QWidget *widget )
   mScrollAreaLayout->insertWidget( mScrollAreaLayout->count() - 1, widget );
 }
 
-QLayout *QgsProcessingParametersWidget::mainLayout()
+void QgsProcessingParametersWidget::addExtraWidget( QWidget *widget )
 {
-  return mScrollAreaLayout;
+  mScrollAreaLayout->addWidget( widget );
 }
 
 ///@endcond

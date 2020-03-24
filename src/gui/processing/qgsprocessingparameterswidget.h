@@ -55,8 +55,7 @@ class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, private 
     void addOutputLabel( QWidget *label SIP_TRANSFER );
     void addOutputWidget( QWidget *widget SIP_TRANSFER );
 
-    QLayout *mainLayout();
-
+    void addExtraWidget( QWidget *widget SIP_TRANSFER );
 
   private:
 
