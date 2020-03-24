@@ -292,7 +292,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
     selectedFeaturesOnly = fromVar.selectedFeaturesOnly;
     featureLimit = fromVar.featureLimit;
     val = fromVar.source;
-    overrideGeometryCheck = fromVar.overrideDefaultGeometryCheck;
+    overrideGeometryCheck = fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck;
     geometryCheck = fromVar.geometryCheck;
   }
   else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )

@@ -25,8 +25,16 @@ Encapsulates settings relating to a feature source input to a processing algorit
 %End
   public:
 
+    enum class Flag
+    {
+      FlagOverrideDefaultGeometryCheck,
+      FlagCreateIndividualOutputPerInputFeature,
+    };
+    typedef QFlags<QgsProcessingFeatureSourceDefinition::Flag> Flags;
+
+
     QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          bool overrideDefaultGeometryCheck = false, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = 0, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
 %Docstring
 Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string ``source``.
 
@@ -35,12 +43,14 @@ If ``selectedFeaturesOnly`` is ``True``, then only selected features from the so
 The optional ``featureLimit`` can be set to a value > 0 to place a hard limit on the maximum number
 of features which will be read from the source.
 
-If ``overrideDefaultGeometryCheck`` is ``True``, then the value of ``geometryCheck`` will override
+The ``flags`` argument can be used to specify flags which dictate the source behavior.
+
+If the QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck is set in ``flags``, then the value of ``geometryCheck`` will override
 the default geometry check method (as dictated by :py:class:`QgsProcessingContext`) for this source.
 %End
 
     QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
-                                          bool overrideDefaultGeometryCheck = false, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = 0, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
 %Docstring
 Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty source.
 
@@ -49,7 +59,9 @@ If ``selectedFeaturesOnly`` is ``True``, then only selected features from the so
 The optional ``featureLimit`` can be set to a value > 0 to place a hard limit on the maximum number
 of features which will be read from the source.
 
-If ``overrideDefaultGeometryCheck`` is ``True``, then the value of ``geometryCheck`` will override
+The ``flags`` argument can be used to specify flags which dictate the source behavior.
+
+If the QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck is set in ``flags``, then the value of ``geometryCheck`` will override
 the default geometry check method (as dictated by :py:class:`QgsProcessingContext`) for this source.
 %End
 
@@ -59,7 +71,7 @@ the default geometry check method (as dictated by :py:class:`QgsProcessingContex
 
     long long featureLimit;
 
-    bool overrideDefaultGeometryCheck;
+    Flags flags;
 
     QgsFeatureRequest::InvalidGeometryCheck geometryCheck;
 
@@ -70,6 +82,8 @@ the default geometry check method (as dictated by :py:class:`QgsProcessingContex
     operator QVariant() const;
 
 };
+
+QFlags<QgsProcessingFeatureSourceDefinition::Flag> operator|(QgsProcessingFeatureSourceDefinition::Flag f1, QFlags<QgsProcessingFeatureSourceDefinition::Flag> f2);
 
 
 

@@ -43,7 +43,8 @@ from qgis.core import (Qgis,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameters,
                        QgsProxyProgressTask,
-                       QgsTaskManager)
+                       QgsTaskManager,
+                       QgsProcessingFeatureSourceDefinition)
 from qgis.gui import (QgsGui,
                       QgsMessageBar,
                       QgsProcessingAlgorithmDialogBase)
@@ -203,13 +204,12 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.blockControlsWhileRunning()
             self.setExecutedAnyResult(True)
             self.cancelButton().setEnabled(False)
-            buttons = self.mainWidget().iterateButtons
+
             self.iterateParam = None
 
-            for i in range(len(list(buttons.values()))):
-                button = list(buttons.values())[i]
-                if button.isChecked():
-                    self.iterateParam = list(buttons.keys())[i]
+            for param in self.algorithm().parameterDefinitions():
+                if isinstance(parameters.get(param.name(), None), QgsProcessingFeatureSourceDefinition) and parameters[param.name()].flags & QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature:
+                    self.iterateParam = param.name()
                     break
 
             self.clearProgress()
