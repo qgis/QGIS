@@ -65,6 +65,7 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void onMainCanvasColorChanged();
     void onTotalPendingJobsCountChanged();
     void mapThemeMenuAboutToShow();
+    void currentMapThemeRenamed( const QString &theme, const QString &newTheme );
 
   private:
     Qgs3DMapCanvas *mCanvas = nullptr;
