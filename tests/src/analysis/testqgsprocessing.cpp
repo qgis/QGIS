@@ -7778,6 +7778,16 @@ void TestQgsProcessing::processingFeatureSource()
   QVariant fsInVariant = QVariant::fromValue( fs );
   QVERIFY( fsInVariant.isValid() );
 
+  // test converting to variant map and back
+  QVariant res = fs.toVariant();
+  QgsProcessingFeatureSourceDefinition dd;
+  QVERIFY( dd.loadVariant( res.toMap() ) );
+  QCOMPARE( dd.source.staticValue().toString(), sourceString );
+  QVERIFY( dd.selectedFeaturesOnly );
+  QCOMPARE( dd.featureLimit, 21 );
+  QCOMPARE( dd.flags, QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck );
+  QCOMPARE( dd.geometryCheck, QgsFeatureRequest::GeometrySkipInvalid );
+
   QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( fsInVariant );
   QCOMPARE( fromVar.source.staticValue().toString(), sourceString );
   QVERIFY( fromVar.selectedFeaturesOnly );
