@@ -329,7 +329,7 @@ class CORE_EXPORT QgsMeshRendererVectorStreamlineSettings
       /**
        * Seeds start points randomly on the mesh
        */
-      Random,
+      Random
     };
 
     //! Returns the method used for seeding start points of strealines
@@ -418,6 +418,18 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
       Traces
     };
 
+    /**
+     * Defines the how the color of vector is defined
+     * \since QGIS 3.14
+     */
+    enum ColoringMethod
+    {
+      //! Render the vector with a single color
+      SingleColor = 0,
+      //! Render the vector with a color ramp
+      ColorRamp
+    };
+
 
     //! Returns line width of the arrow (in millimeters)
     double lineWidth() const;
@@ -483,6 +495,30 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     void setSymbology( const Symbology &symbology );
 
     /**
+     * Returns the coloring method used to render vector datasets
+     * \since QGIS 3.14
+     */
+    ColoringMethod coloringMethod() const;
+
+    /**
+     * Sets the coloring method used to render vector datasets
+     * \since QGIS 3.14
+     */
+    void setColoringMethod( const ColoringMethod &coloringMethod );
+
+    /**
+     * Sets the color ramp shader used to render vector datasets
+     * \since QGIS 3.14
+     */
+    QgsColorRampShader colorRampShader() const;
+
+    /**
+     * Returns the color ramp shader used to render vector datasets
+     * \since QGIS 3.14
+     */
+    void setColorRampShader( const QgsColorRampShader &colorRampShader );
+
+    /**
     * Returns settings for vector rendered with arrows
     * \since QGIS 3.12
     */
@@ -523,13 +559,14 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     //! Reads configuration from the given DOM element
     void readXml( const QDomElement &elem );
 
-
   private:
 
     Symbology mDisplayingMethod = Arrows;
 
     double mLineWidth = DEFAULT_LINE_WIDTH; //in millimeters
+    QgsColorRampShader mColorRampShader;
     QColor mColor = Qt::black;
+    ColoringMethod mColoringMethod = SingleColor;
     double mFilterMin = -1; //disabled
     double mFilterMax = -1; //disabled
     int mUserGridCellWidth = 10; // in pixels

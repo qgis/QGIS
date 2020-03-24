@@ -79,6 +79,7 @@ class TestQgsMeshRenderer : public QObject
 
     void test_vertex_scalar_dataset_rendering();
     void test_vertex_vector_dataset_rendering();
+    void test_vertex_vector_dataset_colorRamp_rendering();
     void test_face_scalar_dataset_rendering();
     void test_face_scalar_dataset_interpolated_neighbour_average_rendering();
     void test_face_vector_dataset_rendering();
@@ -87,7 +88,9 @@ class TestQgsMeshRenderer : public QObject
     void test_face_vector_on_user_grid_streamlines();
     void test_vertex_vector_on_user_grid();
     void test_vertex_vector_on_user_grid_streamlines();
+    void test_vertex_vector_on_user_grid_streamlines_colorRamp();
     void test_vertex_vector_traces();
+    void test_vertex_vector_traces_colorRamp();
     void test_stacked_3d_mesh_single_level_averaging();
     void test_simplified_triangular_mesh_rendering();
 
@@ -185,6 +188,14 @@ void TestQgsMeshRenderer::initTestCase()
   QCOMPARE( lst.count(), 52 );
   QCOMPARE( lst.at( 0 ).value, 1. );  // min group value
   QCOMPARE( lst.at( lst.count() - 1 ).value, 4. );  // max group value
+
+  ds = QgsMeshDatasetIndex( 1, 0 );
+  QgsMeshRendererVectorSettings vectorSettings = mMemoryLayer->rendererSettings().vectorSettings( ds.group() );
+  shader = vectorSettings.colorRampShader();
+  lst = shader.colorRampItemList();
+  QCOMPARE( lst.count(), 52 );
+  QVERIFY( fabs( lst.at( 0 ).value - 1.41421356237 ) < 0.000001 ); // min group value
+  QCOMPARE( lst.at( lst.count() - 1 ).value, 5. ); // max group value
 }
 
 void TestQgsMeshRenderer::cleanupTestCase()
@@ -349,6 +360,25 @@ void TestQgsMeshRenderer::test_vertex_vector_dataset_rendering()
   QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_dataset", mMemoryLayer ) );
 }
 
+void TestQgsMeshRenderer::test_vertex_vector_dataset_colorRamp_rendering()
+{
+  QgsMeshDatasetIndex ds( 1, 0 );
+  const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
+  QVERIFY( metadata.name() == "VertexVectorDataset" );
+
+  QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
+  QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( ds.group() );
+  QgsMeshRendererVectorArrowSettings arrowSettings = settings.arrowSettings();
+  arrowSettings.setMinShaftLength( 15 );
+  settings.setColoringMethod( QgsMeshRendererVectorSettings::ColorRamp );
+  settings.setArrowsSettings( arrowSettings );
+  rendererSettings.setVectorSettings( ds.group(), settings );
+  rendererSettings.setActiveVectorDataset( ds );
+  mMemoryLayer->setRendererSettings( rendererSettings );
+
+  QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_dataset_colorRamp", mMemoryLayer ) );
+}
+
 void TestQgsMeshRenderer::test_face_scalar_dataset_rendering()
 {
   QgsMeshDatasetIndex ds( 2, 0 );
@@ -458,6 +488,7 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid()
   settings.setUserGridCellHeight( 40 );
   settings.setLineWidth( 0.9 );
   settings.setSymbology( QgsMeshRendererVectorSettings::Arrows );
+  settings.setColoringMethod( QgsMeshRendererVectorSettings::SingleColor );
   rendererSettings.setVectorSettings( ds.group(), settings );
   rendererSettings.setActiveVectorDataset( ds );
   mMemoryLayer->setRendererSettings( rendererSettings );
@@ -477,12 +508,34 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_streamlines()
   settings.setUserGridCellWidth( 60 );
   settings.setUserGridCellHeight( 40 );
   settings.setLineWidth( 0.9 );
+  settings.setColoringMethod( QgsMeshRendererVectorSettings::SingleColor );
   settings.setSymbology( QgsMeshRendererVectorSettings::Streamlines );
   rendererSettings.setVectorSettings( ds.group(), settings );
   rendererSettings.setActiveVectorDataset( ds );
   mMemoryLayer->setRendererSettings( rendererSettings );
 
   QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_user_grid_dataset_streamlines", mMemoryLayer ) );
+}
+
+void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_streamlines_colorRamp()
+{
+  QgsMeshDatasetIndex ds( 1, 0 );
+  const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
+  QVERIFY( metadata.name() == "VertexVectorDataset" );
+
+  QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
+  QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( ds.group() );
+  settings.setOnUserDefinedGrid( true );
+  settings.setUserGridCellWidth( 60 );
+  settings.setUserGridCellHeight( 40 );
+  settings.setLineWidth( 0.9 );
+  settings.setColoringMethod( QgsMeshRendererVectorSettings::ColorRamp );
+  settings.setSymbology( QgsMeshRendererVectorSettings::Streamlines );
+  rendererSettings.setVectorSettings( ds.group(), settings );
+  rendererSettings.setActiveVectorDataset( ds );
+  mMemoryLayer->setRendererSettings( rendererSettings );
+
+  QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_user_grid_dataset_streamlines_colorRamp", mMemoryLayer ) );
 }
 
 void TestQgsMeshRenderer::test_vertex_vector_traces()
@@ -497,6 +550,7 @@ void TestQgsMeshRenderer::test_vertex_vector_traces()
   settings.setUserGridCellWidth( 60 );
   settings.setUserGridCellHeight( 40 );
   settings.setLineWidth( 1 );
+  settings.setColoringMethod( QgsMeshRendererVectorSettings::SingleColor );
 
   settings.setSymbology( QgsMeshRendererVectorSettings::Traces );
   QgsMeshRendererVectorTracesSettings tracesSetting = settings.tracesSettings();
@@ -509,6 +563,33 @@ void TestQgsMeshRenderer::test_vertex_vector_traces()
   mMemoryLayer->setRendererSettings( rendererSettings );
 
   QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_traces", mMemoryLayer ) );
+}
+
+void TestQgsMeshRenderer::test_vertex_vector_traces_colorRamp()
+{
+  QgsMeshDatasetIndex ds( 1, 0 );
+  const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
+  QVERIFY( metadata.name() == "VertexVectorDataset" );
+
+  QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
+  QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( ds.group() );
+  settings.setOnUserDefinedGrid( true );
+  settings.setUserGridCellWidth( 60 );
+  settings.setUserGridCellHeight( 40 );
+  settings.setLineWidth( 1 );
+  settings.setColoringMethod( QgsMeshRendererVectorSettings::ColorRamp );
+
+  settings.setSymbology( QgsMeshRendererVectorSettings::Traces );
+  QgsMeshRendererVectorTracesSettings tracesSetting = settings.tracesSettings();
+  tracesSetting.setParticlesCount( -1 );
+  tracesSetting.setMaximumTailLength( 40 );
+  tracesSetting.setMaximumTailLengthUnit( QgsUnitTypes::RenderPixels );
+  settings.setTracesSettings( tracesSetting );
+  rendererSettings.setVectorSettings( ds.group(), settings );
+  rendererSettings.setActiveVectorDataset( ds );
+  mMemoryLayer->setRendererSettings( rendererSettings );
+
+  QVERIFY( imageCheck( "quad_and_triangle_vertex_vector_traces_colorRamp", mMemoryLayer ) );
 }
 
 void TestQgsMeshRenderer::test_signals()

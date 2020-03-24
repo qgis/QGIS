@@ -179,6 +179,7 @@ class QgsMeshStreamField
                         double magnitudeMaximum,
                         bool dataIsOnVertices,
                         const QgsRenderContext &rendererContext,
+                        const QgsMeshVectorColoring &vectorColoring,
                         int resolution = 1 );
 
     //! Copy constructor
@@ -287,6 +288,7 @@ class QgsMeshStreamField
     QImage mTraceImage;
 
     QgsMapToPixel mMapToFieldPixel;
+    QgsMeshVectorColoring mVectorColoring;
 
   private:
     int mPixelFillingCount = 0;
@@ -320,7 +322,10 @@ class QgsMeshStreamlinesField: public QgsMeshStreamField
                              const QgsMeshDataBlock &datasetVectorValues,
                              const QgsMeshDataBlock &scalarActiveFaceFlagValues,
                              const QgsRectangle &layerExtent,
-                             double magMax, bool dataIsOnVertices, QgsRenderContext &rendererContext );
+                             double magMax,
+                             bool dataIsOnVertices,
+                             QgsRenderContext &rendererContext,
+                             const QgsMeshVectorColoring vectorColoring );
 
     //! Copy constructor
     QgsMeshStreamlinesField( const QgsMeshStreamlinesField &other );
@@ -374,7 +379,8 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
                                 const QgsRectangle &layerExtent,
                                 double magMax,
                                 bool dataIsOnVertices,
-                                const QgsRenderContext &rendererContext );
+                                const QgsRenderContext &rendererContext,
+                                const QgsMeshVectorColoring vectorColoring );
 
     //! Copy constructor
     QgsMeshParticleTracesField( const QgsMeshParticleTracesField &other );
@@ -413,9 +419,6 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
     //! Sets the time step
     void setTimeStep( double timeStep );
 
-    //! Sets tihe color of the particles
-    void setParticleColor( const QColor &particleColor );
-
     //! Sets particles size (in px)
     void setParticleSize( double particleSize );
 
@@ -431,10 +434,13 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
     //! Sets if the particle has to be stumped dependiong on liketime
     void setStumpParticleWithLifeTime( bool stumpParticleWithLifeTime );
 
+    //! Sets the color of the particles, overwrite the color provided by vector settings
+    void setParticlesColor( const QColor &c );
   private:
     QPoint direction( QPoint position ) const;
 
     float time( QPoint position ) const;
+    float magnitude( QPoint position ) const;
 
     void drawParticleTrace( const QgsMeshTraceParticle &particle );
 
@@ -451,6 +457,7 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
      *
      */
     QVector<float> mTimeField;
+    QVector<float> mMagnitudeField;
 
     /*the direction for a pixel is defined with a char value
      *
@@ -563,7 +570,8 @@ class CORE_EXPORT QgsMeshVectorTraceAnimationGenerator
                                           bool dataIsOnVertices,
                                           const QgsRenderContext &rendererContext,
                                           const QgsRectangle &layerExtent,
-                                          double magMax ) SIP_SKIP;
+                                          double magMax,
+                                          const QgsMeshRendererVectorSettings &vectorSettings ) SIP_SKIP;
 
     //!Constructor to use with Python binding
     QgsMeshVectorTraceAnimationGenerator( QgsMeshLayer *layer, const QgsRenderContext &rendererContext );

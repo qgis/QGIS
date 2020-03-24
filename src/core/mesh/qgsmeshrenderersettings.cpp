@@ -579,7 +579,10 @@ QDomElement QgsMeshRendererVectorSettings::writeXml( QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "symbology" ), mDisplayingMethod );
 
   elem.setAttribute( QStringLiteral( "line-width" ), mLineWidth );
+  elem.setAttribute( QStringLiteral( "coloring-method" ), coloringMethod() );
   elem.setAttribute( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  QDomElement elemShader = mColorRampShader.writeXml( doc );
+  elem.appendChild( elemShader );
   elem.setAttribute( QStringLiteral( "filter-min" ), mFilterMin );
   elem.setAttribute( QStringLiteral( "filter-max" ), mFilterMax );
 
@@ -600,7 +603,10 @@ void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem )
                         elem.attribute( QStringLiteral( "symbology" ) ).toInt() );
 
   mLineWidth = elem.attribute( QStringLiteral( "line-width" ) ).toDouble();
+  mColoringMethod = static_cast<QgsMeshRendererVectorSettings::ColoringMethod>(
+                      elem.attribute( QStringLiteral( "coloring-method" ) ).toInt() );
   mColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "color" ) ) );
+  mColorRampShader.readXml( elem.firstChildElement( "colorrampshader" ) );
   mFilterMin = elem.attribute( QStringLiteral( "filter-min" ) ).toDouble();
   mFilterMax = elem.attribute( QStringLiteral( "filter-max" ) ).toDouble();
 
@@ -619,6 +625,26 @@ void QgsMeshRendererVectorSettings::readXml( const QDomElement &elem )
   QDomElement elemTraces = elem.firstChildElement( QStringLiteral( "vector-traces-settings" ) );
   if ( ! elemTraces.isNull() )
     mTracesSettings.readXml( elemTraces );
+}
+
+QgsMeshRendererVectorSettings::ColoringMethod QgsMeshRendererVectorSettings::coloringMethod() const
+{
+  return mColoringMethod;
+}
+
+void QgsMeshRendererVectorSettings::setColoringMethod( const QgsMeshRendererVectorSettings::ColoringMethod &coloringMethod )
+{
+  mColoringMethod = coloringMethod;
+}
+
+QgsColorRampShader QgsMeshRendererVectorSettings::colorRampShader() const
+{
+  return mColorRampShader;
+}
+
+void QgsMeshRendererVectorSettings::setColorRampShader( const QgsColorRampShader &colorRampShader )
+{
+  mColorRampShader = colorRampShader;
 }
 
 QgsMeshRendererVectorTracesSettings QgsMeshRendererVectorSettings::tracesSettings() const
