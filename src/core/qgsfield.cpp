@@ -120,7 +120,7 @@ QString QgsField::displayType( const bool showConstraints ) const
 
     typeStr += constraints().constraints() & QgsFieldConstraints::ConstraintUnique
                ? QStringLiteral( " UNIQUE" )
-               : QStringLiteral( "" );
+               : QString();
   }
 
   return typeStr;

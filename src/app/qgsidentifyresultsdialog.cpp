@@ -628,7 +628,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
     QString expressionString = fields.fieldOrigin( i ) == QgsFields::OriginExpression
                                ? vlayer->expressionField( i )
-                               : QStringLiteral();
+                               : QString();
     attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
     attrItem->setToolTip( 0, QgsFieldModel::fieldToolTip( fields.at( i ), expressionString ) );
     attrItem->setData( 0, Qt::UserRole, fields.at( i ).name() );
