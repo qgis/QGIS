@@ -38,6 +38,8 @@
 #include "qgsogrutils.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidermetadata.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -1492,12 +1494,10 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, cons
   }
   else
   {
-    if ( dataSourceString.indexOf( QLatin1String( "|layername=" ) ) != -1 )
-    {
-      QRegularExpression regex( QStringLiteral( "\\|layername=([^|]*)" ) );
-      tableName = regex.match( dataSourceString ).captured( 1 );
-    }
-    else
+    QgsProviderMetadata *ogrProviderMetaData = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) );
+    QVariantMap decodedUri = ogrProviderMetaData->decodeUri( dataSourceString );
+    tableName = decodedUri.value( QStringLiteral( "layerName" ) ).toString();
+    if ( tableName.isEmpty() )
     {
       showWarning( tr( "Could not deduce table name from data source %1." ).arg( dataSourceString ) );
     }
