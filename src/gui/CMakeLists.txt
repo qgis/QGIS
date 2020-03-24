@@ -270,6 +270,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingmultipleselectiondialog.cpp
   processing/qgsprocessingoutputdestinationwidget.cpp
   processing/qgsprocessingparameterdefinitionwidget.cpp
+  processing/qgsprocessingparameterswidget.cpp
   processing/qgsprocessingrecentalgorithmlog.cpp
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
@@ -950,6 +951,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingmultipleselectiondialog.h
   processing/qgsprocessingoutputdestinationwidget.h
   processing/qgsprocessingparameterdefinitionwidget.h
+  processing/qgsprocessingparameterswidget.h
   processing/qgsprocessingrecentalgorithmlog.h
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h

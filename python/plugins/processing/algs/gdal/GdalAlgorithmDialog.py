@@ -62,7 +62,7 @@ class GdalAlgorithmDialog(AlgorithmDialog):
 class GdalParametersPanel(ParametersPanel):
 
     def __init__(self, parent, alg):
-        ParametersPanel.__init__(self, parent, alg)
+        super().__init__(parent, alg)
 
         w = QWidget()
         layout = QVBoxLayout()
@@ -75,7 +75,7 @@ class GdalParametersPanel(ParametersPanel):
         self.text.setReadOnly(True)
         layout.addWidget(self.text)
         w.setLayout(layout)
-        self.layoutMain.addWidget(w)
+        self.mainLayout().addWidget(w)
 
         self.connectParameterSignals()
         self.parametersHaveChanged()
@@ -122,11 +122,11 @@ class GdalParametersPanel(ParametersPanel):
         context = createContext()
         feedback = QgsProcessingFeedback()
         try:
-            parameters = self.parent.getParameterValues()
-            for output in self.alg.destinationParameterDefinitions():
+            parameters = self.parent().getParameterValues()
+            for output in self.algorithm().destinationParameterDefinitions():
                 if not output.name() in parameters or parameters[output.name()] is None:
                     parameters[output.name()] = self.tr("[temporary file]")
-            for p in self.alg.parameterDefinitions():
+            for p in self.algorithm().parameterDefinitions():
                 if p.flags() & QgsProcessingParameterDefinition.FlagHidden:
                     continue
 
@@ -136,7 +136,7 @@ class GdalParametersPanel(ParametersPanel):
                     self.text.setPlainText('')
                     return
 
-            commands = self.alg.getConsoleCommands(parameters, context, feedback, executing=False)
+            commands = self.algorithm().getConsoleCommands(parameters, context, feedback, executing=False)
             commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
             self.text.setPlainText(" ".join(commands))
         except AlgorithmDialogBase.InvalidParameterValue as e:
