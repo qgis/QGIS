@@ -33,7 +33,7 @@ QString QgsRandomPointsOnLinesAlgorithm::displayName() const
 
 QStringList QgsRandomPointsOnLinesAlgorithm::tags() const
 {
-  return QObject::tr( "random,points,lines,seed,attributes,create" ).split( ',' );
+  return QObject::tr( "seed,attributes,create" ).split( ',' );
 }
 
 QString QgsRandomPointsOnLinesAlgorithm::group() const
@@ -59,14 +59,14 @@ void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( maxAttempts_param.release() );
 
   //addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEED" ), QObject::tr( "Random seed" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
-  std::unique_ptr< QgsProcessingParameterNumber > randomSeed_param = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SEED" ), QObject::tr( "Random seed" ), QgsProcessingParameterNumber::Integer, 1, false, 1 );
-  randomSeed_param->setFlags( randomSeed_param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  addParameter( randomSeed_param.release() );
+  std::unique_ptr< QgsProcessingParameterNumber > randomSeedParam = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SEED" ), QObject::tr( "Random seed" ), QgsProcessingParameterNumber::Integer, 1, false, 1 );
+  randomSeedParam->setFlags( randomSeedParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( randomSeedParam.release() );
 
   //addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "INCLUDE_LINE_ATTRIBUTES" ), QObject::tr( "Include line feature attributes" ), true ) );
-  std::unique_ptr< QgsProcessingParameterBoolean > includeLineAttr_param = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "INCLUDE_LINE_ATTRIBUTES" ), QObject::tr( "Include line attributes" ), true );
-  includeLineAttr_param->setFlags( includeLineAttr_param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  addParameter( includeLineAttr_param.release() );
+  std::unique_ptr< QgsProcessingParameterBoolean > includeLineAttrParam = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "INCLUDE_LINE_ATTRIBUTES" ), QObject::tr( "Include line attributes" ), true );
+  includeLineAttrParam->setFlags( includeLineAttrParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( includeLineAttrParam.release() );
 
   addParameter( new
                 QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Random points on lines" ), QgsProcessing::TypeVectorPoint ) );
@@ -190,8 +190,8 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     }
     float lineLength = lGeom.length();
     int distCheckIterations = 0;
-    int i = 0;
-    while ( i < mNumPoints and distCheckIterations < mMaxAttempts )
+    int pointsAddedForThisFeature = 0;
+    while ( pointsAddedForThisFeature < mNumPoints and distCheckIterations < mMaxAttempts )
     {
       if ( feedback->isCanceled() )
       {
@@ -200,7 +200,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
 
       float randPos = lineLength * ( float ) rand() / RAND_MAX;
       QgsGeometry rpGeom = QgsGeometry( lGeom.interpolate( randPos ) );
-      //if ( not rpGeom.isNull() and not rpGeom.isEmpty() )
       if ( rpGeom.isNull() or rpGeom.isEmpty() )
       {
         distCheckIterations++;
@@ -212,7 +211,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
 
       if ( not mMinDistance == 0 )
       {
-        if ( i > 0 )
+        if ( pointsAddedForThisFeature > 0 )
         {
           QList<QgsFeatureId> neighbors = index.nearestNeighbor( rPoint, 1, mMinDistance );
           if ( not neighbors.empty() )
@@ -237,11 +236,11 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       }
       sink->addFeature( f, QgsFeatureSink::FastInsert );
       totNPoints++;
-      i++;
+      pointsAddedForThisFeature++;
       distCheckIterations = 0; //reset distCheckIterations if a point is added
       feedback->setProgress( static_cast<int>( static_cast<double>( totNPoints ) / static_cast<double>( mNumPoints ) * 100 ) );
     }
-    if ( i < mNumPoints )
+    if ( pointsAddedForThisFeature < mNumPoints )
     {
       missedLines++;
     }
