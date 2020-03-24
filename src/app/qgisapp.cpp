@@ -4484,7 +4484,7 @@ void QgisApp::freezeCanvases( bool frozen )
 
 QgsMessageBar *QgisApp::messageBar()
 {
-  Q_ASSERT( mInfoBar );
+  // Q_ASSERT( mInfoBar );
   return mInfoBar;
 }
 
