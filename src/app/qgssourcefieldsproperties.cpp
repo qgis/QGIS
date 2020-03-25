@@ -146,21 +146,25 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
   setRow( row, idx, fields.at( idx ) );
   mFieldsList->setCurrentCell( row, idx );
 
+  QColor expressionColor = QColor( 103, 0, 243, 44 );
+  QColor joinColor = QColor( 0, 243, 79, 44 );
+  QColor defaultColor = QColor( 252, 255, 79, 44 );
+
   for ( int i = 0; i < mFieldsList->columnCount(); i++ )
   {
     switch ( mLayer->fields().fieldOrigin( idx ) )
     {
       case QgsFields::OriginExpression:
         if ( i == 7 ) continue;
-        mFieldsList->item( row, i )->setBackgroundColor( QColor( 200, 200, 255 ) );
+        mFieldsList->item( row, i )->setBackgroundColor( expressionColor );
         break;
 
       case QgsFields::OriginJoin:
-        mFieldsList->item( row, i )->setBackgroundColor( QColor( 200, 255, 200 ) );
+        mFieldsList->item( row, i )->setBackgroundColor( joinColor );
         break;
 
       default:
-        mFieldsList->item( row, i )->setBackgroundColor( QColor( 255, 255, 200 ) );
+        mFieldsList->item( row, i )->setBackgroundColor( defaultColor );
         break;
     }
   }
