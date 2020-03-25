@@ -124,6 +124,8 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     void onLayerChanged( QgsMapLayer *layer );
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
     void showSourceOptions();
+    void selectFromFile();
+    void browseForLayer();
 
   private:
     std::unique_ptr< QgsProcessingParameterDefinition > mParameter;
@@ -141,6 +143,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
 
     QgsBrowserGuiModel *mBrowserModel = nullptr;
 
+    QMenu *mFeatureSourceMenu = nullptr;
     QgsMapLayer *compatibleMapLayerFromMimeData( const QMimeData *data, bool &incompatibleLayerSelected ) const;
     QString compatibleUriFromMimeData( const QMimeData *data ) const;
 };

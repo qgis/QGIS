@@ -24,11 +24,16 @@
 #include "qgsguiutils.h"
 #include "qgspanelwidget.h"
 #include "qgsprocessingfeaturesourceoptionswidget.h"
+#include "qgsdatasourceselectdialog.h"
+#include "qgsprocessingwidgetwrapper.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QCheckBox>
 #include <QDragEnterEvent>
+#include <QMenu>
+#include <QAction>
+#include <QFileDialog>
 
 ///@cond PRIVATE
 
@@ -47,11 +52,9 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
 
   mSelectButton = new QToolButton();
   mSelectButton->setText( QString( QChar( 0x2026 ) ) );
-  mSelectButton->setToolTip( tr( "Select file" ) );
-  connect( mSelectButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::triggerFileSelection );
+  mSelectButton->setToolTip( tr( "Select input" ) );
   layout->addWidget( mSelectButton );
   layout->setAlignment( mSelectButton, Qt::AlignTop );
-
   if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
   {
     mIterateButton = new QToolButton();
@@ -81,6 +84,22 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     connect( mSettingsButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::showSourceOptions );
     layout->addWidget( mSettingsButton );
     layout->setAlignment( mSettingsButton, Qt::AlignTop );
+
+    mFeatureSourceMenu = new QMenu( this );
+    QAction *selectFromFileAction = new QAction( tr( "Select File…" ), mFeatureSourceMenu );
+    connect( selectFromFileAction, &QAction::triggered, this, &QgsProcessingMapLayerComboBox::selectFromFile );
+    mFeatureSourceMenu->addAction( selectFromFileAction );
+    QAction *browseForLayerAction = new QAction( tr( "Browse for Layer…" ), mFeatureSourceMenu );
+    connect( browseForLayerAction, &QAction::triggered, this, &QgsProcessingMapLayerComboBox::browseForLayer );
+    mFeatureSourceMenu->addAction( browseForLayerAction );
+
+    mSelectButton->setMenu( mFeatureSourceMenu );
+    mSelectButton->setPopupMode( QToolButton::InstantPopup );
+  }
+  else
+  {
+    // file selection not handled here, needs handling in Python at the moment...
+    connect( mSelectButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::triggerFileSelection );
   }
 
   QVBoxLayout *vl = new QVBoxLayout();
@@ -581,6 +600,58 @@ void QgsProcessingMapLayerComboBox::showSourceOptions()
 
       if ( changed )
         emit valueChanged();
+    } );
+  }
+}
+
+void QgsProcessingMapLayerComboBox::selectFromFile()
+{
+  QgsSettings settings;
+  const QString initialValue = currentText();
+  QString path;
+
+  if ( QFileInfo( initialValue ).isDir() && QFileInfo::exists( initialValue ) )
+    path = initialValue;
+  else if ( QFileInfo::exists( QFileInfo( initialValue ).path() ) )
+    path = QFileInfo( initialValue ).path();
+  else if ( settings.contains( QStringLiteral( "/Processing/LastInputPath" ) ) )
+    path = settings.value( QStringLiteral( "/Processing/LastInputPath" ) ).toString();
+
+  QString filter;
+  if ( const QgsFileFilterGenerator *generator = dynamic_cast< const QgsFileFilterGenerator * >( mParameter.get() ) )
+    filter = generator->createFileFilter();
+  else
+    filter = QObject::tr( "All files (*.*)" );
+
+  const QString filename = QFileDialog::getOpenFileName( this, tr( "Select File" ), path, filter );
+  if ( filename.isEmpty() )
+    return;
+
+  settings.setValue( QStringLiteral( "/Processing/LastInputPath" ), QFileInfo( filename ).path() );
+  QgsProcessingContext context;
+  setValue( filename, context );
+}
+
+void QgsProcessingMapLayerComboBox::browseForLayer()
+{
+  if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
+  {
+    QgsDataSourceSelectWidget *widget = new QgsDataSourceSelectWidget( mBrowserModel, true, QgsMapLayerType::VectorLayer );
+    widget->setPanelTitle( tr( "Browse for \"%1\"" ).arg( mParameter->description() ) );
+
+    panel->openPanel( widget );
+
+    connect( widget, &QgsDataSourceSelectWidget::itemTriggered, this, [ = ]( const QgsMimeDataUtils::Uri & )
+    {
+      widget->acceptPanel();
+    } );
+    connect( widget, &QgsPanelWidget::panelAccepted, this, [ = ]()
+    {
+      QgsProcessingContext context;
+      if ( widget->uri().providerKey == QLatin1String( "ogr" ) )
+        setValue( widget->uri().uri, context );
+      else
+        setValue( QgsProcessingUtils::encodeProviderKeyAndUri( widget->uri().providerKey, widget->uri().uri ), context );
     } );
   }
 }
