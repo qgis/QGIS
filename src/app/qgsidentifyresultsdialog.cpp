@@ -481,19 +481,6 @@ QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QObject *object )
   return nullptr;
 }
 
-QTreeWidgetItem *QgsIdentifyResultsDialog::findResultFeaturesItem( QTreeWidgetItem *layerItem )
-{
-  for ( int i = 0; i < layerItem->childCount(); i++ )
-  {
-    QTreeWidgetItem *item = layerItem->child( i );
-
-    if ( item->data( 0, Qt::UserRole ).toString() == QLatin1String( "count" ) )
-      return item;
-  }
-
-  return nullptr;
-}
-
 void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyResult &result )
 {
   switch ( result.mLayer->type() )
@@ -539,19 +526,12 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   featItem->setData( 0, Qt::UserRole + 1, mFeatures.size() );
   mFeatures << f;
   layItem->addChild( featItem );
-
-  QTreeWidgetItem *resultFeaturesCountItem = findResultFeaturesItem( layItem );
-  if ( ! resultFeaturesCountItem )
-  {
-    resultFeaturesCountItem = new QTreeWidgetItem( QStringList() << tr( "(Count Results)" ) );
-    resultFeaturesCountItem->setData( 0, Qt::UserRole, QLatin1String( "count" ) );
-    layItem->insertChild( 0, resultFeaturesCountItem );
-  }
-
-  if ( resultFeaturesCountItem )
-  {
-    resultFeaturesCountItem->setText( 1, QString::number( layItem->childCount() - 1 ) );
-  }
+  layItem->setFirstColumnSpanned( true );
+  QString countSuffix = lstResults->topLevelItemCount() > 1 || layItem->childCount() > 1
+                        ? QStringLiteral( " [%1]" ).arg( layItem->childCount() )
+                        : QString();
+  QgsLogger::warning( countSuffix + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
+  layItem->setText( 0, QStringLiteral( "%1 %2" ).arg( vlayer->name(), countSuffix ) );
 
   if ( derivedAttributes.size() >= 0 )
   {
@@ -1131,9 +1111,6 @@ void QgsIdentifyResultsDialog::editingToggled()
   for ( i = 0; i < layItem->childCount(); i++ )
   {
     QTreeWidgetItem *featItem = layItem->child( i );
-
-    if ( featItem->data( 0, Qt::UserRole ).toString() == QLatin1String( "result features" ) )
-      continue;
 
     int j;
     for ( j = 0; j < featItem->childCount() && featItem->child( j )->data( 0, Qt::UserRole ).toString() != QLatin1String( "actions" ); j++ )
