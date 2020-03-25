@@ -38,6 +38,7 @@
 #include <QFileInfo>
 #include <QRegExp>
 #include <QScreen>
+#include <QFont>
 
 //graph
 #include <qwt_plot.h>
@@ -511,6 +512,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     layItem = new QTreeWidgetItem( QStringList() << vlayer->name() );
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( vlayer ) ) );
     lstResults->addTopLevelItem( layItem );
+    QFont boldFont;
+    boldFont.setBold( true );
+    layItem->setFont( 0, boldFont );
 
     connect( vlayer, &QObject::destroyed, this, &QgsIdentifyResultsDialog::layerDestroyed );
     connect( vlayer, &QgsMapLayer::crsChanged, this, &QgsIdentifyResultsDialog::layerDestroyed );
@@ -527,10 +531,10 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   mFeatures << f;
   layItem->addChild( featItem );
   layItem->setFirstColumnSpanned( true );
-  QString countSuffix = lstResults->topLevelItemCount() > 1 || layItem->childCount() > 1
+
+  QString countSuffix = layItem->childCount() > 1
                         ? QStringLiteral( " [%1]" ).arg( layItem->childCount() )
                         : QString();
-  QgsLogger::warning( countSuffix + QStringLiteral( __FILE__ ) + ": " + QString::number( __LINE__ ) );
   layItem->setText( 0, QStringLiteral( "%1 %2" ).arg( vlayer->name(), countSuffix ) );
 
   if ( derivedAttributes.size() >= 0 )
