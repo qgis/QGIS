@@ -75,6 +75,7 @@
 %Include auto_generated/qgsexpressionlineedit.sip
 %Include auto_generated/qgsexpressionselectiondialog.sip
 %Include auto_generated/qgsextentgroupbox.sip
+%Include auto_generated/qgsextentwidget.sip
 %Include auto_generated/qgsexternalresourcewidget.sip
 %Include auto_generated/qgsfeaturelistcombobox.sip
 %Include auto_generated/qgsfeatureselectiondlg.sip

@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsextentgroupbox.h                                          *
+ * src/gui/qgsextentwidget.h                                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -11,26 +11,26 @@
 
 
 
-class QgsExtentGroupBox : QgsCollapsibleGroupBox
+
+class QgsExtentWidget : QWidget
 {
 %Docstring
-Collapsible group box for configuration of extent, typically for a save operation.
+A widget for configuration of a map extent.
 
 Besides allowing the user to enter the extent manually, it comes with options to use
 original extent or extent defined by the current view in map canvas.
 
-When using the group box, make sure to call setOriginalExtent(), setCurrentExtent() and setOutputCrs() during initialization.
+When using the widget, make sure to call setOriginalExtent(), setCurrentExtent() and setOutputCrs() during initialization.
 
-.. seealso:: :py:class:`QgsExtentWidget`
+.. seealso:: :py:class:`QgsExtentGroupBox`
 
-.. versionadded:: 2.4
+.. versionadded:: 3.14
 %End
 
 %TypeHeaderCode
-#include "qgsextentgroupbox.h"
+#include "qgsextentwidget.h"
 %End
   public:
-
 
     enum ExtentState
     {
@@ -41,9 +41,9 @@ When using the group box, make sure to call setOriginalExtent(), setCurrentExten
       DrawOnCanvas,
     };
 
-    explicit QgsExtentGroupBox( QWidget *parent /TransferThis/ = 0 );
+    explicit QgsExtentWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsExtentGroupBox.
+Constructor for QgsExtentWidget.
 %End
 
     void setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs );
@@ -122,31 +122,11 @@ Returns the extent shown in the widget - in output CRS coordinates.
 Returns the current output CRS, used in the display.
 
 .. seealso:: :py:func:`outputExtent`
-
-.. versionadded:: 3.0
 %End
 
-    QgsExtentGroupBox::ExtentState extentState() const;
+    QgsExtentWidget::ExtentState extentState() const;
 %Docstring
 Returns the currently selected state for the widget's extent.
-%End
-
-    void setTitleBase( const QString &title );
-%Docstring
-Sets the base part of ``title`` of the group box (will be appended with extent state)
-
-.. seealso:: :py:func:`titleBase`
-
-.. versionadded:: 2.12
-%End
-
-    QString titleBase() const;
-%Docstring
-Returns the base part of title of the group box (will be appended with extent state).
-
-.. seealso:: :py:func:`setTitleBase`
-
-.. versionadded:: 2.12
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );
@@ -154,16 +134,22 @@ Returns the base part of title of the group box (will be appended with extent st
 Sets the map canvas to enable dragging of extent on a canvas.
 
 :param canvas: the map canvas
-
-.. versionadded:: 3.0
 %End
 
     QSize ratio() const;
 %Docstring
 Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
 If the aspect ratio isn't fixed, the width and height will be set to zero.
+%End
 
-.. versionadded:: 3.0
+    QString extentLayerName() const;
+%Docstring
+Returns the name of the extent layer.
+%End
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the widget is in a valid state, i.e. has an extent set.
 %End
 
   public slots:
@@ -186,15 +172,11 @@ Sets the output extent to a custom extent (may be transformed to output CRS).
     void setOutputExtentFromLayer( const QgsMapLayer *layer );
 %Docstring
 Sets the output extent to match a ``layer``'s extent (may be transformed to output CRS).
-
-.. versionadded:: 3.0
 %End
 
     void setOutputExtentFromDrawOnCanvas();
 %Docstring
 Sets the output extent by dragging on the canvas.
-
-.. versionadded:: 3.0
 %End
 
     void setRatio( QSize ratio );
@@ -203,8 +185,6 @@ Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
 To unset a fixed aspect ratio, set the width and height to zero.
 
 :param ratio: aspect ratio's width and height
-
-.. versionadded:: 3.0
 %End
 
   signals:
@@ -214,12 +194,17 @@ To unset a fixed aspect ratio, set the width and height to zero.
 Emitted when the widget's extent is changed.
 %End
 
+    void validationChanged( bool valid );
+%Docstring
+Emitted when the widget's validation state changes.
+%End
+
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsextentgroupbox.h                                          *
+ * src/gui/qgsextentwidget.h                                            *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

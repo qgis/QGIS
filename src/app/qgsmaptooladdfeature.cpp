@@ -33,7 +33,7 @@
 #include "qgsfeatureaction.h"
 #include "qgisapp.h"
 #include "qgsexpressioncontextutils.h"
-
+#include "qgsrubberband.h"
 #include <QSettings>
 
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode )
