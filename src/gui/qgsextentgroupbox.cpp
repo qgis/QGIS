@@ -20,7 +20,7 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
   , mTitleBase( tr( "Extent" ) )
 {
-  mWidget = new QgsExtentWidget();
+  mWidget = new QgsExtentWidget( nullptr, QgsExtentWidget::ExpandedStyle );
   QVBoxLayout *layout = new QVBoxLayout();
   layout->addWidget( mWidget );
   setLayout( layout );

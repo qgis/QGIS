@@ -28,6 +28,7 @@
 #include "qgis_gui.h"
 
 #include <memory>
+#include <QRegularExpression>
 
 class QgsCoordinateReferenceSystem;
 class QgsMapLayerModel;
@@ -62,10 +63,17 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
       DrawOnCanvas, //!< Extent taken from a rectangled drawn onto the map canvas
     };
 
+    //! Widget styles
+    enum WidgetStyle
+    {
+      CondensedStyle, //!< Shows a compressed widget, for use when available space is minimal
+      ExpandedStyle, //!< Shows an expanded widget, for use when space is not constrained
+    };
+
     /**
      * Constructor for QgsExtentWidget.
      */
-    explicit QgsExtentWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsExtentWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, WidgetStyle style = CondensedStyle );
 
     /**
      * Sets the original extent and coordinate reference system for the widget. This should be called as part of initialization.
@@ -213,6 +221,7 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
   private:
     void setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, QgsExtentWidget::ExtentState state );
     void setOutputExtentFromLineEdit();
+    void setOutputExtentFromCondensedLineEdit();
 
     ExtentState mExtentState = OriginalExtent;
 
@@ -224,9 +233,14 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
     QgsRectangle mOriginalExtent;
     QgsCoordinateReferenceSystem mOriginalCrs;
 
+    QMenu *mMenu = nullptr;
     QMenu *mLayerMenu = nullptr;
     QgsMapLayerModel *mMapLayerModel = nullptr;
-    QList< QAction * > mMenuActions;
+    QList< QAction * > mLayerMenuActions;
+    QAction *mUseCanvasExtentAction = nullptr;
+    QAction *mUseCurrentExtentAction = nullptr;
+    QAction *mDrawOnCanvasAction = nullptr;
+
     QPointer< const QgsMapLayer > mExtentLayer;
     QString mExtentLayerName;
 
@@ -236,6 +250,9 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
     QSize mRatio;
 
     bool mIsValid = false;
+    bool mHasFixedOutputCrs = false;
+
+    QRegularExpression mCondensedRe;
     void setValid( bool valid );
 
     void setExtentToLayerExtent( const QString &layerId );

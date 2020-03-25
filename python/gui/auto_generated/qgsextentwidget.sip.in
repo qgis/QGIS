@@ -41,7 +41,13 @@ When using the widget, make sure to call setOriginalExtent(), setCurrentExtent()
       DrawOnCanvas,
     };
 
-    explicit QgsExtentWidget( QWidget *parent /TransferThis/ = 0 );
+    enum WidgetStyle
+    {
+      CondensedStyle,
+      ExpandedStyle,
+    };
+
+    explicit QgsExtentWidget( QWidget *parent /TransferThis/ = 0, WidgetStyle style = CondensedStyle );
 %Docstring
 Constructor for QgsExtentWidget.
 %End
