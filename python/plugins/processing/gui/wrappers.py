@@ -1141,20 +1141,24 @@ class EnumWidgetWrapper(WidgetWrapper):
 class FeatureSourceWidgetWrapper(WidgetWrapper):
     NOT_SELECTED = '[Not selected]'
 
+    def __init__(self, *args, **kwargs):
+        self.map_layer_combo = None
+        super().__init__(*args, **kwargs)
+
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
-            self.combo = QgsProcessingMapLayerComboBox(self.parameterDefinition())
+            self.map_layer_combo = QgsProcessingMapLayerComboBox(self.parameterDefinition())
             self.context = dataobjects.createContext()
 
             try:
                 if iface.activeLayer().type() == QgsMapLayerType.VectorLayer:
-                    self.combo.setLayer(iface.activeLayer())
+                    self.map_layer_combo.setLayer(iface.activeLayer())
             except:
                 pass
 
-            self.combo.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            self.map_layer_combo.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
 
-            return self.combo
+            return self.map_layer_combo
 
         elif self.dialogType == DIALOG_BATCH:
             widget = BatchInputSelectionPanel(self.parameterDefinition(), self.row, self.col, self.dialog)
@@ -1186,8 +1190,8 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             return widget
 
     def setWidgetContext(self, context):
-        if isinstance(self.combo, QgsProcessingMapLayerComboBox):
-            self.combo.setWidgetContext(context)
+        if self.map_layer_combo:
+            self.map_layer_combo.setWidgetContext(context)
         super().setWidgetContext(context)
 
     def selectFile(self):
@@ -1213,7 +1217,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
                 layer = QgsProject.instance().mapLayer(value)
                 if layer is not None:
                     value = layer
-            self.combo.setValue(value, self.context)
+            self.map_layer_combo.setValue(value, self.context)
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setValue(value)
         else:
@@ -1222,7 +1226,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
 
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
-            return self.combo.value()
+            return self.map_layer_combo.value()
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.getValue()
         else:
