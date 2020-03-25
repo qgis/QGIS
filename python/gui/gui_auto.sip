@@ -99,6 +99,7 @@
 %Include auto_generated/qgsgui.sip
 %Include auto_generated/qgshelp.sip
 %Include auto_generated/qgshighlight.sip
+%Include auto_generated/qgshighlightablelineedit.sip
 %Include auto_generated/qgshistogramwidget.sip
 %Include auto_generated/qgsidentifymenu.sip
 %Include auto_generated/qgskeyvaluewidget.sip
