@@ -360,12 +360,19 @@ class TestQgsFieldModel(unittest.TestCase):
         self.assertEqual(QgsFieldModel.fieldToolTip(f), "<b>my_real</b><br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL</font>")
         f.setComment('Comment text')
         self.assertEqual(QgsFieldModel.fieldToolTip(f), "<b>my_real</b><br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL</font><br><em>Comment text</em>")
-        self.assertEqual(QgsFieldModel.fieldToolTip(f, '1+1'), "<b>my_real</b><br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL</font><br><em>Comment text</em><br><font style='font-family:monospace;'>1+1</font>")
+
+    def testFieldTooltipExtended(self):
+        layer = QgsVectorLayer("Point?", "tooltip", "memory")
+        f = QgsField('my_real', QVariant.Double, 'real', 8, 3, 'Comment text')
+        layer.addExpressionField('1+1', f)
+        layer.updateFields()
+        self.assertEqual(QgsFieldModel.fieldToolTipExtended(QgsField('my_string', QVariant.String, 'string'), layer), '')
+        self.assertEqual(QgsFieldModel.fieldToolTipExtended(f, layer), "<b>my_real</b><br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL</font><br><em>Comment text</em><br><font style='font-family:monospace;'>1+1</font>")
         f.setAlias('my alias')
         constraints = f.constraints()
         constraints.setConstraint(QgsFieldConstraints.ConstraintUnique)
         f.setConstraints(constraints)
-        self.assertEqual(QgsFieldModel.fieldToolTip(f, '1+1'), "<b>my alias</b> (my_real)<br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL UNIQUE</font><br><em>Comment text</em><br><font style='font-family:monospace;'>1+1</font>")
+        self.assertEqual(QgsFieldModel.fieldToolTipExtended(f, layer), "<b>my alias</b> (my_real)<br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL UNIQUE</font><br><em>Comment text</em><br><font style='font-family:monospace;'>1+1</font>")
 
 
 if __name__ == '__main__':
