@@ -22,7 +22,11 @@ A QgsFilterLineEdit subclass with the ability to "highlight" the edges of the wi
 #include "qgshighlightablelineedit.h"
 %End
   public:
+
     QgsHighlightableLineEdit( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsHighlightableLineEdit, with the specified ``parent`` widget.
+%End
 
     bool isHighlighted() const;
 %Docstring
