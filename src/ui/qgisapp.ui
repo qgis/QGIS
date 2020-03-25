@@ -1210,7 +1210,7 @@
     <string>Deselect Features from All Layers</string>
    </property>
     <property name="shortcut">
-    <string>Alt+Shift+A</string>
+    <string>Ctrl+Alt+A</string>
    </property>
   </action>
   <action name="mActionDeselectActiveLayer">
