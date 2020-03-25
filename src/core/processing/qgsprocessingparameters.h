@@ -1156,6 +1156,14 @@ class CORE_EXPORT QgsProcessingParameters
     static QgsCoordinateReferenceSystem parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 
     /**
+     * Returns the coordinate reference system associated with an extent parameter value.
+     *
+     * \see parameterAsExtent()
+     */
+    static QgsCoordinateReferenceSystem parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
+
+    /**
      * Evaluates the parameter with matching \a definition to a point.
      *
      * If \a crs is set then the point will be automatically reprojected so that it is in the specified \a crs.

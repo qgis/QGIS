@@ -1181,7 +1181,12 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
 QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   QVariant val = parameters.value( definition->name() );
+  return parameterAsExtentCrs( definition, val, context );
+}
 
+QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+{
+  QVariant val = value;
   if ( val.canConvert< QgsReferencedRectangle >() )
   {
     QgsReferencedRectangle rr = val.value<QgsReferencedRectangle>();

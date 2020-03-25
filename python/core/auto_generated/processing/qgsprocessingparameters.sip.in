@@ -1080,6 +1080,14 @@ Returns the coordinate reference system associated with an extent parameter valu
 .. seealso:: :py:func:`parameterAsExtent`
 %End
 
+    static QgsCoordinateReferenceSystem parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Returns the coordinate reference system associated with an extent parameter value.
+
+.. seealso:: :py:func:`parameterAsExtent`
+%End
+
+
     static QgsPointXY parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
                                         const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 %Docstring

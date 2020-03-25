@@ -226,6 +226,12 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      */
     void validationChanged( bool valid );
 
+    /**
+     * Emitted when the parent dialog visibility must be changed (e.g.
+     * to permit access to the map canvas)
+     */
+    void toggleDialogVisibility( bool visible );
+
   protected:
 
     void dragEnterEvent( QDragEnterEvent *event ) override;

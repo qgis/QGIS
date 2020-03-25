@@ -50,6 +50,7 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingProviderConnectionWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingDatabaseSchemaWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingDatabaseTableWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingExtentWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
