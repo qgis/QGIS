@@ -154,10 +154,9 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
   setRow( row, idx, fields.at( idx ) );
   mFieldsList->setCurrentCell( row, idx );
 
-  bool dark = QgsGui::instance()->nativePlatformInterface()->hasDarkTheme();
-  QColor expressionColor = !dark ? QColor( 200, 200, 255 ) : QColor( 0, 80, 0 );
-  QColor joinColor = !dark ? QColor( 200, 255, 200 ) : QColor( 150, 0, 0 );
-  QColor defaultColor = !dark ? QColor( 255, 255, 200 ) : QColor();
+  QColor expressionColor = QColor( 103, 0, 243, 44 );
+  QColor joinColor = QColor( 0, 243, 79, 44 );
+  QColor defaultColor = QColor( 252, 255, 79, 44 );
 
   for ( int i = 0; i < mFieldsList->columnCount(); i++ )
   {
