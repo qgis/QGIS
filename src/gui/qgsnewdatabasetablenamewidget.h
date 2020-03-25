@@ -22,6 +22,7 @@
 #include "qgis_gui.h"
 #include "qgsbrowserguimodel.h"
 #include "qgsbrowserproxymodel.h"
+#include "qgspanelwidget.h"
 
 #include <QWidget>
 #include <QDialog>
@@ -40,7 +41,7 @@
  *
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QWidget, private Ui::QgsNewDatabaseTableNameWidget
+class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QgsPanelWidget, private Ui::QgsNewDatabaseTableNameWidget
 {
     Q_OBJECT
 
