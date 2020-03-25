@@ -558,7 +558,9 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
       QStringLiteral( "sqlite" ),
       QStringLiteral( "db" ),
       QStringLiteral( "gdb" ),
-      QStringLiteral( "kml" ) };
+      QStringLiteral( "kml" ),
+      QStringLiteral( "osm" ),
+      QStringLiteral( "pbf" ) };
   static QStringList sOgrSupportedDbDriverNames { QStringLiteral( "GPKG" ),
       QStringLiteral( "db" ),
       QStringLiteral( "gdb" ) };
