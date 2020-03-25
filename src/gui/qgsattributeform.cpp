@@ -1506,11 +1506,8 @@ void QgsAttributeForm::init()
       bool labelOnTop = mLayer->editFormConfig().labelOnTop( idx );
 
       // This will also create the widget
-      QString expressionString = fields.fieldOrigin( idx ) == QgsFields::OriginExpression
-                                 ? mLayer->expressionField( idx )
-                                 : QString();
       QLabel *l = new QLabel( labelText );
-      l->setToolTip( QgsFieldModel::fieldToolTip( field, expressionString ) );
+      l->setToolTip( QgsFieldModel::fieldToolTipExtended( field, mLayer ) );
       QSvgWidget *i = new QSvgWidget();
       i->setFixedSize( 18, 18 );
 

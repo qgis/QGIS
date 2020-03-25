@@ -464,7 +464,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
   }
 }
 
-QString QgsFieldModel::fieldToolTip( const QgsField &field, const QString &expression )
+QString QgsFieldModel::fieldToolTip( const QgsField &field )
 {
   QString toolTip;
   if ( !field.alias().isEmpty() )
@@ -485,9 +485,25 @@ QString QgsFieldModel::fieldToolTip( const QgsField &field, const QString &expre
     toolTip += QStringLiteral( "<br><em>%1</em>" ).arg( comment );
   }
 
-  if ( ! expression.isEmpty() )
+  return toolTip;
+}
+
+QString QgsFieldModel::fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer )
+{
+  QString toolTip = QgsFieldModel::fieldToolTip( field );
+  const QgsFields fields = layer->fields();
+  int fieldIdx = fields.indexOf( field.name() );
+
+  if ( fieldIdx < 0 )
+    return QString();
+
+  QString expressionString = fields.fieldOrigin( fieldIdx ) == QgsFields::OriginExpression
+                             ? layer->expressionField( fieldIdx )
+                             : QString();
+
+  if ( !expressionString.isEmpty() )
   {
-    toolTip += QStringLiteral( "<br><font style='font-family:monospace;'>%3</font>" ).arg( expression );
+    toolTip += QStringLiteral( "<br><font style='font-family:monospace;'>%3</font>" ).arg( expressionString );
   }
 
   return toolTip;
