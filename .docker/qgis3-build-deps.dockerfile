@@ -35,6 +35,7 @@ RUN  apt-get update \
     libgsl-dev \
     libpq-dev \
     libproj-dev \
+    libprotobuf-dev \
     libqca-qt5-2-dev \
     libqca-qt5-2-plugins \
     libqt53drender5 \
