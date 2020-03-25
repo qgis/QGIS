@@ -894,7 +894,7 @@ static void _getTitle( const QDomDocument &doc, QString &title )
 
   if ( !nl.count() )
   {
-    QgsDebugMsg( QStringLiteral( "unable to find title element" ) );
+    QgsDebugMsgLevel( QStringLiteral( "unable to find title element" ), 2 );
     return;
   }
 
@@ -902,7 +902,7 @@ static void _getTitle( const QDomDocument &doc, QString &title )
 
   if ( !titleNode.hasChildNodes() ) // if not, then there's no actual text
   {
-    QgsDebugMsg( QStringLiteral( "unable to find title element" ) );
+    QgsDebugMsgLevel( QStringLiteral( "unable to find title element" ), 2 );
     return;
   }
 
@@ -910,7 +910,7 @@ static void _getTitle( const QDomDocument &doc, QString &title )
 
   if ( !titleTextNode.isText() )
   {
-    QgsDebugMsg( QStringLiteral( "unable to find title element" ) );
+    QgsDebugMsgLevel( QStringLiteral( "unable to find title element" ), 2 );
     return;
   }
 
