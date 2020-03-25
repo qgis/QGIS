@@ -202,7 +202,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
         float randPos = lineLength * ( float ) rand() / RAND_MAX;
         QgsGeometry rpGeom = QgsGeometry( lGeom.interpolate( randPos ) );
 
-        if ( not rpGeom.isNull() && not rpGeom.isEmpty() )
+        if ( !rpGeom.isNull() && !rpGeom.isEmpty() )
         {
           if ( mMinDistance != 0 && pointsAddedForThisFeature > 0 )
           {
