@@ -51,7 +51,7 @@ void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input line layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "POINTS_NUMBER" ), QObject::tr( "Number of points for each feature" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "MIN_DISTANCE" ), QObject::tr( "Minimum distance between points" ), 0, QStringLiteral( "INPUT" ), true, 0 ) );
-  
+
   std::unique_ptr< QgsProcessingParameterNumber > maxAttempts_param = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAX_TRIES_PER_POINT" ), QObject::tr( "Maximum number of search attempts (for Min. dist. > 0)" ), QgsProcessingParameterNumber::Integer, 10, true, 1, 1000 );
   maxAttempts_param->setFlags( maxAttempts_param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( maxAttempts_param.release() );
@@ -135,7 +135,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
 
   QString ldest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ),
-      context, ldest, fields, QgsWkbTypes::Point, lineSource->sourceCrs() ) );
+                                          context, ldest, fields, QgsWkbTypes::Point, lineSource->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -156,7 +156,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   long numberOfFeatures = lineSource->featureCount();
   QgsFeature lFeat;
   QgsFeatureIterator fitL = mIncludeLineAttr ? lineSource->getFeatures()
-      : lineSource->getFeatures( QgsFeatureRequest().setNoAttributes());
+                            : lineSource->getFeatures( QgsFeatureRequest().setNoAttributes());
   while ( fitL.nextFeature( lFeat ) )
   {
     featureCount++;
@@ -182,7 +182,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     }
     float lineLength = lGeom.length();
     int pointsAddedForThisFeature = 0;
-    for ( long i = 0; i < mNumPoints; i++)
+    for ( long i = 0; i < mNumPoints; i++ )
     {
       if ( feedback->isCanceled() )
       {
@@ -232,16 +232,15 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
           sink->addFeature( f, QgsFeatureSink::FastInsert );
           totNPoints++;
           pointsAddedForThisFeature++;
-          saved += (mMaxAttempts - distCheckIterations);
+          saved += ( mMaxAttempts - distCheckIterations );
 
-          feedback->setProgress( static_cast<int>( 100 * static_cast<double>( tries + saved ) / static_cast<double>( mNumPoints * mMaxAttempts * (numberOfFeatures - emptyOrNullGeom) ) ) );
+          feedback->setProgress( static_cast<int>( 100 * static_cast<double>( tries + saved ) / static_cast<double>( mNumPoints * mMaxAttempts * ( numberOfFeatures - emptyOrNullGeom) ) ) );
           break;
         }
         else
         {
-          feedback->setProgress( static_cast<int>( 100 * static_cast<double>( tries + saved ) / static_cast<double>( mNumPoints * mMaxAttempts * (numberOfFeatures - emptyOrNullGeom) ) ) );
+          feedback->setProgress( static_cast<int>( 100 * static_cast<double>( tries + saved ) / static_cast<double>( mNumPoints * mMaxAttempts * ( numberOfFeatures - emptyOrNullGeom) ) ) );
         }
-        
       }
     }
     if ( pointsAddedForThisFeature < mNumPoints )
