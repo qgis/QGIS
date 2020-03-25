@@ -77,6 +77,7 @@
 #include "qgsprocessingoutputdestinationwidget.h"
 #include "qgssettings.h"
 #include "qgsprocessingfeaturesourceoptionswidget.h"
+#include "qgsextentwidget.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -203,6 +204,7 @@ class TestProcessingGui : public QObject
     void testLayoutItemWrapper();
     void testPointPanel();
     void testPointWrapper();
+    void testExtentWrapper();
     void testColorWrapper();
     void testCoordinateOperationWrapper();
     void mapLayerComboBox();
@@ -3703,6 +3705,127 @@ void TestProcessingGui::testPointWrapper()
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
   QCOMPARE( static_cast< QgsProcessingParameterPoint * >( def.get() )->defaultValue().toString(), QStringLiteral( "4.000000,7.000000" ) );
 
+}
+
+void TestProcessingGui::testExtentWrapper()
+{
+  auto testWrapper = []( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterExtent param( QStringLiteral( "extent" ), QStringLiteral( "extent" ), false );
+
+    QgsProcessingExtentWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingExtentWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( "1,2,3,4", context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1.000000000,2.000000000,3.000000000,4.000000000" ) );
+    QCOMPARE( static_cast< QgsExtentWidget * >( wrapper.wrappedWidget() )->outputExtent(), QgsRectangle( 1, 3, 2, 4 ) );
+
+    wrapper.setWidgetValue( "1,2,3,4 [EPSG:3111]", context );
+    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "1.000000000,2.000000000,3.000000000,4.000000000 [EPSG:3111]" ) );
+    QCOMPARE( static_cast< QgsExtentWidget * >( wrapper.wrappedWidget() )->outputExtent(), QgsRectangle( 1, 3, 2, 4 ) );
+    QCOMPARE( static_cast< QgsExtentWidget * >( wrapper.wrappedWidget() )->outputCrs().authid(), QStringLiteral( "EPSG:3111" ) );
+
+    // check signal
+    static_cast< QgsExtentWidget * >( wrapper.wrappedWidget() )->setOutputExtentFromUser( QgsRectangle( 11, 22, 33, 44 ), QgsCoordinateReferenceSystem() );
+    QCOMPARE( spy.count(), 3 );
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "extent" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    delete w;
+
+    // optional
+
+    QgsProcessingParameterExtent param2( QStringLiteral( "extent" ), QStringLiteral( "extent" ), QVariant(), true );
+
+    QgsProcessingExtentWidgetWrapper wrapper2( &param2, type );
+    w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingExtentWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( "1,2,3,4", context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( static_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->outputExtent(), QgsRectangle( 1, 3, 2, 4 ) );
+    QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1.000000000,2.000000000,3.000000000,4.000000000" ) );
+
+    wrapper2.setWidgetValue( "1,2,3,4 [EPSG:3111]", context );
+    QCOMPARE( spy2.count(), 2 );
+    QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "1.000000000,2.000000000,3.000000000,4.000000000 [EPSG:3111]" ) );
+    QCOMPARE( static_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->outputExtent(), QgsRectangle( 1, 3, 2, 4 ) );
+    QCOMPARE( static_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->outputCrs().authid(), QStringLiteral( "EPSG:3111" ) );
+    wrapper2.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy2.count(), 3 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+    QVERIFY( !static_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->isValid() );
+
+    wrapper2.setWidgetValue( "1,3,4,7", context );
+    QCOMPARE( spy2.count(), 4 );
+    wrapper2.setWidgetValue( "", context );
+    QCOMPARE( spy2.count(), 5 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+    QVERIFY( !static_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->isValid() );
+
+    // check signals
+    wrapper2.setWidgetValue( "1,3,9,8", context );
+    QCOMPARE( spy2.count(), 6 );
+    static_cast< QgsExtentWidget * >( wrapper2.wrappedWidget() )->clear();
+    QCOMPARE( spy2.count(), 7 );
+
+    delete w;
+
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+
+  // config widget
+  QgsProcessingContext context;
+  QgsProcessingParameterWidgetContext widgetContext;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "extent" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterExtent extentParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QStringLiteral( "1,2,3,4" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "extent" ), context, widgetContext, &extentParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterExtent * >( def.get() )->defaultValue().toString(), QStringLiteral( "1.000000000,2.000000000,3.000000000,4.000000000" ) );
+  extentParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  extentParam.setDefaultValue( QStringLiteral( "4,7,8,9" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "extent" ), context, widgetContext, &extentParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterExtent * >( def.get() )->defaultValue().toString(), QStringLiteral( "4.000000000,7.000000000,8.000000000,9.000000000" ) );
 }
 
 void TestProcessingGui::testColorWrapper()

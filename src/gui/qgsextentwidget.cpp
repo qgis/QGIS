@@ -259,6 +259,7 @@ void QgsExtentWidget::clear()
   whileBlocking( mXMaxLineEdit )->clear();
   whileBlocking( mYMinLineEdit )->clear();
   whileBlocking( mYMaxLineEdit )->clear();
+  whileBlocking( mCondensedLineEdit )->clearValue();
   setValid( false );
 
   if ( prevWasNull )
@@ -388,13 +389,14 @@ void QgsExtentWidget::setOutputExtentFromDrawOnCanvas()
       connect( mMapToolExtent.get(), &QgsMapToolExtent::extentChanged, this, &QgsExtentWidget::extentDrawn );
       connect( mMapToolExtent.get(), &QgsMapTool::deactivated, this, [ = ]
       {
-        window()->setVisible( true );
+        emit toggleDialogVisibility( true );
         mMapToolPrevious = nullptr;
       } );
     }
     mMapToolExtent->setRatio( mRatio );
     mCanvas->setMapTool( mMapToolExtent.get() );
-    window()->setVisible( false );
+
+    emit toggleDialogVisibility( false );
   }
 }
 
@@ -402,7 +404,7 @@ void QgsExtentWidget::extentDrawn( const QgsRectangle &extent )
 {
   setOutputExtent( extent, mCanvas->mapSettings().destinationCrs(), DrawOnCanvas );
   mCanvas->setMapTool( mMapToolPrevious );
-  window()->setVisible( true );
+  emit toggleDialogVisibility( true );
   mMapToolPrevious = nullptr;
 }
 

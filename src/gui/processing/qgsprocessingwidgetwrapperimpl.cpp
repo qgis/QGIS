@@ -51,6 +51,7 @@
 #include "qgsproviderconnectioncombobox.h"
 #include "qgsdatabaseschemacombobox.h"
 #include "qgsdatabasetablecombobox.h"
+#include "qgsextentwidget.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -4716,6 +4717,194 @@ void QgsProcessingDatabaseTableWidgetWrapper::postInitialize( const QList<QgsAbs
 }
 
 
+//
+// QgsProcessingExtentWidgetWrapper
+//
+
+QgsProcessingExtentParameterDefinitionWidget::QgsProcessingExtentParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultWidget = new QgsExtentWidget();
+  mDefaultWidget->setNullValueAllowed( true, tr( "Not set" ) );
+  if ( const QgsProcessingParameterExtent *extentParam = dynamic_cast<const QgsProcessingParameterExtent *>( definition ) )
+  {
+    if ( extentParam->defaultValue().isValid() )
+    {
+      QgsRectangle rect = QgsProcessingParameters::parameterAsExtent( extentParam, extentParam->defaultValue(), context );
+      QgsCoordinateReferenceSystem crs = QgsProcessingParameters::parameterAsExtentCrs( extentParam, extentParam->defaultValue(), context );
+      mDefaultWidget->setCurrentExtent( rect, crs );
+      mDefaultWidget->setOutputExtentFromCurrent();
+    }
+    else
+    {
+      mDefaultWidget->clear();
+    }
+  }
+
+  vlayout->addWidget( mDefaultWidget );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingExtentParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  const QString defaultVal = mDefaultWidget->isValid() ? QStringLiteral( "%1,%2,%3,%4%5" ).arg(
+                               QString::number( mDefaultWidget->outputExtent().xMinimum(), 'f', 9 ),
+                               QString::number( mDefaultWidget->outputExtent().xMaximum(), 'f', 9 ),
+                               QString::number( mDefaultWidget->outputExtent().yMinimum(), 'f', 9 ),
+                               QString::number( mDefaultWidget->outputExtent().yMaximum(), 'f', 9 ),
+                               mDefaultWidget->outputCrs().isValid() ? QStringLiteral( " [%1]" ).arg( mDefaultWidget->outputCrs().authid() ) : QString()
+                             ) : QString();
+  auto param = qgis::make_unique< QgsProcessingParameterExtent >( name, description, !defaultVal.isEmpty() ? QVariant( defaultVal ) : QVariant() );
+  param->setFlags( flags );
+  return param.release();
+}
+
+
+
+QgsProcessingExtentWidgetWrapper::QgsProcessingExtentWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingExtentWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterExtent *extentParam = dynamic_cast< const QgsProcessingParameterExtent *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    case QgsProcessingGui::Modeler:
+    {
+      mExtentWidget = new QgsExtentWidget( nullptr );
+      if ( widgetContext().mapCanvas() )
+        mExtentWidget->setMapCanvas( widgetContext().mapCanvas() );
+
+      if ( extentParam->flags() & QgsProcessingParameterDefinition::FlagOptional )
+        mExtentWidget->setNullValueAllowed( true, tr( "Not set" ) );
+
+      mExtentWidget->setToolTip( parameterDefinition()->toolTip() );
+
+      connect( mExtentWidget, &QgsExtentWidget::extentChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+
+      if ( mDialog && type() != QgsProcessingGui::Modeler )
+        setDialog( mDialog ); // setup connections to panel - dialog was previously set before the widget was created
+
+      return mExtentWidget;
+    }
+  }
+  return nullptr;
+}
+
+void QgsProcessingExtentWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( context );
+  if ( mExtentWidget && context.mapCanvas() && type() != QgsProcessingGui::Modeler )
+    mExtentWidget->setMapCanvas( context.mapCanvas() );
+}
+
+void QgsProcessingExtentWidgetWrapper::setDialog( QDialog *dialog )
+{
+  mDialog = dialog;
+  if ( mExtentWidget && mDialog && type() != QgsProcessingGui::Modeler )
+  {
+    connect( mExtentWidget, &QgsExtentWidget::toggleDialogVisibility, mDialog, [ = ]( bool visible )
+    {
+      if ( !visible )
+        mDialog->showMinimized();
+      else
+      {
+        mDialog->showNormal();
+        mDialog->raise();
+        mDialog->activateWindow();
+      }
+    } );
+  }
+  QgsAbstractProcessingParameterWidgetWrapper::setDialog( dialog );
+}
+
+void QgsProcessingExtentWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mExtentWidget )
+  {
+    if ( !value.isValid() || ( value.type() == QVariant::String && value.toString().isEmpty() ) )
+      mExtentWidget->clear();
+    else
+    {
+      QgsRectangle r = QgsProcessingParameters::parameterAsExtent( parameterDefinition(), value, context );
+      QgsCoordinateReferenceSystem crs = QgsProcessingParameters::parameterAsPointCrs( parameterDefinition(), value, context );
+      mExtentWidget->setCurrentExtent( r, crs );
+      mExtentWidget->setOutputExtentFromCurrent();
+    }
+  }
+}
+
+QVariant QgsProcessingExtentWidgetWrapper::widgetValue() const
+{
+  if ( mExtentWidget )
+  {
+    const QString val = mExtentWidget->isValid() ? QStringLiteral( "%1,%2,%3,%4%5" ).arg(
+                          QString::number( mExtentWidget->outputExtent().xMinimum(), 'f', 9 ),
+                          QString::number( mExtentWidget->outputExtent().xMaximum(), 'f', 9 ),
+                          QString::number( mExtentWidget->outputExtent().yMinimum(), 'f', 9 ),
+                          QString::number( mExtentWidget->outputExtent().yMaximum(), 'f', 9 ),
+                          mExtentWidget->outputCrs().isValid() ? QStringLiteral( " [%1]" ).arg( mExtentWidget->outputCrs().authid() ) : QString()
+                        ) : QString();
+
+    return val.isEmpty() ? QVariant() : QVariant( val );
+  }
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingExtentWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterExtent::typeName()
+         << QgsProcessingParameterString::typeName();
+}
+
+QStringList QgsProcessingExtentWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+QList<int> QgsProcessingExtentWidgetWrapper::compatibleDataTypes() const
+{
+  return QList<int>();
+}
+
+QString QgsProcessingExtentWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "string of the format 'x min,x max,y min,y max' or a geometry value (bounding box is used)" );
+}
+
+QString QgsProcessingExtentWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterExtent::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingExtentWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingExtentWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingExtentWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingExtentParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
+
 
 
 ///@endcond PRIVATE
+

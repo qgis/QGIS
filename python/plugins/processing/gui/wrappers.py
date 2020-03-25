@@ -405,6 +405,16 @@ class CrsWidgetWrapper(WidgetWrapper):
 class ExtentWidgetWrapper(WidgetWrapper):
     USE_MIN_COVERING_EXTENT = "[Use min covering extent]"
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        """
+        .. deprecated:: 3.4
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("ExtentWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
+
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             widget = ExtentSelectionPanel(self.dialog, self.parameterDefinition())
@@ -1819,6 +1829,7 @@ class WidgetWrapperFactory:
             # deprecated, moved to c++
             wrapper = CrsWidgetWrapper
         elif param.type() == 'extent':
+            # deprecated, moved to c++
             wrapper = ExtentWidgetWrapper
         elif param.type() == 'point':
             # deprecated, moved to c++
