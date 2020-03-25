@@ -223,6 +223,7 @@ QgsWmsProvider *QgsWmsProvider::clone() const
   QgsDataProvider::ProviderOptions options;
   QgsWmsProvider *provider = new QgsWmsProvider( dataSourceUri(), options, mCaps.isValid() ? &mCaps : nullptr );
   provider->copyBaseSettings( *this );
+  provider->setDataSourceUri( dataSourceUri() );
   return provider;
 }
 
