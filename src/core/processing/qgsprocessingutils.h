@@ -106,6 +106,27 @@ class CORE_EXPORT QgsProcessingUtils
     static QList< QgsMapLayer * > compatibleLayers( QgsProject *project, bool sort = true );
 
     /**
+     * Encodes a provider key and layer \a uri to a single string, for use with
+     * decodeProviderKeyAndUri()
+     *
+     * \since QGIS 3.14
+     */
+    static QString encodeProviderKeyAndUri( const QString &providerKey, const QString &uri );
+
+    /**
+     * Decodes a provider key and layer \a uri from an encoded string, for use with
+     * encodeProviderKeyAndUri()
+     *
+     * \param string encoded string, as returned by encodeProviderKeyAndUri()
+     * \param providerKey ID key for corresponding data provider
+     * \param uri decoded layer uri
+     * \returns TRUE if \a string was successfully decoded
+     *
+     * \since QGIS 3.14
+     */
+    static bool decodeProviderKeyAndUri( const QString &string, QString &providerKey SIP_OUT, QString &uri SIP_OUT );
+
+    /**
      * Layer type hints.
      * \since QGIS 3.4
      */

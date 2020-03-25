@@ -133,6 +133,25 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   return layers;
 }
 
+QString QgsProcessingUtils::encodeProviderKeyAndUri( const QString &providerKey, const QString &uri )
+{
+  return QStringLiteral( "%1://%2" ).arg( providerKey, uri );
+}
+
+bool QgsProcessingUtils::decodeProviderKeyAndUri( const QString &string, QString &providerKey, QString &uri )
+{
+  QRegularExpression re( QStringLiteral( "^(\\w+?):\\/\\/(.+)$" ) );
+  const QRegularExpressionMatch match = re.match( string );
+  if ( !match.hasMatch() )
+    return false;
+
+  providerKey = match.captured( 1 );
+  uri = match.captured( 2 );
+
+  // double check that provider is valid
+  return QgsProviderRegistry::instance()->providerMetadata( providerKey );
+}
+
 QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMapLayerStore *store, QgsProcessingUtils::LayerHint typeHint )
 {
   if ( !store || string.isEmpty() )

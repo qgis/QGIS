@@ -518,6 +518,7 @@ class TestQgsProcessing: public QObject
     void providerById();
     void removeProvider();
     void compatibleLayers();
+    void encodeDecodeUriProvider();
     void normalizeLayerSource();
     void context();
     void mapLayers();
@@ -858,6 +859,28 @@ void TestQgsProcessing::compatibleLayers()
   Q_FOREACH ( QgsMapLayer *l, QgsProcessingUtils::compatibleLayers( &p, false ) )
     lIds << l->name();
   QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" );
+}
+
+void TestQgsProcessing::encodeDecodeUriProvider()
+{
+  QString provider;
+  QString uri;
+  QCOMPARE( QgsProcessingUtils::encodeProviderKeyAndUri( QStringLiteral( "ogr" ), QStringLiteral( "/home/me/test.shp" ) ), QStringLiteral( "ogr:///home/me/test.shp" ) );
+  QVERIFY( QgsProcessingUtils::decodeProviderKeyAndUri( QStringLiteral( "ogr:///home/me/test.shp" ), provider, uri ) );
+  QCOMPARE( provider, QStringLiteral( "ogr" ) );
+  QCOMPARE( uri, QStringLiteral( "/home/me/test.shp" ) );
+  QCOMPARE( QgsProcessingUtils::encodeProviderKeyAndUri( QStringLiteral( "ogr" ), QStringLiteral( "http://mysourcem/a.json" ) ), QStringLiteral( "ogr://http://mysourcem/a.json" ) );
+  QVERIFY( QgsProcessingUtils::decodeProviderKeyAndUri( QStringLiteral( "ogr://http://mysourcem/a.json" ), provider, uri ) );
+  QCOMPARE( provider, QStringLiteral( "ogr" ) );
+  QCOMPARE( uri, QStringLiteral( "http://mysourcem/a.json" ) );
+  QCOMPARE( QgsProcessingUtils::encodeProviderKeyAndUri( QStringLiteral( "postgres" ), QStringLiteral( "host=blah blah etc" ) ), QStringLiteral( "postgres://host=blah blah etc" ) );
+  QVERIFY( QgsProcessingUtils::decodeProviderKeyAndUri( QStringLiteral( "postgres://host=blah blah etc" ), provider, uri ) );
+  QCOMPARE( provider, QStringLiteral( "postgres" ) );
+  QCOMPARE( uri, QStringLiteral( "host=blah blah etc" ) );
+
+  // should reject non valid providers
+  QVERIFY( !QgsProcessingUtils::decodeProviderKeyAndUri( QStringLiteral( "asdasda://host=blah blah etc" ), provider, uri ) );
+  QVERIFY( !QgsProcessingUtils::decodeProviderKeyAndUri( QStringLiteral( "http://mysourcem/a.json" ), provider, uri ) );
 }
 
 void TestQgsProcessing::normalizeLayerSource()
