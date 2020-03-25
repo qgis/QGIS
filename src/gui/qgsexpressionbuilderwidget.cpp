@@ -575,7 +575,7 @@ void QgsExpressionBuilderWidget::registerItem( const QString &group,
     //Recent group should always be last group
     newgroupNode->setData( group.startsWith( QLatin1String( "Recent (" ) ) ? 2 : 1, QgsExpressionItem::CUSTOM_SORT_ROLE );
     newgroupNode->appendRow( item );
-    newgroupNode->setBackground( QBrush( QColor( 238, 238, 238 ) ) );
+    newgroupNode->setBackground( QBrush( QColor( 150, 150, 150, 150 ) ) );
     mModel->appendRow( newgroupNode );
     mExpressionGroups.insert( group, newgroupNode );
   }
