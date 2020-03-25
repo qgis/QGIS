@@ -114,6 +114,12 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief slot executed when user "Set end same as start" button on time options in source page.
     void setEndAsStartStaticButton_clicked();
 
+    //! \brief slot executed when user "Pass provider temporal range" radio button on time options in source page.
+    void passProjectTemporalRange_toggled( bool checked );
+
+    //! \brief slot executed when user "Static time range" radio button on time options in source page.
+    void staticTemporalRange_toggled( bool checked );
+
     /**
      * \brief slot executed when the single band radio button is pressed.
      * \brief slot executed when the reset null value to file default icon is selected
@@ -233,6 +239,12 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      *
      */
     void updateSourceStaticTime();
+
+    /**
+     * Initialiaze the layers static time inputs state.
+     *
+     */
+    void setSourceStaticTimeState();
 
     void setupTransparencyTable( int nBands );
 
