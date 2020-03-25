@@ -80,6 +80,13 @@ Returns the current value of the widget.
 .. seealso:: :py:func:`setValue`
 %End
 
+    void setWidgetContext( QgsProcessingParameterWidgetContext *context );
+%Docstring
+Sets the ``context`` in which the widget is shown.
+
+.. versionadded:: 3.14
+%End
+
   signals:
 
     void valueChanged();

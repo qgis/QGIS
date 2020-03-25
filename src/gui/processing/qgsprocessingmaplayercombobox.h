@@ -29,6 +29,8 @@ class QgsMapLayerComboBox;
 class QToolButton;
 class QCheckBox;
 class QgsProcessingParameterDefinition;
+class QgsBrowserGuiModel;
+class QgsProcessingParameterWidgetContext;
 
 ///@cond PRIVATE
 
@@ -92,6 +94,12 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
      */
     QVariant value() const;
 
+    /**
+     * Sets the \a context in which the widget is shown.
+     * \since QGIS 3.14
+     */
+    void setWidgetContext( QgsProcessingParameterWidgetContext *context );
+
   signals:
 
     /**
@@ -130,6 +138,9 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     QgsFeatureRequest::InvalidGeometryCheck mGeometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
     QPointer< QgsMapLayer> mPrevLayer;
     int mBlockChangedSignal = 0;
+
+    QgsBrowserGuiModel *mBrowserModel = nullptr;
+
     QgsMapLayer *compatibleMapLayerFromMimeData( const QMimeData *data, bool &incompatibleLayerSelected ) const;
     QString compatibleUriFromMimeData( const QMimeData *data ) const;
 };
