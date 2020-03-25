@@ -16,6 +16,7 @@
 #ifndef QGSMBTILESREADER_H
 #define QGSMBTILESREADER_H
 
+#include "qgis_core.h"
 
 #include "sqlite3.h"
 #include "qgssqliteutils.h"
@@ -23,7 +24,7 @@
 class QImage;
 class QgsRectangle;
 
-class QgsMBTilesReader
+class CORE_EXPORT QgsMBTilesReader
 {
   public:
     explicit QgsMBTilesReader( const QString &filename );

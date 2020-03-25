@@ -1,0 +1,176 @@
+/***************************************************************************
+  qgsvectortilelayer.cpp
+  --------------------------------------
+  Date                 : March 2020
+  Copyright            : (C) 2020 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsvectortilelayer.h"
+
+#include "qgsvectortilelayerrenderer.h"
+#include "qgsmbtilesreader.h"
+#include "qgsvectortilebasicrenderer.h"
+#include "qgsvectortileloader.h"
+
+#include "qgsdatasourceuri.h"
+
+QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName )
+  : QgsPluginLayer( "vector-tile", baseName )
+{
+  mDataSource = uri;
+
+  QgsDataSourceUri dsUri;
+  dsUri.setEncodedUri( uri );
+
+  mSourceType = dsUri.param( "type" );
+  mSourcePath = dsUri.param( "url" );
+  if ( mSourceType == "xyz" )
+  {
+    // online tiles
+    mSourceMinZoom = 0;
+    mSourceMaxZoom = 14;
+
+    setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
+  }
+  else if ( mSourceType == "mbtiles" )
+  {
+    QgsMBTilesReader reader( mSourcePath );
+    if ( !reader.open() )
+    {
+      qDebug() << "failed to open MBTiles file:" << mSourcePath;
+      return;
+    }
+
+    qDebug() << "name:" << reader.metadataValue( "name" );
+    bool minZoomOk, maxZoomOk;
+    int minZoom = reader.metadataValue( "minzoom" ).toInt( &minZoomOk );
+    int maxZoom = reader.metadataValue( "maxzoom" ).toInt( &maxZoomOk );
+    if ( minZoomOk )
+      mSourceMinZoom = minZoom;
+    if ( maxZoomOk )
+      mSourceMaxZoom = maxZoom;
+    qDebug() << "zoom range:" << mSourceMinZoom << mSourceMaxZoom;
+
+    QgsRectangle r = reader.extent();
+    // TODO: reproject to EPSG:3857
+    setExtent( r );
+  }
+  else
+  {
+    // TODO: report error - unknown type
+    return;
+  }
+
+  setCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+  setValid( true );
+
+  // set a default renderer
+  setRenderer( new QgsVectorTileBasicRenderer );
+}
+
+QgsVectorTileLayer::~QgsVectorTileLayer() = default;
+
+
+QgsPluginLayer *QgsVectorTileLayer::clone() const
+{
+  QgsVectorTileLayer *layer = new QgsVectorTileLayer( source(), name() );
+  layer->setRenderer( renderer() ? renderer()->clone() : nullptr );
+  return layer;
+}
+
+QgsMapLayerRenderer *QgsVectorTileLayer::createMapRenderer( QgsRenderContext &rendererContext )
+{
+  return new QgsVectorTileLayerRenderer( this, rendererContext );
+}
+
+bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
+{
+  QString errorMsg;
+  return readSymbology( layerNode, errorMsg, context );
+}
+
+bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  QDomElement mapLayerNode = layerNode.toElement();
+  mapLayerNode.setAttribute( "type", "vector-tile" );
+
+  QString errorMsg;
+  return writeSymbology( layerNode, doc, errorMsg, context );
+}
+
+bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories )
+{
+  QDomElement elem = node.toElement();
+
+  readCommonStyle( elem, context, categories );
+
+  QDomElement elemRenderer = elem.firstChildElement( "renderer" );
+  if ( elemRenderer.isNull() )
+  {
+    errorMessage = "Missing <renderer> tag";
+    return false;
+  }
+  QString rendererType = elemRenderer.attribute( "type" );
+  QgsVectorTileRenderer *r = nullptr;
+  if ( rendererType == "basic" )
+    r = new QgsVectorTileBasicRenderer;
+  //else if ( rendererType == "mapbox-gl" )
+  //  r = new MapboxGLStyleRenderer;
+  else
+  {
+    errorMessage = "Unknown renderer type: " + rendererType;
+    return false;
+  }
+
+  r->readXml( elemRenderer, context );
+  return true;
+}
+
+bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories ) const
+{
+  Q_UNUSED( errorMessage )
+  QDomElement elem = node.toElement();
+
+  writeCommonStyle( elem, doc, context, categories );
+
+  if ( mRenderer )
+  {
+    QDomElement elemRenderer = doc.createElement( "renderer" );
+    elemRenderer.setAttribute( "type", mRenderer->type() );
+    mRenderer->writeXml( elemRenderer, context );
+    elem.appendChild( elemRenderer );
+  }
+  return true;
+}
+
+void QgsVectorTileLayer::setTransformContext( const QgsCoordinateTransformContext &transformContext )
+{
+  Q_UNUSED( transformContext )
+}
+
+QByteArray QgsVectorTileLayer::getRawTile( QgsTileXYZ tileID )
+{
+  QgsTileRange tileRange( tileID.column(), tileID.column(), tileID.row(), tileID.row() );
+  QList<QgsVectorTileRawData> rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, tileID.zoomLevel(), QPointF(), tileRange );
+  if ( rawTiles.isEmpty() )
+    return QByteArray();
+  return rawTiles.first().data;
+}
+
+void QgsVectorTileLayer::setRenderer( QgsVectorTileRenderer *r )
+{
+  mRenderer.reset( r );
+}
+
+QgsVectorTileRenderer *QgsVectorTileLayer::renderer() const
+{
+  return mRenderer.get();
+}

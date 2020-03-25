@@ -534,3 +534,4 @@
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
 %Include auto_generated/symbology/qgsmasksymbollayer.sip
 %Include auto_generated/qgsuserprofile.sip
+%Include auto_generated/vectortile/qgsvectortilelayer.sip

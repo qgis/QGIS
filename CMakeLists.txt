@@ -331,6 +331,11 @@ IF(WITH_CORE)
     MESSAGE (SEND_ERROR "sqlite3 dependency was not found!")
   ENDIF (NOT SQLITE3_FOUND)
 
+  FIND_PACKAGE(Protobuf REQUIRED)   # for decoding of vector tiles in MVT format
+  MESSAGE(STATUS "Found Protobuf: ${Protobuf_LIBRARIES}")
+  FIND_PACKAGE(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
+  MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
+
   # optional
   IF (WITH_POSTGRESQL)
     FIND_PACKAGE(Postgres) # PostgreSQL provider
