@@ -249,7 +249,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       missedLines++;
     }
   }
-  //feedback->pushInfo( QObject::tr( "Missed points 1: %1").arg( missedPoints ));
   missedPoints = mNumPoints * featureCount - totNPoints;
   feedback->pushInfo( QObject::tr( "Total number of points generated: "
                                    " %1\nNumber of missed points: %2\nLines with missing points: "
