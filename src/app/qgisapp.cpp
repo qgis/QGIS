@@ -78,6 +78,7 @@
 #include "qgsrelationmanager.h"
 #include "qgsapplication.h"
 #include "qgslayerstylingwidget.h"
+#include "qgsdevtoolspanelwidget.h"
 #include "qgstaskmanager.h"
 #include "qgsweakrelation.h"
 #include "qgsziputils.h"
@@ -1119,6 +1120,23 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   addDockWidget( Qt::RightDockWidgetArea, mMapStylingDock );
   mMapStylingDock->hide();
+  endProfile();
+
+  startProfile( QStringLiteral( "Dev Tools dock" ) );
+  mDevToolsDock = new QgsDockWidget( this );
+  mDevToolsDock->setWindowTitle( tr( "Debugging/Development Tools" ) );
+  mDevToolsDock->setObjectName( QStringLiteral( "DevTools" ) );
+  QShortcut *showDevToolsDock = new QShortcut( QKeySequence( tr( "F12" ) ), this );
+  connect( showDevToolsDock, &QShortcut::activated, mDevToolsDock, &QgsDockWidget::toggleUserVisible );
+  showDevToolsDock->setObjectName( QStringLiteral( "ShowDevToolsPanel" ) );
+  showDevToolsDock->setWhatsThis( tr( "Show Debugging/Development Tools" ) );
+
+  mDevToolsWidget = new QgsDevToolsPanelWidget( mDevToolFactories );
+  mDevToolsDock->setWidget( mDevToolsWidget );
+//  connect( mDevToolsDock, &QDockWidget::visibilityChanged, mActionStyleDock, &QAction::setChecked );
+
+  addDockWidget( Qt::RightDockWidgetArea, mDevToolsDock );
+  mDevToolsDock->hide();
   endProfile();
 
   startProfile( QStringLiteral( "Snapping dialog" ) );
@@ -11855,6 +11873,22 @@ void QgisApp::registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 void QgisApp::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory )
 {
   mOptionsWidgetFactories.removeAll( factory );
+}
+
+void QgisApp::registerDevToolFactory( QgsDevToolWidgetFactory *factory )
+{
+  mDevToolFactories << factory;
+  if ( mDevToolsWidget )
+  {
+    // widget was already created, so we manually need to push this factory to the widget
+    mDevToolsWidget->addToolFactory( factory );
+  }
+}
+
+void QgisApp::unregisterDevToolFactory( QgsDevToolWidgetFactory *factory )
+{
+  mDevToolsWidget->removeToolFactory( factory );
+  mDevToolFactories.removeAll( factory );
 }
 
 QgsMapLayer *QgisApp::activeLayer()

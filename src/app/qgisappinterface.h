@@ -143,6 +143,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) override;
     void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
     void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
+    void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
+    void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
     void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
     void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
