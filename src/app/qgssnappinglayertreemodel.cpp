@@ -238,6 +238,7 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QgsMa
   , mProject( project )
   , mCanvas( canvas )
   , mIndividualLayerSettings( project->snappingConfig().individualLayerSettings() )
+  , mEnableMinMaxColumn( project->snappingConfig().limitToScale() )
 
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
@@ -278,9 +279,9 @@ Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
           return Qt::NoItemFlags;
         }
       }
-      else if( idx.column() == MaxScaleColumn || idx.column() == MinScaleColumn )
+      else if ( idx.column() == MaxScaleColumn || idx.column() == MinScaleColumn )
       {
-        if( mProject->snappingConfig().limitToScale() )
+        if ( mEnableMinMaxColumn )
         {
           return Qt::ItemIsEnabled | Qt::ItemIsEditable;
         }
@@ -344,6 +345,7 @@ void QgsSnappingLayerTreeModel::setFilterText( const QString &filterText )
 void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
 {
   const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> oldSettings = mIndividualLayerSettings;
+  bool wasMinMaxEnabled = mEnableMinMaxColumn;
 
   for ( auto it = oldSettings.constBegin(); it != oldSettings.constEnd(); ++it )
   {
@@ -367,17 +369,18 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
     }
   }
 
-  hasRowchanged( mLayerTreeModel->rootGroup(), oldSettings );
+  mEnableMinMaxColumn = mProject->snappingConfig().limitToScale();
+  hasRowchanged( mLayerTreeModel->rootGroup(), oldSettings, wasMinMaxEnabled != mEnableMinMaxColumn );
 }
 
-void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings )
+void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &oldSettings, bool forceRefresh )
 {
   if ( node->nodeType() == QgsLayerTreeNode::NodeGroup )
   {
     const auto constChildren = node->children();
     for ( QgsLayerTreeNode *child : constChildren )
     {
-      hasRowchanged( child, oldSettings );
+      hasRowchanged( child, oldSettings, forceRefresh );
     }
   }
   else
@@ -388,7 +391,7 @@ void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHa
     {
       emit dataChanged( QModelIndex(), idx );
     }
-    else
+    if ( oldSettings.value( vl ) != mProject->snappingConfig().individualLayerSettings().value( vl ) || forceRefresh )
     {
       mIndividualLayerSettings.insert( vl, mProject->snappingConfig().individualLayerSettings().value( vl ) );
       emit dataChanged( idx, index( idx.row(), columnCount( idx ) - 1 ) );
