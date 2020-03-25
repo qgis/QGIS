@@ -158,6 +158,34 @@ class TestQgsExtentWidget(unittest.TestCase):
         # just test this by restricting the test to 4 decimals
         self.assertEqual(w.outputExtent().toString(4), QgsRectangle(1, 2, 3, 4).toString(4))
 
+    def testClear(self):
+        w = QgsExtentWidget()
+        w.setNullValueAllowed(True, 'test')
+        valid_spy = QSignalSpy(w.validationChanged)
+        changed_spy = QSignalSpy(w.extentChanged)
+        self.assertFalse(w.isValid())
+        w.setOriginalExtent(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('epsg:3111'))
+        w.setCurrentExtent(QgsRectangle(11, 12, 13, 14), QgsCoordinateReferenceSystem('epsg:3113'))
+        w.setOutputExtentFromOriginal()
+        self.assertEqual(len(valid_spy), 1)
+        self.assertEqual(len(changed_spy), 1)
+        self.assertTrue(w.isValid())
+
+        w.clear()
+        self.assertEqual(len(valid_spy), 2)
+        self.assertEqual(len(changed_spy), 2)
+        self.assertFalse(w.isValid())
+        self.assertTrue(w.outputExtent().isNull())
+        w.clear()
+        self.assertEqual(len(valid_spy), 2)
+        self.assertEqual(len(changed_spy), 2)
+        self.assertTrue(w.outputExtent().isNull())
+        w.setOutputExtentFromOriginal()
+        self.assertEqual(len(valid_spy), 3)
+        self.assertEqual(len(changed_spy), 3)
+        self.assertTrue(w.isValid())
+        self.assertEqual(w.outputExtent(), QgsRectangle(1, 2, 3, 4))
+
 
 if __name__ == '__main__':
     unittest.main()

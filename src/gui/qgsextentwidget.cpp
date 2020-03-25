@@ -39,6 +39,7 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   mCondensedRe = QRegularExpression( QStringLiteral( "\\s*([\\d\\.]+)\\s*,\\s*([\\d\\.]+)\\s*,\\s*([\\d\\.]+)\\s*,\\s*([\\d\\.]+)\\s*(\\[.*?\\])" ) );
   mCondensedLineEdit->setValidator( new QRegularExpressionValidator( mCondensedRe, this ) );
   mCondensedLineEdit->setShowClearButton( false );
+  connect( mCondensedLineEdit, &QgsFilterLineEdit::cleared, this, &QgsExtentWidget::clear );
 
   connect( mCondensedLineEdit, &QLineEdit::textEdited, this, &QgsExtentWidget::setOutputExtentFromCondensedLineEdit );
 
@@ -232,15 +233,36 @@ void QgsExtentWidget::setOutputExtentFromLineEdit()
 void QgsExtentWidget::setOutputExtentFromCondensedLineEdit()
 {
   const QString text = mCondensedLineEdit->text();
-  const QRegularExpressionMatch match = mCondensedRe.match( text );
-  if ( match.hasMatch() )
+  if ( text.isEmpty() )
   {
-    whileBlocking( mXMinLineEdit )->setText( match.captured( 1 ) );
-    whileBlocking( mXMaxLineEdit )->setText( match.captured( 2 ) );
-    whileBlocking( mYMinLineEdit )->setText( match.captured( 3 ) );
-    whileBlocking( mYMaxLineEdit )->setText( match.captured( 4 ) );
-    emit extentChanged( outputExtent() );
+    clear();
   }
+  else
+  {
+    const QRegularExpressionMatch match = mCondensedRe.match( text );
+    if ( match.hasMatch() )
+    {
+      whileBlocking( mXMinLineEdit )->setText( match.captured( 1 ) );
+      whileBlocking( mXMaxLineEdit )->setText( match.captured( 2 ) );
+      whileBlocking( mYMinLineEdit )->setText( match.captured( 3 ) );
+      whileBlocking( mYMaxLineEdit )->setText( match.captured( 4 ) );
+      emit extentChanged( outputExtent() );
+    }
+  }
+}
+
+void QgsExtentWidget::clear()
+{
+  bool prevWasNull = mIsValid;
+
+  whileBlocking( mXMinLineEdit )->clear();
+  whileBlocking( mXMaxLineEdit )->clear();
+  whileBlocking( mYMinLineEdit )->clear();
+  whileBlocking( mYMaxLineEdit )->clear();
+  setValid( false );
+
+  if ( prevWasNull )
+    emit extentChanged( outputExtent() );
 }
 
 QString QgsExtentWidget::extentLayerName() const
@@ -251,6 +273,12 @@ QString QgsExtentWidget::extentLayerName() const
 bool QgsExtentWidget::isValid() const
 {
   return mIsValid;
+}
+
+void QgsExtentWidget::setNullValueAllowed( bool allowed, const QString &notSetText )
+{
+  mCondensedLineEdit->setShowClearButton( allowed );
+  mCondensedLineEdit->setNullValue( notSetText );
 }
 
 void QgsExtentWidget::setValid( bool valid )
