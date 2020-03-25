@@ -23,6 +23,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgssettings.h"
+#include "qgsguiutils.h"
 
 #include <QDialogButtonBox>
 #include <QPushButton>
@@ -34,7 +35,7 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
   QgsBrowserGuiModel *browserModel,
   const QStringList &providersFilter,
   QWidget *parent )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
 {
 
   // Initialize the browser
@@ -73,6 +74,8 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
       }
     }
   }
+
+  mBrowserToolbar->setIconSize( QgsGuiUtils::iconSize( true ) );
 
   mBrowserProxyModel.setBrowserModel( mBrowserModel );
   // If a filter was specified but the data provider could not be found
