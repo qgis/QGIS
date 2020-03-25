@@ -46,7 +46,7 @@ class GUI_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroup
 
   public:
     //! constructor
-    QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList<TabPair> &tabList, QWidget *parent = nullptr );
+    QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList<TabPair> &tabList, QTreeWidgetItem *currentTab = nullptr, QWidget *parent = nullptr );
 
     //! Returns the name of the tab or group
     QString name();
