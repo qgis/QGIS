@@ -381,6 +381,7 @@ SET(QGIS_GUI_SRCS
   qgsexpressionselectiondialog.cpp
   qgsexpressionstoredialog.cpp
   qgsextentgroupbox.cpp
+  qgsextentwidget.cpp
   qgsexternalresourcewidget.cpp
   qgsfeatureselectiondlg.cpp
   qgsfieldcombobox.cpp
@@ -598,6 +599,7 @@ SET(QGIS_GUI_HDRS
   qgsexpressionlineedit.h
   qgsexpressionselectiondialog.h
   qgsextentgroupbox.h
+  qgsextentwidget.h
   qgsexternalresourcewidget.h
   qgsfeaturelistcombobox.h
   qgsfeatureselectiondlg.h
