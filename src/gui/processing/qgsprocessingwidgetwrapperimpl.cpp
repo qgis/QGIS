@@ -4870,13 +4870,22 @@ QStringList QgsProcessingExtentWidgetWrapper::compatibleParameterTypes() const
 {
   return QStringList()
          << QgsProcessingParameterExtent::typeName()
-         << QgsProcessingParameterString::typeName();
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterMapLayer::typeName()
+         << QgsProcessingParameterFeatureSource::typeName()
+         << QgsProcessingParameterRasterLayer::typeName()
+         << QgsProcessingParameterVectorLayer::typeName()
+         << QgsProcessingParameterMeshLayer::typeName();
+
 }
 
 QStringList QgsProcessingExtentWidgetWrapper::compatibleOutputTypes() const
 {
   return QStringList()
-         << QgsProcessingOutputString::typeName();
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputRasterLayer::typeName()
+         << QgsProcessingOutputVectorLayer::typeName()
+         << QgsProcessingOutputMapLayer::typeName();
 }
 
 QList<int> QgsProcessingExtentWidgetWrapper::compatibleDataTypes() const
