@@ -1118,6 +1118,29 @@ Unregister a previously registered tab in the options dialog.
 .. versionadded:: 3.0
 %End
 
+    virtual void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+%Docstring
+Register a new tool in the development/debugging tools dock.
+
+.. note::
+
+   Ownership of the factory is not transferred, and the factory must
+   be unregistered when plugin is unloaded.
+
+.. seealso:: :py:func:`unregisterDevToolWidgetFactory`
+
+.. versionadded:: 3.14
+%End
+
+    virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+%Docstring
+Unregister a previously registered tool factory from the development/debugging tools dock.
+
+.. seealso:: :py:func:`registerDevToolWidgetFactory`
+
+.. versionadded:: 3.14
+%End
+
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
 Register a new custom drop handler.

@@ -536,6 +536,16 @@ void QgisAppInterface::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *
   qgis->unregisterOptionsWidgetFactory( factory );
 }
 
+void QgisAppInterface::registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory )
+{
+  qgis->registerDevToolFactory( factory );
+}
+
+void QgisAppInterface::unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory )
+{
+  qgis->unregisterDevToolFactory( factory );
+}
+
 void QgisAppInterface::registerCustomDropHandler( QgsCustomDropHandler *handler )
 {
   qgis->registerCustomDropHandler( handler );
