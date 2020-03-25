@@ -186,10 +186,10 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   connect( mMaxScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMaxScale );
 
 
-  mLimitToScale = new QAction( tr( "Toggle Snapping limit on scale" ), this );
+  mLimitToScale = new QAction( tr( "Toggle scale dependent snapping" ), this );
   mLimitToScale->setCheckable( true );
   mLimitToScale->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingOnScale.svg" ) ) );
-  mLimitToScale->setObjectName( QStringLiteral( "EnableSnappinLimitOnScaleAction" ) );
+  mLimitToScale->setObjectName( QStringLiteral( "EnableSnappingLimitOnScaleAction" ) );
   connect( mLimitToScale, &QAction::toggled, this, &QgsSnappingWidget::changeLimitToScale );
 
   // units
@@ -472,10 +472,12 @@ void QgsSnappingWidget::toggleSnappingWidgets( bool enabled )
   mMinScaleWidget->setEnabled( enabled && mConfig.limitToScale() );
   mMaxScaleWidget->setEnabled( enabled && mConfig.limitToScale() );
   mUnitsComboBox->setEnabled( enabled );
+
   if ( mEditAdvancedConfigAction )
   {
     mEditAdvancedConfigAction->setEnabled( enabled );
   }
+
   if ( mAdvancedConfigWidget )
   {
     mAdvancedConfigWidget->setEnabled( enabled );

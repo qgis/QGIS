@@ -291,16 +291,14 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
   }
   else if ( mSnappingConfig.mode() == QgsSnappingConfig::AdvancedConfiguration )
   {
-    typedef QList<LayerConfig>::const_iterator LayerConfigIterator;
     QList<LayerAndAreaOfInterest> layers;
-    QList<LayerConfigIterator> filteredConfigs;
+    QList<LayerConfig> filteredConfigs;
 
     bool inRangeGlobal = ( mSnappingConfig.minScale() <= 0.0 || mMapSettings.scale() >= mSnappingConfig.minScale() )
                          && ( mSnappingConfig.maxScale() <= 0.0 || mMapSettings.scale() <= mSnappingConfig.maxScale() );
 
-    for ( LayerConfigIterator it = mLayers.begin(); it != mLayers.end(); ++it )
+    for ( const LayerConfig &layerConfig : qgis::as_const( mLayers ))
     {
-      const LayerConfig &layerConfig = *it;
       QgsSnappingConfig::IndividualLayerSettings layerSettings = mSnappingConfig.individualLayerSettings( layerConfig.layer );
 
       //Default value for layer config means it is not set ( appears NULL ) layerSpecificRange <- false
@@ -313,7 +311,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
       {
         double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
         layers << qMakePair( layerConfig.layer, _areaOfInterest( pointMap, tolerance ) );
-        filteredConfigs << it;
+        filteredConfigs << layerConfig;
       }
     }
     prepareIndex( layers, relaxed );
@@ -322,9 +320,8 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     QgsPointLocator::MatchList edges; // for snap on intersection
     double maxSnapIntTolerance = 0;
 
-    for ( LayerConfigIterator &it : filteredConfigs )
+    for ( const LayerConfig &layerConfig : qgis::as_const( filteredConfigs ) )
     {
-      const LayerConfig &layerConfig = *it;
       double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
       if ( QgsPointLocator *loc = locatorForLayerUsingStrategy( layerConfig.layer, pointMap, tolerance ) )
       {

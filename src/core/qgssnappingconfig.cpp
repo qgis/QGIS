@@ -35,13 +35,11 @@ QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enable
   , mMaxScale( maxScale )
 {}
 
-QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units, double minScale, double maxScale )
+QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units )
   : mValid( true )
   , mEnabled( enabled )
   , mTolerance( tolerance )
   , mUnits( units )
-  , mMinScale( minScale )
-  , mMaxScale( maxScale )
 {
   Q_NOWARN_DEPRECATED_PUSH
   setType( type );

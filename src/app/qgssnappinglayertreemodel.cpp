@@ -278,6 +278,13 @@ Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
           return Qt::NoItemFlags;
         }
       }
+      else if( idx.column() == MaxScaleColumn || idx.column() == MinScaleColumn )
+      {
+        if( mProject->snappingConfig().limitToScale() )
+        {
+          return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+        }
+      }
       else
       {
         return Qt::ItemIsEnabled | Qt::ItemIsEditable;
@@ -381,7 +388,7 @@ void QgsSnappingLayerTreeModel::hasRowchanged( QgsLayerTreeNode *node, const QHa
     {
       emit dataChanged( QModelIndex(), idx );
     }
-    if ( oldSettings.value( vl ) != mProject->snappingConfig().individualLayerSettings().value( vl ) )
+    else
     {
       mIndividualLayerSettings.insert( vl, mProject->snappingConfig().individualLayerSettings().value( vl ) );
       emit dataChanged( idx, index( idx.row(), columnCount( idx ) - 1 ) );
@@ -637,7 +644,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       {
         if ( ls.minScale() <= 0.0 )
         {
-          return QString( "not set" );
+          return QString( tr( "not set" ) );
         }
         else
         {
@@ -657,7 +664,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       {
         if ( ls.maxScale() <= 0.0 )
         {
-          return QString( "not set" );
+          return QString( tr( "not set" ) );
         }
         else
         {
