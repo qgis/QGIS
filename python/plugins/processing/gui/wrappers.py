@@ -1153,7 +1153,6 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
                 pass
 
             self.combo.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
-            self.combo.triggerFileSelection.connect(self.selectFile)
 
             return self.combo
 
@@ -1194,7 +1193,6 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
     def selectFile(self):
         filename, selected_filter = self.getFileName(self.combo.currentText())
         if filename:
-            filename = dataobjects.getRasterSublayer(filename, self.parameterDefinition())
             if isinstance(self.combo, QgsProcessingMapLayerComboBox):
                 self.combo.setValue(filename, self.context)
             elif isinstance(self.combo, QgsMapLayerComboBox):
