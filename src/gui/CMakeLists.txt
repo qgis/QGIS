@@ -112,6 +112,9 @@ SET(QGIS_GUI_SRCS
   auth/qgsauthsslimportdialog.cpp
   auth/qgsauthtrustedcasdialog.cpp
 
+  devtools/qgsdevtoolwidget.cpp
+  devtools/qgsdevtoolwidgetfactory.cpp
+
   editorwidgets/core/qgseditorconfigwidget.cpp
   editorwidgets/core/qgseditorwidgetautoconf.cpp
   editorwidgets/core/qgseditorwidgetfactory.cpp
@@ -263,6 +266,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingalgorithmconfigurationwidget.cpp
   processing/qgsprocessingalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
+  processing/qgsprocessingfeaturesourceoptionswidget.cpp
   processing/qgsprocessingguiregistry.cpp
   processing/qgsprocessingmaplayercombobox.cpp
   processing/qgsprocessingmatrixparameterdialog.cpp
@@ -270,6 +274,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingmultipleselectiondialog.cpp
   processing/qgsprocessingoutputdestinationwidget.cpp
   processing/qgsprocessingparameterdefinitionwidget.cpp
+  processing/qgsprocessingparameterswidget.cpp
   processing/qgsprocessingrecentalgorithmlog.cpp
   processing/qgsprocessingtoolboxmodel.cpp
   processing/qgsprocessingtoolboxtreeview.cpp
@@ -379,6 +384,7 @@ SET(QGIS_GUI_SRCS
   qgsexpressionselectiondialog.cpp
   qgsexpressionstoredialog.cpp
   qgsextentgroupbox.cpp
+  qgsextentwidget.cpp
   qgsexternalresourcewidget.cpp
   qgsfeatureselectiondlg.cpp
   qgsfieldcombobox.cpp
@@ -403,6 +409,7 @@ SET(QGIS_GUI_SRCS
   qgsguiutils.cpp
   qgshighlight.cpp
   qgshighlightablecombobox.cpp
+  qgshighlightablelineedit.cpp
   qgshistogramwidget.cpp
   qgshelp.cpp
   qgsidentifymenu.cpp
@@ -596,6 +603,7 @@ SET(QGIS_GUI_HDRS
   qgsexpressionlineedit.h
   qgsexpressionselectiondialog.h
   qgsextentgroupbox.h
+  qgsextentwidget.h
   qgsexternalresourcewidget.h
   qgsfeaturelistcombobox.h
   qgsfeatureselectiondlg.h
@@ -622,6 +630,7 @@ SET(QGIS_GUI_HDRS
   qgshelp.h
   qgshighlight.h
   qgshighlightablecombobox.h
+  qgshighlightablelineedit.h
   qgshistogramwidget.h
   qgsidentifymenu.h
   qgsinstallgridshiftdialog.h
@@ -787,6 +796,9 @@ SET(QGIS_GUI_HDRS
 
   callouts/qgscalloutwidget.h
 
+  devtools/qgsdevtoolwidget.h
+  devtools/qgsdevtoolwidgetfactory.h
+
   editorwidgets/core/qgseditorconfigwidget.h
   editorwidgets/core/qgseditorwidgetautoconf.h
   editorwidgets/core/qgseditorwidgetfactory.h
@@ -942,6 +954,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingalgorithmconfigurationwidget.h
   processing/qgsprocessingalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
+  processing/qgsprocessingfeaturesourceoptionswidget.h
   processing/qgsprocessinggui.h
   processing/qgsprocessingguiregistry.h
   processing/qgsprocessingmaplayercombobox.h
@@ -950,6 +963,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingmultipleselectiondialog.h
   processing/qgsprocessingoutputdestinationwidget.h
   processing/qgsprocessingparameterdefinitionwidget.h
+  processing/qgsprocessingparameterswidget.h
   processing/qgsprocessingrecentalgorithmlog.h
   processing/qgsprocessingtoolboxmodel.h
   processing/qgsprocessingtoolboxtreeview.h
@@ -1155,6 +1169,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/devtools
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/effects

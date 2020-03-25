@@ -10,7 +10,7 @@
 
 
 
-class QgsNewDatabaseTableNameWidget : QWidget
+class QgsNewDatabaseTableNameWidget : QgsPanelWidget
 {
 %Docstring
 The QgsNewDatabaseTableNameWidget class embeds the browser view to

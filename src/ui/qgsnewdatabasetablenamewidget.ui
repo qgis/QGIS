@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsNewDatabaseTableNameWidget</class>
- <widget class="QWidget" name="QgsNewDatabaseTableNameWidget">
+ <widget class="QgsPanelWidget" name="QgsNewDatabaseTableNameWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -12,33 +12,43 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="leftMargin">
-    <number>4</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
-    <number>4</number>
+    <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>4</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
     <number>4</number>
    </property>
    <item>
-    <widget class="QToolBar" name="mBrowserToolbar">
-     <property name="iconSize">
-      <size>
-       <width>24</width>
-       <height>24</height>
-      </size>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="spacing">
+      <number>0</number>
      </property>
-     <property name="floatable">
-      <bool>false</bool>
+     <property name="bottomMargin">
+      <number>0</number>
      </property>
-     <addaction name="mActionRefresh"/>
-    </widget>
-   </item>
-   <item>
-    <widget class="QgsBrowserTreeView" name="mBrowserTreeView"/>
+     <item>
+      <widget class="QToolBar" name="mBrowserToolbar">
+       <property name="iconSize">
+        <size>
+         <width>24</width>
+         <height>24</height>
+        </size>
+       </property>
+       <property name="floatable">
+        <bool>false</bool>
+       </property>
+       <addaction name="mActionRefresh"/>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsBrowserTreeView" name="mBrowserTreeView"/>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QLabel" name="label">
@@ -79,6 +89,12 @@
   </action>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsPanelWidget</class>
+   <extends>QWidget</extends>
+   <header>qgspanelwidget.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsBrowserTreeView</class>
    <extends>QTreeView</extends>

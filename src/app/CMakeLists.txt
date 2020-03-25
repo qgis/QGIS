@@ -27,6 +27,7 @@ SET(QGIS_APP_SRCS
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
   qgsdatumtransformtablewidget.cpp
+  qgsdevtoolspanelwidget.cpp
   qgsdiscoverrelationsdialog.cpp
   qgsdxfexportdialog.cpp
   qgsformannotationdialog.cpp
@@ -409,6 +410,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/devtools
   ${CMAKE_SOURCE_DIR}/src/gui/labeling
   ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr

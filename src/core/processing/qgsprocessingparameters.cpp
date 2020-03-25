@@ -39,6 +39,28 @@
 #include <functional>
 
 
+QVariant QgsProcessingFeatureSourceDefinition::toVariant() const
+{
+  QVariantMap map;
+  map.insert( QStringLiteral( "source" ), source.toVariant() );
+  map.insert( QStringLiteral( "selected_only" ), selectedFeaturesOnly );
+  map.insert( QStringLiteral( "feature_limit" ), featureLimit );
+  map.insert( QStringLiteral( "flags" ), static_cast< int >( flags ) );
+  map.insert( QStringLiteral( "geometry_check" ), static_cast< int >( geometryCheck ) );
+  return map;
+}
+
+bool QgsProcessingFeatureSourceDefinition::loadVariant( const QVariantMap &map )
+{
+  source.loadVariant( map.value( QStringLiteral( "source" ) ) );
+  selectedFeaturesOnly = map.value( QStringLiteral( "selected_only" ), false ).toBool();
+  featureLimit = map.value( QStringLiteral( "feature_limit" ), -1 ).toLongLong();
+  flags = static_cast< Flags >( map.value( QStringLiteral( "flags" ), 0 ).toInt() );
+  geometryCheck = static_cast< QgsFeatureRequest::InvalidGeometryCheck >( map.value( QStringLiteral( "geometry_check" ), QgsFeatureRequest::GeometryAbortOnInvalid ).toInt() );
+  return true;
+}
+
+
 QVariant QgsProcessingOutputLayerDefinition::toVariant() const
 {
   QVariantMap map;
@@ -615,11 +637,13 @@ QString parameterAsCompatibleSourceLayerPathInternal( const QgsProcessingParamet
   QVariant val = parameters.value( definition->name() );
 
   bool selectedFeaturesOnly = false;
+  long long featureLimit = -1;
   if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
   {
     // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
     selectedFeaturesOnly = fromVar.selectedFeaturesOnly;
+    featureLimit = fromVar.featureLimit;
     val = fromVar.source;
   }
   else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
@@ -673,10 +697,10 @@ QString parameterAsCompatibleSourceLayerPathInternal( const QgsProcessingParamet
 
   if ( layerName )
     return QgsProcessingUtils::convertToCompatibleFormatAndLayerName( vl, selectedFeaturesOnly, definition->name(),
-           compatibleFormats, preferredFormat, context, feedback, *layerName );
+           compatibleFormats, preferredFormat, context, feedback, *layerName, featureLimit );
   else
     return QgsProcessingUtils::convertToCompatibleFormat( vl, selectedFeaturesOnly, definition->name(),
-           compatibleFormats, preferredFormat, context, feedback );
+           compatibleFormats, preferredFormat, context, feedback, featureLimit );
 }
 
 QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback )
@@ -932,6 +956,12 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
   {
     return val.value<QgsRectangle>();
   }
+  if ( val.canConvert< QgsGeometry >() )
+  {
+    const QgsGeometry geom = val.value<QgsGeometry>();
+    if ( !geom.isNull() )
+      return geom.boundingBox();
+  }
   if ( val.canConvert< QgsReferencedRectangle >() )
   {
     QgsReferencedRectangle rr = val.value<QgsReferencedRectangle>();
@@ -1157,7 +1187,12 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
 QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   QVariant val = parameters.value( definition->name() );
+  return parameterAsExtentCrs( definition, val, context );
+}
 
+QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+{
+  QVariant val = value;
   if ( val.canConvert< QgsReferencedRectangle >() )
   {
     QgsReferencedRectangle rr = val.value<QgsReferencedRectangle>();
@@ -2516,6 +2551,10 @@ bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &input
     QgsRectangle r = input.value<QgsRectangle>();
     return !r.isNull();
   }
+  if ( input.canConvert< QgsGeometry >() )
+  {
+    return true;
+  }
   if ( input.canConvert< QgsReferencedRectangle >() )
   {
     QgsReferencedRectangle r = input.value<QgsReferencedRectangle>();
@@ -2571,13 +2610,22 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
            qgsDoubleToString( r.xMaximum() ),
            qgsDoubleToString( r.yMaximum() ) );
   }
-  if ( value.canConvert< QgsReferencedRectangle >() )
+  else if ( value.canConvert< QgsReferencedRectangle >() )
   {
     QgsReferencedRectangle r = value.value<QgsReferencedRectangle>();
     return QStringLiteral( "'%1, %3, %2, %4 [%5]'" ).arg( qgsDoubleToString( r.xMinimum() ),
            qgsDoubleToString( r.yMinimum() ),
            qgsDoubleToString( r.xMaximum() ),
            qgsDoubleToString( r.yMaximum() ),                                                                                                                             r.crs().authid() );
+  }
+  else if ( value.canConvert< QgsGeometry >() )
+  {
+    const QgsGeometry g = value.value<QgsGeometry>();
+    if ( !g.isNull() )
+    {
+      const QString wkt = g.asWkt();
+      return QStringLiteral( "QgsGeometry.fromWkt('%1')" ).arg( wkt );
+    }
   }
 
   QVariantMap p;
@@ -4624,26 +4672,63 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
   if ( value.canConvert<QgsProcessingFeatureSourceDefinition>() )
   {
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
+    QString geometryCheckString;
+    switch ( fromVar.geometryCheck )
+    {
+      case QgsFeatureRequest::GeometryNoCheck:
+        geometryCheckString = QStringLiteral( "QgsFeatureRequest.GeometryNoCheck" );
+        break;
+
+      case QgsFeatureRequest::GeometrySkipInvalid:
+        geometryCheckString = QStringLiteral( "QgsFeatureRequest.GeometrySkipInvalid" );
+        break;
+
+      case QgsFeatureRequest::GeometryAbortOnInvalid:
+        geometryCheckString = QStringLiteral( "QgsFeatureRequest.GeometryAbortOnInvalid" );
+        break;
+    }
+
+    QStringList flags;
+    QString flagString;
+    if ( fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck )
+      flags << QStringLiteral( "QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck" );
+    if ( fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature )
+      flags << QStringLiteral( "QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature" );
+    if ( !flags.empty() )
+      flagString = flags.join( QStringLiteral( " | " ) );
+    else
+      flagString = QStringLiteral( "None" );
+
     if ( fromVar.source.propertyType() == QgsProperty::StaticProperty )
     {
-      if ( fromVar.selectedFeaturesOnly )
+      QString layerString = fromVar.source.staticValue().toString();
+      // prefer to use layer source instead of id if possible (since it's persistent)
+      if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
+        layerString = layer->source();
+
+      if ( fromVar.selectedFeaturesOnly || fromVar.featureLimit != -1 || fromVar.flags )
       {
-        return QStringLiteral( "QgsProcessingFeatureSourceDefinition('%1', True)" ).arg( fromVar.source.staticValue().toString() );
+        return QStringLiteral( "QgsProcessingFeatureSourceDefinition('%1', selectedFeaturesOnly=%2, featureLimit=%3, flags=%4, geometryCheck=%5)" ).arg( layerString,
+               fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ),
+               QString::number( fromVar.featureLimit ),
+               flagString,
+               geometryCheckString );
       }
       else
       {
-        QString layerString = fromVar.source.staticValue().toString();
-        // prefer to use layer source instead of id if possible (since it's persistent)
-        if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
-          layerString = layer->source();
         return QgsProcessingUtils::stringToPythonLiteral( layerString );
       }
     }
     else
     {
-      if ( fromVar.selectedFeaturesOnly )
+      if ( fromVar.selectedFeaturesOnly || fromVar.featureLimit != -1 || fromVar.flags )
       {
-        return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('%1'), True)" ).arg( fromVar.source.asExpression() );
+        return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('%1'), selectedFeaturesOnly=%2, featureLimit=%3, flags=%4, geometryCheck=%5)" )
+               .arg( fromVar.source.asExpression(),
+                     fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ),
+                     QString::number( fromVar.featureLimit ),
+                     flagString,
+                     geometryCheckString );
       }
       else
       {

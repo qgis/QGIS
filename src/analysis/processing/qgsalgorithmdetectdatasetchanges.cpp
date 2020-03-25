@@ -69,7 +69,7 @@ void QgsDetectVectorChangesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "ADDED" ), QObject::tr( "Added features" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "DELETED" ), QObject::tr( "Deleted features" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true, true ) );
 
-  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "UNCHAGED_COUNT" ), QObject::tr( "Count of unchanged features" ) ) );
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "UNCHANGED_COUNT" ), QObject::tr( "Count of unchanged features" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "ADDED_COUNT" ), QObject::tr( "Count of features added in revised layer" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "DELETED_COUNT" ), QObject::tr( "Count of features deleted from original layer" ) ) );
 }

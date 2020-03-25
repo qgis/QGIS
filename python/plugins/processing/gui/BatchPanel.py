@@ -69,7 +69,8 @@ from qgis.gui import (
     QgsProcessingParameterWidgetContext,
     QgsProcessingContextGenerator,
     QgsFindFilesByPatternDialog,
-    QgsExpressionBuilderDialog
+    QgsExpressionBuilderDialog,
+    QgsPanelWidget
 )
 from qgis.utils import iface
 
@@ -269,7 +270,7 @@ class BatchPanelFillWidget(QToolButton):
                 self.setRowValue(row, value, context)
 
 
-class BatchPanel(BASE, WIDGET):
+class BatchPanel(QgsPanelWidget, WIDGET):
     PARAMETERS = "PARAMETERS"
     OUTPUTS = "OUTPUTS"
 

@@ -290,6 +290,7 @@ called using the feature with invalid geometry as a parameter.
 %End
 
 
+
     void setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
 %Docstring
 Sets a callback function to use when encountering a transform error when iterating

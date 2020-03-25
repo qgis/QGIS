@@ -139,6 +139,8 @@ class QgsLayoutCustomDropHandler;
 class QgsProxyProgressTask;
 class QgsNetworkRequestParameters;
 class QgsBearingNumericFormat;
+class QgsDevToolsPanelWidget;
+class QgsDevToolWidgetFactory;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -681,6 +683,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Unregister a previously registered tab in the options dialog
     void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory );
+
+    //! Register a dev tool factory
+    void registerDevToolFactory( QgsDevToolWidgetFactory *factory );
+
+    //! Unregister a previously registered dev tool factory
+    void unregisterDevToolFactory( QgsDevToolWidgetFactory *factory );
 
     //! Register a new custom drop handler.
     void registerCustomDropHandler( QgsCustomDropHandler *handler );
@@ -2334,6 +2342,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsUserProfileManager *mUserProfileManager = nullptr;
     QgsDockWidget *mMapStylingDock = nullptr;
     QgsLayerStylingWidget *mMapStyleWidget = nullptr;
+    QgsDockWidget *mDevToolsDock = nullptr;
+    QgsDevToolsPanelWidget *mDevToolsWidget = nullptr;
 
     //! Persistent tile scale slider
     QgsTileScaleWidget *mpTileScaleWidget = nullptr;
@@ -2376,6 +2386,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QList<QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
+
+    QList<QgsDevToolWidgetFactory * > mDevToolFactories;
 
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
     QVector<QPointer<QgsLayoutCustomDropHandler>> mCustomLayoutDropHandlers;

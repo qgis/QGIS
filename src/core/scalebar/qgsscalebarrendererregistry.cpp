@@ -20,6 +20,8 @@
 #include "qgsnumericscalebarrenderer.h"
 #include "qgssingleboxscalebarrenderer.h"
 #include "qgsticksscalebarrenderer.h"
+#include "qgssteppedlinescalebarrenderer.h"
+#include "qgshollowscalebarrenderer.h"
 
 QgsScaleBarRendererRegistry::QgsScaleBarRendererRegistry()
 {
@@ -29,6 +31,8 @@ QgsScaleBarRendererRegistry::QgsScaleBarRendererRegistry()
   addRenderer( new QgsTicksScaleBarRenderer( QgsTicksScaleBarRenderer::TicksUp ) );
   addRenderer( new QgsTicksScaleBarRenderer( QgsTicksScaleBarRenderer::TicksDown ) );
   addRenderer( new QgsTicksScaleBarRenderer( QgsTicksScaleBarRenderer::TicksMiddle ) );
+  addRenderer( new QgsSteppedLineScaleBarRenderer() );
+  addRenderer( new QgsHollowScaleBarRenderer() );
 }
 
 QgsScaleBarRendererRegistry::~QgsScaleBarRendererRegistry()

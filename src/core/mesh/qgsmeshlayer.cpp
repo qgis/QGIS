@@ -70,6 +70,32 @@ void QgsMeshLayer::setDefaultRendererSettings()
     meshSettings.setEnabled( true );
     mRendererSettings.setNativeMeshSettings( meshSettings );
   }
+
+  // Sets default resample method for scalar dataset
+  if ( !mDataProvider )
+    return;
+  for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
+  {
+    QgsMeshDatasetGroupMetadata meta = mDataProvider->datasetGroupMetadata( i );
+    if ( meta.isScalar() )
+    {
+      QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( i );
+      switch ( meta.dataType() )
+      {
+        case QgsMeshDatasetGroupMetadata::DataOnFaces:
+        case QgsMeshDatasetGroupMetadata::DataOnVolumes: // data on volumes are averaged to 2D data on faces
+          scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::NeighbourAverage );
+          break;
+        case QgsMeshDatasetGroupMetadata::DataOnVertices:
+          scalarSettings.setDataResamplingMethod( QgsMeshRendererScalarSettings::None );
+          break;
+        case QgsMeshDatasetGroupMetadata::DataOnEdges:
+          break;
+      }
+      mRendererSettings.setScalarSettings( i, scalarSettings );
+    }
+  }
+
 }
 
 void QgsMeshLayer::createSimplifiedMeshes()
@@ -381,6 +407,13 @@ void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
   scalarSettings.setClassificationMinimumMaximum( groupMin, groupMax );
   scalarSettings.setColorRampShader( fcn );
   mRendererSettings.setScalarSettings( groupIndex, scalarSettings );
+
+  if ( metadata.isVector() )
+  {
+    QgsMeshRendererVectorSettings vectorSettings;
+    vectorSettings.setColorRampShader( fcn );
+    mRendererSettings.setVectorSettings( groupIndex, vectorSettings );
+  }
 }
 
 QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &rendererContext )

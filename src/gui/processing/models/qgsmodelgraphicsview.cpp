@@ -435,6 +435,29 @@ void QgsModelGraphicsView::endMacroCommand()
   emit macroCommandEnded();
 }
 
+void QgsModelGraphicsView::snapSelected()
+{
+  QgsModelGraphicsScene *s = modelScene();
+  const QList<QgsModelComponentGraphicItem *> itemList = s->selectedComponentItems();
+  startMacroCommand( tr( "Snap Items" ) );
+  if ( !itemList.empty() )
+  {
+    bool prevSetting = mSnapper.snapToGrid();
+    mSnapper.setSnapToGrid( true );
+    for ( QgsModelComponentGraphicItem *item : itemList )
+    {
+      bool wasSnapped = false;
+      QRectF snapped = mSnapper.snapRectWithResize( item->mapRectToScene( item->itemRect( ) ), transform().m11(), wasSnapped );
+      if ( wasSnapped )
+      {
+        item->setItemRect( snapped );
+      }
+    }
+    mSnapper.setSnapToGrid( prevSetting );
+  }
+  endMacroCommand();
+}
+
 
 QgsModelViewSnapMarker::QgsModelViewSnapMarker()
   : QGraphicsRectItem( QRectF( 0, 0, 0, 0 ) )

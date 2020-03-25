@@ -56,19 +56,58 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
   public:
 
     /**
-     * Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string source.
+     * Flags which control source behavior.
+     * \since QGIS 3.14
      */
-    QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false )
+    enum class Flag
+    {
+      FlagOverrideDefaultGeometryCheck = 1 << 0, //!< If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source
+      FlagCreateIndividualOutputPerInputFeature = 1 << 1, //!< If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed.
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
+    /**
+     * Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string \a source.
+     *
+     * If \a selectedFeaturesOnly is TRUE, then only selected features from the source will be used.
+     *
+     * The optional \a featureLimit can be set to a value > 0 to place a hard limit on the maximum number
+     * of features which will be read from the source.
+     *
+     * The \a flags argument can be used to specify flags which dictate the source behavior.
+     *
+     * If the QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck is set in \a flags, then the value of \a geometryCheck will override
+     * the default geometry check method (as dictated by QgsProcessingContext) for this source.
+     */
+    QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = nullptr, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
       : source( QgsProperty::fromValue( source ) )
       , selectedFeaturesOnly( selectedFeaturesOnly )
+      , featureLimit( featureLimit )
+      , flags( flags )
+      , geometryCheck( geometryCheck )
     {}
 
     /**
      * Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty source.
+     *
+     * If \a selectedFeaturesOnly is TRUE, then only selected features from the source will be used.
+     *
+     * The optional \a featureLimit can be set to a value > 0 to place a hard limit on the maximum number
+     * of features which will be read from the source.
+     *
+     * The \a flags argument can be used to specify flags which dictate the source behavior.
+     *
+     * If the QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck is set in \a flags, then the value of \a geometryCheck will override
+     * the default geometry check method (as dictated by QgsProcessingContext) for this source.
      */
-    QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false )
+    QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = nullptr, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid )
       : source( source )
       , selectedFeaturesOnly( selectedFeaturesOnly )
+      , featureLimit( featureLimit )
+      , flags( flags )
+      , geometryCheck( geometryCheck )
     {}
 
     /**
@@ -81,9 +120,54 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      */
     bool selectedFeaturesOnly;
 
+    /**
+     * If set to a value > 0, places a limit on the maximum number of features which will be
+     * read from the source.
+     *
+     * \since QGIS 3.14
+     */
+    long long featureLimit = -1;
+
+    /**
+     * Flags which dictate source behavior.
+     *
+     * \since QGIS 3.14
+     */
+    Flags flags = nullptr;
+
+    /**
+     * Geometry check method to apply to this source. This setting is only
+     * utilized if the QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature is
+     * set in QgsProcessingFeatureSourceDefinition::flags.
+     *
+     * \see overrideDefaultGeometryCheck
+     * \since QGIS 3.14
+     */
+    QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
+
+    /**
+     * Saves this source definition to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     * \see loadVariant()
+     * \since QGIS 3.14
+     */
+    QVariant toVariant() const;
+
+    /**
+     * Loads this source definition from a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::readVariant to load it from an XML document.
+     * \see toVariant()
+     * \since QGIS 3.14
+     */
+    bool loadVariant( const QVariantMap &map );
+
     bool operator==( const QgsProcessingFeatureSourceDefinition &other )
     {
-      return source == other.source && selectedFeaturesOnly == other.selectedFeaturesOnly;
+      return source == other.source
+             && selectedFeaturesOnly == other.selectedFeaturesOnly
+             && featureLimit == other.featureLimit
+             && flags == other.flags
+             && geometryCheck == other.geometryCheck;
     }
 
     bool operator!=( const QgsProcessingFeatureSourceDefinition &other )
@@ -100,6 +184,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
 };
 
 Q_DECLARE_METATYPE( QgsProcessingFeatureSourceDefinition )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingFeatureSourceDefinition::Flags )
 
 /**
  * \class QgsProcessingOutputLayerDefinition
@@ -1069,6 +1154,14 @@ class CORE_EXPORT QgsProcessingParameters
      * \see parameterAsExtent()
      */
     static QgsCoordinateReferenceSystem parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+
+    /**
+     * Returns the coordinate reference system associated with an extent parameter value.
+     *
+     * \see parameterAsExtent()
+     */
+    static QgsCoordinateReferenceSystem parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+
 
     /**
      * Evaluates the parameter with matching \a definition to a point.

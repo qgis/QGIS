@@ -75,6 +75,7 @@
 %Include auto_generated/qgsexpressionlineedit.sip
 %Include auto_generated/qgsexpressionselectiondialog.sip
 %Include auto_generated/qgsextentgroupbox.sip
+%Include auto_generated/qgsextentwidget.sip
 %Include auto_generated/qgsexternalresourcewidget.sip
 %Include auto_generated/qgsfeaturelistcombobox.sip
 %Include auto_generated/qgsfeatureselectiondlg.sip
@@ -98,6 +99,7 @@
 %Include auto_generated/qgsgui.sip
 %Include auto_generated/qgshelp.sip
 %Include auto_generated/qgshighlight.sip
+%Include auto_generated/qgshighlightablelineedit.sip
 %Include auto_generated/qgshistogramwidget.sip
 %Include auto_generated/qgsidentifymenu.sip
 %Include auto_generated/qgskeyvaluewidget.sip
@@ -239,6 +241,8 @@
 %Include auto_generated/auth/qgsauthsslimportdialog.sip
 %Include auto_generated/auth/qgsauthtrustedcasdialog.sip
 %Include auto_generated/callouts/qgscalloutwidget.sip
+%Include auto_generated/devtools/qgsdevtoolwidget.sip
+%Include auto_generated/devtools/qgsdevtoolwidgetfactory.sip
 %Include auto_generated/editorwidgets/core/qgseditorconfigwidget.sip
 %Include auto_generated/editorwidgets/core/qgseditorwidgetautoconf.sip
 %Include auto_generated/editorwidgets/core/qgseditorwidgetfactory.sip
@@ -311,6 +315,7 @@
 %Include auto_generated/processing/qgsprocessingmultipleselectiondialog.sip
 %Include auto_generated/processing/qgsprocessingoutputdestinationwidget.sip
 %Include auto_generated/processing/qgsprocessingparameterdefinitionwidget.sip
+%Include auto_generated/processing/qgsprocessingparameterswidget.sip
 %Include auto_generated/processing/qgsprocessingrecentalgorithmlog.sip
 %Include auto_generated/processing/qgsprocessingtoolboxmodel.sip
 %Include auto_generated/processing/qgsprocessingtoolboxtreeview.sip

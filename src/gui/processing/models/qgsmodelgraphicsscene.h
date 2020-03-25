@@ -107,6 +107,11 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QgsModelComponentGraphicItem *componentItemAt( QPointF position ) const;
 
     /**
+     * Selects all the components in the scene.
+     */
+    void selectAll();
+
+    /**
      * Clears any selected items in the scene.
      *
      * Call this method rather than QGraphicsScene::clearSelection, as the latter does

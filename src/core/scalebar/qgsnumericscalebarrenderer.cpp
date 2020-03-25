@@ -33,7 +33,12 @@ QString QgsNumericScaleBarRenderer::visibleName() const
 
 int QgsNumericScaleBarRenderer::sortKey() const
 {
-  return 7;
+  return 100;
+}
+
+QgsScaleBarRenderer::Flags QgsNumericScaleBarRenderer::flags() const
+{
+  return Flag::FlagUsesAlignment;
 }
 
 QgsNumericScaleBarRenderer *QgsNumericScaleBarRenderer::clone() const
@@ -78,7 +83,7 @@ void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScale
   painter->restore();
 }
 
-QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &settings,
+QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( QgsRenderContext &, const QgsScaleBarSettings &settings,
     const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
 {
   QFont font = settings.textFormat().toQFont();
@@ -86,7 +91,18 @@ QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &
   double textWidth = QgsLayoutUtils::textWidthMM( font, scaleText( scaleContext.scale, settings ) );
   double textHeight = QgsLayoutUtils::fontAscentMM( font );
 
-  return QSizeF( 2 * settings.boxContentSpace() + 2 * settings.pen().width() + textWidth,
+  return QSizeF( 2 * settings.boxContentSpace() + textWidth,
+                 textHeight + 2 * settings.boxContentSpace() );
+}
+
+QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
+{
+  QFont font = settings.textFormat().toQFont();
+
+  double textWidth = QgsLayoutUtils::textWidthMM( font, scaleText( scaleContext.scale, settings ) );
+  double textHeight = QgsLayoutUtils::fontAscentMM( font );
+
+  return QSizeF( 2 * settings.boxContentSpace() + textWidth,
                  textHeight + 2 * settings.boxContentSpace() );
 }
 

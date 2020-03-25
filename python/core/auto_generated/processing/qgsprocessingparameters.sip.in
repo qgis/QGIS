@@ -25,19 +25,75 @@ Encapsulates settings relating to a feature source input to a processing algorit
 %End
   public:
 
-    QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false );
+    enum class Flag
+    {
+      FlagOverrideDefaultGeometryCheck,
+      FlagCreateIndividualOutputPerInputFeature,
+    };
+    typedef QFlags<QgsProcessingFeatureSourceDefinition::Flag> Flags;
+
+
+    QgsProcessingFeatureSourceDefinition( const QString &source = QString(), bool selectedFeaturesOnly = false, long long featureLimit = -1,
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = 0, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
 %Docstring
-Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string source.
+Constructor for QgsProcessingFeatureSourceDefinition, accepting a static string ``source``.
+
+If ``selectedFeaturesOnly`` is ``True``, then only selected features from the source will be used.
+
+The optional ``featureLimit`` can be set to a value > 0 to place a hard limit on the maximum number
+of features which will be read from the source.
+
+The ``flags`` argument can be used to specify flags which dictate the source behavior.
+
+If the QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck is set in ``flags``, then the value of ``geometryCheck`` will override
+the default geometry check method (as dictated by :py:class:`QgsProcessingContext`) for this source.
 %End
 
-    QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false );
+    QgsProcessingFeatureSourceDefinition( const QgsProperty &source, bool selectedFeaturesOnly = false, long long featureLimit = -1,
+                                          QgsProcessingFeatureSourceDefinition::Flags flags = 0, QgsFeatureRequest::InvalidGeometryCheck geometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid );
 %Docstring
 Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty source.
+
+If ``selectedFeaturesOnly`` is ``True``, then only selected features from the source will be used.
+
+The optional ``featureLimit`` can be set to a value > 0 to place a hard limit on the maximum number
+of features which will be read from the source.
+
+The ``flags`` argument can be used to specify flags which dictate the source behavior.
+
+If the QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck is set in ``flags``, then the value of ``geometryCheck`` will override
+the default geometry check method (as dictated by :py:class:`QgsProcessingContext`) for this source.
 %End
 
     QgsProperty source;
 
     bool selectedFeaturesOnly;
+
+    long long featureLimit;
+
+    Flags flags;
+
+    QgsFeatureRequest::InvalidGeometryCheck geometryCheck;
+
+    QVariant toVariant() const;
+%Docstring
+Saves this source definition to a QVariantMap, wrapped in a QVariant.
+You can use QgsXmlUtils.writeVariant to save it to an XML document.
+
+.. seealso:: :py:func:`loadVariant`
+
+.. versionadded:: 3.14
+%End
+
+    bool loadVariant( const QVariantMap &map );
+%Docstring
+Loads this source definition from a QVariantMap, wrapped in a QVariant.
+You can use QgsXmlUtils.readVariant to load it from an XML document.
+
+.. seealso:: :py:func:`toVariant`
+
+.. versionadded:: 3.14
+%End
 
     bool operator==( const QgsProcessingFeatureSourceDefinition &other );
 
@@ -46,6 +102,8 @@ Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty so
     operator QVariant() const;
 
 };
+
+QFlags<QgsProcessingFeatureSourceDefinition::Flag> operator|(QgsProcessingFeatureSourceDefinition::Flag f1, QFlags<QgsProcessingFeatureSourceDefinition::Flag> f2);
 
 
 
@@ -1021,6 +1079,14 @@ Returns the coordinate reference system associated with an extent parameter valu
 
 .. seealso:: :py:func:`parameterAsExtent`
 %End
+
+    static QgsCoordinateReferenceSystem parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+%Docstring
+Returns the coordinate reference system associated with an extent parameter value.
+
+.. seealso:: :py:func:`parameterAsExtent`
+%End
+
 
     static QgsPointXY parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
                                         const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );

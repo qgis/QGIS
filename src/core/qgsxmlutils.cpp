@@ -221,6 +221,13 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
         element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProcessingOutputLayerDefinition" ) );
         break;
       }
+      else if ( value.canConvert< QgsProcessingFeatureSourceDefinition >() )
+      {
+        QDomElement valueElement = writeVariant( value.value< QgsProcessingFeatureSourceDefinition >().toVariant(), doc );
+        element.appendChild( valueElement );
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProcessingFeatureSourceDefinition" ) );
+        break;
+      }
       Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported user variant type %1" ).arg( QMetaType::typeName( value.userType() ) ).toLocal8Bit() );
       break;
     }
@@ -350,6 +357,18 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
   else if ( type == QLatin1String( "QgsProcessingOutputLayerDefinition" ) )
   {
     QgsProcessingOutputLayerDefinition res;
+    const QDomNodeList values = element.childNodes();
+    if ( values.isEmpty() )
+      return QVariant();
+
+    if ( res.loadVariant( QgsXmlUtils::readVariant( values.at( 0 ).toElement() ).toMap() ) )
+      return res;
+
+    return QVariant();
+  }
+  else if ( type == QLatin1String( "QgsProcessingFeatureSourceDefinition" ) )
+  {
+    QgsProcessingFeatureSourceDefinition res;
     const QDomNodeList values = element.childNodes();
     if ( values.isEmpty() )
       return QVariant();

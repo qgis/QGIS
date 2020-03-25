@@ -56,6 +56,8 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   {
     setValue( mParameter->defaultValue() );
   }
+
+  setToolTip( mParameter->toolTip() );
 }
 
 bool QgsProcessingLayerOutputDestinationWidget::outputIsSkipped() const

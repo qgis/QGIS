@@ -80,12 +80,18 @@
     <addaction name="mActionZoomToItems"/>
     <addaction name="separator"/>
     <addaction name="mActionShowComments"/>
+    <addaction name="separator"/>
+    <addaction name="mActionSnappingEnabled"/>
    </widget>
    <widget class="QMenu" name="mMenuEdit">
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <addaction name="mActionSelectAll"/>
+    <addaction name="mActionSnapSelected"/>
+    <addaction name="separator"/>
     <addaction name="mActionDeleteComponents"/>
+    <addaction name="separator"/>
    </widget>
    <addaction name="menu_Model"/>
    <addaction name="mMenuEdit"/>
@@ -608,6 +614,31 @@
    </property>
    <property name="shortcut">
     <string>Del</string>
+   </property>
+  </action>
+  <action name="mActionSnappingEnabled">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Enable Snapping</string>
+   </property>
+  </action>
+  <action name="mActionSnapSelected">
+   <property name="text">
+    <string>Snap Selected Components to Grid</string>
+   </property>
+  </action>
+  <action name="mActionSelectAll">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSelectAll.svg</normaloff>:/images/themes/default/mActionSelectAll.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select All</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
    </property>
   </action>
  </widget>

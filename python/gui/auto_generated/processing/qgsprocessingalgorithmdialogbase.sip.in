@@ -56,7 +56,7 @@ Returns the algorithm running in the dialog.
 .. seealso:: :py:func:`setAlgorithm`
 %End
 
-    void setMainWidget( QWidget *widget /Transfer/ );
+    void setMainWidget( QgsPanelWidget *widget /Transfer/ );
 %Docstring
 Sets the main ``widget`` for the dialog, usually a panel for configuring algorithm parameters.
 
@@ -73,11 +73,6 @@ Returns the main widget for the dialog, usually a panel for configuring algorith
     void showLog();
 %Docstring
 Switches the dialog to the log page.
-%End
-
-    void showParameters();
-%Docstring
-Switches the dialog to the parameters page.
 %End
 
     bool wasExecuted() const;
@@ -187,6 +182,11 @@ Copies the current log contents to the clipboard.
 .. versionadded:: 3.2
 %End
 
+    void showParameters();
+%Docstring
+Switches the dialog to the parameters page.
+%End
+
   protected:
 
     virtual void closeEvent( QCloseEvent *e );
@@ -235,7 +235,6 @@ Sets whether the algorithm was executed through the dialog.
 %Docstring
 Sets whether the algorithm was executed through the dialog (no matter the result).
 %End
-
 
     void setResults( const QVariantMap &results );
 %Docstring

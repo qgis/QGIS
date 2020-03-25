@@ -22,25 +22,18 @@ __author__ = 'Arnaud Morvan'
 __date__ = 'May 2016'
 __copyright__ = '(C) 2016, Arnaud Morvan'
 
-import locale
 import os
 import re
-from functools import cmp_to_key
 from inspect import isclass
 from copy import deepcopy
 
 from qgis.core import (
     QgsApplication,
-    QgsUnitTypes,
     QgsCoordinateReferenceSystem,
     QgsExpression,
-    QgsExpressionContextGenerator,
     QgsFieldProxyModel,
-    QgsMapLayerProxyModel,
-    QgsWkbTypes,
     QgsSettings,
     QgsProject,
-    QgsMapLayer,
     QgsMapLayerType,
     QgsVectorLayer,
     QgsProcessing,
@@ -53,7 +46,6 @@ from qgis.core import (
     QgsProcessingParameterFile,
     QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterNumber,
-    QgsProcessingParameterDistance,
     QgsProcessingParameterRasterLayer,
     QgsProcessingParameterEnum,
     QgsProcessingParameterString,
@@ -75,8 +67,6 @@ from qgis.core import (
     QgsProcessingOutputString,
     QgsProcessingOutputNumber,
     QgsProcessingModelChildParameterSource,
-    QgsProcessingModelAlgorithm,
-    QgsRasterDataProvider,
     NULL,
     Qgis)
 
@@ -87,12 +77,13 @@ from qgis.PyQt.QtWidgets import (
     QDialog,
     QFileDialog,
     QHBoxLayout,
-    QVBoxLayout,
     QLineEdit,
     QPlainTextEdit,
     QToolButton,
     QWidget,
+    QSizePolicy
 )
+from qgis.PyQt.QtGui import QIcon
 from qgis.gui import (
     QgsGui,
     QgsExpressionLineEdit,
@@ -107,7 +98,7 @@ from qgis.gui import (
     QgsAbstractProcessingParameterWidgetWrapper,
     QgsProcessingMapLayerComboBox
 )
-from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant, Qt
+from qgis.PyQt.QtCore import QVariant, Qt
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -128,6 +119,8 @@ from processing.tools import dataobjects
 DIALOG_STANDARD = QgsProcessingGui.Standard
 DIALOG_BATCH = QgsProcessingGui.Batch
 DIALOG_MODELER = QgsProcessingGui.Modeler
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class InvalidParameterValue(Exception):
@@ -411,6 +404,16 @@ class CrsWidgetWrapper(WidgetWrapper):
 
 class ExtentWidgetWrapper(WidgetWrapper):
     USE_MIN_COVERING_EXTENT = "[Use min covering extent]"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        """
+        .. deprecated:: 3.4
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("ExtentWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
 
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
@@ -1151,7 +1154,9 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
 
             self.combo.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             self.combo.triggerFileSelection.connect(self.selectFile)
+
             return self.combo
+
         elif self.dialogType == DIALOG_BATCH:
             widget = BatchInputSelectionPanel(self.parameterDefinition(), self.row, self.col, self.dialog)
             widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
@@ -1824,6 +1829,7 @@ class WidgetWrapperFactory:
             # deprecated, moved to c++
             wrapper = CrsWidgetWrapper
         elif param.type() == 'extent':
+            # deprecated, moved to c++
             wrapper = ExtentWidgetWrapper
         elif param.type() == 'point':
             # deprecated, moved to c++

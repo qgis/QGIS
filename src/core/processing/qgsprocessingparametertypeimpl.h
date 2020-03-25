@@ -620,7 +620,8 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
              << QObject::tr( "QgsProcessingFeatureSourceDefinition: Extent of source is used" )
              << QStringLiteral( "QgsProperty" )
              << QStringLiteral( "QgsRectangle" )
-             << QStringLiteral( "QgsReferencedRectangle" );
+             << QStringLiteral( "QgsReferencedRectangle" )
+             << QStringLiteral( "QgsGeometry: bounding box of geometry is used" );;
     }
 
     QStringList acceptedStringValues() const override

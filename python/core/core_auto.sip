@@ -418,6 +418,7 @@
 %Include auto_generated/numericformats/qgsbearingnumericformat.sip
 %Include auto_generated/numericformats/qgscurrencynumericformat.sip
 %Include auto_generated/numericformats/qgsfallbacknumericformat.sip
+%Include auto_generated/numericformats/qgsfractionnumericformat.sip
 %Include auto_generated/numericformats/qgsnumericformat.sip
 %Include auto_generated/numericformats/qgsnumericformatregistry.sip
 %Include auto_generated/numericformats/qgspercentagenumericformat.sip
@@ -486,11 +487,13 @@
 %Include auto_generated/raster/qgssinglebandgrayrenderer.sip
 %Include auto_generated/raster/qgssinglebandpseudocolorrenderer.sip
 %Include auto_generated/scalebar/qgsdoubleboxscalebarrenderer.sip
+%Include auto_generated/scalebar/qgshollowscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsnumericscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsscalebarrenderer.sip
 %Include auto_generated/scalebar/qgsscalebarrendererregistry.sip
 %Include auto_generated/scalebar/qgsscalebarsettings.sip
 %Include auto_generated/scalebar/qgssingleboxscalebarrenderer.sip
+%Include auto_generated/scalebar/qgssteppedlinescalebarrenderer.sip
 %Include auto_generated/scalebar/qgsticksscalebarrenderer.sip
 %Include auto_generated/symbology/qgs25drenderer.sip
 %Include auto_generated/symbology/qgsarrowsymbollayer.sip

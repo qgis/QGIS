@@ -118,6 +118,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mainLayout->insertWidget( 0, mMessageBar );
 
   mView->setAcceptDrops( true );
+  QgsSettings settings;
 
   connect( mActionClose, &QAction::triggered, this, &QWidget::close );
   connect( mActionZoomIn, &QAction::triggered, this, &QgsModelDesignerDialog::zoomIn );
@@ -131,6 +132,20 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mActionSave, &QAction::triggered, this, [ = ] { saveModel( false ); } );
   connect( mActionSaveAs, &QAction::triggered, this, [ = ] { saveModel( true ); } );
   connect( mActionDeleteComponents, &QAction::triggered, this, &QgsModelDesignerDialog::deleteSelected );
+  connect( mActionSnapSelected, &QAction::triggered, mView, &QgsModelGraphicsView::snapSelected );
+
+  mActionSnappingEnabled->setChecked( settings.value( QStringLiteral( "/Processing/Modeler/enableSnapToGrid" ), false ).toBool() );
+  connect( mActionSnappingEnabled, &QAction::toggled, this, [ = ]( bool enabled )
+  {
+    mView->snapper()->setSnapToGrid( enabled );
+    QgsSettings().setValue( QStringLiteral( "/Processing/Modeler/enableSnapToGrid" ), enabled );
+  } );
+  mView->snapper()->setSnapToGrid( mActionSnappingEnabled->isChecked() );
+
+  connect( mActionSelectAll, &QAction::triggered, this, [ = ]
+  {
+    mScene->selectAll();
+  } );
 
   mUndoAction = mUndoStack->createUndoAction( this );
   mUndoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
@@ -146,7 +161,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mToolbar->insertAction( mActionZoomIn, mRedoAction );
   mToolbar->insertSeparator( mActionZoomIn );
 
-  QgsSettings settings;
+
   QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::FilterModeler;
   if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_ALGORITHMS_KNOWN_ISSUES" ), false ).toBool() )
   {

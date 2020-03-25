@@ -10,7 +10,6 @@
 
 
 
-
 class QgsMapToolExtent : QgsMapTool
 {
 %Docstring

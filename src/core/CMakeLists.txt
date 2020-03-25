@@ -108,6 +108,7 @@ SET(QGIS_CORE_SRCS
   numericformats/qgsbearingnumericformat.cpp
   numericformats/qgscurrencynumericformat.cpp
   numericformats/qgsfallbacknumericformat.cpp
+  numericformats/qgsfractionnumericformat.cpp
   numericformats/qgsnumericformat.cpp
   numericformats/qgsnumericformatregistry.cpp
   numericformats/qgspercentagenumericformat.cpp
@@ -181,11 +182,13 @@ SET(QGIS_CORE_SRCS
   providers/ogr/qgsogrtransaction.cpp
 
   scalebar/qgsdoubleboxscalebarrenderer.cpp
+  scalebar/qgshollowscalebarrenderer.cpp
   scalebar/qgsnumericscalebarrenderer.cpp
   scalebar/qgsscalebarrenderer.cpp
   scalebar/qgsscalebarrendererregistry.cpp
   scalebar/qgsscalebarsettings.cpp
   scalebar/qgssingleboxscalebarrenderer.cpp
+  scalebar/qgssteppedlinescalebarrenderer.cpp
   scalebar/qgsticksscalebarrenderer.cpp
 
   qgis.cpp
@@ -1182,6 +1185,7 @@ SET(QGIS_CORE_HDRS
   numericformats/qgsbearingnumericformat.h
   numericformats/qgscurrencynumericformat.h
   numericformats/qgsfallbacknumericformat.h
+  numericformats/qgsfractionnumericformat.h
   numericformats/qgsnumericformat.h
   numericformats/qgsnumericformatregistry.h
   numericformats/qgspercentagenumericformat.h
@@ -1271,11 +1275,13 @@ SET(QGIS_CORE_HDRS
   raster/qgssinglebandpseudocolorrenderer.h
 
   scalebar/qgsdoubleboxscalebarrenderer.h
+  scalebar/qgshollowscalebarrenderer.h
   scalebar/qgsnumericscalebarrenderer.h
   scalebar/qgsscalebarrenderer.h
   scalebar/qgsscalebarrendererregistry.h
   scalebar/qgsscalebarsettings.h
   scalebar/qgssingleboxscalebarrenderer.h
+  scalebar/qgssteppedlinescalebarrenderer.h
   scalebar/qgsticksscalebarrenderer.h
 
   symbology/qgs25drenderer.h
@@ -1375,10 +1381,11 @@ INCLUDE_DIRECTORIES(
   3d
   annotations
   auth
+  callouts
   classification
   dxf
   effects
-  ${CMAKE_SOURCE_DIR}/src/core/expression
+  expression
   fieldformatter
   geometry
   geocms

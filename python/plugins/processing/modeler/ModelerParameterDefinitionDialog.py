@@ -46,7 +46,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterMapLayer,
-                       QgsProcessingParameterExtent,
                        QgsProcessingParameterMatrix,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterNumber,
@@ -487,9 +486,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
                 return
-        elif (self.paramType == parameters.PARAMETER_EXTENT
-              or isinstance(self.param, QgsProcessingParameterExtent)):
-            self.param = QgsProcessingParameterExtent(name, description)
         elif (self.paramType == parameters.PARAMETER_ENUM
                 or isinstance(self.param, QgsProcessingParameterEnum)):
             self.param = QgsProcessingParameterEnum(name, description, self.widget.options(), self.widget.allowMultiple(), self.widget.defaultOptions())

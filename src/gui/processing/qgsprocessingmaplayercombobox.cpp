@@ -20,6 +20,10 @@
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeatureid.h"
+#include "qgsapplication.h"
+#include "qgsguiutils.h"
+#include "qgspanelwidget.h"
+#include "qgsprocessingfeaturesourceoptionswidget.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QToolButton>
@@ -47,6 +51,37 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   connect( mSelectButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::triggerFileSelection );
   layout->addWidget( mSelectButton );
   layout->setAlignment( mSelectButton, Qt::AlignTop );
+
+  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
+  {
+    mIterateButton = new QToolButton();
+    mIterateButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconIterate.svg" ) ) );
+    mIterateButton->setToolTip( tr( "Iterate over this layer, creating a separate output for every feature in the layer" ) );
+    mIterateButton->setCheckable( true );
+    mIterateButton->setAutoRaise( true );
+
+    int iconSize = QgsGuiUtils::scaleIconSize( 24 );
+
+    // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
+    mIterateButton->setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
+    mIterateButton->setIconSize( QSize( iconSize, iconSize ) );
+
+    layout->addWidget( mIterateButton );
+    layout->setAlignment( mIterateButton, Qt::AlignTop );
+
+    mSettingsButton = new QToolButton();
+    mSettingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ) );
+    mSettingsButton->setToolTip( tr( "Advanced options" ) );
+
+    // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
+    mSettingsButton->setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
+    mSettingsButton->setIconSize( QSize( iconSize, iconSize ) );
+    mSettingsButton->setAutoRaise( true );
+
+    connect( mSettingsButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::showSourceOptions );
+    layout->addWidget( mSettingsButton );
+    layout->setAlignment( mSettingsButton, Qt::AlignTop );
+  }
 
   QVBoxLayout *vl = new QVBoxLayout();
   vl->setMargin( 0 );
@@ -164,11 +199,22 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
   QVariant val = value;
   bool found = false;
   bool selectedOnly = false;
+  bool iterate = false;
   if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
   {
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
     val = fromVar.source;
     selectedOnly = fromVar.selectedFeaturesOnly;
+    iterate = fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature;
+    mFeatureLimit = fromVar.featureLimit;
+    mIsOverridingDefaultGeometryCheck = fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck;
+    mGeometryCheck = fromVar.geometryCheck;
+  }
+  else
+  {
+    mFeatureLimit = -1;
+    mIsOverridingDefaultGeometryCheck = false;
+    mGeometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
   }
 
   if ( val.canConvert<QgsProperty>() )
@@ -210,6 +256,11 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
         mUseSelectionCheckBox->setChecked( false );
         mUseSelectionCheckBox->setEnabled( false );
       }
+
+      if ( mIterateButton )
+      {
+        mIterateButton->setChecked( iterate );
+      }
     }
     mBlockChangedSignal--;
     if ( changed )
@@ -224,6 +275,9 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
       mUseSelectionCheckBox->setChecked( false );
       mUseSelectionCheckBox->setEnabled( false );
     }
+    if ( mIterateButton )
+      mIterateButton->setChecked( iterate );
+
     if ( !string.isEmpty() )
     {
       mBlockChangedSignal++;
@@ -247,10 +301,15 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
 
 QVariant QgsProcessingMapLayerComboBox::value() const
 {
+  const bool iterate = mIterateButton && mIterateButton->isChecked();
+  const bool selectedOnly = mUseSelectionCheckBox && mUseSelectionCheckBox->isChecked();
   if ( QgsMapLayer *layer = mCombo->currentLayer() )
   {
-    if ( mUseSelectionCheckBox && mUseSelectionCheckBox->isChecked() )
-      return QgsProcessingFeatureSourceDefinition( layer->id(), true );
+    if ( selectedOnly || iterate || mFeatureLimit != -1 || mIsOverridingDefaultGeometryCheck )
+      return QgsProcessingFeatureSourceDefinition( layer->id(), selectedOnly, mFeatureLimit,
+             ( iterate ? QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature : QgsProcessingFeatureSourceDefinition::Flags() )
+             | ( mIsOverridingDefaultGeometryCheck ? QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck : QgsProcessingFeatureSourceDefinition::Flags() ),
+             mGeometryCheck );
     else
       return layer->id();
   }
@@ -258,8 +317,11 @@ QVariant QgsProcessingMapLayerComboBox::value() const
   {
     if ( !mCombo->currentText().isEmpty() )
     {
-      if ( mUseSelectionCheckBox && mUseSelectionCheckBox->isChecked() )
-        return QgsProcessingFeatureSourceDefinition( mCombo->currentText(), true );
+      if ( selectedOnly || iterate || mFeatureLimit != -1 || mIsOverridingDefaultGeometryCheck )
+        return QgsProcessingFeatureSourceDefinition( mCombo->currentText(), selectedOnly, mFeatureLimit,
+               ( iterate ? QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature : QgsProcessingFeatureSourceDefinition::Flags() )
+               | ( mIsOverridingDefaultGeometryCheck ? QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck : QgsProcessingFeatureSourceDefinition::Flags() ),
+               mGeometryCheck );
       else
         return mCombo->currentText();
     }
@@ -488,6 +550,35 @@ void QgsProcessingMapLayerComboBox::selectionChanged( const QgsFeatureIds &selec
   if ( selected.isEmpty() )
     mUseSelectionCheckBox->setChecked( false );
   mUseSelectionCheckBox->setEnabled( !selected.isEmpty() );
+}
+
+void QgsProcessingMapLayerComboBox::showSourceOptions()
+{
+  if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
+  {
+    QgsProcessingFeatureSourceOptionsWidget *widget = new QgsProcessingFeatureSourceOptionsWidget();
+    widget->setPanelTitle( tr( "%1 Options" ).arg( mParameter->description() ) );
+
+    widget->setGeometryCheckMethod( mIsOverridingDefaultGeometryCheck, mGeometryCheck );
+    widget->setFeatureLimit( mFeatureLimit );
+
+    panel->openPanel( widget );
+
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]
+    {
+      bool changed = false;
+      changed = changed | ( widget->featureLimit() != mFeatureLimit );
+      changed = changed | ( widget->isOverridingInvalidGeometryCheck() != mIsOverridingDefaultGeometryCheck );
+      changed = changed | ( widget->geometryCheckMethod() != mGeometryCheck );
+
+      mFeatureLimit = widget->featureLimit();
+      mIsOverridingDefaultGeometryCheck = widget->isOverridingInvalidGeometryCheck();
+      mGeometryCheck = widget->geometryCheckMethod();
+
+      if ( changed )
+        emit valueChanged();
+    } );
+  }
 }
 
 

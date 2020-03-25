@@ -21,7 +21,7 @@
 QgsModelSnapper::QgsModelSnapper()
 {
   QgsSettings s;
-  mTolerance = s.value( QStringLiteral( "LayoutDesigner/defaultSnapTolerancePixels" ), 5, QgsSettings::Gui ).toInt();
+  mTolerance = s.value( QStringLiteral( "/Processing/Modeler/snapTolerancePixels" ), 40 ).toInt();
 }
 
 void QgsModelSnapper::setSnapTolerance( const int snapTolerance )
@@ -34,19 +34,19 @@ void QgsModelSnapper::setSnapToGrid( bool enabled )
   mSnapToGrid = enabled;
 }
 
-QPointF QgsModelSnapper::snapPoint( QPointF point, double scaleFactor, bool &snapped ) const
+QPointF QgsModelSnapper::snapPoint( QPointF point, double scaleFactor, bool &snapped, bool snapHorizontal, bool snapVertical ) const
 {
   snapped = false;
 
   bool snappedXToGrid = false;
   bool snappedYToGrid = false;
   QPointF res = snapPointToGrid( point, scaleFactor, snappedXToGrid, snappedYToGrid );
-  if ( snappedXToGrid )
+  if ( snappedXToGrid && snapVertical )
   {
     snapped = true;
     point.setX( res.x() );
   }
-  if ( snappedYToGrid )
+  if ( snappedYToGrid && snapHorizontal )
   {
     snapped = true;
     point.setY( res.y() );
@@ -55,30 +55,58 @@ QPointF QgsModelSnapper::snapPoint( QPointF point, double scaleFactor, bool &sna
   return point;
 }
 
-QRectF QgsModelSnapper::snapRect( const QRectF &rect, double scaleFactor, bool &snapped ) const
+QRectF QgsModelSnapper::snapRect( const QRectF &rect, double scaleFactor, bool &snapped, bool snapHorizontal, bool snapVertical ) const
 {
   snapped = false;
   QRectF snappedRect = rect;
-
-  QList< double > xCoords;
-  xCoords << rect.left() << rect.center().x() << rect.right();
-  QList< double > yCoords;
-  yCoords << rect.top() << rect.center().y() << rect.bottom();
 
   bool snappedXToGrid = false;
   bool snappedYToGrid = false;
   QList< QPointF > points;
   points << rect.topLeft() << rect.topRight() << rect.bottomLeft() << rect.bottomRight();
   QPointF res = snapPointsToGrid( points, scaleFactor, snappedXToGrid, snappedYToGrid );
-  if ( snappedXToGrid )
+  if ( snappedXToGrid && snapVertical )
   {
     snapped = true;
     snappedRect.translate( res.x(), 0 );
   }
-  if ( snappedYToGrid )
+  if ( snappedYToGrid && snapHorizontal )
   {
     snapped = true;
     snappedRect.translate( 0, res.y() );
+  }
+
+  return snappedRect;
+}
+
+QRectF QgsModelSnapper::snapRectWithResize( const QRectF &rect, double scaleFactor, bool &snapped, bool snapHorizontal, bool snapVertical ) const
+{
+  snapped = false;
+  QRectF snappedRect = rect;
+
+  bool snappedXToGrid = false;
+  bool snappedYToGrid = false;
+  QPointF res = snapPointsToGrid( QList< QPointF >() << rect.topLeft(), scaleFactor, snappedXToGrid, snappedYToGrid );
+  if ( snappedXToGrid && snapVertical )
+  {
+    snapped = true;
+    snappedRect.setLeft( snappedRect.left() + res.x() );
+  }
+  if ( snappedYToGrid && snapHorizontal )
+  {
+    snapped = true;
+    snappedRect.setTop( snappedRect.top() + res.y() );
+  }
+  res = snapPointsToGrid( QList< QPointF >() << rect.bottomRight(), scaleFactor, snappedXToGrid, snappedYToGrid );
+  if ( snappedXToGrid && snapVertical )
+  {
+    snapped = true;
+    snappedRect.setRight( snappedRect.right() + res.x() );
+  }
+  if ( snappedYToGrid && snapHorizontal )
+  {
+    snapped = true;
+    snappedRect.setBottom( snappedRect.bottom() + res.y() );
   }
 
   return snappedRect;
@@ -111,7 +139,7 @@ QPointF QgsModelSnapper::snapPointsToGrid( const QList<QPointF> &points, double 
   for ( QPointF point : points )
   {
     //snap x coordinate
-    double gridRes = 10; //mLayout->convertToLayoutUnits( grid.resolution() );
+    double gridRes = 30; //mLayout->convertToLayoutUnits( grid.resolution() );
     int xRatio = static_cast< int >( ( point.x() ) / gridRes + 0.5 ); //NOLINT
     int yRatio = static_cast< int >( ( point.y() ) / gridRes + 0.5 ); //NOLINT
 

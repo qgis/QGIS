@@ -38,6 +38,7 @@ class CORE_EXPORT QgsDoubleBoxScaleBarRenderer: public QgsScaleBarRenderer
 
     QString id() const override;
     QString visibleName() const override;
+    Flags flags() const override;
     int sortKey() const override;
     QgsDoubleBoxScaleBarRenderer *clone() const override SIP_FACTORY;
 

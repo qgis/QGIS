@@ -63,7 +63,7 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
   QgsMeshDatasetGroupMetadata::DataType mScalarDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
   double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
   double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
-  QgsMeshRendererScalarSettings::DataInterpolationMethod mDataInterpolationMethod = QgsMeshRendererScalarSettings::None;
+  QgsMeshRendererScalarSettings::DataResamplingMethod mDataInterpolationMethod = QgsMeshRendererScalarSettings::None;
   std::unique_ptr<QgsMesh3dAveragingMethod> mScalarAveragingMethod;
 
   // vector dataset

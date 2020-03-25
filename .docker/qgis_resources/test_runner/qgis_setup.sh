@@ -44,7 +44,12 @@ if [[ -n "$PLUGIN_NAME" ]]; then
     printf "%s=true\n\n" "$PLUGIN_NAME" >> $CONF_MASTER_FILE
     # Install the plugin
     if [ ! -d "${PLUGIN_MASTER_FOLDER}/${PLUGIN_NAME}" ]; then
-        ln -s "/tests_directory/${PLUGIN_NAME}" "${PLUGIN_MASTER_FOLDER}"
+        plugin_dir="/tests_directory/${PLUGIN_NAME}"
+        if [ ! -d "${plugin_dir}" ]; then
+          echo "ERROR: ${plugin_dir} does not exist" >&2
+          exit 1
+        fi
+        ln -s "${plugin_dir}" "${PLUGIN_MASTER_FOLDER}"
         echo "Plugin master folder linked in ${PLUGIN_MASTER_FOLDER}/${PLUGIN_NAME}"
     fi
 fi

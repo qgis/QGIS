@@ -81,6 +81,8 @@ QgsMeshVectorArrowRenderer::QgsMeshVectorArrowRenderer(
   mBufferedExtent.setXMaximum( mBufferedExtent.xMaximum() + extension );
   mBufferedExtent.setYMinimum( mBufferedExtent.yMinimum() - extension );
   mBufferedExtent.setYMaximum( mBufferedExtent.yMaximum() + extension );
+
+  mVectorColoring.reset( new QgsMeshVectorColoring( settings ) );
 }
 
 QgsMeshVectorArrowRenderer::~QgsMeshVectorArrowRenderer() = default;
@@ -100,7 +102,6 @@ void QgsMeshVectorArrowRenderer::draw()
   double penWidth = mContext.convertToPainterUnits( mCfg.lineWidth(),
                     QgsUnitTypes::RenderUnit::RenderMillimeters );
   pen.setWidthF( penWidth );
-  pen.setColor( mCfg.color() );
   painter->setPen( pen );
 
   if ( mCfg.isOnUserDefinedGrid() )
@@ -453,6 +454,9 @@ void QgsMeshVectorArrowRenderer::drawVectorArrow( const QgsPointXY &lineStart, d
   }
 
   // Now actually draw the vector
+  QPen pen( mContext.painter()->pen() );
+  pen.setColor( mVectorColoring->color( magnitude ) );
+  mContext.painter()->setPen( pen );
   mContext.painter()->drawLine( lineStart.toQPointF(), lineEnd.toQPointF() );
   mContext.painter()->drawPolygon( finalVectorHeadPoints );
 }
@@ -512,6 +516,49 @@ QgsMeshVectorRenderer *QgsMeshVectorRenderer::makeVectorRenderer(
   }
 
   return renderer;
+}
+
+QgsMeshVectorColoring::QgsMeshVectorColoring( const QgsMeshRendererVectorSettings &settings )
+{
+  switch ( settings.coloringMethod() )
+  {
+    case QgsMeshRendererVectorSettings::SingleColor:
+      setColor( settings.color() );
+      break;
+    case QgsMeshRendererVectorSettings::ColorRamp:
+      setColor( settings.colorRampShader() );
+      break;
+  }
+}
+
+void QgsMeshVectorColoring::setColor( const QgsColorRampShader &colorRampShader )
+{
+  mColorRampShader = colorRampShader;
+}
+
+void QgsMeshVectorColoring::setColor( const QColor &color )
+{
+  mColorRampShader = QgsColorRampShader();
+  mSingleColor = color;
+}
+
+QColor QgsMeshVectorColoring::color( double magnitude ) const
+{
+  if ( mColorRampShader.sourceColorRamp() )
+  {
+    if ( mColorRampShader.isEmpty() )
+      return mColorRampShader.sourceColorRamp()->color( 0 );
+
+    int r, g, b, a;
+    if ( mColorRampShader.shade( magnitude, &r, &g, &b, &a ) )
+      return QColor( r, g, b, a );
+    else
+      return QColor( 0, 0, 0, 0 );
+  }
+  else
+  {
+    return mSingleColor;
+  }
 }
 
 ///@endcond

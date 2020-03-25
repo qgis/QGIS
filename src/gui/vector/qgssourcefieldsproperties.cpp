@@ -20,6 +20,9 @@
 #include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsgui.h"
+#include "qgsnative.h"
+
 
 QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -151,21 +154,26 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
   setRow( row, idx, fields.at( idx ) );
   mFieldsList->setCurrentCell( row, idx );
 
+  QColor expressionColor = QColor( 103, 0, 243, 44 );
+  QColor joinColor = QColor( 0, 243, 79, 44 );
+  QColor defaultColor = QColor( 252, 255, 79, 44 );
+
   for ( int i = 0; i < mFieldsList->columnCount(); i++ )
   {
     switch ( mLayer->fields().fieldOrigin( idx ) )
     {
       case QgsFields::OriginExpression:
         if ( i == 7 ) continue;
-        mFieldsList->item( row, i )->setBackground( QColor( 200, 200, 255 ) );
+        mFieldsList->item( row, i )->setBackground( expressionColor );
         break;
 
       case QgsFields::OriginJoin:
-        mFieldsList->item( row, i )->setBackground( QColor( 200, 255, 200 ) );
+        mFieldsList->item( row, i )->setBackground( joinColor );
         break;
 
       default:
-        mFieldsList->item( row, i )->setBackground( QColor( 255, 255, 200 ) );
+        if ( defaultColor.isValid() )
+          mFieldsList->item( row, i )->setBackground( defaultColor );
         break;
     }
   }
@@ -349,12 +357,12 @@ void QgsSourceFieldsProperties::deleteAttributeClicked()
   }
 
   if ( !expressionFields.isEmpty() )
-    mLayer->deleteAttributes( expressionFields.toList() );
+    mLayer->deleteAttributes( expressionFields.values() );
 
   if ( !providerFields.isEmpty() )
   {
     mLayer->beginEditCommand( tr( "Deleted attributes" ) );
-    if ( mLayer->deleteAttributes( providerFields.toList() ) )
+    if ( mLayer->deleteAttributes( providerFields.values() ) )
       mLayer->endEditCommand();
     else
       mLayer->destroyEditCommand();
@@ -414,7 +422,7 @@ void QgsSourceFieldsProperties::updateButtons()
   QgsVectorDataProvider *provider = mLayer->dataProvider();
   if ( !provider )
     return;
-  const int cap = provider->capabilities();
+  const QgsVectorDataProvider::Capabilities cap = provider->capabilities();
 
   mToggleEditingButton->setEnabled( ( cap & QgsVectorDataProvider::ChangeAttributeValues ) && !mLayer->readOnly() );
 

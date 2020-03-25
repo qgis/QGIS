@@ -69,7 +69,6 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
     void pushDebugInfo( const QString &info ) override;
     void pushConsoleInfo( const QString &info ) override;
 
-
 };
 #endif
 
@@ -120,7 +119,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * Sets the main \a widget for the dialog, usually a panel for configuring algorithm parameters.
      * \see mainWidget()
      */
-    void setMainWidget( QWidget *widget SIP_TRANSFER );
+    void setMainWidget( QgsPanelWidget *widget SIP_TRANSFER );
 
     /**
      * Returns the main widget for the dialog, usually a panel for configuring algorithm parameters.
@@ -132,11 +131,6 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * Switches the dialog to the log page.
      */
     void showLog();
-
-    /**
-     * Switches the dialog to the parameters page.
-     */
-    void showParameters();
 
     /**
      * Returns TRUE if an algorithm was executed in the dialog.
@@ -235,6 +229,11 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      */
     void copyLogToClipboard();
 
+    /**
+     * Switches the dialog to the parameters page.
+     */
+    void showParameters();
+
   protected:
 
     void closeEvent( QCloseEvent *e ) override;
@@ -280,7 +279,6 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * Sets whether the algorithm was executed through the dialog (no matter the result).
      */
     void setExecutedAnyResult( bool executedAnyResult );
-
 
     /**
      * Sets the algorithm results.

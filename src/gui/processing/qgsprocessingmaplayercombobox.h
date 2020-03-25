@@ -115,13 +115,19 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
 
     void onLayerChanged( QgsMapLayer *layer );
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
+    void showSourceOptions();
 
   private:
     std::unique_ptr< QgsProcessingParameterDefinition > mParameter;
     QgsMapLayerComboBox *mCombo = nullptr;
     QToolButton *mSelectButton = nullptr;
+    QToolButton *mIterateButton = nullptr;
+    QToolButton *mSettingsButton = nullptr;
     QCheckBox *mUseSelectionCheckBox = nullptr;
     bool mDragActive = false;
+    long long mFeatureLimit = -1;
+    bool mIsOverridingDefaultGeometryCheck = false;
+    QgsFeatureRequest::InvalidGeometryCheck mGeometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
     QPointer< QgsMapLayer> mPrevLayer;
     int mBlockChangedSignal = 0;
     QgsMapLayer *compatibleMapLayerFromMimeData( const QMimeData *data, bool &incompatibleLayerSelected ) const;

@@ -55,13 +55,13 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
 void QgsMeshRendererScalarSettingsWidget::setLayer( QgsMeshLayer *layer )
 {
   mMeshLayer = layer;
-  mScalarInterpolationTypeComboBox->setEnabled( dataIsDefinedOnFaces() );
+  mScalarInterpolationTypeComboBox->setEnabled( !dataIsDefinedOnEdges() );
 }
 
 void QgsMeshRendererScalarSettingsWidget::setActiveDatasetGroup( int groupIndex )
 {
   mActiveDatasetGroup = groupIndex;
-  mScalarInterpolationTypeComboBox->setEnabled( dataIsDefinedOnFaces() );
+  mScalarInterpolationTypeComboBox->setEnabled( !dataIsDefinedOnEdges() );
 }
 
 QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() const
@@ -70,7 +70,7 @@ QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() co
   settings.setColorRampShader( mScalarColorRampShaderWidget->shader() );
   settings.setClassificationMinimumMaximum( lineEditValue( mScalarMinLineEdit ), lineEditValue( mScalarMaxLineEdit ) );
   settings.setOpacity( mOpacityWidget->opacity() );
-  settings.setDataInterpolationMethod( dataIntepolationMethod() );
+  settings.setDataResamplingMethod( dataIntepolationMethod() );
   settings.setEdgeWidth( mScalarEdgeWidthSpinBox->value() );
   settings.setEdgeWidthUnit( mScalarEdgeWidthUnitSelectionWidget->unit() );
   return settings;
@@ -98,7 +98,7 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );
   whileBlocking( mScalarColorRampShaderWidget )->setMinimumMaximum( min, max );
   whileBlocking( mOpacityWidget )->setOpacity( settings.opacity() );
-  int index = mScalarInterpolationTypeComboBox->findData( settings.dataInterpolationMethod() );
+  int index = mScalarInterpolationTypeComboBox->findData( settings.dataResamplingMethod() );
   whileBlocking( mScalarInterpolationTypeComboBox )->setCurrentIndex( index );
 
   bool hasEdges = ( mMeshLayer->dataProvider() &&
@@ -140,18 +140,11 @@ void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
   mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );
 }
 
-QgsMeshRendererScalarSettings::DataInterpolationMethod QgsMeshRendererScalarSettingsWidget::dataIntepolationMethod() const
+QgsMeshRendererScalarSettings::DataResamplingMethod QgsMeshRendererScalarSettingsWidget::dataIntepolationMethod() const
 {
-  if ( dataIsDefinedOnFaces() )
-  {
-    const int data = mScalarInterpolationTypeComboBox->currentData().toInt();
-    const QgsMeshRendererScalarSettings::DataInterpolationMethod method = static_cast<QgsMeshRendererScalarSettings::DataInterpolationMethod>( data );
-    return method;
-  }
-  else
-  {
-    return QgsMeshRendererScalarSettings::None;
-  }
+  const int data = mScalarInterpolationTypeComboBox->currentData().toInt();
+  const QgsMeshRendererScalarSettings::DataResamplingMethod method = static_cast<QgsMeshRendererScalarSettings::DataResamplingMethod>( data );
+  return method;
 }
 
 bool QgsMeshRendererScalarSettingsWidget::dataIsDefinedOnFaces() const
@@ -165,6 +158,19 @@ bool QgsMeshRendererScalarSettingsWidget::dataIsDefinedOnFaces() const
   QgsMeshDatasetGroupMetadata meta = mMeshLayer->dataProvider()->datasetGroupMetadata( mActiveDatasetGroup );
   const bool onFaces = ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces );
   return onFaces;
+}
+
+bool QgsMeshRendererScalarSettingsWidget::dataIsDefinedOnEdges() const
+{
+  if ( !mMeshLayer || !mMeshLayer->dataProvider() || !mMeshLayer->dataProvider()->isValid() )
+    return false;
+
+  if ( mActiveDatasetGroup < 0 )
+    return false;
+
+  QgsMeshDatasetGroupMetadata meta = mMeshLayer->dataProvider()->datasetGroupMetadata( mActiveDatasetGroup );
+  const bool onEdges = ( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnEdges );
+  return onEdges;
 }
 
 
