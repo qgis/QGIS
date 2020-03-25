@@ -2690,6 +2690,8 @@ void TestQgsProcessing::parameterExtent()
   QVERIFY( !def->checkValueIsAcceptable( QgsRectangle() ) );
   QVERIFY( def->checkValueIsAcceptable( QgsReferencedRectangle( QgsRectangle( 1, 2, 3, 4 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) ) );
   QVERIFY( !def->checkValueIsAcceptable( QgsReferencedRectangle( QgsRectangle(), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsGeometry::fromRect( QgsRectangle( 1, 2, 3, 4 ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsGeometry::fromWkt( QStringLiteral( "LineString(10 10, 20 20)" ) ) ) );
 
   // these checks require a context - otherwise we could potentially be referring to a layer source
   QVERIFY( def->checkValueIsAcceptable( "1,2,3" ) );
@@ -2866,6 +2868,20 @@ void TestQgsProcessing::parameterExtent()
   p.setCrs( QgsCoordinateReferenceSystem( "EPSG:3785" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsExtentCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:3785" ) );
 
+  // QgsGeometry
+  params.insert( "non_optional", QgsGeometry::fromRect( QgsRectangle( 13, 14, 15, 16 ) ) );
+  ext = QgsProcessingParameters::parameterAsExtent( def.get(), params, context );
+  QGSCOMPARENEAR( ext.xMinimum(), 13, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 15, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(),  14, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 16, 0.001 );
+  // with target CRS - should make no difference, because source CRS is unknown
+  ext = QgsProcessingParameters::parameterAsExtent( def.get(), params, context,  QgsCoordinateReferenceSystem( "EPSG:3785" ) );
+  QGSCOMPARENEAR( ext.xMinimum(), 13, 0.001 );
+  QGSCOMPARENEAR( ext.xMaximum(), 15, 0.001 );
+  QGSCOMPARENEAR( ext.yMinimum(),  14, 0.001 );
+  QGSCOMPARENEAR( ext.yMaximum(), 16, 0.001 );
+
   // QgsReferencedRectangle
   params.insert( "non_optional", QgsReferencedRectangle( QgsRectangle( 1.1, 2.2, 3.3, 4.4 ), QgsCoordinateReferenceSystem( "EPSG:4326" ) ) );
   ext = QgsProcessingParameters::parameterAsExtent( def.get(), params, context );
@@ -2902,6 +2918,7 @@ void TestQgsProcessing::parameterExtent()
   QCOMPARE( def->valueAsPythonString( "1,2,3,4 [EPSG:4326]", context ), QStringLiteral( "'1,2,3,4 [EPSG:4326]'" ) );
   QCOMPARE( def->valueAsPythonString( "uri='complex' username=\"complex\"", context ), QStringLiteral( "'uri=\\'complex\\' username=\\\"complex\\\"'" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QStringLiteral( "'c:\\\\test\\\\new data\\\\test.dat'" ) );
+  QCOMPARE( def->valueAsPythonString( QgsGeometry::fromWkt( QStringLiteral( "LineString( 10 10, 20 20)" ) ), context ), QStringLiteral( "QgsGeometry.fromWkt('LineString (10 10, 20 20)')" ) );
 
   QString pythonCode = def->asPythonString();
   QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterExtent('non_optional', '', defaultValue='1,2,3,4')" ) );
