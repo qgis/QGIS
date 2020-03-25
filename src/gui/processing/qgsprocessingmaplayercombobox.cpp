@@ -329,6 +329,10 @@ QVariant QgsProcessingMapLayerComboBox::value() const
   return QVariant();
 }
 
+void QgsProcessingMapLayerComboBox::setWidgetContext( QgsProcessingParameterWidgetContext *context )
+{
+  mBrowserModel = context->browserModel();
+}
 
 QgsMapLayer *QgsProcessingMapLayerComboBox::compatibleMapLayerFromMimeData( const QMimeData *data, bool &incompatibleLayerSelected ) const
 {

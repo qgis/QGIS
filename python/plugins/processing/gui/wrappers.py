@@ -1186,6 +1186,11 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             widget.setLayout(layout)
             return widget
 
+    def setWidgetContext(self, context):
+        if isinstance(self.combo, QgsProcessingMapLayerComboBox):
+            self.combo.setWidgetContext(context)
+        super().setWidgetContext(context)
+
     def selectFile(self):
         filename, selected_filter = self.getFileName(self.combo.currentText())
         if filename:
