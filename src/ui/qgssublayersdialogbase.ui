@@ -90,38 +90,13 @@
     </layout>
    </item>
    <item row="0" column="0">
-    <widget class="QFrame" name="grpFilePath">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <property name="spacing">
-       <number>0</number>
-      </property>
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QLabel" name="lblFilePath">
-        <property name="text">
-         <string>Path</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="txtFilePath">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
+    <widget class="QLineEdit" name="txtFilePath">
+    <property name="enabled">
+      <bool>false</bool>
+    </property>
+    <property name="toolTip">
+      <string>Current file source</string>
+    </property>
     </widget>
    </item>
   </layout>

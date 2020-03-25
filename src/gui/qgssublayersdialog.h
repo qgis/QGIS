@@ -30,6 +30,10 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
 {
     Q_OBJECT
   public:
+
+    /**
+     * Prompt behaviour of the QgsSublayersDialog
+     */
     enum PromptMode
     {
 

@@ -15,6 +15,7 @@ class QgsSublayersDialog : QDialog
 #include "qgssublayersdialog.h"
 %End
   public:
+
     enum PromptMode
     {
 

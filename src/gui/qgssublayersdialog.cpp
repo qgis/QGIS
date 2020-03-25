@@ -74,16 +74,16 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
     mShowType = true;
   }
 
-  QString filename = providerType == QgsSublayersDialog::Vsifile
-                     ? providerSource
-                     : QgsProviderRegistry::instance()->decodeUri( name, providerSource )[QStringLiteral( "path" )].toString();
+  QString fileFullPath = providerType == QgsSublayersDialog::Vsifile
+                         ? providerSource
+                         : QgsProviderRegistry::instance()->decodeUri( name, providerSource )[QStringLiteral( "path" )].toString();
+  QString filename = QFileInfo( fileFullPath ).fileName();
 
-  txtFilePath->setText( QDir::toNativeSeparators( QFileInfo( filename ).canonicalFilePath() ) );
+  setWindowTitle( filename.isEmpty() ? title : QStringLiteral( "%1 | %2" ).arg( title, filename ) );
+  txtFilePath->setText( QDir::toNativeSeparators( QFileInfo( fileFullPath ).canonicalFilePath() ) );
 
   if ( filename.isEmpty() )
-    grpFilePath->setVisible( false );
-
-  setWindowTitle( title );
+    txtFilePath->setVisible( false );
 
   // add a "Select All" button - would be nicer with an icon
   connect( btnSelectAll, &QAbstractButton::pressed, layersTable, &QTreeView::selectAll );
