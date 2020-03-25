@@ -278,7 +278,6 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QTreeWidgetItem *featureItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QObject *layer );
-    QTreeWidgetItem *findResultFeaturesItem( QTreeWidgetItem *layerItem );
 
 
     void highlightLayer( QTreeWidgetItem *object );
