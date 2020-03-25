@@ -311,6 +311,7 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog( QgsBrowserGuiModel *browse
   : QDialog( parent )
 {
   setWindowTitle( tr( "Select a Data Source" ) );
+  setObjectName( QStringLiteral( "QgsDataSourceSelectDialog" ) );
   QgsGui::enableAutoGeometryRestore( this );
 
   mWidget = new QgsDataSourceSelectWidget( browserModel, setFilterByLayerType, layerType );
