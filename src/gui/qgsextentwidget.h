@@ -212,6 +212,12 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      */
     void validationChanged( bool valid );
 
+  protected:
+
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
+
   private slots:
 
     void layerMenuAboutToShow();
@@ -256,6 +262,9 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
     void setValid( bool valid );
 
     void setExtentToLayerExtent( const QString &layerId );
+
+    QgsMapLayer *mapLayerFromMimeData( const QMimeData *data ) const;
+
 
 };
 

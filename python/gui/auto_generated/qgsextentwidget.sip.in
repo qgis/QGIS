@@ -205,6 +205,15 @@ Emitted when the widget's extent is changed.
 Emitted when the widget's validation state changes.
 %End
 
+  protected:
+
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+    virtual void dragLeaveEvent( QDragLeaveEvent *event );
+
+    virtual void dropEvent( QDropEvent *event );
+
+
 };
 
 /************************************************************************

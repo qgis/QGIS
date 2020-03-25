@@ -38,6 +38,7 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
 
   mCondensedRe = QRegularExpression( QStringLiteral( "\\s*([\\d\\.]+)\\s*,\\s*([\\d\\.]+)\\s*,\\s*([\\d\\.]+)\\s*,\\s*([\\d\\.]+)\\s*(\\[.*?\\])" ) );
   mCondensedLineEdit->setValidator( new QRegularExpressionValidator( mCondensedRe, this ) );
+  mCondensedLineEdit->setShowClearButton( false );
 
   connect( mCondensedLineEdit, &QLineEdit::textEdited, this, &QgsExtentWidget::setOutputExtentFromCondensedLineEdit );
 
@@ -84,6 +85,8 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
       mCondensedFrame->hide();
       break;
   }
+
+  setAcceptDrops( true );
 }
 
 void QgsExtentWidget::setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs )
@@ -295,6 +298,20 @@ void QgsExtentWidget::setExtentToLayerExtent( const QString &layerId )
   setOutputExtentFromLayer( layer );
 }
 
+QgsMapLayer *QgsExtentWidget::mapLayerFromMimeData( const QMimeData *data ) const
+{
+  const QgsMimeDataUtils::UriList uriList = QgsMimeDataUtils::decodeUriList( data );
+  for ( const QgsMimeDataUtils::Uri &u : uriList )
+  {
+    // is this uri from the current project?
+    if ( QgsMapLayer *layer = u.mapLayer() )
+    {
+      return layer;
+    }
+  }
+  return nullptr;
+}
+
 void QgsExtentWidget::setOutputExtentFromCurrent()
 {
   if ( mCanvas )
@@ -385,4 +402,65 @@ void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas )
     mMenu->removeAction( mUseCanvasExtentAction );
     mMenu->removeAction( mDrawOnCanvasAction );
   }
+}
+
+void QgsExtentWidget::dragEnterEvent( QDragEnterEvent *event )
+{
+  if ( !( event->possibleActions() & Qt::CopyAction ) )
+  {
+    event->ignore();
+    return;
+  }
+
+  if ( mapLayerFromMimeData( event->mimeData() ) )
+  {
+    // dragged an acceptable layer, phew
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+    mCondensedLineEdit->setHighlighted( true );
+    update();
+  }
+  else
+  {
+    event->ignore();
+  }
+}
+
+void QgsExtentWidget::dragLeaveEvent( QDragLeaveEvent *event )
+{
+  if ( mCondensedLineEdit->isHighlighted() )
+  {
+    event->accept();
+    mCondensedLineEdit->setHighlighted( false );
+    update();
+  }
+  else
+  {
+    event->ignore();
+  }
+}
+
+void QgsExtentWidget::dropEvent( QDropEvent *event )
+{
+  if ( !( event->possibleActions() & Qt::CopyAction ) )
+  {
+    event->ignore();
+    return;
+  }
+
+  if ( QgsMapLayer *layer = mapLayerFromMimeData( event->mimeData() ) )
+  {
+    // dropped a map layer
+    setFocus( Qt::MouseFocusReason );
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+
+    setOutputExtentFromLayer( layer );
+  }
+  else
+  {
+    event->ignore();
+  }
+  mCondensedLineEdit->setHighlighted( false );
+  update();
 }
