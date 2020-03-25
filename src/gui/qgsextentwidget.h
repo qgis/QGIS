@@ -166,6 +166,15 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      */
     bool isValid() const;
 
+    /**
+     * Sets whether the widget can be set to a "not set" (null) state.
+     *
+     * The specified \a notSetText will be used for showing null values.
+     *
+     * \note This mode only applies to widgets in the condensed state!
+     */
+    void setNullValueAllowed( bool allowed, const QString &notSetText = QString() );
+
   public slots:
 
     /**
@@ -199,6 +208,11 @@ class GUI_EXPORT QgsExtentWidget : public QWidget, private Ui::QgsExtentGroupBox
      * \param ratio aspect ratio's width and height
      */
     void setRatio( QSize ratio ) { mRatio = ratio; }
+
+    /**
+     * Clears the widget, setting it to a null value.
+     */
+    void clear();
 
   signals:
 

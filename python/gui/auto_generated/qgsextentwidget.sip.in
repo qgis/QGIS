@@ -158,6 +158,17 @@ Returns the name of the extent layer.
 Returns ``True`` if the widget is in a valid state, i.e. has an extent set.
 %End
 
+    void setNullValueAllowed( bool allowed, const QString &notSetText = QString() );
+%Docstring
+Sets whether the widget can be set to a "not set" (null) state.
+
+The specified ``notSetText`` will be used for showing null values.
+
+.. note::
+
+   This mode only applies to widgets in the condensed state!
+%End
+
   public slots:
 
     void setOutputExtentFromOriginal();
@@ -191,6 +202,11 @@ Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
 To unset a fixed aspect ratio, set the width and height to zero.
 
 :param ratio: aspect ratio's width and height
+%End
+
+    void clear();
+%Docstring
+Clears the widget, setting it to a null value.
 %End
 
   signals:
