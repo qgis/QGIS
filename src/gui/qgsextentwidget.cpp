@@ -25,8 +25,9 @@
 #include <QMenu>
 #include <QAction>
 #include <QDoubleValidator>
+#include <QRegularExpression>
 
-QgsExtentWidget::QgsExtentWidget( QWidget *parent )
+QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   : QWidget( parent )
 {
   setupUi( this );
@@ -35,10 +36,30 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent )
   connect( mYMinLineEdit, &QLineEdit::textEdited, this, &QgsExtentWidget::setOutputExtentFromLineEdit );
   connect( mYMaxLineEdit, &QLineEdit::textEdited, this, &QgsExtentWidget::setOutputExtentFromLineEdit );
 
-  mLayerMenu = new QMenu( this );
+  mCondensedRe = QRegularExpression( QStringLiteral( "\\s*([\\d\\.]+)\\s*,\\s*([\\d\\.]+)\\s*,\\s*([\\d\\.]+)\\s*,\\s*([\\d\\.]+)\\s*(\\[.*?\\])" ) );
+  mCondensedLineEdit->setValidator( new QRegularExpressionValidator( mCondensedRe, this ) );
+
+  connect( mCondensedLineEdit, &QLineEdit::textEdited, this, &QgsExtentWidget::setOutputExtentFromCondensedLineEdit );
+
+  mLayerMenu = new QMenu( tr( "Calculate from Layer" ) );
   mButtonCalcFromLayer->setMenu( mLayerMenu );
   connect( mLayerMenu, &QMenu::aboutToShow, this, &QgsExtentWidget::layerMenuAboutToShow );
   mMapLayerModel = new QgsMapLayerModel( this );
+
+  mMenu = new QMenu( this );
+  mUseCanvasExtentAction = new QAction( tr( "Use Map Canvas Extent" ), this );
+  connect( mUseCanvasExtentAction, &QAction::triggered, this, &QgsExtentWidget::setOutputExtentFromCurrent );
+
+  mUseCurrentExtentAction = new QAction( tr( "Use Current Layer Extent" ), this );
+  connect( mUseCurrentExtentAction, &QAction::triggered, this, &QgsExtentWidget::setOutputExtentFromCurrent );
+
+  mDrawOnCanvasAction = new QAction( tr( "Draw on Canvas" ), this );
+  connect( mDrawOnCanvasAction, &QAction::triggered, this, &QgsExtentWidget::setOutputExtentFromDrawOnCanvas );
+
+  mMenu->addMenu( mLayerMenu );
+
+  mCondensedToolButton->setMenu( mMenu );
+  mCondensedToolButton->setPopupMode( QToolButton::InstantPopup );
 
   mXMinLineEdit->setValidator( new QDoubleValidator( this ) );
   mXMaxLineEdit->setValidator( new QDoubleValidator( this ) );
@@ -52,6 +73,17 @@ QgsExtentWidget::QgsExtentWidget( QWidget *parent )
   connect( mCurrentExtentButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromCurrent );
   connect( mOriginalExtentButton, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromOriginal );
   connect( mButtonDrawOnCanvas, &QAbstractButton::clicked, this, &QgsExtentWidget::setOutputExtentFromDrawOnCanvas );
+
+  switch ( style )
+  {
+    case CondensedStyle:
+      mExpandedWidget->hide();
+      break;
+
+    case ExpandedStyle:
+      mCondensedFrame->hide();
+      break;
+  }
 }
 
 void QgsExtentWidget::setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs )
@@ -69,10 +101,12 @@ void QgsExtentWidget::setCurrentExtent( const QgsRectangle &currentExtent, const
   mCurrentCrs = currentCrs;
 
   mCurrentExtentButton->setVisible( true );
+  mMenu->addAction( mUseCurrentExtentAction );
 }
 
 void QgsExtentWidget::setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs )
 {
+  mHasFixedOutputCrs = true;
   if ( mOutputCrs != outputCrs )
   {
     bool prevExtentEnabled = mIsValid;
@@ -122,21 +156,29 @@ void QgsExtentWidget::setOutputCrs( const QgsCoordinateReferenceSystem &outputCr
 void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinateReferenceSystem &srcCrs, ExtentState state )
 {
   QgsRectangle extent;
-  if ( mOutputCrs == srcCrs )
+  if ( !mHasFixedOutputCrs )
   {
+    mOutputCrs = srcCrs;
     extent = r;
   }
   else
   {
-    try
+    if ( mOutputCrs == srcCrs )
     {
-      QgsCoordinateTransform ct( srcCrs, mOutputCrs, QgsProject::instance() );
-      extent = ct.transformBoundingBox( r );
-    }
-    catch ( QgsCsException & )
-    {
-      // can't reproject
       extent = r;
+    }
+    else
+    {
+      try
+      {
+        QgsCoordinateTransform ct( srcCrs, mOutputCrs, QgsProject::instance() );
+        extent = ct.transformBoundingBox( r );
+      }
+      catch ( QgsCsException & )
+      {
+        // can't reproject
+        extent = r;
+      }
     }
   }
 
@@ -163,6 +205,13 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
   mYMinLineEdit->setText( QString::number( extent.yMinimum(), 'f', decimals ) );
   mYMaxLineEdit->setText( QString::number( extent.yMaximum(), 'f', decimals ) );
 
+  QString condensed = QStringLiteral( "%1,%2,%3,%4" ).arg( mXMinLineEdit->text(),
+                      mXMaxLineEdit->text(),
+                      mYMinLineEdit->text(),
+                      mYMaxLineEdit->text() );
+  condensed += QStringLiteral( " [%1]" ).arg( mOutputCrs.userFriendlyIdentifier( QgsCoordinateReferenceSystem::ShortString ) );
+  mCondensedLineEdit->setText( condensed );
+
   mExtentState = state;
 
   if ( !mIsValid )
@@ -171,11 +220,24 @@ void QgsExtentWidget::setOutputExtent( const QgsRectangle &r, const QgsCoordinat
   emit extentChanged( extent );
 }
 
-
 void QgsExtentWidget::setOutputExtentFromLineEdit()
 {
   mExtentState = UserExtent;
   emit extentChanged( outputExtent() );
+}
+
+void QgsExtentWidget::setOutputExtentFromCondensedLineEdit()
+{
+  const QString text = mCondensedLineEdit->text();
+  const QRegularExpressionMatch match = mCondensedRe.match( text );
+  if ( match.hasMatch() )
+  {
+    whileBlocking( mXMinLineEdit )->setText( match.captured( 1 ) );
+    whileBlocking( mXMaxLineEdit )->setText( match.captured( 2 ) );
+    whileBlocking( mYMinLineEdit )->setText( match.captured( 3 ) );
+    whileBlocking( mYMaxLineEdit )->setText( match.captured( 4 ) );
+    emit extentChanged( outputExtent() );
+  }
 }
 
 QString QgsExtentWidget::extentLayerName() const
@@ -199,8 +261,8 @@ void QgsExtentWidget::setValid( bool valid )
 
 void QgsExtentWidget::layerMenuAboutToShow()
 {
-  qDeleteAll( mMenuActions );
-  mMenuActions.clear();
+  qDeleteAll( mLayerMenuActions );
+  mLayerMenuActions.clear();
   mLayerMenu->clear();
   for ( int i = 0; i < mMapLayerModel->rowCount(); ++i )
   {
@@ -220,7 +282,7 @@ void QgsExtentWidget::layerMenuAboutToShow()
       setExtentToLayerExtent( layerId );
     } );
     mLayerMenu->addAction( act );
-    mMenuActions << act;
+    mLayerMenuActions << act;
   }
 }
 
@@ -312,10 +374,15 @@ void QgsExtentWidget::setMapCanvas( QgsMapCanvas *canvas )
     mCanvas = canvas;
     mButtonDrawOnCanvas->setVisible( true );
     mCurrentExtentButton->setVisible( true );
+
+    mMenu->addAction( mUseCanvasExtentAction );
+    mMenu->addAction( mDrawOnCanvasAction );
   }
   else
   {
     mButtonDrawOnCanvas->setVisible( false );
     mCurrentExtentButton->setVisible( false );
+    mMenu->removeAction( mUseCanvasExtentAction );
+    mMenu->removeAction( mDrawOnCanvasAction );
   }
 }
