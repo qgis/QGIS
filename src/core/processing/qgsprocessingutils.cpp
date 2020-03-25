@@ -214,19 +214,33 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
 
 QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint )
 {
-  QStringList components = string.split( '|' );
-  if ( components.isEmpty() )
-    return nullptr;
+  QString provider;
+  QString uri;
+  const bool useProvider = decodeProviderKeyAndUri( string, provider, uri );
+  if ( !useProvider )
+    uri = string;
 
-  QFileInfo fi;
-  if ( QFileInfo::exists( string ) )
-    fi = QFileInfo( string );
-  else if ( QFileInfo::exists( components.at( 0 ) ) )
-    fi = QFileInfo( components.at( 0 ) );
+  QString name;
+  // for disk based sources, we use the filename to determine a layer name
+  if ( !useProvider || ( provider == QLatin1String( "ogr" ) || provider == QLatin1String( "gdal" ) || provider == QLatin1String( "mdal" ) ) )
+  {
+    QStringList components = uri.split( '|' );
+    if ( components.isEmpty() )
+      return nullptr;
+
+    QFileInfo fi;
+    if ( QFileInfo::exists( uri ) )
+      fi = QFileInfo( uri );
+    else if ( QFileInfo::exists( components.at( 0 ) ) )
+      fi = QFileInfo( components.at( 0 ) );
+    else
+      return nullptr;
+    name = fi.baseName();
+  }
   else
-    return nullptr;
-
-  QString name = fi.baseName();
+  {
+    name = QgsDataSourceUri( uri ).table();
+  }
 
   // brute force attempt to load a matching layer
   if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Vector )
@@ -234,7 +248,17 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     QgsVectorLayer::LayerOptions options { transformContext };
     options.loadDefaultStyle = false;
     options.skipCrsValidation = true;
-    std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( string, name, QStringLiteral( "ogr" ), options );
+
+    std::unique_ptr< QgsVectorLayer > layer;
+    if ( useProvider )
+    {
+      layer = qgis::make_unique<QgsVectorLayer>( uri, name, provider, options );
+    }
+    else
+    {
+      // fallback to ogr
+      layer = qgis::make_unique<QgsVectorLayer>( uri, name, QStringLiteral( "ogr" ), options );
+    }
     if ( layer->isValid() )
     {
       return layer.release();
@@ -245,7 +269,18 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     QgsRasterLayer::LayerOptions rasterOptions;
     rasterOptions.loadDefaultStyle = false;
     rasterOptions.skipCrsValidation = true;
-    std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), rasterOptions ) );
+
+    std::unique_ptr< QgsRasterLayer > rasterLayer;
+    if ( useProvider )
+    {
+      rasterLayer = qgis::make_unique< QgsRasterLayer >( uri, name, provider, rasterOptions );
+    }
+    else
+    {
+      // fallback to gdal
+      rasterLayer = qgis::make_unique< QgsRasterLayer >( uri, name, QStringLiteral( "gdal" ), rasterOptions );
+    }
+
     if ( rasterLayer->isValid() )
     {
       return rasterLayer.release();
@@ -255,7 +290,16 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   {
     QgsMeshLayer::LayerOptions meshOptions;
     meshOptions.skipCrsValidation = true;
-    std::unique_ptr< QgsMeshLayer > meshLayer( new QgsMeshLayer( string, name, QStringLiteral( "mdal" ), meshOptions ) );
+
+    std::unique_ptr< QgsMeshLayer > meshLayer;
+    if ( useProvider )
+    {
+      meshLayer = qgis::make_unique< QgsMeshLayer >( uri, name, provider, meshOptions );
+    }
+    else
+    {
+      meshLayer = qgis::make_unique< QgsMeshLayer >( uri, name, QStringLiteral( "mdal" ), meshOptions );
+    }
     if ( meshLayer->isValid() )
     {
       return meshLayer.release();

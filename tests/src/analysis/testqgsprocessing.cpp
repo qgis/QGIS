@@ -1069,8 +1069,22 @@ void TestQgsProcessing::mapLayers()
 
   delete l;
 
+  // use encoded provider/uri string
+  l = QgsProcessingUtils::loadMapLayerFromString( QStringLiteral( "gdal://%1" ).arg( raster ), QgsCoordinateTransformContext() );
+  QVERIFY( l->isValid() );
+  QCOMPARE( l->type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( l->name(), QStringLiteral( "landsat" ) );
+  delete l;
+
   //test with vector
   l = QgsProcessingUtils::loadMapLayerFromString( vector, QgsCoordinateTransformContext() );
+  QVERIFY( l->isValid() );
+  QCOMPARE( l->type(), QgsMapLayerType::VectorLayer );
+  QCOMPARE( l->name(), QStringLiteral( "points" ) );
+  delete l;
+
+  // use encoded provider/uri string
+  l = QgsProcessingUtils::loadMapLayerFromString( QStringLiteral( "ogr://%1" ).arg( vector ), QgsCoordinateTransformContext() );
   QVERIFY( l->isValid() );
   QCOMPARE( l->type(), QgsMapLayerType::VectorLayer );
   QCOMPARE( l->name(), QStringLiteral( "points" ) );
@@ -5509,6 +5523,7 @@ void TestQgsProcessing::parameterFeatureSource()
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( v2 ), context ), QStringLiteral( "'%1'" ).arg( vector2 ) );
   QCOMPARE( def->valueAsPythonString( "uri='complex' username=\"complex\"", context ), QStringLiteral( "'uri=\\'complex\\' username=\\\"complex\\\"'" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QStringLiteral( "'c:\\\\test\\\\new data\\\\test.dat'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "postgres://uri='complex' username=\"complex\"" ), context ), QStringLiteral( "'postgres://uri=\\'complex\\' username=\\\"complex\\\"'" ) );
 
   QVariantMap map = def->toVariantMap();
   QgsProcessingParameterFeatureSource fromMap( "x" );
