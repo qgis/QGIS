@@ -146,6 +146,13 @@ void QgsSourceFieldsProperties::attributeAdded( int idx )
   setRow( row, idx, fields.at( idx ) );
   mFieldsList->setCurrentCell( row, idx );
 
+<<<<<<< HEAD:src/app/qgssourcefieldsproperties.cpp
+=======
+  QColor expressionColor = QColor( 103, 0, 243, 44 );
+  QColor joinColor = QColor( 0, 243, 79, 44 );
+  QColor defaultColor = QColor( 252, 255, 79, 44 );
+
+>>>>>>> a8c5e1dca2... [ui] Further improve source fields properties colors to play well:src/gui/vector/qgssourcefieldsproperties.cpp
   for ( int i = 0; i < mFieldsList->columnCount(); i++ )
   {
     switch ( mLayer->fields().fieldOrigin( idx ) )
