@@ -108,7 +108,7 @@ Check if the layer is supported for this widget.
 :return: ``True`` if this layer is supported for this widget
 %End
 
-    virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent /TransferThis/ = 0 ) const = 0 /Factory/;
+    virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent = 0 ) const = 0 /Factory/;
 %Docstring
 Factory function to create the widget on demand as needed by the dock.
 

@@ -112,6 +112,9 @@ SET(QGIS_GUI_SRCS
   auth/qgsauthsslimportdialog.cpp
   auth/qgsauthtrustedcasdialog.cpp
 
+  devtools/qgsdevtoolwidget.cpp
+  devtools/qgsdevtoolwidgetfactory.cpp
+
   editorwidgets/core/qgseditorconfigwidget.cpp
   editorwidgets/core/qgseditorwidgetautoconf.cpp
   editorwidgets/core/qgseditorwidgetfactory.cpp
@@ -787,6 +790,9 @@ SET(QGIS_GUI_HDRS
 
   callouts/qgscalloutwidget.h
 
+  devtools/qgsdevtoolwidget.h
+  devtools/qgsdevtoolwidgetfactory.h
+
   editorwidgets/core/qgseditorconfigwidget.h
   editorwidgets/core/qgseditorwidgetautoconf.h
   editorwidgets/core/qgseditorwidgetfactory.h
@@ -1155,6 +1161,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/devtools
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/effects

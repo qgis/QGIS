@@ -239,6 +239,8 @@
 %Include auto_generated/auth/qgsauthsslimportdialog.sip
 %Include auto_generated/auth/qgsauthtrustedcasdialog.sip
 %Include auto_generated/callouts/qgscalloutwidget.sip
+%Include auto_generated/devtools/qgsdevtoolwidget.sip
+%Include auto_generated/devtools/qgsdevtoolwidgetfactory.sip
 %Include auto_generated/editorwidgets/core/qgseditorconfigwidget.sip
 %Include auto_generated/editorwidgets/core/qgseditorwidgetautoconf.sip
 %Include auto_generated/editorwidgets/core/qgseditorwidgetfactory.sip
