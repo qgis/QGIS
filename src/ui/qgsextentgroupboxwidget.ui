@@ -227,7 +227,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QLineEdit" name="mCondensedLineEdit">
+       <widget class="QgsHighlightableLineEdit" name="mCondensedLineEdit">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -254,6 +254,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsHighlightableLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgshighlightablelineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mYMaxLineEdit</tabstop>
   <tabstop>mXMinLineEdit</tabstop>
