@@ -813,14 +813,12 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
   QVariant val = value;
 
   QgsProject *destinationProject = nullptr;
-  QVariantMap createOptions;
   QString destName;
   if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
   {
     // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
     QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
     destinationProject = fromVar.destinationProject;
-    createOptions = fromVar.createOptions;
     val = fromVar.sink;
     destName = fromVar.destinationName;
   }
