@@ -272,7 +272,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
 
     void showContextMenu( QPoint pt );
 
-    void currentChanged( const QModelIndex &index, const QModelIndex & );
+    void currentItemChanged( const QModelIndex &index, const QModelIndex & );
 
   private:
     void updateFunctionTree();

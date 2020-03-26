@@ -122,7 +122,7 @@ QgsExpressionTreeView::QgsExpressionTreeView( QWidget *parent )
 
   setContextMenuPolicy( Qt::CustomContextMenu );
   connect( this, &QWidget::customContextMenuRequested, this, &QgsExpressionTreeView::showContextMenu );
-  connect( selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsExpressionTreeView::currentChanged );
+  connect( selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsExpressionTreeView::currentItemChanged );
 
   updateFunctionTree();
   loadUserExpressions();
@@ -241,7 +241,7 @@ void QgsExpressionTreeView::showContextMenu( QPoint pt )
     menu->popup( mapToGlobal( pt ) );
 }
 
-void QgsExpressionTreeView::currentChanged( const QModelIndex &index, const QModelIndex & )
+void QgsExpressionTreeView::currentItemChanged( const QModelIndex &index, const QModelIndex & )
 {
   // Get the item
   QModelIndex idx = mProxyModel->mapToSource( index );
