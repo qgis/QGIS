@@ -223,7 +223,6 @@ QgsWmsProvider *QgsWmsProvider::clone() const
   QgsDataProvider::ProviderOptions options;
   QgsWmsProvider *provider = new QgsWmsProvider( dataSourceUri(), options, mCaps.isValid() ? &mCaps : nullptr );
   provider->copyBaseSettings( *this );
-  provider->setDataSourceUri( dataSourceUri() );
   return provider;
 }
 
@@ -1084,7 +1083,8 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 {
   QgsDateTimeRange range = temporalCapabilities()->requestedTemporalRange();
   QString format = "yyyy-MM-ddThh:mm:ssZ";
-  QgsDataSourceUri uri( dataSourceUri() );
+  QgsDataSourceUri uri;
+  uri.setEncodedUri( dataSourceUri() );
 
   if ( !range.isInfinite() )
   {
@@ -1111,7 +1111,8 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
       QDateTime start = QDateTime::fromString( timeParts.at( 0 ), Qt::ISODateWithMs );
       QDateTime end = QDateTime::fromString( timeParts.at( 1 ), Qt::ISODateWithMs );
 
-      range = QgsDateTimeRange( start, end );
+      if ( start == end )
+        range = QgsDateTimeRange( start, end );
     }
   }
 
@@ -1143,8 +1144,8 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 
     if ( dateTime.isValid() )
     {
-        setQueryItem( query, QStringLiteral( "DIM_REFERENCE_TIME" ),
-                      dateTime.toString( format ) );
+      setQueryItem( query, QStringLiteral( "DIM_REFERENCE_TIME" ),
+                    dateTime.toString( format ) );
     }
   }
 }
