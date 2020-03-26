@@ -432,7 +432,7 @@ void QgsExpressionTreeView::loadFieldNames()
     node->removeRows( 0, node->rowCount() );
   }
 
-  // this can happend if fields are manually set
+  // this can happen if fields are manually set
   if ( !mLayer )
     return;
 

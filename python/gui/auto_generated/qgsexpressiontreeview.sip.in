@@ -139,7 +139,7 @@ Sets layer in order to get the fields and values
 
     void loadFieldNames( const QgsFields &fields );
 %Docstring
-This allows to load fields without specifying a layer
+This allows loading fields without specifying a layer
 %End
 
     void setExpressionContext( const QgsExpressionContext &context );

@@ -157,7 +157,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
     void setLayer( QgsVectorLayer *layer );
 
     /**
-     * This allows to load fields without specifying a layer
+     * This allows loading fields without specifying a layer
      */
     void loadFieldNames( const QgsFields &fields );
 
@@ -202,6 +202,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
      * Returns a pointer to the dialog's function item model.
      * This method is exposed for testing purposes only - it should not be used to modify the model
      * \note will be removed in QGIS 4
+     * \deprecated since QGIS 3.14
      */
     Q_DECL_DEPRECATED QStandardItemModel *model() SIP_SKIP; // TODO remove QGIS 4
 
