@@ -82,7 +82,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     return true;
   }
 
-  if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "wmst" ) )
+  if ( !mIsTemporal && uri.param( QStringLiteral( "type" ) ) == QLatin1String( "wmst" ) )
   {
     mIsTemporal = true;
     mTemporalExtent = uri.param( QStringLiteral( "time" ) );

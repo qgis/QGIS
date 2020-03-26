@@ -362,7 +362,7 @@ QString QgsWMSLayerItem::createUri()
 
   // Number of styles must match number of layers
   mDataSourceUri.setParam( QStringLiteral( "layers" ), mLayerProperty.name );
-  QString style = !mLayerProperty.style.isEmpty() ? mLayerProperty.style.at( 0 ).name : QString();
+  QString style = !mLayerProperty.style.isEmpty() ? mLayerProperty.style.at( 0 ).name : QLatin1String( "" );
   mDataSourceUri.setParam( QStringLiteral( "styles" ), style );
 
   // Check for layer dimensions
@@ -376,6 +376,9 @@ QString QgsWMSLayerItem::createUri()
       mDataSourceUri.setParam( dimension.name, dimension.extent );
     }
   }
+
+  // Default value for temporal interval requests
+  // mDataSourceUri.setParam( QStringLiteral( "timeInterval" ), QLatin1String( "no" ) );
 
   QString format;
   // get first supported by qt and server

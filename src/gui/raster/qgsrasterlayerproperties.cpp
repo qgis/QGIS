@@ -1164,14 +1164,18 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
        mRasterLayer->dataProvider() &&
        mRasterLayer->temporalProperties() )
   {
-    QgsDataSourceUri uri( mRasterLayer->dataProvider()->dataSourceUri() );
+    QgsDataSourceUri uri;
+    QString uriString = mRasterLayer->dataProvider()->dataSourceUri();
+    uri.setEncodedUri( uriString );
+
     if ( mStaticTemporalRange->isChecked() )
     {
       QString time = mStartStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs ) + "/" +
                      mEndStaticDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
+      uri.removeParam( "time" );
       uri.setParam( QLatin1String( "time" ), time );
       mRasterLayer->temporalProperties()->setTemporalSource(
-                  QgsRasterLayerTemporalProperties::Layer );
+        QgsRasterLayerTemporalProperties::Layer );
     }
 
     if ( mProjectTemporalRange->isChecked() )
@@ -1185,22 +1189,24 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
         QString time = range.begin().toString( Qt::ISODateWithMs ) + "/" +
                        range.end().toString( Qt::ISODateWithMs );
 
+        uri.removeParam( "time" );
         uri.setParam( QLatin1String( "time" ), time );
         mRasterLayer->temporalProperties()->setTemporalSource(
-                    QgsRasterLayerTemporalProperties::Project );
+          QgsRasterLayerTemporalProperties::Project );
       }
     }
 
     if ( mReferenceTime->isChecked() )
     {
       QString reference_time = mReferenceDateTimeEdit->dateTime().toString( Qt::ISODateWithMs );
+      uri.removeParam( "reference_time" );
       uri.setParam( QLatin1String( "reference_time" ), reference_time );
     }
     if ( mRasterLayer->dataProvider()->temporalCapabilities() )
       mRasterLayer->dataProvider()->temporalCapabilities()->setEnableTime(
         !mDisableTime->isChecked() );
 
-    mRasterLayer->dataProvider()->setDataSourceUri( uri.uri() );
+    mRasterLayer->dataProvider()->setDataSourceUri( uri.encodedUri() );
 
     mRasterLayer->temporalProperties()->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >(
           mFetchModeComboBox->currentData().toInt() ) );
@@ -1222,7 +1228,9 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
   {
     QgsDateTimeRange layerRange = mRasterLayer->temporalProperties()->fixedTemporalRange();
     QgsDateTimeRange layerReferenceRange = mRasterLayer->temporalProperties()->fixedReferenceTemporalRange();
-    QgsDataSourceUri uri( mRasterLayer->dataProvider()->dataSourceUri() );
+    QString uriString =  mRasterLayer->dataProvider()->dataSourceUri();
+    QgsDataSourceUri uri;
+    uri.setEncodedUri( uriString );
 
     QString time = uri.param( QLatin1String( "time" ) );
     QString referenceTime = uri.param( QLatin1String( "reference_time" ) );
@@ -1238,9 +1246,9 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
     }
     if ( layerReferenceRange.begin().isValid() && layerReferenceRange.end().isValid() )
     {
-        mReferenceDateTimeEdit->setDateTimeRange( layerReferenceRange.begin(),
-            layerReferenceRange.end() );
-        mReferenceDateTimeEdit->setDateTime( layerReferenceRange.begin() );
+      mReferenceDateTimeEdit->setDateTimeRange( layerReferenceRange.begin(),
+          layerReferenceRange.end() );
+      mReferenceDateTimeEdit->setDateTime( layerReferenceRange.begin() );
     }
 
     if ( time != QLatin1String( "" ) )
@@ -1267,9 +1275,9 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
     mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData( mRasterLayer->temporalProperties()->intervalHandlingMethod() ) );
 
     if ( mRasterLayer->temporalProperties()->temporalSource() == QgsRasterLayerTemporalProperties::Layer )
-        mStaticTemporalRange->setChecked( true );
+      mStaticTemporalRange->setChecked( true );
     else if ( mRasterLayer->temporalProperties()->temporalSource() == QgsRasterLayerTemporalProperties::Project )
-        mProjectTemporalRange->setChecked( true );
+      mProjectTemporalRange->setChecked( true );
   }
 }
 
