@@ -79,26 +79,6 @@ QgsHanaFeatureIterator::QgsHanaFeatureIterator(
     mSqlStatement = sql;
     mClosed = false;
 
-    /// TODO : REMOVE ************
-    StatementRef stmtCount = mConnRef->getNativeRef()->createStatement();
-
-    QString sqlCount = QString( "SELECT COUNT(*) FROM %1.%2" ).arg( QgsHanaUtils::quotedIdentifier( mSource->mSchemaName ), QgsHanaUtils::quotedIdentifier( mSource->mTableName ) );
-    if ( !mSource->mQueryWhereClause.isEmpty() )
-      sqlCount += " WHERE " + mSource->mQueryWhereClause;
-    ResultSetRef rsCount = stmtCount->executeQuery( sqlCount.toStdString().c_str() );
-    rsCount->next();
-    int64_t tableRowsCount = *rsCount->getLong( 1 );
-    rsCount->close();
-
-    sqlCount = QString( "SELECT COUNT(*) FROM (%1)" ).arg( sql );
-    rsCount = stmtCount->executeQuery( sqlCount.toStdString().c_str() );
-    rsCount->next();
-    int64_t viewFeaturesCount = *rsCount->getLong( 1 );
-    rsCount->close();
-
-    mSelectivity = static_cast<double>( viewFeaturesCount ) / tableRowsCount;
-    /// ***************
-
     rewind();
   }
   catch ( const odbc::Exception &ex )
