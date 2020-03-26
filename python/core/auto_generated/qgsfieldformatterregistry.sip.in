@@ -63,13 +63,6 @@ Returns a basic fallback field formatter which can be used
 to represent any field in an unspectacular manner.
 %End
 
-    static bool formatterCanProvideAvailableValues( QgsVectorLayer *layer, const QString &fieldName );
-%Docstring
-Returns if the formatter for a given layer and field name can provide available values
-
-.. versionadded:: 3.14
-%End
-
   signals:
 
     void fieldFormatterAdded( QgsFieldFormatter *formatter );

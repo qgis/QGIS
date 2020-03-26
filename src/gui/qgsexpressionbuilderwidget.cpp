@@ -52,6 +52,25 @@
 #include "qgsexpressiontreeview.h"
 
 
+
+bool formatterCanProvideAvailableValues( QgsVectorLayer *layer, const QString &fieldName )
+{
+  if ( layer )
+  {
+    const QgsFields fields = layer->fields();
+    int fieldIndex = fields.lookupField( fieldName );
+    if ( fieldIndex != -1 )
+    {
+      const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
+      const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+
+      return ( formatter->flags() & QgsFieldFormatter::CanProvideAvailableValues );
+    }
+  }
+  return false;
+}
+
+
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   : QWidget( parent )
   , mProject( QgsProject::instance() )
@@ -285,7 +304,7 @@ void QgsExpressionBuilderWidget::expressionTreeItemChanged( QgsExpressionItem *i
   {
     mValuesModel->clear();
 
-    cbxValuesInUse->setVisible( formatterCanProvideAvailableValues( item->text() ) );
+    cbxValuesInUse->setVisible( formatterCanProvideAvailableValues( mLayer, item->text() ) );
     cbxValuesInUse->setChecked( false );
   }
   mValueGroupBox->setVisible( isField );
@@ -490,20 +509,6 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
     item->setData( strValue );
     mValuesModel->appendRow( item );
   }
-}
-
-bool QgsExpressionBuilderWidget::formatterCanProvideAvailableValues( const QString &fieldName )
-{
-  const QgsFields fields = mLayer->fields();
-  int fieldIndex = fields.lookupField( fieldName );
-  if ( fieldIndex != -1 )
-  {
-    const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
-    const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
-
-    return ( formatter->flags() & QgsFieldFormatter::CanProvideAvailableValues );
-  }
-  return false;
 }
 
 QString QgsExpressionBuilderWidget::getFunctionHelp( QgsExpressionFunction *function )
@@ -1135,7 +1140,7 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem *express
 }
 
 
-
+// *************
 // Menu provider
 
 QMenu *QgsExpressionBuilderWidget::ExpressionTreeMenuProvider::createContextMenu( QgsExpressionItem *item )
@@ -1148,7 +1153,7 @@ QMenu *QgsExpressionBuilderWidget::ExpressionTreeMenuProvider::createContextMenu
     menu->addAction( tr( "Load First 10 Unique Values" ), mExpressionBuilderWidget, &QgsExpressionBuilderWidget::loadSampleValues );
     menu->addAction( tr( "Load All Unique Values" ), mExpressionBuilderWidget, &QgsExpressionBuilderWidget::loadAllValues );
 
-    if ( QgsFieldFormatterRegistry::formatterCanProvideAvailableValues( layer, item->text() ) )
+    if ( formatterCanProvideAvailableValues( layer, item->text() ) )
     {
       menu->addAction( tr( "Load First 10 Unique Used Values" ), mExpressionBuilderWidget, SLOT( loadSampleUsedValues() ) );
       menu->addAction( tr( "Load All Unique Used Values" ), mExpressionBuilderWidget, &QgsExpressionBuilderWidget::loadAllUsedValues );

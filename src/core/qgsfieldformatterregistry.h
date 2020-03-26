@@ -79,12 +79,6 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
      */
     QgsFieldFormatter *fallbackFieldFormatter() const;
 
-    /**
-     * Returns if the formatter for a given layer and field name can provide available values
-     * \since QGIS 3.14
-     */
-    static bool formatterCanProvideAvailableValues( QgsVectorLayer *layer, const QString &fieldName );
-
   signals:
 
     /**

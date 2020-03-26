@@ -408,7 +408,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void clearErrors();
     void runPythonCode( const QString &code );
     void fillFieldValues( const QString &fieldName, int countLimit, bool forceUsedValues = false );
-    bool formatterCanProvideAvailableValues( const QString &fieldName );
     QString getFunctionHelp( QgsExpressionFunction *function );
     QString loadFunctionHelp( QgsExpressionItem *functionName );
     QString helpStylesheet() const;

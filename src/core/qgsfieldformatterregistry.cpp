@@ -17,7 +17,6 @@
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
 
-#include "qgsapplication.h"
 #include "qgsvaluerelationfieldformatter.h"
 #include "qgsvaluemapfieldformatter.h"
 #include "qgsdatetimefieldformatter.h"
@@ -78,21 +77,4 @@ QgsFieldFormatter *QgsFieldFormatterRegistry::fieldFormatter( const QString &id 
 QgsFieldFormatter *QgsFieldFormatterRegistry::fallbackFieldFormatter() const
 {
   return mFallbackFieldFormatter;
-}
-
-bool QgsFieldFormatterRegistry::formatterCanProvideAvailableValues( QgsVectorLayer *layer, const QString &fieldName )
-{
-  if ( layer )
-  {
-    const QgsFields fields = layer->fields();
-    int fieldIndex = fields.lookupField( fieldName );
-    if ( fieldIndex != -1 )
-    {
-      const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
-      const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
-
-      return ( formatter->flags() & QgsFieldFormatter::CanProvideAvailableValues );
-    }
-  }
-  return false;
 }
