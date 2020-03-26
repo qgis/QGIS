@@ -18,6 +18,8 @@ SET(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
   ${CMAKE_SOURCE_DIR}/external/meshOptimizer/simplifier.cpp
 
+  ${CMAKE_SOURCE_DIR}/external/mapbox-vector-tile/vector_tile.pb.cc
+
   callouts/qgscallout.cpp
   callouts/qgscalloutsregistry.cpp
 
@@ -643,7 +645,6 @@ SET(QGIS_CORE_SRCS
   vectortile/qgsvectortileloader.cpp
   vectortile/qgsvectortilemvtdecoder.cpp
   vectortile/qgsvectortileutils.cpp
-  vectortile/vector_tile.pb.cc
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
@@ -1436,6 +1437,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external/poly2tri
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/meshOptimizer
+  ${CMAKE_SOURCE_DIR}/external/mapbox-vector-tile
 )
 
 INCLUDE_DIRECTORIES(SYSTEM
