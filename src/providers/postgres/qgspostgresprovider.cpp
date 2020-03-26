@@ -3630,7 +3630,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     }
   }
 
-  QString detectedType = mRequestedGeomType == QgsWkbTypes::Unknown ? QString() : QgsPostgresConn::postgisWkbTypeName( mRequestedGeomType );
+  QString detectedType;
   QString detectedSrid = mRequestedSrid;
   if ( !schemaName.isEmpty() )
   {
@@ -3646,8 +3646,7 @@ bool QgsPostgresProvider::getGeometryDetails()
 
     if ( result.PQntuples() == 1 )
     {
-      QString dt = result.PQgetvalue( 0, 0 );
-      if ( dt != "GEOMETRY" ) detectedType = dt;
+      detectedType = result.PQgetvalue( 0, 0 );
 
       QString dim = result.PQgetvalue( 0, 2 );
       if ( dim == QLatin1String( "3" ) && !detectedType.endsWith( 'M' ) )
