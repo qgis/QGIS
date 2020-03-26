@@ -229,6 +229,30 @@ QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
   delete mExpressionTreeMenuProvider;
 }
 
+void QgsExpressionBuilderWidget::init( const QgsExpressionContext &context, const QString &recentCollection, const Flags &flags )
+{
+  setExpressionContext( context );
+
+  if ( flags.testFlag( LoadRecent ) )
+    mExpressionTreeView->loadRecent( recentCollection );
+
+  if ( flags.testFlag( LoadUserExpressions ) )
+    mExpressionTreeView->loadUserExpressions();
+}
+
+void QgsExpressionBuilderWidget::initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context, const QString &recentCollection, const Flags &flags )
+{
+  init( context, recentCollection, flags );
+  setLayer( layer );
+}
+
+void QgsExpressionBuilderWidget::initWithFields( const QgsFields &fields, const QgsExpressionContext &context, const QString &recentCollection, const Flags &flags )
+{
+  init( context, recentCollection, flags );
+  mExpressionTreeView->loadFieldNames( fields );
+}
+
+
 void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;

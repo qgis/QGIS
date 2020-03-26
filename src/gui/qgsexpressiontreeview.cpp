@@ -413,6 +413,17 @@ void QgsExpressionTreeView::loadLayers()
   }
 }
 
+void QgsExpressionTreeView::loadFieldNames( const QgsFields &fields )
+{
+  for ( int i = 0; i < fields.count(); ++i )
+  {
+    const QgsField field = fields.at( i );
+    QIcon icon = fields.iconForField( i );
+    registerItem( QStringLiteral( "Fields and Values" ), field.displayNameWithAlias(),
+                  " \"" + field.name() + "\" ", QString(), QgsExpressionItem::Field, false, i, icon );
+  }
+}
+
 void QgsExpressionTreeView::loadFieldNames()
 {
   if ( mExpressionGroups.contains( QStringLiteral( "Fields and Values" ) ) )
@@ -421,18 +432,13 @@ void QgsExpressionTreeView::loadFieldNames()
     node->removeRows( 0, node->rowCount() );
   }
 
+  // this can happend if fields are manually set
   if ( !mLayer )
     return;
 
   const QgsFields &fields = mLayer->fields();
 
-  for ( int i = 0; i < fields.count(); ++i )
-  {
-    const QgsField field = fields.at( i );
-    QIcon icon = fields.iconForField( i );
-    registerItem( QStringLiteral( "Fields and Values" ), field.displayNameWithAlias(),
-                  " \"" + field.name() + "\" ", QString(), QgsExpressionItem::Field, false, i, icon );
-  }
+  loadFieldNames( fields );
 }
 
 void QgsExpressionTreeView::loadRelations()

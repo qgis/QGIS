@@ -137,6 +137,11 @@ Returns a newly created menu instance
 Sets layer in order to get the fields and values
 %End
 
+    void loadFieldNames( const QgsFields &fields );
+%Docstring
+This allows to load fields without specifying a layer
+%End
+
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
 Sets the expression context for the tree view. The context is used

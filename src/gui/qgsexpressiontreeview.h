@@ -157,6 +157,11 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
     void setLayer( QgsVectorLayer *layer );
 
     /**
+     * This allows to load fields without specifying a layer
+     */
+    void loadFieldNames( const QgsFields &fields );
+
+    /**
      * Sets the expression context for the tree view. The context is used
      * to populate the list of available functions and variables.
      * \param context expression context

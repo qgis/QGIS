@@ -46,10 +46,43 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
   public:
 
     /**
+     * Flag to determine what should be loaded
+     * \since QGIS 3.14
+     */
+    enum Flag
+    {
+      LoadNothing = 0, //!< Do not load anything
+      LoadRecent = 1 << 1, //!< Load recent expressions given the collection key
+      LoadUserExpressions = 1 << 2, //!< Load user expressions
+      LoadAll = LoadRecent | LoadUserExpressions, //!< Load everything
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+    Q_FLAG( Flag )
+
+
+    /**
      * Create a new expression builder widget with an optional parent.
      */
     QgsExpressionBuilderWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsExpressionBuilderWidget() override;
+
+    /**
+     * Initialize without any layer
+     * \since QGIS 3.14
+     */
+    void init( const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+
+    /**
+     * Initialize with a layer
+     * \since QGIS 3.14
+     */
+    void initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+
+    /**
+     * Initialize with given fields without any layer
+     * \since QGIS 3.14
+     */
+    void initWithFields( const QgsFields &fields, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
 
     /**
      * Sets layer in order to get the fields and values
@@ -63,11 +96,13 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsVectorLayer *layer() const;
 
     //! \deprecated since QGIS 3.14 this is now done automatically
-    Q_DECL_DEPRECATED void loadFieldNames( const QgsFields &fields = QgsFields() ) {Q_UNUSED( fields )}
+    Q_DECL_DEPRECATED void loadFieldNames() {}
+
+    //! \deprecated since QGIS 3.14 use epxressionTree()->loadFieldNames() instead
+    Q_DECL_DEPRECATED void loadFieldNames( const QgsFields &fields ) {mExpressionTreeView->loadFieldNames( fields );}
 
     /**
      * Loads field names and values from the specified map.
-     *  \note The field values must be quoted appropriately if they are strings.
      *  \since QGIS 2.12
      * \deprecated since QGIS 3.14 this will not do anything, use setLayer() instead
      */
@@ -366,6 +401,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     };
 
     int FUNCTION_MARKER_ID = 25;
+
     void createErrorMarkers( QList<QgsExpression::ParserError> errors );
     void createMarkers( const QgsExpressionNode *node );
     void clearFunctionMarkers();

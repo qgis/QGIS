@@ -25,11 +25,43 @@ See QgsExpressionBuilderDialog for example of usage.
 %End
   public:
 
+    enum Flag
+    {
+      LoadNothing,
+      LoadRecent,
+      LoadUserExpressions,
+      LoadAll,
+    };
+    typedef QFlags<QgsExpressionBuilderWidget::Flag> Flags;
+
+
+
     QgsExpressionBuilderWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Create a new expression builder widget with an optional parent.
 %End
     ~QgsExpressionBuilderWidget();
+
+    void init( const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+%Docstring
+Initialize without any layer
+
+.. versionadded:: 3.14
+%End
+
+    void initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+%Docstring
+Initialize with a layer
+
+.. versionadded:: 3.14
+%End
+
+    void initWithFields( const QgsFields &fields, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), const Flags &flags = LoadAll );
+%Docstring
+Initialize with given fields without any layer
+
+.. versionadded:: 3.14
+%End
 
     void setLayer( QgsVectorLayer *layer );
 %Docstring
@@ -45,20 +77,23 @@ Sets layer in order to get the fields and values
 Returns the current layer or a None.
 %End
 
- void loadFieldNames( const QgsFields &fields = QgsFields() );
+ void loadFieldNames();
 %Docstring
 
 .. deprecated:: QGIS 3.14
    this is now done automatically
 %End
 
+ void loadFieldNames( const QgsFields &fields );
+%Docstring
+
+.. deprecated:: QGIS 3.14
+   use epxressionTree()->loadFieldNames() instead
+%End
+
     void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues );
 %Docstring
 Loads field names and values from the specified map.
-
-.. note::
-
-   The field values must be quoted appropriately if they are strings.
 
 .. versionadded:: 2.12
 
