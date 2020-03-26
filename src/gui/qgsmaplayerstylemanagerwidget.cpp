@@ -31,6 +31,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsapplication.h"
+#include "qgsmatchinglayersdialog.h"
 
 QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -51,6 +52,10 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
   QAction *loadFromFileAction = toolbar->addAction( tr( "Load Style" ) );
   loadFromFileAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
   connect( loadFromFileAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadStyle );
+  QAction *importStylesAction = toolbar->addAction( tr( "Import all styles from" ) );
+  connect( importStylesAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::importAllStyles );
+  QAction *overrideStylesAction = toolbar->addAction( tr( "Override all styles from" ) );
+  connect( overrideStylesAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::replaceAllStyles );
   QAction *saveAsDefaultAction = toolbar->addAction( tr( "Save as Default" ) );
   connect( saveAsDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::saveAsDefault );
   QAction *loadDefaultAction = toolbar->addAction( tr( "Restore Default" ) );
@@ -342,3 +347,32 @@ void QgsMapLayerStyleManagerWidget::loadStyle()
   myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), myPath );
 
 }
+
+void QgsMapLayerStyleManagerWidget::importAllStyles()
+{
+  QgsMatchingLayersDialog dialog( mLayer );
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    QgsMapLayerStyleManager *manager = mLayer->styleManager();
+    const QList<QgsMapLayer *> selectedLayers = dialog.selectedLayers();
+    for ( QgsMapLayer *layer : selectedLayers )
+    {
+      manager->importAllLayerStyles( layer );
+    }
+  }
+}
+
+void QgsMapLayerStyleManagerWidget::replaceAllStyles()
+{
+  QgsMatchingLayersDialog dialog( mLayer );
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    QgsMapLayerStyleManager *manager = mLayer->styleManager();
+    const QList<QgsMapLayer *> selectedLayers = dialog.selectedLayers();
+    for ( QgsMapLayer *layer : selectedLayers )
+    {
+      manager->replaceAllLayerStyles( layer );
+    }
+  }
+}
+

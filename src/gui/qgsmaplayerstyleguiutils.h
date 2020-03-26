@@ -56,12 +56,16 @@ class GUI_EXPORT QgsMapLayerStyleGuiUtils : public QObject
     QAction *actionRemoveStyle( QgsMapLayer *layer, QObject *parent = nullptr );
     QAction *actionRenameStyle( QgsMapLayer *layer, QObject *parent = nullptr );
     QList<QAction *> actionsUseStyle( QgsMapLayer *layer, QObject *parent = nullptr );
+    QAction *actionImportStyles( QgsMapLayer *layer, QObject *parent );
+    QAction *actionOverrideStyles( QgsMapLayer *layer, QObject *parent );
 
   private slots:
     void addStyle();
     void useStyle();
     void removeStyle();
     void renameStyle();
+    void overrideAllStyles();
+    void importAllStyles();
 };
 
 #endif // QGSMAPLAYERSTYLEGUIUTILS_H

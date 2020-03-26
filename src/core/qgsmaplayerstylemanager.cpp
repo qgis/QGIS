@@ -16,11 +16,13 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaplayerstyle.h"
 #include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
 
 #include "qgslogger.h"
 
 #include <QDomElement>
 #include <QTextStream>
+#include <QtDebug>
 
 QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer *layer )
   : mLayer( layer )
@@ -230,3 +232,44 @@ bool QgsMapLayerStyleManager::isDefault( const QString &styleName ) const
 {
   return styleName == defaultStyleName();
 }
+
+void QgsMapLayerStyleManager::importAllLayerStyles( QgsMapLayer *layer )
+{
+  if ( mLayer->type() != layer->type() )
+    return;
+  if ( mLayer->type() == QgsMapLayerType::VectorLayer )
+  {
+    if ( qobject_cast<QgsVectorLayer *>( mLayer )->geometryType() != qobject_cast<QgsVectorLayer *>( layer )->geometryType() )
+      return;
+  }
+  QMap<QString, QgsMapLayerStyle> styles = layer->styleManager()->mapLayerStyles();
+  QMap<QString, QgsMapLayerStyle>::const_iterator i;
+  bool ok = true;
+  for (i = styles.constBegin(); i != styles.constEnd(); ++i)
+  {
+    qDebug() << i.key();
+    ok = addStyle( i.key(), i.value() );
+    if ( !ok )
+    {
+      addStyle( i.key() + " alt", i.value() );
+      qDebug() << i.key() << " alt";
+    }
+  }
+}
+
+void QgsMapLayerStyleManager::replaceAllLayerStyles( QgsMapLayer *layer )
+{
+  if ( mLayer->type() != layer->type() )
+    return;
+  if ( mLayer->type() == QgsMapLayerType::VectorLayer )
+  {
+    if ( qobject_cast<QgsVectorLayer *>( mLayer )->geometryType() != qobject_cast<QgsVectorLayer *>( layer )->geometryType() )
+      return;
+  }
+  QStringList styles = layer->styleManager()->styles();
+  QStringList::const_iterator constIterator;
+  for ( constIterator = styles.constBegin(); constIterator != styles.constEnd();  ++constIterator )
+    removeStyle( *constIterator );
+  importAllLayerStyles( layer );
+}
+

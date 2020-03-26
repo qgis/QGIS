@@ -23,6 +23,8 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmatchinglayersdialog.h"
+
 
 
 QgsMapLayerStyleGuiUtils *QgsMapLayerStyleGuiUtils::instance()
@@ -89,9 +91,28 @@ void QgsMapLayerStyleGuiUtils::addStyleManagerActions( QMenu *m, QgsMapLayer *la
     m->addAction( actionRemoveStyle( layer, m ) );
   m->addAction( actionRenameStyle( layer, m ) );
   m->addSeparator();
+  m->addAction( actionImportStyles( layer, m ) );
+  m->addAction( actionOverrideStyles( layer, m ) );
+  m->addSeparator();
   const auto actions {actionsUseStyle( layer, m )};
   for ( QAction *a : actions )
     m->addAction( a );
+}
+
+QAction *QgsMapLayerStyleGuiUtils::actionImportStyles( QgsMapLayer *layer, QObject *parent )
+{
+  QAction *a = new QAction( tr( "Import all styles from.." ), parent );
+  a->setData( QVariant::fromValue<QObject *>( layer ) );
+  connect( a, &QAction::triggered, this, &QgsMapLayerStyleGuiUtils::importAllStyles );
+  return a;
+}
+
+QAction *QgsMapLayerStyleGuiUtils::actionOverrideStyles( QgsMapLayer *layer, QObject *parent )
+{
+  QAction *a = new QAction( tr( "Override styles from.." ), parent );
+  a->setData( QVariant::fromValue<QObject *>( layer ) );
+  connect( a, &QAction::triggered, this, &QgsMapLayerStyleGuiUtils::overrideAllStyles );
+  return a;
 }
 
 void QgsMapLayerStyleGuiUtils::addStyle()
@@ -181,3 +202,47 @@ void QgsMapLayerStyleGuiUtils::renameStyle()
     QgsDebugMsg( "Failed to rename style: " + name );
   }
 }
+
+void QgsMapLayerStyleGuiUtils::importAllStyles()
+{
+  QAction *a = qobject_cast<QAction *>( sender() );
+  if ( !a )
+    return;
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( a->data().value<QObject *>() );
+  if ( !layer )
+    return;
+
+  QgsMatchingLayersDialog dialog( layer );
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    QgsMapLayerStyleManager *manager = layer->styleManager();
+    const QList<QgsMapLayer *> selectedLayers = dialog.selectedLayers();
+    for ( QgsMapLayer *layer : selectedLayers )
+    {
+      manager->importAllLayerStyles( layer );
+    }
+  }
+}
+
+void QgsMapLayerStyleGuiUtils::overrideAllStyles()
+{
+  QAction *a = qobject_cast<QAction *>( sender() );
+  if ( !a )
+    return;
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( a->data().value<QObject *>() );
+  if ( !layer )
+    return;
+
+  QgsMatchingLayersDialog dialog( layer );
+  if ( dialog.exec() == QDialog::Accepted )
+  {
+    QgsMapLayerStyleManager *manager = layer->styleManager();
+    const QList<QgsMapLayer *> selectedLayers = dialog.selectedLayers();
+    for ( QgsMapLayer *layer : selectedLayers )
+    {
+      manager->replaceAllLayerStyles( layer );
+    }
+  }
+}
+
+
