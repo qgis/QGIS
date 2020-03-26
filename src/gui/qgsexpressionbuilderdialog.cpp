@@ -80,7 +80,7 @@ void QgsExpressionBuilderDialog::done( int r )
 
 void QgsExpressionBuilderDialog::accept()
 {
-  builder->saveToRecent( mRecentKey );
+  builder->expressionTree()->saveToRecent( builder->expressionText(), mRecentKey );
   QDialog::accept();
 }
 

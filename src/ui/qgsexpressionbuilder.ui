@@ -206,6 +206,12 @@
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
                      </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>0</width>
+                       <height>0</height>
+                      </size>
+                     </property>
                     </spacer>
                    </item>
                   </layout>
@@ -586,7 +592,7 @@
              <widget class="QWidget" name="layoutWidget1">
               <layout class="QGridLayout" name="gridLayout_9">
                <item row="1" column="0" colspan="2">
-                <widget class="QTreeView" name="expressionTree">
+                <widget class="QgsExpressionTreeView" name="mExpressionTreeView">
                  <property name="frameShape">
                   <enum>QFrame::StyledPanel</enum>
                  </property>
@@ -828,7 +834,7 @@ Change the name of the script and save to allow QGIS to auto load on startup.</s
                 <string/>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../../images/images.qrc">
                  <normaloff>:/images/themes/default/console/iconNewTabEditorConsole.svg</normaloff>:/images/themes/default/console/iconNewTabEditorConsole.svg</iconset>
                </property>
                <property name="iconSize">
@@ -920,7 +926,7 @@ Saved scripts are auto loaded on QGIS startup.</string>
                 <string>Save and Load Functions</string>
                </property>
                <property name="icon">
-                <iconset>
+                <iconset resource="../../images/images.qrc">
                  <normaloff>:/images/themes/default/mActionStart.svg</normaloff>:/images/themes/default/mActionStart.svg</iconset>
                </property>
               </widget>
@@ -969,15 +975,15 @@ Saved scripts are auto loaded on QGIS startup.</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCodeEditorExpression</class>
    <extends>QWidget</extends>
    <header>qgscodeeditorexpression.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCodeEditorPython</class>
@@ -985,7 +991,15 @@ Saved scripts are auto loaded on QGIS startup.</string>
    <header>qgscodeeditorpython.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsExpressionTreeView</class>
+   <extends>QTreeView</extends>
+   <header>qgsexpressiontreeview.h</header>
+  </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

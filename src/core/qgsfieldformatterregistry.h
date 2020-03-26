@@ -24,6 +24,7 @@
 #include "qgis_core.h"
 
 class QgsFieldFormatter;
+class QgsVectorLayer;
 
 /**
  * \ingroup core
@@ -77,6 +78,12 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
      * to represent any field in an unspectacular manner.
      */
     QgsFieldFormatter *fallbackFieldFormatter() const;
+
+    /**
+     * Returns if the formatter for a given layer and field name can provide available values
+     * \since QGIS 3.14
+     */
+    static bool formatterCanProvideAvailableValues( QgsVectorLayer *layer, const QString &fieldName );
 
   signals:
 

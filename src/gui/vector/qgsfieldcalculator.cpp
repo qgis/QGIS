@@ -161,7 +161,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
 
 void QgsFieldCalculator::accept()
 {
-  builder->saveToRecent( QStringLiteral( "fieldcalc" ) );
+  builder->expressionTree()->saveToRecent( builder->expressionText(), QStringLiteral( "fieldcalc" ) );
 
   if ( !mVectorLayer )
     return;
