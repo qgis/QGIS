@@ -128,11 +128,6 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
 
       QgsFeature f( layerFields, static_cast<QgsFeatureId>( feature.id() ) );
 
-      // initialize all fields to empty string.
-      // TODO: this should not be necessary, but some rules don't like NULL
-      for ( int i = 0; i < layerFields.count(); ++i )
-        f.setAttribute( i, QStringLiteral( "" ) );
-
       //
       // parse attributes
       //

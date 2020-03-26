@@ -25,7 +25,7 @@
 class QgsRenderContext;
 
 //! Features of a vector tile, grouped by sub-layer names (key of the map)
-typedef QMap<QString, QVector<QgsFeature> > QgsVectorTileFeatures;
+typedef QMap<QString, QVector<QgsFeature> > QgsVectorTileFeatures SIP_SKIP;
 
 /**
  * \ingroup core
@@ -34,14 +34,36 @@ typedef QMap<QString, QVector<QgsFeature> > QgsVectorTileFeatures;
  *
  * \since QGIS 3.14
  */
-struct QgsVectorTileRendererData
+class CORE_EXPORT QgsVectorTileRendererData
 {
-  //! Position of the tile in the tile matrix set
-  QgsTileXYZ id;
-  //! Features of the tile grouped into sub-layers
-  QgsVectorTileFeatures features;
-  //! Polygon (made out of four corners of the tile) in screen coordinates calculated from render context
-  QPolygon tilePolygon;
+  public:
+    //! Constructs the object
+    explicit QgsVectorTileRendererData( QgsTileXYZ id ): mId( id ) {}
+
+    //! Returns coordinates of the tile
+    QgsTileXYZ id() const { return mId; }
+
+    //! Sets polygon of the tile
+    void setTilePolygon( QPolygon polygon ) { mTilePolygon = polygon; }
+    //! Returns polygon (made out of four corners of the tile) in screen coordinates calculated from render context
+    QPolygon tilePolygon() const { return mTilePolygon; }
+
+    //! Sets features of the tile
+    void setFeatures( const QgsVectorTileFeatures &features ) SIP_SKIP { mFeatures = features; }
+    //! Returns features of the tile grouped by sub-layer names
+    QgsVectorTileFeatures features() const SIP_SKIP { return mFeatures; }
+    //! Returns list of layer names present in the tile
+    QStringList layers() const { return mFeatures.keys(); }
+    //! Returns list of all features within a single sub-layer
+    QVector<QgsFeature> layerFeatures( const QString &layerName ) const { return mFeatures[layerName]; }
+
+  private:
+    //! Position of the tile in the tile matrix set
+    QgsTileXYZ mId;
+    //! Features of the tile grouped into sub-layers
+    QgsVectorTileFeatures mFeatures;
+    //! Polygon (made out of four corners of the tile) in screen coordinates calculated from render context
+    QPolygon mTilePolygon;
 };
 
 /**
@@ -57,6 +79,19 @@ struct QgsVectorTileRendererData
  */
 class CORE_EXPORT QgsVectorTileRenderer
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+
+    const QString type = sipCpp->type();
+
+    if ( type == QStringLiteral( "basic" ) )
+      sipType = sipType_QgsVectorTileBasicRenderer;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
   public:
     virtual ~QgsVectorTileRenderer() = default;
 
@@ -64,13 +99,13 @@ class CORE_EXPORT QgsVectorTileRenderer
     virtual QString type() const = 0;
 
     //! Returns a clone of the renderer
-    virtual QgsVectorTileRenderer *clone() const = 0;
+    virtual QgsVectorTileRenderer *clone() const = 0 SIP_FACTORY;
 
     //! Initializes rendering. It should be paired with a stopRender() call.
     virtual void startRender( QgsRenderContext &context, int tileZoom, const QgsTileRange &tileRange ) = 0;
 
     //! Returns field names of sub-layers that will be used for rendering. Must be called between startRender/stopRender.
-    virtual QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext & ) = 0;
+    virtual QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext & ) SIP_SKIP { return QMap<QString, QSet<QString> >(); }
 
     //! Finishes rendering and cleans up any resources
     virtual void stopRender( QgsRenderContext &context ) = 0;

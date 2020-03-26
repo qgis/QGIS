@@ -16,6 +16,9 @@
 #ifndef QGSVECTORTILEBASICRENDERER_H
 #define QGSVECTORTILEBASICRENDERER_H
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include "qgsvectortilerenderer.h"
 
 class QgsLineSymbol;
@@ -40,7 +43,7 @@ class QgsSymbol;
  *
  * \since QGIS 3.14
  */
-struct QgsVectorTileBasicRendererStyle
+class CORE_EXPORT QgsVectorTileBasicRendererStyle
 {
   public:
     //! Constructs a style object
@@ -70,7 +73,7 @@ struct QgsVectorTileBasicRendererStyle
     QString filterExpression() const { return mExpression; }
 
     //! Sets symbol for rendering. Takes ownership of the symbol.
-    void setSymbol( QgsSymbol *sym );
+    void setSymbol( QgsSymbol *sym SIP_TRANSFER );
     //! Returns symbol for rendering
     QgsSymbol *symbol() const { return mSymbol.get(); }
 
@@ -119,16 +122,16 @@ struct QgsVectorTileBasicRendererStyle
  *
  * \since QGIS 3.14
  */
-class QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
+class CORE_EXPORT QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
 {
   public:
     //! Constructs renderer with some default styles
     QgsVectorTileBasicRenderer();
 
     QString type() const override;
-    QgsVectorTileBasicRenderer *clone() const override;
+    QgsVectorTileBasicRenderer *clone() const override SIP_FACTORY;
     void startRender( QgsRenderContext &context, int tileZoom, const QgsTileRange &tileRange ) override;
-    QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext & ) override;
+    QMap<QString, QSet<QString> > usedAttributes( const QgsRenderContext & ) override SIP_SKIP;
     void stopRender( QgsRenderContext &context ) override;
     void renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;

@@ -15,6 +15,7 @@
 
 #include "qgsvectortilebasicrenderer.h"
 
+#include "qgsexpressioncontextutils.h"
 #include "qgslinesymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectortileutils.h"
@@ -137,8 +138,8 @@ void QgsVectorTileBasicRenderer::stopRender( QgsRenderContext &context )
 
 void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &tile, QgsRenderContext &context )
 {
-  const QgsVectorTileFeatures tileData = tile.features;
-  int zoomLevel = tile.id.zoomLevel();
+  const QgsVectorTileFeatures tileData = tile.features();
+  int zoomLevel = tile.id().zoomLevel();
 
   for ( const QgsVectorTileBasicRendererStyle &layerStyle : qgis::as_const( mStyles ) )
   {
@@ -147,9 +148,9 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
 
     QgsFields fields = QgsVectorTileUtils::makeQgisFields( mRequiredFields[layerStyle.layerName()] );
 
-    QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) );
+    QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) ); // will be deleted by popper
     scope->setFields( fields );
-    context.expressionContext().appendScope( scope );
+    QgsExpressionContextScopePopper popper( context.expressionContext(), scope );
 
     QgsExpression filterExpression( layerStyle.filterExpression() );
     filterExpression.prepare( &context.expressionContext() );
@@ -186,8 +187,6 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
       }
     }
     sym->stopRender( context );
-
-    delete context.expressionContext().popScope();
   }
 }
 

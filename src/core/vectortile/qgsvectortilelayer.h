@@ -85,9 +85,9 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsPluginLayer
 
     // implementation of virtual functions from QgsMapLayer
 
-    QgsPluginLayer *clone() const override;
+    QgsPluginLayer *clone() const override SIP_FACTORY;
 
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override;
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
     virtual bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context ) override;
 
@@ -126,9 +126,9 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsPluginLayer
      * Sets renderer for the map layer.
      * \note Takes ownership of the passed renderer
      */
-    void setRenderer( QgsVectorTileRenderer *r ) SIP_SKIP;
+    void setRenderer( QgsVectorTileRenderer *r SIP_TRANSFER );
     //! Returns currently assigned renderer
-    QgsVectorTileRenderer *renderer() const SIP_SKIP;
+    QgsVectorTileRenderer *renderer() const;
 
   private:
     //! Type of the data source

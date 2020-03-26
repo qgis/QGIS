@@ -148,23 +148,22 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
   if ( ctx.renderingStopped() )
     return;
 
-  QgsVectorTileRendererData tile;
-  tile.id = rawTile.id;
-  tile.features = decoder.layerFeatures( mPerLayerFields );
+  QgsVectorTileRendererData tile( rawTile.id );
+  tile.setFeatures( decoder.layerFeatures( mPerLayerFields ) );
+  tile.setTilePolygon( QgsVectorTileUtils::tilePolygon( rawTile.id, mTileMatrix, ctx.mapToPixel() ) );
 
   mTotalDecodeTime += tLoad.elapsed();
 
   // calculate tile polygon in screen coordinates
-  tile.tilePolygon = QgsVectorTileUtils::tilePolygon( rawTile.id, mTileMatrix, ctx.mapToPixel() );
 
   if ( ctx.renderingStopped() )
     return;
 
   // set up clipping so that rendering does not go behind tile's extent
 
-  ctx.painter()->setClipRegion( QRegion( tile.tilePolygon ) );
+  ctx.painter()->setClipRegion( QRegion( tile.tilePolygon() ) );
 
-  qDebug() << "drawing tile" << tile.id.zoomLevel() << tile.id.column() << tile.id.row();
+  qDebug() << "drawing tile" << tile.id().zoomLevel() << tile.id().column() << tile.id().row();
 
   QElapsedTimer tDraw;
   tDraw.start();
@@ -179,6 +178,6 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
     QPen pen( Qt::red );
     pen.setWidth( 3 );
     ctx.painter()->setPen( pen );
-    ctx.painter()->drawPolygon( tile.tilePolygon );
+    ctx.painter()->drawPolygon( tile.tilePolygon() );
   }
 }
