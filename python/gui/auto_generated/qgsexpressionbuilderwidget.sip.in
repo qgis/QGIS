@@ -62,8 +62,8 @@ Loads field names and values from the specified map.
 
 .. versionadded:: 2.12
 
-.. deprecated::
-   use setLayer() and expressionTree()->
+.. deprecated:: QGIS 3.14
+   this will not do anything, use setLayer() instead
 %End
 
     void setGeomCalculator( const QgsDistanceArea &da );

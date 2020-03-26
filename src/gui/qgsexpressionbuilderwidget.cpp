@@ -259,7 +259,7 @@ void QgsExpressionBuilderWidget::expressionTreeItemChanged( QgsExpressionItem *i
   bool isField = mLayer && item->getItemType() == QgsExpressionItem::Field;
   if ( isField )
   {
-    loadFieldValues( mFieldValues.value( item->text() ) );
+    mValuesModel->clear();
 
     cbxValuesInUse->setVisible( formatterCanProvideAvailableValues( item->text() ) );
     cbxValuesInUse->setChecked( false );
@@ -412,20 +412,8 @@ void QgsExpressionBuilderWidget::insertExpressionText( const QString &text )
 
 void QgsExpressionBuilderWidget::loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues )
 {
-  mFieldValues.clear();
-  QgsFields fields;
-  for ( auto it = fieldValues.constBegin(); it != fieldValues.constEnd(); ++it )
-  {
-    fields.append( QgsField( it.key() ) );
-    const QStringList values = it.value();
-    QVariantMap map;
-    for ( const QString &value : values )
-    {
-      map.insert( value, value );
-    }
-    mFieldValues.insert( it.key(), map );
-  }
-  mExpressionTreeView->loadFieldNames( fields );
+  Q_UNUSED( fieldValues )
+  // This is not maintained and setLayer() should be used instead.
 }
 
 void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int countLimit, bool forceUsedValues )
@@ -669,17 +657,6 @@ void QgsExpressionBuilderWidget::setParserError( bool parserError )
 
   mParserError = parserError;
   emit parserErrorChanged();
-}
-
-void QgsExpressionBuilderWidget::loadFieldValues( const QVariantMap &values )
-{
-  mValuesModel->clear();
-  for ( QVariantMap::ConstIterator it = values.constBegin(); it != values.constEnd(); ++ it )
-  {
-    QStandardItem *item = new QStandardItem( it.key() );
-    item->setData( it.value() );
-    mValuesModel->appendRow( item );
-  }
 }
 
 bool QgsExpressionBuilderWidget::evalError() const
@@ -1133,6 +1110,9 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem *express
   return "<head><style>" + helpStylesheet() + "</style></head><body>" + helpContents + "</body>";
 }
 
+
+
+// Menu provider
 
 QMenu *QgsExpressionBuilderWidget::ExpressionTreeMenuProvider::createContextMenu( QgsExpressionItem *item )
 {

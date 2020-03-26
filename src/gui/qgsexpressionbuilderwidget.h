@@ -69,7 +69,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Loads field names and values from the specified map.
      *  \note The field values must be quoted appropriately if they are strings.
      *  \since QGIS 2.12
-     * \deprecated use setLayer() and expressionTree()->
+     * \deprecated since QGIS 3.14 this will not do anything, use setLayer() instead
      */
     void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues );
 
@@ -393,8 +393,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     void setParserError( bool parserError );
 
-    void loadFieldValues( const QVariantMap &values );
-
     // Will hold items with
     // * a display string that matches the represented field values
     // * custom data in Qt::UserRole + 1 that contains a ready to use expression literal ('quoted string' or NULL or a plain number )
@@ -409,7 +407,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsExpressionHighlighter *highlighter = nullptr;
     bool mExpressionValid = false;
     QgsDistanceArea mDa;
-    QMap<QString, QVariantMap>  mFieldValues;
     QgsExpressionContext mExpressionContext;
     QPointer< QgsProject > mProject;
     bool mEvalError = true;
