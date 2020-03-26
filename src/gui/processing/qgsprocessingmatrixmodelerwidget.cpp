@@ -51,7 +51,7 @@ void QgsProcessingMatrixModelerWidget::addColumn()
 void QgsProcessingMatrixModelerWidget::removeColumns()
 {
   QModelIndexList selected = mTableView->selectionModel()->selectedColumns();
-  std::sort( selected.begin(), selected(), []( const QModelIndex & a, const QModelIndex & b ) { return b < a; } );
+  std::sort( selected.begin(), selected.end(), []( const QModelIndex & a, const QModelIndex & b ) { return b < a; } );
 
   mTableView->setUpdatesEnabled( false );
   for ( QModelIndex i : qgis::as_const( selected ) )
@@ -72,7 +72,7 @@ void QgsProcessingMatrixModelerWidget::addRow()
 void QgsProcessingMatrixModelerWidget::removeRows()
 {
   QModelIndexList selected = mTableView->selectionModel()->selectedRows();
-  std::sort( selected.begin(), selected(), []( const QModelIndex & a, const QModelIndex & b ) { return b < a; } );
+  std::sort( selected.begin(), selected.end(), []( const QModelIndex & a, const QModelIndex & b ) { return b < a; } );
 
   mTableView->setUpdatesEnabled( false );
   for ( QModelIndex i : qgis::as_const( selected ) )
