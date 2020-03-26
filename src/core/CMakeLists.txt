@@ -680,6 +680,11 @@ IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   SET_SOURCE_FILES_PROPERTIES(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
 ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
+IF (NOT MSVC)
+  # automatically generated file produces warnings (unused-parameter, unused-variable, misleading-indentation)
+  SET_SOURCE_FILES_PROPERTIES(${CMAKE_SOURCE_DIR}/external/mapbox-vector-tile/vector_tile.pb.cc PROPERTIES COMPILE_FLAGS -w)
+ENDIF (NOT MSVC)
+
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     gps/qgsqtlocationconnection.cpp
