@@ -59,6 +59,7 @@ class QgsDatabaseSchemaComboBox;
 class QgsDatabaseTableComboBox;
 class QgsExtentWidget;
 class QgsProcessingEnumModelerWidget;
+class QgsProcessingMatrixModelerWidget;
 
 ///@cond PRIVATE
 
@@ -417,6 +418,22 @@ class GUI_EXPORT QgsProcessingRangeWidgetWrapper : public QgsAbstractProcessingP
     friend class TestProcessingGui;
 };
 
+class GUI_EXPORT QgsProcessingMatrixParameterDefinitionWidget : public QgsProcessingAbstractParameterDefinitionWidget
+{
+    Q_OBJECT
+  public:
+
+    QgsProcessingMatrixParameterDefinitionWidget( QgsProcessingContext &context,
+        const QgsProcessingParameterWidgetContext &widgetContext,
+        const QgsProcessingParameterDefinition *definition = nullptr,
+        const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingParameterDefinition *createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const override;
+
+  private:
+
+    QgsProcessingMatrixModelerWidget *mMatrixWidget = nullptr;
+
+};
 
 class GUI_EXPORT QgsProcessingMatrixWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
 {
@@ -430,6 +447,11 @@ class GUI_EXPORT QgsProcessingMatrixWidgetWrapper : public QgsAbstractProcessing
     // QgsProcessingParameterWidgetFactoryInterface
     QString parameterType() const override;
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget(
+      QgsProcessingContext &context,
+      const QgsProcessingParameterWidgetContext &widgetContext,
+      const QgsProcessingParameterDefinition *definition = nullptr,
+      const QgsProcessingAlgorithm *algorithm = nullptr ) override;
 
     // QgsProcessingParameterWidgetWrapper interface
     QWidget *createWidget() override SIP_FACTORY;

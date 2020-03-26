@@ -2196,6 +2196,39 @@ void TestProcessingGui::testMatrixWrapper()
 
   // modeler wrapper
   testWrapper( QgsProcessingGui::Modeler );
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  QgsProcessingContext context;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "matrix" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterMatrix matrixParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), 1, false, QStringList() << "A" << "B" << "C", QVariantList() << 0 << 0 << 0 );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "matrix" ), context, widgetContext, &matrixParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterMatrix * >( def.get() )->headers(), QStringList() << "A" << "B" << "C" );
+  QCOMPARE( static_cast< QgsProcessingParameterMatrix * >( def.get() )->defaultValue().toStringList(), QStringList() << "0" << "0" << "0" );
+  QVERIFY( !static_cast< QgsProcessingParameterMatrix * >( def.get() )->hasFixedNumberRows() );
+  matrixParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  matrixParam.setHasFixedNumberRows( true );
+  matrixParam.setDefaultValue( QVariantList() << 1 << 2 << 3 );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "matrix" ), context, widgetContext, &matrixParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterMatrix * >( def.get() )->headers(), QStringList() << "A" << "B" << "C" );
+  QCOMPARE( static_cast< QgsProcessingParameterMatrix * >( def.get() )->defaultValue().toStringList(), QStringList() << "1" << "2" << "3" );
+  QVERIFY( static_cast< QgsProcessingParameterMatrix * >( def.get() )->hasFixedNumberRows() );
 }
 
 void TestProcessingGui::testExpressionWrapper()
