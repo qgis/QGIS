@@ -5367,6 +5367,8 @@ QVariantMap QgsPostgresProviderMetadata::decodeUri( const QString &uri )
     uriParts[ QStringLiteral( "service" ) ] = dsUri.service();
   if ( ! dsUri.username().isEmpty() )
     uriParts[ QStringLiteral( "username" ) ] = dsUri.username();
+  if ( ! dsUri.password().isEmpty() )
+    uriParts[ QStringLiteral( "password" ) ] = dsUri.password();
   if ( ! dsUri.authConfigId().isEmpty() )
     uriParts[ QStringLiteral( "authcfg" ) ] = dsUri.authConfigId();
   if ( dsUri.wkbType() != QgsWkbTypes::Type::Unknown )
