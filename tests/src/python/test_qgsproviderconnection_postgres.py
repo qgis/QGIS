@@ -45,7 +45,45 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         # Create test layers
         vl = QgsVectorLayer(cls.postgres_conn + ' sslmode=disable key=\'"key1","key2"\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
         assert vl.isValid()
+<<<<<<< HEAD
         cls.uri = cls.postgres_conn + ' port=5432 sslmode=disable '
+=======
+        cls.uri = cls.postgres_conn + ' sslmode=disable'
+
+    def test_postgis_connections_from_uri(self):
+        """Create a connection from a layer uri and retrieve it"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        vl = QgsVectorLayer(self.postgres_conn + ' sslmode=disable key=\'"key1","key2"\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
+        conn = md.createConnection(vl.dataProvider().uri().uri(), {})
+        self.assertEqual(conn.uri(), self.uri)
+
+        # Test table(), throws if not found
+        table_info = conn.table('qgis_test', 'someData')
+        table_info = conn.table('qgis_test', 'Raster1')
+
+        # Test raster
+        self.assertEqual(conn.tableUri('qgis_test', 'Raster1'),
+                         '%s table="qgis_test"."Raster1"' % self.uri)
+
+        rl = QgsRasterLayer(conn.tableUri('qgis_test', 'Raster1'), 'r1', 'postgresraster')
+        self.assertTrue(rl.isValid())
+
+    def test_postgis_geometry_filter(self):
+        """Make sure the postgres provider only returns one matching geometry record and no polygons etc."""
+        vl = QgsVectorLayer(self.postgres_conn + ' srid=4326 type=POINT table="qgis_test"."geometries_table" (geom) sql=', 'test', 'postgres')
+
+        ids = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(ids, [2])
+
+    def test_postgis_table_uri(self):
+        """Create a connection from a layer uri and create a table URI"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.uri, {})
+        vl = QgsVectorLayer(conn.tableUri('qgis_test', 'geometries_table'), 'my', 'postgres')
+        self.assertTrue(vl.isValid())
+>>>>>>> 2dec5a0d47... Merge pull request #35367 from m-kuhn/requested_type_does_not_take_precedence
 
     def test_postgis_connections(self):
         """Create some connections and retrieve them"""
