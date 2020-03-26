@@ -390,26 +390,37 @@ void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
 
 void QgsProcessingLayerOutputDestinationWidget::saveToPostGIS()
 {
-  QgsNewDatabaseTableNameDialog dlg( mBrowserModel, QStringList() << QStringLiteral( "postgres" ), this );
-  dlg.setWindowTitle( tr( "Save to PostGIS Table" ) );
-  if ( dlg.exec() && dlg.isValid() )
+  if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
   {
-    mUseTemporary = false;
+    QgsNewDatabaseTableNameWidget *widget = new QgsNewDatabaseTableNameWidget( mBrowserModel, QStringList() << QStringLiteral( "postgres" ), this );
+    widget->setPanelTitle( tr( "Save “%1” to PostGIS Table" ).arg( mParameter->description() ) );
 
-    QgsDataSourceUri uri = QgsDataSourceUri( dlg.uri() );
+    panel->openPanel( widget );
 
-    QString geomColumn;
-    if ( const QgsProcessingParameterFeatureSink *sink = dynamic_cast< const QgsProcessingParameterFeatureSink * >( mParameter ) )
+    auto changed = [ = ]
     {
-      if ( sink->hasGeometry() )
-        geomColumn = QStringLiteral( "geom" );
-    }
-    uri.setGeometryColumn( geomColumn );
+      mUseTemporary = false;
 
-    leText->setText( QStringLiteral( "postgis:%1" ).arg( uri.uri() ) );
+      QgsDataSourceUri uri = QgsDataSourceUri( widget->uri() );
 
-    emit skipOutputChanged( false );
-    emit destinationChanged();
+      QString geomColumn;
+      if ( const QgsProcessingParameterFeatureSink *sink = dynamic_cast< const QgsProcessingParameterFeatureSink * >( mParameter ) )
+      {
+        if ( sink->hasGeometry() )
+          geomColumn = QStringLiteral( "geom" );
+      }
+      uri.setGeometryColumn( geomColumn );
+
+      leText->setText( QStringLiteral( "postgis:%1" ).arg( uri.uri() ) );
+
+      emit skipOutputChanged( false );
+      emit destinationChanged();
+    };
+
+    connect( widget, &QgsNewDatabaseTableNameWidget::tableNameChanged, this, [ = ] { changed(); } );
+    connect( widget, &QgsNewDatabaseTableNameWidget::schemaNameChanged, this, [ = ] { changed(); } );
+    connect( widget, &QgsNewDatabaseTableNameWidget::validationChanged, this, [ = ] { changed(); } );
+    connect( widget, &QgsNewDatabaseTableNameWidget::providerKeyChanged, this, [ = ] { changed(); } );
   }
 }
 
