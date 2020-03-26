@@ -424,7 +424,6 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   {
     if ( mOptions & Fields )
       mAttributesSelection->setVisible( true );
-    fieldsAsDisplayedValues = ( sFormat == QLatin1String( "CSV" ) || sFormat == QLatin1String( "XLS" ) || sFormat == QLatin1String( "XLSX" ) || sFormat == QLatin1String( "ODS" ) );
   }
 
   // Show symbology options only for some formats
