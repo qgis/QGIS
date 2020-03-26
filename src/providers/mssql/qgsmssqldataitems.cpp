@@ -96,7 +96,7 @@ void QgsMssqlConnectionItem::stop()
 
 void QgsMssqlConnectionItem::refresh()
 {
-  QgsDebugMsg( "mPath = " + mPath );
+  QgsDebugMsgLevel( "mPath = " + mPath, 3 );
   stop();
 
   // read up the schemas and layers from database
@@ -514,7 +514,7 @@ QString QgsMssqlLayerItem::createUri()
   mDisableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( connItem->name() );
   uri.setParam( QStringLiteral( "disableInvalidGeometryHandling" ), mDisableInvalidGeometryHandling ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
-  QgsDebugMsg( QStringLiteral( "layer uri: %1" ).arg( uri.uri() ) );
+  QgsDebugMsgLevel( QStringLiteral( "layer uri: %1" ).arg( uri.uri() ), 3 );
   return uri.uri();
 }
 

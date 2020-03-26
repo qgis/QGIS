@@ -10,7 +10,7 @@
     <height>629</height>
    </rect>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -23,7 +23,24 @@
    <property name="bottomMargin">
     <number>4</number>
    </property>
-   <item>
+   <item row="2" column="0">
+    <widget class="QLineEdit" name="mNewTableName">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="placeholderText">
+      <string>name of the new table</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="mOkButton">
+     <property name="text">
+      <string>Ok</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <property name="spacing">
       <number>0</number>
@@ -50,24 +67,14 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="1" column="0" colspan="2">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>New table name</string>
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QLineEdit" name="mNewTableName">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="placeholderText">
-      <string>name of the new table</string>
-     </property>
-    </widget>
-   </item>
-   <item>
+   <item row="3" column="0" colspan="2">
     <widget class="QLabel" name="mValidationResults">
      <property name="enabled">
       <bool>true</bool>

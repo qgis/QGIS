@@ -382,36 +382,40 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
   {
     if ( ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName()
            || mParameter->type() == QgsProcessingParameterVectorLayer::typeName() )
-         && u.layerType == QLatin1String( "vector" ) && u.providerKey == QLatin1String( "ogr" ) )
+         && u.layerType == QLatin1String( "vector" ) )
     {
       QList< int > dataTypes =  mParameter->type() == QgsProcessingParameterFeatureSource::typeName() ? static_cast< QgsProcessingParameterFeatureSource * >( mParameter.get() )->dataTypes()
                                 : ( mParameter->type() == QgsProcessingParameterVectorLayer::typeName() ? static_cast<QgsProcessingParameterVectorLayer *>( mParameter.get() )->dataTypes()
                                     : QList< int >() );
+      bool acceptable = false;
       switch ( QgsWkbTypes::geometryType( u.wkbType ) )
       {
         case QgsWkbTypes::UnknownGeometry:
-          return u.uri;
+          acceptable = true;
+          break;
 
         case QgsWkbTypes::PointGeometry:
           if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPoint ) )
-            return u.uri;
+            acceptable = true;
           break;
 
         case QgsWkbTypes::LineGeometry:
           if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorLine ) )
-            return u.uri;
+            acceptable = true;
           break;
 
         case QgsWkbTypes::PolygonGeometry:
           if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPolygon ) )
-            return u.uri;
+            acceptable = true;
           break;
 
         case QgsWkbTypes::NullGeometry:
           if ( dataTypes.contains( QgsProcessing::TypeVector ) )
-            return u.uri;
+            acceptable = true;
           break;
       }
+      if ( acceptable )
+        return u.providerKey != QLatin1String( "ogr" ) ? QgsProcessingUtils::encodeProviderKeyAndUri( u.providerKey, u.uri ) : u.uri;
     }
     else if ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName()
               && u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" ) )
@@ -648,7 +652,9 @@ void QgsProcessingMapLayerComboBox::browseForLayer()
     connect( widget, &QgsPanelWidget::panelAccepted, this, [ = ]()
     {
       QgsProcessingContext context;
-      if ( widget->uri().providerKey == QLatin1String( "ogr" ) )
+      if ( widget->uri().uri.isEmpty() )
+        setValue( QVariant(), context );
+      else if ( widget->uri().providerKey == QLatin1String( "ogr" ) )
         setValue( widget->uri().uri, context );
       else
         setValue( QgsProcessingUtils::encodeProviderKeyAndUri( widget->uri().providerKey, widget->uri().uri ), context );

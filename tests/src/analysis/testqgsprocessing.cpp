@@ -1629,6 +1629,21 @@ void TestQgsProcessing::parseDestinationString()
   QVERIFY( !useWriter );
   QVERIFY( extension.isEmpty() );
 
+  // newer format
+  destination = QStringLiteral( "postgres://dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
+  QCOMPARE( providerKey, QStringLiteral( "postgres" ) );
+  QCOMPARE( uri, QStringLiteral( "dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" ) );
+  QVERIFY( !useWriter );
+  QVERIFY( extension.isEmpty() );
+  //mssql
+  destination = QStringLiteral( "mssql://dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
+  QCOMPARE( providerKey, QStringLiteral( "mssql" ) );
+  QCOMPARE( uri, QStringLiteral( "dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" ) );
+  QVERIFY( !useWriter );
+  QVERIFY( extension.isEmpty() );
+
   // full uri shp output
   options.clear();
   destination = QStringLiteral( "ogr:d:/test.shp" );

@@ -65,6 +65,14 @@ Emitted whenever the "skip output" option is toggled in the widget.
 %Docstring
 Emitted whenever the destination value is changed in the widget.
 %End
+  protected:
+
+    virtual void dragEnterEvent( QDragEnterEvent *event );
+
+    virtual void dragLeaveEvent( QDragLeaveEvent *event );
+
+    virtual void dropEvent( QDropEvent *event );
+
 
 };
 

@@ -602,16 +602,26 @@ QString QgsProcessingUtils::stringToPythonLiteral( const QString &string )
 void QgsProcessingUtils::parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter, QString &extension )
 {
   extension.clear();
-  QRegularExpression splitRx( QStringLiteral( "^(.{3,}?):(.*)$" ) );
-  QRegularExpressionMatch match = splitRx.match( destination );
-  if ( match.hasMatch() )
+  bool matched = decodeProviderKeyAndUri( destination, providerKey, uri );
+
+  if ( !matched )
   {
-    providerKey = match.captured( 1 );
+    QRegularExpression splitRx( QStringLiteral( "^(.{3,}?):(.*)$" ) );
+    QRegularExpressionMatch match = splitRx.match( destination );
+    if ( match.hasMatch() )
+    {
+      providerKey = match.captured( 1 );
+      uri = match.captured( 2 );
+      matched = true;
+    }
+  }
+
+  if ( matched )
+  {
     if ( providerKey == QStringLiteral( "postgis" ) ) // older processing used "postgis" instead of "postgres"
     {
       providerKey = QStringLiteral( "postgres" );
     }
-    uri = match.captured( 2 );
     if ( providerKey == QLatin1String( "ogr" ) )
     {
       QgsDataSourceUri dsUri( uri );
