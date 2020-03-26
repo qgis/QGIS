@@ -52,6 +52,7 @@
 #include "qgsdatabaseschemacombobox.h"
 #include "qgsdatabasetablecombobox.h"
 #include "qgsextentwidget.h"
+#include "qgsprocessingenummodelerwidget.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -2015,6 +2016,32 @@ void QgsProcessingEnumCheckboxPanelWidget::deselectAll()
 // QgsProcessingEnumWidgetWrapper
 //
 
+QgsProcessingEnumParameterDefinitionWidget::QgsProcessingEnumParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  mEnumWidget = new QgsProcessingEnumModelerWidget();
+  if ( const QgsProcessingParameterEnum *enumParam = dynamic_cast<const QgsProcessingParameterEnum *>( definition ) )
+  {
+    mEnumWidget->setAllowMultiple( enumParam->allowMultiple() );
+    mEnumWidget->setOptions( enumParam->options() );
+    mEnumWidget->setDefaultOptions( enumParam->defaultValue() );
+  }
+  vlayout->addWidget( mEnumWidget );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingEnumParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterEnum >( name, description, mEnumWidget->options(), mEnumWidget->allowMultiple(), mEnumWidget->defaultOptions() );
+  param->setFlags( flags );
+  return param.release();
+}
+
+
 QgsProcessingEnumWidgetWrapper::QgsProcessingEnumWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
@@ -2151,6 +2178,11 @@ QString QgsProcessingEnumWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingEnumWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingEnumWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingEnumWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingEnumParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 //
