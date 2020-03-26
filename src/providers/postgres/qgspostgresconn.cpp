@@ -2023,6 +2023,26 @@ void QgsPostgresConn::postgisWkbType( QgsWkbTypes::Type wkbType, QString &geomet
       geometryType = QStringLiteral( "MULTIPOLYGON" );
       break;
 
+    case QgsWkbTypes::CircularString:
+      geometryType = QStringLiteral( "CIRCULARSTRING" );
+      break;
+
+    case QgsWkbTypes::CompoundCurve:
+      geometryType = QStringLiteral( "COMPOUNDCURVE" );
+      break;
+
+    case QgsWkbTypes::CurvePolygon:
+      geometryType = QStringLiteral( "CURVEPOLYGON" );
+      break;
+
+    case QgsWkbTypes::MultiCurve:
+      geometryType = QStringLiteral( "MULTICURVE" );
+      break;
+
+    case QgsWkbTypes::MultiSurface:
+      geometryType = QStringLiteral( "MULTISURFACE" );
+      break;
+
     case QgsWkbTypes::Unknown:
       geometryType = QStringLiteral( "GEOMETRY" );
       break;
