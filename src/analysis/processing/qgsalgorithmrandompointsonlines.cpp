@@ -156,7 +156,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
   long numberOfFeatures = lineSource->featureCount();
   QgsFeature lFeat;
   QgsFeatureIterator fitL = mIncludeLineAttr ? lineSource->getFeatures()
-                            : lineSource->getFeatures( QgsFeatureRequest().setNoAttributes());
+                            : lineSource->getFeatures( QgsFeatureRequest().setNoAttributes() );
   while ( fitL.nextFeature( lFeat ) )
   {
     featureCount++;
@@ -234,12 +234,12 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
           pointsAddedForThisFeature++;
           saved += ( mMaxAttempts - distCheckIterations );
 
-          feedback->setProgress( static_cast<int>( 100 * static_cast<double>( tries + saved ) / static_cast<double>( mNumPoints * mMaxAttempts * ( numberOfFeatures - emptyOrNullGeom) ) ) );
+          feedback->setProgress( static_cast<int>( 100 * static_cast<double>( tries + saved ) / static_cast<double>( mNumPoints * mMaxAttempts * ( numberOfFeatures - emptyOrNullGeom ) ) ) );
           break;
         }
         else
         {
-          feedback->setProgress( static_cast<int>( 100 * static_cast<double>( tries + saved ) / static_cast<double>( mNumPoints * mMaxAttempts * ( numberOfFeatures - emptyOrNullGeom) ) ) );
+          feedback->setProgress( static_cast<int>( 100 * static_cast<double>( tries + saved ) / static_cast<double>( mNumPoints * mMaxAttempts * ( numberOfFeatures - emptyOrNullGeom ) ) ) );
         }
       }
     }
