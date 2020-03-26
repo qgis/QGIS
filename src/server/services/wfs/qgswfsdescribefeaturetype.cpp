@@ -111,7 +111,7 @@ namespace QgsWfs
     QStringList typeNameList;
     QDomDocument queryDoc;
     QString errorMsg;
-    if ( queryDoc.setContent( parameters.value( QStringLiteral( "REQUEST_BODY" ) ), true, &errorMsg ) )
+    if ( queryDoc.setContent( request.data(), true, &errorMsg ) )
     {
       //read doc
       QDomElement queryDocElem = queryDoc.documentElement();
