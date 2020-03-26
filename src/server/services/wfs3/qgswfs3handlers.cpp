@@ -1031,9 +1031,13 @@ json QgsWfs3CollectionsItemsHandler::schema( const QgsServerApiContext &context 
                 "201", {
                   { "description", "A new feature was successfully added to the collection" }
                 },
+              },
+              {
                 "403", {
                   { "description", "Forbidden: the operation requested was not authorized" }
                 },
+              },
+              {
                 "500", {
                   { "description", "Posted data could not be parsed correctly or another error occurred" }
                 }
@@ -1963,9 +1967,13 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
                 "200", {
                   { "description", "The feature was successfully updated" }
                 },
+              },
+              {
                 "403", {
                   { "description", "Forbidden: the operation requested was not authorized" }
                 },
+              },
+              {
                 "500", {
                   { "description", "Posted data could not be parsed correctly or another error occurred" }
                 }
@@ -1987,9 +1995,13 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
                 "200", {
                   { "description", "The feature was successfully updated" }
                 },
+              },
+              {
                 "403", {
                   { "description", "Forbidden: the operation requested was not authorized" }
                 },
+              },
+              {
                 "500", {
                   { "description", "Posted data could not be parsed correctly or another error occurred" }
                 }
@@ -2011,9 +2023,13 @@ json QgsWfs3CollectionsFeatureHandler::schema( const QgsServerApiContext &contex
                 "201", {
                   { "description", "The feature was successfully deleted from the collection" }
                 },
+              },
+              {
                 "403", {
                   { "description", "Forbidden: the operation requested was not authorized" }
                 },
+              },
+              {
                 "500", {
                   { "description", "Posted data could not be parsed correctly or another error occurred" }
                 }
