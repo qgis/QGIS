@@ -38,6 +38,8 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
 
   setupUi( this );
 
+  leText->setClearButtonEnabled( false );
+
   connect( leText, &QLineEdit::textEdited, this, &QgsProcessingLayerOutputDestinationWidget::textChanged );
 
   mMenu = new QMenu( this );
@@ -62,6 +64,9 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   }
 
   setToolTip( mParameter->toolTip() );
+
+  setAcceptDrops( true );
+  leText->setAcceptDrops( false );
 }
 
 bool QgsProcessingLayerOutputDestinationWidget::outputIsSkipped() const
@@ -447,5 +452,113 @@ void QgsProcessingLayerOutputDestinationWidget::textChanged( const QString &text
   emit destinationChanged();
 }
 
+QString QgsProcessingLayerOutputDestinationWidget::mimeDataToPath( const QMimeData *data )
+{
+  const QgsMimeDataUtils::UriList uriList = QgsMimeDataUtils::decodeUriList( data );
+  for ( const QgsMimeDataUtils::Uri &u : uriList )
+  {
+    if ( ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName()
+           || mParameter->type() == QgsProcessingParameterVectorDestination::typeName()
+           || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
+         && u.layerType == QLatin1String( "vector" ) && u.providerKey == QLatin1String( "ogr" ) )
+    {
+      return u.uri;
+    }
+    else if ( ( mParameter->type() == QgsProcessingParameterRasterDestination::typeName()
+                || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
+              && u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" ) )
+      return u.uri;
+#if 0
+    else if ( ( mParameter->type() == QgsProcessingParameterMeshDestination::typeName()
+                || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
+              && u.layerType == QLatin1String( "mesh" ) && u.providerKey == QLatin1String( "mdal" ) )
+      return u.uri;
+
+#endif
+    else if ( mParameter->type() == QgsProcessingParameterFolderDestination::typeName()
+              && u.layerType == QLatin1String( "directory" ) )
+    {
+      return u.uri;
+    }
+  }
+  if ( !uriList.isEmpty() )
+    return QString();
+
+  // files dragged from file explorer, outside of QGIS
+  QStringList rawPaths;
+  if ( data->hasUrls() )
+  {
+    const QList< QUrl > urls = data->urls();
+    rawPaths.reserve( urls.count() );
+    for ( const QUrl &url : urls )
+    {
+      const QString local =  url.toLocalFile();
+      if ( !rawPaths.contains( local ) )
+        rawPaths.append( local );
+    }
+  }
+  if ( !data->text().isEmpty() && !rawPaths.contains( data->text() ) )
+    rawPaths.append( data->text() );
+
+  for ( const QString &path : qgis::as_const( rawPaths ) )
+  {
+    QFileInfo file( path );
+    if ( file.isFile() && ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName()
+                            || mParameter->type() == QgsProcessingParameterVectorDestination::typeName()
+                            || mParameter->type() == QgsProcessingParameterRasterDestination::typeName()
+                            || mParameter->type() == QgsProcessingParameterVectorDestination::typeName()
+                            || mParameter->type() == QgsProcessingParameterFileDestination::typeName() ) )
+    {
+      // TODO - we should check to see if it's a valid extension for the parameter, but that's non-trivial
+      return path;
+    }
+    else if ( file.isDir() && ( mParameter->type() == QgsProcessingParameterFolderDestination::typeName() ) )
+      return path;
+  }
+
+  return QString();
+}
+
+void QgsProcessingLayerOutputDestinationWidget::dragEnterEvent( QDragEnterEvent *event )
+{
+  if ( !( event->possibleActions() & Qt::CopyAction ) )
+    return;
+
+  const QString path = mimeDataToPath( event->mimeData() );
+  if ( !path.isEmpty() )
+  {
+    // dragged an acceptable path, phew
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+    leText->setHighlighted( true );
+  }
+}
+
+void QgsProcessingLayerOutputDestinationWidget::dragLeaveEvent( QDragLeaveEvent *event )
+{
+  QWidget::dragLeaveEvent( event );
+  if ( leText->isHighlighted() )
+  {
+    event->accept();
+    leText->setHighlighted( false );
+  }
+}
+
+void QgsProcessingLayerOutputDestinationWidget::dropEvent( QDropEvent *event )
+{
+  if ( !( event->possibleActions() & Qt::CopyAction ) )
+    return;
+
+  const QString path = mimeDataToPath( event->mimeData() );
+  if ( !path.isEmpty() )
+  {
+    // dropped an acceptable path, phew
+    setFocus( Qt::MouseFocusReason );
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+    setValue( path );
+  }
+  leText->setHighlighted( false );
+}
 
 ///@endcond

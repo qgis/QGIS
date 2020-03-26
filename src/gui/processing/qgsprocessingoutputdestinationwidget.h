@@ -77,6 +77,11 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
      * Emitted whenever the destination value is changed in the widget.
      */
     void destinationChanged();
+  protected:
+
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
 
   private slots:
 
@@ -91,6 +96,8 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     void textChanged( const QString &text );
 
   private:
+
+    QString mimeDataToPath( const QMimeData *data );
 
     const QgsProcessingDestinationParameter *mParameter = nullptr;
     QMenu *mMenu = nullptr;
