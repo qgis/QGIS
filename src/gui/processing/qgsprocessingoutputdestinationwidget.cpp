@@ -37,10 +37,14 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   Q_ASSERT( mParameter );
 
   setupUi( this );
-  connect( mSelectButton, &QToolButton::clicked, this, &QgsProcessingLayerOutputDestinationWidget::showMenu );
+
   connect( leText, &QLineEdit::textEdited, this, &QgsProcessingLayerOutputDestinationWidget::textChanged );
 
   mMenu = new QMenu( this );
+  connect( mMenu, &QMenu::aboutToShow, this, &QgsProcessingLayerOutputDestinationWidget::menuAboutToShow );
+  mSelectButton->setMenu( mMenu );
+  mSelectButton->setPopupMode( QToolButton::InstantPopup );
+
   QgsSettings settings;
   mEncoding = settings.value( QStringLiteral( "/Processing/encoding" ), QStringLiteral( "System" ) ).toString();
 
@@ -174,7 +178,7 @@ void QgsProcessingLayerOutputDestinationWidget::setWidgetContext( const QgsProce
   mBrowserModel = context.browserModel();
 }
 
-void QgsProcessingLayerOutputDestinationWidget::showMenu()
+void QgsProcessingLayerOutputDestinationWidget::menuAboutToShow()
 {
   mMenu->clear();
 
@@ -239,7 +243,6 @@ void QgsProcessingLayerOutputDestinationWidget::showMenu()
     connect( actionSetEncoding, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::selectEncoding );
     mMenu->addAction( actionSetEncoding );
   }
-  mMenu->exec( QCursor::pos() );
 }
 
 void QgsProcessingLayerOutputDestinationWidget::skipOutput()

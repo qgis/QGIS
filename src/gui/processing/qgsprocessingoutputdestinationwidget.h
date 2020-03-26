@@ -80,7 +80,7 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
 
   private slots:
 
-    void showMenu();
+    void menuAboutToShow();
     void skipOutput();
     void saveToTemporary();
     void selectDirectory();
