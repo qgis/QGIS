@@ -408,6 +408,7 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
         << QStringLiteral( "ogr" )
         << QStringLiteral( "spatialite" ), this );
     widget->setPanelTitle( tr( "Save “%1” to Database Table" ).arg( mParameter->description() ) );
+    widget->setAcceptButtonVisible( true );
 
     panel->openPanel( widget );
 
@@ -445,6 +446,11 @@ void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
     connect( widget, &QgsNewDatabaseTableNameWidget::schemaNameChanged, this, [ = ] { changed(); } );
     connect( widget, &QgsNewDatabaseTableNameWidget::validationChanged, this, [ = ] { changed(); } );
     connect( widget, &QgsNewDatabaseTableNameWidget::providerKeyChanged, this, [ = ] { changed(); } );
+    connect( widget, &QgsNewDatabaseTableNameWidget::accepted, this, [ = ]
+    {
+      changed();
+      widget->acceptPanel();
+    } );
   }
 }
 

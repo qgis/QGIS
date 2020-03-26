@@ -61,6 +61,13 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QgsPanelWidget, private 
                                             QWidget *parent = nullptr );
 
     /**
+     * Sets whether the optional "Ok"/accept button should be visible.
+     *
+     * By default this is hidden, to better allow the widget to be embedded inside other widgets and dialogs.
+     */
+    void setAcceptButtonVisible( bool visible );
+
+    /**
      * Returns the currently selected schema or file path (in case of filesystem-based DBs like spatialite or GPKG) for the new table
      */
     QString schema() const;
@@ -132,6 +139,10 @@ class GUI_EXPORT QgsNewDatabaseTableNameWidget : public QgsPanelWidget, private 
      */
     void uriChanged( const QString &uri );
 
+    /**
+     * Emitted when the OK/accept button is clicked.
+     */
+    void accepted();
 
   private:
 
