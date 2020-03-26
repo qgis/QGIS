@@ -9,6 +9,12 @@
 
 set -e
 
+# GNU prefix command for mac os support (gsed, gsplit)
+GP=
+if [[ "$OSTYPE" =~ darwin* ]]; then
+  GP=g
+fi
+
 CLASSNAME=$1
 
 TODAY=$(date '+%d.%m.%Y')
@@ -27,13 +33,11 @@ for i in "${EXT[@]}"
 do
 	DESTFILE=$DIR/../src/customwidgets/${CLASSLOWER}plugin.$i
 	cp "$DIR"/customwidget."$i".template "$DESTFILE"
-	sed -i s/%DATE%/"$TODAY"/g "$DESTFILE"
-	sed -i s/%YEAR%/"$YEAR"/g "$DESTFILE"
-	sed -i s/%AUTHOR%/"$AUTHOR"/g "$DESTFILE"
-	sed -i s/%EMAIL%/"$EMAIL"/g "$DESTFILE"
-	sed -i s/%CLASSUPPERCASE%/"$CLASSUPPER"/g "$DESTFILE"
-	sed -i s/%CLASSLOWERCASE%/"$CLASSLOWER"/g "$DESTFILE"
-	sed -i s/%CLASSMIXEDCASE%/"$CLASSNAME"/g "$DESTFILE"
+	${GP}sed -i s/%DATE%/"$TODAY"/g "$DESTFILE"
+	${GP}sed -i s/%YEAR%/"$YEAR"/g "$DESTFILE"
+	${GP}sed -i s/%AUTHOR%/"$AUTHOR"/g "$DESTFILE"
+	${GP}sed -i s/%EMAIL%/"$EMAIL"/g "$DESTFILE"
+	${GP}sed -i s/%CLASSUPPERCASE%/"$CLASSUPPER"/g "$DESTFILE"
+	${GP}sed -i s/%CLASSLOWERCASE%/"$CLASSLOWER"/g "$DESTFILE"
+	${GP}sed -i s/%CLASSMIXEDCASE%/"$CLASSNAME"/g "$DESTFILE"
 done
-
-
