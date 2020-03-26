@@ -3174,6 +3174,38 @@ void TestProcessingGui::testEnumWrapper()
   // checkbox style (not for batch or model mode!)
   testWrapper( QgsProcessingGui::Standard, true );
 
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  QgsProcessingContext context;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "enum" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterEnum enumParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QStringList() << "A" << "B" << "C", false, 2 );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "enum" ), context, widgetContext, &enumParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterEnum * >( def.get() )->options(), QStringList() << "A" << "B" << "C" );
+  QCOMPARE( static_cast< QgsProcessingParameterEnum * >( def.get() )->defaultValue().toStringList(), QStringList() << "2" );
+  QVERIFY( !static_cast< QgsProcessingParameterEnum * >( def.get() )->allowMultiple() );
+  enumParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  enumParam.setAllowMultiple( true );
+  enumParam.setDefaultValue( QVariantList() << 0 << 1 );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "enum" ), context, widgetContext, &enumParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterEnum * >( def.get() )->options(), QStringList() << "A" << "B" << "C" );
+  QCOMPARE( static_cast< QgsProcessingParameterEnum * >( def.get() )->defaultValue().toStringList(), QStringList() << "0" << "1" );
+  QVERIFY( static_cast< QgsProcessingParameterEnum * >( def.get() )->allowMultiple() );
 }
 
 void TestProcessingGui::testLayoutWrapper()

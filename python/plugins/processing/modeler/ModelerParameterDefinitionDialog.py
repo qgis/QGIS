@@ -53,7 +53,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterScale,
                        QgsProcessingParameterRange,
                        QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterEnum,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource,
@@ -65,7 +64,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterVectorDestination)
 
-from processing.gui.enummodelerwidget import EnumModelerWidget
 from processing.gui.matrixmodelerwidget import MatrixModelerWidget
 from processing.core import parameters
 from processing.modeler.exceptions import UndefinedParameterException
@@ -83,7 +81,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                          parameters.PARAMETER_NUMBER,
                          parameters.PARAMETER_DISTANCE,
                          parameters.PARAMETER_SCALE,
-                         parameters.PARAMETER_ENUM,
                          parameters.PARAMETER_MATRIX,
                          parameters.PARAMETER_MAP_LAYER):
             return True
@@ -95,7 +92,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                                 QgsProcessingParameterNumber,
                                 QgsProcessingParameterDistance,
                                 QgsProcessingParameterScale,
-                                QgsProcessingParameterEnum,
                                 QgsProcessingParameterMatrix,
                                 QgsProcessingParameterMapLayer,
                                 QgsProcessingDestinationParameter)):
@@ -299,14 +295,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                 if default:
                     self.defaultTextBox.setText(str(default))
             self.verticalLayout.addWidget(self.defaultTextBox)
-        elif self.paramType == parameters.PARAMETER_ENUM or \
-                isinstance(self.param, QgsProcessingParameterEnum):
-            self.widget = EnumModelerWidget(self)
-            if self.param is not None:
-                self.widget.setAllowMultiple(bool(self.param.allowMultiple()))
-                self.widget.setOptions(self.param.options())
-                self.widget.setDefault(self.param.defaultValue())
-            self.verticalLayout.addWidget(self.widget)
         elif self.paramType == parameters.PARAMETER_MATRIX or \
                 isinstance(self.param, QgsProcessingParameterMatrix):
             self.widget = MatrixModelerWidget(self)
@@ -486,9 +474,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
                 return
-        elif (self.paramType == parameters.PARAMETER_ENUM
-                or isinstance(self.param, QgsProcessingParameterEnum)):
-            self.param = QgsProcessingParameterEnum(name, description, self.widget.options(), self.widget.allowMultiple(), self.widget.defaultOptions())
         elif (self.paramType == parameters.PARAMETER_MATRIX
                 or isinstance(self.param, QgsProcessingParameterMatrix)):
             self.param = QgsProcessingParameterMatrix(name, description, hasFixedNumberRows=self.widget.fixedRows(), headers=self.widget.headers(), defaultValue=self.widget.value())
