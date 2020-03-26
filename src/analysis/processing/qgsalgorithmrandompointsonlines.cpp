@@ -19,28 +19,18 @@
 #include "qgsalgorithmrandompointsonlines.h"
 #include "random"
 
-constexpr char INPUT_C[] = "INPUT";
-std::string INPUT(INPUT_C);
-constexpr char POINTS_NUMBER_C[] = "POINTS_NUMBER";
-std::string POINTS_NUMBER(POINTS_NUMBER_C);
-constexpr char MIN_DISTANCE_C[] = "MIN_DISTANCE";
-std::string MIN_DISTANCE(MIN_DISTANCE_C);
-constexpr char MAX_TRIES_PER_POINT_C[] = "MAX_TRIES_PER_POINT";
-std::string MAX_TRIES_PER_POINT(MAX_TRIES_PER_POINT_C);
-constexpr char SEED_C[] = "SEED";
-std::string SEED(SEED_C);
-constexpr char INCLUDE_LINE_ATTRIBUTES_C[] = "INCLUDE_LINE_ATTRIBUTES";
-std::string INCLUDE_LINE_ATTRIBUTES(INCLUDE_LINE_ATTRIBUTES_C);
-constexpr char OUTPUT_C[] = "OUTPUT";
-std::string OUTPUT(OUTPUT_C);
-constexpr char OUTPUT_POINTS_C[] = "OUTPUT_POINTS";
-std::string OUTPUT_POINTS(OUTPUT_POINTS_C);
-constexpr char POINTS_MISSED_C[] = "POINTS_MISSED";
-std::string POINTS_MISSED(POINTS_MISSED_C);
-constexpr char LINES_WITH_MISSED_POINTS_C[] = "LINES_WITH_MISSED_POINTS";
-std::string LINES_WITH_MISSED_POINTS(LINES_WITH_MISSED_POINTS_C);
-constexpr char FEATURES_WITH_EMPTY_OR_NO_GEOMETRY_C[] = "FEATURES_WITH_EMPTY_OR_NO_GEOMETRY";
-std::string FEATURES_WITH_EMPTY_OR_NO_GEOMETRY(FEATURES_WITH_EMPTY_OR_NO_GEOMETRY_C);
+// The algorithm parameter names:
+constexpr char INPUT[] = "INPUT";
+constexpr char POINTS_NUMBER[] = "POINTS_NUMBER";
+constexpr char MIN_DISTANCE[] = "MIN_DISTANCE";
+constexpr char MAX_TRIES_PER_POINT[] = "MAX_TRIES_PER_POINT";
+constexpr char SEED[] = "SEED";
+constexpr char INCLUDE_LINE_ATTRIBUTES[] = "INCLUDE_LINE_ATTRIBUTES";
+constexpr char OUTPUT[] = "OUTPUT";
+constexpr char OUTPUT_POINTS[] = "OUTPUT_POINTS";
+constexpr char POINTS_MISSED[] = "POINTS_MISSED";
+constexpr char LINES_WITH_MISSED_POINTS[] = "LINES_WITH_MISSED_POINTS";
+constexpr char FEATURES_WITH_EMPTY_OR_NO_GEOMETRY[] = "FEATURES_WITH_EMPTY_OR_NO_GEOMETRY";
 
 ///@cond PRIVATE
 
