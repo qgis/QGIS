@@ -152,11 +152,14 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
   if ( key.isEmpty() && mParameter->flags() & QgsProcessingParameterDefinition::FlagOptional )
     return QVariant();
 
+  QString provider;
+  QString uri;
   if ( !key.isEmpty() && key != QgsProcessing::TEMPORARY_OUTPUT
        && !key.startsWith( QLatin1String( "memory:" ) )
        && !key.startsWith( QLatin1String( "ogr:" ) )
        && !key.startsWith( QLatin1String( "postgres:" ) )
-       && !key.startsWith( QLatin1String( "postgis:" ) ) )
+       && !key.startsWith( QLatin1String( "postgis:" ) )
+       && !QgsProcessingUtils::decodeProviderKeyAndUri( key, provider, uri ) )
   {
     // output should be a file path
     QString folder = QFileInfo( key ).path();
@@ -234,12 +237,9 @@ void QgsProcessingLayerOutputDestinationWidget::menuAboutToShow()
     connect( actionSaveToGpkg, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::saveToGeopackage );
     mMenu->addAction( actionSaveToGpkg );
 
-    QAction *actionSaveToPostGIS = new QAction( tr( "Save to PostGIS Table…" ), this );
-    connect( actionSaveToPostGIS, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::saveToPostGIS );
-
-    const bool postgresConnectionsExist = !( QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) )->connections().isEmpty() );
-    actionSaveToPostGIS->setEnabled( postgresConnectionsExist );
-    mMenu->addAction( actionSaveToPostGIS );
+    QAction *actionSaveToDatabase = new QAction( tr( "Save to Database Table…" ), this );
+    connect( actionSaveToDatabase, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::saveToDatabase );
+    mMenu->addAction( actionSaveToDatabase );
   }
 
   if ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName() )
@@ -398,12 +398,13 @@ void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
   emit destinationChanged();
 }
 
-void QgsProcessingLayerOutputDestinationWidget::saveToPostGIS()
+void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
 {
   if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
   {
-    QgsNewDatabaseTableNameWidget *widget = new QgsNewDatabaseTableNameWidget( mBrowserModel, QStringList() << QStringLiteral( "postgres" ), this );
-    widget->setPanelTitle( tr( "Save “%1” to PostGIS Table" ).arg( mParameter->description() ) );
+
+    QgsNewDatabaseTableNameWidget *widget = new QgsNewDatabaseTableNameWidget( mBrowserModel, QStringList(), this );
+    widget->setPanelTitle( tr( "Save “%1” to Database Table" ).arg( mParameter->description() ) );
 
     panel->openPanel( widget );
 
@@ -411,17 +412,27 @@ void QgsProcessingLayerOutputDestinationWidget::saveToPostGIS()
     {
       mUseTemporary = false;
 
-      QgsDataSourceUri uri = QgsDataSourceUri( widget->uri() );
-
       QString geomColumn;
       if ( const QgsProcessingParameterFeatureSink *sink = dynamic_cast< const QgsProcessingParameterFeatureSink * >( mParameter ) )
       {
         if ( sink->hasGeometry() )
           geomColumn = QStringLiteral( "geom" );
       }
-      uri.setGeometryColumn( geomColumn );
 
-      leText->setText( QStringLiteral( "postgis:%1" ).arg( uri.uri() ) );
+      if ( widget->dataProviderKey() == QLatin1String( "ogr" ) )
+      {
+        QgsDataSourceUri uri;
+        uri.setTable( widget->table() );
+        uri.setDatabase( widget->schema() );
+        uri.setGeometryColumn( geomColumn );
+        leText->setText( QStringLiteral( "ogr:%1" ).arg( uri.uri() ) );
+      }
+      else
+      {
+        QgsDataSourceUri uri( widget->uri() );
+        uri.setGeometryColumn( geomColumn );
+        leText->setText( QgsProcessingUtils::encodeProviderKeyAndUri( widget->dataProviderKey(), uri.uri() ) );
+      }
 
       emit skipOutputChanged( false );
       emit destinationChanged();

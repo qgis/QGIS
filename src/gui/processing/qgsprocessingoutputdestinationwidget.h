@@ -91,7 +91,7 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     void selectDirectory();
     void selectFile();
     void saveToGeopackage();
-    void saveToPostGIS();
+    void saveToDatabase();
     void selectEncoding();
     void textChanged( const QString &text );
 
