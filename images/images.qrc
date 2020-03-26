@@ -834,6 +834,7 @@
         <file>themes/default/temporal_navigation/skipToEnd.svg</file>
         <file>themes/default/temporal_navigation/pause.svg</file>
         <file>themes/default/mIconIterate.svg</file>
+        <file>themes/default/mIconNetworkLogger.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
