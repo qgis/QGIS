@@ -46,7 +46,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterMapLayer,
-                       QgsProcessingParameterMatrix,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterDistance,
@@ -64,7 +63,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterVectorDestination)
 
-from processing.gui.matrixmodelerwidget import MatrixModelerWidget
 from processing.core import parameters
 from processing.modeler.exceptions import UndefinedParameterException
 
@@ -81,7 +79,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                          parameters.PARAMETER_NUMBER,
                          parameters.PARAMETER_DISTANCE,
                          parameters.PARAMETER_SCALE,
-                         parameters.PARAMETER_MATRIX,
                          parameters.PARAMETER_MAP_LAYER):
             return True
         elif isinstance(param, (QgsProcessingParameterField,
@@ -92,7 +89,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                                 QgsProcessingParameterNumber,
                                 QgsProcessingParameterDistance,
                                 QgsProcessingParameterScale,
-                                QgsProcessingParameterMatrix,
                                 QgsProcessingParameterMapLayer,
                                 QgsProcessingDestinationParameter)):
             return True
@@ -295,13 +291,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                 if default:
                     self.defaultTextBox.setText(str(default))
             self.verticalLayout.addWidget(self.defaultTextBox)
-        elif self.paramType == parameters.PARAMETER_MATRIX or \
-                isinstance(self.param, QgsProcessingParameterMatrix):
-            self.widget = MatrixModelerWidget(self)
-            if self.param is not None:
-                self.widget.setValue(self.param.headers(), self.param.defaultValue())
-                self.widget.setFixedRows(self.param.hasFixedNumberRows())
-            self.verticalLayout.addWidget(self.widget)
 
         elif isinstance(self.param, QgsProcessingDestinationParameter):
             self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
@@ -474,9 +463,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
                 return
-        elif (self.paramType == parameters.PARAMETER_MATRIX
-                or isinstance(self.param, QgsProcessingParameterMatrix)):
-            self.param = QgsProcessingParameterMatrix(name, description, hasFixedNumberRows=self.widget.fixedRows(), headers=self.widget.headers(), defaultValue=self.widget.value())
 
         # Destination parameter
         elif (isinstance(self.param, QgsProcessingParameterFeatureSink)):

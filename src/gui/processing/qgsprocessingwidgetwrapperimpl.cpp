@@ -53,6 +53,7 @@
 #include "qgsdatabasetablecombobox.h"
 #include "qgsextentwidget.h"
 #include "qgsprocessingenummodelerwidget.h"
+#include "qgsprocessingmatrixmodelerwidget.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -1308,6 +1309,31 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRangeWidgetWrapper::cr
 // QgsProcessingMatrixWidgetWrapper
 //
 
+QgsProcessingMatrixParameterDefinitionWidget::QgsProcessingMatrixParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  mMatrixWidget = new QgsProcessingMatrixModelerWidget();
+  if ( const QgsProcessingParameterMatrix *matrixParam = dynamic_cast<const QgsProcessingParameterMatrix *>( definition ) )
+  {
+    mMatrixWidget->setValue( matrixParam->headers(), matrixParam->defaultValue() );
+    mMatrixWidget->setFixedRows( matrixParam->hasFixedNumberRows() );
+  }
+  vlayout->addWidget( mMatrixWidget );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingMatrixParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterMatrix >( name, description, 1, mMatrixWidget->fixedRows(), mMatrixWidget->headers(), mMatrixWidget->value() );
+  param->setFlags( flags );
+  return param.release();
+}
+
+
 QgsProcessingMatrixWidgetWrapper::QgsProcessingMatrixWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
@@ -1382,7 +1408,10 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMatrixWidgetWrapper::c
   return new QgsProcessingMatrixWidgetWrapper( parameter, type );
 }
 
-
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMatrixWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingMatrixParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
 
 
 //
