@@ -24,6 +24,7 @@
 #include "processing/qgsprocessingalgrunnertask.h"
 #include "qgsstringutils.h"
 #include "qgsapplication.h"
+#include "qgspanelwidget.h"
 #include <QToolButton>
 #include <QDesktopServices>
 #include <QScrollBar>
@@ -95,16 +96,20 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   mSplitterState = splitter->saveState();
   splitterChanged( 0, 0 );
 
-  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsProcessingAlgorithmDialogBase::closeClicked );
-  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProcessingAlgorithmDialogBase::runAlgorithm );
-
   // Rename OK button to Run
   mButtonRun = mButtonBox->button( QDialogButtonBox::Ok );
   mButtonRun->setText( tr( "Run" ) );
 
+  // Rename Yes button. Yes is used to ensure same position of Run and Change Parameters with respect to Close button.
+  mButtonChangeParameters = mButtonBox->button( QDialogButtonBox::Yes );
+  mButtonChangeParameters->setText( tr( "Change Parameters" ) );
+
   buttonCancel->setEnabled( false );
   mButtonClose = mButtonBox->button( QDialogButtonBox::Close );
 
+  connect( mButtonRun, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::runAlgorithm );
+  connect( mButtonChangeParameters, &QPushButton::clicked, this, &QgsProcessingAlgorithmDialogBase::showParameters );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsProcessingAlgorithmDialogBase::closeClicked );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProcessingAlgorithmDialogBase::openHelp );
   connect( mButtonCollapse, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::toggleCollapsed );
   connect( splitter, &QSplitter::splitterMoved, this, &QgsProcessingAlgorithmDialogBase::splitterChanged );
@@ -112,6 +117,8 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   connect( mButtonSaveLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::saveLog );
   connect( mButtonCopyLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::copyLogToClipboard );
   connect( mButtonClearLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::clearLog );
+
+  connect( mTabWidget, &QTabWidget::currentChanged, this, &QgsProcessingAlgorithmDialogBase::mTabWidget_currentChanged );
 
   mMessageBar = new QgsMessageBar();
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
@@ -155,6 +162,12 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
   {
     mButtonBox->removeButton( mButtonBox->button( QDialogButtonBox::Help ) );
   }
+
+  const QString warning = algorithm->provider()->warningMessage();
+  if ( !warning.isEmpty() )
+  {
+    mMessageBar->pushMessage( warning, Qgis::Warning, 0 );
+  }
 }
 
 QgsProcessingAlgorithm *QgsProcessingAlgorithmDialogBase::algorithm()
@@ -162,15 +175,17 @@ QgsProcessingAlgorithm *QgsProcessingAlgorithmDialogBase::algorithm()
   return mAlgorithm.get();
 }
 
-void QgsProcessingAlgorithmDialogBase::setMainWidget( QWidget *widget )
+void QgsProcessingAlgorithmDialogBase::setMainWidget( QgsPanelWidget *widget )
 {
   if ( mMainWidget )
   {
     mMainWidget->deleteLater();
   }
 
+  mPanelStack->setMainPanel( widget );
+  widget->setDockMode( true );
+
   mMainWidget = widget;
-  mTabWidget->widget( 0 )->layout()->addWidget( mMainWidget );
 }
 
 QWidget *QgsProcessingAlgorithmDialogBase::mainWidget()
@@ -233,6 +248,11 @@ void QgsProcessingAlgorithmDialogBase::showLog()
   mTabWidget->setCurrentIndex( 1 );
 }
 
+void QgsProcessingAlgorithmDialogBase::showParameters()
+{
+  mTabWidget->setCurrentIndex( 0 );
+}
+
 QPushButton *QgsProcessingAlgorithmDialogBase::runButton()
 {
   return mButtonRun;
@@ -243,6 +263,11 @@ QPushButton *QgsProcessingAlgorithmDialogBase::cancelButton()
   return buttonCancel;
 }
 
+QPushButton *QgsProcessingAlgorithmDialogBase::changeParametersButton()
+{
+  return mButtonChangeParameters;
+}
+
 void QgsProcessingAlgorithmDialogBase::clearProgress()
 {
   progressBar->setMaximum( 0 );
@@ -251,6 +276,11 @@ void QgsProcessingAlgorithmDialogBase::clearProgress()
 void QgsProcessingAlgorithmDialogBase::setExecuted( bool executed )
 {
   mExecuted = executed;
+}
+
+void QgsProcessingAlgorithmDialogBase::setExecutedAnyResult( bool executedAnyResult )
+{
+  mExecutedAnyResult = executedAnyResult;
 }
 
 void QgsProcessingAlgorithmDialogBase::setResults( const QVariantMap &results )
@@ -303,6 +333,11 @@ void QgsProcessingAlgorithmDialogBase::splitterChanged( int, int )
     mHelpCollapsed = false;
     mButtonCollapse->setArrowType( Qt::RightArrow );
   }
+}
+
+void QgsProcessingAlgorithmDialogBase::mTabWidget_currentChanged( int )
+{
+  updateRunButtonVisibility();
 }
 
 void QgsProcessingAlgorithmDialogBase::linkClicked( const QUrl &url )
@@ -524,12 +559,11 @@ void QgsProcessingAlgorithmDialogBase::processEvents()
 
   // So that we get a chance of hitting the Abort button
 #ifdef Q_OS_LINUX
-  // For some reason on Windows hasPendingEvents() always return true,
-  // but one iteration is actually enough on Windows to get good interactivity
+  // One iteration is actually enough on Windows to get good interactivity
   // whereas on Linux we must allow for far more iterations.
   // For safety limit the number of iterations
   int nIters = 0;
-  while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+  while ( ++nIters < 100 )
 #endif
   {
     QCoreApplication::processEvents();
@@ -548,7 +582,43 @@ void QgsProcessingAlgorithmDialogBase::resetGui()
   progressBar->setMaximum( 100 );
   progressBar->setValue( 0 );
   mButtonRun->setEnabled( true );
+  mButtonChangeParameters->setEnabled( true );
   mButtonClose->setEnabled( true );
+  if ( mMainWidget )
+  {
+    mMainWidget->setEnabled( true );
+  }
+  updateRunButtonVisibility();
+  resetAdditionalGui();
+}
+
+void QgsProcessingAlgorithmDialogBase::updateRunButtonVisibility()
+{
+  // Activate run button if current tab is Parameters
+  bool runButtonVisible = mTabWidget->currentIndex() == 0;
+  mButtonRun->setVisible( runButtonVisible );
+  mButtonChangeParameters->setVisible( !runButtonVisible && mExecutedAnyResult && mButtonChangeParameters->isEnabled() );
+}
+
+void QgsProcessingAlgorithmDialogBase::resetAdditionalGui()
+{
+
+}
+
+void QgsProcessingAlgorithmDialogBase::blockControlsWhileRunning()
+{
+  mButtonRun->setEnabled( false );
+  mButtonChangeParameters->setEnabled( false );
+  if ( mMainWidget )
+  {
+    mMainWidget->setEnabled( false );
+  }
+  blockAdditionalControlsWhileRunning();
+}
+
+void QgsProcessingAlgorithmDialogBase::blockAdditionalControlsWhileRunning()
+{
+
 }
 
 QgsMessageBar *QgsProcessingAlgorithmDialogBase::messageBar()

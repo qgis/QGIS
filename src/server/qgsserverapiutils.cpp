@@ -157,7 +157,6 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
       return QVariant::Type::Invalid;
     }
     const QgsField field { layer->fields().at( fieldIdx ) };
-    QString fieldRefValue;
     return field.type();
   };
 
@@ -171,7 +170,6 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
       return QString();
     }
 
-    QString fieldRefValue;
     // Downcast only datetime -> date
     // always cast strings
     if ( fieldRealType == QVariant::Type::String )
@@ -440,9 +438,9 @@ QgsExpression QgsServerApiUtils::temporalFilterExpression( const QgsVectorLayer 
 json QgsServerApiUtils::layerExtent( const QgsVectorLayer *layer )
 {
   auto extent { layer->extent() };
-  if ( layer->crs().postgisSrid() != 4326 )
+  if ( layer->crs().authid() != QLatin1String( "EPSG:4326" ) )
   {
-    static const QgsCoordinateReferenceSystem targetCrs { 4326 };
+    static const QgsCoordinateReferenceSystem targetCrs( QStringLiteral( "EPSG:4326" ) );
     const QgsCoordinateTransform ct( layer->crs(), targetCrs, layer->transformContext() );
     extent = ct.transform( extent );
   }
@@ -563,25 +561,9 @@ QgsCoordinateReferenceSystem QgsServerApiUtils::parseCrs( const QString &bboxCrs
   }
 }
 
-const QVector<QgsMapLayer *> QgsServerApiUtils::publishedWfsLayers( const QgsProject *project )
+const QVector<QgsVectorLayer *> QgsServerApiUtils::publishedWfsLayers( const QgsServerApiContext &context )
 {
-  const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
-  const QStringList wfstUpdateLayersId = QgsServerProjectUtils::wfstUpdateLayerIds( *project );
-  const QStringList wfstInsertLayersId = QgsServerProjectUtils::wfstInsertLayerIds( *project );
-  const QStringList wfstDeleteLayersId = QgsServerProjectUtils::wfstDeleteLayerIds( *project );
-  QVector<QgsMapLayer *> result;
-  const auto constLayers { project->mapLayers() };
-  for ( auto it = project->mapLayers().constBegin(); it !=  project->mapLayers().constEnd(); it++ )
-  {
-    if ( wfstUpdateLayersId.contains( it.value()->id() ) ||
-         wfstInsertLayersId.contains( it.value()->id() ) ||
-         wfstDeleteLayersId.contains( it.value()->id() ) )
-    {
-      result.push_back( it.value() );
-    }
-
-  }
-  return result;
+  return publishedWfsLayers< QgsVectorLayer * >( context );
 }
 
 QString QgsServerApiUtils::sanitizedFieldValue( const QString &value )
@@ -641,7 +623,7 @@ QString QgsServerApiUtils::appendMapParameter( const QString &path, const QUrl &
 {
   QList<QPair<QString, QString> > qi;
   QString result { path };
-  const auto constItems { requestUrl.queryItems( ) };
+  const auto constItems { QUrlQuery( requestUrl ).queryItems() };
   for ( const auto &i : constItems )
   {
     if ( i.first.compare( QStringLiteral( "MAP" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )

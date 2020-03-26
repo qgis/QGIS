@@ -67,7 +67,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
 
 };
 //dummy provider for testing
-class DummyProvider : public QgsProcessingProvider
+class DummyProvider : public QgsProcessingProvider // clazy:exclude=missing-qobject-macro
 {
   public:
 

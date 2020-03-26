@@ -44,6 +44,11 @@ bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &s
   return !search.isEmpty() && candidate.contains( search, Qt::CaseInsensitive );
 }
 
+double QgsLocatorFilter::fuzzyScore( const QString &candidate, const QString &search )
+{
+  return QgsStringUtils::fuzzyScore( candidate, search );
+}
+
 bool QgsLocatorFilter::enabled() const
 {
   return mEnabled;

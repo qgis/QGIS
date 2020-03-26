@@ -431,6 +431,8 @@ segment in the line.
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const;
 
+    virtual QString asKml( int precision = 17 ) const;
+
 
     virtual double length() const;
 

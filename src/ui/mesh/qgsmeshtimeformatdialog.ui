@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Time Display Options</string>
   </property>
+  <property name="toolTip">
+   <string>Reload from layer</string>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
     <widget class="QComboBox" name="mUseTimeComboBox">
@@ -37,7 +40,7 @@
       <bool>true</bool>
      </property>
      <property name="title">
-      <string>Use absolute time </string>
+      <string>Use Absolute Time </string>
      </property>
      <property name="flat">
       <bool>false</bool>
@@ -57,26 +60,53 @@
        </widget>
       </item>
       <item>
-       <widget class="QDateTimeEdit" name="mReferenceDateTimeEdit">
-        <property name="dateTime">
-         <datetime>
-          <hour>0</hour>
-          <minute>0</minute>
-          <second>0</second>
-          <year>2019</year>
-          <month>1</month>
-          <day>1</day>
-         </datetime>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="topMargin">
+         <number>0</number>
         </property>
-        <property name="calendarPopup">
-         <bool>true</bool>
-        </property>
-       </widget>
+        <item>
+         <widget class="QDateTimeEdit" name="mReferenceDateTimeEdit">
+          <property name="dateTime">
+           <datetime>
+            <hour>0</hour>
+            <minute>0</minute>
+            <second>0</second>
+            <year>2019</year>
+            <month>1</month>
+            <day>1</day>
+           </datetime>
+          </property>
+          <property name="calendarPopup">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mReloadReferenceTimeButton">
+          <property name="maximumSize">
+           <size>
+            <width>24</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Date/time Format</string>
+         <string>Date/time format</string>
         </property>
        </widget>
       </item>
@@ -153,7 +183,7 @@
    <item>
     <widget class="QGroupBox" name="mRelativeTimeGroupBox">
      <property name="title">
-      <string>Use relative time</string>
+      <string>Use Relative Time</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
@@ -191,7 +221,7 @@
          <item>
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Time Format</string>
+            <string>Time format</string>
            </property>
           </widget>
          </item>
@@ -246,7 +276,7 @@
    <item>
     <widget class="QGroupBox" name="mDatasetPlaybackGroupBox">
      <property name="title">
-      <string>Dataset playback</string>
+      <string>Dataset Playback</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
@@ -284,9 +314,51 @@
      </layout>
     </widget>
    </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Provider Time Settings</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="1">
+       <widget class="QComboBox" name="mProviderTimeUnitComboBox">
+        <item>
+         <property name="text">
+          <string>seconds</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>minutes</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>hours</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>days</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Time unit</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
  <slots>
   <slot>shaftLengthMethodChanged()</slot>

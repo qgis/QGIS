@@ -640,6 +640,12 @@ QgsUnitTypes::RenderUnit QgsSymbolLayerUtils::decodeSldUom( const QString &str, 
       *scaleFactor = 304.8; // from feet to meters
     return QgsUnitTypes::RenderMapUnits;
   }
+  else if ( str == QLatin1String( "http://www.opengeospatial.org/se/units/pixel" ) )
+  {
+    if ( scaleFactor )
+      *scaleFactor = 1.0; // from pixels to pixels
+    return QgsUnitTypes::RenderPixels;
+  }
 
   // pixel is the SLD default uom. The "standardized rendering pixel
   // size" is defined to be 0.28mm x 0.28mm (millimeters).
@@ -1230,7 +1236,7 @@ bool QgsSymbolLayerUtils::createSymbolLayerListFromSld( QDomElement &element,
     QgsWkbTypes::GeometryType geomType,
     QgsSymbolLayerList &layers )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   if ( element.isNull() )
     return false;
@@ -1630,7 +1636,7 @@ bool QgsSymbolLayerUtils::needSvgFill( QDomElement &element )
 
 bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerList &layerList )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   /* SE 1.1 says about PolygonSymbolizer:
   if a point geometry is referenced instead of a polygon,
@@ -1937,7 +1943,7 @@ void QgsSymbolLayerUtils::fillToSld( QDomDocument &doc, QDomElement &element, Qt
 
 bool QgsSymbolLayerUtils::fillFromSld( QDomElement &element, Qt::BrushStyle &brushStyle, QColor &color )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   brushStyle = Qt::SolidPattern;
   color = QColor( 128, 128, 128 );
@@ -2078,7 +2084,7 @@ bool QgsSymbolLayerUtils::lineFromSld( QDomElement &element,
                                        Qt::PenJoinStyle *penJoinStyle, Qt::PenCapStyle *penCapStyle,
                                        QVector<qreal> *customDashPattern, double *dashOffset )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   penStyle = Qt::SolidLine;
   color = QColor( 0, 0, 0 );
@@ -2254,7 +2260,7 @@ void QgsSymbolLayerUtils::parametricSvgToSld( QDomDocument &doc, QDomElement &gr
 
 QString QgsSymbolLayerUtils::getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth )
 {
-  QUrl url = QUrl();
+  QUrlQuery url;
   if ( fillColor.isValid() )
   {
     url.addQueryItem( QStringLiteral( "fill" ), fillColor.name() );
@@ -2276,7 +2282,7 @@ QString QgsSymbolLayerUtils::getSvgParametricPath( const QString &basePath, cons
     url.addQueryItem( QStringLiteral( "outline-opacity" ), QStringLiteral( "1" ) );
   }
   url.addQueryItem( QStringLiteral( "outline-width" ), QString::number( strokeWidth ) );
-  QString params = url.encodedQuery();
+  QString params = url.toString( QUrl::FullyEncoded );
   if ( params.isEmpty() )
   {
     return basePath;
@@ -2291,7 +2297,7 @@ bool QgsSymbolLayerUtils::externalGraphicFromSld( QDomElement &element,
     QString &path, QString &mime,
     QColor &color, double &size )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
   Q_UNUSED( color )
 
   QDomElement externalGraphicElem = element.firstChildElement( QStringLiteral( "ExternalGraphic" ) );
@@ -2346,7 +2352,7 @@ bool QgsSymbolLayerUtils::externalMarkerFromSld( QDomElement &element,
     QString &path, QString &format, int &markIndex,
     QColor &color, double &size )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   color = QColor();
   markIndex = -1;
@@ -2426,7 +2432,7 @@ bool QgsSymbolLayerUtils::wellKnownMarkerFromSld( QDomElement &element,
     QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle,
     double &strokeWidth, double &size )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   name = QStringLiteral( "square" );
   color = QColor();
@@ -2761,7 +2767,7 @@ bool QgsSymbolLayerUtils::createFunctionElement( QDomDocument &doc, QDomElement 
 
 bool QgsSymbolLayerUtils::functionFromSldElement( QDomElement &element, QString &function )
 {
-  // check if ogc:Filter or containe ogc:Filters
+  // check if ogc:Filter or contains ogc:Filters
   QDomElement elem = element;
   if ( element.tagName() != QLatin1String( "Filter" ) )
   {
@@ -2813,7 +2819,7 @@ void QgsSymbolLayerUtils::createOnlineResourceElement( QDomDocument &doc, QDomEl
 
 bool QgsSymbolLayerUtils::onlineResourceFromSldElement( QDomElement &element, QString &path, QString &format )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   QDomElement onlineResourceElem = element.firstChildElement( QStringLiteral( "OnlineResource" ) );
   if ( onlineResourceElem.isNull() )

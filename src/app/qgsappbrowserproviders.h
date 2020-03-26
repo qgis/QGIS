@@ -406,4 +406,30 @@ class QgsBookmarkDropHandler : public QgsCustomDropHandler
     bool handleCustomUriCanvasDrop( const QgsMimeDataUtils::Uri &uri, QgsMapCanvas *canvas ) const override;
 };
 
+
+/**
+ * Data item provider for showing html files in the browser.
+ */
+class QgsHtmlDataItemProvider : public QgsDataItemProvider
+{
+  public:
+    QString name() override;
+    int capabilities() const override;
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+};
+
+/**
+ * Custom data item for html files.
+ */
+class QgsHtmlDataItem : public QgsDataItem
+{
+    Q_OBJECT
+
+  public:
+
+    QgsHtmlDataItem( QgsDataItem *parent, const QString &name, const QString &path );
+    bool handleDoubleClick() override;
+    QList< QAction * > actions( QWidget *parent ) override;
+};
+
 #endif // QGSAPPBROWSERPROVIDERS_H

@@ -210,11 +210,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
       continue;
     }
     l->undoStack()->blockCommands( false );
-    if ( addLayout( l.get() ) )
-    {
-      ( void )l.release(); // ownership was transferred successfully
-    }
-    else
+    if ( !addLayout( l.release() ) )
     {
       result = false;
     }
@@ -229,11 +225,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
       result = false;
       continue;
     }
-    if ( addLayout( r.get() ) )
-    {
-      ( void )r.release(); // ownership was transferred successfully
-    }
-    else
+    if ( !addLayout( r.release() ) )
     {
       result = false;
     }
@@ -562,6 +554,12 @@ bool QgsLayoutManagerProxyModel::filterAcceptsRow( int sourceRow, const QModelIn
   if ( !layout )
     return model->allowEmptyLayout();
 
+  if ( !mFilterString.trimmed().isEmpty() )
+  {
+    if ( !layout->name().contains( mFilterString, Qt::CaseInsensitive ) )
+      return false;
+  }
+
   switch ( layout->layoutType() )
   {
     case QgsMasterLayoutInterface::PrintLayout:
@@ -580,5 +578,11 @@ QgsLayoutManagerProxyModel::Filters QgsLayoutManagerProxyModel::filters() const
 void QgsLayoutManagerProxyModel::setFilters( Filters filters )
 {
   mFilters = filters;
+  invalidateFilter();
+}
+
+void QgsLayoutManagerProxyModel::setFilterString( const QString &filter )
+{
+  mFilterString = filter;
   invalidateFilter();
 }

@@ -18,7 +18,6 @@
 
 #include <QMenu>
 #include "qgis_sip.h"
-#include <QSignalMapper>
 
 #include "qgsfeature.h"
 #include "qgsaction.h"
@@ -112,6 +111,13 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * \since QGIS 3.0
      */
     QgsExpressionContextScope expressionContextScope() const;
+
+    /**
+     * Returns menu actions
+     *
+     * \since QGIS 3.12
+     */
+    QList<QgsAction> menuActions();
 
   signals:
     void reinit();

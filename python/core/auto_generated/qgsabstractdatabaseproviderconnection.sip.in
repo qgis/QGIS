@@ -38,6 +38,7 @@ is not supported or cannot be performed without errors.
       Raster,
       View,
       MaterializedView,
+      Foreign,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::TableFlag> TableFlags;
@@ -102,7 +103,7 @@ Sets the geometry column types to ``geometryColumnTypes``
 Returns the default name for the table entry
 
 It is usually the table name but in case there are multiple geometry
-columns, the geometry column name is appendend to the table name.
+columns, the geometry column name is appended to the table name.
 
 .. seealso:: :py:func:`geometryColumnCount`
 %End
@@ -209,6 +210,7 @@ This information is calculated from the geometry columns types.
 .. seealso:: :py:func:`geometryColumnTypes`
 %End
 
+        bool operator==( const QgsAbstractDatabaseProviderConnection::TableProperty &other ) const;
 
     };
 
@@ -229,6 +231,9 @@ This information is calculated from the geometry columns types.
       SqlLayers,
       TableExists,
       Spatial,
+      CreateSpatialIndex,
+      SpatialIndexExists,
+      DeleteSpatialIndex,
     };
 
     typedef QFlags<QgsAbstractDatabaseProviderConnection::Capability> Capabilities;
@@ -268,7 +273,7 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 
     virtual void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, QgsWkbTypes::Type wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const throw( QgsProviderConnectionException );
 %Docstring
-Creates an empty table with ``name`` in the given ``schema`` (schema is ignored  if not supported by the backend).
+Creates an empty table with ``name`` in the given ``schema`` (schema is ignored if not supported by the backend).
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 :raises :: py:class:`QgsProviderConnectionException`
@@ -296,7 +301,7 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 
     virtual void dropRasterTable( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
-Drops a raster table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``.
+Drops a raster table with given ``schema`` (schema is ignored if not supported by the backend) and ``name``.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 .. note::
@@ -308,7 +313,7 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 
     virtual void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
 %Docstring
-Renames a vector or aspatial table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``.
+Renames a vector or aspatial table with given ``schema`` (schema is ignored if not supported by the backend) and ``name``.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 .. note::
@@ -320,7 +325,7 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 
     virtual void renameRasterTable( const QString &schema, const QString &name, const QString &newName ) const throw( QgsProviderConnectionException );
 %Docstring
-Renames a raster table with given ``schema`` (schema is ignored  if not supported by the backend) and ``name``.
+Renames a raster table with given ``schema`` (schema is ignored if not supported by the backend) and ``name``.
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 .. note::
@@ -374,10 +379,52 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 
     virtual void vacuum( const QString &schema, const QString &name ) const throw( QgsProviderConnectionException );
 %Docstring
-Vacuum the database table with given ``schema`` and ``name`` (schema is ignored  if not supported by the backend).
+Vacuum the database table with given ``schema`` and ``name`` (schema is ignored if not supported by the backend).
 Raises a QgsProviderConnectionException if any errors are encountered.
 
 :raises :: py:class:`QgsProviderConnectionException`
+%End
+
+    struct SpatialIndexOptions
+    {
+      QString geometryColumnName;
+    };
+
+    virtual void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const throw( QgsProviderConnectionException );
+%Docstring
+Creates a spatial index for the database table with given ``schema`` and ``name`` (schema is ignored if not supported by the backend).
+
+The ``options`` argument can be used to provide extra options controlling the spatial index creation.
+
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.14
+%End
+
+    virtual bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const throw( QgsProviderConnectionException );
+%Docstring
+Determines whether a spatial index exists for the database table with given ``schema``, ``name`` and ``geometryColumn`` (``schema`` and ``geometryColumn`` are
+ignored if not supported by the backend).
+
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.14
+%End
+
+    virtual void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const throw( QgsProviderConnectionException );
+%Docstring
+Deletes the existing spatial index for the database table with given ``schema``, ``name`` and ``geometryColumn`` (``schema`` and ``geometryColumn`` are
+ignored if not supported by the backend).
+
+Raises a QgsProviderConnectionException if any errors are encountered.
+
+:raises :: py:class:`QgsProviderConnectionException`
+
+.. versionadded:: 3.14
 %End
 
 

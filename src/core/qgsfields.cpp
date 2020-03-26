@@ -350,8 +350,10 @@ int QgsFields::lookupField( const QString &fieldName ) const
 
 QgsAttributeList QgsFields::allAttributesList() const
 {
+  const int count = d->fields.count();
   QgsAttributeList lst;
-  for ( int i = 0; i < d->fields.count(); ++i )
+  lst.reserve( count );
+  for ( int i = 0; i < count; ++i )
     lst.append( i );
   return lst;
 }

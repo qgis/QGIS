@@ -87,6 +87,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
       ParserError = 4, //!< Error parsing formula
       MemoryError = 5, //!< Error allocating memory for result
       BandError = 6, //!< Invalid band number for input
+      CalculationError = 7, //!< Error occurred while performing calculation
     };
 
 

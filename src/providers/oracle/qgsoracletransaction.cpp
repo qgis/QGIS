@@ -29,6 +29,12 @@ QgsOracleTransaction::QgsOracleTransaction( const QString &connString )
 
 }
 
+QgsOracleTransaction::~QgsOracleTransaction()
+{
+  if ( mConn )
+    mConn->unref();
+}
+
 bool QgsOracleTransaction::beginTransaction( QString &, int /* statementTimeout */ )
 {
   mConn = QgsOracleConn::connectDb( mConnString, true /*transaction*/ );

@@ -19,6 +19,9 @@
 #include "qgslayoututils.h"
 #include "qgstextrenderer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsnumericformat.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
 #include <QFontMetricsF>
 #include <QPainter>
 
@@ -52,7 +55,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
   int segmentCounter = 0;
 
   QString currentNumericLabel;
-  QList<double> positions = segmentPositions( scaleContext, settings );
+  QList<double> positions = segmentPositions( context, scaleContext, settings );
 
   bool drawZero = true;
   switch ( settings.labelHorizontalPlacement() )
@@ -64,6 +67,8 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
       drawZero = true;
       break;
   }
+
+  QgsNumericFormatContext numericContext;
 
   for ( int i = 0; i < positions.size(); ++i )
   {
@@ -79,7 +84,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
 
     if ( segmentCounter >= nSegmentsLeft )
     {
-      currentNumericLabel = QString::number( currentLabelNumber / settings.mapUnitsPerScaleBarUnit() );
+      currentNumericLabel = settings.numericFormat()->formatDouble( currentLabelNumber / settings.mapUnitsPerScaleBarUnit(), numericContext );
     }
 
     //don't draw label for intermediate left segments or the zero label when it needs to be skipped
@@ -120,7 +125,7 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
     // note: this label is NOT centered over the end of the bar - rather the numeric portion
     // of it is, without considering the unit label suffix. That's drawn at the end after
     // horizontally centering just the numeric portion.
-    currentNumericLabel = QString::number( currentLabelNumber / settings.mapUnitsPerScaleBarUnit() );
+    currentNumericLabel = settings.numericFormat()->formatDouble( currentLabelNumber / settings.mapUnitsPerScaleBarUnit(), numericContext );
     scaleScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "scale_value" ), currentNumericLabel, true, false ) );
     QPointF pos;
     pos.setY( fontMetrics.ascent() + scaledBoxContentSpace + ( settings.labelVerticalPlacement() == QgsScaleBarSettings::LabelBelowSegment ? scaledHeight + scaledLabelBarSpace : 0 ) );
@@ -138,6 +143,16 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
   }
 
   painter->restore();
+}
+
+QgsScaleBarRenderer::Flags QgsScaleBarRenderer::flags() const
+{
+  return nullptr;
+}
+
+int QgsScaleBarRenderer::sortKey() const
+{
+  return 100;
 }
 
 QSizeF QgsScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &settings,
@@ -165,7 +180,7 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &setting
 
   //consider last number and label
   double largestLabelNumber = settings.numberOfSegments() * settings.unitsPerSegment() / settings.mapUnitsPerScaleBarUnit();
-  QString largestNumberLabel = QString::number( largestLabelNumber );
+  QString largestNumberLabel = settings.numericFormat()->formatDouble( largestLabelNumber, QgsNumericFormatContext() );
   QString largestLabel = largestNumberLabel + ' ' + settings.unitLabel();
   double largestLabelWidth;
   if ( settings.labelHorizontalPlacement() == QgsScaleBarSettings::LabelCenteredSegment )
@@ -187,21 +202,86 @@ QSizeF QgsScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &setting
 
   double totalBarLength = scaleContext.segmentWidth * ( settings.numberOfSegments() + ( settings.numberOfSegmentsLeft() > 0 ? 1 : 0 ) );
 
+  // this whole method is deprecated, so we can still call the deprecated settings.pen() getter
+  Q_NOWARN_DEPRECATED_PUSH
   double width = firstLabelWidth + totalBarLength + 2 * settings.pen().widthF() + largestLabelWidth + 2 * settings.boxContentSpace();
+  Q_NOWARN_DEPRECATED_POP
+
   double height = settings.height() + settings.labelBarSpace() + 2 * settings.boxContentSpace() + QgsLayoutUtils::fontAscentMM( font );
 
   return QSizeF( width, height );
+}
+
+QSizeF QgsScaleBarRenderer::calculateBoxSize( QgsRenderContext &context, const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
+{
+  QFont font = settings.textFormat().toQFont();
+
+  //consider centered first label
+  double firstLabelWidth = QgsLayoutUtils::textWidthMM( font, firstLabelString( settings ) );
+  if ( settings.labelHorizontalPlacement() == QgsScaleBarSettings::LabelCenteredSegment )
+  {
+    if ( firstLabelWidth > scaleContext.segmentWidth )
+    {
+      firstLabelWidth = ( firstLabelWidth - scaleContext.segmentWidth ) / 2;
+    }
+    else
+    {
+      firstLabelWidth = 0.0;
+    }
+  }
+  else
+  {
+    firstLabelWidth = firstLabelWidth / 2;
+  }
+
+  //consider last number and label
+  double largestLabelNumber = settings.numberOfSegments() * settings.unitsPerSegment() / settings.mapUnitsPerScaleBarUnit();
+  QString largestNumberLabel = settings.numericFormat()->formatDouble( largestLabelNumber, QgsNumericFormatContext() );
+  QString largestLabel = largestNumberLabel + ' ' + settings.unitLabel();
+  double largestLabelWidth;
+  if ( settings.labelHorizontalPlacement() == QgsScaleBarSettings::LabelCenteredSegment )
+  {
+    largestLabelWidth = QgsLayoutUtils::textWidthMM( font, largestLabel );
+    if ( largestLabelWidth > scaleContext.segmentWidth )
+    {
+      largestLabelWidth = ( largestLabelWidth - scaleContext.segmentWidth ) / 2;
+    }
+    else
+    {
+      largestLabelWidth = 0.0;
+    }
+  }
+  else
+  {
+    largestLabelWidth = QgsLayoutUtils::textWidthMM( font, largestLabel ) - QgsLayoutUtils::textWidthMM( font, largestNumberLabel ) / 2;
+  }
+
+  double totalBarLength = scaleContext.segmentWidth * ( settings.numberOfSegments() + ( settings.numberOfSegmentsLeft() > 0 ? 1 : 0 ) );
+
+  double lineWidth = QgsSymbolLayerUtils::estimateMaxSymbolBleed( settings.lineSymbol(), context ) * 2;
+  // need to convert to mm
+  lineWidth /= context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+
+  double width = firstLabelWidth + totalBarLength + 2 * lineWidth + largestLabelWidth + 2 * settings.boxContentSpace();
+  double height = settings.height() + settings.labelBarSpace() + 2 * settings.boxContentSpace() + QgsLayoutUtils::fontAscentMM( font );
+
+  return QSizeF( width, height );
+}
+
+bool QgsScaleBarRenderer::applyDefaultSettings( QgsScaleBarSettings & ) const
+{
+  return false;
 }
 
 QString QgsScaleBarRenderer::firstLabelString( const QgsScaleBarSettings &settings ) const
 {
   if ( settings.numberOfSegmentsLeft() > 0 )
   {
-    return QString::number( settings.unitsPerSegment() / settings.mapUnitsPerScaleBarUnit() );
+    return settings.numericFormat()->formatDouble( settings.unitsPerSegment() / settings.mapUnitsPerScaleBarUnit(), QgsNumericFormatContext() );
   }
   else
   {
-    return QStringLiteral( "0" );
+    return settings.numericFormat()->formatDouble( 0, QgsNumericFormatContext() );
   }
 }
 
@@ -239,7 +319,38 @@ QList<double> QgsScaleBarRenderer::segmentPositions( const ScaleBarContext &scal
 {
   QList<double> positions;
 
+  // this whole method is deprecated, so calling a deprecated function is fine
+  Q_NOWARN_DEPRECATED_PUSH
   double currentXCoord = settings.pen().widthF() + settings.boxContentSpace();
+  Q_NOWARN_DEPRECATED_POP
+
+  //left segments
+  double leftSegmentSize = scaleContext.segmentWidth / settings.numberOfSegmentsLeft();
+  positions.reserve( settings.numberOfSegmentsLeft() + settings.numberOfSegments() );
+  for ( int i = 0; i < settings.numberOfSegmentsLeft(); ++i )
+  {
+    positions << currentXCoord;
+    currentXCoord += leftSegmentSize;
+  }
+
+  //right segments
+  for ( int i = 0; i < settings.numberOfSegments(); ++i )
+  {
+    positions << currentXCoord;
+    currentXCoord += scaleContext.segmentWidth;
+  }
+  return positions;
+}
+
+QList<double> QgsScaleBarRenderer::segmentPositions( QgsRenderContext &context, const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const
+{
+  QList<double> positions;
+
+  double lineWidth = QgsSymbolLayerUtils::estimateMaxSymbolBleed( settings.lineSymbol(), context ) * 2.0;
+  // need to convert to mm
+  lineWidth /= context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+
+  double currentXCoord = lineWidth + settings.boxContentSpace();
 
   //left segments
   double leftSegmentSize = scaleContext.segmentWidth / settings.numberOfSegmentsLeft();

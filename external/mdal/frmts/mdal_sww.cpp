@@ -1,5 +1,5 @@
 /*
- MDAL - mMesh Data Abstraction Library (MIT License)
+ MDAL - Mesh Data Abstraction Library (MIT License)
  Copyright (C) 2016 Lutra Consulting
  Copyright (C) 2018 Peter Petrik (zilolv at gmail dot com)
 */
@@ -12,6 +12,7 @@
 
 #include "mdal_sww.hpp"
 #include "mdal_utils.hpp"
+#include "mdal_logger.hpp"
 
 MDAL::DriverSWW::DriverSWW()
   : Driver( "SWW",
@@ -35,7 +36,7 @@ size_t MDAL::DriverSWW::getVertexCount( const NetCDFFile &ncFile ) const
 }
 
 
-bool MDAL::DriverSWW::canRead( const std::string &uri )
+bool MDAL::DriverSWW::canReadMesh( const std::string &uri )
 {
   NetCDFFile ncFile;
 
@@ -45,6 +46,10 @@ bool MDAL::DriverSWW::canRead( const std::string &uri )
     getVertexCount( ncFile );
   }
   catch ( MDAL_Status )
+  {
+    return false;
+  }
+  catch ( MDAL::Error )
   {
     return false;
   }
@@ -122,8 +127,12 @@ MDAL::Vertices MDAL::DriverSWW::readVertices( const NetCDFFile &ncFile ) const
   std::vector<double> pz = readZCoords( ncFile );
 
   // we may need to apply a shift to the X,Y coordinates
-  double xLLcorner = ncFile.getAttrDouble( NC_GLOBAL, "xllcorner" );
-  double yLLcorner = ncFile.getAttrDouble( NC_GLOBAL, "yllcorner" );
+  double xLLcorner = 0.0;
+  if ( ncFile.hasAttrDouble( NC_GLOBAL, "xllcorner" ) )
+    xLLcorner = ncFile.getAttrDouble( NC_GLOBAL, "xllcorner" );
+  double yLLcorner = 0.0;
+  if ( ncFile.hasAttrDouble( NC_GLOBAL, "yllcorner" ) )
+    yLLcorner = ncFile.getAttrDouble( NC_GLOBAL, "yllcorner" );
 
   MDAL::Vertices vertices( nPoints );
   Vertex *vertexPtr = vertices.data();
@@ -144,7 +153,7 @@ MDAL::Faces MDAL::DriverSWW::readFaces( const NetCDFFile &ncFile ) const
   size_t nVolumes, nVertices;
   ncFile.getDimension( "number_of_volumes", &nVolumes, &nVolumesId );
   ncFile.getDimension( "number_of_vertices", &nVertices, &nVerticesId );
-  if ( nVertices != 3 ) throw MDAL_Status::Err_UnknownFormat;
+  if ( nVertices != 3 ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Number of vertices is not allowed" );
 
   std::vector<int> pvolumes = ncFile.readIntArr( "volumes", nVertices * nVolumes );
 
@@ -288,23 +297,22 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readScalarGroup(
             mesh,
             mFileName,
             groupName );
-    mds->setIsOnVertices( true );
+    mds->setDataLocation( MDAL_DataLocation::DataOnVertices );
     mds->setIsScalar( true );
 
     int zDimsX = 0;
     if ( nc_inq_varndims( ncFile.handle(), varxid, &zDimsX ) != NC_NOERR )
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Fail while reading scalar group: invalid variable id or bad ncid" );
 
     if ( zDimsX == 1 )
     {
       // TIME INDEPENDENT
-      std::shared_ptr<MDAL::MemoryDataset> o = std::make_shared<MDAL::MemoryDataset>( mds.get() );
-      o->setTime( 0.0 );
-      double *values = o->values();
+      std::shared_ptr<MDAL::MemoryDataset2D> o = std::make_shared<MDAL::MemoryDataset2D>( mds.get() );
+      o->setTime( RelativeTimestamp() );
       std::vector<double> valuesX = ncFile.readDoubleArr( arrName, nPoints );
       for ( size_t i = 0; i < nPoints; ++i )
       {
-        values[i] = valuesX[i];
+        o->setScalarValue( i, valuesX[i] );
       }
       o->setStatistics( MDAL::calculateStatistics( o ) );
       mds->datasets.push_back( o );
@@ -314,8 +322,8 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readScalarGroup(
       // TIME DEPENDENT
       for ( size_t t = 0; t < times.size(); ++t )
       {
-        std::shared_ptr<MDAL::MemoryDataset> mto = std::make_shared<MDAL::MemoryDataset>( mds.get() );
-        mto->setTime( static_cast<double>( times[t] ) / 3600. );
+        std::shared_ptr<MDAL::MemoryDataset2D> mto = std::make_shared<MDAL::MemoryDataset2D>( mds.get() );
+        mto->setTime( static_cast<double>( times[t] ), RelativeTimestamp::seconds ); // Time is always in seconds
         double *values = mto->values();
 
         // fetching data for one timestep
@@ -357,46 +365,42 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readVectorGroup(
             mesh,
             mFileName,
             groupName );
-    mds->setIsOnVertices( true );
+    mds->setDataLocation( MDAL_DataLocation::DataOnVertices );
     mds->setIsScalar( false );
 
     int zDimsX = 0;
     int zDimsY = 0;
     if ( nc_inq_varndims( ncFile.handle(), varxid, &zDimsX ) != NC_NOERR )
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Fail while reading vector group: invalid variable id or bad ncid" );
 
     if ( nc_inq_varndims( ncFile.handle(), varyid, &zDimsY ) != NC_NOERR )
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Fail while reading vector group: invalid variable id or bad ncid" );
 
     if ( zDimsX != zDimsY )
-      throw MDAL_Status::Err_UnknownFormat;
-
-    std::vector<double> valuesX( nPoints ), valuesY( nPoints );
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Fail while reading vector group: dimensions do not match" );
 
     if ( zDimsX == 1 )
     {
       // TIME INDEPENDENT
-      std::shared_ptr<MDAL::MemoryDataset> o = std::make_shared<MDAL::MemoryDataset>( mds.get() );
+      std::shared_ptr<MDAL::MemoryDataset2D> o = std::make_shared<MDAL::MemoryDataset2D>( mds.get() );
       o->setTime( 0.0 );
-      double *values = o->values();
       std::vector<double> valuesX = ncFile.readDoubleArr( arrXName, nPoints );
       std::vector<double> valuesY = ncFile.readDoubleArr( arrYName, nPoints );
       for ( size_t i = 0; i < nPoints; ++i )
       {
-        values[2 * i] = valuesX[i];
-        values[2 * i + 1] = valuesY[i];
+        o->setVectorValue( i, valuesX[i], valuesY[i] );
       }
       o->setStatistics( MDAL::calculateStatistics( o ) );
       mds->datasets.push_back( o );
     }
     else
     {
+      std::vector<double> valuesX( nPoints ), valuesY( nPoints );
       // TIME DEPENDENT
       for ( size_t t = 0; t < times.size(); ++t )
       {
-        std::shared_ptr<MDAL::MemoryDataset> mto = std::make_shared<MDAL::MemoryDataset>( mds.get() );
+        std::shared_ptr<MDAL::MemoryDataset2D> mto = std::make_shared<MDAL::MemoryDataset2D>( mds.get() );
         mto->setTime( static_cast<double>( times[t] ) / 3600. );
-        double *values = mto->values();
 
         // fetching data for one timestep
         size_t start[2], count[2];
@@ -410,8 +414,7 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readVectorGroup(
 
         for ( size_t i = 0; i < nPoints; ++i )
         {
-          values[2 * i] = static_cast<double>( valuesX[i] );
-          values[2 * i + 1] = static_cast<double>( valuesY[i] );
+          mto->setVectorValue( i, static_cast<double>( valuesX[i] ),  static_cast<double>( valuesY[i] ) );
         }
 
         mto->setStatistics( MDAL::calculateStatistics( mto ) );
@@ -425,11 +428,10 @@ std::shared_ptr<MDAL::DatasetGroup> MDAL::DriverSWW::readVectorGroup(
 }
 
 std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load(
-  const std::string &resultsFile,
-  MDAL_Status *status )
+  const std::string &resultsFile )
 {
   mFileName = resultsFile;
-  if ( status ) *status = MDAL_Status::None;
+  MDAL::Log::resetLastStatus();
 
   NetCDFFile ncFile;
 
@@ -445,6 +447,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load(
       new MemoryMesh(
         name(),
         vertices.size(),
+        0,
         faces.size(),
         3, // triangles
         computeExtent( vertices ),
@@ -465,7 +468,12 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSWW::load(
   }
   catch ( MDAL_Status err )
   {
-    if ( status ) *status = err;
+    MDAL::Log::error( err, "Error while loading file " + resultsFile );
+    return std::unique_ptr< MDAL::Mesh >();
+  }
+  catch ( MDAL::Error err )
+  {
+    MDAL::Log::error( err, name() );
     return std::unique_ptr< MDAL::Mesh >();
   }
 }

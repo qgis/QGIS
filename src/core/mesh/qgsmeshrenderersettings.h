@@ -19,13 +19,14 @@
 #define QGSMESHRENDERERSETTINGS_H
 
 #include <QColor>
+#include <QDomElement>
 #include <limits>
 
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgscolorrampshader.h"
 #include "qgsmeshdataprovider.h"
-
+#include "qgsmesh3daveraging.h"
 
 /**
  * \ingroup core
@@ -54,6 +55,20 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
     //! Sets color used for rendering of the mesh
     void setColor( const QColor &color );
 
+    /**
+     * Returns units of the width of the mesh frame
+     *
+     * \since QGIS 3.14
+     */
+    QgsUnitTypes::RenderUnit lineWidthUnit() const;
+
+    /**
+     * Sets units of the width of the mesh frame
+     *
+     * \since QGIS 3.14
+     */
+    void setLineWidthUnit( const QgsUnitTypes::RenderUnit &lineWidthUnit );
+
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads configuration from the given DOM element
@@ -62,6 +77,7 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
   private:
     bool mEnabled = false;
     double mLineWidth = DEFAULT_LINE_WIDTH;
+    QgsUnitTypes::RenderUnit mLineWidthUnit = QgsUnitTypes::RenderMillimeters;
     QColor mColor = Qt::black;
 };
 
@@ -77,18 +93,24 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
 class CORE_EXPORT QgsMeshRendererScalarSettings
 {
   public:
-    //! Interpolation of value defined on vertices from datasets with data defined on faces
-    enum DataInterpolationMethod
+
+    /**
+     * Resampling of value from dataset
+     *
+     * - for vertices : does a resampling from values defined on surrounding faces
+     * - for faces : does a resampling from values defined on surrounding vertices
+     * - for edges : not supported.
+     */
+    enum DataResamplingMethod
     {
 
       /**
-       * Use data defined on face centers, do not interpolate to vertices
+       * Does not use resampling
        */
       None = 0,
 
       /**
-       * For each vertex does a simple average of values defined for all faces that contains
-       * given vertex
+       * Does a simple average of values defined for all surrounding faces/vertices
        */
       NeighbourAverage,
     };
@@ -117,39 +139,69 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
      *
      * \since QGIS 3.12
      */
-    DataInterpolationMethod dataInterpolationMethod() const;
+    DataResamplingMethod dataResamplingMethod() const;
 
     /**
      * Sets data interpolation method
      *
      * \since QGIS 3.12
      */
-    void setDataInterpolationMethod( const DataInterpolationMethod &dataInterpolationMethod );
+    void setDataResamplingMethod( const DataResamplingMethod &dataResamplingMethod );
 
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads configuration from the given DOM element
     void readXml( const QDomElement &elem );
 
+    /**
+     * Returns width of the edge
+     *
+     * \since QGIS 3.14
+     */
+    double edgeWidth() const;
+
+    /**
+     * Sets width of the edge
+     *
+     * \since QGIS 3.14
+     */
+    void setEdgeWidth( double edgeWidth );
+
+    /**
+     * Returns length units of the width of the edge
+     *
+     * \since QGIS 3.14
+     */
+    QgsUnitTypes::RenderUnit edgeWidthUnit() const;
+
+    /**
+     * Sets length units of the width of the edge
+     *
+     * \since QGIS 3.14
+     */
+    void setEdgeWidthUnit( const QgsUnitTypes::RenderUnit &edgeWidthUnit );
+
   private:
     QgsColorRampShader mColorRampShader;
-    DataInterpolationMethod mDataInterpolationMethod = DataInterpolationMethod::None;
+    DataResamplingMethod mDataResamplingMethod = DataResamplingMethod::None;
     double mClassificationMinimum = 0;
     double mClassificationMaximum = 0;
     double mOpacity = 1;
 
+    double mEdgeWidth = 2;
+    QgsUnitTypes::RenderUnit mEdgeWidthUnit = QgsUnitTypes::RenderMillimeters;
 };
 
 /**
  * \ingroup core
  *
- * Represents a mesh renderer settings for vector datasets
+ * Represents a mesh renderer settings for vector datasets displayed with arrows
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
- * \since QGIS 3.2
+ * \since QGIS 3.12
  */
-class CORE_EXPORT QgsMeshRendererVectorSettings
+class CORE_EXPORT QgsMeshRendererVectorArrowSettings
 {
   public:
 
@@ -173,46 +225,8 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
       Fixed
     };
 
-    //! Returns line width of the arrow (in millimeters)
-    double lineWidth() const;
-    //! Sets line width of the arrow in pixels (in millimeters)
-    void setLineWidth( double lineWidth );
-
-    //! Returns color used for drawing arrows
-    QColor color() const;
-    //! Sets color used for drawing arrows
-    void setColor( const QColor &color );
-
-    /**
-     * Returns filter value for vector magnitudes.
-     *
-     * If magnitude of the vector is lower than this value, the vector is not
-     * drawn. -1 represents that filtering is not active.
-     */
-    double filterMin() const;
-
-    /**
-     * Sets filter value for vector magnitudes.
-     * \see filterMin()
-     */
-    void setFilterMin( double filterMin );
-
-    /**
-     * Returns filter value for vector magnitudes.
-     *
-     * If magnitude of the vector is higher than this value, the vector is not
-     * drawn. -1 represents that filtering is not active.
-     */
-    double filterMax() const;
-
-    /**
-     * Sets filter value for vector magnitudes.
-     * \see filterMax()
-     */
-    void setFilterMax( double filterMax );
-
     //! Returns method used for drawing arrows
-    QgsMeshRendererVectorSettings::ArrowScalingMethod shaftLengthMethod() const;
+    QgsMeshRendererVectorArrowSettings::ArrowScalingMethod shaftLengthMethod() const;
     //! Sets method used for drawing arrows
     void setShaftLengthMethod( ArrowScalingMethod shaftLengthMethod );
 
@@ -282,6 +296,185 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     //! Sets ratio of the head length of the arrow (range 0-1)
     void setArrowHeadLengthRatio( double arrowHeadLengthRatio );
 
+    //! Writes configuration to a new DOM element
+    QDomElement writeXml( QDomDocument &doc ) const;
+    //! Reads configuration from the given DOM element
+    void readXml( const QDomElement &elem );
+
+  private:
+    QgsMeshRendererVectorArrowSettings::ArrowScalingMethod mShaftLengthMethod = QgsMeshRendererVectorArrowSettings::ArrowScalingMethod::MinMax;
+    double mMinShaftLength = 0.8; //in millimeters
+    double mMaxShaftLength = 10; //in millimeters
+    double mScaleFactor = 10;
+    double mFixedShaftLength = 20; //in millimeters
+    double mArrowHeadWidthRatio = 0.15;
+    double mArrowHeadLengthRatio = 0.40;
+};
+
+/**
+ * \ingroup core
+ *
+ * Represents a streamline renderer settings for vector datasets displayed by streamlines
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsMeshRendererVectorStreamlineSettings
+{
+  public:
+    //! Method used to define start points that are used to draw streamlines
+    enum SeedingStartPointsMethod
+    {
+
+      /**
+       * Seeds start points on the vertices mesh or user regular grid
+       */
+      MeshGridded = 0,
+
+      /**
+       * Seeds start points randomly on the mesh
+       */
+      Random
+    };
+
+    //! Returns the method used for seeding start points of strealines
+    SeedingStartPointsMethod seedingMethod() const;
+    //! Sets the method used for seeding start points of strealines
+    void setSeedingMethod( const SeedingStartPointsMethod &seedingMethod );
+    //! Returns the density used for seeding start points
+    double seedingDensity() const;
+    //! Sets the density used for seeding start points
+    void setSeedingDensity( double seedingDensity );
+    //! Reads configuration from the given DOM element
+    void readXml( const QDomElement &elem );
+    //! Writes configuration to a new DOM element
+    QDomElement writeXml( QDomDocument &doc ) const;
+
+  private:
+
+    QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod mSeedingMethod = MeshGridded;
+    double mSeedingDensity = 0.15;
+};
+
+/**
+ * \ingroup core
+ *
+ * Represents a trace renderer settings for vector datasets displayed by particle traces
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
+ * \since QGIS 3.12
+ */
+class CORE_EXPORT QgsMeshRendererVectorTracesSettings
+{
+  public:
+
+    //! Returns the maximum tail length
+    double maximumTailLength() const;
+    //! Sets the maximums tail length
+    void setMaximumTailLength( double maximumTailLength );
+    //! Returns particles count
+    int particlesCount() const;
+    //! Sets particles count
+    void setParticlesCount( int value );
+    //! Returns the maximum tail length unit
+    QgsUnitTypes::RenderUnit maximumTailLengthUnit() const;
+    //! Sets the maximum tail length unit
+    void setMaximumTailLengthUnit( const QgsUnitTypes::RenderUnit &maximumTailLengthUnit );
+
+    //! Reads configuration from the given DOM element
+    void readXml( const QDomElement &elem );
+    //! Writes configuration to a new DOM element
+    QDomElement writeXml( QDomDocument &doc ) const;
+
+
+
+  private:
+    int mParticlesCount = 1000;
+    double mMaximumTailLength = 100;
+    QgsUnitTypes::RenderUnit mMaximumTailLengthUnit = QgsUnitTypes::RenderMillimeters;
+
+};
+
+/**
+ * \ingroup core
+ *
+ * Represents a renderer settings for vector datasets
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsMeshRendererVectorSettings
+{
+  public:
+
+    /**
+     * Defines the symbology of vector rendering
+     * \since QGIS 3.12
+     */
+    enum Symbology
+    {
+      //! Displaying vector dataset with arrows
+      Arrows = 0,
+      //! Displaying vector dataset with streamlines
+      Streamlines,
+      //! Displaying vector dataset with particle traces
+      Traces
+    };
+
+    /**
+     * Defines the how the color of vector is defined
+     * \since QGIS 3.14
+     */
+    enum ColoringMethod
+    {
+      //! Render the vector with a single color
+      SingleColor = 0,
+      //! Render the vector with a color ramp
+      ColorRamp
+    };
+
+
+    //! Returns line width of the arrow (in millimeters)
+    double lineWidth() const;
+    //! Sets line width of the arrow in pixels (in millimeters)
+    void setLineWidth( double lineWidth );
+
+    //! Returns color used for drawing arrows
+    QColor color() const;
+    //! Sets color used for drawing arrows
+    void setColor( const QColor &color );
+
+    /**
+     * Returns filter value for vector magnitudes.
+     *
+     * If magnitude of the vector is lower than this value, the vector is not
+     * drawn. -1 represents that filtering is not active.
+     */
+    double filterMin() const;
+
+    /**
+     * Sets filter value for vector magnitudes.
+     * \see filterMin()
+     */
+    void setFilterMin( double filterMin );
+
+    /**
+     * Returns filter value for vector magnitudes.
+     *
+     * If magnitude of the vector is higher than this value, the vector is not
+     * drawn. -1 represents that filtering is not active.
+     */
+    double filterMax() const;
+
+    /**
+     * Sets filter value for vector magnitudes.
+     * \see filterMax()
+     */
+    void setFilterMax( double filterMax );
+
     //! Returns whether vectors are drawn on user-defined grid
     bool isOnUserDefinedGrid() const;
     //! Toggles drawing of vectors on user defined grid
@@ -295,28 +488,101 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     //! Sets height of user grid cell (in pixels)
     void setUserGridCellHeight( int height );
 
+    /**
+    * Returns the displaying method used to render vector datasets
+    * \since QGIS 3.12
+    */
+    Symbology symbology() const;
+
+    /**
+     * Sets the displaying method used to render vector datasets
+     * \since QGIS 3.12
+     */
+    void setSymbology( const Symbology &symbology );
+
+    /**
+     * Returns the coloring method used to render vector datasets
+     * \since QGIS 3.14
+     */
+    ColoringMethod coloringMethod() const;
+
+    /**
+     * Sets the coloring method used to render vector datasets
+     * \since QGIS 3.14
+     */
+    void setColoringMethod( const ColoringMethod &coloringMethod );
+
+    /**
+     * Sets the color ramp shader used to render vector datasets
+     * \since QGIS 3.14
+     */
+    QgsColorRampShader colorRampShader() const;
+
+    /**
+     * Returns the color ramp shader used to render vector datasets
+     * \since QGIS 3.14
+     */
+    void setColorRampShader( const QgsColorRampShader &colorRampShader );
+
+    /**
+    * Returns settings for vector rendered with arrows
+    * \since QGIS 3.12
+    */
+    QgsMeshRendererVectorArrowSettings arrowSettings() const;
+
+    /**
+     * Sets settings for vector rendered with arrows
+     * \since QGIS 3.12
+     */
+    void setArrowsSettings( const QgsMeshRendererVectorArrowSettings &arrowSettings );
+
+    /**
+     * Returns settings for vector rendered with streamlines
+     * \since QGIS 3.12
+     */
+    QgsMeshRendererVectorStreamlineSettings streamLinesSettings() const;
+
+    /**
+     * Sets settings for vector rendered with streamlines
+     * \since QGIS 3.12
+     */
+    void setStreamLinesSettings( const QgsMeshRendererVectorStreamlineSettings &streamLinesSettings );
+
+    /**
+     * Returns settings for vector rendered with traces
+     * \since QGIS 3.12
+     */
+    QgsMeshRendererVectorTracesSettings tracesSettings() const;
+
+    /**
+     * Sets settings for vector rendered with traces
+     * \since QGIS 3.12
+     */
+    void setTracesSettings( const QgsMeshRendererVectorTracesSettings &tracesSettings );
+
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads configuration from the given DOM element
     void readXml( const QDomElement &elem );
 
   private:
+
+    Symbology mDisplayingMethod = Arrows;
+
     double mLineWidth = DEFAULT_LINE_WIDTH; //in millimeters
+    QgsColorRampShader mColorRampShader;
     QColor mColor = Qt::black;
+    ColoringMethod mColoringMethod = SingleColor;
     double mFilterMin = -1; //disabled
     double mFilterMax = -1; //disabled
-    QgsMeshRendererVectorSettings::ArrowScalingMethod mShaftLengthMethod = QgsMeshRendererVectorSettings::ArrowScalingMethod::MinMax;
-    double mMinShaftLength = 0.8; //in millimeters
-    double mMaxShaftLength = 10; //in millimeters
-    double mScaleFactor = 10;
-    double mFixedShaftLength = 20; //in millimeters
-    double mArrowHeadWidthRatio = 0.15;
-    double mArrowHeadLengthRatio = 0.40;
-    bool mOnUserDefinedGrid = false;
     int mUserGridCellWidth = 10; // in pixels
     int mUserGridCellHeight = 10; // in pixels
-};
+    bool mOnUserDefinedGrid = false;
 
+    QgsMeshRendererVectorArrowSettings mArrowsSettings;
+    QgsMeshRendererVectorStreamlineSettings mStreamLinesSettings;
+    QgsMeshRendererVectorTracesSettings mTracesSettings;
+};
 
 /**
  * \ingroup core
@@ -331,15 +597,34 @@ class CORE_EXPORT QgsMeshRendererSettings
 {
   public:
 
-    //! Returns renderer settings
+    /**
+     * Constructs renderer with default single layer averaging method
+     */
+    QgsMeshRendererSettings();
+    //! Destructor
+    ~QgsMeshRendererSettings();
+
+    //! Returns native mesh renderer settings
     QgsMeshRendererMeshSettings nativeMeshSettings() const { return mRendererNativeMeshSettings; }
-    //! Sets new renderer settings, triggers repaint
+    //! Sets new native mesh  renderer settings, triggers repaint
     void setNativeMeshSettings( const QgsMeshRendererMeshSettings &settings ) { mRendererNativeMeshSettings = settings; }
 
-    //! Returns renderer settings
+    //! Returns triangular mesh renderer settings
     QgsMeshRendererMeshSettings triangularMeshSettings() const { return mRendererTriangularMeshSettings; }
-    //! Sets new renderer settings
+    //! Sets new triangular mesh renderer settings
     void setTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings ) { mRendererTriangularMeshSettings = settings; }
+
+    /**
+     * Returns edge mesh renderer settings
+     * \since QGIS 3.14
+     */
+    QgsMeshRendererMeshSettings edgeMeshSettings() const { return mRendererEdgeMeshSettings; }
+
+    /**
+     * Sets new edge mesh renderer settings
+     * \since QGIS 3.14
+     */
+    void setEdgeMeshSettings( const QgsMeshRendererMeshSettings &settings ) { mRendererEdgeMeshSettings = settings; }
 
     //! Returns renderer settings
     QgsMeshRendererScalarSettings scalarSettings( int groupIndex ) const { return mRendererScalarSettings.value( groupIndex ); }
@@ -350,6 +635,20 @@ class CORE_EXPORT QgsMeshRendererSettings
     QgsMeshRendererVectorSettings vectorSettings( int groupIndex ) const { return mRendererVectorSettings.value( groupIndex ); }
     //! Sets new renderer settings
     void setVectorSettings( int groupIndex, const QgsMeshRendererVectorSettings &settings ) { mRendererVectorSettings[groupIndex] = settings; }
+
+    /**
+     * Returns averaging method for conversion of 3d stacked mesh data to 2d data
+     *
+     * Caller does not own the resulting pointer
+     */
+    QgsMesh3dAveragingMethod *averagingMethod() const;
+
+    /**
+     * Sets averaging method for conversion of 3d stacked mesh data to 2d data
+     *
+     * Ownership of the method is not transferred.
+     */
+    void setAveragingMethod( QgsMesh3dAveragingMethod *method );
 
     //! Returns active scalar dataset
     QgsMeshDatasetIndex activeScalarDataset() const { return mActiveScalarDataset; }
@@ -369,6 +668,7 @@ class CORE_EXPORT QgsMeshRendererSettings
   private:
     QgsMeshRendererMeshSettings mRendererNativeMeshSettings;
     QgsMeshRendererMeshSettings mRendererTriangularMeshSettings;
+    QgsMeshRendererMeshSettings mRendererEdgeMeshSettings;
 
     QHash<int, QgsMeshRendererScalarSettings> mRendererScalarSettings;  //!< Per-group scalar settings
     QHash<int, QgsMeshRendererVectorSettings> mRendererVectorSettings;  //!< Per-group vector settings
@@ -378,6 +678,9 @@ class CORE_EXPORT QgsMeshRendererSettings
 
     //! index of active vector dataset
     QgsMeshDatasetIndex mActiveVectorDataset;
+
+    //! Averaging method to get 2D datasets from 3D stacked mesh datasets
+    std::shared_ptr<QgsMesh3dAveragingMethod> mAveragingMethod;
 };
 
 #endif //QGSMESHRENDERERSETTINGS_H

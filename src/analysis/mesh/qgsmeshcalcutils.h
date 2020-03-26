@@ -54,6 +54,9 @@ class ANALYSIS_EXPORT QgsMeshCalcUtils
 
     /**
      * Creates the utils and validates the input
+     *
+     * The constructor fetches all dataset values and creates memory datasets from them.
+     *
      * \param layer mesh layer
      * \param usedGroupNames dataset group's names that are used in the expression
      * \param startTime start time
@@ -175,6 +178,12 @@ class ANALYSIS_EXPORT QgsMeshCalcUtils
     //! Operator maximum
     void maximum( QgsMeshMemoryDatasetGroup &group1, const QgsMeshMemoryDatasetGroup &group2 ) const;
 
+    //! Calculates the data type of result dataset group
+    static QgsMeshDatasetGroupMetadata::DataType determineResultDataType( QgsMeshLayer *layer, const QStringList &usedGroupNames );
+
+    //! Returns the data type of result dataset group
+    QgsMeshDatasetGroupMetadata::DataType outputType() const;
+
   private:
     double ffilter( double val1, double filter ) const;
     double fadd( double val1, double val2 ) const;
@@ -201,9 +210,11 @@ class ANALYSIS_EXPORT QgsMeshCalcUtils
     double faverageAggregated( QVector<double> &vals ) const;
 
     /**
-     * Find dataset group in provider with the name and copy all values to
+     * Clones the dataset data to memory
+     *
+     * Finds dataset group in provider with the name and copies all values to
      * memory dataset group. Returns NULLPTR if no such dataset group
-     * exists
+     * exists. Resulting datasets are guaranteed to have the same mOutputType type
      */
     std::shared_ptr<QgsMeshMemoryDatasetGroup> create( const QString &datasetGroupName ) const;
 

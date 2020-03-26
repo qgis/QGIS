@@ -41,6 +41,38 @@ class TestQgsExtentGroupBox(unittest.TestCase):
         w.setTitleBase('abc')
         self.assertEqual(w.titleBase(), 'abc')
 
+    def test_checkstate(self):
+        w = QgsExtentGroupBox()
+        spy = QSignalSpy(w.extentChanged)
+        self.assertFalse(w.isCheckable())
+        self.assertFalse(w.isChecked())
+        self.assertTrue(w.outputExtent().isNull())
+
+        w.setCheckable(True)
+        self.assertTrue(w.isCheckable())
+        self.assertTrue(w.isChecked())
+        self.assertTrue(w.outputExtent().isNull())
+        self.assertEqual(len(spy), 0)
+
+        w.setCurrentExtent(QgsRectangle(11, 12, 13, 14), QgsCoordinateReferenceSystem('epsg:3113'))
+        w.setOutputExtentFromCurrent()
+        self.assertTrue(w.isCheckable())
+        self.assertTrue(w.isChecked())
+        self.assertEqual(w.outputExtent(), QgsRectangle(11, 12, 13, 14))
+        self.assertEqual(len(spy), 1)
+
+        w.setChecked(False)
+        self.assertTrue(w.isCheckable())
+        self.assertFalse(w.isChecked())
+        self.assertTrue(w.outputExtent().isNull())
+        self.assertEqual(len(spy), 2)
+
+        w.setChecked(True)
+        self.assertTrue(w.isCheckable())
+        self.assertTrue(w.isChecked())
+        self.assertEqual(w.outputExtent(), QgsRectangle(11, 12, 13, 14))
+        self.assertEqual(len(spy), 3)
+
     def test_SettingExtent(self):
         w = qgis.gui.QgsExtentGroupBox()
 

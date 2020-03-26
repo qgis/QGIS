@@ -266,6 +266,27 @@ Sets the current ``filters`` used for filtering available layouts.
 .. seealso:: :py:func:`filters`
 %End
 
+    QString filterString() const;
+%Docstring
+Returns the current filter string, if set.
+
+.. seealso:: :py:func:`setFilterString`
+
+.. versionadded:: 3.12
+%End
+
+  public slots:
+
+    void setFilterString( const QString &filter );
+%Docstring
+Sets a ``filter`` string, such that only layouts with names containing the
+specified string will be shown.
+
+.. seealso:: :py:func:`filterString`
+
+.. versionadded:: 3.12
+%End
+
 };
 
 QFlags<QgsLayoutManagerProxyModel::Filter> operator|(QgsLayoutManagerProxyModel::Filter f1, QFlags<QgsLayoutManagerProxyModel::Filter> f2);

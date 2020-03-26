@@ -43,7 +43,8 @@ from qgis.core import (Qgis,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameters,
                        QgsProxyProgressTask,
-                       QgsTaskManager)
+                       QgsTaskManager,
+                       QgsProcessingFeatureSourceDefinition)
 from qgis.gui import (QgsGui,
                       QgsMessageBar,
                       QgsProcessingAlgorithmDialogBase)
@@ -90,6 +91,8 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.buttonBox().button(QDialogButtonBox.Close).setText(QCoreApplication.translate("AlgorithmDialog", "Cancel"))
             self.setWindowTitle(self.windowTitle() + ' | ' + self.active_layer.name())
 
+        self.updateRunButtonVisibility()
+
     def getParametersPanel(self, alg, parent):
         return ParametersPanel(parent, alg, self.in_place)
 
@@ -98,6 +101,14 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         dlg = BatchAlgorithmDialog(self.algorithm().create(), parent=iface.mainWindow())
         dlg.show()
         dlg.exec_()
+
+    def resetAdditionalGui(self):
+        if not self.in_place:
+            self.runAsBatchButton.setEnabled(True)
+
+    def blockAdditionalControlsWhileRunning(self):
+        if not self.in_place:
+            self.runAsBatchButton.setEnabled(False)
 
     def setParameters(self, parameters):
         self.mainWidget().setParameters(parameters)
@@ -153,7 +164,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                         dest_project = QgsProject.instance()
 
                 widget = self.mainWidget().outputWidgets[param.name()]
-                value = widget.getValue()
+                value = widget.value()
 
                 if value and isinstance(value, QgsProcessingOutputLayerDefinition):
                     value.destinationProject = dest_project
@@ -189,19 +200,23 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 QMessageBox.warning(
                     self, self.tr('Unable to execute algorithm'), msg)
                 return
-            self.runButton().setEnabled(False)
+
+            self.blockControlsWhileRunning()
+            self.setExecutedAnyResult(True)
             self.cancelButton().setEnabled(False)
-            buttons = self.mainWidget().iterateButtons
+
             self.iterateParam = None
 
-            for i in range(len(list(buttons.values()))):
-                button = list(buttons.values())[i]
-                if button.isChecked():
-                    self.iterateParam = list(buttons.keys())[i]
+            for param in self.algorithm().parameterDefinitions():
+                if isinstance(parameters.get(param.name(), None), QgsProcessingFeatureSourceDefinition) and parameters[param.name()].flags & QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature:
+                    self.iterateParam = param.name()
                     break
 
             self.clearProgress()
             self.feedback.pushVersionInfo(self.algorithm().provider())
+            if self.algorithm().provider().warningMessage():
+                self.feedback.reportError(self.algorithm().provider().warningMessage())
+
             self.setProgressText(QCoreApplication.translate('AlgorithmDialog', 'Processing algorithm…'))
 
             self.setInfo(
@@ -256,10 +271,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
                     self.cancelButton().setEnabled(False)
 
-                    if not self.in_place:
-                        self.finish(ok, results, self.context, self.feedback)
-                    elif ok:
-                        self.close()
+                    self.finish(ok, results, self.context, self.feedback, in_place=self.in_place)
 
                     self.feedback = None
                     self.context = None
@@ -313,10 +325,10 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.messageBar().pushMessage("", e.message,
                                           level=Qgis.Warning, duration=5)
 
-    def finish(self, successful, result, context, feedback):
+    def finish(self, successful, result, context, feedback, in_place=False):
         keepOpen = not successful or ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
-        if self.iterateParam is None:
+        if not in_place and self.iterateParam is None:
 
             # add html results to results dock
             for out in self.algorithm().outputDefinitions():
@@ -331,7 +343,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.setResults(result)
         self.setInfo(self.tr('Algorithm \'{0}\' finished').format(self.algorithm().displayName()), escapeHtml=False)
 
-        if not keepOpen:
+        if not in_place and not keepOpen:
             self.close()
         else:
             self.resetGui()

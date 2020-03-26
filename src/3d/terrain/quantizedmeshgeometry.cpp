@@ -329,11 +329,15 @@ QuantizedMeshGeometry::QuantizedMeshGeometry( QuantizedMeshTile *t, const Map3D 
     ibptr[i*3+2] = srcptr[i*3];
   }
   */
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   m_vertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
-  m_vertexBuffer->setData( vb );
-
   m_indexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, this );
+#else
+  m_vertexBuffer = new Qt3DRender::QBuffer( this );
+  m_indexBuffer = new Qt3DRender::QBuffer( this );
+#endif
+
+  m_vertexBuffer->setData( vb );
   m_indexBuffer->setData( ib );
 
   m_positionAttribute = new Qt3DRender::QAttribute( this );

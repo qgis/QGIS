@@ -60,6 +60,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
     QMap<QString, QgsRasterBlock *>::iterator it = rasterData.find( mRasterName );
     if ( it == rasterData.end() )
     {
+      QgsDebugMsg( QStringLiteral( "Error: could not find raster data for \"%1\"" ).arg( mRasterName ) );
       return false;
     }
 
@@ -190,9 +191,10 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData,
   else if ( mType == tNumber )
   {
     size_t nEntries = static_cast<size_t>( result.nColumns() * result.nRows() );
-    std::vector<double> *data = new  std::vector<double>( nEntries );
-    std::fill( std::begin( *data ), std::end( *data ), mNumber );
-    result.setData( result.nColumns(), 1, data->data(), result.nodataValue() );
+    double *data = new double[ nEntries ];
+    std::fill( data, data + nEntries, mNumber );
+    result.setData( result.nColumns(), 1, data, result.nodataValue() );
+
     return true;
   }
   else if ( mType == tMatrix )

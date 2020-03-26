@@ -118,8 +118,7 @@ QString QgsLayerMetadataFormatter::extentSectionHtml( const bool showSpatialExte
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" );
     if ( mMetadata.crs().isValid() )
     {
-      myMetadata += mMetadata.crs().authid() + QStringLiteral( " - " );
-      myMetadata += mMetadata.crs().description() + QStringLiteral( " - " );
+      myMetadata += mMetadata.crs().userFriendlyIdentifier() + QStringLiteral( " - " );
       if ( mMetadata.crs().isGeographic() )
         myMetadata += tr( "Geographic" );
       else
@@ -135,8 +134,7 @@ QString QgsLayerMetadataFormatter::extentSectionHtml( const bool showSpatialExte
       {
         myMetadata += QLatin1String( "<br />\n" );
       }
-      myMetadata += QStringLiteral( "<strong>" ) + tr( "CRS" ) + QStringLiteral( ": </strong>" ) + spatialExtent.extentCrs.authid() + QStringLiteral( " - " );
-      myMetadata += spatialExtent.extentCrs.description() + QStringLiteral( " - " );
+      myMetadata += QStringLiteral( "<strong>" ) + tr( "CRS" ) + QStringLiteral( ": </strong>" ) + spatialExtent.extentCrs.userFriendlyIdentifier() + QStringLiteral( " - " );
       if ( spatialExtent.extentCrs.isGeographic() )
         myMetadata += tr( "Geographic" );
       else

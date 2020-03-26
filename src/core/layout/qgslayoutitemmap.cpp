@@ -1059,10 +1059,14 @@ bool QgsLayoutItemMap::nextExportPart()
       FALLTHROUGH
 
     case Grid:
-      if ( mOverviewStack->hasEnabledItems() )
+      for ( int i = 0; i < mOverviewStack->size(); ++i )
       {
-        mCurrentExportPart = OverviewMapExtent;
-        return true;
+        QgsLayoutItemMapItem *item = mOverviewStack->item( i );
+        if ( item->enabled() && item->stackingPosition() == QgsLayoutItemMapItem::StackAboveMapLabels )
+        {
+          mCurrentExportPart = OverviewMapExtent;
+          return true;
+        }
       }
       FALLTHROUGH
 
@@ -1131,6 +1135,25 @@ QgsLayoutItem::ExportLayerDetail QgsLayoutItemMap::exportLayerDetails() const
                 detail.name = QStringLiteral( "%1 (%2): %3" ).arg( displayName(), detail.mapTheme, layer->name() );
               else
                 detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), layer->name() );
+            }
+            else
+            {
+              // might be an item based layer
+              const QList<QgsLayoutItemMapOverview *> res = mOverviewStack->asList();
+              for ( QgsLayoutItemMapOverview  *item : res )
+              {
+                if ( !item || !item->enabled() || item->stackingPosition() == QgsLayoutItemMapItem::StackAboveMapLabels )
+                  continue;
+
+                if ( item->mapLayer() && detail.mapLayerId == item->mapLayer()->id() )
+                {
+                  if ( !detail.mapTheme.isEmpty() )
+                    detail.name = QStringLiteral( "%1 (%2): %3" ).arg( displayName(), detail.mapTheme, item->mapLayer()->name() );
+                  else
+                    detail.name = QStringLiteral( "%1: %2" ).arg( displayName(), item->mapLayer()->name() );
+                  break;
+                }
+              }
             }
             return detail;
           }
@@ -1466,13 +1489,13 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
 
   QgsCoordinateReferenceSystem mapCrs = crs();
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs" ), mapCrs.authid(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mapCrs.toProj4(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_definition" ), mapCrs.toProj(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_description" ), mapCrs.description(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_units" ), QgsUnitTypes::toString( mapCrs.mapUnits() ), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_acronym" ), mapCrs.projectionAcronym(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_ellipsoid" ), mapCrs.ellipsoidAcronym(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_proj4" ), mapCrs.toProj4(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_wkt" ), mapCrs.toWkt(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_proj4" ), mapCrs.toProj(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_crs_wkt" ), mapCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ), true ) );
 
   QVariantList layersIds;
   QVariantList layers;
@@ -1497,6 +1520,11 @@ QgsExpressionContext QgsLayoutItemMap::createExpressionContext() const
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_layers" ), layers, true ) );
 
   scope->addFunction( QStringLiteral( "is_layer_visible" ), new QgsExpressionContextUtils::GetLayerVisibility( layersInMap, scale() ) );
+
+  // maybe one day we'll populate these with real values!
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_start_time" ), QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_end_time" ), QVariant(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "map_interval" ), QVariant(), true ) );
 
   return context;
 }
@@ -1664,7 +1692,13 @@ void QgsLayoutItemMap::updateBoundingRect()
 void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
 {
   QgsExpressionContext context = createExpressionContext();
-
+  if ( property == QgsLayoutObject::MapCrs || property == QgsLayoutObject::AllProperties )
+  {
+    bool ok;
+    QString crsVar = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapCrs, context, QString(), &ok );
+    if ( ok && QgsCoordinateReferenceSystem( crsVar ).isValid() )
+      mCrs = QgsCoordinateReferenceSystem( crsVar );
+  }
   //updates data defined properties and redraws item to match
   if ( property == QgsLayoutObject::MapRotation || property == QgsLayoutObject::MapScale ||
        property == QgsLayoutObject::MapXMin || property == QgsLayoutObject::MapYMin ||
@@ -2203,7 +2237,10 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   QgsExpressionContext scopedContext;
   if ( !context )
     scopedContext = createExpressionContext();
+
+  bool ok = false;
   const QgsExpressionContext *evalContext = context ? context : &scopedContext;
+
 
   //data defined map extents set?
   QgsRectangle newExtent = extent();
@@ -2216,7 +2253,6 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   double maxXD = 0;
   double maxYD = 0;
 
-  bool ok = false;
   minXD = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::MapXMin, *evalContext, 0.0, &ok );
   if ( ok )
   {
@@ -2493,11 +2529,14 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
 
 void QgsLayoutItemMap::createStagedRenderJob( const QgsRectangle &extent, const QSizeF size, double dpi )
 {
-  // TODO - overview?
-  mStagedRendererJob = qgis::make_unique< QgsMapRendererStagedRenderJob >( mapSettings( extent, size, dpi, true ),
+  QgsMapSettings settings = mapSettings( extent, size, dpi, true );
+  settings.setLayers( mOverviewStack->modifyMapLayerList( settings.layers() ) );
+
+  mStagedRendererJob = qgis::make_unique< QgsMapRendererStagedRenderJob >( settings,
                        mLayout && mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagRenderLabelsByMapLayer
                        ? QgsMapRendererStagedRenderJob::RenderLabelsByMapLayer
                        : QgsMapRendererStagedRenderJob::Flags( nullptr ) );
   mStagedRendererJob->start();
 }
+
 

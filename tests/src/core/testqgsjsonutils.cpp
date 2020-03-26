@@ -129,7 +129,7 @@ void TestQgsJsonUtils::testParseJson()
   }
 
   // Test empty string: null
-  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QgsJsonUtils::parseJson( QStringLiteral( "" ) ) ).dump() ), QString( "null" ) );
+  QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QgsJsonUtils::parseJson( QString() ) ).dump() ), QString( "null" ) );
   // invalid json -> null
   QCOMPARE( QString::fromStdString( QgsJsonUtils::jsonFromVariant( QgsJsonUtils::parseJson( QStringLiteral( "invalid json" ) ) ).dump() ), QString( "null" ) );
   // String lists

@@ -134,6 +134,11 @@ bool QgsLayoutItemMapItem::accept( QgsStyleEntityVisitorInterface * ) const
   return true;
 }
 
+QgsMapLayer *QgsLayoutItemMapItem::mapLayer()
+{
+  return nullptr;
+}
+
 //
 // QgsLayoutItemMapItemStack
 //
@@ -179,7 +184,11 @@ void QgsLayoutItemMapItemStack::moveItemUp( const QString &itemId )
   {
     return;
   }
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
   mItems.swap( index, index + 1 );
+#else
+  mItems.swapItemsAt( index, index + 1 );
+#endif
 }
 
 void QgsLayoutItemMapItemStack::moveItemDown( const QString &itemId )
@@ -195,7 +204,11 @@ void QgsLayoutItemMapItemStack::moveItemDown( const QString &itemId )
   {
     return;
   }
+#if QT_VERSION < QT_VERSION_CHECK(5, 13, 0)
   mItems.swap( index, index - 1 );
+#else
+  mItems.swapItemsAt( index, index - 1 );
+#endif
 }
 
 QgsLayoutItemMapItem *QgsLayoutItemMapItemStack::item( const QString &itemId ) const

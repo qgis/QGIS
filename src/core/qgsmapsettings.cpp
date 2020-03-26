@@ -61,7 +61,7 @@ void QgsMapSettings::setMagnificationFactor( double factor )
   mExtent = ext;
   mDpi = mDpi / ratio;
 
-  QgsDebugMsg( QStringLiteral( "Magnification factor: %1  dpi: %2  ratio: %3" ).arg( factor ).arg( mDpi ).arg( ratio ) );
+  QgsDebugMsgLevel( QStringLiteral( "Magnification factor: %1  dpi: %2  ratio: %3" ).arg( factor ).arg( mDpi ).arg( ratio ), 3 );
 
   updateDerived();
 }
@@ -439,6 +439,7 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer *layer
       QgsDebugMsgLevel( QStringLiteral( "sourceCrs = %1" ).arg( ct.sourceCrs().authid() ), 3 );
       QgsDebugMsgLevel( QStringLiteral( "destCRS = %1" ).arg( ct.destinationCrs().authid() ), 3 );
       QgsDebugMsgLevel( QStringLiteral( "extent %1" ).arg( extent.toString() ), 3 );
+      ct.setBallparkTransformsAreAppropriate( true );
       extent = ct.transformBoundingBox( extent );
     }
   }

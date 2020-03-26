@@ -312,6 +312,13 @@ class CORE_EXPORT QgsVectorLayerUtils
      * \since QGIS 3.12
      */
     static QHash<QString, QSet<QgsSymbolLayerId>> symbolLayerMasks( const QgsVectorLayer * ) SIP_SKIP;
+
+    /**
+     * \returns a descriptive string for a \a feature, suitable for displaying to the user.
+     *         The definition is taken from the ``displayExpression`` property of \a layer.
+     * \since QGIS 3.12
+     */
+    static QString getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature );
 };
 
 

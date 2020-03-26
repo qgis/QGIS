@@ -35,6 +35,7 @@ email                : sbr00pwb@users.sourceforge.net
 #include "qgsunittypes.h"
 #include "qgssettings.h"
 #include "qgssymbollayerutils.h"
+#include "qgsfillsymbollayer.h"
 
 #include "qgsdoubleboxscalebarrenderer.h"
 #include "qgsnumericscalebarrenderer.h"
@@ -153,21 +154,54 @@ void QgsDecorationScaleBar::setupScaleBar()
       std::unique_ptr< QgsTicksScaleBarRenderer > tickStyle = qgis::make_unique< QgsTicksScaleBarRenderer >();
       tickStyle->setTickPosition( mStyleIndex == 0 ? QgsTicksScaleBarRenderer::TicksDown : QgsTicksScaleBarRenderer::TicksUp );
       mStyle = std::move( tickStyle );
-      mSettings.setFillColor( mColor );
-      mSettings.setLineColor( mColor ); // Compatibility with pre 3.2 configuration
+
+      std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >();
+      fillSymbol->setColor( mColor ); // Compatibility with pre 3.2 configuration
+      if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( fillSymbol->symbolLayer( 0 ) ) )
+      {
+        fill->setStrokeStyle( Qt::NoPen );
+      }
+      mSettings.setFillSymbol( fillSymbol.release() );
+
+      std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
+      lineSymbol->setColor( mColor ); // Compatibility with pre 3.2 configuration
+      lineSymbol->setWidth( 0.3 );
+      lineSymbol->setOutputUnit( QgsUnitTypes::RenderMillimeters );
+      mSettings.setLineSymbol( lineSymbol.release() );
       mSettings.setHeight( 2.2 );
-      mSettings.setLineWidth( 0.3 );
       break;
     }
     case 2:
     case 3:
+    {
       mStyle = qgis::make_unique< QgsSingleBoxScaleBarRenderer >();
-      mSettings.setFillColor( mColor );
-      mSettings.setFillColor2( QColor( "transparent" ) );
-      mSettings.setLineColor( mOutlineColor );
+
+
+      std::unique_ptr< QgsFillSymbol > fillSymbol = qgis::make_unique< QgsFillSymbol >();
+      fillSymbol->setColor( mColor );
+      if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( fillSymbol->symbolLayer( 0 ) ) )
+      {
+        fill->setStrokeStyle( Qt::NoPen );
+      }
+      mSettings.setFillSymbol( fillSymbol.release() );
+
+      std::unique_ptr< QgsFillSymbol > fillSymbol2 = qgis::make_unique< QgsFillSymbol >();
+      fillSymbol2->setColor( QColor( 255, 255, 255, 0 ) );
+      if ( QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( fillSymbol2->symbolLayer( 0 ) ) )
+      {
+        fill->setStrokeStyle( Qt::NoPen );
+      }
+      mSettings.setAlternateFillSymbol( fillSymbol2.release() );
+
       mSettings.setHeight( mStyleIndex == 2 ? 1 : 3 );
-      mSettings.setLineWidth( mStyleIndex == 2 ? 0.2 : 0.3 );
+      std::unique_ptr< QgsLineSymbol > lineSymbol = qgis::make_unique< QgsLineSymbol >();
+      lineSymbol->setColor( mOutlineColor ); // Compatibility with pre 3.2 configuration
+      lineSymbol->setWidth( mStyleIndex == 2 ? 0.2 : 0.3 );
+      lineSymbol->setOutputUnit( QgsUnitTypes::RenderMillimeters );
+      mSettings.setLineSymbol( lineSymbol.release() );
+
       break;
+    }
   }
   mSettings.setLabelBarSpace( 1.8 );
 }
@@ -310,16 +344,14 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
   mSettings.setNumberOfSegments( mStyleIndex == 3 ? 2 : 1 );
   mSettings.setUnitsPerSegment( mStyleIndex == 3 ? unitsPerSegment / 2 : unitsPerSegment );
   mSettings.setUnitLabel( scaleBarUnitLabel );
-  if ( mPlacement == TopCenter || mPlacement == BottomCenter )
-  {
-    mSettings.setLabelHorizontalPlacement( QgsScaleBarSettings::LabelCenteredSegment );
-  }
+  mSettings.setLabelHorizontalPlacement( mPlacement == TopCenter || mPlacement == BottomCenter ? QgsScaleBarSettings::LabelCenteredSegment : QgsScaleBarSettings::LabelCenteredEdge );
+
   QgsScaleBarRenderer::ScaleBarContext scaleContext;
   scaleContext.segmentWidth = mStyleIndex == 3 ? segmentSize / 2 : segmentSize;
   scaleContext.scale = mapSettings.scale();
 
   //Calculate total width of scale bar and label
-  QSizeF size = mStyle->calculateBoxSize( mSettings, scaleContext );
+  QSizeF size = mStyle->calculateBoxSize( context, mSettings, scaleContext );
   size.setWidth( context.convertToPainterUnits( size.width(), QgsUnitTypes::RenderMillimeters ) );
   size.setHeight( context.convertToPainterUnits( size.height(), QgsUnitTypes::RenderMillimeters ) );
 

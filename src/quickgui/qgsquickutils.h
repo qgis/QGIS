@@ -253,6 +253,17 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
      */
     Q_INVOKABLE static QString evaluateExpression( const QgsQuickFeatureLayerPair &pair, QgsProject *activeProject, const QString &expression );
 
+    /**
+     * Selects features in a layer
+     * This method is required since QML cannot perform the conversion of a feature ID to a QgsFeatureId (i.e. a qint64)
+     * \param layer the vector layer
+     * \param fids the list of feature IDs
+     * \param behavior the selection behavior
+     *
+     * \since QGIS 3.12
+     */
+    Q_INVOKABLE static void selectFeaturesInLayer( QgsVectorLayer *layer, const QList<int> &fids, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
+
   private:
     static void formatToMetricDistance( double srcDistance,
                                         QgsUnitTypes::DistanceUnit srcUnits,

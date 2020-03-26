@@ -30,6 +30,8 @@
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
 
+#include <QOpenGLContext>
+#include <QOpenGLFunctions>
 #include <QTimer>
 
 #include "qgsaabb.h"
@@ -41,6 +43,7 @@
 #include "qgscameracontroller.h"
 #include "qgschunkedentity_p.h"
 #include "qgschunknode_p.h"
+#include "qgseventtracing.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsrulebased3drenderer.h"
@@ -176,6 +179,14 @@ int Qgs3DMapScene::terrainPendingJobsCount() const
   return mTerrain ? mTerrain->pendingJobsCount() : 0;
 }
 
+int Qgs3DMapScene::totalPendingJobsCount() const
+{
+  int count = 0;
+  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
+    count += entity->pendingJobsCount();
+  return count;
+}
+
 void Qgs3DMapScene::registerPickHandler( Qgs3DMapScenePickHandler *pickHandler )
 {
   if ( mPickHandlers.isEmpty() )
@@ -183,9 +194,8 @@ void Qgs3DMapScene::registerPickHandler( Qgs3DMapScenePickHandler *pickHandler )
     // we need to add object pickers
     for ( Qt3DCore::QEntity *entity : mLayerEntities.values() )
     {
-      Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker( entity );
-      entity->addComponent( picker );
-      connect( picker, &Qt3DRender::QObjectPicker::clicked, this, &Qgs3DMapScene::onLayerEntityPickEvent );
+      if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
+        chunkedEntity->setPickingEnabled( true );
     }
   }
 
@@ -201,11 +211,28 @@ void Qgs3DMapScene::unregisterPickHandler( Qgs3DMapScenePickHandler *pickHandler
     // we need to remove pickers
     for ( Qt3DCore::QEntity *entity : mLayerEntities.values() )
     {
-      Qt3DRender::QObjectPicker *picker = entity->findChild<Qt3DRender::QObjectPicker *>();
-      picker->deleteLater();
+      if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
+        chunkedEntity->setPickingEnabled( false );
     }
   }
 }
+
+void Qgs3DMapScene::onLayerEntityPickedObject( Qt3DRender::QPickEvent *pickEvent, QgsFeatureId fid )
+{
+  QgsMapLayer *layer = mLayerEntities.key( qobject_cast<QgsChunkedEntity *>( sender() ) );
+  if ( !layer )
+    return;
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer )
+    return;
+
+  for ( Qgs3DMapScenePickHandler *pickHandler : qgis::as_const( mPickHandlers ) )
+  {
+    pickHandler->handlePickOnVectorLayer( vlayer, fid, pickEvent->worldIntersection(), pickEvent );
+  }
+}
+
 
 float Qgs3DMapScene::worldSpaceError( float epsilon, float distance )
 {
@@ -249,6 +276,8 @@ void Qgs3DMapScene::onCameraChanged()
 
 void Qgs3DMapScene::updateScene()
 {
+  QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Update Scene" ) );
+
   for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() )
@@ -401,6 +430,7 @@ void Qgs3DMapScene::createTerrainDeferred()
 
   mTerrainUpdateScheduled = false;
 
+  connect( mTerrain, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
   connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
 
   emit terrainEntityChanged();
@@ -411,50 +441,6 @@ void Qgs3DMapScene::onBackgroundColorChanged()
   mEngine->setClearColor( mMap.backgroundColor() );
 }
 
-void Qgs3DMapScene::onLayerEntityPickEvent( Qt3DRender::QPickEvent *event )
-{
-  Qt3DRender::QPickTriangleEvent *triangleEvent = qobject_cast<Qt3DRender::QPickTriangleEvent *>( event );
-  if ( !triangleEvent )
-    return;
-
-  Qt3DRender::QObjectPicker *picker = qobject_cast<Qt3DRender::QObjectPicker *>( sender() );
-  if ( !picker )
-    return;
-
-  Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>( picker->parent() );
-  if ( !entity )
-    return;
-
-  QgsMapLayer *layer = mLayerEntities.key( entity );
-  if ( !layer )
-    return;
-
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
-    return;
-
-  for ( Qgs3DMapScenePickHandler *pickHandler : qgis::as_const( mPickHandlers ) )
-  {
-    // go figure out feature ID from the triangle index
-    QgsFeatureId fid = -1;
-    for ( Qt3DRender::QGeometryRenderer *geomRenderer : entity->findChildren<Qt3DRender::QGeometryRenderer *>() )
-    {
-      // unfortunately we can't access which sub-entity triggered the pick event
-      // so as a temporary workaround let's just ignore the entity with selection
-      // and hope the event was the main entity (QTBUG-58206)
-      if ( geomRenderer->objectName() != QLatin1String( "main" ) )
-        continue;
-
-      if ( QgsTessellatedPolygonGeometry *g = qobject_cast<QgsTessellatedPolygonGeometry *>( geomRenderer->geometry() ) )
-      {
-        fid = g->triangleIndexToFeatureId( triangleEvent->triangleIndex() );
-        break;
-      }
-    }
-    pickHandler->handlePickOnVectorLayer( vlayer, fid, event->worldIntersection(), event );
-  }
-
-}
 
 void Qgs3DMapScene::updateLights()
 {
@@ -495,7 +481,7 @@ void Qgs3DMapScene::updateCameraLens()
 void Qgs3DMapScene::onRenderersChanged()
 {
   // remove entities (if any)
-  qDeleteAll( mRenderersEntities.values() );
+  qDeleteAll( mRenderersEntities );
   mRenderersEntities.clear();
 
   // re-add entities from new set of renderers
@@ -554,25 +540,29 @@ void Qgs3DMapScene::onLayersChanged()
 
 void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 {
+  bool needsSceneUpdate = false;
   QgsAbstract3DRenderer *renderer = layer->renderer3D();
   if ( renderer )
   {
     // Fix vector layer's renderer to make sure the renderer is pointing to its layer.
     // It has happened before that renderer pointed to a different layer (probably after copying a style).
     // This is a bit of a hack and it should be handled in QgsMapLayer::setRenderer3D() but in qgis_core
-    // the vector layer 3D renderer class is not available. Maybe we need an intermediate map layer 3D renderer
-    // class in qgis_core that can be used to handle this case nicely.
-    if ( layer->type() == QgsMapLayerType::VectorLayer && renderer->type() == QLatin1String( "vector" ) )
+    // the vector layer 3D renderer classes are not available.
+    if ( layer->type() == QgsMapLayerType::VectorLayer &&
+         ( renderer->type() == QLatin1String( "vector" ) || renderer->type() == QLatin1String( "rulebased" ) ) )
     {
-      static_cast<QgsVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
-    }
-    else if ( layer->type() == QgsMapLayerType::VectorLayer && renderer->type() == QLatin1String( "rulebased" ) )
-    {
-      static_cast<QgsRuleBased3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
+      static_cast<QgsAbstractVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
     }
     else if ( layer->type() == QgsMapLayerType::MeshLayer && renderer->type() == QLatin1String( "mesh" ) )
     {
-      static_cast<QgsMeshLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsMeshLayer *>( layer ) );
+      QgsMeshLayer3DRenderer *meshRenderer = static_cast<QgsMeshLayer3DRenderer *>( renderer );
+      meshRenderer->setLayer( static_cast<QgsMeshLayer *>( layer ) );
+
+      // Before entity creation, set the maximum texture size
+      // Not very clean, but for now, only place found in the workflow to do that simple
+      QgsMesh3DSymbol *sym = new QgsMesh3DSymbol( *meshRenderer->symbol() );
+      sym->setMaximumTextureSize( maximumTextureSize() );
+      meshRenderer->setSymbol( sym );
     }
 
     Qt3DCore::QEntity *newEntity = renderer->createEntity( mMap );
@@ -581,16 +571,28 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
       newEntity->setParent( this );
       mLayerEntities.insert( layer, newEntity );
 
-      if ( !mPickHandlers.isEmpty() )
-      {
-        Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker( newEntity );
-        newEntity->addComponent( picker );
-        connect( picker, &Qt3DRender::QObjectPicker::pressed, this, &Qgs3DMapScene::onLayerEntityPickEvent );
-      }
-
       finalizeNewEntity( newEntity );
+
+      if ( QgsChunkedEntity *chunkedNewEntity = qobject_cast<QgsChunkedEntity *>( newEntity ) )
+      {
+        mChunkEntities.append( chunkedNewEntity );
+        needsSceneUpdate = true;
+
+        chunkedNewEntity->setPickingEnabled( !mPickHandlers.isEmpty() );
+        connect( chunkedNewEntity, &QgsChunkedEntity::pickedObject, this, &Qgs3DMapScene::onLayerEntityPickedObject );
+
+        connect( chunkedNewEntity, &QgsChunkedEntity::newEntityCreated, this, [this]( Qt3DCore::QEntity * entity )
+        {
+          finalizeNewEntity( entity );
+        } );
+
+        connect( chunkedNewEntity, &QgsChunkedEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::totalPendingJobsCountChanged );
+      }
     }
   }
+
+  if ( needsSceneUpdate )
+    onCameraChanged();   // needed for chunked entities
 
   connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
 
@@ -599,11 +601,23 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     connect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
+
+  if ( layer->type() == QgsMapLayerType::MeshLayer )
+  {
+    connect( layer, &QgsMapLayer::rendererChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+  }
+
 }
 
 void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
 {
   Qt3DCore::QEntity *entity = mLayerEntities.take( layer );
+
+  if ( QgsChunkedEntity *chunkedEntity = qobject_cast<QgsChunkedEntity *>( entity ) )
+  {
+    mChunkEntities.removeOne( chunkedEntity );
+  }
+
   if ( entity )
     entity->deleteLater();
 
@@ -613,6 +627,11 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
+  }
+
+  if ( layer->type() == QgsMapLayerType::MeshLayer )
+  {
+    disconnect( layer, &QgsMapLayer::rendererChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
 }
 
@@ -639,6 +658,18 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 
     bm->setViewportSize( mCameraController->viewport().size() );
   }
+}
+
+int Qgs3DMapScene::maximumTextureSize() const
+{
+  QSurface *surface = mEngine->surface();
+  QOpenGLContext context;
+  context.create();
+  context.makeCurrent( surface );
+  QOpenGLFunctions openglFunctions( &context );
+  GLint size;
+  openglFunctions.glGetIntegerv( GL_MAX_TEXTURE_SIZE, &size );
+  return int( size );
 }
 
 void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )

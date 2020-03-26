@@ -283,7 +283,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                         f.write(s)
                 command += ' -{} "{}"'.format(param.name(), tempTableFile)
             elif isinstance(param, QgsProcessingParameterExtent):
-                # 'We have to substract/add half cell size, since SAGA is
+                # 'We have to subtract/add half cell size, since SAGA is
                 # center based, not corner based
                 halfcell = self.getOutputCellsize(parameters, context) / 2
                 offset = [halfcell, -halfcell, halfcell, -halfcell]
@@ -326,7 +326,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
             output_files[out.name()] = filePath
             command += ' -{} "{}"'.format(out.name(), filePath)
-            commands.append(command)
+        commands.append(command)
 
         # special treatment for RGB algorithm
         # TODO: improve this and put this code somewhere else

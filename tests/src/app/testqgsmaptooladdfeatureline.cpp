@@ -42,7 +42,7 @@ namespace QTest
   // pretty printing of geometries in comparison tests
   template<> char *toString( const QgsGeometry &geom )
   {
-    QByteArray ba = geom.asWkt().toAscii();
+    QByteArray ba = geom.asWkt().toLatin1();
     return qstrdup( ba.data() );
   }
 }
@@ -68,6 +68,7 @@ class TestQgsMapToolAddFeatureLine : public QObject
     void testZ();
     void testZMSnapping();
     void testTopologicalEditingZ();
+    void testCloseLine();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -79,6 +80,8 @@ class TestQgsMapToolAddFeatureLine : public QObject
     QgsVectorLayer *mLayerLineZ = nullptr;
     QgsVectorLayer *mLayerPointZM = nullptr;
     QgsVectorLayer *mLayerTopoZ = nullptr;
+    QgsVectorLayer *mLayerLine2D = nullptr;
+    QgsVectorLayer *mLayerCloseLine = nullptr;
     QgsFeatureId mFidLineF1 = 0;
 };
 
@@ -136,6 +139,11 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   mLayerLineZ->addFeature( lineF2 );
   QCOMPARE( mLayerLineZ->featureCount(), ( long )1 );
 
+  mLayerCloseLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line Closed" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerCloseLine->isValid() );
+  mLayerCloseLine->startEditing();
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerCloseLine );
+
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
   mCanvas->setExtent( QgsRectangle( 0, 0, 8, 8 ) );
@@ -169,7 +177,18 @@ void TestQgsMapToolAddFeatureLine::initTestCase()
   mLayerTopoZ->addFeature( topoFeat );
   QCOMPARE( mLayerTopoZ->featureCount(), ( long ) 1 );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineZ << mLayerPointZM << mLayerTopoZ );
+  // make 2D layer for snapping with a 3D layer
+  mLayerLine2D = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerLine2D->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine2D );
+
+  mLayerLine2D->startEditing();
+  QgsFeature lineString2DF;
+  lineString2DF.setGeometry( QgsGeometry::fromWkt( "LineString ((8 8, 9 9))" ) );
+
+  mLayerLine2D->addFeature( lineString2DF );
+  QCOMPARE( mLayerLine2D->featureCount(), ( long )1 );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineZ << mLayerPointZM << mLayerTopoZ << mLayerLine2D );
 
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
@@ -406,6 +425,27 @@ void TestQgsMapToolAddFeatureLine::testZMSnapping()
 
   mLayerLine->undoStack()->undo();
 
+  mCanvas->setCurrentLayer( mLayerLineZ );
+  oldFids = utils.existingFeatureIds();
+  // test with default Z value = 222
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 222 );
+  // snap a on a layer without ZM support
+  utils.mouseClick( 9, 9, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 8, 7, Qt::LeftButton );
+  utils.mouseClick( 5, 0, Qt::RightButton );
+
+  newFid = utils.newFeatureId( oldFids );
+
+  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry().get()->is3D(), true );
+
+  QString wkt = "LineStringZ (9 9 222, 8 7 222)";
+  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry().get()->isMeasure(), false );
+
+  mLayerLine->undoStack()->undo();
+
+  cfg.setEnabled( false );
+
   cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );
 }
@@ -448,6 +488,24 @@ void TestQgsMapToolAddFeatureLine::testTopologicalEditingZ()
   cfg.setEnabled( false );
   mCanvas->snappingUtils()->setConfig( cfg );
   cfg.project()->setTopologicalEditing( topologicalEditing );
+}
+
+void TestQgsMapToolAddFeatureLine::testCloseLine()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerCloseLine );
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 5, 1, Qt::LeftButton );
+  utils.mouseClick( 5, 5, Qt::LeftButton );
+  utils.mouseClick( 5, 5, Qt::RightButton, Qt::ShiftModifier );
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QString wkt = "LineString (1 1, 5 1, 5 5, 1 1)";
+  QCOMPARE( mLayerCloseLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerCloseLine->undoStack()->undo();
 }
 QGSTEST_MAIN( TestQgsMapToolAddFeatureLine )
 #include "testqgsmaptooladdfeatureline.moc"

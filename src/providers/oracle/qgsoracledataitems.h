@@ -101,6 +101,10 @@ class QgsOracleOwnerItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
     void addLayer( const QgsOracleLayerProperty &layerProperty );
+
+    // QgsDataItem interface
+  public:
+    bool layerCollection() const override;
 };
 
 Q_NOWARN_DEPRECATED_PUSH // deleteLayer deprecated
@@ -116,7 +120,7 @@ class QgsOracleLayerItem : public QgsLayerItem
     QList<QAction *> actions( QWidget *parent ) override;
 
   public slots:
-    bool deleteLayer();
+    bool deleteLayer() override;
 
   private:
     QgsOracleLayerProperty mLayerProperty;
@@ -128,6 +132,7 @@ class QgsOracleDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
+    QString dataProviderKey() const override;
 
     int capabilities() const override;
 

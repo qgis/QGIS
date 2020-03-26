@@ -21,6 +21,7 @@
 #include "qgsoapifapirequest.h"
 #include "qgsoapifcollection.h"
 #include "qgsoapifitemsrequest.h"
+#include "qgswfsutils.h" // for isCompatibleType()
 
 #include <algorithm>
 
@@ -232,10 +233,10 @@ QgsRectangle QgsOapifProvider::extent() const
   return mShared->consolidatedExtent();
 }
 
-void QgsOapifProvider::reloadData()
+void QgsOapifProvider::reloadProviderData()
 {
+  mUpdateFeatureCountAtNextFeatureCountRequest = true;
   mShared->invalidateCache();
-  QgsVectorDataProvider::reloadData();
 }
 
 bool QgsOapifProvider::isValid() const
@@ -302,13 +303,16 @@ bool QgsOapifProvider::setSubsetString( const QString &filter, bool updateFeatur
   if ( !mShared->computeServerFilter( errorMsg ) )
     QgsMessageLog::logMessage( errorMsg, tr( "OAPIF" ) );
 
-  reloadData();
+
   if ( updateFeatureCount )
   {
-    mUpdateFeatureCountAtNextFeatureCountRequest = true;
+    reloadData();
   }
-
-  emit dataChanged();
+  else
+  {
+    mShared->invalidateCache();
+    emit dataChanged();
+  }
 
   return true;
 }
@@ -643,7 +647,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
     hasQueryParam = true;
   }
 
-  const auto &rect = mShared->currentRect();
+  const QgsRectangle &rect = mShared->currentRect();
   if ( !rect.isNull() )
   {
     // Clamp to avoid server errors.
@@ -713,8 +717,8 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
 
     QVector<QgsFeatureUniqueIdPair> featureList;
     size_t i = 0;
-    const auto &srcFields = itemsRequest.fields();
-    const auto &dstFields = mShared->fields();
+    const QgsFields srcFields = itemsRequest.fields();
+    const QgsFields dstFields = mShared->fields();
     for ( const auto &pair : itemsRequest.features() )
     {
       // In the case the features of the current page have not the same schema
@@ -732,7 +736,7 @@ void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, int maxFeatures
           const auto dstFieldType = dstFields.at( j ).type();
           if ( v.isNull() )
             dstFeat.setAttribute( j, QVariant( dstFieldType ) );
-          else if ( v.type() == dstFieldType )
+          else if ( QgsWFSUtils::isCompatibleType( v.type(), dstFieldType ) )
             dstFeat.setAttribute( j, v );
           else
             dstFeat.setAttribute( j, QgsVectorDataProvider::convertValue( dstFieldType, v.toString() ) );

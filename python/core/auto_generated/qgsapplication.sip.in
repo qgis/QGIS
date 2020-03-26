@@ -812,11 +812,25 @@ Returns the action scope registry.
 .. versionadded:: 3.0
 %End
 
+    static QgsConnectionRegistry *connectionRegistry();
+%Docstring
+Returns the application's connection registry, used for managing saved data provider connections.
+
+.. versionadded:: 3.14
+%End
+
     static QgsRuntimeProfiler *profiler();
 %Docstring
 Returns the application runtime profiler.
 
 .. versionadded:: 3.0
+%End
+
+    static QgsNumericFormatRegistry *numericFormatRegistry() /KeepReference/;
+%Docstring
+Gets the registry of available numeric formats.
+
+.. versionadded:: 3.12
 %End
 
     static QgsFieldFormatterRegistry *fieldFormatterRegistry() /KeepReference/;
@@ -829,6 +843,13 @@ Gets the registry of available field formatters.
 Returns registry of available 3D renderers.
 
 .. versionadded:: 3.0
+%End
+
+    static QgsScaleBarRendererRegistry *scaleBarRendererRegistry() /KeepReference/;
+%Docstring
+Gets the registry of available scalebar renderers.
+
+.. versionadded:: 3.14
 %End
 
     static QgsProjectStorageRegistry *projectStorageRegistry() /KeepReference/;

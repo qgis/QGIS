@@ -35,6 +35,7 @@ find . \
     -o -name "*.rej" \
     -o -name "*.orig" \
     -o -name "*.new" \
+    -o -name "*.temp" \
     -o -name "*~" \
   \) \
   -print \

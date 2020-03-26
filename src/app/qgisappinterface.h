@@ -71,7 +71,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsRasterLayer *addRasterLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
     QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
     bool addProject( const QString &projectName ) override;
-    void newProject( bool promptToSaveFlag = false ) override;
+    bool newProject( bool promptToSaveFlag = false ) override;
     void reloadConnections( ) override;
     QgsMapLayer *activeLayer() override;
     bool setActiveLayer( QgsMapLayer *layer ) override;
@@ -143,6 +143,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) override;
     void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
     void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
+    void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
+    void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
     void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
     void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
@@ -266,6 +268,23 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionQgisHomePage() override;
     QAction *actionCheckQgisVersion() override;
     QAction *actionAbout() override;
+    QAction *actionCircle2Points() override;
+    QAction *actionCircle3Points() override;
+    QAction *actionCircle3Tangents() override;
+    QAction *actionCircle2TangentsPoint() override;
+    QAction *actionCircleCenterPoint() override;
+    QAction *actionEllipseCenter2Points() override;
+    QAction *actionEllipseCenterPoint() override;
+    QAction *actionEllipseExtent() override;
+    QAction *actionEllipseFoci() override;
+    QAction *actionRectangleCenterPoint() override;
+    QAction *actionRectangleExtent() override;
+    QAction *actionRectangle3PointsDistance() override;
+    QAction *actionRectangle3PointsProjected() override;
+    QAction *actionRegularPolygon2Points() override;
+    QAction *actionRegularPolygonCenterPoint() override;
+    QAction *actionRegularPolygonCenterCorner() override;
+
     bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) override;
     QgsAttributeDialog *getFeatureForm( QgsVectorLayer *layer, QgsFeature &feature ) override;
     QgsVectorLayerTools *vectorLayerTools() override;

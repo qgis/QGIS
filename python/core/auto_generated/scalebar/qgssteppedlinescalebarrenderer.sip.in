@@ -1,0 +1,52 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/scalebar/qgssteppedlinescalebarrenderer.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsSteppedLineScaleBarRenderer: QgsScaleBarRenderer
+{
+%Docstring
+Scalebar style that draws a stepped line representation of a scalebar.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgssteppedlinescalebarrenderer.h"
+%End
+  public:
+
+    QgsSteppedLineScaleBarRenderer();
+%Docstring
+Constructor for QgsSteppedLineScaleBarRenderer.
+%End
+
+    virtual QString id() const;
+
+    virtual QString visibleName() const;
+
+    virtual int sortKey() const;
+
+    virtual Flags flags() const;
+
+    virtual QgsSteppedLineScaleBarRenderer *clone() const /Factory/;
+
+
+     virtual void draw( QgsRenderContext &context,
+               const QgsScaleBarSettings &settings,
+               const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/scalebar/qgssteppedlinescalebarrenderer.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

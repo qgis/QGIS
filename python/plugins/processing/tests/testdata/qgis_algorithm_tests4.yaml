@@ -41,6 +41,32 @@ tests:
         name: expected/removed_duplicated_nodes_line.gml
         type: vector
 
+  - algorithm: native:removeduplicatevertices
+    name: Remove duplicate vertices from all parts
+    params:
+      INPUT:
+        name: custom/multi_polygons_with_duplicate_nodes_per_part.gml
+        type: vector
+      TOLERANCE: 0.001
+      USE_Z_VALUE: false
+    results:
+      OUTPUT:
+        name: expected/multi_polygons_without_duplicate_nodes.gml
+        type: vector
+
+  - algorithm: native:removeduplicatevertices
+    name: Remove duplicate vertices from all interior rings
+    params:
+      INPUT:
+        name: custom/polygons_with_duplicate_nodes_in_several_holes.gml
+        type: vector
+      TOLERANCE: 0.001
+      USE_Z_VALUE: false
+    results:
+      OUTPUT:
+        name: expected/polygons_without_duplicate_nodes_in_holes.gml
+        type: vector
+
   - algorithm: qgis:keepnbiggestparts
     name: Keep N biggest parts
     params:
@@ -1363,7 +1389,7 @@ tests:
         name: expected/split_linez_by_length.shp
         type: vector
 
-  - algorithm: qgis:deleteduplicategeometries
+  - algorithm: native:deleteduplicategeometries
     name: Delete Duplicates with null geometries
     params:
       INPUT:
@@ -1991,6 +2017,7 @@ tests:
       OUTPUT:
         name: expected/nearest_lines_to_polys.gml
         type: vector
+        pk: [fid,fid_2]
 
   - algorithm: native:joinbynearest
     name: Nearest points to lines, with max distance
@@ -2304,5 +2331,99 @@ tests:
       OUTPUT:
         name: expected/split_by_char_regex.gml
         type: vector
+
+  - algorithm: native:affinetransform
+    name: Affine transform
+    params:
+      DELTA_M: 4.0
+      DELTA_X: 1.0
+      DELTA_Y: 2.0
+      DELTA_Z: 3.0
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+      ROTATION_Z: 45.0
+      SCALE_M: 1.4
+      SCALE_X: 1.1
+      SCALE_Y: 1.2
+      SCALE_Z: 1.3
+    results:
+      OUTPUT:
+        name: expected/affine_transform.gml
+        type: vector
+
+  - algorithm: native:renametablefield
+    name: Rename table field
+    params:
+      FIELD: id2
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+      NEW_NAME: id_renamed
+    results:
+      OUTPUT:
+        name: expected/renamed_field.gml
+        type: vector
+
+  - algorithm: native:filterbygeometry
+    name: Filter by geometry type polygon input
+    params:
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      LINES:
+        name: expected/filter_geom_polys_line.gml
+        type: vector
+      NO_GEOMETRY:
+        name: expected/filter_geom_polys_null.gml
+        type: vector
+      POINTS:
+        name: expected/filter_geom_polys_point.gml
+        type: vector
+      POLYGONS:
+        name: expected/filter_geom_polys_poly.gml
+        type: vector
+
+  - algorithm: native:filterbygeometry
+    name: Filter by geometry type point input
+    params:
+      INPUT:
+        name: points.gml|layername=points
+        type: vector
+    results:
+      LINES:
+        name: expected/filter_geom_points_line.gml
+        type: vector
+      NO_GEOMETRY:
+        name: expected/filter_geom_points_null.gml
+        type: vector
+      POINTS:
+        name: expected/filter_geom_points_point.gml
+        type: vector
+      POLYGONS:
+        name: expected/filter_geom_points_poly.gml
+        type: vector
+
+  - algorithm: native:filterbygeometry
+    name: Filter by geometry type line input
+    params:
+      INPUT:
+        name: lines.gml|layername=lines
+        type: vector
+    results:
+      LINES:
+        name: expected/filter_geom_lines_line.gml
+        type: vector
+      NO_GEOMETRY:
+        name: expected/filter_geom_lines_null.gml
+        type: vector
+      POINTS:
+        name: expected/filter_geom_lines_point.gml
+        type: vector
+      POLYGONS:
+        name: expected/filter_geom_lines_poly.gml
+        type: vector
+
 
 # See ../README.md for a description of the file format

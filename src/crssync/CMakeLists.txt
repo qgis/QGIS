@@ -18,24 +18,27 @@ TARGET_LINK_LIBRARIES(crssync
 )
 
 IF(MSVC AND NOT USING_NMAKE)
-	ADD_CUSTOM_TARGET(synccrsdb
-		COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/crssync.exe
-		DEPENDS crssync
-	)
+  ADD_CUSTOM_TARGET(synccrsdb
+    COMMENT "Running crssync"
+    COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_CFG_INTDIR}/crssync.exe
+    DEPENDS crssync
+  )
 ELSEIF(CMAKE_CROSSCOMPILING AND NOT MXE)
   SET(NATIVE_CRSSYNC_BIN CACHE PATH "Path to a natively compiled synccrsdb binary")
   IF(NOT NATIVE_CRSSYNC_BIN)
     MESSAGE(FATAL_ERROR "NATIVE_CRSSYNC_BIN needs to be defined when cross-compiling")
   ENDIF()
   ADD_CUSTOM_TARGET(synccrsdb
+    COMMENT "Running native crssync"
     COMMAND ${NATIVE_CRSSYNC_BIN}
     DEPENDS crssync
   )
 ELSE()
-	ADD_CUSTOM_TARGET(synccrsdb
-		COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/crssync
-		DEPENDS crssync
-	)
+  ADD_CUSTOM_TARGET(synccrsdb
+    COMMENT "Running crssync"
+    COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/crssync
+    DEPENDS crssync
+  )
 ENDIF()
 
 INSTALL(CODE "MESSAGE(\"Installing crssync ...\")")

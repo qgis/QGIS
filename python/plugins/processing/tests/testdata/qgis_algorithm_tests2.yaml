@@ -184,7 +184,7 @@ tests:
         type: rasterhash
 
   - algorithm: native:removenullgeometries
-    name: Remove null geometries
+    name: Remove null geometries (do not remove empty)
     params:
       INPUT:
         name: polys.gml
@@ -192,6 +192,75 @@ tests:
     results:
       OUTPUT:
         name: expected/remove_null_polys.gml
+        type: vector
+
+  - algorithm: native:removenullgeometries
+    name: Remove null geometries (remove empty)
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      REMOVE_EMPTY: true
+    results:
+      OUTPUT:
+        name: expected/remove_null_polys.gml
+        type: vector
+
+  - algorithm: native:removenullgeometries
+    name: Remove null geometries (do not remove empty, but there is empty data)
+    params:
+      INPUT:
+        name: custom/multi_polys_with_empty_geoms.gpkg|layername=multi_polys_with_empty_geoms
+        type: vector
+    results:
+      OUTPUT:
+        name: ogr:dbname='expected/multi_polys_non_null_one_empty.gpkg' table="output" (geom) sql=
+        uri: expected/multi_polys_non_null_one_empty.gpkg|layername=multi_polys_non_null_one_empty
+        type: vector
+
+  - algorithm: native:removenullgeometries
+    name: Remove null geometries (remove empty, and there is empty data)
+    params:
+      INPUT:
+        name: custom/multi_polys_with_empty_geoms.gpkg|layername=multi_polys_with_empty_geoms
+        type: vector
+      REMOVE_EMPTY: true
+    results:
+      OUTPUT:
+        name: expected/multi_polys_non_null_non_empty.gml
+        type: vector
+
+  - algorithm: native:removenullgeometries
+    name: Remove null geometries, 2 outputs (do not remove empty, but there is empty data)
+    params:
+      INPUT:
+        name: custom/multi_polys_with_empty_geoms.gpkg|layername=multi_polys_with_empty_geoms
+        type: vector
+    results:
+      OUTPUT:
+        name: ogr:dbname='expected/results_remove_null_geometries.gpkg' table="output" (geom) sql=
+        uri: expected/results_remove_null_geometries.gpkg|layername=do_not_remove_empty_non_null
+        type: vector
+      NULL_OUTPUT:
+        name: ogr:dbname='expected/results_remove_null_geometries.gpkg' table="output" (geom) sql=
+        uri: expected/results_remove_null_geometries.gpkg|layername=do_not_remove_empty_null
+        type: vector
+
+  - algorithm: native:removenullgeometries
+    name: Remove null geometries, 2 outputs (remove empty, and there is empty data)
+    params:
+      INPUT:
+        name: custom/multi_polys_with_empty_geoms.gpkg|layername=multi_polys_with_empty_geoms
+        type: vector
+      REMOVE_EMPTY: true
+    results:
+      OUTPUT:
+        name: ogr:dbname='expected/results_remove_null_geometries.gpkg' table="output" (geom) sql=
+        uri: expected/results_remove_null_geometries.gpkg|layername=remove_empty_non_null
+        type: vector
+      NULL_OUTPUT:
+        name: ogr:dbname='expected/results_remove_null_geometries.gpkg' table="output" (geom) sql=
+        uri: expected/results_remove_null_geometries.gpkg|layername=remove_empty_null
         type: vector
 
   - algorithm: native:extractbyexpression
@@ -234,7 +303,7 @@ tests:
         name: expected/extend_multilines.gml
         type: vector
 
-  - algorithm: qgis:extractspecificvertices
+  - algorithm: native:extractspecificvertices
     name: Extract specific vertices lines
     params:
       INPUT:
@@ -249,7 +318,7 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:extractspecificvertices
+  - algorithm: native:extractspecificvertices
     name: Extract specific vertices polygons
     params:
       INPUT:
@@ -378,7 +447,7 @@ tests:
         hash: 71aecb383a686d78ea0e677901a8a93f822b9897d7a9e23ba4ebf24d
         type: rasterhash
 
-  - algorithm: qgis:geometrybyexpression
+  - algorithm: native:geometrybyexpression
     name: Geometry by expression (point)
     params:
       EXPRESSION: 'translate( $geometry,1,1)'
@@ -393,7 +462,7 @@ tests:
         name: expected/geometry_by_expression_point.gml
         type: vector
 
-  - algorithm: qgis:geometrybyexpression
+  - algorithm: native:geometrybyexpression
     name: Geometry by expression (polygon)
     params:
       EXPRESSION: ' translate( centroid($geometry),1,1)'
@@ -411,7 +480,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:geometrybyexpression
+  - algorithm: native:geometrybyexpression
     name: Geometry by expression (line)
     params:
       EXPRESSION: ' translate( $geometry,1,1)'
@@ -535,7 +604,7 @@ tests:
         name: expected/snap_geometries.gml
         type: vector
 
-  - algorithm: qgis:poleofinaccessibility
+  - algorithm: native:poleofinaccessibility
     name: Pole of inaccessibility (polygons)
     params:
       INPUT:
@@ -646,15 +715,6 @@ tests:
         name: expected/extract_by_attribute_greater.gml
         type: vector
 
-  - algorithm: qgis:createattributeindex
-    name: Create Attribute Index (only tests for python errors, does not check result)
-    params:
-      FIELD: fid
-      INPUT:
-        name: lines.gml
-        type: vector
-    results: {}
-
   - algorithm: qgis:deletecolumn
     name: Delete columns (multiple)
     params:
@@ -679,7 +739,7 @@ tests:
         name: expected/delete_column.gml
         type: vector
 
-  - algorithm: qgis:createpointslayerfromtable
+  - algorithm: native:createpointslayerfromtable
     name: Create points from table
     params:
       INPUT:
@@ -1116,7 +1176,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:orthogonalize
+  - algorithm: native:orthogonalize
     name: Orthogonalize polys
     params:
       INPUT:
@@ -1130,7 +1190,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:orthogonalize
+  - algorithm: native:orthogonalize
     name: Orthogonalize lines
     params:
       INPUT:
@@ -1914,7 +1974,7 @@ tests:
           - d
           - type
 
-  - algorithm: qgis:createattributeindex
+  - algorithm: native:createattributeindex
     name: Create attribute index
     params:
       FIELD: id
@@ -1928,7 +1988,7 @@ tests:
         type: vector
         in_place_result: true
 
-  - algorithm: qgis:createspatialindex
+  - algorithm: native:createspatialindex
     name: Create spatial index
     params:
       INPUT:
@@ -1941,7 +2001,7 @@ tests:
         type: vector
         in_place_result: true
 
-  - algorithm: qgis:truncatetable
+  - algorithm: native:truncatetable
     name: Truncate table
     params:
       INPUT:

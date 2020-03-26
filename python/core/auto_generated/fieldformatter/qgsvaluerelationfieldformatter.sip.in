@@ -25,7 +25,7 @@ features on another layer.
   public:
     struct ValueRelationItem
     {
-      ValueRelationItem( const QVariant &key, const QString &value );
+      ValueRelationItem( const QVariant &key, const QString &value, const QString &description = QString() );
 %Docstring
 Constructor for ValueRelationItem
 %End
@@ -37,6 +37,7 @@ Constructor for ValueRelationItem
 
       QVariant key;
       QString value;
+      QString description;
     };
 
     typedef QVector < QgsValueRelationFieldFormatter::ValueRelationItem > ValueRelationCache;
@@ -64,7 +65,7 @@ Utility to convert a list or a string representation of an (hstore style: {1,2..
 .. versionadded:: 3.2
 %End
 
-    static QgsValueRelationFieldFormatter::ValueRelationCache createCache( const QVariantMap &config, const QgsFeature &formFeature = QgsFeature() );
+    static QgsValueRelationFieldFormatter::ValueRelationCache createCache( const QVariantMap &config, const QgsFeature &formFeature = QgsFeature(), const QgsFeature &parentFormFeature = QgsFeature() );
 %Docstring
 Create a cache for a value relation field.
 This can be used to keep the value map in the local memory
@@ -72,6 +73,7 @@ if doing multiple lookups in a loop.
 
 :param config: The widget configuration
 :param formFeature: The feature currently being edited with current attribute values
+:param parentFormFeature: For embedded forms only, the feature currently being edited in the parent form with current attribute values
 
 :return: A kvp list of values for the widget
 
@@ -112,9 +114,45 @@ Returns a list of variables required by the form context ``expression``
 .. versionadded:: 3.2
 %End
 
-    static bool expressionIsUsable( const QString &expression, const QgsFeature &feature );
+    static bool expressionRequiresParentFormScope( const QString &expression );
 %Docstring
-Check whether the ``feature`` has all values required by the ``expression``
+Check if the ``expression`` requires a parent form scope (i.e. if it uses fields
+or geometry of the parent form's currently edited feature).
+
+:param expression: The widget's filter expression
+
+:return: ``True`` if the expression requires a parent form scope
+
+.. versionadded:: 3.14
+%End
+
+    static QSet<QString> expressionParentFormAttributes( const QString &expression );
+%Docstring
+Returns a list of attributes required by the parent form's form context ``expression``
+
+:param expression: Form filter expression
+
+:return: list of parent attributes required by the expression
+
+.. versionadded:: 3.14
+%End
+
+    static QSet<QString> expressionParentFormVariables( const QString &expression );
+%Docstring
+Returns a list of variables required by the parent form's form context ``expression``
+
+:param expression: Form filter expression
+
+:return: list of parent variables required by the expression
+
+.. versionadded:: 3.14
+%End
+
+
+    static bool expressionIsUsable( const QString &expression, const QgsFeature &feature, const QgsFeature &parentFeature = QgsFeature() );
+%Docstring
+Check whether the ``feature`` has all values required by the ``expression``,
+optionally checks for ``parentFeature``
 
 :return: ``True`` if the expression can be used
 
@@ -129,6 +167,7 @@ Returns the (possibly NULL) layer from the widget's ``config`` and ``project``
 %End
 
 
+    virtual QVariantList availableValues( const QVariantMap &config, int countLimit, const QgsFieldFormatterContext &context ) const;
 
 };
 

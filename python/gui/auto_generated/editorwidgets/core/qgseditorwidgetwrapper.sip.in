@@ -10,6 +10,7 @@
 
 
 
+
 class QgsEditorWidgetWrapper : QgsWidgetWrapper
 {
 %Docstring
@@ -187,7 +188,6 @@ of attribute values failing enforced field constraints.
 .. versionadded:: 3.0
 %End
 
-
     QString constraintFailureReason() const;
 %Docstring
 Returns the reason why a constraint check has failed (or an empty string
@@ -304,6 +304,19 @@ to reflect the new values.
 Will call the value() method to determine the emitted value
 %End
 
+    virtual void parentFormValueChanged( const QString &attribute, const QVariant &value );
+%Docstring
+Is called in embedded form widgets when an ``attribute`` ``value`` in
+the parent form has changed.
+
+The default implementations does nothing.
+Subclasses should reimplement this method to notify the form widgets
+that something has changed in case they have filter expressions that
+depend on the parent form scope.
+
+.. versionadded:: 3.14
+%End
+
   protected:
 
     virtual void updateConstraintWidgetStatus();
@@ -346,7 +359,6 @@ attribute ``attributeName`` to ``attributeValue``
 
 .. versionadded:: 3.2
 %End
-
 
 };
 

@@ -40,7 +40,7 @@ QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )
     mCrs = vectorLayer->crs();
     mTransform.setSourceCrs( mCrs );
   }
-  mTransform.setDestinationCrs( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
+  mTransform.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
 }
 
 void QgsJsonExporter::setVectorLayer( QgsVectorLayer *vectorLayer )
@@ -436,6 +436,9 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
       case QMetaType::Bool:
         j = val.toBool();
         break;
+      case QMetaType::QByteArray:
+        j = val.toByteArray().toBase64().toStdString();
+        break;
       default:
         j = val.toString().toStdString();
         break;
@@ -446,11 +449,14 @@ json QgsJsonUtils::jsonFromVariant( const QVariant &val )
 
 QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
 {
+  // tracks whether entire json string is a primitive
+  bool isPrimitive = true;
+
   std::function<QVariant( json )> _parser { [ & ]( json jObj ) -> QVariant {
       QVariant result;
-      QString errorMessage;
       if ( jObj.is_array() )
       {
+        isPrimitive = false;
         QVariantList results;
         for ( const auto &item : jObj )
         {
@@ -460,6 +466,7 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
       }
       else if ( jObj.is_object() )
       {
+        isPrimitive = false;
         QVariantMap results;
         for ( const auto  &item : jObj.items() )
         {
@@ -490,7 +497,14 @@ QVariant QgsJsonUtils::parseJson( const std::string &jsonString )
         }
         else if ( jObj.is_string() )
         {
-          result = QString::fromStdString( jObj.get<std::string>() );
+          if ( isPrimitive && jObj.get<std::string>().length() == 0 )
+          {
+            result = QString::fromStdString( jObj.get<std::string>() ).append( "\"" ).insert( 0, "\"" );
+          }
+          else
+          {
+            result = QString::fromStdString( jObj.get<std::string>() );
+          }
         }
         else if ( jObj.is_null() )
         {

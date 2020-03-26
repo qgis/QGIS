@@ -72,9 +72,19 @@ QgsStyleItemsListWidget::QgsStyleItemsListWidget( QWidget *parent )
   btnAdvanced->hide(); // advanced button is hidden by default
   btnAdvanced->setMenu( new QMenu( this ) );
 
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 10;
+#else
+  double iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 10;
+#endif
   viewSymbols->setIconSize( QSize( static_cast< int >( iconSize ), static_cast< int >( iconSize * 0.9 ) ) );  // ~100, 90 on low dpi
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 2;
+#else
+  double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 2;
+#endif
   mSymbolTreeView->setIconSize( QSize( static_cast< int >( treeIconSize ), static_cast< int >( treeIconSize ) ) );
 
   viewSymbols->setSelectionBehavior( QAbstractItemView::SelectRows );

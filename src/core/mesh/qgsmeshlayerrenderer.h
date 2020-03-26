@@ -33,6 +33,7 @@ class QgsMeshLayer;
 #include "qgsmeshlayer.h"
 #include "qgssymbol.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsmeshtracerenderer.h"
 
 class QgsRenderContext;
 
@@ -44,6 +45,7 @@ class QgsRenderContext;
  */
 class QgsMeshLayerRendererFeedback : public QgsRasterBlockFeedback
 {
+    Q_OBJECT
 };
 
 
@@ -58,10 +60,11 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
   QgsMeshDatasetIndex mActiveScalarDatasetIndex;
   QVector<double> mScalarDatasetValues;
   QgsMeshDataBlock mScalarActiveFaceFlagValues;
-  bool mScalarDataOnVertices = true;
+  QgsMeshDatasetGroupMetadata::DataType mScalarDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
   double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
   double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
-  QgsMeshRendererScalarSettings::DataInterpolationMethod mDataInterpolationMethod = QgsMeshRendererScalarSettings::None;
+  QgsMeshRendererScalarSettings::DataResamplingMethod mDataInterpolationMethod = QgsMeshRendererScalarSettings::None;
+  std::unique_ptr<QgsMesh3dAveragingMethod> mScalarAveragingMethod;
 
   // vector dataset
   QgsMeshDatasetIndex mActiveVectorDatasetIndex;
@@ -71,7 +74,8 @@ struct CORE_NO_EXPORT QgsMeshLayerRendererCache
   double mVectorDatasetMagMaximum = std::numeric_limits<double>::quiet_NaN();
   double mVectorDatasetGroupMagMinimum = std::numeric_limits<double>::quiet_NaN();
   double mVectorDatasetGroupMagMaximum = std::numeric_limits<double>::quiet_NaN();
-  bool mVectorDataOnVertices = true;
+  QgsMeshDatasetGroupMetadata::DataType mVectorDataType = QgsMeshDatasetGroupMetadata::DataType::DataOnVertices;
+  std::unique_ptr<QgsMesh3dAveragingMethod> mVectorAveragingMethod;
 };
 
 ///@endcond
@@ -94,13 +98,20 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
 
   private:
     void renderMesh();
-    void renderMesh( const QgsMeshRendererMeshSettings &settings, const QVector<QgsMeshFace> &faces, const QList<int> &facesInExtent );
+    void renderEdgeMesh( const QgsMeshRendererMeshSettings &settings, const QList<int> &edgesInExtent );
+    void renderFaceMesh( const QgsMeshRendererMeshSettings &settings, const QVector<QgsMeshFace> &faces, const QList<int> &facesInExtent );
     void renderScalarDataset();
+    void renderScalarDatasetOnEdges( const QgsMeshRendererScalarSettings &scalarSettings );
+    void renderScalarDatasetOnFaces( const QgsMeshRendererScalarSettings &scalarSettings );
+
     void renderVectorDataset();
+    void copyTriangularMeshes( QgsMeshLayer *layer, QgsRenderContext &context );
     void copyScalarDatasetValues( QgsMeshLayer *layer );
     void copyVectorDatasetValues( QgsMeshLayer *layer );
     void calculateOutputSize();
-
+    QgsPointXY fractionPoint( const QgsPointXY &p1, const QgsPointXY &p2, double fraction ) const;
+    bool mIsMeshSimplificationActive = false;
+    QColor colorAt( QgsColorRampShader *shader, double val ) const;
   protected:
     //! feedback class for cancellation
     std::unique_ptr<QgsMeshLayerRendererFeedback> mFeedback;
@@ -111,10 +122,13 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     // copy from mesh layer
     QgsTriangularMesh mTriangularMesh;
 
+    // copy from mesh layer
+    QgsRectangle mLayerExtent;
+
     // copy of the scalar dataset
     QVector<double> mScalarDatasetValues;
     QgsMeshDataBlock mScalarActiveFaceFlagValues;
-    bool mScalarDataOnVertices = true;
+    QgsMeshDatasetGroupMetadata::DataType mScalarDataType = QgsMeshDatasetGroupMetadata::DataOnVertices;
     double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
     double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
 
@@ -125,7 +139,7 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     double mVectorDatasetMagMaximum = std::numeric_limits<double>::quiet_NaN();
     double mVectorDatasetGroupMagMinimum = std::numeric_limits<double>::quiet_NaN();
     double mVectorDatasetGroupMagMaximum = std::numeric_limits<double>::quiet_NaN();
-    bool mVectorDataOnVertices = true;
+    QgsMeshDatasetGroupMetadata::DataType mVectorDataType = QgsMeshDatasetGroupMetadata::DataOnVertices;
 
     // copy of rendering settings
     QgsMeshRendererSettings mRendererSettings;

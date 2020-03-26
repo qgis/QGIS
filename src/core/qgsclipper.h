@@ -115,29 +115,29 @@ class CORE_EXPORT QgsClipper
 
     // Trims the given feature to the given boundary. Returns the
     // trimmed feature in the outX and outY vectors.
-    static void trimFeatureToBoundary( const QVector<double> &inX,
-                                       const QVector<double> &inY,
-                                       QVector<double> &outX,
-                                       QVector<double> &outY,
-                                       Boundary b,
-                                       bool shapeOpen );
+    static inline void trimFeatureToBoundary( const QVector<double> &inX,
+        const QVector<double> &inY,
+        QVector<double> &outX,
+        QVector<double> &outY,
+        Boundary b,
+        bool shapeOpen );
 
-    static void trimPolygonToBoundary( const QPolygonF &inPts, QPolygonF &outPts, const QgsRectangle &rect, Boundary b, double boundaryValue );
+    static inline void trimPolygonToBoundary( const QPolygonF &inPts, QPolygonF &outPts, const QgsRectangle &rect, Boundary b, double boundaryValue );
 
     // Determines if a point is inside or outside the given boundary
-    static bool inside( double x, double y, Boundary b );
+    static inline bool inside( double x, double y, Boundary b );
 
-    static bool inside( QPointF pt, Boundary b, double val );
+    static inline bool inside( QPointF pt, Boundary b, double val );
 
     // Calculates the intersection point between a line defined by a
     // (x1, y1), and (x2, y2) and the given boundary
-    static QgsPointXY intersect( double x1, double y1,
-                                 double x2, double y2,
-                                 Boundary b );
+    static inline QgsPointXY intersect( double x1, double y1,
+                                        double x2, double y2,
+                                        Boundary b );
 
-    static QPointF intersectRect( QPointF pt1,
-                                  QPointF pt2,
-                                  Boundary b, const QgsRectangle &rect );
+    static inline QPointF intersectRect( QPointF pt1,
+                                         QPointF pt2,
+                                         Boundary b, const QgsRectangle &rect );
 
     //Implementation of 'Fast clipping' algorithm (Sobkow et al. 1987, Computers & Graphics Vol.11, 4, p.459-467)
     static bool clipLineSegment( double xLeft, double xRight, double yBottom, double yTop, double &x0, double &y0, double &x1, double &y1 );

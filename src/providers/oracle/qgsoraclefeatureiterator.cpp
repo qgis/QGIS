@@ -70,23 +70,22 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
     // ensure that all attributes required for expression filter are being fetched
     if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
     {
-      const auto constReferencedColumns = mRequest.filterExpression()->referencedColumns();
-      for ( const QString &field : constReferencedColumns )
+      const QSet<int> attributeIndexes = mRequest.filterExpression()->referencedAttributeIndexes( mSource->mFields );
+      for ( int attrIdx : attributeIndexes )
       {
-        int attrIdx = mSource->mFields.lookupField( field );
         if ( !mAttributeList.contains( attrIdx ) )
           mAttributeList << attrIdx;
       }
     }
 
     // ensure that all attributes required for order by are fetched
-    const QSet< QString > orderByAttributes = mRequest.orderBy().usedAttributes();
-    for ( const QString &attr : orderByAttributes )
+    const auto orderByAttributes = mRequest.orderBy().usedAttributeIndices( mSource->mFields );
+    for ( int attrIdx : orderByAttributes )
     {
-      int attrIndex = mSource->mFields.lookupField( attr );
-      if ( !mAttributeList.contains( attrIndex ) )
-        mAttributeList << attrIndex;
+      if ( !mAttributeList.contains( attrIdx ) )
+        mAttributeList << attrIdx;
     }
+
   }
   else
     mAttributeList = mSource->mFields.allAttributesList();
@@ -547,8 +546,10 @@ bool QgsOracleFeatureIterator::execQuery( const QString &query, const QVariantLi
       // ORA-12170: TNS:Connect timeout occurred
       // Or if  there is a problem with the network connectivity try again N times
       // ORA-03114: Not Connected to Oracle
-      if ( mQry.lastError().number() == 12170 ||
-           mQry.lastError().number() == 3114 )
+      if ( mQry.lastError().nativeErrorCode() == QLatin1String( "12170" ) ||
+           mQry.lastError().nativeErrorCode().compare( QLatin1String( "ORA-12170" ), Qt::CaseInsensitive ) == 0 ||
+           mQry.lastError().nativeErrorCode() == QLatin1String( "3114" ) ||
+           mQry.lastError().nativeErrorCode().compare( QLatin1String( "ORA-3114" ), Qt::CaseInsensitive ) == 0 )
       {
         // restart connection
         mConnection->reconnect();

@@ -47,8 +47,8 @@ void QgsRasterLayerRendererFeedback::onNewData()
 
   // TODO: update only the area that got new data
 
-  QgsDebugMsg( QStringLiteral( "new raster preview! %1" ).arg( mLastPreview.msecsTo( QTime::currentTime() ) ) );
-  QTime t;
+  QgsDebugMsgLevel( QStringLiteral( "new raster preview! %1" ).arg( mLastPreview.msecsTo( QTime::currentTime() ) ), 3 );
+  QElapsedTimer t;
   t.start();
   QgsRasterBlockFeedback feedback;
   feedback.setPreviewOnly( true );
@@ -56,7 +56,7 @@ void QgsRasterLayerRendererFeedback::onNewData()
   QgsRasterIterator iterator( mR->mPipe->last() );
   QgsRasterDrawer drawer( &iterator );
   drawer.draw( mR->renderContext()->painter(), mR->mRasterViewPort, &mR->renderContext()->mapToPixel(), &feedback );
-  QgsDebugMsg( QStringLiteral( "total raster preview time: %1 ms" ).arg( t.elapsed() ) );
+  QgsDebugMsgLevel( QStringLiteral( "total raster preview time: %1 ms" ).arg( t.elapsed() ), 3 );
   mLastPreview = QTime::currentTime();
 }
 
@@ -102,7 +102,9 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     {
       try
       {
-        myProjectedViewExtent = rendererContext.coordinateTransform().transformBoundingBox( rendererContext.extent() );
+        QgsCoordinateTransform ct = rendererContext.coordinateTransform();
+        ct.setBallparkTransformsAreAppropriate( true );
+        myProjectedViewExtent = ct.transformBoundingBox( rendererContext.extent() );
       }
       catch ( QgsCsException &cs )
       {
@@ -113,7 +115,9 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
     try
     {
-      myProjectedLayerExtent = rendererContext.coordinateTransform().transformBoundingBox( layer->extent() );
+      QgsCoordinateTransform ct = rendererContext.coordinateTransform();
+      ct.setBallparkTransformsAreAppropriate( true );
+      myProjectedLayerExtent = ct.transformBoundingBox( layer->extent() );
     }
     catch ( QgsCsException &cs )
     {
@@ -132,7 +136,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   QgsRectangle myRasterExtent = layer->ignoreExtents() ? myProjectedViewExtent : myProjectedViewExtent.intersect( myProjectedLayerExtent );
   if ( myRasterExtent.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "draw request outside view extent." ) );
+    QgsDebugMsgLevel( QStringLiteral( "draw request outside view extent." ), 2 );
     // nothing to do
     return;
   }
@@ -223,6 +227,25 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   QgsRasterRenderer *rasterRenderer = mPipe->renderer();
   if ( rasterRenderer && !( rendererContext.flags() & QgsRenderContext::RenderPreviewJob ) )
     layer->refreshRendererIfNeeded( rasterRenderer, rendererContext.extent() );
+
+  if ( layer->temporalProperties()->isActive() && renderContext()->isTemporal() )
+  {
+    switch ( layer->temporalProperties()->mode() )
+    {
+      case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+        break;
+
+      case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+        // in this mode we need to pass on the desired render temporal range to the data provider
+        if ( mPipe->provider()->temporalCapabilities() )
+        {
+          mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( rendererContext.temporalRange() );
+          mPipe->provider()->temporalCapabilities()->setRequestedReferenceTemporalRange( layer->temporalProperties()->referenceTemporalRange() );
+          mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( layer->temporalProperties()->intervalHandlingMethod() );
+        }
+        break;
+    }
+  }
 }
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
@@ -240,7 +263,7 @@ bool QgsRasterLayerRenderer::render()
 
   //R->draw( mPainter, mRasterViewPort, &mMapToPixel );
 
-  QTime time;
+  QElapsedTimer time;
   time.start();
   //
   //

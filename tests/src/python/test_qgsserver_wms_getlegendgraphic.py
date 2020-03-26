@@ -93,6 +93,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello,db_point",
             "LAYERTITLE": "FALSE",
+            "RULELABEL": "FALSE",
             "FORMAT": "image/png",
             "HEIGHT": "500",
             "WIDTH": "500",
@@ -174,9 +175,32 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'ITEMFONTFAMILY': self.fontFamily,
             'ITEMFONTSIZE': '20',
             'LAYERTITLE': 'TRUE',
+            'RULELABEL': 'TRUE'
         }
         qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_test", 250, QSize(15, 15))
+
+        # no set of LAYERTITLE and RULELABEL means they are true
+        parms = {
+            'MAP': self.testdata_path + "test_project.qgs",
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetLegendGraphic',
+            'FORMAT': 'image/png',
+            # 'WIDTH': '20', # optional
+            # 'HEIGHT': '20', # optional
+            'LAYER': u'testlayer%20èé',
+            'LAYERFONTBOLD': 'TRUE',
+            'LAYERFONTSIZE': '30',
+            'ITEMFONTBOLD': 'TRUE',
+            'LAYERFONTFAMILY': self.fontFamily,
+            'ITEMFONTFAMILY': self.fontFamily,
+            'ITEMFONTSIZE': '20'
+        }
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        r, h = self._result(self._execute_request(qs))
+
         self._img_diff_error(r, h, "WMS_GetLegendGraphic_test", 250, QSize(15, 15))
 
         parms = {
@@ -189,6 +213,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             # 'HEIGHT': '20', # optional
             'LAYER': u'testlayer%20èé',
             'LAYERTITLE': 'FALSE',
+            'RULELABEL': 'FALSE'
         }
         qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
@@ -205,15 +230,15 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'LAYER': u'testlayer%20èé',
             'LAYERFONTBOLD': 'TRUE',
             'LAYERFONTSIZE': '30',
-            'LAYERFONTFAMILY': self.fontFamily,
-            'ITEMFONTFAMILY': self.fontFamily,
             'ITEMFONTBOLD': 'TRUE',
             'ITEMFONTSIZE': '20',
-            'RULELABEL': 'TRUE',
+            'LAYERFONTFAMILY': self.fontFamily,
+            'ITEMFONTFAMILY': self.fontFamily,
+            'RULELABEL': 'FALSE'
         }
         qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_test", 250, QSize(15, 15))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_false", 250, QSize(15, 15))
 
         parms = {
             'MAP': self.testdata_path + "test_project.qgs",
@@ -228,11 +253,32 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             'ITEMFONTSIZE': '20',
             'LAYERFONTFAMILY': self.fontFamily,
             'ITEMFONTFAMILY': self.fontFamily,
-            'RULELABEL': 'FALSE',
+            'LAYERTITLE': 'FALSE',
+            'RULELABEL': 'TRUE'
         }
         qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_false", 250, QSize(15, 15))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_true", 250, QSize(15, 15))
+
+        # no set of RULELABEL means it is true
+        parms = {
+            'MAP': self.testdata_path + "test_project.qgs",
+            'SERVICE': 'WMS',
+            'VERSION': '1.3.0',
+            'REQUEST': 'GetLegendGraphic',
+            'FORMAT': 'image/png',
+            'LAYER': u'testlayer%20èé',
+            'LAYERFONTBOLD': 'TRUE',
+            'LAYERFONTSIZE': '30',
+            'ITEMFONTBOLD': 'TRUE',
+            'ITEMFONTSIZE': '20',
+            'LAYERFONTFAMILY': self.fontFamily,
+            'ITEMFONTFAMILY': self.fontFamily,
+            'LAYERTITLE': 'FALSE'
+        }
+        qs = '?' + '&'.join([u"%s=%s" % (k, v) for k, v in parms.items()])
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetLegendGraphic_rulelabel_true", 250, QSize(15, 15))
 
     def test_wms_getLegendGraphics_rule(self):
         """Test that does not return an exception but an image"""
@@ -274,6 +320,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello",
             "LAYERTITLE": "FALSE",
+            "RULELABEL": "FALSE",
             "FORMAT": "image/png",
             "HEIGHT": "500",
             "WIDTH": "500",
@@ -291,6 +338,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello",
             "LAYERTITLE": "FALSE",
+            "RULELABEL": "FALSE",
             "FORMAT": "image/png",
             "HEIGHT": "500",
             "WIDTH": "500",
@@ -309,6 +357,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello",
             "LAYERTITLE": "FALSE",
+            "RULELABEL": "FALSE",
             "FORMAT": "image/png",
             "HEIGHT": "500",
             "WIDTH": "500",
@@ -326,6 +375,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello",
             "LAYERTITLE": "FALSE",
+            "RULELABEL": "FALSE",
             "FORMAT": "image/png",
             "HEIGHT": "500",
             "WIDTH": "500",
@@ -344,6 +394,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello",
             "LAYERTITLE": "FALSE",
+            "RULELABEL": "FALSE",
             "BOXSPACE": "100",
             "FORMAT": "image/png",
             "HEIGHT": "500",
@@ -362,6 +413,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello",
             "LAYERTITLE": "FALSE",
+            "RULELABEL": "FALSE",
             "SYMBOLSPACE": "100",
             "FORMAT": "image/png",
             "HEIGHT": "500",
@@ -380,6 +432,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello",
             "LAYERTITLE": "FALSE",
+            "RULELABEL": "FALSE",
             "ICONLABELSPACE": "100",
             "FORMAT": "image/png",
             "HEIGHT": "500",
@@ -398,6 +451,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello",
             "LAYERTITLE": "FALSE",
+            "RULELABEL": "FALSE",
             "SYMBOLWIDTH": "50",
             "SYMBOLHEIGHT": "30",
             "FORMAT": "image/png",
@@ -465,6 +519,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello,db_point",
             "LAYERTITLE": "FALSE",
+            "RULELABEL": "FALSE",
             "FORMAT": "image/png",
             "SRCHEIGHT": "500",
             "SRCWIDTH": "500",
@@ -483,6 +538,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello,db_point",
             "LAYERTITLE": "FALSE",
+            "RULELABEL": "FALSE",
             "FORMAT": "image/png",
             "SRCHEIGHT": "500",
             "SRCWIDTH": "500",
@@ -501,6 +557,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello,db_point",
             "LAYERTITLE": "FALSE",
+            "RULELABEL": "FALSE",
             "FORMAT": "image/png",
             "HEIGHT": "500",
             "WIDTH": "500",
@@ -519,6 +576,7 @@ class TestQgsServerWMSGetLegendGraphic(TestQgsServerWMSTestBase):
             "REQUEST": "GetLegendGraphic",
             "LAYER": "Country,Hello,db_point",
             "LAYERTITLE": "FALSE",
+            "RULELABEL": "FALSE",
             "FORMAT": "image/png",
             "HEIGHT": "500",
             "WIDTH": "500",

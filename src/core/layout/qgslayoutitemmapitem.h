@@ -189,6 +189,13 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
      */
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    /**
+     * Returns the internal map layer used by this item, if available.
+     *
+     * \since QGIS 3.10.1
+     */
+    virtual QgsMapLayer *mapLayer();
+
     QgsExpressionContext createExpressionContext() const override;
 
   protected:

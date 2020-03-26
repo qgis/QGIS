@@ -86,6 +86,11 @@ class CORE_EXPORT sqlite3_statement_unique_ptr : public std::unique_ptr< sqlite3
     QString columnAsText( int column ) const;
 
     /**
+     * Returns the column value from the current statement row as raw byte array.
+     */
+    QByteArray columnAsBlob( int column ) const;
+
+    /**
      * Gets column value from the current statement row as a long long integer (64 bits).
      */
     qlonglong columnAsInt64( int column ) const;

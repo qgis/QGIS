@@ -1,5 +1,5 @@
 /*
- MDAL - mMesh Data Abstraction Library (MIT License)
+ MDAL - Mesh Data Abstraction Library (MIT License)
  Copyright (C) 2016 Lutra Consulting
  Copyright (C) 2018 Peter Petrik (zilolv at gmail dot com)
 */
@@ -14,9 +14,13 @@
 #include <string>
 #include <cmath>
 #include <cstring>
+#include <assert.h>
 
 #include "mdal_utils.hpp"
 #include "mdal_hdf5.hpp"
+#include "mdal_logger.hpp"
+
+#define FLO2D_NAN 0.0
 
 struct VertexCompare
 {
@@ -42,9 +46,21 @@ static std::string fileNameFromDir( const std::string &mainFileName, const std::
 
 static double getDouble( double val )
 {
-  if ( MDAL::equals( val, 0.0, 1e-8 ) )
+  if ( MDAL::equals( val, FLO2D_NAN, 1e-8 ) )
   {
     return MDAL_NAN;
+  }
+  else
+  {
+    return val;
+  }
+}
+
+static double toFlo2DDouble( double val )
+{
+  if ( std::isnan( val ) )
+  {
+    return FLO2D_NAN;
   }
   else
   {
@@ -69,12 +85,12 @@ void MDAL::DriverFlo2D::addStaticDataset(
                                           datFileName,
                                           groupName
                                         );
-  group->setIsOnVertices( false );
+  group->setDataLocation( MDAL_DataLocation::DataOnFaces );
   group->setIsScalar( true );
 
-  std::shared_ptr<MDAL::MemoryDataset> dataset = std::make_shared< MemoryDataset >( group.get() );
+  std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
   assert( vals.size() == dataset->valuesCount() );
-  dataset->setTime( 0.0 );
+  dataset->setTime( MDAL::RelativeTimestamp() );
   double *values = dataset->values();
   memcpy( values, vals.data(), vals.size() * sizeof( double ) );
   dataset->setStatistics( MDAL::calculateStatistics( dataset ) );
@@ -88,7 +104,7 @@ void MDAL::DriverFlo2D::parseCADPTSFile( const std::string &datFileName, std::ve
   std::string cadptsFile( fileNameFromDir( datFileName, "CADPTS.DAT" ) );
   if ( !MDAL::fileExists( cadptsFile ) )
   {
-    throw MDAL_Status::Err_FileNotFound;
+    throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not find file " + cadptsFile );
   }
 
   std::ifstream cadptsStream( cadptsFile, std::ifstream::in );
@@ -100,7 +116,7 @@ void MDAL::DriverFlo2D::parseCADPTSFile( const std::string &datFileName, std::ve
     std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() != 3 )
     {
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Error while loading CADPTS file, wrong lineparts count (3)" );
     }
     CellCenter cc;
     cc.id = MDAL::toSizeT( lineParts[1] ) - 1; //numbered from 1
@@ -120,7 +136,7 @@ void MDAL::DriverFlo2D::parseFPLAINFile( std::vector<double> &elevations,
   std::string fplainFile( fileNameFromDir( datFileName, "FPLAIN.DAT" ) );
   if ( !MDAL::fileExists( fplainFile ) )
   {
-    throw MDAL_Status::Err_FileNotFound;
+    throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Could not find file " + fplainFile );
   }
 
   std::ifstream fplainStream( fplainFile, std::ifstream::in );
@@ -132,7 +148,7 @@ void MDAL::DriverFlo2D::parseFPLAINFile( std::vector<double> &elevations,
     std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() != 7 )
     {
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Error while loading Fplain file, wrong lineparts count (7)" );
     }
     size_t cc_i = MDAL::toSizeT( lineParts[0] ) - 1; //numbered from 1
     for ( size_t j = 0; j < 4; ++j )
@@ -143,7 +159,7 @@ void MDAL::DriverFlo2D::parseFPLAINFile( std::vector<double> &elevations,
   }
 }
 
-static void addDatasetToGroup( std::shared_ptr<MDAL::DatasetGroup> group, std::shared_ptr<MDAL::MemoryDataset> dataset )
+static void addDatasetToGroup( std::shared_ptr<MDAL::DatasetGroup> group, std::shared_ptr<MDAL::MemoryDataset2D> dataset )
 {
   if ( group && dataset && dataset->valuesCount() > 0 )
   {
@@ -172,7 +188,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
   size_t nVertexs = mMesh->verticesCount();
   size_t ntimes = 0;
 
-  double time = 0.0;
+  RelativeTimestamp time = RelativeTimestamp();
   size_t face_idx = 0;
 
   std::shared_ptr<DatasetGroup> depthDsGroup = std::make_shared< DatasetGroup >(
@@ -181,7 +197,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
         datFileName,
         "Depth"
       );
-  depthDsGroup->setIsOnVertices( false );
+  depthDsGroup->setDataLocation( MDAL_DataLocation::DataOnFaces );
   depthDsGroup->setIsScalar( true );
 
 
@@ -191,7 +207,7 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
         datFileName,
         "Water Level"
       );
-  waterLevelDsGroup->setIsOnVertices( false );
+  waterLevelDsGroup->setDataLocation( MDAL_DataLocation::DataOnFaces );
   waterLevelDsGroup->setIsScalar( true );
 
   std::shared_ptr<DatasetGroup> flowDsGroup = std::make_shared< DatasetGroup >(
@@ -200,12 +216,12 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
         datFileName,
         "Velocity"
       );
-  flowDsGroup->setIsOnVertices( false );
+  flowDsGroup->setDataLocation( MDAL_DataLocation::DataOnFaces );
   flowDsGroup->setIsScalar( false );
 
-  std::shared_ptr<MDAL::MemoryDataset> flowDataset;
-  std::shared_ptr<MDAL::MemoryDataset> depthDataset;
-  std::shared_ptr<MDAL::MemoryDataset> waterLevelDataset;
+  std::shared_ptr<MDAL::MemoryDataset2D> flowDataset;
+  std::shared_ptr<MDAL::MemoryDataset2D> depthDataset;
+  std::shared_ptr<MDAL::MemoryDataset2D> waterLevelDataset;
 
   while ( std::getline( inStream, line ) )
   {
@@ -213,16 +229,16 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
     std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() == 1 )
     {
-      time = MDAL::toDouble( line );
+      time = RelativeTimestamp( MDAL::toDouble( line ), RelativeTimestamp::hours );
       ntimes++;
 
       if ( depthDataset ) addDatasetToGroup( depthDsGroup, depthDataset );
       if ( flowDataset ) addDatasetToGroup( flowDsGroup, flowDataset );
       if ( waterLevelDataset ) addDatasetToGroup( waterLevelDsGroup, waterLevelDataset );
 
-      depthDataset  = std::make_shared< MemoryDataset >( depthDsGroup.get() );
-      flowDataset = std::make_shared< MemoryDataset >( flowDsGroup.get() );
-      waterLevelDataset = std::make_shared< MemoryDataset >( waterLevelDsGroup.get() );
+      depthDataset  = std::make_shared< MemoryDataset2D >( depthDsGroup.get() );
+      flowDataset = std::make_shared< MemoryDataset2D >( flowDsGroup.get() );
+      waterLevelDataset = std::make_shared< MemoryDataset2D >( waterLevelDsGroup.get() );
 
       depthDataset->setTime( time );
       flowDataset->setTime( time );
@@ -234,25 +250,23 @@ void MDAL::DriverFlo2D::parseTIMDEPFile( const std::string &datFileName, const s
     else if ( ( lineParts.size() == 5 ) || ( lineParts.size() == 6 ) )
     {
       // new Vertex for time
-      if ( !depthDataset || !flowDataset || !waterLevelDataset ) throw MDAL_Status::Err_UnknownFormat;
-      if ( face_idx == nVertexs ) throw MDAL_Status::Err_IncompatibleMesh;
+      if ( !depthDataset || !flowDataset || !waterLevelDataset ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Depth, flow or water level dataset is not valid (null)" );
+      if ( face_idx == nVertexs ) throw MDAL::Error( MDAL_Status::Err_IncompatibleMesh, "Invalid face id" );
 
       // this is magnitude: getDouble(lineParts[2]);
-      flowDataset->values()[2 * face_idx] = getDouble( lineParts[3] );
-      flowDataset->values()[2 * face_idx + 1] = getDouble( lineParts[4] );
+      flowDataset->setVectorValue( face_idx, getDouble( lineParts[3] ),  getDouble( lineParts[4] ) );
 
       double depth = getDouble( lineParts[1] );
-      depthDataset->values()[face_idx] = depth;
+      depthDataset->setScalarValue( face_idx, depth );
 
       if ( !std::isnan( depth ) ) depth += elevations[face_idx];
-      waterLevelDataset->values()[face_idx] = depth;
+      waterLevelDataset->setScalarValue( face_idx, depth );
 
       face_idx ++;
-
     }
     else
     {
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to load TIMDEP file, found unknown format" );
     }
   }
 
@@ -292,12 +306,12 @@ void MDAL::DriverFlo2D::parseDEPTHFile( const std::string &datFileName, const st
   while ( std::getline( depthStream, line ) )
   {
     line = MDAL::rtrim( line );
-    if ( vertex_idx == nFaces ) throw MDAL_Status::Err_IncompatibleMesh;
+    if ( vertex_idx == nFaces ) throw MDAL::Error( MDAL_Status::Err_IncompatibleMesh, "Error while loading DEPTH file, invalid vertex index" );
 
     std::vector<std::string> lineParts = MDAL::split( line, ' ' );
     if ( lineParts.size() != 4 )
     {
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Error while loading DEPTH file, wrong lineparts count (4)" );
     }
 
     double val = getDouble( lineParts[3] );
@@ -337,13 +351,13 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
     // VELFP.OUT - COORDINATES (ELEM NUM, X, Y, MAX VEL) - Maximum floodplain flow velocity;
     while ( std::getline( velocityStream, line ) )
     {
-      if ( vertex_idx == nFaces ) throw MDAL_Status::Err_IncompatibleMesh;
+      if ( vertex_idx == nFaces ) throw MDAL::Error( MDAL_Status::Err_IncompatibleMesh, "Error while loading VELFP file, invalid vertex index" );
 
       line = MDAL::rtrim( line );
       std::vector<std::string> lineParts = MDAL::split( line, ' ' );
       if ( lineParts.size() != 4 )
       {
-        throw MDAL_Status::Err_UnknownFormat;
+        throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Error while loading VELFP file, wrong lineparts count (4)" );
       }
 
       double val = getDouble( lineParts[3] );
@@ -368,13 +382,13 @@ void MDAL::DriverFlo2D::parseVELFPVELOCFile( const std::string &datFileName )
     // VELOC.OUT - COORDINATES (ELEM NUM, X, Y, MAX VEL)  - Maximum channel flow velocity
     while ( std::getline( velocityStream, line ) )
     {
-      if ( vertex_idx == nFaces ) throw MDAL_Status::Err_IncompatibleMesh;
+      if ( vertex_idx == nFaces ) throw MDAL::Error( MDAL_Status::Err_IncompatibleMesh, "Error while loading VELOC file, invalid vertex index" );
 
       line = MDAL::rtrim( line );
       std::vector<std::string> lineParts = MDAL::split( line, ' ' );
       if ( lineParts.size() != 4 )
       {
-        throw MDAL_Status::Err_UnknownFormat;
+        throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Error while loading VELOC file, wrong lineparts count (4)" );
       }
 
       double val = getDouble( lineParts[3] );
@@ -412,7 +426,7 @@ double MDAL::DriverFlo2D::calcCellSize( const std::vector<CellCenter> &cells )
       }
     }
   }
-  throw MDAL_Status::Err_IncompatibleMesh;
+  throw MDAL::Error( MDAL_Status::Err_IncompatibleMesh, "Did not find izolated cell" );
 }
 
 MDAL::Vertex MDAL::DriverFlo2D::createVertex( size_t position, double half_cell_size, const CellCenter &cell )
@@ -485,6 +499,7 @@ void MDAL::DriverFlo2D::createMesh( const std::vector<CellCenter> &cells, double
     new MemoryMesh(
       name(),
       vertices.size(),
+      0,
       faces.size(),
       4, //maximum quads
       computeExtent( vertices ),
@@ -495,16 +510,14 @@ void MDAL::DriverFlo2D::createMesh( const std::vector<CellCenter> &cells, double
   mMesh->vertices = vertices;
 }
 
-bool MDAL::DriverFlo2D::parseHDF5Datasets( const std::string &datFileName )
+bool MDAL::DriverFlo2D::parseHDF5Datasets( MemoryMesh *mesh, const std::string &timedepFileName )
 {
   //return true on error
 
-  size_t nFaces =  mMesh->facesCount();
-
-  std::string timedepFileName = fileNameFromDir( datFileName, "TIMDEP.HDF5" );
+  size_t nFaces =  mesh->facesCount();
   if ( !fileExists( timedepFileName ) ) return true;
 
-  HdfFile file( timedepFileName );
+  HdfFile file( timedepFileName, HdfFile::ReadOnly );
   if ( !file.isValid() ) return true;
 
   HdfGroup timedataGroup = file.group( "TIMDEP NETCDF OUTPUT RESULTS" );
@@ -519,6 +532,9 @@ bool MDAL::DriverFlo2D::parseHDF5Datasets( const std::string &datFileName )
 
     HdfAttribute groupType = grp.attribute( "Grouptype" );
     if ( !groupType.isValid() ) return true;
+
+    HdfAttribute timeUnitAttribute = grp.attribute( "TimeUnits" );
+    std::string timeUnitString = timeUnitAttribute.readString();
 
     /* Min and Max arrays in TIMDEP.HDF5 files have dimensions 1xntimesteps .
         HdfDataset minDs = grp.dataset("Mins");
@@ -538,7 +554,7 @@ bool MDAL::DriverFlo2D::parseHDF5Datasets( const std::string &datFileName )
     bool isVector = MDAL::contains( groupType.readString(), "vector", ContainsBehaviour::CaseInsensitive );
 
     // Some sanity checks
-    size_t expectedSize = mMesh->facesCount() * timesteps;
+    size_t expectedSize = mesh->facesCount() * timesteps;
     if ( isVector ) expectedSize *= 2;
     if ( valuesDs.elementCount() != expectedSize ) return true;
 
@@ -549,17 +565,17 @@ bool MDAL::DriverFlo2D::parseHDF5Datasets( const std::string &datFileName )
     // Create dataset now
     std::shared_ptr<DatasetGroup> ds = std::make_shared< DatasetGroup >(
                                          name(),
-                                         mMesh.get(),
-                                         datFileName,
+                                         mesh,
+                                         timedepFileName,
                                          grpName
                                        );
-    ds->setIsOnVertices( false );
+    ds->setDataLocation( MDAL_DataLocation::DataOnFaces );
     ds->setIsScalar( !isVector );
 
     for ( size_t ts = 0; ts < timesteps; ++ts )
     {
-      std::shared_ptr< MemoryDataset > output = std::make_shared< MemoryDataset >( ds.get() );
-      output->setTime( times[ts] );
+      std::shared_ptr< MemoryDataset2D > output = std::make_shared< MemoryDataset2D >( ds.get() );
+      output->setTime( times[ts], parseDurationTimeUnit( timeUnitString ) );
 
       if ( isVector )
       {
@@ -569,8 +585,7 @@ bool MDAL::DriverFlo2D::parseHDF5Datasets( const std::string &datFileName )
           size_t idx = 2 * ( ts * nFaces + i );
           double x = getDouble( static_cast<double>( values[idx] ) );
           double y = getDouble( static_cast<double>( values[idx + 1] ) );
-          output->values()[2 * i] = x;
-          output->values()[2 * i + 1] = y;
+          output->setVectorValue( i, x, y );
         }
       }
       else
@@ -580,7 +595,7 @@ bool MDAL::DriverFlo2D::parseHDF5Datasets( const std::string &datFileName )
         {
           size_t idx = ts * nFaces + i;
           double val = getDouble( static_cast<double>( values[idx] ) );
-          output->values()[i] = val;
+          output->setScalarValue( i, val );
         }
       }
       addDatasetToGroup( ds, output );
@@ -588,7 +603,7 @@ bool MDAL::DriverFlo2D::parseHDF5Datasets( const std::string &datFileName )
 
     // TODO use mins & maxs arrays
     ds->setStatistics( MDAL::calculateStatistics( ds ) );
-    mMesh->datasetGroups.push_back( ds );
+    mesh->datasetGroups.push_back( ds );
 
   }
 
@@ -612,7 +627,7 @@ MDAL::DriverFlo2D::DriverFlo2D()
       "FLO2D",
       "Flo2D",
       "*.nc",
-      Capability::ReadMesh )
+      Capability::ReadMesh | Capability::ReadDatasets | Capability::WriteDatasetsOnFaces )
 {
 
 }
@@ -622,7 +637,7 @@ MDAL::DriverFlo2D *MDAL::DriverFlo2D::create()
   return new DriverFlo2D();
 }
 
-bool MDAL::DriverFlo2D::canRead( const std::string &uri )
+bool MDAL::DriverFlo2D::canReadMesh( const std::string &uri )
 {
   std::string cadptsFile( fileNameFromDir( uri, "CADPTS.DAT" ) );
   if ( !MDAL::fileExists( cadptsFile ) )
@@ -639,10 +654,47 @@ bool MDAL::DriverFlo2D::canRead( const std::string &uri )
   return true;
 }
 
-std::unique_ptr< MDAL::Mesh > MDAL::DriverFlo2D::load( const std::string &resultsFile, MDAL_Status *status )
+bool MDAL::DriverFlo2D::canReadDatasets( const std::string &uri )
+{
+  if ( !fileExists( uri ) ) return false;
+
+  HdfFile file( uri, HdfFile::ReadOnly );
+  if ( !file.isValid() ) return false;
+
+  HdfGroup timedataGroup = file.group( "TIMDEP NETCDF OUTPUT RESULTS" );
+  if ( !timedataGroup.isValid() ) return false;
+
+  return true;
+}
+
+void MDAL::DriverFlo2D::load( const std::string &uri, MDAL::Mesh *mesh )
+{
+  MDAL::Log::resetLastStatus();
+
+  MDAL::MemoryMesh *memoryMesh = dynamic_cast<MDAL::MemoryMesh *>( mesh );
+  if ( !memoryMesh )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, name(), "Mesh is not valid (null)" );
+    return;
+  }
+
+  if ( !MDAL::fileExists( uri ) )
+  {
+    MDAL::Log::error( MDAL_Status::Err_FileNotFound, name(), "Could not find file " + uri );
+    return;
+  }
+
+  bool err = parseHDF5Datasets( memoryMesh, uri );
+  if ( err )
+  {
+    MDAL::Log::error( MDAL_Status::Err_InvalidData, name(), "Could not parse HDF5 datasets" );
+  }
+}
+
+std::unique_ptr< MDAL::Mesh > MDAL::DriverFlo2D::load( const std::string &resultsFile )
 {
   mDatFileName = resultsFile;
-  if ( status ) *status = MDAL_Status::None;
+  MDAL::Log::resetLastStatus();
   mMesh.reset();
   std::vector<CellCenter> cells;
 
@@ -660,7 +712,9 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverFlo2D::load( const std::string &result
     // create output for bed elevation
     addStaticDataset( elevations, "Bed Elevation", mDatFileName );
 
-    if ( parseHDF5Datasets( mDatFileName ) )
+    // check if we have HDF5 file
+    std::string TIMDEPFileName = fileNameFromDir( mDatFileName, "TIMDEP.HDF5" );
+    if ( parseHDF5Datasets( mMesh.get(), TIMDEPFileName ) )
     {
       // some problem with HDF5 data, try text files
       parseOUTDatasets( mDatFileName, elevations );
@@ -669,9 +723,187 @@ std::unique_ptr< MDAL::Mesh > MDAL::DriverFlo2D::load( const std::string &result
 
   catch ( MDAL_Status error )
   {
-    if ( status ) *status = ( error );
+    MDAL::Log::error( error, name(), "error occured while loading file " + resultsFile );
     mMesh.reset();
+  }
+  catch ( MDAL::Error err )
+  {
+    MDAL::Log::error( err, name() );
   }
 
   return std::unique_ptr<Mesh>( mMesh.release() );
+}
+
+
+bool MDAL::DriverFlo2D::addToHDF5File( DatasetGroup *group )
+{
+  assert( MDAL::fileExists( group->uri() ) );
+  HdfFile file( group->uri(), HdfFile::ReadWrite );
+  if ( !file.isValid() ) return true;
+
+  HdfGroup timedataGroup = file.group( "TIMDEP NETCDF OUTPUT RESULTS" );
+  if ( !timedataGroup.isValid() ) return true;
+  return appendGroup( file, group, timedataGroup );
+}
+
+
+bool MDAL::DriverFlo2D::saveNewHDF5File( DatasetGroup *dsGroup )
+{
+  // Create file
+  HdfFile file( dsGroup->uri(), HdfFile::Create );
+  // Unable to create
+  if ( !file.isValid() ) return true;
+
+  // Create float dataset File Version
+  HdfDataset dsFileVersion( file.id(), "/File Version", H5T_NATIVE_FLOAT );
+  dsFileVersion.write( 1.0f );
+
+  // Create string dataset File Type
+  HdfDataset dsFileType( file.id(), "/File Type", HdfDataType::createString() );
+  dsFileType.write( "Xmdf" );
+
+  // Create group TIMDEP NETCDF OUTPUT RESULTS
+  HdfGroup groupTNOR = HdfGroup::create( file.id(), "/TIMDEP NETCDF OUTPUT RESULTS" );
+
+  // Create attribute
+  HdfAttribute attTNORGrouptype( groupTNOR.id(), "Grouptype", HdfDataType::createString() );
+  // Write string value to attribute
+  attTNORGrouptype.write( "Generic" );
+
+  return appendGroup( file, dsGroup, groupTNOR );
+}
+
+bool MDAL::DriverFlo2D::appendGroup( HdfFile &file, MDAL::DatasetGroup *dsGroup, HdfGroup &groupTNOR )
+{
+  assert( dsGroup->dataLocation() == MDAL_DataLocation::DataOnFaces );
+
+  HdfDataType dtMaxString = HdfDataType::createString();
+  std::string dsGroupName = dsGroup->name();
+  const size_t timesCount = dsGroup->datasets.size();
+  const size_t facesCount = dsGroup->mesh()->facesCount();
+  size_t valCount = facesCount;
+  HdfDataspace dscValues;
+  if ( dsGroup->isScalar() )
+  {
+    std::vector<hsize_t> dimsForScalarValues = { timesCount, facesCount };
+    dscValues = HdfDataspace( dimsForScalarValues );
+  }
+  else
+  {
+    valCount *= 2;
+    std::vector<hsize_t> dimsForVectorValues = { timesCount, facesCount, 2 };
+    dscValues =  HdfDataspace( dimsForVectorValues );
+  }
+
+  std::vector<hsize_t> timesCountVec = {timesCount};
+  HdfDataspace dscTimes( timesCountVec );
+
+  std::vector<float> maximums( timesCount );
+  std::vector<float> minimums( timesCount );
+  std::vector<double> times( timesCount );
+  std::vector<float> values( timesCount * valCount );
+
+  // prepare data
+  for ( size_t i = 0; i < dsGroup->datasets.size(); i++ )
+  {
+    const std::shared_ptr<Dataset> &dataset = dsGroup->datasets.at( i );
+    std::vector<double> singleRowValues( valCount );
+
+    if ( dsGroup->isScalar() )
+    {
+      dataset->scalarData( 0, facesCount, singleRowValues.data() );
+    }
+    else
+    {
+      dataset->vectorData( 0, facesCount, singleRowValues.data() );
+    }
+
+    for ( size_t j = 0; j < valCount; j++ )
+    {
+      double doubleValue = toFlo2DDouble( singleRowValues[j] );
+      values[i * valCount + j] = static_cast<float>( doubleValue );
+    }
+
+    const Statistics st = dataset->statistics();
+    maximums[i] = static_cast<float>( st.maximum );
+    minimums[i] = static_cast<float>( st.minimum );
+    times.push_back( dataset->time( RelativeTimestamp::hours ) );
+  }
+
+  // store data
+  int i = 0;
+  while ( file.pathExists( "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName ) )
+  {
+    dsGroupName = dsGroup->name() + "_" + std::to_string( i ); // make sure we have unique group name
+  }
+  HdfGroup group = HdfGroup::create( groupTNOR.id(), "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName );
+
+  HdfAttribute attDataType( group.id(), "Data Type", H5T_NATIVE_INT );
+  attDataType.write( 0 );
+
+  HdfAttribute attDatasetCompression( group.id(), "DatasetCompression", H5T_NATIVE_INT );
+  attDatasetCompression.write( -1 );
+
+  /*
+  HdfDataspace dscDatasetUnits( dimsSingle );
+  HdfAttribute attDatasetUnits( group.id(), "DatasetUnits", true );
+  attDatasetUnits.writeString( dscDatasetUnits.id(), "unknown" );
+  */
+
+  HdfAttribute attGrouptype( group.id(), "Grouptype", dtMaxString );
+  if ( dsGroup->isScalar() )
+    attGrouptype.write( "DATASET SCALAR" );
+  else
+    attGrouptype.write( "DATASET VECTOR" );
+
+  HdfAttribute attTimeUnits( group.id(), "TimeUnits", dtMaxString );
+  attTimeUnits.write( "Hours" );
+
+  HdfDataset dsMaxs( file.id(), "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName + "/Maxs", H5T_NATIVE_FLOAT, timesCountVec );
+  dsMaxs.write( maximums );
+
+  HdfDataset dsMins( file.id(), "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName + "/Mins", H5T_NATIVE_FLOAT, timesCountVec );
+  dsMins.write( minimums );
+
+  HdfDataset dsTimes( file.id(), "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName + "/Times", H5T_NATIVE_DOUBLE, timesCountVec );
+  dsTimes.write( times );
+
+  HdfDataset dsValues( file.id(), "/TIMDEP NETCDF OUTPUT RESULTS/" + dsGroupName + "/Values", H5T_NATIVE_FLOAT, dscValues );
+  dsValues.write( values );
+
+  return false; //OK
+}
+
+bool MDAL::DriverFlo2D::persist( DatasetGroup *group )
+{
+  if ( !group || ( group->dataLocation() != MDAL_DataLocation::DataOnFaces ) )
+  {
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleDataset, name(), "flo-2d can store only 2D face datasets" );
+    return true;
+  }
+
+  try
+  {
+    // Return true on error
+    if ( MDAL::fileExists( group->uri() ) )
+    {
+      // Add dataset to a existing file
+      return addToHDF5File( group );
+    }
+    else
+    {
+      // Create new HDF5 file with Flow2D structure
+      return saveNewHDF5File( group );
+    }
+  }
+  catch ( MDAL_Status error )
+  {
+    MDAL::Log::error( error, name(), "error occured" );
+    return true;
+  }
+  catch ( MDAL::Error err )
+  {
+    MDAL::Log::error( err, name() );
+    return true;
+  }
 }

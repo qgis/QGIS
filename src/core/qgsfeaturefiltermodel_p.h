@@ -16,6 +16,7 @@
 #define QGSFEATUREFILTERMODEL_P_H
 
 #include <QThread>
+#include <QMutex>
 #include "qgsfeaturefiltermodel.h"
 #include "qgslogger.h"
 #include "qgsvectorlayerfeatureiterator.h"
@@ -68,21 +69,25 @@ class QgsFieldExpressionValuesGatherer: public QThread
           attributes << feat.attribute( idx );
         mEntries.append( QgsFeatureFilterModel::Entry( attributes, mDisplayExpression.evaluate( &mExpressionContext ).toString(), feat ) );
 
+        QMutexLocker locker( &mCancelMutex );
         if ( mWasCanceled )
           return;
       }
-
-      emit collectedValues();
     }
 
     //! Informs the gatherer to immediately stop collecting values
     void stop()
     {
+      QMutexLocker locker( &mCancelMutex );
       mWasCanceled = true;
     }
 
     //! Returns TRUE if collection was canceled before completion
-    bool wasCanceled() const { return mWasCanceled; }
+    bool wasCanceled() const
+    {
+      QMutexLocker locker( &mCancelMutex );
+      return mWasCanceled;
+    }
 
     QVector<QgsFeatureFilterModel::Entry> entries() const
     {
@@ -110,14 +115,6 @@ class QgsFieldExpressionValuesGatherer: public QThread
       mData = data;
     }
 
-  signals:
-
-    /**
-     * Emitted when values have been collected
-     * \param values list of unique matching string values
-     */
-    void collectedValues();
-
   private:
 
     std::unique_ptr<QgsVectorLayerFeatureSource> mSource;
@@ -126,6 +123,7 @@ class QgsFieldExpressionValuesGatherer: public QThread
     QgsFeatureRequest mRequest;
     QgsFeatureIterator mIterator;
     bool mWasCanceled = false;
+    mutable QMutex mCancelMutex;
     QVector<QgsFeatureFilterModel::Entry> mEntries;
     QStringList mIdentifierFields;
     QVariant mData;

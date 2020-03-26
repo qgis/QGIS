@@ -1,0 +1,12 @@
+{
+"type": "FeatureCollection",
+"name": "point_ordered_placement",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::32613" } },
+"features": [
+{ "type": "Feature", "properties": { "pkuid": 1, "text": "Single point" }, "geometry": { "type": "Point", "coordinates": [ 609510.0, 4825130.0 ] } },
+{ "type": "Feature", "properties": { "pkuid": 2, "text": null }, "geometry": { "type": "Point", "coordinates": [ 606510.0, 4823130.0 ] } },
+{ "type": "Feature", "properties": { "pkuid": 3, "text": null }, "geometry": { "type": "Point", "coordinates": [ 612510.0, 4823130.0 ] } },
+{ "type": "Feature", "properties": { "pkuid": 4, "text": null }, "geometry": { "type": "Point", "coordinates": [ 612510.0, 4827130.0 ] } },
+{ "type": "Feature", "properties": { "pkuid": 5, "text": null }, "geometry": { "type": "Point", "coordinates": [ 606510.0, 4827130.0 ] } }
+]
+}

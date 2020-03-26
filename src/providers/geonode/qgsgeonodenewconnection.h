@@ -26,7 +26,7 @@ class QgsGeoNodeNewConnection : public QgsNewHttpConnection
 
   public:
     //! Constructor
-    QgsGeoNodeNewConnection( QWidget *parent = nullptr, const QString &connName = QString::null, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsGeoNodeNewConnection( QWidget *parent = nullptr, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
   public slots:
 

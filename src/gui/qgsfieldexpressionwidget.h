@@ -37,7 +37,7 @@ class QgsExpressionContextGenerator;
 /**
  * \ingroup gui
  * \brief The QgsFieldExpressionWidget class reates a widget to choose fields and edit expressions
- * It contains a combo boxto display the fields and expression and a button to open the expression dialog.
+ * It contains a combo box to display the fields and expression and a button to open the expression dialog.
  * The combo box is editable, allowing expressions to be edited inline.
  * The validity of the expression is checked live on key press, invalid expressions are displayed in red.
  * The expression will be added to the model (and the fieldChanged signals emitted)

@@ -230,7 +230,7 @@ Creates a clone of the FieldValueConverter.
     };
 
 
-    static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
+ static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
         const QString &fileName,
         const QString &fileEncoding,
         const QgsCoordinateReferenceSystem &destCRS = QgsCoordinateReferenceSystem(),
@@ -249,7 +249,7 @@ Creates a clone of the FieldValueConverter.
         bool includeZ = false,
         const QgsAttributeList &attributes = QgsAttributeList(),
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = 0
-                                                               );
+                                                                                 ) /Deprecated/;
 %Docstring
 Write contents of vector layer to an (OGR supported) vector format
 
@@ -259,7 +259,7 @@ Write contents of vector layer to an (OGR supported) vector format
 :param destCRS: CRS to reproject exported geometries to, or invalid CRS for no reprojection
 :param driverName: OGR driver to use
 :param onlySelected: write only selected features of layer
-:param errorMessage: pointer to buffer fo error message
+:param errorMessage: will be set to the error message text, if an error occurs while writing the layer
 :param datasourceOptions: list of OGR data source creation options
 :param layerOptions: list of OGR layer creation options
 :param skipAttributeCreation: only write geometries
@@ -273,10 +273,13 @@ Write contents of vector layer to an (OGR supported) vector format
 :param includeZ: set to ``True`` to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
+
+.. deprecated::
+   Use writeAsVectorFormatV2() instead.
 %End
 
 
-    static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
+ static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
         const QString &fileName,
         const QString &fileEncoding,
         const QgsCoordinateTransform &ct,
@@ -295,7 +298,7 @@ Write contents of vector layer to an (OGR supported) vector format
         bool includeZ = false,
         const QgsAttributeList &attributes = QgsAttributeList(),
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = 0
-                                                               );
+                                                                                 ) /Deprecated/;
 %Docstring
 Writes a layer out to a vector file.
 
@@ -306,7 +309,7 @@ Writes a layer out to a vector file.
            for no transformation
 :param driverName: OGR driver to use
 :param onlySelected: write only selected features of layer
-:param errorMessage: pointer to buffer fo error message
+:param errorMessage: will be set to the error message text, if an error occurs while writing the layer
 :param datasourceOptions: list of OGR data source creation options
 :param layerOptions: list of OGR layer creation options
 :param skipAttributeCreation: only write geometries
@@ -322,6 +325,9 @@ Writes a layer out to a vector file.
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
 
 .. versionadded:: 2.2
+
+.. deprecated::
+   Use writeAsVectorFormatV2() instead.
 %End
 
     class SaveVectorOptions
@@ -381,12 +387,12 @@ Constructor
     };
 
 
-    static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
+ static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
         const QString &fileName,
         const QgsVectorFileWriter::SaveVectorOptions &options,
         QString *newFilename = 0,
         QString *errorMessage /Out/ = 0
-                                                               );
+                                                                                 ) /Deprecated/;
 %Docstring
 Writes a layer out to a vector file.
 
@@ -394,25 +400,76 @@ Writes a layer out to a vector file.
 :param fileName: file name to write to
 :param options: options.
 :param newFilename: QString pointer which will contain the new file name created (in case it is different to fileName).
-:param errorMessage: pointer to buffer fo error message
+:param errorMessage: will be set to the error message text, if an error occurs while writing the layer
 
 .. versionadded:: 3.0
+
+.. deprecated::
+   Use writeAsVectorFormatV2() instead.
 %End
 
-    QgsVectorFileWriter( const QString &vectorFileName,
-                         const QString &fileEncoding,
-                         const QgsFields &fields,
-                         QgsWkbTypes::Type geometryType,
-                         const QgsCoordinateReferenceSystem &srs = QgsCoordinateReferenceSystem(),
-                         const QString &driverName = "GPKG",
-                         const QStringList &datasourceOptions = QStringList(),
-                         const QStringList &layerOptions = QStringList(),
-                         QString *newFilename = 0,
-                         QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
-                         QgsFeatureSink::SinkFlags sinkFlags = 0
-                       );
+ QgsVectorFileWriter( const QString &vectorFileName,
+                                           const QString &fileEncoding,
+                                           const QgsFields &fields,
+                                           QgsWkbTypes::Type geometryType,
+                                           const QgsCoordinateReferenceSystem &srs = QgsCoordinateReferenceSystem(),
+                                           const QString &driverName = "GPKG",
+                                           const QStringList &datasourceOptions = QStringList(),
+                                           const QStringList &layerOptions = QStringList(),
+                                           QString *newFilename = 0,
+                                           QgsVectorFileWriter::SymbologyExport symbologyExport = QgsVectorFileWriter::NoSymbology,
+                                           QgsFeatureSink::SinkFlags sinkFlags = 0
+                                         ) /Deprecated/;
 
 
+
+    static QgsVectorFileWriter *create( const QString &fileName,
+                                        const QgsFields &fields,
+                                        QgsWkbTypes::Type geometryType,
+                                        const QgsCoordinateReferenceSystem &srs,
+                                        const QgsCoordinateTransformContext &transformContext,
+                                        const QgsVectorFileWriter::SaveVectorOptions &options,
+                                        QgsFeatureSink::SinkFlags sinkFlags = 0,
+                                        QString *newFilename = 0,
+                                        QString *newLayer = 0 );
+%Docstring
+Create a new vector file writer.
+
+:param fileName: file name to write to
+:param fields: fields to write
+:param geometryType: geometry type of output file
+:param srs: spatial reference system of output file
+:param transformContext: coordinate transform context
+:param options: save options
+:param sinkFlags: feature sink flags
+:param newFilename: potentially modified file name (output parameter)
+:param newLayer: potentially modified layer name (output parameter)
+
+.. versionadded:: 3.10.3
+%End
+
+    static QgsVectorFileWriter::WriterError writeAsVectorFormatV2( QgsVectorLayer *layer,
+        const QString &fileName,
+        const QgsCoordinateTransformContext &transformContext,
+        const QgsVectorFileWriter::SaveVectorOptions &options,
+        QString *newFilename = 0,
+        QString *newLayer = 0,
+        QString *errorMessage /Out/ = 0 );
+%Docstring
+Writes a layer out to a vector file.
+
+:param layer: source layer to write
+:param fileName: file name to write to
+:param transformContext: coordinate transform context
+:param options: save options
+:param newFilename: potentially modified file name (output parameter)
+:param newLayer: potentially modified layer name (output parameter)
+
+:return: - Error message code, or QgsVectorFileWriter.NoError if the write operation was successful
+         - errorMessage: will be set to the error message text, if an error occurs while writing the layer
+
+.. versionadded:: 3.10.3
+%End
 
     struct FilterFormatDetails
     {

@@ -84,7 +84,8 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   : mSourceCRS( source )
   , mDestCRS( destination )
 {
-  calculateTransforms( context );
+  if ( mSourceCRS != mDestCRS )
+    calculateTransforms( context );
 }
 Q_NOWARN_DEPRECATED_POP
 
@@ -99,6 +100,9 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
 
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate &other )
   : QSharedData( other )
+#if PROJ_VERSION_MAJOR >= 6
+  , mAvailableOpCount( other.mAvailableOpCount )
+#endif
   , mIsValid( other.mIsValid )
   , mShortCircuit( other.mShortCircuit )
   , mSourceCRS( other.mSourceCRS )
@@ -106,6 +110,9 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mSourceDatumTransform( other.mSourceDatumTransform )
   , mDestinationDatumTransform( other.mDestinationDatumTransform )
   , mProjCoordinateOperation( other.mProjCoordinateOperation )
+  , mShouldReverseCoordinateOperation( other.mShouldReverseCoordinateOperation )
+  , mAllowFallbackTransforms( other.mAllowFallbackTransforms )
+  , mIsReversed( other.mIsReversed )
 {
 #if PROJ_VERSION_MAJOR < 6
   //must reinitialize to setup mSourceProjection and mDestinationProjection
@@ -136,6 +143,9 @@ void QgsCoordinateTransformPrivate::invalidate()
 {
   mShortCircuit = true;
   mIsValid = false;
+#if PROJ_VERSION_MAJOR >= 6
+  mAvailableOpCount = -1;
+#endif
 }
 
 bool QgsCoordinateTransformPrivate::initialize()
@@ -160,6 +170,14 @@ bool QgsCoordinateTransformPrivate::initialize()
 
   mIsValid = true;
 
+  if ( mSourceCRS == mDestCRS )
+  {
+    // If the source and destination projection are the same, set the short
+    // circuit flag (no transform takes place)
+    mShortCircuit = true;
+    return true;
+  }
+
   // init the projections (destination and source)
   freeProj();
 
@@ -169,7 +187,7 @@ bool QgsCoordinateTransformPrivate::initialize()
   int destDatumTransform = mDestinationDatumTransform;
   bool useDefaultDatumTransform = ( sourceDatumTransform == - 1 && destDatumTransform == -1 );
 
-  mSourceProjString = mSourceCRS.toProj4();
+  mSourceProjString = mSourceCRS.toProj();
   if ( !useDefaultDatumTransform )
   {
     mSourceProjString = stripDatumTransform( mSourceProjString );
@@ -179,7 +197,7 @@ bool QgsCoordinateTransformPrivate::initialize()
     mSourceProjString += ( ' ' + QgsDatumTransform::datumTransformToProj( sourceDatumTransform ) );
   }
 
-  mDestProjString = mDestCRS.toProj4();
+  mDestProjString = mDestCRS.toProj();
   if ( !useDefaultDatumTransform )
   {
     mDestProjString = stripDatumTransform( mDestProjString );
@@ -200,8 +218,8 @@ bool QgsCoordinateTransformPrivate::initialize()
   ProjData res = threadLocalProjData();
 
 #ifdef COORDINATE_TRANSFORM_VERBOSE
-  QgsDebugMsg( "From proj : " + mSourceCRS.toProj4() );
-  QgsDebugMsg( "To proj   : " + mDestCRS.toProj4() );
+  QgsDebugMsg( "From proj : " + mSourceCRS.toProj() );
+  QgsDebugMsg( "To proj   : " + mDestCRS.toProj() );
 #endif
 
 #if PROJ_VERSION_MAJOR>=6
@@ -236,22 +254,9 @@ bool QgsCoordinateTransformPrivate::initialize()
   }
 #endif
 
-  //XXX todo overload == operator for QgsCoordinateReferenceSystem
-  //at the moment srs.parameters contains the whole proj def...soon it won't...
-  //if (mSourceCRS->toProj4() == mDestCRS->toProj4())
-  if ( mSourceCRS == mDestCRS )
-  {
-    // If the source and destination projection are the same, set the short
-    // circuit flag (no transform takes place)
-    mShortCircuit = true;
-    QgsDebugMsgLevel( QStringLiteral( "Source/Dest CRS equal, shortcircuit is set." ), 3 );
-  }
-  else
-  {
-    // Transform must take place
-    mShortCircuit = false;
-    QgsDebugMsgLevel( QStringLiteral( "Source/Dest CRS not equal, shortcircuit is not set." ), 3 );
-  }
+  // Transform must take place
+  mShortCircuit = false;
+
   return mIsValid;
 }
 
@@ -259,7 +264,18 @@ void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTran
 {
   // recalculate datum transforms from context
 #if PROJ_VERSION_MAJOR >= 6
-  mProjCoordinateOperation = context.calculateCoordinateOperation( mSourceCRS, mDestCRS );
+  if ( mSourceCRS.isValid() && mDestCRS.isValid() )
+  {
+    mProjCoordinateOperation = context.calculateCoordinateOperation( mSourceCRS, mDestCRS );
+    mShouldReverseCoordinateOperation = context.mustReverseCoordinateOperation( mSourceCRS, mDestCRS );
+    mAllowFallbackTransforms = context.allowFallbackTransform( mSourceCRS, mDestCRS );
+  }
+  else
+  {
+    mProjCoordinateOperation.clear();
+    mShouldReverseCoordinateOperation = false;
+    mAllowFallbackTransforms = false;
+  }
 #else
   Q_NOWARN_DEPRECATED_PUSH
   QgsDatumTransform::TransformPair transforms = context.calculateDatumTransforms( mSourceCRS, mDestCRS );
@@ -331,6 +347,8 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   QStringList projErrors;
   proj_log_func( context, &projErrors, proj_collecting_logger );
 
+  mIsReversed = false;
+
   QgsProjUtils::proj_pj_unique_ptr transform;
   if ( !mProjCoordinateOperation.isEmpty() )
   {
@@ -357,14 +375,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
     }
     else
     {
-      // transform may have either the source or destination CRS using swapped axis order. For QGIS, we ALWAYS need regular x/y axis order
-      transform.reset( proj_normalize_for_visualization( context, transform.get() ) );
-      if ( !transform )
-      {
-        const QString err = QObject::tr( "Cannot normalize transform between %1 and %2" ).arg( mSourceCRS.authid(),
-                            mDestCRS.authid() );
-        QgsMessageLog::logMessage( err, QString(), Qgis::Critical );
-      }
+      mIsReversed = mShouldReverseCoordinateOperation;
     }
   }
 
@@ -387,8 +398,8 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
 
     if ( PJ_OBJ_LIST *ops = proj_create_operations( context, mSourceCRS.projObject(), mDestCRS.projObject(), operationContext ) )
     {
-      int count = proj_list_get_count( ops );
-      if ( count < 1 )
+      mAvailableOpCount = proj_list_get_count( ops );
+      if ( mAvailableOpCount < 1 )
       {
         // huh?
         int errNo = proj_context_errno( context );
@@ -401,7 +412,7 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
           nonAvailableError = QObject::tr( "No coordinate operations are available between these two reference systems" );
         }
       }
-      else if ( count == 1 )
+      else if ( mAvailableOpCount == 1 )
       {
         // only a single operation available. Can we use it?
         transform.reset( proj_list_get( context, ops, 0 ) );
@@ -465,15 +476,21 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
         // multiple operations available. Can we use the best one?
         QgsDatumTransform::TransformDetails preferred;
         bool missingPreferred = false;
-        for ( int i = 0; i < count; ++ i )
+        bool stillLookingForPreferred = true;
+        for ( int i = 0; i < mAvailableOpCount; ++ i )
         {
           transform.reset( proj_list_get( context, ops, i ) );
           const bool isInstantiable = transform && proj_coordoperation_is_instantiable( context, transform.get() );
-          if ( i == 0 && transform && !isInstantiable )
+          if ( stillLookingForPreferred && transform && !isInstantiable )
           {
             // uh oh :( something is missing blocking us from the preferred operation!
-            missingPreferred = true;
-            preferred = QgsDatumTransform::transformDetailsFromPj( transform.get() );
+            QgsDatumTransform::TransformDetails candidate = QgsDatumTransform::transformDetailsFromPj( transform.get() );
+            if ( !candidate.proj.isEmpty() )
+            {
+              preferred = candidate;
+              missingPreferred = true;
+              stillLookingForPreferred = false;
+            }
           }
           if ( transform && isInstantiable )
           {
@@ -581,6 +598,33 @@ ProjData QgsCoordinateTransformPrivate::threadLocalProjData()
   return res;
 }
 
+#if PROJ_VERSION_MAJOR>=6
+ProjData QgsCoordinateTransformPrivate::threadLocalFallbackProjData()
+{
+  QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Read );
+
+  PJ_CONTEXT *context = QgsProjContext::get();
+  QMap < uintptr_t, ProjData >::const_iterator it = mProjFallbackProjections.constFind( reinterpret_cast< uintptr_t>( context ) );
+
+  if ( it != mProjFallbackProjections.constEnd() )
+  {
+    ProjData res = it.value();
+    return res;
+  }
+
+  // proj projections don't exist yet, so we need to create
+  locker.changeMode( QgsReadWriteLocker::Write );
+
+  QgsProjUtils::proj_pj_unique_ptr transform( proj_create_crs_to_crs_from_pj( context, mSourceCRS.projObject(), mDestCRS.projObject(), nullptr, nullptr ) );
+  if ( transform )
+    transform.reset( proj_normalize_for_visualization( QgsProjContext::get(), transform.get() ) );
+
+  ProjData res = transform.release();
+  mProjFallbackProjections.insert( reinterpret_cast< uintptr_t>( context ), res );
+  return res;
+}
+#endif
+
 void QgsCoordinateTransformPrivate::setCustomMissingRequiredGridHandler( const std::function<void ( const QgsCoordinateReferenceSystem &, const QgsCoordinateReferenceSystem &, const QgsDatumTransform::GridDetails & )> &handler )
 {
   sMissingRequiredGridHandler = handler;
@@ -653,7 +697,7 @@ void QgsCoordinateTransformPrivate::addNullGridShifts( QString &srcProjString, Q
 void QgsCoordinateTransformPrivate::freeProj()
 {
   QgsReadWriteLocker locker( mProjLock, QgsReadWriteLocker::Write );
-  if ( mProjProjections.isEmpty() )
+  if ( mProjProjections.isEmpty() && mProjFallbackProjections.isEmpty() )
     return;
   QMap < uintptr_t, ProjData >::const_iterator it = mProjProjections.constBegin();
 #if PROJ_VERSION_MAJOR>=6
@@ -668,6 +712,14 @@ void QgsCoordinateTransformPrivate::freeProj()
     proj_assign_context( it.value(), tmpContext );
     proj_destroy( it.value() );
   }
+
+  it = mProjFallbackProjections.constBegin();
+  for ( ; it != mProjFallbackProjections.constEnd(); ++it )
+  {
+    proj_assign_context( it.value(), tmpContext );
+    proj_destroy( it.value() );
+  }
+
   proj_context_destroy( tmpContext );
 #else
   projCtx tmpContext = pj_ctx_alloc();
@@ -681,6 +733,7 @@ void QgsCoordinateTransformPrivate::freeProj()
   pj_ctx_free( tmpContext );
 #endif
   mProjProjections.clear();
+  mProjFallbackProjections.clear();
 }
 
 #if PROJ_VERSION_MAJOR>=6
@@ -693,6 +746,13 @@ bool QgsCoordinateTransformPrivate::removeObjectsBelongingToCurrentThread( void 
   {
     proj_destroy( it.value() );
     mProjProjections.erase( it );
+  }
+
+  it = mProjFallbackProjections.find( reinterpret_cast< uintptr_t>( pj_context ) );
+  if ( it != mProjFallbackProjections.end() )
+  {
+    proj_destroy( it.value() );
+    mProjFallbackProjections.erase( it );
   }
 
   return mProjProjections.isEmpty();

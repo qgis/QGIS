@@ -20,6 +20,7 @@
 #include <QApplication>
 #include <QtDebug>
 #include <QFile>
+#include <QElapsedTimer>
 #include <QThread>
 
 #ifndef CMAKE_SOURCE_DIR
@@ -30,7 +31,7 @@ int QgsLogger::sDebugLevel = -999; // undefined value
 int QgsLogger::sPrefixLength = -1;
 Q_GLOBAL_STATIC( QString, sFileFilter )
 Q_GLOBAL_STATIC( QString, sLogFile )
-Q_GLOBAL_STATIC( QTime, sTime )
+Q_GLOBAL_STATIC( QElapsedTimer, sTime )
 
 void QgsLogger::init()
 {

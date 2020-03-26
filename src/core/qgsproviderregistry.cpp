@@ -66,9 +66,10 @@ QgsProviderRegistry *QgsProviderRegistry::instance( const QString &pluginPath )
   without accidentally adding a null meta data item to the metadata map.
 */
 static
-QgsProviderMetadata *findMetadata_( QgsProviderRegistry::Providers const &metaData,
-                                    QString const &providerKey )
+QgsProviderMetadata *findMetadata_( const QgsProviderRegistry::Providers &metaData,
+                                    const QString &providerKey )
 {
+  // first do case-sensitive match
   QgsProviderRegistry::Providers::const_iterator i =
     metaData.find( providerKey );
 
@@ -77,8 +78,15 @@ QgsProviderMetadata *findMetadata_( QgsProviderRegistry::Providers const &metaDa
     return i->second;
   }
 
+  // fallback to case-insensitive match
+  for ( auto it = metaData.begin(); it != metaData.end(); ++it )
+  {
+    if ( providerKey.compare( it->first, Qt::CaseInsensitive ) == 0 )
+      return it->second;
+  }
+
   return nullptr;
-} // findMetadata_
+}
 
 QgsProviderRegistry::QgsProviderRegistry( const QString &pluginPath )
 {
@@ -94,7 +102,7 @@ QgsProviderRegistry::QgsProviderRegistry( const QString &pluginPath )
   QString baseDir = appDir.left( bin );
   QString mLibraryDirectory = baseDir + "/lib";
 #endif
-  mLibraryDirectory = pluginPath;
+  mLibraryDirectory.setPath( pluginPath );
   init();
 }
 
@@ -405,6 +413,15 @@ QVariantMap QgsProviderRegistry::decodeUri( const QString &providerKey, const QS
     return QVariantMap();
 }
 
+QString QgsProviderRegistry::encodeUri( const QString &providerKey, const QVariantMap &parts )
+{
+  QgsProviderMetadata *meta = findMetadata_( mProviders, providerKey );
+  if ( meta )
+    return meta->encodeUri( parts );
+  else
+    return QString();
+}
+
 QgsVectorLayerExporter::ExportError QgsProviderRegistry::createEmptyLayer( const QString &providerKey,
     const QString &uri,
     const QgsFields &fields,
@@ -559,7 +576,7 @@ QWidget *QgsProviderRegistry::createSelectionWidget( const QString &providerKey,
   Q_UNUSED( parent );
   Q_UNUSED( fl );
   Q_UNUSED( widgetMode );
-  QgsDebugMsg( "deprecated call - use QgsGui::providerGuiRegistry()->sourceSelectProviders(providerKey)[0]->createDataSourceWidget() instead" );
+  QgsDebugMsg( "deprecated call - use QgsGui::sourceSelectProviderRegistry()->createDataSourceWidget() instead" );
   return nullptr;
 }
 

@@ -104,9 +104,9 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
 #endif
 
     std::unique_ptr<QgsExpression> mExpression;
-    QgsFillSymbol *mFillSymbol = nullptr;
-    QgsLineSymbol *mLineSymbol = nullptr;
-    QgsMarkerSymbol *mMarkerSymbol = nullptr;
+    std::unique_ptr<QgsFillSymbol> mFillSymbol;
+    std::unique_ptr<QgsLineSymbol> mLineSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mMarkerSymbol;
     QgsSymbol *mSymbol = nullptr;
 
     /**

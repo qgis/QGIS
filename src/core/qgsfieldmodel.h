@@ -137,6 +137,35 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
      */
     static QString fieldToolTip( const QgsField &field );
 
+    /**
+     * Returns a HTML formatted tooltip string for a \a field, containing details
+     * like the field name, alias, type and expression.
+     * \since QGIS 3.14
+     */
+    static QString fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer );
+
+    /**
+     * Manually sets the \a fields to use for the model.
+     *
+     * This method should only be used when the model ISN'T associated with a layer()
+     * and needs to show the fields from an arbitrary field collection instead. Calling
+     * setFields() will automatically clear any existing layer().
+     *
+     * \see fields()
+     * \since QGIS 3.14
+     */
+    void setFields( const QgsFields &fields );
+
+    /**
+     * Returns the fields currently shown in the model.
+     *
+     * This will either be fields from the associated layer() or the fields
+     * manually set by a call to setFields().
+     *
+     * \since QGIS 3.14
+     */
+    QgsFields fields() const;
+
   public slots:
 
     /**

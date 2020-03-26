@@ -1,4 +1,5 @@
 SET (WMS_SRCS
+  qgsmbtilesreader.cpp
   qgswmscapabilities.cpp
   qgswmsprovider.cpp
   qgswmsconnection.cpp
@@ -23,6 +24,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/symbology

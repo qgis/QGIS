@@ -33,6 +33,7 @@ class QgsExpressionContext;
 class QgsOptionsPageWidget;
 class QgsLocatorOptionsWidget;
 class QgsAuthConfigSelect;
+class QgsBearingNumericFormat;
 
 /**
  * \class QgsOptions
@@ -265,6 +266,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void updateSampleLocaleText();
 
+    void customizeBearingFormat();
+
   protected:
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
     QMap<QString, QVariant> mStyleSheetNewOpts;
@@ -277,6 +280,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     QList< QgsOptionsPageWidget * > mAdditionalOptionWidgets;
     QgsLocatorOptionsWidget *mLocatorOptionsWidget = nullptr;
+
+    std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
 
     void updateActionsForCurrentColorScheme( QgsColorScheme *scheme );
 

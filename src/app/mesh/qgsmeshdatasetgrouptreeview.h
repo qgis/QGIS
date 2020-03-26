@@ -118,7 +118,7 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
     void syncToLayer( QgsMeshLayer *layer );
 
   private:
-    void addTreeItem( const QString &groupName, bool isVector, int groupIndex, QgsMeshDatasetGroupTreeItem *parent );
+    void addTreeItem( const QString &groupName, const QString &displayName, bool isVector, int groupIndex, QgsMeshDatasetGroupTreeItem *parent );
     QModelIndex groupIndexToModelIndex( int groupIndex );
 
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mRootItem;
@@ -198,6 +198,22 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView : public QTreeView
     QgsMeshDatasetGroupTreeModel mModel;
     QgsMeshDatasetGroupTreeItemDelagate mDelegate;
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
+};
+
+class QgsMeshDatasetGroupListModel: public QAbstractListModel
+{
+  public:
+    explicit QgsMeshDatasetGroupListModel( QObject *parent ): QAbstractListModel( parent )
+    {}
+
+    //! Add groups to the model from mesh layer
+    void syncToLayer( QgsMeshLayer *layer );
+
+    int rowCount( const QModelIndex &parent ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+
+  private:
+    QgsMeshLayer *mLayer = nullptr;
 };
 
 #endif // QGSMESHDATASETGROUPTREE_H

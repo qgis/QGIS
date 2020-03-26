@@ -333,7 +333,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         QString source( layer->publicSource() );
         if ( source.size() > 1024 )
         {
-          source = source.left( 1023 ) + QStringLiteral( "…" );
+          source = source.left( 1023 ) + QString( QChar( 0x2026 ) );
         }
 
         parts << "<i>" + source.toHtmlEscaped() + "</i>";
@@ -1516,8 +1516,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsLayerTreeModel::layerOriginalLegendNodes
 
 QgsLayerTreeModelLegendNode *QgsLayerTreeModel::findLegendNode( const QString &layerId, const QString &ruleKey ) const
 {
-  QMap<QgsLayerTreeLayer *, LayerLegendData>::const_iterator it = mLegend.constBegin();
-  for ( ; it != mLegend.constEnd(); ++it )
+  for ( auto it = mLegend.constBegin(); it != mLegend.constEnd(); ++it )
   {
     QgsLayerTreeLayer *layer = it.key();
     if ( layer->layerId() == layerId )
@@ -1557,8 +1556,7 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
 
   std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
 
-  const auto constMLegend = mLegend;
-  for ( const LayerLegendData &data : constMLegend )
+  for ( const LayerLegendData &data : qgis::as_const( mLegend ) )
   {
     QList<QgsSymbolLegendNode *> symbolNodes;
     QMap<QString, int> widthMax;

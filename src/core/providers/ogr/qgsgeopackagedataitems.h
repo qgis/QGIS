@@ -61,6 +61,10 @@ class CORE_EXPORT QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     void addConnection();
     void deleteConnection();
 
+
+    // QgsDataItem interface
+  public:
+    bool layerCollection() const override;
 };
 
 
@@ -114,7 +118,7 @@ class CORE_EXPORT QgsGeoPackageRasterLayerItem : public QgsGeoPackageAbstractLay
 
 
 
-class CORE_EXPORT QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLayerItem
+class CORE_EXPORT QgsGeoPackageVectorLayerItem final: public QgsGeoPackageAbstractLayerItem
 {
     Q_OBJECT
 
@@ -128,7 +132,7 @@ class CORE_EXPORT QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLay
  * \brief The QgsGeoPackageConnectionItem class adds the stored
  *        connection management to QgsGeoPackageCollectionItem
  */
-class CORE_EXPORT QgsGeoPackageConnectionItem : public QgsGeoPackageCollectionItem
+class CORE_EXPORT QgsGeoPackageConnectionItem final: public QgsGeoPackageCollectionItem
 {
     Q_OBJECT
 
@@ -138,7 +142,7 @@ class CORE_EXPORT QgsGeoPackageConnectionItem : public QgsGeoPackageCollectionIt
 };
 
 
-class CORE_EXPORT QgsGeoPackageRootItem : public QgsDataCollectionItem
+class CORE_EXPORT QgsGeoPackageRootItem final: public QgsDataCollectionItem
 {
     Q_OBJECT
 
@@ -156,10 +160,11 @@ class CORE_EXPORT QgsGeoPackageRootItem : public QgsDataCollectionItem
 
 
 //! Provider for geopackage data item
-class QgsGeoPackageDataItemProvider : public QgsDataItemProvider
+class QgsGeoPackageDataItemProvider final: public QgsDataItemProvider
 {
   public:
     QString name() override;
+    QString dataProviderKey() const override;
     int capabilities() const override;
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };

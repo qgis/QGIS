@@ -102,6 +102,9 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
     def test_getprojectsettings(self):
         self.wms_request_compare('GetProjectSettings')
 
+    def test_getprojectsettings_opacity(self):
+        self.wms_request_compare('GetProjectSettings', None, 'getprojectsettings_opacity', 'test_opacity_project.qgs')
+
     def test_getcontext(self):
         self.wms_request_compare('GetContext')
 
@@ -324,7 +327,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         f.close()
 
         # clean header in doc
-        doc = doc.replace('Content-Length: 6575\n', '')
+        doc = doc.replace('Content-Length: 15066\n', '')
         doc = doc.replace('Content-Type: text/xml; charset=utf-8\n\n', '')
         doc = doc.replace('<?xml version="1.0" encoding="utf-8"?>\n', '')
 

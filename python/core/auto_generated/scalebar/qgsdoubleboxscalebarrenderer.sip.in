@@ -26,7 +26,16 @@ Double box with alternating colors.
 Constructor for QgsDoubleBoxScaleBarRenderer.
 %End
 
-    virtual QString name() const;
+    virtual QString id() const;
+
+    virtual QString visibleName() const;
+
+    virtual Flags flags() const;
+
+    virtual int sortKey() const;
+
+    virtual QgsDoubleBoxScaleBarRenderer *clone() const /Factory/;
+
 
      virtual void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,

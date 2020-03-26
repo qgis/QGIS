@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include "qgsprocessingmodelcomponent.h"
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingmodelcomment.h"
 
 ///@cond NOT_STABLE
 
@@ -38,6 +39,8 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
      * Constructor for QgsProcessingModelOutput with the specified \a name and \a description.
      */
     QgsProcessingModelOutput( const QString &name = QString(), const QString &description = QString() );
+
+    QgsProcessingModelOutput *clone() const override SIP_FACTORY;
 
     /**
      * Returns the model output name.
@@ -119,6 +122,10 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
      */
     bool loadVariant( const QVariantMap &map );
 
+    SIP_SKIP const QgsProcessingModelComment *comment() const override { return &mComment; }
+    QgsProcessingModelComment *comment() override { return &mComment; }
+    void setComment( const QgsProcessingModelComment &comment ) override { mComment = comment; }
+
   private:
 
     QString mName;
@@ -126,6 +133,9 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
     QString mChildId;
     QString mOutputName;
     bool mMandatory = false;
+
+    QgsProcessingModelComment mComment;
+
 };
 
 ///@endcond

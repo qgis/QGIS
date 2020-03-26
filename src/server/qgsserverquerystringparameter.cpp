@@ -41,14 +41,14 @@ QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &contex
 {
 
   // 1: check required
-  if ( mRequired && ! context.request()->url().hasQueryItem( mName ) )
+  if ( mRequired && !QUrlQuery( context.request()->url() ).hasQueryItem( mName ) )
   {
     throw QgsServerApiBadRequestException( QStringLiteral( "Missing required argument: '%1'" ).arg( mName ) );
   }
 
   // 2: get value from query string or set it to the default
   QVariant value;
-  if ( context.request()->url().hasQueryItem( mName ) )
+  if ( QUrlQuery( context.request()->url() ).hasQueryItem( mName ) )
   {
     value = QUrlQuery( context.request()->url() ).queryItemValue( mName, QUrl::FullyDecoded );
   }
@@ -122,6 +122,10 @@ json QgsServerQueryStringParameter::data() const
   if ( dataType == "list" )
   {
     dataType = "string";
+  }
+  else if ( dataType == "double" )
+  {
+    dataType = "number";
   }
   return
   {

@@ -6,14 +6,14 @@ Content-Type: text/xml; charset=utf-8
   <name>dem</name>
   <label>dem</label>
   <lonLatEnvelope srsName="urn:ogc:def:crs:OGC:1.3:CRS84">
-   <gml:pos>-30 30</gml:pos>
-   <gml:pos>3.33245e-12 60</gml:pos>
+   <gml:pos>-30 29.999999</gml:pos>
+   <gml:pos>0.000001 60</gml:pos>
   </lonLatEnvelope>
   <domainSet>
    <spatialDomain>
     <gml:Envelope srsName="EPSG:4326">
-     <gml:pos>-30 30</gml:pos>
-     <gml:pos>3.33245e-12 60</gml:pos>
+     <gml:pos>-30 29.999999</gml:pos>
+     <gml:pos>0.000001 60</gml:pos>
     </gml:Envelope>
     <gml:RectifiedGrid dimension="2">
      <gml:limits>

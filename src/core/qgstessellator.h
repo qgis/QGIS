@@ -75,6 +75,18 @@ class CORE_EXPORT QgsTessellator
      */
     std::unique_ptr< QgsMultiPolygon > asMultiPolygon() const SIP_SKIP;
 
+    /**
+     * Returns minimal Z value of the data (in world coordinates)
+     * \since QGIS 3.12
+     */
+    float zMinimum() const { return mZMin; }
+
+    /**
+     * Returns maximal Z value of the data (in world coordinates)
+     * \since QGIS 3.12
+     */
+    float zMaximum() const { return mZMax; }
+
   private:
     void init();
 
@@ -86,6 +98,9 @@ class CORE_EXPORT QgsTessellator
     QVector<float> mData;
     int mStride;
     bool mNoZ = false;
+
+    float mZMin = std::numeric_limits<float>::max();
+    float mZMax = std::numeric_limits<float>::min();
 };
 
 #endif // QGSTESSELLATOR_H

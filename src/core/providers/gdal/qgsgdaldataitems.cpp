@@ -59,7 +59,7 @@ bool QgsGdalLayerItem::setCrs( const QgsCoordinateReferenceSystem &crs )
   if ( !hDS )
     return false;
 
-  QString wkt = crs.toWkt();
+  QString wkt = crs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 );
   if ( GDALSetProjection( hDS.get(), wkt.toLocal8Bit().data() ) != CE_None )
   {
     QgsDebugMsg( QStringLiteral( "Could not set CRS" ) );
@@ -259,6 +259,18 @@ QgsDataItem *QgsGdalDataItemProvider::createDataItem( const QString &pathIn, Qgs
       name = name.replace( vsiPrefix + parentItem->path() + '/', "" );
     }
 #endif
+  }
+
+  if ( suffix == QStringLiteral( "mbtiles" ) )
+  {
+    // handled by WMS provider
+    QUrlQuery uq;
+    uq.addQueryItem( "type", "mbtiles" );
+    uq.addQueryItem( "url", QUrl::fromLocalFile( path ).toString() );
+    QString encodedUri = uq.toString();
+    QgsLayerItem *item = new QgsLayerItem( parentItem, name, path, encodedUri, QgsLayerItem::Raster, QStringLiteral( "wms" ) );
+    item->setState( QgsDataItem::Populated );
+    return item;
   }
 
   // Filters out the OGR/GDAL supported formats that can contain multiple layers

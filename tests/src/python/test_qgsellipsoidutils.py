@@ -37,7 +37,7 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
             if QgsProjUtils.projVersionMajor() < 6:
                 self.assertEqual(params.crs.authid(), 'EPSG:4030')
             else:
-                self.assertEqual(params.crs.toProj4(), '+proj=longlat +a=6378137 +rf=298.25722356300003 +no_defs')
+                self.assertEqual(params.crs.toProj(), '+proj=longlat +a=6378137 +rf=298.25722356300003 +no_defs')
 
         for i in range(2):
             params = QgsEllipsoidUtils.ellipsoidParameters("Ganymede2000")
@@ -49,7 +49,7 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
             if QgsProjUtils.projVersionMajor() < 6:
                 self.assertEqual(params.crs.authid(), '')
             else:
-                self.assertEqual(params.crs.toProj4(), '+proj=longlat +a=2632345 +no_defs')
+                self.assertEqual(params.crs.toProj(), '+proj=longlat +a=2632345 +no_defs')
 
             if QgsProjUtils.projVersionMajor() >= 6:
                 params = QgsEllipsoidUtils.ellipsoidParameters("ESRI:107916")
@@ -58,7 +58,7 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
                 self.assertEqual(params.semiMinor, 2632345.0)
                 self.assertEqual(params.inverseFlattening, 0)
                 self.assertFalse(params.useCustomParameters)
-                self.assertEqual(params.crs.toProj4(), '+proj=longlat +a=2632345 +no_defs')
+                self.assertEqual(params.crs.toProj(), '+proj=longlat +a=2632345 +no_defs')
 
                 params = QgsEllipsoidUtils.ellipsoidParameters("EPSG:7001")
                 self.assertTrue(params.valid)
@@ -66,7 +66,7 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
                 self.assertEqual(params.semiMinor, 6356256.909237285)
                 self.assertEqual(params.inverseFlattening, 299.3249646)
                 self.assertFalse(params.useCustomParameters)
-                self.assertEqual(params.crs.toProj4(),
+                self.assertEqual(params.crs.toProj(),
                                  '+proj=longlat +a=6377563.3959999997 +rf=299.32496459999999 +no_defs')
 
                 params = QgsEllipsoidUtils.ellipsoidParameters("EPSG:7008")
@@ -75,7 +75,7 @@ class TestQgsEllipsoidUtils(unittest.TestCase):
                 self.assertEqual(params.semiMinor, 6356583.8)
                 self.assertEqual(params.inverseFlattening, 294.9786982138982)
                 self.assertFalse(params.useCustomParameters)
-                self.assertEqual(params.crs.toProj4(),
+                self.assertEqual(params.crs.toProj(),
                                  '+proj=longlat +a=6378206.4000000004 +b=6356583.7999999998 +no_defs')
 
         # using parameters

@@ -222,6 +222,11 @@ void QgsLayerTreeViewDefaultActions::checkAndAllParents()
 
 void QgsLayerTreeViewDefaultActions::addGroup()
 {
+  if ( mView->selectedNodes( true ).count() >= 2 )
+  {
+    groupSelected();
+    return;
+  }
   QgsLayerTreeGroup *group = mView->currentGroupNode();
   if ( !group )
     group = mView->layerTreeModel()->rootGroup();
@@ -369,7 +374,7 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas *canvas, const Q
   extent.scale( 1.05 );
 
   //zoom to bounding box
-  canvas->setExtent( extent );
+  canvas->setExtent( extent, true );
   canvas->refresh();
 }
 
@@ -424,7 +429,7 @@ void QgsLayerTreeViewDefaultActions::moveOutOfGroup()
 
 void QgsLayerTreeViewDefaultActions::moveToTop()
 {
-  QMap <QgsLayerTreeGroup *, int> groupInsertIdx;
+  QHash <QgsLayerTreeGroup *, int> groupInsertIdx;
   int insertIdx;
   const QList< QgsLayerTreeNode * >  selectedNodes = mView->selectedNodes();
   for ( QgsLayerTreeNode *n : selectedNodes )

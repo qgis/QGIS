@@ -1342,8 +1342,7 @@ void QgsMarkerSymbol::setAngle( double symbolAngle )
 
 double QgsMarkerSymbol::angle() const
 {
-  const auto constMLayers = mLayers;
-  for ( QgsSymbolLayer *layer : constMLayers )
+  for ( QgsSymbolLayer *layer : qgis::as_const( mLayers ) )
   {
     if ( layer->type() != QgsSymbol::Marker )
       continue;
@@ -1369,8 +1368,8 @@ void QgsMarkerSymbol::setDataDefinedAngle( const QgsProperty &property )
 {
   const double symbolRotation = angle();
 
-  const auto constMLayers = mLayers;
-  for ( QgsSymbolLayer *layer : constMLayers )
+
+  for ( QgsSymbolLayer *layer : qgis::as_const( mLayers ) )
   {
     if ( layer->type() != QgsSymbol::Marker )
       continue;
@@ -1725,8 +1724,8 @@ void QgsMarkerSymbol::renderPoint( QPointF point, const QgsFeature *f, QgsRender
     return;
   }
 
-  const auto constMLayers = mLayers;
-  for ( QgsSymbolLayer *symbolLayer : constMLayers )
+
+  for ( QgsSymbolLayer *symbolLayer : qgis::as_const( mLayers ) )
   {
     if ( context.renderingStopped() )
       break;

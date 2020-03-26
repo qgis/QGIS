@@ -24,6 +24,7 @@
 #include "nmeatime.h"
 #include "qgsgpsmarker.h"
 #include "qgsmaptoolcapture.h"
+#include "qgspanelwidget.h"
 #include <qwt_plot_curve.h>
 #ifdef WITH_QWTPOLAR
 #include <qwt_polar_plot.h>
@@ -34,9 +35,11 @@
 class QextSerialPort;
 class QgsGpsConnection;
 class QgsGpsTrackerThread;
-struct QgsGpsInformation;
+class QgsGpsInformation;
 class QgsMapCanvas;
 class QgsFeature;
+class QgsGpsBearingItem;
+class QgsBearingNumericFormat;
 
 class QFile;
 class QColor;
@@ -45,14 +48,20 @@ class QColor;
  * A dock widget that displays information from a GPS device and
  * allows the user to capture features using gps readings to
  * specify the geometry.*/
-class APP_EXPORT QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidgetBase
+class APP_EXPORT QgsGpsInformationWidget: public QgsPanelWidget, private Ui::QgsGpsInformationWidgetBase
 {
     Q_OBJECT
   public:
-    QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsGpsInformationWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr );
     ~QgsGpsInformationWidget() override;
+
+  public slots:
+    void tapAndHold( const QgsPointXY &mapPoint, QTapAndHoldGesture *gesture );
+
+
   private slots:
     void mConnectButton_toggled( bool flag );
+    void recenter();
     void displayGPSInformation( const QgsGpsInformation &info );
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
     void updateCloseFeatureButton( QgsMapLayer *lyr );
@@ -78,11 +87,13 @@ class APP_EXPORT QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInfo
     void cboAcquisitionIntervalEdited();
     void cboDistanceThresholdEdited();
     void timestampFormatChanged( int index );
+    void cursorCoordinateChanged( const QgsPointXY &point );
 
     /**
      * Updates compatible fields for timestamp recording
      */
     void updateTimestampDestinationFields( QgsMapLayer *mapLayer );
+
   private:
     enum FixStatus  //GPS status
     {
@@ -102,6 +113,8 @@ class APP_EXPORT QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInfo
     QgsGpsConnection *mNmea = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsGpsMarker *mMapMarker = nullptr;
+    QgsGpsBearingItem *mMapBearingItem = nullptr;
+
     QwtPlot *mPlot = nullptr;
     QwtPlotCurve *mCurve = nullptr;
 #ifdef WITH_QWTPOLAR
@@ -111,7 +124,12 @@ class APP_EXPORT QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInfo
 #endif
     void createRubberBand();
 
+    void updateGpsDistanceStatusMessage();
+
     QgsCoordinateReferenceSystem mWgs84CRS;
+    QgsCoordinateTransform mCanvasToWgs84Transform;
+    QgsDistanceArea mDistanceCalculator;
+
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
     QgsRubberBand *mRubberBand = nullptr;
     QgsPointXY mLastGpsPosition;
@@ -133,6 +151,12 @@ class APP_EXPORT QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInfo
     QMap<QString, QString> mPreferredTimestampFields;
     //! Flag when updating fields
     bool mPopulatingFields = false;
+
+    QgsPointXY mLastCursorPosWgs84;
+    std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
+
+    QElapsedTimer mLastRotateTimer;
+
     friend class TestQgsGpsInformationWidget;
 };
 

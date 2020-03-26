@@ -30,7 +30,7 @@ email                : hugo dot mercier at oslandia dot com
 
 class QgsVirtualLayerFeatureIterator;
 
-class QgsVirtualLayerProvider: public QgsVectorDataProvider
+class QgsVirtualLayerProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
   public:
@@ -60,7 +60,6 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     QgsAttributeList pkAttributeIndexes() const override;
     QSet<QgsMapLayerDependency> dependencies() const override;
     bool cancelReload() override;
-    void reloadData() override;
 
   private:
 
@@ -118,6 +117,11 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     bool loadSourceLayers();
     void createVirtualTable( QgsVectorLayer *vlayer, const QString &name );
 
+    /**
+     * Opens or creates file
+    */
+    void reloadProviderData() override;
+
     friend class QgsVirtualLayerFeatureSource;
 
   private slots:
@@ -125,7 +129,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
 
 };
 
-class QgsVirtualLayerProviderMetadata: public QgsProviderMetadata
+class QgsVirtualLayerProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsVirtualLayerProviderMetadata();
@@ -133,7 +137,7 @@ class QgsVirtualLayerProviderMetadata: public QgsProviderMetadata
 };
 
 #ifdef HAVE_GUI
-class QgsVirtualLayerProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsVirtualLayerProviderGuiMetadata final: public QgsProviderGuiMetadata
 {
   public:
     QgsVirtualLayerProviderGuiMetadata();

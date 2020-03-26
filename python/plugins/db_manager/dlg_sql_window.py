@@ -276,7 +276,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self,
             self.tr('Save SQL Query'),
             lastDir,
-            self.tr("SQL File (*.sql, *.SQL)"))
+            self.tr("SQL File (*.sql *.SQL)"))
 
         if filename:
             if not filename.lower().endswith('.sql'):
@@ -295,7 +295,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             self,
             self.tr("Load SQL Query"),
             lastDir,
-            self.tr("SQL File (*.sql, *.SQL)"))
+            self.tr("SQL File (*.sql *.SQL);;All Files (*)"))
 
         if filename:
             with open(filename, 'r') as f:

@@ -237,8 +237,10 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
     case Section::Providers :
       prefix = QStringLiteral( "providers" );
       break;
+    case Section::Expressions :
+      prefix = QStringLiteral( "expressions" );
+      break;
     case Section::NoSection:
-    default:
       return sanitizeKey( key );
   }
   return prefix  + "/" + sanitizeKey( key );

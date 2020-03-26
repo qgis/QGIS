@@ -45,8 +45,25 @@ class GUI_EXPORT QgsLayoutCustomDropHandler : public QObject
      * be further processed (e.g. by other QgsLayoutCustomDropHandler).
      *
      * The base class implementation does nothing.
+     *
+     * \deprecated use the version which specifies a drop location instead.
      */
-    virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file );
+    Q_DECL_DEPRECATED virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file ) SIP_DEPRECATED;
+
+    /**
+     * Called when the specified \a file has been dropped onto a QGIS layout. If TRUE
+     * is returned, then the handler has accepted this file and it should not
+     * be further processed (e.g. by other QgsLayoutCustomDropHandler).
+     *
+     * The \a dropPoint point specifies the location (in layout coordinates) at which
+     * the drop occurred.
+     *
+     * The base class implementation does nothing.
+     *
+     * \since QGIS 3.12
+     */
+    virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF dropPoint, const QString &file );
 };
+
 
 #endif // QGSLAYOUTCUSTOMDROPHANDLER_H

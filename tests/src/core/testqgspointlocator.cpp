@@ -474,6 +474,49 @@ class TestQgsPointLocator : public QObject
       delete loc;
     }
 
+
+    void testEmptyLayer()
+    {
+      // Issue https://github.com/qgis/QGIS/issues/33449
+
+
+      // Create an empty layer, add one feature and check that we can snap on this feature
+      QgsVectorLayer layer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+      QgsProject::instance()->addMapLayer( &layer );
+
+      QgsPointLocator loc( &layer );
+
+      // init locator (no rtree in locator because there is no feature in layer)
+      QgsPointXY pt( 2, 2 );
+      QgsPointLocator::Match m = loc.nearestVertex( pt, 999 );
+      QVERIFY( loc.mIsEmptyLayer );
+      QVERIFY( !loc.mRTree );
+
+      layer.startEditing();
+      QgsFeature ff( 0 );
+      QgsPolygonXY polygon;
+      QgsPolylineXY polyline;
+      polyline << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 0, 1 );
+      polygon << polyline;
+      QgsGeometry ffGeom = QgsGeometry::fromPolygonXY( polygon );
+      ff.setGeometry( ffGeom );
+
+      layer.addFeature( ff );
+
+      QVERIFY( !loc.mIsEmptyLayer );
+      QVERIFY( loc.mRTree );
+
+      // Check is inserted feature is well known from the locator (even in relaxed mode,
+      // no need to index and wait for finished)
+      m = loc.nearestVertex( pt, 999, nullptr, true );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasVertex() );
+      QCOMPARE( m.layer(), &layer );
+      QCOMPARE( m.point(), QgsPointXY( 1, 1 ) );
+      QCOMPARE( m.distance(), std::sqrt( 2.0 ) );
+      QCOMPARE( m.vertexIndex(), 2 );
+    }
+
 };
 
 QGSTEST_MAIN( TestQgsPointLocator )

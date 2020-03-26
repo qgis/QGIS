@@ -70,9 +70,16 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
             Grass7Utils.GRASS_HELP_PATH,
             self.tr('Location of GRASS docs'),
             Grass7Utils.grassHelpPath()))
-        # Add a setting for using v.external instead of v.in.ogr
-        # But set it to False by default because some algorithms
-        # can't be used with external data (need a solid v.in.ogr).
+        # Add settings for using r.external/v.external instead of r.in.gdal/v.in.ogr
+        # but set them to False by default because the {r,v}.external implementations
+        # have some bugs on windows + there are algorithms that can't be used with
+        # external data (need a solid r.in.gdal/v.in.ogr).
+        # For more info have a look at e.g. https://trac.osgeo.org/grass/ticket/3927
+        ProcessingConfig.addSetting(Setting(
+            self.name(),
+            Grass7Utils.GRASS_USE_REXTERNAL,
+            self.tr('For raster layers, use r.external (faster) instead of r.in.gdal'),
+            False))
         ProcessingConfig.addSetting(Setting(
             self.name(),
             Grass7Utils.GRASS_USE_VEXTERNAL,
@@ -90,6 +97,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_PATH)
+        ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_REXTERNAL)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_VEXTERNAL)
 
     def isActive(self):

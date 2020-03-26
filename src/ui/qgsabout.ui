@@ -236,19 +236,6 @@ p, li { white-space: pre-wrap; }
             </widget>
            </item>
            <item>
-            <spacer name="spacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>21</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
             <widget class="QLabel" name="label_3">
              <property name="text">
               <string>QGIS is licensed under the GNU General Public License</string>
@@ -261,25 +248,12 @@ p, li { white-space: pre-wrap; }
            <item>
             <widget class="QLabel" name="label_2">
              <property name="text">
-              <string>http://www.gnu.org/licenses</string>
+              <string>https://www.gnu.org/licenses</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
             </widget>
-           </item>
-           <item>
-            <spacer name="spacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
            </item>
            <item>
             <layout class="QHBoxLayout" name="_2">
@@ -296,7 +270,7 @@ p, li { white-space: pre-wrap; }
              <item>
               <widget class="QPushButton" name="btnQgisUser">
                <property name="text">
-                <string>Join our user mailing list</string>
+                <string>Join our User Mailing List</string>
                </property>
                <property name="flat">
                 <bool>false</bool>

@@ -122,7 +122,7 @@ class ProcessingModelItem(QgsDataItem):
         ProcessingDropHandler.runAlg(self.path())
 
     def editModel(self):
-        dlg = ModelerDialog()
+        dlg = ModelerDialog.create()
         dlg.loadModel(self.path())
         dlg.show()
 
@@ -306,11 +306,6 @@ class ProcessingPlugin:
         self.toolbox.deleteLater()
         self.menu.deleteLater()
 
-        # delete temporary output files
-        folder = QgsProcessingUtils.tempFolder()
-        if QDir(folder).exists():
-            shutil.rmtree(folder, True)
-
         # also delete temporary help files
         folder = tempHelpFolder()
         if QDir(folder).exists():
@@ -337,7 +332,7 @@ class ProcessingPlugin:
         self.toolboxAction.setChecked(visible)
 
     def openModeler(self):
-        dlg = ModelerDialog()
+        dlg = ModelerDialog.create()
         dlg.update_model.connect(self.updateModel)
         dlg.show()
 

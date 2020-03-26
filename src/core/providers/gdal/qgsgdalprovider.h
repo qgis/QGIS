@@ -62,7 +62,7 @@ class QgsCoordinateTransform;
   to provide access to spatial data residing in a GDAL layers.
 
 */
-class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
+class QgsGdalProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 {
     Q_OBJECT
 
@@ -199,8 +199,6 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     bool setNoDataValue( int bandNo, double noDataValue ) override;
     bool remove() override;
 
-    void reloadData() override;
-
     QString validateCreationOptions( const QStringList &createOptions, const QString &format ) override;
     QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
                                            const QStringList &configOptions, const QString &fileFormat ) override;
@@ -239,8 +237,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // update mode
     bool mUpdate;
 
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,0,0)
     // initialize CRS from wkt
     bool crsFromWkt( const char *wkt );
+#endif
 
     //! Do some initialization on the dataset (e.g. handling of south-up datasets)
     void initBaseDataset();
@@ -333,16 +333,22 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     bool worldToPixel( double x, double y, int &col, int &row ) const;
 
     bool mStatisticsAreReliable = false;
+
+    /**
+     * Closes and reinits dataset
+    */
+    void reloadProviderData() override;
 };
 
 /**
  * Metadata of the GDAL data provider
  */
-class QgsGdalProviderMetadata: public QgsProviderMetadata
+class QgsGdalProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsGdalProviderMetadata();
     QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
     QgsGdalProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QgsGdalProvider *createRasterDataProvider(
       const QString &uri,

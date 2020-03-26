@@ -51,6 +51,9 @@ class APP_EXPORT QgsMapToolAddRegularPolygon: public QgsMapToolCapture
     //! delete the spin box to enter the number of sides, if it exists
     void deleteNumberSidesSpinBox();
 
+    //! Convenient method to release (activate/deactivate) tools
+    void release( QgsMapMouseEvent *e );
+
     /**
      * The parent map tool, e.g. the add feature tool.
      *  Completed regular polygon will be added to this tool by calling its addCurve() method.

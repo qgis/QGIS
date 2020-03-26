@@ -21,14 +21,16 @@ from qgis.core import (
     QgsRelation,
     QgsTransaction,
     QgsFeatureRequest,
-    QgsVectorLayerTools
+    QgsVectorLayerTools,
+    QgsGeometry
 )
 
 from qgis.gui import (
     QgsGui,
     QgsRelationWidgetWrapper,
     QgsAttributeEditorContext,
-    QgsMapCanvas
+    QgsMapCanvas,
+    QgsAdvancedDigitizingDockWidget
 )
 
 from qgis.PyQt.QtCore import QTimer
@@ -37,7 +39,7 @@ from qgis.PyQt.QtWidgets import (
     QMessageBox,
     QDialogButtonBox,
     QTableView,
-    QApplication
+    QDialog
 )
 from qgis.testing import start_app, unittest
 
@@ -174,22 +176,14 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         f.setAttributes([self.vl_books.dataProvider().defaultValueClause(0), 'The Hitchhiker\'s Guide to the Galaxy', 'Sputnik Editions', 1961])
         self.vl_books.addFeature(f)
 
-        def choose_linked_feature():
-            dlg = QApplication.activeModalWidget()
-            dlg.setSelectedFeatures([f.id()])
-            dlg.accept()
-
         btn = self.widget.findChild(QToolButton, 'mLinkFeatureButton')
-
-        timer = QTimer()
-        timer.setSingleShot(True)
-        timer.setInterval(0)  # will run in the event loop as soon as it's processed when the dialog is opened
-        timer.timeout.connect(choose_linked_feature)
-        timer.start()
-
         btn.click()
-        # magically the above code selects the feature here...
 
+        dlg = self.widget.findChild(QDialog)
+        dlg.setSelectedFeatures([f.id()])
+        dlg.accept()
+
+        # magically the above code selects the feature here...
         link_feature = next(self.vl_link_books_authors.getFeatures(QgsFeatureRequest().setFilterExpression('"fk_book"={}'.format(f[0]))))
         self.assertIsNotNone(link_feature[0])
 
@@ -286,6 +280,76 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.assertEqual([fbook.id()], selectionMgr.selectedFeatureIds())
         self.assertTrue(self.zoomToButton.isEnabled())
 
+    def test_add_feature_geometry(self):
+        """
+        Test to add a feature with a geometry
+        """
+        vl_pipes = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."pipes" (geom) sql=', 'pipes', 'postgres')
+        vl_leaks = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."leaks" (geom) sql=', 'leaks', 'postgres')
+        vl_leaks.startEditing()
+
+        QgsProject.instance().addMapLayer(vl_pipes)
+        QgsProject.instance().addMapLayer(vl_leaks)
+
+        self.assertEqual(vl_pipes.featureCount(), 2)
+        self.assertEqual(vl_leaks.featureCount(), 3)
+
+        rel = QgsRelation()
+        rel.setReferencingLayer(vl_leaks.id())
+        rel.setReferencedLayer(vl_pipes.id())
+        rel.addFieldPair('pipe', 'id')
+        rel.setId('rel_pipe_leak')
+        self.assertTrue(rel.isValid())
+        self.relMgr.addRelation(rel)
+
+        # Mock vector layer tool to just set default value on created feature
+        class DummyVlTools(QgsVectorLayerTools):
+
+            def addFeature(self, layer, defaultValues, defaultGeometry):
+                f = QgsFeature(layer.fields())
+                for idx, value in defaultValues.items():
+                    f.setAttribute(idx, value)
+                f.setGeometry(defaultGeometry)
+                ok = layer.addFeature(f)
+
+                return ok, f
+
+        wrapper = QgsRelationWidgetWrapper(vl_leaks, rel)
+        context = QgsAttributeEditorContext()
+        vltool = DummyVlTools()
+        context.setVectorLayerTools(vltool)
+        context.setMapCanvas(self.mapCanvas)
+        cadDockWidget = QgsAdvancedDigitizingDockWidget(self.mapCanvas)
+        context.setCadDockWidget(cadDockWidget)
+        wrapper.setContext(context)
+        widget = wrapper.widget()
+        widget.show()
+        pipe = next(vl_pipes.getFeatures())
+        self.assertEqual(pipe.id(), 1)
+        wrapper.setFeature(pipe)
+        table_view = widget.findChild(QTableView)
+        self.assertEqual(table_view.model().rowCount(), 1)
+
+        btn = widget.findChild(QToolButton, 'mAddFeatureGeometryButton')
+        self.assertTrue(btn.isVisible())
+        self.assertTrue(btn.isEnabled())
+        btn.click()
+        self.assertTrue(self.mapCanvas.mapTool())
+        feature = QgsFeature(vl_leaks.fields())
+        feature.setGeometry(QgsGeometry.fromWkt('POINT(0 0.8)'))
+        self.mapCanvas.mapTool().digitizingCompleted.emit(feature)
+        self.assertEqual(table_view.model().rowCount(), 2)
+        self.assertEqual(vl_leaks.featureCount(), 4)
+        request = QgsFeatureRequest()
+        request.addOrderBy("id", False)
+
+        # get new created feature
+        feat = next(vl_leaks.getFeatures('"id" is NULL'))
+        self.assertTrue(feat.isValid())
+        self.assertTrue(feat.geometry().equals(QgsGeometry.fromWkt('POINT(0 0.8)')))
+
+        vl_leaks.rollBack()
+
     def startTransaction(self):
         """
         Start a new transaction and set all layers into transaction mode.
@@ -334,6 +398,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.wrapper = QgsRelationWidgetWrapper(layer, relation)
         self.wrapper.setConfig({'nm-rel': nmrel.id()})
         context = QgsAttributeEditorContext()
+        context.setMapCanvas(self.mapCanvas)
         context.setVectorLayerTools(self.vltools)
         self.wrapper.setContext(context)
 

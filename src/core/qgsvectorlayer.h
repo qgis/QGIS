@@ -62,6 +62,7 @@ class QgsMapToPixel;
 class QgsRectangle;
 class QgsRectangle;
 class QgsRelation;
+class QgsWeakRelation;
 class QgsRelationManager;
 class QgsSingleSymbolRenderer;
 class QgsStoredExpressionManager;
@@ -71,6 +72,7 @@ class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
 class QgsVectorLayerFeatureCounter;
 class QgsAbstractVectorLayerLabeling;
+class QgsPalLayerSettings;
 class QgsPoint;
 class QgsFeedback;
 class QgsAuxiliaryStorage;
@@ -580,7 +582,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QgsVectorDataProvider *dataProvider() FINAL;
     const QgsVectorDataProvider *dataProvider() const FINAL SIP_SKIP;
 
-    //! Sets the textencoding of the data provider
+    /**
+     * Sets the text \a encoding of the data provider.
+     *
+     * An empty \a encoding string indicates that the provider should automatically
+     * select the most appropriate encoding.
+     *
+     * \warning Support for setting the provider encoding depends on the underlying data
+     * provider. Check dataProvider().capabilities() for the QgsVectorDataProvider::SelectEncoding
+     * capability in order to determine if the provider supports this ability.
+     */
     void setProviderEncoding( const QString &encoding );
 
     //! Setup the coordinate system transformation for the layer
@@ -712,7 +723,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectByExpression()
      * \see selectByIds()
      */
-    Q_INVOKABLE void selectByRect( QgsRectangle &rect, SelectBehavior behavior = SetSelection );
+    Q_INVOKABLE void selectByRect( QgsRectangle &rect, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 
     /**
      * Selects matching features using an expression.
@@ -723,7 +734,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectByIds()
      * \since QGIS 2.16
      */
-    Q_INVOKABLE void selectByExpression( const QString &expression, SelectBehavior behavior = SetSelection );
+    Q_INVOKABLE void selectByExpression( const QString &expression, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 
     /**
      * Selects matching features using a list of feature IDs. Will emit the
@@ -735,7 +746,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectByExpression()
      * \since QGIS 2.16
      */
-    Q_INVOKABLE void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
+    Q_INVOKABLE void selectByIds( const QgsFeatureIds &ids, QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection );
 
     /**
      * Modifies the current selection on this layer
@@ -858,10 +869,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setRenderer( QgsFeatureRenderer *r SIP_TRANSFER );
 
     //! Returns point, line or polygon
-    QgsWkbTypes::GeometryType geometryType() const;
+    Q_INVOKABLE QgsWkbTypes::GeometryType geometryType() const;
 
     //! Returns the WKBType or WKBUnknown in case of error
-    QgsWkbTypes::Type wkbType() const FINAL;
+    Q_INVOKABLE QgsWkbTypes::Type wkbType() const FINAL;
 
     QgsCoordinateReferenceSystem sourceCrs() const FINAL;
     QString sourceName() const FINAL;
@@ -1861,7 +1872,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see startEditing()
      * \see commitChanges()
      */
-    bool rollBack( bool deleteBuffer = true );
+    Q_INVOKABLE bool rollBack( bool deleteBuffer = true );
 
     /**
      * Returns the layer's relations, where the foreign key is on this layer.
@@ -1870,6 +1881,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns A list of relations
      */
     QList<QgsRelation> referencingRelations( int idx ) const;
+
+    /**
+     * Returns the layer's weak relations as specified in the layer's style.
+     * \returns A list of weak relations
+     * \note not available in Python bindings
+     * \since QGIS 3.12
+     */
+    QList<QgsWeakRelation> weakRelations( ) const SIP_SKIP;
+
 
     //! Buffer with uncommitted editing operations. Only valid after editing has been turned on.
     Q_INVOKABLE QgsVectorLayerEditBuffer *editBuffer() { return mEditBuffer; }
@@ -2303,7 +2323,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \see select(QgsFeatureId)
      */
-    void select( const QgsFeatureIds &featureIds );
+    Q_INVOKABLE void select( const QgsFeatureIds &featureIds );
 
     /**
      * Deselects feature by its ID
@@ -2321,7 +2341,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \see deselect(const QgsFeatureId)
      */
-    void deselect( const QgsFeatureIds &featureIds );
+    Q_INVOKABLE void deselect( const QgsFeatureIds &featureIds );
 
     /**
      * Clear selection
@@ -2329,7 +2349,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \see selectByIds()
      * \see reselect()
      */
-    void removeSelection();
+    Q_INVOKABLE void removeSelection();
 
     /**
      * Reselects the previous set of selected features. This is only applicable
@@ -2373,6 +2393,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \since QGIS 3.8
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
+
+    SpatialIndexPresence hasSpatialIndex() const override;
 
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
@@ -2661,6 +2683,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Read labeling from SLD
     void readSldLabeling( const QDomNode &node );
 
+    //! Read settings from SLD TextSymbolizer element
+    bool readSldTextSymbolizer( const QDomNode &node, QgsPalLayerSettings &settings ) const;
+
     //! Read simple labeling from layer's custom properties (QGIS 2.x projects)
     QgsAbstractVectorLayerLabeling *readLabelingFromCustomProperties();
 
@@ -2821,6 +2846,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! To avoid firing multiple time dataChanged signal on circular layer circular dependencies
     bool mDataChangedFired = false;
+
+    QList<QgsWeakRelation> mWeakRelations;
 };
 
 

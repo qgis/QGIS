@@ -105,7 +105,7 @@ void TestQgsMapToolMoveFeature::initTestCase()
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( QgsSnappingConfig::AllLayers );
   cfg.setTolerance( 1 );
-  cfg.setType( QgsSnappingConfig::VertexAndSegment );
+  cfg.setTypeFlag( static_cast<QgsSnappingConfig::SnappingTypeFlag>( QgsSnappingConfig::VertexFlag | QgsSnappingConfig::SegmentFlag ) );
   cfg.setEnabled( true );
   mCanvas->snappingUtils()->setConfig( cfg );
 
@@ -132,8 +132,6 @@ void TestQgsMapToolMoveFeature::testMoveFeature()
 {
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
 
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
-
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
@@ -151,8 +149,6 @@ void TestQgsMapToolMoveFeature::testTopologicalMoveFeature()
   QgsProject::instance()->setTopologicalEditing( true );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
-
-  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
   utils.mouseClick( 1, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseClick( 2, 1, Qt::LeftButton, Qt::KeyboardModifiers(), true );

@@ -32,6 +32,8 @@ for equal intervals
     virtual QIcon icon() const;
 
 
+    virtual bool valuesRequired() const;
+
     static const QString METHOD_ID;
 
 };

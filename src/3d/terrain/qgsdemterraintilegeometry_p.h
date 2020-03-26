@@ -53,6 +53,8 @@ namespace QgsRayCastingUtils
  */
 class DemTerrainTileGeometry : public Qt3DRender::QGeometry
 {
+    Q_OBJECT
+
   public:
 
     /**

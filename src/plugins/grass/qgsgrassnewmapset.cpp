@@ -407,7 +407,7 @@ void QgsGrassNewMapset::setGrassProjection()
 {
   setError( mProjErrorLabel );
 
-  QString proj4 = mProjectionSelector->crs().toProj4();
+  QString proj4 = mProjectionSelector->crs().toProj();
 
   // Not defined
   if ( mNoProjRadioButton->isChecked() )
@@ -463,17 +463,23 @@ void QgsGrassNewMapset::setGrassProjection()
       // Note: GPJ_osr_to_grass() defaults in PROJECTION_XY if projection
       //       cannot be set
 
-      // There was a bug in GRASS, it is present in 6.0.x line
-      int ret = GPJ_wkt_to_grass( &mCellHead, &mProjInfo, &mProjUnits, wkt, 0 );
+      G_TRY
+      {
+        // There was a bug in GRASS, it is present in 6.0.x line
+        int ret = GPJ_wkt_to_grass( &mCellHead, &mProjInfo, &mProjUnits, wkt, 0 );
+        // Note: It seems that GPJ_osr_to_grass()returns always 1,
+        //   -> test if mProjInfo was set
 
-      // Note: It seems that GPJ_osr_to_grass()returns always 1,
-      //   -> test if mProjInfo was set
-
-      Q_UNUSED( ret )
-      QgsDebugMsg( QString( "ret = %1" ).arg( ret ) );
-      QgsDebugMsg( QString( "mProjInfo = %1" ).arg( QString::number( ( qulonglong )mProjInfo, 16 ).toLocal8Bit().constData() ) );
-
-      CPLFree( wkt );
+        Q_UNUSED( ret )
+        QgsDebugMsg( QString( "ret = %1" ).arg( ret ) );
+        QgsDebugMsg( QString( "mProjInfo = %1" ).arg( QString::number( ( qulonglong )mProjInfo, 16 ).toLocal8Bit().constData() ) );
+        CPLFree( wkt );
+      }
+      G_CATCH( QgsGrass::Exception & e )
+      {
+        QgsGrass::warning( tr( "Cannot set projection: %1" ).arg( e.what() ) );
+        return;
+      }
     }
 
     if ( !mProjInfo || !mProjUnits )

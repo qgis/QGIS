@@ -1,0 +1,73 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgspercentagenumericformat.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsPercentageNumericFormat : QgsBasicNumericFormat
+{
+%Docstring
+A numeric formatter which returns a text representation of a percentage value.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgspercentagenumericformat.h"
+%End
+  public:
+
+    enum InputValues
+    {
+      ValuesArePercentage,
+      ValuesAreFractions,
+    };
+
+    QgsPercentageNumericFormat();
+%Docstring
+Default constructor
+%End
+
+    virtual QString id() const;
+
+    virtual QString visibleName() const;
+
+    virtual int sortKey();
+
+    virtual double suggestSampleValue() const;
+
+    virtual QString formatDouble( double value, const QgsNumericFormatContext &context ) const;
+
+    virtual QgsNumericFormat *clone() const /Factory/;
+
+    virtual QgsNumericFormat *create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const /Factory/;
+
+    virtual QVariantMap configuration( const QgsReadWriteContext &context ) const;
+
+
+    InputValues inputValues() const;
+%Docstring
+Returns the format of the incoming values.
+
+.. seealso:: :py:func:`setInputValues`
+%End
+
+    void setInputValues( InputValues format );
+%Docstring
+Sets the ``format`` of the incoming values.
+
+.. seealso:: :py:func:`inputValues`
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/numericformats/qgspercentagenumericformat.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

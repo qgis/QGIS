@@ -31,6 +31,8 @@ which does not compute any break.
     virtual QString id() const;
 
 
+    virtual bool valuesRequired() const;
+
     static const QString METHOD_ID;
 
 };

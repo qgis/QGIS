@@ -42,6 +42,7 @@ class TestQgsZonalStatistics : public QObject
     void testReprojection();
     void testNoData();
     void testSmallPolygons();
+    void testShortName();
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
@@ -341,6 +342,22 @@ void TestQgsZonalStatistics::testSmallPolygons()
   QCOMPARE( f.attribute( "nmin" ).toDouble(), 851.0 );
   QCOMPARE( f.attribute( "nmax" ).toDouble(), 872.0 );
   QGSCOMPARENEAR( f.attribute( "nmean" ).toDouble(), 864.285638, 0.001 );
+}
+
+void TestQgsZonalStatistics::testShortName()
+{
+  QCOMPARE( QgsZonalStatistics::shortName( QgsZonalStatistics::Count ), QStringLiteral( "count" ) );
+  QCOMPARE( QgsZonalStatistics::shortName( QgsZonalStatistics::Sum ), QStringLiteral( "sum" ) );
+  QCOMPARE( QgsZonalStatistics::shortName( QgsZonalStatistics::Mean ), QStringLiteral( "mean" ) );
+  QCOMPARE( QgsZonalStatistics::shortName( QgsZonalStatistics::Median ), QStringLiteral( "median" ) );
+  QCOMPARE( QgsZonalStatistics::shortName( QgsZonalStatistics::StDev ), QStringLiteral( "stdev" ) );
+  QCOMPARE( QgsZonalStatistics::shortName( QgsZonalStatistics::Min ), QStringLiteral( "min" ) );
+  QCOMPARE( QgsZonalStatistics::shortName( QgsZonalStatistics::Max ), QStringLiteral( "max" ) );
+  QCOMPARE( QgsZonalStatistics::shortName( QgsZonalStatistics::Range ), QStringLiteral( "range" ) );
+  QCOMPARE( QgsZonalStatistics::shortName( QgsZonalStatistics::Minority ), QStringLiteral( "minority" ) );
+  QCOMPARE( QgsZonalStatistics::shortName( QgsZonalStatistics::Majority ), QStringLiteral( "majority" ) );
+  QCOMPARE( QgsZonalStatistics::shortName( QgsZonalStatistics::Variety ), QStringLiteral( "variety" ) );
+  QCOMPARE( QgsZonalStatistics::shortName( QgsZonalStatistics::Variance ), QStringLiteral( "variance" ) );
 }
 
 QGSTEST_MAIN( TestQgsZonalStatistics )

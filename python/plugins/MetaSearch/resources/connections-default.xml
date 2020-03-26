@@ -6,13 +6,13 @@
     <csw name="Finland: National CSW (Paikkatietohakemisto)" url="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/csw"/>
     <csw name="Iceland: National CSW (Iceland Service)" url="https://gatt.lmi.is/geonetwork/srv/eng/csw"/>
     <csw name="Italy: National CSW (Geoportale Nazionale - Servizio di ricerca Italiano)" url="http://www.pcn.minambiente.it/geoportal/csw"/>
-    <csw name="Italy: RNDT - Repertorio Nazionale dei Dati Territoriali - Servizio di ricerca" url="http://www.rndt.gov.it/RNDT/CSW"/>
+    <csw name="Italy: RNDT - Repertorio Nazionale dei Dati Territoriali - Servizio di ricerca" url="https://geodati.gov.it/RNDT/csw"/>
     <csw name="New Zealand: LINZ Data Service" url="https://data.linz.govt.nz/services/csw/"/>
     <csw name="Netherlands: National CSW (Nationaal Georegister)" url="http://www.nationaalgeoregister.nl/geonetwork/srv/dut/csw"/>
     <csw name="Norway: National CSW (Geonorge)" url="http://www.geonorge.no/geonetwork/srv/no/csw"/>
     <csw name="Sweden: National CSW" url="http://www.geodata.se/InspireCswProxy/csw"/>
     <csw name="UK Location Catalogue Publishing Service" url="http://csw.data.gov.uk/geonetwork/srv/en/csw"/>
     <csw name="UNEP GRID-Geneva Metadata Catalog" url="http://geonetwork.grid.unep.ch:8080/geonetwork/srv/eng/csw"/>
-    <csw name="Portugal: Sistema Nacional de Informação Geográfica (SNIG)" url="http://snig.dgterritorio.pt/geoportal/csw/discovery"/>
+    <csw name="Portugal: Sistema Nacional de Informação Geográfica (SNIG)" url="https://snig.dgterritorio.gov.pt/rndg/srv/eng/csw"/>
     <csw name="Spain: Centro Nacional de Información Geográfica (CNIG)" url="http://www.ign.es/csw-inspire/srv/spa/csw"/>
 </qgsCSWConnections>

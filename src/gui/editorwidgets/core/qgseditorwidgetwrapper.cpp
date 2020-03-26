@@ -96,6 +96,12 @@ void QgsEditorWidgetWrapper::emitValueChanged()
   emit valuesChanged( value(), additionalFieldValues() );
 }
 
+void QgsEditorWidgetWrapper::parentFormValueChanged( const QString &attribute, const QVariant &value )
+{
+  Q_UNUSED( attribute )
+  Q_UNUSED( value )
+}
+
 void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
 {
   if ( !mConstraintResultVisible )
@@ -267,10 +273,6 @@ bool QgsEditorWidgetWrapper::isBlockingCommit() const
   return mIsBlockingCommit;
 }
 
-QList<QgsVectorLayerRef> QgsEditorWidgetWrapper::layerDependencies() const
-{
-  return QList<QgsVectorLayerRef>();
-}
 
 QString QgsEditorWidgetWrapper::constraintFailureReason() const
 {

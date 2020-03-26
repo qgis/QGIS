@@ -19,6 +19,7 @@ import os
 from qgis.PyQt.QtCore import (
     QSize,
     QRectF,
+    QDir
 )
 from qgis.PyQt.QtGui import (
     QColor,
@@ -67,6 +68,7 @@ from qgis.core import (
     QgsLayoutSize,
     QgsLayoutItemMap,
     QgsLayoutExporter,
+    QgsWkbTypes,
 )
 
 
@@ -95,9 +97,10 @@ class TestSelectiveMasking(unittest.TestCase):
         self.checker = QgsRenderChecker()
         self.checker.setControlPathPrefix("selective_masking")
 
+        self.report = "<h1>Python Selective Masking Tests</h1>\n"
+
         self.map_settings = QgsMapSettings()
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromSrid(4326)
+        crs = QgsCoordinateReferenceSystem('epsg:4326')
         extent = QgsRectangle(-123.0, 22.7, -76.4, 46.9)
         self.map_settings.setBackgroundColor(QColor(152, 219, 249))
         self.map_settings.setOutputSize(QSize(420, 280))
@@ -134,10 +137,17 @@ class TestSelectiveMasking(unittest.TestCase):
                 fmt.setSize(32)
                 fmt.setSizeUnit(QgsUnitTypes.RenderPoints)
                 settings.setFormat(fmt)
+                if (layer.geometryType == QgsWkbTypes.PolygonGeometry):
+                    settings.placement = QgsPalLayerSettings.OverPoint
                 layer.labeling().setSettings(settings, provider)
 
         # order layers for rendering
         self.map_settings.setLayers([self.points_layer, self.lines_layer, self.polys_layer])
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
 
     def check_renderings(self, map_settings, control_name):
         """Test a rendering with different configurations:
@@ -163,7 +173,9 @@ class TestSelectiveMasking(unittest.TestCase):
                 self.checker.setControlName(control_name)
                 self.checker.setRenderedImage(tmp)
                 suffix = "_parallel" if do_parallel else "_sequential"
-                self.assertTrue(self.checker.compareImages(control_name + suffix))
+                res = self.checker.compareImages(control_name + suffix)
+                self.report += self.checker.report()
+                self.assertTrue(res)
 
                 print("=== Rendering took {}s".format(float(t) / 1000.0))
 
@@ -185,7 +197,8 @@ class TestSelectiveMasking(unittest.TestCase):
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
 
-        self.assertTrue(self.polys_layer.labeling().settings().format().mask().enabled())
+        format = self.polys_layer.labeling().settings().format()
+        self.assertTrue(format.mask().enabled())
 
         self.check_renderings(self.map_settings, "label_mask")
 
@@ -207,7 +220,8 @@ class TestSelectiveMasking(unittest.TestCase):
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
 
-        self.assertTrue(self.polys_layer.labeling().settings().format().mask().enabled())
+        format = self.polys_layer.labeling().settings().format()
+        self.assertTrue(format.mask().enabled())
 
         # modify labeling settings of the lines layer
         label_settings = self.lines_with_labels.labeling().settings()
@@ -245,7 +259,8 @@ class TestSelectiveMasking(unittest.TestCase):
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
 
-        self.assertTrue(self.polys_layer.labeling().settings().format().mask().enabled())
+        format = self.polys_layer.labeling().settings().format()
+        self.assertTrue(format.mask().enabled())
 
         # modify labeling settings of the lines layer
         label_settings = self.lines_with_labels.labeling().settings()
@@ -288,7 +303,8 @@ class TestSelectiveMasking(unittest.TestCase):
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
 
-        self.assertTrue(self.polys_layer.labeling().settings().format().mask().enabled())
+        format = self.polys_layer.labeling().settings().format()
+        self.assertTrue(format.mask().enabled())
 
         self.check_renderings(self.map_settings, "label_mask_subsymbol")
 
@@ -336,6 +352,7 @@ class TestSelectiveMasking(unittest.TestCase):
             if child.description() == 'Tadam':
                 break
         label_settings = child.settings()
+        label_settings.priority = 3
         fmt = label_settings.format()
         # enable a mask
         fmt.mask().setEnabled(True)
@@ -391,7 +408,8 @@ class TestSelectiveMasking(unittest.TestCase):
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
 
-        self.assertTrue(self.polys_layer.labeling().settings().format().mask().enabled())
+        format = self.polys_layer.labeling().settings().format()
+        self.assertTrue(format.mask().enabled())
 
         # enable symbol levels
         self.lines_layer.renderer().setUsingSymbolLevels(True)
@@ -553,7 +571,9 @@ class TestSelectiveMasking(unittest.TestCase):
             render_function()
             self.checker.setControlName(control_name)
             self.checker.setRenderedImage(tmp)
-            self.assertTrue(self.checker.compareImages(control_name))
+            res = self.checker.compareImages(control_name, 90)
+            self.report += self.checker.report()
+            self.assertTrue(res)
 
     def test_mask_with_effect(self):
         p = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'size': "7"})
@@ -612,7 +632,8 @@ class TestSelectiveMasking(unittest.TestCase):
         label_settings.setFormat(fmt)
         self.polys_layer.labeling().setSettings(label_settings)
 
-        self.assertTrue(self.polys_layer.labeling().settings().format().mask().enabled())
+        format = self.polys_layer.labeling().settings().format()
+        self.assertTrue(format.mask().enabled())
 
         self.check_renderings(self.map_settings, "label_mask_with_effect")
 
@@ -674,7 +695,9 @@ class TestSelectiveMasking(unittest.TestCase):
         control_name = "layout_export"
         self.checker.setControlName(control_name)
         self.checker.setRenderedImage(tmp)
-        self.assertTrue(self.checker.compareImages(control_name))
+        res = self.checker.compareImages(control_name)
+        self.report += self.checker.report()
+        self.assertTrue(res)
 
 
 if __name__ == '__main__':

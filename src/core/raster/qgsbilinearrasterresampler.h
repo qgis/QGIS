@@ -43,6 +43,7 @@ class CORE_EXPORT QgsBilinearRasterResampler: public QgsRasterResamplerV2
     QImage resampleV2( const QImage &source, const QSize &size ) override;
     QString type() const override;
     QgsBilinearRasterResampler *clone() const override SIP_FACTORY;
+    int tileBufferPixels() const override;
 };
 
 #endif // QGSBILINEARRASTERRESAMPLER_H

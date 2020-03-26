@@ -62,7 +62,7 @@ using QgsOgrLayerUniquePtr = std::unique_ptr< QgsOgrLayer, QgsOgrLayerReleaser>;
   \class QgsOgrProvider
   \brief Data provider for OGR datasources
   */
-class QgsOgrProvider : public QgsVectorDataProvider
+class QgsOgrProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -164,14 +164,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
     int layerIndex() const { return mLayerIndex; }
 
     QByteArray quotedIdentifier( const QByteArray &field ) const;
-
-    /**
-     * A forced reload invalidates the underlying connection.
-     * E.g. in case a shapefile is replaced, the old file will be closed
-     * and the new file will be opened.
-     */
-    void forceReload() override;
-    void reloadData() override;
 
   protected:
     //! Loads fields from input file to member attributeFields
@@ -335,6 +327,13 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QgsOgrTransaction *mTransaction = nullptr;
 
     void setTransaction( QgsTransaction *transaction ) override;
+
+    /**
+    * Invalidates and reopens the file and resets the feature count
+    * E.g. in case a shapefile is replaced, the old file will be closed
+    * and the new file will be opened.
+    */
+    void reloadProviderData() override;
 };
 
 class QgsOgrDataset;
@@ -734,7 +733,7 @@ class QgsOgrLayer
  * Entry point for registration of the OGR data provider
  * \since QGIS 3.10
  */
-class QgsOgrProviderMetadata: public QgsProviderMetadata
+class QgsOgrProviderMetadata final: public QgsProviderMetadata
 {
   public:
 
@@ -745,6 +744,7 @@ class QgsOgrProviderMetadata: public QgsProviderMetadata
     QList< QgsDataItemProvider * > dataItemProviders() const override;
     QgsOgrProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
     QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
     QString filters( FilterType type ) override;
     QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,

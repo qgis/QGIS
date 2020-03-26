@@ -84,11 +84,13 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/geocms
       ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
       ${CMAKE_SOURCE_DIR}/src/core/gps
+      ${CMAKE_SOURCE_DIR}/src/core/labeling
       ${CMAKE_SOURCE_DIR}/src/core/layertree
       ${CMAKE_SOURCE_DIR}/src/core/layout
       ${CMAKE_SOURCE_DIR}/src/core/locator
       ${CMAKE_SOURCE_DIR}/src/core/metadata
       ${CMAKE_SOURCE_DIR}/src/core/mesh
+      ${CMAKE_SOURCE_DIR}/src/core/numericformats
       ${CMAKE_SOURCE_DIR}/src/core/pal
       ${CMAKE_SOURCE_DIR}/src/core/processing
       ${CMAKE_SOURCE_DIR}/src/core/providers
@@ -101,14 +103,18 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/auth
       ${CMAKE_SOURCE_DIR}/src/gui/attributetable
       ${CMAKE_SOURCE_DIR}/src/gui/callouts
+      ${CMAKE_SOURCE_DIR}/src/gui/devtools
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
       ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
       ${CMAKE_SOURCE_DIR}/src/gui/effects
+      ${CMAKE_SOURCE_DIR}/src/gui/labeling
       ${CMAKE_SOURCE_DIR}/src/gui/layertree
       ${CMAKE_SOURCE_DIR}/src/gui/layout
       ${CMAKE_SOURCE_DIR}/src/gui/locator
+      ${CMAKE_SOURCE_DIR}/src/gui/numericformats
       ${CMAKE_SOURCE_DIR}/src/gui/ogr
       ${CMAKE_SOURCE_DIR}/src/gui/processing
+      ${CMAKE_SOURCE_DIR}/src/gui/processing/models
       ${CMAKE_SOURCE_DIR}/src/gui/raster
       ${CMAKE_SOURCE_DIR}/src/gui/symbology
       ${CMAKE_SOURCE_DIR}/src/analysis

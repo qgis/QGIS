@@ -56,6 +56,13 @@ QString sqlite3_statement_unique_ptr::columnAsText( int column ) const
   return QString::fromUtf8( reinterpret_cast<const char *>( sqlite3_column_text( get(), column ) ) );
 }
 
+QByteArray sqlite3_statement_unique_ptr::columnAsBlob( int column ) const
+{
+  const void *blob = sqlite3_column_blob( get(), column );
+  int size = sqlite3_column_bytes( get(), column );
+  return QByteArray( reinterpret_cast<const char *>( blob ), size );
+}
+
 qlonglong sqlite3_statement_unique_ptr::columnAsInt64( int column ) const
 {
   return sqlite3_column_int64( get(), column );

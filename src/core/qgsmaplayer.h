@@ -47,6 +47,7 @@ class QgsMapLayerRenderer;
 class QgsMapLayerStyleManager;
 class QgsProject;
 class QgsStyleEntityVisitorInterface;
+class QgsMapLayerTemporalProperties;
 
 class QDomDocument;
 class QKeyEvent;
@@ -161,8 +162,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
       Rendering          = 1 << 10, //!< Rendering: scale visibility, simplify method, opacity
       CustomProperties   = 1 << 11, //!< Custom properties (by plugins for instance)
       GeometryOptions    = 1 << 12, //!< Geometry validation configuration
+      Relations          = 1 << 13, //!< Relations
       AllStyleCategories = LayerConfiguration | Symbology | Symbology3D | Labeling | Fields | Forms | Actions |
-                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions,
+                           MapTips | Diagrams | AttributeTable | Rendering | CustomProperties | GeometryOptions | Relations,
     };
     Q_ENUM( StyleCategory )
     Q_DECLARE_FLAGS( StyleCategories, StyleCategory )
@@ -591,26 +593,33 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see customProperty()
      * \since QGIS 3.0
      */
-    QStringList customPropertyKeys() const;
+    Q_INVOKABLE QStringList customPropertyKeys() const;
 
     /**
      * Set a custom property for layer. Properties are stored in a map and saved in project file.
      * \see customProperty()
      * \see removeCustomProperty()
      */
-    void setCustomProperty( const QString &key, const QVariant &value );
+    Q_INVOKABLE void setCustomProperty( const QString &key, const QVariant &value );
 
     /**
      * Read a custom property from layer. Properties are stored in a map and saved in project file.
      * \see setCustomProperty()
     */
-    QVariant customProperty( const QString &value, const QVariant &defaultValue = QVariant() ) const;
+    Q_INVOKABLE QVariant customProperty( const QString &value, const QVariant &defaultValue = QVariant() ) const;
 
     /**
      * Set custom properties for layer. Current properties are dropped.
      * \since QGIS 3.0
      */
     void setCustomProperties( const QgsObjectCustomProperties &properties );
+
+    /**
+     * Read all custom properties from layer. Properties are stored in a map and saved in project file.
+     * \see setCustomProperties
+     * \since QGIS 3.14
+     */
+    const QgsObjectCustomProperties &customProperties() const;
 
     /**
      * Remove a custom property from layer. Properties are stored in a map and saved in project file.
@@ -1172,6 +1181,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    /**
+     * Returns the layer's temporal properties. This may be NULLPTR, depending on the layer type.
+     *
+     * \since QGIS 3.14
+     */
+    virtual QgsMapLayerTemporalProperties *temporalProperties() { return nullptr; }
+
   public slots:
 
     /**
@@ -1257,7 +1273,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsMapLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider()->name() );
+    QString str = QStringLiteral( "<QgsMapLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

@@ -44,9 +44,9 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertFalse(da.ellipsoidCrs().isValid())
         da.setEllipsoid("GRS80")
         # depends on proj version
-        self.assertIn(da.ellipsoidCrs().toProj4(), ('+proj=longlat +ellps=GRS80 +no_defs', '+proj=longlat +a=6378137 +rf=298.25722210100002 +no_defs'))
+        self.assertIn(da.ellipsoidCrs().toProj(), ('+proj=longlat +ellps=GRS80 +no_defs', '+proj=longlat +a=6378137 +rf=298.25722210100002 +no_defs'))
         da.setEllipsoid("WGS84")
-        self.assertIn(da.ellipsoidCrs().toProj4(), ('+proj=longlat +ellps=WGS84 +no_defs', '+proj=longlat +a=6378137 +rf=298.25722356300003 +no_defs'))
+        self.assertIn(da.ellipsoidCrs().toProj(), ('+proj=longlat +ellps=WGS84 +no_defs', '+proj=longlat +a=6378137 +rf=298.25722356300003 +no_defs'))
 
     def testMeasureLine(self):
         #   +-+
@@ -79,7 +79,7 @@ class TestQgsDistanceArea(unittest.TestCase):
             da_wsg84.setEllipsoid(da_wsg84.sourceCrs().ellipsoidAcronym())
         self.assertEqual(da_wsg84.sourceCrs().authid(), 'EPSG:4326')
         print(("setting [{}] srid [{}] description [{}] isGeographic[{}]".format(u'Wsg84', da_wsg84.sourceCrs().authid(), da_wsg84.sourceCrs().description(), da_wsg84.sourceCrs().isGeographic())))
-        # print(("-- projectionAcronym[{}] ellipsoidAcronym[{}] toWkt[{}] mapUnits[{}] toProj4[{}]".format(da_wsg84.sourceCrs().projectionAcronym(),da_wsg84.sourceCrs().ellipsoidAcronym(), da_wsg84.sourceCrs().toWkt(),da_wsg84.sourceCrs().mapUnits(),da_wsg84.sourceCrs().toProj4())))
+        # print(("-- projectionAcronym[{}] ellipsoidAcronym[{}] toWkt[{}] mapUnits[{}] toProj4[{}]".format(da_wsg84.sourceCrs().projectionAcronym(),da_wsg84.sourceCrs().ellipsoidAcronym(), da_wsg84.sourceCrs().toWkt(),da_wsg84.sourceCrs().mapUnits(),da_wsg84.sourceCrs().toProj())))
         print(("Testing Position change for[{}] years[{}]".format(u'Ampelanlage - Potsdamer Platz, Verkehrsinsel', u'1924 and 1998')))
 
         # 1924-10-24 SRID=3068;POINT(23099.49 20296.69)

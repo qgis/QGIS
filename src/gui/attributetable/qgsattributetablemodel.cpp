@@ -166,7 +166,8 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   if ( row < 0 || count < 1 )
     return false;
 
-  beginRemoveRows( parent, row, row + count - 1 );
+  if ( !mResettingModel )
+    beginRemoveRows( parent, row, row + count - 1 );
 
 #ifdef QGISDEBUG
   if ( 3 <= QgsLogger::debugLevel() )
@@ -208,12 +209,13 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
 
   Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
 
-  endRemoveRows();
+  if ( !mResettingModel )
+    endRemoveRows();
 
   return true;
 }
 
-void QgsAttributeTableModel::featureAdded( QgsFeatureId fid, bool resettingModel )
+void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 {
   QgsDebugMsgLevel( QStringLiteral( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
   bool featOk = true;
@@ -244,11 +246,11 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid, bool resettingModel
     if ( ! mIdRowMap.contains( fid ) )
     {
       int n = mRowIdMap.size();
-      if ( !resettingModel )
+      if ( !mResettingModel )
         beginInsertRows( QModelIndex(), n, n );
       mIdRowMap.insert( fid, n );
       mRowIdMap.insert( n, fid );
-      if ( !resettingModel )
+      if ( !mResettingModel )
         endInsertRows();
       reload( index( rowCount() - 1, 0 ), index( rowCount() - 1, columnCount() ) );
     }
@@ -436,8 +438,10 @@ void QgsAttributeTableModel::loadLayer()
   // (emit of progress() signal may enter event loop and thus attribute
   // table view may be updated with inconsistent model which may assume
   // wrong number of attributes)
+
   loadAttributes();
 
+  mResettingModel = true;
   beginResetModel();
 
   if ( rowCount() != 0 )
@@ -452,7 +456,7 @@ void QgsAttributeTableModel::loadLayer()
 
     int i = 0;
 
-    QTime t;
+    QElapsedTimer t;
     t.start();
 
     while ( features.nextFeature( mFeat ) )
@@ -468,7 +472,7 @@ void QgsAttributeTableModel::loadLayer()
 
         t.restart();
       }
-      featureAdded( mFeat.id(), true );
+      featureAdded( mFeat.id() );
     }
 
     emit finished();
@@ -476,6 +480,8 @@ void QgsAttributeTableModel::loadLayer()
   }
 
   endResetModel();
+
+  mResettingModel = false;
 }
 
 
@@ -618,7 +624,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     else
     {
       const QgsField field = layer()->fields().at( mAttributes.at( section ) );
-      return QgsFieldModel::fieldToolTip( field );
+      return QgsFieldModel::fieldToolTipExtended( field, layer() );
     }
   }
   else
@@ -705,14 +711,14 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     {
       mExpressionContext.setFeature( mFeat );
       QList<QgsConditionalStyle> styles;
-      if ( mRowStylesMap.contains( index.row() ) )
+      if ( mRowStylesMap.contains( mFeat.id() ) )
       {
-        styles = mRowStylesMap[index.row()];
+        styles = mRowStylesMap[mFeat.id()];
       }
       else
       {
         styles = QgsConditionalStyle::matchingConditionalStyles( layer()->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
-        mRowStylesMap.insert( index.row(), styles );
+        mRowStylesMap.insert( mFeat.id(), styles );
       }
 
       QgsConditionalStyle rowstyle = QgsConditionalStyle::compressStyles( styles );
@@ -750,7 +756,7 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
   if ( !layer()->isModified() )
     return false;
 
-  mRowStylesMap.remove( index.row() );
+  mRowStylesMap.remove( mFeat.id() );
 
   return true;
 }
@@ -840,7 +846,7 @@ void QgsAttributeTableModel::executeAction( QUuid action, const QModelIndex &idx
 void QgsAttributeTableModel::executeMapLayerAction( QgsMapLayerAction *action, const QModelIndex &idx ) const
 {
   QgsFeature f = feature( idx );
-  action->triggerForFeature( layer(), &f );
+  action->triggerForFeature( layer(), f );
 }
 
 QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const

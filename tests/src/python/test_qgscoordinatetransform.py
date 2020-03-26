@@ -29,10 +29,8 @@ class TestQgsCoordinateTransform(unittest.TestCase):
     def testTransformBoundingBox(self):
         """Test that we can transform a rectangular bbox from utm56s to LonLat"""
         myExtent = QgsRectangle(242270, 6043737, 246330, 6045897)
-        myGeoCrs = QgsCoordinateReferenceSystem()
-        myGeoCrs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-        myUtmCrs = QgsCoordinateReferenceSystem()
-        myUtmCrs.createFromId(32756, QgsCoordinateReferenceSystem.EpsgCrsId)
+        myGeoCrs = QgsCoordinateReferenceSystem('EPSG:4326')
+        myUtmCrs = QgsCoordinateReferenceSystem('EPSG:32756')
         myXForm = QgsCoordinateTransform(myUtmCrs, myGeoCrs, QgsProject.instance())
         myProjectedExtent = myXForm.transformBoundingBox(myExtent)
         myExpectedExtent = ('150.1509239873580270,-35.7176936443908772 : '
@@ -58,10 +56,8 @@ class TestQgsCoordinateTransform(unittest.TestCase):
     def testTransformQgsRectangle_Regression17600(self):
         """Test that rectangle transform is in the bindings"""
         myExtent = QgsRectangle(-1797107, 4392148, 6025926, 6616304)
-        myGeoCrs = QgsCoordinateReferenceSystem()
-        myGeoCrs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-        myUtmCrs = QgsCoordinateReferenceSystem()
-        myUtmCrs.createFromId(3857, QgsCoordinateReferenceSystem.EpsgCrsId)
+        myGeoCrs = QgsCoordinateReferenceSystem('EPSG:4326')
+        myUtmCrs = QgsCoordinateReferenceSystem('EPSG:3857')
         myXForm = QgsCoordinateTransform(myUtmCrs, myGeoCrs, QgsProject.instance())
         myTransformedExtent = myXForm.transform(myExtent)
         myTransformedExtentForward = myXForm.transform(myExtent, QgsCoordinateTransform.ForwardTransform)
@@ -153,9 +149,20 @@ class TestQgsCoordinateTransform(unittest.TestCase):
 
         transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28354'), QgsCoordinateReferenceSystem('EPSG:28353'), context)
         self.assertEqual(list(transform.context().coordinateOperations().keys()), [('EPSG:28356', 'EPSG:4283')])
-
         # should be no coordinate operation
         self.assertEqual(transform.coordinateOperation(), '')
+        # should default to allowing fallback transforms
+        self.assertTrue(transform.allowFallbackTransforms())
+
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                           QgsCoordinateReferenceSystem('EPSG:4283'), context)
+        self.assertTrue(transform.allowFallbackTransforms())
+        context.addCoordinateOperation(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                       QgsCoordinateReferenceSystem('EPSG:4283'),
+                                       'proj', False)
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                           QgsCoordinateReferenceSystem('EPSG:4283'), context)
+        self.assertFalse(transform.allowFallbackTransforms())
 
         # matching source
         transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'), QgsCoordinateReferenceSystem('EPSG:28353'), context)
@@ -172,6 +179,10 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         # test manual overwriting
         transform.setCoordinateOperation('proj2')
         self.assertEqual(transform.coordinateOperation(), 'proj2')
+        transform.setAllowFallbackTransforms(False)
+        self.assertFalse(transform.allowFallbackTransforms())
+        transform.setAllowFallbackTransforms(True)
+        self.assertTrue(transform.allowFallbackTransforms())
 
         # test that auto operation setting occurs when updating src/dest crs
         transform.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:28356'))

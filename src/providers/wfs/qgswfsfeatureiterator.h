@@ -32,7 +32,7 @@ class QgsWFSSharedData;
 class QgsVectorDataProvider;
 
 //! Utility class to issue a GetFeature resultType=hits request
-class QgsWFSFeatureHitsAsyncRequest: public QgsWfsRequest
+class QgsWFSFeatureHitsAsyncRequest final: public QgsWfsRequest
 {
     Q_OBJECT
   public:
@@ -64,7 +64,7 @@ class QgsWFSFeatureHitsAsyncRequest: public QgsWfsRequest
     A progress dialog may pop-up in GUI mode (if the download takes a certain time)
     to allow canceling the download.
 */
-class QgsWFSFeatureDownloaderImpl: public QgsWfsRequest, public QgsFeatureDownloaderImpl
+class QgsWFSFeatureDownloaderImpl final: public QgsWfsRequest, public QgsFeatureDownloaderImpl
 {
     Q_OBJECT
 

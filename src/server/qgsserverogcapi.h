@@ -32,6 +32,15 @@ class QgsServerOgcApiHandler;
  *
  * \code{.py}
  *
+ * class Handler1(QgsServerOgcApiHandler):
+ *   """A handler, see QgsServerOgcApiHandler for an example"""
+ *   ...
+ *
+ * h = Handler1()
+ * api = QgsServerOgcApi(serverInterface(), "/api1", "apione", "A firs API", "1.0")
+ * api.registerHandler(h)
+ * server.serverInterface().serviceRegistry().registerApi(api)
+ *
  * \endcode
  *
  * \since QGIS 3.10

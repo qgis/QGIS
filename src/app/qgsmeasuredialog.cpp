@@ -391,7 +391,7 @@ void QgsMeasureDialog::updateUi()
     {
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured area are in degrees, so area is calculated using Cartesian calculations in square degrees." ).arg(
-                   mCanvas->mapSettings().destinationCrs().description() );
+                   mCanvas->mapSettings().destinationCrs().userFriendlyIdentifier() );
       mDa.setEllipsoid( geoNone() );
       mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
@@ -410,7 +410,7 @@ void QgsMeasureDialog::updateUi()
         resultUnit = QgsUnitTypes::distanceToAreaUnit( mCanvas->mapSettings().destinationCrs().mapUnits() );
         toolTip += "<br> * " + tr( "Project ellipsoidal calculation is not selected." ) + ' ';
         toolTip += tr( "Area is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
-                   mCanvas->mapSettings().destinationCrs().description() );
+                   mCanvas->mapSettings().destinationCrs().userFriendlyIdentifier() );
       }
       setWindowTitle( tr( "Measure" ) );
 
@@ -469,7 +469,7 @@ void QgsMeasureDialog::updateUi()
     {
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using Cartesian calculations in degrees." ).arg(
-                   mCanvas->mapSettings().destinationCrs().description() );
+                   mCanvas->mapSettings().destinationCrs().userFriendlyIdentifier() );
       mDa.setEllipsoid( geoNone() );
       mConvertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
@@ -488,7 +488,7 @@ void QgsMeasureDialog::updateUi()
         resultUnit = mCanvas->mapSettings().destinationCrs().mapUnits();
         toolTip += "<br> * " + tr( "Project ellipsoidal calculation is not selected." ) + ' ';
         toolTip += tr( "Distance is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
-                   mCanvas->mapSettings().destinationCrs().description() );
+                   mCanvas->mapSettings().destinationCrs().userFriendlyIdentifier() );
       }
       setWindowTitle( tr( "Measure" ) );
 

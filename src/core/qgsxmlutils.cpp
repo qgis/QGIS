@@ -20,6 +20,7 @@
 #include "qgsrectangle.h"
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
+#include "qgsprocessingparameters.h"
 
 QgsUnitTypes::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement &element )
 {
@@ -165,9 +166,29 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
       element.setAttribute( QStringLiteral( "value" ), value.toString() );
       break;
 
+    case QVariant::Char:
+      element.setAttribute( QStringLiteral( "type" ), QVariant::typeToName( value.type() ) );
+      element.setAttribute( QStringLiteral( "value" ), value.isNull() ? QString() : value.toString() );
+      break;
+
     case QVariant::Color:
       element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "color" ) );
       element.setAttribute( QStringLiteral( "value" ), value.value< QColor >().isValid() ? QgsSymbolLayerUtils::encodeColor( value.value< QColor >() ) : QString() );
+      break;
+
+    case QVariant::DateTime:
+      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "datetime" ) );
+      element.setAttribute( QStringLiteral( "value" ), value.value< QDateTime >().isValid() ? value.toDateTime().toString( Qt::ISODate ) : QString() );
+      break;
+
+    case QVariant::Date:
+      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "date" ) );
+      element.setAttribute( QStringLiteral( "value" ), value.value< QDate >().isValid() ? value.toDate().toString( Qt::ISODate ) : QString() );
+      break;
+
+    case QVariant::Time:
+      element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "time" ) );
+      element.setAttribute( QStringLiteral( "value" ), value.value< QTime >().isValid() ? value.toTime().toString( Qt::ISODate ) : QString() );
       break;
 
     case QVariant::UserType:
@@ -193,7 +214,22 @@ QDomElement QgsXmlUtils::writeVariant( const QVariant &value, QDomDocument &doc 
         element.setAttribute( QStringLiteral( "value" ), geom.asWkt() );
         break;
       }
-      FALLTHROUGH
+      else if ( value.canConvert< QgsProcessingOutputLayerDefinition >() )
+      {
+        QDomElement valueElement = writeVariant( value.value< QgsProcessingOutputLayerDefinition >().toVariant(), doc );
+        element.appendChild( valueElement );
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProcessingOutputLayerDefinition" ) );
+        break;
+      }
+      else if ( value.canConvert< QgsProcessingFeatureSourceDefinition >() )
+      {
+        QDomElement valueElement = writeVariant( value.value< QgsProcessingFeatureSourceDefinition >().toVariant(), doc );
+        element.appendChild( valueElement );
+        element.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QgsProcessingFeatureSourceDefinition" ) );
+        break;
+      }
+      Q_ASSERT_X( false, "QgsXmlUtils::writeVariant", QStringLiteral( "unsupported user variant type %1" ).arg( QMetaType::typeName( value.userType() ) ).toLocal8Bit() );
+      break;
     }
 
     default:
@@ -236,6 +272,11 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
   {
     return element.attribute( QStringLiteral( "value" ) );
   }
+  else if ( type == QLatin1String( "QChar" ) )
+  {
+    const QString res = element.attribute( QStringLiteral( "value" ) );
+    return res.isEmpty() ? QChar() : res.at( 0 );
+  }
   else if ( type == QLatin1String( "bool" ) )
   {
     return element.attribute( QStringLiteral( "value" ) ) == QLatin1String( "true" );
@@ -243,6 +284,18 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
   else if ( type == QLatin1String( "color" ) )
   {
     return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QColor() : QgsSymbolLayerUtils::decodeColor( element.attribute( QStringLiteral( "value" ) ) );
+  }
+  else if ( type == QLatin1String( "datetime" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QDateTime() : QDateTime::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
+  }
+  else if ( type == QLatin1String( "date" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QDate() : QDate::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
+  }
+  else if ( type == QLatin1String( "time" ) )
+  {
+    return element.attribute( QStringLiteral( "value" ) ).isEmpty() ? QTime() : QTime::fromString( element.attribute( QStringLiteral( "value" ) ), Qt::ISODate );
   }
   else if ( type == QLatin1String( "Map" ) )
   {
@@ -300,6 +353,30 @@ QVariant QgsXmlUtils::readVariant( const QDomElement &element )
   else if ( type == QLatin1String( "QgsGeometry" ) )
   {
     return QgsGeometry::fromWkt( element.attribute( "value" ) );
+  }
+  else if ( type == QLatin1String( "QgsProcessingOutputLayerDefinition" ) )
+  {
+    QgsProcessingOutputLayerDefinition res;
+    const QDomNodeList values = element.childNodes();
+    if ( values.isEmpty() )
+      return QVariant();
+
+    if ( res.loadVariant( QgsXmlUtils::readVariant( values.at( 0 ).toElement() ).toMap() ) )
+      return res;
+
+    return QVariant();
+  }
+  else if ( type == QLatin1String( "QgsProcessingFeatureSourceDefinition" ) )
+  {
+    QgsProcessingFeatureSourceDefinition res;
+    const QDomNodeList values = element.childNodes();
+    if ( values.isEmpty() )
+      return QVariant();
+
+    if ( res.loadVariant( QgsXmlUtils::readVariant( values.at( 0 ).toElement() ).toMap() ) )
+      return res;
+
+    return QVariant();
   }
   else
   {

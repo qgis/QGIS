@@ -714,6 +714,8 @@ QString QgsWFSProvider::subsetString() const
 
 bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
+  Q_UNUSED( updateFeatureCount )
+
   QgsDebugMsgLevel( QStringLiteral( "theSql = '%1'" ).arg( theSQL ), 4 );
 
   if ( theSQL == mSubsetString )
@@ -755,11 +757,8 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   QString errorMsg;
   if ( !mShared->computeFilter( errorMsg ) )
     QgsMessageLog::logMessage( errorMsg, tr( "WFS" ) );
-  reloadData();
-  if ( updateFeatureCount )
-    featureCount();
 
-  emit dataChanged();
+  reloadData();
 
   return true;
 }
@@ -773,10 +772,9 @@ QgsAbstractFeatureSource *QgsWFSProvider::featureSource() const
   return fs;
 }
 
-void QgsWFSProvider::reloadData()
+void QgsWFSProvider::reloadProviderData()
 {
   mShared->invalidateCache();
-  QgsVectorDataProvider::reloadData();
 }
 
 QgsWkbTypes::Type QgsWFSProvider::wkbType() const
@@ -1593,10 +1591,14 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument &doc ) const
   if ( describeFeatureTypeURL.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
     describeFeatureTypeURL = QUrl( QStringLiteral( "http://fake_qgis_http_endpoint" ) );
-    describeFeatureTypeURL.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
+    QUrlQuery query( describeFeatureTypeURL );
+    query.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "DescribeFeatureType" ) );
+    describeFeatureTypeURL.setQuery( query );
   }
-  describeFeatureTypeURL.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
-  describeFeatureTypeURL.addQueryItem( QStringLiteral( "TYPENAME" ), mShared->mURI.typeName() );
+  QUrlQuery query( describeFeatureTypeURL );
+  query.addQueryItem( QStringLiteral( "VERSION" ), QStringLiteral( "1.0.0" ) );
+  query.addQueryItem( QStringLiteral( "TYPENAME" ), mShared->mURI.typeName() );
+  describeFeatureTypeURL.setQuery( query );
 
   transactionElem.setAttribute( QStringLiteral( "xsi:schemaLocation" ), mApplicationNamespace + ' '
                                 + describeFeatureTypeURL.toEncoded() );

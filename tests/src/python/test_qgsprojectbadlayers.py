@@ -56,9 +56,7 @@ class TestQgsProjectBadLayers(unittest.TestCase):
         :rtype: QgsMapSettings
         """
         ms = QgsMapSettings()
-        crs = QgsCoordinateReferenceSystem()
-        """:type: QgsCoordinateReferenceSystem"""
-        crs.createFromSrid(4326)
+        crs = QgsCoordinateReferenceSystem('epsg:4326')
         ms.setBackgroundColor(QColor(152, 219, 249))
         ms.setOutputSize(QSize(420, 280))
         ms.setOutputDpi(72)

@@ -431,6 +431,9 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   if ( pCount == 0 )
     return;
 
+  float zMin = std::numeric_limits<float>::max();
+  float zMax = std::numeric_limits<float>::min();
+
   if ( pCount == 4 && polygon.numInteriorRings() == 0 )
   {
     // polygon is a triangle - write vertices to the output data array without triangulation
@@ -439,7 +442,13 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     const double *zData = !mNoZ ? exterior->zData() : nullptr;
     for ( int i = 0; i < 3; i++ )
     {
-      mData << *xData++ - mOriginX << ( mNoZ ? 0 : *zData++ ) << - *yData++ + mOriginY;
+      float z = ( mNoZ ? 0 : *zData++ );
+      if ( z < zMin )
+        zMin = z;
+      if ( z > zMax )
+        zMax = z;
+
+      mData << *xData++ - mOriginX << z << - *yData++ + mOriginY;
       if ( mAddNormals )
         mData << pNormal.x() << pNormal.z() << - pNormal.y();
     }
@@ -568,6 +577,11 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           const double fx = ( pt.x() / scaleX ) - mOriginX + pt0.x();
           const double fy = ( pt.y() / scaleY ) - mOriginY + pt0.y();
           const double fz = mNoZ ? 0 : ( pt.z() + extrusionHeight + pt0.z() );
+          if ( fz < zMin )
+            zMin = fz;
+          if ( fz > zMax )
+            zMax = fz;
+
           mData << fx << fz << -fy;
           if ( mAddNormals )
             mData << pNormal.x() << pNormal.z() << - pNormal.y();
@@ -608,7 +622,14 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
     for ( int i = 0; i < polygon.numInteriorRings(); ++i )
       _makeWalls( *qgsgeometry_cast< const QgsLineString * >( polygon.interiorRing( i ) ), true, extrusionHeight, mData, mAddNormals, mOriginX, mOriginY );
+
+    zMax += extrusionHeight;
   }
+
+  if ( zMin < mZMin )
+    mZMin = zMin;
+  if ( zMax > mZMax )
+    mZMax = zMax;
 }
 
 QgsPoint getPointFromData( QVector< float >::const_iterator &it )

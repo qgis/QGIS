@@ -500,7 +500,7 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const 
     case InvalidProperty:
       return defaultValue;
 
-  };
+  }
 
   return QVariant();
 }

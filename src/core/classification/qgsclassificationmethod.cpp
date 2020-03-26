@@ -22,6 +22,7 @@
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgsapplication.h"
 #include "qgsclassificationmethodregistry.h"
+#include "qgsxmlutils.h"
 
 const int QgsClassificationMethod::MAX_PRECISION = 15;
 const int QgsClassificationMethod::MIN_PRECISION = -6;
@@ -39,8 +40,13 @@ QList<double> QgsClassificationMethod::rangesToBreaks( const QList<QgsClassifica
 QgsClassificationMethod::QgsClassificationMethod( MethodProperties properties, int codeComplexity )
   : mFlags( properties )
   , mCodeComplexity( codeComplexity )
-  , mLabelFormat( QStringLiteral( "%1 - %2 " ) )
+  , mLabelFormat( QStringLiteral( "%1 - %2" ) )
 {
+}
+
+QgsClassificationMethod::~QgsClassificationMethod()
+{
+  qDeleteAll( mParameters );
 }
 
 void QgsClassificationMethod::copyBase( QgsClassificationMethod *c ) const
@@ -49,6 +55,7 @@ void QgsClassificationMethod::copyBase( QgsClassificationMethod *c ) const
   c->setLabelFormat( mLabelFormat );
   c->setLabelPrecision( mLabelPrecision );
   c->setLabelTrimTrailingZeroes( mLabelTrimTrailingZeroes );
+  c->setParameterValues( mParameterValues );
 }
 
 QgsClassificationMethod *QgsClassificationMethod::create( const QDomElement &element, const QgsReadWriteContext &context )
@@ -78,6 +85,11 @@ QgsClassificationMethod *QgsClassificationMethod::create( const QDomElement &ele
     method->setLabelTrimTrailingZeroes( trimTrailingZeroes );
   }
 
+  // parameters (processing parameters)
+  QDomElement parametersElem = element.firstChildElement( QStringLiteral( "parameters" ) );
+  const QVariantMap parameterValues = QgsXmlUtils::readVariant( parametersElem.firstChildElement() ).toMap();
+  method->setParameterValues( parameterValues );
+
   // Read specific properties from the implementation
   QDomElement extraElem = element.firstChildElement( QStringLiteral( "extraInformation" ) );
   if ( !extraElem.isNull() )
@@ -105,6 +117,11 @@ QDomElement QgsClassificationMethod::save( QDomDocument &doc, const QgsReadWrite
   labelFormatElem.setAttribute( QStringLiteral( "labelprecision" ), labelPrecision() );
   labelFormatElem.setAttribute( QStringLiteral( "trimtrailingzeroes" ), labelTrimTrailingZeroes() ? 1 : 0 );
   methodElem.appendChild( labelFormatElem );
+
+  // parameters (processing parameters)
+  QDomElement parametersElem = doc.createElement( QStringLiteral( "parameters" ) );
+  parametersElem.appendChild( QgsXmlUtils::writeVariant( mParameterValues, doc ) );
+  methodElem.appendChild( parametersElem );
 
   // extra information
   QDomElement extraElem = doc.createElement( QStringLiteral( "extraInformation" ) );
@@ -161,6 +178,34 @@ QString QgsClassificationMethod::formatNumber( double value ) const
   }
 }
 
+void QgsClassificationMethod::addParameter( QgsProcessingParameterDefinition *definition )
+{
+  mParameters.append( definition );
+}
+
+const QgsProcessingParameterDefinition *QgsClassificationMethod::parameterDefinition( const QString &parameterName ) const
+{
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
+  {
+    if ( def->name() == parameterName )
+      return def;
+  }
+  QgsMessageLog::logMessage( QStringLiteral( "No parameter definition found for %1 in %2 method." ).arg( parameterName ).arg( name() ) );
+  return nullptr;
+}
+
+void QgsClassificationMethod::setParameterValues( const QVariantMap &values )
+{
+  mParameterValues = values;
+  for ( auto it = mParameterValues.constBegin(); it != mParameterValues.constEnd(); ++it )
+  {
+    if ( !parameterDefinition( it.key() ) )
+    {
+      QgsMessageLog::logMessage( name(), QObject::tr( "Parameter %1 does not exist in the method" ).arg( it.key() ) );
+    }
+  }
+}
+
 QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorLayer *layer, const QString &expression, int nclasses )
 {
   if ( expression.isEmpty() )
@@ -172,6 +217,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorL
   QList<double> values;
   double minimum;
   double maximum;
+
 
   int fieldIndex = layer->fields().indexFromName( expression );
 
@@ -192,7 +238,7 @@ QList<QgsClassificationRange> QgsClassificationMethod::classes( const QgsVectorL
     maximum = layer->maximumValue( fieldIndex ).toDouble();
   }
 
-  // get the breaks
+  // get the breaks, minimum and maximum might be updated by implementation
   QList<double> breaks = calculateBreaks( minimum, maximum, values, nclasses );
   breaks.insert( 0, minimum );
   // create classes

@@ -20,18 +20,17 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgshighlightablecombobox.h"
 
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   : QWidget( parent )
 {
-
-
   QHBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 6 );
   setLayout( layout );
 
-  mCrsComboBox = new QComboBox( this );
+  mCrsComboBox = new QgsHighlightableComboBox( this );
   mCrsComboBox->addItem( tr( "invalid projection" ), QgsProjectionSelectionWidget::CurrentCrs );
   mCrsComboBox->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
 
@@ -58,6 +57,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
 
   setFocusPolicy( Qt::StrongFocus );
   setFocusProxy( mButton );
+  setAcceptDrops( true );
 
   connect( mButton, &QToolButton::clicked, this, &QgsProjectionSelectionWidget::selectCrs );
   connect( mCrsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsProjectionSelectionWidget::comboIndexChanged );
@@ -65,7 +65,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
 {
-  switch ( ( CrsOption )mCrsComboBox->currentData().toInt() )
+  switch ( static_cast< CrsOption >( mCrsComboBox->currentData().toInt() ) )
   {
     case QgsProjectionSelectionWidget::LayerCrs:
       return mLayerCrs;
@@ -194,6 +194,68 @@ void QgsProjectionSelectionWidget::selectCrs()
   }
 }
 
+void QgsProjectionSelectionWidget::dragEnterEvent( QDragEnterEvent *event )
+{
+  if ( !( event->possibleActions() & Qt::CopyAction ) )
+  {
+    event->ignore();
+    return;
+  }
+
+  if ( mapLayerFromMimeData( event->mimeData() ) )
+  {
+    // dragged an acceptable layer, phew
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+    mCrsComboBox->setHighlighted( true );
+    update();
+  }
+  else
+  {
+    event->ignore();
+  }
+}
+
+void QgsProjectionSelectionWidget::dragLeaveEvent( QDragLeaveEvent *event )
+{
+  if ( mCrsComboBox->isHighlighted() )
+  {
+    event->accept();
+    mCrsComboBox->setHighlighted( false );
+    update();
+  }
+  else
+  {
+    event->ignore();
+  }
+}
+
+void QgsProjectionSelectionWidget::dropEvent( QDropEvent *event )
+{
+  if ( !( event->possibleActions() & Qt::CopyAction ) )
+  {
+    event->ignore();
+    return;
+  }
+
+  if ( QgsMapLayer *layer = mapLayerFromMimeData( event->mimeData() ) )
+  {
+    // dropped a map layer
+    setFocus( Qt::MouseFocusReason );
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+
+    if ( layer->crs().isValid() )
+      setCrs( layer->crs() );
+  }
+  else
+  {
+    event->ignore();
+  }
+  mCrsComboBox->setHighlighted( false );
+  update();
+}
+
 void QgsProjectionSelectionWidget::addNotSetOption()
 {
   mCrsComboBox->insertItem( 0, mNotSetText, QgsProjectionSelectionWidget::CrsNotSet );
@@ -203,32 +265,33 @@ void QgsProjectionSelectionWidget::addNotSetOption()
 
 void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
 {
-  switch ( ( CrsOption )mCrsComboBox->itemData( idx ).toInt() )
+  switch ( static_cast< CrsOption >( mCrsComboBox->itemData( idx ).toInt() ) )
   {
     case QgsProjectionSelectionWidget::LayerCrs:
       emit crsChanged( mLayerCrs );
-      return;
+      break;
     case QgsProjectionSelectionWidget::ProjectCrs:
       emit crsChanged( mProjectCrs );
-      return;
+      break;
     case QgsProjectionSelectionWidget::CurrentCrs:
       emit crsChanged( mCrs );
-      return;
+      break;
     case QgsProjectionSelectionWidget::DefaultCrs:
       emit crsChanged( mDefaultCrs );
-      return;
+      break;
     case QgsProjectionSelectionWidget::RecentCrs:
     {
       long srsid = mCrsComboBox->itemData( idx, Qt::UserRole + 1 ).toLongLong();
       QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
       emit crsChanged( crs );
-      return;
+      break;
     }
     case QgsProjectionSelectionWidget::CrsNotSet:
       emit cleared();
       emit crsChanged( QgsCoordinateReferenceSystem() );
-      return;
+      break;
   }
+  updateTooltip();
 }
 
 void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
@@ -263,6 +326,7 @@ void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &c
     mCrs = crs;
     emit crsChanged( crs );
   }
+  updateTooltip();
 }
 
 void QgsProjectionSelectionWidget::setLayerCrs( const QgsCoordinateReferenceSystem &crs )
@@ -272,11 +336,11 @@ void QgsProjectionSelectionWidget::setLayerCrs( const QgsCoordinateReferenceSyst
   {
     if ( layerItemIndex > -1 )
     {
-      mCrsComboBox->setItemText( layerItemIndex, tr( "Layer CRS: %1 - %2" ).arg( crs.authid(), crs.description() ) );
+      mCrsComboBox->setItemText( layerItemIndex, tr( "Layer CRS: %1" ).arg( crs.userFriendlyIdentifier() ) );
     }
     else
     {
-      mCrsComboBox->insertItem( firstRecentCrsIndex(), tr( "Layer CRS: %1 - %2" ).arg( crs.authid(), crs.description() ), QgsProjectionSelectionWidget::LayerCrs );
+      mCrsComboBox->insertItem( firstRecentCrsIndex(), tr( "Layer CRS: %1" ).arg( crs.userFriendlyIdentifier() ), QgsProjectionSelectionWidget::LayerCrs );
     }
   }
   else
@@ -293,13 +357,13 @@ void QgsProjectionSelectionWidget::addProjectCrsOption()
 {
   if ( mProjectCrs.isValid() )
   {
-    mCrsComboBox->addItem( tr( "Project CRS: %1 - %2" ).arg( mProjectCrs.authid(), mProjectCrs.description() ), QgsProjectionSelectionWidget::ProjectCrs );
+    mCrsComboBox->addItem( tr( "Project CRS: %1" ).arg( mProjectCrs.userFriendlyIdentifier() ), QgsProjectionSelectionWidget::ProjectCrs );
   }
 }
 
 void QgsProjectionSelectionWidget::addDefaultCrsOption()
 {
-  mCrsComboBox->addItem( tr( "Default CRS: %1 - %2" ).arg( mDefaultCrs.authid(), mDefaultCrs.description() ), QgsProjectionSelectionWidget::DefaultCrs );
+  mCrsComboBox->addItem( tr( "Default CRS: %1" ).arg( mDefaultCrs.userFriendlyIdentifier() ), QgsProjectionSelectionWidget::DefaultCrs );
 }
 
 void QgsProjectionSelectionWidget::addCurrentCrsOption()
@@ -312,19 +376,17 @@ void QgsProjectionSelectionWidget::addCurrentCrsOption()
 QString QgsProjectionSelectionWidget::crsOptionText( const QgsCoordinateReferenceSystem &crs )
 {
   if ( crs.isValid() )
-    return tr( "%1 - %2" ).arg( crs.authid(), crs.description() );
+    return crs.userFriendlyIdentifier();
   else
     return tr( "invalid projection" );
 }
 
 void QgsProjectionSelectionWidget::addRecentCrs()
 {
-  QStringList recentProjections = QgsCoordinateReferenceSystem::recentProjections();
-  int i = 0;
-  const auto constRecentProjections = recentProjections;
-  for ( const QString &projection : constRecentProjections )
+  const QList< QgsCoordinateReferenceSystem> recentProjections = QgsCoordinateReferenceSystem::recentCoordinateReferenceSystems();
+  for ( const QgsCoordinateReferenceSystem &crs : recentProjections )
   {
-    long srsid = projection.toLong();
+    long srsid = crs.srsid();
 
     //check if already shown
     if ( crsIsShown( srsid ) )
@@ -332,17 +394,10 @@ void QgsProjectionSelectionWidget::addRecentCrs()
       continue;
     }
 
-    i++;
-    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromSrsId( srsid );
     if ( crs.isValid() )
     {
-      mCrsComboBox->addItem( tr( "%1 - %2" ).arg( crs.authid(), crs.description() ), QgsProjectionSelectionWidget::RecentCrs );
+      mCrsComboBox->addItem( crs.userFriendlyIdentifier(), QgsProjectionSelectionWidget::RecentCrs );
       mCrsComboBox->setItemData( mCrsComboBox->count() - 1, QVariant( ( long long )srsid ), Qt::UserRole + 1 );
-    }
-    if ( i >= 4 )
-    {
-      //limit to 4 recent projections to avoid clutter
-      break;
     }
   }
 }
@@ -356,10 +411,33 @@ int QgsProjectionSelectionWidget::firstRecentCrsIndex() const
 {
   for ( int i = 0; i < mCrsComboBox->count(); ++i )
   {
-    if ( ( CrsOption )mCrsComboBox->itemData( i ).toInt() == RecentCrs )
+    if ( static_cast< CrsOption >( mCrsComboBox->itemData( i ).toInt() ) == RecentCrs )
     {
       return i;
     }
   }
   return -1;
+}
+
+void QgsProjectionSelectionWidget::updateTooltip()
+{
+  QgsCoordinateReferenceSystem c = crs();
+  if ( c.isValid() )
+    setToolTip( c.toWkt( QgsCoordinateReferenceSystem::WKT2_2018, true ) );
+  else
+    setToolTip( QString() );
+}
+
+QgsMapLayer *QgsProjectionSelectionWidget::mapLayerFromMimeData( const QMimeData *data ) const
+{
+  const QgsMimeDataUtils::UriList uriList = QgsMimeDataUtils::decodeUriList( data );
+  for ( const QgsMimeDataUtils::Uri &u : uriList )
+  {
+    // is this uri from the current project?
+    if ( QgsMapLayer *layer = u.mapLayer() )
+    {
+      return layer;
+    }
+  }
+  return nullptr;
 }

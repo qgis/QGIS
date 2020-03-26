@@ -16,7 +16,7 @@
 #include "qgsmaprendererjob.h"
 
 #include <QPainter>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QTimer>
 #include <QtConcurrentMap>
 
@@ -42,6 +42,7 @@
 #include "qgssymbollayer.h"
 #include "qgsvectorlayerutils.h"
 #include "qgssymbollayerutils.h"
+#include "qgsmaplayertemporalproperties.h"
 
 ///@cond PRIVATE
 
@@ -154,8 +155,12 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
                           .arg( std::fabs( 1.0 - extent2.height() / extent.height() ) )
                           , 3 );
 
-        if ( std::fabs( 1.0 - extent2.width() / extent.width() ) < 0.5 &&
-             std::fabs( 1.0 - extent2.height() / extent.height() ) < 0.5 )
+        // can differ by a maximum of up to 20% of height/width
+        if ( qgsDoubleNear( extent2.xMinimum(), extent.xMinimum(), extent.width() * 0.2 )
+             && qgsDoubleNear( extent2.xMaximum(), extent.xMaximum(), extent.width() * 0.2 )
+             && qgsDoubleNear( extent2.yMinimum(), extent.yMinimum(), extent.height() * 0.2 )
+             && qgsDoubleNear( extent2.yMaximum(), extent.yMaximum(), extent.height() * 0.2 )
+           )
         {
           extent = extent1;
         }
@@ -291,6 +296,12 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
       continue;
     }
 
+    if ( mSettings.isTemporal() && ml->temporalProperties() && !ml->temporalProperties()->isVisibleInTemporalRange( mSettings.temporalRange() ) )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Layer not rendered because it is not visible within the map's time range" ), 3 );
+      continue;
+    }
+
     QgsRectangle r1 = mSettings.visibleExtent(), r2;
     r1.grow( mSettings.extentBuffer() );
     QgsCoordinateTransform ct;
@@ -376,7 +387,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
       }
     }
 
-    QTime layerTime;
+    QElapsedTimer layerTime;
     layerTime.start();
     job.renderer = ml->createMapRenderer( job.context );
     job.renderingTime = layerTime.elapsed(); // include job preparation time in layer rendering time
@@ -808,7 +819,7 @@ void QgsMapRendererJob::composeSecondPass( LayerRenderJobs &secondPassJobs, Labe
       {
         QPainter tempPainter;
 
-        // resue the first pass painter, if available
+        // reuse the first pass painter, if available
         QPainter *painter1 = job.firstPassJob->context.painter();
         if ( ! painter1 )
         {
@@ -906,7 +917,7 @@ void QgsMapRendererJob::drawLabeling( QgsRenderContext &renderContext, QgsLabeli
 {
   QgsDebugMsgLevel( QStringLiteral( "Draw labeling start" ), 5 );
 
-  QTime t;
+  QElapsedTimer t;
   t.start();
 
   // Reset the composition mode before rendering the labels

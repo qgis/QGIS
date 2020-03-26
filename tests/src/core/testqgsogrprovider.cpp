@@ -48,6 +48,7 @@ class TestQgsOgrProvider : public QObject
 
     void setupProxy();
     void decodeUri();
+    void encodeUri();
     void testThread();
     //! Test GPKG data items rename
     void testGpkgDataItemRename();
@@ -99,7 +100,7 @@ void TestQgsOgrProvider::setupProxy()
     settings.setValue( QStringLiteral( "proxy/proxyPassword" ), QStringLiteral( "password" ) );
     settings.setValue( QStringLiteral( "proxy/proxyExcludedUrls" ), QStringLiteral( "http://www.myhost.com|http://www.myotherhost.com" ) );
     QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
-    QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1Literal( "ogr" ) );
+    QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1String( "ogr" ) );
     QVERIFY( vl.isValid() );
     const char *proxyConfig = CPLGetConfigOption( "GDAL_HTTP_PROXY", nullptr );
     QCOMPARE( proxyConfig, "myproxyhostname.com:1234" );
@@ -115,7 +116,7 @@ void TestQgsOgrProvider::setupProxy()
     settings.setValue( QStringLiteral( "proxy/proxyUser" ), QStringLiteral( "username" ) );
     settings.remove( QStringLiteral( "proxy/proxyPassword" ) );
     QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
-    QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1Literal( "ogr" ) );
+    QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1String( "ogr" ) );
     QVERIFY( vl.isValid() );
     const char *proxyConfig = CPLGetConfigOption( "GDAL_HTTP_PROXY", nullptr );
     QCOMPARE( proxyConfig, "myproxyhostname.com" );
@@ -135,6 +136,26 @@ void TestQgsOgrProvider::decodeUri()
   QCOMPARE( parts.value( QStringLiteral( "layerName" ) ).toString(), QString( "a_layer" ) );
 }
 
+void TestQgsOgrProvider::encodeUri()
+{
+  QVariantMap parts;
+  parts.insert( QStringLiteral( "path" ), QStringLiteral( "/home/user/test.gpkg" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "/home/user/test.gpkg" ) );
+
+  // layerName only
+  parts.insert( QStringLiteral( "layerName" ), QStringLiteral( "test" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "/home/user/test.gpkg|layername=test" ) );
+  parts.remove( QStringLiteral( "layerName" ) );
+
+  // layerId only
+  parts.insert( QStringLiteral( "layerId" ), QStringLiteral( "testid" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "/home/user/test.gpkg|layerid=testid" ) );
+
+  // Both layerName and layerId: layerName takes precedence
+  parts.insert( QStringLiteral( "layerName" ), QStringLiteral( "test" ) );
+  QCOMPARE( QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "gdal" ), parts ), QStringLiteral( "/home/user/test.gpkg|layername=test|layername=test" ) );
+
+}
 
 class ReadVectorLayer : public QThread
 {
@@ -146,7 +167,7 @@ class ReadVectorLayer : public QThread
     void run() override
     {
 
-      QgsVectorLayer *vl2 = new QgsVectorLayer( _filePath, QStringLiteral( "thread_test" ), QLatin1Literal( "ogr" ) );
+      QgsVectorLayer *vl2 = new QgsVectorLayer( _filePath, QStringLiteral( "thread_test" ), QLatin1String( "ogr" ) );
 
       QgsFeature f;
       QVERIFY( vl2->getFeatures().nextFeature( f ) );

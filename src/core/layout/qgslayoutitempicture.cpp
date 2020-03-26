@@ -35,6 +35,7 @@
 #include "qgsbearingutils.h"
 #include "qgsmapsettings.h"
 #include "qgsreadwritecontext.h"
+#include "qgsimagecache.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -344,6 +345,7 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
   mHasExpressionError = false;
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::PictureSource ) )
   {
+    mMode = FormatUnknown;
     bool ok = false;
     const QgsProperty &sourceProperty = mDataDefinedProperties.property( QgsLayoutObject::PictureSource );
     source = sourceProperty.value( *evalContext, source, &ok );
@@ -356,7 +358,7 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
     else if ( source.type() != QVariant::ByteArray )
     {
       source = source.toString().trimmed();
-      QgsDebugMsg( QStringLiteral( "exprVal PictureSource:%1" ).arg( source.toString() ) );
+      QgsDebugMsgLevel( QStringLiteral( "exprVal PictureSource:%1" ).arg( source.toString() ), 2 );
     }
   }
 
@@ -439,11 +441,51 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
   }
 }
 
+void QgsLayoutItemPicture::loadPictureUsingCache( const QString &path )
+{
+  switch ( mMode )
+  {
+    case FormatUnknown:
+      break;
+
+    case FormatRaster:
+    {
+      bool fitsInCache = false;
+      mImage = QgsApplication::imageCache()->pathAsImage( path, QSize(), true, 1, fitsInCache, true );
+      break;
+    }
+
+    case FormatSVG:
+    {
+      QgsExpressionContext context = createExpressionContext();
+      QColor fillColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgBackgroundColor, context, mSvgFillColor );
+      QColor strokeColor = mDataDefinedProperties.valueAsColor( QgsLayoutObject::PictureSvgStrokeColor, context, mSvgStrokeColor );
+      double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::PictureSvgStrokeWidth, context, mSvgStrokeWidth );
+      const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( path, rect().width(), fillColor, strokeColor, strokeWidth,
+                                     1.0 );
+      mSVG.load( svgContent );
+      if ( mSVG.isValid() )
+      {
+        mMode = FormatSVG;
+        QRect viewBox = mSVG.viewBox(); //take width/height ratio from view box instead of default size
+        mDefaultSvgSize.setWidth( viewBox.width() );
+        mDefaultSvgSize.setHeight( viewBox.height() );
+      }
+      else
+      {
+        mMode = FormatUnknown;
+      }
+      break;
+    }
+  }
+}
+
 void QgsLayoutItemPicture::disconnectMap( QgsLayoutItemMap *map )
 {
   if ( map )
   {
     disconnect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    disconnect( map, &QgsLayoutItemMap::rotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
   }
 }
@@ -454,7 +496,7 @@ void QgsLayoutItemPicture::updateMapRotation()
     return;
 
   // take map rotation
-  double rotation = mRotationMap->mapRotation();
+  double rotation = mRotationMap->mapRotation() + mRotationMap->rotation();
 
   // handle true north
   switch ( mNorthMode )
@@ -483,7 +525,7 @@ void QgsLayoutItemPicture::updateMapRotation()
   }
 
   rotation += mNorthOffset;
-  setPictureRotation( rotation );
+  setPictureRotation( ( rotation > 360.0 ) ? rotation - 360.0 : rotation );
 }
 
 void QgsLayoutItemPicture::loadPicture( const QVariant &data )
@@ -492,7 +534,7 @@ void QgsLayoutItemPicture::loadPicture( const QVariant &data )
   QVariant imageData( data );
   mEvaluatedPath = data.toString();
 
-  if ( mEvaluatedPath.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) )
+  if ( mEvaluatedPath.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) && mMode == FormatUnknown )
   {
     QByteArray base64 = mEvaluatedPath.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
     imageData = QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
@@ -505,16 +547,21 @@ void QgsLayoutItemPicture::loadPicture( const QVariant &data )
       mMode = FormatRaster;
     }
   }
-  else if ( mEvaluatedPath.startsWith( QLatin1String( "http" ) ) )
+  else if ( mMode == FormatUnknown  && mEvaluatedPath.startsWith( QLatin1String( "http" ) ) )
   {
-    //remote location
+    //remote location (unsafe way, uses QEventLoop) - for old API/project compatibility only!!
     loadRemotePicture( mEvaluatedPath );
+  }
+  else if ( mMode == FormatUnknown )
+  {
+    //local location - for old API/project compatibility only!!
+    loadLocalPicture( mEvaluatedPath );
   }
   else
   {
-    //local location
-    loadLocalPicture( mEvaluatedPath );
+    loadPictureUsingCache( mEvaluatedPath );
   }
+
   if ( mMode != FormatUnknown ) //make sure we start with a new QImage
   {
     recalculateSize();
@@ -661,6 +708,7 @@ void QgsLayoutItemPicture::setLinkedMap( QgsLayoutItemMap *map )
   {
     mPictureRotation = map->mapRotation();
     connect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    connect( map, &QgsLayoutItemMap::rotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     mRotationMap = map;
     updateMapRotation();
@@ -700,8 +748,9 @@ void QgsLayoutItemPicture::refreshDataDefinedProperty( const QgsLayoutObject::Da
   QgsLayoutItem::refreshDataDefinedProperty( property );
 }
 
-void QgsLayoutItemPicture::setPicturePath( const QString &path )
+void QgsLayoutItemPicture::setPicturePath( const QString &path, Format format )
 {
+  mMode = format;
   mSourcePath = path;
   refreshPicture();
 }
@@ -730,6 +779,7 @@ bool QgsLayoutItemPicture::writePropertiesToElement( QDomElement &elem, QDomDocu
   elem.setAttribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( mSvgFillColor ) );
   elem.setAttribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSvgStrokeColor ) );
   elem.setAttribute( QStringLiteral( "svgBorderWidth" ), QString::number( mSvgStrokeWidth ) );
+  elem.setAttribute( QStringLiteral( "mode" ), mMode );
 
   //rotation
   elem.setAttribute( QStringLiteral( "pictureRotation" ), QString::number( mPictureRotation ) );
@@ -757,6 +807,7 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   mSvgFillColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgFillColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 255, 255, 255 ) ) ) );
   mSvgStrokeColor = QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "svgBorderColor" ), QgsSymbolLayerUtils::encodeColor( QColor( 0, 0, 0 ) ) ) );
   mSvgStrokeWidth = itemElem.attribute( QStringLiteral( "svgBorderWidth" ), QStringLiteral( "0.2" ) ).toDouble();
+  mMode = static_cast< Format >( itemElem.attribute( QStringLiteral( "mode" ), QString::number( FormatUnknown ) ).toInt() );
 
   QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
   if ( !composerItemList.isEmpty() )
@@ -852,6 +903,15 @@ void QgsLayoutItemPicture::setSvgStrokeWidth( double width )
   refreshPicture();
 }
 
+void QgsLayoutItemPicture::setMode( QgsLayoutItemPicture::Format mode )
+{
+  if ( mMode == mode )
+    return;
+
+  mMode = mode;
+  refreshPicture();
+}
+
 void QgsLayoutItemPicture::finalizeRestoreFromXml()
 {
   if ( !mLayout || mRotationMapUuid.isEmpty() )
@@ -867,6 +927,7 @@ void QgsLayoutItemPicture::finalizeRestoreFromXml()
     if ( ( mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid, true ) ) ) )
     {
       connect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+      connect( mRotationMap, &QgsLayoutItemMap::rotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
       connect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     }
   }

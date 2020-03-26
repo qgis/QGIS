@@ -35,6 +35,8 @@ Constructor for QgsBilinearRasterResampler.
 
     virtual QgsBilinearRasterResampler *clone() const /Factory/;
 
+    virtual int tileBufferPixels() const;
+
 };
 
 /************************************************************************

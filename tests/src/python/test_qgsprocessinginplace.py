@@ -194,6 +194,7 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         self._support_inplace_edit_tester('native:splitlinesbylength', LINESTRING_ONLY)
         self._support_inplace_edit_tester('native:buffer', POLYGON_ONLY_NOT_M_NOT_Z)
         self._support_inplace_edit_tester('native:antimeridiansplit', LINESTRING_ONLY)
+        self._support_inplace_edit_tester('native:affinetransform', GEOMETRY_ONLY)
 
     def _make_compatible_tester(self, feature_wkt, layer_wkb_name, attrs=[1]):
         layer = self._make_layer(layer_wkb_name)
@@ -231,11 +232,11 @@ class TestQgsProcessingInPlace(unittest.TestCase):
 
         # Adding Z back
         l, f = self._make_compatible_tester('Point (1 1)', 'PointZ')
-        self.assertEqual(f[0].geometry().get().z(), 0)
+        self.assertEqual(f[0].geometry().constGet().z(), 0)
 
         # Adding M back
         l, f = self._make_compatible_tester('Point (1 1)', 'PointM')
-        self.assertEqual(f[0].geometry().get().m(), 0)
+        self.assertEqual(f[0].geometry().constGet().m(), 0)
 
         self._make_compatible_tester('Point m (1 1 3)', 'Point')
         self._make_compatible_tester('Point(1 3)', 'MultiPoint')
@@ -249,14 +250,14 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         # Adding Z back
         l, f = self._make_compatible_tester('Polygon ((1 1, 2 2, 3 3, 1 1))', 'PolygonZ')
         g = f[0].geometry()
-        g2 = g.get()
+        g2 = g.constGet()
         for v in g2.vertices():
             self.assertEqual(v.z(), 0)
 
         # Adding M back
         l, f = self._make_compatible_tester('Polygon ((1 1, 2 2, 3 3, 1 1))', 'PolygonM')
         g = f[0].geometry()
-        g2 = g.get()
+        g2 = g.constGet()
         for v in g2.vertices():
             self.assertEqual(v.m(), 0)
 
@@ -275,14 +276,14 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         # Adding Z back
         l, f = self._make_compatible_tester('LineString (1 1, 2 2, 3 3, 1 1))', 'LineStringZ')
         g = f[0].geometry()
-        g2 = g.get()
+        g2 = g.constGet()
         for v in g2.vertices():
             self.assertEqual(v.z(), 0)
 
         # Adding M back
         l, f = self._make_compatible_tester('LineString (1 1, 2 2, 3 3, 1 1))', 'LineStringM')
         g = f[0].geometry()
-        g2 = g.get()
+        g2 = g.constGet()
         for v in g2.vertices():
             self.assertEqual(v.m(), 0)
 
@@ -651,8 +652,8 @@ class TestQgsProcessingInPlace(unittest.TestCase):
         )
 
         g = [f.geometry() for f in new_features][0]
-        self.assertAlmostEqual(g.get().x(), 1001875.4, 1)
-        self.assertAlmostEqual(g.get().y(), 5621521.5, 1)
+        self.assertAlmostEqual(g.constGet().x(), 1001875.4, 1)
+        self.assertAlmostEqual(g.constGet().y(), 5621521.5, 1)
 
         # Check selected
         self.assertEqual(self.vl.selectedFeatureIds(), [1])

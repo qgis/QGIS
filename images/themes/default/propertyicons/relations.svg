@@ -1,0 +1,31 @@
+<svg height="32" width="32" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<linearGradient id="a" gradientUnits="userSpaceOnUse" x1="5.6324644" x2="10.6324644" y1="3.7047943" y2="15.7047943">
+<stop offset="0" stop-color="#f1f1f1"/>
+<stop offset="1" stop-color="#d6d6d6"/>
+</linearGradient>
+<path d="m10.283011 8.3578359l10.139192.00203v7.8920306" fill="none" stroke="#2b3b4d"/>
+<g fill-rule="evenodd" stroke="#888a85" stroke-linecap="round" stroke-linejoin="round" transform="translate(-.431455 -.14381833)">
+<rect fill="url(#a)" height="15" overflow="visible" rx="1" width="13" x="2.6324642" y="1.7047944"/>
+<path d="m2.6324644 5.7047943l12.9999996 0" fill="#eeeeec" overflow="visible"/>
+<path d="m4.6324644 8.7047943l2 0" fill="#eeeeec" overflow="visible"/>
+<path d="m4.6324644 11.704794l2 0" fill="#eeeeec" overflow="visible"/>
+<path d="m4.6324644 14.704795l2 0" fill="#eeeeec" overflow="visible"/>
+<path d="m9.6324641 8.7047943l3.9999999 0" fill="#eeeeec" overflow="visible"/>
+<path d="m9.5703417 11.663069l4.0621223.04172" fill="#eeeeec" overflow="visible"/>
+<path d="m9.6324641 14.704795l3.9999999 0" fill="#eeeeec" overflow="visible"/>
+<path d="m4.7035514 3.7105107l1.928913-.00572" fill="#eeeeec" overflow="visible"/>
+<path d="m9.6324641 3.7047943l3.9999999 0" fill="#eeeeec" overflow="visible"/>
+</g>
+<g fill-rule="evenodd" stroke="#888a85" stroke-linecap="round" stroke-linejoin="round" transform="translate(14.885197 13.80656)">
+<rect fill="url(#a)" height="15" overflow="visible" rx="1" width="13" x="2.6324642" y="1.7047944"/>
+<path d="m2.6324644 5.7047943l12.9999996 0" fill="#eeeeec" overflow="visible"/>
+<path d="m4.6324644 8.7047943l2 0" fill="#eeeeec" overflow="visible"/>
+<path d="m4.6324644 11.704794l2 0" fill="#eeeeec" overflow="visible"/>
+<path d="m4.6324644 14.704795l2 0" fill="#eeeeec" overflow="visible"/>
+<path d="m9.6324641 8.7047943l3.9999999 0" fill="#eeeeec" overflow="visible"/>
+<path d="m9.5703417 11.663069l4.0621223.04172" fill="#eeeeec" overflow="visible"/>
+<path d="m9.6324641 14.704795l3.9999999 0" fill="#eeeeec" overflow="visible"/>
+<path d="m4.7035514 3.7105107l1.928913-.00572" fill="#eeeeec" overflow="visible"/>
+<path d="m9.6324641 3.7047943l3.9999999 0" fill="#eeeeec" overflow="visible"/>
+</g>
+</svg>

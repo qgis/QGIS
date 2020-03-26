@@ -35,6 +35,8 @@
 #include <QImage>
 #include <QNetworkReply>
 
+// clazy:excludeall=lambda-in-connect
+
 QgsLayoutItemHtml::QgsLayoutItemHtml( QgsLayout *layout )
   : QgsLayoutMultiFrame( layout )
 {

@@ -62,7 +62,7 @@ geometry and a list of field/values attributes.
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -97,7 +97,7 @@ geometry and a list of field/values attributes.
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -129,7 +129,7 @@ geometry and a list of field/values attributes.
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -418,7 +418,7 @@ The feature will be valid if it was successful
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else
@@ -457,7 +457,7 @@ before this method can be used.
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
       sipRes = false;
     }
@@ -491,7 +491,7 @@ before this method can be used.
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
     if ( fieldIdx == -1 )
     {
-      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      PyErr_SetString( PyExc_KeyError, a0->toLatin1() );
       sipIsErr = 1;
     }
     else

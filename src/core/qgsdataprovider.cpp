@@ -15,6 +15,7 @@
 
 #include <QMutexLocker>
 #include "qgsdataprovider.h"
+#include "qgsdataprovidertemporalcapabilities.h"
 
 #define SUBLAYER_SEPARATOR QStringLiteral( "!!::!!" )
 
@@ -22,6 +23,17 @@ QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::Pro
   : mDataSourceURI( uri ),
     mOptions( providerOptions )
 {
+}
+
+QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities()
+{
+  return nullptr;
+}
+
+void QgsDataProvider::reloadData()
+{
+  reloadProviderData();
+  emit dataChanged();
 }
 
 void QgsDataProvider::setProviderProperty( QgsDataProvider::ProviderProperty property, const QVariant &value )

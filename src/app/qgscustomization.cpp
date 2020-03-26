@@ -19,6 +19,9 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsstatusbar.h"
+#include "qgsbrowserdockwidget.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdataitemproviderregistry.h"
 #include "qgsgui.h"
 
 #include <QAction>
@@ -359,6 +362,7 @@ void QgsCustomizationDialog::init()
   }
 
   treeWidget->insertTopLevelItems( 0, QgsCustomization::instance()->mMainWindowItems );
+  treeWidget->addTopLevelItem( QgsCustomization::instance()->mBrowserItem );
 
   for ( int i = 0; i < treeWidget->topLevelItemCount(); i++ )
     treeWidget->expandItem( treeWidget->topLevelItem( i ) );
@@ -696,6 +700,42 @@ void QgsCustomization::createTreeItemStatus()
   mMainWindowItems << topItem;
 }
 
+void QgsCustomization::createTreeItemBrowser()
+{
+  if ( mBrowserItem )
+    return;
+
+  QStringList data;
+  data << QStringLiteral( "Browser" );
+  mBrowserItem = new QTreeWidgetItem( data );
+  QVector<QStringList> items;
+
+  items << QStringList( {QStringLiteral( "special:Home" ), tr( "Home Folder" )} );
+  items << QStringList( {QStringLiteral( "special:ProjectHome" ), tr( "Project Home Folder" )} );
+  items << QStringList( {QStringLiteral( "special:Favorites" ), tr( "Favorites Folder" )} );
+  items << QStringList( {QStringLiteral( "special:Drives" ), tr( "Drive Folders (e.g. C:\\)" )} );
+  items << QStringList( {QStringLiteral( "special:Volumes" ), tr( "Volume Folder (MacOS only)" )} );
+
+  const auto constProviders = QgsApplication::dataItemProviderRegistry()->providers();
+  for ( QgsDataItemProvider *pr : constProviders )
+  {
+    int capabilities = pr->capabilities();
+    if ( capabilities != QgsDataProvider::NoDataCapabilities )
+    {
+      QStringList item;
+      item << QStringLiteral( "%1" ).arg( pr->name() ) << QObject::tr( "Data Item Provider: %1" ).arg( pr->name() );
+      items << item;
+    }
+  }
+
+  for ( const QStringList &strs : items )
+  {
+    QTreeWidgetItem *item = new QTreeWidgetItem( mBrowserItem, strs );
+    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+    item->setCheckState( 0, Qt::Checked );
+  }
+}
+
 QgsCustomization *QgsCustomization::sInstance = nullptr;
 QgsCustomization *QgsCustomization::instance()
 {
@@ -973,6 +1013,34 @@ void QgsCustomization::removeFromLayout( QLayout *layout, QWidget *widget )
       QgsCustomization::removeFromLayout( l, widget );
     }
   }
+}
+
+void QgsCustomization::updateBrowserWidget( QgsBrowserDockWidget *widget )
+{
+  createTreeItemBrowser();
+
+  if ( !widget )
+    return;
+
+  if ( !mEnabled )
+    return;
+
+  if ( !mBrowserItem )
+    return;
+
+  QStringList disabledDataItems;
+  mSettings->beginGroup( QStringLiteral( "Customization/Browser" ) );
+  for ( int i = 0; i < mBrowserItem->childCount(); ++i )
+  {
+    const QTreeWidgetItem *item = mBrowserItem->child( i );
+    if ( item && !mSettings->value( item->text( 0 ), true ).toBool() )
+    {
+      disabledDataItems << item->text( 0 );
+    }
+  }
+  mSettings->endGroup();
+
+  widget->setDisabledDataItemsKeys( disabledDataItems );
 }
 
 void QgsCustomization::preNotify( QObject *receiver, QEvent *event, bool *done )

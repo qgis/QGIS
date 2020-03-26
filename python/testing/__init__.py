@@ -26,6 +26,7 @@ import sys
 import difflib
 import functools
 import filecmp
+import tempfile
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import QgsApplication, QgsFeatureRequest, NULL
@@ -421,6 +422,7 @@ def start_app(cleanup=True):
         # no need to mess with it here.
         QGISAPP = QgsApplication(argvb, myGuiFlag)
 
+        os.environ['QGIS_CUSTOM_CONFIG_PATH'] = tempfile.mkdtemp('', 'QGIS-PythonTestConfigPath')
         QGISAPP.initQgis()
         print(QGISAPP.showSettings())
 

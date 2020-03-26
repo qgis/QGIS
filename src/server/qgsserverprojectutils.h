@@ -20,8 +20,10 @@
 
 #include <QString>
 #include <QHash>
+#include <cmath>
 
 #include "qgis_server.h"
+#include "qgis_sip.h"
 
 class QgsProject;
 class QgsRectangle;
@@ -41,6 +43,20 @@ class QgsRectangle;
  */
 namespace QgsServerProjectUtils
 {
+
+  /**
+   * Returns a double greater than \a number to the specified number of \a places.
+   *
+   * \since QGIS 3.10.1
+   */
+  SERVER_EXPORT double ceilWithPrecision( double number, int places ) SIP_SKIP;
+
+  /**
+   * Returns a double less than \a number to the specified number of \a places.
+   *
+   * \since QGIS 3.10.1
+   */
+  SERVER_EXPORT double floorWithPrecision( double number, int places ) SIP_SKIP;
 
   /**
    * Returns if owsService capabilities are enabled.

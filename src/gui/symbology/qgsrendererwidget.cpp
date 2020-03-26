@@ -348,6 +348,19 @@ void QgsRendererWidget::applyChanges()
   apply();
 }
 
+void QgsRendererWidget::setDockMode( bool dockMode )
+{
+  if ( dockMode )
+  {
+    // when in dock mode, these shortcuts conflict with the main window shortcuts and cannot be used
+    if ( mCopyAction )
+      mCopyAction->setShortcut( QKeySequence() );
+    if ( mPasteAction )
+      mPasteAction->setShortcut( QKeySequence() );
+  }
+  QgsPanelWidget::setDockMode( dockMode );
+}
+
 QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWidget( const QgsMarkerSymbol *symbol, const QgsDataDefinedSizeLegend *ddsLegend )
 {
   QgsProperty ddSize = symbol->dataDefinedSize();

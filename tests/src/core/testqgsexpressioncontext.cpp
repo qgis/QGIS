@@ -625,7 +625,7 @@ void TestQgsExpressionContext::globalScope()
 
 void TestQgsExpressionContext::projectScope()
 {
-  QgsProject *project = QgsProject::instance();
+  QgsProject project;
   QgsProjectMetadata md;
   md.setTitle( QStringLiteral( "project title" ) );
   md.setAuthor( QStringLiteral( "project author" ) );
@@ -636,13 +636,13 @@ void TestQgsExpressionContext::projectScope()
   keywords.insert( QStringLiteral( "voc1" ), QStringList() << "a" << "b" );
   keywords.insert( QStringLiteral( "voc2" ), QStringList() << "c" << "d" );
   md.setKeywords( keywords );
-  project->setMetadata( md );
+  project.setMetadata( md );
 
-  QgsExpressionContextUtils::setProjectVariable( project, QStringLiteral( "test" ), "testval" );
-  QgsExpressionContextUtils::setProjectVariable( project, QStringLiteral( "testdouble" ), 5.2 );
+  QgsExpressionContextUtils::setProjectVariable( &project, QStringLiteral( "test" ), "testval" );
+  QgsExpressionContextUtils::setProjectVariable( &project, QStringLiteral( "testdouble" ), 5.2 );
 
   QgsExpressionContext context;
-  QgsExpressionContextScope *scope = QgsExpressionContextUtils::projectScope( project );
+  QgsExpressionContextScope *scope = QgsExpressionContextUtils::projectScope( &project );
   context << scope;
   QCOMPARE( scope->name(), tr( "Project" ) );
 
@@ -664,18 +664,70 @@ void TestQgsExpressionContext::projectScope()
   QgsExpression expProject( QStringLiteral( "var('test')" ) );
   QCOMPARE( expProject.evaluate( &context ).toString(), QString( "testval" ) );
 
-  //test clearing project variables
-  QgsExpressionContextScope *projectScope = QgsExpressionContextUtils::projectScope( project );
-  QVERIFY( projectScope->hasVariable( "test" ) );
-  QgsProject::instance()->clear();
+  // layers
+  QVERIFY( context.variable( "layers" ).isValid() );
+  QVERIFY( context.variable( "layer_ids" ).isValid() );
+  QVERIFY( context.variable( "layers" ).toList().isEmpty() );
+  QVERIFY( context.variable( "layer_ids" ).toList().isEmpty() );
+
+  // add layer
+  QgsVectorLayer *vectorLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "test layer" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vectorLayer2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "test layer" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vectorLayer3 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "test layer" ), QStringLiteral( "memory" ) );
+  project.addMapLayer( vectorLayer );
+  QgsExpressionContextScope *projectScope = QgsExpressionContextUtils::projectScope( &project );
+  QCOMPARE( projectScope->variable( "layers" ).toList().size(), 1 );
+  QCOMPARE( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 0 ) ), vectorLayer );
+  QCOMPARE( projectScope->variable( "layer_ids" ).toList().size(), 1 );
+  QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer->id() ) );
   delete projectScope;
-  projectScope = QgsExpressionContextUtils::projectScope( project );
+  project.addMapLayer( vectorLayer2 );
+  projectScope = QgsExpressionContextUtils::projectScope( &project );
+  QCOMPARE( projectScope->variable( "layers" ).toList().size(), 2 );
+  QVERIFY( project.mapLayers().values().contains( qobject_cast< QgsMapLayer * >( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 0 ) ) ) ) );
+  QVERIFY( project.mapLayers().values().contains( qobject_cast< QgsMapLayer * >( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 1 ) ) ) ) );
+  QCOMPARE( projectScope->variable( "layer_ids" ).toList().size(), 2 );
+  QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer->id() ) );
+  QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer2->id() ) );
+  delete projectScope;
+  project.addMapLayers( QList< QgsMapLayer * >() << vectorLayer3 );
+  projectScope = QgsExpressionContextUtils::projectScope( &project );
+  QCOMPARE( projectScope->variable( "layers" ).toList().size(), 3 );
+  QVERIFY( project.mapLayers().values().contains( qobject_cast< QgsMapLayer * >( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 0 ) ) ) ) );
+  QVERIFY( project.mapLayers().values().contains( qobject_cast< QgsMapLayer * >( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 1 ) ) ) ) );
+  QVERIFY( project.mapLayers().values().contains( qobject_cast< QgsMapLayer * >( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 2 ) ) ) ) );
+  QCOMPARE( projectScope->variable( "layer_ids" ).toList().size(), 3 );
+  QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer->id() ) );
+  QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer2->id() ) );
+  QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer3->id() ) );
+  delete projectScope;
+  project.removeMapLayer( vectorLayer );
+  projectScope = QgsExpressionContextUtils::projectScope( &project );
+  QCOMPARE( projectScope->variable( "layers" ).toList().size(), 2 );
+  QVERIFY( project.mapLayers().values().contains( qobject_cast< QgsMapLayer * >( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 0 ) ) ) ) );
+  QVERIFY( project.mapLayers().values().contains( qobject_cast< QgsMapLayer * >( qvariant_cast< QObject * >( projectScope->variable( "layers" ).toList().at( 1 ) ) ) ) );
+  QCOMPARE( projectScope->variable( "layer_ids" ).toList().size(), 2 );
+  QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer2->id() ) );
+  QVERIFY( projectScope->variable( "layer_ids" ).toList().contains( vectorLayer3->id() ) );
+  delete projectScope;
+  project.removeMapLayers( QList< QgsMapLayer * >() << vectorLayer2 << vectorLayer3 );
+  projectScope = QgsExpressionContextUtils::projectScope( &project );
+  QVERIFY( projectScope->variable( "layers" ).toList().isEmpty() );
+  QVERIFY( projectScope->variable( "layer_ids" ).toList().isEmpty() );
+  delete projectScope;
+
+  //test clearing project variables
+  projectScope = QgsExpressionContextUtils::projectScope( &project );
+  QVERIFY( projectScope->hasVariable( "test" ) );
+  project.clear();
+  delete projectScope;
+  projectScope = QgsExpressionContextUtils::projectScope( &project );
   QVERIFY( !projectScope->hasVariable( "test" ) );
 
   //test a preset project variable
-  QgsProject::instance()->setTitle( QStringLiteral( "test project" ) );
+  project.setTitle( QStringLiteral( "test project" ) );
   delete projectScope;
-  projectScope = QgsExpressionContextUtils::projectScope( project );
+  projectScope = QgsExpressionContextUtils::projectScope( &project );
   QCOMPARE( projectScope->variable( "project_title" ).toString(), QString( "test project" ) );
   delete projectScope;
 
@@ -683,8 +735,8 @@ void TestQgsExpressionContext::projectScope()
   QVariantMap vars;
   vars.insert( QStringLiteral( "newvar1" ), QStringLiteral( "val1" ) );
   vars.insert( QStringLiteral( "newvar2" ), QStringLiteral( "val2" ) );
-  QgsExpressionContextUtils::setProjectVariables( project, vars );
-  projectScope = QgsExpressionContextUtils::projectScope( project );
+  QgsExpressionContextUtils::setProjectVariables( &project, vars );
+  projectScope = QgsExpressionContextUtils::projectScope( &project );
 
   QVERIFY( !projectScope->hasVariable( "test" ) );
   QCOMPARE( projectScope->variable( "newvar1" ).toString(), QString( "val1" ) );
@@ -692,11 +744,11 @@ void TestQgsExpressionContext::projectScope()
   delete projectScope;
 
   //test removeProjectVariable
-  QgsExpressionContextUtils::setProjectVariable( project, QStringLiteral( "key" ), "value" );
-  projectScope = QgsExpressionContextUtils::projectScope( project );
+  QgsExpressionContextUtils::setProjectVariable( &project, QStringLiteral( "key" ), "value" );
+  projectScope = QgsExpressionContextUtils::projectScope( &project );
   QVERIFY( projectScope->hasVariable( "key" ) );
-  QgsExpressionContextUtils::removeProjectVariable( project, QStringLiteral( "key" ) );
-  projectScope = QgsExpressionContextUtils::projectScope( project );
+  QgsExpressionContextUtils::removeProjectVariable( &project, QStringLiteral( "key" ) );
+  projectScope = QgsExpressionContextUtils::projectScope( &project );
   QVERIFY( !projectScope->hasVariable( "key" ) );
   delete projectScope;
   projectScope = nullptr;
@@ -710,7 +762,7 @@ void TestQgsExpressionContext::projectScope()
   colorList << qMakePair( QColor( 30, 60, 20 ), QStringLiteral( "murky depths of hades" ) );
   s.setColors( colorList );
   QgsExpressionContext contextColors;
-  contextColors << QgsExpressionContextUtils::projectScope( project );
+  contextColors << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
 
   QgsExpression expProjectColor( QStringLiteral( "project_color('murky depths of hades')" ) );
   QCOMPARE( expProjectColor.evaluate( &contextColors ).toString(), QString( "30,60,20" ) );

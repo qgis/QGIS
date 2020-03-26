@@ -122,7 +122,7 @@ namespace QgsWfs
     QgsCoordinateReferenceSystem requestCrs;
     int requestPrecision = 6;
     if ( !onlyOneLayer )
-      requestCrs = QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
+      requestCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
 
     QList<getFeatureQuery>::iterator qIt = aRequest.queries.begin();
     for ( ; qIt != aRequest.queries.end(); ++qIt )
@@ -1091,7 +1091,7 @@ namespace QgsWfs
           QgsGeometry exportGeom = QgsGeometry::fromRect( *rect );
           QgsCoordinateTransform transform;
           transform.setSourceCrs( crs );
-          transform.setDestinationCrs( QgsCoordinateReferenceSystem( 4326, QgsCoordinateReferenceSystem::EpsgCrsId ) );
+          transform.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
           try
           {
             if ( exportGeom.transform( transform ) == 0 )
@@ -1267,7 +1267,7 @@ namespace QgsWfs
     QString createFeatureGeoJSON( const QgsFeature &feature, const createFeatureParams &params, const QgsAttributeList &pkAttributes )
     {
       QString id = QStringLiteral( "%1.%2" ).arg( params.typeName, QgsServerFeatureId::getServerFid( feature, pkAttributes ) );
-      //QgsJsonExporter force transform geometry to ESPG:4326
+      //QgsJsonExporter force transform geometry to EPSG:4326
       //and the RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
       //Q_UNUSED( prec )
 

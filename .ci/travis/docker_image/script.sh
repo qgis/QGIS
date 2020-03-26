@@ -74,7 +74,7 @@ else
     body='{
       "request": {
         "branch":"master",
-        "message": "Trigger PyQGIS doc build after release of new Docker image as __DOCKER_TAG__",
+        "message": "Trigger PyQGIS doc after release of __DOCKER_TAG__",
         "config": {
           "merge_mode": "deep_merge",
           "matrix": {

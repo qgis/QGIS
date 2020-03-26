@@ -27,20 +27,28 @@ QgsRelation::QgsRelation()
 {
 }
 
+QgsRelation::QgsRelation( const QgsRelationContext &context )
+  : d( new QgsRelationPrivate() )
+  , mContext( context )
+{
+}
+
 QgsRelation::~QgsRelation() = default;
 
 QgsRelation::QgsRelation( const QgsRelation &other )
   : d( other.d )
+  , mContext( other.mContext )
 {
 }
 
 QgsRelation &QgsRelation::operator=( const QgsRelation &other )
 {
   d = other.d;
+  mContext = other.mContext;
   return *this;
 }
 
-QgsRelation QgsRelation::createFromXml( const QDomNode &node, QgsReadWriteContext &context )
+QgsRelation QgsRelation::createFromXml( const QDomNode &node, QgsReadWriteContext &context,  const QgsRelationContext &relationContext )
 {
   QDomElement elem = node.toElement();
 
@@ -49,7 +57,7 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node, QgsReadWriteContex
     QgsLogger::warning( QApplication::translate( "QgsRelation", "Cannot create relation. Unexpected tag '%1'" ).arg( elem.tagName() ) );
   }
 
-  QgsRelation relation;
+  QgsRelation relation( relationContext );
 
   QString referencingLayerId = elem.attribute( QStringLiteral( "referencingLayer" ) );
   QString referencedLayerId = elem.attribute( QStringLiteral( "referencedLayer" ) );
@@ -57,7 +65,7 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node, QgsReadWriteContex
   QString name = context.projectTranslator()->translate( QStringLiteral( "project:relations" ), elem.attribute( QStringLiteral( "name" ) ) );
   QString strength = elem.attribute( QStringLiteral( "strength" ) );
 
-  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
+  QMap<QString, QgsMapLayer *> mapLayers = relationContext.project()->mapLayers();
 
   QgsMapLayer *referencingLayer = mapLayers[referencingLayerId];
   QgsMapLayer *referencedLayer = mapLayers[referencedLayerId];
@@ -355,7 +363,7 @@ QString QgsRelation::resolveReferencingField( const QString &referencedField ) c
 
 void QgsRelation::updateRelationStatus()
 {
-  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer *> &mapLayers = mContext.project()->mapLayers();
 
   d->mReferencingLayer = qobject_cast<QgsVectorLayer *>( mapLayers[d->mReferencingLayerId] );
   d->mReferencedLayer = qobject_cast<QgsVectorLayer *>( mapLayers[d->mReferencedLayerId] );

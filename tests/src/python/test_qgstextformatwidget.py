@@ -85,8 +85,8 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         self.assertEqual(s.joinStyle(), Qt.RoundJoin)
         self.assertTrue(s.paintEffect())
         self.assertEqual(s.paintEffect().blurLevel(), 2.0)
-        # Always return an empty list because there is no project (and thus no layers) defined
-        self.assertEqual(s.maskedSymbolLayers(), [])
+        self.assertEqual(s.maskedSymbolLayers(), [QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
+                                                  QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2))])
 
     def createBackgroundSettings(self):
         s = QgsTextBackgroundSettings()

@@ -120,11 +120,11 @@ void QgsRasterTransparencyWidget::syncToLayer()
   QgsDebugMsg( QStringLiteral( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ) );
   if ( !noDataRangeList.isEmpty() )
   {
-    leNoDataValue->insert( QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ) );
+    leNoDataValue->setText( QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ) );
   }
   else
   {
-    leNoDataValue->insert( QString() );
+    leNoDataValue->setText( QString() );
   }
 
   populateTransparencyTable( mRasterLayer->renderer() );
@@ -668,7 +668,7 @@ void QgsRasterTransparencyWidget::adjustTransparencyCellWidth( int row, int colu
   QLineEdit *lineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, column ) );
   if ( !lineEdit ) return;
 
-  int width = std::max( lineEdit->fontMetrics().width( lineEdit->text() ) + 10, 100 );
+  int width = std::max( lineEdit->fontMetrics().boundingRect( lineEdit->text() ).width() + 10, 100 );
   width = std::max( width, tableTransparency->columnWidth( column ) );
 
   lineEdit->setFixedWidth( width );

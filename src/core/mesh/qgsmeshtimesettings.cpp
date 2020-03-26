@@ -40,6 +40,7 @@ QDomElement QgsMeshTimeSettings::writeXml( QDomDocument &doc, const QgsReadWrite
   elem.setAttribute( QStringLiteral( "relative-time-format" ), mRelativeTimeFormat );
   elem.setAttribute( QStringLiteral( "absolute-time-reference-time" ), mAbsoluteTimeReferenceTime.toString() );
   elem.setAttribute( QStringLiteral( "absolute-time-format" ), mAbsoluteTimeFormat );
+  elem.setAttribute( QStringLiteral( "provider-time-unit" ), mProviderTimeUnit );
   return elem;
 }
 
@@ -51,6 +52,7 @@ void QgsMeshTimeSettings::readXml( const QDomElement &elem, const QgsReadWriteCo
   mRelativeTimeFormat = elem.attribute( QStringLiteral( "relative-time-format" ) );
   mAbsoluteTimeReferenceTime = QDateTime::fromString( elem.attribute( QStringLiteral( "absolute-time-reference-time" ) ) );
   mAbsoluteTimeFormat = elem.attribute( QStringLiteral( "absolute-time-format" ) );
+  mProviderTimeUnit = static_cast<QgsMeshTimeSettings::TimeUnit>( elem.attribute( QStringLiteral( "provider-time-unit" ) ).toInt() );
 }
 
 bool QgsMeshTimeSettings::useAbsoluteTime() const
@@ -112,4 +114,14 @@ QString QgsMeshTimeSettings::absoluteTimeFormat() const
 void QgsMeshTimeSettings::setAbsoluteTimeFormat( const QString &absoluteTimeFormat )
 {
   mAbsoluteTimeFormat = absoluteTimeFormat;
+}
+
+QgsMeshTimeSettings::TimeUnit QgsMeshTimeSettings::providerTimeUnit() const
+{
+  return mProviderTimeUnit;
+}
+
+void QgsMeshTimeSettings::setProviderTimeUnit( const QgsMeshTimeSettings::TimeUnit &providerTimeUnit )
+{
+  mProviderTimeUnit = providerTimeUnit;
 }

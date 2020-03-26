@@ -37,7 +37,8 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterdataprovider.h"
-
+#include "qgsrasterlayer.h"
+#include "qgsrasterrenderer.h"
 #include "qgsvectorlayerserverproperties.h"
 
 
@@ -169,8 +170,6 @@ namespace QgsWms
   {
     QDomDocument doc;
     QDomElement wmsCapabilitiesElement;
-
-    QgsServerRequest::Parameters parameters = request.parameters();
 
     // Get service URL
     QUrl href = serviceUrl( request, project );
@@ -1432,6 +1431,7 @@ namespace QgsWms
       }
 
       QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+      int wgs84precision = 6;
 
       QString version = doc.documentElement().attribute( QStringLiteral( "version" ) );
 
@@ -1456,28 +1456,28 @@ namespace QgsWms
       if ( version == QLatin1String( "1.1.1" ) ) // WMS Version 1.1.1
       {
         ExGeoBBoxElement = doc.createElement( QStringLiteral( "LatLonBoundingBox" ) );
-        ExGeoBBoxElement.setAttribute( QStringLiteral( "minx" ), QString::number( wgs84BoundingRect.xMinimum() ) );
-        ExGeoBBoxElement.setAttribute( QStringLiteral( "maxx" ), QString::number( wgs84BoundingRect.xMaximum() ) );
-        ExGeoBBoxElement.setAttribute( QStringLiteral( "miny" ), QString::number( wgs84BoundingRect.yMinimum() ) );
-        ExGeoBBoxElement.setAttribute( QStringLiteral( "maxy" ), QString::number( wgs84BoundingRect.yMaximum() ) );
+        ExGeoBBoxElement.setAttribute( QStringLiteral( "minx" ), qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wgs84BoundingRect.xMinimum(), wgs84precision ), wgs84precision ) );
+        ExGeoBBoxElement.setAttribute( QStringLiteral( "miny" ), qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wgs84BoundingRect.yMinimum(), wgs84precision ), wgs84precision ) );
+        ExGeoBBoxElement.setAttribute( QStringLiteral( "maxx" ), qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wgs84BoundingRect.xMaximum(), wgs84precision ), wgs84precision ) );
+        ExGeoBBoxElement.setAttribute( QStringLiteral( "maxy" ), qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wgs84BoundingRect.yMaximum(), wgs84precision ), wgs84precision ) );
       }
       else // WMS Version 1.3.0
       {
         ExGeoBBoxElement = doc.createElement( QStringLiteral( "EX_GeographicBoundingBox" ) );
         QDomElement wBoundLongitudeElement = doc.createElement( QStringLiteral( "westBoundLongitude" ) );
-        QDomText wBoundLongitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.xMinimum() ) );
+        QDomText wBoundLongitudeText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wgs84BoundingRect.xMinimum(), wgs84precision ), wgs84precision ) );
         wBoundLongitudeElement.appendChild( wBoundLongitudeText );
         ExGeoBBoxElement.appendChild( wBoundLongitudeElement );
         QDomElement eBoundLongitudeElement = doc.createElement( QStringLiteral( "eastBoundLongitude" ) );
-        QDomText eBoundLongitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.xMaximum() ) );
+        QDomText eBoundLongitudeText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wgs84BoundingRect.xMaximum(), wgs84precision ), wgs84precision ) );
         eBoundLongitudeElement.appendChild( eBoundLongitudeText );
         ExGeoBBoxElement.appendChild( eBoundLongitudeElement );
         QDomElement sBoundLatitudeElement = doc.createElement( QStringLiteral( "southBoundLatitude" ) );
-        QDomText sBoundLatitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.yMinimum() ) );
+        QDomText sBoundLatitudeText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( wgs84BoundingRect.yMinimum(), wgs84precision ), wgs84precision ) );
         sBoundLatitudeElement.appendChild( sBoundLatitudeText );
         ExGeoBBoxElement.appendChild( sBoundLatitudeElement );
         QDomElement nBoundLatitudeElement = doc.createElement( QStringLiteral( "northBoundLatitude" ) );
-        QDomText nBoundLatitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.yMaximum() ) );
+        QDomText nBoundLatitudeText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( wgs84BoundingRect.yMaximum(), wgs84precision ), wgs84precision ) );
         nBoundLatitudeElement.appendChild( nBoundLatitudeText );
         ExGeoBBoxElement.appendChild( nBoundLatitudeElement );
       }
@@ -1552,6 +1552,12 @@ namespace QgsWms
         return;
       }
 
+      int precision = 3;
+      if ( crs.isGeographic() )
+      {
+        precision = 6;
+      }
+
       //BoundingBox element
       QDomElement bBoxElement = doc.createElement( QStringLiteral( "BoundingBox" ) );
       if ( crs.isValid() )
@@ -1564,10 +1570,10 @@ namespace QgsWms
         crsExtent.invert();
       }
 
-      bBoxElement.setAttribute( QStringLiteral( "minx" ), QString::number( crsExtent.xMinimum() ) );
-      bBoxElement.setAttribute( QStringLiteral( "miny" ), QString::number( crsExtent.yMinimum() ) );
-      bBoxElement.setAttribute( QStringLiteral( "maxx" ), QString::number( crsExtent.xMaximum() ) );
-      bBoxElement.setAttribute( QStringLiteral( "maxy" ), QString::number( crsExtent.yMaximum() ) );
+      bBoxElement.setAttribute( QStringLiteral( "minx" ), qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( crsExtent.xMinimum(), precision ), precision ) );
+      bBoxElement.setAttribute( QStringLiteral( "miny" ), qgsDoubleToString( QgsServerProjectUtils::floorWithPrecision( crsExtent.yMinimum(), precision ), precision ) );
+      bBoxElement.setAttribute( QStringLiteral( "maxx" ), qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( crsExtent.xMaximum(), precision ), precision ) );
+      bBoxElement.setAttribute( QStringLiteral( "maxy" ), qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( crsExtent.yMaximum(), precision ), precision ) );
 
       QDomElement lastBBoxElem = layerElem.lastChildElement( QStringLiteral( "BoundingBox" ) );
       if ( !lastBBoxElem.isNull() )
@@ -1896,6 +1902,9 @@ namespace QgsWms
           //geometry type
           layerElem.setAttribute( QStringLiteral( "geometryType" ), QgsWkbTypes::displayString( vLayer->wkbType() ) );
 
+          //opacity
+          layerElem.setAttribute( QStringLiteral( "opacity" ), QString::number( vLayer->opacity() ) );
+
           layerElem.appendChild( attributesElem );
           break;
         }
@@ -1934,6 +1943,14 @@ namespace QgsWms
             QDomText wmsPrintLayerText = doc.createTextNode( wmsPrintLayer.toString() );
             wmsPrintLayerElem.appendChild( wmsPrintLayerText );
             layerElem.appendChild( wmsPrintLayerElem );
+          }
+
+          //opacity
+          QgsRasterLayer *rl = static_cast<QgsRasterLayer *>( currentLayer );
+          QgsRasterRenderer *rasterRenderer = rl->renderer();
+          if ( rasterRenderer )
+          {
+            layerElem.setAttribute( QStringLiteral( "opacity" ), QString::number( rasterRenderer->opacity() ) );
           }
           break;
         }

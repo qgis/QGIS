@@ -1,0 +1,93 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelthinningsettings.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLabelThinningSettings
+{
+%Docstring
+
+Contains settings related to how the label engine removes candidate label positions and reduces the number
+of displayed labels.
+
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgslabelthinningsettings.h"
+%End
+  public:
+
+    bool limitNumberOfLabelsEnabled() const;
+%Docstring
+Returns ``True`` if the number of labels drawn for the layer should be limited.
+
+.. seealso:: :py:func:`maximumNumberLabels`
+
+.. seealso:: :py:func:`setLimitNumberLabelsEnabled`
+%End
+
+    void setLimitNumberLabelsEnabled( bool enabled );
+%Docstring
+Sets whether the the number of labels drawn for the layer should be limited.
+
+.. seealso:: :py:func:`setMaximumNumberLabels`
+
+.. seealso:: :py:func:`limitNumberOfLabelsEnabled`
+%End
+
+    int maximumNumberLabels() const;
+%Docstring
+Returns the maximum number of labels which should be drawn for this layer.
+This only has an effect if limitNumberOfLabelsEnabled() is ``True``.
+
+.. seealso:: :py:func:`limitNumberOfLabelsEnabled`
+
+.. seealso:: :py:func:`setMaximumNumberLabels`
+%End
+
+    void setMaximumNumberLabels( int number );
+%Docstring
+Sets the maximum ``number`` of labels which should be drawn for this layer.
+This only has an effect if limitNumberOfLabelsEnabled() is ``True``.
+
+.. seealso:: :py:func:`setLimitNumberLabelsEnabled`
+
+.. seealso:: :py:func:`maximumNumberLabels`
+%End
+
+    double minimumFeatureSize() const;
+%Docstring
+Returns the minimum feature size (in millimeters) for a feature to be labelled.
+
+.. seealso:: :py:func:`setMinimumFeatureSize`
+%End
+
+    void setMinimumFeatureSize( double size );
+%Docstring
+Sets the minimum feature ``size`` (in millimeters) for a feature to be labelled.
+
+.. seealso:: :py:func:`minimumFeatureSize`
+%End
+
+    void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
+%Docstring
+Updates the thinning settings to respect any data defined properties
+set within the specified ``properties`` collection.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/labeling/qgslabelthinningsettings.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

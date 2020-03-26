@@ -262,7 +262,7 @@ class QgsBackgroundCachedFeatureSource;
     downloader to receive 'fresh' features, and to a iterator on the features
     already cached. It will actually start by consuming cache features for
     initial feedback, and then process the live downloaded features. */
-class QgsBackgroundCachedFeatureIterator : public QObject,
+class QgsBackgroundCachedFeatureIterator final: public QObject,
   public QgsAbstractFeatureIteratorFromSource<QgsBackgroundCachedFeatureSource>
 {
     Q_OBJECT
@@ -283,11 +283,8 @@ class QgsBackgroundCachedFeatureIterator : public QObject,
     void connectSignals( QgsFeatureDownloader *downloader );
 
   private slots:
-    void featureReceived( int featureCount );
     void featureReceivedSynchronous( const QVector<QgsFeatureUniqueIdPair> &list );
-    void endOfDownload( bool success );
-    void checkInterruption();
-    void timeout();
+    void endOfDownloadSynchronous( bool success );
 
   private:
 
@@ -296,14 +293,15 @@ class QgsBackgroundCachedFeatureIterator : public QObject,
     //! Subset of attributes (relatives to mShared->mFields) to fetch. Only valid if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
     QgsAttributeList mSubSetAttributes;
 
+    bool mNewFeaturesReceived = false;
     bool mDownloadFinished = false;
-    QEventLoop *mLoop = nullptr;
     QgsFeatureIterator mCacheIterator;
     QgsFeedback *mInterruptionChecker = nullptr;
-    bool mTimeoutOccurred = false;
+    bool mTimeoutOrInterruptionOccurred = false;
 
     //! this mutex synchronizes the mWriterXXXX variables between featureReceivedSynchronous() and fetchFeature()
     QMutex mMutex;
+    QWaitCondition mWaitCond;
     //! used to forger mWriterFilename
     int mCounter = 0;
     //! maximum size in bytes of mWriterByteArray before flushing it to disk
@@ -322,6 +320,9 @@ class QgsBackgroundCachedFeatureIterator : public QObject,
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
 
+    //! typically to save a FilterFid/FilterFids request that will not be captured by mRequest
+    QgsFeatureRequest mAdditionalRequest;
+
     ///////////////// METHODS
 
     //! Translate mRequest to a request compatible of the Spatialite cache
@@ -337,7 +338,7 @@ class QgsBackgroundCachedFeatureIterator : public QObject,
 
 
 //! Feature source
-class QgsBackgroundCachedFeatureSource : public QgsAbstractFeatureSource
+class QgsBackgroundCachedFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsBackgroundCachedFeatureSource( std::shared_ptr<QgsBackgroundCachedSharedData> shared );

@@ -43,6 +43,14 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingLayoutItemWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingPointWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingColorWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingCoordinateOperationWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFieldWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMapThemeWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDateTimeWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingProviderConnectionWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDatabaseSchemaWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDatabaseTableWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingExtentWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

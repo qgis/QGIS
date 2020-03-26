@@ -13,6 +13,7 @@
 
 
 
+
 class QgsDxfExport
 {
 
@@ -90,6 +91,21 @@ unique value.
       HFit,
       Undefined
     };
+
+    enum DxfPolylineFlag
+    {
+      Closed,
+      Curve,
+      Spline,
+      Is3DPolyline,
+      Is3DPolygonMesh,
+      PolygonMesh,
+      PolyfaceMesh,
+      ContinuousPattern,
+    };
+
+    typedef QFlags<QgsDxfExport::DxfPolylineFlag> DxfPolylineFlags;
+
 
     QgsDxfExport();
 %Docstring
@@ -490,6 +506,8 @@ Register name of layer for feature
 };
 
 QFlags<QgsDxfExport::Flag> operator|(QgsDxfExport::Flag f1, QFlags<QgsDxfExport::Flag> f2);
+
+QFlags<QgsDxfExport::DxfPolylineFlag> operator|(QgsDxfExport::DxfPolylineFlag f1, QFlags<QgsDxfExport::DxfPolylineFlag> f2);
 
 
 /************************************************************************

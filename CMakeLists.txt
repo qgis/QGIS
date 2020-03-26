@@ -15,7 +15,7 @@ SET(CMAKE_LINK_DEPENDS_NO_SHARED ON)
 #############################################################
 # Project and version
 SET(CPACK_PACKAGE_VERSION_MAJOR "3")
-SET(CPACK_PACKAGE_VERSION_MINOR "11")
+SET(CPACK_PACKAGE_VERSION_MINOR "13")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
@@ -141,6 +141,7 @@ IF(WITH_CORE)
     # as otherwise user has to use PYTHONPATH environment variable to add
     # QGIS bindings to package search path
     SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
+    SET (SIP_GLOBAL_INSTALL FALSE CACHE BOOL "Install sip source files to system sip directory? (might need root)")
     SET (WITH_STAGED_PLUGINS TRUE CACHE BOOL "Stage-install core Python plugins to run from build directory? (utilities and console are always staged)")
     SET (WITH_PY_COMPILE FALSE CACHE BOOL "Determines whether Python modules in staged or installed locations are byte-compiled")
     # concatenate QScintilla2 API files
@@ -400,7 +401,11 @@ IF(WITH_CORE)
   IF (APPLE)
     FIND_PACKAGE(Qt5MacExtras REQUIRED)
   ENDIF (APPLE)
-  INCLUDE("cmake/modules/ECMQt4To5Porting.cmake")
+
+  # get the Qt plugins directory
+  GET_TARGET_PROPERTY(QMAKE_EXECUTABLE Qt5::qmake LOCATION)
+  EXEC_PROGRAM(${QMAKE_EXECUTABLE} ARGS "-query QT_INSTALL_PLUGINS" RETURN_VALUE return_code OUTPUT_VARIABLE QT_PLUGINS_DIR )
+
   MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
   IF (WITH_QUICK)
     FIND_PACKAGE(Qt5Qml REQUIRED)
@@ -529,6 +534,7 @@ IF (PEDANTIC)
     SET(_warnings "${_warnings} /wd4706 ")  # assignment within conditional expression (pal)
     SET(_warnings "${_warnings} /wd4714 ")  # function '...' marked as __forceinline not inlined (QString::toLower/toUpper/trimmed)
     SET(_warnings "${_warnings} /wd4800 ")  # 'int' : forcing value to bool 'true' or 'false' (performance warning)
+    SET(_warnings "${_warnings} /wd4996 ")  # '...': was declared deprecated (unfortunately triggered when implementing deprecated interfaces even when it is deprecated too)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_warnings}")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${_warnings}")
   ELSE (MSVC)
@@ -542,6 +548,8 @@ IF (PEDANTIC)
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${_warnings}")
 
     # c++ only warnings
+
+    SET(_warnings "${_warnings} -Wnon-virtual-dtor")
 
     # unavoidable - we can't avoid these, as older, supported compilers do not support removing the redundant move
     SET(_warnings "${_warnings} -Wno-redundant-move")
@@ -602,6 +610,11 @@ IF(MSVC)
   # disable macros that offend std::numeric_limits<T>::min()/max()
   ADD_DEFINITIONS(-DNOMINMAX)
 ENDIF(MSVC)
+
+# Prevent build when Qt api deprecated before this Qt version is used:
+ADD_DEFINITIONS(-DQT_DEPRECATED_WARNINGS)
+# Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
+ADD_DEFINITIONS(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
 
 IF(ENABLE_COVERAGE)
   INCLUDE("cmake/modules/coverage/CodeCoverage.cmake")
@@ -761,7 +774,7 @@ IF (WITH_CORE)
   MARK_AS_ADVANCED (ADD_CLAZY_CHECKS)
   IF (ADD_CLAZY_CHECKS)
   SET(CMAKE_CXX_BASE_FLAGS "${CMAKE_CXX_FLAGS}")
-  SET(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection")
+  SET(CLAZY_BASE_CHECKS "connect-3arg-lambda,lambda-unique-connection,empty-qstringliteral,fully-qualified-moc-types,lambda-in-connect,lowercase-qml-type-name,qcolor-from-literal,qfileinfo-exists,qmap-with-pointer-key,unused-non-trivial-variable,overridden-signal,qdeleteall,qstring-left,skipped-base-method,missing-qobject-macro,isempty-vs-count")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_BASE_FLAGS} -Xclang -plugin-arg-clazy -Xclang ${CLAZY_BASE_CHECKS}")
   ENDIF (ADD_CLAZY_CHECKS)
 ENDIF (WITH_CORE)

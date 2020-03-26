@@ -116,13 +116,15 @@ struct HelpVariant
                const QList<HelpArg> &arguments = QList<HelpArg>(),
                bool variableLenArguments = false,
                const QList<HelpExample> &examples = QList<HelpExample>(),
-               const QString &notes = QString() )
+               const QString &notes = QString(),
+               const QStringList &tags = QStringList() )
     : mName( name )
     , mDescription( description )
     , mArguments( arguments )
     , mVariableLenArguments( variableLenArguments )
     , mExamples( examples )
     , mNotes( notes )
+    , mTags( tags )
   {}
 
   QString mName;
@@ -131,6 +133,7 @@ struct HelpVariant
   bool mVariableLenArguments;
   QList<HelpExample> mExamples;
   QString mNotes;
+  QStringList mTags;
 };
 
 

@@ -677,6 +677,13 @@ using the "mod_spatialite" extension (python3)"""
             break
     if not found:
         raise RuntimeError("Cannot find any suitable spatialite module")
+    if any(['.gpkg' in arg for arg in args]):
+        try:
+            cur.execute("SELECT EnableGpkgAmphibiousMode()")
+        except (sqlite3.Error, sqlite3.DatabaseError, sqlite3.NotSupportedError):
+            QgsMessageLog.logMessage(u"warning:{}".format("Could not enable geopackage amphibious mode"),
+                                     QCoreApplication.translate("Python", "Python warning"))
+
     cur.close()
     con.enable_load_extension(False)
     con.create_function("regexp", 2, fcnRegexp)

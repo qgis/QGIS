@@ -65,4 +65,5 @@ tests/testdata/qgis_server/ets-wms13/project.qgs
 tests/testdata/layouts/sample_project.qgs
 tests/testdata/layouts/2x_template_attributetable.qpt
 tests/testdata/plugindependencies_data.json
+tests/testdata/projects/test-project-with-relations.qgs
 mac/development.md

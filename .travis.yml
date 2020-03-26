@@ -152,10 +152,13 @@ git:
   depth: 120
 
 notifications:
-  irc: "chat.freenode.net#qgis-test"
-  on_failure: change
-  on_success: change
-  skip_join: true
+  irc: 
+    channels:  
+      - "chat.freenode.net#qgis-test"
+      - "chat.freenode.net#qgis-activity"
+    on_failure: change
+    on_success: change
+    skip_join: true
 
   webhooks:
     urls:

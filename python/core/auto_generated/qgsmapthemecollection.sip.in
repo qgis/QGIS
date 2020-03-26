@@ -55,6 +55,8 @@ Returns map layer or ``None`` if the layer does not exist anymore
 Sets the map layer for this record
 %End
 
+        bool isVisible;
+
         bool usingCurrentStyle;
         QString currentStyle;
         bool usingLegendItems;
@@ -127,11 +129,28 @@ and a forward slash, e.g. "level1/level2"
 .. versionadded:: 3.2
 %End
 
+        QSet<QString> checkedGroupNodes() const;
+%Docstring
+Returns a set of group identifiers for group nodes that should have checked state (other group nodes should be unchecked).
+The returned value is valid only when hasCheckedStateInfo() returns ``True``.
+Group identifiers are built using group names, a sub-group name is prepended by parent group's identifier
+and a forward slash, e.g. "level1/level2"
+
+.. versionadded:: 3.10.1
+%End
+
         void setExpandedGroupNodes( const QSet<QString> &expandedGroupNodes );
 %Docstring
 Sets a set of group identifiers for group nodes that should have expanded state. See expandedGroupNodes().
 
 .. versionadded:: 3.2
+%End
+
+        void setCheckedGroupNodes( const QSet<QString> &checkedGroupNodes );
+%Docstring
+Sets a set of group identifiers for group nodes that should have checked state. See checkedGroupNodes().
+
+.. versionadded:: 3.10.1
 %End
 
     };

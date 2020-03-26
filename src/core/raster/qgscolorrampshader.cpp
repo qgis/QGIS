@@ -58,6 +58,7 @@ QgsColorRampShader::QgsColorRampShader( const QgsColorRampShader &other )
 
 QgsColorRampShader &QgsColorRampShader::operator=( const QgsColorRampShader &other )
 {
+  QgsRasterShaderFunction::operator=( other );
   if ( other.sourceColorRamp() )
     mSourceColorRamp.reset( other.sourceColorRamp()->clone() );
   else
@@ -499,6 +500,8 @@ QDomElement QgsColorRampShader::writeXml( QDomDocument &doc ) const
   colorRampShaderElem.setAttribute( QStringLiteral( "colorRampType" ), colorRampTypeAsQString() );
   colorRampShaderElem.setAttribute( QStringLiteral( "classificationMode" ), classificationMode() );
   colorRampShaderElem.setAttribute( QStringLiteral( "clip" ), clip() );
+  colorRampShaderElem.setAttribute( QStringLiteral( "minimumValue" ), mMinimumValue );
+  colorRampShaderElem.setAttribute( QStringLiteral( "maximumValue" ), mMaximumValue );
 
   // save source color ramp
   if ( sourceColorRamp() )
@@ -534,6 +537,8 @@ void QgsColorRampShader::readXml( const QDomElement &colorRampShaderElem )
   setColorRampType( colorRampShaderElem.attribute( QStringLiteral( "colorRampType" ), QStringLiteral( "INTERPOLATED" ) ) );
   setClassificationMode( static_cast< QgsColorRampShader::ClassificationMode >( colorRampShaderElem.attribute( QStringLiteral( "classificationMode" ), QStringLiteral( "1" ) ).toInt() ) );
   setClip( colorRampShaderElem.attribute( QStringLiteral( "clip" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
+  setMinimumValue( colorRampShaderElem.attribute( QStringLiteral( "minimumValue" ) ).toDouble() );
+  setMaximumValue( colorRampShaderElem.attribute( QStringLiteral( "maximumValue" ) ).toDouble() );
 
   QList<QgsColorRampShader::ColorRampItem> itemList;
   QDomElement itemElem;

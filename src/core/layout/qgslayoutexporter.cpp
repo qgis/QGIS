@@ -1592,14 +1592,14 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
     }
 
     if ( t )
-      GDALSetProjection( outputDS.get(), map->crs().toWkt().toLocal8Bit().constData() );
+      GDALSetProjection( outputDS.get(), map->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ).toLocal8Bit().constData() );
   }
   CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );
 
   return true;
 }
 
-QString nameForLayerWithItems( const QList< QGraphicsItem * > items, unsigned int layerId )
+QString nameForLayerWithItems( const QList< QGraphicsItem * > &items, unsigned int layerId )
 {
   if ( items.count() == 1 )
   {

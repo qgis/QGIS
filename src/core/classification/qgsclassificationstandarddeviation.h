@@ -41,7 +41,7 @@ class CORE_EXPORT QgsClassificationStandardDeviation : public QgsClassificationM
     static const QString METHOD_ID;
 
   private:
-    QList<double> calculateBreaks( double minimum, double maximum,
+    QList<double> calculateBreaks( double &minimum, double &maximum,
                                    const QList<double> &values, int nclasses ) override;
 
     QString valueToLabel( double value ) const override;

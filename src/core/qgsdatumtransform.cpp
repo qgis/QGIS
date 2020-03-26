@@ -46,12 +46,9 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
   // See https://lists.osgeo.org/pipermail/proj/2019-May/008604.html
   proj_operation_factory_context_set_spatial_criterion( pjContext, operationContext,  PROJ_SPATIAL_CRITERION_PARTIAL_INTERSECTION );
 
-#if PROJ_VERSION_MAJOR>6 || (PROJ_VERSION_MAJOR==6 && PROJ_VERSION_MINOR>=2)
   if ( includeSuperseded )
     proj_operation_factory_context_set_discard_superseded( pjContext, operationContext, false );
-#else
-  Q_UNUSED( includeSuperseded )
-#endif
+
   if ( PJ_OBJ_LIST *ops = proj_create_operations( pjContext, source.projObject(), destination.projObject(), operationContext ) )
   {
     int count = proj_list_get_count( ops );
@@ -61,7 +58,10 @@ QList<QgsDatumTransform::TransformDetails> QgsDatumTransform::operations( const 
       if ( !op )
         continue;
 
-      res.push_back( transformDetailsFromPj( op.get() ) );
+      QgsDatumTransform::TransformDetails details = transformDetailsFromPj( op.get() );
+      if ( !details.proj.isEmpty() )
+        res.push_back( details );
+
     }
     proj_list_destroy( ops );
   }
@@ -326,6 +326,10 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
 
   if ( details.proj.isEmpty() )
     details.proj = QString( proj_as_proj_string( pjContext, op, PJ_PROJ_5, nullptr ) );
+
+  if ( details.proj.isEmpty() )
+    return details;
+
   details.name = QString( proj_get_name( op ) );
   details.accuracy = proj_coordoperation_get_accuracy( pjContext, op );
   details.isAvailable = proj_coordoperation_is_instantiable( pjContext, op );
@@ -348,10 +352,8 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
     details.bounds.setYMaximum( northLat );
   }
 
-#if PROJ_VERSION_MAJOR>6 || (PROJ_VERSION_MAJOR==6 && PROJ_VERSION_MINOR>=2)
   details.remarks = QString( proj_get_remarks( op ) );
   details.scope = QString( proj_get_scope( op ) );
-#endif
 
   for ( int j = 0; j < proj_coordoperation_get_grid_used_count( pjContext, op ); ++j )
   {
@@ -375,7 +377,6 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
     details.grids.append( gridDetails );
   }
 
-#if PROJ_VERSION_MAJOR>6 || (PROJ_VERSION_MAJOR==6 && PROJ_VERSION_MINOR>=2)
   for ( int j = 0; j < proj_concatoperation_get_step_count( pjContext, op ); ++j )
   {
     QgsProjUtils::proj_pj_unique_ptr step( proj_concatoperation_get_step( pjContext, op, j ) );
@@ -395,7 +396,6 @@ QgsDatumTransform::TransformDetails QgsDatumTransform::transformDetailsFromPj( P
       details.operationDetails.append( singleOpDetails );
     }
   }
-#endif
 
   return details;
 }

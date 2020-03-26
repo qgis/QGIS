@@ -24,6 +24,7 @@ import psycopg2
 
 import os
 import time
+from datetime import datetime
 
 from qgis.core import (
     QgsVectorLayer,
@@ -42,7 +43,8 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsProject,
     QgsWkbTypes,
-    QgsGeometry
+    QgsGeometry,
+    QgsProviderRegistry
 )
 from qgis.gui import QgsGui, QgsAttributeForm
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject, QByteArray
@@ -1409,6 +1411,155 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(vl0.featureCount(), 10)
         for f in vl0.getFeatures():
             self.assertNotEqual(f.attribute(0), NULL)
+
+    def testFeatureCountEstimatedOnView(self):
+        """
+        Test feature count on view when estimated data is enabled
+        """
+        self.execSQLCommand('DROP VIEW IF EXISTS qgis_test.somedataview')
+        self.execSQLCommand('CREATE VIEW qgis_test.somedataview AS SELECT * FROM qgis_test."someData"')
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' estimatedmetadata=true srid=4326 type=POINT table="qgis_test"."somedataview" (geom) sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(self.source.featureCount() > 0)
+
+    def testIdentityPk(self):
+        """Test a table with identity pk, see GH #29560"""
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\' srid=4326 type=POLYGON table="qgis_test"."b29560"(geom) sql=', 'testb29560', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        feature = QgsFeature(vl.fields())
+        geom = QgsGeometry.fromWkt('POLYGON EMPTY')
+        feature.setGeometry(geom)
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+
+        del(vl)
+
+        # Verify
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\' srid=4326 type=POLYGON table="qgis_test"."b29560"(geom) sql=', 'testb29560', 'postgres')
+        self.assertTrue(vl.isValid())
+        feature = next(vl.getFeatures())
+        self.assertIsNotNone(feature.id())
+
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Test flaky')
+    def testDefaultValuesAndClauses(self):
+        """Test whether default values like CURRENT_TIMESTAMP or
+        now() they are respected. See GH #33383"""
+
+        # Create the test table
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable  table="public"."test_table_default_values" sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        dp = vl.dataProvider()
+
+        # Clean the table
+        dp.deleteFeatures(dp.allFeatureIds())
+
+        # Save it for the test
+        now = datetime.now()
+
+        # Test default values
+        dp.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, 1)
+        # FIXME: spatialite provider (and OGR) return a NULL here and the following passes
+        # self.assertTrue(dp.defaultValue(0).isNull())
+        self.assertIsNotNone(dp.defaultValue(0))
+        self.assertIsNone(dp.defaultValue(1))
+        self.assertTrue(dp.defaultValue(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(dp.defaultValue(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(dp.defaultValue(4), 123)
+        self.assertEqual(dp.defaultValue(5), 'My default')
+
+        #FIXME: the provider should return the clause definition
+        #       regardless of the EvaluateDefaultValues setting
+        dp.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, 0)
+        self.assertEqual(dp.defaultValueClause(0), "nextval('test_table_default_values_id_seq'::regclass)")
+        self.assertEqual(dp.defaultValueClause(1), '')
+        self.assertEqual(dp.defaultValueClause(2), "now()")
+        self.assertEqual(dp.defaultValueClause(3), "CURRENT_TIMESTAMP")
+        self.assertEqual(dp.defaultValueClause(4), '123')
+        self.assertEqual(dp.defaultValueClause(5), "'My default'::text")
+        #FIXME: the test fails if the value is not reset to 1
+        dp.setProviderProperty(QgsDataProvider.EvaluateDefaultValues, 1)
+
+        feature = QgsFeature(vl.fields())
+        for idx in range(vl.fields().count()):
+            default = vl.dataProvider().defaultValue(idx)
+            if default is not None:
+                feature.setAttribute(idx, default)
+            else:
+                feature.setAttribute(idx, 'A comment')
+
+        self.assertTrue(vl.dataProvider().addFeature(feature))
+        del(vl)
+
+        # Verify
+        vl2 = QgsVectorLayer(self.dbconn + ' sslmode=disable  table="public"."test_table_default_values" sql=', 'test', 'postgres')
+        self.assertTrue(vl2.isValid())
+        feature = next(vl2.getFeatures())
+        self.assertEqual(feature.attribute(1), 'A comment')
+        self.assertTrue(feature.attribute(2).startswith(now.strftime('%Y-%m-%d')))
+        self.assertTrue(feature.attribute(3).startswith(now.strftime('%Y-%m-%d')))
+        self.assertEqual(feature.attribute(4), 123)
+        self.assertEqual(feature.attribute(5), 'My default')
+
+    def testEncodeDecodeUri(self):
+        """Test PG encode/decode URI"""
+
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        self.assertEqual(md.decodeUri('dbname=\'qgis_tests\' host=localhost port=5432 user=\'myuser\' sslmode=disable estimatedmetadata=true srid=3067 table="public"."basic_map_tiled" (rast)'),
+                         {'dbname': 'qgis_tests',
+                          'estimatedmetadata': True,
+                          'geometrycolumn': 'rast',
+                          'host': 'localhost',
+                          'port': '5432',
+                          'schema': 'public',
+                          'selectatid': False,
+                          'srid': '3067',
+                          'sslmode': 1,
+                          'table': 'basic_map_tiled',
+                          'username': 'myuser'})
+
+        self.assertEqual(md.decodeUri('dbname=\'qgis_tests\' host=localhost port=5432 user=\'myuser\' sslmode=disable key=\'id\' estimatedmetadata=true srid=3763 type=MultiPolygon checkPrimaryKeyUnicity=\'1\' table="public"."copas1" (geom)'),
+                         {'dbname': 'qgis_tests',
+                          'estimatedmetadata': True,
+                          'geometrycolumn': 'geom',
+                          'host': 'localhost',
+                          'key': 'id',
+                          'port': '5432',
+                          'schema': 'public',
+                          'selectatid': False,
+                          'srid': '3763',
+                          'sslmode': 1,
+                          'table': 'copas1',
+                          'type': 6,
+                          'username': 'myuser'})
+
+        self.assertEqual(md.encodeUri({'dbname': 'qgis_tests',
+                                       'estimatedmetadata': True,
+                                       'geometrycolumn': 'geom',
+                                       'host': 'localhost',
+                                       'key': 'id',
+                                       'port': '5432',
+                                       'schema': 'public',
+                                       'selectatid': False,
+                                       'srid': '3763',
+                                       'sslmode': 1,
+                                       'table': 'copas1',
+                                       'type': 6,
+                                       'username': 'myuser'}), "dbname='qgis_tests' user='myuser' srid=3763 estimatedmetadata='true' host='localhost' key='id' port='5432' selectatid='false' sslmode='disable' type='MultiPolygon' table=\"public\".\"copas1\" (geom)")
+
+        self.assertEqual(md.encodeUri({'dbname': 'qgis_tests',
+                                       'estimatedmetadata': True,
+                                       'geometrycolumn': 'rast',
+                                       'host': 'localhost',
+                                       'port': '5432',
+                                       'schema': 'public',
+                                       'selectatid': False,
+                                       'srid': '3067',
+                                       'sslmode': 1,
+                                       'table': 'basic_map_tiled',
+                                       'username': 'myuser'}), "dbname='qgis_tests' user='myuser' srid=3067 estimatedmetadata='true' host='localhost' port='5432' selectatid='false' sslmode='disable' table=\"public\".\"basic_map_tiled\" (rast)")
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):

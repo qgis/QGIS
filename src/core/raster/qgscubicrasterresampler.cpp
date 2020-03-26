@@ -42,3 +42,8 @@ QString QgsCubicRasterResampler::type() const
   return QStringLiteral( "cubic" );
 }
 
+int QgsCubicRasterResampler::tileBufferPixels() const
+{
+  return 2;
+}
+

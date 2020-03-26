@@ -32,9 +32,11 @@ class CORE_EXPORT QgsNmeaConnection: public QgsGpsConnection
   public:
 
     /**
-     * \brief Constructs a QgsNmeaConnection with given \a device.
+     * Constructs a QgsNmeaConnection with given \a device.
+     *
+     * Ownership of \a device is transferred to the connection.
      */
-    QgsNmeaConnection( QIODevice *device );
+    QgsNmeaConnection( QIODevice *device SIP_TRANSFER );
 
   protected slots:
     //! Parse available data source content
@@ -58,7 +60,12 @@ class CORE_EXPORT QgsNmeaConnection: public QgsGpsConnection
     void processGsaSentence( const char *data, int len );
     //! process GST sentence
     void processGstSentence( const char *data, int len );
-
+    //! process HDT sentence
+    void processHdtSentence( const char *data, int len );
+    //! process HCHDG sentence
+    void processHchdgSentence( const char *data, int len );
+    //! process HCHDT sentence
+    void processHchdtSentence( const char *data, int len );
 };
 
 #endif // QGSNMEACONNECTION_H

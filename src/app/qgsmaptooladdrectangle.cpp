@@ -53,6 +53,28 @@ void QgsMapToolAddRectangle::keyPressEvent( QKeyEvent *e )
     if ( mParentTool )
       mParentTool->keyPressEvent( e );
   }
+
+  if ( e && e->key() == Qt::Key_Backspace )
+  {
+    if ( mPoints.size() == 1 )
+    {
+
+      if ( mTempRubberBand )
+      {
+        delete mTempRubberBand;
+        mTempRubberBand = nullptr;
+      }
+
+      mPoints.clear();
+    }
+    else if ( mPoints.size() > 1 )
+    {
+      mPoints.removeLast();
+
+    }
+    if ( mParentTool )
+      mParentTool->keyPressEvent( e );
+  }
 }
 
 void QgsMapToolAddRectangle::keyReleaseEvent( QKeyEvent *e )
@@ -71,7 +93,20 @@ void QgsMapToolAddRectangle::deactivate( )
   }
 
   mParentTool->clearCurve( );
-  mParentTool->addCurve( mRectangle.toLineString( !QgsWkbTypes::hasZ( qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() )->wkbType() ) ) );
+  // keep z value from the first snapped point
+  std::unique_ptr<QgsLineString> lineString( mRectangle.toLineString() );
+  for ( const QgsPoint &point : qgis::as_const( mPoints ) )
+  {
+    if ( QgsWkbTypes::hasZ( point.wkbType() ) &&
+         point.z() != defaultZValue() )
+    {
+      lineString->dropZValue();
+      lineString->addZValue( point.z() );
+      break;
+    }
+  }
+
+  mParentTool->addCurve( lineString.release() );
   clean();
 
   QgsMapToolCapture::deactivate();
@@ -103,4 +138,14 @@ void QgsMapToolAddRectangle::clean()
   QgsVectorLayer *vLayer = static_cast<QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
   if ( vLayer )
     mLayerType = vLayer->geometryType();
+}
+
+void QgsMapToolAddRectangle::release( QgsMapMouseEvent *e )
+{
+  deactivate();
+  if ( mParentTool )
+  {
+    mParentTool->canvasReleaseEvent( e );
+  }
+  activate();
 }

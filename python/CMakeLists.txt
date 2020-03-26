@@ -82,6 +82,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
+  ${SPATIALINDEX_INCLUDE_DIR}
 )
 
 IF (WITH_GUI)
@@ -106,11 +107,13 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geocms
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/gps
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/providers
@@ -138,13 +141,19 @@ IF (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/gui/raster
     ${CMAKE_SOURCE_DIR}/src/gui/attributetable
     ${CMAKE_SOURCE_DIR}/src/gui/auth
+    ${CMAKE_SOURCE_DIR}/src/gui/devtools
     ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
     ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
     ${CMAKE_SOURCE_DIR}/src/gui/effects
+    ${CMAKE_SOURCE_DIR}/src/gui/labeling
     ${CMAKE_SOURCE_DIR}/src/gui/layertree
     ${CMAKE_SOURCE_DIR}/src/gui/layout
     ${CMAKE_SOURCE_DIR}/src/gui/locator
+    ${CMAKE_SOURCE_DIR}/src/gui/numericformats
     ${CMAKE_SOURCE_DIR}/src/gui/processing
+    ${CMAKE_SOURCE_DIR}/src/gui/processing/models
+    ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
+    ${CMAKE_SOURCE_DIR}/src/gui/vector
 
     ${CMAKE_BINARY_DIR}/src/gui
   )
@@ -399,4 +408,11 @@ FOREACH(module ${PY_MODULES})
     )
   ENDFOREACH(pyfile)
   PY_COMPILE(py${module} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}")
+
+  # install source sip files
+  IF(SIP_GLOBAL_INSTALL)
+    FILE(GLOB sip_files ${CMAKE_CURRENT_BINARY_DIR}/${module}/*.sip)
+    INSTALL(FILES ${sip_files} DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
+    INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${module}/auto_generated DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
+  ENDIF(SIP_GLOBAL_INSTALL)
 ENDFOREACH(module)

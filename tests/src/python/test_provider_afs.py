@@ -28,7 +28,8 @@ from qgis.core import (NULL,
                        QgsRectangle,
                        QgsCategorizedSymbolRenderer,
                        QgsProviderRegistry,
-                       QgsWkbTypes
+                       QgsWkbTypes,
+                       QgsDataSourceUri
                        )
 from qgis.testing import (start_app,
                           unittest
@@ -157,7 +158,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": -200,
             "name": null,
             "name2":"NuLl",
-            "num_char":"5"    
+            "num_char":"5"
            },
            "geometry": {
             "x": -71.123,
@@ -171,7 +172,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 300,
             "name": "Pear",
             "name2":"PEaR",
-            "num_char":"3"   
+            "num_char":"3"
            },
            "geometry": null
           },
@@ -182,7 +183,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 100,
             "name": "Orange",
             "name2":"oranGe",
-            "num_char":"1"    
+            "num_char":"1"
            },
            "geometry": {
             "x": -70.332,
@@ -196,7 +197,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 200,
             "name": "Apple",
             "name2":"Apple",
-            "num_char":"2"    
+            "num_char":"2"
            },
            "geometry": {
             "x": -68.2,
@@ -210,7 +211,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
             "cnt": 400,
             "name": "Honey",
             "name2":"Honey",
-            "num_char":"4"    
+            "num_char":"4"
            },
            "geometry": {
             "x": -65.32,
@@ -247,7 +248,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
     "cnt": -200,
     "name": null,
     "name2":"NuLl",
-    "num_char":"5"    
+    "num_char":"5"
    },
    "geometry": {
     "x": -71.123,
@@ -261,7 +262,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
     "cnt": 300,
     "name": "Pear",
     "name2":"PEaR",
-    "num_char":"3"   
+    "num_char":"3"
    },
    "geometry": null
   },
@@ -272,7 +273,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
     "cnt": 100,
     "name": "Orange",
     "name2":"oranGe",
-    "num_char":"1"    
+    "num_char":"1"
    },
    "geometry": {
     "x": -70.332,
@@ -286,7 +287,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
     "cnt": 200,
     "name": "Apple",
     "name2":"Apple",
-    "num_char":"2"    
+    "num_char":"2"
    },
    "geometry": {
     "x": -68.2,
@@ -300,7 +301,7 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
     "cnt": 400,
     "name": "Honey",
     "name2":"Honey",
-    "num_char":"4"    
+    "num_char":"4"
    },
    "geometry": {
     "x": -65.32,
@@ -423,7 +424,15 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         """
         uri = self.vl.source()
         parts = QgsProviderRegistry.instance().decodeUri(self.vl.dataProvider().name(), uri)
-        self.assertEqual(parts, {'url': 'http://' + self.basetestpath + '/fake_qgis_http_endpoint'})
+        self.assertEqual(parts, {'crs': 'epsg:4326', 'url': 'http://' + self.basetestpath + '/fake_qgis_http_endpoint'})
+
+    def testEncodeUri(self):
+        """
+        Test encoding an AFS uri
+        """
+        parts = {'url': 'http://blah.com', 'crs': 'epsg:4326', 'referer': 'me', 'bounds': QgsRectangle(1, 2, 3, 4)}
+        uri = QgsProviderRegistry.instance().encodeUri(self.vl.dataProvider().name(), parts)
+        self.assertEqual(uri, " bbox='1,2,3,4' crs='epsg:4326' referer='me' url='http://blah.com'")
 
     def testObjectIdDifferentName(self):
         """ Test that object id fields not named OBJECTID work correctly """
@@ -623,20 +632,20 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         extent1.extentCrs = QgsCoordinateReferenceSystem.fromEpsgId(4326)
         extent1.bounds = QgsBox3d(QgsRectangle(-71.123, 66.33, -65.32, 78.3))
         extent.setSpatialExtents([extent1])
-        self.assertEqual(vl.metadata().extent(), extent)
-
-        self.assertEqual(vl.metadata().crs(), QgsCoordinateReferenceSystem.fromEpsgId(4326))
-        self.assertEqual(vl.metadata().identifier(), 'http://' + sanitize(endpoint, ''))
-        self.assertEqual(vl.metadata().parentIdentifier(), 'http://' + self.basetestpath + '/2')
-        self.assertEqual(vl.metadata().type(), 'dataset')
-        self.assertEqual(vl.metadata().abstract(), 'QGIS Provider Test Layer')
-        self.assertEqual(vl.metadata().title(), 'QGIS Test')
-        self.assertEqual(vl.metadata().rights(), ['not copyright'])
+        md = vl.metadata()
+        self.assertEqual(md.extent(), extent)
+        self.assertEqual(md.crs(), QgsCoordinateReferenceSystem.fromEpsgId(4326))
+        self.assertEqual(md.identifier(), 'http://' + sanitize(endpoint, ''))
+        self.assertEqual(md.parentIdentifier(), 'http://' + self.basetestpath + '/2')
+        self.assertEqual(md.type(), 'dataset')
+        self.assertEqual(md.abstract(), 'QGIS Provider Test Layer')
+        self.assertEqual(md.title(), 'QGIS Test')
+        self.assertEqual(md.rights(), ['not copyright'])
         l = QgsLayerMetadata.Link()
         l.name = 'Source'
         l.type = 'WWW:LINK'
         l.url = 'http://' + sanitize(endpoint, '')
-        self.assertEqual(vl.metadata().links(), [l])
+        self.assertEqual(md.links(), [l])
 
     def testRenderer(self):
         """ Test that renderer is correctly acquired from provider """

@@ -32,10 +32,11 @@ QgsAbstractFileContentSourceLineEdit::QgsAbstractFileContentSourceLineEdit( QWid
   : QWidget( parent )
 {
   QHBoxLayout *layout = new QHBoxLayout( this );
+  layout->setContentsMargins( 0, 0, 0, 0 );
   mFileLineEdit = new QgsFilterLineEdit( this );
   mFileLineEdit->setShowClearButton( true );
   mFileToolButton = new QToolButton( this );
-  mFileToolButton->setText( QStringLiteral( "…" ) );
+  mFileToolButton->setText( QString( QChar( 0x2026 ) ) );
   layout->addWidget( mFileLineEdit, 1 );
   layout->addWidget( mFileToolButton );
   setLayout( layout );

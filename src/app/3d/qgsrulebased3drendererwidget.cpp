@@ -44,9 +44,9 @@ QgsRuleBased3DRendererWidget::QgsRuleBased3DRendererWidget( QWidget *parent )
   mDeleteAction = new QAction( tr( "Remove Rule" ), this );
   mDeleteAction->setShortcut( QKeySequence( QKeySequence::Delete ) );
 
-  viewRules->addAction( mDeleteAction );
   viewRules->addAction( mCopyAction );
   viewRules->addAction( mPasteAction );
+  viewRules->addAction( mDeleteAction );
 
   connect( viewRules, &QAbstractItemView::doubleClicked, this, static_cast<void ( QgsRuleBased3DRendererWidget::* )( const QModelIndex & )>( &QgsRuleBased3DRendererWidget::editRule ) );
 
@@ -86,6 +86,21 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBased3DRendererWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsRuleBased3DRendererWidget::widgetChanged );
   connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsRuleBased3DRendererWidget::widgetChanged );
+}
+
+void QgsRuleBased3DRendererWidget::setDockMode( bool dockMode )
+{
+  if ( dockMode )
+  {
+    // when in dock mode, these shortcuts conflict with the main window shortcuts and cannot be used
+    if ( mCopyAction )
+      mCopyAction->setShortcut( QKeySequence() );
+    if ( mPasteAction )
+      mPasteAction->setShortcut( QKeySequence() );
+    if ( mDeleteAction )
+      mDeleteAction->setShortcut( QKeySequence() );
+  }
+  QgsPanelWidget::setDockMode( dockMode );
 }
 
 

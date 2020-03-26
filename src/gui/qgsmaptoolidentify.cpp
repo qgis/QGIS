@@ -249,7 +249,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
   if ( ! scalarDatasetIndex.isValid() && ! vectorDatasetIndex.isValid() )
     return false;
 
-  QMap< QString, QString > scalarAttributes, vectorAttributes;
+  QMap< QString, QString > scalarAttributes, vectorAttributes, raw3dAttributes;
 
   QString scalarGroup;
   if ( scalarDatasetIndex.isValid() )
@@ -439,7 +439,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     renderer->stopRender( context );
   }
 
-  QgsDebugMsg( "Feature count on identify: " + QString::number( featureCount ) );
+  QgsDebugMsgLevel( "Feature count on identify: " + QString::number( featureCount ), 2 );
 
   QApplication::restoreOverrideCursor();
   return featureCount > 0;

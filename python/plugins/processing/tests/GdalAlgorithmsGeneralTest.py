@@ -36,6 +36,7 @@ from qgis.core import (QgsProcessingContext,
                        QgsProject,
                        QgsVectorLayer,
                        QgsRectangle,
+                       QgsProjUtils,
                        QgsProcessingException,
                        QgsProcessingFeatureSourceDefinition)
 
@@ -67,12 +68,17 @@ class TestGdalAlgorithms(unittest.TestCase):
         # Test that algorithms report a valid commandName
         p = QgsApplication.processingRegistry().providerById('gdal')
         for a in p.algorithms():
+            if a.id() in ('gdal:buildvirtualvector'):
+                # build virtual vector is an exception
+                continue
             self.assertTrue(a.commandName(), 'Algorithm {} has no commandName!'.format(a.id()))
 
     def testCommandNameInTags(self):
         # Test that algorithms commandName is present in provided tags
         p = QgsApplication.processingRegistry().providerById('gdal')
         for a in p.algorithms():
+            if not a.commandName():
+                continue
             self.assertTrue(a.commandName() in a.tags(), 'Algorithm {} commandName not found in tags!'.format(a.id()))
 
     def testNoParameters(self):
@@ -310,18 +316,25 @@ class TestGdalAlgorithms(unittest.TestCase):
             'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')),
             'EPSG:20936')
         crs = QgsCoordinateReferenceSystem()
-        crs.createFromProj4(
+        crs.createFromProj(
             '+proj=utm +zone=36 +south +a=600000 +b=70000 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
         self.assertTrue(crs.isValid())
-        self.assertEqual(GdalUtils.gdal_crs_string(crs),
-                         '+proj=utm +zone=36 +south +a=600000 +b=70000 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
-        # check that newlines are stripped
-        crs = QgsCoordinateReferenceSystem()
-        crs.createFromProj4(
-            '+proj=utm +zone=36 +south\n     +a=600000 +b=70000 \r\n    +towgs84=-143,-90,-294,0,0,0,0 +units=m\n+no_defs')
-        self.assertTrue(crs.isValid())
-        self.assertEqual(GdalUtils.gdal_crs_string(crs),
-                         '+proj=utm +zone=36 +south      +a=600000 +b=70000       +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
+
+        if QgsProjUtils.projVersionMajor() >= 6:
+            # proj 6, WKT should be used
+            self.assertEqual(GdalUtils.gdal_crs_string(crs)[:40], 'BOUNDCRS[SOURCECRS[PROJCRS["unknown",BAS')
+
+            self.assertEqual(GdalUtils.gdal_crs_string(QgsCoordinateReferenceSystem('ESRI:102003')), 'ESRI:102003')
+        else:
+            self.assertEqual(GdalUtils.gdal_crs_string(crs),
+                             '+proj=utm +zone=36 +south +a=600000 +b=70000 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
+            # check that newlines are stripped
+            crs = QgsCoordinateReferenceSystem()
+            crs.createFromProj(
+                '+proj=utm +zone=36 +south\n     +a=600000 +b=70000 \r\n    +towgs84=-143,-90,-294,0,0,0,0 +units=m\n+no_defs')
+            self.assertTrue(crs.isValid())
+            self.assertEqual(GdalUtils.gdal_crs_string(crs),
+                             '+proj=utm +zone=36 +south      +a=600000 +b=70000       +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs')
 
 
 if __name__ == '__main__':

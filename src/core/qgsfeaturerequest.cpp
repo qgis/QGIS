@@ -84,6 +84,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mLimit = rh.mLimit;
   mOrderBy = rh.mOrderBy;
   mCrs = rh.mCrs;
+  mTransformContext = rh.mTransformContext;
   mTransformErrorCallback = rh.mTransformErrorCallback;
   mTimeout = rh.mTimeout;
   mRequestMayBeNested = rh.mRequestMayBeNested;
@@ -344,7 +345,7 @@ QgsAbstractFeatureSource::~QgsAbstractFeatureSource()
   while ( !mActiveIterators.empty() )
   {
     QgsAbstractFeatureIterator *it = *mActiveIterators.begin();
-    QgsDebugMsg( QStringLiteral( "closing active iterator" ) );
+    QgsDebugMsgLevel( QStringLiteral( "closing active iterator" ), 2 );
     it->close();
   }
 }

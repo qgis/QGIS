@@ -35,6 +35,23 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
+static QString _fileNameForTest( const QString &testName )
+{
+  return QDir::tempPath() + '/' + testName + ".png";
+}
+
+static bool _verifyImage( const QString &testName, QString &report )
+{
+  QgsRenderChecker checker;
+  checker.setControlPathPrefix( QStringLiteral( "qgssimplemarkertest" ) );
+  checker.setControlName( "expected_" + testName );
+  checker.setRenderedImage( _fileNameForTest( testName ) );
+  checker.setSizeTolerance( 3, 3 );
+  bool equal = checker.compareImages( testName, 500 );
+  report += checker.report();
+  return equal;
+}
+
 /**
  * \ingroup UnitTests
  * This is a unit test for simple marker symbol types.
@@ -54,6 +71,8 @@ class TestQgsSimpleMarkerSymbol : public QObject
 
     void simpleMarkerSymbol();
     void simpleMarkerSymbolRotation();
+    void simpleMarkerSymbolPreviewRotation();
+    void simpleMarkerSymbolPreviewRotation_data();
     void simpleMarkerSymbolBevelJoin();
     void simpleMarkerSymbolMiterJoin();
     void simpleMarkerSymbolRoundJoin();
@@ -154,6 +173,37 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolRotation()
   mSimpleMarkerLayer->setStrokeWidth( 0.2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::BevelJoin );
   QVERIFY( imageCheck( "simplemarker_rotation" ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolPreviewRotation()
+{
+  QFETCH( QString, name );
+  QFETCH( double, angle );
+  QFETCH( QString, expression );
+  QgsMarkerSymbol markerSymbol;
+  QgsSimpleMarkerSymbolLayer *simpleMarkerLayer = new QgsSimpleMarkerSymbolLayer();
+  markerSymbol.changeSymbolLayer( 0, simpleMarkerLayer );
+
+  simpleMarkerLayer->setShape( QgsSimpleMarkerSymbolLayerBase::Shape::Arrow );
+  simpleMarkerLayer->setAngle( angle );
+  simpleMarkerLayer->setSize( 20 );
+  simpleMarkerLayer->setColor( Qt::red );
+  simpleMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::PropertyAngle, QgsProperty::fromExpression( expression ) );
+
+  QgsExpressionContext ec;
+  QImage image = markerSymbol.bigSymbolPreviewImage( &ec );
+  image.save( _fileNameForTest( name ) );
+  QVERIFY( _verifyImage( name, mReport ) );
+}
+
+void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolPreviewRotation_data()
+{
+  QTest::addColumn<QString>( "name" );
+  QTest::addColumn<double>( "angle" );
+  QTest::addColumn<QString>( "expression" );
+
+  QTest::newRow( "field_based" ) << QStringLiteral( "field_based" ) << 20. << QStringLiteral( "orientation" ); // Should fallback to 20 because orientation is not available
+  QTest::newRow( "static_expression" ) << QStringLiteral( "static_expression" ) << 20. << QStringLiteral( "40" ); // Should use 40 because expression has precedence
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolBevelJoin()

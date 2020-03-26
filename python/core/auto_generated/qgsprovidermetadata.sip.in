@@ -13,8 +13,69 @@
 
 
 
+class QgsMeshDriverMetadata
+{
+%Docstring
+Holds metadata about mesh driver
 
-class QgsProviderMetadata
+.. versionadded:: 3.12
+%End
+
+%TypeHeaderCode
+#include "qgsprovidermetadata.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+
+    enum MeshDriverCapability
+    {
+      CanWriteFaceDatasets,
+      CanWriteVertexDatasets,
+      CanWriteEdgeDatasets,
+    };
+
+    typedef QFlags<QgsMeshDriverMetadata::MeshDriverCapability> MeshDriverCapabilities;
+
+
+    QgsMeshDriverMetadata();
+%Docstring
+Constructs default metadata without any capabilities
+%End
+
+    QgsMeshDriverMetadata( const QString &name,
+                           const QString &description,
+                           const MeshDriverCapabilities &capabilities );
+%Docstring
+Constructs driver metadata with selected capabilities
+
+:param name: name/key of the driver
+:param description: short description of the driver
+:param capabilities: driver's capabilities
+%End
+
+    MeshDriverCapabilities capabilities() const;
+%Docstring
+Returns the capabilities for this driver.
+%End
+
+    QString name() const;
+%Docstring
+Returns the name (key) for this driver.
+%End
+
+    QString description() const;
+%Docstring
+Returns the description for this driver.
+%End
+
+};
+
+QFlags<QgsMeshDriverMetadata::MeshDriverCapability> operator|(QgsMeshDriverMetadata::MeshDriverCapability f1, QFlags<QgsMeshDriverMetadata::MeshDriverCapability> f2);
+
+
+class QgsProviderMetadata : QObject
 {
 %Docstring
 Holds data provider key, description, and associated shared library file or function pointer information.
@@ -24,10 +85,10 @@ which are native providers that are included in the core QGIS installation
 and accessed through function pointers.
 
 For library based providers, the metadata class is used in a lazy load
-implementation in QgsProviderRegistry.  To save memory, data providers
+implementation in :py:class:`QgsProviderRegistry`.  To save memory, data providers
 are only actually loaded via QLibrary calls if they're to be used.  (Though they're all
 iteratively loaded once to get their metadata information, and then
-unloaded when the QgsProviderRegistry is created.)  QgsProviderMetadata
+unloaded when the QgsProviderRegistry is created.)  :py:class:`QgsProviderMetadata`
 supplies enough information to be able to later load the associated shared
 library object.
 %End
@@ -106,6 +167,13 @@ Suitable for use in a QFileDialog.getOpenFileNames() call.
 .. versionadded:: 3.10
 %End
 
+    virtual QList<QgsMeshDriverMetadata> meshDriversMetadata();
+%Docstring
+Builds the list of available mesh drivers metadata
+
+.. versionadded:: 3.12
+%End
+
     virtual QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) /Factory/;
 %Docstring
 Class factory to return a pointer to a newly created QgsDataProvider object
@@ -143,13 +211,38 @@ Breaks a provider data source URI into its component paths (e.g. file path, laye
 
 :param uri: uri string
 
-:return: map containing components. Standard components include "path", "layerName", "url".
+:return: map containing components. Standard components may include:
+         - "path": file path
+         - "layerName"
+         - "url": base URL, for online services
+         - "referer": referrer string, for HTTP requests
+         - "host": hostname, for database services
+         - "bounds": hardcoded layer bounds (as a QgsRectangle)
+         - "crs": CRS definition
+         - "authcfg": authentication configuration ID
 
 .. note::
 
    this function may not be supported by all providers, an empty map will be returned in such case
 
 .. versionadded:: 3.10
+%End
+
+    virtual QString encodeUri( const QVariantMap &parts );
+%Docstring
+Reassembles a provider data source URI from its component paths (e.g. file path, layer name).
+
+:param parts: parts as returned by decodeUri
+
+:return: datasource uri string
+
+.. note::
+
+   this function may not be supported by all providers, an empty string will be returned in such case
+
+.. seealso:: :py:func:`decodeUri`
+
+.. versionadded:: 3.12
 %End
 
     virtual QList< QgsDataItemProvider * > dataItemProviders() const /Factory/;
@@ -262,22 +355,26 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 %End
 
 
-    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) /Factory/;
+    virtual QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) throw( QgsProviderConnectionException ) /Factory/;
 %Docstring
 Creates a new connection from ``uri`` and ``configuration``,
 the newly created connection is not automatically stored in the settings, call
 saveConnection() to save it.
 Ownership is transferred to the caller.
 
+:raises :: py:class:`QgsProviderConnectionException`
+
 .. seealso:: :py:func:`saveConnection`
 
 .. versionadded:: 3.10
 %End
 
-    virtual QgsAbstractProviderConnection *createConnection( const QString &name );
+    virtual QgsAbstractProviderConnection *createConnection( const QString &name ) throw( QgsProviderConnectionException );
 %Docstring
 Creates a new connection by loading the connection with the given ``name`` from the settings.
 Ownership is transferred to the caller.
+
+:raises :: py:class:`QgsProviderConnectionException`
 
 .. seealso:: :py:func:`findConnection`
 %End
@@ -292,14 +389,52 @@ Raises a QgsProviderConnectionException if any errors are encountered.
 .. versionadded:: 3.10
 %End
 
-    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name );
+    virtual void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) throw( QgsProviderConnectionException );
 %Docstring
 Stores the connection in the settings
 
 :param connection: the connection to be stored in the settings
 :param name: the name under which the connection will be stored
 
+:raises :: py:class:`QgsProviderConnectionException`
+
 .. versionadded:: 3.10
+%End
+
+  signals:
+
+    void connectionCreated( const QString &name );
+%Docstring
+Emitted when a connection with the specified ``name`` is created.
+
+.. note::
+
+   Only providers which implement the connection handling API will emit this signal.
+
+.. versionadded:: 3.14
+%End
+
+    void connectionDeleted( const QString &name );
+%Docstring
+Emitted when the connection with the specified ``name`` was deleted.
+
+.. note::
+
+   Only providers which implement the connection handling API will emit this signal.
+
+.. versionadded:: 3.14
+%End
+
+    void connectionChanged( const QString &name );
+%Docstring
+Emitted when the connection with the specified ``name`` is changed, e.g. the settings
+relating to the connection have been updated.
+
+.. note::
+
+   Only providers which implement the connection handling API will emit this signal.
+
+.. versionadded:: 3.14
 %End
 
   protected:

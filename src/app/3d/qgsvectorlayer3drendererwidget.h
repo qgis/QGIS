@@ -19,6 +19,7 @@
 #include <memory>
 
 #include "qgsmaplayerconfigwidget.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsvectorlayer3drenderer.h"
 
 class QComboBox;
@@ -31,6 +32,7 @@ class QgsMapCanvas;
 
 class QgsRuleBased3DRendererWidget;
 class QgsSymbol3DWidget;
+class QgsVectorLayer3DPropertiesWidget;
 
 
 class QgsSingleSymbol3DRendererWidget : public QWidget
@@ -60,9 +62,9 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
 {
     Q_OBJECT
   public:
-    explicit QgsVectorLayer3DRendererWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
+    explicit QgsVectorLayer3DRendererWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
-    void setLayer( QgsVectorLayer *layer );
+    void syncToLayer( QgsMapLayer *layer ) override;
 
     void setDockMode( bool dockMode ) override;
 
@@ -78,11 +80,25 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
   private:
     QComboBox *cboRendererType = nullptr;
     QStackedWidget *widgetRendererStack = nullptr;
+    QgsVectorLayer3DPropertiesWidget *widgetBaseProperties = nullptr;
 
     QLabel *widgetNoRenderer = nullptr;
     QgsSingleSymbol3DRendererWidget *widgetSingleSymbolRenderer = nullptr;
     QgsRuleBased3DRendererWidget *widgetRuleBasedRenderer = nullptr;
 };
+
+class QgsVectorLayer3DRendererWidgetFactory : public QObject, public QgsMapLayerConfigWidgetFactory
+{
+    Q_OBJECT
+  public:
+    explicit QgsVectorLayer3DRendererWidgetFactory( QObject *parent = nullptr );
+    QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
+
+    bool supportLayerPropertiesDialog() const override { return true; }
+
+    bool supportsLayer( QgsMapLayer *layer ) const override;
+};
+
 
 
 #endif // QGSVECTORLAYER3DRENDERERWIDGET_H

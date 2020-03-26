@@ -613,7 +613,7 @@ void QgsGrassModule::run()
       environment.insert( QStringLiteral( "QGIS_PREFIX_PATH" ), QgsApplication::prefixPath() );
       if ( crs.isValid() ) // it should always be valid
       {
-        environment.insert( QStringLiteral( "QGIS_GRASS_CRS" ), crs.toProj4() );
+        environment.insert( QStringLiteral( "QGIS_GRASS_CRS" ), crs.toProj() );
       }
       // Suppress debug output
       environment.insert( QStringLiteral( "QGIS_DEBUG" ), QStringLiteral( "-1" ) );

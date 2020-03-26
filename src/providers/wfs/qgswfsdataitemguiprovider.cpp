@@ -34,6 +34,12 @@ void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
   if ( QgsWfsConnectionItem *connItem = qobject_cast< QgsWfsConnectionItem * >( item ) )
   {
+    QAction *actionRefresh = new QAction( tr( "Refresh" ), this );
+    connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
+    menu->addAction( actionRefresh );
+
+    menu->addSeparator();
+
     QAction *actionEdit = new QAction( tr( "Edit…" ), this );
     connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
     menu->addAction( actionEdit );
@@ -76,4 +82,12 @@ void QgsWfsDataItemGuiProvider::deleteConnection( QgsDataItem *item )
   QgsWfsConnection::deleteConnection( item->name() );
   // the parent should be updated
   item->parent()->refreshConnections();
+}
+
+void QgsWfsDataItemGuiProvider::refreshConnection( QgsDataItem *item )
+{
+  item->refresh();
+  // the parent should be updated
+  if ( item->parent() )
+    item->parent()->refreshConnections();
 }

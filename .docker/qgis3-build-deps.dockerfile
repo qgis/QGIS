@@ -26,6 +26,7 @@ RUN  apt-get update \
     git \
     graphviz \
     grass-dev \
+    libaio1 \
     libexiv2-dev \
     libexpat1-dev \
     libfcgi-dev \
@@ -34,6 +35,7 @@ RUN  apt-get update \
     libgsl-dev \
     libpq-dev \
     libproj-dev \
+    libprotobuf-dev \
     libqca-qt5-2-dev \
     libqca-qt5-2-plugins \
     libqt53drender5 \
@@ -73,6 +75,7 @@ RUN  apt-get update \
     python3-nose2 \
     python3-pip \
     python3-psycopg2 \
+    python3-pyproj \
     python3-pyqt5 \
     python3-pyqt5.qsci \
     python3-pyqt5.qtsql \
@@ -98,6 +101,7 @@ RUN  apt-get update \
     saga \
     spawn-fcgi \
     txt2tags \
+    unzip \
     xauth \
     xfonts-100dpi \
     xfonts-75dpi \
@@ -128,6 +132,17 @@ RUN  apt-get update \
     six \
   && apt-get clean
 
+# Oracle : client side
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/193000/instantclient-basic-linux.x64-19.3.0.0.0dbru.zip > instantclient-basic-linux.x64-19.3.0.0.0dbru.zip
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/193000/instantclient-sdk-linux.x64-19.3.0.0.0dbru.zip > instantclient-sdk-linux.x64-19.3.0.0.0dbru.zip
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/193000/instantclient-sqlplus-linux.x64-19.3.0.0.0dbru.zip > instantclient-sqlplus-linux.x64-19.3.0.0.0dbru.zip
+
+RUN unzip instantclient-basic-linux.x64-19.3.0.0.0dbru.zip
+RUN unzip instantclient-sdk-linux.x64-19.3.0.0.0dbru.zip
+RUN unzip instantclient-sqlplus-linux.x64-19.3.0.0.0dbru.zip
+
+ENV PATH="/instantclient_19_3:${PATH}"
+ENV LD_LIBRARY_PATH="/instantclient_19_3:${LD_LIBRARY_PATH}"
 
 # MSSQL: client side
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
@@ -143,7 +158,7 @@ RUN locale-gen
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
 # OTB: download and install otb packages for QGIS tests
-RUN curl -k https://www.orfeo-toolbox.org/packages/OTB-7.0.0-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
+RUN curl -k https://www.orfeo-toolbox.org/packages/OTB-7.1.0-Linux64.run -o /tmp/OTB-Linux64.run && sh /tmp/OTB-Linux64.run --target /opt/otb
 ENV OTB_INSTALL_DIR=/opt/otb
 
 # Clazy
@@ -158,4 +173,3 @@ RUN curl -k https://downloads.kdab.com/clazy/1.6/Clazy-x86_64-1.6.AppImage -o /t
 ENV QT_SELECT=5
 ENV LANG=C.UTF-8
 ENV PATH="/usr/local/bin:${PATH}"
-

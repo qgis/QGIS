@@ -1249,6 +1249,14 @@ QgsExpressionContextScope *QgsVectorLayerSelectedFeatureSource::createExpression
     return nullptr;
 }
 
+QgsFeatureSource::SpatialIndexPresence QgsVectorLayerSelectedFeatureSource::hasSpatialIndex() const
+{
+  if ( mLayer )
+    return mLayer->hasSpatialIndex();
+  else
+    return QgsFeatureSource::SpatialIndexUnknown;
+}
+
 //
 // QgsVectorLayerSelectedFeatureIterator
 //

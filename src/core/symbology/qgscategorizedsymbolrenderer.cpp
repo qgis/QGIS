@@ -186,7 +186,6 @@ void QgsCategorizedSymbolRenderer::rebuildHash()
   for ( const QgsRendererCategory &cat : qgis::as_const( mCategories ) )
   {
     const QVariant val = cat.value();
-    QString valAsString;
     if ( val.type() == QVariant::List )
     {
       const QVariantList list = val.toList();
@@ -1061,7 +1060,8 @@ QgsCategorizedSymbolRenderer *QgsCategorizedSymbolRenderer::convertFromRenderer(
     if ( graduatedSymbolRenderer )
     {
       r.reset( new QgsCategorizedSymbolRenderer( QString(), QgsCategoryList() ) );
-      r->setSourceSymbol( graduatedSymbolRenderer->sourceSymbol()->clone() );
+      if ( graduatedSymbolRenderer->sourceSymbol() )
+        r->setSourceSymbol( graduatedSymbolRenderer->sourceSymbol()->clone() );
       if ( graduatedSymbolRenderer->sourceColorRamp() )
       {
         r->setSourceColorRamp( graduatedSymbolRenderer->sourceColorRamp()->clone() );

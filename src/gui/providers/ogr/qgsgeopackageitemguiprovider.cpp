@@ -120,7 +120,7 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     QVariantMap dataDelete;
     dataDelete.insert( QStringLiteral( "path" ), collectionItem->path() );
     dataDelete.insert( QStringLiteral( "parent" ), QVariant::fromValue( QPointer< QgsDataItem >( collectionItem->parent() ) ) );
-    actionAddTable->setData( dataDelete );
+    actionDelete->setData( dataDelete );
     connect( actionDelete, &QAction::triggered, this, &QgsGeoPackageItemGuiProvider::deleteGpkg );
     menu->addAction( actionDelete );
 
@@ -215,7 +215,6 @@ bool QgsGeoPackageItemGuiProvider::rename( QgsDataItem *item, const QString &new
     }
     else
     {
-      QString filePath = parts.value( QStringLiteral( "path" ) ).toString();
       const QList<QgsMapLayer *> layersList( layerItem->layersInProject() );
       if ( ! layersList.isEmpty( ) )
       {

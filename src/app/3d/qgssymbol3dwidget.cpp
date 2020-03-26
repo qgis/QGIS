@@ -42,6 +42,7 @@ QgsSymbol3DWidget::QgsSymbol3DWidget( QWidget *parent ) : QWidget( parent )
   widgetStack->addWidget( widgetPolygon );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
+  layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( widgetStack );
 
   connect( widgetLine, &QgsLine3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );

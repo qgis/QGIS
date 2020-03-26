@@ -191,7 +191,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns matching render unit
      * \see encodeSldUom()
      */
-    static QgsUnitTypes::RenderUnit decodeSldUom( const QString &str, double *scaleFactor );
+    static QgsUnitTypes::RenderUnit decodeSldUom( const QString &str, double *scaleFactor = nullptr );
 
     /**
      * Returns the size scaled in pixels according to the uom attribute.

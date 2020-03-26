@@ -274,7 +274,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         return;
       }
 
-      if ( mode() == CapturePolygon )
+      if ( mode() == CapturePolygon || e->modifiers() == Qt::ShiftModifier )
       {
         closePolygon();
       }

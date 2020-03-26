@@ -140,6 +140,19 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * string. If \a coordinateOperationProjString is empty, then the default Proj operation
      * will be used when transforming between the coordinate reference systems.
      *
+     * If \a allowFallback is TRUE (since QGIS 3.12), then "ballpark" fallback transformations
+     * will be used in the case that the specified coordinate operation fails (such as when
+     * coordinates from outside a required grid shift file are transformed). See
+     * QgsCoordinateTransform::fallbackOperationOccurred() for further details. Note that if an
+     * existing \a sourceCrs and \a destinationCrs pair are added with a different \a allowFallback
+     * value, that value will replace the existing one (i.e. each combination of \a sourceCrs and
+     * \a destinationCrs must be unique).
+     *
+     * \warning coordinateOperationProjString MUST be a proj string which has been normalized for
+     * visualization, and must be constructed so that coordinates are always input and output
+     * with x/y coordinate ordering. (Proj strings output by utilities such as projinfo will NOT
+     * automatically normalize the axis order!).
+     *
      * Returns TRUE if the new coordinate operation was added successfully.
      *
      * \see coordinateOperations()
@@ -150,7 +163,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \since QGIS 3.8
      */
-    bool addCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &coordinateOperationProjString );
+    bool addCoordinateOperation( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, const QString &coordinateOperationProjString, bool allowFallback = true );
 
     /**
      * Removes the source to destination datum transform pair for the specified \a sourceCrs and
@@ -201,9 +214,32 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * \note Requires Proj 6.0 or later. Builds based on earlier Proj versions will always return
      * an empty string, and the deprecated calculateDatumTransforms() method should be used instead.
      *
+     * \warning Always check the result of mustReverseCoordinateOperation() in order to determine if the
+     * proj coordinate operation string returned by this method corresponds to the reverse operation, and
+     * must be manually flipped when calculating coordinate transforms.
+     *
      * \since QGIS 3.8
      */
     QString calculateCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
+
+    /**
+     * Returns TRUE if approximate "ballpark" transforms may be used when transforming
+     * between a \a source and \a destination CRS pair, in the case that the preferred
+     * coordinate operation fails (such as when
+     * coordinates from outside a required grid shift file are transformed). See
+     * QgsCoordinateTransform::fallbackOperationOccurred() for further details.
+     *
+     * \since QGIS 3.12
+     */
+    bool allowFallbackTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
+
+    /**
+     * Returns TRUE if the coordinate operation returned by calculateCoordinateOperation() for the \a source to \a destination pair
+     * must be inverted.
+     *
+     * \since QGIS 3.10.2
+     */
+    bool mustReverseCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
 
     // TODO QGIS 4.0 - remove missingTransforms, not used for Proj >= 6.0 builds
 

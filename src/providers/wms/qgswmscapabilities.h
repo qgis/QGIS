@@ -154,17 +154,55 @@ struct QgsWmsBoundingBoxProperty
   QgsRectangle   box;    // consumes minx, miny, maxx, maxy.
 };
 
-//! Dimension Property structure
-// TODO: Fill to WMS specifications
+/**
+ * \brief Dimension Property structure.
+ *
+ *  Contains the optional dimension element,
+ *  the element can be present in Service or Layer metadata
+ */
 struct QgsWmsDimensionProperty
 {
+  //! Name of the dimensional axis eg. time
   QString   name;
+
+  //! Units of the dimensional axis, defined from UCUM. Can be null.
   QString   units;
+
+  //! Optional, unit symbol a 7-bit ASCII character string also defined from UCUM.
   QString   unitSymbol;
+
+  //! Optional, default value to be used in GetMap request
   QString   defaultValue;   // plain "default" is a reserved word
-  bool      multipleValues;
-  bool      nearestValue;
-  bool      current;
+
+  //! Text containing available value(s) for the dimension
+  QString   extent;
+
+  //! Optional, determines whether multiple values of the dimension can be requested
+  bool      multipleValues = false;
+
+  //! Optional, whether nearest value of the dimension will be returned, if requested.
+  bool      nearestValue = false;
+
+  //! Optional, valid only for temporal exents, determines whether data are normally kept current.
+  bool      current = false;
+
+  //! Parse the dimension extent to QgsDateTimeRange instance
+  QgsDateTimeRange parseExtent() const
+  {
+    if ( extent.contains( '/' ) )
+    {
+      QStringList extentContent = extent.split( '/' );
+      int extentSize = extentContent.size();
+
+      QDateTime start = QDateTime::fromString( extentContent.at( 0 ), Qt::ISODateWithMs );
+      QDateTime end = QDateTime::fromString( extentContent.at( extentSize - 2 ), Qt::ISODateWithMs );
+
+      if ( start.isValid() & end.isValid() )
+        return QgsDateTimeRange( start, end );
+    }
+
+    return QgsDateTimeRange();
+  }
 };
 
 //! Logo URL Property structure
@@ -279,10 +317,10 @@ struct QgsWmsLayerProperty
   QStringList                             crs;        // coord ref sys
   QgsRectangle                            ex_GeographicBoundingBox;
   QVector<QgsWmsBoundingBoxProperty>      boundingBoxes;
-  QVector<QgsWmsDimensionProperty>        dimension;
   QgsWmsAttributionProperty               attribution;
   QVector<QgsWmsAuthorityUrlProperty>     authorityUrl;
   QVector<QgsWmsIdentifierProperty>       identifier;
+  QVector<QgsWmsDimensionProperty>        dimensions;
   QVector<QgsWmsMetadataUrlProperty>      metadataUrl;
   QVector<QgsWmsDataListUrlProperty>      dataListUrl;
   QVector<QgsWmsFeatureListUrlProperty>   featureListUrl;
@@ -298,6 +336,168 @@ struct QgsWmsLayerProperty
   bool               noSubsets;
   int                fixedWidth;
   int                fixedHeight;
+
+  // TODO need to expand this to cover more of layer properties
+  bool equal( const QgsWmsLayerProperty &layerProperty )
+  {
+    if ( !( name == layerProperty.name ) )
+      return false;
+    if ( !( title == layerProperty.title ) )
+      return false;
+    if ( !( abstract == layerProperty.abstract ) )
+      return false;
+
+    return true;
+  }
+
+  /**
+   * Returns true if it the struct has the dimension with the passed name
+   */
+  bool hasDimension( QString dimensionName ) const
+  {
+    if ( dimensions.isEmpty() )
+      return false;
+
+    for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( dimensions ) )
+    {
+      if ( dimension.name == dimensionName )
+        return true;
+    }
+
+    return false;
+  }
+};
+
+/**
+ * Stores the dates parts from the WMS-T dimension extent.
+ *
+ */
+struct QgsWmstDates
+{
+  QgsWmstDates( QList< QDateTime > dates )
+  {
+    dateTimes = dates;
+  }
+  QgsWmstDates()
+  {
+
+  }
+
+  bool operator== ( const QgsWmstDates &other )
+  {
+    return dateTimes == other.dateTimes;
+  }
+
+  QList< QDateTime > dateTimes;
+};
+
+/**
+ * Stores resolution part of the WMS-T dimension extent.
+ *
+ * If resolution does not exist, active() will return false;
+ */
+struct QgsWmstResolution
+{
+  int year = -1;
+  int month = -1;
+  int day = -1;
+
+  int hour = -1;
+  int minutes = -1;
+  int seconds = -1;
+
+  bool active()
+  {
+    return year != -1 || month != -1 || day != -1 ||
+           hour != -1 || minutes != -1 || seconds != -1;
+  }
+
+  QString text()
+  {
+    QString text( "P" );
+
+    if ( year != -1 )
+    {
+      text.append( QString::number( year ) );
+      text.append( 'Y' );
+    }
+    if ( month != -1 )
+    {
+      text.append( QString::number( month ) );
+      text.append( 'M' );
+    }
+    if ( day != -1 )
+    {
+      text.append( QString::number( day ) );
+      text.append( 'D' );
+    }
+
+    if ( hour != -1 )
+    {
+      if ( !text.contains( 'T' ) )
+        text.append( 'T' );
+      text.append( QString::number( hour ) );
+      text.append( 'H' );
+    }
+    if ( minutes != -1 )
+    {
+      if ( !text.contains( 'T' ) )
+        text.append( 'T' );
+      text.append( QString::number( minutes ) );
+      text.append( 'M' );
+    }
+    if ( seconds != -1 )
+    {
+      if ( !text.contains( 'T' ) )
+        text.append( 'T' );
+      text.append( QString::number( seconds ) );
+      text.append( 'S' );
+    }
+    return text;
+  }
+
+  bool operator== ( const QgsWmstResolution &other )
+  {
+    return year == other.year && month == other.month &&
+           day == other.day && hour == other.hour &&
+           minutes == other.minutes && seconds == other.seconds;
+  }
+
+};
+
+
+/**
+ * Stores dates and resolution structure pair.
+ */
+struct QgsWmstExtentPair
+{
+  QgsWmstExtentPair()
+  {
+  }
+
+  QgsWmstExtentPair( QgsWmstDates otherDates, QgsWmstResolution otherResolution )
+  {
+    dates = otherDates;
+    resolution = otherResolution;
+  }
+
+  bool operator ==( const QgsWmstExtentPair &other )
+  {
+    return dates == other.dates &&
+           resolution == other.resolution;
+  }
+
+  QgsWmstDates dates;
+  QgsWmstResolution resolution;
+};
+
+
+/**
+ * Stores  the WMS-T dimension extent.
+ */
+struct QgsWmstDimensionExtent
+{
+  QList <QgsWmstExtentPair> datesResolutionList;
 };
 
 struct QgsWmtsTheme
@@ -559,6 +759,32 @@ class QgsWmsSettings
 
     QgsWmsParserSettings parserSettings() const { return mParserSettings; }
 
+    /**
+     * Parse the given string extent into a well defined dates and resolution structures.
+     * The string extent comes from WMS-T dimension capabilities.
+     *
+     * \since 3.14
+     */
+    QgsWmstDimensionExtent parseTemporalExtent( QString extent );
+
+    /**
+     * Parse the given string item into a resolution structure.
+     *
+     * \since 3.14
+     */
+    QgsWmstResolution parseWmstResolution( QString item );
+
+    /**
+     * Parse the given string item into QDateTime instant.
+     *
+     * \since 3.14
+     */
+    QDateTime parseWmstDateTimes( QString item );
+
+    QList<QDateTime> dateTimesFromExtent( QgsWmstDimensionExtent dimensionExtent );
+
+    QDateTime addTime( QDateTime dateTime, QgsWmstResolution resolution );
+
   protected:
     QgsWmsParserSettings    mParserSettings;
 
@@ -566,6 +792,33 @@ class QgsWmsSettings
     bool                    mTiled;
     //! whether we actually work with XYZ tiles instead of WMS / WMTS
     bool mXyz;
+
+    //! Whether we are dealing with WMS-T
+    bool mIsTemporal = false;
+
+    //! Whether we are dealing bi-temporal dimensional WMS-T
+    bool mIsBiTemporal = false;
+
+    //! Temporal extent from dimension property in WMS-T
+    QString mTemporalExtent;
+
+    //! Fixed temporal range for the data provider
+    QgsDateTimeRange mFixedRange;
+
+    //! Fixed reference temporal range for the data provider
+    QgsDateTimeRange mFixedReferenceRange;
+
+    //! List of all available datetimes.
+    QList<QDateTime> mDateTimes;
+
+    //! Stores WMS-T time dimension extent dates
+    QgsWmstDimensionExtent mTimeDimensionExtent;
+
+    //! Stores WMS-T reference dimension extent dates
+    QgsWmstDimensionExtent mReferenceTimeDimensionExtent;
+
+    //! whether we are dealing with MBTiles file rather than using network-based tiles
+    bool mIsMBTiles = false;
     //! chosen values for dimensions in case of multi-dimensional data (key=dim id, value=dim value)
     QHash<QString, QString>  mTileDimensionValues;
     //! name of the chosen tile matrix set
@@ -680,33 +933,35 @@ class QgsWmsCapabilities
     int identifyCapabilities() const;
 
   protected:
-    bool parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty &capabilitiesProperty );
+    bool parseCapabilitiesDom( const QByteArray &xml, QgsWmsCapabilitiesProperty &capabilitiesProperty );
 
-    void parseService( QDomElement const &e, QgsWmsServiceProperty &serviceProperty );
-    void parseOnlineResource( QDomElement const &e, QgsWmsOnlineResourceAttribute &onlineResourceAttribute );
-    void parseKeywordList( QDomElement  const &e, QStringList &keywordListProperty );
-    void parseContactInformation( QDomElement const &e, QgsWmsContactInformationProperty &contactInformationProperty );
-    void parseContactPersonPrimary( QDomElement const &e, QgsWmsContactPersonPrimaryProperty &contactPersonPrimaryProperty );
-    void parseContactAddress( QDomElement const &e, QgsWmsContactAddressProperty &contactAddressProperty );
+    void parseService( const QDomElement &element, QgsWmsServiceProperty &serviceProperty );
+    void parseOnlineResource( const QDomElement &element, QgsWmsOnlineResourceAttribute &onlineResourceAttribute );
+    void parseKeywordList( const QDomElement &element, QStringList &keywordListProperty );
+    void parseContactInformation( const QDomElement &element, QgsWmsContactInformationProperty &contactInformationProperty );
+    void parseContactPersonPrimary( const QDomElement &element, QgsWmsContactPersonPrimaryProperty &contactPersonPrimaryProperty );
+    void parseContactAddress( const QDomElement &element, QgsWmsContactAddressProperty &contactAddressProperty );
 
-    void parseCapability( QDomElement const &e, QgsWmsCapabilityProperty &capabilityProperty );
-    void parseRequest( QDomElement const &e, QgsWmsRequestProperty &requestProperty );
-    void parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlProperty &legendUrlProperty );
-    void parseLayer( QDomElement const &e, QgsWmsLayerProperty &layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
-    void parseStyle( QDomElement const &e, QgsWmsStyleProperty &styleProperty );
+    void parseCapability( const QDomElement &element, QgsWmsCapabilityProperty &capabilityProperty );
+    void parseRequest( const QDomElement &element, QgsWmsRequestProperty &requestProperty );
+    void parseDimension( const QDomElement &element, QgsWmsDimensionProperty &dimensionProperty );
+    void parseLegendUrl( const QDomElement &element, QgsWmsLegendUrlProperty &legendUrlProperty );
+    void parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty );
+    void parseLayer( const QDomElement &element, QgsWmsLayerProperty &layerProperty, QgsWmsLayerProperty *parentProperty = nullptr );
+    void parseStyle( const QDomElement &element, QgsWmsStyleProperty &styleProperty );
 
-    void parseOperationType( QDomElement const &e, QgsWmsOperationType &operationType );
-    void parseDcpType( QDomElement const &e, QgsWmsDcpTypeProperty &dcpType );
-    void parseHttp( QDomElement const &e, QgsWmsHttpProperty &httpProperty );
-    void parseGet( QDomElement const &e, QgsWmsGetProperty &getProperty );
-    void parsePost( QDomElement const &e, QgsWmsPostProperty &postProperty );
+    void parseOperationType( const QDomElement &element, QgsWmsOperationType &operationType );
+    void parseDcpType( const QDomElement &element, QgsWmsDcpTypeProperty &dcpType );
+    void parseHttp( const QDomElement &element, QgsWmsHttpProperty &httpProperty );
+    void parseGet( const QDomElement &element, QgsWmsGetProperty &getProperty );
+    void parsePost( const QDomElement &element, QgsWmsPostProperty &postProperty );
 
-    void parseTileSetProfile( QDomElement const &e );
-    void parseWMTSContents( QDomElement const &e );
+    void parseTileSetProfile( const QDomElement &element );
+    void parseWMTSContents( const QDomElement &element );
     void parseKeywords( const QDomNode &e, QStringList &keywords );
     void parseTheme( const QDomElement &e, QgsWmtsTheme &t );
 
-    QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString() );
+    QString nodeAttribute( const QDomElement &element, const QString &name, const QString &defValue = QString() );
 
     /**
      * In case no bounding box is present in WMTS capabilities, try to estimate it from tile matrix sets.

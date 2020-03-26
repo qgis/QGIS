@@ -1507,6 +1507,16 @@ class TestGdalRasterAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsT
                  source + ' ' +
                  outdir + '/check.jpg'])
 
+            self.assertEqual(
+                alg.getConsoleCommands({'INPUT': source,
+                                        'FIELD': 'id',
+                                        'EXTRA': '-at -add',
+                                        'OUTPUT': outdir + '/check.jpg'}, context, feedback),
+                ['gdal_rasterize',
+                 '-l polys2 -a id -ts 0.0 0.0 -ot Float32 -of JPEG -at -add ' +
+                 source + ' ' +
+                 outdir + '/check.jpg'])
+
     def testRasterizeOver(self):
         context = QgsProcessingContext()
         feedback = QgsProcessingFeedback()

@@ -71,7 +71,6 @@ class TestQgsPalLabeling(unittest.TestCase):
 
     _TestDataDir = unitTestDataPath()
     _PalDataDir = os.path.join(_TestDataDir, 'labeling')
-    _PalFeaturesDb = os.path.join(_PalDataDir, 'pal_features_v3.sqlite')
     _TestFont = getTestFont()  # Roman at 12 pt
     """:type: QFont"""
     _MapRegistry = None
@@ -89,12 +88,6 @@ class TestQgsPalLabeling(unittest.TestCase):
         # qgis iface
         cls._Iface = get_iface()
         cls._Canvas = cls._Iface.mapCanvas()
-
-        # verify that SpatiaLite provider is available
-        msg = '\nSpatialite provider not found, SKIPPING TEST SUITE'
-        # noinspection PyArgumentList
-        res = 'spatialite' in QgsProviderRegistry.instance().providerList()
-        assert res, msg
 
         cls._TestFunction = ''
         cls._TestGroup = ''
@@ -134,7 +127,9 @@ class TestQgsPalLabeling(unittest.TestCase):
     @classmethod
     def setDefaultEngineSettings(cls):
         """Restore default settings for pal labeling"""
-        cls._MapSettings.setLabelingEngineSettings(QgsLabelingEngineSettings())
+        settings = QgsLabelingEngineSettings()
+        settings.setPlacementVersion(QgsLabelingEngineSettings.PlacementEngineVersion2)
+        cls._MapSettings.setLabelingEngineSettings(settings)
 
     @classmethod
     def removeAllLayers(cls):
@@ -160,10 +155,8 @@ class TestQgsPalLabeling(unittest.TestCase):
     def loadFeatureLayer(cls, table, chk=False):
         if chk and cls._MapRegistry.mapLayersByName(table):
             return
-        uri = QgsDataSourceUri()
-        uri.setDatabase(cls._PalFeaturesDb)
-        uri.setDataSource('', table, 'geometry')
-        vlayer = QgsVectorLayer(uri.uri(), table, 'spatialite')
+        vlayer = QgsVectorLayer('{}/{}.geojson'.format(cls._PalDataDir, table), table, 'ogr')
+        assert vlayer.isValid()
         # .qml should contain only style for symbology
         vlayer.loadNamedStyle(os.path.join(cls._PalDataDir,
                                            '{0}.qml'.format(table)))
@@ -183,10 +176,8 @@ class TestQgsPalLabeling(unittest.TestCase):
     @classmethod
     def aoiExtent(cls):
         """Area of interest extent, which matches output aspect ratio"""
-        uri = QgsDataSourceUri()
-        uri.setDatabase(cls._PalFeaturesDb)
-        uri.setDataSource('', 'aoi', 'geometry')
-        aoilayer = QgsVectorLayer(uri.uri(), 'aoi', 'spatialite')
+        aoilayer = QgsVectorLayer('{}/aoi.geojson'.format(cls._PalDataDir), 'aoi', 'ogr')
+        assert aoilayer.isValid()
         return aoilayer.extent()
 
     @classmethod
@@ -195,10 +186,8 @@ class TestQgsPalLabeling(unittest.TestCase):
         :rtype: QgsMapSettings
         """
         ms = QgsMapSettings()
-        crs = QgsCoordinateReferenceSystem()
-        """:type: QgsCoordinateReferenceSystem"""
         # default for labeling test data: WGS 84 / UTM zone 13N
-        crs.createFromSrid(32613)
+        crs = QgsCoordinateReferenceSystem('epsg:32613')
         ms.setBackgroundColor(QColor(152, 219, 249))
         ms.setOutputSize(QSize(420, 280))
         ms.setOutputDpi(72)

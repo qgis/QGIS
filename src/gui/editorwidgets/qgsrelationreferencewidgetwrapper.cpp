@@ -67,10 +67,16 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 
   const QVariant relationName = config( QStringLiteral( "Relation" ) );
 
+  // Store relation data source and provider key
+  mWidget->setReferencedLayerDataSource( config( QStringLiteral( "ReferencedLayerDataSource" ) ).toString() );
+  mWidget->setReferencedLayerProviderKey( config( QStringLiteral( "ReferencedLayerProviderKey" ) ).toString() );
+  mWidget->setReferencedLayerId( config( QStringLiteral( "ReferencedLayerId" ) ).toString() );
+  mWidget->setReferencedLayerName( config( QStringLiteral( "ReferencedLayerName" ) ).toString() );
+
   QgsRelation relation; // invalid relation by default
   if ( relationName.isValid() )
     relation = QgsProject::instance()->relationManager()->relation( relationName.toString() );
-  else if ( ! layer()->referencingRelations( fieldIdx() ).isEmpty() )
+  if ( !relation.isValid() && !layer()->referencingRelations( fieldIdx() ).isEmpty() )
     relation = layer()->referencingRelations( fieldIdx() )[0];
 
   // If this widget is already embedded by the same relation, reduce functionality
@@ -82,6 +88,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
       mWidget->setReadOnlySelector( true );
       mWidget->setAllowMapIdentification( false );
       mWidget->setOpenFormButtonVisible( false );
+      mWidget->setAllowAddFeatures( false );
       break;
     }
     ctx = ctx->parentContext();

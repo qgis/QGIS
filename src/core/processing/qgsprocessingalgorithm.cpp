@@ -599,7 +599,14 @@ bool QgsProcessingAlgorithm::parameterAsBoolean( const QVariantMap &parameters, 
 
 QgsFeatureSink *QgsProcessingAlgorithm::parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, QgsFeatureSink::SinkFlags sinkFlags ) const
 {
-  return QgsProcessingParameters::parameterAsSink( parameterDefinition( name ), parameters, fields, geometryType, crs, context, destinationIdentifier, sinkFlags );
+  try
+  {
+    return QgsProcessingParameters::parameterAsSink( parameterDefinition( name ), parameters, fields, geometryType, crs, context, destinationIdentifier, sinkFlags );
+  }
+  catch ( QgsProcessingException & )
+  {
+    throw QgsProcessingException( QObject::tr( "No parameter definition for the sink '%1'" ).arg( name ) );
+  }
 }
 
 QgsProcessingFeatureSource *QgsProcessingAlgorithm::parameterAsSource( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const
@@ -720,6 +727,26 @@ QgsLayoutItem *QgsProcessingAlgorithm::parameterAsLayoutItem( const QVariantMap 
 QColor QgsProcessingAlgorithm::parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
   return QgsProcessingParameters::parameterAsColor( parameterDefinition( name ), parameters, context );
+}
+
+QString QgsProcessingAlgorithm::parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+{
+  return QgsProcessingParameters::parameterAsConnectionName( parameterDefinition( name ), parameters, context );
+}
+
+QDateTime QgsProcessingAlgorithm::parameterAsDateTime( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+{
+  return QgsProcessingParameters::parameterAsDateTime( parameterDefinition( name ), parameters, context );
+}
+
+QString QgsProcessingAlgorithm::parameterAsSchema( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+{
+  return QgsProcessingParameters::parameterAsSchema( parameterDefinition( name ), parameters, context );
+}
+
+QString QgsProcessingAlgorithm::parameterAsDatabaseTableName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
+{
+  return QgsProcessingParameters::parameterAsDatabaseTableName( parameterDefinition( name ), parameters, context );
 }
 
 QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameters, const QString &name )
@@ -845,9 +872,19 @@ QgsProcessingAlgorithm::Flags QgsProcessingFeatureBasedAlgorithm::flags() const
 
 void QgsProcessingFeatureBasedAlgorithm::initAlgorithm( const QVariantMap &config )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), inputLayerTypes() ) );
+  addParameter( new QgsProcessingParameterFeatureSource( inputParameterName(), inputParameterDescription(), inputLayerTypes() ) );
   initParameters( config );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), outputName(), outputLayerType() ) );
+}
+
+QString QgsProcessingFeatureBasedAlgorithm::inputParameterName() const
+{
+  return QStringLiteral( "INPUT" );
+}
+
+QString QgsProcessingFeatureBasedAlgorithm::inputParameterDescription() const
+{
+  return QObject::tr( "Input layer" );
 }
 
 QList<int> QgsProcessingFeatureBasedAlgorithm::inputLayerTypes() const
@@ -976,6 +1013,7 @@ bool QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( const QgsMapLayer *
     type = QgsWkbTypes::LineString;
   else if ( inPlaceGeometryType == QgsWkbTypes::PolygonGeometry )
     type = QgsWkbTypes::Polygon;
+
   if ( QgsWkbTypes::geometryType( outputWkbType( type ) ) != inPlaceGeometryType )
     return false;
 
@@ -986,9 +1024,9 @@ void QgsProcessingFeatureBasedAlgorithm::prepareSource( const QVariantMap &param
 {
   if ( ! mSource )
   {
-    mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+    mSource.reset( parameterAsSource( parameters, inputParameterName(), context ) );
     if ( !mSource )
-      throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+      throw QgsProcessingException( invalidSourceError( parameters, inputParameterName() ) );
   }
 }
 

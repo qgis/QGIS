@@ -6,6 +6,7 @@
 #include "mdal_config.hpp"
 #include "mdal_driver_manager.hpp"
 #include "frmts/mdal_2dm.hpp"
+#include "frmts/mdal_xms_tin.hpp"
 #include "frmts/mdal_ascii_dat.hpp"
 #include "frmts/mdal_binary_dat.hpp"
 #include "frmts/mdal_selafin.hpp"
@@ -26,6 +27,7 @@
 #include "frmts/mdal_ugrid.hpp"
 #include "frmts/mdal_3di.hpp"
 #include "frmts/mdal_sww.hpp"
+#include "frmts/mdal_tuflowfv.hpp"
 #endif
 
 #if defined HAVE_GDAL && defined HAVE_NETCDF
@@ -36,70 +38,69 @@
 #include "frmts/mdal_xdmf.hpp"
 #endif
 
-std::unique_ptr<MDAL::Mesh> MDAL::DriverManager::load( const std::string &meshFile, MDAL_Status *status ) const
+std::unique_ptr<MDAL::Mesh> MDAL::DriverManager::load( const std::string &meshFile ) const
 {
   std::unique_ptr<MDAL::Mesh> mesh;
 
   if ( !MDAL::fileExists( meshFile ) )
   {
-    if ( status ) *status = MDAL_Status::Err_FileNotFound;
+    MDAL::Log::error( MDAL_Status::Err_FileNotFound, "File " + meshFile + " could not be found" );
     return std::unique_ptr<MDAL::Mesh>();
   }
 
   for ( const auto &driver : mDrivers )
   {
     if ( ( driver->hasCapability( Capability::ReadMesh ) ) &&
-         driver->canRead( meshFile ) )
+         driver->canReadMesh( meshFile ) )
     {
       std::unique_ptr<Driver> drv( driver->create() );
-      mesh = drv->load( meshFile, status );
+      mesh = drv->load( meshFile );
       if ( mesh ) // stop if he have the mesh
         break;
     }
   }
 
-  if ( status && !mesh )
-    *status = MDAL_Status::Err_UnknownFormat;
+  if ( !mesh )
+    MDAL::Log::error( MDAL_Status::Err_UnknownFormat, "Unable to load mesh (null)" );
 
   return mesh;
 }
 
-void MDAL::DriverManager::loadDatasets( Mesh *mesh, const std::string &datasetFile, MDAL_Status *status ) const
+void MDAL::DriverManager::loadDatasets( Mesh *mesh, const std::string &datasetFile ) const
 {
   if ( !MDAL::fileExists( datasetFile ) )
   {
-    if ( status ) *status = MDAL_Status::Err_FileNotFound;
+    MDAL::Log::error( MDAL_Status::Err_FileNotFound, "File " + datasetFile + " could not be found" );
     return;
   }
 
   if ( !mesh )
   {
-    if ( status ) *status = MDAL_Status::Err_IncompatibleMesh;
+    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Mesh is not valid (null)" );
     return;
   }
 
   for ( const auto &driver : mDrivers )
   {
     if ( driver->hasCapability( Capability::ReadDatasets ) &&
-         driver->canRead( datasetFile ) )
+         driver->canReadDatasets( datasetFile ) )
     {
       std::unique_ptr<Driver> drv( driver->create() );
-      drv->load( datasetFile, mesh, status );
+      drv->load( datasetFile, mesh );
       return;
     }
   }
 
-  if ( status )
-    *status = MDAL_Status::Err_UnknownFormat;
+  MDAL::Log::error( MDAL_Status::Err_UnknownFormat, "No driver was able to load requested file: " + datasetFile );
 }
 
-void MDAL::DriverManager::save( MDAL::Mesh *mesh, const std::string &uri, const std::string &driverName, MDAL_Status *status ) const
+void MDAL::DriverManager::save( MDAL::Mesh *mesh, const std::string &uri, const std::string &driverName ) const
 {
   auto selectedDriver = driver( driverName );
 
   std::unique_ptr<Driver> drv( selectedDriver->create() );
 
-  drv->save( uri, mesh, status );
+  drv->save( uri, mesh );
 }
 
 size_t MDAL::DriverManager::driversCount() const
@@ -133,6 +134,7 @@ MDAL::DriverManager::DriverManager()
 {
   // MESH DRIVERS
   mDrivers.push_back( std::make_shared<MDAL::Driver2dm>() );
+  mDrivers.push_back( std::make_shared<MDAL::DriverXmsTin>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverSelafin>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverEsriTin>() );
 
@@ -142,6 +144,7 @@ MDAL::DriverManager::DriverManager()
 #endif
 
 #ifdef HAVE_NETCDF
+  mDrivers.push_back( std::make_shared<MDAL::DriverTuflowFV>() );
   mDrivers.push_back( std::make_shared<MDAL::Driver3Di>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverSWW>() );
   mDrivers.push_back( std::make_shared<MDAL::DriverUgrid>() );

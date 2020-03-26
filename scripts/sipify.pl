@@ -530,6 +530,10 @@ while ($LINE_IDX < $LINE_COUNT){
         write_output("SF1", "%Feature $1$2\n");
         next;
     }
+    if ($LINE =~ m/^\s*SIP_PROPERTY\((.*)\)$/){
+        write_output("SF1", "%Property($1)\n");
+        next;
+    }
     if ($LINE =~ m/^\s*SIP_IF_FEATURE\( (\!?\w+) \)(.*)$/){
         write_output("SF2", "%If ($1)$2\n");
         next;
@@ -1206,8 +1210,8 @@ while ($LINE_IDX < $LINE_COUNT){
     # multiline definition (parenthesis left open)
     if ( $MULTILINE_DEFINITION != MULTILINE_NO ){
         dbg_info("on multiline");
-        # https://regex101.com/r/DN01iM/2
-        if ( $LINE =~ m/^([^()]+(\((?:[^()]++|(?1))*\)))*[^()]*\)[^()]*$/){
+        # https://regex101.com/r/DN01iM/4
+        if ( $LINE =~ m/^([^()]+(\((?:[^()]++|(?1))*\)))*[^()]*\)([^()](throw\([^()]+\))?)*$/){
             dbg_info("ending multiline");
             # remove potential following body
             if ( $MULTILINE_DEFINITION != MULTILINE_CONDITIONAL_STATEMENT && $LINE !~ m/(\{.*\}|;)\s*(\/\/.*)?$/ ){

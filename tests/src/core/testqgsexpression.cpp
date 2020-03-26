@@ -94,6 +94,8 @@ class TestQgsExpression: public QObject
       mPointsLayer->setAttributionUrl( QStringLiteral( "attribution url" ) );
       mPointsLayer->setMinimumScale( 500 );
       mPointsLayer->setMaximumScale( 1000 );
+      mPointsLayer->setMapTipTemplate( QStringLiteral( "Maptip with class = [% \"Class\" %]" ) );
+      mPointsLayer->setDisplayExpression( QStringLiteral( "'Display expression with class = ' ||  \"Class\"" ) );
 
       mPointsLayerMetadata = new QgsVectorLayer( pointFileInfo.filePath(),
           pointFileInfo.completeBaseName() + "_metadata", QStringLiteral( "ogr" ) );
@@ -671,10 +673,26 @@ class TestQgsExpression: public QObject
       QTest::newRow( "in 2" ) << "1 in (1,null,3)" << false << QVariant( 1 );
       QTest::newRow( "in 3" ) << "1 in (null,2,3)" << false << QVariant();
       QTest::newRow( "in 4" ) << "null in (1,2,3)" << false << QVariant();
+      QTest::newRow( "in 5" ) << "'a' in (1,2,3)" << false << QVariant( 0 );
+      QTest::newRow( "in 6" ) << "'a' in (1,'a',3)" << false << QVariant( 1 );
+      QTest::newRow( "in 7" ) << "'b' in (1,'a',3)" << false << QVariant( 0 );
+      QTest::newRow( "in 8" ) << "1.2 in (1,2,3)" << false << QVariant( 0 );
+      QTest::newRow( "in 9" ) << "'010080383000187224' in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 0 );
+      QTest::newRow( "in 10" ) << "'010080383000187219' in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 1 );
+      QTest::newRow( "in 11" ) << "'010080383000187218' in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 1 );
+      QTest::newRow( "in 12" ) << "'010080383000187223' in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 1 );
       QTest::newRow( "not in 1" ) << "1 not in (1,2,3)" << false << QVariant( 0 );
       QTest::newRow( "not in 2" ) << "1 not in (1,null,3)" << false << QVariant( 0 );
       QTest::newRow( "not in 3" ) << "1 not in (null,2,3)" << false << QVariant();
       QTest::newRow( "not in 4" ) << "null not in (1,2,3)" << false << QVariant();
+      QTest::newRow( "not in 5" ) << "'a' not in (1,2,3)" << false << QVariant( 1 );
+      QTest::newRow( "not in 6" ) << "'a' not in (1,'a',3)" << false << QVariant( 0 );
+      QTest::newRow( "not in 7" ) << "'b' not in (1,'a',3)" << false << QVariant( 1 );
+      QTest::newRow( "not in 8" ) << "1.2 not in (1,2,3)" << false << QVariant( 1 );
+      QTest::newRow( "not in 9" ) << "'010080383000187224' not in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 1 );
+      QTest::newRow( "not in 10" ) << "'010080383000187219' not in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 0 );
+      QTest::newRow( "not in 11" ) << "'010080383000187218' not in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 0 );
+      QTest::newRow( "not in 12" ) << "'010080383000187223' not in ('010080383000187219','010080383000187218','010080383000187223')" << false << QVariant( 0 );
 
       // regexp, like
       QTest::newRow( "like 1" ) << "'hello' like '%ll_'" << false << QVariant( 1 );
@@ -971,6 +989,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "pole_of_inaccessibility not poly" ) << "geom_to_wkt(pole_of_inaccessibility( geomFromWKT('POINT (1.5 0.5)'), 0.1 ))" << false << QVariant();
       QTest::newRow( "pole_of_inaccessibility not geom" ) << "pole_of_inaccessibility('g',0.1)" << true << QVariant();
       QTest::newRow( "pole_of_inaccessibility null" ) << "pole_of_inaccessibility(NULL,0.1)" << false << QVariant();
+      QTest::newRow( "is_valid not geom" ) << "is_valid('g')" << true << QVariant();
+      QTest::newRow( "is_valid null" ) << "is_valid(NULL)" << false << QVariant();
+      QTest::newRow( "is_valid point" ) << "is_valid(geom_from_wkt('POINT(1 2)'))" << false << QVariant( true );
+      QTest::newRow( "is_valid valid" ) << "is_valid(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2, 0 0)'))" << false << QVariant( true );
+      QTest::newRow( "is_valid not valid" ) << "is_valid(geom_from_wkt('LINESTRING(0 0)'))" << false << QVariant( false );
       QTest::newRow( "is_closed not geom" ) << "is_closed('g')" << true << QVariant();
       QTest::newRow( "is_closed null" ) << "is_closed(NULL)" << false << QVariant();
       QTest::newRow( "is_closed point" ) << "is_closed(geom_from_wkt('POINT(1 2)'))" << false << QVariant();
@@ -980,6 +1003,18 @@ class TestQgsExpression: public QObject
       QTest::newRow( "is_closed multiline" ) << "is_closed(geom_from_wkt('MultiLineString ((6501338.13976828 4850981.51459331, 6501343.09036573 4850984.01453377, 6501338.13976828 4850988.96491092, 6501335.63971657 4850984.01453377, 6501338.13976828 4850981.51459331))'))" << false << QVariant( true );
       QTest::newRow( "is_closed multiline" ) << "is_closed(geom_from_wkt('MultiLineString ((6501338.13976828 4850981.51459331, 6501343.09036573 4850984.01453377, 6501338.13976828 4850988.96491092, 6501335.63971657 4850984.01453377, 6501438.13976828 4850981.51459331))'))" << false << QVariant( false );
       QTest::newRow( "is_closed multiline" ) << "is_closed(geom_from_wkt('MultiLineString EMPTY'))" << false << QVariant();
+      QTest::newRow( "is_empty not geom" ) << "is_empty('g')" << true << QVariant();
+      QTest::newRow( "is_empty null" ) << "is_empty(NULL)" << false << QVariant();
+      QTest::newRow( "is_empty point" ) << "is_empty(geom_from_wkt('POINT(1 2)'))" << false << QVariant( false );
+      QTest::newRow( "is_empty empty point" ) << "is_empty(geom_from_wkt('POINT EMPTY'))" << false << QVariant( true );
+      QTest::newRow( "is_empty polygon" ) << "is_empty(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'))" << false << QVariant( false );
+      QTest::newRow( "is_empty empty polygon" ) << "is_empty(geom_from_wkt('POLYGON EMPTY'))" << false << QVariant( true );
+      QTest::newRow( "is_empty_or_null not geom" ) << "is_empty_or_null('g')" << true << QVariant();
+      QTest::newRow( "is_empty_or_null null" ) << "is_empty_or_null(NULL)" << false << QVariant( true );
+      QTest::newRow( "is_empty_or_null point" ) << "is_empty_or_null(geom_from_wkt('POINT(1 2)'))" << false << QVariant( false );
+      QTest::newRow( "is_empty_or_null empty point" ) << "is_empty_or_null(geom_from_wkt('POINT EMPTY'))" << false << QVariant( true );
+      QTest::newRow( "is_empty_or_null polygon" ) << "is_empty_or_null(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'))" << false << QVariant( false );
+      QTest::newRow( "is_empty_or_null empty polygon" ) << "is_empty_or_null(geom_from_wkt('POLYGON EMPTY'))" << false << QVariant( true );
       QTest::newRow( "collect_geometries none" ) << "geom_to_wkt(collect_geometries())" << false << QVariant( "" );
       QTest::newRow( "collect_geometries not" ) << "geom_to_wkt(collect_geometries(45))" << true << QVariant();
       QTest::newRow( "collect_geometries one" ) << "geom_to_wkt(collect_geometries(make_point(4,5)))" << false << QVariant( "MultiPoint ((4 5))" );
@@ -1135,6 +1170,16 @@ class TestQgsExpression: public QObject
       QTest::newRow( "flip_coordinates not geom" ) << "flip_coordinates('g')" << true << QVariant();
       QTest::newRow( "flip_coordinates null" ) << "flip_coordinates(NULL)" << false << QVariant();
       QTest::newRow( "flip_coordinates point" ) << "geom_to_wkt(flip_coordinates(geom_from_wkt('POINT(1 2)')))" << false << QVariant( "Point (2 1)" );
+      QTest::newRow( "rotate not geom" ) << "rotate('g', 90)" << true << QVariant();
+      QTest::newRow( "rotate null" ) << "rotate(NULL, 90)" << false << QVariant();
+      QTest::newRow( "rotate point" ) << "geom_to_wkt(rotate(geom_from_wkt('POINT( 20 10)'), 90, geom_from_wkt('POINT( 30 15)')))" << false << QVariant( "Point (25 25)" );
+      QTest::newRow( "rotate line centroid" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90))" << false << QVariant( "LineString (0 10, 0 0, 10 0)" );
+      QTest::newRow( "rotate line fixed point" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, make_point(5, 2)))" << false << QVariant( "LineString (3 7, 3 -3, 13 -3)" );
+      QTest::newRow( "rotate line fixed point not geom" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, 'a'))" << true << QVariant();
+      QTest::newRow( "rotate line fixed point not point" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, geom_from_wkt('LineString(0 0, 10 0, 10 10)')))" << true << QVariant();
+      QTest::newRow( "rotate line fixed multi point" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, geom_from_wkt('MULTIPOINT((-5 -3))')))" << false << QVariant( "LineString (-2 -8, -2 -18, 8 -18)" );
+      QTest::newRow( "rotate line fixed multi point multiple" ) << "geom_to_wkt(rotate(geom_from_wkt('LineString(0 0, 10 0, 10 10)'),90, geom_from_wkt('MULTIPOINT(-5 -3,1 2)')))" << true << QVariant();
+      QTest::newRow( "rotate polygon centroid" ) << "geom_to_wkt(rotate(geom_from_wkt('Polygon((0 0, 10 0, 10 10, 0 0))'),-90))" << false << QVariant( "Polygon ((10 0, 10 10, 0 10, 10 0))" );
 
       // string functions
       QTest::newRow( "format_number" ) << "format_number(1999.567,2)" << false << QVariant( "1,999.57" );
@@ -1288,11 +1333,20 @@ class TestQgsExpression: public QObject
       QTest::newRow( "time - time" ) << "to_time('08:30:00') - to_time('05:15:00')" << false << QVariant( QgsInterval( 3 * 60 * 60 + 15 * 60 ) );
       QTest::newRow( "epoch" ) << "epoch(to_datetime('2017-01-01T00:00:01+00:00'))" << false << QVariant( 1483228801000LL );
       QTest::newRow( "epoch invalid date" ) << "epoch('invalid')" << true << QVariant();
+      // datetime_from_epoch will always return a local datetime, so here we create some circular magic to create a local datetime during test (so test can be ran in every timezone...)
+      QTest::newRow( "datetime_from_epoch" ) << "datetime_from_epoch(epoch(to_datetime('2017-01-01T00:00:01')))" << false << QVariant( QDateTime( QDate( 2017, 1, 1 ), QTime( 0, 0, 1 ), Qt::LocalTime ) );
+      QTest::newRow( "datetime_from_epoch_null" ) << "datetime_from_epoch(NULL)" << false <<  QVariant( QVariant::Invalid );
       QTest::newRow( "date from format" ) << "to_date('June 29, 2019','MMMM d, yyyy')" << false << QVariant( QDate( 2019, 6, 29 ) );
+      QTest::newRow( "date from format and language" ) << "to_date('29 juin, 2019','d MMMM, yyyy','fr')" << false << QVariant( QDate( 2019, 6, 29 ) );
       QTest::newRow( "date from format, wrong string" ) << "to_date('wrong.string.here','yyyy.MM.dd')" << true << QVariant();
       QTest::newRow( "date from format, wrong format" ) << "to_date('2019-01-01','wrong')" << true << QVariant();
+      QTest::newRow( "date from format, language missing format" ) << "to_date('2019-01-01',language:='fr')" << true << QVariant();
       QTest::newRow( "datetime from format" ) << "to_datetime('June 29, 2019 @ 11:00','MMMM d, yyyy @ HH:mm')" << false << QVariant( QDateTime( QDate( 2019, 6, 29 ), QTime( 11, 0 ) ) );
+      QTest::newRow( "datetime from format and language" ) << "to_datetime('29 juin, 2019 @ 11:00','d MMMM, yyyy @ HH:mm','fr')" << false << QVariant( QDateTime( QDate( 2019, 6, 29 ), QTime( 11, 0 ) ) );
       QTest::newRow( "time from format" ) << "to_time('12:34:56','HH:mm:ss')" << false << QVariant( QTime( 12, 34, 56 ) );
+      QTest::newRow( "time from format and language" ) << "to_time('12:34:56','HH:mm:ss','fr')" << false << QVariant( QTime( 12, 34, 56 ) );
+      QTest::newRow( "formatted string from date" ) << "format_date('2019-06-29','MMMM d, yyyy')" << false << QVariant( QString( "June 29, 2019" ) );
+      QTest::newRow( "formatted string from date with language" ) << "format_date('2019-06-29','d MMMM yyyy','fr')" << false << QVariant( QString( "29 juin 2019" ) );
 
       // Color functions
       QTest::newRow( "ramp color" ) << "ramp_color('Spectral',0.3)" << false << QVariant( "254,190,116,255" );
@@ -1358,6 +1412,11 @@ class TestQgsExpression: public QObject
       QTest::newRow( "brackets first" ) << "(1+2)*(3+4)" << false << QVariant( 21 );
       QTest::newRow( "right associativity" ) << "(2^3)^2" << false << QVariant( 64. );
       QTest::newRow( "left associativity" ) << "1-(2-1)" << false << QVariant( 0 );
+
+      // eval_template tests
+      QTest::newRow( "eval_template" ) << QStringLiteral( "eval_template(\'this is a [% \\'template\\' || \\'!\\' %]\')" ) << false << QVariant( "this is a template!" );
+      QTest::newRow( "eval_template string" ) << QStringLiteral( "eval_template('string')" ) << false << QVariant( "string" );
+      QTest::newRow( "eval_template expression" ) << QStringLiteral( "eval_template('a' || ' string')" ) << false << QVariant( "a string" );
 
       // layer_property tests
       QTest::newRow( "layer_property no layer" ) << "layer_property('','title')" << false << QVariant();
@@ -1963,6 +2022,63 @@ class TestQgsExpression: public QObject
       QTest::newRow( "group by with null value" ) << "sum(\"col1\", \"col4\")" << false << QVariant( 8 );
     }
 
+    void maptip_display_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<QgsFeature>( "feature" );
+      QTest::addColumn<QgsVectorLayer *>( "layer" );
+      QTest::addColumn<bool>( "evalError" );
+      QTest::addColumn<QVariant>( "result" );
+
+      QgsFeature firstFeature = mPointsLayer->getFeature( 1 );
+      QgsVectorLayer *noLayer = nullptr;
+
+      QTest::newRow( "display not evaluated" ) << QStringLiteral( "display_expression(@layer_id, $currentfeature, False)" ) << firstFeature << mPointsLayer  << false << QVariant( "'Display expression with class = ' ||  \"Class\"" );
+      QTest::newRow( "display wrong layer" ) << QStringLiteral( "display_expression()" ) << firstFeature << noLayer  << true << QVariant();
+      QTest::newRow( "display wrong feature" ) << QStringLiteral( "display_expression()" ) << QgsFeature() << mPointsLayer << true << QVariant();
+
+      QTest::newRow( "maptip wrong feature" ) << QStringLiteral( "maptip()" ) << QgsFeature() << mPointsLayer << true << QVariant();
+      QTest::newRow( "maptip wrong layer" ) << QStringLiteral( "maptip()" ) << firstFeature << noLayer << true << QVariant();
+      QTest::newRow( "maptip not evaluated" ) << QStringLiteral( "maptip(@layer_id, $currentfeature, False)" ) << firstFeature << mPointsLayer << false << QVariant( "Maptip with class = [% \"Class\" %]" );
+
+      QTest::newRow( "maptip with 2 params" ) << QStringLiteral( "maptip(@layer_id, $currentfeature)" ) << firstFeature << mPointsLayer << false << QVariant( "Maptip with class = Biplane" );
+      QTest::newRow( "maptip with 1 param" ) << QStringLiteral( "maptip($currentfeature)" ) << firstFeature << mPointsLayer << false << QVariant( "Maptip with class = Biplane" );
+      QTest::newRow( "maptip with 0 param" ) << QStringLiteral( "maptip()" ) << firstFeature << mPointsLayer << false << QVariant( "Maptip with class = Biplane" );
+
+      QTest::newRow( "display with 2 params" ) << QStringLiteral( "display_expression(@layer_id, $currentfeature)" ) << firstFeature << mPointsLayer << false << QVariant( "Display expression with class = Biplane" );
+      QTest::newRow( "display with 1 param" ) << QStringLiteral( "display_expression($currentfeature)" ) << firstFeature << mPointsLayer << false << QVariant( "Display expression with class = Biplane" );
+      QTest::newRow( "display with 0 param" ) << QStringLiteral( "display_expression()" ) << firstFeature << mPointsLayer << false << QVariant( "Display expression with class = Biplane" );
+    }
+
+    void maptip_display()
+    {
+      QFETCH( QString, string );
+      QFETCH( QgsFeature, feature );
+      QFETCH( QgsVectorLayer *, layer );
+      QFETCH( bool, evalError );
+      QFETCH( QVariant, result );
+
+      QgsExpressionContext context;
+      context.appendScope( QgsExpressionContextUtils::globalScope() );
+      context.appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+      if ( layer )
+      {
+        //layer->setDisplayExpression( QStringLiteral( "Display expression with class = ' || Class" ) );
+        context.appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+      }
+      context.setFeature( feature );
+
+      QgsExpression exp( string );
+      exp.prepare( &context );
+
+      if ( exp.hasParserError() )
+        qDebug() << exp.parserErrorString();
+      QCOMPARE( exp.hasParserError(), false );
+      QVariant res = exp.evaluate( &context );
+      QCOMPARE( exp.hasEvalError(), evalError );
+      QCOMPARE( res.toString(), result.toString() );
+    }
+
     void selection()
     {
       QFETCH( QgsFeatureIds, selectedFeatures );
@@ -2135,8 +2251,8 @@ class TestQgsExpression: public QObject
     {
       QgsExpression exp1( QStringLiteral( "rand(1,10)" ) );
       QVariant v1 = exp1.evaluate();
-      QCOMPARE( v1.toInt() <= 10, true );
-      QCOMPARE( v1.toInt() >= 1, true );
+      QVERIFY2( v1.toInt() <= 10, QString( "Calculated: %1 Expected <= %2" ).arg( QString::number( v1.toInt() ), QString::number( 10 ) ).toUtf8().constData() );
+      QVERIFY2( v1.toInt() >= 1, QString( "Calculated: %1 Expected >= %2" ).arg( QString::number( v1.toInt() ), QString::number( 1 ) ).toUtf8().constData() );
 
       QgsExpression exp2( QStringLiteral( "rand(min:=-5,max:=-5)" ) );
       QVariant v2 = exp2.evaluate();
@@ -2146,23 +2262,83 @@ class TestQgsExpression: public QObject
       QgsExpression exp3( QStringLiteral( "rand(10,1)" ) );
       QVariant v3 = exp3.evaluate();
       QCOMPARE( v3.type(),  QVariant::Invalid );
+
+      // Supports multiple type of seeds
+      QgsExpression exp4( QStringLiteral( "rand(1,10,123)" ) );
+      QVariant v4 = exp4.evaluate();
+      QVERIFY2( v4.toInt() <= 10, QString( "Calculated: %1 > Expected %2" ).arg( QString::number( v4.toInt() ), QString::number( 10 ) ).toUtf8().constData() );
+      QVERIFY2( v4.toInt() >= 1, QString( "Calculated: %1 < Expected %2" ).arg( QString::number( v4.toInt() ), QString::number( 1 ) ).toUtf8().constData() );
+      QgsExpression exp5( QStringLiteral( "rand(1,10,1.23)" ) );
+      QVariant v5 = exp5.evaluate();
+      QVERIFY2( v5.toInt() <= 10, QString( "Calculated: %1 > Expected %2" ).arg( QString::number( v5.toInt() ), QString::number( 10 ) ).toUtf8().constData() );
+      QVERIFY2( v5.toInt() >= 1, QString( "Calculated: %1 < Expected %2" ).arg( QString::number( v5.toInt() ), QString::number( 1 ) ).toUtf8().constData() );
+      QgsExpression exp6( QStringLiteral( "rand(1,10,'123')" ) );
+      QVariant v6 = exp6.evaluate();
+      QVERIFY2( v6.toInt() <= 10, QString( "Calculated: %1 > Expected %2" ).arg( QString::number( v6.toInt() ), QString::number( 10 ) ).toUtf8().constData() );
+      QVERIFY2( v6.toInt() >= 1, QString( "Calculated: %1 < Expected %2" ).arg( QString::number( v6.toInt() ), QString::number( 1 ) ).toUtf8().constData() );
+      QgsExpression exp7( QStringLiteral( "rand(1,10,'abc')" ) );
+      QVariant v7 = exp7.evaluate();
+      QVERIFY2( v7.toInt() <= 10, QString( "Calculated: %1 > Expected %2" ).arg( QString::number( v7.toInt() ), QString::number( 10 ) ).toUtf8().constData() );
+      QVERIFY2( v7.toInt() >= 1, QString( "Calculated: %1 < Expected %2" ).arg( QString::number( v7.toInt() ), QString::number( 1 ) ).toUtf8().constData() );
+
+      // Two calls with the same seed always return the same number
+      QgsExpression exp8( QStringLiteral( "rand(1,1000000000,1)" ) );
+      QVariant v8 = exp8.evaluate();
+      QCOMPARE( v8.toInt(), 546311529 );
+
+      // Two calls with a different seed return a different number
+      QgsExpression exp9( QStringLiteral( "rand(1,100000000000,1)" ) );
+      QVariant v9 = exp9.evaluate();
+      QgsExpression exp10( QStringLiteral( "rand(1,100000000000,2)" ) );
+      QVariant v10 = exp10.evaluate();
+      QVERIFY2( v9.toInt() != v10.toInt(), QStringLiteral( "Calculated: %1 Expected != %2" ).arg( QString::number( v9.toInt() ), QString::number( v10.toInt() ) ).toUtf8().constData() );
     }
 
     void eval_randf()
     {
       QgsExpression exp1( QStringLiteral( "randf(1.5,9.5)" ) );
       QVariant v1 = exp1.evaluate();
-      QCOMPARE( v1.toDouble() <= 9.5, true );
-      QCOMPARE( v1.toDouble() >= 1.5, true );
+      QVERIFY2( v1.toDouble() <= 9.5, QStringLiteral( "Calculated: %1 Expected <= %2" ).arg( QString::number( v1.toDouble() ), QString::number( 9.5 ) ).toUtf8().constData() );
+      QVERIFY2( v1.toDouble() >= 1.5, QStringLiteral( "Calculated: %1 Expected >= %2" ).arg( QString::number( v1.toDouble() ), QString::number( 1.5 ) ).toUtf8().constData() );
 
       QgsExpression exp2( QStringLiteral( "randf(min:=-0.0005,max:=-0.0005)" ) );
       QVariant v2 = exp2.evaluate();
-      QCOMPARE( v2.toDouble(), -0.0005 );
+      QVERIFY2( qgsDoubleNear( v2.toDouble(), -0.0005 ), QStringLiteral( "Calculated: %1 != Expected %2" ).arg( QString::number( v2.toDouble() ), QString::number( -0.0005 ) ).toUtf8().constData() );
 
       // Invalid expression since max<min
       QgsExpression exp3( QStringLiteral( "randf(9.3333,1.784)" ) );
       QVariant v3 = exp3.evaluate();
       QCOMPARE( v3.type(),  QVariant::Invalid );
+
+      // Supports multiple type of seeds
+      QgsExpression exp4( QStringLiteral( "randf(1.5,9.5,123)" ) );
+      QVariant v4 = exp4.evaluate();
+      QVERIFY2( v4.toDouble() <= 9.5, QStringLiteral( "Calculated: %1 > Expected %2" ).arg( QString::number( v4.toDouble() ), QString::number( 9.5 ) ).toUtf8().constData() );
+      QVERIFY2( v4.toDouble() >= 1.5, QStringLiteral( "Calculated: %1 < Expected %2" ).arg( QString::number( v4.toDouble() ), QString::number( 1.5 ) ).toUtf8().constData() );
+      QgsExpression exp5( QStringLiteral( "randf(1.5,9.5,1.23)" ) );
+      QVariant v5 = exp5.evaluate();
+      QVERIFY2( v5.toDouble() <= 9.5, QStringLiteral( "Calculated: %1 > Expected %2" ).arg( QString::number( v5.toDouble() ), QString::number( 9.5 ) ).toUtf8().constData() );
+      QVERIFY2( v5.toDouble() >= 1.5, QStringLiteral( "Calculated: %1 < Expected %2" ).arg( QString::number( v5.toDouble() ), QString::number( 1.5 ) ).toUtf8().constData() );
+      QgsExpression exp6( QStringLiteral( "randf(1.5,9.5,'123')" ) );
+      QVariant v6 = exp6.evaluate();
+      QVERIFY2( v6.toDouble() <= 9.5, QStringLiteral( "Calculated: %1 > Expected %2" ).arg( QString::number( v6.toDouble() ), QString::number( 9.5 ) ).toUtf8().constData() );
+      QVERIFY2( v6.toDouble() >= 1.5, QStringLiteral( "Calculated: %1 < Expected %2" ).arg( QString::number( v6.toDouble() ), QString::number( 1.5 ) ).toUtf8().constData() );
+      QgsExpression exp7( QStringLiteral( "randf(1.5,9.5,'abc')" ) );
+      QVariant v7 = exp7.evaluate();
+      QVERIFY2( v7.toDouble() <= 9.5, QStringLiteral( "Calculated: %1 > Expected %2" ).arg( QString::number( v7.toDouble() ), QString::number( 9.5 ) ).toUtf8().constData() );
+      QVERIFY2( v7.toDouble() >= 1.5, QStringLiteral( "Calculated: %1 < Expected %2" ).arg( QString::number( v7.toDouble() ), QString::number( 1.5 ) ).toUtf8().constData() );
+
+      // Two calls with the same seed always return the same number
+      QgsExpression exp8( QStringLiteral( "randf(seed:=1)" ) );
+      QVariant v8 = exp8.evaluate();
+      QVERIFY2( qgsDoubleNear( v8.toDouble(), 0.13387664401253274 ), QStringLiteral( "Calculated: %1 != Expected %2" ).arg( QString::number( v8.toDouble() ), QString::number( 0.13387664401253274 ) ).toUtf8().constData() );
+
+      // Two calls with a different seed return a different number
+      QgsExpression exp9( QStringLiteral( "randf(seed:=1)" ) );
+      QVariant v9 = exp9.evaluate();
+      QgsExpression exp10( QStringLiteral( "randf(seed:=2)" ) );
+      QVariant v10 = exp10.evaluate();
+      QVERIFY2( ! qgsDoubleNear( v9.toDouble(), v10.toDouble() ), QStringLiteral( "Calculated: %1 == Expected %2" ).arg( QString::number( v9.toDouble() ), QString::number( v10.toDouble() ) ).toUtf8().constData() );
     }
 
     void referenced_columns()
@@ -3500,7 +3676,7 @@ class TestQgsExpression: public QObject
       QCOMPARE( e.evaluate( &context ).toString(), QStringLiteral( "[3]" ) );
       e = QgsExpression( QStringLiteral( "'a[3]'" ) );
       QCOMPARE( e.evaluate( &context ).toString(), QStringLiteral( "a[3]" ) );
-      e = QgsExpression( QStringLiteral( "\"a[3]\"" ) );
+      e = QgsExpression( QStringLiteral( "try(\"a[3]\", '[a[3]]')" ) );
       QCOMPARE( e.evaluate( &context ).toString(), QStringLiteral( "[a[3]]" ) );
       e = QgsExpression( QStringLiteral( "(1+2)[0]" ) );
       QVERIFY( !e.evaluate( &context ).isValid() );

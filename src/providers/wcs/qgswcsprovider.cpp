@@ -426,15 +426,15 @@ bool QgsWcsProvider::parseUri( const QString &uriString )
   mIgnoreAxisOrientation = uri.hasParam( QStringLiteral( "IgnoreAxisOrientation" ) ); // must be before parsing!
   mInvertAxisOrientation = uri.hasParam( QStringLiteral( "InvertAxisOrientation" ) ); // must be before parsing!
 
-  mAuth.mUserName = uri.param( QStringLiteral( "username" ) );
+  mAuth.mUserName = uri.username();
   QgsDebugMsg( "set username to " + mAuth.mUserName );
 
-  mAuth.mPassword = uri.param( QStringLiteral( "password" ) );
+  mAuth.mPassword = uri.password();
   QgsDebugMsg( "set password to " + mAuth.mPassword );
 
-  if ( uri.hasParam( QStringLiteral( "authcfg" ) ) )
+  if ( !uri.authConfigId().isEmpty() )
   {
-    mAuth.mAuthCfg = uri.param( QStringLiteral( "authcfg" ) );
+    mAuth.mAuthCfg = uri.authConfigId();
   }
   QgsDebugMsg( "set authcfg to " + mAuth.mAuthCfg );
 
@@ -526,8 +526,10 @@ void QgsWcsProvider::setCoverageCrs( QString const &crs )
 
 void QgsWcsProvider::setQueryItem( QUrl &url, const QString &item, const QString &value ) const
 {
-  url.removeQueryItem( item );
-  url.addQueryItem( item, value );
+  QUrlQuery query( url );
+  query.removeQueryItem( item );
+  query.addQueryItem( item, value );
+  url.setQuery( query );
 }
 
 bool QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
@@ -565,7 +567,7 @@ bool QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
     {
       QgsDebugMsg( QStringLiteral( "Cached does not have CRS" ) );
     }
-    QgsDebugMsg( "Cache CRS: " + cacheCrs.authid() + ' ' + cacheCrs.description() );
+    QgsDebugMsg( "Cache CRS: " + cacheCrs.userFriendlyIdentifier() );
 
     QgsRectangle cacheExtent = QgsGdalProviderBase::extent( mCachedGdalDataset.get() );
     QgsDebugMsg( "viewExtent = " + viewExtent.toString() );
@@ -573,20 +575,19 @@ bool QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
     // TODO: check also rotated
     if ( cacheCrs.isValid() && !mFixRotate )
     {
-      // using qgsDoubleNear is too precise, example accetable difference:
+      // using qgsDoubleNear is too precise, example acceptable difference:
       // 179.9999999306699863 x 179.9999999306700431
       if ( !qgsDoubleNearSig( cacheExtent.xMinimum(), viewExtent.xMinimum(), 10 ) ||
            !qgsDoubleNearSig( cacheExtent.yMinimum(), viewExtent.yMinimum(), 10 ) ||
            !qgsDoubleNearSig( cacheExtent.xMaximum(), viewExtent.xMaximum(), 10 ) ||
            !qgsDoubleNearSig( cacheExtent.yMaximum(), viewExtent.yMaximum(), 10 ) )
       {
+        // Just print a message so user is aware of a server side issue but don't left
+        // the tile blank so we can deal with eventually misconfigured WCS server
+        // https://github.com/qgis/QGIS/issues/33339
+
         QgsDebugMsg( QStringLiteral( "cacheExtent and viewExtent differ" ) );
         QgsMessageLog::logMessage( tr( "Received coverage has wrong extent %1 (expected %2)" ).arg( cacheExtent.toString(), viewExtent.toString() ), tr( "WCS" ) );
-        // We are doing all possible to avoid this situation,
-        // If it happens, it would be possible to rescale the portion we get
-        // to only part of the data block, but it is better to left it
-        // blank, so that the problem may be discovered in its origin.
-        return false;
       }
     }
 
@@ -808,7 +809,10 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int 
   QgsDebugMsg( QStringLiteral( "%1 bytes received" ).arg( mCachedData.size() ) );
   if ( mCachedData.isEmpty() )
   {
-    QgsMessageLog::logMessage( tr( "No data received" ), tr( "WCS" ) );
+    if ( !feedback || !feedback->isCanceled() )
+    {
+      QgsMessageLog::logMessage( tr( "No data received" ), tr( "WCS" ) );
+    }
     clearCache();
     return;
   }
@@ -948,7 +952,7 @@ int QgsWcsProvider::colorInterpretation( int bandNo ) const
 }
 
 
-bool QgsWcsProvider::parseServiceExceptionReportDom( QByteArray const &xml, const QString &wcsVersion, QString &errorTitle, QString &errorText )
+bool QgsWcsProvider::parseServiceExceptionReportDom( const QByteArray &xml, const QString &wcsVersion, QString &errorTitle, QString &errorText )
 {
 
 #ifdef QGISDEBUG
@@ -1174,7 +1178,7 @@ bool QgsWcsProvider::calculateExtent() const
     {
       QgsDebugMsg( QStringLiteral( "Cached does not have CRS" ) );
     }
-    QgsDebugMsg( "Cache CRS: " + cacheCrs.authid() + ' ' + cacheCrs.description() );
+    QgsDebugMsg( "Cache CRS: " + cacheCrs.userFriendlyIdentifier() );
 
     // We can only verify extent if CRS is set
     // If dataset comes rotated, GDAL probably cuts latitude extend, disable
@@ -1244,6 +1248,14 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
   metadata += htmlRow( tr( "Name (identifier)" ), coverage.identifier );
   metadata += htmlRow( tr( "Title" ), coverage.title );
   metadata += htmlRow( tr( "Abstract" ), coverage.abstract );
+
+  if ( !coverage.metadataLink.metadataType.isNull()  &&
+       !coverage.metadataLink.xlinkHref.isNull() )
+  {
+    metadata += htmlRow( tr( "Metadata Type" ), coverage.metadataLink.metadataType );
+    metadata += htmlRow( tr( "Metadata Link" ), coverage.metadataLink.xlinkHref );
+  }
+
 #if 0
   // We don't have size, nativeCrs, nativeBoundingBox etc. until describe coverage which would be heavy for all coverages
   metadata += htmlRow( tr( "Fixed Width" ), QString::number( coverage.width ) );
@@ -1584,7 +1596,7 @@ QString  QgsWcsProvider::description() const
   return WCS_DESCRIPTION;
 }
 
-void QgsWcsProvider::reloadData()
+void QgsWcsProvider::reloadProviderData()
 {
   clearCache();
 }

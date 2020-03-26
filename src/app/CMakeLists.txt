@@ -17,18 +17,9 @@ SET(QGIS_APP_SRCS
   qgsappcoordinateoperationhandlers.cpp
   qgsapplayertreeviewmenuprovider.cpp
   qgsappwindowmanager.cpp
-  qgsaddattrdialog.cpp
-  qgsaddtaborgroup.cpp
   qgsappscreenshots.cpp
-  qgsjoindialog.cpp
-  qgswmsdimensiondialog.cpp
   qgsannotationwidget.cpp
   qgsappsslerrorhandler.cpp
-  qgsattributeactiondialog.cpp
-  qgsattributeactionpropertiesdialog.cpp
-  qgsattributetypedialog.cpp
-  qgsattributerelationedit.cpp
-  qgsattributesforminitcode.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
   qgsbookmarkeditordialog.cpp
@@ -36,27 +27,21 @@ SET(QGIS_APP_SRCS
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
   qgsdatumtransformtablewidget.cpp
+  qgsdevtoolspanelwidget.cpp
   qgsdiscoverrelationsdialog.cpp
   qgsdxfexportdialog.cpp
   qgsformannotationdialog.cpp
   qgsguivectorlayertools.cpp
   qgshtmlannotationdialog.cpp
   qgsdelattrdialog.cpp
-  qgsdiagramproperties.cpp
   qgsdisplayangle.cpp
-  qgsfieldcalculator.cpp
   qgsfirstrundialog.cpp
+  qgsfixattributedialog.cpp
   qgsgeometryvalidationservice.cpp
   qgsgeometryvalidationdock.cpp
   qgsgeometryvalidationmodel.cpp
-  qgssourcefieldsproperties.cpp
-  qgsattributesformproperties.cpp
   qgsidentifyresultsdialog.cpp
-  qgsinstallgridshiftdialog.cpp
   qgsfeatureaction.cpp
-  qgslabelpropertydialog.cpp
-  qgslabelengineconfigdialog.cpp
-  qgslabelingwidget.cpp
   qgslayercapabilitiesmodel.cpp
   qgslayertreeviewindicatorprovider.cpp
   qgslayertreeviewembeddedindicator.cpp
@@ -65,26 +50,22 @@ SET(QGIS_APP_SRCS
   qgslayertreeviewnocrsindicator.cpp
   qgslayertreeviewnonremovableindicator.cpp
   qgslayertreeviewbadlayerindicator.cpp
-  qgsmaskingwidget.cpp
-  qgsmasksourceselectionwidget.cpp
+  qgslayertreeviewtemporalindicator.cpp
   qgsmapcanvasdockwidget.cpp
-  qgsmaplayerstylecategoriesmodel.cpp
-  qgsmaplayerstyleguiutils.cpp
   qgsmapsavedialog.cpp
   qgsprojectlistitemdelegate.cpp
   qgspuzzlewidget.cpp
   qgsversionmigration.cpp
-  qgsrulebasedlabelingwidget.cpp
   qgssnappinglayertreemodel.cpp
   qgssnappingwidget.cpp
   qgsstatusbarcoordinateswidget.cpp
   qgsstatusbarmagnifierwidget.cpp
   qgsstatusbarscalewidget.cpp
-  qgssymbollayerselectionwidget.cpp
   qgstemplateprojectsmodel.cpp
-  qgsvectorlayerloadstyledialog.cpp
+  qgstemporalcontrollerdockwidget.cpp
   qgsversioninfo.cpp
   qgsrecentprojectsitemsmodel.cpp
+  qgsvectorlayerdigitizingproperties.cpp
   qgswelcomepage.cpp
 
   qgsmaptooladdfeature.cpp
@@ -92,27 +73,21 @@ SET(QGIS_APP_SRCS
   qgsmaptooladdring.cpp
   qgsmaptoolfillring.cpp
   qgsmaptoolannotation.cpp
-  qgsmaptoolchangelabelproperties.cpp
   qgsmaptooldeletering.cpp
   qgsmaptooldeletepart.cpp
   qgsmaptooltrimextendfeature.cpp
   qgsmaptoolfeatureaction.cpp
   qgsmaptoolformannotation.cpp
   qgsmaptoolhtmlannotation.cpp
-  qgsmaptoolpinlabels.cpp
-  qgsmaptoolshowhidelabels.cpp
   qgsmaptoolidentifyaction.cpp
-  qgsmaptoollabel.cpp
   qgsmaptoolmeasureangle.cpp
   qgsmaptoolmovefeature.cpp
-  qgsmaptoolmovelabel.cpp
   qgsmaptooloffsetcurve.cpp
   qgsmaptooloffsetpointsymbol.cpp
   qgsmaptoolpointsymbol.cpp
   qgsmaptoolreshape.cpp
   qgsmaptoolreverseline.cpp
   qgsmaptoolrotatefeature.cpp
-  qgsmaptoolrotatelabel.cpp
   qgsmaptoolrotatepointsymbols.cpp
   qgsmaptoolselect.cpp
   qgsmaptoolselectionhandler.cpp
@@ -155,7 +130,6 @@ SET(QGIS_APP_SRCS
   qgsprojectlayergroupdialog.cpp
   qgsprojectproperties.cpp
   qgsrastercalcdialog.cpp
-  qgsrasterlayerproperties.cpp
   qgsrelationmanagerdialog.cpp
   qgsrelationadddlg.cpp
   qgsselectbyformdialog.cpp
@@ -163,9 +137,6 @@ SET(QGIS_APP_SRCS
   qgstextannotationdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
-  qgsvectorlayerlegendwidget.cpp
-  qgsvectorlayersavestyledialog.cpp
-  qgsvectorlayerproperties.cpp
   qgsmapthemes.cpp
   qgshandlebadlayers.cpp
   qgsmaptooladdcircularstring.cpp
@@ -193,35 +164,18 @@ SET(QGIS_APP_SRCS
 
   browser/qgsinbuiltdataitemproviders.cpp
 
-  layout/qgsgeopdflayertreemodel.cpp
-  layout/qgslayoutaddpagesdialog.cpp
-  layout/qgslayoutapputils.cpp
-  layout/qgslayoutatlaswidget.cpp
-  layout/qgslayoutattributeselectiondialog.cpp
-  layout/qgslayoutattributetablewidget.cpp
-  layout/qgslayoutdesignerdialog.cpp
-  layout/qgslayoutguidewidget.cpp
-  layout/qgslayouthtmlwidget.cpp
-  layout/qgslayoutimageexportoptionsdialog.cpp
-  layout/qgslayoutitemslistview.cpp
+  labeling/qgslabelpropertydialog.cpp
+  labeling/qgsmaptoolchangelabelproperties.cpp
+  labeling/qgsmaptoolpinlabels.cpp
+  labeling/qgsmaptoolshowhidelabels.cpp
+  labeling/qgsmaptoollabel.cpp
+  labeling/qgsmaptoolmovelabel.cpp
+  labeling/qgsmaptoolrotatelabel.cpp
+
   layout/qgslayoutappmenuprovider.cpp
-  layout/qgslayoutlabelwidget.cpp
-  layout/qgslayoutlegendlayersdialog.cpp
-  layout/qgslayoutlegendwidget.cpp
+  layout/qgslayoutdesignerdialog.cpp
+  layout/qgslayoutimagedrophandler.cpp
   layout/qgslayoutmanagerdialog.cpp
-  layout/qgslayoutmapwidget.cpp
-  layout/qgslayoutmapgridwidget.cpp
-  layout/qgslayoutpagepropertieswidget.cpp
-  layout/qgslayoutpdfexportoptionsdialog.cpp
-  layout/qgslayoutpicturewidget.cpp
-  layout/qgslayoutpolygonwidget.cpp
-  layout/qgslayoutpolylinewidget.cpp
-  layout/qgslayoutpropertieswidget.cpp
-  layout/qgslayoutqptdrophandler.cpp
-  layout/qgslayoutscalebarwidget.cpp
-  layout/qgslayoutshapewidget.cpp
-  layout/qgslayouttablebackgroundcolorsdialog.cpp
-  layout/qgslayoutvaliditychecks.cpp
   layout/qgsreportfieldgroupsectionwidget.cpp
   layout/qgsreportlayoutsectionwidget.cpp
   layout/qgsreportorganizerwidget.cpp
@@ -231,6 +185,7 @@ SET(QGIS_APP_SRCS
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
 
+  gps/qgsgpsbearingitem.cpp
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
 
@@ -251,6 +206,7 @@ SET(QGIS_APP_SRCS
 
   mesh/qgsmeshlayerproperties.cpp
   mesh/qgsrenderermeshpropertieswidget.cpp
+  mesh/qgsmeshrenderer3daveragingwidget.cpp
   mesh/qgsmeshrenderermeshsettingswidget.cpp
   mesh/qgsmeshrendererscalarsettingswidget.cpp
   mesh/qgsmeshrenderervectorsettingswidget.cpp
@@ -281,6 +237,7 @@ IF (WITH_3D)
     3d/qgsphongmaterialwidget.cpp
     3d/qgsrulebased3drendererwidget.cpp
     3d/qgssymbol3dwidget.cpp
+    3d/qgsvectorlayer3dpropertieswidget.cpp
     3d/qgsvectorlayer3drendererwidget.cpp
     3d/qgsmeshlayer3drendererwidget.cpp
     layout/qgslayout3dmapwidget.cpp
@@ -416,6 +373,7 @@ INCLUDE_DIRECTORIES(
 
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/decorations
+  ${CMAKE_SOURCE_DIR}/src/app/labeling
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
@@ -435,8 +393,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/numericformats
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/locator
+  ${CMAKE_SOURCE_DIR}/src/core/numericformats
   ${CMAKE_SOURCE_DIR}/src/core/pal
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/raster
@@ -445,16 +406,22 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/validity
   ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/attributeformconfig
   ${CMAKE_SOURCE_DIR}/src/gui/symbology
   ${CMAKE_SOURCE_DIR}/src/gui/attributetable
   ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/devtools
+  ${CMAKE_SOURCE_DIR}/src/gui/labeling
+  ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/numericformats
   ${CMAKE_SOURCE_DIR}/src/gui/processing
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/locator
+  ${CMAKE_SOURCE_DIR}/src/gui/vector
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_SOURCE_DIR}/src/native
@@ -474,6 +441,7 @@ IF (WITH_3D)
     ${CMAKE_SOURCE_DIR}/src/core/3d
     ${CMAKE_SOURCE_DIR}/src/3d
     ${CMAKE_SOURCE_DIR}/src/3d/symbols
+    ${CMAKE_SOURCE_DIR}/src/3d/mesh
     ${CMAKE_SOURCE_DIR}/src/3d/terrain
     ${CMAKE_SOURCE_DIR}/src/3d/chunks
     ${CMAKE_BINARY_DIR}/src/3d
@@ -513,12 +481,14 @@ INCLUDE_DIRECTORIES(
   ../gui/symbology
   ../gui/attributetable
   ../gui/auth
+  ../gui/effects
   ../gui/ogr
   ../gui/raster
   ../gui/editorwidgets
   ../gui/editorwidgets/core
   ../gui/layertree
   ../gui/layout
+  ../gui/tableeditor
   ../plugins
   ../python
   gps

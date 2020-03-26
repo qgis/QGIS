@@ -28,6 +28,7 @@
 
 class QgsMapCanvas;
 class QgsAdvancedDigitizingDockWidget;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -79,6 +80,7 @@ class GUI_EXPORT QgsAttributeEditorContext
       : mParentContext( &parentContext )
       , mVectorLayerTools( parentContext.mVectorLayerTools )
       , mMapCanvas( parentContext.mMapCanvas )
+      , mMainMessageBar( parentContext.mMainMessageBar )
       , mCadDockWidget( parentContext.mCadDockWidget )
       , mDistanceArea( parentContext.mDistanceArea )
       , mFormFeature( parentContext.mFormFeature )
@@ -91,6 +93,7 @@ class GUI_EXPORT QgsAttributeEditorContext
       : mParentContext( &parentContext )
       , mVectorLayerTools( parentContext.mVectorLayerTools )
       , mMapCanvas( parentContext.mMapCanvas )
+      , mMainMessageBar( parentContext.mMainMessageBar )
       , mCadDockWidget( parentContext.mCadDockWidget )
       , mDistanceArea( parentContext.mDistanceArea )
       , mRelation( relation )
@@ -240,6 +243,20 @@ class GUI_EXPORT QgsAttributeEditorContext
     void setFormFeature( const QgsFeature &feature ) { mFormFeature = feature ; }
 
     /**
+     * Returns the feature of the currently edited parent form in its actual state
+     * \see setParentFormFeature()
+     * \since QGIS 3.14
+     */
+    QgsFeature parentFormFeature() const { return mParentFormFeature; }
+
+    /**
+     * Sets the \a feature of the currently edited parent form
+     * \see parentFormFeature()
+     * \since QGIS 3.14
+     */
+    void setParentFormFeature( const QgsFeature &feature ) { mParentFormFeature = feature ; }
+
+    /**
      * Returns current attributeFormMode
      * \since QGIS 3.4
      */
@@ -261,17 +278,32 @@ class GUI_EXPORT QgsAttributeEditorContext
       return metaEnum.valueToKey( static_cast<int>( mAttributeFormMode ) );
     }
 
+    /**
+     * Set current \a messageBar as the main message bar
+     * \since QGIS 3.12
+     */
+    void setMainMessageBar( QgsMessageBar *messageBar ) { mMainMessageBar = messageBar; }
+
+    /**
+     * Returns the main message bar
+     * \since QGIS 3.12
+     */
+    QgsMessageBar *mainMessageBar() { return mMainMessageBar; }
+
   private:
     const QgsAttributeEditorContext *mParentContext = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     QgsVectorLayerTools *mVectorLayerTools = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
+    QgsMessageBar *mMainMessageBar = nullptr;
     QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
     QgsDistanceArea mDistanceArea;
     QgsRelation mRelation;
     RelationMode mRelationMode = Undefined;
     //! Store the values of the currently edited form or table row
     QgsFeature mFormFeature;
+    //! Store the values of the currently edited parent form or table row
+    QgsFeature mParentFormFeature;
     FormMode mFormMode = Embed;
     bool mAllowCustomUi = true;
     Mode mAttributeFormMode = SingleEditMode;

@@ -33,7 +33,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import re
-from bs4 import BeautifulSoup
+import json
 from PyQt5.QtGui import (
     QImage, QColor, qRed, qBlue, qGreen, qAlpha, qRgb, QPixmap)
 from PyQt5.QtWidgets import (QDialog,
@@ -147,19 +147,20 @@ class ResultHandler(QDialog):
         self.reject()
 
     def parse_url(self, url):
-        print('Fetching dash results from: {}'.format(url))
-        page = urllib.request.urlopen(url)
-        soup = BeautifulSoup(page, "lxml")
+        parts = urllib.parse.urlsplit(url)
+        apiurl = urllib.parse.urlunsplit((parts.scheme, parts.netloc, '/api/v1/testDetails.php', parts.query, parts.fragment))
+        print('Fetching dash results from api: {}'.format(apiurl))
+        page = urllib.request.urlopen(apiurl)
+        content = json.loads(page.read().decode('utf-8'))
 
         # build up list of rendered images
-        measurement_img = [img for img in soup.find_all('img') if
-                           img.get('alt') and img.get('alt').startswith('Rendered Image')]
+        measurement_img = [img for img in content['test']['images'] if img['role'].startswith('Rendered Image')]
 
         images = {}
         for img in measurement_img:
-            m = re.search('Rendered Image (.*?)(\s|$)', img.get('alt'))
+            m = re.search('Rendered Image (.*?)(\s|$)', img['role'])
             test_name = m.group(1)
-            rendered_image = img.get('src')
+            rendered_image = 'displayImage.php?imgid={}'.format(img['imgid'])
             images[test_name] = '{}/{}'.format(dash_url, rendered_image)
 
         if images:
@@ -365,11 +366,21 @@ class ResultHandler(QDialog):
 def main():
     app = QApplication(sys.argv)
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('dash_url')
-    args = parser.parse_args()
+    parser = argparse.ArgumentParser(
+            description='''A tool to automatically update test image masks based on results submitted to cdash.
 
-    w = ResultHandler()
+            It will take local control images from the QGIS source and rendered images from test results
+            on cdash to create a mask.
+
+            When using it, carefully check, that the rendered images from the test results are acceptable and
+            that the new masks will only mask regions on the image that indeed allow for variation.
+
+            If the resulting mask is too tolerant, consider adding a new control image next to the existing one.
+            ''')
+    parser.add_argument('dash_url', help='URL to a dash result with images. E.g. https://cdash.orfeo-toolbox.org/testDetails.php?test=15052561&build=27712'))
+    args=parser.parse_args()
+
+    w=ResultHandler()
     w.parse_url(args.dash_url)
     w.exec_()
 

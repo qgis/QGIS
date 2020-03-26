@@ -291,7 +291,7 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
   {
     // we are in a collection
     name = QString::fromUtf8( OGR_FD_GetName( hDef ) );
-    QgsDebugMsg( "OGR layer name : " + name );
+    QgsDebugMsgLevel( "OGR layer name : " + name, 2 );
     if ( !uniqueNames )
     {
       layerUri += "|layerid=" + QString::number( layerId );
@@ -408,6 +408,11 @@ bool QgsOgrDataCollectionItem::createConnection( const QString &name, const QStr
 QString QgsOgrDataItemProvider::name()
 {
   return QStringLiteral( "OGR" );
+}
+
+QString QgsOgrDataItemProvider::dataProviderKey() const
+{
+  return QStringLiteral( "ogr" );
 }
 
 int QgsOgrDataItemProvider::capabilities() const
@@ -558,7 +563,9 @@ QgsDataItem *QgsOgrDataItemProvider::createDataItem( const QString &pathIn, QgsD
       QStringLiteral( "sqlite" ),
       QStringLiteral( "db" ),
       QStringLiteral( "gdb" ),
-      QStringLiteral( "kml" ) };
+      QStringLiteral( "kml" ),
+      QStringLiteral( "osm" ),
+      QStringLiteral( "pbf" ) };
   static QStringList sOgrSupportedDbDriverNames { QStringLiteral( "GPKG" ),
       QStringLiteral( "db" ),
       QStringLiteral( "gdb" ) };

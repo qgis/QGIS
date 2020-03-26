@@ -212,7 +212,7 @@ void TestQgsAuthConfig::testConfigSslServer()
 
   sslconfig.setSslCertificate( sslcert );
   sslconfig.setSslHostPort( hostport );
-  sslconfig.setSslProtocol( QSsl::TlsV1 );
+  sslconfig.setSslProtocol( QSsl::TlsV1_0 );
   sslconfig.setVersion( 2 );
   sslconfig.setQtVersion( 470 );
   sslconfig.setSslPeerVerifyMode( QSslSocket::VerifyNone );
@@ -225,7 +225,7 @@ void TestQgsAuthConfig::testConfigSslServer()
   QCOMPARE( sslconfig.configString(), confstr );
   QCOMPARE( sslconfig.sslHostPort(), hostport );
   QCOMPARE( sslconfig.sslCertificate(), sslcert );
-  QCOMPARE( sslconfig.sslProtocol(), QSsl::TlsV1 );
+  QCOMPARE( sslconfig.sslProtocol(), QSsl::TlsV1_0 );
   QCOMPARE( sslconfig.version(), 2 );
   QCOMPARE( sslconfig.qtVersion(), 470 );
   QCOMPARE( sslconfig.sslPeerVerifyMode(), QSslSocket::VerifyNone );
@@ -234,7 +234,7 @@ void TestQgsAuthConfig::testConfigSslServer()
 
   QgsAuthConfigSslServer sslconfig2;
   sslconfig2.loadConfigString( confstr );
-  QCOMPARE( sslconfig2.sslProtocol(), QSsl::TlsV1 );
+  QCOMPARE( sslconfig2.sslProtocol(), QSsl::TlsV1_0 );
   QCOMPARE( sslconfig2.version(), 2 );
   QCOMPARE( sslconfig2.qtVersion(), 470 );
   QCOMPARE( sslconfig2.sslPeerVerifyMode(), QSslSocket::VerifyNone );

@@ -101,6 +101,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/dxf
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/labeling
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
@@ -166,13 +167,19 @@ INSTALL(TARGETS qgis_server
 
 # end qgis_server library
 
+# add image resources
+SET(QGIS_SERVER_IMAGERCCS ../../images/images.qrc)
+QT5_ADD_RESOURCES(QGIS_SERVER_IMAGERCC_SRCS ${QGIS_SERVER_IMAGERCCS})
+
 # add test resources, e.g. standard test font
 SET(QGIS_SERVER_TESTRCCS ../../tests/testdata/testdata.qrc)
 QT5_ADD_RESOURCES(QGIS_SERVER_TESTRCC_SRCS ${QGIS_SERVER_TESTRCCS})
 
-ADD_EXECUTABLE(qgis_mapserv.fcgi qgis_map_serv.cpp ${QGIS_SERVER_TESTRCC_SRCS})
+ADD_EXECUTABLE(qgis_mapserv.fcgi qgis_map_serv.cpp ${QGIS_SERVER_TESTRCC_SRCS} ${QGIS_SERVER_IMAGERCC_SRCS})
+ADD_EXECUTABLE(qgis_mapserver qgis_mapserver.cpp ${QGIS_SERVER_TESTRCC_SRCS} ${QGIS_SERVER_IMAGERCC_SRCS})
 
 TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi qgis_server)
+TARGET_LINK_LIBRARIES(qgis_mapserver qgis_server)
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)
@@ -190,6 +197,12 @@ INSTALL(TARGETS
   qgis_mapserv.fcgi
   DESTINATION ${QGIS_CGIBIN_DIR}
 )
+
+INSTALL(TARGETS
+  qgis_mapserver
+  DESTINATION ${QGIS_BIN_DIR}
+)
+
 INSTALL(FILES
   admin.sld
   wms_metadata.xml

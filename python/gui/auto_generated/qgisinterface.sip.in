@@ -599,6 +599,71 @@ Returns the Hide Deselected Layers action.
     virtual QAction *actionCheckQgisVersion() = 0;
     virtual QAction *actionAbout() = 0;
 
+    virtual QAction *actionCircle2Points()  = 0;
+%Docstring
+Returns the native add circle from 2 points action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionCircle3Points()  = 0;
+%Docstring
+Returns the native add circle from 3 points action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionCircle3Tangents()  = 0;
+%Docstring
+Returns the native add circle from 3 tangents action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionCircle2TangentsPoint()  = 0;
+%Docstring
+Returns the native add circle from 2 tangents and a point action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionCircleCenterPoint()  = 0;
+%Docstring
+Returns the native add circle from center action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionEllipseCenter2Points()  = 0;
+%Docstring
+Returns the native add ellipse from center and 2 points action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionEllipseCenterPoint()  = 0;
+%Docstring
+Returns the native add ellipse from center and a point action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionEllipseExtent()  = 0;
+%Docstring
+Returns the native add ellipse from an extent action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionEllipseFoci()  = 0;
+%Docstring
+Returns the native add ellipse from foci action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRectangleCenterPoint()  = 0;
+%Docstring
+Returns the native add rectangle from center and a point action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRectangleExtent()  = 0;
+%Docstring
+Returns the native add rectangle from extent action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRectangle3PointsDistance()  = 0;
+%Docstring
+Returns the native add rectangle from 3 points (distance from 2nd and 3rd points) action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRectangle3PointsProjected()  = 0;
+%Docstring
+Returns the native add rectangle from 3 points (distance from projected 3rd point on segment p1 and p2) action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRegularPolygon2Points()  = 0;
+%Docstring
+Returns the native add regular polygon from 2 points action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRegularPolygonCenterPoint()  = 0;
+%Docstring
+Returns the native add regular polygon from center and a point action. Call trigger() on it to set the map tool.
+%End
+    virtual QAction *actionRegularPolygonCenterCorner()  = 0;
+%Docstring
+Returns the native add regular polygon from center and a corner action. Call trigger() on it to set the map tool.
+%End
+
     virtual QgsVectorLayerTools *vectorLayerTools() = 0;
 %Docstring
 Access the vector layer tools instance.
@@ -687,9 +752,17 @@ Adds a mesh layer to the current project.
 %Docstring
 Adds (opens) a project
 %End
-    virtual void newProject( bool promptToSaveFlag = false ) = 0;
+
+    virtual bool newProject( bool promptToSaveFlag = false ) = 0;
 %Docstring
-Starts a new blank project
+Starts a new blank project.
+
+If ``promptToSaveFlag`` is ``True`` then users will be prompted to save any currently open
+project (if that project has changes). If the flag is ``False``, then the current project will
+be closed without prompting to save (possibly resulting in data loss).
+
+Since QGIS 3.10.1, returns ``True`` if a new project was created, or ``False`` if the operation was not successful (e.g.
+the user opted to cancel when prompted to save the current project).
 %End
 
     virtual void reloadConnections( ) = 0;
@@ -1043,6 +1116,29 @@ Unregister a previously registered tab in the options dialog.
 .. seealso:: :py:func:`registerOptionsWidgetFactory`
 
 .. versionadded:: 3.0
+%End
+
+    virtual void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+%Docstring
+Register a new tool in the development/debugging tools dock.
+
+.. note::
+
+   Ownership of the factory is not transferred, and the factory must
+   be unregistered when plugin is unloaded.
+
+.. seealso:: :py:func:`unregisterDevToolWidgetFactory`
+
+.. versionadded:: 3.14
+%End
+
+    virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+%Docstring
+Unregister a previously registered tool factory from the development/debugging tools dock.
+
+.. seealso:: :py:func:`registerDevToolWidgetFactory`
+
+.. versionadded:: 3.14
 %End
 
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;

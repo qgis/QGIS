@@ -52,9 +52,13 @@ class TestQgsDxfExport : public QObject
     void testMtext();
     void testMtext_data();
     void testMTextEscapeSpaces();
+    void testMTextEscapeLineBreaks();
     void testText();
+    void testTextAngle();
     void testTextAlign();
     void testTextAlign_data();
+    void testTextQuadrant();
+    void testTextQuadrant_data();
     void testGeometryGeneratorExport();
     void testCurveExport();
     void testCurveExport_data();
@@ -395,6 +399,48 @@ void TestQgsDxfExport::testMTextEscapeSpaces()
   QVERIFY2( fileContainsText( file, "\\fQGIS Vera Sans|i0|b1;\\H3.81136;A\\~text\\~with\\~spaces", &debugInfo ), debugInfo.toUtf8().constData() );
 }
 
+void TestQgsDxfExport::testMTextEscapeLineBreaks()
+{
+  int field = mPointLayerNoSymbols->addExpressionField( QStringLiteral( "'A text with ' || char(13) || char(10) || 'line break'" ), QgsField( QStringLiteral( "linebreaktest" ), QVariant::String ) );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "linebreaktest" );
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+  mPointLayerNoSymbols->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  mPointLayerNoSymbols->setLabelsEnabled( true );
+
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayerNoSymbols ) );
+
+  QgsMapSettings mapSettings;
+  QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( mPointLayerNoSymbols->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayerNoSymbols );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( mPointLayerNoSymbols->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+
+  QString file = getTempFileName( "mtext_escape_linebreaks" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+
+  dxfFile.open( QIODevice::ReadOnly );
+  QString fileContent = QTextStream( &dxfFile ).readAll();
+  dxfFile.close();
+  QVERIFY( fileContent.contains( "A\\~text\\~with\\~\\Pline\\~break" ) );
+  mPointLayerNoSymbols->removeExpressionField( field );
+}
+
 void TestQgsDxfExport::testText()
 {
   QgsPalLayerSettings settings;
@@ -457,6 +503,85 @@ void TestQgsDxfExport::testText()
                               "AcDbText", &debugInfo ), debugInfo.toUtf8().constData() );
 }
 
+void TestQgsDxfExport::testTextAngle()
+{
+  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:2056&field=ori:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QgsGeometry g = QgsGeometry::fromWkt( "Point(2684679.392 1292182.527)" );
+  QgsGeometry g2 = QgsGeometry::fromWkt( "Point(2684692.322 1292192.534)" );
+  QgsFeature f( vl->fields() );
+  f.setGeometry( g );
+  f.setAttribute( 0, 30 );
+
+  vl->dataProvider()->addFeatures( QgsFeatureList() << f );
+
+  f.setGeometry( g2 );
+  f.setAttribute( 0, 40 );
+
+  vl->dataProvider()->addFeatures( QgsFeatureList() << f );
+
+  QgsPalLayerSettings settings;
+  auto ddp = settings.dataDefinedProperties();
+  QgsProperty prop;
+  prop.setExpressionString( QStringLiteral( "ori" ) );
+  ddp.setProperty( QgsPalLayerSettings::Property::LabelRotation, prop );
+  settings.setDataDefinedProperties( ddp );
+  settings.fieldName = QStringLiteral( "ori" );
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  settings.setFormat( format );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl->setLabelsEnabled( true );
+
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+
+  QgsMapSettings mapSettings;
+  QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( QgsRectangle( 2684579, 1292082, 2684779, 1292282 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( vl->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+  d.setFlags( QgsDxfExport::FlagNoMText );
+
+  QString file = getTempFileName( "text_dxf_angle" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+
+  QString debugInfo;
+  QVERIFY2( fileContainsText( file, "TEXT\n"
+                              "  5\n"
+                              "**no check**\n"
+                              "100\n"
+                              "AcDbEntity\n"
+                              "100\n"
+                              "AcDbText\n"
+                              "  8\n"
+                              "vl\n"
+                              "420\n"
+                              "**no check**\n"
+                              " 10\n"
+                              "**no check**\n"
+                              " 20\n"
+                              "**no check**\n"
+                              " 40\n"
+                              "**no check**\n"
+                              "  1\n"
+                              "40\n"
+                              " 50\n"
+                              "320.0\n"
+                              "  7\n"
+                              "STANDARD\n"
+                              "100\n"
+                              "AcDbText", &debugInfo ), debugInfo.toUtf8().constData() );
+}
+
 void TestQgsDxfExport::testTextAlign()
 {
   QFETCH( QgsDxfExport::HAlign, dxfHali );
@@ -472,13 +597,13 @@ void TestQgsDxfExport::testTextAlign()
   halignProp.setStaticValue( hali );
   props.setProperty( QgsPalLayerSettings::Hali, halignProp );
   QgsProperty posXProp = QgsProperty();
-  posXProp.setExpressionString( QStringLiteral( "x($geometry)" ) );
+  posXProp.setExpressionString( QStringLiteral( "x($geometry) + 1" ) );
   props.setProperty( QgsPalLayerSettings::PositionX, posXProp );
   QgsProperty valignProp = QgsProperty();
   valignProp.setStaticValue( vali );
   props.setProperty( QgsPalLayerSettings::Vali, valignProp );
   QgsProperty posYProp = QgsProperty();
-  posXProp.setExpressionString( QStringLiteral( "y($geometry)" ) );
+  posYProp.setExpressionString( QStringLiteral( "y($geometry) + 1" ) );
   props.setProperty( QgsPalLayerSettings::PositionY, posYProp );
   settings.setDataDefinedProperties( props );
 
@@ -534,13 +659,13 @@ void TestQgsDxfExport::testTextAlign()
                               "420\n"
                               "**no check**\n"
                               " 10\n"
-                              "REGEX ^2684679\\.39\\d*\n"
+                              "REGEX ^2684680\\.39\\d*\n"
                               " 20\n"
-                              "REGEX ^1292182\\.52\\d*\n"
+                              "REGEX ^1292183\\.52\\d*\n"
                               " 11\n"
-                              "REGEX ^2684679\\.39\\d*\n"
+                              "REGEX ^2684680\\.39\\d*\n"
                               " 21\n"
-                              "REGEX ^1292182\\.52\\d*\n"
+                              "REGEX ^1292183\\.52\\d*\n"
                               " 40\n"
                               "**no check**\n"
                               "  1\n"
@@ -607,6 +732,167 @@ void TestQgsDxfExport::testTextAlign_data()
       << QStringLiteral( "Half" );
 }
 
+void TestQgsDxfExport::testTextQuadrant()
+{
+  QFETCH( int, offsetQuad );
+  QFETCH( QgsDxfExport::HAlign, dxfHali );
+  QFETCH( QgsDxfExport::VAlign, dxfVali );
+  QFETCH( double, angle );
+
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "text" );
+  settings.placement = QgsPalLayerSettings::Placement::OverPoint;
+
+  QgsPropertyCollection props = settings.dataDefinedProperties();
+  QgsProperty offsetQuadProp = QgsProperty();
+  offsetQuadProp.setStaticValue( offsetQuad );
+  props.setProperty( QgsPalLayerSettings::OffsetQuad, offsetQuadProp );
+  props.setProperty( QgsPalLayerSettings::Property::LabelRotation, angle );
+  settings.setDataDefinedProperties( props );
+
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+
+  std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:2056&field=text:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QgsGeometry g = QgsGeometry::fromWkt( "Point(2685025.687 1292145.297)" );
+  QgsFeature f( vl->fields() );
+  f.setGeometry( g );
+  f.setAttribute( 0, QStringLiteral( "182" ) );
+
+  vl->dataProvider()->addFeatures( QgsFeatureList() << f );
+  vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  vl->setLabelsEnabled( true );
+
+  QgsMapSettings mapSettings;
+  QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( QgsRectangle( 2685025.687, 1292045.297, 2685125.687, 1292145.297 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl.get() );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( vl->crs() );
+
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vl.get() ) );
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+  d.setFlags( QgsDxfExport::FlagNoMText );
+  d.setExtent( mapSettings.extent() );
+
+  static int testNumber = 0;
+  ++testNumber;
+  QString file = getTempFileName( QStringLiteral( "text_dxf_offset_quad_%1_%2" ).arg( offsetQuad ).arg( angle ) );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
+  dxfFile.close();
+  QString debugInfo;
+  QVERIFY2( fileContainsText( file, QStringLiteral( "TEXT\n"
+                              "  5\n"
+                              "**no check**\n"
+                              "100\n"
+                              "AcDbEntity\n"
+                              "100\n"
+                              "AcDbText\n"
+                              "  8\n"
+                              "vl\n"
+                              "420\n"
+                              "**no check**\n"
+                              " 10\n"
+                              "REGEX ^2685025\\.68\\d*\n"
+                              " 20\n"
+                              "REGEX ^1292145\\.29\\d*\n"
+                              " 11\n"
+                              "REGEX ^2685025\\.68\\d*\n"
+                              " 21\n"
+                              "REGEX ^1292145\\.29\\d*\n"
+                              " 40\n"
+                              "**no check**\n"
+                              "  1\n"
+                              "182\n"
+                              " 50\n"
+                              "%1\n"
+                              " 72\n"
+                              "     %2\n"
+                              "  7\n"
+                              "STANDARD\n"
+                              "100\n"
+                              "AcDbText\n"
+                              " 73\n"
+                              "     %3" ).arg( QString::number( fmod( 360 - angle, 360 ), 'f', 1 ) ).arg( QString::number( static_cast<int>( dxfHali ) ), QString::number( static_cast<int>( dxfVali ) ) ), &debugInfo ), debugInfo.toUtf8().constData() );
+}
+
+void TestQgsDxfExport::testTextQuadrant_data()
+{
+  QTest::addColumn<int>( "offsetQuad" );
+  QTest::addColumn<QgsDxfExport::HAlign>( "dxfHali" );
+  QTest::addColumn<QgsDxfExport::VAlign>( "dxfVali" );
+  QTest::addColumn<double>( "angle" );
+
+  QTest::newRow( "Above Left, no rotation" )
+      << 0
+      << QgsDxfExport::HAlign::HRight
+      << QgsDxfExport::VAlign::VBottom
+      << 0.0;
+
+  QTest::newRow( "Above, no rotation" )
+      << 1
+      << QgsDxfExport::HAlign::HCenter
+      << QgsDxfExport::VAlign::VBottom
+      << 0.0;
+
+  QTest::newRow( "Above Right, no rotation" )
+      << 2
+      << QgsDxfExport::HAlign::HLeft
+      << QgsDxfExport::VAlign::VBottom
+      << 0.0;
+
+  QTest::newRow( "Left, no rotation" )
+      << 3
+      << QgsDxfExport::HAlign::HRight
+      << QgsDxfExport::VAlign::VMiddle
+      << 0.0;
+
+  QTest::newRow( "Over, no rotation" )
+      << 4
+      << QgsDxfExport::HAlign::HCenter
+      << QgsDxfExport::VAlign::VMiddle
+      << 0.0;
+
+  QTest::newRow( "Right, no rotation" )
+      << 5
+      << QgsDxfExport::HAlign::HLeft
+      << QgsDxfExport::VAlign::VMiddle
+      << 0.0;
+
+  QTest::newRow( "Below Left, no rotation" )
+      << 6
+      << QgsDxfExport::HAlign::HRight
+      << QgsDxfExport::VAlign::VTop
+      << 0.0;
+
+  QTest::newRow( "Below, no rotation" )
+      << 7
+      << QgsDxfExport::HAlign::HCenter
+      << QgsDxfExport::VAlign::VTop
+      << 0.0;
+
+  QTest::newRow( "Below Right, no rotation" )
+      << 8
+      << QgsDxfExport::HAlign::HLeft
+      << QgsDxfExport::VAlign::VTop
+      << 0.0;
+
+  QTest::newRow( "Below, 20°" )
+      << 7
+      << QgsDxfExport::HAlign::HCenter
+      << QgsDxfExport::VAlign::VTop
+      << 20.0;
+}
+
 void TestQgsDxfExport::testGeometryGeneratorExport()
 {
   QgsDxfExport d;
@@ -662,7 +948,8 @@ void TestQgsDxfExport::testCurveExport()
   QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), QgsDxfExport::ExportResult::Success );
   dxfFile.close();
 
-  QVERIFY( fileContainsText( file, dxfText ) );
+  QString debugInfo;
+  QVERIFY2( fileContainsText( file, dxfText, &debugInfo ), debugInfo.toUtf8().constData() );
 }
 
 void TestQgsDxfExport::testCurveExport_data()
@@ -695,7 +982,7 @@ void TestQgsDxfExport::testCurveExport_data()
                          " 90\n"
                          "     2\n"
                          " 70\n"
-                         "     2\n"
+                         "   130\n"
                          " 43\n"
                          "-1.0\n"
                          " 10\n"
@@ -735,7 +1022,7 @@ void TestQgsDxfExport::testCurveExport_data()
                          " 90\n"
                          "     5\n"
                          " 70\n"
-                         "     3\n"
+                         "   131\n"
                          " 43\n"
                          "-1.0\n"
                          " 10\n"
@@ -854,7 +1141,7 @@ void TestQgsDxfExport::testDashedLine()
                               " 90\n"
                               "     6\n"
                               " 70\n"
-                              "     0\n"
+                              "   128\n"
                               " 43\n"
                               "0.11\n"
                               " 10\n"
@@ -912,7 +1199,7 @@ bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &tex
           bool ok = false;
           if ( searchLine.startsWith( QLatin1String( "REGEX " ) ) )
           {
-            QRegularExpression re( searchLine.right( 7 ) );
+            QRegularExpression re( searchLine.mid( 6 ) );
             if ( re.match( line ).hasMatch() )
               ok = true;
           }

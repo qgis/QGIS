@@ -99,7 +99,7 @@ class QgsSettingsTree : public QTreeWidget
 
     QgsSettings *mSettings = nullptr;
     QTimer mRefreshTimer;
-    bool mAutoRefresh = true;
+    bool mAutoRefresh = false;
     QIcon mGroupIcon;
     QIcon mKeyIcon;
 

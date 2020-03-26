@@ -167,9 +167,9 @@ bool QgisAppInterface::addProject( const QString &projectName )
   return qgis->addProject( projectName );
 }
 
-void QgisAppInterface::newProject( bool promptToSaveFlag )
+bool QgisAppInterface::newProject( bool promptToSaveFlag )
 {
-  qgis->fileNew( promptToSaveFlag );
+  return qgis->fileNew( promptToSaveFlag );
 }
 
 void QgisAppInterface::reloadConnections()
@@ -536,6 +536,16 @@ void QgisAppInterface::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *
   qgis->unregisterOptionsWidgetFactory( factory );
 }
 
+void QgisAppInterface::registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory )
+{
+  qgis->registerDevToolFactory( factory );
+}
+
+void QgisAppInterface::unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory )
+{
+  qgis->unregisterDevToolFactory( factory );
+}
+
 void QgisAppInterface::registerCustomDropHandler( QgsCustomDropHandler *handler )
 {
   qgis->registerCustomDropHandler( handler );
@@ -637,7 +647,22 @@ QAction *QgisAppInterface::actionMapTips() { return qgis->actionMapTips(); }
 QAction *QgisAppInterface::actionNewBookmark() { return qgis->actionNewBookmark(); }
 QAction *QgisAppInterface::actionShowBookmarks() { return qgis->actionShowBookmarks(); }
 QAction *QgisAppInterface::actionDraw() { return qgis->actionDraw(); }
-
+QAction *QgisAppInterface::actionCircle2Points() {  return qgis->actionCircle2Points();}
+QAction *QgisAppInterface::actionCircle3Points() {  return qgis->actionCircle3Points();}
+QAction *QgisAppInterface::actionCircle3Tangents() {  return qgis->actionCircle3Tangents();}
+QAction *QgisAppInterface::actionCircle2TangentsPoint() {  return qgis->actionCircle2TangentsPoint();}
+QAction *QgisAppInterface::actionCircleCenterPoint() {  return qgis->actionCircleCenterPoint();}
+QAction *QgisAppInterface::actionEllipseCenter2Points() {  return qgis->actionEllipseCenter2Points();}
+QAction *QgisAppInterface::actionEllipseCenterPoint() {  return qgis->actionEllipseCenterPoint();}
+QAction *QgisAppInterface::actionEllipseExtent() {  return qgis->actionEllipseExtent();}
+QAction *QgisAppInterface::actionEllipseFoci() {  return qgis->actionEllipseFoci();}
+QAction *QgisAppInterface::actionRectangleCenterPoint() {  return qgis->actionRectangleCenterPoint();}
+QAction *QgisAppInterface::actionRectangleExtent() {  return qgis->actionRectangleExtent();}
+QAction *QgisAppInterface::actionRectangle3PointsDistance() {  return qgis->actionRectangle3PointsDistance();}
+QAction *QgisAppInterface::actionRectangle3PointsProjected() {  return qgis->actionRectangle3PointsProjected();}
+QAction *QgisAppInterface::actionRegularPolygon2Points() {  return qgis->actionRegularPolygon2Points();}
+QAction *QgisAppInterface::actionRegularPolygonCenterPoint() {  return qgis->actionRegularPolygonCenterPoint();}
+QAction *QgisAppInterface::actionRegularPolygonCenterCorner() {  return qgis->actionRegularPolygonCenterCorner();}
 //! Layer menu actions
 QAction *QgisAppInterface::actionNewVectorLayer() { return qgis->actionNewVectorLayer(); }
 QAction *QgisAppInterface::actionAddOgrLayer() { return qgis->actionAddOgrLayer(); }
@@ -740,10 +765,8 @@ QgsAttributeDialog *QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeat
   myDa.setSourceCrs( l->crs(), QgsProject::instance()->transformContext() );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
-  QgsAttributeEditorContext context;
+  QgsAttributeEditorContext context( QgisApp::instance()->createAttributeEditorContext() );
   context.setDistanceArea( myDa );
-  context.setVectorLayerTools( qgis->vectorLayerTools() );
-  context.setMapCanvas( qgis->mapCanvas() );
   QgsAttributeDialog *dialog = new QgsAttributeDialog( l, &feature, false, qgis, true, context );
   if ( !feature.isValid() )
   {

@@ -28,6 +28,7 @@
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsfeedback.h"
+#include "qgsproject.h"
 
 #include <limits>
 
@@ -40,16 +41,15 @@ QgsMeshContours::QgsMeshContours( QgsMeshLayer *layer )
   if ( !mMeshLayer ||  !mMeshLayer->dataProvider() || !mMeshLayer->dataProvider()->isValid() )
     return;
 
+  // Support for meshes with edges is not implemented
+  if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    return;
+
   mNativeMesh.reset( new QgsMesh() );
   mMeshLayer->dataProvider()->populateMesh( mNativeMesh.get() );
 
-  QgsMapSettings mapSettings;
-  mapSettings.setExtent( mMeshLayer->extent() );
-  mapSettings.setDestinationCrs( mMeshLayer->crs() );
-  mapSettings.setOutputDpi( 96 );
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-  mTriangularMesh.reset( new QgsTriangularMesh() );
-  mTriangularMesh->update( mNativeMesh.get(), &context );
+  mTriangularMesh.reset( new QgsTriangularMesh );
+  mTriangularMesh->update( mNativeMesh.get() );
 }
 
 QgsMeshContours::~QgsMeshContours() = default;
@@ -58,7 +58,7 @@ QgsGeometry QgsMeshContours::exportPolygons(
   const QgsMeshDatasetIndex &index,
   double min_value,
   double max_value,
-  QgsMeshRendererScalarSettings::DataInterpolationMethod method,
+  QgsMeshRendererScalarSettings::DataResamplingMethod method,
   QgsFeedback *feedback
 )
 {
@@ -90,7 +90,7 @@ QgsGeometry QgsMeshContours::exportPolygons(
     if ( !mScalarActiveFaceFlagValues.active( nativeIndex ) )
       continue;
 
-    const auto &triangle = mTriangularMesh->triangles().at( i );
+    const QgsMeshFace &triangle = mTriangularMesh->triangles().at( i );
     const int indices[3] =
     {
       triangle.at( 0 ),
@@ -196,8 +196,36 @@ QgsGeometry QgsMeshContours::exportPolygons(
         }
         else
         {
-          // nothing here, we are outside the range
-          continue;
+          // last option we need to consider is that both min and max are between
+          // value i and j, and in that case we need to calculate both point
+          double value1 = max_value;
+          double value2 = max_value;
+          if ( values[i] < values[j] )
+          {
+            if ( ( min_value < values[i] ) || ( max_value > values[j] ) )
+            {
+              continue;
+            }
+            value1 = min_value;
+          }
+          else
+          {
+            if ( ( min_value < values[j] ) || ( max_value > values[i] ) )
+            {
+              continue;
+            }
+            value2 = min_value;
+          }
+
+          const double fraction1 = ( value1 - values[i] ) / ( values[j] - values[i] );
+          const QgsPoint xy1 = QgsGeometryUtils::interpolatePointOnLine( coords[i], coords[j], fraction1 );
+          if ( !ring.contains( xy1 ) )
+            ring.push_back( xy1 );
+
+          const double fraction2 = ( value2 - values[i] ) / ( values[j] - values[i] );
+          const QgsPoint xy2 = QgsGeometryUtils::interpolatePointOnLine( coords[i], coords[j], fraction2 );
+          if ( !ring.contains( xy2 ) )
+            ring.push_back( xy2 );
         }
       }
     }
@@ -205,8 +233,7 @@ QgsGeometry QgsMeshContours::exportPolygons(
     // add if the polygon is not degraded
     if ( ring.size() > 2 )
     {
-      ring.push_back( coords[0] );
-      std::unique_ptr< QgsLineString > ext = qgis::make_unique< QgsLineString> ( coords );
+      std::unique_ptr< QgsLineString > ext = qgis::make_unique< QgsLineString> ( ring );
       std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
       poly->setExteriorRing( ext.release() );
       multiPolygon.push_back( QgsGeometry( std::move( poly ) ) );
@@ -227,7 +254,7 @@ QgsGeometry QgsMeshContours::exportPolygons(
 
 QgsGeometry QgsMeshContours::exportLines( const QgsMeshDatasetIndex &index,
     double value,
-    QgsMeshRendererScalarSettings::DataInterpolationMethod method,
+    QgsMeshRendererScalarSettings::DataResamplingMethod method,
     QgsFeedback *feedback )
 {
   // Check if the layer/mesh is valid
@@ -252,7 +279,7 @@ QgsGeometry QgsMeshContours::exportLines( const QgsMeshDatasetIndex &index,
     if ( !mScalarActiveFaceFlagValues.active( nativeIndex ) )
       continue;
 
-    const auto &triangle = mTriangularMesh->triangles().at( i );
+    const QgsMeshFace &triangle = mTriangularMesh->triangles().at( i );
 
     const int indices[3] =
     {
@@ -353,22 +380,28 @@ QgsGeometry QgsMeshContours::exportLines( const QgsMeshDatasetIndex &index,
   }
 }
 
-void QgsMeshContours::populateCache( const QgsMeshDatasetIndex &index, QgsMeshRendererScalarSettings::DataInterpolationMethod method )
+void QgsMeshContours::populateCache( const QgsMeshDatasetIndex &index, QgsMeshRendererScalarSettings::DataResamplingMethod method )
 {
   if ( mCachedIndex != index )
   {
-    QVector<QgsMeshVertex> vertices = mTriangularMesh->vertices();
-    bool scalarDataOnVertices = mMeshLayer->dataProvider()->datasetGroupMetadata( index ).dataType() != QgsMeshDatasetGroupMetadata::DataOnFaces;
+    bool scalarDataOnVertices = mMeshLayer->dataProvider()->datasetGroupMetadata( index ).dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
     int count =  scalarDataOnVertices ? mNativeMesh->vertices.count() : mNativeMesh->faces.count();
 
     // populate scalar values
-    QgsMeshDataBlock vals = mMeshLayer->dataProvider()->datasetValues(
+    QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                              mMeshLayer,
                               index,
                               0,
                               count );
-
-    // vals could be scalar or vectors, for contour rendering we want always magnitude
-    mDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
+    if ( vals.isValid() )
+    {
+      // vals could be scalar or vectors, for contour rendering we want always magnitude
+      mDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
+    }
+    else
+    {
+      mDatasetValues = QVector<double>( count, std::numeric_limits<double>::quiet_NaN() );
+    }
 
     // populate face active flag, always defined on faces
     mScalarActiveFaceFlagValues = mMeshLayer->dataProvider()->areFacesActive(

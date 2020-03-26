@@ -41,6 +41,36 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
     QgsWmsCapabilitiesDownload *mCapabilitiesDownload = nullptr;
 };
 
+/**
+ * \brief WMS Layer Collection.
+ *
+ *  This collection contains a WMS Layer element that can enclose other layers
+ */
+class QgsWMSLayerCollectionItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsWMSLayerCollectionItem( QgsDataItem *parent, QString name, QString path,
+                               const QgsWmsCapabilitiesProperty &capabilitiesProperty,
+                               const QgsDataSourceUri &dataSourceUri,
+                               const QgsWmsLayerProperty &layerProperty );
+
+    bool equal( const QgsDataItem *other ) override;
+
+    //! Stores GetCapabilities response
+    QgsWmsCapabilitiesProperty mCapabilitiesProperty;
+
+    //! Stores WMS connection information
+    QgsDataSourceUri mDataSourceUri;
+
+    //! WMS Layer properties, can be inherited by subsidiary layers
+    QgsWmsLayerProperty mLayerProperty;
+
+    // QgsDataItem interface
+  public:
+    bool layerCollection() const override;
+};
+
 // WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
 // We have to use QgsDataCollectionItem and support layer methods if necessary
 class QgsWMSLayerItem : public QgsLayerItem
@@ -52,6 +82,7 @@ class QgsWMSLayerItem : public QgsLayerItem
                      const QgsDataSourceUri &dataSourceUri,
                      const QgsWmsLayerProperty &layerProperty );
 
+    bool equal( const QgsDataItem *other ) override;
     QString createUri();
 
     QgsWmsCapabilitiesProperty mCapabilitiesProperty;
@@ -95,13 +126,22 @@ class QgsWMSRootItem : public QgsDataCollectionItem
   public slots:
 };
 
+class QgsWMTSRootItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsWMTSRootItem( QgsDataItem *parent, QString name, QString path );
+
+  public slots:
+};
+
 
 //! Provider for WMS root data item
 class QgsWmsDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override { return QStringLiteral( "WMS" ); }
-
+    QString dataProviderKey() const override;
     int capabilities() const override { return QgsDataProvider::Net; }
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
@@ -138,7 +178,7 @@ class QgsXyzTileDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-
+    QString dataProviderKey() const override;
     int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;

@@ -54,7 +54,8 @@ void QgsFeatureListView::setModel( QgsFeatureListModel *featureListModel )
   mCurrentEditSelectionModel = new QItemSelectionModel( mModel->masterModel(), this );
   if ( !mFeatureSelectionManager )
   {
-    mFeatureSelectionManager = new QgsVectorLayerSelectionManager( mModel->layerCache()->layer(), mModel );
+    mOwnedFeatureSelectionManager = new QgsVectorLayerSelectionManager( mModel->layerCache()->layer(), mModel );
+    mFeatureSelectionManager = mOwnedFeatureSelectionManager;
   }
 
   mFeatureSelectionModel = new QgsFeatureSelectionModel( featureListModel, featureListModel, mFeatureSelectionManager, this );
@@ -161,7 +162,11 @@ void QgsFeatureListView::editSelectionChanged( const QItemSelection &deselected,
     QItemSelection localSelected = mModel->mapSelectionFromMaster( selected );
     viewport()->update( visualRegionForSelection( localDeselected ) | visualRegionForSelection( localSelected ) );
   }
+  updateEditSelectionDependencies();
+}
 
+void QgsFeatureListView::updateEditSelectionDependencies()
+{
   QItemSelection currentSelection = mCurrentEditSelectionModel->selection();
   if ( currentSelection.size() == 1 )
   {
@@ -325,7 +330,11 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
 
     QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "Feature" ), this );
 
-    emit willShowContextMenu( menu, index );
+    // Index is from feature list model, but we need an index from the
+    // filter model to be passed to listeners, using fid instead would
+    // have been much better in term of bugs (and headaches) but this
+    // belongs to the API unfortunately.
+    emit willShowContextMenu( menu, mModel->mapToSource( index ) );
 
     menu->exec( event->globalPos() );
   }
@@ -360,7 +369,12 @@ void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
 void QgsFeatureListView::ensureEditSelection( bool inSelection )
 {
   if ( !mModel->rowCount() )
+  {
+    // not sure this is the best place to emit from
+    // this will allow setting the counter to zero in the browsing panel
+    emit currentEditSelectionProgressChanged( 0, 0 );
     return;
+  }
 
   const QModelIndexList selectedIndexes = mCurrentEditSelectionModel->selectedIndexes();
 
@@ -453,14 +467,20 @@ void QgsFeatureListView::ensureEditSelection( bool inSelection )
     }
     mUpdateEditSelectionTimer.start();
   }
+  updateEditSelectionDependencies();
 }
 
 void QgsFeatureListView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager )
 {
-  delete mFeatureSelectionManager;
-
   mFeatureSelectionManager = featureSelectionManager;
 
   if ( mFeatureSelectionModel )
     mFeatureSelectionModel->setFeatureSelectionManager( mFeatureSelectionManager );
+
+  // only delete the owner selection manager and not one created from outside
+  if ( mOwnedFeatureSelectionManager )
+  {
+    mOwnedFeatureSelectionManager->deleteLater();
+    mOwnedFeatureSelectionManager = nullptr;
+  }
 }

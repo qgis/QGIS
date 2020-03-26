@@ -54,7 +54,7 @@ class QgsSpatiaLiteFeatureIterator;
   interface defined in the QgsDataProvider class to provide access to spatial
   data residing in a SQLite/SpatiaLite enabled database.
   */
-class QgsSpatiaLiteProvider: public QgsVectorDataProvider
+class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -124,6 +124,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QVariant defaultValue( int fieldId ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
     bool createAttributeIndex( int field ) override;
+    SpatialIndexPresence hasSpatialIndex() const override;
 
     /**
      * The SpatiaLite provider does its own transforms so we return
@@ -221,6 +222,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     QgsFields mAttributeFields;
 
+    //! Map of field index to default value SQL fragments
+    QMap<int, QString> mDefaultValueClause;
+
     //! Flag indicating if the layer data source is a valid SpatiaLite layer
     bool mValid = false;
 
@@ -264,7 +268,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QString mGeometryColumn;
 
     //! Map of field index to default value
-    QMap<int, QVariant> mDefaultValues;
+    QMap<int, QString> mDefaultValues;
 
     //! Name of the SpatialIndex table
     QString mIndexTable;
@@ -382,9 +386,12 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     friend class QgsSpatiaLiteFeatureSource;
 
+    // QgsVectorDataProvider interface
+  public:
+    virtual QString defaultValueClause( int fieldIndex ) const override;
 };
 
-class QgsSpatiaLiteProviderMetadata: public QgsProviderMetadata
+class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsSpatiaLiteProviderMetadata();
@@ -398,6 +405,7 @@ class QgsSpatiaLiteProviderMetadata: public QgsProviderMetadata
     int listStyles( const QString &uri, QStringList &ids, QStringList &names,
                     QStringList &descriptions, QString &errCause ) override;
     QVariantMap decodeUri( const QString &uri ) override;
+    QString encodeUri( const QVariantMap &parts ) override;
     QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options ) override;
 
     QgsVectorLayerExporter::ExportError createEmptyLayer( const QString &uri, const QgsFields &fields,

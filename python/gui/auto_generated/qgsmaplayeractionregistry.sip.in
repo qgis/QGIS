@@ -76,7 +76,7 @@ True if action can run using the specified layer
 Triggers the action with the specified layer and list of feature.
 %End
 
-    void triggerForFeature( QgsMapLayer *layer, const QgsFeature *feature );
+    void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature );
 %Docstring
 Triggers the action with the specified layer and feature.
 %End

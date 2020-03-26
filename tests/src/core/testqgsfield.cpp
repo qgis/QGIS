@@ -48,6 +48,7 @@ class TestQgsField: public QObject
     void dataStream();
     void displayName();
     void displayNameWithAlias();
+    void displayType();
     void editorWidgetSetup();
     void collection();
 
@@ -359,9 +360,13 @@ void TestQgsField::displayString()
   //test double value
   QgsField doubleField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10, 3 );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5.005" ) );
+  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4.5e-09" ) );
+  QCOMPARE( doubleField.displayString( 1e-04 ), QString( "0.0001" ) );
   QgsField doubleFieldNoPrec( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10 );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5.005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5.005005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4.5e-09" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-04 ), QString( "0.0001" ) );
   QCOMPARE( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator, QLocale::NumberOption::DefaultNumberOptions );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599,999,898,999" ) );
 
@@ -372,8 +377,12 @@ void TestQgsField::displayString()
   //test double value with German locale
   QLocale::setDefault( QLocale::German );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5,005" ) );
+  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4,5e-09" ) );
+  QCOMPARE( doubleField.displayString( 1e-04 ), QString( "0,0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5,005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5,005005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4,5e-09" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-04 ), QString( "0,0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599.999.898.999" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5999.123456 ), QString( "5.999,123456" ) );
 
@@ -382,8 +391,12 @@ void TestQgsField::displayString()
   customGerman.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
   QLocale::setDefault( customGerman );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5,005" ) );
+  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4,5e-09" ) );
+  QCOMPARE( doubleField.displayString( 1e-04 ), QString( "0,0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5,005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5,005005005" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4,5e-09" ) );
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-04 ), QString( "0,0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599999898999" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5999.123456 ), QString( "5999,123456" ) );
 
@@ -400,8 +413,20 @@ void TestQgsField::displayString()
   customEnglish.setNumberOptions( QLocale::NumberOption::OmitGroupSeparator );
   QLocale::setDefault( customEnglish );
   QCOMPARE( doubleField.displayString( 5.005005 ), QString( "5.005" ) );
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 11, 0 )
+  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4.5e-09" ) );
+#else
+  QCOMPARE( doubleField.displayString( 4.5e-09 ), QString( "4.5e-9" ) );
+#endif
+  QCOMPARE( doubleField.displayString( 1e-04 ), QString( "0.0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5.005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5.005005005" ) );
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 11, 0 )
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4.5e-09" ) );
+#else
+  QCOMPARE( doubleFieldNoPrec.displayString( 4.5e-09 ), QString( "4.5e-9" ) );
+#endif
+  QCOMPARE( doubleFieldNoPrec.displayString( 1e-04 ), QString( "0.0001" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599999898999" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5999.123456 ), QString( "5999.123456" ) );
 
@@ -725,6 +750,24 @@ void TestQgsField::displayNameWithAlias()
   QCOMPARE( field.displayNameWithAlias(), QString( "name (alias)" ) );
   field.setAlias( QString() );
   QCOMPARE( field.displayNameWithAlias(), QString( "name" ) );
+}
+
+
+void TestQgsField::displayType()
+{
+  QgsField field;
+  field.setTypeName( QStringLiteral( "numeric" ) );
+  QCOMPARE( field.displayType(), QString( "numeric" ) );
+  field.setLength( 20 );
+  QCOMPARE( field.displayType(), QString( "numeric(20)" ) );
+  field.setPrecision( 10 );
+  field.setPrecision( 10 );
+  QCOMPARE( field.displayType(), QString( "numeric(20, 10)" ) );
+  QCOMPARE( field.displayType( true ), QString( "numeric(20, 10) NULL" ) );
+  QgsFieldConstraints constraints;
+  constraints.setConstraint( QgsFieldConstraints::ConstraintUnique );
+  field.setConstraints( constraints );
+  QCOMPARE( field.displayType( true ), QString( "numeric(20, 10) NULL UNIQUE" ) );
 }
 
 

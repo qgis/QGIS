@@ -132,6 +132,22 @@ void QgsAbstractDatabaseProviderConnection::vacuum( const QString &, const QStri
   checkCapability( Capability::Vacuum );
 }
 
+void QgsAbstractDatabaseProviderConnection::createSpatialIndex( const QString &, const QString &, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions & ) const
+{
+  checkCapability( Capability::CreateSpatialIndex );
+}
+
+void QgsAbstractDatabaseProviderConnection::deleteSpatialIndex( const QString &, const QString &, const QString & ) const
+{
+  checkCapability( Capability::DeleteSpatialIndex );
+}
+
+bool QgsAbstractDatabaseProviderConnection::spatialIndexExists( const QString &, const QString &, const QString & ) const
+{
+  checkCapability( Capability::SpatialIndexExists );
+  return false;
+}
+
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsAbstractDatabaseProviderConnection::tables( const QString &, const QgsAbstractDatabaseProviderConnection::TableFlags & ) const
 {
   checkCapability( Capability::Tables );
@@ -235,6 +251,18 @@ int QgsAbstractDatabaseProviderConnection::TableProperty::maxCoordinateDimension
     res = std::max( res, QgsWkbTypes::coordDimensions( ct.wkbType ) );
   }
   return res;
+}
+
+bool QgsAbstractDatabaseProviderConnection::TableProperty::operator==( const QgsAbstractDatabaseProviderConnection::TableProperty &other ) const
+{
+  return mSchema == other.mSchema &&
+         mTableName == other.mTableName &&
+         mGeometryColumn == other.mGeometryColumn &&
+         mGeometryColumnCount == other.mGeometryColumnCount &&
+         mPkColumns == other.mPkColumns &&
+         mFlags == other.mFlags &&
+         mComment == other.mComment &&
+         mInfo == other.mInfo;
 }
 
 

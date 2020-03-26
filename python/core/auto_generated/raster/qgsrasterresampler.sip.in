@@ -55,6 +55,15 @@ Gets a deep copy of this object.
 Needs to be reimplemented by subclasses.
 Ownership is transferred to the caller.
 %End
+
+    virtual int tileBufferPixels() const;
+%Docstring
+Returns the optional tile buffer size in pixels. This represents
+the size to buffer individual resampled tile requests prior to resampling,
+in order to avoid rendering artifacts at the edges of raster tile boundaries.
+
+.. versionadded:: 3.10.1
+%End
 };
 
 

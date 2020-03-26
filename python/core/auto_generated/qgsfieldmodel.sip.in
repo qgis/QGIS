@@ -136,6 +136,37 @@ like the field name, alias and type.
 .. versionadded:: 3.0
 %End
 
+    static QString fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer );
+%Docstring
+Returns a HTML formatted tooltip string for a ``field``, containing details
+like the field name, alias, type and expression.
+
+.. versionadded:: 3.14
+%End
+
+    void setFields( const QgsFields &fields );
+%Docstring
+Manually sets the ``fields`` to use for the model.
+
+This method should only be used when the model ISN'T associated with a layer()
+and needs to show the fields from an arbitrary field collection instead. Calling
+setFields() will automatically clear any existing layer().
+
+.. seealso:: :py:func:`fields`
+
+.. versionadded:: 3.14
+%End
+
+    QgsFields fields() const;
+%Docstring
+Returns the fields currently shown in the model.
+
+This will either be fields from the associated layer() or the fields
+manually set by a call to setFields().
+
+.. versionadded:: 3.14
+%End
+
   public slots:
 
     void setLayer( QgsVectorLayer *layer );

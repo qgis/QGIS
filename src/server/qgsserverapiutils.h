@@ -152,13 +152,11 @@ class SERVER_EXPORT QgsServerApiUtils
     static QgsCoordinateReferenceSystem parseCrs( const QString &bboxCrs );
 
     /**
-     * Returns the list of layers accessible to the service for a given \a project.
+     * Returns the list of layers accessible to the service for a given \a context.
      *
      * This method takes into account the ACL restrictions provided by QGIS Server Access Control plugins.
-     *
-     * \note project must not be NULL
      */
-    static const QVector<QgsMapLayer *> publishedWfsLayers( const QgsProject *project );
+    static const QVector<QgsVectorLayer *> publishedWfsLayers( const QgsServerApiContext &context );
 
 #ifndef SIP_RUN
 
@@ -167,22 +165,22 @@ class SERVER_EXPORT QgsServerApiUtils
      *
      * Example:
      *
-     *     QVector<QgsVectorLayer*> vectorLayers = publishedLayers<QgsVectorLayer>();
+     *     QVector<const QgsVectorLayer*> vectorLayers = publishedLayers<QgsVectorLayer>();
      *
      * \note not available in Python bindings
      */
     template <typename T>
-    static const QVector<const T *> publishedWfsLayers( const QgsServerApiContext &context )
+    static const QVector<T> publishedWfsLayers( const QgsServerApiContext &context )
     {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       QgsAccessControl *accessControl = context.serverInterface()->accessControls();
 #endif
       const QgsProject *project = context.project();
-      QVector<const T *> result;
+      QVector<T> result;
       if ( project )
       {
         const QStringList wfsLayerIds = QgsServerProjectUtils::wfsLayerIds( *project );
-        const auto constLayers { project->layers<T *>() };
+        const auto constLayers { project->layers<T>() };
         for ( const auto &layer : constLayers )
         {
           if ( ! wfsLayerIds.contains( layer->id() ) )
@@ -202,6 +200,7 @@ class SERVER_EXPORT QgsServerApiUtils
     }
 
 #endif
+
 
     /**
      * Sanitizes the input \a value by removing URL encoding and checking for malicious content.

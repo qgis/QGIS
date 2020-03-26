@@ -33,6 +33,7 @@ class QTextCodec;
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
 #include "qgsfeaturerequest.h"
+#include "qgsvectordataprovidertemporalcapabilities.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 typedef QSet<int> QgsAttributeIds SIP_SKIP;
@@ -404,12 +405,23 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QString capabilitiesString() const;
 
     /**
-     * Set encoding used for accessing data from layer
+     * Set encoding used for accessing data from layer.
+     *
+     * An empty encoding string indicates that the provider should automatically
+     * select the most appropriate encoding for the data source.
+     *
+     * \warning Support for setting the provider encoding depends on the underlying data
+     * provider. Check capabilities() for the QgsVectorDataProvider::SelectEncoding
+     * capability in order to determine if the provider supports this ability.
+     *
+     * \see encoding()
      */
     virtual void setEncoding( const QString &e );
 
     /**
-     * Gets encoding which is used for accessing data
+     * Returns the encoding which is used for accessing data.
+     *
+     * \see setEncoding()
      */
     QString encoding() const;
 
@@ -549,13 +561,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QgsTransaction *transaction() const;
 
     /**
-     * Forces a reload of the underlying datasource if the provider implements this
-     * method.
-     * In particular on the OGR provider, a pooled connection will be invalidated.
-     * This forces QGIS to reopen a file or connection.
-     * This can be required if the underlying file is replaced.
+     * \deprecated QGIS 3.12 - will be removed in QGIS 4.0 - use reloadData instead
      */
-    virtual void forceReload();
+    Q_DECL_DEPRECATED virtual void forceReload() SIP_DEPRECATED { reloadData(); }
 
     /**
      * Gets the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
@@ -608,6 +616,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \since QGIS 3.8.1
      */
     virtual void handlePostCloneOperations( QgsVectorDataProvider *source );
+
+    QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() override;
 
   signals:
 
@@ -679,13 +689,14 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     //! List of errors
     mutable QStringList mErrors;
 
+    std::unique_ptr< QgsVectorDataProviderTemporalCapabilities > mTemporalCapabilities;
+
     static QStringList sEncodings;
 
     /**
      * Includes this data provider in the specified transaction. Ownership of transaction is not transferred.
      */
     virtual void setTransaction( QgsTransaction * /*transaction*/ ) {}
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorDataProvider::Capabilities )

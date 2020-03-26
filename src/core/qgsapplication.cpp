@@ -29,7 +29,9 @@
 #include "qgsactionscoperegistry.h"
 #include "qgsruntimeprofiler.h"
 #include "qgstaskmanager.h"
+#include "qgsnumericformatregistry.h"
 #include "qgsfieldformatterregistry.h"
+#include "qgsscalebarrendererregistry.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
 #include "qgscolorschemeregistry.h"
@@ -39,9 +41,9 @@
 #include "qgsrendererregistry.h"
 #include "qgssymbollayerregistry.h"
 #include "qgssymbollayerutils.h"
-#include "callouts/qgscalloutsregistry.h"
+#include "qgscalloutsregistry.h"
 #include "qgspluginlayerregistry.h"
-#include "classification/qgsclassificationmethodregistry.h"
+#include "qgsclassificationmethodregistry.h"
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
 #include "qgssettings.h"
@@ -58,6 +60,7 @@
 #include "qgsnewsfeedparser.h"
 #include "qgsbookmarkmanager.h"
 #include "qgsstylemodel.h"
+#include "qgsconnectionregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -223,6 +226,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsDatumTransform::GridDetails>( "QgsDatumTransform::GridDetails" );
   qRegisterMetaType<QgsDatumTransform::TransformDetails>( "QgsDatumTransform::TransformDetails" );
   qRegisterMetaType<QgsNewsFeedParser::Entry>( "QgsNewsFeedParser::Entry" );
+  qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
 
   ( void ) resolvePkgPath();
 
@@ -338,7 +342,8 @@ void QgsApplication::init( QString profileFolder )
   colorSchemeRegistry()->initStyleScheme();
 
   bookmarkManager()->initialize( QgsApplication::qgisSettingsDirPath() + "/bookmarks.xml" );
-  members()->mStyleModel = new QgsStyleModel( QgsStyle::defaultStyle() );
+  if ( !members()->mStyleModel )
+    members()->mStyleModel = new QgsStyleModel( QgsStyle::defaultStyle() );
 
   ABISYM( mInitialized ) = true;
 }
@@ -1363,20 +1368,20 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                             "  color: #93b023;"  // from http://qgis.org/en/site/getinvolved/styleguide.html
                             "  font-weight: bold;"
                             "  font-size: large;"
-                            "  text-align: right;"
+                            "  text-align: left;"
                             "  border-bottom: 5px solid #DCEB5C;"
                             "}"
                             "h4{  background-color: #F6F6F6;"
                             "  color: #93b023;"  // from http://qgis.org/en/site/getinvolved/styleguide.html
                             "  font-weight: bold;"
                             "  font-size: medium;"
-                            "  text-align: right;"
+                            "  text-align: left;"
                             "}"
                             "h5{    background-color: #F6F6F6;"
                             "   color: #93b023;"  // from http://qgis.org/en/site/getinvolved/styleguide.html
                             "   font-weight: bold;"
                             "   font-size: small;"
-                            "   text-align: right;"
+                            "   text-align: left;"
                             "}"
                             "a{  color: #729FCF;"
                             "  font-family: arial,sans-serif;"
@@ -1396,7 +1401,7 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                             "  border-top: 1px solid black;"
                             "}"
                             ".list-view .highlight {"
-                            "  text-align: right;"
+                            "  text-align: left;"
                             "  border: 0px;"
                             "  width: 20%;"
                             "  padding-right: 15px;"
@@ -1435,6 +1440,7 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                    "   border-collapse: collapse;"
                    "   table-layout:fixed;"
                    "   width: 100% !important;"
+                   "   font-size: 90%;"
                    "}"
                    // Override
                    "h1 { "
@@ -1446,7 +1452,7 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                    "}"
                    // Set first column width
                    ".list-view th:first-child, .list-view td:first-child {"
-                   "   width: 15%;"
+                   "   width: 20%;"
                    "}"
                    ".list-view.highlight { "
                    "   padding-left: inherit; "
@@ -1679,8 +1685,8 @@ void QgsApplication::applyGdalSkippedDrivers()
       realDisabledDriverList << driverName;
   }
   QString myDriverList = realDisabledDriverList.join( ' ' );
-  QgsDebugMsg( QStringLiteral( "Gdal Skipped driver list set to:" ) );
-  QgsDebugMsg( myDriverList );
+  QgsDebugMsgLevel( QStringLiteral( "Gdal Skipped driver list set to:" ), 1 );
+  QgsDebugMsgLevel( myDriverList, 1 );
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
   GDALAllRegister(); //to update driver list and skip missing ones
 }
@@ -1879,11 +1885,104 @@ bool QgsApplication::createDatabase( QString *errorMessage )
     }
 
     char *errmsg = nullptr;
-    int res = sqlite3_exec( database.get(), "SELECT epsg FROM tbl_srs LIMIT 0", nullptr, nullptr, &errmsg );
+    int res = sqlite3_exec( database.get(), "SELECT srs_id FROM tbl_srs LIMIT 0", nullptr, nullptr, &errmsg );
+    if ( res != SQLITE_OK )
+    {
+      sqlite3_free( errmsg );
+
+      // qgis.db is missing tbl_srs, create it
+      if ( sqlite3_exec( database.get(),
+                         "DROP INDEX IF EXISTS idx_srsauthid;"
+                         "CREATE TABLE tbl_srs ("
+                         "srs_id INTEGER PRIMARY KEY,"
+                         "description text NOT NULL,"
+                         "projection_acronym text NOT NULL,"
+                         "ellipsoid_acronym NOT NULL,"
+                         "parameters text NOT NULL,"
+                         "srid integer,"
+                         "auth_name varchar,"
+                         "auth_id varchar,"
+                         "is_geo integer NOT NULL,"
+                         "deprecated boolean,"
+                         "wkt text);"
+                         "CREATE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);", nullptr, nullptr, &errmsg ) != SQLITE_OK )
+      {
+        if ( errorMessage )
+        {
+          *errorMessage = tr( "Creation of missing tbl_srs in the private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) );
+        }
+        sqlite3_free( errmsg );
+        return false;
+      }
+    }
+    else
+    {
+      // test if wkt column exists in database
+      res = sqlite3_exec( database.get(), "SELECT wkt FROM tbl_srs LIMIT 0", nullptr, nullptr, &errmsg );
+      if ( res != SQLITE_OK )
+      {
+        // need to add wkt column
+        sqlite3_free( errmsg );
+        if ( sqlite3_exec( database.get(),
+                           "DROP INDEX IF EXISTS idx_srsauthid;"
+                           "DROP TABLE IF EXISTS tbl_srs_bak;"
+                           "ALTER TABLE tbl_srs RENAME TO tbl_srs_bak;"
+                           "CREATE TABLE tbl_srs ("
+                           "srs_id INTEGER PRIMARY KEY,"
+                           "description text NOT NULL,"
+                           "projection_acronym text NOT NULL,"
+                           "ellipsoid_acronym NOT NULL,"
+                           "parameters text NOT NULL,"
+                           "srid integer,"
+                           "auth_name varchar,"
+                           "auth_id varchar,"
+                           "is_geo integer NOT NULL,"
+                           "deprecated boolean,"
+                           "wkt text);"
+                           "CREATE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);"
+                           "INSERT INTO tbl_srs(srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) SELECT srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,'','',is_geo,0 FROM tbl_srs_bak;"
+                           "DROP TABLE tbl_srs_bak", nullptr, nullptr, &errmsg ) != SQLITE_OK )
+        {
+          if ( errorMessage )
+          {
+            *errorMessage = tr( "Migration of private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) );
+          }
+          sqlite3_free( errmsg );
+          return false;
+        }
+      }
+    }
+
+    res = sqlite3_exec( database.get(), "SELECT acronym FROM tbl_projection LIMIT 0", nullptr, nullptr, &errmsg );
+    if ( res != SQLITE_OK )
+    {
+      sqlite3_free( errmsg );
+
+      // qgis.db is missing tbl_projection, create it
+      if ( sqlite3_exec( database.get(),
+                         "CREATE TABLE tbl_projection ("
+                         "acronym varchar(20) NOT NULL PRIMARY KEY,"
+                         "name varchar(255) NOT NULL default '',"
+                         "notes varchar(255) NOT NULL default '',"
+                         "parameters varchar(255) NOT NULL default ''"
+                         ")", nullptr, nullptr, &errmsg ) != SQLITE_OK )
+      {
+        if ( errorMessage )
+        {
+          *errorMessage = tr( "Creation of missing tbl_projection in the private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) );
+        }
+        sqlite3_free( errmsg );
+        return false;
+      }
+    }
+
+    res = sqlite3_exec( database.get(), "SELECT epsg FROM tbl_srs LIMIT 0", nullptr, nullptr, &errmsg );
     if ( res == SQLITE_OK )
     {
       // epsg column exists => need migration
       if ( sqlite3_exec( database.get(),
+                         "DROP INDEX IF EXISTS idx_srsauthid;"
+                         "DROP TABLE IF EXISTS tbl_srs_bak;"
                          "ALTER TABLE tbl_srs RENAME TO tbl_srs_bak;"
                          "CREATE TABLE tbl_srs ("
                          "srs_id INTEGER PRIMARY KEY,"
@@ -1895,11 +1994,11 @@ bool QgsApplication::createDatabase( QString *errorMessage )
                          "auth_name varchar,"
                          "auth_id varchar,"
                          "is_geo integer NOT NULL,"
-                         "deprecated boolean);"
+                         "deprecated boolean,"
+                         "wkt text);"
                          "CREATE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);"
                          "INSERT INTO tbl_srs(srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) SELECT srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,'','',is_geo,0 FROM tbl_srs_bak;"
-                         "DROP TABLE tbl_srs_bak", nullptr, nullptr, &errmsg ) != SQLITE_OK
-         )
+                         "DROP TABLE tbl_srs_bak", nullptr, nullptr, &errmsg ) != SQLITE_OK )
       {
         if ( errorMessage )
         {
@@ -1932,8 +2031,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
                        ",a.deprecated AS deprecated"
                        " FROM tbl_srs a"
                        " LEFT OUTER JOIN tbl_projection b ON a.projection_acronym=b.acronym"
-                       " ORDER BY coalesce(b.name,a.projection_acronym),a.description", nullptr, nullptr, &errmsg ) != SQLITE_OK
-       )
+                       " ORDER BY coalesce(b.name,a.projection_acronym),a.description", nullptr, nullptr, &errmsg ) != SQLITE_OK )
     {
       if ( errorMessage )
       {
@@ -1948,7 +2046,7 @@ bool QgsApplication::createDatabase( QString *errorMessage )
 
 void QgsApplication::setMaxThreads( int maxThreads )
 {
-  QgsDebugMsg( QStringLiteral( "maxThreads: %1" ).arg( maxThreads ) );
+  QgsDebugMsgLevel( QStringLiteral( "maxThreads: %1" ).arg( maxThreads ), 1 );
 
   // make sure value is between 1 and #cores, if not set to -1 (use #cores)
   // 0 could be used to disable any parallel processing
@@ -1964,7 +2062,7 @@ void QgsApplication::setMaxThreads( int maxThreads )
 
   // set max thread count in QThreadPool
   QThreadPool::globalInstance()->setMaxThreadCount( maxThreads );
-  QgsDebugMsg( QStringLiteral( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ) );
+  QgsDebugMsgLevel( QStringLiteral( "set QThreadPool max thread count to %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ), 1 );
 }
 
 QgsTaskManager *QgsApplication::taskManager()
@@ -2082,6 +2180,11 @@ QgsProcessingRegistry *QgsApplication::processingRegistry()
   return members()->mProcessingRegistry;
 }
 
+QgsConnectionRegistry *QgsApplication::connectionRegistry()
+{
+  return members()->mConnectionRegistry;
+}
+
 QgsPageSizeRegistry *QgsApplication::pageSizeRegistry()
 {
   return members()->mPageSizeRegistry;
@@ -2092,6 +2195,11 @@ QgsAnnotationRegistry *QgsApplication::annotationRegistry()
   return members()->mAnnotationRegistry;
 }
 
+QgsNumericFormatRegistry *QgsApplication::numericFormatRegistry()
+{
+  return members()->mNumericFormatRegistry;
+}
+
 QgsFieldFormatterRegistry *QgsApplication::fieldFormatterRegistry()
 {
   return members()->mFieldFormatterRegistry;
@@ -2100,6 +2208,11 @@ QgsFieldFormatterRegistry *QgsApplication::fieldFormatterRegistry()
 Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
 {
   return members()->m3DRendererRegistry;
+}
+
+QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry()
+{
+  return members()->mScaleBarRendererRegistry;
 }
 
 QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
@@ -2113,8 +2226,10 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   // will need to be careful with the order of creation/destruction
   mMessageLog = new QgsMessageLog();
   mProfiler = new QgsRuntimeProfiler();
+  mConnectionRegistry = new QgsConnectionRegistry();
   mTaskManager = new QgsTaskManager();
   mActionScopeRegistry = new QgsActionScopeRegistry();
+  mNumericFormatRegistry = new QgsNumericFormatRegistry();
   mFieldFormatterRegistry = new QgsFieldFormatterRegistry();
   mSvgCache = new QgsSvgCache();
   mImageCache = new QgsImageCache();
@@ -2137,11 +2252,13 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mValidityCheckRegistry = new QgsValidityCheckRegistry();
   mClassificationMethodRegistry = new QgsClassificationMethodRegistry();
   mBookmarkManager = new QgsBookmarkManager( nullptr );
+  mScaleBarRendererRegistry = new QgsScaleBarRendererRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
   delete mStyleModel;
+  delete mScaleBarRendererRegistry;
   delete mValidityCheckRegistry;
   delete mActionScopeRegistry;
   delete m3DRendererRegistry;
@@ -2166,7 +2283,9 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mTaskManager;
   delete mNetworkContentFetcherRegistry;
   delete mClassificationMethodRegistry;
+  delete mNumericFormatRegistry;
   delete mBookmarkManager;
+  delete mConnectionRegistry;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

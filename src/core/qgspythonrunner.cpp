@@ -29,7 +29,7 @@ bool QgsPythonRunner::run( const QString &command, const QString &messageOnError
 {
   if ( sInstance )
   {
-    QgsDebugMsg( "Running " + command );
+    QgsDebugMsgLevel( "Running " + command, 3 );
     return sInstance->runCommand( command, messageOnError );
   }
   else

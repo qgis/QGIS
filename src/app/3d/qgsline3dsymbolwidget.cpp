@@ -70,3 +70,4 @@ void QgsLine3DSymbolWidget::updateGuiState()
   //spinWidth->setEnabled( !simple );
   spinExtrusion->setEnabled( !simple );
 }
+

@@ -22,13 +22,15 @@ __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
 import os
+import tempfile
 
 from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
 from qgis.core import (NULL,
                        QgsApplication,
                        QgsSettings,
                        QgsVectorFileWriter,
-                       QgsRasterFileWriter)
+                       QgsRasterFileWriter,
+                       QgsProcessingUtils)
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 from multiprocessing import cpu_count
@@ -60,6 +62,7 @@ class ProcessingConfig:
     MAX_THREADS = 'MAX_THREADS'
     DEFAULT_OUTPUT_RASTER_LAYER_EXT = 'DefaultOutputRasterLayerExt'
     DEFAULT_OUTPUT_VECTOR_LAYER_EXT = 'DefaultOutputVectorLayerExt'
+    TEMP_PATH = 'TEMP_PATH2'
 
     settings = {}
     settingIcons = {}
@@ -164,6 +167,12 @@ class ProcessingConfig:
             'tif',
             valuetype=Setting.SELECTION,
             options=extensions))
+
+        ProcessingConfig.addSetting(Setting(
+            ProcessingConfig.tr('General'),
+            ProcessingConfig.TEMP_PATH,
+            ProcessingConfig.tr('Override temporary output folder path (leave blank for default)'), None,
+            valuetype=Setting.FOLDER))
 
     @staticmethod
     def setGroupIcon(group, icon):

@@ -210,7 +210,8 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, const QList<QgsLay
   }
 
   QgsReadWriteContext context;
-  context.setPathResolver( QgsPathResolver( path ) );
+  bool writeAbsolutePath = QgsProject::instance()->readBoolEntry( QStringLiteral( "Paths" ), QStringLiteral( "/Absolute" ), false );
+  context.setPathResolver( QgsPathResolver( writeAbsolutePath ? QString() : path ) );
 
   QDomDocument doc( QStringLiteral( "qgis-layer-definition" ) );
   if ( !exportLayerDefinition( doc, selectedTreeNodes, errorMessage, context ) )
@@ -442,8 +443,16 @@ QgsLayerDefinition::DependencySorter::DependencySorter( const QString &fileName 
   : mHasCycle( false )
   , mHasMissingDependency( false )
 {
+  QString qgsProjectFile = fileName;
+  QgsProjectArchive archive;
+  if ( fileName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
+  {
+    archive.unzip( fileName );
+    qgsProjectFile = archive.projectFile();
+  }
+
   QDomDocument doc;
-  QFile pFile( fileName );
+  QFile pFile( qgsProjectFile );
   ( void )pFile.open( QIODevice::ReadOnly );
   ( void )doc.setContent( &pFile );
   init( doc );

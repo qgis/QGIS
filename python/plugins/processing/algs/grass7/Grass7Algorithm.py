@@ -25,6 +25,7 @@ import sys
 import os
 import re
 import uuid
+import math
 import importlib
 
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
@@ -48,6 +49,7 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterField,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterBoolean,
+                       QgsProcessingParameterRange,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterRasterLayer,
@@ -617,6 +619,12 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             elif isinstance(param, (QgsProcessingParameterNumber,
                                     QgsProcessingParameterPoint)):
                 value = self.parameterAsString(parameters, paramName, context)
+            elif isinstance(param, QgsProcessingParameterRange):
+                v = self.parameterAsRange(parameters, paramName, context)
+                if (param.flags() & QgsProcessingParameterDefinition.FlagOptional) and (math.isnan(v[0]) or math.isnan(v[1])):
+                    continue
+                else:
+                    value = '{},{}'.format(v[0], v[1])
             # For everything else, we assume that it is a string
             else:
                 value = '"{}"'.format(
@@ -700,29 +708,31 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             elif isinstance(out, QgsProcessingParameterFolderDestination):
                 self.exportRasterLayersIntoDirectory(outName, parameters, context)
 
-    def loadRasterLayerFromParameter(self, name, parameters, context, external=True, band=1):
+    def loadRasterLayerFromParameter(self, name, parameters, context, external=None, band=1):
         """
         Creates a dedicated command to load a raster into
         the temporary GRASS DB.
         :param name: name of the parameter.
         :param parameters: algorithm parameters dict.
         :param context: algorithm context.
-        :param external: True if using r.external.
+        :param external: use r.external if True, r.in.gdal otherwise.
         :param band: imports only specified band. None for all bands.
         """
         layer = self.parameterAsRasterLayer(parameters, name, context)
         self.loadRasterLayer(name, layer, external, band)
 
-    def loadRasterLayer(self, name, layer, external=True, band=1, destName=None):
+    def loadRasterLayer(self, name, layer, external=None, band=1, destName=None):
         """
         Creates a dedicated command to load a raster into
         the temporary GRASS DB.
         :param name: name of the parameter.
         :param layer: QgsMapLayer for the raster layer.
-        :param external: True if using r.external.
+        :param external: use r.external if True, r.in.gdal if False.
         :param band: imports only specified band. None for all bands.
         :param destName: force the destination name of the raster.
         """
+        if external is None:
+            external = ProcessingConfig.getSetting(Grass7Utils.GRASS_USE_REXTERNAL)
         self.inputLayers.append(layer)
         self.setSessionProjectionFromLayer(layer)
         if not destName:
@@ -1011,7 +1021,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         """
         if not Grass7Utils.projectionSet and iface:
             self.destination_crs = iface.mapCanvas().mapSettings().destinationCrs()
-            proj4 = iface.mapCanvas().mapSettings().destinationCrs().toProj4()
+            proj4 = iface.mapCanvas().mapSettings().destinationCrs().toProj()
             command = 'g.proj -c proj4="{}"'.format(proj4)
             self.commands.append(command)
             Grass7Utils.projectionSet = True
@@ -1022,7 +1032,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         We creates a PROJ4 definition which is transmitted to Grass
         """
         if not Grass7Utils.projectionSet:
-            proj4 = str(layer.crs().toProj4())
+            proj4 = str(layer.crs().toProj())
             self.destination_crs = layer.crs()
             command = 'g.proj -c proj4="{}"'.format(proj4)
             self.commands.append(command)

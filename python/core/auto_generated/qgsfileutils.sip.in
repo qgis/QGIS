@@ -84,6 +84,22 @@ and "/home/user/projects" exists but no "2018" subfolder exists, then the functi
 
 .. versionadded:: 3.2
 %End
+
+    static QStringList findFile( const QString &file, const QString &basepath = QString(), int maxClimbs = 4, int searchCeiling = 4, const QString &currentDir = QString() );
+%Docstring
+Will check ``basepath`` in an outward spiral up to ``maxClimbs`` levels to check if ``file`` exists.
+
+:param file: Name or full path of the file to find
+:param basepath: current basepath of the file, needed if only the name is specified in file
+:param maxClimbs: limit the number of time the search can move up from the basepath
+:param searchCeiling: limits where in the folder hierarchy the search can be performed, 1 = root/drive, 2 = first folder level, 3 = sub folders ( Unix: /usr/bin, Win: C:/Users/Admin ), etc.
+:param currentDir: alternative default directory to override the actual current directory during the search
+
+:return: List of strings of the first matching path in unix format.
+
+.. versionadded:: 3.12
+%End
+
 };
 
 /************************************************************************

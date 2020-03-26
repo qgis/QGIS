@@ -196,7 +196,7 @@ void QgsAlignRasterDialog::updateParametersFromReferenceLayer()
   {
     QgsCoordinateReferenceSystem refCRS( refInfo.crs() );
     if ( refCRS != mCrsSelector->crs() )
-      customCRSWkt = mCrsSelector->crs().toWkt();
+      customCRSWkt = mCrsSelector->crs( ).toWkt( QgsCoordinateReferenceSystem::WKT2_2018 );
   }
 
   if ( mChkCustomCellSize->isChecked() )
@@ -313,7 +313,7 @@ void QgsAlignRasterDialog::referenceLayerChanged()
 
 void QgsAlignRasterDialog::destinationCrsChanged()
 {
-  if ( mCrsSelector->crs().toWkt() == mAlign->destinationCrs() )
+  if ( mCrsSelector->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) == mAlign->destinationCrs() )
     return;
 
   int index = mCboReferenceLayer->currentIndex();

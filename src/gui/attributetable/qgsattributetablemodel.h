@@ -318,10 +318,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Launched when a feature has been added
      * \param fid feature id
-     * \param resettingModel set to TRUE if model is in the process of being reset
-     * and the normal begin/EndInsertRows calls should not be made
      */
-    virtual void featureAdded( QgsFeatureId fid, bool resettingModel = false );
+    virtual void featureAdded( QgsFeatureId fid );
 
     /**
      * Launched when layer has been deleted
@@ -383,6 +381,9 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     //! Flag for massive changes operations, set by edit command or rollback
     bool mBulkEditCommandRunning = false;
+
+    //! TRUE if model is in the midst of a reset operation
+    bool mResettingModel = false;
 
     //! Sets the flag for massive changes operations
     void bulkEditCommandStarted();

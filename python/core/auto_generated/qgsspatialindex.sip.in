@@ -63,6 +63,7 @@ that of the spatial index construction.
 .. versionadded:: 2.8
 %End
 
+
     explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = 0, QgsSpatialIndex::Flags flags = 0 );
 %Docstring
 Constructor - creates R-tree and bulk loads it with features from the source.

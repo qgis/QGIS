@@ -47,6 +47,7 @@ Q_GLOBAL_STATIC_WITH_ARGS( PalPropertyList, palHiddenProperties, (
   QgsPalLayerSettings::Strikeout,
   QgsPalLayerSettings::MultiLineAlignment,
   QgsPalLayerSettings::BufferSize,
+  QgsPalLayerSettings::BufferDraw,
   QgsPalLayerSettings::BufferColor,
   QgsPalLayerSettings::LabelDistance,
   QgsPalLayerSettings::Hali,

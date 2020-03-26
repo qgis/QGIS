@@ -461,7 +461,7 @@ QString QgsSimpleLineSymbolLayer::ogrFeatureStyle( double mmScaleFactor, double 
 
 QgsSymbolLayer *QgsSimpleLineSymbolLayer::createFromSld( QDomElement &element )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
   if ( strokeElem.isNull() )
@@ -1653,6 +1653,8 @@ void QgsTemplatedLineSymbolLayerBase::renderPolylineCentral( const QPolygonF &po
                            ( last.y() - it->y() ) * ( last.y() - it->y() ) );
       last = *it;
     }
+    if ( qgsDoubleNear( length, 0.0 ) )
+      return;
 
     const double midPoint = length / 2;
 
@@ -1876,7 +1878,7 @@ void QgsMarkerLineSymbolLayer::toSld( QDomDocument &doc, QDomElement &element, c
 
 QgsSymbolLayer *QgsMarkerLineSymbolLayer::createFromSld( QDomElement &element )
 {
-  QgsDebugMsg( QStringLiteral( "Entered." ) );
+  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
 
   QDomElement strokeElem = element.firstChildElement( QStringLiteral( "Stroke" ) );
   if ( strokeElem.isNull() )

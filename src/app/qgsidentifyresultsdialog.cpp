@@ -37,6 +37,8 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QRegExp>
+#include <QScreen>
+#include <QFont>
 
 //graph
 #include <qwt_plot.h>
@@ -76,6 +78,7 @@
 #include "qgsfiledownloaderdialog.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
+#include "qgsfieldmodel.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsexpressioncontextutils.h"
@@ -325,10 +328,10 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( cmbIdentifyMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsIdentifyResultsDialog::cmbIdentifyMode_currentIndexChanged );
   connect( cmbViewMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsIdentifyResultsDialog::cmbViewMode_currentIndexChanged );
   connect( mExpandNewAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mExpandNewAction_triggered );
-  connect( cbxAutoFeatureForm, &QCheckBox::toggled, this, &QgsIdentifyResultsDialog::cbxAutoFeatureForm_toggled );
   connect( mExpandAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mExpandAction_triggered );
   connect( mCollapseAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::mCollapseAction_triggered );
   connect( mActionCopy, &QAction::triggered, this, &QgsIdentifyResultsDialog::mActionCopy_triggered );
+  connect( mActionAutoFeatureForm, &QAction::toggled, this, &QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled );
 
   mOpenFormAction->setDisabled( true );
 
@@ -360,7 +363,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   mExpandNewAction->setChecked( mySettings.value( QStringLiteral( "Map/identifyExpand" ), false ).toBool() );
   mActionCopy->setEnabled( false );
   lstResults->setColumnCount( 2 );
-  lstResults->sortByColumn( -1 );
+  lstResults->sortByColumn( -1, Qt::AscendingOrder );
   setColumnText( 0, tr( "Feature" ) );
   setColumnText( 1, tr( "Value" ) );
 
@@ -383,7 +386,6 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   cmbIdentifyMode->addItem( tr( "Top down" ), QgsMapToolIdentify::TopDownAll );
   cmbIdentifyMode->addItem( tr( "Layer selection" ), QgsMapToolIdentify::LayerSelection );
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
-  cbxAutoFeatureForm->setChecked( mySettings.value( QStringLiteral( "Map/identifyAutoFeatureForm" ), false ).toBool() );
 
   // view modes
   cmbViewMode->addItem( tr( "Tree" ), 0 );
@@ -417,6 +419,18 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mHelpToolButton, &QAbstractButton::clicked, this, &QgsIdentifyResultsDialog::showHelp );
 
   initSelectionModes();
+
+  QMenu *settingsMenu = new QMenu();
+  QToolButton *settingsButton = new QToolButton();
+  settingsButton->setAutoRaise( true );
+  settingsButton->setToolTip( tr( "Identify Settings" ) );
+  settingsButton->setMenu( settingsMenu );
+  settingsButton->setPopupMode( QToolButton::InstantPopup );
+  settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  mIdentifyToolbar->addWidget( settingsButton );
+
+  settingsMenu->addAction( mActionAutoFeatureForm );
+  mActionAutoFeatureForm->setChecked( mySettings.value( QStringLiteral( "Map/identifyAutoFeatureForm" ), false ).toBool() );
 }
 
 QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
@@ -499,6 +513,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     layItem = new QTreeWidgetItem( QStringList() << vlayer->name() );
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( vlayer ) ) );
     lstResults->addTopLevelItem( layItem );
+    QFont boldFont;
+    boldFont.setBold( true );
+    layItem->setFont( 0, boldFont );
 
     connect( vlayer, &QObject::destroyed, this, &QgsIdentifyResultsDialog::layerDestroyed );
     connect( vlayer, &QgsMapLayer::crsChanged, this, &QgsIdentifyResultsDialog::layerDestroyed );
@@ -514,6 +531,12 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   featItem->setData( 0, Qt::UserRole + 1, mFeatures.size() );
   mFeatures << f;
   layItem->addChild( featItem );
+  layItem->setFirstColumnSpanned( true );
+
+  QString countSuffix = layItem->childCount() > 1
+                        ? QStringLiteral( " [%1]" ).arg( layItem->childCount() )
+                        : QString();
+  layItem->setText( 0, QStringLiteral( "%1 %2" ).arg( vlayer->name(), countSuffix ) );
 
   if ( derivedAttributes.size() >= 0 )
   {
@@ -604,7 +627,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     featItem->addChild( attrItem );
 
     attrItem->setData( 0, Qt::DisplayRole, vlayer->attributeDisplayName( i ) );
-    attrItem->setToolTip( 0, vlayer->attributeDisplayName( i ) );
+    attrItem->setToolTip( 0, QgsFieldModel::fieldToolTipExtended( fields.at( i ), vlayer ) );
     attrItem->setData( 0, Qt::UserRole, fields.at( i ).name() );
     attrItem->setData( 0, Qt::UserRole + 1, i );
 
@@ -940,7 +963,14 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     QgsIdentifyResultsWebViewItem *attrItem = new QgsIdentifyResultsWebViewItem( lstResults );
 #ifdef WITH_QTWEBKIT
     attrItem->webView()->page()->setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
     const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
+#else
+    const int horizontalDpi = logicalDpiX();
+#endif
+
+
     // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
     if ( horizontalDpi > 96 )
     {
@@ -1089,7 +1119,9 @@ void QgsIdentifyResultsDialog::editingToggled()
 
     int j;
     for ( j = 0; j < featItem->childCount() && featItem->child( j )->data( 0, Qt::UserRole ).toString() != QLatin1String( "actions" ); j++ )
-      QgsDebugMsg( QStringLiteral( "%1: skipped %2" ).arg( featItem->child( j )->data( 0, Qt::UserRole ).toString() ) );
+    {
+      QgsDebugMsgLevel( QStringLiteral( "%1: skipped %2" ).arg( featItem->child( j )->data( 0, Qt::UserRole ).toString() ), 2 );
+    }
 
     if ( j == featItem->childCount() || featItem->child( j )->childCount() < 1 )
       continue;
@@ -1344,7 +1376,7 @@ void QgsIdentifyResultsDialog::clear()
   }
 
   lstResults->clear();
-  lstResults->sortByColumn( -1 );
+  lstResults->sortByColumn( -1, Qt::AscendingOrder );
   clearHighlights();
 
   tblResults->clearContents();
@@ -1459,7 +1491,7 @@ void QgsIdentifyResultsDialog::doMapLayerAction( QTreeWidgetItem *item, QgsMapLa
     return;
 
   int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
-  action->triggerForFeature( layer, &mFeatures[ featIdx ] );
+  action->triggerForFeature( layer, mFeatures[ featIdx ] );
 }
 
 QTreeWidgetItem *QgsIdentifyResultsDialog::featureItem( QTreeWidgetItem *item )
@@ -1657,11 +1689,11 @@ void QgsIdentifyResultsDialog::layerDestroyed()
   // remove items, starting from last
   for ( int i = tblResults->rowCount() - 1; i >= 0; i-- )
   {
-    QgsDebugMsg( QStringLiteral( "item %1 / %2" ).arg( i ).arg( tblResults->rowCount() ) );
+    QgsDebugMsgLevel( QStringLiteral( "item %1 / %2" ).arg( i ).arg( tblResults->rowCount() ), 3 );
     QTableWidgetItem *layItem = tblResults->item( i, 0 );
     if ( layItem && layItem->data( Qt::UserRole ).value<QObject *>() == senderObject )
     {
-      QgsDebugMsg( QStringLiteral( "removing row %1" ).arg( i ) );
+      QgsDebugMsgLevel( QStringLiteral( "removing row %1" ).arg( i ), 3 );
       tblResults->removeRow( i );
     }
   }
@@ -1852,7 +1884,7 @@ void QgsIdentifyResultsDialog::zoomToFeature()
     rect.scale( 0.5, &c );
   }
 
-  mCanvas->setExtent( rect );
+  mCanvas->setExtent( rect, true );
   mCanvas->refresh();
 }
 
@@ -2051,7 +2083,7 @@ void QgsIdentifyResultsDialog::cmbViewMode_currentIndexChanged( int index )
   stackedWidget->setCurrentIndex( index );
 }
 
-void QgsIdentifyResultsDialog::cbxAutoFeatureForm_toggled( bool checked )
+void QgsIdentifyResultsDialog::mActionAutoFeatureForm_toggled( bool checked )
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Map/identifyAutoFeatureForm" ), checked );
@@ -2166,7 +2198,7 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
 
 void QgsIdentifyResultsDialogMapLayerAction::execute()
 {
-  mAction->triggerForFeature( mLayer, mFeature );
+  mAction->triggerForFeature( mLayer, *mFeature );
 }
 
 void QgsIdentifyResultsDialog::showHelp()

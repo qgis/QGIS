@@ -75,6 +75,13 @@ Returns the global processing gui registry, used for registering the GUI behavio
 .. versionadded:: 3.2
 %End
 
+    static QgsNumericFormatGuiRegistry *numericFormatGuiRegistry() /KeepReference/;
+%Docstring
+Returns the global numeric format gui registry, used for registering the GUI widgets associated with :py:class:`QgsNumericFormats`.
+
+.. versionadded:: 3.12
+%End
+
     static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog();
 %Docstring
 Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.

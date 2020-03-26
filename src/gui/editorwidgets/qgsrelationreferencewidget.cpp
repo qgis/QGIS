@@ -44,6 +44,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturefiltermodel.h"
 #include "qgsidentifymenu.h"
+#include "qgsvectorlayerutils.h"
 
 
 bool qVariantListIsNull( const QVariantList &list )
@@ -155,6 +156,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   mHighlightFeatureButton->hide();
   mAttributeEditorFrame->hide();
   mInvalidLabel->hide();
+  mAddEntryButton->hide();
 
   // connect buttons
   connect( mOpenFormButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::openForm );
@@ -163,45 +165,12 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   connect( mRemoveFKButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::deleteForeignKeys );
   connect( mAddEntryButton, &QAbstractButton::clicked, this, &QgsRelationReferenceWidget::addEntry );
   connect( mComboBox, &QComboBox::editTextChanged, this, &QgsRelationReferenceWidget::updateAddEntryButton );
-  connect( mComboBox, &QgsFeatureListComboBox::modelUpdated, this, &QgsRelationReferenceWidget::updateIndex );
 }
 
 QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
 {
   deleteHighlight();
   unsetMapTool();
-}
-
-void QgsRelationReferenceWidget::updateIndex()
-{
-  if ( mChainFilters && mComboBox->count() > 0 )
-  {
-    int index = -1;
-
-    // uninitialized filter
-    if ( ! mFilterComboBoxes.isEmpty()
-         && mFilterComboBoxes[0]->currentIndex() == 0 && mAllowNull )
-    {
-      index = mComboBox->nullIndex();
-    }
-    else if ( mComboBox->count() > mComboBox->nullIndex() )
-    {
-      index = mComboBox->nullIndex() + 1;
-    }
-    else if ( mAllowNull )
-    {
-      index = mComboBox->nullIndex();
-    }
-    else
-    {
-      index = 0;
-    }
-
-    if ( mComboBox->count() > index )
-    {
-      mComboBox->setCurrentIndex( index );
-    }
-  }
 }
 
 void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool allowNullValue )
@@ -211,6 +180,10 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
 
   if ( relation.isValid() )
   {
+    mReferencedLayerId = relation.referencedLayerId();
+    mReferencedLayerName = relation.referencedLayer()->name();
+    setReferencedLayerDataSource( relation.referencedLayer()->publicSource() );
+    mReferencedLayerProviderKey = relation.referencedLayer()->providerType();
     mInvalidLabel->hide();
 
     mRelation = relation;
@@ -391,7 +364,7 @@ void QgsRelationReferenceWidget::deleteForeignKeys()
   mRemoveFKButton->setEnabled( false );
   updateAttributeEditorFrame( QgsFeature() );
 
-  emitForeignKeysChanged( foreignKeys(), true );
+  emitForeignKeysChanged( foreignKeys() );
 }
 
 QgsFeature QgsRelationReferenceWidget::referencedFeature() const
@@ -457,8 +430,12 @@ void QgsRelationReferenceWidget::setEditorContext( const QgsAttributeEditorConte
   mMapToolIdentify.reset( new QgsMapToolIdentifyFeature( mCanvas ) );
   mMapToolIdentify->setButton( mMapIdentificationButton );
 
-  mMapToolDigitize.reset( new QgsMapToolDigitizeFeature( mCanvas, context.cadDockWidget() ) );
-  mMapToolDigitize->setButton( mAddEntryButton );
+  if ( mEditorContext.cadDockWidget() )
+  {
+    mMapToolDigitize.reset( new QgsMapToolDigitizeFeature( mCanvas, mEditorContext.cadDockWidget() ) );
+    mMapToolDigitize->setButton( mAddEntryButton );
+    updateAddEntryButton();
+  }
 }
 
 void QgsRelationReferenceWidget::setEmbedForm( bool display )
@@ -610,8 +587,6 @@ void QgsRelationReferenceWidget::init()
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
     connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRelationReferenceWidget::comboReferenceChanged );
-    //call it for the first time
-    emit mComboBox->currentIndexChanged( mComboBox->currentIndex() );
 
     QApplication::restoreOverrideCursor();
 
@@ -676,7 +651,7 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
     {
       extent.combineExtentWith( featBBox );
       extent.scale( 1.1 );
-      mCanvas->setExtent( extent );
+      mCanvas->setExtent( extent, true );
       mCanvas->refresh();
     }
   }
@@ -788,9 +763,9 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature &feature )
     }
     mLineEdit->setText( title );
     mForeignKeys.clear();
+    mFeature = feature;
     for ( const QString &fieldName : qgis::as_const( mReferencedFields ) )
       mForeignKeys << mFeature.attribute( fieldName );
-    mFeature = feature;
   }
   else
   {
@@ -995,15 +970,7 @@ void QgsRelationReferenceWidget::addEntry()
   {
     QString title = tr( "Relation %1 for %2." ).arg( mRelation.name(), mReferencingLayer->name() );
 
-    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mReferencingLayer ) );
-    if ( mCanvas )
-      context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() ) );
-
-    QgsExpression exp( mReferencingLayer->displayExpression() );
-    context.setFeature( mFormFeature );
-    exp.prepare( &context );
-    QString displayString = exp.evaluate( &context ).toString();
-
+    QString displayString = QgsVectorLayerUtils::getFeatureDisplayString( mReferencingLayer, mFormFeature );
     QString msg = tr( "Link feature to %1 \"%2\" : Digitize the geometry for the new feature on layer %3. Press &lt;ESC&gt; to cancel." )
                   .arg( mReferencingLayer->name(), displayString, mReferencedLayer->name() );
     mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );
@@ -1044,7 +1011,7 @@ void QgsRelationReferenceWidget::entryAdded( const QgsFeature &feat )
 
 void QgsRelationReferenceWidget::updateAddEntryButton()
 {
-  mAddEntryButton->setVisible( mAllowAddFeatures );
+  mAddEntryButton->setVisible( mAllowAddFeatures && mMapToolDigitize );
   mAddEntryButton->setEnabled( mReferencedLayer && mReferencedLayer->isEditable() );
 }
 
@@ -1084,6 +1051,47 @@ void QgsRelationReferenceWidget::emitForeignKeysChanged( const QVariantList &for
   emit foreignKeyChanged( foreignKeys.at( 0 ) );
   Q_NOWARN_DEPRECATED_POP
   emit foreignKeysChanged( foreignKeys );
+}
+
+QString QgsRelationReferenceWidget::referencedLayerName() const
+{
+  return mReferencedLayerName;
+}
+
+void QgsRelationReferenceWidget::setReferencedLayerName( const QString &relationLayerName )
+{
+  mReferencedLayerName = relationLayerName;
+}
+
+QString QgsRelationReferenceWidget::referencedLayerId() const
+{
+  return mReferencedLayerId;
+}
+
+void QgsRelationReferenceWidget::setReferencedLayerId( const QString &relationLayerId )
+{
+  mReferencedLayerId = relationLayerId;
+}
+
+QString QgsRelationReferenceWidget::referencedLayerProviderKey() const
+{
+  return mReferencedLayerProviderKey;
+}
+
+void QgsRelationReferenceWidget::setReferencedLayerProviderKey( const QString &relationProviderKey )
+{
+  mReferencedLayerProviderKey = relationProviderKey;
+}
+
+QString QgsRelationReferenceWidget::referencedLayerDataSource() const
+{
+  return mReferencedLayerDataSource;
+}
+
+void QgsRelationReferenceWidget::setReferencedLayerDataSource( const QString &relationDataSource )
+{
+  const QgsPathResolver resolver { QgsProject::instance()->pathResolver() };
+  mReferencedLayerDataSource = resolver.writePath( relationDataSource );
 }
 
 void QgsRelationReferenceWidget::setFormFeature( const QgsFeature &formFeature )

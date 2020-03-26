@@ -42,7 +42,7 @@
 #include <QDomDocument>
 #include <QNetworkDiskCache>
 #include <QSettings>
-#include <QDateTime>
+#include <QElapsedTimer>
 
 // TODO: remove, it's only needed by a single debug message
 #include <fcgi_stdio.h>
@@ -59,9 +59,10 @@ QgsCapabilitiesCache *QgsServer::sCapabilitiesCache = nullptr;
 QgsServerInterfaceImpl *QgsServer::sServerInterface = nullptr;
 // Initialization must run once for all servers
 bool QgsServer::sInitialized = false;
-QgsServerSettings QgsServer::sSettings;
 
 QgsServiceRegistry *QgsServer::sServiceRegistry = nullptr;
+
+Q_GLOBAL_STATIC( QgsServerSettings, sSettings );
 
 QgsServer::QgsServer()
 {
@@ -92,8 +93,8 @@ void QgsServer::setupNetworkAccessManager()
   QSettings settings;
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
   QNetworkDiskCache *cache = new QNetworkDiskCache( nullptr );
-  qint64 cacheSize = sSettings.cacheSize();
-  QString cacheDirectory = sSettings.cacheDirectory();
+  qint64 cacheSize = sSettings()->cacheSize();
+  QString cacheDirectory = sSettings()->cacheDirectory();
   cache->setCacheDirectory( cacheDirectory );
   cache->setMaximumCacheSize( cacheSize );
   QgsMessageLog::logMessage( QStringLiteral( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ), QStringLiteral( "Server" ), Qgis::Info );
@@ -137,7 +138,7 @@ void QgsServer::printRequestParameters( const QMap< QString, QString> &parameter
 QString QgsServer::configPath( const QString &defaultConfigPath, const QString &configPath )
 {
   QString cfPath( defaultConfigPath );
-  QString projectFile = sSettings.projectFile();
+  QString projectFile = sSettings()->projectFile();
   if ( !projectFile.isEmpty() )
   {
     cfPath = projectFile;
@@ -170,13 +171,13 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QString &
 void QgsServer::initLocale()
 {
   // System locale override
-  if ( ! sSettings.overrideSystemLocale().isEmpty() )
+  if ( ! sSettings()->overrideSystemLocale().isEmpty() )
   {
-    QLocale::setDefault( QLocale( sSettings.overrideSystemLocale() ) );
+    QLocale::setDefault( QLocale( sSettings()->overrideSystemLocale() ) );
   }
   // Number group separator settings
   QLocale currentLocale;
-  if ( sSettings.showGroupSeparator() )
+  if ( sSettings()->showGroupSeparator() )
   {
     currentLocale.setNumberOptions( currentLocale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
   }
@@ -208,16 +209,16 @@ bool QgsServer::init()
 
   // reload settings to take into account QCoreApplication and QgsApplication
   // configuration
-  sSettings.load();
+  sSettings()->load();
 
   // init and configure logger
   QgsServerLogger::instance();
-  QgsServerLogger::instance()->setLogLevel( sSettings.logLevel() );
-  if ( ! sSettings.logFile().isEmpty() )
+  QgsServerLogger::instance()->setLogLevel( sSettings()->logLevel() );
+  if ( ! sSettings()->logFile().isEmpty() )
   {
-    QgsServerLogger::instance()->setLogFile( sSettings.logFile() );
+    QgsServerLogger::instance()->setLogFile( sSettings()->logFile() );
   }
-  else if ( sSettings.logStderr() )
+  else if ( sSettings()->logStderr() )
   {
     QgsServerLogger::instance()->setLogStderr();
   }
@@ -226,7 +227,7 @@ bool QgsServer::init()
   initLocale();
 
   // log settings currently used
-  sSettings.logSummary();
+  sSettings()->logSummary();
 
   setupNetworkAccessManager();
   QDomImplementation::setInvalidDataPolicy( QDomImplementation::DropInvalidChars );
@@ -273,11 +274,11 @@ bool QgsServer::init()
 
   sServiceRegistry = new QgsServiceRegistry();
 
-  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, sServiceRegistry, &sSettings );
+  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, sServiceRegistry, sSettings() );
 
   // Load service module
   QString modulePath = QgsApplication::libexecPath() + "server";
-  qDebug() << "Initializing server modules from " << modulePath << endl;
+  // qDebug() << QStringLiteral( "Initializing server modules from: %1" ).arg( modulePath );
   sServiceRegistry->init( modulePath,  sServerInterface );
 
   sInitialized = true;
@@ -289,18 +290,21 @@ bool QgsServer::init()
 
 void QgsServer::putenv( const QString &var, const QString &val )
 {
-#ifdef _MSC_VER
-  _putenv_s( var.toStdString().c_str(), val.toStdString().c_str() );
-#else
-  setenv( var.toStdString().c_str(), val.toStdString().c_str(), 1 );
-#endif
-  sSettings.load( var );
+  if ( val.isEmpty() )
+  {
+    qunsetenv( var.toUtf8().data() );
+  }
+  else
+  {
+    qputenv( var.toUtf8().data(), val.toUtf8() );
+  }
+  sSettings()->load( var );
 }
 
 void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project )
 {
   Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
-  QTime time; //used for measuring request time if loglevel < 1
+  QElapsedTimer time; //used for measuring request time if loglevel < 1
 
   qApp->processEvents();
 
@@ -419,7 +423,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
     {
       responseDecorator.write( ex );
       QString format;
-      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::Info );
+      QgsMessageLog::logMessage( ex.formatResponse( format ), QStringLiteral( "Server" ), Qgis::Warning );
     }
     catch ( QgsException &ex )
     {

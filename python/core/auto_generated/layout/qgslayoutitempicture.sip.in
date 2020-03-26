@@ -62,11 +62,13 @@ The caller takes responsibility for deleting the returned object.
 %End
 
 
-    void setPicturePath( const QString &path );
+    void setPicturePath( const QString &path, Format format = FormatUnknown );
 %Docstring
 Sets the source ``path`` of the image (may be svg or a raster format). Data defined
 picture source may override this value. The path can either be a local path
 or a remote (http) path.
+
+Ideally, the ``format`` argument should specify the image format.
 
 .. seealso:: :py:func:`picturePath`
 %End
@@ -153,7 +155,7 @@ Sets the ``offset`` added to the picture's rotation from a map's North.
 
     ResizeMode resizeMode() const;
 %Docstring
-Returns the resize mode used for drawing the picture within the composer
+Returns the resize mode used for drawing the picture within the layout
 item's frame.
 
 .. seealso:: :py:func:`setResizeMode`
@@ -249,6 +251,17 @@ Sets the stroke ``width`` (in layout units) used for parametrized SVG files.
     Format mode() const;
 %Docstring
 Returns the current picture mode (image format).
+
+.. seealso:: :py:func:`setMode`
+%End
+
+    void setMode( Format mode );
+%Docstring
+Sets the current picture ``mode`` (image format).
+
+.. seealso:: :py:func:`mode`
+
+.. versionadded:: 3.14
 %End
 
     virtual void finalizeRestoreFromXml();

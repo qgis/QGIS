@@ -650,7 +650,7 @@ void QgsDxfExport::writeEntities()
 
     QgsCoordinateTransform ct( mMapSettings.destinationCrs(), job->crs, mMapSettings.transformContext() );
 
-    QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setExpressionContext( job->expressionContext );
+    QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( job->attributes, job->fields ).setExpressionContext( job->renderContext.expressionContext() );
     request.setFilterRect( ct.transform( mExtent ) );
 
     QgsFeatureIterator featureIt = job->featureSource.getFeatures( request );
@@ -786,7 +786,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( DxfLayerJob *job )
   QHash< QgsSymbol *, QList<QgsFeature> > features;
 
   QgsRenderContext ctx = renderContext();
-  const QList<QgsExpressionContextScope *> scopes = job->expressionContext.scopes();
+  const QList<QgsExpressionContextScope *> scopes = job->renderContext.expressionContext().scopes();
   for ( QgsExpressionContextScope *scope : scopes )
     ctx.expressionContext().appendScope( new QgsExpressionContextScope( *scope ) );
   QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, nullptr, nullptr );
@@ -908,7 +908,7 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
     const QgsMarkerSymbolLayer *msl = dynamic_cast< const QgsMarkerSymbolLayer * >( symbolLayer );
     if ( msl && symbol )
     {
-      if ( symbolLayer->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, msl->sizeUnit(), mMapUnits, ctx.renderContext().mapToPixel().mapUnitsPerPixel() ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
+      if ( msl->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, msl->sizeUnit(), mMapUnits, ctx.renderContext().mapToPixel().mapUnitsPerPixel() ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
       {
         return;
       }
@@ -1097,7 +1097,17 @@ void QgsDxfExport::writePolyline( const QgsCurve &curve, const QString &layer, c
     writeGroup( color );
 
     writeGroup( 90, points.size() );
-    writeGroup( 70, ( curve.isClosed() ? 1 : 0 ) | ( curve.hasCurvedSegments() ? 2 : 0 ) );
+    QgsDxfExport::DxfPolylineFlags polylineFlags;
+    if ( curve.isClosed() )
+      polylineFlags.setFlag( QgsDxfExport::DxfPolylineFlag::Closed );
+    if ( curve.hasCurvedSegments() )
+      polylineFlags.setFlag( QgsDxfExport::DxfPolylineFlag::Curve );
+
+    // Might need to conditional once this feature is implemented
+    //   https://github.com/qgis/QGIS/issues/32468
+    polylineFlags.setFlag( QgsDxfExport::DxfPolylineFlag::ContinuousPattern );
+
+    writeGroup( 70, static_cast<int>( polylineFlags ) );
     writeGroup( 43, width );
 
     for ( int i = 0; i < points.size(); i++ )
@@ -1252,15 +1262,83 @@ void QgsDxfExport::writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QS
 
 void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::LabelPosition *label, const QgsPalLayerSettings &layerSettings, const QgsExpressionContext &expressionContext )
 {
+
   double lblX = label->getX();
   double lblY = label->getY();
+
+  QgsLabelFeature *labelFeature = label->getFeaturePart()->feature();
 
   HAlign hali = HAlign::Undefined;
   VAlign vali = VAlign::Undefined;
 
   const QgsPropertyCollection &props = layerSettings.dataDefinedProperties();
+
+  if ( layerSettings.placement == QgsPalLayerSettings::Placement::OverPoint )
+  {
+    lblX = labelFeature->anchorPosition().x();
+    lblY = labelFeature->anchorPosition().y();
+
+    QgsPalLayerSettings::QuadrantPosition offsetQuad = layerSettings.quadOffset;
+
+    if ( props.isActive( QgsPalLayerSettings::OffsetQuad ) )
+    {
+      const QVariant exprVal = props.value( QgsPalLayerSettings::OffsetQuad, expressionContext );
+      if ( exprVal.isValid() )
+      {
+        offsetQuad = static_cast<QgsPalLayerSettings::QuadrantPosition>( exprVal.toInt() );
+      }
+    }
+
+    switch ( offsetQuad )
+    {
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantAboveLeft:
+        hali = HAlign::HRight;
+        vali = VAlign::VBottom;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantAbove:
+        hali = HAlign::HCenter;
+        vali = VAlign::VBottom;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantAboveRight:
+        hali = HAlign::HLeft;
+        vali = VAlign::VBottom;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantLeft:
+        hali = HAlign::HRight;
+        vali = VAlign::VMiddle;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantOver:
+        hali = HAlign::HCenter;
+        vali = VAlign::VMiddle;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantRight:
+        hali = HAlign::HLeft;
+        vali = VAlign::VMiddle;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantBelowLeft:
+        hali = HAlign::HRight;
+        vali = VAlign::VTop;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantBelow:
+        hali = HAlign::HCenter;
+        vali = VAlign::VTop;
+        break;
+      case QgsPalLayerSettings::QuadrantPosition::QuadrantBelowRight:
+        hali = HAlign::HLeft;
+        vali = VAlign::VTop;
+        break;
+      default: // OverHali
+        hali = HAlign::HCenter;
+        vali = VAlign::VTop;
+        break;
+    }
+  }
+
   if ( props.isActive( QgsPalLayerSettings::Hali ) )
   {
+    lblX = labelFeature->anchorPosition().x();
+    lblY = labelFeature->anchorPosition().y();
+
     hali = HAlign::HLeft;
     QVariant exprVal = props.value( QgsPalLayerSettings::Hali, expressionContext );
     if ( exprVal.isValid() )
@@ -1276,8 +1354,6 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, pal::La
       }
     }
   }
-
-  std::unique_ptr<QFontMetricsF> labelFontMetrics( new QFontMetricsF( layerSettings.format().font() ) );
 
   //vertical alignment
   if ( props.isActive( QgsPalLayerSettings::Vali ) )
@@ -1393,7 +1469,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, const Q
     writeGroup( 1, pt ); // Second alignment point
   writeGroup( 40, size );
   writeGroup( 1, text );
-  writeGroup( 50, angle );
+  writeGroup( 50, fmod( angle, 360 ) );
   if ( hali != HAlign::Undefined )
     writeGroup( 72, static_cast<int>( hali ) );
   writeGroup( 7, QStringLiteral( "STANDARD" ) ); // so far only support for standard font
@@ -2238,10 +2314,14 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
 
   if ( mFlags & FlagNoMText )
   {
+    txt.replace( QChar( QChar::LineFeed ), ' ' );
+    txt.replace( QChar( QChar::CarriageReturn ), ' ' );
     writeText( dxfLayer, txt, label, tmpLyr, context.expressionContext() );
   }
   else
   {
+    txt.replace( QString( QChar( QChar::CarriageReturn ) ) + QString( QChar( QChar::LineFeed ) ), QStringLiteral( "\\P" ) );
+    txt.replace( QChar( QChar::CarriageReturn ), QStringLiteral( "\\P" ) );
     txt = txt.replace( wrapchr, QLatin1String( "\\P" ) );
     txt.replace( " ", "\\~" );
 

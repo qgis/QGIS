@@ -15,6 +15,7 @@
 
 #include "qgseventtracing.h"
 
+#include <QCoreApplication>
 #include <QFile>
 #include <QThread>
 
@@ -23,10 +24,11 @@
 struct TraceItem
 {
   QgsEventTracing::EventType type;
-  int threadId;
-  int timestamp;
+  uint threadId;
+  qint64 timestamp;
   QString category;
   QString name;
+  QString id;
 };
 
 //! Whether we are tracing right now
@@ -63,6 +65,24 @@ bool QgsEventTracing::stopTracing()
   return false;
 }
 
+bool QgsEventTracing::isTracingEnabled()
+{
+  return sIsTracing;
+}
+
+static char _eventTypeToChar( QgsEventTracing::EventType type )
+{
+  switch ( type )
+  {
+    case QgsEventTracing::Begin: return 'B';
+    case QgsEventTracing::End: return 'E';
+    case QgsEventTracing::Instant: return 'i';
+    case QgsEventTracing::AsyncBegin: return 'b';
+    case QgsEventTracing::AsyncEnd: return 'e';
+  }
+  return '?';
+}
+
 bool QgsEventTracing::writeTrace( const QString &fileName )
 {
   if ( sIsTracing )
@@ -81,9 +101,20 @@ bool QgsEventTracing::writeTrace( const QString &fileName )
       f.write( ",\n" );
     else
       first = false;
-    char t = item.type == Begin ? 'B' : ( item.type == End ? 'E' : 'I' );
-    QString msg = QString( "  {\"cat\": \"%1\", \"pid\": 1, \"tid\": %2, \"ts\": %3, \"ph\": \"%4\", \"name\": \"%5\" }" )
+    char t = _eventTypeToChar( item.type );
+    QString msg = QStringLiteral( "  {\"cat\": \"%1\", \"pid\": 1, \"tid\": %2, \"ts\": %3, \"ph\": \"%4\", \"name\": \"%5\"" )
                   .arg( item.category ).arg( item.threadId ).arg( item.timestamp ).arg( t ).arg( item.name );
+
+    // for instant events we always set them as global (currently not supporting instant events at thread scope)
+    if ( item.type == Instant )
+      msg += QStringLiteral( ", \"s\": \"g\"" );
+
+    // async events also need to have ID associated
+    if ( item.type == AsyncBegin || item.type == AsyncEnd )
+      msg += QStringLiteral( ", \"id\": \"%1\"" ).arg( item.id );
+
+    msg += " }";
+
     f.write( msg.toUtf8() );
   }
 
@@ -92,7 +123,7 @@ bool QgsEventTracing::writeTrace( const QString &fileName )
   return true;
 }
 
-void QgsEventTracing::addEvent( QgsEventTracing::EventType type, const QString &category, const QString &name )
+void QgsEventTracing::addEvent( QgsEventTracing::EventType type, const QString &category, const QString &name, const QString &id )
 {
   if ( !sIsTracing )
     return;
@@ -101,9 +132,13 @@ void QgsEventTracing::addEvent( QgsEventTracing::EventType type, const QString &
   TraceItem item;
   item.type = type;
   item.timestamp = sTracingTimer()->nsecsElapsed() / 1000;
-  item.threadId = reinterpret_cast<qint64>( QThread::currentThreadId() );
+  if ( QThread::currentThread() == QCoreApplication::instance()->thread() )
+    item.threadId = 0;  // to make it show up first
+  else
+    item.threadId = static_cast<uint>( reinterpret_cast<quint64>( QThread::currentThreadId() ) );
   item.category = category;
   item.name = name;
+  item.id = id;
   sTraceEvents()->append( item );
   sTraceEventsMutex()->unlock();
 }

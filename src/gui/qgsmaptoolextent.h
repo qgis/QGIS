@@ -20,8 +20,7 @@
 #include "qgspointxy.h"
 #include "qgsrubberband.h"
 #include "qgis_gui.h"
-
-#include <memory>
+#include "qobjectuniqueptr.h"
 
 class QgsMapCanvas;
 
@@ -76,7 +75,7 @@ class GUI_EXPORT QgsMapToolExtent : public QgsMapTool
 
     void drawExtent();
 
-    std::unique_ptr< QgsRubberBand > mRubberBand;
+    QObjectUniquePtr< QgsRubberBand > mRubberBand;
 
     QgsPointXY mStartPoint;
     QgsPointXY mEndPoint;

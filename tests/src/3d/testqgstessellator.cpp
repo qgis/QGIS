@@ -138,6 +138,7 @@ class TestQgsTessellator : public QObject
     void testCrashEmptyPolygon();
     void testBoundsScaling();
     void testNoZ();
+    void testTriangulationDoesNotCrash();
 
   private:
 };
@@ -384,6 +385,16 @@ void TestQgsTessellator::testNoZ()
   QgsTessellator t( polygonZ.boundingBox(), false, false, false, true );
   t.addPolygon( polygonZ, 0 );
   QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
+}
+
+void TestQgsTessellator::testTriangulationDoesNotCrash()
+{
+  // a commit in poly2tri has caused a crashing regression - https://github.com/jhasse/poly2tri/issues/11
+  // this code only makes sure that the crash does not come back during another update of poly2tri
+  QgsPolygon polygon;
+  polygon.fromWkt( "Polygon((0 0, -5 -3e-10, -10 -2e-10, -10 -4, 0 -4))" );
+  QgsTessellator t( 0, 0, true );
+  t.addPolygon( polygon, 0 );
 }
 
 

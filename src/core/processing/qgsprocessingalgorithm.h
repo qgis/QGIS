@@ -76,6 +76,8 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagDisplayNameIsLiteral = 1 << 7, //!< Algorithm's display name is a static literal string, and should not be translated or automatically formatted. For use with algorithms named after commands, e.g. GRASS 'v.in.ogr'.
       FlagSupportsInPlaceEdits = 1 << 8, //!< Algorithm supports in-place editing
       FlagKnownIssues = 1 << 9, //!< Algorithm has known issues
+      FlagCustomException = 1 << 10, //!< Algorithm raises custom exception notices, don't use the standard ones
+      FlagPruneModelBranchesBasedOnAlgorithmResults = 1 << 11, //!< Algorithm results will cause remaining model branches to be pruned based on the results of running the algorithm
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -525,9 +527,8 @@ class CORE_EXPORT QgsProcessingAlgorithm
      *
      * This method will not be called if the prepareAlgorithm() step failed (returned FALSE).
      *
-     * c++ implementations of processAlgorithm can throw the QgsProcessingException exception
-     * to indicate that a fatal error occurred within the execution. Python based subclasses
-     * should raise GeoAlgorithmExecutionException for the same purpose.
+     * Implementations of processAlgorithm can throw the QgsProcessingException exception
+     * to indicate that a fatal error occurred within the execution.
      *
      * \returns A map of algorithm outputs. These may be output layer references, or calculated
      * values such as statistical calculations. Unless the algorithm subclass overrides
@@ -628,9 +629,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * to the sink, e.g. via calling QgsProcessingUtils::mapLayerFromString().
      *
      * This function creates a new object and the caller takes responsibility for deleting the returned object.
+     *
+     * \throws QgsProcessingException
      */
     QgsFeatureSink *parameterAsSink( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QString &destinationIdentifier SIP_OUT,
-                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = nullptr ) const SIP_FACTORY;
+                                     const QgsFields &fields, QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), QgsFeatureSink::SinkFlags sinkFlags = nullptr ) const SIP_THROW( QgsProcessingException ) SIP_FACTORY;
 
     /**
      * Evaluates the parameter with matching \a name to a feature source.
@@ -856,6 +859,35 @@ class CORE_EXPORT QgsProcessingAlgorithm
     QColor parameterAsColor( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
 
     /**
+     * Evaluates the parameter with matching \a name to a connection name string.
+     *
+     * \since QGIS 3.14
+     */
+    QString parameterAsConnectionName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a name to a database schema name string.
+     *
+     * \since QGIS 3.14
+     */
+    QString parameterAsSchema( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a name to a database table name string.
+     *
+     * \since QGIS 3.14
+     */
+    QString parameterAsDatabaseTableName( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+    /**
+     * Evaluates the parameter with matching \a name to a DateTime, or returns an invalid date time if the parameter was not set.
+     *
+     * \since QGIS 3.14
+     */
+    QDateTime parameterAsDateTime( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
+
+
+    /**
      * Returns a user-friendly string to use as an error when a source parameter could
      * not be loaded.
      *
@@ -995,6 +1027,24 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
   protected:
 
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+
+    /**
+     * Returns the name of the parameter corresponding to the input layer.
+     *
+     * By default this is the standard "INPUT" parameter name.
+     *
+     * \since QGIS 3.12
+     */
+    virtual QString inputParameterName() const;
+
+    /**
+     * Returns the translated description of the parameter corresponding to the input layer.
+     *
+     * By default this is a translated "Input layer" string.
+     *
+     * \since QGIS 3.12
+     */
+    virtual QString inputParameterDescription() const;
 
     /**
      * Returns the translated, user visible name for any layers created by this algorithm.

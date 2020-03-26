@@ -75,6 +75,11 @@ QString QgsProviderMetadata::filters( FilterType )
   return QString();
 }
 
+QList<QgsMeshDriverMetadata> QgsProviderMetadata::meshDriversMetadata()
+{
+  return QList<QgsMeshDriverMetadata>();
+}
+
 QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options )
 {
   if ( mCreateFunction )
@@ -87,6 +92,11 @@ QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri, const 
 QVariantMap QgsProviderMetadata::decodeUri( const QString & )
 {
   return QVariantMap();
+}
+
+QString QgsProviderMetadata::encodeUri( const QVariantMap & )
+{
+  return QString();
 }
 
 QgsVectorLayerExporter::ExportError QgsProviderMetadata::createEmptyLayer(
@@ -209,16 +219,22 @@ void QgsProviderMetadata::deleteConnection( const QString &name )
 
 void QgsProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name )
 {
-  Q_UNUSED( connection );
-  Q_UNUSED( name );
+  Q_UNUSED( connection )
+  Q_UNUSED( name )
   throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "saveConnection" ) ) );
 }
 
 ///@cond PRIVATE
 void QgsProviderMetadata::saveConnectionProtected( const QgsAbstractProviderConnection *conn, const QString &name )
 {
+  const bool isNewConnection = !connections().contains( name );
   conn->store( name );
   mProviderConnections.clear();
+
+  if ( !isNewConnection )
+    emit connectionChanged( name );
+  else
+    emit connectionCreated( name );
 }
 ///@endcond
 
@@ -239,6 +255,24 @@ QMap<QString, T *> QgsProviderMetadata::connections( bool cached )
   return result;
 }
 
+QgsMeshDriverMetadata::QgsMeshDriverMetadata() = default;
 
+QgsMeshDriverMetadata::QgsMeshDriverMetadata( const QString &name, const QString &description, const MeshDriverCapabilities &capabilities )
+  : mName( name ), mDescription( description ), mCapabilities( capabilities )
+{
+}
 
+QgsMeshDriverMetadata::MeshDriverCapabilities QgsMeshDriverMetadata::capabilities() const
+{
+  return mCapabilities;
+}
 
+QString QgsMeshDriverMetadata::name() const
+{
+  return mName;
+}
+
+QString QgsMeshDriverMetadata::description() const
+{
+  return mDescription;
+}

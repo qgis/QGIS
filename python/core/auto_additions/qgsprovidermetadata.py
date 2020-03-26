@@ -1,4 +1,7 @@
 # The following has been generated automatically from src/core/qgsprovidermetadata.h
+QgsMeshDriverMetadata.MeshDriverCapability.baseClass = QgsMeshDriverMetadata
+QgsMeshDriverMetadata.MeshDriverCapabilities.baseClass = QgsMeshDriverMetadata
+MeshDriverCapabilities = QgsMeshDriverMetadata  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 QgsProviderMetadata.FilterType.FilterVector.__doc__ = ""
 QgsProviderMetadata.FilterType.FilterRaster.__doc__ = ""

@@ -45,7 +45,7 @@ QIcon QgsClassificationQuantile::icon() const
 }
 
 
-QList<double> QgsClassificationQuantile::calculateBreaks( double minimum, double maximum,
+QList<double> QgsClassificationQuantile::calculateBreaks( double &minimum, double &maximum,
     const QList<double> &values, int nclasses )
 {
   Q_UNUSED( minimum )

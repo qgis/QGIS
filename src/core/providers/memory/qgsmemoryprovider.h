@@ -26,7 +26,7 @@ class QgsSpatialIndex;
 
 class QgsMemoryFeatureIterator;
 
-class QgsMemoryProvider : public QgsVectorDataProvider
+class QgsMemoryProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
 
@@ -67,6 +67,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override { return true; }
     bool createSpatialIndex() override;
+    QgsFeatureSource::SpatialIndexPresence hasSpatialIndex() const override;
     QgsVectorDataProvider::Capabilities capabilities() const override;
     bool truncate() override;
 

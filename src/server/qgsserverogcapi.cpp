@@ -16,6 +16,7 @@
 
 #include <QDir>
 #include <QDebug>
+#include <QtGlobal>
 
 #include "qgsserverogcapi.h"
 #include "qgsserverogcapihandler.h"
@@ -32,7 +33,7 @@ QMap<QgsServerOgcApi::ContentType, QStringList> QgsServerOgcApi::sContentTypeMim
     QStringLiteral( "application/geojson" )
   };
   map[QgsServerOgcApi::ContentType::HTML] = QStringList { QStringLiteral( "text/html" ) };
-  map[QgsServerOgcApi::ContentType::OPENAPI3] = QStringList { QStringLiteral( "application/openapi+json;version=3.0" ) };
+  map[QgsServerOgcApi::ContentType::OPENAPI3] = QStringList { QStringLiteral( "application/vnd.oai.openapi+json;version=3.0" ) };
   map[QgsServerOgcApi::ContentType::XML] = QStringList { QStringLiteral( "application/xml" ) };
   return map;
 }();
@@ -68,7 +69,13 @@ void QgsServerOgcApi::registerHandler( QgsServerOgcApiHandler *handler )
 
 QUrl QgsServerOgcApi::sanitizeUrl( const QUrl &url )
 {
-  return url.adjusted( QUrl::StripTrailingSlash | QUrl::NormalizePathSegments );
+  // Since QT 5.12 NormalizePathSegments does not collapse double slashes
+  QUrl u { url.adjusted( QUrl::StripTrailingSlash | QUrl::NormalizePathSegments ) };
+  if ( u.path().contains( QLatin1String( "//" ) ) )
+  {
+    u.setPath( u.path().replace( QLatin1String( "//" ), QChar( '/' ) ) );
+  }
+  return u;
 }
 
 void QgsServerOgcApi::executeRequest( const QgsServerApiContext &context ) const

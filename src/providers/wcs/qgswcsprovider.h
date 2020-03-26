@@ -105,7 +105,7 @@ struct QgsWcsAuthorization
   data residing in a OGC Web Map Service.
 
 */
-class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
+class QgsWcsProvider final: public QgsRasterDataProvider, QgsGdalProviderBase
 {
     Q_OBJECT
 
@@ -187,7 +187,6 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString lastErrorFormat() override;
     QString name() const override;
     QString description() const override;
-    void reloadData() override;
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
 
     int colorInterpretation( int bandNo ) const override;
@@ -400,6 +399,11 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QNetworkRequest::CacheLoadControl mCacheLoadControl = QNetworkRequest::PreferNetwork;
 
+    /**
+     * Clears cache
+    */
+    void reloadProviderData() override;
+
 };
 
 //! Handler for downloading of coverage data - output is written to mCachedData
@@ -434,7 +438,7 @@ class QgsWcsDownloadHandler : public QObject
     static int sErrors; // this should be ideally per-provider...?
 };
 
-class QgsWcsProviderMetadata: public QgsProviderMetadata
+class QgsWcsProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsWcsProviderMetadata();

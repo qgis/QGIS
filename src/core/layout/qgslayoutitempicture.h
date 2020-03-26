@@ -85,9 +85,12 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * Sets the source \a path of the image (may be svg or a raster format). Data defined
      * picture source may override this value. The path can either be a local path
      * or a remote (http) path.
+     *
+     * Ideally, the \a format argument should specify the image format.
+     *
      * \see picturePath()
      */
-    void setPicturePath( const QString &path );
+    void setPicturePath( const QString &path, Format format = FormatUnknown );
 
     /**
      * Returns the path of the source image. Data defined picture source may override
@@ -155,7 +158,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void setNorthOffset( double offset );
 
     /**
-     * Returns the resize mode used for drawing the picture within the composer
+     * Returns the resize mode used for drawing the picture within the layout
      * item's frame.
      * \see setResizeMode()
      */
@@ -226,8 +229,16 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 
     /**
      * Returns the current picture mode (image format).
+     * \see setMode()
      */
     Format mode() const { return mMode; }
+
+    /**
+     * Sets the current picture \a mode (image format).
+     * \see mode()
+     * \since QGIS 3.14
+     */
+    void setMode( Format mode );
 
     void finalizeRestoreFromXml() override;
 
@@ -357,6 +368,8 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * Loads a local picture for the item
      */
     void loadLocalPicture( const QString &path );
+
+    void loadPictureUsingCache( const QString &path );
 
     void disconnectMap( QgsLayoutItemMap *map );
 

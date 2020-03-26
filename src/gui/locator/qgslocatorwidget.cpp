@@ -41,7 +41,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   mLineEdit->setPlaceholderText( tr( "Type to locate (Ctrl+K)" ) );
 #endif
 
-  int placeholderMinWidth = mLineEdit->fontMetrics().width( mLineEdit->placeholderText() );
+  int placeholderMinWidth = mLineEdit->fontMetrics().boundingRect( mLineEdit->placeholderText() ).width();
   int minWidth = std::max( 200, static_cast< int >( placeholderMinWidth * 1.8 ) );
   resize( minWidth, 30 );
   QSizePolicy sizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
@@ -144,7 +144,14 @@ void QgsLocatorWidget::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsLocatorWidget::search( const QString &string )
 {
-  mLineEdit->setText( string );
+  if ( string.isEmpty() )
+  {
+    mLineEdit->selectAll();
+  }
+  else
+  {
+    mLineEdit->setText( string );
+  }
   window()->activateWindow(); // window must also be active - otherwise floating docks can steal keystrokes
   scheduleDelayedPopup();
   mLineEdit->setFocus();

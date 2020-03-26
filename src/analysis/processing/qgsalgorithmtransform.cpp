@@ -23,6 +23,13 @@
 void QgsTransformAlgorithm::initParameters( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "TARGET_CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "EPSG:4326" ) ) );
+
+#if PROJ_VERSION_MAJOR>=6
+  std::unique_ptr< QgsProcessingParameterCoordinateOperation > crsOpParam = qgis::make_unique< QgsProcessingParameterCoordinateOperation >( QStringLiteral( "OPERATION" ), QObject::tr( "Coordinate operation" ),
+      QVariant(), QStringLiteral( "INPUT" ), QStringLiteral( "TARGET_CRS" ), QVariant(), QVariant(), true );
+  crsOpParam->setFlags( crsOpParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( crsOpParam.release() );
+#endif
 }
 
 QgsCoordinateReferenceSystem QgsTransformAlgorithm::outputCrs( const QgsCoordinateReferenceSystem & ) const
@@ -81,7 +88,8 @@ bool QgsTransformAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
 {
   prepareSource( parameters, context );
   mDestCrs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
-  mTransformContext = context.project() ? context.project()->transformContext() : QgsCoordinateTransformContext();
+  mTransformContext = context.transformContext();
+  mCoordOp = parameterAsString( parameters, QStringLiteral( "OPERATION" ), context );
   return true;
 }
 
@@ -91,7 +99,11 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
   if ( !mCreatedTransform )
   {
     mCreatedTransform = true;
+    if ( !mCoordOp.isEmpty() )
+      mTransformContext.addCoordinateOperation( sourceCrs(), mDestCrs, mCoordOp, false );
     mTransform = QgsCoordinateTransform( sourceCrs(), mDestCrs, mTransformContext );
+
+    mTransform.disableFallbackOperationHandler( true );
   }
 
   if ( feature.hasGeometry() )
@@ -106,6 +118,14 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
       else
       {
         feature.clearGeometry();
+      }
+
+      if ( !mWarnedAboutFallbackTransform && mTransform.fallbackOperationOccurred() )
+      {
+        feedback->reportError( QObject::tr( "An alternative, ballpark-only transform was used when transforming coordinates for one or more features. "
+                                            "(Possibly an incorrect choice of operation was made for transformations between these reference systems - check "
+                                            "that the selected operation is valid for the full extent of the input layer.)" ) );
+        mWarnedAboutFallbackTransform = true; // only warn once to avoid flooding the log
       }
     }
     catch ( QgsCsException & )

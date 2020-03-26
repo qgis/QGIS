@@ -168,7 +168,7 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex &idx, int role
       int n;
       for ( n = 0; !hasChecked || !hasUnchecked; n++ )
       {
-        QVariant v = data( idx.child( n, 0 ), role );
+        QVariant v = data( index( n, 0, idx ), role );
         if ( !v.isValid() )
           break;
 
@@ -237,7 +237,7 @@ bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const Q
     int i = 0;
     for ( i = 0; ; i++ )
     {
-      QModelIndex child = index.child( i, 0 );
+      QModelIndex child = QgsVectorLayerAndAttributeModel::index( i, 0, index );
       if ( !child.isValid() )
         break;
 

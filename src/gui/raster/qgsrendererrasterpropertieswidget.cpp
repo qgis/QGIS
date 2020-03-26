@@ -319,7 +319,7 @@ void QgsRendererRasterPropertiesWidget::toggleColorizeControls( bool colorizeEna
 
 void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &rendererName )
 {
-  QgsDebugMsg( "rendererName = " + rendererName );
+  QgsDebugMsgLevel( "rendererName = " + rendererName, 3 );
   QgsRasterRendererWidget *oldWidget = mRendererWidget;
 
   int alphaBand = -1;
@@ -338,7 +338,7 @@ void QgsRendererRasterPropertiesWidget::setRendererWidget( const QString &render
   {
     if ( rendererEntry.widgetCreateFunction ) // Single band color data renderer e.g. has no widget
     {
-      QgsDebugMsg( QStringLiteral( "renderer has widgetCreateFunction" ) );
+      QgsDebugMsgLevel( QStringLiteral( "renderer has widgetCreateFunction" ), 3 );
       // Current canvas extent (used to calc min/max) in layer CRS
       QgsRectangle myExtent = mMapCanvas->mapSettings().outputExtentToLayerExtent( mRasterLayer, mMapCanvas->extent() );
       if ( oldWidget )

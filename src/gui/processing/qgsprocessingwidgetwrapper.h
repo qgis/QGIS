@@ -38,6 +38,8 @@ class QgsProcessingModelAlgorithm;
 class QgsMapCanvas;
 class QgsProcessingAlgorithm;
 class QgsProcessingAbstractParameterDefinitionWidget;
+class QgsMessageBar;
+class QgsBrowserGuiModel;
 
 /**
  * \class QgsProcessingContextGenerator
@@ -95,6 +97,36 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
     QgsMapCanvas *mapCanvas() const;
 
     /**
+     * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
+     * to the user.
+     * \see messageBar()
+     * \since QGIS 3.12
+     */
+    void setMessageBar( QgsMessageBar *bar );
+
+    /**
+     * Returns the message bar associated with the widget. This allows the widget to push feedback messages
+     * to the user.
+     * \see setMessageBar()
+     * \since QGIS 3.12
+     */
+    QgsMessageBar *messageBar() const;
+
+    /**
+     * Sets the browser \a model associated with the widget. This will usually be the shared app instance of the browser model
+     * \see browserModel()
+     * \since QGIS 3.14
+     */
+    void setBrowserModel( QgsBrowserGuiModel *model );
+
+    /**
+     * Returns the browser model associated with the widget.
+     * \see setBrowserModel()
+     * \since QGIS 3.12
+     */
+    QgsBrowserGuiModel *browserModel() const;
+
+    /**
      * Sets the \a project associated with the widget. This allows the widget to retrieve the map layers
      * and other properties from the correct project.
      * \see project()
@@ -148,7 +180,11 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
 
     QgsMapCanvas *mMapCanvas = nullptr;
 
+    QgsMessageBar *mMessageBar = nullptr;
+
     QgsProject *mProject = nullptr;
+
+    QgsBrowserGuiModel *mBrowserModel = nullptr;
 
 };
 

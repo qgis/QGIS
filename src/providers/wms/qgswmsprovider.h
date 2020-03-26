@@ -109,7 +109,7 @@ class QgsCachedImageFetcher: public QgsImageFetcher
   data residing in a OGC Web Map Service.
 
 */
-class QgsWmsProvider : public QgsRasterDataProvider
+class QgsWmsProvider final: public QgsRasterDataProvider
 {
     Q_OBJECT
 
@@ -213,7 +213,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString name() const override;
     static QString providerKey();
     QString description() const override;
-    void reloadData() override;
     bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
     QList< double > nativeResolutions() const override;
 
@@ -271,7 +270,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
   private:
 
     //! In case of XYZ tile layer, setup capabilities from its URI
-    void setupXyzCapabilities( const QString &uri );
+    void setupXyzCapabilities( const QString &uri, const QgsRectangle &sourceExtent = QgsRectangle(), int sourceMinZoom = -1, int sourceMaxZoom = -1, double sourceTilePixelRatio = 0. );
+    //! In case of MBTiles layer, setup capabilities from its metadata
+    bool setupMBTilesCapabilities( const QString &uri );
 
     QImage *draw( QgsRectangle const   &viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback *feedback );
 
@@ -329,7 +330,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString toParamValue( const QgsRectangle &rect, bool changeXY );
 
     /* \brief add SRS or CRS parameter */
-    void setSRSQueryItem( QUrl &url );
+    void setSRSQueryItem( QUrlQuery &url );
 
     bool ignoreExtents() const override;
 
@@ -339,6 +340,13 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void createTileRequestsWMSC( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
     void createTileRequestsWMTS( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
     void createTileRequestsXYZ( const QgsWmtsTileMatrix *tm, const QgsWmsProvider::TilePositions &tiles, QgsWmsProvider::TileRequests &requests );
+
+    /**
+      * Add WMS-T parameters to the \a query, if provider has temporal properties
+      *
+      * \since QGIS 3.14
+      */
+    void addWmstParameters( QUrlQuery &query );
 
     //! Helper structure to store a cached tile image with its rectangle
     typedef struct TileImage
@@ -364,10 +372,10 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString layerMetadata( QgsWmsLayerProperty &layer );
 
     //! remove query item and replace it with a new value
-    void setQueryItem( QUrl &url, const QString &key, const QString &value );
+    void setQueryItem( QUrlQuery &url, const QString &key, const QString &value );
 
     //! add image FORMAT parameter to url
-    void setFormatQueryItem( QUrl &url );
+    void setFormatQueryItem( QUrlQuery &url );
 
     //! Name of the stored connection
     QString mConnectionName;
@@ -441,7 +449,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QString mError;
 
-
     /**
      * The mime type of the message
      */
@@ -470,6 +477,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     //! User's settings (URI, authorization, layer, style, ...)
     QgsWmsSettings mSettings;
+
+    //! Temporal range member
+    QgsDateTimeRange mRange;
 
     QList< double > mNativeResolutions;
 
@@ -575,7 +585,7 @@ class QgsWmsStatistics
 
 Q_DECLARE_TYPEINFO( QgsWmsProvider::TilePosition, Q_PRIMITIVE_TYPE );
 
-class QgsWmsProviderMetadata: public QgsProviderMetadata
+class QgsWmsProviderMetadata final: public QgsProviderMetadata
 {
   public:
     QgsWmsProviderMetadata();

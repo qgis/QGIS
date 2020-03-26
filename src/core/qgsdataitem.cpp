@@ -19,6 +19,7 @@
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
 #include <QDateTime>
+#include <QElapsedTimer>
 #include <QDir>
 #include <QFileInfo>
 #include <QMenu>
@@ -121,13 +122,14 @@ QIcon QgsZipItem::iconZip()
 
 QgsAnimatedIcon *QgsDataItem::sPopulatingIcon = nullptr;
 
-QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent, const QString &name, const QString &path )
+QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
   : mType( type )
   , mCapabilities( NoCapabilities )
   , mParent( parent )
   , mState( NotPopulated )
   , mName( name )
+  , mProviderKey( providerKey )
   , mPath( path )
   , mDeferredDelete( false )
   , mFutureWatcher( nullptr )
@@ -279,7 +281,7 @@ void QgsDataItem::populate( bool foreground )
 QVector<QgsDataItem *> QgsDataItem::runCreateChildren( QgsDataItem *item )
 {
   QgsDebugMsgLevel( "path = " + item->path(), 2 );
-  QTime time;
+  QElapsedTimer time;
   time.start();
   QVector <QgsDataItem *> children = item->createChildren();
   QgsDebugMsgLevel( QStringLiteral( "%1 children created in %2 ms" ).arg( children.size() ).arg( time.elapsed() ), 3 );
@@ -438,6 +440,16 @@ void QgsDataItem::refresh( const QVector<QgsDataItem *> &children )
   setState( Populated );
 }
 
+QString QgsDataItem::providerKey() const
+{
+  return mProviderKey;
+}
+
+void QgsDataItem::setProviderKey( const QString &value )
+{
+  mProviderKey = value;
+}
+
 int QgsDataItem::rowCount()
 {
   return mChildren.size();
@@ -445,6 +457,11 @@ int QgsDataItem::rowCount()
 bool QgsDataItem::hasChildren()
 {
   return ( state() == Populated ? !mChildren.isEmpty() : true );
+}
+
+bool QgsDataItem::layerCollection() const
+{
+  return false;
 }
 
 void QgsDataItem::setParent( QgsDataItem *parent )
@@ -607,9 +624,9 @@ QList<QMenu *> QgsDataItem::menus( QWidget *parent )
 
 // ---------------------------------------------------------------------
 
-QgsLayerItem::QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey )
-  : QgsDataItem( Layer, parent, name, path )
-  , mProviderKey( providerKey )
+QgsLayerItem::QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path,
+                            const QString &uri, LayerType layerType, const QString &providerKey )
+  : QgsDataItem( Layer, parent, name, path, providerKey )
   , mUri( uri )
   , mLayerType( layerType )
 {
@@ -784,8 +801,11 @@ QgsMimeDataUtils::Uri QgsLayerItem::mimeUri() const
 }
 
 // ---------------------------------------------------------------------
-QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataItem( Collection, parent, name, path )
+QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem *parent,
+    const QString &name,
+    const QString &path,
+    const QString &providerKey )
+  : QgsDataItem( Collection, parent, name, path, providerKey )
 {
   mCapabilities = Fertile;
   mIconName = QStringLiteral( "/mIconDbSchema.svg" );
@@ -817,8 +837,10 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, co
   init();
 }
 
-QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path )
-  : QgsDataCollectionItem( parent, QDir::toNativeSeparators( name ), path )
+QgsDirectoryItem::QgsDirectoryItem( QgsDataItem *parent, const QString &name,
+                                    const QString &dirPath, const QString &path,
+                                    const QString &providerKey )
+  : QgsDataCollectionItem( parent, QDir::toNativeSeparators( name ), path, providerKey )
   , mDirPath( dirPath )
   , mRefreshLater( false )
 {
@@ -1207,8 +1229,9 @@ void QgsDirectoryParamWidget::showHideColumn()
   settings.setValue( QStringLiteral( "dataitem/directoryHiddenColumns" ), lst );
 }
 
-QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataItem( QgsDataItem::Project, parent, name, path )
+QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name,
+                                const QString &path, const QString &providerKey )
+  : QgsDataItem( QgsDataItem::Project, parent, name, path, providerKey )
 {
   mIconName = QStringLiteral( ":/images/icons/qgis_icon.svg" );
   setToolTip( QDir::toNativeSeparators( path ) );
@@ -1233,7 +1256,7 @@ QgsErrorItem::QgsErrorItem( QgsDataItem *parent, const QString &error, const QSt
 }
 
 QgsFavoritesItem::QgsFavoritesItem( QgsDataItem *parent, const QString &name, const QString &path )
-  : QgsDataCollectionItem( parent, name, QStringLiteral( "favorites:" ) )
+  : QgsDataCollectionItem( parent, name, QStringLiteral( "favorites:" ), QStringLiteral( "special:Favorites" ) )
 {
   Q_UNUSED( path )
   mCapabilities |= Fast;
@@ -1392,8 +1415,10 @@ QgsZipItem::QgsZipItem( QgsDataItem *parent, const QString &name, const QString 
   init();
 }
 
-QgsZipItem::QgsZipItem( QgsDataItem *parent, const QString &name, const QString &filePath, const QString &path )
-  : QgsDataCollectionItem( parent, name, path )
+QgsZipItem::QgsZipItem( QgsDataItem *parent, const QString &name,
+                        const QString &filePath, const QString &path,
+                        const QString &providerKey )
+  : QgsDataCollectionItem( parent, name, path, providerKey )
   , mFilePath( filePath )
 {
   init();
@@ -1584,7 +1609,7 @@ QStringList QgsZipItem::getZipFileList()
 ///@cond PRIVATE
 
 QgsProjectHomeItem::QgsProjectHomeItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path )
-  : QgsDirectoryItem( parent, name, dirPath, path )
+  : QgsDirectoryItem( parent, name, dirPath, path, QStringLiteral( "special:ProjectHome" ) )
 {
 }
 
@@ -1602,7 +1627,7 @@ QVariant QgsProjectHomeItem::sortKey() const
 
 
 QgsFavoriteItem::QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name, const QString &dirPath, const QString &path )
-  : QgsDirectoryItem( parent, name, dirPath, path )
+  : QgsDirectoryItem( parent, name, dirPath, path, QStringLiteral( "special:Favorites" ) )
   , mFavorites( parent )
 {
   mCapabilities |= Rename;

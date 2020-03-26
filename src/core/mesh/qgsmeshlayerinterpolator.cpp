@@ -34,16 +34,18 @@
 #include "qgscoordinatetransform.h"
 #include "qgsmeshdataprovider.h"
 
-QgsMeshLayerInterpolator::QgsMeshLayerInterpolator( const QgsTriangularMesh &m,
-    const QVector<double> &datasetValues, const QgsMeshDataBlock &activeFaceFlagValues,
-    bool dataIsOnVertices,
-    const QgsRenderContext &context,
-    const QSize &size )
+QgsMeshLayerInterpolator::QgsMeshLayerInterpolator(
+  const QgsTriangularMesh &m,
+  const QVector<double> &datasetValues,
+  const QgsMeshDataBlock &activeFaceFlagValues,
+  QgsMeshDatasetGroupMetadata::DataType dataType,
+  const QgsRenderContext &context,
+  const QSize &size )
   : mTriangularMesh( m ),
     mDatasetValues( datasetValues ),
     mActiveFaceFlagValues( activeFaceFlagValues ),
     mContext( context ),
-    mDataOnVertices( dataIsOnVertices ),
+    mDataType( dataType ),
     mOutputSize( size )
 {
 }
@@ -74,14 +76,30 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
   outputBlock->setIsNoData();  // assume initially that all values are unset
   double *data = reinterpret_cast<double *>( outputBlock->bits() );
 
-  const QVector<QgsMeshFace> &triangles = mTriangularMesh.triangles();
+  QList<int> spatialIndexTriangles;
+  int indexCount;
+  if ( mSpatialIndexActive )
+  {
+    spatialIndexTriangles = mTriangularMesh.faceIndexesForRectangle( extent );
+    indexCount = spatialIndexTriangles.count();
+  }
+  else
+  {
+    indexCount = mTriangularMesh.triangles().count();
+  }
+
+  if ( mTriangularMesh.contains( QgsMesh::ElementType::Edge ) )
+  {
+    return outputBlock.release();
+  }
+
   const QVector<QgsMeshVertex> &vertices = mTriangularMesh.vertices();
 
   // currently expecting that triangulation does not add any new extra vertices on the way
-  if ( mDataOnVertices )
+  if ( mDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
     Q_ASSERT( mDatasetValues.count() == mTriangularMesh.vertices().count() );
 
-  for ( int i = 0; i < triangles.size(); ++i )
+  for ( int i = 0; i < indexCount; ++i )
   {
     if ( feedback && feedback->isCanceled() )
       break;
@@ -89,12 +107,18 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
     if ( mContext.renderingStopped() )
       break;
 
-    const QgsMeshFace &face = triangles[i];
+    int triangleIndex;
+    if ( mSpatialIndexActive )
+      triangleIndex = spatialIndexTriangles[i];
+    else
+      triangleIndex = i;
+
+    const QgsMeshFace &face = mTriangularMesh.triangles()[triangleIndex];
 
     const int v1 = face[0], v2 = face[1], v3 = face[2];
     const QgsPoint p1 = vertices[v1], p2 = vertices[v2], p3 = vertices[v3];
 
-    const int nativeFaceIndex = mTriangularMesh.trianglesToNativeFaces()[i];
+    const int nativeFaceIndex = mTriangularMesh.trianglesToNativeFaces()[triangleIndex];
     const bool isActive = mActiveFaceFlagValues.active( nativeFaceIndex );
     if ( !isActive )
       continue;
@@ -115,7 +139,7 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
       {
         double val;
         const QgsPointXY p = mContext.mapToPixel().toMapCoordinates( k, j );
-        if ( mDataOnVertices )
+        if ( mDataType == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
           val = QgsMeshLayerUtils::interpolateFromVerticesData(
                   p1,
                   p2,
@@ -126,16 +150,15 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
                   p );
         else
         {
-          int face = mTriangularMesh.trianglesToNativeFaces()[i];
+          const int faceIdx = mTriangularMesh.trianglesToNativeFaces()[triangleIndex];
           val = QgsMeshLayerUtils::interpolateFromFacesData(
                   p1,
                   p2,
                   p3,
-                  mDatasetValues[face],
+                  mDatasetValues[faceIdx],
                   p
                 );
         }
-
         if ( !std::isnan( val ) )
         {
           line[k] = val;
@@ -148,6 +171,8 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
 
   return outputBlock.release();
 }
+
+void QgsMeshLayerInterpolator::setSpatialIndexActive( bool active ) {mSpatialIndexActive = active;}
 
 ///@endcond
 
@@ -186,15 +211,18 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   std::unique_ptr<QgsMesh> nativeMesh = qgis::make_unique<QgsMesh>();
   layer.dataProvider()->populateMesh( nativeMesh.get() );
   std::unique_ptr<QgsTriangularMesh> triangularMesh = qgis::make_unique<QgsTriangularMesh>();
-  triangularMesh->update( nativeMesh.get(), &renderContext );
+  triangularMesh->update( nativeMesh.get(), transform );
 
   const QgsMeshDatasetGroupMetadata metadata = layer.dataProvider()->datasetGroupMetadata( datasetIndex );
-  bool scalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
-
-  QgsMeshDataBlock vals = layer.dataProvider()->datasetValues(
+  QgsMeshDatasetGroupMetadata::DataType scalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
+  const int count =  QgsMeshLayerUtils::datasetValuesCount( nativeMesh.get(), scalarDataType );
+  QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                            &layer,
                             datasetIndex,
                             0,
-                            scalarDataOnVertices ? nativeMesh->vertices.count() : nativeMesh->faces.count() );
+                            count );
+  if ( !vals.isValid() )
+    return nullptr;
 
   QVector<double> datasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
   QgsMeshDataBlock activeFaceFlagValues = layer.dataProvider()->areFacesActive(
@@ -202,14 +230,14 @@ QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
       0,
       nativeMesh->faces.count() );
 
-  QgsMeshLayerInterpolator iterpolator(
+  QgsMeshLayerInterpolator interpolator(
     *( triangularMesh.get() ),
     datasetValues,
     activeFaceFlagValues,
-    scalarDataOnVertices,
+    scalarDataType,
     renderContext,
     QSize( widthPixel, heightPixel )
   );
 
-  return iterpolator.block( 0, extent, widthPixel, heightPixel, feedback );
+  return interpolator.block( 0, extent, widthPixel, heightPixel, feedback );
 }

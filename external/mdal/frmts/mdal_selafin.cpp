@@ -21,6 +21,7 @@
 #include "mdal.h"
 #include "mdal_utils.hpp"
 #include <math.h>
+#include "mdal_logger.hpp"
 
 MDAL::SerafinStreamReader::SerafinStreamReader() = default;
 
@@ -29,12 +30,12 @@ void MDAL::SerafinStreamReader::initialize( const std::string &fileName )
   mFileName = fileName;
   if ( !MDAL::fileExists( mFileName ) )
   {
-    throw MDAL_Status::Err_FileNotFound;
+    throw MDAL::Error( MDAL_Status::Err_FileNotFound, "Did not find file " + mFileName );
   }
 
   mIn = std::ifstream( mFileName, std::ifstream::in | std::ifstream::binary );
   if ( !mIn )
-    throw MDAL_Status::Err_FileNotFound; // Couldn't open the file
+    throw MDAL::Error( MDAL_Status::Err_FileNotFound, "File " + mFileName + " could not be open" ); // Couldn't open the file
 
   // get length of file:
   mIn.seekg( 0, mIn.end );
@@ -61,7 +62,7 @@ bool MDAL::SerafinStreamReader::getStreamPrecision( )
   }
   else
   {
-    throw MDAL_Status::Err_UnknownFormat;
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Not found stream precision" );
   }
   ignore_array_length( );
   return ret;
@@ -70,7 +71,7 @@ bool MDAL::SerafinStreamReader::getStreamPrecision( )
 std::string MDAL::SerafinStreamReader::read_string( size_t len )
 {
   size_t length = read_sizet();
-  if ( length != len ) throw MDAL_Status::Err_UnknownFormat;
+  if ( length != len ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to read string" );
   std::string ret = read_string_without_length( len );
   ignore_array_length();
   return ret;
@@ -81,11 +82,11 @@ std::vector<double> MDAL::SerafinStreamReader::read_double_arr( size_t len )
   size_t length = read_sizet();
   if ( mStreamInFloatPrecision )
   {
-    if ( length != len * 4 ) throw MDAL_Status::Err_UnknownFormat;
+    if ( length != len * 4 ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "File format problem while reading double array" );
   }
   else
   {
-    if ( length != len * 8 ) throw MDAL_Status::Err_UnknownFormat;
+    if ( length != len * 8 ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "File format problem while reading double array" );
   }
   std::vector<double> ret( len );
   for ( size_t i = 0; i < len; ++i )
@@ -99,7 +100,7 @@ std::vector<double> MDAL::SerafinStreamReader::read_double_arr( size_t len )
 std::vector<int> MDAL::SerafinStreamReader::read_int_arr( size_t len )
 {
   size_t length = read_sizet();
-  if ( length != len * 4 ) throw MDAL_Status::Err_UnknownFormat;
+  if ( length != len * 4 ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "File format problem while reading int array" );
   std::vector<int> ret( len );
   for ( size_t i = 0; i < len; ++i )
   {
@@ -112,7 +113,7 @@ std::vector<int> MDAL::SerafinStreamReader::read_int_arr( size_t len )
 std::vector<size_t> MDAL::SerafinStreamReader::read_size_t_arr( size_t len )
 {
   size_t length = read_sizet();
-  if ( length != len * 4 ) throw MDAL_Status::Err_UnknownFormat;
+  if ( length != len * 4 ) throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "File format problem while reading sizet array" );
   std::vector<size_t> ret( len );
   for ( size_t i = 0; i < len; ++i )
   {
@@ -127,7 +128,7 @@ std::string MDAL::SerafinStreamReader::read_string_without_length( size_t len )
   std::vector<char> ptr( len );
   mIn.read( ptr.data(), static_cast<int>( len ) );
   if ( !mIn )
-    throw MDAL_Status::Err_UnknownFormat;
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to open stream for reading string without length" );
 
   size_t str_length = 0;
   for ( size_t i = len; i > 0; --i )
@@ -150,13 +151,13 @@ double MDAL::SerafinStreamReader::read_double( )
   {
     float ret_f;
     if ( !readValue( ret_f, mIn, mIsNativeLittleEndian ) )
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Reading double failed" );
     ret = static_cast<double>( ret_f );
   }
   else
   {
     if ( !readValue( ret, mIn, mIsNativeLittleEndian ) )
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Reading double failed" );
   }
   return ret;
 }
@@ -168,7 +169,7 @@ int MDAL::SerafinStreamReader::read_int( )
 
   if ( mIn.read( reinterpret_cast< char * >( &data ), 4 ) )
     if ( !mIn )
-      throw MDAL_Status::Err_UnknownFormat;
+      throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to open stream for reading int" );
   if ( mIsNativeLittleEndian )
   {
     std::reverse( reinterpret_cast< char * >( &data ), reinterpret_cast< char * >( &data ) + 4 );
@@ -195,7 +196,7 @@ void MDAL::SerafinStreamReader::ignore( int len )
 {
   mIn.ignore( len );
   if ( !mIn )
-    throw MDAL_Status::Err_UnknownFormat;
+    throw MDAL::Error( MDAL_Status::Err_UnknownFormat, "Unable to ignore characters (invalid stream)" );
 }
 
 void MDAL::SerafinStreamReader::ignore_array_length( )
@@ -232,7 +233,8 @@ void MDAL::DriverSelafin::parseFile( std::vector<std::string> &var_names,
                                      std::vector<size_t> &ikle,
                                      std::vector<double> &x,
                                      std::vector<double> &y,
-                                     std::vector<timestep_map> &data )
+                                     std::vector<timestep_map> &data,
+                                     DateTime &referenceTime )
 {
 
   /* 1 record containing the title of the study (72 characters) and a 8 characters
@@ -283,7 +285,7 @@ void MDAL::DriverSelafin::parseFile( std::vector<std::string> &var_names,
   if ( params[6] != 0 )
   {
     // would need additional parsing
-    throw MDAL_Status::Err_MissingDriver;
+    throw MDAL::Error( MDAL_Status::Err_MissingDriver, "File " + mFileName + " would need additional parsing" );
   }
 
   /*
@@ -293,7 +295,7 @@ void MDAL::DriverSelafin::parseFile( std::vector<std::string> &var_names,
   if ( params[9] == 1 )
   {
     std::vector<int> datetime = mReader.read_int_arr( 6 );
-    MDAL_UNUSED( datetime )
+    referenceTime = DateTime( datetime[0], datetime[1], datetime[2], datetime[3], datetime[4], double( datetime[5] ) );
   }
 
   /* 1 record containing the integers NELEM,NPOIN,NDP,1 (number of
@@ -321,7 +323,7 @@ void MDAL::DriverSelafin::parseFile( std::vector<std::string> &var_names,
      gives the numbering of boundary points for the others
   */
   std::vector<int> iPointBoundary = mReader.read_int_arr( *nPoint );
-  MDAL_UNUSED( iPointBoundary );
+  MDAL_UNUSED( iPointBoundary )
 
   /* 1 record containing table X (real array of dimension NPOIN containing the
      abscissae of the points)
@@ -378,7 +380,7 @@ void MDAL::DriverSelafin::createMesh(
   {
     if ( nPointsPerElem != 3 )
     {
-      throw MDAL_Status::Err_IncompatibleMesh; //we can add it, but it is uncommon for this format
+      throw MDAL::Error( MDAL_Status::Err_IncompatibleMesh, "Creating mesh failed, wrong number of points per element (3)" ); //we can add it, but it is uncommon for this format
     }
 
     // elemPtr->setId(e);
@@ -401,6 +403,7 @@ void MDAL::DriverSelafin::createMesh(
     new MemoryMesh(
       "SELAFIN",
       nodes.size(),
+      0,
       elements.size(),
       3, //Triangles
       computeExtent( nodes ),
@@ -411,7 +414,10 @@ void MDAL::DriverSelafin::createMesh(
   mMesh->vertices = nodes;
 }
 
-void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, const std::vector<timestep_map> &data, size_t nPoints )
+void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names,
+                                   const std::vector<timestep_map> &data,
+                                   size_t nPoints,
+                                   const DateTime &referenceTime )
 {
   for ( size_t nName = 0; nName < var_names.size(); ++nName )
   {
@@ -459,28 +465,29 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
                 mMesh->uri(),
                 var_name
               );
-      group->setIsOnVertices( true );
+      group->setDataLocation( MDAL_DataLocation::DataOnVertices );
       group->setIsScalar( !is_vector );
 
       mMesh->datasetGroups.push_back( group );
     }
 
+    group->setReferenceTime( referenceTime );
+
     size_t i = 0;
     for ( timestep_map::const_iterator it = data[nName].begin(); it != data[nName].end(); ++it, ++i )
     {
-      std::shared_ptr<MDAL::MemoryDataset> dataset;
+      std::shared_ptr<MDAL::MemoryDataset2D> dataset;
       if ( group->datasets.size() > i )
       {
-        dataset = std::dynamic_pointer_cast<MDAL::MemoryDataset>( group->datasets[i] );
+        dataset = std::dynamic_pointer_cast<MDAL::MemoryDataset2D>( group->datasets[i] );
       }
       else
       {
-        dataset = std::make_shared< MemoryDataset >( group.get() );
-        dataset->setTime( it->first );
+        dataset = std::make_shared< MemoryDataset2D >( group.get(), true );
+        // see https://github.com/lutraconsulting/MDAL/issues/185
+        dataset->setTime( it->first, RelativeTimestamp::seconds );
         group->datasets.push_back( dataset );
       }
-      double *values = dataset->values();
-
       for ( size_t nP = 0; nP < nPoints; nP++ )
       {
         double val = it->second.at( nP );
@@ -492,16 +499,16 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
         {
           if ( is_x )
           {
-            values[2 * nP] = val;
+            dataset->setValueX( nP, val );
           }
           else
           {
-            values[2 * nP + 1] = val;
+            dataset->setValueY( nP, val );
           }
         }
         else
         {
-          values[nP] = val;
+          dataset->setScalarValue( nP, val );
         }
       }
     }
@@ -512,8 +519,9 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
   {
     for ( auto dataset : group->datasets )
     {
-      std::shared_ptr<MDAL::MemoryDataset> dts = std::dynamic_pointer_cast<MDAL::MemoryDataset>( dataset );
-      MDAL::activateFaces( mMesh.get(), dts );
+      std::shared_ptr<MDAL::MemoryDataset2D> dts = std::dynamic_pointer_cast<MDAL::MemoryDataset2D>( dataset );
+      if ( dts )
+        dts->activateFaces( mMesh.get() );
 
       MDAL::Statistics stats = MDAL::calculateStatistics( dataset );
       dataset->setStatistics( stats );
@@ -524,7 +532,7 @@ void MDAL::DriverSelafin::addData( const std::vector<std::string> &var_names, co
   }
 }
 
-bool MDAL::DriverSelafin::canRead( const std::string &uri )
+bool MDAL::DriverSelafin::canReadMesh( const std::string &uri )
 {
   if ( !MDAL::fileExists( uri ) ) return false;
 
@@ -552,9 +560,9 @@ bool MDAL::DriverSelafin::canRead( const std::string &uri )
   return true;
 }
 
-std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFile, MDAL_Status *status )
+std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFile )
 {
-  if ( status ) *status = MDAL_Status::None;
+  MDAL::Log::resetLastStatus();
   mFileName = meshFile;
   mMesh.reset();
 
@@ -568,6 +576,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFi
   std::vector<double> x;
   std::vector<double> y;
   std::vector<timestep_map> data;
+  DateTime referenceTime;
 
   try
   {
@@ -580,7 +589,8 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFi
                ikle,
                x,
                y,
-               data );
+               data,
+               referenceTime );
 
     createMesh( xOrigin,
                 yOrigin,
@@ -591,11 +601,16 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverSelafin::load( const std::string &meshFi
                 x,
                 y );
 
-    addData( var_names, data, nPoints );
+    addData( var_names, data, nPoints, referenceTime );
   }
   catch ( MDAL_Status error )
   {
-    if ( status ) *status = ( error );
+    MDAL::Log::error( error, name(), "Error while loading file " + meshFile );
+    mMesh.reset();
+  }
+  catch ( MDAL::Error err )
+  {
+    MDAL::Log::error( err, name() );
     mMesh.reset();
   }
   return std::unique_ptr<Mesh>( mMesh.release() );

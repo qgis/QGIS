@@ -120,6 +120,7 @@ void QgsMeshRendererActiveDatasetWidget::setTimeRange()
 
   // update combobox
   mTimeComboBox->blockSignals( true );
+  int currentIndex = mTimeComboBox->currentIndex();
   mTimeComboBox->clear();
   if ( groupWithMaximumDatasets > -1 )
   {
@@ -131,16 +132,20 @@ void QgsMeshRendererActiveDatasetWidget::setTimeRange()
       mTimeComboBox->addItem( mMeshLayer->formatTime( time ), time );
     }
   }
+  mTimeComboBox->setCurrentIndex( currentIndex );
   mTimeComboBox->blockSignals( false );
-
+  updateMetadata();
   // enable/disable time controls depending on whether the data set is time varying
   enableTimeControls();
 }
 
 void QgsMeshRendererActiveDatasetWidget::enableTimeControls()
 {
-  const int scalarDatesets = mMeshLayer->dataProvider()->datasetCount( mActiveScalarDatasetGroup );
-  const int vectorDatesets = mMeshLayer->dataProvider()->datasetCount( mActiveVectorDatasetGroup );
+  const QgsMeshDataProvider *provider = mMeshLayer->dataProvider();
+  if ( !provider )
+    return;
+  const int scalarDatesets = provider->datasetCount( mActiveScalarDatasetGroup );
+  const int vectorDatesets = provider->datasetCount( mActiveVectorDatasetGroup );
   const bool isTimeVarying = ( scalarDatesets > 1 ) || ( vectorDatesets > 1 );
   mTimeComboBox->setEnabled( isTimeVarying );
   mDatasetSlider->setEnabled( isTimeVarying );
@@ -363,10 +368,50 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
          .arg( mMeshLayer->formatTime( time ) )
          .arg( time );
 
-  const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
+  QString definedOnMesh;
+  if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) )
+  {
+    if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    {
+      definedOnMesh = tr( "faces and edges" );
+    }
+    else
+    {
+      definedOnMesh = tr( "faces" );
+    }
+  }
+  else if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+  {
+    definedOnMesh = tr( "edges" );
+  }
+  else
+  {
+    definedOnMesh = tr( "invalid mesh" );
+  }
   msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-         .arg( tr( "Data Type" ) )
-         .arg( gmeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ? tr( "Defined on vertices" ) : tr( "Defined on faces" ) );
+         .arg( tr( "Mesh type" ) )
+         .arg( definedOnMesh );
+
+  const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
+  QString definedOn;
+  switch ( gmeta.dataType() )
+  {
+    case QgsMeshDatasetGroupMetadata::DataOnVertices:
+      definedOn = tr( "vertices" );
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnFaces:
+      definedOn = tr( "faces" );
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnVolumes:
+      definedOn = tr( "volumes" );
+      break;
+    case QgsMeshDatasetGroupMetadata::DataOnEdges:
+      definedOn = tr( "edges" );
+      break;
+  }
+  msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
+         .arg( tr( "Data type" ) )
+         .arg( definedOn );
 
   msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
          .arg( tr( "Is vector" ) )

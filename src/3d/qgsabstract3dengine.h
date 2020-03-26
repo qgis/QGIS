@@ -22,6 +22,7 @@
 
 class QColor;
 class QRect;
+class QSurface;
 
 namespace Qt3DCore
 {
@@ -72,6 +73,13 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      * Only one image request can be active at a time.
      */
     virtual void requestCaptureImage() = 0;
+
+    /**
+     * Returns the surface of the engine
+     *
+     * \since QGIS 3.14
+     */
+    virtual QSurface *surface() const = 0;
 
   signals:
     //! Emitted after a call to requestCaptureImage() to return the captured image.

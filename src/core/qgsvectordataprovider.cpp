@@ -37,9 +37,8 @@
 
 QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options )
   : QgsDataProvider( uri, options )
+  , mTemporalCapabilities( qgis::make_unique< QgsVectorDataProviderTemporalCapabilities >() )
 {
-  QgsSettings settings;
-  setEncoding( settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString() );
 }
 
 QString QgsVectorDataProvider::storageType() const
@@ -201,7 +200,8 @@ void QgsVectorDataProvider::setEncoding( const QString &e )
 
   if ( !mEncoding && e != QLatin1String( "System" ) )
   {
-    QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
+    if ( !e.isEmpty() )
+      QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
     mEncoding = QTextCodec::codecForName( "System" );
   }
 
@@ -388,7 +388,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
       }
     }
 
-    QgsDebugMsg( QStringLiteral( "native type matches" ) );
+    QgsDebugMsgLevel( QStringLiteral( "native type matches" ), 3 );
     return true;
   }
 
@@ -594,11 +594,6 @@ QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, const QString
 QgsTransaction *QgsVectorDataProvider::transaction() const
 {
   return nullptr;
-}
-
-void QgsVectorDataProvider::forceReload()
-{
-  emit dataChanged();
 }
 
 static bool _compareEncodings( const QString &s1, const QString &s2 )
@@ -845,4 +840,9 @@ QList<QgsRelation> QgsVectorDataProvider::discoverRelations( const QgsVectorLaye
 void QgsVectorDataProvider::handlePostCloneOperations( QgsVectorDataProvider * )
 {
 
+}
+
+QgsVectorDataProviderTemporalCapabilities *QgsVectorDataProvider::temporalCapabilities()
+{
+  return mTemporalCapabilities.get();
 }

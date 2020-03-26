@@ -14,6 +14,7 @@ usr/lib/qgis/plugins/libowsprovider.so
 usr/lib/qgis/plugins/libpkcs12authmethod.so
 usr/lib/qgis/plugins/libpkipathsauthmethod.so
 usr/lib/qgis/plugins/libpostgresprovider.so
+usr/lib/qgis/plugins/libpostgresrasterprovider.so
 usr/lib/qgis/plugins/libspatialiteprovider.so
 usr/lib/qgis/plugins/libvirtuallayerprovider.so
 usr/lib/qgis/plugins/libwcsprovider.so
