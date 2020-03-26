@@ -16,6 +16,8 @@
 #ifndef QGSVECTORTILELOADER_H
 #define QGSVECTORTILELOADER_H
 
+#define SIP_NO_FILE
+
 class QByteArray;
 
 #include "qgsvectortilerenderer.h"
@@ -29,6 +31,7 @@ class QByteArray;
 class QgsVectorTileRawData
 {
   public:
+    //! Constructs a raw tile object
     QgsVectorTileRawData( QgsTileXYZ tileID = QgsTileXYZ(), const QByteArray &raw = QByteArray() )
       : id( tileID ), data( raw ) {}
 
@@ -60,7 +63,7 @@ class QgsVectorTileLoader : public QObject
 
     //! Returns raw tile data for a single tile, doing a HTTP request. Block the caller until tile data are downloaded.
     static QByteArray loadFromNetwork( const QgsTileXYZ &id, const QString &requestUrl );
-    //! Returns raw tile data for a signle tile loaded from MBTiles file
+    //! Returns raw tile data for a single tile loaded from MBTiles file
     static QByteArray loadFromMBTiles( const QgsTileXYZ &id, QgsMBTilesReader &mbTileReader );
     //! Decodes gzip byte stream, returns true on success
     static bool decodeGzip( const QByteArray &bytesIn, QByteArray &bytesOut );

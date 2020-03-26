@@ -16,6 +16,8 @@
 #ifndef QGSVECTORTILEMVTDECODER_H
 #define QGSVECTORTILEMVTDECODER_H
 
+#define SIP_NO_FILE
+
 class QgsFeature;
 
 #include <QStringList>

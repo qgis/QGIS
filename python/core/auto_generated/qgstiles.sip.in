@@ -67,9 +67,21 @@ Returns whether the range is valid (when all row/column numbers are not negative
 %End
 
     int startColumn() const;
+%Docstring
+Returns index of the first column in the range
+%End
     int endColumn() const;
+%Docstring
+Returns index of the last column in the range
+%End
     int startRow() const;
+%Docstring
+Returns index of the first row in the range
+%End
     int endRow() const;
+%Docstring
+Returns index of the last row in the range
+%End
 
 };
 

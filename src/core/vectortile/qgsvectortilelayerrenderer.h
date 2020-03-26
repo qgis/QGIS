@@ -16,6 +16,8 @@
 #ifndef QGSVECTORTILELAYERRENDERER_H
 #define QGSVECTORTILELAYERRENDERER_H
 
+#define SIP_NO_FILE
+
 #include "qgsmaplayerrenderer.h"
 
 class QgsVectorTileLayer;

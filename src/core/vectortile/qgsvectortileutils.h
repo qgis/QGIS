@@ -16,6 +16,8 @@
 #ifndef QGSVECTORTILEUTILS_H
 #define QGSVECTORTILEUTILS_H
 
+#define SIP_NO_FILE
+
 #include <QSet>
 
 class QPointF;

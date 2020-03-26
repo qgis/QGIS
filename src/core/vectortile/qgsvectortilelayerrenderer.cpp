@@ -112,7 +112,7 @@ bool QgsVectorTileLayerRenderer::render()
   }
   else
   {
-    // Block until tiles are fetched and rendered. If the rendering gets cancelled at some point,
+    // Block until tiles are fetched and rendered. If the rendering gets canceled at some point,
     // the async loader will catch the signal, abort requests and return from downloadBlocking()
     asyncLoader->downloadBlocking();
   }

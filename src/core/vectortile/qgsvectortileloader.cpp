@@ -66,7 +66,7 @@ void QgsVectorTileLoader::downloadBlocking()
 
   if ( mFeedback && mFeedback->isCanceled() )
   {
-    qDebug() << "actually not - we were cancelled";
+    qDebug() << "actually not - we were canceled";
     return; // nothing to do
   }
 
@@ -81,7 +81,9 @@ void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QStr
 {
   QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id );
   QNetworkRequest request( url );
-  // TODO: some extra headers? QgsSetRequestInitiatorClass / auth / "Accept" header
+  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLoader" ) );
+  QgsSetRequestInitiatorId( request, QStringLiteral( "X=%1 Y=%2 Z=%3" ).arg( id.column() ).arg( id.row() ).arg( id.zoomLevel() ) );
+
   request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), id.column() );
   request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ), id.row() );
   request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 3 ), id.zoomLevel() );
@@ -133,7 +135,7 @@ void QgsVectorTileLoader::tileReplyFinished()
 
 void QgsVectorTileLoader::canceled()
 {
-  qDebug() << "cancelling pending requests";
+  qDebug() << "canceling pending requests";
   const QList<QNetworkReply *> replies = mReplies;
   for ( QNetworkReply *reply : replies )
   {

@@ -306,7 +306,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         }
       }
 
-      f.setAttribute( "ty_pe", geomType );
+      f.setAttribute( "_geom_type", geomType );
 
       layerFeatures.append( f );
     }

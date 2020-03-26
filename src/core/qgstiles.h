@@ -69,9 +69,13 @@ class CORE_EXPORT QgsTileRange
     //! Returns whether the range is valid (when all row/column numbers are not negative)
     bool isValid() const { return mStartColumn >= 0 && mEndColumn >= 0 && mStartRow >= 0 && mEndRow >= 0; }
 
+    //! Returns index of the first column in the range
     int startColumn() const { return mStartColumn; }
+    //! Returns index of the last column in the range
     int endColumn() const { return mEndColumn; }
+    //! Returns index of the first row in the range
     int startRow() const { return mStartRow; }
+    //! Returns index of the last row in the range
     int endRow() const { return mEndRow; }
 
   private:

@@ -82,7 +82,7 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
   decoder.decode( tileID, mvt->getRawTile( tileID ) );
   qDebug() << decoder.layers();
   QSet<QString> fieldNames = QSet<QString>::fromList( decoder.layerFieldNames( layerName ) );
-  fieldNames << "ty_pe";  // geom. type
+  fieldNames << "_geom_type";
   QMap<QString, QgsFields> perLayerFields;
   QgsFields fields = QgsVectorTileUtils::makeQgisFields( fieldNames );
   perLayerFields[layerName] = fields;
