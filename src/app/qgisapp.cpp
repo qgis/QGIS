@@ -7778,6 +7778,9 @@ void QgisApp::changeDataSource( QgsMapLayer *layer )
           vlayer->setSubsetString( subsetString );
         }
 
+        if ( vlayer )
+          vlayer->updateExtents();
+
         // All the following code is necessary to refresh the layer
         QgsLayerTreeModel *model = qobject_cast<QgsLayerTreeModel *>( mLayerTreeView->model() );
         if ( model )
