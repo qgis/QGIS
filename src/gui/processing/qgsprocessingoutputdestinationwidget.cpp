@@ -233,11 +233,13 @@ void QgsProcessingLayerOutputDestinationWidget::showMenu()
     mMenu->addAction( actionSaveToPostGIS );
   }
 
-  QAction *actionSetEncoding = new QAction( tr( "Change File Encoding (%1)…" ).arg( mEncoding ), this );
-  connect( actionSetEncoding, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::selectEncoding );
-  mMenu->addAction( actionSetEncoding );
+  if ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName() )
+  {
+    QAction *actionSetEncoding = new QAction( tr( "Change File Encoding (%1)…" ).arg( mEncoding ), this );
+    connect( actionSetEncoding, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::selectEncoding );
+    mMenu->addAction( actionSetEncoding );
+  }
   mMenu->exec( QCursor::pos() );
-
 }
 
 void QgsProcessingLayerOutputDestinationWidget::skipOutput()
