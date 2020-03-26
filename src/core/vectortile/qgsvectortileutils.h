@@ -31,7 +31,7 @@ class QgsVectorLayer;
 
 class QgsTileMatrix;
 class QgsTileRange;
-struct QgsTileXYZ;
+class QgsTileXYZ;
 class QgsVectorTileLayer;
 
 /**

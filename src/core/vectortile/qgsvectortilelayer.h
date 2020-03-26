@@ -23,7 +23,7 @@
 
 class QgsVectorTileRenderer;
 
-struct QgsTileXYZ;
+class QgsTileXYZ;
 
 /**
  * \ingroup core

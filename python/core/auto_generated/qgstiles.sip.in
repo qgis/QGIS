@@ -86,8 +86,21 @@ Returns index of the last row in the range
 };
 
 
-struct QgsTileMatrix
+class QgsTileMatrix
 {
+%Docstring
+Defines a matrix of tiles for a single zoom level: it is defined by its size (width * height)
+and map extent that it covers.
+
+Please note that we follow the XYZ convention of X/Y axes, i.e. top-left tile has [0,0] coordinate
+(which is different from TMS convention where bottom-left tile has [0,0] coordinate).
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgstiles.h"
+%End
   public:
 
     static QgsTileMatrix fromWebMercator( int mZoomLevel );

@@ -96,7 +96,7 @@ class CORE_EXPORT QgsTileRange
  *
  * \since QGIS 3.14
  */
-struct CORE_EXPORT QgsTileMatrix
+class CORE_EXPORT QgsTileMatrix
 {
   public:
 
