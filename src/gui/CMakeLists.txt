@@ -266,6 +266,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingalgorithmconfigurationwidget.cpp
   processing/qgsprocessingalgorithmdialogbase.cpp
   processing/qgsprocessingconfigurationwidgets.cpp
+  processing/qgsprocessingenummodelerwidget.cpp
   processing/qgsprocessingfeaturesourceoptionswidget.cpp
   processing/qgsprocessingguiregistry.cpp
   processing/qgsprocessingmaplayercombobox.cpp
@@ -954,6 +955,7 @@ SET(QGIS_GUI_HDRS
   processing/qgsprocessingalgorithmconfigurationwidget.h
   processing/qgsprocessingalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
+  processing/qgsprocessingenummodelerwidget.h
   processing/qgsprocessingfeaturesourceoptionswidget.h
   processing/qgsprocessinggui.h
   processing/qgsprocessingguiregistry.h
