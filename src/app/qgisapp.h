@@ -141,6 +141,8 @@ class QgsNetworkRequestParameters;
 class QgsBearingNumericFormat;
 class QgsDevToolsPanelWidget;
 class QgsDevToolWidgetFactory;
+class QgsNetworkLogger;
+class QgsNetworkLoggerWidgetFactory;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -2439,6 +2441,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsHandleBadLayersHandler *mAppBadLayersHandler = nullptr;
 
     std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
+
+    QgsNetworkLogger *mNetworkLogger = nullptr;
+    std::unique_ptr< QgsNetworkLoggerWidgetFactory > mNetworkLoggerWidgetFactory;
 
     class QgsCanvasRefreshBlocker
     {

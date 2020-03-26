@@ -366,9 +366,10 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsbearingnumericformat.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgstemporalcontrollerdockwidget.h"
-
+#include "qgsnetworklogger.h"
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
+#include "qgsnetworkloggerwidgetfactory.h"
 
 #include "browser/qgsinbuiltdataitemproviders.h"
 
@@ -830,6 +831,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mUserProfileManager->setActiveUserProfile( activeProfile );
   mUserProfileManager->setNewProfileNotificationEnabled( true );
   connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
+  endProfile();
+
+  // start the network logger early, we want all requests logged!
+  startProfile( QStringLiteral( "Network logger" ) );
+  mNetworkLogger = new QgsNetworkLogger( QgsNetworkAccessManager::instance(), this );
   endProfile();
 
   // load GUI: actions, menus, toolbars
@@ -1598,6 +1604,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
 
+  mNetworkLoggerWidgetFactory = qgis::make_unique< QgsNetworkLoggerWidgetFactory >( mNetworkLogger );
+  registerDevToolFactory( mNetworkLoggerWidgetFactory.get() );
+
   // update windows
   qApp->processEvents();
 
@@ -1689,6 +1698,9 @@ QgisApp::~QgisApp()
 {
   // shouldn't be needed, but from this stage on, we don't want/need ANY map canvas refreshes to take place
   mFreezeCount = 1000000;
+
+  unregisterDevToolFactory( mNetworkLoggerWidgetFactory.get() );
+  mNetworkLoggerWidgetFactory.reset();
 
   delete mInternalClipboard;
   delete mQgisInterface;
