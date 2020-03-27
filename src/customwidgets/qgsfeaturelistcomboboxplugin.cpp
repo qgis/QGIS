@@ -81,7 +81,7 @@ QString QgsFeatureListComboBoxPlugin::whatsThis() const
 QString QgsFeatureListComboBoxPlugin::domXml() const
 {
   return QString( "<ui language=\"c++\">\n"
-                  " <widget class=\"%1\" name=\"mQgsFeatureListComboBox\">\n"
+                  " <widget class=\"%1\" name=\"mFeatureListComboBox\">\n"
                   "  <property name=\"geometry\">\n"
                   "   <rect>\n"
                   "    <x>0</x>\n"
