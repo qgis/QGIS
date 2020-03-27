@@ -107,7 +107,7 @@ QList< QgsMapLayer *> QgsMatchingLayersDialog::selectedLayers() const
 }
 
 
-void QgsLayoutLegendLayersDialog::filterVisible( bool enabled )
+void QgsMatchingLayersDialog::filterVisible( bool enabled )
 {
   if ( enabled )
     mModel->setLayerWhitelist( mVisibleLayers );
