@@ -38,6 +38,11 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
     mSourceMinZoom = 0;
     mSourceMaxZoom = 14;
 
+    if ( dsUri.hasParam( QStringLiteral( "zmin" ) ) )
+      mSourceMinZoom = dsUri.param( QStringLiteral( "zmin" ) ).toInt();
+    if ( dsUri.hasParam( QStringLiteral( "zmax" ) ) )
+      mSourceMaxZoom = dsUri.param( QStringLiteral( "zmax" ) ).toInt();
+
     setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
   }
   else if ( mSourceType == "mbtiles" )
