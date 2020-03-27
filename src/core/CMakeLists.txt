@@ -346,6 +346,7 @@ SET(QGIS_CORE_SRCS
   qgssnappingconfig.cpp
   qgsprojectdisplaysettings.cpp
   qgsprojectproperty.cpp
+  qgsprojectservervalidator.cpp
   qgsprojectstorage.cpp
   qgsprojectstorageregistry.cpp
   qgsprojecttimesettings.cpp
@@ -868,6 +869,7 @@ SET(QGIS_CORE_HDRS
   qgsprojectdisplaysettings.h
   qgsprojectfiletransform.h
   qgsprojectproperty.h
+  qgsprojectservervalidator.h
   qgsprojectstorage.h
   qgsprojectstorageregistry.h
   qgsprojecttimesettings.h

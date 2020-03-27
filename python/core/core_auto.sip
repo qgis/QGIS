@@ -154,6 +154,7 @@
 %Include auto_generated/qgsprojectdisplaysettings.sip
 %Include auto_generated/qgsprojectfiletransform.sip
 %Include auto_generated/qgsprojectproperty.sip
+%Include auto_generated/qgsprojectservervalidator.sip
 %Include auto_generated/qgsprojectstorage.sip
 %Include auto_generated/qgsprojectstorageregistry.sip
 %Include auto_generated/qgsprojecttimesettings.sip

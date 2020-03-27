@@ -251,8 +251,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );
     //! add WMTS Grid definition based on CRS
     void addWmtsGrid( const QString &crsStr );
-    //! Check OWS configuration
-    void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
 
     //! Populates list with ellipsoids from Sqlite3 db
     void populateEllipsoidList();

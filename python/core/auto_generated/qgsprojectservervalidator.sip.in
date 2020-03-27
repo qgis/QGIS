@@ -1,0 +1,46 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojectservervalidator.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsProjectServerValidator
+{
+%Docstring
+Project server validator.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprojectservervalidator.h"
+%End
+  public:
+
+    static void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
+%Docstring
+Recursive function to check a layer tree group.
+The function will collect OWS names and encoding for each layers.
+
+.. versionadded:: 3.14
+%End
+
+    static QString projectStatusHtml( QgsLayerTree *layerTree );
+%Docstring
+Check a layer tree.
+
+.. versionadded:: 3.14
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojectservervalidator.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
