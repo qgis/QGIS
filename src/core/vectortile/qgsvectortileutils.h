@@ -50,7 +50,7 @@ class QgsVectorTileUtils
     static void sortTilesByDistanceFromCenter( QVector<QgsTileXYZ> &tiles, const QPointF &center );
 
     //! Returns polygon (made by four corners of the tile) in screen coordinates
-    static QPolygon tilePolygon( QgsTileXYZ id, const QgsTileMatrix &tm, const QgsMapToPixel &mtp );
+    static QPolygon tilePolygon( QgsTileXYZ id, const QgsCoordinateTransform &ct, const QgsTileMatrix &tm, const QgsMapToPixel &mtp );
     //! Returns QgsFields instance based on the set of field names
     static QgsFields makeQgisFields( QSet<QString> flds );
     //! Finds best fitting zoom level (assuming GoogleCRS84Quad tile matrix set) given map scale denominator and allowed zoom level range

@@ -47,7 +47,7 @@ class QgsVectorTileMVTDecoder
     QStringList layerFieldNames( const QString &layerName ) const;
 
     //! Returns decoded features grouped by sub-layers. It can only be called after a successful decode()
-    QgsVectorTileFeatures layerFeatures( const QMap<QString, QgsFields> &perLayerFields ) const;
+    QgsVectorTileFeatures layerFeatures( const QMap<QString, QgsFields> &perLayerFields, const QgsCoordinateTransform &ct ) const;
 
   private:
     vector_tile::Tile tile;

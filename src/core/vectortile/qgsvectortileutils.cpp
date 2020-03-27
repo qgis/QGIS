@@ -33,13 +33,13 @@
 
 
 
-QPolygon QgsVectorTileUtils::tilePolygon( QgsTileXYZ id, const QgsTileMatrix &tm, const QgsMapToPixel &mtp )
+QPolygon QgsVectorTileUtils::tilePolygon( QgsTileXYZ id, const QgsCoordinateTransform &ct, const QgsTileMatrix &tm, const QgsMapToPixel &mtp )
 {
   QgsRectangle r = tm.tileExtent( id );
-  QgsPointXY p00a = mtp.transform( r.xMinimum(), r.yMinimum() );
-  QgsPointXY p11a = mtp.transform( r.xMaximum(), r.yMaximum() );
-  QgsPointXY p01a = mtp.transform( r.xMinimum(), r.yMaximum() );
-  QgsPointXY p10a = mtp.transform( r.xMaximum(), r.yMinimum() );
+  QgsPointXY p00a = mtp.transform( ct.transform( r.xMinimum(), r.yMinimum() ) );
+  QgsPointXY p11a = mtp.transform( ct.transform( r.xMaximum(), r.yMaximum() ) );
+  QgsPointXY p01a = mtp.transform( ct.transform( r.xMinimum(), r.yMaximum() ) );
+  QgsPointXY p10a = mtp.transform( ct.transform( r.xMaximum(), r.yMinimum() ) );
   QPolygon path;
   path << p00a.toQPointF().toPoint();
   path << p01a.toQPointF().toPoint();
@@ -86,7 +86,7 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
   QMap<QString, QgsFields> perLayerFields;
   QgsFields fields = QgsVectorTileUtils::makeQgisFields( fieldNames );
   perLayerFields[layerName] = fields;
-  QgsVectorTileFeatures data = decoder.layerFeatures( perLayerFields );
+  QgsVectorTileFeatures data = decoder.layerFeatures( perLayerFields, QgsCoordinateTransform() );
   QgsFeatureList featuresList = data[layerName].toList();
 
   // turn all geometries to geom. collections (otherwise they won't be accepted by memory provider)

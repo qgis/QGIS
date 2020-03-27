@@ -92,7 +92,7 @@ QStringList QgsVectorTileMVTDecoder::layerFieldNames( const QString &layerName )
   return fieldNames;
 }
 
-QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString, QgsFields> &perLayerFields ) const
+QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString, QgsFields> &perLayerFields, const QgsCoordinateTransform &ct ) const
 {
   QgsVectorTileFeatures features;
 
@@ -307,6 +307,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
       }
 
       f.setAttribute( "_geom_type", geomType );
+      f.geometry().transform( ct );
 
       layerFeatures.append( f );
     }

@@ -149,9 +149,11 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
   if ( ctx.renderingStopped() )
     return;
 
+  QgsCoordinateTransform ct = ctx.coordinateTransform();
+
   QgsVectorTileRendererData tile( rawTile.id );
-  tile.setFeatures( decoder.layerFeatures( mPerLayerFields ) );
-  tile.setTilePolygon( QgsVectorTileUtils::tilePolygon( rawTile.id, mTileMatrix, ctx.mapToPixel() ) );
+  tile.setFeatures( decoder.layerFeatures( mPerLayerFields, ct ) );
+  tile.setTilePolygon( QgsVectorTileUtils::tilePolygon( rawTile.id, ct, mTileMatrix, ctx.mapToPixel() ) );
 
   mTotalDecodeTime += tLoad.elapsed();
 
