@@ -91,7 +91,7 @@ Returns the current layer or a None.
    use epxressionTree()->loadFieldNames() instead
 %End
 
-    void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues );
+ void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues ) /Deprecated/;
 %Docstring
 Loads field names and values from the specified map.
 
@@ -162,7 +162,7 @@ preview result and to populate the list of available functions and variables.
 
     bool isExpressionValid();
 
- void saveToRecent( const QString &collection = "generic" );
+ void saveToRecent( const QString &collection = "generic" ) /Deprecated/;
 %Docstring
 Adds the current expression to the given ``collection``.
 By default it is saved to the collection "generic".
@@ -171,7 +171,7 @@ By default it is saved to the collection "generic".
    use expressionTree()->saveRecent() instead
 %End
 
- void loadRecent( const QString &collection = QStringLiteral( "generic" ) );
+ void loadRecent( const QString &collection = QStringLiteral( "generic" ) )/Deprecated/;
 %Docstring
 Loads the recent expressions from the given ``collection``.
 By default it is loaded from the collection "generic".
@@ -182,7 +182,7 @@ By default it is loaded from the collection "generic".
 
     QgsExpressionTreeView *expressionTree() const;
 
- void loadUserExpressions();
+ void loadUserExpressions() /Deprecated/;
 %Docstring
 Loads the user expressions.
 
@@ -192,7 +192,7 @@ Loads the user expressions.
 .. versionadded:: 3.12
 %End
 
- void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText );
+ void saveToUserExpressions( const QString &label, const QString expression, const QString &helpText ) /Deprecated/;
 %Docstring
 Stores the user ``expression`` with given ``label`` and ``helpText``.
 
@@ -202,7 +202,7 @@ Stores the user ``expression`` with given ``label`` and ``helpText``.
 .. versionadded:: 3.12
 %End
 
- void removeFromUserExpressions( const QString &label );
+ void removeFromUserExpressions( const QString &label ) /Deprecated/;
 %Docstring
 Removes the expression ``label`` from the user stored expressions.
 
@@ -237,7 +237,7 @@ Loads code into the function editor
 Updates the list of function files found at the given path
 %End
 
- QStandardItemModel *model();
+ QStandardItemModel *model() /Deprecated/;
 %Docstring
 Returns a pointer to the dialog's function item model.
 This method is exposed for testing purposes only - it should not be used to modify the model.

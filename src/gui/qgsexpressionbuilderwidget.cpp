@@ -704,7 +704,9 @@ void QgsExpressionBuilderWidget::setEvalError( bool evalError )
 
 QStandardItemModel *QgsExpressionBuilderWidget::model()
 {
+  Q_NOWARN_DEPRECATED_PUSH
   return mExpressionTreeView->model();
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsProject *QgsExpressionBuilderWidget::project()
