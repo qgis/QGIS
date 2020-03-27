@@ -1604,8 +1604,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
 
-  mNetworkLoggerWidgetFactory = qgis::make_unique< QgsNetworkLoggerWidgetFactory >( mNetworkLogger );
-  registerDevToolFactory( mNetworkLoggerWidgetFactory.get() );
+  mNetworkLoggerWidgetFactory.reset( qgis::make_unique< QgsNetworkLoggerWidgetFactory >( mNetworkLogger ) );
 
   // update windows
   qApp->processEvents();
@@ -1699,7 +1698,6 @@ QgisApp::~QgisApp()
   // shouldn't be needed, but from this stage on, we don't want/need ANY map canvas refreshes to take place
   mFreezeCount = 1000000;
 
-  unregisterDevToolFactory( mNetworkLoggerWidgetFactory.get() );
   mNetworkLoggerWidgetFactory.reset();
 
   delete mInternalClipboard;
