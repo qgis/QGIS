@@ -151,6 +151,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     void setExpressionContext( const QgsExpressionContext &context );
 
+    //! Returns if the expression is valid
     bool isExpressionValid();
 
     /**
@@ -167,6 +168,10 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     Q_DECL_DEPRECATED void loadRecent( const QString &collection = QStringLiteral( "generic" ) )SIP_DEPRECATED ;
 
+    /**
+     * Returns the expression tree
+     * \since QGIS 3.14
+     */
     QgsExpressionTreeView *expressionTree() const;
 
     /**

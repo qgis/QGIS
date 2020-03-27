@@ -125,6 +125,7 @@ class GUI_EXPORT QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 
 /**
  * \ingroup gui
+ * \class QgsExpressionTreeView
  * QgsExpressionTreeView is a tree view to list all expressions
  * functions, variables and fields that can be used in an expression.
  * \see QgsExpressionBuilderWidget
@@ -137,9 +138,9 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
 
     /**
      * \ingroup gui
+     * \class MenuProvider
      * Implementation of this interface can be implemented to allow QgsExpressionTreeView
      * instance to provide custom context menus (opened upon right-click).
-     * \since QGIS 3.14
      */
     class MenuProvider
     {

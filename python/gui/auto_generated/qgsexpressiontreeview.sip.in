@@ -115,8 +115,6 @@ functions, variables and fields that can be used in an expression.
 %Docstring
 Implementation of this interface can be implemented to allow QgsExpressionTreeView
 instance to provide custom context menus (opened upon right-click).
-
-.. versionadded:: 3.14
 %End
 
 %TypeHeaderCode

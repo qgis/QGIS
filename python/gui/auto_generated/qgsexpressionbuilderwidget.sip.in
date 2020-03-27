@@ -161,6 +161,9 @@ preview result and to populate the list of available functions and variables.
 %End
 
     bool isExpressionValid();
+%Docstring
+Returns if the expression is valid
+%End
 
  void saveToRecent( const QString &collection = "generic" ) /Deprecated/;
 %Docstring
@@ -181,6 +184,11 @@ By default it is loaded from the collection "generic".
 %End
 
     QgsExpressionTreeView *expressionTree() const;
+%Docstring
+Returns the expression tree
+
+.. versionadded:: 3.14
+%End
 
  void loadUserExpressions() /Deprecated/;
 %Docstring
