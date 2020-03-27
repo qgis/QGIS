@@ -31,10 +31,10 @@ QgsLayerTreeViewTemporalIndicatorProvider::QgsLayerTreeViewTemporalIndicatorProv
 
 void QgsLayerTreeViewTemporalIndicatorProvider::connectSignals( QgsMapLayer *layer )
 {
-  if ( !layer->temporalProperties() )
+  if ( !layer )
     return;
 
-  connect( layer->temporalProperties(), &QgsMapLayerTemporalProperties::changed, this, [ this, layer ]( ) { this->onLayerChanged( layer ); } );
+  connect( layer, &QgsMapLayer::dataSourceChanged, this, [ this, layer ]( ) { this->onLayerChanged( layer ); } );
 }
 
 void QgsLayerTreeViewTemporalIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
@@ -72,28 +72,37 @@ bool QgsLayerTreeViewTemporalIndicatorProvider::acceptLayer( QgsMapLayer *layer 
 
 QString QgsLayerTreeViewTemporalIndicatorProvider::iconName( QgsMapLayer *layer )
 {
-  switch ( layer->temporalProperties()->temporalSource() )
-  {
-    case QgsMapLayerTemporalProperties::TemporalSource::Project:
-      return QStringLiteral( "/mIndicatorTimeFromProject.svg" );
+  QgsDataSourceUri uri;
 
-    case QgsMapLayerTemporalProperties::TemporalSource::Layer:
-      return QStringLiteral( "/mIndicatorTemporal.svg" );
-  }
+  if ( layer->dataProvider() )
+    uri.setEncodedUri( layer->dataProvider()->dataSourceUri() );
+
+  const QString temporalSource = uri.param( QStringLiteral( "temporalSource" ) );
+
+  if ( temporalSource == QString( "project" ) )
+    return QStringLiteral( "/mIndicatorTimeFromProject.svg" );
+
+  if ( temporalSource == QString( "provider" ) )
+    return QStringLiteral( "/mIndicatorTemporal.svg" );
 
   return QString();
 }
 
 QString QgsLayerTreeViewTemporalIndicatorProvider::tooltipText( QgsMapLayer *layer )
 {
-  switch ( layer->temporalProperties()->temporalSource() )
-  {
-    case QgsMapLayerTemporalProperties::TemporalSource::Project:
-      return tr( "<b>Temporal layer, currently using project's time range </b>" );
+  QgsDataSourceUri uri;
 
-    case QgsMapLayerTemporalProperties::TemporalSource::Layer:
-      return tr( "<b>Temporal layer </b>" );
-  }
+  if ( layer->dataProvider() )
+    uri.setEncodedUri( layer->dataProvider()->dataSourceUri() );
+
+  const QString temporalSource = uri.param( QStringLiteral( "temporalSource" ) );
+
+  if ( temporalSource == QString( "project" ) )
+    return tr( "<b>Temporal layer, currently using project's time range </b>" );
+
+  if ( temporalSource == QString( "provider" ) )
+    return tr( "<b>Temporal layer </b>" );
+
   return QString();
 }
 

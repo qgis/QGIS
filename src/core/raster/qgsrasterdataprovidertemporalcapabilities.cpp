@@ -35,16 +35,6 @@ const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::availableTemp
   return mAvailableTemporalRange;
 }
 
-void QgsRasterDataProviderTemporalCapabilities::setEnableTime( bool enabled )
-{
-  mEnableTime = enabled;
-}
-
-bool QgsRasterDataProviderTemporalCapabilities::isTimeEnabled() const
-{
-  return mEnableTime;
-}
-
 void QgsRasterDataProviderTemporalCapabilities::setAvailableReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
   if ( !hasTemporalCapabilities() )

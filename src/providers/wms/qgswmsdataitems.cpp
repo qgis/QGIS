@@ -371,14 +371,20 @@ QString QgsWMSLayerItem::createUri()
     // add temporal dimensions only
     if ( dimension.name == QLatin1String( "time" ) || dimension.name == QLatin1String( "reference_time" ) )
     {
+      QString name = dimension.name == QLatin1String( "time" ) ? QString( "timeDimensionExtent" ) : QString( "referenceTimeDimensionExtent" );
+
       if ( !( mDataSourceUri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) ) )
         mDataSourceUri.setParam( QLatin1String( "type" ), QLatin1String( "wmst" ) );
-      mDataSourceUri.setParam( dimension.name, dimension.extent );
+      mDataSourceUri.setParam( name, dimension.extent );
     }
   }
 
-  // Default value for temporal interval requests
-  // mDataSourceUri.setParam( QStringLiteral( "timeInterval" ), QLatin1String( "no" ) );
+  // WMS-T defaults settings
+  if ( mDataSourceUri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) )
+  {
+    mDataSourceUri.setParam( QLatin1String( "temporalSource" ), QLatin1String( "provider" ) );
+    mDataSourceUri.setParam( QLatin1String( "enableTime" ), QLatin1String( "yes" ) );
+  }
 
   QString format;
   // get first supported by qt and server

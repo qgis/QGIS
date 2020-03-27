@@ -59,26 +59,6 @@ Reads temporal properties from a DOM ``element`` previously written by writeXml(
 .. seealso:: :py:func:`writeXml`
 %End
 
-    enum TemporalSource
-    {
-      Layer,
-      Project
-    };
-
-    TemporalSource temporalSource() const;
-%Docstring
-Returns the temporal properties temporal range source, can be layer or project.
-
-.. seealso:: :py:func:`setTemporalSource`
-%End
-
-    void setTemporalSource( TemporalSource source );
-%Docstring
-Sets the temporal properties temporal range ``source``.
-
-.. seealso:: :py:func:`temporalSource`
-%End
-
     virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;
 %Docstring
 Returns ``True`` if the layer should be visible and rendered for the specified time ``range``.

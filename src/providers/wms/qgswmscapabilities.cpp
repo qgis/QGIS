@@ -82,10 +82,10 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     return true;
   }
 
-  if ( !mIsTemporal && uri.param( QStringLiteral( "type" ) ) == QLatin1String( "wmst" ) )
+  if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "wmst" ) )
   {
     mIsTemporal = true;
-    mTemporalExtent = uri.param( QStringLiteral( "time" ) );
+    mTemporalExtent = uri.param( QStringLiteral( "timeDimensionExtent" ) );
     mTimeDimensionExtent = parseTemporalExtent( mTemporalExtent );
 
     if ( mTimeDimensionExtent.datesResolutionList.first().dates.dateTimes.size() > 0 )
@@ -100,9 +100,9 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 
     mDateTimes = dateTimesFromExtent( mTimeDimensionExtent );
 
-    if ( uri.param( QStringLiteral( "reference_time" ) ) != QString() )
+    if ( uri.param( QStringLiteral( "referenceTimeDimensionExtent" ) ) != QString() )
     {
-      QString referenceExtent = uri.param( QStringLiteral( "reference_time" ) );
+      QString referenceExtent = uri.param( QStringLiteral( "referenceTimeDimensionExtent" ) );
 
       mReferenceTimeDimensionExtent = parseTemporalExtent( referenceExtent );
 

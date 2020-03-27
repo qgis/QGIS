@@ -85,13 +85,6 @@ bool QgsRasterLayerTemporalProperties::readXml( const QDomElement &element, cons
   mMode = static_cast< TemporalMode >( temporalNode.attribute( QStringLiteral( "mode" ), QStringLiteral( "0" ) ). toInt() );
   mIntervalHandlingMethod = static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >( temporalNode.attribute( QStringLiteral( "fetchMode" ), QStringLiteral( "0" ) ). toInt() );
 
-  int sourceIndex = temporalNode.attribute( QStringLiteral( "source" ), QStringLiteral( "0" ) ).toInt();
-
-  if ( sourceIndex == 0 )
-    setTemporalSource( TemporalSource::Layer );
-  else
-    setTemporalSource( TemporalSource::Project );
-
   QDomNode rangeElement = temporalNode.namedItem( QStringLiteral( "fixedRange" ) );
 
   QDomNode begin = rangeElement.namedItem( QStringLiteral( "start" ) );
@@ -115,7 +108,6 @@ QDomElement QgsRasterLayerTemporalProperties::writeXml( QDomElement &element, QD
   QDomElement temporalElement = document.createElement( QStringLiteral( "temporal" ) );
   temporalElement.setAttribute( QStringLiteral( "enabled" ), isActive() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   temporalElement.setAttribute( QStringLiteral( "mode" ), QString::number( mMode ) );
-  temporalElement.setAttribute( QStringLiteral( "source" ), QString::number( temporalSource() ) );
   temporalElement.setAttribute( QStringLiteral( "fetchMode" ), QString::number( mIntervalHandlingMethod ) );
 
   QDomElement rangeElement = document.createElement( QStringLiteral( "fixedRange" ) );
