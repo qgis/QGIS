@@ -329,7 +329,7 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   QString lastFilter;
   for ( const QString &f : filters )
   {
-    if ( f.contains( QStringLiteral( "*%1" ).arg( lastExt ), Qt::CaseInsensitive ) )
+    if ( f.contains( QStringLiteral( "*.%1" ).arg( lastExt ), Qt::CaseInsensitive ) )
     {
       lastFilter = f;
       break;
@@ -346,7 +346,7 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   if ( !filename.isEmpty() )
   {
     mUseTemporary = false;
-    filename = QgsFileUtils::addExtensionFromFilter( filename, fileFilter );
+    filename = QgsFileUtils::addExtensionFromFilter( filename, lastFilter );
 
     leText->setText( filename );
     settings.setValue( QStringLiteral( "/Processing/LastOutputPath" ), QFileInfo( filename ).path() );
