@@ -23,7 +23,7 @@
 #include "qgsdatasourceuri.h"
 
 QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName )
-  : QgsPluginLayer( "vector-tile", baseName )
+  : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
 {
   mDataSource = uri;
 
@@ -79,7 +79,7 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
 QgsVectorTileLayer::~QgsVectorTileLayer() = default;
 
 
-QgsPluginLayer *QgsVectorTileLayer::clone() const
+QgsVectorTileLayer *QgsVectorTileLayer::clone() const
 {
   QgsVectorTileLayer *layer = new QgsVectorTileLayer( source(), name() );
   layer->setRenderer( renderer() ? renderer()->clone() : nullptr );

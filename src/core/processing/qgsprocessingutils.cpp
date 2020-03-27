@@ -33,6 +33,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsreferencedgeometry.h"
 #include "qgsrasterfilewriter.h"
+#include "qgsvectortilelayer.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -152,6 +153,8 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
         return true;
       case QgsMapLayerType::MeshLayer:
         return !canUseLayer( qobject_cast< QgsMeshLayer * >( layer ) );
+      case QgsMapLayerType::VectorTileLayer:
+        return !canUseLayer( qobject_cast< QgsVectorTileLayer * >( layer ) );
     }
     return true;
   } ), layers.end() );
@@ -402,6 +405,11 @@ QgsCoordinateReferenceSystem QgsProcessingUtils::variantToCrs( const QVariant &v
 bool QgsProcessingUtils::canUseLayer( const QgsMeshLayer *layer )
 {
   return layer && layer->dataProvider();
+}
+
+bool QgsProcessingUtils::canUseLayer( const QgsVectorTileLayer *layer )
+{
+  return layer && layer->isValid();
 }
 
 bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )

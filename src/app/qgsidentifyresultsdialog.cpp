@@ -497,6 +497,10 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
       addFeature( qobject_cast<QgsMeshLayer *>( result.mLayer ), result.mLabel, result.mAttributes, result.mDerivedAttributes );
       break;
 
+    case QgsMapLayerType::VectorTileLayer:
+      // TODO
+      break;
+
     case QgsMapLayerType::PluginLayer:
       break;
   }

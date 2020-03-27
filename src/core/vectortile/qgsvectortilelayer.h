@@ -19,7 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include "qgspluginlayer.h"
+#include "qgsmaplayer.h"
 
 class QgsVectorTileRenderer;
 
@@ -76,16 +76,18 @@ class QgsTileXYZ;
  *
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsVectorTileLayer : public QgsPluginLayer
+class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 {
+    Q_OBJECT
+
   public:
     //! Constructs a new vector tile layer
     explicit QgsVectorTileLayer( const QString &path = QString(), const QString &baseName = QString() );
-    ~QgsVectorTileLayer();
+    ~QgsVectorTileLayer() override;
 
     // implementation of virtual functions from QgsMapLayer
 
-    QgsPluginLayer *clone() const override SIP_FACTORY;
+    QgsVectorTileLayer *clone() const override SIP_FACTORY;
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
@@ -130,6 +132,11 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsPluginLayer
     //! Returns currently assigned renderer
     QgsVectorTileRenderer *renderer() const;
 
+    //! Sets whether to render also borders of tiles (useful for debugging)
+    void setTileBorderRenderingEnabled( bool enabled ) { mTileBorderRendering = enabled; }
+    //! Returns whether to render also borders of tiles (useful for debugging)
+    bool isTileBorderRenderingEnabled() const { return mTileBorderRendering; }
+
   private:
     //! Type of the data source
     QString mSourceType;
@@ -142,6 +149,8 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsPluginLayer
 
     //! Renderer assigned to the layer to draw map
     std::unique_ptr<QgsVectorTileRenderer> mRenderer;
+    //! Whether we draw borders of tiles
+    bool mTileBorderRendering = false;
 };
 
 

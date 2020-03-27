@@ -11,7 +11,7 @@
 
 
 
-class QgsVectorTileLayer : QgsPluginLayer
+class QgsVectorTileLayer : QgsMapLayer
 {
 %Docstring
 Implements a map layer that is dedicated to rendering of vector tiles.
@@ -75,7 +75,7 @@ Constructs a new vector tile layer
     ~QgsVectorTileLayer();
 
 
-    virtual QgsPluginLayer *clone() const /Factory/;
+    virtual QgsVectorTileLayer *clone() const /Factory/;
 
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
@@ -123,6 +123,15 @@ Sets renderer for the map layer.
     QgsVectorTileRenderer *renderer() const;
 %Docstring
 Returns currently assigned renderer
+%End
+
+    void setTileBorderRenderingEnabled( bool enabled );
+%Docstring
+Sets whether to render also borders of tiles (useful for debugging)
+%End
+    bool isTileBorderRenderingEnabled() const;
+%Docstring
+Returns whether to render also borders of tiles (useful for debugging)
 %End
 
 };

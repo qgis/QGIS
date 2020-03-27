@@ -8325,6 +8325,7 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
       return saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ), true, onlySelected, defaultToAddToMap );
 
     case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::PluginLayer:
       return QString();
   }
@@ -14006,6 +14007,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionIdentify->setEnabled( true );
       break;
 
+    case QgsMapLayerType::VectorTileLayer:
+      // TODO
+      break;
+
     case QgsMapLayerType::PluginLayer:
       break;
 
@@ -14955,6 +14960,12 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       mMapStyleWidget->blockUpdates( false );
 
       delete vectorLayerPropertiesDialog; // delete since dialog cannot be reused without updating code
+      break;
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      // TODO
       break;
     }
 

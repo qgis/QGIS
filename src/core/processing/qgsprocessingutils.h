@@ -34,6 +34,7 @@ class QgsMapLayerStore;
 class QgsProcessingFeedback;
 class QgsProcessingFeatureSource;
 class QgsProcessingAlgorithm;
+class QgsVectorTileLayer;
 
 #include <QString>
 #include <QVariant>
@@ -383,6 +384,7 @@ class CORE_EXPORT QgsProcessingUtils
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsMeshLayer *layer );
+    static bool canUseLayer( const QgsVectorTileLayer *layer );
     static bool canUseLayer( const QgsVectorLayer *layer,
                              const QList< int > &sourceTypes = QList< int >() );
 

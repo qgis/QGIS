@@ -177,6 +177,12 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
         feedback->pushDebugInfo( QObject::tr( "Packaging mesh layers is not supported." ) );
         errored = true;
         break;
+
+      case QgsMapLayerType::VectorTileLayer:
+        //not supported
+        feedback->pushDebugInfo( QObject::tr( "Packaging vector tile layers is not supported." ) );
+        errored = true;
+        break;
     }
   }
 

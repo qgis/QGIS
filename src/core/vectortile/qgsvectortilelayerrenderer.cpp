@@ -33,6 +33,7 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   , mSourceMinZoom( layer->sourceMinZoom() )
   , mSourceMaxZoom( layer->sourceMaxZoom() )
   , mRenderer( layer->renderer()->clone() )
+  , mDrawTileBoundaries( layer->isTileBorderRenderingEnabled() )
   , mFeedback( new QgsFeedback )
 {
 }

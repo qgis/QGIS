@@ -21,6 +21,8 @@
 #include "sqlite3.h"
 #include "qgssqliteutils.h"
 
+#define SIP_NO_FILE
+
 class QImage;
 class QgsRectangle;
 

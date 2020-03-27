@@ -61,7 +61,7 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     std::unique_ptr<QgsVectorTileRenderer> mRenderer;
 
     //! Whether to draw boundaries of tiles (useful for debugging)
-    bool mDrawTileBoundaries = true;
+    bool mDrawTileBoundaries = false;
 
     // temporary data used during rendering process
 
