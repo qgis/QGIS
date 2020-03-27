@@ -120,6 +120,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   connect( mProjectTemporalRange, &QRadioButton::toggled, this, &QgsRasterLayerProperties::passProjectTemporalRange_toggled );
   connect( mStaticTemporalRange, &QRadioButton::toggled, this, &QgsRasterLayerProperties::staticTemporalRange_toggled );
 
+  connect( mStaticTemporalRange, &QRadioButton::toggled, mStaticWmstFrame, &QWidget::setEnabled );
+  connect( mReferenceTime, &QCheckBox::toggled, mWmstReferenceTimeFrame, &QWidget::setEnabled );
+
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
   menuStyle->addAction( tr( "Load Style…" ), this, &QgsRasterLayerProperties::loadStyle_clicked );
