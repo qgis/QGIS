@@ -255,9 +255,9 @@ class BatchPanelFillWidget(QToolButton):
 
             p = pp.as_posix()
 
-            if ((isinstance(self.parameterDefinition, QgsProcessingParameterRasterLayer) or
-                 (isinstance(self.parameterDefinition,
-                                QgsProcessingParameterMultipleLayers) and self.param.layerType() == QgsProcessing.TypeRaster)) and
+            if ((isinstance(self.parameterDefinition, QgsProcessingParameterRasterLayer)
+                 or (isinstance(self.parameterDefinition,
+                             QgsProcessingParameterMultipleLayers) and self.param.layerType() == QgsProcessing.TypeRaster)) and
                     not QgsRasterLayer.isValidRasterFileName(p)):
                 continue
 
@@ -274,16 +274,16 @@ class BatchPanelFillWidget(QToolButton):
 
     def showLayerSelectionDialog(self):
         layers = []
-        if (isinstance(self.parameterDefinition, QgsProcessingParameterRasterLayer) or
-            (isinstance(self.parameterDefinition, QgsProcessingParameterMultipleLayers) and
+        if (isinstance(self.parameterDefinition, QgsProcessingParameterRasterLayer)
+            or (isinstance(self.parameterDefinition, QgsProcessingParameterMultipleLayers) and
                 self.param.layerType() == QgsProcessing.TypeRaster)):
             layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
         elif isinstance(self.parameterDefinition, QgsProcessingParameterVectorLayer):
             layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
         elif isinstance(self.parameterDefinition, QgsProcessingParameterMapLayer):
             layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
-        elif (isinstance(self.parameterDefinition, QgsProcessingParameterMeshLayer) or
-              (isinstance(self.parameterDefinition, QgsProcessingParameterMultipleLayers) and
+        elif (isinstance(self.parameterDefinition, QgsProcessingParameterMeshLayer)
+              or (isinstance(self.parameterDefinition, QgsProcessingParameterMultipleLayers) and
                   self.parameterDefinition.layerType() == QgsProcessing.TypeMesh)):
             layers = QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance())
         else:
