@@ -176,9 +176,9 @@ class QgsNetworkLoggerRootNode final : public QgsNetworkLoggerGroup
     QVariant data( int role = Qt::DisplayRole ) const override final;
 
     /**
-     * Removes \a count requests from the start of the root group.
+     * Removes a \a row from the root group.
      */
-    void trimRequests( int count );
+    void removeRow( int row );
 };
 
 
