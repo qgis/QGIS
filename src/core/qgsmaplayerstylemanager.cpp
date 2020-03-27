@@ -247,12 +247,15 @@ void QgsMapLayerStyleManager::importAllLayerStyles( QgsMapLayer *layer )
   bool ok = true;
   for (i = styles.constBegin(); i != styles.constEnd(); ++i)
   {
-    qDebug() << i.key();
-    ok = addStyle( i.key(), i.value() );
+    QgsMapLayerStyle importedStyle;
+    if ( i.key() == layer->styleManager()->currentStyle() )
+      importedStyle = layer->styleManager()->style( i.key() );
+    else
+      importedStyle = i.value();
+    ok = addStyle( i.key(), importedStyle );
     if ( !ok )
     {
-      addStyle( i.key() + " alt", i.value() );
-      qDebug() << i.key() << " alt";
+      addStyle( i.key() + " alt", importedStyle );
     }
   }
 }

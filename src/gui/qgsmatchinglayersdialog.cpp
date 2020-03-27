@@ -28,6 +28,7 @@ QgsMatchingLayersDialog::QgsMatchingLayersDialog( QgsMapLayer *layer, QWidget *p
   : QDialog( parent )
 {
   setupUi( this );
+  setWindowTitle( tr( "Select the desired layer" ) );
   QgsGui::enableAutoGeometryRestore( this );
   QgsMapLayerProxyModel::Filter filter; 
   mModel = new QgsMapLayerProxyModel( listMapLayers );
