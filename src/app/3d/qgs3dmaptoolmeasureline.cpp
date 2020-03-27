@@ -175,6 +175,8 @@ void Qgs3DMapToolMeasureLine::handleClick( Qt3DRender::QPickEvent *event, const 
 
 void Qgs3DMapToolMeasureLine::updateMeasurementLayer()
 {
+  if ( !mMeasurementLayer )
+    return;
   double verticalScale = canvas()->map()->terrainVerticalScale();
   QgsLineString *line;
   if ( verticalScale != 1.0 )
