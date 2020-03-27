@@ -40,7 +40,6 @@ class TestQgsRasterDataProviderTemporalCapabilities : public QObject
 
     void checkActiveStatus();
     void checkTemporalRange();
-    void checkReferenceTemporalRange();
 
   private:
     QgsRasterDataProviderTemporalCapabilities *temporalCapabilities = nullptr;
@@ -106,28 +105,6 @@ void TestQgsRasterDataProviderTemporalCapabilities::checkTemporalRange()
   // will result in to setting the requested temporal range with the fixed temporal range.
   temporalCapabilities->setRequestedTemporalRange( fixedDateTimeRange );
   QCOMPARE( temporalCapabilities->requestedTemporalRange(), fixedDateTimeRange );
-}
-
-void TestQgsRasterDataProviderTemporalCapabilities::checkReferenceTemporalRange()
-{
-  QgsDateTimeRange fixedDateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
-                                        QDateTime( QDate( 2020, 12, 31 ) ) );
-  QgsDateTimeRange dateTimeRange = QgsDateTimeRange( QDateTime( QDate( 2020, 1, 1 ) ),
-                                   QDateTime( QDate( 2020, 3, 1 ) ) );
-  QgsDateTimeRange outOfLimitsRange = QgsDateTimeRange( QDateTime( QDate( 2019, 1, 1 ) ),
-                                      QDateTime( QDate( 2021, 3, 1 ) ) );
-
-  temporalCapabilities->setAvailableReferenceTemporalRange( fixedDateTimeRange );
-  temporalCapabilities->setRequestedReferenceTemporalRange( dateTimeRange );
-
-  QCOMPARE( temporalCapabilities->availableReferenceTemporalRange(), fixedDateTimeRange );
-  QCOMPARE( temporalCapabilities->requestedReferenceTemporalRange(), dateTimeRange );
-
-  temporalCapabilities->setRequestedReferenceTemporalRange( outOfLimitsRange );
-  QCOMPARE( temporalCapabilities->requestedReferenceTemporalRange(), dateTimeRange );
-
-  temporalCapabilities->setRequestedReferenceTemporalRange( fixedDateTimeRange );
-  QCOMPARE( temporalCapabilities->requestedReferenceTemporalRange(), fixedDateTimeRange );
 }
 
 QGSTEST_MAIN( TestQgsRasterDataProviderTemporalCapabilities )
