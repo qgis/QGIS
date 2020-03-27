@@ -213,12 +213,12 @@ class contour_polygon(contour):
         self.removeParameter(contour.FIELD_NAME)
 
         self.addParameter(QgsProcessingParameterString(self.FIELD_NAME_MIN,
-                                                       self.tr('Attribute name to use for the minimum elevation of contour polygons (if not set, no elevation attribute is attached)'),
+                                                       self.tr('Attribute name for minimum elevation of contour polygon'),
                                                        defaultValue='ELEV_MIN',
                                                        optional=True))
 
         self.addParameter(QgsProcessingParameterString(self.FIELD_NAME_MAX,
-                                                       self.tr('Attribute name to use for the maximum elevation of contour polygons (if not set, no elevation attribute is attached)'),
+                                                       self.tr('Attribute name for maximum elevation of contour polygon'),
                                                        defaultValue='ELEV_MAX',
                                                        optional=True))
 
