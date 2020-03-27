@@ -20,6 +20,7 @@
 //qgis includes...
 #include "qgsapplication.h"
 #include "qgsproject.h"
+#include "qgsrenderchecker.h"
 #include "qgstiles.h"
 #include "qgsvectortilelayer.h"
 
@@ -37,6 +38,10 @@ class TestQgsVectorTileLayer : public QObject
   private:
     QString mDataDir;
     QgsVectorTileLayer *mLayer = nullptr;
+    QString mReport;
+    QgsMapSettings *mMapSettings = nullptr;
+
+    bool imageCheck( const QString &testType, QgsVectorTileLayer *layer, QgsRectangle extent );
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -45,6 +50,7 @@ class TestQgsVectorTileLayer : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void test_basic();
+    void test_render();
 };
 
 
@@ -66,6 +72,9 @@ void TestQgsVectorTileLayer::initTestCase()
 
   QgsProject::instance()->addMapLayer( mLayer );
 
+  mMapSettings = new QgsMapSettings();
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << mLayer );
+
 }
 
 void TestQgsVectorTileLayer::cleanupTestCase()
@@ -81,6 +90,28 @@ void TestQgsVectorTileLayer::test_basic()
 
   QByteArray invalidTileRawData = mLayer->getRawTile( QgsTileXYZ( 0, 0, 99 ) );
   QCOMPARE( invalidTileRawData.length(), 0 );
+}
+
+
+bool TestQgsVectorTileLayer::imageCheck( const QString &testType, QgsVectorTileLayer *layer, QgsRectangle extent )
+{
+  mReport += "<h2>" + testType + "</h2>\n";
+  mMapSettings->setExtent( extent );
+  mMapSettings->setDestinationCrs( layer->crs() );
+  mMapSettings->setOutputDpi( 96 );
+  QgsRenderChecker myChecker;
+  myChecker.setControlPathPrefix( QStringLiteral( "vector_tile" ) );
+  myChecker.setControlName( "expected_" + testType );
+  myChecker.setMapSettings( *mMapSettings );
+  myChecker.setColorTolerance( 15 );
+  bool myResultFlag = myChecker.runTest( testType, 0 );
+  mReport += myChecker.report();
+  return myResultFlag;
+}
+
+void TestQgsVectorTileLayer::test_render()
+{
+  QVERIFY( imageCheck( "render_test_basic", mLayer, mLayer->extent() ) );
 }
 
 

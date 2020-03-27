@@ -16,7 +16,9 @@
 #include "qgsvectortilebasicrenderer.h"
 
 #include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbollayer.h"
 #include "qgslinesymbollayer.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectortileutils.h"
 
@@ -229,30 +231,56 @@ QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::styles() cons
 
 void QgsVectorTileBasicRenderer::setDefaultStyle()
 {
-  QColor color = Qt::blue;
-  QColor polygonColor = color;
-  polygonColor.setAlpha( 100 );
-  QColor pointColor = Qt::red;
+  QColor polygonFillColor = Qt::blue;
+  QColor polygonStrokeColor = polygonFillColor;
+  polygonFillColor.setAlpha( 100 );
+  double polygonStrokeWidth = DEFAULT_LINE_WIDTH;
 
-  QgsFillSymbol *polygonSymbol = static_cast<QgsFillSymbol *>( QgsLineSymbol::defaultSymbol( QgsWkbTypes::PolygonGeometry ) );
-  polygonSymbol->setColor( polygonColor );
+  QColor lineStrokeColor = Qt::blue;
+  double lineStrokeWidth = DEFAULT_LINE_WIDTH;
 
-  QgsLineSymbol *lineSymbol = static_cast<QgsLineSymbol *>( QgsLineSymbol::defaultSymbol( QgsWkbTypes::LineGeometry ) );
-  lineSymbol->setColor( color );
+  QColor pointFillColor = Qt::red;
+  QColor pointStrokeColor = pointFillColor;
+  pointFillColor.setAlpha( 100 );
+  double pointSize = DEFAULT_POINT_SIZE;
 
-  QgsMarkerSymbol *pointSymbol = static_cast<QgsMarkerSymbol *>( QgsLineSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
-  pointSymbol->setColor( pointColor );
+  setStyles( simpleStyle( polygonFillColor, polygonStrokeColor, polygonStrokeWidth,
+                          lineStrokeColor, lineStrokeWidth,
+                          pointFillColor, pointStrokeColor, pointSize ) );
+}
+
+QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::simpleStyle(
+  const QColor &polygonFillColor, const QColor &polygonStrokeColor, double polygonStrokeWidth,
+  const QColor &lineStrokeColor, double lineStrokeWidth,
+  const QColor &pointFillColor, const QColor &pointStrokeColor, double pointSize )
+{
+  QgsSimpleFillSymbolLayer *fillSymbolLayer = new QgsSimpleFillSymbolLayer();
+  fillSymbolLayer->setFillColor( polygonFillColor );
+  fillSymbolLayer->setStrokeColor( polygonStrokeColor );
+  fillSymbolLayer->setStrokeWidth( polygonStrokeWidth );
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol( QgsSymbolLayerList() << fillSymbolLayer );
+
+  QgsSimpleLineSymbolLayer *lineSymbolLayer = new QgsSimpleLineSymbolLayer;
+  lineSymbolLayer->setColor( lineStrokeColor );
+  lineSymbolLayer->setWidth( lineStrokeWidth );
+  QgsLineSymbol *lineSymbol = new QgsLineSymbol( QgsSymbolLayerList() << lineSymbolLayer );
+
+  QgsSimpleMarkerSymbolLayer *markerSymbolLayer = new QgsSimpleMarkerSymbolLayer;
+  markerSymbolLayer->setFillColor( pointFillColor );
+  markerSymbolLayer->setStrokeColor( pointStrokeColor );
+  markerSymbolLayer->setSize( pointSize );
+  QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( QgsSymbolLayerList() << markerSymbolLayer );
 
   QgsVectorTileBasicRendererStyle st1( "polygons", QString(), QgsWkbTypes::PolygonGeometry );
-  st1.setSymbol( polygonSymbol );
+  st1.setSymbol( fillSymbol );
 
   QgsVectorTileBasicRendererStyle st2( "lines", QString(), QgsWkbTypes::LineGeometry );
   st2.setSymbol( lineSymbol );
 
   QgsVectorTileBasicRendererStyle st3( "points", QString(), QgsWkbTypes::PointGeometry );
-  st3.setSymbol( pointSymbol );
+  st3.setSymbol( markerSymbol );
 
   QList<QgsVectorTileBasicRendererStyle> lst;
   lst << st1 << st2 << st3;
-  setStyles( lst );
+  return lst;
 }
