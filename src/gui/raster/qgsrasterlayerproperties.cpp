@@ -1229,40 +1229,39 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
 
   if ( mRasterLayer->dataProvider() && mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
   {
-    QgsDateTimeRange layerRange = mRasterLayer->temporalProperties()->fixedTemporalRange();
-
-    QgsDateTimeRange layerReferenceRange = mRasterLayer->dataProvider()->temporalCapabilities()->availableReferenceTemporalRange();
+    const QgsDateTimeRange availableProviderRange = mRasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
+    const QgsDateTimeRange availableReferenceRange = mRasterLayer->dataProvider()->temporalCapabilities()->availableReferenceTemporalRange();
     QString uriString =  mRasterLayer->dataProvider()->dataSourceUri();
     QgsDataSourceUri uri;
     uri.setEncodedUri( uriString );
 
-    QString time = uri.param( QLatin1String( "time" ) );
-    QString referenceTime = uri.param( QLatin1String( "reference_time" ) );
-
-    if ( layerRange.begin().isValid() && layerRange.end().isValid() )
+    // setup maximum extents for widgets, based on provider's capabilities
+    if ( availableProviderRange.begin().isValid() && availableProviderRange.end().isValid() )
     {
-      mStartStaticDateTimeEdit->setDateTimeRange( layerRange.begin(),
-          layerRange.end() );
-      mStartStaticDateTimeEdit->setDateTime( layerRange.begin() );
-      mEndStaticDateTimeEdit->setDateTimeRange( layerRange.begin(),
-          layerRange.end() );
-      mEndStaticDateTimeEdit->setDateTime( layerRange.end() );
+      mStartStaticDateTimeEdit->setDateTimeRange( availableProviderRange.begin(),
+          availableProviderRange.end() );
+      mStartStaticDateTimeEdit->setDateTime( availableProviderRange.begin() );
+      mEndStaticDateTimeEdit->setDateTimeRange( availableProviderRange.begin(),
+          availableProviderRange.end() );
+      mEndStaticDateTimeEdit->setDateTime( availableProviderRange.end() );
     }
-    if ( layerReferenceRange.begin().isValid() && layerReferenceRange.end().isValid() )
+    if ( availableReferenceRange.begin().isValid() && availableReferenceRange.end().isValid() )
     {
-      mReferenceDateTimeEdit->setDateTimeRange( layerReferenceRange.begin(),
-          layerReferenceRange.end() );
-      mReferenceDateTimeEdit->setDateTime( layerReferenceRange.begin() );
+      mReferenceDateTimeEdit->setDateTimeRange( availableReferenceRange.begin(),
+          availableReferenceRange.end() );
+      mReferenceDateTimeEdit->setDateTime( availableReferenceRange.begin() );
     }
 
-    if ( time != QLatin1String( "" ) )
+    const QString time = uri.param( QStringLiteral( "time" ) );
+    if ( !time.isEmpty() )
     {
       QStringList parts = time.split( '/' );
       mStartStaticDateTimeEdit->setDateTime( QDateTime::fromString( parts.at( 0 ), Qt::ISODateWithMs ) );
       mEndStaticDateTimeEdit->setDateTime( QDateTime::fromString( parts.at( 1 ), Qt::ISODateWithMs ) );
     }
 
-    if ( referenceTime != QLatin1String( "" ) )
+    const QString referenceTime = uri.param( QStringLiteral( "reference_time" ) );
+    if ( !referenceTime.isEmpty() )
     {
       if ( referenceTime.contains( '/' ) )
       {
