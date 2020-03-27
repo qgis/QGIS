@@ -27,7 +27,10 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
   : QWidget( parent )
   , mLayer( layer )
 {
+  Q_ASSERT( mLayer );
   setupUi( this );
+
+  connect( mModeFixedRangeRadio, &QRadioButton::toggled, mFixedTimeRangeFrame, &QWidget::setEnabled );
   init();
 }
 
@@ -40,8 +43,19 @@ void QgsRasterLayerTemporalPropertiesWidget::init()
   mEndTemporalDateTimeEdit->setDisplayFormat(
     locale.dateTimeFormat( QLocale::ShortFormat ) );
 
-  if ( mLayer && mLayer->temporalProperties() )
-    mTemporalGroupBox->setChecked( mLayer->temporalProperties()->isActive() );
+  mTemporalGroupBox->setChecked( mLayer->temporalProperties()->isActive() );
+  switch ( mLayer->temporalProperties()->mode() )
+  {
+    case QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider:
+      mModeAutomaticRadio->setChecked( true );
+      break;
+    case QgsRasterLayerTemporalProperties::ModeFixedTemporalRange:
+      mModeFixedRangeRadio->setChecked( true );
+      break;
+  }
+
+  mStartTemporalDateTimeEdit->setDateTime( mLayer->temporalProperties()->fixedTemporalRange().begin() );
+  mEndTemporalDateTimeEdit->setDateTime( mLayer->temporalProperties()->fixedTemporalRange().end() );
 }
 
 void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
@@ -50,7 +64,10 @@ void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
 
   QgsDateTimeRange normalRange = QgsDateTimeRange( mStartTemporalDateTimeEdit->dateTime(),
                                  mEndTemporalDateTimeEdit->dateTime() );
-  mLayer->temporalProperties()->setTemporalRange( normalRange );
-  mLayer->temporalProperties()->setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource::Layer );
 
+  if ( mModeAutomaticRadio->isChecked() )
+    mLayer->temporalProperties()->setMode( QgsRasterLayerTemporalProperties::ModeTemporalRangeFromDataProvider );
+  else if ( mModeFixedRangeRadio->isChecked() )
+    mLayer->temporalProperties()->setMode( QgsRasterLayerTemporalProperties::ModeFixedTemporalRange );
+  mLayer->temporalProperties()->setFixedTemporalRange( normalRange );
 }
