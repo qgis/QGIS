@@ -507,6 +507,22 @@ void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 
 void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
 {
+  if ( event->key() == Qt::Key_Space )
+  {
+    const auto constSelectedNodes = selectedNodes();
+
+    if ( ! constSelectedNodes.isEmpty() )
+    {
+      for ( QgsLayerTreeNode *node : constSelectedNodes )
+      {
+        node->setItemVisibilityChecked( ! node->isVisible() );
+      }
+
+      // if we call the original keyPress handler, the current item will be checked to the original state yet again
+      return;
+    }
+  }
+
   const QgsLayerTreeModel::Flags oldFlags = layerTreeModel()->flags();
   if ( event->modifiers() & Qt::ControlModifier )
     layerTreeModel()->setFlags( oldFlags | QgsLayerTreeModel::ActionHierarchical );

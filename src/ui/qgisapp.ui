@@ -151,6 +151,7 @@
     <addaction name="mActionHideAllLayers"/>
     <addaction name="mActionShowSelectedLayers"/>
     <addaction name="mActionHideSelectedLayers"/>
+    <addaction name="mActionToggleSelectedLayers"/>
     <addaction name="mActionHideDeselectedLayers"/>
     <addaction name="separator"/>
    </widget>
@@ -2671,6 +2672,17 @@ Acts on the currently active layer only.</string>
    </property>
    <property name="text">
     <string>Hide Selected Layers</string>
+   </property>
+  </action>
+  <action name="mActionToggleSelectedLayers">
+   <property name="text">
+    <string>Toggle Selected Layers</string>
+   </property>
+   <property name="shortcut">
+    <string>Space</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WidgetShortcut</enum>
    </property>
   </action>
   <action name="mActionHideDeselectedLayers">

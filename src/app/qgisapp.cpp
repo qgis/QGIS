@@ -2650,6 +2650,7 @@ void QgisApp::createActions()
   connect( mActionHideAllLayers, &QAction::triggered, this, &QgisApp::hideAllLayers );
   connect( mActionShowSelectedLayers, &QAction::triggered, this, &QgisApp::showSelectedLayers );
   connect( mActionHideSelectedLayers, &QAction::triggered, this, &QgisApp::hideSelectedLayers );
+  connect( mActionToggleSelectedLayers, &QAction::triggered, this, &QgisApp::toggleSelectedLayers );
   connect( mActionHideDeselectedLayers, &QAction::triggered, this, &QgisApp::hideDeselectedLayers );
 
   // Plugin Menu Items
@@ -7551,6 +7552,18 @@ void QgisApp::hideSelectedLayers()
   for ( QgsLayerTreeNode *node : constSelectedNodes )
   {
     node->setItemVisibilityChecked( false );
+  }
+}
+
+//reimplements method from base (gui) class
+void QgisApp::toggleSelectedLayers()
+{
+  QgsDebugMsg( QStringLiteral( "toggling selected layers!" ) );
+
+  const auto constSelectedNodes = mLayerTreeView->selectedNodes();
+  for ( QgsLayerTreeNode *node : constSelectedNodes )
+  {
+    node->setItemVisibilityChecked( ! node->isVisible() );
   }
 }
 
