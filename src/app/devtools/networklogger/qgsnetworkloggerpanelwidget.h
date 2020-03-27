@@ -66,6 +66,7 @@ class QgsNetworkLoggerTreeView: public QTreeView
     QMenu *mMenu = nullptr;
     QgsNetworkLogger *mLogger = nullptr;
     QgsNetworkLoggerProxyModel *mProxyModel = nullptr;
+    bool mAutoScroll = true;
 };
 
 

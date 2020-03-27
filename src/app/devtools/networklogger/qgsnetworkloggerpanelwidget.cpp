@@ -20,6 +20,7 @@
 #include "qgsnetworkloggernode.h"
 #include <QFontDatabase>
 #include <QMenu>
+#include <QScrollBar>
 
 //
 // QgsNetworkLoggerTreeView
@@ -38,6 +39,20 @@ QgsNetworkLoggerTreeView::QgsNetworkLoggerTreeView( QgsNetworkLogger *logger, QW
 
   setContextMenuPolicy( Qt::CustomContextMenu );
   connect( this, &QgsNetworkLoggerTreeView::customContextMenuRequested, this, &QgsNetworkLoggerTreeView::contextMenu );
+
+  connect( verticalScrollBar(), &QAbstractSlider::sliderMoved, this, [this]( int value )
+  {
+    if ( value == verticalScrollBar()->maximum() )
+      mAutoScroll = true;
+    else
+      mAutoScroll = false;
+  } );
+
+  connect( mLogger, &QAbstractItemModel::rowsInserted, this, [ = ]
+  {
+    if ( mAutoScroll )
+      scrollToBottom();
+  } );
 
   mMenu = new QMenu( this );
 }
@@ -134,11 +149,5 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
   {
     QgsSettings().setValue( QStringLiteral( "logNetworkRequests" ), enabled, QgsSettings::App );
     mLogger->enableLogging( enabled );
-  } );
-
-  connect( mLogger, &QAbstractItemModel::rowsInserted, this, [ = ]
-  {
-    // we may want to make this optional?
-    mTreeView->scrollToBottom();
   } );
 }
