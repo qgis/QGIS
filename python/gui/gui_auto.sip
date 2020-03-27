@@ -74,6 +74,7 @@
 %Include auto_generated/qgsexpressionbuilderwidget.sip
 %Include auto_generated/qgsexpressionhighlighter.sip
 %Include auto_generated/qgsexpressionlineedit.sip
+%Include auto_generated/qgsexpressionpreviewwidget.sip
 %Include auto_generated/qgsexpressionselectiondialog.sip
 %Include auto_generated/qgsexpressiontreeview.sip
 %Include auto_generated/qgsextentgroupbox.sip

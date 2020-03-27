@@ -1,0 +1,156 @@
+/***************************************************************************
+    qgsexpressionpreviewwidget.cpp
+     --------------------------------------
+    Date                 : march 2020 - quarantine day 12
+    Copyright            : (C) 2020 by Denis Rouzaud
+    Email                : denis@opengis.ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsexpressionpreviewwidget.h"
+#include "qgsmessageviewer.h"
+#include "qgsvectorlayer.h"
+
+
+
+QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
+  : QWidget( parent )
+{
+  setupUi( this );
+  mPreviewLabel->clear();
+
+  connect( mPreviewLabel, &QLabel::linkActivated, this, &QgsExpressionPreviewWidget::linkActivated );
+}
+
+void QgsExpressionPreviewWidget::setLayer( QgsVectorLayer *layer )
+{
+  mLayer = layer;
+  mFeatureListComboBox->setSourceLayer( layer );
+}
+
+void QgsExpressionPreviewWidget::setExpressionText( const QString &expression )
+{
+  // If the string is empty the expression will still "fail" although
+  // we don't show the user an error as it will be confusing.
+  if ( expression.isEmpty() )
+  {
+    mPreviewLabel->clear();
+    mPreviewLabel->setStyleSheet( QString() );
+    setExpressionToolTip( QString() );
+    emit expressionParsed( false );
+    mExpression = QgsExpression();
+  }
+  else
+  {
+    mExpression = QgsExpression( expression );
+
+    if ( mLayer )
+    {
+      // Only set calculator if we have layer, else use default.
+      mExpression.setGeomCalculator( &mDa );
+
+      if ( !mExpressionContext.feature().isValid() )
+      {
+        // no feature passed yet, try to get from layer
+        QgsFeature f;
+        mLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) ).nextFeature( f );
+        mExpressionContext.setFeature( f );
+      }
+    }
+
+    QVariant value = mExpression.evaluate( &mExpressionContext );
+    if ( !mExpression.hasEvalError() )
+    {
+      mPreviewLabel->setText( QgsExpression::formatPreviewString( value ) );
+    }
+
+    if ( mExpression.hasParserError() || mExpression.hasEvalError() )
+    {
+      QString errorString = mExpression.parserErrorString().replace( "\n", "<br>" );
+      QString tooltip;
+      if ( mExpression.hasParserError() )
+        tooltip = QStringLiteral( "<b>%1:</b>"
+                                  "%2" ).arg( tr( "Parser Errors" ), errorString );
+      // Only show the eval error if there is no parser error.
+      if ( !mExpression.hasParserError() && mExpression.hasEvalError() )
+        tooltip += QStringLiteral( "<b>%1:</b> %2" ).arg( tr( "Eval Error" ), mExpression.evalErrorString() );
+
+      mPreviewLabel->setText( tr( "Expression is invalid <a href=""more"">(more info)</a>" ) );
+      mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(255, 6, 10,  255);" ) );
+      setExpressionToolTip( tooltip );
+      emit expressionParsed( false );
+      setParserError( mExpression.hasParserError() );
+      setEvalError( mExpression.hasEvalError() );
+    }
+    else
+    {
+      mPreviewLabel->setStyleSheet( QString() );
+      setExpressionToolTip( QString() );
+      emit expressionParsed( true );
+      setParserError( false );
+      setEvalError( false );
+    }
+  }
+}
+
+void QgsExpressionPreviewWidget::setGeomCalculator( const QgsDistanceArea &da )
+{
+  mDa = da;
+}
+
+void QgsExpressionPreviewWidget::setExpressionContext( const QgsExpressionContext &context )
+{
+  mExpressionContext = context;
+}
+
+void QgsExpressionPreviewWidget::linkActivated( const QString & )
+{
+  QgsMessageViewer *mv = new QgsMessageViewer( this );
+  mv->setWindowTitle( tr( "More Info on Expression Error" ) );
+  mv->setMessageAsHtml( mToolTip );
+  mv->exec();
+}
+
+void QgsExpressionPreviewWidget::setExpressionToolTip( const QString &toolTip )
+{
+  if ( toolTip == mToolTip )
+    return;
+
+  mToolTip = toolTip;
+  mPreviewLabel->setToolTip( mToolTip );
+  emit toolTipChanged( mToolTip );
+}
+
+void QgsExpressionPreviewWidget::setParserError( bool parserError )
+{
+  if ( parserError != mParserError )
+  {
+    mParserError = parserError;
+    emit parserErrorChanged();
+  }
+}
+bool QgsExpressionPreviewWidget::parserError() const
+{
+  return mParserError;
+}
+
+void QgsExpressionPreviewWidget::setEvalError( bool evalError )
+{
+  if ( evalError == mEvalError )
+    return;
+
+  mEvalError = evalError;
+  emit evalErrorChanged();
+}
+
+bool QgsExpressionPreviewWidget::evalError() const
+{
+  return mEvalError;
+}
+
