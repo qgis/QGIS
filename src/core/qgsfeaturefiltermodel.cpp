@@ -63,6 +63,8 @@ void QgsFeatureFilterModel::setSourceLayer( QgsVectorLayer *sourceLayer )
   mExpressionContext = sourceLayer->createExpressionContext();
   reload();
   emit sourceLayerChanged();
+  
+  setDisplayExpression( sourceLayer->displayExpression() );
 }
 
 QString QgsFeatureFilterModel::displayExpression() const
