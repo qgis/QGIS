@@ -15,6 +15,7 @@
  *
  ***************************************************************************/
 #include "qgsauthmanager.h"
+#include "qgshanadriver.h"
 #include "qgshanaconnection.h"
 #include "qgshananewconnection.h"
 #include "qgshanasettings.h"
@@ -54,11 +55,8 @@ QgsHanaNewConnection::QgsHanaNewConnection(
   connect( btnConnect, &QPushButton::clicked, this, &QgsHanaNewConnection::btnConnect_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsHanaNewConnection::showHelp );
 
-#ifdef Q_OS_WIN
-  txtDriver->setText( QLatin1String( "HDBODBC" ) );
-#else
-  txtDriver->setText( QLatin1String( "/usr/sap/hdbclient/libodbcHDB.so" ) );
-#endif
+  txtDriver->setText( QgsHanaDriver::instance()->getDriver() );
+
   cbxCryptoProvider->addItem( tr( "openssl" ), QLatin1String( "openssl" ) );
   cbxCryptoProvider->addItem( tr( "commoncrypto" ), QLatin1String( "commoncrypto" ) );
   cbxCryptoProvider->addItem( tr( "sapcrypto" ), QLatin1String( "sapcrypto" ) );

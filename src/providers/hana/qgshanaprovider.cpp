@@ -1711,11 +1711,5 @@ QgsVectorLayerExporter::ExportError QgsHanaProviderMetadata::createEmptyLayer(
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
-  if ( QgsHanaDriver::instance()->isInstalled() )
-    return new QgsHanaProviderMetadata();
-  else
-  {
-    QgsMessageLog::logMessage( QStringLiteral( "HANA ODBC driver cannot be found" ), QStringLiteral( "HANA" ) );
-    return nullptr;
-  }
+  return new QgsHanaProviderMetadata();
 }

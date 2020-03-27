@@ -17,6 +17,9 @@
 #include "qgshanadriver.h"
 #include "qgslogger.h"
 
+#include <QDir>
+#include <QFileInfo>
+
 #include "odbc/Connection.h"
 #include "odbc/Environment.h"
 
@@ -24,19 +27,48 @@ using namespace odbc;
 
 QgsHanaDriver *QgsHanaDriver::sInstance = nullptr;
 
+static QString detectDriverPath( EnvironmentRef &env, const QString &libName, const QString &defaultPath )
+{
+  QString path = defaultPath + QDir::separator() + libName;
+  if ( QFileInfo::exists( path ) )
+    return path;
+
+  std::vector<DriverInformation> drivers = env->getDrivers();
+  for ( const DriverInformation &drv : drivers )
+  {
+    for ( const DriverInformation::Attribute &attr : drv.attributes )
+    {
+      if ( QString::compare( QString::fromStdString( attr.name ), "DRIVER", Qt::CaseInsensitive ) == 0 )
+      {
+        QString path = QString::fromStdString( attr.value );
+        if ( path.endsWith( libName ) && QFileInfo::exists( path ) )
+          return path;
+      }
+    }
+  }
+  return QString();
+}
+
 QgsHanaDriver::QgsHanaDriver()
+  : mEnv( Environment::create() )
 {
   QgsDebugCall;
-  mEnv = Environment::create();
-#ifdef Q_OS_WIN
-#ifdef Q_OS_WIN64
-  mIsInstalled = mEnv->isDriverInstalled( "HDBODBC" );
+#if defined(Q_OS_WIN)
+#if defined(Q_OS_WIN64)
+  mDriver = mEnv->isDriverInstalled( "HDBODBC" ) ? "HDBODBC" : "";
 #else
-  mIsInstalled = mEnv->isDriverInstalled( "HDBODBC32" );
+  mDriver = mEnv->isDriverInstalled( "HDBODBC32" ) ? "HDBODBC32" : "";
 #endif
+#elif defined(Q_OS_MAC)
+  mDriver = detectDriverPath( mEnv, "libodbcHDB.dylib", "/Applications/sap/hdbclient" );
 #else
-  mIsInstalled = true;
+  mDriver = detectDriverPath( mEnv, "libodbcHDB.so", "/usr/sap/hdbclient" );
 #endif
+}
+
+QgsHanaDriver::~QgsHanaDriver()
+{
+  QgsDebugCall;
 }
 
 QgsHanaDriver *QgsHanaDriver::instance()
@@ -44,11 +76,6 @@ QgsHanaDriver *QgsHanaDriver::instance()
   if ( !sInstance )
     sInstance = new QgsHanaDriver();
   return sInstance;
-}
-
-QgsHanaDriver::~QgsHanaDriver()
-{
-  QgsDebugCall;
 }
 
 void QgsHanaDriver::cleanupInstance()
@@ -60,4 +87,9 @@ void QgsHanaDriver::cleanupInstance()
 ConnectionRef QgsHanaDriver::createConnection()
 {
   return mEnv->createConnection();
+}
+
+QString QgsHanaDriver::getDriver() const
+{
+  return mDriver;
 }

@@ -18,13 +18,17 @@
 #define QGSHANADRIVER_H
 
 #include <qglobal.h>
+#include <QString>
 #include "odbc/Forwards.h"
 
 class QgsHanaDriver
 {
+    QgsHanaDriver();
+    ~QgsHanaDriver();
+
   public:
     odbc::ConnectionRef createConnection();
-    bool isInstalled() const { return mIsInstalled; }
+    QString getDriver() const;
 
     static QgsHanaDriver *instance();
     static void cleanupInstance();
@@ -33,12 +37,8 @@ class QgsHanaDriver
     Q_DISABLE_COPY( QgsHanaDriver )
 
   private:
-    QgsHanaDriver();
-    ~QgsHanaDriver();
-
-  private:
     odbc::EnvironmentRef mEnv;
-    bool mIsInstalled;
+    QString mDriver;
 
     static QgsHanaDriver *sInstance;
 };
