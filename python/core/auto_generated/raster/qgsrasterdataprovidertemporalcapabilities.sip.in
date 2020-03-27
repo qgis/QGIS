@@ -92,28 +92,6 @@ Returns the requested temporal range.
 Intended to be used by the provider in fetching data.
 %End
 
-    void setRequestedReferenceTemporalRange( const QgsDateTimeRange &range );
-%Docstring
-Sets the requested reference temporal ``range`` to retrieve when
-returning data from the associated data provider.
-
-.. note::
-
-   this is not normally manually set, and is intended for use by
-   QgsRasterLayerRenderer to automatically set the requested temporal range
-   on a clone of the data provider during a render job.
-
-.. seealso:: :py:func:`requestedReferenceTemporalRange`
-%End
-
-    const QgsDateTimeRange &requestedReferenceTemporalRange() const;
-%Docstring
-Returns the requested reference temporal range.
-Intended to be used by the provider in fetching data.
-
-.. seealso:: :py:func:`setRequestedReferenceTemporalRange`
-%End
-
     void setEnableTime( bool enabled );
 %Docstring
 Sets the time enabled status.
@@ -130,20 +108,6 @@ This is useful in some temporal layers who use dates only.
 Returns the temporal property status.
 
 .. seealso:: :py:func:`setEnableTime`
-%End
-
-    void setReferenceEnable( bool enabled );
-%Docstring
-Sets the usage status of the reference range.
-
-.. seealso:: :py:func:`isReferenceEnable`
-%End
-
-    bool isReferenceEnable() const;
-%Docstring
-Returns the enabled status of the reference range.
-
-.. seealso:: :py:func:`setReferenceEnable`
 %End
 
 };

@@ -240,7 +240,6 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
         if ( mPipe->provider()->temporalCapabilities() )
         {
           mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( rendererContext.temporalRange() );
-          mPipe->provider()->temporalCapabilities()->setRequestedReferenceTemporalRange( layer->temporalProperties()->referenceTemporalRange() );
           mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( layer->temporalProperties()->intervalHandlingMethod() );
         }
         break;
