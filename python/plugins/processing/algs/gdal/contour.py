@@ -203,7 +203,6 @@ class contour_polygon(contour):
 
     FIELD_NAME_MIN = 'FIELD_NAME_MIN'
     FIELD_NAME_MAX = 'FIELD_NAME_MAX'
-    OUTPUT = 'OUTPUT'
 
     def __init__(self):
         super().__init__()
@@ -226,7 +225,7 @@ class contour_polygon(contour):
         # Need to replace the output parameter, as we are producing a different type of output
         self.removeParameter(contour.OUTPUT)
         self.addParameter(QgsProcessingParameterVectorDestination(
-            self.OUTPUT, self.tr('Contours'), QgsProcessing.TypeVectorPolygon))
+            contour.OUTPUT, self.tr('Contours'), QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'contour_polygon'
