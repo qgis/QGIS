@@ -102,10 +102,9 @@ QVariant QgsNetworkLoggerRootNode::data( int ) const
   return QVariant();
 }
 
-void QgsNetworkLoggerRootNode::trimRequests( int count )
+void QgsNetworkLoggerRootNode::removeRow( int row )
 {
-  for ( int i = 0; i < count; ++i )
-    mChildren.pop_front();
+  mChildren.erase( mChildren.begin() + row );
 }
 
 

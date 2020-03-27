@@ -75,6 +75,14 @@ class QgsNetworkLogger : public QAbstractItemModel
      */
     QList< QAction * > actions( const QModelIndex &index, QObject *parent );
 
+
+    /**
+     * Removes a list of request \a rows from the log.
+    */
+    void removeRows( const QList< int > &rows );
+
+    static constexpr int MAX_LOGGED_REQUESTS = 1000;
+
   public slots:
 
     /**
@@ -99,7 +107,6 @@ class QgsNetworkLogger : public QAbstractItemModel
     //! Returns index for a given node
     QModelIndex node2index( QgsNetworkLoggerNode *node ) const;
     QModelIndex indexOfParentLayerTreeNode( QgsNetworkLoggerNode *parentNode ) const;
-    void trimRequests( int count );
 
     QgsNetworkAccessManager *mNam = nullptr;
     bool mIsLogging = false;
@@ -108,7 +115,6 @@ class QgsNetworkLogger : public QAbstractItemModel
 
     QHash< int, QgsNetworkLoggerRequestGroup * > mRequestGroups;
 
-    static constexpr int MAX_LOGGED_REQUESTS = 1000;
 };
 
 /**

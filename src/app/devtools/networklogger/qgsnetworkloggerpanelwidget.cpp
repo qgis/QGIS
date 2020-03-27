@@ -50,6 +50,28 @@ QgsNetworkLoggerTreeView::QgsNetworkLoggerTreeView( QgsNetworkLogger *logger, QW
 
   connect( mLogger, &QAbstractItemModel::rowsInserted, this, [ = ]
   {
+    if ( mLogger->rowCount() > ( QgsNetworkLogger::MAX_LOGGED_REQUESTS * 1.2 ) ) // 20 % more as buffer
+    {
+      // never trim expanded nodes
+      const int toTrim = mLogger->rowCount() - QgsNetworkLogger::MAX_LOGGED_REQUESTS;
+      int trimmed = 0;
+      QList< int > rowsToTrim;
+      rowsToTrim.reserve( toTrim );
+      for ( int i = 0; i < mLogger->rowCount(); ++i )
+      {
+        const QModelIndex proxyIndex = mProxyModel->mapFromSource( mLogger->index( i, 0 ) );
+        if ( !proxyIndex.isValid() || !isExpanded( proxyIndex ) )
+        {
+          rowsToTrim << i;
+          trimmed++;
+        }
+        if ( trimmed == toTrim )
+          break;
+      }
+
+      mLogger->removeRows( rowsToTrim );
+    }
+
     if ( mAutoScroll )
       scrollToBottom();
   } );

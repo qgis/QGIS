@@ -80,9 +80,6 @@ void QgsNetworkLogger::requestAboutToBeCreated( QgsNetworkRequestParameters para
   mRequestGroups.insert( parameters.requestId(), group.get() );
   mRootNode->addChild( std::move( group ) );
   endInsertRows();
-
-  if ( childCount > ( MAX_LOGGED_REQUESTS * 1.2 ) ) // 20 % more as buffer
-    trimRequests( childCount - MAX_LOGGED_REQUESTS );
 }
 
 void QgsNetworkLogger::requestFinished( QgsNetworkReplyContent content )
@@ -193,17 +190,20 @@ QModelIndex QgsNetworkLogger::indexOfParentLayerTreeNode( QgsNetworkLoggerNode *
   return createIndex( row, 0, parentNode );
 }
 
-void QgsNetworkLogger::trimRequests( int count )
+void QgsNetworkLogger::removeRows( const QList<int> &rows )
 {
-  for ( int i = 0; i < count; ++i )
-  {
-    int popId = data( index( i, 0, QModelIndex() ), QgsNetworkLoggerNode::RoleId ).toInt();
-    mRequestGroups.remove( popId );
-  }
+  QList< int > res = rows;
+  std::sort( res.begin(), res.end(), std::greater< int >() );
 
-  beginRemoveRows( QModelIndex(), 0, count - 1 );
-  mRootNode->trimRequests( count );
-  endRemoveRows();
+  for ( int row : qgis::as_const( res ) )
+  {
+    int popId = data( index( row, 0, QModelIndex() ), QgsNetworkLoggerNode::RoleId ).toInt();
+    mRequestGroups.remove( popId );
+
+    beginRemoveRows( QModelIndex(), row, row );
+    mRootNode->removeRow( row );
+    endRemoveRows();
+  }
 }
 
 int QgsNetworkLogger::rowCount( const QModelIndex &parent ) const
