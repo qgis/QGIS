@@ -41,6 +41,7 @@ Constructs a style object
 %Docstring
 Constructs a style object as a copy of another style
 %End
+    ~QgsVectorTileBasicRendererStyle();
 
     void setStyleName( const QString &name );
 %Docstring
@@ -146,7 +147,7 @@ each defines a rendering rule.
   public:
     QgsVectorTileBasicRenderer();
 %Docstring
-Constructs renderer with some default styles
+Constructs renderer with no styles
 %End
 
     virtual QString type() const;
@@ -178,7 +179,12 @@ Returns list of styles of the renderer
       const QColor &lineStrokeColor, double lineStrokeWidth,
       const QColor &pointFillColor, const QColor &pointStrokeColor, double pointSize );
 %Docstring
-Sets a default style to render all layers with the given fill/stroke colors, stroke widths and marker sizes
+Returns a list of styles to render all layers with the given fill/stroke colors, stroke widths and marker sizes
+%End
+
+    static QList<QgsVectorTileBasicRendererStyle> simpleStyleWithRandomColors();
+%Docstring
+Returns a list of styles to render all layers, using random colors
 %End
 
 };

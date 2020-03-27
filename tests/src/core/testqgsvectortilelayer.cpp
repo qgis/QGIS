@@ -22,6 +22,7 @@
 #include "qgsproject.h"
 #include "qgsrenderchecker.h"
 #include "qgstiles.h"
+#include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilelayer.h"
 
 /**
@@ -75,6 +76,24 @@ void TestQgsVectorTileLayer::initTestCase()
   mMapSettings = new QgsMapSettings();
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mLayer );
 
+  // let's have some standard style config for the layer
+  QColor polygonFillColor = Qt::blue;
+  QColor polygonStrokeColor = polygonFillColor;
+  polygonFillColor.setAlpha( 100 );
+  double polygonStrokeWidth = DEFAULT_LINE_WIDTH;
+  QColor lineStrokeColor = Qt::blue;
+  double lineStrokeWidth = DEFAULT_LINE_WIDTH;
+  QColor pointFillColor = Qt::red;
+  QColor pointStrokeColor = pointFillColor;
+  pointFillColor.setAlpha( 100 );
+  double pointSize = DEFAULT_POINT_SIZE;
+
+  QgsVectorTileBasicRenderer *rend = new QgsVectorTileBasicRenderer;
+  rend->setStyles( QgsVectorTileBasicRenderer::simpleStyle(
+                     polygonFillColor, polygonStrokeColor, polygonStrokeWidth,
+                     lineStrokeColor, lineStrokeWidth,
+                     pointFillColor, pointStrokeColor, pointSize ) );
+  mLayer->setRenderer( rend );  // takes ownership
 }
 
 void TestQgsVectorTileLayer::cleanupTestCase()

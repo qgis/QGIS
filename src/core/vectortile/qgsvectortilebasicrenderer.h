@@ -51,6 +51,7 @@ class CORE_EXPORT QgsVectorTileBasicRendererStyle
     //! Constructs a style object as a copy of another style
     QgsVectorTileBasicRendererStyle( const QgsVectorTileBasicRendererStyle &other );
     QgsVectorTileBasicRendererStyle &operator=( const QgsVectorTileBasicRendererStyle &other );
+    ~QgsVectorTileBasicRendererStyle();
 
     //! Sets human readable name of this style
     void setStyleName( const QString &name ) { mStyleName = name; }
@@ -125,7 +126,7 @@ class CORE_EXPORT QgsVectorTileBasicRendererStyle
 class CORE_EXPORT QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
 {
   public:
-    //! Constructs renderer with some default styles
+    //! Constructs renderer with no styles
     QgsVectorTileBasicRenderer();
 
     QString type() const override;
@@ -142,11 +143,14 @@ class CORE_EXPORT QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
     //! Returns list of styles of the renderer
     QList<QgsVectorTileBasicRendererStyle> styles() const;
 
-    //! Sets a default style to render all layers with the given fill/stroke colors, stroke widths and marker sizes
+    //! Returns a list of styles to render all layers with the given fill/stroke colors, stroke widths and marker sizes
     static QList<QgsVectorTileBasicRendererStyle> simpleStyle(
       const QColor &polygonFillColor, const QColor &polygonStrokeColor, double polygonStrokeWidth,
       const QColor &lineStrokeColor, double lineStrokeWidth,
       const QColor &pointFillColor, const QColor &pointStrokeColor, double pointSize );
+
+    //! Returns a list of styles to render all layers, using random colors
+    static QList<QgsVectorTileBasicRendererStyle> simpleStyleWithRandomColors();
 
   private:
     void setDefaultStyle();

@@ -78,7 +78,9 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
   setValid( true );
 
   // set a default renderer
-  setRenderer( new QgsVectorTileBasicRenderer );
+  QgsVectorTileBasicRenderer *renderer = new QgsVectorTileBasicRenderer;
+  renderer->setStyles( QgsVectorTileBasicRenderer::simpleStyleWithRandomColors() );
+  setRenderer( renderer );
 }
 
 QgsVectorTileLayer::~QgsVectorTileLayer() = default;

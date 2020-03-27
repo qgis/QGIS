@@ -15,6 +15,8 @@
 
 #include "qgsvectortilebasicrenderer.h"
 
+#include "qgsapplication.h"
+#include "qgscolorschemeregistry.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbollayer.h"
@@ -47,6 +49,8 @@ QgsVectorTileBasicRendererStyle &QgsVectorTileBasicRendererStyle::operator=( con
   mMaxZoomLevel = other.mMaxZoomLevel;
   return *this;
 }
+
+QgsVectorTileBasicRendererStyle::~QgsVectorTileBasicRendererStyle() = default;
 
 void QgsVectorTileBasicRendererStyle::setSymbol( QgsSymbol *sym )
 {
@@ -97,7 +101,6 @@ void QgsVectorTileBasicRendererStyle::readXml( const QDomElement &elem, const Qg
 
 QgsVectorTileBasicRenderer::QgsVectorTileBasicRenderer()
 {
-  setDefaultStyle();
 }
 
 QString QgsVectorTileBasicRenderer::type() const
@@ -229,24 +232,24 @@ QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::styles() cons
   return mStyles;
 }
 
-void QgsVectorTileBasicRenderer::setDefaultStyle()
+QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::simpleStyleWithRandomColors()
 {
-  QColor polygonFillColor = Qt::blue;
+  QColor polygonFillColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
   QColor polygonStrokeColor = polygonFillColor;
   polygonFillColor.setAlpha( 100 );
   double polygonStrokeWidth = DEFAULT_LINE_WIDTH;
 
-  QColor lineStrokeColor = Qt::blue;
+  QColor lineStrokeColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
   double lineStrokeWidth = DEFAULT_LINE_WIDTH;
 
-  QColor pointFillColor = Qt::red;
+  QColor pointFillColor = QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor();
   QColor pointStrokeColor = pointFillColor;
   pointFillColor.setAlpha( 100 );
   double pointSize = DEFAULT_POINT_SIZE;
 
-  setStyles( simpleStyle( polygonFillColor, polygonStrokeColor, polygonStrokeWidth,
-                          lineStrokeColor, lineStrokeWidth,
-                          pointFillColor, pointStrokeColor, pointSize ) );
+  return simpleStyle( polygonFillColor, polygonStrokeColor, polygonStrokeWidth,
+                      lineStrokeColor, lineStrokeWidth,
+                      pointFillColor, pointStrokeColor, pointSize );
 }
 
 QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::simpleStyle(
