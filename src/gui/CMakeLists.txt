@@ -385,6 +385,7 @@ SET(QGIS_GUI_SRCS
   qgsexpressionlineedit.cpp
   qgsexpressionselectiondialog.cpp
   qgsexpressionstoredialog.cpp
+  qgsexpressiontreeview.cpp
   qgsextentgroupbox.cpp
   qgsextentwidget.cpp
   qgsexternalresourcewidget.cpp
@@ -604,6 +605,7 @@ SET(QGIS_GUI_HDRS
   qgsexpressionhighlighter.h
   qgsexpressionlineedit.h
   qgsexpressionselectiondialog.h
+  qgsexpressiontreeview.h
   qgsextentgroupbox.h
   qgsextentwidget.h
   qgsexternalresourcewidget.h

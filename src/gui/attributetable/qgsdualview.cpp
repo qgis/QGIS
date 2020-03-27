@@ -919,11 +919,8 @@ void QgsDualView::modifySort()
 
   QgsExpressionBuilderWidget *expressionBuilder = new QgsExpressionBuilderWidget();
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
-  expressionBuilder->setExpressionContext( context );
-  expressionBuilder->setLayer( mLayer );
-  expressionBuilder->loadFieldNames();
-  expressionBuilder->loadRecent( QStringLiteral( "generic" ) );
-  expressionBuilder->loadUserExpressions( );
+
+  expressionBuilder->initWithLayer( mLayer, context, QStringLiteral( "generic" ) );
   expressionBuilder->setExpressionText( sortExpression().isEmpty() ? mLayer->displayExpression() : sortExpression() );
 
   sortingGroupBox->layout()->addWidget( expressionBuilder );
