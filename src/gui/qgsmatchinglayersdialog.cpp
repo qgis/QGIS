@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
+#include "qgsmapthemecollection.h"
 
 QgsMatchingLayersDialog::QgsMatchingLayersDialog( QgsMapLayer *layer, QWidget *parent )
   : QDialog( parent )
