@@ -100,6 +100,22 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
      */
     void setWidgetContext( QgsProcessingParameterWidgetContext *context );
 
+    /**
+     * Sets whether the combo box value can be freely edited.
+     *
+     * \see isEditable()
+     * \since QGIS 3.14
+     */
+    void setEditable( bool editable );
+
+    /**
+     * Returns whether the combo box value can be freely edited.
+     *
+     * \see setEditable()
+     * \since QGIS 3.14
+     */
+    bool isEditable() const;
+
   signals:
 
     /**

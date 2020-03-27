@@ -215,6 +215,12 @@ QString QgsProcessingMapLayerComboBox::currentText()
 
 void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessingContext &context )
 {
+  if ( !value.isValid()  && mParameter->flags() & QgsProcessingParameterDefinition::FlagOptional )
+  {
+    setLayer( nullptr );
+    return;
+  }
+
   QVariant val = value;
   bool found = false;
   bool selectedOnly = false;
@@ -320,6 +326,9 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
 
 QVariant QgsProcessingMapLayerComboBox::value() const
 {
+  if ( isEditable() && mCombo->currentText() != mCombo->itemText( mCombo->currentIndex() ) )
+    return mCombo->currentText();
+
   const bool iterate = mIterateButton && mIterateButton->isChecked();
   const bool selectedOnly = mUseSelectionCheckBox && mUseSelectionCheckBox->isChecked();
   if ( QgsMapLayer *layer = mCombo->currentLayer() )
@@ -351,6 +360,16 @@ QVariant QgsProcessingMapLayerComboBox::value() const
 void QgsProcessingMapLayerComboBox::setWidgetContext( QgsProcessingParameterWidgetContext *context )
 {
   mBrowserModel = context->browserModel();
+}
+
+void QgsProcessingMapLayerComboBox::setEditable( bool editable )
+{
+  mCombo->setEditable( editable );
+}
+
+bool QgsProcessingMapLayerComboBox::isEditable() const
+{
+  return mCombo->isEditable();
 }
 
 QgsMapLayer *QgsProcessingMapLayerComboBox::compatibleMapLayerFromMimeData( const QMimeData *data, bool &incompatibleLayerSelected ) const

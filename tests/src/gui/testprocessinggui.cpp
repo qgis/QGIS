@@ -208,6 +208,7 @@ class TestProcessingGui : public QObject
     void testColorWrapper();
     void testCoordinateOperationWrapper();
     void mapLayerComboBox();
+    void testMapLayerWrapper();
     void paramConfigWidget();
     void testMapThemeWrapper();
     void testDateTimeWrapper();
@@ -4607,6 +4608,158 @@ void TestProcessingGui::mapLayerComboBox()
   combo.reset();
   param.reset();
   QgsProject::instance()->removeAllMapLayers();
+}
+
+void TestProcessingGui::testMapLayerWrapper()
+{
+  // setup a project with a range of layer types
+  QgsProject::instance()->removeAllMapLayers();
+  QgsVectorLayer *point = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( point );
+  QgsVectorLayer *line = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( line );
+  QgsVectorLayer *polygon = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( polygon );
+  QgsVectorLayer *noGeom = new QgsVectorLayer( QStringLiteral( "None" ), QStringLiteral( "l1" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( noGeom );
+  QgsMeshLayer *mesh = new QgsMeshLayer( QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_and_triangle.2dm", QStringLiteral( "Triangle and Quad Mdal" ), QStringLiteral( "mdal" ) );
+  mesh->dataProvider()->addDataset( QStringLiteral( TEST_DATA_DIR ) + "/mesh/quad_and_triangle_vertex_scalar_with_inactive_face.dat" );
+  QVERIFY( mesh->isValid() );
+  QgsProject::instance()->addMapLayer( mesh );
+  QgsRasterLayer *raster = new QgsRasterLayer( QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif", QStringLiteral( "band1_byte" ) );
+  QgsProject::instance()->addMapLayer( raster );
+
+  auto testWrapper = [ = ]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterMapLayer param( QStringLiteral( "layer" ), QStringLiteral( "layer" ), false );
+
+    QgsProcessingMapLayerWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingEnumWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "bb" ), context );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( spy.count(), 1 );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "bb" ) );
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
+        wrapper.setWidgetValue( QStringLiteral( "aa" ), context );
+        QCOMPARE( spy.count(), 2 );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "aa" ) );
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper.wrappedWidget() )->currentText(), QStringLiteral( "aa" ) );
+        break;
+    }
+
+    delete w;
+
+    // with project
+    QgsProcessingParameterWidgetContext widgetContext;
+    widgetContext.setProject( QgsProject::instance() );
+    context.setProject( QgsProject::instance() );
+
+    QgsProcessingMapLayerWidgetWrapper wrapper2( &param, type );
+    wrapper2.setWidgetContext( widgetContext );
+    w = wrapper2.createWrappedWidget( context );
+
+    QSignalSpy spy2( &wrapper2, &QgsProcessingMapLayerWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toString(), QStringLiteral( "bb" ) );
+    QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
+    wrapper2.setWidgetValue( QStringLiteral( "band1_byte" ), context );
+    QCOMPARE( spy2.count(), 2 );
+    QCOMPARE( wrapper2.widgetValue().toString(), raster->id() );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "band1_byte [EPSG:4326]" ) );
+        break;
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "band1_byte" ) );
+        break;
+    }
+
+    QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentLayer()->name(), QStringLiteral( "band1_byte" ) );
+
+    // check signal
+    static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->setLayer( polygon );
+    QCOMPARE( spy2.count(), 3 );
+    QCOMPARE( wrapper2.widgetValue().toString(), polygon->id() );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l1 [EPSG:4326]" ) );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentText(), QStringLiteral( "l1" ) );
+        break;
+    }
+    QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper2.wrappedWidget() )->currentLayer()->name(), QStringLiteral( "l1" ) );
+
+    delete w;
+
+    // optional
+    QgsProcessingParameterMapLayer param2( QStringLiteral( "layer" ), QStringLiteral( "layer" ), QVariant(), true );
+    QgsProcessingMapLayerWidgetWrapper wrapper3( &param2, type );
+    wrapper3.setWidgetContext( widgetContext );
+    w = wrapper3.createWrappedWidget( context );
+
+    QSignalSpy spy3( &wrapper3, &QgsProcessingMapLayerWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "bb" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toString(), QStringLiteral( "bb" ) );
+    QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "bb" ) );
+    wrapper3.setWidgetValue( QStringLiteral( "band1_byte" ), context );
+    QCOMPARE( spy3.count(), 2 );
+    QCOMPARE( wrapper3.widgetValue().toString(), raster->id() );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "band1_byte [EPSG:4326]" ) );
+        break;
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( static_cast< QgsProcessingMapLayerComboBox * >( wrapper3.wrappedWidget() )->currentText(), QStringLiteral( "band1_byte" ) );
+        break;
+    }
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 3 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    delete w;
+
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "layer" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
 }
 
 void TestProcessingGui::paramConfigWidget()
