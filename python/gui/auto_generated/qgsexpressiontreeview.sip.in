@@ -115,6 +115,8 @@ functions, variables and fields that can be used in an expression.
 %Docstring
 Implementation of this interface can be implemented to allow QgsExpressionTreeView
 instance to provide custom context menus (opened upon right-click).
+
+.. versionadded:: 3.14
 %End
 
 %TypeHeaderCode
@@ -156,6 +158,14 @@ to populate the list of available functions and variables.
 :param context: expression context
 
 .. seealso:: :py:func:`expressionContext`
+%End
+
+    QgsExpressionContext expressionContext() const;
+%Docstring
+Returns the expression context for the widget. The context is used for the expression
+preview result and for populating the list of available functions and variables.
+
+.. seealso:: :py:func:`setExpressionContext`
 %End
 
     QgsProject *project();

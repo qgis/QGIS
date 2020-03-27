@@ -141,6 +141,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
      * \class MenuProvider
      * Implementation of this interface can be implemented to allow QgsExpressionTreeView
      * instance to provide custom context menus (opened upon right-click).
+     * \since QGIS 3.14
      */
     class MenuProvider
     {
@@ -173,6 +174,13 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
      * \see expressionContext
      */
     void setExpressionContext( const QgsExpressionContext &context );
+
+    /**
+     * Returns the expression context for the widget. The context is used for the expression
+     * preview result and for populating the list of available functions and variables.
+     * \see setExpressionContext
+     */
+    QgsExpressionContext expressionContext() const { return mExpressionContext; }
 
     /**
      * Returns the project currently associated with the widget.
