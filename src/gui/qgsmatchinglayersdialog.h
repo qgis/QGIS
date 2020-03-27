@@ -42,6 +42,10 @@ class GUI_EXPORT QgsMatchingLayersDialog: public QDialog, private Ui::QgsLayoutL
     //! Returns the list of selected layers
     QList< QgsMapLayer * > selectedLayers() const;
 
+  private slots:
+
+    void filterVisible( bool enabled );
+
   private:
 
     QgsMapLayerProxyModel *mModel = nullptr;
