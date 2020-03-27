@@ -1227,7 +1227,8 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
   if ( mRasterLayer && mRasterLayer->temporalProperties() )
   {
     QgsDateTimeRange layerRange = mRasterLayer->temporalProperties()->fixedTemporalRange();
-    QgsDateTimeRange layerReferenceRange = mRasterLayer->temporalProperties()->fixedReferenceTemporalRange();
+
+    QgsDateTimeRange layerReferenceRange = mRasterLayer->dataProvider()->temporalCapabilities()->availableReferenceTemporalRange();
     QString uriString =  mRasterLayer->dataProvider()->dataSourceUri();
     QgsDataSourceUri uri;
     uri.setEncodedUri( uriString );

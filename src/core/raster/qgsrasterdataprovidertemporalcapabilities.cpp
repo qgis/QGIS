@@ -69,27 +69,6 @@ const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::requestedTemp
   return mRequestedRange;
 }
 
-void QgsRasterDataProviderTemporalCapabilities::setRequestedReferenceTemporalRange( const QgsDateTimeRange &dateTimeRange )
-{
-  if ( mAvailableReferenceRange.contains( dateTimeRange ) )
-    mRequestedReferenceRange = dateTimeRange;
-}
-
-const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::requestedReferenceTemporalRange() const
-{
-  return mRequestedReferenceRange;
-}
-
-void QgsRasterDataProviderTemporalCapabilities::setReferenceEnable( bool enabled )
-{
-  mReferenceEnable = enabled;
-}
-
-bool QgsRasterDataProviderTemporalCapabilities::isReferenceEnable() const
-{
-  return mReferenceEnable;
-}
-
 QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod QgsRasterDataProviderTemporalCapabilities::intervalHandlingMethod() const
 {
   return mIntervalMatchMethod;
