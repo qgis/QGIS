@@ -606,11 +606,7 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QFontComboBox" name="mFontFamilyComboBox">
-                      <property name="enabled">
-                       <bool>false</bool>
-                      </property>
-                     </widget>
+                     <widget class="QFontComboBox" name="mFontFamilyComboBox" />
                     </item>
                     <item>
                      <widget class="QLabel" name="label_20">
