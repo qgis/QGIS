@@ -285,6 +285,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   temporalLayout->addWidget( mTemporalWidget );
 
   setSourceStaticTimeState();
+  mWmstGroup->setVisible( mRasterLayer->providerType() == QLatin1String( "wms" ) && mRasterLayer->dataProvider() && mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
 
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().userFriendlyIdentifier() );
@@ -1162,10 +1163,9 @@ void QgsRasterLayerProperties::apply()
 
 void QgsRasterLayerProperties::updateSourceStaticTime()
 {
-  if ( mTimeGroup->isEnabled() &&
-       mRasterLayer &&
+  if ( mWmstGroup->isEnabled() &&
        mRasterLayer->dataProvider() &&
-       mRasterLayer->temporalProperties() )
+       mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
   {
     QgsDataSourceUri uri;
     QString uriString = mRasterLayer->dataProvider()->dataSourceUri();
@@ -1227,7 +1227,7 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
   mReferenceDateTimeEdit->setDisplayFormat(
     locale.dateTimeFormat( QLocale::ShortFormat ) );
 
-  if ( mRasterLayer && mRasterLayer->temporalProperties() )
+  if ( mRasterLayer->dataProvider() && mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
   {
     QgsDateTimeRange layerRange = mRasterLayer->temporalProperties()->fixedTemporalRange();
 
