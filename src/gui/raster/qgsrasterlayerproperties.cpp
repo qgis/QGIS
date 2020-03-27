@@ -1271,6 +1271,7 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
     mFetchModeComboBox->addItem( tr( "Match to End of Range" ), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange );
     mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData( mRasterLayer->temporalProperties()->intervalHandlingMethod() ) );
 
+    // TODO -- this should not be in the layer properties -- like the other settings, they need to be stored in the provider's URI
     if ( mRasterLayer->temporalProperties()->temporalSource() == QgsRasterLayerTemporalProperties::Layer )
       mStaticTemporalRange->setChecked( true );
     else if ( mRasterLayer->temporalProperties()->temporalSource() == QgsRasterLayerTemporalProperties::Project )
