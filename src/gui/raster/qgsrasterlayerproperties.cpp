@@ -1088,8 +1088,6 @@ void QgsRasterLayerProperties::apply()
   QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
   pixmapThumbnail->setPixmap( thumbnail );
 
-  mRasterLayer->triggerRepaint();
-
   if ( mRasterLayer->shortName() != mLayerShortNameLineEdit->text() )
     mMetadataFilled = false;
   mRasterLayer->setShortName( mLayerShortNameLineEdit->text() );
