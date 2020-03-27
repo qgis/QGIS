@@ -1102,11 +1102,11 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
   }
   else
   {
-    if ( uri.hasParam( QLatin1String( "time" ) ) &&
-         uri.param( QLatin1String( "time" ) ) != QLatin1String( "" ) )
+    if ( uri.hasParam( QStringLiteral( "time" ) ) &&
+         !uri.param( QStringLiteral( "time" ) ).isEmpty() )
     {
-      QString time = uri.param( QLatin1String( "time" ) );
-      QStringList timeParts = time.split( "/" );
+      QString time = uri.param( QStringLiteral( "time" ) );
+      QStringList timeParts = time.split( '/' );
 
       QDateTime start = QDateTime::fromString( timeParts.at( 0 ), Qt::ISODateWithMs );
       QDateTime end = QDateTime::fromString( timeParts.at( 1 ), Qt::ISODateWithMs );
@@ -1135,10 +1135,10 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
   }
 
   // If the data provider has bi-temporal properties and they are enabled
-  if ( uri.hasParam( "reference_time" ) &&
-       uri.param( QLatin1String( "reference_time" ) ) != QLatin1String( "" ) )
+  if ( uri.hasParam( QStringLiteral( "reference_time" ) ) &&
+       !uri.param( QStringLiteral( "reference_time" ) ).isEmpty() )
   {
-    QString time = uri.param( QLatin1String( "reference_time" ) );
+    QString time = uri.param( QStringLiteral( "reference_time" ) );
 
     QDateTime dateTime = QDateTime::fromString( time, Qt::ISODateWithMs );
 
