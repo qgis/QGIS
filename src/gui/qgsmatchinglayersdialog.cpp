@@ -110,7 +110,7 @@ QList< QgsMapLayer *> QgsMatchingLayersDialog::selectedLayers() const
 void QgsMatchingLayersDialog::filterVisible( bool enabled )
 {
   if ( enabled )
-    mModel->setLayerWhitelist( QgsProject::instance()->mapThemeCollection()->masterVisibleLayers(); );
+    mModel->setLayerWhitelist( QgsProject::instance()->mapThemeCollection()->masterVisibleLayers() );
   else
     mModel->setLayerWhitelist( QList< QgsMapLayer * >() );
 }
