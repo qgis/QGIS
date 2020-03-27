@@ -3656,7 +3656,7 @@ bool QgsPostgresProvider::getGeometryDetails()
         detectedType += QLatin1String( "ZM" );
 
       QString ds = result.PQgetvalue( 0, 1 );
-      if ( ds != "0" ) detectedSrid = ds;
+      if ( ds != QLatin1String( "0" ) ) detectedSrid = ds;
       mSpatialColType = SctGeometry;
     }
     else
