@@ -92,24 +92,6 @@ Returns the requested temporal range.
 Intended to be used by the provider in fetching data.
 %End
 
-    void setEnableTime( bool enabled );
-%Docstring
-Sets the time enabled status.
-This enables whether time part in the temporal range should be
-used when updated the temporal range of these capabilities.
-
-This is useful in some temporal layers who use dates only.
-
-.. seealso:: :py:func:`isTimeEnabled`
-%End
-
-    bool isTimeEnabled() const;
-%Docstring
-Returns the temporal property status.
-
-.. seealso:: :py:func:`setEnableTime`
-%End
-
 };
 
 /************************************************************************

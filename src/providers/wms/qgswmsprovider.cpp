@@ -1116,7 +1116,7 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
     }
   }
 
-  if ( !temporalCapabilities()->isTimeEnabled() )
+  if ( uri.param( QStringLiteral( "enableTime" ) ) == QLatin1String( "no" ) )
     format = "yyyy-MM-dd";
 
   if ( range.begin().isValid() && range.end().isValid() )

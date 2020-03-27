@@ -108,24 +108,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     */
     const QgsDateTimeRange &requestedTemporalRange() const;
 
-    /**
-     * Sets the time enabled status.
-     * This enables whether time part in the temporal range should be
-     * used when updated the temporal range of these capabilities.
-     *
-     * This is useful in some temporal layers who use dates only.
-     *
-     * \see isTimeEnabled()
-     */
-    void setEnableTime( bool enabled );
-
-    /**
-     * Returns the temporal property status.
-     *
-     * \see setEnableTime()
-    */
-    bool isTimeEnabled() const;
-
   private:
 
     /**
@@ -149,17 +131,6 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
      *
      */
     QgsDateTimeRange mAvailableTemporalRange;
-
-    /**
-     * If the stored time part in temporal ranges should be taked into account.
-     *
-     * This is to enable data providers that use dates only and no datetime, to
-     * configure their temporal properties to consider their state.
-     *
-     * eg. some WMS-T providers only require date with "YYYY-MM-DD" format with
-     *  no time part.
-     */
-    bool mEnableTime = true;
 
     //! Represents the requested temporal range.
     QgsDateTimeRange mRequestedRange;
