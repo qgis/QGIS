@@ -1289,7 +1289,7 @@ void QgsRasterLayerProperties::staticTemporalRange_toggled( bool checked )
 {
   if ( checked )
   {
-    mLabel->setText( tr( "" ) );
+    mLabel->clear();
   }
 }
 
