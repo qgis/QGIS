@@ -81,7 +81,7 @@ QString %CLASSMIXEDCASE%Plugin::whatsThis() const
 QString %CLASSMIXEDCASE%Plugin::domXml() const
 {
   return QString( "<ui language=\"c++\">\n"
-                  " <widget class=\"%1\" name=\"m%CLASSMIXEDCASE%\">\n"
+                  " <widget class=\"%1\" name=\"m%CLASSWITHOUTQGS%\">\n"
                   "  <property name=\"geometry\">\n"
                   "   <rect>\n"
                   "    <x>0</x>\n"
