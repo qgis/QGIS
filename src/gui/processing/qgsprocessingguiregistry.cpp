@@ -52,6 +52,10 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingDatabaseTableWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingExtentWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingMapLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingVectorLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFeatureSourceWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingRasterLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMeshLayerWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()
