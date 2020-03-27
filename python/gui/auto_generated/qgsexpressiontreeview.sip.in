@@ -115,6 +115,8 @@ functions, variables and fields that can be used in an expression.
 %Docstring
 Implementation of this interface can be implemented to allow QgsExpressionTreeView
 instance to provide custom context menus (opened upon right-click).
+
+.. versionadded:: 3.14
 %End
 
 %TypeHeaderCode
@@ -122,6 +124,9 @@ instance to provide custom context menus (opened upon right-click).
 %End
       public:
         explicit MenuProvider();
+%Docstring
+Constructor
+%End
         virtual ~MenuProvider();
 
         virtual QMenu *createContextMenu( QgsExpressionItem *item ) /Factory/;
@@ -131,6 +136,9 @@ Returns a newly created menu instance
     };
 
     QgsExpressionTreeView( QWidget *parent = 0 );
+%Docstring
+Constructor
+%End
 
     void setLayer( QgsVectorLayer *layer );
 %Docstring
@@ -245,6 +253,9 @@ Emitter when the current expression item changed
 
   public slots:
     void setSearchText( const QString &text );
+%Docstring
+Sets the text to filter the expression tree
+%End
 
 
 };

@@ -136,12 +136,15 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
   public:
 
     /**
+     * \ingroup gui
      * Implementation of this interface can be implemented to allow QgsExpressionTreeView
      * instance to provide custom context menus (opened upon right-click).
+     * \since QGIS 3.14
      */
     class MenuProvider
     {
       public:
+        //! Constructor
         explicit MenuProvider() = default;
         virtual ~MenuProvider() = default;
 
@@ -149,6 +152,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
         virtual QMenu *createContextMenu( QgsExpressionItem *item ) SIP_FACTORY {Q_UNUSED( item ) return nullptr;}
     };
 
+    //! Constructor
     QgsExpressionTreeView( QWidget *parent = nullptr );
 
     /**
@@ -264,6 +268,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
     void currentExpressionItemChanged( QgsExpressionItem *item );
 
   public slots:
+    //! Sets the text to filter the expression tree
     void setSearchText( const QString &text );
 
 
