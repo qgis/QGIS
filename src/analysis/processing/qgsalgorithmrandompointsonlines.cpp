@@ -67,9 +67,9 @@ void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( POINTS_NUMBER, QObject::tr( "Number of points for each feature" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
   addParameter( new QgsProcessingParameterDistance( MIN_DISTANCE, QObject::tr( "Minimum distance between points" ), 0, INPUT, true, 0 ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > maxAttempts_param = qgis::make_unique< QgsProcessingParameterNumber >( MAX_TRIES_PER_POINT, QObject::tr( "Maximum number of search attempts (for Min. dist. > 0)" ), QgsProcessingParameterNumber::Integer, 10, true, 1, 1000 );
-  maxAttempts_param->setFlags( maxAttempts_param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
-  addParameter( maxAttempts_param.release() );
+  std::unique_ptr< QgsProcessingParameterNumber > maxAttemptsParam = qgis::make_unique< QgsProcessingParameterNumber >( MAX_TRIES_PER_POINT, QObject::tr( "Maximum number of search attempts (for Min. dist. > 0)" ), QgsProcessingParameterNumber::Integer, 10, true, 1, 1000 );
+  maxAttemptsParam->setFlags( maxAttemptsParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( maxAttemptsParam.release() );
 
   std::unique_ptr< QgsProcessingParameterNumber > randomSeedParam = qgis::make_unique< QgsProcessingParameterNumber >( SEED, QObject::tr( "Random seed" ), QgsProcessingParameterNumber::Integer, 1, false, 1 );
   randomSeedParam->setFlags( randomSeedParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
@@ -182,7 +182,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     }
     if ( !lFeat.hasGeometry() )
     {
-      feedback->pushInfo( "No geometry" );
       // Increment invalid features count
       emptyOrNullGeom++;
       continue;
@@ -190,12 +189,11 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     QgsGeometry lGeom( lFeat.geometry() );
     if ( lGeom.isEmpty() )
     {
-      feedback->pushInfo( "Empty geometry" );
       // Increment invalid features count
       emptyOrNullGeom++;
       continue;
     }
-    float lineLength = lGeom.length();
+    double lineLength = lGeom.length();
     int pointsAddedForThisFeature = 0;
     for ( long i = 0; i < mNumPoints; i++ )
     {
@@ -214,7 +212,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
         distCheckIterations++;
         tries++;
         // Generate a random point
-        float randPos = lineLength * ( float ) rand() / RAND_MAX;
+        double randPos = lineLength * ( double ) rand() / RAND_MAX;
         QgsGeometry rpGeom = QgsGeometry( lGeom.interpolate( randPos ) );
 
         if ( !rpGeom.isNull() && !rpGeom.isEmpty() )
