@@ -1144,9 +1144,6 @@
                          </item>
                          <item row="1" column="1">
                           <widget class="QFontComboBox" name="mFontFamilyCmbBx">
-                           <property name="editable">
-                            <bool>false</bool>
-                           </property>
                            <property name="sizeAdjustPolicy">
                             <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
                            </property>
