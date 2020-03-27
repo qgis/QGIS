@@ -83,7 +83,7 @@ QgsMatchingLayersDialog::QgsMatchingLayersDialog( QgsMapLayer *layer, QWidget *p
 
   connect( listMapLayers, &QListView::doubleClicked, this, &QgsMatchingLayersDialog::accept );
   connect( mFilterLineEdit, &QLineEdit::textChanged, mModel, &QgsMapLayerProxyModel::setFilterString );
-  connect( mCheckBoxVisibleLayers, &QCheckBox::toggled, this, &QgsLayoutLegendLayersDialog::filterVisible );
+  connect( mCheckBoxVisibleLayers, &QCheckBox::toggled, this, &QgsMatchingLayersDialog::filterVisible );
 }
 
 QList< QgsMapLayer *> QgsMatchingLayersDialog::selectedLayers() const
@@ -110,7 +110,7 @@ QList< QgsMapLayer *> QgsMatchingLayersDialog::selectedLayers() const
 void QgsMatchingLayersDialog::filterVisible( bool enabled )
 {
   if ( enabled )
-    mModel->setLayerWhitelist( mVisibleLayers );
+    mModel->setLayerWhitelist( QgsProject::instance()->mapThemeCollection()->masterVisibleLayers(); );
   else
     mModel->setLayerWhitelist( QList< QgsMapLayer * >() );
 }
