@@ -54,6 +54,7 @@
 #include "qgsextentwidget.h"
 #include "qgsprocessingenummodelerwidget.h"
 #include "qgsprocessingmatrixmodelerwidget.h"
+#include "qgsprocessingmaplayercombobox.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -65,6 +66,7 @@
 #include <QRadioButton>
 #include <QButtonGroup>
 #include <QMenu>
+#include <QFileDialog>
 
 ///@cond PRIVATE
 
@@ -4973,6 +4975,122 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingExtentWidgetWrapper
 {
   return new QgsProcessingExtentParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
+
+
+
+
+//
+// QgsProcessingMapLayerWidgetWrapper
+//
+
+QgsProcessingMapLayerWidgetWrapper::QgsProcessingMapLayerWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingMapLayerWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterMapLayer *layerParam = dynamic_cast< const QgsProcessingParameterMapLayer *>( parameterDefinition() );
+
+  mComboBox = new QgsProcessingMapLayerComboBox( layerParam );
+
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+      break;
+    case QgsProcessingGui::Modeler:
+      mComboBox->setEditable( true );
+      break;
+  }
+
+  mComboBox->setToolTip( parameterDefinition()->toolTip() );
+
+  connect( mComboBox, &QgsProcessingMapLayerComboBox::triggerFileSelection, this, [ = ]()
+  {
+    QString v = widgetValue().toString();
+    if ( !QFileInfo::exists( v ) )
+      v.clear();
+
+    if ( !v.isEmpty() )
+      v = QFileInfo( v ).path();
+    else
+      v = QgsSettings().value( QStringLiteral( "/Processing/LastInputPath" ), QDir::homePath() ).toString();
+
+    const QString filename = QFileDialog::getOpenFileName( mComboBox, tr( "Select File " ),
+                             v, layerParam->createFileFilter() );
+    if ( filename.isEmpty() )
+      return;
+
+    QgsSettings().setValue( QStringLiteral( "/Processing/LastInputPath" ),
+                            QFileInfo( filename ).path() );
+    QgsProcessingContext context;
+    mComboBox->setValue( filename, context );
+  } );
+
+  connect( mComboBox, &QgsProcessingMapLayerComboBox::valueChanged, this, [ = ]()
+  {
+    if ( mBlockSignals )
+      return;
+
+    emit widgetValueHasChanged( this );
+  } );
+  return mComboBox;
+}
+
+void QgsProcessingMapLayerWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  mComboBox->setValue( value, context );
+}
+
+QVariant QgsProcessingMapLayerWidgetWrapper::widgetValue() const
+{
+  return mComboBox->value();
+}
+
+QStringList QgsProcessingMapLayerWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterRasterLayer::typeName()
+         << QgsProcessingParameterMeshLayer::typeName()
+         << QgsProcessingParameterVectorLayer::typeName()
+         << QgsProcessingParameterMapLayer::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterExpression::typeName();
+}
+
+QStringList QgsProcessingMapLayerWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName()
+         << QgsProcessingOutputRasterLayer::typeName()
+         << QgsProcessingOutputVectorLayer::typeName()
+         << QgsProcessingOutputMapLayer::typeName()
+         << QgsProcessingOutputFile::typeName();
+}
+
+QList<int> QgsProcessingMapLayerWidgetWrapper::compatibleDataTypes() const
+{
+  return QList< int >();
+}
+
+QString QgsProcessingMapLayerWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "path to a map layer" );
+}
+
+QString QgsProcessingMapLayerWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterMapLayer::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMapLayerWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingMapLayerWidgetWrapper( parameter, type );
+}
+
+
 
 
 

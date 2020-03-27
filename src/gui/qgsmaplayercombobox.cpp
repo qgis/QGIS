@@ -74,7 +74,7 @@ QStringList QgsMapLayerComboBox::additionalItems() const
 
 void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
 {
-  if ( layer == currentLayer() )
+  if ( layer == currentLayer() && ( layer || !isEditable() || currentText().isEmpty() ) )
     return;
 
   if ( !layer )

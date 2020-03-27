@@ -60,6 +60,7 @@ class QgsDatabaseTableComboBox;
 class QgsExtentWidget;
 class QgsProcessingEnumModelerWidget;
 class QgsProcessingMatrixModelerWidget;
+class QgsProcessingMapLayerComboBox;
 
 ///@cond PRIVATE
 
@@ -1534,6 +1535,44 @@ class GUI_EXPORT QgsProcessingDatabaseTableWidgetWrapper : public QgsAbstractPro
 
     friend class TestProcessingGui;
 };
+
+
+class GUI_EXPORT QgsProcessingMapLayerWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingMapLayerWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+
+  protected:
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    QStringList compatibleParameterTypes() const override;
+
+    QStringList compatibleOutputTypes() const override;
+
+    QList< int > compatibleDataTypes() const override;
+    QString modelerExpressionFormatString() const override;
+
+  private:
+
+    QgsProcessingMapLayerComboBox *mComboBox = nullptr;
+    int mBlockSignals = 0;
+
+    friend class TestProcessingGui;
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSPROCESSINGWIDGETWRAPPERIMPL_H
