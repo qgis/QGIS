@@ -4675,6 +4675,8 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
     return layer->minimumScale();
   else if ( QString::compare( layerProperty, QStringLiteral( "max_scale" ), Qt::CaseInsensitive ) == 0 )
     return layer->maximumScale();
+  else if ( QString::compare( layerProperty, QStringLiteral( "is_editable" ), Qt::CaseInsensitive ) == 0 )
+    return layer->isEditable();
   else if ( QString::compare( layerProperty, QStringLiteral( "crs" ), Qt::CaseInsensitive ) == 0 )
     return layer->crs().authid();
   else if ( QString::compare( layerProperty, QStringLiteral( "crs_definition" ), Qt::CaseInsensitive ) == 0 )
