@@ -18,11 +18,11 @@
 #include <math.h>
 
 #include <QPolygon>
-#include <QtDebug>
 
 #include "qgscoordinatetransform.h"
 #include "qgsgeometrycollection.h"
 #include "qgsfields.h"
+#include "qgslogger.h"
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
@@ -61,8 +61,6 @@ QgsFields QgsVectorTileUtils::makeQgisFields( QSet<QString> flds )
 
 int QgsVectorTileUtils::scaleToZoomLevel( double mapScale, int sourceMinZoom, int sourceMaxZoom )
 {
-  qDebug() << "MVT map scale 1 :" << mapScale;
-
   double s0 = 559082264.0287178;   // scale denominator at zoom level 0 of GoogleCRS84Quad
   double tileZoom2 = log( s0 / mapScale ) / log( 2 );
   tileZoom2 -= 1;   // TODO: it seems that map scale is double (is that because of high-dpi screen?)
@@ -80,9 +78,8 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
 {
   QgsVectorTileMVTDecoder decoder;
   decoder.decode( tileID, mvt->getRawTile( tileID ) );
-  qDebug() << decoder.layers();
   QSet<QString> fieldNames = QSet<QString>::fromList( decoder.layerFieldNames( layerName ) );
-  fieldNames << "_geom_type";
+  fieldNames << QStringLiteral( "_geom_type" );
   QMap<QString, QgsFields> perLayerFields;
   QgsFields fields = QgsVectorTileUtils::makeQgisFields( fieldNames );
   perLayerFields[layerName] = fields;
@@ -105,14 +102,14 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
     featuresList[i].setGeometry( QgsGeometry( gc ) );
   }
 
-  QgsVectorLayer *vl = new QgsVectorLayer( "GeometryCollection", layerName, "memory" );
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "GeometryCollection" ), layerName, QStringLiteral( "memory" ) );
   vl->dataProvider()->addAttributes( fields.toList() );
   vl->updateFields();
   bool res = vl->dataProvider()->addFeatures( featuresList );
   Q_ASSERT( res );
   Q_ASSERT( featuresList.count() == vl->featureCount() );
   vl->updateExtents();
-  qDebug() << "layer" << layerName << "features" << vl->featureCount();
+  QgsDebugMsg( QStringLiteral( "Layer %1 features %2" ).arg( layerName ).arg( vl->featureCount() ) );
   return vl;
 }
 

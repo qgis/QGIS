@@ -19,6 +19,7 @@
 
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeedback.h"
+#include "qgslogger.h"
 
 #include "qgsvectortilemvtdecoder.h"
 #include "qgsvectortilelayer.h"
@@ -48,26 +49,29 @@ bool QgsVectorTileLayerRenderer::render()
   QElapsedTimer tTotal;
   tTotal.start();
 
-  qDebug() << "MVT rend" << ctx.extent().toString( -1 );
+  QgsDebugMsg( QStringLiteral( "Vector tiles rendering extent: " ) + ctx.extent().toString( -1 ) );
+  QgsDebugMsg( QStringLiteral( "Vector tiles map scale 1 : %1" ).arg( ctx.rendererScale() ) );
 
   mTileZoom = QgsVectorTileUtils::scaleToZoomLevel( ctx.rendererScale(), mSourceMinZoom, mSourceMaxZoom );
-  qDebug() << "MVT zoom level" << mTileZoom;
+  QgsDebugMsg( QStringLiteral( "Vector tiles zoom level: %1" ).arg( mTileZoom ) );
 
   mTileMatrix = QgsTileMatrix::fromWebMercator( mTileZoom );
 
   mTileRange = mTileMatrix.tileRangeFromExtent( ctx.extent() );
-  qDebug() << "MVT tile range" << mTileRange.startColumn() << mTileRange.endColumn() << " | " << mTileRange.startRow() << mTileRange.endRow();
+  QgsDebugMsg( QStringLiteral( "Vector tiles range X: %1 - %2  Y: %3 - %4" )
+               .arg( mTileRange.startColumn() ).arg( mTileRange.endColumn() )
+               .arg( mTileRange.startRow() ).arg( mTileRange.endRow() ) );
 
   // view center is used to sort the order of tiles for fetching and rendering
   QPointF viewCenter = mTileMatrix.mapToTileCoordinates( ctx.extent().center() );
 
   if ( !mTileRange.isValid() )
   {
-    qDebug() << "outside of range";
+    QgsDebugMsg( QStringLiteral( "Vector tiles - outside of range" ) );
     return true;   // nothing to do
   }
 
-  bool isAsync = ( mSourceType == "xyz" );
+  bool isAsync = ( mSourceType == QStringLiteral( "xyz" ) );
 
   std::unique_ptr<QgsVectorTileLoader> asyncLoader;
   QList<QgsVectorTileRawData> rawTiles;
@@ -76,15 +80,15 @@ bool QgsVectorTileLayerRenderer::render()
     QElapsedTimer tFetch;
     tFetch.start();
     rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, mTileZoom, viewCenter, mTileRange );
-    qDebug() << "FETCH TIME" << tFetch.elapsed() / 1000.;
-    qDebug() << "fetched tiles:" << rawTiles.count();
+    QgsDebugMsg( QStringLiteral( "Tile fetching time: %1" ).arg( tFetch.elapsed() / 1000. ) );
+    QgsDebugMsg( QStringLiteral( "Fetched tiles: %1" ).arg( rawTiles.count() ) );
   }
   else
   {
     asyncLoader.reset( new QgsVectorTileLoader( mSourcePath, mTileZoom, mTileRange, viewCenter, mFeedback.get() ) );
     QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, [this]( const QgsVectorTileRawData & rawTile )
     {
-      qDebug() << "got async tile" << rawTile.id.column() << rawTile.id.row() << rawTile.id.zoomLevel();
+      QgsDebugMsg( QStringLiteral( "Got tile asynchronously: " ) + rawTile.id.toString() );
       if ( !rawTile.data.isEmpty() )
         decodeAndDrawTile( rawTile );
     } );
@@ -122,9 +126,9 @@ bool QgsVectorTileLayerRenderer::render()
 
   ctx.painter()->setClipping( false );
 
-  qDebug() << "DECODE TIME" << mTotalDecodeTime / 1000.;
-  qDebug() << "DRAW TIME" << mTotalDrawTime / 1000.;
-  qDebug() << "TOTAL TIME" << tTotal.elapsed() / 1000.;
+  QgsDebugMsg( QStringLiteral( "Total time for decoding: %1" ).arg( mTotalDecodeTime / 1000. ) );
+  QgsDebugMsg( QStringLiteral( "Drawing time: %1" ).arg( mTotalDrawTime / 1000. ) );
+  QgsDebugMsg( QStringLiteral( "Total time: %1" ).arg( tTotal.elapsed() / 1000. ) );
 
   return !ctx.renderingStopped();
 }
@@ -133,7 +137,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
 {
   QgsRenderContext &ctx = *renderContext();
 
-  qDebug() << "decoding tile " << rawTile.id.zoomLevel() << rawTile.id.column() << rawTile.id.row();
+  QgsDebugMsgLevel( QStringLiteral( "Drawing tile " ) + rawTile.id.toString(), 2 );
 
   QElapsedTimer tLoad;
   tLoad.start();
@@ -142,7 +146,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
   QgsVectorTileMVTDecoder decoder;
   if ( !decoder.decode( rawTile.id, rawTile.data ) )
   {
-    qDebug() << "Failed to parse raw tile data!";
+    QgsDebugMsg( QStringLiteral( "Failed to parse raw tile data! " ) + rawTile.id.toString() );
     return;
   }
 
@@ -165,8 +169,6 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
   // set up clipping so that rendering does not go behind tile's extent
 
   ctx.painter()->setClipRegion( QRegion( tile.tilePolygon() ) );
-
-  qDebug() << "drawing tile" << tile.id().zoomLevel() << tile.id().column() << tile.id().row();
 
   QElapsedTimer tDraw;
   tDraw.start();

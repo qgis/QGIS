@@ -45,6 +45,9 @@ class CORE_EXPORT QgsTileXYZ
     //! Returns tile's zoom level (Z)
     int zoomLevel() const { return mZoomLevel; }
 
+    //! Returns tile coordinates in a formatted string
+    QString toString() const { return QStringLiteral( "X=%1 Y=%2 Z=%3" ).arg( mColumn ).arg( mRow ).arg( mZoomLevel ); }
+
   private:
     int mColumn;
     int mRow;

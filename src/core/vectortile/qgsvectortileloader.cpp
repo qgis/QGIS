@@ -15,12 +15,12 @@
 
 #include "qgsvectortileloader.h"
 
-#include <QtDebug>
 #include <QEventLoop>
 
 #include <zlib.h>
 
 #include "qgsblockingnetworkrequest.h"
+#include "qgslogger.h"
 #include "qgsmbtilesreader.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsvectortileutils.h"
@@ -39,7 +39,7 @@ QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, int zoomLevel, con
       return;
   }
 
-  qDebug() << "starting loader";
+  QgsDebugMsg( QStringLiteral( "Starting network loader" ) );
   QVector<QgsTileXYZ> tiles = QgsVectorTileUtils::tilesInRange( range, zoomLevel );
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
   for ( QgsTileXYZ id : qgis::as_const( tiles ) )
@@ -50,7 +50,7 @@ QgsVectorTileLoader::QgsVectorTileLoader( const QString &uri, int zoomLevel, con
 
 QgsVectorTileLoader::~QgsVectorTileLoader()
 {
-  qDebug() << "terminating loader";
+  QgsDebugMsg( QStringLiteral( "Terminating network loader" ) );
 
   if ( !mReplies.isEmpty() )
   {
@@ -62,17 +62,17 @@ QgsVectorTileLoader::~QgsVectorTileLoader()
 
 void QgsVectorTileLoader::downloadBlocking()
 {
-  qDebug() << "starting event loop" << mReplies.count() << "requests";
-
   if ( mFeedback && mFeedback->isCanceled() )
   {
-    qDebug() << "actually not - we were canceled";
+    QgsDebugMsg( QStringLiteral( "downloadBlocking - not staring event loop - canceled" ) );
     return; // nothing to do
   }
 
+  QgsDebugMsg( QStringLiteral( "Starting event loop with %1 requests" ).arg( mReplies.count() ) );
+
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
 
-  qDebug() << "download blocking finished";
+  QgsDebugMsg( QStringLiteral( "downloadBlocking finished" ) );
 
   Q_ASSERT( mReplies.isEmpty() );
 }
@@ -82,7 +82,7 @@ void QgsVectorTileLoader::loadFromNetworkAsync( const QgsTileXYZ &id, const QStr
   QString url = QgsVectorTileUtils::formatXYZUrlTemplate( requestUrl, id );
   QNetworkRequest request( url );
   QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsVectorTileLoader" ) );
-  QgsSetRequestInitiatorId( request, QStringLiteral( "X=%1 Y=%2 Z=%3" ).arg( id.column() ).arg( id.row() ).arg( id.zoomLevel() ) );
+  QgsSetRequestInitiatorId( request, id.toString() );
 
   request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), id.column() );
   request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ), id.row() );
@@ -110,7 +110,7 @@ void QgsVectorTileLoader::tileReplyFinished()
   {
     // TODO: handle redirections?
 
-    qDebug() << "tile reply - all good!";
+    QgsDebugMsg( QStringLiteral( "Tile download successful: " ) + tileID.toString() );
     QByteArray rawData = reply->readAll();
     mReplies.removeOne( reply );
     reply->deleteLater();
@@ -119,7 +119,7 @@ void QgsVectorTileLoader::tileReplyFinished()
   }
   else
   {
-    qDebug() << "tile reply - error!   " << reply->errorString();
+    QgsDebugMsg( QStringLiteral( "Tile download failed! " ) + reply->errorString() );
     mReplies.removeOne( reply );
     reply->deleteLater();
 
@@ -135,11 +135,10 @@ void QgsVectorTileLoader::tileReplyFinished()
 
 void QgsVectorTileLoader::canceled()
 {
-  qDebug() << "canceling pending requests";
+  QgsDebugMsg( QStringLiteral( "Canceling %1 pending requests" ).arg( mReplies.count() ) );
   const QList<QNetworkReply *> replies = mReplies;
   for ( QNetworkReply *reply : replies )
   {
-    qDebug() << "aborting request";
     reply->abort();
   }
 }
@@ -151,7 +150,7 @@ QList<QgsVectorTileRawData> QgsVectorTileLoader::blockingFetchTileRawData( const
   QList<QgsVectorTileRawData> rawTiles;
 
   QgsMBTilesReader mbReader( sourcePath );
-  bool isUrl = ( sourceType == "xyz" );
+  bool isUrl = ( sourceType == QStringLiteral( "xyz" ) );
   if ( !isUrl )
   {
     bool res = mbReader.open();
@@ -177,11 +176,10 @@ QByteArray QgsVectorTileLoader::loadFromNetwork( const QgsTileXYZ &id, const QSt
   QNetworkRequest nr;
   nr.setUrl( QUrl( url ) );
   QgsBlockingNetworkRequest req;
-  qDebug() << "requestiong" << url;
+  QgsDebugMsg( QStringLiteral( "Blocking request: " ) + url );
   QgsBlockingNetworkRequest::ErrorCode errCode = req.get( nr );
-  qDebug() << "get" << errCode;
   QgsNetworkReplyContent reply = req.reply();
-  qDebug() << "content size" << reply.content().size();
+  QgsDebugMsg( QStringLiteral( "Got error code %1, content size %2" ).arg( errCode ).arg( reply.content().size() ) );
   return reply.content();
 }
 
@@ -193,7 +191,7 @@ QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMBTile
   QByteArray gzippedTileData = mbTileReader.tileData( id.zoomLevel(), id.column(), rowTMS );
   if ( gzippedTileData.isEmpty() )
   {
-    qDebug() << "Failed to get tile" << id.zoomLevel() << id.column() << id.row();
+    QgsDebugMsg( QStringLiteral( "Failed to get tile " ) + id.toString() );
     return QByteArray();
   }
 
@@ -202,11 +200,11 @@ QByteArray QgsVectorTileLoader::loadFromMBTiles( const QgsTileXYZ &id, QgsMBTile
   QByteArray data;
   if ( !decodeGzip( gzippedTileData, data ) )
   {
-    qDebug() << "failed to decompress tile" << id.zoomLevel() << id.column() << id.row();
+    QgsDebugMsg( QStringLiteral( "Failed to decompress tile " ) + id.toString() );
     return QByteArray();
   }
 
-  qDebug() << "tile blob size" << gzippedTileData.size() << " -> uncompressed size" << data.size();
+  QgsDebugMsg( QStringLiteral( "Tile blob size %1 -> uncompressed size %2" ).arg( gzippedTileData.size() ).arg( data.size() ) );
   return data;
 }
 

@@ -41,6 +41,11 @@ Returns tile's row index (Y)
 Returns tile's zoom level (Z)
 %End
 
+    QString toString() const;
+%Docstring
+Returns tile coordinates in a formatted string
+%End
+
 };
 
 

@@ -59,13 +59,13 @@ void QgsVectorTileBasicRendererStyle::setSymbol( QgsSymbol *sym )
 
 void QgsVectorTileBasicRendererStyle::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  elem.setAttribute( "name", mStyleName );
-  elem.setAttribute( "layer", mLayerName );
-  elem.setAttribute( "geometry", mGeometryType );
-  elem.setAttribute( "enabled", mEnabled ? "1" : "0" );
-  elem.setAttribute( "expression", mExpression );
-  elem.setAttribute( "min-zoom", mMinZoomLevel );
-  elem.setAttribute( "max-zoom", mMaxZoomLevel );
+  elem.setAttribute( QStringLiteral( "name" ), mStyleName );
+  elem.setAttribute( QStringLiteral( "layer" ), mLayerName );
+  elem.setAttribute( QStringLiteral( "geometry" ), mGeometryType );
+  elem.setAttribute( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  elem.setAttribute( QStringLiteral( "expression" ), mExpression );
+  elem.setAttribute( QStringLiteral( "min-zoom" ), mMinZoomLevel );
+  elem.setAttribute( QStringLiteral( "max-zoom" ), mMaxZoomLevel );
 
   QDomDocument doc = elem.ownerDocument();
   QgsSymbolMap symbols;
@@ -76,13 +76,13 @@ void QgsVectorTileBasicRendererStyle::writeXml( QDomElement &elem, const QgsRead
 
 void QgsVectorTileBasicRendererStyle::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mStyleName = elem.attribute( "name" );
-  mLayerName = elem.attribute( "layer" );
-  mGeometryType = static_cast<QgsWkbTypes::GeometryType>( elem.attribute( "geometry" ).toInt() );
-  mEnabled = elem.attribute( "enabled" ).toInt();
-  mExpression = elem.attribute( "expression" );
-  mMinZoomLevel = elem.attribute( "min-zoom" ).toInt();
-  mMaxZoomLevel = elem.attribute( "max-zoom" ).toInt();
+  mStyleName = elem.attribute( QStringLiteral( "name" ) );
+  mLayerName = elem.attribute( QStringLiteral( "layer" ) );
+  mGeometryType = static_cast<QgsWkbTypes::GeometryType>( elem.attribute( QStringLiteral( "geometry" ) ).toInt() );
+  mEnabled = elem.attribute( QStringLiteral( "enabled" ) ).toInt();
+  mExpression = elem.attribute( QStringLiteral( "expression" ) );
+  mMinZoomLevel = elem.attribute( QStringLiteral( "min-zoom" ) ).toInt();
+  mMaxZoomLevel = elem.attribute( QStringLiteral( "max-zoom" ) ).toInt();
 
   mSymbol.reset();
   QDomElement symbolsElem = elem.firstChildElement( QStringLiteral( "symbols" ) );
@@ -105,7 +105,7 @@ QgsVectorTileBasicRenderer::QgsVectorTileBasicRenderer()
 
 QString QgsVectorTileBasicRenderer::type() const
 {
-  return "basic";
+  return QStringLiteral( "basic" );
 }
 
 QgsVectorTileBasicRenderer *QgsVectorTileBasicRenderer::clone() const
@@ -198,10 +198,10 @@ void QgsVectorTileBasicRenderer::renderTile( const QgsVectorTileRendererData &ti
 void QgsVectorTileBasicRenderer::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   QDomDocument doc = elem.ownerDocument();
-  QDomElement elemStyles = doc.createElement( "styles" );
+  QDomElement elemStyles = doc.createElement( QStringLiteral( "styles" ) );
   for ( const QgsVectorTileBasicRendererStyle &layerStyle : mStyles )
   {
-    QDomElement elemStyle = doc.createElement( "style" );
+    QDomElement elemStyle = doc.createElement( QStringLiteral( "style" ) );
     layerStyle.writeXml( elemStyle, context );
     elemStyles.appendChild( elemStyle );
   }
@@ -212,8 +212,8 @@ void QgsVectorTileBasicRenderer::readXml( const QDomElement &elem, const QgsRead
 {
   mStyles.clear();
 
-  QDomElement elemStyles = elem.firstChildElement( "styles" );
-  QDomElement elemStyle = elemStyles.firstChildElement( "style" );
+  QDomElement elemStyles = elem.firstChildElement( QStringLiteral( "styles" ) );
+  QDomElement elemStyle = elemStyles.firstChildElement( QStringLiteral( "style" ) );
   while ( !elemStyle.isNull() )
   {
     QgsVectorTileBasicRendererStyle layerStyle;
@@ -274,13 +274,13 @@ QList<QgsVectorTileBasicRendererStyle> QgsVectorTileBasicRenderer::simpleStyle(
   markerSymbolLayer->setSize( pointSize );
   QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( QgsSymbolLayerList() << markerSymbolLayer );
 
-  QgsVectorTileBasicRendererStyle st1( "polygons", QString(), QgsWkbTypes::PolygonGeometry );
+  QgsVectorTileBasicRendererStyle st1( QStringLiteral( "Polygons" ), QString(), QgsWkbTypes::PolygonGeometry );
   st1.setSymbol( fillSymbol );
 
-  QgsVectorTileBasicRendererStyle st2( "lines", QString(), QgsWkbTypes::LineGeometry );
+  QgsVectorTileBasicRendererStyle st2( QStringLiteral( "Lines" ), QString(), QgsWkbTypes::LineGeometry );
   st2.setSymbol( lineSymbol );
 
-  QgsVectorTileBasicRendererStyle st3( "points", QString(), QgsWkbTypes::PointGeometry );
+  QgsVectorTileBasicRendererStyle st3( QStringLiteral( "Points" ), QString(), QgsWkbTypes::PointGeometry );
   st3.setSymbol( markerSymbol );
 
   QList<QgsVectorTileBasicRendererStyle> lst;

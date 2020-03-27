@@ -14,13 +14,13 @@
  ***************************************************************************/
 
 #include <string>
-#include <QtDebug>
 
 #include "qgsvectortilemvtdecoder.h"
 
 #include "qgsvectortilelayerrenderer.h"
 #include "qgsvectortileutils.h"
 
+#include "qgslogger.h"
 #include "qgsmultipoint.h"
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
@@ -256,7 +256,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         }
         else
         {
-          qDebug() << "huh?";  // TODO: handle properly
+          QgsDebugMsg( QStringLiteral( "Unexpected command ID: %1" ).arg( cmdId ) );
         }
       }
 
@@ -306,7 +306,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         }
       }
 
-      f.setAttribute( "_geom_type", geomType );
+      f.setAttribute( QStringLiteral( "_geom_type" ), geomType );
       f.geometry().transform( ct );
 
       layerFeatures.append( f );

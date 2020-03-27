@@ -15,6 +15,7 @@
 
 #include "qgsvectortilelayer.h"
 
+#include "qgslogger.h"
 #include "qgsvectortilelayerrenderer.h"
 #include "qgsmbtilesreader.h"
 #include "qgsvectortilebasicrenderer.h"
@@ -30,9 +31,9 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( uri );
 
-  mSourceType = dsUri.param( "type" );
-  mSourcePath = dsUri.param( "url" );
-  if ( mSourceType == "xyz" )
+  mSourceType = dsUri.param( QStringLiteral( "type" ) );
+  mSourcePath = dsUri.param( QStringLiteral( "url" ) );
+  if ( mSourceType == QStringLiteral( "xyz" ) )
   {
     // online tiles
     mSourceMinZoom = 0;
@@ -45,24 +46,24 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
 
     setExtent( QgsRectangle( -20037508.3427892, -20037508.3427892, 20037508.3427892, 20037508.3427892 ) );
   }
-  else if ( mSourceType == "mbtiles" )
+  else if ( mSourceType == QStringLiteral( "mbtiles" ) )
   {
     QgsMBTilesReader reader( mSourcePath );
     if ( !reader.open() )
     {
-      qDebug() << "failed to open MBTiles file:" << mSourcePath;
+      QgsDebugMsg( QStringLiteral( "failed to open MBTiles file: " ) + mSourcePath );
       return;
     }
 
-    qDebug() << "name:" << reader.metadataValue( "name" );
+    QgsDebugMsg( QStringLiteral( "name: " ) + reader.metadataValue( QStringLiteral( "name" ) ) );
     bool minZoomOk, maxZoomOk;
-    int minZoom = reader.metadataValue( "minzoom" ).toInt( &minZoomOk );
-    int maxZoom = reader.metadataValue( "maxzoom" ).toInt( &maxZoomOk );
+    int minZoom = reader.metadataValue( QStringLiteral( "minzoom" ) ).toInt( &minZoomOk );
+    int maxZoom = reader.metadataValue( QStringLiteral( "maxzoom" ) ).toInt( &maxZoomOk );
     if ( minZoomOk )
       mSourceMinZoom = minZoom;
     if ( maxZoomOk )
       mSourceMaxZoom = maxZoom;
-    qDebug() << "zoom range:" << mSourceMinZoom << mSourceMaxZoom;
+    QgsDebugMsg( QStringLiteral( "zoom range: %1 - %2" ).arg( mSourceMinZoom ).arg( mSourceMaxZoom ) );
 
     QgsRectangle r = reader.extent();
     // TODO: reproject to EPSG:3857
@@ -70,11 +71,11 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
   }
   else
   {
-    // TODO: report error - unknown type
+    QgsDebugMsg( QStringLiteral( "Unknown source type: " ) + mSourceType );
     return;
   }
 
-  setCrs( QgsCoordinateReferenceSystem( "EPSG:3857" ) );
+  setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
   setValid( true );
 
   // set a default renderer
@@ -107,7 +108,7 @@ bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext
 bool QgsVectorTileLayer::writeXml( QDomNode &layerNode, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement mapLayerNode = layerNode.toElement();
-  mapLayerNode.setAttribute( "type", "vector-tile" );
+  mapLayerNode.setAttribute( QStringLiteral( "type" ), QStringLiteral( "vector-tile" ) );
 
   QString errorMsg;
   return writeSymbology( layerNode, doc, errorMsg, context );
@@ -119,21 +120,19 @@ bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMess
 
   readCommonStyle( elem, context, categories );
 
-  QDomElement elemRenderer = elem.firstChildElement( "renderer" );
+  QDomElement elemRenderer = elem.firstChildElement( QStringLiteral( "renderer" ) );
   if ( elemRenderer.isNull() )
   {
-    errorMessage = "Missing <renderer> tag";
+    errorMessage = tr( "Missing <renderer> tag" );
     return false;
   }
-  QString rendererType = elemRenderer.attribute( "type" );
+  QString rendererType = elemRenderer.attribute( QStringLiteral( "type" ) );
   QgsVectorTileRenderer *r = nullptr;
-  if ( rendererType == "basic" )
+  if ( rendererType == QStringLiteral( "basic" ) )
     r = new QgsVectorTileBasicRenderer;
-  //else if ( rendererType == "mapbox-gl" )
-  //  r = new MapboxGLStyleRenderer;
   else
   {
-    errorMessage = "Unknown renderer type: " + rendererType;
+    errorMessage = tr( "Unknown renderer type: " ) + rendererType;
     return false;
   }
 
@@ -150,8 +149,8 @@ bool QgsVectorTileLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QStr
 
   if ( mRenderer )
   {
-    QDomElement elemRenderer = doc.createElement( "renderer" );
-    elemRenderer.setAttribute( "type", mRenderer->type() );
+    QDomElement elemRenderer = doc.createElement( QStringLiteral( "renderer" ) );
+    elemRenderer.setAttribute( QStringLiteral( "type" ), mRenderer->type() );
     mRenderer->writeXml( elemRenderer, context );
     elem.appendChild( elemRenderer );
   }
