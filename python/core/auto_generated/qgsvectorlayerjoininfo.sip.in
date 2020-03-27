@@ -77,9 +77,11 @@ Returns prefix of fields from the joined layer. If ``None``, joined layer's name
 %Docstring
 Sets whether values from the joined layer should be cached in memory to speed up lookups
 %End
+
     bool isUsingMemoryCache() const;
 %Docstring
-Returns whether values from the joined layer should be cached in memory to speed up lookups
+Returns whether values from the joined layer should be cached in memory to speed up lookups.
+Will return false if upsertOnEdit is enabled.
 %End
 
     bool isDynamicFormEnabled() const;
