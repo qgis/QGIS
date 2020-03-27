@@ -429,7 +429,7 @@ void TestQgsAttributeTable::testFilteredFeatures()
   std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowAll ) );
 
   // show all (three features)
-  dlg->mFeatureFilterWidget->filterShowAll();
+  dlg->filterShowAll();
   QCOMPARE( dlg->mMainView->featureCount(), 3 );
   QCOMPARE( dlg->mMainView->filteredFeatureCount(), 3 );
 
@@ -442,15 +442,15 @@ void TestQgsAttributeTable::testFilteredFeatures()
   QCOMPARE( dlg->mMainView->filteredFeatureCount(), 4 );
 
   // bigger 5 (two of four features)
-  dlg->mFeatureFilterWidget->setFilterExpression( QStringLiteral( "col1>5" ), QgsAttributeForm::ReplaceFilter, true );
+  dlg->setFilterExpression( QStringLiteral( "col1>5" ), QgsAttributeForm::ReplaceFilter, true );
   QCOMPARE( dlg->mMainView->featureCount(), 4 );
   QCOMPARE( dlg->mMainView->filteredFeatureCount(), 2 );
   // bigger 7 (one of four features)
-  dlg->mFeatureFilterWidget->setFilterExpression( QStringLiteral( "col1>7" ), QgsAttributeForm::ReplaceFilter, true );
+  dlg->setFilterExpression( QStringLiteral( "col1>7" ), QgsAttributeForm::ReplaceFilter, true );
   QCOMPARE( dlg->mMainView->featureCount(), 4 );
   QCOMPARE( dlg->mMainView->filteredFeatureCount(), 1 );
   // bigger 9 (no of four features)
-  dlg->mFeatureFilterWidget->setFilterExpression( QStringLiteral( "col1>9" ), QgsAttributeForm::ReplaceFilter, true );
+  dlg->setFilterExpression( QStringLiteral( "col1>9" ), QgsAttributeForm::ReplaceFilter, true );
   QCOMPARE( dlg->mMainView->featureCount(), 4 );
   QCOMPARE( dlg->mMainView->filteredFeatureCount(), 0 );
 
@@ -482,7 +482,7 @@ void TestQgsAttributeTable::testFilteredFeatures()
   QCOMPARE( dlg->mMainView->filteredFeatureCount(), 1 );
 
   // smaller 11 (three of four features)
-  dlg->mFeatureFilterWidget->setFilterExpression( QStringLiteral( "col1<11" ), QgsAttributeForm::ReplaceFilter, true );
+  dlg->setFilterExpression( QStringLiteral( "col1<11" ), QgsAttributeForm::ReplaceFilter, true );
   QCOMPARE( dlg->mMainView->filteredFeatureCount(), 3 );
 }
 
