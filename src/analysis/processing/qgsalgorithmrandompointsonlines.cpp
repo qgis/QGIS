@@ -20,17 +20,17 @@
 #include "random"
 
 // The algorithm parameter names:
-constexpr char INPUT[] = "INPUT";
-constexpr char POINTS_NUMBER[] = "POINTS_NUMBER";
-constexpr char MIN_DISTANCE[] = "MIN_DISTANCE";
-constexpr char MAX_TRIES_PER_POINT[] = "MAX_TRIES_PER_POINT";
-constexpr char SEED[] = "SEED";
-constexpr char INCLUDE_LINE_ATTRIBUTES[] = "INCLUDE_LINE_ATTRIBUTES";
-constexpr char OUTPUT[] = "OUTPUT";
-constexpr char OUTPUT_POINTS[] = "OUTPUT_POINTS";
-constexpr char POINTS_MISSED[] = "POINTS_MISSED";
-constexpr char LINES_WITH_MISSED_POINTS[] = "LINES_WITH_MISSED_POINTS";
-constexpr char FEATURES_WITH_EMPTY_OR_NO_GEOMETRY[] = "FEATURES_WITH_EMPTY_OR_NO_GEOMETRY";
+static const  QString INPUT = QStringLiteral( "INPUT" );
+static const  QString POINTS_NUMBER = QStringLiteral( "POINTS_NUMBER" );
+static const  QString MIN_DISTANCE = QStringLiteral( "MIN_DISTANCE" );
+static const  QString MAX_TRIES_PER_POINT = QStringLiteral( "MAX_TRIES_PER_POINT" );
+static const  QString SEED = QStringLiteral( "SEED" );
+static const  QString INCLUDE_LINE_ATTRIBUTES = QStringLiteral( "INCLUDE_LINE_ATTRIBUTES" );
+static const  QString OUTPUT = QStringLiteral( "OUTPUT" );
+static const  QString OUTPUT_POINTS = QStringLiteral( "OUTPUT_POINTS" );
+static const  QString POINTS_MISSED = QStringLiteral( "POINTS_MISSED" );
+static const  QString LINES_WITH_MISSED_POINTS = QStringLiteral( "LINES_WITH_MISSED_POINTS" );
+static const  QString FEATURES_WITH_EMPTY_OR_NO_GEOMETRY = QStringLiteral( "FEATURES_WITH_EMPTY_OR_NO_GEOMETRY" );
 
 ///@cond PRIVATE
 
@@ -63,29 +63,29 @@ void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
 {
 
   //addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( INPUT ), QObject::tr( "Input line layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QString::fromStdString( INPUT ), QObject::tr( "Input line layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
-  addParameter( new QgsProcessingParameterNumber( QString::fromStdString( POINTS_NUMBER ), QObject::tr( "Number of points for each feature" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
-  addParameter( new QgsProcessingParameterDistance( QString::fromStdString( MIN_DISTANCE ), QObject::tr( "Minimum distance between points" ), 0, QString::fromStdString( "INPUT" ), true, 0 ) );
+  addParameter( new QgsProcessingParameterFeatureSource( INPUT, QObject::tr( "Input line layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
+  addParameter( new QgsProcessingParameterNumber( POINTS_NUMBER, QObject::tr( "Number of points for each feature" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
+  addParameter( new QgsProcessingParameterDistance( MIN_DISTANCE, QObject::tr( "Minimum distance between points" ), 0, INPUT, true, 0 ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > maxAttempts_param = qgis::make_unique< QgsProcessingParameterNumber >( QString::fromStdString( "MAX_TRIES_PER_POINT" ), QObject::tr( "Maximum number of search attempts (for Min. dist. > 0)" ), QgsProcessingParameterNumber::Integer, 10, true, 1, 1000 );
+  std::unique_ptr< QgsProcessingParameterNumber > maxAttempts_param = qgis::make_unique< QgsProcessingParameterNumber >( MAX_TRIES_PER_POINT, QObject::tr( "Maximum number of search attempts (for Min. dist. > 0)" ), QgsProcessingParameterNumber::Integer, 10, true, 1, 1000 );
   maxAttempts_param->setFlags( maxAttempts_param->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( maxAttempts_param.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > randomSeedParam = qgis::make_unique< QgsProcessingParameterNumber >( QString::fromStdString( SEED ), QObject::tr( "Random seed" ), QgsProcessingParameterNumber::Integer, 1, false, 1 );
+  std::unique_ptr< QgsProcessingParameterNumber > randomSeedParam = qgis::make_unique< QgsProcessingParameterNumber >( SEED, QObject::tr( "Random seed" ), QgsProcessingParameterNumber::Integer, 1, false, 1 );
   randomSeedParam->setFlags( randomSeedParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( randomSeedParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterBoolean > includeLineAttrParam = qgis::make_unique< QgsProcessingParameterBoolean >( QString::fromStdString( INCLUDE_LINE_ATTRIBUTES ), QObject::tr( "Include line attributes" ), true );
+  std::unique_ptr< QgsProcessingParameterBoolean > includeLineAttrParam = qgis::make_unique< QgsProcessingParameterBoolean >( INCLUDE_LINE_ATTRIBUTES, QObject::tr( "Include line attributes" ), true );
   includeLineAttrParam->setFlags( includeLineAttrParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( includeLineAttrParam.release() );
 
   addParameter( new
-                QgsProcessingParameterFeatureSink( QString::fromStdString( OUTPUT ), QObject::tr( "Random points on lines" ), QgsProcessing::TypeVectorPoint ) );
+                QgsProcessingParameterFeatureSink( OUTPUT, QObject::tr( "Random points on lines" ), QgsProcessing::TypeVectorPoint ) );
 
-  addOutput( new QgsProcessingOutputNumber( QString::fromStdString( OUTPUT_POINTS ), QObject::tr( "Total number of points generated" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QString::fromStdString( POINTS_MISSED ), QObject::tr( "Number of missed points" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QString::fromStdString( LINES_WITH_MISSED_POINTS ), QObject::tr( "Number of lines with missed points" ) ) );
-  addOutput( new QgsProcessingOutputNumber( QString::fromStdString( FEATURES_WITH_EMPTY_OR_NO_GEOMETRY ), QObject::tr( "Number of features with empty or no geometry" ) ) );
+  addOutput( new QgsProcessingOutputNumber( OUTPUT_POINTS, QObject::tr( "Total number of points generated" ) ) );
+  addOutput( new QgsProcessingOutputNumber( POINTS_MISSED, QObject::tr( "Number of missed points" ) ) );
+  addOutput( new QgsProcessingOutputNumber( LINES_WITH_MISSED_POINTS, QObject::tr( "Number of lines with missed points" ) ) );
+  addOutput( new QgsProcessingOutputNumber( FEATURES_WITH_EMPTY_OR_NO_GEOMETRY, QObject::tr( "Number of features with empty or no geometry" ) ) );
 }
 
 QString QgsRandomPointsOnLinesAlgorithm::shortHelpString() const
@@ -114,7 +114,7 @@ QString QgsRandomPointsOnLinesAlgorithm::shortHelpString() const
                       "<li> A point layer containing the random points (<code>OUTPUT</code>).</li> "
                       "<li> The number of generated features (<code>POINTS_GENERATED</code>).</li> "
                       "<li> The number of missed points (<code>POINTS_MISSED</code>).</li> "
-                      "<li> The number of features with missing points (<code>LINES_WITH_MISSED_POINTS</code>).</li> "
+                      "<li> The number of features with non-empty geometry and missing points (<code>LINES_WITH_MISSED_POINTS</code>).</li> "
                       "<li> The number of features with an empty or no geometry (<code>LINES_WITH_EMPTY_OR_NO_GEOMETRY</code>).</li> "
                       "</ul>"
                     );
@@ -128,20 +128,20 @@ QgsRandomPointsOnLinesAlgorithm *QgsRandomPointsOnLinesAlgorithm::createInstance
 
 bool QgsRandomPointsOnLinesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mNumPoints = parameterAsInt( parameters, QString::fromStdString( POINTS_NUMBER ), context );
-  mMinDistance = parameterAsDouble( parameters, QString::fromStdString( MIN_DISTANCE ), context );
-  mMaxAttempts = parameterAsInt( parameters, QString::fromStdString( MAX_TRIES_PER_POINT ), context );
-  mRandSeed = parameterAsInt( parameters, QString::fromStdString( SEED ), context );
-  mIncludeLineAttr = parameterAsBoolean( parameters, QString::fromStdString( INCLUDE_LINE_ATTRIBUTES ), context );
+  mNumPoints = parameterAsInt( parameters, POINTS_NUMBER, context );
+  mMinDistance = parameterAsDouble( parameters, MIN_DISTANCE, context );
+  mMaxAttempts = parameterAsInt( parameters, MAX_TRIES_PER_POINT, context );
+  mRandSeed = parameterAsInt( parameters, SEED, context );
+  mIncludeLineAttr = parameterAsBoolean( parameters, INCLUDE_LINE_ATTRIBUTES, context );
   return true;
 }
 
 QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap &parameters,
     QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsFeatureSource > lineSource( parameterAsSource( parameters, QString::fromStdString( INPUT ), context ) );
+  std::unique_ptr< QgsFeatureSource > lineSource( parameterAsSource( parameters, INPUT, context ) );
   if ( !lineSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QString::fromStdString( INPUT ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, INPUT ) );
 
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "rand_point_id" ), QVariant::LongLong ) );
@@ -149,10 +149,10 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     fields.extend( lineSource->fields() );
 
   QString ldest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QString::fromStdString( OUTPUT ),
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, OUTPUT,
                                           context, ldest, fields, QgsWkbTypes::Point, lineSource->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QString::fromStdString( OUTPUT ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, OUTPUT ) );
 
   //initialize random engine
   srand( mRandSeed );
@@ -269,11 +269,11 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
                                    " %3\nFeatures with empty or missing geometries: %4"
                                  ).arg( totNPoints ).arg( missedPoints ).arg( missedLines ).arg( emptyOrNullGeom ) );
   QVariantMap outputs;
-  outputs.insert( QString::fromStdString( OUTPUT ), ldest );
-  outputs.insert( QString::fromStdString( OUTPUT_POINTS ), totNPoints );
-  outputs.insert( QString::fromStdString( POINTS_MISSED ), missedPoints );
-  outputs.insert( QString::fromStdString( LINES_WITH_MISSED_POINTS ), missedLines );
-  outputs.insert( QString::fromStdString( FEATURES_WITH_EMPTY_OR_NO_GEOMETRY ), emptyOrNullGeom );
+  outputs.insert( OUTPUT, ldest );
+  outputs.insert( OUTPUT_POINTS, totNPoints );
+  outputs.insert( POINTS_MISSED, missedPoints );
+  outputs.insert( LINES_WITH_MISSED_POINTS, missedLines );
+  outputs.insert( FEATURES_WITH_EMPTY_OR_NO_GEOMETRY, emptyOrNullGeom );
 
   return outputs;
 }
