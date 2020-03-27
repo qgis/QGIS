@@ -408,7 +408,7 @@ class ExtentWidgetWrapper(WidgetWrapper):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         """
-        .. deprecated:: 3.4
+        .. deprecated:: 3.14
         Do not use, will be removed in QGIS 4.0
         """
 
@@ -932,6 +932,17 @@ class RangeWidgetWrapper(WidgetWrapper):
 class MapLayerWidgetWrapper(WidgetWrapper):
     NOT_SELECTED = '[Not selected]'
 
+    def __init__(self, param, dialog, row=0, col=0, **kwargs):
+        """
+        .. deprecated:: 3.14
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("MapLayerWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
+
+        super().__init__(param, dialog, row, col, **kwargs)
+
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
             self.combo = QgsProcessingMapLayerComboBox(self.parameterDefinition())
@@ -1030,6 +1041,17 @@ class MapLayerWidgetWrapper(WidgetWrapper):
 
 class RasterWidgetWrapper(MapLayerWidgetWrapper):
 
+    def __init__(self, param, dialog, row=0, col=0, **kwargs):
+        """
+        .. deprecated:: 3.14
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("RasterWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
+
+        super().__init__(param, dialog, row, col, **kwargs)
+
     def getAvailableLayers(self):
         return self.dialog.getAvailableValuesOfType((QgsProcessingParameterRasterLayer, QgsProcessingParameterString),
                                                     (QgsProcessingOutputRasterLayer, QgsProcessingOutputFile, QgsProcessingOutputString))
@@ -1051,6 +1073,17 @@ class RasterWidgetWrapper(MapLayerWidgetWrapper):
 
 
 class MeshWidgetWrapper(MapLayerWidgetWrapper):
+
+    def __init__(self, param, dialog, row=0, col=0, **kwargs):
+        """
+        .. deprecated:: 3.14
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("MeshWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
+
+        super().__init__(param, dialog, row, col, **kwargs)
 
     def getAvailableLayers(self):
         return self.dialog.getAvailableValuesOfType((QgsProcessingParameterMeshLayer, QgsProcessingParameterString),
@@ -1142,6 +1175,13 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
     NOT_SELECTED = '[Not selected]'
 
     def __init__(self, *args, **kwargs):
+        """
+        .. deprecated:: 3.4
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("FeatureSourceWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
         self.map_layer_combo = None
         super().__init__(*args, **kwargs)
 
@@ -1423,6 +1463,17 @@ class ExpressionWidgetWrapper(WidgetWrapper):
 
 class VectorLayerWidgetWrapper(WidgetWrapper):
     NOT_SELECTED = '[Not selected]'
+
+    def __init__(self, param, dialog, row=0, col=0, **kwargs):
+        """
+        .. deprecated:: 3.14
+        Do not use, will be removed in QGIS 4.0
+        """
+
+        from warnings import warn
+        warn("VectorLayerWidgetWrapper is deprecated and will be removed in QGIS 4.0", DeprecationWarning)
+
+        super().__init__(param, dialog, row, col, **kwargs)
 
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
@@ -1853,6 +1904,7 @@ class WidgetWrapperFactory:
             # deprecated, moved to c++
             wrapper = DistanceWidgetWrapper
         elif param.type() == 'raster':
+            # deprecated, moved to c++
             wrapper = RasterWidgetWrapper
         elif param.type() == 'enum':
             # deprecated, moved to c++
@@ -1864,15 +1916,18 @@ class WidgetWrapperFactory:
             # deprecated, moved to c++
             wrapper = ExpressionWidgetWrapper
         elif param.type() == 'vector':
+            # deprecated, moved to c++
             wrapper = VectorLayerWidgetWrapper
         elif param.type() == 'field':
             # deprecated, moved to c++
             wrapper = TableFieldWidgetWrapper
         elif param.type() == 'source':
+            # deprecated, moved to c++
             wrapper = FeatureSourceWidgetWrapper
         elif param.type() == 'band':
             wrapper = BandWidgetWrapper
         elif param.type() == 'layer':
+            # deprecated, moved to c++
             wrapper = MapLayerWidgetWrapper
         elif param.type() == 'range':
             # deprecated, moved to c++
@@ -1881,6 +1936,7 @@ class WidgetWrapperFactory:
             # deprecated, moved to c++
             wrapper = FixedTableWidgetWrapper
         elif param.type() == 'mesh':
+            # deprecated, moved to c++
             wrapper = MeshWidgetWrapper
         else:
             assert False, param.type()

@@ -37,7 +37,7 @@
 
 ///@cond PRIVATE
 
-QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QWidget *parent )
+QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QWidget( parent )
   , mParameter( parameter->clone() )
 {
@@ -55,7 +55,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   mSelectButton->setToolTip( tr( "Select input" ) );
   layout->addWidget( mSelectButton );
   layout->setAlignment( mSelectButton, Qt::AlignTop );
-  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
+  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == QgsProcessingGui::Standard )
   {
     mIterateButton = new QToolButton();
     mIterateButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconIterate.svg" ) ) );
@@ -98,8 +98,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   }
   else
   {
-    // file selection not handled here, needs handling in Python at the moment...
-    connect( mSelectButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::triggerFileSelection );
+    connect( mSelectButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::selectFromFile );
   }
 
   QVBoxLayout *vl = new QVBoxLayout();
@@ -110,7 +109,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
 
   QgsMapLayerProxyModel::Filters filters = nullptr;
 
-  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
+  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == QgsProcessingGui::Standard )
   {
     mUseSelectionCheckBox = new QCheckBox( tr( "Selected features only" ) );
     mUseSelectionCheckBox->setChecked( false );
@@ -357,9 +356,9 @@ QVariant QgsProcessingMapLayerComboBox::value() const
   return QVariant();
 }
 
-void QgsProcessingMapLayerComboBox::setWidgetContext( QgsProcessingParameterWidgetContext *context )
+void QgsProcessingMapLayerComboBox::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
 {
-  mBrowserModel = context->browserModel();
+  mBrowserModel = context.browserModel();
 }
 
 void QgsProcessingMapLayerComboBox::setEditable( bool editable )
@@ -571,7 +570,7 @@ void QgsProcessingMapLayerComboBox::dropEvent( QDropEvent *event )
 
 void QgsProcessingMapLayerComboBox::onLayerChanged( QgsMapLayer *layer )
 {
-  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
+  if ( mUseSelectionCheckBox && mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
   {
     if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
     {
@@ -635,7 +634,7 @@ void QgsProcessingMapLayerComboBox::selectFromFile()
 
   if ( QFileInfo( initialValue ).isDir() && QFileInfo::exists( initialValue ) )
     path = initialValue;
-  else if ( QFileInfo::exists( QFileInfo( initialValue ).path() ) )
+  else if ( QFileInfo::exists( QFileInfo( initialValue ).path() ) && QFileInfo( initialValue ).path() != '.' )
     path = QFileInfo( initialValue ).path();
   else if ( settings.contains( QStringLiteral( "/Processing/LastInputPath" ) ) )
     path = settings.value( QStringLiteral( "/Processing/LastInputPath" ) ).toString();

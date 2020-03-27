@@ -23,7 +23,7 @@
 #include "qgsfeatureid.h"
 #include "qgsmimedatautils.h"
 #include "qgsprocessingcontext.h"
-
+#include "qgsprocessinggui.h"
 
 class QgsMapLayerComboBox;
 class QToolButton;
@@ -49,7 +49,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     /**
      * Constructor for QgsProcessingMapLayerComboBox, with the specified \a parameter definition.
      */
-    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QWidget *parent = nullptr );
+    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
 
     ~QgsProcessingMapLayerComboBox() override;
 
@@ -98,7 +98,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
      * Sets the \a context in which the widget is shown.
      * \since QGIS 3.14
      */
-    void setWidgetContext( QgsProcessingParameterWidgetContext *context );
+    void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
 
     /**
      * Sets whether the combo box value can be freely edited.
@@ -122,12 +122,6 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
      * Emitted whenever the value is changed in the widget.
      */
     void valueChanged();
-
-    /**
-     * Emitted when the widget has triggered a file selection operation (to be
-     * handled in Python for now).
-     */
-    void triggerFileSelection();
 
   protected:
 
