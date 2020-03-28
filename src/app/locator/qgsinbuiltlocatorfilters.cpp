@@ -242,8 +242,10 @@ void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const 
   if ( string.length() < 3 && !context.usingPrefix )
     return;
 
+  QString searchString = string;
+
   bool allowNumeric = false;
-  double numericalValue = string.toDouble( &allowNumeric );
+  double numericalValue = searchString.toDouble( &allowNumeric );
 
   QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgisApp::instance()->activeLayer() );
   if ( !layer )
@@ -254,8 +256,15 @@ void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const 
   mDispExpression.prepare( &mContext );
 
   bool exactMatch = false;
-  if ( string.length() < 3 )
+  if ( searchString.length() < 3 )
     exactMatch = true;
+
+  if ( searchString.startsWith( '"' ) && searchString.endsWith( '"' ) )
+  {
+    exactMatch = true;
+    searchString.remove( 0, 1 );
+    searchString.chop( 1 );
+  }
 
   // build up request expression
   QStringList expressionParts;
@@ -266,10 +275,10 @@ void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const 
     {
       if ( exactMatch )
         expressionParts << QStringLiteral( "%1 ILIKE '%2'" ).arg( QgsExpression::quotedColumnRef( field.name() ),
-                        string );
+                        searchString );
       else
         expressionParts << QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ),
-                        string );
+                        searchString );
     }
     else if ( allowNumeric && field.isNumeric() )
     {
@@ -373,9 +382,18 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
   if ( string.length() < 3 && !context.usingPrefix )
     return;
 
+  QString searchString = string;
+
   bool exactMatch = false;
-  if ( string.length() < 3 )
+  if ( searchString.length() < 3 )
     exactMatch = true;
+
+  if ( searchString.startsWith( '"' ) && searchString.endsWith( '"' ) )
+  {
+    exactMatch = true;
+    searchString.remove( 0, 1 );
+    searchString.chop( 1 );
+  }
 
   mPreparedLayers.clear();
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
@@ -394,7 +412,7 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     req.setSubsetOfAttributes( expression.referencedAttributeIndexes( layer->fields() ).toList() );
     if ( !expression.needsGeometry() )
       req.setFlags( QgsFeatureRequest::NoGeometry );
-    QString enhancedSearch = string;
+    QString enhancedSearch = searchString;
     enhancedSearch.replace( ' ', '%' );
     if ( exactMatch )
       req.setFilterExpression( QStringLiteral( "%1 ILIKE '%2'" )
@@ -589,7 +607,7 @@ void QgsSettingsLocatorFilter::fetchResults( const QString &string, const QgsLoc
       continue;
     }
 
-    result.score = fuzzyScore( result.displayString, string );;
+    result.score = fuzzyScore( result.displayString, string );
 
     if ( result.score > 0 )
       emit resultFetched( result );
