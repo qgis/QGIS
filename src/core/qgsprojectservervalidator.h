@@ -1,9 +1,28 @@
-#include "qgis_core.h"
-#include "qgslayertreegroup.h"
-#include "qgslayertree.h"
+/***************************************************************************
+                             qgsprojectservervalidator.h
+                             ---------------------------
+    begin                : March 2020
+    copyright            : (C) 2020 by Etienne Trimaille
+    email                : etienne dot trimaille at gmail dot com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 
 #ifndef QGSPROJECTSERVERVALIDATOR_H
 #define QGSPROJECTSERVERVALIDATOR_H
+
+#include "qgis_core.h"
+#include "qgslayermetadatavalidator.h"
+#include "qgslayertreegroup.h"
+#include "qgslayertree.h"
+
 
 /**
  * \ingroup core
@@ -11,23 +30,29 @@
  * \brief Project server validator.
  * \since QGIS 3.14
  */
-class CORE_EXPORT QgsProjectServerValidator
+class CORE_EXPORT QgsProjectServerValidator : public QgsAbstractBaseValidator
 {
 
   public:
 
     /**
-     * Recursive function to check a layer tree group.
-     * The function will collect OWS names and encoding for each layers.
-     * \since QGIS 3.14
+     * Constructor for QgsProjectServerValidator.
      */
-    static void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
+    QgsProjectServerValidator() = default;
 
     /**
-     * Check a layer tree.
+     * Validates a layer tree to avoid some problems on QGIS Server, and returns TRUE if it's considered valid.
+     * If validation fails, the \a results list will be filled with a list of
+     * items describing why the validation failed and what needs to be rectified
+     * \param layerTree input layer tree
+     * \param results results of the validation
+     * \returns bool
      * \since QGIS 3.14
      */
-    static QString projectStatusHtml( QgsLayerTree *layerTree );
+    bool validate( QgsLayerTree *layerTree, QList< QgsAbstractBaseValidator::ValidationResult > &results SIP_OUT ) const;
+
+  private:
+    static void browseLayerTree( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
 
 };
 

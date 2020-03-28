@@ -7,7 +7,10 @@
  ************************************************************************/
 
 
-class QgsProjectServerValidator
+
+
+
+class QgsProjectServerValidator : QgsAbstractBaseValidator
 {
 %Docstring
 Project server validator.
@@ -20,20 +23,12 @@ Project server validator.
 %End
   public:
 
-    static void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
+    QgsProjectServerValidator();
 %Docstring
-Recursive function to check a layer tree group.
-The function will collect OWS names and encoding for each layers.
-
-.. versionadded:: 3.14
+Constructor for :py:class:`QgsNativeMetadataBaseValidator`.
 %End
 
-    static QString projectStatusHtml( QgsLayerTree *layerTree );
-%Docstring
-Check a layer tree.
-
-.. versionadded:: 3.14
-%End
+    bool validate( QgsLayerTree *layerTree, QList< QgsAbstractBaseValidator::ValidationResult > &results /Out/ ) const;
 
 };
 

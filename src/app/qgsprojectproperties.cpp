@@ -1906,10 +1906,33 @@ void QgsProjectProperties::pbnWCSLayersDeselectAll_clicked()
 
 void QgsProjectProperties::pbnLaunchOWSChecker_clicked()
 {
+  QList<QgsAbstractBaseValidator::ValidationResult> validationResults;
+  QgsProjectServerValidator validator;
+  bool results = validator.validate( QgisApp::instance()->layerTreeView()->layerTreeModel()->rootGroup(), validationResults );
+
+  QString errors;
+  if ( !results )
+  {
+    for ( const QgsAbstractBaseValidator::ValidationResult &result : qgis::as_const( validationResults ) )
+    {
+      errors += QLatin1String( "<b>" ) % result.section % QLatin1String( " :</b> " );
+      if ( ! result.identifier.isNull() )
+      {
+        errors += QLatin1String( " " ) % result.identifier.toString();
+      }
+      errors += QLatin1String( " : " ) % result.note % QLatin1String( "<br />" );
+    }
+  }
+  else
+  {
+    errors = QString( tr( "Ok, it seems valid." ) );
+  }
+
   QString myStyle = QgsApplication::reportStyleSheet();
+  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
   teOWSChecker->clear();
   teOWSChecker->document()->setDefaultStyleSheet( myStyle );
-  teOWSChecker->setHtml( QgsProjectServerValidator::projectStatusHtml( QgisApp::instance()->layerTreeView()->layerTreeModel()->rootGroup() ) );
+  teOWSChecker->setHtml( errors );
 }
 
 void QgsProjectProperties::pbnAddScale_clicked()
