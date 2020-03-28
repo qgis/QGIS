@@ -99,7 +99,7 @@ void TestQgsRasterDataProviderTemporalCapabilities::checkTemporalRange()
 
   // Test setting out of fixed temporal range limits, should not update the temporal range.
   temporalCapabilities->setRequestedTemporalRange( outOfLimitsRange );
-  QCOMPARE( temporalCapabilities->requestedTemporalRange(), dateTimeRange );
+  QCOMPARE( temporalCapabilities->requestedTemporalRange(), outOfLimitsRange );
 
   // Test if setting the requested temporal range with the fixed temporal range object,
   // will result in to setting the requested temporal range with the fixed temporal range.
