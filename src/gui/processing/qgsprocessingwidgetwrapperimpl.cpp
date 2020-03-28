@@ -4902,6 +4902,8 @@ QWidget *QgsProcessingMapLayerWidgetWrapper::createWidget()
 
     emit widgetValueHasChanged( this );
   } );
+
+  setWidgetContext( widgetContext() );
   return mComboBox;
 }
 
@@ -4909,7 +4911,16 @@ void QgsProcessingMapLayerWidgetWrapper::setWidgetContext( const QgsProcessingPa
 {
   QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( context );
   if ( mComboBox )
+  {
     mComboBox->setWidgetContext( context );
+
+    if ( !( parameterDefinition()->flags() & QgsProcessingParameterDefinition::FlagOptional ) )
+    {
+      // non optional parameter -- if no default value set, default to active layer
+      if ( !parameterDefinition()->defaultValue().isValid() )
+        mComboBox->setLayer( context.activeLayer() );
+    }
+  }
 }
 
 void QgsProcessingMapLayerWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )

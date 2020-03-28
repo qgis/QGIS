@@ -81,6 +81,16 @@ void QgsProcessingParameterWidgetContext::setModelChildAlgorithmId( const QStrin
   mModelChildAlgorithmId = modelChildAlgorithmId;
 }
 
+QgsMapLayer *QgsProcessingParameterWidgetContext::activeLayer() const
+{
+  return mActiveLayer;
+}
+
+void QgsProcessingParameterWidgetContext::setActiveLayer( QgsMapLayer *activeLayer )
+{
+  mActiveLayer = activeLayer;
+}
+
 QgsProcessingModelAlgorithm *QgsProcessingParameterWidgetContext::model() const
 {
   return mModel;

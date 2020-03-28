@@ -172,6 +172,22 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
      */
     void setModelChildAlgorithmId( const QString &id );
 
+    /**
+     * Returns the current active layer.
+     *
+     * \see setActiveLayer()
+     * \since QGIS 3.14
+     */
+    QgsMapLayer *activeLayer() const;
+
+    /**
+     * Sets the current active \a layer.
+     *
+     * \see activeLayer()
+     * \since QGIS 3.14
+     */
+    void setActiveLayer( QgsMapLayer *layer );
+
   private:
 
     QgsProcessingModelAlgorithm *mModel = nullptr;
@@ -185,6 +201,8 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
     QgsProject *mProject = nullptr;
 
     QgsBrowserGuiModel *mBrowserModel = nullptr;
+
+    QgsMapLayer *mActiveLayer = nullptr;
 
 };
 

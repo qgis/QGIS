@@ -151,6 +151,8 @@ class ModelerParametersDialog(QDialog):
         widget_context.setProject(QgsProject.instance())
         if iface is not None:
             widget_context.setMapCanvas(iface.mapCanvas())
+            widget_context.setActiveLayer(iface.activeLayer())
+
         widget_context.setModel(self.model)
         widget_context.setModelChildAlgorithmId(self.childId)
 

@@ -55,6 +55,8 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
         widget_context.setProject(QgsProject.instance())
         if iface is not None:
             widget_context.setMapCanvas(iface.mapCanvas())
+            widget_context.setActiveLayer(iface.activeLayer())
+
         widget_context.setModel(self.model())
         return widget_context
 

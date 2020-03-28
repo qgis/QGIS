@@ -98,6 +98,8 @@ class ParametersPanel(QgsProcessingParametersWidget):
         if iface is not None:
             widget_context.setMapCanvas(iface.mapCanvas())
             widget_context.setBrowserModel(iface.browserModel())
+            widget_context.setActiveLayer(iface.activeLayer())
+
         widget_context.setMessageBar(self.parent().messageBar())
         if isinstance(self.algorithm(), QgsProcessingModelAlgorithm):
             widget_context.setModel(self.algorithm())

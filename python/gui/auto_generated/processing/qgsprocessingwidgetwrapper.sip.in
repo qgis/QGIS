@@ -162,6 +162,24 @@ Sets the child algorithm ``id`` within the model which the parameter widget is a
 .. seealso:: :py:func:`setModel`
 %End
 
+    QgsMapLayer *activeLayer() const;
+%Docstring
+Returns the current active layer.
+
+.. seealso:: :py:func:`setActiveLayer`
+
+.. versionadded:: 3.14
+%End
+
+    void setActiveLayer( QgsMapLayer *layer );
+%Docstring
+Sets the current active ``layer``.
+
+.. seealso:: :py:func:`activeLayer`
+
+.. versionadded:: 3.14
+%End
+
 };
 
 
