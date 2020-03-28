@@ -91,12 +91,18 @@
    </item>
    <item row="0" column="0">
     <widget class="QLineEdit" name="txtFilePath">
-    <property name="enabled">
-      <bool>false</bool>
-    </property>
-    <property name="toolTip">
+     <property name="toolTip">
       <string>Current file source</string>
-    </property>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #505050;
+background-color: #F0F0F0;
+border: 1px solid #B0B0B0;
+border-radius: 2px;</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
   </layout>
