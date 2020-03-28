@@ -960,7 +960,6 @@ class MapLayerWidgetWrapper(WidgetWrapper):
                 pass
 
             self.combo.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
-            self.combo.triggerFileSelection.connect(self.selectFile)
             return self.combo
         elif self.dialogType == DIALOG_BATCH:
             widget = BatchInputSelectionPanel(self.parameterDefinition(), self.row, self.col, self.dialog)
@@ -1487,7 +1486,6 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
                 pass
 
             self.combo.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
-            self.combo.triggerFileSelection.connect(self.selectFile)
             return self.combo
         elif self.dialogType == DIALOG_BATCH:
             widget = BatchInputSelectionPanel(self.parameterDefinition(), self.row, self.col, self.dialog)
