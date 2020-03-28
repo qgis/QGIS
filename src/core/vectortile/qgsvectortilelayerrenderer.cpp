@@ -49,25 +49,25 @@ bool QgsVectorTileLayerRenderer::render()
   QElapsedTimer tTotal;
   tTotal.start();
 
-  QgsDebugMsg( QStringLiteral( "Vector tiles rendering extent: " ) + ctx.extent().toString( -1 ) );
-  QgsDebugMsg( QStringLiteral( "Vector tiles map scale 1 : %1" ).arg( ctx.rendererScale() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Vector tiles rendering extent: " ) + ctx.extent().toString( -1 ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Vector tiles map scale 1 : %1" ).arg( ctx.rendererScale() ), 2 );
 
   mTileZoom = QgsVectorTileUtils::scaleToZoomLevel( ctx.rendererScale(), mSourceMinZoom, mSourceMaxZoom );
-  QgsDebugMsg( QStringLiteral( "Vector tiles zoom level: %1" ).arg( mTileZoom ) );
+  QgsDebugMsgLevel( QStringLiteral( "Vector tiles zoom level: %1" ).arg( mTileZoom ), 2 );
 
   mTileMatrix = QgsTileMatrix::fromWebMercator( mTileZoom );
 
   mTileRange = mTileMatrix.tileRangeFromExtent( ctx.extent() );
-  QgsDebugMsg( QStringLiteral( "Vector tiles range X: %1 - %2  Y: %3 - %4" )
-               .arg( mTileRange.startColumn() ).arg( mTileRange.endColumn() )
-               .arg( mTileRange.startRow() ).arg( mTileRange.endRow() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Vector tiles range X: %1 - %2  Y: %3 - %4" )
+                    .arg( mTileRange.startColumn() ).arg( mTileRange.endColumn() )
+                    .arg( mTileRange.startRow() ).arg( mTileRange.endRow() ), 2 );
 
   // view center is used to sort the order of tiles for fetching and rendering
   QPointF viewCenter = mTileMatrix.mapToTileCoordinates( ctx.extent().center() );
 
   if ( !mTileRange.isValid() )
   {
-    QgsDebugMsg( QStringLiteral( "Vector tiles - outside of range" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Vector tiles - outside of range" ), 2 );
     return true;   // nothing to do
   }
 
@@ -80,15 +80,15 @@ bool QgsVectorTileLayerRenderer::render()
     QElapsedTimer tFetch;
     tFetch.start();
     rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, mTileZoom, viewCenter, mTileRange );
-    QgsDebugMsg( QStringLiteral( "Tile fetching time: %1" ).arg( tFetch.elapsed() / 1000. ) );
-    QgsDebugMsg( QStringLiteral( "Fetched tiles: %1" ).arg( rawTiles.count() ) );
+    QgsDebugMsgLevel( QStringLiteral( "Tile fetching time: %1" ).arg( tFetch.elapsed() / 1000. ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Fetched tiles: %1" ).arg( rawTiles.count() ), 2 );
   }
   else
   {
     asyncLoader.reset( new QgsVectorTileLoader( mSourcePath, mTileZoom, mTileRange, viewCenter, mFeedback.get() ) );
     QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, [this]( const QgsVectorTileRawData & rawTile )
     {
-      QgsDebugMsg( QStringLiteral( "Got tile asynchronously: " ) + rawTile.id.toString() );
+      QgsDebugMsgLevel( QStringLiteral( "Got tile asynchronously: " ) + rawTile.id.toString(), 2 );
       if ( !rawTile.data.isEmpty() )
         decodeAndDrawTile( rawTile );
     } );
@@ -126,9 +126,9 @@ bool QgsVectorTileLayerRenderer::render()
 
   ctx.painter()->setClipping( false );
 
-  QgsDebugMsg( QStringLiteral( "Total time for decoding: %1" ).arg( mTotalDecodeTime / 1000. ) );
-  QgsDebugMsg( QStringLiteral( "Drawing time: %1" ).arg( mTotalDrawTime / 1000. ) );
-  QgsDebugMsg( QStringLiteral( "Total time: %1" ).arg( tTotal.elapsed() / 1000. ) );
+  QgsDebugMsgLevel( QStringLiteral( "Total time for decoding: %1" ).arg( mTotalDecodeTime / 1000. ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Drawing time: %1" ).arg( mTotalDrawTime / 1000. ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Total time: %1" ).arg( tTotal.elapsed() / 1000. ), 2 );
 
   return !ctx.renderingStopped();
 }
@@ -146,7 +146,7 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
   QgsVectorTileMVTDecoder decoder;
   if ( !decoder.decode( rawTile.id, rawTile.data ) )
   {
-    QgsDebugMsg( QStringLiteral( "Failed to parse raw tile data! " ) + rawTile.id.toString() );
+    QgsDebugMsgLevel( QStringLiteral( "Failed to parse raw tile data! " ) + rawTile.id.toString(), 2 );
     return;
   }
 

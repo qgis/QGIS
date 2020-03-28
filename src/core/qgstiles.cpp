@@ -15,7 +15,7 @@
 
 #include "qgstiles.h"
 
-#include <QtDebug>
+#include "qgslogger.h"
 
 QgsTileMatrix QgsTileMatrix::fromWebMercator( int zoomLevel )
 {
@@ -51,24 +51,12 @@ QgsPointXY QgsTileMatrix::tileCenter( QgsTileXYZ id ) const
   return QgsPointXY( x, y );
 }
 
-inline double clampDouble( double lo, double v, double hi )
-{
-  return ( v < lo ) ? lo : ( hi < v ) ? hi : v;
-}
-
-static int clampTile( int tile, int nTiles )
-{
-  if ( tile < 0 ) return 0;
-  if ( tile >= nTiles ) return nTiles - 1;
-  return tile;
-}
-
 QgsTileRange QgsTileMatrix::tileRangeFromExtent( const QgsRectangle &r )
 {
-  double x0 = clampDouble( mExtent.xMinimum(), r.xMinimum(), mExtent.xMaximum() );
-  double y0 = clampDouble( mExtent.yMinimum(), r.yMinimum(), mExtent.yMaximum() );
-  double x1 = clampDouble( mExtent.xMinimum(), r.xMaximum(), mExtent.xMaximum() );
-  double y1 = clampDouble( mExtent.yMinimum(), r.yMaximum(), mExtent.yMaximum() );
+  double x0 = qBound( mExtent.xMinimum(), r.xMinimum(), mExtent.xMaximum() );
+  double y0 = qBound( mExtent.yMinimum(), r.yMinimum(), mExtent.yMaximum() );
+  double x1 = qBound( mExtent.xMinimum(), r.xMaximum(), mExtent.xMaximum() );
+  double y1 = qBound( mExtent.yMinimum(), r.yMaximum(), mExtent.yMaximum() );
   if ( x0 >= x1 || y0 >= y1 )
     return QgsTileRange();   // nothing to display
 
@@ -77,13 +65,13 @@ QgsTileRange QgsTileMatrix::tileRangeFromExtent( const QgsRectangle &r )
   double tileY1 = ( mExtent.yMaximum() - y1 ) / mTileYSpan;
   double tileY2 = ( mExtent.yMaximum() - y0 ) / mTileYSpan;
 
-  qDebug() << "tile range of edges" << tileX1 << tileY1 << tileX2 << tileY2;
+  QgsDebugMsgLevel( QStringLiteral( "Tile range of edges [%1,%2] - [%3,%4]" ).arg( tileX1 ).arg( tileY1 ).arg( tileX2 ).arg( tileY2 ), 2 );
 
   // figure out tile range from zoom
-  int startColumn = clampTile( static_cast<int>( floor( tileX1 ) ), mMatrixWidth );
-  int endColumn = clampTile( static_cast<int>( floor( tileX2 ) ), mMatrixWidth );
-  int startRow = clampTile( static_cast<int>( floor( tileY1 ) ), mMatrixHeight );
-  int endRow = clampTile( static_cast<int>( floor( tileY2 ) ), mMatrixHeight );
+  int startColumn = qBound( 0, static_cast<int>( floor( tileX1 ) ), mMatrixWidth - 1 );
+  int endColumn = qBound( 0, static_cast<int>( floor( tileX2 ) ), mMatrixWidth - 1 );
+  int startRow = qBound( 0, static_cast<int>( floor( tileY1 ) ), mMatrixHeight - 1 );
+  int endRow = qBound( 0, static_cast<int>( floor( tileY2 ) ), mMatrixHeight - 1 );
   return QgsTileRange( startColumn, endColumn, startRow, endRow );
 }
 

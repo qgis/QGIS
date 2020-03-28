@@ -55,7 +55,7 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
       return;
     }
 
-    QgsDebugMsg( QStringLiteral( "name: " ) + reader.metadataValue( QStringLiteral( "name" ) ) );
+    QgsDebugMsgLevel( QStringLiteral( "name: " ) + reader.metadataValue( QStringLiteral( "name" ) ), 2 );
     bool minZoomOk, maxZoomOk;
     int minZoom = reader.metadataValue( QStringLiteral( "minzoom" ) ).toInt( &minZoomOk );
     int maxZoom = reader.metadataValue( QStringLiteral( "maxzoom" ) ).toInt( &maxZoomOk );
@@ -63,7 +63,7 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
       mSourceMinZoom = minZoom;
     if ( maxZoomOk )
       mSourceMaxZoom = maxZoom;
-    QgsDebugMsg( QStringLiteral( "zoom range: %1 - %2" ).arg( mSourceMinZoom ).arg( mSourceMaxZoom ) );
+    QgsDebugMsgLevel( QStringLiteral( "zoom range: %1 - %2" ).arg( mSourceMinZoom ).arg( mSourceMaxZoom ), 2 );
 
     QgsRectangle r = reader.extent();
     // TODO: reproject to EPSG:3857

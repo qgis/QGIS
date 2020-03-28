@@ -109,7 +109,7 @@ QgsVectorLayer *QgsVectorTileUtils::makeVectorLayerForTile( QgsVectorTileLayer *
   Q_ASSERT( res );
   Q_ASSERT( featuresList.count() == vl->featureCount() );
   vl->updateExtents();
-  QgsDebugMsg( QStringLiteral( "Layer %1 features %2" ).arg( layerName ).arg( vl->featureCount() ) );
+  QgsDebugMsgLevel( QStringLiteral( "Layer %1 features %2" ).arg( layerName ).arg( vl->featureCount() ), 2 );
   return vl;
 }
 

@@ -80,9 +80,9 @@ void TestQgsVectorTileLayer::initTestCase()
   QColor polygonFillColor = Qt::blue;
   QColor polygonStrokeColor = polygonFillColor;
   polygonFillColor.setAlpha( 100 );
-  double polygonStrokeWidth = DEFAULT_LINE_WIDTH;
+  double polygonStrokeWidth = DEFAULT_LINE_WIDTH * 2;
   QColor lineStrokeColor = Qt::blue;
-  double lineStrokeWidth = DEFAULT_LINE_WIDTH;
+  double lineStrokeWidth = DEFAULT_LINE_WIDTH * 2;
   QColor pointFillColor = Qt::red;
   QColor pointStrokeColor = pointFillColor;
   pointFillColor.setAlpha( 100 );
