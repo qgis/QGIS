@@ -253,6 +253,10 @@ void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const 
   mContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
   mDispExpression.prepare( &mContext );
 
+  bool exactMatch = false;
+  if ( string.length() < 3 )
+    exactMatch = true;
+
   // build up request expression
   QStringList expressionParts;
   const QgsFields fields = layer->fields();
@@ -260,8 +264,12 @@ void QgsActiveLayerFeaturesLocatorFilter::prepare( const QString &string, const 
   {
     if ( field.type() == QVariant::String )
     {
-      expressionParts << QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ),
-                      string );
+      if ( exactMatch )
+        expressionParts << QStringLiteral( "%1 ILIKE '%2'" ).arg( QgsExpression::quotedColumnRef( field.name() ),
+                        string );
+      else
+        expressionParts << QStringLiteral( "%1 ILIKE '%%2%'" ).arg( QgsExpression::quotedColumnRef( field.name() ),
+                        string );
     }
     else if ( allowNumeric && field.isNumeric() )
     {
@@ -365,6 +373,10 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
   if ( string.length() < 3 && !context.usingPrefix )
     return;
 
+  bool exactMatch = false;
+  if ( string.length() < 3 )
+    exactMatch = true;
+
   mPreparedLayers.clear();
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
@@ -384,8 +396,12 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
       req.setFlags( QgsFeatureRequest::NoGeometry );
     QString enhancedSearch = string;
     enhancedSearch.replace( ' ', '%' );
-    req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
-                             .arg( layer->displayExpression(), enhancedSearch ) );
+    if ( exactMatch )
+      req.setFilterExpression( QStringLiteral( "%1 ILIKE '%2'" )
+                               .arg( layer->displayExpression(), enhancedSearch ) );
+    else
+      req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
+                               .arg( layer->displayExpression(), enhancedSearch ) );
     req.setLimit( 30 );
 
     std::shared_ptr<PreparedLayer> preparedLayer( new PreparedLayer() );
