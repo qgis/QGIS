@@ -1079,10 +1079,10 @@ void QgsRasterLayerProperties::apply()
   //set the blend mode for the layer
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
 
+  updateSourceStaticTime();
+
   // Update temporal properties
   mTemporalWidget->saveTemporalProperties();
-
-  updateSourceStaticTime();
 
   //get the thumbnail for the layer
   QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
@@ -1212,7 +1212,6 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
 
     mRasterLayer->dataProvider()->setDataSourceUri( uri.encodedUri() );
     mRasterLayer->setDataSource( mRasterLayer->dataProvider()->dataSourceUri(), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
-
 
     mRasterLayer->temporalProperties()->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >(
           mFetchModeComboBox->currentData().toInt() ) );

@@ -50,8 +50,7 @@ const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::availableRefe
 
 void QgsRasterDataProviderTemporalCapabilities::setRequestedTemporalRange( const QgsDateTimeRange &dateTimeRange )
 {
-  if ( mAvailableTemporalRange.contains( dateTimeRange ) )
-    mRequestedRange = dateTimeRange;
+  mRequestedRange = dateTimeRange;
 }
 
 const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::requestedTemporalRange() const
