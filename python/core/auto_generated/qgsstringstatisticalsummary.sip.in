@@ -39,6 +39,8 @@ specifying the statistic in the constructor or via setStatistics().
       MinimumLength,
       MaximumLength,
       MeanLength,
+      Minority,
+      Majority,
       All,
     };
     typedef QFlags<QgsStringStatisticalSummary::Statistic> Statistics;
@@ -213,6 +215,20 @@ Returns the maximum length of strings.
 Returns the mean length of strings.
 
 .. versionadded:: 3.0
+%End
+
+    QString minority() const;
+%Docstring
+Returns the most common string.
+
+.. versionadded:: 3.14
+%End
+
+    QString majority() const;
+%Docstring
+Returns the least common string.
+
+.. versionadded:: 3.14
 %End
 
     static QString displayName( QgsStringStatisticalSummary::Statistic statistic );

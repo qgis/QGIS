@@ -44,6 +44,8 @@ void QgsStringStatisticalSummary::reset()
   mMaxLength = 0;
   mSumLengths = 0;
   mMeanLength = 0;
+  mMinority = QString();
+  mMajority = QString();
 }
 
 void QgsStringStatisticalSummary::calculate( const QStringList &values )
@@ -75,6 +77,21 @@ void QgsStringStatisticalSummary::addValue( const QVariant &value )
 void QgsStringStatisticalSummary::finalize()
 {
   mMeanLength = mSumLengths / static_cast< double >( mCount );
+
+  if ( mStatistics & Minority || mStatistics & Majority )
+  {
+    QList<int> valueCounts = mValues.values();
+    std::sort( valueCounts.begin(), valueCounts.end() );
+
+    if ( mStatistics & Minority )
+    {
+      mMinority = mValues.key( valueCounts.first() );
+    }
+    if ( mStatistics & Majority )
+    {
+      mMajority = mValues.key( valueCounts.last() );
+    }
+  }
 }
 
 void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList &values )
@@ -89,6 +106,8 @@ void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList &val
       testString( variant.toString() );
     }
   }
+
+  finalize();
 }
 
 void QgsStringStatisticalSummary::testString( const QString &string )
@@ -98,9 +117,9 @@ void QgsStringStatisticalSummary::testString( const QString &string )
   if ( string.isEmpty() )
     mCountMissing++;
 
-  if ( mStatistics & CountDistinct )
+  if ( mStatistics & CountDistinct || mStatistics & Majority || mStatistics & Minority )
   {
-    mValues << string;
+    mValues[string]++;
   }
   if ( mStatistics & Min )
   {
@@ -150,6 +169,10 @@ QVariant QgsStringStatisticalSummary::statistic( QgsStringStatisticalSummary::St
       return mMaxLength;
     case MeanLength:
       return mMeanLength;
+    case Minority:
+      return mMinority;
+    case Majority:
+      return mMajority;
     case All:
       return 0;
   }
@@ -176,6 +199,10 @@ QString QgsStringStatisticalSummary::displayName( QgsStringStatisticalSummary::S
       return QObject::tr( "Maximum length" );
     case MeanLength:
       return QObject::tr( "Mean length" );
+    case Minority:
+      return QObject::tr( "Minority" );
+    case Majority:
+      return QObject::tr( "Majority" );
     case All:
       return QString();
   }

@@ -74,8 +74,8 @@ class CORE_EXPORT QgsAggregateCalculator
       StDev, //!< Standard deviation of values (numeric fields only)
       StDevSample, //!< Sample standard deviation of values (numeric fields only)
       Range, //!< Range of values (max - min) (numeric and datetime fields only)
-      Minority, //!< Minority of values (numeric fields only)
-      Majority, //!< Majority of values (numeric fields only)
+      Minority, //!< Minority of values
+      Majority, //!< Majority of values
       FirstQuartile, //!< First quartile (numeric fields only)
       ThirdQuartile, //!< Third quartile (numeric fields only)
       InterQuartileRange, //!< Inter quartile range (IQR) (numeric fields only)

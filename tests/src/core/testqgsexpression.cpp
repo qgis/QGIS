@@ -1978,6 +1978,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "range" ) << "range(\"col1\")" << false << QVariant( 18.0 );
       QTest::newRow( "minority" ) << "minority(\"col3\")" << false << QVariant( 1 );
       QTest::newRow( "majority" ) << "majority(\"col3\")" << false << QVariant( 2 );
+      QTest::newRow( "minority string" ) << "minority(\"col2\")" << false << QVariant( "test" );
+      QTest::newRow( "majority string" ) << "majority(\"col2\")" << false << QVariant( "" );
       QTest::newRow( "q1" ) << "q1(\"col1\")" << false << QVariant( 2.5 );
       QTest::newRow( "q3" ) << "q3(\"col1\")" << false << QVariant( 6.5 );
       QTest::newRow( "iqr" ) << "iqr(\"col1\")" << false << QVariant( 4 );
