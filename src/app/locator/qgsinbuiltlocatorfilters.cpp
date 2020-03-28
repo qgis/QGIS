@@ -386,7 +386,12 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     enhancedSearch.replace( ' ', '%' );
     req.setFilterExpression( QStringLiteral( "%1 ILIKE '%%2%'" )
                              .arg( layer->displayExpression(), enhancedSearch ) );
-    req.setLimit( 30 );
+    req.setLimit( 6 );
+
+    QgsFeatureRequest exactMatchRequest = req;
+    exactMatchRequest.setFilterExpression( QStringLiteral( "%1 ILIKE '%2'" )
+                                           .arg( layer->displayExpression(), enhancedSearch ) );
+    exactMatchRequest.setLimit( 10 );
 
     std::shared_ptr<PreparedLayer> preparedLayer( new PreparedLayer() );
     preparedLayer->expression = expression;
@@ -395,6 +400,7 @@ void QgsAllLayersFeaturesLocatorFilter::prepare( const QString &string, const Qg
     preparedLayer->layerName = layer->name();
     preparedLayer->featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );
     preparedLayer->request = req;
+    preparedLayer->exactMatchRequest = exactMatchRequest;
     preparedLayer->layerIcon = QgsMapLayerModel::iconForLayer( layer );
 
     mPreparedLayers.append( preparedLayer );
@@ -411,11 +417,46 @@ void QgsAllLayersFeaturesLocatorFilter::fetchResults( const QString &string, con
   for ( auto preparedLayer : qgis::as_const( mPreparedLayers ) )
   {
     foundInCurrentLayer = 0;
+
+    QgsFeatureIds foundFeatureIds;
+
+    QgsFeatureIterator exactMatchIt = preparedLayer->featureSource->getFeatures( preparedLayer->exactMatchRequest );
+    while ( exactMatchIt.nextFeature( f ) )
+    {
+      if ( feedback->isCanceled() )
+        return;
+
+      QgsLocatorResult result;
+      result.group = preparedLayer->layerName;
+
+      preparedLayer->context.setFeature( f );
+
+      result.displayString = preparedLayer->expression.evaluate( &( preparedLayer->context ) ).toString();
+
+      result.userData = QVariantList() << f.id() << preparedLayer->layerId;
+      foundFeatureIds << f.id();
+      result.icon = preparedLayer->layerIcon;
+      result.score = static_cast< double >( string.length() ) / result.displayString.size();
+
+      result.actions << QgsLocatorResult::ResultAction( OpenForm, tr( "Open form…" ) );
+      emit resultFetched( result );
+
+      foundInCurrentLayer++;
+      foundInTotal++;
+      if ( foundInCurrentLayer >= mMaxResultsPerLayer )
+        break;
+    }
+    if ( foundInTotal >= mMaxTotalResults )
+      break;
+
     QgsFeatureIterator it = preparedLayer->featureSource->getFeatures( preparedLayer->request );
     while ( it.nextFeature( f ) )
     {
       if ( feedback->isCanceled() )
         return;
+
+      if ( foundFeatureIds.contains( f.id() ) )
+        continue;
 
       QgsLocatorResult result;
       result.group = preparedLayer->layerName;
