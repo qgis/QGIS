@@ -177,7 +177,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     featureCount++;
     if ( feedback->isCanceled() )
     {
-      feedback->pushInfo( "canceled" );
       break;
     }
     if ( !lFeat.hasGeometry() )
