@@ -953,7 +953,7 @@ class MapLayerWidgetWrapper(WidgetWrapper):
                     self.combo.setValue(self.parameterDefinition().defaultValue(), self.context)
                 else:
                     if self.parameterDefinition().defaultValue():
-                        self.combo.setvalue(self.parameterDefinition().defaultValue(), self.context)
+                        self.combo.setValue(self.parameterDefinition().defaultValue(), self.context)
                     else:
                         self.combo.setLayer(iface.activeLayer())
             except:

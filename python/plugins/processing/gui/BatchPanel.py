@@ -626,6 +626,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         widget_context = QgsProcessingParameterWidgetContext()
         widget_context.setProject(QgsProject.instance())
         if iface is not None:
+            widget_context.setActiveLayer(iface.activeLayer())
             widget_context.setMapCanvas(iface.mapCanvas())
 
         widget_context.setMessageBar(self.parent.messageBar())
