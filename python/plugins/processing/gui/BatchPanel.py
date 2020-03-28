@@ -255,11 +255,11 @@ class BatchPanelFillWidget(QToolButton):
 
             p = pp.as_posix()
 
-            if ((isinstance(self.parameterDefinition, QgsProcessingParameterRasterLayer) or
-                 (isinstance(self.parameterDefinition,
-                                QgsProcessingParameterMultipleLayers) and self.param.layerType() == QgsProcessing.TypeRaster)) and
-                    not QgsRasterLayer.isValidRasterFileName(p)):
-                continue
+            if isinstance(self.parameterDefinition, QgsProcessingParameterRasterLayer) or \
+                (isinstance(self.parameterDefinition,
+                            QgsProcessingParameterMultipleLayers) and self.param.layerType() == QgsProcessing.TypeRaster):
+                if not QgsRasterLayer.isValidRasterFileName(p):
+                    continue
 
             files.append(p)
 
@@ -274,17 +274,19 @@ class BatchPanelFillWidget(QToolButton):
 
     def showLayerSelectionDialog(self):
         layers = []
-        if (isinstance(self.parameterDefinition, QgsProcessingParameterRasterLayer) or
-            (isinstance(self.parameterDefinition, QgsProcessingParameterMultipleLayers) and
-                self.param.layerType() == QgsProcessing.TypeRaster)):
+        if isinstance(self.parameterDefinition, QgsProcessingParameterRasterLayer):
+            layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
+        elif isinstance(self.parameterDefinition,
+                        QgsProcessingParameterMultipleLayers) and self.param.layerType() == QgsProcessing.TypeRaster:
             layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
         elif isinstance(self.parameterDefinition, QgsProcessingParameterVectorLayer):
             layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
         elif isinstance(self.parameterDefinition, QgsProcessingParameterMapLayer):
             layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
-        elif (isinstance(self.parameterDefinition, QgsProcessingParameterMeshLayer) or
-              (isinstance(self.parameterDefinition, QgsProcessingParameterMultipleLayers) and
-                  self.parameterDefinition.layerType() == QgsProcessing.TypeMesh)):
+        elif isinstance(self.parameterDefinition, QgsProcessingParameterMeshLayer):
+            layers = QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance())
+        elif isinstance(self.parameterDefinition,
+                        QgsProcessingParameterMultipleLayers) and self.parameterDefinition.layerType() == QgsProcessing.TypeMesh:
             layers = QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance())
         else:
             datatypes = [QgsProcessing.TypeVectorAnyGeometry]
@@ -583,10 +585,9 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                 value = wrapper.parameterValue()
 
                 if not param.checkValueIsAcceptable(value, context):
-                    self.parent.messageBar().pushMessage("", self.tr(
-                        'Wrong or missing parameter value: {0} (row {1})').format(
-                        param.description(), row + 1),
-                        level=Qgis.Warning, duration=5)
+                    msg = self.tr('Wrong or missing parameter value: {0} (row {1})').format(
+                        param.description(), row + 1)
+                    self.parent.messageBar().pushMessage("", msg, level=Qgis.Warning, duration=5)
                     return
                 algParams[param.name()] = param.valueAsPythonString(value, context)
                 col += 1
@@ -753,8 +754,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                     parameters[out.name()] = text
                 col += 1
             else:
-                self.parent.messageBar().pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
-                    out.description(), row + 1),
-                    level=Qgis.Warning, duration=5)
+                msg = self.tr('Wrong or missing output value: {0} (row {1})').format(out.description(), row + 1)
+                self.parent.messageBar().pushMessage("", msg, level=Qgis.Warning, duration=5)
                 return {}, False
         return parameters, True
