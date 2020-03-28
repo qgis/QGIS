@@ -211,7 +211,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
 
     case QgsMapLayerType::VectorTileLayer:
     {
-      QgsDebugMsg( QStringLiteral( "creating vector tile layer" ) );
+      QgsDebugMsgLevel( QStringLiteral( "creating vector tile layer" ), 2 );
       mLayer = qgis::make_unique< QgsVectorTileLayer >( layerItem->uri(), layerItem->name() );
       break;
     }
