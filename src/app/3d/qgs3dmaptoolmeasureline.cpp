@@ -124,6 +124,8 @@ QCursor Qgs3DMapToolMeasureLine::cursor() const
 
 void Qgs3DMapToolMeasureLine::onMapSettingsChanged()
 {
+  if ( !mIsAlreadyActivated )
+    return;
   connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolMeasureLine::onTerrainEntityChanged );
 
   // Update scale if the terrain vertical scale changed
@@ -137,6 +139,8 @@ void Qgs3DMapToolMeasureLine::onTerrainPicked( Qt3DRender::QPickEvent *event )
 
 void Qgs3DMapToolMeasureLine::onTerrainEntityChanged()
 {
+  if ( !mIsAlreadyActivated )
+    return;
   // no need to disconnect from the previous entity: it has been destroyed
   // start listening to the new terrain entity
   if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )
