@@ -55,6 +55,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   mSelectButton->setToolTip( tr( "Select input" ) );
   layout->addWidget( mSelectButton );
   layout->setAlignment( mSelectButton, Qt::AlignTop );
+  int iconSize = QgsGuiUtils::scaleIconSize( 24 );
   if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == QgsProcessingGui::Standard )
   {
     mIterateButton = new QToolButton();
@@ -63,15 +64,17 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     mIterateButton->setCheckable( true );
     mIterateButton->setAutoRaise( true );
 
-    int iconSize = QgsGuiUtils::scaleIconSize( 24 );
-
     // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
     mIterateButton->setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
     mIterateButton->setIconSize( QSize( iconSize, iconSize ) );
 
     layout->addWidget( mIterateButton );
     layout->setAlignment( mIterateButton, Qt::AlignTop );
+  }
 
+  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && ( type == QgsProcessingGui::Standard
+       || type == QgsProcessingGui::Batch ) )
+  {
     mSettingsButton = new QToolButton();
     mSettingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ) );
     mSettingsButton->setToolTip( tr( "Advanced options" ) );
