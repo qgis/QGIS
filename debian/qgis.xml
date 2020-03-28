@@ -13,6 +13,7 @@
       </match>
     </magic>
     <glob pattern="*.qgs"/>
+    <glob pattern="*.qgz"/>
   </mime-type>
 
   <mime-type type="application/x-qgis-layer-settings">
