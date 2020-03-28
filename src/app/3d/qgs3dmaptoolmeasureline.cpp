@@ -211,6 +211,8 @@ void Qgs3DMapToolMeasureLine::updateMeasurementLayer()
 
 void Qgs3DMapToolMeasureLine::updateSettings()
 {
+  if ( !mMeasurementLayer )
+    return;
   // Line style
   QgsLine3DSymbol *lineSymbol = new QgsLine3DSymbol;
   lineSymbol->setRenderAsSimpleLines( true );
