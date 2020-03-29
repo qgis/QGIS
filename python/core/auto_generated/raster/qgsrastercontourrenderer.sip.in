@@ -1,0 +1,122 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrastercontourrenderer.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsRasterContourRenderer : QgsRasterRenderer
+{
+%Docstring
+Raster renderer that generates contours on the fly for a source raster band.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsrastercontourrenderer.h"
+%End
+  public:
+    explicit QgsRasterContourRenderer( QgsRasterInterface *input );
+%Docstring
+Creates a contour renderer
+%End
+    ~QgsRasterContourRenderer();
+
+
+    virtual QgsRasterContourRenderer *clone() const /Factory/;
+
+%Docstring
+QgsRasterContourRenderer cannot be copied. Use clone() instead.
+%End
+
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
+
+
+    virtual QList<int> usesBands() const;
+
+
+
+    int inputBand() const;
+%Docstring
+Returns the number of the input raster band
+%End
+    void setInputBand( int band );
+%Docstring
+Sets the number of the input raster band
+%End
+
+    double contourInterval() const;
+%Docstring
+Returns the interval of contour lines generation
+%End
+    void setContourInterval( double interval );
+%Docstring
+Sets the interval of contour lines generation
+%End
+
+    QgsLineSymbol *contourSymbol() const;
+%Docstring
+Returns the symbol used for contour lines
+%End
+    void setContourSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the symbol used for contour lines. Takes ownership of the passed symbol
+%End
+
+    double contourIndexInterval() const;
+%Docstring
+Returns the interval of index contour lines (index contour lines are typical further apart and with a wider line symbol)
+%End
+    void setContourIndexInterval( double interval );
+%Docstring
+Sets the interval of index contour lines (index contour lines are typical further apart and with a wider line symbol)
+%End
+
+    QgsLineSymbol *contourIndexSymbol() const;
+%Docstring
+Returns the symbol of index contour lines
+%End
+    void setContourIndexSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the symbol of index contour lines
+%End
+
+    double downscale() const;
+%Docstring
+Returns by how much the renderer will scale down the request to the data provider.
+For example, for a raster block 1000x500 with downscale 10, the renderer will request raster 100x50 from provider.
+Higher downscale makes contour lines more simplified (at the expense of loosing some detail).
+The value of one means there will be no downscaling.
+%End
+
+    void setDownscale( double scale );
+%Docstring
+Sets by how much the renderer will scale down the request to the data provider.
+
+.. seealso:: :py:func:`downscale`
+%End
+
+  private:
+    QgsRasterContourRenderer( const QgsRasterContourRenderer & );
+    const QgsRasterContourRenderer &operator=( const QgsRasterContourRenderer & );
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrastercontourrenderer.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

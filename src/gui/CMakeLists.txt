@@ -3,6 +3,7 @@ SET(QGIS_GUI_SRCS
   raster/qgsmultibandcolorrendererwidget.cpp
   raster/qgspalettedrendererwidget.cpp
   raster/qgsrasterbandcombobox.cpp
+  raster/qgsrastercontourrendererwidget.cpp
   raster/qgsrasterhistogramwidget.cpp
   raster/qgsrasterlayerproperties.cpp
   raster/qgsrasterlayertemporalpropertieswidget.cpp
@@ -1011,6 +1012,7 @@ SET(QGIS_GUI_HDRS
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
   raster/qgsrasterbandcombobox.h
+  raster/qgsrastercontourrendererwidget.h
   raster/qgsrasterhistogramwidget.h
   raster/qgsrasterminmaxwidget.h
   raster/qgsrasterrendererwidget.h

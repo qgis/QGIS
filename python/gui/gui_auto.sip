@@ -332,6 +332,7 @@
 %Include auto_generated/raster/qgsmultibandcolorrendererwidget.sip
 %Include auto_generated/raster/qgspalettedrendererwidget.sip
 %Include auto_generated/raster/qgsrasterbandcombobox.sip
+%Include auto_generated/raster/qgsrastercontourrendererwidget.sip
 %Include auto_generated/raster/qgsrasterhistogramwidget.sip
 %Include auto_generated/raster/qgsrasterminmaxwidget.sip
 %Include auto_generated/raster/qgsrasterrendererwidget.sip
