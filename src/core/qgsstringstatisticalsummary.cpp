@@ -67,11 +67,14 @@ void QgsStringStatisticalSummary::addString( const QString &string )
 
 void QgsStringStatisticalSummary::addValue( const QVariant &value )
 {
-  if ( value.type() == QVariant::String )
+  if ( value.isNull() )
   {
-    testString( value.toString() );
+    addString( QString() );
   }
-  finalize();
+  else if ( value.type() == QVariant::String )
+  {
+    addString( value.toString() );
+  }
 }
 
 void QgsStringStatisticalSummary::finalize()
@@ -100,7 +103,11 @@ void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList &val
   const auto constValues = values;
   for ( const QVariant &variant : constValues )
   {
-    if ( variant.type() == QVariant::String )
+    if ( variant.isNull() )
+    {
+      testString( QString() );
+    }
+    else if ( variant.type() == QVariant::String )
     {
       testString( variant.toString() );
     }
@@ -111,10 +118,13 @@ void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList &val
 
 void QgsStringStatisticalSummary::testString( const QString &string )
 {
-  mCount++;
-
-  if ( string.isEmpty() )
+  if ( string.isNull() )
+  {
     mCountMissing++;
+    return;
+  }
+
+  mCount++;
 
   if ( mStatistics & CountDistinct || mStatistics & Majority || mStatistics & Minority )
   {

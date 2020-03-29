@@ -24,14 +24,14 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         # added one-at-a-time
         s = QgsStringStatisticalSummary()
         self.assertEqual(s.statistics(), QgsStringStatisticalSummary.All)
-        strings = ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', 'aaaa', '', 'dddd']
+        strings = ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', None, None, 'eeee', '', 'eeee', 'aaaa', '', 'dddd']
         s.calculate(strings)
         s2 = QgsStringStatisticalSummary()
         for string in strings:
             s2.addString(string)
         s2.finalize()
-        self.assertEqual(s.count(), 10)
-        self.assertEqual(s2.count(), 10)
+        self.assertEqual(s.count(), 9)
+        self.assertEqual(s2.count(), 9)
         self.assertEqual(s.countDistinct(), 6)
         self.assertEqual(s2.countDistinct(), 6)
         self.assertEqual(set(s.distinctValues()), set(['cc', 'aaaa', 'bbbbbbbb', 'eeee', 'dddd', '']))
@@ -60,7 +60,7 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
     def testIndividualStats(self):
         # tests calculation of statistics one at a time, to make sure statistic calculations are not
         # dependent on each other
-        tests = [{'stat': QgsStringStatisticalSummary.Count, 'expected': 10},
+        tests = [{'stat': QgsStringStatisticalSummary.Count, 'expected': 9},
                  {'stat': QgsStringStatisticalSummary.CountDistinct, 'expected': 6},
                  {'stat': QgsStringStatisticalSummary.CountMissing, 'expected': 2},
                  {'stat': QgsStringStatisticalSummary.Min, 'expected': 'aaaa'},
@@ -83,7 +83,7 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
             s3.setStatistics(t['stat'])
             self.assertEqual(s.statistics(), t['stat'])
 
-            strings = ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', 'aaaa', '', 'dddd']
+            strings = ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', None, None, 'eeee', '', 'eeee', 'aaaa', '', 'dddd']
             s.calculate(strings)
             s3.reset()
             for string in strings:
@@ -99,7 +99,7 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
     def testVariantStats(self):
         s = QgsStringStatisticalSummary()
         self.assertEqual(s.statistics(), QgsStringStatisticalSummary.All)
-        s.calculateFromVariants(['cc', 5, 'bbbb', 'aaaa', 'eeee', 6, 9, '9', ''])
+        s.calculateFromVariants(['cc', 5, 'bbbb', 'aaaa', None, 'eeee', 6, 9, '9', ''])
         self.assertEqual(s.count(), 6)
         self.assertEqual(set(s.distinctValues()), set(['cc', 'aaaa', 'bbbb', 'eeee', '', '9']))
         self.assertEqual(s.countMissing(), 1)
