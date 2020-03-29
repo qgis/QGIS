@@ -219,14 +219,24 @@ Returns the mean length of strings.
 
     QString minority() const;
 %Docstring
-Returns the least common string.
+Returns the least common string. The minority is the value with least occurrences in the list
+This is only calculated if Statistic.Minority has been specified in the constructor
+or via setStatistics. If multiple values match, return the first value relative to the
+initial values order.
+
+.. seealso:: :py:func:`majority`
 
 .. versionadded:: 3.14
 %End
 
     QString majority() const;
 %Docstring
-Returns the most common string.
+Returns the most common string. The majority is the value with most occurrences in the list
+This is only calculated if Statistic.Majority has been specified in the constructor
+or via setStatistics. If multiple values match, return the first value relative to the
+initial values order.
+
+.. seealso:: :py:func:`minority`
 
 .. versionadded:: 3.14
 %End
