@@ -1860,16 +1860,39 @@ void QgsProcessingEnumPanelWidget::showDialog()
       availableOptions << i;
   }
 
-  QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
   const QStringList options = mParam ? mParam->options() : QStringList();
-  dlg.setValueFormatter( [options]( const QVariant & v ) -> QString
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
   {
-    const int i = v.toInt();
-    return options.size() > i ? options.at( i ) : QString();
-  } );
-  if ( dlg.exec() )
+    QgsProcessingMultipleSelectionPanelWidget *widget = new QgsProcessingMultipleSelectionPanelWidget( availableOptions, mValue );
+    widget->setPanelTitle( mParam->description() );
+
+    widget->setValueFormatter( [options]( const QVariant & v ) -> QString
+    {
+      const int i = v.toInt();
+      return options.size() > i ? options.at( i ) : QString();
+    } );
+
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [ = ]()
+    {
+      setValue( widget->selectedOptions() );
+    } );
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
+    panel->openPanel( widget );
+  }
+  else
   {
-    setValue( dlg.selectedOptions() );
+    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
+
+    dlg.setValueFormatter( [options]( const QVariant & v ) -> QString
+    {
+      const int i = v.toInt();
+      return options.size() > i ? options.at( i ) : QString();
+    } );
+    if ( dlg.exec() )
+    {
+      setValue( dlg.selectedOptions() );
+    }
   }
 }
 
@@ -3333,14 +3356,36 @@ void QgsProcessingFieldPanelWidget::showDialog()
     availableOptions << field.name();
   }
 
-  QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
-  dlg.setValueFormatter( []( const QVariant & v ) -> QString
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
   {
-    return v.toString();
-  } );
-  if ( dlg.exec() )
+    QgsProcessingMultipleSelectionPanelWidget *widget = new QgsProcessingMultipleSelectionPanelWidget( availableOptions, mValue );
+    widget->setPanelTitle( mParam->description() );
+
+    widget->setValueFormatter( []( const QVariant & v ) -> QString
+    {
+      return v.toString();
+    } );
+
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [ = ]()
+    {
+      setValue( widget->selectedOptions() );
+    } );
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
+    panel->openPanel( widget );
+  }
+  else
   {
-    setValue( dlg.selectedOptions() );
+    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
+
+    dlg.setValueFormatter( []( const QVariant & v ) -> QString
+    {
+      return v.toString();
+    } );
+    if ( dlg.exec() )
+    {
+      setValue( dlg.selectedOptions() );
+    }
   }
 }
 

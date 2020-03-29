@@ -2746,13 +2746,13 @@ void TestProcessingGui::testMultipleSelectionDialog()
 {
   QVariantList availableOptions;
   QVariantList selectedOptions;
-  std::unique_ptr< QgsProcessingMultipleSelectionDialog > dlg = qgis::make_unique< QgsProcessingMultipleSelectionDialog >( availableOptions, selectedOptions );
+  std::unique_ptr< QgsProcessingMultipleSelectionPanelWidget > dlg = qgis::make_unique< QgsProcessingMultipleSelectionPanelWidget >( availableOptions, selectedOptions );
   QVERIFY( dlg->selectedOptions().isEmpty() );
   QCOMPARE( dlg->mModel->rowCount(), 0 );
 
   std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   availableOptions << QVariant( "aa" ) << QVariant( 15 ) << QVariant::fromValue( vl.get() );
-  dlg = qgis::make_unique< QgsProcessingMultipleSelectionDialog >( availableOptions, selectedOptions );
+  dlg = qgis::make_unique< QgsProcessingMultipleSelectionPanelWidget >( availableOptions, selectedOptions );
   QVERIFY( dlg->selectedOptions().isEmpty() );
   QCOMPARE( dlg->mModel->rowCount(), 3 );
   dlg->selectAll( true );
@@ -2768,7 +2768,7 @@ void TestProcessingGui::testMultipleSelectionDialog()
   // additional options
   availableOptions.clear();
   selectedOptions << QVariant( "bb" ) << QVariant( 6.6 );
-  dlg = qgis::make_unique< QgsProcessingMultipleSelectionDialog >( availableOptions, selectedOptions );
+  dlg = qgis::make_unique< QgsProcessingMultipleSelectionPanelWidget >( availableOptions, selectedOptions );
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->selectedOptions(), selectedOptions );
   dlg->mModel->item( 1 )->setCheckState( Qt::Unchecked );
@@ -2776,7 +2776,7 @@ void TestProcessingGui::testMultipleSelectionDialog()
 
   // mix of standard and additional options
   availableOptions << QVariant( 6.6 ) << QVariant( "aa" );
-  dlg = qgis::make_unique< QgsProcessingMultipleSelectionDialog >( availableOptions, selectedOptions );
+  dlg = qgis::make_unique< QgsProcessingMultipleSelectionPanelWidget >( availableOptions, selectedOptions );
   QCOMPARE( dlg->mModel->rowCount(), 3 );
   QCOMPARE( dlg->selectedOptions(), selectedOptions ); // order must be maintained!
   dlg->mModel->item( 2 )->setCheckState( Qt::Checked );
@@ -2785,7 +2785,7 @@ void TestProcessingGui::testMultipleSelectionDialog()
   // selection buttons
   selectedOptions.clear();
   availableOptions = QVariantList() << QVariant( "a" ) << QVariant( "b" ) << QVariant( "c" );
-  dlg = qgis::make_unique< QgsProcessingMultipleSelectionDialog >( availableOptions, selectedOptions );
+  dlg = qgis::make_unique< QgsProcessingMultipleSelectionPanelWidget >( availableOptions, selectedOptions );
   QVERIFY( dlg->selectedOptions().isEmpty() );
   dlg->mSelectionList->selectionModel()->select( dlg->mModel->index( 1, 0 ), QItemSelectionModel::ClearAndSelect );
   // without a multi-selection, select all/toggle options should affect all items
@@ -2815,7 +2815,7 @@ void TestProcessingGui::testMultipleSelectionDialog()
 
   // text format
   availableOptions = QVariantList() << QVariant( "a" ) << 6 << 6.2;
-  dlg = qgis::make_unique< QgsProcessingMultipleSelectionDialog >( availableOptions, selectedOptions );
+  dlg = qgis::make_unique< QgsProcessingMultipleSelectionPanelWidget >( availableOptions, selectedOptions );
   QCOMPARE( dlg->mModel->item( 0 )->text(), QStringLiteral( "a" ) );
   QCOMPARE( dlg->mModel->item( 1 )->text(), QStringLiteral( "6" ) );
   QCOMPARE( dlg->mModel->item( 2 )->text(), QStringLiteral( "6.2" ) );
