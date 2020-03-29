@@ -220,7 +220,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
     Statistics mStatistics;
 
     int mCount;
-    QHash< QString, int > mValues;
+    QMap< QString, int > mValues;
     int mCountMissing;
     QString mMin;
     QString mMax;
