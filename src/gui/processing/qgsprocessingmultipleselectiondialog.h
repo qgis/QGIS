@@ -20,7 +20,7 @@
 #include "qgis_gui.h"
 #include "ui_qgsprocessingmultipleselectiondialogbase.h"
 #include "qgsprocessingparameters.h"
-
+#include <QDialog>
 
 class QStandardItemModel;
 class QToolButton;
@@ -30,18 +30,117 @@ class QStandardItem;
 
 /**
  * \ingroup gui
- * \brief Dialog for configuration of a matrix (fixed table) parameter.
+ * \brief A panel widget for selection of multiple options from a fixed list of options.
  * \note Not stable API
- * \since QGIS 3.6
+ * \since QGIS 3.14
  */
-class GUI_EXPORT QgsProcessingMultipleSelectionDialog : public QDialog, private Ui::QgsProcessingMultipleSelectionDialogBase
+class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidget, private Ui::QgsProcessingMultipleSelectionDialogBase
 {
     Q_OBJECT
 
   public:
 
     /**
-     * Constructor for QgsProcessingMultipleSelectionDialog.
+     * Constructor for QgsProcessingMultipleSelectionPanelWidget.
+     *
+     * The \a availableOptions list specifies the list of standard known options for the parameter,
+     * whilst the \a selectedOptions list specifies which options should be initially selected.
+     *
+     * The \a selectedOptions list may contain extra options which are not present in \a availableOptions,
+     * in which case they will be also added as existing options within the dialog.
+     */
+    QgsProcessingMultipleSelectionPanelWidget( const QVariantList &availableOptions = QVariantList(),
+        const QVariantList &selectedOptions = QVariantList(),
+        QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets a callback function to use when encountering an invalid geometry and
+     */
+#ifndef SIP_RUN
+    void setValueFormatter( const std::function< QString( const QVariant & )> &formatter );
+#else
+    void setValueFormatter( SIP_PYCALLABLE );
+    % MethodCode
+
+    Py_BEGIN_ALLOW_THREADS
+
+    sipCpp->setValueFormatter( [a0]( const QVariant &v )->QString
+    {
+      QString res;
+      SIP_BLOCK_THREADS
+      PyObject *s = sipCallMethod( NULL, a0, "D", &v, sipType_QVariant, NULL );
+      int state;
+      int sipIsError = 0;
+      QString *t1 = reinterpret_cast<QString *>( sipConvertToType( s, sipType_QString, 0, SIP_NOT_NONE, &state, &sipIsError ) );
+      if ( sipIsError == 0 )
+      {
+        res = QString( *t1 );
+      }
+      sipReleaseType( t1, sipType_QString, state );
+      SIP_UNBLOCK_THREADS
+      return res;
+    } );
+
+    Py_END_ALLOW_THREADS
+    % End
+#endif
+
+
+    /**
+     * Returns the ordered list of selected options.
+     */
+    QVariantList selectedOptions() const;
+
+  signals:
+
+    /**
+     * Emitted when the accept button is clicked.
+     */
+    void acceptClicked();
+
+    /**
+     * Emitted when the selection changes in the widget.
+     */
+    void selectionChanged();
+
+  private slots:
+
+    void selectAll( bool checked );
+    void toggleSelection();
+
+  private:
+    std::function< QString( const QVariant & )> mValueFormatter;
+
+    QPushButton *mButtonSelectAll = nullptr;
+    QPushButton *mButtonClearSelection = nullptr;
+    QPushButton *mButtonToggleSelection = nullptr;
+    QStandardItemModel *mModel = nullptr;
+
+    QList< QStandardItem * > currentItems();
+
+    QDialogButtonBox *buttonBox() { return mButtonBox; }
+
+    void populateList( const QVariantList &availableOptions, const QVariantList &selectedOptions );
+
+    friend class TestProcessingGui;
+    friend class QgsProcessingMultipleSelectionDialog;
+};
+
+
+/**
+ * \ingroup gui
+ * \brief A dialog for selection of multiple options from a fixed list of options.
+ * \note Not stable API
+ * \since QGIS 3.6
+ */
+class GUI_EXPORT QgsProcessingMultipleSelectionDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsProcessingMultipleSelectionPanelWidget.
      *
      * The \a availableOptions list specifies the list of standard known options for the parameter,
      * whilst the \a selectedOptions list specifies which options should be initially selected.
@@ -92,24 +191,10 @@ class GUI_EXPORT QgsProcessingMultipleSelectionDialog : public QDialog, private 
      */
     QVariantList selectedOptions() const;
 
-  private slots:
-
-    void selectAll( bool checked );
-    void toggleSelection();
-
   private:
-    std::function< QString( const QVariant & )> mValueFormatter;
 
-    QPushButton *mButtonSelectAll = nullptr;
-    QPushButton *mButtonClearSelection = nullptr;
-    QPushButton *mButtonToggleSelection = nullptr;
-    QStandardItemModel *mModel = nullptr;
+    QgsProcessingMultipleSelectionPanelWidget *mWidget = nullptr;
 
-    QList< QStandardItem * > currentItems();
-
-    void populateList( const QVariantList &availableOptions, const QVariantList &selectedOptions );
-
-    friend class TestProcessingGui;
 };
 
 ///@endcond

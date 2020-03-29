@@ -23,10 +23,10 @@
 
 ///@cond NOT_STABLE
 
-QgsProcessingMultipleSelectionDialog::QgsProcessingMultipleSelectionDialog( const QVariantList &availableOptions,
+QgsProcessingMultipleSelectionPanelWidget::QgsProcessingMultipleSelectionPanelWidget( const QVariantList &availableOptions,
     const QVariantList &selectedOptions,
-    QWidget *parent, Qt::WindowFlags flags )
-  : QDialog( parent, flags )
+    QWidget *parent )
+  : QgsPanelWidget( parent )
   , mValueFormatter( []( const QVariant & v )->QString { return v.toString(); } )
 {
   setupUi( this );
@@ -48,12 +48,15 @@ QgsProcessingMultipleSelectionDialog::QgsProcessingMultipleSelectionDialog( cons
 
   connect( mButtonSelectAll, &QPushButton::clicked, this, [ = ] { selectAll( true ); } );
   connect( mButtonClearSelection, &QPushButton::clicked, this, [ = ] { selectAll( false ); } );
-  connect( mButtonToggleSelection, &QPushButton::clicked, this, &QgsProcessingMultipleSelectionDialog::toggleSelection );
+  connect( mButtonToggleSelection, &QPushButton::clicked, this, &QgsProcessingMultipleSelectionPanelWidget::toggleSelection );
 
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked );
   populateList( availableOptions, selectedOptions );
+
+  connect( mModel, &QStandardItemModel::itemChanged, this, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged );
 }
 
-void QgsProcessingMultipleSelectionDialog::setValueFormatter( const std::function<QString( const QVariant & )> &formatter )
+void QgsProcessingMultipleSelectionPanelWidget::setValueFormatter( const std::function<QString( const QVariant & )> &formatter )
 {
   mValueFormatter = formatter;
   // update item text using new formatter
@@ -63,7 +66,7 @@ void QgsProcessingMultipleSelectionDialog::setValueFormatter( const std::functio
   }
 }
 
-QVariantList QgsProcessingMultipleSelectionDialog::selectedOptions() const
+QVariantList QgsProcessingMultipleSelectionPanelWidget::selectedOptions() const
 {
   QVariantList options;
   options.reserve( mModel->rowCount() );
@@ -75,7 +78,7 @@ QVariantList QgsProcessingMultipleSelectionDialog::selectedOptions() const
   return options;
 }
 
-void QgsProcessingMultipleSelectionDialog::selectAll( const bool checked )
+void QgsProcessingMultipleSelectionPanelWidget::selectAll( const bool checked )
 {
   const QList<QStandardItem *> items = currentItems();
   for ( QStandardItem *item : items )
@@ -84,7 +87,7 @@ void QgsProcessingMultipleSelectionDialog::selectAll( const bool checked )
   }
 }
 
-void QgsProcessingMultipleSelectionDialog::toggleSelection()
+void QgsProcessingMultipleSelectionPanelWidget::toggleSelection()
 {
   const QList<QStandardItem *> items = currentItems();
   for ( QStandardItem *item : items )
@@ -93,7 +96,7 @@ void QgsProcessingMultipleSelectionDialog::toggleSelection()
   }
 }
 
-QList<QStandardItem *> QgsProcessingMultipleSelectionDialog::currentItems()
+QList<QStandardItem *> QgsProcessingMultipleSelectionPanelWidget::currentItems()
 {
   QList<QStandardItem *> items;
   const QModelIndexList selection = mSelectionList->selectionModel()->selectedIndexes();
@@ -116,7 +119,7 @@ QList<QStandardItem *> QgsProcessingMultipleSelectionDialog::currentItems()
   return items;
 }
 
-void QgsProcessingMultipleSelectionDialog::populateList( const QVariantList &availableOptions, const QVariantList &selectedOptions )
+void QgsProcessingMultipleSelectionPanelWidget::populateList( const QVariantList &availableOptions, const QVariantList &selectedOptions )
 {
   mModel = new QStandardItemModel( this );
 
@@ -150,4 +153,35 @@ void QgsProcessingMultipleSelectionDialog::populateList( const QVariantList &ava
   mSelectionList->setModel( mModel );
 }
 
+
+
+//
+// QgsProcessingMultipleSelectionDialog
+//
+
+
+
 ///@endcond
+
+QgsProcessingMultipleSelectionDialog::QgsProcessingMultipleSelectionDialog( const QVariantList &availableOptions, const QVariantList &selectedOptions, QWidget *parent, Qt::WindowFlags flags )
+  : QDialog( parent, flags )
+{
+  setWindowTitle( tr( "Multiple Selection" ) );
+  QVBoxLayout *vLayout = new QVBoxLayout();
+  mWidget = new QgsProcessingMultipleSelectionPanelWidget( availableOptions, selectedOptions );
+  vLayout->addWidget( mWidget );
+  mWidget->buttonBox()->addButton( QDialogButtonBox::Cancel );
+  connect( mWidget->buttonBox(), &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mWidget->buttonBox(), &QDialogButtonBox::rejected, this, &QDialog::reject );
+  setLayout( vLayout );
+}
+
+void QgsProcessingMultipleSelectionDialog::setValueFormatter( const std::function<QString( const QVariant & )> &formatter )
+{
+  mWidget->setValueFormatter( formatter );
+}
+
+QVariantList QgsProcessingMultipleSelectionDialog::selectedOptions() const
+{
+  return mWidget->selectedOptions();
+}
