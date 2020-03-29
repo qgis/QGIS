@@ -56,6 +56,14 @@ void QgsRasterLayerTemporalPropertiesWidget::init()
 
   mStartTemporalDateTimeEdit->setDateTime( mLayer->temporalProperties()->fixedTemporalRange().begin() );
   mEndTemporalDateTimeEdit->setDateTime( mLayer->temporalProperties()->fixedTemporalRange().end() );
+
+  if ( !mLayer->dataProvider() || !mLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
+  {
+    mModeAutomaticRadio->setEnabled( false );
+    mModeAutomaticRadio->setChecked( false );
+    mModeFixedRangeRadio->setChecked( true );
+  }
+
 }
 
 void QgsRasterLayerTemporalPropertiesWidget::saveTemporalProperties()
