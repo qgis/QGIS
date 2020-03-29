@@ -320,6 +320,10 @@ SET(QGIS_GUI_SRCS
   tableeditor/qgstableeditorformattingwidget.cpp
   tableeditor/qgstableeditorwidget.cpp
 
+  vectortile/qgsvectortileconnectiondialog.cpp
+  vectortile/qgsvectortiledataitemguiprovider.cpp
+  vectortile/qgsvectortileproviderguimetadata.cpp
+
   qgisinterface.cpp
   qgsactionmenu.cpp
   qgsaddattrdialog.cpp
@@ -1079,6 +1083,10 @@ SET(QGIS_GUI_HDRS
   tableeditor/qgstableeditorformattingwidget.h
   tableeditor/qgstableeditorwidget.h
 
+  vectortile/qgsvectortileconnectiondialog.h
+  vectortile/qgsvectortiledataitemguiprovider.h
+  vectortile/qgsvectortileproviderguimetadata.h
+
   qgsbrowserdockwidget_p.h
 )
 
@@ -1194,6 +1202,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/providers/ogr
   ${CMAKE_SOURCE_DIR}/src/gui/raster
   ${CMAKE_SOURCE_DIR}/src/gui/vector
+  ${CMAKE_SOURCE_DIR}/src/gui/vectortile
   ${CMAKE_SOURCE_DIR}/src/gui/tableeditor
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations

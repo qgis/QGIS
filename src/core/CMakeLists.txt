@@ -641,10 +641,13 @@ SET(QGIS_CORE_SRCS
   validity/qgsvaliditycheckregistry.cpp
 
   vectortile/qgsvectortilebasicrenderer.cpp
+  vectortile/qgsvectortileconnection.cpp
+  vectortile/qgsvectortiledataitems.cpp
   vectortile/qgsvectortilelayer.cpp
   vectortile/qgsvectortilelayerrenderer.cpp
   vectortile/qgsvectortileloader.cpp
   vectortile/qgsvectortilemvtdecoder.cpp
+  vectortile/qgsvectortileprovidermetadata.cpp
   vectortile/qgsvectortileutils.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
@@ -1338,10 +1341,13 @@ SET(QGIS_CORE_HDRS
   validity/qgsvaliditycheckregistry.h
 
   vectortile/qgsvectortilebasicrenderer.h
+  vectortile/qgsvectortileconnection.h
+  vectortile/qgsvectortiledataitems.h
   vectortile/qgsvectortilelayer.h
   vectortile/qgsvectortilelayerrenderer.h
   vectortile/qgsvectortileloader.h
   vectortile/qgsvectortilemvtdecoder.h
+  vectortile/qgsvectortileprovidermetadata.h
   vectortile/qgsvectortilerenderer.h
   vectortile/qgsvectortileutils.h
 )
