@@ -40,16 +40,16 @@
  */
 class TestQgsRasterFill : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     TestQgsRasterFill() = default;
 
   private slots:
-    void initTestCase();		// will be called before the first testfunction is executed.
-    void cleanupTestCase();	// will be called after the last testfunction was executed.
-    void init();						// will be called before each testfunction is executed.
-    void cleanup();					// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void rasterFillSymbol();
     void coordinateMode();
@@ -93,7 +93,7 @@ void TestQgsRasterFill::initTestCase()
   QString myPolysFileName = mTestDataDir + "polys.shp";
   QFileInfo myPolyFileInfo( myPolysFileName );
   mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-    myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
