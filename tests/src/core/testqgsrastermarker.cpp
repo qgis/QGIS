@@ -40,16 +40,16 @@
  */
 class TestQgsRasterMarker : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     TestQgsRasterMarker() = default;
 
   private slots:
-    void initTestCase();		// will be called before the first testfunction is executed.
-    void cleanupTestCase();	// will be called after the last testfunction was executed.
-    void init();						// will be called before each testfunction is executed.
-    void cleanup();					// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void rasterMarkerSymbol();
     void offset();
@@ -97,7 +97,7 @@ void TestQgsRasterMarker::initTestCase()
   QString pointFileName = mTestDataDir + "points.shp";
   QFileInfo pointFileInfo( pointFileName );
   mPointLayer = new QgsVectorLayer( pointFileInfo.filePath(),
-    pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+                                    pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPointLayer );
