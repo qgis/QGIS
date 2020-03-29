@@ -219,14 +219,14 @@ Returns the mean length of strings.
 
     QString minority() const;
 %Docstring
-Returns the most common string.
+Returns the least common string.
 
 .. versionadded:: 3.14
 %End
 
     QString majority() const;
 %Docstring
-Returns the least common string.
+Returns the most common string.
 
 .. versionadded:: 3.14
 %End
