@@ -81,15 +81,14 @@ void QgsStringStatisticalSummary::finalize()
   if ( mStatistics & Minority || mStatistics & Majority )
   {
     QList<int> valueCounts = mValues.values();
-    std::sort( valueCounts.begin(), valueCounts.end() );
 
     if ( mStatistics & Minority )
     {
-      mMinority = mValues.key( valueCounts.first() );
+      mMinority = mValues.key( *std::min_element( valueCounts.begin(), valueCounts.end() ) );
     }
     if ( mStatistics & Majority )
     {
-      mMajority = mValues.key( valueCounts.last() );
+      mMajority = mValues.key( *std::max_element( valueCounts.begin(), valueCounts.end() ) );
     }
   }
 }
