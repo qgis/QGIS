@@ -24,6 +24,7 @@
 #include "qgslogger.h"
 #include "qgsgdalguiprovider.h"
 #include "qgsogrguiprovider.h"
+#include "qgsvectortileproviderguimetadata.h"
 
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgswmsprovidergui.h"
@@ -65,6 +66,9 @@ void QgsProviderGuiRegistry::loadStaticProviders( )
 
   QgsProviderGuiMetadata *ogr = new QgsOgrGuiProviderMetadata();
   mProviders[ ogr->key() ] = ogr;
+
+  QgsProviderGuiMetadata *vt = new QgsVectorTileProviderGuiMetadata();
+  mProviders[ vt->key() ] = vt;
 
 #ifdef HAVE_STATIC_PROVIDERS
   QgsProviderGuiMetadata *wms = new QgsWmsProviderGuiMetadata();
