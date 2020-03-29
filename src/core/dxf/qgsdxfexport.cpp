@@ -150,6 +150,7 @@ void QgsDxfExport::writeGroup( const QColor &color, int exactMatchCode, int rgbC
 
   int c = ( color.red() & 0xff ) * 0x10000 + ( color.green() & 0xff ) * 0x100 + ( color.blue() & 0xff );
   writeGroup( rgbCode, c );
+  transparencyCode = 0;
 
 }
 
