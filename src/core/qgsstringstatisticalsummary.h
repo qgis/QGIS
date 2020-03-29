@@ -198,15 +198,23 @@ class CORE_EXPORT QgsStringStatisticalSummary
     double meanLength() const { return mMeanLength; }
 
     /**
-      * Returns the least common string.
-      * \since QGIS 3.14
-      */
+     * Returns the least common string. The minority is the value with least occurrences in the list
+     * This is only calculated if Statistic::Minority has been specified in the constructor
+     * or via setStatistics. If multiple values match, return the first value relative to the
+     * initial values order.
+     * \see majority
+     * \since QGIS 3.14
+     */
     QString minority() const { return mMinority; }
 
     /**
-      * Returns the most common string.
-      * \since QGIS 3.14
-      */
+     * Returns the most common string. The majority is the value with most occurrences in the list
+     * This is only calculated if Statistic::Majority has been specified in the constructor
+     * or via setStatistics. If multiple values match, return the first value relative to the
+     * initial values order.
+     * \see minority
+     * \since QGIS 3.14
+     */
     QString majority() const { return mMajority; }
 
     /**
