@@ -40,25 +40,33 @@
  */
 class TestQgsRasterMarker : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 
   public:
     TestQgsRasterMarker() = default;
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();		// will be called before the first testfunction is executed.
+    void cleanupTestCase();	// will be called after the last testfunction was executed.
+    void init();						// will be called before each testfunction is executed.
+    void cleanup();					// will be called after every testfunction.
 
     void rasterMarkerSymbol();
+    void offset();
     void anchor();
-    void alpha();
     void rotation();
     void fixedAspectRatio();
+    void alpha();
+
+    void percentage();
+    void percentageOffset() { offset(); }
+    void percentageAnchor() { anchor(); }
+    void percentageRotation() { rotation(); }
+    void percentageFixedAspectRatio() { fixedAspectRatio(); }
+    void percentageAlpha() { alpha(); }
 
   private:
-    bool mTestHasError =  false ;
+    bool mTestHasError = false;
     bool imageCheck( const QString &type );
 
     QgsMapSettings mMapSettings;
@@ -68,35 +76,44 @@ class TestQgsRasterMarker : public QObject
     QgsSingleSymbolRenderer *mSymbolRenderer = nullptr;
     QString mTestDataDir;
     QString mReport;
+    QString mPercentageName;
 };
 
 
 void TestQgsRasterMarker::initTestCase()
 {
   mTestHasError = false;
-  // init QGIS's paths - true means that all path will be inited from prefix
+
+  // Init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  //create some objects that will be used in all tests...
-  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  // Create some objects that will be used in all tests...
+  QString myDataDir( TEST_DATA_DIR ); // defined in CmakeLists.txt
   mTestDataDir = myDataDir + '/';
 
-  //create a marker layer that will be used in all tests
+  // Create a marker layer that will be used in all tests
   QString pointFileName = mTestDataDir + "points.shp";
   QFileInfo pointFileInfo( pointFileName );
   mPointLayer = new QgsVectorLayer( pointFileInfo.filePath(),
-                                    pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+    pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // Register the layer with the registry
-  QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mPointLayer );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mPointLayer );
 
-  //setup the raster marker symbol
+  // Setup the raster marker symbol
   mRasterMarker = new QgsRasterMarkerSymbolLayer();
+  mRasterMarker->setPath( mTestDataDir + QStringLiteral( "sample_image.png" ) );
+  mRasterMarker->setSizeUnit( QgsUnitTypes::RenderPixels );
+  mRasterMarker->setSize( 30.0 );
+  mRasterMarker->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HCenter );
+  mRasterMarker->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VCenter );
+  mRasterMarker->setOffsetUnit( QgsUnitTypes::RenderPixels );
+
   mMarkerSymbol = new QgsMarkerSymbol();
   mMarkerSymbol->changeSymbolLayer( 0, mRasterMarker );
+
   mSymbolRenderer = new QgsSingleSymbolRenderer( mMarkerSymbol );
   mPointLayer->setRenderer( mSymbolRenderer );
 
@@ -105,7 +122,6 @@ void TestQgsRasterMarker::initTestCase()
   // and is more light weight
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayer );
   mReport += QLatin1String( "<h1>Raster Marker Renderer Tests</h1>\n" );
-
 }
 
 void TestQgsRasterMarker::cleanupTestCase()
@@ -124,54 +140,74 @@ void TestQgsRasterMarker::cleanupTestCase()
 
 void TestQgsRasterMarker::init()
 {
-  mRasterMarker->setPath( mTestDataDir + QStringLiteral( "sample_image.png" ) );
-  mRasterMarker->setSize( 30.0 );
-  mRasterMarker->setSizeUnit( QgsUnitTypes::RenderPixels );
 }
 
 void TestQgsRasterMarker::cleanup()
 {
-
 }
 
 void TestQgsRasterMarker::rasterMarkerSymbol()
 {
-  mReport += QLatin1String( "<h2>Raster marker symbol renderer test</h2>\n" );
+  mReport += QLatin1String( "<h2>Raster marker symbol renderer (30 px)</h2>\n" );
   bool result = imageCheck( QStringLiteral( "rastermarker" ) );
+  QVERIFY( result );
+}
+
+void TestQgsRasterMarker::offset()
+{
+  mReport += QString( "<h2>Raster marker" + mPercentageName + " offset (12 px; 15 px)</h2>\n" );
+  mRasterMarker->setOffset( QPointF( 12, 15 ) );
+  bool result = imageCheck( QStringLiteral( "rastermarker_offset" ) + mPercentageName );
   QVERIFY( result );
 }
 
 void TestQgsRasterMarker::anchor()
 {
-  mRasterMarker->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( 2 ) );
-  mRasterMarker->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( 2 ) );
-  bool result = imageCheck( QStringLiteral( "rastermarker_anchor" ) );
-  QVERIFY( result );
-  mRasterMarker->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( 1 ) );
-  mRasterMarker->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( 1 ) );
-}
-
-void TestQgsRasterMarker::alpha()
-{
-  mReport += QLatin1String( "<h2>Raster marker alpha</h2>\n" );
-  mRasterMarker->setOpacity( 0.5 );
-  bool result = imageCheck( QStringLiteral( "rastermarker_alpha" ) );
+  mReport += QString( "<h2>Raster marker" + mPercentageName + " anchor (Left; Top)</h2>\n" );
+  mRasterMarker->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::Left );
+  mRasterMarker->setVerticalAnchorPoint( QgsMarkerSymbolLayer::Top );
+  bool result = imageCheck( QStringLiteral( "rastermarker_anchor" ) + mPercentageName );
   QVERIFY( result );
 }
 
 void TestQgsRasterMarker::rotation()
 {
-  mReport += QLatin1String( "<h2>Raster marker rotation</h2>\n" );
+  mReport += QString( "<h2>Raster marker" + mPercentageName + " rotation (45.0)</h2>\n" );
   mRasterMarker->setAngle( 45.0 );
-  bool result = imageCheck( QStringLiteral( "rastermarker_rotation" ) );
+  bool result = imageCheck( QStringLiteral( "rastermarker_rotation" ) + mPercentageName );
   QVERIFY( result );
 }
 
 void TestQgsRasterMarker::fixedAspectRatio()
 {
-  mReport += QLatin1String( "<h2>Raster marker fixed aspect ratio</h2>\n" );
-  mRasterMarker->setFixedAspectRatio( 0.2 );
-  bool result = imageCheck( QStringLiteral( "rastermarker_fixedaspectratio" ) );
+  mReport += QString( "<h2>Raster marker" + mPercentageName + " fixed aspect ratio (1.0)</h2>\n" );
+  mRasterMarker->setFixedAspectRatio( 1.0 );
+  bool result = imageCheck( QStringLiteral( "rastermarker_fixedaspectratio" ) + mPercentageName );
+  QVERIFY( result );
+}
+
+void TestQgsRasterMarker::alpha()
+{
+  mReport += QString( "<h2>Raster marker" + mPercentageName + " alpha (0.5)</h2>\n" );
+  mRasterMarker->setOpacity( 0.5 );
+  bool result = imageCheck( QStringLiteral( "rastermarker_alpha" ) + mPercentageName );
+  QVERIFY( result );
+}
+
+void TestQgsRasterMarker::percentage()
+{
+  mPercentageName = "_percentage";
+  mRasterMarker->setOffset( QPointF( 0, 0 ) );
+  mRasterMarker->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HCenter );
+  mRasterMarker->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VCenter );
+  mRasterMarker->setAngle( 0.0 );
+  mRasterMarker->setFixedAspectRatio( 0.0 );
+  mRasterMarker->setOpacity( 1.0 );
+
+  mReport += QLatin1String( "<h2>Raster marker_percentage (12.3 %)</h2>\n" );
+  mRasterMarker->setSizeUnit( QgsUnitTypes::RenderPercentage );
+  mRasterMarker->setSize( 12.3 );
+  bool result = imageCheck( QStringLiteral( "rastermarker_percentage" ) );
   QVERIFY( result );
 }
 
@@ -181,8 +217,8 @@ void TestQgsRasterMarker::fixedAspectRatio()
 
 bool TestQgsRasterMarker::imageCheck( const QString &testType )
 {
-  //use the QgsRenderChecker test utility class to
-  //ensure the rendered output matches our control image
+  // Use the QgsRenderChecker test utility class to
+  // ensure the rendered output matches our control image
   mMapSettings.setExtent( mPointLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
