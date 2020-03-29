@@ -2226,7 +2226,7 @@ void QgsVertexTool::deleteVertex()
 
   // de-duplicate vertices in linear rings - if there is the first vertex selected,
   // then also the last vertex will be selected - but we want just one out of the pair
-  // also unselect vertices of parts or rings that will be automatically removed
+  // also deselect vertices of parts or rings that will be automatically removed
   QHash<QgsVectorLayer *, QHash<QgsFeatureId, QList<int> > >::iterator lIt = toDeleteGrouped.begin();
   for ( ; lIt != toDeleteGrouped.end(); ++lIt )
   {
@@ -2255,7 +2255,7 @@ void QgsVertexTool::deleteVertex()
         }
         // polygonal rings with less than 4 vertices get deleted automatically
         // linear parts with less than 2 vertices get deleted automatically
-        // let's keep that number and dont remove vertices beyond that point
+        // let's keep that number and don't remove vertices beyond that point
         const int minAllowedVertices = geom.type() == QgsWkbTypes::PolygonGeometry ? 4 : 2;
         for ( int i = vertexIds.count() - 1; i >= 0 ; --i )
         {
