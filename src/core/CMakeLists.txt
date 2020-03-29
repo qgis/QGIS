@@ -522,6 +522,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsraster.cpp
   raster/qgsrasterblock.cpp
   raster/qgsrasterchecker.cpp
+  raster/qgsrastercontourrenderer.cpp
   raster/qgsrasterdataprovider.cpp
   raster/qgsrasterdataprovidertemporalcapabilities.cpp
   raster/qgsrasterfilewritertask.cpp
@@ -1244,6 +1245,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterbandstats.h
   raster/qgsrasterblock.h
   raster/qgsrasterchecker.h
+  raster/qgsrastercontourrenderer.h
   raster/qgsrasterdataprovider.h
   raster/qgsrasterdataprovidertemporalcapabilities.h
   raster/qgsrasterdrawer.h

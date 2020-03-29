@@ -38,6 +38,7 @@
 #include "qgspalettedrendererwidget.h"
 #include "qgsproject.h"
 #include "qgsrasterbandstats.h"
+#include "qgsrastercontourrendererwidget.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterhistogramwidget.h"
 #include "qgsrasteridentifyresult.h"
@@ -398,6 +399,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "singlebandpseudocolor" ), QgsSingleBandPseudoColorRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "singlebandgray" ), QgsSingleBandGrayRendererWidget::create );
   QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "hillshade" ), QgsHillshadeRendererWidget::create );
+  QgsApplication::rasterRendererRegistry()->insertWidgetFunction( QStringLiteral( "contour" ), QgsRasterContourRendererWidget::create );
 
   //fill available renderers into combo box
   QgsRasterRendererRegistryEntry entry;

@@ -459,6 +459,7 @@
 %Include auto_generated/raster/qgsrasterbandstats.sip
 %Include auto_generated/raster/qgsrasterblock.sip
 %Include auto_generated/raster/qgsrasterchecker.sip
+%Include auto_generated/raster/qgsrastercontourrenderer.sip
 %Include auto_generated/raster/qgsrasterdataprovider.sip
 %Include auto_generated/raster/qgsrasterdataprovidertemporalcapabilities.sip
 %Include auto_generated/raster/qgsrasterdrawer.sip
