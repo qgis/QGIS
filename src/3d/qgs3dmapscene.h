@@ -135,6 +135,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void updateScene();
     bool updateCameraNearFarPlanes();
     void finalizeNewEntity( Qt3DCore::QEntity *newEntity );
+    int maximumTextureSize() const;
 
   private:
     const Qgs3DMapSettings &mMap;

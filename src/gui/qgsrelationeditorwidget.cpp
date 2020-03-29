@@ -259,9 +259,12 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
 
 void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
-  mDualView->init( layer, mEditorContext.mapCanvas(), request, mEditorContext );
+  QgsAttributeEditorContext ctx { mEditorContext };
+  ctx.setParentFormFeature( mFeature );
+  mDualView->init( layer, mEditorContext.mapCanvas(), request, ctx );
   mFeatureSelectionMgr = new QgsFilteredSelectionManager( layer, request, mDualView );
   mDualView->setFeatureSelectionManager( mFeatureSelectionMgr );
+
   connect( mFeatureSelectionMgr, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
 
   QIcon icon;
@@ -282,7 +285,7 @@ void QgsRelationEditorWidget::initDualView( QgsVectorLayer *layer, const QgsFeat
     text = tr( "Add Polygon Feature" );
   }
 
-  if ( text.isEmpty() )
+  if ( text.isEmpty() || !mEditorContext.mapCanvas() || !mEditorContext.cadDockWidget() )
   {
     mAddFeatureGeometryButton->setVisible( false );
   }
@@ -365,8 +368,12 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
 void QgsRelationEditorWidget::setEditorContext( const QgsAttributeEditorContext &context )
 {
   mEditorContext = context;
-  mMapToolDigitize.reset( new QgsMapToolDigitizeFeature( context.mapCanvas(), context.cadDockWidget() ) );
-  mMapToolDigitize->setButton( mAddFeatureGeometryButton );
+
+  if ( context.mapCanvas() && context.cadDockWidget() )
+  {
+    mMapToolDigitize.reset( new QgsMapToolDigitizeFeature( context.mapCanvas(), context.cadDockWidget() ) );
+    mMapToolDigitize->setButton( mAddFeatureGeometryButton );
+  }
 }
 
 QgsIFeatureSelectionManager *QgsRelationEditorWidget::featureSelectionManager()
@@ -380,11 +387,14 @@ void QgsRelationEditorWidget::setViewMode( QgsDualView::ViewMode mode )
   mViewMode = mode;
 }
 
-void QgsRelationEditorWidget::setFeature( const QgsFeature &feature )
+void QgsRelationEditorWidget::setFeature( const QgsFeature &feature, bool update )
 {
   mFeature = feature;
 
-  updateUi();
+  mEditorContext.setFormFeature( feature );
+
+  if ( update )
+    updateUi();
 }
 
 void QgsRelationEditorWidget::updateButtons()
@@ -442,6 +452,9 @@ void QgsRelationEditorWidget::addFeatureGeometry()
     layer = mRelation.referencingLayer();
 
   mMapToolDigitize->setLayer( layer );
+
+  // window is always on top, so we hide it to digitize without seeing it
+  window()->setVisible( false );
   setMapTool( mMapToolDigitize );
 
   connect( mMapToolDigitize, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsRelationEditorWidget::onDigitizingCompleted );
@@ -907,6 +920,11 @@ void QgsRelationEditorWidget::setShowUnlinkButton( bool showUnlinkButton )
   mUnlinkFeatureButton->setVisible( showUnlinkButton );
 }
 
+void QgsRelationEditorWidget::parentFormValueChanged( const QString &attribute, const QVariant &newValue )
+{
+  mDualView->parentFormValueChanged( attribute, newValue );
+}
+
 bool QgsRelationEditorWidget::showLabel() const
 {
   return mShowLabel;
@@ -958,6 +976,11 @@ void QgsRelationEditorWidget::unsetMapTool()
   disconnect( mMapToolDigitize, &QgsMapToolDigitizeFeature::digitizingCompleted, this, &QgsRelationEditorWidget::onDigitizingCompleted );
 }
 
+QgsFeature QgsRelationEditorWidget::feature() const
+{
+  return mFeature;
+}
+
 void QgsRelationEditorWidget::onKeyPressed( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Escape )
@@ -968,6 +991,7 @@ void QgsRelationEditorWidget::onKeyPressed( QKeyEvent *e )
 
 void QgsRelationEditorWidget::mapToolDeactivated()
 {
+  window()->setVisible( true );
   window()->raise();
   window()->activateWindow();
 

@@ -22,6 +22,10 @@
 #include "qgsapplication.h"
 #include "qgsmodelgraphicitem.h"
 #include "qgsprocessingmodelalgorithm.h"
+#include "qgsmodelgraphicsview.h"
+#include "qgsmodelviewtool.h"
+#include "qgsmodelviewmouseevent.h"
+
 #include <QSvgRenderer>
 #include <QPicture>
 #include <QPainter>
@@ -39,7 +43,6 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
   , mModel( model )
 {
   setAcceptHoverEvents( true );
-  setFlag( QGraphicsItem::ItemIsMovable, true );
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   setFlag( QGraphicsItem::ItemSendsGeometryChanges, true );
   setZValue( QgsModelGraphicsScene::ZValues::ModelComponent );
@@ -51,9 +54,7 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
   QPainter painter( &editPicture );
   svg.render( &painter );
   painter.end();
-  mEditButton = new QgsModelDesignerFlatButtonGraphicItem( this, editPicture,
-      QPointF( component->size().width() / 2.0 - mButtonSize.width() / 2.0,
-               component->size().height() / 2.0 - mButtonSize.height() / 2.0 ) );
+  mEditButton = new QgsModelDesignerFlatButtonGraphicItem( this, editPicture, QPointF( 0, 0 ) );
   connect( mEditButton, &QgsModelDesignerFlatButtonGraphicItem::clicked, this, &QgsModelComponentGraphicItem::editComponent );
 
   QSvgRenderer svg2( QgsApplication::iconPath( QStringLiteral( "mActionDeleteModelComponent.svg" ) ) );
@@ -61,10 +62,15 @@ QgsModelComponentGraphicItem::QgsModelComponentGraphicItem( QgsProcessingModelCo
   painter.begin( &deletePicture );
   svg2.render( &painter );
   painter.end();
-  mDeleteButton = new QgsModelDesignerFlatButtonGraphicItem( this, deletePicture,
-      QPointF( component->size().width() / 2.0 - mButtonSize.width() / 2.0,
-               mButtonSize.height() / 2.0 - component->size().height() / 2.0 ) );
+  mDeleteButton = new QgsModelDesignerFlatButtonGraphicItem( this, deletePicture, QPointF( 0, 0 ) );
   connect( mDeleteButton, &QgsModelDesignerFlatButtonGraphicItem::clicked, this, &QgsModelComponentGraphicItem::deleteComponent );
+
+  updateButtonPositions();
+}
+
+QgsModelComponentGraphicItem::Flags QgsModelComponentGraphicItem::flags() const
+{
+  return nullptr;
 }
 
 QgsModelComponentGraphicItem::~QgsModelComponentGraphicItem() = default;
@@ -84,6 +90,14 @@ QgsProcessingModelAlgorithm *QgsModelComponentGraphicItem::model()
   return mModel;
 }
 
+QgsModelGraphicsView *QgsModelComponentGraphicItem::view()
+{
+  if ( scene()->views().isEmpty() )
+    return nullptr;
+
+  return qobject_cast< QgsModelGraphicsView * >( scene()->views().first() );
+}
+
 QFont QgsModelComponentGraphicItem::font() const
 {
   return mFont;
@@ -95,52 +109,147 @@ void QgsModelComponentGraphicItem::setFont( const QFont &font )
   update();
 }
 
+void QgsModelComponentGraphicItem::moveComponentBy( qreal dx, qreal dy )
+{
+  setPos( mComponent->position().x() + dx, mComponent->position().y() + dy );
+  mComponent->setPosition( pos() );
+
+  emit aboutToChange( tr( "Move %1" ).arg( mComponent->description() ) );
+  updateStoredComponentPosition( pos(), mComponent->size() );
+  emit changed();
+
+  emit sizePositionChanged();
+  emit updateArrowPaths();
+}
+
+void QgsModelComponentGraphicItem::previewItemMove( qreal dx, qreal dy )
+{
+  setPos( mComponent->position().x() + dx, mComponent->position().y() + dy );
+  emit updateArrowPaths();
+}
+
+void QgsModelComponentGraphicItem::setItemRect( QRectF rect )
+{
+  rect = rect.normalized();
+
+  if ( rect.width() < MIN_COMPONENT_WIDTH )
+    rect.setWidth( MIN_COMPONENT_WIDTH );
+  if ( rect.height() < MIN_COMPONENT_HEIGHT )
+    rect.setHeight( MIN_COMPONENT_HEIGHT );
+
+  setPos( rect.center() );
+  prepareGeometryChange();
+
+  emit aboutToChange( tr( "Resize %1" ).arg( mComponent->description() ) );
+
+  mComponent->setPosition( pos() );
+  mComponent->setSize( rect.size() );
+  updateStoredComponentPosition( pos(), mComponent->size() );
+
+  updateButtonPositions();
+  emit changed();
+
+  emit updateArrowPaths();
+  emit sizePositionChanged();
+}
+
+QRectF QgsModelComponentGraphicItem::previewItemRectChange( QRectF rect )
+{
+  rect = rect.normalized();
+
+  if ( rect.width() < MIN_COMPONENT_WIDTH )
+    rect.setWidth( MIN_COMPONENT_WIDTH );
+  if ( rect.height() < MIN_COMPONENT_HEIGHT )
+    rect.setHeight( MIN_COMPONENT_HEIGHT );
+
+  setPos( rect.center() );
+  prepareGeometryChange();
+
+  mTempSize = rect.size();
+
+  updateButtonPositions();
+  emit updateArrowPaths();
+
+  return rect;
+}
+
+void QgsModelComponentGraphicItem::finalizePreviewedItemRectChange( QRectF )
+{
+  mComponent->setPosition( pos() );
+  prepareGeometryChange();
+  mComponent->setSize( mTempSize );
+  mTempSize = QSizeF();
+
+  emit aboutToChange( tr( "Resize %1" ).arg( mComponent->description() ) );
+  updateStoredComponentPosition( pos(), mComponent->size() );
+
+  updateButtonPositions();
+
+  emit changed();
+
+  emit sizePositionChanged();
+  emit updateArrowPaths();
+}
+
+void QgsModelComponentGraphicItem::modelHoverEnterEvent( QgsModelViewMouseEvent *event )
+{
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
+    updateToolTip( mapFromScene( event->modelPoint() ) );
+}
+
+void QgsModelComponentGraphicItem::modelHoverMoveEvent( QgsModelViewMouseEvent *event )
+{
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
+    updateToolTip( mapFromScene( event->modelPoint() ) );
+}
+
+void QgsModelComponentGraphicItem::modelHoverLeaveEvent( QgsModelViewMouseEvent * )
+{
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
+  {
+    setToolTip( QString() );
+    if ( mIsHovering )
+    {
+      mIsHovering = false;
+      update();
+      emit repaintArrows();
+    }
+  }
+}
+
+void QgsModelComponentGraphicItem::modelDoubleClickEvent( QgsModelViewMouseEvent * )
+{
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
+    editComponent();
+}
+
 void QgsModelComponentGraphicItem::mouseDoubleClickEvent( QGraphicsSceneMouseEvent * )
 {
-  editComponent();
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
+    editComponent();
 }
 
 void QgsModelComponentGraphicItem::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
-  updateToolTip( event->pos() );
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
+    updateToolTip( event->pos() );
 }
 
 void QgsModelComponentGraphicItem::hoverMoveEvent( QGraphicsSceneHoverEvent *event )
 {
-  updateToolTip( event->pos() );
+  if ( view() && view()->tool() && view()->tool()->allowItemInteraction() )
+    updateToolTip( event->pos() );
 }
 
 void QgsModelComponentGraphicItem::hoverLeaveEvent( QGraphicsSceneHoverEvent * )
 {
-  setToolTip( QString() );
-  if ( mIsHovering )
-  {
-    mIsHovering = false;
-    update();
-    emit repaintArrows();
-  }
+  modelHoverLeaveEvent( nullptr );
 }
 
 QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemChange change, const QVariant &value )
 {
   switch ( change )
   {
-    case QGraphicsItem::ItemPositionHasChanged:
-    {
-      emit updateArrowPaths();
-      mComponent->setPosition( pos() );
-
-      // also need to update the model's stored component's position
-      // TODO - this is not so nice, consider moving this to model class
-      if ( QgsProcessingModelChildAlgorithm *child = dynamic_cast< QgsProcessingModelChildAlgorithm * >( mComponent.get() ) )
-        mModel->childAlgorithm( child->childId() ).setPosition( pos() );
-      else if ( QgsProcessingModelParameter *param = dynamic_cast< QgsProcessingModelParameter * >( mComponent.get() ) )
-        mModel->parameterComponent( param->parameterName() ).setPosition( pos() );
-      else if ( QgsProcessingModelOutput *output = dynamic_cast< QgsProcessingModelOutput * >( mComponent.get() ) )
-        mModel->childAlgorithm( output->childId() ).modelOutput( output->name() ).setPosition( pos() );
-
-      break;
-    }
     case QGraphicsItem::ItemSelectedChange:
     {
       emit repaintArrows();
@@ -154,18 +263,16 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
         // ideally would be in constructor, but cannot call virtual methods from that...
         if ( linkPointCount( Qt::TopEdge ) )
         {
-          QPointF pt = linkPoint( Qt::TopEdge, -1 );
-          pt = QPointF( 0, pt.y() );
-          mExpandTopButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::TopEdge ), pt );
+          mExpandTopButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::TopEdge ), QPointF( 0, 0 ) );
           connect( mExpandTopButton, &QgsModelDesignerFoldButtonGraphicItem::folded, this, [ = ]( bool folded ) { fold( Qt::TopEdge, folded ); } );
         }
         if ( linkPointCount( Qt::BottomEdge ) )
         {
-          QPointF pt = linkPoint( Qt::BottomEdge, -1 );
-          pt = QPointF( 0, pt.y() );
-          mExpandBottomButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::BottomEdge ), pt );
+          mExpandBottomButton = new QgsModelDesignerFoldButtonGraphicItem( this, mComponent->linksCollapsed( Qt::BottomEdge ), QPointF( 0, 0 ) );
           connect( mExpandBottomButton, &QgsModelDesignerFoldButtonGraphicItem::folded, this, [ = ]( bool folded ) { fold( Qt::BottomEdge, folded ); } );
         }
+        mInitialized = true;
+        updateButtonPositions();
       }
       break;
     }
@@ -180,15 +287,32 @@ QVariant QgsModelComponentGraphicItem::itemChange( QGraphicsItem::GraphicsItemCh
 QRectF QgsModelComponentGraphicItem::boundingRect() const
 {
   QFontMetricsF fm( mFont );
-  const int linksAbove = mComponent->linksCollapsed( Qt::TopEdge ) ? 0 : linkPointCount( Qt::TopEdge );
-  const int linksBelow = mComponent->linksCollapsed( Qt::BottomEdge ) ? 0 : linkPointCount( Qt::BottomEdge );
+  const int linksAbove = linkPointCount( Qt::TopEdge );
+  const int linksBelow = linkPointCount( Qt::BottomEdge );
 
-  const double hUp = fm.height() * 1.2 * ( linksAbove + 2 );
-  const double hDown = fm.height() * 1.2 * ( linksBelow + 2 );
-  return QRectF( -( mComponent->size().width() + 2 ) / 2,
-                 -( mComponent->size().height() + 2 ) / 2 - hUp,
-                 mComponent->size().width() + 2,
-                 mComponent->size().height() + hDown + hUp );
+  const double hUp = linksAbove == 0 ? 0 :
+                     fm.height() * 1.2 * ( ( mComponent->linksCollapsed( Qt::TopEdge ) ? 0 : linksAbove ) + 2 );
+  const double hDown = linksBelow == 0 ? 0 :
+                       fm.height() * 1.2 * ( ( mComponent->linksCollapsed( Qt::BottomEdge ) ? 0 : linksBelow ) + 2 );
+  return QRectF( -( itemSize().width() ) / 2 - RECT_PEN_SIZE,
+                 -( itemSize().height() ) / 2 - hUp - RECT_PEN_SIZE,
+                 itemSize().width() + 2 * RECT_PEN_SIZE,
+                 itemSize().height() + hDown + hUp + 2 * RECT_PEN_SIZE );
+}
+
+bool QgsModelComponentGraphicItem::contains( const QPointF &point ) const
+{
+  QRectF paintingBounds = boundingRect();
+  if ( point.x() < paintingBounds.left() + RECT_PEN_SIZE )
+    return false;
+  if ( point.x() > paintingBounds.right() - RECT_PEN_SIZE )
+    return false;
+  if ( point.y() < paintingBounds.top() + RECT_PEN_SIZE )
+    return false;
+  if ( point.y() > paintingBounds.bottom() - RECT_PEN_SIZE )
+    return false;
+
+  return true;
 }
 
 void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
@@ -197,20 +321,36 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   QColor color = fillColor( state() );
   QColor stroke = strokeColor( state() );
 
-  painter->setPen( QPen( stroke, 0 ) ); // 0 width "cosmetic" pen
+  QPen strokePen = QPen( stroke, 0 ) ; // 0 width "cosmetic" pen
+  strokePen.setStyle( strokeStyle( state() ) );
+  painter->setPen( strokePen );
   painter->setBrush( QBrush( color, Qt::SolidPattern ) );
   painter->drawRect( rect );
   painter->setFont( font() );
   painter->setPen( QPen( textColor( state() ) ) );
 
-  QString text = truncatedTextForItem( label() );
+  QString text;
 
-  const QSizeF componentSize = mComponent->size();
+  const QSizeF componentSize = itemSize();
 
   QFontMetricsF fm( font() );
   double h = fm.ascent();
   QPointF pt( -componentSize.width() / 2 + 25, componentSize.height() / 2.0 - h + 1 );
-  painter->drawText( pt, text );
+
+  if ( iconPicture().isNull() && iconPixmap().isNull() )
+  {
+    QRectF labelRect = QRectF( rect.left() + TEXT_MARGIN, rect.top() + TEXT_MARGIN, rect.width() - 2 * TEXT_MARGIN - mButtonSize.width() - BUTTON_MARGIN, rect.height() - 2 * TEXT_MARGIN );
+    text = label();
+    painter->drawText( labelRect, Qt::TextWordWrap, text );
+  }
+  else
+  {
+    QRectF labelRect = QRectF( rect.left() + 21 + TEXT_MARGIN, rect.top() + TEXT_MARGIN,
+                               rect.width() - 2 * TEXT_MARGIN - mButtonSize.width() - BUTTON_MARGIN - 21, rect.height() - 2 * TEXT_MARGIN );
+    text = label();
+    painter->drawText( labelRect, Qt::TextWordWrap | Qt::AlignVCenter, text );
+  }
+
   painter->setPen( QPen( QApplication::palette().color( QPalette::WindowText ) ) );
 
   if ( linkPointCount( Qt::TopEdge ) || linkPointCount( Qt::BottomEdge ) )
@@ -253,42 +393,58 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   const QPixmap px = iconPixmap();
   if ( !px.isNull() )
   {
-    painter->drawPixmap( -( componentSize.width() / 2.0 ) + 3, -8, px );
+    painter->drawPixmap( QPointF( -( componentSize.width() / 2.0 ) + 3, -8 ), px );
   }
   else
   {
     const QPicture pic = iconPicture();
     if ( !pic.isNull() )
     {
-      painter->drawPicture( -( componentSize.width() / 2.0 ) + 3, -8, pic );
+      painter->drawPicture( QPointF( -( componentSize.width() / 2.0 ) + 3, -8 ), pic );
     }
   }
 }
 
-QRectF QgsModelComponentGraphicItem::itemRect() const
+QRectF QgsModelComponentGraphicItem::itemRect( bool storedRect ) const
 {
-  return QRectF( -( mComponent->size().width() + 2 ) / 2.0,
-                 -( mComponent->size().height() + 2 ) / 2.0,
-                 mComponent->size().width() + 2,
-                 mComponent->size().height() + 2 );
+  if ( storedRect )
+  {
+    return QRectF( mComponent->position().x() - ( mComponent->size().width() ) / 2.0,
+                   mComponent->position().y()  - ( mComponent->size().height() ) / 2.0,
+                   mComponent->size().width(),
+                   mComponent->size().height() );
+  }
+  else
+    return QRectF( -( itemSize().width() ) / 2.0,
+                   -( itemSize().height() ) / 2.0,
+                   itemSize().width(),
+                   itemSize().height() );
 }
 
 QString QgsModelComponentGraphicItem::truncatedTextForItem( const QString &text ) const
 {
   QFontMetricsF fm( mFont );
   double width = fm.boundingRect( text ).width();
-  if ( width < mComponent->size().width() - 25 - mButtonSize.width() )
+  if ( width < itemSize().width() - 25 - mButtonSize.width() )
     return text;
 
   QString t = text;
   t = t.left( t.length() - 3 ) + QChar( 0x2026 );
   width = fm.boundingRect( t ).width();
-  while ( width > mComponent->size().width() - 25 - mButtonSize.width() )
+  while ( width > itemSize().width() - 25 - mButtonSize.width() )
   {
+    if ( t.length() < 5 )
+      break;
+
     t = t.left( t.length() - 4 ) + QChar( 0x2026 );
     width = fm.boundingRect( t ).width();
   }
   return t;
+}
+
+Qt::PenStyle QgsModelComponentGraphicItem::strokeStyle( QgsModelComponentGraphicItem::State ) const
+{
+  return Qt::SolidLine;
 }
 
 QPicture QgsModelComponentGraphicItem::iconPicture() const
@@ -299,6 +455,30 @@ QPicture QgsModelComponentGraphicItem::iconPicture() const
 QPixmap QgsModelComponentGraphicItem::iconPixmap() const
 {
   return QPixmap();
+}
+
+void QgsModelComponentGraphicItem::updateButtonPositions()
+{
+  mEditButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0 - BUTTON_MARGIN,
+                                     itemSize().height() / 2.0 - mButtonSize.height() / 2.0 - BUTTON_MARGIN ) );
+  mDeleteButton->setPosition( QPointF( itemSize().width() / 2.0 - mButtonSize.width() / 2.0 - BUTTON_MARGIN,
+                                       mButtonSize.height() / 2.0 - itemSize().height() / 2.0 + BUTTON_MARGIN ) );
+
+  if ( mExpandTopButton )
+  {
+    QPointF pt = linkPoint( Qt::TopEdge, -1 );
+    mExpandTopButton->setPosition( QPointF( 0, pt.y() ) );
+  }
+  if ( mExpandBottomButton )
+  {
+    QPointF pt = linkPoint( Qt::BottomEdge, -1 );
+    mExpandBottomButton->setPosition( QPointF( 0, pt.y() ) );
+  }
+}
+
+QSizeF QgsModelComponentGraphicItem::itemSize() const
+{
+  return !mTempSize.isValid() ? mComponent->size() : mTempSize;
 }
 
 void QgsModelComponentGraphicItem::updateToolTip( const QPointF &pos )
@@ -323,6 +503,7 @@ void QgsModelComponentGraphicItem::updateToolTip( const QPointF &pos )
 
 void QgsModelComponentGraphicItem::fold( Qt::Edge edge, bool folded )
 {
+  emit aboutToChange( !folded ? tr( "Expand Item" ) : tr( "Collapse Item" ) );
   mComponent->setLinksCollapsed( edge, folded );
   // also need to update the model's stored component
 
@@ -336,6 +517,7 @@ void QgsModelComponentGraphicItem::fold( Qt::Edge edge, bool folded )
 
   prepareGeometryChange();
   emit updateArrowPaths();
+  emit changed();
   update();
 }
 
@@ -383,8 +565,8 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) cons
         QFontMetricsF fm( mFont );
         const double w = fm.boundingRect( text ).width();
         const double h = fm.height() * 1.2 * ( pointIndex + 1 ) + fm.height() / 2.0;
-        const double y = h + mComponent->size().height() / 2.0 + 5;
-        const double x = !mComponent->linksCollapsed( Qt::BottomEdge ) ? ( -mComponent->size().width() / 2 + 33 + w + 5 ) : 10;
+        const double y = h + itemSize().height() / 2.0 + 5;
+        const double x = !mComponent->linksCollapsed( Qt::BottomEdge ) ? ( -itemSize().width() / 2 + 33 + w + 5 ) : 10;
         return QPointF( x, y );
       }
       break;
@@ -403,8 +585,8 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) cons
         }
         QFontMetricsF fm( mFont );
         double h = -( fm.height() * 1.2 ) * ( paramIndex + 2 ) - fm.height() / 2.0 + 8;
-        h = h - mComponent->size().height() / 2.0;
-        return QPointF( -mComponent->size().width() / 2 + offsetX, h );
+        h = h - itemSize().height() / 2.0;
+        return QPointF( -itemSize().width() / 2 + offsetX, h );
       }
       break;
     }
@@ -421,16 +603,16 @@ QPointF QgsModelComponentGraphicItem::calculateAutomaticLinkPoint( QgsModelCompo
   // find closest edge to other item
   const QgsRectangle otherRect( other->itemRect().translated( other->pos() ) );
 
-  const QPointF leftPoint = pos() + QPointF( -mComponent->size().width() / 2.0, 0 );
+  const QPointF leftPoint = pos() + QPointF( -itemSize().width() / 2.0, 0 );
   const double distLeft = otherRect.distance( QgsPointXY( leftPoint ) );
 
-  const QPointF rightPoint = pos() + QPointF( mComponent->size().width() / 2.0, 0 );
+  const QPointF rightPoint = pos() + QPointF( itemSize().width() / 2.0, 0 );
   const double distRight = otherRect.distance( QgsPointXY( rightPoint ) );
 
-  const QPointF topPoint = pos() + QPointF( 0, -mComponent->size().height() / 2.0 );
+  const QPointF topPoint = pos() + QPointF( 0, -itemSize().height() / 2.0 );
   const double distTop = otherRect.distance( QgsPointXY( topPoint ) );
 
-  const QPointF bottomPoint = pos() + QPointF( 0, mComponent->size().height() / 2.0 );
+  const QPointF bottomPoint = pos() + QPointF( 0, itemSize().height() / 2.0 );
   const double distBottom = otherRect.distance( QgsPointXY( bottomPoint ) );
 
   if ( distLeft <= distRight && distLeft <= distTop && distLeft <= distBottom )
@@ -459,16 +641,16 @@ QPointF QgsModelComponentGraphicItem::calculateAutomaticLinkPoint( const QPointF
 {
   // find closest edge to other point
   const QgsPointXY otherPt( point );
-  const QPointF leftPoint = pos() + QPointF( -mComponent->size().width() / 2.0, 0 );
+  const QPointF leftPoint = pos() + QPointF( -itemSize().width() / 2.0, 0 );
   const double distLeft = otherPt.distance( QgsPointXY( leftPoint ) );
 
-  const QPointF rightPoint = pos() + QPointF( mComponent->size().width() / 2.0, 0 );
+  const QPointF rightPoint = pos() + QPointF( itemSize().width() / 2.0, 0 );
   const double distRight = otherPt.distance( QgsPointXY( rightPoint ) );
 
-  const QPointF topPoint = pos() + QPointF( 0, -mComponent->size().height() / 2.0 );
+  const QPointF topPoint = pos() + QPointF( 0, -itemSize().height() / 2.0 );
   const double distTop = otherPt.distance( QgsPointXY( topPoint ) );
 
-  const QPointF bottomPoint = pos() + QPointF( 0, mComponent->size().height() / 2.0 );
+  const QPointF bottomPoint = pos() + QPointF( 0, itemSize().height() / 2.0 );
   const double distBottom = otherPt.distance( QgsPointXY( bottomPoint ) );
 
   if ( distLeft <= distRight && distLeft <= distTop && distLeft <= distBottom )
@@ -512,8 +694,11 @@ void QgsModelParameterGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEv
   QMenu *popupmenu = new QMenu( event->widget() );
   QAction *removeAction = popupmenu->addAction( QObject::tr( "Remove" ) );
   connect( removeAction, &QAction::triggered, this, &QgsModelParameterGraphicItem::deleteComponent );
-  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit" ) );
+  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit…" ) );
   connect( editAction, &QAction::triggered, this, &QgsModelParameterGraphicItem::editComponent );
+  QAction *editCommentAction = popupmenu->addAction( component()->comment()->description().isEmpty() ? QObject::tr( "Add Comment…" ) : QObject::tr( "Edit Comment…" ) );
+  connect( editCommentAction, &QAction::triggered, this, &QgsModelParameterGraphicItem::editComment );
+
   popupmenu->exec( event->screenPos() );
 }
 
@@ -558,6 +743,35 @@ QPicture QgsModelParameterGraphicItem::iconPicture() const
   return mPicture;
 }
 
+void QgsModelParameterGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
+{
+  if ( QgsProcessingModelParameter *param = dynamic_cast< QgsProcessingModelParameter * >( component() ) )
+  {
+    model()->parameterComponent( param->parameterName() ).setPosition( pos );
+    model()->parameterComponent( param->parameterName() ).setSize( size );
+  }
+}
+
+bool QgsModelParameterGraphicItem::canDeleteComponent()
+{
+  if ( const QgsProcessingModelParameter *param = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
+  {
+    if ( model()->childAlgorithmsDependOnParameter( param->parameterName() ) )
+    {
+      return false;
+    }
+    else if ( model()->otherParametersDependOnParameter( param->parameterName() ) )
+    {
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 void QgsModelParameterGraphicItem::deleteComponent()
 {
   if ( const QgsProcessingModelParameter *param = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
@@ -576,6 +790,7 @@ void QgsModelParameterGraphicItem::deleteComponent()
     }
     else
     {
+      emit aboutToChange( tr( "Delete Input %1" ).arg( param->description() ) );
       model()->removeModelParameter( param->parameterName() );
       emit changed();
       emit requestModelRepaint();
@@ -588,7 +803,7 @@ void QgsModelParameterGraphicItem::deleteComponent()
 QgsModelChildAlgorithmGraphicItem::QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( child, model, parent )
 {
-  if ( !child->algorithm()->svgIconPath().isEmpty() )
+  if ( child->algorithm() && !child->algorithm()->svgIconPath().isEmpty() )
   {
     QSvgRenderer svg( child->algorithm()->svgIconPath() );
     const QSizeF size = svg.defaultSize();
@@ -597,7 +812,7 @@ QgsModelChildAlgorithmGraphicItem::QgsModelChildAlgorithmGraphicItem( QgsProcess
     svg.render( &painter );
     painter.end();
   }
-  else
+  else if ( child->algorithm() )
   {
     mPixmap = child->algorithm()->icon().pixmap( 15, 15 );
   }
@@ -610,8 +825,11 @@ void QgsModelChildAlgorithmGraphicItem::contextMenuEvent( QGraphicsSceneContextM
   QMenu *popupmenu = new QMenu( event->widget() );
   QAction *removeAction = popupmenu->addAction( QObject::tr( "Remove" ) );
   connect( removeAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::deleteComponent );
-  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit" ) );
+  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit…" ) );
   connect( editAction, &QAction::triggered, this, &QgsModelChildAlgorithmGraphicItem::editComponent );
+  QAction *editCommentAction = popupmenu->addAction( component()->comment()->description().isEmpty() ? QObject::tr( "Add Comment…" ) : QObject::tr( "Edit Comment…" ) );
+  connect( editCommentAction, &QAction::triggered, this, &QgsModelParameterGraphicItem::editComment );
+  popupmenu->addSeparator();
 
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
   {
@@ -680,6 +898,9 @@ int QgsModelChildAlgorithmGraphicItem::linkPointCount( Qt::Edge edge ) const
 {
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
   {
+    if ( !child->algorithm() )
+      return 0;
+
     switch ( edge )
     {
       case Qt::BottomEdge:
@@ -709,6 +930,9 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
 
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
   {
+    if ( !child->algorithm() )
+      return 0;
+
     switch ( edge )
     {
       case Qt::BottomEdge:
@@ -733,10 +957,29 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
   return QString();
 }
 
+void QgsModelChildAlgorithmGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
+{
+  if ( QgsProcessingModelChildAlgorithm *child = dynamic_cast< QgsProcessingModelChildAlgorithm * >( component() ) )
+  {
+    model()->childAlgorithm( child->childId() ).setPosition( pos );
+    model()->childAlgorithm( child->childId() ).setSize( size );
+  }
+}
+
+bool QgsModelChildAlgorithmGraphicItem::canDeleteComponent()
+{
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
+  {
+    return model()->dependentChildAlgorithms( child->childId() ).empty();
+  }
+  return false;
+}
+
 void QgsModelChildAlgorithmGraphicItem::deleteComponent()
 {
   if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( component() ) )
   {
+    emit aboutToChange( tr( "Remove %1" ).arg( child->algorithm() ? child->algorithm()->displayName() : tr( "Algorithm" ) ) );
     if ( !model()->removeChildAlgorithm( child->childId() ) )
     {
       QMessageBox::warning( nullptr, QObject::tr( "Could not remove algorithm" ),
@@ -788,7 +1031,6 @@ QgsModelOutputGraphicItem::QgsModelOutputGraphicItem( QgsProcessingModelOutput *
   setLabel( output->name() );
 }
 
-
 QColor QgsModelOutputGraphicItem::fillColor( QgsModelComponentGraphicItem::State state ) const
 {
   QColor c( 172, 196, 114 );
@@ -830,15 +1072,156 @@ QPicture QgsModelOutputGraphicItem::iconPicture() const
   return mPicture;
 }
 
+void QgsModelOutputGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
+{
+  if ( QgsProcessingModelOutput *output = dynamic_cast< QgsProcessingModelOutput * >( component() ) )
+  {
+    model()->childAlgorithm( output->childId() ).modelOutput( output->name() ).setPosition( pos );
+    model()->childAlgorithm( output->childId() ).modelOutput( output->name() ).setSize( size );
+  }
+}
+
+bool QgsModelOutputGraphicItem::canDeleteComponent()
+{
+  if ( dynamic_cast< const QgsProcessingModelOutput * >( component() ) )
+  {
+    return true;
+  }
+  return false;
+}
+
 void QgsModelOutputGraphicItem::deleteComponent()
 {
   if ( const QgsProcessingModelOutput *output = dynamic_cast< const QgsProcessingModelOutput * >( component() ) )
   {
+    emit aboutToChange( tr( "Delete Output %1" ).arg( output->description() ) );
     model()->childAlgorithm( output->childId() ).removeModelOutput( output->name() );
     model()->updateDestinationParameters();
     emit changed();
     emit requestModelRepaint();
   }
+}
+
+
+
+
+QgsModelCommentGraphicItem::QgsModelCommentGraphicItem( QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
+  : QgsModelComponentGraphicItem( comment, model, parent )
+  , mParentComponent( parentItem->component()->clone() )
+  , mParentItem( parentItem )
+{
+  setLabel( comment->description() );
+
+  QFont f = font();
+  f.setPixelSize( 9 );
+  setFont( f );
+}
+
+void QgsModelCommentGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
+{
+  QMenu *popupmenu = new QMenu( event->widget() );
+  QAction *removeAction = popupmenu->addAction( QObject::tr( "Remove" ) );
+  connect( removeAction, &QAction::triggered, this, &QgsModelCommentGraphicItem::deleteComponent );
+  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit…" ) );
+  connect( editAction, &QAction::triggered, this, &QgsModelCommentGraphicItem::editComponent );
+  popupmenu->exec( event->screenPos() );
+}
+
+QgsModelCommentGraphicItem::~QgsModelCommentGraphicItem() = default;
+
+QColor QgsModelCommentGraphicItem::fillColor( QgsModelComponentGraphicItem::State state ) const
+{
+  QColor c( 230, 230, 230 );
+  switch ( state )
+  {
+    case Selected:
+      c = c.darker( 110 );
+      break;
+    case Hover:
+      c = c.darker( 105 );
+      break;
+
+    case Normal:
+      break;
+  }
+  return c;
+}
+
+QColor QgsModelCommentGraphicItem::strokeColor( QgsModelComponentGraphicItem::State state ) const
+{
+  switch ( state )
+  {
+    case Selected:
+      return QColor( 50, 50, 50 );
+    case Hover:
+    case Normal:
+      return QColor( 150, 150, 150 );
+  }
+  return QColor();
+}
+
+QColor QgsModelCommentGraphicItem::textColor( QgsModelComponentGraphicItem::State ) const
+{
+  return QColor( 100, 100, 100 );
+}
+
+Qt::PenStyle QgsModelCommentGraphicItem::strokeStyle( QgsModelComponentGraphicItem::State ) const
+{
+  return Qt::DotLine;
+}
+
+void QgsModelCommentGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
+{
+  if ( QgsProcessingModelComment *comment = modelComponent() )
+  {
+    comment->setPosition( pos );
+    comment->setSize( size );
+  }
+}
+
+bool QgsModelCommentGraphicItem::canDeleteComponent()
+{
+  if ( modelComponent() )
+  {
+    return true;
+  }
+  return false;
+}
+
+void QgsModelCommentGraphicItem::deleteComponent()
+{
+  if ( QgsProcessingModelComment *comment = modelComponent() )
+  {
+    emit aboutToChange( tr( "Delete Comment" ) );
+    comment->setDescription( QString() );
+    emit changed();
+    emit requestModelRepaint();
+  }
+}
+
+void QgsModelCommentGraphicItem::editComponent()
+{
+  if ( mParentItem )
+  {
+    mParentItem->editComment();
+  }
+}
+
+QgsProcessingModelComment *QgsModelCommentGraphicItem::modelComponent()
+{
+  if ( const QgsProcessingModelChildAlgorithm *child = dynamic_cast< const QgsProcessingModelChildAlgorithm * >( mParentComponent.get() ) )
+  {
+    return model()->childAlgorithm( child->childId() ).comment();
+  }
+  else if ( const QgsProcessingModelParameter *param = dynamic_cast< const QgsProcessingModelParameter * >( mParentComponent.get() ) )
+  {
+    return model()->parameterComponent( param->parameterName() ).comment();
+  }
+  else if ( const QgsProcessingModelOutput *output = dynamic_cast< const QgsProcessingModelOutput * >( mParentComponent.get() ) )
+  {
+    return model()->childAlgorithm( output->childId() ).modelOutput( output->name() ).comment();
+  }
+  return nullptr;
 }
 
 

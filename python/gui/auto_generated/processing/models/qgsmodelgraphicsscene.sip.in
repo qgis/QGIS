@@ -31,11 +31,16 @@ QGraphicsScene subclass representing the model designer.
     {
       ArrowLink,
       ModelComponent,
+      MouseHandles,
+      RubberBand,
+      ZSnapIndicator,
+
     };
 
     enum Flag
     {
       FlagHideControls,
+      FlagHideComments,
     };
     typedef QFlags<QgsModelGraphicsScene::Flag> Flags;
 
@@ -72,6 +77,92 @@ Returns the current combination of flags set for the scene.
 
 .. seealso:: :py:func:`setFlag`
 %End
+
+    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
+
+
+    void createItems( QgsProcessingModelAlgorithm *model, QgsProcessingContext &context );
+%Docstring
+Populates the scene by creating items representing the specified ``model``.
+%End
+
+    QList<QgsModelComponentGraphicItem *> selectedComponentItems();
+%Docstring
+Returns list of selected component items.
+%End
+
+    QgsModelComponentGraphicItem *componentItemAt( QPointF position ) const;
+%Docstring
+Returns the topmost component item at a specified ``position``.
+%End
+
+    void selectAll();
+%Docstring
+Selects all the components in the scene.
+%End
+
+    void deselectAll();
+%Docstring
+Clears any selected items in the scene.
+
+Call this method rather than QGraphicsScene.clearSelection, as the latter does
+not correctly emit signals to allow the scene's model to update.
+%End
+
+    void setSelectedItem( QgsModelComponentGraphicItem *item );
+%Docstring
+Clears any selected items and sets ``item`` as the current selection.
+%End
+
+  signals:
+
+    void rebuildRequired();
+%Docstring
+Emitted when a change in the model requires a full rebuild of the scene.
+%End
+
+    void componentAboutToChange( const QString &text, int id = 0 );
+%Docstring
+Emitted whenever a component of the model is about to be changed.
+
+The ``text`` argument gives the translated text describing the change about to occur, and the
+optional ``id`` can be used to group the associated undo commands.
+%End
+
+    void componentChanged();
+%Docstring
+Emitted whenever a component of the model is changed.
+%End
+
+    void selectedItemChanged( QgsModelComponentGraphicItem *selected );
+%Docstring
+Emitted whenever the selected item changes.
+If ``None``, no item is selected.
+%End
+
+  protected:
+
+    virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const /Factory/;
+%Docstring
+Creates a new graphic item for a model parameter.
+%End
+
+    virtual QgsModelComponentGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  /Factory/;
+%Docstring
+Creates a new graphic item for a model child algorithm.
+%End
+
+    virtual QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const /Factory/;
+%Docstring
+Creates a new graphic item for a model output.
+%End
+
+    virtual QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment,
+        QgsModelComponentGraphicItem *parentItem ) const /Factory/;
+%Docstring
+Creates a new graphic item for a model comment.
+%End
+
 
 };
 

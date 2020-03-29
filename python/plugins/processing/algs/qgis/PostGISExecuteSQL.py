@@ -21,9 +21,14 @@ __author__ = 'Victor Olaya, Carterix Geomatics'
 __date__ = 'October 2012'
 __copyright__ = '(C) 2012, Victor Olaya, Carterix Geomatics'
 
-from qgis.core import (QgsProcessingException, QgsProcessingParameterString)
+from qgis.core import (
+    QgsProcessingException,
+    QgsProcessingParameterString,
+    QgsProcessingParameterProviderConnection,
+    QgsProviderRegistry,
+    QgsProviderConnectionException
+)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools import postgis
 
 
 class PostGISExecuteSQL(QgisAlgorithm):
@@ -41,12 +46,9 @@ class PostGISExecuteSQL(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        db_param = QgsProcessingParameterString(
+        db_param = QgsProcessingParameterProviderConnection(
             self.DATABASE,
-            self.tr('Database (connection name)'))
-        db_param.setMetadata({
-            'widget_wrapper': {
-                'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
+            self.tr('Database (connection name)'), 'postgres')
         self.addParameter(db_param)
         self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query'), multiLine=True))
 
@@ -63,13 +65,19 @@ class PostGISExecuteSQL(QgisAlgorithm):
         return self.tr('postgis,database').split(',')
 
     def processAlgorithm(self, parameters, context, feedback):
-        connection = self.parameterAsString(parameters, self.DATABASE, context)
-        db = postgis.GeoDB.from_name(connection)
+        connection_name = self.parameterAsConnectionName(parameters, self.DATABASE, context)
+
+        # resolve connection details to uri
+        try:
+            md = QgsProviderRegistry.instance().providerMetadata('postgres')
+            conn = md.createConnection(connection_name)
+        except QgsProviderConnectionException:
+            raise QgsProcessingException(self.tr('Could not retrieve connection details for {}').format(connection_name))
 
         sql = self.parameterAsString(parameters, self.SQL, context).replace('\n', ' ')
         try:
-            db._exec_sql_and_commit(str(sql))
-        except postgis.DbError as e:
-            raise QgsProcessingException(
-                self.tr('Error executing SQL:\n{0}').format(str(e)))
+            conn.executeSql(sql)
+        except QgsProviderConnectionException as e:
+            raise QgsProcessingException(self.tr('Error executing SQL:\n{0}').format(e))
+
         return {}

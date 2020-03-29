@@ -19,6 +19,7 @@
 #include "qgsdxfexport.h"
 #include "qgsdxfpaintdevice.h"
 #include "qgsexpression.h"
+#include "qgsfontutils.h"
 #include "qgsimagecache.h"
 #include "qgsimageoperation.h"
 #include "qgsrendercontext.h"
@@ -2979,14 +2980,10 @@ QgsFontMarkerSymbolLayer::QgsFontMarkerSymbolLayer( const QString &fontFamily, Q
   mPenJoinStyle = DEFAULT_FONTMARKER_JOINSTYLE;
 }
 
-QgsFontMarkerSymbolLayer::~QgsFontMarkerSymbolLayer()
-{
-  delete mFontMetrics;
-}
-
 QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QgsStringMap &props )
 {
   QString fontFamily = DEFAULT_FONTMARKER_FONT;
+  QString fontStyle = DEFAULT_FONTMARKER_FONT;
   QString string = DEFAULT_FONTMARKER_CHR;
   double pointSize = DEFAULT_FONTMARKER_SIZE;
   QColor color = DEFAULT_FONTMARKER_COLOR;
@@ -3005,6 +3002,8 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QgsStringMap &props )
 
   QgsFontMarkerSymbolLayer *m = new QgsFontMarkerSymbolLayer( fontFamily, string, pointSize, color, angle );
 
+  if ( props.contains( QStringLiteral( "font_style" ) ) )
+    m->setFontStyle( props[QStringLiteral( "font_style" )] );
   if ( props.contains( QStringLiteral( "outline_color" ) ) )
     m->setStrokeColor( QgsSymbolLayerUtils::decodeColor( props[QStringLiteral( "outline_color" )] ) );
   if ( props.contains( QStringLiteral( "outline_width" ) ) )
@@ -3054,13 +3053,17 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mPen.setWidthF( context.renderContext().convertToPainterUnits( mStrokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale ) );
 
   mFont = QFont( mFontFamily );
+  if ( !mFontStyle.isEmpty() )
+  {
+    mFont.setStyleName( QgsFontUtils::translateNamedStyle( mFontStyle ) );
+  }
+
   const double sizePixels = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
   mNonZeroFontSize = !qgsDoubleNear( sizePixels, 0.0 );
   // if a non zero, but small pixel size results, round up to 2 pixels so that a "dot" is at least visible
   // (if we set a <=1 pixel size here Qt will reset the font to a default size, leading to much too large symbols)
   mFont.setPixelSize( std::max( 2, static_cast< int >( std::round( sizePixels ) ) ) );
-  delete mFontMetrics;
-  mFontMetrics = new QFontMetrics( mFont );
+  mFontMetrics.reset( new QFontMetrics( mFont ) );
 #if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
   mChrWidth = mFontMetrics->width( mString );
 #else
@@ -3070,7 +3073,9 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mOrigSize = mSize; // save in case the size would be data defined
 
   // use caching only when not using a data defined character
-  mUseCachedPath = !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCharacter );
+  mUseCachedPath = !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontFamily ) &&
+                   !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontStyle ) &&
+                   !mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCharacter );
   if ( mUseCachedPath )
   {
     QPointF chrOffset = mChrOffset;
@@ -3242,6 +3247,23 @@ void QgsFontMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
     p->setPen( Qt::NoPen );
   }
 
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontFamily ) )
+  {
+    context.setOriginalValueVariable( mFontFamily );
+    QString fontFamily = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFontFamily, context.renderContext().expressionContext(), mFontFamily, &ok );
+    mFont.setFamily( ok ? fontFamily : mFontFamily );
+  }
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontStyle ) )
+  {
+    context.setOriginalValueVariable( mFontStyle );
+    QString fontStyle = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFontStyle, context.renderContext().expressionContext(), mFontStyle, &ok );
+    mFont.setStyleName( QgsFontUtils::translateNamedStyle( ok ? fontStyle : mFontStyle ) );
+  }
+  if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontFamily ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFontStyle ) )
+  {
+    mFontMetrics.reset( new QFontMetrics( mFont ) );
+  }
+
   QPointF chrOffset = mChrOffset;
   double chrWidth;
   QString charToRender = characterToRender( context, chrOffset, chrWidth );
@@ -3282,6 +3304,7 @@ QgsStringMap QgsFontMarkerSymbolLayer::properties() const
 {
   QgsStringMap props;
   props[QStringLiteral( "font" )] = mFontFamily;
+  props[QStringLiteral( "font_style" )] = mFontStyle;
   props[QStringLiteral( "chr" )] = mString;
   props[QStringLiteral( "size" )] = QString::number( mSize );
   props[QStringLiteral( "size_unit" )] = QgsUnitTypes::encodeUnit( mSizeUnit );
@@ -3304,6 +3327,7 @@ QgsStringMap QgsFontMarkerSymbolLayer::properties() const
 QgsFontMarkerSymbolLayer *QgsFontMarkerSymbolLayer::clone() const
 {
   QgsFontMarkerSymbolLayer *m = new QgsFontMarkerSymbolLayer( mFontFamily, mString, mSize, mColor, mAngle );
+  m->setFontStyle( mFontStyle );
   m->setStrokeColor( mStrokeColor );
   m->setStrokeWidth( mStrokeWidth );
   m->setStrokeWidthUnit( mStrokeWidthUnit );
@@ -3359,7 +3383,7 @@ QRectF QgsFontMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext &
   ( void )characterToRender( context, chrOffset, chrWidth );
 
   if ( !mFontMetrics )
-    mFontMetrics = new QFontMetrics( mFont );
+    mFontMetrics.reset( new QFontMetrics( mFont ) );
 
   double scaledSize = calculateSize( context );
   if ( !qgsDoubleNear( scaledSize, mOrigSize ) )

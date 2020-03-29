@@ -770,7 +770,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         testPath = "dbname=%s table='test_filter' (geometry) key='id'" % self.dbname
         vl = QgsVectorLayer(testPath, 'test', 'spatialite')
         self.assertTrue(vl.isValid())
-        vl.setSubsetString('"name" REGEXP \'[txe]\'')
+        vl.setSubsetString('"name" REGEXP \'[txe]{3}\'')
         self.assertEqual(vl.featureCount(), 4)
         del(vl)
 
@@ -837,7 +837,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         parts = {'path': filename, 'layerName': 'test'}
         uri = registry.encodeUri('spatialite', parts)
-        self.assertEqual(uri, 'dbname=\'{}\' table="test" (geometry) sql='.format(filename))
+        self.assertEqual(uri, 'dbname=\'{}\' table="test"'.format(filename))
 
     def testPKNotInt(self):
         """ Check when primary key is not an integer """

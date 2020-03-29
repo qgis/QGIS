@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
 

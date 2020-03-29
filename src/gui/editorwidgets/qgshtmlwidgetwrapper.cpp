@@ -50,8 +50,7 @@ void QgsHtmlWidgetWrapper::initWidget( QWidget *editor )
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
 #else
-  QScreen *screen = QGuiApplication::screenAt( mWidget->mapToGlobal( QPoint( mWidget->width() / 2, 0 ) ) );
-  const int horizontalDpi = screen->logicalDotsPerInchX();
+  const int horizontalDpi = mWidget->logicalDpiX();
 #endif
 
   mWidget->setZoomFactor( horizontalDpi / 96.0 );
@@ -82,9 +81,13 @@ void QgsHtmlWidgetWrapper::setHtmlContext( )
   if ( !mWidget )
     return;
 
-  QgsAttributeEditorContext attributecontext = context();
+  const QgsAttributeEditorContext attributecontext = context();
   QgsExpressionContext expressionContext = layer()->createExpressionContext();
   expressionContext << QgsExpressionContextUtils::formScope( mFeature, attributecontext.attributeFormModeString() );
+  if ( attributecontext.parentFormFeature().isValid() )
+  {
+    expressionContext << QgsExpressionContextUtils::parentFormScope( attributecontext.parentFormFeature() );
+  }
   expressionContext.setFeature( mFeature );
 
   HtmlExpression *htmlExpression = new HtmlExpression();

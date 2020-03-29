@@ -68,11 +68,11 @@ class QgsMesh3dAveragingMethod;
  *      "3.0, 2.0 \n" \
  *      "2.0, 3.0 \n" \
  *      "1.0, 3.0 \n" \
- *      "---"
+ *      "---" \
  *      "0, 1, 3, 4 \n" \
  *      "1, 2, 3 \n"
  *    );
- *    QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "memory_mesh");
+ *    QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch layer", "mesh_memory");
  * \endcode
  *
  * \subsection mdal MDAL data provider (mdal)
@@ -158,6 +158,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
                         QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage,
                          const QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) const override;
+    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const override;
+    bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
     QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
@@ -169,21 +171,21 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QString providerType() const;
 
     /**
-     * Returns native mesh (NULLPTR before rendering)
+     * Returns native mesh (NULLPTR before rendering or calling to updateMesh)
      *
      * \note Not available in Python bindings
      */
     QgsMesh *nativeMesh() SIP_SKIP;
 
     /**
-     * Returns native mesh (NULLPTR before rendering)
+     * Returns native mesh (NULLPTR before rendering or calling to updateMesh)
      *
      * \note Not available in Python bindings
      */
     const QgsMesh *nativeMesh() const SIP_SKIP;
 
     /**
-     * Returns triangular mesh (NULLPTR before rendering).
+     * Returns triangular mesh (NULLPTR before rendering or calling to updateMesh).
      *
      * If the parameter triangleSize is provided, among the base triangular mesh
      * and the simplified triangular meshes, the one returned is which has the average triangle size just greater than triangleSize.
@@ -197,9 +199,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsTriangularMesh *triangularMesh( double minimumTriangleSize = 0 ) const SIP_SKIP;
 
     /**
-     * Update the base triangular mesh, create one if it doesn't exist
+     * Gets native mesh and updates (creates if it doesn't exist) the base triangular mesh
+     *
      * \param transform Transformation from layer CRS to destination (e.g. map) CRS. With invalid transform, it keeps the native mesh CRS
-     * \since QGIS 3.14
      */
     void updateTriangularMesh( const QgsCoordinateTransform &transform = QgsCoordinateTransform() );
 
@@ -234,7 +236,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      *
      * \since QGIS 3.14
      */
-
     QgsMeshSimplificationSettings meshSimplificationSettings() const SIP_SKIP;
 
     /**
@@ -242,7 +243,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      *
      * \since QGIS 3.14
      */
-
     void setMeshSimplificationSettings( const QgsMeshSimplificationSettings &meshSimplificationSettings ) SIP_SKIP;
 
     /**
@@ -295,7 +295,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      * \since QGIS 3.8
      */
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
-
 
   signals:
 

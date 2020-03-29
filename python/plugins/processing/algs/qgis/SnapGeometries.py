@@ -26,6 +26,8 @@ from qgis.analysis import (QgsGeometrySnapper,
                            QgsInternalGeometrySnapper)
 from qgis.core import (QgsFeatureSink,
                        QgsProcessing,
+                       QgsMapLayer,
+                       QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
@@ -82,6 +84,12 @@ class SnapGeometriesToLayer(QgisAlgorithm):
 
     def displayName(self):
         return self.tr('Snap geometries to layer')
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagSupportsInPlaceEdits
+
+    def supportInPlaceEdit(self, layer):
+        return layer.type() == QgsMapLayer.VectorLayer
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)

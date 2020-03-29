@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Backport Bot
         if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( join( github.event.pull_request.labels.*.name ), 'backport') ) || contains( github.event.label.name, 'backport' ) )
-        uses: Gaurav0/backport@v1.0.24
+        uses: Gaurav0/backport@v1.0.26
         with:
           bot_username: qgis-bot
           bot_token: ddbdec32940df79f1adf2369b4b10f10b5a66f65

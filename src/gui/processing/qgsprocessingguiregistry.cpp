@@ -47,6 +47,15 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingFieldWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingMapThemeWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingDateTimeWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingProviderConnectionWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDatabaseSchemaWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingDatabaseTableWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingExtentWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMapLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingVectorLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFeatureSourceWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingRasterLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMeshLayerWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

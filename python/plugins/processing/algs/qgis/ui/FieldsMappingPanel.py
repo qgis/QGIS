@@ -34,6 +34,12 @@ from qgis.PyQt.QtCore import (
     pyqtSlot,
     QCoreApplication
 )
+
+from qgis.PyQt.QtGui import (
+    QBrush,
+    QColor
+)
+
 from qgis.PyQt.QtWidgets import (
     QComboBox,
     QHeaderView,
@@ -54,6 +60,7 @@ from qgis.core import (
     QgsProcessingUtils,
     QgsProject,
     QgsVectorLayer,
+    QgsFieldConstraints
 )
 from qgis.gui import QgsFieldExpressionWidget
 
@@ -78,6 +85,12 @@ class FieldsMappingModel(QAbstractTableModel):
         (QVariant.String, "String"),
         (QVariant.List, "List"),
         (QVariant.Bool, "Boolean")])
+
+    constraints = {
+        QgsFieldConstraints.ConstraintNotNull: "NOT NULL",
+        QgsFieldConstraints.ConstraintUnique: "Unique",
+        QgsFieldConstraints.ConstraintExpression: "Expression constraint"
+    }
 
     def __init__(self, parent=None):
         super(FieldsMappingModel, self).__init__(parent)
@@ -109,6 +122,10 @@ class FieldsMappingModel(QAbstractTableModel):
             'name': 'precision',
             'type': QVariant.Int,
             'header': self.tr("Precision")
+        }, {
+            'name': 'constraints',
+            'type': QVariant.String,
+            'header': self.tr("Template properties")
         }]
 
     def columnIndex(self, column_name):
@@ -161,20 +178,28 @@ class FieldsMappingModel(QAbstractTableModel):
                 return section
 
     def flags(self, index):
-        return Qt.ItemFlags(Qt.ItemIsSelectable |
-                            Qt.ItemIsEditable |
-                            Qt.ItemIsEnabled)
+        column_def = self.columns[index.column()]
+
+        flags = Qt.ItemFlags(Qt.ItemIsSelectable |
+                             Qt.ItemIsEnabled)
+        if column_def['name'] != 'constraints':
+            flags = flags | Qt.ItemIsEditable
+
+        return flags
 
     def data(self, index, role=Qt.DisplayRole):
         field = self._mapping[index.row()]
         column_def = self.columns[index.column()]
 
         if role == Qt.DisplayRole:
-            value = field[column_def['name']]
+            value = field[column_def['name']] if column_def['name'] in field else QVariant()
             if column_def['type'] == QVariant.Type:
                 if value == QVariant.Invalid:
                     return ''
                 return self.fieldTypes[value]
+            elif column_def['name'] == 'constraints' and value:
+                return self.tr("Constraints active")
+
             return value
 
         if role == Qt.EditRole:
@@ -186,6 +211,13 @@ class FieldsMappingModel(QAbstractTableModel):
             else:
                 hAlign = Qt.AlignLeft
             return hAlign + Qt.AlignVCenter
+
+        if role == Qt.BackgroundRole:
+            return QBrush(QColor(255, 224, 178)) if 'constraints' in field and field['constraints'] else QVariant()
+
+        if role == Qt.ToolTipRole:
+            if column_def['name'] == 'constraints' and 'constraints' in field:
+                return "<br>".join([self.constraints[constraint] for constraint in field['constraints']])
 
     def setData(self, index, value, role=Qt.EditRole):
         field = self._mapping[index.row()]
@@ -222,13 +254,15 @@ class FieldsMappingModel(QAbstractTableModel):
                     'type': QVariant.Invalid,
                     'length': 0,
                     'precision': 0,
-                    'expression': ''}
+                    'expression': '',
+                    'constraints': ''}
 
         return {'name': field.name(),
                 'type': field.type(),
                 'length': field.length(),
                 'precision': field.precision(),
-                'expression': QgsExpression.quotedColumnRef(field.name())}
+                'expression': QgsExpression.quotedColumnRef(field.name()),
+                'constraints': self.get_field_constraints(field.constraints())}
 
     def loadLayerFields(self, layer):
         self.beginResetModel()
@@ -239,6 +273,26 @@ class FieldsMappingModel(QAbstractTableModel):
                 self._mapping.append(self.newField(field))
 
         self.endResetModel()
+
+    def get_field_constraints(self, field_constraints):
+        constraints = list()
+
+        if field_constraints.constraints() & QgsFieldConstraints.ConstraintNotNull and \
+            field_constraints.constraintStrength(
+                QgsFieldConstraints.ConstraintNotNull) & QgsFieldConstraints.ConstraintStrengthHard:
+            constraints.append(QgsFieldConstraints.ConstraintNotNull)
+
+        if field_constraints.constraints() & QgsFieldConstraints.ConstraintUnique and \
+            field_constraints.constraintStrength(
+                QgsFieldConstraints.ConstraintUnique) & QgsFieldConstraints.ConstraintStrengthHard:
+            constraints.append(QgsFieldConstraints.ConstraintUnique)
+
+        if field_constraints.constraints() & QgsFieldConstraints.ConstraintExpression and \
+            field_constraints.constraintStrength(
+                QgsFieldConstraints.ConstraintExpression) & QgsFieldConstraints.ConstraintStrengthHard:
+            constraints.append(QgsFieldConstraints.ConstraintExpression)
+
+        return constraints
 
 
 class FieldTypeDelegate(QStyledItemDelegate):

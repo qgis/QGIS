@@ -60,7 +60,10 @@ QgsChunkLoader *QgsMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node )
   return new QgsMeshTerrainTileLoader( mTerrain, node, meshLayer(), symbol() );
 }
 
-float QgsMeshTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const {Q_UNUSED( map ); return 0;}
+float QgsMeshTerrainGenerator::rootChunkError( const Qgs3DMapSettings & ) const
+{
+  return 0;
+}
 
 void QgsMeshTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
 {
@@ -77,7 +80,7 @@ void QgsMeshTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
 
   for ( int i = 0; i < triangularMesh->vertices().count(); ++i )
   {
-    float zValue = triangularMesh->vertices().at( i ).z();
+    float zValue = static_cast< float >( triangularMesh->vertices().at( i ).z() );
     if ( min > zValue )
       min = zValue;
     if ( max < zValue )
@@ -131,7 +134,7 @@ QgsRectangle QgsMeshTerrainGenerator::extent() const
   {
     extentInMap = terrainToMapTransform.transform( mLayer->extent() );
   }
-  catch ( QgsCsException &e )
+  catch ( QgsCsException & )
   {
     extentInMap = mLayer->extent();
   }

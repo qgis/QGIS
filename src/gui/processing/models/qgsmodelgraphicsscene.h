@@ -18,8 +18,16 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgsprocessingcontext.h"
 #include <QGraphicsScene>
 
+class QgsProcessingModelAlgorithm;
+class QgsModelComponentGraphicItem;
+class QgsProcessingModelParameter;
+class QgsProcessingModelChildAlgorithm;
+class QgsProcessingModelOutput;
+class QgsProcessingModelComponent;
+class QgsProcessingModelComment;
 
 ///@cond NOT_STABLE
 
@@ -40,12 +48,17 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     {
       ArrowLink = 0, //!< An arrow linking model items
       ModelComponent = 1, //!< Model components (e.g. algorithms, inputs and outputs)
+      MouseHandles = 99, //!< Mouse handles
+      RubberBand = 100, //!< Rubber band item
+      ZSnapIndicator = 101, //!< Z-value for snapping indicator
+
     };
 
     //! Flags for controlling how the scene is rendered and scene behavior
     enum Flag
     {
       FlagHideControls = 1 << 1,  //!< If set, item interactive controls will be hidden
+      FlagHideComments = 1 << 2, //!< If set, comments will be hidden
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -76,9 +89,108 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     QgsModelGraphicsScene::Flags flags() const { return mFlags; }
 
+    void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
+
+    /**
+     * Populates the scene by creating items representing the specified \a model.
+     */
+    void createItems( QgsProcessingModelAlgorithm *model, QgsProcessingContext &context );
+
+    /**
+     * Returns list of selected component items.
+     */
+    QList<QgsModelComponentGraphicItem *> selectedComponentItems();
+
+    /**
+     * Returns the topmost component item at a specified \a position.
+     */
+    QgsModelComponentGraphicItem *componentItemAt( QPointF position ) const;
+
+    /**
+     * Selects all the components in the scene.
+     */
+    void selectAll();
+
+    /**
+     * Clears any selected items in the scene.
+     *
+     * Call this method rather than QGraphicsScene::clearSelection, as the latter does
+     * not correctly emit signals to allow the scene's model to update.
+    */
+    void deselectAll();
+
+    /**
+     * Clears any selected items and sets \a item as the current selection.
+    */
+    void setSelectedItem( QgsModelComponentGraphicItem *item );
+
+  signals:
+
+    /**
+     * Emitted when a change in the model requires a full rebuild of the scene.
+     */
+    void rebuildRequired();
+
+    /**
+     * Emitted whenever a component of the model is about to be changed.
+     *
+    * The \a text argument gives the translated text describing the change about to occur, and the
+    * optional \a id can be used to group the associated undo commands.
+     */
+    void componentAboutToChange( const QString &text, int id = 0 );
+
+    /**
+     * Emitted whenever a component of the model is changed.
+     */
+    void componentChanged();
+
+    /**
+     * Emitted whenever the selected item changes.
+     * If NULLPTR, no item is selected.
+     */
+    void selectedItemChanged( QgsModelComponentGraphicItem *selected );
+
+  protected:
+
+    /**
+     * Creates a new graphic item for a model parameter.
+     */
+    virtual QgsModelComponentGraphicItem *createParameterGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelParameter *param ) const SIP_FACTORY;
+
+    /**
+     * Creates a new graphic item for a model child algorithm.
+     */
+    virtual QgsModelComponentGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  SIP_FACTORY;
+
+    /**
+     * Creates a new graphic item for a model output.
+     */
+    virtual QgsModelComponentGraphicItem *createOutputGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelOutput *output ) const SIP_FACTORY;
+
+    /**
+     * Creates a new graphic item for a model comment.
+     */
+    virtual QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment,
+        QgsModelComponentGraphicItem *parentItem ) const SIP_FACTORY;
+
+
   private:
 
+    struct LinkSource
+    {
+      QgsModelComponentGraphicItem *item = nullptr;
+      Qt::Edge edge = Qt::LeftEdge;
+      int linkIndex = -1;
+    };
+    QList< LinkSource > linkSourcesForParameterValue( QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context ) const;
+
+    void addCommentItemForComponent( QgsProcessingModelAlgorithm *model, const QgsProcessingModelComponent &component, QgsModelComponentGraphicItem *parentItem );
+
     Flags mFlags = nullptr;
+
+    QMap< QString, QgsModelComponentGraphicItem * > mParameterItems;
+    QMap< QString, QgsModelComponentGraphicItem * > mChildAlgorithmItems;
+    QMap< QString, QMap< QString, QgsModelComponentGraphicItem * > > mOutputItems;
 
 };
 

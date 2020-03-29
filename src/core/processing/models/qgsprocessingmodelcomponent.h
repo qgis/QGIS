@@ -23,6 +23,8 @@
 #include <QPointF>
 #include <QSizeF>
 
+class QgsProcessingModelComment;
+
 ///@cond NOT_STABLE
 
 /**
@@ -88,11 +90,29 @@ class CORE_EXPORT QgsProcessingModelComponent
     void setLinksCollapsed( Qt::Edge edge, bool collapsed );
 
     /**
+     * Returns the comment attached to this component (may be NULLPTR)
+     * \see setComment()
+     */
+    SIP_SKIP virtual const QgsProcessingModelComment *comment() const { return nullptr; }
+
+    /**
+     * Returns the comment attached to this component (may be NULLPTR)
+     * \see setComment()
+     */
+    virtual QgsProcessingModelComment *comment() { return nullptr; }
+
+    /**
+     * Sets the \a comment attached to this component.
+     * \see comment()
+     */
+    virtual void setComment( const QgsProcessingModelComment &comment );
+
+    /**
      * Clones the component.
      *
      * Ownership is transferred to the caller.
      */
-    virtual QgsProcessingModelComponent *clone() = 0 SIP_FACTORY;
+    virtual QgsProcessingModelComponent *clone() const = 0 SIP_FACTORY;
 
   protected:
 
@@ -116,6 +136,16 @@ class CORE_EXPORT QgsProcessingModelComponent
      * \see saveCommonProperties()
      */
     void restoreCommonProperties( const QVariantMap &map );
+
+    /**
+     * Copies all non-specific definition properties from the \a other component definition.
+     *
+     * This includes properties like the size and position of the component, but not properties
+     * like the specific algorithm or input details.
+     *
+     * \since QGIS 3.14
+     */
+    void copyNonDefinitionProperties( const QgsProcessingModelComponent &other );
 
   private:
 

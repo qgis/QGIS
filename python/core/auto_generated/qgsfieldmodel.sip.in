@@ -136,6 +136,14 @@ like the field name, alias and type.
 .. versionadded:: 3.0
 %End
 
+    static QString fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer );
+%Docstring
+Returns a HTML formatted tooltip string for a ``field``, containing details
+like the field name, alias, type and expression.
+
+.. versionadded:: 3.14
+%End
+
     void setFields( const QgsFields &fields );
 %Docstring
 Manually sets the ``fields`` to use for the model.

@@ -813,14 +813,14 @@ QgsGeometry::OperationResult QgsGeometry::rotate( double rotation, const QgsPoin
   return QgsGeometry::Success;
 }
 
-QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints )
+QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints, bool splitFeature )
 {
   QgsPointSequence split, topology;
   convertPointList( splitLine, split );
   convertPointList( topologyTestPoints, topology );
-  return splitGeometry( split, newGeometries, topological, topology );
+  return splitGeometry( split, newGeometries, topological, topology, splitFeature );
 }
-QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints )
+QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QgsPointSequence &topologyTestPoints, bool splitFeature )
 {
   if ( !d->geometry )
   {
@@ -836,8 +836,8 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QgsPointSequence 
 
   if ( result == QgsGeometryEngine::Success )
   {
-    *this = newGeoms.takeAt( 0 );
-
+    if ( splitFeature )
+      *this = newGeoms.takeAt( 0 );
     newGeometries = newGeoms;
   }
 

@@ -23,6 +23,7 @@
 #include "qgsprocessingmodelcomponent.h"
 #include "qgsprocessingmodelchildparametersource.h"
 #include "qgsprocessingmodeloutput.h"
+#include "qgsprocessingmodelcomment.h"
 #include <memory>
 
 class QgsProcessingModelAlgorithm;
@@ -48,7 +49,17 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     QgsProcessingModelChildAlgorithm( const QgsProcessingModelChildAlgorithm &other );
     QgsProcessingModelChildAlgorithm &operator=( const QgsProcessingModelChildAlgorithm &other );
 
-    QgsProcessingModelChildAlgorithm *clone() override SIP_FACTORY;
+    QgsProcessingModelChildAlgorithm *clone() const override SIP_FACTORY;
+
+    /**
+     * Copies all non-specific definition properties from the the matching component from a \a model.
+     *
+     * This includes properties like the size and position of the component, but not properties
+     * like the specific algorithm or input details.
+     *
+     * \since QGIS 3.14
+     */
+    void copyNonDefinitionPropertiesFromModel( QgsProcessingModelAlgorithm *model );
 
     /**
      * Returns the child algorithm's unique ID string, used the identify
@@ -261,6 +272,10 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
     QStringList asPythonCode( QgsProcessing::PythonOutputType outputType, const QgsStringMap &extraParameters, int currentIndent, int indentSize,
                               const QMap<QString, QString> &friendlyChildNames, const QMap<QString, QString> &friendlyOutputNames ) const;
 
+    SIP_SKIP const QgsProcessingModelComment *comment() const override { return &mComment; }
+    QgsProcessingModelComment *comment() override { return &mComment; }
+    void setComment( const QgsProcessingModelComment &comment ) override { mComment = comment; }
+
   private:
 
     QString mId;
@@ -280,6 +295,8 @@ class CORE_EXPORT QgsProcessingModelChildAlgorithm : public QgsProcessingModelCo
 
     //! List of child algorithms from the parent model on which this algorithm is dependent
     QStringList mDependencies;
+
+    QgsProcessingModelComment mComment;
 
     friend class TestQgsProcessing;
 

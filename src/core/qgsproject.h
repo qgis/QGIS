@@ -74,6 +74,7 @@ class QgsMapLayer;
 class QgsBookmarkManager;
 class QgsProjectViewSettings;
 class QgsProjectDisplaySettings;
+class QgsProjectTimeSettings;
 
 /**
  * \ingroup core
@@ -610,6 +611,23 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.10.1
      */
     QgsProjectViewSettings *viewSettings();
+
+    /**
+     * Returns the project's time settings, which contains the project's temporal range and other
+     * time based settings.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.14
+     */
+    const QgsProjectTimeSettings *timeSettings() const SIP_SKIP;
+
+    /**
+     * Returns the project's time settings, which contains the project's temporal range and other
+     * time based settings.
+     *
+     * \since QGIS 3.14
+     */
+    QgsProjectTimeSettings *timeSettings();
 
     /**
      * Returns the project's display settings, which settings and properties relating
@@ -1789,6 +1807,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsBookmarkManager *mBookmarkManager = nullptr;
 
     QgsProjectViewSettings *mViewSettings = nullptr;
+
+    QgsProjectTimeSettings *mTimeSettings = nullptr;
 
     QgsProjectDisplaySettings *mDisplaySettings = nullptr;
 

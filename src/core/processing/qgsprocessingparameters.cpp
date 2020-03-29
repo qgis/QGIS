@@ -35,7 +35,30 @@
 #include "qgsprintlayout.h"
 #include "qgssymbollayerutils.h"
 #include "qgsfileutils.h"
+#include "qgsproviderregistry.h"
 #include <functional>
+
+
+QVariant QgsProcessingFeatureSourceDefinition::toVariant() const
+{
+  QVariantMap map;
+  map.insert( QStringLiteral( "source" ), source.toVariant() );
+  map.insert( QStringLiteral( "selected_only" ), selectedFeaturesOnly );
+  map.insert( QStringLiteral( "feature_limit" ), featureLimit );
+  map.insert( QStringLiteral( "flags" ), static_cast< int >( flags ) );
+  map.insert( QStringLiteral( "geometry_check" ), static_cast< int >( geometryCheck ) );
+  return map;
+}
+
+bool QgsProcessingFeatureSourceDefinition::loadVariant( const QVariantMap &map )
+{
+  source.loadVariant( map.value( QStringLiteral( "source" ) ) );
+  selectedFeaturesOnly = map.value( QStringLiteral( "selected_only" ), false ).toBool();
+  featureLimit = map.value( QStringLiteral( "feature_limit" ), -1 ).toLongLong();
+  flags = static_cast< Flags >( map.value( QStringLiteral( "flags" ), 0 ).toInt() );
+  geometryCheck = static_cast< QgsFeatureRequest::InvalidGeometryCheck >( map.value( QStringLiteral( "geometry_check" ), QgsFeatureRequest::GeometryAbortOnInvalid ).toInt() );
+  return true;
+}
 
 
 QVariant QgsProcessingOutputLayerDefinition::toVariant() const
@@ -51,6 +74,11 @@ bool QgsProcessingOutputLayerDefinition::loadVariant( const QVariantMap &map )
   sink.loadVariant( map.value( QStringLiteral( "sink" ) ) );
   createOptions = map.value( QStringLiteral( "create_options" ) ).toMap();
   return true;
+}
+
+bool QgsProcessingOutputLayerDefinition::operator==( const QgsProcessingOutputLayerDefinition &other ) const
+{
+  return sink == other.sink && destinationProject == other.destinationProject && destinationName == other.destinationName && createOptions == other.createOptions;
 }
 
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
@@ -548,6 +576,10 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
       return nullptr;
     }
     // fall back to default
+    if ( !definition )
+    {
+      throw QgsProcessingException( QObject::tr( "No parameter definition for the sink" ) );
+    }
     dest = definition->defaultValue().toString();
   }
   else
@@ -605,11 +637,13 @@ QString parameterAsCompatibleSourceLayerPathInternal( const QgsProcessingParamet
   QVariant val = parameters.value( definition->name() );
 
   bool selectedFeaturesOnly = false;
+  long long featureLimit = -1;
   if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
   {
     // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
     selectedFeaturesOnly = fromVar.selectedFeaturesOnly;
+    featureLimit = fromVar.featureLimit;
     val = fromVar.source;
   }
   else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
@@ -663,10 +697,10 @@ QString parameterAsCompatibleSourceLayerPathInternal( const QgsProcessingParamet
 
   if ( layerName )
     return QgsProcessingUtils::convertToCompatibleFormatAndLayerName( vl, selectedFeaturesOnly, definition->name(),
-           compatibleFormats, preferredFormat, context, feedback, *layerName );
+           compatibleFormats, preferredFormat, context, feedback, *layerName, featureLimit );
   else
     return QgsProcessingUtils::convertToCompatibleFormat( vl, selectedFeaturesOnly, definition->name(),
-           compatibleFormats, preferredFormat, context, feedback );
+           compatibleFormats, preferredFormat, context, feedback, featureLimit );
 }
 
 QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, const QStringList &compatibleFormats, const QString &preferredFormat, QgsProcessingFeedback *feedback )
@@ -779,14 +813,12 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
   QVariant val = value;
 
   QgsProject *destinationProject = nullptr;
-  QVariantMap createOptions;
   QString destName;
   if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
   {
     // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
     QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
     destinationProject = fromVar.destinationProject;
-    createOptions = fromVar.createOptions;
     val = fromVar.sink;
     destName = fromVar.destinationName;
   }
@@ -921,6 +953,12 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
   if ( val.canConvert< QgsRectangle >() )
   {
     return val.value<QgsRectangle>();
+  }
+  if ( val.canConvert< QgsGeometry >() )
+  {
+    const QgsGeometry geom = val.value<QgsGeometry>();
+    if ( !geom.isNull() )
+      return geom.boundingBox();
   }
   if ( val.canConvert< QgsReferencedRectangle >() )
   {
@@ -1147,7 +1185,12 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
 QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
   QVariant val = parameters.value( definition->name() );
+  return parameterAsExtentCrs( definition, val, context );
+}
 
+QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+{
+  QVariant val = value;
   if ( val.canConvert< QgsReferencedRectangle >() )
   {
     QgsReferencedRectangle rr = val.value<QgsReferencedRectangle>();
@@ -1770,6 +1813,51 @@ QColor QgsProcessingParameters::parameterAsColor( const QgsProcessingParameterDe
   return c;
 }
 
+QString QgsProcessingParameters::parameterAsConnectionName( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QString();
+
+  return parameterAsConnectionName( definition, parameters.value( definition->name() ), context );
+}
+
+QString QgsProcessingParameters::parameterAsConnectionName( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context )
+{
+  // for now it's just treated identical to strings, but in future we may want flexibility to amend this
+  // (hence the new method)
+  return parameterAsString( definition, value, context );
+}
+
+QString QgsProcessingParameters::parameterAsSchema( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QString();
+
+  return parameterAsSchema( definition, parameters.value( definition->name() ), context );
+}
+
+QString QgsProcessingParameters::parameterAsSchema( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context )
+{
+  // for now it's just treated identical to strings, but in future we may want flexibility to amend this (e.g. if we want to embed connection details into the schema
+  // parameter values, such as via a delimiter separated string)
+  return parameterAsString( definition, value, context );
+}
+
+QString QgsProcessingParameters::parameterAsDatabaseTableName( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context )
+{
+  if ( !definition )
+    return QString();
+
+  return parameterAsDatabaseTableName( definition, parameters.value( definition->name() ), context );
+}
+
+QString QgsProcessingParameters::parameterAsDatabaseTableName( const QgsProcessingParameterDefinition *definition, const QVariant &value, const QgsProcessingContext &context )
+{
+  // for now it's just treated identical to strings, but in future we may want flexibility to amend this (e.g. if we want to embed connection details into the table name
+  // parameter values, such as via a delimiter separated string)
+  return parameterAsString( definition, value, context );
+}
+
 QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromVariantMap( const QVariantMap &map )
 {
   QString type = map.value( QStringLiteral( "parameter_type" ) ).toString();
@@ -1936,6 +2024,12 @@ QgsProcessingParameterDefinition *QgsProcessingParameters::parameterFromScriptCo
     return QgsProcessingParameterMapTheme::fromScriptCode( name, description, isOptional, definition );
   else if ( type == QStringLiteral( "datetime" ) )
     return QgsProcessingParameterDateTime::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "providerconnection" ) )
+    return QgsProcessingParameterProviderConnection::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "databaseschema" ) )
+    return QgsProcessingParameterDatabaseSchema::fromScriptCode( name, description, isOptional, definition );
+  else if ( type == QStringLiteral( "databasetable" ) )
+    return QgsProcessingParameterDatabaseTable::fromScriptCode( name, description, isOptional, definition );
 
   return nullptr;
 }
@@ -2191,8 +2285,9 @@ QgsProcessingParameterCrs *QgsProcessingParameterCrs::fromScriptCode( const QStr
   return new QgsProcessingParameterCrs( name, description, definition.compare( QLatin1String( "none" ), Qt::CaseInsensitive ) == 0 ? QVariant() : definition, isOptional );
 }
 
-QgsProcessingParameterMapLayer::QgsProcessingParameterMapLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
+QgsProcessingParameterMapLayer::QgsProcessingParameterMapLayer( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, const QList<int> &types )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , QgsProcessingParameterLimitedDataTypes( types )
 {
 
 }
@@ -2248,9 +2343,175 @@ QString QgsProcessingParameterMapLayer::valueAsPythonString( const QVariant &val
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 
+QString createAllMapLayerFileFilter()
+{
+  QStringList vectors = QgsProviderRegistry::instance()->fileVectorFilters().split( QStringLiteral( ";;" ) );
+  QStringList rasters = QgsProviderRegistry::instance()->fileRasterFilters().split( QStringLiteral( ";;" ) );
+  for ( const QString &raster : rasters )
+  {
+    if ( !vectors.contains( raster ) )
+      vectors << raster;
+  }
+  QStringList meshFilters = QgsProviderRegistry::instance()->fileMeshFilters().split( QStringLiteral( ";;" ) );
+  for ( const QString &mesh : meshFilters )
+  {
+    if ( !vectors.contains( mesh ) )
+      vectors << mesh;
+  }
+  vectors.removeAll( QObject::tr( "All files (*.*)" ) );
+  std::sort( vectors.begin(), vectors.end() );
+
+  return QObject::tr( "All files (*.*)" ) + QStringLiteral( ";;" ) + vectors.join( QStringLiteral( ";;" ) );
+}
+
+QString QgsProcessingParameterMapLayer::createFileFilter() const
+{
+  return createAllMapLayerFileFilter();
+}
+
+QString QgsProcessingParameterMapLayer::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += QStringLiteral( "layer " );
+
+  for ( int type : mDataTypes )
+  {
+    switch ( type )
+    {
+      case QgsProcessing::TypeVectorAnyGeometry:
+        code += QStringLiteral( "hasgeometry " );
+        break;
+
+      case QgsProcessing::TypeVectorPoint:
+        code += QStringLiteral( "point " );
+        break;
+
+      case QgsProcessing::TypeVectorLine:
+        code += QStringLiteral( "line " );
+        break;
+
+      case QgsProcessing::TypeVectorPolygon:
+        code += QStringLiteral( "polygon " );
+        break;
+
+      case QgsProcessing::TypeRaster:
+        code += QStringLiteral( "raster " );
+        break;
+
+      case QgsProcessing::TypeMesh:
+        code += QStringLiteral( "mesh " );
+        break;
+    }
+  }
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
 QgsProcessingParameterMapLayer *QgsProcessingParameterMapLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
-  return new QgsProcessingParameterMapLayer( name, description, definition, isOptional );
+  QList< int > types;
+  QString def = definition;
+  while ( true )
+  {
+    if ( def.startsWith( QLatin1String( "hasgeometry" ), Qt::CaseInsensitive ) )
+    {
+      types << QgsProcessing::TypeVectorAnyGeometry;
+      def = def.mid( 12 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "point" ), Qt::CaseInsensitive ) )
+    {
+      types << QgsProcessing::TypeVectorPoint;
+      def = def.mid( 6 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "line" ), Qt::CaseInsensitive ) )
+    {
+      types << QgsProcessing::TypeVectorLine;
+      def = def.mid( 5 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "polygon" ), Qt::CaseInsensitive ) )
+    {
+      types << QgsProcessing::TypeVectorPolygon;
+      def = def.mid( 8 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "raster" ), Qt::CaseInsensitive ) )
+    {
+      types << QgsProcessing::TypeRaster;
+      def = def.mid( 7 );
+      continue;
+    }
+    else if ( def.startsWith( QLatin1String( "mesh" ), Qt::CaseInsensitive ) )
+    {
+      types << QgsProcessing::TypeMesh;
+      def = def.mid( 5 );
+      continue;
+    }
+    break;
+  }
+
+  return new QgsProcessingParameterMapLayer( name, description, def, isOptional, types );
+}
+
+QString QgsProcessingParameterMapLayer::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterMapLayer('%1', '%2'" ).arg( name(), description() );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1" ).arg( valueAsPythonString( mDefault, c ) );
+
+      if ( !mDataTypes.empty() )
+      {
+        QStringList options;
+        options.reserve( mDataTypes.size() );
+        for ( int t : mDataTypes )
+          options << QStringLiteral( "QgsProcessing.%1" ).arg( QgsProcessing::sourceTypeToString( static_cast< QgsProcessing::SourceType >( t ) ) );
+        code += QStringLiteral( ", types=[%1])" ).arg( options.join( ',' ) );
+      }
+      else
+      {
+        code += QStringLiteral( ")" );
+      }
+
+      return code;
+    }
+  }
+  return QString();
+}
+
+QVariantMap QgsProcessingParameterMapLayer::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  QVariantList types;
+  for ( int type : mDataTypes )
+  {
+    types << type;
+  }
+  map.insert( QStringLiteral( "data_types" ), types );
+  return map;
+}
+
+bool QgsProcessingParameterMapLayer::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mDataTypes.clear();
+  const QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
+  for ( const QVariant &val : values )
+  {
+    mDataTypes << val.toInt();
+  }
+  return true;
 }
 
 QgsProcessingParameterExtent::QgsProcessingParameterExtent( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -2287,6 +2548,10 @@ bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &input
   {
     QgsRectangle r = input.value<QgsRectangle>();
     return !r.isNull();
+  }
+  if ( input.canConvert< QgsGeometry >() )
+  {
+    return true;
   }
   if ( input.canConvert< QgsReferencedRectangle >() )
   {
@@ -2343,13 +2608,22 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
            qgsDoubleToString( r.xMaximum() ),
            qgsDoubleToString( r.yMaximum() ) );
   }
-  if ( value.canConvert< QgsReferencedRectangle >() )
+  else if ( value.canConvert< QgsReferencedRectangle >() )
   {
     QgsReferencedRectangle r = value.value<QgsReferencedRectangle>();
     return QStringLiteral( "'%1, %3, %2, %4 [%5]'" ).arg( qgsDoubleToString( r.xMinimum() ),
            qgsDoubleToString( r.yMinimum() ),
            qgsDoubleToString( r.xMaximum() ),
            qgsDoubleToString( r.yMaximum() ),                                                                                                                             r.crs().authid() );
+  }
+  else if ( value.canConvert< QgsGeometry >() )
+  {
+    const QgsGeometry g = value.value<QgsGeometry>();
+    if ( !g.isNull() )
+    {
+      const QString wkt = g.asWkt();
+      return QStringLiteral( "QgsGeometry.fromWkt('%1')" ).arg( wkt );
+    }
   }
 
   QVariantMap p;
@@ -2951,6 +3225,33 @@ QString QgsProcessingParameterMultipleLayers::asPythonString( const QgsProcessin
   return QString();
 }
 
+QString QgsProcessingParameterMultipleLayers::createFileFilter() const
+{
+  QStringList exts;
+  switch ( mLayerType )
+  {
+    case QgsProcessing::TypeFile:
+      return QObject::tr( "All files (*.*)" );
+
+    case QgsProcessing::TypeRaster:
+      return QgsProviderRegistry::instance()->fileRasterFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+
+    case QgsProcessing::TypeVector:
+    case QgsProcessing::TypeVectorAnyGeometry:
+    case QgsProcessing::TypeVectorPoint:
+    case QgsProcessing::TypeVectorLine:
+    case QgsProcessing::TypeVectorPolygon:
+      return QgsProviderRegistry::instance()->fileVectorFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+
+    case QgsProcessing::TypeMesh:
+      return QgsProviderRegistry::instance()->fileMeshFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+
+    case QgsProcessing::TypeMapLayer:
+      return createAllMapLayerFileFilter();
+  }
+  return QString();
+}
+
 QgsProcessing::SourceType QgsProcessingParameterMultipleLayers::layerType() const
 {
   return mLayerType;
@@ -3331,6 +3632,11 @@ QString QgsProcessingParameterRasterLayer::valueAsPythonString( const QVariant &
   QgsRasterLayer *layer = QgsProcessingParameters::parameterAsRasterLayer( this, p, context );
   return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
+}
+
+QString QgsProcessingParameterRasterLayer::createFileFilter() const
+{
+  return QgsProviderRegistry::instance()->fileRasterFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
 }
 
 QgsProcessingParameterRasterLayer *QgsProcessingParameterRasterLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
@@ -3881,6 +4187,11 @@ QString QgsProcessingParameterVectorLayer::asPythonString( const QgsProcessing::
   return QString();
 }
 
+QString QgsProcessingParameterVectorLayer::createFileFilter() const
+{
+  return QgsProviderRegistry::instance()->fileVectorFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+}
+
 QList<int> QgsProcessingParameterLimitedDataTypes::dataTypes() const
 {
   return mDataTypes;
@@ -3895,8 +4206,7 @@ QVariantMap QgsProcessingParameterVectorLayer::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   QVariantList types;
-  const auto constMDataTypes = mDataTypes;
-  for ( int type : constMDataTypes )
+  for ( int type : mDataTypes )
   {
     types << type;
   }
@@ -3908,9 +4218,8 @@ bool QgsProcessingParameterVectorLayer::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mDataTypes.clear();
-  QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
-  const auto constValues = values;
-  for ( const QVariant &val : constValues )
+  const QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
+  for ( const QVariant &val : values )
   {
     mDataTypes << val.toInt();
   }
@@ -3988,6 +4297,11 @@ QString QgsProcessingParameterMeshLayer::valueAsPythonString( const QVariant &va
   QgsMeshLayer *layer = QgsProcessingParameters::parameterAsMeshLayer( this, p, context );
   return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
          : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
+}
+
+QString QgsProcessingParameterMeshLayer::createFileFilter() const
+{
+  return QgsProviderRegistry::instance()->fileMeshFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
 }
 
 QgsProcessingParameterMeshLayer *QgsProcessingParameterMeshLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
@@ -4356,26 +4670,63 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
   if ( value.canConvert<QgsProcessingFeatureSourceDefinition>() )
   {
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
+    QString geometryCheckString;
+    switch ( fromVar.geometryCheck )
+    {
+      case QgsFeatureRequest::GeometryNoCheck:
+        geometryCheckString = QStringLiteral( "QgsFeatureRequest.GeometryNoCheck" );
+        break;
+
+      case QgsFeatureRequest::GeometrySkipInvalid:
+        geometryCheckString = QStringLiteral( "QgsFeatureRequest.GeometrySkipInvalid" );
+        break;
+
+      case QgsFeatureRequest::GeometryAbortOnInvalid:
+        geometryCheckString = QStringLiteral( "QgsFeatureRequest.GeometryAbortOnInvalid" );
+        break;
+    }
+
+    QStringList flags;
+    QString flagString;
+    if ( fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagOverrideDefaultGeometryCheck )
+      flags << QStringLiteral( "QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck" );
+    if ( fromVar.flags & QgsProcessingFeatureSourceDefinition::Flag::FlagCreateIndividualOutputPerInputFeature )
+      flags << QStringLiteral( "QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature" );
+    if ( !flags.empty() )
+      flagString = flags.join( QStringLiteral( " | " ) );
+    else
+      flagString = QStringLiteral( "None" );
+
     if ( fromVar.source.propertyType() == QgsProperty::StaticProperty )
     {
-      if ( fromVar.selectedFeaturesOnly )
+      QString layerString = fromVar.source.staticValue().toString();
+      // prefer to use layer source instead of id if possible (since it's persistent)
+      if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
+        layerString = layer->source();
+
+      if ( fromVar.selectedFeaturesOnly || fromVar.featureLimit != -1 || fromVar.flags )
       {
-        return QStringLiteral( "QgsProcessingFeatureSourceDefinition('%1', True)" ).arg( fromVar.source.staticValue().toString() );
+        return QStringLiteral( "QgsProcessingFeatureSourceDefinition('%1', selectedFeaturesOnly=%2, featureLimit=%3, flags=%4, geometryCheck=%5)" ).arg( layerString,
+               fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ),
+               QString::number( fromVar.featureLimit ),
+               flagString,
+               geometryCheckString );
       }
       else
       {
-        QString layerString = fromVar.source.staticValue().toString();
-        // prefer to use layer source instead of id if possible (since it's persistent)
-        if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
-          layerString = layer->source();
         return QgsProcessingUtils::stringToPythonLiteral( layerString );
       }
     }
     else
     {
-      if ( fromVar.selectedFeaturesOnly )
+      if ( fromVar.selectedFeaturesOnly || fromVar.featureLimit != -1 || fromVar.flags )
       {
-        return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('%1'), True)" ).arg( fromVar.source.asExpression() );
+        return QStringLiteral( "QgsProcessingFeatureSourceDefinition(QgsProperty.fromExpression('%1'), selectedFeaturesOnly=%2, featureLimit=%3, flags=%4, geometryCheck=%5)" )
+               .arg( fromVar.source.asExpression(),
+                     fromVar.selectedFeaturesOnly ? QStringLiteral( "True" ) : QStringLiteral( "False" ),
+                     QString::number( fromVar.featureLimit ),
+                     flagString,
+                     geometryCheckString );
       }
       else
       {
@@ -4392,7 +4743,7 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
 
   // prefer to use layer source if possible (since it's persistent)
   if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
-    layerString = layer->source();
+    layerString = layer->providerType() != QLatin1String( "ogr" ) && layer->providerType() != QLatin1String( "gdal" ) && layer->providerType() != QLatin1String( "mdal" ) ? QgsProcessingUtils::encodeProviderKeyAndUri( layer->providerType(), layer->source() ) : layer->source();
 
   return QgsProcessingUtils::stringToPythonLiteral( layerString );
 }
@@ -4404,8 +4755,7 @@ QString QgsProcessingParameterFeatureSource::asScriptCode() const
     code += QStringLiteral( "optional " );
   code += QStringLiteral( "source " );
 
-  const auto constMDataTypes = mDataTypes;
-  for ( int type : constMDataTypes )
+  for ( int type : mDataTypes )
   {
     switch ( type )
     {
@@ -4455,6 +4805,11 @@ QString QgsProcessingParameterFeatureSource::asPythonString( const QgsProcessing
   return QString();
 }
 
+QString QgsProcessingParameterFeatureSource::createFileFilter() const
+{
+  return QgsProviderRegistry::instance()->fileVectorFilters() + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+}
+
 QgsProcessingParameterLimitedDataTypes::QgsProcessingParameterLimitedDataTypes( const QList<int> &types )
   : mDataTypes( types )
 {
@@ -4465,8 +4820,7 @@ QVariantMap QgsProcessingParameterFeatureSource::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
   QVariantList types;
-  const auto constMDataTypes = mDataTypes;
-  for ( int type : constMDataTypes )
+  for ( int type : mDataTypes )
   {
     types << type;
   }
@@ -4478,9 +4832,8 @@ bool QgsProcessingParameterFeatureSource::fromVariantMap( const QVariantMap &map
 {
   QgsProcessingParameterDefinition::fromVariantMap( map );
   mDataTypes.clear();
-  QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
-  const auto constValues = values;
-  for ( const QVariant &val : constValues )
+  const QVariantList values = map.value( QStringLiteral( "data_types" ) ).toList();
+  for ( const QVariant &val : values )
   {
     mDataTypes << val.toInt();
   }
@@ -4667,6 +5020,18 @@ QString QgsProcessingParameterFeatureSink::asPythonString( const QgsProcessing::
     }
   }
   return QString();
+}
+
+QString QgsProcessingParameterFeatureSink::createFileFilter() const
+{
+  const QStringList exts = supportedOutputVectorLayerExtensions();
+  QStringList filters;
+  for ( const QString &ext : exts )
+  {
+    filters << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+  }
+  return filters.join( QStringLiteral( ";;" ) ) + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+
 }
 
 QStringList QgsProcessingParameterFeatureSink::supportedOutputVectorLayerExtensions() const
@@ -4860,6 +5225,17 @@ QString QgsProcessingParameterRasterDestination::defaultFileExtension() const
   }
 }
 
+QString QgsProcessingParameterRasterDestination::createFileFilter() const
+{
+  const QStringList exts = supportedOutputRasterLayerExtensions();
+  QStringList filters;
+  for ( const QString &ext : exts )
+  {
+    filters << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+  }
+  return filters.join( QStringLiteral( ";;" ) ) + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
+}
+
 QStringList QgsProcessingParameterRasterDestination::supportedOutputRasterLayerExtensions() const
 {
   if ( originalProvider() )
@@ -5002,6 +5378,11 @@ QString QgsProcessingParameterFileDestination::asPythonString( const QgsProcessi
   return QString();
 }
 
+QString QgsProcessingParameterFileDestination::createFileFilter() const
+{
+  return ( fileFilter().isEmpty() ? QString() : fileFilter() + QStringLiteral( ";;" ) ) + QObject::tr( "All files (*.*)" );
+}
+
 QString QgsProcessingParameterFileDestination::fileFilter() const
 {
   return mFileFilter;
@@ -5131,6 +5512,11 @@ QString QgsProcessingDestinationParameter::asPythonString( const QgsProcessing::
   }
   // oh well, we tried
   return QString();
+}
+
+QString QgsProcessingDestinationParameter::createFileFilter() const
+{
+  return QObject::tr( "Default extension" ) + QStringLiteral( " (*." ) + defaultFileExtension() + ')';
 }
 
 QString QgsProcessingDestinationParameter::generateTemporaryDestination() const
@@ -5302,6 +5688,17 @@ QString QgsProcessingParameterVectorDestination::asPythonString( const QgsProces
     }
   }
   return QString();
+}
+
+QString QgsProcessingParameterVectorDestination::createFileFilter() const
+{
+  const QStringList exts = supportedOutputVectorLayerExtensions();
+  QStringList filters;
+  for ( const QString &ext : exts )
+  {
+    filters << QObject::tr( "%1 files (*.%2)" ).arg( ext.toUpper(), ext.toLower() );
+  }
+  return filters.join( QStringLiteral( ";;" ) ) + QStringLiteral( ";;" ) + QObject::tr( "All files (*.*)" );
 }
 
 QStringList QgsProcessingParameterVectorDestination::supportedOutputVectorLayerExtensions() const
@@ -6130,6 +6527,16 @@ QString QgsProcessingParameterCoordinateOperation::asPythonString( QgsProcessing
   return QString();
 }
 
+QStringList QgsProcessingParameterCoordinateOperation::dependsOnOtherParameters() const
+{
+  QStringList res;
+  if ( !mSourceParameterName.isEmpty() )
+    res << mSourceParameterName;
+  if ( !mDestParameterName.isEmpty() )
+    res << mDestParameterName;
+  return res;
+}
+
 QVariantMap QgsProcessingParameterCoordinateOperation::toVariantMap() const
 {
   QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
@@ -6478,4 +6885,415 @@ QgsProcessingParameterDateTime *QgsProcessingParameterDateTime::fromScriptCode( 
 {
   return new QgsProcessingParameterDateTime( name, description, DateTime, definition.isEmpty() ? QVariant()
          : ( definition.toLower().trimmed() == QStringLiteral( "none" ) ? QVariant() : definition ), isOptional );
+}
+
+
+
+//
+// QgsProcessingParameterProviderConnection
+//
+
+QgsProcessingParameterProviderConnection::QgsProcessingParameterProviderConnection( const QString &name, const QString &description, const QString &provider, const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mProviderId( provider )
+{
+
+}
+
+
+QgsProcessingParameterDefinition *QgsProcessingParameterProviderConnection::clone() const
+{
+  return new QgsProcessingParameterProviderConnection( *this );
+}
+
+bool QgsProcessingParameterProviderConnection::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() && !mDefault.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( ( input.type() == QVariant::String && input.toString().isEmpty() )
+       || ( !input.isValid() && mDefault.type() == QVariant::String && mDefault.toString().isEmpty() ) )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
+QString QgsProcessingParameterProviderConnection::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+}
+
+QString QgsProcessingParameterProviderConnection::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += QStringLiteral( "providerconnection " );
+  code += mProviderId + ' ';
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
+QString QgsProcessingParameterProviderConnection::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterProviderConnection('%1', '%2', '%3'" ).arg( name(), description(), mProviderId );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
+
+      return code;
+    }
+  }
+  return QString();
+}
+
+QVariantMap QgsProcessingParameterProviderConnection::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "provider" ), mProviderId );
+  return map;
+}
+
+bool QgsProcessingParameterProviderConnection::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mProviderId = map.value( QStringLiteral( "provider" ) ).toString();
+  return true;
+}
+
+QgsProcessingParameterProviderConnection *QgsProcessingParameterProviderConnection::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  QString parent;
+
+  QString def = definition;
+  QString provider;
+  if ( def.contains( ' ' ) )
+  {
+    provider = def.left( def.indexOf( ' ' ) );
+    def = def.mid( def.indexOf( ' ' ) + 1 );
+  }
+  else
+  {
+    provider = def;
+    def.clear();
+  }
+
+  if ( def.startsWith( '"' ) || def.startsWith( '\'' ) )
+    def = def.mid( 1 );
+  if ( def.endsWith( '"' ) || def.endsWith( '\'' ) )
+    def.chop( 1 );
+
+  QVariant defaultValue = def;
+
+  if ( defaultValue == QStringLiteral( "None" ) || defaultValue.toString().isEmpty() )
+    defaultValue = QVariant();
+
+  return new QgsProcessingParameterProviderConnection( name, description, provider, defaultValue, isOptional );
+}
+
+
+//
+// QgsProcessingParameterDatabaseSchema
+//
+
+QgsProcessingParameterDatabaseSchema::QgsProcessingParameterDatabaseSchema( const QString &name, const QString &description, const QString &parentLayerParameterName, const QVariant &defaultValue, bool optional )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mParentConnectionParameterName( parentLayerParameterName )
+{
+
+}
+
+
+QgsProcessingParameterDefinition *QgsProcessingParameterDatabaseSchema::clone() const
+{
+  return new QgsProcessingParameterDatabaseSchema( *this );
+}
+
+bool QgsProcessingParameterDatabaseSchema::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() && !mDefault.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( ( input.type() == QVariant::String && input.toString().isEmpty() )
+       || ( !input.isValid() && mDefault.type() == QVariant::String && mDefault.toString().isEmpty() ) )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
+QString QgsProcessingParameterDatabaseSchema::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+}
+
+QString QgsProcessingParameterDatabaseSchema::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += QStringLiteral( "databaseschema " );
+
+  code += mParentConnectionParameterName + ' ';
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
+QString QgsProcessingParameterDatabaseSchema::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterDatabaseSchema('%1', '%2'" ).arg( name(), description() );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+
+      code += QStringLiteral( ", connectionParameterName='%1'" ).arg( mParentConnectionParameterName );
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1" ).arg( valueAsPythonString( mDefault, c ) );
+
+      code += ')';
+
+      return code;
+    }
+  }
+  return QString();
+}
+
+QStringList QgsProcessingParameterDatabaseSchema::dependsOnOtherParameters() const
+{
+  QStringList depends;
+  if ( !mParentConnectionParameterName.isEmpty() )
+    depends << mParentConnectionParameterName;
+  return depends;
+}
+
+QString QgsProcessingParameterDatabaseSchema::parentConnectionParameterName() const
+{
+  return mParentConnectionParameterName;
+}
+
+void QgsProcessingParameterDatabaseSchema::setParentConnectionParameterName( const QString &name )
+{
+  mParentConnectionParameterName = name;
+}
+
+QVariantMap QgsProcessingParameterDatabaseSchema::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "mParentConnectionParameterName" ), mParentConnectionParameterName );
+  return map;
+}
+
+bool QgsProcessingParameterDatabaseSchema::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mParentConnectionParameterName = map.value( QStringLiteral( "mParentConnectionParameterName" ) ).toString();
+  return true;
+}
+
+QgsProcessingParameterDatabaseSchema *QgsProcessingParameterDatabaseSchema::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  QString parent;
+  QString def = definition;
+
+  QRegularExpression re( QStringLiteral( "(.*?)\\s+(.*)$" ) );
+  QRegularExpressionMatch m = re.match( def );
+  if ( m.hasMatch() )
+  {
+    parent = m.captured( 1 ).trimmed();
+    def = m.captured( 2 );
+  }
+  else
+  {
+    parent = def;
+    def.clear();
+  }
+
+  return new QgsProcessingParameterDatabaseSchema( name, description, parent, def.isEmpty() ? QVariant() : def, isOptional );
+}
+
+//
+// QgsProcessingParameterDatabaseTable
+//
+
+QgsProcessingParameterDatabaseTable::QgsProcessingParameterDatabaseTable( const QString &name, const QString &description,
+    const QString &connectionParameterName,
+    const QString &schemaParameterName,
+    const QVariant &defaultValue, bool optional, bool allowNewTableNames )
+  : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
+  , mParentConnectionParameterName( connectionParameterName )
+  , mParentSchemaParameterName( schemaParameterName )
+  , mAllowNewTableNames( allowNewTableNames )
+{
+
+}
+
+
+QgsProcessingParameterDefinition *QgsProcessingParameterDatabaseTable::clone() const
+{
+  return new QgsProcessingParameterDatabaseTable( *this );
+}
+
+bool QgsProcessingParameterDatabaseTable::checkValueIsAcceptable( const QVariant &input, QgsProcessingContext * ) const
+{
+  if ( !input.isValid() && !mDefault.isValid() )
+    return mFlags & FlagOptional;
+
+  if ( ( input.type() == QVariant::String && input.toString().isEmpty() )
+       || ( !input.isValid() && mDefault.type() == QVariant::String && mDefault.toString().isEmpty() ) )
+    return mFlags & FlagOptional;
+
+  return true;
+}
+
+QString QgsProcessingParameterDatabaseTable::valueAsPythonString( const QVariant &value, QgsProcessingContext & ) const
+{
+  if ( !value.isValid() )
+    return QStringLiteral( "None" );
+
+  if ( value.canConvert<QgsProperty>() )
+    return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
+
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+}
+
+QString QgsProcessingParameterDatabaseTable::asScriptCode() const
+{
+  QString code = QStringLiteral( "##%1=" ).arg( mName );
+  if ( mFlags & FlagOptional )
+    code += QStringLiteral( "optional " );
+  code += QStringLiteral( "databasetable " );
+
+  code += ( mParentConnectionParameterName.isEmpty() ? QStringLiteral( "none" ) : mParentConnectionParameterName ) + ' ';
+  code += ( mParentSchemaParameterName.isEmpty() ? QStringLiteral( "none" ) : mParentSchemaParameterName ) + ' ';
+
+  code += mDefault.toString();
+  return code.trimmed();
+}
+
+QString QgsProcessingParameterDatabaseTable::asPythonString( const QgsProcessing::PythonOutputType outputType ) const
+{
+  switch ( outputType )
+  {
+    case QgsProcessing::PythonQgsProcessingAlgorithmSubclass:
+    {
+      QString code = QStringLiteral( "QgsProcessingParameterDatabaseTable('%1', '%2'" ).arg( name(), description() );
+      if ( mFlags & FlagOptional )
+        code += QStringLiteral( ", optional=True" );
+
+      if ( mAllowNewTableNames )
+        code += QStringLiteral( ", allowNewTableNames=True" );
+
+      code += QStringLiteral( ", connectionParameterName='%1'" ).arg( mParentConnectionParameterName );
+      code += QStringLiteral( ", schemaParameterName='%1'" ).arg( mParentSchemaParameterName );
+      QgsProcessingContext c;
+      code += QStringLiteral( ", defaultValue=%1" ).arg( valueAsPythonString( mDefault, c ) );
+
+      code += ')';
+
+      return code;
+    }
+  }
+  return QString();
+}
+
+QStringList QgsProcessingParameterDatabaseTable::dependsOnOtherParameters() const
+{
+  QStringList depends;
+  if ( !mParentConnectionParameterName.isEmpty() )
+    depends << mParentConnectionParameterName;
+  if ( !mParentSchemaParameterName.isEmpty() )
+    depends << mParentSchemaParameterName;
+  return depends;
+}
+
+QString QgsProcessingParameterDatabaseTable::parentConnectionParameterName() const
+{
+  return mParentConnectionParameterName;
+}
+
+void QgsProcessingParameterDatabaseTable::setParentConnectionParameterName( const QString &name )
+{
+  mParentConnectionParameterName = name;
+}
+
+QString QgsProcessingParameterDatabaseTable::parentSchemaParameterName() const
+{
+  return mParentSchemaParameterName;
+}
+
+void QgsProcessingParameterDatabaseTable::setParentSchemaParameterName( const QString &name )
+{
+  mParentSchemaParameterName = name;
+}
+
+QVariantMap QgsProcessingParameterDatabaseTable::toVariantMap() const
+{
+  QVariantMap map = QgsProcessingParameterDefinition::toVariantMap();
+  map.insert( QStringLiteral( "mParentConnectionParameterName" ), mParentConnectionParameterName );
+  map.insert( QStringLiteral( "mParentSchemaParameterName" ), mParentSchemaParameterName );
+  map.insert( QStringLiteral( "mAllowNewTableNames" ), mAllowNewTableNames );
+  return map;
+}
+
+bool QgsProcessingParameterDatabaseTable::fromVariantMap( const QVariantMap &map )
+{
+  QgsProcessingParameterDefinition::fromVariantMap( map );
+  mParentConnectionParameterName = map.value( QStringLiteral( "mParentConnectionParameterName" ) ).toString();
+  mParentSchemaParameterName = map.value( QStringLiteral( "mParentSchemaParameterName" ) ).toString();
+  mAllowNewTableNames = map.value( QStringLiteral( "mAllowNewTableNames" ), false ).toBool();
+  return true;
+}
+
+QgsProcessingParameterDatabaseTable *QgsProcessingParameterDatabaseTable::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+{
+  QString connection;
+  QString schema;
+  QString def = definition;
+
+  QRegularExpression re( QStringLiteral( "(.*?)\\s+(.*+)\\b\\s*(.*)$" ) );
+  QRegularExpressionMatch m = re.match( def );
+  if ( m.hasMatch() )
+  {
+    connection = m.captured( 1 ).trimmed();
+    if ( connection == QLatin1String( "none" ) )
+      connection.clear();
+    schema = m.captured( 2 ).trimmed();
+    if ( schema == QLatin1String( "none" ) )
+      schema.clear();
+    def = m.captured( 3 );
+  }
+
+  return new QgsProcessingParameterDatabaseTable( name, description, connection, schema, def.isEmpty() ? QVariant() : def, isOptional );
+}
+
+bool QgsProcessingParameterDatabaseTable::allowNewTableNames() const
+{
+  return mAllowNewTableNames;
+}
+
+void QgsProcessingParameterDatabaseTable::setAllowNewTableNames( bool allowNewTableNames )
+{
+  mAllowNewTableNames = allowNewTableNames;
 }

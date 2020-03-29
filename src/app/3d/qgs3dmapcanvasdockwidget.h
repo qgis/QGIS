@@ -16,8 +16,10 @@
 #ifndef QGS3DMAPCANVASDOCKWIDGET_H
 #define QGS3DMAPCANVASDOCKWIDGET_H
 
+#include "qmenu.h"
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
+#include "qtoolbutton.h"
 
 #define SIP_NO_FILE
 
@@ -62,6 +64,7 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
     void onTotalPendingJobsCountChanged();
+    void mapThemeMenuAboutToShow();
 
   private:
     Qgs3DMapCanvas *mCanvas = nullptr;
@@ -71,6 +74,9 @@ class APP_EXPORT Qgs3DMapCanvasDockWidget : public QgsDockWidget
     QLabel *mLabelPendingJobs = nullptr;
     Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
+    QMenu *mMapThemeMenu = nullptr;
+    QList<QAction *> mMapThemeMenuPresetActions;
+    QToolButton *mBtnMapThemes = nullptr;
 };
 
 #endif // QGS3DMAPCANVASDOCKWIDGET_H

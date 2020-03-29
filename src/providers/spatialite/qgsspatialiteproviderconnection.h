@@ -40,14 +40,20 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
     QList<QList<QVariant>> executeSql( const QString &sql ) const override;
     void vacuum( const QString &schema, const QString &name ) const override;
+    void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const override;
+    bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
         const TableFlags &flags = nullptr ) const override;
+    QIcon icon() const override;
 
   private:
 
     void setDefaultCapabilities();
     //! Use GDAL to execute SQL
     QList<QVariantList> executeSqlPrivate( const QString &sql ) const;
+
+    //! Executes SQL directly using sqlite3 -- avoids the extra consistency checks which GDAL requires when opening a spatialite database
+    bool executeSqlDirect( const QString &sql ) const;
 
     //! extract the path from the DS URI (which is in "PG" form: 'dbname=\'/path_to.sqlite\' table="table_name" (geom_col_name)')
     QString pathFromUri() const;

@@ -76,8 +76,30 @@ void TestQgsDataSourceUri::checkparser_data()
       ;
 
   QTest::newRow( "pgrast" )
-      << "PG: dbname=mydb host=myhost user=myname password=mypasswd port=5432 mode=2 schema=public column=geom table=mytable"
-      << "mytable" // table
+      << R"(PG: dbname='qgis_tests' host=localhost port=5432 user='myname' sslmode=disable estimatedmetadata=true srid=3067 table="public"."basic_map_tiled" (rast))"
+      << "basic_map_tiled" // table
+      << "rast" // geometrycolumn
+      << "" // key
+      << true // estimatedmetadata
+      << "3067" // srid
+      << QgsWkbTypes::Unknown // type
+      << false // selectatid
+      << "" // service
+      << "myname" // user
+      << "" // password
+      << "qgis_tests" // dbname
+      << "localhost" // host
+      << "5432" // port
+      << "" // driver
+      << QgsDataSourceUri::SslDisable // sslmode
+      << "" // sql
+      << "" // myparam
+      << "public" // schema
+      ;
+
+  QTest::newRow( "pg_notable" )
+      << "PG: dbname=mydb host=myhost user=myname password=mypasswd port=5432 mode=2 schema=myschema "
+      << "" // table
       << "" // geometrycolumn
       << "" // key
       << false // estimatedmetadata
@@ -94,8 +116,31 @@ void TestQgsDataSourceUri::checkparser_data()
       << QgsDataSourceUri::SslPrefer // sslmode
       << "" // sql
       << "" // myparam
-      << "public"
+      << "public" // schema
       ;
+
+  QTest::newRow( "pg_notable_quoted" )
+      << "dbname='mydb' host='myhost' user='myname' password='mypasswd' port='5432' mode='2' schema=myschema"
+      << "" // table
+      << "" // geometrycolumn
+      << "" // key
+      << false // estimatedmetadata
+      << "" // srid
+      << QgsWkbTypes::Unknown // type
+      << false // selectatid
+      << "" // service
+      << "myname" // user
+      << "mypasswd" // password
+      << "mydb" // dbname
+      << "myhost" // host
+      << "5432" // port
+      << "" // driver
+      << QgsDataSourceUri::SslPrefer // sslmode
+      << "" // sql
+      << "" // myparam
+      << "public" // schema
+      ;
+
 
 
   QTest::newRow( "pgmlsz" )
@@ -117,7 +162,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << QgsDataSourceUri::SslPrefer // sslmode
       << "" // sql
       << "" // myparam
-      << "public"
+      << "public" // schema
       ;
 
   QTest::newRow( "DB2" )
@@ -139,7 +184,7 @@ void TestQgsDataSourceUri::checkparser_data()
       << QgsDataSourceUri::SslPrefer // sslmode
       << "" // sql
       << "myvalue" // myparam
-      << "TEST"
+      << "TEST"  // schema
       ;
 }
 

@@ -17,6 +17,7 @@
 
 #include "qgsmssqlprovider.h"
 #include "qgsmssqlconnection.h"
+#include "qgsmssqlproviderconnection.h"
 
 #include <QtGlobal>
 #include <QFileInfo>
@@ -488,6 +489,11 @@ QString QgsMssqlProvider::quotedValue( const QVariant &value )
       else
         return v.prepend( '\'' ).append( '\'' );
   }
+}
+
+QString QgsMssqlProvider::quotedIdentifier( const QString &value )
+{
+  return QStringLiteral( "[%1]" ).arg( value );
 }
 
 QString QgsMssqlProvider::defaultValueClause( int fieldId ) const
@@ -2050,6 +2056,31 @@ QList<QgsDataItemProvider *> QgsMssqlProviderMetadata::dataItemProviders() const
   return providers;
 }
 
+QMap<QString, QgsAbstractProviderConnection *> QgsMssqlProviderMetadata::connections( bool cached )
+{
+  return connectionsProtected<QgsMssqlProviderConnection, QgsMssqlConnection>( cached );
+}
+
+QgsAbstractProviderConnection *QgsMssqlProviderMetadata::createConnection( const QString &name )
+{
+  return new QgsMssqlProviderConnection( name );
+}
+
+QgsAbstractProviderConnection *QgsMssqlProviderMetadata::createConnection( const QString &uri, const QVariantMap &configuration )
+{
+  return new QgsMssqlProviderConnection( uri, configuration );
+}
+
+void QgsMssqlProviderMetadata::deleteConnection( const QString &name )
+{
+  deleteConnectionProtected<QgsMssqlProviderConnection>( name );
+}
+
+void QgsMssqlProviderMetadata::saveConnection( const QgsAbstractProviderConnection *conn, const QString &name )
+{
+  saveConnectionProtected( conn, name );
+}
+
 QgsVectorLayerExporter::ExportError QgsMssqlProviderMetadata::createEmptyLayer(
   const QString &uri,
   const QgsFields &fields,
@@ -2389,6 +2420,130 @@ QString QgsMssqlProviderMetadata::getStyleById( const QString &uri, QString styl
   return style;
 }
 
+QVariantMap QgsMssqlProviderMetadata::decodeUri( const QString &uri )
+{
+  const QgsDataSourceUri dsUri { uri };
+  QVariantMap uriParts;
+
+  if ( ! dsUri.database().isEmpty() )
+    uriParts[ QStringLiteral( "dbname" ) ] = dsUri.database();
+  if ( ! dsUri.host().isEmpty() )
+    uriParts[ QStringLiteral( "host" ) ] = dsUri.host();
+  if ( ! dsUri.port().isEmpty() )
+    uriParts[ QStringLiteral( "port" ) ] = dsUri.port();
+  if ( ! dsUri.service().isEmpty() )
+    uriParts[ QStringLiteral( "service" ) ] = dsUri.service();
+  if ( ! dsUri.username().isEmpty() )
+    uriParts[ QStringLiteral( "username" ) ] = dsUri.username();
+  if ( ! dsUri.password().isEmpty() )
+    uriParts[ QStringLiteral( "password" ) ] = dsUri.password();
+
+  // Supported?
+  //if ( ! dsUri.authConfigId().isEmpty() )
+  //  uriParts[ QStringLiteral( "authcfg" ) ] = dsUri.authConfigId();
+
+  if ( dsUri.wkbType() != QgsWkbTypes::Type::Unknown )
+    uriParts[ QStringLiteral( "type" ) ] = dsUri.wkbType();
+
+  // Supported?
+  // uriParts[ QStringLiteral( "selectatid" ) ] = dsUri.selectAtIdDisabled();
+
+  if ( ! dsUri.table().isEmpty() )
+    uriParts[ QStringLiteral( "table" ) ] = dsUri.table();
+  if ( ! dsUri.schema().isEmpty() )
+    uriParts[ QStringLiteral( "schema" ) ] = dsUri.schema();
+  if ( ! dsUri.keyColumn().isEmpty() )
+    uriParts[ QStringLiteral( "key" ) ] = dsUri.keyColumn();
+  if ( ! dsUri.srid().isEmpty() )
+    uriParts[ QStringLiteral( "srid" ) ] = dsUri.srid();
+
+  uriParts[ QStringLiteral( "estimatedmetadata" ) ] = dsUri.useEstimatedMetadata();
+
+  // is this supported?
+  // uriParts[ QStringLiteral( "sslmode" ) ] = dsUri.sslMode();
+
+  if ( ! dsUri.sql().isEmpty() )
+    uriParts[ QStringLiteral( "sql" ) ] = dsUri.sql();
+  if ( ! dsUri.geometryColumn().isEmpty() )
+    uriParts[ QStringLiteral( "geometrycolumn" ) ] = dsUri.geometryColumn();
+
+  // From configuration
+  static const QStringList configurationParameters
+  {
+    QStringLiteral( "geometryColumnsOnly" ),
+    QStringLiteral( "allowGeometrylessTables" ),
+    QStringLiteral( "saveUsername" ),
+    QStringLiteral( "savePassword" ),
+    QStringLiteral( "estimatedMetadata" ),
+    QStringLiteral( "disableInvalidGeometryHandling" ),
+  };
+
+  for ( const auto &configParam : configurationParameters )
+  {
+    if ( dsUri.hasParam( configParam ) )
+    {
+      uriParts[ configParam ] = dsUri.param( configParam );
+    }
+  }
+
+  return uriParts;
+}
+
+QString QgsMssqlProviderMetadata::encodeUri( const QVariantMap &parts )
+{
+  QgsDataSourceUri dsUri;
+  if ( parts.contains( QStringLiteral( "dbname" ) ) )
+    dsUri.setDatabase( parts.value( QStringLiteral( "dbname" ) ).toString() );
+  // Also accepts "database"
+  if ( parts.contains( QStringLiteral( "database" ) ) )
+    dsUri.setDatabase( parts.value( QStringLiteral( "database" ) ).toString() );
+  // Supported?
+  //if ( parts.contains( QStringLiteral( "port" ) ) )
+  //  dsUri.setParam( QStringLiteral( "port" ), parts.value( QStringLiteral( "port" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "host" ) ) )
+    dsUri.setParam( QStringLiteral( "host" ), parts.value( QStringLiteral( "host" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "service" ) ) )
+    dsUri.setParam( QStringLiteral( "service" ), parts.value( QStringLiteral( "service" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "username" ) ) )
+    dsUri.setUsername( parts.value( QStringLiteral( "username" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "password" ) ) )
+    dsUri.setPassword( parts.value( QStringLiteral( "password" ) ).toString() );
+  // Supported?
+  //if ( parts.contains( QStringLiteral( "authcfg" ) ) )
+  //  dsUri.setAuthConfigId( parts.value( QStringLiteral( "authcfg" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "type" ) ) )
+    dsUri.setParam( QStringLiteral( "type" ), QgsWkbTypes::displayString( static_cast<QgsWkbTypes::Type>( parts.value( QStringLiteral( "type" ) ).toInt() ) ) );
+  // Supported?
+  //if ( parts.contains( QStringLiteral( "selectatid" ) ) )
+  //  dsUri.setParam( QStringLiteral( "selectatid" ), parts.value( QStringLiteral( "selectatid" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "table" ) ) )
+    dsUri.setTable( parts.value( QStringLiteral( "table" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "schema" ) ) )
+    dsUri.setSchema( parts.value( QStringLiteral( "schema" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "key" ) ) )
+    dsUri.setParam( QStringLiteral( "key" ), parts.value( QStringLiteral( "key" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "srid" ) ) )
+    dsUri.setSrid( parts.value( QStringLiteral( "srid" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "estimatedmetadata" ) ) )
+    dsUri.setParam( QStringLiteral( "estimatedmetadata" ), parts.value( QStringLiteral( "estimatedmetadata" ) ).toString() );
+  // Supported?
+  //if ( parts.contains( QStringLiteral( "sslmode" ) ) )
+  //  dsUri.setParam( QStringLiteral( "sslmode" ), QgsDataSourceUri::encodeSslMode( static_cast<QgsDataSourceUri::SslMode>( parts.value( QStringLiteral( "sslmode" ) ).toInt( ) ) ) );
+  if ( parts.contains( QStringLiteral( "sql" ) ) )
+    dsUri.setSql( parts.value( QStringLiteral( "sql" ) ).toString() );
+  // Supported?
+  //if ( parts.contains( QStringLiteral( "checkPrimaryKeyUnicity" ) ) )
+  //  dsUri.setParam( QStringLiteral( "checkPrimaryKeyUnicity" ), parts.value( QStringLiteral( "checkPrimaryKeyUnicity" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "geometrycolumn" ) ) )
+    dsUri.setGeometryColumn( parts.value( QStringLiteral( "geometrycolumn" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "disableInvalidGeometryHandling" ) ) )
+    dsUri.setParam( QStringLiteral( "disableInvalidGeometryHandling" ), parts.value( QStringLiteral( "disableInvalidGeometryHandling" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "allowGeometrylessTables" ) ) )
+    dsUri.setParam( QStringLiteral( "allowGeometrylessTables" ), parts.value( QStringLiteral( "allowGeometrylessTables" ) ).toString() );
+  if ( parts.contains( QStringLiteral( "geometryColumnsOnly" ) ) )
+    dsUri.setParam( QStringLiteral( "geometryColumnsOnly" ), parts.value( QStringLiteral( "geometryColumnsOnly" ) ).toString() );
+  return dsUri.uri();
+}
 
 QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {

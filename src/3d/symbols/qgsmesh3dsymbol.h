@@ -76,6 +76,20 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
+    /**
+     * Returns if the 3d rendering is enabled
+     *
+     * \since QGIS 3.14
+     */
+    bool isEnabled() const;
+
+    /**
+     * Sets if the 3d rendering is enabled
+     *
+     * \since QGIS 3.14
+     */
+    void setEnabled( bool enabled );
+
     //! Returns method that determines altitude (whether to clamp to feature to terrain)
     Qgs3DTypes::AltitudeClamping altitudeClamping() const { return mAltClamping; }
     //! Sets method that determines altitude (whether to clamp to feature to terrain)
@@ -241,6 +255,66 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
      */
     void setIsVerticalMagnitudeRelative( bool isVerticalMagnitudeRelative );
 
+    /**
+     * Returns if arrows are enabled for 3D rendering
+     *
+     * \since QGIS 3.14
+     */
+    bool arrowsEnabled() const;
+
+    /**
+     * Sets if arrows are enabled for 3D rendering
+     *
+     * \since QGIS 3.14
+     */
+    void setArrowsEnabled( bool arrowsEnabled );
+
+    /**
+     * Returns the arrow spacing
+     *
+     * \since QGIS 3.14
+     */
+    double arrowsSpacing() const;
+
+    /**
+     * Sets the arrow spacing
+     *
+     * \since QGIS 3.14
+     */
+    void setArrowsSpacing( double arrowsSpacing );
+
+    /**
+     * Returns the maximum texture size supported by the hardware
+     * Used to store the GL_MAX_TEXTURE_SIZE value that comes from the 3D engine
+     * before creating the entity
+     *
+     * \since QGIS 3.14
+     */
+    int maximumTextureSize() const;
+
+    /**
+     * Sets the maximum texture size supported by the hardware
+     * Used to store the GL_MAX_TEXTURE_SIZE value that comes from the 3D engine
+     * before creating the entity
+     *
+     * \since QGIS 3.14
+     */
+    void setMaximumTextureSize( int maximumTextureSize );
+
+    /**
+     * Returns if the arrow size is fixed
+     *
+     * \since QGIS 3.14
+     */
+    bool arrowsFixedSize() const;
+
+    /**
+     * Sets if the arrow size is fixed
+     *
+     * \since QGIS 3.14
+     */
+    void setArrowsFixedSize( bool arrowsFixedSize );
+
   private:
 
     //! how to handle altitude of vector features
@@ -248,6 +322,8 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     float mHeight = 0.0f;           //!< Base height of triangles
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
     bool mAddBackFaces = false;
+
+    bool mEnabled = true;
 
     //! Triangles settings
     bool mSmoothedTriangles = false;
@@ -264,6 +340,13 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     QgsMesh3DSymbol::RenderingStyle mRenderingStyle = QgsMesh3DSymbol::SingleColor;
     QgsColorRampShader mColorRampShader;
     QColor mSingleColor = Qt::darkGreen;
+
+    //! Arrows rendering
+    bool mArrowsEnabled = false;
+    double mArrowsSpacing = 25;
+    bool mArrowsFixedSize = false;
+    QColor mArrowsColor = Qt::yellow;
+    int mMaximumTextureSize = 1024;
 };
 
 #endif // QGSMESH3DSYMBOL_H

@@ -184,36 +184,65 @@
      <property name="title">
       <string>Defaults</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
-      <item row="1" column="0">
+     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0">
+      <item row="4" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>Default value</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QLabel" name="mDefaultPreviewLabel">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QgsExpressionLineEdit" name="mExpressionWidget" native="true">
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
+      <item row="6" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>Preview</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0" colspan="2">
+      <item row="4" column="1">
+       <widget class="QgsExpressionLineEdit" name="mExpressionWidget" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QLabel" name="mDefaultPreviewLabel">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0" colspan="2">
+       <widget class="QWidget" name="mWarnDefaultValueHasFieldsWidget" native="true">
+        <layout class="QHBoxLayout" name="mWarnDefaultValueHasFields">
+         <item>
+          <widget class="QLabel" name="label_8">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="../../../images/images.qrc">:/images/themes/default/mIconWarning.svg</pixmap>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>Using fields in a default value expression only works if "Apply default value on update" is checked.</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="8" column="0" colspan="2">
        <widget class="QCheckBox" name="mApplyDefaultValueOnUpdateCheckBox">
         <property name="toolTip">
          <string>&lt;p&gt;With this option checked, the default value will not only be used when the feature is first created, but also whenever a feature's attribute or geometry is changed.&lt;/p&gt;&lt;p&gt;This is often useful for a last_modified timestamp or to record the username that last modified the feature.&lt;/p&gt;</string>
@@ -274,8 +303,10 @@
   <tabstop>leConstraintExpressionDescription</tabstop>
   <tabstop>mCheckBoxEnforceExpression</tabstop>
   <tabstop>mExpressionWidget</tabstop>
-  <tabstop>mApplyDefaultValueOnUpdateCheckBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

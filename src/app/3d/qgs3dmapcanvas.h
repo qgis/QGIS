@@ -82,6 +82,9 @@ class Qgs3DMapCanvas : public QWidget
     //! Emitted when the 3D map canvas was successfully saved as image
     void savedAsImage( QString fileName );
 
+    //! Emitted when the the map setting is changed
+    void mapSettingsChanged();
+
   protected:
     void resizeEvent( QResizeEvent *ev ) override;
     bool eventFilter( QObject *watched, QEvent *event ) override;

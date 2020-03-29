@@ -42,6 +42,7 @@
 #include "qgssymbollayer.h"
 #include "qgsvectorlayerutils.h"
 #include "qgssymbollayerutils.h"
+#include "qgsmaplayertemporalproperties.h"
 
 ///@cond PRIVATE
 
@@ -292,6 +293,12 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( !ml->isInScaleRange( mSettings.scale() ) ) //|| mOverview )
     {
       QgsDebugMsgLevel( QStringLiteral( "Layer not rendered because it is not within the defined visibility scale range" ), 3 );
+      continue;
+    }
+
+    if ( mSettings.isTemporal() && ml->temporalProperties() && !ml->temporalProperties()->isVisibleInTemporalRange( mSettings.temporalRange() ) )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Layer not rendered because it is not visible within the map's time range" ), 3 );
       continue;
     }
 

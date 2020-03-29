@@ -36,7 +36,7 @@ std::string MDAL::readFileToString( const std::string &filename )
 
 bool MDAL::startsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour )
 {
-  if ( str.size() < substr.size() )
+  if ( ( str.size() < substr.size() ) || substr.empty() )
     return false;
 
   if ( behaviour == ContainsBehaviour::CaseSensitive )
@@ -47,7 +47,7 @@ bool MDAL::startsWith( const std::string &str, const std::string &substr, Contai
 
 bool MDAL::endsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour )
 {
-  if ( str.size() < substr.size() )
+  if ( ( str.size() < substr.size() ) || substr.empty() )
     return false;
 
   if ( behaviour == ContainsBehaviour::CaseSensitive )
@@ -193,15 +193,6 @@ bool MDAL::contains( const std::string &str, const std::string &substr, Contains
               );
     return ( it != str.end() );
   }
-}
-
-void MDAL::debug( const std::string &message )
-{
-#ifdef NDEBUG
-  MDAL_UNUSED( message );
-#else
-  std::cout << message << std::endl;
-#endif
 }
 
 bool MDAL::toBool( const std::string &str )
@@ -492,7 +483,7 @@ MDAL::Statistics MDAL::calculateStatistics( std::shared_ptr<Dataset> dataset )
     return ret;
 
   bool isVector = !dataset->group()->isScalar();
-  bool is3D = dataset->group()->dataLocation() == MDAL_DataLocation::DataOnVolumes3D;
+  bool is3D = dataset->group()->dataLocation() == MDAL_DataLocation::DataOnVolumes;
   size_t bufLen = 2000;
   std::vector<double> buffer( isVector ? bufLen * 2 : bufLen );
 
@@ -553,7 +544,7 @@ void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertic
   if ( !mesh )
     return;
 
-  if ( 0 == mesh->facesCount() )
+  if ( 0 == mesh->verticesCount() )
     return;
 
   std::shared_ptr<DatasetGroup> group = std::make_shared< DatasetGroup >(
@@ -562,7 +553,7 @@ void MDAL::addBedElevationDatasetGroup( MDAL::Mesh *mesh, const Vertices &vertic
                                           mesh->uri(),
                                           "Bed Elevation"
                                         );
-  group->setDataLocation( MDAL_DataLocation::DataOnVertices2D );
+  group->setDataLocation( MDAL_DataLocation::DataOnVertices );
   group->setIsScalar( true );
 
   std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
@@ -598,7 +589,7 @@ void MDAL::addFaceScalarDatasetGroup( MDAL::Mesh *mesh,
                                           mesh->uri(),
                                           name
                                         );
-  group->setDataLocation( MDAL_DataLocation::DataOnFaces2D );
+  group->setDataLocation( MDAL_DataLocation::DataOnFaces );
   group->setIsScalar( true );
 
   std::shared_ptr<MDAL::MemoryDataset2D> dataset = std::make_shared< MemoryDataset2D >( group.get() );
@@ -797,4 +788,11 @@ bool MDAL::getHeaderLine( std::ifstream &stream, std::string &line )
   if ( ! stream.get( b, sizeof( b ) - 1, '\n' ) ) return false;
   line = std::string( b );
   return true;
+}
+
+MDAL::Error::Error( MDAL_Status s, std::string m, std::string d ): status( s ), mssg( m ), driver( d ) {}
+
+void MDAL::Error::setDriver( std::string d )
+{
+  driver = d;
 }

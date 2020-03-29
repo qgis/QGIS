@@ -25,7 +25,7 @@ QgsProcessingModelParameter::QgsProcessingModelParameter( const QString &paramet
 
 }
 
-QgsProcessingModelParameter *QgsProcessingModelParameter::clone()
+QgsProcessingModelParameter *QgsProcessingModelParameter::clone() const
 {
   return new QgsProcessingModelParameter( *this );
 }

@@ -33,6 +33,7 @@ from qgis.core import (
     QgsPointXY,
     QgsRaster,
     QgsProviderRegistry,
+    QgsRasterBandStats,
 )
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath, compareWkt
@@ -65,8 +66,19 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         cls.dbconn = 'service=qgis_test'
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
-        # Create test layers
+
         cls._load_test_table('public', 'raster_tiled_3035')
+        cls._load_test_table('public', 'raster_3035_no_constraints')
+        cls._load_test_table('public', 'raster_3035_tiled_no_overviews')
+        cls._load_test_table('public', 'raster_3035_tiled_no_pk')
+        cls._load_test_table('public', 'raster_3035_tiled_composite_pk')
+        cls._load_test_table('public', 'raster_3035_untiled_multiple_rows')
+        cls._load_test_table('idro', 'cosmo_i5_snow', 'bug_34823_pg_raster')
+
+        # Fix timing issues in backend
+        #time.sleep(1)
+
+        # Create test layer
         cls.rl = QgsRasterLayer(cls.dbconn + ' sslmode=disable key=\'rid\' srid=3035  table="public"."raster_tiled_3035" sql=', 'test', 'postgresraster')
         assert cls.rl.isValid()
         cls.source = cls.rl.dataProvider()
@@ -117,21 +129,18 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
     def testNoConstraintRaster(self):
         """Read unconstrained raster layer"""
 
-        self._load_test_table('public', 'raster_3035_no_constraints')
         rl = QgsRasterLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=3035  table="public"."raster_3035_no_constraints" sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
 
     def testPkGuessing(self):
         """Read raster layer with no pkey in uri"""
 
-        self._load_test_table('public', 'raster_tiled_3035')
         rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_tiled_3035" sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
 
     def testWhereCondition(self):
         """Read raster layer with where condition"""
 
-        self._load_test_table('public', 'raster_3035_tiled_no_overviews')
         rl_nowhere = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_3035_tiled_no_overviews"' +
                                     'sql=', 'test', 'postgresraster')
         self.assertTrue(rl_nowhere.isValid())
@@ -148,10 +157,19 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
 
         self.assertAlmostEqual(rl.dataProvider().identify(rl.extent().center(), QgsRaster.IdentifyFormatValue).results()[1], 223.38, 2)
 
+        self.assertTrue(compareWkt(rl_nowhere.extent().asWktPolygon(), 'POLYGON((4080050 2430625, 4080200 2430625, 4080200 2430750, 4080050 2430750, 4080050 2430625))'))
+
+        self.assertTrue(compareWkt(rl.extent().asWktPolygon(), 'POLYGON((4080150 2430625, 4080200 2430625, 4080200 2430650, 4080150 2430650, 4080150 2430625))'))
+
+        self.assertNotEqual(rl.extent(), rl_nowhere.extent())
+
+        # Now check if setSubsetString updates the extent
+        self.assertTrue(rl_nowhere.setSubsetString('"category" = \'cat2\''))
+        self.assertEqual(rl.extent(), rl_nowhere.extent())
+
     def testNoPk(self):
         """Read raster with no PK"""
 
-        self._load_test_table('public', 'raster_3035_tiled_no_pk')
         rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_3035_tiled_no_pk"' +
                             'sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
@@ -159,7 +177,6 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
     def testCompositeKey(self):
         """Read raster with composite pks"""
 
-        self._load_test_table('public', 'raster_3035_tiled_composite_pk')
         rl = QgsRasterLayer(self.dbconn + ' sslmode=disable srid=3035  table="public"."raster_3035_tiled_composite_pk"' +
                             'sql=', 'test', 'postgresraster')
         self.assertTrue(rl.isValid())
@@ -224,16 +241,12 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         """Test that a layer in a different schema than public can be loaded
         See: GH #34823"""
 
-        self._load_test_table('idro', 'cosmo_i5_snow', 'bug_34823_pg_raster')
-
         rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema}".format(table='cosmo_i5_snow', schema='idro'), 'pg_layer', 'postgresraster')
         self.assertTrue(rl.isValid())
         self.assertTrue(compareWkt(rl.extent().asWktPolygon(), 'POLYGON((-64.79286766849691048 -77.26689086732433509, -62.18292922825105506 -77.26689086732433509, -62.18292922825105506 -74.83694818157819384, -64.79286766849691048 -74.83694818157819384, -64.79286766849691048 -77.26689086732433509))'))
 
     def testUntiledMultipleRows(self):
         """Test multiple rasters (one per row)"""
-
-        self._load_test_table('public', 'raster_3035_untiled_multiple_rows')
 
         rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} sql=\"pk\" = 1".format(table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
         self.assertTrue(rl.isValid())
@@ -252,6 +265,56 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
             for j in range(2):
                 data.append(int(block.value(i, j)))
         self.assertEqual(data, [136, 142, 161, 169])
+
+    def testSetSubsetString(self):
+        """Test setSubsetString"""
+
+        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} sql=\"pk\" = 2".format(table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
+        self.assertTrue(rl.isValid())
+
+        block = rl.dataProvider().block(1, rl.extent(), 2, 2)
+        data = []
+        for i in range(2):
+            for j in range(2):
+                data.append(int(block.value(i, j)))
+        self.assertEqual(data, [136, 142, 161, 169])
+
+        stats = rl.dataProvider().bandStatistics(1, QgsRasterBandStats.Min | QgsRasterBandStats.Max, rl.extent())
+        self.assertEqual(int(stats.minimumValue), 136)
+        self.assertEqual(int(stats.maximumValue), 169)
+
+        ce = rl.renderer().contrastEnhancement()
+        min_max = int(ce.minimumValue()), int(ce.maximumValue())
+        self.assertEqual(min_max, (136, 169))
+
+        # Change filter:
+        self.assertTrue(rl.setSubsetString('"pk" = 1'))
+        block = rl.dataProvider().block(1, rl.extent(), 2, 2)
+        data = []
+        for i in range(2):
+            for j in range(2):
+                data.append(int(block.value(i, j)))
+        self.assertEqual(data, [136, 142, 145, 153])
+
+        # Check that we have new statistics
+        stats = rl.dataProvider().bandStatistics(1, QgsRasterBandStats.Min | QgsRasterBandStats.Max, rl.extent())
+        self.assertEqual(int(stats.minimumValue), 136)
+        self.assertEqual(int(stats.maximumValue), 153)
+
+        # Check that the renderer has been updated
+        ce = rl.renderer().contrastEnhancement()
+        new_min_max = int(ce.minimumValue()), int(ce.maximumValue())
+        self.assertNotEqual(new_min_max, min_max)
+        self.assertEqual(new_min_max, (136, 153))
+
+        # Set invalid filter
+        self.assertFalse(rl.setSubsetString('"pk_wrong" = 1'))
+        block = rl.dataProvider().block(1, rl.extent(), 2, 2)
+        data = []
+        for i in range(2):
+            for j in range(2):
+                data.append(int(block.value(i, j)))
+        self.assertEqual(data, [136, 142, 145, 153])
 
 
 if __name__ == '__main__':

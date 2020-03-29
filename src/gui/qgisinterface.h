@@ -61,6 +61,7 @@ class QgsLocatorFilter;
 class QgsStatusBar;
 class QgsMeshLayer;
 class QgsBrowserGuiModel;
+class QgsDevToolWidgetFactory;
 
 
 /**
@@ -926,6 +927,22 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.0
     */
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
+
+    /**
+     * Register a new tool in the development/debugging tools dock.
+     * \note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * \see unregisterDevToolWidgetFactory()
+     * \since QGIS 3.14
+     */
+    virtual void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
+
+    /**
+     * Unregister a previously registered tool factory from the development/debugging tools dock.
+     * \see registerDevToolWidgetFactory()
+     * \since QGIS 3.14
+    */
+    virtual void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) = 0;
 
     /**
      * Register a new custom drop handler.

@@ -73,6 +73,7 @@ class CORE_EXPORT QgsCallout
       OffsetFromLabel, //!< Distance to offset lines from label area
       DrawCalloutToAllParts, //!< Whether callout lines should be drawn to all feature parts
       AnchorPointPosition, //!< Feature's anchor point position
+      LabelAnchorPointPosition, //!< Label's anchor point position
     };
 
     //! Options for draw order (stacking) of callouts
@@ -89,6 +90,24 @@ class CORE_EXPORT QgsCallout
       PointOnExterior, //!< A point on the surface's outline closest to the label is used as anchor for polygon geometries
       PointOnSurface, //!< A point guaranteed to be on the surface is used as anchor for polygon geometries
       Centroid, //!< The surface's centroid is used as anchor for polygon geometries
+    };
+
+    /**
+     * Label's anchor point position.
+     * \since QGIS 3.14
+     */
+    enum LabelAnchorPoint
+    {
+      LabelPointOnExterior, //!< The point on the label's boundary closest to the feature
+      LabelCentroid, //!< The labe's centroid
+      LabelTopLeft, //!< Top left corner of the label's boundary
+      LabelTopMiddle, //!< Top middle of the label's boundary
+      LabelTopRight, //!< Top right corner of the label's boundary
+      LabelMiddleLeft, //!< Middle left of the label's boundary
+      LabelMiddleRight, //!< Middle right of the label's boundary
+      LabelBottomLeft, //!< Bottom left corner of the label's boundary
+      LabelBottomMiddle, //!< Bottom middle of the label's boundary
+      LabelBottomRight, //!< Bottom right corner of the label's boundary
     };
 
     /**
@@ -293,6 +312,42 @@ class CORE_EXPORT QgsCallout
      */
     static QgsCallout::AnchorPoint decodeAnchorPoint( const QString &name, bool *ok = nullptr );
 
+
+    /**
+     * Returns the label's anchor point position.
+     *
+     * \see setLabelAnchorPoint()
+     * \since QGIS 3.14
+     */
+    LabelAnchorPoint labelAnchorPoint() const { return mLabelAnchorPoint; }
+
+    /**
+     * Sets the label's \a anchor point position.
+     *
+     * \see labelAnchorPoint()
+     * \since QGIS 3.14
+     */
+    void setLabelAnchorPoint( LabelAnchorPoint anchor ) { mLabelAnchorPoint = anchor; }
+
+    /**
+     * Encodes a label \a anchor point to its string representation.
+     * \returns encoded string
+     * \see decodeLabelAnchorPoint()
+     * \since QGIS 3.14
+     */
+    static QString encodeLabelAnchorPoint( LabelAnchorPoint anchor );
+
+    /**
+     * Attempts to decode a string representation of a label anchor point name to the corresponding
+     * anchor point.
+     * \param name encoded label anchor point name
+     * \param ok if specified, will be set to TRUE if the anchor point was successfully decoded
+     * \returns decoded name
+     * \see encodeLabelAnchorPoint()
+     * \since QGIS 3.14
+     */
+    static QgsCallout::LabelAnchorPoint decodeLabelAnchorPoint( const QString &name, bool *ok = nullptr );
+
   protected:
 
     /**
@@ -315,11 +370,18 @@ class CORE_EXPORT QgsCallout
      */
     virtual void draw( QgsRenderContext &context, QRectF bodyBoundingBox, const double angle, const QgsGeometry &anchor, QgsCalloutContext &calloutContext ) = 0;
 
+    /**
+     * Returns the anchor point geometry for a label with the given bounding box and \a anchor point mode.
+     * \since QGIS 3.14
+     */
+    QgsGeometry labelAnchorGeometry( QRectF bodyBoundingBox, const double angle, LabelAnchorPoint anchor ) const;
+
   private:
 
     bool mEnabled = false;
 
     AnchorPoint mAnchorPoint = PoleOfInaccessibility;
+    LabelAnchorPoint mLabelAnchorPoint = LabelPointOnExterior;
 
     //! Property collection for data defined callout settings
     QgsPropertyCollection mDataDefinedProperties;

@@ -32,7 +32,8 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QString &uri, const 
   : QgsRasterDataProvider( uri, providerOptions )
   , mShared( new QgsPostgresRasterSharedData )
 {
-  mUri = QgsDataSourceUri( uri );
+
+  mUri = uri;
 
   // populate members from the uri structure
   mSchemaName = mUri.schema();
@@ -683,6 +684,35 @@ QgsPostgresConn *QgsPostgresRasterProvider::connectionRW()
     mConnectionRW = QgsPostgresConn::connectDb( mUri.connectionInfo( false ), false );
   }
   return mConnectionRW;
+}
+
+QString QgsPostgresRasterProvider::subsetString() const
+{
+  return mSqlWhereClause;
+}
+
+bool QgsPostgresRasterProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
+{
+  Q_UNUSED( updateFeatureCount )
+  const QString oldSql { mSqlWhereClause };
+  mSqlWhereClause = subset;
+  // Recalculate extent and other metadata calling init()
+  if ( !init() )
+  {
+    // Restore
+    mSqlWhereClause = oldSql;
+    init();
+    return false;
+  }
+
+  mStatistics.clear();
+  mShared->invalidateCache();
+
+  // Update datasource uri too
+  mUri.setSql( subset );
+  setDataSourceUri( mUri.uri( false ) );
+
+  return true;
 }
 
 void QgsPostgresRasterProvider::disconnectDb()
@@ -1567,7 +1597,7 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int st
   // Query the backend
   QString where { extent.isEmpty() ? QString() : QStringLiteral( "WHERE %1 && ST_GeomFromText( %2, %3 )" )
                   .arg( quotedIdentifier( mRasterColumn ) )
-                  .arg( extent.asWktPolygon() )
+                  .arg( quotedValue( extent.asWktPolygon() ) )
                   .arg( mCrs.postgisSrid() ) };
 
   if ( ! mSqlWhereClause.isEmpty() )

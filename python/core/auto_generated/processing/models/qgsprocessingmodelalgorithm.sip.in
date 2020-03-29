@@ -443,6 +443,32 @@ These variables are added to the model's expression context scope, allowing for 
 .. versionadded:: 3.8
 %End
 
+    QVariantMap designerParameterValues() const;
+%Docstring
+Returns the parameter values to use as default values when running this model through the
+designer dialog.
+
+This usually corresponds to the last set of parameter values used when the model was
+run through the designer.
+
+.. seealso:: :py:func:`setDesignerParameterValues`
+
+.. versionadded:: 3.14
+%End
+
+    void setDesignerParameterValues( const QVariantMap &values );
+%Docstring
+Sets the parameter ``values`` to use as default values when running this model through the
+designer dialog.
+
+This usually corresponds to the last set of parameter values used when the model was
+run through the designer.
+
+.. seealso:: :py:func:`designerParameterValues`
+
+.. versionadded:: 3.14
+%End
+
   protected:
 
     virtual QgsProcessingAlgorithm *createInstance() const /Factory/;

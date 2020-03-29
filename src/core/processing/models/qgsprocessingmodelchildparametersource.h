@@ -232,6 +232,8 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
 
 };
 
+Q_DECLARE_METATYPE( QgsProcessingModelChildParameterSource );
+
 #ifndef SIP_RUN
 //! List of child parameter sources
 typedef QList< QgsProcessingModelChildParameterSource > QgsProcessingModelChildParameterSources;

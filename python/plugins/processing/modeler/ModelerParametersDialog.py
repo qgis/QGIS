@@ -29,7 +29,7 @@ from qgis.PyQt.QtCore import (Qt,
                               QByteArray)
 from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QFrame, QPushButton, QSizePolicy, QVBoxLayout,
-                                 QHBoxLayout, QWidget)
+                                 QHBoxLayout, QWidget, QTabWidget, QTextEdit)
 
 from qgis.core import (Qgis,
                        QgsProject,
@@ -102,6 +102,11 @@ class ModelerParametersDialog(QDialog):
         settings.setValue("/Processing/modelParametersDialogGeometry", self.saveGeometry())
         super(ModelerParametersDialog, self).closeEvent(event)
 
+    def switchToCommentTab(self):
+        self.tab.setCurrentIndex(1)
+        self.commentEdit.setFocus()
+        self.commentEdit.selectAll()
+
     def setupUi(self):
         self.checkBoxes = {}
         self.showAdvanced = False
@@ -111,6 +116,11 @@ class ModelerParametersDialog(QDialog):
         self.algorithmItem = None
 
         self.resize(650, 450)
+
+        self.mainLayout = QVBoxLayout()
+        self.tab = QTabWidget()
+        self.mainLayout.addWidget(self.tab)
+
         self.buttonBox = QDialogButtonBox()
         self.buttonBox.setOrientation(Qt.Horizontal)
         self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok | QDialogButtonBox.Help)
@@ -118,7 +128,6 @@ class ModelerParametersDialog(QDialog):
                            QSizePolicy.Expanding)
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setSpacing(5)
-        self.verticalLayout.setMargin(20)
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
@@ -142,6 +151,8 @@ class ModelerParametersDialog(QDialog):
         widget_context.setProject(QgsProject.instance())
         if iface is not None:
             widget_context.setMapCanvas(iface.mapCanvas())
+            widget_context.setActiveLayer(iface.activeLayer())
+
         widget_context.setModel(self.model)
         widget_context.setModelChildAlgorithmId(self.childId)
 
@@ -229,12 +240,32 @@ class ModelerParametersDialog(QDialog):
         self.scrollArea.setWidgetResizable(True)
 
         self.verticalLayout2.addWidget(self.scrollArea)
-        self.verticalLayout2.addWidget(self.buttonBox)
-        self.setLayout(self.verticalLayout2)
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
         self.buttonBox.helpRequested.connect(self.openHelp)
+
+        w = QWidget()
+        w.setLayout(self.verticalLayout2)
+        self.tab.addTab(w, self.tr('Properties'))
+
+        self.commentLayout = QVBoxLayout()
+        self.commentEdit = QTextEdit()
+        self.commentEdit.setAcceptRichText(False)
+        self.commentLayout.addWidget(self.commentEdit)
+        w2 = QWidget()
+        w2.setLayout(self.commentLayout)
+        self.tab.addTab(w2, self.tr('Comments'))
+
+        self.mainLayout.addWidget(self.buttonBox)
+        self.setLayout(self.mainLayout)
+
         QMetaObject.connectSlotsByName(self)
+
+    def setComments(self, text):
+        self.commentEdit.setPlainText(text)
+
+    def comments(self):
+        return self.commentEdit.toPlainText()
 
     def getAvailableDependencies(self):  # spellok
         if self.childId is None:
@@ -378,9 +409,9 @@ class ModelerParametersDialog(QDialog):
                     [isinstance(subval, QgsProcessingModelChildParameterSource) for subval in val])):
                 val = [QgsProcessingModelChildParameterSource.fromStaticValue(val)]
             for subval in val:
-                if (isinstance(subval, QgsProcessingModelChildParameterSource) and
-                    subval.source() == QgsProcessingModelChildParameterSource.StaticValue and
-                        not param.checkValueIsAcceptable(subval.staticValue())) \
+                if (isinstance(subval, QgsProcessingModelChildParameterSource)
+                    and subval.source() == QgsProcessingModelChildParameterSource.StaticValue
+                        and not param.checkValueIsAcceptable(subval.staticValue())) \
                         or (subval is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
                     self.bar.pushMessage(self.tr("Error"), self.tr("Wrong or missing value for parameter '{}'").format(
                         param.description()),
@@ -419,6 +450,7 @@ class ModelerParametersDialog(QDialog):
         #except:
         #    pass
 
+        alg.comment().setDescription(self.comments())
         return alg
 
     def okPressed(self):

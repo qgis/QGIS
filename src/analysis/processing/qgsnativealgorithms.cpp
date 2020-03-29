@@ -61,6 +61,7 @@
 #include "qgsalgorithmfiledownloader.h"
 #include "qgsalgorithmfillnodata.h"
 #include "qgsalgorithmfilter.h"
+#include "qgsalgorithmfilterbygeometry.h"
 #include "qgsalgorithmfiltervertices.h"
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmforcerhr.h"
@@ -251,6 +252,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
   addAlgorithm( new QgsFillNoDataAlgorithm() );
   addAlgorithm( new QgsFilterAlgorithm() );
+  addAlgorithm( new QgsFilterByGeometryAlgorithm() );
+  addAlgorithm( new QgsFilterByLayerTypeAlgorithm() );
   addAlgorithm( new QgsFilterVerticesByM() );
   addAlgorithm( new QgsFilterVerticesByZ() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );

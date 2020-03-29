@@ -21,14 +21,18 @@
 #include <QGraphicsObject>
 #include <QFont>
 #include <QPicture>
+#include <QPointer>
 
 class QgsProcessingModelComponent;
 class QgsProcessingModelParameter;
 class QgsProcessingModelChildAlgorithm;
 class QgsProcessingModelOutput;
+class QgsProcessingModelComment;
 class QgsProcessingModelAlgorithm;
 class QgsModelDesignerFlatButtonGraphicItem;
 class QgsModelDesignerFoldButtonGraphicItem;
+class QgsModelGraphicsView;
+class QgsModelViewMouseEvent;
 
 ///@cond NOT_STABLE
 
@@ -52,6 +56,12 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
       Hover, //!< Cursor is hovering over an deselected item
     };
 
+    //! Available flags
+    enum Flag
+    {
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     /**
      * Constructor for QgsModelComponentGraphicItem for the specified \a component, with the specified \a parent item.
      *
@@ -65,6 +75,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
                                   QGraphicsItem *parent SIP_TRANSFERTHIS );
 
     ~QgsModelComponentGraphicItem() override;
+
+    /**
+     * Returns item flags.
+     */
+    virtual Flags flags() const;
 
     /**
      * Returns the model component associated with this item.
@@ -82,6 +97,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QgsProcessingModelAlgorithm *model();
 
     /**
+     * Returns the associated view.
+     */
+    QgsModelGraphicsView *view();
+
+    /**
      * Returns the font used to render text in the item.
      * \see setFont()
      */
@@ -93,18 +113,68 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void setFont( const QFont &font );
 
+    /**
+     * Moves the component by the specified \a dx and \a dy.
+     *
+     * \warning Call this method, not QGraphicsItem::moveBy!
+     */
+    void moveComponentBy( qreal dx, qreal dy );
+
+    /**
+     * Shows a preview of moving the item from its stored position by \a dx, \a dy.
+     */
+    void previewItemMove( qreal dx, qreal dy );
+
+    /**
+     * Sets a new scene \a rect for the item.
+     */
+    void setItemRect( QRectF rect );
+
+#ifndef SIP_RUN
+
+    /**
+     * Shows a preview of setting a new \a rect for the item.
+     */
+    QRectF previewItemRectChange( QRectF rect );
+
+    /**
+     * Sets a new scene \a rect for the item.
+     */
+    void finalizePreviewedItemRectChange( QRectF rect );
+
+    /**
+     * Handles a model hover enter \a event.
+     */
+    virtual void modelHoverEnterEvent( QgsModelViewMouseEvent *event );
+
+    /**
+     * Handles a model hover move \a event.
+     */
+    virtual void modelHoverMoveEvent( QgsModelViewMouseEvent *event );
+
+    /**
+     * Handles a model hover leave \a event.
+     */
+    virtual void modelHoverLeaveEvent( QgsModelViewMouseEvent *event );
+
+    /**
+     * Handles a model double-click \a event.
+     */
+    virtual void modelDoubleClickEvent( QgsModelViewMouseEvent *event );
+#endif
     void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
     void hoverEnterEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;
     void hoverLeaveEvent( QGraphicsSceneHoverEvent *event ) override;
     QVariant itemChange( GraphicsItemChange change, const QVariant &value ) override;
     QRectF boundingRect() const override;
+    bool contains( const QPointF &point ) const override;
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
     /**
      * Returns the rectangle representing the body of the item.
      */
-    QRectF itemRect() const;
+    QRectF itemRect( bool storedRect = false ) const;
 
     /**
      * Returns the item's label text.
@@ -158,6 +228,25 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     QPointF calculateAutomaticLinkPoint( const QPointF &point, Qt::Edge &edge SIP_OUT ) const;
 
+    /**
+     * Called when the comment attached to the item should be edited.
+     *
+     * The default implementation does nothing.
+     */
+    virtual void editComment() {}
+
+    /**
+     * Returns TRUE if the component can be deleted.
+     */
+    virtual bool canDeleteComponent() { return false; }
+
+    /**
+     * Called when the component should be deleted.
+     *
+     * The default implementation does nothing.
+     */
+    virtual void deleteComponent() {}
+
   signals:
 
     // TODO - rework this, should be triggered externally when the model actually changes!
@@ -166,6 +255,15 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * Emitted by the item to request a repaint of the parent model scene.
      */
     void requestModelRepaint();
+
+    /**
+     * Emitted when the definition of the associated component is about to be changed
+     * by the item.
+     *
+     * The \a text argument gives the translated text describing the change about to occur, and the
+     * optional \a id can be used to group the associated undo commands.
+     */
+    void aboutToChange( const QString &text, int id = 0 );
 
     /**
      * Emitted when the definition of the associated component is changed
@@ -183,6 +281,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     void updateArrowPaths();
 
+    /**
+     * Emitted when the item's size or position changes.
+     */
+    void sizePositionChanged();
+
   protected slots:
 
     /**
@@ -191,13 +294,6 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      * The default implementation does nothing.
      */
     virtual void editComponent() {}
-
-    /**
-     * Called when the component should be deleted.
-     *
-     * The default implementation does nothing.
-     */
-    virtual void deleteComponent() {}
 
   protected:
 
@@ -223,6 +319,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     virtual QColor textColor( State state ) const = 0;
 
     /**
+     * Returns the stroke style to use while rendering the outline of the item.
+     */
+    virtual Qt::PenStyle strokeStyle( State state ) const;
+
+    /**
      * Returns a QPicture version of the item's icon, if available.
      */
     virtual QPicture iconPicture() const;
@@ -232,7 +333,19 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
      */
     virtual QPixmap iconPixmap() const;
 
+    /**
+     * Updates the position and size stored in the model for the associated comment
+     */
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) = 0;
+
+    /**
+     * Updates the item's button positions, based on the current item rect.
+     */
+    void updateButtonPositions();
+
   private:
+
+    QSizeF itemSize() const;
 
     void updateToolTip( const QPointF &pos );
 
@@ -250,15 +363,24 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     QgsModelDesignerFlatButtonGraphicItem *mEditButton = nullptr;
     QgsModelDesignerFlatButtonGraphicItem *mDeleteButton = nullptr;
 
+    static constexpr double MIN_COMPONENT_WIDTH = 70;
+    static constexpr double MIN_COMPONENT_HEIGHT = 30;
+
     static constexpr double DEFAULT_BUTTON_WIDTH = 16;
     static constexpr double DEFAULT_BUTTON_HEIGHT = 16;
+    static constexpr double BUTTON_MARGIN = 2;
+    static constexpr double TEXT_MARGIN = 4;
+    static constexpr double RECT_PEN_SIZE = 2;
     QSizeF mButtonSize { DEFAULT_BUTTON_WIDTH, DEFAULT_BUTTON_HEIGHT };
 
     QFont mFont;
 
     bool mIsHovering = false;
+    bool mIsMoving = false;
+    QSizeF mTempSize;
 
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsModelComponentGraphicItem::Flags )
 
 /**
  * \ingroup gui
@@ -285,6 +407,7 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
                                   QGraphicsItem *parent SIP_TRANSFERTHIS );
 
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
+    bool canDeleteComponent() override;
 
   protected:
 
@@ -292,6 +415,7 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
     QPicture iconPicture() const override;
+    void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:
 
@@ -326,6 +450,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
                                        QgsProcessingModelAlgorithm *model,
                                        QGraphicsItem *parent SIP_TRANSFERTHIS );
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
+    bool canDeleteComponent() override;
 
   protected:
 
@@ -337,6 +462,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
 
     int linkPointCount( Qt::Edge edge ) const override;
     QString linkPointText( Qt::Edge edge, int index ) const override;
+    void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:
 
@@ -376,12 +502,15 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
                                QgsProcessingModelAlgorithm *model,
                                QGraphicsItem *parent SIP_TRANSFERTHIS );
 
+    bool canDeleteComponent() override;
+
   protected:
 
     QColor fillColor( State state ) const override;
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
     QPicture iconPicture() const override;
+    void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:
 
@@ -390,6 +519,57 @@ class GUI_EXPORT QgsModelOutputGraphicItem : public QgsModelComponentGraphicItem
   private:
 
     QPicture mPicture;
+};
+
+
+
+/**
+ * \ingroup gui
+ * \brief A graphic item representing a model comment in the model designer.
+ * \warning Not stable API
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicItem
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsModelCommentGraphicItem for the specified \a comment, with the specified \a parent item.
+     *
+     * The \a model argument specifies the associated processing model. Ownership of \a model is not transferred, and
+     * it must exist for the lifetime of this object.
+     *
+     * Ownership of \a output is transferred to the item.
+     */
+    QgsModelCommentGraphicItem( QgsProcessingModelComment *comment SIP_TRANSFER,
+                                QgsModelComponentGraphicItem *parentItem,
+                                QgsProcessingModelAlgorithm *model,
+                                QGraphicsItem *parent SIP_TRANSFERTHIS );
+    ~QgsModelCommentGraphicItem() override;
+    void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
+    bool canDeleteComponent() override;
+  protected:
+
+    QColor fillColor( State state ) const override;
+    QColor strokeColor( State state ) const override;
+    QColor textColor( State state ) const override;
+    Qt::PenStyle strokeStyle( State state ) const override;
+    void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
+
+  protected slots:
+
+    void deleteComponent() override;
+    void editComponent() override;
+  private:
+
+    QgsProcessingModelComment *modelComponent();
+
+    std::unique_ptr< QgsProcessingModelComponent > mParentComponent;
+    QPointer< QgsModelComponentGraphicItem > mParentItem;
+
+
 };
 ///@endcond
 

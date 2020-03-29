@@ -23,6 +23,8 @@
 
 #include <QVector>
 #include <QVector3D>
+#include <QSet>
+#include <QList>
 #include <memory>
 #include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
@@ -44,7 +46,7 @@ class QgsRectangle;
  *
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsTriangularMesh
+class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
 {
   public:
     //! Ctor
@@ -67,14 +69,37 @@ class CORE_EXPORT QgsTriangularMesh
      * extra vertices needed to create triangles (N+1 - len)
      */
     const QVector<QgsMeshVertex> &vertices() const ;
+
     //! Returns triangles
     const QVector<QgsMeshFace> &triangles() const ;
 
-    //! Returns centroids of the native faces in map CRS
-    const QVector<QgsMeshVertex> &centroids() const ;
+    //! Returns edges
+    const QVector<QgsMeshEdge> &edges() const ;
+
+    /**
+     * Returns centroids of the native faces in map CRS
+     *
+     * \deprecated since QGIS 3.14 use faceCentroids() instead
+     */
+    Q_DECL_DEPRECATED const QVector<QgsMeshVertex> &centroids() const ;
+
+    /**
+     * Returns centroids of the native faces in map CRS
+     * \since QGIS 3.14
+     */
+    const QVector<QgsMeshVertex> &faceCentroids() const ;
+
+    /**
+     * Returns centroids of the native edges in map CRS
+     * \since QGIS 3.14
+     */
+    const QVector<QgsMeshVertex> &edgeCentroids() const ;
 
     //! Returns mapping between triangles and original faces
     const QVector<int> &trianglesToNativeFaces() const ;
+
+    //! Returns mapping between edges and original edges
+    const QVector<int> &edgesToNativeEdges() const ;
 
     /**
      * Finds index of triangle at given point
@@ -110,9 +135,18 @@ class CORE_EXPORT QgsTriangularMesh
     QList<int> faceIndexesForRectangle( const QgsRectangle &rectangle ) const ;
 
     /**
-     * Calculates and returns normale vector on each vertex
+     * Finds indexes of edges intersecting given bounding box
+     * It uses spatial indexing
      *
-     * \returns  all normales at vertices
+     * \param rectangle bounding box in map coordinate system
+     * \returns edges indexes that intersect the rectangle
+     */
+    QList<int> edgeIndexesForRectangle( const QgsRectangle &rectangle ) const ;
+
+    /**
+     * Calculates and returns normale vector on each vertex that is part of any face
+     *
+     * \returns all normales at vertices
      *
      * \since QGIS 3.12
      */
@@ -127,6 +161,8 @@ class CORE_EXPORT QgsTriangularMesh
      * There are as many simplified meshes as necessary to have a the minimum triangles count on the last simplified mesh.
      *
      * The caller has to take the ownership of returned meshes.
+     *
+     * Not implemented for Edge meshes and Mixed meshes
      *
      * \param reductionFactor is the factor used to reduce the number of triangles of the mesh
      * \param minimumTrianglesCount is the minimal faces count on simplified mesh
@@ -154,6 +190,21 @@ class CORE_EXPORT QgsTriangularMesh
      */
     int levelOfDetail() const;
 
+    /**
+     * Returns the extent of the triangular mesh in map coordinates
+     *
+     * \returns bounding box of the triangular mesh
+     *
+     * \since QGIS 3.14
+     */
+    QgsRectangle extent() const;
+
+    /**
+     * Returns whether the mesh contains at mesh elements of given type
+     *  \since QGIS 3.14
+     */
+    bool contains( const QgsMesh::ElementType &type ) const;
+
   private:
 
     /**
@@ -175,12 +226,19 @@ class CORE_EXPORT QgsTriangularMesh
     // faces are derived triangles
     QgsMesh mTriangularMesh;
     QVector<int> mTrianglesToNativeFaces; //len(mTrianglesToNativeFaces) == len(mTriangles). Mapping derived -> native
+    QVector<int> mEdgesToNativeEdges; //len(mEdgesToNativeEdges) == len(mEdges). Mapping derived -> native
 
     // centroids of the native faces in map CRS
     QVector<QgsMeshVertex> mNativeMeshFaceCentroids;
 
-    QgsMeshSpatialIndex mSpatialIndex;
+    // centroids of the native edges in map CRS
+    QVector<QgsMeshVertex> mNativeMeshEdgeCentroids;
+
+    QgsMeshSpatialIndex mSpatialFaceIndex;
+    QgsMeshSpatialIndex mSpatialEdgeIndex;
     QgsCoordinateTransform mCoordinateTransform; //coordinate transform used to convert native mesh vertices to map vertices
+
+    QgsRectangle mExtent;
 
     // average size of the triangles
     double mAverageTriangleSize = 0;
@@ -203,7 +261,25 @@ namespace QgsMeshUtils
    * Returns unique native faces indexes from list of triangle indexes
    * \since QGIS 3.4
    */
-  CORE_EXPORT QList<int> nativeFacesFromTriangles( const QList<int> &triangleIndexes, const QVector<int> &trianglesToNativeFaces );
+  CORE_EXPORT QSet<int> nativeFacesFromTriangles( const QList<int> &triangleIndexes, const QVector<int> &trianglesToNativeFaces );
+
+  /**
+   * Returns unique native faces indexes from list of triangle indexes
+   * \since QGIS 3.14
+   */
+  CORE_EXPORT QSet<int> nativeEdgesFromEdges( const QList<int> &edgesIndexes, const QVector<int> &edgesToNativeEdges );
+
+  /**
+   * Returns unique native vertex indexes from list of vertices of triangles
+   * \since QGIS 3.14
+   */
+  CORE_EXPORT QSet<int> nativeVerticesFromTriangles( const QList<int> &triangleIndexes, const QVector<QgsMeshFace> &triangles );
+
+  /**
+   * Returns unique native faces indexes from list of vertices of triangles
+   * \since QGIS 3.14
+   */
+  CORE_EXPORT QSet<int> nativeVerticesFromEdges( const QList<int> &edgesIndexes, const QVector<QgsMeshEdge> &edges );
 
   /**
    * Tests if point p is on the face defined with vertices

@@ -119,6 +119,7 @@ class QgsAdvancedDigitizingDockWidget;
 class QgsGpsInformationWidget;
 class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
+class QgsTemporalControllerDockWidget;
 
 class QgsDecorationItem;
 class QgsMessageLogViewer;
@@ -138,6 +139,8 @@ class QgsLayoutCustomDropHandler;
 class QgsProxyProgressTask;
 class QgsNetworkRequestParameters;
 class QgsBearingNumericFormat;
+class QgsDevToolsPanelWidget;
+class QgsDevToolWidgetFactory;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -632,7 +635,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLocatorWidget *locatorWidget() { return mLocatorWidget; }
 
     //! show layer properties
-    void showLayerProperties( QgsMapLayer *mapLayer );
+    void showLayerProperties( QgsMapLayer *mapLayer, const QString &page = QString() );
 
     //! returns pointer to map legend
     QgsLayerTreeView *layerTreeView();
@@ -680,6 +683,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Unregister a previously registered tab in the options dialog
     void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory );
+
+    //! Register a dev tool factory
+    void registerDevToolFactory( QgsDevToolWidgetFactory *factory );
+
+    //! Unregister a previously registered dev tool factory
+    void unregisterDevToolFactory( QgsDevToolWidgetFactory *factory );
 
     //! Register a new custom drop handler.
     void registerCustomDropHandler( QgsCustomDropHandler *handler );
@@ -957,8 +966,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Duplicate map layer(s) in legend
     void duplicateLayers( const QList<QgsMapLayer *> &lyrList = QList<QgsMapLayer *>() );
 
-    //! change layer subset of current vector layer
-    void layerSubsetString();
+    /**
+     * Changes layer subset of \a mapLayer
+     * \since QGIS 3.12
+     */
+    void layerSubsetString( QgsMapLayer *mapLayer );
+
+    //! change layer subset of the active layer
+    void layerSubsetString( );
 
     //! Sets scale visibility of selected layers
     void setLayerScaleVisibility();
@@ -1101,6 +1116,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Create a new spatial bookmark
     void newBookmark( bool inProject = false );
+
+    /**
+     * Creates a default attribute editor context using the main map canvas and the main edit tools and message bar
+     * \since QGIS 3.12
+     */
+    QgsAttributeEditorContext createAttributeEditorContext();
 
   protected:
 
@@ -1489,6 +1510,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! deselect features from all layers
     void deselectAll();
+
+    //! deselect features from the current active layer
+    void deselectActiveLayer();
 
     //! select all features
     void selectAll();
@@ -2300,6 +2324,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
     QgsBrowserDockWidget *mBrowserWidget2 = nullptr;
 
+    QgsTemporalControllerDockWidget *mTemporalControllerWidget = nullptr;
+
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
     QgsStatisticalSummaryDockWidget *mStatisticalSummaryDockWidget = nullptr;
     QgsBookmarks *mBookMarksDockWidget = nullptr;
@@ -2316,6 +2342,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsUserProfileManager *mUserProfileManager = nullptr;
     QgsDockWidget *mMapStylingDock = nullptr;
     QgsLayerStylingWidget *mMapStyleWidget = nullptr;
+    QgsDockWidget *mDevToolsDock = nullptr;
+    QgsDevToolsPanelWidget *mDevToolsWidget = nullptr;
 
     //! Persistent tile scale slider
     QgsTileScaleWidget *mpTileScaleWidget = nullptr;
@@ -2358,6 +2386,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QList<QgsMapLayerConfigWidgetFactory *> mMapLayerPanelFactories;
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
+
+    QList<QgsDevToolWidgetFactory * > mDevToolFactories;
 
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
     QVector<QPointer<QgsLayoutCustomDropHandler>> mCustomLayoutDropHandlers;

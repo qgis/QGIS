@@ -23,12 +23,14 @@
 #include "qgsfeatureid.h"
 #include "qgsmimedatautils.h"
 #include "qgsprocessingcontext.h"
-
+#include "qgsprocessinggui.h"
 
 class QgsMapLayerComboBox;
 class QToolButton;
 class QCheckBox;
 class QgsProcessingParameterDefinition;
+class QgsBrowserGuiModel;
+class QgsProcessingParameterWidgetContext;
 
 ///@cond PRIVATE
 
@@ -47,7 +49,7 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     /**
      * Constructor for QgsProcessingMapLayerComboBox, with the specified \a parameter definition.
      */
-    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QWidget *parent = nullptr );
+    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
 
     ~QgsProcessingMapLayerComboBox() override;
 
@@ -92,18 +94,34 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
      */
     QVariant value() const;
 
+    /**
+     * Sets the \a context in which the widget is shown.
+     * \since QGIS 3.14
+     */
+    void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
+
+    /**
+     * Sets whether the combo box value can be freely edited.
+     *
+     * \see isEditable()
+     * \since QGIS 3.14
+     */
+    void setEditable( bool editable );
+
+    /**
+     * Returns whether the combo box value can be freely edited.
+     *
+     * \see setEditable()
+     * \since QGIS 3.14
+     */
+    bool isEditable() const;
+
   signals:
 
     /**
      * Emitted whenever the value is changed in the widget.
      */
     void valueChanged();
-
-    /**
-     * Emitted when the widget has triggered a file selection operation (to be
-     * handled in Python for now).
-     */
-    void triggerFileSelection();
 
   protected:
 
@@ -115,15 +133,27 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
 
     void onLayerChanged( QgsMapLayer *layer );
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
+    void showSourceOptions();
+    void selectFromFile();
+    void browseForLayer();
 
   private:
     std::unique_ptr< QgsProcessingParameterDefinition > mParameter;
     QgsMapLayerComboBox *mCombo = nullptr;
     QToolButton *mSelectButton = nullptr;
+    QToolButton *mIterateButton = nullptr;
+    QToolButton *mSettingsButton = nullptr;
     QCheckBox *mUseSelectionCheckBox = nullptr;
     bool mDragActive = false;
+    long long mFeatureLimit = -1;
+    bool mIsOverridingDefaultGeometryCheck = false;
+    QgsFeatureRequest::InvalidGeometryCheck mGeometryCheck = QgsFeatureRequest::GeometryAbortOnInvalid;
     QPointer< QgsMapLayer> mPrevLayer;
     int mBlockChangedSignal = 0;
+
+    QgsBrowserGuiModel *mBrowserModel = nullptr;
+
+    QMenu *mFeatureSourceMenu = nullptr;
     QgsMapLayer *compatibleMapLayerFromMimeData( const QMimeData *data, bool &incompatibleLayerSelected ) const;
     QString compatibleUriFromMimeData( const QMimeData *data ) const;
 };

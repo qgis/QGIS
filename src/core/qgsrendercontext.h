@@ -52,7 +52,7 @@ class QgsMaskIdProvider;
  * The context of a rendering operation defines properties such as
  * the conversion ratio between screen and map units, the extents
  * to be rendered etc.
- **/
+ */
 class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 {
   public:

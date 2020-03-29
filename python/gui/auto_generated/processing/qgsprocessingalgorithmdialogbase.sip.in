@@ -56,7 +56,7 @@ Returns the algorithm running in the dialog.
 .. seealso:: :py:func:`setAlgorithm`
 %End
 
-    void setMainWidget( QWidget *widget /Transfer/ );
+    void setMainWidget( QgsPanelWidget *widget /Transfer/ );
 %Docstring
 Sets the main ``widget`` for the dialog, usually a panel for configuring algorithm parameters.
 
@@ -182,6 +182,11 @@ Copies the current log contents to the clipboard.
 .. versionadded:: 3.2
 %End
 
+    void showParameters();
+%Docstring
+Switches the dialog to the parameters page.
+%End
+
   protected:
 
     virtual void closeEvent( QCloseEvent *e );
@@ -195,6 +200,11 @@ Returns the dialog's run button.
     QPushButton *cancelButton();
 %Docstring
 Returns the dialog's cancel button.
+%End
+
+    QPushButton *changeParametersButton();
+%Docstring
+Returns the dialog's change parameters button.
 %End
 
     QDialogButtonBox *buttonBox();
@@ -221,6 +231,11 @@ Sets whether the algorithm was executed through the dialog.
 .. seealso:: :py:func:`setResults`
 %End
 
+    void setExecutedAnyResult( bool executedAnyResult );
+%Docstring
+Sets whether the algorithm was executed through the dialog (no matter the result).
+%End
+
     void setResults( const QVariantMap &results );
 %Docstring
 Sets the algorithm results.
@@ -238,6 +253,29 @@ Displays an info ``message`` in the dialog's log.
     void resetGui();
 %Docstring
 Resets the dialog's gui, ready for another algorithm execution.
+%End
+
+    virtual void resetAdditionalGui();
+%Docstring
+For subclasses to register their own GUI controls to be reset, ready
+for another algorithm execution.
+%End
+
+    void updateRunButtonVisibility();
+%Docstring
+Sets visibility for mutually exclusive buttons Run and Change Parameters.
+%End
+
+    void blockControlsWhileRunning();
+%Docstring
+Blocks run and changeParameters buttons and parameters tab while the
+algorithm is running.
+%End
+
+    virtual void blockAdditionalControlsWhileRunning();
+%Docstring
+For subclasses to register their own GUI controls to be blocked while
+the algorithm is running.
 %End
 
     QgsMessageBar *messageBar();

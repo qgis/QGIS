@@ -34,6 +34,12 @@ Base class for graphic items representing model components in the model designer
       Hover,
     };
 
+    enum Flag
+    {
+    };
+    typedef QFlags<QgsModelComponentGraphicItem::Flag> Flags;
+
+
     QgsModelComponentGraphicItem( QgsProcessingModelComponent *component /Transfer/,
                                   QgsProcessingModelAlgorithm *model,
                                   QGraphicsItem *parent /TransferThis/ );
@@ -48,6 +54,11 @@ Ownership of ``component`` is transferred to the item.
 
     ~QgsModelComponentGraphicItem();
 
+    virtual Flags flags() const;
+%Docstring
+Returns item flags.
+%End
+
     QgsProcessingModelComponent *component();
 %Docstring
 Returns the model component associated with this item.
@@ -57,6 +68,11 @@ Returns the model component associated with this item.
     QgsProcessingModelAlgorithm *model();
 %Docstring
 Returns the model associated with this item.
+%End
+
+    QgsModelGraphicsView *view();
+%Docstring
+Returns the associated view.
 %End
 
     QFont font() const;
@@ -73,6 +89,25 @@ Sets the ``font`` used to render text in the item.
 .. seealso:: :py:func:`font`
 %End
 
+    void moveComponentBy( qreal dx, qreal dy );
+%Docstring
+Moves the component by the specified ``dx`` and ``dy``.
+
+.. warning::
+
+   Call this method, not QGraphicsItem.moveBy!
+%End
+
+    void previewItemMove( qreal dx, qreal dy );
+%Docstring
+Shows a preview of moving the item from its stored position by ``dx``, ``dy``.
+%End
+
+    void setItemRect( QRectF rect );
+%Docstring
+Sets a new scene ``rect`` for the item.
+%End
+
     virtual void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event );
 
     virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
@@ -85,10 +120,12 @@ Sets the ``font`` used to render text in the item.
 
     virtual QRectF boundingRect() const;
 
+    virtual bool contains( const QPointF &point ) const;
+
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
 
 
-    QRectF itemRect() const;
+    QRectF itemRect( bool storedRect = false ) const;
 %Docstring
 Returns the rectangle representing the body of the item.
 %End
@@ -147,12 +184,40 @@ Returns the best link point to use for a link originating at a specified ``other
          - edge: item edge for calculated best link point
 %End
 
+    virtual void editComment();
+%Docstring
+Called when the comment attached to the item should be edited.
+
+The default implementation does nothing.
+%End
+
+    virtual bool canDeleteComponent();
+%Docstring
+Returns ``True`` if the component can be deleted.
+%End
+
+    virtual void deleteComponent();
+%Docstring
+Called when the component should be deleted.
+
+The default implementation does nothing.
+%End
+
   signals:
 
 
     void requestModelRepaint();
 %Docstring
 Emitted by the item to request a repaint of the parent model scene.
+%End
+
+    void aboutToChange( const QString &text, int id = 0 );
+%Docstring
+Emitted when the definition of the associated component is about to be changed
+by the item.
+
+The ``text`` argument gives the translated text describing the change about to occur, and the
+optional ``id`` can be used to group the associated undo commands.
 %End
 
     void changed();
@@ -171,18 +236,16 @@ Emitted when item requests that all connected arrows are repainted.
 Emitted when item requires that all connected arrow paths are recalculated.
 %End
 
+    void sizePositionChanged();
+%Docstring
+Emitted when the item's size or position changes.
+%End
+
   protected slots:
 
     virtual void editComponent();
 %Docstring
 Called when the component should be edited.
-
-The default implementation does nothing.
-%End
-
-    virtual void deleteComponent();
-%Docstring
-Called when the component should be deleted.
 
 The default implementation does nothing.
 %End
@@ -210,6 +273,11 @@ Returns the stroke color for the item for the specified ``state``.
 Returns the label text color for the item for the specified ``state``.
 %End
 
+    virtual Qt::PenStyle strokeStyle( State state ) const;
+%Docstring
+Returns the stroke style to use while rendering the outline of the item.
+%End
+
     virtual QPicture iconPicture() const;
 %Docstring
 Returns a QPicture version of the item's icon, if available.
@@ -220,7 +288,19 @@ Returns a QPicture version of the item's icon, if available.
 Returns a QPixmap version of the item's icon, if available.
 %End
 
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) = 0;
+%Docstring
+Updates the position and size stored in the model for the associated comment
+%End
+
+    void updateButtonPositions();
+%Docstring
+Updates the item's button positions, based on the current item rect.
+%End
+
 };
+QFlags<QgsModelComponentGraphicItem::Flag> operator|(QgsModelComponentGraphicItem::Flag f1, QFlags<QgsModelComponentGraphicItem::Flag> f2);
+
 
 class QgsModelParameterGraphicItem : QgsModelComponentGraphicItem
 {
@@ -253,6 +333,8 @@ Ownership of ``parameter`` is transferred to the item.
 
     virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
 
+    virtual bool canDeleteComponent();
+
 
   protected:
 
@@ -263,6 +345,8 @@ Ownership of ``parameter`` is transferred to the item.
     virtual QColor textColor( State state ) const;
 
     virtual QPicture iconPicture() const;
+
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
 
 
   protected slots:
@@ -302,6 +386,8 @@ Ownership of ``child`` is transferred to the item.
 %End
     virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
 
+    virtual bool canDeleteComponent();
+
 
   protected:
 
@@ -319,6 +405,8 @@ Ownership of ``child`` is transferred to the item.
     virtual int linkPointCount( Qt::Edge edge ) const;
 
     virtual QString linkPointText( Qt::Edge edge, int index ) const;
+
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
 
 
   protected slots:
@@ -358,6 +446,9 @@ it must exist for the lifetime of this object.
 Ownership of ``output`` is transferred to the item.
 %End
 
+    virtual bool canDeleteComponent();
+
+
   protected:
 
     virtual QColor fillColor( State state ) const;
@@ -368,11 +459,70 @@ Ownership of ``output`` is transferred to the item.
 
     virtual QPicture iconPicture() const;
 
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
+
 
   protected slots:
 
     virtual void deleteComponent();
 
+
+};
+
+
+
+class QgsModelCommentGraphicItem : QgsModelComponentGraphicItem
+{
+%Docstring
+A graphic item representing a model comment in the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelcomponentgraphicitem.h"
+%End
+  public:
+
+    QgsModelCommentGraphicItem( QgsProcessingModelComment *comment /Transfer/,
+                                QgsModelComponentGraphicItem *parentItem,
+                                QgsProcessingModelAlgorithm *model,
+                                QGraphicsItem *parent /TransferThis/ );
+%Docstring
+Constructor for QgsModelCommentGraphicItem for the specified ``comment``, with the specified ``parent`` item.
+
+The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
+it must exist for the lifetime of this object.
+
+Ownership of ``output`` is transferred to the item.
+%End
+    ~QgsModelCommentGraphicItem();
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
+
+    virtual bool canDeleteComponent();
+
+  protected:
+
+    virtual QColor fillColor( State state ) const;
+
+    virtual QColor strokeColor( State state ) const;
+
+    virtual QColor textColor( State state ) const;
+
+    virtual Qt::PenStyle strokeStyle( State state ) const;
+
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
+
+
+  protected slots:
+
+    virtual void deleteComponent();
+
+    virtual void editComponent();
 
 };
 

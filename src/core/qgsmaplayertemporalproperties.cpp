@@ -17,8 +17,26 @@
 
 #include "qgsmaplayertemporalproperties.h"
 
-QgsMapLayerTemporalProperties::QgsMapLayerTemporalProperties( bool enabled )
-  : QgsTemporalProperty( enabled )
+QgsMapLayerTemporalProperties::QgsMapLayerTemporalProperties( QObject *parent, bool enabled )
+  : QgsTemporalProperty( parent, enabled )
 {
 }
 
+void QgsMapLayerTemporalProperties::setTemporalSource( QgsMapLayerTemporalProperties::TemporalSource source )
+{
+  if ( mSource != source )
+  {
+    mSource = source;
+    emit changed();
+  }
+}
+
+bool QgsMapLayerTemporalProperties::isVisibleInTemporalRange( const QgsDateTimeRange & ) const
+{
+  return true;
+}
+
+QgsMapLayerTemporalProperties::TemporalSource QgsMapLayerTemporalProperties::temporalSource() const
+{
+  return mSource;
+}

@@ -59,6 +59,8 @@
 #include "qgsfileutils.h"
 #include "qgswebview.h"
 
+#include "qgsrasterlayertemporalpropertieswidget.h"
+
 #include <QDesktopServices>
 #include <QTableWidgetItem>
 #include <QHeaderView>
@@ -254,7 +256,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   // We can calculate histogram for all data sources but estimated only if
   // size is unknown - could also be enabled if well supported (estimated histogram
-  // and and let user know that it is estimated)
+  // and let user know that it is estimated)
   if ( !provider || !( provider->capabilities() & QgsRasterDataProvider::Size ) )
   {
     // disable Histogram tab completely
@@ -264,10 +266,15 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   QVBoxLayout *layout = new QVBoxLayout( metadataFrame );
   layout->setMargin( 0 );
   mMetadataWidget = new QgsMetadataWidget( this, mRasterLayer );
-  mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
+  mMetadataWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
   mMetadataWidget->setMapCanvas( mMapCanvas );
   layout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( layout );
+
+  QVBoxLayout *temporalLayout = new QVBoxLayout( temporalFrame );
+  temporalLayout->setContentsMargins( 0, 0, 0, 0 );
+  mTemporalWidget = new QgsRasterLayerTemporalPropertiesWidget( this, mRasterLayer );
+  temporalLayout->addWidget( mTemporalWidget );
 
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().userFriendlyIdentifier() );
@@ -445,8 +452,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 #if QT_VERSION < QT_VERSION_CHECK(5, 10, 0)
   const int horizontalDpi = qApp->desktop()->screen()->logicalDpiX();
 #else
-  QScreen *screen = QGuiApplication::screenAt( mapToGlobal( QPoint( width() / 2, 0 ) ) );
-  const int horizontalDpi = screen->logicalDotsPerInchX();
+  const int horizontalDpi = logicalDpiX();
 #endif
 
   // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
@@ -483,6 +489,39 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     title += QStringLiteral( " (%1)" ).arg( mRasterLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
   optionsStackedWidget_CurrentChanged( mOptionsStackedWidget->currentIndex() );
+
+  //Add help page references
+  mOptsPage_Information->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#information-properties" ) );
+  mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#source-properties" ) );
+  mOptsPage_Style->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#symbology-properties" ) );
+  mOptsPage_Transparency->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#transparency-properties" ) );
+
+  if ( mOptsPage_Histogram )
+    mOptsPage_Histogram->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#histogram-properties" ) );
+
+  mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#rendering-properties" ) );
+
+  if ( mOptsPage_Pyramids )
+    mOptsPage_Pyramids->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#pyramids-properties" ) );
+
+  mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#metadata-properties" ) );
+  mOptsPage_Legend->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#legend-properties" ) );
+  mOptsPage_Server->setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#server-properties" ) );
+}
+
+void QgsRasterLayerProperties::setCurrentPage( const QString &page )
+{
+  //find the page with a matching widget name
+  for ( int idx = 0; idx < mOptionsStackedWidget->count(); ++idx )
+  {
+    QWidget *currentPage = mOptionsStackedWidget->widget( idx );
+    if ( currentPage->objectName() == page )
+    {
+      //found the page, set it as current
+      mOptionsStackedWidget->setCurrentIndex( idx );
+      return;
+    }
+  }
 }
 
 void QgsRasterLayerProperties::setupTransparencyTable( int nBands )
@@ -1029,6 +1068,9 @@ void QgsRasterLayerProperties::apply()
   //set the blend mode for the layer
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
 
+  // Update temporal properties
+  mTemporalWidget->saveTemporalProperties();
+
   //get the thumbnail for the layer
   QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
   pixmapThumbnail->setPixmap( thumbnail );
@@ -1500,28 +1542,8 @@ void QgsRasterLayerProperties::aboutToShowStyleMenu()
   // this should be unified with QgsVectorLayerProperties::aboutToShowStyleMenu()
 
   QMenu *m = qobject_cast<QMenu *>( sender() );
-  if ( !m )
-    return;
 
-  // first get rid of previously added style manager actions (they are dynamic)
-  bool gotFirstSeparator = false;
-  QList<QAction *> actions = m->actions();
-  for ( int i = 0; i < actions.count(); ++i )
-  {
-    if ( actions[i]->isSeparator() )
-    {
-      if ( gotFirstSeparator )
-      {
-        // remove all actions after second separator (including it)
-        while ( actions.count() != i )
-          delete actions.takeAt( i );
-        break;
-      }
-      else
-        gotFirstSeparator = true;
-    }
-  }
-
+  QgsMapLayerStyleGuiUtils::instance()->removesExtraMenuSeparators( m );
   // re-add style manager actions!
   m->addSeparator();
   QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( m, mRasterLayer );
@@ -2099,5 +2121,14 @@ void QgsRasterLayerProperties::onCancel()
 
 void QgsRasterLayerProperties::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html" ) );
+  const QVariant helpPage = mOptionsStackedWidget->currentWidget()->property( "helpPage" );
+
+  if ( helpPage.isValid() )
+  {
+    QgsHelp::openHelp( helpPage.toString() );
+  }
+  else
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html" ) );
+  }
 }

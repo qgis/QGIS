@@ -144,7 +144,7 @@ static QByteArray createDatasetIndexData( const QgsTriangularMesh &mesh, const Q
   for ( int i = 0; i < trianglesCount; ++i )
   {
     int nativeFaceIndex = mesh.trianglesToNativeFaces()[i];
-    const bool isActive = mActiveFaceFlagValues.active( nativeFaceIndex );
+    const bool isActive = mActiveFaceFlagValues.active().isEmpty() || mActiveFaceFlagValues.active( nativeFaceIndex );
     if ( !isActive )
       continue;
     const QgsMeshFace &face = mesh.triangles().at( i );
@@ -354,8 +354,6 @@ void QgsMeshDataset3dGeometry::init()
 
   QgsTriangularMesh triangularMesh = *layer->triangularMesh();
 
-//Extract data from render cache
-
   if ( verticaleMagnitude.count() != triangularMesh.vertices().count()  ||
        scalarMagnitude.count() != triangularMesh.vertices().count() )
     return;
@@ -425,12 +423,15 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
 
   //count active faces
   int activeTriangularCount = 0;
-  for ( int i = 0; i < triangularMesh.triangles().count(); ++i )
-  {
-    int nativeIndex = triangularMesh.trianglesToNativeFaces()[i];
-    if ( activeFaceFlagValues.active( nativeIndex ) )
-      activeTriangularCount++;
-  }
+  if ( activeFaceFlagValues.active().isEmpty() )
+    activeTriangularCount = triangularMesh.triangles().count();
+  else
+    for ( int i = 0; i < triangularMesh.triangles().count(); ++i )
+    {
+      int nativeIndex = triangularMesh.trianglesToNativeFaces()[i];
+      if ( activeFaceFlagValues.active( nativeIndex ) )
+        activeTriangularCount++;
+    }
 
   //extract the scalar dataset used to render color shading
   QgsMeshDataBlock scalarActiveFaceFlagValues =

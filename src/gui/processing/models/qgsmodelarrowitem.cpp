@@ -37,7 +37,7 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Q
   setFlag( QGraphicsItem::ItemIsSelectable, false );
   mColor = QApplication::palette().color( QPalette::WindowText );
   mColor.setAlpha( 150 );
-  setPen( QPen( mColor, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin ) );
+  setPen( QPen( mColor, 8, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin ) );
   setZValue( QgsModelGraphicsScene::ArrowLink );
   updatePath();
 

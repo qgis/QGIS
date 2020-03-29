@@ -65,6 +65,10 @@ class QgsWMSLayerCollectionItem : public QgsDataCollectionItem
 
     //! WMS Layer properties, can be inherited by subsidiary layers
     QgsWmsLayerProperty mLayerProperty;
+
+    // QgsDataItem interface
+  public:
+    bool layerCollection() const override;
 };
 
 // WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
@@ -137,7 +141,7 @@ class QgsWmsDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override { return QStringLiteral( "WMS" ); }
-
+    QString dataProviderKey() const override;
     int capabilities() const override { return QgsDataProvider::Net; }
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
@@ -174,7 +178,7 @@ class QgsXyzTileDataItemProvider : public QgsDataItemProvider
 {
   public:
     QString name() override;
-
+    QString dataProviderKey() const override;
     int capabilities() const override;
 
     QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;

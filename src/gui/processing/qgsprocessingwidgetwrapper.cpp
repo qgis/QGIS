@@ -51,6 +51,16 @@ QgsMessageBar *QgsProcessingParameterWidgetContext::messageBar() const
   return mMessageBar;
 }
 
+void QgsProcessingParameterWidgetContext::setBrowserModel( QgsBrowserGuiModel *model )
+{
+  mBrowserModel = model;
+}
+
+QgsBrowserGuiModel *QgsProcessingParameterWidgetContext::browserModel() const
+{
+  return mBrowserModel;
+}
+
 void QgsProcessingParameterWidgetContext::setProject( QgsProject *project )
 {
   mProject = project;
@@ -69,6 +79,16 @@ QString QgsProcessingParameterWidgetContext::modelChildAlgorithmId() const
 void QgsProcessingParameterWidgetContext::setModelChildAlgorithmId( const QString &modelChildAlgorithmId )
 {
   mModelChildAlgorithmId = modelChildAlgorithmId;
+}
+
+QgsMapLayer *QgsProcessingParameterWidgetContext::activeLayer() const
+{
+  return mActiveLayer;
+}
+
+void QgsProcessingParameterWidgetContext::setActiveLayer( QgsMapLayer *activeLayer )
+{
+  mActiveLayer = activeLayer;
 }
 
 QgsProcessingModelAlgorithm *QgsProcessingParameterWidgetContext::model() const
@@ -115,7 +135,7 @@ QWidget *QgsAbstractProcessingParameterWidgetWrapper::createWrappedWidget( QgsPr
 
   mWidget = createWidget();
   QWidget *wrappedWidget = mWidget;
-  if ( mType != QgsProcessingGui::Batch && mParameterDefinition->isDynamic() )
+  if ( mParameterDefinition->isDynamic() )
   {
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->setMargin( 0 );
@@ -320,7 +340,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
 QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterface::createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context )
 {
   std::unique_ptr< QgsProcessingModelerParameterWidget > widget = qgis::make_unique< QgsProcessingModelerParameterWidget >( model, childId, parameter, context );
-  widget->populateSources( compatibleParameterTypes(), compatibleOutputTypes(), compatibleDataTypes() );
+  widget->populateSources( compatibleParameterTypes(), compatibleOutputTypes(), compatibleDataTypes( parameter ) );
   widget->setExpressionHelpText( modelerExpressionFormatString() );
   return widget.release();
 }
@@ -330,6 +350,11 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingParameterWidgetFact
     const QgsProcessingAlgorithm * )
 {
   return nullptr;
+}
+
+QList<int> QgsProcessingParameterWidgetFactoryInterface::compatibleDataTypes( const QgsProcessingParameterDefinition * ) const
+{
+  return QList< int >();
 }
 
 QString QgsProcessingParameterWidgetFactoryInterface::modelerExpressionFormatString() const

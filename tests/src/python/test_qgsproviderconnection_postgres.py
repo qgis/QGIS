@@ -23,9 +23,11 @@ from qgis.core import (
     QgsProviderRegistry,
     QgsCoordinateReferenceSystem,
     QgsRasterLayer,
+    QgsDataSourceUri,
 )
 from qgis.testing import unittest
 from osgeo import gdal
+from qgis.PyQt.QtCore import QTemporaryDir
 
 
 class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderConnectionBase):
@@ -66,6 +68,13 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
 
         rl = QgsRasterLayer(conn.tableUri('qgis_test', 'Raster1'), 'r1', 'postgresraster')
         self.assertTrue(rl.isValid())
+
+    def test_postgis_geometry_filter(self):
+        """Make sure the postgres provider only returns one matching geometry record and no polygons etc."""
+        vl = QgsVectorLayer(self.postgres_conn + ' srid=4326 type=POINT table="qgis_test"."geometries_table" (geom) sql=', 'test', 'postgres')
+
+        ids = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(ids, [2])
 
     def test_postgis_table_uri(self):
         """Create a connection from a layer uri and create a table URI"""
@@ -236,6 +245,66 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
         conn = md.createConnection(self.uri, {})
         self.assertEqual(conn.executeSql("SELECT relname, relkind FROM pg_class c, pg_namespace n WHERE n.oid = c.relnamespace AND relname = 'bikes_view' AND c.relkind IN ('t', 'v', 'm')"), [['bikes_view', 'v']])
+
+    def test_foreign_table_csv(self):
+        """Test foreign table"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+        temp_dir = QTemporaryDir()
+        csv_path = os.path.join(temp_dir.path(), 'test.csv')
+        csv = """id,description,geom_x,geom_y
+1,Basic point,10.5,20.82
+2,Integer point,11,22
+3,Final point,13.0,23.0
+"""
+        with open(csv_path, 'w') as f:
+            f.write(csv)
+
+        os.chmod(temp_dir.path(), 0o777)
+        os.chmod(csv_path, 0o777)
+
+        foreign_table_definition = """
+CREATE EXTENSION IF NOT EXISTS file_fdw;
+CREATE SERVER IF NOT EXISTS file_fdw_test_server FOREIGN DATA WRAPPER file_fdw;
+CREATE FOREIGN TABLE IF NOT EXISTS points_csv (
+    id integer not null,
+    name text,
+    x numeric,
+    y numeric ) SERVER file_fdw_test_server OPTIONS ( filename '%s', format 'csv', header 'true' );
+""" % csv_path
+
+        conn.executeSql(foreign_table_definition)
+
+        self.assertNotEquals(conn.tables('public', QgsAbstractDatabaseProviderConnection.Foreign | QgsAbstractDatabaseProviderConnection.Aspatial), [])
+
+    @unittest.skipIf(os.environ.get('TRAVIS', '') == 'true', 'Disabled on Travis')
+    def test_foreign_table_server(self):
+        """Test foreign table with server"""
+
+        md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
+        conn = md.createConnection(self.uri, {})
+
+        uri = QgsDataSourceUri(conn.uri())
+        host = uri.host()
+        port = uri.port()
+        user = uri.username()
+        dbname = uri.database()
+        password = uri.password()
+        service = uri.service()
+
+        foreign_table_definition = """
+CREATE EXTENSION IF NOT EXISTS postgres_fdw;
+CREATE SERVER IF NOT EXISTS postgres_fdw_test_server FOREIGN DATA WRAPPER postgres_fdw OPTIONS (service '{service}', dbname '{dbname}', host '{host}', port '{port}');
+DROP SCHEMA  IF EXISTS foreign_schema CASCADE;
+CREATE SCHEMA IF NOT EXISTS foreign_schema;
+CREATE USER MAPPING IF NOT EXISTS FOR CURRENT_USER SERVER postgres_fdw_test_server OPTIONS (user '{user}', password '{password}');
+IMPORT FOREIGN SCHEMA qgis_test LIMIT TO ( "someData" )
+  FROM SERVER postgres_fdw_test_server
+  INTO foreign_schema;
+""".format(host=host, user=user, port=port, dbname=dbname, password=password, service=service)
+        conn.executeSql(foreign_table_definition)
+        self.assertEquals(conn.tables('foreign_schema', QgsAbstractDatabaseProviderConnection.Foreign)[0].tableName(), 'someData')
 
 
 if __name__ == '__main__':

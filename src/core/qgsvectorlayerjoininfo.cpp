@@ -35,6 +35,19 @@ QString QgsVectorLayerJoinInfo::prefixedFieldName( const QgsField &f ) const
   return name;
 }
 
+void QgsVectorLayerJoinInfo::setUsingMemoryCache( bool enabled )
+{
+  mMemoryCache = enabled;
+}
+
+bool QgsVectorLayerJoinInfo::isUsingMemoryCache() const
+{
+  if ( mUpsertOnEdit )
+    return false;
+
+  return mMemoryCache;
+}
+
 void QgsVectorLayerJoinInfo::setEditable( bool enabled )
 {
   mEditable = enabled;

@@ -44,7 +44,8 @@
 
 void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
-  QApplication::setOverrideCursor( Qt::ArrowCursor );
+  QgsTemporaryCursorRestoreOverride cursorOverride;
+
   QgsHandleBadLayers *dialog = new QgsHandleBadLayers( layers );
 
   dialog->buttonBox->button( QDialogButtonBox::Ignore )->setToolTip( tr( "Import all unavailable layers unmodified (you can fix them later)." ) );
@@ -70,7 +71,6 @@ void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
   }
 
   delete dialog;
-  QApplication::restoreOverrideCursor();
 }
 
 QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
@@ -112,6 +112,9 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
                                          << tr( "Auth config" )
                                          << tr( "Datasource" )
                                        );
+
+  mLayerList->horizontalHeader()->setSectionsMovable( true );
+  mLayerList->horizontalHeader()->setSectionResizeMode( QHeaderView::Interactive );
 
   int j = 0;
   for ( int i = 0; i < mLayers.size(); i++ )

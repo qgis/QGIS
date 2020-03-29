@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+
 //! C++ Wrapper around netcdf C library
 class NetCDFFile
 {

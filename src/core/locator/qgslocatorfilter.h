@@ -306,6 +306,13 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     static bool stringMatches( const QString &candidate, const QString &search );
 
     /**
+     * Tests a \a candidate string to see how likely it is a match for
+     * a specified \a search string.
+     * \since 3.14
+     */
+    static double fuzzyScore( const QString &candidate, const QString &search );
+
+    /**
      * Returns TRUE if the filter is enabled.
      * \see setEnabled()
      */

@@ -41,6 +41,10 @@ QgsMeshContours::QgsMeshContours( QgsMeshLayer *layer )
   if ( !mMeshLayer ||  !mMeshLayer->dataProvider() || !mMeshLayer->dataProvider()->isValid() )
     return;
 
+  // Support for meshes with edges is not implemented
+  if ( mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) )
+    return;
+
   mNativeMesh.reset( new QgsMesh() );
   mMeshLayer->dataProvider()->populateMesh( mNativeMesh.get() );
 
@@ -54,7 +58,7 @@ QgsGeometry QgsMeshContours::exportPolygons(
   const QgsMeshDatasetIndex &index,
   double min_value,
   double max_value,
-  QgsMeshRendererScalarSettings::DataInterpolationMethod method,
+  QgsMeshRendererScalarSettings::DataResamplingMethod method,
   QgsFeedback *feedback
 )
 {
@@ -250,7 +254,7 @@ QgsGeometry QgsMeshContours::exportPolygons(
 
 QgsGeometry QgsMeshContours::exportLines( const QgsMeshDatasetIndex &index,
     double value,
-    QgsMeshRendererScalarSettings::DataInterpolationMethod method,
+    QgsMeshRendererScalarSettings::DataResamplingMethod method,
     QgsFeedback *feedback )
 {
   // Check if the layer/mesh is valid
@@ -376,7 +380,7 @@ QgsGeometry QgsMeshContours::exportLines( const QgsMeshDatasetIndex &index,
   }
 }
 
-void QgsMeshContours::populateCache( const QgsMeshDatasetIndex &index, QgsMeshRendererScalarSettings::DataInterpolationMethod method )
+void QgsMeshContours::populateCache( const QgsMeshDatasetIndex &index, QgsMeshRendererScalarSettings::DataResamplingMethod method )
 {
   if ( mCachedIndex != index )
   {

@@ -36,8 +36,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>521</width>
-        <height>685</height>
+        <width>539</width>
+        <height>696</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_4">
@@ -63,10 +63,34 @@
           <item row="1" column="1" colspan="2">
            <widget class="QgsMapLayerComboBox" name="cboTerrainLayer"/>
           </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelTerrainLayer">
+            <property name="text">
+             <string>Elevation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QComboBox" name="cboTerrainType"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="labelTerrainResolution">
+            <property name="text">
+             <string>Tile resolution</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="1" colspan="2">
            <widget class="QgsDoubleSpinBox" name="spinTerrainScale">
             <property name="value">
              <double>1.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelTerrainType">
+            <property name="text">
+             <string>Type</string>
             </property>
            </widget>
           </item>
@@ -80,17 +104,17 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labelTerrainScale">
+            <property name="text">
+             <string>Vertical scale</string>
+            </property>
+           </widget>
+          </item>
           <item row="4" column="0">
            <widget class="QLabel" name="labelTerrainSkirtHeight">
             <property name="text">
              <string>Skirt height</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1" colspan="2">
-           <widget class="QComboBox" name="cboTerrainMapTheme">
-            <property name="editable">
-             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -110,56 +134,21 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="labelTerrainScale">
-            <property name="text">
-             <string>Vertical scale</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="labelTerrainType">
-            <property name="text">
-             <string>Type</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="labelTerrainLayer">
-            <property name="text">
-             <string>Elevation</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="labelTerrainMapTheme">
-            <property name="text">
-             <string>Map theme</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="labelTerrainResolution">
-            <property name="text">
-             <string>Tile resolution</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="cboTerrainType"/>
-          </item>
          </layout>
         </widget>
        </item>
        <item row="3" column="0">
         <widget class="QgsCollapsibleGroupBox" name="groupTerrainShading">
          <property name="title">
-          <string>Terrain shading</string>
+          <string>Terrain Shading</string>
          </property>
          <property name="checkable">
           <bool>true</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="margin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QgsPhongMaterialWidget" name="widgetTerrainMaterial" native="true"/>
           </item>
@@ -198,6 +187,9 @@
           <string>Lights</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="margin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QgsLightsWidget" name="widgetLights" native="true"/>
           </item>
@@ -313,7 +305,7 @@
        <item row="2" column="0">
         <widget class="QgsCollapsibleGroupBox" name="groupMeshTerrainShading">
          <property name="title">
-          <string>Mesh terrain settings</string>
+          <string>Mesh Terrain Settings</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <property name="leftMargin">
@@ -386,7 +378,6 @@
   <tabstop>spinTerrainScale</tabstop>
   <tabstop>spinTerrainResolution</tabstop>
   <tabstop>spinTerrainSkirtHeight</tabstop>
-  <tabstop>cboTerrainMapTheme</tabstop>
   <tabstop>groupTerrainShading</tabstop>
   <tabstop>spinMapResolution</tabstop>
   <tabstop>spinScreenError</tabstop>

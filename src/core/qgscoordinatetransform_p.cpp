@@ -84,7 +84,8 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   : mSourceCRS( source )
   , mDestCRS( destination )
 {
-  calculateTransforms( context );
+  if ( mSourceCRS != mDestCRS )
+    calculateTransforms( context );
 }
 Q_NOWARN_DEPRECATED_POP
 
@@ -169,6 +170,14 @@ bool QgsCoordinateTransformPrivate::initialize()
 
   mIsValid = true;
 
+  if ( mSourceCRS == mDestCRS )
+  {
+    // If the source and destination projection are the same, set the short
+    // circuit flag (no transform takes place)
+    mShortCircuit = true;
+    return true;
+  }
+
   // init the projections (destination and source)
   freeProj();
 
@@ -245,22 +254,9 @@ bool QgsCoordinateTransformPrivate::initialize()
   }
 #endif
 
-  //XXX todo overload == operator for QgsCoordinateReferenceSystem
-  //at the moment srs.parameters contains the whole proj def...soon it won't...
-  //if (mSourceCRS->toProj() == mDestCRS->toProj())
-  if ( mSourceCRS == mDestCRS )
-  {
-    // If the source and destination projection are the same, set the short
-    // circuit flag (no transform takes place)
-    mShortCircuit = true;
-    QgsDebugMsgLevel( QStringLiteral( "Source/Dest CRS equal, shortcircuit is set." ), 3 );
-  }
-  else
-  {
-    // Transform must take place
-    mShortCircuit = false;
-    QgsDebugMsgLevel( QStringLiteral( "Source/Dest CRS not equal, shortcircuit is not set." ), 3 );
-  }
+  // Transform must take place
+  mShortCircuit = false;
+
   return mIsValid;
 }
 
@@ -268,9 +264,18 @@ void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTran
 {
   // recalculate datum transforms from context
 #if PROJ_VERSION_MAJOR >= 6
-  mProjCoordinateOperation = context.calculateCoordinateOperation( mSourceCRS, mDestCRS );
-  mShouldReverseCoordinateOperation = context.mustReverseCoordinateOperation( mSourceCRS, mDestCRS );
-  mAllowFallbackTransforms = context.allowFallbackTransform( mSourceCRS, mDestCRS );
+  if ( mSourceCRS.isValid() && mDestCRS.isValid() )
+  {
+    mProjCoordinateOperation = context.calculateCoordinateOperation( mSourceCRS, mDestCRS );
+    mShouldReverseCoordinateOperation = context.mustReverseCoordinateOperation( mSourceCRS, mDestCRS );
+    mAllowFallbackTransforms = context.allowFallbackTransform( mSourceCRS, mDestCRS );
+  }
+  else
+  {
+    mProjCoordinateOperation.clear();
+    mShouldReverseCoordinateOperation = false;
+    mAllowFallbackTransforms = false;
+  }
 #else
   Q_NOWARN_DEPRECATED_PUSH
   QgsDatumTransform::TransformPair transforms = context.calculateDatumTransforms( mSourceCRS, mDestCRS );

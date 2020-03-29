@@ -345,6 +345,34 @@ QgsMeshFace QgsMesh::face( int index ) const
   return QgsMeshFace();
 }
 
+QgsMeshEdge QgsMesh::edge( int index ) const
+{
+  if ( index < edges.size() && index >= 0 )
+    return edges[index];
+  return QgsMeshEdge();
+}
+
+void QgsMesh::clear()
+{
+  vertices.clear();
+  edges.clear();
+  faces.clear();
+}
+
+bool QgsMesh::contains( const QgsMesh::ElementType &type ) const
+{
+  switch ( type )
+  {
+    case ElementType::Vertex:
+      return !vertices.isEmpty();
+    case ElementType::Edge:
+      return !edges.isEmpty();
+    case ElementType::Face:
+      return !faces.isEmpty();
+  }
+  return false;
+}
+
 int QgsMesh::vertexCount() const
 {
   return vertices.size();
@@ -353,6 +381,11 @@ int QgsMesh::vertexCount() const
 int QgsMesh::faceCount() const
 {
   return faces.size();
+}
+
+int QgsMesh::edgeCount() const
+{
+  return edges.size();
 }
 
 QgsMesh3dDataBlock::QgsMesh3dDataBlock() = default;
@@ -466,4 +499,18 @@ void QgsMesh3dDataBlock::setValues( const QVector<double> &doubleBuffer )
 void QgsMesh3dDataBlock::setValid( bool valid )
 {
   mIsValid = valid;
+}
+
+bool QgsMeshDataSourceInterface::contains( const QgsMesh::ElementType &type ) const
+{
+  switch ( type )
+  {
+    case QgsMesh::ElementType::Vertex:
+      return vertexCount() != 0;
+    case QgsMesh::ElementType::Edge:
+      return edgeCount() != 0;
+    case QgsMesh::ElementType::Face:
+      return faceCount() != 0;
+  }
+  return false;
 }

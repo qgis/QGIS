@@ -385,6 +385,23 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent ) SIP_SKIP;
 
     /**
+     * Returns the string (typically sql) used to define a subset of the layer.
+     * \returns The subset string or null QString if not implemented by the provider
+     * \since QGIS 3.12
+     */
+    virtual QString subsetString() const;
+
+    /**
+     * Sets the string (typically sql) used to define a subset of the layer
+     * \param subset The subset string. This may be the where clause of a sql statement
+     *               or other definition string specific to the underlying dataprovider
+     *               and data store.
+     * \returns TRUE, when setting the subset string was successful, FALSE otherwise
+     * \since QGIS 3.12
+     */
+    virtual bool setSubsetString( const QString &subset );
+
+    /**
      * Returns default contrast enhancement settings for that type of raster.
      *  \note not available in Python bindings
      */
@@ -444,6 +461,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
+  signals:
+
+    /**
+     * Emitted when the layer's subset string has changed.
+     * \since QGIS 3.12
+     */
+    void subsetStringChanged();
+
+
   protected:
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
     bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
@@ -455,6 +481,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
     QString decodedSource( const QString &source, const QString &provider,  const QgsReadWriteContext &context ) const override;
+
   private:
     //! \brief Initialize default values
     void init();
@@ -475,6 +502,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                                  bool generateLookupTableFlag,
                                  QgsRasterRenderer *rasterRenderer );
 
+    //! Refresh renderer
+    void refreshRenderer( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent );
+
     void computeMinMax( int band,
                         const QgsRasterMinMaxOrigin &mmo,
                         QgsRasterMinMaxOrigin::Limits limits,
@@ -490,7 +520,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QgsRasterDataProvider *mDataProvider = nullptr;
 
     //! Pointer to temporal properties
-    std::unique_ptr< QgsRasterLayerTemporalProperties > mTemporalProperties;
+    QgsRasterLayerTemporalProperties *mTemporalProperties = nullptr;
 
     //! [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created
     QDateTime mLastModified;

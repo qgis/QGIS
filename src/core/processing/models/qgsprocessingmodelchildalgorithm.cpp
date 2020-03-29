@@ -35,6 +35,7 @@ QgsProcessingModelChildAlgorithm::QgsProcessingModelChildAlgorithm( const QgsPro
   , mModelOutputs( other.mModelOutputs )
   , mActive( other.mActive )
   , mDependencies( other.mDependencies )
+  , mComment( other.mComment )
 {
   setAlgorithmId( other.algorithmId() );
 }
@@ -49,12 +50,39 @@ QgsProcessingModelChildAlgorithm &QgsProcessingModelChildAlgorithm::operator=( c
   mModelOutputs = other.mModelOutputs;
   mActive = other.mActive;
   mDependencies = other.mDependencies;
+  mComment = other.mComment;
   return *this;
 }
 
-QgsProcessingModelChildAlgorithm *QgsProcessingModelChildAlgorithm::clone()
+QgsProcessingModelChildAlgorithm *QgsProcessingModelChildAlgorithm::clone() const
 {
   return new QgsProcessingModelChildAlgorithm( *this );
+}
+
+void QgsProcessingModelChildAlgorithm::copyNonDefinitionPropertiesFromModel( QgsProcessingModelAlgorithm *model )
+{
+  const QgsProcessingModelChildAlgorithm existingChild = model->childAlgorithm( mId );
+  copyNonDefinitionProperties( existingChild );
+
+  int i = 0;
+  for ( auto it = mModelOutputs.begin(); it != mModelOutputs.end(); ++it )
+  {
+    if ( !existingChild.modelOutputs().value( it.key() ).position().isNull() )
+      it.value().setPosition( existingChild.modelOutputs().value( it.key() ).position() );
+    else
+      it.value().setPosition( position() + QPointF( size().width(), ( i + 1.5 ) * size().height() ) );
+
+    if ( QgsProcessingModelComment *comment = it.value().comment() )
+    {
+      if ( const QgsProcessingModelComment *existingComment = existingChild.modelOutputs().value( it.key() ).comment() )
+      {
+        comment->setDescription( existingComment->description() );
+        comment->setSize( existingComment->size() );
+        comment->setPosition( existingComment->position() );
+      }
+    }
+    i++;
+  }
 }
 
 const QgsProcessingAlgorithm *QgsProcessingModelChildAlgorithm::algorithm() const
@@ -173,6 +201,9 @@ QStringList QgsProcessingModelChildAlgorithm::asPythonCode( const QgsProcessing:
 
   if ( !description().isEmpty() )
     lines << baseIndent + QStringLiteral( "# %1" ).arg( description() );
+  if ( !mComment.description().isEmpty() )
+    lines << baseIndent + QStringLiteral( "# %1" ).arg( mComment.description() );
+
   QStringList paramParts;
   for ( auto paramIt = mParams.constBegin(); paramIt != mParams.constEnd(); ++paramIt )
   {

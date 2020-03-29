@@ -37,6 +37,7 @@ class QgsMetadataWidget;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;
+class QgsRasterLayerTemporalPropertiesWidget;
 class QgsWebView;
 
 
@@ -73,6 +74,13 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      * \param fl windows flag
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
+
+    /**
+     * Sets the dialog \a page (by object name) to show.
+     *
+     * \since QGIS 3.14
+     */
+    void setCurrentPage( const QString &page );
 
   protected slots:
     //! \brief auto slot executed when the active page in the main widget stack is changed
@@ -200,12 +208,22 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     QgsRasterRendererWidget *mRendererWidget = nullptr;
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
+    /**
+     * Widget with temporal inputs, to be used by temporal based raster layers.
+     */
+    QgsRasterLayerTemporalPropertiesWidget *mTemporalWidget = nullptr;
+
     bool rasterIsMultiBandColor();
 
     /**
      * Updates the information tab by reloading metadata
      */
     void updateInformationContent();
+
+    /**
+     * Updates the temporal properties for temporal based raster layers.
+     */
+    void updateTemporalProperties();
 
     void setupTransparencyTable( int nBands );
 

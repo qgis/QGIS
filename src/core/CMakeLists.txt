@@ -108,6 +108,7 @@ SET(QGIS_CORE_SRCS
   numericformats/qgsbearingnumericformat.cpp
   numericformats/qgscurrencynumericformat.cpp
   numericformats/qgsfallbacknumericformat.cpp
+  numericformats/qgsfractionnumericformat.cpp
   numericformats/qgsnumericformat.cpp
   numericformats/qgsnumericformatregistry.cpp
   numericformats/qgspercentagenumericformat.cpp
@@ -152,6 +153,7 @@ SET(QGIS_CORE_SRCS
   processing/models/qgsprocessingmodelalgorithm.cpp
   processing/models/qgsprocessingmodelchildalgorithm.cpp
   processing/models/qgsprocessingmodelchildparametersource.cpp
+  processing/models/qgsprocessingmodelcomment.cpp
   processing/models/qgsprocessingmodelcomponent.cpp
   processing/models/qgsprocessingmodelparameter.cpp
   processing/models/qgsprocessingmodeloutput.cpp
@@ -180,10 +182,13 @@ SET(QGIS_CORE_SRCS
   providers/ogr/qgsogrtransaction.cpp
 
   scalebar/qgsdoubleboxscalebarrenderer.cpp
+  scalebar/qgshollowscalebarrenderer.cpp
   scalebar/qgsnumericscalebarrenderer.cpp
   scalebar/qgsscalebarrenderer.cpp
+  scalebar/qgsscalebarrendererregistry.cpp
   scalebar/qgsscalebarsettings.cpp
   scalebar/qgssingleboxscalebarrenderer.cpp
+  scalebar/qgssteppedlinescalebarrenderer.cpp
   scalebar/qgsticksscalebarrenderer.cpp
 
   qgis.cpp
@@ -218,6 +223,7 @@ SET(QGIS_CORE_SRCS
   qgscolorscheme.cpp
   qgscolorschemeregistry.cpp
   qgsconditionalstyle.cpp
+  qgsconnectionregistry.cpp
   qgscoordinateformatter.cpp
   qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
@@ -226,12 +232,15 @@ SET(QGIS_CORE_SRCS
   qgscoordinateutils.cpp
   qgscredentials.cpp
   qgsdartmeasurement.cpp
+  qgsdatabaseschemamodel.cpp
+  qgsdatabasetablemodel.cpp
   qgsdatadefinedsizelegend.cpp
   qgsdataitem.cpp
   qgsdataitemprovider.cpp
   qgsdataitemproviderregistry.cpp
   qgsdatasourceuri.cpp
   qgsdataprovider.cpp
+  qgsdataprovidertemporalcapabilities.cpp
   qgsdatetimestatisticalsummary.cpp
   qgsdatumtransform.cpp
   qgsdbfilterproxymodel.cpp
@@ -339,12 +348,14 @@ SET(QGIS_CORE_SRCS
   qgsprojectproperty.cpp
   qgsprojectstorage.cpp
   qgsprojectstorageregistry.cpp
+  qgsprojecttimesettings.cpp
   qgsprojectversion.cpp
   qgsprojectviewsettings.cpp
   qgsprojutils.cpp
   qgsproperty.cpp
   qgspropertycollection.cpp
   qgspropertytransformer.cpp
+  qgsproviderconnectionmodel.cpp
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
   qgsproxyprogresstask.cpp
@@ -377,8 +388,11 @@ SET(QGIS_CORE_SRCS
   qgsstringutils.cpp
   qgstablecell.cpp
   qgstaskmanager.cpp
+  qgstemporalcontroller.cpp
+  qgstemporalnavigationobject.cpp
   qgstemporalproperty.cpp
   qgstemporalrangeobject.cpp
+  qgstemporalutils.cpp
   qgstessellator.cpp
   qgstextrenderer.cpp
   qgstilecache.cpp
@@ -392,6 +406,7 @@ SET(QGIS_CORE_SRCS
   qgsvector.cpp
   qgsvector3d.cpp
   qgsvectordataprovider.cpp
+  qgsvectordataprovidertemporalcapabilities.cpp
   qgsvectorfilewriter.cpp
   qgsvectorfilewritertask.cpp
   qgsvectorlayer.cpp
@@ -508,6 +523,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrasterblock.cpp
   raster/qgsrasterchecker.cpp
   raster/qgsrasterdataprovider.cpp
+  raster/qgsrasterdataprovidertemporalcapabilities.cpp
   raster/qgsrasterfilewritertask.cpp
   raster/qgsrasteridentifyresult.cpp
   raster/qgsrasterinterface.cpp
@@ -715,6 +731,7 @@ SET(QGIS_CORE_HDRS
   qgscolorschemeregistry.h
   qgsconditionalstyle.h
   qgsconnectionpool.h
+  qgsconnectionregistry.h
   qgscoordinateformatter.h
   qgscoordinatereferencesystem.h
   qgscoordinatetransform.h
@@ -722,11 +739,14 @@ SET(QGIS_CORE_HDRS
   qgscoordinateutils.h
   qgscredentials.h
   qgsdartmeasurement.h
+  qgsdatabaseschemamodel.h
+  qgsdatabasetablemodel.h
   qgsdatadefinedsizelegend.h
   qgsdataitem.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
   qgsdataprovider.h
+  qgsdataprovidertemporalcapabilities.h
   qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
   qgsdatumtransform.h
@@ -762,6 +782,7 @@ SET(QGIS_CORE_HDRS
   qgsfieldproxymodel.h
   qgsfields.h
   qgsfiledownloader.h
+  qgsfilefiltergenerator.h
   qgsfileutils.h
   qgsfontutils.h
   qgsgdalutils.h
@@ -849,6 +870,7 @@ SET(QGIS_CORE_HDRS
   qgsprojectproperty.h
   qgsprojectstorage.h
   qgsprojectstorageregistry.h
+  qgsprojecttimesettings.h
   qgsprojecttranslator.h
   qgsprojectversion.h
   qgsprojectviewsettings.h
@@ -856,6 +878,7 @@ SET(QGIS_CORE_HDRS
   qgsproperty.h
   qgspropertycollection.h
   qgspropertytransformer.h
+  qgsproviderconnectionmodel.h
   qgsprovidermetadata.h
   qgsproviderregistry.h
   qgsproxyprogresstask.h
@@ -892,8 +915,11 @@ SET(QGIS_CORE_HDRS
   qgsstringutils.h
   qgstablecell.h
   qgstaskmanager.h
+  qgstemporalcontroller.h
+  qgstemporalnavigationobject.h
   qgstemporalproperty.h
   qgstemporalrangeobject.h
+  qgstemporalutils.h
   qgstessellator.h
   qgstestutils.h
   qgstextrenderer.h
@@ -910,6 +936,7 @@ SET(QGIS_CORE_HDRS
   qgsvector.h
   qgsvector3d.h
   qgsvectordataprovider.h
+  qgsvectordataprovidertemporalcapabilities.h
   qgsvectorfilewriter.h
   qgsvectorfilewritertask.h
   qgsvectorlayer.h
@@ -1158,6 +1185,7 @@ SET(QGIS_CORE_HDRS
   numericformats/qgsbearingnumericformat.h
   numericformats/qgscurrencynumericformat.h
   numericformats/qgsfallbacknumericformat.h
+  numericformats/qgsfractionnumericformat.h
   numericformats/qgsnumericformat.h
   numericformats/qgsnumericformatregistry.h
   numericformats/qgspercentagenumericformat.h
@@ -1166,6 +1194,7 @@ SET(QGIS_CORE_HDRS
   processing/models/qgsprocessingmodelalgorithm.h
   processing/models/qgsprocessingmodelchildalgorithm.h
   processing/models/qgsprocessingmodelchildparametersource.h
+  processing/models/qgsprocessingmodelcomment.h
   processing/models/qgsprocessingmodelcomponent.h
   processing/models/qgsprocessingmodeloutput.h
   processing/models/qgsprocessingmodelparameter.h
@@ -1216,6 +1245,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterblock.h
   raster/qgsrasterchecker.h
   raster/qgsrasterdataprovider.h
+  raster/qgsrasterdataprovidertemporalcapabilities.h
   raster/qgsrasterdrawer.h
   raster/qgsrasterfilewriter.h
   raster/qgsrasterfilewritertask.h
@@ -1245,10 +1275,13 @@ SET(QGIS_CORE_HDRS
   raster/qgssinglebandpseudocolorrenderer.h
 
   scalebar/qgsdoubleboxscalebarrenderer.h
+  scalebar/qgshollowscalebarrenderer.h
   scalebar/qgsnumericscalebarrenderer.h
   scalebar/qgsscalebarrenderer.h
+  scalebar/qgsscalebarrendererregistry.h
   scalebar/qgsscalebarsettings.h
   scalebar/qgssingleboxscalebarrenderer.h
+  scalebar/qgssteppedlinescalebarrenderer.h
   scalebar/qgsticksscalebarrenderer.h
 
   symbology/qgs25drenderer.h
@@ -1348,10 +1381,11 @@ INCLUDE_DIRECTORIES(
   3d
   annotations
   auth
+  callouts
   classification
   dxf
   effects
-  ${CMAKE_SOURCE_DIR}/src/core/expression
+  expression
   fieldformatter
   geometry
   geocms

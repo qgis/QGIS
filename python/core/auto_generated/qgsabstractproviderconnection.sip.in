@@ -74,6 +74,11 @@ Stores the connection in the settings.
 Deletes the connection from the settings.
 %End
 
+    virtual QIcon icon() const;
+%Docstring
+Returns an icon representing the connection.
+%End
+
     QString uri() const;
 %Docstring
 Returns the connection data source URI string representation

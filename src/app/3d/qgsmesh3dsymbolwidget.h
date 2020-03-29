@@ -18,6 +18,7 @@
 
 #include <QWidget>
 
+#include "qgsmesh3dsymbol.h"
 #include "ui_qgsmesh3dpropswidget.h"
 
 class QgsMeshDatasetGroupListModel;
@@ -57,6 +58,7 @@ class QgsMesh3dSymbolWidget : public QWidget, private Ui::QgsMesh3dPropsWidget
     void setColorRampMinMax( double min, double max );
     QgsMeshLayer *mLayer = nullptr;
     QgsMeshDatasetGroupListModel *mDatasetGroupListModel = nullptr;
+    QgsMesh3DSymbol mSymbol;
 
 };
 

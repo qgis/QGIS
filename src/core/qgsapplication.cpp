@@ -31,6 +31,7 @@
 #include "qgstaskmanager.h"
 #include "qgsnumericformatregistry.h"
 #include "qgsfieldformatterregistry.h"
+#include "qgsscalebarrendererregistry.h"
 #include "qgssvgcache.h"
 #include "qgsimagecache.h"
 #include "qgscolorschemeregistry.h"
@@ -40,9 +41,9 @@
 #include "qgsrendererregistry.h"
 #include "qgssymbollayerregistry.h"
 #include "qgssymbollayerutils.h"
-#include "callouts/qgscalloutsregistry.h"
+#include "qgscalloutsregistry.h"
 #include "qgspluginlayerregistry.h"
-#include "classification/qgsclassificationmethodregistry.h"
+#include "qgsclassificationmethodregistry.h"
 #include "qgsmessagelog.h"
 #include "qgsannotationregistry.h"
 #include "qgssettings.h"
@@ -59,6 +60,7 @@
 #include "qgsnewsfeedparser.h"
 #include "qgsbookmarkmanager.h"
 #include "qgsstylemodel.h"
+#include "qgsconnectionregistry.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -1366,20 +1368,20 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                             "  color: #93b023;"  // from http://qgis.org/en/site/getinvolved/styleguide.html
                             "  font-weight: bold;"
                             "  font-size: large;"
-                            "  text-align: right;"
+                            "  text-align: left;"
                             "  border-bottom: 5px solid #DCEB5C;"
                             "}"
                             "h4{  background-color: #F6F6F6;"
                             "  color: #93b023;"  // from http://qgis.org/en/site/getinvolved/styleguide.html
                             "  font-weight: bold;"
                             "  font-size: medium;"
-                            "  text-align: right;"
+                            "  text-align: left;"
                             "}"
                             "h5{    background-color: #F6F6F6;"
                             "   color: #93b023;"  // from http://qgis.org/en/site/getinvolved/styleguide.html
                             "   font-weight: bold;"
                             "   font-size: small;"
-                            "   text-align: right;"
+                            "   text-align: left;"
                             "}"
                             "a{  color: #729FCF;"
                             "  font-family: arial,sans-serif;"
@@ -1399,7 +1401,7 @@ QString QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType styleSh
                             "  border-top: 1px solid black;"
                             "}"
                             ".list-view .highlight {"
-                            "  text-align: right;"
+                            "  text-align: left;"
                             "  border: 0px;"
                             "  width: 20%;"
                             "  padding-right: 15px;"
@@ -2178,6 +2180,11 @@ QgsProcessingRegistry *QgsApplication::processingRegistry()
   return members()->mProcessingRegistry;
 }
 
+QgsConnectionRegistry *QgsApplication::connectionRegistry()
+{
+  return members()->mConnectionRegistry;
+}
+
 QgsPageSizeRegistry *QgsApplication::pageSizeRegistry()
 {
   return members()->mPageSizeRegistry;
@@ -2203,6 +2210,11 @@ Qgs3DRendererRegistry *QgsApplication::renderer3DRegistry()
   return members()->m3DRendererRegistry;
 }
 
+QgsScaleBarRendererRegistry *QgsApplication::scaleBarRendererRegistry()
+{
+  return members()->mScaleBarRendererRegistry;
+}
+
 QgsProjectStorageRegistry *QgsApplication::projectStorageRegistry()
 {
   return members()->mProjectStorageRegistry;
@@ -2214,6 +2226,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   // will need to be careful with the order of creation/destruction
   mMessageLog = new QgsMessageLog();
   mProfiler = new QgsRuntimeProfiler();
+  mConnectionRegistry = new QgsConnectionRegistry();
   mTaskManager = new QgsTaskManager();
   mActionScopeRegistry = new QgsActionScopeRegistry();
   mNumericFormatRegistry = new QgsNumericFormatRegistry();
@@ -2239,11 +2252,13 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mValidityCheckRegistry = new QgsValidityCheckRegistry();
   mClassificationMethodRegistry = new QgsClassificationMethodRegistry();
   mBookmarkManager = new QgsBookmarkManager( nullptr );
+  mScaleBarRendererRegistry = new QgsScaleBarRendererRegistry();
 }
 
 QgsApplication::ApplicationMembers::~ApplicationMembers()
 {
   delete mStyleModel;
+  delete mScaleBarRendererRegistry;
   delete mValidityCheckRegistry;
   delete mActionScopeRegistry;
   delete m3DRendererRegistry;
@@ -2270,6 +2285,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   delete mClassificationMethodRegistry;
   delete mNumericFormatRegistry;
   delete mBookmarkManager;
+  delete mConnectionRegistry;
 }
 
 QgsApplication::ApplicationMembers *QgsApplication::members()

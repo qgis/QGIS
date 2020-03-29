@@ -116,6 +116,15 @@ Gets the data source specification.
 .. versionadded:: 3.0
 %End
 
+    virtual QgsDataProviderTemporalCapabilities *temporalCapabilities();
+%Docstring
+Returns the provider's temporal capabilities.
+
+This may be ``None``, depending on the data provider.
+
+.. versionadded:: 3.14
+%End
+
     virtual QgsRectangle extent() const = 0;
 %Docstring
 Returns the extent of the layer

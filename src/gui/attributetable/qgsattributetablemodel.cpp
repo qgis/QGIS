@@ -624,7 +624,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     else
     {
       const QgsField field = layer()->fields().at( mAttributes.at( section ) );
-      return QgsFieldModel::fieldToolTip( field );
+      return QgsFieldModel::fieldToolTipExtended( field, layer() );
     }
   }
   else

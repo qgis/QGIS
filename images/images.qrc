@@ -268,6 +268,7 @@
         <file>themes/default/mActionDeleteSelected.svg</file>
         <file>themes/default/mActionDeleteTable.svg</file>
         <file>themes/default/mActionDeselectAll.svg</file>
+        <file>themes/default/mActionDeselectActiveLayer.svg</file>
         <file>themes/default/mActionDuplicateLayer.svg</file>
         <file>themes/default/mActionDuplicateComposer.svg</file>
         <file>themes/default/mActionEditCopy.svg</file>
@@ -815,12 +816,24 @@
         <file>themes/default/mIconHtml.svg</file>
         <file>themes/default/mIconHamburgerMenu.svg</file>
         <file>themes/default/mActionAddManualTable.svg</file>
+        <file>themes/default/propertyicons/temporal.svg</file>
         <file>themes/default/mIconModelerCollapse.svg</file>
         <file>themes/default/mIconModelerExpand.svg</file>
         <file>themes/default/mActionDeleteModelComponent.svg</file>
         <file>themes/default/mActionEditModelComponent.svg</file>
         <file>themes/default/mIconModelOutput.svg</file>
         <file>themes/default/mIconModelInput.svg</file>
+        <file>themes/default/mIndicatorTemporal.svg</file>
+        <file>themes/default/mIndicatorTimeFromProject.svg</file>
+        <file>themes/default/temporal_navigation/back.svg</file>
+        <file>themes/default/temporal_navigation/forward.svg</file>
+        <file>themes/default/temporal_navigation/next.svg</file>
+        <file>themes/default/temporal_navigation/stop.svg</file>
+        <file>themes/default/temporal_navigation/previous.svg</file>
+        <file>themes/default/temporal_navigation/rewindToStart.svg</file>
+        <file>themes/default/temporal_navigation/skipToEnd.svg</file>
+        <file>themes/default/temporal_navigation/pause.svg</file>
+        <file>themes/default/mIconIterate.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
