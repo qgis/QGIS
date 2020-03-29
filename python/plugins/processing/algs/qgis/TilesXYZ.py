@@ -29,8 +29,8 @@ from uuid import uuid4
 
 import sqlite3
 from osgeo import gdal
-from qgis.PyQt.QtCore import QSize, Qt, QByteArray, QBuffer
-from qgis.PyQt.QtGui import QColor, QImage, QPainter
+from qgis.PyQt.QtCore import QSize, Qt, QByteArray, QBuffer, QRect
+from qgis.PyQt.QtGui import QColor, QImage, QPainter, QBrush
 from qgis.core import (QgsProcessingException,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
@@ -143,6 +143,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
     TILE_FORMAT = 'TILE_FORMAT'
     QUALITY = 'QUALITY'
     METATILESIZE = 'METATILESIZE'
+    SKIPBLANKTILES = 'SKIPBLANKTILES'
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT, self.tr('Extent')))
@@ -162,9 +163,8 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
                                                        maxValue=600,
                                                        defaultValue=96))
         self.addParameter(QgsProcessingParameterColor(self.BACKGROUND_COLOR,
-                                                      self.tr('Background color'),
-                                                      defaultValue=QColor(Qt.transparent),
-                                                      optional=True))
+                                                      self.tr('Background color (opacity is not considered in JPG tiles)'),
+                                                      defaultValue=QColor(255,255,255,0))) #Transparent color if tile is set as PNG, white color if it's set as JPG
         self.formats = ['PNG', 'JPG']
         self.addParameter(QgsProcessingParameterEnum(self.TILE_FORMAT,
                                                      self.tr('Tile format'),
@@ -181,6 +181,9 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
                                                        maxValue=20,
                                                        defaultValue=4))
         self.thread_nr_re = re.compile('[0-9]+$') # thread number regex
+        self.addParameter(QgsProcessingParameterBoolean(self.SKIPBLANKTILES,
+                                                        self.tr('Skip blank tiles (those where all pixels match the defined background color)'),
+                                                        defaultValue=True))
 
     def prepareAlgorithm(self, parameters, context, feedback):
         project = context.project()
@@ -226,7 +229,14 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
 
         for r, c, tile in metatile.tiles:
             tileImage = image.copy(self.tile_width * r, self.tile_height * c, self.tile_width, self.tile_height)
-            self.writer.write_tile(tile, tileImage)
+
+            if self.skipblanktiles:
+                is_blank = (tileImage == self.blank_image)
+            else:
+                is_blank = False
+
+            if not is_blank:
+                self.writer.write_tile(tile, tileImage)
 
         # to stop thread sync issues
         with self.progressThreadLock:
@@ -246,6 +256,8 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
         self.quality = self.parameterAsInt(parameters, self.QUALITY, context)
         self.metatilesize = self.parameterAsInt(parameters, self.METATILESIZE, context)
         self.maxThreads = int(ProcessingConfig.getSetting(ProcessingConfig.MAX_THREADS))
+        self.skipblanktiles = self.parameterAsBoolean(parameters, self.SKIPBLANKTILES, context)
+
         try:
             self.tile_width = self.parameterAsInt(parameters, self.TILE_WIDTH, context)
             self.tile_height = self.parameterAsInt(parameters, self.TILE_HEIGHT, context)
@@ -253,12 +265,30 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
             self.tile_width = 256
             self.tile_height = 256
 
+        # disable background color transparency if tile format is JPG
+        if self.tile_format == 'JPG' and self.color.alphaF()<1:
+            self.color.setAlphaF(1)
+
         wgs_crs = QgsCoordinateReferenceSystem('EPSG:4326')
         dest_crs = QgsCoordinateReferenceSystem('EPSG:3857')
 
         project = context.project()
         self.src_to_wgs = QgsCoordinateTransform(project.crs(), wgs_crs, context.transformContext())
         self.wgs_to_dest = QgsCoordinateTransform(wgs_crs, dest_crs, context.transformContext())
+
+        if self.skipblanktiles:
+            # Prepare a blank image to compare
+            size_blank = QSize(self.tile_width, self.tile_height)
+            tmpImage = QImage(size_blank, QImage.Format_ARGB32_Premultiplied)
+            tmpImage.fill(self.color)
+            dpm_blank = dpi / 25.4 * 1000
+            tmpImage.setDotsPerMeterX(dpm_blank)
+            tmpImage.setDotsPerMeterY(dpm_blank)
+            p = QPainter(tmpImage)
+            p.fillRect(QRect(0, 0, self.tile_width, self.tile_height), QBrush(self.color))
+            self.blank_image = tmpImage.copy(0, 0, self.tile_width, self.tile_height)
+            p.end()
+
         # without re-writing, we need a different settings for each thread to stop async errors
         # naming doesn't always line up, but the last number does
         self.settingsDictionary = {str(i): QgsMapSettings() for i in range(self.maxThreads)}
@@ -267,8 +297,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
             self.settingsDictionary[thread].setDestinationCrs(dest_crs)
             self.settingsDictionary[thread].setLayers(self.layers)
             self.settingsDictionary[thread].setOutputDpi(dpi)
-            if self.tile_format == 'PNG':
-                self.settingsDictionary[thread].setBackgroundColor(self.color)
+            self.settingsDictionary[thread].setBackgroundColor(self.color)
 
             ## disable partial labels (they would be cut at the edge of tiles)
             labeling_engine_settings = self.settingsDictionary[thread].labelingEngineSettings()
