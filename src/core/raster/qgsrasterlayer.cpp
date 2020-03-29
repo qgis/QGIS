@@ -101,6 +101,7 @@ QgsRasterLayer::QgsRasterLayer()
   : QgsMapLayer( QgsMapLayerType::RasterLayer )
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
+  , mTemporalProperties( new QgsRasterLayerTemporalProperties( this ) )
 
 {
   init();
@@ -115,6 +116,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
     // Constant that signals property not used.
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
   , TRSTRING_NOT_SET( tr( "Not Set" ) )
+  , mTemporalProperties( new QgsRasterLayerTemporalProperties( this ) )
 {
   mShouldValidateCrs = !options.skipCrsValidation;
 
@@ -576,8 +578,6 @@ void QgsRasterLayer::init()
   //Initialize the last view port structure, should really be a class
   mLastViewPort.mWidth = 0;
   mLastViewPort.mHeight = 0;
-
-  mTemporalProperties = new QgsRasterLayerTemporalProperties( this );
 }
 
 void QgsRasterLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
