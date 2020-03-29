@@ -52,6 +52,9 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
 
   setupUi( this );
 
+  mOkButton->hide();
+  mOkButton->setEnabled( false );
+
   QStringList shownDataItemProvidersFilter;
 
   const auto providerList { QgsApplication::dataItemProviderRegistry()->providers() };
@@ -150,7 +153,15 @@ QgsNewDatabaseTableNameWidget::QgsNewDatabaseTableNameWidget(
     }
   } );
 
+  connect( this, &QgsNewDatabaseTableNameWidget::validationChanged, mOkButton, &QWidget::setEnabled );
+  connect( mOkButton, &QPushButton::clicked, this, &QgsNewDatabaseTableNameWidget::accepted );
+
   validate();
+}
+
+void QgsNewDatabaseTableNameWidget::setAcceptButtonVisible( bool visible )
+{
+  mOkButton->setVisible( visible );
 }
 
 void QgsNewDatabaseTableNameWidget::refreshModel( const QModelIndex &index )

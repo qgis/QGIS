@@ -37,10 +37,16 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   Q_ASSERT( mParameter );
 
   setupUi( this );
-  connect( mSelectButton, &QToolButton::clicked, this, &QgsProcessingLayerOutputDestinationWidget::showMenu );
+
+  leText->setClearButtonEnabled( false );
+
   connect( leText, &QLineEdit::textEdited, this, &QgsProcessingLayerOutputDestinationWidget::textChanged );
 
   mMenu = new QMenu( this );
+  connect( mMenu, &QMenu::aboutToShow, this, &QgsProcessingLayerOutputDestinationWidget::menuAboutToShow );
+  mSelectButton->setMenu( mMenu );
+  mSelectButton->setPopupMode( QToolButton::InstantPopup );
+
   QgsSettings settings;
   mEncoding = settings.value( QStringLiteral( "/Processing/encoding" ), QStringLiteral( "System" ) ).toString();
 
@@ -58,6 +64,9 @@ QgsProcessingLayerOutputDestinationWidget::QgsProcessingLayerOutputDestinationWi
   }
 
   setToolTip( mParameter->toolTip() );
+
+  setAcceptDrops( true );
+  leText->setAcceptDrops( false );
 }
 
 bool QgsProcessingLayerOutputDestinationWidget::outputIsSkipped() const
@@ -143,11 +152,14 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
   if ( key.isEmpty() && mParameter->flags() & QgsProcessingParameterDefinition::FlagOptional )
     return QVariant();
 
+  QString provider;
+  QString uri;
   if ( !key.isEmpty() && key != QgsProcessing::TEMPORARY_OUTPUT
        && !key.startsWith( QLatin1String( "memory:" ) )
        && !key.startsWith( QLatin1String( "ogr:" ) )
        && !key.startsWith( QLatin1String( "postgres:" ) )
-       && !key.startsWith( QLatin1String( "postgis:" ) ) )
+       && !key.startsWith( QLatin1String( "postgis:" ) )
+       && !QgsProcessingUtils::decodeProviderKeyAndUri( key, provider, uri ) )
   {
     // output should be a file path
     QString folder = QFileInfo( key ).path();
@@ -174,7 +186,7 @@ void QgsProcessingLayerOutputDestinationWidget::setWidgetContext( const QgsProce
   mBrowserModel = context.browserModel();
 }
 
-void QgsProcessingLayerOutputDestinationWidget::showMenu()
+void QgsProcessingLayerOutputDestinationWidget::menuAboutToShow()
 {
   mMenu->clear();
 
@@ -225,19 +237,17 @@ void QgsProcessingLayerOutputDestinationWidget::showMenu()
     connect( actionSaveToGpkg, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::saveToGeopackage );
     mMenu->addAction( actionSaveToGpkg );
 
-    QAction *actionSaveToPostGIS = new QAction( tr( "Save to PostGIS Table…" ), this );
-    connect( actionSaveToPostGIS, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::saveToPostGIS );
-
-    const bool postgresConnectionsExist = !( QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) )->connections().isEmpty() );
-    actionSaveToPostGIS->setEnabled( postgresConnectionsExist );
-    mMenu->addAction( actionSaveToPostGIS );
+    QAction *actionSaveToDatabase = new QAction( tr( "Save to Database Table…" ), this );
+    connect( actionSaveToDatabase, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::saveToDatabase );
+    mMenu->addAction( actionSaveToDatabase );
   }
 
-  QAction *actionSetEncoding = new QAction( tr( "Change File Encoding (%1)…" ).arg( mEncoding ), this );
-  connect( actionSetEncoding, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::selectEncoding );
-  mMenu->addAction( actionSetEncoding );
-  mMenu->exec( QCursor::pos() );
-
+  if ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName() )
+  {
+    QAction *actionSetEncoding = new QAction( tr( "Change File Encoding (%1)…" ).arg( mEncoding ), this );
+    connect( actionSetEncoding, &QAction::triggered, this, &QgsProcessingLayerOutputDestinationWidget::selectEncoding );
+    mMenu->addAction( actionSetEncoding );
+  }
 }
 
 void QgsProcessingLayerOutputDestinationWidget::skipOutput()
@@ -319,7 +329,7 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   QString lastFilter;
   for ( const QString &f : filters )
   {
-    if ( f.contains( QStringLiteral( "*%1" ).arg( lastExt ), Qt::CaseInsensitive ) )
+    if ( f.contains( QStringLiteral( "*.%1" ).arg( lastExt ), Qt::CaseInsensitive ) )
     {
       lastFilter = f;
       break;
@@ -336,7 +346,7 @@ void QgsProcessingLayerOutputDestinationWidget::selectFile()
   if ( !filename.isEmpty() )
   {
     mUseTemporary = false;
-    filename = QgsFileUtils::addExtensionFromFilter( filename, fileFilter );
+    filename = QgsFileUtils::addExtensionFromFilter( filename, lastFilter );
 
     leText->setText( filename );
     settings.setValue( QStringLiteral( "/Processing/LastOutputPath" ), QFileInfo( filename ).path() );
@@ -388,28 +398,59 @@ void QgsProcessingLayerOutputDestinationWidget::saveToGeopackage()
   emit destinationChanged();
 }
 
-void QgsProcessingLayerOutputDestinationWidget::saveToPostGIS()
+void QgsProcessingLayerOutputDestinationWidget::saveToDatabase()
 {
-  QgsNewDatabaseTableNameDialog dlg( mBrowserModel, QStringList() << QStringLiteral( "postgres" ), this );
-  dlg.setWindowTitle( tr( "Save to PostGIS Table" ) );
-  if ( dlg.exec() && dlg.isValid() )
+  if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
   {
-    mUseTemporary = false;
 
-    QgsDataSourceUri uri = QgsDataSourceUri( dlg.uri() );
+    QgsNewDatabaseTableNameWidget *widget = new QgsNewDatabaseTableNameWidget( mBrowserModel, QStringList() << QStringLiteral( "postgres" )
+        << QStringLiteral( "mssql" )
+        << QStringLiteral( "ogr" )
+        << QStringLiteral( "spatialite" ), this );
+    widget->setPanelTitle( tr( "Save “%1” to Database Table" ).arg( mParameter->description() ) );
+    widget->setAcceptButtonVisible( true );
 
-    QString geomColumn;
-    if ( const QgsProcessingParameterFeatureSink *sink = dynamic_cast< const QgsProcessingParameterFeatureSink * >( mParameter ) )
+    panel->openPanel( widget );
+
+    auto changed = [ = ]
     {
-      if ( sink->hasGeometry() )
-        geomColumn = QStringLiteral( "geom" );
-    }
-    uri.setGeometryColumn( geomColumn );
+      mUseTemporary = false;
 
-    leText->setText( QStringLiteral( "postgis:%1" ).arg( uri.uri() ) );
+      QString geomColumn;
+      if ( const QgsProcessingParameterFeatureSink *sink = dynamic_cast< const QgsProcessingParameterFeatureSink * >( mParameter ) )
+      {
+        if ( sink->hasGeometry() )
+          geomColumn = QStringLiteral( "geom" );
+      }
 
-    emit skipOutputChanged( false );
-    emit destinationChanged();
+      if ( widget->dataProviderKey() == QLatin1String( "ogr" ) )
+      {
+        QgsDataSourceUri uri;
+        uri.setTable( widget->table() );
+        uri.setDatabase( widget->schema() );
+        uri.setGeometryColumn( geomColumn );
+        leText->setText( QStringLiteral( "ogr:%1" ).arg( uri.uri() ) );
+      }
+      else
+      {
+        QgsDataSourceUri uri( widget->uri() );
+        uri.setGeometryColumn( geomColumn );
+        leText->setText( QgsProcessingUtils::encodeProviderKeyAndUri( widget->dataProviderKey(), uri.uri() ) );
+      }
+
+      emit skipOutputChanged( false );
+      emit destinationChanged();
+    };
+
+    connect( widget, &QgsNewDatabaseTableNameWidget::tableNameChanged, this, [ = ] { changed(); } );
+    connect( widget, &QgsNewDatabaseTableNameWidget::schemaNameChanged, this, [ = ] { changed(); } );
+    connect( widget, &QgsNewDatabaseTableNameWidget::validationChanged, this, [ = ] { changed(); } );
+    connect( widget, &QgsNewDatabaseTableNameWidget::providerKeyChanged, this, [ = ] { changed(); } );
+    connect( widget, &QgsNewDatabaseTableNameWidget::accepted, this, [ = ]
+    {
+      changed();
+      widget->acceptPanel();
+    } );
   }
 }
 
@@ -431,5 +472,113 @@ void QgsProcessingLayerOutputDestinationWidget::textChanged( const QString &text
   emit destinationChanged();
 }
 
+QString QgsProcessingLayerOutputDestinationWidget::mimeDataToPath( const QMimeData *data )
+{
+  const QgsMimeDataUtils::UriList uriList = QgsMimeDataUtils::decodeUriList( data );
+  for ( const QgsMimeDataUtils::Uri &u : uriList )
+  {
+    if ( ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName()
+           || mParameter->type() == QgsProcessingParameterVectorDestination::typeName()
+           || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
+         && u.layerType == QLatin1String( "vector" ) && u.providerKey == QLatin1String( "ogr" ) )
+    {
+      return u.uri;
+    }
+    else if ( ( mParameter->type() == QgsProcessingParameterRasterDestination::typeName()
+                || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
+              && u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" ) )
+      return u.uri;
+#if 0
+    else if ( ( mParameter->type() == QgsProcessingParameterMeshDestination::typeName()
+                || mParameter->type() == QgsProcessingParameterFileDestination::typeName() )
+              && u.layerType == QLatin1String( "mesh" ) && u.providerKey == QLatin1String( "mdal" ) )
+      return u.uri;
+
+#endif
+    else if ( mParameter->type() == QgsProcessingParameterFolderDestination::typeName()
+              && u.layerType == QLatin1String( "directory" ) )
+    {
+      return u.uri;
+    }
+  }
+  if ( !uriList.isEmpty() )
+    return QString();
+
+  // files dragged from file explorer, outside of QGIS
+  QStringList rawPaths;
+  if ( data->hasUrls() )
+  {
+    const QList< QUrl > urls = data->urls();
+    rawPaths.reserve( urls.count() );
+    for ( const QUrl &url : urls )
+    {
+      const QString local =  url.toLocalFile();
+      if ( !rawPaths.contains( local ) )
+        rawPaths.append( local );
+    }
+  }
+  if ( !data->text().isEmpty() && !rawPaths.contains( data->text() ) )
+    rawPaths.append( data->text() );
+
+  for ( const QString &path : qgis::as_const( rawPaths ) )
+  {
+    QFileInfo file( path );
+    if ( file.isFile() && ( mParameter->type() == QgsProcessingParameterFeatureSink::typeName()
+                            || mParameter->type() == QgsProcessingParameterVectorDestination::typeName()
+                            || mParameter->type() == QgsProcessingParameterRasterDestination::typeName()
+                            || mParameter->type() == QgsProcessingParameterVectorDestination::typeName()
+                            || mParameter->type() == QgsProcessingParameterFileDestination::typeName() ) )
+    {
+      // TODO - we should check to see if it's a valid extension for the parameter, but that's non-trivial
+      return path;
+    }
+    else if ( file.isDir() && ( mParameter->type() == QgsProcessingParameterFolderDestination::typeName() ) )
+      return path;
+  }
+
+  return QString();
+}
+
+void QgsProcessingLayerOutputDestinationWidget::dragEnterEvent( QDragEnterEvent *event )
+{
+  if ( !( event->possibleActions() & Qt::CopyAction ) )
+    return;
+
+  const QString path = mimeDataToPath( event->mimeData() );
+  if ( !path.isEmpty() )
+  {
+    // dragged an acceptable path, phew
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+    leText->setHighlighted( true );
+  }
+}
+
+void QgsProcessingLayerOutputDestinationWidget::dragLeaveEvent( QDragLeaveEvent *event )
+{
+  QWidget::dragLeaveEvent( event );
+  if ( leText->isHighlighted() )
+  {
+    event->accept();
+    leText->setHighlighted( false );
+  }
+}
+
+void QgsProcessingLayerOutputDestinationWidget::dropEvent( QDropEvent *event )
+{
+  if ( !( event->possibleActions() & Qt::CopyAction ) )
+    return;
+
+  const QString path = mimeDataToPath( event->mimeData() );
+  if ( !path.isEmpty() )
+  {
+    // dropped an acceptable path, phew
+    setFocus( Qt::MouseFocusReason );
+    event->setDropAction( Qt::CopyAction );
+    event->accept();
+    setValue( path );
+  }
+  leText->setHighlighted( false );
+}
 
 ///@endcond

@@ -47,9 +47,14 @@ class GUI_EXPORT QgsJoinDialog: public QDialog, private Ui::QgsJoinDialogBase
 
     void checkDefinitionValid();
 
+    void editableJoinLayerChanged();
+
   private:
     //! Target layer
     QgsVectorLayer *mLayer = nullptr;
+
+    // Temporary storage for "cache" setting since the checkbox may be temporarily disabled
+    bool mCacheEnabled = false;
 };
 
 

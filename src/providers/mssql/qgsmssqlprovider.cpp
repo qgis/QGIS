@@ -2435,6 +2435,8 @@ QVariantMap QgsMssqlProviderMetadata::decodeUri( const QString &uri )
     uriParts[ QStringLiteral( "service" ) ] = dsUri.service();
   if ( ! dsUri.username().isEmpty() )
     uriParts[ QStringLiteral( "username" ) ] = dsUri.username();
+  if ( ! dsUri.password().isEmpty() )
+    uriParts[ QStringLiteral( "password" ) ] = dsUri.password();
 
   // Supported?
   //if ( ! dsUri.authConfigId().isEmpty() )

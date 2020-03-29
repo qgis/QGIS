@@ -69,6 +69,13 @@ class TestPyQgsProviderConnectionPostgres(unittest.TestCase, TestPyQgsProviderCo
         rl = QgsRasterLayer(conn.tableUri('qgis_test', 'Raster1'), 'r1', 'postgresraster')
         self.assertTrue(rl.isValid())
 
+    def test_postgis_geometry_filter(self):
+        """Make sure the postgres provider only returns one matching geometry record and no polygons etc."""
+        vl = QgsVectorLayer(self.postgres_conn + ' srid=4326 type=POINT table="qgis_test"."geometries_table" (geom) sql=', 'test', 'postgres')
+
+        ids = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(ids, [2])
+
     def test_postgis_table_uri(self):
         """Create a connection from a layer uri and create a table URI"""
 

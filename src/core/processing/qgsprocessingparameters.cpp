@@ -813,14 +813,12 @@ QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingPara
   QVariant val = value;
 
   QgsProject *destinationProject = nullptr;
-  QVariantMap createOptions;
   QString destName;
   if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
   {
     // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
     QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
     destinationProject = fromVar.destinationProject;
-    createOptions = fromVar.createOptions;
     val = fromVar.sink;
     destName = fromVar.destinationName;
   }
@@ -4745,7 +4743,7 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
 
   // prefer to use layer source if possible (since it's persistent)
   if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context, true, QgsProcessingUtils::LayerHint::Vector ) ) )
-    layerString = layer->source();
+    layerString = layer->providerType() != QLatin1String( "ogr" ) && layer->providerType() != QLatin1String( "gdal" ) && layer->providerType() != QLatin1String( "mdal" ) ? QgsProcessingUtils::encodeProviderKeyAndUri( layer->providerType(), layer->source() ) : layer->source();
 
   return QgsProcessingUtils::stringToPythonLiteral( layerString );
 }

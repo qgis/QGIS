@@ -172,6 +172,22 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
      */
     void setModelChildAlgorithmId( const QString &id );
 
+    /**
+     * Returns the current active layer.
+     *
+     * \see setActiveLayer()
+     * \since QGIS 3.14
+     */
+    QgsMapLayer *activeLayer() const;
+
+    /**
+     * Sets the current active \a layer.
+     *
+     * \see activeLayer()
+     * \since QGIS 3.14
+     */
+    void setActiveLayer( QgsMapLayer *layer );
+
   private:
 
     QgsProcessingModelAlgorithm *mModel = nullptr;
@@ -185,6 +201,8 @@ class GUI_EXPORT QgsProcessingParameterWidgetContext
     QgsProject *mProject = nullptr;
 
     QgsBrowserGuiModel *mBrowserModel = nullptr;
+
+    QgsMapLayer *mActiveLayer = nullptr;
 
 };
 
@@ -555,7 +573,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
 
     /**
      * Returns a list of compatible Processing data types for inputs
-     * for this parameter.
+     * for this widget for the specified \a parameter.
      *
      * In order to determine the available sources for the parameter in a model
      * the types returned by this method are checked. The returned list corresponds
@@ -567,7 +585,7 @@ class GUI_EXPORT QgsProcessingParameterWidgetFactoryInterface
      * \see compatibleParameterTypes()
      * \see compatibleOutputTypes()
      */
-    virtual QList< int > compatibleDataTypes() const = 0;
+    virtual QList< int > compatibleDataTypes( const QgsProcessingParameterDefinition *parameter ) const;
 
     /**
      * Returns the expected expression format string for expression results for the parameter

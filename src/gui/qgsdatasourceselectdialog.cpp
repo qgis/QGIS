@@ -95,8 +95,6 @@ QgsDataSourceSelectWidget::QgsDataSourceSelectWidget(
   action->setCheckable( true );
   menu->addAction( action );
 
-  mBrowserTreeView->setExpandsOnDoubleClick( false );
-
   connect( mActionRefresh, &QAction::triggered, this, [ = ] { refreshModel( QModelIndex() ); } );
   connect( mBrowserTreeView, &QgsBrowserTreeView::clicked, this, &QgsDataSourceSelectWidget::onLayerSelected );
   connect( mBrowserTreeView, &QgsBrowserTreeView::doubleClicked, this, &QgsDataSourceSelectWidget::itemDoubleClicked );
@@ -313,6 +311,7 @@ QgsDataSourceSelectDialog::QgsDataSourceSelectDialog( QgsBrowserGuiModel *browse
   : QDialog( parent )
 {
   setWindowTitle( tr( "Select a Data Source" ) );
+  setObjectName( QStringLiteral( "QgsDataSourceSelectDialog" ) );
   QgsGui::enableAutoGeometryRestore( this );
 
   mWidget = new QgsDataSourceSelectWidget( browserModel, setFilterByLayerType, layerType );

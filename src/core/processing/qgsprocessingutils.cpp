@@ -133,6 +133,25 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   return layers;
 }
 
+QString QgsProcessingUtils::encodeProviderKeyAndUri( const QString &providerKey, const QString &uri )
+{
+  return QStringLiteral( "%1://%2" ).arg( providerKey, uri );
+}
+
+bool QgsProcessingUtils::decodeProviderKeyAndUri( const QString &string, QString &providerKey, QString &uri )
+{
+  QRegularExpression re( QStringLiteral( "^(\\w+?):\\/\\/(.+)$" ) );
+  const QRegularExpressionMatch match = re.match( string );
+  if ( !match.hasMatch() )
+    return false;
+
+  providerKey = match.captured( 1 );
+  uri = match.captured( 2 );
+
+  // double check that provider is valid
+  return QgsProviderRegistry::instance()->providerMetadata( providerKey );
+}
+
 QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMapLayerStore *store, QgsProcessingUtils::LayerHint typeHint )
 {
   if ( !store || string.isEmpty() )
@@ -195,19 +214,33 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
 
 QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, const QgsCoordinateTransformContext &transformContext, LayerHint typeHint )
 {
-  QStringList components = string.split( '|' );
-  if ( components.isEmpty() )
-    return nullptr;
+  QString provider;
+  QString uri;
+  const bool useProvider = decodeProviderKeyAndUri( string, provider, uri );
+  if ( !useProvider )
+    uri = string;
 
-  QFileInfo fi;
-  if ( QFileInfo::exists( string ) )
-    fi = QFileInfo( string );
-  else if ( QFileInfo::exists( components.at( 0 ) ) )
-    fi = QFileInfo( components.at( 0 ) );
+  QString name;
+  // for disk based sources, we use the filename to determine a layer name
+  if ( !useProvider || ( provider == QLatin1String( "ogr" ) || provider == QLatin1String( "gdal" ) || provider == QLatin1String( "mdal" ) ) )
+  {
+    QStringList components = uri.split( '|' );
+    if ( components.isEmpty() )
+      return nullptr;
+
+    QFileInfo fi;
+    if ( QFileInfo::exists( uri ) )
+      fi = QFileInfo( uri );
+    else if ( QFileInfo::exists( components.at( 0 ) ) )
+      fi = QFileInfo( components.at( 0 ) );
+    else
+      return nullptr;
+    name = fi.baseName();
+  }
   else
-    return nullptr;
-
-  QString name = fi.baseName();
+  {
+    name = QgsDataSourceUri( uri ).table();
+  }
 
   // brute force attempt to load a matching layer
   if ( typeHint == LayerHint::UnknownType || typeHint == LayerHint::Vector )
@@ -215,7 +248,17 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     QgsVectorLayer::LayerOptions options { transformContext };
     options.loadDefaultStyle = false;
     options.skipCrsValidation = true;
-    std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( string, name, QStringLiteral( "ogr" ), options );
+
+    std::unique_ptr< QgsVectorLayer > layer;
+    if ( useProvider )
+    {
+      layer = qgis::make_unique<QgsVectorLayer>( uri, name, provider, options );
+    }
+    else
+    {
+      // fallback to ogr
+      layer = qgis::make_unique<QgsVectorLayer>( uri, name, QStringLiteral( "ogr" ), options );
+    }
     if ( layer->isValid() )
     {
       return layer.release();
@@ -226,7 +269,18 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
     QgsRasterLayer::LayerOptions rasterOptions;
     rasterOptions.loadDefaultStyle = false;
     rasterOptions.skipCrsValidation = true;
-    std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), rasterOptions ) );
+
+    std::unique_ptr< QgsRasterLayer > rasterLayer;
+    if ( useProvider )
+    {
+      rasterLayer = qgis::make_unique< QgsRasterLayer >( uri, name, provider, rasterOptions );
+    }
+    else
+    {
+      // fallback to gdal
+      rasterLayer = qgis::make_unique< QgsRasterLayer >( uri, name, QStringLiteral( "gdal" ), rasterOptions );
+    }
+
     if ( rasterLayer->isValid() )
     {
       return rasterLayer.release();
@@ -236,7 +290,16 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, 
   {
     QgsMeshLayer::LayerOptions meshOptions;
     meshOptions.skipCrsValidation = true;
-    std::unique_ptr< QgsMeshLayer > meshLayer( new QgsMeshLayer( string, name, QStringLiteral( "mdal" ), meshOptions ) );
+
+    std::unique_ptr< QgsMeshLayer > meshLayer;
+    if ( useProvider )
+    {
+      meshLayer = qgis::make_unique< QgsMeshLayer >( uri, name, provider, meshOptions );
+    }
+    else
+    {
+      meshLayer = qgis::make_unique< QgsMeshLayer >( uri, name, QStringLiteral( "mdal" ), meshOptions );
+    }
     if ( meshLayer->isValid() )
     {
       return meshLayer.release();
@@ -539,16 +602,26 @@ QString QgsProcessingUtils::stringToPythonLiteral( const QString &string )
 void QgsProcessingUtils::parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter, QString &extension )
 {
   extension.clear();
-  QRegularExpression splitRx( QStringLiteral( "^(.{3,}?):(.*)$" ) );
-  QRegularExpressionMatch match = splitRx.match( destination );
-  if ( match.hasMatch() )
+  bool matched = decodeProviderKeyAndUri( destination, providerKey, uri );
+
+  if ( !matched )
   {
-    providerKey = match.captured( 1 );
+    QRegularExpression splitRx( QStringLiteral( "^(.{3,}?):(.*)$" ) );
+    QRegularExpressionMatch match = splitRx.match( destination );
+    if ( match.hasMatch() )
+    {
+      providerKey = match.captured( 1 );
+      uri = match.captured( 2 );
+      matched = true;
+    }
+  }
+
+  if ( matched )
+  {
     if ( providerKey == QStringLiteral( "postgis" ) ) // older processing used "postgis" instead of "postgres"
     {
       providerKey = QStringLiteral( "postgres" );
     }
-    uri = match.captured( 2 );
     if ( providerKey == QLatin1String( "ogr" ) )
     {
       QgsDataSourceUri dsUri( uri );

@@ -92,6 +92,28 @@ value.
 .. seealso:: :py:func:`compatibleVectorLayers`
 %End
 
+    static QString encodeProviderKeyAndUri( const QString &providerKey, const QString &uri );
+%Docstring
+Encodes a provider key and layer ``uri`` to a single string, for use with
+decodeProviderKeyAndUri()
+
+.. versionadded:: 3.14
+%End
+
+    static bool decodeProviderKeyAndUri( const QString &string, QString &providerKey /Out/, QString &uri /Out/ );
+%Docstring
+Decodes a provider key and layer ``uri`` from an encoded string, for use with
+encodeProviderKeyAndUri()
+
+:param string: encoded string, as returned by encodeProviderKeyAndUri()
+:param uri: decoded layer uri
+
+:return: - ``True`` if ``string`` was successfully decoded
+         - providerKey: ID key for corresponding data provider
+
+.. versionadded:: 3.14
+%End
+
     enum class LayerHint
     {
       UnknownType,

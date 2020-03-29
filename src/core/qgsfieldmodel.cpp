@@ -475,23 +475,37 @@ QString QgsFieldModel::fieldToolTip( const QgsField &field )
   {
     toolTip = QStringLiteral( "<b>%1</b>" ).arg( field.name() );
   }
-  QString typeString;
-  if ( field.length() > 0 )
+
+  toolTip += QStringLiteral( "<br><font style='font-family:monospace; white-space: nowrap;'>%3</font>" ).arg( field.displayType( true ) );
+
+  QString comment = field.comment();
+
+  if ( ! comment.isEmpty() )
   {
-    if ( field.precision() > 0 )
-    {
-      typeString = QStringLiteral( "%1 (%2, %3)" ).arg( field.typeName() ).arg( field.length() ).arg( field.precision() );
-    }
-    else
-    {
-      typeString = QStringLiteral( "%1 (%2)" ).arg( field.typeName() ).arg( field.length() );
-    }
+    toolTip += QStringLiteral( "<br><em>%1</em>" ).arg( comment );
   }
-  else
+
+  return toolTip;
+}
+
+QString QgsFieldModel::fieldToolTipExtended( const QgsField &field, const QgsVectorLayer *layer )
+{
+  QString toolTip = QgsFieldModel::fieldToolTip( field );
+  const QgsFields fields = layer->fields();
+  int fieldIdx = fields.indexOf( field.name() );
+
+  if ( fieldIdx < 0 )
+    return QString();
+
+  QString expressionString = fields.fieldOrigin( fieldIdx ) == QgsFields::OriginExpression
+                             ? layer->expressionField( fieldIdx )
+                             : QString();
+
+  if ( !expressionString.isEmpty() )
   {
-    typeString = field.typeName();
+    toolTip += QStringLiteral( "<br><font style='font-family:monospace;'>%3</font>" ).arg( expressionString );
   }
-  toolTip += QStringLiteral( "<p>%1</p>" ).arg( typeString );
+
   return toolTip;
 }
 

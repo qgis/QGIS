@@ -65,6 +65,7 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alread
   connect( mJoinLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsJoinDialog::checkDefinitionValid );
   connect( mJoinFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsJoinDialog::checkDefinitionValid );
   connect( mTargetFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsJoinDialog::checkDefinitionValid );
+  connect( mEditableJoinLayer, &QGroupBox::toggled, this, &QgsJoinDialog::editableJoinLayerChanged );
 
   checkDefinitionValid();
 }
@@ -108,6 +109,8 @@ void QgsJoinDialog::setJoinInfo( const QgsVectorLayerJoinInfo &joinInfo )
       }
     }
   }
+
+  editableJoinLayerChanged();
 }
 
 QgsVectorLayerJoinInfo QgsJoinDialog::joinInfo() const
@@ -200,4 +203,21 @@ void QgsJoinDialog::checkDefinitionValid()
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( mJoinLayerComboBox->currentIndex() != -1
       && mJoinFieldComboBox->currentIndex() != -1
       && mTargetFieldComboBox->currentIndex() != -1 );
+}
+
+void QgsJoinDialog::editableJoinLayerChanged()
+{
+  if ( mEditableJoinLayer->isChecked() )
+  {
+    mCacheInMemoryCheckBox->setEnabled( false );
+    mCacheInMemoryCheckBox->setToolTip( tr( "Caching can not be enabled if editable join layer is enabled" ) );
+    mCacheEnabled = mCacheInMemoryCheckBox->isChecked();
+    mCacheInMemoryCheckBox->setChecked( false );
+  }
+  else
+  {
+    mCacheInMemoryCheckBox->setEnabled( true );
+    mCacheInMemoryCheckBox->setToolTip( QString() );
+    mCacheInMemoryCheckBox->setChecked( mCacheEnabled );
+  }
 }

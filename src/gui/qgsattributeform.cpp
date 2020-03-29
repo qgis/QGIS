@@ -43,6 +43,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsfeaturerequest.h"
 #include "qgstexteditwrapper.h"
+#include "qgsfieldmodel.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -1506,7 +1507,7 @@ void QgsAttributeForm::init()
 
       // This will also create the widget
       QLabel *l = new QLabel( labelText );
-      l->setToolTip( QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( fieldName, field.comment() ) );
+      l->setToolTip( QgsFieldModel::fieldToolTipExtended( field, mLayer ) );
       QSvgWidget *i = new QSvgWidget();
       i->setFixedSize( 18, 18 );
 

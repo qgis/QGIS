@@ -22,6 +22,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsexpressionbuilderwidgetplugin.cpp
   qgsextentgroupboxplugin.cpp
   qgsexternalresourcewidgetplugin.cpp
+  qgsfeaturelistcomboboxplugin.cpp
   qgsfieldcomboboxplugin.cpp
   qgsfieldexpressionwidgetplugin.cpp
   qgsfilewidgetplugin.cpp
@@ -54,6 +55,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsexpressionbuilderwidgetplugin.h
   qgsextentgroupboxplugin.h
   qgsexternalresourcewidgetplugin.h
+  qgsfeaturelistcomboboxplugin.h
   qgsfieldcomboboxplugin.h
   qgsfieldexpressionwidgetplugin.h
   qgsfilewidgetplugin.h

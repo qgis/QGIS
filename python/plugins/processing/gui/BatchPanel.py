@@ -24,6 +24,7 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 import os
 import json
 import warnings
+from pathlib import Path
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import (
@@ -60,10 +61,14 @@ from qgis.core import (
     QgsProcessingParameterFeatureSource,
     QgsProcessingParameterRasterDestination,
     QgsProcessingParameterVectorDestination,
+    QgsProcessingParameterMultipleLayers,
     QgsProcessingParameterFeatureSink,
     QgsProcessingOutputLayerDefinition,
     QgsExpressionContextUtils,
-    QgsExpression
+    QgsProcessing,
+    QgsExpression,
+    QgsRasterLayer,
+    QgsProcessingUtils
 )
 from qgis.gui import (
     QgsProcessingParameterWidgetContext,
@@ -79,6 +84,7 @@ from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 
 from processing.tools import dataobjects
 from processing.tools.dataobjects import createContext
+from processing.gui.MultipleInputDialog import MultipleInputDialog
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -146,6 +152,22 @@ class BatchPanelFillWidget(QToolButton):
             find_by_pattern_action.setToolTip(self.tr('Adds files by a file pattern match'))
             self.menu.addAction(find_by_pattern_action)
 
+            select_file_action = QAction(
+                QCoreApplication.translate('BatchInputSelectionPanel', 'Select Files…'), self.menu)
+            select_file_action.triggered.connect(self.showFileSelectionDialog)
+            self.menu.addAction(select_file_action)
+
+            select_directory_action = QAction(
+                QCoreApplication.translate('BatchInputSelectionPanel', 'Add All Files from a Directory…'), self.menu)
+            select_directory_action.triggered.connect(self.showDirectorySelectionDialog)
+            self.menu.addAction(select_directory_action)
+
+            if not isinstance(self.parameterDefinition, QgsProcessingParameterFile):
+                select_layer_action = QAction(
+                    QCoreApplication.translate('BatchInputSelectionPanel', 'Select from Open Layers…'), self.menu)
+                select_layer_action.triggered.connect(self.showLayerSelectionDialog)
+                self.menu.addAction(select_layer_action)
+
     def fillDown(self):
         """
         Copy the top value down
@@ -190,6 +212,117 @@ class BatchPanelFillWidget(QToolButton):
             first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
             for row, file in enumerate(files):
                 self.setRowValue(first_row + row, file, context)
+
+    def showFileSelectionDialog(self):
+        settings = QgsSettings()
+        if settings.contains('/Processing/LastInputPath'):
+            path = str(settings.value('/Processing/LastInputPath'))
+        else:
+            path = QDir.homePath()
+
+        files, selected_filter = QFileDialog.getOpenFileNames(
+            self, self.tr('Select Files'), path, self.parameterDefinition.createFileFilter()
+        )
+
+        if not files:
+            return
+
+        settings.setValue('/Processing/LastInputPath', os.path.dirname(str(files[0])))
+
+        context = dataobjects.createContext()
+
+        first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
+        for row, file in enumerate(files):
+            self.setRowValue(first_row + row, file, context)
+
+    def showDirectorySelectionDialog(self):
+        settings = QgsSettings()
+        if settings.contains('/Processing/LastInputPath'):
+            path = str(settings.value('/Processing/LastInputPath'))
+        else:
+            path = QDir.homePath()
+
+        folder = QFileDialog.getExistingDirectory(self, self.tr('Select Directory'), path)
+        if not folder:
+            return
+
+        settings.setValue('/Processing/LastInputPath', folder)
+
+        files = []
+        for pp in Path(folder).rglob("*"):
+            if not pp.is_file():
+                continue
+
+            p = pp.as_posix()
+
+            if isinstance(self.parameterDefinition, QgsProcessingParameterRasterLayer) or \
+                (isinstance(self.parameterDefinition,
+                            QgsProcessingParameterMultipleLayers) and self.param.layerType() == QgsProcessing.TypeRaster):
+                if not QgsRasterLayer.isValidRasterFileName(p):
+                    continue
+
+            files.append(p)
+
+        if not files:
+            return
+
+        context = dataobjects.createContext()
+
+        first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
+        for row, file in enumerate(files):
+            self.setRowValue(first_row + row, file, context)
+
+    def showLayerSelectionDialog(self):
+        layers = []
+        if isinstance(self.parameterDefinition, QgsProcessingParameterRasterLayer):
+            layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
+        elif isinstance(self.parameterDefinition,
+                        QgsProcessingParameterMultipleLayers) and self.param.layerType() == QgsProcessing.TypeRaster:
+            layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
+        elif isinstance(self.parameterDefinition, QgsProcessingParameterVectorLayer):
+            layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
+        elif isinstance(self.parameterDefinition, QgsProcessingParameterMapLayer):
+            layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
+        elif isinstance(self.parameterDefinition, QgsProcessingParameterMeshLayer):
+            layers = QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance())
+        elif isinstance(self.parameterDefinition,
+                        QgsProcessingParameterMultipleLayers) and self.parameterDefinition.layerType() == QgsProcessing.TypeMesh:
+            layers = QgsProcessingUtils.compatibleMeshLayers(QgsProject.instance())
+        else:
+            datatypes = [QgsProcessing.TypeVectorAnyGeometry]
+            if isinstance(self.parameterDefinition, QgsProcessingParameterFeatureSource):
+                datatypes = self.parameterDefinition.dataTypes()
+            elif isinstance(self.parameterDefinition, QgsProcessingParameterMultipleLayers):
+                datatypes = [self.parameterDefinition.layerType()]
+
+            if QgsProcessing.TypeVectorAnyGeometry not in datatypes:
+                layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), datatypes)
+            else:
+                layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
+
+        dlg = MultipleInputDialog([layer.name() for layer in layers])
+        dlg.exec_()
+
+        def generate_layer_id(layer):
+            # prefer layer name if unique
+            if len([l for l in layers if l.name().lower() == layer.name().lower()]) == 1:
+                return layer.name()
+            else:
+                # otherwise fall back to layer id
+                return layer.id()
+
+        if not dlg.selectedoptions:
+            return
+
+        selected = dlg.selectedoptions
+
+        context = dataobjects.createContext()
+
+        first_row = self.panel.batchRowCount() if self.panel.batchRowCount() > 1 else 0
+        for row, selected_idx in enumerate(selected):
+            layer = layers[selected_idx]
+            value = generate_layer_id(layer)
+            self.setRowValue(first_row + row, value, context)
 
     def calculateByExpression(self):
         """
@@ -452,10 +585,9 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                 value = wrapper.parameterValue()
 
                 if not param.checkValueIsAcceptable(value, context):
-                    self.parent.messageBar().pushMessage("", self.tr(
-                        'Wrong or missing parameter value: {0} (row {1})').format(
-                        param.description(), row + 1),
-                        level=Qgis.Warning, duration=5)
+                    msg = self.tr('Wrong or missing parameter value: {0} (row {1})').format(
+                        param.description(), row + 1)
+                    self.parent.messageBar().pushMessage("", msg, level=Qgis.Warning, duration=5)
                     return
                 algParams[param.name()] = param.valueAsPythonString(value, context)
                 col += 1
@@ -495,6 +627,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
         widget_context = QgsProcessingParameterWidgetContext()
         widget_context.setProject(QgsProject.instance())
         if iface is not None:
+            widget_context.setActiveLayer(iface.activeLayer())
             widget_context.setMapCanvas(iface.mapCanvas())
 
         widget_context.setMessageBar(self.parent.messageBar())
@@ -621,8 +754,7 @@ class BatchPanel(QgsPanelWidget, WIDGET):
                     parameters[out.name()] = text
                 col += 1
             else:
-                self.parent.messageBar().pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
-                    out.description(), row + 1),
-                    level=Qgis.Warning, duration=5)
+                msg = self.tr('Wrong or missing output value: {0} (row {1})').format(out.description(), row + 1)
+                self.parent.messageBar().pushMessage("", msg, level=Qgis.Warning, duration=5)
                 return {}, False
         return parameters, True

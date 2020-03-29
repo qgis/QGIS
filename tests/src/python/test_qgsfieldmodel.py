@@ -19,7 +19,8 @@ from qgis.core import (QgsField,
                        QgsFieldProxyModel,
                        QgsEditorWidgetSetup,
                        QgsProject,
-                       QgsVectorLayerJoinInfo)
+                       QgsVectorLayerJoinInfo,
+                       QgsFieldConstraints)
 from qgis.PyQt.QtCore import QVariant, Qt, QModelIndex
 
 from qgis.testing import start_app, unittest
@@ -350,13 +351,28 @@ class TestQgsFieldModel(unittest.TestCase):
 
     def testFieldTooltip(self):
         f = QgsField('my_string', QVariant.String, 'string')
-        self.assertEqual(QgsFieldModel.fieldToolTip(f), '<b>my_string</b><p>string</p>')
+        self.assertEqual(QgsFieldModel.fieldToolTip(f), "<b>my_string</b><br><font style='font-family:monospace; white-space: nowrap;'>string NULL</font>")
         f.setAlias('my alias')
-        self.assertEqual(QgsFieldModel.fieldToolTip(f), '<b>my alias</b> (my_string)<p>string</p>')
+        self.assertEqual(QgsFieldModel.fieldToolTip(f), "<b>my alias</b> (my_string)<br><font style='font-family:monospace; white-space: nowrap;'>string NULL</font>")
         f.setLength(20)
-        self.assertEqual(QgsFieldModel.fieldToolTip(f), '<b>my alias</b> (my_string)<p>string (20)</p>')
+        self.assertEqual(QgsFieldModel.fieldToolTip(f), "<b>my alias</b> (my_string)<br><font style='font-family:monospace; white-space: nowrap;'>string(20) NULL</font>")
         f = QgsField('my_real', QVariant.Double, 'real', 8, 3)
-        self.assertEqual(QgsFieldModel.fieldToolTip(f), '<b>my_real</b><p>real (8, 3)</p>')
+        self.assertEqual(QgsFieldModel.fieldToolTip(f), "<b>my_real</b><br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL</font>")
+        f.setComment('Comment text')
+        self.assertEqual(QgsFieldModel.fieldToolTip(f), "<b>my_real</b><br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL</font><br><em>Comment text</em>")
+
+    def testFieldTooltipExtended(self):
+        layer = QgsVectorLayer("Point?", "tooltip", "memory")
+        f = QgsField('my_real', QVariant.Double, 'real', 8, 3, 'Comment text')
+        layer.addExpressionField('1+1', f)
+        layer.updateFields()
+        self.assertEqual(QgsFieldModel.fieldToolTipExtended(QgsField('my_string', QVariant.String, 'string'), layer), '')
+        self.assertEqual(QgsFieldModel.fieldToolTipExtended(f, layer), "<b>my_real</b><br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL</font><br><em>Comment text</em><br><font style='font-family:monospace;'>1+1</font>")
+        f.setAlias('my alias')
+        constraints = f.constraints()
+        constraints.setConstraint(QgsFieldConstraints.ConstraintUnique)
+        f.setConstraints(constraints)
+        self.assertEqual(QgsFieldModel.fieldToolTipExtended(f, layer), "<b>my alias</b> (my_real)<br><font style='font-family:monospace; white-space: nowrap;'>real(8, 3) NULL UNIQUE</font><br><em>Comment text</em><br><font style='font-family:monospace;'>1+1</font>")
 
 
 if __name__ == '__main__':

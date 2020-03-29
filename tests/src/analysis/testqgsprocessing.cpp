@@ -518,6 +518,7 @@ class TestQgsProcessing: public QObject
     void providerById();
     void removeProvider();
     void compatibleLayers();
+    void encodeDecodeUriProvider();
     void normalizeLayerSource();
     void context();
     void mapLayers();
@@ -860,6 +861,28 @@ void TestQgsProcessing::compatibleLayers()
   QCOMPARE( lIds, QStringList() << "R1" << "ar2" << "zz"  << "V4" << "v1" << "v3" << "vvvv4" << "MX" << "mA" );
 }
 
+void TestQgsProcessing::encodeDecodeUriProvider()
+{
+  QString provider;
+  QString uri;
+  QCOMPARE( QgsProcessingUtils::encodeProviderKeyAndUri( QStringLiteral( "ogr" ), QStringLiteral( "/home/me/test.shp" ) ), QStringLiteral( "ogr:///home/me/test.shp" ) );
+  QVERIFY( QgsProcessingUtils::decodeProviderKeyAndUri( QStringLiteral( "ogr:///home/me/test.shp" ), provider, uri ) );
+  QCOMPARE( provider, QStringLiteral( "ogr" ) );
+  QCOMPARE( uri, QStringLiteral( "/home/me/test.shp" ) );
+  QCOMPARE( QgsProcessingUtils::encodeProviderKeyAndUri( QStringLiteral( "ogr" ), QStringLiteral( "http://mysourcem/a.json" ) ), QStringLiteral( "ogr://http://mysourcem/a.json" ) );
+  QVERIFY( QgsProcessingUtils::decodeProviderKeyAndUri( QStringLiteral( "ogr://http://mysourcem/a.json" ), provider, uri ) );
+  QCOMPARE( provider, QStringLiteral( "ogr" ) );
+  QCOMPARE( uri, QStringLiteral( "http://mysourcem/a.json" ) );
+  QCOMPARE( QgsProcessingUtils::encodeProviderKeyAndUri( QStringLiteral( "postgres" ), QStringLiteral( "host=blah blah etc" ) ), QStringLiteral( "postgres://host=blah blah etc" ) );
+  QVERIFY( QgsProcessingUtils::decodeProviderKeyAndUri( QStringLiteral( "postgres://host=blah blah etc" ), provider, uri ) );
+  QCOMPARE( provider, QStringLiteral( "postgres" ) );
+  QCOMPARE( uri, QStringLiteral( "host=blah blah etc" ) );
+
+  // should reject non valid providers
+  QVERIFY( !QgsProcessingUtils::decodeProviderKeyAndUri( QStringLiteral( "asdasda://host=blah blah etc" ), provider, uri ) );
+  QVERIFY( !QgsProcessingUtils::decodeProviderKeyAndUri( QStringLiteral( "http://mysourcem/a.json" ), provider, uri ) );
+}
+
 void TestQgsProcessing::normalizeLayerSource()
 {
   QCOMPARE( QgsProcessingUtils::normalizeLayerSource( "data\\layers\\test.shp" ), QString( "data/layers/test.shp" ) );
@@ -1046,8 +1069,22 @@ void TestQgsProcessing::mapLayers()
 
   delete l;
 
+  // use encoded provider/uri string
+  l = QgsProcessingUtils::loadMapLayerFromString( QStringLiteral( "gdal://%1" ).arg( raster ), QgsCoordinateTransformContext() );
+  QVERIFY( l->isValid() );
+  QCOMPARE( l->type(), QgsMapLayerType::RasterLayer );
+  QCOMPARE( l->name(), QStringLiteral( "landsat" ) );
+  delete l;
+
   //test with vector
   l = QgsProcessingUtils::loadMapLayerFromString( vector, QgsCoordinateTransformContext() );
+  QVERIFY( l->isValid() );
+  QCOMPARE( l->type(), QgsMapLayerType::VectorLayer );
+  QCOMPARE( l->name(), QStringLiteral( "points" ) );
+  delete l;
+
+  // use encoded provider/uri string
+  l = QgsProcessingUtils::loadMapLayerFromString( QStringLiteral( "ogr://%1" ).arg( vector ), QgsCoordinateTransformContext() );
   QVERIFY( l->isValid() );
   QCOMPARE( l->type(), QgsMapLayerType::VectorLayer );
   QCOMPARE( l->name(), QStringLiteral( "points" ) );
@@ -1588,6 +1625,21 @@ void TestQgsProcessing::parseDestinationString()
   destination = QStringLiteral( "postgres:dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" );
   QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
   QCOMPARE( providerKey, QStringLiteral( "postgres" ) );
+  QCOMPARE( uri, QStringLiteral( "dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" ) );
+  QVERIFY( !useWriter );
+  QVERIFY( extension.isEmpty() );
+
+  // newer format
+  destination = QStringLiteral( "postgres://dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
+  QCOMPARE( providerKey, QStringLiteral( "postgres" ) );
+  QCOMPARE( uri, QStringLiteral( "dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" ) );
+  QVERIFY( !useWriter );
+  QVERIFY( extension.isEmpty() );
+  //mssql
+  destination = QStringLiteral( "mssql://dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
+  QCOMPARE( providerKey, QStringLiteral( "mssql" ) );
   QCOMPARE( uri, QStringLiteral( "dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" ) );
   QVERIFY( !useWriter );
   QVERIFY( extension.isEmpty() );
@@ -5486,6 +5538,7 @@ void TestQgsProcessing::parameterFeatureSource()
   QCOMPARE( def->valueAsPythonString( QVariant::fromValue( v2 ), context ), QStringLiteral( "'%1'" ).arg( vector2 ) );
   QCOMPARE( def->valueAsPythonString( "uri='complex' username=\"complex\"", context ), QStringLiteral( "'uri=\\'complex\\' username=\\\"complex\\\"'" ) );
   QCOMPARE( def->valueAsPythonString( QStringLiteral( "c:\\test\\new data\\test.dat" ), context ), QStringLiteral( "'c:\\\\test\\\\new data\\\\test.dat'" ) );
+  QCOMPARE( def->valueAsPythonString( QStringLiteral( "postgres://uri='complex' username=\"complex\"" ), context ), QStringLiteral( "'postgres://uri=\\'complex\\' username=\\\"complex\\\"'" ) );
 
   QVariantMap map = def->toVariantMap();
   QgsProcessingParameterFeatureSource fromMap( "x" );

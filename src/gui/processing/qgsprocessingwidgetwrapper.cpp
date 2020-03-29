@@ -81,6 +81,16 @@ void QgsProcessingParameterWidgetContext::setModelChildAlgorithmId( const QStrin
   mModelChildAlgorithmId = modelChildAlgorithmId;
 }
 
+QgsMapLayer *QgsProcessingParameterWidgetContext::activeLayer() const
+{
+  return mActiveLayer;
+}
+
+void QgsProcessingParameterWidgetContext::setActiveLayer( QgsMapLayer *activeLayer )
+{
+  mActiveLayer = activeLayer;
+}
+
 QgsProcessingModelAlgorithm *QgsProcessingParameterWidgetContext::model() const
 {
   return mModel;
@@ -330,7 +340,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
 QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterface::createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context )
 {
   std::unique_ptr< QgsProcessingModelerParameterWidget > widget = qgis::make_unique< QgsProcessingModelerParameterWidget >( model, childId, parameter, context );
-  widget->populateSources( compatibleParameterTypes(), compatibleOutputTypes(), compatibleDataTypes() );
+  widget->populateSources( compatibleParameterTypes(), compatibleOutputTypes(), compatibleDataTypes( parameter ) );
   widget->setExpressionHelpText( modelerExpressionFormatString() );
   return widget.release();
 }
@@ -340,6 +350,11 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingParameterWidgetFact
     const QgsProcessingAlgorithm * )
 {
   return nullptr;
+}
+
+QList<int> QgsProcessingParameterWidgetFactoryInterface::compatibleDataTypes( const QgsProcessingParameterDefinition * ) const
+{
+  return QList< int >();
 }
 
 QString QgsProcessingParameterWidgetFactoryInterface::modelerExpressionFormatString() const

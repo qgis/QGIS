@@ -24,15 +24,20 @@
 #include "qgsguiutils.h"
 #include "qgspanelwidget.h"
 #include "qgsprocessingfeaturesourceoptionswidget.h"
+#include "qgsdatasourceselectdialog.h"
+#include "qgsprocessingwidgetwrapper.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QToolButton>
 #include <QCheckBox>
 #include <QDragEnterEvent>
+#include <QMenu>
+#include <QAction>
+#include <QFileDialog>
 
 ///@cond PRIVATE
 
-QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QWidget *parent )
+QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QWidget( parent )
   , mParameter( parameter->clone() )
 {
@@ -47,12 +52,11 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
 
   mSelectButton = new QToolButton();
   mSelectButton->setText( QString( QChar( 0x2026 ) ) );
-  mSelectButton->setToolTip( tr( "Select file" ) );
-  connect( mSelectButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::triggerFileSelection );
+  mSelectButton->setToolTip( tr( "Select input" ) );
   layout->addWidget( mSelectButton );
   layout->setAlignment( mSelectButton, Qt::AlignTop );
-
-  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
+  int iconSize = QgsGuiUtils::scaleIconSize( 24 );
+  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == QgsProcessingGui::Standard )
   {
     mIterateButton = new QToolButton();
     mIterateButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconIterate.svg" ) ) );
@@ -60,15 +64,17 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     mIterateButton->setCheckable( true );
     mIterateButton->setAutoRaise( true );
 
-    int iconSize = QgsGuiUtils::scaleIconSize( 24 );
-
     // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
     mIterateButton->setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
     mIterateButton->setIconSize( QSize( iconSize, iconSize ) );
 
     layout->addWidget( mIterateButton );
     layout->setAlignment( mIterateButton, Qt::AlignTop );
+  }
 
+  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && ( type == QgsProcessingGui::Standard
+       || type == QgsProcessingGui::Batch ) )
+  {
     mSettingsButton = new QToolButton();
     mSettingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ) );
     mSettingsButton->setToolTip( tr( "Advanced options" ) );
@@ -81,6 +87,21 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     connect( mSettingsButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::showSourceOptions );
     layout->addWidget( mSettingsButton );
     layout->setAlignment( mSettingsButton, Qt::AlignTop );
+
+    mFeatureSourceMenu = new QMenu( this );
+    QAction *selectFromFileAction = new QAction( tr( "Select File…" ), mFeatureSourceMenu );
+    connect( selectFromFileAction, &QAction::triggered, this, &QgsProcessingMapLayerComboBox::selectFromFile );
+    mFeatureSourceMenu->addAction( selectFromFileAction );
+    QAction *browseForLayerAction = new QAction( tr( "Browse for Layer…" ), mFeatureSourceMenu );
+    connect( browseForLayerAction, &QAction::triggered, this, &QgsProcessingMapLayerComboBox::browseForLayer );
+    mFeatureSourceMenu->addAction( browseForLayerAction );
+
+    mSelectButton->setMenu( mFeatureSourceMenu );
+    mSelectButton->setPopupMode( QToolButton::InstantPopup );
+  }
+  else
+  {
+    connect( mSelectButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::selectFromFile );
   }
 
   QVBoxLayout *vl = new QVBoxLayout();
@@ -91,7 +112,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
 
   QgsMapLayerProxyModel::Filters filters = nullptr;
 
-  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
+  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == QgsProcessingGui::Standard )
   {
     mUseSelectionCheckBox = new QCheckBox( tr( "Selected features only" ) );
     mUseSelectionCheckBox->setChecked( false );
@@ -196,6 +217,12 @@ QString QgsProcessingMapLayerComboBox::currentText()
 
 void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessingContext &context )
 {
+  if ( !value.isValid()  && mParameter->flags() & QgsProcessingParameterDefinition::FlagOptional )
+  {
+    setLayer( nullptr );
+    return;
+  }
+
   QVariant val = value;
   bool found = false;
   bool selectedOnly = false;
@@ -301,6 +328,9 @@ void QgsProcessingMapLayerComboBox::setValue( const QVariant &value, QgsProcessi
 
 QVariant QgsProcessingMapLayerComboBox::value() const
 {
+  if ( isEditable() && mCombo->currentText() != mCombo->itemText( mCombo->currentIndex() ) )
+    return mCombo->currentText();
+
   const bool iterate = mIterateButton && mIterateButton->isChecked();
   const bool selectedOnly = mUseSelectionCheckBox && mUseSelectionCheckBox->isChecked();
   if ( QgsMapLayer *layer = mCombo->currentLayer() )
@@ -329,6 +359,20 @@ QVariant QgsProcessingMapLayerComboBox::value() const
   return QVariant();
 }
 
+void QgsProcessingMapLayerComboBox::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  mBrowserModel = context.browserModel();
+}
+
+void QgsProcessingMapLayerComboBox::setEditable( bool editable )
+{
+  mCombo->setEditable( editable );
+}
+
+bool QgsProcessingMapLayerComboBox::isEditable() const
+{
+  return mCombo->isEditable();
+}
 
 QgsMapLayer *QgsProcessingMapLayerComboBox::compatibleMapLayerFromMimeData( const QMimeData *data, bool &incompatibleLayerSelected ) const
 {
@@ -359,36 +403,40 @@ QString QgsProcessingMapLayerComboBox::compatibleUriFromMimeData( const QMimeDat
   {
     if ( ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName()
            || mParameter->type() == QgsProcessingParameterVectorLayer::typeName() )
-         && u.layerType == QLatin1String( "vector" ) && u.providerKey == QLatin1String( "ogr" ) )
+         && u.layerType == QLatin1String( "vector" ) )
     {
       QList< int > dataTypes =  mParameter->type() == QgsProcessingParameterFeatureSource::typeName() ? static_cast< QgsProcessingParameterFeatureSource * >( mParameter.get() )->dataTypes()
                                 : ( mParameter->type() == QgsProcessingParameterVectorLayer::typeName() ? static_cast<QgsProcessingParameterVectorLayer *>( mParameter.get() )->dataTypes()
                                     : QList< int >() );
+      bool acceptable = false;
       switch ( QgsWkbTypes::geometryType( u.wkbType ) )
       {
         case QgsWkbTypes::UnknownGeometry:
-          return u.uri;
+          acceptable = true;
+          break;
 
         case QgsWkbTypes::PointGeometry:
           if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPoint ) )
-            return u.uri;
+            acceptable = true;
           break;
 
         case QgsWkbTypes::LineGeometry:
           if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorLine ) )
-            return u.uri;
+            acceptable = true;
           break;
 
         case QgsWkbTypes::PolygonGeometry:
           if ( dataTypes.isEmpty() || dataTypes.contains( QgsProcessing::TypeVector ) || dataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) || dataTypes.contains( QgsProcessing::TypeVectorPolygon ) )
-            return u.uri;
+            acceptable = true;
           break;
 
         case QgsWkbTypes::NullGeometry:
           if ( dataTypes.contains( QgsProcessing::TypeVector ) )
-            return u.uri;
+            acceptable = true;
           break;
       }
+      if ( acceptable )
+        return u.providerKey != QLatin1String( "ogr" ) ? QgsProcessingUtils::encodeProviderKeyAndUri( u.providerKey, u.uri ) : u.uri;
     }
     else if ( mParameter->type() == QgsProcessingParameterRasterLayer::typeName()
               && u.layerType == QLatin1String( "raster" ) && u.providerKey == QLatin1String( "gdal" ) )
@@ -525,7 +573,7 @@ void QgsProcessingMapLayerComboBox::dropEvent( QDropEvent *event )
 
 void QgsProcessingMapLayerComboBox::onLayerChanged( QgsMapLayer *layer )
 {
-  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
+  if ( mUseSelectionCheckBox && mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
   {
     if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
     {
@@ -577,6 +625,60 @@ void QgsProcessingMapLayerComboBox::showSourceOptions()
 
       if ( changed )
         emit valueChanged();
+    } );
+  }
+}
+
+void QgsProcessingMapLayerComboBox::selectFromFile()
+{
+  QgsSettings settings;
+  const QString initialValue = currentText();
+  QString path;
+
+  if ( QFileInfo( initialValue ).isDir() && QFileInfo::exists( initialValue ) )
+    path = initialValue;
+  else if ( QFileInfo::exists( QFileInfo( initialValue ).path() ) && QFileInfo( initialValue ).path() != '.' )
+    path = QFileInfo( initialValue ).path();
+  else if ( settings.contains( QStringLiteral( "/Processing/LastInputPath" ) ) )
+    path = settings.value( QStringLiteral( "/Processing/LastInputPath" ) ).toString();
+
+  QString filter;
+  if ( const QgsFileFilterGenerator *generator = dynamic_cast< const QgsFileFilterGenerator * >( mParameter.get() ) )
+    filter = generator->createFileFilter();
+  else
+    filter = QObject::tr( "All files (*.*)" );
+
+  const QString filename = QFileDialog::getOpenFileName( this, tr( "Select File" ), path, filter );
+  if ( filename.isEmpty() )
+    return;
+
+  settings.setValue( QStringLiteral( "/Processing/LastInputPath" ), QFileInfo( filename ).path() );
+  QgsProcessingContext context;
+  setValue( filename, context );
+}
+
+void QgsProcessingMapLayerComboBox::browseForLayer()
+{
+  if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
+  {
+    QgsDataSourceSelectWidget *widget = new QgsDataSourceSelectWidget( mBrowserModel, true, QgsMapLayerType::VectorLayer );
+    widget->setPanelTitle( tr( "Browse for \"%1\"" ).arg( mParameter->description() ) );
+
+    panel->openPanel( widget );
+
+    connect( widget, &QgsDataSourceSelectWidget::itemTriggered, this, [ = ]( const QgsMimeDataUtils::Uri & )
+    {
+      widget->acceptPanel();
+    } );
+    connect( widget, &QgsPanelWidget::panelAccepted, this, [ = ]()
+    {
+      QgsProcessingContext context;
+      if ( widget->uri().uri.isEmpty() )
+        setValue( QVariant(), context );
+      else if ( widget->uri().providerKey == QLatin1String( "ogr" ) )
+        setValue( widget->uri().uri, context );
+      else
+        setValue( QgsProcessingUtils::encodeProviderKeyAndUri( widget->uri().providerKey, widget->uri().uri ), context );
     } );
   }
 }

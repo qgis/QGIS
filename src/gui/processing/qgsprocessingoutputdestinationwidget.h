@@ -77,20 +77,27 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
      * Emitted whenever the destination value is changed in the widget.
      */
     void destinationChanged();
+  protected:
+
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
 
   private slots:
 
-    void showMenu();
+    void menuAboutToShow();
     void skipOutput();
     void saveToTemporary();
     void selectDirectory();
     void selectFile();
     void saveToGeopackage();
-    void saveToPostGIS();
+    void saveToDatabase();
     void selectEncoding();
     void textChanged( const QString &text );
 
   private:
+
+    QString mimeDataToPath( const QMimeData *data );
 
     const QgsProcessingDestinationParameter *mParameter = nullptr;
     QMenu *mMenu = nullptr;

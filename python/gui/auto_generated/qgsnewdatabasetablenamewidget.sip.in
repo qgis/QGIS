@@ -46,6 +46,13 @@ Constructs a new QgsNewDatabaseTableNameWidget
 :param parent: optional parent for this widget
 %End
 
+    void setAcceptButtonVisible( bool visible );
+%Docstring
+Sets whether the optional "Ok"/accept button should be visible.
+
+By default this is hidden, to better allow the widget to be embedded inside other widgets and dialogs.
+%End
+
     QString schema() const;
 %Docstring
 Returns the currently selected schema or file path (in case of filesystem-based DBs like spatialite or GPKG) for the new table
@@ -121,6 +128,10 @@ This signal is emitted when the URI of the new table changes, whether or not it 
 :param uri: URI string representation
 %End
 
+    void accepted();
+%Docstring
+Emitted when the OK/accept button is clicked.
+%End
 
 };
 

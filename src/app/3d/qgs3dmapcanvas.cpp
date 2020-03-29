@@ -106,6 +106,8 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
     mNavigationWidget->updateFromCamera();
   }
   );
+
+  emit mapSettingsChanged();
 }
 
 QgsCameraController *Qgs3DMapCanvas::cameraController()

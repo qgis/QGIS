@@ -83,6 +83,9 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
             if (context.usingPrefix and not string):
                 self.resultFetched.emit(result)
 
+            if not string:
+                return
+
             string = string.lower()
             tagScore = 0
             tags = [*a.tags(), a.provider().name(), a.group()]
