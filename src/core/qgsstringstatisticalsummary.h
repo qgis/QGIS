@@ -198,13 +198,13 @@ class CORE_EXPORT QgsStringStatisticalSummary
     double meanLength() const { return mMeanLength; }
 
     /**
-      * Returns the most common string.
+      * Returns the least common string.
       * \since QGIS 3.14
       */
     QString minority() const { return mMinority; }
 
     /**
-      * Returns the least common string.
+      * Returns the most common string.
       * \since QGIS 3.14
       */
     QString majority() const { return mMajority; }
