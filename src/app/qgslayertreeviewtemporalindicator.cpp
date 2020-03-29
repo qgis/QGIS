@@ -34,7 +34,7 @@ void QgsLayerTreeViewTemporalIndicatorProvider::connectSignals( QgsMapLayer *lay
   if ( !layer )
     return;
 
-  connect( layer, &QgsMapLayer::dataSourceChanged, this, [ this, layer ]( ) { this->onLayerChanged( layer ); } );
+  connect( layer->temporalProperties(), &QgsMapLayerTemporalProperties::changed, this, [ this, layer ]( ) { this->onLayerChanged( layer ); } );
 }
 
 void QgsLayerTreeViewTemporalIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
@@ -70,40 +70,14 @@ bool QgsLayerTreeViewTemporalIndicatorProvider::acceptLayer( QgsMapLayer *layer 
   return false;
 }
 
-QString QgsLayerTreeViewTemporalIndicatorProvider::iconName( QgsMapLayer *layer )
+QString QgsLayerTreeViewTemporalIndicatorProvider::iconName( QgsMapLayer * )
 {
-  QgsDataSourceUri uri;
-
-  if ( layer->dataProvider() )
-    uri.setEncodedUri( layer->dataProvider()->dataSourceUri() );
-
-  const QString temporalSource = uri.param( QStringLiteral( "temporalSource" ) );
-
-  if ( temporalSource == QString( "project" ) )
-    return QStringLiteral( "/mIndicatorTimeFromProject.svg" );
-
-  if ( temporalSource == QString( "provider" ) )
-    return QStringLiteral( "/mIndicatorTemporal.svg" );
-
-  return QString();
+  return QStringLiteral( "/mIndicatorTemporal.svg" );
 }
 
-QString QgsLayerTreeViewTemporalIndicatorProvider::tooltipText( QgsMapLayer *layer )
+QString QgsLayerTreeViewTemporalIndicatorProvider::tooltipText( QgsMapLayer * )
 {
-  QgsDataSourceUri uri;
-
-  if ( layer->dataProvider() )
-    uri.setEncodedUri( layer->dataProvider()->dataSourceUri() );
-
-  const QString temporalSource = uri.param( QStringLiteral( "temporalSource" ) );
-
-  if ( temporalSource == QString( "project" ) )
-    return tr( "<b>Temporal layer, currently using project's time range </b>" );
-
-  if ( temporalSource == QString( "provider" ) )
-    return tr( "<b>Temporal layer </b>" );
-
-  return QString();
+  return tr( "<b>Temporal layer</b>" );
 }
 
 void QgsLayerTreeViewTemporalIndicatorProvider::onLayerChanged( QgsMapLayer *layer )
