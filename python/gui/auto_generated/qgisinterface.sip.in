@@ -585,6 +585,13 @@ Returns the Toggle Selected Layers action.
 .. versionadded:: 3.14
 %End
 
+    virtual QAction *actionToggleSelectedLayersIndependently() = 0;
+%Docstring
+Returns the Toggle Selected Layers Independantly action.
+
+.. versionadded:: 3.14
+%End
+
     virtual QAction *actionHideDeselectedLayers() = 0;
 %Docstring
 Returns the Hide Deselected Layers action.

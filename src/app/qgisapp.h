@@ -545,6 +545,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionShowAllLayers() { return mActionShowAllLayers; }
     QAction *actionHideSelectedLayers() { return mActionHideSelectedLayers; }
     QAction *actionToggleSelectedLayers() { return mActionToggleSelectedLayers; }
+    QAction *actionToggleSelectedLayersIndependently() { return mActionToggleSelectedLayersIndependently; }
     QAction *actionHideDeselectedLayers() { return mActionHideDeselectedLayers; }
     QAction *actionShowSelectedLayers() { return mActionShowSelectedLayers; }
 
@@ -1413,8 +1414,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showAllLayers();
     //reimplements method from base (gui) class
     void hideSelectedLayers();
-    //! Toggles the visibility of the selected layers
+    //! Toggles the visibility of the selected layers depending on the state of the first layer in selection (first clicked)
     void toggleSelectedLayers();
+    //! Toggles the visibility of the selected layers independently
+    void toggleSelectedLayersIndependently();
     //! Hides any layers which are not selected
     void hideDeselectedLayers();
     //reimplements method from base (gui) class

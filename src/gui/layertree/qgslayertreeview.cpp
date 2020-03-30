@@ -513,9 +513,10 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
 
     if ( ! constSelectedNodes.isEmpty() )
     {
+      bool isFirstNodeChecked = constSelectedNodes[0]->itemVisibilityChecked();
       for ( QgsLayerTreeNode *node : constSelectedNodes )
       {
-        node->setItemVisibilityChecked( ! node->isVisible() );
+        node->setItemVisibilityChecked( ! isFirstNodeChecked );
       }
 
       // if we call the original keyPress handler, the current item will be checked to the original state yet again

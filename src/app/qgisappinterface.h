@@ -255,6 +255,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionShowAllLayers() override;
     QAction *actionHideSelectedLayers() override;
     QAction *actionToggleSelectedLayers() override;
+    QAction *actionToggleSelectedLayersIndependently() override;
     QAction *actionHideDeselectedLayers() override;
     QAction *actionShowSelectedLayers() override;
     QAction *actionManagePlugins() override;

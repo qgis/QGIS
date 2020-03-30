@@ -152,6 +152,7 @@
     <addaction name="mActionShowSelectedLayers"/>
     <addaction name="mActionHideSelectedLayers"/>
     <addaction name="mActionToggleSelectedLayers"/>
+    <addaction name="mActionIndependentlyToggleSelectedLayers"/>
     <addaction name="mActionHideDeselectedLayers"/>
     <addaction name="separator"/>
    </widget>
@@ -2675,6 +2676,10 @@ Acts on the currently active layer only.</string>
    </property>
   </action>
   <action name="mActionToggleSelectedLayers">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionToggleSelectedLayers.svg</normaloff>:/images/themes/default/mActionToggleSelectedLayers.svg</iconset>
+   </property>
    <property name="text">
     <string>Toggle Selected Layers</string>
    </property>
@@ -2683,6 +2688,11 @@ Acts on the currently active layer only.</string>
    </property>
    <property name="shortcutContext">
     <enum>Qt::WidgetShortcut</enum>
+   </property>
+  </action>
+  <action name="mActionToggleSelectedLayersIndependently">
+   <property name="text">
+    <string>Toggle Selected Layers Independently</string>
    </property>
   </action>
   <action name="mActionHideDeselectedLayers">
