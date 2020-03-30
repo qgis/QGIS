@@ -74,7 +74,10 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
     mEndDateTime->setDateTime( range.end() );
   }
 
-  mSetToProjectTimeButton->setToolTip( tr( "Set datetimes inputs to match project time" ) );
+  mSetToProjectTimeButton->setToolTip( tr( "Match time range to project. \n"
+                                       "If a project has no explicit time range set, \n"
+                                       "then the range will be calculated based on the \n"
+                                       "minimum and maximum dates from any temporal-enabled layers." ) );
 
   for ( QgsUnitTypes::TemporalUnit u :
         {
