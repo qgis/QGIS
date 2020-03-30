@@ -911,7 +911,7 @@ a conversion in this case and will return the target layer name in the ``layerNa
 .. versionadded:: 3.10
 %End
 
-    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
+    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a map layer.
 
@@ -920,7 +920,7 @@ sources and stored temporarily in the ``context``. In either case, callers do no
 need to handle deletion of the returned layer.
 %End
 
-    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context );
+    static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint = QgsProcessingUtils::LayerHint::UnknownType );
 %Docstring
 Evaluates the parameter with matching ``definition`` and ``value`` to a map layer.
 

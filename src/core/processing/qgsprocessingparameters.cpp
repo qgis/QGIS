@@ -721,15 +721,15 @@ QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPathAndLayerNam
 }
 
 
-QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
+QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint )
 {
   if ( !definition )
     return nullptr;
 
-  return parameterAsLayer( definition, parameters.value( definition->name() ), context );
+  return parameterAsLayer( definition, parameters.value( definition->name() ), context, layerHint );
 }
 
-QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
+QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context, QgsProcessingUtils::LayerHint layerHint )
 {
   if ( !definition )
     return nullptr;
@@ -775,27 +775,27 @@ QgsMapLayer *QgsProcessingParameters::parameterAsLayer( const QgsProcessingParam
   if ( layerRef.isEmpty() )
     return nullptr;
 
-  return QgsProcessingUtils::mapLayerFromString( layerRef, context );
+  return QgsProcessingUtils::mapLayerFromString( layerRef, context, true, layerHint );
 }
 
 QgsRasterLayer *QgsProcessingParameters::parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsRasterLayer *>( parameterAsLayer( definition, parameters, context ) );
+  return qobject_cast< QgsRasterLayer *>( parameterAsLayer( definition, parameters, context, QgsProcessingUtils::LayerHint::Raster ) );
 }
 
 QgsRasterLayer *QgsProcessingParameters::parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsRasterLayer *>( parameterAsLayer( definition, value, context ) );
+  return qobject_cast< QgsRasterLayer *>( parameterAsLayer( definition, value, context, QgsProcessingUtils::LayerHint::Raster ) );
 }
 
 QgsMeshLayer *QgsProcessingParameters::parameterAsMeshLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsMeshLayer *>( parameterAsLayer( definition, parameters, context ) );
+  return qobject_cast< QgsMeshLayer *>( parameterAsLayer( definition, parameters, context, QgsProcessingUtils::LayerHint::Mesh ) );
 }
 
 QgsMeshLayer *QgsProcessingParameters::parameterAsMeshLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsMeshLayer *>( parameterAsLayer( definition, value, context ) );
+  return qobject_cast< QgsMeshLayer *>( parameterAsLayer( definition, value, context, QgsProcessingUtils::LayerHint::Mesh ) );
 }
 
 QString QgsProcessingParameters::parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
@@ -910,12 +910,12 @@ QString QgsProcessingParameters::parameterAsFileOutput( const QgsProcessingParam
 
 QgsVectorLayer *QgsProcessingParameters::parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsVectorLayer *>( parameterAsLayer( definition, parameters, context ) );
+  return qobject_cast< QgsVectorLayer *>( parameterAsLayer( definition, parameters, context, QgsProcessingUtils::LayerHint::Vector ) );
 }
 
 QgsVectorLayer *QgsProcessingParameters::parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariant &value, QgsProcessingContext &context )
 {
-  return qobject_cast< QgsVectorLayer *>( parameterAsLayer( definition, value, context ) );
+  return qobject_cast< QgsVectorLayer *>( parameterAsLayer( definition, value, context, QgsProcessingUtils::LayerHint::Vector ) );
 }
 
 QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context )
