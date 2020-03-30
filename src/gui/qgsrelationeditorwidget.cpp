@@ -376,7 +376,7 @@ void QgsRelationEditorWidget::setEditorContext( const QgsAttributeEditorContext 
   }
 }
 
-QgsAttributeEditorContext QgsRelationEditorWidget::editorContext()
+QgsAttributeEditorContext QgsRelationEditorWidget::editorContext() const
 {
   return mEditorContext;
 }
