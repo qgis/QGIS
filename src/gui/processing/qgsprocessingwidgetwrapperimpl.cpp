@@ -55,6 +55,7 @@
 #include "qgsprocessingenummodelerwidget.h"
 #include "qgsprocessingmatrixmodelerwidget.h"
 #include "qgsprocessingmaplayercombobox.h"
+#include "qgsrasterbandcombobox.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -5209,5 +5210,372 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMeshLayerWidgetWrapper
 }
 
 
+
+//
+// QgsProcessingRasterBandPanelWidget
+//
+
+QgsProcessingRasterBandPanelWidget::QgsProcessingRasterBandPanelWidget( QWidget *parent, const QgsProcessingParameterBand *param )
+  : QWidget( parent )
+  , mParam( param )
+{
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setMargin( 0 );
+  hl->setContentsMargins( 0, 0, 0, 0 );
+
+  mLineEdit = new QLineEdit();
+  mLineEdit->setEnabled( false );
+  hl->addWidget( mLineEdit, 1 );
+
+  mToolButton = new QToolButton();
+  mToolButton->setText( QString( QChar( 0x2026 ) ) );
+  hl->addWidget( mToolButton );
+
+  setLayout( hl );
+
+  if ( mParam )
+  {
+    mLineEdit->setText( tr( "%1 bands selected" ).arg( 0 ) );
+  }
+
+  connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingRasterBandPanelWidget::showDialog );
+}
+
+void QgsProcessingRasterBandPanelWidget::setBands( const QList< int > &bands )
+{
+  mBands = bands;
+}
+
+void QgsProcessingRasterBandPanelWidget::setBandNames( const QHash<int, QString> &names )
+{
+  mBandNames = names;
+}
+
+void QgsProcessingRasterBandPanelWidget::setValue( const QVariant &value )
+{
+  if ( value.isValid() )
+    mValue = value.type() == QVariant::List ? value.toList() : QVariantList() << value;
+  else
+    mValue.clear();
+
+  updateSummaryText();
+  emit changed();
+}
+
+void QgsProcessingRasterBandPanelWidget::showDialog()
+{
+  QVariantList availableOptions;
+  QStringList fieldNames;
+  availableOptions.reserve( mBands.size() );
+  for ( int band : qgis::as_const( mBands ) )
+  {
+    availableOptions << band;
+  }
+
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsProcessingMultipleSelectionPanelWidget *widget = new QgsProcessingMultipleSelectionPanelWidget( availableOptions, mValue );
+    widget->setPanelTitle( mParam->description() );
+
+    widget->setValueFormatter( [this]( const QVariant & v ) -> QString
+    {
+      int band = v.toInt();
+      return mBandNames.contains( band ) ? mBandNames.value( band ) : v.toString();
+    } );
+
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [ = ]()
+    {
+      setValue( widget->selectedOptions() );
+    } );
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
+    panel->openPanel( widget );
+  }
+  else
+  {
+    QgsProcessingMultipleSelectionDialog dlg( availableOptions, mValue, this, nullptr );
+
+    dlg.setValueFormatter( [this]( const QVariant & v ) -> QString
+    {
+      int band = v.toInt();
+      return mBandNames.contains( band ) ? mBandNames.value( band ) : v.toString();
+    } );
+    if ( dlg.exec() )
+    {
+      setValue( dlg.selectedOptions() );
+    }
+  }
+}
+
+void QgsProcessingRasterBandPanelWidget::updateSummaryText()
+{
+  if ( mParam )
+    mLineEdit->setText( tr( "%1 bands selected" ).arg( mValue.count() ) );
+}
+
+
+//
+// QgsProcessingBandWidgetWrapper
+//
+
+QgsProcessingBandWidgetWrapper::QgsProcessingBandWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingBandWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterBand *bandParam = dynamic_cast< const QgsProcessingParameterBand *>( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      if ( bandParam->allowMultiple() )
+      {
+        mPanel = new QgsProcessingRasterBandPanelWidget( nullptr, bandParam );
+        mPanel->setToolTip( parameterDefinition()->toolTip() );
+        connect( mPanel, &QgsProcessingRasterBandPanelWidget::changed, this, [ = ]
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mPanel;
+      }
+      else
+      {
+        mComboBox = new QgsRasterBandComboBox();
+        mComboBox->setShowNotSetOption( bandParam->flags() & QgsProcessingParameterDefinition::FlagOptional );
+
+        mComboBox->setToolTip( parameterDefinition()->toolTip() );
+        connect( mComboBox, &QgsRasterBandComboBox::bandChanged, this, [ = ]( int )
+        {
+          emit widgetValueHasChanged( this );
+        } );
+        return mComboBox;
+      }
+    }
+
+    case QgsProcessingGui::Modeler:
+    {
+      mLineEdit = new QLineEdit();
+      mLineEdit->setToolTip( QObject::tr( "Band number (separate bands with ; for multiple band parameters)" ) );
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]
+      {
+        emit widgetValueHasChanged( this );
+      } );
+      return mLineEdit;
+    }
+
+  }
+  return nullptr;
+}
+
+void QgsProcessingBandWidgetWrapper::postInitialize( const QList<QgsAbstractProcessingParameterWidgetWrapper *> &wrappers )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::postInitialize( wrappers );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Batch:
+    {
+      for ( const QgsAbstractProcessingParameterWidgetWrapper *wrapper : wrappers )
+      {
+        if ( wrapper->parameterDefinition()->name() == static_cast< const QgsProcessingParameterBand * >( parameterDefinition() )->parentLayerParameterName() )
+        {
+          setParentLayerWrapperValue( wrapper );
+          connect( wrapper, &QgsAbstractProcessingParameterWidgetWrapper::widgetValueHasChanged, this, [ = ]
+          {
+            setParentLayerWrapperValue( wrapper );
+          } );
+          break;
+        }
+      }
+      break;
+    }
+
+    case QgsProcessingGui::Modeler:
+      break;
+  }
+}
+
+void QgsProcessingBandWidgetWrapper::setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper )
+{
+  // evaluate value to layer
+  QgsProcessingContext *context = nullptr;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
+  if ( mProcessingContextGenerator )
+    context = mProcessingContextGenerator->processingContext();
+
+  if ( !context )
+  {
+    tmpContext = qgis::make_unique< QgsProcessingContext >();
+    context = tmpContext.get();
+  }
+
+  QVariant value = parentWrapper->parameterValue();
+
+  QgsRasterLayer *layer = QgsProcessingParameters::parameterAsRasterLayer( parentWrapper->parameterDefinition(), value, *context );
+  if ( layer && layer->isValid() )
+  {
+    // need to grab ownership of layer if required - otherwise layer may be deleted when context
+    // goes out of scope
+    std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
+    if ( ownedLayer && ownedLayer->type() == QgsMapLayerType::RasterLayer )
+    {
+      mParentLayer.reset( qobject_cast< QgsRasterLayer * >( ownedLayer.release() ) );
+      layer = mParentLayer.get();
+    }
+    else
+    {
+      // don't need ownership of this layer - it wasn't owned by context (so e.g. is owned by the project)
+    }
+
+    if ( mComboBox )
+      mComboBox->setLayer( layer );
+    else if ( mPanel )
+    {
+      QgsRasterDataProvider *provider = layer->dataProvider();
+      if ( provider && layer->isValid() )
+      {
+        //fill available bands
+        int nBands = provider->bandCount();
+        QList< int > bands;
+        QHash< int, QString > bandNames;
+        for ( int i = 1; i <= nBands; ++i )
+        {
+          bandNames.insert( i, QgsRasterBandComboBox::displayBandName( provider, i ) );
+          bands << i;
+        }
+        mPanel->setBands( bands );
+        mPanel->setBandNames( bandNames );
+      }
+    }
+  }
+  else
+  {
+    if ( mComboBox )
+      mComboBox->setLayer( nullptr );
+    else if ( mPanel )
+      mPanel->setBands( QList< int >() );
+
+    if ( value.isValid() && widgetContext().messageBar() )
+    {
+      widgetContext().messageBar()->clearWidgets();
+      widgetContext().messageBar()->pushMessage( QString(), QObject::tr( "Could not load selected layer/table. Dependent bands could not be populated" ),
+          Qgis::Warning, 5 );
+    }
+  }
+
+  if ( parameterDefinition()->defaultValue().isValid() )
+    setWidgetValue( parameterDefinition()->defaultValue(), *context );
+}
+
+void QgsProcessingBandWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mComboBox )
+  {
+    if ( !value.isValid() )
+      mComboBox->setBand( -1 );
+    else
+    {
+      const int v = QgsProcessingParameters::parameterAsInt( parameterDefinition(), value, context );
+      mComboBox->setBand( v );
+    }
+  }
+  else if ( mPanel )
+  {
+    QVariantList opts;
+    if ( value.isValid() )
+    {
+      const QList< int > v = QgsProcessingParameters::parameterAsInts( parameterDefinition(), value, context );
+      opts.reserve( v.size() );
+      for ( int i : v )
+        opts << i;
+    }
+    if ( mPanel )
+      mPanel->setValue( value.isValid() ? opts : QVariant() );
+  }
+  else if ( mLineEdit )
+  {
+    const QgsProcessingParameterBand *bandParam = static_cast< const QgsProcessingParameterBand * >( parameterDefinition() );
+    if ( bandParam->allowMultiple() )
+    {
+      const QList< int > v = QgsProcessingParameters::parameterAsInts( parameterDefinition(), value, context );
+      QStringList opts;
+      opts.reserve( v.size() );
+      for ( int i : v )
+        opts << QString::number( i );
+      mLineEdit->setText( value.isValid() && !opts.empty() ? opts.join( ';' ) : QString() );
+    }
+    else
+    {
+      if ( value.isValid() )
+        mLineEdit->setText( QString::number( QgsProcessingParameters::parameterAsInt( parameterDefinition(), value, context ) ) );
+      else
+        mLineEdit->clear();
+    }
+  }
+}
+
+QVariant QgsProcessingBandWidgetWrapper::widgetValue() const
+{
+  if ( mComboBox )
+    return mComboBox->currentBand() == -1 ? QVariant() : mComboBox->currentBand();
+  else if ( mPanel )
+    return !mPanel->value().toList().isEmpty() ? mPanel->value() : QVariant();
+  else if ( mLineEdit )
+  {
+    const QgsProcessingParameterBand *bandParam = static_cast< const QgsProcessingParameterBand * >( parameterDefinition() );
+    if ( bandParam->allowMultiple() )
+    {
+      const QStringList parts = mLineEdit->text().split( ';', QString::SkipEmptyParts );
+      QVariantList res;
+      res.reserve( parts.count() );
+      for ( const QString &s : parts )
+      {
+        bool ok = false;
+        int band = s.toInt( &ok );
+        if ( ok )
+          res << band;
+      }
+      return res.isEmpty() ? QVariant() : res;
+    }
+    else
+    {
+      return mLineEdit->text().isEmpty() ? QVariant() : mLineEdit->text();
+    }
+  }
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingBandWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterBand::typeName()
+         << QgsProcessingParameterNumber::typeName();
+}
+
+QStringList QgsProcessingBandWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputNumber::typeName();
+}
+
+QString QgsProcessingBandWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "selected band numbers as an array of numbers, or semicolon separated string of options (e.g. '1;3')" );
+}
+
+QString QgsProcessingBandWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterBand::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingBandWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingBandWidgetWrapper( parameter, type );
+}
 ///@endcond PRIVATE
 

@@ -61,6 +61,7 @@ class QgsExtentWidget;
 class QgsProcessingEnumModelerWidget;
 class QgsProcessingMatrixModelerWidget;
 class QgsProcessingMapLayerComboBox;
+class QgsRasterBandComboBox;
 
 ///@cond PRIVATE
 
@@ -1619,6 +1620,90 @@ class GUI_EXPORT QgsProcessingMeshLayerWidgetWrapper : public QgsProcessingMapLa
     QString modelerExpressionFormatString() const override;
 
 };
+
+
+class GUI_EXPORT QgsProcessingRasterBandPanelWidget : public QWidget
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingRasterBandPanelWidget( QWidget *parent = nullptr, const QgsProcessingParameterBand *param = nullptr );
+
+    void setBands( const QList< int > &bands );
+    void setBandNames( const QHash<int, QString > &names );
+    QList< int > bands() const { return mBands; }
+
+    QVariant value() const { return mValue; }
+    void setValue( const QVariant &value );
+
+  signals:
+
+    void changed();
+
+  private slots:
+
+    void showDialog();
+
+  private:
+
+    void updateSummaryText();
+
+    QList< int > mBands;
+    QHash<int, QString > mBandNames;
+
+    const QgsProcessingParameterBand *mParam = nullptr;
+    QLineEdit *mLineEdit = nullptr;
+    QToolButton *mToolButton = nullptr;
+
+    QVariantList mValue;
+
+    friend class TestProcessingGui;
+};
+
+
+class GUI_EXPORT QgsProcessingBandWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingBandWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+                                    QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+    void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers ) override;
+
+  public slots:
+    void setParentLayerWrapperValue( const QgsAbstractProcessingParameterWidgetWrapper *parentWrapper );
+
+  protected:
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    QStringList compatibleParameterTypes() const override;
+
+    QStringList compatibleOutputTypes() const override;
+    QString modelerExpressionFormatString() const override;
+
+  private:
+
+    QgsRasterBandComboBox *mComboBox = nullptr;
+    QgsProcessingRasterBandPanelWidget *mPanel = nullptr;
+    QLineEdit *mLineEdit = nullptr;
+
+    std::unique_ptr< QgsRasterLayer > mParentLayer;
+
+    friend class TestProcessingGui;
+};
+
+
 
 ///@endcond PRIVATE
 
