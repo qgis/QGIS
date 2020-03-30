@@ -69,7 +69,7 @@ void QgsMeshLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabili
 
   if ( mReferenceTime.isValid() )
     mTimeExtent = temporalCapabilities->timeExtent();
-  else // If the provider capabilities doesn't provide a reference time, try to bring one frome projet settings
+  else // If the provider capabilities doesn't provide a reference time, try to bring one from projet settings
   {
     // Not sure it is a good idea to call instance of project here ...
     mReferenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();

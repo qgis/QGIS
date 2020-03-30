@@ -61,7 +61,7 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
     void addGroupReferenceDateTime( int group, const QDateTime &reference ) SIP_SKIP;
 
     /**
-     * Adds a \a time (in milliseonds) from a dataset contained in \a group
+     * Adds a \a time (in milliseconds) from a dataset contained in \a group
      *
      * \note must be used only by the mesh data provider,
      * all dataset need to be added one after one

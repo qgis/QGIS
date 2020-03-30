@@ -33,7 +33,7 @@ QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexTimeInM
     return QgsMeshDatasetIndex();
 
   // If requested time is before the timestamp of the first dataset, return the first dataset
-  // Allow to display "static" dataset (as terrain elevation)
+  // For "static" dataset (as terrain elevation)
   if ( timeSinceGroupeReference < datasetTimes.first() )
     return QgsMeshDatasetIndex( group, 0 );
   for ( int i = 1; i < datasetTimes.count(); ++i )
