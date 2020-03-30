@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsMeshDataProviderTemporalCapabilities: QgsDataProviderTemporalCapabilities
 {
 %Docstring
@@ -27,16 +29,16 @@ Constructor for QgsMeshDataProviderTemporalCapabilities
 
     QgsMeshDatasetIndex datasetIndexTimeInMilliseconds( int group, qint64 timeSinceGlobalReference ) const;
 %Docstring
-Returns the last dataset index that has the time equal or lesser or than ``timeSinceGlobalReference`` (in milliseconds)from the dataset ``group``
+Returns the last dataset index that has the time equal or less or than ``timeSinceGlobalReference`` (in milliseconds)from the dataset ``group``
 
-Returns invalide dataset index if the time is less than the first dataset's time
+Returns invalid dataset index if the time is less than the first dataset's time
 %End
 
     QgsMeshDatasetIndex datasetIndex( int group, double  timeSinceGlobalReferenceInHours ) const;
 %Docstring
-Returns the last dataset index that has the time equal or lesser or than ``timeSinceGlobalReference`` (in hours)from the dataset ``group``
+Returns the last dataset index that has the time equal or less or than ``timeSinceGlobalReference`` (in hours)from the dataset ``group``
 
-Returns invalide dataset index if the time is less than the first dataset's time
+Returns invalid dataset index if the time is less than the first dataset's time
 %End
 
 
@@ -44,7 +46,7 @@ Returns invalide dataset index if the time is less than the first dataset's time
 
     bool hasReferenceTime() const;
 %Docstring
-Returns true if the data has a reference time
+Returns whether the reference time is set
 %End
 
     QDateTime referenceTime() const;
@@ -60,20 +62,20 @@ and the first and last times available from the all the dataset
 
     QgsDateTimeRange timeExtent( const QDateTime &reference ) const;
 %Docstring
-Returns the time extent using ``reference`` date time
+Returns the time extent using an external ``reference`` date time
 and the first and last times available from the all the dataset
 %End
 
     void setTemporalUnit( const QgsUnitTypes::TemporalUnit &temporalUnit );
 %Docstring
-Sets the temporal unit (``temporalUnit``) used to read data
+Sets the temporal unit (``temporalUnit``) used to read data by the data provider
 
 Temporal units supported are milliseconds, seconds, minutes, hors, days and weeks
 %End
 
     QgsUnitTypes::TemporalUnit temporalUnit() const;
 %Docstring
-Returns the temporal unit used to read data
+Returns the temporal unit used to read data by the data provider
 
 Temporal units supported are milliseconds, seconds, minutes, hors, days and weeks
 %End

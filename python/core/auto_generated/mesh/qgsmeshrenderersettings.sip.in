@@ -724,10 +724,32 @@ Reads configuration from the given DOM element
 %End
 
     int activeScalarDatasetGroup() const;
+%Docstring
+Returns the active scalar dataset group
+
+.. versionadded:: 3.14
+%End
+
     void setActiveScalarDatasetGroup( int activeScalarDatasetGroup );
+%Docstring
+Sets the active scalar dataset group
+
+.. versionadded:: 3.14
+%End
 
     int activeVectorDatasetGroup() const;
+%Docstring
+Returns the active vector dataset group
+
+.. versionadded:: 3.14
+%End
+
     void setActiveVectorDatasetGroup( int activeVectorDatasetGroup );
+%Docstring
+Sets the active vector dataset group
+
+.. versionadded:: 3.14
+%End
 
 };
 
