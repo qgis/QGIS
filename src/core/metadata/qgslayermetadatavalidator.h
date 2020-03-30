@@ -28,16 +28,15 @@ class QgsLayerMetadata;
 
 /**
  * \ingroup core
- * \class QgsAbstractBaseValidator
- * \brief Abstract base class for validators.
- * \since QGIS 3.14
+ * \class QgsAbstractMetadataBaseValidator
+ * \brief Abstract base class for metadata validators.
+ * \since QGIS 3.0
  */
-class CORE_EXPORT QgsAbstractBaseValidator
+
+class CORE_EXPORT QgsAbstractMetadataBaseValidator
 {
+
   public:
-
-
-    virtual ~QgsAbstractBaseValidator() = default;
 
     /**
      * Contains the parameters describing a metadata validation
@@ -69,20 +68,6 @@ class CORE_EXPORT QgsAbstractBaseValidator
       //! The reason behind the validation failure.
       QString note;
     };
-};
-
-
-/**
- * \ingroup core
- * \class QgsAbstractMetadataBaseValidator
- * \brief Abstract base class for metadata validators.
- * \since QGIS 3.0
- */
-
-class CORE_EXPORT QgsAbstractMetadataBaseValidator : public QgsAbstractBaseValidator
-{
-
-  public:
 
     virtual ~QgsAbstractMetadataBaseValidator() = default;
 
@@ -93,7 +78,7 @@ class CORE_EXPORT QgsAbstractMetadataBaseValidator : public QgsAbstractBaseValid
      * items describing why the validation failed and what needs to be rectified
      * to fix the metadata.
      */
-    virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractBaseValidator::ValidationResult > &results SIP_OUT ) const = 0;
+    virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results SIP_OUT ) const = 0;
 
 };
 
@@ -114,7 +99,7 @@ class CORE_EXPORT QgsNativeMetadataBaseValidator : public QgsAbstractMetadataBas
      */
     QgsNativeMetadataBaseValidator() = default;
 
-    bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractBaseValidator::ValidationResult > &results SIP_OUT ) const override;
+    bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results SIP_OUT ) const override;
 
 };
 
@@ -136,7 +121,7 @@ class CORE_EXPORT QgsNativeMetadataValidator : public QgsNativeMetadataBaseValid
      */
     QgsNativeMetadataValidator() = default;
 
-    bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractBaseValidator::ValidationResult > &results SIP_OUT ) const override;
+    bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results SIP_OUT ) const override;
 
 };
 
@@ -157,7 +142,7 @@ class CORE_EXPORT QgsNativeProjectMetadataValidator : public QgsNativeMetadataBa
      */
     QgsNativeProjectMetadataValidator() = default;
 
-    bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractBaseValidator::ValidationResult > &results SIP_OUT ) const override;
+    bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results SIP_OUT ) const override;
 
 };
 

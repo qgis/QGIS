@@ -1906,21 +1906,17 @@ void QgsProjectProperties::pbnWCSLayersDeselectAll_clicked()
 
 void QgsProjectProperties::pbnLaunchOWSChecker_clicked()
 {
-  QList<QgsAbstractBaseValidator::ValidationResult> validationResults;
+  QList<QgsProjectServerValidator::ValidationResult> validationResults;
   QgsProjectServerValidator validator;
-  bool results = validator.validate( QgisApp::instance()->layerTreeView()->layerTreeModel()->rootGroup(), validationResults );
+  bool results = validator.validate( QgsProject::instance()->layerTreeRoot(), validationResults );
 
   QString errors;
   if ( !results )
   {
-    for ( const QgsAbstractBaseValidator::ValidationResult &result : qgis::as_const( validationResults ) )
+    for ( const QgsProjectServerValidator::ValidationResult &result : qgis::as_const( validationResults ) )
     {
-      errors += QLatin1String( "<b>" ) % result.section % QLatin1String( " :</b> " );
-      if ( ! result.identifier.isNull() )
-      {
-        errors += QLatin1String( " " ) % result.identifier.toString();
-      }
-      errors += QLatin1String( " : " ) % result.note % QLatin1String( "<br />" );
+      errors += QLatin1String( "<b>" ) % QgsProjectServerValidator::displayValidationError( result.error ) % QLatin1String( " :</b> " );
+      errors += result.identifier.toString();
     }
   }
   else

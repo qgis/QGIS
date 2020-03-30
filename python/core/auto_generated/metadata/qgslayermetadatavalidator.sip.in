@@ -10,21 +10,19 @@
 
 
 
-class QgsAbstractBaseValidator
+
+class QgsAbstractMetadataBaseValidator
 {
 %Docstring
-Abstract base class for validators.
+Abstract base class for metadata validators.
 
-.. versionadded:: 3.14
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
 #include "qgslayermetadatavalidator.h"
 %End
   public:
-
-
-    virtual ~QgsAbstractBaseValidator();
 
     struct ValidationResult
     {
@@ -40,26 +38,10 @@ Constructor for ValidationResult.
 
       QString note;
     };
-};
-
-
-
-class QgsAbstractMetadataBaseValidator : QgsAbstractBaseValidator
-{
-%Docstring
-Abstract base class for metadata validators.
-
-.. versionadded:: 3.0
-%End
-
-%TypeHeaderCode
-#include "qgslayermetadatavalidator.h"
-%End
-  public:
 
     virtual ~QgsAbstractMetadataBaseValidator();
 
-    virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractBaseValidator::ValidationResult > &results /Out/ ) const = 0;
+    virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results /Out/ ) const = 0;
 %Docstring
 Validates a ``metadata`` object, and returns ``True`` if the
 metadata is considered valid.
@@ -89,7 +71,7 @@ A validator for the native base QGIS metadata schema definition.
 Constructor for QgsNativeMetadataBaseValidator.
 %End
 
-    virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractBaseValidator::ValidationResult > &results /Out/ ) const;
+    virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results /Out/ ) const;
 
 
 };
@@ -114,7 +96,7 @@ A validator for the native QGIS layer metadata schema definition.
 Constructor for QgsNativeMetadataValidator.
 %End
 
-    virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractBaseValidator::ValidationResult > &results /Out/ ) const;
+    virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results /Out/ ) const;
 
 
 };
@@ -138,7 +120,7 @@ A validator for the native QGIS project metadata schema definition.
 Constructor for QgsNativeProjectMetadataValidator.
 %End
 
-    virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractBaseValidator::ValidationResult > &results /Out/ ) const;
+    virtual bool validate( const QgsAbstractMetadataBase *metadata, QList< QgsAbstractMetadataBaseValidator::ValidationResult > &results /Out/ ) const;
 
 
 };

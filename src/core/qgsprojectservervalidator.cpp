@@ -22,6 +22,20 @@
 #include "qgsvectorlayer.h"
 
 
+QString QgsProjectServerValidator::displayValidationError( QgsProjectServerValidator::ValidationError error )
+{
+  switch ( error )
+  {
+    case QgsProjectServerValidator::Encoding:
+      return QObject::tr( "Encoding is not set properly. It shouldn't be 'System'" );
+    case QgsProjectServerValidator::ShortNames:
+      return QObject::tr( "Layer short name needs to be updated" );
+    case QgsProjectServerValidator::DuplicatedNames:
+      return QObject::tr( "Layers/groups have the same name or short name" );
+  }
+  return QString();
+}
+
 void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages )
 {
   QList< QgsLayerTreeNode * > treeGroupChildren = treeGroup->children();
@@ -41,27 +55,27 @@ void QgsProjectServerValidator::browseLayerTree( QgsLayerTreeGroup *treeGroup, Q
     else
     {
       QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
-      QgsMapLayer *l = treeLayer->layer();
-      if ( l )
+      QgsMapLayer *layer = treeLayer->layer();
+      if ( layer )
       {
-        QString shortName = l->shortName();
+        QString shortName = layer->shortName();
         if ( shortName.isEmpty() )
-          owsNames << l->name();
+          owsNames << layer->name();
         else
           owsNames << shortName;
-        if ( l->type() == QgsMapLayerType::VectorLayer )
+
+        if ( layer->type() == QgsMapLayerType::VectorLayer )
         {
-          QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
+          QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( layer );
           if ( vl->dataProvider()->encoding() == QLatin1String( "System" ) )
-            encodingMessages << l->name();
+            encodingMessages << layer->name();
         }
       }
     }
   }
 }
 
-
-bool QgsProjectServerValidator::validate( QgsLayerTree *layerTree, QList<QgsAbstractBaseValidator::ValidationResult> &results ) const
+bool QgsProjectServerValidator::validate( QgsLayerTree *layerTree, QList<QgsProjectServerValidator::ValidationResult> &results ) const
 {
   results.clear();
   bool result = true;
@@ -96,19 +110,19 @@ bool QgsProjectServerValidator::validate( QgsLayerTree *layerTree, QList<QgsAbst
   if ( !duplicateNames.empty() )
   {
     result = false;
-    results << ValidationResult( QObject::tr( "Duplicated names" ), QObject::tr( "Layers/groups have the same name or short name." ), duplicateNames.join( QStringLiteral( ", " ) ) );
+    results << ValidationResult( QgsProjectServerValidator::DuplicatedNames, duplicateNames.join( QStringLiteral( ", " ) ) );
   }
 
   if ( !regExpMessages.empty() )
   {
     result = false;
-    results << ValidationResult( QObject::tr( "Short names" ), QObject::tr( "Layers short names have to be updated." ), regExpMessages.join( QStringLiteral( ", " ) ) );
+    results << ValidationResult( QgsProjectServerValidator::ShortNames, regExpMessages.join( QStringLiteral( ", " ) ) );
   }
 
   if ( !encodingMessages.empty() )
   {
     result = false;
-    results << ValidationResult( QObject::tr( "Encoding" ), QObject::tr( "Encoding is not set." ), encodingMessages.join( QStringLiteral( ", " ) ) );
+    results << ValidationResult( QgsProjectServerValidator::Encoding, encodingMessages.join( QStringLiteral( ", " ) ) );
   }
 
   return result;

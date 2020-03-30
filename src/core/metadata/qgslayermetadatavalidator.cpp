@@ -23,7 +23,7 @@
 // QgsNativeMetadataBaseValidator
 //
 
-bool QgsNativeMetadataBaseValidator::validate( const QgsAbstractMetadataBase *metadata, QList<QgsAbstractBaseValidator::ValidationResult> &results ) const
+bool QgsNativeMetadataBaseValidator::validate( const QgsAbstractMetadataBase *metadata, QList<QgsAbstractMetadataBaseValidator::ValidationResult> &results ) const
 {
   results.clear();
   if ( !metadata )
@@ -185,7 +185,7 @@ bool QgsNativeMetadataValidator::validate( const QgsAbstractMetadataBase *baseMe
 // QgsNativeProjectMetadataValidator
 //
 
-bool QgsNativeProjectMetadataValidator::validate( const QgsAbstractMetadataBase *baseMetadata, QList<QgsAbstractBaseValidator::ValidationResult> &results ) const
+bool QgsNativeProjectMetadataValidator::validate( const QgsAbstractMetadataBase *baseMetadata, QList<QgsAbstractMetadataBaseValidator::ValidationResult> &results ) const
 {
   results.clear();
 

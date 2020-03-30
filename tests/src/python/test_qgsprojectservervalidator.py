@@ -28,19 +28,48 @@ class TestQgsprojectServerValidator(unittest.TestCase):
         """Test project server validator."""
         validator = QgsProjectServerValidator()
         project = QgsProject()
-        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer_1", "memory")
+        layer = QgsVectorLayer('Point?field=fldtxt:string', 'layer_1', 'memory')
         project.addMapLayers([layer])
 
         valid, results = validator.validate(project.layerTreeRoot())
         self.assertTrue(valid)
         self.assertFalse(results)
 
-        layer_1 = QgsVectorLayer("Point?field=fldtxt:string", "layer_1", "memory")
+        layer_1 = QgsVectorLayer('Point?field=fldtxt:string', 'layer_1', 'memory')
         project.addMapLayers([layer_1])
 
         valid, results = validator.validate(project.layerTreeRoot())
         self.assertFalse(valid)
-        self.assertEqual(results[0].section, 'Duplicated names')
+        self.assertEqual(1, len(results))
+        self.assertEqual(QgsProjectServerValidator.DuplicatedNames, results[0].error)
+
+        layer_1.setShortName('layer_1_invalid_#')
+        valid, results = validator.validate(project.layerTreeRoot())
+        self.assertFalse(valid)
+        self.assertEqual(1, len(results))
+        self.assertEqual(QgsProjectServerValidator.ShortNames, results[0].error)
+
+        layer_1.setShortName('layer_1')  # Same short name as the first layer name
+        valid, results = validator.validate(project.layerTreeRoot())
+        self.assertFalse(valid)
+        self.assertEqual(1, len(results))
+        self.assertEqual(QgsProjectServerValidator.DuplicatedNames, results[0].error)
+
+        layer_1.setShortName('layer_1_bis')
+        valid, results = validator.validate(project.layerTreeRoot())
+        self.assertTrue(valid)
+        self.assertEqual(0, len(results))
+
+        group = project.layerTreeRoot().addGroup('layer_1')
+        valid, results = validator.validate(project.layerTreeRoot())
+        self.assertFalse(valid)
+        self.assertEqual(1, len(results))
+        self.assertEqual(QgsProjectServerValidator.DuplicatedNames, results[0].error)
+
+        group.setCustomProperty('wmsShortName', 'my_group1')
+        valid, results = validator.validate(project.layerTreeRoot())
+        self.assertTrue(valid)
+        self.assertEqual(0, len(results))
 
 
 if __name__ == '__main__':
