@@ -80,6 +80,13 @@ class CORE_EXPORT QgsSnappingConfig
     Q_DECLARE_FLAGS( SnappingTypeFlag, SnappingTypes )
     Q_FLAG( SnappingTypeFlag )
 
+    enum ScaleDependencyMode
+    {
+      Disabled = 0,
+      ScaleDependentGlobal,
+      ScaleDependentPerLayer
+    };
+
     /**
      * Convenient method to returns the translated name of the enum type
      * QgsSnappingConfig::SnappingTypeFlag
@@ -172,7 +179,8 @@ class CORE_EXPORT QgsSnappingConfig
          */
         void setTypeFlag( QgsSnappingConfig::SnappingTypeFlag type );
 
-        /**!
+        /**
+         * !
          * Returns the tolerance
          * \since QGIS 3.12
          */
@@ -314,16 +322,16 @@ class CORE_EXPORT QgsSnappingConfig
     void setMaxScale( double pMaxScale );
 
     /**
-     * Returns limit to scale
+     * Set the scale dependency mode
      * \since QGIS 3.14
      */
-    bool limitToScale() const;
+    void setScaleDependencyMode( ScaleDependencyMode mode );
 
     /**
-     * Set limit to scale, true means snapping will be limited to the [minScale, maxScale] range
+     * Returns the scale dependency mode
      * \since QGIS 3.14
      */
-    void setLimitToScale( bool pLimitSnapping );
+    ScaleDependencyMode scaleDependencyMode() const;
 
     //! Returns the type of units
     QgsTolerance::UnitType units() const;
@@ -455,7 +463,7 @@ class CORE_EXPORT QgsSnappingConfig
     SnappingMode mMode = ActiveLayer;
     SnappingTypeFlag mType = VertexFlag;
     double mTolerance = 0.0;
-    bool mLimitToScale = false;
+    ScaleDependencyMode mScaleDependencyMode = Disabled;
     double mMinScale = 0.0;
     double mMaxScale = 0.0;
     QgsTolerance::UnitType mUnits = QgsTolerance::ProjectUnits;

@@ -186,11 +186,23 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   connect( mMaxScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMaxScale );
 
 
-  mLimitToScale = new QAction( tr( "Toggle scale dependent snapping" ), this );
-  mLimitToScale->setCheckable( true );
-  mLimitToScale->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingOnScale.svg" ) ) );
-  mLimitToScale->setObjectName( QStringLiteral( "EnableSnappingLimitOnScaleAction" ) );
-  connect( mLimitToScale, &QAction::toggled, this, &QgsSnappingWidget::changeLimitToScale );
+  mSnappingScaleModeButton = new QToolButton();
+  mSnappingScaleModeButton->setToolTip( tr( "Snapping scale mode" ) );
+  mSnappingScaleModeButton->setPopupMode( QToolButton::InstantPopup );
+  QMenu *scaleModeMenu = new QMenu( tr( "Set snapping scale mode" ), this );
+  mDefaultSnappingScaleAct = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingOnScale.svg" ) ), tr( "Disabled" ), scaleModeMenu );
+  mDefaultSnappingScaleAct->setToolTip( tr( "Scale dependency disabled" ) );
+  mGlobalSnappingScaleAct = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingOnScale.svg" ) ), tr( "Global" ), scaleModeMenu );
+  mGlobalSnappingScaleAct->setToolTip( tr( "Scale dependency global" ) );
+  mPerLayerSnappingScaleAct = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingOnScale.svg" ) ), tr( "Per layer" ), scaleModeMenu );
+  mPerLayerSnappingScaleAct->setToolTip( tr( "Scale dependency per layer" ) );
+  scaleModeMenu->addAction( mDefaultSnappingScaleAct );
+  scaleModeMenu->addAction( mGlobalSnappingScaleAct );
+  scaleModeMenu->addAction( mPerLayerSnappingScaleAct );
+  mSnappingScaleModeButton->setMenu( scaleModeMenu );
+  mSnappingScaleModeButton->setObjectName( QStringLiteral( "SnappingScaleModeButton" ) );
+  mSnappingScaleModeButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+  connect( mSnappingScaleModeButton, &QToolButton::triggered, this, &QgsSnappingWidget::snappingScaleModeTriggered );
 
   // units
   mUnitsComboBox = new QComboBox();
@@ -299,10 +311,8 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     layout->addWidget( mTypeButton );
     layout->addWidget( mToleranceSpinBox );
     layout->addWidget( mUnitsComboBox );
-    QToolButton *limitToScaleButton = new QToolButton();
-    limitToScaleButton->addAction( mLimitToScale );
-    limitToScaleButton->setDefaultAction( mLimitToScale );
-    layout->addWidget( limitToScaleButton );
+    mSnappingScaleModeButton->setDefaultAction( mDefaultSnappingScaleAct );
+    layout->addWidget( mSnappingScaleModeButton );
     layout->addWidget( mMinScaleWidget );
     layout->addWidget( mMaxScaleWidget );
 
@@ -437,7 +447,18 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     mMaxScaleWidget->setScale( config.maxScale() );
   }
 
-  mLimitToScale->setChecked( config.limitToScale() );
+  if ( config.scaleDependencyMode() == QgsSnappingConfig::Disabled )
+  {
+    mSnappingScaleModeButton->setDefaultAction( mDefaultSnappingScaleAct );
+  }
+  else if ( config.scaleDependencyMode() == QgsSnappingConfig::ScaleDependentGlobal )
+  {
+    mSnappingScaleModeButton->setDefaultAction( mGlobalSnappingScaleAct );
+  }
+  else if ( config.scaleDependencyMode() == QgsSnappingConfig::ScaleDependentPerLayer )
+  {
+    mSnappingScaleModeButton->setDefaultAction( mPerLayerSnappingScaleAct );
+  }
 
   if ( config.intersectionSnapping() != mIntersectionSnappingAction->isChecked() )
   {
@@ -468,9 +489,9 @@ void QgsSnappingWidget::toggleSnappingWidgets( bool enabled )
   mModeButton->setEnabled( enabled );
   mTypeButton->setEnabled( enabled );
   mToleranceSpinBox->setEnabled( enabled );
-  mLimitToScale->setEnabled( enabled );
-  mMinScaleWidget->setEnabled( enabled && mConfig.limitToScale() );
-  mMaxScaleWidget->setEnabled( enabled && mConfig.limitToScale() );
+  mSnappingScaleModeButton->setEnabled( enabled );
+  mMinScaleWidget->setEnabled( enabled && mConfig.scaleDependencyMode() == QgsSnappingConfig::ScaleDependentGlobal );
+  mMaxScaleWidget->setEnabled( enabled && mConfig.scaleDependencyMode() == QgsSnappingConfig::ScaleDependentGlobal );
   mUnitsComboBox->setEnabled( enabled );
 
   if ( mEditAdvancedConfigAction )
@@ -501,14 +522,6 @@ void QgsSnappingWidget::changeMinScale( double pMinScale )
 void QgsSnappingWidget::changeMaxScale( double pMaxScale )
 {
   mConfig.setMaxScale( pMaxScale );
-  mProject->setSnappingConfig( mConfig );
-}
-
-void QgsSnappingWidget::changeLimitToScale( bool enabled )
-{
-  mConfig.setLimitToScale( enabled );
-  mMinScaleWidget->setEnabled( mConfig.limitToScale() );
-  mMaxScaleWidget->setEnabled( mConfig.limitToScale() );
   mProject->setSnappingConfig( mConfig );
 }
 
@@ -597,6 +610,29 @@ void QgsSnappingWidget::typeButtonTriggered( QAction *action )
   mProject->setSnappingConfig( mConfig );
 }
 
+void QgsSnappingWidget::snappingScaleModeTriggered( QAction *action )
+{
+  mSnappingScaleModeButton->setDefaultAction( action );
+  QgsSnappingConfig::ScaleDependencyMode mode;
+  if ( action == mDefaultSnappingScaleAct )
+  {
+    mode =  QgsSnappingConfig::Disabled;
+  }
+  else if ( action == mGlobalSnappingScaleAct )
+  {
+    mode = QgsSnappingConfig::ScaleDependentGlobal;
+  }
+  else if ( action == mPerLayerSnappingScaleAct )
+  {
+    mode = QgsSnappingConfig::ScaleDependentPerLayer;
+  }
+
+  mMinScaleWidget->setEnabled( mode == QgsSnappingConfig::ScaleDependentGlobal );
+  mMaxScaleWidget->setEnabled( mode == QgsSnappingConfig::ScaleDependentGlobal );
+  mConfig.setScaleDependencyMode( mode );
+  mProject->setSnappingConfig( mConfig );
+}
+
 void QgsSnappingWidget::updateToleranceDecimals()
 {
   if ( mConfig.units() == QgsTolerance::Pixels )
@@ -638,9 +674,9 @@ void QgsSnappingWidget::modeChanged()
     {
       mAdvancedConfigWidget->setVisible( advanced );
     }
+    mSnappingScaleModeButton->setVisible( advanced );
     mMinScaleWidget->setVisible( advanced );
     mMaxScaleWidget->setVisible( advanced );
-    mLimitToScale->setVisible( advanced );
   }
 }
 

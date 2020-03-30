@@ -106,8 +106,6 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void changeMaxScale( double pMaxScale );
 
-    void changeLimitToScale( bool enabled );
-
     void changeUnit( int idx );
 
     void enableTopologicalEditing( bool enabled );
@@ -116,6 +114,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void modeButtonTriggered( QAction *action );
     void typeButtonTriggered( QAction *action );
+    void snappingScaleModeTriggered( QAction *action );
 
     //! number of decimals of the tolerance spin box depends on map units
     void updateToleranceDecimals();
@@ -152,11 +151,13 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mCentroidAction = nullptr;
     QAction *mMiddleAction = nullptr;
     QDoubleSpinBox *mToleranceSpinBox = nullptr;
-    QAction *mLimitToScale = nullptr;
     QgsScaleWidget *mMinScaleWidget = nullptr;
     QgsScaleWidget *mMaxScaleWidget = nullptr;
     QAction *mToleranceAction = nullptr; // hide widget does not work on toolbar, action needed
-    QAction *mLimitToScaleAction = nullptr;
+    QToolButton *mSnappingScaleModeButton = nullptr;
+    QAction *mDefaultSnappingScaleAct = nullptr;
+    QAction *mGlobalSnappingScaleAct = nullptr;
+    QAction *mPerLayerSnappingScaleAct = nullptr;
     QComboBox *mUnitsComboBox = nullptr;
     QAction *mUnitAction = nullptr; // hide widget does not work on toolbar, action needed
     QAction *mTopologicalEditingAction = nullptr;

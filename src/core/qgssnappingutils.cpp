@@ -297,17 +297,17 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     bool inRangeGlobal = ( mSnappingConfig.minScale() <= 0.0 || mMapSettings.scale() >= mSnappingConfig.minScale() )
                          && ( mSnappingConfig.maxScale() <= 0.0 || mMapSettings.scale() <= mSnappingConfig.maxScale() );
 
-    for ( const LayerConfig &layerConfig : qgis::as_const( mLayers ))
+    for ( const LayerConfig &layerConfig : qgis::as_const( mLayers ) )
     {
       QgsSnappingConfig::IndividualLayerSettings layerSettings = mSnappingConfig.individualLayerSettings( layerConfig.layer );
 
-      //Default value for layer config means it is not set ( appears NULL ) layerSpecificRange <- false
-      bool layerSpecificRange = layerSettings.minScale() > 0.0 || layerSettings.maxScale() > 0.0;
-      bool inRangeLayer = ( layerSettings.minScale() < 0.0 || mMapSettings.scale() >= layerSettings.minScale() ) && ( layerSettings.maxScale() < 0.0 || mMapSettings.scale() <= layerSettings.maxScale() );
+      bool inRangeLayer = ( layerSettings.minScale() <= 0.0 || mMapSettings.scale() >= layerSettings.minScale() ) && ( layerSettings.maxScale() <= 0.0 || mMapSettings.scale() <= layerSettings.maxScale() );
 
       //If limit to scale is disabled, snapping activated on all layer
       //If no per layer config is set use the global one, otherwise use the layer config
-      if ( !mSnappingConfig.limitToScale() || ( ( !layerSpecificRange && inRangeGlobal ) || ( layerSpecificRange && inRangeLayer ) ) )
+      if ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::Disabled
+           || ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::ScaleDependentGlobal && inRangeGlobal )
+           || ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::ScaleDependentPerLayer  && inRangeLayer ) )
       {
         double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
         layers << qMakePair( layerConfig.layer, _areaOfInterest( pointMap, tolerance ) );

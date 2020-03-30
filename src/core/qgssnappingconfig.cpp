@@ -180,7 +180,7 @@ bool QgsSnappingConfig::operator==( const QgsSnappingConfig &other ) const
          && mUnits == other.mUnits
          && mIntersectionSnapping == other.mIntersectionSnapping
          && mIndividualLayerSettings == other.mIndividualLayerSettings
-         && mLimitToScale == other.mLimitToScale
+         && mScaleDependencyMode == other.mScaleDependencyMode
          && mMinScale == other.mMinScale
          && mMaxScale == other.mMaxScale;
 }
@@ -205,7 +205,7 @@ void QgsSnappingConfig::reset()
   mMode = mode;
   mType = type;
   mTolerance = tolerance;
-  mLimitToScale = false;
+  mScaleDependencyMode = Disabled;
   mMinScale = 0.0;
   mMaxScale = 0.0;
   // do not allow unit to be "layer" if not in advanced configuration
@@ -378,7 +378,7 @@ bool QgsSnappingConfig::operator!=( const QgsSnappingConfig &other ) const
          || mTolerance != other.mTolerance
          || mUnits != other.mUnits
          || mIndividualLayerSettings != other.mIndividualLayerSettings
-         || mLimitToScale != other.mLimitToScale
+         || mScaleDependencyMode != other.mScaleDependencyMode
          || mMinScale != other.mMinScale
          || mMaxScale != other.mMaxScale;
 }
@@ -444,8 +444,8 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
   if ( snapSettingsElem.hasAttribute( QStringLiteral( "tolerance" ) ) )
     mTolerance = snapSettingsElem.attribute( QStringLiteral( "tolerance" ) ).toDouble();
 
-  if ( snapSettingsElem.hasAttribute( QStringLiteral( "limitToScale" ) ) )
-    mLimitToScale = snapSettingsElem.attribute( QStringLiteral( "limitToScale" ) ) == QLatin1String( "1" );
+  if ( snapSettingsElem.hasAttribute( QStringLiteral( "scaleDependencyMode" ) ) )
+    mScaleDependencyMode = static_cast<QgsSnappingConfig::ScaleDependencyMode>( snapSettingsElem.attribute( QStringLiteral( "scaleDependencyMode" ) ).toInt() );
 
   if ( snapSettingsElem.hasAttribute( QStringLiteral( "minScale" ) ) )
     mMinScale = snapSettingsElem.attribute( QStringLiteral( "minScale" ) ).toDouble();
@@ -504,7 +504,7 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
   snapSettingsElem.setAttribute( QStringLiteral( "tolerance" ), mTolerance );
   snapSettingsElem.setAttribute( QStringLiteral( "unit" ), static_cast<int>( mUnits ) );
   snapSettingsElem.setAttribute( QStringLiteral( "intersection-snapping" ), QString::number( mIntersectionSnapping ) );
-  snapSettingsElem.setAttribute( QStringLiteral( "limitToScale" ), QString::number( mLimitToScale ) );
+  snapSettingsElem.setAttribute( QStringLiteral( "scaleDependencyMode" ), QString::number( mScaleDependencyMode ) );
   snapSettingsElem.setAttribute( QStringLiteral( "minScale" ), mMinScale );
   snapSettingsElem.setAttribute( QStringLiteral( "maxScale" ), mMaxScale );
 
@@ -668,15 +668,16 @@ void QgsSnappingConfig::setMaxScale( double pMaxScale )
   mMaxScale = pMaxScale;
 }
 
-bool QgsSnappingConfig::limitToScale() const
+void QgsSnappingConfig::setScaleDependencyMode( QgsSnappingConfig::ScaleDependencyMode mode )
 {
-  return mLimitToScale;
+  mScaleDependencyMode = mode;
 }
 
-void QgsSnappingConfig::setLimitToScale( bool pLimitSnapping )
+QgsSnappingConfig::ScaleDependencyMode QgsSnappingConfig::scaleDependencyMode() const
 {
-  mLimitToScale = pLimitSnapping;
+  return mScaleDependencyMode;
 }
+
 
 
 
