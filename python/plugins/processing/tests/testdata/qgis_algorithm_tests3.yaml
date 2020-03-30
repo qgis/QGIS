@@ -620,8 +620,6 @@ tests:
         name: expected/randompointsonlines_min1.gml
         type: vector
 
-
-
   - algorithm: native:randomextract
     name: Random extract by number
     params:
