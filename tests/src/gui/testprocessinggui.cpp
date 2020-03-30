@@ -78,6 +78,7 @@
 #include "qgssettings.h"
 #include "qgsprocessingfeaturesourceoptionswidget.h"
 #include "qgsextentwidget.h"
+#include "qgsrasterbandcombobox.h"
 
 class TestParamType : public QgsProcessingParameterDefinition
 {
@@ -195,6 +196,8 @@ class TestProcessingGui : public QObject
     void testFieldSelectionPanel();
     void testFieldWrapper();
     void testMultipleSelectionDialog();
+    void testRasterBandSelectionPanel();
+    void testBandWrapper();
     void testEnumSelectionPanel();
     void testEnumCheckboxPanel();
     void testEnumWrapper();
@@ -2827,6 +2830,297 @@ void TestProcessingGui::testMultipleSelectionDialog()
   QCOMPARE( dlg->mModel->item( 1 )->text(), QStringLiteral( "6_" ) );
   QCOMPARE( dlg->mModel->item( 2 )->text(), QStringLiteral( "6.2_" ) );
 
+}
+
+void TestProcessingGui::testRasterBandSelectionPanel()
+{
+  QgsProcessingParameterBand bandParam( QString(), QString(), QVariant(), QStringLiteral( "INPUT" ), false, true );
+  QgsProcessingRasterBandPanelWidget w( nullptr, &bandParam );
+  QSignalSpy spy( &w, &QgsProcessingRasterBandPanelWidget::changed );
+
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 bands selected" ) );
+  w.setValue( QStringLiteral( "1" ) );
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "1" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "1 bands selected" ) );
+
+  w.setValue( QVariantList() << QStringLiteral( "2" ) << QStringLiteral( "1" ) );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( w.value().toList(), QVariantList() << QStringLiteral( "2" ) << QStringLiteral( "1" ) );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "2 bands selected" ) );
+
+  w.setValue( QVariantList() << 3 << 5 << 1 );
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( w.value().toList(), QVariantList() << 3 << 5 << 1 );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "3 bands selected" ) );
+
+  w.setValue( QVariant() );
+  QCOMPARE( spy.count(), 4 );
+  QCOMPARE( w.value().toList(), QVariantList() );
+  QCOMPARE( w.mLineEdit->text(), QStringLiteral( "0 bands selected" ) );
+}
+
+void TestProcessingGui::testBandWrapper()
+{
+  const QgsProcessingAlgorithm *statsAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:rasterlayerstatistics" ) );
+  const QgsProcessingParameterDefinition *layerDef = statsAlg->parameterDefinition( QStringLiteral( "INPUT" ) );
+
+  auto testWrapper = [layerDef]( QgsProcessingGui::WidgetType type )
+  {
+    TestLayerWrapper layerWrapper( layerDef );
+    QgsProject p;
+    QgsRasterLayer *rl = new QgsRasterLayer( TEST_DATA_DIR + QStringLiteral( "/landsat.tif" ), QStringLiteral( "x" ), QStringLiteral( "gdal" ) );
+    p.addMapLayer( rl );
+
+    QgsProcessingParameterBand param( QStringLiteral( "band" ), QStringLiteral( "band" ), QVariant(), QStringLiteral( "INPUT" ) );
+
+    QgsProcessingBandWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+
+    QWidget *w = wrapper.createWrappedWidget( context );
+    ( void )w;
+    layerWrapper.setWidgetValue( QVariant::fromValue( rl ), context );
+    wrapper.setParentLayerWrapperValue( &layerWrapper );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingBandWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( 3, context );
+    QCOMPARE( spy.count(), 1 );
+    QCOMPARE( wrapper.widgetValue().toInt(), 3 );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsRasterBandComboBox * >( wrapper.wrappedWidget() )->currentBand(), 3 );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(),  QStringLiteral( "3" ) );
+        break;
+    }
+
+    wrapper.setWidgetValue( QStringLiteral( "1" ), context );
+    QCOMPARE( spy.count(), 2 );
+    QCOMPARE( wrapper.widgetValue().toInt(), 1 );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsRasterBandComboBox * >( wrapper.wrappedWidget() )->currentBand(), 1 );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(),  QStringLiteral( "1" ) );
+        break;
+    }
+
+    delete w;
+
+    // optional
+    param = QgsProcessingParameterBand( QStringLiteral( "band" ), QStringLiteral( "band" ), QVariant(), QStringLiteral( "INPUT" ), true, false );
+
+    QgsProcessingBandWidgetWrapper wrapper2( &param, type );
+
+    w = wrapper2.createWrappedWidget( context );
+    layerWrapper.setWidgetValue( QVariant::fromValue( rl ), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    QSignalSpy spy2( &wrapper2, &QgsProcessingBandWidgetWrapper::widgetValueHasChanged );
+    wrapper2.setWidgetValue( QStringLiteral( "4" ), context );
+    QCOMPARE( spy2.count(), 1 );
+    QCOMPARE( wrapper2.widgetValue().toInt(),  4 );
+
+    wrapper2.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy2.count(), 2 );
+    QVERIFY( !wrapper2.widgetValue().isValid() );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( static_cast< QgsRasterBandComboBox * >( wrapper2.wrappedWidget() )->currentBand(), -1 );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(),  QString() );
+        break;
+    }
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "band [optional]" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+
+    // check signal
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        static_cast< QgsRasterBandComboBox * >( wrapper2.wrappedWidget() )->setBand( 6 );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->setText( QStringLiteral( "6" ) );
+        break;
+    }
+
+    QCOMPARE( spy2.count(), 3 );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper2.mComboBox->layer(), rl );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+
+    // should not be owned by wrapper
+    QVERIFY( !wrapper2.mParentLayer.get() );
+    layerWrapper.setWidgetValue( QVariant(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QVERIFY( !wrapper2.mComboBox->layer() );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+
+    layerWrapper.setWidgetValue( rl->id(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QVERIFY( !wrapper2.mComboBox->layer() );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    QVERIFY( !wrapper2.mParentLayer.get() );
+
+    // with project layer
+    context.setProject( &p );
+    TestProcessingContextGenerator generator( context );
+    wrapper2.registerProcessingContextGenerator( &generator );
+
+    layerWrapper.setWidgetValue( rl->id(), context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper2.mComboBox->layer(), rl );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+    QVERIFY( !wrapper2.mParentLayer.get() );
+
+    // non-project layer
+    QString rasterFileName = TEST_DATA_DIR + QStringLiteral( "/landsat-f32-b1.tif" );
+    layerWrapper.setWidgetValue( rasterFileName, context );
+    wrapper2.setParentLayerWrapperValue( &layerWrapper );
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+        QCOMPARE( wrapper2.mComboBox->layer()->publicSource(), rasterFileName );
+        break;
+
+      case QgsProcessingGui::Modeler:
+        break;
+    }
+
+    // must be owned by wrapper, or layer may be deleted while still required by wrapper
+    QCOMPARE( wrapper2.mParentLayer->publicSource(), rasterFileName );
+
+    delete w;
+
+    // multiple
+    param = QgsProcessingParameterBand( QStringLiteral( "band" ), QStringLiteral( "band" ), QVariant(), QStringLiteral( "INPUT" ), true, true );
+
+    QgsProcessingBandWidgetWrapper wrapper3( &param, type );
+
+    w = wrapper3.createWrappedWidget( context );
+    layerWrapper.setWidgetValue( QVariant::fromValue( rl ), context );
+    wrapper3.setParentLayerWrapperValue( &layerWrapper );
+    QSignalSpy spy3( &wrapper3, &QgsProcessingBandWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "5" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toList(), QVariantList() << 5 );
+
+    wrapper3.setWidgetValue( QString(), context );
+    QCOMPARE( spy3.count(), 2 );
+    QVERIFY( wrapper3.widgetValue().toString().isEmpty() );
+
+    wrapper3.setWidgetValue( QStringLiteral( "3;4" ), context );
+    QCOMPARE( spy3.count(), 3 );
+    QCOMPARE( wrapper3.widgetValue().toStringList(), QStringList() << QStringLiteral( "3" ) << QStringLiteral( "4" ) );
+
+    wrapper3.setWidgetValue( QVariantList() << 5 << 6 << 7, context );
+    QCOMPARE( spy3.count(), 4 );
+    QCOMPARE( wrapper3.widgetValue().toList(), QVariantList() << 5 << 6 << 7 );
+
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 5 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+
+
+    // multiple non-optional
+    param = QgsProcessingParameterBand( QStringLiteral( "band" ), QStringLiteral( "band" ), QVariant(), QStringLiteral( "INPUT" ), false, true );
+
+    QgsProcessingBandWidgetWrapper wrapper4( &param, type );
+
+    w = wrapper4.createWrappedWidget( context );
+    layerWrapper.setWidgetValue( QVariant::fromValue( rl ), context );
+    wrapper4.setParentLayerWrapperValue( &layerWrapper );
+    QSignalSpy spy4( &wrapper4, &QgsProcessingBandWidgetWrapper::widgetValueHasChanged );
+    wrapper4.setWidgetValue( QStringLiteral( "5" ), context );
+    QCOMPARE( spy4.count(), 1 );
+    QCOMPARE( wrapper4.widgetValue().toList(), QVariantList() << 5 );
+
+    wrapper4.setWidgetValue( QString(), context );
+    QCOMPARE( spy4.count(), 2 );
+    QVERIFY( wrapper4.widgetValue().toString().isEmpty() );
+
+    wrapper4.setWidgetValue( QStringLiteral( "3;4" ), context );
+    QCOMPARE( spy4.count(), 3 );
+    QCOMPARE( wrapper4.widgetValue().toStringList(), QStringList() << QStringLiteral( "3" ) << QStringLiteral( "4" ) );
+
+    wrapper4.setWidgetValue( QVariantList() << 5 << 6 << 7, context );
+    QCOMPARE( spy4.count(), 4 );
+    QCOMPARE( wrapper4.widgetValue().toList(), QVariantList() << 5 << 6 << 7 );
+
+    delete w;
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
 }
 
 void TestProcessingGui::testEnumSelectionPanel()
