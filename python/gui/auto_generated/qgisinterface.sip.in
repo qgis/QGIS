@@ -587,7 +587,7 @@ Returns the Toggle Selected Layers action.
 
     virtual QAction *actionToggleSelectedLayersIndependently() = 0;
 %Docstring
-Returns the Toggle Selected Layers Independantly action.
+Returns the Toggle Selected Layers Independently action.
 
 .. versionadded:: 3.14
 %End

@@ -518,7 +518,7 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionToggleSelectedLayers() = 0;
 
     /**
-     * Returns the Toggle Selected Layers Independantly action.
+     * Returns the Toggle Selected Layers Independently action.
      * \since QGIS 3.14
      */
     virtual QAction *actionToggleSelectedLayersIndependently() = 0;

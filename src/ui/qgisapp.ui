@@ -152,7 +152,7 @@
     <addaction name="mActionShowSelectedLayers"/>
     <addaction name="mActionHideSelectedLayers"/>
     <addaction name="mActionToggleSelectedLayers"/>
-    <addaction name="mActionIndependentlyToggleSelectedLayers"/>
+    <addaction name="mActionToggleSelectedLayersIndependently"/>
     <addaction name="mActionHideDeselectedLayers"/>
     <addaction name="separator"/>
    </widget>

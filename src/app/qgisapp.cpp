@@ -7556,7 +7556,6 @@ void QgisApp::hideSelectedLayers()
   }
 }
 
-//reimplements method from base (gui) class
 void QgisApp::toggleSelectedLayers()
 {
   QgsDebugMsg( QStringLiteral( "toggling selected layers!" ) );
@@ -7572,7 +7571,6 @@ void QgisApp::toggleSelectedLayers()
   }
 }
 
-//reimplements method from base (gui) class
 void QgisApp::toggleSelectedLayersIndependently()
 {
   QgsDebugMsg( QStringLiteral( "toggling selected layers independently!" ) );
