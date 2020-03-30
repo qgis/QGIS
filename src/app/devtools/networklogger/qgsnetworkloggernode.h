@@ -69,6 +69,11 @@ class QgsNetworkLoggerNode
      */
     virtual QList< QAction * > actions( QObject *parent );
 
+    /**
+     * Converts the node's contents to a variant.
+     */
+    virtual QVariant toVariant() const;
+
   protected:
 
     QgsNetworkLoggerNode();
@@ -114,6 +119,7 @@ class QgsNetworkLoggerGroup : public QgsNetworkLoggerNode
 
     int childCount() const override final { return mChildren.size(); }
     QVariant data( int role = Qt::DisplayRole ) const override;
+    QVariant toVariant() const override;
 
   protected:
 
@@ -151,6 +157,16 @@ class QgsNetworkLoggerValueNode : public QgsNetworkLoggerNode
      */
     QgsNetworkLoggerValueNode( const QString &key, const QString &value, const QColor &color = QColor() );
 
+    /**
+     * Returns the node's key.
+     */
+    QString key() const { return mKey; }
+
+    /**
+     * Returns the node's value.
+     */
+    QString value() const { return mValue; }
+
     QVariant data( int role = Qt::DisplayRole ) const override final;
     int childCount() const override final { return 0; }
 
@@ -179,8 +195,13 @@ class QgsNetworkLoggerRootNode final : public QgsNetworkLoggerGroup
      * Removes a \a row from the root group.
      */
     void removeRow( int row );
+
+    QVariant toVariant() const override;
 };
 
+class QgsNetworkLoggerRequestDetailsGroup;
+class QgsNetworkLoggerReplyGroup;
+class QgsNetworkLoggerSslErrorGroup;
 
 /**
  * \ingroup app
@@ -229,6 +250,7 @@ class QgsNetworkLoggerRequestGroup final : public QgsNetworkLoggerGroup
     QgsNetworkLoggerRequestGroup( const QgsNetworkRequestParameters &request );
     QVariant data( int role = Qt::DisplayRole ) const override;
     QList< QAction * > actions( QObject *parent ) override final;
+    QVariant toVariant() const override;
 
     /**
      * Returns the request's status.
@@ -293,7 +315,14 @@ class QgsNetworkLoggerRequestGroup final : public QgsNetworkLoggerGroup
     Status mStatus = Status::Pending;
     bool mHasSslErrors = false;
     QList< QPair< QString, QString > > mHeaders;
+    QgsNetworkLoggerRequestDetailsGroup *mDetailsGroup = nullptr;
+    QgsNetworkLoggerReplyGroup *mReplyGroup = nullptr;
+    QgsNetworkLoggerSslErrorGroup *mSslErrorsGroup = nullptr;
 };
+
+class QgsNetworkLoggerRequestQueryGroup;
+class QgsNetworkLoggerRequestHeadersGroup;
+class QgsNetworkLoggerPostContentGroup;
 
 /**
  * \ingroup app
@@ -329,7 +358,13 @@ class QgsNetworkLoggerRequestDetailsGroup final : public QgsNetworkLoggerGroup
      * specified \a request details.
      */
     QgsNetworkLoggerRequestDetailsGroup( const QgsNetworkRequestParameters &request );
+    QVariant toVariant() const override;
 
+  private:
+
+    QgsNetworkLoggerRequestQueryGroup *mQueryGroup = nullptr;
+    QgsNetworkLoggerRequestHeadersGroup *mRequestHeaders = nullptr;
+    QgsNetworkLoggerPostContentGroup *mPostContent = nullptr;
 };
 
 
@@ -407,6 +442,8 @@ class QgsNetworkLoggerPostContentGroup final : public QgsNetworkLoggerGroup
     QgsNetworkLoggerPostContentGroup( const QgsNetworkRequestParameters &parameters );
 };
 
+class QgsNetworkLoggerReplyHeadersGroup;
+
 /**
  * \ingroup app
  * \class QgsNetworkLoggerReplyGroup
@@ -432,6 +469,11 @@ class QgsNetworkLoggerReplyGroup final : public QgsNetworkLoggerGroup
      * specified \a reply details.
      */
     QgsNetworkLoggerReplyGroup( const QgsNetworkReplyContent &reply );
+    QVariant toVariant() const override;
+
+  private:
+
+    QgsNetworkLoggerReplyHeadersGroup *mReplyHeaders = nullptr;
 
 };
 
