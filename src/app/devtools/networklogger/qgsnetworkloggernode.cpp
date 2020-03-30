@@ -15,6 +15,7 @@
 
 #include "qgsnetworkloggernode.h"
 #include "qgis.h"
+#include "qgsjsonutils.h"
 #include <QUrlQuery>
 #include <QColor>
 #include <QBrush>
@@ -23,6 +24,8 @@
 #include <QDesktopServices>
 #include <QApplication>
 #include <QClipboard>
+#include <nlohmann/json.hpp>
+
 //
 // QgsNetworkLoggerNode
 //
@@ -87,6 +90,19 @@ QVariant QgsNetworkLoggerGroup::data( int role ) const
   return QVariant();
 }
 
+QVariant QgsNetworkLoggerGroup::toVariant() const
+{
+  QVariantMap res;
+  for ( const std::unique_ptr< QgsNetworkLoggerNode > &child : mChildren )
+  {
+    if ( const QgsNetworkLoggerValueNode *valueNode = dynamic_cast< const QgsNetworkLoggerValueNode *>( child.get() ) )
+    {
+      res.insert( valueNode->key(), valueNode->value() );
+    }
+  }
+  return res;
+}
+
 //
 // QgsNetworkLoggerRootNode
 //
@@ -105,6 +121,14 @@ QVariant QgsNetworkLoggerRootNode::data( int ) const
 void QgsNetworkLoggerRootNode::removeRow( int row )
 {
   mChildren.erase( mChildren.begin() + row );
+}
+
+QVariant QgsNetworkLoggerRootNode::toVariant() const
+{
+  QVariantList res;
+  for ( const std::unique_ptr< QgsNetworkLoggerNode > &child : mChildren )
+    res << child->toVariant();
+  return res;
 }
 
 
@@ -169,6 +193,7 @@ QgsNetworkLoggerRequestGroup::QgsNetworkLoggerRequestGroup( const QgsNetworkRequ
   }
 
   std::unique_ptr< QgsNetworkLoggerRequestDetailsGroup > detailsGroup = qgis::make_unique< QgsNetworkLoggerRequestDetailsGroup >( request );
+  mDetailsGroup = detailsGroup.get();
   addChild( std::move( detailsGroup ) );
 
   mTimer.start();
@@ -283,6 +308,41 @@ QList<QAction *> QgsNetworkLoggerRequestGroup::actions( QObject *parent )
   } );
   res << copyAsCurlAction;
 
+  QAction *copyJsonAction = new QAction( QObject::tr( "Copy as JSON" ), parent );
+  QObject::connect( copyJsonAction, &QAction::triggered, openUrlAction, [ = ]
+  {
+    const QVariant value = toVariant();
+    const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( value ).dump( 2 ) );
+    QApplication::clipboard()->setText( json );
+
+  } );
+  res << copyJsonAction;
+
+  return res;
+}
+
+QVariant QgsNetworkLoggerRequestGroup::toVariant() const
+{
+  QVariantMap res;
+  res.insert( QStringLiteral( "URL" ), mUrl.url() );
+  res.insert( QStringLiteral( "Total time (ms)" ), mTotalTime );
+  res.insert( QStringLiteral( "Bytes Received" ), mBytesReceived );
+  res.insert( QStringLiteral( "Bytes Total" ), mBytesTotal );
+  res.insert( QStringLiteral( "Replies" ), mReplies );
+  if ( mDetailsGroup )
+  {
+    const QVariantMap detailsMap = mDetailsGroup->toVariant().toMap();
+    for ( auto it = detailsMap.constBegin(); it != detailsMap.constEnd(); ++it )
+      res.insert( it.key(), it.value() );
+  }
+  if ( mReplyGroup )
+  {
+    res.insert( QObject::tr( "Reply" ), mReplyGroup->toVariant() );
+  }
+  if ( mSslErrorsGroup )
+  {
+    res.insert( QObject::tr( "SSL Errors" ), mSslErrorsGroup->toVariant() );
+  }
   return res;
 }
 
@@ -307,7 +367,9 @@ void QgsNetworkLoggerRequestGroup::setReply( const QgsNetworkReplyContent &reply
   mHttpStatus = reply.attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
   mContentType = reply.rawHeader( "Content - Type" );
 
-  addChild( qgis::make_unique< QgsNetworkLoggerReplyGroup >( reply ) );
+  std::unique_ptr< QgsNetworkLoggerReplyGroup > replyGroup = qgis::make_unique< QgsNetworkLoggerReplyGroup >( reply ) ;
+  mReplyGroup = replyGroup.get();
+  addChild( std::move( replyGroup ) );
 }
 
 void QgsNetworkLoggerRequestGroup::setTimedOut()
@@ -327,7 +389,9 @@ void QgsNetworkLoggerRequestGroup::setSslErrors( const QList<QSslError> &errors 
   mHasSslErrors = !errors.empty();
   if ( mHasSslErrors )
   {
-    addChild( qgis::make_unique< QgsNetworkLoggerSslErrorGroup >( errors ) );
+    std::unique_ptr< QgsNetworkLoggerSslErrorGroup > errorGroup =  qgis::make_unique< QgsNetworkLoggerSslErrorGroup >( errors );
+    mSslErrorsGroup = errorGroup.get();
+    addChild( std::move( errorGroup ) );
   }
 }
 
@@ -404,16 +468,26 @@ QgsNetworkLoggerRequestDetailsGroup::QgsNetworkLoggerRequestDetailsGroup( const 
   addKeyValueNode( QObject::tr( "Cache (save)" ), request.request().attribute( QNetworkRequest::CacheSaveControlAttribute ).toBool() ? QObject::tr( "Can store result in cache" ) : QObject::tr( "Result cannot be stored in cache" ) );
 
   if ( !QUrlQuery( request.request().url() ).queryItems().isEmpty() )
-    addChild( qgis::make_unique< QgsNetworkLoggerRequestQueryGroup >( request.request().url() ) );
+  {
+    std::unique_ptr< QgsNetworkLoggerRequestQueryGroup > queryGroup = qgis::make_unique< QgsNetworkLoggerRequestQueryGroup >( request.request().url() );
+    mQueryGroup = queryGroup.get();
+    addChild( std::move( queryGroup ) );
+  }
 
-  addChild( qgis::make_unique< QgsNetworkLoggerRequestHeadersGroup >( request ) );
+  std::unique_ptr< QgsNetworkLoggerRequestHeadersGroup > requestHeadersGroup = qgis::make_unique< QgsNetworkLoggerRequestHeadersGroup >( request );
+  mRequestHeaders = requestHeadersGroup.get();
+  addChild( std::move( requestHeadersGroup ) );
 
   switch ( request.operation() )
   {
     case QNetworkAccessManager::PostOperation:
     case QNetworkAccessManager::PutOperation:
-      addChild( qgis::make_unique< QgsNetworkLoggerPostContentGroup >( request ) );
+    {
+      std::unique_ptr< QgsNetworkLoggerPostContentGroup > postContentGroup = qgis::make_unique< QgsNetworkLoggerPostContentGroup >( request );
+      mPostContent = postContentGroup.get();
+      addChild( std::move( postContentGroup ) );
       break;
+    }
 
     case QNetworkAccessManager::GetOperation:
     case QNetworkAccessManager::HeadOperation:
@@ -423,6 +497,19 @@ QgsNetworkLoggerRequestDetailsGroup::QgsNetworkLoggerRequestDetailsGroup( const 
       break;
   }
 }
+
+QVariant QgsNetworkLoggerRequestDetailsGroup::toVariant() const
+{
+  QVariantMap res = QgsNetworkLoggerGroup::toVariant().toMap();
+  if ( mQueryGroup )
+    res.insert( QObject::tr( "Query" ), mQueryGroup->toVariant() );
+  if ( mRequestHeaders )
+    res.insert( QObject::tr( "Headers" ), mRequestHeaders->toVariant() );
+  if ( mPostContent )
+    res.insert( QObject::tr( "Content" ), mPostContent->toVariant() );
+  return res;
+}
+
 
 //
 // QgsNetworkLoggerRequestQueryGroup
@@ -480,7 +567,19 @@ QgsNetworkLoggerReplyGroup::QgsNetworkLoggerReplyGroup( const QgsNetworkReplyCon
   }
   addKeyValueNode( QObject::tr( "Cache (result)" ), reply.attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool() ? QObject::tr( "Used entry from cache" ) : QObject::tr( "Read from network" ) );
 
-  addChild( qgis::make_unique< QgsNetworkLoggerReplyHeadersGroup >( reply ) );
+  std::unique_ptr< QgsNetworkLoggerReplyHeadersGroup > headersGroup = qgis::make_unique< QgsNetworkLoggerReplyHeadersGroup >( reply );
+  mReplyHeaders = headersGroup.get();
+  addChild( std::move( headersGroup ) );
+}
+
+QVariant QgsNetworkLoggerReplyGroup::toVariant() const
+{
+  QVariantMap res = QgsNetworkLoggerGroup::toVariant().toMap();
+  if ( mReplyHeaders )
+  {
+    res.insert( QObject::tr( "Headers" ), mReplyHeaders->toVariant() );
+  }
+  return res;
 }
 
 
@@ -520,4 +619,9 @@ QVariant QgsNetworkLoggerSslErrorGroup::data( int role ) const
 QList<QAction *> QgsNetworkLoggerNode::actions( QObject * )
 {
   return QList< QAction * >();
+}
+
+QVariant QgsNetworkLoggerNode::toVariant() const
+{
+  return QVariant();
 }
