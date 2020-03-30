@@ -2683,12 +2683,6 @@ Acts on the currently active layer only.</string>
    <property name="text">
     <string>Toggle Selected Layers</string>
    </property>
-   <property name="shortcut">
-    <string>Space</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::WidgetShortcut</enum>
-   </property>
   </action>
   <action name="mActionToggleSelectedLayersIndependently">
    <property name="text">
