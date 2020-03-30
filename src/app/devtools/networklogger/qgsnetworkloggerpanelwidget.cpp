@@ -18,9 +18,13 @@
 #include "qgsnetworklogger.h"
 #include "qgssettings.h"
 #include "qgsnetworkloggernode.h"
+#include "qgsjsonutils.h"
 #include <QFontDatabase>
 #include <QMenu>
 #include <QScrollBar>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <nlohmann/json.hpp>
 
 //
 // QgsNetworkLoggerTreeView
@@ -171,5 +175,29 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
   {
     QgsSettings().setValue( QStringLiteral( "logNetworkRequests" ), enabled, QgsSettings::App );
     mLogger->enableLogging( enabled );
+  } );
+  connect( mActionSaveLog, &QAction::triggered, this, [ = ]()
+  {
+    if ( QMessageBox::warning( this, tr( "Save Network Log" ),
+                               tr( "Security warning: network logs may contain sensitive data including usernames or passwords. Treat this log as confidential and be careful who you share it with. Continue?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+      return;
+
+    QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save Network Log" ), QDir::homePath(), tr( "Log files" ) + " (*.json)" );
+    if ( saveFilePath.isEmpty() )
+    {
+      return;
+    }
+
+    QFile exportFile( saveFilePath );
+    if ( !exportFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+    {
+      return;
+    }
+    QTextStream fout( &exportFile );
+
+    const QVariant value = mLogger->rootGroup()->toVariant();
+    const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( value ).dump( 2 ) );
+
+    fout << json;
   } );
 }

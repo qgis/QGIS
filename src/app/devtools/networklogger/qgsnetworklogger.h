@@ -81,6 +81,11 @@ class QgsNetworkLogger : public QAbstractItemModel
     */
     void removeRows( const QList< int > &rows );
 
+    /**
+     * Returns the root node of the log.
+     */
+    QgsNetworkLoggerRootNode *rootGroup();
+
     static constexpr int MAX_LOGGED_REQUESTS = 1000;
 
   public slots:

@@ -41,6 +41,8 @@
      <addaction name="mActionClear"/>
      <addaction name="mActionShowSuccessful"/>
      <addaction name="mActionShowTimeouts"/>
+     <addaction name="separator"/>
+     <addaction name="mActionSaveLog"/>
     </widget>
    </item>
    <item>
@@ -101,6 +103,15 @@
    </property>
    <property name="text">
     <string>Show Timeouts</string>
+   </property>
+  </action>
+  <action name="mActionSaveLog">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save Log…</string>
    </property>
   </action>
  </widget>

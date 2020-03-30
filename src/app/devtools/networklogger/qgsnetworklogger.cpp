@@ -206,6 +206,11 @@ void QgsNetworkLogger::removeRows( const QList<int> &rows )
   }
 }
 
+QgsNetworkLoggerRootNode *QgsNetworkLogger::rootGroup()
+{
+  return mRootNode.get();
+}
+
 int QgsNetworkLogger::rowCount( const QModelIndex &parent ) const
 {
   QgsNetworkLoggerNode *n = index2node( parent );
