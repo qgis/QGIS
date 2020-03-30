@@ -33,6 +33,7 @@
 class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProviderTemporalCapabilities
 {
   public:
+
     /**
      * Constructor for QgsMeshDataProviderTemporalCapabilities
      */
@@ -129,9 +130,11 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
     //! Holds the reference time of each dataset groups
     QHash<int, QDateTime> mGroupsReferenceDateTime;
 
-    //! Holds the time of each dataset in milliseconds.
-    //! The times are from the dataset groups reference time if any,
-    //! otherwise from 0
+    /**
+     * Holds the time of each dataset in milliseconds.
+     * The times are from the dataset groups reference time if any,
+     * otherwise from 0
+     */
     QHash<int, QList<qint64>> mDatasetTimeSinceGroupReference;
 
     QgsUnitTypes::TemporalUnit mTemporalUnit = QgsUnitTypes::TemporalHours;

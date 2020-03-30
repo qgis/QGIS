@@ -22,6 +22,7 @@ Class for handling properties relating to a mesh data provider's temporal capabi
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 %End
   public:
+
     QgsMeshDataProviderTemporalCapabilities();
 %Docstring
 Constructor for QgsMeshDataProviderTemporalCapabilities

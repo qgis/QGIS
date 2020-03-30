@@ -55,6 +55,7 @@ void QgsLayerTreeViewTemporalIndicatorProvider::onIndicatorClicked( const QModel
       break;
     case QgsMapLayerType::MeshLayer:
       QgisApp::instance()->showLayerProperties( qobject_cast<QgsMeshLayer *>( layer ), QStringLiteral( "mOptsPage_Temporal" ) );
+      break;
     case QgsMapLayerType::VectorLayer:
     case QgsMapLayerType::PluginLayer:
       break;
