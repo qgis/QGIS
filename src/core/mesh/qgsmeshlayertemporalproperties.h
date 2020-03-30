@@ -76,7 +76,7 @@ class CORE_EXPORT QgsMeshLayerTemporalProperties : public QgsMapLayerTemporalPro
     /**
      * Sets the reference time and update the time extent from the temporal capabilities
      *
-     * \param timeExtent the time time extent
+     * \param referenceTime the reference time
      * \param capabilities the temporal capabilities of the data provider
      */
     void setReferenceTime( const QDateTime &referenceTime, const QgsDataProviderTemporalCapabilities *capabilities );
