@@ -5628,12 +5628,128 @@ void QgsProcessingMultipleLayerPanelWidget::setProject( QgsProject *project )
   mProject = project;
 }
 
+void QgsProcessingMultipleLayerPanelWidget::setModel( QgsProcessingModelAlgorithm *model, const QString &modelChildAlgorithmID )
+{
+  mModel = model;
+  if ( !model )
+    return;
+
+  switch ( mParam->layerType() )
+  {
+    case QgsProcessing::TypeFile:
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterFile::typeName(),
+                      QStringList() <<  QgsProcessingOutputFile::typeName() );
+      break;
+
+    case QgsProcessing::TypeRaster:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterRasterLayer::typeName()
+                      << QgsProcessingParameterMultipleLayers::typeName()
+                      << QgsProcessingParameterFile::typeName(),
+                      QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputRasterLayer::typeName()
+                      << QgsProcessingOutputMultipleLayers::typeName() );
+      break;
+    }
+
+    case QgsProcessing::TypeMesh:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterMeshLayer::typeName()
+                      << QgsProcessingParameterMultipleLayers::typeName()
+                      << QgsProcessingParameterFile::typeName(),
+                      QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputMultipleLayers::typeName() );
+      break;
+    }
+
+    case QgsProcessing::TypeVector:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterFeatureSource::typeName()
+                      << QgsProcessingParameterVectorLayer::typeName()
+                      << QgsProcessingParameterFile::typeName()
+                      << QgsProcessingParameterMultipleLayers::typeName(),
+                      QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputVectorLayer::typeName()
+                      << QgsProcessingOutputMultipleLayers::typeName(),
+                      QList< int >() << QgsProcessing::TypeVector );
+      break;
+    }
+
+    case QgsProcessing::TypeVectorAnyGeometry:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterFeatureSource::typeName()
+                      << QgsProcessingParameterVectorLayer::typeName()
+                      << QgsProcessingParameterFile::typeName()
+                      << QgsProcessingParameterMultipleLayers::typeName(),
+                      QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputVectorLayer::typeName()
+                      << QgsProcessingOutputMultipleLayers::typeName() );
+      break;
+    }
+
+    case QgsProcessing::TypeVectorPoint:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterFeatureSource::typeName()
+                      << QgsProcessingParameterVectorLayer::typeName()
+                      << QgsProcessingParameterFile::typeName()
+                      << QgsProcessingParameterMultipleLayers::typeName(),
+                      QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputVectorLayer::typeName()
+                      << QgsProcessingOutputMultipleLayers::typeName(),
+                      QList< int >() << QgsProcessing::TypeVectorAnyGeometry << QgsProcessing::TypeVectorPoint );
+      break;
+    }
+
+    case QgsProcessing::TypeVectorLine:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterFeatureSource::typeName()
+                      << QgsProcessingParameterVectorLayer::typeName()
+                      << QgsProcessingParameterFile::typeName()
+                      << QgsProcessingParameterMultipleLayers::typeName(),
+                      QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputVectorLayer::typeName()
+                      << QgsProcessingOutputMultipleLayers::typeName(),
+                      QList< int >() << QgsProcessing::TypeVectorAnyGeometry << QgsProcessing::TypeVectorLine );
+      break;
+    }
+
+    case QgsProcessing::TypeVectorPolygon:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterFeatureSource::typeName()
+                      << QgsProcessingParameterVectorLayer::typeName()
+                      << QgsProcessingParameterFile::typeName()
+                      << QgsProcessingParameterMultipleLayers::typeName(),
+                      QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputVectorLayer::typeName()
+                      << QgsProcessingOutputMultipleLayers::typeName(),
+                      QList< int >() << QgsProcessing::TypeVectorAnyGeometry << QgsProcessing::TypeVectorPolygon );
+      break;
+    }
+
+    case QgsProcessing::TypeMapLayer:
+    {
+      mModelSources = model->availableSourcesForChild( modelChildAlgorithmID, QStringList() << QgsProcessingParameterFeatureSource::typeName()
+                      << QgsProcessingParameterVectorLayer::typeName()
+                      << QgsProcessingParameterRasterLayer::typeName()
+                      << QgsProcessingParameterMeshLayer::typeName()
+                      << QgsProcessingParameterFile::typeName()
+                      << QgsProcessingParameterMultipleLayers::typeName(),
+                      QStringList() << QgsProcessingOutputFile::typeName()
+                      << QgsProcessingOutputVectorLayer::typeName()
+                      << QgsProcessingOutputRasterLayer::typeName()
+                      // << QgsProcessingOutputMeshLayer::typeName()
+                      << QgsProcessingOutputMultipleLayers::typeName() );
+      break;
+    }
+  }
+}
+
 void QgsProcessingMultipleLayerPanelWidget::showDialog()
 {
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
   {
-    QgsProcessingMultipleInputPanelWidget *widget = new QgsProcessingMultipleInputPanelWidget( mParam, mValue );
+    QgsProcessingMultipleInputPanelWidget *widget = new QgsProcessingMultipleInputPanelWidget( mParam, mValue, mModelSources, mModel );
     widget->setPanelTitle( mParam->description() );
     widget->setProject( mProject );
     connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [ = ]()
@@ -5645,7 +5761,7 @@ void QgsProcessingMultipleLayerPanelWidget::showDialog()
   }
   else
   {
-    QgsProcessingMultipleInputDialog dlg( mParam, mValue, this, nullptr );
+    QgsProcessingMultipleInputDialog dlg( mParam, mValue, mModelSources, mModel, this, nullptr );
     dlg.setProject( mProject );
     if ( dlg.exec() )
     {
@@ -5677,6 +5793,7 @@ QWidget *QgsProcessingMultipleLayerWidgetWrapper::createWidget()
   mPanel = new QgsProcessingMultipleLayerPanelWidget( nullptr, layerParam );
   mPanel->setToolTip( parameterDefinition()->toolTip() );
   mPanel->setProject( widgetContext().project() );
+  mPanel->setModel( widgetContext().model(), widgetContext().modelChildAlgorithmId() );
   connect( mPanel, &QgsProcessingMultipleLayerPanelWidget::changed, this, [ = ]
   {
     emit widgetValueHasChanged( this );
@@ -5688,7 +5805,10 @@ void QgsProcessingMultipleLayerWidgetWrapper::setWidgetContext( const QgsProcess
 {
   QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( context );
   if ( mPanel )
+  {
     mPanel->setProject( context.project() );
+    mPanel->setModel( widgetContext().model(), widgetContext().modelChildAlgorithmId() );
+  }
 }
 
 void QgsProcessingMultipleLayerWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
@@ -5703,6 +5823,16 @@ void QgsProcessingMultipleLayerWidgetWrapper::setWidgetValue( const QVariant &va
       for ( const QgsMapLayer *l : v )
         opts << l->source();
     }
+
+    for ( const QVariant &v : value.toList() )
+    {
+      if ( v.canConvert< QgsProcessingModelChildParameterSource >() )
+      {
+        const QgsProcessingModelChildParameterSource source = v.value< QgsProcessingModelChildParameterSource >();
+        opts << QVariant::fromValue( source );
+      }
+    }
+
     if ( mPanel )
       mPanel->setValue( value.isValid() ? opts : QVariant() );
   }

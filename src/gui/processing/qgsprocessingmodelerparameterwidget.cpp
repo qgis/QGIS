@@ -157,27 +157,57 @@ void QgsProcessingModelerParameterWidget::setWidgetValue( const QgsProcessingMod
   setSourceType( value.source() );
 }
 
-QgsProcessingModelChildParameterSource QgsProcessingModelerParameterWidget::value() const
+void QgsProcessingModelerParameterWidget::setWidgetValue( const QList<QgsProcessingModelChildParameterSource> &values )
+{
+  if ( values.size() == 1 )
+    setWidgetValue( values.at( 0 ) );
+  else
+  {
+    QVariantList r;
+    for ( const QgsProcessingModelChildParameterSource &v : values )
+      r << QVariant::fromValue( v );
+    mStaticValue = r;
+    updateUi();
+    setSourceType( QgsProcessingModelChildParameterSource::StaticValue );
+  }
+}
+
+QVariant QgsProcessingModelerParameterWidget::value() const
 {
   switch ( currentSourceType() )
   {
     case StaticValue:
-      return QgsProcessingModelChildParameterSource::fromStaticValue( mStaticWidgetWrapper->parameterValue() );
+    {
+      const QVariant v = mStaticWidgetWrapper->parameterValue();
+
+      if ( v.type() == QVariant::List )
+      {
+        const QVariantList vList = v.toList();
+        if ( std::all_of( vList.begin(), vList.end(), []( const QVariant & val )
+      {
+        return val.canConvert< QgsProcessingModelChildParameterSource >();
+        } ) )
+        {
+          return v;
+        }
+      }
+      return QVariant::fromValue( QgsProcessingModelChildParameterSource::fromStaticValue( v ) );
+    }
 
     case Expression:
-      return QgsProcessingModelChildParameterSource::fromExpression( mExpressionWidget->expression() );
+      return QVariant::fromValue( QgsProcessingModelChildParameterSource::fromExpression( mExpressionWidget->expression() ) );
 
     case ModelParameter:
-      return QgsProcessingModelChildParameterSource::fromModelParameter( mModelInputCombo->currentData().toString() );
+      return QVariant::fromValue( QgsProcessingModelChildParameterSource::fromModelParameter( mModelInputCombo->currentData().toString() ) );
 
     case ChildOutput:
     {
       const QStringList parts = mChildOutputCombo->currentData().toStringList();
-      return QgsProcessingModelChildParameterSource::fromChildOutput( parts.value( 0, QString() ), parts.value( 1, QString() ) );
+      return QVariant::fromValue( QgsProcessingModelChildParameterSource::fromChildOutput( parts.value( 0, QString() ), parts.value( 1, QString() ) ) );
     }
   }
 
-  return QgsProcessingModelChildParameterSource();
+  return QVariant::fromValue( QgsProcessingModelChildParameterSource() );
 }
 
 void QgsProcessingModelerParameterWidget::setDialog( QDialog *dialog )

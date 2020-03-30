@@ -632,9 +632,13 @@ void TestProcessingGui::testModelerWrapper()
   QgsProcessingModelChildAlgorithm a3( QStringLiteral( "native:buffer" ) );
   a3.setDescription( QStringLiteral( "alg3" ) );
   a3.setChildId( QStringLiteral( "alg3" ) );
+  QgsProcessingModelChildAlgorithm a4( QStringLiteral( "native:package" ) );
+  a4.setDescription( QStringLiteral( "alg4" ) );
+  a4.setChildId( QStringLiteral( "alg4" ) );
   algs.insert( QStringLiteral( "alg1" ), a1 );
   algs.insert( QStringLiteral( "alg2" ), a2 );
   algs.insert( QStringLiteral( "alg3" ), a3 );
+  algs.insert( QStringLiteral( "alg4" ), a4 );
   model.setChildAlgorithms( algs );
 
   QMap<QString, QgsProcessingModelParameter> pComponents;
@@ -672,32 +676,32 @@ void TestProcessingGui::testModelerWrapper()
 
   // static value
   w->setWidgetValue( QgsProcessingModelChildParameterSource::fromStaticValue( true ) );
-  QCOMPARE( w->value().source(), QgsProcessingModelChildParameterSource::StaticValue );
-  QCOMPARE( w->value().staticValue().toBool(), true );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().staticValue().toBool(), true );
   w->setWidgetValue( QgsProcessingModelChildParameterSource::fromStaticValue( false ) );
-  QCOMPARE( w->value().source(), QgsProcessingModelChildParameterSource::StaticValue );
-  QCOMPARE( w->value().staticValue().toBool(), false );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().staticValue().toBool(), false );
   QCOMPARE( w->mStackedWidget->currentIndex(), 0 );
   QCOMPARE( w->mSourceButton->toolTip(), QStringLiteral( "Value" ) );
 
   // expression value
   w->setWidgetValue( QgsProcessingModelChildParameterSource::fromExpression( QStringLiteral( "1+2" ) ) );
-  QCOMPARE( w->value().source(), QgsProcessingModelChildParameterSource::Expression );
-  QCOMPARE( w->value().expression(), QStringLiteral( "1+2" ) );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::Expression );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().expression(), QStringLiteral( "1+2" ) );
   QCOMPARE( w->mStackedWidget->currentIndex(), 1 );
   QCOMPARE( w->mSourceButton->toolTip(), QStringLiteral( "Pre-calculated Value" ) );
 
   // model input - should fail, because we haven't populated sources yet, and so have no compatible sources
   w->setWidgetValue( QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "p1" ) ) );
-  QCOMPARE( w->value().source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QVERIFY( w->value().parameterName().isEmpty() );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  QVERIFY( w->value().value< QgsProcessingModelChildParameterSource>().parameterName().isEmpty() );
   QCOMPARE( w->mStackedWidget->currentIndex(), 2 );
   QCOMPARE( w->mSourceButton->toolTip(), QStringLiteral( "Model Input" ) );
 
   // alg output  - should fail, because we haven't populated sources yet, and so have no compatible sources
   w->setWidgetValue( QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg3" ), QStringLiteral( "OUTPUT" ) ) );
-  QCOMPARE( w->value().source(), QgsProcessingModelChildParameterSource::ChildOutput );
-  QVERIFY( w->value().outputChildId().isEmpty() );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QVERIFY( w->value().value< QgsProcessingModelChildParameterSource>().outputChildId().isEmpty() );
   QCOMPARE( w->mStackedWidget->currentIndex(), 3 );
   QCOMPARE( w->mSourceButton->toolTip(), QStringLiteral( "Algorithm Output" ) );
 
@@ -706,15 +710,36 @@ void TestProcessingGui::testModelerWrapper()
 
   // model input
   w->setWidgetValue( QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "p1" ) ) );
-  QCOMPARE( w->value().source(), QgsProcessingModelChildParameterSource::ModelParameter );
-  QCOMPARE( w->value().parameterName(), QStringLiteral( "p1" ) );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().parameterName(), QStringLiteral( "p1" ) );
 
   // alg output
   w->setWidgetValue( QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg3" ), QStringLiteral( "OUTPUT" ) ) );
-  QCOMPARE( w->value().source(), QgsProcessingModelChildParameterSource::ChildOutput );
-  QCOMPARE( w->value().outputChildId(), QStringLiteral( "alg3" ) );
-  QCOMPARE( w->value().outputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().outputChildId(), QStringLiteral( "alg3" ) );
+  QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().outputName(), QStringLiteral( "OUTPUT" ) );
 
+  // multi-source input
+  delete w;
+  const QgsProcessingAlgorithm *packageAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:package" ) );
+  const QgsProcessingParameterDefinition *layerDef = packageAlg->parameterDefinition( QStringLiteral( "LAYERS" ) );
+
+  w = new QgsProcessingModelerParameterWidget( &model, "alg4", layerDef, context );
+
+  w->setWidgetValue( QList< QgsProcessingModelChildParameterSource>()
+                     << QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg3" ), QStringLiteral( "OUTPUT" ) )
+                     << QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "p1" ) )
+                     << QgsProcessingModelChildParameterSource::fromStaticValue( QStringLiteral( "something" ) ) );
+  QCOMPARE( w->value().toList().count(), 3 );
+
+  QCOMPARE( w->value().toList().at( 0 ).value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( w->value().toList().at( 0 ).value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::ChildOutput );
+  QCOMPARE( w->value().toList().at( 0 ).value< QgsProcessingModelChildParameterSource>().outputChildId(), QStringLiteral( "alg3" ) );
+  QCOMPARE( w->value().toList().at( 0 ).value< QgsProcessingModelChildParameterSource>().outputName(), QStringLiteral( "OUTPUT" ) );
+  QCOMPARE( w->value().toList().at( 1 ).value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::ModelParameter );
+  QCOMPARE( w->value().toList().at( 1 ).value< QgsProcessingModelChildParameterSource>().parameterName(), QStringLiteral( "p1" ) );
+  QCOMPARE( w->value().toList().at( 2 ).value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::StaticValue );
+  QCOMPARE( w->value().toList().at( 2 ).value< QgsProcessingModelChildParameterSource>().staticValue().toString(), QStringLiteral( "something" ) );
   delete w;
 
 }
@@ -2838,7 +2863,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 {
   std::unique_ptr< QgsProcessingParameterMultipleLayers > param = qgis::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeRaster );
   QVariantList selectedOptions;
-  std::unique_ptr< QgsProcessingMultipleInputPanelWidget > dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), selectedOptions );
+  std::unique_ptr< QgsProcessingMultipleInputPanelWidget > dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), selectedOptions, QList<QgsProcessingModelChildParameterSource >() );
   QVERIFY( dlg->selectedOptions().isEmpty() );
   QCOMPARE( dlg->mModel->rowCount(), 0 );
 
@@ -2865,21 +2890,21 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->id() );
   QVERIFY( dlg->selectedOptions().isEmpty() );
   // existing value using layer id should match to project layer
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() << raster->id() );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() << raster->id(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->id() );
   QCOMPARE( dlg->selectedOptions().size(), 1 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), raster->id() );
   // existing value using layer source should also match to project layer
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() << raster->source() );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() << raster->source(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ), Qt::UserRole ).toString(), raster->source() );
   QCOMPARE( dlg->selectedOptions().size(), 1 );
   QCOMPARE( dlg->selectedOptions().at( 0 ).toString(), raster->source() );
   // existing value using full layer path not matching a project layer should work
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() << raster->source() << QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() << raster->source() << QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif", QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "raster [EPSG:4326]" ) );
@@ -2891,7 +2916,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
   QCOMPARE( dlg->selectedOptions().at( 1 ).toString(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
 
   // should remember layer order
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList()  << QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" << raster->source() );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList()  << QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" << raster->source(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 2 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
@@ -2904,7 +2929,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // mesh
   param = qgis::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeMesh );
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "mesh" ) );
@@ -2912,7 +2937,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // vector points
   param = qgis::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeVectorPoint );
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "point [EPSG:4326]" ) );
@@ -2920,7 +2945,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // vector lines
   param = qgis::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeVectorLine );
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "line [EPSG:4326]" ) );
@@ -2928,7 +2953,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // vector polygons
   param = qgis::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeVectorPolygon );
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 1 );
   QCOMPARE( dlg->mModel->data( dlg->mModel->index( 0, 0 ) ).toString(), QStringLiteral( "polygon [EPSG:4326]" ) );
@@ -2936,7 +2961,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // vector any type
   param = qgis::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeVector );
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 4 );
   QSet< QString > titles;
@@ -2946,7 +2971,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // any type
   param = qgis::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeMapLayer );
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 6 );
   titles.clear();
@@ -2957,7 +2982,7 @@ void TestProcessingGui::testMultipleFileSelectionDialog()
 
   // files
   param = qgis::make_unique< QgsProcessingParameterMultipleLayers >( QString(), QString(), QgsProcessing::TypeFile );
-  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList() );
+  dlg = qgis::make_unique< QgsProcessingMultipleInputPanelWidget >( param.get(), QVariantList(), QList<QgsProcessingModelChildParameterSource >() );
   dlg->setProject( QgsProject::instance() );
   QCOMPARE( dlg->mModel->rowCount(), 0 );
 }
@@ -3273,35 +3298,12 @@ void TestProcessingGui::testMultipleInputWrapper()
     wrapper.setWidgetValue( QVariantList() << path1 << path2, context );
     QCOMPARE( spy.count(), 1 );
     QCOMPARE( wrapper.widgetValue().toList(), QVariantList() << path1 << path2 );
-
-    switch ( type )
-    {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-        QCOMPARE( static_cast< QgsProcessingMultipleLayerPanelWidget * >( wrapper.wrappedWidget() )->value().toList(), QVariantList() << path1 << path2 );
-        break;
-
-      case QgsProcessingGui::Modeler:
-        QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(),  QStringLiteral( "3" ) );
-        break;
-    }
+    QCOMPARE( static_cast< QgsProcessingMultipleLayerPanelWidget * >( wrapper.wrappedWidget() )->value().toList(), QVariantList() << path1 << path2 );
 
     wrapper.setWidgetValue( path1, context );
     QCOMPARE( spy.count(), 2 );
     QCOMPARE( wrapper.widgetValue().toStringList(), QStringList() << path1 );
-
-    switch ( type )
-    {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-        QCOMPARE( static_cast< QgsProcessingMultipleLayerPanelWidget * >( wrapper.wrappedWidget() )->value().toList(), QVariantList() << path1 );
-        break;
-
-      case QgsProcessingGui::Modeler:
-        QCOMPARE( static_cast< QLineEdit * >( wrapper.wrappedWidget() )->text(),  QStringLiteral( "1" ) );
-        break;
-    }
-
+    QCOMPARE( static_cast< QgsProcessingMultipleLayerPanelWidget * >( wrapper.wrappedWidget() )->value().toList(), QVariantList() << path1 );
     delete w;
 
     // optional
@@ -3318,18 +3320,7 @@ void TestProcessingGui::testMultipleInputWrapper()
     wrapper2.setWidgetValue( QVariant(), context );
     QCOMPARE( spy2.count(), 2 );
     QVERIFY( !wrapper2.widgetValue().isValid() );
-
-    switch ( type )
-    {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-        QVERIFY( static_cast< QgsProcessingMultipleLayerPanelWidget * >( wrapper2.wrappedWidget() )->value().toList().isEmpty() );
-        break;
-
-      case QgsProcessingGui::Modeler:
-        QCOMPARE( static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->text(),  QString() );
-        break;
-    }
+    QVERIFY( static_cast< QgsProcessingMultipleLayerPanelWidget * >( wrapper2.wrappedWidget() )->value().toList().isEmpty() );
 
     QLabel *l = wrapper.createWrappedLabel();
     if ( wrapper.type() != QgsProcessingGui::Batch )
@@ -3345,19 +3336,30 @@ void TestProcessingGui::testMultipleInputWrapper()
     }
 
     // check signal
-    switch ( type )
-    {
-      case QgsProcessingGui::Standard:
-      case QgsProcessingGui::Batch:
-        static_cast< QgsProcessingMultipleLayerPanelWidget * >( wrapper2.wrappedWidget() )->setValue( QVariantList() << path1 );
-        break;
-
-      case QgsProcessingGui::Modeler:
-        static_cast< QLineEdit * >( wrapper2.wrappedWidget() )->setText( QStringLiteral( "6" ) );
-        break;
-    }
-
+    static_cast< QgsProcessingMultipleLayerPanelWidget * >( wrapper2.wrappedWidget() )->setValue( QVariantList() << path1 );
     QCOMPARE( spy2.count(), 3 );
+
+
+    if ( wrapper.type() == QgsProcessingGui::Modeler )
+    {
+      // different mix of sources
+
+      wrapper2.setWidgetValue( QVariantList()
+                               << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg3" ), QStringLiteral( "OUTPUT" ) ) )
+                               << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromModelParameter( QStringLiteral( "p1" ) ) )
+                               << QVariant::fromValue( QgsProcessingModelChildParameterSource::fromStaticValue( QStringLiteral( "something" ) ) ), context ) ;
+      QCOMPARE( wrapper2.widgetValue().toList().count(), 3 );
+
+      QCOMPARE( wrapper2.widgetValue().toList().at( 0 ).value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::ChildOutput );
+      QCOMPARE( wrapper2.widgetValue().toList().at( 0 ).value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::ChildOutput );
+      QCOMPARE( wrapper2.widgetValue().toList().at( 0 ).value< QgsProcessingModelChildParameterSource>().outputChildId(), QStringLiteral( "alg3" ) );
+      QCOMPARE( wrapper2.widgetValue().toList().at( 0 ).value< QgsProcessingModelChildParameterSource>().outputName(), QStringLiteral( "OUTPUT" ) );
+      QCOMPARE( wrapper2.widgetValue().toList().at( 1 ).value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::ModelParameter );
+      QCOMPARE( wrapper2.widgetValue().toList().at( 1 ).value< QgsProcessingModelChildParameterSource>().parameterName(), QStringLiteral( "p1" ) );
+      QCOMPARE( wrapper2.widgetValue().toList().at( 2 ).value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::StaticValue );
+      QCOMPARE( wrapper2.widgetValue().toList().at( 2 ).value< QgsProcessingModelChildParameterSource>().staticValue().toString(), QStringLiteral( "something" ) );
+      delete w;
+    }
   };
 
   // standard wrapper
@@ -3365,10 +3367,9 @@ void TestProcessingGui::testMultipleInputWrapper()
 
   // batch wrapper
   testWrapper( QgsProcessingGui::Batch );
-#if 0
+
   // modeler wrapper
   testWrapper( QgsProcessingGui::Modeler );
-#endif
 }
 
 void TestProcessingGui::testEnumSelectionPanel()

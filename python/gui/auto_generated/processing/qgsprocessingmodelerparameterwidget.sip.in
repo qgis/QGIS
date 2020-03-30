@@ -114,7 +114,16 @@ Sets the current ``value`` for the parameter.
 .. seealso:: :py:func:`value`
 %End
 
-    virtual QgsProcessingModelChildParameterSource value() const;
+    void setWidgetValue( const QList< QgsProcessingModelChildParameterSource > &values );
+%Docstring
+Sets the current ``values`` for the parameter.
+
+.. seealso:: :py:func:`value`
+
+.. versionadded:: 3.14
+%End
+
+    virtual QVariant value() const;
 %Docstring
 Returns the current value of the parameter.
 

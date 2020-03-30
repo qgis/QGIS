@@ -25,6 +25,8 @@
 class QStandardItemModel;
 class QToolButton;
 class QStandardItem;
+class QgsProcessingModelChildParameterSource;
+class QgsProcessingModelAlgorithm;
 
 ///@cond NOT_STABLE
 
@@ -117,14 +119,14 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
 
     //! Dialog list model
     QStandardItemModel *mModel = nullptr;
-
+    //! Value formatter
+    std::function< QString( const QVariant & )> mValueFormatter;
   private slots:
 
     void selectAll( bool checked );
     void toggleSelection();
 
   private:
-    std::function< QString( const QVariant & )> mValueFormatter;
 
     QPushButton *mButtonSelectAll = nullptr;
     QPushButton *mButtonClearSelection = nullptr;
@@ -226,7 +228,9 @@ class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMul
      * Constructor for QgsProcessingMultipleInputPanelWidget.
      */
     QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter,
-                                           const QVariantList &selectedOptions = QVariantList(),
+                                           const QVariantList &selectedOptions,
+                                           const QList< QgsProcessingModelChildParameterSource > &modelSources,
+                                           QgsProcessingModelAlgorithm *model = nullptr,
                                            QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
@@ -266,7 +270,9 @@ class GUI_EXPORT QgsProcessingMultipleInputDialog : public QDialog
      * in which case they will be also added as existing options within the dialog.
      */
     QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter,
-                                      const QVariantList &selectedOptions = QVariantList(),
+                                      const QVariantList &selectedOptions,
+                                      const QList< QgsProcessingModelChildParameterSource > &modelSources,
+                                      QgsProcessingModelAlgorithm *model = nullptr,
                                       QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
 
     /**

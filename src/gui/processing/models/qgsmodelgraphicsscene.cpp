@@ -138,9 +138,9 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
               arrow = new QgsModelArrowItem( link.item, link.edge, link.linkIndex, mChildAlgorithmItems.value( it.value().childId() ), Qt::TopEdge, idx );
             addItem( arrow );
           }
-          idx += 1;
         }
       }
+      idx += 1;
     }
     const QStringList dependencies = it.value().dependencies();
     for ( const QString &depend : dependencies )

@@ -98,7 +98,6 @@ Emitted when the selection changes in the widget.
 Adds a new option to the widget.
 %End
 
-
 };
 
 
@@ -188,7 +187,9 @@ A panel widget for selection of multiple inputs from a fixed list of options.
   public:
 
     QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter,
-                                           const QVariantList &selectedOptions = QVariantList(),
+                                           const QVariantList &selectedOptions,
+                                           const QList< QgsProcessingModelChildParameterSource > &modelSources,
+                                           QgsProcessingModelAlgorithm *model = 0,
                                            QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingMultipleInputPanelWidget.
@@ -220,7 +221,9 @@ A dialog for selection of multiple layer inputs.
   public:
 
     QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter,
-                                      const QVariantList &selectedOptions = QVariantList(),
+                                      const QVariantList &selectedOptions,
+                                      const QList< QgsProcessingModelChildParameterSource > &modelSources,
+                                      QgsProcessingModelAlgorithm *model = 0,
                                       QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = 0 );
 %Docstring
 Constructor for QgsProcessingMultipleInputDialog.

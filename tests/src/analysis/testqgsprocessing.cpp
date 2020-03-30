@@ -603,6 +603,7 @@ class TestQgsProcessing: public QObject
     void parameterType();
     void sourceTypeToString_data();
     void sourceTypeToString();
+    void modelSource();
 
   private:
 
@@ -10336,6 +10337,35 @@ void TestQgsProcessing::sourceTypeToString()
 
   const QgsProcessing::SourceType sourceType = static_cast< QgsProcessing::SourceType >( type );
   QCOMPARE( QgsProcessing::sourceTypeToString( sourceType ), expected );
+}
+
+void TestQgsProcessing::modelSource()
+{
+  QgsProcessingModelChildParameterSource source;
+  source.setExpression( QStringLiteral( "expression" ) );
+  source.setExpressionText( QStringLiteral( "expression string" ) );
+  source.setOutputName( QStringLiteral( "output name " ) );
+  source.setStaticValue( QString( "value" ) );
+  source.setOutputChildId( QStringLiteral( "output child id" ) );
+  source.setParameterName( QStringLiteral( "parameter name" ) );
+  source.setSource( QgsProcessingModelChildParameterSource::ChildOutput );
+
+  QByteArray ba;
+  QDataStream ds( &ba, QIODevice::ReadWrite );
+  ds << source;
+
+  ds.device()->seek( 0 );
+
+  QgsProcessingModelChildParameterSource res;
+  ds >> res;
+
+  QCOMPARE( res.expression(), QStringLiteral( "expression" ) );
+  QCOMPARE( res.expressionText(), QStringLiteral( "expression string" ) );
+  QCOMPARE( res.outputName(), QStringLiteral( "output name " ) );
+  QCOMPARE( res.staticValue().toString(), QString( "value" ) );
+  QCOMPARE( res.outputChildId(), QStringLiteral( "output child id" ) );
+  QCOMPARE( res.parameterName(), QStringLiteral( "parameter name" ) );
+  QCOMPARE( res.source(), QgsProcessingModelChildParameterSource::ChildOutput );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )
