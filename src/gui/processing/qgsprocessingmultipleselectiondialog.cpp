@@ -15,11 +15,18 @@
 
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsgui.h"
+#include "qgssettings.h"
+#include "qgsfileutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsmeshlayer.h"
+#include "qgsrasterlayer.h"
+
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QToolButton>
+#include <QFileDialog>
 
 ///@cond NOT_STABLE
 
@@ -78,6 +85,7 @@ QVariantList QgsProcessingMultipleSelectionPanelWidget::selectedOptions() const
   return options;
 }
 
+
 void QgsProcessingMultipleSelectionPanelWidget::selectAll( const bool checked )
 {
   const QList<QStandardItem *> items = currentItems();
@@ -131,29 +139,40 @@ void QgsProcessingMultipleSelectionPanelWidget::populateList( const QVariantList
 //    if isinstance(t, QgsProcessingModelChildParameterSource):
 //       item = QStandardItem(t.staticValue())
     // else:
-    std::unique_ptr< QStandardItem > item = qgis::make_unique< QStandardItem >( mValueFormatter( option ) );
-    item->setData( option, Qt::UserRole );
-    item->setCheckState( Qt::Checked );
-    item->setCheckable( true );
-    item->setDropEnabled( false );
-    mModel->appendRow( item.release() );
+
+    addOption( option, mValueFormatter( option ), true );
     remainingOptions.removeAll( option );
   }
 
   for ( const QVariant &option : qgis::as_const( remainingOptions ) )
   {
-    std::unique_ptr< QStandardItem > item = qgis::make_unique< QStandardItem >( mValueFormatter( option ) );
-    item->setData( option, Qt::UserRole );
-    item->setCheckState( Qt::Unchecked );
-    item->setCheckable( true );
-    item->setDropEnabled( false );
-    mModel->appendRow( item.release() );
+    addOption( option, mValueFormatter( option ), false );
   }
 
   mSelectionList->setModel( mModel );
 }
 
 
+void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle )
+{
+  // don't add duplicate options
+  for ( int i = 0; i < mModel->rowCount(); ++i )
+  {
+    if ( mModel->item( i )->data( Qt::UserRole ) == value )
+    {
+      if ( updateExistingTitle )
+        mModel->item( i )->setText( title );
+      return;
+    }
+  }
+
+  std::unique_ptr< QStandardItem > item = qgis::make_unique< QStandardItem >( title );
+  item->setData( value, Qt::UserRole );
+  item->setCheckState( selected ? Qt::Checked : Qt::Unchecked );
+  item->setCheckable( true );
+  item->setDropEnabled( false );
+  mModel->appendRow( item.release() );
+}
 
 //
 // QgsProcessingMultipleSelectionDialog
@@ -184,4 +203,218 @@ void QgsProcessingMultipleSelectionDialog::setValueFormatter( const std::functio
 QVariantList QgsProcessingMultipleSelectionDialog::selectedOptions() const
 {
   return mWidget->selectedOptions();
+}
+
+
+//
+// QgsProcessingMultipleInputPanelWidget
+//
+
+QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, QWidget *parent )
+  : QgsProcessingMultipleSelectionPanelWidget( QVariantList(), selectedOptions, parent )
+  , mParameter( parameter )
+{
+  QPushButton *addFileButton = new QPushButton( tr( "Add File(s)…" ) );
+  connect( addFileButton, &QPushButton::clicked, this, &QgsProcessingMultipleInputPanelWidget::addFiles );
+  buttonBox()->addButton( addFileButton, QDialogButtonBox::ActionRole );
+
+  QPushButton *addDirButton = new QPushButton( tr( "Add Directory…" ) );
+  connect( addDirButton, &QPushButton::clicked, this, &QgsProcessingMultipleInputPanelWidget::addDirectory );
+  buttonBox()->addButton( addDirButton, QDialogButtonBox::ActionRole );
+}
+
+void QgsProcessingMultipleInputPanelWidget::setProject( QgsProject *project )
+{
+  if ( mParameter->layerType() != QgsProcessing::TypeFile )
+    populateFromProject( project );
+}
+
+void QgsProcessingMultipleInputPanelWidget::addFiles()
+{
+  QgsSettings settings;
+  QString path = settings.value( QStringLiteral( "/Processing/LastInputPath" ), QDir::homePath() ).toString();
+
+  QString filter;
+  if ( const QgsFileFilterGenerator *generator = dynamic_cast< const QgsFileFilterGenerator * >( mParameter ) )
+    filter = generator->createFileFilter();
+  else
+    filter = QObject::tr( "All files (*.*)" );
+
+  const QStringList filenames = QFileDialog::getOpenFileNames( this, tr( "Select File(s)" ), path, filter );
+  if ( filenames.empty() )
+    return;
+
+  settings.setValue( QStringLiteral( "/Processing/LastInputPath" ), QFileInfo( filenames.at( 0 ) ).path() );
+
+  for ( const QString &file : filenames )
+  {
+    addOption( file, file, true );
+  }
+
+  emit selectionChanged();
+}
+
+void QgsProcessingMultipleInputPanelWidget::addDirectory()
+{
+  QgsSettings settings;
+  QString path = settings.value( QStringLiteral( "/Processing/LastInputPath" ), QDir::homePath() ).toString();
+
+  const QString dir = QFileDialog::getExistingDirectory( this, tr( "Select Directory" ), path );
+  if ( dir.isEmpty() )
+    return;
+
+  settings.setValue( QStringLiteral( "/Processing/LastInputPath" ), dir );
+
+  QStringList nameFilters;
+  if ( const QgsFileFilterGenerator *generator = dynamic_cast< const QgsFileFilterGenerator * >( mParameter ) )
+  {
+    const QStringList extensions = QgsFileUtils::extensionsFromFilter( generator->createFileFilter() );
+    for ( const QString &extension : extensions )
+    {
+      nameFilters << QStringLiteral( "*.%1" ).arg( extension );
+      nameFilters << QStringLiteral( "*.%1" ).arg( extension.toUpper() );
+      nameFilters << QStringLiteral( "*.%1" ).arg( extension.toLower() );
+    }
+  }
+
+  QDirIterator it( path, nameFilters, QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories );
+  QStringList files;
+  while ( it.hasNext() )
+  {
+    const QString fullPath = it.next();
+    addOption( fullPath, fullPath, true );
+  }
+  emit selectionChanged();
+}
+
+void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *project )
+{
+  QgsSettings settings;
+  auto addLayer = [&]( const QgsMapLayer * layer )
+  {
+    const QString authid = layer->crs().authid();
+    QString title;
+    if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_CRS_DEF" ), true ).toBool() && !authid.isEmpty() )
+      title = QStringLiteral( "%1 [%2]" ).arg( layer->name(), authid );
+    else
+      title = layer->name();
+
+
+    QString id = layer->id();
+    for ( int i = 0; i < mModel->rowCount(); ++i )
+    {
+      // try to match project layers to current layers
+      if ( mModel->item( i )->data( Qt::UserRole ) == layer->id() )
+      {
+        id = layer->id();
+        break;
+      }
+      else if ( mModel->item( i )->data( Qt::UserRole ) == layer->source() )
+      {
+        id = layer->source();
+        break;
+      }
+    }
+
+    addOption( id, title, false, true );
+  };
+
+  switch ( mParameter->layerType() )
+  {
+    case QgsProcessing::TypeFile:
+      break;
+
+    case QgsProcessing::TypeRaster:
+    {
+      const QList<QgsRasterLayer *> options = QgsProcessingUtils::compatibleRasterLayers( project, false );
+      for ( const QgsRasterLayer *layer : options )
+      {
+        addLayer( layer );
+      }
+      break;
+    }
+
+    case QgsProcessing::TypeMesh:
+    {
+      const QList<QgsMeshLayer *> options = QgsProcessingUtils::compatibleMeshLayers( project, false );
+      for ( const QgsMeshLayer *layer : options )
+      {
+        addLayer( layer );
+      }
+
+      break;
+    }
+
+    case QgsProcessing::TypeVector:
+    case QgsProcessing::TypeVectorAnyGeometry:
+    {
+      const QList<QgsVectorLayer *> options = QgsProcessingUtils::compatibleVectorLayers( project, QList< int >() );
+      for ( const QgsVectorLayer *layer : options )
+      {
+        addLayer( layer );
+      }
+
+      break;
+    }
+
+    case QgsProcessing::TypeMapLayer:
+    {
+      const QList<QgsVectorLayer *> vectors = QgsProcessingUtils::compatibleVectorLayers( project, QList< int >() );
+      for ( const QgsVectorLayer *layer : vectors )
+      {
+        addLayer( layer );
+      }
+      const QList<QgsRasterLayer *> rasters = QgsProcessingUtils::compatibleRasterLayers( project );
+      for ( const QgsRasterLayer *layer : rasters )
+      {
+        addLayer( layer );
+      }
+      const QList<QgsMeshLayer *> meshes = QgsProcessingUtils::compatibleMeshLayers( project );
+      for ( const QgsMeshLayer *layer : meshes )
+      {
+        addLayer( layer );
+      }
+
+      break;
+    }
+
+    case QgsProcessing::TypeVectorPoint:
+    case QgsProcessing::TypeVectorLine:
+    case QgsProcessing::TypeVectorPolygon:
+    {
+      const QList<QgsVectorLayer *> vectors = QgsProcessingUtils::compatibleVectorLayers( project, QList< int >() << mParameter->layerType() );
+      for ( const QgsVectorLayer *layer : vectors )
+      {
+        addLayer( layer );
+      }
+      break;
+    }
+  }
+}
+
+//
+// QgsProcessingMultipleInputDialog
+//
+
+QgsProcessingMultipleInputDialog::QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, QWidget *parent, Qt::WindowFlags flags )
+  : QDialog( parent, flags )
+{
+  setWindowTitle( tr( "Multiple Selection" ) );
+  QVBoxLayout *vLayout = new QVBoxLayout();
+  mWidget = new QgsProcessingMultipleInputPanelWidget( parameter, selectedOptions );
+  vLayout->addWidget( mWidget );
+  mWidget->buttonBox()->addButton( QDialogButtonBox::Cancel );
+  connect( mWidget->buttonBox(), &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mWidget->buttonBox(), &QDialogButtonBox::rejected, this, &QDialog::reject );
+  setLayout( vLayout );
+}
+
+QVariantList QgsProcessingMultipleInputDialog::selectedOptions() const
+{
+  return mWidget->selectedOptions();
+}
+
+void QgsProcessingMultipleInputDialog::setProject( QgsProject *project )
+{
+  mWidget->setProject( project );
 }
