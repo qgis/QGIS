@@ -132,7 +132,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
       // parse attributes
       //
 
-      for ( int tagNum = 0; tagNum < feature.tags_size(); tagNum += 2 )
+      for ( int tagNum = 0; tagNum + 1 < feature.tags_size(); tagNum += 2 )
       {
         int keyIndex = static_cast<int>( feature.tags( tagNum ) );
         int fieldIndex = tagKeyIndexToFieldIndex.value( keyIndex, -1 );
@@ -140,6 +140,11 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           continue;
 
         int valueIndex = static_cast<int>( feature.tags( tagNum + 1 ) );
+        if ( valueIndex >= layer.values_size() )
+        {
+          QgsDebugMsg( QStringLiteral( "Invalid value index for attribute" ) );
+          continue;
+        }
         const ::vector_tile::Tile_Value &value = layer.values( valueIndex );
 
         if ( value.has_string_value() )
@@ -155,11 +160,10 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         else if ( value.has_sint_value() )
           f.setAttribute( fieldIndex, static_cast<int>( value.sint_value() ) );
         else if ( value.has_bool_value() )
-          f.setAttribute( fieldIndex, static_cast<int>( value.bool_value() ) );  // or keep it bool? (do we have good support for that?)
+          f.setAttribute( fieldIndex, static_cast<bool>( value.bool_value() ) );
         else
         {
-          // TODO: report - should not happen
-          Q_ASSERT( false );
+          QgsDebugMsg( QStringLiteral( "Unexpected attribute value" ) );
         }
       }
 
@@ -182,6 +186,11 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         unsigned cmdCount = g >> 3;
         if ( cmdId == 1 ) // MoveTo
         {
+          if ( i + static_cast<int>( cmdCount ) * 2 >= feature.geometry_size() )
+          {
+            QgsDebugMsg( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
+            break;
+          }
           for ( unsigned j = 0; j < cmdCount; j++ )
           {
             unsigned v = feature.geometry( i + 1 );
@@ -215,6 +224,11 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         }
         else if ( cmdId == 2 ) // LineTo
         {
+          if ( i + static_cast<int>( cmdCount ) * 2 >= feature.geometry_size() )
+          {
+            QgsDebugMsg( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
+            break;
+          }
           for ( unsigned j = 0; j < cmdCount; j++ )
           {
             unsigned v = feature.geometry( i + 1 );
@@ -247,8 +261,14 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
             else
             {
               // interior ring (hole)
-              Q_ASSERT( outputPolygons.count() != 0 );  // TODO: better error handling
-              outputPolygons[outputPolygons.count() - 1]->addInteriorRing( new QgsLineString( tmpPoints ) );
+              if ( outputPolygons.count() != 0 )
+              {
+                outputPolygons[outputPolygons.count() - 1]->addInteriorRing( new QgsLineString( tmpPoints ) );
+              }
+              else
+              {
+                QgsDebugMsg( QStringLiteral( "Malformed geometry: first ring of a polygon is interior ring" ) );
+              }
               tmpPoints.clear();
             }
           }
