@@ -1263,8 +1263,18 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
       mEndStaticDateTimeEdit->setDateTime( QDateTime::fromString( parts.at( 1 ), Qt::ISODateWithMs ) );
     }
 
+    const QString referenceTimeExent = uri.param( QStringLiteral( "referenceTimeDimensionExtent" ) );
+
+    mReferenceTime->setEnabled( !referenceTimeExent.isEmpty() );
+    mReferenceDateTimeEdit->setVisible( !referenceTimeExent.isEmpty() );
+
+    QString referenceTimeLabelText = referenceTimeExent.isEmpty() ?
+                                     tr( "There is no reference time in the layer's capabilities." ) : QString();
+    mReferenceTimeLabel->setText( referenceTimeLabelText );
+
     const QString referenceTime = uri.param( QStringLiteral( "reference_time" ) );
-    if ( !referenceTime.isEmpty() )
+
+    if ( !referenceTime.isEmpty() && !referenceTimeExent.isEmpty() )
     {
       if ( referenceTime.contains( '/' ) )
       {
