@@ -71,7 +71,7 @@ void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
   maxAttemptsParam->setFlags( maxAttemptsParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( maxAttemptsParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > randomSeedParam = qgis::make_unique< QgsProcessingParameterNumber >( SEED, QObject::tr( "Random seed" ), QgsProcessingParameterNumber::Integer, 1, false, 1 );
+  std::unique_ptr< QgsProcessingParameterNumber > randomSeedParam = qgis::make_unique< QgsProcessingParameterNumber >( SEED, QObject::tr( "Random seed" ), QgsProcessingParameterNumber::Integer, QVariant(), true, 1 );
   randomSeedParam->setFlags( randomSeedParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( randomSeedParam.release() );
 
@@ -131,6 +131,7 @@ bool QgsRandomPointsOnLinesAlgorithm::prepareAlgorithm( const QVariantMap &param
   mNumPoints = parameterAsInt( parameters, POINTS_NUMBER, context );
   mMinDistance = parameterAsDouble( parameters, MIN_DISTANCE, context );
   mMaxAttempts = parameterAsInt( parameters, MAX_TRIES_PER_POINT, context );
+  mUseRandomSeed = parameters.value( SEED ).isValid();
   mRandSeed = parameterAsInt( parameters, SEED, context );
   mIncludeLineAttr = parameterAsBoolean( parameters, INCLUDE_LINE_ATTRIBUTES, context );
   return true;
@@ -155,7 +156,9 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     throw QgsProcessingException( invalidSinkError( parameters, OUTPUT ) );
 
   //initialize random engine
-  srand( mRandSeed );
+  std::random_device rd;
+  std::mt19937 mt( !mUseRandomSeed ? rd() : mRandSeed );
+  std::uniform_real_distribution<> uniformDist( 0, 1 );
 
   //index for finding close points (mMinDistance > 0)
   QgsSpatialIndex index;
@@ -217,7 +220,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
           break;
         }
         // Generate a random point
-        double randPos = lineLength * ( double ) rand() / RAND_MAX;
+        double randPos = lineLength * uniformDist( mt );
         QgsGeometry rpGeom = QgsGeometry( lGeom.interpolate( randPos ) );
 
         if ( !rpGeom.isNull() && !rpGeom.isEmpty() )
