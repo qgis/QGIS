@@ -274,7 +274,7 @@ QgsWMSItemBase::QgsWMSItemBase( const QgsWmsCapabilitiesProperty &capabilitiesPr
 {
 }
 
-QString QgsWMSItemBase::createUri()
+QString QgsWMSLayerItem::createUri()
 {
   if ( mLayerProperty.name.isEmpty() )
     return QString(); // layer collection
@@ -290,10 +290,19 @@ QString QgsWMSItemBase::createUri()
     // add temporal dimensions only
     if ( dimension.name == QLatin1String( "time" ) || dimension.name == QLatin1String( "reference_time" ) )
     {
+      QString name = dimension.name == QLatin1String( "time" ) ? QString( "timeDimensionExtent" ) : QString( "referenceTimeDimensionExtent" );
+
       if ( !( mDataSourceUri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) ) )
         mDataSourceUri.setParam( QLatin1String( "type" ), QLatin1String( "wmst" ) );
-      mDataSourceUri.setParam( dimension.name, dimension.extent );
+      mDataSourceUri.setParam( name, dimension.extent );
     }
+  }
+
+  // WMS-T defaults settings
+  if ( mDataSourceUri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) )
+  {
+    mDataSourceUri.setParam( QLatin1String( "temporalSource" ), QLatin1String( "provider" ) );
+    mDataSourceUri.setParam( QLatin1String( "enableTime" ), QLatin1String( "yes" ) );
   }
 
   QString format;
