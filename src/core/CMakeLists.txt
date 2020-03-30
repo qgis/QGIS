@@ -18,8 +18,6 @@ SET(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
   ${CMAKE_SOURCE_DIR}/external/meshOptimizer/simplifier.cpp
 
-  ${CMAKE_SOURCE_DIR}/external/mapbox-vector-tile/vector_tile.pb.cc
-
   callouts/qgscallout.cpp
   callouts/qgscalloutsregistry.cpp
 
@@ -679,11 +677,6 @@ IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # spatialindex headers produce warnings
   SET_SOURCE_FILES_PROPERTIES(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
 ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-
-IF (NOT MSVC)
-  # automatically generated file produces warnings (unused-parameter, unused-variable, misleading-indentation)
-  SET_SOURCE_FILES_PROPERTIES(${CMAKE_SOURCE_DIR}/external/mapbox-vector-tile/vector_tile.pb.cc PROPERTIES COMPILE_FLAGS -w)
-ENDIF (NOT MSVC)
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -1388,6 +1381,16 @@ IF(NOT MSVC)
   ENDIF ()
 ENDIF(NOT MSVC)
 
+# Generate cpp+header file from .proto file using "protoc" tool (to support MVT encoding of vector tiles)
+protobuf_generate_cpp(VECTOR_TILE_PROTO_SRCS VECTOR_TILE_PROTO_HDRS vectortile/vector_tile.proto)
+SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS} ${VECTOR_TILE_PROTO_SRCS})
+SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${VECTOR_TILE_PROTO_HDRS})
+IF (NOT MSVC)
+  # automatically generated file produces warnings (unused-parameter, unused-variable, misleading-indentation)
+  SET_SOURCE_FILES_PROPERTIES(${VECTOR_TILE_PROTO_SRCS} PROPERTIES COMPILE_FLAGS -w)
+ENDIF (NOT MSVC)
+
+
 # install headers
 # install qgsconfig.h and plugin.h here so they can get into
 # the OS X framework target
@@ -1593,7 +1596,7 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${SQLITE3_LIBRARY}
   ${SPATIALITE_LIBRARY}
   ${LIBZIP_LIBRARY}
-  ${Protobuf_LIBRARIES}
+  ${Protobuf_LITE_LIBRARY}
   ${ZLIB_LIBRARIES}
 )
 
