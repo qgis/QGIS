@@ -140,7 +140,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void setEditorContext( const QgsAttributeEditorContext &context );
 
     /**
-     * Returns the editor \a context
+     * Returns the attribute editor context.
      * \since QGIS 3.14
      */
     QgsAttributeEditorContext editorContext( ) const;
