@@ -81,9 +81,9 @@ Sets the editor ``context``
    the geometry of a referencing feature from this widget
 %End
 
-    QgsAttributeEditorContext editorContext( );
+    QgsAttributeEditorContext editorContext( ) const;
 %Docstring
-Returns the editor ``context``
+Returns the attribute editor context.
 
 .. versionadded:: 3.14
 %End
