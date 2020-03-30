@@ -257,6 +257,13 @@ QList<QAction *> QgsNetworkLoggerRequestGroup::actions( QObject *parent )
   } );
   res << openUrlAction;
 
+  QAction *copyUrlAction = new QAction( QObject::tr( "Copy URL" ), parent );
+  QObject::connect( copyUrlAction, &QAction::triggered, openUrlAction, [ = ]
+  {
+    QApplication::clipboard()->setText( mUrl.url() );
+  } );
+  res << copyUrlAction;
+
   QAction *copyAsCurlAction = new QAction( QObject::tr( "Copy As cURL" ), parent );
   QObject::connect( copyAsCurlAction, &QAction::triggered, copyAsCurlAction, [ = ]
   {
