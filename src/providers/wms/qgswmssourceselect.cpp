@@ -1027,7 +1027,7 @@ void QgsWMSSourceSelect::collectDimensions( QStringList &layers, QgsDataSourceUr
 {
   for ( const QgsWmsLayerProperty layerProperty : mLayerProperties )
   {
-    if ( layerProperty.name == layers.join( QStringLiteral( "," ) ) )
+    if ( layerProperty.name == layers.join( ',' ) )
     {
       // Check for layer dimensions
       for ( const QgsWmsDimensionProperty &dimension : qgis::as_const( layerProperty.dimensions ) )
@@ -1037,7 +1037,7 @@ void QgsWMSSourceSelect::collectDimensions( QStringList &layers, QgsDataSourceUr
              dimension.name == QLatin1String( "reference_time" ) )
         {
           QString name = dimension.name == QLatin1String( "time" ) ?
-                         QString( "timeDimensionExtent" ) : QString( "referenceTimeDimensionExtent" );
+                         QStringLiteral( "timeDimensionExtent" ) : QStringLiteral( "referenceTimeDimensionExtent" );
 
           if ( !( uri.param( QLatin1String( "type" ) ) == QLatin1String( "wmst" ) ) )
             uri.setParam( QLatin1String( "type" ), QLatin1String( "wmst" ) );
