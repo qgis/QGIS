@@ -196,8 +196,6 @@ void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value
 
 
 
-///@endcond
-
 QgsProcessingMultipleSelectionDialog::QgsProcessingMultipleSelectionDialog( const QVariantList &availableOptions, const QVariantList &selectedOptions, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
@@ -442,3 +440,6 @@ void QgsProcessingMultipleInputDialog::setProject( QgsProject *project )
 {
   mWidget->setProject( project );
 }
+
+
+///@endcond
