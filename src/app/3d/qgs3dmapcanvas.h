@@ -19,6 +19,8 @@
 #include <QWidget>
 #include <Qt3DRender/QRenderCapture>
 
+#include "qgsrange.h"
+
 namespace Qt3DExtras
 {
   class Qt3DWindow;
@@ -74,9 +76,16 @@ class Qgs3DMapCanvas : public QWidget
     Qgs3DMapTool *mapTool() const { return mMapTool; }
 
     /**
-     * Set the visibility of on-screen navigation widget.
+     * Sets the visibility of on-screen navigation widget.
      */
     void setOnScreenNavigationVisibility( bool visibility );
+
+  public slots:
+
+    /**
+     * Sets the time range
+     */
+    void setTimeRange( const QgsDateTimeRange &timeRange );
 
   signals:
     //! Emitted when the 3D map canvas was successfully saved as image
@@ -84,6 +93,9 @@ class Qgs3DMapCanvas : public QWidget
 
     //! Emitted when the the map setting is changed
     void mapSettingsChanged();
+
+    //! Emitted when the map time range is changed
+    void mapTimeRangeChanged();
 
   protected:
     void resizeEvent( QResizeEvent *ev ) override;

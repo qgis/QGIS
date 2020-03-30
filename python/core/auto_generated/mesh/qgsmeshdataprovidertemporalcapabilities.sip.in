@@ -1,0 +1,99 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshdataprovidertemporalcapabilities.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsMeshDataProviderTemporalCapabilities: QgsDataProviderTemporalCapabilities
+{
+%Docstring
+Class for handling properties relating to a mesh data provider's temporal capabilities.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmeshdataprovidertemporalcapabilities.h"
+%End
+  public:
+    QgsMeshDataProviderTemporalCapabilities();
+%Docstring
+Constructor for QgsMeshDataProviderTemporalCapabilities
+%End
+
+    QgsMeshDatasetIndex datasetIndexTimeInMilliseconds( int group, qint64 timeSinceGlobalReference ) const;
+%Docstring
+Returns the last dataset index that has the time equal or lesser or than ``timeSinceGlobalReference`` (in milliseconds)from the dataset ``group``
+
+Returns invalide dataset index if the time is less than the first dataset's time
+%End
+
+    QgsMeshDatasetIndex datasetIndex( int group, double  timeSinceGlobalReferenceInHours ) const;
+%Docstring
+Returns the last dataset index that has the time equal or lesser or than ``timeSinceGlobalReference`` (in hours)from the dataset ``group``
+
+Returns invalide dataset index if the time is less than the first dataset's time
+%End
+
+
+
+
+    bool hasReferenceTime() const;
+%Docstring
+Returns true if the data has a reference time
+%End
+
+    QDateTime referenceTime() const;
+%Docstring
+Returns the reference time
+%End
+
+    QgsDateTimeRange timeExtent() const;
+%Docstring
+Returns the time extent using the internal reference time
+and the first and last times available from the all the dataset
+%End
+
+    QgsDateTimeRange timeExtent( const QDateTime &reference ) const;
+%Docstring
+Returns the time extent using ``reference`` date time
+and the first and last times available from the all the dataset
+%End
+
+    void setTemporalUnit( const QgsUnitTypes::TemporalUnit &temporalUnit );
+%Docstring
+Sets the temporal unit (``temporalUnit``) used to read data
+
+Temporal units supported are milliseconds, seconds, minutes, hors, days and weeks
+%End
+
+    QgsUnitTypes::TemporalUnit temporalUnit() const;
+%Docstring
+Returns the temporal unit used to read data
+
+Temporal units supported are milliseconds, seconds, minutes, hors, days and weeks
+%End
+
+    qint64 datasetTime( const QgsMeshDatasetIndex &index ) const;
+%Docstring
+Returns the relative time in milliseconds of the dataset
+%End
+
+    void clear();
+%Docstring
+Clears alls stored reference times and dataset times
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshdataprovidertemporalcapabilities.h              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -17,6 +17,7 @@
 ///@cond PRIVATE
 
 #include "qgsmeshmemorydataprovider.h"
+#include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsmeshlayerutils.h"
 #include "qgstriangularmesh.h"
 #include <cstring>
@@ -54,6 +55,8 @@ QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri, const 
     data = uri.split( "&uid=" )[0];
   }
   mIsValid = splitMeshSections( data );
+
+  temporalCapabilities()->setTemporalUnit( QgsUnitTypes::TemporalHours );
 }
 
 QString QgsMeshMemoryDataProvider::providerKey()
@@ -341,6 +344,17 @@ bool QgsMeshMemoryDataProvider::checkVertexId( int vertexIndex )
   return true;
 }
 
+void QgsMeshMemoryDataProvider::addGroupToTemporalCapabilities( int groupIndex, const QgsMeshMemoryDatasetGroup &group )
+{
+  QgsMeshDataProviderTemporalCapabilities *tempCap = temporalCapabilities();
+  if ( !tempCap )
+    return;
+
+  for ( int i = 0; i < group.datasets.count(); ++i )
+    if ( group.datasets.at( i ) )
+      tempCap->addDatasetTime( groupIndex, group.datasets.at( i )->time );
+}
+
 int QgsMeshMemoryDataProvider::vertexCount() const
 {
   return mVertices.size();
@@ -388,10 +402,12 @@ bool QgsMeshMemoryDataProvider::addDataset( const QString &uri )
 
   calculateMinMaxForDatasetGroup( group );
   mDatasetGroups.push_back( group );
+  addGroupToTemporalCapabilities( mDatasetGroups.count() - 1, group );
 
   if ( valid )
   {
     mExtraDatasetUris << uri;
+    temporalCapabilities()->setHasTemporalCapabilities( true );
     emit datasetGroupsAdded( 1 );
     emit dataChanged();
   }

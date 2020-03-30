@@ -130,8 +130,8 @@ void TestQgs3DRendering::initTestCase()
   mLayerMeshDataset->setCrs( mLayerDtm->crs() ); // this testing mesh does not have any CRS defined originally
   // disable rendering of scalar 2d datasets for now
   QgsMeshRendererSettings settings = mLayerMeshDataset->rendererSettings();
-  settings.setActiveScalarDataset( QgsMeshDatasetIndex( 0, 0 ) );
-  settings.setActiveVectorDataset( QgsMeshDatasetIndex( 2, 0 ) );
+  settings.setActiveScalarDatasetGroup( 0 );
+  settings.setActiveVectorDatasetGroup( 2 );
   mLayerMeshDataset->setRendererSettings( settings );
   mProject->addMapLayer( mLayerMeshDataset );
 

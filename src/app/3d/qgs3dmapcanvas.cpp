@@ -107,6 +107,8 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   }
   );
 
+  connect( this, &Qgs3DMapCanvas::mapTimeRangeChanged, mScene, &Qgs3DMapScene::onMapTimeRangeChange );
+
   emit mapSettingsChanged();
 }
 
@@ -191,10 +193,18 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
   return false;
 }
 
-
 void Qgs3DMapCanvas::setOnScreenNavigationVisibility( bool visibility )
 {
   mNavigationWidget->setVisible( visibility );
   QgsSettings setting;
   setting.setValue( QStringLiteral( "/3D/navigationWidget/visibility" ), visibility, QgsSettings::Gui );
+}
+
+void Qgs3DMapCanvas::setTimeRange( const QgsDateTimeRange &timeRange )
+{
+  if ( mMap )
+  {
+    mMap->setTemporalRange( timeRange );
+    emit mapTimeRangeChanged();
+  }
 }

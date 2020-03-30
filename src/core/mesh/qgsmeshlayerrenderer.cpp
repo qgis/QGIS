@@ -38,6 +38,7 @@
 #include "qgsfillsymbollayer.h"
 #include "qgssettings.h"
 #include "qgsstyle.h"
+#include "qgsmeshdataprovidertemporalcapabilities.h"
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer(
   QgsMeshLayer *layer,
@@ -102,7 +103,7 @@ void QgsMeshLayerRenderer::calculateOutputSize()
 
 void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 {
-  const QgsMeshDatasetIndex datasetIndex = mRendererSettings.activeScalarDataset();
+  QgsMeshDatasetIndex datasetIndex = layer->activeScalarDatasetAtTime( renderContext()->temporalRange() );
 
   // Find out if we can use cache up to date. If yes, use it and return
   const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
@@ -125,7 +126,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
   // Cache is not up-to-date, gather data
   if ( datasetIndex.isValid() )
   {
-    const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex );
+    const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex.group() );
     mScalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
 
     // populate scalar values
@@ -200,7 +201,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 
 void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 {
-  const QgsMeshDatasetIndex datasetIndex = mRendererSettings.activeVectorDataset();
+  QgsMeshDatasetIndex datasetIndex =  layer->activeVectorDatasetAtTime( renderContext()->temporalRange() );
 
   // Find out if we can use cache up to date. If yes, use it and return
   const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
@@ -425,11 +426,11 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   if ( std::isnan( mScalarDatasetMinimum ) || std::isnan( mScalarDatasetMaximum ) )
     return; // only NODATA values
 
-  QgsMeshDatasetIndex index = mRendererSettings.activeScalarDataset();
-  if ( !index.isValid() )
+  int groupIndex = mRendererSettings.activeScalarDatasetGroup();
+  if ( groupIndex < 0 )
     return; // no shader
 
-  const QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( index.group() );
+  const QgsMeshRendererScalarSettings scalarSettings = mRendererSettings.scalarSettings( groupIndex );
 
   if ( ( mTriangularMesh.contains( QgsMesh::ElementType::Face ) ) &&
        ( mScalarDataType != QgsMeshDatasetGroupMetadata::DataType::DataOnEdges ) )
@@ -607,6 +608,15 @@ QColor QgsMeshLayerRenderer::colorAt( QgsColorRampShader *shader, double val ) c
   return QColor();
 }
 
+QgsMeshDatasetIndex QgsMeshLayerRenderer::datasetIndexAtTime( QgsMeshLayer *layer, int datasetGroupIndex )
+{
+  QgsDateTimeRange timeRange = renderContext()->temporalRange(); //by default UTC
+  QDateTime layerReferenceTime = layer->temporalProperties()->timeExtent().begin();
+  qint64 time = layerReferenceTime.msecsTo( timeRange.begin() );
+  QgsMeshDataProviderTemporalCapabilities *tempCap = layer->dataProvider()->temporalCapabilities();
+  return tempCap->datasetIndexTimeInMilliseconds( datasetGroupIndex, time );
+}
+
 QgsPointXY QgsMeshLayerRenderer::fractionPoint( const QgsPointXY &p1, const QgsPointXY &p2, double fraction ) const
 {
   const QgsPointXY pt( p1.x() + fraction * ( p2.x() - p1.x() ),
@@ -641,8 +651,8 @@ void QgsMeshLayerRenderer::renderScalarDatasetOnFaces( const QgsMeshRendererScal
 
 void QgsMeshLayerRenderer::renderVectorDataset()
 {
-  QgsMeshDatasetIndex index = mRendererSettings.activeVectorDataset();
-  if ( !index.isValid() )
+  int groupIndex = mRendererSettings.activeVectorDatasetGroup();
+  if ( groupIndex < 0 )
     return;
 
   if ( !mVectorDatasetValues.isValid() )
@@ -659,7 +669,7 @@ void QgsMeshLayerRenderer::renderVectorDataset()
         mVectorDatasetMagMaximum,
         mVectorDatasetMagMinimum,
         mVectorDataType,
-        mRendererSettings.vectorSettings( index.group() ),
+        mRendererSettings.vectorSettings( groupIndex ),
         *renderContext(),
         mLayerExtent,
         mOutputSize ) );

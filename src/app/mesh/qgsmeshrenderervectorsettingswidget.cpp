@@ -294,7 +294,7 @@ void QgsMeshRendererVectorSettingsWidget::loadColorRampShader()
     return;
 
   QgsMeshDataProvider *provider = mMeshLayer->dataProvider();
-  int currentVectorDataSetGroupIndex = mMeshLayer->rendererSettings().activeVectorDataset().group();
+  int currentVectorDataSetGroupIndex = mMeshLayer->rendererSettings().activeVectorDatasetGroup();
   if ( !provider ||
        currentVectorDataSetGroupIndex < 0 ||
        !provider->datasetGroupMetadata( currentVectorDataSetGroupIndex ).isVector() )

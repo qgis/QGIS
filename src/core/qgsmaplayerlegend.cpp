@@ -361,16 +361,16 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
 
   QgsMeshRendererSettings rendererSettings = mLayer->rendererSettings();
 
-  QgsMeshDatasetIndex indexScalar = rendererSettings.activeScalarDataset();
-  QgsMeshDatasetIndex indexVector = rendererSettings.activeVectorDataset();
+  int indexScalar = rendererSettings.activeScalarDatasetGroup();
+  int indexVector = rendererSettings.activeVectorDatasetGroup();
 
   QString name;
-  if ( indexScalar.isValid() && indexVector.isValid() && indexScalar.group() != indexVector.group() )
-    name = QString( "%1 / %2" ).arg( provider->datasetGroupMetadata( indexScalar.group() ).name(), provider->datasetGroupMetadata( indexVector.group() ).name() );
-  else if ( indexScalar.isValid() )
-    name = provider->datasetGroupMetadata( indexScalar.group() ).name();
-  else if ( indexVector.isValid() )
-    name = provider->datasetGroupMetadata( indexVector.group() ).name();
+  if ( indexScalar > -1 && indexVector > -1 && indexScalar != indexVector )
+    name = QString( "%1 / %2" ).arg( provider->datasetGroupMetadata( indexScalar ).name(), provider->datasetGroupMetadata( indexVector ).name() );
+  else if ( indexScalar > -1 )
+    name = provider->datasetGroupMetadata( indexScalar ).name();
+  else if ( indexVector > -1 )
+    name = provider->datasetGroupMetadata( indexVector ).name();
   else
   {
     // neither contours nor vectors get rendered - no legend needed
@@ -379,9 +379,9 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
 
   nodes << new QgsSimpleLegendNode( nodeLayer, name );
 
-  if ( indexScalar.isValid() )
+  if ( indexScalar > -1 )
   {
-    QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( indexScalar.group() );
+    QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( indexScalar );
     QgsLegendColorList items;
     settings.colorRampShader().legendSymbologyItems( items );
     for ( const QPair< QString, QColor > &item : qgis::as_const( items ) )

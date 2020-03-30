@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsmdaldataitems.h"
+#include "qgsmeshdataprovidertemporalcapabilities.h"
 
 
 const QString QgsMdalProvider::MDAL_PROVIDER_KEY = QStringLiteral( "mdal" );
@@ -50,6 +51,7 @@ QgsCoordinateReferenceSystem QgsMdalProvider::crs() const
 QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &options )
   : QgsMeshDataProvider( uri, options )
 {
+  temporalCapabilities()->setTemporalUnit( QgsUnitTypes::TemporalHours );
   loadData();
 }
 
@@ -307,11 +309,39 @@ void QgsMdalProvider::loadData()
 {
   QByteArray curi = dataSourceUri().toUtf8();
   mMeshH = MDAL_LoadMesh( curi.constData() );
+  temporalCapabilities()->clear();
+
   if ( mMeshH )
   {
     const QString proj = MDAL_M_projection( mMeshH );
     if ( !proj.isEmpty() )
       mCrs.createFromString( proj );
+
+    int dsGroupCount = MDAL_M_datasetGroupCount( mMeshH );
+    for ( int i = 0; i < dsGroupCount; ++i )
+      addGroupToTemporalCapabilities( i );
+  }
+}
+
+
+void QgsMdalProvider::addGroupToTemporalCapabilities( int indexGroup )
+{
+  if ( !mMeshH )
+    return;
+  QgsMeshDataProviderTemporalCapabilities *tempCap = temporalCapabilities();
+  tempCap->setHasTemporalCapabilities( true );
+  tempCap->setHasTemporalCapabilities( true );
+  QgsMeshDatasetGroupMetadata dsgMetadata = datasetGroupMetadata( indexGroup );
+  QDateTime refTime = dsgMetadata.referenceTime();
+  refTime.setTimeSpec( Qt::UTC ); //For now provider don't support time zone and return always in local time, force UTC
+  tempCap->addGroupReferenceDateTime( indexGroup, refTime );
+  int dsCount = datasetCount( indexGroup );
+
+  for ( int dsi = 0; dsi < dsCount; ++dsi )
+  {
+    QgsMeshDatasetMetadata dsMeta = datasetMetadata( QgsMeshDatasetIndex( indexGroup, dsi ) );
+    if ( dsMeta.isValid() )
+      tempCap->addDatasetTime( indexGroup, dsMeta.time() );
   }
 }
 
@@ -322,11 +352,16 @@ void QgsMdalProvider::reloadProviderData()
 
   loadData();
 
+  int datasetCountBeforeAdding = datasetGroupCount();
+
   if ( mMeshH )
     for ( auto uri : mExtraDatasetUris )
     {
       std::string str = uri.toStdString();
       MDAL_M_LoadDatasets( mMeshH, str.c_str() );
+      int datasetCount = datasetGroupCount();
+      for ( ; datasetCountBeforeAdding < datasetCount; datasetCountBeforeAdding++ )
+        addGroupToTemporalCapabilities( datasetCountBeforeAdding );
     }
 }
 
@@ -468,8 +503,11 @@ bool QgsMdalProvider::addDataset( const QString &uri )
   else
   {
     mExtraDatasetUris << uri;
-    emit datasetGroupsAdded( datasetGroupCount() - datasetCount );
+    int datasetCountAfterAdding = datasetGroupCount();
+    emit datasetGroupsAdded( datasetCountAfterAdding - datasetCount );
     emit dataChanged();
+    for ( ; datasetCount < datasetCountAfterAdding; datasetCount++ )
+      addGroupToTemporalCapabilities( datasetCount );
     return true; // Ok
   }
 }

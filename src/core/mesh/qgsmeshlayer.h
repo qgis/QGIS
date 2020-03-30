@@ -26,6 +26,7 @@
 #include "qgsmeshrenderersettings.h"
 #include "qgsmeshtimesettings.h"
 #include "qgsmeshsimplificationsettings.h"
+#include "qgsmeshlayertemporalproperties.h"
 
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
@@ -164,6 +165,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    QgsMeshLayerTemporalProperties *temporalProperties() override;
 
     void reload() override;
 
@@ -287,6 +289,60 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       */
     QgsMesh3dDataBlock dataset3dValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
 
+    /**
+      * Returns dataset index from active scalar group depending on the time range.
+      * If the temporal properties is not active, return the static dataset
+      *
+      * \param timeRange the time range
+      * \returns dataset index
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetIndex activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
+
+    /**
+      * Returns dataset index from active vector group depending on the time range
+      * If the temporal properties is not active, return the static dataset
+      *
+      * \param timeRange the time range
+      * \returns dataset index
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetIndex activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange ) const;
+
+    /**
+      * Sets the static scalar dataset index that is rendered if the temporal properties is not active
+      *
+      * \param staticScalarDatasetIndex the scalar data set index
+      *
+      * \since QGIS 3.14
+      */
+    void setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex ) SIP_SKIP;
+
+    /**
+      * Sets the static vector dataset index that is rendered if the temporal properties is not active
+      *
+      * \param staticVectorDatasetIndex the vector data set index
+      *
+      * \since QGIS 3.14
+      */
+    void setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex ) SIP_SKIP;
+
+    /**
+      * Returns the static scalar dataset index that is rendered if the temporal properties is not active
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetIndex staticScalarDatasetIndex() const;
+
+    /**
+      * Returns the static vector dataset index that is rendered if the temporal properties is not active
+      *
+      * \since QGIS 3.14
+      */
+    QgsMeshDatasetIndex staticVectorDatasetIndex() const;
+
   public slots:
 
     /**
@@ -299,18 +355,18 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
   signals:
 
     /**
-     * Emitted when active scalar dataset is changed
+     * Emitted when active scalar group dataset is changed
      *
-     * \since QGIS 3.4
+     * \since QGIS 3.14
      */
-    void activeScalarDatasetChanged( const QgsMeshDatasetIndex &index );
+    void activeScalarDatasetGroupChanged( int index );
 
     /**
-     * Emitted when active vector dataset is changed
+     * Emitted when active vector group dataset is changed
      *
-     * \since QGIS 3.4
+     * \since QGIS 3.14
      */
-    void activeVectorDatasetChanged( const QgsMeshDatasetIndex &index );
+    void activeVectorDatasetGroupChanged( int index );
 
     /**
      * Emitted when time format is changed
@@ -346,6 +402,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     bool hasSimplifiedMeshes() const;
 
+    QgsMeshDatasetIndex datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const;
+
   private slots:
     void onDatasetGroupsAdded( int count );
 
@@ -370,6 +428,11 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
     //! Simplify mesh configuration
     QgsMeshSimplificationSettings mSimplificationSettings;
+
+    QgsMeshLayerTemporalProperties *mTemporalProperties;
+
+    QgsMeshDatasetIndex mStaticScalarDatasetIndex;
+    QgsMeshDatasetIndex mStaticVectorDatasetIndex;
 };
 
 #endif //QGSMESHLAYER_H

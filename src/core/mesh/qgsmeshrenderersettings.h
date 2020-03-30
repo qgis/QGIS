@@ -650,20 +650,34 @@ class CORE_EXPORT QgsMeshRendererSettings
      */
     void setAveragingMethod( QgsMesh3dAveragingMethod *method );
 
-    //! Returns active scalar dataset
-    QgsMeshDatasetIndex activeScalarDataset() const { return mActiveScalarDataset; }
-    //! Sets active scalar dataset for rendering
-    void setActiveScalarDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() ) { mActiveScalarDataset = index; }
-
-    //! Returns active vector dataset
-    QgsMeshDatasetIndex activeVectorDataset() const { return mActiveVectorDataset; }
-    //! Sets active vector dataset for rendering.
-    void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() ) { mActiveVectorDataset = index; }
-
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads configuration from the given DOM element
     void readXml( const QDomElement &elem );
+
+    /**
+     * Returns the active scalar dataset group
+     * \since QGIS 3.14
+     */
+    int activeScalarDatasetGroup() const;
+
+    /**
+     * Sets the active scalar dataset group
+     * \since QGIS 3.14
+     */
+    void setActiveScalarDatasetGroup( int activeScalarDatasetGroup );
+
+    /**
+     * Returns the active vector dataset group
+     * \since QGIS 3.14
+     */
+    int activeVectorDatasetGroup() const;
+
+    /**
+     * Sets the active vector dataset group
+     * \since QGIS 3.14
+     */
+    void setActiveVectorDatasetGroup( int activeVectorDatasetGroup );
 
   private:
     QgsMeshRendererMeshSettings mRendererNativeMeshSettings;
@@ -673,11 +687,11 @@ class CORE_EXPORT QgsMeshRendererSettings
     QHash<int, QgsMeshRendererScalarSettings> mRendererScalarSettings;  //!< Per-group scalar settings
     QHash<int, QgsMeshRendererVectorSettings> mRendererVectorSettings;  //!< Per-group vector settings
 
-    //! index of active scalar dataset
-    QgsMeshDatasetIndex mActiveScalarDataset;
+    //! index of active scalar dataset group
+    int mActiveScalarDatasetGroup;
 
-    //! index of active vector dataset
-    QgsMeshDatasetIndex mActiveVectorDataset;
+    //! index of active vector dataset group
+    int mActiveVectorDatasetGroup;
 
     //! Averaging method to get 2D datasets from 3D stacked mesh datasets
     std::shared_ptr<QgsMesh3dAveragingMethod> mAveragingMethod;

@@ -114,6 +114,10 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Emitted when the scene's state has changed
     void sceneStateChanged();
 
+  public slots:
+    //! Updates the temporale entities
+    void onMapTimeRangeChange();
+
   private slots:
     void onCameraChanged();
     void onFrameTriggered( float dt );

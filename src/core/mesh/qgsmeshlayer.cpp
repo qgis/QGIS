@@ -26,6 +26,7 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerrenderer.h"
+#include "qgsmeshlayertemporalproperties.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsmeshtimesettings.h"
 #include "qgspainting.h"
@@ -53,6 +54,10 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
 
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
   setDefaultRendererSettings();
+
+  mTemporalProperties = new QgsMeshLayerTemporalProperties( this );
+  if ( mDataProvider )
+    mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
 }
 
 
@@ -61,7 +66,7 @@ void QgsMeshLayer::setDefaultRendererSettings()
   if ( mDataProvider && mDataProvider->datasetGroupCount() > 0 )
   {
     // show data from the first dataset group
-    mRendererSettings.setActiveScalarDataset( QgsMeshDatasetIndex( 0, 0 ) );
+    mRendererSettings.setActiveScalarDatasetGroup( 0 );
   }
   else
   {
@@ -238,7 +243,10 @@ void QgsMeshLayer::setTimeSettings( const QgsMeshTimeSettings &settings )
 
 QString QgsMeshLayer::formatTime( double hours )
 {
-  return QgsMeshLayerUtils::formatTime( hours, mTimeSettings );
+  if ( dataProvider() && dataProvider()->temporalCapabilities()->hasReferenceTime() )
+    return QgsMeshLayerUtils::formatTime( hours, temporalProperties()->referenceTime(), mTimeSettings );
+  else
+    return QgsMeshLayerUtils::formatTime( hours, QDateTime(), mTimeSettings );
 }
 
 QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const
@@ -340,6 +348,31 @@ void QgsMeshLayer::setTransformContext( const QgsCoordinateTransformContext &tra
     mDataProvider->setTransformContext( transformContext );
 }
 
+QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const
+{
+  const QDateTime layerReferenceTime = mTemporalProperties->referenceTime();
+  qint64 time = layerReferenceTime.msecsTo( timeRange.begin() );
+  const QgsMeshDataProviderTemporalCapabilities *tempCap = dataProvider()->temporalCapabilities();
+
+  return tempCap->datasetIndexTimeInMilliseconds( datasetGroupIndex, time );
+}
+
+QgsMeshDatasetIndex QgsMeshLayer::activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const
+{
+  if ( mTemporalProperties->isActive() )
+    return datasetIndexAtTime( timeRange, mRendererSettings.activeScalarDatasetGroup() );
+  else
+    return mStaticScalarDatasetIndex;
+}
+
+QgsMeshDatasetIndex QgsMeshLayer::activeVectorDatasetAtTime( const QgsDateTimeRange &timeRange ) const
+{
+  if ( mTemporalProperties->isActive() )
+    return datasetIndexAtTime( timeRange, mRendererSettings.activeVectorDatasetGroup() );
+  else
+    return mStaticVectorDatasetIndex;
+}
+
 void QgsMeshLayer::fillNativeMesh()
 {
   Q_ASSERT( !mNativeMesh );
@@ -358,6 +391,32 @@ void QgsMeshLayer::onDatasetGroupsAdded( int count )
   int newDatasetGroupCount = mDataProvider->datasetGroupCount();
   for ( int i = newDatasetGroupCount - count; i < newDatasetGroupCount; ++i )
     assignDefaultStyleToDatasetGroup( i );
+
+  if ( mDataProvider )
+    temporalProperties()->setIsActive( mDataProvider->temporalCapabilities()->hasTemporalCapabilities() );
+
+}
+
+QgsMeshDatasetIndex QgsMeshLayer::staticVectorDatasetIndex() const
+{
+  return mStaticVectorDatasetIndex;
+}
+
+QgsMeshDatasetIndex QgsMeshLayer::staticScalarDatasetIndex() const
+{
+  return mStaticScalarDatasetIndex;
+}
+
+void QgsMeshLayer::setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex )
+{
+  mStaticVectorDatasetIndex = staticVectorDatasetIndex;
+  mRendererSettings.setActiveVectorDatasetGroup( staticVectorDatasetIndex.group() );
+}
+
+void QgsMeshLayer::setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex )
+{
+  mStaticScalarDatasetIndex = staticScalarDatasetIndex;
+  mRendererSettings.setActiveScalarDatasetGroup( staticScalarDatasetIndex.group() );
 }
 
 QgsMeshSimplificationSettings QgsMeshLayer::meshSimplificationSettings() const
@@ -445,10 +504,6 @@ bool QgsMeshLayer::readSymbology( const QDomNode &node, QString &errorMessage,
   if ( !elemRendererSettings.isNull() )
     mRendererSettings.readXml( elemRendererSettings );
 
-  QDomElement elemTimeSettings = elem.firstChildElement( "mesh-time-settings" );
-  if ( !elemTimeSettings.isNull() )
-    mTimeSettings.readXml( elemTimeSettings, context );
-
   QDomElement elemSimplifySettings = elem.firstChildElement( "mesh-simplify-settings" );
   if ( !elemSimplifySettings.isNull() )
     mSimplificationSettings.readXml( elemSimplifySettings, context );
@@ -476,9 +531,6 @@ bool QgsMeshLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &e
 
   QDomElement elemRendererSettings = mRendererSettings.writeXml( doc );
   elem.appendChild( elemRendererSettings );
-
-  QDomElement elemTimeSettings = mTimeSettings.writeXml( doc, context );
-  elem.appendChild( elemTimeSettings );
 
   QDomElement elemSimplifySettings = mSimplificationSettings.writeXml( doc, context );
   elem.appendChild( elemSimplifySettings );
@@ -569,8 +621,33 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
     }
   }
 
+  if ( mDataProvider && pkeyNode.toElement().hasAttribute( QStringLiteral( "time-unit" ) ) )
+    mDataProvider->setTemporalUnit(
+      static_cast<QgsUnitTypes::TemporalUnit>( pkeyNode.toElement().attribute( QStringLiteral( "time-unit" ) ).toInt() ) );
+
   QString errorMsg;
   readSymbology( layer_node, errorMsg, context );
+
+  // read temporal
+  temporalProperties()->readXml( layer_node.toElement(), context );
+  if ( !temporalProperties()->timeExtent().begin().isValid() )
+    temporalProperties()->setDefaultsFromDataProviderTemporalCapabilities( dataProvider()->temporalCapabilities() );
+
+
+  // read static dataset
+  QDomElement elemStaticDataset = layer_node.firstChildElement( QStringLiteral( "static-active-dataset" ) );
+  if ( elemStaticDataset.hasAttribute( QStringLiteral( "scalar" ) ) )
+  {
+    QStringList lst = elemStaticDataset.attribute( QStringLiteral( "scalar" ) ).split( QChar( ',' ) );
+    if ( lst.count() == 2 )
+      mStaticScalarDatasetIndex = QgsMeshDatasetIndex( lst[0].toInt(), lst[1].toInt() );
+  }
+  if ( elemStaticDataset.hasAttribute( QStringLiteral( "vector" ) ) )
+  {
+    QStringList lst = elemStaticDataset.attribute( QStringLiteral( "vector" ) ).split( QChar( ',' ) );
+    if ( lst.count() == 2 )
+      mStaticVectorDatasetIndex = QgsMeshDatasetIndex( lst[0].toInt(), lst[1].toInt() );
+  }
 
   return mValid; // should be true if read successfully
 }
@@ -595,6 +672,7 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
     QDomText providerText = document.createTextNode( providerType() );
     provider.appendChild( providerText );
     layer_node.appendChild( provider );
+    provider.setAttribute( QStringLiteral( "time-unit" ), mDataProvider->temporalCapabilities()->temporalUnit() );
 
     const QStringList extraDatasetUris = mDataProvider->extraDatasets();
     QDomElement elemExtraDatasets = document.createElement( QStringLiteral( "extra-datasets" ) );
@@ -607,6 +685,15 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
     }
     layer_node.appendChild( elemExtraDatasets );
   }
+  // write temporal
+  mTemporalProperties->writeXml( mapLayerNode, document, context );
+
+  QDomElement elemStaticDataset = document.createElement( QStringLiteral( "static-active-dataset" ) );
+  if ( mStaticScalarDatasetIndex.isValid() )
+    elemStaticDataset.setAttribute( QStringLiteral( "scalar" ), QStringLiteral( "%1,%2" ).arg( mStaticScalarDatasetIndex.group() ).arg( mStaticScalarDatasetIndex.dataset() ) );
+  if ( mStaticVectorDatasetIndex.isValid() )
+    elemStaticDataset.setAttribute( QStringLiteral( "vector" ), QStringLiteral( "%1,%2" ).arg( mStaticVectorDatasetIndex.group() ).arg( mStaticVectorDatasetIndex.dataset() ) );
+  layer_node.appendChild( elemStaticDataset );
 
   // renderer specific settings
   QString errorMsg;
@@ -665,13 +752,6 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
   }
 
-  QDateTime referenceTime = QgsMeshLayerUtils::firstReferenceTime( this );
-  if ( referenceTime.isValid() )
-  {
-    mTimeSettings.setAbsoluteTimeReferenceTime( referenceTime );
-    mTimeSettings.setUseAbsoluteTime( true );
-  }
-
   for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
     assignDefaultStyleToDatasetGroup( i );
 
@@ -679,4 +759,9 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
   connect( mDataProvider, &QgsMeshDataProvider::datasetGroupsAdded, this, &QgsMeshLayer::onDatasetGroupsAdded );
 
   return true;
+}
+
+QgsMeshLayerTemporalProperties *QgsMeshLayer::temporalProperties()
+{
+  return  mTemporalProperties;
 }

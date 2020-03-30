@@ -179,7 +179,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \since QGIS 3.14
      */
-    virtual QgsDataProviderTemporalCapabilities *temporalCapabilities();
+    virtual QgsDataProviderTemporalCapabilities *temporalCapabilities() const;
 
     /**
      * Returns the extent of the layer

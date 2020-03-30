@@ -94,27 +94,27 @@ void QgsRendererMeshPropertiesWidget::apply()
   triangularMeshSettings.setEnabled( triangularMeshRenderingIsEnabled );
 
   // SCALAR
-  QgsMeshDatasetIndex activeScalarDatasetIndex = mMeshRendererActiveDatasetWidget->activeScalarDataset();
+  int activeScalarDatasetGroupIndex = mMeshRendererActiveDatasetWidget->activeScalarDatasetGroup();
   if ( !mContoursGroupBox->isChecked() )
-    activeScalarDatasetIndex = QgsMeshDatasetIndex();
+    activeScalarDatasetGroupIndex = -1;
 
   // VECTOR
-  QgsMeshDatasetIndex activeVectorDatasetIndex = mMeshRendererActiveDatasetWidget->activeVectorDataset();
+  int activeVectorDatasetGroupIndex = mMeshRendererActiveDatasetWidget->activeVectorDatasetGroup();
   if ( !mVectorsGroupBox->isChecked() )
-    activeVectorDatasetIndex = QgsMeshDatasetIndex();
+    activeVectorDatasetGroupIndex = -1;
 
   QgsMeshRendererSettings settings = mMeshLayer->rendererSettings();
   settings.setEdgeMeshSettings( edgeMeshSettings );
   settings.setNativeMeshSettings( nativeMeshSettings );
   settings.setTriangularMeshSettings( triangularMeshSettings );
 
-  settings.setActiveScalarDataset( activeScalarDatasetIndex );
-  if ( activeScalarDatasetIndex.isValid() )
-    settings.setScalarSettings( activeScalarDatasetIndex.group(), mMeshRendererScalarSettingsWidget->settings() );
+  settings.setActiveScalarDatasetGroup( activeScalarDatasetGroupIndex );
+  if ( activeScalarDatasetGroupIndex > -1 )
+    settings.setScalarSettings( activeScalarDatasetGroupIndex, mMeshRendererScalarSettingsWidget->settings() );
 
-  settings.setActiveVectorDataset( activeVectorDatasetIndex );
-  if ( activeVectorDatasetIndex.isValid() )
-    settings.setVectorSettings( activeVectorDatasetIndex.group(), mMeshRendererVectorSettingsWidget->settings() );
+  settings.setActiveVectorDatasetGroup( activeVectorDatasetGroupIndex );
+  if ( activeVectorDatasetGroupIndex > -1 )
+    settings.setVectorSettings( activeVectorDatasetGroupIndex, mMeshRendererVectorSettingsWidget->settings() );
 
   //set the blend mode for the layer
   mMeshLayer->setBlendMode( mBlendModeComboBox->blendMode() );
@@ -164,6 +164,7 @@ void QgsRendererMeshPropertiesWidget::onActiveScalarGroupChanged( int groupIndex
   mMeshRendererScalarSettingsWidget->syncToLayer();
   mContoursGroupBox->setChecked( groupIndex >= 0 );
   mContoursGroupBox->setEnabled( groupIndex >= 0 );
+  emit mMeshLayer->activeScalarDatasetGroupChanged( groupIndex );
 }
 
 void QgsRendererMeshPropertiesWidget::onActiveVectorGroupChanged( int groupIndex )
@@ -174,4 +175,5 @@ void QgsRendererMeshPropertiesWidget::onActiveVectorGroupChanged( int groupIndex
   mMeshRendererVectorSettingsWidget->syncToLayer();
   mVectorsGroupBox->setChecked( groupIndex >= 0 );
   mVectorsGroupBox->setEnabled( groupIndex >= 0 );
+  emit mMeshLayer->activeVectorDatasetGroupChanged( groupIndex );
 }

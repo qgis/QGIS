@@ -20,6 +20,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeutils.h"
+#include "qgsmeshlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgisapp.h"
@@ -52,9 +53,9 @@ void QgsLayerTreeViewTemporalIndicatorProvider::onIndicatorClicked( const QModel
     case QgsMapLayerType::RasterLayer:
       QgisApp::instance()->showLayerProperties( qobject_cast<QgsRasterLayer *>( layer ), QStringLiteral( "mOptsPage_Temporal" ) );
       break;
-
-    case QgsMapLayerType::VectorLayer:
     case QgsMapLayerType::MeshLayer:
+      QgisApp::instance()->showLayerProperties( qobject_cast<QgsMeshLayer *>( layer ), QStringLiteral( "mOptsPage_Temporal" ) );
+    case QgsMapLayerType::VectorLayer:
     case QgsMapLayerType::PluginLayer:
       break;
   }

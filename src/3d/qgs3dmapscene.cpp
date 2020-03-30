@@ -538,6 +538,18 @@ void Qgs3DMapScene::onLayersChanged()
   }
 }
 
+void Qgs3DMapScene::onMapTimeRangeChange()
+{
+  for ( auto layer : mLayerEntities.keys() )
+  {
+    if ( layer->temporalProperties()->isActive() )
+    {
+      removeLayerEntity( layer );
+      addLayerEntity( layer );
+    }
+  }
+}
+
 void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
 {
   bool needsSceneUpdate = false;

@@ -1,0 +1,81 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshlayertemporalproperties.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsMeshLayerTemporalProperties : QgsMapLayerTemporalProperties
+{
+%Docstring
+Implementation of map layer temporal properties for mesh layers.
+
+The time in a mesh layer is defined by :
+- a reference time provided by the data, the project or the user
+- each dataset is associated with a relative times
+- time extent is defined by the first time and the last time of all dataset
+
+Reference time :          AT
+Dataset 1 time            o-----RT------RT-----RT-----------RT
+Dataset 2 time            o---------RT------RT--------RT
+Dataset 3 time            o------------------------------RT-------RT----------RT
+Time extent of layer      o-----<--------------------------------------------->
+
+AT : absolute time (QDateTime)
+RT : relative time (qint64)
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmeshlayertemporalproperties.h"
+%End
+  public:
+
+    QgsMeshLayerTemporalProperties( QObject *parent /TransferThis/ = 0, bool enabled = true );
+%Docstring
+Constructor for QgsMeshLayerTemporalProperties
+
+:param parent: pointer to the parent object
+:param enabled: argument specifies whether the temporal properties are initially enabled or not (see isActive()).
+%End
+
+  public:
+    virtual QDomElement writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context );
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+    virtual void setDefaultsFromDataProviderTemporalCapabilities( const QgsDataProviderTemporalCapabilities *capabilities );
+
+
+    QgsDateTimeRange timeExtent() const;
+%Docstring
+Returns the time extent
+%End
+
+    QDateTime referenceTime() const;
+%Docstring
+Returns the reference time
+%End
+
+    void setReferenceTime( const QDateTime &referenceTime, const QgsDataProviderTemporalCapabilities *capabilities );
+%Docstring
+Sets the reference time and update the time extent from the temporal capabilities
+
+:param timeExtent: the time time extent
+:param capabilities: the temporal capabilities of the data provider
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/mesh/qgsmeshlayertemporalproperties.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

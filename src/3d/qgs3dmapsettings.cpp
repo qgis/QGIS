@@ -31,6 +31,7 @@
 
 Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   : QObject( nullptr )
+  , QgsTemporalRangeObject( other )
   , mOrigin( other.mOrigin )
   , mCrs( other.mCrs )
   , mBackgroundColor( other.mBackgroundColor )

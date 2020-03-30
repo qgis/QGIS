@@ -617,7 +617,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual void handlePostCloneOperations( QgsVectorDataProvider *source );
 
-    QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() override;
+    QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() const override;
 
   signals:
 

@@ -219,7 +219,7 @@ SET(QGIS_APP_SRCS
   mesh/qgsmeshrendereractivedatasetwidget.cpp
   mesh/qgsmeshdatasetgrouptreeview.cpp
   mesh/qgsmeshcalculatordialog.cpp
-  mesh/qgsmeshtimeformatdialog.cpp
+  mesh/qgsmeshstaticdatasetwidget.cpp
 )
 
 IF (WITH_3D)

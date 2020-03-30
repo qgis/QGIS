@@ -27,6 +27,9 @@
 #include "qgsproject.h"
 #include "qgstriangularmesh.h"
 #include "qgsmeshlayerutils.h"
+#include "qgsmeshlayertemporalproperties.h"
+
+#include "qgsmeshdataprovidertemporalcapabilities.h"
 
 /**
  * \ingroup UnitTests
@@ -45,6 +48,7 @@ class TestQgsMeshLayer : public QObject
     QgsMeshLayer *mMdalLayer = nullptr;
     QgsMeshLayer *mMemory1DLayer = nullptr;
     QgsMeshLayer *mMdal1DLayer = nullptr;
+    QgsMeshLayer *mMdal3DLayer = nullptr;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -72,8 +76,7 @@ class TestQgsMeshLayer : public QObject
     void test_read_vertex_scalar_dataset_with_inactive_face();
     void test_extent();
 
-    void test_time_format_data();
-    void test_time_format();
+    void test_temporal();
 
     void test_reload();
     void test_reload_extra_dataset();
@@ -104,13 +107,16 @@ void TestQgsMeshLayer::initTestCase()
   mMemoryLayer = new QgsMeshLayer( readFile( "/quad_and_triangle.txt" ), "Triangle and Quad Memory", "mesh_memory" );
   QVERIFY( mMemoryLayer->isValid() );
   QCOMPARE( mMemoryLayer->dataProvider()->extraDatasets().count(), 0 );
+  QVERIFY( !mMemoryLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
+  QVERIFY( !mMemoryLayer->temporalProperties()->isActive() );
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_bed_elevation.txt" ) );
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_vertex_scalar.txt" ) );
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_vertex_vector.txt" ) );
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_face_scalar.txt" ) );
   mMemoryLayer->dataProvider()->addDataset( readFile( "/quad_and_triangle_face_vector.txt" ) );
   QCOMPARE( mMemoryLayer->dataProvider()->extraDatasets().count(), 5 );
-
+  QVERIFY( mMemoryLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
+  QVERIFY( mMemoryLayer->temporalProperties()->isActive() );
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mMemoryLayer );
 
@@ -118,6 +124,7 @@ void TestQgsMeshLayer::initTestCase()
   QString uri( mDataDir + "/quad_and_triangle.2dm" );
   mMdalLayer = new QgsMeshLayer( uri, "Triangle and Quad MDAL", "mdal" );
   QCOMPARE( mMdalLayer->dataProvider()->datasetGroupCount(), 1 ); //bed elevation is already in the 2dm
+  QVERIFY( mMdalLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_scalar.dat" );
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_vertex_vector.dat" );
   QCOMPARE( mMdalLayer->dataProvider()->extraDatasets().count(), 2 );
@@ -127,6 +134,8 @@ void TestQgsMeshLayer::initTestCase()
   mMdalLayer->dataProvider()->addDataset( mDataDir + "/quad_and_triangle_els_face_vector.dat" );
 
   QVERIFY( mMdalLayer->isValid() );
+  QVERIFY( mMemoryLayer->temporalProperties()->isActive() );
+
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mMdalLayer );
 
@@ -134,12 +143,16 @@ void TestQgsMeshLayer::initTestCase()
   mMemory1DLayer = new QgsMeshLayer( readFile( "/lines.txt" ), "Lines Memory", "mesh_memory" );
   QVERIFY( mMemory1DLayer->isValid() );
   QCOMPARE( mMemory1DLayer->dataProvider()->extraDatasets().count(), 0 );
+  QVERIFY( !mMemory1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
+  QVERIFY( !mMemory1DLayer->temporalProperties()->isActive() );
   mMemory1DLayer->dataProvider()->addDataset( readFile( "/lines_bed_elevation.txt" ) );
   mMemory1DLayer->dataProvider()->addDataset( readFile( "/lines_vertex_scalar.txt" ) );
   mMemory1DLayer->dataProvider()->addDataset( readFile( "/lines_vertex_vector.txt" ) );
   mMemory1DLayer->dataProvider()->addDataset( readFile( "/lines_els_scalar.txt" ) );
   mMemory1DLayer->dataProvider()->addDataset( readFile( "/lines_els_vector.txt" ) );
   QCOMPARE( mMemory1DLayer->dataProvider()->extraDatasets().count(), 5 );
+  QVERIFY( mMemory1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
+  QVERIFY( mMemory1DLayer->temporalProperties()->isActive() );
 
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mMemory1DLayer );
@@ -148,9 +161,14 @@ void TestQgsMeshLayer::initTestCase()
   uri = QString( mDataDir + "/lines.2dm" );
   mMdal1DLayer = new QgsMeshLayer( uri, "Lines MDAL", "mdal" );
   QCOMPARE( mMdal1DLayer->dataProvider()->datasetGroupCount(), 1 ); //bed elevation is already in the 2dm
+  QVERIFY( mMemory1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
+  QVERIFY( mMemory1DLayer->temporalProperties()->isActive() );
   mMdal1DLayer->dataProvider()->addDataset( mDataDir + "/lines_vertex_scalar.dat" );
   mMdal1DLayer->dataProvider()->addDataset( mDataDir + "/lines_vertex_vector.dat" );
   QCOMPARE( mMdal1DLayer->dataProvider()->extraDatasets().count(), 2 );
+  QVERIFY( mMemory1DLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() );
+  QVERIFY( mMemory1DLayer->temporalProperties()->isActive() );
+
 
   //The face dataset is recognized by "_els_" in the filename for this format
   mMdal1DLayer->dataProvider()->addDataset( mDataDir + "/lines_els_scalar.dat" );
@@ -159,6 +177,15 @@ void TestQgsMeshLayer::initTestCase()
   QVERIFY( mMdal1DLayer->isValid() );
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mMdal1DLayer );
+
+
+  // MDAL 3D Layer
+  uri = QString( mDataDir + "/trap_steady_05_3D.nc" );
+  mMdal3DLayer = new QgsMeshLayer( uri, "Lines MDAL", "mdal" );
+
+  QVERIFY( mMdal3DLayer->isValid() );
+  QgsProject::instance()->addMapLayers(
+    QList<QgsMapLayer *>() << mMdal3DLayer );
 }
 
 void TestQgsMeshLayer::cleanupTestCase()
@@ -685,69 +712,6 @@ void TestQgsMeshLayer::test_write_read_project()
   QVERIFY( layers.size() == 2 );
 }
 
-void TestQgsMeshLayer::test_time_format_data()
-{
-  QTest::addColumn<QgsMeshTimeSettings>( "settings" );
-  QTest::addColumn<double>( "hours" );
-  QTest::addColumn<QString>( "expectedTime" );
-
-  QTest::newRow( "rel1" ) << QgsMeshTimeSettings( 0, "hh:mm:ss.zzz" ) << 0.0 << QString( "00:00:00.000" );
-  QTest::newRow( "rel2" ) << QgsMeshTimeSettings( 0, "hh:mm:ss" ) << 0.0 << QString( "00:00:00" );
-  QTest::newRow( "rel3" ) << QgsMeshTimeSettings( 0, "d hh:mm:ss" ) << 0.0 << QString( "0 d 00:00:00" );
-  QTest::newRow( "rel4" ) << QgsMeshTimeSettings( 0, "d hh" ) << 0.0 << QString( "0 d 0" );
-  QTest::newRow( "rel5" ) << QgsMeshTimeSettings( 0, "d" ) << 0.0 << QString( "0" );
-  QTest::newRow( "rel6" ) << QgsMeshTimeSettings( 0, "hh" ) << 0.0 << QString( "0" );
-  QTest::newRow( "rel7" ) << QgsMeshTimeSettings( 0, "ss" ) << 0.0 << QString( "0" );
-  QTest::newRow( "rel8" ) << QgsMeshTimeSettings( 0, "some-invalid-format" ) << 0.0 << QString( "0" );
-
-  QTest::newRow( "rel9" ) << QgsMeshTimeSettings( 100.11111, "hh:mm:ss.zzz" ) << 0.0 << QString( "100:06:39.996" );
-  QTest::newRow( "rel10" ) << QgsMeshTimeSettings( 0, "hh:mm:ss.zzz" ) << 100.11111 << QString( "100:06:39.996" );
-  QTest::newRow( "rel11" ) << QgsMeshTimeSettings( 0, "hh:mm:ss" ) << 100.11111 << QString( "100:06:39" );
-  QTest::newRow( "rel12" ) << QgsMeshTimeSettings( 0, "d hh:mm:ss" ) << 100.11111 << QString( "4 d 04:06:39" );
-  QTest::newRow( "rel13" ) << QgsMeshTimeSettings( 0, "d hh" ) << 100.11111 << QString( "4 d 4" );
-  QTest::newRow( "rel14" ) << QgsMeshTimeSettings( 0, "d" ) << 100.11111 << QString( "4" );
-  QTest::newRow( "rel15" ) << QgsMeshTimeSettings( 0, "hh" ) << 100.11111 << QString( "100.111" );
-  QTest::newRow( "rel16" ) << QgsMeshTimeSettings( 0, "ss" ) << 100.11111 << QString( "360399" );
-  QTest::newRow( "rel17" ) << QgsMeshTimeSettings( 0, "some-invalid-format" ) << 100.11111 << QString( "100.111" );
-
-  QDateTime dt = QDateTime::fromString( "2019-03-21 11:01:02", "yyyy-MM-dd HH:mm:ss" );
-  QTest::newRow( "abs1" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy hh:mm:ss" ) << 0.0 << QString( "21.03.2019 11:01:02" );
-  QTest::newRow( "abs2" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy hh:mm" ) << 0.0 << QString( "21.03.2019 11:01" );
-  QTest::newRow( "abs3" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy hh" ) << 0.0 << QString( "21.03.2019 11" );
-  QTest::newRow( "abs4" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy" ) << 0.0 << QString( "21.03.2019" );
-  QTest::newRow( "abs5" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy hh:mm:ss" ) << 0.0 << QString( "21/03/2019 11:01:02" );
-  QTest::newRow( "abs6" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy hh:mm" ) << 0.0 << QString( "21/03/2019 11:01" );
-  QTest::newRow( "abs7" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy hh" ) << 0.0 << QString( "21/03/2019 11" );
-  QTest::newRow( "abs8" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy" ) << 0.0 << QString( "21/03/2019" );
-  QTest::newRow( "abs9" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy hh:mm:ss" ) << 0.0 << QString( "03/21/2019 11:01:02" );
-  QTest::newRow( "abs10" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy hh:mm" ) << 0.0 << QString( "03/21/2019 11:01" );
-  QTest::newRow( "abs11" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy hh" ) << 0.0 << QString( "03/21/2019 11" );
-  QTest::newRow( "abs12" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy" ) << 0.0 << QString( "03/21/2019" );
-
-  QTest::newRow( "abs13" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy hh:mm:ss" ) << 100.11111 << QString( "25.03.2019 15:07:41" );
-  QTest::newRow( "abs14" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy hh:mm" ) << 100.11111 << QString( "25.03.2019 15:07" );
-  QTest::newRow( "abs15" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy hh" ) << 100.11111 << QString( "25.03.2019 15" );
-  QTest::newRow( "abs16" ) << QgsMeshTimeSettings( dt, "dd.MM.yyyy" ) << 100.11111 << QString( "25.03.2019" );
-  QTest::newRow( "abs17" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy hh:mm:ss" ) << 100.11111 << QString( "25/03/2019 15:07:41" );
-  QTest::newRow( "abs18" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy hh:mm" ) << 100.11111 << QString( "25/03/2019 15:07" );
-  QTest::newRow( "abs19" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy hh" ) << 100.11111 << QString( "25/03/2019 15" );
-  QTest::newRow( "abs20" ) << QgsMeshTimeSettings( dt, "dd/MM/yyyy" ) << 100.11111 << QString( "25/03/2019" );
-  QTest::newRow( "abs21" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy hh:mm:ss" ) << 100.11111 << QString( "03/25/2019 15:07:41" );
-  QTest::newRow( "abs22" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy hh:mm" ) << 100.11111 << QString( "03/25/2019 15:07" );
-  QTest::newRow( "abs23" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy hh" ) << 100.11111 << QString( "03/25/2019 15" );
-  QTest::newRow( "abs24" ) << QgsMeshTimeSettings( dt, "MM/dd/yyyy" ) << 100.11111 << QString( "03/25/2019" );
-}
-
-void TestQgsMeshLayer::test_time_format()
-{
-  QFETCH( QgsMeshTimeSettings, settings );
-  QFETCH( double, hours );
-  QFETCH( QString, expectedTime );
-
-  QString time = QgsMeshLayerUtils::formatTime( hours, settings );
-  QCOMPARE( time, expectedTime );
-}
-
 void TestQgsMeshLayer::test_reload()
 {
   //init file for the test
@@ -920,12 +884,9 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
 
 void TestQgsMeshLayer::test_mesh_simplification()
 {
-  // Init files for the test
-  QgsMeshLayer layer( mDataDir + "/trap_steady_05_3D.nc", "MDAL layer", "mdal" );
-
   QgsCoordinateTransform invalidTransform;
-  layer.updateTriangularMesh( invalidTransform );
-  QgsTriangularMesh *baseMesh = layer.triangularMesh();
+  mMdal3DLayer->updateTriangularMesh( invalidTransform );
+  QgsTriangularMesh *baseMesh = mMdal3DLayer->triangularMesh();
 
   QCOMPARE( baseMesh->triangles().count(), 640 );
 
@@ -945,6 +906,36 @@ void TestQgsMeshLayer::test_mesh_simplification()
   // Delete simplified meshes
   for ( QgsTriangularMesh *m : simplifiedMeshes )
     delete m;
+}
+
+void TestQgsMeshLayer::test_temporal()
+{
+  //Mesh memory provider
+  QgsMeshDataProviderTemporalCapabilities *tempCap = mMemoryLayer->dataProvider()->temporalCapabilities();
+  QCOMPARE( tempCap->datasetIndex( 1, 0.0 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndex( 1, 0.9 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndex( 1, 1.0 ).dataset(), 1 );
+  QCOMPARE( tempCap->datasetIndex( 1, 1000 ).dataset(), 1 ); //last time step
+
+  //Mesh MDAL provider with internal dataset
+  tempCap = mMdalLayer->dataProvider()->temporalCapabilities();
+  QCOMPARE( tempCap->datasetIndex( 0, 0.0 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndex( 0, 0.9 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndex( 0, 1.0 ).dataset(), 0 ); //bed elevation has only one time step
+  //Mesh MDAL provider with internal da.taset
+  QCOMPARE( tempCap->datasetIndex( 1, 0.0 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndex( 1, 0.9 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndex( 1, 1.0 ).dataset(), 1 );
+  QCOMPARE( tempCap->datasetIndex( 1, 1000 ).dataset(), 1 );//last time step
+
+  //Mesh MDAL provider with reference time
+  tempCap = mMdal3DLayer->dataProvider()->temporalCapabilities();
+  QCOMPARE( tempCap->datasetIndex( 1, 0.0 ).dataset(), 0 );
+  QDateTime begin = QDateTime( QDate( 1990, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC );
+  QDateTime end = QDateTime( QDate( 1990, 1, 1 ), QTime( 6, 0, 1, 938 ), Qt::UTC );
+  QCOMPARE( tempCap->timeExtent(), QgsDateTimeRange( begin, end ) );
+
+  mMdal3DLayer->temporalProperties();
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )

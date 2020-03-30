@@ -112,6 +112,8 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     QgsPointXY fractionPoint( const QgsPointXY &p1, const QgsPointXY &p2, double fraction ) const;
     bool mIsMeshSimplificationActive = false;
     QColor colorAt( QgsColorRampShader *shader, double val ) const;
+    QgsMeshDatasetIndex datasetIndexAtTime( QgsMeshLayer *layer, int datasetGroupIndex );
+
   protected:
     //! feedback class for cancellation
     std::unique_ptr<QgsMeshLayerRendererFeedback> mFeedback;

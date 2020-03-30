@@ -261,7 +261,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       return QStringList();
     }
 
-    QgsRasterDataProviderTemporalCapabilities *temporalCapabilities() override;
+    QgsRasterDataProviderTemporalCapabilities *temporalCapabilities() const override;
 
     //! \brief Returns whether the provider supplies a legend graphic
     virtual bool supportsLegendGraphic() const { return false; }
