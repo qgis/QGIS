@@ -143,7 +143,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
      * Returns the editor \a context
      * \since QGIS 3.14
      */
-    QgsAttributeEditorContext editorContext( );
+    QgsAttributeEditorContext editorContext( ) const;
 
     /**
      * The feature selection manager is responsible for the selected features
