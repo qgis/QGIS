@@ -142,11 +142,19 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     virtual void setWidgetValue( const QgsProcessingModelChildParameterSource &value );
 
     /**
+     * Sets the current \a values for the parameter.
+     *
+     * \see value()
+     * \since QGIS 3.14
+     */
+    void setWidgetValue( const QList< QgsProcessingModelChildParameterSource > &values );
+
+    /**
      * Returns the current value of the parameter.
      *
      * \see setWidgetValue()
      */
-    virtual QgsProcessingModelChildParameterSource value() const;
+    virtual QVariant value() const;
 
     /**
      * Sets the parent \a dialog in which the widget is shown.

@@ -24,6 +24,7 @@
 #include "qgsprocessingparameterdefinitionwidget.h"
 #include "qgsmaptool.h"
 #include "qgsprocessingcontext.h"
+#include "processing/models/qgsprocessingmodelchildparametersource.h"
 
 #include <QAbstractButton>
 
@@ -1719,6 +1720,7 @@ class GUI_EXPORT QgsProcessingMultipleLayerPanelWidget : public QWidget
     void setValue( const QVariant &value );
 
     void setProject( QgsProject *project );
+    void setModel( QgsProcessingModelAlgorithm *model, const QString &modelChildAlgorithmID );
 
   signals:
 
@@ -1737,6 +1739,8 @@ class GUI_EXPORT QgsProcessingMultipleLayerPanelWidget : public QWidget
     QToolButton *mToolButton = nullptr;
 
     QVariantList mValue;
+    QList< QgsProcessingModelChildParameterSource > mModelSources;
+    QgsProcessingModelAlgorithm *mModel = nullptr;
 
     QgsProject *mProject = nullptr;
 

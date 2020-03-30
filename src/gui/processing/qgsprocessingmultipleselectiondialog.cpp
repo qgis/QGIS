@@ -20,7 +20,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsmeshlayer.h"
 #include "qgsrasterlayer.h"
-
+#include "processing/models/qgsprocessingmodelchildparametersource.h"
 #include <QStandardItemModel>
 #include <QStandardItem>
 #include <QPushButton>
@@ -34,7 +34,18 @@ QgsProcessingMultipleSelectionPanelWidget::QgsProcessingMultipleSelectionPanelWi
     const QVariantList &selectedOptions,
     QWidget *parent )
   : QgsPanelWidget( parent )
-  , mValueFormatter( []( const QVariant & v )->QString { return v.toString(); } )
+  , mValueFormatter( []( const QVariant & v )->QString
+{
+  if ( v.canConvert< QgsProcessingModelChildParameterSource >() )
+  {
+    return v.value< QgsProcessingModelChildParameterSource >().staticValue().toString();
+  }
+  else
+  {
+    return v.toString();
+  }
+  return QString();
+} )
 {
   setupUi( this );
 
@@ -158,7 +169,12 @@ void QgsProcessingMultipleSelectionPanelWidget::addOption( const QVariant &value
   // don't add duplicate options
   for ( int i = 0; i < mModel->rowCount(); ++i )
   {
-    if ( mModel->item( i )->data( Qt::UserRole ) == value )
+    if ( mModel->item( i )->data( Qt::UserRole ) == value ||
+         ( mModel->item( i )->data( Qt::UserRole ).canConvert< QgsProcessingModelChildParameterSource >() &&
+           value.canConvert< QgsProcessingModelChildParameterSource >() &&
+           mModel->item( i )->data( Qt::UserRole ).value< QgsProcessingModelChildParameterSource >() ==
+           value.value< QgsProcessingModelChildParameterSource >() )
+       )
     {
       if ( updateExistingTitle )
         mModel->item( i )->setText( title );
@@ -210,7 +226,9 @@ QVariantList QgsProcessingMultipleSelectionDialog::selectedOptions() const
 // QgsProcessingMultipleInputPanelWidget
 //
 
-QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, QWidget *parent )
+QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions,
+    const QList<QgsProcessingModelChildParameterSource> &modelSources,
+    QgsProcessingModelAlgorithm *model, QWidget *parent )
   : QgsProcessingMultipleSelectionPanelWidget( QVariantList(), selectedOptions, parent )
   , mParameter( parameter )
 {
@@ -221,6 +239,11 @@ QgsProcessingMultipleInputPanelWidget::QgsProcessingMultipleInputPanelWidget( co
   QPushButton *addDirButton = new QPushButton( tr( "Add Directory…" ) );
   connect( addDirButton, &QPushButton::clicked, this, &QgsProcessingMultipleInputPanelWidget::addDirectory );
   buttonBox()->addButton( addDirButton, QDialogButtonBox::ActionRole );
+
+  for ( const QgsProcessingModelChildParameterSource &source : modelSources )
+  {
+    addOption( QVariant::fromValue( source ), source.friendlyIdentifier( model ), false, true );
+  }
 }
 
 void QgsProcessingMultipleInputPanelWidget::setProject( QgsProject *project )
@@ -396,12 +419,13 @@ void QgsProcessingMultipleInputPanelWidget::populateFromProject( QgsProject *pro
 // QgsProcessingMultipleInputDialog
 //
 
-QgsProcessingMultipleInputDialog::QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, QWidget *parent, Qt::WindowFlags flags )
+QgsProcessingMultipleInputDialog::QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions,
+    const QList< QgsProcessingModelChildParameterSource > &modelSources, QgsProcessingModelAlgorithm *model, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
   setWindowTitle( tr( "Multiple Selection" ) );
   QVBoxLayout *vLayout = new QVBoxLayout();
-  mWidget = new QgsProcessingMultipleInputPanelWidget( parameter, selectedOptions );
+  mWidget = new QgsProcessingMultipleInputPanelWidget( parameter, selectedOptions, modelSources, model );
   vLayout->addWidget( mWidget );
   mWidget->buttonBox()->addButton( QDialogButtonBox::Cancel );
   connect( mWidget->buttonBox(), &QDialogButtonBox::accepted, this, &QDialog::accept );
