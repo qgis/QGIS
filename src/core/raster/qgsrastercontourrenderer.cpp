@@ -148,7 +148,7 @@ QgsRasterBlock *QgsRasterContourRenderer::block( int bandNo, const QgsRectangle 
   int inputWidth = static_cast<int>( round( width / mDownscale ) );
   int inputHeight = static_cast<int>( round( height / mDownscale ) );
 
-  std::shared_ptr< QgsRasterBlock > inputBlock( mInput->block( mInputBand, extent, inputWidth, inputHeight, feedback ) );
+  std::unique_ptr< QgsRasterBlock > inputBlock( mInput->block( mInputBand, extent, inputWidth, inputHeight, feedback ) );
   if ( !inputBlock || inputBlock->isEmpty() )
   {
     QgsDebugMsg( QStringLiteral( "No raster data!" ) );

@@ -36,6 +36,9 @@ QgsRasterContourRenderer cannot be copied. Use clone() instead.
 %End
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
+%Docstring
+Creates an instance of the renderer based on definition from XML (used by renderer registry)
+%End
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
@@ -96,7 +99,7 @@ Sets the symbol of index contour lines
 %Docstring
 Returns by how much the renderer will scale down the request to the data provider.
 For example, for a raster block 1000x500 with downscale 10, the renderer will request raster 100x50 from provider.
-Higher downscale makes contour lines more simplified (at the expense of loosing some detail).
+Higher downscale makes contour lines more simplified (at the expense of losing some detail).
 The value of one means there will be no downscaling.
 %End
 
