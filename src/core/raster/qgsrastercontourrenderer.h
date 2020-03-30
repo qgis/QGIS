@@ -41,6 +41,7 @@ class CORE_EXPORT QgsRasterContourRenderer : public QgsRasterRenderer
 
     QgsRasterContourRenderer *clone() const override SIP_FACTORY;
 
+    //! Creates an instance of the renderer based on definition from XML (used by renderer registry)
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
@@ -79,7 +80,7 @@ class CORE_EXPORT QgsRasterContourRenderer : public QgsRasterRenderer
     /**
      * Returns by how much the renderer will scale down the request to the data provider.
      * For example, for a raster block 1000x500 with downscale 10, the renderer will request raster 100x50 from provider.
-     * Higher downscale makes contour lines more simplified (at the expense of loosing some detail).
+     * Higher downscale makes contour lines more simplified (at the expense of losing some detail).
      * The value of one means there will be no downscaling.
      */
     double downscale() const { return mDownscale; }
