@@ -23,6 +23,7 @@
 
 #include "qgsdatasourceuri.h"
 
+
 QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName )
   : QgsMapLayer( QgsMapLayerType::VectorTileLayer, baseName )
 {
