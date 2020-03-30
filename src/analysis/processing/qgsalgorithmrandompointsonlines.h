@@ -55,12 +55,11 @@ class QgsRandomPointsOnLinesAlgorithm : public QgsProcessingAlgorithm
 
   private:
     int mNumPoints;
-    double mMinDistance;
-    int mMaxAttempts;
-    int mRandSeed;
-    bool mIncludeLineAttr;
-    QgsCoordinateReferenceSystem mCrs;
-
+    double mMinDistance = 0;
+    int mMaxAttempts = 10;
+    bool mUseRandomSeed = false;
+    int mRandSeed = 0;
+    bool mIncludeLineAttr = false;
 };
 
 ///@endcond PRIVATE
