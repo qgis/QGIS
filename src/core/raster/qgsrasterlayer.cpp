@@ -1334,7 +1334,7 @@ bool QgsRasterLayer::defaultContrastEnhancementSettings(
 
   if ( key.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "No default contrast enhancement for this drawing style" ) );
+    QgsDebugMsgLevel( QStringLiteral( "No default contrast enhancement for this drawing style" ), 2 );
     myAlgorithm = QgsContrastEnhancement::contrastEnhancementAlgorithmFromString( QString() );
     myLimits = QgsRasterMinMaxOrigin::limitsFromString( QString() );
     return false;
