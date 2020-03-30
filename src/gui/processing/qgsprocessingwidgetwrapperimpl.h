@@ -1705,6 +1705,80 @@ class GUI_EXPORT QgsProcessingBandWidgetWrapper : public QgsAbstractProcessingPa
 
 
 
+
+
+class GUI_EXPORT QgsProcessingMultipleLayerPanelWidget : public QWidget
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingMultipleLayerPanelWidget( QWidget *parent = nullptr, const QgsProcessingParameterMultipleLayers *param = nullptr );
+
+    QVariant value() const { return mValue; }
+    void setValue( const QVariant &value );
+
+    void setProject( QgsProject *project );
+
+  signals:
+
+    void changed();
+
+  private slots:
+
+    void showDialog();
+
+  private:
+
+    void updateSummaryText();
+
+    const QgsProcessingParameterMultipleLayers *mParam = nullptr;
+    QLineEdit *mLineEdit = nullptr;
+    QToolButton *mToolButton = nullptr;
+
+    QVariantList mValue;
+
+    QgsProject *mProject = nullptr;
+
+    friend class TestProcessingGui;
+};
+
+
+class GUI_EXPORT QgsProcessingMultipleLayerWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProcessingMultipleLayerWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    // QgsProcessingParameterWidgetFactoryInterface
+    QString parameterType() const override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+
+    // QgsProcessingParameterWidgetWrapper interface
+    QWidget *createWidget() override SIP_FACTORY;
+    void setWidgetContext( const QgsProcessingParameterWidgetContext &context ) override;
+
+  protected:
+
+    void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
+    QVariant widgetValue() const override;
+
+    QStringList compatibleParameterTypes() const override;
+
+    QStringList compatibleOutputTypes() const override;
+    QString modelerExpressionFormatString() const override;
+
+  private:
+
+    QgsProcessingMultipleLayerPanelWidget *mPanel = nullptr;
+
+    friend class TestProcessingGui;
+};
+
+
 ///@endcond PRIVATE
 
 #endif // QGSPROCESSINGWIDGETWRAPPERIMPL_H

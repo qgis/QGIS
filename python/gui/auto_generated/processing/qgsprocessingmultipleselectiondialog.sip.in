@@ -74,6 +74,11 @@ Sets a callback function to use when encountering an invalid geometry and
 Returns the ordered list of selected options.
 %End
 
+    QDialogButtonBox *buttonBox();
+%Docstring
+Returns the widget's button box.
+%End
+
   signals:
 
     void acceptClicked();
@@ -85,6 +90,14 @@ Emitted when the accept button is clicked.
 %Docstring
 Emitted when the selection changes in the widget.
 %End
+
+  protected:
+
+    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false );
+%Docstring
+Adds a new option to the widget.
+%End
+
 
 };
 
@@ -155,6 +168,79 @@ Returns the ordered list of selected options.
 %End
 
 };
+
+
+class QgsProcessingMultipleInputPanelWidget : QgsProcessingMultipleSelectionPanelWidget
+{
+%Docstring
+A panel widget for selection of multiple inputs from a fixed list of options.
+
+.. note::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingmultipleselectiondialog.h"
+%End
+  public:
+
+    QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter,
+                                           const QVariantList &selectedOptions = QVariantList(),
+                                           QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProcessingMultipleInputPanelWidget.
+%End
+
+    void setProject( QgsProject *project );
+%Docstring
+Sets the project associated with the widget.
+%End
+
+};
+
+
+class QgsProcessingMultipleInputDialog : QDialog
+{
+%Docstring
+A dialog for selection of multiple layer inputs.
+
+.. note::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingmultipleselectiondialog.h"
+%End
+  public:
+
+    QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter,
+                                      const QVariantList &selectedOptions = QVariantList(),
+                                      QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = 0 );
+%Docstring
+Constructor for QgsProcessingMultipleInputDialog.
+
+The ``selectedOptions`` list may contain extra options which are not present in ``availableOptions``,
+in which case they will be also added as existing options within the dialog.
+%End
+
+    QVariantList selectedOptions() const;
+%Docstring
+Returns the ordered list of selected options.
+%End
+
+    void setProject( QgsProject *project );
+%Docstring
+Sets the project associated with the dialog.
+%End
+
+};
+
 
 
 /************************************************************************

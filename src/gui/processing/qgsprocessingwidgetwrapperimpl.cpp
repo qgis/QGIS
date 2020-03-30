@@ -5577,5 +5577,171 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingBandWidgetWrapper::cre
 {
   return new QgsProcessingBandWidgetWrapper( parameter, type );
 }
+
+
+
+
+
+//
+// QgsProcessingMultipleLayerPanelWidget
+//
+
+QgsProcessingMultipleLayerPanelWidget::QgsProcessingMultipleLayerPanelWidget( QWidget *parent, const QgsProcessingParameterMultipleLayers *param )
+  : QWidget( parent )
+  , mParam( param )
+{
+  QHBoxLayout *hl = new QHBoxLayout();
+  hl->setMargin( 0 );
+  hl->setContentsMargins( 0, 0, 0, 0 );
+
+  mLineEdit = new QLineEdit();
+  mLineEdit->setEnabled( false );
+  hl->addWidget( mLineEdit, 1 );
+
+  mToolButton = new QToolButton();
+  mToolButton->setText( QString( QChar( 0x2026 ) ) );
+  hl->addWidget( mToolButton );
+
+  setLayout( hl );
+
+  if ( mParam )
+  {
+    mLineEdit->setText( tr( "%1 inputs selected" ).arg( 0 ) );
+  }
+
+  connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingMultipleLayerPanelWidget::showDialog );
+}
+
+void QgsProcessingMultipleLayerPanelWidget::setValue( const QVariant &value )
+{
+  if ( value.isValid() )
+    mValue = value.type() == QVariant::List ? value.toList() : QVariantList() << value;
+  else
+    mValue.clear();
+
+  updateSummaryText();
+  emit changed();
+}
+
+void QgsProcessingMultipleLayerPanelWidget::setProject( QgsProject *project )
+{
+  mProject = project;
+}
+
+void QgsProcessingMultipleLayerPanelWidget::showDialog()
+{
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsProcessingMultipleInputPanelWidget *widget = new QgsProcessingMultipleInputPanelWidget( mParam, mValue );
+    widget->setPanelTitle( mParam->description() );
+    widget->setProject( mProject );
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [ = ]()
+    {
+      setValue( widget->selectedOptions() );
+    } );
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
+    panel->openPanel( widget );
+  }
+  else
+  {
+    QgsProcessingMultipleInputDialog dlg( mParam, mValue, this, nullptr );
+    dlg.setProject( mProject );
+    if ( dlg.exec() )
+    {
+      setValue( dlg.selectedOptions() );
+    }
+  }
+}
+
+void QgsProcessingMultipleLayerPanelWidget::updateSummaryText()
+{
+  if ( mParam )
+    mLineEdit->setText( tr( "%1 inputs selected" ).arg( mValue.count() ) );
+}
+
+//
+// QgsProcessingMultipleLayerWidgetWrapper
+//
+
+QgsProcessingMultipleLayerWidgetWrapper::QgsProcessingMultipleLayerWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingMultipleLayerWidgetWrapper::createWidget()
+{
+  const QgsProcessingParameterMultipleLayers *layerParam = dynamic_cast< const QgsProcessingParameterMultipleLayers *>( parameterDefinition() );
+
+  mPanel = new QgsProcessingMultipleLayerPanelWidget( nullptr, layerParam );
+  mPanel->setToolTip( parameterDefinition()->toolTip() );
+  mPanel->setProject( widgetContext().project() );
+  connect( mPanel, &QgsProcessingMultipleLayerPanelWidget::changed, this, [ = ]
+  {
+    emit widgetValueHasChanged( this );
+  } );
+  return mPanel;
+}
+
+void QgsProcessingMultipleLayerWidgetWrapper::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
+{
+  QgsAbstractProcessingParameterWidgetWrapper::setWidgetContext( context );
+  if ( mPanel )
+    mPanel->setProject( context.project() );
+}
+
+void QgsProcessingMultipleLayerWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext &context )
+{
+  if ( mPanel )
+  {
+    QVariantList opts;
+    if ( value.isValid() )
+    {
+      const QList< QgsMapLayer * > v = QgsProcessingParameters::parameterAsLayerList( parameterDefinition(), value, context );
+      opts.reserve( v.size() );
+      for ( const QgsMapLayer *l : v )
+        opts << l->source();
+    }
+    if ( mPanel )
+      mPanel->setValue( value.isValid() ? opts : QVariant() );
+  }
+}
+
+QVariant QgsProcessingMultipleLayerWidgetWrapper::widgetValue() const
+{
+  if ( mPanel )
+    return !mPanel->value().toList().isEmpty() ? mPanel->value() : QVariant();
+  else
+    return QVariant();
+}
+
+QStringList QgsProcessingMultipleLayerWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterBand::typeName()
+         << QgsProcessingParameterNumber::typeName();
+}
+
+QStringList QgsProcessingMultipleLayerWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputNumber::typeName();
+}
+
+QString QgsProcessingMultipleLayerWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "an array of layer paths, or semicolon separated string of layer paths" );
+}
+
+QString QgsProcessingMultipleLayerWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterMultipleLayers::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMultipleLayerWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingMultipleLayerWidgetWrapper( parameter, type );
+}
 ///@endcond PRIVATE
 

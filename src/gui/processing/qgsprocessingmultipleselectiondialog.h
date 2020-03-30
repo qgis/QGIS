@@ -91,6 +91,11 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
      */
     QVariantList selectedOptions() const;
 
+    /**
+     * Returns the widget's button box.
+     */
+    QDialogButtonBox *buttonBox() { return mButtonBox; }
+
   signals:
 
     /**
@@ -103,6 +108,16 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
      */
     void selectionChanged();
 
+  protected:
+
+    /**
+     * Adds a new option to the widget.
+     */
+    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false );
+
+    //! Dialog list model
+    QStandardItemModel *mModel = nullptr;
+
   private slots:
 
     void selectAll( bool checked );
@@ -114,16 +129,13 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
     QPushButton *mButtonSelectAll = nullptr;
     QPushButton *mButtonClearSelection = nullptr;
     QPushButton *mButtonToggleSelection = nullptr;
-    QStandardItemModel *mModel = nullptr;
 
     QList< QStandardItem * > currentItems();
 
-    QDialogButtonBox *buttonBox() { return mButtonBox; }
 
     void populateList( const QVariantList &availableOptions, const QVariantList &selectedOptions );
 
     friend class TestProcessingGui;
-    friend class QgsProcessingMultipleSelectionDialog;
 };
 
 
@@ -196,6 +208,83 @@ class GUI_EXPORT QgsProcessingMultipleSelectionDialog : public QDialog
     QgsProcessingMultipleSelectionPanelWidget *mWidget = nullptr;
 
 };
+
+
+/**
+ * \ingroup gui
+ * \brief A panel widget for selection of multiple inputs from a fixed list of options.
+ * \note Not stable API
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsProcessingMultipleInputPanelWidget : public QgsProcessingMultipleSelectionPanelWidget
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsProcessingMultipleInputPanelWidget.
+     */
+    QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter,
+                                           const QVariantList &selectedOptions = QVariantList(),
+                                           QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Sets the project associated with the widget.
+     */
+    void setProject( QgsProject *project );
+
+  private slots:
+
+    void addFiles();
+    void addDirectory();
+
+  private:
+
+    void populateFromProject( QgsProject *project );
+
+    const QgsProcessingParameterMultipleLayers *mParameter = nullptr;
+};
+
+
+/**
+ * \ingroup gui
+ * \brief A dialog for selection of multiple layer inputs.
+ * \note Not stable API
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsProcessingMultipleInputDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsProcessingMultipleInputDialog.
+     *
+     * The \a selectedOptions list may contain extra options which are not present in \a availableOptions,
+     * in which case they will be also added as existing options within the dialog.
+     */
+    QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter,
+                                      const QVariantList &selectedOptions = QVariantList(),
+                                      QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
+
+    /**
+     * Returns the ordered list of selected options.
+     */
+    QVariantList selectedOptions() const;
+
+    /**
+     * Sets the project associated with the dialog.
+     */
+    void setProject( QgsProject *project );
+
+  private:
+
+    QgsProcessingMultipleInputPanelWidget *mWidget = nullptr;
+
+};
+
 
 ///@endcond
 
