@@ -164,7 +164,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
                                                        defaultValue=96))
         self.addParameter(QgsProcessingParameterColor(self.BACKGROUND_COLOR,
                                                       self.tr('Background color (opacity is not considered in JPG tiles)'),
-                                                      defaultValue=QColor(255,255,255,0))) #Transparent color if tile is set as PNG, white color if it's set as JPG
+                                                      defaultValue=QColor(255, 255, 255, 0)))  # Transparent color if tile is set as PNG, white color if it's set as JPG
         self.formats = ['PNG', 'JPG']
         self.addParameter(QgsProcessingParameterEnum(self.TILE_FORMAT,
                                                      self.tr('Tile format'),
@@ -266,7 +266,7 @@ class TilesXYZAlgorithmBase(QgisAlgorithm):
             self.tile_height = 256
 
         # disable background color transparency if tile format is JPG
-        if self.tile_format == 'JPG' and self.color.alphaF()<1:
+        if self.tile_format == 'JPG' and self.color.alphaF() < 1:
             self.color.setAlphaF(1)
 
         wgs_crs = QgsCoordinateReferenceSystem('EPSG:4326')
