@@ -2400,7 +2400,7 @@ void TestQgsProcessingAlgs::saveLog()
   QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
   QFile file( results.value( QStringLiteral( "OUTPUT" ) ).toString() );
   QVERIFY( file.open( QFile::ReadOnly  | QIODevice::Text ) );
-  QCOMPARE( file.readAll(), QStringLiteral( "test\n" ) );
+  QCOMPARE( QString( file.readAll() ), QStringLiteral( "test\n" ) );
 
   parameters.insert( QStringLiteral( "USE_HTML" ), true );
   results = alg->run( parameters, *context, &feedback, &ok );
@@ -2408,7 +2408,7 @@ void TestQgsProcessingAlgs::saveLog()
   QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
   QFile file2( results.value( QStringLiteral( "OUTPUT" ) ).toString() );
   QVERIFY( file2.open( QFile::ReadOnly  | QIODevice::Text ) );
-  QCOMPARE( file2.readAll(), QStringLiteral( "<span style=\"color:red\">test</span><br/>" ) );
+  QCOMPARE( QString( file2.readAll() ), QStringLiteral( "<span style=\"color:red\">test</span><br/>" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )
