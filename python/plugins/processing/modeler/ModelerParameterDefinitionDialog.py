@@ -74,8 +74,7 @@ class ModelerParameterDefinitionDialog(QDialog):
 
     @staticmethod
     def use_legacy_dialog(param=None, paramType=None):
-        if paramType in (parameters.PARAMETER_TABLE_FIELD,
-                         parameters.PARAMETER_VECTOR,
+        if paramType in (parameters.PARAMETER_VECTOR,
                          parameters.PARAMETER_TABLE,
                          parameters.PARAMETER_MULTIPLE,
                          parameters.PARAMETER_NUMBER,
@@ -83,8 +82,7 @@ class ModelerParameterDefinitionDialog(QDialog):
                          parameters.PARAMETER_SCALE,
                          parameters.PARAMETER_MAP_LAYER):
             return True
-        elif isinstance(param, (QgsProcessingParameterField,
-                                QgsProcessingParameterFeatureSource,
+        elif isinstance(param, (QgsProcessingParameterFeatureSource,
                                 QgsProcessingParameterVectorLayer,
                                 QgsProcessingParameterMultipleLayers,
                                 QgsProcessingParameterNumber,
@@ -137,53 +135,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         if isinstance(self.param, QgsProcessingParameterDefinition):
             self.nameTextBox.setText(self.param.description())
 
-        if self.paramType == parameters.PARAMETER_TABLE_FIELD or \
-                isinstance(self.param, QgsProcessingParameterField):
-            self.verticalLayout.addWidget(QLabel(self.tr('Parent layer')))
-            self.parentCombo = QComboBox()
-            idx = 0
-            for param in list(self.alg.parameterComponents().values()):
-                definition = self.alg.parameterDefinition(param.parameterName())
-                if isinstance(definition, (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer)):
-                    self.parentCombo.addItem(definition.description(), definition.name())
-                    if self.param is not None:
-                        if self.param.parentLayerParameterName() == definition.name():
-                            self.parentCombo.setCurrentIndex(idx)
-                    idx += 1
-            self.verticalLayout.addWidget(self.parentCombo)
-
-            # add the datatype selector
-            self.verticalLayout.addWidget(QLabel(self.tr('Allowed data type')))
-            self.datatypeCombo = QComboBox()
-            self.datatypeCombo.addItem(self.tr('Any'), -1)
-            self.datatypeCombo.addItem(self.tr('Number'), 0)
-            self.datatypeCombo.addItem(self.tr('String'), 1)
-            self.datatypeCombo.addItem(self.tr('Date/time'), 2)
-            self.verticalLayout.addWidget(self.datatypeCombo)
-
-            if self.param is not None and self.param.dataType() is not None:
-                # QComboBoxes indexes start at 0,
-                # self.param.datatype start with -1 that is why I need to do +1
-                datatypeIndex = self.param.dataType() + 1
-                self.datatypeCombo.setCurrentIndex(datatypeIndex)
-
-            self.multipleCheck = QCheckBox()
-            self.multipleCheck.setText(self.tr('Accept multiple fields'))
-            self.multipleCheck.setChecked(False)
-            if self.param is not None:
-                self.multipleCheck.setChecked(self.param.allowMultiple())
-            self.verticalLayout.addWidget(self.multipleCheck)
-
-            self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
-            self.defaultTextBox = QLineEdit()
-            self.defaultTextBox.setToolTip(
-                self.tr('Default field name, or ; separated list of field names for multiple field parameters'))
-            if self.param is not None:
-                default = self.param.defaultValue()
-                if default is not None:
-                    self.defaultTextBox.setText(str(default))
-            self.verticalLayout.addWidget(self.defaultTextBox)
-        elif (self.paramType in (
+        if (self.paramType in (
                 parameters.PARAMETER_VECTOR, parameters.PARAMETER_TABLE) or
                 isinstance(self.param, (QgsProcessingParameterFeatureSource, QgsProcessingParameterVectorLayer))):
             self.verticalLayout.addWidget(QLabel(self.tr('Geometry type')))
@@ -380,22 +332,9 @@ class ModelerParameterDefinitionDialog(QDialog):
                 i += 1
         else:
             name = self.param.name()
-        if (self.paramType == parameters.PARAMETER_TABLE_FIELD or
-                isinstance(self.param, QgsProcessingParameterField)):
-            if self.parentCombo.currentIndex() < 0:
-                QMessageBox.warning(self, self.tr('Unable to define parameter'),
-                                    self.tr('Wrong or missing parameter values'))
-                return
-            parent = self.parentCombo.currentData()
-            datatype = self.datatypeCombo.currentData()
-            default = self.defaultTextBox.text()
-            if not default:
-                default = None
-            self.param = QgsProcessingParameterField(name, description, defaultValue=default,
-                                                     parentLayerParameterName=parent, type=datatype,
-                                                     allowMultiple=self.multipleCheck.isChecked())
-        elif (self.paramType == parameters.PARAMETER_MAP_LAYER or
-              isinstance(self.param, QgsProcessingParameterMapLayer)):
+
+        if (self.paramType == parameters.PARAMETER_MAP_LAYER
+                or isinstance(self.param, QgsProcessingParameterMapLayer)):
             self.param = QgsProcessingParameterMapLayer(
                 name, description, types=[self.datatypeCombo.currentData()])
         elif (self.paramType == parameters.PARAMETER_RASTER or

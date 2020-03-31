@@ -3402,6 +3402,105 @@ void QgsProcessingFieldPanelWidget::updateSummaryText()
 // QgsProcessingFieldWidgetWrapper
 //
 
+QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Parent layer" ) ) );
+  mParentLayerComboBox = new QComboBox();
+
+  QString initialParent;
+  if ( const QgsProcessingParameterField *fieldParam = dynamic_cast<const QgsProcessingParameterField *>( definition ) )
+    initialParent = fieldParam->parentLayerParameterName();
+
+  if ( widgetContext.model() )
+  {
+    // populate combo box with other model input choices
+    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
+    {
+      if ( const QgsProcessingParameterFeatureSource *definition = dynamic_cast< const QgsProcessingParameterFeatureSource * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      {
+        mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+        if ( !initialParent.isEmpty() && initialParent == definition->name() )
+        {
+          mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+        }
+      }
+      else if ( const QgsProcessingParameterVectorLayer *definition = dynamic_cast< const QgsProcessingParameterVectorLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      {
+        mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+        if ( !initialParent.isEmpty() && initialParent == definition->name() )
+        {
+          mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+        }
+      }
+    }
+  }
+
+  if ( mParentLayerComboBox->count() == 0 && !initialParent.isEmpty() )
+  {
+    // if no parent candidates found, we just add the existing one as a placeholder
+    mParentLayerComboBox->addItem( initialParent, initialParent );
+    mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+  }
+
+  vlayout->addWidget( mParentLayerComboBox );
+
+  vlayout->addWidget( new QLabel( tr( "Allowed data type" ) ) );
+  mDataTypeComboBox = new QComboBox();
+  mDataTypeComboBox->addItem( tr( "Any" ), QgsProcessingParameterField::Any );
+  mDataTypeComboBox->addItem( tr( "Number" ), QgsProcessingParameterField::Numeric );
+  mDataTypeComboBox->addItem( tr( "String" ), QgsProcessingParameterField::String );
+  mDataTypeComboBox->addItem( tr( "Date/time" ), QgsProcessingParameterField::DateTime );
+  if ( const QgsProcessingParameterField *fieldParam = dynamic_cast<const QgsProcessingParameterField *>( definition ) )
+    mDataTypeComboBox->setCurrentIndex( fieldParam->dataType() + 1 ); // QComboBoxes indexes start at 0, datatype start with -1 that is why I need to do +1
+
+  vlayout->addWidget( mDataTypeComboBox );
+
+  mAllowMultipleCheckBox = new QCheckBox( tr( "Accept multiple fields" ) );
+  if ( const QgsProcessingParameterField *fieldParam = dynamic_cast<const QgsProcessingParameterField *>( definition ) )
+    mAllowMultipleCheckBox->setChecked( fieldParam->allowMultiple() );
+
+  vlayout->addWidget( mAllowMultipleCheckBox );
+
+  mDefaultToAllCheckBox = new QCheckBox( tr( "Select all fields by default" ) );
+  mDefaultToAllCheckBox->setEnabled( mAllowMultipleCheckBox->isChecked() );
+  if ( const QgsProcessingParameterField *fieldParam = dynamic_cast<const QgsProcessingParameterField *>( definition ) )
+    mDefaultToAllCheckBox->setChecked( fieldParam->defaultToAllFields() );
+
+  vlayout->addWidget( mDefaultToAllCheckBox );
+
+  connect( mAllowMultipleCheckBox, &QCheckBox::stateChanged, this, [ = ]
+  {
+    mDefaultToAllCheckBox->setEnabled( mAllowMultipleCheckBox->isChecked() );
+  } );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultLineEdit = new QLineEdit();
+  mDefaultLineEdit->setToolTip( tr( "Default field name, or ; separated list of field names for multiple field parameters" ) );
+  if ( const QgsProcessingParameterField *fieldParam = dynamic_cast<const QgsProcessingParameterField *>( definition ) )
+  {
+    const QStringList fields = QgsProcessingParameters::parameterAsFields( fieldParam, fieldParam->defaultValue(), context );
+    mDefaultLineEdit->setText( fields.join( ';' ) );
+  }
+  vlayout->addWidget( mDefaultLineEdit );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingFieldParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  QgsProcessingParameterField::DataType dataType = static_cast< QgsProcessingParameterField::DataType >( mDataTypeComboBox->currentData().toInt() );
+  auto param = qgis::make_unique< QgsProcessingParameterField >( name, description, mDefaultLineEdit->text(), mParentLayerComboBox->currentData().toString(), dataType, mAllowMultipleCheckBox->isChecked(), false, mDefaultToAllCheckBox->isChecked() );
+  param->setFlags( flags );
+  return param.release();
+}
+
 QgsProcessingFieldWidgetWrapper::QgsProcessingFieldWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
@@ -3703,6 +3802,11 @@ QString QgsProcessingFieldWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFieldWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingFieldWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingFieldWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingFieldParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 //
