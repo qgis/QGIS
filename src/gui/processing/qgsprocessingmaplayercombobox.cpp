@@ -72,8 +72,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     layout->setAlignment( mIterateButton, Qt::AlignTop );
   }
 
-  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && ( type == QgsProcessingGui::Standard
-       || type == QgsProcessingGui::Batch ) )
+  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
   {
     mSettingsButton = new QToolButton();
     mSettingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ) );
