@@ -457,6 +457,78 @@ class TestQgsSnappingUtils : public QObject
       QCOMPARE( m.point(), QgsPointXY( 1, 0 ) );
     }
 
+    void testSnapScaleDependency()
+    {
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 1, 1 ) );
+      //Cannot set a specific scale directly, so play with Dpi in map settings, default scale is now 43295.7
+      mapSettings.setOutputDpi( 1 );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      QgsSnappingConfig snappingConfig = u.config();
+      u.setMapSettings( mapSettings );
+      snappingConfig.setEnabled( true );
+      snappingConfig.setMode( QgsSnappingConfig::AdvancedConfiguration );
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Disabled );
+      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, -1.0, -1.0 ) );
+      u.setConfig( snappingConfig );
+
+      //No limit on scale
+      QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m.isValid() );
+      QVERIFY( m.hasVertex() );
+      QCOMPARE( m.point(), QgsPointXY( 1, 0 ) );
+
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::ScaleDependentGlobal );
+      snappingConfig.setMinScale( 0.0 );
+      snappingConfig.setMaxScale( 0.0 );
+      u.setConfig( snappingConfig );
+
+      //Global settings for scale limit, but scale are set to 0 -> snapping enabled
+      QgsPointLocator::Match m1 = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m1.isValid() );
+      QVERIFY( m1.hasVertex() );
+
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::ScaleDependentGlobal );
+      snappingConfig.setMinScale( 1000.0 );
+      snappingConfig.setMaxScale( 10000.0 );
+      u.setConfig( snappingConfig );
+
+      //Global settings for scale limit, but scale outside min max range -> no snapping
+      QgsPointLocator::Match m2 = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m2.isValid() == false );
+      QVERIFY( m2.hasVertex() == false );
+
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::ScaleDependentGlobal );
+      snappingConfig.setMinScale( 1000.0 );
+      snappingConfig.setMaxScale( 100000.0 );
+      u.setConfig( snappingConfig );
+
+      //Global settings for scale limit, scale inside min max range -> snapping enabled
+      QgsPointLocator::Match m3 = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m3.isValid() );
+      QVERIFY( m3.hasVertex() );
+
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::ScaleDependentPerLayer );
+      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, 1000.0, 10000.0 ) );
+      u.setConfig( snappingConfig );
+
+      //Per layer settings, but scale outside min max range of layer -> no snapping
+      QgsPointLocator::Match m4 = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m4.isValid() == false );
+      QVERIFY( m4.hasVertex() == false );
+
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::ScaleDependentPerLayer );
+      snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, 1000.0, 100000.0 ) );
+      u.setConfig( snappingConfig );
+
+      //Per layer settings, scale inside min max range of layer -> snapping enabled
+      QgsPointLocator::Match m5 = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m5.isValid() );
+      QVERIFY( m5.hasVertex() );
+    }
 };
 
 QGSTEST_MAIN( TestQgsSnappingUtils )
