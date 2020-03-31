@@ -3302,6 +3302,40 @@ void TestProcessingGui::testBandWrapper()
 
   // modeler wrapper
   testWrapper( QgsProcessingGui::Modeler );
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  QgsProcessingContext context;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "band" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterBand bandParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), 1, QStringLiteral( "parent" ) );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "band" ), context, widgetContext, &bandParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterBand * >( def.get() )->defaultValue().toString(), QStringLiteral( "1" ) );
+  QCOMPARE( static_cast< QgsProcessingParameterBand * >( def.get() )->allowMultiple(), false );
+  QCOMPARE( static_cast< QgsProcessingParameterBand * >( def.get() )->parentLayerParameterName(), QStringLiteral( "parent" ) );
+  bandParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  bandParam.setParentLayerParameterName( QString() );
+  bandParam.setAllowMultiple( true );
+  bandParam.setDefaultValue( QVariantList() << 2 << 3 );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "band" ), context, widgetContext, &bandParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterBand * >( def.get() )->defaultValue().toStringList(), QStringList() << "2" << "3" );
+  QCOMPARE( static_cast< QgsProcessingParameterBand * >( def.get() )->allowMultiple(), true );
+  QVERIFY( static_cast< QgsProcessingParameterBand * >( def.get() )->parentLayerParameterName().isEmpty() );
 }
 
 void TestProcessingGui::testMultipleInputWrapper()

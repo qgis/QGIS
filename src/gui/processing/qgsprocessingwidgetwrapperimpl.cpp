@@ -5315,9 +5315,82 @@ void QgsProcessingRasterBandPanelWidget::updateSummaryText()
 }
 
 
+
 //
 // QgsProcessingBandWidgetWrapper
 //
+
+QgsProcessingBandParameterDefinitionWidget::QgsProcessingBandParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultLineEdit = new QLineEdit();
+  mDefaultLineEdit->setToolTip( tr( "Band number (separate bands with ; for multiple band parameters)" ) );
+  if ( const QgsProcessingParameterBand *bandParam = dynamic_cast<const QgsProcessingParameterBand *>( definition ) )
+  {
+    const QList< int > bands = QgsProcessingParameters::parameterAsInts( bandParam, bandParam->defaultValue(), context );
+    QStringList defVal;
+    for ( int b : bands )
+    {
+      defVal << QString::number( b );
+    }
+
+    mDefaultLineEdit->setText( defVal.join( ';' ) );
+  }
+  vlayout->addWidget( mDefaultLineEdit );
+
+  vlayout->addWidget( new QLabel( tr( "Parent layer" ) ) );
+  mParentLayerComboBox = new QComboBox();
+
+  QString initialParent;
+  if ( const QgsProcessingParameterBand *bandParam = dynamic_cast<const QgsProcessingParameterBand *>( definition ) )
+    initialParent = bandParam->parentLayerParameterName();
+
+  if ( widgetContext.model() )
+  {
+    // populate combo box with other model input choices
+    const QMap<QString, QgsProcessingModelParameter> components = widgetContext.model()->parameterComponents();
+    for ( auto it = components.constBegin(); it != components.constEnd(); ++it )
+    {
+      if ( const QgsProcessingParameterRasterLayer *definition = dynamic_cast< const QgsProcessingParameterRasterLayer * >( widgetContext.model()->parameterDefinition( it.value().parameterName() ) ) )
+      {
+        mParentLayerComboBox-> addItem( definition->description(), definition->name() );
+        if ( !initialParent.isEmpty() && initialParent == definition->name() )
+        {
+          mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+        }
+      }
+    }
+  }
+
+  if ( mParentLayerComboBox->count() == 0 && !initialParent.isEmpty() )
+  {
+    // if no parent candidates found, we just add the existing one as a placeholder
+    mParentLayerComboBox->addItem( initialParent, initialParent );
+    mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
+  }
+
+  vlayout->addWidget( mParentLayerComboBox );
+
+  mAllowMultipleCheckBox = new QCheckBox( tr( "Allow multiple" ) );
+  if ( const QgsProcessingParameterBand *bandParam = dynamic_cast<const QgsProcessingParameterBand *>( definition ) )
+    mAllowMultipleCheckBox->setChecked( bandParam->allowMultiple() );
+
+  vlayout->addWidget( mAllowMultipleCheckBox );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingBandParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterBand >( name, description, mDefaultLineEdit->text().split( ';' ), mParentLayerComboBox->currentData().toString(), false, mAllowMultipleCheckBox->isChecked() );
+  param->setFlags( flags );
+  return param.release();
+}
 
 QgsProcessingBandWidgetWrapper::QgsProcessingBandWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
@@ -5579,7 +5652,10 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingBandWidgetWrapper::cre
   return new QgsProcessingBandWidgetWrapper( parameter, type );
 }
 
-
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingBandWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingBandParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
 
 
 
