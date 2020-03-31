@@ -23,10 +23,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 import webbrowser
 
-from qgis.PyQt.QtCore import (Qt,
-                              QUrl,
-                              QMetaObject,
-                              QByteArray)
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QFrame, QPushButton, QSizePolicy, QVBoxLayout,
                                  QHBoxLayout, QWidget, QTabWidget, QTextEdit)
@@ -34,20 +31,15 @@ from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
 from qgis.core import (Qgis,
                        QgsProject,
                        QgsProcessingParameterDefinition,
-                       QgsProcessingParameterPoint,
-                       QgsProcessingParameterExtent,
-                       QgsProcessingModelAlgorithm,
                        QgsProcessingModelOutput,
                        QgsProcessingModelChildAlgorithm,
                        QgsProcessingModelChildParameterSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingParameterVectorDestination,
-                       QgsProcessingOutputDefinition,
-                       QgsSettings)
+                       QgsProcessingOutputDefinition)
 
 from qgis.gui import (QgsGui,
                       QgsMessageBar,
@@ -56,7 +48,9 @@ from qgis.gui import (QgsGui,
                       QgsHelp,
                       QgsProcessingContextGenerator,
                       QgsProcessingModelerParameterWidget,
-                      QgsProcessingParameterWidgetContext)
+                      QgsProcessingParameterWidgetContext,
+                      QgsPanelWidget,
+                      QgsPanelWidgetStack)
 from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapperFactory
@@ -69,15 +63,86 @@ from processing.gui.wrappers import WidgetWrapper
 class ModelerParametersDialog(QDialog):
 
     def __init__(self, alg, model, algName=None, configuration=None):
-        QDialog.__init__(self)
+        super().__init__()
+        self.setObjectName('ModelerParametersDialog')
         self.setModal(True)
 
-        self._alg = alg # The algorithm to define in this dialog. It is an instance of QgsProcessingAlgorithm
-        self.model = model # The model this algorithm is going to be added to. It is an instance of QgsProcessingModelAlgorithm
-        self.childId = algName # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
+        # dammit this is SUCH as mess... stupid stable API
+        self._alg = alg  # The algorithm to define in this dialog. It is an instance of QgsProcessingAlgorithm
+        self.model = model  # The model this algorithm is going to be added to. It is an instance of QgsProcessingModelAlgorithm
+        self.childId = algName  # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
         self.configuration = configuration
         self.context = createContext()
 
+        self.widget = ModelerParametersWidget(alg, model, algName, configuration, context=self.context, dialog=self)
+        QgsGui.enableAutoGeometryRestore(self)
+
+        self.buttonBox = QDialogButtonBox()
+        self.buttonBox.setOrientation(Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok | QDialogButtonBox.Help)
+
+        self.buttonBox.accepted.connect(self.okPressed)
+        self.buttonBox.rejected.connect(self.reject)
+        self.buttonBox.helpRequested.connect(self.openHelp)
+
+        mainLayout = QVBoxLayout()
+        mainLayout.addWidget(self.widget, 1)
+        mainLayout.addWidget(self.buttonBox)
+        self.setLayout(mainLayout)
+
+    def setComments(self, text):
+        self.widget.setComments(text)
+
+    def comments(self):
+        return self.widget.comments()
+
+    def switchToCommentTab(self):
+        self.widget.switchToCommentTab()
+
+    def getAvailableDependencies(self):  # spellok
+        return self.widget.getAvailableDependencies()
+
+    def getDependenciesPanel(self):
+        return self.widget.getDependenciesPanel()
+
+    def getAvailableValuesOfType(self, paramType, outTypes=[], dataTypes=[]):
+        return self.widget.getAvailableValuesOfType(paramType, outTypes, dataTypes)
+
+    def resolveValueDescription(self, value):
+        return self.widget.resolveValueDescription(value)
+
+    def setPreviousValues(self):
+        self.widget.setPreviousValues()
+
+    def createAlgorithm(self):
+        return self.widget.createAlgorithm()
+
+    def okPressed(self):
+        if self.createAlgorithm() is not None:
+            self.accept()
+
+    def openHelp(self):
+        algHelp = self.widget.algorithm().helpUrl()
+        if not algHelp:
+            algHelp = QgsHelp.helpUrl("processing_algs/{}/{}.html#{}".format(
+                self.widget.algorithm().provider().helpId(), self.algorithm().groupId(),
+                "{}{}".format(self.algorithm().provider().helpId(), self.algorithm().name()))).toString()
+
+        if algHelp not in [None, ""]:
+            webbrowser.open(algHelp)
+
+
+class ModelerParametersPanelWidget(QgsPanelWidget):
+
+    def __init__(self, alg, model, algName=None, configuration=None, dialog=None, context=None):
+        super().__init__()
+        self._alg = alg  # The algorithm to define in this dialog. It is an instance of QgsProcessingAlgorithm
+        self.model = model  # The model this algorithm is going to be added to. It is an instance of QgsProcessingModelAlgorithm
+        self.childId = algName  # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
+        self.configuration = configuration
+        self.context = context
+        self.dialog = dialog
+        self.setWindowTitle(self._alg.displayName())
         self.widget_labels = {}
 
         class ContextGenerator(QgsProcessingContextGenerator):
@@ -94,18 +159,8 @@ class ModelerParametersDialog(QDialog):
         self.setupUi()
         self.params = None
 
-        settings = QgsSettings()
-        self.restoreGeometry(settings.value("/Processing/modelParametersDialogGeometry", QByteArray()))
-
-    def closeEvent(self, event):
-        settings = QgsSettings()
-        settings.setValue("/Processing/modelParametersDialogGeometry", self.saveGeometry())
-        super(ModelerParametersDialog, self).closeEvent(event)
-
-    def switchToCommentTab(self):
-        self.tab.setCurrentIndex(1)
-        self.commentEdit.setFocus()
-        self.commentEdit.selectAll()
+    def algorithm(self):
+        return self._alg
 
     def setupUi(self):
         self.checkBoxes = {}
@@ -115,27 +170,17 @@ class ModelerParametersDialog(QDialog):
         self.dependentItems = {}
         self.algorithmItem = None
 
-        self.resize(650, 450)
-
         self.mainLayout = QVBoxLayout()
-        self.tab = QTabWidget()
-        self.mainLayout.addWidget(self.tab)
+        self.mainLayout.setContentsMargins(0, 0, 0, 0)
 
-        self.buttonBox = QDialogButtonBox()
-        self.buttonBox.setOrientation(Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok | QDialogButtonBox.Help)
-        self.setSizePolicy(QSizePolicy.Expanding,
-                           QSizePolicy.Expanding)
         self.verticalLayout = QVBoxLayout()
-        self.verticalLayout.setSpacing(5)
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
         self.verticalLayout.addWidget(self.bar)
 
         hLayout = QHBoxLayout()
-        hLayout.setSpacing(5)
-        hLayout.setMargin(0)
+        hLayout.setContentsMargins(0, 0, 0, 0)
         descriptionLabel = QLabel(self.tr("Description"))
         self.descriptionBox = QLineEdit()
         self.descriptionBox.setText(self._alg.displayName())
@@ -179,7 +224,7 @@ class ModelerParametersDialog(QDialog):
             if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
 
-            wrapper = WidgetWrapperFactory.create_wrapper(param, self)
+            wrapper = WidgetWrapperFactory.create_wrapper(param, self.dialog)
             self.wrappers[param.name()] = wrapper
 
             wrapper.setWidgetContext(widget_context)
@@ -210,7 +255,8 @@ class ModelerParametersDialog(QDialog):
             if dest.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
             if isinstance(dest, (QgsProcessingParameterRasterDestination, QgsProcessingParameterVectorDestination,
-                                 QgsProcessingParameterFeatureSink, QgsProcessingParameterFileDestination, QgsProcessingParameterFolderDestination)):
+                                 QgsProcessingParameterFeatureSink, QgsProcessingParameterFileDestination,
+                                 QgsProcessingParameterFolderDestination)):
                 label = QLabel(dest.description())
                 item = QgsFilterLineEdit()
                 if hasattr(item, 'setPlaceholderText'):
@@ -228,7 +274,6 @@ class ModelerParametersDialog(QDialog):
         self.verticalLayout.addStretch(1000)
 
         self.setPreviousValues()
-        self.setWindowTitle(self._alg.displayName())
         self.verticalLayout2 = QVBoxLayout()
         self.verticalLayout2.setSpacing(2)
         self.verticalLayout2.setMargin(0)
@@ -238,34 +283,14 @@ class ModelerParametersDialog(QDialog):
         self.scrollArea = QgsScrollArea()
         self.scrollArea.setWidget(self.paramPanel)
         self.scrollArea.setWidgetResizable(True)
+        self.scrollArea.setFrameStyle(QFrame.NoFrame)
 
         self.verticalLayout2.addWidget(self.scrollArea)
-        self.buttonBox.accepted.connect(self.okPressed)
-        self.buttonBox.rejected.connect(self.cancelPressed)
-        self.buttonBox.helpRequested.connect(self.openHelp)
 
         w = QWidget()
         w.setLayout(self.verticalLayout2)
-        self.tab.addTab(w, self.tr('Properties'))
-
-        self.commentLayout = QVBoxLayout()
-        self.commentEdit = QTextEdit()
-        self.commentEdit.setAcceptRichText(False)
-        self.commentLayout.addWidget(self.commentEdit)
-        w2 = QWidget()
-        w2.setLayout(self.commentLayout)
-        self.tab.addTab(w2, self.tr('Comments'))
-
-        self.mainLayout.addWidget(self.buttonBox)
+        self.mainLayout.addWidget(w)
         self.setLayout(self.mainLayout)
-
-        QMetaObject.connectSlotsByName(self)
-
-    def setComments(self, text):
-        self.commentEdit.setPlainText(text)
-
-    def comments(self):
-        return self.commentEdit.toPlainText()
 
     def getAvailableDependencies(self):  # spellok
         if self.childId is None:
@@ -409,9 +434,9 @@ class ModelerParametersDialog(QDialog):
                     [isinstance(subval, QgsProcessingModelChildParameterSource) for subval in val])):
                 val = [QgsProcessingModelChildParameterSource.fromStaticValue(val)]
             for subval in val:
-                if (isinstance(subval, QgsProcessingModelChildParameterSource)
-                    and subval.source() == QgsProcessingModelChildParameterSource.StaticValue
-                        and not param.checkValueIsAcceptable(subval.staticValue())) \
+                if (isinstance(subval, QgsProcessingModelChildParameterSource) and
+                        subval.source() == QgsProcessingModelChildParameterSource.StaticValue and
+                        not param.checkValueIsAcceptable(subval.staticValue())) \
                         or (subval is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
                     self.bar.pushMessage(self.tr("Error"), self.tr("Wrong or missing value for parameter '{}'").format(
                         param.description()),
@@ -445,27 +470,98 @@ class ModelerParametersDialog(QDialog):
             dep_ids.append(availableDependencies[selected].childId())  # spellok
         alg.setDependencies(dep_ids)
 
-        #try:
-        #    self._alg.processBeforeAddingToModeler(alg, self.model)
-        #except:
-        #    pass
-
-        alg.comment().setDescription(self.comments())
         return alg
 
-    def okPressed(self):
-        alg = self.createAlgorithm()
-        if alg is not None:
-            self.accept()
 
-    def cancelPressed(self):
-        self.reject()
+class ModelerParametersWidget(QWidget):
 
-    def openHelp(self):
-        algHelp = self._alg.helpUrl()
-        if not algHelp:
-            algHelp = QgsHelp.helpUrl("processing_algs/{}/{}.html#{}".format(
-                self._alg.provider().helpId(), self._alg.groupId(), "{}{}".format(self._alg.provider().helpId(), self._alg.name()))).toString()
+    def __init__(self, alg, model, algName=None, configuration=None, dialog=None, context=None):
+        super().__init__()
+        self._alg = alg  # The algorithm to define in this dialog. It is an instance of QgsProcessingAlgorithm
+        self.model = model  # The model this algorithm is going to be added to. It is an instance of QgsProcessingModelAlgorithm
+        self.childId = algName  # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
+        self.configuration = configuration
+        self.context = context
+        self.dialog = dialog
 
-        if algHelp not in [None, ""]:
-            webbrowser.open(algHelp)
+        self.widget = ModelerParametersPanelWidget(alg, model, algName, configuration, dialog, context)
+
+        self.widget_labels = {}
+
+        class ContextGenerator(QgsProcessingContextGenerator):
+
+            def __init__(self, context):
+                super().__init__()
+                self.processing_context = context
+
+            def processingContext(self):
+                return self.processing_context
+
+        self.context_generator = ContextGenerator(self.context)
+
+        self.setupUi()
+        self.params = None
+
+    def algorithm(self):
+        return self._alg
+
+    def switchToCommentTab(self):
+        self.tab.setCurrentIndex(1)
+        self.commentEdit.setFocus()
+        self.commentEdit.selectAll()
+
+    def setupUi(self):
+        self.checkBoxes = {}
+        self.showAdvanced = False
+        self.wrappers = {}
+        self.valueItems = {}
+        self.dependentItems = {}
+        self.algorithmItem = None
+
+        self.mainLayout = QVBoxLayout()
+        self.mainLayout.setContentsMargins(0, 0, 0, 0)
+        self.tab = QTabWidget()
+        self.mainLayout.addWidget(self.tab)
+
+        self.param_widget = QgsPanelWidgetStack()
+        self.widget.setDockMode(True)
+        self.param_widget.setMainPanel(self.widget)
+
+        self.tab.addTab(self.param_widget, self.tr('Properties'))
+
+        self.commentLayout = QVBoxLayout()
+        self.commentEdit = QTextEdit()
+        self.commentEdit.setAcceptRichText(False)
+        self.commentLayout.addWidget(self.commentEdit)
+        w2 = QWidget()
+        w2.setLayout(self.commentLayout)
+        self.tab.addTab(w2, self.tr('Comments'))
+
+        self.setLayout(self.mainLayout)
+
+    def setComments(self, text):
+        self.commentEdit.setPlainText(text)
+
+    def comments(self):
+        return self.commentEdit.toPlainText()
+
+    def getAvailableDependencies(self):  # spellok
+        return self.widget.getAvailableDependencies()
+
+    def getDependenciesPanel(self):
+        return self.widget.getDependenciesPanel()
+
+    def getAvailableValuesOfType(self, paramType, outTypes=[], dataTypes=[]):
+        return self.widget.getAvailableValuesOfType(paramType, outTypes, dataTypes)
+
+    def resolveValueDescription(self, value):
+        return self.widget.resolveValueDescription(value)
+
+    def setPreviousValues(self):
+        self.widget.setPreviousValues()
+
+    def createAlgorithm(self):
+        alg = self.widget.createAlgorithm()
+        if alg:
+            alg.comment().setDescription(self.comments())
+        return alg
