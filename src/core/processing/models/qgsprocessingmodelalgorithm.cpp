@@ -100,6 +100,56 @@ QgsProcessingAlgorithm::Flags QgsProcessingModelAlgorithm::flags() const
 
 QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const
 {
+  auto evaluateSources = [ = ]( const QgsProcessingParameterDefinition * def )->QVariant
+  {
+    const QgsProcessingModelChildParameterSources paramSources = child.parameterSources().value( def->name() );
+
+    QString expressionText;
+    QVariantList paramParts;
+    for ( const QgsProcessingModelChildParameterSource &source : paramSources )
+    {
+      switch ( source.source() )
+      {
+        case QgsProcessingModelChildParameterSource::StaticValue:
+          paramParts << source.staticValue();
+          break;
+
+        case QgsProcessingModelChildParameterSource::ModelParameter:
+          paramParts << modelParameters.value( source.parameterName() );
+          break;
+
+        case QgsProcessingModelChildParameterSource::ChildOutput:
+        {
+          QVariantMap linkedChildResults = results.value( source.outputChildId() ).toMap();
+          paramParts << linkedChildResults.value( source.outputName() );
+          break;
+        }
+
+        case QgsProcessingModelChildParameterSource::Expression:
+        {
+          QgsExpression exp( source.expression() );
+          paramParts << exp.evaluate( &expressionContext );
+          break;
+        }
+        case QgsProcessingModelChildParameterSource::ExpressionText:
+        {
+          expressionText = QgsExpression::replaceExpressionText( source.expressionText(), &expressionContext );
+          break;
+        }
+      }
+    }
+
+    if ( ! expressionText.isEmpty() )
+    {
+      return expressionText;
+    }
+    else if ( paramParts.count() == 1 )
+      return paramParts.at( 0 );
+    else
+      return paramParts;
+  };
+
+
   QVariantMap childParams;
   const auto constParameterDefinitions = child.algorithm()->parameterDefinitions();
   for ( const QgsProcessingParameterDefinition *def : constParameterDefinitions )
@@ -109,53 +159,8 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
       if ( !child.parameterSources().contains( def->name() ) )
         continue; // use default value
 
-      QgsProcessingModelChildParameterSources paramSources = child.parameterSources().value( def->name() );
-
-      QString expressionText;
-      QVariantList paramParts;
-      const auto constParamSources = paramSources;
-      for ( const QgsProcessingModelChildParameterSource &source : constParamSources )
-      {
-        switch ( source.source() )
-        {
-          case QgsProcessingModelChildParameterSource::StaticValue:
-            paramParts << source.staticValue();
-            break;
-
-          case QgsProcessingModelChildParameterSource::ModelParameter:
-            paramParts << modelParameters.value( source.parameterName() );
-            break;
-
-          case QgsProcessingModelChildParameterSource::ChildOutput:
-          {
-            QVariantMap linkedChildResults = results.value( source.outputChildId() ).toMap();
-            paramParts << linkedChildResults.value( source.outputName() );
-            break;
-          }
-
-          case QgsProcessingModelChildParameterSource::Expression:
-          {
-            QgsExpression exp( source.expression() );
-            paramParts << exp.evaluate( &expressionContext );
-            break;
-          }
-          case QgsProcessingModelChildParameterSource::ExpressionText:
-          {
-            expressionText = QgsExpression::replaceExpressionText( source.expressionText(), &expressionContext );
-            break;
-          }
-        }
-      }
-
-      if ( ! expressionText.isEmpty() )
-      {
-        childParams.insert( def->name(), expressionText );
-      }
-      else if ( paramParts.count() == 1 )
-        childParams.insert( def->name(), paramParts.at( 0 ) );
-      else
-        childParams.insert( def->name(), paramParts );
-
+      const QVariant value = evaluateSources( def );
+      childParams.insert( def->name(), value );
     }
     else
     {
@@ -188,7 +193,19 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
         }
       }
 
-      if ( !isFinalOutput )
+      bool hasExplicitDefinition = false;
+      if ( !isFinalOutput && child.parameterSources().contains( def->name() ) )
+      {
+        // explicitly defined source for output
+        const QVariant value = evaluateSources( def );
+        if ( value.isValid() )
+        {
+          childParams.insert( def->name(), value );
+          hasExplicitDefinition = true;
+        }
+      }
+
+      if ( !isFinalOutput && !hasExplicitDefinition )
       {
         // output is temporary
 

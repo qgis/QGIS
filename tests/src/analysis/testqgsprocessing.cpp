@@ -9216,6 +9216,23 @@ void TestQgsProcessing::modelExecution()
   QCOMPARE( outDef.sink.staticValue().toString(), QStringLiteral( "memory:" ) );
   QCOMPARE( params.count(), 3 ); // don't want FAIL_OUTPUT set!
 
+  // a child with an static output value
+  QgsProcessingModelChildAlgorithm alg2c4;
+  alg2c4.setChildId( "cx4" );
+  alg2c4.setAlgorithmId( "native:extractbyexpression" );
+  alg2c4.addParameterSources( "OUTPUT", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromStaticValue( "STATIC" ) );
+  model2.addChildAlgorithm( alg2c4 );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx4" ), modelInputs, childResults, expContext );
+  QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "STATIC" ) );
+  model2.removeChildAlgorithm( "cx4" );
+  // expression based output value
+  alg2c4.addParameterSources( "OUTPUT", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromExpression( "'A' || 'B'" ) );
+  model2.addChildAlgorithm( alg2c4 );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx4" ), modelInputs, childResults, expContext );
+  QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "AB" ) );
+  model2.removeChildAlgorithm( "cx4" );
+
+
   variables = model2.variablesForChildAlgorithm( "cx3", context );
   QCOMPARE( variables.count(), 16 );
   QCOMPARE( variables.value( "DIST" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
