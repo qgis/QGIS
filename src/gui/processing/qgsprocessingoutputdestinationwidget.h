@@ -24,7 +24,7 @@
 
 class QgsProcessingDestinationParameter;
 class QgsBrowserGuiModel;
-
+class QCheckBox;
 ///@cond NOT_STABLE
 
 /**
@@ -66,6 +66,16 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
      */
     void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
 
+    /**
+     * Adds the "Open output file after running" option to the widget.
+     */
+    void addOpenAfterRunningOption();
+
+    /**
+     * Returns TRUE if the widget has the "Open output file after running" option checked.
+     */
+    bool openAfterRunning() const;
+
   signals:
 
     /**
@@ -106,6 +116,7 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     bool mDefaultSelection = false;
     QString mEncoding;
     QgsBrowserGuiModel *mBrowserModel = nullptr;
+    QCheckBox *mOpenAfterRunningCheck = nullptr;
 
     friend class TestProcessingGui;
 };

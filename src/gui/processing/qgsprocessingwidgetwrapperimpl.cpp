@@ -56,6 +56,7 @@
 #include "qgsprocessingmatrixmodelerwidget.h"
 #include "qgsprocessingmaplayercombobox.h"
 #include "qgsrasterbandcombobox.h"
+#include "qgsprocessingoutputdestinationwidget.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -5873,5 +5874,214 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMultipleLayerWidgetWra
 {
   return new QgsProcessingMultipleLayerWidgetWrapper( parameter, type );
 }
-///@endcond PRIVATE
 
+//
+// QgsProcessingOutputWidgetWrapper
+//
+
+QgsProcessingOutputWidgetWrapper::QgsProcessingOutputWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QWidget *QgsProcessingOutputWidgetWrapper::createWidget()
+{
+  const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter * >( parameterDefinition() );
+  switch ( type() )
+  {
+    case QgsProcessingGui::Standard:
+    {
+      mOutputWidget = new QgsProcessingLayerOutputDestinationWidget( destParam, false );
+      mOutputWidget->setToolTip( parameterDefinition()->toolTip() );
+
+      connect( mOutputWidget, &QgsProcessingLayerOutputDestinationWidget::destinationChanged, this, [ = ]()
+      {
+        if ( mBlockSignals )
+          return;
+
+        emit widgetValueHasChanged( this );
+      } );
+
+      if ( destParam->type() == QgsProcessingParameterRasterDestination::typeName() ||
+           destParam->type() == QgsProcessingParameterFeatureSink::typeName() ||
+           destParam->type() == QgsProcessingParameterVectorDestination::typeName() )
+        mOutputWidget->addOpenAfterRunningOption();
+
+      return mOutputWidget;
+    }
+    case QgsProcessingGui::Batch:
+      break;
+    case QgsProcessingGui::Modeler:
+      break;
+  }
+
+  return nullptr;
+}
+
+
+void QgsProcessingOutputWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext & )
+{
+  if ( mOutputWidget )
+    mOutputWidget->setValue( value );
+}
+
+QVariant QgsProcessingOutputWidgetWrapper::widgetValue() const
+{
+  if ( mOutputWidget )
+    return mOutputWidget->value();
+
+  return QVariant();
+}
+
+QVariantMap QgsProcessingOutputWidgetWrapper::customProperties() const
+{
+  QVariantMap res;
+  if ( mOutputWidget )
+    res.insert( QStringLiteral( "OPEN_AFTER_RUNNING" ), mOutputWidget->openAfterRunning() );
+  return res;
+}
+
+QStringList QgsProcessingOutputWidgetWrapper::compatibleParameterTypes() const
+{
+  return QStringList()
+         << QgsProcessingParameterRasterLayer::typeName()
+         << QgsProcessingParameterMeshLayer::typeName()
+         << QgsProcessingParameterVectorLayer::typeName()
+         << QgsProcessingParameterMapLayer::typeName()
+         << QgsProcessingParameterString::typeName()
+         << QgsProcessingParameterExpression::typeName();
+}
+
+QStringList QgsProcessingOutputWidgetWrapper::compatibleOutputTypes() const
+{
+  return QStringList()
+         << QgsProcessingOutputString::typeName();
+}
+
+//
+// QgsProcessingFeatureSinkWidgetWrapper
+//
+
+QgsProcessingFeatureSinkWidgetWrapper::QgsProcessingFeatureSinkWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsProcessingOutputWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QString QgsProcessingFeatureSinkWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterFeatureSink::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFeatureSinkWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingFeatureSinkWidgetWrapper( parameter, type );
+}
+
+QString QgsProcessingFeatureSinkWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "path to layer destination" );
+}
+
+//
+// QgsProcessingFeatureSinkWidgetWrapper
+//
+
+QgsProcessingVectorDestinationWidgetWrapper::QgsProcessingVectorDestinationWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsProcessingOutputWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QString QgsProcessingVectorDestinationWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterVectorDestination::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingVectorDestinationWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingVectorDestinationWidgetWrapper( parameter, type );
+}
+
+QString QgsProcessingVectorDestinationWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "path to layer destination" );
+}
+
+//
+// QgsProcessingFeatureSinkWidgetWrapper
+//
+
+QgsProcessingRasterDestinationWidgetWrapper::QgsProcessingRasterDestinationWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsProcessingOutputWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QString QgsProcessingRasterDestinationWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterRasterDestination::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRasterDestinationWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingRasterDestinationWidgetWrapper( parameter, type );
+}
+
+QString QgsProcessingRasterDestinationWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "path to layer destination" );
+}
+
+//
+// QgsProcessingFileDestinationWidgetWrapper
+//
+
+QgsProcessingFileDestinationWidgetWrapper::QgsProcessingFileDestinationWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsProcessingOutputWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QString QgsProcessingFileDestinationWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterFileDestination::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFileDestinationWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingFileDestinationWidgetWrapper( parameter, type );
+}
+
+QString QgsProcessingFileDestinationWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "path to file destination" );
+}
+
+//
+// QgsProcessingFolderDestinationWidgetWrapper
+//
+
+QgsProcessingFolderDestinationWidgetWrapper::QgsProcessingFolderDestinationWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+  : QgsProcessingOutputWidgetWrapper( parameter, type, parent )
+{
+
+}
+
+QString QgsProcessingFolderDestinationWidgetWrapper::parameterType() const
+{
+  return QgsProcessingParameterFolderDestination::typeName();
+}
+
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFolderDestinationWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+{
+  return new QgsProcessingFolderDestinationWidgetWrapper( parameter, type );
+}
+
+QString QgsProcessingFolderDestinationWidgetWrapper::modelerExpressionFormatString() const
+{
+  return tr( "path to folder destination" );
+}
+
+///@endcond PRIVATE

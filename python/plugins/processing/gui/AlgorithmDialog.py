@@ -47,6 +47,7 @@ from qgis.core import (Qgis,
                        QgsProcessingFeatureSourceDefinition)
 from qgis.gui import (QgsGui,
                       QgsMessageBar,
+                      QgsProcessingLayerOutputDestinationWidget,
                       QgsProcessingAlgorithmDialogBase)
 from qgis.utils import iface
 
@@ -155,16 +156,17 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     parameters[param.name()] = 'memory:'
                     continue
 
-                dest_project = None
-                if not param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
-                        isinstance(param, (QgsProcessingParameterRasterDestination,
-                                           QgsProcessingParameterFeatureSink,
-                                           QgsProcessingParameterVectorDestination)):
-                    if self.mainWidget().checkBoxes[param.name()].isChecked():
-                        dest_project = QgsProject.instance()
+                try:
+                    wrapper = self.mainWidget().wrappers[param.name()]
+                except KeyError:
+                    continue
 
-                widget = self.mainWidget().outputWidgets[param.name()]
-                value = widget.value()
+                widget = wrapper.wrappedWidget()
+                value = wrapper.parameterValue()
+
+                dest_project = None
+                if wrapper.customProperties().get('OPEN_AFTER_RUNNING'):
+                    dest_project = QgsProject.instance()
 
                 if value and isinstance(value, QgsProcessingOutputLayerDefinition):
                     value.destinationProject = dest_project

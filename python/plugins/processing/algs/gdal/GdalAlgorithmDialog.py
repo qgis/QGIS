@@ -100,9 +100,6 @@ class GdalParametersPanel(ParametersPanel):
             for c in w.findChildren(QWidget):
                 self.connectWidgetChangedSignals(c)
 
-        for output_widget in self.outputWidgets.values():
-            self.connectWidgetChangedSignals(output_widget)
-
     def connectWidgetChangedSignals(self, w):
         if isinstance(w, QLineEdit):
             w.textChanged.connect(self.parametersHaveChanged)
