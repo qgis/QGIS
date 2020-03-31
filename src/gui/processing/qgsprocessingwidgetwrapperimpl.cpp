@@ -5961,6 +5961,38 @@ void QgsProcessingMultipleLayerPanelWidget::updateSummaryText()
 // QgsProcessingMultipleLayerWidgetWrapper
 //
 
+QgsProcessingMultipleLayerParameterDefinitionWidget::QgsProcessingMultipleLayerParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Allowed layer type" ) ) );
+  mLayerTypeComboBox = new QComboBox();
+  mLayerTypeComboBox->addItem( tr( "Any Map Layer" ), QgsProcessing::TypeMapLayer );
+  mLayerTypeComboBox->addItem( tr( "Vector (No Geometry Required)" ), QgsProcessing::TypeVector );
+  mLayerTypeComboBox->addItem( tr( "Vector (Point)" ), QgsProcessing::TypeVectorPoint );
+  mLayerTypeComboBox->addItem( tr( "Vector (Line)" ), QgsProcessing::TypeVectorLine );
+  mLayerTypeComboBox->addItem( tr( "Vector (Polygon)" ), QgsProcessing::TypeVectorPolygon );
+  mLayerTypeComboBox->addItem( tr( "Any Geometry Type" ), QgsProcessing::TypeVectorAnyGeometry );
+  mLayerTypeComboBox->addItem( tr( "Raster" ), QgsProcessing::TypeRaster );
+  mLayerTypeComboBox->addItem( tr( "File" ), QgsProcessing::TypeFile );
+  mLayerTypeComboBox->addItem( tr( "Mesh" ), QgsProcessing::TypeMesh );
+  if ( const QgsProcessingParameterMultipleLayers *layersParam = dynamic_cast<const QgsProcessingParameterMultipleLayers *>( definition ) )
+    mLayerTypeComboBox->setCurrentIndex( mLayerTypeComboBox->findData( layersParam->layerType() ) );
+
+  vlayout->addWidget( mLayerTypeComboBox );
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingMultipleLayerParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterMultipleLayers >( name, description, static_cast< QgsProcessing::SourceType >( mLayerTypeComboBox->currentData().toInt() ) );
+  param->setFlags( flags );
+  return param.release();
+}
+
 QgsProcessingMultipleLayerWidgetWrapper::QgsProcessingMultipleLayerWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
@@ -6054,6 +6086,12 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMultipleLayerWidgetWra
 {
   return new QgsProcessingMultipleLayerWidgetWrapper( parameter, type );
 }
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMultipleLayerWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingMultipleLayerParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
+
 
 //
 // QgsProcessingOutputWidgetWrapper

@@ -49,7 +49,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterMapLayer,
-                       QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterScale,
@@ -76,7 +75,6 @@ class ModelerParameterDefinitionDialog(QDialog):
     def use_legacy_dialog(param=None, paramType=None):
         if paramType in (parameters.PARAMETER_VECTOR,
                          parameters.PARAMETER_TABLE,
-                         parameters.PARAMETER_MULTIPLE,
                          parameters.PARAMETER_NUMBER,
                          parameters.PARAMETER_DISTANCE,
                          parameters.PARAMETER_SCALE,
@@ -84,7 +82,6 @@ class ModelerParameterDefinitionDialog(QDialog):
             return True
         elif isinstance(param, (QgsProcessingParameterFeatureSource,
                                 QgsProcessingParameterVectorLayer,
-                                QgsProcessingParameterMultipleLayers,
                                 QgsProcessingParameterNumber,
                                 QgsProcessingParameterDistance,
                                 QgsProcessingParameterScale,
@@ -148,21 +145,6 @@ class ModelerParameterDefinitionDialog(QDialog):
             if self.param is not None:
                 self.shapetypeCombo.setCurrentIndex(self.shapetypeCombo.findData(self.param.dataTypes()[0]))
             self.verticalLayout.addWidget(self.shapetypeCombo)
-        elif (self.paramType == parameters.PARAMETER_MULTIPLE or
-              isinstance(self.param, QgsProcessingParameterMultipleLayers)):
-            self.verticalLayout.addWidget(QLabel(self.tr('Data type')))
-            self.datatypeCombo = QComboBox()
-            self.datatypeCombo.addItem(self.tr('Any Map Layer'), QgsProcessing.TypeMapLayer)
-            self.datatypeCombo.addItem(self.tr('Vector (No Geometry Required)'), QgsProcessing.TypeVector)
-            self.datatypeCombo.addItem(self.tr('Vector (Point)'), QgsProcessing.TypeVectorPoint)
-            self.datatypeCombo.addItem(self.tr('Vector (Line)'), QgsProcessing.TypeVectorLine)
-            self.datatypeCombo.addItem(self.tr('Vector (Polygon)'), QgsProcessing.TypeVectorPolygon)
-            self.datatypeCombo.addItem(self.tr('Vector (Any Geometry Type)'), QgsProcessing.TypeVectorAnyGeometry)
-            self.datatypeCombo.addItem(self.tr('Raster'), QgsProcessing.TypeRaster)
-            self.datatypeCombo.addItem(self.tr('File'), QgsProcessing.TypeFile)
-            if self.param is not None:
-                self.datatypeCombo.setCurrentIndex(self.datatypeCombo.findData(self.param.layerType()))
-            self.verticalLayout.addWidget(self.datatypeCombo)
         elif (self.paramType == parameters.PARAMETER_MAP_LAYER
               or isinstance(self.param, QgsProcessingParameterMapLayer)):
             self.verticalLayout.addWidget(QLabel(self.tr('Data type')))
@@ -351,11 +333,6 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.param = QgsProcessingParameterFeatureSource(
                 name, description,
                 [self.shapetypeCombo.currentData()])
-        elif (self.paramType == parameters.PARAMETER_MULTIPLE or
-              isinstance(self.param, QgsProcessingParameterMultipleLayers)):
-            self.param = QgsProcessingParameterMultipleLayers(
-                name, description,
-                self.datatypeCombo.currentData())
         elif (self.paramType == parameters.PARAMETER_DISTANCE or
               isinstance(self.param, QgsProcessingParameterDistance)):
             self.param = QgsProcessingParameterDistance(name, description,
