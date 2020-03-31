@@ -188,7 +188,7 @@ void QgsLayoutManualTableWidget::setTableContents()
     for ( double width : columnWidths )
     {
       mEditorDialog->setTableColumnWidth( col, width );
-      headers << mTable->headers().value( col )->heading();
+      headers << ( mTable->headers().size() > col ? mTable->headers().value( col )->heading() : QVariant() );
       col++;
     }
     mEditorDialog->setTableHeaders( headers );
