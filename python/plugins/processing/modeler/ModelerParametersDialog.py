@@ -99,7 +99,7 @@ class ModelerParametersDialog(QDialog):
     def switchToCommentTab(self):
         self.widget.switchToCommentTab()
 
-    def getAvailableDependencies(self):  # spellok
+    def getAvailableDependencies(self):
         return self.widget.getAvailableDependencies()
 
     def getDependenciesPanel(self):
@@ -292,7 +292,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.mainLayout.addWidget(w)
         self.setLayout(self.mainLayout)
 
-    def getAvailableDependencies(self):  # spellok
+    def getAvailableDependencies(self):
         if self.childId is None:
             dependent = []
         else:
@@ -305,7 +305,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         return opts
 
     def getDependenciesPanel(self):
-        return MultipleInputPanel([alg.description() for alg in self.getAvailableDependencies()])  # spellok
+        return MultipleInputPanel([alg.description() for alg in self.getAvailableDependencies()])
 
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
@@ -394,7 +394,7 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                     self.valueItems[out.childOutputName()].setText(out.name())
 
             selected = []
-            dependencies = self.getAvailableDependencies()  # spellok
+            dependencies = self.getAvailableDependencies()
             for idx, dependency in enumerate(dependencies):
                 if dependency.childId() in alg.dependencies():
                     selected.append(idx)
@@ -464,10 +464,10 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         alg.setModelOutputs(outputs)
 
         selectedOptions = self.dependenciesPanel.selectedoptions
-        availableDependencies = self.getAvailableDependencies()  # spellok
+        availableDependencies = self.getAvailableDependencies()
         dep_ids = []
         for selected in selectedOptions:
-            dep_ids.append(availableDependencies[selected].childId())  # spellok
+            dep_ids.append(availableDependencies[selected].childId())
         alg.setDependencies(dep_ids)
 
         return alg
@@ -545,7 +545,7 @@ class ModelerParametersWidget(QWidget):
     def comments(self):
         return self.commentEdit.toPlainText()
 
-    def getAvailableDependencies(self):  # spellok
+    def getAvailableDependencies(self):
         return self.widget.getAvailableDependencies()
 
     def getDependenciesPanel(self):
