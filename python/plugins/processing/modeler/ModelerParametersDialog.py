@@ -67,6 +67,9 @@ class ModelerParametersDialog(QDialog):
         self.setObjectName('ModelerParametersDialog')
         self.setModal(True)
 
+        if iface is not None:
+            self.setStyleSheet(iface.mainWindow().styleSheet())
+
         # dammit this is SUCH as mess... stupid stable API
         self._alg = alg  # The algorithm to define in this dialog. It is an instance of QgsProcessingAlgorithm
         self.model = model  # The model this algorithm is going to be added to. It is an instance of QgsProcessingModelAlgorithm
