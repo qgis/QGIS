@@ -35,11 +35,6 @@ from qgis.core import (Qgis,
                        QgsProcessingModelOutput,
                        QgsProcessingModelChildAlgorithm,
                        QgsProcessingModelChildParameterSource,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterRasterDestination,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingParameterFolderDestination,
-                       QgsProcessingParameterVectorDestination,
                        QgsProcessingOutputDefinition)
 
 from qgis.gui import (QgsGui,
@@ -175,11 +170,8 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         return self._alg
 
     def setupUi(self):
-        self.checkBoxes = {}
         self.showAdvanced = False
         self.wrappers = {}
-        self.valueItems = {}
-        self.dependentItems = {}
         self.algorithmItem = None
 
         self.mainLayout = QVBoxLayout()
@@ -246,8 +238,6 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             else:
                 widget = wrapper.widget
             if widget is not None:
-                self.valueItems[param.name()] = widget
-
                 if issubclass(wrapper.__class__, QgsProcessingModelerParameterWidget):
                     label = wrapper.createLabel()
                 else:
@@ -263,19 +253,29 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                 self.verticalLayout.addWidget(label)
                 self.verticalLayout.addWidget(widget)
 
-        for dest in self._alg.destinationParameterDefinitions():
-            if dest.flags() & QgsProcessingParameterDefinition.FlagHidden:
+        for output in self._alg.destinationParameterDefinitions():
+            if output.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
-            if isinstance(dest, (QgsProcessingParameterRasterDestination, QgsProcessingParameterVectorDestination,
-                                 QgsProcessingParameterFeatureSink, QgsProcessingParameterFileDestination,
-                                 QgsProcessingParameterFolderDestination)):
-                label = QLabel(dest.description())
-                item = QgsFilterLineEdit()
-                if hasattr(item, 'setPlaceholderText'):
-                    item.setPlaceholderText(self.tr('[Enter name if this is a final result]'))
+
+            widget = QgsGui.processingGuiRegistry().createModelerParameterWidget(self.model,
+                                                                                 self.childId,
+                                                                                 output,
+                                                                                 self.context)
+            widget.setDialog(self.dialog)
+            widget.setWidgetContext(widget_context)
+            widget.registerProcessingContextGenerator(self.context_generator)
+
+            self.wrappers[output.name()] = widget
+
+            item = QgsFilterLineEdit()
+            if hasattr(item, 'setPlaceholderText'):
+                item.setPlaceholderText(self.tr('[Enter name if this is a final result]'))
+
+            label = widget.createLabel()
+            if label is not None:
                 self.verticalLayout.addWidget(label)
-                self.verticalLayout.addWidget(item)
-                self.valueItems[dest.name()] = item
+
+            self.verticalLayout.addWidget(widget)
 
         label = QLabel(' ')
         self.verticalLayout.addWidget(label)
@@ -401,9 +401,34 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
                         value = value.staticValue()
                     wrapper.setValue(value)
 
-            for name, out in alg.modelOutputs().items():
-                if out.childOutputName() in self.valueItems:
-                    self.valueItems[out.childOutputName()].setText(out.name())
+            for output in self.algorithm().destinationParameterDefinitions():
+                if output.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                    continue
+
+                model_output_name = None
+                for name, out in alg.modelOutputs().items():
+                    if out.childId() == self.childId and out.childOutputName() == output.name():
+                        # this destination parameter is linked to a model output
+                        model_output_name = out.name()
+                        break
+
+                value = None
+                if model_output_name is None and output.name() in alg.parameterSources():
+                    value = alg.parameterSources()[output.name()]
+                    if isinstance(value, list) and len(value) == 1:
+                        value = value[0]
+                    elif isinstance(value, list) and len(value) == 0:
+                        value = None
+
+                wrapper = self.wrappers[output.name()]
+
+                if model_output_name is not None:
+                    wrapper.setToModelOutput(model_output_name)
+                elif value is not None or output.defaultValue() is not None:
+                    if value is None:
+                        value = QgsProcessingModelChildParameterSource.fromStaticValue(output.defaultValue())
+
+                    wrapper.setWidgetValue(value)
 
             selected = []
             dependencies = self.getAvailableDependencies()
@@ -457,21 +482,31 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
             alg.addParameterSources(param.name(), val)
 
         outputs = {}
-        for dest in self._alg.destinationParameterDefinitions():
-            if not dest.flags() & QgsProcessingParameterDefinition.FlagHidden:
-                name = self.valueItems[dest.name()].text()
-                if name.strip() != '':
-                    output = QgsProcessingModelOutput(name, name)
-                    output.setChildId(alg.childId())
-                    output.setChildOutputName(dest.name())
-                    outputs[name] = output
+        for output in self._alg.destinationParameterDefinitions():
+            if not output.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                wrapper = self.wrappers[output.name()]
 
-            if dest.flags() & QgsProcessingParameterDefinition.FlagIsModelOutput:
-                if dest.name() not in outputs:
-                    output = QgsProcessingModelOutput(dest.name(), dest.name())
-                    output.setChildId(alg.childId())
-                    output.setChildOutputName(dest.name())
-                    outputs[dest.name()] = output
+                if wrapper.isModelOutput():
+                    name = wrapper.modelOutputName()
+                    if name:
+                        model_output = QgsProcessingModelOutput(name, name)
+                        model_output.setChildId(alg.childId())
+                        model_output.setChildOutputName(output.name())
+                        outputs[name] = model_output
+                else:
+                    val = wrapper.value()
+
+                    if isinstance(val, QgsProcessingModelChildParameterSource):
+                        val = [val]
+
+                    alg.addParameterSources(output.name(), val)
+
+            if output.flags() & QgsProcessingParameterDefinition.FlagIsModelOutput:
+                if output.name() not in outputs:
+                    model_output = QgsProcessingModelOutput(output.name(), output.name())
+                    model_output.setChildId(alg.childId())
+                    model_output.setChildOutputName(output.name())
+                    outputs[output.name()] = model_output
 
         alg.setModelOutputs(outputs)
 
@@ -521,12 +556,6 @@ class ModelerParametersWidget(QWidget):
         self.commentEdit.selectAll()
 
     def setupUi(self):
-        self.showAdvanced = False
-        self.wrappers = {}
-        self.valueItems = {}
-        self.dependentItems = {}
-        self.algorithmItem = None
-
         self.mainLayout = QVBoxLayout()
         self.mainLayout.setContentsMargins(0, 0, 0, 0)
         self.tab = QTabWidget()

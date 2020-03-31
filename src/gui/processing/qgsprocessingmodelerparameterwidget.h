@@ -32,6 +32,7 @@ class QgsExpressionLineEdit;
 class QgsProcessingModelAlgorithm;
 class QgsProcessingParameterWidgetContext;
 class QgsProcessingContextGenerator;
+class QgsFilterLineEdit;
 
 class QLabel;
 class QToolButton;
@@ -117,7 +118,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
 
     /**
      * Set the expected expression format \a text, which is shown in the expression builder dialog for the widget
-     * when in the "pre-calculated" expression mode. This is purely a text format and no expression validation is made
+     * when in the "pre-calculated" ex  pression mode. This is purely a text format and no expression validation is made
      * against it.
      */
     void setExpressionHelpText( const QString &text );
@@ -150,6 +151,33 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     void setWidgetValue( const QList< QgsProcessingModelChildParameterSource > &values );
 
     /**
+     * Sets the widget to a model output, for destination parameters only.
+     *
+     * \see isModelOutput()
+     * \see modelOutputName()
+     * \since QGIS 3.14
+     */
+    void setToModelOutput( const QString &value );
+
+    /**
+     * Returns TRUE if the widget is set to the model output mode.
+     *
+     * \see setToModelOutput()
+     * \see modelOutputName()
+     * \since QGIS 3.14
+     */
+    bool isModelOutput() const;
+
+    /**
+     * Returns the model output name, if isModelOutput() is TRUE.
+     *
+     * \see setToModelOutput()
+     * \see isModelOutput()
+     * \since QGIS 3.14
+     */
+    QString modelOutputName() const;
+
+    /**
      * Returns the current value of the parameter.
      *
      * \see setWidgetValue()
@@ -179,6 +207,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
       Expression = 1,
       ModelParameter = 2,
       ChildOutput = 3,
+      ModelOutput = 4,
     };
 
     SourceType currentSourceType() const;
@@ -206,6 +235,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     QgsExpressionLineEdit *mExpressionWidget = nullptr;
     QComboBox *mModelInputCombo = nullptr;
     QComboBox *mChildOutputCombo = nullptr;
+    QgsFilterLineEdit *mModelOutputName = nullptr;
 
     friend class TestProcessingGui;
 };

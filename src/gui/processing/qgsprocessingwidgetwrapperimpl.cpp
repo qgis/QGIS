@@ -5891,6 +5891,7 @@ QWidget *QgsProcessingOutputWidgetWrapper::createWidget()
   switch ( type() )
   {
     case QgsProcessingGui::Standard:
+    case QgsProcessingGui::Modeler:
     {
       mOutputWidget = new QgsProcessingLayerOutputDestinationWidget( destParam, false );
       mOutputWidget->setToolTip( parameterDefinition()->toolTip() );
@@ -5903,16 +5904,15 @@ QWidget *QgsProcessingOutputWidgetWrapper::createWidget()
         emit widgetValueHasChanged( this );
       } );
 
-      if ( destParam->type() == QgsProcessingParameterRasterDestination::typeName() ||
-           destParam->type() == QgsProcessingParameterFeatureSink::typeName() ||
-           destParam->type() == QgsProcessingParameterVectorDestination::typeName() )
+      if ( type() == QgsProcessingGui::Standard
+           && ( destParam->type() == QgsProcessingParameterRasterDestination::typeName() ||
+                destParam->type() == QgsProcessingParameterFeatureSink::typeName() ||
+                destParam->type() == QgsProcessingParameterVectorDestination::typeName() ) )
         mOutputWidget->addOpenAfterRunningOption();
 
       return mOutputWidget;
     }
     case QgsProcessingGui::Batch:
-      break;
-    case QgsProcessingGui::Modeler:
       break;
   }
 

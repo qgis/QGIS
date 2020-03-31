@@ -229,6 +229,11 @@ class TestProcessingGui : public QObject
     void testOutputDefinitionWidgetFolder();
     void testOutputDefinitionWidgetFileOut();
     void testFeatureSourceOptionsWidget();
+    void testVectorOutWrapper();
+    void testSinkWrapper();
+    void testRasterOutWrapper();
+    void testFileOutWrapper();
+    void testFolderOutWrapper();
 
   private:
 
@@ -652,7 +657,8 @@ void TestProcessingGui::testModelerWrapper()
   model.addModelParameter( new QgsProcessingParameterBoolean( "p1", "desc" ), bool1 );
   QgsProcessingModelParameter testParam( "p2" );
   model.addModelParameter( new TestParamType( "test_type", "p2" ), testParam );
-
+  QgsProcessingModelParameter testDestParam( "p3" );
+  model.addModelParameter( new QgsProcessingParameterFileDestination( "test_dest", "p3" ), testDestParam );
   // try to create a parameter widget, no factories registered
   QgsProcessingGuiRegistry registry;
   QgsProcessingContext context;
@@ -719,6 +725,25 @@ void TestProcessingGui::testModelerWrapper()
   QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().source(), QgsProcessingModelChildParameterSource::ChildOutput );
   QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().outputChildId(), QStringLiteral( "alg3" ) );
   QCOMPARE( w->value().value< QgsProcessingModelChildParameterSource>().outputName(), QStringLiteral( "OUTPUT" ) );
+
+  // model output
+  delete w;
+  w = new QgsProcessingModelerParameterWidget( &model, "alg1", model.parameterDefinition( "test_dest" ), context );
+  QCOMPARE( w->parameterDefinition()->name(), QStringLiteral( "test_dest" ) );
+  // should default to being a model output for destination parameters, but with no value
+  QVERIFY( w->isModelOutput() );
+  QCOMPARE( w->modelOutputName(), QString() );
+  // set it to something else
+  w->setWidgetValue( QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg3" ), QStringLiteral( "OUTPUT" ) ) );
+  QVERIFY( !w->isModelOutput() );
+  // and back
+  w->setToModelOutput( QStringLiteral( "out" ) );
+  QVERIFY( w->isModelOutput() );
+  QCOMPARE( w->modelOutputName(), QStringLiteral( "out" ) );
+  w->setWidgetValue( QgsProcessingModelChildParameterSource::fromChildOutput( QStringLiteral( "alg3" ), QStringLiteral( "OUTPUT" ) ) );
+  w->setToModelOutput( QString() );
+  QVERIFY( w->isModelOutput() );
+  QCOMPARE( w->modelOutputName(), QString() );
 
   // multi-source input
   delete w;
@@ -7463,6 +7488,381 @@ void TestProcessingGui::testFeatureSourceOptionsWidget()
   w.setGeometryCheckMethod( false, QgsFeatureRequest::GeometryAbortOnInvalid );
   QVERIFY( !w.isOverridingInvalidGeometryCheck() );
   QCOMPARE( spy.count(), 5 );
+}
+
+void TestProcessingGui::testVectorOutWrapper()
+{
+  auto testWrapper = [ = ]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterVectorDestination param( QStringLiteral( "vector" ), QStringLiteral( "vector" ) );
+
+    QgsProcessingVectorDestinationWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingVectorDestinationWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "/bb.shp" ), context );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( spy.count(), 1 );
+        QCOMPARE( wrapper.widgetValue().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/bb.shp" ) );
+        QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->value().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/bb.shp" ) );
+        wrapper.setWidgetValue( QStringLiteral( "/aa.shp" ), context );
+        QCOMPARE( spy.count(), 2 );
+        QCOMPARE( wrapper.widgetValue().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/aa.shp" ) );
+        QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->value().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/aa.shp" ) );
+        break;
+    }
+
+    // check signal
+    static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->setValue( QStringLiteral( "/cc.shp" ) );
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/cc.shp" ) );
+    delete w;
+
+    // optional
+    QgsProcessingParameterVectorDestination param2( QStringLiteral( "vector" ), QStringLiteral( "vector" ), QgsProcessing::TypeVector, QVariant(), true );
+    QgsProcessingVectorDestinationWidgetWrapper wrapper3( &param2, type );
+    w = wrapper3.createWrappedWidget( context );
+
+    QSignalSpy spy3( &wrapper3, &QgsProcessingVectorDestinationWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "/bb.shp" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/bb.shp" ) );
+    QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper3.wrappedWidget() )->value().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/bb.shp" ) );
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 2 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    delete w;
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "vector" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  // testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testSinkWrapper()
+{
+  auto testWrapper = [ = ]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterFeatureSink param( QStringLiteral( "sink" ), QStringLiteral( "sink" ) );
+
+    QgsProcessingFeatureSinkWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingFeatureSinkWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "/bb.shp" ), context );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( spy.count(), 1 );
+        QCOMPARE( wrapper.widgetValue().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/bb.shp" ) );
+        QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->value().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/bb.shp" ) );
+        wrapper.setWidgetValue( QStringLiteral( "/aa.shp" ), context );
+        QCOMPARE( spy.count(), 2 );
+        QCOMPARE( wrapper.widgetValue().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/aa.shp" ) );
+        QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->value().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/aa.shp" ) );
+        break;
+    }
+
+    // check signal
+    static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->setValue( QStringLiteral( "/cc.shp" ) );
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/cc.shp" ) );
+    delete w;
+
+    // optional
+    QgsProcessingParameterFeatureSink param2( QStringLiteral( "sink" ), QStringLiteral( "sink" ), QgsProcessing::TypeVector, QVariant(), true );
+    QgsProcessingFeatureSinkWidgetWrapper wrapper3( &param2, type );
+    w = wrapper3.createWrappedWidget( context );
+
+    QSignalSpy spy3( &wrapper3, &QgsProcessingFeatureSinkWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "/bb.shp" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/bb.shp" ) );
+    QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper3.wrappedWidget() )->value().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/bb.shp" ) );
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 2 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    delete w;
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "sink" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  // testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testRasterOutWrapper()
+{
+  auto testWrapper = [ = ]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterRasterDestination param( QStringLiteral( "raster" ), QStringLiteral( "raster" ) );
+
+    QgsProcessingRasterDestinationWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingRasterDestinationWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "/bb.tif" ), context );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( spy.count(), 1 );
+        QCOMPARE( wrapper.widgetValue().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/bb.tif" ) );
+        QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->value().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/bb.tif" ) );
+        wrapper.setWidgetValue( QStringLiteral( "/aa.tif" ), context );
+        QCOMPARE( spy.count(), 2 );
+        QCOMPARE( wrapper.widgetValue().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/aa.tif" ) );
+        QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->value().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/aa.tif" ) );
+        break;
+    }
+
+    // check signal
+    static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->setValue( QStringLiteral( "/cc.tif" ) );
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/cc.tif" ) );
+    delete w;
+
+    // optional
+    QgsProcessingParameterRasterDestination param2( QStringLiteral( "raster" ), QStringLiteral( "raster" ), QVariant(), true );
+    QgsProcessingRasterDestinationWidgetWrapper wrapper3( &param2, type );
+    w = wrapper3.createWrappedWidget( context );
+
+    QSignalSpy spy3( &wrapper3, &QgsProcessingRasterDestinationWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "/bb.tif" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/bb.tif" ) );
+    QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper3.wrappedWidget() )->value().value< QgsProcessingOutputLayerDefinition >().sink.staticValue().toString(), QStringLiteral( "/bb.tif" ) );
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 2 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    delete w;
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "raster" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  // testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testFileOutWrapper()
+{
+  auto testWrapper = [ = ]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterFileDestination param( QStringLiteral( "file" ), QStringLiteral( "file" ) );
+
+    QgsProcessingFileDestinationWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingFileDestinationWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "/bb.tif" ), context );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( spy.count(), 1 );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "/bb.tif" ) );
+        QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->value().toString(), QStringLiteral( "/bb.tif" ) );
+        wrapper.setWidgetValue( QStringLiteral( "/aa.tif" ), context );
+        QCOMPARE( spy.count(), 2 );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "/aa.tif" ) );
+        QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->value().toString(), QStringLiteral( "/aa.tif" ) );
+        break;
+    }
+
+    // check signal
+    static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->setValue( QStringLiteral( "/cc.tif" ) );
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "/cc.tif" ) );
+    delete w;
+
+    // optional
+    QgsProcessingParameterFileDestination param2( QStringLiteral( "file" ), QStringLiteral( "file" ), QString(), QVariant(), true );
+    QgsProcessingFileDestinationWidgetWrapper wrapper3( &param2, type );
+    w = wrapper3.createWrappedWidget( context );
+
+    QSignalSpy spy3( &wrapper3, &QgsProcessingFileDestinationWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "/bb.tif" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toString(), QStringLiteral( "/bb.tif" ) );
+    QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper3.wrappedWidget() )->value().toString(), QStringLiteral( "/bb.tif" ) );
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 2 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    delete w;
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "file" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  // testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
+}
+
+void TestProcessingGui::testFolderOutWrapper()
+{
+  auto testWrapper = [ = ]( QgsProcessingGui::WidgetType type )
+  {
+    // non optional
+    QgsProcessingParameterFolderDestination param( QStringLiteral( "folder" ), QStringLiteral( "folder" ) );
+
+    QgsProcessingFolderDestinationWidgetWrapper wrapper( &param, type );
+
+    QgsProcessingContext context;
+    QWidget *w = wrapper.createWrappedWidget( context );
+
+    QSignalSpy spy( &wrapper, &QgsProcessingFolderDestinationWidgetWrapper::widgetValueHasChanged );
+    wrapper.setWidgetValue( QStringLiteral( "/bb" ), context );
+
+    switch ( type )
+    {
+      case QgsProcessingGui::Standard:
+      case QgsProcessingGui::Batch:
+      case QgsProcessingGui::Modeler:
+        QCOMPARE( spy.count(), 1 );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "/bb" ) );
+        QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->value().toString(), QStringLiteral( "/bb" ) );
+        wrapper.setWidgetValue( QStringLiteral( "/aa" ), context );
+        QCOMPARE( spy.count(), 2 );
+        QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "/aa" ) );
+        QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->value().toString(), QStringLiteral( "/aa" ) );
+        break;
+    }
+
+    // check signal
+    static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper.wrappedWidget() )->setValue( QStringLiteral( "/cc" ) );
+    QCOMPARE( spy.count(), 3 );
+    QCOMPARE( wrapper.widgetValue().toString(), QStringLiteral( "/cc" ) );
+    delete w;
+
+    // optional
+    QgsProcessingParameterFolderDestination param2( QStringLiteral( "folder" ), QStringLiteral( "folder" ), QVariant(), true );
+    QgsProcessingFolderDestinationWidgetWrapper wrapper3( &param2, type );
+    w = wrapper3.createWrappedWidget( context );
+
+    QSignalSpy spy3( &wrapper3, &QgsProcessingFolderDestinationWidgetWrapper::widgetValueHasChanged );
+    wrapper3.setWidgetValue( QStringLiteral( "/bb" ), context );
+    QCOMPARE( spy3.count(), 1 );
+    QCOMPARE( wrapper3.widgetValue().toString(), QStringLiteral( "/bb" ) );
+    QCOMPARE( static_cast< QgsProcessingLayerOutputDestinationWidget * >( wrapper3.wrappedWidget() )->value().toString(), QStringLiteral( "/bb" ) );
+    wrapper3.setWidgetValue( QVariant(), context );
+    QCOMPARE( spy3.count(), 2 );
+    QVERIFY( !wrapper3.widgetValue().isValid() );
+    delete w;
+
+    QLabel *l = wrapper.createWrappedLabel();
+    if ( wrapper.type() != QgsProcessingGui::Batch )
+    {
+      QVERIFY( l );
+      QCOMPARE( l->text(), QStringLiteral( "folder" ) );
+      QCOMPARE( l->toolTip(), param.toolTip() );
+      delete l;
+    }
+    else
+    {
+      QVERIFY( !l );
+    }
+  };
+
+  // standard wrapper
+  testWrapper( QgsProcessingGui::Standard );
+
+  // batch wrapper
+  // testWrapper( QgsProcessingGui::Batch );
+
+  // modeler wrapper
+  testWrapper( QgsProcessingGui::Modeler );
 }
 
 void TestProcessingGui::cleanupTempDir()
