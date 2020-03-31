@@ -108,7 +108,7 @@ Pushes a summary of the QGIS (and underlying library) version information to the
 .. versionadded:: 3.4.7
 %End
 
-    QString htmlLog() const;
+    virtual QString htmlLog() const;
 %Docstring
 Returns the HTML formatted contents of the log, which contains all messages pushed to the feedback object.
 
@@ -117,7 +117,7 @@ Returns the HTML formatted contents of the log, which contains all messages push
 .. versionadded:: 3.14
 %End
 
-    QString textLog() const;
+    virtual QString textLog() const;
 %Docstring
 Returns the plain text contents of the log, which contains all messages pushed to the feedback object.
 
@@ -172,6 +172,9 @@ to scale the current progress to account for progress through the overall proces
 
     virtual void pushConsoleInfo( const QString &info );
 
+    virtual QString htmlLog() const;
+
+    virtual QString textLog() const;
 
 };
 

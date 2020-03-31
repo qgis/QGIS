@@ -114,6 +114,8 @@ class TestQgsProcessingAlgs: public QObject
 
     void filterByLayerType();
 
+    void saveLog();
+
   private:
 
     QString mPointLayerPath;
@@ -2377,6 +2379,36 @@ void TestQgsProcessingAlgs::filterByLayerType()
   QVERIFY( ok );
   QVERIFY( !results.value( QStringLiteral( "RASTER" ) ).toString().isEmpty() );
   QVERIFY( !results.contains( QStringLiteral( "VECTOR" ) ) );
+}
+
+void TestQgsProcessingAlgs::saveLog()
+{
+  std::unique_ptr< QgsProcessingAlgorithm > alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:savelog" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "OUTPUT" ), QgsProcessing::TEMPORARY_OUTPUT );
+
+  bool ok = false;
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProcessingFeedback feedback;
+  feedback.reportError( QStringLiteral( "test" ) );
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  QFile file( results.value( QStringLiteral( "OUTPUT" ) ).toString() );
+  QVERIFY( file.open( QFile::ReadOnly  | QIODevice::Text ) );
+  QCOMPARE( file.readAll(), QStringLiteral( "test\n" ) );
+
+  parameters.insert( QStringLiteral( "USE_HTML" ), true );
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( !results.value( QStringLiteral( "OUTPUT" ) ).toString().isEmpty() );
+  QFile file2( results.value( QStringLiteral( "OUTPUT" ) ).toString() );
+  QVERIFY( file2.open( QFile::ReadOnly  | QIODevice::Text ) );
+  QCOMPARE( file2.readAll(), QStringLiteral( "<span style=\"color:red\">test</span><br/>" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgs )

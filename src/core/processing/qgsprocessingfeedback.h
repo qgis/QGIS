@@ -113,7 +113,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see textLog()
      * \since QGIS 3.14
      */
-    QString htmlLog() const { return mHtmlLog; }
+    virtual QString htmlLog() const;
 
     /**
      * Returns the plain text contents of the log, which contains all messages pushed to the feedback object.
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see htmlLog()
      * \since QGIS 3.14
      */
-    QString textLog() const { return mTextLog; }
+    virtual QString textLog() const;
 
   private:
     bool mLogFeedback = true;
@@ -168,7 +168,8 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
     void pushCommandInfo( const QString &info ) override;
     void pushDebugInfo( const QString &info ) override;
     void pushConsoleInfo( const QString &info ) override;
-
+    QString htmlLog() const override;
+    QString textLog() const override;
   private slots:
 
     void updateOverallProgress( double progress );

@@ -104,6 +104,16 @@ void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provid
   }
 }
 
+QString QgsProcessingFeedback::htmlLog() const
+{
+  return mHtmlLog;
+}
+
+QString QgsProcessingFeedback::textLog() const
+{
+  return mTextLog;
+}
+
 
 QgsProcessingMultiStepFeedback::QgsProcessingMultiStepFeedback( int childAlgorithmCount, QgsProcessingFeedback *feedback )
   : mChildSteps( childAlgorithmCount )
@@ -147,6 +157,16 @@ void QgsProcessingMultiStepFeedback::pushDebugInfo( const QString &info )
 void QgsProcessingMultiStepFeedback::pushConsoleInfo( const QString &info )
 {
   mFeedback->pushConsoleInfo( info );
+}
+
+QString QgsProcessingMultiStepFeedback::htmlLog() const
+{
+  return mFeedback->htmlLog();
+}
+
+QString QgsProcessingMultiStepFeedback::textLog() const
+{
+  return mFeedback->textLog();
 }
 
 void QgsProcessingMultiStepFeedback::updateOverallProgress( double progress )
