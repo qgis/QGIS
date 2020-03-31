@@ -27,6 +27,7 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QFrame, QPushButton, QSizePolicy, QVBoxLayout,
                                  QHBoxLayout, QWidget, QTabWidget, QTextEdit)
+from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (Qgis,
                        QgsProject,
@@ -50,7 +51,8 @@ from qgis.gui import (QgsGui,
                       QgsProcessingModelerParameterWidget,
                       QgsProcessingParameterWidgetContext,
                       QgsPanelWidget,
-                      QgsPanelWidgetStack)
+                      QgsPanelWidgetStack,
+                      QgsColorButton)
 from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapperFactory
@@ -100,6 +102,12 @@ class ModelerParametersDialog(QDialog):
 
     def comments(self):
         return self.widget.comments()
+
+    def setCommentColor(self, color):
+        self.widget.setCommentColor(color)
+
+    def commentColor(self):
+        return self.widget.commentColor()
 
     def switchToCommentTab(self):
         self.widget.switchToCommentTab()
@@ -534,7 +542,18 @@ class ModelerParametersWidget(QWidget):
         self.commentLayout = QVBoxLayout()
         self.commentEdit = QTextEdit()
         self.commentEdit.setAcceptRichText(False)
-        self.commentLayout.addWidget(self.commentEdit)
+        self.commentLayout.addWidget(self.commentEdit, 1)
+
+        hl = QHBoxLayout()
+        hl.setContentsMargins(0, 0, 0, 0)
+        hl.addWidget(QLabel(self.tr('Color')))
+        self.comment_color_button = QgsColorButton()
+        self.comment_color_button.setAllowOpacity(True)
+        self.comment_color_button.setWindowTitle(self.tr('Comment Color'))
+        self.comment_color_button.setShowNull(True, self.tr('Default'))
+        hl.addWidget(self.comment_color_button)
+        self.commentLayout.addLayout(hl)
+
         w2 = QWidget()
         w2.setLayout(self.commentLayout)
         self.tab.addTab(w2, self.tr('Comments'))
@@ -546,6 +565,15 @@ class ModelerParametersWidget(QWidget):
 
     def comments(self):
         return self.commentEdit.toPlainText()
+
+    def setCommentColor(self, color):
+        if color.isValid():
+            self.comment_color_button.setColor(color)
+        else:
+            self.comment_color_button.setToNull()
+
+    def commentColor(self):
+        return self.comment_color_button.color() if not self.comment_color_button.isNull() else QColor()
 
     def getAvailableDependencies(self):
         return self.widget.getAvailableDependencies()
@@ -566,4 +594,5 @@ class ModelerParametersWidget(QWidget):
         alg = self.widget.createAlgorithm()
         if alg:
             alg.comment().setDescription(self.comments())
+            alg.comment().setColor(self.commentColor())
         return alg
