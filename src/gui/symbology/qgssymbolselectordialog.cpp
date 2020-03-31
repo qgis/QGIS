@@ -772,6 +772,7 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
   : QDialog( parent )
 {
   setLayout( new QVBoxLayout() );
+
   mSelectorWidget = new QgsSymbolSelectorWidget( symbol, style, vl, this );
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
 
