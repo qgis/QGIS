@@ -27,6 +27,14 @@ it to users via the GUI.
 %End
   public:
 
+    QgsProcessingFeedback( bool logFeedback = true );
+%Docstring
+Constructor for QgsProcessingFeedback.
+
+If ``logFeedback`` is ``True``, then all feedback received will be directed
+to :py:class:`QgsMessageLog`.
+%End
+
     virtual void setProgressText( const QString &text );
 %Docstring
 Sets a progress report text string. This can be used in conjunction with
@@ -98,6 +106,24 @@ report the output from executing an external command or subprocess.
 Pushes a summary of the QGIS (and underlying library) version information to the log.
 
 .. versionadded:: 3.4.7
+%End
+
+    QString htmlLog() const;
+%Docstring
+Returns the HTML formatted contents of the log, which contains all messages pushed to the feedback object.
+
+.. seealso:: :py:func:`textLog`
+
+.. versionadded:: 3.14
+%End
+
+    QString textLog() const;
+%Docstring
+Returns the plain text contents of the log, which contains all messages pushed to the feedback object.
+
+.. seealso:: :py:func:`htmlLog`
+
+.. versionadded:: 3.14
 %End
 
 };
