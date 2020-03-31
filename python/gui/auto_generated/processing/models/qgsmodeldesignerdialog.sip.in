@@ -102,6 +102,11 @@ Returns ``False`` if the cancel option was selected
 Sets the results of child algorithms for the last run of the model through the designer window.
 %End
 
+    void setLastRunChildAlgorithmInputs( const QVariantMap &inputs );
+%Docstring
+Sets the inputs for child algorithms for the last run of the model through the designer window.
+%End
+
 };
 
 
