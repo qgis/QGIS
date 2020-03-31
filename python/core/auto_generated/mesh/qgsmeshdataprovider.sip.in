@@ -315,7 +315,10 @@ Responsible for reading native mesh data
 %Docstring
 Ctor
 %End
-    virtual QgsMeshDataProviderTemporalCapabilities *temporalCapabilities() const;
+
+    virtual QgsMeshDataProviderTemporalCapabilities *temporalCapabilities();
+
+    virtual const QgsMeshDataProviderTemporalCapabilities *temporalCapabilities() const;
 
 
     void setTemporalUnit( QgsUnitTypes::TemporalUnit unit );

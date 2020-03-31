@@ -193,7 +193,7 @@ Returns the sublayers of this layer - useful for providers that manage
 their own layers, such as WMS
 %End
 
-    virtual QgsRasterDataProviderTemporalCapabilities *temporalCapabilities() const;
+    virtual QgsRasterDataProviderTemporalCapabilities *temporalCapabilities();
 
 
     virtual bool supportsLegendGraphic() const;
