@@ -354,7 +354,7 @@ QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &ti
   qint64 time = layerReferenceTime.msecsTo( timeRange.begin() );
   const QgsMeshDataProviderTemporalCapabilities *tempCap = dataProvider()->temporalCapabilities();
 
-  return tempCap->datasetIndexTimeInMilliseconds( datasetGroupIndex, time );
+  return tempCap->datasetIndexFromTimeInMilliseconds( datasetGroupIndex, time );
 }
 
 QgsMeshDatasetIndex QgsMeshLayer::activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const
@@ -400,6 +400,14 @@ void QgsMeshLayer::onDatasetGroupsAdded( int count )
 QgsMeshDatasetIndex QgsMeshLayer::staticVectorDatasetIndex() const
 {
   return mStaticVectorDatasetIndex;
+}
+
+void QgsMeshLayer::setReferenceTime( const QDateTime &referenceTime )
+{
+  if ( dataProvider() )
+    temporalProperties()->setReferenceTime( referenceTime, dataProvider()->temporalCapabilities() );
+  else
+    temporalProperties()->setReferenceTime( referenceTime, nullptr );
 }
 
 QgsMeshDatasetIndex QgsMeshLayer::staticScalarDatasetIndex() const

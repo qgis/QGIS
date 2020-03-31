@@ -614,7 +614,7 @@ QgsMeshDatasetIndex QgsMeshLayerRenderer::datasetIndexAtTime( QgsMeshLayer *laye
   QDateTime layerReferenceTime = layer->temporalProperties()->timeExtent().begin();
   qint64 time = layerReferenceTime.msecsTo( timeRange.begin() );
   QgsMeshDataProviderTemporalCapabilities *tempCap = layer->dataProvider()->temporalCapabilities();
-  return tempCap->datasetIndexTimeInMilliseconds( datasetGroupIndex, time );
+  return tempCap->datasetIndexFromTimeInMilliseconds( datasetGroupIndex, time );
 }
 
 QgsPointXY QgsMeshLayerRenderer::fractionPoint( const QgsPointXY &p1, const QgsPointXY &p2, double fraction ) const

@@ -912,25 +912,25 @@ void TestQgsMeshLayer::test_temporal()
 {
   //Mesh memory provider
   QgsMeshDataProviderTemporalCapabilities *tempCap = mMemoryLayer->dataProvider()->temporalCapabilities();
-  QCOMPARE( tempCap->datasetIndex( 1, 0.0 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndex( 1, 0.9 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndex( 1, 1.0 ).dataset(), 1 );
-  QCOMPARE( tempCap->datasetIndex( 1, 1000 ).dataset(), 1 ); //last time step
+  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 0.0 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 0.9 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 1.0 ).dataset(), 1 );
+  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 1000 ).dataset(), 1 ); //last time step
 
   //Mesh MDAL provider with internal dataset
   tempCap = mMdalLayer->dataProvider()->temporalCapabilities();
-  QCOMPARE( tempCap->datasetIndex( 0, 0.0 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndex( 0, 0.9 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndex( 0, 1.0 ).dataset(), 0 ); //bed elevation has only one time step
+  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 0, 0.0 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 0, 0.9 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 0, 1.0 ).dataset(), 0 ); //bed elevation has only one time step
   //Mesh MDAL provider with internal da.taset
-  QCOMPARE( tempCap->datasetIndex( 1, 0.0 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndex( 1, 0.9 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndex( 1, 1.0 ).dataset(), 1 );
-  QCOMPARE( tempCap->datasetIndex( 1, 1000 ).dataset(), 1 );//last time step
+  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 0.0 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 0.9 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 1.0 ).dataset(), 1 );
+  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 1000 ).dataset(), 1 );//last time step
 
   //Mesh MDAL provider with reference time
   tempCap = mMdal3DLayer->dataProvider()->temporalCapabilities();
-  QCOMPARE( tempCap->datasetIndex( 1, 0.0 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 0.0 ).dataset(), 0 );
   QDateTime begin = QDateTime( QDate( 1990, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC );
   QDateTime end = QDateTime( QDate( 1990, 1, 1 ), QTime( 6, 0, 1, 938 ), Qt::UTC );
   QCOMPARE( tempCap->timeExtent(), QgsDateTimeRange( begin, end ) );

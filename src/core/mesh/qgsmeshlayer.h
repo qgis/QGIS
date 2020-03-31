@@ -343,6 +343,15 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       */
     QgsMeshDatasetIndex staticVectorDatasetIndex() const;
 
+    /**
+      * Sets the reference time of the layer
+      *
+      * \param referenceTime the reference time
+      *
+      * \since QGIS 3.14
+      */
+    void setReferenceTime( const QDateTime &referenceTime );
+
   public slots:
 
     /**

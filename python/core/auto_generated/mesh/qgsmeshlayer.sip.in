@@ -278,6 +278,15 @@ Returns the static vector dataset index that is rendered if the temporal propert
 .. versionadded:: 3.14
 %End
 
+    void setReferenceTime( const QDateTime &referenceTime );
+%Docstring
+Sets the reference time of the layer
+
+:param referenceTime: the reference time
+
+.. versionadded:: 3.14
+%End
+
   public slots:
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );

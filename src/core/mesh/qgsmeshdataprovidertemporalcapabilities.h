@@ -40,18 +40,18 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
     QgsMeshDataProviderTemporalCapabilities();
 
     /**
-     * Returns the last dataset index that has the time equal or less or than \a timeSinceGlobalReference (in milliseconds)from the dataset \a group
+     * Returns the last dataset index that has the time equal or less or than \a timeSinceGlobalReference (in milliseconds) from the dataset \a group
      *
      * Returns invalid dataset index if the time is less than the first dataset's time
      */
-    QgsMeshDatasetIndex datasetIndexTimeInMilliseconds( int group, qint64 timeSinceGlobalReference ) const;
+    QgsMeshDatasetIndex datasetIndexFromTimeInMilliseconds( int group, qint64 timeSinceGlobalReference ) const;
 
     /**
-     * Returns the last dataset index that has the time equal or less or than \a timeSinceGlobalReference (in hours)from the dataset \a group
+     * Returns the last dataset index that has the time equal or less or than \a timeSinceGlobalReference (in hours) from the dataset \a group
      *
      * Returns invalid dataset index if the time is less than the first dataset's time
      */
-    QgsMeshDatasetIndex datasetIndex( int group, double  timeSinceGlobalReferenceInHours ) const;
+    QgsMeshDatasetIndex datasetIndexFromTimeInHours( int group, double  timeSinceGlobalReferenceInHours ) const;
 
     /**
      * Adds a \a reference date/time from a dataset \a group
@@ -103,12 +103,10 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
      *
      * Temporal units supported are milliseconds, seconds, minutes, hors, days and weeks
      */
-    void setTemporalUnit( const QgsUnitTypes::TemporalUnit &temporalUnit );
+    void setTemporalUnit( QgsUnitTypes::TemporalUnit temporalUnit );
 
     /**
      * Returns the temporal unit used to read data by the data provider
-     *
-     * Temporal units supported are milliseconds, seconds, minutes, hors, days and weeks
      */
     QgsUnitTypes::TemporalUnit temporalUnit() const;
 

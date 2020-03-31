@@ -20,7 +20,8 @@
 #include "qgsproject.h"
 #include "qgsprojecttimesettings.h"
 
-QgsMeshLayerTemporalProperties::QgsMeshLayerTemporalProperties( QObject *parent, bool enabled ): QgsMapLayerTemporalProperties( parent, enabled )
+QgsMeshLayerTemporalProperties::QgsMeshLayerTemporalProperties( QObject *parent, bool enabled ):
+  QgsMapLayerTemporalProperties( parent, enabled )
 {}
 
 QDomElement QgsMeshLayerTemporalProperties::writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context )
@@ -69,14 +70,6 @@ void QgsMeshLayerTemporalProperties::setDefaultsFromDataProviderTemporalCapabili
 
   if ( mReferenceTime.isValid() )
     mTimeExtent = temporalCapabilities->timeExtent();
-  else // If the provider capabilities doesn't provide a reference time, try to bring one from projet settings
-  {
-    // Not sure it is a good idea to call instance of project here ...
-    mReferenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
-    if ( !mReferenceTime.isValid() ) // If project reference time is invalid, use current date
-      mReferenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
-    mTimeExtent = temporalCapabilities->timeExtent( mReferenceTime );
-  }
 }
 
 QgsDateTimeRange QgsMeshLayerTemporalProperties::timeExtent() const
@@ -91,7 +84,12 @@ QDateTime QgsMeshLayerTemporalProperties::referenceTime() const
 
 void QgsMeshLayerTemporalProperties::setReferenceTime( const QDateTime &referenceTime, const QgsDataProviderTemporalCapabilities *capabilities )
 {
-  const QgsMeshDataProviderTemporalCapabilities *tempCap = static_cast<const QgsMeshDataProviderTemporalCapabilities *>( capabilities );
   mReferenceTime = referenceTime;
-  mTimeExtent = tempCap->timeExtent( referenceTime );
+  if ( capabilities )
+  {
+    const QgsMeshDataProviderTemporalCapabilities *tempCap = static_cast<const QgsMeshDataProviderTemporalCapabilities *>( capabilities );
+    mTimeExtent = tempCap->timeExtent( referenceTime );
+  }
+  else
+    mTimeExtent = QgsDateTimeRange( referenceTime, referenceTime );
 }

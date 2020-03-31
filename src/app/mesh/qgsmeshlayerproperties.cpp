@@ -383,13 +383,10 @@ void QgsMeshLayerProperties::apply()
    * Temporal Tab
    */
 
+  mMeshLayer->setReferenceTime( mTemporalDateTimeReference->dateTime() );
   if ( mMeshLayer->dataProvider() )
-  {
-    QDateTime startTime = mTemporalDateTimeReference->dateTime();
-    mMeshLayer->temporalProperties()->setReferenceTime( startTime, mMeshLayer->dataProvider()->temporalCapabilities() );
     mMeshLayer->dataProvider()->setTemporalUnit(
       static_cast<QgsUnitTypes::TemporalUnit>( mTemporalProviderTimeUnitComboBox->currentData().toInt() ) );
-  }
 
   mStaticScalarWidget->apply();
   bool needEmitRendererChanged = mMeshLayer->temporalProperties()->isActive() == mTemporalStaticDatasetCheckBox->isChecked();

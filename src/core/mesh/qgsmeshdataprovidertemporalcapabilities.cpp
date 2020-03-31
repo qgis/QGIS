@@ -21,11 +21,11 @@
 QgsMeshDataProviderTemporalCapabilities::QgsMeshDataProviderTemporalCapabilities(): QgsDataProviderTemporalCapabilities()
 {}
 
-QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexTimeInMilliseconds( int group, qint64 timeSinceGlobalReference ) const
+QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexFromTimeInMilliseconds( int group, qint64 timeSinceGlobalReference ) const
 {
-  const QDateTime &groupReference = mGroupsReferenceDateTime[group];
+  const QDateTime groupReference = mGroupsReferenceDateTime[group];
 
-  const qint64 timeSinceGroupeReference =
+  const qint64 timeSinceGroupReference =
     timeSinceGlobalReference - mGlobalReferenceDateTime.msecsTo( groupReference );
   const QList<qint64> &datasetTimes = mDatasetTimeSinceGroupReference[group];
   // No dataset
@@ -34,11 +34,11 @@ QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexTimeInM
 
   // If requested time is before the timestamp of the first dataset, return the first dataset
   // For "static" dataset (as terrain elevation)
-  if ( timeSinceGroupeReference < datasetTimes.first() )
+  if ( timeSinceGroupReference < datasetTimes.first() )
     return QgsMeshDatasetIndex( group, 0 );
   for ( int i = 1; i < datasetTimes.count(); ++i )
   {
-    if ( timeSinceGroupeReference < datasetTimes.at( i ) )
+    if ( timeSinceGroupReference < datasetTimes.at( i ) )
       return QgsMeshDatasetIndex( group, i - 1 );
   }
 
@@ -46,9 +46,9 @@ QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexTimeInM
   return QgsMeshDatasetIndex( group, datasetTimes.count() - 1 );
 }
 
-QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndex( int group, double timeSinceGlobalReferenceInHours ) const
+QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexFromTimeInHours( int group, double timeSinceGlobalReferenceInHours ) const
 {
-  return datasetIndexTimeInMilliseconds( group, qint64( 3600 * 1000 * timeSinceGlobalReferenceInHours ) );
+  return datasetIndexFromTimeInMilliseconds( group, qint64( 3600 * 1000 * timeSinceGlobalReferenceInHours ) );
 }
 
 void QgsMeshDataProviderTemporalCapabilities::addGroupReferenceDateTime( int group, const QDateTime &reference )
@@ -68,30 +68,7 @@ void QgsMeshDataProviderTemporalCapabilities::addDatasetTimeInMilliseconds( int 
 
 void QgsMeshDataProviderTemporalCapabilities::addDatasetTime( int group, double time )
 {
-  qint64 unitTimeFactor = 1;
-  switch ( mTemporalUnit )
-  {
-    case QgsUnitTypes::TemporalMilliseconds:
-      unitTimeFactor = 1;
-      break;
-    case QgsUnitTypes::TemporalSeconds:
-      unitTimeFactor = 1000;
-      break;
-    case QgsUnitTypes::TemporalMinutes:
-      unitTimeFactor = 60 * 1000;
-      break;
-    case QgsUnitTypes::TemporalHours:
-      unitTimeFactor = 60 * 60 * 1000;
-      break;
-    case QgsUnitTypes::TemporalDays:
-      unitTimeFactor = 24 * 60 * 60 * 1000;
-      break;
-    case QgsUnitTypes::TemporalWeeks:
-      unitTimeFactor = 7 * 24 * 60 * 60 * 1000;
-      break;
-    default:
-      break;
-  }
+  qint64 unitTimeFactor = QgsUnitTypes::fromUnitToUnitFactor( mTemporalUnit, QgsUnitTypes::TemporalMilliseconds );
   addDatasetTimeInMilliseconds( group, time * unitTimeFactor );
 }
 
@@ -145,7 +122,7 @@ QgsDateTimeRange QgsMeshDataProviderTemporalCapabilities::timeExtent( const QDat
   return  QgsDateTimeRange( begin, end );
 }
 
-void QgsMeshDataProviderTemporalCapabilities::setTemporalUnit( const QgsUnitTypes::TemporalUnit &timeUnit )
+void QgsMeshDataProviderTemporalCapabilities::setTemporalUnit( QgsUnitTypes::TemporalUnit timeUnit )
 {
   mTemporalUnit = timeUnit;
 }
