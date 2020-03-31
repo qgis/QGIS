@@ -26,33 +26,59 @@
 #include <proj_api.h>
 #endif
 
+QgsProcessingFeedback::QgsProcessingFeedback( bool logFeedback )
+  : mLogFeedback( logFeedback )
+{
+
+}
+
 void QgsProcessingFeedback::setProgressText( const QString & )
 {
 }
 
 void QgsProcessingFeedback::reportError( const QString &error, bool )
 {
-  QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::Critical );
+  if ( mLogFeedback )
+    QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::Critical );
+
+  mHtmlLog.append( QStringLiteral( "<span style=\"color:red\">%1</span><br/>" ).arg( error.toHtmlEscaped() ).replace( '\n', QStringLiteral( "<br>" ) ) );
+  mTextLog.append( error + '\n' );
 }
 
 void QgsProcessingFeedback::pushInfo( const QString &info )
 {
-  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+  if ( mLogFeedback )
+    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+
+  mHtmlLog.append( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) + QStringLiteral( "<br/>" ) );
+  mTextLog.append( info + '\n' );
 }
 
 void QgsProcessingFeedback::pushCommandInfo( const QString &info )
 {
-  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+  if ( mLogFeedback )
+    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+
+  mHtmlLog.append( QStringLiteral( "<code>%1</code><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) ) );
+  mTextLog.append( info + '\n' );
 }
 
 void QgsProcessingFeedback::pushDebugInfo( const QString &info )
 {
-  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+  if ( mLogFeedback )
+    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+
+  mHtmlLog.append( QStringLiteral( "<span style=\"color:#777\">%1</span><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) ) );
+  mTextLog.append( info + '\n' );
 }
 
 void QgsProcessingFeedback::pushConsoleInfo( const QString &info )
 {
-  QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+  if ( mLogFeedback )
+    QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info );
+
+  mHtmlLog.append( QStringLiteral( "<code style=\"color:#777\">%1</code><br/>" ).arg( info.toHtmlEscaped().replace( '\n', QStringLiteral( "<br>" ) ) ) );
+  mTextLog.append( info + '\n' );
 }
 
 void QgsProcessingFeedback::pushVersionInfo( const QgsProcessingProvider *provider )

@@ -49,7 +49,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
     /**
      * Constructor for QgsProcessingAlgorithmDialogFeedback.
      */
-    QgsProcessingAlgorithmDialogFeedback() = default;
+    QgsProcessingAlgorithmDialogFeedback();
 
   signals:
 

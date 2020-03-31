@@ -521,6 +521,7 @@ class TestQgsProcessing: public QObject
     void encodeDecodeUriProvider();
     void normalizeLayerSource();
     void context();
+    void feedback();
     void mapLayers();
     void mapLayerFromStore();
     void mapLayerFromString();
@@ -1054,6 +1055,19 @@ void TestQgsProcessing::context()
   id = v2->id();
   delete v2;
   QVERIFY( !context2.temporaryLayerStore()->mapLayer( id ) );
+}
+
+void TestQgsProcessing::feedback()
+{
+  QgsProcessingFeedback f;
+  f.pushInfo( QStringLiteral( "info" ) );
+  f.reportError( QStringLiteral( "error" ) );
+  f.pushDebugInfo( QStringLiteral( "debug" ) );
+  f.pushCommandInfo( QStringLiteral( "command" ) );
+  f.pushConsoleInfo( QStringLiteral( "console" ) );
+
+  QCOMPARE( f.htmlLog(), QStringLiteral( "info<br/><span style=\"color:red\">error</span><br/><span style=\"color:#777\">debug</span><br/><code>command</code><br/><code style=\"color:#777\">console</code><br/>" ) );
+  QCOMPARE( f.textLog(), QStringLiteral( "info\nerror\ndebug\ncommand\nconsole\n" ) );
 }
 
 void TestQgsProcessing::mapLayers()

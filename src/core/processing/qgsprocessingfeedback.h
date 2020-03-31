@@ -41,6 +41,14 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
   public:
 
     /**
+     * Constructor for QgsProcessingFeedback.
+     *
+     * If \a logFeedback is TRUE, then all feedback received will be directed
+     * to QgsMessageLog.
+     */
+    QgsProcessingFeedback( bool logFeedback = true );
+
+    /**
      * Sets a progress report text string. This can be used in conjunction with
      * setProgress() to provide detailed progress reports, such as "Transformed
      * 4 of 5 layers".
@@ -98,6 +106,27 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \since QGIS 3.4.7
      */
     void pushVersionInfo( const QgsProcessingProvider *provider = nullptr );
+
+    /**
+     * Returns the HTML formatted contents of the log, which contains all messages pushed to the feedback object.
+     *
+     * \see textLog()
+     * \since QGIS 3.14
+     */
+    QString htmlLog() const { return mHtmlLog; }
+
+    /**
+     * Returns the plain text contents of the log, which contains all messages pushed to the feedback object.
+     *
+     * \see htmlLog()
+     * \since QGIS 3.14
+     */
+    QString textLog() const { return mTextLog; }
+
+  private:
+    bool mLogFeedback = true;
+    QString mHtmlLog;
+    QString mTextLog;
 
 };
 
