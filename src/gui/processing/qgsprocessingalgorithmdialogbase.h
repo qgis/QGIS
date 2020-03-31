@@ -343,6 +343,15 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      */
     static QString formatStringForLog( const QString &string );
 
+  signals:
+
+    /**
+     * Emitted whenever an algorithm has finished executing in the dialog.
+     *
+     * \since QGIS 3.14
+     */
+    void algorithmFinished( bool successful, const QVariantMap &result );
+
   protected slots:
 
     /**

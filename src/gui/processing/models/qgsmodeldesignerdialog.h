@@ -120,6 +120,11 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      */
     bool checkForUnsavedChanges();
 
+    /**
+     * Sets the results of child algorithms for the last run of the model through the designer window.
+     */
+    void setLastRunChildAlgorithmResults( const QVariantMap &results );
+
   private slots:
     void zoomIn();
     void zoomOut();
@@ -163,6 +168,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QString mTitle;
 
     int mBlockRepaints = 0;
+
+    QVariantMap mChildResults;
 
     bool isDirty() const;
 

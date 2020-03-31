@@ -301,6 +301,15 @@ Formats an input ``string`` for display in the log tab.
 .. versionadded:: 3.0.1
 %End
 
+  signals:
+
+    void algorithmFinished( bool successful, const QVariantMap &result );
+%Docstring
+Emitted whenever an algorithm has finished executing in the dialog.
+
+.. versionadded:: 3.14
+%End
+
   protected slots:
 
     virtual void finished( bool successful, const QVariantMap &result, QgsProcessingContext &context, QgsProcessingFeedback *feedback );

@@ -437,6 +437,11 @@ bool QgsModelDesignerDialog::checkForUnsavedChanges()
   }
 }
 
+void QgsModelDesignerDialog::setLastRunChildAlgorithmResults( const QVariantMap &results )
+{
+  mChildResults = results;
+}
+
 void QgsModelDesignerDialog::zoomIn()
 {
   mView->setTransformationAnchor( QGraphicsView::NoAnchor );
