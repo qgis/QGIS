@@ -131,6 +131,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmreverselinedirection.cpp
   processing/qgsalgorithmrotate.cpp
   processing/qgsalgorithmruggedness.cpp
+  processing/qgsalgorithmsavelog.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsegmentize.cpp
   processing/qgsalgorithmserviceareafromlayer.cpp

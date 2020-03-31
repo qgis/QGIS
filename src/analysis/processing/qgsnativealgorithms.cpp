@@ -125,6 +125,7 @@
 #include "qgsalgorithmreverselinedirection.h"
 #include "qgsalgorithmrotate.h"
 #include "qgsalgorithmruggedness.h"
+#include "qgsalgorithmsavelog.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
 #include "qgsalgorithmsegmentize.h"
 #include "qgsalgorithmserviceareafromlayer.h"
@@ -331,6 +332,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsReverseLineDirectionAlgorithm() );
   addAlgorithm( new QgsRotateFeaturesAlgorithm() );
   addAlgorithm( new QgsRuggednessAlgorithm() );
+  addAlgorithm( new QgsSaveLogToFileAlgorithm() );
   addAlgorithm( new QgsSaveSelectedFeatures() );
   addAlgorithm( new QgsSegmentizeByMaximumAngleAlgorithm() );
   addAlgorithm( new QgsSegmentizeByMaximumDistanceAlgorithm() );

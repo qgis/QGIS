@@ -282,10 +282,13 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
         continue;
 
       executedAlg = true;
-      if ( feedback )
-        feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
 
       const QgsProcessingModelChildAlgorithm &child = mChildAlgorithms[ childId ];
+      std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
+
+      const bool skipGenericLogging = childAlg->flags() & QgsProcessingAlgorithm::FlagSkipGenericModelLogging;
+      if ( feedback && !skipGenericLogging )
+        feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
 
       QgsExpressionContext expContext = baseContext;
       expContext << QgsExpressionContextUtils::processingAlgorithmScope( child.algorithm(), parameters, context )
@@ -293,7 +296,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       context.setExpressionContext( expContext );
 
       QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext );
-      if ( feedback )
+      if ( feedback && !skipGenericLogging )
         feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
 
       QStringList params;
@@ -303,7 +306,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
                child.algorithm()->parameterDefinition( childParamIt.key() )->valueAsPythonString( childParamIt.value(), context ) );
       }
 
-      if ( feedback )
+      if ( feedback && !skipGenericLogging )
       {
         feedback->pushInfo( QObject::tr( "Input Parameters:" ) );
         feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( params.join( QStringLiteral( ", " ) ) ) );
@@ -313,7 +316,6 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
       childTime.start();
 
       bool ok = false;
-      std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
       QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok, child.configuration() );
       if ( !ok )
       {
@@ -389,7 +391,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       childAlg.reset( nullptr );
       modelFeedback.setCurrentStep( executed.count() );
-      if ( feedback )
+      if ( feedback && !skipGenericLogging )
         feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%2 outputs)." ).arg( childTime.elapsed() / 1000.0 ).arg( results.count() ) );
     }
 
