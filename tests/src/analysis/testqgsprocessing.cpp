@@ -8266,16 +8266,20 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( comment.position(), QPointF( 11, 14 ) );
   comment.setDescription( QStringLiteral( "a comment" ) );
   QCOMPARE( comment.description(), QStringLiteral( "a comment" ) );
+  comment.setColor( QColor( 123, 45, 67 ) );
+  QCOMPARE( comment.color(), QColor( 123, 45, 67 ) );
   std::unique_ptr< QgsProcessingModelComment > commentClone( comment.clone() );
   QCOMPARE( commentClone->toVariant(), comment.toVariant() );
   QCOMPARE( commentClone->size(), QSizeF( 9, 8 ) );
   QCOMPARE( commentClone->position(), QPointF( 11, 14 ) );
   QCOMPARE( commentClone->description(), QStringLiteral( "a comment" ) );
+  QCOMPARE( commentClone->color(), QColor( 123, 45, 67 ) );
   QgsProcessingModelComment comment2;
   comment2.loadVariant( comment.toVariant().toMap() );
   QCOMPARE( comment2.size(), QSizeF( 9, 8 ) );
   QCOMPARE( comment2.position(), QPointF( 11, 14 ) );
   QCOMPARE( comment2.description(), QStringLiteral( "a comment" ) );
+  QCOMPARE( comment2.color(), QColor( 123, 45, 67 ) );
 
   QMap< QString, QString > friendlyOutputNames;
   QgsProcessingModelChildAlgorithm child( QStringLiteral( "some_id" ) );
@@ -8463,6 +8467,21 @@ void TestQgsProcessing::modelerAlgorithm()
   a2.setDescription( QStringLiteral( "alg2" ) );
   a2.setPosition( QPointF( 112, 131 ) );
   a2.setSize( QSizeF( 44, 55 ) );
+  a2.comment()->setSize( QSizeF( 111, 222 ) );
+  a2.comment()->setPosition( QPointF( 113, 114 ) );
+  a2.comment()->setDescription( QStringLiteral( "c" ) );
+  a2.comment()->setColor( QColor( 255, 254, 253 ) );
+  QgsProcessingModelOutput oo;
+  oo.setPosition( QPointF( 312, 331 ) );
+  oo.setSize( QSizeF( 344, 355 ) );
+  oo.comment()->setSize( QSizeF( 311, 322 ) );
+  oo.comment()->setPosition( QPointF( 313, 314 ) );
+  oo.comment()->setDescription( QStringLiteral( "c3" ) );
+  oo.comment()->setColor( QColor( 155, 14, 353 ) );
+  QMap< QString, QgsProcessingModelOutput > a2Outs;
+  a2Outs.insert( QStringLiteral( "out1" ), oo );
+  a2.setModelOutputs( a2Outs );
+
   algs.insert( QStringLiteral( "a" ), a1 );
   algs.insert( QStringLiteral( "b" ), a2 );
   alg.setChildAlgorithms( algs );
@@ -8473,10 +8492,28 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelChildAlgorithm a2other;
   a2other.setChildId( QStringLiteral( "b" ) );
   a2other.setDescription( QStringLiteral( "alg2 other" ) );
+  QgsProcessingModelOutput oo2;
+  QMap< QString, QgsProcessingModelOutput > a2Outs2;
+  a2Outs2.insert( QStringLiteral( "out1" ), oo2 );
+  a2other.setModelOutputs( a2Outs2 );
+
   a2other.copyNonDefinitionPropertiesFromModel( &alg );
   QCOMPARE( a2other.description(), QStringLiteral( "alg2 other" ) );
   QCOMPARE( a2other.position(), QPointF( 112, 131 ) );
   QCOMPARE( a2other.size(), QSizeF( 44, 55 ) );
+  QCOMPARE( a2other.comment()->size(), QSizeF( 111, 222 ) );
+  QCOMPARE( a2other.comment()->position(), QPointF( 113, 114 ) );
+  // should not be copied
+  QCOMPARE( a2other.comment()->description(), QString() );
+  QVERIFY( !a2other.comment()->color().isValid() );
+
+  QCOMPARE( a2other.modelOutput( QStringLiteral( "out1" ) ).position(), QPointF( 312, 331 ) );
+  QCOMPARE( a2other.modelOutput( QStringLiteral( "out1" ) ).size(), QSizeF( 344, 355 ) );
+  QCOMPARE( a2other.modelOutput( QStringLiteral( "out1" ) ).comment()->size(), QSizeF( 311, 322 ) );
+  QCOMPARE( a2other.modelOutput( QStringLiteral( "out1" ) ).comment()->position(), QPointF( 313, 314 ) );
+  // should be copied for outputs
+  QCOMPARE( a2other.modelOutput( QStringLiteral( "out1" ) ).comment()->description(), QStringLiteral( "c3" ) );
+  QCOMPARE( a2other.modelOutput( QStringLiteral( "out1" ) ).comment()->color(), QColor( 155, 14, 353 ) );
 
   QgsProcessingModelChildAlgorithm a3;
   a3.setChildId( QStringLiteral( "c" ) );

@@ -318,8 +318,33 @@ bool QgsModelComponentGraphicItem::contains( const QPointF &point ) const
 void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
   const QRectF rect = itemRect();
-  QColor color = fillColor( state() );
-  QColor stroke = strokeColor( state() );
+  QColor color;
+  QColor stroke;
+  QColor foreColor;
+  if ( mComponent->color().isValid() )
+  {
+    color = mComponent->color();
+    switch ( state() )
+    {
+      case Selected:
+        color = color.darker( 110 );
+        break;
+      case Hover:
+        color = color.darker( 105 );
+        break;
+
+      case Normal:
+        break;
+    }
+    stroke = color.darker( 110 );
+    foreColor = color.lightness() > 150 ? QColor( 0, 0, 0 ) : QColor( 255, 255, 255 );
+  }
+  else
+  {
+    color = fillColor( state() );
+    stroke = strokeColor( state() );
+    foreColor = textColor( state() );
+  }
 
   QPen strokePen = QPen( stroke, 0 ) ; // 0 width "cosmetic" pen
   strokePen.setStyle( strokeStyle( state() ) );
@@ -327,7 +352,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   painter->setBrush( QBrush( color, Qt::SolidPattern ) );
   painter->drawRect( rect );
   painter->setFont( font() );
-  painter->setPen( QPen( textColor( state() ) ) );
+  painter->setPen( QPen( foreColor ) );
 
   QString text;
 

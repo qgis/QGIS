@@ -68,7 +68,10 @@ void QgsProcessingModelChildAlgorithm::copyNonDefinitionPropertiesFromModel( Qgs
   for ( auto it = mModelOutputs.begin(); it != mModelOutputs.end(); ++it )
   {
     if ( !existingChild.modelOutputs().value( it.key() ).position().isNull() )
+    {
       it.value().setPosition( existingChild.modelOutputs().value( it.key() ).position() );
+      it.value().setSize( existingChild.modelOutputs().value( it.key() ).size() );
+    }
     else
       it.value().setPosition( position() + QPointF( size().width(), ( i + 1.5 ) * size().height() ) );
 
@@ -79,6 +82,7 @@ void QgsProcessingModelChildAlgorithm::copyNonDefinitionPropertiesFromModel( Qgs
         comment->setDescription( existingComment->description() );
         comment->setSize( existingComment->size() );
         comment->setPosition( existingComment->position() );
+        comment->setColor( existingComment->color() );
       }
     }
     i++;

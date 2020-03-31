@@ -63,17 +63,20 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
     def edit(self, edit_comment=False):
         existing_param = self.model().parameterDefinition(self.component().parameterName())
         comment = self.component().comment().description()
+        comment_color = self.component().comment().color()
         new_param = None
         if ModelerParameterDefinitionDialog.use_legacy_dialog(param=existing_param):
             # boo, old api
             dlg = ModelerParameterDefinitionDialog(self.model(),
                                                    param=existing_param)
             dlg.setComments(comment)
+            dlg.setCommentColor(comment_color)
             if edit_comment:
                 dlg.switchToCommentTab()
             if dlg.exec_():
                 new_param = dlg.param
                 comment = dlg.comments()
+                comment_color = dlg.commentColor()
         else:
             # yay, use new API!
             context = createContext()
@@ -84,12 +87,14 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
                                                          definition=existing_param,
                                                          algorithm=self.model())
             dlg.setComments(comment)
+            dlg.setCommentColor(comment_color)
             if edit_comment:
                 dlg.switchToCommentTab()
 
             if dlg.exec_():
                 new_param = dlg.createParameter(existing_param.name())
                 comment = dlg.comments()
+                comment_color = dlg.commentColor()
 
         if new_param is not None:
             self.aboutToChange.emit(self.tr('Edit {}').format(new_param.description()))
@@ -97,6 +102,7 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
             self.component().setParameterName(new_param.name())
             self.component().setDescription(new_param.name())
             self.component().comment().setDescription(comment)
+            self.component().comment().setColor(comment_color)
             self.model().addModelParameter(new_param, self.component())
             self.setLabel(new_param.description())
             self.requestModelRepaint.emit()
@@ -125,6 +131,7 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
         dlg = ModelerParametersDialog(elemAlg, self.model(), self.component().childId(),
                                       self.component().configuration())
         dlg.setComments(self.component().comment().description())
+        dlg.setCommentColor(self.component().comment().color())
         if edit_comment:
             dlg.switchToCommentTab()
         if dlg.exec_():
@@ -160,6 +167,7 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
         dlg = ModelerParameterDefinitionDialog(self.model(),
                                                param=self.model().parameterDefinition(param_name))
         dlg.setComments(self.component().comment().description())
+        dlg.setCommentColor(self.component().comment().color())
         if edit_comment:
             dlg.switchToCommentTab()
 
@@ -169,6 +177,7 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
             model_output.setDefaultValue(dlg.param.defaultValue())
             model_output.setMandatory(not (dlg.param.flags() & QgsProcessingParameterDefinition.FlagOptional))
             model_output.comment().setDescription(dlg.comments())
+            model_output.comment().setColor(dlg.commentColor())
             self.aboutToChange.emit(self.tr('Edit {}').format(model_output.description()))
             self.model().updateDestinationParameters()
             self.requestModelRepaint.emit()
