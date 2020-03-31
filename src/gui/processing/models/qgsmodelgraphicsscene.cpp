@@ -165,8 +165,6 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
       connect( item, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
 
-      addCommentItemForComponent( model, outputIt.value(), item );
-
       QPointF pos = outputIt.value().position();
       int idx = -1;
       int i = 0;
@@ -188,6 +186,8 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
       item->setPos( pos );
       outputItems.insert( outputIt.key(), item );
       addItem( new QgsModelArrowItem( mChildAlgorithmItems[it.value().childId()], Qt::BottomEdge, idx, item ) );
+
+      addCommentItemForComponent( model, outputIt.value(), item );
     }
     mOutputItems.insert( it.value().childId(), outputItems );
   }
