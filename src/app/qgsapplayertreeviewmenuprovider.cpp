@@ -117,6 +117,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( actions->actionMoveToTop( menu ) );
       }
 
+      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == idx.model()->rowCount() - 1 ) )
+      {
+        menu->addAction( actions->actionMoveToBottom( menu ) );
+      }
+
       menu->addSeparator();
 
       if ( mView->selectedNodes( true ).count() >= 2 )
@@ -202,6 +207,11 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == 0 ) )
       {
         menu->addAction( actions->actionMoveToTop( menu ) );
+      }
+
+      if ( !( mView->selectedNodes( true ).count() == 1 && idx.row() == idx.model()->rowCount() - 1 ) )
+      {
+        menu->addAction( actions->actionMoveToBottom( menu ) );
       }
 
       QAction *checkAll = actions->actionCheckAndAllParents( menu );
