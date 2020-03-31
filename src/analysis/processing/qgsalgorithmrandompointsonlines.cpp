@@ -237,9 +237,9 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       numberPointsForThisFeature = mNumPointsProperty.valueAsInt( expressionContext, numberPointsForThisFeature );
     desiredNumberOfPoints += numberPointsForThisFeature;
 
-    int maxAttemptsForThisFeatures = mMaxAttempts;
+    int maxAttemptsForThisFeature = mMaxAttempts;
     if ( mDynamicMaxAttempts )
-      maxAttemptsForThisFeatures = mMaxAttemptsProperty.valueAsInt( expressionContext, maxAttemptsForThisFeatures );
+      maxAttemptsForThisFeature = mMaxAttemptsProperty.valueAsInt( expressionContext, maxAttemptsForThisFeature );
 
     double minDistanceForThisFeature = mMinDistance;
     if ( mDynamicMinDistance )
@@ -256,7 +256,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       }
       // Try to add a point (mMaxAttempts attempts)
       int distCheckIterations = 0;
-      while ( distCheckIterations < maxAttemptsForThisFeatures )
+      while ( distCheckIterations < maxAttemptsForThisFeature )
       {
         if ( feedback->isCanceled() )
         {
@@ -276,7 +276,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
             {
               // total progress = progress over input features + progress over desired number of points for this feature + number of iterations for this point vs max iterations
               distCheckIterations++;
-              feedback->setProgress( baseFeatureProgress + pointProgressIncrement * ( pointIndex + static_cast< double >( distCheckIterations ) / maxAttemptsForThisFeatures ) );
+              feedback->setProgress( baseFeatureProgress + pointProgressIncrement * ( pointIndex + static_cast< double >( distCheckIterations ) / maxAttemptsForThisFeature ) );
               continue;
             }
           }
@@ -304,7 +304,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
         {
           // total progress = progress over input features + progress over desired number of points for this feature + number of iterations for this point vs max iterations
           distCheckIterations++;
-          feedback->setProgress( baseFeatureProgress + pointProgressIncrement * ( pointIndex + static_cast< double >( distCheckIterations ) / maxAttemptsForThisFeatures ) );
+          feedback->setProgress( baseFeatureProgress + pointProgressIncrement * ( pointIndex + static_cast< double >( distCheckIterations ) / maxAttemptsForThisFeature ) );
         }
       }
 
