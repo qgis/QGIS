@@ -74,6 +74,8 @@ class ModelerParametersDialog(QDialog):
         self.configuration = configuration
         self.context = createContext()
 
+        self.setWindowTitle(self._alg.displayName())
+
         self.widget = ModelerParametersWidget(alg, model, algName, configuration, context=self.context, dialog=self)
         QgsGui.enableAutoGeometryRestore(self)
 
@@ -142,7 +144,6 @@ class ModelerParametersPanelWidget(QgsPanelWidget):
         self.configuration = configuration
         self.context = context
         self.dialog = dialog
-        self.setWindowTitle(self._alg.displayName())
         self.widget_labels = {}
 
         class ContextGenerator(QgsProcessingContextGenerator):
