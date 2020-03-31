@@ -48,7 +48,7 @@ QgsModelComponentGraphicItem *QgsModelGraphicsScene::createParameterGraphicItem(
   return new QgsModelParameterGraphicItem( param, model, nullptr );
 }
 
-QgsModelComponentGraphicItem *QgsModelGraphicsScene::createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const
+QgsModelChildAlgorithmGraphicItem *QgsModelGraphicsScene::createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const
 {
   return new QgsModelChildAlgorithmGraphicItem( child, model, nullptr );
 }
@@ -100,9 +100,10 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
   const QMap<QString, QgsProcessingModelChildAlgorithm> childAlgs = model->childAlgorithms();
   for ( auto it = childAlgs.constBegin(); it != childAlgs.constEnd(); ++it )
   {
-    QgsModelComponentGraphicItem *item = createChildAlgGraphicItem( model, it.value().clone() );
+    QgsModelChildAlgorithmGraphicItem *item = createChildAlgGraphicItem( model, it.value().clone() );
     addItem( item );
     item->setPos( it.value().position().x(), it.value().position().y() );
+    item->setResults( mChildResults.value( it.value().childId() ).toMap() );
     mChildAlgorithmItems.insert( it.value().childId(), item );
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
@@ -263,6 +264,19 @@ void QgsModelGraphicsScene::setSelectedItem( QgsModelComponentGraphicItem *item 
     item->setSelected( true );
   }
   emit selectedItemChanged( item );
+}
+
+void QgsModelGraphicsScene::setChildAlgorithmResults( const QVariantMap &results )
+{
+  mChildResults = results;
+
+  for ( auto it = mChildResults.constBegin(); it != mChildResults.constEnd(); ++it )
+  {
+    if ( QgsModelChildAlgorithmGraphicItem *item = mChildAlgorithmItems.value( it.key() ) )
+    {
+      item->setResults( it.value().toMap() );
+    }
+  }
 }
 
 QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForParameterValue( QgsProcessingModelAlgorithm *model, const QVariant &value, const QString &childId, QgsProcessingContext &context ) const

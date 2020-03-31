@@ -936,7 +936,15 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
     switch ( edge )
     {
       case Qt::BottomEdge:
-        return truncatedTextForItem( child->algorithm()->outputDefinitions().at( index )->description() );
+      {
+        const QgsProcessingOutputDefinition *output = child->algorithm()->outputDefinitions().at( index );
+        QString title = output->description();
+        if ( mResults.contains( output->name() ) )
+        {
+          title += QStringLiteral( ": %1" ).arg( mResults.value( output->name() ).toString() );
+        }
+        return truncatedTextForItem( title );
+      }
 
       case Qt::TopEdge:
       {
@@ -973,6 +981,16 @@ bool QgsModelChildAlgorithmGraphicItem::canDeleteComponent()
     return model()->dependentChildAlgorithms( child->childId() ).empty();
   }
   return false;
+}
+
+void QgsModelChildAlgorithmGraphicItem::setResults( const QVariantMap &results )
+{
+  if ( mResults == results )
+    return;
+
+  mResults = results;
+  update();
+  emit updateArrowPaths();
 }
 
 void QgsModelChildAlgorithmGraphicItem::deleteComponent()

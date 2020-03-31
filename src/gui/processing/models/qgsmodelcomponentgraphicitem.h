@@ -452,6 +452,11 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
 
+    /**
+     * Sets the results obtained for this child algorithm for the last model execution through the dialog.
+     */
+    void setResults( const QVariantMap &results );
+
   protected:
 
     QColor fillColor( State state ) const override;
@@ -475,6 +480,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
   private:
     QPicture mPicture;
     QPixmap mPixmap;
+    QVariantMap mResults;
 };
 
 

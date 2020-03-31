@@ -28,6 +28,7 @@ class QgsProcessingModelChildAlgorithm;
 class QgsProcessingModelOutput;
 class QgsProcessingModelComponent;
 class QgsProcessingModelComment;
+class QgsModelChildAlgorithmGraphicItem;
 
 ///@cond NOT_STABLE
 
@@ -124,6 +125,11 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     */
     void setSelectedItem( QgsModelComponentGraphicItem *item );
 
+    /**
+     * Sets the results for child algorithms for the last model execution.
+     */
+    void setChildAlgorithmResults( const QVariantMap &results );
+
   signals:
 
     /**
@@ -160,7 +166,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     /**
      * Creates a new graphic item for a model child algorithm.
      */
-    virtual QgsModelComponentGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  SIP_FACTORY;
+    virtual QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  SIP_FACTORY;
 
     /**
      * Creates a new graphic item for a model output.
@@ -189,8 +195,9 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     Flags mFlags = nullptr;
 
     QMap< QString, QgsModelComponentGraphicItem * > mParameterItems;
-    QMap< QString, QgsModelComponentGraphicItem * > mChildAlgorithmItems;
+    QMap< QString, QgsModelChildAlgorithmGraphicItem * > mChildAlgorithmItems;
     QMap< QString, QMap< QString, QgsModelComponentGraphicItem * > > mOutputItems;
+    QVariantMap mChildResults;
 
 };
 
