@@ -10844,7 +10844,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
                                         Qgis::Critical, messageTimeout() );
     else if ( qobject_cast<QgsVectorLayer *>( dupLayer ) )
       visibleMessageBar()->pushMessage( tr( "Layer duplication complete" ),
-                                        tr( "Note that it's using the same data source." ),
+                                        dupLayer->providerType() != QLatin1String( "memory" ) ? tr( "Note that it's using the same data source." ) : QString(),
                                         Qgis::Info, messageTimeout() );
 
     if ( !newSelection )
