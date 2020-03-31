@@ -356,6 +356,7 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 
   mScene = scene;
   mScene->setParent( this );
+  mScene->setChildAlgorithmResults( mChildResults );
 
   mView->setModelScene( mScene );
 
@@ -440,6 +441,8 @@ bool QgsModelDesignerDialog::checkForUnsavedChanges()
 void QgsModelDesignerDialog::setLastRunChildAlgorithmResults( const QVariantMap &results )
 {
   mChildResults = results;
+  if ( mScene )
+    mScene->setChildAlgorithmResults( mChildResults );
 }
 
 void QgsModelDesignerDialog::zoomIn()

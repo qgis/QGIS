@@ -389,6 +389,11 @@ Ownership of ``child`` is transferred to the item.
     virtual bool canDeleteComponent();
 
 
+    void setResults( const QVariantMap &results );
+%Docstring
+Sets the results obtained for this child algorithm for the last model execution through the dialog.
+%End
+
   protected:
 
     virtual QColor fillColor( State state ) const;

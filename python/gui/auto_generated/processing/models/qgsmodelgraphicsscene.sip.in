@@ -114,6 +114,11 @@ not correctly emit signals to allow the scene's model to update.
 Clears any selected items and sets ``item`` as the current selection.
 %End
 
+    void setChildAlgorithmResults( const QVariantMap &results );
+%Docstring
+Sets the results for child algorithms for the last model execution.
+%End
+
   signals:
 
     void rebuildRequired();
@@ -147,7 +152,7 @@ If ``None``, no item is selected.
 Creates a new graphic item for a model parameter.
 %End
 
-    virtual QgsModelComponentGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  /Factory/;
+    virtual QgsModelChildAlgorithmGraphicItem *createChildAlgGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelChildAlgorithm *child ) const  /Factory/;
 %Docstring
 Creates a new graphic item for a model child algorithm.
 %End
