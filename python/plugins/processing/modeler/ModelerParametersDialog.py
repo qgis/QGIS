@@ -486,8 +486,6 @@ class ModelerParametersWidget(QWidget):
 
         self.widget = ModelerParametersPanelWidget(alg, model, algName, configuration, dialog, context)
 
-        self.widget_labels = {}
-
         class ContextGenerator(QgsProcessingContextGenerator):
 
             def __init__(self, context):
