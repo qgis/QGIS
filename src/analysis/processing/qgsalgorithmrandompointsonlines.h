@@ -55,8 +55,17 @@ class QgsRandomPointsOnLinesAlgorithm : public QgsProcessingAlgorithm
 
   private:
     int mNumPoints;
+    bool mDynamicNumPoints = false;
+    QgsProperty mNumPointsProperty;
+
     double mMinDistance = 0;
+    bool mDynamicMinDistance = false;
+    QgsProperty mMinDistanceProperty;
+
     int mMaxAttempts = 10;
+    bool mDynamicMaxAttempts = false;
+    QgsProperty mMaxAttemptsProperty;
+
     bool mUseRandomSeed = false;
     int mRandSeed = 0;
     bool mIncludeLineAttr = false;

@@ -61,14 +61,24 @@ QString QgsRandomPointsOnLinesAlgorithm::groupId() const
 
 void QgsRandomPointsOnLinesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-
-  //addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( INPUT ), QObject::tr( "Input line layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
   addParameter( new QgsProcessingParameterFeatureSource( INPUT, QObject::tr( "Input line layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
-  addParameter( new QgsProcessingParameterNumber( POINTS_NUMBER, QObject::tr( "Number of points for each feature" ), QgsProcessingParameterNumber::Integer, 1, false, 1 ) );
-  addParameter( new QgsProcessingParameterDistance( MIN_DISTANCE, QObject::tr( "Minimum distance between points" ), 0, INPUT, true, 0 ) );
+  std::unique_ptr< QgsProcessingParameterNumber > numberPointsParam = qgis::make_unique< QgsProcessingParameterNumber >( POINTS_NUMBER, QObject::tr( "Number of points for each feature" ), QgsProcessingParameterNumber::Integer, 1, false, 1 );
+  numberPointsParam->setIsDynamic( true );
+  numberPointsParam->setDynamicPropertyDefinition( QgsPropertyDefinition( POINTS_NUMBER, QObject::tr( "Number of points for each feature" ), QgsPropertyDefinition::IntegerPositive ) );
+  numberPointsParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  addParameter( numberPointsParam.release() );
+
+  std::unique_ptr< QgsProcessingParameterDistance > minDistParam = qgis::make_unique< QgsProcessingParameterDistance >( MIN_DISTANCE, QObject::tr( "Minimum distance between points" ), 0, INPUT, true, 0 );
+  minDistParam->setIsDynamic( true );
+  minDistParam->setDynamicPropertyDefinition( QgsPropertyDefinition( MIN_DISTANCE, QObject::tr( "Minimum distance between points" ), QgsPropertyDefinition::DoublePositive ) );
+  minDistParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  addParameter( minDistParam.release() );
 
   std::unique_ptr< QgsProcessingParameterNumber > maxAttemptsParam = qgis::make_unique< QgsProcessingParameterNumber >( MAX_TRIES_PER_POINT, QObject::tr( "Maximum number of search attempts (for Min. dist. > 0)" ), QgsProcessingParameterNumber::Integer, 10, true, 1, 1000 );
   maxAttemptsParam->setFlags( maxAttemptsParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
+  maxAttemptsParam->setIsDynamic( true );
+  maxAttemptsParam->setDynamicPropertyDefinition( QgsPropertyDefinition( MAX_TRIES_PER_POINT, QObject::tr( "Maximum number of search attempts (for Min. dist. > 0)" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
+  maxAttemptsParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( maxAttemptsParam.release() );
 
   std::unique_ptr< QgsProcessingParameterNumber > randomSeedParam = qgis::make_unique< QgsProcessingParameterNumber >( SEED, QObject::tr( "Random seed" ), QgsProcessingParameterNumber::Integer, QVariant(), true, 1 );
@@ -129,8 +139,20 @@ QgsRandomPointsOnLinesAlgorithm *QgsRandomPointsOnLinesAlgorithm::createInstance
 bool QgsRandomPointsOnLinesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mNumPoints = parameterAsInt( parameters, POINTS_NUMBER, context );
+  mDynamicNumPoints = QgsProcessingParameters::isDynamic( parameters, POINTS_NUMBER );
+  if ( mDynamicNumPoints )
+    mNumPointsProperty = parameters.value( POINTS_NUMBER ).value< QgsProperty >();
+
   mMinDistance = parameterAsDouble( parameters, MIN_DISTANCE, context );
+  mDynamicMinDistance = QgsProcessingParameters::isDynamic( parameters, MIN_DISTANCE );
+  if ( mDynamicMinDistance )
+    mMinDistanceProperty = parameters.value( MIN_DISTANCE ).value< QgsProperty >();
+
   mMaxAttempts = parameterAsInt( parameters, MAX_TRIES_PER_POINT, context );
+  mDynamicMaxAttempts = QgsProcessingParameters::isDynamic( parameters, MAX_TRIES_PER_POINT );
+  if ( mDynamicMaxAttempts )
+    mMaxAttemptsProperty = parameters.value( MAX_TRIES_PER_POINT ).value< QgsProperty >();
+
   mUseRandomSeed = parameters.value( SEED ).isValid();
   mRandSeed = parameterAsInt( parameters, SEED, context );
   mIncludeLineAttr = parameterAsBoolean( parameters, INCLUDE_LINE_ATTRIBUTES, context );
@@ -140,7 +162,7 @@ bool QgsRandomPointsOnLinesAlgorithm::prepareAlgorithm( const QVariantMap &param
 QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap &parameters,
     QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsFeatureSource > lineSource( parameterAsSource( parameters, INPUT, context ) );
+  std::unique_ptr< QgsProcessingFeatureSource > lineSource( parameterAsSource( parameters, INPUT, context ) );
   if ( !lineSource )
     throw QgsProcessingException( invalidSourceError( parameters, INPUT ) );
 
@@ -154,6 +176,8 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
                                           context, ldest, fields, QgsWkbTypes::Point, lineSource->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, OUTPUT ) );
+
+  QgsExpressionContext expressionContext = createExpressionContext( parameters, context, lineSource.get() );
 
   //initialize random engine
   std::random_device rd;
@@ -170,9 +194,10 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
 
   long featureCount = 0;
   long numberOfFeatures = lineSource->featureCount();
+  long long desiredNumberOfPoints = 0;
   const double featureProgressStep = 100.0 / ( numberOfFeatures > 0 ? numberOfFeatures : 1 );
   QgsFeature lFeat;
-  QgsFeatureIterator fitL = mIncludeLineAttr ? lineSource->getFeatures()
+  QgsFeatureIterator fitL = mIncludeLineAttr || mDynamicNumPoints || mDynamicMinDistance || mDynamicMaxAttempts ? lineSource->getFeatures()
                             : lineSource->getFeatures( QgsFeatureRequest().setNoAttributes() );
   while ( fitL.nextFeature( lFeat ) )
   {
@@ -199,13 +224,31 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       continue;
     }
 
+    if ( mDynamicNumPoints || mDynamicMinDistance || mDynamicMaxAttempts )
+    {
+      expressionContext.setFeature( lFeat );
+    }
+
     double lineLength = lGeom.length();
     int pointsAddedForThisFeature = 0;
 
-    const double baseFeatureProgress = featureCount * featureProgressStep;
-    const double pointProgressIncrement = featureProgressStep / mNumPoints;
+    int numberPointsForThisFeature = mNumPoints;
+    if ( mDynamicNumPoints )
+      numberPointsForThisFeature = mNumPointsProperty.valueAsInt( expressionContext, numberPointsForThisFeature );
+    desiredNumberOfPoints += numberPointsForThisFeature;
 
-    for ( long pointIndex = 0; pointIndex < mNumPoints; pointIndex++ )
+    int maxAttemptsForThisFeatures = mMaxAttempts;
+    if ( mDynamicMaxAttempts )
+      maxAttemptsForThisFeatures = mMaxAttemptsProperty.valueAsInt( expressionContext, maxAttemptsForThisFeatures );
+
+    double minDistanceForThisFeature = mMinDistance;
+    if ( mDynamicMinDistance )
+      minDistanceForThisFeature = mMinDistanceProperty.valueAsDouble( expressionContext, minDistanceForThisFeature );
+
+    const double baseFeatureProgress = featureCount * featureProgressStep;
+    const double pointProgressIncrement = featureProgressStep / numberPointsForThisFeature;
+
+    for ( long pointIndex = 0; pointIndex < numberPointsForThisFeature; pointIndex++ )
     {
       if ( feedback->isCanceled() )
       {
@@ -213,7 +256,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       }
       // Try to add a point (mMaxAttempts attempts)
       int distCheckIterations = 0;
-      while ( distCheckIterations < mMaxAttempts )
+      while ( distCheckIterations < maxAttemptsForThisFeatures )
       {
         if ( feedback->isCanceled() )
         {
@@ -225,15 +268,15 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
 
         if ( !rpGeom.isNull() && !rpGeom.isEmpty() )
         {
-          if ( mMinDistance != 0 && pointsAddedForThisFeature > 0 )
+          if ( minDistanceForThisFeature != 0 && pointsAddedForThisFeature > 0 )
           {
             // Have to check minimum distance to existing points
-            QList<QgsFeatureId> neighbors = index.nearestNeighbor( rpGeom, 1, mMinDistance );
+            QList<QgsFeatureId> neighbors = index.nearestNeighbor( rpGeom, 1, minDistanceForThisFeature );
             if ( !neighbors.empty() )
             {
               // total progress = progress over input features + progress over desired number of points for this feature + number of iterations for this point vs max iterations
               distCheckIterations++;
-              feedback->setProgress( baseFeatureProgress + pointProgressIncrement * ( pointIndex + static_cast< double >( distCheckIterations ) / mMaxAttempts ) );
+              feedback->setProgress( baseFeatureProgress + pointProgressIncrement * ( pointIndex + static_cast< double >( distCheckIterations ) / maxAttemptsForThisFeatures ) );
               continue;
             }
           }
@@ -248,7 +291,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
           f.setAttributes( pAttrs );
           f.setGeometry( rpGeom );
 
-          if ( mMinDistance != 0 )
+          if ( minDistanceForThisFeature != 0 )
           {
             index.addFeature( f );
           }
@@ -261,21 +304,21 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
         {
           // total progress = progress over input features + progress over desired number of points for this feature + number of iterations for this point vs max iterations
           distCheckIterations++;
-          feedback->setProgress( baseFeatureProgress + pointProgressIncrement * ( pointIndex + static_cast< double >( distCheckIterations ) / mMaxAttempts ) );
+          feedback->setProgress( baseFeatureProgress + pointProgressIncrement * ( pointIndex + static_cast< double >( distCheckIterations ) / maxAttemptsForThisFeatures ) );
         }
       }
 
       // total progress = progress over input features + progress over desired number of points for this feature
       feedback->setProgress( baseFeatureProgress + pointProgressIncrement * ( pointIndex + 1 ) );
     }
-    if ( pointsAddedForThisFeature < mNumPoints )
+    if ( pointsAddedForThisFeature < numberPointsForThisFeature )
     {
       missedLines++;
     }
     featureCount++;
     feedback->setProgress( featureCount * featureProgressStep );
   }
-  missedPoints = mNumPoints * featureCount - totNPoints;
+  missedPoints = desiredNumberOfPoints - totNPoints;
   feedback->pushInfo( QObject::tr( "Total number of points generated: "
                                    " %1\nNumber of missed points: %2\nLines with missing points: "
                                    " %3\nFeatures with empty or missing geometries: %4"
