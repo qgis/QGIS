@@ -342,6 +342,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.setExecuted(True)
         self.setResults(result)
         self.setInfo(self.tr('Algorithm \'{0}\' finished').format(self.algorithm().displayName()), escapeHtml=False)
+        self.algorithmFinished.emit(successful, result)
 
         if not in_place and not keepOpen:
             self.close()
