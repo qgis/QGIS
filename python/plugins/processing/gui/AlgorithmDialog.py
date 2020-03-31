@@ -258,7 +258,8 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     if ok:
                         self.feedback.pushInfo(self.tr('Execution completed in {0:0.2f} seconds').format(time.time() - start_time))
                         self.feedback.pushInfo(self.tr('Results:'))
-                        self.feedback.pushCommandInfo(pformat(results))
+                        r = {k: v for k, v in results.items() if k not in ('CHILD_RESULTS', 'CHILD_INPUTS')}
+                        self.feedback.pushCommandInfo(pformat(r))
                     else:
                         self.feedback.reportError(
                             self.tr('Execution failed after {0:0.2f} seconds').format(time.time() - start_time))
