@@ -237,7 +237,6 @@ void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
 
   connect( mMainCanvas, &QgsMapCanvas::layersChanged, this, &Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged );
   connect( mMainCanvas, &QgsMapCanvas::canvasColorChanged, this, &Qgs3DMapCanvasDockWidget::onMainCanvasColorChanged );
-  connect( mMainCanvas->temporalController(), &QgsTemporalController::updateTemporalRange, mCanvas, &Qgs3DMapCanvas::setTimeRange );
 }
 
 void Qgs3DMapCanvasDockWidget::resetView()

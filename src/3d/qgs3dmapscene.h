@@ -116,7 +116,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
 
   public slots:
     //! Updates the temporale entities
-    void onMapTimeRangeChange();
+    void updateTemporal();
 
   private slots:
     void onCameraChanged();

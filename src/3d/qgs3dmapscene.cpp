@@ -538,7 +538,7 @@ void Qgs3DMapScene::onLayersChanged()
   }
 }
 
-void Qgs3DMapScene::onMapTimeRangeChange()
+void Qgs3DMapScene::updateTemporal()
 {
   for ( auto layer : mLayerEntities.keys() )
   {

@@ -33,6 +33,7 @@ class QgsWindow3DEngine;
 class QgsCameraController;
 class QgsPointXY;
 class Qgs3DNavigationWidget;
+class QgsTemporalController;
 
 
 class Qgs3DMapCanvas : public QWidget
@@ -80,12 +81,10 @@ class Qgs3DMapCanvas : public QWidget
      */
     void setOnScreenNavigationVisibility( bool visibility );
 
-  public slots:
-
     /**
-     * Sets the time range
+     * Sets the temporal controller
      */
-    void setTimeRange( const QgsDateTimeRange &timeRange );
+    void setTemporalController( QgsTemporalController *temporalController );
 
   signals:
     //! Emitted when the 3D map canvas was successfully saved as image
@@ -94,8 +93,8 @@ class Qgs3DMapCanvas : public QWidget
     //! Emitted when the the map setting is changed
     void mapSettingsChanged();
 
-    //! Emitted when the map time range is changed
-    void mapTimeRangeChanged();
+  private slots:
+    void updateTemporalRange( const QgsDateTimeRange &timeRange );
 
   protected:
     void resizeEvent( QResizeEvent *ev ) override;
@@ -119,6 +118,8 @@ class Qgs3DMapCanvas : public QWidget
 
     //! On-Screen Navigation widget.
     Qgs3DNavigationWidget *mNavigationWidget = nullptr;
+
+    QgsTemporalController *mTemporalController = nullptr;
 };
 
 #endif // QGS3DMAPCANVAS_H

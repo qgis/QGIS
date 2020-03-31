@@ -28,6 +28,7 @@
 #include "qgswindow3dengine.h"
 #include "qgs3dnavigationwidget.h"
 #include "qgssettings.h"
+#include "qgstemporalcontroller.h"
 
 Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
@@ -106,8 +107,6 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
     mNavigationWidget->updateFromCamera();
   }
   );
-
-  connect( this, &Qgs3DMapCanvas::mapTimeRangeChanged, mScene, &Qgs3DMapScene::onMapTimeRangeChange );
 
   emit mapSettingsChanged();
 }
@@ -200,11 +199,17 @@ void Qgs3DMapCanvas::setOnScreenNavigationVisibility( bool visibility )
   setting.setValue( QStringLiteral( "/3D/navigationWidget/visibility" ), visibility, QgsSettings::Gui );
 }
 
-void Qgs3DMapCanvas::setTimeRange( const QgsDateTimeRange &timeRange )
+void Qgs3DMapCanvas::setTemporalController( QgsTemporalController *temporalController )
 {
-  if ( mMap )
-  {
-    mMap->setTemporalRange( timeRange );
-    emit mapTimeRangeChanged();
-  }
+  if ( mTemporalController )
+    disconnect( mTemporalController, &QgsTemporalController::updateTemporalRange, this, &Qgs3DMapCanvas::updateTemporalRange );
+
+  mTemporalController = temporalController;
+  connect( mTemporalController, &QgsTemporalController::updateTemporalRange, this, &Qgs3DMapCanvas::updateTemporalRange );
+}
+
+void Qgs3DMapCanvas::updateTemporalRange( const QgsDateTimeRange &temporalrange )
+{
+  mMap->setTemporalRange( temporalrange );
+  mScene->updateTemporal();
 }
