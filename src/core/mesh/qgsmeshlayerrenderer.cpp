@@ -103,7 +103,11 @@ void QgsMeshLayerRenderer::calculateOutputSize()
 
 void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 {
-  QgsMeshDatasetIndex datasetIndex = layer->activeScalarDatasetAtTime( renderContext()->temporalRange() );
+  QgsMeshDatasetIndex datasetIndex;
+  if ( renderContext()->isTemporal() )
+    datasetIndex = layer->activeScalarDatasetAtTime( renderContext()->temporalRange() );
+  else
+    datasetIndex = layer->staticScalarDatasetIndex();
 
   // Find out if we can use cache up to date. If yes, use it and return
   const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
@@ -201,7 +205,11 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 
 void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 {
-  QgsMeshDatasetIndex datasetIndex =  layer->activeVectorDatasetAtTime( renderContext()->temporalRange() );
+  QgsMeshDatasetIndex datasetIndex;
+  if ( renderContext()->isTemporal() )
+    datasetIndex = layer->activeVectorDatasetAtTime( renderContext()->temporalRange() );
+  else
+    datasetIndex = layer->staticVectorDatasetIndex();
 
   // Find out if we can use cache up to date. If yes, use it and return
   const int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
