@@ -1,7 +1,7 @@
 
 # see https://docs.docker.com/docker-cloud/builds/advanced/
 # using ARG in FROM requires min v17.05.0-ce
-ARG DOCKER_TAG=latest
+ARG DOCKER_TAG=release-3_10
 
 FROM  qgis/qgis3-build-deps:${DOCKER_TAG} AS BUILDER
 MAINTAINER Denis Rouzaud <denis@opengis.ch>
