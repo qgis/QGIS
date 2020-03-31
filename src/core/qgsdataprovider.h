@@ -179,7 +179,16 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \since QGIS 3.14
      */
-    virtual QgsDataProviderTemporalCapabilities *temporalCapabilities() const;
+    virtual QgsDataProviderTemporalCapabilities *temporalCapabilities();
+
+    /**
+     * Returns the provider's temporal capabilities.
+     *
+     * This may be NULLPTR, depending on the data provider.
+     *
+     * \since QGIS 3.14
+     */
+    virtual const QgsDataProviderTemporalCapabilities *temporalCapabilities() const;
 
     /**
      * Returns the extent of the layer

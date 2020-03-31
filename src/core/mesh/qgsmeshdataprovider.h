@@ -326,7 +326,9 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
   public:
     //! Ctor
     QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
-    QgsMeshDataProviderTemporalCapabilities *temporalCapabilities() const override;
+
+    QgsMeshDataProviderTemporalCapabilities *temporalCapabilities() override;
+    const QgsMeshDataProviderTemporalCapabilities *temporalCapabilities() const override;
 
     /**
      * Sets the temporal unit of the provider and reload data if it changes.

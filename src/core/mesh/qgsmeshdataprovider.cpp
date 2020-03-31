@@ -25,7 +25,12 @@ QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvi
 {
 }
 
-QgsMeshDataProviderTemporalCapabilities *QgsMeshDataProvider::temporalCapabilities() const
+QgsMeshDataProviderTemporalCapabilities *QgsMeshDataProvider::temporalCapabilities()
+{
+  return mTemporalCapabilities.get();
+}
+
+const QgsMeshDataProviderTemporalCapabilities *QgsMeshDataProvider::temporalCapabilities() const
 {
   return mTemporalCapabilities.get();
 }
