@@ -246,7 +246,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
     }
   }
   else if ( mPipe->provider()->temporalCapabilities() )
+  {
     mPipe->provider()->temporalCapabilities()->setRequestedTemporalRange( QgsDateTimeRange() );
+    mPipe->provider()->temporalCapabilities()->setIntervalHandlingMethod( layer->temporalProperties()->intervalHandlingMethod() );
+  }
 }
 
 QgsRasterLayerRenderer::~QgsRasterLayerRenderer()

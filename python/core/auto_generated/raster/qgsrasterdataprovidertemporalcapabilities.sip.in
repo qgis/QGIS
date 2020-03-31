@@ -38,6 +38,8 @@ The ``enabled`` argument specifies whether the data provider has temporal capabi
       MatchUsingWholeRange,
       MatchExactUsingStartOfRange,
       MatchExactUsingEndOfRange,
+      FindClosestMatchToStartOfRange,
+      FindClosestMatchToEndOfRange
     };
 
     IntervalHandlingMethod intervalHandlingMethod() const;

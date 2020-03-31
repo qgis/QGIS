@@ -1086,7 +1086,25 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
   QgsDataSourceUri uri;
   uri.setEncodedUri( dataSourceUri() );
 
-  if ( !range.isInfinite() )
+  if ( range.isInfinite() )
+  {
+    if ( uri.hasParam( QStringLiteral( "time" ) ) &&
+         !uri.param( QStringLiteral( "time" ) ).isEmpty() )
+    {
+      QString time = uri.param( QStringLiteral( "time" ) );
+      QStringList timeParts = time.split( '/' );
+
+      QDateTime start = QDateTime::fromString( timeParts.at( 0 ), Qt::ISODateWithMs );
+      QDateTime end = QDateTime::fromString( timeParts.at( 1 ), Qt::ISODateWithMs );
+
+      range = QgsDateTimeRange( start, end );
+    }
+  }
+
+  if ( uri.param( QStringLiteral( "enableTime" ) ) == QLatin1String( "no" ) )
+    format = "yyyy-MM-dd";
+
+  if ( range.begin().isValid() && range.end().isValid() )
   {
     switch ( temporalCapabilities()->intervalHandlingMethod() )
     {
@@ -1098,29 +1116,21 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
       case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange:
         range = QgsDateTimeRange( range.end(), range.end() );
         break;
+      case QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToStartOfRange:
+      {
+        QDateTime dateTimeStart = mSettings.findLeastClosestDateTime( range.begin() );
+        range = QgsDateTimeRange( dateTimeStart, dateTimeStart );
+        break;
+      }
+
+      case QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToEndOfRange:
+      {
+        QDateTime dateTimeEnd = mSettings.findLeastClosestDateTime( range.end() );
+        range = QgsDateTimeRange( dateTimeEnd, dateTimeEnd );
+        break;
+      }
     }
-  }
-  else
-  {
-    if ( uri.hasParam( QStringLiteral( "time" ) ) &&
-         !uri.param( QStringLiteral( "time" ) ).isEmpty() )
-    {
-      QString time = uri.param( QStringLiteral( "time" ) );
-      QStringList timeParts = time.split( '/' );
 
-      QDateTime start = QDateTime::fromString( timeParts.at( 0 ), Qt::ISODateWithMs );
-      QDateTime end = QDateTime::fromString( timeParts.at( 1 ), Qt::ISODateWithMs );
-
-      if ( start == end )
-        range = QgsDateTimeRange( start, end );
-    }
-  }
-
-  if ( uri.param( QStringLiteral( "enableTime" ) ) == QLatin1String( "no" ) )
-    format = "yyyy-MM-dd";
-
-  if ( range.begin().isValid() && range.end().isValid() )
-  {
     if ( range.begin() == range.end() )
       setQueryItem( query, QStringLiteral( "TIME" ),
                     range.begin().toString( format ) );

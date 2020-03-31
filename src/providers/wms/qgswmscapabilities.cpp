@@ -295,6 +295,7 @@ QList<QDateTime> QgsWmsSettings::dateTimesFromExtent( QgsWmstDimensionExtent dim
       {
         QDateTime first = QDateTime( pair.dates.dateTimes.at( 0 ) );
         QDateTime last = QDateTime( pair.dates.dateTimes.at( 1 ) );
+        dates.append( first );
 
         while ( first < last )
         {
@@ -332,6 +333,37 @@ QDateTime QgsWmsSettings::addTime( QDateTime dateTime, QgsWmstResolution resolut
     resultDateTime = resultDateTime.addSecs( resolution.seconds );
 
   return resultDateTime;
+}
+
+QDateTime QgsWmsSettings::findLeastClosestDateTime( QDateTime dateTime )
+{
+  QDateTime closest = dateTime;
+  long long min = LLONG_MAX;
+
+  if ( !dateTime.isValid() || mDateTimes.contains( dateTime ) )
+    return closest;
+
+  for ( QDateTime current : mDateTimes )
+  {
+    if ( !current.isValid() )
+      continue;
+
+    long long difference = dateTime.secsTo( current );
+
+    // The datetimes list is sorted, if difference is increasing or
+    // it is above zero means search is now looking for greater than
+    // datetimes then search will have to stop.
+    if ( difference > 0 || std::abs( difference ) > min )
+      break;
+
+    if ( std::abs( difference ) < min )
+    {
+      min = std::abs( difference );
+      closest = current;
+    }
+  }
+
+  return closest;
 }
 
 QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
@@ -416,10 +448,10 @@ QgsWmstResolution QgsWmsSettings::parseWmstResolution( QString item )
 
 QDateTime QgsWmsSettings::parseWmstDateTimes( QString item )
 {
-  // Standard item will have YYYY-MM-DDThh:mm:ss.SSSZ
+  // Standard item will have YYYY-MM-DDTHH:mm:ss.SSSZ
   //  format a Qt::ISODateWithMs
 
-  QString format = "YYYY-MM-DDThh:mm:ss.SSSZ";
+  QString format = "YYYY-MM-DDTHH:mm:ss.SSSZ";
 
   // Check if it does not have time part
   if ( !item.contains( 'T' ) )
