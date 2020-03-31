@@ -24,14 +24,17 @@
 ///@cond NOT_STABLE
 
 
-QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex )
+QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing,
+                                      QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming )
   : QObject( nullptr )
   , mStartItem( startItem )
   , mStartEdge( startEdge )
   , mStartIndex( startIndex )
+  , mStartIsOutgoing( startIsOutgoing )
   , mEndItem( endItem )
   , mEndEdge( endEdge )
   , mEndIndex( endIndex )
+  , mEndIsIncoming( endIsIncoming )
 {
   setCacheMode( QGraphicsItem::DeviceCoordinateCache );
   setFlag( QGraphicsItem::ItemIsSelectable, false );
@@ -48,17 +51,17 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Q
 }
 
 QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, QgsModelComponentGraphicItem *endItem )
-  : QgsModelArrowItem( startItem, startEdge, startIndex, endItem, Qt::LeftEdge, -1 )
+  : QgsModelArrowItem( startItem, startEdge, startIndex, true, endItem, Qt::LeftEdge, -1, true )
 {
 }
 
 QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex )
-  : QgsModelArrowItem( startItem, Qt::LeftEdge, -1, endItem, endEdge, endIndex )
+  : QgsModelArrowItem( startItem, Qt::LeftEdge, -1, true, endItem, endEdge, endIndex, true )
 {
 }
 
 QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, QgsModelComponentGraphicItem *endItem )
-  : QgsModelArrowItem( startItem, Qt::LeftEdge, -1, endItem, Qt::LeftEdge, -1 )
+  : QgsModelArrowItem( startItem, Qt::LeftEdge, -1, true, endItem, Qt::LeftEdge, -1, true )
 {
 }
 
@@ -107,14 +110,14 @@ void QgsModelArrowItem::updatePath()
   bool hasStartPt = false;
   if ( mStartIndex != -1 )
   {
-    startPt = mStartItem->linkPoint( mStartEdge, mStartIndex );
+    startPt = mStartItem->linkPoint( mStartEdge, mStartIndex, !mStartIsOutgoing );
     hasStartPt = true;
   }
   QPointF endPt;
   bool hasEndPt = false;
   if ( mEndIndex != -1 )
   {
-    endPt = mEndItem->linkPoint( mEndEdge, mEndIndex );
+    endPt = mEndItem->linkPoint( mEndEdge, mEndIndex, mEndIsIncoming );
     hasEndPt = true;
   }
 
@@ -129,13 +132,13 @@ void QgsModelArrowItem::updatePath()
 
     controlPoints.append( pt );
     mNodePoints.append( pt );
-    controlPoints.append( bezierPointForCurve( pt, startEdge ) );
+    controlPoints.append( bezierPointForCurve( pt, startEdge, !mStartIsOutgoing ) );
   }
   else
   {
     mNodePoints.append( mStartItem->pos() + startPt );
     controlPoints.append( mStartItem->pos() + startPt );
-    controlPoints.append( bezierPointForCurve( mStartItem->pos() + startPt, mStartEdge == Qt::BottomEdge ? Qt::RightEdge : Qt::LeftEdge ) );
+    controlPoints.append( bezierPointForCurve( mStartItem->pos() + startPt, mStartEdge == Qt::BottomEdge ? Qt::RightEdge : Qt::LeftEdge, !mStartIsOutgoing ) );
   }
 
   if ( !hasEndPt )
@@ -147,14 +150,14 @@ void QgsModelArrowItem::updatePath()
     else
       pt = mEndItem->calculateAutomaticLinkPoint( startPt + mStartItem->pos(), endEdge );
 
-    controlPoints.append( bezierPointForCurve( pt, endEdge ) );
+    controlPoints.append( bezierPointForCurve( pt, endEdge, mEndIsIncoming ) );
     controlPoints.append( pt );
     mNodePoints.append( pt );
   }
   else
   {
     mNodePoints.append( mEndItem->pos() + endPt );
-    controlPoints.append( bezierPointForCurve( mEndItem->pos() + endPt, mEndEdge == Qt::BottomEdge ? Qt::RightEdge : Qt::LeftEdge ) );
+    controlPoints.append( bezierPointForCurve( mEndItem->pos() + endPt, mEndEdge == Qt::BottomEdge ? Qt::RightEdge : Qt::LeftEdge, mEndIsIncoming ) );
     controlPoints.append( mEndItem->pos() + endPt );
   }
 
@@ -164,21 +167,21 @@ void QgsModelArrowItem::updatePath()
   setPath( path );
 }
 
-QPointF QgsModelArrowItem::bezierPointForCurve( const QPointF &point, Qt::Edge edge ) const
+QPointF QgsModelArrowItem::bezierPointForCurve( const QPointF &point, Qt::Edge edge, bool incoming ) const
 {
   switch ( edge )
   {
     case Qt::LeftEdge:
-      return point + QPointF( -50, 0 );
+      return point + QPointF( incoming ? -50 : 50, 0 );
 
     case Qt::RightEdge:
-      return point + QPointF( 50, 0 );
+      return point + QPointF( incoming ? -50 : 50, 0 );
 
     case Qt::TopEdge:
-      return point + QPointF( 0, -30 );
+      return point + QPointF( 0, incoming ? -30 : 30 );
 
     case Qt::BottomEdge:
-      return point + QPointF( 0, 30 );
+      return point + QPointF( 0, incoming ? -30 : 30 );
   }
   return QPointF();
 }

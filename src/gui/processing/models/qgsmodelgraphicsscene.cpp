@@ -136,14 +136,15 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
   // arrows linking child algorithms
   for ( auto it = childAlgs.constBegin(); it != childAlgs.constEnd(); ++it )
   {
-    int idx = 0;
+    int topIdx = 0;
+    int bottomIdx = 0;
     if ( !it.value().algorithm() )
       continue;
 
     const QgsProcessingParameterDefinitions parameters = it.value().algorithm()->parameterDefinitions();
     for ( const QgsProcessingParameterDefinition *parameter : parameters )
     {
-      if ( !parameter->isDestination() && !( parameter->flags() & QgsProcessingParameterDefinition::FlagHidden ) )
+      if ( !( parameter->flags() & QgsProcessingParameterDefinition::FlagHidden ) )
       {
         QList< QgsProcessingModelChildParameterSource > sources;
         if ( it.value().parameterSources().contains( parameter->name() ) )
@@ -155,14 +156,21 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
           {
             QgsModelArrowItem *arrow = nullptr;
             if ( link.linkIndex == -1 )
-              arrow = new QgsModelArrowItem( link.item, mChildAlgorithmItems.value( it.value().childId() ), Qt::TopEdge, idx );
+              arrow = new QgsModelArrowItem( link.item, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx );
             else
-              arrow = new QgsModelArrowItem( link.item, link.edge, link.linkIndex, mChildAlgorithmItems.value( it.value().childId() ), Qt::TopEdge, idx );
+              arrow = new QgsModelArrowItem( link.item, link.edge, link.linkIndex, true,
+                                             mChildAlgorithmItems.value( it.value().childId() ),
+                                             parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge,
+                                             parameter->isDestination() ? bottomIdx : topIdx,
+                                             true );
             addItem( arrow );
           }
         }
       }
-      idx += 1;
+      if ( parameter->isDestination() )
+        bottomIdx++;
+      else
+        topIdx++;
     }
     const QStringList dependencies = it.value().dependencies();
     for ( const QString &depend : dependencies )

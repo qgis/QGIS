@@ -43,8 +43,8 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      * The arrow will link \a startItem to \a endItem, joining the specified \a startEdge and \a startIndex
      * to \a endEdge and \a endIndex.
      */
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex,
-                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing,
+                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming );
 
     /**
      * Constructor for QgsModelArrowItem, with the specified \a parent item.
@@ -88,15 +88,17 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
 
   private:
 
-    QPointF bezierPointForCurve( const QPointF &point, Qt::Edge edge ) const;
+    QPointF bezierPointForCurve( const QPointF &point, Qt::Edge edge, bool incoming ) const;
 
     QgsModelComponentGraphicItem *mStartItem = nullptr;
     Qt::Edge mStartEdge = Qt::LeftEdge;
     int mStartIndex = -1;
+    bool mStartIsOutgoing = true;
 
     QgsModelComponentGraphicItem *mEndItem = nullptr;
     Qt::Edge mEndEdge = Qt::LeftEdge;
     int mEndIndex = -1;
+    bool mEndIsIncoming = false;
 
     QList< QPointF > mNodePoints;
 
