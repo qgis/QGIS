@@ -82,3 +82,7 @@ WORKDIR /
 
 # Run supervisor
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+
+# Install python modules required to load automatically loaded
+# python plugins
+RUN pip3 install jinja2 pygments
