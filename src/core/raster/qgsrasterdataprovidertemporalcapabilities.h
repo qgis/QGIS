@@ -53,8 +53,10 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
       MatchUsingWholeRange, //!< Use an exact match to the whole temporal range
       MatchExactUsingStartOfRange, //!< Match the start of the temporal range to a corresponding layer or band, and only use exact matching results
       MatchExactUsingEndOfRange, //!< Match the end of the temporal range to a corresponding layer or band, and only use exact matching results
+      FindClosestMatchToStartOfRange, //! Match the start of the temporal range to the least previous closest datetime.
+      FindClosestMatchToEndOfRange //! Match the end of the temporal range to the least previous closest datetime.
     };
-    // TODO -- add other methods, like "FindClosestMatchToStartOfRange", "FindClosestMatchToEndOfRange", etc
+    // TODO -- add other methods
 
     /**
      * Returns the desired method to use when resolving a temporal interval to matching

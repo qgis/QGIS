@@ -1222,15 +1222,6 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
 
 void QgsRasterLayerProperties::setSourceStaticTimeState()
 {
-  QLocale locale;
-
-  mStartStaticDateTimeEdit->setDisplayFormat(
-    locale.dateTimeFormat( QLocale::ShortFormat ) );
-  mEndStaticDateTimeEdit->setDisplayFormat(
-    locale.dateTimeFormat( QLocale::ShortFormat ) );
-  mReferenceDateTimeEdit->setDisplayFormat(
-    locale.dateTimeFormat( QLocale::ShortFormat ) );
-
   if ( mRasterLayer->dataProvider() && mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
   {
     const QgsDateTimeRange availableProviderRange = mRasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
@@ -1290,6 +1281,8 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
     mFetchModeComboBox->addItem( tr( "Use Whole Temporal Range" ), QgsRasterDataProviderTemporalCapabilities::MatchUsingWholeRange );
     mFetchModeComboBox->addItem( tr( "Match to Start of Range" ), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange );
     mFetchModeComboBox->addItem( tr( "Match to End of Range" ), QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange );
+    mFetchModeComboBox->addItem( tr( "Previous Closest to Start of Range" ), QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToStartOfRange );
+    mFetchModeComboBox->addItem( tr( "Previous Closest to End of Range" ), QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToEndOfRange );
     mFetchModeComboBox->setCurrentIndex( mFetchModeComboBox->findData( mRasterLayer->temporalProperties()->intervalHandlingMethod() ) );
 
     const QString temporalSource = uri.param( QStringLiteral( "temporalSource" ) );
