@@ -39,6 +39,8 @@ bool QgsProcessingModelChildParameterSource::operator==( const QgsProcessingMode
       return mExpression == other.mExpression;
     case ExpressionText:
       return mExpressionText == other.mExpressionText;
+    case ModelOutput:
+      return true;
   }
   return false;
 }
@@ -120,6 +122,9 @@ QVariant QgsProcessingModelChildParameterSource::toVariant() const
     case ExpressionText:
       map.insert( QStringLiteral( "expression_text" ), mExpressionText );
       break;
+
+    case ModelOutput:
+      break;
   }
   return map;
 }
@@ -148,6 +153,9 @@ bool QgsProcessingModelChildParameterSource::loadVariant( const QVariantMap &map
 
     case ExpressionText:
       mExpressionText = map.value( QStringLiteral( "expression_text" ) ).toString();
+      break;
+
+    case ModelOutput:
       break;
   }
   return true;
@@ -179,6 +187,9 @@ QString QgsProcessingModelChildParameterSource::asPythonCode( const QgsProcessin
 
     case ExpressionText:
       return mExpressionText;
+
+    case ModelOutput:
+      return QString();
   }
   return QString();
 }
@@ -222,6 +233,9 @@ QString QgsProcessingModelChildParameterSource::friendlyIdentifier( QgsProcessin
 
     case ExpressionText:
       return mExpressionText;
+
+    case ModelOutput:
+      return QString();
   }
   return QString();
 }

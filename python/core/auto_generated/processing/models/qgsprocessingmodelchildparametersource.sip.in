@@ -30,6 +30,7 @@ Source for the value of a parameter for a child algorithm within a model.
       StaticValue,
       Expression,
       ExpressionText,
+      ModelOutput,
     };
 
     QgsProcessingModelChildParameterSource();

@@ -43,6 +43,7 @@ class CORE_EXPORT QgsProcessingModelChildParameterSource
       StaticValue, //!< Parameter value is a static value
       Expression, //!< Parameter value is taken from an expression, evaluated just before the algorithm runs
       ExpressionText, //!< Parameter value is taken from a text with expressions, evaluated just before the algorithm runs
+      ModelOutput, //!< Parameter value is linked to an output parameter for the model
     };
 
     /**

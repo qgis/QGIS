@@ -136,6 +136,9 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
           expressionText = QgsExpression::replaceExpressionText( source.expressionText(), &expressionContext );
           break;
         }
+
+        case QgsProcessingModelChildParameterSource::ModelOutput:
+          break;
       }
     }
 
@@ -856,6 +859,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       case QgsProcessingModelChildParameterSource::Expression:
       case QgsProcessingModelChildParameterSource::ExpressionText:
       case QgsProcessingModelChildParameterSource::StaticValue:
+      case QgsProcessingModelChildParameterSource::ModelOutput:
         continue;
     };
     variables.insert( safeName( name ), VariableDefinition( value, source, description ) );
@@ -901,6 +905,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       case QgsProcessingModelChildParameterSource::Expression:
       case QgsProcessingModelChildParameterSource::ExpressionText:
       case QgsProcessingModelChildParameterSource::StaticValue:
+      case QgsProcessingModelChildParameterSource::ModelOutput:
         continue;
 
     };
@@ -959,6 +964,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       case QgsProcessingModelChildParameterSource::Expression:
       case QgsProcessingModelChildParameterSource::ExpressionText:
       case QgsProcessingModelChildParameterSource::StaticValue:
+      case QgsProcessingModelChildParameterSource::ModelOutput:
         continue;
 
     };
