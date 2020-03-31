@@ -72,6 +72,9 @@ class ModelerParametersDialog(QDialog):
         QDialog.__init__(self)
         self.setModal(True)
 
+        if iface is not None:
+            self.setStyleSheet(iface.mainWindow().styleSheet())
+
         self._alg = alg # The algorithm to define in this dialog. It is an instance of QgsProcessingAlgorithm
         self.model = model # The model this algorithm is going to be added to. It is an instance of QgsProcessingModelAlgorithm
         self.childId = algName # The name of the algorithm in the model, in case we are editing it and not defining it for the first time
