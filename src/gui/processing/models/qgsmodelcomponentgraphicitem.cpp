@@ -498,12 +498,12 @@ void QgsModelComponentGraphicItem::updateButtonPositions()
 
   if ( mExpandTopButton )
   {
-    QPointF pt = linkPoint( Qt::TopEdge, -1 );
+    QPointF pt = linkPoint( Qt::TopEdge, -1, true );
     mExpandTopButton->setPosition( QPointF( 0, pt.y() ) );
   }
   if ( mExpandBottomButton )
   {
-    QPointF pt = linkPoint( Qt::BottomEdge, -1 );
+    QPointF pt = linkPoint( Qt::BottomEdge, -1, false );
     mExpandBottomButton->setPosition( QPointF( 0, pt.y() ) );
   }
 }
@@ -584,7 +584,7 @@ QString QgsModelComponentGraphicItem::linkPointText( Qt::Edge, int ) const
   return QString();
 }
 
-QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) const
+QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index, bool incoming ) const
 {
   switch ( edge )
   {
@@ -592,6 +592,11 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) cons
     {
       if ( linkPointCount( Qt::BottomEdge ) )
       {
+        double offsetX = 25;
+        if ( mComponent->linksCollapsed( Qt::BottomEdge ) )
+        {
+          offsetX = 17;
+        }
         const int pointIndex = !mComponent->linksCollapsed( Qt::BottomEdge ) ? index : -1;
         const QString text = truncatedTextForItem( linkPointText( Qt::BottomEdge, index ) );
         QFontMetricsF fm( mFont );
@@ -599,7 +604,9 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) cons
         const double h = fm.height() * 1.2 * ( pointIndex + 1 ) + fm.height() / 2.0;
         const double y = h + itemSize().height() / 2.0 + 5;
         const double x = !mComponent->linksCollapsed( Qt::BottomEdge ) ? ( -itemSize().width() / 2 + 33 + w + 5 ) : 10;
-        return QPointF( x, y );
+        return QPointF( incoming ? -itemSize().width() / 2 + offsetX
+                        :  x,
+                        y );
       }
       break;
     }
@@ -616,9 +623,13 @@ QPointF QgsModelComponentGraphicItem::linkPoint( Qt::Edge edge, int index ) cons
           offsetX = 17;
         }
         QFontMetricsF fm( mFont );
+        const QString text = truncatedTextForItem( linkPointText( Qt::TopEdge, index ) );
+        const double w = fm.boundingRect( text ).width();
         double h = -( fm.height() * 1.2 ) * ( paramIndex + 2 ) - fm.height() / 2.0 + 8;
         h = h - itemSize().height() / 2.0;
-        return QPointF( -itemSize().width() / 2 + offsetX, h );
+        return QPointF( incoming ? -itemSize().width() / 2 + offsetX
+                        : ( !mComponent->linksCollapsed( Qt::TopEdge ) ? ( -itemSize().width() / 2 + 33 + w + 5 ) : 10 ),
+                        h );
       }
       break;
     }

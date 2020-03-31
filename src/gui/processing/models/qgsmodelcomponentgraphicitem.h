@@ -209,7 +209,7 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     /**
      * Returns the location of the link point with the specified \a index on the specified \a edge.
      */
-    QPointF linkPoint( Qt::Edge edge, int index ) const;
+    QPointF linkPoint( Qt::Edge edge, int index, bool incoming ) const;
 
     /**
      * Returns the best link point to use for a link originating at a specified \a other item.
