@@ -333,6 +333,9 @@ IF(WITH_CORE)
 
   FIND_PACKAGE(Protobuf REQUIRED)   # for decoding of vector tiles in MVT format
   MESSAGE(STATUS "Found Protobuf: ${Protobuf_LIBRARIES}")
+  IF (NOT Protobuf_PROTOC_EXECUTABLE)
+    MESSAGE (SEND_ERROR "Protobuf library's 'protoc' tool was not found!")
+  ENDIF ()
   FIND_PACKAGE(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
   MESSAGE(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
 
