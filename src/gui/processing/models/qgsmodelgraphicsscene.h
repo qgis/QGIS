@@ -130,6 +130,11 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     void setChildAlgorithmResults( const QVariantMap &results );
 
+    /**
+     * Sets the inputs for child algorithms for the last model execution.
+     */
+    void setChildAlgorithmInputs( const QVariantMap &inputs );
+
   signals:
 
     /**
@@ -198,6 +203,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QMap< QString, QgsModelChildAlgorithmGraphicItem * > mChildAlgorithmItems;
     QMap< QString, QMap< QString, QgsModelComponentGraphicItem * > > mOutputItems;
     QVariantMap mChildResults;
+    QVariantMap mChildInputs;
 
 };
 

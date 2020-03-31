@@ -457,6 +457,11 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      */
     void setResults( const QVariantMap &results );
 
+    /**
+     * Sets the inputs used for this child algorithm for the last model execution through the dialog.
+     */
+    void setInputs( const QVariantMap &inputs );
+
   protected:
 
     QColor fillColor( State state ) const override;
@@ -481,6 +486,7 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
     QPicture mPicture;
     QPixmap mPixmap;
     QVariantMap mResults;
+    QVariantMap mInputs;
 };
 
 

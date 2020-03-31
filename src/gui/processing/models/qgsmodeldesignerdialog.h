@@ -125,6 +125,11 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      */
     void setLastRunChildAlgorithmResults( const QVariantMap &results );
 
+    /**
+     * Sets the inputs for child algorithms for the last run of the model through the designer window.
+     */
+    void setLastRunChildAlgorithmInputs( const QVariantMap &inputs );
+
   private slots:
     void zoomIn();
     void zoomOut();
@@ -170,6 +175,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     int mBlockRepaints = 0;
 
     QVariantMap mChildResults;
+    QVariantMap mChildInputs;
 
     bool isDirty() const;
 

@@ -445,6 +445,13 @@ void QgsModelDesignerDialog::setLastRunChildAlgorithmResults( const QVariantMap 
     mScene->setChildAlgorithmResults( mChildResults );
 }
 
+void QgsModelDesignerDialog::setLastRunChildAlgorithmInputs( const QVariantMap &inputs )
+{
+  mChildInputs = inputs;
+  if ( mScene )
+    mScene->setChildAlgorithmInputs( mChildInputs );
+}
+
 void QgsModelDesignerDialog::zoomIn()
 {
   mView->setTransformationAnchor( QGraphicsView::NoAnchor );

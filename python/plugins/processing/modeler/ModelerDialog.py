@@ -122,6 +122,7 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         def on_finished(successful, results):
             self.setLastRunChildAlgorithmResults(dlg.results()['CHILD_RESULTS'])
+            self.setLastRunChildAlgorithmInputs(dlg.results()['CHILD_INPUTS'])
 
         dlg = AlgorithmDialog(self.model().create(), parent=self)
         dlg.setParameters(self.model().designerParameterValues())

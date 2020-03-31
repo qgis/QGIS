@@ -954,7 +954,11 @@ QString QgsModelChildAlgorithmGraphicItem::linkPointText( Qt::Edge edge, int ind
           return param->flags() & QgsProcessingParameterDefinition::FlagHidden || param->isDestination();
         } ), params.end() );
 
-        return truncatedTextForItem( params.at( index )->description() );
+
+        QString title = params.at( index )->description();
+        if ( !mInputs.value( params.at( index )->name() ).toString().isEmpty() )
+          title +=  QStringLiteral( ": %1" ).arg( mInputs.value( params.at( index )->name() ).toString() );
+        return truncatedTextForItem( title );
       }
 
       case Qt::LeftEdge:
@@ -989,6 +993,16 @@ void QgsModelChildAlgorithmGraphicItem::setResults( const QVariantMap &results )
     return;
 
   mResults = results;
+  update();
+  emit updateArrowPaths();
+}
+
+void QgsModelChildAlgorithmGraphicItem::setInputs( const QVariantMap &inputs )
+{
+  if ( mInputs == inputs )
+    return;
+
+  mInputs = inputs;
   update();
   emit updateArrowPaths();
 }

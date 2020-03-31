@@ -119,6 +119,11 @@ Clears any selected items and sets ``item`` as the current selection.
 Sets the results for child algorithms for the last model execution.
 %End
 
+    void setChildAlgorithmInputs( const QVariantMap &inputs );
+%Docstring
+Sets the inputs for child algorithms for the last model execution.
+%End
+
   signals:
 
     void rebuildRequired();
