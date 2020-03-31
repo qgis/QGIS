@@ -23,7 +23,7 @@
 #include "qgsexpressioncontext.h"
 #include "models/qgsprocessingmodelalgorithm.h"
 #include "qgsexpressioncontextutils.h"
-
+#include "qgsprocessingwidgetwrapperimpl.h"
 #include <QLabel>
 #include <QHBoxLayout>
 
@@ -151,7 +151,11 @@ QWidget *QgsAbstractProcessingParameterWidgetWrapper::createWrappedWidget( QgsPr
     wrappedWidget->setLayout( hLayout );
   }
 
-  setWidgetValue( mParameterDefinition->defaultValue(), context );
+  if ( !dynamic_cast<const QgsProcessingDestinationParameter * >( mParameterDefinition ) )
+  {
+    // an exception -- output widgets handle this themselves
+    setWidgetValue( mParameterDefinition->defaultValue(), context );
+  }
 
   return wrappedWidget;
 }
@@ -201,6 +205,11 @@ QVariant QgsAbstractProcessingParameterWidgetWrapper::parameterValue() const
     return mPropertyButton->toProperty();
   else
     return widgetValue();
+}
+
+QVariantMap QgsAbstractProcessingParameterWidgetWrapper::customProperties() const
+{
+  return QVariantMap();
 }
 
 void QgsAbstractProcessingParameterWidgetWrapper::registerProcessingContextGenerator( QgsProcessingContextGenerator *generator )

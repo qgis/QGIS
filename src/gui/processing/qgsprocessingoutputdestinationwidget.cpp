@@ -26,6 +26,7 @@
 #include <QMenu>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QCheckBox>
 
 ///@cond NOT_STABLE
 
@@ -184,6 +185,26 @@ QVariant QgsProcessingLayerOutputDestinationWidget::value() const
 void QgsProcessingLayerOutputDestinationWidget::setWidgetContext( const QgsProcessingParameterWidgetContext &context )
 {
   mBrowserModel = context.browserModel();
+}
+
+void QgsProcessingLayerOutputDestinationWidget::addOpenAfterRunningOption()
+{
+  mOpenAfterRunningCheck = new QCheckBox( tr( "Open output file after running algorithm" ) );
+  mOpenAfterRunningCheck->setChecked( !outputIsSkipped() );
+  mOpenAfterRunningCheck->setEnabled( !outputIsSkipped() );
+  gridLayout->addWidget( mOpenAfterRunningCheck, 1, 0, 1, 2 );
+
+  connect( this, &QgsProcessingLayerOutputDestinationWidget::skipOutputChanged, this, [ = ]( bool skipped )
+  {
+    bool enabled = !skipped;
+    mOpenAfterRunningCheck->setEnabled( enabled );
+    mOpenAfterRunningCheck->setChecked( enabled );
+  } );
+}
+
+bool QgsProcessingLayerOutputDestinationWidget::openAfterRunning() const
+{
+  return mOpenAfterRunningCheck && mOpenAfterRunningCheck->isChecked();
 }
 
 void QgsProcessingLayerOutputDestinationWidget::menuAboutToShow()

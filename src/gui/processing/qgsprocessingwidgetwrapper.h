@@ -345,6 +345,11 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
     QVariant parameterValue() const;
 
     /**
+     * Returns any custom properties set by the wrapper.
+     */
+    virtual QVariantMap customProperties() const;
+
+    /**
      * Registers a Processing context \a generator class that will be used to retrieve
      * a Processing context for the wrapper when required.
      */

@@ -25,31 +25,16 @@ __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
 
-import os
-
-from functools import partial
-
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterExtent,
-                       QgsProcessingParameterRasterDestination,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterVectorDestination,
-                       QgsProcessingOutputLayerDefinition,
                        QgsProject,
-                       QgsProcessingModelAlgorithm,
-                       QgsVectorFileWriter)
+                       QgsProcessingModelAlgorithm)
 from qgis.gui import (QgsProcessingContextGenerator,
                       QgsProcessingParameterWidgetContext,
-                      QgsProcessingLayerOutputDestinationWidget,
-                      QgsProcessingParametersWidget)
+                      QgsProcessingParametersWidget,
+                      QgsGui,
+                      QgsProcessingGui)
 from qgis.utils import iface
-
-from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtWidgets import (
-    QLabel,
-    QCheckBox
-)
-from osgeo import gdal
 
 from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
 from processing.tools.dataobjects import createContext
@@ -62,8 +47,6 @@ class ParametersPanel(QgsProcessingParametersWidget):
         self.in_place = in_place
 
         self.wrappers = {}
-        self.outputWidgets = {}
-        self.checkBoxes = {}
 
         self.processing_context = createContext()
 
@@ -160,47 +143,40 @@ class ParametersPanel(QgsProcessingParametersWidget):
             if output.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
 
-            if self.in_place and param.name() in ('INPUT', 'OUTPUT'):
+            if self.in_place and output.name() in ('INPUT', 'OUTPUT'):
                 continue
 
-            label = QLabel(output.description())
-            widget = QgsProcessingLayerOutputDestinationWidget(output, False)
-            widget.setWidgetContext(widget_context)
+            wrapper = QgsGui.processingGuiRegistry().createParameterWidgetWrapper(output, QgsProcessingGui.Standard)
+            wrapper.setWidgetContext(widget_context)
+            wrapper.registerProcessingContextGenerator(self.context_generator)
+            self.wrappers[output.name()] = wrapper
 
-            self.addOutputLabel(label)
+            label = wrapper.createWrappedLabel()
+            if label is not None:
+                self.addOutputLabel(label)
+
+            widget = wrapper.createWrappedWidget(self.processing_context)
             self.addOutputWidget(widget)
-            if isinstance(output, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink,
-                                   QgsProcessingParameterVectorDestination)):
-                check = QCheckBox()
-                check.setText(QCoreApplication.translate('ParametersPanel', 'Open output file after running algorithm'))
 
-                def skipOutputChanged(widget, checkbox, skipped):
-
-                    enabled = not skipped
-
-                    # Do not try to open formats that are write-only.
-                    value = widget.value()
-                    if value and isinstance(value, QgsProcessingOutputLayerDefinition) and isinstance(output, (
-                            QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
-                        filename = value.sink.staticValue()
-                        if filename not in ('memory:', ''):
-                            path, ext = os.path.splitext(filename)
-                            format = QgsVectorFileWriter.driverForExtension(ext)
-                            drv = gdal.GetDriverByName(format)
-                            if drv:
-                                if drv.GetMetadataItem(gdal.DCAP_OPEN) is None:
-                                    enabled = False
-
-                    checkbox.setEnabled(enabled)
-                    checkbox.setChecked(enabled)
-
-                check.setChecked(not widget.outputIsSkipped())
-                check.setEnabled(not widget.outputIsSkipped())
-                widget.skipOutputChanged.connect(partial(skipOutputChanged, widget, check))
-                self.addOutputWidget(check)
-                self.checkBoxes[output.name()] = check
-
-            self.outputWidgets[output.name()] = widget
+            #    def skipOutputChanged(widget, checkbox, skipped):
+            # TODO
+            #        enabled = not skipped
+            #
+            #        # Do not try to open formats that are write-only.
+            #        value = widget.value()
+            #        if value and isinstance(value, QgsProcessingOutputLayerDefinition) and isinstance(output, (
+            #                QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
+            #            filename = value.sink.staticValue()
+            #            if filename not in ('memory:', ''):
+            #                path, ext = os.path.splitext(filename)
+            #                format = QgsVectorFileWriter.driverForExtension(ext)
+            #                drv = gdal.GetDriverByName(format)
+            #                if drv:
+            #                    if drv.GetMetadataItem(gdal.DCAP_OPEN) is None:
+            #                        enabled = False
+            #
+            #        checkbox.setEnabled(enabled)
+            #        checkbox.setChecked(enabled)
 
         for wrapper in list(self.wrappers.values()):
             wrapper.postInitialize(list(self.wrappers.values()))
@@ -213,11 +189,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
             if not param.name() in parameters:
                 continue
 
-            if not param.isDestination():
-                value = parameters[param.name()]
+            value = parameters[param.name()]
 
-                wrapper = self.wrappers[param.name()]
-                wrapper.setParameterValue(value, self.processing_context)
-            else:
-                dest_widget = self.outputWidgets[param.name()]
-                dest_widget.setValue(parameters[param.name()])
+            wrapper = self.wrappers[param.name()]
+            wrapper.setParameterValue(value, self.processing_context)

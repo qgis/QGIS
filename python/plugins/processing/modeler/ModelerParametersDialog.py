@@ -521,7 +521,6 @@ class ModelerParametersWidget(QWidget):
         self.commentEdit.selectAll()
 
     def setupUi(self):
-        self.checkBoxes = {}
         self.showAdvanced = False
         self.wrappers = {}
         self.valueItems = {}

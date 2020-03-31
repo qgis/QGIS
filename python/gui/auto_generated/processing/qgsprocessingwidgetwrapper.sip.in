@@ -304,6 +304,11 @@ Returns the current value of the parameter.
 .. seealso:: :py:func:`setParameterValue`
 %End
 
+    virtual QVariantMap customProperties() const;
+%Docstring
+Returns any custom properties set by the wrapper.
+%End
+
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 %Docstring
 Registers a Processing context ``generator`` class that will be used to retrieve
