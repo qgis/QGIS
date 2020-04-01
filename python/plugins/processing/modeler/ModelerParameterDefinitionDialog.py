@@ -74,11 +74,9 @@ class ModelerParameterDefinitionDialog(QDialog):
     @staticmethod
     def use_legacy_dialog(param=None, paramType=None):
         if paramType in (parameters.PARAMETER_DISTANCE,
-                         parameters.PARAMETER_SCALE,
                          parameters.PARAMETER_MAP_LAYER):
             return True
         elif isinstance(param, (QgsProcessingParameterDistance,
-                                QgsProcessingParameterScale,
                                 QgsProcessingParameterMapLayer,
                                 QgsProcessingDestinationParameter)):
             return True
@@ -140,8 +138,8 @@ class ModelerParameterDefinitionDialog(QDialog):
             if self.param is not None:
                 self.datatypeCombo.setCurrentIndex(self.datatypeCombo.findData(self.param.dataTypes()[0]))
             self.verticalLayout.addWidget(self.datatypeCombo)
-        elif (self.paramType in (parameters.PARAMETER_DISTANCE, parameters.PARAMETER_SCALE) or
-              isinstance(self.param, (QgsProcessingParameterDistance, QgsProcessingParameterScale))):
+        elif (self.paramType in (parameters.PARAMETER_DISTANCE) or
+              isinstance(self.param, (QgsProcessingParameterDistance))):
 
             if (self.paramType == parameters.PARAMETER_DISTANCE or
                     isinstance(self.param, QgsProcessingParameterDistance)):
@@ -162,8 +160,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                         idx += 1
                 self.verticalLayout.addWidget(self.parentCombo)
 
-            if (self.paramType != parameters.PARAMETER_SCALE and not
-                    isinstance(self.param, QgsProcessingParameterScale)):
                 self.verticalLayout.addWidget(QLabel(self.tr('Min value')))
                 self.minTextBox = QLineEdit()
                 self.verticalLayout.addWidget(self.minTextBox)
@@ -318,10 +314,6 @@ class ModelerParameterDefinitionDialog(QDialog):
             parent = self.parentCombo.currentData()
             if parent:
                 self.param.setParentParameterName(parent)
-        elif (self.paramType == parameters.PARAMETER_SCALE or
-              isinstance(self.param, QgsProcessingParameterScale)):
-            self.param = QgsProcessingParameterScale(name, description,
-                                                     self.defaultTextBox.text())
 
         # Destination parameter
         elif (isinstance(self.param, QgsProcessingParameterFeatureSink)):

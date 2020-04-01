@@ -1074,6 +1074,34 @@ QVariant QgsProcessingDistanceWidgetWrapper::widgetValue() const
 // QgsProcessingScaleWidgetWrapper
 //
 
+QgsProcessingScaleParameterDefinitionWidget::QgsProcessingScaleParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+
+  mDefaultLineEdit = new QLineEdit();
+
+  if ( const QgsProcessingParameterScale *scaleParam = dynamic_cast<const QgsProcessingParameterScale *>( definition ) )
+  {
+    mDefaultLineEdit->setText( scaleParam->defaultValue().toString() );
+  }
+
+  vlayout->addWidget( mDefaultLineEdit );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingScaleParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterScale >( name, description, mDefaultLineEdit->text() );
+  param->setFlags( flags );
+  return param.release();
+}
+
 QgsProcessingScaleWidgetWrapper::QgsProcessingScaleWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsProcessingNumericWidgetWrapper( parameter, type, parent )
 {
@@ -1143,6 +1171,11 @@ void QgsProcessingScaleWidgetWrapper::setWidgetValue( const QVariant &value, Qgs
       mScaleWidget->setScale( v );
     }
   }
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingScaleWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingScaleParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 
