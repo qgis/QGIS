@@ -27,6 +27,7 @@
 #include "qgsmodelviewtoolselect.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
+#include "processing/models/qgsprocessingmodelgroupbox.h"
 
 #include <QShortcut>
 #include <QDesktopWidget>

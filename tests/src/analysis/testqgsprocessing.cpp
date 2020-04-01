@@ -22,6 +22,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelgroupbox.h"
 #include "qgsnativealgorithms.h"
 #include <QObject>
 #include <QtTest/QSignalSpy>
@@ -8281,6 +8282,31 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( comment2.description(), QStringLiteral( "a comment" ) );
   QCOMPARE( comment2.color(), QColor( 123, 45, 67 ) );
 
+  // group boxes
+  QgsProcessingModelGroupBox groupBox;
+  groupBox.setSize( QSizeF( 9, 8 ) );
+  QCOMPARE( groupBox.size(), QSizeF( 9, 8 ) );
+  groupBox.setPosition( QPointF( 11, 14 ) );
+  QCOMPARE( groupBox.position(), QPointF( 11, 14 ) );
+  groupBox.setDescription( QStringLiteral( "a comment" ) );
+  QCOMPARE( groupBox.description(), QStringLiteral( "a comment" ) );
+  groupBox.setColor( QColor( 123, 45, 67 ) );
+  QCOMPARE( groupBox.color(), QColor( 123, 45, 67 ) );
+  std::unique_ptr< QgsProcessingModelGroupBox > groupClone( groupBox.clone() );
+  QCOMPARE( groupClone->toVariant(), groupBox.toVariant() );
+  QCOMPARE( groupClone->size(), QSizeF( 9, 8 ) );
+  QCOMPARE( groupClone->position(), QPointF( 11, 14 ) );
+  QCOMPARE( groupClone->description(), QStringLiteral( "a comment" ) );
+  QCOMPARE( groupClone->color(), QColor( 123, 45, 67 ) );
+  QCOMPARE( groupClone->uuid(), groupBox.uuid() );
+  QgsProcessingModelGroupBox groupBox2;
+  groupBox2.loadVariant( groupBox.toVariant().toMap() );
+  QCOMPARE( groupBox2.size(), QSizeF( 9, 8 ) );
+  QCOMPARE( groupBox2.position(), QPointF( 11, 14 ) );
+  QCOMPARE( groupBox2.description(), QStringLiteral( "a comment" ) );
+  QCOMPARE( groupBox2.color(), QColor( 123, 45, 67 ) );
+  QCOMPARE( groupBox2.uuid(), groupBox.uuid() );
+
   QMap< QString, QString > friendlyOutputNames;
   QgsProcessingModelChildAlgorithm child( QStringLiteral( "some_id" ) );
   QCOMPARE( child.algorithmId(), QStringLiteral( "some_id" ) );
@@ -8452,6 +8478,17 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg.helpContent(), help );
   QCOMPARE( alg.shortDescription(), QStringLiteral( "short" ) );
   QCOMPARE( alg.helpUrl(), QStringLiteral( "url" ) );
+
+  QVERIFY( alg.groupBoxes().isEmpty() );
+  alg.addGroupBox( groupBox );
+  QCOMPARE( alg.groupBoxes().size(), 1 );
+  QCOMPARE( alg.groupBoxes().at( 0 ).uuid(), groupBox.uuid() );
+  QCOMPARE( alg.groupBoxes().at( 0 ).uuid(), groupBox.uuid() );
+  alg.removeGroupBox( QStringLiteral( "a" ) );
+  QCOMPARE( alg.groupBoxes().size(), 1 );
+  alg.removeGroupBox( groupBox.uuid() );
+  QVERIFY( alg.groupBoxes().isEmpty() );
+
 
   QVariantMap lastParams;
   lastParams.insert( QStringLiteral( "a" ), 2 );
@@ -8790,6 +8827,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelAlgorithm alg5( "test", "testGroup" );
   alg5.helpContent().insert( "author", "me" );
   alg5.helpContent().insert( "usage", "run" );
+  alg5.addGroupBox( groupBox );
   QVariantMap variables;
   variables.insert( QStringLiteral( "v1" ), 5 );
   variables.insert( QStringLiteral( "v2" ), QStringLiteral( "aabbccd" ) );
@@ -8849,6 +8887,13 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6.helpContent(), alg5.helpContent() );
   QCOMPARE( alg6.variables(), variables );
   QCOMPARE( alg6.designerParameterValues(), lastParams );
+
+  QCOMPARE( alg6.groupBoxes().size(), 1 );
+  QCOMPARE( alg6.groupBoxes().at( 0 ).size(), QSizeF( 9, 8 ) );
+  QCOMPARE( alg6.groupBoxes().at( 0 ).position(), QPointF( 11, 14 ) );
+  QCOMPARE( alg6.groupBoxes().at( 0 ).description(), QStringLiteral( "a comment" ) );
+  QCOMPARE( alg6.groupBoxes().at( 0 ).color(), QColor( 123, 45, 67 ) );
+
   QgsProcessingModelChildAlgorithm alg6c1 = alg6.childAlgorithm( "cx1" );
   QCOMPARE( alg6c1.childId(), QStringLiteral( "cx1" ) );
   QCOMPARE( alg6c1.algorithmId(), QStringLiteral( "buffer" ) );

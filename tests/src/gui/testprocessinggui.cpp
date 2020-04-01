@@ -40,6 +40,7 @@
 #include "qgsprocessingmaplayercombobox.h"
 #include "qgsnativealgorithms.h"
 #include "processing/models/qgsprocessingmodelalgorithm.h"
+#include "processing/models/qgsprocessingmodelgroupbox.h"
 #include "qgsxmlutils.h"
 #include "qgspropertyoverridebutton.h"
 #include "qgsprojectionselectionwidget.h"
