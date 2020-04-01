@@ -18,6 +18,7 @@
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodelarrowitem.h"
+#include "qgsprocessingmodelgroupbox.h"
 #include <QGraphicsSceneMouseEvent>
 
 ///@cond NOT_STABLE
@@ -63,8 +64,26 @@ QgsModelComponentGraphicItem *QgsModelGraphicsScene::createCommentGraphicItem( Q
   return new QgsModelCommentGraphicItem( comment, parentItem, model, nullptr );
 }
 
+QgsModelComponentGraphicItem *QgsModelGraphicsScene::createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const
+{
+  return new QgsModelGroupBoxGraphicItem( box, model, nullptr );
+}
+
 void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, QgsProcessingContext &context )
 {
+  // model group boxes
+  const QList<QgsProcessingModelGroupBox> boxes = model->groupBoxes();
+  for ( const QgsProcessingModelGroupBox &box : boxes )
+  {
+    // TODO z order!
+    QgsModelComponentGraphicItem *item = createGroupBoxGraphicItem( model, box.clone() );
+    addItem( item );
+    item->setPos( box.position().x(), box.position().y() );
+    connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
+    connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
+    connect( item, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
+  }
+
   // model input parameters
   const QMap<QString, QgsProcessingModelParameter> params = model->parameterComponents();
   for ( auto it = params.constBegin(); it != params.constEnd(); ++it )

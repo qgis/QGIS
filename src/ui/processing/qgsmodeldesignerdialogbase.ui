@@ -92,6 +92,7 @@
     <addaction name="separator"/>
     <addaction name="mActionDeleteComponents"/>
     <addaction name="separator"/>
+    <addaction name="mActionAddGroupBox"/>
    </widget>
    <addaction name="menu_Model"/>
    <addaction name="mMenuEdit"/>
@@ -639,6 +640,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="mActionAddGroupBox">
+   <property name="text">
+    <string>Add Group Box</string>
    </property>
   </action>
  </widget>

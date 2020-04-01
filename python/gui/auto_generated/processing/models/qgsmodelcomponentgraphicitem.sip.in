@@ -278,6 +278,11 @@ Returns the label text color for the item for the specified ``state``.
 Returns the stroke style to use while rendering the outline of the item.
 %End
 
+    virtual Qt::Alignment titleAlignment() const;
+%Docstring
+Returns the title alignment
+%End
+
     virtual QPicture iconPicture() const;
 %Docstring
 Returns a QPicture version of the item's icon, if available.
@@ -535,6 +540,64 @@ Ownership of ``output`` is transferred to the item.
     virtual void editComponent();
 
 };
+
+
+class QgsModelGroupBoxGraphicItem : QgsModelComponentGraphicItem
+{
+%Docstring
+A graphic item representing a group box in the model designer.
+
+.. warning::
+
+   Not stable API
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsmodelcomponentgraphicitem.h"
+%End
+  public:
+
+    QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box /Transfer/,
+                                 QgsProcessingModelAlgorithm *model,
+                                 QGraphicsItem *parent /TransferThis/ );
+%Docstring
+Constructor for QgsModelGroupBoxGraphicItem for the specified group ``box``, with the specified ``parent`` item.
+
+The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
+it must exist for the lifetime of this object.
+
+Ownership of ``output`` is transferred to the item.
+%End
+    ~QgsModelGroupBoxGraphicItem();
+    virtual void contextMenuEvent( QGraphicsSceneContextMenuEvent *event );
+
+    virtual bool canDeleteComponent();
+
+  protected:
+
+    virtual QColor fillColor( State state ) const;
+
+    virtual QColor strokeColor( State state ) const;
+
+    virtual QColor textColor( State state ) const;
+
+    virtual Qt::PenStyle strokeStyle( State state ) const;
+
+    virtual Qt::Alignment titleAlignment() const;
+
+    virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
+
+
+  protected slots:
+
+    virtual void deleteComponent();
+
+    virtual void editComponent();
+
+};
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

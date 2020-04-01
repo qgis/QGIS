@@ -33,6 +33,7 @@ class QgsModelDesignerFlatButtonGraphicItem;
 class QgsModelDesignerFoldButtonGraphicItem;
 class QgsModelGraphicsView;
 class QgsModelViewMouseEvent;
+class QgsProcessingModelGroupBox;
 
 ///@cond NOT_STABLE
 
@@ -324,6 +325,11 @@ class GUI_EXPORT QgsModelComponentGraphicItem : public QGraphicsObject
     virtual Qt::PenStyle strokeStyle( State state ) const;
 
     /**
+     * Returns the title alignment
+     */
+    virtual Qt::Alignment titleAlignment() const;
+
+    /**
      * Returns a QPicture version of the item's icon, if available.
      */
     virtual QPicture iconPicture() const;
@@ -583,6 +589,52 @@ class GUI_EXPORT QgsModelCommentGraphicItem : public QgsModelComponentGraphicIte
 
 
 };
+
+
+/**
+ * \ingroup gui
+ * \brief A graphic item representing a group box in the model designer.
+ * \warning Not stable API
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicItem
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsModelGroupBoxGraphicItem for the specified group \a box, with the specified \a parent item.
+     *
+     * The \a model argument specifies the associated processing model. Ownership of \a model is not transferred, and
+     * it must exist for the lifetime of this object.
+     *
+     * Ownership of \a output is transferred to the item.
+     */
+    QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box SIP_TRANSFER,
+                                 QgsProcessingModelAlgorithm *model,
+                                 QGraphicsItem *parent SIP_TRANSFERTHIS );
+    ~QgsModelGroupBoxGraphicItem() override;
+    void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
+    bool canDeleteComponent() override;
+  protected:
+
+    QColor fillColor( State state ) const override;
+    QColor strokeColor( State state ) const override;
+    QColor textColor( State state ) const override;
+    Qt::PenStyle strokeStyle( State state ) const override;
+    Qt::Alignment titleAlignment() const override;
+    void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
+
+  protected slots:
+
+    void deleteComponent() override;
+    void editComponent() override;
+  private:
+
+
+};
+
 ///@endcond
 
 #endif // QGSMODELCOMPONENTGRAPHICITEM_H

@@ -23,7 +23,7 @@ QgsProcessingModelGroupBox::QgsProcessingModelGroupBox( const QString &descripti
   : QgsProcessingModelComponent( description )
   , mUuid( QUuid::createUuid().toString() )
 {
-  setSize( QSizeF( 100, 60 ) );
+  setSize( QSizeF( 400, 360 ) );
 }
 
 QgsProcessingModelGroupBox *QgsProcessingModelGroupBox::clone() const

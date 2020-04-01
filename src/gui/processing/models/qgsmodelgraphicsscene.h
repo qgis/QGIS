@@ -29,6 +29,7 @@ class QgsProcessingModelOutput;
 class QgsProcessingModelComponent;
 class QgsProcessingModelComment;
 class QgsModelChildAlgorithmGraphicItem;
+class QgsProcessingModelGroupBox;
 
 ///@cond NOT_STABLE
 
@@ -47,8 +48,9 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     //! Z values for scene items
     enum ZValues
     {
-      ArrowLink = 0, //!< An arrow linking model items
-      ModelComponent = 1, //!< Model components (e.g. algorithms, inputs and outputs)
+      GroupBox = 0, //!< A logical group box
+      ArrowLink = 1, //!< An arrow linking model items
+      ModelComponent = 2, //!< Model components (e.g. algorithms, inputs and outputs)
       MouseHandles = 99, //!< Mouse handles
       RubberBand = 100, //!< Rubber band item
       ZSnapIndicator = 101, //!< Z-value for snapping indicator
@@ -184,6 +186,10 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     virtual QgsModelComponentGraphicItem *createCommentGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelComment *comment,
         QgsModelComponentGraphicItem *parentItem ) const SIP_FACTORY;
 
+    /**
+     * Creates a new graphic item for a model group box.
+     */
+    QgsModelComponentGraphicItem *createGroupBoxGraphicItem( QgsProcessingModelAlgorithm *model, QgsProcessingModelGroupBox *box ) const SIP_FACTORY;
 
   private:
 

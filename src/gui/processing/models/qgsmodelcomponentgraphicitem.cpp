@@ -18,6 +18,7 @@
 #include "qgsprocessingmodelparameter.h"
 #include "qgsprocessingmodelchildalgorithm.h"
 #include "qgsprocessingmodeloutput.h"
+#include "qgsprocessingmodelgroupbox.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsapplication.h"
 #include "qgsmodelgraphicitem.h"
@@ -25,6 +26,7 @@
 #include "qgsmodelgraphicsview.h"
 #include "qgsmodelviewtool.h"
 #include "qgsmodelviewmouseevent.h"
+#include "qgsmodelgroupboxdefinitionwidget.h"
 
 #include <QSvgRenderer>
 #include <QPicture>
@@ -366,7 +368,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
   {
     QRectF labelRect = QRectF( rect.left() + TEXT_MARGIN, rect.top() + TEXT_MARGIN, rect.width() - 2 * TEXT_MARGIN - mButtonSize.width() - BUTTON_MARGIN, rect.height() - 2 * TEXT_MARGIN );
     text = label();
-    painter->drawText( labelRect, Qt::TextWordWrap, text );
+    painter->drawText( labelRect, Qt::TextWordWrap | titleAlignment(), text );
   }
   else
   {
@@ -470,6 +472,11 @@ QString QgsModelComponentGraphicItem::truncatedTextForItem( const QString &text 
 Qt::PenStyle QgsModelComponentGraphicItem::strokeStyle( QgsModelComponentGraphicItem::State ) const
 {
   return Qt::SolidLine;
+}
+
+Qt::Alignment QgsModelComponentGraphicItem::titleAlignment() const
+{
+  return Qt::AlignLeft;
 }
 
 QPicture QgsModelComponentGraphicItem::iconPicture() const
@@ -1160,7 +1167,129 @@ void QgsModelOutputGraphicItem::deleteComponent()
 }
 
 
+//
+// QgsModelGroupBoxGraphicItem
+//
 
+QgsModelGroupBoxGraphicItem::QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
+  : QgsModelComponentGraphicItem( box, model, parent )
+{
+  setZValue( QgsModelGraphicsScene::ZValues::GroupBox );
+  setLabel( box->description() );
+
+  QFont f = font();
+  f.setBold( true );
+  f.setPixelSize( 14 );
+  setFont( f );
+}
+
+void QgsModelGroupBoxGraphicItem::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
+{
+  QMenu *popupmenu = new QMenu( event->widget() );
+  QAction *removeAction = popupmenu->addAction( QObject::tr( "Remove" ) );
+  connect( removeAction, &QAction::triggered, this, &QgsModelGroupBoxGraphicItem::deleteComponent );
+  QAction *editAction = popupmenu->addAction( QObject::tr( "Edit…" ) );
+  connect( editAction, &QAction::triggered, this, &QgsModelGroupBoxGraphicItem::editComponent );
+  popupmenu->exec( event->screenPos() );
+}
+
+QgsModelGroupBoxGraphicItem::~QgsModelGroupBoxGraphicItem() = default;
+
+QColor QgsModelGroupBoxGraphicItem::fillColor( QgsModelComponentGraphicItem::State state ) const
+{
+  QColor c( 230, 230, 230 );
+  switch ( state )
+  {
+    case Selected:
+      c = c.darker( 110 );
+      break;
+    case Hover:
+      c = c.darker( 105 );
+      break;
+
+    case Normal:
+      break;
+  }
+  return c;
+}
+
+QColor QgsModelGroupBoxGraphicItem::strokeColor( QgsModelComponentGraphicItem::State state ) const
+{
+  switch ( state )
+  {
+    case Selected:
+      return QColor( 50, 50, 50 );
+    case Hover:
+    case Normal:
+      return QColor( 150, 150, 150 );
+  }
+  return QColor();
+}
+
+QColor QgsModelGroupBoxGraphicItem::textColor( QgsModelComponentGraphicItem::State ) const
+{
+  return QColor( 100, 100, 100 );
+}
+
+Qt::PenStyle QgsModelGroupBoxGraphicItem::strokeStyle( QgsModelComponentGraphicItem::State ) const
+{
+  return Qt::DotLine;
+}
+
+Qt::Alignment QgsModelGroupBoxGraphicItem::titleAlignment() const
+{
+  return Qt::AlignHCenter;
+}
+
+void QgsModelGroupBoxGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
+{
+  if ( QgsProcessingModelGroupBox *box = dynamic_cast< QgsProcessingModelGroupBox * >( component() ) )
+  {
+    box->setPosition( pos );
+    box->setSize( size );
+    model()->addGroupBox( *box );
+  }
+}
+
+bool QgsModelGroupBoxGraphicItem::canDeleteComponent()
+{
+  if ( dynamic_cast< QgsProcessingModelGroupBox * >( component() ) )
+  {
+    return true;
+  }
+  return false;
+}
+
+void QgsModelGroupBoxGraphicItem::deleteComponent()
+{
+  if ( const QgsProcessingModelGroupBox *box = dynamic_cast< const QgsProcessingModelGroupBox * >( component() ) )
+  {
+    emit aboutToChange( tr( "Delete Group Box" ) );
+    model()->removeGroupBox( box->uuid() );
+    emit changed();
+    emit requestModelRepaint();
+  }
+}
+
+void QgsModelGroupBoxGraphicItem::editComponent()
+{
+  if ( const QgsProcessingModelGroupBox *box = dynamic_cast< const QgsProcessingModelGroupBox * >( component() ) )
+  {
+    QgsModelGroupBoxDefinitionDialog dlg( *box, this->scene()->views().at( 0 ) );
+
+    if ( dlg.exec() )
+    {
+      emit aboutToChange( tr( "Edit Group Box" ) );
+      model()->addGroupBox( dlg.groupBox() );
+      emit changed();
+      emit requestModelRepaint();
+    }
+  }
+}
+
+//
+// QgsModelCommentGraphicItem
+//
 
 QgsModelCommentGraphicItem::QgsModelCommentGraphicItem( QgsProcessingModelComment *comment, QgsModelComponentGraphicItem *parentItem, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent )
   : QgsModelComponentGraphicItem( comment, model, parent )

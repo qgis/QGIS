@@ -270,7 +270,18 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     mIgnoreUndoStackChanges--;
   } );
 
+  connect( mActionAddGroupBox, &QAction::triggered, this, [ = ]
+  {
+    const QPointF viewCenter = mView->mapToScene( mView->viewport()->rect().center() );
+    QgsProcessingModelGroupBox group;
+    group.setPosition( viewCenter );
+    group.setDescription( tr( "New Group" ) );
 
+    beginUndoCommand( tr( "Add Group Box" ) );
+    model()->addGroupBox( group );
+    repaintModel();
+    endUndoCommand();
+  } );
   updateWindowTitle();
 }
 
@@ -632,6 +643,10 @@ void QgsModelDesignerDialog::deleteSelected()
     if ( dynamic_cast< QgsModelCommentGraphicItem *>( p1 ) )
       return true;
     else if ( dynamic_cast< QgsModelCommentGraphicItem *>( p2 ) )
+      return false;
+    else if ( dynamic_cast< QgsModelGroupBoxGraphicItem *>( p1 ) )
+      return true;
+    else if ( dynamic_cast< QgsModelGroupBoxGraphicItem *>( p2 ) )
       return false;
     else if ( dynamic_cast< QgsModelOutputGraphicItem *>( p1 ) )
       return true;
