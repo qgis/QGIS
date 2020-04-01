@@ -267,95 +267,14 @@ bool QgsWMSConnectionItem::equal( const QgsDataItem *other )
 }
 
 // ---------------------------------------------------------------------------
-
-QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty )
-  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "WMS" ) )
-  , mCapabilitiesProperty( capabilitiesProperty )
+QgsWMSItemBase::QgsWMSItemBase( const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty )
+  : mCapabilitiesProperty( capabilitiesProperty )
   , mDataSourceUri( dataSourceUri )
   , mLayerProperty( layerProperty )
 {
-  mIconName = QStringLiteral( "mIconWms.svg" );
-
-  // Populate everything, it costs nothing, all info about layers is collected
-  for ( const QgsWmsLayerProperty &layerProperty : qgis::as_const( mLayerProperty.layer ) )
-  {
-    // Attention, the name may be empty
-    QgsDebugMsgLevel( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title, 2 );
-    QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
-
-    QgsDataItem *layer = nullptr;
-
-    if ( layerProperty.name.isEmpty() || !layerProperty.layer.isEmpty() )
-      layer = new QgsWMSLayerCollectionItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, dataSourceUri, layerProperty );
-    else
-      layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, mCapabilitiesProperty, dataSourceUri, layerProperty );
-
-    addChildItem( layer );
-  }
-
-  setState( Populated );
 }
 
-bool QgsWMSLayerCollectionItem::equal( const QgsDataItem *other )
-{
-  if ( type() != other->type() )
-  {
-    return false;
-  }
-  const QgsWMSLayerCollectionItem *otherCollectionItem = qobject_cast<const QgsWMSLayerCollectionItem *>( other );
-  if ( !otherCollectionItem )
-  {
-    return false;
-  }
-
-  // Check if the children are not the same then they are not equal
-  if ( mChildren.size() != otherCollectionItem->mChildren.size() )
-    return false;
-
-  // compare children content, if the content differs then the parents are not equal
-  for ( QgsDataItem *child : mChildren )
-  {
-    if ( !child )
-      continue;
-    for ( QgsDataItem *otherChild : otherCollectionItem->mChildren )
-    {
-      if ( !otherChild )
-        continue;
-      // In case they have same path, check if they have same content
-      if ( child->path() == otherChild->path() )
-      {
-        if ( !child->equal( otherChild ) )
-          return false;
-      }
-      else
-      {
-        continue;
-      }
-    }
-  }
-
-
-  return ( mPath == otherCollectionItem->mPath && mName == otherCollectionItem->mName );
-}
-
-// ---------------------------------------------------------------------------
-
-QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty )
-  : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, QStringLiteral( "wms" ) )
-  , mCapabilitiesProperty( capabilitiesProperty )
-  , mDataSourceUri( dataSourceUri )
-  , mLayerProperty( layerProperty )
-{
-  mSupportedCRS = mLayerProperty.crs;
-  mSupportFormats = mCapabilitiesProperty.capability.request.getMap.format;
-  QgsDebugMsgLevel( "uri = " + mDataSourceUri.encodedUri(), 2 );
-
-  mUri = createUri();
-  mIconName = QStringLiteral( "mIconWms.svg" );
-  setState( Populated );
-}
-
-QString QgsWMSLayerItem::createUri()
+QString QgsWMSItemBase::createUri()
 {
   if ( mLayerProperty.name.isEmpty() )
     return QString(); // layer collection
@@ -422,6 +341,113 @@ QString QgsWMSLayerItem::createUri()
   return mDataSourceUri.encodedUri();
 }
 
+
+// ---------------------------------------------------------------------------
+
+QgsWMSLayerCollectionItem::QgsWMSLayerCollectionItem( QgsDataItem *parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty )
+  : QgsDataCollectionItem( parent, name, path, QStringLiteral( "wms" ) )
+  , QgsWMSItemBase( capabilitiesProperty, dataSourceUri, layerProperty )
+{
+  mIconName = QStringLiteral( "mIconWms.svg" );
+  mUri = createUri();
+
+  // Populate everything, it costs nothing, all info about layers is collected
+  for ( const QgsWmsLayerProperty &layerProperty : qgis::as_const( mLayerProperty.layer ) )
+  {
+    // Attention, the name may be empty
+    QgsDebugMsgLevel( QString::number( layerProperty.orderId ) + ' ' + layerProperty.name + ' ' + layerProperty.title, 2 );
+    QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
+
+    QgsDataItem *layer = nullptr;
+
+    if ( layerProperty.name.isEmpty() || !layerProperty.layer.isEmpty() )
+      layer = new QgsWMSLayerCollectionItem( this, layerProperty.title, mPath + '/' + pathName, capabilitiesProperty, dataSourceUri, layerProperty );
+    else
+      layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + '/' + pathName, mCapabilitiesProperty, dataSourceUri, layerProperty );
+
+    addChildItem( layer );
+  }
+
+  setState( Populated );
+}
+
+bool QgsWMSLayerCollectionItem::equal( const QgsDataItem *other )
+{
+  if ( type() != other->type() )
+  {
+    return false;
+  }
+  const QgsWMSLayerCollectionItem *otherCollectionItem = qobject_cast<const QgsWMSLayerCollectionItem *>( other );
+  if ( !otherCollectionItem )
+  {
+    return false;
+  }
+
+  // Check if the children are not the same then they are not equal
+  if ( mChildren.size() != otherCollectionItem->mChildren.size() )
+    return false;
+
+  // compare children content, if the content differs then the parents are not equal
+  for ( QgsDataItem *child : mChildren )
+  {
+    if ( !child )
+      continue;
+    for ( QgsDataItem *otherChild : otherCollectionItem->mChildren )
+    {
+      if ( !otherChild )
+        continue;
+      // In case they have same path, check if they have same content
+      if ( child->path() == otherChild->path() )
+      {
+        if ( !child->equal( otherChild ) )
+          return false;
+      }
+      else
+      {
+        continue;
+      }
+    }
+  }
+
+  return ( mPath == otherCollectionItem->mPath && mName == otherCollectionItem->mName );
+}
+
+bool QgsWMSLayerCollectionItem::hasDragEnabled() const
+{
+  if ( !mLayerProperty.name.isEmpty() )
+    return true;
+  return false;
+}
+
+QgsMimeDataUtils::Uri QgsWMSLayerCollectionItem::mimeUri() const
+{
+  QgsMimeDataUtils::Uri u;
+
+  u.layerType = QStringLiteral( "raster" );
+  u.providerKey = providerKey();
+  u.name = name();
+  u.uri = mUri;
+  u.supportedCrs = mLayerProperty.crs;
+  u.supportedFormats = mCapabilitiesProperty.capability.request.getMap.format;
+
+  return u;
+}
+
+// ---------------------------------------------------------------------------
+
+QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem *parent, QString name, QString path, const QgsWmsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWmsLayerProperty &layerProperty )
+  : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, QStringLiteral( "wms" ) )
+  ,  QgsWMSItemBase( capabilitiesProperty, dataSourceUri, layerProperty )
+{
+  mSupportedCRS = mLayerProperty.crs;
+  mSupportFormats = mCapabilitiesProperty.capability.request.getMap.format;
+  QgsDebugMsgLevel( "uri = " + mDataSourceUri.encodedUri(), 2 );
+
+  mUri = createUri();
+  mIconName = QStringLiteral( "mIconWms.svg" );
+  setState( Populated );
+}
+
 bool QgsWMSLayerItem::equal( const QgsDataItem *other )
 {
   if ( type() != other->type() )
@@ -436,7 +462,6 @@ bool QgsWMSLayerItem::equal( const QgsDataItem *other )
 
   if ( !mLayerProperty.equal( otherLayer->mLayerProperty ) )
     return false;
-
 
   return ( mPath == otherLayer->mPath && mName == otherLayer->mName );
 }
