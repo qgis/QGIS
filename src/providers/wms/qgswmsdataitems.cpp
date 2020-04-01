@@ -274,7 +274,7 @@ QgsWMSItemBase::QgsWMSItemBase( const QgsWmsCapabilitiesProperty &capabilitiesPr
 {
 }
 
-QString QgsWMSLayerItem::createUri()
+QString QgsWMSItemBase::createUri()
 {
   if ( mLayerProperty.name.isEmpty() )
     return QString(); // layer collection
