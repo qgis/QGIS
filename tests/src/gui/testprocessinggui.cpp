@@ -1615,6 +1615,45 @@ void TestProcessingGui::testNumericWrapperDouble()
 
   // modeler wrapper
   testWrapper( QgsProcessingGui::Modeler );
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  QgsProcessingContext context;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "number" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterNumber numParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QgsProcessingParameterNumber::Double, 1 );
+  numParam.setMinimum( 0 );
+  numParam.setMaximum( 10 );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "number" ), context, widgetContext, &numParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->defaultValue().toDouble(), 1.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->dataType(), QgsProcessingParameterNumber::Double );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->minimum(), 0.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->maximum(), 10.0 );
+  numParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  numParam.setDataType( QgsProcessingParameterNumber::Integer );
+  numParam.setMinimum( -1 );
+  numParam.setMaximum( 1 );
+  numParam.setDefaultValue( 0 );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "number" ), context, widgetContext, &numParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->defaultValue().toInt(), 0 );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->dataType(), QgsProcessingParameterNumber::Integer );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->minimum(), -1.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->maximum(), 1.0 );
 }
 
 void TestProcessingGui::testNumericWrapperInt()
@@ -1766,6 +1805,45 @@ void TestProcessingGui::testNumericWrapperInt()
 
   // modeler wrapper
   testWrapper( QgsProcessingGui::Modeler );
+
+  // config widget
+  QgsProcessingParameterWidgetContext widgetContext;
+  QgsProcessingContext context;
+  std::unique_ptr< QgsProcessingParameterDefinitionWidget > widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "number" ), context, widgetContext );
+  std::unique_ptr< QgsProcessingParameterDefinition > def( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) ); // should default to mandatory
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+
+  // using a parameter definition as initial values
+  QgsProcessingParameterNumber numParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QgsProcessingParameterNumber::Integer, 1 );
+  numParam.setMinimum( 0 );
+  numParam.setMaximum( 10 );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "number" ), context, widgetContext, &numParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagOptional ) );
+  QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->defaultValue().toDouble(), 1.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->dataType(), QgsProcessingParameterNumber::Integer );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->minimum(), 0.0 );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->maximum(), 10.0 );
+  numParam.setFlags( QgsProcessingParameterDefinition::FlagAdvanced | QgsProcessingParameterDefinition::FlagOptional );
+  numParam.setDataType( QgsProcessingParameterNumber::Double );
+  numParam.setMinimum( -2.5 );
+  numParam.setMaximum( 2.5 );
+  numParam.setDefaultValue( 0.5 );
+  widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "number" ), context, widgetContext, &numParam );
+  def.reset( widget->createParameter( QStringLiteral( "param_name" ) ) );
+  QCOMPARE( def->name(), QStringLiteral( "param_name" ) );
+  QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
+  QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->defaultValue().toDouble(), 0.5 );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->dataType(), QgsProcessingParameterNumber::Double );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->minimum(), -2.5 );
+  QCOMPARE( static_cast< QgsProcessingParameterNumber * >( def.get() )->maximum(), 2.5 );
 }
 
 void TestProcessingGui::testDistanceWrapper()
