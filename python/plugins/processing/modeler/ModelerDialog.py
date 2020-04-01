@@ -205,7 +205,7 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         showComments = QgsSettings().value("/Processing/Modeler/ShowComments", True, bool)
         if not showComments:
-            self.scene.setFlag(QgsModelGraphicsScene.FlagHideComments)
+            scene.setFlag(QgsModelGraphicsScene.FlagHideComments)
 
         context = createContext()
         scene.createItems(self.model(), context)
