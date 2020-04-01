@@ -248,7 +248,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     if ( mDynamicMinDistance )
       minDistanceForThisFeature = mMinDistanceProperty.valueAsDouble( expressionContext, minDistanceForThisFeature );
 
-    const double pointProgressIncrement = featureProgressStep / (numberPointsForThisFeature * maxAttemptsForThisFeature);
+    const double pointProgressIncrement = featureProgressStep / ( numberPointsForThisFeature * maxAttemptsForThisFeature );
     double pointProgress = 0;
     for ( long pointIndex = 0; pointIndex < numberPointsForThisFeature; pointIndex++ )
     {
@@ -301,7 +301,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
           sink->addFeature( f, QgsFeatureSink::FastInsert );
           totNPoints++;
           pointsAddedForThisFeature++;
-          pointProgress += pointProgressIncrement * (maxAttemptsForThisFeature - distCheckIterations);
+          pointProgress += pointProgressIncrement * ( maxAttemptsForThisFeature - distCheckIterations );
           break;
         }
         else
