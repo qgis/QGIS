@@ -328,7 +328,7 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
     QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
 
     QgsMeshDataProviderTemporalCapabilities *temporalCapabilities() override;
-    const QgsMeshDataProviderTemporalCapabilities *temporalCapabilities() const override;
+    const QgsMeshDataProviderTemporalCapabilities *temporalCapabilities() const override SIP_SKIP;
 
     /**
      * Sets the temporal unit of the provider and reload data if it changes.

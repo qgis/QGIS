@@ -125,14 +125,6 @@ This may be ``None``, depending on the data provider.
 .. versionadded:: 3.14
 %End
 
-    virtual const QgsDataProviderTemporalCapabilities *temporalCapabilities() const;
-%Docstring
-Returns the provider's temporal capabilities.
-
-This may be ``None``, depending on the data provider.
-
-.. versionadded:: 3.14
-%End
 
     virtual QgsRectangle extent() const = 0;
 %Docstring
