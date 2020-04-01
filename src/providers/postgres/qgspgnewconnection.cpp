@@ -211,6 +211,7 @@ void QgsPgNewConnection::testConnection()
     if ( conn->pgVersion() < 90500 )
     {
       cb_projectsInDatabase->setEnabled( false );
+      cb_projectsInDatabase->setChecked( false );
       cb_projectsInDatabase->setToolTip( tr( "Saving projects in databases not available for PostgreSQL databases earlier than 9.5" ) );
     }
     else
