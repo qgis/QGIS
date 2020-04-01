@@ -52,6 +52,15 @@ class CORE_EXPORT QgsProcessingModelGroupBox : public QgsProcessingModelComponen
      * \see toVariant()
      */
     bool loadVariant( const QVariantMap &map );
+
+    /**
+     * Returns the unique ID associated with this group box.
+     */
+    QString uuid() const;
+
+  private:
+
+    QString mUuid;
 };
 
 ///@endcond

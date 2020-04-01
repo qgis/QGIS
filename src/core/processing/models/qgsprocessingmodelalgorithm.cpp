@@ -27,6 +27,7 @@
 #include "qgsapplication.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsprocessingmodelgroupbox.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -1190,6 +1191,21 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
   }
 }
 
+void QgsProcessingModelAlgorithm::addGroupBox( const QgsProcessingModelGroupBox &groupBox )
+{
+  mGroupBoxes.insert( groupBox.uuid(), groupBox );
+}
+
+QList<QgsProcessingModelGroupBox> QgsProcessingModelAlgorithm::groupBoxes() const
+{
+  return mGroupBoxes.values();
+}
+
+void QgsProcessingModelAlgorithm::removeGroupBox( const QString &uuid )
+{
+  mGroupBoxes.remove( uuid );
+}
+
 QVariant QgsProcessingModelAlgorithm::toVariant() const
 {
   QVariantMap map;
@@ -1214,12 +1230,18 @@ QVariant QgsProcessingModelAlgorithm::toVariant() const
   map.insert( QStringLiteral( "parameters" ), paramMap );
 
   QVariantMap paramDefMap;
-  const auto constMParameters = mParameters;
-  for ( const QgsProcessingParameterDefinition *def : constMParameters )
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
     paramDefMap.insert( def->name(), def->toVariantMap() );
   }
   map.insert( QStringLiteral( "parameterDefinitions" ), paramDefMap );
+
+  QVariantList groupBoxDefs;
+  for ( auto it = mGroupBoxes.constBegin(); it != mGroupBoxes.constEnd(); ++it )
+  {
+    groupBoxDefs.append( it.value().toVariant() );
+  }
+  map.insert( QStringLiteral( "groupBoxes" ), groupBoxDefs );
 
   map.insert( QStringLiteral( "modelVariables" ), mVariables );
 
@@ -1287,6 +1309,15 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
 
       QgsMessageLog::logMessage( QCoreApplication::translate( "Processing", "Could not load parameter %1 of type %2." ).arg( name, type ), QCoreApplication::translate( "Processing", "Processing" ) );
     }
+  }
+
+  mGroupBoxes.clear();
+  const QVariantList groupBoxList = map.value( QStringLiteral( "groupBoxes" ) ).toList();
+  for ( const QVariant &groupBoxDef : groupBoxList )
+  {
+    QgsProcessingModelGroupBox groupBox;
+    groupBox.loadVariant( groupBoxDef.toMap() );
+    mGroupBoxes.insert( groupBox.uuid(), groupBox );
   }
 
   updateDestinationParameters();

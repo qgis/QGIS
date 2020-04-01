@@ -25,6 +25,8 @@
 #include "qgsprocessingmodelparameter.h"
 #include "qgsprocessingmodelchildparametersource.h"
 
+class QgsProcessingModelGroupBox;
+
 ///@cond NOT_STABLE
 
 /**
@@ -242,6 +244,33 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     void updateDestinationParameters();
 
     /**
+     * Adds a new group \a box to the model.
+     *
+     * If an existing group box with the same uuid already exists then its definition will be replaced.
+     *
+     * \see groupBoxes()
+     * \since QGIS 3.14
+     */
+    void addGroupBox( const QgsProcessingModelGroupBox &groupBox );
+
+    /**
+     * Returns a list of the group boxes within the model.
+     *
+     * \see addGroupBox()
+     * \since QGIS 3.14
+     */
+    QList< QgsProcessingModelGroupBox > groupBoxes() const;
+
+    /**
+     * Removes the group box with matching \a uuid from the model.
+     *
+     * \see addGroupBox()
+     * \see groupBoxes()
+     * \since QGIS 3.14
+     */
+    void removeGroupBox( const QString &uuid );
+
+    /**
      * Writes the model to a file, at the specified \a path.
      * \see fromFile()
      */
@@ -451,6 +480,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QVariantMap mVariables;
 
     QVariantMap mDesignerParameterValues;
+
+    QMap< QString, QgsProcessingModelGroupBox > mGroupBoxes;
 
     void dependsOnChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;
     void dependentChildAlgorithmsRecursive( const QString &childId, QSet<QString> &depends ) const;

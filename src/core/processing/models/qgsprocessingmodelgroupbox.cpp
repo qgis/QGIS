@@ -21,6 +21,7 @@
 
 QgsProcessingModelGroupBox::QgsProcessingModelGroupBox( const QString &description )
   : QgsProcessingModelComponent( description )
+  , mUuid( QUuid::createUuid().toString() )
 {
   setSize( QSizeF( 100, 60 ) );
 }
@@ -33,6 +34,7 @@ QgsProcessingModelGroupBox *QgsProcessingModelGroupBox::clone() const
 QVariant QgsProcessingModelGroupBox::toVariant() const
 {
   QVariantMap map;
+  map.insert( QStringLiteral( "uuid" ), mUuid );
   saveCommonProperties( map );
   return map;
 }
@@ -40,7 +42,13 @@ QVariant QgsProcessingModelGroupBox::toVariant() const
 bool QgsProcessingModelGroupBox::loadVariant( const QVariantMap &map )
 {
   restoreCommonProperties( map );
+  mUuid = map.value( QStringLiteral( "uuid" ) ).toString();
   return true;
+}
+
+QString QgsProcessingModelGroupBox::uuid() const
+{
+  return mUuid;
 }
 
 
