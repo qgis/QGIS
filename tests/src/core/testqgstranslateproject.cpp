@@ -52,12 +52,16 @@ class TestQgsTranslateProject : public QObject
 void TestQgsTranslateProject::initTestCase()
 {
   //start application
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
   original_locale = settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString() ;
 }
 
 void TestQgsTranslateProject::cleanupTestCase()
 {
   settings.setValue( QStringLiteral( "locale/userLocale" ), original_locale );
+  QgsApplication::exitQgis();
 
   //delete translated project file
   QString translatedProjectFileName( TEST_DATA_DIR );
