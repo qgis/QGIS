@@ -1167,9 +1167,7 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
        mRasterLayer->dataProvider() &&
        mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
   {
-    QgsDataSourceUri uri;
-    QString uriString = mRasterLayer->dataProvider()->dataSourceUri();
-    uri.setEncodedUri( uriString );
+    QgsDataSourceUri uri {  mRasterLayer->dataProvider()->uri() };
 
     if ( mStaticTemporalRange->isChecked() )
     {
@@ -1212,7 +1210,7 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
     uri.removeParam( QStringLiteral( "enableTime" ) );
     uri.setParam( QStringLiteral( "enableTime" ), enableTime );
 
-    mRasterLayer->dataProvider()->setDataSourceUri( uri.encodedUri() );
+    mRasterLayer->dataProvider()->setDataSourceUri( uri.uri() );
     mRasterLayer->setDataSource( mRasterLayer->dataProvider()->dataSourceUri(), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
 
     mRasterLayer->temporalProperties()->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >(
@@ -1227,9 +1225,7 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
     const QgsDateTimeRange availableProviderRange = mRasterLayer->dataProvider()->temporalCapabilities()->availableTemporalRange();
     const QgsDateTimeRange availableReferenceRange = mRasterLayer->dataProvider()->temporalCapabilities()->availableReferenceTemporalRange();
 
-    QgsDataSourceUri uri;
-    const QString uriString = mRasterLayer->dataProvider()->dataSourceUri() ;
-    uri.setEncodedUri( uriString );
+    QgsDataSourceUri uri { mRasterLayer->dataProvider()->uri() };
 
     mStartStaticDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
     mEndStaticDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
