@@ -791,7 +791,7 @@ class QgsWmsSettings
      *
      * Returns the passed \a dateTime if it is found in the available datetimes.
      */
-    QDateTime findLeastClosestDateTime( QDateTime dateTime );
+    QDateTime findLeastClosestDateTime( QDateTime dateTime ) const;
 
   protected:
     QgsWmsParserSettings    mParserSettings;
