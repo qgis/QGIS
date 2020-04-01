@@ -80,12 +80,17 @@ class CORE_EXPORT QgsSnappingConfig
     Q_DECLARE_FLAGS( SnappingTypeFlag, SnappingTypes )
     Q_FLAG( SnappingTypeFlag )
 
+    /**
+     * ScaleDependencyMode the scale dependency mode of snapping
+     * \since QGIS 3.14
+     */
     enum ScaleDependencyMode
     {
-      Disabled = 0,
-      Global = 1,
-      PerLayer = 2
+      Disabled = 0,//!< No scale dependency
+      Global = 1,//!< Scale dependency using global min max range
+      PerLayer = 2//!< Scale dependency using min max range per layer
     };
+    Q_ENUM( ScaleDependencyMode )
 
     /**
      * Convenient method to returns the translated name of the enum type
