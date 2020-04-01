@@ -42,20 +42,18 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
 };
 
 /**
- * \brief WMS Layer Collection.
+ * Base class which contains similar basic attributes and functions needed by the
+ * wms collection layers and child layers.
  *
- *  This collection contains a WMS Layer element that can enclose other layers
  */
-class QgsWMSLayerCollectionItem : public QgsDataCollectionItem
+class QgsWMSItemBase
 {
-    Q_OBJECT
   public:
-    QgsWMSLayerCollectionItem( QgsDataItem *parent, QString name, QString path,
-                               const QgsWmsCapabilitiesProperty &capabilitiesProperty,
-                               const QgsDataSourceUri &dataSourceUri,
-                               const QgsWmsLayerProperty &layerProperty );
+    QgsWMSItemBase( const QgsWmsCapabilitiesProperty &capabilitiesProperty,
+                    const QgsDataSourceUri &dataSourceUri,
+                    const QgsWmsLayerProperty &layerProperty );
 
-    bool equal( const QgsDataItem *other ) override;
+    QString createUri();
 
     //! Stores GetCapabilities response
     QgsWmsCapabilitiesProperty mCapabilitiesProperty;
@@ -67,9 +65,43 @@ class QgsWMSLayerCollectionItem : public QgsDataCollectionItem
     QgsWmsLayerProperty mLayerProperty;
 };
 
+/**
+ * \brief WMS Layer Collection.
+ *
+ *  This collection contains a WMS Layer element that can enclose other layers.
+ */
+class QgsWMSLayerCollectionItem : public QgsDataCollectionItem, public QgsWMSItemBase
+{
+    Q_OBJECT
+  public:
+    QgsWMSLayerCollectionItem( QgsDataItem *parent, QString name, QString path,
+                               const QgsWmsCapabilitiesProperty &capabilitiesProperty,
+                               const QgsDataSourceUri &dataSourceUri,
+                               const QgsWmsLayerProperty &layerProperty );
+
+    bool equal( const QgsDataItem *other ) override;
+
+    bool hasDragEnabled() const override;
+
+    QgsMimeDataUtils::Uri mimeUri() const override;
+
+<<<<<<< HEAD
+    //! WMS Layer properties, can be inherited by subsidiary layers
+    QgsWmsLayerProperty mLayerProperty;
+=======
+  protected:
+    //! The URI
+    QString mUri;
+
+    // QgsDataItem interface
+  public:
+    bool layerCollection() const override;
+>>>>>>> 7422d65c81... Enable loading wms category/collection layers in the layers panel
+};
+
 // WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
 // We have to use QgsDataCollectionItem and support layer methods if necessary
-class QgsWMSLayerItem : public QgsLayerItem
+class QgsWMSLayerItem : public QgsLayerItem, public QgsWMSItemBase
 {
     Q_OBJECT
   public:
@@ -79,11 +111,7 @@ class QgsWMSLayerItem : public QgsLayerItem
                      const QgsWmsLayerProperty &layerProperty );
 
     bool equal( const QgsDataItem *other ) override;
-    QString createUri();
 
-    QgsWmsCapabilitiesProperty mCapabilitiesProperty;
-    QgsDataSourceUri mDataSourceUri;
-    QgsWmsLayerProperty mLayerProperty;
 };
 
 class QgsWMTSLayerItem : public QgsLayerItem
