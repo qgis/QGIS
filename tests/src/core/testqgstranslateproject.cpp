@@ -51,7 +51,7 @@ class TestQgsTranslateProject : public QObject
 
 void TestQgsTranslateProject::initTestCase()
 {
-  settings.clear();
+  //start application
   original_locale = settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString() ;
 }
 
