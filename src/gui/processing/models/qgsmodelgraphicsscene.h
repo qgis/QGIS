@@ -110,6 +110,11 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QgsModelComponentGraphicItem *componentItemAt( QPointF position ) const;
 
     /**
+     * Returns the graphic item corresponding to the specified group box \a uuid.
+     */
+    QgsModelComponentGraphicItem *groupBoxItem( const QString &uuid );
+
+    /**
      * Selects all the components in the scene.
      */
     void selectAll();
@@ -208,6 +213,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     QMap< QString, QgsModelComponentGraphicItem * > mParameterItems;
     QMap< QString, QgsModelChildAlgorithmGraphicItem * > mChildAlgorithmItems;
     QMap< QString, QMap< QString, QgsModelComponentGraphicItem * > > mOutputItems;
+    QMap< QString, QgsModelComponentGraphicItem * > mGroupBoxItems;
     QVariantMap mChildResults;
     QVariantMap mChildInputs;
 

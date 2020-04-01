@@ -70,7 +70,7 @@
     <addaction name="separator"/>
     <addaction name="mActionClose"/>
    </widget>
-   <widget class="QMenu" name="menu_View">
+   <widget class="QMenu" name="mMenuView">
     <property name="title">
      <string>&amp;View</string>
     </property>
@@ -96,7 +96,7 @@
    </widget>
    <addaction name="menu_Model"/>
    <addaction name="mMenuEdit"/>
-   <addaction name="menu_View"/>
+   <addaction name="mMenuView"/>
   </widget>
   <widget class="QToolBar" name="mToolbar">
    <property name="windowTitle">
