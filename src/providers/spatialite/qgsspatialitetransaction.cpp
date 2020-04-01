@@ -55,19 +55,25 @@ bool QgsSpatiaLiteTransaction::executeSql( const QString &sql, QString &errorMsg
     return false;
   }
 
-  QString err;
   if ( isDirty )
   {
-    createSavepoint( err );
+    createSavepoint( errorMsg );
+    if ( ! errorMsg.isEmpty() )
+    {
+      QgsDebugMsg( errorMsg );
+      return false;
+    }
   }
+
   char *errMsg = nullptr;
   if ( sqlite3_exec( mSqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
   {
-    QgsDebugMsg( errorMsg );
     if ( isDirty )
     {
-      rollbackToSavepoint( savePoints().last(), err );
+      rollbackToSavepoint( savePoints().last(), errorMsg );
     }
+    errorMsg = QStringLiteral( "%1\n%2" ).arg( errMsg, errorMsg );
+    QgsDebugMsg( errMsg );
     sqlite3_free( errMsg );
     return false;
   }
