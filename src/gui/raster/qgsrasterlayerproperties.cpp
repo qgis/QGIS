@@ -1167,7 +1167,7 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
        mRasterLayer->dataProvider() &&
        mRasterLayer->dataProvider()->temporalCapabilities()->hasTemporalCapabilities() )
   {
-    QgsDataSourceUri uri {  mRasterLayer->dataProvider()->uri() };
+    QgsDataSourceUri uri { mRasterLayer->dataProvider()->uri() };
 
     if ( mStaticTemporalRange->isChecked() )
     {
@@ -1210,8 +1210,7 @@ void QgsRasterLayerProperties::updateSourceStaticTime()
     uri.removeParam( QStringLiteral( "enableTime" ) );
     uri.setParam( QStringLiteral( "enableTime" ), enableTime );
 
-    mRasterLayer->dataProvider()->setDataSourceUri( uri.uri() );
-    mRasterLayer->setDataSource( mRasterLayer->dataProvider()->dataSourceUri(), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
+    mRasterLayer->setDataSource( uri.uri(), mRasterLayer->name(), mRasterLayer->providerType(), QgsDataProvider::ProviderOptions() );
 
     mRasterLayer->temporalProperties()->setIntervalHandlingMethod( static_cast< QgsRasterDataProviderTemporalCapabilities::IntervalHandlingMethod >(
           mFetchModeComboBox->currentData().toInt() ) );
