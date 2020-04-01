@@ -481,7 +481,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m.hasVertex() );
       QCOMPARE( m.point(), QgsPointXY( 1, 0 ) );
 
-      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::ScaleDependentGlobal );
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Global );
       snappingConfig.setMinScale( 0.0 );
       snappingConfig.setMaxScale( 0.0 );
       u.setConfig( snappingConfig );
@@ -491,7 +491,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m1.isValid() );
       QVERIFY( m1.hasVertex() );
 
-      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::ScaleDependentGlobal );
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Global );
       snappingConfig.setMinScale( 1000.0 );
       snappingConfig.setMaxScale( 10000.0 );
       u.setConfig( snappingConfig );
@@ -501,7 +501,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m2.isValid() == false );
       QVERIFY( m2.hasVertex() == false );
 
-      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::ScaleDependentGlobal );
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Global );
       snappingConfig.setMinScale( 1000.0 );
       snappingConfig.setMaxScale( 100000.0 );
       u.setConfig( snappingConfig );
@@ -511,7 +511,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m3.isValid() );
       QVERIFY( m3.hasVertex() );
 
-      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::ScaleDependentPerLayer );
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::PerLayer );
       snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, 1000.0, 10000.0 ) );
       u.setConfig( snappingConfig );
 
@@ -520,7 +520,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m4.isValid() == false );
       QVERIFY( m4.hasVertex() == false );
 
-      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::ScaleDependentPerLayer );
+      snappingConfig.setScaleDependencyMode( QgsSnappingConfig::PerLayer );
       snappingConfig.setIndividualLayerSettings( mVL, QgsSnappingConfig::IndividualLayerSettings( true, QgsSnappingConfig::VertexFlag, 10, QgsTolerance::Pixels, 1000.0, 100000.0 ) );
       u.setConfig( snappingConfig );
 

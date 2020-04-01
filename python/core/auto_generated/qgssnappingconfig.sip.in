@@ -54,8 +54,8 @@ This is a container for configuration of the snapping of the project
     enum ScaleDependencyMode
     {
       Disabled,
-      ScaleDependentGlobal,
-      ScaleDependentPerLayer
+      Global,
+      PerLayer
     };
 
     static const QString snappingTypeFlagToString( SnappingTypeFlag type );

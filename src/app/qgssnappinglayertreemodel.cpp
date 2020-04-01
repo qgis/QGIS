@@ -238,7 +238,7 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QgsMa
   , mProject( project )
   , mCanvas( canvas )
   , mIndividualLayerSettings( project->snappingConfig().individualLayerSettings() )
-  , mEnableMinMaxColumn( project->snappingConfig().scaleDependencyMode() == QgsSnappingConfig::ScaleDependentPerLayer )
+  , mEnableMinMaxColumn( project->snappingConfig().scaleDependencyMode() == QgsSnappingConfig::PerLayer )
 
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
@@ -369,7 +369,7 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
     }
   }
 
-  mEnableMinMaxColumn = ( mProject->snappingConfig().scaleDependencyMode() == QgsSnappingConfig::ScaleDependentPerLayer );
+  mEnableMinMaxColumn = ( mProject->snappingConfig().scaleDependencyMode() == QgsSnappingConfig::PerLayer );
   hasRowchanged( mLayerTreeModel->rootGroup(), oldSettings, wasMinMaxEnabled != mEnableMinMaxColumn );
 }
 

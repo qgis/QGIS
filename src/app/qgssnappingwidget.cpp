@@ -451,11 +451,11 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
   {
     mSnappingScaleModeButton->setDefaultAction( mDefaultSnappingScaleAct );
   }
-  else if ( config.scaleDependencyMode() == QgsSnappingConfig::ScaleDependentGlobal )
+  else if ( config.scaleDependencyMode() == QgsSnappingConfig::Global )
   {
     mSnappingScaleModeButton->setDefaultAction( mGlobalSnappingScaleAct );
   }
-  else if ( config.scaleDependencyMode() == QgsSnappingConfig::ScaleDependentPerLayer )
+  else if ( config.scaleDependencyMode() == QgsSnappingConfig::PerLayer )
   {
     mSnappingScaleModeButton->setDefaultAction( mPerLayerSnappingScaleAct );
   }
@@ -490,8 +490,8 @@ void QgsSnappingWidget::toggleSnappingWidgets( bool enabled )
   mTypeButton->setEnabled( enabled );
   mToleranceSpinBox->setEnabled( enabled );
   mSnappingScaleModeButton->setEnabled( enabled );
-  mMinScaleWidget->setEnabled( enabled && mConfig.scaleDependencyMode() == QgsSnappingConfig::ScaleDependentGlobal );
-  mMaxScaleWidget->setEnabled( enabled && mConfig.scaleDependencyMode() == QgsSnappingConfig::ScaleDependentGlobal );
+  mMinScaleWidget->setEnabled( enabled && mConfig.scaleDependencyMode() == QgsSnappingConfig::Global );
+  mMaxScaleWidget->setEnabled( enabled && mConfig.scaleDependencyMode() == QgsSnappingConfig::Global );
   mUnitsComboBox->setEnabled( enabled );
 
   if ( mEditAdvancedConfigAction )
@@ -613,22 +613,23 @@ void QgsSnappingWidget::typeButtonTriggered( QAction *action )
 void QgsSnappingWidget::snappingScaleModeTriggered( QAction *action )
 {
   mSnappingScaleModeButton->setDefaultAction( action );
-  QgsSnappingConfig::ScaleDependencyMode mode;
+  QgsSnappingConfig::ScaleDependencyMode mode = mConfig.scaleDependencyMode();
+
   if ( action == mDefaultSnappingScaleAct )
   {
     mode =  QgsSnappingConfig::Disabled;
   }
   else if ( action == mGlobalSnappingScaleAct )
   {
-    mode = QgsSnappingConfig::ScaleDependentGlobal;
+    mode = QgsSnappingConfig::Global;
   }
   else if ( action == mPerLayerSnappingScaleAct )
   {
-    mode = QgsSnappingConfig::ScaleDependentPerLayer;
+    mode = QgsSnappingConfig::PerLayer;
   }
 
-  mMinScaleWidget->setEnabled( mode == QgsSnappingConfig::ScaleDependentGlobal );
-  mMaxScaleWidget->setEnabled( mode == QgsSnappingConfig::ScaleDependentGlobal );
+  mMinScaleWidget->setEnabled( mode == QgsSnappingConfig::Global );
+  mMaxScaleWidget->setEnabled( mode == QgsSnappingConfig::Global );
   mConfig.setScaleDependencyMode( mode );
   mProject->setSnappingConfig( mConfig );
 }

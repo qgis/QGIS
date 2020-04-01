@@ -306,8 +306,8 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
       //If limit to scale is disabled, snapping activated on all layer
       //If no per layer config is set use the global one, otherwise use the layer config
       if ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::Disabled
-           || ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::ScaleDependentGlobal && inRangeGlobal )
-           || ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::ScaleDependentPerLayer  && inRangeLayer ) )
+           || ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::Global && inRangeGlobal )
+           || ( mSnappingConfig.scaleDependencyMode() == QgsSnappingConfig::PerLayer  && inRangeLayer ) )
       {
         double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
         layers << qMakePair( layerConfig.layer, _areaOfInterest( pointMap, tolerance ) );

@@ -83,8 +83,8 @@ class CORE_EXPORT QgsSnappingConfig
     enum ScaleDependencyMode
     {
       Disabled = 0,
-      ScaleDependentGlobal,
-      ScaleDependentPerLayer
+      Global = 1,
+      PerLayer = 2
     };
 
     /**
