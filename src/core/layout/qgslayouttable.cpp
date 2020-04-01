@@ -1271,7 +1271,7 @@ void QgsLayoutTable::drawVerticalGridLines( QPainter *painter, const QMap<int, d
   double tableHeight = 0;
   if ( hasHeader )
   {
-    tableHeight += ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 ) + mCellMargin * 2 + QgsLayoutUtils::fontAscentMM( mHeaderFont );
+    tableHeight += ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 ) + mCellMargin * 2 + mMaxRowHeightMap[0];
   }
   tableHeight += ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 );
   double headerHeight = tableHeight;
