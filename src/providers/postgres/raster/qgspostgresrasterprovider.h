@@ -90,7 +90,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     QString mRasterColumn;
     //! Name of the schema
     QString mSchemaName;
-    //! SQL statement used to limit the features retrieved
+    //! SQL statement used to limit the features retrieved (subset string)
     QString mSqlWhereClause;
     //! Rectangle that contains the extent (bounding box) of the layer
     mutable QgsRectangle mExtent;
@@ -126,6 +126,8 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     double mScaleX = 0;
     //! Scale y
     double mScaleY = 0;
+    //! Temporal field
+    QString mTemporalField;
 
     QString mDetectedSrid;            //!< Spatial reference detected in the database
     QString mRequestedSrid;           //!< Spatial reference requested in the uri
@@ -156,6 +158,9 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
 
     QString subsetString() const override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
+
+    //! Subset string with temporal range from request (if any)
+    QString subsetStringWithTemporalRange() const;
 
     bool hasSufficientPermsAndCapabilities();
     void disconnectDb();

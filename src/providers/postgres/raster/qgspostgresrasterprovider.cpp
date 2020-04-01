@@ -143,6 +143,7 @@ QgsPostgresRasterProvider::QgsPostgresRasterProvider( const QgsPostgresRasterPro
   , mTileHeight( other.mTileHeight )
   , mScaleX( other.mScaleX )
   , mScaleY( other.mScaleY )
+  , mTemporalField( other.mTemporalField )
   , mDetectedSrid( other.mDetectedSrid )
   , mRequestedSrid( other.mRequestedSrid )
   , mConnectionRO( other.mConnectionRO )
@@ -228,10 +229,10 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
   const bool isSingleValue {  width == 1 && height == 1 };
   QString tableToQuery { mQuery };
 
-  QString whereAnd;
-  if ( ! mSqlWhereClause.isEmpty() )
+  QString whereAnd { subsetStringWithTemporalRange() };
+  if ( ! whereAnd.isEmpty() )
   {
-    whereAnd = QStringLiteral( "%1 AND " ).arg( mSqlWhereClause );
+    whereAnd = whereAnd.append( QStringLiteral( " AND " ) );
   }
 
   // Identify
@@ -361,7 +362,7 @@ bool QgsPostgresRasterProvider::readBlock( int bandNo, const QgsRectangle &viewE
     unsigned int overviewFactor { 1 };  // no overview
 
     // Cannot use overviews if there is a where condition
-    if ( mSqlWhereClause.isEmpty() )
+    if ( whereAnd.isEmpty() )
     {
       const auto ovKeys { mOverViews.keys( ) };
       QList<unsigned int>::const_reverse_iterator rit { ovKeys.rbegin() };
@@ -643,7 +644,7 @@ QString QgsPostgresRasterProvider::htmlMetadata()
   const QVariantMap additionalInformation
   {
     { tr( "Is Tiled" ), mIsTiled },
-    { tr( "Where Clause SQL" ), mSqlWhereClause },
+    { tr( "Where Clause SQL" ), subsetString() },
     { tr( "Pixel Size" ), QStringLiteral( "%1, %2" ).arg( mScaleX ).arg( mScaleY ) },
     { tr( "Overviews" ),  overviews },
     { tr( "Primary Keys SQL" ),  pkSql() },
@@ -694,7 +695,7 @@ QString QgsPostgresRasterProvider::subsetString() const
 bool QgsPostgresRasterProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
 {
   Q_UNUSED( updateFeatureCount )
-  const QString oldSql { mSqlWhereClause };
+  const QString oldSql { subsetString() };
   mSqlWhereClause = subset;
   // Recalculate extent and other metadata calling init()
   if ( !init() )
@@ -713,6 +714,48 @@ bool QgsPostgresRasterProvider::setSubsetString( const QString &subset, bool upd
   setDataSourceUri( mUri.uri( false ) );
 
   return true;
+}
+
+QString QgsPostgresRasterProvider::subsetStringWithTemporalRange() const
+{
+  // Temporal
+  if ( ! mTemporalField.isEmpty() )
+  {
+    if ( temporalCapabilities()->hasTemporalCapabilities() && ! mTemporalField.isEmpty() )
+    {
+      QString temporalClause;
+      const QgsTemporalRange<QDateTime> requestedRange { temporalCapabilities()->requestedTemporalRange() };
+      if ( ! requestedRange.isEmpty() && ! requestedRange.isInfinite() )
+      {
+        if ( requestedRange.isInstant() )
+        {
+          temporalClause = QStringLiteral( "%1::datetime = %2" ).arg( quotedIdentifier( mTemporalField ),
+                           quotedValue( requestedRange.begin().toString( Qt::DateFormat::ISODate ) ) );
+        }
+        else
+        {
+          if ( requestedRange.begin().isValid() )
+          {
+            temporalClause = QStringLiteral( "%1::datetime %2 %3" ).arg( quotedIdentifier( mTemporalField ),
+                             requestedRange.includeBeginning() ? ">=" : ">",
+                             requestedRange.begin().toString( Qt::DateFormat::ISODate ) );
+          }
+          if ( requestedRange.end().isValid() )
+          {
+            if ( ! temporalClause.isEmpty() )
+            {
+              temporalClause.append( " AND " );
+            }
+            temporalClause.append( QStringLiteral( "%1::datetime %2 %3" ).arg( quotedIdentifier( mTemporalField ),
+                                   requestedRange.includeEnd() ? "<=" : "<",
+                                   requestedRange.end().toString( Qt::DateFormat::ISODate ) ) );
+          }
+        }
+        return QStringLiteral( "%1 AND (%2)" ).arg( mSqlWhereClause, temporalClause );
+      }
+    }
+  }
+  return mSqlWhereClause;
 }
 
 void QgsPostgresRasterProvider::disconnectDb()
@@ -799,7 +842,7 @@ bool QgsPostgresRasterProvider::init()
 
   // ///////////////////////////////////////////////////////////////////
   // First method: get information from metadata
-  if ( ! mIsQuery && mUseEstimatedMetadata && mSqlWhereClause.isEmpty() )
+  if ( ! mIsQuery && mUseEstimatedMetadata && subsetString().isEmpty() )
   {
     try
     {
@@ -901,7 +944,7 @@ bool QgsPostgresRasterProvider::init()
                                     "FROM %2 WHERE %3" )
                                     .arg( quotedIdentifier( mRasterColumn ) )
                                     .arg( mQuery )
-                                    .arg( mSqlWhereClause.isEmpty() ? "'t'" : mSqlWhereClause ) };
+                                    .arg( subsetString().isEmpty() ? "'t'" : subsetString() ) };
 
           QgsPostgresResult extentResult( connectionRO()->PQexec( extentSql ) );
           const QByteArray extentHexAscii { extentResult.PQgetvalue( 0, 0 ).toLatin1() };
@@ -1020,9 +1063,9 @@ bool QgsPostgresRasterProvider::init()
   }
 
   QString where;
-  if ( ! mSqlWhereClause.isEmpty() )
+  if ( ! subsetString().isEmpty() )
   {
-    where = QStringLiteral( "WHERE %1" ).arg( mSqlWhereClause );
+    where = QStringLiteral( "WHERE %1" ).arg( subsetString() );
   }
 
   const QString sql { QStringLiteral( "SELECT ENCODE( ST_AsBinary( ST_Envelope( foo.bar) ), 'hex'), ( ST_Metadata( foo.bar ) ).* "
@@ -1183,6 +1226,46 @@ bool QgsPostgresRasterProvider::init()
     QgsMessageLog::logMessage( tr( "An error occurred while fetching raster metadata" ),
                                QStringLiteral( "PostGIS" ), Qgis::Critical );
     return false;
+  }
+
+  // Temporal capabilities
+  // Setup temporal properties for layer
+  if ( mUri.hasParam( QStringLiteral( "temporalField" ) ) )
+  {
+    Q_ASSERT_X( temporalCapabilities(), "QgsPostgresRasterProvider::QgsPostgresRasterProvider", "Data provider temporal capabilities object does not exist" );
+    // Calculate the range
+    const QString sql { QStringLiteral( "SELECT MIN(%1::timestamp), MAX(%1::timestamp) "
+                                        "FROM %2 %3" )
+                        .arg( quotedIdentifier( mUri.param( QStringLiteral( "temporalField" ) ) ) )
+                        .arg( mQuery )
+                        .arg( where )};
+
+    QgsPostgresResult result( connectionRO()->PQexec( sql ) );
+
+    if ( PGRES_TUPLES_OK == result.PQresultStatus() && result.PQntuples() == 1 )
+    {
+      const QDateTime minTime { QDateTime::fromString( result.PQgetvalue( 0, 0 ), Qt::DateFormat::ISODate ) };
+      const QDateTime maxTime { QDateTime::fromString( result.PQgetvalue( 0, 1 ), Qt::DateFormat::ISODate ) };
+      if ( minTime.isValid() && maxTime.isValid() && !( minTime > maxTime ) )
+      {
+        mTemporalField = mUri.param( QStringLiteral( "temporalField" ) );
+        temporalCapabilities()->setHasTemporalCapabilities( true );
+        temporalCapabilities()->setAvailableTemporalRange( { minTime, maxTime } );
+        temporalCapabilities()->setIntervalHandlingMethod( QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToStartOfRange );
+        QgsDebugMsgLevel( QStringLiteral( "Raster temporal range for field %1: %2 - %3" ).arg( mTemporalField, minTime.toString(), maxTime.toString() ), 3 );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Invalid temporal range in raster temporal capabilities for field %1: %2 - %3" ).arg( mUri.param( QStringLiteral( "temporalField" ) ), minTime.toString(), maxTime.toString() ),
+                                   QStringLiteral( "PostGIS" ), Qgis::Warning );
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "An error occurred while fetching raster temporal capabilities for field: %1" ).arg( mUri.param( QStringLiteral( "temporalField" ) ) ),
+                                 QStringLiteral( "PostGIS" ), Qgis::Warning );
+
+    }
   }
 
   return true;
@@ -1454,7 +1537,7 @@ void QgsPostgresRasterProvider::determinePrimaryKeyFromUriKeyColumn()
 
 QString QgsPostgresRasterProvider::pkSql()
 {
-  Q_ASSERT( ! mPrimaryKeyAttrs.isEmpty() );
+  Q_ASSERT_X( ! mPrimaryKeyAttrs.isEmpty(), "QgsPostgresRasterProvider::pkSql()",  "No PK is defined!" );
   if ( mPrimaryKeyAttrs.count( ) > 1 )
   {
     QStringList pkeys;
@@ -1466,7 +1549,6 @@ QString QgsPostgresRasterProvider::pkSql()
   }
   return quotedIdentifier( mPrimaryKeyAttrs.first() );
 }
-
 
 void QgsPostgresRasterProvider::findOverviews()
 {
@@ -1575,7 +1657,7 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int st
   double statsRatio { pixelsRatio };
 
   // Decide if overviews can be used here
-  if ( mSqlWhereClause.isEmpty() && ! mIsQuery && mIsTiled && extent.isEmpty() )
+  if ( subsetString().isEmpty() && ! mIsQuery && mIsTiled && extent.isEmpty() )
   {
     const unsigned int desiredOverviewFactor { static_cast<unsigned int>( 1.0 / sqrt( pixelsRatio ) ) };
     const auto ovKeys { mOverViews.keys( ) };
@@ -1600,10 +1682,10 @@ QgsRasterBandStats QgsPostgresRasterProvider::bandStatistics( int bandNo, int st
                   .arg( quotedValue( extent.asWktPolygon() ) )
                   .arg( mCrs.postgisSrid() ) };
 
-  if ( ! mSqlWhereClause.isEmpty() )
+  if ( ! subsetString().isEmpty() )
   {
-    where.append( where.isEmpty() ? QStringLiteral( "WHERE %1" ).arg( mSqlWhereClause ) :
-                  QStringLiteral( " AND %1" ).arg( mSqlWhereClause ) );
+    where.append( where.isEmpty() ? QStringLiteral( "WHERE %1" ).arg( subsetString() ) :
+                  QStringLiteral( " AND %1" ).arg( subsetString() ) );
   }
 
   const QString sql { QStringLiteral( "SELECT (ST_SummaryStatsAgg( %1, %2, TRUE, %3 )).* "

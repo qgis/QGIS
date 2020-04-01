@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
   qgspostgresrastershareddata.h - QgsPostgresRasterSharedData
 
  ---------------------
@@ -153,8 +153,7 @@ class QgsPostgresRasterSharedData
     bool fetchTilesIndex( const QgsGeometry &requestPolygon, const TilesRequest &request );
     //! Fast track for first fetch
     TilesResponse fetchTilesIndexAndData( const QgsGeometry &requestPolygon, const TilesRequest &request );
-    Tile const *setTileData( const QString &cacheKey, TileIdType tileId, const QByteArray &data );
-
+    Tile const *setTileData( const QString& cacheKey, TileIdType tileId, const QByteArray &data );
     /**
     * Tile caches, index is a key generated from the overview factor (1 is the full resolution data)
     * and the where clause
