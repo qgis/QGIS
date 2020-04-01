@@ -335,10 +335,10 @@ QDateTime QgsWmsSettings::addTime( QDateTime dateTime, QgsWmstResolution resolut
   return resultDateTime;
 }
 
-QDateTime QgsWmsSettings::findLeastClosestDateTime( QDateTime dateTime )
+QDateTime QgsWmsSettings::findLeastClosestDateTime( QDateTime dateTime ) const
 {
   QDateTime closest = dateTime;
-  long long min = LLONG_MAX;
+  long long min = std::numeric_limits<long long>::max();
 
   if ( !dateTime.isValid() || mDateTimes.contains( dateTime ) )
     return closest;
