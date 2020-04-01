@@ -24,8 +24,7 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingmodelparameter.h"
 #include "qgsprocessingmodelchildparametersource.h"
-
-class QgsProcessingModelGroupBox;
+#include "qgsprocessingmodelgroupbox.h"
 
 ///@cond NOT_STABLE
 
