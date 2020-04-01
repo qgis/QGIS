@@ -613,6 +613,65 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingAuthConfigWidgetWrappe
 // QgsProcessingNumericWidgetWrapper
 //
 
+QgsProcessingNumberParameterDefinitionWidget::QgsProcessingNumberParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Number type" ) ) );
+
+  mTypeComboBox = new QComboBox();
+  mTypeComboBox->addItem( tr( "Float" ), QgsProcessingParameterNumber::Double );
+  mTypeComboBox->addItem( tr( "Integer" ), QgsProcessingParameterNumber::Integer );
+  vlayout->addWidget( mTypeComboBox );
+
+  vlayout->addWidget( new QLabel( tr( "Minimum value" ) ) );
+  mMinLineEdit = new QLineEdit();
+  vlayout->addWidget( mMinLineEdit );
+
+  vlayout->addWidget( new QLabel( tr( "Maximum value" ) ) );
+  mMaxLineEdit = new QLineEdit();
+  vlayout->addWidget( mMaxLineEdit );
+
+  vlayout->addWidget( new QLabel( tr( "Default value" ) ) );
+  mDefaultLineEdit = new QLineEdit();
+  vlayout->addWidget( mDefaultLineEdit );
+
+  if ( const QgsProcessingParameterNumber *numberParam = dynamic_cast<const QgsProcessingParameterNumber *>( definition ) )
+  {
+    mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( numberParam->dataType() ) );
+    mMinLineEdit->setText( QString::number( numberParam->minimum() ) );
+    mMaxLineEdit->setText( QString::number( numberParam->maximum() ) );
+    mDefaultLineEdit->setText( numberParam->defaultValue().toString() );
+  }
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingNumberParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  QgsProcessingParameterNumber::Type dataType = static_cast< QgsProcessingParameterNumber::Type >( mTypeComboBox->currentData().toInt() );
+  auto param = qgis::make_unique< QgsProcessingParameterNumber >( name, description, dataType, mDefaultLineEdit->text() );
+
+  bool ok;
+  float val = mMinLineEdit->text().toFloat( &ok );
+  if ( ok )
+  {
+    param->setMinimum( val );
+  }
+
+  val = mMaxLineEdit->text().toFloat( &ok );
+  if ( ok )
+  {
+    param->setMaximum( val );
+  }
+
+  param->setFlags( flags );
+  return param.release();
+}
+
 QgsProcessingNumericWidgetWrapper::QgsProcessingNumericWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
@@ -835,6 +894,11 @@ QString QgsProcessingNumericWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingNumericWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingNumericWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingNumericWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingNumberParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 //

@@ -73,13 +73,11 @@ class ModelerParameterDefinitionDialog(QDialog):
 
     @staticmethod
     def use_legacy_dialog(param=None, paramType=None):
-        if paramType in (parameters.PARAMETER_NUMBER,
-                         parameters.PARAMETER_DISTANCE,
+        if paramType in (parameters.PARAMETER_DISTANCE,
                          parameters.PARAMETER_SCALE,
                          parameters.PARAMETER_MAP_LAYER):
             return True
-        elif isinstance(param, (QgsProcessingParameterNumber,
-                                QgsProcessingParameterDistance,
+        elif isinstance(param, (QgsProcessingParameterDistance,
                                 QgsProcessingParameterScale,
                                 QgsProcessingParameterMapLayer,
                                 QgsProcessingDestinationParameter)):
@@ -142,8 +140,8 @@ class ModelerParameterDefinitionDialog(QDialog):
             if self.param is not None:
                 self.datatypeCombo.setCurrentIndex(self.datatypeCombo.findData(self.param.dataTypes()[0]))
             self.verticalLayout.addWidget(self.datatypeCombo)
-        elif (self.paramType in (parameters.PARAMETER_NUMBER, parameters.PARAMETER_DISTANCE, parameters.PARAMETER_SCALE) or
-              isinstance(self.param, (QgsProcessingParameterNumber, QgsProcessingParameterDistance, QgsProcessingParameterScale))):
+        elif (self.paramType in (parameters.PARAMETER_DISTANCE, parameters.PARAMETER_SCALE) or
+              isinstance(self.param, (QgsProcessingParameterDistance, QgsProcessingParameterScale))):
 
             if (self.paramType == parameters.PARAMETER_DISTANCE or
                     isinstance(self.param, QgsProcessingParameterDistance)):
@@ -163,15 +161,6 @@ class ModelerParameterDefinitionDialog(QDialog):
                                 self.parentCombo.setCurrentIndex(idx)
                         idx += 1
                 self.verticalLayout.addWidget(self.parentCombo)
-            elif (self.paramType != parameters.PARAMETER_SCALE and not
-                    isinstance(self.param, QgsProcessingParameterScale)):
-                self.verticalLayout.addWidget(QLabel(self.tr('Number type')))
-                self.type_combo = QComboBox()
-                self.type_combo.addItem(self.tr('Float'), QgsProcessingParameterNumber.Double)
-                self.type_combo.addItem(self.tr('Integer'), QgsProcessingParameterNumber.Integer)
-                if self.param:
-                    self.type_combo.setCurrentIndex(self.type_combo.findData(self.param.dataType()))
-                self.verticalLayout.addWidget(self.type_combo)
 
             if (self.paramType != parameters.PARAMETER_SCALE and not
                     isinstance(self.param, QgsProcessingParameterScale)):
@@ -333,23 +322,6 @@ class ModelerParameterDefinitionDialog(QDialog):
               isinstance(self.param, QgsProcessingParameterScale)):
             self.param = QgsProcessingParameterScale(name, description,
                                                      self.defaultTextBox.text())
-        elif (self.paramType == parameters.PARAMETER_NUMBER or
-              isinstance(self.param, QgsProcessingParameterNumber)):
-
-            type = self.type_combo.currentData()
-            self.param = QgsProcessingParameterNumber(name, description, type,
-                                                      self.defaultTextBox.text())
-            try:
-                vmin = self.minTextBox.text().strip()
-                if not vmin == '':
-                    self.param.setMinimum(float(vmin))
-                vmax = self.maxTextBox.text().strip()
-                if not vmax == '':
-                    self.param.setMaximum(float(vmax))
-            except:
-                QMessageBox.warning(self, self.tr('Unable to define parameter'),
-                                    self.tr('Wrong or missing parameter values'))
-                return
 
         # Destination parameter
         elif (isinstance(self.param, QgsProcessingParameterFeatureSink)):
