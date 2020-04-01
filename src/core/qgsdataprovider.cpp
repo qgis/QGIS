@@ -25,7 +25,7 @@ QgsDataProvider::QgsDataProvider( const QString &uri, const QgsDataProvider::Pro
 {
 }
 
-QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities()
+QgsDataProviderTemporalCapabilities *QgsDataProvider::temporalCapabilities() const
 {
   return nullptr;
 }
