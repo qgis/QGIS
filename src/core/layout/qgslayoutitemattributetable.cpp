@@ -519,6 +519,12 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     req.setFilterFid( atlasFeature.id() );
   }
 
+  QVector< QPair<int, bool> > sortColumns = sortAttributes();
+  for ( int i = sortColumns.size() - 1; i >= 0; --i )
+  {
+    req = req.addOrderBy( mColumns.at( sortColumns.at( i ).first )->attribute(), sortColumns.at( i ).second );
+  }
+
   QgsFeature f;
   int counter = 0;
   QgsFeatureIterator fit = layer->getFeatures( req );
@@ -626,16 +632,6 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     tempContents << currentRow;
     existingContents << rowContents;
     ++counter;
-  }
-
-  //sort the list, starting with the last attribute
-  QgsLayoutAttributeTableCompare c;
-  QVector< QPair<int, bool> > sortColumns = sortAttributes();
-  for ( int i = sortColumns.size() - 1; i >= 0; --i )
-  {
-    c.setSortColumn( sortColumns.at( i ).first );
-    c.setAscending( sortColumns.at( i ).second );
-    std::stable_sort( tempContents.begin(), tempContents.end(), c );
   }
 
   // build final table contents
