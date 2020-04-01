@@ -73,12 +73,13 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
 {
   // model group boxes
   const QList<QgsProcessingModelGroupBox> boxes = model->groupBoxes();
+  mGroupBoxItems.clear();
   for ( const QgsProcessingModelGroupBox &box : boxes )
   {
-    // TODO z order!
     QgsModelComponentGraphicItem *item = createGroupBoxGraphicItem( model, box.clone() );
     addItem( item );
     item->setPos( box.position().x(), box.position().y() );
+    mGroupBoxItems.insert( box.uuid(), item );
     connect( item, &QgsModelComponentGraphicItem::requestModelRepaint, this, &QgsModelGraphicsScene::rebuildRequired );
     connect( item, &QgsModelComponentGraphicItem::changed, this, &QgsModelGraphicsScene::componentChanged );
     connect( item, &QgsModelComponentGraphicItem::aboutToChange, this, &QgsModelGraphicsScene::componentAboutToChange );
@@ -241,6 +242,11 @@ QgsModelComponentGraphicItem *QgsModelGraphicsScene::componentItemAt( QPointF po
     }
   }
   return nullptr;
+}
+
+QgsModelComponentGraphicItem *QgsModelGraphicsScene::groupBoxItem( const QString &uuid )
+{
+  return mGroupBoxItems.value( uuid );
 }
 
 void QgsModelGraphicsScene::selectAll()

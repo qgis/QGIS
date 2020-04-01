@@ -97,6 +97,11 @@ Returns list of selected component items.
 Returns the topmost component item at a specified ``position``.
 %End
 
+    QgsModelComponentGraphicItem *groupBoxItem( const QString &uuid );
+%Docstring
+Returns the graphic item corresponding to the specified group box ``uuid``.
+%End
+
     void selectAll();
 %Docstring
 Selects all the components in the scene.

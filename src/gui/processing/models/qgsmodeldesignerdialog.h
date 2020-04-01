@@ -142,6 +142,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void toggleComments( bool show );
     void updateWindowTitle();
     void deleteSelected();
+    void populateZoomToMenu();
 
   private:
 
@@ -166,6 +167,8 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QAction *mRedoAction = nullptr;
     QUndoView *mUndoView = nullptr;
     QgsDockWidget *mUndoDock = nullptr;
+
+    QMenu *mGroupMenu = nullptr;
 
     int mBlockUndoCommands = 0;
     int mIgnoreUndoStackChanges = 0;
