@@ -91,7 +91,7 @@ from QgsProcessing.SourceType.
     void setExpressionHelpText( const QString &text );
 %Docstring
 Set the expected expression format ``text``, which is shown in the expression builder dialog for the widget
-when in the "pre-calculated" ex  pression mode. This is purely a text format and no expression validation is made
+when in the "pre-calculated" expression mode. This is purely a text format and no expression validation is made
 against it.
 %End
 
