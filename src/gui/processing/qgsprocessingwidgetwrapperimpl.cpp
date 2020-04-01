@@ -5169,6 +5169,37 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRasterLayerWidgetWrapp
 // QgsProcessingVectorLayerWidgetWrapper
 //
 
+QgsProcessingVectorLayerParameterDefinitionWidget::QgsProcessingVectorLayerParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Geometry type" ) ) );
+  mGeometryTypeComboBox = new QComboBox();
+  mGeometryTypeComboBox->addItem( tr( "Geometry Not Required" ), QgsProcessing::TypeVector );
+  mGeometryTypeComboBox->addItem( tr( "Point" ), QgsProcessing::TypeVectorPoint );
+  mGeometryTypeComboBox->addItem( tr( "Line" ), QgsProcessing::TypeVectorLine );
+  mGeometryTypeComboBox->addItem( tr( "Polygon" ), QgsProcessing::TypeVectorPolygon );
+  mGeometryTypeComboBox->addItem( tr( "Any Geometry Type" ), QgsProcessing::TypeVectorAnyGeometry );
+
+  if ( const QgsProcessingParameterVectorLayer *vectorParam = dynamic_cast<const QgsProcessingParameterVectorLayer *>( definition ) )
+    mGeometryTypeComboBox->setCurrentIndex( mGeometryTypeComboBox->findData( vectorParam->dataTypes().at( 0 ) ) );
+
+  vlayout->addWidget( mGeometryTypeComboBox );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingVectorLayerParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterVectorLayer >( name, description, QList< int >() << mGeometryTypeComboBox->currentData().toInt() );
+  param->setFlags( flags );
+  return param.release();
+}
+
+
 QgsProcessingVectorLayerWidgetWrapper::QgsProcessingVectorLayerWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsProcessingMapLayerWidgetWrapper( parameter, type, parent )
 {
@@ -5216,12 +5247,46 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingVectorLayerWidgetWrapp
   return new QgsProcessingVectorLayerWidgetWrapper( parameter, type );
 }
 
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingVectorLayerWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingVectorLayerParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
 
 
 
 //
 // QgsProcessingFeatureSourceLayerWidgetWrapper
 //
+
+QgsProcessingFeatureSourceParameterDefinitionWidget::QgsProcessingFeatureSourceParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Geometry type" ) ) );
+  mGeometryTypeComboBox = new QComboBox();
+  mGeometryTypeComboBox->addItem( tr( "Geometry Not Required" ), QgsProcessing::TypeVector );
+  mGeometryTypeComboBox->addItem( tr( "Point" ), QgsProcessing::TypeVectorPoint );
+  mGeometryTypeComboBox->addItem( tr( "Line" ), QgsProcessing::TypeVectorLine );
+  mGeometryTypeComboBox->addItem( tr( "Polygon" ), QgsProcessing::TypeVectorPolygon );
+  mGeometryTypeComboBox->addItem( tr( "Any Geometry Type" ), QgsProcessing::TypeVectorAnyGeometry );
+
+  if ( const QgsProcessingParameterFeatureSource *sourceParam = dynamic_cast<const QgsProcessingParameterFeatureSource *>( definition ) )
+    mGeometryTypeComboBox->setCurrentIndex( mGeometryTypeComboBox->findData( sourceParam->dataTypes().at( 0 ) ) );
+
+  vlayout->addWidget( mGeometryTypeComboBox );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingFeatureSourceParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterFeatureSource >( name, description, QList< int >() << mGeometryTypeComboBox->currentData().toInt() );
+  param->setFlags( flags );
+  return param.release();
+}
 
 QgsProcessingFeatureSourceWidgetWrapper::QgsProcessingFeatureSourceWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsProcessingMapLayerWidgetWrapper( parameter, type, parent )
@@ -5269,6 +5334,11 @@ QString QgsProcessingFeatureSourceWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingFeatureSourceWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingFeatureSourceWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingFeatureSourceWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingFeatureSourceParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }
 
 //
