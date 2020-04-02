@@ -33,8 +33,8 @@
 
 #include "qgscolorrampshader.h"
 #include "qgsdataprovider.h"
-#include "qgsfields.h"
 #include "qgsraster.h"
+#include "qgsfields.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterpyramid.h"
 #include "qgsrasterrange.h"
@@ -133,6 +133,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     //! Returns data type for the band specified by number
     Qgis::DataType dataType( int bandNo ) const override = 0;
+
+    /**
+     * Returns the fields of the raster layer for data providers that expose them,
+     * the default implementation returns an empty list.
+     * \since QGIS 3.14
+     */
+    virtual QgsFields fields() const { return QgsFields(); };
 
     /**
      * Returns source data type for the band specified by number,
