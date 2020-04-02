@@ -1389,6 +1389,7 @@ IF (NOT MSVC)
   # automatically generated file produces warnings (unused-parameter, unused-variable, misleading-indentation)
   SET_SOURCE_FILES_PROPERTIES(${VECTOR_TILE_PROTO_SRCS} PROPERTIES COMPILE_FLAGS -w)
 ENDIF (NOT MSVC)
+ADD_DEFINITIONS(-DPROTOBUF_USE_DLLS)
 
 
 # install headers
