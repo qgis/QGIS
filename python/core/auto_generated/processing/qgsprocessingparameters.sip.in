@@ -25,7 +25,7 @@ Encapsulates settings relating to a feature source input to a processing algorit
 %End
   public:
 
-    enum class Flag
+    enum Flag
     {
       FlagOverrideDefaultGeometryCheck,
       FlagCreateIndividualOutputPerInputFeature,

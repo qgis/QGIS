@@ -253,7 +253,7 @@ class TestQgsXmlUtils(unittest.TestCase):
         definition = QgsProcessingFeatureSourceDefinition(QgsProperty.fromValue('my source'))
         definition.selectedFeaturesOnly = True
         definition.featureLimit = 27
-        definition.flags = QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature
+        definition.flags = QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature
         definition.geometryCheck = QgsFeatureRequest.GeometrySkipInvalid
 
         elem = QgsXmlUtils.writeVariant(definition, doc)
@@ -261,9 +261,7 @@ class TestQgsXmlUtils(unittest.TestCase):
         self.assertEqual(c.source.staticValue(), 'my source')
         self.assertTrue(c.selectedFeaturesOnly)
         self.assertEqual(c.featureLimit, 27)
-        self.assertTrue(c.flags & QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature.value)
-        self.assertFalse(int(
-            c.flags & QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck.value))
+        self.assertEqual(c.flags, QgsProcessingFeatureSourceDefinition.FlagCreateIndividualOutputPerInputFeature)
         self.assertEqual(c.geometryCheck, QgsFeatureRequest.GeometrySkipInvalid)
 
     def test_output_layer_definition(self):
