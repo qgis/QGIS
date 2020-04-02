@@ -262,8 +262,8 @@ class TestQgsXmlUtils(unittest.TestCase):
         self.assertTrue(c.selectedFeaturesOnly)
         self.assertEqual(c.featureLimit, 27)
         self.assertTrue(c.flags & QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature.value)
-        self.assertFalse(
-            c.flags & QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck.value)
+        self.assertFalse(int(
+            c.flags & QgsProcessingFeatureSourceDefinition.Flag.FlagOverrideDefaultGeometryCheck.value))
         self.assertEqual(c.geometryCheck, QgsFeatureRequest.GeometrySkipInvalid)
 
     def test_output_layer_definition(self):
