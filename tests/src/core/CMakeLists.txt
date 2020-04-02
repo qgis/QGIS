@@ -31,6 +31,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/classification
   ${CMAKE_SOURCE_DIR}/src/core/mesh
+  ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/test
 
   ${CMAKE_BINARY_DIR}/src/core
@@ -238,6 +239,7 @@ SET(TESTS
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayer.cpp
  testqgsvectorlayerutils.cpp
+ testqgsvectortilelayer.cpp
  testqgsziputils.cpp
  testziplayer.cpp
  testqgslayerdefinition.cpp

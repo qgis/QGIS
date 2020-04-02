@@ -1,5 +1,4 @@
 SET (WMS_SRCS
-  qgsmbtilesreader.cpp
   qgswmscapabilities.cpp
   qgswmsprovider.cpp
   qgswmsconnection.cpp

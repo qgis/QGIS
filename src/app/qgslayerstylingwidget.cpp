@@ -225,6 +225,12 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
       break;
     }
 
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      // TODO
+      break;
+    }
+
     case QgsMapLayerType::PluginLayer:
       break;
   }
@@ -600,6 +606,12 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         break;
       }
 
+      case QgsMapLayerType::VectorTileLayer:
+      {
+        // TODO
+        break;
+      }
+
       case QgsMapLayerType::PluginLayer:
       {
         mStackedWidget->setCurrentIndex( mNotSupportedPage );
@@ -723,6 +735,9 @@ bool QgsLayerStyleManagerWidgetFactory::supportsLayer( QgsMapLayer *layer ) cons
     case QgsMapLayerType::RasterLayer:
     case QgsMapLayerType::MeshLayer:
       return true;
+
+    case QgsMapLayerType::VectorTileLayer:
+      return false;  // TODO
 
     case QgsMapLayerType::PluginLayer:
       return false;

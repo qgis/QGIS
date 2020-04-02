@@ -116,6 +116,7 @@ bool QgsMapLayerProxyModel::acceptsLayer( QgsMapLayer *layer ) const
   if ( ( mFilters.testFlag( RasterLayer ) && layer->type() == QgsMapLayerType::RasterLayer ) ||
        ( mFilters.testFlag( VectorLayer ) && layer->type() == QgsMapLayerType::VectorLayer ) ||
        ( mFilters.testFlag( MeshLayer ) && layer->type() == QgsMapLayerType::MeshLayer ) ||
+       ( mFilters.testFlag( VectorTileLayer ) && layer->type() == QgsMapLayerType::VectorTileLayer ) ||
        ( mFilters.testFlag( PluginLayer ) && layer->type() == QgsMapLayerType::PluginLayer ) )
     return true;
 

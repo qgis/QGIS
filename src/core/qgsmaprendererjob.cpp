@@ -906,6 +906,7 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer *ml )
     }
 
     case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::PluginLayer:
       break;
   }

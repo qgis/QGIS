@@ -205,6 +205,7 @@
 %Include auto_generated/qgstessellator.sip
 %Include auto_generated/qgstestutils.sip
 %Include auto_generated/qgstextrenderer.sip
+%Include auto_generated/qgstiles.sip
 %Include auto_generated/qgstolerance.sip
 %Include auto_generated/qgstracer.sip
 %Include auto_generated/qgstrackedvectorlayertools.sip
@@ -533,6 +534,9 @@
 %Include auto_generated/validity/qgsabstractvaliditycheck.sip
 %Include auto_generated/validity/qgsvaliditycheckcontext.sip
 %Include auto_generated/validity/qgsvaliditycheckregistry.sip
+%Include auto_generated/vectortile/qgsvectortilebasicrenderer.sip
+%Include auto_generated/vectortile/qgsvectortilelayer.sip
+%Include auto_generated/vectortile/qgsvectortilerenderer.sip
 %Include auto_generated/gps/qgsqtlocationconnection.sip
 %Include auto_generated/gps/qgsgpsconnectionregistry.sip
 %Include auto_generated/symbology/qgsmasksymbollayer.sip
