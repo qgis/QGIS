@@ -34,9 +34,4 @@ QList<QgsDataItemProvider *> QgsVectorTileProviderMetadata::dataItemProviders() 
   return providers;
 }
 
-//QString QgsVectorTileProviderMetadata::staticKey()
-//{
-//  return PROVIDER_KEY;
-//}
-
 ///@endcond
