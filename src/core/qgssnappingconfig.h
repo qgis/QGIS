@@ -128,8 +128,6 @@ class CORE_EXPORT QgsSnappingConfig
          * \param type
          * \param tolerance
          * \param units
-         * \param minScale 0.0 disable scale limit
-         * \param maxScale 0.0 disable scale limit
          * \deprecated since QGIS 3.12 use the method with SnappingTypeFlag instead.
          */
         Q_DECL_DEPRECATED IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units ) SIP_DEPRECATED;
