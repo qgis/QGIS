@@ -88,8 +88,6 @@ IndividualLayerSettings
 :param type:
 :param tolerance:
 :param units:
-:param minScale: 0.0 disable scale limit
-:param maxScale: 0.0 disable scale limit
 
 .. deprecated:: QGIS 3.12
    use the method with SnappingTypeFlag instead.
