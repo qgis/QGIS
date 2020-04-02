@@ -309,6 +309,26 @@ void QgsLayoutItemMap::storeCurrentLayerStyles()
   }
 }
 
+void QgsLayoutItemMap::setFollowVisibilityPreset( bool follow )
+{
+  if ( mFollowVisibilityPreset == follow )
+    return;
+
+  mFollowVisibilityPreset = follow;
+  if ( !mFollowVisibilityPresetName.isEmpty() )
+    emit themeChanged( mFollowVisibilityPreset ? mFollowVisibilityPresetName : QString() );
+}
+
+void QgsLayoutItemMap::setFollowVisibilityPresetName( const QString &name )
+{
+  if ( name == mFollowVisibilityPresetName )
+    return;
+
+  mFollowVisibilityPresetName = name;
+  if ( mFollowVisibilityPreset )
+    emit themeChanged( mFollowVisibilityPresetName );
+}
+
 void QgsLayoutItemMap::moveContent( double dx, double dy )
 {
   mLastRenderedImageOffsetX -= dx;
@@ -1706,6 +1726,13 @@ void QgsLayoutItemMap::refreshDataDefinedProperty( const QgsLayoutObject::DataDe
   if ( property == QgsLayoutObject::MapLabelMargin || property == QgsLayoutObject::AllProperties )
   {
     refreshLabelMargin( false );
+  }
+  if ( property == QgsLayoutObject::MapStylePreset || property == QgsLayoutObject::AllProperties )
+  {
+    const QString previousTheme = mLastEvaluatedThemeName.isEmpty() ? mFollowVisibilityPresetName : mLastEvaluatedThemeName;
+    mLastEvaluatedThemeName = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapStylePreset, context, mFollowVisibilityPresetName );
+    if ( mLastEvaluatedThemeName != previousTheme )
+      emit themeChanged( mLastEvaluatedThemeName );
   }
 
   //force redraw
