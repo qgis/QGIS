@@ -16,6 +16,9 @@
 #ifndef QGSVECTORTILEDATAITEMGUIPROVIDER_H
 #define QGSVECTORTILEDATAITEMGUIPROVIDER_H
 
+///@cond PRIVATE
+#define SIP_NO_FILE
+
 #include "qgsdataitemguiprovider.h"
 
 
@@ -38,5 +41,6 @@ class QgsVectorTileDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
 
 };
 
+///@endcond
 
 #endif // QGSVECTORTILEDATAITEMGUIPROVIDER_H

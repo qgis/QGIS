@@ -16,6 +16,9 @@
 #ifndef QGSVECTORTILEPROVIDERGUIMETADATA_H
 #define QGSVECTORTILEPROVIDERGUIMETADATA_H
 
+///@cond PRIVATE
+#define SIP_NO_FILE
+
 #include <QList>
 #include <QMainWindow>
 
@@ -29,5 +32,7 @@ class QgsVectorTileProviderGuiMetadata: public QgsProviderGuiMetadata
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
 
 };
+
+///@endcond
 
 #endif // QGSVECTORTILEPROVIDERGUIMETADATA_H
