@@ -277,13 +277,16 @@ bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPol
           );
       mSpatialIndexes[ cacheKey ]->insert( tile.get(), tile->extent );
       mTiles[ cacheKey ][ tileId ] = std::move( tile );
+      QgsDebugMsgLevel( QStringLiteral( "Tile added: %1, ID: %2" )
+                        .arg( cacheKey )
+                        .arg( tileId ), 3 );
       //qDebug() << "Tile added:" << cacheKey << " ID: " << tileId << "extent " << extent.toString( 4 ) << upperleftx << upperlefty << tileWidth  << tileHeight <<  extent.width() << extent.height();
     }
     else
     {
       QgsDebugMsgLevel( QStringLiteral( "Tile already indexed: %1, ID: %2" )
                         .arg( cacheKey )
-                        .arg( tileId ), 2 );
+                        .arg( tileId ), 3 );
     }
   }
   return true;
@@ -379,7 +382,9 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
       response.extent.combineExtentWith( tile->extent );
 
       mTiles[ cacheKey ][ tileId ] = std::move( tile );
-
+      QgsDebugMsgLevel( QStringLiteral( "Tile added: %1, ID: %2" )
+                        .arg( cacheKey )
+                        .arg( tileId ), 3 );
       //qDebug() << "Tile data added:" << cacheKey << " ID: " << tileId << "extent " << extent.toString( 4 ) << upperleftx << upperlefty << tileWidth  << tileHeight <<  extent.width() << extent.height();
     }
     else

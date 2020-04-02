@@ -301,9 +301,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>643</width>
-                <height>681</height>
+                <y>-61</y>
+                <width>629</width>
+                <height>824</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -356,7 +356,7 @@ border-radius: 2px;</string>
                 </layout>
                </item>
                <item>
-                <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
+                <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
                  <property name="focusPolicy">
                   <enum>Qt::StrongFocus</enum>
                  </property>
@@ -434,7 +434,7 @@ border-radius: 2px;</string>
                        <property name="timeSpec">
                         <enum>Qt::UTC</enum>
                        </property>
-                       <property name="allowNull">
+                       <property name="allowNull" stdset="0">
                         <bool>false</bool>
                        </property>
                       </widget>
@@ -457,7 +457,7 @@ border-radius: 2px;</string>
                       <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
                        <property name="dateTime">
                         <datetime>
-                         <hour>8</hour>
+                         <hour>6</hour>
                          <minute>3</minute>
                          <second>57</second>
                          <year>2020</year>
@@ -466,7 +466,7 @@ border-radius: 2px;</string>
                         </datetime>
                        </property>
                        <property name="currentSection">
-                        <enum>QDateTimeEdit::DaySection</enum>
+                        <enum>QDateTimeEdit::MonthSection</enum>
                        </property>
                        <property name="displayFormat">
                         <string>M/d/yyyy H:mm:ss AP</string>
@@ -474,7 +474,7 @@ border-radius: 2px;</string>
                        <property name="timeSpec">
                         <enum>Qt::UTC</enum>
                        </property>
-                       <property name="allowNull">
+                       <property name="allowNull" stdset="0">
                         <bool>false</bool>
                        </property>
                       </widget>
@@ -501,7 +501,7 @@ border-radius: 2px;</string>
                       <widget class="QgsDateTimeEdit" name="mReferenceDateTimeEdit">
                        <property name="dateTime">
                         <datetime>
-                         <hour>19</hour>
+                         <hour>18</hour>
                          <minute>20</minute>
                          <second>36</second>
                          <year>2020</year>
@@ -528,7 +528,7 @@ border-radius: 2px;</string>
                        <property name="timeSpec">
                         <enum>Qt::UTC</enum>
                        </property>
-                       <property name="allowNull">
+                       <property name="allowNull" stdset="0">
                         <bool>false</bool>
                        </property>
                       </widget>
@@ -574,6 +574,55 @@ border-radius: 2px;</string>
                    <widget class="QCheckBox" name="mReferenceTime">
                     <property name="text">
                      <string>Reference time</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="mPostgresRasterTemporalGroup">
+                 <property name="title">
+                  <string>Temporal capabilities</string>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_18">
+                  <item row="1" column="1">
+                   <widget class="QgsFieldComboBox" name="mPostgresRasterTemporalFieldComboBox">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                      <horstretch>1</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QgsDateTimeEdit" name="mPostgresRasterDefaultTime"/>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="label">
+                    <property name="text">
+                     <string>Temporal field</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0" colspan="2">
+                   <widget class="QLabel" name="mPostgresRasterTemporalLabel">
+                    <property name="text">
+                     <string>If the dataset contains multiple rasters belonging to a time series, specifiy the field that contains the time information, the type of the field can be any type that can be converted to a timestamp. A default value can be specified and it will be used when the temporal controller is not requesting any particular time.</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="label_12">
+                    <property name="text">
+                     <string>Default time</string>
                     </property>
                    </widget>
                   </item>
@@ -629,8 +678,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>515</width>
-                <height>506</height>
+                <width>643</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -657,7 +706,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Band Rendering</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rasterstyle</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_14">
@@ -702,13 +751,13 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Color Rendering</string>
                  </property>
-                 <property name="collapsed">
+                 <property name="collapsed" stdset="0">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rasterstyle</string>
                  </property>
-                 <property name="saveCollapsedState">
+                 <property name="saveCollapsedState" stdset="0">
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_2">
@@ -1004,13 +1053,13 @@ border-radius: 2px;</string>
                  <property name="checkable">
                   <bool>false</bool>
                  </property>
-                 <property name="collapsed">
+                 <property name="collapsed" stdset="0">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rasterstyle</string>
                  </property>
-                 <property name="saveCollapsedState">
+                 <property name="saveCollapsedState" stdset="0">
                   <bool>true</bool>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout">
@@ -1229,8 +1278,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>343</width>
-                <height>476</height>
+                <width>643</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1251,12 +1300,12 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Global Opacity</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastertransp</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
                   <item row="0" column="0">
-                   <widget class="QgsOpacityWidget" name="mOpacityWidget">
+                   <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
@@ -1270,7 +1319,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>No Data Value</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastertransp</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
@@ -1342,7 +1391,7 @@ border-radius: 2px;</string>
                  <property name="title">
                   <string>Custom Transparency Options</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastertransp</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_3">
@@ -1582,8 +1631,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>86</width>
-                <height>44</height>
+                <width>643</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1645,7 +1694,7 @@ border-radius: 2px;</string>
              <property name="checked">
               <bool>false</bool>
              </property>
-             <property name="syncGroup">
+             <property name="syncGroup" stdset="0">
               <string notr="true">rastergeneral</string>
              </property>
              <layout class="QGridLayout" name="_5">
@@ -1665,7 +1714,7 @@ border-radius: 2px;</string>
                <number>6</number>
               </property>
               <item row="0" column="0" colspan="2">
-               <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
+               <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
                 <property name="toolTip">
                  <string/>
                 </property>
@@ -1800,8 +1849,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>579</width>
-                <height>201</height>
+                <width>643</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2030,8 +2079,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>370</width>
-                <height>650</height>
+                <width>643</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -2052,7 +2101,7 @@ p, li { white-space: pre-wrap; }
                  <property name="title">
                   <string>Description</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastermeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_5">
@@ -2188,7 +2237,7 @@ p, li { white-space: pre-wrap; }
                  <property name="title">
                   <string>Attribution</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
@@ -2234,7 +2283,7 @@ p, li { white-space: pre-wrap; }
                  <property name="title">
                   <string>MetadataUrl</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_9">
@@ -2482,6 +2531,17 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -2492,11 +2552,6 @@ p, li { white-space: pre-wrap; }
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDateTimeEdit</class>
-   <extends>QDateTimeEdit</extends>
-   <header>qgsdatetimeedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>
@@ -2526,12 +2581,6 @@ p, li { white-space: pre-wrap; }
    <header>qgsscalerangewidget.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsLayerTreeEmbeddedConfigWidget</class>
    <extends>QWidget</extends>
    <header>qgslayertreeembeddedconfigwidget.h</header>
@@ -2547,6 +2596,11 @@ p, li { white-space: pre-wrap; }
    <extends>QWidget</extends>
    <header>qgswebview.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -2614,6 +2668,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>mBackgroundLayerCheckBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

@@ -66,6 +66,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     virtual QString lastErrorTitle() override;
     virtual QString lastError() override;
     int capabilities() const override;
+    QgsFields fields() const override;
 
     // QgsRasterInterface interface
     int xSize() const override;
@@ -126,8 +127,21 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     double mScaleX = 0;
     //! Scale y
     double mScaleY = 0;
-    //! Temporal field
-    QString mTemporalField;
+    //! Temporal field index
+    int mTemporalFieldIndex = -1;
+    //! Temporal default date
+    QDateTime mTemporalDefaultTime;
+    //! Keep track of fields
+    QgsFields mAttributeFields;
+    //! Keeps track of identity fields
+    QHash<int, char> mIdentityFields;
+    //! Keeps track of default values
+    QHash<int, QString> mDefaultValues;
+    //! Data comment
+    QString mDataComment;
+    //! Layer metadata
+    QgsLayerMetadata mLayerMetadata;
+
 
     QString mDetectedSrid;            //!< Spatial reference detected in the database
     QString mRequestedSrid;           //!< Spatial reference requested in the uri
@@ -166,6 +180,9 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     void disconnectDb();
     //! Initialize the raster by fetching metadata and creating spatial indexes.
     bool init();
+    //! Initialize fields and temporal capabilities
+    bool initFieldsAndTemporal();
+
     //! Search for overviews and store a map
     void findOverviews();
     //! Initialize spatial indexes
@@ -175,7 +192,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     static QString quotedJsonValue( const QVariant &value ) { return QgsPostgresConn::quotedJsonValue( value ); }
     static QString quotedByteaValue( const QVariant &value );
     QgsPostgresProvider::Relkind relkind() const;
-
+    bool loadFields();
 
     /**
      * Determine the fields making up the primary key
@@ -195,7 +212,29 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
      */
     QString pkSql();
 
+    /**
+     * Returns table comment
+     */
+    QString dataComment() const override;
+
+
+    /**
+     * Private struct for column type information
+     */
+    struct PGTypeInfo
+    {
+      QString typeName;
+      QString typeType;
+      QString typeElem;
+      int typeLen;
+    };
+
+    QStringList parseUriKey( const QString &key );
+
+  public:
 };
+
+
 
 struct QgsPostgresRasterProviderException: public std::exception
 {
