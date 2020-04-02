@@ -545,6 +545,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void setupMapConnections( QgsLayoutItemMap *map, bool connect = true );
 
+    void setModelStyleOverrides( const QMap<QString, QString> &overrides );
+
     std::unique_ptr< QgsLegendModel > mLegendModel;
     std::unique_ptr< QgsLayerTreeGroup > mCustomLayerTree;
 
