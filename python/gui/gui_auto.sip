@@ -382,5 +382,8 @@
 %Include auto_generated/symbology/qgsvectorfieldsymbollayerwidget.sip
 %Include auto_generated/tableeditor/qgstableeditordialog.sip
 %Include auto_generated/tableeditor/qgstableeditorwidget.sip
+%Include auto_generated/vectortile/qgsvectortileconnectiondialog.sip
+%Include auto_generated/vectortile/qgsvectortiledataitemguiprovider.sip
+%Include auto_generated/vectortile/qgsvectortileproviderguimetadata.sip
 %Include auto_generated/editorwidgets/qgsqmlwidgetwrapper.sip
 %Include auto_generated/qgsadvanceddigitizingcanvasitem.sip
