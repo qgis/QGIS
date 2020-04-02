@@ -490,6 +490,40 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
 
+    def testThemes(self):
+        layout = QgsPrintLayout(QgsProject.instance())
+        layout.setName('LAYOUT')
+
+        map = QgsLayoutItemMap(layout)
+        layout.addLayoutItem(map)
+        legend = QgsLayoutItemLegend(layout)
+
+        self.assertFalse(legend.themeName())
+        legend.setLinkedMap(map)
+        self.assertFalse(legend.themeName())
+
+        map.setFollowVisibilityPresetName('theme1')
+        map.setFollowVisibilityPreset(True)
+        self.assertEqual(legend.themeName(), 'theme1')
+        map.setFollowVisibilityPresetName('theme2')
+        self.assertEqual(legend.themeName(), 'theme2')
+        map.setFollowVisibilityPreset(False)
+        self.assertFalse(legend.themeName())
+
+        # with theme set before linking map
+        map2 = QgsLayoutItemMap(layout)
+        map2.setFollowVisibilityPresetName('theme3')
+        map2.setFollowVisibilityPreset(True)
+        legend.setLinkedMap(map2)
+        self.assertEqual(legend.themeName(), 'theme3')
+        map2.setFollowVisibilityPresetName('theme2')
+        self.assertEqual(legend.themeName(), 'theme2')
+
+        # replace with map with no theme
+        map3 = QgsLayoutItemMap(layout)
+        legend.setLinkedMap(map3)
+        self.assertFalse(legend.themeName())
+
 
 if __name__ == '__main__':
     unittest.main()
