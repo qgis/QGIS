@@ -51,7 +51,7 @@ class TestQgsProviderRegistry(unittest.TestCase):
         """
         providers = QgsProviderRegistry.instance().providerList()
         for p in providers:
-            if p == 'geonode':
+            if p == 'geonode' or p == 'vectortile':
                 continue
 
             self.assertTrue(QgsProviderRegistry.instance().createProvider(p, ''))
