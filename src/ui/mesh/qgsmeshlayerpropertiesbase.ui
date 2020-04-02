@@ -191,7 +191,7 @@
           <enum>QFrame::Plain</enum>
          </property>
          <property name="currentIndex">
-          <number>5</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -309,6 +309,23 @@ border-radius: 2px;</string>
                 <widget class="QPushButton" name="mAddDatasetButton">
                  <property name="text">
                   <string>Assign Extra Dataset to Mesh</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="mTemporalStaticDatasetCheckBox">
+                 <property name="text">
+                  <string>Static Dataset</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsMeshStaticDatasetWidget" name="mStaticScalarWidget" native="true">
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>0</height>
+                  </size>
                  </property>
                 </widget>
                </item>
@@ -465,6 +482,65 @@ border-radius: 2px;</string>
              </property>
             </widget>
            </item>
+           <item row="0" column="4">
+            <widget class="QPushButton" name="mTemporalReloadButton">
+             <property name="maximumSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
+             <property name="toolTip">
+              <string>Reload from provider</string>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="../../../images/images.qrc">
+               <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Layer Time Reference</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="2" colspan="7">
+            <widget class="QGroupBox" name="groupBox_2">
+             <property name="title">
+              <string>Provider Time Settings</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_5">
+              <item row="0" column="2">
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>Time unit</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="mTemporalProviderTimeUnitComboBox"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
            <item row="0" column="3">
             <widget class="QDateTimeEdit" name="mTemporalDateTimeReference">
              <property name="alignment">
@@ -478,25 +554,18 @@ border-radius: 2px;</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="2">
-            <spacer name="verticalSpacer_2">
+           <item row="0" column="7" colspan="2">
+            <spacer name="horizontalSpacer">
              <property name="orientation">
-              <enum>Qt::Vertical</enum>
+              <enum>Qt::Horizontal</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
-               <width>20</width>
-               <height>40</height>
+               <width>40</width>
+               <height>20</height>
               </size>
              </property>
             </spacer>
-           </item>
-           <item row="1" column="2">
-            <widget class="QLabel" name="label_6">
-             <property name="text">
-              <string>Layer Start Time</string>
-             </property>
-            </widget>
            </item>
            <item row="1" column="4" colspan="2">
             <widget class="QLabel" name="label_4">
@@ -536,92 +605,23 @@ border-radius: 2px;</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="2" colspan="7">
-            <widget class="QGroupBox" name="groupBox_2">
-             <property name="title">
-              <string>Provider Time Settings</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_5">
-              <item row="0" column="2">
-               <spacer name="horizontalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_12">
-                <property name="text">
-                 <string>Time unit</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QComboBox" name="mTemporalProviderTimeUnitComboBox"/>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>Layer Time Reference</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="4">
-            <widget class="QPushButton" name="mTemporalReloadButton">
-             <property name="maximumSize">
-              <size>
-               <width>24</width>
-               <height>24</height>
-              </size>
-             </property>
-             <property name="toolTip">
-              <string>Reload from provider</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="../../../images/images.qrc">
-               <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="2">
-            <widget class="QCheckBox" name="mTemporalStaticDatasetCheckBox">
-             <property name="text">
-              <string>Static Dataset</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="7" colspan="2">
-            <spacer name="horizontalSpacer">
+           <item row="3" column="2">
+            <spacer name="verticalSpacer_2">
              <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+              <enum>Qt::Vertical</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
-               <width>40</width>
-               <height>20</height>
+               <width>20</width>
+               <height>40</height>
               </size>
              </property>
             </spacer>
            </item>
-           <item row="6" column="2" colspan="7">
-            <widget class="QgsMeshStaticDatasetWidget" name="mStaticScalarWidget" native="true">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>15</height>
-              </size>
+           <item row="1" column="2">
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>Layer Start Time</string>
              </property>
             </widget>
            </item>
