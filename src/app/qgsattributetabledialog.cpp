@@ -1263,12 +1263,6 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
     }
   }
 
-  QgsFeatureIds filteredFeatures;
-  QgsDistanceArea myDa;
-
-  myDa.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
-  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
-
   // parse search string and build parsed tree
   QgsExpression filterExpression( filter );
   if ( filterExpression.hasParserError() )
@@ -1284,50 +1278,7 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
     QgisApp::instance()->messageBar()->pushMessage( tr( "Evaluation error" ), filterExpression.evalErrorString(), Qgis::Warning, QgisApp::instance()->messageTimeout() );
   }
 
-  bool fetchGeom = filterExpression.needsGeometry();
-
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
-  filterExpression.setGeomCalculator( &myDa );
-  filterExpression.setDistanceUnits( QgsProject::instance()->distanceUnits() );
-  filterExpression.setAreaUnits( QgsProject::instance()->areaUnits() );
-  QgsFeatureRequest request( mMainView->masterModel()->request() );
-  request.setSubsetOfAttributes( filterExpression.referencedColumns(), mLayer->fields() );
-  if ( !fetchGeom )
-  {
-    request.setFlags( QgsFeatureRequest::NoGeometry );
-  }
-  else
-  {
-    // force geometry extraction if the filter requests it
-    request.setFlags( request.flags() & ~QgsFeatureRequest::NoGeometry );
-  }
-  QgsFeatureIterator featIt = mLayer->getFeatures( request );
-
-  QgsFeature f;
-
-  while ( featIt.nextFeature( f ) )
-  {
-    context.setFeature( f );
-    if ( filterExpression.evaluate( &context ).toInt() != 0 )
-      filteredFeatures << f.id();
-
-    // check if there were errors during evaluating
-    if ( filterExpression.hasEvalError() )
-      break;
-  }
-
-  featIt.close();
-
-  mMainView->setFilteredFeatures( filteredFeatures );
-
-  QApplication::restoreOverrideCursor();
-
-  if ( filterExpression.hasEvalError() )
-  {
-    QgisApp::instance()->messageBar()->pushMessage( tr( "Error filtering" ), filterExpression.evalErrorString(), Qgis::Warning, QgisApp::instance()->messageTimeout() );
-    return;
-  }
+  mMainView->filterFeatures( filterExpression, context );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
 }
 
