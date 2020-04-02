@@ -18,6 +18,8 @@
 #include "qgsgui.h"
 #include <QMessageBox>
 
+///@cond PRIVATE
+
 QgsVectorTileConnectionDialog::QgsVectorTileConnectionDialog( QWidget *parent )
   : QDialog( parent )
 {
@@ -60,3 +62,5 @@ void QgsVectorTileConnectionDialog::accept()
   }
   QDialog::accept();
 }
+
+///@endcond

@@ -17,6 +17,7 @@
 
 #include "qgsvectortiledataitemguiprovider.h"
 
+///@cond PRIVATE
 
 QgsVectorTileProviderGuiMetadata::QgsVectorTileProviderGuiMetadata()
   : QgsProviderGuiMetadata( QStringLiteral( "vectortile" ) )
@@ -28,3 +29,5 @@ QList<QgsDataItemGuiProvider *> QgsVectorTileProviderGuiMetadata::dataItemGuiPro
   return QList<QgsDataItemGuiProvider *>()
          << new QgsVectorTileDataItemGuiProvider;
 }
+
+///@endcond

@@ -16,6 +16,9 @@
 #ifndef QGSVECTORTILECONNECTIONDIALOG_H
 #define QGSVECTORTILECONNECTIONDIALOG_H
 
+///@cond PRIVATE
+#define SIP_NO_FILE
+
 #include <QDialog>
 
 #include "ui_qgsvectortileconnectiondialog.h"
@@ -41,5 +44,7 @@ class QgsVectorTileConnectionDialog : public QDialog, public Ui::QgsVectorTileCo
     QString mBaseKey;
     QString mCredentialsBaseKey;
 };
+
+///@endcond
 
 #endif // QGSVECTORTILECONNECTIONDIALOG_H

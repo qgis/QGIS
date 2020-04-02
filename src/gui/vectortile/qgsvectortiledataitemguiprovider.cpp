@@ -23,6 +23,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
+///@cond PRIVATE
 
 void QgsVectorTileDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &, QgsDataItemGuiContext )
 {
@@ -106,3 +107,5 @@ void QgsVectorTileDataItemGuiProvider::loadXyzTilesServers( QgsDataItem *item )
   dlg.exec();
   item->refreshConnections();
 }
+
+///@endcond
