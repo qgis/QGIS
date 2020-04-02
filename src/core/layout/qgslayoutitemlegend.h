@@ -477,6 +477,15 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     QgsLayoutItemMap *linkedMap() const { return mMap; }
 
     /**
+     * Returns the name of the theme currently linked to the legend.
+     *
+     * This usually equates to the theme rendered in the linkedMap().
+     *
+     * \since QGIS 3.14
+     */
+    QString themeName() const;
+
+    /**
      * Updates the model and all legend entries.
      */
     void updateLegend();
@@ -518,6 +527,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     //! update legend in case style of associated map has changed
     void mapLayerStyleOverridesChanged();
+    //! update legend in case theme of associated map has changed
+    void mapThemeChanged( const QString &theme );
 
     //! react to atlas
     void onAtlasEnded();
@@ -566,6 +577,9 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     //! Will be TRUE if the legend should be resized automatically to fit contents
     bool mSizeToContents = true;
+
+    //! Name of theme for legend -- usually the theme associated with the linked map.
+    QString mThemeName;
 
     friend class QgsCompositionConverter;
 
