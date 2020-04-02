@@ -866,6 +866,9 @@ void QgsRasterLayer::setDataSource( const QString &dataSource, const QString &ba
 
   setDataProvider( provider, options );
 
+  if ( mDataProvider )
+    mDataProvider->setDataSourceUri( mDataSource );
+
   if ( mValid )
   {
     mTemporalProperties->setDefaultsFromDataProviderTemporalCapabilities( mDataProvider->temporalCapabilities() );
