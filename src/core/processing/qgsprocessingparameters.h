@@ -59,7 +59,7 @@ class CORE_EXPORT QgsProcessingFeatureSourceDefinition
      * Flags which control source behavior.
      * \since QGIS 3.14
      */
-    enum class Flag : int
+    enum Flag
     {
       FlagOverrideDefaultGeometryCheck = 1 << 0, //!< If set, the default geometry check method (as dictated by QgsProcessingContext) will be overridden for this source
       FlagCreateIndividualOutputPerInputFeature = 1 << 1, //!< If set, every feature processed from this source will be placed into its own individually created output destination. Support for this flag depends on how an algorithm is executed.
