@@ -21,34 +21,35 @@
 QgsMeshDataProviderTemporalCapabilities::QgsMeshDataProviderTemporalCapabilities(): QgsDataProviderTemporalCapabilities()
 {}
 
-QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexFromTimeInMilliseconds( int group, qint64 timeSinceGlobalReference ) const
+QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexFromRelativeTimeRange( int group, qint64 startTimeSinceGlobalReference, qint64 endTimeSinceGlobalReference ) const
 {
-  const QDateTime groupReference = mGroupsReferenceDateTime[group];
-
-  const qint64 timeSinceGroupReference =
-    timeSinceGlobalReference - mGlobalReferenceDateTime.msecsTo( groupReference );
+  // No time --> non temporal dataset, so return the dataset that has to be the only one
   const QList<qint64> &datasetTimes = mDatasetTimeSinceGroupReference[group];
-  // No dataset
   if ( datasetTimes.isEmpty() )
+    return QgsMeshDatasetIndex( group, 0 );
+  const QDateTime groupReference = mGroupsReferenceDateTime[group];
+  const qint64 startTimeSinceGroupReference =
+    startTimeSinceGlobalReference - mGlobalReferenceDateTime.msecsTo( groupReference );
+  const qint64 endTimeSinceGroupReference =
+    endTimeSinceGlobalReference - mGlobalReferenceDateTime.msecsTo( groupReference );
+
+  if ( startTimeSinceGroupReference >= datasetTimes.last() )
     return QgsMeshDatasetIndex();
 
-  // If requested time is before the timestamp of the first dataset, return the first dataset
-  // For "static" dataset (as terrain elevation)
-  if ( timeSinceGroupReference < datasetTimes.first() )
-    return QgsMeshDatasetIndex( group, 0 );
-  for ( int i = 1; i < datasetTimes.count(); ++i )
+  for ( int i = 0; i < datasetTimes.count(); ++i )
   {
-    if ( timeSinceGroupReference < datasetTimes.at( i ) )
-      return QgsMeshDatasetIndex( group, i - 1 );
+    qint64 time = datasetTimes.at( i );
+    if ( startTimeSinceGroupReference <= time )
+    {
+      if ( endTimeSinceGroupReference <= time )
+        return QgsMeshDatasetIndex( group, i - 1 ); // invalid if i=0
+      else
+        return QgsMeshDatasetIndex( group, i );
+    }
   }
 
-  // The requested time is after last timestamp, return the last dataset
-  return QgsMeshDatasetIndex( group, datasetTimes.count() - 1 );
-}
-
-QgsMeshDatasetIndex QgsMeshDataProviderTemporalCapabilities::datasetIndexFromTimeInHours( int group, double timeSinceGlobalReferenceInHours ) const
-{
-  return datasetIndexFromTimeInMilliseconds( group, qint64( 3600 * 1000 * timeSinceGlobalReferenceInHours ) );
+  // if we are here (normally, this could no happen), return invalid dataset index
+  return QgsMeshDatasetIndex();
 }
 
 void QgsMeshDataProviderTemporalCapabilities::addGroupReferenceDateTime( int group, const QDateTime &reference )

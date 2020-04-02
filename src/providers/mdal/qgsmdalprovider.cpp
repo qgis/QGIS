@@ -337,12 +337,16 @@ void QgsMdalProvider::addGroupToTemporalCapabilities( int indexGroup )
   tempCap->addGroupReferenceDateTime( indexGroup, refTime );
   int dsCount = datasetCount( indexGroup );
 
-  for ( int dsi = 0; dsi < dsCount; ++dsi )
+  if ( dsgMetadata.isTemporal() )
   {
-    QgsMeshDatasetMetadata dsMeta = datasetMetadata( QgsMeshDatasetIndex( indexGroup, dsi ) );
-    if ( dsMeta.isValid() )
-      tempCap->addDatasetTime( indexGroup, dsMeta.time() );
+    for ( int dsi = 0; dsi < dsCount; ++dsi )
+    {
+      QgsMeshDatasetMetadata dsMeta = datasetMetadata( QgsMeshDatasetIndex( indexGroup, dsi ) );
+      if ( dsMeta.isValid() )
+        tempCap->addDatasetTime( indexGroup, dsMeta.time() );
+    }
   }
+
 }
 
 void QgsMdalProvider::reloadProviderData()
@@ -577,6 +581,8 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
   QString referenceTimeString( MDAL_G_referenceTime( group ) );
   QDateTime referenceTime = QDateTime::fromString( referenceTimeString, Qt::ISODate );
 
+  bool isTemporal = MDAL_G_datasetCount( group ) > 1;
+
   QgsMeshDatasetGroupMetadata meta(
     name,
     isScalar,
@@ -585,6 +591,7 @@ QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupInde
     max,
     maximumVerticalLevels,
     referenceTime,
+    isTemporal,
     metadata
   );
 

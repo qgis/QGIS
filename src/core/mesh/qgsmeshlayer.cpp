@@ -351,10 +351,13 @@ void QgsMeshLayer::setTransformContext( const QgsCoordinateTransformContext &tra
 QgsMeshDatasetIndex QgsMeshLayer::datasetIndexAtTime( const QgsDateTimeRange &timeRange, int datasetGroupIndex ) const
 {
   const QDateTime layerReferenceTime = mTemporalProperties->referenceTime();
-  qint64 time = layerReferenceTime.msecsTo( timeRange.begin() );
-  const QgsMeshDataProviderTemporalCapabilities *tempCap = dataProvider()->temporalCapabilities();
+  qint64 startTime = layerReferenceTime.msecsTo( timeRange.begin() );
+  qint64 endTime = layerReferenceTime.msecsTo( timeRange.end() );
 
-  return tempCap->datasetIndexFromTimeInMilliseconds( datasetGroupIndex, time );
+  if ( dataProvider() )
+    return dataProvider()->temporalCapabilities()->datasetIndexFromRelativeTimeRange( datasetGroupIndex, startTime, endTime );
+  else
+    return QgsMeshDatasetIndex();
 }
 
 QgsMeshDatasetIndex QgsMeshLayer::activeScalarDatasetAtTime( const QgsDateTimeRange &timeRange ) const
@@ -418,13 +421,15 @@ QgsMeshDatasetIndex QgsMeshLayer::staticScalarDatasetIndex() const
 void QgsMeshLayer::setStaticVectorDatasetIndex( const QgsMeshDatasetIndex &staticVectorDatasetIndex )
 {
   mStaticVectorDatasetIndex = staticVectorDatasetIndex;
-  mRendererSettings.setActiveVectorDatasetGroup( staticVectorDatasetIndex.group() );
+  if ( !temporalProperties()->isActive() )
+    mRendererSettings.setActiveVectorDatasetGroup( staticVectorDatasetIndex.group() );
 }
 
 void QgsMeshLayer::setStaticScalarDatasetIndex( const QgsMeshDatasetIndex &staticScalarDatasetIndex )
 {
   mStaticScalarDatasetIndex = staticScalarDatasetIndex;
-  mRendererSettings.setActiveScalarDatasetGroup( staticScalarDatasetIndex.group() );
+  if ( !temporalProperties()->isActive() )
+    mRendererSettings.setActiveScalarDatasetGroup( staticScalarDatasetIndex.group() );
 }
 
 QgsMeshSimplificationSettings QgsMeshLayer::meshSimplificationSettings() const

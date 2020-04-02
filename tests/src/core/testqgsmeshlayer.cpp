@@ -910,30 +910,62 @@ void TestQgsMeshLayer::test_mesh_simplification()
 
 void TestQgsMeshLayer::test_temporal()
 {
-  //Mesh memory provider
+  qint64 relativeTime_0 = -1000;
+  qint64 relativeTime_1 = 0;
+  qint64 relativeTime_2 = 1000 * 60 * 60 * 0.3;
+  qint64 relativeTime_3 = 1000 * 60 * 60 * 0.5;
+  qint64 relativeTime_4 = 1000 * 60 * 60 * 1.5;
+  qint64 relativeTime_5 = 1000 * 60 * 60 * 2;
+  // Mesh memory provider
   QgsMeshDataProviderTemporalCapabilities *tempCap = mMemoryLayer->dataProvider()->temporalCapabilities();
-  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 0.0 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 0.9 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 1.0 ).dataset(), 1 );
-  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 1000 ).dataset(), 1 ); //last time step
+  // Static dataset
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_0, relativeTime_1 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_1, relativeTime_2 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_2, relativeTime_3 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_3, relativeTime_4 ).dataset(), 0 );
+  // Temporal dataset
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_0, relativeTime_1 ).dataset(), -1 );
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_1, relativeTime_2 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_2, relativeTime_3 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_3, relativeTime_4 ).dataset(), 1 );
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_4, relativeTime_5 ).dataset(), -1 );
 
-  //Mesh MDAL provider with internal dataset
+  // Mesh MDAL provider with internal dataset
   tempCap = mMdalLayer->dataProvider()->temporalCapabilities();
-  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 0, 0.0 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 0, 0.9 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 0, 1.0 ).dataset(), 0 ); //bed elevation has only one time step
-  //Mesh MDAL provider with internal da.taset
-  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 0.0 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 0.9 ).dataset(), 0 );
-  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 1.0 ).dataset(), 1 );
-  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 1000 ).dataset(), 1 );//last time step
+  // Static dataset
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_0, relativeTime_1 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_1, relativeTime_2 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_2, relativeTime_3 ).dataset(), 0 );
+  // Temporal dataset
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_0, relativeTime_1 ).dataset(), -1 );
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_1, relativeTime_2 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_2, relativeTime_3 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_3, relativeTime_4 ).dataset(), 1 );
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 1, relativeTime_4, relativeTime_5 ).dataset(), -1 );
 
   //Mesh MDAL provider with reference time
   tempCap = mMdal3DLayer->dataProvider()->temporalCapabilities();
-  QCOMPARE( tempCap->datasetIndexFromTimeInHours( 1, 0.0 ).dataset(), 0 );
+  QCOMPARE( tempCap->datasetIndexFromRelativeTimeRange( 0, relativeTime_0, relativeTime_1 ).dataset(), 0 );
   QDateTime begin = QDateTime( QDate( 1990, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC );
   QDateTime end = QDateTime( QDate( 1990, 1, 1 ), QTime( 6, 0, 1, 938 ), Qt::UTC );
   QCOMPARE( tempCap->timeExtent(), QgsDateTimeRange( begin, end ) );
+
+  QDateTime time_1 = QDateTime( QDate( 1990, 1, 1 ), QTime( 3, 0, 0 ), Qt::UTC );
+  QDateTime time_2 = time_1.addSecs( 300 );
+  QgsMeshRendererSettings settings = mMdal3DLayer->rendererSettings();
+  // Static dataset (bed elevation)
+  settings.setActiveScalarDatasetGroup( 0 ); //static dataset (bed elevation)
+  mMdal3DLayer->setRendererSettings( settings );
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 0 );
+  // Attempt to next dataset
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1.addSecs( 400 ), time_2.addSecs( 400 ) ) ).dataset(), 0 );
+
+  // Temporal dataset
+  settings.setActiveScalarDatasetGroup( 1 );
+  mMdal3DLayer->setRendererSettings( settings );
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1, time_2 ) ).dataset(), 18 );
+  // Next dataset
+  QCOMPARE( mMdal3DLayer->activeScalarDatasetAtTime( QgsDateTimeRange( time_1.addSecs( 400 ), time_2.addSecs( 400 ) ) ).dataset(), 19 );
 
   mMdal3DLayer->temporalProperties();
 }

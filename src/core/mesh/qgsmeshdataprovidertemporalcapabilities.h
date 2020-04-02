@@ -40,18 +40,15 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
     QgsMeshDataProviderTemporalCapabilities();
 
     /**
-     * Returns the last dataset index that has the time equal or less or than \a timeSinceGlobalReference (in milliseconds) from the dataset \a group
+     * Returns the first dataset that are include in the range [\a startTimeSinceGlobalReference,\a endTimeSinceGlobalReference[ (in milliseconds)
+     * from the dataset \a group. If no dataset is present in this range return the last dataset before this range if it not the last one
+     * of whole the dataset group
      *
-     * Returns invalid dataset index if the time is less than the first dataset's time
-     */
-    QgsMeshDatasetIndex datasetIndexFromTimeInMilliseconds( int group, qint64 timeSinceGlobalReference ) const;
-
-    /**
-     * Returns the last dataset index that has the time equal or less or than \a timeSinceGlobalReference (in hours) from the dataset \a group
+     * Returns invalid dataset index if there is no data set in the range
      *
-     * Returns invalid dataset index if the time is less than the first dataset's time
+     * \note for non temporal dataset group, the range is not used and the unique dataset is returned
      */
-    QgsMeshDatasetIndex datasetIndexFromTimeInHours( int group, double  timeSinceGlobalReferenceInHours ) const;
+    QgsMeshDatasetIndex datasetIndexFromRelativeTimeRange( int group, qint64 startTimeSinceGlobalReference, qint64 endTimeSinceGlobalReference ) const;
 
     /**
      * Adds a \a reference date/time from a dataset \a group
@@ -132,6 +129,7 @@ class CORE_EXPORT QgsMeshDataProviderTemporalCapabilities: public QgsDataProvide
      * Holds the time of each dataset in milliseconds.
      * The times are from the dataset groups reference time if any,
      * otherwise from 0
+     * Non Temporal dataset (static) have empty list
      */
     QHash<int, QList<qint64>> mDatasetTimeSinceGroupReference;
 

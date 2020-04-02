@@ -28,18 +28,17 @@ Class for handling properties relating to a mesh data provider's temporal capabi
 Constructor for QgsMeshDataProviderTemporalCapabilities
 %End
 
-    QgsMeshDatasetIndex datasetIndexFromTimeInMilliseconds( int group, qint64 timeSinceGlobalReference ) const;
+    QgsMeshDatasetIndex datasetIndexFromRelativeTimeRange( int group, qint64 startTimeSinceGlobalReference, qint64 endTimeSinceGlobalReference ) const;
 %Docstring
-Returns the last dataset index that has the time equal or less or than ``timeSinceGlobalReference`` (in milliseconds) from the dataset ``group``
+Returns the first dataset that are include in the range [``startTimeSinceGlobalReference``,``endTimeSinceGlobalReference``[ (in milliseconds)
+from the dataset ``group``. If no dataset is present in this range return the last dataset before this range if it not the last one
+of whole the dataset group
 
-Returns invalid dataset index if the time is less than the first dataset's time
-%End
+Returns invalid dataset index if there is no data set in the range
 
-    QgsMeshDatasetIndex datasetIndexFromTimeInHours( int group, double  timeSinceGlobalReferenceInHours ) const;
-%Docstring
-Returns the last dataset index that has the time equal or less or than ``timeSinceGlobalReference`` (in hours) from the dataset ``group``
+.. note::
 
-Returns invalid dataset index if the time is less than the first dataset's time
+   for non temporal dataset group, the range is not used and the unique dataset is returned
 %End
 
 
@@ -86,7 +85,7 @@ Returns the relative time in milliseconds of the dataset
 
     void clear();
 %Docstring
-Clears all stored reference times and dataset times
+Clears alls stored reference times and dataset times
 %End
 
 };

@@ -127,6 +127,7 @@ QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata( const QString &name,
     double maximum,
     int maximumVerticalLevels,
     const QDateTime &referenceTime,
+    bool isTemporal,
     const QMap<QString, QString> &extraOptions )
   : mName( name )
   , mIsScalar( isScalar )
@@ -136,6 +137,8 @@ QgsMeshDatasetGroupMetadata::QgsMeshDatasetGroupMetadata( const QString &name,
   , mExtraOptions( extraOptions )
   , mMaximumVerticalLevelsCount( maximumVerticalLevels )
   , mReferenceTime( referenceTime )
+  , mIsTemporal( isTemporal )
+
 {
 }
 
@@ -152,6 +155,11 @@ bool QgsMeshDatasetGroupMetadata::isVector() const
 bool QgsMeshDatasetGroupMetadata::isScalar() const
 {
   return mIsScalar;
+}
+
+bool QgsMeshDatasetGroupMetadata::isTemporal() const
+{
+  return mIsTemporal;
 }
 
 QString QgsMeshDatasetGroupMetadata::name() const

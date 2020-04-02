@@ -616,15 +616,6 @@ QColor QgsMeshLayerRenderer::colorAt( QgsColorRampShader *shader, double val ) c
   return QColor();
 }
 
-QgsMeshDatasetIndex QgsMeshLayerRenderer::datasetIndexAtTime( QgsMeshLayer *layer, int datasetGroupIndex )
-{
-  QgsDateTimeRange timeRange = renderContext()->temporalRange(); //by default UTC
-  QDateTime layerReferenceTime = layer->temporalProperties()->timeExtent().begin();
-  qint64 time = layerReferenceTime.msecsTo( timeRange.begin() );
-  QgsMeshDataProviderTemporalCapabilities *tempCap = layer->dataProvider()->temporalCapabilities();
-  return tempCap->datasetIndexFromTimeInMilliseconds( datasetGroupIndex, time );
-}
-
 QgsPointXY QgsMeshLayerRenderer::fractionPoint( const QgsPointXY &p1, const QgsPointXY &p2, double fraction ) const
 {
   const QgsPointXY pt( p1.x() + fraction * ( p2.x() - p1.x() ),

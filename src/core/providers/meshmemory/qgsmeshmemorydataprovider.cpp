@@ -350,9 +350,13 @@ void QgsMeshMemoryDataProvider::addGroupToTemporalCapabilities( int groupIndex, 
   if ( !tempCap )
     return;
 
-  for ( int i = 0; i < group.datasets.count(); ++i )
-    if ( group.datasets.at( i ) )
-      tempCap->addDatasetTime( groupIndex, group.datasets.at( i )->time );
+  if ( group.datasetCount() > 1 ) //non temporal dataset groups (count=1) have no time in the capabilities
+  {
+    for ( int i = 0; i < group.datasets.count(); ++i )
+      if ( group.datasets.at( i ) )
+        tempCap->addDatasetTime( groupIndex, group.datasets.at( i )->time );
+  }
+
 }
 
 int QgsMeshMemoryDataProvider::vertexCount() const
@@ -455,6 +459,7 @@ QgsMeshDatasetGroupMetadata QgsMeshMemoryDatasetGroup::groupMetadata() const
            maximum,
            0,
            QDateTime(),
+           datasetCount() > 1,
            metadata
          );
 }

@@ -140,8 +140,8 @@ void QgsRendererMeshPropertiesWidget::syncToLayer()
   mTriangularMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().triangularMeshSettings().isEnabled() : false );
   mEdgeMeshGroup->setChecked( mMeshLayer ? mMeshLayer->rendererSettings().edgeMeshSettings().isEnabled() : false );
 
-  onActiveScalarGroupChanged( mMeshRendererActiveDatasetWidget->activeScalarDatasetGroup() );
-  onActiveVectorGroupChanged( mMeshRendererActiveDatasetWidget->activeVectorDatasetGroup() );
+  onActiveScalarGroupChanged( mMeshLayer->rendererSettings().activeScalarDatasetGroup() );
+  onActiveVectorGroupChanged( mMeshLayer->rendererSettings().activeVectorDatasetGroup() );
 
   bool hasFaces = ( mMeshLayer->dataProvider() &&
                     mMeshLayer->dataProvider()->contains( QgsMesh::ElementType::Face ) );
