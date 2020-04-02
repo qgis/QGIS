@@ -1296,6 +1296,67 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingScaleWidgetWrapper:
 // QgsProcessingRangeWidgetWrapper
 //
 
+QgsProcessingRangeParameterDefinitionWidget::QgsProcessingRangeParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Number type" ) ) );
+
+  mTypeComboBox = new QComboBox();
+  mTypeComboBox->addItem( tr( "Float" ), QgsProcessingParameterNumber::Double );
+  mTypeComboBox->addItem( tr( "Integer" ), QgsProcessingParameterNumber::Integer );
+  vlayout->addWidget( mTypeComboBox );
+
+  vlayout->addWidget( new QLabel( tr( "Minimum value" ) ) );
+  mMinLineEdit = new QLineEdit();
+  vlayout->addWidget( mMinLineEdit );
+
+  vlayout->addWidget( new QLabel( tr( "Maximum value" ) ) );
+  mMaxLineEdit = new QLineEdit();
+  vlayout->addWidget( mMaxLineEdit );
+
+  if ( const QgsProcessingParameterRange *rangeParam = dynamic_cast<const QgsProcessingParameterRange *>( definition ) )
+  {
+    mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( rangeParam->dataType() ) );
+    const QList< double > range = QgsProcessingParameters::parameterAsRange( rangeParam, rangeParam->defaultValue(), context );
+    mMinLineEdit->setText( QString::number( range.at( 0 ) ) );
+    mMaxLineEdit->setText( QString::number( range.at( 1 ) ) );
+  }
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingRangeParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  QString defaultValue;
+  if ( mMinLineEdit->text().isEmpty() )
+  {
+    defaultValue = QStringLiteral( "None" );
+  }
+  else
+  {
+    defaultValue = mMinLineEdit->text();
+  }
+
+  if ( mMaxLineEdit->text().isEmpty() )
+  {
+    defaultValue += QStringLiteral( ",None" );
+  }
+  else
+  {
+    defaultValue += QStringLiteral( "," ) + mMaxLineEdit->text();
+  }
+
+  QgsProcessingParameterNumber::Type dataType = static_cast< QgsProcessingParameterNumber::Type >( mTypeComboBox->currentData().toInt() );
+  auto param = qgis::make_unique< QgsProcessingParameterRange >( name, description, dataType, defaultValue );
+  param->setFlags( flags );
+  return param.release();
+}
+
+
 QgsProcessingRangeWidgetWrapper::QgsProcessingRangeWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
@@ -1487,6 +1548,10 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRangeWidgetWrapper::cr
   return new QgsProcessingRangeWidgetWrapper( parameter, type );
 }
 
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingRangeWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingRangeParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
 
 
 //
