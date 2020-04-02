@@ -67,7 +67,9 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
     QgsDebugMsgLevel( QStringLiteral( "zoom range: %1 - %2" ).arg( mSourceMinZoom ).arg( mSourceMaxZoom ), 2 );
 
     QgsRectangle r = reader.extent();
-    // TODO: reproject to EPSG:3857
+    QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ),
+                               QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), transformContext() );
+    r = ct.transformBoundingBox( r );
     setExtent( r );
   }
   else

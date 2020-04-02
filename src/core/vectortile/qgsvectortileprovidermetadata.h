@@ -33,7 +33,6 @@ class QgsVectorTileProviderMetadata : public QgsProviderMetadata
     QgsVectorTileProviderMetadata();
     QList< QgsDataItemProvider * > dataItemProviders() const override;
 
-    //static QString staticKey();
 };
 
 ///@endcond
