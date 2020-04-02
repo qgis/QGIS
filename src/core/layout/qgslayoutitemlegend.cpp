@@ -678,6 +678,7 @@ void QgsLayoutItemLegend::setupMapConnections( QgsLayoutItemMap *map, bool conne
     disconnect( map, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     disconnect( map, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
+    disconnect( map, &QgsLayoutItemMap::themeChanged, this, &QgsLayoutItemLegend::mapThemeChanged );
   }
   else
   {
@@ -685,6 +686,7 @@ void QgsLayoutItemLegend::setupMapConnections( QgsLayoutItemMap *map, bool conne
     connect( map, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     connect( map, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
+    connect( map, &QgsLayoutItemMap::themeChanged, this, &QgsLayoutItemLegend::mapThemeChanged );
   }
 }
 
@@ -700,10 +702,10 @@ void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
   if ( mMap )
   {
     setupMapConnections( mMap, true );
+    mThemeName = mMap->themeToRender( mMap->createExpressionContext() );
   }
 
   updateFilterByMap();
-
 }
 
 void QgsLayoutItemLegend::invalidateCurrentMap()
@@ -773,7 +775,13 @@ void QgsLayoutItemLegend::mapLayerStyleOverridesChanged()
   }
 
   adjustBoxSize();
+
   updateFilterByMap( false );
+}
+
+void QgsLayoutItemLegend::mapThemeChanged( const QString &theme )
+{
+  mThemeName = theme;
 }
 
 void QgsLayoutItemLegend::updateFilterByMap( bool redraw )
@@ -819,6 +827,11 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     mLegendModel->setLegendFilterByMap( nullptr );
 
   mForceResize = true;
+}
+
+QString QgsLayoutItemLegend::themeName() const
+{
+  return mThemeName;
 }
 
 void QgsLayoutItemLegend::setLegendFilterOutAtlas( bool doFilter )
