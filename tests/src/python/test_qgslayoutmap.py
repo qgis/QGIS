@@ -17,6 +17,7 @@ import os
 from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QPainter, QColor
+from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.core import (QgsLayoutItemMap,
                        QgsRectangle,
@@ -397,6 +398,63 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         map3_restore = [i for i in l2.items() if isinstance(i, QgsLayoutItemMap) and i.id() == 'map3'][0]
         self.assertTrue(map_restore.isLabelBlockingItem(map2_restore))
         self.assertTrue(map_restore.isLabelBlockingItem(map3_restore))
+
+    def testTheme(self):
+        layout = QgsLayout(QgsProject.instance())
+        map = QgsLayoutItemMap(layout)
+        self.assertFalse(map.followVisibilityPreset())
+        self.assertFalse(map.followVisibilityPresetName())
+
+        spy = QSignalSpy(map.themeChanged)
+
+        map.setFollowVisibilityPresetName('theme')
+        self.assertFalse(map.followVisibilityPreset())
+        self.assertEqual(map.followVisibilityPresetName(), 'theme')
+        # should not be emitted - followVisibilityPreset is False
+        self.assertEqual(len(spy), 0)
+        map.setFollowVisibilityPresetName('theme2')
+        self.assertEqual(map.followVisibilityPresetName(), 'theme2')
+        self.assertEqual(len(spy), 0)
+
+        map.setFollowVisibilityPresetName('')
+        map.setFollowVisibilityPreset(True)
+        # should not be emitted - followVisibilityPresetName is empty
+        self.assertEqual(len(spy), 0)
+        self.assertFalse(map.followVisibilityPresetName())
+        self.assertTrue(map.followVisibilityPreset())
+
+        map.setFollowVisibilityPresetName('theme')
+        self.assertEqual(len(spy), 1)
+        self.assertEqual(spy[-1][0], 'theme')
+        map.setFollowVisibilityPresetName('theme')
+        self.assertEqual(len(spy), 1)
+        map.setFollowVisibilityPresetName('theme2')
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(spy[-1][0], 'theme2')
+        map.setFollowVisibilityPreset(False)
+        self.assertEqual(len(spy), 3)
+        self.assertFalse(spy[-1][0])
+        map.setFollowVisibilityPreset(False)
+        self.assertEqual(len(spy), 3)
+        map.setFollowVisibilityPresetName('theme3')
+        self.assertEqual(len(spy), 3)
+        map.setFollowVisibilityPreset(True)
+        self.assertEqual(len(spy), 4)
+        self.assertEqual(spy[-1][0], 'theme3')
+        map.setFollowVisibilityPreset(True)
+        self.assertEqual(len(spy), 4)
+
+        # data defined theme
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.MapStylePreset, QgsProperty.fromValue('theme4'))
+        map.refresh()
+        self.assertEqual(len(spy), 5)
+        self.assertEqual(spy[-1][0], 'theme4')
+        map.refresh()
+        self.assertEqual(len(spy), 5)
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.MapStylePreset, QgsProperty.fromValue('theme6'))
+        map.refresh()
+        self.assertEqual(len(spy), 6)
+        self.assertEqual(spy[-1][0], 'theme6')
 
 
 if __name__ == '__main__':
