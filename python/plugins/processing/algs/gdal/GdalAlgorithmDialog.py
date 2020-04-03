@@ -120,7 +120,7 @@ class GdalParametersPanel(ParametersPanel):
         context = createContext()
         feedback = QgsProcessingFeedback()
         try:
-            parameters = self.dialog.getParameterValues()
+            parameters = self.dialog.createProcessingParameters()
             for output in self.algorithm().destinationParameterDefinitions():
                 if not output.name() in parameters or parameters[output.name()] is None:
                     parameters[output.name()] = self.tr("[temporary file]")

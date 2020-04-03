@@ -33,22 +33,24 @@ from qgis.gui import (QgsProcessingContextGenerator,
                       QgsProcessingParameterWidgetContext,
                       QgsProcessingParametersWidget,
                       QgsGui,
-                      QgsProcessingGui)
+                      QgsProcessingGui,
+                      QgsProcessingParametersGenerator)
 from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
 from processing.tools.dataobjects import createContext
 
 
-class ParametersPanel(QgsProcessingParametersWidget):
+class ParametersPanel(QgsProcessingParametersWidget, QgsProcessingParametersGenerator):
 
-    def __init__(self, parent, alg, in_place=False):
+    def __init__(self, parent, alg, in_place=False, parameters_generator=None):
         super().__init__(alg, parent)
         self.in_place = in_place
 
         self.wrappers = {}
 
         self.processing_context = createContext()
+        self.processing_parameters_generator = parameters_generator
 
         class ContextGenerator(QgsProcessingContextGenerator):
 
@@ -98,6 +100,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
                 wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent())
                 wrapper.setWidgetContext(widget_context)
                 wrapper.registerProcessingContextGenerator(self.context_generator)
+                wrapper.registerProcessingParametersGenerator(self.processing_parameters_generator)
                 self.wrappers[param.name()] = wrapper
 
                 # For compatibility with 3.x API, we need to check whether the wrapper is
@@ -149,6 +152,7 @@ class ParametersPanel(QgsProcessingParametersWidget):
             wrapper = QgsGui.processingGuiRegistry().createParameterWidgetWrapper(output, QgsProcessingGui.Standard)
             wrapper.setWidgetContext(widget_context)
             wrapper.registerProcessingContextGenerator(self.context_generator)
+            wrapper.registerProcessingParametersGenerator(self.processing_parameters_generator)
             self.wrappers[output.name()] = wrapper
 
             label = wrapper.createWrappedLabel()

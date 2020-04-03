@@ -187,6 +187,16 @@ void QgsProcessingLayerOutputDestinationWidget::setWidgetContext( const QgsProce
   mBrowserModel = context.browserModel();
 }
 
+void QgsProcessingLayerOutputDestinationWidget::setContext( QgsProcessingContext *context )
+{
+  mContext = context;
+}
+
+void QgsProcessingLayerOutputDestinationWidget::registerProcessingParametersGenerator( QgsProcessingParametersGenerator *generator )
+{
+  mParametersGenerator = generator;
+}
+
 void QgsProcessingLayerOutputDestinationWidget::addOpenAfterRunningOption()
 {
   mOpenAfterRunningCheck = new QCheckBox( tr( "Open output file after running algorithm" ) );

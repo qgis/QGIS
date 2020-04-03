@@ -5894,6 +5894,10 @@ QWidget *QgsProcessingOutputWidgetWrapper::createWidget()
     case QgsProcessingGui::Modeler:
     {
       mOutputWidget = new QgsProcessingLayerOutputDestinationWidget( destParam, false );
+      if ( mProcessingContextGenerator )
+        mOutputWidget->setContext( mProcessingContextGenerator->processingContext() );
+      if ( mParametersGenerator )
+        mOutputWidget->registerProcessingParametersGenerator( mParametersGenerator );
       mOutputWidget->setToolTip( parameterDefinition()->toolTip() );
 
       connect( mOutputWidget, &QgsProcessingLayerOutputDestinationWidget::destinationChanged, this, [ = ]()

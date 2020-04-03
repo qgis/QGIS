@@ -130,7 +130,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         dlg.exec_()
 
         if dlg.wasExecuted():
-            self.model().setDesignerParameterValues(dlg.getParameterValues())
+            self.model().setDesignerParameterValues(dlg.createProcessingParameters())
 
     def saveInProject(self):
         if not self.validateSave():

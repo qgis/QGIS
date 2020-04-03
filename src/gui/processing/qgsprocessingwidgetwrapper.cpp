@@ -217,6 +217,11 @@ void QgsAbstractProcessingParameterWidgetWrapper::registerProcessingContextGener
   mProcessingContextGenerator = generator;
 }
 
+void QgsAbstractProcessingParameterWidgetWrapper::registerProcessingParametersGenerator( QgsProcessingParametersGenerator *generator )
+{
+  mParametersGenerator = generator;
+}
+
 QLabel *QgsAbstractProcessingParameterWidgetWrapper::createLabel()
 {
   switch ( mType )

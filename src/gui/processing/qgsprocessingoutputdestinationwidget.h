@@ -67,6 +67,19 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     void setWidgetContext( const QgsProcessingParameterWidgetContext &context );
 
     /**
+     * Sets the processing \a context in which this widget is being shown.
+     */
+    void setContext( QgsProcessingContext *context );
+
+    /**
+     * Registers a Processing parameters \a generator class that will be used to retrieve
+     * algorithm parameters for the widget when required.
+     *
+     * \since QGIS 3.14
+     */
+    void registerProcessingParametersGenerator( QgsProcessingParametersGenerator *generator );
+
+    /**
      * Adds the "Open output file after running" option to the widget.
      */
     void addOpenAfterRunningOption();
@@ -110,6 +123,7 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     QString mimeDataToPath( const QMimeData *data );
 
     const QgsProcessingDestinationParameter *mParameter = nullptr;
+    QgsProcessingParametersGenerator *mParametersGenerator = nullptr;
     QMenu *mMenu = nullptr;
 
     bool mUseTemporary = true;
@@ -117,6 +131,8 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     QString mEncoding;
     QgsBrowserGuiModel *mBrowserModel = nullptr;
     QCheckBox *mOpenAfterRunningCheck = nullptr;
+
+    QgsProcessingContext *mContext = nullptr;
 
     friend class TestProcessingGui;
 };
