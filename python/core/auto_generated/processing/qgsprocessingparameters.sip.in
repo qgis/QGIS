@@ -2869,7 +2869,7 @@ A parameter which represents the destination feature sink for features created b
   public:
 
     QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
-                                       bool optional = false, bool createByDefault = true );
+                                       bool optional = false, bool createByDefault = true, bool supportsAppend = false );
 %Docstring
 Constructor for QgsProcessingParameterFeatureSink.
 
@@ -2926,6 +2926,30 @@ cannot be reliably determined in advance, this method will default to returning 
 Sets the layer ``type`` for the sinks associated with the parameter.
 
 .. seealso:: :py:func:`dataType`
+%End
+
+    bool supportsAppend() const;
+%Docstring
+Returns ``True`` if the sink supports appending features to an existing table.
+
+A sink only supports appending if the algorithm implements QgsProcessingAlgorithm.sinkProperties for the sink parameter.
+
+.. seealso:: :py:func:`setSupportsAppend`
+
+.. versionadded:: 3.14
+%End
+
+    void setSupportsAppend( bool supportsAppend );
+%Docstring
+Sets whether the sink supports appending features to an existing table.
+
+.. warning::
+
+   A sink only supports appending if the algorithm implements QgsProcessingAlgorithm.sinkProperties for the sink parameter.
+
+.. seealso:: :py:func:`supportsAppend`
+
+.. versionadded:: 3.14
 %End
 
     virtual QVariantMap toVariantMap() const;

@@ -4904,9 +4904,10 @@ QgsProcessingParameterFeatureSource *QgsProcessingParameterFeatureSource::fromSc
   return new QgsProcessingParameterFeatureSource( name, description, types, def, isOptional );
 }
 
-QgsProcessingParameterFeatureSink::QgsProcessingParameterFeatureSink( const QString &name, const QString &description, QgsProcessing::SourceType type, const QVariant &defaultValue, bool optional, bool createByDefault )
+QgsProcessingParameterFeatureSink::QgsProcessingParameterFeatureSink( const QString &name, const QString &description, QgsProcessing::SourceType type, const QVariant &defaultValue, bool optional, bool createByDefault, bool supportsAppend )
   : QgsProcessingDestinationParameter( name, description, defaultValue, optional, createByDefault )
   , mDataType( type )
+  , mSupportsAppend( supportsAppend )
 {
 }
 
@@ -5047,6 +5048,8 @@ QString QgsProcessingParameterFeatureSink::asPythonString( const QgsProcessing::
       code += QStringLiteral( ", type=QgsProcessing.%1" ).arg( QgsProcessing::sourceTypeToString( mDataType ) );
 
       code += QStringLiteral( ", createByDefault=%1" ).arg( createByDefault() ? QStringLiteral( "True" ) : QStringLiteral( "False" ) );
+      if ( mSupportsAppend )
+        code += QStringLiteral( ", supportsAppend=True" );
 
       QgsProcessingContext c;
       code += QStringLiteral( ", defaultValue=%1)" ).arg( valueAsPythonString( mDefault, c ) );
@@ -5124,6 +5127,7 @@ QVariantMap QgsProcessingParameterFeatureSink::toVariantMap() const
 {
   QVariantMap map = QgsProcessingDestinationParameter::toVariantMap();
   map.insert( QStringLiteral( "data_type" ), mDataType );
+  map.insert( QStringLiteral( "supports_append" ), mSupportsAppend );
   return map;
 }
 
@@ -5131,6 +5135,7 @@ bool QgsProcessingParameterFeatureSink::fromVariantMap( const QVariantMap &map )
 {
   QgsProcessingDestinationParameter::fromVariantMap( map );
   mDataType = static_cast< QgsProcessing::SourceType >( map.value( QStringLiteral( "data_type" ) ).toInt() );
+  mSupportsAppend = map.value( QStringLiteral( "supports_append" ), false ).toBool();
   return true;
 }
 
@@ -5168,6 +5173,16 @@ QgsProcessingParameterFeatureSink *QgsProcessingParameterFeatureSink::fromScript
   }
 
   return new QgsProcessingParameterFeatureSink( name, description, type, definition, isOptional );
+}
+
+bool QgsProcessingParameterFeatureSink::supportsAppend() const
+{
+  return mSupportsAppend;
+}
+
+void QgsProcessingParameterFeatureSink::setSupportsAppend( bool supportsAppend )
+{
+  mSupportsAppend = supportsAppend;
 }
 
 QgsProcessingParameterRasterDestination::QgsProcessingParameterRasterDestination( const QString &name, const QString &description, const QVariant &defaultValue, bool optional, bool createByDefault )

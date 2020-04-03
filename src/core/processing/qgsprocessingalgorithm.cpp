@@ -875,7 +875,7 @@ void QgsProcessingFeatureBasedAlgorithm::initAlgorithm( const QVariantMap &confi
 {
   addParameter( new QgsProcessingParameterFeatureSource( inputParameterName(), inputParameterDescription(), inputLayerTypes() ) );
   initParameters( config );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), outputName(), outputLayerType() ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), outputName(), outputLayerType(), QVariant(), false, true, true ) );
 }
 
 QString QgsProcessingFeatureBasedAlgorithm::inputParameterName() const
