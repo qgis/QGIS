@@ -437,17 +437,18 @@ void QgsLayerTreeViewDefaultActions::moveOutOfGroup()
 void QgsLayerTreeViewDefaultActions::moveToTop()
 {
   QList< QgsLayerTreeNode * >  selectedNodes = mView->selectedNodes();
-  // sort the nodes by depth first to avoid moving a group before it's contents
+  std::reverse( selectedNodes.begin(), selectedNodes.end() );
+  // sort the nodes by depth first to avoid moving a group before its contents
   std::stable_sort( selectedNodes.begin(), selectedNodes.end(), []( const QgsLayerTreeNode * a, const QgsLayerTreeNode * b )
   {
-    return a->depth() < b->depth();
+    return a->depth() > b->depth();
   } );
-  for ( auto it = selectedNodes.rbegin(); it < selectedNodes.rend(); ++it )
+  for ( QgsLayerTreeNode *n : qgis::as_const( selectedNodes ) )
   {
-    QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( ( *it )->parent() );
-    QgsLayerTreeNode *clonedNode = ( *it )->clone();
+    QgsLayerTreeGroup *parentGroup = qobject_cast<QgsLayerTreeGroup *>( n->parent() );
+    QgsLayerTreeNode *clonedNode = n->clone();
     parentGroup->insertChildNode( 0, clonedNode );
-    parentGroup->removeChildNode( ( *it ) );
+    parentGroup->removeChildNode( n );
   }
 }
 
@@ -455,7 +456,7 @@ void QgsLayerTreeViewDefaultActions::moveToTop()
 void QgsLayerTreeViewDefaultActions::moveToBottom()
 {
   QList< QgsLayerTreeNode * > selectedNodes = mView->selectedNodes();
-  // sort the nodes by depth first to avoid moving a group before it's contents
+  // sort the nodes by depth first to avoid moving a group before its contents
   std::stable_sort( selectedNodes.begin(), selectedNodes.end(), []( const QgsLayerTreeNode * a, const QgsLayerTreeNode * b )
   {
     return a->depth() > b->depth();
