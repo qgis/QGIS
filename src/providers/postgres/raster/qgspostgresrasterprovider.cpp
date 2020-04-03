@@ -837,9 +837,10 @@ bool QgsPostgresRasterProvider::init()
   // unless:
   // - it is a query layer (unsupported at the moment)
   // - use estimated metadata is false
-  // - there is a WHERE condition
+  // - there is a WHERE condition (except for temporal default value )
   // If previous conditions are not met or the first method fail try to fetch information
   // directly from the raster data. This can be very slow.
+  // Note that a temporal filter set as temporal default value does not count as a WHERE condition
 
   // utility to get data type from string, used in both branches
   auto pixelTypeFromString = [ ]( const QString & t ) -> Qgis::DataType
@@ -1006,7 +1007,7 @@ bool QgsPostgresRasterProvider::init()
 
         mExtent = p.boundingBox();
 
-        // Size
+        // Tile size
         mTileWidth = result.PQgetvalue( 0, 6 ).toInt( &ok );
 
         if ( ! ok )
@@ -1116,23 +1117,33 @@ bool QgsPostgresRasterProvider::init()
     where = QStringLiteral( "WHERE %1" ).arg( subsetString() );
   }
 
-  const QString sql { QStringLiteral( "SELECT ENCODE( ST_AsBinary( ST_Envelope( foo.bar) ), 'hex'), ( ST_Metadata( foo.bar ) ).* "
-                                      "FROM ( SELECT ST_Union ( %1 ) AS bar FROM %2 %3) AS foo" )
-                      .arg( quotedIdentifier( mRasterColumn ),
-                            tableToQuery,
-                            where )};
+  // Fastest SQL: fetch all metadata in one pass
+  //   0           1          3           3        4       5         6       7       8       9      10          11           12           13      14
+  // encode | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands | pixeltype | nodatavalue | isoutdb | path
+  const QString sql { QStringLiteral( R"(
+      WITH cte_rast AS ( SELECT ST_Union( %1 ) AS united_raster FROM %2 %3 ),
+           cte_bandno AS ( SELECT * FROM generate_series(1, ST_NumBands ( ( SELECT cte_rast.united_raster FROM cte_rast ) ) ) AS bandno ),
+           cte_band AS ( SELECT ST_Band( united_raster, bandno ) AS band FROM cte_rast, cte_bandno )
+                      SELECT ENCODE( ST_AsBinary( ST_Envelope( band ) ), 'hex'),
+                        (ST_Metadata( band  )).*,
+                        (ST_BandMetadata( band )).*
+                      FROM cte_band
+  )" ).arg( quotedIdentifier( mRasterColumn ),
+                                          tableToQuery,
+                                          where )};
 
   QgsDebugMsgLevel( QStringLiteral( "Raster information sql: %1" ).arg( sql ), 4 );
 
   QgsPostgresResult result( connectionRO()->PQexec( sql ) );
   if ( PGRES_TUPLES_OK == result.PQresultStatus() && result.PQntuples() > 0 )
   {
-    bool ok;
-    QgsPolygon p;
 
-    // envelope | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
+    mBandCount = result.PQntuples();
+
+    bool ok;
 
     // Extent
+    QgsPolygon p;
     try
     {
       QgsConstWkbPtr ptr { QByteArray::fromHex( result.PQgetvalue( 0, 0 ).toLatin1() ) };
@@ -1152,7 +1163,7 @@ bool QgsPostgresRasterProvider::init()
 
     mExtent = p.boundingBox();
 
-    // Size
+    // Tile size (in this path the raster is considered untiled, so this is actually the whole size
     mTileWidth = result.PQgetvalue( 0, 3 ).toInt( &ok );
 
     if ( ! ok )
@@ -1212,61 +1223,36 @@ bool QgsPostgresRasterProvider::init()
     }
 
     mDetectedSrid = result.PQgetvalue( 0, 9 );
-    mBandCount = result.PQgetvalue( 0, 10 ).toInt( &ok );
-    if ( ! ok )
-    {
-      QgsMessageLog::logMessage( tr( "Cannot convert band count '%1' to int" ).arg( result.PQgetvalue( 0, 10 ) ),
-                                 QStringLiteral( "PostGIS" ), Qgis::Critical );
-      return false;
-    }
 
     // Fetch band data types
-    // bandnum | pixeltype | nodatavalue | isoutdb | path
-    const QString sql { QStringLiteral( "SELECT * FROM ST_BandMetadata( (SELECT ST_Union ( %1 ) FROM %2 %3 ), "
-                                        "(SELECT ARRAY_AGG(foo) FROM generate_series(1,%4) AS foo) )" )
-                        .arg( quotedIdentifier( mRasterColumn ) )
-                        .arg( mQuery )
-                        .arg( where )
-                        .arg( mBandCount ) };
-
-    QgsPostgresResult result( connectionRO()->PQexec( sql ) );
-    if ( PGRES_TUPLES_OK == result.PQresultStatus() && result.PQntuples() > 0 )
+    for ( int rowNumber = 0; rowNumber < result.PQntuples(); ++rowNumber )
     {
-      for ( int rowNumber = 0; rowNumber < result.PQntuples(); ++rowNumber )
+      Qgis::DataType type { pixelTypeFromString( result.PQgetvalue( rowNumber, 11 ) ) };
+
+      if ( type == Qgis::DataType::UnknownDataType )
       {
-        Qgis::DataType type { pixelTypeFromString( result.PQgetvalue( rowNumber, 1 ) ) };
-
-        if ( type == Qgis::DataType::UnknownDataType )
-        {
-          QgsMessageLog::logMessage( tr( "Unsupported data type: '%1'" ).arg( result.PQgetvalue( rowNumber, 1 ) ),
-                                     QStringLiteral( "PostGIS" ), Qgis::Critical );
-          return false;
-        }
-
-        mDataTypes.push_back( type );
-        mDataSizes.push_back( QgsRasterBlock::typeSize( type ) );
-        double nodataValue { result.PQgetvalue( rowNumber, 2 ).toDouble( &ok ) };
-
-        if ( ! ok )
-        {
-          QgsMessageLog::logMessage( tr( "Cannot convert nodata value '%1' to double, default to: %2" )
-                                     .arg( result.PQgetvalue( rowNumber, 2 ) )
-                                     .arg( std::numeric_limits<double>::min() ), QStringLiteral( "PostGIS" ), Qgis::Info );
-          nodataValue = std::numeric_limits<double>::min();
-        }
-
-        mSrcNoDataValue.append( nodataValue );
-        mSrcHasNoDataValue.append( true );
-        mUseSrcNoDataValue.append( true );
-        mIsOutOfDb = result.PQgetvalue( rowNumber, 3 ) == 't';
+        QgsMessageLog::logMessage( tr( "Unsupported data type: '%1'" ).arg( result.PQgetvalue( rowNumber, 11 ) ),
+                                   QStringLiteral( "PostGIS" ), Qgis::Critical );
+        return false;
       }
+
+      mDataTypes.push_back( type );
+      mDataSizes.push_back( QgsRasterBlock::typeSize( type ) );
+      double nodataValue { result.PQgetvalue( rowNumber, 12 ).toDouble( &ok ) };
+
+      if ( ! ok )
+      {
+        QgsMessageLog::logMessage( tr( "Cannot convert nodata value '%1' to double, default to: %2" )
+                                   .arg( result.PQgetvalue( rowNumber, 2 ) )
+                                   .arg( std::numeric_limits<double>::min() ), QStringLiteral( "PostGIS" ), Qgis::Info );
+        nodataValue = std::numeric_limits<double>::min();
+      }
+
+      mSrcNoDataValue.append( nodataValue );
+      mSrcHasNoDataValue.append( true );
+      mUseSrcNoDataValue.append( true );
     }
-    else
-    {
-      QgsMessageLog::logMessage( tr( "An error occurred while fetching raster band metadata" ),
-                                 QStringLiteral( "PostGIS" ), Qgis::Critical );
-      return false;
-    }
+    mIsOutOfDb = result.PQgetvalue( 0, 13 ) == 't';
   }
   else
   {
