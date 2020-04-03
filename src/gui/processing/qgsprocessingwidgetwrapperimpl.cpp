@@ -57,6 +57,7 @@
 #include "qgsprocessingmaplayercombobox.h"
 #include "qgsrasterbandcombobox.h"
 #include "qgsprocessingoutputdestinationwidget.h"
+#include "qgscheckablecombobox.h"
 #include <QToolButton>
 #include <QLabel>
 #include <QHBoxLayout>
@@ -5306,7 +5307,7 @@ QgsProcessingMapLayerParameterDefinitionWidget::QgsProcessingMapLayerParameterDe
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Layer type" ) ) );
-  mLayerTypeComboBox = new QComboBox();
+  mLayerTypeComboBox = new QgsCheckableComboBox();
   mLayerTypeComboBox->addItem( tr( "Any Map Layer" ), QgsProcessing::TypeMapLayer );
   mLayerTypeComboBox->addItem( tr( "Vector (Point)" ), QgsProcessing::TypeVectorPoint );
   mLayerTypeComboBox->addItem( tr( "Vector (Line)" ), QgsProcessing::TypeVectorLine );
@@ -5316,7 +5317,12 @@ QgsProcessingMapLayerParameterDefinitionWidget::QgsProcessingMapLayerParameterDe
   mLayerTypeComboBox->addItem( tr( "Mesh" ), QgsProcessing::TypeMesh );
 
   if ( const QgsProcessingParameterMapLayer *layerParam = dynamic_cast<const QgsProcessingParameterMapLayer *>( definition ) )
-    mLayerTypeComboBox->setCurrentIndex( mLayerTypeComboBox->findData( layerParam->dataTypes().at( 0 ) ) );
+  {
+    for ( int i : layerParam->dataTypes() )
+    {
+      mLayerTypeComboBox->setItemCheckState( mLayerTypeComboBox->findData( i ), Qt::Checked );
+    }
+  }
 
   vlayout->addWidget( mLayerTypeComboBox );
 
@@ -5325,8 +5331,12 @@ QgsProcessingMapLayerParameterDefinitionWidget::QgsProcessingMapLayerParameterDe
 
 QgsProcessingParameterDefinition *QgsProcessingMapLayerParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
+  QList< int > dataTypes;
+  for ( const QVariant &v : mLayerTypeComboBox->checkedItemsData() )
+    dataTypes << v.toInt();
+
   auto param = qgis::make_unique< QgsProcessingParameterMapLayer >( name, description );
-  param->setDataTypes( QList< int >() << mLayerTypeComboBox->currentData().toInt() );
+  param->setDataTypes( dataTypes );
   param->setFlags( flags );
   return param.release();
 }
@@ -5499,7 +5509,7 @@ QgsProcessingVectorLayerParameterDefinitionWidget::QgsProcessingVectorLayerParam
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Geometry type" ) ) );
-  mGeometryTypeComboBox = new QComboBox();
+  mGeometryTypeComboBox = new QgsCheckableComboBox();
   mGeometryTypeComboBox->addItem( tr( "Geometry Not Required" ), QgsProcessing::TypeVector );
   mGeometryTypeComboBox->addItem( tr( "Point" ), QgsProcessing::TypeVectorPoint );
   mGeometryTypeComboBox->addItem( tr( "Line" ), QgsProcessing::TypeVectorLine );
@@ -5507,7 +5517,12 @@ QgsProcessingVectorLayerParameterDefinitionWidget::QgsProcessingVectorLayerParam
   mGeometryTypeComboBox->addItem( tr( "Any Geometry Type" ), QgsProcessing::TypeVectorAnyGeometry );
 
   if ( const QgsProcessingParameterVectorLayer *vectorParam = dynamic_cast<const QgsProcessingParameterVectorLayer *>( definition ) )
-    mGeometryTypeComboBox->setCurrentIndex( mGeometryTypeComboBox->findData( vectorParam->dataTypes().at( 0 ) ) );
+  {
+    for ( int i : vectorParam->dataTypes() )
+    {
+      mGeometryTypeComboBox->setItemCheckState( mGeometryTypeComboBox->findData( i ), Qt::Checked );
+    }
+  }
 
   vlayout->addWidget( mGeometryTypeComboBox );
 
@@ -5516,7 +5531,11 @@ QgsProcessingVectorLayerParameterDefinitionWidget::QgsProcessingVectorLayerParam
 
 QgsProcessingParameterDefinition *QgsProcessingVectorLayerParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
-  auto param = qgis::make_unique< QgsProcessingParameterVectorLayer >( name, description, QList< int >() << mGeometryTypeComboBox->currentData().toInt() );
+  QList< int > dataTypes;
+  for ( const QVariant &v : mGeometryTypeComboBox->checkedItemsData() )
+    dataTypes << v.toInt();
+
+  auto param = qgis::make_unique< QgsProcessingParameterVectorLayer >( name, description, dataTypes );
   param->setFlags( flags );
   return param.release();
 }
@@ -5588,7 +5607,7 @@ QgsProcessingFeatureSourceParameterDefinitionWidget::QgsProcessingFeatureSourceP
   vlayout->setContentsMargins( 0, 0, 0, 0 );
 
   vlayout->addWidget( new QLabel( tr( "Geometry type" ) ) );
-  mGeometryTypeComboBox = new QComboBox();
+  mGeometryTypeComboBox = new QgsCheckableComboBox();
   mGeometryTypeComboBox->addItem( tr( "Geometry Not Required" ), QgsProcessing::TypeVector );
   mGeometryTypeComboBox->addItem( tr( "Point" ), QgsProcessing::TypeVectorPoint );
   mGeometryTypeComboBox->addItem( tr( "Line" ), QgsProcessing::TypeVectorLine );
@@ -5596,7 +5615,12 @@ QgsProcessingFeatureSourceParameterDefinitionWidget::QgsProcessingFeatureSourceP
   mGeometryTypeComboBox->addItem( tr( "Any Geometry Type" ), QgsProcessing::TypeVectorAnyGeometry );
 
   if ( const QgsProcessingParameterFeatureSource *sourceParam = dynamic_cast<const QgsProcessingParameterFeatureSource *>( definition ) )
-    mGeometryTypeComboBox->setCurrentIndex( mGeometryTypeComboBox->findData( sourceParam->dataTypes().at( 0 ) ) );
+  {
+    for ( int i : sourceParam->dataTypes() )
+    {
+      mGeometryTypeComboBox->setItemCheckState( mGeometryTypeComboBox->findData( i ), Qt::Checked );
+    }
+  }
 
   vlayout->addWidget( mGeometryTypeComboBox );
 
@@ -5605,7 +5629,11 @@ QgsProcessingFeatureSourceParameterDefinitionWidget::QgsProcessingFeatureSourceP
 
 QgsProcessingParameterDefinition *QgsProcessingFeatureSourceParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
-  auto param = qgis::make_unique< QgsProcessingParameterFeatureSource >( name, description, QList< int >() << mGeometryTypeComboBox->currentData().toInt() );
+  QList< int > dataTypes;
+  for ( const QVariant &v : mGeometryTypeComboBox->checkedItemsData() )
+    dataTypes << v.toInt();
+
+  auto param = qgis::make_unique< QgsProcessingParameterFeatureSource >( name, description, dataTypes );
   param->setFlags( flags );
   return param.release();
 }
