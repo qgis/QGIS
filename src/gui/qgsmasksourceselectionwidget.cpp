@@ -63,6 +63,7 @@ QgsMaskSourceSelectionWidget::QgsMaskSourceSelectionWidget( QWidget *parent )
 
   // place the tree in a layout
   QVBoxLayout *vbox = new QVBoxLayout();
+  vbox->setContentsMargins( 0, 0, 0, 0 );
   vbox->addWidget( mTree );
 
   setLayout( vbox );
