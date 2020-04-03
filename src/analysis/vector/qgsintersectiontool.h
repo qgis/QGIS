@@ -47,6 +47,20 @@ namespace Vectoranalysis
                            QgsCoordinateTransformContext transformContext,
                            QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck = QgsFeatureRequest::GeometryNoCheck );
 
+    protected:
+
+      /**
+       * Prepare jobs
+       */
+      void prepare() override;
+
+      /**
+       * Process feature
+       */
+      void processFeature( const Job *job ) override;
+
+      bool prepareNextChunk() override;
+
     private:
       QgsSpatialIndex mSpatialIndex;
       QgsFeatureSource *mLayerA;
@@ -54,15 +68,7 @@ namespace Vectoranalysis
       QgsAttributeList mFieldIndicesA;
       QgsAttributeList mFieldIndicesB;
 
-      /**
-       * Prepare jobs
-       */
-      void prepare();
 
-      /**
-       * Process feature
-       */
-      void processFeature( const Job *job );
   };
 
 } // Geoprocessing

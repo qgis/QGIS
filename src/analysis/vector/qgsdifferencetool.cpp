@@ -43,12 +43,12 @@ namespace Vectoranalysis
   void QgsDifferenceTool::processFeature( const Job *job )
   {
     QgsFeature f;
-    if ( !mOutput || !mLayerA || !mLayerB || !getFeatureAtId( f, job->featureid, mLayerA, mLayerA->fields().allAttributesList() ) )
+    if ( !mOutput || !mLayerA || !mLayerB )
     {
       return;
     }
 
-    QgsFeatureList difference = QgsOverlayUtils::featureDifference( f, *mLayerA, *mLayerB, mSpatialIndex, mTransformContext, mLayerA->fields().size(), mLayerB->fields().size(), QgsOverlayUtils::OutputA );
+    QgsFeatureList difference = QgsOverlayUtils::featureDifference( job->feature, *mLayerA, *mLayerB, mSpatialIndex, mTransformContext, mLayerA->fields().size(), mLayerB->fields().size(), QgsOverlayUtils::OutputA );
     writeFeatures( difference );
   }
 

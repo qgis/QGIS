@@ -407,6 +407,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
 
 void QgsOverlayUtils::runVectorAnalysisTool( Vectoranalysis::QgsAbstractTool &tool, QgsProcessingFeedback *feedback )
 {
+#if 0
   QFutureWatcher<void> fWatcher;
   QEventLoop evLoop;
   if ( feedback )
@@ -428,6 +429,9 @@ void QgsOverlayUtils::runVectorAnalysisTool( Vectoranalysis::QgsAbstractTool &to
   feedback->setProgressText( QObject::tr( "Executing tool..." ) );
   fWatcher.setFuture( tool.execute() );
   evLoop.exec();
+#endif //0
+
+  tool.run();
 
   const QStringList &exceptionList = tool.exceptions();
   if ( !exceptionList.isEmpty() )

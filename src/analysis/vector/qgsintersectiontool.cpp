@@ -40,21 +40,31 @@ namespace Vectoranalysis
 
   void QgsIntersectionTool::prepare()
   {
-    appendToJobQueue( mLayerA );
+    QgsFeatureRequest request;
+    request.setSubsetOfAttributes( mFieldIndicesA );
+    request.setInvalidGeometryCheck( mInvalidGeometryCheck );
+    mFeatureIterator = mLayerA->getFeatures( request );
     buildSpatialIndex( mSpatialIndex, mLayerB );
   }
 
   void QgsIntersectionTool::processFeature( const Job *job )
   {
-    // Get currently processed feature
-    QgsFeature f;
-    if ( !mOutput || !mLayerA || !mLayerB || !getFeatureAtId( f, job->featureid, mLayerA, mFieldIndicesA ) )
+    if ( !mOutput || !mLayerA || !mLayerB )
     {
       return;
     }
 
-    QgsFeatureList intersection = QgsOverlayUtils::featureIntersection( f, *mLayerA, *mLayerB, mSpatialIndex, mTransformContext, mFieldIndicesA, mFieldIndicesB );
+    QgsFeatureList intersection = QgsOverlayUtils::featureIntersection( job->feature, *mLayerA, *mLayerB, mSpatialIndex, mTransformContext, mFieldIndicesA, mFieldIndicesB );
     writeFeatures( intersection );
   }
 
+  bool QgsIntersectionTool::prepareNextChunk()
+  {
+    if ( !mLayerA )
+    {
+      return false;
+    }
+
+    return appendNextChunkToJobQueue( mLayerA );
+  }
 } // Geoprocessing

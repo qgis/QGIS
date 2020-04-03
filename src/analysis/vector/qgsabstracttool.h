@@ -56,9 +56,9 @@ namespace Vectoranalysis
       QFuture<void> init();
 
       /**
-       * Executes the analysis tool
+       * @brief run analysis
        */
-      virtual QFuture<void> execute();
+      void run();
 
       /**
        * Returns exceptions
@@ -66,6 +66,12 @@ namespace Vectoranalysis
        */
       const QStringList &exceptions() const { return mExceptions; }
 
+    private:
+
+      /**
+       * Executes the job queue
+       */
+      QFuture<void> execute();
 
     protected:
 
@@ -74,10 +80,9 @@ namespace Vectoranalysis
        */
       struct Job
       {
-        Job( const QgsFeatureId &_featureid, int _taskFlag )
-          : featureid( _featureid ), taskFlag( _taskFlag ) {}
-        virtual ~Job() {}
-        QgsFeatureId featureid;
+        Job( QgsFeature _feature, int _taskFlag )
+          : feature( _feature ), taskFlag( _taskFlag ) {}
+        QgsFeature feature;
         int taskFlag;
       };
 
@@ -97,6 +102,12 @@ namespace Vectoranalysis
       virtual void prepare() = 0;
 
       /**
+       * @brief Create job queue from next feature chunk
+       * @return  true if there are more features. False if all fetures have been processed
+       */
+      virtual bool prepareNextChunk() { return false; } // = 0;
+
+      /**
        * Process individual feature, implemented by subclasses
        */
       virtual void processFeature( const Job *job ) = 0;
@@ -110,6 +121,13 @@ namespace Vectoranalysis
        * Creates jobs for each feature and adds them to the job queue
        */
       void appendToJobQueue( QgsFeatureSource *layer, int taskFlag = 0 );
+
+      /**
+       * @brief appendNextChunkToJobQueue
+       * @param layer
+       * @param taskFlag
+       */
+      bool appendNextChunkToJobQueue( QgsFeatureSource *layer, int taskFlag = 0 );
 
       /**
        * Fetch feature at id
@@ -129,6 +147,9 @@ namespace Vectoranalysis
       QgsFeatureSink *mOutput;
       QgsCoordinateTransformContext mTransformContext;
       QgsFeatureRequest::InvalidGeometryCheck mInvalidGeometryCheck;
+
+      int mChunkSize = 100; //number of features fetched in one go
+      QgsFeatureIterator mFeatureIterator;
   };
 
 } // Geoprocessing

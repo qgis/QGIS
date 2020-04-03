@@ -57,6 +57,18 @@ namespace Vectoranalysis
     return QtConcurrent::run( this, &QgsAbstractTool::prepare );
   }
 
+  void QgsAbstractTool::run()
+  {
+    prepare();
+    while ( prepareNextChunk() )
+    {
+      QFuture<void> f = execute();
+      f.waitForFinished();
+      qDeleteAll( mJobQueue );
+      mJobQueue.clear();
+    }
+  }
+
   QFuture<void> QgsAbstractTool::execute()
   {
     return QtConcurrent::map( mJobQueue, ProcessFeatureWrapper( this ) );
@@ -73,10 +85,31 @@ namespace Vectoranalysis
 
   void QgsAbstractTool::appendToJobQueue( QgsFeatureSource *layer, int taskFlag )
   {
+#if 0 //todo: remove function
     for ( const QgsFeatureId &id : layer->allFeatureIds() )
     {
       mJobQueue.append( new Job( id, taskFlag ) );
     }
+#endif //0
+  }
+
+  bool QgsAbstractTool::appendNextChunkToJobQueue( QgsFeatureSource *layer, int taskFlag )
+  {
+
+    QgsFeature f;
+    for ( int i = 0; i < mChunkSize; ++i )
+    {
+      if ( !mFeatureIterator.nextFeature( f ) )
+      {
+        if ( i == 0 )
+        {
+          return false;
+        }
+        break;
+      }
+      mJobQueue.append( new Job( f, taskFlag ) );
+    }
+    return true;
   }
 
   bool QgsAbstractTool::getFeatureAtId( QgsFeature &feature, QgsFeatureId id, QgsFeatureSource *layer, const QgsAttributeList &attIdx )

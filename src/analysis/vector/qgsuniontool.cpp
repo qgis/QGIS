@@ -55,22 +55,14 @@ namespace Vectoranalysis
     QgsGeometry geom = f.geometry();
     if ( job->taskFlag == ProcessLayerAFeature )
     {
-      if ( !getFeatureAtId( f, job->featureid, mLayerA, mFieldIndicesA ) )
-      {
-        return;
-      }
       QgsFeatureList intersection = QgsOverlayUtils::featureIntersection( f, *mLayerA, *mLayerB, mSpatialIndexB, mTransformContext, mFieldIndicesA, mFieldIndicesB );
       writeFeatures( intersection );
-      QgsFeatureList differenceA = QgsOverlayUtils::featureDifference( f, *mLayerA, *mLayerB, mSpatialIndexB, mTransformContext, mLayerA->fields().size(), mLayerB->fields().size(), QgsOverlayUtils::OutputAB );
+      QgsFeatureList differenceA = QgsOverlayUtils::featureDifference( job->feature, *mLayerA, *mLayerB, mSpatialIndexB, mTransformContext, mLayerA->fields().size(), mLayerB->fields().size(), QgsOverlayUtils::OutputAB );
       writeFeatures( differenceA );
     }
     else // if(job->taskFlag == ProcessLayerBFeature)
     {
-      if ( !getFeatureAtId( f, job->featureid, mLayerB, mFieldIndicesB ) )
-      {
-        return;
-      }
-      QgsFeatureList differenceB = QgsOverlayUtils::featureDifference( f, *mLayerB, *mLayerA, mSpatialIndexA, mTransformContext, mLayerB->fields().size(), mLayerA->fields().size(), QgsOverlayUtils::OutputBA );
+      QgsFeatureList differenceB = QgsOverlayUtils::featureDifference( job->feature, *mLayerB, *mLayerA, mSpatialIndexA, mTransformContext, mLayerB->fields().size(), mLayerA->fields().size(), QgsOverlayUtils::OutputBA );
       writeFeatures( differenceB );
     }
   }
