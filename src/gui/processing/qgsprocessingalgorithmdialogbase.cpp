@@ -203,11 +203,6 @@ QWidget *QgsProcessingAlgorithmDialogBase::mainWidget()
   return mMainWidget;
 }
 
-QVariantMap QgsProcessingAlgorithmDialogBase::getParameterValues() const
-{
-  return QVariantMap();
-}
-
 void QgsProcessingAlgorithmDialogBase::saveLogToFile( const QString &path, const LogFormat format )
 {
   QFile logFile( path );

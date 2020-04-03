@@ -53,6 +53,19 @@ parent model algorithm, a linked map canvas, and other relevant information whic
 to fine-tune its behavior.
 %End
 
+    void setContext( QgsProcessingContext *context );
+%Docstring
+Sets the processing ``context`` in which this widget is being shown.
+%End
+
+    void registerProcessingParametersGenerator( QgsProcessingParametersGenerator *generator );
+%Docstring
+Registers a Processing parameters ``generator`` class that will be used to retrieve
+algorithm parameters for the widget when required.
+
+.. versionadded:: 3.14
+%End
+
     void addOpenAfterRunningOption();
 %Docstring
 Adds the "Open output file after running" option to the widget.

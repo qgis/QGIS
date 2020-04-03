@@ -95,7 +95,8 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.updateRunButtonVisibility()
 
     def getParametersPanel(self, alg, parent):
-        return ParametersPanel(parent, alg, self.in_place)
+        panel = ParametersPanel(parent, alg, self.in_place, parameters_generator=self)
+        return panel
 
     def runAsBatch(self):
         self.close()
@@ -114,7 +115,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
     def setParameters(self, parameters):
         self.mainWidget().setParameters(parameters)
 
-    def getParameterValues(self):
+    def createProcessingParameters(self):
         parameters = {}
 
         if self.mainWidget() is None:
@@ -186,7 +187,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
-            parameters = self.getParameterValues()
+            parameters = self.createProcessingParameters()
 
             if checkCRS and not self.algorithm().validateInputCrs(parameters, self.context):
                 reply = QMessageBox.question(self, self.tr("Unmatching CRS's"),

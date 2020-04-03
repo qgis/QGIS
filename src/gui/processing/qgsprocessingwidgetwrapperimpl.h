@@ -1830,6 +1830,9 @@ class GUI_EXPORT QgsProcessingFeatureSinkWidgetWrapper : public QgsProcessingOut
   protected:
     QString modelerExpressionFormatString() const override;
 
+  private:
+    QgsProcessingContext mContext;
+
 };
 
 class GUI_EXPORT QgsProcessingVectorDestinationWidgetWrapper : public QgsProcessingOutputWidgetWrapper
