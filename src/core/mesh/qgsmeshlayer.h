@@ -164,8 +164,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-
     void reload() override;
+    QStringList subLayers() const override;
 
     //! Returns the provider type for this layer
     QString providerType() const;

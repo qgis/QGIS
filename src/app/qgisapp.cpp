@@ -5458,7 +5458,8 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
   QgsMeshLayer::LayerOptions options;
   std::unique_ptr<QgsMeshLayer> layer( new QgsMeshLayer( url, base, providerKey, options ) );
 
-  if ( ! layer || !layer->isValid() )
+
+  if ( ! layer || ( !layer->isValid() && layer->subLayers().isEmpty() ) )
   {
     if ( guiWarning )
     {
@@ -5468,6 +5469,18 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
 
     // since the layer is bad, stomp on it
     return nullptr;
+  }
+
+  if ( !layer->isValid() && layer->subLayers().count() > 0 )
+  {
+    QList< QgsMapLayer * > subLayers = askUserForMDALSublayers( layer.get() );
+
+    if ( !subLayers.isEmpty() )
+      QgsProject::instance()->addMapLayers( subLayers );
+
+    for ( QgsMapLayer *l : qgis::as_const( subLayers ) )
+      askUserForDatumTransform( l->crs(), QgsProject::instance()->crs(), l );
+    layer.reset( !subLayers.isEmpty() ? qobject_cast< QgsMeshLayer * >( subLayers.at( 0 ) ) : nullptr );
   }
 
   QgsProject::instance()->addMapLayer( layer.get() );
@@ -5918,6 +5931,58 @@ QList<QgsMapLayer *> QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     if ( addToGroup && ! newLayersVisible )
       group->setItemVisibilityCheckedRecursive( newLayersVisible );
   }
+  return result;
+}
+
+QList<QgsMapLayer *> QgisApp::askUserForMDALSublayers( QgsMeshLayer *layer )
+{
+  QList< QgsMapLayer * > result;
+  if ( !layer )
+    return result;
+
+  QStringList sublayers = layer->subLayers();
+  if ( sublayers.empty() )
+    return result;
+
+  QgsSublayersDialog chooseSublayersDialog( QgsSublayersDialog::Mdal, QStringLiteral( "mdal" ), this );
+  chooseSublayersDialog.setShowAddToGroupCheckbox( true );
+
+  QgsSublayersDialog::LayerDefinitionList layersDefList;
+  int id = 1;
+  for ( QString layerUri : sublayers )
+  {
+    QgsSublayersDialog::LayerDefinition definition;
+    QStringList parsedUri = layerUri.split( ':' );
+    switch ( parsedUri.count() )
+    {
+      case 0:
+      case 1:
+        definition.layerName = tr( "none" );
+        break;
+      case 2:
+        definition.layerName = QFileInfo( parsedUri.last() ).baseName();
+        break;
+      default:
+        definition.layerName = parsedUri.last();
+        break;
+
+    }
+    definition.layerId = id++;
+    layersDefList.append( definition );
+  }
+
+  chooseSublayersDialog.populateLayerTable( layersDefList );
+  if ( chooseSublayersDialog.exec() )
+  {
+    QgsSublayersDialog::LayerDefinitionList selection = chooseSublayersDialog.selection();
+    for ( auto definition : selection )
+    {
+      int id = definition.layerId;
+      QString name = definition.layerName;
+      result.append( new QgsMeshLayer( sublayers.at( id - 1 ), name, QStringLiteral( "mdal" ) ) );
+    }
+  }
+
   return result;
 }
 

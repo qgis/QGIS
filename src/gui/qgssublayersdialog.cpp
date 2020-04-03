@@ -50,26 +50,30 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
 
-  if ( providerType == QgsSublayersDialog::Ogr )
+  switch ( providerType )
   {
-    setWindowTitle( tr( "Select Vector Layers to Add…" ) );
-    layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
-                                  << tr( "Number of features" ) << tr( "Geometry type" ) << tr( "Description" ) );
-    mShowCount = true;
-    mShowType = true;
-    mShowDescription = true;
-  }
-  else if ( providerType == QgsSublayersDialog::Gdal )
-  {
-    setWindowTitle( tr( "Select Raster Layers to Add…" ) );
-    layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) );
-  }
-  else
-  {
-    setWindowTitle( tr( "Select Layers to Add…" ) );
-    layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
-                                  << tr( "Type" ) );
-    mShowType = true;
+    case QgsSublayersDialog::Ogr :
+      setWindowTitle( tr( "Select Vector Layers to Add…" ) );
+      layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
+                                    << tr( "Number of features" ) << tr( "Geometry type" ) << tr( "Description" ) );
+      mShowCount = true;
+      mShowType = true;
+      mShowDescription = true;
+      break;
+    case QgsSublayersDialog::Gdal:
+      setWindowTitle( tr( "Select Raster Layers to Add…" ) );
+      layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) );
+      break;
+    case QgsSublayersDialog::Mdal:
+      setWindowTitle( tr( "Select Mesh Layers to Add…" ) );
+      layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Mesh name" ) );
+      break;
+    default:
+      setWindowTitle( tr( "Select Layers to Add…" ) );
+      layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
+                                    << tr( "Type" ) );
+      mShowType = true;
+      break;
   }
 
   // add a "Select All" button - would be nicer with an icon

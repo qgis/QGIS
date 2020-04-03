@@ -45,14 +45,18 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
 
   setProviderType( providerKey );
   // if we’re given a provider type, try to create and bind one to this layer
+  bool ok = false;
   if ( !meshLayerPath.isEmpty() && !providerKey.isEmpty() )
   {
     QgsDataProvider::ProviderOptions providerOptions { options.transformContext };
-    setDataProvider( providerKey, providerOptions );
+    ok = setDataProvider( providerKey, providerOptions );
   }
 
-  setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
-  setDefaultRendererSettings();
+  if ( ok )
+  {
+    setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
+    setDefaultRendererSettings();
+  }
 }
 
 
@@ -631,6 +635,14 @@ void QgsMeshLayer::reload()
     //clear the rendererCache
     mRendererCache.reset( new QgsMeshLayerRendererCache() );
   }
+}
+
+QStringList QgsMeshLayer::subLayers() const
+{
+  if ( mDataProvider )
+    return mDataProvider->subLayers();
+  else
+    return QStringList();
 }
 
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
