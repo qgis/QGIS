@@ -301,9 +301,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
+                <y>-188</y>
                 <width>629</width>
-                <height>824</height>
+                <height>914</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -457,7 +457,7 @@ border-radius: 2px;</string>
                       <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
                        <property name="dateTime">
                         <datetime>
-                         <hour>4</hour>
+                         <hour>2</hour>
                          <minute>3</minute>
                          <second>57</second>
                          <year>2020</year>
@@ -501,7 +501,7 @@ border-radius: 2px;</string>
                       <widget class="QgsDateTimeEdit" name="mReferenceDateTimeEdit">
                        <property name="dateTime">
                         <datetime>
-                         <hour>17</hour>
+                         <hour>16</hour>
                          <minute>20</minute>
                          <second>36</second>
                          <year>2020</year>
@@ -589,6 +589,23 @@ border-radius: 2px;</string>
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_18">
+                  <item row="0" column="0" colspan="2">
+                   <widget class="QLabel" name="mPostgresRasterTemporalLabel">
+                    <property name="text">
+                     <string>If the dataset contains multiple rasters belonging to a time series, specify the field that contains the time information, the type of the field can be any type that can be converted to a timestamp.</string>
+                    </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_12">
+                    <property name="text">
+                     <string>Default time</string>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="1" column="1">
                    <widget class="QgsFieldComboBox" name="mPostgresRasterTemporalFieldComboBox">
                     <property name="sizePolicy">
@@ -599,9 +616,6 @@ border-radius: 2px;</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="2" column="1">
-                   <widget class="QgsDateTimeEdit" name="mPostgresRasterDefaultTime"/>
-                  </item>
                   <item row="1" column="0">
                    <widget class="QLabel" name="label">
                     <property name="text">
@@ -609,20 +623,16 @@ border-radius: 2px;</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0" colspan="2">
-                   <widget class="QLabel" name="mPostgresRasterTemporalLabel">
+                  <item row="3" column="1">
+                   <widget class="QgsDateTimeEdit" name="mPostgresRasterDefaultTime"/>
+                  </item>
+                  <item row="2" column="0" colspan="2">
+                   <widget class="QLabel" name="label_14">
                     <property name="text">
-                     <string>If the dataset contains multiple rasters belonging to a time series, specify the field that contains the time information, the type of the field can be any type that can be converted to a timestamp. A default value can be specified and it will be used when the temporal controller is not requesting any particular time.</string>
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;A default value can be specified and it will be used when the temporal controller is not requesting any particular time.&lt;/p&gt;&lt;p&gt;It is recommended to set a default temporal value here instead of using a provider filter because the provider filter will still be active when using the temporal controller while this default value will be ignored.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="2" column="0">
-                   <widget class="QLabel" name="label_12">
-                    <property name="text">
-                     <string>Default time</string>
                     </property>
                    </widget>
                   </item>

@@ -703,10 +703,32 @@ QString QgsPostgresRasterProvider::subsetString() const
   return mSqlWhereClause;
 }
 
+QString QgsPostgresRasterProvider::defaultTimeSubsetString( const QDateTime &defaultTime ) const
+{
+  if ( defaultTime.isValid( ) &&
+       mTemporalFieldIndex >= 0 &&
+       mAttributeFields.exists( mTemporalFieldIndex ) )
+  {
+    const QgsField temporalField { mAttributeFields.field( mTemporalFieldIndex ) };
+    const QString typeCast { temporalField.type() != QVariant::DateTime ? QStringLiteral( "::timestamp" ) : QString() };
+    const QString temporalFieldName { temporalField.name() };
+    return  { QStringLiteral( "%1%2 = %3" )
+              .arg( quotedIdentifier( temporalFieldName ),
+                    typeCast,
+                    quotedValue( defaultTime.toString( Qt::DateFormat::ISODate ) ) ) };
+  }
+  else
+  {
+    return QString();
+  }
+}
+
 bool QgsPostgresRasterProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
 {
   Q_UNUSED( updateFeatureCount )
-  const QString oldSql { subsetString() };
+
+  const QString oldSql { mSqlWhereClause };
+
   mSqlWhereClause = subset;
   // Recalculate extent and other metadata calling init()
   if ( !init() )
@@ -732,7 +754,10 @@ QString QgsPostgresRasterProvider::subsetStringWithTemporalRange() const
   // Temporal
   if ( mTemporalFieldIndex >= 0 && mAttributeFields.exists( mTemporalFieldIndex ) )
   {
-    const QString temporalFieldName { mAttributeFields.field( mTemporalFieldIndex ).name() };
+    const QgsField temporalField { mAttributeFields.field( mTemporalFieldIndex ) };
+    const QString typeCast { temporalField.type() != QVariant::DateTime ? QStringLiteral( "::timestamp" ) : QString() };
+    const QString temporalFieldName { temporalField.name() };
+
     if ( temporalCapabilities()->hasTemporalCapabilities() )
     {
       QString temporalClause;
@@ -741,16 +766,20 @@ QString QgsPostgresRasterProvider::subsetStringWithTemporalRange() const
       {
         if ( requestedRange.isInstant() )
         {
-          temporalClause = QStringLiteral( "%1::timestamp = %2" ).arg( quotedIdentifier( temporalFieldName ),
-                           quotedValue( requestedRange.begin().toString( Qt::DateFormat::ISODate ) ) );
+          temporalClause = QStringLiteral( "%1%2 = %3" )
+                           .arg( quotedIdentifier( temporalFieldName ),
+                                 typeCast,
+                                 quotedValue( requestedRange.begin().toString( Qt::DateFormat::ISODate ) ) );
         }
         else
         {
           if ( requestedRange.begin().isValid() )
           {
-            temporalClause = QStringLiteral( "%1::timestamp %2 %3" ).arg( quotedIdentifier( temporalFieldName ),
-                             requestedRange.includeBeginning() ? ">=" : ">",
-                             quotedValue( requestedRange.begin().toString( Qt::DateFormat::ISODate ) ) );
+            temporalClause = QStringLiteral( "%1%2 %3 %4" )
+                             .arg( quotedIdentifier( temporalFieldName ),
+                                   typeCast,
+                                   requestedRange.includeBeginning() ? ">=" : ">",
+                                   quotedValue( requestedRange.begin().toString( Qt::DateFormat::ISODate ) ) );
           }
           if ( requestedRange.end().isValid() )
           {
@@ -758,24 +787,25 @@ QString QgsPostgresRasterProvider::subsetStringWithTemporalRange() const
             {
               temporalClause.append( QStringLiteral( " AND " ) );
             }
-            temporalClause.append( QStringLiteral( "%1::timestamp %2 %3" ).arg( quotedIdentifier( temporalFieldName ),
-                                   requestedRange.includeEnd() ? "<=" : "<",
-                                   quotedValue( requestedRange.end().toString( Qt::DateFormat::ISODate ) ) ) );
+            temporalClause.append( QStringLiteral( "%1%2 %3 %4" )
+                                   .arg( quotedIdentifier( temporalFieldName ),
+                                         typeCast,
+                                         requestedRange.includeEnd() ? "<=" : "<",
+                                         quotedValue( requestedRange.end().toString( Qt::DateFormat::ISODate ) ) ) );
           }
         }
         return mSqlWhereClause.isEmpty() ? temporalClause : QStringLiteral( "%1 AND (%2)" ).arg( mSqlWhereClause, temporalClause );
       }
-    }
-
-    if ( mTemporalDefaultTime.isValid( ) )
-    {
-      const QString temporalClause { QStringLiteral( "%1::timestamp = %2" ).arg( quotedIdentifier( temporalFieldName ),
-                                     quotedValue( mTemporalDefaultTime.toString( Qt::DateFormat::ISODate ) ) ) };
-      return mSqlWhereClause.isEmpty() ? temporalClause : QStringLiteral( "%1 AND (%2)" ).arg( mSqlWhereClause, temporalClause );
+      const QString defaultTimeSubset { defaultTimeSubsetString( mTemporalDefaultTime ) };
+      if ( ! defaultTimeSubset.isEmpty() )
+      {
+        return mSqlWhereClause.isEmpty() ? defaultTimeSubset : QStringLiteral( "%1 AND (%2)" ).arg( mSqlWhereClause, defaultTimeSubset );
+      }
     }
   }
   return mSqlWhereClause;
 }
+
 
 void QgsPostgresRasterProvider::disconnectDb()
 {

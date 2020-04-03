@@ -298,7 +298,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     const QgsFields fields { mRasterLayer->dataProvider()->fields() };
     mPostgresRasterTemporalFieldComboBox->setFields( fields );
     mPostgresRasterTemporalFieldComboBox->setFilters( QgsFieldProxyModel::Filter::Date |
-        QgsFieldProxyModel::Filter::Time |
         QgsFieldProxyModel::Filter::DateTime |
         QgsFieldProxyModel::Filter::String );
     mPostgresRasterTemporalFieldComboBox->setAllowEmptyFieldName( true );

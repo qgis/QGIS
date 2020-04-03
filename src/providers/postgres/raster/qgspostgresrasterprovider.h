@@ -129,7 +129,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     double mScaleY = 0;
     //! Temporal field index
     int mTemporalFieldIndex = -1;
-    //! Temporal default date
+    //! Temporal default time
     QDateTime mTemporalDefaultTime;
     //! Keep track of fields
     QgsFields mAttributeFields;
@@ -175,6 +175,9 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
 
     //! Subset string with temporal range from request (if any)
     QString subsetStringWithTemporalRange() const;
+
+    //! Subset string with only the temporal default time part
+    QString defaultTimeSubsetString( const QDateTime &defaultTime ) const;
 
     bool hasSufficientPermsAndCapabilities();
     void disconnectDb();
