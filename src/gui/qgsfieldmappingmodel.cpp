@@ -342,7 +342,7 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
   mMapping.clear();
   // Prepare the model data
   QStringList usedFields;
-  for ( const auto &df : qgis::as_const( destinationFields ) )
+  for ( const QgsField &df : destinationFields )
   {
     Field f;
     f.field = df;
