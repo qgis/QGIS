@@ -41,6 +41,11 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
     return true;
   }
 
+  if ( !sourceModel()->data( index, QgsFieldModel::FieldIsWidgetEditable ).toBool() )
+  {
+    return true;
+  }
+
   QgsFields::FieldOrigin origin = static_cast< QgsFields::FieldOrigin >( originVariant.toInt() );
   switch ( origin )
   {
