@@ -189,7 +189,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \since QGIS 3.14
      */
-    virtual QgsDataProviderTemporalCapabilities *temporalCapabilities() const;
+    virtual QgsDataProviderTemporalCapabilities *temporalCapabilities();
 
     /**
      * Returns the provider's temporal capabilities.

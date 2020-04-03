@@ -842,7 +842,7 @@ void QgsVectorDataProvider::handlePostCloneOperations( QgsVectorDataProvider * )
 
 }
 
-QgsVectorDataProviderTemporalCapabilities *QgsVectorDataProvider::temporalCapabilities() const
+QgsVectorDataProviderTemporalCapabilities *QgsVectorDataProvider::temporalCapabilities()
 {
   return mTemporalCapabilities.get();
 }

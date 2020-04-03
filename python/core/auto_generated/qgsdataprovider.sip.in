@@ -128,7 +128,7 @@ Gets the data source specification.
 .. versionadded:: 3.0
 %End
 
-    virtual QgsDataProviderTemporalCapabilities *temporalCapabilities() const;
+    virtual QgsDataProviderTemporalCapabilities *temporalCapabilities();
 %Docstring
 Returns the provider's temporal capabilities.
 

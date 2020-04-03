@@ -626,7 +626,7 @@ from the ``source`` provider.
 .. versionadded:: 3.8.1
 %End
 
-    virtual QgsVectorDataProviderTemporalCapabilities *temporalCapabilities() const;
+    virtual QgsVectorDataProviderTemporalCapabilities *temporalCapabilities();
 
 
   signals:

@@ -408,7 +408,7 @@ void QgsRasterDataProvider::setUserNoDataValue( int bandNo, const QgsRasterRange
   }
 }
 
-QgsRasterDataProviderTemporalCapabilities *QgsRasterDataProvider::temporalCapabilities() const
+QgsRasterDataProviderTemporalCapabilities *QgsRasterDataProvider::temporalCapabilities()
 {
   return mTemporalCapabilities.get();
 }
