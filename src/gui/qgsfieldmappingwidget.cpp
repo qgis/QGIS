@@ -26,7 +26,7 @@ QgsFieldMappingWidget::QgsFieldMappingWidget( QWidget *parent,
     const QgsFields &sourceFields,
     const QgsFields &destinationFields,
     const QMap<QString, QString> &expressions )
-  : QWidget( parent )
+  : QgsPanelWidget( parent )
 {
 
   setupUi( this );

@@ -8,7 +8,7 @@
 
 
 
-class QgsFieldMappingWidget : QWidget
+class QgsFieldMappingWidget : QgsPanelWidget
 {
 %Docstring
 The QgsFieldMappingWidget class creates a mapping from one set of QgsFields to another,

@@ -31,7 +31,7 @@
  * "destination" fields.
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsFieldMappingWidget : public QWidget, private Ui::QgsFieldMappingWidget
+class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget, private Ui::QgsFieldMappingWidget
 {
     Q_OBJECT
 
