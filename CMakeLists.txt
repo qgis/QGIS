@@ -42,7 +42,7 @@ IF (APPLE)
   # find_packages to look for these libraries instead of system libraries
   IF ( QGIS_MAC_DEPS_DIR )
     SET(ENV{LIB_DIR} ${QGIS_MAC_DEPS_DIR})
-    SET(CMAKE_PREFIX_PATH "$CMAKE_PREFIX_PATH;${QGIS_MAC_DEPS_DIR}")
+    LIST(APPEND CMAKE_PREFIX_PATH ${QGIS_MAC_DEPS_DIR})
   ENDIF ( QGIS_MAC_DEPS_DIR )
 ENDIF (APPLE)
 
