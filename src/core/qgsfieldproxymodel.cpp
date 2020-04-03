@@ -41,11 +41,6 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
     return true;
   }
 
-  if ( !sourceModel()->data( index, QgsFieldModel::FieldIsWidgetEditable ).toBool() )
-  {
-    return true;
-  }
-
   QgsFields::FieldOrigin origin = static_cast< QgsFields::FieldOrigin >( originVariant.toInt() );
   switch ( origin )
   {
@@ -67,8 +62,18 @@ bool QgsFieldProxyModel::isReadOnly( const QModelIndex &index ) const
 
     case QgsFields::OriginEdit:
     case QgsFields::OriginProvider:
-      //not read only
-      return false;
+    {
+      if ( !sourceModel()->data( index, QgsFieldModel::FieldIsWidgetEditable ).toBool() )
+      {
+        return true;
+      }
+      else
+      {
+        //not read only
+        return false;
+      }
+    }
+
   }
   return false; // avoid warnings
 }
