@@ -1117,11 +1117,16 @@ bool QgsPostgresRasterProvider::init()
     where = QStringLiteral( "WHERE %1" ).arg( subsetString() );
   }
 
+  // If we dropped here from the fast track because there was something wrong reading metadata
+  // we can safely assume that the raster is NOT tiled and add LIMIT 1 in the query below to
+  // speed things up.
+
   // Fastest SQL: fetch all metadata in one pass
   //   0           1          3           3        4       5         6       7       8       9      10          11           12           13      14
   // encode | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands | pixeltype | nodatavalue | isoutdb | path
   const QString sql { QStringLiteral( R"(
-      WITH cte_rast AS ( SELECT ST_Union( %1 ) AS united_raster FROM %2 %3 ),
+      WITH cte_filtered_raster AS ( SELECT %1 AS filtered_rast FROM %2 %3 ),
+           cte_rast AS ( SELECT ST_Union( cte_filtered_raster.filtered_rast ) AS united_raster FROM cte_filtered_raster ),
            cte_bandno AS ( SELECT * FROM generate_series(1, ST_NumBands ( ( SELECT cte_rast.united_raster FROM cte_rast ) ) ) AS bandno ),
            cte_band AS ( SELECT ST_Band( united_raster, bandno ) AS band FROM cte_rast, cte_bandno )
                       SELECT ENCODE( ST_AsBinary( ST_Envelope( band ) ), 'hex'),
@@ -1130,7 +1135,7 @@ bool QgsPostgresRasterProvider::init()
                       FROM cte_band
   )" ).arg( quotedIdentifier( mRasterColumn ),
                                           tableToQuery,
-                                          where )};
+                                          where.isEmpty() &&mUseEstimatedMetadata ? QStringLiteral( "LIMIT 1" ) : where ) };
 
   QgsDebugMsgLevel( QStringLiteral( "Raster information sql: %1" ).arg( sql ), 4 );
 
