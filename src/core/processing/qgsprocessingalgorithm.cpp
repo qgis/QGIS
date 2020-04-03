@@ -418,6 +418,11 @@ bool QgsProcessingAlgorithm::hasHtmlOutputs() const
   return false;
 }
 
+QgsProcessingAlgorithm::VectorProperties QgsProcessingAlgorithm::sinkProperties( const QString &, const QVariantMap &, QgsProcessingContext &, const QMap<QString, QgsProcessingAlgorithm::VectorProperties> & ) const
+{
+  return VectorProperties();
+}
+
 QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok, const QVariantMap &configuration ) const
 {
   std::unique_ptr< QgsProcessingAlgorithm > alg( create( configuration ) );
