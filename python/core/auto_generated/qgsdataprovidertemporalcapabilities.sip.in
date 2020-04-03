@@ -30,6 +30,10 @@ Base class for handling properties relating to a data provider's temporal capabi
     {
       sipType = sipType_QgsVectorDataProviderTemporalCapabilities;
     }
+    else if ( dynamic_cast < QgsMeshDataProviderTemporalCapabilities * >( sipCpp ) )
+    {
+      sipType = sipType_QgsMeshDataProviderTemporalCapabilities;
+    }
     else
     {
       sipType = 0;

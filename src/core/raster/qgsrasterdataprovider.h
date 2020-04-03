@@ -262,6 +262,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     }
 
     QgsRasterDataProviderTemporalCapabilities *temporalCapabilities() override;
+    const QgsRasterDataProviderTemporalCapabilities *temporalCapabilities() const override SIP_SKIP;
 
     //! \brief Returns whether the provider supplies a legend graphic
     virtual bool supportsLegendGraphic() const { return false; }

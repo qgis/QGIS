@@ -413,6 +413,11 @@ QgsRasterDataProviderTemporalCapabilities *QgsRasterDataProvider::temporalCapabi
   return mTemporalCapabilities.get();
 }
 
+const QgsRasterDataProviderTemporalCapabilities *QgsRasterDataProvider::temporalCapabilities() const
+{
+  return mTemporalCapabilities.get();
+}
+
 QgsRasterDataProvider *QgsRasterDataProvider::create( const QString &providerKey,
     const QString &uri,
     const QString &format, int nBands,

@@ -202,6 +202,8 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
     bool checkDatasetValidity( std::shared_ptr<QgsMeshMemoryDataset> &dataset, QgsMeshDatasetGroupMetadata::DataType dataType );
     bool checkVertexId( int vertex_id );
 
+    void addGroupToTemporalCapabilities( int groupIndex, const QgsMeshMemoryDatasetGroup &group );
+
     QVector<QgsMeshVertex> mVertices;
     QVector<QgsMeshFace> mFaces;
     QVector<QgsMeshEdge> mEdges;

@@ -426,6 +426,11 @@ void QgsMapCanvas::setTemporalController( QgsTemporalController *controller )
   connect( mController, &QgsTemporalController::updateTemporalRange, this, &QgsMapCanvas::setTemporalRange );
 }
 
+const QgsTemporalController *QgsMapCanvas::temporalController() const
+{
+  return mController;
+}
+
 void QgsMapCanvas::setMapSettingsFlags( QgsMapSettings::Flags flags )
 {
   mSettings.setFlags( flags );

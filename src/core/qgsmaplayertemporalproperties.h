@@ -49,6 +49,10 @@ class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
     {
       sipType = sipType_QgsRasterLayerTemporalProperties;
     }
+    else if ( qobject_cast<QgsMeshLayerTemporalProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsMeshLayerTemporalProperties;
+    }
     else
     {
       sipType = 0;

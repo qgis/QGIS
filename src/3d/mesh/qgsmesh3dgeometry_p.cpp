@@ -324,12 +324,14 @@ QgsMesh3dGeometry::QgsMesh3dGeometry( QgsMeshLayer *layer,
 
 QgsMeshDataset3dGeometry::QgsMeshDataset3dGeometry(
   QgsMeshLayer *layer,
+  const QgsDateTimeRange &timeRange,
   const QgsVector3D &origin,
   const QgsMesh3DSymbol &symbol,
   Qt3DCore::QNode *parent ):
   QgsMesh3dGeometry( layer, origin, symbol, parent ),
   mIsVerticalMagnitudeRelative( symbol.isVerticalMagnitudeRelative() ),
-  mVerticalGroupDatasetIndex( symbol.verticalDatasetGroupIndex() )
+  mVerticalGroupDatasetIndex( symbol.verticalDatasetGroupIndex() ),
+  mTimeRange( timeRange )
 {
   init();
 }
@@ -395,7 +397,8 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
   if ( !layer )
     return 0;
 
-  QgsMeshDatasetIndex scalarDatasetIndex = layer->rendererSettings().activeScalarDataset();
+  QgsMeshDatasetIndex scalarDatasetIndex = layer->activeScalarDatasetAtTime( mTimeRange );
+
   if ( !scalarDatasetIndex.isValid() )
     return 0;
 
@@ -404,7 +407,6 @@ int QgsMeshDataset3dGeometry::extractDataset( QVector<double> &verticalMagnitude
 
   QgsTriangularMesh triangularMesh = *layer->triangularMesh();
   const QgsMesh nativeMesh = *layer->nativeMesh();
-
 
   //extract the scalar dataset used to render vertical magnitude of geometry
   //define the vertical magnitude datasetIndex

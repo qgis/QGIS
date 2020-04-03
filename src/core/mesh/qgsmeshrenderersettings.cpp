@@ -400,12 +400,10 @@ QDomElement QgsMeshRendererSettings::writeXml( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( QStringLiteral( "mesh-renderer-settings" ) );
 
-  QDomElement elemActiveDataset = doc.createElement( QStringLiteral( "active-dataset" ) );
-  if ( mActiveScalarDataset.isValid() )
-    elemActiveDataset.setAttribute( QStringLiteral( "scalar" ), QStringLiteral( "%1,%2" ).arg( mActiveScalarDataset.group() ).arg( mActiveScalarDataset.dataset() ) );
-  if ( mActiveVectorDataset.isValid() )
-    elemActiveDataset.setAttribute( QStringLiteral( "vector" ), QStringLiteral( "%1,%2" ).arg( mActiveVectorDataset.group() ).arg( mActiveVectorDataset.dataset() ) );
-  elem.appendChild( elemActiveDataset );
+  QDomElement elemActiveDatasetGroup = doc.createElement( QStringLiteral( "active-dataset-group" ) );
+  elemActiveDatasetGroup.setAttribute( QStringLiteral( "scalar" ), mActiveScalarDatasetGroup );
+  elemActiveDatasetGroup.setAttribute( QStringLiteral( "vector" ), mActiveVectorDatasetGroup );
+  elem.appendChild( elemActiveDatasetGroup );
 
   for ( int groupIndex : mRendererScalarSettings.keys() )
   {
@@ -453,19 +451,12 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem )
   mRendererVectorSettings.clear();
   mAveragingMethod.reset();
 
-  QDomElement elemActiveDataset = elem.firstChildElement( QStringLiteral( "active-dataset" ) );
+  QDomElement elemActiveDataset = elem.firstChildElement( QStringLiteral( "active-dataset-group" ) );
   if ( elemActiveDataset.hasAttribute( QStringLiteral( "scalar" ) ) )
-  {
-    QStringList lst = elemActiveDataset.attribute( QStringLiteral( "scalar" ) ).split( QChar( ',' ) );
-    if ( lst.count() == 2 )
-      mActiveScalarDataset = QgsMeshDatasetIndex( lst[0].toInt(), lst[1].toInt() );
-  }
+    mActiveScalarDatasetGroup = elemActiveDataset.attribute( QStringLiteral( "scalar" ) ).toInt();
+
   if ( elemActiveDataset.hasAttribute( QStringLiteral( "vector" ) ) )
-  {
-    QStringList lst = elemActiveDataset.attribute( QStringLiteral( "vector" ) ).split( QChar( ',' ) );
-    if ( lst.count() == 2 )
-      mActiveVectorDataset = QgsMeshDatasetIndex( lst[0].toInt(), lst[1].toInt() );
-  }
+    mActiveVectorDatasetGroup = elemActiveDataset.attribute( QStringLiteral( "vector" ) ).toInt();
 
   QDomElement elemScalar = elem.firstChildElement( QStringLiteral( "scalar-settings" ) );
   while ( !elemScalar.isNull() )
@@ -503,6 +494,26 @@ void QgsMeshRendererSettings::readXml( const QDomElement &elem )
   {
     mAveragingMethod.reset( QgsMesh3dAveragingMethod::createFromXml( elemAveraging ) );
   }
+}
+
+int QgsMeshRendererSettings::activeScalarDatasetGroup() const
+{
+  return mActiveScalarDatasetGroup;
+}
+
+void QgsMeshRendererSettings::setActiveScalarDatasetGroup( int activeScalarDatasetGroup )
+{
+  mActiveScalarDatasetGroup = activeScalarDatasetGroup;
+}
+
+int QgsMeshRendererSettings::activeVectorDatasetGroup() const
+{
+  return mActiveVectorDatasetGroup;
+}
+
+void QgsMeshRendererSettings::setActiveVectorDatasetGroup( int activeVectorDatasetGroup )
+{
+  mActiveVectorDatasetGroup = activeVectorDatasetGroup;
 }
 
 QgsMeshRendererVectorStreamlineSettings::SeedingStartPointsMethod QgsMeshRendererVectorStreamlineSettings::seedingMethod() const

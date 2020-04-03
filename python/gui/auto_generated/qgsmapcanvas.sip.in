@@ -81,6 +81,14 @@ update the canvas temporal range.
 .. versionadded:: 3.14
 %End
 
+    const QgsTemporalController *temporalController() const;
+%Docstring
+Gets access to the temporal controller that will be used to
+update the canvas temporal range.
+
+.. versionadded:: 3.14
+%End
+
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 sets destination coordinate reference system
