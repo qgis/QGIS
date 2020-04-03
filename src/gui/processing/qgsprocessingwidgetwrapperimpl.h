@@ -64,6 +64,7 @@ class QgsProcessingMatrixModelerWidget;
 class QgsProcessingMapLayerComboBox;
 class QgsRasterBandComboBox;
 class QgsProcessingLayerOutputDestinationWidget;
+class QgsCheckableComboBox;
 
 ///@cond PRIVATE
 
@@ -1634,7 +1635,7 @@ class GUI_EXPORT QgsProcessingMapLayerParameterDefinitionWidget : public QgsProc
 
   private:
 
-    QComboBox *mLayerTypeComboBox = nullptr;
+    QgsCheckableComboBox *mLayerTypeComboBox = nullptr;
 };
 
 class GUI_EXPORT QgsProcessingMapLayerWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
@@ -1718,7 +1719,7 @@ class GUI_EXPORT QgsProcessingVectorLayerParameterDefinitionWidget : public QgsP
 
   private:
 
-    QComboBox *mGeometryTypeComboBox = nullptr;
+    QgsCheckableComboBox *mGeometryTypeComboBox = nullptr;
 };
 
 class GUI_EXPORT QgsProcessingVectorLayerWidgetWrapper : public QgsProcessingMapLayerWidgetWrapper
@@ -1762,7 +1763,7 @@ class GUI_EXPORT QgsProcessingFeatureSourceParameterDefinitionWidget : public Qg
 
   private:
 
-    QComboBox *mGeometryTypeComboBox = nullptr;
+    QgsCheckableComboBox *mGeometryTypeComboBox = nullptr;
 };
 
 class GUI_EXPORT QgsProcessingFeatureSourceWidgetWrapper : public QgsProcessingMapLayerWidgetWrapper

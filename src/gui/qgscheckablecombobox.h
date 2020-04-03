@@ -170,6 +170,13 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
     QStringList checkedItems() const;
 
     /**
+     * Returns userData (stored in the Qt::UserRole) associated with
+     * currently checked items.
+     * \see checkedItems()
+     */
+    QVariantList checkedItemsData() const;
+
+    /**
      * Returns the checked state of the item identified by index
      * \param index item index
      * \see setItemCheckState()

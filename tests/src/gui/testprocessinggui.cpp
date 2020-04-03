@@ -5635,7 +5635,7 @@ void TestProcessingGui::testMapLayerWrapper()
   QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
-  QCOMPARE( static_cast< QgsProcessingParameterMapLayer * >( def.get() )->dataTypes(), QList< int >() << QgsProcessing::TypeRaster );
+  QCOMPARE( static_cast< QgsProcessingParameterMapLayer * >( def.get() )->dataTypes(), QList< int >()  << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeRaster );
 }
 
 void TestProcessingGui::testRasterLayerWrapper()
@@ -5951,7 +5951,7 @@ void TestProcessingGui::testVectorLayerWrapper()
   QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
-  QCOMPARE( static_cast< QgsProcessingParameterVectorLayer * >( def.get() )->dataTypes(), QList< int >() << QgsProcessing::TypeVectorLine );
+  QCOMPARE( static_cast< QgsProcessingParameterVectorLayer * >( def.get() )->dataTypes(), QList< int >() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeVectorLine );
 }
 
 void TestProcessingGui::testFeatureSourceWrapper()
@@ -6125,7 +6125,7 @@ void TestProcessingGui::testFeatureSourceWrapper()
   QCOMPARE( def->description(), QStringLiteral( "test desc" ) );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagOptional );
   QVERIFY( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced );
-  QCOMPARE( static_cast< QgsProcessingParameterFeatureSource * >( def.get() )->dataTypes(), QList< int >() << QgsProcessing::TypeVectorPoint );
+  QCOMPARE( static_cast< QgsProcessingParameterFeatureSource * >( def.get() )->dataTypes(), QList< int >() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeVectorLine );
 }
 
 void TestProcessingGui::testMeshLayerWrapper()
