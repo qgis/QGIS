@@ -23,31 +23,42 @@
 
 #include <QStringList>
 
-struct QgsVectorTileConnection
-{
-  QString name;
-  QString url;
-  int zMin = -1;
-  int zMax = -1;
+#include "qgsabstractproviderconnection.h"
 
-  QString encodedUri() const;
-};
-
-//! Utility class for handling list of connections to vector tile layers
-class CORE_EXPORT QgsVectorTileConnectionUtils
+class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderConnection
 {
+
   public:
+    QgsVectorTileProviderConnection( const QString &name );
+    QgsVectorTileProviderConnection( const QString &uri, const QVariantMap &configuration );
+
+    virtual void store( const QString &name ) const override;
+    virtual void remove( const QString &name ) const override;
+
+    //! Represents decoded data of a connection
+    struct Data
+    {
+      QString url;
+      int zMin = -1;
+      int zMax = -1;
+    };
+
+    //! Returns connection data encoded as a string
+    static QString encodedUri( const Data &conn );
+    //! Decodes connection string to a data structure
+    static Data decodedUri( const QString &uri );
+
+    //! Returns connection data encoded as a string containg URI for QgsVectorTileLayer
+    static QString encodedLayerUri( const Data &conn );
+
     //! Returns list of existing connections, unless the hidden ones
     static QStringList connectionList();
-
     //! Returns connection details
-    static QgsVectorTileConnection connection( const QString &name );
-
+    static Data connection( const QString &name );
     //! Removes a connection from the list
     static void deleteConnection( const QString &name );
-
     //! Adds a new connection to the list
-    static void addConnection( const QgsVectorTileConnection &conn );
+    static void addConnection( const QString &name, Data conn );
 };
 
 ///@endcond

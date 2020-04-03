@@ -24,18 +24,16 @@
 #include "ui_qgsvectortileconnectiondialog.h"
 
 
-struct QgsVectorTileConnection;
-
-
 class QgsVectorTileConnectionDialog : public QDialog, public Ui::QgsVectorTileConnectionDialog
 {
     Q_OBJECT
   public:
     explicit QgsVectorTileConnectionDialog( QWidget *parent = nullptr );
 
-    void setConnection( const QgsVectorTileConnection &conn );
+    void setConnection( const QString &name, const QString &uri );
 
-    QgsVectorTileConnection connection() const;
+    QString connectionUri() const;
+    QString connectionName() const;
 
     void accept() override;
 

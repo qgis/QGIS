@@ -57,12 +57,14 @@ void QgsVectorTileDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
 void QgsVectorTileDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
   QgsVectorTileConnectionDialog dlg;
-  dlg.setConnection( QgsVectorTileConnectionUtils::connection( item->name() ) );
+  QString uri = QgsVectorTileProviderConnection::encodedUri( QgsVectorTileProviderConnection::connection( item->name() ) );
+  dlg.setConnection( item->name(), uri );
   if ( !dlg.exec() )
     return;
 
-  QgsVectorTileConnectionUtils::deleteConnection( item->name() );
-  QgsVectorTileConnectionUtils::addConnection( dlg.connection() );
+  QgsVectorTileProviderConnection::deleteConnection( item->name() );
+  QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( dlg.connectionUri() );
+  QgsVectorTileProviderConnection::addConnection( dlg.connectionName(), conn );
 
   item->parent()->refreshConnections();
 }
@@ -73,7 +75,7 @@ void QgsVectorTileDataItemGuiProvider::deleteConnection( QgsDataItem *item )
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
-  QgsVectorTileConnectionUtils::deleteConnection( item->name() );
+  QgsVectorTileProviderConnection::deleteConnection( item->name() );
 
   item->parent()->refreshConnections();
 }
@@ -84,7 +86,9 @@ void QgsVectorTileDataItemGuiProvider::newConnection( QgsDataItem *item )
   if ( !dlg.exec() )
     return;
 
-  QgsVectorTileConnectionUtils::addConnection( dlg.connection() );
+  QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( dlg.connectionUri() );
+  QgsVectorTileProviderConnection::addConnection( dlg.connectionName(), conn );
+
   item->refreshConnections();
 }
 

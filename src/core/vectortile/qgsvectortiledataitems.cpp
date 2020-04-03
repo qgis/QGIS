@@ -30,11 +30,11 @@ QgsVectorTileRootItem::QgsVectorTileRootItem( QgsDataItem *parent, QString name,
 QVector<QgsDataItem *> QgsVectorTileRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
-  const auto connectionList = QgsVectorTileConnectionUtils::connectionList();
+  const auto connectionList = QgsVectorTileProviderConnection::connectionList();
   for ( const QString &connName : connectionList )
   {
-    QgsVectorTileConnection connection( QgsVectorTileConnectionUtils::connection( connName ) );
-    QgsDataItem *conn = new QgsVectorTileLayerItem( this, connName, mPath + '/' + connName, connection.encodedUri() );
+    QString uri = QgsVectorTileProviderConnection::encodedLayerUri( QgsVectorTileProviderConnection::connection( connName ) );
+    QgsDataItem *conn = new QgsVectorTileLayerItem( this, connName, mPath + '/' + connName, uri );
     connections.append( conn );
   }
   return connections;
