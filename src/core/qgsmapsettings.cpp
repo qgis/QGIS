@@ -459,6 +459,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer *layer
   try
   {
     QgsCoordinateTransform ct = layerTransform( layer );
+    ct.setBallparkTransformsAreAppropriate( true );
     if ( ct.isValid() )
     {
       QgsDebugMsgLevel( QStringLiteral( "sourceCrs = %1" ).arg( ct.sourceCrs().authid() ), 3 );
