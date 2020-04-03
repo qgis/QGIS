@@ -597,9 +597,12 @@ int vtableFilter( sqlite3_vtab_cursor *cursor, int idxNum, const char *idxStr, i
   {
     // rtree filter
     const char *blob = reinterpret_cast< const char * >( sqlite3_value_blob( argv[0] ) );
-    int bytes = sqlite3_value_bytes( argv[0] );
-    QgsRectangle r( spatialiteBlobBbox( blob, bytes ) );
-    request.setFilterRect( r );
+    if ( blob )
+    {
+      int bytes = sqlite3_value_bytes( argv[0] );
+      QgsRectangle r( spatialiteBlobBbox( blob, bytes ) );
+      request.setFilterRect( r );
+    }
   }
   else if ( idxNum == 3 )
   {
