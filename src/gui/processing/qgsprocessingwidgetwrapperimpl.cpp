@@ -5478,7 +5478,11 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRasterLayerWidgetWrapp
 
 QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingRasterLayerWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
 {
-  //return new QgsProcessingBandParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+  Q_UNUSED( context );
+  Q_UNUSED( widgetContext );
+  Q_UNUSED( definition );
+  Q_UNUSED( algorithm );
+
   return nullptr;
 }
 
@@ -5704,7 +5708,11 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMeshLayerWidgetWrapper
 
 QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMeshLayerWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
 {
-  //return new QgsProcessingBandParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+  Q_UNUSED( context );
+  Q_UNUSED( widgetContext );
+  Q_UNUSED( definition );
+  Q_UNUSED( algorithm );
+
   return nullptr;
 }
 
