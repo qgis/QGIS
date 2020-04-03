@@ -73,10 +73,7 @@ class ModelerParameterDefinitionDialog(QDialog):
 
     @staticmethod
     def use_legacy_dialog(param=None, paramType=None):
-        if paramType in (parameters.PARAMETER_MAP_LAYER):
-            return True
-        elif isinstance(param, (QgsProcessingParameterMapLayer,
-                                QgsProcessingDestinationParameter)):
+        if isinstance(param, QgsProcessingDestinationParameter):
             return True
 
         # yay, use new API!
@@ -122,21 +119,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         if isinstance(self.param, QgsProcessingParameterDefinition):
             self.nameTextBox.setText(self.param.description())
 
-        if (self.paramType == parameters.PARAMETER_MAP_LAYER
-                or isinstance(self.param, QgsProcessingParameterMapLayer)):
-            self.verticalLayout.addWidget(QLabel(self.tr('Data type')))
-            self.datatypeCombo = QComboBox()
-            self.datatypeCombo.addItem(self.tr('Any Map Layer'), QgsProcessing.TypeMapLayer)
-            self.datatypeCombo.addItem(self.tr('Vector (Point)'), QgsProcessing.TypeVectorPoint)
-            self.datatypeCombo.addItem(self.tr('Vector (Line)'), QgsProcessing.TypeVectorLine)
-            self.datatypeCombo.addItem(self.tr('Vector (Polygon)'), QgsProcessing.TypeVectorPolygon)
-            self.datatypeCombo.addItem(self.tr('Vector (Any Geometry Type)'), QgsProcessing.TypeVectorAnyGeometry)
-            self.datatypeCombo.addItem(self.tr('Raster'), QgsProcessing.TypeRaster)
-            self.datatypeCombo.addItem(self.tr('Mesh'), QgsProcessing.TypeMesh)
-            if self.param is not None:
-                self.datatypeCombo.setCurrentIndex(self.datatypeCombo.findData(self.param.dataTypes()[0]))
-            self.verticalLayout.addWidget(self.datatypeCombo)
-        elif isinstance(self.param, QgsProcessingDestinationParameter):
+        if isinstance(self.param, QgsProcessingDestinationParameter):
             self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
             self.defaultWidget = QgsProcessingLayerOutputDestinationWidget(self.param, defaultSelection=True)
             self.verticalLayout.addWidget(self.defaultWidget)
@@ -239,17 +222,8 @@ class ModelerParameterDefinitionDialog(QDialog):
         else:
             name = self.param.name()
 
-        if (self.paramType == parameters.PARAMETER_MAP_LAYER
-                or isinstance(self.param, QgsProcessingParameterMapLayer)):
-            self.param = QgsProcessingParameterMapLayer(
-                name, description, types=[self.datatypeCombo.currentData()])
-        elif (self.paramType == parameters.PARAMETER_RASTER or
-              isinstance(self.param, QgsProcessingParameterRasterLayer)):
-            self.param = QgsProcessingParameterRasterLayer(
-                name, description)
-
         # Destination parameter
-        elif (isinstance(self.param, QgsProcessingParameterFeatureSink)):
+        if (isinstance(self.param, QgsProcessingParameterFeatureSink)):
             self.param = QgsProcessingParameterFeatureSink(
                 name=name,
                 description=self.param.description(),
