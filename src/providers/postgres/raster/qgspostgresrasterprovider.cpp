@@ -1118,9 +1118,9 @@ bool QgsPostgresRasterProvider::init()
 
   const QString sql { QStringLiteral( "SELECT ENCODE( ST_AsBinary( ST_Envelope( foo.bar) ), 'hex'), ( ST_Metadata( foo.bar ) ).* "
                                       "FROM ( SELECT ST_Union ( %1 ) AS bar FROM %2 %3) AS foo" )
-                      .arg( quotedIdentifier( mRasterColumn ) )
-                      .arg( tableToQuery )
-                      .arg( where )};
+                      .arg( quotedIdentifier( mRasterColumn ),
+                            tableToQuery,
+                            where )};
 
   QgsDebugMsgLevel( QStringLiteral( "Raster information sql: %1" ).arg( sql ), 4 );
 
