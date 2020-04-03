@@ -1191,6 +1191,11 @@ Read the source from ``parameters`` and ``context`` and set it
 .. versionadded:: 3.4
 %End
 
+     virtual QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink,
+        const QVariantMap &parameters,
+        QgsProcessingContext &context,
+        const QMap< QString, QgsProcessingAlgorithm::VectorProperties > &sourceProperties ) const;
+
 };
 
 

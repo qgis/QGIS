@@ -1031,3 +1031,34 @@ void QgsProcessingFeatureBasedAlgorithm::prepareSource( const QVariantMap &param
   }
 }
 
+
+QgsProcessingAlgorithm::VectorProperties QgsProcessingFeatureBasedAlgorithm::sinkProperties( const QString &sink, const QVariantMap &parameters, QgsProcessingContext &context, const QMap<QString, QgsProcessingAlgorithm::VectorProperties> &sourceProperties ) const
+{
+  QgsProcessingAlgorithm::VectorProperties result;
+  if ( sink == QStringLiteral( "OUTPUT" ) )
+  {
+    if ( sourceProperties.value( QStringLiteral( "INPUT" ) ).availability == QgsProcessingAlgorithm::Available )
+    {
+      const VectorProperties inputProps = sourceProperties.value( QStringLiteral( "INPUT" ) );
+      result.fields = outputFields( inputProps.fields );
+      result.crs = outputCrs( inputProps.crs );
+      result.wkbType = outputWkbType( inputProps.wkbType );
+      result.availability = Available;
+      return result;
+    }
+    else
+    {
+      std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+      if ( source )
+      {
+        result.fields = outputFields( source->fields() );
+        result.crs = outputCrs( source->sourceCrs() );
+        result.wkbType = outputWkbType( source->wkbType() );
+        result.availability = Available;
+        return result;
+      }
+    }
+  }
+  return result;
+}
+
