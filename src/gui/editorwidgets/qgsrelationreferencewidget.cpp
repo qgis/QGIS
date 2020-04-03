@@ -788,9 +788,9 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature &feature )
     }
     mLineEdit->setText( title );
     mForeignKeys.clear();
+    mFeature = feature;
     for ( const QString &fieldName : qgis::as_const( mReferencedFields ) )
       mForeignKeys << mFeature.attribute( fieldName );
-    mFeature = feature;
   }
   else
   {
