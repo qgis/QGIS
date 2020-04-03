@@ -243,6 +243,9 @@ void QgsFieldExpressionWidget::editExpression()
   dlg.setWindowTitle( mExpressionDialogTitle );
   dlg.setAllowEvalErrors( mAllowEvalErrors );
 
+  if ( !vl )
+    dlg.expressionBuilder()->expressionTree()->loadFieldNames( mFieldProxyModel->sourceFieldModel()->fields() );
+
   if ( dlg.exec() )
   {
     QString newExpression = dlg.expressionText();

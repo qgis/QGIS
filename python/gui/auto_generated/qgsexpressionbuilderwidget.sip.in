@@ -88,7 +88,7 @@ Returns the current layer or a None.
 %Docstring
 
 .. deprecated:: QGIS 3.14
-   use epxressionTree()->loadFieldNames() instead
+   use expressionTree()->loadFieldNames() instead
 %End
 
  void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues ) /Deprecated/;
