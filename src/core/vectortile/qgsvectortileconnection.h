@@ -48,7 +48,7 @@ class CORE_EXPORT QgsVectorTileProviderConnection : public QgsAbstractProviderCo
     //! Decodes connection string to a data structure
     static Data decodedUri( const QString &uri );
 
-    //! Returns connection data encoded as a string containg URI for QgsVectorTileLayer
+    //! Returns connection data encoded as a string containing URI for QgsVectorTileLayer
     static QString encodedLayerUri( const Data &conn );
 
     //! Returns list of existing connections, unless the hidden ones
