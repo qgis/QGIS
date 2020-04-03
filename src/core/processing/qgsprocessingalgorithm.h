@@ -316,6 +316,56 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool hasHtmlOutputs() const;
 
     /**
+     * Property availability, used for QgsProcessingAlgorithm::VectorProperties
+     * in order to determine if properties are available or not
+     */
+    enum PropertyAvailability
+    {
+      NotAvailable, //!< Properties are not available
+      Available, //!< Properties are available
+    };
+
+    /**
+     * Properties of a vector source or sink used in an algorithm.
+     *
+     * \since QGIS 3.14
+     */
+    struct VectorProperties
+    {
+      //! Fields
+      QgsFields fields;
+
+      //! Geometry (WKB) type
+      QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
+
+      //! Coordinate Reference System
+      QgsCoordinateReferenceSystem crs;
+
+      //! Availability of the properties. By default properties are not available.
+      QgsProcessingAlgorithm::PropertyAvailability availability = QgsProcessingAlgorithm::NotAvailable;
+    };
+
+    /**
+     * Returns the vector properties which will be used for the \a sink with matching name.
+     *
+     * The \a parameters argument specifies the values of all parameters which would be used to generate
+     * the sink. These can be used alongside the provided \a context in order to pre-evaluate inputs
+     * when required in order to determine the sink's properties.
+     *
+     * The \a sourceProperties map will contain the vector properties of the various sources used
+     * as inputs to the algorithm. These will only be available in certain circumstances (e.g. when the
+     * algorithm is used within a model), so implementations will need to be adaptable to circumstances
+     * when either \a sourceParameters is empty or \a parameters is empty, and use whatever information
+     * is passed in order to make a best guess determination of the output properties.
+     *
+     * \since QGIS 3.14
+     */
+    virtual QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink,
+        const QVariantMap &parameters,
+        QgsProcessingContext &context,
+        const QMap< QString, QgsProcessingAlgorithm::VectorProperties > &sourceProperties ) const;
+
+    /**
      * Executes the algorithm using the specified \a parameters. This method internally
      * creates a copy of the algorithm before running it, so it is safe to call
      * on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider.
