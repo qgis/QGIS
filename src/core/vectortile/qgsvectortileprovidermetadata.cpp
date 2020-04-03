@@ -15,6 +15,7 @@
 
 #include "qgsvectortileprovidermetadata.h"
 
+#include "qgsvectortileconnection.h"
 #include "qgsvectortiledataitems.h"
 
 ///@cond PRIVATE
@@ -32,6 +33,26 @@ QList<QgsDataItemProvider *> QgsVectorTileProviderMetadata::dataItemProviders() 
   QList< QgsDataItemProvider * > providers;
   providers << new QgsVectorTileDataItemProvider;
   return providers;
+}
+
+QMap<QString, QgsAbstractProviderConnection *> QgsVectorTileProviderMetadata::connections( bool cached )
+{
+  return connectionsProtected<QgsVectorTileProviderConnection, QgsVectorTileProviderConnection>( cached );
+}
+
+QgsAbstractProviderConnection *QgsVectorTileProviderMetadata::createConnection( const QString &name )
+{
+  return new QgsVectorTileProviderConnection( name );
+}
+
+void QgsVectorTileProviderMetadata::deleteConnection( const QString &name )
+{
+  deleteConnectionProtected<QgsVectorTileProviderConnection>( name );
+}
+
+void QgsVectorTileProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name )
+{
+  saveConnectionProtected( connection, name );
 }
 
 ///@endcond

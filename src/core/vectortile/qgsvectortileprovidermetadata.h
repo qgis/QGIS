@@ -33,6 +33,13 @@ class QgsVectorTileProviderMetadata : public QgsProviderMetadata
     QgsVectorTileProviderMetadata();
     QList< QgsDataItemProvider * > dataItemProviders() const override;
 
+    // handling of stored connections
+
+    QMap<QString, QgsAbstractProviderConnection *> connections( bool cached ) override;
+    QgsAbstractProviderConnection *createConnection( const QString &name ) override;
+    void deleteConnection( const QString &name ) override;
+    void saveConnection( const QgsAbstractProviderConnection *connection, const QString &name ) override;
+
 };
 
 ///@endcond

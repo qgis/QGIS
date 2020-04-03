@@ -31,9 +31,11 @@ QgsVectorTileConnectionDialog::QgsVectorTileConnectionDialog( QWidget *parent )
   connect( mCheckBoxZMax, &QCheckBox::toggled, mSpinZMax, &QSpinBox::setEnabled );
 }
 
-void QgsVectorTileConnectionDialog::setConnection( const QgsVectorTileConnection &conn )
+void QgsVectorTileConnectionDialog::setConnection( const QString &name, const QString &uri )
 {
-  mEditName->setText( conn.name );
+  mEditName->setText( name );
+
+  QgsVectorTileProviderConnection::Data conn = QgsVectorTileProviderConnection::decodedUri( uri );
   mEditUrl->setText( conn.url );
   mCheckBoxZMin->setChecked( conn.zMin != -1 );
   mSpinZMin->setValue( conn.zMin != -1 ? conn.zMin : 0 );
@@ -41,16 +43,20 @@ void QgsVectorTileConnectionDialog::setConnection( const QgsVectorTileConnection
   mSpinZMax->setValue( conn.zMax != -1 ? conn.zMax : 14 );
 }
 
-QgsVectorTileConnection QgsVectorTileConnectionDialog::connection() const
+QString QgsVectorTileConnectionDialog::connectionUri() const
 {
-  QgsVectorTileConnection conn;
-  conn.name = mEditName->text();
+  QgsVectorTileProviderConnection::Data conn;
   conn.url = mEditUrl->text();
   if ( mCheckBoxZMin->isChecked() )
     conn.zMin = mSpinZMin->value();
   if ( mCheckBoxZMax->isChecked() )
     conn.zMax = mSpinZMax->value();
-  return conn;
+  return QgsVectorTileProviderConnection::encodedUri( conn );
+}
+
+QString QgsVectorTileConnectionDialog::connectionName() const
+{
+  return mEditName->text();
 }
 
 void QgsVectorTileConnectionDialog::accept()
