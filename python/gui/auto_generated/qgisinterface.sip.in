@@ -578,6 +578,20 @@ Statistical summary action.
     virtual QAction *actionShowAllLayers() = 0;
     virtual QAction *actionHideSelectedLayers() = 0;
 
+    virtual QAction *actionToggleSelectedLayers() = 0;
+%Docstring
+Returns the Toggle Selected Layers action.
+
+.. versionadded:: 3.14
+%End
+
+    virtual QAction *actionToggleSelectedLayersIndependently() = 0;
+%Docstring
+Returns the Toggle Selected Layers Independently action.
+
+.. versionadded:: 3.14
+%End
+
     virtual QAction *actionHideDeselectedLayers() = 0;
 %Docstring
 Returns the Hide Deselected Layers action.

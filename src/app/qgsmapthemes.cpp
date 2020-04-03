@@ -42,6 +42,8 @@ QgsMapThemes::QgsMapThemes()
   mMenu->addAction( QgisApp::instance()->actionHideAllLayers() );
   mMenu->addAction( QgisApp::instance()->actionShowSelectedLayers() );
   mMenu->addAction( QgisApp::instance()->actionHideSelectedLayers() );
+  mMenu->addAction( QgisApp::instance()->actionToggleSelectedLayers() );
+  mMenu->addAction( QgisApp::instance()->actionToggleSelectedLayersIndependently() );
   mMenu->addAction( QgisApp::instance()->actionHideDeselectedLayers() );
   mMenu->addSeparator();
 

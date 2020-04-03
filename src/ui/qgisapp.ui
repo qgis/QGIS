@@ -151,6 +151,8 @@
     <addaction name="mActionHideAllLayers"/>
     <addaction name="mActionShowSelectedLayers"/>
     <addaction name="mActionHideSelectedLayers"/>
+    <addaction name="mActionToggleSelectedLayers"/>
+    <addaction name="mActionToggleSelectedLayersIndependently"/>
     <addaction name="mActionHideDeselectedLayers"/>
     <addaction name="separator"/>
    </widget>
@@ -2674,6 +2676,20 @@ Acts on the currently active layer only.</string>
    </property>
    <property name="text">
     <string>Hide Selected Layers</string>
+   </property>
+  </action>
+  <action name="mActionToggleSelectedLayers">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionToggleSelectedLayers.svg</normaloff>:/images/themes/default/mActionToggleSelectedLayers.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Toggle Selected Layers</string>
+   </property>
+  </action>
+  <action name="mActionToggleSelectedLayersIndependently">
+   <property name="text">
+    <string>Toggle Selected Layers Independently</string>
    </property>
   </action>
   <action name="mActionHideDeselectedLayers">

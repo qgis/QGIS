@@ -2679,6 +2679,8 @@ void QgisApp::createActions()
   connect( mActionHideAllLayers, &QAction::triggered, this, &QgisApp::hideAllLayers );
   connect( mActionShowSelectedLayers, &QAction::triggered, this, &QgisApp::showSelectedLayers );
   connect( mActionHideSelectedLayers, &QAction::triggered, this, &QgisApp::hideSelectedLayers );
+  connect( mActionToggleSelectedLayers, &QAction::triggered, this, &QgisApp::toggleSelectedLayers );
+  connect( mActionToggleSelectedLayersIndependently, &QAction::triggered, this, &QgisApp::toggleSelectedLayersIndependently );
   connect( mActionHideDeselectedLayers, &QAction::triggered, this, &QgisApp::hideDeselectedLayers );
 
   // Plugin Menu Items
@@ -7589,6 +7591,35 @@ void QgisApp::hideSelectedLayers()
   for ( QgsLayerTreeNode *node : constSelectedNodes )
   {
     node->setItemVisibilityChecked( false );
+  }
+}
+
+void QgisApp::toggleSelectedLayers()
+{
+  QgsDebugMsg( QStringLiteral( "toggling selected layers!" ) );
+
+  const auto constSelectedNodes = mLayerTreeView->selectedNodes();
+  if ( ! constSelectedNodes.isEmpty() )
+  {
+    bool isFirstNodeChecked = constSelectedNodes[0]->itemVisibilityChecked();
+    for ( QgsLayerTreeNode *node : constSelectedNodes )
+    {
+      node->setItemVisibilityChecked( ! isFirstNodeChecked );
+    }
+  }
+}
+
+void QgisApp::toggleSelectedLayersIndependently()
+{
+  QgsDebugMsg( QStringLiteral( "toggling selected layers independently!" ) );
+
+  const auto constSelectedNodes = mLayerTreeView->selectedNodes();
+  if ( ! constSelectedNodes.isEmpty() )
+  {
+    for ( QgsLayerTreeNode *node : constSelectedNodes )
+    {
+      node->setItemVisibilityChecked( ! node->itemVisibilityChecked() );
+    }
   }
 }
 
