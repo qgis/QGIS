@@ -1199,6 +1199,11 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      */
     void prepareSource( const QVariantMap &parameters, QgsProcessingContext &context );
 
+    QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink,
+        const QVariantMap &parameters,
+        QgsProcessingContext &context,
+        const QMap< QString, QgsProcessingAlgorithm::VectorProperties > &sourceProperties ) const override;
+
   private:
 
     std::unique_ptr< QgsProcessingFeatureSource > mSource;
