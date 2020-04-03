@@ -292,6 +292,7 @@ QString QgsFieldMappingModel::findExpressionForDestinationField( const QgsFieldM
   {
     if ( sf.name() == f.field.name() )
     {
+      excludedFieldNames.push_back( sf.name() );
       return QgsExpression::quotedColumnRef( sf.name() );
     }
   }
