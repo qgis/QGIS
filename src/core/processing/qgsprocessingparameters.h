@@ -2763,7 +2763,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
      * output will not be created by default.
      */
     QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
-                                       bool optional = false, bool createByDefault = true );
+                                       bool optional = false, bool createByDefault = true, bool supportsAppend = false );
 
     /**
      * Returns the type name for the parameter class.
@@ -2804,6 +2804,26 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
      */
     void setDataType( QgsProcessing::SourceType type );
 
+    /**
+     * Returns TRUE if the sink supports appending features to an existing table.
+     *
+     * A sink only supports appending if the algorithm implements QgsProcessingAlgorithm::sinkProperties for the sink parameter.
+     *
+     * \see setSupportsAppend()
+     * \since QGIS 3.14
+     */
+    bool supportsAppend() const;
+
+    /**
+     * Sets whether the sink supports appending features to an existing table.
+     *
+     * \warning A sink only supports appending if the algorithm implements QgsProcessingAlgorithm::sinkProperties for the sink parameter.
+     *
+     * \see supportsAppend()
+     * \since QGIS 3.14
+     */
+    void setSupportsAppend( bool supportsAppend );
+
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
     QString generateTemporaryDestination() const override;
@@ -2816,6 +2836,7 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
   private:
 
     QgsProcessing::SourceType mDataType = QgsProcessing::TypeVectorAnyGeometry;
+    bool mSupportsAppend = false;
 };
 
 
