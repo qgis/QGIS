@@ -301,7 +301,7 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>-61</y>
+                <y>0</y>
                 <width>629</width>
                 <height>824</height>
                </rect>
@@ -457,7 +457,7 @@ border-radius: 2px;</string>
                       <widget class="QgsDateTimeEdit" name="mStartStaticDateTimeEdit">
                        <property name="dateTime">
                         <datetime>
-                         <hour>6</hour>
+                         <hour>4</hour>
                          <minute>3</minute>
                          <second>57</second>
                          <year>2020</year>
@@ -501,7 +501,7 @@ border-radius: 2px;</string>
                       <widget class="QgsDateTimeEdit" name="mReferenceDateTimeEdit">
                        <property name="dateTime">
                         <datetime>
-                         <hour>18</hour>
+                         <hour>17</hour>
                          <minute>20</minute>
                          <second>36</second>
                          <year>2020</year>
@@ -612,7 +612,7 @@ border-radius: 2px;</string>
                   <item row="0" column="0" colspan="2">
                    <widget class="QLabel" name="mPostgresRasterTemporalLabel">
                     <property name="text">
-                     <string>If the dataset contains multiple rasters belonging to a time series, specifiy the field that contains the time information, the type of the field can be any type that can be converted to a timestamp. A default value can be specified and it will be used when the temporal controller is not requesting any particular time.</string>
+                     <string>If the dataset contains multiple rasters belonging to a time series, specify the field that contains the time information, the type of the field can be any type that can be converted to a timestamp. A default value can be specified and it will be used when the temporal controller is not requesting any particular time.</string>
                     </property>
                     <property name="wordWrap">
                      <bool>true</bool>
@@ -678,8 +678,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>680</height>
+                <width>470</width>
+                <height>514</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1278,8 +1278,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>680</height>
+                <width>332</width>
+                <height>477</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1631,8 +1631,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>680</height>
+                <width>98</width>
+                <height>45</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1849,8 +1849,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>680</height>
+                <width>531</width>
+                <height>205</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -2079,8 +2079,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>643</width>
-                <height>680</height>
+                <width>325</width>
+                <height>667</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
