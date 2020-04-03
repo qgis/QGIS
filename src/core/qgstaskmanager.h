@@ -592,6 +592,8 @@ class CORE_EXPORT QgsTaskManager : public QObject
       QgsTaskRunnableWrapper *runnable = nullptr;
     };
 
+    bool mInitialized = false;
+
     mutable QMutex *mTaskMutex;
 
     QMap< long, TaskInfo > mTasks;
