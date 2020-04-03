@@ -5294,10 +5294,42 @@ QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingExtentWidgetWrapper
 
 
 
-
 //
 // QgsProcessingMapLayerWidgetWrapper
 //
+
+QgsProcessingMapLayerParameterDefinitionWidget::QgsProcessingMapLayerParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm, QWidget *parent )
+  : QgsProcessingAbstractParameterDefinitionWidget( context, widgetContext, definition, algorithm, parent )
+{
+  QVBoxLayout *vlayout = new QVBoxLayout();
+  vlayout->setMargin( 0 );
+  vlayout->setContentsMargins( 0, 0, 0, 0 );
+
+  vlayout->addWidget( new QLabel( tr( "Layer type" ) ) );
+  mLayerTypeComboBox = new QComboBox();
+  mLayerTypeComboBox->addItem( tr( "Any Map Layer" ), QgsProcessing::TypeMapLayer );
+  mLayerTypeComboBox->addItem( tr( "Vector (Point)" ), QgsProcessing::TypeVectorPoint );
+  mLayerTypeComboBox->addItem( tr( "Vector (Line)" ), QgsProcessing::TypeVectorLine );
+  mLayerTypeComboBox->addItem( tr( "Vector (Polygon)" ), QgsProcessing::TypeVectorPolygon );
+  mLayerTypeComboBox->addItem( tr( "Vector (Any Geometry Type)" ), QgsProcessing::TypeVectorAnyGeometry );
+  mLayerTypeComboBox->addItem( tr( "Raster" ), QgsProcessing::TypeRaster );
+  mLayerTypeComboBox->addItem( tr( "Mesh" ), QgsProcessing::TypeMesh );
+
+  if ( const QgsProcessingParameterMapLayer *layerParam = dynamic_cast<const QgsProcessingParameterMapLayer *>( definition ) )
+    mLayerTypeComboBox->setCurrentIndex( mLayerTypeComboBox->findData( layerParam->dataTypes().at( 0 ) ) );
+
+  vlayout->addWidget( mLayerTypeComboBox );
+
+  setLayout( vlayout );
+}
+
+QgsProcessingParameterDefinition *QgsProcessingMapLayerParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
+{
+  auto param = qgis::make_unique< QgsProcessingParameterMapLayer >( name, description );
+  param->setDataTypes( QList< int >() << mLayerTypeComboBox->currentData().toInt() );
+  param->setFlags( flags );
+  return param.release();
+}
 
 QgsProcessingMapLayerWidgetWrapper::QgsProcessingMapLayerWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
@@ -5395,6 +5427,11 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMapLayerWidgetWrapper:
   return new QgsProcessingMapLayerWidgetWrapper( parameter, type );
 }
 
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMapLayerWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  return new QgsProcessingMapLayerParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+}
+
 
 //
 // QgsProcessingRasterLayerWidgetWrapper
@@ -5437,6 +5474,12 @@ QString QgsProcessingRasterLayerWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRasterLayerWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingRasterLayerWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingRasterLayerWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  //return new QgsProcessingBandParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+  return nullptr;
 }
 
 
@@ -5657,6 +5700,12 @@ QString QgsProcessingMeshLayerWidgetWrapper::parameterType() const
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingMeshLayerWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
 {
   return new QgsProcessingMeshLayerWidgetWrapper( parameter, type );
+}
+
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingMeshLayerWidgetWrapper::createParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
+{
+  //return new QgsProcessingBandParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+  return nullptr;
 }
 
 
