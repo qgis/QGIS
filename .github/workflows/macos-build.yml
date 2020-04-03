@@ -2,7 +2,7 @@ name: Mac OS build
 on: [push, pull_request]
 env:
   QT_VERSION: 5.14.1
-  QGIS_DEPS_VERSION: 0.2.0
+  QGIS_DEPS_VERSION: 0.2.1
 
 jobs:
   mac_os_build:
