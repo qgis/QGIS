@@ -208,7 +208,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.iterateParam = None
 
             for param in self.algorithm().parameterDefinitions():
-                if isinstance(parameters.get(param.name(), None), QgsProcessingFeatureSourceDefinition) and parameters[param.name()].flags & QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature.value:
+                if isinstance(parameters.get(param.name(), None), QgsProcessingFeatureSourceDefinition) and parameters[param.name()].flags & QgsProcessingFeatureSourceDefinition.Flag.FlagCreateIndividualOutputPerInputFeature:
                     self.iterateParam = param.name()
                     break
 
