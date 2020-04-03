@@ -99,7 +99,7 @@ bool QgsFieldMappingWidget::removeSelectedFields()
 
   std::list<int> rowsToRemove { selectedRows() };
   rowsToRemove.reverse();
-  for ( const auto &row : rowsToRemove )
+  for ( int row : rowsToRemove )
   {
     if ( ! model()->removeField( model()->index( row, 0, QModelIndex() ) ) )
     {
@@ -115,7 +115,7 @@ bool QgsFieldMappingWidget::moveSelectedFieldsUp()
     return false;
 
   const std::list<int> rowsToMoveUp { selectedRows() };
-  for ( const auto &row : rowsToMoveUp )
+  for ( int row : rowsToMoveUp )
   {
     if ( ! model()->moveUp( model()->index( row, 0, QModelIndex() ) ) )
     {
@@ -132,7 +132,7 @@ bool QgsFieldMappingWidget::moveSelectedFieldsDown()
 
   std::list<int> rowsToMoveDown { selectedRows() };
   rowsToMoveDown.reverse();
-  for ( const auto &row : rowsToMoveDown )
+  for ( int row : rowsToMoveDown )
   {
     if ( ! model()->moveDown( model()->index( row, 0, QModelIndex() ) ) )
     {
@@ -161,8 +161,8 @@ std::list<int> QgsFieldMappingWidget::selectedRows()
   std::list<int> rows;
   if ( mTableView->selectionModel()->hasSelection() )
   {
-    const auto constSelection { mTableView->selectionModel()->selectedIndexes() };
-    for ( const auto &index : constSelection )
+    const QModelIndexList constSelection { mTableView->selectionModel()->selectedIndexes() };
+    for ( const QModelIndex &index : constSelection )
     {
       rows.push_back( index.row() );
     }
@@ -197,7 +197,7 @@ void QgsFieldMappingWidget::ExpressionDelegate::setEditorData( QWidget *editor, 
   if ( ! editorWidget )
     return;
 
-  const auto value = index.model()->data( index, Qt::EditRole );
+  const QVariant value = index.model()->data( index, Qt::EditRole );
   editorWidget->setField( value.toString() );
 }
 
@@ -241,12 +241,12 @@ QWidget *QgsFieldMappingWidget::TypeDelegate::createEditor( QWidget *parent, con
   QComboBox *editor = new QComboBox( parent );
   const QgsFieldMappingModel *model { qobject_cast<const QgsFieldMappingModel *>( index.model() ) };
   Q_ASSERT( model );
-  const auto typeList { model->dataTypes() };
+  const QMap<QVariant::Type, QString> typeList { model->dataTypes() };
   int i = 0;
-  for ( const auto &type : typeList.keys() )
+  for ( auto it = typeList.constBegin(); it != typeList.constEnd(); ++it )
   {
-    editor->addItem( typeList[ type ] );
-    editor->setItemData( i, static_cast<int>( type ), Qt::UserRole );
+    editor->addItem( typeList[ it.key() ] );
+    editor->setItemData( i, static_cast<int>( it.key() ), Qt::UserRole );
     ++i;
   }
   if ( ! model->destinationEditable() )
