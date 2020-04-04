@@ -209,7 +209,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     QList< QgsMapLayer * > checkedLayers() const;
 
     /**
-     * Returns the depth of this node, i.e. the number of it's ancestors
+     * Returns the depth of this node, i.e. the number of its ancestors
      * \since QGIS 3.14
      */
     int depth() const;

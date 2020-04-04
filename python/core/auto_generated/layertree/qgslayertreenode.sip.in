@@ -212,7 +212,7 @@ children.
 
     int depth() const;
 %Docstring
-Returns the depth of this node, i.e. the number of it's ancestors
+Returns the depth of this node, i.e. the number of its ancestors
 
 .. versionadded:: 3.14
 %End
