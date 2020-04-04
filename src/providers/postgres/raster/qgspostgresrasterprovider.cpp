@@ -825,7 +825,7 @@ void QgsPostgresRasterProvider::disconnectDb()
 bool QgsPostgresRasterProvider::init()
 {
 
-  // WARNING: multiple failure return points!
+  // WARNING: multiple failure and return points!
 
   if ( !determinePrimaryKey() )
   {
@@ -1143,6 +1143,10 @@ bool QgsPostgresRasterProvider::init()
   if ( PGRES_TUPLES_OK == result.PQresultStatus() && result.PQntuples() > 0 )
   {
 
+    // These may have been filled with defaults in the fast track
+    mSrcNoDataValue.clear();
+    mSrcHasNoDataValue.clear();
+    mUseSrcNoDataValue.clear();
     mBandCount = result.PQntuples();
 
     bool ok;
@@ -1205,10 +1209,10 @@ bool QgsPostgresRasterProvider::init()
       return false;
     }
 
-    // Compute raster size
-    mHeight = static_cast<long>( mExtent.height() / std::abs( mScaleY ) );
-    mWidth = static_cast<long>( mExtent.width() / std::abs( mScaleX ) );
-    mIsTiled = ( mWidth != mTileWidth ) || ( mHeight != mTileHeight );
+    // Compute raster size, it is untiled so just take tile dimensions
+    mHeight = mTileHeight;
+    mWidth = mTileWidth;
+    mIsTiled = false;
 
     mCrs = QgsCoordinateReferenceSystem();
     // FIXME: from Nyall's comment:
