@@ -87,6 +87,9 @@ BuildRequires:  sqlite-devel
 BuildRequires:  hdf5-devel
 BuildRequires:  netcdf-devel
 BuildRequires:  fcgi-devel
+BuildRequires:  protobuf-compiler
+BuildRequires:  protobuf-devel
+BuildRequires:  protobuf-lite-devel
 
 # OpenCL
 BuildRequires:  opencl-headers
