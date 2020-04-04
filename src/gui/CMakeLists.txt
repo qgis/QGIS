@@ -223,6 +223,7 @@ SET(QGIS_GUI_SRCS
   layout/qgslayoutmanualtablewidget.cpp
   layout/qgslayoutmapgridwidget.cpp
   layout/qgslayoutmapwidget.cpp
+  layout/qgslayoutmarkerwidget.cpp
   layout/qgslayoutmousehandles.cpp
   layout/qgslayoutnewitempropertiesdialog.cpp
   layout/qgslayoutpagepropertieswidget.cpp
@@ -921,6 +922,7 @@ SET(QGIS_GUI_HDRS
   layout/qgslayoutmanualtablewidget.h
   layout/qgslayoutmapgridwidget.h
   layout/qgslayoutmapwidget.h
+  layout/qgslayoutmarkerwidget.h
   layout/qgslayoutmousehandles.h
   layout/qgslayoutnewitempropertiesdialog.h
   layout/qgslayoutpagepropertieswidget.h
