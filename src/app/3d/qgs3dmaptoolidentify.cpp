@@ -87,6 +87,7 @@ void Qgs3DMapToolIdentify::activate()
   }
 
   mCanvas->scene()->registerPickHandler( mPickHandler.get() );
+  mIsActive = true;
 }
 
 void Qgs3DMapToolIdentify::deactivate()
@@ -97,6 +98,7 @@ void Qgs3DMapToolIdentify::deactivate()
   }
 
   mCanvas->scene()->unregisterPickHandler( mPickHandler.get() );
+  mIsActive = false;
 }
 
 QCursor Qgs3DMapToolIdentify::cursor() const
@@ -106,6 +108,8 @@ QCursor Qgs3DMapToolIdentify::cursor() const
 
 void Qgs3DMapToolIdentify::onMapSettingsChanged()
 {
+  if ( !mIsActive )
+    return;
   connect( mCanvas->scene(), &Qgs3DMapScene::terrainEntityChanged, this, &Qgs3DMapToolIdentify::onTerrainEntityChanged );
 }
 
@@ -153,6 +157,8 @@ void Qgs3DMapToolIdentify::onTerrainPicked( Qt3DRender::QPickEvent *event )
 
 void Qgs3DMapToolIdentify::onTerrainEntityChanged()
 {
+  if ( !mIsActive )
+    return;
   // no need to disconnect from the previous entity: it has been destroyed
   // start listening to the new terrain entity
   if ( QgsTerrainEntity *terrainEntity = mCanvas->scene()->terrainEntity() )
