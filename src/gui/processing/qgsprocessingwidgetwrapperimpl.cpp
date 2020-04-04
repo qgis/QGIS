@@ -653,17 +653,19 @@ QgsProcessingNumberParameterDefinitionWidget::QgsProcessingNumberParameterDefini
 
 QgsProcessingParameterDefinition *QgsProcessingNumberParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
-  QgsProcessingParameterNumber::Type dataType = static_cast< QgsProcessingParameterNumber::Type >( mTypeComboBox->currentData().toInt() );
-  auto param = qgis::make_unique< QgsProcessingParameterNumber >( name, description, dataType, mDefaultLineEdit->text() );
-
   bool ok;
-  float val = mMinLineEdit->text().toFloat( &ok );
+  double val = mDefaultLineEdit->text().toDouble( &ok );
+
+  QgsProcessingParameterNumber::Type dataType = static_cast< QgsProcessingParameterNumber::Type >( mTypeComboBox->currentData().toInt() );
+  auto param = qgis::make_unique< QgsProcessingParameterNumber >( name, description, dataType, ok ? val : QVariant() );
+
+  val = mMinLineEdit->text().toDouble( &ok );
   if ( ok )
   {
     param->setMinimum( val );
   }
 
-  val = mMaxLineEdit->text().toFloat( &ok );
+  val = mMaxLineEdit->text().toDouble( &ok );
   if ( ok )
   {
     param->setMaximum( val );
@@ -995,10 +997,12 @@ QgsProcessingDistanceParameterDefinitionWidget::QgsProcessingDistanceParameterDe
 
 QgsProcessingParameterDefinition *QgsProcessingDistanceParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
-  auto param = qgis::make_unique< QgsProcessingParameterDistance >( name, description, mDefaultLineEdit->text(), mParentLayerComboBox->currentData().toString() );
-
   bool ok;
-  float val = mMinLineEdit->text().toFloat( &ok );
+  double val = mDefaultLineEdit->text().toDouble( &ok );
+
+  auto param = qgis::make_unique< QgsProcessingParameterDistance >( name, description, ok ? val : QVariant(), mParentLayerComboBox->currentData().toString() );
+
+  val = mMinLineEdit->text().toDouble( &ok );
   if ( ok )
   {
     param->setMinimum( val );
@@ -1211,7 +1215,9 @@ QgsProcessingScaleParameterDefinitionWidget::QgsProcessingScaleParameterDefiniti
 
 QgsProcessingParameterDefinition *QgsProcessingScaleParameterDefinitionWidget::createParameter( const QString &name, const QString &description, QgsProcessingParameterDefinition::Flags flags ) const
 {
-  auto param = qgis::make_unique< QgsProcessingParameterScale >( name, description, mDefaultLineEdit->text() );
+  bool ok;
+  double val = mDefaultLineEdit->text().toDouble( &ok );
+  auto param = qgis::make_unique< QgsProcessingParameterScale >( name, description, ok ? val : QVariant() );
   param->setFlags( flags );
   return param.release();
 }
@@ -3733,7 +3739,7 @@ QgsProcessingFieldParameterDefinitionWidget::QgsProcessingFieldParameterDefiniti
   mDataTypeComboBox->addItem( tr( "String" ), QgsProcessingParameterField::String );
   mDataTypeComboBox->addItem( tr( "Date/time" ), QgsProcessingParameterField::DateTime );
   if ( const QgsProcessingParameterField *fieldParam = dynamic_cast<const QgsProcessingParameterField *>( definition ) )
-    mDataTypeComboBox->setCurrentIndex( fieldParam->dataType() + 1 ); // QComboBoxes indexes start at 0, datatype start with -1 that is why I need to do +1
+    mDataTypeComboBox->setCurrentIndex( mDataTypeComboBox->findData( fieldParam->dataType() ) );
 
   vlayout->addWidget( mDataTypeComboBox );
 

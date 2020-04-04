@@ -1626,7 +1626,7 @@ void TestProcessingGui::testNumericWrapperDouble()
   QVERIFY( !( def->flags() & QgsProcessingParameterDefinition::FlagAdvanced ) );
 
   // using a parameter definition as initial values
-  QgsProcessingParameterNumber numParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QgsProcessingParameterNumber::Double, 1 );
+  QgsProcessingParameterNumber numParam( QStringLiteral( "n" ), QStringLiteral( "test desc" ), QgsProcessingParameterNumber::Double, 1.0 );
   numParam.setMinimum( 0 );
   numParam.setMaximum( 10 );
   widget = qgis::make_unique< QgsProcessingParameterDefinitionWidget >( QStringLiteral( "number" ), context, widgetContext, &numParam );
