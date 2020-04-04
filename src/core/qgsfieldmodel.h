@@ -58,6 +58,7 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
       IsEmptyRole = Qt::UserRole + 8, //!< Return if the index corresponds to the empty value
       EditorWidgetType = Qt::UserRole + 9, //!< Editor widget type
       JoinedFieldIsEditable = Qt::UserRole + 10, //!< TRUE if a joined field is editable (returns QVariant if not a joined field)
+      FieldIsWidgetEditable = Qt::UserRole + 11, //!< TRUE if a is editable from the widget
     };
 
     /**

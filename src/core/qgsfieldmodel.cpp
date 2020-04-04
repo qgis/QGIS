@@ -387,6 +387,12 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       return QVariant();
     }
 
+    case FieldIsWidgetEditable:
+    {
+      return !( mLayer->editFormConfig().readOnly( index.row() - fieldOffset ) );
+    }
+
+
     case Qt::DisplayRole:
     case Qt::EditRole:
     case Qt::ToolTipRole:

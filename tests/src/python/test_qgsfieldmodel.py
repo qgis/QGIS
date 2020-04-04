@@ -349,6 +349,26 @@ class TestQgsFieldModel(unittest.TestCase):
         self.assertEqual(proxy_m.rowCount(), 1)
         self.assertEqual(proxy_m.data(proxy_m.index(0, 0)), 'id_a')
 
+    def testFieldIsWidgetEditableRole(self):
+        l, m = create_model()
+        self.assertTrue(m.data(m.indexFromName('fldtxt'), QgsFieldModel.FieldIsWidgetEditable))
+        self.assertTrue(m.data(m.indexFromName('fldint'), QgsFieldModel.FieldIsWidgetEditable))
+        self.assertFalse(m.data(m.indexFromName('an expression'), QgsFieldModel.FieldIsWidgetEditable))
+        self.assertFalse(m.data(m.indexFromName(None), QgsFieldModel.FieldIsWidgetEditable))
+        m.setAllowExpression(True)
+        m.setExpression('an expression')
+        self.assertTrue(m.data(m.indexFromName('an expression'), QgsFieldModel.FieldIsWidgetEditable))
+        m.setAllowEmptyFieldName(True)
+        self.assertTrue(m.data(m.indexFromName(None), QgsFieldModel.FieldIsWidgetEditable))
+
+        editFormConfig = l.editFormConfig()
+        idx = l.fields().indexOf('fldtxt')
+        # Make fldtxt readOnly
+        editFormConfig.setReadOnly(idx, True)
+        l.setEditFormConfig(editFormConfig)
+        # It's read only, so the widget is NOT editable
+        self.assertFalse(m.data(m.indexFromName('fldtxt'), QgsFieldModel.FieldIsWidgetEditable))
+
     def testFieldTooltip(self):
         f = QgsField('my_string', QVariant.String, 'string')
         self.assertEqual(QgsFieldModel.fieldToolTip(f), "<b>my_string</b><br><font style='font-family:monospace; white-space: nowrap;'>string NULL</font>")
