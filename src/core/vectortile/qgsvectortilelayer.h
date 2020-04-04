@@ -138,6 +138,9 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
     bool isTileBorderRenderingEnabled() const { return mTileBorderRendering; }
 
   private:
+    bool loadDataSource();
+
+  private:
     //! Type of the data source
     QString mSourceType;
     //! URL/Path of the data source

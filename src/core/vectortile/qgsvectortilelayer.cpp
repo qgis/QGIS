@@ -29,8 +29,18 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
 {
   mDataSource = uri;
 
+  mValid = loadDataSource();
+
+  // set a default renderer
+  QgsVectorTileBasicRenderer *renderer = new QgsVectorTileBasicRenderer;
+  renderer->setStyles( QgsVectorTileBasicRenderer::simpleStyleWithRandomColors() );
+  setRenderer( renderer );
+}
+
+bool QgsVectorTileLayer::loadDataSource()
+{
   QgsDataSourceUri dsUri;
-  dsUri.setEncodedUri( uri );
+  dsUri.setEncodedUri( mDataSource );
 
   mSourceType = dsUri.param( QStringLiteral( "type" ) );
   mSourcePath = dsUri.param( QStringLiteral( "url" ) );
@@ -53,7 +63,7 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
     if ( !reader.open() )
     {
       QgsDebugMsg( QStringLiteral( "failed to open MBTiles file: " ) + mSourcePath );
-      return;
+      return false;
     }
 
     QgsDebugMsgLevel( QStringLiteral( "name: " ) + reader.metadataValue( QStringLiteral( "name" ) ), 2 );
@@ -75,16 +85,11 @@ QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseN
   else
   {
     QgsDebugMsg( QStringLiteral( "Unknown source type: " ) + mSourceType );
-    return;
+    return false;
   }
 
   setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ) );
-  setValid( true );
-
-  // set a default renderer
-  QgsVectorTileBasicRenderer *renderer = new QgsVectorTileBasicRenderer;
-  renderer->setStyles( QgsVectorTileBasicRenderer::simpleStyleWithRandomColors() );
-  setRenderer( renderer );
+  return true;
 }
 
 QgsVectorTileLayer::~QgsVectorTileLayer() = default;
@@ -104,6 +109,8 @@ QgsMapLayerRenderer *QgsVectorTileLayer::createMapRenderer( QgsRenderContext &re
 
 bool QgsVectorTileLayer::readXml( const QDomNode &layerNode, QgsReadWriteContext &context )
 {
+  mValid = loadDataSource();
+
   QString errorMsg;
   return readSymbology( layerNode, errorMsg, context );
 }
@@ -140,6 +147,7 @@ bool QgsVectorTileLayer::readSymbology( const QDomNode &node, QString &errorMess
   }
 
   r->readXml( elemRenderer, context );
+  setRenderer( r );
   return true;
 }
 

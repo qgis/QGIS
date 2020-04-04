@@ -89,7 +89,7 @@ void QgsVectorTileBasicRendererStyle::readXml( const QDomElement &elem, const Qg
   if ( !symbolsElem.isNull() )
   {
     QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem, context );
-    if ( !symbolMap.contains( QStringLiteral( "0" ) ) )
+    if ( symbolMap.contains( QStringLiteral( "0" ) ) )
     {
       mSymbol.reset( symbolMap.take( QStringLiteral( "0" ) ) );
     }
@@ -219,6 +219,7 @@ void QgsVectorTileBasicRenderer::readXml( const QDomElement &elem, const QgsRead
     QgsVectorTileBasicRendererStyle layerStyle;
     layerStyle.readXml( elemStyle, context );
     mStyles.append( layerStyle );
+    elemStyle = elemStyle.nextSiblingElement( QStringLiteral( "style" ) );
   }
 }
 

@@ -142,6 +142,10 @@ class CORE_EXPORT QgsVectorTileBasicRenderer : public QgsVectorTileRenderer
     void setStyles( const QList<QgsVectorTileBasicRendererStyle> &styles );
     //! Returns list of styles of the renderer
     QList<QgsVectorTileBasicRendererStyle> styles() const;
+    //! Updates style definition at the paricular index of the list (the index must be in interval [0,N-1] otherwise this function does nothing)
+    void setStyle( int index, const QgsVectorTileBasicRendererStyle &style ) { mStyles[index] = style; }
+    //! Returns style definition at the particular index
+    QgsVectorTileBasicRendererStyle style( int index ) const { return mStyles[index]; }
 
     //! Returns a list of styles to render all layers with the given fill/stroke colors, stroke widths and marker sizes
     static QList<QgsVectorTileBasicRendererStyle> simpleStyle(
