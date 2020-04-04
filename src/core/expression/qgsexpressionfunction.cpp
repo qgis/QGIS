@@ -4787,7 +4787,7 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
     return result;
   }
   else if ( QString::compare( layerProperty, QStringLiteral( "distance_units" ), Qt::CaseInsensitive ) == 0 )
-    return QgsUnitTypes::encodeUnit(layer->crs().mapUnits());
+    return QgsUnitTypes::encodeUnit( layer->crs().mapUnits() );
   else if ( QString::compare( layerProperty, QStringLiteral( "type" ), Qt::CaseInsensitive ) == 0 )
   {
     switch ( layer->type() )
