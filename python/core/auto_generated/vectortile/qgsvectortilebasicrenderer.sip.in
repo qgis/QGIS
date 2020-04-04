@@ -173,6 +173,14 @@ Sets list of styles of the renderer
 %Docstring
 Returns list of styles of the renderer
 %End
+    void setStyle( int index, const QgsVectorTileBasicRendererStyle &style );
+%Docstring
+Updates style definition at the paricular index of the list (the index must be in interval [0,N-1] otherwise this function does nothing)
+%End
+    QgsVectorTileBasicRendererStyle style( int index ) const;
+%Docstring
+Returns style definition at the particular index
+%End
 
     static QList<QgsVectorTileBasicRendererStyle> simpleStyle(
       const QColor &polygonFillColor, const QColor &polygonStrokeColor, double polygonStrokeWidth,
