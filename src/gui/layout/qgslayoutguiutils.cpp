@@ -310,7 +310,7 @@ void QgsLayoutGuiUtils::registerGuiForKnownItemTypes( QgsMapCanvas *mapCanvas )
                                       [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
     return new QgsLayoutMarkerWidget( qobject_cast< QgsLayoutItemMarker * >( item ) );
-  }, createRubberBand ) );
+  }, nullptr ) );
 
   // arrow
   std::unique_ptr< QgsLayoutItemGuiMetadata > arrowMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata>(
