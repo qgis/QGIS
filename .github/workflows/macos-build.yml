@@ -2,7 +2,7 @@ name: Mac OS build
 on: [push, pull_request]
 env:
   QT_VERSION: 5.14.1
-  QGIS_DEPS_VERSION: 0.2.1
+  QGIS_DEPS_VERSION: 0.2.2
 
 jobs:
   mac_os_build:
@@ -34,7 +34,6 @@ jobs:
                -DWITH_BINDINGS=TRUE \
                -DWITH_3D=TRUE \
                $QGIS_DIR
-
 
       - name: build QGIS
         run: |

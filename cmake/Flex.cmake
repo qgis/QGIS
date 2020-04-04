@@ -14,8 +14,10 @@ MACRO(FIND_FLEX)
                      NAMES flex.exe
                      PATHS $ENV{LIB_DIR}/bin c:/cygwin/bin $ENV{PROGRAMFILES}/GnuWin32/bin
                     )
+      ELSEIF(APPLE AND QGIS_MAC_DEPS_DIR)
+	      FIND_PROGRAM(FLEX_EXECUTABLE flex PATHS $ENV{LIB_DIR}/bin NO_DEFAULT_PATH)
       ELSE(MSVC)
-        FIND_PROGRAM(FLEX_EXECUTABLE flex $ENV{LIB_DIR}/bin /usr/local/bin)
+        FIND_PROGRAM(FLEX_EXECUTABLE flex)
       ENDIF (MSVC)
 
       IF (NOT FLEX_EXECUTABLE)
