@@ -364,6 +364,7 @@
 %Include auto_generated/layout/qgslayoutitemmapgrid.sip
 %Include auto_generated/layout/qgslayoutitemmapitem.sip
 %Include auto_generated/layout/qgslayoutitemmapoverview.sip
+%Include auto_generated/layout/qgslayoutitemmarker.sip
 %Include auto_generated/layout/qgslayoutitemnodeitem.sip
 %Include auto_generated/layout/qgslayoutitempage.sip
 %Include auto_generated/layout/qgslayoutitempicture.sip

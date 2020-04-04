@@ -467,6 +467,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutitemmapgrid.cpp
   layout/qgslayoutitemmapitem.cpp
   layout/qgslayoutitemmapoverview.cpp
+  layout/qgslayoutitemmarker.cpp
   layout/qgslayoutitemnodeitem.cpp
   layout/qgslayoutitempage.cpp
   layout/qgslayoutitempicture.cpp
@@ -1135,6 +1136,7 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutitemmapgrid.h
   layout/qgslayoutitemmapitem.h
   layout/qgslayoutitemmapoverview.h
+  layout/qgslayoutitemmarker.h
   layout/qgslayoutitemnodeitem.h
   layout/qgslayoutitempage.h
   layout/qgslayoutitempicture.h
