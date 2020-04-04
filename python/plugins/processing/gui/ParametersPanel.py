@@ -28,7 +28,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterExtent,
                        QgsProject,
-                       QgsProcessingModelAlgorithm)
+                       QgsProcessingModelAlgorithm,
+                       QgsProcessingOutputLayerDefinition)
 from qgis.gui import (QgsProcessingContextGenerator,
                       QgsProcessingParameterWidgetContext,
                       QgsProcessingParametersWidget,
@@ -38,19 +39,19 @@ from qgis.gui import (QgsProcessingContextGenerator,
 from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapperFactory, WidgetWrapper
+from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.tools.dataobjects import createContext
 
 
 class ParametersPanel(QgsProcessingParametersWidget, QgsProcessingParametersGenerator):
 
-    def __init__(self, parent, alg, in_place=False, parameters_generator=None):
+    def __init__(self, parent, alg, in_place=False):
         super().__init__(alg, parent)
         self.in_place = in_place
 
         self.wrappers = {}
 
         self.processing_context = createContext()
-        self.processing_parameters_generator = parameters_generator
 
         class ContextGenerator(QgsProcessingContextGenerator):
 
@@ -100,7 +101,7 @@ class ParametersPanel(QgsProcessingParametersWidget, QgsProcessingParametersGene
                 wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent())
                 wrapper.setWidgetContext(widget_context)
                 wrapper.registerProcessingContextGenerator(self.context_generator)
-                wrapper.registerProcessingParametersGenerator(self.processing_parameters_generator)
+                wrapper.registerProcessingParametersGenerator(self)
                 self.wrappers[param.name()] = wrapper
 
                 # For compatibility with 3.x API, we need to check whether the wrapper is
@@ -152,7 +153,7 @@ class ParametersPanel(QgsProcessingParametersWidget, QgsProcessingParametersGene
             wrapper = QgsGui.processingGuiRegistry().createParameterWidgetWrapper(output, QgsProcessingGui.Standard)
             wrapper.setWidgetContext(widget_context)
             wrapper.registerProcessingContextGenerator(self.context_generator)
-            wrapper.registerProcessingParametersGenerator(self.processing_parameters_generator)
+            wrapper.registerProcessingParametersGenerator(self)
             self.wrappers[output.name()] = wrapper
 
             label = wrapper.createWrappedLabel()
@@ -184,6 +185,69 @@ class ParametersPanel(QgsProcessingParametersWidget, QgsProcessingParametersGene
 
         for wrapper in list(self.wrappers.values()):
             wrapper.postInitialize(list(self.wrappers.values()))
+
+    def createProcessingParameters(self):
+        parameters = {}
+
+        for param in self.algorithm().parameterDefinitions():
+            if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                continue
+            if not param.isDestination():
+
+                if self.in_place and param.name() == 'INPUT':
+                    parameters[param.name()] = self.active_layer
+                    continue
+
+                try:
+                    wrapper = self.wrappers[param.name()]
+                except KeyError:
+                    continue
+
+                # For compatibility with 3.x API, we need to check whether the wrapper is
+                # the deprecated WidgetWrapper class. If not, it's the newer
+                # QgsAbstractProcessingParameterWidgetWrapper class
+                # TODO QGIS 4.0 - remove
+                if issubclass(wrapper.__class__, WidgetWrapper):
+                    widget = wrapper.widget
+                else:
+                    widget = wrapper.wrappedWidget()
+
+                if widget is None:
+                    continue
+
+                value = wrapper.parameterValue()
+                parameters[param.name()] = value
+
+                if not param.checkValueIsAcceptable(value):
+                    raise AlgorithmDialogBase.InvalidParameterValue(param, widget)
+            else:
+                if self.in_place and param.name() == 'OUTPUT':
+                    parameters[param.name()] = 'memory:'
+                    continue
+
+                try:
+                    wrapper = self.wrappers[param.name()]
+                except KeyError:
+                    continue
+
+                widget = wrapper.wrappedWidget()
+                value = wrapper.parameterValue()
+
+                dest_project = None
+                if wrapper.customProperties().get('OPEN_AFTER_RUNNING'):
+                    dest_project = QgsProject.instance()
+
+                if value and isinstance(value, QgsProcessingOutputLayerDefinition):
+                    value.destinationProject = dest_project
+                if value:
+                    parameters[param.name()] = value
+                    if param.isDestination():
+                        context = createContext()
+                        ok, error = self.algorithm().provider().isSupportedOutputValue(value, param, context)
+                        if not ok:
+                            raise AlgorithmDialogBase.InvalidOutputExtension(widget, error)
+
+        return self.algorithm().preprocessParameters(parameters)
 
     def setParameters(self, parameters):
         for param in self.algorithm().parameterDefinitions():
