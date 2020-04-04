@@ -31,6 +31,7 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsgeometryengine.h"
 
+<<<<<<< HEAD
 //QgsLayoutAttributeTableCompare
 
 ///@cond PRIVATE
@@ -70,6 +71,8 @@ class CORE_EXPORT QgsLayoutAttributeTableCompare
 
 ///@endcond
 
+=======
+>>>>>>> c796861b13... Correct table sorting for layout tables with limited number of rows
 //
 // QgsLayoutItemAttributeTable
 //
@@ -499,6 +502,12 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     req.setFilterFid( atlasFeature.id() );
   }
 
+  QVector< QPair<int, bool> > sortColumns = sortAttributes();
+  for ( int i = sortColumns.size() - 1; i >= 0; --i )
+  {
+    req = req.addOrderBy( mColumns.at( sortColumns.at( i ).first )->attribute(), sortColumns.at( i ).second );
+  }
+
   QgsFeature f;
   int counter = 0;
   QgsFeatureIterator fit = layer->getFeatures( req );
@@ -567,6 +576,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     }
   }
 
+<<<<<<< HEAD
   //sort the list, starting with the last attribute
   QgsLayoutAttributeTableCompare c;
   QVector< QPair<int, bool> > sortColumns = sortAttributes();
@@ -575,6 +585,25 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     c.setSortColumn( sortColumns.at( i ).first );
     c.setAscending( sortColumns.at( i ).second );
     std::stable_sort( contents.begin(), contents.end(), c );
+=======
+  // build final table contents
+  contents.reserve( tempContents.size() );
+  mConditionalStyles.reserve( tempContents.size() );
+  for ( auto it = tempContents.constBegin(); it != tempContents.constEnd(); ++it )
+  {
+    QgsLayoutTableRow row;
+    QList< QgsConditionalStyle > rowStyles;
+    row.reserve( it->size() );
+    rowStyles.reserve( it->size() );
+
+    for ( auto cellIt = it->constBegin(); cellIt != it->constEnd(); ++cellIt )
+    {
+      row << cellIt->first;
+      rowStyles << cellIt->second;
+    }
+    contents << row;
+    mConditionalStyles << rowStyles;
+>>>>>>> c796861b13... Correct table sorting for layout tables with limited number of rows
   }
 
   recalculateTableSize();
