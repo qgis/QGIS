@@ -179,12 +179,12 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
 
   QgsExpressionContext expressionContext = createExpressionContext( parameters, context, lineSource.get() );
 
-  //initialize random engine
+  // Initialize random engine
   std::random_device rd;
   std::mt19937 mt( !mUseRandomSeed ? rd() : mRandSeed );
   std::uniform_real_distribution<> uniformDist( 0, 1 );
 
-  //index for finding close points (mMinDistance > 0)
+  // Index for finding close points (mMinDistance > 0)
   QgsSpatialIndex index;
 
   int totNPoints = 0;
@@ -212,7 +212,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       // Increment invalid features count
       emptyOrNullGeom++;
       featureCount++;
-      //feedback->setProgress( featureCount * featureProgressStep );
       baseFeatureProgress += featureProgressStep;
       feedback->setProgress( baseFeatureProgress );
       continue;
@@ -223,7 +222,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       // Increment invalid features count
       emptyOrNullGeom++;
       featureCount++;
-      //feedback->setProgress( featureCount * featureProgressStep );
       baseFeatureProgress += featureProgressStep;
       feedback->setProgress( baseFeatureProgress );
       continue;
@@ -250,10 +248,9 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
     if ( mDynamicMinDistance )
       minDistanceForThisFeature = mMinDistanceProperty.valueAsDouble( expressionContext, minDistanceForThisFeature );
 
-    //const double baseFeatureProgress = featureCount * featureProgressStep;
-    //const double pointProgressIncrement = featureProgressStep / numberPointsForThisFeature;
     const double pointProgressIncrement = featureProgressStep / (numberPointsForThisFeature * maxAttemptsForThisFeature);
-    double pointProgress = 0;
+
+    double pointProgress = 0.0;
     for ( long pointIndex = 0; pointIndex < numberPointsForThisFeature; pointIndex++ )
     {
       if ( feedback->isCanceled() )
@@ -271,6 +268,7 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
         // Generate a random point
         double randPos = lineLength * uniformDist( mt );
         QgsGeometry rpGeom = QgsGeometry( lGeom.interpolate( randPos ) );
+        distCheckIterations++;
         pointProgress += pointProgressIncrement;
 
         if ( !rpGeom.isNull() && !rpGeom.isEmpty() )
@@ -281,9 +279,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
             QList<QgsFeatureId> neighbors = index.nearestNeighbor( rpGeom, 1, minDistanceForThisFeature );
             if ( !neighbors.empty() )
             {
-              // total progress = progress over input features + progress over desired number of points for this feature + number of iterations for this point vs max iterations
-              distCheckIterations++;
-              //feedback->setProgress( baseFeatureProgress + pointProgressIncrement * ( pointIndex + static_cast< double >( distCheckIterations ) / maxAttemptsForThisFeature ) );
               feedback->setProgress( baseFeatureProgress + pointProgress );
               continue;
             }
@@ -311,16 +306,10 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
         }
         else
         {
-          // total progress = progress over input features + progress over desired number of points for this feature + number of iterations for this point vs max iterations
-          distCheckIterations++;
-          //feedback->setProgress( baseFeatureProgress + pointProgressIncrement * ( pointIndex + static_cast< double >( distCheckIterations ) / maxAttemptsForThisFeature ) );
           feedback->setProgress( baseFeatureProgress + pointProgress );
-//pointProgressIncrement * ( pointIndex + static_cast< double >( distCheckIterations ) / maxAttemptsForThisFeature )
         }
       } // while not maxattempts
-
-      // total progress = progress over input features + progress over desired number of points for this feature
-      feedback->setProgress( baseFeatureProgress + pointProgressIncrement * ( pointIndex + 1 ) );
+      feedback->setProgress( baseFeatureProgress + pointProgress );
     } // for points
     baseFeatureProgress += featureProgressStep;
     if ( pointsAddedForThisFeature < numberPointsForThisFeature )
@@ -328,7 +317,6 @@ QVariantMap QgsRandomPointsOnLinesAlgorithm::processAlgorithm( const QVariantMap
       missedLines++;
     }
     featureCount++;
-    //feedback->setProgress( featureCount * featureProgressStep );
     feedback->setProgress( baseFeatureProgress );
   } // while features
   missedPoints = desiredNumberOfPoints - totNPoints;
