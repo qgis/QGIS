@@ -484,6 +484,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutmodel.cpp
   layout/qgslayoutmultiframe.cpp
   layout/qgslayoutmultiframeundocommand.cpp
+  layout/qgslayoutnortharrowhandler.cpp
   layout/qgslayoutobject.cpp
   layout/qgslayoutpagecollection.cpp
   layout/qgslayoutrendercontext.cpp
@@ -1153,6 +1154,7 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutmodel.h
   layout/qgslayoutmultiframe.h
   layout/qgslayoutmultiframeundocommand.h
+  layout/qgslayoutnortharrowhandler.h
   layout/qgslayoutobject.h
   layout/qgslayoutpagecollection.h
   layout/qgslayoutpoint.h
