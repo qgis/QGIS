@@ -109,7 +109,7 @@ def resetScriptFolder(folder):
     # isolate "QGIS3/profiles/"
     appIndex = -4
     profileIndex = -3
-    currentSettingPath = QgsApplication.qgisSettingsDirPath()
+    currentSettingPath = os.path.normpath(QgsApplication.qgisSettingsDirPath())
     paths = currentSettingPath.split(os.sep)
     commonSettingPath = os.path.join(paths[appIndex], paths[profileIndex])
 
