@@ -229,6 +229,7 @@ SET(TESTS
  testqgstaskmanager.cpp
  testqgstemporalproperty.cpp
  testqgstemporalrangeobject.cpp
+ testqgstemporalnavigationobject.cpp
  testqgstracer.cpp
  testqgstriangularmesh.cpp
  testqgsfontutils.cpp
