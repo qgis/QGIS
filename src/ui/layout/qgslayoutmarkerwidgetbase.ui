@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>308</width>
-    <height>116</height>
+    <height>272</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -56,7 +56,7 @@
         <x>0</x>
         <y>0</y>
         <width>306</width>
-        <height>91</height>
+        <height>247</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -98,6 +98,67 @@
          </layout>
         </widget>
        </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBoxBasic" name="mRotationGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+         <property name="title">
+          <string>Marker Rotation</string>
+         </property>
+         <property name="syncGroup" stdset="0">
+          <string notr="true">composeritem</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Offset</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="mNorthTypeComboBox"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="mRotationFromMapCheckBox">
+            <property name="text">
+             <string>Sync with map</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QgsDoubleSpinBox" name="mNorthOffsetSpinBox">
+            <property name="wrapping">
+             <bool>true</bool>
+            </property>
+            <property name="suffix">
+             <string> °</string>
+            </property>
+            <property name="minimum">
+             <double>-360.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>360.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>North alignment</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QgsLayoutItemComboBox" name="mMapComboBox"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -118,9 +179,19 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsSymbolButton</class>
    <extends>QToolButton</extends>
    <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsLayoutItemComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgslayoutitemcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

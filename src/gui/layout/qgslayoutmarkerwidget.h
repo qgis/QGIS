@@ -56,6 +56,10 @@ class GUI_EXPORT QgsLayoutMarkerWidget: public QgsLayoutItemBaseWidget, private 
   private slots:
 
     void symbolChanged();
+    void rotationFromMapCheckBoxChanged( int state );
+    void mapChanged( QgsLayoutItem *item );
+    void northOffsetSpinBoxChanged( double d );
+    void northTypeComboBoxChanged( int index );
 
     //! Sets the GUI elements to the currentValues of mComposerShape
     void setGuiElementValues();

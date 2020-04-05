@@ -20,6 +20,7 @@
 #include "qgis_core.h"
 #include "qgslayoutitem.h"
 #include "qgslayoutitemregistry.h"
+#include "qgslayoutnortharrowhandler.h"
 
 class QgsMarkerSymbol;
 
@@ -64,6 +65,61 @@ class CORE_EXPORT QgsLayoutItemMarker : public QgsLayoutItem
      */
     QgsMarkerSymbol *symbol();
 
+    /**
+     * Sets the \a map object for rotation.
+     *
+     * If this is set then the marker will be rotated by the same
+     * amount as the specified map object. This is useful especially for
+     * syncing north arrows with a map item.
+     *
+     * \see linkedMap()
+     */
+    void setLinkedMap( QgsLayoutItemMap *map );
+
+    /**
+     * Returns the linked rotation map, if set. An NULLPTR means map rotation is
+     * disabled.  If this is set then the marker is rotated by the same amount
+     * as the specified map object.
+     * \see setLinkedMap()
+     */
+    QgsLayoutItemMap *linkedMap() const;
+
+    /**
+     * When the marker is linked to a map in north arrow rotation mode,
+     * returns the current north arrow rotation for the marker.
+     *
+     * \see setLinkedMap()
+     */
+    double northArrowRotation() const { return mNorthArrowRotation; }
+
+    /**
+     * Returns the mode used to align the marker to a map's North.
+     * \see setNorthMode()
+     * \see northOffset()
+     */
+    QgsLayoutNorthArrowHandler::NorthMode northMode() const;
+
+    /**
+     * Sets the \a mode used to align the marker to a map's North.
+     * \see northMode()
+     * \see setNorthOffset()
+     */
+    void setNorthMode( QgsLayoutNorthArrowHandler::NorthMode mode );
+
+    /**
+     * Returns the offset added to the marker's rotation from a map's North.
+     * \see setNorthOffset()
+     * \see northMode()
+     */
+    double northOffset() const;
+
+    /**
+     * Sets the \a offset added to the marker's rotation from a map's North.
+     * \see northOffset()
+     * \see setNorthMode()
+     */
+    void setNorthOffset( double offset );
+
     // Depending on the symbol style, the bounding rectangle can be larger than the shape
     QRectF boundingRect() const override;
 
@@ -78,6 +134,7 @@ class CORE_EXPORT QgsLayoutItemMarker : public QgsLayoutItem
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
+    void finalizeRestoreFromXml() override;
   private slots:
 
     /**
@@ -89,6 +146,8 @@ class CORE_EXPORT QgsLayoutItemMarker : public QgsLayoutItem
     //! Updates the bounding rect of this item
     void updateBoundingRect();
 
+    void northArrowRotationChanged( double rotation );
+
   private:
 
     std::unique_ptr< QgsMarkerSymbol > mShapeStyleSymbol;
@@ -97,6 +156,9 @@ class CORE_EXPORT QgsLayoutItemMarker : public QgsLayoutItem
     QRectF mCurrentRectangle;
     QgsLayoutSize mFixedSize;
 
+    QString mRotationMapUuid;
+    QgsLayoutNorthArrowHandler *mNorthArrowHandler = nullptr;
+    double mNorthArrowRotation = 0;
 };
 
 
