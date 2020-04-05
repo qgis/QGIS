@@ -50,6 +50,7 @@ class QgsComposerManager;
 class QgsContrastEnhancement;
 class QgsCoordinateReferenceSystem;
 class QgsCustomDropHandler;
+class QgsCustomProjectOpenHandler;
 class QgsCustomLayerOrderWidget;
 class QgsDockWidget;
 class QgsDoubleSpinBox;
@@ -700,6 +701,22 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Unregister a previously registered custom drop handler.
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler );
+
+    /**
+     * Register a new custom project open \a handler.
+     * \note Ownership of \a handler is not transferred, and the handler must
+     *       be unregistered when plugin is unloaded.
+     * \see QgsCustomProjectOpenHandler
+     * \see unregisterCustomProjectOpenHandler()
+     */
+    void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler );
+
+    /**
+     * Unregister a previously registered custom project open \a handler.
+     * \see QgsCustomDropHandler
+     * \see registerCustomProjectOpenHandler()
+     */
+    void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler );
 
     //! Returns a list of registered custom drop handlers.
     QVector<QPointer<QgsCustomDropHandler >> customDropHandlers() const;
@@ -2399,6 +2416,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsDevToolWidgetFactory * > mDevToolFactories;
 
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
+    QVector<QPointer<QgsCustomProjectOpenHandler>> mCustomProjectOpenHandlers;
     QVector<QPointer<QgsLayoutCustomDropHandler>> mCustomLayoutDropHandlers;
 
     QgsLayoutCustomDropHandler *mLayoutQptDropHandler = nullptr;

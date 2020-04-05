@@ -183,6 +183,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgscoordinateutils.h"
 #include "qgscredentialdialog.h"
 #include "qgscustomdrophandler.h"
+#include "qgscustomprojectopenhandler.h"
 #include "qgscustomization.h"
 #include "qgscustomlayerorderwidget.h"
 #include "qgscustomprojectiondialog.h"
@@ -1963,6 +1964,17 @@ void QgisApp::unregisterCustomDropHandler( QgsCustomDropHandler *handler )
   {
     canvas->setCustomDropHandlers( mCustomDropHandlers );
   }
+}
+
+void QgisApp::registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler )
+{
+  if ( !mCustomProjectOpenHandlers.contains( handler ) )
+    mCustomProjectOpenHandlers << handler;
+}
+
+void QgisApp::unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler )
+{
+  mCustomProjectOpenHandlers.removeOne( handler );
 }
 
 QVector<QPointer<QgsCustomDropHandler> > QgisApp::customDropHandlers() const
@@ -6581,18 +6593,40 @@ void QgisApp::fileOpen()
     // Retrieve last used project dir from persistent settings
     QgsSettings settings;
     QString lastUsedDir = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
+
+
+    QStringList fileFilters;
+    QStringList extensions;
+    fileFilters << tr( "QGIS files" ) + QStringLiteral( " (*.qgs *.qgz *.QGS *.QGZ)" );
+    extensions << QStringLiteral( "qgs" ) << QStringLiteral( "qgz" );
+    for ( QgsCustomProjectOpenHandler *handler : qgis::as_const( mCustomProjectOpenHandlers ) )
+    {
+      if ( handler )
+      {
+        const QStringList filters = handler->filters();
+        fileFilters.append( filters );
+        for ( const QString &filter : filters )
+          extensions.append( QgsFileUtils::extensionsFromFilter( filter ) );
+      }
+    }
+
+    // generate master "all projects" extension list
+    QString allEntry = tr( "All Project Files" ) + QStringLiteral( " (" );
+    for ( const QString &extension : extensions )
+      allEntry += QStringLiteral( "*.%1 *.%2 " ).arg( extension.toLower(), extension.toUpper() );
+    allEntry.chop( 1 ); // remove trailing ' '
+    allEntry += ')';
+    fileFilters.insert( 0, allEntry );
+
     QString fullPath = QFileDialog::getOpenFileName( this,
-                       tr( "Choose a QGIS Project File to Open" ),
+                       tr( "Open Project" ),
                        lastUsedDir,
-                       tr( "QGIS files" ) + " (*.qgs *.qgz *.QGS)" );
+                       fileFilters.join( QStringLiteral( ";;" ) ) );
     if ( fullPath.isNull() )
     {
       return;
     }
 
-    // Fix by Tim - getting the dirPath from the dialog
-    // directly truncates the last node in the dir path.
-    // This is a workaround for that
     QFileInfo myFI( fullPath );
     QString myPath = myFI.path();
     // Persist last used project dir
@@ -6647,7 +6681,18 @@ bool QgisApp::addProject( const QString &projectFile )
   bool autoSetupOnFirstLayer = mLayerTreeCanvasBridge->autoSetupOnFirstLayer();
   mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( false );
 
-  if ( !QgsProject::instance()->read( projectFile ) && !QgsZipUtils::isZipFile( projectFile ) )
+  // give custom handlers a chance first
+  bool handled = false;
+  for ( QgsCustomProjectOpenHandler *handler : qgis::as_const( mCustomProjectOpenHandlers ) )
+  {
+    if ( handler && handler->handleProjectOpen( projectFile ) )
+    {
+      handled = true;
+      break;
+    }
+  }
+
+  if ( !handled && !QgsProject::instance()->read( projectFile ) && !QgsZipUtils::isZipFile( projectFile ) )
   {
     QString backupFile = projectFile + "~";
     QString loadBackupPrompt;
