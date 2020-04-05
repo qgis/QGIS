@@ -14,11 +14,7 @@
  ***************************************************************************/
 
 #include "qgsstringstatisticalsummary.h"
-#include <QString>
-#include <QStringList>
 #include <QObject>
-#include <QVariant>
-#include <QVariantList>
 #include <limits>
 
 /***************************************************************************
@@ -46,6 +42,9 @@ void QgsStringStatisticalSummary::reset()
   mMeanLength = 0;
   mMinority = QString();
   mMajority = QString();
+  mFirst = QString();
+  mLast = QString();
+  mMode.clear();
 }
 
 void QgsStringStatisticalSummary::calculate( const QStringList &values )
@@ -57,6 +56,7 @@ void QgsStringStatisticalSummary::calculate( const QStringList &values )
   {
     testString( string );
   }
+
   finalize();
 }
 
@@ -94,6 +94,28 @@ void QgsStringStatisticalSummary::finalize()
       mMajority = mValues.key( *std::max_element( valueCounts.begin(), valueCounts.end() ) );
     }
   }
+
+  if ( mStatistics & Mode )
+  {
+    int maxOccurrences = 0;
+
+    for ( const QString key : mValues.keys() )
+    {
+      int occurrences = mValues[key];
+
+      if ( occurrences > maxOccurrences )
+      {
+        mMode.clear();
+        maxOccurrences = occurrences;
+      }
+      else if ( occurrences == 0 || occurrences < maxOccurrences )
+      {
+        continue;
+      }
+
+      mMode.append( key );
+    }
+  }
 }
 
 void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList &values )
@@ -126,10 +148,9 @@ void QgsStringStatisticalSummary::testString( const QString &string )
 
   mCount++;
 
-  if ( mStatistics & CountDistinct || mStatistics & Majority || mStatistics & Minority )
-  {
+  if ( mStatistics & CountDistinct || mStatistics & Majority || mStatistics & Minority || mStatistics & Mode )
     mValues[string]++;
-  }
+
   if ( mStatistics & Min )
   {
     if ( !mMin.isEmpty() && !string.isEmpty() )
@@ -152,10 +173,19 @@ void QgsStringStatisticalSummary::testString( const QString &string )
       mMax = string;
     }
   }
+
   if ( mStatistics & MeanLength )
     mSumLengths += string.length();
+
   mMinLength = std::min( mMinLength, string.length() );
   mMaxLength = std::max( mMaxLength, string.length() );
+
+  if ( mStatistics & First )
+    if ( mFirst.isNull() )
+      mFirst = string;
+
+  if ( mStatistics & Last )
+    mLast = string;
 }
 
 QVariant QgsStringStatisticalSummary::statistic( QgsStringStatisticalSummary::Statistic stat ) const
@@ -182,6 +212,12 @@ QVariant QgsStringStatisticalSummary::statistic( QgsStringStatisticalSummary::St
       return mMinority;
     case Majority:
       return mMajority;
+    case First:
+      return mFirst;
+    case Last:
+      return mLast;
+    case Mode:
+      return mMode;
     case All:
       return 0;
   }
@@ -212,6 +248,12 @@ QString QgsStringStatisticalSummary::displayName( QgsStringStatisticalSummary::S
       return QObject::tr( "Minority" );
     case Majority:
       return QObject::tr( "Majority" );
+    case First:
+      return QObject::tr( "First" );
+    case Last:
+      return QObject::tr( "Last" );
+    case Mode:
+      return QObject::tr( "Mode" );
     case All:
       return QString();
   }

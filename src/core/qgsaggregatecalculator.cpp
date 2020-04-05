@@ -170,6 +170,12 @@ QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( con
     return StringMinimumLength;
   else if ( normalized == QLatin1String( "max_length" ) )
     return StringMaximumLength;
+  else if ( normalized == QLatin1String( "first" ) )
+    return First;
+  else if ( normalized == QLatin1String( "last" ) )
+    return Last;
+  else if ( normalized == QLatin1String( "mode" ) )
+    return Mode;
   else if ( normalized == QLatin1String( "concatenate" ) )
     return StringConcatenate;
   else if ( normalized == QLatin1String( "concatenate_unique" ) )
@@ -410,6 +416,37 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
     QStringLiteral( "array_agg" ),
     QCoreApplication::tr( "Array Aggregate" ),
     QSet<QVariant::Type>()
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "first" ),
+    QCoreApplication::tr( "First Value" ),
+    QSet<QVariant::Type>()
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+        << QVariant::String
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "last" ),
+    QCoreApplication::tr( "Last Value" ),
+    QSet<QVariant::Type>()
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+        << QVariant::String
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "mode" ),
+    QCoreApplication::tr( "Mode" ),
+    QSet<QVariant::Type>()
+        << QVariant::String
   };
 
   return aggregates;
@@ -546,11 +583,16 @@ QgsStatisticalSummary::Statistic QgsAggregateCalculator::numericStatFromAggregat
       return QgsStatisticalSummary::ThirdQuartile;
     case InterQuartileRange:
       return QgsStatisticalSummary::InterQuartileRange;
+    case First:
+      return QgsStatisticalSummary::First;
+    case Last:
+      return QgsStatisticalSummary::Last;
     case StringMinimumLength:
     case StringMaximumLength:
     case StringConcatenate:
     case StringConcatenateUnique:
     case GeometryCollect:
+    case Mode:
     case ArrayAggregate:
     {
       if ( ok )
@@ -589,6 +631,12 @@ QgsStringStatisticalSummary::Statistic QgsAggregateCalculator::stringStatFromAgg
       return QgsStringStatisticalSummary::Minority;
     case Majority:
       return QgsStringStatisticalSummary::Majority;
+    case First:
+      return QgsStringStatisticalSummary::First;
+    case Last:
+      return QgsStringStatisticalSummary::Last;
+    case Mode:
+      return QgsStringStatisticalSummary::Mode;
 
     case Sum:
     case Mean:
@@ -645,6 +693,9 @@ QgsDateTimeStatisticalSummary::Statistic QgsAggregateCalculator::dateTimeStatFro
     case FirstQuartile:
     case ThirdQuartile:
     case InterQuartileRange:
+    case First:
+    case Last:
+    case Mode:
     case StringMinimumLength:
     case StringMaximumLength:
     case StringConcatenate:
@@ -745,21 +796,25 @@ QVariant QgsAggregateCalculator::concatenateStrings( QgsFeatureIterator &fit, in
   QStringList results;
   while ( fit.nextFeature( f ) )
   {
-    QString result;
+    QVariant result;
     if ( expression )
     {
       Q_ASSERT( context );
       context->setFeature( f );
-      QVariant v = expression->evaluate( context );
-      result = v.toString();
+      result = expression->evaluate( context );
     }
     else
     {
-      result = f.attribute( attr ).toString();
+      result = f.attribute( attr );
     }
 
-    if ( !unique || !results.contains( result ) )
-      results << result;
+    if ( result.isNull() )
+      continue;
+
+    QString resultStr = result.toString();
+
+    if ( !unique || !results.contains( resultStr ) )
+      results << resultStr;
   }
 
   return results.join( delimiter );
@@ -780,6 +835,7 @@ QVariant QgsAggregateCalculator::defaultValue( QgsAggregateCalculator::Aggregate
     case StringConcatenateUnique:
       return ""; // zero length string - not null!
 
+    case Mode:
     case ArrayAggregate:
       return QVariantList(); // empty list
 
@@ -799,6 +855,8 @@ QVariant QgsAggregateCalculator::defaultValue( QgsAggregateCalculator::Aggregate
     case InterQuartileRange:
     case StringMinimumLength:
     case StringMaximumLength:
+    case First:
+    case Last:
     case GeometryCollect:
       return QVariant();
   }

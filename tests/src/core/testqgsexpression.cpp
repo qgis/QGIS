@@ -189,7 +189,12 @@ class TestQgsExpression: public QObject
       af7.setAttribute( QStringLiteral( "col2" ), "test7" );
       af7.setAttribute( QStringLiteral( "col3" ), 1961 );
       af7.setAttribute( QStringLiteral( "col4" ), "Sputnik" );
-      mAggregatesLayer->dataProvider()->addFeatures( QgsFeatureList() << af1 << af2 << af3 << af4 << af5 << af6 << af7 );
+      QgsFeature af8( mAggregatesLayer->dataProvider()->fields(), 8 );
+      af8.setAttribute( QStringLiteral( "col1" ), QVariant( QVariant::Int ) );
+      af8.setAttribute( QStringLiteral( "col2" ), "" );
+      af8.setAttribute( QStringLiteral( "col3" ), QVariant( QVariant::Int ) );
+      af8.setAttribute( QStringLiteral( "col4" ), "" );
+      mAggregatesLayer->dataProvider()->addFeatures( QgsFeatureList() << af1 << af2 << af3 << af4 << af5 << af6 << af7 << af8 );
       QgsProject::instance()->addMapLayer( mAggregatesLayer );
 
       mChildLayer = new QgsVectorLayer( QStringLiteral( "Point?field=parent:integer"
@@ -217,7 +222,11 @@ class TestQgsExpression: public QObject
       cf5.setAttribute( QStringLiteral( "parent" ), 3 );
       cf5.setAttribute( QStringLiteral( "col2" ), QVariant( QVariant::String ) );
       cf5.setAttribute( QStringLiteral( "col3" ), 7 );
-      mChildLayer->dataProvider()->addFeatures( QgsFeatureList() << cf1 << cf2 << cf3 << cf4 << cf5 );
+      QgsFeature cf6( mChildLayer->dataProvider()->fields(), 6 );
+      cf6.setAttribute( QStringLiteral( "parent" ), 3 );
+      cf6.setAttribute( QStringLiteral( "col2" ), "" );
+      cf6.setAttribute( QStringLiteral( "col3" ), QVariant( QVariant::Int ) );
+      mChildLayer->dataProvider()->addFeatures( QgsFeatureList() << cf1 << cf2 << cf3 << cf4 << cf5 << cf6 );
       QgsProject::instance()->addMapLayer( mChildLayer );
 
       QgsRelation rel;
@@ -1984,17 +1993,23 @@ class TestQgsExpression: public QObject
 
       QTest::newRow( "int aggregate 1" ) << "aggregate('test','sum',\"col1\")" << false << QVariant( 65 );
       QTest::newRow( "int aggregate 2" ) << "aggregate('test','max',\"col1\")" << false << QVariant( 41 );
+      QTest::newRow( "int aggregate first" ) << "aggregate('test','first',\"col1\")" << false << QVariant( 10 );
+      QTest::newRow( "int aggregate last" ) << "aggregate('test','last',\"col1\")" << false << QVariant( 41 );
       QTest::newRow( "int aggregate named" ) << "aggregate(layer:='test',aggregate:='sum',expression:=\"col1\")" << false << QVariant( 65 );
       QTest::newRow( "string aggregate on int" ) << "aggregate('test','max_length',\"col1\")" << true << QVariant();
       QTest::newRow( "string aggregate 1" ) << "aggregate('test','min',\"col2\")" << false << QVariant( "test1" );
       QTest::newRow( "string aggregate 2" ) << "aggregate('test','min_length',\"col2\")" << false << QVariant( 5 );
       QTest::newRow( "string concatenate" ) << "aggregate('test','concatenate',\"col2\",concatenator:=' , ')" << false << QVariant( "test1 , test2 , test3 , test4" );
       QTest::newRow( "string concatenate unique" ) << "aggregate('test','concatenate_unique',\"col2\",concatenator:=' , ')" << false << QVariant( "test1 , test2 , test3 , test4" );
+      QTest::newRow( "string aggregate first" ) << "aggregate('test','first',\"col2\")" << false << QVariant( "test1" );
+      QTest::newRow( "string aggregate last" ) << "aggregate('test','last',\"col2\")" << false << QVariant( "test4" );
+
+      QTest::newRow( "string mode" ) << "aggregate('aggregate_layer','mode',\"col2\")" << false << QVariant( QStringList( {"test4"} ) );
 
       QTest::newRow( "geometry collect" ) << "geom_to_wkt(aggregate('aggregate_layer','collect',$geometry))" << false << QVariant( QStringLiteral( "MultiPoint ((0 0),(1 0),(2 0),(3 0),(5 0),(6 0))" ) );
 
       QVariantList array;
-      array << "test" << QVariant( QVariant::String ) << "test333" << "test4" << QVariant( QVariant::String ) << "test4" << "test7";
+      array << "test" << QVariant( QVariant::String ) << "test333" << "test4" << QVariant( QVariant::String ) << "test4" << "test7" << "";
       QTest::newRow( "array aggregate" ) << "aggregate('aggregate_layer','array_agg',\"col2\")" << false << QVariant( array );
 
       QTest::newRow( "sub expression" ) << "aggregate('test','sum',\"col1\" * 2)" << false << QVariant( 65 * 2 );
@@ -2076,22 +2091,22 @@ class TestQgsExpression: public QObject
       QTest::newRow( "range" ) << "range(\"col1\")" << false << QVariant( 18.0 );
       QTest::newRow( "minority" ) << "minority(\"col3\")" << false << QVariant( 1 );
       QTest::newRow( "majority" ) << "majority(\"col3\")" << false << QVariant( 2 );
-      QTest::newRow( "minority string" ) << "minority(\"col2\")" << false << QVariant( "test" );
-      QTest::newRow( "majority string" ) << "majority(\"col2\")" << false << QVariant( "" );
+      QTest::newRow( "minority string" ) << "minority(\"col2\")" << false << QVariant( "" );
+      QTest::newRow( "majority string" ) << "majority(\"col2\")" << false << QVariant( "test4" );
       QTest::newRow( "q1" ) << "q1(\"col1\")" << false << QVariant( 2.5 );
       QTest::newRow( "q3" ) << "q3(\"col1\")" << false << QVariant( 6.5 );
       QTest::newRow( "iqr" ) << "iqr(\"col1\")" << false << QVariant( 4 );
-      QTest::newRow( "min_length" ) << "min_length(\"col2\")" << false << QVariant( 4 );
+      QTest::newRow( "min_length" ) << "min_length(\"col2\")" << false << QVariant( 0 );
       QTest::newRow( "max_length" ) << "max_length(\"col2\")" << false << QVariant( 7 );
-      QTest::newRow( "concatenate" ) << "concatenate(\"col2\",concatenator:=',')" << false << QVariant( "test,,test333,test4,,test4,test7" );
-      QTest::newRow( "concatenate with order 1" ) << "concatenate(\"col2\",concatenator:=',', order_by:=col1)" << false << QVariant( ",test4,test333,test,,test4,test7" );
-      QTest::newRow( "concatenate with order 2" ) << "concatenate(\"col2\",concatenator:=',', order_by:=col2)" << false << QVariant( "test,test333,test4,test4,test7,," );
+      QTest::newRow( "concatenate" ) << "concatenate(\"col2\",concatenator:=',')" << false << QVariant( "test,test333,test4,test4,test7," );
+      QTest::newRow( "concatenate with order 1" ) << "concatenate(\"col2\",concatenator:=',', order_by:=col1)" << false << QVariant( "test4,test333,test,test4,test7," );
+      QTest::newRow( "concatenate with order 2" ) << "concatenate(\"col2\",concatenator:=',', order_by:=col2)" << false << QVariant( ",test,test333,test4,test4,test7" );
       QTest::newRow( "concatenate unique" ) << "concatenate_unique(\"col4\",concatenator:=',')" << false << QVariant( ",test,Sputnik" );
-      QTest::newRow( "concatenate unique 2" ) << "concatenate_unique(\"col2\",concatenator:=',')" << false << QVariant( "test,,test333,test4,test7" );
-      QTest::newRow( "concatenate unique with order" ) << "concatenate_unique(\"col2\",concatenator:=',', order_by:=col2)" << false << QVariant( "test,test333,test4,test7," );
+      QTest::newRow( "concatenate unique 2" ) << "concatenate_unique(\"col2\",concatenator:=',')" << false << QVariant( "test,test333,test4,test7," );
+      QTest::newRow( "concatenate unique with order" ) << "concatenate_unique(\"col2\",concatenator:=',', order_by:=col2)" << false << QVariant( ",test,test333,test4,test7" );
 
-      QTest::newRow( "array agg" ) << "array_agg(\"col2\")" << false << QVariant( QVariantList() << "test" << "" << "test333" << "test4" << "" << "test4" << "test7" );
-      QTest::newRow( "array agg with order" ) << "array_agg(\"col2\",order_by:=col2)" << false << QVariant( QVariantList() << "test" << "test333" << "test4" << "test4" << "test7" << "" << "" );
+      QTest::newRow( "array agg" ) << "array_agg(\"col2\")" << false << QVariant( QVariantList() << "test" << QVariant( QVariant::String ) << "test333" << "test4" << QVariant( QVariant::String ) << "test4" << "test7" << "" );
+      QTest::newRow( "array agg with order" ) << "array_agg(\"col2\",order_by:=col2)" << false << QVariant( QVariantList() << "" << "test" << "test333" << "test4" << "test4" << "test7" << QVariant( QVariant::String ) << QVariant( QVariant::String ) );
 
       QTest::newRow( "geometry collect" ) << "geom_to_wkt(collect($geometry))" << false << QVariant( QStringLiteral( "MultiPoint ((0 0),(1 0),(2 0),(3 0),(5 0),(6 0))" ) );
       QTest::newRow( "geometry collect with null geometry first" ) << "geom_to_wkt(collect($geometry, filter:=\"col3\"=3))" << false << QVariant( QStringLiteral( "MultiPoint ((5 0))" ) );
@@ -2275,8 +2290,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "relation aggregate count 2" ) << "relation_aggregate('my_rel','count',\"col3\")" << QVariantMap( {{QStringLiteral( "col1" ), 6}} ) << false << QVariant( 0 );
       QTest::newRow( "relation aggregate concatenation" ) << "relation_aggregate('my_rel','concatenate',to_string(\"col3\"),concatenator:=',')" << QVariantMap( {{QStringLiteral( "col1" ), 3}} ) << false << QVariant( "2,7" );
 
-      QTest::newRow( "relation aggregate concatenation with order" ) << "relation_aggregate('my_rel','concatenate',to_string(\"col2\"),concatenator:=',', order_by:=col2)" << QVariantMap( {{QStringLiteral( "col1" ), 4}} ) << false << QVariant( "test,test333," );
-      QTest::newRow( "relation aggregate concatenation with order 2" ) << "relation_aggregate('my_rel','concatenate',to_string(\"col2\"),concatenator:=',', order_by:=col3)" << QVariantMap( {{QStringLiteral( "col1" ), 4}} ) << false << QVariant( ",test,test333" );
+      QTest::newRow( "relation aggregate concatenation with order" ) << "relation_aggregate('my_rel','concatenate',to_string(\"col2\"),concatenator:=',', order_by:=col2)" << QVariantMap( {{QStringLiteral( "col1" ), 4}} ) << false << QVariant( "test,test333" );
+      QTest::newRow( "relation aggregate concatenation with order 2" ) << "relation_aggregate('my_rel','concatenate',to_string(\"col2\"),concatenator:=',', order_by:=col3)" << QVariantMap( {{QStringLiteral( "col1" ), 4}} ) << false << QVariant( "test,test333" );
 
       QTest::newRow( "named relation aggregate 1" ) << "relation_aggregate(relation:='my_rel',aggregate:='sum',expression:=\"col3\")" << QVariantMap( {{QStringLiteral( "col1" ), 4}} ) << false << QVariant( 5 );
       QTest::newRow( "relation aggregate sub expression 1" ) << "relation_aggregate('my_rel','sum',\"col3\" * 2)" << QVariantMap( {{QStringLiteral( "col1" ), 4}} ) << false << QVariant( 10 );

@@ -19,6 +19,18 @@ from qgis.testing import unittest
 
 class PyQgsStringStatisticalSummary(unittest.TestCase):
 
+    def prepareStringStatisticalSummaries(self, strings):
+        s1 = QgsStringStatisticalSummary()
+        s2 = QgsStringStatisticalSummary()
+        s1.calculate(strings)
+
+        for string in strings:
+            s2.addString(string)
+
+        s2.finalize()
+
+        return s1, s2
+
     def testStats(self):
         # we test twice, once with values added as a list and once using values
         # added one-at-a-time
@@ -30,8 +42,8 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         for string in strings:
             s2.addString(string)
         s2.finalize()
-        self.assertEqual(s.count(), 9)
-        self.assertEqual(s2.count(), 9)
+        self.assertEqual(s.count(), 10)
+        self.assertEqual(s2.count(), 10)
         self.assertEqual(s.countDistinct(), 6)
         self.assertEqual(s2.countDistinct(), 6)
         self.assertEqual(set(s.distinctValues()), set(['cc', 'aaaa', 'bbbbbbbb', 'eeee', 'dddd', '']))
@@ -52,15 +64,39 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
         self.assertEqual(s2.minority(), 'bbbbbbbb')
         self.assertEqual(s.majority(), 'aaaa')
         self.assertEqual(s2.majority(), 'aaaa')
+        self.assertEqual(s.first(), 'cc')
+        self.assertEqual(s2.first(), 'cc')
+        self.assertEqual(s.last(), 'dddd')
+        self.assertEqual(s2.last(), 'dddd')
+        self.assertEqual(s.mode(), ['aaaa'])
+        self.assertEqual(s2.mode(), ['aaaa'])
 
         # extra check for minLength without empty strings
         s.calculate(['1111111', '111', '11111'])
         self.assertEqual(s.minLength(), 3)
 
+    def testModeStat(self):
+        s1, s2 = self.prepareStringStatisticalSummaries(['thrice', 'once', 'twice', '', None, None, None, 'thrice', 'thrice', '', 'twice'])
+        self.assertEqual(s1.mode(), ['thrice'])
+        self.assertEqual(s2.mode(), ['thrice'])
+
+        s1, s2 = self.prepareStringStatisticalSummaries(['once', 'twice', '', None, None, '', 'twice'])
+        self.assertEqual(s1.mode(), ['', 'twice'])
+        self.assertEqual(s2.mode(), ['', 'twice'])
+
+        s1, s2 = self.prepareStringStatisticalSummaries([])
+        self.assertEqual(s1.mode(), [])
+        self.assertEqual(s2.mode(), [])
+
+        s1.reset()
+        s1.addString('once')
+        s1.finalize()
+        self.assertEqual(s1.mode(), ['once'])
+
     def testIndividualStats(self):
         # tests calculation of statistics one at a time, to make sure statistic calculations are not
         # dependent on each other
-        tests = [{'stat': QgsStringStatisticalSummary.Count, 'expected': 9},
+        tests = [{'stat': QgsStringStatisticalSummary.Count, 'expected': 10},
                  {'stat': QgsStringStatisticalSummary.CountDistinct, 'expected': 6},
                  {'stat': QgsStringStatisticalSummary.CountMissing, 'expected': 2},
                  {'stat': QgsStringStatisticalSummary.Min, 'expected': 'aaaa'},
@@ -70,6 +106,9 @@ class PyQgsStringStatisticalSummary(unittest.TestCase):
                  {'stat': QgsStringStatisticalSummary.MeanLength, 'expected': 3.4},
                  {'stat': QgsStringStatisticalSummary.Minority, 'expected': 'bbbbbbbb'},
                  {'stat': QgsStringStatisticalSummary.Majority, 'expected': 'aaaa'},
+                 {'stat': QgsStringStatisticalSummary.First, 'expected': 'cc'},
+                 {'stat': QgsStringStatisticalSummary.Last, 'expected': 'dddd'},
+                 {'stat': QgsStringStatisticalSummary.Mode, 'expected': ['aaaa']},
                  ]
 
         s = QgsStringStatisticalSummary()

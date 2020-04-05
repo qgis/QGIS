@@ -243,8 +243,8 @@ class CORE_EXPORT QgsStatisticalSummary
     /**
      * Returns minority of values. The minority is the value with least occurrences in the list.
      * This is only calculated if Statistic::Minority has been specified in the constructor
-     * or via setStatistics. If multiple values match, return the first value relative to the
-     * initial values order. A NaN value may be returned if the minority cannot be calculated.
+     * or via setStatistics. If multiple values match, returns the least value (this may change
+     * in future versions). A NaN value may be returned if the minority cannot be calculated.
      * \see majority
      */
     double minority() const { return mMinority; }
@@ -252,8 +252,8 @@ class CORE_EXPORT QgsStatisticalSummary
     /**
      * Returns majority of values. The majority is the value with most occurrences in the list.
      * This is only calculated if Statistic::Majority has been specified in the constructor
-     * or via setStatistics. If multiple values match, return the first value relative to the
-     * initial values order. A NaN value may be returned if the minority cannot be calculated.
+     * or via setStatistics.  If multiple values match, returns the least value (this may change
+     * in future versions). A NaN value may be returned if the minority cannot be calculated.
      * \see minority
      */
     double majority() const { return mMajority; }

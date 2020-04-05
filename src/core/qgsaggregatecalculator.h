@@ -84,7 +84,10 @@ class CORE_EXPORT QgsAggregateCalculator
       StringConcatenate, //!< Concatenate values with a joining string (string fields only). Specify the delimiter using setDelimiter().
       GeometryCollect, //!< Create a multipart geometry from aggregated geometries
       ArrayAggregate, //!< Create an array of values
-      StringConcatenateUnique //!< Concatenate unique values with a joining string (string fields only). Specify the delimiter using setDelimiter().
+      StringConcatenateUnique, //!< Concatenate unique values with a joining string (string fields only). Specify the delimiter using setDelimiter().
+      First, //!< First
+      Last, //!< Last
+      Mode, //!< Mode
     };
 
     //! A bundle of parameters controlling aggregate calculation

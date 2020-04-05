@@ -131,6 +131,10 @@ class TestQgsAggregateCalculator(unittest.TestCase):
                  [QgsAggregateCalculator.InterQuartileRange, 'flddbl', 2.5],
                  [QgsAggregateCalculator.ArrayAggregate, 'fldint', int_values],
                  [QgsAggregateCalculator.ArrayAggregate, 'flddbl', dbl_values],
+                 [QgsAggregateCalculator.First, 'fldint', int_values[0]],
+                 [QgsAggregateCalculator.First, 'flddbl', dbl_values[0]],
+                 [QgsAggregateCalculator.Last, 'fldint', int_values[-1]],
+                 [QgsAggregateCalculator.Last, 'flddbl', dbl_values[-1]],
                  ]
 
         agg = QgsAggregateCalculator(layer)
@@ -170,7 +174,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         layer = QgsVectorLayer("Point?field=fldstring:string", "layer", "memory")
         pr = layer.dataProvider()
 
-        values = ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', '', 'dddd']
+        values = ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', None, None, '', 'eeee', '', 'dddd']
         features = []
         for v in values:
             f = QgsFeature()
@@ -187,6 +191,11 @@ class TestQgsAggregateCalculator(unittest.TestCase):
                  [QgsAggregateCalculator.StringMinimumLength, 'fldstring', 0],
                  [QgsAggregateCalculator.StringMaximumLength, 'fldstring', 8],
                  [QgsAggregateCalculator.ArrayAggregate, 'fldstring', values],
+                 [QgsAggregateCalculator.Minority, 'fldstring', 'bbbbbbbb'],
+                 [QgsAggregateCalculator.Majority, 'fldstring', ''],
+                 [QgsAggregateCalculator.First, 'fldstring', 'cc'],
+                 [QgsAggregateCalculator.Last, 'fldstring', 'dddd'],
+                 [QgsAggregateCalculator.Mode, 'fldstring', ['', 'aaaa', 'eeee']],
                  ]
 
         agg = QgsAggregateCalculator(layer)
@@ -222,18 +231,24 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         # with order by
         agg = QgsAggregateCalculator(layer)
         val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldstring')
-        self.assertEqual(val, ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', '', 'eeee', '', 'dddd'])
+        self.assertEqual(val, ['cc', 'aaaa', 'bbbbbbbb', 'aaaa', 'eeee', None, None, '', 'eeee', '', 'dddd'])
         params = QgsAggregateCalculator.AggregateParameters()
         params.orderBy = QgsFeatureRequest.OrderBy([QgsFeatureRequest.OrderByClause('fldstring')])
         agg.setParameters(params)
         val, ok = agg.calculate(QgsAggregateCalculator.ArrayAggregate, 'fldstring')
-        self.assertEqual(val, ['', '', 'aaaa', 'aaaa', 'bbbbbbbb', 'cc', 'dddd', 'eeee', 'eeee'])
+        self.assertEqual(val, ['', '', 'aaaa', 'aaaa', 'bbbbbbbb', 'cc', 'dddd', 'eeee', 'eeee', None, None])
         val, ok = agg.calculate(QgsAggregateCalculator.StringConcatenate, 'fldstring')
         self.assertEqual(val, 'aaaaaaaabbbbbbbbccddddeeeeeeee')
         val, ok = agg.calculate(QgsAggregateCalculator.Minority, 'fldstring')
         self.assertEqual(val, 'bbbbbbbb')
         val, ok = agg.calculate(QgsAggregateCalculator.Majority, 'fldstring')
         self.assertEqual(val, '')
+        val, ok = agg.calculate(QgsAggregateCalculator.First, 'fldstring')
+        self.assertEqual(val, '')
+        val, ok = agg.calculate(QgsAggregateCalculator.Last, 'fldstring')
+        self.assertEqual(val, 'eeee')
+        val, ok = agg.calculate(QgsAggregateCalculator.Mode, 'fldstring')
+        self.assertEqual(val, ['', 'aaaa', 'eeee'])
 
     def testDateTime(self):
         """ Test calculation of aggregates on date/datetime fields"""
@@ -425,6 +440,18 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         self.assertTrue(ok)
         self.assertEqual(val, 6.0)
 
+        # test with subset
+        agg = QgsAggregateCalculator(layer)  # reset to remove expression filter
+        val, ok = agg.calculate(QgsAggregateCalculator.First, 'fldint')
+        self.assertTrue(ok)
+        self.assertEqual(val, 4.0)
+
+        # test with subset
+        agg = QgsAggregateCalculator(layer)  # reset to remove expression filter
+        val, ok = agg.calculate(QgsAggregateCalculator.Last, 'fldint')
+        self.assertTrue(ok)
+        self.assertEqual(val, 8.0)
+
         # test with empty subset
         agg.setFidsFilter(list())
         val, ok = agg.calculate(QgsAggregateCalculator.Sum, 'fldint')
@@ -497,6 +524,9 @@ class TestQgsAggregateCalculator(unittest.TestCase):
                  [QgsAggregateCalculator.Majority, 'majority'],
                  [QgsAggregateCalculator.FirstQuartile, 'q1'],
                  [QgsAggregateCalculator.ThirdQuartile, 'q3'],
+                 [QgsAggregateCalculator.First, 'first'],
+                 [QgsAggregateCalculator.Last, 'last'],
+                 [QgsAggregateCalculator.Mode, 'mode'],
                  [QgsAggregateCalculator.InterQuartileRange, 'iqr'],
                  [QgsAggregateCalculator.StringMinimumLength, 'min_length'],
                  [QgsAggregateCalculator.StringMaximumLength, 'max_length'],

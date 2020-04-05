@@ -41,6 +41,10 @@ specifying the statistic in the constructor or via setStatistics().
       MeanLength,
       Minority,
       Majority,
+      First,
+      Last,
+      Mode,
+
       All,
     };
     typedef QFlags<QgsStringStatisticalSummary::Statistic> Statistics;
@@ -221,8 +225,8 @@ Returns the mean length of strings.
 %Docstring
 Returns the least common string. The minority is the value with least occurrences in the list
 This is only calculated if Statistic.Minority has been specified in the constructor
-or via setStatistics. If multiple values match, return the first value relative to the
-initial values order.
+or via setStatistics. If multiple values match, return the first value sorted alphabetically
+ascending (this may change in future versions).
 
 .. seealso:: :py:func:`majority`
 
@@ -233,12 +237,39 @@ initial values order.
 %Docstring
 Returns the most common string. The majority is the value with most occurrences in the list
 This is only calculated if Statistic.Majority has been specified in the constructor
-or via setStatistics. If multiple values match, return the first value relative to the
-initial values order.
+or via setStatistics. If multiple values match, return the first value sorted alphabetically
+ascending (this may change in future versions).
 
 .. seealso:: :py:func:`minority`
 
 .. versionadded:: 3.14
+%End
+
+    QString first() const;
+%Docstring
+Returns the first value obtained.
+
+.. seealso:: :py:func:`last`
+
+.. versionadded:: 3.16
+%End
+
+    QString last() const;
+%Docstring
+Returns the last value obtained.
+
+.. seealso:: :py:func:`first`
+
+.. versionadded:: 3.16
+%End
+
+    QStringList mode() const;
+%Docstring
+Returns the mode of the values. The values are sorted alphabetically in ascending order (this may change in future versions).
+
+.. seealso:: :py:func:`majority`
+
+.. versionadded:: 3.16
 %End
 
     static QString displayName( QgsStringStatisticalSummary::Statistic statistic );

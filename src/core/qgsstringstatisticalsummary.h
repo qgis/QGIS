@@ -18,6 +18,7 @@
 
 #include <QSet>
 #include <QVariantList>
+#include <QStringList>
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -48,17 +49,21 @@ class CORE_EXPORT QgsStringStatisticalSummary
     //! Enumeration of flags that specify statistics to be calculated
     enum Statistic
     {
-      Count = 1,  //!< Count
-      CountDistinct = 2,  //!< Number of distinct string values
-      CountMissing = 4,  //!< Number of missing (null) values
-      Min = 8, //!< Minimum string value
-      Max = 16, //!< Maximum string value
-      MinimumLength = 32, //!< Minimum length of string
-      MaximumLength = 64, //!< Maximum length of string
-      MeanLength = 128, //!< Mean length of strings
-      Minority = 256, //!< Minority of strings
-      Majority = 512, //!< Majority of strings
-      All = Count | CountDistinct | CountMissing | Min | Max | MinimumLength | MaximumLength | MeanLength | Minority | Majority, //!< All statistics
+      Count = 1 << 0,         //!< Count
+      CountDistinct = 1 << 1, //!< Number of distinct string values
+      CountMissing = 1 << 2,  //!< Number of missing (null) values
+      Min = 1 << 3,           //!< Minimum string value
+      Max = 1 << 4,           //!< Maximum string value
+      MinimumLength = 1 << 5, //!< Minimum length of string
+      MaximumLength = 1 << 6, //!< Maximum length of string
+      MeanLength = 1 << 7,    //!< Mean length of strings
+      Minority = 1 << 8,      //!< Minority of strings (since QGIS 3.14)
+      Majority = 1 << 9,      //!< Majority of strings (since QGIS 3.14)
+      First = 1 << 10,        //!< First value (since QGIS 3.16)
+      Last = 1 << 11,         //!< Last value (since QGIS 3.16)
+      Mode = 1 << 12,         //!< Mode value (since QGIS 3.16)
+
+      All = Count | CountDistinct | CountMissing | Min | Max | MinimumLength | MaximumLength | MeanLength | Minority | Majority | First | Last | Mode, //!< All statistics
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
@@ -159,7 +164,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
      * Returns the number of distinct string values.
      * \see distinctValues()
      */
-    int countDistinct() const { return mValues.keys().count(); }
+    int countDistinct() const { return mValues.count(); }
 
     /**
      * Returns the set of distinct string values.
@@ -201,8 +206,8 @@ class CORE_EXPORT QgsStringStatisticalSummary
     /**
      * Returns the least common string. The minority is the value with least occurrences in the list
      * This is only calculated if Statistic::Minority has been specified in the constructor
-     * or via setStatistics. If multiple values match, return the first value relative to the
-     * initial values order.
+     * or via setStatistics. If multiple values match, return the first value sorted alphabetically
+     * ascending (this may change in future versions).
      * \see majority
      * \since QGIS 3.14
      */
@@ -211,12 +216,36 @@ class CORE_EXPORT QgsStringStatisticalSummary
     /**
      * Returns the most common string. The majority is the value with most occurrences in the list
      * This is only calculated if Statistic::Majority has been specified in the constructor
-     * or via setStatistics. If multiple values match, return the first value relative to the
-     * initial values order.
+     * or via setStatistics. If multiple values match, return the first value sorted alphabetically
+     * ascending (this may change in future versions).
      * \see minority
      * \since QGIS 3.14
      */
     QString majority() const { return mMajority; }
+
+    /**
+     * Returns the first value obtained.
+     *
+     * \see last()
+     * \since QGIS 3.16
+     */
+    QString first() const { return mFirst; }
+
+    /**
+     * Returns the last value obtained.
+     *
+     * \see first()
+     * \since QGIS 3.16
+     */
+    QString last() const { return mLast; }
+
+    /**
+     * Returns the mode of the values. The values are sorted alphabetically in ascending order (this may change in future versions).
+     *
+     * \see majority()
+     * \since QGIS 3.16
+     */
+    QStringList mode() const { return mMode; }
 
     /**
      * Returns the friendly display name for a statistic
@@ -239,6 +268,9 @@ class CORE_EXPORT QgsStringStatisticalSummary
     double mMeanLength;
     QString mMinority;
     QString mMajority;
+    QString mFirst;
+    QString mLast;
+    QStringList mMode;
 
     void testString( const QString &string );
 };
