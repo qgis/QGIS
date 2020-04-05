@@ -379,6 +379,7 @@
 %Include auto_generated/layout/qgslayoutmeasurementconverter.sip
 %Include auto_generated/layout/qgslayoutmodel.sip
 %Include auto_generated/layout/qgslayoutmultiframe.sip
+%Include auto_generated/layout/qgslayoutnortharrowhandler.sip
 %Include auto_generated/layout/qgslayoutobject.sip
 %Include auto_generated/layout/qgslayoutpagecollection.sip
 %Include auto_generated/layout/qgslayoutpoint.sip
