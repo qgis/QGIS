@@ -22,6 +22,7 @@
 #include "qgstemporalnavigationobject.h"
 #include "qgstemporalmapsettingswidget.h"
 #include "qgstemporalutils.h"
+#include "qgsmaplayertemporalproperties.h"
 
 QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -114,6 +115,8 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   updateFrameDuration();
 
   connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsTemporalControllerWidget::setWidgetStateFromProject );
+  connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsTemporalControllerWidget::onLayersAdded );
+  connect( QgsProject::instance(), &QgsProject::cleared, this, &QgsTemporalControllerWidget::onProjectCleared );
 }
 
 void QgsTemporalControllerWidget::updateTemporalExtent()
@@ -148,6 +151,26 @@ void QgsTemporalControllerWidget::setWidgetStateFromProject()
   updateFrameDuration();
 
   mNavigationObject->setFramesPerSecond( QgsProject::instance()->timeSettings()->framesPerSecond() );
+}
+
+void QgsTemporalControllerWidget::onLayersAdded()
+{
+  if ( !mHasTemporalLayersLoaded )
+  {
+    QVector<QgsMapLayer *> layers = QgsProject::instance()->layers<QgsMapLayer *>();
+    for ( QgsMapLayer *layer : layers )
+      mHasTemporalLayersLoaded |= layer->temporalProperties()->isActive();
+
+    if ( mHasTemporalLayersLoaded )
+      setDatesToProjectTime();
+  }
+}
+
+void QgsTemporalControllerWidget::onProjectCleared()
+{
+  mHasTemporalLayersLoaded = false;
+  mStartDateTime->setDateTime( QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) ) );
+  mEndDateTime->setDateTime( mStartDateTime->dateTime() );
 }
 
 void QgsTemporalControllerWidget::updateSlider( const QgsDateTimeRange &range )
