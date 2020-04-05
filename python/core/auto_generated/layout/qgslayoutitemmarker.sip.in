@@ -55,6 +55,70 @@ Returns the marker symbol used to draw the shape.
 .. seealso:: :py:func:`setSymbol`
 %End
 
+    void setLinkedMap( QgsLayoutItemMap *map );
+%Docstring
+Sets the ``map`` object for rotation.
+
+If this is set then the marker will be rotated by the same
+amount as the specified map object. This is useful especially for
+syncing north arrows with a map item.
+
+.. seealso:: :py:func:`linkedMap`
+%End
+
+    QgsLayoutItemMap *linkedMap() const;
+%Docstring
+Returns the linked rotation map, if set. An ``None`` means map rotation is
+disabled.  If this is set then the marker is rotated by the same amount
+as the specified map object.
+
+.. seealso:: :py:func:`setLinkedMap`
+%End
+
+    double northArrowRotation() const;
+%Docstring
+When the marker is linked to a map in north arrow rotation mode,
+returns the current north arrow rotation for the marker.
+
+.. seealso:: :py:func:`setLinkedMap`
+%End
+
+    QgsLayoutNorthArrowHandler::NorthMode northMode() const;
+%Docstring
+Returns the mode used to align the marker to a map's North.
+
+.. seealso:: :py:func:`setNorthMode`
+
+.. seealso:: :py:func:`northOffset`
+%End
+
+    void setNorthMode( QgsLayoutNorthArrowHandler::NorthMode mode );
+%Docstring
+Sets the ``mode`` used to align the marker to a map's North.
+
+.. seealso:: :py:func:`northMode`
+
+.. seealso:: :py:func:`setNorthOffset`
+%End
+
+    double northOffset() const;
+%Docstring
+Returns the offset added to the marker's rotation from a map's North.
+
+.. seealso:: :py:func:`setNorthOffset`
+
+.. seealso:: :py:func:`northMode`
+%End
+
+    void setNorthOffset( double offset );
+%Docstring
+Sets the ``offset`` added to the marker's rotation from a map's North.
+
+.. seealso:: :py:func:`northOffset`
+
+.. seealso:: :py:func:`setNorthMode`
+%End
+
     virtual QRectF boundingRect() const;
 
 
@@ -73,6 +137,8 @@ Returns the marker symbol used to draw the shape.
 
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
+
+    virtual void finalizeRestoreFromXml();
 
 };
 

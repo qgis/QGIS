@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2020, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import Qt, QRectF
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsLayoutItemMarker,
@@ -22,7 +22,11 @@ from qgis.core import (QgsLayoutItemMarker,
                        QgsProject,
                        QgsReadWriteContext,
                        QgsLayoutPoint,
-                       QgsUnitTypes)
+                       QgsUnitTypes,
+                       QgsLayoutItemMap,
+                       QgsRectangle,
+                       QgsLayoutNorthArrowHandler,
+                       QgsCoordinateReferenceSystem)
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -99,6 +103,9 @@ class TestQgsLayoutMarker(unittest.TestCase, LayoutItemTestCase):
         marker = QgsLayoutItemMarker(l)
         l.addLayoutItem(marker)
 
+        map = QgsLayoutItemMap(l)
+        l.addLayoutItem(map)
+
         props = {}
         props["color"] = "green"
         props["outline_style"] = "no"
@@ -107,6 +114,10 @@ class TestQgsLayoutMarker(unittest.TestCase, LayoutItemTestCase):
         style = QgsMarkerSymbol.createSimple(props)
         marker.setSymbol(style)
 
+        marker.setLinkedMap(map)
+        marker.setNorthMode(QgsLayoutNorthArrowHandler.TrueNorth)
+        marker.setNorthOffset(15)
+
         #save original item to xml
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
@@ -114,10 +125,15 @@ class TestQgsLayoutMarker(unittest.TestCase, LayoutItemTestCase):
 
         marker2 = QgsLayoutItemMarker(l)
         self.assertTrue(marker2.readXml(elem.firstChildElement(), doc, QgsReadWriteContext()))
+        marker2.finalizeRestoreFromXml()
 
         self.assertEqual(marker2.symbol().symbolLayer(0).color().name(), '#008000')
         self.assertEqual(marker2.symbol().symbolLayer(0).strokeStyle(), Qt.NoPen)
         self.assertEqual(marker2.symbol().symbolLayer(0).size(), 4.4)
+
+        self.assertEqual(marker2.linkedMap(), map)
+        self.assertEqual(marker2.northMode(), QgsLayoutNorthArrowHandler.TrueNorth)
+        self.assertEqual(marker2.northOffset(), 15.0)
 
     def testBounds(self):
         pr = QgsProject()
@@ -146,6 +162,124 @@ class TestQgsLayoutMarker(unittest.TestCase, LayoutItemTestCase):
         self.assertAlmostEqual(bounds.right(), 19.04, 1)
         self.assertAlmostEqual(bounds.top(), 10.95, 1)
         self.assertAlmostEqual(bounds.bottom(), 29.04, 1)
+
+    def testNorthArrowWithMapItemRotation(self):
+        """Test picture rotation when map item is also rotated"""
+
+        layout = QgsLayout(QgsProject.instance())
+
+        map = QgsLayoutItemMap(layout)
+        map.setExtent(QgsRectangle(0, -256, 256, 0))
+        layout.addLayoutItem(map)
+
+        marker = QgsLayoutItemMarker(layout)
+        layout.addLayoutItem(marker)
+
+        marker.setLinkedMap(map)
+        self.assertEqual(marker.linkedMap(), map)
+
+        marker.setNorthMode(QgsLayoutNorthArrowHandler.GridNorth)
+        map.setItemRotation(45)
+        self.assertEqual(marker.northArrowRotation(), 45)
+        map.setMapRotation(-34)
+        self.assertEqual(marker.northArrowRotation(), 11)
+
+        # add an offset
+        marker.setNorthOffset(-10)
+        self.assertEqual(marker.northArrowRotation(), 1)
+
+        map.setItemRotation(55)
+        self.assertEqual(marker.northArrowRotation(), 11)
+
+    def testGridNorth(self):
+        """Test syncing picture to grid north"""
+
+        layout = QgsLayout(QgsProject.instance())
+
+        map = QgsLayoutItemMap(layout)
+        map.setExtent(QgsRectangle(0, -256, 256, 0))
+        layout.addLayoutItem(map)
+
+        marker = QgsLayoutItemMarker(layout)
+        layout.addLayoutItem(marker)
+
+        marker.setLinkedMap(map)
+        self.assertEqual(marker.linkedMap(), map)
+
+        marker.setNorthMode(QgsLayoutNorthArrowHandler.GridNorth)
+        map.setMapRotation(45)
+        self.assertEqual(marker.northArrowRotation(), 45)
+
+        # add an offset
+        marker.setNorthOffset(-10)
+        self.assertEqual(marker.northArrowRotation(), 35)
+
+    def testTrueNorth(self):
+        """Test syncing picture to true north"""
+
+        layout = QgsLayout(QgsProject.instance())
+
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(0, 0, 10, 10))
+        map.setCrs(QgsCoordinateReferenceSystem.fromEpsgId(3575))
+        map.setExtent(QgsRectangle(-2126029.962, -2200807.749, -119078.102, -757031.156))
+        layout.addLayoutItem(map)
+
+        marker = QgsLayoutItemMarker(layout)
+        layout.addLayoutItem(marker)
+
+        marker.setLinkedMap(map)
+        self.assertEqual(marker.linkedMap(), map)
+
+        marker.setNorthMode(QgsLayoutNorthArrowHandler.TrueNorth)
+        self.assertAlmostEqual(marker.northArrowRotation(), 37.20, 1)
+
+        # shift map
+        map.setExtent(QgsRectangle(2120672.293, -3056394.691, 2481640.226, -2796718.780))
+        self.assertAlmostEqual(marker.northArrowRotation(), -38.18, 1)
+
+        # rotate map
+        map.setMapRotation(45)
+        self.assertAlmostEqual(marker.northArrowRotation(), -38.18 + 45, 1)
+
+        # add an offset
+        marker.setNorthOffset(-10)
+        self.assertAlmostEqual(marker.northArrowRotation(), -38.18 + 35, 1)
+
+    def testRenderWithNorthRotation(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        map = QgsLayoutItemMap(layout)
+        map.setExtent(QgsRectangle(0, -256, 256, 0))
+
+        marker = QgsLayoutItemMarker(layout)
+        marker.attemptMove(QgsLayoutPoint(100, 50, QgsUnitTypes.LayoutMillimeters))
+        props = {}
+        props["color"] = "0,255,255"
+        props["outline_style"] = "no"
+        props["size"] = "14.4"
+        props["name"] = "arrow"
+        props["angle"] = "10"
+
+        marker.setLinkedMap(map)
+        self.assertEqual(marker.linkedMap(), map)
+
+        marker.setNorthMode(QgsLayoutNorthArrowHandler.GridNorth)
+        map.setMapRotation(35)
+        self.assertEqual(marker.northArrowRotation(), 35)
+
+        # when rendering, north arrow rotation must be ADDED to symbol rotation! ie.
+        # it does not replace it
+
+        style = QgsMarkerSymbol.createSimple(props)
+        marker.setSymbol(style)
+        layout.addLayoutItem(marker)
+        checker = QgsLayoutChecker(
+            'layout_marker_render_north', layout)
+        checker.setControlPathPrefix("layout_marker")
+        myTestResult, myMessage = checker.testLayout()
+        assert myTestResult, myMessage
 
 
 if __name__ == '__main__':
