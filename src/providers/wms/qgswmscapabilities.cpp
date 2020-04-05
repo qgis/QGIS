@@ -451,7 +451,7 @@ QDateTime QgsWmsSettings::parseWmstDateTimes( QString item )
   // Standard item will have YYYY-MM-DDTHH:mm:ss.SSSZ
   //  format a Qt::ISODateWithMs
 
-  QString format = "YYYY-MM-DDTHH:mm:ss.SSSZ";
+  QString format = "yyyy-MM-ddTHH:mm:ss.SSSZ";
 
   // Check if it does not have time part
   if ( !item.contains( 'T' ) )
