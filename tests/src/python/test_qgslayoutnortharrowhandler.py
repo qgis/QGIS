@@ -147,7 +147,7 @@ class TestQgsLayoutNorthArrowHandler(unittest.TestCase):
         map.setMapRotation(45)
         self.assertAlmostEqual(handler.arrowRotation(), -38.18 + 45, 1)
         self.assertEqual(len(spy), 3)
-        self.assertAlmostEqual(spy[-1][0], -38.18+45, 1)
+        self.assertAlmostEqual(spy[-1][0], -38.18 + 45, 1)
 
         # add an offset
         handler.setNorthOffset(-10)
