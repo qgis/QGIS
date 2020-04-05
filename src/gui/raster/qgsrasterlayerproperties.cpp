@@ -1231,6 +1231,10 @@ void QgsRasterLayerProperties::setSourceStaticTimeState()
     const QString uriString = mRasterLayer->dataProvider()->dataSourceUri() ;
     uri.setEncodedUri( uriString );
 
+    mStartStaticDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+    mEndStaticDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+    mReferenceDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+
     // setup maximum extents for widgets, based on provider's capabilities
     if ( availableProviderRange.begin().isValid() && availableProviderRange.end().isValid() )
     {
@@ -1310,16 +1314,13 @@ void QgsRasterLayerProperties::passProjectTemporalRange_toggled( bool checked )
   if ( checked )
   {
     QgsDateTimeRange range;
-    QLocale locale;
     if ( QgsProject::instance()->timeSettings() )
       range = QgsProject::instance()->timeSettings()->temporalRange();
 
     if ( range.begin().isValid() && range.end().isValid() )
       mLabel->setText( tr( "Project temporal range is set from %1 to %2" ).arg(
-                         range.begin().toString(
-                           locale.dateTimeFormat( QLocale::ShortFormat ) ),
-                         range.end().toString(
-                           locale.dateTimeFormat( QLocale::ShortFormat ) )
+                         range.begin().toString( "yyyy-MM-dd HH:mm:ss" ),
+                         range.end().toString( "yyyy-MM-dd HH:mm:ss" )
                        ) );
     else
       mLabel->setText( tr( "Project temporal range is not valid, can't use it here" ) );

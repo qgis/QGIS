@@ -64,10 +64,9 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
 
   if ( QgsProject::instance()->timeSettings() )
     range = QgsProject::instance()->timeSettings()->temporalRange();
-  QLocale locale;
 
-  mStartDateTime->setDisplayFormat( locale.dateTimeFormat( QLocale::ShortFormat ) );
-  mEndDateTime->setDisplayFormat( locale.dateTimeFormat( QLocale::ShortFormat ) );
+  mStartDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+  mEndDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
   if ( range.begin().isValid() && range.end().isValid() )
   {
@@ -181,10 +180,9 @@ void QgsTemporalControllerWidget::updateSlider( const QgsDateTimeRange &range )
 
 void QgsTemporalControllerWidget::updateRangeLabel( const QgsDateTimeRange &range )
 {
-  QLocale locale;
   mCurrentRangeLabel->setText( tr( "%1 to %2" ).arg(
-                                 range.begin().toString( locale.dateTimeFormat( QLocale::NarrowFormat ) ),
-                                 range.end().toString( locale.dateTimeFormat( QLocale::NarrowFormat ) ) ) );
+                                 range.begin().toString( "yyyy-MM-dd HH:mm:ss" ),
+                                 range.end().toString( "yyyy-MM-dd HH:mm:ss" ) ) );
 }
 
 QgsTemporalController *QgsTemporalControllerWidget::temporalController()

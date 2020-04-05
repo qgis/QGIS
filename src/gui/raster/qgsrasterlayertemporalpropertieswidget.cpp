@@ -36,12 +36,9 @@ QgsRasterLayerTemporalPropertiesWidget::QgsRasterLayerTemporalPropertiesWidget( 
 
 void QgsRasterLayerTemporalPropertiesWidget::init()
 {
-  QLocale locale;
-  mStartTemporalDateTimeEdit->setDisplayFormat(
-    locale.dateTimeFormat( QLocale::ShortFormat ) );
+  mStartTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
-  mEndTemporalDateTimeEdit->setDisplayFormat(
-    locale.dateTimeFormat( QLocale::ShortFormat ) );
+  mEndTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
   mTemporalGroupBox->setChecked( mLayer->temporalProperties()->isActive() );
   switch ( mLayer->temporalProperties()->mode() )
