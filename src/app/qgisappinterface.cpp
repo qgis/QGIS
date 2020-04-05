@@ -566,6 +566,16 @@ void QgisAppInterface::unregisterCustomDropHandler( QgsCustomDropHandler *handle
   qgis->unregisterCustomDropHandler( handler );
 }
 
+void QgisAppInterface::registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler )
+{
+  qgis->registerCustomProjectOpenHandler( handler );
+}
+
+void QgisAppInterface::unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler )
+{
+  qgis->unregisterCustomProjectOpenHandler( handler );
+}
+
 QMenu *QgisAppInterface::projectMenu() { return qgis->projectMenu(); }
 QMenu *QgisAppInterface::editMenu() { return qgis->editMenu(); }
 QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }

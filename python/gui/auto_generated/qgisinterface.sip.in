@@ -1157,11 +1157,11 @@ Unregister a previously registered tool factory from the development/debugging t
 
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
-Register a new custom drop handler.
+Register a new custom drop ``handler``.
 
 .. note::
 
-   Ownership of the factory is not transferred, and the factory must
+   Ownership of ``handler`` is not transferred, and the handler must
    be unregistered when plugin is unloaded.
 
 .. seealso:: :py:class:`QgsCustomDropHandler`
@@ -1173,7 +1173,7 @@ Register a new custom drop handler.
 
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
-Unregister a previously registered custom drop handler.
+Unregister a previously registered custom drop ``handler``.
 
 .. seealso:: :py:class:`QgsCustomDropHandler`
 
@@ -1182,13 +1182,40 @@ Unregister a previously registered custom drop handler.
 .. versionadded:: 3.0
 %End
 
+    virtual void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
+%Docstring
+Register a new custom project open ``handler``.
+
+.. note::
+
+   Ownership of ``handler`` is not transferred, and the handler must
+   be unregistered when plugin is unloaded.
+
+.. seealso:: :py:class:`QgsCustomProjectOpenHandler`
+
+.. seealso:: :py:func:`unregisterCustomProjectOpenHandler`
+
+.. versionadded:: 3.14
+%End
+
+    virtual void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) = 0;
+%Docstring
+Unregister a previously registered custom project open ``handler``.
+
+.. seealso:: :py:class:`QgsCustomDropHandler`
+
+.. seealso:: :py:func:`registerCustomProjectOpenHandler`
+
+.. versionadded:: 3.14
+%End
+
     virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 %Docstring
 Register a new custom drop ``handler`` for layout windows.
 
 .. note::
 
-   Ownership of the factory is not transferred, and the factory must
+   Ownership of ``handler`` is not transferred, and the handler must
    be unregistered when plugin is unloaded.
 
 .. seealso:: :py:class:`QgsLayoutCustomDropHandler`

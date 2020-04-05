@@ -147,6 +147,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
     void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
+    void registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) override;
+    void unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler ) override;
     void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
     void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
     QMenu *projectMenu() override;

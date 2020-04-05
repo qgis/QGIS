@@ -370,6 +370,7 @@ SET(QGIS_GUI_SRCS
   qgscoordinateoperationwidget.cpp
   qgscredentialdialog.cpp
   qgscustomdrophandler.cpp
+  qgscustomprojectopenhandler.cpp
   qgscurveeditorwidget.cpp
   qgsdatabaseschemacombobox.cpp
   qgsdatabasetablecombobox.cpp
@@ -592,6 +593,7 @@ SET(QGIS_GUI_HDRS
   qgscredentialdialog.h
   qgscurveeditorwidget.h
   qgscustomdrophandler.h
+  qgscustomprojectopenhandler.h
   qgsdatabaseschemacombobox.h
   qgsdatabasetablecombobox.h
   qgsdataitemguiprovider.h
