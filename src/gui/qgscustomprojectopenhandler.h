@@ -45,7 +45,7 @@ class GUI_EXPORT QgsCustomProjectOpenHandler : public QObject
      * is returned, then the handler has accepted this file and it should not
      * be further processed (e.g. by other QgsCustomProjectOpenHandler).
      *
-     * It it is the subclasses' responsiblity to ignore file types it cannot handle
+     * It it is the subclasses' responsibility to ignore file types it cannot handle
      * by returning FALSE for these.
      *
      * The base class implementation does nothing.
