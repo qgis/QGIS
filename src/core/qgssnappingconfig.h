@@ -204,7 +204,7 @@ class CORE_EXPORT QgsSnappingConfig
          * Sets the min scale value on which snapping is used, 0.0 disable scale limit
          * \since QGIS 3.14
          */
-        void setMinimumScale( double p_minScale );
+        void setMinimumScale( double minScale );
 
         /**
          * Returns max scale on which snapping is limited
@@ -216,7 +216,7 @@ class CORE_EXPORT QgsSnappingConfig
          * Sets the max scale value on which snapping is used, 0.0 disable scale limit
          * \since QGIS 3.14
          */
-        void setMaximumScale( double p_maxScale );
+        void setMaximumScale( double maxScale );
 
         /**
          * Compare this configuration to other.
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsSnappingConfig
      * Sets the min scale on which snapping is enabled, 0.0 disable scale limit
      * \since QGIS 3.14
      */
-    void setMinimumScale( double pMinScale );
+    void setMinimumScale( double minScale );
 
     /**
      * Returns the max scale
@@ -309,7 +309,7 @@ class CORE_EXPORT QgsSnappingConfig
      * Set the max scale on which snapping is enabled, 0.0 disable scale limit
      * \since QGIS 3.14
      */
-    void setMaximumScale( double pMaxScale );
+    void setMaximumScale( double maxScale );
 
     /**
      * Set the scale dependency mode

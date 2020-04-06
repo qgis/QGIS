@@ -126,9 +126,9 @@ double QgsSnappingConfig::IndividualLayerSettings::minimumScale() const
   return mMinimumScale;
 }
 
-void QgsSnappingConfig::IndividualLayerSettings::setMinimumScale( double p_minScale )
+void QgsSnappingConfig::IndividualLayerSettings::setMinimumScale( double minScale )
 {
-  mMinimumScale = p_minScale;
+  mMinimumScale = minScale;
 }
 
 double QgsSnappingConfig::IndividualLayerSettings::maximumScale() const
@@ -136,9 +136,9 @@ double QgsSnappingConfig::IndividualLayerSettings::maximumScale() const
   return mMaximumScale;
 }
 
-void QgsSnappingConfig::IndividualLayerSettings::setMaximumScale( double p_maxScale )
+void QgsSnappingConfig::IndividualLayerSettings::setMaximumScale( double maxScale )
 {
-  mMaximumScale = p_maxScale;
+  mMaximumScale = maxScale;
 }
 
 bool QgsSnappingConfig::IndividualLayerSettings::operator !=( const QgsSnappingConfig::IndividualLayerSettings &other ) const
@@ -653,9 +653,9 @@ double QgsSnappingConfig::minimumScale() const
   return mMinimumScale;
 }
 
-void QgsSnappingConfig::setMinimumScale( double pMinScale )
+void QgsSnappingConfig::setMinimumScale( double minScale )
 {
-  mMinimumScale = pMinScale;
+  mMinimumScale = minScale;
 }
 
 double QgsSnappingConfig::maximumScale() const
@@ -663,9 +663,9 @@ double QgsSnappingConfig::maximumScale() const
   return mMaximumScale;
 }
 
-void QgsSnappingConfig::setMaximumScale( double pMaxScale )
+void QgsSnappingConfig::setMaximumScale( double maxScale )
 {
-  mMaximumScale = pMaxScale;
+  mMaximumScale = maxScale;
 }
 
 void QgsSnappingConfig::setScaleDependencyMode( QgsSnappingConfig::ScaleDependencyMode mode )

@@ -102,9 +102,9 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     void changeTolerance( double tolerance );
 
-    void changeMinScale( double pMinScale );
+    void changeMinScale( double minScale );
 
-    void changeMaxScale( double pMaxScale );
+    void changeMaxScale( double maxScale );
 
     void changeUnit( int idx );
 
@@ -130,7 +130,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     DisplayMode mDisplayMode;
 
     //! modeChanged determines if widget are visible or not based on mode
-    void modeChanged( );
+    void modeChanged();
 
     QgsProject *mProject = nullptr;
     QgsSnappingConfig mConfig;

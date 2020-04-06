@@ -184,7 +184,7 @@ Returns minimum scale on which snapping is limited
 .. versionadded:: 3.14
 %End
 
-        void setMinimumScale( double p_minScale );
+        void setMinimumScale( double minScale );
 %Docstring
 Sets the min scale value on which snapping is used, 0.0 disable scale limit
 
@@ -198,7 +198,7 @@ Returns max scale on which snapping is limited
 .. versionadded:: 3.14
 %End
 
-        void setMaximumScale( double p_maxScale );
+        void setMaximumScale( double maxScale );
 %Docstring
 Sets the max scale value on which snapping is used, 0.0 disable scale limit
 
@@ -290,7 +290,7 @@ Returns the min scale
 .. versionadded:: 3.14
 %End
 
-    void setMinimumScale( double pMinScale );
+    void setMinimumScale( double minScale );
 %Docstring
 Sets the min scale on which snapping is enabled, 0.0 disable scale limit
 
@@ -304,7 +304,7 @@ Returns the max scale
 .. versionadded:: 3.14
 %End
 
-    void setMaximumScale( double pMaxScale );
+    void setMaximumScale( double maxScale );
 %Docstring
 Set the max scale on which snapping is enabled, 0.0 disable scale limit
 

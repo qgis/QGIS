@@ -513,15 +513,15 @@ void QgsSnappingWidget::changeTolerance( double tolerance )
   mProject->setSnappingConfig( mConfig );
 }
 
-void QgsSnappingWidget::changeMinScale( double pMinScale )
+void QgsSnappingWidget::changeMinScale( double minScale )
 {
-  mConfig.setMinimumScale( pMinScale );
+  mConfig.setMinimumScale( minScale );
   mProject->setSnappingConfig( mConfig );
 }
 
-void QgsSnappingWidget::changeMaxScale( double pMaxScale )
+void QgsSnappingWidget::changeMaxScale( double maxScale )
 {
-  mConfig.setMaximumScale( pMaxScale );
+  mConfig.setMaximumScale( maxScale );
   mProject->setSnappingConfig( mConfig );
 }
 
