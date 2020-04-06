@@ -74,7 +74,6 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         cls._load_test_table('public', 'raster_3035_tiled_composite_pk')
         cls._load_test_table('public', 'raster_3035_untiled_multiple_rows')
         cls._load_test_table('idro', 'cosmo_i5_snow', 'bug_34823_pg_raster')
-        cls._load_test_table('public', 'raster_4326_time')
 
         # Fix timing issues in backend
         #time.sleep(1)
@@ -323,48 +322,48 @@ class TestPyQgsPostgresRasterProvider(unittest.TestCase):
         def _test_block(rl, expected_block, expected_single):
 
             self.assertTrue(rl.isValid())
-            block = rl.dataProvider().block(2, rl.extent(), 2, 2)
+            block = rl.dataProvider().block(1, rl.extent(), 2, 2)
             data = []
             for i in range(2):
                 for j in range(2):
                     data.append(int(block.value(i, j)))
             self.assertEqual(data, expected_block)
 
-            block = rl.dataProvider().block(2, rl.extent(), 1, 1)
-            self.assertEqual(block.value(0, 0), expected_single)
+            block = rl.dataProvider().block(1, rl.extent(), 1, 1)
+            self.assertEqual(int(block.value(0, 0)), expected_single)
 
         # First check that setting different temporal default values we get different results
-        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} temporalDefaultTime='2020-04-01T00:00:00' temporalFieldIndex='2'".format(table='raster_4326_time', schema='public'), 'pg_layer', 'postgresraster')
+        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} temporalDefaultTime='2020-04-01T00:00:00' temporalFieldIndex='1'".format(table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
         self.assertEqual(rl.subsetString(), "")
 
-        _test_block(rl, [161, 218, 113, 142], 226)
+        _test_block(rl, [136, 142, 145, 153], 153)
 
-        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} temporalDefaultTime='2020-04-05T00:00:00' temporalFieldIndex='2'".format(table='raster_4326_time', schema='public'), 'pg_layer', 'postgresraster')
+        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} temporalDefaultTime='2020-04-05T00:00:00' temporalFieldIndex='1'".format(table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
         self.assertEqual(rl.subsetString(), "")
 
-        _test_block(rl, [227, 254, 179, 206], 254)
+        _test_block(rl, [136, 142, 161, 169], 169)
 
         # Check that manually setting a subsetString we get the same results
-        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema}  sql=\"data\" = '2020-04-01'".format(table='raster_4326_time', schema='public'), 'pg_layer', 'postgresraster')
+        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema}  sql=\"data\" = '2020-04-01'".format(table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
         self.assertEqual(rl.subsetString(), '"data" = \'2020-04-01\'')
 
-        _test_block(rl, [161, 218, 113, 142], 226)
+        _test_block(rl, [136, 142, 145, 153], 153)
 
-        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema}  sql=\"data\" = '2020-04-05'".format(table='raster_4326_time', schema='public'), 'pg_layer', 'postgresraster')
+        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema}  sql=\"data\" = '2020-04-05'".format(table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
         self.assertEqual(rl.subsetString(), '"data" = \'2020-04-05\'')
 
-        _test_block(rl, [227, 254, 179, 206], 254)
+        _test_block(rl, [136, 142, 161, 169], 169)
 
         # Now check if the varchar temporal field works the same
-        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} temporalDefaultTime='2020-04-01T00:00:00' temporalFieldIndex='3'".format(table='raster_4326_time', schema='public'), 'pg_layer', 'postgresraster')
+        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} temporalDefaultTime='2020-04-01T00:00:00' temporalFieldIndex='2'".format(table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
         self.assertEqual(rl.subsetString(), '')
 
-        _test_block(rl, [161, 218, 113, 142], 226)
+        _test_block(rl, [136, 142, 145, 153], 153)
 
-        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} temporalDefaultTime='2020-04-05T00:00:00' temporalFieldIndex='3'".format(table='raster_4326_time', schema='public'), 'pg_layer', 'postgresraster')
+        rl = QgsRasterLayer(self.dbconn + " sslmode=disable table={table} schema={schema} temporalDefaultTime='2020-04-05T00:00:00' temporalFieldIndex='2'".format(table='raster_3035_untiled_multiple_rows', schema='public'), 'pg_layer', 'postgresraster')
         self.assertEqual(rl.subsetString(), '')
 
-        _test_block(rl, [227, 254, 179, 206], 254)
+        _test_block(rl, [136, 142, 161, 169], 169)
 
 
 if __name__ == '__main__':
