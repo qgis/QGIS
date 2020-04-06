@@ -1820,7 +1820,6 @@ void TestQgsProcessing::createFeatureSink()
   remapDef.setDestinationCrs( layer->crs() );
   remapDef.setSourceCrs( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   remapDef.setDestinationWkbType( QgsWkbTypes::Polygon );
-  remapDef.addMappedField( QStringLiteral( "fid" ), QgsProperty::fromValue( 3 ) );
   remapDef.addMappedField( QStringLiteral( "my_field" ), QgsProperty::fromExpression( QStringLiteral( "field2 || @extra" ) ) );
   QgsFields fields2;
   fields2.append( QgsField( "field2", QVariant::String ) );
@@ -1842,7 +1841,6 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( f.attributes().at( 1 ).toString(), QStringLiteral( "val" ) );
   QCOMPARE( f.geometry().asWkt( 1 ), QStringLiteral( "PointZ (1 2 3)" ) );
   QVERIFY( it.nextFeature( f ) );
-  QCOMPARE( f.attributes().at( 0 ).toInt(), 3 );
   QCOMPARE( f.attributes().at( 1 ).toString(), QStringLiteral( "val2" ) );
   QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Point (-10199761 -4017774)" ) );
   delete layer;
@@ -1890,6 +1888,28 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->wkbType(), QgsWkbTypes::Polygon );
   QVERIFY( layer->getFeatures().nextFeature( f ) );
   QCOMPARE( f.attribute( "my_field" ).toString(), QStringLiteral( "val" ) );
+
+  // now append to that second layer
+  remapDef.setDestinationFields( layer->fields() );
+  remapDef.setDestinationCrs( layer->crs() );
+
+  remapDef.setSourceCrs( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  remapDef.setDestinationWkbType( QgsWkbTypes::Point );
+  remapDef.addMappedField( QStringLiteral( "my_field" ), QgsProperty::fromExpression( QStringLiteral( "field2 || @extra" ) ) );
+  destination2 = QStringLiteral( "ogr:dbname='%1' table=\"points\" (geom) sql=" ).arg( geopackagePath );
+  sink.reset( QgsProcessingUtils::createFeatureSink( destination2, context, fields2, QgsWkbTypes::PointZ, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QVariantMap(), nullptr, &remapDef ) );
+  QVERIFY( sink.get() );
+  f = QgsFeature( fields );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PointZ(3 4 5)" ) ) );
+  f.setAttributes( QgsAttributes() << "v" );
+  QVERIFY( sink->addFeature( f ) );
+  sink.reset( nullptr );
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination2, context, true ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( layer->featureCount(), 2L );
+  QVERIFY( layer->getFeatures().nextFeature( f ) );
+  QCOMPARE( f.attribute( "my_field" ).toString(), QStringLiteral( "val2" ) );
 }
 
 void TestQgsProcessing::source()
