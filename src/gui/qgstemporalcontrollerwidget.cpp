@@ -158,7 +158,10 @@ void QgsTemporalControllerWidget::onLayersAdded()
   {
     QVector<QgsMapLayer *> layers = QgsProject::instance()->layers<QgsMapLayer *>();
     for ( QgsMapLayer *layer : layers )
-      mHasTemporalLayersLoaded |= layer->temporalProperties()->isActive();
+    {
+      if ( layer->temporalProperties() )
+        mHasTemporalLayersLoaded |= layer->temporalProperties()->isActive();
+    }
 
     if ( mHasTemporalLayersLoaded )
       setDatesToProjectTime();
