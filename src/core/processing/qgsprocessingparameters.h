@@ -26,6 +26,7 @@
 #include "qgsfeaturesource.h"
 #include "qgsprocessingutils.h"
 #include "qgsfilefiltergenerator.h"
+#include "qgsremappingproxyfeaturesink.h"
 #include <QMap>
 #include <limits>
 
@@ -245,6 +246,35 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
     QVariantMap createOptions;
 
     /**
+     * Returns TRUE if the output uses a remapping definition.
+     *
+     * \see remappingDefinition()
+     * \since QGIS 3.14
+     */
+    bool useRemapping() const { return mUseRemapping; }
+
+    /**
+     * Returns the output remapping definition, if useRemapping() is TRUE.
+     *
+     * \see useRemapping()
+     * \see setRemappingDefinition()
+     * \since QGIS 3.14
+     */
+    QgsRemappingSinkDefinition remappingDefinition() const { return mRemappingDefinition; }
+
+    /**
+     * Sets the remapping \a definition to use when adding features to the output layer.
+     *
+     * Calling this method will set useRemapping() to TRUE.
+     *
+     * \see remappingDefinition()
+     * \see useRemapping()
+     *
+     * \since QGIS 3.14
+     */
+    void setRemappingDefinition( const QgsRemappingSinkDefinition &definition );
+
+    /**
      * Saves this output layer definition to a QVariantMap, wrapped in a QVariant.
      * You can use QgsXmlUtils::writeVariant to save it to an XML document.
      * \see loadVariant()
@@ -267,6 +297,12 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
     }
 
     bool operator==( const QgsProcessingOutputLayerDefinition &other ) const;
+    bool operator!=( const QgsProcessingOutputLayerDefinition &other ) const;
+
+  private:
+
+    bool mUseRemapping = false;
+    QgsRemappingSinkDefinition mRemappingDefinition;
 
 };
 
