@@ -27,6 +27,7 @@
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
 #include "qgsproxyfeaturesink.h"
+#include "qgsremappingproxyfeaturesink.h"
 
 class QgsMeshLayer;
 class QgsProject;
@@ -222,7 +223,8 @@ class CORE_EXPORT QgsProcessingUtils
         QgsWkbTypes::Type geometryType,
         const QgsCoordinateReferenceSystem &crs,
         const QVariantMap &createOptions = QVariantMap(),
-        QgsFeatureSink::SinkFlags sinkFlags = nullptr ) SIP_FACTORY;
+        QgsFeatureSink::SinkFlags sinkFlags = nullptr,
+        QgsRemappingSinkDefinition *remappingDefinition = nullptr ) SIP_FACTORY;
 #endif
 
     /**

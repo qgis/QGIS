@@ -1800,6 +1800,8 @@ void TestQgsProcessing::createFeatureSink()
   prevDest = QDir::tempPath() + "/create_feature_sink2.gpkg";
   sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, QgsWkbTypes::PointZ, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
   QVERIFY( sink.get() );
+  f = QgsFeature( fields );
+  f.setAttributes( QgsAttributes() << "val" );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PointZ(1 2 3)" ) ) );
   QVERIFY( sink->addFeature( f ) );
   QCOMPARE( destination, prevDest );
@@ -1812,7 +1814,38 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->fields().at( 1 ).name(), QStringLiteral( "my_field" ) );
   QCOMPARE( layer->fields().at( 1 ).type(), QVariant::String );
   QCOMPARE( layer->featureCount(), 1L );
-
+  // append to existing OGR layer
+  QgsRemappingSinkDefinition remapDef;
+  remapDef.setDestinationFields( layer->fields() );
+  remapDef.setDestinationCrs( layer->crs() );
+  remapDef.setSourceCrs( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  remapDef.setDestinationWkbType( QgsWkbTypes::Polygon );
+  remapDef.addMappedField( QStringLiteral( "fid" ), QgsProperty::fromValue( 3 ) );
+  remapDef.addMappedField( QStringLiteral( "my_field" ), QgsProperty::fromExpression( QStringLiteral( "field2 || @extra" ) ) );
+  QgsFields fields2;
+  fields2.append( QgsField( "field2", QVariant::String ) );
+  context.expressionContext().appendScope( new QgsExpressionContextScope() );
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "extra" ), 2 );
+  sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields2, QgsWkbTypes::Point, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QVariantMap(), nullptr, &remapDef ) );
+  QVERIFY( sink.get() );
+  f = QgsFeature( fields2 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point(10 0)" ) ) );
+  f.setAttributes( QgsAttributes() << "val" );
+  QVERIFY( sink->addFeature( f ) );
+  QCOMPARE( destination, prevDest );
+  sink.reset( nullptr );
+  layer = new QgsVectorLayer( destination );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->featureCount(), 2L );
+  QgsFeatureIterator it = layer->getFeatures();
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.attributes().at( 1 ).toString(), QStringLiteral( "val" ) );
+  QCOMPARE( f.geometry().asWkt( 1 ), QStringLiteral( "PointZ (1 2 3)" ) );
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.attributes().at( 0 ).toInt(), 3 );
+  QCOMPARE( f.attributes().at( 1 ).toString(), QStringLiteral( "val2" ) );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Point (-10199761 -4017774)" ) );
+  delete layer;
   //windows style path
   destination = "d:\\temp\\create_feature_sink.tab";
   sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
