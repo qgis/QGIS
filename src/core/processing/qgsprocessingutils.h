@@ -26,6 +26,7 @@
 #include "qgsprocessing.h"
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
+#include "qgsproxyfeaturesink.h"
 
 class QgsMeshLayer;
 class QgsProject;

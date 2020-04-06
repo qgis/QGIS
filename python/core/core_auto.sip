@@ -167,6 +167,7 @@
 %Include auto_generated/qgsproviderconnectionmodel.sip
 %Include auto_generated/qgsprovidermetadata.sip
 %Include auto_generated/qgsproviderregistry.sip
+%Include auto_generated/qgsproxyfeaturesink.sip
 %Include auto_generated/qgsproxyprogresstask.sip
 %Include auto_generated/qgspythonrunner.sip
 %Include auto_generated/qgsrange.sip
