@@ -74,18 +74,32 @@ class CORE_EXPORT QgsRemappingSinkDefinition
     void addMappedField( const QString &destinationField, const QgsProperty &property ) { mFieldMap.insert( destinationField, property ); }
 
     /**
-     * Returns the transform used for reprojecting incoming features to the sink's destination CRS.
+     * Returns the source CRS used for reprojecting incoming features to the sink's destination CRS.
      *
-     * \see setTransform()
+     * \see setSourceCrs()
      */
-    QgsCoordinateTransform transform() const { return mTransform; }
+    QgsCoordinateReferenceSystem sourceCrs() const { return mSourceCrs; }
 
     /**
-     * Sets the \a transform used for reprojecting incoming features to the sink's destination CRS.
+     * Sets the \a source crs used for reprojecting incoming features to the sink's destination CRS.
      *
-     * \see transform()
+     * \see sourceCrs()
      */
-    void setTransform( const QgsCoordinateTransform &transform )  { mTransform = transform; }
+    void setSourceCrs( const QgsCoordinateReferenceSystem &source ) { mSourceCrs = source; }
+
+    /**
+     * Returns the destination CRS used for reprojecting incoming features to the sink's destination CRS.
+     *
+     * \see setDestinationCrs()
+     */
+    QgsCoordinateReferenceSystem destinationCrs() const { return mDestinationCrs; }
+
+    /**
+     * Sets the \a destination crs used for reprojecting incoming features to the sink's destination CRS.
+     *
+     * \see destinationCrs()
+     */
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &destination ) { mDestinationCrs = destination; }
 
     /**
      * Returns the WKB geometry type for the destination.
@@ -115,17 +129,38 @@ class CORE_EXPORT QgsRemappingSinkDefinition
      */
     void setDestinationFields( const QgsFields &fields ) { mDestinationFields = fields; }
 
+    /**
+     * Saves this remapping definition to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     * \see loadVariant()
+     */
+    QVariant toVariant() const;
+
+    /**
+     * Loads this remapping definition from a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::readVariant to load it from an XML document.
+     * \see toVariant()
+     */
+    bool loadVariant( const QVariantMap &map );
+
+    bool operator==( const QgsRemappingSinkDefinition &other ) const;
+    bool operator!=( const QgsRemappingSinkDefinition &other ) const;
+
   private:
 
     QMap< QString, QgsProperty > mFieldMap;
 
-    QgsCoordinateTransform mTransform;
+    QgsCoordinateReferenceSystem mSourceCrs;
+    QgsCoordinateReferenceSystem mDestinationCrs;
 
     QgsWkbTypes::Type mDestinationWkbType = QgsWkbTypes::Unknown;
 
     QgsFields mDestinationFields;
 
 };
+
+Q_DECLARE_METATYPE( QgsRemappingSinkDefinition )
+
 
 
 /**
@@ -156,6 +191,11 @@ class CORE_EXPORT QgsRemappingProxyFeatureSink : public QgsFeatureSink
     void setExpressionContext( const QgsExpressionContext &context );
 
     /**
+     * Sets the transform \a context to use when reprojecting features.
+     */
+    void setTransformContext( const QgsCoordinateTransformContext &context );
+
+    /**
      * Remaps a \a feature to a set of features compatible with the destination sink.
      */
     QgsFeatureList remapFeature( const QgsFeature &feature ) const;
@@ -172,6 +212,7 @@ class CORE_EXPORT QgsRemappingProxyFeatureSink : public QgsFeatureSink
   private:
 
     QgsRemappingSinkDefinition mDefinition;
+    QgsCoordinateTransform mTransform;
     QgsFeatureSink *mSink = nullptr;
     mutable QgsExpressionContext mContext;
 };

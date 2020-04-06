@@ -103,6 +103,69 @@ class TestQgsFeatureSink(unittest.TestCase):
         self.assertEqual(store.features()[1]['fldtxt'], 'test2')
         self.assertEqual(store.features()[2]['fldtxt'], 'test3')
 
+    def testRemappingSinkDefinition(self):
+        """
+        Test remapping sink definitions
+        """
+        fields = QgsFields()
+        fields.append(QgsField('fldtxt', QVariant.String))
+        fields.append(QgsField('fldint', QVariant.Int))
+        fields.append(QgsField('fldtxt2', QVariant.String))
+
+        mapping_def = QgsRemappingSinkDefinition()
+        mapping_def.setDestinationWkbType(QgsWkbTypes.Point)
+        self.assertEqual(mapping_def.destinationWkbType(), QgsWkbTypes.Point)
+        mapping_def.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        mapping_def.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        self.assertEqual(mapping_def.sourceCrs().authid(), 'EPSG:4326')
+        self.assertEqual(mapping_def.destinationCrs().authid(), 'EPSG:3857')
+        mapping_def.setDestinationFields(fields)
+        self.assertEqual(mapping_def.destinationFields(), fields)
+        mapping_def.addMappedField('fldtxt2', QgsProperty.fromField('fld1'))
+        mapping_def.addMappedField('fldint', QgsProperty.fromExpression('@myval * fldint'))
+
+        self.assertEqual(mapping_def.fieldMap()['fldtxt2'].field(), 'fld1')
+        self.assertEqual(mapping_def.fieldMap()['fldint'].expressionString(), '@myval * fldint')
+
+        mapping_def2 = QgsRemappingSinkDefinition(mapping_def)
+        self.assertTrue(mapping_def == mapping_def2)
+        self.assertFalse(mapping_def != mapping_def2)
+        mapping_def2.setDestinationWkbType(QgsWkbTypes.Polygon)
+        self.assertFalse(mapping_def == mapping_def2)
+        self.assertTrue(mapping_def != mapping_def2)
+        mapping_def2.setDestinationWkbType(QgsWkbTypes.Point)
+        mapping_def2.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertFalse(mapping_def == mapping_def2)
+        self.assertTrue(mapping_def != mapping_def2)
+        mapping_def2.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        mapping_def2.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertFalse(mapping_def == mapping_def2)
+        self.assertTrue(mapping_def != mapping_def2)
+        mapping_def2.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        mapping_def2.setDestinationFields(QgsFields())
+        self.assertFalse(mapping_def == mapping_def2)
+        self.assertTrue(mapping_def != mapping_def2)
+        mapping_def2.setDestinationFields(fields)
+        mapping_def2.addMappedField('fldint3', QgsProperty.fromExpression('@myval * fldint'))
+        self.assertFalse(mapping_def == mapping_def2)
+        self.assertTrue(mapping_def != mapping_def2)
+        mapping_def2.setFieldMap(mapping_def.fieldMap())
+        self.assertTrue(mapping_def == mapping_def2)
+        self.assertFalse(mapping_def != mapping_def2)
+
+        # to variant
+        var = mapping_def.toVariant()
+
+        def2 = QgsRemappingSinkDefinition()
+        def2.loadVariant(var)
+        self.assertEqual(def2.destinationWkbType(), QgsWkbTypes.Point)
+        self.assertEqual(def2.sourceCrs().authid(), 'EPSG:4326')
+        self.assertEqual(def2.destinationCrs().authid(), 'EPSG:3857')
+        self.assertEqual(def2.destinationFields()[0].name(), 'fldtxt')
+        self.assertEqual(def2.destinationFields()[1].name(), 'fldint')
+        self.assertEqual(def2.fieldMap()['fldtxt2'].field(), 'fld1')
+        self.assertEqual(def2.fieldMap()['fldint'].expressionString(), '@myval * fldint')
+
     def testRemappingSink(self):
         """
         Test remapping features
@@ -116,17 +179,11 @@ class TestQgsFeatureSink(unittest.TestCase):
 
         mapping_def = QgsRemappingSinkDefinition()
         mapping_def.setDestinationWkbType(QgsWkbTypes.Point)
-        self.assertEqual(mapping_def.destinationWkbType(), QgsWkbTypes.Point)
-        mapping_def.setTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), QgsCoordinateReferenceSystem('EPSG:3857'), QgsProject.instance()))
-        self.assertEqual(mapping_def.transform().sourceCrs().authid(), 'EPSG:4326')
-        self.assertEqual(mapping_def.transform().destinationCrs().authid(), 'EPSG:3857')
+        mapping_def.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        mapping_def.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
         mapping_def.setDestinationFields(fields)
-        self.assertEqual(mapping_def.destinationFields(), fields)
         mapping_def.addMappedField('fldtxt2', QgsProperty.fromField('fld1'))
         mapping_def.addMappedField('fldint', QgsProperty.fromExpression('@myval * fldint'))
-
-        self.assertEqual(mapping_def.fieldMap()['fldtxt2'].field(), 'fld1')
-        self.assertEqual(mapping_def.fieldMap()['fldint'].expressionString(), '@myval * fldint')
 
         proxy = QgsRemappingProxyFeatureSink(mapping_def, store)
         self.assertEqual(proxy.destinationSink(), store)
@@ -143,6 +200,7 @@ class TestQgsFeatureSink(unittest.TestCase):
         context.appendScope(scope)
         context.setFields(incoming_fields)
         proxy.setExpressionContext(context)
+        proxy.setTransformContext(QgsProject.instance().transformContext())
 
         f = QgsFeature()
         f.setFields(incoming_fields)
