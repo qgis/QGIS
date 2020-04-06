@@ -86,6 +86,7 @@ QgsStyleItemsListWidget::QgsStyleItemsListWidget( QWidget *parent )
   double treeIconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 2;
 #endif
   mSymbolTreeView->setIconSize( QSize( static_cast< int >( treeIconSize ), static_cast< int >( treeIconSize ) ) );
+  mSymbolTreeView->setMinimumHeight( mSymbolTreeView->fontMetrics().height() * 6 );
 
   viewSymbols->setSelectionBehavior( QAbstractItemView::SelectRows );
   mSymbolTreeView->setSelectionMode( viewSymbols->selectionMode() );
