@@ -61,6 +61,7 @@
 #include "qgsbookmarkmanager.h"
 #include "qgsstylemodel.h"
 #include "qgsconnectionregistry.h"
+#include "qgsremappingproxyfeaturesink.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -230,6 +231,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsRectangle>( "QgsRectangle" );
   qRegisterMetaType<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
   qRegisterMetaTypeStreamOperators<QgsProcessingModelChildParameterSource>( "QgsProcessingModelChildParameterSource" );
+  qRegisterMetaType<QgsRemappingSinkDefinition>( "QgsRemappingSinkDefinition" );
 
   ( void ) resolvePkgPath();
 
