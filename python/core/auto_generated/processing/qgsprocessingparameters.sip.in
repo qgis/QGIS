@@ -143,6 +143,39 @@ to automatically load the resulting sink/layer after completing processing.
 
     QVariantMap createOptions;
 
+    bool useRemapping() const;
+%Docstring
+Returns ``True`` if the output uses a remapping definition.
+
+.. seealso:: :py:func:`remappingDefinition`
+
+.. versionadded:: 3.14
+%End
+
+    QgsRemappingSinkDefinition remappingDefinition() const;
+%Docstring
+Returns the output remapping definition, if useRemapping() is ``True``.
+
+.. seealso:: :py:func:`useRemapping`
+
+.. seealso:: :py:func:`setRemappingDefinition`
+
+.. versionadded:: 3.14
+%End
+
+    void setRemappingDefinition( const QgsRemappingSinkDefinition &definition );
+%Docstring
+Sets the remapping ``definition`` to use when adding features to the output layer.
+
+Calling this method will set useRemapping() to ``True``.
+
+.. seealso:: :py:func:`remappingDefinition`
+
+.. seealso:: :py:func:`useRemapping`
+
+.. versionadded:: 3.14
+%End
+
     QVariant toVariant() const;
 %Docstring
 Saves this output layer definition to a QVariantMap, wrapped in a QVariant.
@@ -166,6 +199,7 @@ You can use QgsXmlUtils.readVariant to load it from an XML document.
     operator QVariant() const;
 
     bool operator==( const QgsProcessingOutputLayerDefinition &other ) const;
+    bool operator!=( const QgsProcessingOutputLayerDefinition &other ) const;
 
 };
 
