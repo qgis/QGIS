@@ -7946,8 +7946,15 @@ void TestQgsProcessing::processingFeatureSink()
   QString sinkString( QStringLiteral( "test.shp" ) );
   QgsProject p;
   QgsProcessingOutputLayerDefinition fs( sinkString, &p );
+  QgsRemappingSinkDefinition remap;
+  QVERIFY( !fs.useRemapping() );
+  remap.setDestinationWkbType( QgsWkbTypes::Point );
+  fs.setRemappingDefinition( remap );
+  QVERIFY( fs.useRemapping() );
+
   QCOMPARE( fs.sink.staticValue().toString(), sinkString );
   QCOMPARE( fs.destinationProject, &p );
+  QCOMPARE( fs.remappingDefinition().destinationWkbType(), QgsWkbTypes::Point );
 
   // test storing QgsProcessingFeatureSink in variant and retrieving
   QVariant fsInVariant = QVariant::fromValue( fs );
@@ -7956,6 +7963,7 @@ void TestQgsProcessing::processingFeatureSink()
   QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( fsInVariant );
   QCOMPARE( fromVar.sink.staticValue().toString(), sinkString );
   QCOMPARE( fromVar.destinationProject, &p );
+  QCOMPARE( fromVar.remappingDefinition().destinationWkbType(), QgsWkbTypes::Point );
 
   // test evaluating parameter as sink
   QgsProcessingContext context;

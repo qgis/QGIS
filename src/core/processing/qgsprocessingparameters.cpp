@@ -61,11 +61,23 @@ bool QgsProcessingFeatureSourceDefinition::loadVariant( const QVariantMap &map )
 }
 
 
+//
+// QgsProcessingOutputLayerDefinition
+//
+
+void QgsProcessingOutputLayerDefinition::setRemappingDefinition( const QgsRemappingSinkDefinition &definition )
+{
+  mUseRemapping = true;
+  mRemappingDefinition = definition;
+}
+
 QVariant QgsProcessingOutputLayerDefinition::toVariant() const
 {
   QVariantMap map;
   map.insert( QStringLiteral( "sink" ), sink.toVariant() );
   map.insert( QStringLiteral( "create_options" ), createOptions );
+  if ( mUseRemapping )
+    map.insert( QStringLiteral( "remapping" ), QVariant::fromValue( mRemappingDefinition ) );
   return map;
 }
 
@@ -73,12 +85,27 @@ bool QgsProcessingOutputLayerDefinition::loadVariant( const QVariantMap &map )
 {
   sink.loadVariant( map.value( QStringLiteral( "sink" ) ) );
   createOptions = map.value( QStringLiteral( "create_options" ) ).toMap();
+  if ( map.contains( QStringLiteral( "remapping" ) ) )
+  {
+    mUseRemapping = true;
+    mRemappingDefinition = map.value( QStringLiteral( "remapping" ) ).value< QgsRemappingSinkDefinition >();
+  }
+  else
+  {
+    mUseRemapping = false;
+  }
   return true;
 }
 
 bool QgsProcessingOutputLayerDefinition::operator==( const QgsProcessingOutputLayerDefinition &other ) const
 {
-  return sink == other.sink && destinationProject == other.destinationProject && destinationName == other.destinationName && createOptions == other.createOptions;
+  return sink == other.sink && destinationProject == other.destinationProject && destinationName == other.destinationName && createOptions == other.createOptions
+         && mUseRemapping == other.mUseRemapping && mRemappingDefinition == other.mRemappingDefinition;
+}
+
+bool QgsProcessingOutputLayerDefinition::operator!=( const QgsProcessingOutputLayerDefinition &other ) const
+{
+  return !( *this == other );
 }
 
 bool QgsProcessingParameters::isDynamic( const QVariantMap &parameters, const QString &name )
