@@ -35,7 +35,7 @@ Called when the specified project ``file`` has been opened within QGIS. If ``Tru
 is returned, then the handler has accepted this file and it should not
 be further processed (e.g. by other QgsCustomProjectOpenHandler).
 
-It it is the subclasses' responsiblity to ignore file types it cannot handle
+It it is the subclasses' responsibility to ignore file types it cannot handle
 by returning ``False`` for these.
 
 The base class implementation does nothing.
