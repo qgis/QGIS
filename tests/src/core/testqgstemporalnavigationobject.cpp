@@ -77,6 +77,14 @@ void TestQgsTemporalNavigationObject::cleanupTestCase()
 
 void TestQgsTemporalNavigationObject::animationState()
 {
+  QgsDateTimeRange range = QgsDateTimeRange(
+                             QDateTime( QDate( 2020, 1, 1 ), QTime( 8, 0, 0 ) ),
+                             QDateTime( QDate( 2020, 10, 1 ), QTime( 8, 0, 0 ) )
+                           );
+  navigationObject->setTemporalExtents( range );
+
+  navigationObject->setFrameDuration( QgsInterval( 1, QgsUnitTypes::TemporalMonths ) );
+
   qRegisterMetaType<QgsTemporalNavigationObject::AnimationState>( "AnimationState" );
   QSignalSpy stateSignal( navigationObject, &QgsTemporalNavigationObject::stateChanged );
 
@@ -105,7 +113,7 @@ void TestQgsTemporalNavigationObject::animationState()
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
 
   navigationObject->skipToEnd();
-  QCOMPARE( navigationObject->currentFrameNumber(), navigationObject->totalFrameCount() - 1 );
+  QCOMPARE( navigationObject->currentFrameNumber(), 10 );
 
   navigationObject->rewindToStart();
   QCOMPARE( navigationObject->currentFrameNumber(), 0 );
