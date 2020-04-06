@@ -11411,9 +11411,7 @@ QMap< QString, int > QgisApp::optionsPagesMap()
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Network" ), 13 );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Locator" ), 14 );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Advanced" ), 15 );
-#ifdef HAVE_OPENCL
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Acceleration" ), 16 );
-#endif
   } );
 
   QMap< QString, int > map = sOptionsPagesMap;
