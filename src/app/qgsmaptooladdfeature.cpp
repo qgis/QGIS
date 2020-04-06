@@ -34,6 +34,7 @@
 #include "qgisapp.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsrubberband.h"
+
 #include <QSettings>
 
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode )
@@ -91,7 +92,7 @@ void QgsMapToolAddFeature::digitized( const QgsFeature &f )
     if ( topologicalEditing )
     {
       QList<QgsPointLocator::Match> sm = snappingMatches();
-      Q_ASSERT( f.geometry().constGet()->vertexCount() == sm.size() );
+      Q_ASSERT( f.geometry().constGet()->vertexCount() == ( vlayer->geometryType() == QgsWkbTypes::PolygonGeometry ? sm.size() + 1 : sm.size() ) );
       for ( int i = 0; i < sm.size() ; ++i )
       {
         if ( sm.at( i ).layer() )
