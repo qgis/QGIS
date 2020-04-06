@@ -46,7 +46,6 @@ QgsFeatureList QgsRemappingProxyFeatureSink::remapFeature( const QgsFeature &fea
   QgsFeatureList res;
 
   mContext.setFeature( feature );
-  mContext.setFields( feature.fields() );
 
   // remap fields first
   QgsFeature f;
