@@ -1192,9 +1192,18 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
 #else
 
-  mOptionsListWidget->removeItemWidget( mOptionsListWidget->findItems( tr( "Acceleration" ), Qt::MatchExactly ).first() );
-  mOptionsStackedWidget->removeWidget( mOptionsPageAcceleration );
-
+  mGPUEnableCheckBox->setChecked( false );
+  for ( int idx = 0; idx < mOptionsPageAccelerationLayout->count(); ++idx )
+  {
+    QWidget *item = mOptionsPageAccelerationLayout->itemAt( idx )->widget();
+    if ( item )
+    {
+      item->setEnabled( false );
+    }
+  }
+  QLabel *noOpenCL = new QLabel( tr( "QGIS is compiled without OpenCL support. "
+                                     "GPU acceleration is not available." ), this );
+  mOptionsPageAccelerationLayout->insertWidget( 0, noOpenCL );
 
 #endif
 
