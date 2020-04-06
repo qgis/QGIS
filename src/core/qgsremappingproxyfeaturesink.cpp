@@ -18,11 +18,18 @@
 #include "qgsremappingproxyfeaturesink.h"
 #include "qgslogger.h"
 
-QgsRemappingProxyFeatureSink::QgsRemappingProxyFeatureSink( const QgsRemappingSinkDefinition &mappingDefinition, QgsFeatureSink *sink )
+QgsRemappingProxyFeatureSink::QgsRemappingProxyFeatureSink( const QgsRemappingSinkDefinition &mappingDefinition, QgsFeatureSink *sink, bool ownsSink )
   : QgsFeatureSink()
   , mDefinition( mappingDefinition )
   , mSink( sink )
+  , mOwnsSink( ownsSink )
 {}
+
+QgsRemappingProxyFeatureSink::~QgsRemappingProxyFeatureSink()
+{
+  if ( mOwnsSink )
+    delete mSink;
+}
 
 void QgsRemappingProxyFeatureSink::setExpressionContext( const QgsExpressionContext &context )
 {
@@ -39,6 +46,7 @@ QgsFeatureList QgsRemappingProxyFeatureSink::remapFeature( const QgsFeature &fea
   QgsFeatureList res;
 
   mContext.setFeature( feature );
+  mContext.setFields( feature.fields() );
 
   // remap fields first
   QgsFeature f;

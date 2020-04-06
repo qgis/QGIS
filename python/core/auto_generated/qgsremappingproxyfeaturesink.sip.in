@@ -162,11 +162,14 @@ and by coercing geometries to the format required by the destination sink.
 %End
   public:
 
+
     QgsRemappingProxyFeatureSink( const QgsRemappingSinkDefinition &mappingDefinition, QgsFeatureSink *sink );
 %Docstring
 Constructor for QgsRemappingProxyFeatureSink, using the specified ``mappingDefinition``
 to manipulate features before sending them to the destination ``sink``.
 %End
+
+    ~QgsRemappingProxyFeatureSink();
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring

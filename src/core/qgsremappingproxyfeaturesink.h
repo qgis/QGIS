@@ -179,11 +179,27 @@ class CORE_EXPORT QgsRemappingProxyFeatureSink : public QgsFeatureSink
 {
   public:
 
+#ifndef SIP_RUN
+
+    /**
+     * Constructor for QgsRemappingProxyFeatureSink, using the specified \a mappingDefinition
+     * to manipulate features before sending them to the destination \a sink.
+     *
+     * Ownership of \a sink is dictated by \a ownsSink. If \a ownsSink is FALSE,
+     * ownership is not transferred, and callers must ensure that \a sink exists for the lifetime of this object.
+     * If \a ownsSink is TRUE, then this object will take ownership of \a sink.
+     */
+    QgsRemappingProxyFeatureSink( const QgsRemappingSinkDefinition &mappingDefinition, QgsFeatureSink *sink, bool ownsSink = false );
+#else
+
     /**
      * Constructor for QgsRemappingProxyFeatureSink, using the specified \a mappingDefinition
      * to manipulate features before sending them to the destination \a sink.
      */
     QgsRemappingProxyFeatureSink( const QgsRemappingSinkDefinition &mappingDefinition, QgsFeatureSink *sink );
+#endif
+
+    ~QgsRemappingProxyFeatureSink() override;
 
     /**
      * Sets the expression \a context to use when evaluating mapped field values.
@@ -215,6 +231,7 @@ class CORE_EXPORT QgsRemappingProxyFeatureSink : public QgsFeatureSink
     QgsCoordinateTransform mTransform;
     QgsFeatureSink *mSink = nullptr;
     mutable QgsExpressionContext mContext;
+    bool mOwnsSink = false;
 };
 
 #endif // QGSREMAPPINGPROXYFEATURESINK_H
