@@ -430,6 +430,10 @@ void QgsSnappingWidget::toggleSnappingWidgets( bool enabled )
   mTypeButton->setEnabled( enabled );
   mToleranceSpinBox->setEnabled( enabled );
   mUnitsComboBox->setEnabled( enabled );
+  if ( mEditAdvancedConfigAction )
+  {
+    mEditAdvancedConfigAction->setEnabled( enabled );
+  }
   if ( mAdvancedConfigWidget )
   {
     mAdvancedConfigWidget->setEnabled( enabled );
