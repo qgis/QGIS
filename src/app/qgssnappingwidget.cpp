@@ -176,12 +176,12 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   connect( mToleranceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSnappingWidget::changeTolerance );
 
   mMinScaleWidget = new QgsScaleWidget();
-  mMinScaleWidget->setToolTip( tr( "Min scale on which snapping is enabled" ) );
+  mMinScaleWidget->setToolTip( tr( "Minimum scale from which snapping is enabled" ) );
   mMinScaleWidget->setObjectName( QStringLiteral( "SnappingMinScaleSpinBox" ) );
   connect( mMinScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMinScale );
 
   mMaxScaleWidget = new QgsScaleWidget();
-  mMaxScaleWidget->setToolTip( tr( "Max scale on which snapping is enabled" ) );
+  mMaxScaleWidget->setToolTip( tr( "Maximum scale up to which snapping is enabled" ) );
   mMaxScaleWidget->setObjectName( QStringLiteral( "SnappingMaxScaleSpinBox" ) );
   connect( mMaxScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsSnappingWidget::changeMaxScale );
 
