@@ -179,7 +179,7 @@ Sets the type of units
 
         double minimumScale() const;
 %Docstring
-Returns minimun scale on which snapping is limited
+Returns minimum scale on which snapping is limited
 
 .. versionadded:: 3.14
 %End

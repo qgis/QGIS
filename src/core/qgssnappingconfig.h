@@ -195,7 +195,7 @@ class CORE_EXPORT QgsSnappingConfig
         void setUnits( QgsTolerance::UnitType units );
 
         /**
-         * Returns minimun scale on which snapping is limited
+         * Returns minimum scale on which snapping is limited
          * \since QGIS 3.14
          */
         double minimumScale() const;
