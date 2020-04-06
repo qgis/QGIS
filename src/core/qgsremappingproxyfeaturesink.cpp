@@ -29,6 +29,11 @@ void QgsRemappingProxyFeatureSink::setExpressionContext( const QgsExpressionCont
   mContext = context;
 }
 
+void QgsRemappingProxyFeatureSink::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransform = QgsCoordinateTransform( mDefinition.sourceCrs(), mDefinition.destinationCrs(), context );
+}
+
 QgsFeatureList QgsRemappingProxyFeatureSink::remapFeature( const QgsFeature &feature ) const
 {
   QgsFeatureList res;
@@ -67,7 +72,7 @@ QgsFeatureList QgsRemappingProxyFeatureSink::remapFeature( const QgsFeature &fea
         QgsGeometry reproject = geometry;
         try
         {
-          reproject.transform( mDefinition.transform() );
+          reproject.transform( mTransform );
           featurePart.setGeometry( reproject );
         }
         catch ( QgsCsException & )
@@ -116,4 +121,67 @@ bool QgsRemappingProxyFeatureSink::addFeatures( QgsFeatureIterator &iterator, Qg
     res = addFeature( f, flags ) && res;
   }
   return res;
+}
+
+QVariant QgsRemappingSinkDefinition::toVariant() const
+{
+  QVariantMap map;
+  map.insert( QStringLiteral( "wkb_type" ), mDestinationWkbType );
+  // we only really care about names here
+  QVariantList fieldNames;
+  for ( const QgsField &field : mDestinationFields )
+    fieldNames << field.name();
+  map.insert( QStringLiteral( "destination_field_names" ), fieldNames );
+  map.insert( QStringLiteral( "transform_source" ), mSourceCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
+  map.insert( QStringLiteral( "transform_dest" ), mDestinationCrs.toWkt( QgsCoordinateReferenceSystem::WKT2_2018 ) );
+
+  QVariantMap fieldMap;
+  for ( auto it = mFieldMap.constBegin(); it != mFieldMap.constEnd(); ++it )
+  {
+    fieldMap.insert( it.key(), it.value().toVariant() );
+  }
+  map.insert( QStringLiteral( "field_map" ), fieldMap );
+
+  return map;
+}
+
+bool QgsRemappingSinkDefinition::loadVariant( const QVariantMap &map )
+{
+  mDestinationWkbType = static_cast< QgsWkbTypes::Type >( map.value( QStringLiteral( "wkb_type" ), QgsWkbTypes::Unknown ).toInt() );
+
+  const QVariantList fieldNames = map.value( QStringLiteral( "destination_field_names" ) ).toList();
+  QgsFields fields;
+  for ( const QVariant &field : fieldNames )
+  {
+    fields.append( QgsField( field.toString() ) );
+  }
+  mDestinationFields = fields;
+
+  mSourceCrs = QgsCoordinateReferenceSystem::fromWkt( map.value( QStringLiteral( "transform_source" ) ).toString() );
+  mDestinationCrs = QgsCoordinateReferenceSystem::fromWkt( map.value( QStringLiteral( "transform_dest" ) ).toString() );
+
+  const QVariantMap fieldMap = map.value( QStringLiteral( "field_map" ) ).toMap();
+  mFieldMap.clear();
+  for ( auto it = fieldMap.constBegin(); it != fieldMap.constEnd(); ++it )
+  {
+    QgsProperty p;
+    p.loadVariant( it.value() );
+    mFieldMap.insert( it.key(), p );
+  }
+
+  return true;
+}
+
+bool QgsRemappingSinkDefinition::operator==( const QgsRemappingSinkDefinition &other ) const
+{
+  return mDestinationWkbType == other.mDestinationWkbType
+         && mDestinationFields == other.mDestinationFields
+         && mFieldMap == other.mFieldMap
+         && mSourceCrs == other.mSourceCrs
+         && mDestinationCrs == other.mDestinationCrs;
+}
+
+bool QgsRemappingSinkDefinition::operator!=( const QgsRemappingSinkDefinition &other ) const
+{
+  return !( *this == other );
 }

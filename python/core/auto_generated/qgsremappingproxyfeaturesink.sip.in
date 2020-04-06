@@ -64,18 +64,32 @@ mapping or use of QgsExpression expressions to transform values to the destinati
 .. seealso:: :py:func:`fieldMap`
 %End
 
-    QgsCoordinateTransform transform() const;
+    QgsCoordinateReferenceSystem sourceCrs() const;
 %Docstring
-Returns the transform used for reprojecting incoming features to the sink's destination CRS.
+Returns the source CRS used for reprojecting incoming features to the sink's destination CRS.
 
-.. seealso:: :py:func:`setTransform`
+.. seealso:: :py:func:`setSourceCrs`
 %End
 
-    void setTransform( const QgsCoordinateTransform &transform );
+    void setSourceCrs( const QgsCoordinateReferenceSystem &source );
 %Docstring
-Sets the ``transform`` used for reprojecting incoming features to the sink's destination CRS.
+Sets the ``source`` crs used for reprojecting incoming features to the sink's destination CRS.
 
-.. seealso:: :py:func:`transform`
+.. seealso:: :py:func:`sourceCrs`
+%End
+
+    QgsCoordinateReferenceSystem destinationCrs() const;
+%Docstring
+Returns the destination CRS used for reprojecting incoming features to the sink's destination CRS.
+
+.. seealso:: :py:func:`setDestinationCrs`
+%End
+
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &destination );
+%Docstring
+Sets the ``destination`` crs used for reprojecting incoming features to the sink's destination CRS.
+
+.. seealso:: :py:func:`destinationCrs`
 %End
 
     QgsWkbTypes::Type destinationWkbType() const;
@@ -106,7 +120,28 @@ Sets the ``fields`` for the destination sink.
 .. seealso:: :py:func:`destinationFields`
 %End
 
+    QVariant toVariant() const;
+%Docstring
+Saves this remapping definition to a QVariantMap, wrapped in a QVariant.
+You can use QgsXmlUtils.writeVariant to save it to an XML document.
+
+.. seealso:: :py:func:`loadVariant`
+%End
+
+    bool loadVariant( const QVariantMap &map );
+%Docstring
+Loads this remapping definition from a QVariantMap, wrapped in a QVariant.
+You can use QgsXmlUtils.readVariant to load it from an XML document.
+
+.. seealso:: :py:func:`toVariant`
+%End
+
+    bool operator==( const QgsRemappingSinkDefinition &other ) const;
+    bool operator!=( const QgsRemappingSinkDefinition &other ) const;
+
 };
+
+
 
 
 class QgsRemappingProxyFeatureSink : QgsFeatureSink
@@ -136,6 +171,11 @@ to manipulate features before sending them to the destination ``sink``.
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
 Sets the expression ``context`` to use when evaluating mapped field values.
+%End
+
+    void setTransformContext( const QgsCoordinateTransformContext &context );
+%Docstring
+Sets the transform ``context`` to use when reprojecting features.
 %End
 
     QgsFeatureList remapFeature( const QgsFeature &feature ) const;
