@@ -5304,6 +5304,113 @@ class TestQgsGeometry(unittest.TestCase):
         line = QgsLineString.fromQPolygonF(QPolygonF([QPointF(1.5, 2.5), QPointF(3, 4), QPointF(3, 6.5), QPointF(1.5, 2.5)]))
         self.assertEqual(line.asWkt(1), 'LineString (1.5 2.5, 3 4, 3 6.5, 1.5 2.5)')
 
+    def testCoerce(self):
+        """Test coerce function"""
+
+        def coerce_to_wkt(wkt, type):
+            geom = QgsGeometry.fromWkt(wkt)
+            return [g.asWkt(2) for g in geom.coerceToType(type)]
+
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.Point), ['Point (1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.LineString), ['LineString (1 1, 2 2, 3 3)'])
+        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 1 2, 1 1))', QgsWkbTypes.Polygon), ['Polygon ((1 1, 2 2, 1 2, 1 1))'])
+
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.Point), ['Point (1 1)', 'Point (2 2)', 'Point (3 3)'])
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.Polygon), ['Polygon ((1 1, 2 2, 3 3, 1 1))'])
+        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 1 2, 1 1))', QgsWkbTypes.Point), ['Point (1 1)', 'Point (2 2)', 'Point (1 2)'])
+        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 1 2, 1 1))', QgsWkbTypes.LineString), ['LineString (1 1, 2 2, 1 2, 1 1)'])
+
+        self.assertEqual(coerce_to_wkt('Point z (1 1 3)', QgsWkbTypes.Point), ['Point (1 1)'])
+        self.assertEqual(coerce_to_wkt('Point z (1 1 3)', QgsWkbTypes.PointZ), ['PointZ (1 1 3)'])
+
+        # Adding Z back
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointZ), ['PointZ (1 1 0)'])
+
+        # Adding M back
+        self.assertEqual(coerce_to_wkt('Point (1 1)', QgsWkbTypes.PointM), ['PointM (1 1 0)'])
+        self.assertEqual(coerce_to_wkt('Point m (1 1 3)', QgsWkbTypes.Point), ['Point (1 1)'])
+        self.assertEqual(coerce_to_wkt('Point(1 3)', QgsWkbTypes.MultiPoint), ['MultiPoint ((1 3))'])
+        self.assertEqual(coerce_to_wkt('MultiPoint((1 3), (2 2))', QgsWkbTypes.MultiPoint), ['MultiPoint ((1 3),(2 2))'])
+
+        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.Polygon), ['Polygon ((1 1, 2 2, 3 3, 1 1))'])
+        self.assertEqual(coerce_to_wkt('Polygon z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.Polygon), ['Polygon ((1 1, 2 2, 3 3, 1 1))'])
+        self.assertEqual(coerce_to_wkt('Polygon z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.PolygonZ), ['PolygonZ ((1 1 1, 2 2 2, 3 3 3, 1 1 1))'])
+
+        # Adding Z back
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.PolygonZ), ['PolygonZ ((1 1 0, 2 2 0, 3 3 0, 1 1 0))'])
+
+        # Adding M back
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.PolygonM), ['PolygonM ((1 1 0, 2 2 0, 3 3 0, 1 1 0))'])
+
+        self.assertEqual(coerce_to_wkt('Polygon m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.Polygon), ['Polygon ((1 1, 2 2, 3 3, 1 1))'])
+        self.assertEqual(coerce_to_wkt('Polygon m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.PolygonM), ['PolygonM ((1 1 1, 2 2 2, 3 3 3, 1 1 1))'])
+        self.assertEqual(coerce_to_wkt('Polygon((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.MultiPolygon), ['MultiPolygon (((1 1, 2 2, 3 3, 1 1)))'])
+        self.assertEqual(coerce_to_wkt('MultiPolygon(((1 1, 2 2, 3 3, 1 1)), ((1 1, 2 2, 3 3, 1 1)))', QgsWkbTypes.MultiPolygon), ['MultiPolygon (((1 1, 2 2, 3 3, 1 1)),((1 1, 2 2, 3 3, 1 1)))'])
+
+        self.assertEqual(coerce_to_wkt('LineString((1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.LineString), ['LineString (0 1, 2 2, 3 3, 1 0)'])
+        self.assertEqual(coerce_to_wkt('LineString z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineString), ['LineString (0 1, 2 2, 3 3, 1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString z ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineStringZ), ['LineStringZ (0 1 1, 2 2 2, 3 3 3, 1 1 0)'])
+        self.assertEqual(coerce_to_wkt('LineString m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineString), ['LineString (0 1, 2 2, 3 3, 1 1)'])
+        self.assertEqual(coerce_to_wkt('LineString m ((1 1 1, 2 2 2, 3 3 3, 1 1 1))', QgsWkbTypes.LineStringM), ['LineStringM (0 1 1, 2 2 2, 3 3 3, 1 1 0)'])
+
+        # Adding Z back
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.LineStringZ), ['LineStringZ (1 1 0, 2 2 0, 3 3 0, 1 0 0)'])
+
+        # Adding M back
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3, 1 1))', QgsWkbTypes.LineStringM), ['LineStringM (1 1 0, 2 2 0, 3 3 0, 1 0 0)'])
+
+        self.assertEqual(coerce_to_wkt('LineString(1 1, 2 2, 3 3, 1 1)', QgsWkbTypes.MultiLineString), ['MultiLineString ((1 1, 2 2, 3 3, 1 1))'])
+        self.assertEqual(coerce_to_wkt('MultiLineString((1 1, 2 2, 3 3, 1 1), (1 1, 2 2, 3 3, 1 1))',
+                                       QgsWkbTypes.MultiLineString), ['MultiLineString ((1 1, 2 2, 3 3, 1 1),(1 1, 2 2, 3 3, 1 1))'])
+
+        # Test Multi -> Single
+        self.assertEqual(coerce_to_wkt('MultiLineString((1 1, 2 2, 3 3, 1 1), (10 1, 20 2, 30 3, 10 1))',
+                                       QgsWkbTypes.LineString), ['LineString (1 1, 2 2, 3 3, 1 1)', 'LineString (10 1, 20 2, 30 3, 10 1)'])
+
+        # line -> points
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.Point), ['Point (1 1)', 'Point (2 2)', 'Point (3 3)'])
+
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 2 2, 3 3)', QgsWkbTypes.MultiPoint), ['MultiPoint ((1 1),(2 2),(3 3))'])
+
+        self.assertEqual(coerce_to_wkt('MultiLineString ((1 1, 2 2),(4 4, 3 3))', QgsWkbTypes.Point), ['Point (1 1)', 'Point (2 2)', 'Point (4 4)', 'Point (3 3)'])
+
+        self.assertEqual(coerce_to_wkt('MultiLineString ((1 1, 2 2),(4 4, 3 3))', QgsWkbTypes.MultiPoint), ['MultiPoint ((1 1),(2 2),(4 4),(3 3))'])
+
+        # line -> polygon
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 1 2, 2 2)', QgsWkbTypes.Polygon), ['Polygon ((1 1, 1 2, 2 2, 1 1))'])
+
+        self.assertEqual(coerce_to_wkt('LineString (1 1, 1 2, 2 2)', QgsWkbTypes.MultiPolygon), ['MultiPolygon (((1 1, 1 2, 2 2, 1 1)))'])
+
+        self.assertEqual(coerce_to_wkt('MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4))', QgsWkbTypes.Polygon), ['Polygon ((1 1, 1 2, 2 2, 1 1))', 'Polygon ((3 3, 4 3, 4 4, 3 3))'])
+
+        self.assertEqual(coerce_to_wkt('MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4))',
+                                       QgsWkbTypes.MultiPolygon), ['MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))'])
+
+        self.assertEqual(coerce_to_wkt('CircularString (1 1, 1 2, 2 2, 2 0, 1 1)', QgsWkbTypes.CurvePolygon), ['CurvePolygon (CircularString (1 1, 1 2, 2 2, 2 0, 1 1))'])
+        self.assertEqual(coerce_to_wkt('CircularString (1 1, 1 2, 2 2, 2 0, 1 1)', QgsWkbTypes.LineString)[0][:100], 'LineString (1 1, 0.99 1.01, 0.98 1.02, 0.97 1.03, 0.97 1.04, 0.96 1.05, 0.95 1.06, 0.94 1.06, 0.94 1')
+        self.assertEqual(coerce_to_wkt('CircularString (1 1, 1 2, 2 2, 2 0, 1 1)', QgsWkbTypes.Polygon)[0][:100], 'Polygon ((1 1, 0.99 1.01, 0.98 1.02, 0.97 1.03, 0.97 1.04, 0.96 1.05, 0.95 1.06, 0.94 1.06, 0.94 1.0')
+
+        # polygon -> points
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 1 1))', QgsWkbTypes.Point), ['Point (1 1)', 'Point (1 2)', 'Point (2 2)'])
+
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 1 1))', QgsWkbTypes.MultiPoint), ['MultiPoint ((1 1),(1 2),(2 2))'])
+
+        self.assertEqual(coerce_to_wkt('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))', QgsWkbTypes.Point), ['Point (1 1)', 'Point (1 2)', 'Point (2 2)', 'Point (3 3)', 'Point (4 3)', 'Point (4 4)'])
+
+        self.assertEqual(coerce_to_wkt('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))',
+                                       QgsWkbTypes.MultiPoint), ['MultiPoint ((1 1),(1 2),(2 2),(3 3),(4 3),(4 4))'])
+
+        # polygon -> lines
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 1 1))', QgsWkbTypes.LineString), ['LineString (1 1, 1 2, 2 2, 1 1)'])
+
+        self.assertEqual(coerce_to_wkt('Polygon ((1 1, 1 2, 2 2, 1 1))', QgsWkbTypes.MultiLineString), ['MultiLineString ((1 1, 1 2, 2 2, 1 1))'])
+
+        self.assertEqual(coerce_to_wkt('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))',
+                                       QgsWkbTypes.LineString), ['LineString (1 1, 1 2, 2 2, 1 1)', 'LineString (3 3, 4 3, 4 4, 3 3)'])
+
+        self.assertEqual(coerce_to_wkt('MultiPolygon (((1 1, 1 2, 2 2, 1 1)),((3 3, 4 3, 4 4, 3 3)))',
+                                       QgsWkbTypes.MultiLineString), ['MultiLineString ((1 1, 1 2, 2 2, 1 1),(3 3, 4 3, 4 4, 3 3))'])
+
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
         image = QImage(200, 200, QImage.Format_RGB32)
         image.fill(QColor(0, 0, 0))
