@@ -4897,7 +4897,7 @@ void QgisApp::updateRecentProjectPaths()
 }
 
 // add this file to the recently opened/saved projects list
-void QgisApp::saveRecentProjectPath( bool savePreviewImage )
+void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOverlay )
 {
   // first, re-read the recent project paths. This prevents loss of recent
   // projects when multiple QGIS sessions are open
@@ -4933,7 +4933,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage )
     projectData.previewImagePath = QStringLiteral( "%1/%2.png" ).arg( previewDir, fileName );
     QDir().mkdir( previewDir );
 
-    createPreviewImage( projectData.previewImagePath );
+    createPreviewImage( projectData.previewImagePath, iconOverlay );
   }
   else
   {
@@ -6682,17 +6682,21 @@ bool QgisApp::addProject( const QString &projectFile )
   mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( false );
 
   // give custom handlers a chance first
-  bool handled = false;
+  bool usedCustomHandler = false;
+  bool customHandlerWantsThumbnail = false;
+  QIcon customHandlerIcon;
   for ( QgsCustomProjectOpenHandler *handler : qgis::as_const( mCustomProjectOpenHandlers ) )
   {
     if ( handler && handler->handleProjectOpen( projectFile ) )
     {
-      handled = true;
+      usedCustomHandler = true;
+      customHandlerWantsThumbnail = handler->createDocumentThumbnailAfterOpen();
+      customHandlerIcon = handler->icon();
       break;
     }
   }
 
-  if ( !handled && !QgsProject::instance()->read( projectFile ) && !QgsZipUtils::isZipFile( projectFile ) )
+  if ( !usedCustomHandler && !QgsProject::instance()->read( projectFile ) && !QgsZipUtils::isZipFile( projectFile ) )
   {
     QString backupFile = projectFile + "~";
     QString loadBackupPrompt;
@@ -6785,7 +6789,20 @@ bool QgisApp::addProject( const QString &projectFile )
     // specific plug-in state
 
     // add this to the list of recently used project files
-    saveRecentProjectPath( false );
+    // if a custom handler was used, then we generate a thumbnail
+    if ( !usedCustomHandler || !customHandlerWantsThumbnail )
+      saveRecentProjectPath( false );
+    else if ( !QgsProject::instance()->fileName().isEmpty() )
+    {
+      // we have to delay the thumbnail creation until after the canvas has refreshed for the first time
+      QMetaObject::Connection *connection = new QMetaObject::Connection();
+      *connection = connect( mMapCanvas, &QgsMapCanvas::mapCanvasRefreshed, [ = ]()
+      {
+        QObject::disconnect( *connection );
+        delete connection;
+        saveRecentProjectPath( true, customHandlerIcon );
+      } );
+    }
 
     QApplication::restoreOverrideCursor();
 
@@ -14638,7 +14655,7 @@ void QgisApp::generateProjectAttachedFiles( QgsStringMap &files )
   previewImage->deleteLater();
 }
 
-void QgisApp::createPreviewImage( const QString &path )
+void QgisApp::createPreviewImage( const QString &path, const QIcon &icon )
 {
   // Render the map canvas
   QSize previewSize( 250, 177 ); // h = w / std::sqrt(2)
@@ -14649,6 +14666,13 @@ void QgisApp::createPreviewImage( const QString &path )
   QPixmap previewImage( previewSize );
   QPainter previewPainter( &previewImage );
   mMapCanvas->render( &previewPainter, QRect( QPoint(), previewSize ), previewRect );
+
+  if ( !icon.isNull() )
+  {
+    QPixmap pixmap = icon.pixmap( QSize( 24, 24 ) );
+    previewPainter.drawPixmap( QPointF( 250 - 24 - 5, 177 - 24 - 5 ), pixmap );
+  }
+  previewPainter.end();
 
   // Save
   previewImage.save( path );

@@ -58,6 +58,18 @@ class GUI_EXPORT QgsCustomProjectOpenHandler : public QObject
      * Each individual filter should be reflected as one entry in the returned list.
      */
     virtual QStringList filters() const = 0;
+
+    /**
+     * Returns TRUE if a document thumbnail should automatically be created after opening the project.
+     *
+     * The default behavior is to return FALSE.
+     */
+    virtual bool createDocumentThumbnailAfterOpen() const;
+
+    /**
+     * Returns a custom icon used to represent this handler.
+     */
+    virtual QIcon icon() const;
 };
 
 #endif // QgsCustomProjectOpenHandler_H
