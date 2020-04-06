@@ -675,7 +675,7 @@ void QgsProcessingUtils::parseDestinationString( QString &destination, QString &
   }
 }
 
-QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions, QgsFeatureSink::SinkFlags sinkFlags )
+QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions, QgsFeatureSink::SinkFlags sinkFlags, QgsRemappingSinkDefinition *remappingDefinition )
 {
   QVariantMap options = createOptions;
   if ( !options.contains( QStringLiteral( "fileEncoding" ) ) )
@@ -719,7 +719,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
     bool useWriter = false;
     parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
 
-    QgsFields newFields = fields;
+    QgsFields newFields = remappingDefinition ? remappingDefinition->destinationFields() : fields;
     if ( useWriter && providerKey == QLatin1String( "ogr" ) )
     {
       // use QgsVectorFileWriter for OGR destinations instead of QgsVectorLayerImport, as that allows
@@ -731,34 +731,61 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( format );
       saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( format );
       saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
-      saveOptions.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
+      saveOptions.actionOnExistingFile = remappingDefinition ? QgsVectorFileWriter::AppendToLayerNoNewFields : QgsVectorFileWriter::CreateOrOverwriteFile;
       std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( destination, newFields, geometryType, crs, context.transformContext(), saveOptions, sinkFlags, &finalFileName ) );
       if ( writer->hasError() )
       {
         throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, writer->errorMessage() ) );
       }
       destination = finalFileName;
-      return new QgsProcessingFeatureSink( writer.release(), destination, context, true );
+      if ( remappingDefinition )
+      {
+        std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = qgis::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, writer.release(), true );
+        remapSink->setExpressionContext( context.expressionContext() );
+        remapSink->setTransformContext( context.transformContext() );
+        return new QgsProcessingFeatureSink( remapSink.release(), destination, context, true );
+      }
+      else
+        return new QgsProcessingFeatureSink( writer.release(), destination, context, true );
     }
     else
     {
-      //create empty layer
       const QgsVectorLayer::LayerOptions layerOptions { context.transformContext() };
-      std::unique_ptr< QgsVectorLayerExporter > exporter = qgis::make_unique<QgsVectorLayerExporter>( uri, providerKey, newFields, geometryType, crs, true, options, sinkFlags );
-      if ( exporter->errorCode() )
+      if ( remappingDefinition )
       {
-        throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, exporter->errorMessage() ) );
+        //write to existing layer
+
+        // use destination string as layer name (eg "postgis:..." )
+        std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
+        // update destination to layer ID
+        destination = layer->id();
+
+        context.temporaryLayerStore()->addMapLayer( layer.release() );
+
+        std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = qgis::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, layer->dataProvider(), false );
+        remapSink->setExpressionContext( context.expressionContext() );
+        remapSink->setTransformContext( context.transformContext() );
+        return new QgsProcessingFeatureSink( remapSink.release(), destination, context, true );
       }
+      else
+      {
+        //create empty layer
+        std::unique_ptr< QgsVectorLayerExporter > exporter = qgis::make_unique<QgsVectorLayerExporter>( uri, providerKey, newFields, geometryType, crs, true, options, sinkFlags );
+        if ( exporter->errorCode() )
+        {
+          throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, exporter->errorMessage() ) );
+        }
 
-      // use destination string as layer name (eg "postgis:..." )
-      if ( !layerName.isEmpty() )
-        uri += QStringLiteral( "|layername=%1" ).arg( layerName );
-      std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
-      // update destination to layer ID
-      destination = layer->id();
+        // use destination string as layer name (eg "postgis:..." )
+        if ( !layerName.isEmpty() )
+          uri += QStringLiteral( "|layername=%1" ).arg( layerName );
+        std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
+        // update destination to layer ID
+        destination = layer->id();
 
-      context.temporaryLayerStore()->addMapLayer( layer.release() );
-      return new QgsProcessingFeatureSink( exporter.release(), destination, context, true );
+        context.temporaryLayerStore()->addMapLayer( layer.release() );
+        return new QgsProcessingFeatureSink( exporter.release(), destination, context, true );
+      }
     }
   }
 }

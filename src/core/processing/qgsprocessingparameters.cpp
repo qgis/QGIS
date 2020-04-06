@@ -579,6 +579,8 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   QgsProject *destinationProject = nullptr;
   QString destName;
   QVariantMap createOptions;
+  QgsRemappingSinkDefinition remapDefinition;
+  bool useRemapDefinition = false;
   if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
   {
     // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
@@ -588,6 +590,11 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
 
     val = fromVar.sink;
     destName = fromVar.destinationName;
+    if ( fromVar.useRemapping() )
+    {
+      useRemapDefinition = true;
+      remapDefinition = fromVar.remappingDefinition();
+    }
   }
 
   QString dest;
@@ -622,7 +629,7 @@ QgsFeatureSink *QgsProcessingParameters::parameterAsSink( const QgsProcessingPar
   if ( dest.isEmpty() )
     return nullptr;
 
-  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, context, fields, geometryType, crs, createOptions, sinkFlags ) );
+  std::unique_ptr< QgsFeatureSink > sink( QgsProcessingUtils::createFeatureSink( dest, context, fields, geometryType, crs, createOptions, sinkFlags, useRemapDefinition ? &remapDefinition : nullptr ) );
   destinationIdentifier = dest;
 
   if ( destinationProject )
