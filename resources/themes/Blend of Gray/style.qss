@@ -241,6 +241,10 @@ QToolButton:checked
 {
     border: 1px solid @selection;
 }
+QToolButton:checked:disabled
+{
+    border: 1px solid rgba(240,240,240,100);
+}
 QToolButton::menu-arrow 
 {
     image: url(@theme_path/icons/arrow-down.svg);
