@@ -116,7 +116,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
       return block.release();
     }
 
-    // If lower source resolution is used, the extent must beS aligned to original
+    // If lower source resolution is used, the extent must be aligned to original
     // resolution to avoid possible shift due to resampling
     if ( tmpXRes > xRes )
     {

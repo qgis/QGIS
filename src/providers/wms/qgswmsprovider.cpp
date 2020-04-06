@@ -1082,9 +1082,8 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
 void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 {
   QgsDateTimeRange range = temporalCapabilities()->requestedTemporalRange();
-  QString format = "yyyy-MM-ddTHH:mm:ssZ";
-  QgsDataSourceUri uri;
-  uri.setEncodedUri( dataSourceUri() );
+  QString format { QStringLiteral( "yyyy-MM-ddThh:mm:ssZ" ) };
+  QgsDataSourceUri uri { dataSourceUri() };
 
   if ( range.isInfinite() )
   {

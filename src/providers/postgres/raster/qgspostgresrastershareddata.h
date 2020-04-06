@@ -97,6 +97,9 @@ class QgsPostgresRasterSharedData
      */
     void invalidateCache();
 
+    //! Generates the cache key from the request
+    static QString keyFromRequest( const TilesRequest &request );
+
   private:
 
     //! Protect access to tiles
@@ -150,17 +153,20 @@ class QgsPostgresRasterSharedData
     bool fetchTilesIndex( const QgsGeometry &requestPolygon, const TilesRequest &request );
     //! Fast track for first fetch
     TilesResponse fetchTilesIndexAndData( const QgsGeometry &requestPolygon, const TilesRequest &request );
-    Tile const *setTileData( unsigned int overviewFactor, TileIdType tileId, const QByteArray &data );
+    Tile const *setTileData( const QString &cacheKey, TileIdType tileId, const QByteArray &data );
 
-    // Note: cannot be a smart pointer because spatial index cannot be copied
-    //! Tile caches, index is the overview factor (1 is the full resolution data)
-    std::map<unsigned int, QgsGenericSpatialIndex<Tile>*> mSpatialIndexes;
+    /**
+    * Tile caches, index is a key generated from the overview factor (1 is the full resolution data)
+    * and the where clause
+    * \note cannot be a smart pointer because spatial index cannot be copied
+    */
+    std::map<QString, QgsGenericSpatialIndex<Tile>*> mSpatialIndexes;
 
     //! Memory manager for owned tiles (and for tileId access)
-    std::map<unsigned int, std::map<TileIdType, std::unique_ptr<Tile>>> mTiles;
+    std::map<QString, std::map<TileIdType, std::unique_ptr<Tile>>> mTiles;
 
     //! Keeps track of loaded index bounds
-    std::map<unsigned int, QgsGeometry> mLoadedIndexBounds;
+    std::map<QString, QgsGeometry> mLoadedIndexBounds;
 
 };
 

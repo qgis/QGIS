@@ -2,6 +2,7 @@
 --
 -- in-db float32 tiled raster with composite PK
 --
+DROP TABLE IF EXISTS "public"."raster_3035_tiled_composite_pk" CASCADE;
 
 CREATE TABLE "public"."raster_3035_tiled_composite_pk" ("pk1" INT NOT NULL, "pk2" INT NOT NULL, "rast" raster,"category" text,
   CONSTRAINT unique_pk UNIQUE ("pk1", "pk2")
