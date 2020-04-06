@@ -31,8 +31,8 @@ QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enable
   , mType( type )
   , mTolerance( tolerance )
   , mUnits( units )
-  , mMinScale( minScale )
-  , mMaxScale( maxScale )
+  , mMinimumScale( minScale )
+  , mMaximumScale( maxScale )
 {}
 
 QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units )
@@ -121,24 +121,24 @@ void QgsSnappingConfig::IndividualLayerSettings::setUnits( QgsTolerance::UnitTyp
   mUnits = units;
 }
 
-double QgsSnappingConfig::IndividualLayerSettings::minScale() const
+double QgsSnappingConfig::IndividualLayerSettings::minimumScale() const
 {
-  return mMinScale;
+  return mMinimumScale;
 }
 
-void QgsSnappingConfig::IndividualLayerSettings::setMinScale( double p_minScale )
+void QgsSnappingConfig::IndividualLayerSettings::setMinimumScale( double p_minScale )
 {
-  mMinScale = p_minScale;
+  mMinimumScale = p_minScale;
 }
 
-double QgsSnappingConfig::IndividualLayerSettings::maxScale() const
+double QgsSnappingConfig::IndividualLayerSettings::maximumScale() const
 {
-  return mMaxScale;
+  return mMaximumScale;
 }
 
-void QgsSnappingConfig::IndividualLayerSettings::setMaxScale( double p_maxScale )
+void QgsSnappingConfig::IndividualLayerSettings::setMaximumScale( double p_maxScale )
 {
-  mMaxScale = p_maxScale;
+  mMaximumScale = p_maxScale;
 }
 
 bool QgsSnappingConfig::IndividualLayerSettings::operator !=( const QgsSnappingConfig::IndividualLayerSettings &other ) const
@@ -148,8 +148,8 @@ bool QgsSnappingConfig::IndividualLayerSettings::operator !=( const QgsSnappingC
          || mType != other.mType
          || mTolerance != other.mTolerance
          || mUnits != other.mUnits
-         || mMinScale != other.mMinScale
-         || mMaxScale != other.mMaxScale;
+         || mMinimumScale != other.mMinimumScale
+         || mMaximumScale != other.mMaximumScale;
 }
 
 bool QgsSnappingConfig::IndividualLayerSettings::operator ==( const QgsSnappingConfig::IndividualLayerSettings &other ) const
@@ -159,8 +159,8 @@ bool QgsSnappingConfig::IndividualLayerSettings::operator ==( const QgsSnappingC
          && mType == other.mType
          && mTolerance == other.mTolerance
          && mUnits == other.mUnits
-         && mMinScale == other.mMinScale
-         && mMaxScale == other.mMaxScale;
+         && mMinimumScale == other.mMinimumScale
+         && mMaximumScale == other.mMaximumScale;
 }
 
 
@@ -181,8 +181,8 @@ bool QgsSnappingConfig::operator==( const QgsSnappingConfig &other ) const
          && mIntersectionSnapping == other.mIntersectionSnapping
          && mIndividualLayerSettings == other.mIndividualLayerSettings
          && mScaleDependencyMode == other.mScaleDependencyMode
-         && mMinScale == other.mMinScale
-         && mMaxScale == other.mMaxScale;
+         && mMinimumScale == other.mMinimumScale
+         && mMaximumScale == other.mMaximumScale;
 }
 
 void QgsSnappingConfig::reset()
@@ -206,8 +206,8 @@ void QgsSnappingConfig::reset()
   mType = type;
   mTolerance = tolerance;
   mScaleDependencyMode = Disabled;
-  mMinScale = 0.0;
-  mMaxScale = 0.0;
+  mMinimumScale = 0.0;
+  mMaximumScale = 0.0;
   // do not allow unit to be "layer" if not in advanced configuration
   if ( mUnits == QgsTolerance::LayerUnits && mMode != AdvancedConfiguration )
   {
@@ -379,8 +379,8 @@ bool QgsSnappingConfig::operator!=( const QgsSnappingConfig &other ) const
          || mUnits != other.mUnits
          || mIndividualLayerSettings != other.mIndividualLayerSettings
          || mScaleDependencyMode != other.mScaleDependencyMode
-         || mMinScale != other.mMinScale
-         || mMaxScale != other.mMaxScale;
+         || mMinimumScale != other.mMinimumScale
+         || mMaximumScale != other.mMaximumScale;
 }
 
 void QgsSnappingConfig::readProject( const QDomDocument &doc )
@@ -448,10 +448,10 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
     mScaleDependencyMode = static_cast<QgsSnappingConfig::ScaleDependencyMode>( snapSettingsElem.attribute( QStringLiteral( "scaleDependencyMode" ) ).toInt() );
 
   if ( snapSettingsElem.hasAttribute( QStringLiteral( "minScale" ) ) )
-    mMinScale = snapSettingsElem.attribute( QStringLiteral( "minScale" ) ).toDouble();
+    mMinimumScale = snapSettingsElem.attribute( QStringLiteral( "minScale" ) ).toDouble();
 
   if ( snapSettingsElem.hasAttribute( QStringLiteral( "maxScale" ) ) )
-    mMaxScale = snapSettingsElem.attribute( QStringLiteral( "maxScale" ) ).toDouble();
+    mMaximumScale = snapSettingsElem.attribute( QStringLiteral( "maxScale" ) ).toDouble();
 
   if ( snapSettingsElem.hasAttribute( QStringLiteral( "unit" ) ) )
     mUnits = ( QgsTolerance::UnitType )snapSettingsElem.attribute( QStringLiteral( "unit" ) ).toInt();
@@ -505,8 +505,8 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
   snapSettingsElem.setAttribute( QStringLiteral( "unit" ), static_cast<int>( mUnits ) );
   snapSettingsElem.setAttribute( QStringLiteral( "intersection-snapping" ), QString::number( mIntersectionSnapping ) );
   snapSettingsElem.setAttribute( QStringLiteral( "scaleDependencyMode" ), QString::number( mScaleDependencyMode ) );
-  snapSettingsElem.setAttribute( QStringLiteral( "minScale" ), mMinScale );
-  snapSettingsElem.setAttribute( QStringLiteral( "maxScale" ), mMaxScale );
+  snapSettingsElem.setAttribute( QStringLiteral( "minScale" ), mMinimumScale );
+  snapSettingsElem.setAttribute( QStringLiteral( "maxScale" ), mMaximumScale );
 
   QDomElement ilsElement = doc.createElement( QStringLiteral( "individual-layer-settings" ) );
   QHash<QgsVectorLayer *, IndividualLayerSettings>::const_iterator layerIt = mIndividualLayerSettings.constBegin();
@@ -520,8 +520,8 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
     layerElement.setAttribute( QStringLiteral( "type" ), static_cast<int>( setting.typeFlag() ) );
     layerElement.setAttribute( QStringLiteral( "tolerance" ), setting.tolerance() );
     layerElement.setAttribute( QStringLiteral( "units" ), static_cast<int>( setting.units() ) );
-    layerElement.setAttribute( QStringLiteral( "minScale" ), setting.minScale() );
-    layerElement.setAttribute( QStringLiteral( "maxScale" ), setting.maxScale() );
+    layerElement.setAttribute( QStringLiteral( "minScale" ), setting.minimumScale() );
+    layerElement.setAttribute( QStringLiteral( "maxScale" ), setting.maximumScale() );
     ilsElement.appendChild( layerElement );
   }
   snapSettingsElem.appendChild( ilsElement );
@@ -648,24 +648,24 @@ void QgsSnappingConfig::setProject( QgsProject *project )
   reset();
 }
 
-double QgsSnappingConfig::minScale() const
+double QgsSnappingConfig::minimumScale() const
 {
-  return mMinScale;
+  return mMinimumScale;
 }
 
-void QgsSnappingConfig::setMinScale( double pMinScale )
+void QgsSnappingConfig::setMinimumScale( double pMinScale )
 {
-  mMinScale = pMinScale;
+  mMinimumScale = pMinScale;
 }
 
-double QgsSnappingConfig::maxScale() const
+double QgsSnappingConfig::maximumScale() const
 {
-  return mMaxScale;
+  return mMaximumScale;
 }
 
-void QgsSnappingConfig::setMaxScale( double pMaxScale )
+void QgsSnappingConfig::setMaximumScale( double pMaxScale )
 {
-  mMaxScale = pMaxScale;
+  mMaximumScale = pMaxScale;
 }
 
 void QgsSnappingConfig::setScaleDependencyMode( QgsSnappingConfig::ScaleDependencyMode mode )

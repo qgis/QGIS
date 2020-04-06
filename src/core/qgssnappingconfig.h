@@ -142,7 +142,7 @@ class CORE_EXPORT QgsSnappingConfig
          * \param maxScale 0.0 disable scale limit
          * \since QGIS 3.12
          */
-        IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units, double minScale, double maxScale );
+        IndividualLayerSettings( bool enabled, SnappingTypeFlag type, double tolerance, QgsTolerance::UnitType units, double minScale = 0.0, double maxScale = 0.0 );
 
         /**
          * Constructs an invalid setting
@@ -182,54 +182,41 @@ class CORE_EXPORT QgsSnappingConfig
          */
         void setTypeFlag( QgsSnappingConfig::SnappingTypeFlag type );
 
-        /**
-         * !
-         * Returns the tolerance
-         * \since QGIS 3.12
-         */
+        //! Returns the tolerance
         double tolerance() const;
 
-        /**
-         * Sets the tolerance
-         * \since QGIS 3.12
-         */
+        //! Sets the tolerance
         void setTolerance( double tolerance );
 
-        /**
-         * Returns the type of units
-         * \since QGIS 3.12
-         */
+        //! Returns the type of units
         QgsTolerance::UnitType units() const;
 
-        /**
-         * Sets the type of units
-         * \since QGIS 3.12
-         */
+        //! Sets the type of units
         void setUnits( QgsTolerance::UnitType units );
 
         /**
-         * Returns min scale on which snapping is limited
+         * Returns minimun scale on which snapping is limited
          * \since QGIS 3.14
          */
-        double minScale() const;
+        double minimumScale() const;
 
         /**
          * Sets the min scale value on which snapping is used, 0.0 disable scale limit
          * \since QGIS 3.14
          */
-        void setMinScale( double p_minScale );
+        void setMinimumScale( double p_minScale );
 
         /**
          * Returns max scale on which snapping is limited
          * \since QGIS 3.14
          */
-        double maxScale() const;
+        double maximumScale() const;
 
         /**
          * Sets the max scale value on which snapping is used, 0.0 disable scale limit
          * \since QGIS 3.14
          */
-        void setMaxScale( double p_maxScale );
+        void setMaximumScale( double p_maxScale );
 
         /**
          * Compare this configuration to other.
@@ -244,8 +231,8 @@ class CORE_EXPORT QgsSnappingConfig
         SnappingTypeFlag mType = VertexFlag;
         double mTolerance = 0;
         QgsTolerance::UnitType mUnits = QgsTolerance::Pixels;
-        double mMinScale = 0.0;
-        double mMaxScale = 0.0;
+        double mMinimumScale = 0.0;
+        double mMaximumScale = 0.0;
     };
 
     /**
@@ -304,25 +291,25 @@ class CORE_EXPORT QgsSnappingConfig
      * Returns the min scale
      * \since QGIS 3.14
      */
-    double minScale() const;
+    double minimumScale() const;
 
     /**
      * Sets the min scale on which snapping is enabled, 0.0 disable scale limit
      * \since QGIS 3.14
      */
-    void setMinScale( double pMinScale );
+    void setMinimumScale( double pMinScale );
 
     /**
      * Returns the max scale
      * \since QGIS 3.14
      */
-    double maxScale() const;
+    double maximumScale() const;
 
     /**
      * Set the max scale on which snapping is enabled, 0.0 disable scale limit
      * \since QGIS 3.14
      */
-    void setMaxScale( double pMaxScale );
+    void setMaximumScale( double pMaxScale );
 
     /**
      * Set the scale dependency mode
@@ -467,8 +454,8 @@ class CORE_EXPORT QgsSnappingConfig
     SnappingTypeFlag mType = VertexFlag;
     double mTolerance = 0.0;
     ScaleDependencyMode mScaleDependencyMode = Disabled;
-    double mMinScale = 0.0;
-    double mMaxScale = 0.0;
+    double mMinimumScale = 0.0;
+    double mMaximumScale = 0.0;
     QgsTolerance::UnitType mUnits = QgsTolerance::ProjectUnits;
     bool mIntersectionSnapping = false;
 

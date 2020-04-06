@@ -645,19 +645,19 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     {
       if ( role == Qt::DisplayRole )
       {
-        if ( ls.minScale() <= 0.0 )
+        if ( ls.minimumScale() <= 0.0 )
         {
           return QString( tr( "not set" ) );
         }
         else
         {
-          return QString::number( ls.minScale() );
+          return QString::number( ls.minimumScale() );
         }
       }
 
       if ( role == Qt::UserRole )
       {
-        return ls.minScale();
+        return ls.minimumScale();
       }
     }
 
@@ -665,19 +665,19 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
     {
       if ( role == Qt::DisplayRole )
       {
-        if ( ls.maxScale() <= 0.0 )
+        if ( ls.maximumScale() <= 0.0 )
         {
           return QString( tr( "not set" ) );
         }
         else
         {
-          return QString::number( ls.maxScale() );
+          return QString::number( ls.maximumScale() );
         }
       }
 
       if ( role == Qt::UserRole )
       {
-        return ls.maxScale();
+        return ls.maximumScale();
       }
     }
   }
@@ -825,7 +825,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       if ( !ls.valid() )
         return false;
 
-      ls.setMinScale( value.toDouble() );
+      ls.setMinimumScale( value.toDouble() );
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );
@@ -846,7 +846,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       if ( !ls.valid() )
         return false;
 
-      ls.setMaxScale( value.toDouble() );
+      ls.setMaximumScale( value.toDouble() );
       QgsSnappingConfig config = mProject->snappingConfig();
       config.setIndividualLayerSettings( vl, ls );
       mProject->setSnappingConfig( config );

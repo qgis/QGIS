@@ -294,14 +294,15 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPointXY &pointMap, 
     QList<LayerAndAreaOfInterest> layers;
     QList<LayerConfig> filteredConfigs;
 
-    bool inRangeGlobal = ( mSnappingConfig.minScale() <= 0.0 || mMapSettings.scale() >= mSnappingConfig.minScale() )
-                         && ( mSnappingConfig.maxScale() <= 0.0 || mMapSettings.scale() <= mSnappingConfig.maxScale() );
+    bool inRangeGlobal = ( mSnappingConfig.minimumScale() <= 0.0 || mMapSettings.scale() >= mSnappingConfig.minimumScale() )
+                         && ( mSnappingConfig.maximumScale() <= 0.0 || mMapSettings.scale() <= mSnappingConfig.maximumScale() );
 
     for ( const LayerConfig &layerConfig : qgis::as_const( mLayers ) )
     {
       QgsSnappingConfig::IndividualLayerSettings layerSettings = mSnappingConfig.individualLayerSettings( layerConfig.layer );
 
-      bool inRangeLayer = ( layerSettings.minScale() <= 0.0 || mMapSettings.scale() >= layerSettings.minScale() ) && ( layerSettings.maxScale() <= 0.0 || mMapSettings.scale() <= layerSettings.maxScale() );
+      bool inRangeLayer = ( layerSettings.minimumScale() <= 0.0 || mMapSettings.scale() >= layerSettings.minimumScale() )
+                          && ( layerSettings.maximumScale() <= 0.0 || mMapSettings.scale() <= layerSettings.maximumScale() );
 
       //If limit to scale is disabled, snapping activated on all layer
       //If no per layer config is set use the global one, otherwise use the layer config

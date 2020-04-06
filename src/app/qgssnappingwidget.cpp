@@ -437,14 +437,14 @@ void QgsSnappingWidget::projectSnapSettingsChanged()
     mToleranceSpinBox->setValue( config.tolerance() );
   }
 
-  if ( mMinScaleWidget->scale() != config.minScale() )
+  if ( mMinScaleWidget->scale() != config.minimumScale() )
   {
-    mMinScaleWidget->setScale( config.minScale() );
+    mMinScaleWidget->setScale( config.minimumScale() );
   }
 
-  if ( mMaxScaleWidget->scale() != config.maxScale() )
+  if ( mMaxScaleWidget->scale() != config.maximumScale() )
   {
-    mMaxScaleWidget->setScale( config.maxScale() );
+    mMaxScaleWidget->setScale( config.maximumScale() );
   }
 
   if ( config.scaleDependencyMode() == QgsSnappingConfig::Disabled )
@@ -515,13 +515,13 @@ void QgsSnappingWidget::changeTolerance( double tolerance )
 
 void QgsSnappingWidget::changeMinScale( double pMinScale )
 {
-  mConfig.setMinScale( pMinScale );
+  mConfig.setMinimumScale( pMinScale );
   mProject->setSnappingConfig( mConfig );
 }
 
 void QgsSnappingWidget::changeMaxScale( double pMaxScale )
 {
-  mConfig.setMaxScale( pMaxScale );
+  mConfig.setMaximumScale( pMaxScale );
   mProject->setSnappingConfig( mConfig );
 }
 

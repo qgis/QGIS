@@ -482,8 +482,8 @@ class TestQgsSnappingUtils : public QObject
       QCOMPARE( m.point(), QgsPointXY( 1, 0 ) );
 
       snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Global );
-      snappingConfig.setMinScale( 0.0 );
-      snappingConfig.setMaxScale( 0.0 );
+      snappingConfig.setMinimumScale( 0.0 );
+      snappingConfig.setMaximumScale( 0.0 );
       u.setConfig( snappingConfig );
 
       //Global settings for scale limit, but scale are set to 0 -> snapping enabled
@@ -492,8 +492,8 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m1.hasVertex() );
 
       snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Global );
-      snappingConfig.setMinScale( 1000.0 );
-      snappingConfig.setMaxScale( 10000.0 );
+      snappingConfig.setMinimumScale( 1000.0 );
+      snappingConfig.setMaximumScale( 10000.0 );
       u.setConfig( snappingConfig );
 
       //Global settings for scale limit, but scale outside min max range -> no snapping
@@ -502,8 +502,8 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m2.hasVertex() == false );
 
       snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Global );
-      snappingConfig.setMinScale( 1000.0 );
-      snappingConfig.setMaxScale( 100000.0 );
+      snappingConfig.setMinimumScale( 1000.0 );
+      snappingConfig.setMaximumScale( 100000.0 );
       u.setConfig( snappingConfig );
 
       //Global settings for scale limit, scale inside min max range -> snapping enabled
