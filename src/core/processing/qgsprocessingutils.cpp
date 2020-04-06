@@ -731,7 +731,22 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       saveOptions.datasourceOptions = QgsVectorFileWriter::defaultDatasetOptions( format );
       saveOptions.layerOptions = QgsVectorFileWriter::defaultLayerOptions( format );
       saveOptions.symbologyExport = QgsVectorFileWriter::NoSymbology;
-      saveOptions.actionOnExistingFile = remappingDefinition ? QgsVectorFileWriter::AppendToLayerNoNewFields : QgsVectorFileWriter::CreateOrOverwriteFile;
+      if ( remappingDefinition )
+      {
+        saveOptions.actionOnExistingFile = QgsVectorFileWriter::AppendToLayerNoNewFields;
+        // sniff destination file to get correct wkb type and crs
+        std::unique_ptr< QgsVectorLayer > vl = qgis::make_unique< QgsVectorLayer >( destination );
+        if ( vl->isValid() )
+        {
+          remappingDefinition->setDestinationWkbType( vl->wkbType() );
+          remappingDefinition->setDestinationCrs( vl->crs() );
+        }
+        context.expressionContext().setFields( fields );
+      }
+      else
+      {
+        saveOptions.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteFile;
+      }
       std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( destination, newFields, geometryType, crs, context.transformContext(), saveOptions, sinkFlags, &finalFileName ) );
       if ( writer->hasError() )
       {
@@ -756,15 +771,23 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
         //write to existing layer
 
         // use destination string as layer name (eg "postgis:..." )
+        if ( !layerName.isEmpty() )
+          uri += QStringLiteral( "|layername=%1" ).arg( layerName );
+
         std::unique_ptr< QgsVectorLayer > layer = qgis::make_unique<QgsVectorLayer>( uri, destination, providerKey, layerOptions );
         // update destination to layer ID
         destination = layer->id();
-
-        context.temporaryLayerStore()->addMapLayer( layer.release() );
+        if ( layer->isValid() )
+        {
+          remappingDefinition->setDestinationWkbType( layer->wkbType() );
+          remappingDefinition->setDestinationCrs( layer->crs() );
+        }
 
         std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = qgis::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, layer->dataProvider(), false );
+        context.temporaryLayerStore()->addMapLayer( layer.release() );
         remapSink->setExpressionContext( context.expressionContext() );
         remapSink->setTransformContext( context.transformContext() );
+        context.expressionContext().setFields( fields );
         return new QgsProcessingFeatureSink( remapSink.release(), destination, context, true );
       }
       else
