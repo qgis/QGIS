@@ -1313,9 +1313,17 @@ json QgsGeometry::asJsonObject( int precision ) const
 QVector<QgsGeometry> QgsGeometry::coerceToType( const QgsWkbTypes::Type type ) const
 {
   QVector< QgsGeometry > res;
-  if ( wkbType() == type )
+  if ( isNull() )
+    return res;
+
+  if ( wkbType() == type || type == QgsWkbTypes::Unknown )
   {
     res << *this;
+    return res;
+  }
+
+  if ( type == QgsWkbTypes::NoGeometry )
+  {
     return res;
   }
 
