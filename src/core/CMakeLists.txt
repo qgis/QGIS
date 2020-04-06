@@ -360,6 +360,7 @@ SET(QGIS_CORE_SRCS
   qgsproviderconnectionmodel.cpp
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
+  qgsproxyfeaturesink.cpp
   qgsproxyprogresstask.cpp
   qgspythonrunner.cpp
   qgsreadwritecontext.cpp
@@ -900,6 +901,7 @@ SET(QGIS_CORE_HDRS
   qgsproviderconnectionmodel.h
   qgsprovidermetadata.h
   qgsproviderregistry.h
+  qgsproxyfeaturesink.h
   qgsproxyprogresstask.h
   qgspythonrunner.h
   qgsrange.h
