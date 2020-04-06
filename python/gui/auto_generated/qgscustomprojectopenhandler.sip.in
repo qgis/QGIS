@@ -47,6 +47,18 @@ Returns file filters associated with this handler, e.g. "MXD Documents (*.mxd)",
 
 Each individual filter should be reflected as one entry in the returned list.
 %End
+
+    virtual bool createDocumentThumbnailAfterOpen() const;
+%Docstring
+Returns ``True`` if a document thumbnail should automatically be created after opening the project.
+
+The default behavior is to return ``False``.
+%End
+
+    virtual QIcon icon() const;
+%Docstring
+Returns a custom icon used to represent this handler.
+%End
 };
 
 /************************************************************************

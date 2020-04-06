@@ -1863,7 +1863,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void activeLayerChanged( QgsMapLayer *layer );
 
   private:
-    void createPreviewImage( const QString &path );
+    void createPreviewImage( const QString &path, const QIcon &overlayIcon = QIcon() );
     void startProfile( const QString &name );
     void endProfile();
     void functionProfile( void ( QgisApp::*fnc )(), QgisApp *instance, const QString &name );
@@ -1918,8 +1918,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * instance simultaneously results in data loss.
      *
      * \param savePreviewImage Set to false when the preview image should not be saved. E.g. project load.
+     * \param iconOverlay optional icon to overlay when saving a preview image
      */
-    void saveRecentProjectPath( bool savePreviewImage = true );
+    void saveRecentProjectPath( bool savePreviewImage = true, const QIcon &iconOverlay = QIcon() );
     //! Save recent projects list to settings
     void saveRecentProjects();
     //! Update project menu with the current list of recently accessed projects
