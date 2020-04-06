@@ -3912,11 +3912,11 @@ void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &image
     else
     {
       // RenderPercentage Unit Type takes original image size
-      QSize originalSize = QgsApplication::imageCache()->originalSize( imageFilePath );
-      if ( originalSize.isEmpty() )
+      size = QgsApplication::imageCache()->originalSize( imageFilePath );
+      if ( size.isEmpty() )
         return;
 
-      size.setWidth( ( width * originalSize.width() ) / 100.0 );
+      size.setWidth( ( width * size.width() ) / 100.0 );
 
       // don't render symbols with size below one or above 10,000 pixels
       if ( static_cast< int >( size.width() ) < 1 || 10000.0 < size.width() )
