@@ -24,6 +24,7 @@
 
 #include <QAbstractListModel>
 #include <QInputDialog>
+#include <QMenu>
 
 
 ///@cond PRIVATE
@@ -340,7 +341,12 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
   mModel = new QgsVectorTileBasicRendererListModel( mRenderer.get(), viewStyles );
   viewStyles->setModel( mModel );
 
-  connect( btnAddRule, &QPushButton::clicked, this, &QgsVectorTileBasicRendererWidget::addStyle );
+  QMenu *menuAddRule = new QMenu( btnAddRule );
+  menuAddRule->addAction( tr( "Marker" ), this, [this] { addStyle( QgsWkbTypes::PointGeometry ); } );
+  menuAddRule->addAction( tr( "Line" ), this, [this] { addStyle( QgsWkbTypes::LineGeometry ); } );
+  menuAddRule->addAction( tr( "Fill" ), this, [this] { addStyle( QgsWkbTypes::PolygonGeometry ); } );
+  btnAddRule->setMenu( menuAddRule );
+
   connect( btnEditRule, &QPushButton::clicked, this, &QgsVectorTileBasicRendererWidget::editStyle );
   connect( btnRemoveRule, &QAbstractButton::clicked, this, &QgsVectorTileBasicRendererWidget::removeStyle );
 
@@ -358,25 +364,8 @@ void QgsVectorTileBasicRendererWidget::apply()
   mVTLayer->setRenderer( mRenderer->clone() );
 }
 
-void QgsVectorTileBasicRendererWidget::addStyle()
+void QgsVectorTileBasicRendererWidget::addStyle( QgsWkbTypes::GeometryType geomType )
 {
-  QStringList lst;
-  lst << tr( "Marker" ) << tr( "Line" ) << tr( "Fill" );
-  QString type = QInputDialog::getItem( this, tr( "Add style" ), tr( "Please choose symbol type" ), lst, 0, false );
-  if ( type.isEmpty() )
-    return;
-  int index = lst.indexOf( type );
-
-  QgsWkbTypes::GeometryType geomType;
-  if ( index == 0 )
-    geomType = QgsWkbTypes::PointGeometry;
-  else if ( index == 1 )
-    geomType = QgsWkbTypes::LineGeometry;
-  else if ( index == 2 )
-    geomType = QgsWkbTypes::PolygonGeometry;
-  else
-    return;
-
   QgsVectorTileBasicRendererStyle style( QString(), QString(), geomType );
   style.setSymbol( QgsSymbol::defaultSymbol( geomType ) );
 

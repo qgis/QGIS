@@ -36,7 +36,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QPushButton" name="btnAddRule">
+      <widget class="QToolButton" name="btnAddRule">
        <property name="toolTip">
         <string>Add rule</string>
        </property>
@@ -46,6 +46,9 @@
        <property name="icon">
         <iconset resource="../../images/images.qrc">
          <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+       </property>
+       <property name="popupMode">
+        <enum>QToolButton::InstantPopup</enum>
        </property>
       </widget>
      </item>
