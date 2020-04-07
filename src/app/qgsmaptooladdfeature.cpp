@@ -91,7 +91,10 @@ void QgsMapToolAddFeature::digitized( const QgsFeature &f )
     if ( topologicalEditing )
     {
       QList<QgsPointLocator::Match> sm = snappingMatches();
+<<<<<<< HEAD
       Q_ASSERT( f.geometry().constGet()->vertexCount() == sm.size() );
+=======
+>>>>>>> 550cb5d809... Merge pull request #35622 from nirvn/bogusasset_take2
       for ( int i = 0; i < sm.size() ; ++i )
       {
         if ( sm.at( i ).layer() )
