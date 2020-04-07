@@ -2707,6 +2707,9 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
   bool hasDataDefinedAspectRatio = false;
   double aspectRatio = calculateAspectRatio( context, scaledSize, hasDataDefinedAspectRatio );
 
+  QPointF outputOffset;
+  double angle = 0.0;
+
   // RenderPercentage Unit Type takes original image size
   if ( mSizeUnit == QgsUnitTypes::RenderPercentage )
   {
@@ -2720,6 +2723,8 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
     // don't render symbols with size below one or above 10,000 pixels
     if ( static_cast< int >( width ) < 1 || 10000.0 < width || static_cast< int >( height ) < 1 || 10000.0 < height )
       return;
+
+    calculateOffsetAndRotation( context, width, height, outputOffset, angle );
   }
   else
   {
@@ -2738,14 +2743,11 @@ void QgsRasterMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderCont
     // don't render symbols with size below one or above 10,000 pixels
     if ( static_cast< int >( width ) < 1 || 10000.0 < width )
       return;
+
+    calculateOffsetAndRotation( context, scaledSize, scaledSize * ( height / width ), outputOffset, angle );
   }
 
   p->save();
-
-  QPointF outputOffset;
-  double angle = 0.0;
-  calculateOffsetAndRotation( context, scaledSize, scaledSize * ( height / width ), outputOffset, angle );
-
   p->translate( point + outputOffset );
 
   bool rotated = !qgsDoubleNear( angle, 0 );
