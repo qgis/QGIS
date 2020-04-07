@@ -20,6 +20,7 @@
 #include "qgis_gui.h"
 #include "ui_qgsprocessingdestinationwidgetbase.h"
 #include "qgsprocessingwidgetwrapper.h"
+#include "qgsprocessingcontext.h"
 #include <QWidget>
 
 class QgsProcessingDestinationParameter;
@@ -115,10 +116,13 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     void selectFile();
     void saveToGeopackage();
     void saveToDatabase();
+    void appendToLayer();
     void selectEncoding();
     void textChanged( const QString &text );
 
   private:
+
+    void setAppendDestination( const QString &uri, const QgsFields &destFields );
 
     QString mimeDataToPath( const QMimeData *data );
 
@@ -131,6 +135,9 @@ class GUI_EXPORT QgsProcessingLayerOutputDestinationWidget : public QWidget, pri
     QString mEncoding;
     QgsBrowserGuiModel *mBrowserModel = nullptr;
     QCheckBox *mOpenAfterRunningCheck = nullptr;
+
+    QgsRemappingSinkDefinition mRemapDefinition;
+    bool mUseRemapping = false;
 
     QgsProcessingContext *mContext = nullptr;
 
