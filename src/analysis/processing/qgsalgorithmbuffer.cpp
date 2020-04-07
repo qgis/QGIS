@@ -179,6 +179,36 @@ QgsProcessingAlgorithm::Flags QgsBufferAlgorithm::flags() const
   return f;
 }
 
+QgsProcessingAlgorithm::VectorProperties QgsBufferAlgorithm::sinkProperties( const QString &sink, const QVariantMap &parameters, QgsProcessingContext &context, const QMap<QString, QgsProcessingAlgorithm::VectorProperties> &sourceProperties ) const
+{
+  QgsProcessingAlgorithm::VectorProperties result;
+  if ( sink == QStringLiteral( "OUTPUT" ) )
+  {
+    if ( sourceProperties.value( QStringLiteral( "INPUT" ) ).availability == QgsProcessingAlgorithm::Available )
+    {
+      const VectorProperties inputProps = sourceProperties.value( QStringLiteral( "INPUT" ) );
+      result.fields = inputProps.fields;
+      result.crs = inputProps.crs;
+      result.wkbType = QgsWkbTypes::MultiPolygon;
+      result.availability = Available;
+      return result;
+    }
+    else
+    {
+      std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+      if ( source )
+      {
+        result.fields = source->fields();
+        result.crs = source->sourceCrs();
+        result.wkbType = QgsWkbTypes::MultiPolygon;
+        result.availability = Available;
+        return result;
+      }
+    }
+  }
+  return result;
+}
+
 bool QgsBufferAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
   const QgsVectorLayer *vlayer = qobject_cast< const QgsVectorLayer * >( layer );
