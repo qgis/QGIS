@@ -16,7 +16,7 @@
 
 #include "qgsfieldmappingmodel.h"
 #include "qgsexpressioncontextutils.h"
-
+#include "qgsexpressionnodeimpl.h"
 
 QgsFieldMappingModel::QgsFieldMappingModel( const QgsFields &sourceFields,
     const QgsFields &destinationFields,
@@ -400,6 +400,56 @@ const QMap<QVariant::Type, QString> QgsFieldMappingModel::dataTypes() const
 QList<QgsFieldMappingModel::Field> QgsFieldMappingModel::mapping() const
 {
   return mMapping;
+}
+
+QMap<QString, QgsProperty> QgsFieldMappingModel::fieldPropertyMap() const
+{
+  QMap< QString, QgsProperty > fieldMap;
+  for ( const QgsFieldMappingModel::Field &field : mMapping )
+  {
+    const QgsExpression exp( field.expression );
+    const bool isField = exp.isField();
+    fieldMap.insert( field.originalName, isField
+                     ? QgsProperty::fromField( static_cast<const QgsExpressionNodeColumnRef *>( exp.rootNode() )->name() )
+                     : QgsProperty::fromExpression( field.expression ) );
+  }
+  return fieldMap;
+}
+
+void QgsFieldMappingModel::setFieldPropertyMap( const QMap<QString, QgsProperty> &map )
+{
+  beginResetModel();
+  for ( int i = 0; i < mMapping.count(); ++i )
+  {
+    Field &f = mMapping[i];
+    if ( map.contains( f.field.name() ) )
+    {
+      const QgsProperty prop = map.value( f.field.name() );
+      switch ( prop.propertyType() )
+      {
+        case QgsProperty::StaticProperty:
+          f.expression = QgsExpression::quotedValue( prop.staticValue() );
+          break;
+
+        case QgsProperty::FieldBasedProperty:
+          f.expression = prop.field();
+          break;
+
+        case QgsProperty::ExpressionBasedProperty:
+          f.expression = prop.expressionString();
+          break;
+
+        case QgsProperty::InvalidProperty:
+          f.expression.clear();
+          break;
+      }
+    }
+    else
+    {
+      f.expression.clear();
+    }
+  }
+  endResetModel();
 }
 
 void QgsFieldMappingModel::appendField( const QgsField &field, const QString &expression )

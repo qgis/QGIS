@@ -81,6 +81,21 @@ Returns a list of source fields
 Returns a list of Field objects representing the current status of the model
 %End
 
+    QMap< QString, QgsProperty > fieldPropertyMap() const;
+%Docstring
+Returns a map of destination field name to QgsProperty definition for field value,
+representing the current status of the model.
+
+.. seealso:: :py:func:`setFieldPropertyMap`
+%End
+
+    void setFieldPropertyMap( const QMap< QString, QgsProperty > &map );
+%Docstring
+Sets a map of destination field name to QgsProperty definition for field value.
+
+.. seealso:: :py:func:`fieldPropertyMap`
+%End
+
     void appendField( const QgsField &field, const QString &expression = QString() );
 %Docstring
 Appends a new ``field`` to the model, with an optional ``expression``

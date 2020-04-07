@@ -61,6 +61,21 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget, private Ui::QgsF
     //! Returns a list of Field objects representing the current status of the underlying mapping model
     QList<QgsFieldMappingModel::Field> mapping() const;
 
+    /**
+     * Returns a map of destination field name to QgsProperty definition for field value,
+     * representing the current status of the widget.
+     *
+     * \see setFieldPropertyMap()
+     */
+    QMap< QString, QgsProperty > fieldPropertyMap() const;
+
+    /**
+     * Sets a map of destination field name to QgsProperty definition for field value.
+     *
+     * \see fieldPropertyMap()
+     */
+    void setFieldPropertyMap( const QMap< QString, QgsProperty > &map );
+
     //! Returns the selection model
     QItemSelectionModel *selectionModel();
 
