@@ -147,6 +147,7 @@ void TestQgsTemporalNavigationObject::frameSettings()
                              QDateTime( QDate( 2020, 1, 1 ), QTime( 12, 0, 0 ) )
                            );
   navigationObject->setTemporalExtents( range );
+  QCOMPARE( temporalRangeSignal.count(), 1 );
 
   navigationObject->setFrameDuration( QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
   QCOMPARE( navigationObject->frameDuration(), QgsInterval( 1, QgsUnitTypes::TemporalHours ) );
@@ -156,7 +157,7 @@ void TestQgsTemporalNavigationObject::frameSettings()
 
   navigationObject->setCurrentFrameNumber( 1 );
   QCOMPARE( navigationObject->currentFrameNumber(), 1 );
-  QCOMPARE( temporalRangeSignal.count(), 1 );
+  QCOMPARE( temporalRangeSignal.count(), 2 );
 
   navigationObject->setFramesPerSecond( 1 );
   QCOMPARE( navigationObject->framesPerSecond(), 1.0 );
