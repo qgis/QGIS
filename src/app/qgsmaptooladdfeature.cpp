@@ -91,7 +91,6 @@ void QgsMapToolAddFeature::digitized( const QgsFeature &f )
     if ( topologicalEditing )
     {
       QList<QgsPointLocator::Match> sm = snappingMatches();
-      Q_ASSERT( f.geometry().constGet()->vertexCount() == sm.size() );
       for ( int i = 0; i < sm.size() ; ++i )
       {
         if ( sm.at( i ).layer() )
