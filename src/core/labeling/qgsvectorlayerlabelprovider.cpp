@@ -57,6 +57,19 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsVectorLayer *layer,
   init();
 }
 
+QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( QgsWkbTypes::GeometryType geometryType, const QgsFields &fields, const QgsCoordinateReferenceSystem &crs, const QString &providerId, const QgsPalLayerSettings *settings, QgsMapLayer *layer, const QString &layerName )
+  : QgsAbstractLabelProvider( layer, providerId )
+  , mSettings( settings ? * settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
+  , mLayerGeometryType( geometryType )
+  , mRenderer( nullptr )
+  , mFields( fields )
+  , mCrs( crs )
+{
+  mName = layerName.isEmpty() ? layer->id() : layerName;
+
+  init();
+}
+
 void QgsVectorLayerLabelProvider::init()
 {
   mPlacement = mSettings.placement;

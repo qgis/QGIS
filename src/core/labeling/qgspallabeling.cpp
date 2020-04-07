@@ -483,6 +483,25 @@ bool QgsPalLayerSettings::prepare( QgsRenderContext &context, QSet<QString> &att
   return true;
 }
 
+QSet<QString> QgsPalLayerSettings::referencedFields() const
+{
+  QSet<QString> referenced;
+  if ( drawLabels )
+  {
+    if ( isExpression )
+    {
+      referenced.unite( QgsExpression( fieldName ).referencedColumns() );
+    }
+    else
+    {
+      referenced.insert( fieldName );
+    }
+  }
+
+  referenced.unite( mDataDefinedProperties.referencedFields( QgsExpressionContext(), true ) );
+  return referenced;
+}
+
 void QgsPalLayerSettings::startRender( QgsRenderContext &context )
 {
   if ( mRenderStarted )
