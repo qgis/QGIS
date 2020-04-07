@@ -29,6 +29,16 @@ QgsModelGraphicsScene::QgsModelGraphicsScene( QObject *parent )
   setItemIndexMethod( QGraphicsScene::NoIndex );
 }
 
+QgsProcessingModelAlgorithm *QgsModelGraphicsScene::model()
+{
+  return mModel;
+}
+
+void QgsModelGraphicsScene::setModel( QgsProcessingModelAlgorithm *model )
+{
+  mModel = model;
+}
+
 void QgsModelGraphicsScene::setFlag( QgsModelGraphicsScene::Flag flag, bool on )
 {
   if ( on )
@@ -154,6 +164,8 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
           const QList< LinkSource > sourceItems = linkSourcesForParameterValue( model, QVariant::fromValue( source ), it.value().childId(), context );
           for ( const LinkSource &link : sourceItems )
           {
+            if ( !link.item )
+              continue;
             QgsModelArrowItem *arrow = nullptr;
             if ( link.linkIndex == -1 )
               arrow = new QgsModelArrowItem( link.item, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx );

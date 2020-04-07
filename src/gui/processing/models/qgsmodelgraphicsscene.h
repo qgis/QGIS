@@ -70,6 +70,10 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
      */
     QgsModelGraphicsScene( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
+    QgsProcessingModelAlgorithm *model();
+
+    void setModel( QgsProcessingModelAlgorithm *model );
+
     /**
      * Sets the combination of \a flags controlling how the scene is rendered and behaves.
      * \see setFlag()
@@ -209,6 +213,8 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     void addCommentItemForComponent( QgsProcessingModelAlgorithm *model, const QgsProcessingModelComponent &component, QgsModelComponentGraphicItem *parentItem );
 
     Flags mFlags = nullptr;
+
+    QgsProcessingModelAlgorithm *mModel = nullptr;
 
     QMap< QString, QgsModelComponentGraphicItem * > mParameterItems;
     QMap< QString, QgsModelChildAlgorithmGraphicItem * > mChildAlgorithmItems;

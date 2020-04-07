@@ -80,6 +80,47 @@ Starts a macro command, containing a group of interactions in the view.
 Ends a macro command, containing a group of interactions in the view.
 %End
 
+
+    enum ClipboardOperation
+    {
+      ClipboardCut,
+      ClipboardCopy,
+    };
+
+    void copySelectedItems( ClipboardOperation operation );
+%Docstring
+Cuts or copies the selected items, respecting the specified ``operation``.
+
+.. seealso:: :py:func:`copyItems`
+
+.. seealso:: :py:func:`pasteItems`
+%End
+
+    void copyItems( const QList< QgsModelComponentGraphicItem * > &items, ClipboardOperation operation );
+%Docstring
+Cuts or copies the a list of ``items``, respecting the specified ``operation``.
+
+.. seealso:: :py:func:`copySelectedItems`
+
+.. seealso:: :py:func:`pasteItems`
+%End
+
+    enum PasteMode
+    {
+      PasteModeCursor,
+      PasteModeCenter,
+      PasteModeInPlace,
+    };
+
+    void pasteItems( PasteMode mode );
+%Docstring
+Pastes items from clipboard, using the specified ``mode``.
+
+.. seealso:: :py:func:`copySelectedItems`
+
+.. seealso:: :py:func:`hasItemsInClipboard`
+%End
+
   public slots:
 
     void snapSelected();
@@ -120,6 +161,21 @@ Emitted when a macro command containing a group of interactions is started in th
     void macroCommandEnded();
 %Docstring
 Emitted when a macro command containing a group of interactions in the view has ended.
+%End
+
+    void beginCommand( const QString &text );
+%Docstring
+Emitted when an undo command is started in the view.
+%End
+
+    void endCommand();
+%Docstring
+Emitted when an undo command in the view has ended.
+%End
+
+    void deleteSelectedItems();
+%Docstring
+Emitted when the selected items should be deleted;
 %End
 
 };
