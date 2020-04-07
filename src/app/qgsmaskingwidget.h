@@ -35,7 +35,9 @@ class QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMaskingWidgetBase
   signals:
     void widgetChanged();
   private:
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
+    //! Populate the mask source and target widgets
+    void populate();
 };
 
 #endif
