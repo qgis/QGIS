@@ -372,7 +372,7 @@ void QgsSnappingConfig::readProject( const QDomDocument &doc )
     if ( versionElem.hasAttribute( QStringLiteral( "version" ) ) )
     {
       version = versionElem.attribute( QStringLiteral( "version" ) );
-      QRegularExpression re( "([\\d]*)\\.([\\d]*)" );
+      QRegularExpression re( "([\\d]+)\\.([\\d]+)" );
       QRegularExpressionMatch match = re.match( version );
       if ( match.hasMatch() )
       {
