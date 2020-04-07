@@ -51,6 +51,10 @@ QGraphicsScene subclass representing the model designer.
 Constructor for QgsModelGraphicsScene with the specified ``parent`` object.
 %End
 
+    QgsProcessingModelAlgorithm *model();
+
+    void setModel( QgsProcessingModelAlgorithm *model );
+
     void setFlags( QgsModelGraphicsScene::Flags flags );
 %Docstring
 Sets the combination of ``flags`` controlling how the scene is rendered and behaves.

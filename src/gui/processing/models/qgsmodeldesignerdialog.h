@@ -170,6 +170,9 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     QMenu *mGroupMenu = nullptr;
 
+    QAction *mActionCut = nullptr;
+    QAction *mActionCopy = nullptr;
+    QAction *mActionPaste = nullptr;
     int mBlockUndoCommands = 0;
     int mIgnoreUndoStackChanges = 0;
 

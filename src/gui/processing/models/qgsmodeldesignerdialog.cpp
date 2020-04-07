@@ -166,6 +166,39 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mMenuView->insertMenu( mActionZoomIn, mGroupMenu );
   connect( mGroupMenu, &QMenu::aboutToShow, this, &QgsModelDesignerDialog::populateZoomToMenu );
 
+  //cut/copy/paste actions. Note these are not included in the ui file
+  //as ui files have no support for QKeySequence shortcuts
+  mActionCut = new QAction( tr( "Cu&t" ), this );
+  mActionCut->setShortcuts( QKeySequence::Cut );
+  mActionCut->setStatusTip( tr( "Cut" ) );
+  mActionCut->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCut.svg" ) ) );
+  connect( mActionCut, &QAction::triggered, this, [ = ]
+  {
+    mView->copySelectedItems( QgsModelGraphicsView::ClipboardCut );
+  } );
+
+  mActionCopy = new QAction( tr( "&Copy" ), this );
+  mActionCopy->setShortcuts( QKeySequence::Copy );
+  mActionCopy->setStatusTip( tr( "Copy" ) );
+  mActionCopy->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ) );
+  connect( mActionCopy, &QAction::triggered, this, [ = ]
+  {
+    mView->copySelectedItems( QgsModelGraphicsView::ClipboardCopy );
+  } );
+
+  mActionPaste = new QAction( tr( "&Paste" ), this );
+  mActionPaste->setShortcuts( QKeySequence::Paste );
+  mActionPaste->setStatusTip( tr( "Paste" ) );
+  mActionPaste->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ) );
+  connect( mActionPaste, &QAction::triggered, this, [ = ]
+  {
+    mView->pasteItems( QgsModelGraphicsView::PasteModeCursor );
+  } );
+  mMenuEdit->insertAction( mActionDeleteComponents, mActionCut );
+  mMenuEdit->insertAction( mActionDeleteComponents, mActionCopy );
+  mMenuEdit->insertAction( mActionDeleteComponents, mActionPaste );
+  mMenuEdit->insertSeparator( mActionDeleteComponents );
+
   QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::FilterModeler;
   if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_ALGORITHMS_KNOWN_ISSUES" ), false ).toBool() )
   {
@@ -272,6 +305,18 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     mUndoStack->endMacro();
     mIgnoreUndoStackChanges--;
   } );
+  connect( mView, &QgsModelGraphicsView::beginCommand, this, [ = ]( const QString & text )
+  {
+    beginUndoCommand( text );
+  } );
+  connect( mView, &QgsModelGraphicsView::endCommand, this, [ = ]
+  {
+    endUndoCommand();
+  } );
+  connect( mView, &QgsModelGraphicsView::deleteSelectedItems, this, [ = ]
+  {
+    deleteSelected();
+  } );
 
   connect( mActionAddGroupBox, &QAction::triggered, this, [ = ]
   {
@@ -372,6 +417,7 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
   mScene = scene;
   mScene->setParent( this );
   mScene->setChildAlgorithmResults( mChildResults );
+  mScene->setModel( mModel.get() );
 
   mView->setModelScene( mScene );
 
