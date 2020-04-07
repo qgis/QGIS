@@ -90,7 +90,13 @@ QgsDateTimeRange QgsTemporalNavigationObject::dateTimeRangeForFrameNumber( long 
 void QgsTemporalNavigationObject::setTemporalExtents( const QgsDateTimeRange &temporalExtents )
 {
   mTemporalExtents = temporalExtents;
+  int currentFrameNmber = mCurrentFrameNumber;
   setCurrentFrameNumber( 0 );
+
+  //Force to emit signal if the current frame number doesn't change
+  if ( currentFrameNmber == mCurrentFrameNumber )
+    emit updateTemporalRange( dateTimeRangeForFrameNumber( 0 ) );
+
 }
 
 QgsDateTimeRange QgsTemporalNavigationObject::temporalExtents() const

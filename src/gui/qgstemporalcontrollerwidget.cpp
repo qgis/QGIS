@@ -173,6 +173,7 @@ void QgsTemporalControllerWidget::onProjectCleared()
   mHasTemporalLayersLoaded = false;
   mStartDateTime->setDateTime( QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) ) );
   mEndDateTime->setDateTime( mStartDateTime->dateTime() );
+  updateTemporalExtent();
 }
 
 void QgsTemporalControllerWidget::updateSlider( const QgsDateTimeRange &range )
@@ -230,6 +231,7 @@ void QgsTemporalControllerWidget::setDatesToProjectTime()
   {
     mStartDateTime->setDateTime( range.begin() );
     mEndDateTime->setDateTime( range.end() );
+    updateTemporalExtent();
   }
 }
 
