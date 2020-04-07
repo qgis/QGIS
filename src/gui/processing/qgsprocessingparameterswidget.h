@@ -20,6 +20,7 @@
 #include "qgis_gui.h"
 #include "ui_qgsprocessingparameterswidgetbase.h"
 #include <QWidget>
+#include "qgsprocessingwidgetwrapper.h"
 
 class QgsProcessingAlgorithm;
 class QgsProcessingParameterDefinition;
@@ -32,7 +33,7 @@ class QgsProcessingParameterDefinition;
  * \note Not stable API
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, private Ui::QgsProcessingParametersWidgetBase
+class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public QgsProcessingParametersGenerator, private Ui::QgsProcessingParametersWidgetBase
 {
     Q_OBJECT
 
