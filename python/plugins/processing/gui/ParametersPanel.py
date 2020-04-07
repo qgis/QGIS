@@ -43,7 +43,7 @@ from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.tools.dataobjects import createContext
 
 
-class ParametersPanel(QgsProcessingParametersWidget, QgsProcessingParametersGenerator):
+class ParametersPanel(QgsProcessingParametersWidget):
 
     def __init__(self, parent, alg, in_place=False):
         super().__init__(alg, parent)
