@@ -120,6 +120,16 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      */
     bool checkForUnsavedChanges();
 
+    /**
+     * Sets the results of child algorithms for the last run of the model through the designer window.
+     */
+    void setLastRunChildAlgorithmResults( const QVariantMap &results );
+
+    /**
+     * Sets the inputs for child algorithms for the last run of the model through the designer window.
+     */
+    void setLastRunChildAlgorithmInputs( const QVariantMap &inputs );
+
   private slots:
     void zoomIn();
     void zoomOut();
@@ -132,6 +142,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void toggleComments( bool show );
     void updateWindowTitle();
     void deleteSelected();
+    void populateZoomToMenu();
 
   private:
 
@@ -157,12 +168,17 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QUndoView *mUndoView = nullptr;
     QgsDockWidget *mUndoDock = nullptr;
 
+    QMenu *mGroupMenu = nullptr;
+
     int mBlockUndoCommands = 0;
     int mIgnoreUndoStackChanges = 0;
 
     QString mTitle;
 
     int mBlockRepaints = 0;
+
+    QVariantMap mChildResults;
+    QVariantMap mChildInputs;
 
     bool isDirty() const;
 

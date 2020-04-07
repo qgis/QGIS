@@ -110,6 +110,7 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsRe
 
   Qt::CheckState checked = QgsLayerTreeUtils::checkStateFromXml( element.attribute( QStringLiteral( "checked" ) ) );
   bool isExpanded = ( element.attribute( QStringLiteral( "expanded" ), QStringLiteral( "1" ) ) == QLatin1String( "1" ) );
+  QString labelExpression = element.attribute( QStringLiteral( "legend_exp" ) );
 
   // needs to have the layer reference resolved later
   QgsLayerTreeLayer *nodeLayer = new QgsLayerTreeLayer( layerID, layerName, source, providerKey );
@@ -118,6 +119,7 @@ QgsLayerTreeLayer *QgsLayerTreeLayer::readXml( QDomElement &element, const QgsRe
 
   nodeLayer->setItemVisibilityChecked( checked != Qt::Unchecked );
   nodeLayer->setExpanded( isExpanded );
+  nodeLayer->setLabelExpression( labelExpression );
   return nodeLayer;
 }
 
@@ -144,7 +146,7 @@ void QgsLayerTreeLayer::writeXml( QDomElement &parentElement, const QgsReadWrite
 
   elem.setAttribute( QStringLiteral( "checked" ), mChecked ? QStringLiteral( "Qt::Checked" ) : QStringLiteral( "Qt::Unchecked" ) );
   elem.setAttribute( QStringLiteral( "expanded" ), mExpanded ? "1" : "0" );
-
+  elem.setAttribute( QStringLiteral( "legend_exp" ), mLabelExpression );
   writeCommonXml( elem );
 
   parentElement.appendChild( elem );

@@ -11,7 +11,7 @@
 
 
 
-class QgsProcessingAlgorithmDialogBase : QDialog
+class QgsProcessingAlgorithmDialogBase : QDialog, QgsProcessingParametersGenerator
 {
 %Docstring
 Base class for processing algorithm dialogs.
@@ -97,11 +97,6 @@ Returns the results returned by the algorithm executed.
 %Docstring
 Creates a new processing feedback object, automatically connected to the appropriate
 slots in this dialog.
-%End
-
-    virtual QVariantMap getParameterValues() const;
-%Docstring
-Returns the parameter values for the algorithm to run in the dialog.
 %End
 
     void saveLogToFile( const QString &path, LogFormat format = FormatPlainText );
@@ -299,6 +294,15 @@ by the dialog. Ownership of ``task`` is transferred to the dialog.
 Formats an input ``string`` for display in the log tab.
 
 .. versionadded:: 3.0.1
+%End
+
+  signals:
+
+    void algorithmFinished( bool successful, const QVariantMap &result );
+%Docstring
+Emitted whenever an algorithm has finished executing in the dialog.
+
+.. versionadded:: 3.14
 %End
 
   protected slots:

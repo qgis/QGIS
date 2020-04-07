@@ -1290,9 +1290,10 @@ QgsMeshVectorTraceAnimationGenerator::QgsMeshVectorTraceAnimationGenerator( QgsM
   bool vectorDataOnVertices;
   double magMax;
 
+  QgsMeshDatasetIndex datasetIndex = layer->activeVectorDatasetAtTime( rendererContext.temporalRange() );
+
   // Find out if we can use cache up to date. If yes, use it and return
   int datasetGroupCount = layer->dataProvider()->datasetGroupCount();
-  const QgsMeshDatasetIndex datasetIndex = layer->rendererSettings().activeVectorDataset();
   const QgsMeshRendererVectorSettings vectorSettings = layer->rendererSettings().vectorSettings( datasetIndex.group() );
   QgsMeshLayerRendererCache *cache = layer->rendererCache();
 
@@ -1307,7 +1308,7 @@ QgsMeshVectorTraceAnimationGenerator::QgsMeshVectorTraceAnimationGenerator( QgsM
   else
   {
     const QgsMeshDatasetGroupMetadata metadata =
-      layer->dataProvider()->datasetGroupMetadata( layer->rendererSettings().activeVectorDataset() );
+      layer->dataProvider()->datasetGroupMetadata( datasetIndex.group() );
     magMax = metadata.maximum();
     vectorDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
 

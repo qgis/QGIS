@@ -301,7 +301,7 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
 
   double gridSizeX = mShowGrid && mVerticalGrid ? mGridStrokeWidth : 0;
   double gridSizeY = mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0;
-  double cellHeaderHeight = QgsLayoutUtils::fontAscentMM( mHeaderFont ) + 2 * mCellMargin;
+  double cellHeaderHeight = mMaxRowHeightMap[0] + 2 * mCellMargin;//QgsLayoutUtils::fontAscentMM( mHeaderFont ) + 2 * mCellMargin;
   double cellBodyHeight = QgsLayoutUtils::fontAscentMM( mContentFont ) + 2 * mCellMargin;
   QRectF cell;
 
@@ -352,15 +352,6 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
 
       currentX += mCellMargin;
 
-      Qt::TextFlag textFlag = static_cast< Qt::TextFlag >( 0 );
-      if ( column->width() <= 0 )
-      {
-        //automatic column width, so we use the Qt::TextDontClip flag when drawing contents, as this works nicer for italicised text
-        //which may slightly exceed the calculated width
-        //if column size was manually set then we do apply text clipping, to avoid painting text outside of columns width
-        textFlag = Qt::TextDontClip;
-      }
-
       cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], cellHeaderHeight );
 
       //calculate alignment of header
@@ -381,7 +372,15 @@ void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &
           break;
       }
 
-      QgsLayoutUtils::drawText( p, cell, column->heading(), mHeaderFont, mHeaderFontColor, headerAlign, Qt::AlignVCenter, textFlag );
+      // disable text clipping to target text rectangle, because we manually clip to the full cell bounds below
+      // and it's ok if text overlaps into the margin (e.g. extenders or italicized text)
+      QString str = column->heading();
+      Qt::TextFlag textFlag = static_cast< Qt::TextFlag >( Qt::TextDontClip );
+      if ( ( mWrapBehavior != TruncateText || column->width() > 0 ) && textRequiresWrapping( str, column->width(), mHeaderFont ) )
+      {
+        str = wrappedText( str, column->width(), mHeaderFont );
+      }
+      QgsLayoutUtils::drawText( p, cell, str, mHeaderFont, mHeaderFontColor, headerAlign, Qt::AlignVCenter, textFlag );
 
       currentX += mMaxColumnWidthMap[ col ];
       currentX += mCellMargin;
@@ -869,6 +868,8 @@ bool QgsLayoutTable::calculateMaxColumnWidths()
   int cells = cols * ( mTableContents.count() + 1 );
   QVector< double > widths( cells );
 
+  double currentCellTextWidth;
+
   //first, go through all the column headers and calculate the sizes
   QgsLayoutTableColumns::const_iterator columnIt = mColumns.constBegin();
   int col = 0;
@@ -881,7 +882,15 @@ bool QgsLayoutTable::calculateMaxColumnWidths()
     }
     else if ( mHeaderMode != QgsLayoutTable::NoHeaders )
     {
-      widths[col] = QgsLayoutUtils::textWidthMM( mHeaderFont, ( *columnIt )->heading() );
+      //column width set to automatic, so check content size
+      QStringList multiLineSplit = ( *columnIt )->heading().split( '\n' );
+      currentCellTextWidth = 0;
+      const auto constMultiLineSplit = multiLineSplit;
+      for ( const QString &line : constMultiLineSplit )
+      {
+        currentCellTextWidth = std::max( currentCellTextWidth, QgsLayoutUtils::textWidthMM( mHeaderFont, line ) );
+      }
+      widths[col] = currentCellTextWidth;
     }
     else
     {
@@ -892,7 +901,6 @@ bool QgsLayoutTable::calculateMaxColumnWidths()
 
   //next, go through all the table contents and calculate the sizes
   QgsLayoutTableContents::const_iterator rowIt = mTableContents.constBegin();
-  double currentCellTextWidth;
   int row = 1;
   for ( ; rowIt != mTableContents.constEnd(); ++rowIt )
   {
@@ -951,7 +959,19 @@ bool QgsLayoutTable::calculateMaxRowHeights()
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
     //height
-    heights[col] = mHeaderMode != QgsLayoutTable::NoHeaders ? QgsLayoutUtils::textHeightMM( mHeaderFont, ( *columnIt )->heading() ) : 0;
+    if ( mHeaderMode == QgsLayoutTable::NoHeaders )
+    {
+      heights[col] = 0;
+    }
+    else if ( textRequiresWrapping( ( *columnIt )->heading(), mColumns.at( col )->width(), mHeaderFont ) )
+    {
+      //contents too wide for cell, need to wrap
+      heights[col] = QgsLayoutUtils::textHeightMM( mHeaderFont, wrappedText( ( *columnIt )->heading(), mColumns.at( col )->width(), mHeaderFont ) );
+    }
+    else
+    {
+      heights[col] =  QgsLayoutUtils::textHeightMM( mHeaderFont, ( *columnIt )->heading() );
+    }
     col++;
   }
 
@@ -1103,7 +1123,7 @@ void QgsLayoutTable::drawHorizontalGridLines( QPainter *painter, int firstRow, i
   {
     painter->drawLine( QPointF( halfGridStrokeWidth, currentY ), QPointF( mTableSize.width() - halfGridStrokeWidth, currentY ) );
     currentY += ( mShowGrid ? mGridStrokeWidth : 0 );
-    currentY += ( QgsLayoutUtils::fontAscentMM( mHeaderFont ) + 2 * mCellMargin );
+    currentY += mMaxRowHeightMap[0] + 2 * mCellMargin;
   }
   for ( int row = firstRow; row < lastRow; ++row )
   {
@@ -1251,7 +1271,7 @@ void QgsLayoutTable::drawVerticalGridLines( QPainter *painter, const QMap<int, d
   double tableHeight = 0;
   if ( hasHeader )
   {
-    tableHeight += ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 ) + mCellMargin * 2 + QgsLayoutUtils::fontAscentMM( mHeaderFont );
+    tableHeight += ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 ) + mCellMargin * 2 + mMaxRowHeightMap[0];
   }
   tableHeight += ( mShowGrid && mHorizontalGrid ? mGridStrokeWidth : 0 );
   double headerHeight = tableHeight;

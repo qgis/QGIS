@@ -36,6 +36,30 @@ return a pointer to a context which they have already created and own.
     virtual ~QgsProcessingContextGenerator();
 };
 
+class QgsProcessingParametersGenerator
+{
+%Docstring
+
+An interface for objects which can create sets of parameter values for processing algorithms.
+
+.. versionadded:: 3.14
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingwidgetwrapper.h"
+%End
+  public:
+
+    virtual QVariantMap createProcessingParameters() = 0;
+%Docstring
+This method needs to be reimplemented in all classes which implement this interface
+and return a algorithm parameters.
+%End
+
+    virtual ~QgsProcessingParametersGenerator();
+};
+
+
 class QgsProcessingParameterWidgetContext
 {
 %Docstring
@@ -304,10 +328,24 @@ Returns the current value of the parameter.
 .. seealso:: :py:func:`setParameterValue`
 %End
 
+    virtual QVariantMap customProperties() const;
+%Docstring
+Returns any custom properties set by the wrapper.
+%End
+
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 %Docstring
 Registers a Processing context ``generator`` class that will be used to retrieve
 a Processing context for the wrapper when required.
+%End
+
+    void registerProcessingParametersGenerator( QgsProcessingParametersGenerator *generator );
+%Docstring
+Registers a Processing parameters ``generator`` class that will be used to retrieve
+algorithm parameters for the wrapper when required (e.g. when a wrapper needs access
+to other parameter's values).
+
+.. versionadded:: 3.14
 %End
 
     virtual void postInitialize( const QList< QgsAbstractProcessingParameterWidgetWrapper * > &wrappers );

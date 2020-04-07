@@ -78,6 +78,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagKnownIssues = 1 << 9, //!< Algorithm has known issues
       FlagCustomException = 1 << 10, //!< Algorithm raises custom exception notices, don't use the standard ones
       FlagPruneModelBranchesBasedOnAlgorithmResults = 1 << 11, //!< Algorithm results will cause remaining model branches to be pruned based on the results of running the algorithm
+      FlagSkipGenericModelLogging = 1 << 12, //!< When running as part of a model, the generic algorithm setup and results logging should be skipped
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -313,6 +314,56 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Returns TRUE if this algorithm generates HTML outputs.
      */
     bool hasHtmlOutputs() const;
+
+    /**
+     * Property availability, used for QgsProcessingAlgorithm::VectorProperties
+     * in order to determine if properties are available or not
+     */
+    enum PropertyAvailability
+    {
+      NotAvailable, //!< Properties are not available
+      Available, //!< Properties are available
+    };
+
+    /**
+     * Properties of a vector source or sink used in an algorithm.
+     *
+     * \since QGIS 3.14
+     */
+    struct VectorProperties
+    {
+      //! Fields
+      QgsFields fields;
+
+      //! Geometry (WKB) type
+      QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
+
+      //! Coordinate Reference System
+      QgsCoordinateReferenceSystem crs;
+
+      //! Availability of the properties. By default properties are not available.
+      QgsProcessingAlgorithm::PropertyAvailability availability = QgsProcessingAlgorithm::NotAvailable;
+    };
+
+    /**
+     * Returns the vector properties which will be used for the \a sink with matching name.
+     *
+     * The \a parameters argument specifies the values of all parameters which would be used to generate
+     * the sink. These can be used alongside the provided \a context in order to pre-evaluate inputs
+     * when required in order to determine the sink's properties.
+     *
+     * The \a sourceProperties map will contain the vector properties of the various sources used
+     * as inputs to the algorithm. These will only be available in certain circumstances (e.g. when the
+     * algorithm is used within a model), so implementations will need to be adaptable to circumstances
+     * when either \a sourceParameters is empty or \a parameters is empty, and use whatever information
+     * is passed in order to make a best guess determination of the output properties.
+     *
+     * \since QGIS 3.14
+     */
+    virtual QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink,
+        const QVariantMap &parameters,
+        QgsProcessingContext &context,
+        const QMap< QString, QgsProcessingAlgorithm::VectorProperties > &sourceProperties ) const;
 
     /**
      * Executes the algorithm using the specified \a parameters. This method internally
@@ -1147,6 +1198,11 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * \since QGIS 3.4
      */
     void prepareSource( const QVariantMap &parameters, QgsProcessingContext &context );
+
+    QgsProcessingAlgorithm::VectorProperties sinkProperties( const QString &sink,
+        const QVariantMap &parameters,
+        QgsProcessingContext &context,
+        const QMap< QString, QgsProcessingAlgorithm::VectorProperties > &sourceProperties ) const override;
 
   private:
 

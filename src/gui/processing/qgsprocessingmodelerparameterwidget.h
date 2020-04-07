@@ -32,6 +32,7 @@ class QgsExpressionLineEdit;
 class QgsProcessingModelAlgorithm;
 class QgsProcessingParameterWidgetContext;
 class QgsProcessingContextGenerator;
+class QgsFilterLineEdit;
 
 class QLabel;
 class QToolButton;
@@ -142,11 +143,46 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     virtual void setWidgetValue( const QgsProcessingModelChildParameterSource &value );
 
     /**
+     * Sets the current \a values for the parameter.
+     *
+     * \see value()
+     * \since QGIS 3.14
+     */
+    void setWidgetValue( const QList< QgsProcessingModelChildParameterSource > &values );
+
+    /**
+     * Sets the widget to a model output, for destination parameters only.
+     *
+     * \see isModelOutput()
+     * \see modelOutputName()
+     * \since QGIS 3.14
+     */
+    void setToModelOutput( const QString &value );
+
+    /**
+     * Returns TRUE if the widget is set to the model output mode.
+     *
+     * \see setToModelOutput()
+     * \see modelOutputName()
+     * \since QGIS 3.14
+     */
+    bool isModelOutput() const;
+
+    /**
+     * Returns the model output name, if isModelOutput() is TRUE.
+     *
+     * \see setToModelOutput()
+     * \see isModelOutput()
+     * \since QGIS 3.14
+     */
+    QString modelOutputName() const;
+
+    /**
      * Returns the current value of the parameter.
      *
      * \see setWidgetValue()
      */
-    virtual QgsProcessingModelChildParameterSource value() const;
+    virtual QVariant value() const;
 
     /**
      * Sets the parent \a dialog in which the widget is shown.
@@ -171,6 +207,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
       Expression = 1,
       ModelParameter = 2,
       ChildOutput = 3,
+      ModelOutput = 4,
     };
 
     SourceType currentSourceType() const;
@@ -198,6 +235,7 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
     QgsExpressionLineEdit *mExpressionWidget = nullptr;
     QComboBox *mModelInputCombo = nullptr;
     QComboBox *mChildOutputCombo = nullptr;
+    QgsFilterLineEdit *mModelOutputName = nullptr;
 
     friend class TestProcessingGui;
 };

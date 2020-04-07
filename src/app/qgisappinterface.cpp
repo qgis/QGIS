@@ -566,6 +566,16 @@ void QgisAppInterface::unregisterCustomDropHandler( QgsCustomDropHandler *handle
   qgis->unregisterCustomDropHandler( handler );
 }
 
+void QgisAppInterface::registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler )
+{
+  qgis->registerCustomProjectOpenHandler( handler );
+}
+
+void QgisAppInterface::unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler )
+{
+  qgis->unregisterCustomProjectOpenHandler( handler );
+}
+
 QMenu *QgisAppInterface::projectMenu() { return qgis->projectMenu(); }
 QMenu *QgisAppInterface::editMenu() { return qgis->editMenu(); }
 QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }
@@ -694,6 +704,8 @@ QAction *QgisAppInterface::actionRemoveAllFromOverview() { return qgis->actionRe
 QAction *QgisAppInterface::actionHideAllLayers() { return qgis->actionHideAllLayers(); }
 QAction *QgisAppInterface::actionShowAllLayers() { return qgis->actionShowAllLayers(); }
 QAction *QgisAppInterface::actionHideSelectedLayers() { return qgis->actionHideSelectedLayers(); }
+QAction *QgisAppInterface::actionToggleSelectedLayers() { return qgis->actionToggleSelectedLayers(); }
+QAction *QgisAppInterface::actionToggleSelectedLayersIndependently() { return qgis->actionToggleSelectedLayersIndependently(); }
 QAction *QgisAppInterface::actionHideDeselectedLayers() { return qgis->actionHideDeselectedLayers(); }
 QAction *QgisAppInterface::actionShowSelectedLayers() { return qgis->actionShowSelectedLayers(); }
 

@@ -1,0 +1,188 @@
+/***************************************************************************
+  qgsvectortilelayerrenderer.cpp
+  --------------------------------------
+  Date                 : March 2020
+  Copyright            : (C) 2020 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsvectortilelayerrenderer.h"
+
+#include <QElapsedTimer>
+
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeedback.h"
+#include "qgslogger.h"
+
+#include "qgsvectortilemvtdecoder.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortileloader.h"
+#include "qgsvectortileutils.h"
+
+
+QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context )
+  : QgsMapLayerRenderer( layer->id(), &context )
+  , mSourceType( layer->sourceType() )
+  , mSourcePath( layer->sourcePath() )
+  , mSourceMinZoom( layer->sourceMinZoom() )
+  , mSourceMaxZoom( layer->sourceMaxZoom() )
+  , mRenderer( layer->renderer()->clone() )
+  , mDrawTileBoundaries( layer->isTileBorderRenderingEnabled() )
+  , mFeedback( new QgsFeedback )
+{
+}
+
+bool QgsVectorTileLayerRenderer::render()
+{
+  QgsRenderContext &ctx = *renderContext();
+
+  if ( ctx.renderingStopped() )
+    return false;
+
+  QElapsedTimer tTotal;
+  tTotal.start();
+
+  QgsDebugMsgLevel( QStringLiteral( "Vector tiles rendering extent: " ) + ctx.extent().toString( -1 ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Vector tiles map scale 1 : %1" ).arg( ctx.rendererScale() ), 2 );
+
+  mTileZoom = QgsVectorTileUtils::scaleToZoomLevel( ctx.rendererScale(), mSourceMinZoom, mSourceMaxZoom );
+  QgsDebugMsgLevel( QStringLiteral( "Vector tiles zoom level: %1" ).arg( mTileZoom ), 2 );
+
+  mTileMatrix = QgsTileMatrix::fromWebMercator( mTileZoom );
+
+  mTileRange = mTileMatrix.tileRangeFromExtent( ctx.extent() );
+  QgsDebugMsgLevel( QStringLiteral( "Vector tiles range X: %1 - %2  Y: %3 - %4" )
+                    .arg( mTileRange.startColumn() ).arg( mTileRange.endColumn() )
+                    .arg( mTileRange.startRow() ).arg( mTileRange.endRow() ), 2 );
+
+  // view center is used to sort the order of tiles for fetching and rendering
+  QPointF viewCenter = mTileMatrix.mapToTileCoordinates( ctx.extent().center() );
+
+  if ( !mTileRange.isValid() )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Vector tiles - outside of range" ), 2 );
+    return true;   // nothing to do
+  }
+
+  bool isAsync = ( mSourceType == QStringLiteral( "xyz" ) );
+
+  std::unique_ptr<QgsVectorTileLoader> asyncLoader;
+  QList<QgsVectorTileRawData> rawTiles;
+  if ( !isAsync )
+  {
+    QElapsedTimer tFetch;
+    tFetch.start();
+    rawTiles = QgsVectorTileLoader::blockingFetchTileRawData( mSourceType, mSourcePath, mTileZoom, viewCenter, mTileRange );
+    QgsDebugMsgLevel( QStringLiteral( "Tile fetching time: %1" ).arg( tFetch.elapsed() / 1000. ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Fetched tiles: %1" ).arg( rawTiles.count() ), 2 );
+  }
+  else
+  {
+    asyncLoader.reset( new QgsVectorTileLoader( mSourcePath, mTileZoom, mTileRange, viewCenter, mFeedback.get() ) );
+    QObject::connect( asyncLoader.get(), &QgsVectorTileLoader::tileRequestFinished, [this]( const QgsVectorTileRawData & rawTile )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Got tile asynchronously: " ) + rawTile.id.toString(), 2 );
+      if ( !rawTile.data.isEmpty() )
+        decodeAndDrawTile( rawTile );
+    } );
+  }
+
+  if ( ctx.renderingStopped() )
+    return false;
+
+  mRenderer->startRender( *renderContext(), mTileZoom, mTileRange );
+
+  QMap<QString, QSet<QString> > requiredFields = mRenderer->usedAttributes( *renderContext() );
+
+  QMap<QString, QgsFields> perLayerFields;
+  for ( QString layerName : requiredFields.keys() )
+    mPerLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( requiredFields[layerName] );
+
+  if ( !isAsync )
+  {
+    for ( QgsVectorTileRawData &rawTile : rawTiles )
+    {
+      if ( ctx.renderingStopped() )
+        break;
+
+      decodeAndDrawTile( rawTile );
+    }
+  }
+  else
+  {
+    // Block until tiles are fetched and rendered. If the rendering gets canceled at some point,
+    // the async loader will catch the signal, abort requests and return from downloadBlocking()
+    asyncLoader->downloadBlocking();
+  }
+
+  mRenderer->stopRender( ctx );
+
+  ctx.painter()->setClipping( false );
+
+  QgsDebugMsgLevel( QStringLiteral( "Total time for decoding: %1" ).arg( mTotalDecodeTime / 1000. ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Drawing time: %1" ).arg( mTotalDrawTime / 1000. ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "Total time: %1" ).arg( tTotal.elapsed() / 1000. ), 2 );
+
+  return !ctx.renderingStopped();
+}
+
+void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &rawTile )
+{
+  QgsRenderContext &ctx = *renderContext();
+
+  QgsDebugMsgLevel( QStringLiteral( "Drawing tile " ) + rawTile.id.toString(), 2 );
+
+  QElapsedTimer tLoad;
+  tLoad.start();
+
+  // currently only MVT encoding supported
+  QgsVectorTileMVTDecoder decoder;
+  if ( !decoder.decode( rawTile.id, rawTile.data ) )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Failed to parse raw tile data! " ) + rawTile.id.toString(), 2 );
+    return;
+  }
+
+  if ( ctx.renderingStopped() )
+    return;
+
+  QgsCoordinateTransform ct = ctx.coordinateTransform();
+
+  QgsVectorTileRendererData tile( rawTile.id );
+  tile.setFeatures( decoder.layerFeatures( mPerLayerFields, ct ) );
+  tile.setTilePolygon( QgsVectorTileUtils::tilePolygon( rawTile.id, ct, mTileMatrix, ctx.mapToPixel() ) );
+
+  mTotalDecodeTime += tLoad.elapsed();
+
+  // calculate tile polygon in screen coordinates
+
+  if ( ctx.renderingStopped() )
+    return;
+
+  // set up clipping so that rendering does not go behind tile's extent
+
+  ctx.painter()->setClipRegion( QRegion( tile.tilePolygon() ) );
+
+  QElapsedTimer tDraw;
+  tDraw.start();
+
+  mRenderer->renderTile( tile, ctx );
+  mTotalDrawTime += tDraw.elapsed();
+
+  if ( mDrawTileBoundaries )
+  {
+    ctx.painter()->setClipping( false );
+
+    QPen pen( Qt::red );
+    pen.setWidth( 3 );
+    ctx.painter()->setPen( pen );
+    ctx.painter()->drawPolygon( tile.tilePolygon() );
+  }
+}

@@ -31,6 +31,10 @@ how an individual QgsMapLayer behaves in a temporal context, e.g. while animatin
     {
       sipType = sipType_QgsRasterLayerTemporalProperties;
     }
+    else if ( qobject_cast<QgsMeshLayerTemporalProperties *>( sipCpp ) )
+    {
+      sipType = sipType_QgsMeshLayerTemporalProperties;
+    }
     else
     {
       sipType = 0;
@@ -57,26 +61,6 @@ Writes the properties to a DOM ``element``, to be used later with readXml().
 Reads temporal properties from a DOM ``element`` previously written by writeXml().
 
 .. seealso:: :py:func:`writeXml`
-%End
-
-    enum TemporalSource
-    {
-      Layer,
-      Project
-    };
-
-    TemporalSource temporalSource() const;
-%Docstring
-Returns the temporal properties temporal range source, can be layer or project.
-
-.. seealso:: :py:func:`setTemporalSource`
-%End
-
-    void setTemporalSource( TemporalSource source );
-%Docstring
-Sets the temporal properties temporal range ``source``.
-
-.. seealso:: :py:func:`temporalSource`
 %End
 
     virtual bool isVisibleInTemporalRange( const QgsDateTimeRange &range ) const;

@@ -55,6 +55,15 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
     void setTableContents( const QgsTableContents &contents );
 
     /**
+     * Parses the clipboard text into contents to show in the editor widget.
+     * \returns TRUE if the clipboard was successfully parsed
+     *
+     * \see tableContents()
+     */
+
+    bool setTableContentsFromClipboard();
+
+    /**
      * Returns the current contents of the editor widget table.
      *
      * \see setTableContents()

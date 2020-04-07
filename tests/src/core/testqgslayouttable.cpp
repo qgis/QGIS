@@ -79,6 +79,8 @@ class TestQgsLayoutTable : public QObject
     void conditionalFormatting(); //test rendering with conditional formatting
     void dataDefinedSource();
     void wrappedText();
+    void testBaseSort();
+    void testExpressionSort();
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
@@ -1580,6 +1582,53 @@ void TestQgsLayoutTable::wrappedText()
   QString wrapText = t->wrappedText( sourceText, 101 /*columnWidth*/, f );
   //there should be no line break before the last word (bug #20546)
   QVERIFY( !wrapText.endsWith( "\naliqua" ) );
+}
+
+
+void TestQgsLayoutTable::testBaseSort()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemAttributeTable *table = new QgsLayoutItemAttributeTable( &l );
+  table->setVectorLayer( mVectorLayer );
+  table->setDisplayOnlyVisibleFeatures( false );
+  table->setMaximumNumberOfFeatures( 1 );
+  table->columns().at( 2 )->setSortByRank( 1 );
+  table->columns().at( 2 )->setSortOrder( Qt::DescendingOrder );
+  table->refresh();
+
+  QVector<QStringList> expectedRows;
+  QStringList row;
+  row << QStringLiteral( "Jet" ) << QStringLiteral( "100" ) << QStringLiteral( "20" ) << QStringLiteral( "3" ) << QStringLiteral( "0" ) << QStringLiteral( "3" );
+  expectedRows.append( row );
+  row.clear();
+
+  //retrieve rows and check
+  compareTable( table, expectedRows );
+}
+
+void TestQgsLayoutTable::testExpressionSort()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemAttributeTable *table = new QgsLayoutItemAttributeTable( &l );
+  table->setVectorLayer( mVectorLayer );
+  table->setDisplayOnlyVisibleFeatures( false );
+  table->setMaximumNumberOfFeatures( 1 );
+  table->columns().at( 0 )->setAttribute( "Heading * -1" );
+  table->columns().at( 0 )->setHeading( "exp" );
+  table->columns().at( 0 )->setSortByRank( 1 );
+  table->columns().at( 0 )->setSortOrder( Qt::AscendingOrder );
+  table->refresh();
+
+  QVector<QStringList> expectedRows;
+  QStringList row;
+  row << QStringLiteral( "-340" ) << QStringLiteral( "340" ) << QStringLiteral( "1" ) << QStringLiteral( "3" ) << QStringLiteral( "3" ) << QStringLiteral( "6" );
+  expectedRows.append( row );
+  row.clear();
+
+  //retrieve rows and check
+  compareTable( table, expectedRows );
 }
 
 QGSTEST_MAIN( TestQgsLayoutTable )

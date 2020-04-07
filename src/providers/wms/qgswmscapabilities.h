@@ -785,6 +785,14 @@ class QgsWmsSettings
 
     QDateTime addTime( QDateTime dateTime, QgsWmstResolution resolution );
 
+    /**
+     * Finds the least closest datetime from list of available datetimes
+     * with the given \a dateTime.
+     *
+     * Returns the passed \a dateTime if it is found in the available datetimes.
+     */
+    QDateTime findLeastClosestDateTime( QDateTime dateTime ) const;
+
   protected:
     QgsWmsParserSettings    mParserSettings;
 

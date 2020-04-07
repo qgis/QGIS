@@ -32,7 +32,7 @@
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )
   , mExpressionDialogTitle( tr( "Expression Dialog" ) )
-  , mDa( nullptr )
+  , mDistanceArea( nullptr )
 
 {
   QHBoxLayout *layout = new QHBoxLayout( this );
@@ -112,7 +112,7 @@ void QgsFieldExpressionWidget::setLeftHandButtonStyle( bool isLeft )
 
 void QgsFieldExpressionWidget::setGeomCalculator( const QgsDistanceArea &da )
 {
-  mDa = std::shared_ptr<const QgsDistanceArea>( new QgsDistanceArea( da ) );
+  mDistanceArea = std::shared_ptr<const QgsDistanceArea>( new QgsDistanceArea( da ) );
 }
 
 QString QgsFieldExpressionWidget::currentText() const
@@ -218,6 +218,11 @@ void QgsFieldExpressionWidget::setField( const QString &fieldName )
   currentFieldChanged();
 }
 
+void QgsFieldExpressionWidget::setFields( const QgsFields &fields )
+{
+  mFieldProxyModel->sourceFieldModel()->setFields( fields );
+}
+
 void QgsFieldExpressionWidget::setExpression( const QString &expression )
 {
   setField( expression );
@@ -231,12 +236,15 @@ void QgsFieldExpressionWidget::editExpression()
   QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
   QgsExpressionBuilderDialog dlg( vl, currentExpression, this, QStringLiteral( "generic" ), context );
-  if ( mDa )
+  if ( mDistanceArea )
   {
-    dlg.setGeomCalculator( *mDa );
+    dlg.setGeomCalculator( *mDistanceArea );
   }
   dlg.setWindowTitle( mExpressionDialogTitle );
   dlg.setAllowEvalErrors( mAllowEvalErrors );
+
+  if ( !vl )
+    dlg.expressionBuilder()->expressionTree()->loadFieldNames( mFieldProxyModel->sourceFieldModel()->fields() );
 
   if ( dlg.exec() )
   {

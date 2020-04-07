@@ -112,6 +112,7 @@
         <file>themes/default/algorithms/mAlgorithmNearestNeighbour.svg</file>
         <file>themes/default/algorithms/mAlgorithmNetworkAnalysis.svg</file>
         <file>themes/default/algorithms/mAlgorithmPolygonToLine.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRandomPointsOnLines.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsWithinPolygon.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsWithinExtent.svg</file>
         <file>themes/default/algorithms/mAlgorithmRegularPoints.svg</file>
@@ -298,6 +299,7 @@
         <file>themes/default/mActionHelpSponsors.png</file>
         <file>themes/default/mActionHideAllLayers.svg</file>
         <file>themes/default/mActionToggleAllLayers.svg</file>
+        <file>themes/default/mActionToggleSelectedLayers.svg</file>
         <file>themes/default/mActionHideSelectedLayers.svg</file>
         <file>themes/default/mActionHideDeselectedLayers.svg</file>
         <file>themes/default/mActionHistory.svg</file>
@@ -513,6 +515,7 @@
         <file>themes/default/mIconTimerPause.svg</file>
         <file>themes/default/mIconTreeView.svg</file>
         <file>themes/default/mIconVector.svg</file>
+        <file>themes/default/mIconVectorTileLayer.svg</file>
         <file>themes/default/mIconVirtualLayer.svg</file>
         <file>themes/default/mIconWcs.svg</file>
         <file>themes/default/mIconWfs.svg</file>
@@ -834,6 +837,9 @@
         <file>themes/default/temporal_navigation/skipToEnd.svg</file>
         <file>themes/default/temporal_navigation/pause.svg</file>
         <file>themes/default/mIconIterate.svg</file>
+        <file>themes/default/mIconNetworkLogger.svg</file>
+        <file>themes/default/mActionAddMarker.svg</file>
+        <file>themes/default/mLayoutItemMarker.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

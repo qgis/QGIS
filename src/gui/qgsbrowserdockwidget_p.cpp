@@ -44,6 +44,7 @@
 #include "qgsnative.h"
 #include "qgsmaptoolpan.h"
 #include "qgsvectorlayercache.h"
+#include "qgsvectortilelayer.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsapplication.h"
@@ -205,6 +206,13 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
       QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
       options.skipCrsValidation = true;
       mLayer = qgis::make_unique < QgsVectorLayer>( layerItem->uri(), layerItem->name(), layerItem->providerKey(), options );
+      break;
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      QgsDebugMsgLevel( QStringLiteral( "creating vector tile layer" ), 2 );
+      mLayer = qgis::make_unique< QgsVectorTileLayer >( layerItem->uri(), layerItem->name() );
       break;
     }
 

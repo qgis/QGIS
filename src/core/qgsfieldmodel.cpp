@@ -284,7 +284,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     {
       if ( isEmpty || exprIdx >= 0 )
       {
-        return "";
+        return QString();
       }
       QgsField field = mFields.at( index.row() - fieldOffset );
       return field.name();
@@ -386,6 +386,12 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       }
       return QVariant();
     }
+
+    case FieldIsWidgetEditable:
+    {
+      return !( mLayer->editFormConfig().readOnly( index.row() - fieldOffset ) );
+    }
+
 
     case Qt::DisplayRole:
     case Qt::EditRole:

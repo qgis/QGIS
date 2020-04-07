@@ -60,6 +60,7 @@
 #include "qgsprojectviewsettings.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgsprojecttimesettings.h"
+#include "qgsvectortilelayer.h"
 
 #include <algorithm>
 #include <QApplication>
@@ -1061,6 +1062,10 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   else if ( type == QLatin1String( "mesh" ) )
   {
     mapLayer = qgis::make_unique<QgsMeshLayer>();
+  }
+  else if ( type == QLatin1String( "vector-tile" ) )
+  {
+    mapLayer = qgis::make_unique<QgsVectorTileLayer>();
   }
   else if ( type == QLatin1String( "plugin" ) )
   {

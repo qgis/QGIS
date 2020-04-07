@@ -155,6 +155,7 @@ SET(QGIS_CORE_SRCS
   processing/models/qgsprocessingmodelchildparametersource.cpp
   processing/models/qgsprocessingmodelcomment.cpp
   processing/models/qgsprocessingmodelcomponent.cpp
+  processing/models/qgsprocessingmodelgroupbox.cpp
   processing/models/qgsprocessingmodelparameter.cpp
   processing/models/qgsprocessingmodeloutput.cpp
 
@@ -313,6 +314,7 @@ SET(QGIS_CORE_SRCS
   qgsmapunitscale.cpp
   qgsmargins.cpp
   qgsmaskidprovider.cpp
+  qgsmbtilesreader.cpp
   qgsmessagelog.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
@@ -358,6 +360,7 @@ SET(QGIS_CORE_SRCS
   qgsproviderconnectionmodel.cpp
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
+  qgsproxyfeaturesink.cpp
   qgsproxyprogresstask.cpp
   qgspythonrunner.cpp
   qgsreadwritecontext.cpp
@@ -366,6 +369,7 @@ SET(QGIS_CORE_SRCS
   qgsrelationcontext.cpp
   qgsweakrelation.cpp
   qgsrelationmanager.cpp
+  qgsremappingproxyfeaturesink.cpp
   qgsrenderchecker.cpp
   qgsrendercontext.cpp
   qgsrunprocess.cpp
@@ -396,6 +400,7 @@ SET(QGIS_CORE_SRCS
   qgstessellator.cpp
   qgstextrenderer.cpp
   qgstilecache.cpp
+  qgstiles.cpp
   qgstolerance.cpp
   qgstracer.cpp
   qgstranslationcontext.cpp
@@ -464,6 +469,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutitemmapgrid.cpp
   layout/qgslayoutitemmapitem.cpp
   layout/qgslayoutitemmapoverview.cpp
+  layout/qgslayoutitemmarker.cpp
   layout/qgslayoutitemnodeitem.cpp
   layout/qgslayoutitempage.cpp
   layout/qgslayoutitempicture.cpp
@@ -480,6 +486,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutmodel.cpp
   layout/qgslayoutmultiframe.cpp
   layout/qgslayoutmultiframeundocommand.cpp
+  layout/qgslayoutnortharrowhandler.cpp
   layout/qgslayoutobject.cpp
   layout/qgslayoutpagecollection.cpp
   layout/qgslayoutrendercontext.cpp
@@ -522,6 +529,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsraster.cpp
   raster/qgsrasterblock.cpp
   raster/qgsrasterchecker.cpp
+  raster/qgsrastercontourrenderer.cpp
   raster/qgsrasterdataprovider.cpp
   raster/qgsrasterdataprovidertemporalcapabilities.cpp
   raster/qgsrasterfilewritertask.cpp
@@ -558,6 +566,7 @@ SET(QGIS_CORE_SRCS
 
   mesh/qgsmesh3daveraging.cpp
   mesh/qgsmeshdataprovider.cpp
+  mesh/qgsmeshdataset.cpp
   mesh/qgsmeshlayer.cpp
   mesh/qgsmeshlayerinterpolator.cpp
   mesh/qgsmeshlayerrenderer.cpp
@@ -569,6 +578,8 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshtimesettings.cpp
   mesh/qgsmeshtracerenderer.cpp
   mesh/qgsmeshsimplificationsettings.cpp
+  mesh/qgsmeshlayertemporalproperties.cpp
+  mesh/qgsmeshdataprovidertemporalcapabilities.cpp
 
   labeling/qgslabelfeature.cpp
   labeling/qgslabelingengine.cpp
@@ -635,6 +646,16 @@ SET(QGIS_CORE_SRCS
   validity/qgsabstractvaliditycheck.cpp
   validity/qgsvaliditycheckcontext.cpp
   validity/qgsvaliditycheckregistry.cpp
+
+  vectortile/qgsvectortilebasicrenderer.cpp
+  vectortile/qgsvectortileconnection.cpp
+  vectortile/qgsvectortiledataitems.cpp
+  vectortile/qgsvectortilelayer.cpp
+  vectortile/qgsvectortilelayerrenderer.cpp
+  vectortile/qgsvectortileloader.cpp
+  vectortile/qgsvectortilemvtdecoder.cpp
+  vectortile/qgsvectortileprovidermetadata.cpp
+  vectortile/qgsvectortileutils.cpp
 
   ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
 
@@ -834,6 +855,7 @@ SET(QGIS_CORE_HDRS
   qgsmapunitscale.h
   qgsmargins.h
   qgsmaskidprovider.h
+  qgsmbtilesreader.h
   qgsmessagelog.h
   qgsmessageoutput.h
   qgsmimedatautils.h
@@ -881,6 +903,7 @@ SET(QGIS_CORE_HDRS
   qgsproviderconnectionmodel.h
   qgsprovidermetadata.h
   qgsproviderregistry.h
+  qgsproxyfeaturesink.h
   qgsproxyprogresstask.h
   qgspythonrunner.h
   qgsrange.h
@@ -888,6 +911,7 @@ SET(QGIS_CORE_HDRS
   qgsreadwritelocker.h
   qgsrelation.h
   qgsrelationcontext.h
+  qgsremappingproxyfeaturesink.h
   qgsweakrelation.h
   qgsrelationmanager.h
   qgsrenderchecker.h
@@ -925,6 +949,7 @@ SET(QGIS_CORE_HDRS
   qgstextrenderer.h
   qgsthreadingutils.h
   qgstilecache.h
+  qgstiles.h
   qgstolerance.h
   qgstracer.h
   qgstrackedvectorlayertools.h
@@ -1119,6 +1144,7 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutitemmapgrid.h
   layout/qgslayoutitemmapitem.h
   layout/qgslayoutitemmapoverview.h
+  layout/qgslayoutitemmarker.h
   layout/qgslayoutitemnodeitem.h
   layout/qgslayoutitempage.h
   layout/qgslayoutitempicture.h
@@ -1135,6 +1161,7 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutmodel.h
   layout/qgslayoutmultiframe.h
   layout/qgslayoutmultiframeundocommand.h
+  layout/qgslayoutnortharrowhandler.h
   layout/qgslayoutobject.h
   layout/qgslayoutpagecollection.h
   layout/qgslayoutpoint.h
@@ -1163,6 +1190,7 @@ SET(QGIS_CORE_HDRS
 
   mesh/qgsmesh3daveraging.h
   mesh/qgsmeshdataprovider.h
+  mesh/qgsmeshdataset.h
   mesh/qgsmeshlayer.h
   mesh/qgsmeshlayerinterpolator.h
   mesh/qgsmeshlayerrenderer.h
@@ -1174,6 +1202,8 @@ SET(QGIS_CORE_HDRS
   mesh/qgstriangularmesh.h
   mesh/qgsmeshtracerenderer.h
   mesh/qgsmeshsimplificationsettings.h
+  mesh/qgsmeshlayertemporalproperties.h
+  mesh/qgsmeshdataprovidertemporalcapabilities.h
 
   metadata/qgsabstractmetadatabase.h
   metadata/qgslayermetadata.h
@@ -1196,6 +1226,7 @@ SET(QGIS_CORE_HDRS
   processing/models/qgsprocessingmodelchildparametersource.h
   processing/models/qgsprocessingmodelcomment.h
   processing/models/qgsprocessingmodelcomponent.h
+  processing/models/qgsprocessingmodelgroupbox.h
   processing/models/qgsprocessingmodeloutput.h
   processing/models/qgsprocessingmodelparameter.h
   processing/qgsprocessing.h
@@ -1244,6 +1275,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrasterbandstats.h
   raster/qgsrasterblock.h
   raster/qgsrasterchecker.h
+  raster/qgsrastercontourrenderer.h
   raster/qgsrasterdataprovider.h
   raster/qgsrasterdataprovidertemporalcapabilities.h
   raster/qgsrasterdrawer.h
@@ -1321,6 +1353,17 @@ SET(QGIS_CORE_HDRS
   validity/qgsabstractvaliditycheck.h
   validity/qgsvaliditycheckcontext.h
   validity/qgsvaliditycheckregistry.h
+
+  vectortile/qgsvectortilebasicrenderer.h
+  vectortile/qgsvectortileconnection.h
+  vectortile/qgsvectortiledataitems.h
+  vectortile/qgsvectortilelayer.h
+  vectortile/qgsvectortilelayerrenderer.h
+  vectortile/qgsvectortileloader.h
+  vectortile/qgsvectortilemvtdecoder.h
+  vectortile/qgsvectortileprovidermetadata.h
+  vectortile/qgsvectortilerenderer.h
+  vectortile/qgsvectortileutils.h
 )
 
 SET(QGIS_CORE_PRIVATE_HDRS
@@ -1363,6 +1406,18 @@ IF(NOT MSVC)
     SET_SOURCE_FILES_PROPERTIES(qgscoordinatereferencesystem.cpp PROPERTIES COMPILE_FLAGS "-mllvm -inline-threshold=128")
   ENDIF ()
 ENDIF(NOT MSVC)
+
+# Generate cpp+header file from .proto file using "protoc" tool (to support MVT encoding of vector tiles)
+protobuf_generate_cpp(VECTOR_TILE_PROTO_SRCS VECTOR_TILE_PROTO_HDRS vectortile/vector_tile.proto)
+SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS} ${VECTOR_TILE_PROTO_SRCS})
+SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${VECTOR_TILE_PROTO_HDRS})
+IF (MSVC)
+  SET_SOURCE_FILES_PROPERTIES(${VECTOR_TILE_PROTO_SRCS} vectortile/qgsvectortilemvtdecoder.cpp PROPERTIES COMPILE_DEFINITIONS PROTOBUF_USE_DLLS)
+ELSE (MSVC)
+  # automatically generated file produces warnings (unused-parameter, unused-variable, misleading-indentation)
+  SET_SOURCE_FILES_PROPERTIES(${VECTOR_TILE_PROTO_SRCS} PROPERTIES COMPILE_FLAGS -w)
+ENDIF (MSVC)
+
 
 # install headers
 # install qgsconfig.h and plugin.h here so they can get into
@@ -1410,6 +1465,7 @@ INCLUDE_DIRECTORIES(
   symbology
   mesh
   validity
+  vectortile
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann
   ${CMAKE_SOURCE_DIR}/external/kdbush/include
@@ -1417,6 +1473,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external/poly2tri
   ${CMAKE_SOURCE_DIR}/external/rtree/include
   ${CMAKE_SOURCE_DIR}/external/meshOptimizer
+  ${CMAKE_SOURCE_DIR}/external/mapbox-vector-tile
 )
 
 INCLUDE_DIRECTORIES(SYSTEM
@@ -1431,6 +1488,8 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${Qt5SerialPort_INCLUDE_DIRS}
+  ${Protobuf_INCLUDE_DIRS}
+  ${ZLIB_INCLUDE_DIRS}
 )
 
 
@@ -1565,6 +1624,8 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${SQLITE3_LIBRARY}
   ${SPATIALITE_LIBRARY}
   ${LIBZIP_LIBRARY}
+  ${Protobuf_LITE_LIBRARY}
+  ${ZLIB_LIBRARIES}
 )
 
 IF (FORCE_STATIC_PROVIDERS)

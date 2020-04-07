@@ -106,6 +106,7 @@
 #include "qgsalgorithmraiseexception.h"
 #include "qgsalgorithmrandomextract.h"
 #include "qgsalgorithmrandompointsextent.h"
+#include "qgsalgorithmrandompointsonlines.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
 #include "qgsalgorithmrasterlogicalop.h"
 #include "qgsalgorithmrasterize.h"
@@ -124,6 +125,7 @@
 #include "qgsalgorithmreverselinedirection.h"
 #include "qgsalgorithmrotate.h"
 #include "qgsalgorithmruggedness.h"
+#include "qgsalgorithmsavelog.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
 #include "qgsalgorithmsegmentize.h"
 #include "qgsalgorithmserviceareafromlayer.h"
@@ -307,6 +309,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRaiseWarningAlgorithm() );
   addAlgorithm( new QgsRandomExtractAlgorithm() );
   addAlgorithm( new QgsRandomPointsExtentAlgorithm() );
+  addAlgorithm( new QgsRandomPointsOnLinesAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
   addAlgorithm( new QgsRasterLayerZonalStatsAlgorithm() );
   addAlgorithm( new QgsRasterLogicalAndAlgorithm() );
@@ -329,6 +332,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsReverseLineDirectionAlgorithm() );
   addAlgorithm( new QgsRotateFeaturesAlgorithm() );
   addAlgorithm( new QgsRuggednessAlgorithm() );
+  addAlgorithm( new QgsSaveLogToFileAlgorithm() );
   addAlgorithm( new QgsSaveSelectedFeatures() );
   addAlgorithm( new QgsSegmentizeByMaximumAngleAlgorithm() );
   addAlgorithm( new QgsSegmentizeByMaximumDistanceAlgorithm() );

@@ -29,7 +29,8 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * \brief The QgsFieldModel class is a model to display the list of fields of a layer in widgets.
+ * \brief The QgsFieldModel class is a model to display the list of fields in widgets
+ * (optionally associated with a vector layer).
  * If allowed, expressions might be added to the end of the model.
  * It can be associated with a QgsMapLayerModel to dynamically display a layer and its fields.
  * \since QGIS 2.3
@@ -57,6 +58,7 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
       IsEmptyRole = Qt::UserRole + 8, //!< Return if the index corresponds to the empty value
       EditorWidgetType = Qt::UserRole + 9, //!< Editor widget type
       JoinedFieldIsEditable = Qt::UserRole + 10, //!< TRUE if a joined field is editable (returns QVariant if not a joined field)
+      FieldIsWidgetEditable = Qt::UserRole + 11, //!< TRUE if a is editable from the widget
     };
 
     /**

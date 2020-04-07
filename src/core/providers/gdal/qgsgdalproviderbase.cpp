@@ -56,7 +56,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
 
   if ( myGdalColorTable )
   {
-    QgsDebugMsg( QStringLiteral( "Color table found" ) );
+    QgsDebugMsgLevel( QStringLiteral( "Color table found" ), 2 );
 
     // load category labels
     char **categoryNames = GDALGetRasterCategoryNames( myGdalBand );
@@ -73,9 +73,9 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
 
     int myEntryCount = GDALGetColorEntryCount( myGdalColorTable );
     GDALColorInterp myColorInterpretation = GDALGetRasterColorInterpretation( myGdalBand );
-    QgsDebugMsg( "Color Interpretation: " + QString::number( static_cast< int >( myColorInterpretation ) ) );
+    QgsDebugMsgLevel( "Color Interpretation: " + QString::number( static_cast< int >( myColorInterpretation ) ), 2 );
     GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation( myGdalColorTable );
-    QgsDebugMsg( "Palette Interpretation: " + QString::number( static_cast< int >( myPaletteInterpretation ) ) );
+    QgsDebugMsgLevel( "Palette Interpretation: " + QString::number( static_cast< int >( myPaletteInterpretation ) ), 2 );
 
     const GDALColorEntry *myColorEntry = nullptr;
     for ( int myIterator = 0; myIterator < myEntryCount; myIterator++ )
@@ -128,7 +128,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
         }
         else
         {
-          QgsDebugMsg( QStringLiteral( "Color interpretation type not supported yet" ) );
+          QgsDebugMsgLevel( QStringLiteral( "Color interpretation type not supported yet" ), 2 );
           return ct;
         }
       }
@@ -136,11 +136,11 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   }
   else
   {
-    QgsDebugMsg( "No color table found for band " + QString::number( bandNumber ) );
+    QgsDebugMsgLevel( "No color table found for band " + QString::number( bandNumber ), 2 );
     return ct;
   }
 
-  QgsDebugMsg( QStringLiteral( "Color table loaded successfully" ) );
+  QgsDebugMsgLevel( QStringLiteral( "Color table loaded successfully" ), 2 );
   return ct;
 }
 

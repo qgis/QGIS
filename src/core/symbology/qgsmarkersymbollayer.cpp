@@ -1459,7 +1459,7 @@ QRectF QgsSimpleMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
   QRectF symbolBounds = QgsSimpleMarkerSymbolLayerBase::bounds( point, context );
 
   // need to account for stroke width
-  double penWidth = 0.0;
+  double penWidth = mStrokeWidth;
   bool ok = true;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
@@ -1467,9 +1467,10 @@ QRectF QgsSimpleMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
     double strokeWidth = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mStrokeWidth, &ok );
     if ( ok )
     {
-      penWidth = context.renderContext().convertToPainterUnits( strokeWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale );
+      penWidth = strokeWidth;
     }
   }
+  penWidth = context.renderContext().convertToPainterUnits( penWidth, mStrokeWidthUnit, mStrokeWidthMapUnitScale );
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mStrokeStyle ) );
@@ -1479,6 +1480,9 @@ QRectF QgsSimpleMarkerSymbolLayer::bounds( QPointF point, QgsSymbolRenderContext
       penWidth = 0.0;
     }
   }
+  else if ( mStrokeStyle == Qt::NoPen )
+    penWidth = 0;
+
   //antialiasing, add 1 pixel
   penWidth += 1;
 

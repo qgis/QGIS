@@ -123,6 +123,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/classification
   ${CMAKE_SOURCE_DIR}/src/core/validity
+  ${CMAKE_SOURCE_DIR}/src/core/vectortile
   ${CMAKE_SOURCE_DIR}/src/plugins
   ${CMAKE_SOURCE_DIR}/external
   ${CMAKE_SOURCE_DIR}/external/nlohmann

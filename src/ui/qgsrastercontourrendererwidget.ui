@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsRasterContourRendererWidget</class>
+ <widget class="QWidget" name="QgsRasterContourRendererWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>487</width>
+    <height>394</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="mGrayBandLabel">
+     <property name="text">
+      <string>Input band</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QgsRasterBandComboBox" name="mInputBandComboBox"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Contour Interval</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QgsDoubleSpinBox" name="mContourIntervalSpinBox">
+     <property name="decimals">
+      <number>1</number>
+     </property>
+     <property name="minimum">
+      <double>0.100000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>999999.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>100.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Contour Symbol</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QgsSymbolButton" name="mContourSymbolButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Index Contour Interval</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QgsDoubleSpinBox" name="mIndexContourIntervalSpinBox">
+     <property name="decimals">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <double>999999.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>500.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Index Contour Symbol</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QgsSymbolButton" name="mIndexContourSymbolButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Input Downscaling</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QgsDoubleSpinBox" name="mDownscaleSpinBox">
+     <property name="decimals">
+      <number>1</number>
+     </property>
+     <property name="minimum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>4.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QComboBox</extends>
+   <header>raster/qgsrasterbandcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSymbolButton</class>
+   <extends>QToolButton</extends>
+   <header>qgssymbolbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mInputBandComboBox</tabstop>
+  <tabstop>mContourIntervalSpinBox</tabstop>
+  <tabstop>mContourSymbolButton</tabstop>
+  <tabstop>mIndexContourIntervalSpinBox</tabstop>
+  <tabstop>mIndexContourSymbolButton</tabstop>
+  <tabstop>mDownscaleSpinBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

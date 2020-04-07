@@ -81,6 +81,13 @@ Sets the editor ``context``
    the geometry of a referencing feature from this widget
 %End
 
+    QgsAttributeEditorContext editorContext( ) const;
+%Docstring
+Returns the attribute editor context.
+
+.. versionadded:: 3.14
+%End
+
     QgsIFeatureSelectionManager *featureSelectionManager();
 %Docstring
 The feature selection manager is responsible for the selected features

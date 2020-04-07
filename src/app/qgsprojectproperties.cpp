@@ -236,7 +236,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   // Set time settings input
   QgsDateTimeRange range = QgsProject::instance()->timeSettings()->temporalRange();
-  QLocale locale;
+
+  mStartDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+  mEndDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
   mStartDateTimeEdit->setDateTime( range.begin() );
   mEndDateTimeEdit->setDateTime( range.end() );

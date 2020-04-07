@@ -100,9 +100,6 @@ class GdalParametersPanel(ParametersPanel):
             for c in w.findChildren(QWidget):
                 self.connectWidgetChangedSignals(c)
 
-        for output_widget in self.outputWidgets.values():
-            self.connectWidgetChangedSignals(output_widget)
-
     def connectWidgetChangedSignals(self, w):
         if isinstance(w, QLineEdit):
             w.textChanged.connect(self.parametersHaveChanged)
@@ -123,7 +120,7 @@ class GdalParametersPanel(ParametersPanel):
         context = createContext()
         feedback = QgsProcessingFeedback()
         try:
-            parameters = self.dialog.getParameterValues()
+            parameters = self.dialog.createProcessingParameters()
             for output in self.algorithm().destinationParameterDefinitions():
                 if not output.name() in parameters or parameters[output.name()] is None:
                     parameters[output.name()] = self.tr("[temporary file]")

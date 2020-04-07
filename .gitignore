@@ -11,6 +11,7 @@
 *.sortinc
 *.tex
 *.toc
+*.tmp
 *~
 *-stamp
 .*.swp

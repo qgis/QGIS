@@ -1082,25 +1082,54 @@ QUrl QgsWmsProvider::createRequestUrlWMS( const QgsRectangle &viewExtent, int pi
 void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 {
   QgsDateTimeRange range = temporalCapabilities()->requestedTemporalRange();
-  QString format = "yyyy-MM-ddThh:mm:ssZ";
+  QString format { QStringLiteral( "yyyy-MM-ddThh:mm:ssZ" ) };
+  QgsDataSourceUri uri { dataSourceUri() };
 
-  switch ( temporalCapabilities()->intervalHandlingMethod() )
+  if ( range.isInfinite() )
   {
-    case QgsRasterDataProviderTemporalCapabilities::MatchUsingWholeRange:
-      break;
-    case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange:
-      range = QgsDateTimeRange( range.begin(), range.begin() );
-      break;
-    case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange:
-      range = QgsDateTimeRange( range.end(), range.end() );
-      break;
+    if ( uri.hasParam( QStringLiteral( "time" ) ) &&
+         !uri.param( QStringLiteral( "time" ) ).isEmpty() )
+    {
+      QString time = uri.param( QStringLiteral( "time" ) );
+      QStringList timeParts = time.split( '/' );
+
+      QDateTime start = QDateTime::fromString( timeParts.at( 0 ), Qt::ISODateWithMs );
+      QDateTime end = QDateTime::fromString( timeParts.at( 1 ), Qt::ISODateWithMs );
+
+      range = QgsDateTimeRange( start, end );
+    }
   }
 
-  if ( !temporalCapabilities()->isTimeEnabled() )
+  if ( uri.param( QStringLiteral( "enableTime" ) ) == QLatin1String( "no" ) )
     format = "yyyy-MM-dd";
 
   if ( range.begin().isValid() && range.end().isValid() )
   {
+    switch ( temporalCapabilities()->intervalHandlingMethod() )
+    {
+      case QgsRasterDataProviderTemporalCapabilities::MatchUsingWholeRange:
+        break;
+      case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingStartOfRange:
+        range = QgsDateTimeRange( range.begin(), range.begin() );
+        break;
+      case QgsRasterDataProviderTemporalCapabilities::MatchExactUsingEndOfRange:
+        range = QgsDateTimeRange( range.end(), range.end() );
+        break;
+      case QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToStartOfRange:
+      {
+        QDateTime dateTimeStart = mSettings.findLeastClosestDateTime( range.begin() );
+        range = QgsDateTimeRange( dateTimeStart, dateTimeStart );
+        break;
+      }
+
+      case QgsRasterDataProviderTemporalCapabilities::FindClosestMatchToEndOfRange:
+      {
+        QDateTime dateTimeEnd = mSettings.findLeastClosestDateTime( range.end() );
+        range = QgsDateTimeRange( dateTimeEnd, dateTimeEnd );
+        break;
+      }
+    }
+
     if ( range.begin() == range.end() )
       setQueryItem( query, QStringLiteral( "TIME" ),
                     range.begin().toString( format ) );
@@ -1113,23 +1142,19 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
       setQueryItem( query, QStringLiteral( "TIME" ), extent );
     }
   }
-  // If the data provider has bi-temporal properties and they are enabled
-  if ( temporalCapabilities()->isReferenceEnable() )
-  {
-    QgsDateTimeRange referenceRange = temporalCapabilities()->requestedReferenceTemporalRange();
-    if ( referenceRange.begin().isValid() && referenceRange.end().isValid() )
-    {
-      if ( referenceRange.begin() == referenceRange.end() )
-        setQueryItem( query, QStringLiteral( "DIM_REFERENCE_TIME" ),
-                      referenceRange.begin().toString( format ) );
-      else
-      {
-        QString extent = referenceRange.begin().toString( format );
-        extent.append( "/" );
-        extent.append( referenceRange.end().toString( format ) );
 
-        setQueryItem( query, QStringLiteral( "DIM_REFERENCE_TIME" ), extent );
-      }
+  // If the data provider has bi-temporal properties and they are enabled
+  if ( uri.hasParam( QStringLiteral( "reference_time" ) ) &&
+       !uri.param( QStringLiteral( "reference_time" ) ).isEmpty() )
+  {
+    QString time = uri.param( QStringLiteral( "reference_time" ) );
+
+    QDateTime dateTime = QDateTime::fromString( time, Qt::ISODateWithMs );
+
+    if ( dateTime.isValid() )
+    {
+      setQueryItem( query, QStringLiteral( "DIM_REFERENCE_TIME" ),
+                    dateTime.toString( format ) );
     }
   }
 }

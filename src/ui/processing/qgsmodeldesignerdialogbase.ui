@@ -70,7 +70,7 @@
     <addaction name="separator"/>
     <addaction name="mActionClose"/>
    </widget>
-   <widget class="QMenu" name="menu_View">
+   <widget class="QMenu" name="mMenuView">
     <property name="title">
      <string>&amp;View</string>
     </property>
@@ -92,10 +92,11 @@
     <addaction name="separator"/>
     <addaction name="mActionDeleteComponents"/>
     <addaction name="separator"/>
+    <addaction name="mActionAddGroupBox"/>
    </widget>
    <addaction name="menu_Model"/>
    <addaction name="mMenuEdit"/>
-   <addaction name="menu_View"/>
+   <addaction name="mMenuView"/>
   </widget>
   <widget class="QToolBar" name="mToolbar">
    <property name="windowTitle">
@@ -639,6 +640,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="mActionAddGroupBox">
+   <property name="text">
+    <string>Add Group Box</string>
    </property>
   </action>
  </widget>

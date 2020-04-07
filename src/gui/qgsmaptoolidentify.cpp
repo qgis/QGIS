@@ -244,8 +244,8 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
     return false;
 
   const QgsMeshRendererSettings rendererSettings = layer->rendererSettings();
-  const QgsMeshDatasetIndex scalarDatasetIndex = rendererSettings.activeScalarDataset();
-  const QgsMeshDatasetIndex vectorDatasetIndex = rendererSettings.activeVectorDataset();
+  const QgsMeshDatasetIndex scalarDatasetIndex = layer->activeScalarDatasetAtTime( mCanvas->temporalRange() );
+  const QgsMeshDatasetIndex vectorDatasetIndex = layer->activeVectorDatasetAtTime( mCanvas->temporalRange() );
   if ( ! scalarDatasetIndex.isValid() && ! vectorDatasetIndex.isValid() )
     return false;
 

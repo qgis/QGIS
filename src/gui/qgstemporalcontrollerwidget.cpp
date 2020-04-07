@@ -22,6 +22,7 @@
 #include "qgstemporalnavigationobject.h"
 #include "qgstemporalmapsettingswidget.h"
 #include "qgstemporalutils.h"
+#include "qgsmaplayertemporalproperties.h"
 
 QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -63,10 +64,9 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
 
   if ( QgsProject::instance()->timeSettings() )
     range = QgsProject::instance()->timeSettings()->temporalRange();
-  QLocale locale;
 
-  mStartDateTime->setDisplayFormat( locale.dateTimeFormat( QLocale::ShortFormat ) );
-  mEndDateTime->setDisplayFormat( locale.dateTimeFormat( QLocale::ShortFormat ) );
+  mStartDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
+  mEndDateTime->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
   if ( range.begin().isValid() && range.end().isValid() )
   {
@@ -74,7 +74,10 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
     mEndDateTime->setDateTime( range.end() );
   }
 
-  mSetToProjectTimeButton->setToolTip( tr( "Set datetimes inputs to match project time" ) );
+  mSetToProjectTimeButton->setToolTip( tr( "Match time range to project. \n"
+                                       "If a project has no explicit time range set, \n"
+                                       "then the range will be calculated based on the \n"
+                                       "minimum and maximum dates from any temporal-enabled layers." ) );
 
   for ( QgsUnitTypes::TemporalUnit u :
         {
@@ -111,6 +114,8 @@ QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   updateFrameDuration();
 
   connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsTemporalControllerWidget::setWidgetStateFromProject );
+  connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsTemporalControllerWidget::onLayersAdded );
+  connect( QgsProject::instance(), &QgsProject::cleared, this, &QgsTemporalControllerWidget::onProjectCleared );
 }
 
 void QgsTemporalControllerWidget::updateTemporalExtent()
@@ -147,6 +152,30 @@ void QgsTemporalControllerWidget::setWidgetStateFromProject()
   mNavigationObject->setFramesPerSecond( QgsProject::instance()->timeSettings()->framesPerSecond() );
 }
 
+void QgsTemporalControllerWidget::onLayersAdded()
+{
+  if ( !mHasTemporalLayersLoaded )
+  {
+    QVector<QgsMapLayer *> layers = QgsProject::instance()->layers<QgsMapLayer *>();
+    for ( QgsMapLayer *layer : layers )
+    {
+      if ( layer->temporalProperties() )
+        mHasTemporalLayersLoaded |= layer->temporalProperties()->isActive();
+    }
+
+    if ( mHasTemporalLayersLoaded )
+      setDatesToProjectTime();
+  }
+}
+
+void QgsTemporalControllerWidget::onProjectCleared()
+{
+  mHasTemporalLayersLoaded = false;
+  mStartDateTime->setDateTime( QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) ) );
+  mEndDateTime->setDateTime( mStartDateTime->dateTime() );
+  updateTemporalExtent();
+}
+
 void QgsTemporalControllerWidget::updateSlider( const QgsDateTimeRange &range )
 {
   whileBlocking( mSlider )->setValue( mNavigationObject->currentFrameNumber() );
@@ -155,10 +184,9 @@ void QgsTemporalControllerWidget::updateSlider( const QgsDateTimeRange &range )
 
 void QgsTemporalControllerWidget::updateRangeLabel( const QgsDateTimeRange &range )
 {
-  QLocale locale;
   mCurrentRangeLabel->setText( tr( "%1 to %2" ).arg(
-                                 range.begin().toString( locale.dateTimeFormat( QLocale::NarrowFormat ) ),
-                                 range.end().toString( locale.dateTimeFormat( QLocale::NarrowFormat ) ) ) );
+                                 range.begin().toString( "yyyy-MM-dd HH:mm:ss" ),
+                                 range.end().toString( "yyyy-MM-dd HH:mm:ss" ) ) );
 }
 
 QgsTemporalController *QgsTemporalControllerWidget::temporalController()
@@ -203,6 +231,7 @@ void QgsTemporalControllerWidget::setDatesToProjectTime()
   {
     mStartDateTime->setDateTime( range.begin() );
     mEndDateTime->setDateTime( range.end() );
+    updateTemporalExtent();
   }
 }
 

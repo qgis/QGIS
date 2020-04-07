@@ -368,6 +368,11 @@ QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
       return QgsLayerItem::iconMesh();
     }
 
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      return QgsLayerItem::iconVectorTile();
+    }
+
     case QgsMapLayerType::VectorLayer:
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );

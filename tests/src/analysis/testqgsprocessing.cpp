@@ -22,6 +22,7 @@
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingparametertype.h"
 #include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelgroupbox.h"
 #include "qgsnativealgorithms.h"
 #include <QObject>
 #include <QtTest/QSignalSpy>
@@ -521,6 +522,7 @@ class TestQgsProcessing: public QObject
     void encodeDecodeUriProvider();
     void normalizeLayerSource();
     void context();
+    void feedback();
     void mapLayers();
     void mapLayerFromStore();
     void mapLayerFromString();
@@ -603,6 +605,7 @@ class TestQgsProcessing: public QObject
     void parameterType();
     void sourceTypeToString_data();
     void sourceTypeToString();
+    void modelSource();
 
   private:
 
@@ -1053,6 +1056,19 @@ void TestQgsProcessing::context()
   id = v2->id();
   delete v2;
   QVERIFY( !context2.temporaryLayerStore()->mapLayer( id ) );
+}
+
+void TestQgsProcessing::feedback()
+{
+  QgsProcessingFeedback f;
+  f.pushInfo( QStringLiteral( "info" ) );
+  f.reportError( QStringLiteral( "error" ) );
+  f.pushDebugInfo( QStringLiteral( "debug" ) );
+  f.pushCommandInfo( QStringLiteral( "command" ) );
+  f.pushConsoleInfo( QStringLiteral( "console" ) );
+
+  QCOMPARE( f.htmlLog(), QStringLiteral( "info<br/><span style=\"color:red\">error</span><br/><span style=\"color:#777\">debug</span><br/><code>command</code><br/><code style=\"color:#777\">console</code><br/>" ) );
+  QCOMPARE( f.textLog(), QStringLiteral( "info\nerror\ndebug\ncommand\nconsole\n" ) );
 }
 
 void TestQgsProcessing::mapLayers()
@@ -1784,6 +1800,8 @@ void TestQgsProcessing::createFeatureSink()
   prevDest = QDir::tempPath() + "/create_feature_sink2.gpkg";
   sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, QgsWkbTypes::PointZ, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
   QVERIFY( sink.get() );
+  f = QgsFeature( fields );
+  f.setAttributes( QgsAttributes() << "val" );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PointZ(1 2 3)" ) ) );
   QVERIFY( sink->addFeature( f ) );
   QCOMPARE( destination, prevDest );
@@ -1796,7 +1814,36 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->fields().at( 1 ).name(), QStringLiteral( "my_field" ) );
   QCOMPARE( layer->fields().at( 1 ).type(), QVariant::String );
   QCOMPARE( layer->featureCount(), 1L );
-
+  // append to existing OGR layer
+  QgsRemappingSinkDefinition remapDef;
+  remapDef.setDestinationFields( layer->fields() );
+  remapDef.setDestinationCrs( layer->crs() );
+  remapDef.setSourceCrs( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  remapDef.setDestinationWkbType( QgsWkbTypes::Polygon );
+  remapDef.addMappedField( QStringLiteral( "my_field" ), QgsProperty::fromExpression( QStringLiteral( "field2 || @extra" ) ) );
+  QgsFields fields2;
+  fields2.append( QgsField( "field2", QVariant::String ) );
+  context.expressionContext().appendScope( new QgsExpressionContextScope() );
+  context.expressionContext().scope( 0 )->setVariable( QStringLiteral( "extra" ), 2 );
+  sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields2, QgsWkbTypes::Point, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QVariantMap(), nullptr, &remapDef ) );
+  QVERIFY( sink.get() );
+  f = QgsFeature( fields2 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point(10 0)" ) ) );
+  f.setAttributes( QgsAttributes() << "val" );
+  QVERIFY( sink->addFeature( f ) );
+  QCOMPARE( destination, prevDest );
+  sink.reset( nullptr );
+  layer = new QgsVectorLayer( destination );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->featureCount(), 2L );
+  QgsFeatureIterator it = layer->getFeatures();
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.attributes().at( 1 ).toString(), QStringLiteral( "val" ) );
+  QCOMPARE( f.geometry().asWkt( 1 ), QStringLiteral( "PointZ (1 2 3)" ) );
+  QVERIFY( it.nextFeature( f ) );
+  QCOMPARE( f.attributes().at( 1 ).toString(), QStringLiteral( "val2" ) );
+  QCOMPARE( f.geometry().asWkt( 0 ), QStringLiteral( "Point (-10199761 -4017774)" ) );
+  delete layer;
   //windows style path
   destination = "d:\\temp\\create_feature_sink.tab";
   sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
@@ -1841,6 +1888,28 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->wkbType(), QgsWkbTypes::Polygon );
   QVERIFY( layer->getFeatures().nextFeature( f ) );
   QCOMPARE( f.attribute( "my_field" ).toString(), QStringLiteral( "val" ) );
+
+  // now append to that second layer
+  remapDef.setDestinationFields( layer->fields() );
+  remapDef.setDestinationCrs( layer->crs() );
+
+  remapDef.setSourceCrs( QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  remapDef.setDestinationWkbType( QgsWkbTypes::Point );
+  remapDef.addMappedField( QStringLiteral( "my_field" ), QgsProperty::fromExpression( QStringLiteral( "field2 || @extra" ) ) );
+  destination2 = QStringLiteral( "ogr:dbname='%1' table=\"points\" (geom) sql=" ).arg( geopackagePath );
+  sink.reset( QgsProcessingUtils::createFeatureSink( destination2, context, fields2, QgsWkbTypes::PointZ, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QVariantMap(), nullptr, &remapDef ) );
+  QVERIFY( sink.get() );
+  f = QgsFeature( fields );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PointZ(3 4 5)" ) ) );
+  f.setAttributes( QgsAttributes() << "v" );
+  QVERIFY( sink->addFeature( f ) );
+  sink.reset( nullptr );
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination2, context, true ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( layer->featureCount(), 2L );
+  QVERIFY( layer->getFeatures().nextFeature( f ) );
+  QCOMPARE( f.attribute( "my_field" ).toString(), QStringLiteral( "val2" ) );
 }
 
 void TestQgsProcessing::source()
@@ -7930,8 +7999,15 @@ void TestQgsProcessing::processingFeatureSink()
   QString sinkString( QStringLiteral( "test.shp" ) );
   QgsProject p;
   QgsProcessingOutputLayerDefinition fs( sinkString, &p );
+  QgsRemappingSinkDefinition remap;
+  QVERIFY( !fs.useRemapping() );
+  remap.setDestinationWkbType( QgsWkbTypes::Point );
+  fs.setRemappingDefinition( remap );
+  QVERIFY( fs.useRemapping() );
+
   QCOMPARE( fs.sink.staticValue().toString(), sinkString );
   QCOMPARE( fs.destinationProject, &p );
+  QCOMPARE( fs.remappingDefinition().destinationWkbType(), QgsWkbTypes::Point );
 
   // test storing QgsProcessingFeatureSink in variant and retrieving
   QVariant fsInVariant = QVariant::fromValue( fs );
@@ -7940,13 +8016,14 @@ void TestQgsProcessing::processingFeatureSink()
   QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( fsInVariant );
   QCOMPARE( fromVar.sink.staticValue().toString(), sinkString );
   QCOMPARE( fromVar.destinationProject, &p );
+  QCOMPARE( fromVar.remappingDefinition().destinationWkbType(), QgsWkbTypes::Point );
 
   // test evaluating parameter as sink
   QgsProcessingContext context;
   context.setProject( &p );
 
   // first using static string definition
-  std::unique_ptr< QgsProcessingParameterDefinition > def( new QgsProcessingParameterFeatureSink( QStringLiteral( "layer" ) ) );
+  std::unique_ptr< QgsProcessingParameterFeatureSink > def( new QgsProcessingParameterFeatureSink( QStringLiteral( "layer" ) ) );
   QVariantMap params;
   params.insert( QStringLiteral( "layer" ), QgsProcessingOutputLayerDefinition( "memory:test", nullptr ) );
   QString dest;
@@ -8014,6 +8091,22 @@ void TestQgsProcessing::processingFeatureSink()
   params.insert( QStringLiteral( "layer" ), QVariant() );
   sink.reset( QgsProcessingParameters::parameterAsSink( def.get(), params, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem( "EPSG:3113" ), context, dest ) );
   QVERIFY( sink.get() );
+
+  // appendable
+  def->setSupportsAppend( true );
+  QVERIFY( def->supportsAppend() );
+  QString pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterFeatureSink('layer', '', optional=True, type=QgsProcessing.TypeMapLayer, createByDefault=True, supportsAppend=True, defaultValue='memory:defaultlayer')" ) );
+
+  QVariantMap val = def->toVariantMap();
+  QgsProcessingParameterFeatureSink fromMap( "x" );
+  QVERIFY( fromMap.fromVariantMap( val ) );
+  QVERIFY( fromMap.supportsAppend() );
+
+  def->setSupportsAppend( false );
+  QVERIFY( !def->supportsAppend() );
+  pythonCode = def->asPythonString();
+  QCOMPARE( pythonCode, QStringLiteral( "QgsProcessingParameterFeatureSink('layer', '', optional=True, type=QgsProcessing.TypeMapLayer, createByDefault=True, defaultValue='memory:defaultlayer')" ) );
 }
 
 void TestQgsProcessing::algorithmScope()
@@ -8251,16 +8344,45 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( comment.position(), QPointF( 11, 14 ) );
   comment.setDescription( QStringLiteral( "a comment" ) );
   QCOMPARE( comment.description(), QStringLiteral( "a comment" ) );
+  comment.setColor( QColor( 123, 45, 67 ) );
+  QCOMPARE( comment.color(), QColor( 123, 45, 67 ) );
   std::unique_ptr< QgsProcessingModelComment > commentClone( comment.clone() );
   QCOMPARE( commentClone->toVariant(), comment.toVariant() );
   QCOMPARE( commentClone->size(), QSizeF( 9, 8 ) );
   QCOMPARE( commentClone->position(), QPointF( 11, 14 ) );
   QCOMPARE( commentClone->description(), QStringLiteral( "a comment" ) );
+  QCOMPARE( commentClone->color(), QColor( 123, 45, 67 ) );
   QgsProcessingModelComment comment2;
   comment2.loadVariant( comment.toVariant().toMap() );
   QCOMPARE( comment2.size(), QSizeF( 9, 8 ) );
   QCOMPARE( comment2.position(), QPointF( 11, 14 ) );
   QCOMPARE( comment2.description(), QStringLiteral( "a comment" ) );
+  QCOMPARE( comment2.color(), QColor( 123, 45, 67 ) );
+
+  // group boxes
+  QgsProcessingModelGroupBox groupBox;
+  groupBox.setSize( QSizeF( 9, 8 ) );
+  QCOMPARE( groupBox.size(), QSizeF( 9, 8 ) );
+  groupBox.setPosition( QPointF( 11, 14 ) );
+  QCOMPARE( groupBox.position(), QPointF( 11, 14 ) );
+  groupBox.setDescription( QStringLiteral( "a comment" ) );
+  QCOMPARE( groupBox.description(), QStringLiteral( "a comment" ) );
+  groupBox.setColor( QColor( 123, 45, 67 ) );
+  QCOMPARE( groupBox.color(), QColor( 123, 45, 67 ) );
+  std::unique_ptr< QgsProcessingModelGroupBox > groupClone( groupBox.clone() );
+  QCOMPARE( groupClone->toVariant(), groupBox.toVariant() );
+  QCOMPARE( groupClone->size(), QSizeF( 9, 8 ) );
+  QCOMPARE( groupClone->position(), QPointF( 11, 14 ) );
+  QCOMPARE( groupClone->description(), QStringLiteral( "a comment" ) );
+  QCOMPARE( groupClone->color(), QColor( 123, 45, 67 ) );
+  QCOMPARE( groupClone->uuid(), groupBox.uuid() );
+  QgsProcessingModelGroupBox groupBox2;
+  groupBox2.loadVariant( groupBox.toVariant().toMap() );
+  QCOMPARE( groupBox2.size(), QSizeF( 9, 8 ) );
+  QCOMPARE( groupBox2.position(), QPointF( 11, 14 ) );
+  QCOMPARE( groupBox2.description(), QStringLiteral( "a comment" ) );
+  QCOMPARE( groupBox2.color(), QColor( 123, 45, 67 ) );
+  QCOMPARE( groupBox2.uuid(), groupBox.uuid() );
 
   QMap< QString, QString > friendlyOutputNames;
   QgsProcessingModelChildAlgorithm child( QStringLiteral( "some_id" ) );
@@ -8434,6 +8556,17 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg.shortDescription(), QStringLiteral( "short" ) );
   QCOMPARE( alg.helpUrl(), QStringLiteral( "url" ) );
 
+  QVERIFY( alg.groupBoxes().isEmpty() );
+  alg.addGroupBox( groupBox );
+  QCOMPARE( alg.groupBoxes().size(), 1 );
+  QCOMPARE( alg.groupBoxes().at( 0 ).uuid(), groupBox.uuid() );
+  QCOMPARE( alg.groupBoxes().at( 0 ).uuid(), groupBox.uuid() );
+  alg.removeGroupBox( QStringLiteral( "a" ) );
+  QCOMPARE( alg.groupBoxes().size(), 1 );
+  alg.removeGroupBox( groupBox.uuid() );
+  QVERIFY( alg.groupBoxes().isEmpty() );
+
+
   QVariantMap lastParams;
   lastParams.insert( QStringLiteral( "a" ), 2 );
   lastParams.insert( QStringLiteral( "b" ), 4 );
@@ -8448,6 +8581,21 @@ void TestQgsProcessing::modelerAlgorithm()
   a2.setDescription( QStringLiteral( "alg2" ) );
   a2.setPosition( QPointF( 112, 131 ) );
   a2.setSize( QSizeF( 44, 55 ) );
+  a2.comment()->setSize( QSizeF( 111, 222 ) );
+  a2.comment()->setPosition( QPointF( 113, 114 ) );
+  a2.comment()->setDescription( QStringLiteral( "c" ) );
+  a2.comment()->setColor( QColor( 255, 254, 253 ) );
+  QgsProcessingModelOutput oo;
+  oo.setPosition( QPointF( 312, 331 ) );
+  oo.setSize( QSizeF( 344, 355 ) );
+  oo.comment()->setSize( QSizeF( 311, 322 ) );
+  oo.comment()->setPosition( QPointF( 313, 314 ) );
+  oo.comment()->setDescription( QStringLiteral( "c3" ) );
+  oo.comment()->setColor( QColor( 155, 14, 353 ) );
+  QMap< QString, QgsProcessingModelOutput > a2Outs;
+  a2Outs.insert( QStringLiteral( "out1" ), oo );
+  a2.setModelOutputs( a2Outs );
+
   algs.insert( QStringLiteral( "a" ), a1 );
   algs.insert( QStringLiteral( "b" ), a2 );
   alg.setChildAlgorithms( algs );
@@ -8458,10 +8606,28 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelChildAlgorithm a2other;
   a2other.setChildId( QStringLiteral( "b" ) );
   a2other.setDescription( QStringLiteral( "alg2 other" ) );
+  QgsProcessingModelOutput oo2;
+  QMap< QString, QgsProcessingModelOutput > a2Outs2;
+  a2Outs2.insert( QStringLiteral( "out1" ), oo2 );
+  a2other.setModelOutputs( a2Outs2 );
+
   a2other.copyNonDefinitionPropertiesFromModel( &alg );
   QCOMPARE( a2other.description(), QStringLiteral( "alg2 other" ) );
   QCOMPARE( a2other.position(), QPointF( 112, 131 ) );
   QCOMPARE( a2other.size(), QSizeF( 44, 55 ) );
+  QCOMPARE( a2other.comment()->size(), QSizeF( 111, 222 ) );
+  QCOMPARE( a2other.comment()->position(), QPointF( 113, 114 ) );
+  // should not be copied
+  QCOMPARE( a2other.comment()->description(), QString() );
+  QVERIFY( !a2other.comment()->color().isValid() );
+
+  QCOMPARE( a2other.modelOutput( QStringLiteral( "out1" ) ).position(), QPointF( 312, 331 ) );
+  QCOMPARE( a2other.modelOutput( QStringLiteral( "out1" ) ).size(), QSizeF( 344, 355 ) );
+  QCOMPARE( a2other.modelOutput( QStringLiteral( "out1" ) ).comment()->size(), QSizeF( 311, 322 ) );
+  QCOMPARE( a2other.modelOutput( QStringLiteral( "out1" ) ).comment()->position(), QPointF( 313, 314 ) );
+  // should be copied for outputs
+  QCOMPARE( a2other.modelOutput( QStringLiteral( "out1" ) ).comment()->description(), QStringLiteral( "c3" ) );
+  QCOMPARE( a2other.modelOutput( QStringLiteral( "out1" ) ).comment()->color(), QColor( 155, 14, 353 ) );
 
   QgsProcessingModelChildAlgorithm a3;
   a3.setChildId( QStringLiteral( "c" ) );
@@ -8738,6 +8904,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QgsProcessingModelAlgorithm alg5( "test", "testGroup" );
   alg5.helpContent().insert( "author", "me" );
   alg5.helpContent().insert( "usage", "run" );
+  alg5.addGroupBox( groupBox );
   QVariantMap variables;
   variables.insert( QStringLiteral( "v1" ), 5 );
   variables.insert( QStringLiteral( "v2" ), QStringLiteral( "aabbccd" ) );
@@ -8797,6 +8964,13 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg6.helpContent(), alg5.helpContent() );
   QCOMPARE( alg6.variables(), variables );
   QCOMPARE( alg6.designerParameterValues(), lastParams );
+
+  QCOMPARE( alg6.groupBoxes().size(), 1 );
+  QCOMPARE( alg6.groupBoxes().at( 0 ).size(), QSizeF( 9, 8 ) );
+  QCOMPARE( alg6.groupBoxes().at( 0 ).position(), QPointF( 11, 14 ) );
+  QCOMPARE( alg6.groupBoxes().at( 0 ).description(), QStringLiteral( "a comment" ) );
+  QCOMPARE( alg6.groupBoxes().at( 0 ).color(), QColor( 123, 45, 67 ) );
+
   QgsProcessingModelChildAlgorithm alg6c1 = alg6.childAlgorithm( "cx1" );
   QCOMPARE( alg6c1.childId(), QStringLiteral( "cx1" ) );
   QCOMPARE( alg6c1.algorithmId(), QStringLiteral( "buffer" ) );
@@ -9119,6 +9293,23 @@ void TestQgsProcessing::modelExecution()
   QCOMPARE( outDef.sink.staticValue().toString(), QStringLiteral( "memory:" ) );
   QCOMPARE( params.count(), 3 ); // don't want FAIL_OUTPUT set!
 
+  // a child with an static output value
+  QgsProcessingModelChildAlgorithm alg2c4;
+  alg2c4.setChildId( "cx4" );
+  alg2c4.setAlgorithmId( "native:extractbyexpression" );
+  alg2c4.addParameterSources( "OUTPUT", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromStaticValue( "STATIC" ) );
+  model2.addChildAlgorithm( alg2c4 );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx4" ), modelInputs, childResults, expContext );
+  QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "STATIC" ) );
+  model2.removeChildAlgorithm( "cx4" );
+  // expression based output value
+  alg2c4.addParameterSources( "OUTPUT", QgsProcessingModelChildParameterSources() << QgsProcessingModelChildParameterSource::fromExpression( "'A' || 'B'" ) );
+  model2.addChildAlgorithm( alg2c4 );
+  params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx4" ), modelInputs, childResults, expContext );
+  QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "AB" ) );
+  model2.removeChildAlgorithm( "cx4" );
+
+
   variables = model2.variablesForChildAlgorithm( "cx3", context );
   QCOMPARE( variables.count(), 16 );
   QCOMPARE( variables.value( "DIST" ).source.source(), QgsProcessingModelChildParameterSource::ModelParameter );
@@ -9195,7 +9386,7 @@ void TestQgsProcessing::modelExecution()
                               "    param = QgsProcessingParameterCrs('CRS', '', defaultValue=QgsCoordinateReferenceSystem('EPSG:28355'))\n"
                               "    param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)\n"
                               "    self.addParameter(param)\n"
-                              "    self.addParameter(QgsProcessingParameterFeatureSink('MyModelOutput', 'my model output', type=QgsProcessing.TypeVectorPolygon, createByDefault=True, defaultValue=None))\n"
+                              "    self.addParameter(QgsProcessingParameterFeatureSink('MyModelOutput', 'my model output', type=QgsProcessing.TypeVectorPolygon, createByDefault=True, supportsAppend=True, defaultValue=None))\n"
                               "    self.addParameter(QgsProcessingParameterFeatureSink('cx3:MY_OUT', '', type=QgsProcessing.TypeVectorAnyGeometry, createByDefault=True, defaultValue=None))\n"
                               "\n"
                               "  def processAlgorithm(self, parameters, context, model_feedback):\n"
@@ -10336,6 +10527,35 @@ void TestQgsProcessing::sourceTypeToString()
 
   const QgsProcessing::SourceType sourceType = static_cast< QgsProcessing::SourceType >( type );
   QCOMPARE( QgsProcessing::sourceTypeToString( sourceType ), expected );
+}
+
+void TestQgsProcessing::modelSource()
+{
+  QgsProcessingModelChildParameterSource source;
+  source.setExpression( QStringLiteral( "expression" ) );
+  source.setExpressionText( QStringLiteral( "expression string" ) );
+  source.setOutputName( QStringLiteral( "output name " ) );
+  source.setStaticValue( QString( "value" ) );
+  source.setOutputChildId( QStringLiteral( "output child id" ) );
+  source.setParameterName( QStringLiteral( "parameter name" ) );
+  source.setSource( QgsProcessingModelChildParameterSource::ChildOutput );
+
+  QByteArray ba;
+  QDataStream ds( &ba, QIODevice::ReadWrite );
+  ds << source;
+
+  ds.device()->seek( 0 );
+
+  QgsProcessingModelChildParameterSource res;
+  ds >> res;
+
+  QCOMPARE( res.expression(), QStringLiteral( "expression" ) );
+  QCOMPARE( res.expressionText(), QStringLiteral( "expression string" ) );
+  QCOMPARE( res.outputName(), QStringLiteral( "output name " ) );
+  QCOMPARE( res.staticValue().toString(), QString( "value" ) );
+  QCOMPARE( res.outputChildId(), QStringLiteral( "output child id" ) );
+  QCOMPARE( res.parameterName(), QStringLiteral( "parameter name" ) );
+  QCOMPARE( res.source(), QgsProcessingModelChildParameterSource::ChildOutput );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

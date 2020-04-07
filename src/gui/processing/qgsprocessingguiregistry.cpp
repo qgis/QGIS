@@ -56,6 +56,13 @@ QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
   addParameterWidgetFactory( new QgsProcessingFeatureSourceWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingRasterLayerWidgetWrapper() );
   addParameterWidgetFactory( new QgsProcessingMeshLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingBandWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingMultipleLayerWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFeatureSinkWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingVectorDestinationWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingRasterDestinationWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFileDestinationWidgetWrapper() );
+  addParameterWidgetFactory( new QgsProcessingFolderDestinationWidgetWrapper() );
 }
 
 QgsProcessingGuiRegistry::~QgsProcessingGuiRegistry()

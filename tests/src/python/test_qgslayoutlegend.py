@@ -33,6 +33,10 @@ from qgis.core import (QgsPrintLayout,
                        QgsMapLayerLegendUtils,
                        QgsLegendStyle,
                        QgsFontUtils,
+                       QgsLineSymbol,
+                       QgsMapThemeCollection,
+                       QgsCategorizedSymbolRenderer,
+                       QgsRendererCategory,
                        QgsApplication)
 from qgis.testing import (start_app,
                           unittest
@@ -479,6 +483,145 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         self.assertTrue(result, message)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
+
+    def testThemes(self):
+        layout = QgsPrintLayout(QgsProject.instance())
+        layout.setName('LAYOUT')
+
+        map = QgsLayoutItemMap(layout)
+        layout.addLayoutItem(map)
+        legend = QgsLayoutItemLegend(layout)
+
+        self.assertFalse(legend.themeName())
+        legend.setLinkedMap(map)
+        self.assertFalse(legend.themeName())
+
+        map.setFollowVisibilityPresetName('theme1')
+        map.setFollowVisibilityPreset(True)
+        self.assertEqual(legend.themeName(), 'theme1')
+        map.setFollowVisibilityPresetName('theme2')
+        self.assertEqual(legend.themeName(), 'theme2')
+        map.setFollowVisibilityPreset(False)
+        self.assertFalse(legend.themeName())
+
+        # with theme set before linking map
+        map2 = QgsLayoutItemMap(layout)
+        map2.setFollowVisibilityPresetName('theme3')
+        map2.setFollowVisibilityPreset(True)
+        legend.setLinkedMap(map2)
+        self.assertEqual(legend.themeName(), 'theme3')
+        map2.setFollowVisibilityPresetName('theme2')
+        self.assertEqual(legend.themeName(), 'theme2')
+
+        # replace with map with no theme
+        map3 = QgsLayoutItemMap(layout)
+        legend.setLinkedMap(map3)
+        self.assertFalse(legend.themeName())
+
+    def testLegendRenderWithMapTheme(self):
+        """Test rendering legends linked to map themes"""
+        QgsProject.instance().removeAllMapLayers()
+
+        point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
+        point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
+        line_path = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        line_layer = QgsVectorLayer(line_path, 'lines', 'ogr')
+        QgsProject.instance().clear()
+        QgsProject.instance().addMapLayers([point_layer, line_layer])
+
+        marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no', 'size': '5'})
+        point_layer.setRenderer(QgsSingleSymbolRenderer(marker_symbol))
+        point_layer.styleManager().addStyleFromLayer("red")
+
+        line_symbol = QgsLineSymbol.createSimple({'color': '#ff0000', 'line_width': '2'})
+        line_layer.setRenderer(QgsSingleSymbolRenderer(line_symbol))
+        line_layer.styleManager().addStyleFromLayer("red")
+
+        red_record = QgsMapThemeCollection.MapThemeRecord()
+        point_red_record = QgsMapThemeCollection.MapThemeLayerRecord(point_layer)
+        point_red_record.usingCurrentStyle = True
+        point_red_record.currentStyle = 'red'
+        red_record.addLayerRecord(point_red_record)
+        line_red_record = QgsMapThemeCollection.MapThemeLayerRecord(line_layer)
+        line_red_record.usingCurrentStyle = True
+        line_red_record.currentStyle = 'red'
+        red_record.addLayerRecord(line_red_record)
+        QgsProject.instance().mapThemeCollection().insert('red', red_record)
+
+        marker_symbol1 = QgsMarkerSymbol.createSimple({'color': '#0000ff', 'outline_style': 'no', 'size': '5'})
+        marker_symbol2 = QgsMarkerSymbol.createSimple({'color': '#0000ff', 'name': 'diamond', 'outline_style': 'no', 'size': '5'})
+        marker_symbol3 = QgsMarkerSymbol.createSimple({'color': '#0000ff', 'name': 'rectangle', 'outline_style': 'no', 'size': '5'})
+
+        point_layer.setRenderer(QgsCategorizedSymbolRenderer('Class', [QgsRendererCategory('B52', marker_symbol1, ''),
+                                                                       QgsRendererCategory('Biplane', marker_symbol2, ''),
+                                                                       QgsRendererCategory('Jet', marker_symbol3, ''),
+                                                                       ]))
+        point_layer.styleManager().addStyleFromLayer("blue")
+
+        line_symbol = QgsLineSymbol.createSimple({'color': '#0000ff', 'line_width': '2'})
+        line_layer.setRenderer(QgsSingleSymbolRenderer(line_symbol))
+        line_layer.styleManager().addStyleFromLayer("blue")
+
+        blue_record = QgsMapThemeCollection.MapThemeRecord()
+        point_blue_record = QgsMapThemeCollection.MapThemeLayerRecord(point_layer)
+        point_blue_record.usingCurrentStyle = True
+        point_blue_record.currentStyle = 'blue'
+        blue_record.addLayerRecord(point_blue_record)
+        line_blue_record = QgsMapThemeCollection.MapThemeLayerRecord(line_layer)
+        line_blue_record.usingCurrentStyle = True
+        line_blue_record.currentStyle = 'blue'
+        blue_record.addLayerRecord(line_blue_record)
+        QgsProject.instance().mapThemeCollection().insert('blue', blue_record)
+
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        map1 = QgsLayoutItemMap(layout)
+        map1.attemptSetSceneRect(QRectF(20, 20, 80, 80))
+        map1.setFrameEnabled(True)
+        map1.setLayers([point_layer, line_layer])
+        layout.addLayoutItem(map1)
+        map1.setExtent(point_layer.extent())
+        map1.setFollowVisibilityPreset(True)
+        map1.setFollowVisibilityPresetName('red')
+
+        map2 = QgsLayoutItemMap(layout)
+        map2.attemptSetSceneRect(QRectF(20, 120, 80, 80))
+        map2.setFrameEnabled(True)
+        map2.setLayers([point_layer, line_layer])
+        layout.addLayoutItem(map2)
+        map2.setExtent(point_layer.extent())
+        map2.setFollowVisibilityPreset(True)
+        map2.setFollowVisibilityPresetName('blue')
+
+        legend = QgsLayoutItemLegend(layout)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(120, 20, 80, 80))
+        legend.setFrameEnabled(True)
+        legend.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend.setBackgroundColor(QColor(200, 200, 200))
+        legend.setTitle('')
+        layout.addLayoutItem(legend)
+        legend.setLinkedMap(map1)
+
+        legend2 = QgsLayoutItemLegend(layout)
+        legend2.setTitle("Legend")
+        legend2.attemptSetSceneRect(QRectF(120, 120, 80, 80))
+        legend2.setFrameEnabled(True)
+        legend2.setFrameStrokeWidth(QgsLayoutMeasurement(2))
+        legend2.setBackgroundColor(QColor(200, 200, 200))
+        legend2.setTitle('')
+        layout.addLayoutItem(legend2)
+        legend2.setLinkedMap(map2)
+
+        checker = QgsLayoutChecker(
+            'composer_legend_theme', layout)
+        checker.setControlPathPrefix("composer_legend")
+        result, message = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(result, message)
+
+        QgsProject.instance().clear()
 
 
 if __name__ == '__main__':

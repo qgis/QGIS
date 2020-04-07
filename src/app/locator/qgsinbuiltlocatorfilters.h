@@ -134,6 +134,7 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
         QgsExpressionContext context;
         std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
         QgsFeatureRequest request;
+        QgsFeatureRequest exactMatchRequest;
         QString layerName;
         QString layerId;
         QIcon layerIcon;

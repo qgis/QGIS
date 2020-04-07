@@ -111,6 +111,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QVector<QgsMeshEdge> edges( ) const;
     QVector<QgsMeshFace> faces( ) const;
     void loadData();
+    void addGroupToTemporalCapabilities( int indexGroup );
     MeshH mMeshH;
     QStringList mExtraDatasetUris;
     QgsCoordinateReferenceSystem mCrs;

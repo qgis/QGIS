@@ -134,6 +134,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setTemporalController( QgsTemporalController *controller );
 
     /**
+     * Gets access to the temporal controller that will be used to
+     * update the canvas temporal range.
+     *
+     * \since QGIS 3.14
+     */
+    const QgsTemporalController *temporalController() const;
+
+    /**
      * sets destination coordinate reference system
      * \since QGIS 2.4
      */

@@ -714,24 +714,6 @@ Sets averaging method for conversion of 3d stacked mesh data to 2d data
 Ownership of the method is not transferred.
 %End
 
-    QgsMeshDatasetIndex activeScalarDataset() const;
-%Docstring
-Returns active scalar dataset
-%End
-    void setActiveScalarDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
-%Docstring
-Sets active scalar dataset for rendering
-%End
-
-    QgsMeshDatasetIndex activeVectorDataset() const;
-%Docstring
-Returns active vector dataset
-%End
-    void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
-%Docstring
-Sets active vector dataset for rendering.
-%End
-
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Writes configuration to a new DOM element
@@ -739,6 +721,34 @@ Writes configuration to a new DOM element
     void readXml( const QDomElement &elem );
 %Docstring
 Reads configuration from the given DOM element
+%End
+
+    int activeScalarDatasetGroup() const;
+%Docstring
+Returns the active scalar dataset group
+
+.. versionadded:: 3.14
+%End
+
+    void setActiveScalarDatasetGroup( int activeScalarDatasetGroup );
+%Docstring
+Sets the active scalar dataset group
+
+.. versionadded:: 3.14
+%End
+
+    int activeVectorDatasetGroup() const;
+%Docstring
+Returns the active vector dataset group
+
+.. versionadded:: 3.14
+%End
+
+    void setActiveVectorDatasetGroup( int activeVectorDatasetGroup );
+%Docstring
+Sets the active vector dataset group
+
+.. versionadded:: 3.14
 %End
 
 };

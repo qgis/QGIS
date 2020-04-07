@@ -89,6 +89,7 @@
 #include "qgssourceselectprovider.h"
 #include "qgsprovidermetadata.h"
 #include "qgsfixattributedialog.h"
+#include "qgsprojecttimesettings.h"
 
 #include "qgsanalysis.h"
 #include "qgsgeometrycheckregistry.h"
@@ -182,6 +183,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgscoordinateutils.h"
 #include "qgscredentialdialog.h"
 #include "qgscustomdrophandler.h"
+#include "qgscustomprojectopenhandler.h"
 #include "qgscustomization.h"
 #include "qgscustomlayerorderwidget.h"
 #include "qgscustomprojectiondialog.h"
@@ -259,6 +261,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmapsettings.h"
 #include "qgsmaptip.h"
+#include "qgsmbtilesreader.h"
 #include "qgsmenuheader.h"
 #include "qgsmergeattributesdialog.h"
 #include "qgsmessageviewer.h"
@@ -336,6 +339,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsvectorlayerdigitizingproperties.h"
+#include "qgsvectortilelayer.h"
 #include "qgsmapthemes.h"
 #include "qgsmessagelogviewer.h"
 #include "qgsdataitem.h"
@@ -366,9 +370,10 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsbearingnumericformat.h"
 #include "qgsprojectdisplaysettings.h"
 #include "qgstemporalcontrollerdockwidget.h"
-
+#include "qgsnetworklogger.h"
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
+#include "qgsnetworkloggerwidgetfactory.h"
 
 #include "browser/qgsinbuiltdataitemproviders.h"
 
@@ -830,6 +835,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mUserProfileManager->setActiveUserProfile( activeProfile );
   mUserProfileManager->setNewProfileNotificationEnabled( true );
   connect( mUserProfileManager, &QgsUserProfileManager::profilesChanged, this, &QgisApp::refreshProfileMenu );
+  endProfile();
+
+  // start the network logger early, we want all requests logged!
+  startProfile( QStringLiteral( "Network logger" ) );
+  mNetworkLogger = new QgsNetworkLogger( QgsNetworkAccessManager::instance(), this );
   endProfile();
 
   // load GUI: actions, menus, toolbars
@@ -1598,6 +1608,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mBearingNumericFormat.reset( QgsLocalDefaultSettings::bearingFormat() );
 
+  mNetworkLoggerWidgetFactory.reset( qgis::make_unique< QgsNetworkLoggerWidgetFactory >( mNetworkLogger ) );
+
   // update windows
   qApp->processEvents();
 
@@ -1689,6 +1701,8 @@ QgisApp::~QgisApp()
 {
   // shouldn't be needed, but from this stage on, we don't want/need ANY map canvas refreshes to take place
   mFreezeCount = 1000000;
+
+  mNetworkLoggerWidgetFactory.reset();
 
   delete mInternalClipboard;
   delete mQgisInterface;
@@ -1952,6 +1966,17 @@ void QgisApp::unregisterCustomDropHandler( QgsCustomDropHandler *handler )
   }
 }
 
+void QgisApp::registerCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler )
+{
+  if ( !mCustomProjectOpenHandlers.contains( handler ) )
+    mCustomProjectOpenHandlers << handler;
+}
+
+void QgisApp::unregisterCustomProjectOpenHandler( QgsCustomProjectOpenHandler *handler )
+{
+  mCustomProjectOpenHandlers.removeOne( handler );
+}
+
 QVector<QPointer<QgsCustomDropHandler> > QgisApp::customDropHandlers() const
 {
   return mCustomDropHandlers;
@@ -2000,6 +2025,11 @@ void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
     else if ( u.layerType == QLatin1String( "mesh" ) )
     {
       QgsMeshLayer *layer = new QgsMeshLayer( uri, u.name, u.providerKey );
+      addMapLayer( layer );
+    }
+    else if ( u.layerType == QLatin1String( "vector-tile" ) )
+    {
+      QgsVectorTileLayer *layer = new QgsVectorTileLayer( uri, u.name );
       addMapLayer( layer );
     }
     else if ( u.layerType == QLatin1String( "plugin" ) )
@@ -2668,6 +2698,8 @@ void QgisApp::createActions()
   connect( mActionHideAllLayers, &QAction::triggered, this, &QgisApp::hideAllLayers );
   connect( mActionShowSelectedLayers, &QAction::triggered, this, &QgisApp::showSelectedLayers );
   connect( mActionHideSelectedLayers, &QAction::triggered, this, &QgisApp::hideSelectedLayers );
+  connect( mActionToggleSelectedLayers, &QAction::triggered, this, &QgisApp::toggleSelectedLayers );
+  connect( mActionToggleSelectedLayersIndependently, &QAction::triggered, this, &QgisApp::toggleSelectedLayersIndependently );
   connect( mActionHideDeselectedLayers, &QAction::triggered, this, &QgisApp::hideDeselectedLayers );
 
   // Plugin Menu Items
@@ -4865,7 +4897,7 @@ void QgisApp::updateRecentProjectPaths()
 }
 
 // add this file to the recently opened/saved projects list
-void QgisApp::saveRecentProjectPath( bool savePreviewImage )
+void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOverlay )
 {
   // first, re-read the recent project paths. This prevents loss of recent
   // projects when multiple QGIS sessions are open
@@ -4901,7 +4933,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage )
     projectData.previewImagePath = QStringLiteral( "%1/%2.png" ).arg( previewDir, fileName );
     QDir().mkdir( previewDir );
 
-    createPreviewImage( projectData.previewImagePath );
+    createPreviewImage( projectData.previewImagePath, iconOverlay );
   }
   else
   {
@@ -5458,6 +5490,15 @@ QgsMeshLayer *QgisApp::addMeshLayerPrivate( const QString &url, const QString &b
 
     // since the layer is bad, stomp on it
     return nullptr;
+  }
+
+  // Manage default reference time, if not reference time is present by default in the layer -> assign one
+  if ( ! layer->temporalProperties()->referenceTime().isValid() )
+  {
+    QDateTime referenceTime = QgsProject::instance()->timeSettings()->temporalRange().begin();
+    if ( !referenceTime.isValid() ) // If project reference time is invalid, use current date
+      referenceTime = QDateTime( QDate::currentDate(), QTime( 0, 0, 0, Qt::UTC ) );
+    layer->temporalProperties()->setReferenceTime( referenceTime, layer->dataProvider()->temporalCapabilities() );
   }
 
   QgsProject::instance()->addMapLayer( layer.get() );
@@ -6552,18 +6593,40 @@ void QgisApp::fileOpen()
     // Retrieve last used project dir from persistent settings
     QgsSettings settings;
     QString lastUsedDir = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
+
+
+    QStringList fileFilters;
+    QStringList extensions;
+    fileFilters << tr( "QGIS files" ) + QStringLiteral( " (*.qgs *.qgz *.QGS *.QGZ)" );
+    extensions << QStringLiteral( "qgs" ) << QStringLiteral( "qgz" );
+    for ( QgsCustomProjectOpenHandler *handler : qgis::as_const( mCustomProjectOpenHandlers ) )
+    {
+      if ( handler )
+      {
+        const QStringList filters = handler->filters();
+        fileFilters.append( filters );
+        for ( const QString &filter : filters )
+          extensions.append( QgsFileUtils::extensionsFromFilter( filter ) );
+      }
+    }
+
+    // generate master "all projects" extension list
+    QString allEntry = tr( "All Project Files" ) + QStringLiteral( " (" );
+    for ( const QString &extension : extensions )
+      allEntry += QStringLiteral( "*.%1 *.%2 " ).arg( extension.toLower(), extension.toUpper() );
+    allEntry.chop( 1 ); // remove trailing ' '
+    allEntry += ')';
+    fileFilters.insert( 0, allEntry );
+
     QString fullPath = QFileDialog::getOpenFileName( this,
-                       tr( "Choose a QGIS Project File to Open" ),
+                       tr( "Open Project" ),
                        lastUsedDir,
-                       tr( "QGIS files" ) + " (*.qgs *.qgz *.QGS)" );
+                       fileFilters.join( QStringLiteral( ";;" ) ) );
     if ( fullPath.isNull() )
     {
       return;
     }
 
-    // Fix by Tim - getting the dirPath from the dialog
-    // directly truncates the last node in the dir path.
-    // This is a workaround for that
     QFileInfo myFI( fullPath );
     QString myPath = myFI.path();
     // Persist last used project dir
@@ -6618,7 +6681,22 @@ bool QgisApp::addProject( const QString &projectFile )
   bool autoSetupOnFirstLayer = mLayerTreeCanvasBridge->autoSetupOnFirstLayer();
   mLayerTreeCanvasBridge->setAutoSetupOnFirstLayer( false );
 
-  if ( !QgsProject::instance()->read( projectFile ) && !QgsZipUtils::isZipFile( projectFile ) )
+  // give custom handlers a chance first
+  bool usedCustomHandler = false;
+  bool customHandlerWantsThumbnail = false;
+  QIcon customHandlerIcon;
+  for ( QgsCustomProjectOpenHandler *handler : qgis::as_const( mCustomProjectOpenHandlers ) )
+  {
+    if ( handler && handler->handleProjectOpen( projectFile ) )
+    {
+      usedCustomHandler = true;
+      customHandlerWantsThumbnail = handler->createDocumentThumbnailAfterOpen();
+      customHandlerIcon = handler->icon();
+      break;
+    }
+  }
+
+  if ( !usedCustomHandler && !QgsProject::instance()->read( projectFile ) && !QgsZipUtils::isZipFile( projectFile ) )
   {
     QString backupFile = projectFile + "~";
     QString loadBackupPrompt;
@@ -6711,7 +6789,20 @@ bool QgisApp::addProject( const QString &projectFile )
     // specific plug-in state
 
     // add this to the list of recently used project files
-    saveRecentProjectPath( false );
+    // if a custom handler was used, then we generate a thumbnail
+    if ( !usedCustomHandler || !customHandlerWantsThumbnail )
+      saveRecentProjectPath( false );
+    else if ( !QgsProject::instance()->fileName().isEmpty() )
+    {
+      // we have to delay the thumbnail creation until after the canvas has refreshed for the first time
+      QMetaObject::Connection *connection = new QMetaObject::Connection();
+      *connection = connect( mMapCanvas, &QgsMapCanvas::mapCanvasRefreshed, [ = ]()
+      {
+        QObject::disconnect( *connection );
+        delete connection;
+        saveRecentProjectPath( true, customHandlerIcon );
+      } );
+    }
 
     QApplication::restoreOverrideCursor();
 
@@ -7101,12 +7192,32 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
 
   if ( fileName.endsWith( QStringLiteral( ".mbtiles" ), Qt::CaseInsensitive ) )
   {
-    // prefer to use WMS provider's implementation to open MBTiles rasters
-    QUrlQuery uq;
-    uq.addQueryItem( "type", "mbtiles" );
-    uq.addQueryItem( "url", QUrl::fromLocalFile( fileName ).toString() );
-    if ( addRasterLayer( uq.toString(), fileInfo.completeBaseName(), QStringLiteral( "wms" ) ) )
-      return true;
+    QgsMBTilesReader reader( fileName );
+    if ( reader.open() )
+    {
+      if ( reader.metadataValue( "format" ) == QStringLiteral( "pbf" ) )
+      {
+        // these are vector tiles
+        QUrlQuery uq;
+        uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
+        uq.addQueryItem( QStringLiteral( "url" ), fileName );
+        std::unique_ptr<QgsVectorTileLayer> vtLayer( new QgsVectorTileLayer( uq.toString(), fileInfo.completeBaseName() ) );
+        if ( vtLayer->isValid() )
+        {
+          QgsProject::instance()->addMapLayer( vtLayer.release() );
+          return true;
+        }
+      }
+      else // raster tiles
+      {
+        // prefer to use WMS provider's implementation to open MBTiles rasters
+        QUrlQuery uq;
+        uq.addQueryItem( QStringLiteral( "type" ), QStringLiteral( "mbtiles" ) );
+        uq.addQueryItem( QStringLiteral( "url" ), QUrl::fromLocalFile( fileName ).toString() );
+        if ( addRasterLayer( uq.toString(), fileInfo.completeBaseName(), QStringLiteral( "wms" ) ) )
+          return true;
+      }
+    }
   }
 
   // try to load it as raster
@@ -7569,6 +7680,35 @@ void QgisApp::hideSelectedLayers()
   for ( QgsLayerTreeNode *node : constSelectedNodes )
   {
     node->setItemVisibilityChecked( false );
+  }
+}
+
+void QgisApp::toggleSelectedLayers()
+{
+  QgsDebugMsg( QStringLiteral( "toggling selected layers!" ) );
+
+  const auto constSelectedNodes = mLayerTreeView->selectedNodes();
+  if ( ! constSelectedNodes.isEmpty() )
+  {
+    bool isFirstNodeChecked = constSelectedNodes[0]->itemVisibilityChecked();
+    for ( QgsLayerTreeNode *node : constSelectedNodes )
+    {
+      node->setItemVisibilityChecked( ! isFirstNodeChecked );
+    }
+  }
+}
+
+void QgisApp::toggleSelectedLayersIndependently()
+{
+  QgsDebugMsg( QStringLiteral( "toggling selected layers independently!" ) );
+
+  const auto constSelectedNodes = mLayerTreeView->selectedNodes();
+  if ( ! constSelectedNodes.isEmpty() )
+  {
+    for ( QgsLayerTreeNode *node : constSelectedNodes )
+    {
+      node->setItemVisibilityChecked( ! node->itemVisibilityChecked() );
+    }
   }
 }
 
@@ -8346,6 +8486,7 @@ QString QgisApp::saveAsFile( QgsMapLayer *layer, const bool onlySelected, const 
       return saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ), true, onlySelected, defaultToAddToMap );
 
     case QgsMapLayerType::MeshLayer:
+    case QgsMapLayerType::VectorTileLayer:
     case QgsMapLayerType::PluginLayer:
       return QString();
   }
@@ -10982,7 +11123,7 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
                                         Qgis::Critical, messageTimeout() );
     else if ( qobject_cast<QgsVectorLayer *>( dupLayer ) )
       visibleMessageBar()->pushMessage( tr( "Layer duplication complete" ),
-                                        tr( "Note that it's using the same data source." ),
+                                        dupLayer->providerType() != QLatin1String( "memory" ) ? tr( "Note that it's using the same data source." ) : QString(),
                                         Qgis::Info, messageTimeout() );
 
     if ( !newSelection )
@@ -11550,9 +11691,7 @@ QMap< QString, int > QgisApp::optionsPagesMap()
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Network" ), 13 );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Locator" ), 14 );
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Advanced" ), 15 );
-#ifdef HAVE_OPENCL
     sOptionsPagesMap.insert( QCoreApplication::translate( "QgsOptionsBase", "Acceleration" ), 16 );
-#endif
   } );
 
   QMap< QString, int > map = sOptionsPagesMap;
@@ -12224,6 +12363,7 @@ void QgisApp::new3DMapCanvas()
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
     map->setLayers( mMapCanvas->layers() );
+    map->setTemporalRange( mMapCanvas->temporalRange() );
 
     map->setTransformContext( QgsProject::instance()->transformContext() );
     map->setPathResolver( QgsProject::instance()->pathResolver() );
@@ -12273,6 +12413,7 @@ Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name
   map3DWidget->setWindowTitle( name );
   map3DWidget->mapCanvas3D()->setObjectName( name );
   map3DWidget->setMainCanvas( mMapCanvas );
+  map3DWidget->mapCanvas3D()->setTemporalController( mTemporalControllerWidget->temporalController() );
   return map3DWidget;
 #else
   Q_UNUSED( name )
@@ -14043,6 +14184,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionIdentify->setEnabled( true );
       break;
 
+    case QgsMapLayerType::VectorTileLayer:
+      // TODO
+      break;
+
     case QgsMapLayerType::PluginLayer:
       break;
 
@@ -14508,7 +14653,7 @@ void QgisApp::generateProjectAttachedFiles( QgsStringMap &files )
   previewImage->deleteLater();
 }
 
-void QgisApp::createPreviewImage( const QString &path )
+void QgisApp::createPreviewImage( const QString &path, const QIcon &icon )
 {
   // Render the map canvas
   QSize previewSize( 250, 177 ); // h = w / std::sqrt(2)
@@ -14519,6 +14664,13 @@ void QgisApp::createPreviewImage( const QString &path )
   QPixmap previewImage( previewSize );
   QPainter previewPainter( &previewImage );
   mMapCanvas->render( &previewPainter, QRect( QPoint(), previewSize ), previewRect );
+
+  if ( !icon.isNull() )
+  {
+    QPixmap pixmap = icon.pixmap( QSize( 24, 24 ) );
+    previewPainter.drawPixmap( QPointF( 250 - 24 - 5, 177 - 24 - 5 ), pixmap );
+  }
+  previewPainter.end();
 
   // Save
   previewImage.save( path );
@@ -14992,6 +15144,12 @@ void QgisApp::showLayerProperties( QgsMapLayer *mapLayer, const QString &page )
       mMapStyleWidget->blockUpdates( false );
 
       delete vectorLayerPropertiesDialog; // delete since dialog cannot be reused without updating code
+      break;
+    }
+
+    case QgsMapLayerType::VectorTileLayer:
+    {
+      // TODO
       break;
     }
 

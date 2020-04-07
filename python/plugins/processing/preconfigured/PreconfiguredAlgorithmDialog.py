@@ -50,7 +50,7 @@ class PreconfiguredAlgorithmDialog(AlgorithmDialog):
     def accept(self):
         context = dataobjects.createContext()
         try:
-            parameters = self.getParameterValues()
+            parameters = self.createProcessingParameters()
             self.setOutputValues()
             ok, msg = self.algorithm().checkParameterValues(parameters, context)
             if not ok:

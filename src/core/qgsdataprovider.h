@@ -143,7 +143,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     {
       if ( expandAuthConfig && mDataSourceURI.contains( QLatin1String( "authcfg" ) ) )
       {
-        QgsDataSourceUri uri( mDataSourceURI );
+        const QgsDataSourceUri uri( mDataSourceURI );
         return uri.uri( expandAuthConfig );
       }
       else
@@ -151,6 +151,16 @@ class CORE_EXPORT QgsDataProvider : public QObject
         return mDataSourceURI;
       }
     }
+
+    /**
+     * Returns a short comment for the data that this provider is
+     * providing access to (e.g. the comment for postgres table).
+     *
+     * \note The default implementation returns an empty string.
+     * \since QGIS 3.14
+     */
+    virtual QString dataComment() const { return QString(); };
+
 
     /**
      * Set the data source specification.
@@ -180,6 +190,15 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \since QGIS 3.14
      */
     virtual QgsDataProviderTemporalCapabilities *temporalCapabilities();
+
+    /**
+     * Returns the provider's temporal capabilities.
+     *
+     * This may be NULLPTR, depending on the data provider.
+     *
+     * \since QGIS 3.14
+     */
+    virtual const QgsDataProviderTemporalCapabilities *temporalCapabilities() const SIP_SKIP;
 
     /**
      * Returns the extent of the layer

@@ -98,7 +98,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     //! \deprecated since QGIS 3.14 this is now done automatically
     Q_DECL_DEPRECATED void loadFieldNames() {} SIP_DEPRECATED
 
-    //! \deprecated since QGIS 3.14 use epxressionTree()->loadFieldNames() instead
+    //! \deprecated since QGIS 3.14 use expressionTree()->loadFieldNames() instead
     Q_DECL_DEPRECATED void loadFieldNames( const QgsFields &fields ) {mExpressionTreeView->loadFieldNames( fields );} SIP_DEPRECATED
 
     /**

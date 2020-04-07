@@ -27,6 +27,7 @@
 #include "qgsmodelviewtoolselect.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
+#include "processing/models/qgsprocessingmodelgroupbox.h"
 
 #include <QShortcut>
 #include <QDesktopWidget>
@@ -161,6 +162,9 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   mToolbar->insertAction( mActionZoomIn, mRedoAction );
   mToolbar->insertSeparator( mActionZoomIn );
 
+  mGroupMenu = new QMenu( tr( "Zoom To" ), this );
+  mMenuView->insertMenu( mActionZoomIn, mGroupMenu );
+  connect( mGroupMenu, &QMenu::aboutToShow, this, &QgsModelDesignerDialog::populateZoomToMenu );
 
   QgsProcessingToolboxProxyModel::Filters filters = QgsProcessingToolboxProxyModel::FilterModeler;
   if ( settings.value( QStringLiteral( "Processing/Configuration/SHOW_ALGORITHMS_KNOWN_ISSUES" ), false ).toBool() )
@@ -269,7 +273,18 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
     mIgnoreUndoStackChanges--;
   } );
 
+  connect( mActionAddGroupBox, &QAction::triggered, this, [ = ]
+  {
+    const QPointF viewCenter = mView->mapToScene( mView->viewport()->rect().center() );
+    QgsProcessingModelGroupBox group;
+    group.setPosition( viewCenter );
+    group.setDescription( tr( "New Group" ) );
 
+    beginUndoCommand( tr( "Add Group Box" ) );
+    model()->addGroupBox( group );
+    repaintModel();
+    endUndoCommand();
+  } );
   updateWindowTitle();
 }
 
@@ -356,6 +371,7 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 
   mScene = scene;
   mScene->setParent( this );
+  mScene->setChildAlgorithmResults( mChildResults );
 
   mView->setModelScene( mScene );
 
@@ -435,6 +451,20 @@ bool QgsModelDesignerDialog::checkForUnsavedChanges()
   {
     return true;
   }
+}
+
+void QgsModelDesignerDialog::setLastRunChildAlgorithmResults( const QVariantMap &results )
+{
+  mChildResults = results;
+  if ( mScene )
+    mScene->setChildAlgorithmResults( mChildResults );
+}
+
+void QgsModelDesignerDialog::setLastRunChildAlgorithmInputs( const QVariantMap &inputs )
+{
+  mChildInputs = inputs;
+  if ( mScene )
+    mScene->setChildAlgorithmInputs( mChildInputs );
 }
 
 void QgsModelDesignerDialog::zoomIn()
@@ -617,6 +647,10 @@ void QgsModelDesignerDialog::deleteSelected()
       return true;
     else if ( dynamic_cast< QgsModelCommentGraphicItem *>( p2 ) )
       return false;
+    else if ( dynamic_cast< QgsModelGroupBoxGraphicItem *>( p1 ) )
+      return true;
+    else if ( dynamic_cast< QgsModelGroupBoxGraphicItem *>( p2 ) )
+      return false;
     else if ( dynamic_cast< QgsModelOutputGraphicItem *>( p1 ) )
       return true;
     else if ( dynamic_cast< QgsModelOutputGraphicItem *>( p2 ) )
@@ -674,6 +708,23 @@ void QgsModelDesignerDialog::deleteSelected()
 
   mBlockRepaints = false;
   repaintModel();
+}
+
+void QgsModelDesignerDialog::populateZoomToMenu()
+{
+  mGroupMenu->clear();
+  for ( const QgsProcessingModelGroupBox &box : model()->groupBoxes() )
+  {
+    if ( QgsModelComponentGraphicItem *item = mScene->groupBoxItem( box.uuid() ) )
+    {
+      QAction *zoomAction = new QAction( box.description(), mGroupMenu );
+      connect( zoomAction, &QAction::triggered, this, [ = ]
+      {
+        mView->centerOn( item );
+      } );
+      mGroupMenu->addAction( zoomAction );
+    }
+  }
 }
 
 bool QgsModelDesignerDialog::isDirty() const

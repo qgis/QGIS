@@ -22,6 +22,22 @@
 #include <sqlite3.h>
 #include <spatialite.h>
 
+// Define this variable to print all spatialite SQL statements
+#ifdef SPATIALITE_PRINT_ALL_SQL
+// Debugging code
+#include <QDebug>
+#include <QThread>
+static int trace_callback( unsigned, void *ctx, void *p, void * )
+{
+  sqlite3_stmt *stmt = ( sqlite3_stmt * )p;
+  char *sql = sqlite3_expanded_sql( stmt );
+  qDebug() << "SPATIALITE" << QThread::currentThreadId() << ( sqlite3 * ) ctx << sql;
+  sqlite3_free( sql );
+  return 0;
+}
+#endif
+
+
 int spatialite_database_unique_ptr::open( const QString &path )
 {
   auto &deleter = get_deleter();
@@ -53,6 +69,16 @@ int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, con
 
   if ( result == SQLITE_OK )
     spatialite_init_ex( database, deleter.mSpatialiteContext, 0 );
+
+#ifdef SPATIALITE_PRINT_ALL_SQL
+  // Log all queries
+  sqlite3_trace_v2(
+    database,
+    SQLITE_TRACE_STMT,
+    trace_callback,
+    database
+  );
+#endif
 
   return result;
 }

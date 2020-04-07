@@ -14,7 +14,8 @@
 class QgsFieldModel : QAbstractItemModel
 {
 %Docstring
-The QgsFieldModel class is a model to display the list of fields of a layer in widgets.
+The QgsFieldModel class is a model to display the list of fields in widgets
+(optionally associated with a vector layer).
 If allowed, expressions might be added to the end of the model.
 It can be associated with a QgsMapLayerModel to dynamically display a layer and its fields.
 
@@ -38,6 +39,7 @@ It can be associated with a QgsMapLayerModel to dynamically display a layer and 
       IsEmptyRole,
       EditorWidgetType,
       JoinedFieldIsEditable,
+      FieldIsWidgetEditable,
     };
 
     explicit QgsFieldModel( QObject *parent /TransferThis/ = 0 );

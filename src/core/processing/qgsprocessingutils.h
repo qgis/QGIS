@@ -26,6 +26,8 @@
 #include "qgsprocessing.h"
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
+#include "qgsproxyfeaturesink.h"
+#include "qgsremappingproxyfeaturesink.h"
 
 class QgsMeshLayer;
 class QgsProject;
@@ -34,6 +36,7 @@ class QgsMapLayerStore;
 class QgsProcessingFeedback;
 class QgsProcessingFeatureSource;
 class QgsProcessingAlgorithm;
+class QgsVectorTileLayer;
 
 #include <QString>
 #include <QVariant>
@@ -220,7 +223,8 @@ class CORE_EXPORT QgsProcessingUtils
         QgsWkbTypes::Type geometryType,
         const QgsCoordinateReferenceSystem &crs,
         const QVariantMap &createOptions = QVariantMap(),
-        QgsFeatureSink::SinkFlags sinkFlags = nullptr ) SIP_FACTORY;
+        QgsFeatureSink::SinkFlags sinkFlags = nullptr,
+        QgsRemappingSinkDefinition *remappingDefinition = nullptr ) SIP_FACTORY;
 #endif
 
     /**
@@ -409,6 +413,7 @@ class CORE_EXPORT QgsProcessingUtils
   private:
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsMeshLayer *layer );
+    static bool canUseLayer( const QgsVectorTileLayer *layer );
     static bool canUseLayer( const QgsVectorLayer *layer,
                              const QList< int > &sourceTypes = QList< int >() );
 

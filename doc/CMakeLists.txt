@@ -99,6 +99,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/scalebar
       ${CMAKE_SOURCE_DIR}/src/core/symbology
       ${CMAKE_SOURCE_DIR}/src/core/validity
+      ${CMAKE_SOURCE_DIR}/src/core/vectortile
       ${CMAKE_SOURCE_DIR}/src/gui
       ${CMAKE_SOURCE_DIR}/src/gui/auth
       ${CMAKE_SOURCE_DIR}/src/gui/attributetable
@@ -117,6 +118,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/processing/models
       ${CMAKE_SOURCE_DIR}/src/gui/raster
       ${CMAKE_SOURCE_DIR}/src/gui/symbology
+      ${CMAKE_SOURCE_DIR}/src/gui/vectortile
       ${CMAKE_SOURCE_DIR}/src/analysis
       ${CMAKE_SOURCE_DIR}/src/analysis/mesh
       ${CMAKE_SOURCE_DIR}/src/analysis/interpolation

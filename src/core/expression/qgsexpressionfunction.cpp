@@ -57,6 +57,7 @@
 #include "qgsapplication.h"
 #include "qgis.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsunittypes.h"
 
 typedef QList<QgsExpressionFunction *> ExpressionFunctionList;
 
@@ -4785,6 +4786,8 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
     QVariant result = QVariant::fromValue( extentGeom );
     return result;
   }
+  else if ( QString::compare( layerProperty, QStringLiteral( "distance_units" ), Qt::CaseInsensitive ) == 0 )
+    return QgsUnitTypes::encodeUnit( layer->crs().mapUnits() );
   else if ( QString::compare( layerProperty, QStringLiteral( "type" ), Qt::CaseInsensitive ) == 0 )
   {
     switch ( layer->type() )
@@ -4795,6 +4798,8 @@ static QVariant fcnGetLayerProperty( const QVariantList &values, const QgsExpres
         return QCoreApplication::translate( "expressions", "Raster" );
       case QgsMapLayerType::MeshLayer:
         return QCoreApplication::translate( "expressions", "Mesh" );
+      case QgsMapLayerType::VectorTileLayer:
+        return QCoreApplication::translate( "expressions", "Vector Tile" );
       case QgsMapLayerType::PluginLayer:
         return QCoreApplication::translate( "expressions", "Plugin" );
     }

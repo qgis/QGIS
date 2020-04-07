@@ -66,6 +66,28 @@ class GUI_EXPORT QgsProcessingContextGenerator
 };
 
 /**
+ * \class QgsProcessingParametersGenerator
+ *
+ * An interface for objects which can create sets of parameter values for processing algorithms.
+ *
+ * \ingroup gui
+ * \since QGIS 3.14
+ */
+class GUI_EXPORT QgsProcessingParametersGenerator
+{
+  public:
+
+    /**
+     * This method needs to be reimplemented in all classes which implement this interface
+     * and return a algorithm parameters.
+     */
+    virtual QVariantMap createProcessingParameters() = 0;
+
+    virtual ~QgsProcessingParametersGenerator() = default;
+};
+
+
+/**
  * \ingroup gui
  * \class QgsProcessingParameterWidgetContext
  * Contains settings which reflect the context in which a Processing parameter widget is shown, e.g., the
@@ -345,10 +367,24 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
     QVariant parameterValue() const;
 
     /**
+     * Returns any custom properties set by the wrapper.
+     */
+    virtual QVariantMap customProperties() const;
+
+    /**
      * Registers a Processing context \a generator class that will be used to retrieve
      * a Processing context for the wrapper when required.
      */
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
+
+    /**
+     * Registers a Processing parameters \a generator class that will be used to retrieve
+     * algorithm parameters for the wrapper when required (e.g. when a wrapper needs access
+     * to other parameter's values).
+     *
+     * \since QGIS 3.14
+     */
+    void registerProcessingParametersGenerator( QgsProcessingParametersGenerator *generator );
 
     /**
      * Called after all wrappers have been created within a particular dialog or context,
@@ -429,6 +465,7 @@ class GUI_EXPORT QgsAbstractProcessingParameterWidgetWrapper : public QObject, p
   protected:
 
     QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
+    QgsProcessingParametersGenerator *mParametersGenerator = nullptr;
     QgsProcessingParameterWidgetContext mWidgetContext;
 
   private slots:

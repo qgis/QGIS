@@ -37,14 +37,6 @@ Represents a mesh time settings for mesh datasets
     };
 
     QgsMeshTimeSettings();
-    QgsMeshTimeSettings( double relativeTimeOffsetHours, const QString &relativeTimeFormat );
-%Docstring
-Constructs relative time format settings with defined offset in hours
-%End
-    QgsMeshTimeSettings( const QDateTime &absoluteTimeReferenceTime, const QString &absoluteTimeFormat );
-%Docstring
-Constructs absolute time format settings with defined reference time
-%End
 
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
@@ -53,24 +45,6 @@ Writes configuration to a new DOM element
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 %Docstring
 Reads configuration from the given DOM element
-%End
-
-    bool useAbsoluteTime() const;
-%Docstring
-Returns whether to use absolute time format
-%End
-    void setUseAbsoluteTime( bool useAbsoluteTime );
-%Docstring
-Sets use absolute time flag
-%End
-
-    double relativeTimeOffsetHours() const;
-%Docstring
-Returns number of offset hours for relative time formatting
-%End
-    void setRelativeTimeOffsetHours( double relativeTimeOffsetHours );
-%Docstring
-Sets number of offset hours for relative time formatting
 %End
 
     QString relativeTimeFormat() const;
@@ -82,15 +56,6 @@ Returns format used for relative time
 Sets format used for relative time
 %End
 
-    QDateTime absoluteTimeReferenceTime() const;
-%Docstring
-Returns reference time used for absolute time format
-%End
-    void setAbsoluteTimeReferenceTime( const QDateTime &absoluteTimeReferenceTime );
-%Docstring
-Sets reference time used for absolute time format
-%End
-
     QString absoluteTimeFormat() const;
 %Docstring
 Returns format used for absolute time
@@ -98,20 +63,6 @@ Returns format used for absolute time
     void setAbsoluteTimeFormat( const QString &absoluteTimeFormat );
 %Docstring
 Sets format used for absolute time
-%End
-
-    TimeUnit providerTimeUnit() const;
-%Docstring
-Returns the provider time unit
-
-.. versionadded:: 3.12
-%End
-
-    void setProviderTimeUnit( const TimeUnit &providerTimeUnit );
-%Docstring
-Sets the provider time unit
-
-.. versionadded:: 3.12
 %End
 
 };

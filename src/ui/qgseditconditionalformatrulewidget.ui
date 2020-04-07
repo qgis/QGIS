@@ -317,11 +317,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QFontComboBox" name="mFontFamilyCmbBx">
-          <property name="editable">
-           <bool>false</bool>
-          </property>
-         </widget>
+         <widget class="QFontComboBox" name="mFontFamilyCmbBx" />
         </item>
        </layout>
       </item>

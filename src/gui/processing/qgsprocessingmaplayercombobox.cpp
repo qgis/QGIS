@@ -50,11 +50,6 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
   layout->addWidget( mCombo );
   layout->setAlignment( mCombo, Qt::AlignTop );
 
-  mSelectButton = new QToolButton();
-  mSelectButton->setText( QString( QChar( 0x2026 ) ) );
-  mSelectButton->setToolTip( tr( "Select input" ) );
-  layout->addWidget( mSelectButton );
-  layout->setAlignment( mSelectButton, Qt::AlignTop );
   int iconSize = QgsGuiUtils::scaleIconSize( 24 );
   if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && type == QgsProcessingGui::Standard )
   {
@@ -72,8 +67,7 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     layout->setAlignment( mIterateButton, Qt::AlignTop );
   }
 
-  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() && ( type == QgsProcessingGui::Standard
-       || type == QgsProcessingGui::Batch ) )
+  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
   {
     mSettingsButton = new QToolButton();
     mSettingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionOptions.svg" ) ) );
@@ -87,7 +81,15 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     connect( mSettingsButton, &QToolButton::clicked, this, &QgsProcessingMapLayerComboBox::showSourceOptions );
     layout->addWidget( mSettingsButton );
     layout->setAlignment( mSettingsButton, Qt::AlignTop );
+  }
 
+  mSelectButton = new QToolButton();
+  mSelectButton->setText( QString( QChar( 0x2026 ) ) );
+  mSelectButton->setToolTip( tr( "Select input" ) );
+  layout->addWidget( mSelectButton );
+  layout->setAlignment( mSelectButton, Qt::AlignTop );
+  if ( mParameter->type() == QgsProcessingParameterFeatureSource::typeName() )
+  {
     mFeatureSourceMenu = new QMenu( this );
     QAction *selectFromFileAction = new QAction( tr( "Select File…" ), mFeatureSourceMenu );
     connect( selectFromFileAction, &QAction::triggered, this, &QgsProcessingMapLayerComboBox::selectFromFile );
@@ -95,7 +97,6 @@ QgsProcessingMapLayerComboBox::QgsProcessingMapLayerComboBox( const QgsProcessin
     QAction *browseForLayerAction = new QAction( tr( "Browse for Layer…" ), mFeatureSourceMenu );
     connect( browseForLayerAction, &QAction::triggered, this, &QgsProcessingMapLayerComboBox::browseForLayer );
     mFeatureSourceMenu->addAction( browseForLayerAction );
-
     mSelectButton->setMenu( mFeatureSourceMenu );
     mSelectButton->setPopupMode( QToolButton::InstantPopup );
   }

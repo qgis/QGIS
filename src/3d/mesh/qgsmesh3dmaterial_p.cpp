@@ -231,7 +231,11 @@ class ArrowsGridTexture: public Qt3DRender::QAbstractTextureImage
 };
 
 
-QgsMesh3dMaterial::QgsMesh3dMaterial( QgsMeshLayer *layer, const QgsVector3D &origin, const QgsMesh3DSymbol &symbol, MagnitudeType magnitudeType ):
+QgsMesh3dMaterial::QgsMesh3dMaterial( QgsMeshLayer *layer,
+                                      const QgsDateTimeRange &timeRange,
+                                      const QgsVector3D &origin,
+                                      const QgsMesh3DSymbol &symbol,
+                                      MagnitudeType magnitudeType ):
   mSymbol( symbol ),
   mMagnitudeType( magnitudeType ),
   mOrigin( origin )
@@ -239,7 +243,7 @@ QgsMesh3dMaterial::QgsMesh3dMaterial( QgsMeshLayer *layer, const QgsVector3D &or
   Qt3DRender::QEffect *eff = new Qt3DRender::QEffect( this );
 
   configure();
-  configureArrows( layer );
+  configureArrows( layer, timeRange );
 
   eff->addTechnique( mTechnique );
   setEffect( eff );
@@ -310,12 +314,12 @@ void QgsMesh3dMaterial::configure()
   mTechnique->addParameter( new Qt3DRender::QParameter( "isScalarMagnitude", ( mMagnitudeType == QgsMesh3dMaterial::ScalarDataSet ) ) );
 }
 
-void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer )
+void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange )
 {
   if ( !layer )
     return;
 
-  QgsMeshDatasetIndex datasetIndex = layer->rendererSettings().activeVectorDataset();
+  QgsMeshDatasetIndex datasetIndex = layer->activeVectorDatasetAtTime( timeRange );
 
   mTechnique->addParameter( new Qt3DRender::QParameter( "arrowsSpacing", float( mSymbol.arrowsSpacing() ) ) ) ;
   QColor arrowsColor = layer->rendererSettings().vectorSettings( datasetIndex.group() ).color();
@@ -327,7 +331,7 @@ void QgsMesh3dMaterial::configureArrows( QgsMeshLayer *layer )
   QSize gridSize;
   QgsPointXY minCorner;
   Qt3DRender::QParameter *arrowsEnabledParameter = new Qt3DRender::QParameter( "arrowsEnabled", false );
-  if ( mMagnitudeType != MagnitudeType::ScalarDataSet || !mSymbol.arrowsEnabled() )
+  if ( mMagnitudeType != MagnitudeType::ScalarDataSet || !mSymbol.arrowsEnabled() || meta.isScalar() || !datasetIndex.isValid() )
     arrowsEnabledParameter->setValue( false );
   else
   {
