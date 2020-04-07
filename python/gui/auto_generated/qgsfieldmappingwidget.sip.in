@@ -55,6 +55,21 @@ Returns the underlying mapping model
 Returns a list of Field objects representing the current status of the underlying mapping model
 %End
 
+    QMap< QString, QgsProperty > fieldPropertyMap() const;
+%Docstring
+Returns a map of destination field name to QgsProperty definition for field value,
+representing the current status of the widget.
+
+.. seealso:: :py:func:`setFieldPropertyMap`
+%End
+
+    void setFieldPropertyMap( const QMap< QString, QgsProperty > &map );
+%Docstring
+Sets a map of destination field name to QgsProperty definition for field value.
+
+.. seealso:: :py:func:`fieldPropertyMap`
+%End
+
     QItemSelectionModel *selectionModel();
 %Docstring
 Returns the selection model

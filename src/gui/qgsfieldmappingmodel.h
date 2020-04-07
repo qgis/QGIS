@@ -22,6 +22,7 @@
 #include "qgsfields.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsfieldconstraints.h"
+#include "qgsproperty.h"
 #include "qgis_gui.h"
 
 
@@ -96,6 +97,21 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
 
     //! Returns a list of Field objects representing the current status of the model
     QList<QgsFieldMappingModel::Field> mapping() const;
+
+    /**
+     * Returns a map of destination field name to QgsProperty definition for field value,
+     * representing the current status of the model.
+     *
+     * \see setFieldPropertyMap()
+     */
+    QMap< QString, QgsProperty > fieldPropertyMap() const;
+
+    /**
+     * Sets a map of destination field name to QgsProperty definition for field value.
+     *
+     * \see fieldPropertyMap()
+     */
+    void setFieldPropertyMap( const QMap< QString, QgsProperty > &map );
 
     //! Appends a new \a field to the model, with an optional \a expression
     void appendField( const QgsField &field, const QString &expression = QString() );

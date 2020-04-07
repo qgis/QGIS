@@ -17,6 +17,7 @@ from qgis.core import (
     QgsFields,
     QgsField,
     QgsFieldConstraints,
+    QgsProperty
 )
 from qgis.gui import (
     QgsFieldMappingWidget,
@@ -172,6 +173,42 @@ class TestPyQgsFieldMappingModel(unittest.TestCase):
         self.assertEqual(model.data(model.index(1, 1), Qt.DisplayRole), 'destination_field2')
         self.assertEqual(model.data(model.index(2, 0), Qt.DisplayRole), '"source_field3"')
         self.assertEqual(model.data(model.index(2, 1), Qt.DisplayRole), 'destination_field3')
+
+    def testProperties(self):
+        model = QgsFieldMappingModel(self.source_fields, self.destination_fields)
+        model.setDestinationFields(self.destination_fields, {'destination_field1': '5',
+                                                             'destination_field2': 'source_field2',
+                                                             'destination_field3': 'source_field2 * @myvar'})
+
+        mapping = model.mapping()
+        self.assertEqual(mapping[0].field.name(), 'destination_field1')
+        self.assertEqual(mapping[1].field.name(), 'destination_field2')
+        self.assertEqual(mapping[2].field.name(), 'destination_field3')
+        self.assertEqual(mapping[0].expression, '5')
+        self.assertEqual(mapping[1].expression, 'source_field2')
+        self.assertEqual(mapping[2].expression, 'source_field2 * @myvar')
+
+        self.assertEqual(model.fieldPropertyMap(), {'destination_field1': QgsProperty.fromExpression('5'),
+                                                    'destination_field2': QgsProperty.fromField('source_field2'),
+                                                    'destination_field3': QgsProperty.fromExpression('source_field2 * @myvar'),
+                                                    })
+
+        model = QgsFieldMappingModel(self.source_fields, self.destination_fields)
+        self.assertEqual(model.fieldPropertyMap(), {'destination_field1': QgsProperty.fromField('source_field2'),
+                                                    'destination_field2': QgsProperty.fromField('source_field1'),
+                                                    'destination_field3': QgsProperty.fromExpression(''),
+                                                    })
+
+        model.setFieldPropertyMap({
+            'destination_field1': QgsProperty.fromField('source_field1'),
+            'destination_field2': QgsProperty.fromExpression('55*6'),
+            'destination_field3': QgsProperty.fromValue(6),
+        })
+        self.assertEqual(model.fieldPropertyMap(), {
+            'destination_field1': QgsProperty.fromField('source_field1'),
+            'destination_field2': QgsProperty.fromExpression('55*6'),
+            'destination_field3': QgsProperty.fromExpression('6'),
+        })
 
     def testWidget(self):
         """Test widget operations"""

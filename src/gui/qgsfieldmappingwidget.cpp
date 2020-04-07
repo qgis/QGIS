@@ -67,6 +67,16 @@ QList<QgsFieldMappingModel::Field> QgsFieldMappingWidget::mapping() const
   return model()->mapping();
 }
 
+QMap<QString, QgsProperty> QgsFieldMappingWidget::fieldPropertyMap() const
+{
+  return model()->fieldPropertyMap();
+}
+
+void QgsFieldMappingWidget::setFieldPropertyMap( const QMap<QString, QgsProperty> &map )
+{
+  model()->setFieldPropertyMap( map );
+}
+
 QItemSelectionModel *QgsFieldMappingWidget::selectionModel()
 {
   return mTableView->selectionModel();
