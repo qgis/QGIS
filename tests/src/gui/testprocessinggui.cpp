@@ -7349,6 +7349,28 @@ void TestProcessingGui::testOutputDefinitionWidget()
   panel3.setValue( QgsProcessing::TEMPORARY_OUTPUT );
   QCOMPARE( skipSpy3.count(), 3 );
   QCOMPARE( changedSpy3.count(), 3 );
+
+  // with remapping
+  def = QgsProcessingOutputLayerDefinition( QStringLiteral( "test.shp" ) );
+  QgsRemappingSinkDefinition remap;
+  QMap< QString, QgsProperty > fieldMap;
+  fieldMap.insert( QStringLiteral( "field1" ), QgsProperty::fromField( QStringLiteral( "source1" ) ) );
+  fieldMap.insert( QStringLiteral( "field2" ), QgsProperty::fromExpression( QStringLiteral( "source || source2" ) ) );
+  remap.setFieldMap( fieldMap );
+  def.setRemappingDefinition( remap );
+
+  panel3.setValue( def );
+  v = panel3.value();
+  QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
+  QVERIFY( v.value< QgsProcessingOutputLayerDefinition>().useRemapping() );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().remappingDefinition().fieldMap().size(), 2 );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().remappingDefinition().fieldMap().value( QStringLiteral( "field1" ) ), QgsProperty::fromField( QStringLiteral( "source1" ) ) );
+  QCOMPARE( v.value< QgsProcessingOutputLayerDefinition>().remappingDefinition().fieldMap().value( QStringLiteral( "field2" ) ), QgsProperty::fromExpression( QStringLiteral( "source || source2" ) ) );
+
+  panel3.setValue( QStringLiteral( "other.shp" ) );
+  v = panel3.value();
+  QVERIFY( v.canConvert< QgsProcessingOutputLayerDefinition>() );
+  QVERIFY( !v.value< QgsProcessingOutputLayerDefinition>().useRemapping() );
 }
 
 void TestProcessingGui::testOutputDefinitionWidgetVectorOut()
