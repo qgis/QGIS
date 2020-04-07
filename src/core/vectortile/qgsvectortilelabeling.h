@@ -81,7 +81,7 @@ class CORE_EXPORT QgsVectorTileLabeling
      * Factory for label provider implementation
      * \note not available in Python bindings
      */
-    virtual QgsVectorTileLabelProvider *provider( QgsVectorTileLayer *layer ) const SIP_SKIP = 0;
+    virtual QgsVectorTileLabelProvider *provider( QgsVectorTileLayer *layer ) const SIP_SKIP { Q_UNUSED( layer ) return nullptr; }
 
     //! Writes labeling properties to given XML element
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const = 0;
