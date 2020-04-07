@@ -207,8 +207,11 @@ class CORE_EXPORT QgsAbstractPropertyCollection
     /**
      * Returns the set of any fields referenced by the active properties from the collection.
      * \param context expression context the properties will be evaluated against.
+     * \note The optional argument ignoreContext has been added in QGIS 3.14. When set to true,
+     * even fields not set in context's fields() will be reported - this is useful e.g. with vector tiles
+     * where the actual available field names may not be known beforehand.
      */
-    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
+    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const = 0;
 
     /**
      * Returns TRUE if the collection contains an active property with the specified key.
@@ -325,7 +328,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
 
     QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const override;
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
-    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const override;
     bool isActive( int key ) const override;
     bool hasActiveProperties() const override;
     bool hasDynamicProperties() const override;
@@ -476,7 +479,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * Returns the set of any fields referenced by the active properties from the stack.
      * \param context expression context the properties will be evaluated against.
      */
-    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext(), bool ignoreContext = false ) const override;
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
     QSet<int> propertyKeys() const override;

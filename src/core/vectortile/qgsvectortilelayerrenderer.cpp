@@ -26,6 +26,9 @@
 #include "qgsvectortileloader.h"
 #include "qgsvectortileutils.h"
 
+#include "qgslabelingengine.h"
+#include "qgsvectortilelabeling.h"
+
 
 QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -37,6 +40,19 @@ QgsVectorTileLayerRenderer::QgsVectorTileLayerRenderer( QgsVectorTileLayer *laye
   , mDrawTileBoundaries( layer->isTileBorderRenderingEnabled() )
   , mFeedback( new QgsFeedback )
 {
+
+  if ( QgsLabelingEngine *engine = context.labelingEngine() )
+  {
+    if ( layer->labeling() )
+    {
+      mLabelProvider = layer->labeling()->provider( layer );
+      if ( mLabelProvider )
+      {
+        engine->addProvider( mLabelProvider );
+      }
+    }
+  }
+
 }
 
 bool QgsVectorTileLayerRenderer::render()
@@ -99,11 +115,31 @@ bool QgsVectorTileLayerRenderer::render()
 
   mRenderer->startRender( *renderContext(), mTileZoom, mTileRange );
 
-  QMap<QString, QSet<QString> > requiredFields = mRenderer->usedAttributes( *renderContext() );
+  QMap<QString, QSet<QString> > requiredFields = mRenderer->usedAttributes( ctx );
+
+  if ( mLabelProvider )
+  {
+    QMap<QString, QSet<QString> > requiredFieldsLabeling = mLabelProvider->usedAttributes( mTileZoom );
+    for ( QString layerName : requiredFieldsLabeling.keys() )
+    {
+      requiredFields[layerName].unite( requiredFieldsLabeling[layerName] );
+    }
+  }
 
   QMap<QString, QgsFields> perLayerFields;
   for ( QString layerName : requiredFields.keys() )
     mPerLayerFields[layerName] = QgsVectorTileUtils::makeQgisFields( requiredFields[layerName] );
+
+  if ( mLabelProvider )
+  {
+    mLabelProvider->setFields( requiredFields );
+    QSet<QString> attributeNames;  // we don't need this - already got referenced columns in provider constructor
+    if ( !mLabelProvider->prepare( ctx, attributeNames ) )
+    {
+      ctx.labelingEngine()->removeProvider( mLabelProvider );
+      mLabelProvider = nullptr; // provider is deleted by the engine
+    }
+  }
 
   if ( !isAsync )
   {
@@ -175,6 +211,9 @@ void QgsVectorTileLayerRenderer::decodeAndDrawTile( const QgsVectorTileRawData &
 
   mRenderer->renderTile( tile, ctx );
   mTotalDrawTime += tDraw.elapsed();
+
+  if ( mLabelProvider )
+    mLabelProvider->registerTileFeatures( tile, ctx );
 
   if ( mDrawTileBoundaries )
   {

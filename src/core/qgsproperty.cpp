@@ -392,7 +392,7 @@ bool QgsProperty::prepare( const QgsExpressionContext &context ) const
   return false;
 }
 
-QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context ) const
+QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context, bool ignoreContext ) const
 {
   if ( !d->active )
     return QSet<QString>();
@@ -413,6 +413,11 @@ QSet<QString> QgsProperty::referencedFields( const QgsExpressionContext &context
 
     case ExpressionBasedProperty:
     {
+      if ( ignoreContext )
+      {
+        return d->expression.referencedColumns();
+      }
+
       if ( d->expressionIsInvalid )
         return QSet< QString >();
 
