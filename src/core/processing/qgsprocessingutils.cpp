@@ -719,7 +719,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
     bool useWriter = false;
     parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter, extension );
 
-    QgsFields newFields = remappingDefinition ? remappingDefinition->destinationFields() : fields;
+    QgsFields newFields = fields;
     if ( useWriter && providerKey == QLatin1String( "ogr" ) )
     {
       // use QgsVectorFileWriter for OGR destinations instead of QgsVectorLayerImport, as that allows
@@ -740,6 +740,8 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
         {
           remappingDefinition->setDestinationWkbType( vl->wkbType() );
           remappingDefinition->setDestinationCrs( vl->crs() );
+          newFields = vl->fields();
+          remappingDefinition->setDestinationFields( newFields );
         }
         context.expressionContext().setFields( fields );
       }
@@ -781,6 +783,7 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
         {
           remappingDefinition->setDestinationWkbType( layer->wkbType() );
           remappingDefinition->setDestinationCrs( layer->crs() );
+          remappingDefinition->setDestinationFields( layer->fields() );
         }
 
         std::unique_ptr< QgsRemappingProxyFeatureSink > remapSink = qgis::make_unique< QgsRemappingProxyFeatureSink >( *remappingDefinition, layer->dataProvider(), false );
