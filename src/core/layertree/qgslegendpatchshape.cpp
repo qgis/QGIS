@@ -51,6 +51,28 @@ void QgsLegendPatchShape::setPreserveAspectRatio( bool preserveAspectRatio )
   mPreserveAspectRatio = preserveAspectRatio;
 }
 
+QVector<QPolygonF> QgsLegendPatchShape::defaultPatch( QgsSymbol::SymbolType type, QSizeF size )
+{
+  switch ( type )
+  {
+    case QgsSymbol::Marker:
+      return QVector< QPolygonF >() << ( QPolygonF() << QPointF( size.width() / 2, size.height() / 2 ) );
+
+    case QgsSymbol::Line:
+      // we're adding 0.5 to get rid of blurred preview:
+      // drawing antialiased lines of width 1 at (x,0)-(x,100) creates 2px line
+      return QVector< QPolygonF >() << ( QPolygonF()  << QPointF( 0, int( size.height() / 2 ) + 0.5 ) << QPointF( size.width(), int( size.height() / 2 ) + 0.5 ) );
+
+    case QgsSymbol::Fill:
+      return QVector< QPolygonF >() << QRectF( QPointF( 0, 0 ), QPointF( size.width(), size.height() ) );
+
+    case QgsSymbol::Hybrid:
+      return QVector<QPolygonF>();
+  }
+
+  return QVector<QPolygonF>();
+}
+
 QgsSymbol::SymbolType QgsLegendPatchShape::symbolType() const
 {
   return mSymbolType;
