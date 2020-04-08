@@ -115,12 +115,20 @@ QString QgsHanaUtils::quotedValue( const QVariant &value )
   }
 }
 
+QString QgsHanaUtils::toQString( const NString &str )
+{
+  if ( str.isNull() )
+    return QString();
+  else
+    return QString::fromStdU16String( *str );
+}
+
 QString QgsHanaUtils::toQString( const String &str )
 {
   if ( str.isNull() )
     return QString();
   else
-    return QString( str->c_str() );
+    return QString::fromUtf8( str->c_str() );
 }
 
 QVariant QgsHanaUtils::toVariant( const Byte &value )
@@ -225,7 +233,7 @@ QVariant QgsHanaUtils::toVariant( const String &value )
   if ( value.isNull() )
     return QVariant( QVariant::String );
   else
-    return QVariant( QString::fromStdString( *value ) );
+    return QVariant( QString::fromUtf8( value->c_str() ) );
 }
 
 QVariant QgsHanaUtils::toVariant( const String &value, int type, bool isSigned )

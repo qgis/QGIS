@@ -1,0 +1,355 @@
+/***************************************************************************
+   qgshanaproviderconnection.cpp  -  QgsHanaProviderConnection
+   --------------------------------------
+   Date      : 07-04-2020
+   Copyright : (C) SAP SE
+   Author    : Maksim Rylov
+ ***************************************************************************/
+
+/***************************************************************************
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ ***************************************************************************/
+#include "qgshanaproviderconnection.h"
+#include "qgshanaconnectionpool.h"
+#include "qgshanaexception.h"
+#include "qgshanaprovider.h"
+#include "qgshanaresultset.h"
+#include "qgshanasettings.h"
+#include "qgshanautils.h"
+#include "qgsapplication.h"
+#include "qgsexception.h"
+#include "qgssettings.h"
+
+#include "odbc/Connection.h"
+#include "odbc/Exception.h"
+#include "odbc/ResultSet.h"
+#include "odbc/ResultSetMetaData.h"
+#include "odbc/Statement.h"
+
+using namespace odbc;
+
+QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &name )
+  : QgsAbstractDatabaseProviderConnection( name )
+{
+  QgsHanaSettings settings( name, true );
+  setUri( settings.toDataSourceUri().uri() );
+  setCapabilities();
+}
+
+QgsHanaProviderConnection::QgsHanaProviderConnection( const QString &uri, const QVariantMap &configuration ):
+  QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
+{
+  setCapabilities();
+}
+
+void QgsHanaProviderConnection::setCapabilities()
+{
+     /*
+      * Capability::DropSchema         | CREATE SCHEMA from SYSTEMPRIVILEGE
+      * Capability::CreateSchema       | CREATE SCHEMA from SYSTEMPRIVILEGE
+      * Capability::CreateVectorTable  | TODO if possible
+      * Capability::DropVectorTable    | TODO if possible
+      * Capability::RenameVectorTable  | TODO if possible
+      * Capability::ExecuteSql         | TODO if possible
+      * Capability::SqlLayers          | TODO if possible
+      * Capability::Tables             | CATALOG READ or DATA ADMIN from SYSTEMPRIVILEGE
+      * Capability::Schemas            | CATALOG READ or DATA ADMIN from SYSTEMPRIVILEGE
+      * Capability::TableExists        | CATALOG READ or DATA ADMIN from SYSTEMPRIVILEGE
+      * Capability::Spatial,           | Always TRUE
+      */
+
+    mCapabilities =
+    {
+      Capability::CreateVectorTable,
+      Capability::DropVectorTable,
+      Capability::RenameVectorTable,
+      Capability::ExecuteSql,
+      Capability::SqlLayers,
+      Capability::Spatial
+    };
+
+    const QgsDataSourceUri dsUri { uri() };
+    QgsHanaConnectionRef connRef( dsUri );
+    ConnectionRef conn = connRef->getNativeRef();
+    StatementRef stmt = conn->createStatement();
+    QString sql = QStringLiteral( "SELECT PRIVILEGE FROM PUBLIC.EFFECTIVE_PRIVILEGES "
+                                  "WHERE USER_NAME = CURRENT_USER AND IS_VALID = 'TRUE' AND OBJECT_TYPE = 'SYSTEMPRIVILEGE'" );
+    ResultSetRef rsPrivileges = stmt->executeQuery( reinterpret_cast<const char16_t*>(sql.unicode()) );
+    while ( rsPrivileges->next() )
+    {
+      QString privType = QgsHanaUtils::toQString( *rsPrivileges->getString( 1 ) );
+      if ( privType == QStringLiteral("CREATE SCHEMA") )
+        mCapabilities |= Capability::CreateSchema | Capability::DropSchema;
+      else
+      if ( privType == QStringLiteral("CATALOG READ") || privType == QStringLiteral("DATA ADMIN") )
+         mCapabilities |= Capability::Schemas | Capability::Tables | Capability::TableExists;
+    }
+    rsPrivileges->close();
+}
+
+void QgsHanaProviderConnection::dropTable( const QString &schema, const QString &name ) const
+{
+  executeSqlStatement( QStringLiteral( "DROP TABLE %1.%2" )
+                     .arg( QgsHanaUtils::quotedIdentifier( schema ) )
+                     .arg( QgsHanaUtils::quotedIdentifier( name ) ) );
+}
+
+void QgsHanaProviderConnection::createVectorTable( const QString &schema,
+    const QString &name,
+    const QgsFields &fields,
+    QgsWkbTypes::Type wkbType,
+    const QgsCoordinateReferenceSystem &srs,
+    bool overwrite,
+    const QMap<QString,
+    QVariant> *options ) const
+{
+  checkCapability( Capability::CreateVectorTable );
+
+  QgsDataSourceUri newUri { uri() };
+  newUri.setSchema( schema );
+  newUri.setTable( name );
+  // Set geometry column if it's not aspatial
+  if ( wkbType != QgsWkbTypes::Type::Unknown &&  wkbType != QgsWkbTypes::Type::NoGeometry )
+  {
+    newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "geom" ) ).toString() );
+  }
+  QMap<int, int> map;
+  QString errCause;
+  QgsVectorLayerExporter::ExportError errCode = QgsHanaProvider::createEmptyLayer(
+        newUri.uri(),
+        fields,
+        wkbType,
+        srs,
+        overwrite,
+        &map,
+        &errCause,
+        options
+      );
+  if ( errCode != QgsVectorLayerExporter::ExportError::NoError )
+  {
+    throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
+  }
+}
+
+QString QgsHanaProviderConnection::tableUri( const QString &schema, const QString &name ) const
+{
+  const auto tableInfo { table( schema, name ) };
+
+  QgsDataSourceUri dsUri( uri() );
+  dsUri.setTable( name );
+  dsUri.setSchema( schema );
+  dsUri.setGeometryColumn( tableInfo .geometryColumn() );
+  return dsUri.uri( false );
+}
+
+void QgsHanaProviderConnection::dropVectorTable( const QString &schema, const QString &name ) const
+{
+  checkCapability( Capability::DropVectorTable );
+  dropTable( schema, name );
+}
+
+void QgsHanaProviderConnection::renameTable( const QString &schema, const QString &name, const QString &newName ) const
+{
+  executeSqlStatement( QStringLiteral( "RENAME TABLE %1.%2 TO %1.%3" )
+                     .arg( QgsHanaUtils::quotedIdentifier( schema ) )
+                     .arg( QgsHanaUtils::quotedIdentifier( name ) )
+                     .arg( QgsHanaUtils::quotedIdentifier( newName ) ) );
+}
+
+void QgsHanaProviderConnection::renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const
+{
+  checkCapability( Capability::RenameVectorTable );
+  renameTable( schema, name, newName );
+}
+
+void QgsHanaProviderConnection::createSchema( const QString &name ) const
+{
+  checkCapability( Capability::CreateSchema );
+  executeSqlStatement( QStringLiteral( "CREATE SCHEMA %1" )
+                     .arg( QgsHanaUtils::quotedIdentifier( name ) ) );
+}
+
+void QgsHanaProviderConnection::dropSchema( const QString &name,  bool force ) const
+{
+  checkCapability( Capability::DropSchema );
+  executeSqlStatement( QStringLiteral( "DROP SCHEMA %1 %2" )
+                     .arg( QgsHanaUtils::quotedIdentifier( name ) )
+                     .arg( force ? QStringLiteral( "CASCADE" ) : QString() ) );
+}
+
+QList<QVariantList> QgsHanaProviderConnection::executeSql( const QString &sql ) const
+{
+  checkCapability( Capability::ExecuteSql );
+  if (sql.trimmed().startsWith("SELECT", Qt::CaseSensitivity::CaseInsensitive))
+    return executeSqlQuery( sql );
+  else
+  {
+    executeSqlStatement(sql);
+    return QList<QVariantList>();
+  }
+}
+
+QList<QVariantList> QgsHanaProviderConnection::executeSqlQuery( const QString &sql ) const
+{
+    const QgsDataSourceUri dsUri { uri() };
+    QList<QVariantList> results;
+    QgsHanaConnectionRef conn( dsUri );
+    if ( conn.isNull() )
+      throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+
+    try
+    {
+      ConnectionRef connRef = conn->getNativeRef();
+      StatementRef stmt = connRef->createStatement();
+      QgsHanaResultSetRef resultSet = QgsHanaResultSet::create( stmt, sql );
+      ResultSetMetaDataRef metadata = resultSet->getMetadata();
+      const unsigned short nColumns = metadata->getColumnCount();
+      while (resultSet->next())
+      {
+        QVariantList row;
+        for( unsigned short i = 1; i <= nColumns; ++i)
+          row.push_back( resultSet->getValue( i ) );
+        results.push_back(row);
+      }
+      resultSet->close();
+    }
+    catch (const QgsHanaException& ex)
+    {
+      throw QgsProviderConnectionException( QString( ex.what() ) );
+    }
+
+    return results;
+}
+
+void QgsHanaProviderConnection::executeSqlStatement( const QString &sql ) const
+{
+  const QgsDataSourceUri dsUri { uri() };
+  QgsHanaConnectionRef conn( dsUri );
+  if ( conn.isNull() )
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+
+  try
+  {
+    ConnectionRef connRef = conn->getNativeRef();
+    StatementRef stmt = connRef->createStatement();
+    stmt->execute( reinterpret_cast<const char16_t*>(sql.unicode()) );
+    connRef->commit();
+  }
+  catch (const odbc::Exception& ex)
+  {
+    throw QgsProviderConnectionException( QString( ex.what() ) );
+  }
+}
+
+QList<QgsHanaProviderConnection::TableProperty> QgsHanaProviderConnection::tables( const QString &schema, const TableFlags &flags ) const
+{
+  checkCapability( Capability::Tables );
+  QList<QgsHanaProviderConnection::TableProperty> tables;
+  const QgsDataSourceUri dsUri { uri() };
+
+  QgsHanaConnectionRef conn( dsUri );
+  if ( conn.isNull() )
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+
+  QVector<QgsHanaLayerProperty> layers;
+  try
+  {
+    layers = conn->getLayers(schema, flags.testFlag( TableFlag::Aspatial ), false );
+
+    for ( auto &layerInfo : layers )
+      conn->readLayerInfo(layerInfo);
+
+    for ( const auto &layerInfo : layers )
+    {
+      // Classify
+      TableFlags prFlags;
+      if ( layerInfo.isView )
+        prFlags.setFlag( QgsHanaProviderConnection::TableFlag::View );
+      else if ( !layerInfo.geometryColName.isEmpty() )
+        prFlags.setFlag( QgsHanaProviderConnection::TableFlag::Vector );
+      else
+        prFlags.setFlag( QgsHanaProviderConnection::TableFlag::Aspatial );
+
+      // Filter
+      if ( ! flags || ( prFlags & flags ) )
+      {
+        QgsHanaProviderConnection::TableProperty property;
+        property.setFlags( prFlags );
+
+        QgsCoordinateReferenceSystem crs = conn->getCrs( layerInfo.srid );
+        property.addGeometryColumnType( layerInfo.type, crs );
+
+        property.setTableName( layerInfo.tableName );
+        property.setSchema( layerInfo.schemaName );
+        property.setGeometryColumn( layerInfo.geometryColName );
+        property.setPrimaryKeyColumns( layerInfo.pkCols );
+        property.setGeometryColumnCount( layerInfo.geometryColName.isEmpty() ? 0 : 1 );
+        property.setComment( layerInfo.tableComment );
+        tables.push_back( property );
+      }
+    }
+  }
+  catch (const odbc::Exception& ex)
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve tables: %1, %2" ).arg( uri(), QString( ex.what() ) ) );
+  }
+  catch (const QgsHanaException& ex)
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve tables: %1, %2" ).arg( uri(), QString( ex.what() ) ) );
+  }
+
+  return tables;
+}
+
+QStringList QgsHanaProviderConnection::schemas( ) const
+{
+  checkCapability( Capability::Schemas );
+
+  QStringList schemas;
+  const QgsDataSourceUri dsUri { uri() };
+  QgsHanaConnectionRef conn( dsUri );
+
+  if ( conn.isNull() )
+    throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
+
+  try
+  {
+    QVector<QgsHanaSchemaProperty> schemaProperties = conn->getSchemas("");
+    for ( const auto &s : qgis::as_const( schemaProperties ) )
+      schemas.push_back( s.name );
+  }
+  catch (const QgsHanaException& ex)
+  {
+    throw QgsProviderConnectionException( QObject::tr( "Could not retrieve schemas: %1, %2" ).arg( uri(), QString( ex.what() ) ) );
+  }
+  return schemas;
+}
+
+void QgsHanaProviderConnection::store( const QString &name ) const
+{
+  // delete the original entry first
+  remove( name );
+
+  const QgsDataSourceUri dsUri { uri() };
+
+  QgsHanaSettings settings(name);
+  settings.setFromDataSourceUri(dsUri);
+  settings.setSaveUserName(true);
+  settings.setSavePassword(true);
+  settings.save();
+}
+
+void QgsHanaProviderConnection::remove( const QString &name ) const
+{
+  QgsHanaSettings::removeConnection( name );
+}
+
+QIcon QgsHanaProviderConnection::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconHana.svg" ) );
+}

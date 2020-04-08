@@ -16,6 +16,8 @@
  ***************************************************************************/
 #include "qgshanaresultset.h"
 #include "qgshanautils.h"
+#include "qgslogger.h"
+#include <QString>
 
 QgsHanaResultSet::QgsHanaResultSet( ResultSetRef &&resultSet )
   : mResultSet( resultSet )
@@ -25,7 +27,7 @@ QgsHanaResultSet::QgsHanaResultSet( ResultSetRef &&resultSet )
 
 QgsHanaResultSetRef QgsHanaResultSet::create( StatementRef &stmt, const QString &sql )
 {
-  QgsHanaResultSetRef ret( new QgsHanaResultSet( stmt->executeQuery( sql.toStdString().c_str() ) ) );
+  QgsHanaResultSetRef ret( new QgsHanaResultSet( stmt->executeQuery( reinterpret_cast<const char16_t *>( sql.unicode() ) ) ) );
   return ret;
 }
 
@@ -95,6 +97,7 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
     case SQLDataTypes::LongVarBinary:
       return QgsHanaUtils::toVariant( mResultSet->getBinary( columnIndex ) );
     default:
+      QgsDebugMsg( QStringLiteral( "Unhandled HANA type %1" ).arg( QString::fromStdString( mMetadata->getColumnTypeName( columnIndex ) ) ) );
       return QVariant();
   }
 }

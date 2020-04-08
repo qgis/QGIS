@@ -17,6 +17,7 @@
 #ifndef QGSHANACONNECTION_H
 #define QGSHANACONNECTION_H
 
+#include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
 #include "qgshanatablemodel.h"
 #include "qgslogger.h"
@@ -38,6 +39,7 @@ class QgsHanaConnection : public QObject
 
     const QString &getDatabaseVersion();
     const QString &getUserName();
+    QgsCoordinateReferenceSystem getCrs( int srid );
     QVector<QgsHanaLayerProperty> getLayers(
       const QString &schemaName,
       bool allowGeometrylessTables,
@@ -45,6 +47,7 @@ class QgsHanaConnection : public QObject
     void readLayerInfo( QgsHanaLayerProperty &layerProperty );
     QVector<QgsHanaSchemaProperty> getSchemas( const QString &ownerName );
     QgsWkbTypes::Type getLayerGeometryType( const QgsHanaLayerProperty &layerProperty );
+    QString getColumnDataType( const QString &schemaName, const QString &tableName, const QString &columnName );
 
     odbc::ConnectionRef &getNativeRef() { return mConnection; }
 
@@ -57,6 +60,8 @@ class QgsHanaConnection : public QObject
     {
       return sConnectionAttemptCanceled;
     }
+
+    static QStringList connectionList();
 
   private:
     explicit QgsHanaConnection( const QgsDataSourceUri &uri );

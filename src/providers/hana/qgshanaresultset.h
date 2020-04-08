@@ -48,6 +48,7 @@ class QgsHanaResultSet
     bool next();
     QVariant getValue( unsigned short columnIndex );
     QgsGeometry getGeometry( unsigned short columnIndex );
+    ResultSetMetaDataRef getMetadata() { return mResultSet->getMetaData() ; }
 
   private:
     void ensureBufferCapacity( std::size_t capacity );

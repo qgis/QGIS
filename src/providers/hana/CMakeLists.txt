@@ -12,6 +12,7 @@ SET (HANA_SRCS
   qgshanaexpressioncompiler.cpp
   qgshanafeatureiterator.cpp
   qgshanaprovider.cpp
+  qgshanaproviderconnection.cpp
   qgshanaresultset.cpp
   qgshanasettings.cpp
   qgshanatablemodel.cpp
@@ -32,6 +33,7 @@ SET(HANA_HDRS
   qgshanadriver.h
   qgshanaexception.h
   qgshanaexpressioncompiler.h
+  qgshanaproviderconnection.h
   qgshanaresultset.h
 )
 

@@ -37,6 +37,7 @@ class QgsHanaUtils
     static QString quotedString( const QString &str );
     static QString quotedValue( const QVariant &value );
 
+    static QString toQString( const odbc::NString &str );
     static QString toQString( const odbc::String &str );
     static QVariant toVariant( const odbc::Byte &value );
     static QVariant toVariant( const odbc::UByte &value );
