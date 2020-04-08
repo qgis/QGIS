@@ -1904,6 +1904,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                            const QString &providerKey, bool guiWarning,
                                            bool guiUpdate );
 
+    /**
+     * This method will open a dialog so the user can select MDAL mesh sublayers to load,
+     * and then returns a list of these layers. Layers are added to the project in the method.
+     */
+    QList< QgsMapLayer * > askUserForMDALSublayers( QgsMeshLayer *layer );
+
     //! Open a mesh layer - this is the generic function which takes all parameters
     QgsMeshLayer *addMeshLayerPrivate( const QString &uri, const QString &baseName,
                                        const QString &providerKey, bool guiWarning = true );
