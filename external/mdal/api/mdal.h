@@ -63,7 +63,9 @@ enum MDAL_Status
   Warn_MultipleMeshesInFile
 };
 
-/** Log levels */
+/**
+ * Log levels
+ */
 enum MDAL_LogLevel
 {
   Error,
@@ -235,6 +237,7 @@ MDAL_EXPORT const char *MDAL_M_projection( MDAL_MeshH mesh );
  * Returns NaN on error
  */
 MDAL_EXPORT void MDAL_M_extent( MDAL_MeshH mesh, double *minX, double *maxX, double *minY, double *maxY );
+
 /**
  * Returns vertex count for the mesh
  */
@@ -354,7 +357,8 @@ MDAL_EXPORT MDAL_MeshEdgeIteratorH MDAL_M_edgeIterator( MDAL_MeshH mesh );
  */
 MDAL_EXPORT int MDAL_EI_next( MDAL_MeshEdgeIteratorH iterator, int edgesCount, int *startVertexIndices, int *endVertexIndices );
 
-/** Closes mesh data iterator, frees the memory
+/**
+ * Closes mesh data iterator, frees the memory
  *
  * \since MDAL 0.6.0
  */
@@ -574,14 +578,14 @@ MDAL_EXPORT bool MDAL_D_hasActiveFlagCapability( MDAL_DatasetH dataset );
  */
 enum MDAL_DataType
 {
-  SCALAR_DOUBLE = 0, //!< double value for scalar datasets (DataOnVertices or DataOnFaces or DataOnEdges)
-  VECTOR_2D_DOUBLE, //!< double, double value for vector datasets (DataOnVertices or DataOnFaces or DataOnEdges)
-  ACTIVE_INTEGER, //!< integer, active flag for dataset faces. Some formats support switching off the element for particular timestep (see MDAL_D_hasActiveFlagCapability)
-  VERTICAL_LEVEL_COUNT_INTEGER, //!< number of vertical level for particular mesh's face in 3D Stacked Meshes (DataOnVolumes)
-  VERTICAL_LEVEL_DOUBLE, //!< vertical level extrusion for particular mesh's face in 3D Stacked Meshes (DataOnVolumes)
-  FACE_INDEX_TO_VOLUME_INDEX_INTEGER, //!< the first index of 3D volume for particular mesh's face in 3D Stacked Meshes (DataOnVolumes)
-  SCALAR_VOLUMES_DOUBLE, //!< double scalar values for volumes in 3D Stacked Meshes (DataOnVolumes)
-  VECTOR_2D_VOLUMES_DOUBLE, //!< double, double value for volumes in 3D Stacked Meshes (DataOnVolumes)
+  SCALAR_DOUBLE = 0, //!< Double value for scalar datasets (DataOnVertices or DataOnFaces or DataOnEdges)
+  VECTOR_2D_DOUBLE, //!< Double, double value for vector datasets (DataOnVertices or DataOnFaces or DataOnEdges)
+  ACTIVE_INTEGER, //!< Integer, active flag for dataset faces. Some formats support switching off the element for particular timestep (see MDAL_D_hasActiveFlagCapability)
+  VERTICAL_LEVEL_COUNT_INTEGER, //!< Number of vertical level for particular mesh's face in 3D Stacked Meshes (DataOnVolumes)
+  VERTICAL_LEVEL_DOUBLE, //!< Vertical level extrusion for particular mesh's face in 3D Stacked Meshes (DataOnVolumes)
+  FACE_INDEX_TO_VOLUME_INDEX_INTEGER, //!< The first index of 3D volume for particular mesh's face in 3D Stacked Meshes (DataOnVolumes)
+  SCALAR_VOLUMES_DOUBLE, //!< Double scalar values for volumes in 3D Stacked Meshes (DataOnVolumes)
+  VECTOR_2D_VOLUMES_DOUBLE, //!< Double, double value for volumes in 3D Stacked Meshes (DataOnVolumes)
 };
 
 /**
