@@ -113,6 +113,11 @@ bool QgsVectorTileLayerRenderer::render()
   if ( ctx.renderingStopped() )
     return false;
 
+  // add @zoom_level variable which can be used in styling
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Tiles" ) ); // will be deleted by popper
+  scope->setVariable( "zoom_level", mTileZoom, true );
+  QgsExpressionContextScopePopper popper( ctx.expressionContext(), scope );
+
   mRenderer->startRender( *renderContext(), mTileZoom, mTileRange );
 
   QMap<QString, QSet<QString> > requiredFields = mRenderer->usedAttributes( ctx );
