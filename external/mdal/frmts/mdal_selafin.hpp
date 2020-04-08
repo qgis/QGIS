@@ -63,7 +63,7 @@ namespace MDAL
       DriverSelafin *create() override;
 
       bool canReadMesh( const std::string &uri ) override;
-      std::unique_ptr< Mesh > load( const std::string &meshFile ) override;
+      std::unique_ptr< Mesh > load( const std::string &meshFile, const std::string &meshName = "" ) override;
 
     private:
       typedef std::map<double, std::vector<double> > timestep_map; //TIME (sorted), nodeVal

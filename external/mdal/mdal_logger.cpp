@@ -96,7 +96,7 @@ void _standardStdout( MDAL_LogLevel logLevel, MDAL_Status status, const char *ms
       std::cout << "WARN: Status " << status << ": " << mssg << std::endl;
       break;
     case Info:
-      std::cout << "INFO: Status " << status << ": " << mssg << std::endl;
+      std::cout << "INFO: " << mssg << std::endl;
       break;
     case Debug:
       std::cout << "DEBUG: " << mssg << std::endl;

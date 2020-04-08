@@ -313,13 +313,13 @@ MDAL::CFDimensions MDAL::DriverTuflowFV::populateDimensions( )
 
   // 2D Mesh
   mNcFile->getDimension( "NumCells2D", &count, &ncid );
-  dims.setDimension( CFDimensions::Face2D, count, ncid );
+  dims.setDimension( CFDimensions::Face, count, ncid );
 
   mNcFile->getDimension( "MaxNumCellVert", &count, &ncid );
   dims.setDimension( CFDimensions::MaxVerticesInFace, count, ncid );
 
   mNcFile->getDimension( "NumVert2D", &count, &ncid );
-  dims.setDimension( CFDimensions::Vertex2D, count, ncid );
+  dims.setDimension( CFDimensions::Vertex, count, ncid );
 
   // 3D Mesh
   mNcFile->getDimension( "NumCells3D", &count, &ncid );
@@ -335,7 +335,7 @@ MDAL::CFDimensions MDAL::DriverTuflowFV::populateDimensions( )
   return dims;
 }
 
-void MDAL::DriverTuflowFV::populateFacesAndVertices( Vertices &vertices, Faces &faces )
+void MDAL::DriverTuflowFV::populateElements( Vertices &vertices, Edges &, Faces &faces )
 {
   populateVertices( vertices );
   populateFaces( faces );
@@ -344,7 +344,7 @@ void MDAL::DriverTuflowFV::populateFacesAndVertices( Vertices &vertices, Faces &
 void MDAL::DriverTuflowFV::populateVertices( MDAL::Vertices &vertices )
 {
   assert( vertices.empty() );
-  size_t vertexCount = mDimensions.size( CFDimensions::Vertex2D );
+  size_t vertexCount = mDimensions.size( CFDimensions::Vertex );
   vertices.resize( vertexCount );
   Vertex *vertexPtr = vertices.data();
 
@@ -364,8 +364,8 @@ void MDAL::DriverTuflowFV::populateVertices( MDAL::Vertices &vertices )
 void MDAL::DriverTuflowFV::populateFaces( MDAL::Faces &faces )
 {
   assert( faces.empty() );
-  size_t faceCount = mDimensions.size( CFDimensions::Face2D );
-  size_t vertexCount = mDimensions.size( CFDimensions::Vertex2D );
+  size_t faceCount = mDimensions.size( CFDimensions::Face );
+  size_t vertexCount = mDimensions.size( CFDimensions::Vertex );
   faces.resize( faceCount );
 
   // Parse 2D Mesh
@@ -405,7 +405,7 @@ void MDAL::DriverTuflowFV::calculateMaximumLevelCount()
 
     const size_t maxBufferLength = 1000;
     size_t indexStart = 0;
-    size_t facesCount = mDimensions.size( CFDimensions::Face2D );
+    size_t facesCount = mDimensions.size( CFDimensions::Face );
     while ( true )
     {
       size_t copyValues = std::min( facesCount - indexStart, maxBufferLength );
@@ -541,7 +541,7 @@ std::shared_ptr<MDAL::Dataset> MDAL::DriverTuflowFV::create3DDataset( std::share
         dsi.timeLocation,
         dsi.nTimesteps,
         mDimensions.size( CFDimensions::Type::Volume3D ),
-        mDimensions.size( CFDimensions::Type::Face2D ),
+        mDimensions.size( CFDimensions::Type::Face ),
         mDimensions.size( CFDimensions::Type::StackedFace3D ),
         ts,
         mMaximumLevelsCount,

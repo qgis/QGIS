@@ -38,7 +38,43 @@
 #include "frmts/mdal_xdmf.hpp"
 #endif
 
-std::unique_ptr<MDAL::Mesh> MDAL::DriverManager::load( const std::string &meshFile ) const
+std::string MDAL::DriverManager::getUris( const std::string &file, const std::string &driverName ) const
+{
+  if ( !MDAL::fileExists( file ) )
+  {
+    MDAL::Log::error( MDAL_Status::Err_FileNotFound, "File " + file + " could not be found" );
+    return std::string();
+  }
+
+  if ( !driverName.empty() )
+  {
+    std::shared_ptr<MDAL::Driver> requestedDriver = driver( driverName );
+    if ( !requestedDriver )
+    {
+      MDAL::Log::error( MDAL_Status::Err_MissingDriver, "No such driver with name " + driverName );
+      return std::string();
+    }
+
+    std::unique_ptr<MDAL::Driver> drv( requestedDriver->create() );
+    return drv->buildUri( file );
+  }
+  else
+  {
+    for ( const auto &driver : mDrivers )
+    {
+      if ( ( driver->hasCapability( Capability::ReadMesh ) ) &&
+           driver->canReadMesh( file ) )
+      {
+        std::unique_ptr<MDAL::Driver> drv( driver->create() );
+        return drv->buildUri( file );
+      }
+    }
+  }
+
+  return std::string();
+}
+
+std::unique_ptr<MDAL::Mesh> MDAL::DriverManager::load( const std::string &meshFile, const std::string &meshName ) const
 {
   std::unique_ptr<MDAL::Mesh> mesh;
 
@@ -53,8 +89,9 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverManager::load( const std::string &meshFi
     if ( ( driver->hasCapability( Capability::ReadMesh ) ) &&
          driver->canReadMesh( meshFile ) )
     {
-      std::unique_ptr<Driver> drv( driver->create() );
-      mesh = drv->load( meshFile );
+      std::unique_ptr<MDAL::Driver> drv( driver->create() );
+
+      mesh = drv->load( meshFile, meshName );
       if ( mesh ) // stop if he have the mesh
         break;
     }
@@ -62,6 +99,33 @@ std::unique_ptr<MDAL::Mesh> MDAL::DriverManager::load( const std::string &meshFi
 
   if ( !mesh )
     MDAL::Log::error( MDAL_Status::Err_UnknownFormat, "Unable to load mesh (null)" );
+
+  return mesh;
+}
+
+std::unique_ptr<MDAL::Mesh> MDAL::DriverManager::load(
+  const std::string &driverName,
+  const std::string &meshFile,
+  const std::string &meshName ) const
+{
+  std::unique_ptr<MDAL::Mesh> mesh;
+
+  if ( !MDAL::fileExists( meshFile ) )
+  {
+    MDAL::Log::error( MDAL_Status::Err_FileNotFound, "File " + meshFile + " could not be found" );
+    return mesh;
+  }
+
+  std::shared_ptr<MDAL::Driver> requestedDriver;
+  requestedDriver = driver( driverName );
+  if ( !requestedDriver )
+  {
+    MDAL::Log::error( MDAL_Status::Err_MissingDriver, "Could not find driver with name: " + driverName );
+    return mesh;
+  }
+
+  std::unique_ptr<Driver> drv( requestedDriver->create() );
+  mesh = drv->load( meshFile, meshName );
 
   return mesh;
 }

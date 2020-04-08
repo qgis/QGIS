@@ -32,7 +32,7 @@ namespace MDAL
       int faceVerticesMaximumCount() const override;
 
       bool canReadMesh( const std::string &uri ) override;
-      std::unique_ptr< Mesh > load( const std::string &meshFile ) override;
+      std::unique_ptr< Mesh > load( const std::string &meshFile, const std::string &meshName = "" ) override;
   };
 
 } // namespace MDAL
