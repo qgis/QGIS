@@ -21,6 +21,14 @@ Represents a patch shape for use in map legends.
 %End
   public:
 
+    QgsLegendPatchShape();
+%Docstring
+Constructor for a null QgsLegendPatchShape.
+
+A null QgsLegendPatchShape indicates that the default legend patch shape
+should be used instead.
+%End
+
     QgsLegendPatchShape( QgsSymbol::SymbolType type,
                          const QgsGeometry &geometry,
                          bool preserveAspectRatio = true );
@@ -34,6 +42,12 @@ for further details on the geometry requirements.
 
 If ``preserveAspectRatio`` is ``True``, then the patch shape should preserve its aspect ratio when
 it is resized to fit a desired legend patch size.
+%End
+
+    bool isNull() const;
+%Docstring
+Returns ``True`` if the patch shape is a null QgsLegendPatchShape,
+which indicates that the default legend patch shape should be used instead.
 %End
 
     QgsSymbol::SymbolType symbolType() const;
