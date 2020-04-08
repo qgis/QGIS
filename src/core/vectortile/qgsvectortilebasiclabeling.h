@@ -137,7 +137,9 @@ class CORE_EXPORT QgsVectorTileBasicLabeling : public QgsVectorTileLabeling
 class QgsVectorTileBasicLabelProvider : public QgsVectorTileLabelProvider
 {
   public:
+    //! Constructs a label provider for the given vector tile layer and using styling from QgsVectorTileBasicLabeling
     QgsVectorTileBasicLabelProvider( QgsVectorTileLayer *layer, const QList<QgsVectorTileBasicLabelingStyle> &styles );
+
     QList<QgsAbstractLabelProvider *> subProviders() override;
     bool prepare( QgsRenderContext &context, QSet<QString> &attributeNames ) override;
     void registerTileFeatures( const QgsVectorTileRendererData &tile, QgsRenderContext &context ) override;
@@ -155,6 +157,7 @@ class QgsVectorTileBasicLabelProvider : public QgsVectorTileLabelProvider
     QMap<QString, QSet<QString> > mRequiredFields;
 };
 
+/// @endcond
 #endif
 
 

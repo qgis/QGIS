@@ -33,6 +33,7 @@ class QgsVectorTileRendererData;
 class QgsVectorTileLabelProvider : public QgsVectorLayerLabelProvider
 {
   public:
+    //! Constructs base label provider class for the given vector tile layer
     explicit QgsVectorTileLabelProvider( QgsVectorTileLayer *layer );
 
     //! Returns field names for each sub-layer that are required for labeling
