@@ -88,10 +88,14 @@ void QgsLayoutNorthArrowHandler::setLinkedMap( QgsLayoutItemMap *map )
   if ( !map ) //disable rotation from map
   {
     mRotationMap = nullptr;
+    if ( mArrowRotation != 0 )
+    {
+      mArrowRotation = 0;
+      emit arrowRotationChanged( mArrowRotation );
+    }
   }
   else
   {
-    mArrowRotation = map->mapRotation();
     connect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutNorthArrowHandler::updateMapRotation );
     connect( map, &QgsLayoutItemMap::rotationChanged, this, &QgsLayoutNorthArrowHandler::updateMapRotation );
     connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutNorthArrowHandler::updateMapRotation );
