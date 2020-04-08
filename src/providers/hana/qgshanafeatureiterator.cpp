@@ -27,6 +27,7 @@
 #include "qgssettings.h"
 
 #include "odbc/Connection.h"
+#include "odbc/Exception.h"
 #include "odbc/PreparedStatement.h"
 #include "odbc/ResultSet.h"
 
@@ -74,9 +75,9 @@ QgsHanaFeatureIterator::QgsHanaFeatureIterator(
 
   try
   {
-    QString sql = buildSQLStatement( request );
-    PreparedStatementRef stmt = mConnRef->getNativeRef()->prepareStatement( sql.toStdString().c_str() );
-    mSqlStatement = sql;
+    QString sql = buildSqlQuery( request );
+    PreparedStatementRef stmt = mConnRef->getNativeRef()->prepareStatement( reinterpret_cast<const char16_t *>( sql.unicode() ) );
+    mSqlQuery = sql;
     mClosed = false;
 
     rewind();
@@ -100,7 +101,7 @@ bool QgsHanaFeatureIterator::rewind()
     return false;
 
   mResultSet.reset();
-  PreparedStatementRef stmt = mConnRef->getNativeRef()->prepareStatement( mSqlStatement.toStdString().c_str() );
+  PreparedStatementRef stmt =  mConnRef->getNativeRef()->prepareStatement( reinterpret_cast<const char16_t *>( mSqlQuery.unicode() ) );
   mResultSet = QgsHanaResultSet::create( stmt );
   return true;
 }
@@ -214,7 +215,7 @@ bool QgsHanaFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::Orde
   return mOrderByCompiled;
 }
 
-QString QgsHanaFeatureIterator::buildSQLStatement( const QgsFeatureRequest &request )
+QString QgsHanaFeatureIterator::buildSqlQuery( const QgsFeatureRequest &request )
 {
   bool limitAtProvider = ( mRequest.limit() >= 0 );
   QgsRectangle filterRect = mFilterRect;
