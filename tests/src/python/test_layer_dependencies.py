@@ -113,7 +113,7 @@ class TestLayerDependencies(unittest.TestCase):
         cfg.setMode(QgsSnappingConfig.AdvancedConfiguration)
         cfg.setIndividualLayerSettings(self.pointsLayer,
                                        QgsSnappingConfig.IndividualLayerSettings(True,
-                                                                                 QgsSnappingConfig.Vertex, 20, QgsTolerance.Pixels))
+                                                                                 QgsSnappingConfig.VertexFlag, 20, QgsTolerance.Pixels, 0.0, 0.0))
         u.setConfig(cfg)
 
         m = u.snapToMap(QPoint(95, 100))
@@ -156,7 +156,7 @@ class TestLayerDependencies(unittest.TestCase):
         # test chained layer dependencies A -> B -> C
         cfg.setIndividualLayerSettings(self.pointsLayer2,
                                        QgsSnappingConfig.IndividualLayerSettings(True,
-                                                                                 QgsSnappingConfig.Vertex, 20, QgsTolerance.Pixels))
+                                                                                 QgsSnappingConfig.VertexFlag, 20, QgsTolerance.Pixels, 0.0, 0.0))
         u.setConfig(cfg)
         self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
         self.pointsLayer2.setDependencies([QgsMapLayerDependency(self.pointsLayer.id())])
@@ -304,10 +304,10 @@ class TestLayerDependencies(unittest.TestCase):
         cfg.setMode(QgsSnappingConfig.AdvancedConfiguration)
         cfg.setIndividualLayerSettings(self.pointsLayer,
                                        QgsSnappingConfig.IndividualLayerSettings(True,
-                                                                                 QgsSnappingConfig.Vertex, 20, QgsTolerance.Pixels))
+                                                                                 QgsSnappingConfig.VertexFlag, 20, QgsTolerance.Pixels, 0.0, 0.0))
         cfg.setIndividualLayerSettings(self.pointsLayer2,
                                        QgsSnappingConfig.IndividualLayerSettings(True,
-                                                                                 QgsSnappingConfig.Vertex, 20, QgsTolerance.Pixels))
+                                                                                 QgsSnappingConfig.VertexFlag, 20, QgsTolerance.Pixels, 0.0, 0.0))
         u.setConfig(cfg)
         # add another line
         f = QgsFeature(self.linesLayer.fields())

@@ -105,6 +105,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QgsProjectMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
     Q_PROPERTY( QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged )
     Q_PROPERTY( QColor selectionColor READ selectionColor WRITE setSelectionColor NOTIFY selectionColorChanged )
+    Q_PROPERTY( bool topologicalEditing READ topologicalEditing WRITE setTopologicalEditing NOTIFY topologicalEditingChanged )
 
   public:
 

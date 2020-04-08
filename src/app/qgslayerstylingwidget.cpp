@@ -35,6 +35,8 @@
 #include "qgsmaplayer.h"
 #include "qgsstyle.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectortilelayer.h"
+#include "qgsvectortilebasicrendererwidget.h"
 #include "qgsmeshlayer.h"
 #include "qgsproject.h"
 #include "qgsundowidget.h"
@@ -227,7 +229,11 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
 
     case QgsMapLayerType::VectorTileLayer:
     {
-      // TODO
+      QListWidgetItem *symbolItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ), QString() );
+      symbolItem->setData( Qt::UserRole, Symbology );
+      symbolItem->setToolTip( tr( "Symbology" ) );
+      mOptionsListWidget->addItem( symbolItem );
+
       break;
     }
 
@@ -608,7 +614,20 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
 
       case QgsMapLayerType::VectorTileLayer:
       {
-        // TODO
+        QgsVectorTileLayer *vtLayer = qobject_cast<QgsVectorTileLayer *>( mCurrentLayer );
+        switch ( row )
+        {
+          case 0: // Style
+          {
+            mVectorTileStyleWidget = new QgsVectorTileBasicRendererWidget( vtLayer, mMapCanvas, mMessageBar, mWidgetStack );
+            mVectorTileStyleWidget->setDockMode( true );
+            connect( mVectorTileStyleWidget, &QgsPanelWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+            mWidgetStack->setMainPanel( mVectorTileStyleWidget );
+            break;
+          }
+          default:
+            break;
+        }
         break;
       }
 

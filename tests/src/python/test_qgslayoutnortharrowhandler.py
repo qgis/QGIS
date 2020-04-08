@@ -86,6 +86,10 @@ class TestQgsLayoutNorthArrowHandler(unittest.TestCase):
         self.assertEqual(len(spy), 1)
         self.assertEqual(spy[-1][0], 45)
 
+        handler.setLinkedMap(None)
+        self.assertEqual(len(spy), 2)
+        self.assertEqual(spy[-1][0], 0)
+
     def testGridNorth(self):
         """Test syncing arrow to grid north"""
 
