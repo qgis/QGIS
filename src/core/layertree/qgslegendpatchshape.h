@@ -32,6 +32,14 @@ class CORE_EXPORT QgsLegendPatchShape
   public:
 
     /**
+     * Constructor for a null QgsLegendPatchShape.
+     *
+     * A null QgsLegendPatchShape indicates that the default legend patch shape
+     * should be used instead.
+     */
+    QgsLegendPatchShape() = default;
+
+    /**
      * Constructor for QgsLegendPatchShape.
      *
      * The \a type argument specifies the symbol type associated with this patch.
@@ -45,6 +53,12 @@ class CORE_EXPORT QgsLegendPatchShape
     QgsLegendPatchShape( QgsSymbol::SymbolType type,
                          const QgsGeometry &geometry,
                          bool preserveAspectRatio = true );
+
+    /**
+     * Returns TRUE if the patch shape is a null QgsLegendPatchShape,
+     * which indicates that the default legend patch shape should be used instead.
+     */
+    bool isNull() const;
 
     /**
      * Returns the symbol type associated with this patch.

@@ -26,6 +26,11 @@ QgsLegendPatchShape::QgsLegendPatchShape( QgsSymbol::SymbolType type, const QgsG
 
 }
 
+bool QgsLegendPatchShape::isNull() const
+{
+  return mGeometry.isNull() || mGeometry.isEmpty();
+}
+
 QgsGeometry QgsLegendPatchShape::geometry() const
 {
   return mGeometry;

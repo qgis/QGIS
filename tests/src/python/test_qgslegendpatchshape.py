@@ -28,6 +28,7 @@ class TestQgsLegendPatchShape(unittest.TestCase):
 
     def testBasic(self):
         shape = QgsLegendPatchShape(QgsSymbol.Line, QgsGeometry.fromWkt('LineString( 0 0, 1 1)'), False)
+        self.assertFalse(shape.isNull())
         self.assertEqual(shape.symbolType(), QgsSymbol.Line)
         self.assertEqual(shape.geometry().asWkt(), 'LineString (0 0, 1 1)')
         self.assertFalse(shape.preserveAspectRatio())
@@ -40,6 +41,14 @@ class TestQgsLegendPatchShape(unittest.TestCase):
 
         shape.setPreserveAspectRatio(True)
         self.assertTrue(shape.preserveAspectRatio())
+
+    def testNull(self):
+        shape = QgsLegendPatchShape()
+        self.assertTrue(shape.isNull())
+        shape.setGeometry(QgsGeometry.fromWkt('Multipoint( 1 1, 2 2)'))
+        self.assertFalse(shape.isNull())
+        shape.setGeometry(QgsGeometry())
+        self.assertTrue(shape.isNull())
 
 
 if __name__ == '__main__':
