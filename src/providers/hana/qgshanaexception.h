@@ -19,7 +19,6 @@
 
 #include "qexception.h"
 #include "qgshanautils.h"
-#include "odbc/Exception.h"
 
 class QgsHanaException final : public QException
 {
