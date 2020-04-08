@@ -238,12 +238,9 @@ Returns ``True`` if preparation was successful.
 Returns the set of any fields referenced by the active properties from the collection.
 
 :param context: expression context the properties will be evaluated against.
-
-.. note::
-
-   The optional argument ignoreContext has been added in QGIS 3.14. When set to true,
-   even fields not set in context's fields() will be reported - this is useful e.g. with vector tiles
-   where the actual available field names may not be known beforehand.
+:param ignoreContext: This parameter has been added in QGIS 3.14. When set to true, even fields not set
+                      in context's fields() will be reported - this is useful e.g. with vector tiles
+                      where the actual available field names may not be known beforehand.
 %End
 
     virtual bool isActive( int key ) const = 0;
@@ -550,6 +547,9 @@ Returns the calculated value of the highest priority property with the specified
 Returns the set of any fields referenced by the active properties from the stack.
 
 :param context: expression context the properties will be evaluated against.
+:param ignoreContext: This parameter has been added in QGIS 3.14. When set to true, even fields not set
+                      in context's fields() will be reported - this is useful e.g. with vector tiles
+                      where the actual available field names may not be known beforehand.
 %End
     virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
