@@ -53,6 +53,54 @@ QString QgsHanaSettings::getPort() const
     return mIdentifier;
 }
 
+void QgsHanaSettings::setFromDataSourceUri(const QgsDataSourceUri& uri)
+{
+  mDriver = uri.driver();
+  mHost = uri.host();
+  mIdentifierType = QgsHanaIdentifierType::PORT_NUMBER;
+  mIdentifier = uri.port();
+  mSchema = uri.schema();
+  mDatabase = uri.database();
+  mUserName = uri.username();
+  mPassword = uri.password();
+
+  mSslEnabled = false;
+  mSslCryptoProvider = "";
+  mSslValidateCertificate = false;
+  mSslHostNameInCertificate = "";
+  mSslKeyStore = "";
+  mSslTrustStore = "";
+  if ( uri.hasParam( QStringLiteral( "encrypt" ) ) )
+   mSslEnabled = QVariant(uri.param("encrypt")).toBool();
+  if ( uri.hasParam( QStringLiteral( "sslCryptoProvider" ) ) )
+    mSslCryptoProvider = uri.param( QStringLiteral( "sslCryptoProvider" ) );
+  if ( uri.hasParam( QStringLiteral( "sslValidateCertificate" ) ) )
+    mSslValidateCertificate = QVariant( uri.param( QStringLiteral( "sslValidateCertificate" ) ) ).toBool();
+  if ( uri.hasParam( QStringLiteral( "sslHostNameInCertificate" ) ) )
+    mSslHostNameInCertificate = uri.param( QStringLiteral( "sslHostNameInCertificate" ) );
+  if ( uri.hasParam( QStringLiteral( "sslKeyStore" ) ) )
+    mSslKeyStore = uri.param( QStringLiteral( "sslKeyStore" ) );
+  if ( uri.hasParam( QStringLiteral( "sslTrustStore" ) ) )
+    mSslTrustStore = uri.param( QStringLiteral( "sslTrustStore" ) );
+
+  mUserTablesOnly = true;
+  mAllowGeometrylessTables = false;
+  mSaveUserName = false;
+  mSavePassword = false;
+  mAuthcfg = "";
+
+  if ( uri.hasParam( QStringLiteral( "userTablesOnly" ) ) )
+    mUserTablesOnly = QVariant( uri.param( QStringLiteral( "userTablesOnly" ) ) ).toBool();
+  if ( uri.hasParam( QStringLiteral( "allowGeometrylessTables" ) ) )
+    mAllowGeometrylessTables = QVariant( uri.param( QStringLiteral( "allowGeometrylessTables" ) ) ).toBool();
+  if ( uri.hasParam( QStringLiteral( "saveUsername" ) ) )
+    mSaveUserName = QVariant( uri.param( QStringLiteral( "saveUsername" ) ) ).toBool();
+  if ( uri.hasParam( QStringLiteral( "savePassword" ) ) )
+    mSavePassword = QVariant( uri.param( QStringLiteral( "savePassword" ) ) ).toBool();
+  if ( uri.hasParam( QStringLiteral( "authcfg" ) ) )
+    mAuthcfg = uri.param( QStringLiteral( "authcfg" ) );
+}
+
 QgsDataSourceUri QgsHanaSettings::toDataSourceUri()
 {
   QgsDataSourceUri uri;
@@ -83,6 +131,7 @@ void QgsHanaSettings::load()
   mHost = settings.value( key + "/host" ).toString();
   mIdentifierType = settings.value( key + "/identifierType" ).toUInt();
   mIdentifier = settings.value( key + "/identifier" ).toString();
+  mMultitenant = settings.value( key + "/multitenant" ).toBool();
   mDatabase = settings.value( key + "/database" ).toString();
   mSchema = settings.value( key + "/schema" ).toString();
   mAuthcfg = settings.value( key + "/authcfg" ).toString();
@@ -110,6 +159,7 @@ void QgsHanaSettings::save()
   settings.setValue( key + "/host", mHost );
   settings.setValue( key + "/identifierType", mIdentifierType );
   settings.setValue( key + "/identifier", mIdentifier );
+  settings.setValue( key + "/multitenant", mMultitenant );
   settings.setValue( key + "/database", mDatabase );
   settings.setValue( key + "/schema", mSchema );
   settings.setValue( key + "/authcfg", mAuthcfg );
@@ -136,6 +186,7 @@ void QgsHanaSettings::removeConnection( const QString &name )
   settings.remove( key + "/host" );
   settings.remove( key + "/identifierType" );
   settings.remove( key + "/identifier" );
+  settings.remove( key + "/multitenant" );
   settings.remove( key + "/database" );
   settings.remove( key + "/schema" );
   settings.remove( key + "/userTablesOnly" );
